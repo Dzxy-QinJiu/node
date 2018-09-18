@@ -7,6 +7,9 @@ var notificationEmitter = require('../../../../public/sources/utils/emitters').n
 import {message} from 'antd';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
+import { altAsyncUtil } from 'ant-utils';
+const {asyncDispatcher} = altAsyncUtil;
+
 //更新申请的待审批数，通过、驳回、撤销后均减一
 function updateUnapprovedCount() {
     if (Oplate && Oplate.unread) {
@@ -75,7 +78,8 @@ class ApplyViewDetailActions {
             // 应用配置保存成功时
             'handleSaveAppConfig',
             // 将延期时间设置为截止时间（具体到xx年xx月xx日）
-            'setDelayDeadlineTime'
+            'setDelayDeadlineTime',
+            'setBottomDisplayType'
         );
     }
 
@@ -89,18 +93,21 @@ class ApplyViewDetailActions {
     }
 
     //获取审批单详情
-    getApplyDetail(id, applyData) {
-        //如果已获取了某个详情数据，针对从url中的申请id获取的详情数据
-        if (applyData) {
-            this.dispatch({loading: false, error: false, detail: applyData.detail});
-        } else {
-            AppUserAjax.getApplyDetail(id).then((detail, apps) => {
-                this.dispatch({loading: false, error: false, detail: detail});
-            }, (errorMsg) => {
-                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-            });
-        }
-    }
+    // getApplyDetail(id, applyData) {
+    //     //如果已获取了某个详情数据，针对从url中的申请id获取的详情数据
+    //     if (applyData) {
+    //         this.dispatch({loading: false, error: false, detail: applyData.detail});
+    //     } else {
+    //         AppUserAjax.getApplyDetail(id).then((detail, apps) => {
+    //             this.dispatch({loading: false, error: false, detail: detail});
+    //         }, (errorMsg) => {
+    //             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+    //         });
+    //     }
+    // }
+
+    //获取审批单详情（多应用)
+    getApplyDetail = asyncDispatcher(AppUserAjax.getApplyMultiAppDetail);
 
     //获取回复列表
     getReplyList(id) {

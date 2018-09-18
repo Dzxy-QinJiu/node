@@ -51,7 +51,7 @@ export default function (arg) {
                         errMsg = jqXHR.responseText || jqXHR.responseJSON;
                     }
 
-                    Deferred.reject(errMsg);
+                    reject(errMsg);
                 }
             });
         });

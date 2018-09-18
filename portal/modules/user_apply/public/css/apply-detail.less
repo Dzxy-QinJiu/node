@@ -1,5 +1,6 @@
 @import "../../../../public/css/common-variables";
-
+@pd-l: 13px;
+@font-grey: #A1A1A1;
 .app_user_manage_apply_wrap{
   .app_user_manage_apply_detail_wrap {
     min-width: 600px;
@@ -70,8 +71,41 @@
       float:right;
     }
   }
+  .user-info-block {
+    &.apply-user-detail-block {
+      .delay-days-title {
+        font-size: 15px;
+        color: @font-grey;
+      }
+      .user-item-container {
+        border: 1px solid #e1e9eb;
+        margin-top: 10px;
+      }
+      .userName-container {
+        padding-left: @pd-l;
+        span {
+          color: #ccc;
+        }
+      }
+    }    
+  }
   .apply_detail_desp, .apply_detail_apps{
     padding:0;
+    
+    .applist-container {
+      background: white;
+      li {
+        line-height: 36px;
+        padding-left: @pd-l;
+        padding-right: @pd-l;
+        font-size: 13px;
+        .time-bar {
+          float: right;
+          color: #999999
+        }
+      }
+      
+    }
   }
   .apply_detail_desp{
     padding-right:40px;

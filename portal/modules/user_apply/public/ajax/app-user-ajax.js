@@ -1,3 +1,9 @@
+import ajaxPro from './../../../common/ajaxUtil';
+
+/**
+ * 获取申请详情(多应用)
+ */
+exports.getApplyMultiAppDetail = params => ajaxPro('getApplyDetail', params);
 
 /**
  * 获取用户审批列表

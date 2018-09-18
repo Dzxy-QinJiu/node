@@ -2,10 +2,10 @@ var React = require('react');
 /**
  * Created by wangliping on 2017/9/20.
  */
-import {Form, DatePicker, InputNumber, Select, Radio, Input} from 'antd';
+import { Form, DatePicker, InputNumber, Select, Radio, Input } from 'antd';
 import PropTypes from 'prop-types';
 import language from 'PUB_DIR/language/getLanguage';
-const {TextArea} = Input;
+const { TextArea } = Input;
 const Option = Select.Option;
 import AppUserAjax from 'MOD_DIR/app_user_manage/public/ajax/app-user-ajax';
 import Trace from 'LIB_DIR/trace';
@@ -13,6 +13,7 @@ import DetailCard from 'CMP_DIR/detail-card';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const SELECT_CUSTOM_TIME_TYPE = 'custom';
+import {APPLY_TYPES} from "PUB_DIR/sources/utils/consts";
 class CrmUserApplyForm extends React.Component {
     constructor(props) {
         super(props);
@@ -57,7 +58,7 @@ class CrmUserApplyForm extends React.Component {
     delayTimeNumberChange(value) {
         let formData = this.state.formData;
         formData.delayTimeNumber = value;
-        this.setState({formData: formData});
+        this.setState({ formData: formData });
     }
 
     // 将延期时间设置为截止时间（具体到xx年xx月xx日）
@@ -65,7 +66,7 @@ class CrmUserApplyForm extends React.Component {
         let timestamp = value && value.valueOf() || '';
         let formData = this.state.formData;
         formData.delayDeadlineTime = timestamp;
-        this.setState({formData: formData});
+        this.setState({ formData: formData });
     }
 
     // 设置不可选时间的范围
@@ -77,21 +78,21 @@ class CrmUserApplyForm extends React.Component {
     remarkChange(field, event) {
         let formData = this.state.formData;
         formData.remark[field] = event.target.value;
-        this.setState({formData: formData});
+        this.setState({ formData: formData });
     }
 
     //延期时间范围改变
     delayTimeRangeChange(value, text) {
         let formData = this.state.formData;
         formData.delayTimeRange = value;
-        this.setState({formData: formData});
+        this.setState({ formData: formData });
     }
 
     radioValueChange(field, event) {
         let value = event.target.value;
         let formData = this.state.formData;
         formData[field] = value;
-        this.setState({formData: formData});
+        this.setState({ formData: formData });
     }
 
     getDelayTimeMillis() {
@@ -105,24 +106,32 @@ class CrmUserApplyForm extends React.Component {
     //申请延期的数据处理
     getDelayData() {
         let formData = this.state.formData;
-        let submitObj = {};
+        let submitObj = {
+            type: APPLY_TYPES.DELAY
+        };
+        const paramItem = {};
         //向data中添加delay字段
         if (formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
-            submitObj.end_date = formData.delayDeadlineTime;
+            paramItem.end_date = formData.delayDeadlineTime;
         } else {
             let delayMillis = this.getDelayTimeMillis();
-            submitObj.delay = delayMillis;
+            paramItem.delay = delayMillis;
         }
         //向data中添加备注
         submitObj.remark = this.state.formData.remark.delayRemark;
         //到期是否停用
-        submitObj.over_draft = formData.over_draft;
+        paramItem.over_draft = Number(formData.over_draft);
+        
         /* 构造发邮件数据
          申请审批的，需要传入用户名，客户，应用名，发邮件时候使用
          向后端传递email_customer_names,email_app_names,email_user_names，发邮件使用
          */
         //添加邮箱使用的字段, 客户名 用户名 添加应用名 用户id
-        submitObj = _.extend(submitObj, this.getSelectedUserAppData());
+        // submitObj = _.extend(submitObj, this.getSelectedUserAppData());
+        submitObj.data = this.getSelectedUserMultiAppData().map(x => ({
+            ...paramItem,
+            ...x
+        }));
         return submitObj;
     }
 
@@ -131,16 +140,19 @@ class CrmUserApplyForm extends React.Component {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '点击确定按钮(申请延期)');
         let submitObj = this.getDelayData();
         //销售提交申请延期
-        this.setState({isApplying: true});
-        AppUserAjax.applyDelayTime(submitObj).then((result) => {
-            this.setState({isApplying: false});
+        this.setState({ isApplying: true });
+        AppUserAjax.applyDelayMultiApp({
+            usePromise: true,
+            data: submitObj
+        }).then((result) => {
+            this.setState({ isApplying: false });
             if (result) {
                 this.props.closeApplyPanel();
             } else {
-                this.setState({applyErrorMsg: Intl.get('user.apply.delay.failed', '申请延期失败')});
+                this.setState({ isApplying: false, applyErrorMsg: Intl.get('user.apply.delay.failed', '申请延期失败') });
             }
-        }, (errorMsg) => {
-            this.setState({isApplying: false, applyErrorMsg: errorMsg});
+        }).catch((err) => {
+            this.setState({ isApplying: false, applyErrorMsg: (err && err.message) || Intl.get('user.apply.delay.failed', '申请延期失败')  });
         });
     }
 
@@ -195,6 +207,25 @@ class CrmUserApplyForm extends React.Component {
         };
     }
 
+    //获取选择的用户及其应用相关的数据(多个应用)
+    getSelectedUserMultiAppData() {
+        let appArr = [];
+        this.props.crmUserList.forEach(user => {
+            if (user.apps && user.apps.length > 0) {
+                user.apps.forEach(app => {
+                    appArr.push(({
+                        "client_id": app.app_id,
+                        "user_id": user.user.user_id,
+                        'user_name': user.user.user_name,
+                        "nickname": user.user.nick_name,
+                        "client_name": app.app_name
+                    }))
+                })
+            }
+        })
+        return appArr;
+    }
+
     // 申请停用
     submitStopUseData() {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '点击确定按钮(申请停用)');
@@ -206,17 +237,17 @@ class CrmUserApplyForm extends React.Component {
             status: '0'
         };
 
-        this.setState({isApplying: true});
+        this.setState({ isApplying: true });
         //调用申请修改开通状态
         AppUserAjax.salesApplyStatus(submitObj).then((result) => {
-            this.setState({isApplying: false});
+            this.setState({ isApplying: false });
             if (result) {
                 this.props.closeApplyPanel();
             } else {
-                this.setState({applyErrorMsg: Intl.get('user.apply.status.failed', '申请修改开通状态失败')});
+                this.setState({ applyErrorMsg: Intl.get('user.apply.status.failed', '申请修改开通状态失败') });
             }
         }, (errorMsg) => {
-            this.setState({isApplying: false, applyErrorMsg: errorMsg});
+            this.setState({ isApplying: false, applyErrorMsg: errorMsg });
         });
     }
 
@@ -228,17 +259,17 @@ class CrmUserApplyForm extends React.Component {
             user_ids: selectedUserAppData.user_ids,
             remark: this.state.formData.remark.passwordRemark
         };
-        this.setState({isApplying: true});
+        this.setState({ isApplying: true });
         //调用修改密码
         AppUserAjax.applyChangePassword(submitObj).then((result) => {
-            this.setState({isApplying: false});
+            this.setState({ isApplying: false });
             if (result) {
                 this.props.closeApplyPanel();
             } else {
-                this.setState({applyErrorMsg: Intl.get('user.apply.password.failed', '申请修改密码失败')});
+                this.setState({ applyErrorMsg: Intl.get('user.apply.password.failed', '申请修改密码失败') });
             }
         }, (errorMsg) => {
-            this.setState({isApplying: false, applyErrorMsg: errorMsg});
+            this.setState({ isApplying: false, applyErrorMsg: errorMsg });
         });
     }
 
@@ -250,17 +281,17 @@ class CrmUserApplyForm extends React.Component {
             user_ids: selectedUserAppData.user_ids,
             remark: this.state.formData.remark.otherRemark
         };
-        this.setState({isApplying: true});
+        this.setState({ isApplying: true });
         //调用修改其他类型的申请
         AppUserAjax.applyChangeOther(submitObj).then((result) => {
-            this.setState({isApplying: false});
+            this.setState({ isApplying: false });
             if (result) {
                 this.props.closeApplyPanel();
             } else {
-                this.setState({applyErrorMsg: Intl.get('user.apply.password.failed', '申请其他类型的修改失败')});
+                this.setState({ applyErrorMsg: Intl.get('user.apply.password.failed', '申请其他类型的修改失败') });
             }
         }, (errorMsg) => {
-            this.setState({isApplying: false, applyErrorMsg: errorMsg});
+            this.setState({ isApplying: false, applyErrorMsg: errorMsg });
         });
     }
 
@@ -295,8 +326,8 @@ class CrmUserApplyForm extends React.Component {
         }
         const formItemLayout = {
             colon: false,
-            labelCol: {span: 4},
-            wrapperCol: {span: 20}
+            labelCol: { span: 4 },
+            wrapperCol: { span: 20 }
         };
         return (
             <Form>
@@ -314,25 +345,25 @@ class CrmUserApplyForm extends React.Component {
                                 showToday={false}
                             />
                         ) : (
-                            <InputNumber
-                                value={this.state.formData.delayTimeNumber}
-                                onChange={this.delayTimeNumberChange.bind(this)}
-                                style={{width: '80px', height: '30px'}}
-                                min={1}
-                                max={10000}
-                            />
-                        )}
+                                <InputNumber
+                                    value={this.state.formData.delayTimeNumber}
+                                    onChange={this.delayTimeNumberChange.bind(this)}
+                                    style={{ width: '80px', height: '30px' }}
+                                    min={1}
+                                    max={10000}
+                                />
+                            )}
 
                         <Select
                             value={this.state.formData.delayTimeRange}
-                            style={{width: divWidth}}
+                            style={{ width: divWidth }}
                             onChange={this.delayTimeRangeChange.bind(this)}
                         >
-                            <Option value="days">{Intl.get('common.time.unit.day','天')}</Option>
-                            <Option value="weeks">{Intl.get('common.time.unit.week','周')}</Option>
-                            <Option value="months">{Intl.get('common.time.unit.month','月')}</Option>
-                            <Option value="years">{Intl.get('common.time.unit.year','年')}</Option>
-                            <Option value="custom">{Intl.get('user.time.custom','自定义')}</Option>
+                            <Option value="days">{Intl.get('common.time.unit.day', '天')}</Option>
+                            <Option value="weeks">{Intl.get('common.time.unit.week', '周')}</Option>
+                            <Option value="months">{Intl.get('common.time.unit.month', '月')}</Option>
+                            <Option value="years">{Intl.get('common.time.unit.year', '年')}</Option>
+                            <Option value="custom">{Intl.get('user.time.custom', '自定义')}</Option>
                         </Select>
                     </FormItem>
                 </div>
@@ -342,9 +373,9 @@ class CrmUserApplyForm extends React.Component {
                 >
                     <RadioGroup onChange={this.radioValueChange.bind(this, 'over_draft')}
                         value={this.state.formData.over_draft}>
-                        <Radio key="1" value="1">{Intl.get('user.status.stop','停用')}</Radio>
-                        <Radio key="2" value="2">{Intl.get('user.status.degrade','降级')}</Radio>
-                        <Radio key="0" value="0">{Intl.get('user.status.immutability','不变')}</Radio>
+                        <Radio key="1" value="1">{Intl.get('user.status.stop', '停用')}</Radio>
+                        <Radio key="2" value="2">{Intl.get('user.status.degrade', '降级')}</Radio>
+                        <Radio key="0" value="0">{Intl.get('user.status.immutability', '不变')}</Radio>
                     </RadioGroup>
                 </FormItem>
                 {/*申请延期要填备注，批量延期不需要填备注*/}
@@ -354,7 +385,7 @@ class CrmUserApplyForm extends React.Component {
                 >
                     <TextArea
                         placeholder={Intl.get('user.remark.write.tip', '请填写备注')}
-                        autosize={{minRows: 2, maxRows: 6}}
+                        autosize={{ minRows: 2, maxRows: 6 }}
                         onChange={this.remarkChange.bind(this, 'delayRemark')}
                         value={this.state.formData.remark.delayRemark}
                     />
@@ -368,12 +399,12 @@ class CrmUserApplyForm extends React.Component {
         return (
             <form>
                 <FormItem
-                    wrapperCol={{span: 24}}
+                    wrapperCol={{ span: 24 }}
                 >
                     <TextArea
                         placeholder={placeholder}
                         value={this.state.formData.remark[key]}
-                        autosize={{minRows: 2, maxRows: 6}}
+                        autosize={{ minRows: 2, maxRows: 6 }}
                         onChange={this.remarkChange.bind(this, key)}
                     />
                 </FormItem>
@@ -424,7 +455,7 @@ CrmUserApplyForm.defaultProps = {
     APPLY_TYPES: {},
     applyType: '',
     crmUserList: [],
-    closeApplyPanel: function() {
+    closeApplyPanel: function () {
     },
 };
 CrmUserApplyForm.propTypes = {

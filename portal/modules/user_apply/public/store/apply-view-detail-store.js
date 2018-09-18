@@ -1,7 +1,10 @@
 import ApplyViewDetailActions from '../action/apply-view-detail-actions';
+import { altAsyncUtil } from 'ant-utils';
+const {resultHandler} = altAsyncUtil;
+import {APPLY_TYPES} from "PUB_DIR/sources/utils/consts";
 
 class ApplyViewDetailStore {
-    constructor(){
+    constructor() {
         this.resetState();
         this.bindActions(ApplyViewDetailActions);
     }
@@ -12,7 +15,7 @@ class ApplyViewDetailStore {
         //审批的详情数据
         this.detailInfoObj = {
             // "" loading error
-            loadingResult: 'loading',
+            loading: false,
             //获取的详情信息
             info: {},
             //错误信息
@@ -51,7 +54,7 @@ class ApplyViewDetailStore {
             //延期时间的单位，默认是天
             delayTimeUnit: 'days',
             // 到期时间(选择到期时间)
-            end_date: moment().add('days',1).valueOf(),
+            end_date: moment().add('days', 1).valueOf(),
             // 延期时间
             delay_time: '',
             //审批修改密码
@@ -120,7 +123,7 @@ class ApplyViewDetailStore {
     }
     //获取应用列表
     getApps(result) {
-        if(result.error) {
+        if (result.error) {
             this.app_list = [];
         } else {
             this.app_list = result.list;
@@ -140,71 +143,81 @@ class ApplyViewDetailStore {
         var weeks = Math.floor(left_millis / WEEK_MILLIS);
         left_millis = left_millis - weeks * WEEK_MILLIS;
         var days = Math.floor(left_millis / DAY_MILLIS);
-        if(years !== 0 && months === 0 && weeks === 0 && days === 0){
+        if (years !== 0 && months === 0 && weeks === 0 && days === 0) {
             this.formData.delayTimeNumber = years;
             this.formData.delayTimeUnit = 'years';
-        }else if(years === 0 && months !== 0 && weeks === 0 && days === 0){
+        } else if (years === 0 && months !== 0 && weeks === 0 && days === 0) {
             this.formData.delayTimeNumber = months;
             this.formData.delayTimeUnit = 'months';
-        }else if(years === 0 && months === 0 && weeks !== 0 && days === 0){
+        } else if (years === 0 && months === 0 && weeks !== 0 && days === 0) {
             this.formData.delayTimeNumber = weeks;
             this.formData.delayTimeUnit = 'weeks';
-        }else if(years === 0 && months === 0 && weeks === 0 && days !== 0){
+        } else if (years === 0 && months === 0 && weeks === 0 && days !== 0) {
             this.formData.delayTimeNumber = days;
             this.formData.delayTimeUnit = 'days';
-        }else{
+        } else {
             this.formData.delayTimeNumber = 365 * years + 30 * months + 7 * weeks + days;
             this.formData.delayTimeUnit = 'days';
         }
     }
-    
+
     //获取审批详情
-    getApplyDetail(obj) {
+    getApplyDetail = resultHandler('detailInfoObj', function ({ data, paramObj }) {
         //没有角色的时候，显示模态框，重置
         this.rolesNotSettingModalDialog = {
             show: false,
             appNames: [],
             continueSubmit: false
         };
-        if(obj.error) {
-            this.detailInfoObj.loadingResult = 'error';
-            this.detailInfoObj.info = {};
-            this.detailInfoObj.errorMsg = obj.errorMsg;
-        } else {
-            this.detailInfoObj.loadingResult = '';
-            const info = obj.detail;
-            _.each(info.apps || [] , (app) => {
-                app.app_id = app.client_id;
-                app.app_name = app.client_name;
-            });
-            this.detailInfoObj.info = info;
-            this.detailInfoObj.info = obj.detail;
-            this.detailInfoObj.errorMsg = '';
-            this.createAppsSetting();
-            if(_.isArray(this.detailInfoObj.info.user_names)) {
-                this.formData.user_name = this.detailInfoObj.info.user_names[0];
+        const info = data;
+        const apps = info.message.apply_param && (JSON.parse(info.message.apply_param)|| []);
+        info.apps =  apps.map(app => ({
+            ...app,
+            app_id: app.client_id,
+            app_name: app.client_name
+        }));
+        info.users = _.uniqBy(apps, 'user_id').map(user => {
+            const item = _.pick(user, "user_id", "user_name");
+            return {
+                ...item,
+                apps: apps.filter(x => x.user_id === item.user_id).map(app => ({
+                    ...app,
+                    app_id: app.client_id,
+                    app_name: app.client_name
+                }))
             }
-            if(_.isArray(this.detailInfoObj.info.nick_names)) {
-                this.formData.nick_name = this.detailInfoObj.info.nick_names[0];
-            }
-            let delayTime = 0;
-            if(this.detailInfoObj.info.type === 'apply_grant_delay'){
-                if (this.detailInfoObj.info.delayTime) { // 同步修改时间
-                    delayTime = this.detailInfoObj.info.delayTime;
-                    this.formData.delay_time = delayTime;
-                    this.getDelayDisplayTime(delayTime);
-                } else { // 到期时间，点开修改同步到自定义
-                    this.formData.delayTimeUnit = 'custom';
-                    this.formData.end_date = this.detailInfoObj.info.end_date;
-                }
+        })
+        info.customer_name = info.message.customer_name;
+        this.detailInfoObj.info = info;
+        this.formData.user_name = info.producer.user_name;
+        this.formData.nick_name = info.producer.nick_name;
+
+
+        this.createAppsSetting();
+        // if (_.isArray(this.detailInfoObj.info.user_names)) {
+        //     this.formData.user_name = this.detailInfoObj.info.user_names[0];
+        // }
+        // if (_.isArray(this.detailInfoObj.info.nick_names)) {
+        //     this.formData.nick_name = this.detailInfoObj.info.nick_names[0];
+        // }
+        let delayTime = 0;
+        if (_.get(this.detailInfoObj, 'message.type') === APPLY_TYPES.DELAY) {
+            if (this.detailInfoObj.info.delayTime) { // 同步修改时间
+                delayTime = this.detailInfoObj.info.delayTime;
+                this.formData.delay_time = delayTime;
+                this.getDelayDisplayTime(delayTime);
+            } else { // 到期时间，点开修改同步到自定义
+                this.formData.delayTimeUnit = 'custom';
+                this.formData.end_date = this.detailInfoObj.info.end_date;
             }
         }
-    }
+
+    })
     //生成应用的单独配置
     createAppsSetting() {
         //申请的应用列表
         const apps = this.detailInfoObj.info.apps;
-        _.each(apps , (appInfo) => {
+        _.each(apps, (appInfo) => {
             const app_id = appInfo.app_id;
             const tags = appInfo.tags || [];
 
@@ -212,22 +225,22 @@ class ApplyViewDetailStore {
                 end_time = appInfo.end_date || 0,
                 range;
 
-            if(appInfo.end_date === '0' || appInfo.end_date === 0) {
+            if (appInfo.end_date === '0' || appInfo.end_date === 0) {
                 range = 'forever';
             } else {
                 var startMoment = moment(new Date(+start_time));
                 var endMoment = moment(new Date(+end_time));
                 startMoment.hours(0).minutes(0).seconds(0).milliseconds(0);
                 endMoment.hours(0).minutes(0).seconds(0).milliseconds(0);
-                var rangeDiffMonth = endMoment.diff(startMoment , 'months') + '';
-                if(['1','6','12'].indexOf(rangeDiffMonth) >= 0 && startMoment.format('D') === endMoment.format('D')) {
+                var rangeDiffMonth = endMoment.diff(startMoment, 'months') + '';
+                if (['1', '6', '12'].indexOf(rangeDiffMonth) >= 0 && startMoment.format('D') === endMoment.format('D')) {
                     range = rangeDiffMonth + 'm';
                 } else {
                     //判断天数，是7天(一周)还是15天(半个月)
-                    var rangeDiffDays = endMoment.diff(startMoment , 'days') + '';
-                    if(rangeDiffDays === '7') {
+                    var rangeDiffDays = endMoment.diff(startMoment, 'days') + '';
+                    if (rangeDiffDays === '7') {
                         range = '1w';
-                    } else if(rangeDiffDays === '15'){
+                    } else if (rangeDiffDays === '15') {
                         range = '0.5m';
                     } else {
                         range = 'custom';
@@ -265,7 +278,7 @@ class ApplyViewDetailStore {
     }
     //计算右侧底部类型
     setBottomDisplayType() {
-        if(this.selectedDetailItem.isConsumed === 'true') {
+        if (this.selectedDetailItem.isConsumed === 'true') {
             this.detailBottomDisplayType = 'formtext';
         } else {
             this.detailBottomDisplayType = 'btn';
@@ -273,10 +286,10 @@ class ApplyViewDetailStore {
     }
     //提交审批
     submitApply(obj) {
-        if(obj.loading) {
+        if (obj.loading) {
             this.applyResult.submitResult = 'loading';
             this.applyResult.errorMsg = '';
-        } else if(obj.error) {
+        } else if (obj.error) {
             this.applyResult.submitResult = 'error';
             this.applyResult.errorMsg = obj.errorMsg;
         } else {
@@ -310,7 +323,7 @@ class ApplyViewDetailStore {
             this.detailInfoObj.info.user_names[0] = name;
             this.isChangeUserName = true;
         }
-        
+
     }
     cancelUserName() {
         this.formData.user_name = this.detailInfoObj.info.user_names[0];
@@ -338,7 +351,7 @@ class ApplyViewDetailStore {
         this.rightPanelAppConfig = '';
     }
     // 显示应用没有默认的权限和角色的右侧面板
-    showAppConfigPanel(app){
+    showAppConfigPanel(app) {
         //是否显示右侧面板
         this.showRightPanel = true;
         this.rightPanelAppConfig = app;
@@ -348,18 +361,18 @@ class ApplyViewDetailStore {
         this.rightPanelUserId = '';
     }
     // 应用配置取消保存
-    handleCancel(){
+    handleCancel() {
         this.showRightPanel = false;
         this.rightPanelAppConfig = '';
         this.addUserTypeConfigInfoShow = false;
     }
     // 应用配置保存成功时
-    handleSaveAppConfig(){
+    handleSaveAppConfig() {
         this.showRightPanel = false;
         this.rightPanelAppConfig = '';
         this.addUserTypeConfigInfoShow = false;
     }
-    showAppConfigRightPanle(){
+    showAppConfigRightPanle() {
         this.addUserTypeConfigInfoShow = true;
     }
     //关闭右侧面板
@@ -396,7 +409,7 @@ class ApplyViewDetailStore {
         if (this.formData.delayTimeUnit !== 'custom') {
             this.formData.delay_time = delay;
             // 当时间单位为天、周、月、年时，默认end_date一个具体的值（默认显示当前时间的第二天）
-            this.formData.end_date = moment().add('days',1).valueOf();
+            this.formData.end_date = moment().add('days', 1).valueOf();
         } else {
             this.formData.end_date = delay;
             this.formData.delay_time = '';
@@ -411,7 +424,7 @@ class ApplyViewDetailStore {
         if (this.detailInfoObj.info.delayTime) {
             delayTime = this.detailInfoObj.info.delayTime;
             this.formData.delay_time = delayTime;
-            this.formData.end_date = moment().add('days',1).valueOf();
+            this.formData.end_date = moment().add('days', 1).valueOf();
             this.getDelayDisplayTime(delayTime);
         } else {
             this.formData.delayTimeUnit = 'custom';
@@ -433,18 +446,18 @@ class ApplyViewDetailStore {
     setDelayDeadlineTime(val) {
         this.formData.end_date = val;
     }
-    
+
     //获取回复列表
     getReplyList(resultObj) {
         //回复列表
         var replyListInfo = this.replyListInfo;
         //result,list,errorMsg
         //loading的情况
-        if(resultObj.loading) {
+        if (resultObj.loading) {
             replyListInfo.result = 'loading';
             replyListInfo.list = [];
             replyListInfo.errorMsg = '';
-        } else if(resultObj.error) {
+        } else if (resultObj.error) {
             //出错的情况
             replyListInfo.result = 'error';
             replyListInfo.list = [];
@@ -458,7 +471,7 @@ class ApplyViewDetailStore {
     }
     //显示回复输入框为空的错误
     showReplyCommentEmptyError() {
-        if(this.replyFormInfo.result === 'success') {
+        if (this.replyFormInfo.result === 'success') {
             return;
         }
         this.replyFormInfo.result = 'error';
@@ -473,10 +486,10 @@ class ApplyViewDetailStore {
     addReply(resultObj) {
         //回复表单
         var replyFormInfo = this.replyFormInfo;
-        if(resultObj.loading) {
+        if (resultObj.loading) {
             replyFormInfo.result = 'loading';
             replyFormInfo.errorMsg = '';
-        } else if(resultObj.error) {
+        } else if (resultObj.error) {
             replyFormInfo.result = 'error';
             replyFormInfo.errorMsg = resultObj.errorMsg;
         } else {
@@ -490,7 +503,7 @@ class ApplyViewDetailStore {
     }
     //恢复添加回复表单到默认状态
     resetReplyFormResult() {
-        if(this.replyFormInfo.result === 'success') {
+        if (this.replyFormInfo.result === 'success') {
             //回复表单重置
             this.replyFormInfo = {
                 result: '',
@@ -505,15 +518,15 @@ class ApplyViewDetailStore {
         //已经获取的用户id
         var target_user_id = userInfo.user_id;
         //遍历reply列表，找到user_id与获取user_id相同的，赋予user_logo
-        _.each(list , (reply) => {
-            if(reply.user_id === target_user_id) {
+        _.each(list, (reply) => {
+            if (reply.user_id === target_user_id) {
                 reply.user_logo = userInfo.user_logo;
             }
         });
     }
-    
+
     //设置角色的模态框是显示还是隐藏
-    setRolesNotSettingModalDialog({show,appNames}) {
+    setRolesNotSettingModalDialog({ show, appNames }) {
         this.rolesNotSettingModalDialog.show = show;
         this.rolesNotSettingModalDialog.appNames = appNames;
     }
@@ -526,4 +539,4 @@ class ApplyViewDetailStore {
 }
 
 //使用alt导出store
-export default alt.createStore(ApplyViewDetailStore , 'ApplyViewDetailStoreV2');
+export default alt.createStore(ApplyViewDetailStore, 'ApplyViewDetailStoreV2');

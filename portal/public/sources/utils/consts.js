@@ -313,3 +313,7 @@ export const SPECIAL_LABEL = {
     HAS_CALL_BACK: Intl.get('common.has.callback', '已回访'),
 };
 
+export const APPLY_TYPES = {
+    DELAY: 'apply_grant_delay_multiapp'
+};
+

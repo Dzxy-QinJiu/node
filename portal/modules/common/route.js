@@ -414,4 +414,20 @@ module.exports = [{
     'passport': {
         'needLogin': true
     }
+}, {    
+    //申请延期（多应用
+    'method': 'post',
+    'path': '/rest/base/v1/user/grants/update/apply',
+    'handler': 'applyDelayMultiApp',
+    'passport': {
+        'needLogin': true
+    }
+}, {    
+    //获取申请详情（多应用
+    'method': 'get',
+    'path': '/rest/base/v1/message/apply/:applyId',
+    'handler': 'getApplyDetail',
+    'passport': {
+        'needLogin': true
+    }
 }];
