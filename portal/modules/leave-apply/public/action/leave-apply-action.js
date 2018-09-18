@@ -10,8 +10,8 @@ function LeaveApplyActions() {
     );
     this.getAllApplyList = function(queryObj) {
         this.dispatch({error: false, loading: true});
-        LeaveApplyAjax.getAllApplyList(queryObj).then((list) => {
-            this.dispatch({error: false, loading: false, list: list});
+        LeaveApplyAjax.getAllApplyList(queryObj).then((data) => {
+            this.dispatch({error: false, loading: false, data: data});
         }, (errorMsg) => {
             this.dispatch({
                 error: true,
