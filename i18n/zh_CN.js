@@ -927,7 +927,7 @@ var zh_CN = {
     'sales.stage.change.sort': '变更顺序',
     'sales.stage.add.sales.stage': '添加销售阶段',
     'sales.stage.sales.stage': '销售阶段',
-    'sales.stage.delete.sales.stage': '确定删除这个销售阶段麽',
+    'sales.stage.delete.sales.stage': '确定删除这个销售阶段吗?',
     'sales.stage.signed': '签约',
     'sales.stage.intention': '意向',
     'sales.stage.message': '信息',
@@ -2640,5 +2640,11 @@ var zh_CN = {
     'user.get.user.info.null': '获取不到登录用户的信息',
     'user.info.binding.phone': '绑定手机号',
     'user.info.no.set.phone': '该用户还没有手机号，{bindPhone}',
+    'crm.order.stage.manage': '订单阶段管理',
+    'crm.order.stage.add': '添加订单阶段',
+    'crm.order.stage.edit': '编辑订单阶段',
+    'crm.order.stage.name': '阶段名称',
+    'crm.order.stage.name.placeholder': '请输入阶段名称',
+    'crm.order.stage.destrip.palceholder': '请输入阶段的描述信息',
 };
 export default zh_CN;
