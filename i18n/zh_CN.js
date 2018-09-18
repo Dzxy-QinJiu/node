@@ -2652,7 +2652,10 @@ var zh_CN = {
     'leave.apply.add.leave.person': '出差人员',
     'leave.apply.add.leave.destination': '目的地',
     'leave.apply.add.leave.reason': '出差事由',
-    'leave.apply.select.customer': '请先选择客户'
+    'leave.apply.select.customer': '请先选择客户',
+    'leave.apply.for.city.address': '出差地点',
+    'leave.apply.for.leave.time': '出差时间',
+    'leave.apply.for.application': '出差人员'
 
 
 };

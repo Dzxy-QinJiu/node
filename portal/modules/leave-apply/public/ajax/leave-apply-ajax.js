@@ -73,3 +73,21 @@ exports.addLeaveApply = function(data) {
     });
     return Deferred.promise();
 };
+//根据申请的id获取申请的详情
+let getLeaveApplyDetailByIdAjax = null;
+exports.getLeaveApplyDetailById = function(queryObj) {
+    var Deferred = $.Deferred();
+    getLeaveApplyDetailByIdAjax && getLeaveApplyDetailByIdAjax.abort();
+    getLeaveApplyDetailByIdAjax = $.ajax({
+        url: '/rest/apply/detail/byId',
+        type: 'get',
+        data: queryObj,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

@@ -34,6 +34,13 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+        }, {
+            method: 'get',
+            path: '/rest/apply/detail/byId',
+            handler: 'getLeaveApplyDetailById',
+            passport: {
+                needLogin: true
+            },
         }
     ]
 };

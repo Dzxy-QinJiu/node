@@ -7,6 +7,8 @@ var LeaveApplyAjax = require('../ajax/leave-apply-ajax');
 function LeaveApplyActions() {
     this.generateActions(
         'setInitState',
+        'setSelectedDetailItem',//点击某个申请
+        'changeApplyListType'
     );
     this.getAllApplyList = function(queryObj) {
         this.dispatch({error: false, loading: true});
@@ -22,8 +24,8 @@ function LeaveApplyActions() {
     };
     this.getSelfApplyList = function() {
         this.dispatch({error: false, loading: true});
-        LeaveApplyAjax.getSelfApplyList().then((list) => {
-            this.dispatch({error: false, loading: false, list: list});
+        LeaveApplyAjax.getSelfApplyList().then((data) => {
+            this.dispatch({error: false, loading: false, data: data});
         }, (errorMsg) => {
             this.dispatch({
                 error: true,
@@ -34,8 +36,8 @@ function LeaveApplyActions() {
     };
     this.getWorklistLeaveApplyList = function() {
         this.dispatch({error: false, loading: true});
-        LeaveApplyAjax.getWorklistLeaveApplyList().then((list) => {
-            this.dispatch({error: false, loading: false, list: list});
+        LeaveApplyAjax.getWorklistLeaveApplyList().then((data) => {
+            this.dispatch({error: false, loading: false, data: data});
         }, (errorMsg) => {
             this.dispatch({
                 error: true,

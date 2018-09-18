@@ -10,24 +10,12 @@ function LeaveApplyStore() {
     this.bindActions(LeaveApplyAction);
 }
 LeaveApplyStore.prototype.setInitState = function() {
-    //获取全部申请信息时
-    this.isLoadingAllApply = true;
-    this.allApplyErrMsg = '';
-    this.allApplyList = [];
-    //获取由自己发起的出差申请
-    this.isLoadingSelfApply = true;
-    this.selfApplyErrMsg = '';
-    this.selfApplyList = [];
-    //获取由我审批的出差申请
-    this.isLoadingWrokList = true;
-    this.workListErrMsg = '';
-    this.workLisApplyList = [];
     this.sort_field = 'create_time';//排序字段
     this.status = '';//请假申请的状态
-    this.order = '';
+    this.order = 'descend';
     this.page_size = 20;
     this.lastLeaveApplyId = '';//用于下拉加载的id
-    //申请列表
+    //所有申请列表
     this.applyListObj = {
         // "" loading error
         loadingResult: 'loading',
@@ -37,6 +25,26 @@ LeaveApplyStore.prototype.setInitState = function() {
         errorMsg: ''
     };
     this.lastApplyId = '';
+    //由我审批的出差申请列表
+    this.workListApplyObj = {
+        // "" loading error
+        loadingResult: 'loading',
+        //获取的列表
+        list: [],
+        //错误信息
+        errorMsg: ''
+    };
+    //由我发起的出差申请
+    this.selfApplyList = {
+        // "" loading error
+        loadingResult: 'loading',
+        //获取的列表
+        list: [],
+        //错误信息
+        errorMsg: ''
+    };
+    //筛选类别 all(全部) pass(已通过) reject(已驳回)  false(待审批)
+    this.applyListType = 'all';
 };
 // LeaveApplyStore.prototype.getAllApplyList = function(data) {
 //     if (data.loading){
@@ -92,6 +100,16 @@ LeaveApplyStore.prototype.getAllApplyList = function(obj) {
             this.listenScrollBottom = false;
         }
     }
+};
+LeaveApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {
+    this.selectedDetailItem = obj;
+    this.selectedDetailItemIdx = idx;
+};
+LeaveApplyStore.prototype.changeApplyListType = function(type) {
+    this.applyListType = type;
+    this.lastApplyId = '';
+    // this.showUpdateTip = false;
+    // this.isCheckUnreadApplyList = false;
 };
 
 module.exports = alt.createStore(LeaveApplyStore, 'LeaveApplyStore');

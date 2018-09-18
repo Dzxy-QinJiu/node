@@ -13,7 +13,9 @@ var restApis = {
     //查询由当前账号审批的出差申请
     applylistBussinessTrip: '/rest/base/v1/workflow/businesstrip/worklist',
     //添加出差申请
-    addLeaveApply: '/rest/base/v1/workflow/businesstrip'
+    addLeaveApply: '/rest/base/v1/workflow/businesstrip',
+    //根据出差申请的id查询申请的详情
+    getLeaveApplyDetailById: '/rest/base/v1/workflow/businesstrip/detail'
 };
 exports.restUrls = restApis;
 var _ = require('lodash');
@@ -26,7 +28,7 @@ exports.getAllLeaveApplyList = function(req, res) {
             url: url,
             req: req,
             res: res
-        }, null);
+        }, queryObj);
 };
 //获取当前账号发起的出差申请
 exports.getSelfLeaveApplyList = function(req, res) {
@@ -54,4 +56,13 @@ exports.addLeaveApply = function(req, res) {
             req: req,
             res: res
         }, req.body);
+};
+//根据审批的id获取审批的详情
+exports.getLeaveApplyDetailById = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getLeaveApplyDetailById,
+            req: req,
+            res: res
+        }, req.query);
 };
