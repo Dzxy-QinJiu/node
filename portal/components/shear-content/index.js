@@ -12,12 +12,10 @@ class ShearContent extends React.Component {
         this.state = {
             showDetail: false
         };
-
     }
     componentDidMount() {
         const $rootDOM = $(ReactDOM.findDOMNode(this));
         this.$contentDOM = $rootDOM.find('.cut-content');
-        console.log(this.$contentDOM);
         if (this.$contentDOM.length) {
             //转换成dom对象
             this.handleShear(this.$contentDOM[0]);
@@ -33,17 +31,12 @@ class ShearContent extends React.Component {
     showDetail(isShow) {
         this.setState({
             showDetail: isShow
-        }, () => {
-            // this.$contentDOM.find('.append-btn-bar').toggle();
-
         });
     }
     componentWillReceiveProps() {
         if (this.$contentDOM.length) {
             this.handleShear(this.$contentDOM[0]);
         }
-    }
-    componentWillUnMount() {
     }
     render() {
         const hideCls = classNames('cut-content', {
