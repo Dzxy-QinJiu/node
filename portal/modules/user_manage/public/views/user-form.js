@@ -1,23 +1,11 @@
-var React = require('react');
-var language = require('../../../../public/language/getLanguage');
-if (language.lan() === 'es' || language.lan() === 'en') {
-    require('../css/index-es_VE.less');
-} else if (language.lan() === 'zh') {
-    require('../css/index-zh_CN.less');
-}
+require('../css/user-add-form.less');
 var Form = require('antd').Form;
 var Input = require('antd').Input;
 var Select = require('antd').Select;
 var Icon = require('antd').Icon;
 var Option = Select.Option;
 var FormItem = Form.Item;
-var rightPanelUtil = require('../../../../components/rightPanel');
-var RightPanelClose = rightPanelUtil.RightPanelClose;
-var RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
-var RightPanelCancel = rightPanelUtil.RightPanelCancel;
-var RightPanelReturn = rightPanelUtil.RightPanelReturn;
 var HeadIcon = require('../../../../components/headIcon');
-var Spinner = require('../../../../components/spinner');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var crypto = require('crypto');//用于密码md5
 var UserFormStore = require('../store/user-form-store');
@@ -27,13 +15,20 @@ var classNames = require('classnames');
 import Trace from 'LIB_DIR/trace';
 import PhoneInput from 'CMP_DIR/phone-input';
 import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
+import {emailRegex} from 'PUB_DIR/sources/utils/consts';
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 
 function noop() {
 }
 
 const FORM_CONST = {
     LABEL_COL: 5,
-    WRAPPER_COL: 18
+    WRAPPER_COL: 19
+};
+const LAYOUT_CONST = {
+    HEADICON_H: 107,//头像的高度
+    TITLE_H: 94//标题的高度
 };
 
 class UserForm extends React.Component {
@@ -82,19 +77,8 @@ class UserForm extends React.Component {
 
     componentDidMount() {
         var _this = this;
-        _this.layout();
         UserFormStore.listen(_this.onChange);
-        $(window).resize(function(e) {
-            e.stopPropagation();
-            _this.layout();
-        });
     }
-
-    layout = () => {
-        var bHeight = $('body').height();
-        var formHeight = bHeight - $('form .head-image-container').outerHeight(true);
-        $('.user-form-scroll').height(formHeight);
-    };
 
     //关闭面板前清空验证的处理
     resetValidatFlags = () => {
@@ -215,8 +199,7 @@ class UserForm extends React.Component {
     //邮箱唯一性验证
     checkOnlyEmail = (e) => {
         let email = $.trim(this.props.form.getFieldValue('email'));
-        if (email && email !== this.props.user.email.value && /^(((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(,((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)*$/i
-            .test(email)) {
+        if (email && email !== this.props.user.email.value && emailRegex.test(email)) {
             //所有者的邮箱唯一性验证
             UserFormAction.checkOnlyEmail(email);
 
@@ -326,7 +309,7 @@ class UserForm extends React.Component {
 
     state = this.initData();
 
-    render() {
+    renderFormContent() {
         let values = this.props.form.getFieldsValue();
         var className = 'right-panel-content';
         if (this.props.userFormShow) {
@@ -339,169 +322,174 @@ class UserForm extends React.Component {
         const {getFieldDecorator} = this.props.form;
         var saveResult = this.state.saveResult;
         var headDescr = Intl.get('member.head.logo', '头像');
+        var formHeight = $('body').height() - LAYOUT_CONST.HEADICON_H - LAYOUT_CONST.TITLE_H;
         return (
-            <div className={className} data-tracename="添加/编辑面板">
-                <RightPanelClose onClick={this.closePanel} data-tracename="关闭添加/编辑面板"/>
-                {(this.props.formType === 'add' || !this.props.userFormShow) ? null : (
-                    <RightPanelReturn onClick={this.returnInfoPanel} data-tracename="返回详细信息展示页"/>)}
-                <Form layout='horizontal' className="form" autoComplete="off">
-                    <FormItem id="image">
-                        {getFieldDecorator('image')(
-                            <div>
-                                <HeadIcon
-                                    headIcon={values.image}
-                                    iconDescr={values.name || headDescr}
-                                    upLoadDescr={headDescr}
-                                    isEdit={true}
-                                    onChange={this.uploadImg}
-                                    userName={values.userName}
-                                    isUserHeadIcon={true}
+            <Form layout='horizontal' className="form" autoComplete="off">
+                <FormItem id="image">
+                    {getFieldDecorator('image')(
+                        <div>
+                            <HeadIcon
+                                headIcon={values.image}
+                                iconDescr={values.name || headDescr}
+                                upLoadDescr={headDescr}
+                                isEdit={true}
+                                onChange={this.uploadImg}
+                                userName={values.userName}
+                                isUserHeadIcon={true}
+                            />
+                            <Input type="hidden" name="image" id="image"/>
+                        </div>
+                    )}
+                </FormItem>
+                <div className="user-form-scroll" style={{height: formHeight}}>
+                    <GeminiScrollbar className="geminiScrollbar-vertical">
+                        <div id="user-add-form">
+                            <FormItem
+                                label={Intl.get('realm.change.owner.name', '姓名')}
+                                labelCol={{span: FORM_CONST.LABEL_COL}}
+                                wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
+                            >
+                                {getFieldDecorator('name', {
+                                    rules: [nameLengthRule]
+                                })(
+                                    <Input name="name" id="nickName"
+                                        placeholder={Intl.get('crm.90', '请输入姓名')}
+                                    />
+                                )}
+                            </FormItem>
+                            <FormItem
+                                label={Intl.get('common.email', '邮箱')}
+                                labelCol={{span: FORM_CONST.LABEL_COL}}
+                                wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
+                            >
+                                {getFieldDecorator('email', {
+                                    rules: [{
+                                        required: true,
+                                        type: 'email',
+                                        message: Intl.get('common.correct.email', '请输入正确的邮箱')
+                                    }]
+                                })(
+                                    <Input name="email" id="email" type="text"
+                                        placeholder={Intl.get('member.email.extra.tip', '邮箱会作为登录时的用户名使用')}
+                                        className={this.state.emailExist || this.state.emailError ? 'input-red-border' : ''}
+                                        onBlur={(e) => {
+                                            this.checkOnlyEmail(e);
+                                        }}
+                                    />
+                                )}
+
+                            </FormItem>
+                            {this.renderEmailMsg()}
+                            <FormItem
+                                label={Intl.get('common.role', '角色')}
+                                labelCol={{span: FORM_CONST.LABEL_COL}}
+                                wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
+                            >
+                                {this.state.isLoadingRoleList ? (
+                                    <div className="role-list-loading">
+                                        <ReactIntl.FormattedMessage id="member.get.role.lists"
+                                            defaultMessage="正在获取角色列表"/>
+                                        <Icon type="loading"/>
+                                    </div>) : (
+                                    <div>
+                                        {getFieldDecorator('role', {
+                                            rules: [{
+                                                required: true,
+                                                type: 'array',
+                                                message: Intl.get('member.select.role', '请选择角色')
+                                            }]
+                                        })(
+                                            <Select multiple
+                                                size='large'
+                                                optionFilterProp="children"
+                                                placeholder={Intl.get('member.select.role', '请选择角色')}
+                                                searchPlaceholder={Intl.get('member.select.role', '请选择角色')}
+                                                notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
+                                                onSelect={this.handleSelect}
+                                                getPopupContainer={() => document.getElementById('user-add-form')}
+                                            >
+                                                {this.renderRoleOptions()}
+                                            </Select>
+                                        )}
+                                    </div>)
+                                }
+                            </FormItem>
+                            <PhoneInput
+                                placeholder={Intl.get('crm.95', '请输入联系人电话')}
+                                validateRules={this.getPhoneInputValidateRules()}
+                                initialValue={values.phone}
+                                id="phone"
+                                labelCol={{span: FORM_CONST.LABEL_COL}}
+                                wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
+                                form={this.props.form}
+
+                            />
+                            {/** v8环境下，不显示所属团队 */}
+                            {this.props.formType === 'add' ? (!Oplate.hideSomeItem && <FormItem
+                                label={Intl.get('common.belong.team', '所属团队')}
+                                labelCol={{span: FORM_CONST.LABEL_COL}}
+                                wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
+                            >
+                                {this.state.isLoadingTeamList ? (
+                                    <div className="role-list-loading"><ReactIntl.FormattedMessage
+                                        id="member.is.get.group.lists" defaultMessage="正在获取团队列表"/><Icon
+                                        type="loading"/></div>) : (
+                                    <div>
+                                        {getFieldDecorator('team')(
+                                            <Select name="team" id="team"
+                                                placeholder={Intl.get('member.select.group', '请选择团队')}
+                                                notFoundContent={Intl.get('member.no.group', '暂无此团队')}
+                                                showSearch
+                                                searchPlaceholder={Intl.get('member.search.group.by.name', '输入团队名称搜索')}
+                                                optionFilterProp="children"
+                                                value={values.team}
+                                                // onChange={this.setField.bind(this, 'team')}
+                                                onSelect={this.handleTeamSelect}
+                                                getPopupContainer={() => document.getElementById('user-add-form')}
+                                            >
+                                                {this.renderTeamOptions()}
+                                            </Select>
+                                        )}
+                                    </div>)
+                                }
+                            </FormItem>) : null}
+                            <FormItem>
+                                <SaveCancelButton loading={this.state.isSaving}
+                                    saveErrorMsg={saveResult === 'error' ? this.state.saveMsg : ''}
+                                    handleSubmit={this.handleSubmit.bind(this)}
+                                    handleCancel={this.handleCancel.bind(this)}
                                 />
-                                <Input type="hidden" name="image" id="image"/>
-                            </div>
-                        )}
-                    </FormItem>
-                    <div className="user-form-scroll" style={{width: '420px'}}>
-                        <GeminiScrollbar className="geminiScrollbar-vertical">
-                            <div id="user-add-form">
-                                <FormItem
-                                    label={Intl.get('realm.change.owner.name', '姓名')}
-                                    labelCol={{span: FORM_CONST.LABEL_COL}}
-                                    wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
-                                >
-                                    {getFieldDecorator('name', {
-                                        rules: [nameLengthRule]
-                                    })(
-                                        <Input name="name" id="nickName"
-                                            placeholder={Intl.get('common.required.tip', '必填项*')}
-                                        />
-                                    )}
-                                </FormItem>
-                                <PhoneInput
-                                    placeholder={Intl.get('crm.95', '请输入联系人电话')}
-                                    validateRules={this.getPhoneInputValidateRules()}
-                                    initialValue={values.phone}
-                                    id="phone"
-                                    labelCol={{span: FORM_CONST.LABEL_COL}}
-                                    wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
-                                    form={this.props.form}
-
-                                />
-                                <FormItem
-                                    label={Intl.get('common.email', '邮箱')}
-                                    labelCol={{span: FORM_CONST.LABEL_COL}}
-                                    wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
-                                >
-
-                                    {getFieldDecorator('email', {
-                                        rules: [{
-                                            required: true,
-                                            type: 'email',
-                                            message: Intl.get('common.correct.email', '请输入正确的邮箱')
-                                        }, {
-                                            validator: {}
-                                        }]
-                                    })(
-                                        <Input name="email" id="email" type="text"
-                                            placeholder={Intl.get('common.required.tip', '必填项*')}
-                                            className={this.state.emailExist || this.state.emailError ? 'input-red-border' : ''}
-                                            onBlur={(e) => {
-                                                this.checkOnlyEmail(e);
-                                            }}
-                                        />
-                                    )}
-
-                                </FormItem>
-                                {this.renderEmailMsg()}
-                                <FormItem
-                                    label={Intl.get('common.role', '角色')}
-                                    labelCol={{span: FORM_CONST.LABEL_COL}}
-                                    wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
-                                >
-                                    {this.state.isLoadingRoleList ? (
-                                        <div className="role-list-loading">
-                                            <ReactIntl.FormattedMessage id="member.get.role.lists"
-                                                defaultMessage="正在获取角色列表"/>
-                                            <Icon type="loading"/>
-                                        </div>) : (
-                                        <div>
-                                            {getFieldDecorator('role', {
-                                                rules: [{
-                                                    required: true,
-                                                    type: 'array',
-                                                    message: Intl.get('member.select.role', '请选择角色')
-                                                }]
-                                            })(
-                                                <Select multiple
-                                                    optionFilterProp="children"
-                                                    searchPlaceholder={Intl.get('member.select.role', '请选择角色')}
-                                                    notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
-                                                    onSelect={this.handleSelect}
-                                                    getPopupContainer={() => document.getElementById('user-add-form')}
-                                                >
-                                                    {this.renderRoleOptions()}
-                                                </Select>
-                                            )}
-                                        </div>)
+                            </FormItem>
+                            <FormItem>
+                                <div className="indicator">
+                                    {saveResult === 'success' ?
+                                        (
+                                            <AlertTimer time={3000}
+                                                message={this.state.saveMsg}
+                                                type={saveResult} showIcon
+                                                onHide={this.hideSaveTooltip}/>
+                                        ) : ''
                                     }
-                                </FormItem>
-                                {/** v8环境下，不显示所属团队 */}
-                                {this.props.formType === 'add' ? (!Oplate.hideSomeItem && <FormItem
-                                    label={Intl.get('common.belong.team', '所属团队')}
-                                    labelCol={{span: FORM_CONST.LABEL_COL}}
-                                    wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
-                                >
-                                    {this.state.isLoadingTeamList ? (
-                                        <div className="role-list-loading"><ReactIntl.FormattedMessage
-                                            id="member.is.get.group.lists" defaultMessage="正在获取团队列表"/><Icon
-                                            type="loading"/></div>) : (
-                                        <div>
-                                            {getFieldDecorator('team')(
-                                                <Select name="team" id="team"
-                                                    placeholder={Intl.get('member.select.group', '请选择团队')}
-                                                    notFoundContent={Intl.get('member.no.group', '暂无此团队')}
-                                                    showSearch
-                                                    searchPlaceholder={Intl.get('member.search.group.by.name', '输入团队名称搜索')}
-                                                    optionFilterProp="children"
-                                                    value={values.team}
-                                                    // onChange={this.setField.bind(this, 'team')}
-                                                    onSelect={this.handleTeamSelect}
-                                                    getPopupContainer={() => document.getElementById('user-add-form')}
-                                                >
-                                                    {this.renderTeamOptions()}
-                                                </Select>
-                                            )}
-                                        </div>)
-                                    }
-                                </FormItem>) : null}
-                                <FormItem
-                                    wrapperCol={{span: 23}}>
-                                    <div className="indicator">
-                                        {saveResult ?
-                                            (
-                                                <AlertTimer time={3000}
-                                                    message={this.state.saveMsg}
-                                                    type={this.state.saveResult} showIcon
-                                                    onHide={this.hideSaveTooltip}/>
-                                            ) : ''
-                                        }
-                                    </div>
-                                    <RightPanelCancel onClick={this.handleCancel} data-tracename="取消新添加成员的基本信息">
-                                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
-                                    </RightPanelCancel>
-                                    <RightPanelSubmit onClick={this.handleSubmit} data-tracename="保存新添加成员的基本信息">
-                                        <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
-                                    </RightPanelSubmit>
-                                </FormItem>
-                            </div>
-                        </GeminiScrollbar>
-                    </div>
-                    {this.state.isSaving ? (<div className="right-pannel-block">
-                        <Spinner className="right-panel-saving"/>
-                    </div>) : ''}
-                </Form>
-            </ div>
+                                </div>
+                            </FormItem>
+                        </div>
+                    </GeminiScrollbar>
+                </div>
+            </Form>
         );
+    }
+
+    render() {
+        return (
+            <RightPanelModal
+                className="member-add-container"
+                isShowMadal={true}
+                isShowCloseBtn={true}
+                onClosePanel={this.handleCancel.bind(this)}
+                title={Intl.get('common.add.member', '添加成员')}
+                content={this.renderFormContent()}
+                dataTracename='添加成员'
+            />);
     }
 }
 UserForm.propTypes = {

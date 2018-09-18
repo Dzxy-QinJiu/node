@@ -1,0 +1,60 @@
+//添加成员时，角色选中后就不再在下拉列表中展示的样式设置
+.ant-select-dropdown-menu-item-selected.role-options-selected {
+  display: none;
+}
+
+// 错误提示的字体以及边框颜色
+@error_tips_color: #f04134;
+//添加成员面版样式
+.member-add-container {
+  form {
+    .head-image-container {
+      margin-bottom: 0;
+      margin-top: 0;
+      .update-logo-desr {
+        line-height: 20px;
+      }
+      p {
+        margin-top: 0;
+      }
+    }
+    #user-add-form {
+      position: relative;
+      //正在获取角色列表的等待效果
+      .role-list-loading {
+        line-height: 32px;
+        color: #666;
+        .anticon-loading {
+          font-size: 16px;
+          margin-left: 10px;
+        }
+      }
+      .phone-email-check {
+        float: left;
+        width: 100%;
+        margin-top: -14px;
+        line-height: 20px;
+        margin-bottom: 10px;
+        padding-left: 105px;
+        color: @error_tips_color;
+      }
+      .input-red-border {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        padding: 6px 7px;
+        border: 1px solid @error_tips_color;
+        line-height: 1.5;
+        color: #666;
+        background-color: #fff;
+        background-image: none;
+        box-shadow: 0 0 0 2px #ffddcc;
+        cursor: text;
+      }
+      .ant-select-selection__rendered{
+        line-height: 30px;
+      }
+    }
+  }
+
+}
