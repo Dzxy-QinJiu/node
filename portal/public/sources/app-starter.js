@@ -95,11 +95,8 @@ function init() {
                     childRoutes.push(require('../../modules/sales_home_page'));
                 }
                 break;
-            case 'oplate_user_analysis':
-                childRoutes.push(require('../../modules/oplate_user_analysis'));
-                break;
-            case 'oplate_customer_analysis':
-                childRoutes.push(require('../../modules/oplate_customer_analysis'));
+            case 'analysis':
+                childRoutes.push(require('./analysis'));
                 break;
             //后台管理
             case 'background_management':
@@ -139,12 +136,6 @@ function init() {
             //日程管理
             case 'schedule_management':
                 childRoutes.push(require('../../modules/schedule_management'));
-                break;
-            case 'weekly_report_analysis':
-                childRoutes.push(require('../../modules/weekly_report'));
-                break;
-            case 'monthly_report_analysis':
-                childRoutes.push(require('../../modules/monthly-report'));
                 break;
         }
     });

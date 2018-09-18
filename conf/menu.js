@@ -193,13 +193,13 @@ class LeftMenuClass {
                         ],
                         //有这个权限，才显示入口图标
                         showPrivileges: ['CRM_COMPETING_PRODUCT']
-                    }, 
+                    },
                     {
                         id: 'OPENAPP',
                         name: backendIntl.get('app.title', '应用管理'),
                         routePath: 'background_management/openApp',
                         privileges: [
-                          
+
                         ],
                         //有这个权限，才显示入口图标
                         showPrivileges: ['ROLEP_RIVILEGE_ROLE_CLIENT_LIST']
@@ -207,51 +207,59 @@ class LeftMenuClass {
                 ]
             },
             {
-                id: 'OPLATE_CUSTOMER_ANALYSIS',//唯一标识
+                id: 'OPLATE_ANALYSIS',//唯一标识
                 name: backendIntl.get('menu.customer.analysis', '运营分析'),
-                routePath: 'analysis/customer',
-                privileges: [
-                    'OPLATE_CUSTOMER_ANALYSIS_SUMMARY',
-                ],
-                //有这个权限，才显示入口图标
-                showPrivileges: ['OPLATE_CUSTOMER_ANALYSIS_SUMMARY']
-            },
-            {
-                id: 'OPLATE_USER_ANALYSIS',//唯一标识
-                name: backendIntl.get('menu.user.analysis', '运营分析'),
-                routePath: 'analysis/user',
-                privileges: [
-                    'OPLATE_USER_ANALYSIS_SUMMARY',
-                ],
-                //有这个权限，才显示入口图标
-                showPrivileges: ['OPLATE_USER_ANALYSIS_SUMMARY']
-            },
-            //周报统计
-            {
-                id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
-                name: backendIntl.get('menu.user.analysis', '运营分析'),
-                routePath: 'analysis/weekly_report',
-                privileges: [
-                    'CALLRECORD_ASKFORLEAVE_ADD',
-                ],
-                //有这个权限，才显示入口图标
-                showPrivileges: ['CALLRECORD_ASKFORLEAVE_ADD']
-            },
-            //月报统计
-            {
-                id: 'MONTHLY_REPORT_ANALYSIS',//唯一标识
-                name: backendIntl.get('analysis.sales.monthly.report', '销售月报'),
-                routePath: 'analysis/monthly_report',
-                privileges: [
-                    'CALL_RECORD_VIEW_MANAGER',
-                    'CALL_RECORD_VIEW_USER',
-                ],
-                //有这个权限，才显示入口图标
-                showPrivileges: [
-                    'CALL_RECORD_VIEW_MANAGER',
-                    'CALL_RECORD_VIEW_USER',
+                routePath: 'analysis',
+                subMenu: [
+                    {
+                        id: 'OPLATE_CUSTOMER_ANALYSIS',//唯一标识
+                        name: backendIntl.get('customer.analysis', '客户分析'),
+                        routePath: 'analysis/customer',
+                        privileges: [
+                            'OPLATE_CUSTOMER_ANALYSIS_SUMMARY',
+                        ],
+                        //有这个权限，才显示入口图标
+                        showPrivileges: ['OPLATE_CUSTOMER_ANALYSIS_SUMMARY']
+                    },
+                    {
+                        id: 'OPLATE_USER_ANALYSIS',//唯一标识
+                        name: backendIntl.get('sales.user.analysis', '用户分析'),
+                        routePath: 'analysis/user',
+                        privileges: [
+                            'OPLATE_USER_ANALYSIS_SUMMARY',
+                        ],
+                        //有这个权限，才显示入口图标
+                        showPrivileges: ['OPLATE_USER_ANALYSIS_SUMMARY']
+                    },
+                    //周报统计
+                    {
+                        id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
+                        name: backendIntl.get('analysis.sales.weekly.report', '销售周报'),
+                        routePath: 'analysis/weekly_report',
+                        privileges: [
+                            'CALLRECORD_ASKFORLEAVE_ADD',
+                        ],
+                        //有这个权限，才显示入口图标
+                        showPrivileges: ['CALLRECORD_ASKFORLEAVE_ADD']
+                    },
+                    //月报统计
+                    {
+                        id: 'MONTHLY_REPORT_ANALYSIS',//唯一标识
+                        name: backendIntl.get('analysis.sales.monthly.report', '销售月报'),
+                        routePath: 'analysis/monthly_report',
+                        privileges: [
+                            'CALL_RECORD_VIEW_MANAGER',
+                            'CALL_RECORD_VIEW_USER',
+                        ],
+                        //有这个权限，才显示入口图标
+                        showPrivileges: [
+                            'CALL_RECORD_VIEW_MANAGER',
+                            'CALL_RECORD_VIEW_USER',
+                        ]
+                    },
                 ]
             },
+
             {
                 id: 'SALES_HOME_PAGE', //唯一标识，销售首页
                 name: backendIntl.get('menu.sales.homepage', '销售主页'),
@@ -381,7 +389,7 @@ class LeftMenuClass {
         ];
 
         var user_info_idx = -1;
-        var user_info_manage = _.find(leftMenuList, function(item, i) {
+        var user_info_manage = _.find(leftMenuList, function (item, i) {
             if (item.id === 'USER_INFO_MANAGE') {
                 user_info_idx = i;
                 return true;
