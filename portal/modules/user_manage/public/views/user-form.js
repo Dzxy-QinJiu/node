@@ -22,10 +22,6 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 function noop() {
 }
 
-const FORM_CONST = {
-    LABEL_COL: 5,
-    WRAPPER_COL: 19
-};
 const LAYOUT_CONST = {
     HEADICON_H: 107,//头像的高度
     TITLE_H: 94//标题的高度
@@ -323,6 +319,11 @@ class UserForm extends React.Component {
         var saveResult = this.state.saveResult;
         var headDescr = Intl.get('member.head.logo', '头像');
         var formHeight = $('body').height() - LAYOUT_CONST.HEADICON_H - LAYOUT_CONST.TITLE_H;
+        const formItemLayout = {
+            colon: false,
+            labelCol: {span: 5},
+            wrapperCol: {span: 19},
+        };
         return (
             <Form layout='horizontal' className="form" autoComplete="off">
                 <FormItem id="image">
@@ -346,8 +347,7 @@ class UserForm extends React.Component {
                         <div id="user-add-form">
                             <FormItem
                                 label={Intl.get('realm.change.owner.name', '姓名')}
-                                labelCol={{span: FORM_CONST.LABEL_COL}}
-                                wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
+                                {...formItemLayout}
                             >
                                 {getFieldDecorator('name', {
                                     rules: [nameLengthRule]
@@ -359,8 +359,7 @@ class UserForm extends React.Component {
                             </FormItem>
                             <FormItem
                                 label={Intl.get('common.email', '邮箱')}
-                                labelCol={{span: FORM_CONST.LABEL_COL}}
-                                wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
+                                {...formItemLayout}
                             >
                                 {getFieldDecorator('email', {
                                     rules: [{
@@ -382,8 +381,7 @@ class UserForm extends React.Component {
                             {this.renderEmailMsg()}
                             <FormItem
                                 label={Intl.get('common.role', '角色')}
-                                labelCol={{span: FORM_CONST.LABEL_COL}}
-                                wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
+                                {...formItemLayout}
                             >
                                 {this.state.isLoadingRoleList ? (
                                     <div className="role-list-loading">
@@ -419,16 +417,15 @@ class UserForm extends React.Component {
                                 validateRules={this.getPhoneInputValidateRules()}
                                 initialValue={values.phone}
                                 id="phone"
-                                labelCol={{span: FORM_CONST.LABEL_COL}}
-                                wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
+                                labelCol={{span: formItemLayout.labelCol.span}}
+                                wrapperCol={{span: formItemLayout.wrapperCol.span}}
                                 form={this.props.form}
 
                             />
                             {/** v8环境下，不显示所属团队 */}
                             {this.props.formType === 'add' ? (!Oplate.hideSomeItem && <FormItem
                                 label={Intl.get('common.belong.team', '所属团队')}
-                                labelCol={{span: FORM_CONST.LABEL_COL}}
-                                wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
+                                {...formItemLayout}
                             >
                                 {this.state.isLoadingTeamList ? (
                                     <div className="role-list-loading"><ReactIntl.FormattedMessage
