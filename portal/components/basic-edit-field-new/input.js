@@ -18,6 +18,7 @@ import Trace from 'LIB_DIR/trace';
 import {DetailEditBtn} from '../rightPanel';
 import SaveCancelButton from '../detail-card/save-cancel-button';
 import {parseAmount} from 'LIB_DIR/func';
+import ShearContent from '../shear-content';
 
 const BasicEditField = createReactClass({
     displayName: 'BasicEditField',
@@ -253,7 +254,9 @@ const BasicEditField = createReactClass({
                 textBlock = (
                     <div className={cls}>
                         <span className="inline-block basic-info-text">
-                            {displayText}{this.props.afterValTip || ''}
+                            <ShearContent>
+                                {displayText}
+                            </ShearContent>{this.props.afterValTip || ''}
                         </span>
                         {this.props.hasEditPrivilege ? (
                             <DetailEditBtn title={this.props.editBtnTip}
