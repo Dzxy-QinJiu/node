@@ -113,7 +113,7 @@ class UserInfo extends React.Component{
                 message.error(resultObj.errorMsg);
             } else {
                 message.success(
-                    Intl.get('user.info.active.email', '激活邮件已发送至{email}',{'email': values.email})
+                    Intl.get('user.info.active.email', '激活邮件已发送至{email}',{'email': this.state.formData.email})
                 );
             }
         });
