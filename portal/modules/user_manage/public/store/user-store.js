@@ -313,6 +313,8 @@ UserStore.prototype.updateSearchContent = function(searchContent) {
 };
 UserStore.prototype.closeRightPanel = function() {
     this.rightPanelShow = false;
+    this.userInfoShow = false;
+    this.userFormShow = false;
 };
 
 UserStore.prototype.showContinueAddButton = function() {

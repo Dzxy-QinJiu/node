@@ -1,4 +1,10 @@
-var React = require('react');
+
+let language = require('PUB_DIR/language/getLanguage');
+if (language.lan() === 'es' || language.lan() === 'en') {
+    require('./css/index-es_VE.less');
+} else if (language.lan() === 'zh') {
+    require('./css/index-zh_CN.less');
+}
 var RightCardsContainer = require('../../../components/rightCardsContainer');
 var UserStore = require('./store/user-store');
 var UserAction = require('./action/user-actions');
@@ -266,7 +272,7 @@ class UserManage extends React.Component {
                         userRoleList={this.state.userRoleList}
                         filterUserByRole={this.events_filterUserByRole.bind(this)}
                     />
-                    <RightPanel className="white-space-nowrap" showFlag={this.state.rightPanelShow}>
+                    <RightPanel className="white-space-nowrap" showFlag={this.state.userInfoShow}>
                         <UserInfo
                             userInfo={this.state.currentUser}
                             closeRightPanel={this.events_closeRightPanel}
@@ -277,19 +283,18 @@ class UserManage extends React.Component {
                             changeUserFieldSuccess={this.changeUserFieldSuccess}
                             updateUserStatus={this.updateUserStatus}
                         />
-                        {this.state.userFormShow ?
-                            <AddUserForm
-                                formType={this.state.formType}
-                                closeRightPanel={this.events_closeRightPanel}
-                                returnInfoPanel={this.events_returnInfoPanel}
-                                showUserInfo={this.events_showUserInfo.bind(this)}
-                                showContinueAddButton={this.events_showContinueAddButton}
-                                user={this.state.currentUser}
-                                userFormShow={this.state.userFormShow}
-                            />
-                            : null}
-
                     </RightPanel>
+                    {this.state.userFormShow ?
+                        <AddUserForm
+                            formType={this.state.formType}
+                            closeRightPanel={this.events_closeRightPanel}
+                            returnInfoPanel={this.events_returnInfoPanel}
+                            showUserInfo={this.events_showUserInfo.bind(this)}
+                            showContinueAddButton={this.events_showContinueAddButton}
+                            user={this.state.currentUser}
+                            userFormShow={this.state.userFormShow}
+                        />
+                        : null}
                 </RightCardsContainer>
             </div>
         );

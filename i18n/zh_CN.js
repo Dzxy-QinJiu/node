@@ -705,6 +705,7 @@ var zh_CN = {
     'member.is.building': '创建中',
     'member.create.time': '创建时间',
     'member.forbidden.self': '禁止禁用自己',
+    'member.email.extra.tip': '邮箱会作为登录时的用户名使用',
     //后台管理-成员end
     //组织管理start
     'organization.no.organization.tip': '暂无组织，请先添加',

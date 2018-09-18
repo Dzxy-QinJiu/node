@@ -1,12 +1,8 @@
 /*成员管理样式设置*/
 @import "../../../../public/css/common-variables";
 @import (optional) "./common.less";
-//添加成员时，角色选中后就不再在下拉列表中展示的样式设置
-.ant-select-dropdown-menu-item-selected.role-options-selected{
-  display:none;
-}
 
-//添加面板样式设置
+//成员管理样式设置
 .backgroundManagement_user_content{
   .user-basic-edit-field{
     span.inline-block {
@@ -92,14 +88,6 @@
       margin:-20px 0 10px 100px;
     }
   }
-  form{
-    .head-image-container{
-      margin-bottom:40px;
-    }
-    #user-add-form{
-      position: relative;
-    }
-  }
   .btn-add-member{
     height:34px;
     border:1px solid #4d8cbf;
@@ -115,66 +103,6 @@
       font-weight:bold;
       margin-right:10px;
     }
-  }
-}
-
-.user-form-scroll{
-  .ant-select-selection--multiple .ant-select-search--inline .ant-select-search__field{
-    height:20px;
-    border:0;
-  }
-  .ant-form-item{
-    padding-right:0;
-    text-align:left;
-    margin-left: 25px !important;
-    > label{
-      text-align:left !important;
-    }
-    .indicator{
-      position:absolute;
-      float:right;
-      right:140px;
-      top:17px;
-      text-align:center;
-      .ant-alert{
-        padding:8px 5px;
-      }
-    }
-    //正在获取角色列表的等待效果
-    .role-list-loading{
-      line-height:35px;
-      color:#666;
-      .anticon-loading{
-        font-size:16px;
-        margin-left:10px;
-      }
-    }
-  }
-  .form-cancel-btn{
-    margin-right:17px;
-  }
-  .phone-email-check{
-    float:left;
-    width:100%;
-    margin-top:-14px;
-    line-height:20px;
-    margin-bottom:10px;
-    padding-left:105px;
-    color:@error_tips_color;
-  }
-  .input-red-border{
-    position:relative;
-    display:inline-block;
-    width:100%;
-    padding:6px 7px;
-    border:1px solid @error_tips_color;
-    line-height:1.5;
-    color:#666;
-    background-color:#fff;
-    background-image:none;
-    box-shadow:0 0 0 2px #ffddcc;
-    cursor:text;
-
   }
 }
 
