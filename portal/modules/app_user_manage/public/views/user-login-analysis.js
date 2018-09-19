@@ -11,8 +11,8 @@ import StatusWrapper from 'CMP_DIR/status-wrapper';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 import { AntcChart } from 'antc';
-import { Progress, Tooltip, Icon } from 'antd';
-import PropTypes from 'prop-types'; 
+import { Progress, Tooltip, Icon, Alert } from 'antd';
+import PropTypes from 'prop-types';
 
 //日历热力图颜色
 const CALENDER_COLOR = {
@@ -191,7 +191,7 @@ class UserLoginAnalysis extends React.Component {
                         <li>
                             <span>{Intl.get('user.login.latest.activity.score', '最新活跃度')}:</span>
                             <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_activity_score') || 0)}
-                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.activity', '最近30天的活跃天数/30。该分项在总分钟占比30%',)}>
+                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.activity', '最近30天的活跃天数/30。该分项在总分钟占比30%')}>
                                     <Icon type="question-circle-o" />
                                 </Tooltip>
                             </span>
@@ -199,7 +199,7 @@ class UserLoginAnalysis extends React.Component {
                         <li>
                             <span>{Intl.get('user.login.latest.immersion.score', '最新沉浸度')}:</span>
                             <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_immersion_score') || 0)}
-                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.deep', '最近30天的在线分钟数/(30*24*60)。该分项在总分钟占比30%',)}>
+                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.deep', '最近30天的在线分钟数/(30*24*60)。该分项在总分钟占比30%')}>
                                     <Icon type="question-circle-o" />
                                 </Tooltip>
                             </span>
@@ -207,7 +207,7 @@ class UserLoginAnalysis extends React.Component {
                         <li>
                             <span>{Intl.get('user.login.freshness.score', '新鲜度')}:</span>
                             <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'freshness_score') || 0)}
-                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.fresh', '距离最近的登录时间。该分项在总分钟占比20%',)}>
+                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.fresh', '距离最近的登录时间。该分项在总分钟占比20%')}>
                                     <Icon type="question-circle-o" />
                                 </Tooltip>
                             </span>
@@ -215,7 +215,7 @@ class UserLoginAnalysis extends React.Component {
                         <li>
                             <span>{Intl.get('user.login.history.activity.score', '历史活跃度')}:</span>
                             <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_activity_score') || 0)}
-                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.historyActivity', '总活跃天数/开通的总天数。该分项在总分钟占比10%',)}>
+                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.historyActivity', '总活跃天数/开通的总天数。该分项在总分钟占比10%')}>
                                     <Icon type="question-circle-o" />
                                 </Tooltip>
                             </span>
@@ -223,7 +223,7 @@ class UserLoginAnalysis extends React.Component {
                         <li>
                             <span>{Intl.get('user.login.history.immersion.score', '历史沉浸度')}:</span>
                             <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_immersion_score') || 0)}
-                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.historyFresh', '总在线分钟数/开通总分钟数。该分项在总分钟占比10%',)}>
+                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.historyFresh', '总在线分钟数/开通总分钟数。该分项在总分钟占比10%')}>
                                     <Icon type="question-circle-o" />
                                 </Tooltip>
                             </span>
@@ -309,23 +309,23 @@ class UserLoginAnalysis extends React.Component {
                             {this.renderChart(loginChartInfo.loginCount, this.chartFrequencyTooltip)}
                         </div>
                     ) : (
-                        <CardContainer
-                            radioValue={radioValue}
-                            dateRange={this.state.selectValueMap[app.app_id] || 'LoginFrequency'}
-                            onDateRangeChange={this.handleSelectRadio.bind(this, app)}
-                            title={Intl.get('user.detail.loginAnalysis.title', '近一年的活跃统计')}
-                        >
-                            <div className="duration-chart">
-                                {
-                                    this.state.selectValueMap[app.app_id] === 'loginDuration' ?
-                                    // 时长
-                                        this.renderChart(loginChartInfo.loginDuration, this.durationTooltip) :
-                                    // 次数
-                                        this.renderChart(loginChartInfo.loginCount, this.chartFrequencyTooltip)
-                                }
-                            </div>
-                        </CardContainer>
-                    )}
+                            <CardContainer
+                                radioValue={radioValue}
+                                dateRange={this.state.selectValueMap[app.app_id] || 'LoginFrequency'}
+                                onDateRangeChange={this.handleSelectRadio.bind(this, app)}
+                                title={Intl.get('user.detail.loginAnalysis.title', '近一年的活跃统计')}
+                            >
+                                <div className="duration-chart">
+                                    {
+                                        this.state.selectValueMap[app.app_id] === 'loginDuration' ?
+                                            // 时长
+                                            this.renderChart(loginChartInfo.loginDuration, this.durationTooltip) :
+                                            // 次数
+                                            this.renderChart(loginChartInfo.loginCount, this.chartFrequencyTooltip)
+                                    }
+                                </div>
+                            </CardContainer>
+                        )}
                 </div>
             );
         } else {
@@ -349,7 +349,7 @@ class UserLoginAnalysis extends React.Component {
             tooltip: {
                 formatter: charTips
             },
-            visualMap: {                
+            visualMap: {
                 inRange: {
                     color: ['#fff', CALENDER_COLOR.CONTENT]
                 }
@@ -399,7 +399,7 @@ class UserLoginAnalysis extends React.Component {
     };
 
     handleSelectRadio = (app, dataRange) => {
-        const {selectValueMap} = this.state;
+        const { selectValueMap } = this.state;
         selectValueMap[app.app_id] = dataRange;
         this.setState({
             selectValueMap
@@ -464,10 +464,10 @@ class UserLoginAnalysis extends React.Component {
                                                     !loading && (!_.get(userInfo, 'loginInfo', 'count') && !_.get(userInfo, 'loginInfo', 'duration') ? <div className="user-no-login">
                                                         {Intl.get('user.no.login.system', '该用户还没有登录过系统')}
                                                     </div> : <div>
-                                                        {this.renderUserLoginScore(app)}
-                                                        {this.renderUserLoginInfo(app)}
-                                                        {this.renderLoginChart(app)}
-                                                    </div>)
+                                                            {this.renderUserLoginScore(app)}
+                                                            {this.renderUserLoginInfo(app)}
+                                                            {this.renderLoginChart(app)}
+                                                        </div>)
                                                 }
                                             </div>
                                         </StatusWrapper>) : null
@@ -484,7 +484,15 @@ class UserLoginAnalysis extends React.Component {
             >
                 <div className="user-analysis-panel" style={{ height: this.props.height }}>
                     <GeminiScrollbar>
-                        {userLoginBlock}
+                        {_.get(this.state.userOwnAppArray, 'length') > 0 ? userLoginBlock :
+                            <div className="alert-container">
+                                <Alert
+                                    message={Intl.get('common.no.data', '暂无数据')}
+                                    type="info"
+                                    showIcon={true}
+                                />
+                            </div>                            
+                        }
                     </GeminiScrollbar>
                 </div>
             </StatusWrapper>
