@@ -8,7 +8,8 @@ require('../css/user-info.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/user-info-es.less');
 }
-import {Spin, Icon, Pagination, Select, Alert, Popconfirm, message} from 'antd';
+import {Spin, Icon, Pagination, Select, Alert, Popconfirm, message, Tabs} from 'antd';
+const TabPane = Tabs.TabPane;
 import {getPassStrenth, passwordRegex} from 'CMP_DIR/password-strength-bar';
 var Option = Select.Option;
 var rightPanelUtil = require('../../../../components/rightPanel');
@@ -36,11 +37,20 @@ import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
+import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
+import DetailCard from 'CMP_DIR/detail-card';
 import {StatusWrapper} from 'antc';
 import classNames from 'classnames';
-
+import Spinner from 'CMP_DIR/spinner';
+const TAB_KEYS = {
+    BASIC_INFO_TAB: '1',//基本信息
+    LOG_TAB: '2'//操作日志
+};
+const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 354;
 class UserInfo extends React.Component {
     state = {
+        userIsLoading: this.props.userIsLoading,
+        getUserDetailError: this.props.getUserDetailError,
         userInfo: $.extend(true, {}, this.props.userInfo),
         userBasicDetail: {id: '', createDate: ''},//要传用户的id和用户的创建时间
         modalStr: '',//模态框提示内容
@@ -49,6 +59,7 @@ class UserInfo extends React.Component {
         roleList: UserFormStore.getState().roleList,
         isPasswordInputShow: false,//是否展示修改密码的输入框
         hasLog: true,
+        activeKey: TAB_KEYS.BASIC_INFO_TAB,
         ...UserInfoStore.getState(),
     };
 
@@ -60,6 +71,8 @@ class UserInfo extends React.Component {
         }
         this.setState({
             userInfo: $.extend(true, {}, nextProps.userInfo),
+            getUserDetailError: nextProps.getUserDetailError,
+            userIsLoading: nextProps.userIsLoading
         });
         this.layout();
     }
@@ -164,18 +177,18 @@ class UserInfo extends React.Component {
     };
 
     //团队的选择事件
-    onSelectTeam = (teamId) => {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '选择所属团队');
-        let userInfo = this.state.userInfo;
-        userInfo.teamId = teamId;
-        this.setState({userInfo});
-    };
-
-    cancelEditTeam = () => {
-        let userInfo = this.state.userInfo;
-        userInfo.teamId = this.props.userInfo.teamId;
-        this.setState({userInfo});
-    };
+    // onSelectTeam = (teamId) => {
+    //     Trace.traceEvent(ReactDOM.findDOMNode(this), '选择所属团队');
+    //     let userInfo = this.state.userInfo;
+    //     userInfo.teamId = teamId;
+    //     this.setState({userInfo});
+    // };
+    //
+    // cancelEditTeam = () => {
+    //     let userInfo = this.state.userInfo;
+    //     userInfo.teamId = this.props.userInfo.teamId;
+    //     this.setState({userInfo});
+    // };
 
     //修改的所属团队成功后的处理
     afterEditTeamSuccess = (user) => {
@@ -233,18 +246,18 @@ class UserInfo extends React.Component {
         return roleOptions;
     };
 
-    selectRole = (roleIds) => {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '选择角色');
-        let userInfo = this.state.userInfo;
-        userInfo.roleIds = roleIds;
-        this.setState({userInfo});
-    };
-
-    cancelEditRole = () => {
-        let userInfo = this.state.userInfo;
-        userInfo.roleIds = _.extend([], this.props.userInfo.roleIds);
-        this.setState({userInfo});
-    };
+    // selectRole = (roleIds) => {
+    //     Trace.traceEvent(ReactDOM.findDOMNode(this), '选择角色');
+    //     let userInfo = this.state.userInfo;
+    //     userInfo.roleIds = roleIds;
+    //     this.setState({userInfo});
+    // };
+    //
+    // cancelEditRole = () => {
+    //     let userInfo = this.state.userInfo;
+    //     userInfo.roleIds = _.extend([], this.props.userInfo.roleIds);
+    //     this.setState({userInfo});
+    // };
 
     onPasswordDisplayChange(e) {
         this.setState({isPasswordInputShow: !this.state.isPasswordInputShow});
@@ -306,11 +319,11 @@ class UserInfo extends React.Component {
         return '';
     };
 
-    afterModifySuccess = (updateObj) => {
-        this.setState({
-            saleGoalsAndCommissionRadio: updateObj
-        });
-    };
+    // afterModifySuccess = (updateObj) => {
+    //     this.setState({
+    //         saleGoalsAndCommissionRadio: updateObj
+    //     });
+    // };
 
     uploadImg = (src) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '点击上传头像');
@@ -392,8 +405,41 @@ class UserInfo extends React.Component {
             if (_.isFunction(errorFunc)) errorFunc(errorMsg);
         });
     }
-
-    renderUserItems = () => {
+    //保存修改的销售目标,saveObj={id,goal}
+    saveSalesGole = (saveObj, successFunc, errorFunc) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '保存销售目标的修改');
+        let userInfo = this.state.userInfo || {};
+        if (!saveObj.id) {
+            delete saveObj.id;//原来未设置过销售目标，则是添加，不需要传id
+        }
+        saveObj.user_id = userInfo.id;
+        saveObj.user_name = userInfo.name;
+        saveObj.sales_team = userInfo.teamName;
+        saveObj.sales_team_id = userInfo.teamId;
+        UserInfoAjax.setSalesGoals(saveObj).then((result) => {
+            if (result) {
+                if (_.isFunction(successFunc)) successFunc();
+                //如果之前没有填写过销售目标和提成比例
+                if (!saveObj.id) {
+                    saveObj.id = result.id;
+                }
+                if (result.goal || result.goal === 0) {
+                    saveObj.goal = result.goal;
+                }
+                if (result.commission_ratio || result.commission_ratio === 0) {
+                    saveObj.commission_ratio = result.commission_ratio;
+                }
+                this.setState({
+                    saleGoalsAndCommissionRadio: saveObj
+                });
+            } else {
+                if (_.isFunction(errorFunc)) errorFunc();
+            }
+        }, (errorMsg) => {
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+        });
+    }
+    renderMemberInfoContent = () => {
         let userInfo = this.state.userInfo;
         let roleSelectOptions = this.getRoleSelectOptions(userInfo);
         let roleNames = '', isSales = false;
@@ -416,197 +462,140 @@ class UserInfo extends React.Component {
             //销售目标
             goal = saleGoalsAndCommissionRadio.goal;
         }
-
         return (
-            <div data-tracename="用户详情面板">
-                <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get('common.username', '用户名')}</dt>
-                    <dd>
-                        <UserDetailEditField
-                            user_id={userInfo.id}
-                            value={userInfo.userName}
-                            field="user_name"
-                            disabled={true}
-                        />
-                    </dd>
-                </dl>
-
-                <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get('realm.change.owner.name', '姓名')}</dt>
-                    <dd>
-                        <UserDetailEditField
-                            user_id={userInfo.id}
-                            value={userInfo.name}
-                            field="nick_name"
-                            type="text"
-                            modifySuccess={this.changeUserFieldSuccess}
-                            disabled={hasPrivilege('UPDATE_MEMBER_BASE_INFO') ? false : true}
-                            validators={[nameLengthRule]}
-                            placeholder={Intl.get('common.required.tip', '必填项*')}
-                            saveEditInput={UserInfoAjax.editUser}
-                        />
-                    </dd>
-                </dl>
-
-                <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get('common.password', '密码')}</dt>
-                    <dd>
-                        <UserDetailEditField
-                            ref="password"
-                            user_id={userInfo.id}
-                            value={Intl.get('user.password.tip', '保密中')}
-                            field="password"
-                            type="password"
-                            hideButtonBlock={true}
-                            showPasswordStrength={true}
-                            disabled={hasPrivilege('UPDATE_MEMBER_BASE_INFO') ? false : true}
-                            validators={[{validator: this.checkPass}]}
-                            placeholder={Intl.get('common.password.compose.rule', '6-18位字符(由数字，字母，符号组成)')}
-                            title={Intl.get('user.batch.password.reset', '重置密码')}
-                            onDisplayTypeChange={this.onPasswordDisplayTypeChange}
-                            onValueChange={this.onPasswordValueChange}
-                        />
-                    </dd>
-                </dl>
-                {this.state.isPasswordInputShow ? (
-                    <dl className="dl-horizontal detail_item member-detail-item">
-                        <dt>
-                            {Intl.get('common.confirm.password', '确认密码')}
-                        </dt>
-                        <dd>
-                            <UserDetailEditField
-                                ref="confirmPassword"
-                                user_id={userInfo.id}
-                                displayType="edit"
-                                field="password"
-                                type="password"
-                                placeholder={Intl.get('common.password.compose.rule', '6-18位字符(由数字，字母，符号组成)')}
-                                validators={[{validator: this.checkRePass}]}
-                                onDisplayTypeChange={this.onConfirmPasswordDisplayTypeChange}
-                                modifySuccess={this.onConfirmPasswordDisplayTypeChange}
-                                saveEditInput={UserInfoAjax.editUser}
-                            />
-                        </dd>
-                    </dl>
-                ) : null}
-                <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get('common.phone', '电话')}</dt>
-                    <dd>
-                        <UserDetailEditField
-                            user_id={userInfo.id}
-                            value={userInfo.phone}
-                            field="phone"
-                            type="text"
-                            disabled={hasPrivilege('UPDATE_MEMBER_BASE_INFO') ? false : true}
-                            validators={[{validator: checkPhone}]}
-                            placeholder={Intl.get('user.input.phone', '请输入手机号')}
-                            saveEditInput={UserInfoAjax.editUser}
-                            modifySuccess={this.changeUserFieldSuccess}
-                        />
-                    </dd>
-                </dl>
-                <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get('common.email', '邮箱')}</dt>
-                    <dd>
-                        <UserDetailEditField
-                            user_id={userInfo.id}
-                            value={userInfo.email}
-                            afterValTip={' (' + (userInfo.emailEnable ? Intl.get('common.actived', '已激活') : Intl.get('member.not.actived', '未激活')) + ')'}
-                            field="email"
-                            type="text"
-                            disabled={hasPrivilege('UPDATE_MEMBER_BASE_INFO') ? false : true}
-                            validators={[{
-                                type: 'email',
-                                required: true,
-                                message: Intl.get('common.correct.email', '请输入正确的邮箱')
-                            }]}
-                            placeholder={Intl.get('member.input.email', '请输入邮箱')}
-                            saveEditInput={UserInfoAjax.editUser}
-                            modifySuccess={this.changeUserFieldSuccess}
-                        />
-                    </dd>
-                </dl>
-
-                <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get('common.role', '角色')}</dt>
-                    <dd>
-                        <BasicEditSelectField
-                            id={userInfo.id}
-                            displayText={roleNames}
-                            value={userInfo.roleIds}
-                            multiple={true}
-                            field="role"
-                            selectOptions={roleSelectOptions}
-                            disabled={hasPrivilege('UPDATE_MEMBER_ROLE') ? false : true}
-                            validators={[{
-                                required: true,
-                                message: Intl.get('member.select.role', '请选择角色'),
-                                type: 'array'
-                            }]}
-                            placeholder={Intl.get('member.select.role', '请选择角色')}
-                            onSelectChange={this.selectRole}
-                            cancelEditField={this.cancelEditRole}
-                            saveEditSelect={UserInfoAjax.updateUserRoles}
-                            modifySuccess={this.afterEditRoleSuccess}
-                        />
-                    </dd>
-                </dl>
+            <div>
+                <div className="basic-info-item">
+                    <span className="basic-info-label">
+                        {Intl.get('common.role', '角色')}:
+                    </span>
+                    <BasicEditSelectField
+                        width={EDIT_FEILD_WIDTH}
+                        id={userInfo.id}
+                        displayText={roleNames}
+                        value={userInfo.roleIds}
+                        multiple={true}
+                        field="role"
+                        selectOptions={roleSelectOptions}
+                        hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_ROLE')}
+                        validators={[{
+                            required: true,
+                            message: Intl.get('member.select.role', '请选择角色'),
+                            type: 'array'
+                        }]}
+                        placeholder={Intl.get('member.select.role', '请选择角色')}
+                        // onSelectChange={this.selectRole}
+                        // cancelEditField={this.cancelEditRole}
+                        saveEditSelect={this.saveEditMemberInfo.bind(this, 'role')}
+                        noDataTip={Intl.get('member.no.role', '暂无角色')}
+                        addDataTip={Intl.get('user.setting.roles', '设置角色')}
+                    />
+                </div>
                 {/** v8环境下，不显示所属团队*/}
-                { !Oplate.hideSomeItem && <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get('common.belong.team', '所属团队')}</dt>
-                    <dd>
+                { !Oplate.hideSomeItem ? (
+                    <div className="basic-info-item">
+                        <span className="basic-info-label">
+                            {Intl.get('common.belong.team', '所属团队')}:
+                        </span>
                         <BasicEditSelectField
                             id={userInfo.id}
                             displayText={userInfo.teamName}
                             value={userInfo.teamId}
                             field="team"
                             selectOptions={this.getTeamOptions()}
-                            disabled={hasPrivilege('USER_MANAGE_EDIT_USER') ? false : true}
                             placeholder={Intl.get('member.select.group', '请选择团队')}
                             validators={[{message: Intl.get('member.select.group', '请选择团队')}]}
-                            onSelectChange={this.onSelectTeam}
-                            cancelEditField={this.cancelEditTeam}
-                            saveEditSelect={UserInfoAjax.updateUserTeam}
-                            modifySuccess={this.afterEditTeamSuccess}
+                            // onSelectChange={this.onSelectTeam}
+                            // cancelEditField={this.cancelEditTeam}
+                            width={EDIT_FEILD_LESS_WIDTH}
+                            hasEditPrivilege={hasPrivilege('USER_MANAGE_EDIT_USER')}
+                            saveEditSelect={this.saveEditMemberInfo.bind(this, 'team')}
+                            noDataTip={Intl.get('member.no.groups', '暂无团队')}
+                            addDataTip={Intl.get('sales.team.add.team', '添加团队')}
                         />
-                    </dd>
-                </dl> }
-                {isSales ? <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get('sales.team.sales.goal', '销售目标')}</dt>
-                    <dd>
-                        <CommissionAndTarget
+                    </div>) : null }
+                {isSales ? (
+                    <div className="basic-info-item">
+                        <span className="basic-info-label">{Intl.get('sales.team.sales.goal', '销售目标')}:</span>
+                        <BasicEditInputField
+                            width={EDIT_FEILD_LESS_WIDTH}
                             id={recordId}
-                            field={'goal'}
-                            userInfo={this.state.userInfo}
-                            setSalesGoals={UserInfoAjax.setSalesGoals}
                             value={goal}
-                            displayType={'text'}
-                            min={0}
-                            countTip={Intl.get('contract.82', '元')}
-                            afterModifySuccess={this.afterModifySuccess}
+                            field="goal"
+                            type="number"
+                            afterValTip={Intl.get('contract.82', '元')}
+                            hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
+                            saveEditInput={this.saveSalesGole}
                         />
-                    </dd>
-                </dl> : null}
-                <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get('user.manage.phone.order', '坐席号')}</dt>
-                    <dd>{userInfo.phoneOrder}</dd>
-                </dl>
-                <dl className="dl-horizontal detail_item member-detail-item">
-                    <dt>{Intl.get('member.create.time', '创建时间')}</dt>
-                    <dd>
-                        <UserDetailEditField
-                            user_id={userInfo.id}
-                            value={userInfo.createDate ? moment(userInfo.createDate).format(oplateConsts.DATE_FORMAT) : ''}
-                            field="createDate"
-                            disabled={true}
-                        />
-                    </dd>
-                </dl>
+                    </div> ) : null}
+                <div className="basic-info-item">
+                    <span className="basic-info-label">{Intl.get('user.manage.phone.order', '坐席号')}:</span>
+                    <BasicEditInputField
+                        width={EDIT_FEILD_LESS_WIDTH}
+                        id={userInfo.id}
+                        value={userInfo.phoneOrder}
+                        hasEditPrivilege={false}
+                    />
+                </div>
+                <div className="basic-info-item">
+                    <span className="basic-info-label">{Intl.get('member.create.time', '创建时间')}:</span>
+                    <BasicEditDateField
+                        width={EDIT_FEILD_WIDTH}
+                        id={userInfo.id}
+                        field="createDate"
+                        value={userInfo.createDate ? moment(userInfo.createDate).format(oplateConsts.DATE_FORMAT) : ''}
+                        hasEditPrivilege={false}
+                    />
+                </div>
             </div>
         );
     };
 
-    renderDetailContent() {
+    renderContactContent() {
+        let userInfo = this.state.userInfo;
+        return (
+            <div>
+                <div className="basic-info-item">
+                    <span className="basic-info-label">{Intl.get('user.phone', '手机号')}:</span>
+                    <BasicEditInputField
+                        width={EDIT_FEILD_LESS_WIDTH}
+                        id={userInfo.id}
+                        value={userInfo.phone}
+                        field="phone"
+                        type="text"
+                        hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
+                        validators={[{validator: checkPhone}]}
+                        placeholder={Intl.get('user.input.phone', '请输入手机号')}
+                        saveEditInput={this.saveEditMemberInfo.bind(this, 'phone')}
+                        addDataTip={Intl.get('member.phone.add', '添加手机号')}
+                        noDataTip={Intl.get('member.phone.no.data', '未添加手机号')}
+                    />
+                </div>
+                <div className="basic-info-item">
+                    <span className="basic-info-label">{Intl.get('common.email', '邮箱')}:</span>
+                    <BasicEditInputField
+                        width={EDIT_FEILD_WIDTH}
+                        id={userInfo.id}
+                        value={userInfo.email}
+                        afterTextTip={`(${userInfo.emailEnable ? Intl.get('common.actived', '已激活') : Intl.get('member.not.actived', '未激活')})`}
+                        field="email"
+                        type="text"
+                        hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
+                        validators={[{
+                            type: 'email',
+                            required: true,
+                            message: Intl.get('common.correct.email', '请输入正确的邮箱')
+                        }]}
+                        placeholder={Intl.get('member.input.email', '请输入邮箱')}
+                        saveEditInput={this.saveEditMemberInfo.bind(this, 'email')}
+                        noDataTip={Intl.get('member.email.no.data', '未添加邮箱')}
+                        addDataTip={Intl.get('user.info.add.email', '添加邮箱')}
+                    />
+                </div>
+            </div>
+        );
+    }
+
+    renderContent() {
         //当前要展示的信息
         var userInfo = this.state.userInfo;
         let user_id = userInfo.id;
@@ -665,28 +654,6 @@ class UserInfo extends React.Component {
 
         return (
             <div className={className} data-tracename="成员详情">
-                <RightPanelClose onClick={this.props.closeRightPanel} data-tracename="点击关闭成员详情"/>
-                {user_id !== loginUserInfo.user_id ? <div className="edit-buttons">
-                    {!this.props.isContinueAddButtonShow ? (
-                        <PrivilegeChecker check={'USER_MANAGE_EDIT_USER'}>
-                            <RightPanelForbid onClick={(e) => {
-                                this.showForbidModalDialog(e);
-                            }} isActive={this.state.userInfo.status === 0}
-                            />
-                        </PrivilegeChecker>
-                    ) : null}
-                </div> : null}
-                <Popconfirm title="是否保存上传的头像？"
-                    visible={this.state.showSaveIconTip}
-                    onConfirm={this.saveUserIcon} onCancel={this.cancelEditIcon}>
-                    <HeadIcon headIcon={this.state.userInfo.image} iconDescr={this.state.userInfo.name}
-                        isEdit={true}
-                        onChange={this.uploadImg}
-                        userName={userName}
-                        isUserHeadIcon={true}
-
-                    />
-                </Popconfirm>
                 <div className="log-infor-scroll">
                     <GeminiScrollbar className="geminiScrollbar-vertical">
                         <div className="card-infor-list" id="member-infor-list">
@@ -742,6 +709,15 @@ class UserInfo extends React.Component {
         );
     }
 
+    //切换tab时的处理
+    changeActiveKey = (key) => {
+        let keyName = key === TAB_KEYS.BASIC_INFO_TAB ? '基本信息' : '操作日志';
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + keyName);
+        this.setState({
+            activeKey: key
+        });
+    };
+
     renderMemberStatus(userInfo) {
         let loginUserInfo = UserData.getUserData();
         //自己不能停用自己
@@ -774,6 +750,7 @@ class UserInfo extends React.Component {
 
     renderTitle() {
         let userInfo = this.state.userInfo;
+        const TITLE_INPUT_WIDTH = 280;
         return (
             <div className="member-detail-title">
                 <Popconfirm title={Intl.get('member.save.logo.tip', '是否保存上传的头像？')}
@@ -790,7 +767,7 @@ class UserInfo extends React.Component {
                     <div className="password-edit-container">
                         <BasicEditInputField
                             ref="password"
-                            width={280}
+                            width={TITLE_INPUT_WIDTH}
                             id={userInfo.id}
                             field="password"
                             type="password"
@@ -805,7 +782,7 @@ class UserInfo extends React.Component {
                         />
                         <BasicEditInputField
                             ref="confirmPassword"
-                            width={280}
+                            width={TITLE_INPUT_WIDTH}
                             id={userInfo.id}
                             displayType="edit"
                             field="password"
@@ -823,7 +800,7 @@ class UserInfo extends React.Component {
                         </div>
                         <div className="member-info-label member-name-label">
                             <BasicEditInputField
-                                width={280}
+                                width={TITLE_INPUT_WIDTH}
                                 id={userInfo.id}
                                 value={userInfo.name}
                                 field="nick_name"
@@ -849,6 +826,86 @@ class UserInfo extends React.Component {
         );
     }
 
+    renderBasicContent() {
+        if (this.state.userIsLoading) {
+            return (<Spinner/>);
+        } else {
+            var userInfo = this.state.userInfo;
+            let isSales = false;
+            if (_.isArray(userInfo.roleNames) && userInfo.roleNames.length) {
+                if (_.indexOf(userInfo.roleNames, Intl.get('sales.home.sales', '销售')) > -1) {
+                    //是否是销售角色
+                    isSales = true;
+                }
+            }
+            var commissionRadio = '', recordId = '',
+                saleGoalsAndCommissionRadio = this.state.saleGoalsAndCommissionRadio, newCommissionRatio = '',
+                renewalCommissionRatio = '';
+            if ((saleGoalsAndCommissionRadio.commission_ratio && saleGoalsAndCommissionRadio.commission_ratio > -1) || saleGoalsAndCommissionRadio.commission_ratio === 0) {
+                //提成比例
+                commissionRadio = saleGoalsAndCommissionRadio.commission_ratio;
+            }
+            if ((saleGoalsAndCommissionRadio.new_commission_ratio && saleGoalsAndCommissionRadio.new_commission_ratio > -1) || saleGoalsAndCommissionRadio.new_commission_ratio === 0) {
+                //新签提成比例,该字段存在，并且不为-1的时候，才进行赋值
+                newCommissionRatio = saleGoalsAndCommissionRadio.new_commission_ratio;
+            }
+            if ((saleGoalsAndCommissionRadio.renewal_commission_ratio && saleGoalsAndCommissionRadio.renewal_commission_ratio > -1) || saleGoalsAndCommissionRadio.renewal_commission_ratio === 0) {
+                //续约提成比例，该字段存在，并且不为-1的时候，才进行赋值
+                renewalCommissionRatio = saleGoalsAndCommissionRadio.renewal_commission_ratio;
+            }
+            if (saleGoalsAndCommissionRadio.id) {
+                //某条销售目标和提成比例的id
+                recordId = saleGoalsAndCommissionRadio.id;
+            }
+
+            return (
+                <div className="member-detail-basic-container">
+                    <DetailCard content={this.renderMemberInfoContent()}
+                        className='member-info-card-container'/>
+                    <DetailCard title={Intl.get('crm.5', '联系方式')}
+                        content={this.renderContactContent()}
+                        className='member-contact-card-container'/>
+                    <div className="">
+                        {isSales ?
+                            <DetailCard className='radio-container-wrap'
+                                content={
+                                    <RadioCard
+                                        id={recordId}
+                                        commissionRadio={commissionRadio}
+                                        newCommissionRatio={newCommissionRatio}
+                                        renewalCommissionRatio={renewalCommissionRatio}
+                                        userInfo={this.state.userInfo}
+                                        setSalesGoals={UserInfoAjax.setSalesGoals}
+                                    />}
+                            /> : null}
+                    </div>
+                    {this.props.isContinueAddButtonShow ? (
+                        <div className="btn-add-member" onClick={this.props.showEditForm.bind(null, 'add')}>
+                            <Icon type="plus"/><span><ReactIntl.FormattedMessage id="common.add.member"
+                                defaultMessage="添加成员"/></span>
+                        </div>
+                    ) : null}
+                </div>
+            );
+        }
+    }
+
+    renderDetailTabs() {
+        return (
+            <Tabs defaultActiveKey={TAB_KEYS.BASIC_INFO_TAB}
+                activeKey={this.state.activeKey}
+                onChange={this.changeActiveKey}>
+                <TabPane tab={Intl.get('user.basic.info', '基本资料')}
+                    key={TAB_KEYS.BASIC_INFO_TAB}>
+                    {this.state.activeKey === TAB_KEYS.BASIC_INFO_TAB ? this.renderBasicContent() : null}
+                </TabPane>
+                <TabPane tab={Intl.get('member.operation.log', '操作日志')}
+                    key={TAB_KEYS.LOG_TAB}>
+                    {this.state.activeKey === TAB_KEYS.LOG_TAB ? (<UserLog />) : null}
+                </TabPane>
+            </Tabs>);
+    }
+
     render() {
         return (
             <RightPanelModal
@@ -857,7 +914,7 @@ class UserInfo extends React.Component {
                 isShowCloseBtn={true}
                 onClosePanel={this.props.closeRightPanel}
                 title={this.renderTitle()}
-                // content={this.renderDetailContent()}
+                content={this.renderDetailTabs()}
                 dataTracename='成员详情'
             />
         );

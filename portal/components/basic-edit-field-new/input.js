@@ -68,6 +68,8 @@ const BasicEditField = createReactClass({
             //取消按钮的文字展示
             cancelBtnText: '',
             hoverShowEdit: true,
+            //展示内容后面跟的提示信息
+            afterTextTip: ''
         };
     },
 
@@ -79,6 +81,7 @@ const BasicEditField = createReactClass({
         return {
             loading: false,
             displayType: this.props.displayType || 'text',
+            afterTextTip: this.props.afterTextTip || '',
             formData: {
                 input: this.props.value
             },
@@ -241,6 +244,7 @@ const BasicEditField = createReactClass({
         });
         var textBlock = null;
         if (this.state.displayType === 'text') {
+
             var displayText = this.props.type === 'password' ? Intl.get('user.password.tip', '保密中') : this.state.value;
             //如果是数字类型，展示时，千分位加，分隔的处理
             if (this.props.type === 'number' && displayText) {
@@ -253,7 +257,7 @@ const BasicEditField = createReactClass({
                 textBlock = (
                     <div className={cls}>
                         <span className="inline-block basic-info-text">
-                            {displayText}{this.props.afterValTip || ''}
+                            {displayText}{this.props.afterTextTip || ''}
                         </span>
                         {this.props.hasEditPrivilege ? (
                             <DetailEditBtn title={this.props.editBtnTip}

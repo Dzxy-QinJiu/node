@@ -284,6 +284,8 @@ class UserManage extends React.Component {
                             isContinueAddButtonShow={this.state.isContinueAddButtonShow}
                             changeUserFieldSuccess={this.changeUserFieldSuccess}
                             updateUserStatus={this.updateUserStatus}
+                            userIsLoading={this.state.userIsLoading}
+                            getUserDetailError={this.state.getUserDetailError}
                         /> : null}
                     {this.state.userFormShow ?
                         <AddUserForm

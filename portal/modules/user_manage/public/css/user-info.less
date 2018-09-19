@@ -1,9 +1,11 @@
 //成员详情样式文件
 @btn-color: #8da8c5;
+@label-color: #999999;
 .member-detail-container {
   //成员详情头部样式设置
   .right-panel-modal-content {
     .right-panel-modal-title {
+      margin-bottom: 0;
       padding: 20px 20px 14px;
       font-weight: normal;
     }
@@ -61,10 +63,6 @@
         }
       }
     }
-    //密码输入框的样式
-    .password-edit-container {
-
-    }
 
     //按钮区
     .member-title-btns {
@@ -77,6 +75,87 @@
       .status-switch-container {
         float: right;
       }
+    }
+  }
+
+  .ant-tabs {
+    padding: 0 20px;
+  }
+
+  .basic-info-item {
+    float: left;
+    width: 100%;
+    min-height: 24px;
+    font-size: 14px;
+    .basic-info-label {
+      float: left;
+      line-height: 24px;
+      color: @label-color;
+    }
+    //编辑按钮hover时才展示
+    .icon-edit-btn {
+      display: none;
+    }
+    &:hover {
+      background-color: #f6fbff;
+      .icon-edit-btn {
+        display: block;
+        float: right;
+        font-size: 16px;
+        color: @btn-color;
+        cursor: pointer;
+      }
+    }
+    form {
+      .ant-form-item {
+        padding-right: 0;
+      }
+    }
+  }
+  //提成比例样式
+  .radio-container {
+    font-size: 14px;
+    .ant-checkbox-wrapper {
+      font-size: 14px;
+    }
+    .ant-input-number-input {
+      height: 25px;
+    }
+    .ant-input-number {
+      margin: 5px 10px;
+    }
+    .iconfont {
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .icon-choose, .icon-update {
+      margin: 0px 5px;
+    }
+    .icon-choose {
+      color: #4dbe50;
+    }
+    .icon-close {
+      color: #f43631;
+    }
+    .edit-btn {
+      cursor: pointer;
+    }
+  }
+  //再添加一个成员的按钮样式
+  .btn-add-member {
+    height: 34px;
+    border: 1px solid #4d8cbf;
+    border-radius: 4px;
+    margin: 20px 20px 0;
+    text-align: center;
+    font-size: 13px;
+    color: #4d8cbf;
+    padding-top: 5px;
+    cursor: pointer;
+    .anticon-plus {
+      font-size: 15px;
+      font-weight: bold;
+      margin-right: 10px;
     }
   }
 
