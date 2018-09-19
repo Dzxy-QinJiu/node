@@ -251,18 +251,12 @@ class ApplyViewDetailStore {
                 case APPLY_TYPES.DISABLE:
                     info.status = apps[0].status;
                     break;
-
             }
-
         }
         info.customer_name = info.message.customer_name;
         info.comment = info.message.remark;
         info.type = info.message.type;
-        this.detailInfoObj.info = info;
-        // this.formData.user_name = info.producer.user_name;
-        // this.formData.nick_name = info.producer.nick_name;
-
-
+        this.detailInfoObj.info = info;     
         this.createAppsSetting();
         if (_.isArray(this.detailInfoObj.info.user_names)) {
             this.formData.user_name = this.detailInfoObj.info.user_names[0];
@@ -270,8 +264,6 @@ class ApplyViewDetailStore {
         if (_.isArray(this.detailInfoObj.info.nick_names)) {
             this.formData.nick_name = this.detailInfoObj.info.nick_names[0];
         }
-
-
     })
     //生成应用的单独配置
     createAppsSetting() {

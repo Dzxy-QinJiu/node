@@ -127,7 +127,6 @@ class CrmUserApplyForm extends React.Component {
          向后端传递email_customer_names,email_app_names,email_user_names，发邮件使用
          */
         //添加邮箱使用的字段, 客户名 用户名 添加应用名 用户id
-        // submitObj = _.extend(submitObj, this.getSelectedUserAppData());
 
         submitObj.data = this.getSelectedUserMultiAppData().map(x => {
             let delayDate = (new Date(moment(x.end_date).add(delayMillis, 'ms'))).getTime();
