@@ -13,14 +13,18 @@ var restApis = {
     //查询由当前账号审批的出差申请
     applylistBussinessTrip: '/rest/base/v1/workflow/businesstrip/worklist',
     //添加出差申请
-    addLeaveApply: '/rest/base/v1/workflow/businesstrip',
+    addBusinessApply: '/rest/base/v1/workflow/businesstrip',
     //根据出差申请的id查询申请的详情
-    getLeaveApplyDetailById: '/rest/base/v1/workflow/businesstrip/detail'
+    getBusinessApplyDetailById: '/rest/base/v1/workflow/businesstrip/detail',
+    //获取申请列表
+    getOrAddApplyComments: '/rest/base/v1/workflow/businesstrip/comments',
+    //通过或者驳回申请
+    approveApplyPassOrReject: '/rest/base/v1/workflow/businesstrip/approve/:id'
 };
 exports.restUrls = restApis;
 var _ = require('lodash');
 //获取所有的出差申请
-exports.getAllLeaveApplyList = function(req, res) {
+exports.getAllBusinessApplyList = function(req, res) {
     var queryObj = req.query;
     var url = restApis.allBussinessTrip;
     return restUtil.authRest.get(
@@ -31,7 +35,7 @@ exports.getAllLeaveApplyList = function(req, res) {
         }, queryObj);
 };
 //获取当前账号发起的出差申请
-exports.getSelfLeaveApplyList = function(req, res) {
+exports.getSelfBusinessApplyList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: restApis.selfBussinessTrip,
@@ -40,7 +44,7 @@ exports.getSelfLeaveApplyList = function(req, res) {
         }, null);
 };
 //查询由当前账号审批的出差申请
-exports.getWorklistLeaveApplyList = function(req, res) {
+exports.getWorklistBusinessApplyList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: restApis.applylistBussinessTrip,
@@ -49,20 +53,47 @@ exports.getWorklistLeaveApplyList = function(req, res) {
         }, null);
 };
 //添加出差申请
-exports.addLeaveApply = function(req, res) {
+exports.addBusinessApply = function(req, res) {
     return restUtil.authRest.post(
         {
-            url: restApis.addLeaveApply,
+            url: restApis.addBusinessApply,
             req: req,
             res: res
         }, req.body);
 };
 //根据审批的id获取审批的详情
-exports.getLeaveApplyDetailById = function(req, res) {
+exports.getBusinessApplyDetailById = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: restApis.getLeaveApplyDetailById,
+            url: restApis.getBusinessApplyDetailById,
             req: req,
             res: res
         }, req.query);
+};
+//获取审批意见
+exports.getBusinessApplyComments = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getOrAddApplyComments,
+            req: req,
+            res: res
+        }, req.query);
+};
+//添加审批意见
+exports.addBusinessApplyComments = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.getOrAddApplyComments,
+            req: req,
+            res: res
+        }, req.body);
+};
+//批准或驳回审批
+exports.approveApplyPassOrReject = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.approveApplyPassOrReject.replace(':id',req.params.id),
+            req: req,
+            res: res
+        }, req.body);
 };

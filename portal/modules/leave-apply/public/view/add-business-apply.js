@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/9/10.
  */
 import {RightPanel} from 'CMP_DIR/rightPanel';
-require('../css/add-leave-apply.less');
+require('../css/add-business-apply.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {Form, Input, Button, Icon,message, DatePicker} from 'antd';
@@ -22,7 +22,7 @@ const ADD_LEAVE_CUSTOMER_SUGGEST_ID = 'add-leave-customer-suggest-wrap';
 const DEFAULTTIMETYPE = 'day';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
-var leaveApplyAction = require('../action/leave-apply-action');
+var BusinessApplyAction = require('../action/business-apply-action');
 import AlertTimer from 'CMP_DIR/alert-timer';
 import {AntcAreaSelection} from 'antc';
 import Trace from 'LIB_DIR/trace';
@@ -31,7 +31,7 @@ const DELAY_TIME_RANGE = {
     ERROR_RANGE: 3000,
     CLOSE_RANGE: 500
 };
-class AddLeaveApply extends React.Component {
+class AddBusinessApply extends React.Component {
     constructor(props) {
         super(props);
         var timeRange = getStartEndTimeOfDiffRange(DEFAULTTIMETYPE, true);
@@ -75,8 +75,8 @@ class AddLeaveApply extends React.Component {
     }
 
 
-    hideLeaveApplyAddForm = () => {
-        this.props.hideLeaveApplyAddForm();
+    hideBusinessApplyAddForm = () => {
+        this.props.hideBusinessApplyAddForm();
     };
     onBeginTimeChange = (date, dateString) => {
         var formData = this.state.formData;
@@ -149,7 +149,7 @@ class AddLeaveApply extends React.Component {
                     //添加成功
                     this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
                     setTimeout(() => {
-                        this.hideLeaveApplyAddForm();
+                        this.hideBusinessApplyAddForm();
                     },DELAY_TIME_RANGE.CLOSE_RANGE);
                 },
                 error: (errorMsg) => {
@@ -257,7 +257,7 @@ class AddLeaveApply extends React.Component {
         };
         return (
             <RightPanel showFlag={true} data-tracename="添加出差申请" className="add-leave-apply-container">
-                <span className="iconfont icon-close add—leave-apply-close-btn" onClick={this.hideLeaveApplyAddForm}
+                <span className="iconfont icon-close add—leave-apply-close-btn" onClick={this.hideBusinessApplyAddForm}
                     data-tracename="关闭添加出差申请面板"></span>
 
                 <div className="add-leave-apply-wrap">
@@ -383,7 +383,7 @@ class AddLeaveApply extends React.Component {
                                             {Intl.get('common.save', '保存')}
                                             {this.state.isSaving ? <Icon type="loading"/> : null}
                                         </Button>
-                                        <Button className="cancel-btn" onClick={this.hideLeaveApplyAddForm}
+                                        <Button className="cancel-btn" onClick={this.hideBusinessApplyAddForm}
                                             data-tracename="点击取消添加出差申请按钮">
                                             {Intl.get('common.cancel', '取消')}
                                         </Button>
@@ -409,13 +409,13 @@ class AddLeaveApply extends React.Component {
         );
     }
 }
-AddLeaveApply.defaultProps = {
-    hideLeaveApplyAddForm: function() {
+AddBusinessApply.defaultProps = {
+    hideBusinessApplyAddForm: function() {
     },
     form: {}
 };
-AddLeaveApply.propTypes = {
-    hideLeaveApplyAddForm: PropTypes.func,
+AddBusinessApply.propTypes = {
+    hideBusinessApplyAddForm: PropTypes.func,
     form: PropTypes.object,
 };
-export default Form.create()(AddLeaveApply);
+export default Form.create()(AddBusinessApply);

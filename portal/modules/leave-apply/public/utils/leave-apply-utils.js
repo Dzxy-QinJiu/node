@@ -10,6 +10,6 @@ exports.APPLY_LIST_LAYOUT_CONSTANTS = {
 };
 exports.getApplyTopicText = (obj) => {
     if (obj.topic === 'customer_visit') {
-        return Intl.get('customer.visit.customer', '拜访客户');
+        return Intl.get('leave.apply.add.leave.apply', '出差申请');
     }
 };

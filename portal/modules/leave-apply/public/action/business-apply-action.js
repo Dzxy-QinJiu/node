@@ -3,16 +3,17 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/10.
  */
-var LeaveApplyAjax = require('../ajax/leave-apply-ajax');
-function LeaveApplyActions() {
+var BusinessApplyAjax = require('../ajax/business-apply-ajax');
+function BusinessApplyActions() {
     this.generateActions(
         'setInitState',
         'setSelectedDetailItem',//点击某个申请
         'changeApplyListType'
     );
+    //todo 先获取需要你审批的
     this.getAllApplyList = function(queryObj) {
         this.dispatch({error: false, loading: true});
-        LeaveApplyAjax.getAllApplyList(queryObj).then((data) => {
+        BusinessApplyAjax.getWorklistBusinessApplyList(queryObj).then((data) => {
             this.dispatch({error: false, loading: false, data: data});
         }, (errorMsg) => {
             this.dispatch({
@@ -24,7 +25,7 @@ function LeaveApplyActions() {
     };
     this.getSelfApplyList = function() {
         this.dispatch({error: false, loading: true});
-        LeaveApplyAjax.getSelfApplyList().then((data) => {
+        BusinessApplyAjax.getSelfApplyList().then((data) => {
             this.dispatch({error: false, loading: false, data: data});
         }, (errorMsg) => {
             this.dispatch({
@@ -34,9 +35,9 @@ function LeaveApplyActions() {
             });
         });
     };
-    this.getWorklistLeaveApplyList = function() {
+    this.getWorklistBusinessApplyList = function() {
         this.dispatch({error: false, loading: true});
-        LeaveApplyAjax.getWorklistLeaveApplyList().then((data) => {
+        BusinessApplyAjax.getWorklistBusinessApplyList().then((data) => {
             this.dispatch({error: false, loading: false, data: data});
         }, (errorMsg) => {
             this.dispatch({
@@ -47,4 +48,4 @@ function LeaveApplyActions() {
         });
     };
 }
-module.exports = alt.createActions(LeaveApplyActions);
+module.exports = alt.createActions(BusinessApplyActions);

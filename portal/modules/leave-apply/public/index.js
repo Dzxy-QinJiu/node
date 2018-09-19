@@ -4,13 +4,13 @@
  * Created by zhangshujuan on 2018/9/10.
  */
 import Trace from 'LIB_DIR/trace';
-var leaveApplyStore = require('./store/leave-apply-store');
-var leaveApplyAction = require('./action/leave-apply-action');
+var BusinessApplyStore = require('./store/business-apply-store');
+var BusinessApplyAction = require('./action/business-apply-action');
 import TopNav from 'CMP_DIR/top-nav';
 require('./css/index.less');
 var userData = require('PUB_DIR/sources/user-data');
-import {Button, Menu,Dropdown} from 'antd';
-import AddLeaveApplyPanel from './view/add-leave-apply';
+import {Button, Menu, Dropdown} from 'antd';
+import AddBusinessApplyPanel from './view/add-business-apply';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 var className = require('classnames');
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
@@ -20,26 +20,26 @@ var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 var classNames = require('classnames');
 var LeaveApplyUtils = require('./utils/leave-apply-utils');
 import ApplyViewDetail from './view/apply-view-detail';
-class LeaveApplyManagement extends React.Component {
+class BusinessApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加出差申请面板
-        ...leaveApplyStore.getState()
+        ...BusinessApplyStore.getState()
     };
 
     onStoreChange = () => {
-        this.setState(leaveApplyStore.getState());
+        this.setState(BusinessApplyStore.getState());
     };
 
     componentDidMount() {
-        leaveApplyStore.listen(this.onStoreChange);
+        BusinessApplyStore.listen(this.onStoreChange);
         //todo 不区分角色，都获取全部的申请列表
-        this.getAllLeaveApplyList();
+        this.getAllBusinessApplyList();
         // //如果是普通销售，就获取自己的申请列表
         // if (userData.getUserData().isCommonSales){
-        //     this.getSelfLeaveApplyList();
+        //     this.getSelfBusinessApplyList();
         // }else{
         // // 如果是管理员或者是销售领导，就获取要由自己审批的申请列表
-        // this.getAllLeaveApplyList();
+        // this.getAllBusinessApplyList();
         // }
     }
 
@@ -49,7 +49,7 @@ class LeaveApplyManagement extends React.Component {
             status: this.state.status,//请假申请的状态
             order: this.state.order,
             page_size: this.state.page_size,
-            id: this.state.lastLeaveApplyId, //用于下拉加载的id
+            id: this.state.lastBusinessApplyId, //用于下拉加载的id
         };
         //去除查询条件中值为空的项
         commonMethodUtil.removeEmptyItem(params);
@@ -57,23 +57,23 @@ class LeaveApplyManagement extends React.Component {
     }
 
     //获取全部请假申请
-    getAllLeaveApplyList() {
+    getAllBusinessApplyList() {
         var queryObj = this.getQueryParams();
-        leaveApplyAction.getAllApplyList(queryObj);
+        BusinessApplyAction.getAllApplyList(queryObj);
     }
 
     //获取自己发起的请假申请
-    getSelfLeaveApplyList() {
-        leaveApplyAction.getSelfApplyList();
+    getSelfBusinessApplyList() {
+        BusinessApplyAction.getSelfApplyList();
     }
 
     //获取由自己审批的请假申请
-    getWorklistLeaveApplyList() {
-        leaveApplyAction.getWorklistLeaveApplyList();
+    getWorklistBusinessApplyList() {
+        BusinessApplyAction.getWorklistBusinessApplyList();
     }
 
     componentWillUnmount() {
-        leaveApplyStore.unlisten(this.onStoreChange);
+        BusinessApplyStore.unlisten(this.onStoreChange);
     }
 
     showAddApplyPanel = () => {
@@ -81,14 +81,14 @@ class LeaveApplyManagement extends React.Component {
             showAddApplyPanel: true
         });
     };
-    hideLeaveApplyAddForm = () => {
+    hideBusinessApplyAddForm = () => {
         this.setState({
             showAddApplyPanel: false
         });
     };
     //下拉加载
     handleScrollBarBottom = () => {
-        this.getAllLeaveApplyList();
+        this.getAllBusinessApplyList();
     };
     //是否显示没有更多数据了
     showNoMoreDataTip = () => {
@@ -98,17 +98,13 @@ class LeaveApplyManagement extends React.Component {
     //点击展示详情
     clickShowDetail = (obj, idx) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '查看申请详情');
-        leaveApplyAction.setSelectedDetailItem({obj, idx});
+        BusinessApplyAction.setSelectedDetailItem({obj, idx});
     };
     getApplyStateText = (obj) => {
-        if (obj.isConsumed === 'true') {
-            if (obj.approval_state === '1') {
-                return Intl.get('user.apply.pass', '已通过');
-            } else if (obj.approval_state === '2') {
-                return Intl.get('user.apply.reject', '已驳回');
-            } else if (obj.approval_state === '3') {
-                return Intl.get('user.apply.backout', '已撤销');
-            }
+        if (obj.status === 'pass') {
+            return Intl.get('user.apply.pass', '已通过');
+        } else if (obj.status === 'reject') {
+            return Intl.get('user.apply.reject', '已驳回');
         } else {
             return Intl.get('user.apply.false', '待审批');
         }
@@ -151,8 +147,8 @@ class LeaveApplyManagement extends React.Component {
             selectType = Intl.get('user.apply.backout', '已撤销');
         }
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.pull-left'), '根据' + selectType + '过滤');
-        leaveApplyAction.changeApplyListType(obj.key);
-        setTimeout(() => this.getAllLeaveApplyList());
+        BusinessApplyAction.changeApplyListType(obj.key);
+        setTimeout(() => this.getAllBusinessApplyList());
     };
     renderApplyHeader = () => {
         //如果是从url传入了参数applyId
@@ -239,7 +235,7 @@ class LeaveApplyManagement extends React.Component {
                 {
                     this.state.applyListObj.list.map((obj, i) => {
                         var btnClass = classNames({
-                            processed: obj.isConsumed === 'true'
+                            processed: obj.status !== 'ongoing'
                         });
                         var currentClass = classNames({
                             current: obj.id === this.state.selectedDetailItem.id && i === this.state.selectedDetailItemIdx
@@ -305,21 +301,19 @@ class LeaveApplyManagement extends React.Component {
                                         />
                                     </GeminiScrollbar>
                                 </div>
-                                {this.state.applyId ? null : (
-                                    <div className="summary_info">
-                                        {Intl.get('user.apply.total.apply', '共{number}条申请{apply_type}', {
-                                            'number': this.state.totalSize,
-                                            'apply_type': applyType
-                                        })}
-                                    </div>)
-                                }
+                                <div className="summary_info">
+                                    {Intl.get('user.apply.total.apply', '共{number}条申请{apply_type}', {
+                                        'number': this.state.totalSize,
+                                        'apply_type': applyType
+                                    })}
+                                </div>
+
                             </div>
                             )
                         }
                     </div>
                     {noShowApplyDetail ? null : (
                         <ApplyViewDetail
-                            applyData={this.state.applyId ? applyDetail : null}
                             detailItem={this.state.selectedDetailItem}
                             // isUnreadDetail={this.getIsUnreadDetail()}
                             showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
@@ -328,8 +322,8 @@ class LeaveApplyManagement extends React.Component {
                 </div>
                 {this.state.showAddApplyPanel ?
                     <div className={addPanelWrap}>
-                        <AddLeaveApplyPanel
-                            hideLeaveApplyAddForm={this.hideLeaveApplyAddForm}/>
+                        <AddBusinessApplyPanel
+                            hideBusinessApplyAddForm={this.hideBusinessApplyAddForm}/>
                     </div>
                     : null}
 
@@ -337,4 +331,4 @@ class LeaveApplyManagement extends React.Component {
         );
     }
 }
-module.exports = LeaveApplyManagement;
+module.exports = BusinessApplyManagement;

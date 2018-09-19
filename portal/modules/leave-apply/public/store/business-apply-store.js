@@ -3,18 +3,18 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/10.
  */
-var LeaveApplyAction = require('../action/leave-apply-action');
-function LeaveApplyStore() {
+var BusinessApplyAction = require('../action/business-apply-action');
+function BusinessApplyStore() {
     //初始化state数据
     this.setInitState();
-    this.bindActions(LeaveApplyAction);
+    this.bindActions(BusinessApplyAction);
 }
-LeaveApplyStore.prototype.setInitState = function() {
+BusinessApplyStore.prototype.setInitState = function() {
     this.sort_field = 'create_time';//排序字段
     this.status = '';//请假申请的状态
     this.order = 'descend';
     this.page_size = 20;
-    this.lastLeaveApplyId = '';//用于下拉加载的id
+    this.lastBusinessApplyId = '';//用于下拉加载的id
     //所有申请列表
     this.applyListObj = {
         // "" loading error
@@ -46,7 +46,7 @@ LeaveApplyStore.prototype.setInitState = function() {
     //筛选类别 all(全部) pass(已通过) reject(已驳回)  false(待审批)
     this.applyListType = 'all';
 };
-// LeaveApplyStore.prototype.getAllApplyList = function(data) {
+// BusinessApplyStore.prototype.getAllApplyList = function(data) {
 //     if (data.loading){
 //         this.isLoadingAllApply = true;
 //         this.allApplyErrMsg = '';
@@ -63,13 +63,13 @@ LeaveApplyStore.prototype.setInitState = function() {
 //
 // };
 //清空数据
-LeaveApplyStore.prototype.clearData = function() {
+BusinessApplyStore.prototype.clearData = function() {
     this.applyListObj.list = [];
     this.selectedDetailItem = {};
     this.selectedDetailItemIdx = -1;
     this.listenScrollBottom = false;
 };
-LeaveApplyStore.prototype.getAllApplyList = function(obj) {
+BusinessApplyStore.prototype.getAllApplyList = function(obj) {
     if (obj.loading) {
         this.applyListObj.loadingResult = 'loading';
         this.applyListObj.errorMsg = '';
@@ -101,15 +101,15 @@ LeaveApplyStore.prototype.getAllApplyList = function(obj) {
         }
     }
 };
-LeaveApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {
+BusinessApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {
     this.selectedDetailItem = obj;
     this.selectedDetailItemIdx = idx;
 };
-LeaveApplyStore.prototype.changeApplyListType = function(type) {
+BusinessApplyStore.prototype.changeApplyListType = function(type) {
     this.applyListType = type;
     this.lastApplyId = '';
     // this.showUpdateTip = false;
     // this.isCheckUnreadApplyList = false;
 };
 
-module.exports = alt.createStore(LeaveApplyStore, 'LeaveApplyStore');
+module.exports = alt.createStore(BusinessApplyStore, 'BusinessApplyStore');

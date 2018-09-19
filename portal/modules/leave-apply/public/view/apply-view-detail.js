@@ -3,47 +3,49 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/18.
  */
-var applyLeaveDetailStore = require('../store/apply-leave-detail-store');
+var applyBusinessDetailStore = require('../store/apply-business-detail-store');
 var ApplyViewDetailActions = require('../action/apply-view-detail-action');
 var LeaveApplyUtils = require('../utils/leave-apply-utils');
 var Spinner = require('CMP_DIR/spinner');
 import Trace from 'LIB_DIR/trace';
-import {Alert} from 'antd';
+import {Alert, Icon, Input, Row, Col, Button, Modal} from 'antd';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
-import {RightPanel} from '../../../../components/rightPanel';
+import {RightPanel} from 'CMP_DIR/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-require('../css/leave-apply-detail.less');
+require('../css/business-apply-detail.less');
+import userData from 'PUB_DIR/sources/user-data';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
-            ...applyLeaveDetailStore.getState()
+            ...applyBusinessDetailStore.getState()
         };
     }
 
     onStoreChange = () => {
-        this.setState(applyLeaveDetailStore.getState());
+        this.setState(applyBusinessDetailStore.getState());
     };
 
     componentDidMount() {
-        applyLeaveDetailStore.listen(this.onStoreChange);
+        applyBusinessDetailStore.listen(this.onStoreChange);
         if (this.props.detailItem.id) {
-            this.getLeaveApplyDetailById(this.props.detailItem, this.props.applyData);
+            this.getBusinessApplyDetailData(this.props.detailItem);
         }
     }
+
     componentWillReceiveProps(nextProps) {
         var thisPropsId = this.props.detailItem.id;
         var nextPropsId = nextProps.detailItem.id;
         if (thisPropsId && nextPropsId && nextPropsId !== thisPropsId) {
-            this.getLeaveApplyDetailById(nextProps.detailItem);
+            this.getBusinessApplyDetailData(nextProps.detailItem);
         }
     }
 
     componentWillUnmount() {
-        applyLeaveDetailStore.unlisten(this.onStoreChange);
+        applyBusinessDetailStore.unlisten(this.onStoreChange);
     }
 
     getApplyListDivHeight() {
@@ -53,20 +55,35 @@ class ApplyViewDetail extends React.Component {
 
     retryFetchDetail = (e) => {
         Trace.traceEvent(e, '点击了重试');
-        this.getLeaveApplyDetailById(this.props.detailItem);
+        if (this.props.detailItem.id) {
+            this.getBusinessApplyDetailData(this.props.detailItem);
+        }
     };
 
-    getLeaveApplyDetailById(detailItem, applyData) {
-
+    getBusinessApplyDetailData(detailItem) {
         setTimeout(() => {
             ApplyViewDetailActions.setInitialData(detailItem);
-            ApplyViewDetailActions.getLeaveApplyDetailById({id: detailItem.id}, applyData);
-            // //获取回复列表
-            // if (hasPrivilege('GET_APPLY_COMMENTS')) {
-            //     ApplyViewDetailActions.getReplyList(detailItem.id);
-            // }
+            ApplyViewDetailActions.getBusinessApplyDetailById({id: detailItem.id});
+            //如果申请的状态是已通过或者是已驳回的时候，就不用发请求获取回复列表，直接用详情中的回复列表
+            //其他状态需要发请求请求回复列表
+            if (detailItem.status === 'pass' || detailItem.state === 'reject') {
+                ApplyViewDetailActions.setApplyComment(detailItem.approve_details);
+            } else if (detailItem.id) {
+                ApplyViewDetailActions.getBusinessApplyCommentList({id: detailItem.id});
+            }
         });
     }
+
+    //重新获取回复列表
+    refreshReplyList = (e) => {
+        Trace.traceEvent(e, '点击了重新获取');
+        var detailItem = this.props.detailItem;
+        if (detailItem.status === 'pass' || detailItem.state === 'reject') {
+            ApplyViewDetailActions.setApplyComment(detailItem.approve_details);
+        } else if (detailItem.id) {
+            ApplyViewDetailActions.getBusinessApplyCommentList({id: detailItem.id});
+        }
+    };
 
     renderApplyDetailLoading() {
         if (this.state.detailInfoObj.loadingResult === 'loading') {
@@ -151,11 +168,11 @@ class ApplyViewDetail extends React.Component {
                     <div className="apply-info-content">
                         <div className="customer-name">
                             <a href="javascript:void(0)"
-                                onClick={this.showCustomerDetail.bind(this, _.get(detailInfo,'detail.customer_id'))}
+                                onClick={this.showCustomerDetail.bind(this, _.get(detailInfo, 'detail.customer_id'))}
                                 data-tracename="查看客户详情"
                                 title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
                             >
-                                {_.get(detailInfo,'detail.customer_name')}
+                                {_.get(detailInfo, 'detail.customer_name')}
                                 <span className="iconfont icon-arrow-right"/>
                             </a>
                         </div>
@@ -163,7 +180,8 @@ class ApplyViewDetail extends React.Component {
                 </div>
             </div>);
     }
-    renderLeaveApplyDetail(detailInfo){
+
+    renderBusinessApplyDetail(detailInfo) {
         var detail = detailInfo.detail || {};
         var applicant = detailInfo.applicant || {};
         var beginDate = moment(detail.begin_time).format(oplateConsts.DATE_FORMAT);
@@ -178,7 +196,7 @@ class ApplyViewDetail extends React.Component {
                     <div className="apply-info-content">
                         <div className="apply-info-label">
                             <span className="user-info-label">
-                                {Intl.get('leave.apply.for.application','出差人员')}:
+                                {Intl.get('leave.apply.for.application', '出差人员')}:
                             </span>
                             <span className="user-info-text">
                                 {applicant.user_name}
@@ -186,7 +204,7 @@ class ApplyViewDetail extends React.Component {
                         </div>
                         <div className="apply-info-label">
                             <span className="user-info-label">
-                                {Intl.get('leave.apply.for.leave.time','出差时间')}:
+                                {Intl.get('leave.apply.for.leave.time', '出差时间')}:
                             </span>
                             <span className="user-info-text">
                                 {isOneDay ? beginDate : (beginDate + ' - ' + endDate)}
@@ -194,16 +212,259 @@ class ApplyViewDetail extends React.Component {
                         </div>
                         <div className="apply-info-label">
                             <span className="user-info-label">
-                                {Intl.get('leave.apply.for.city.address','出差地点')}:
+                                {Intl.get('leave.apply.for.city.address', '出差地点')}:
                             </span>
                             <span className="user-info-text">
                                 {detail.milestone}
+                            </span>
+                        </div>
+                        <div className="apply-info-label">
+                            <span className="user-info-label">
+                                {Intl.get('leave.apply.add.leave.reason', '出差事由')}:
+                            </span>
+                            <span className="user-info-text">
+                                {detail.reason}
                             </span>
                         </div>
                     </div>
                 </div>
             </div>
         );
+    }
+
+    //渲染回复列表
+    renderReplyList() {
+        let replyListInfo = this.state.replyListInfo;
+        if (replyListInfo.result === 'loading') {
+            return (
+                <div className="reply-loading-wrap">
+                    <Icon type="loading"/>
+                    <span className="reply-loading-text">
+                        {Intl.get('user.apply.reply.loading', '正在努力加载回复列表 ......')}
+                    </span>
+                </div>);
+        }
+        if (replyListInfo.result === 'error') {
+            var message = (
+                <span>{replyListInfo.errorMsg}，<Icon type="reload" onClick={this.refreshReplyList}
+                    title={Intl.get('common.get.again', '重新获取')}/></span>);
+            return (<Alert message={message} type="error" showIcon={true}/> );
+        }
+        let replyList = replyListInfo.list;
+        if (_.isArray(replyList) && replyList.length) {
+            return (
+                <ul>
+                    {replyList.map((replyItem, index) => {
+                        return (
+                            <li key={index} className="apply-info-label">
+                                <span className="user-info-label">{replyItem.user_name}:</span>
+                                <span className="user-info-text">{replyItem.comment}</span>
+                                <span className="user-info-label reply-date-text">{
+                                    moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)}</span>
+                            </li>);
+                    })}
+                </ul>);
+        } else {
+            return null;
+        }
+    }
+
+    //添加一条回复
+    addReply = (e) => {
+        Trace.traceEvent(e, '点击回复按钮');
+        //如果ajax没有执行完，则不提交
+        if (this.state.replyFormInfo.result === 'loading') {
+            return;
+        }
+        //构造提交数据
+        var submitData = {
+            id: this.props.detailItem.id,
+            comment: $.trim(this.state.replyFormInfo.comment),
+        };
+        if (!submitData.comment) {
+            ApplyViewDetailActions.showReplyCommentEmptyError();
+            return;
+        }
+        //提交数据
+        ApplyViewDetailActions.addBusinessApplyComments(submitData);
+    };
+    //备注 输入框改变时候触发
+    commentInputChange = (event) => {
+        //如果添加回复的ajax没有执行完，则不提交
+        if (this.state.replyFormInfo.result === 'loading') {
+            return;
+        }
+        var val = $.trim(event.target.value);
+        ApplyViewDetailActions.setApplyFormDataComment(val);
+        if (val) {
+            ApplyViewDetailActions.hideReplyCommentEmptyError();
+        }
+    };
+    //渲染回复表单loading,success,error
+    renderReplyFormResult() {
+        var replyFormInfo = this.state.replyFormInfo;
+        if (replyFormInfo.result === 'loading') {
+            return <Icon type="loading"/>;
+        }
+        if (replyFormInfo.result === 'error') {
+            return <Alert
+                message={replyFormInfo.errorMsg}
+                type="error"
+                showIcon={true}
+            />;
+        }
+        return null;
+    }
+
+    getNoSecondTimeStr(time) {
+        return time ? moment(time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) : '';
+    }
+
+    getApplyResultDscr(detailInfoObj) {
+        let resultDscr = '';
+        switch (detailInfoObj.status) {
+            case 'pass':
+                resultDscr = Intl.get('user.apply.detail.pass', '通过申请');
+                break;
+            case 'reject':
+                resultDscr = Intl.get('user.apply.detail.reject', '驳回申请');
+                break;
+        }
+        return resultDscr;
+    }
+
+    viewApprovalResult = (e) => {
+        Trace.traceEvent(e, '查看审批结果');
+        this.getBusinessApplyDetailData(this.props.detailItem);
+    };
+
+    renderApplyFormResult = () => {
+        if (this.state.applyResult.submitResult === 'loading' || true) {
+            return (
+                <Modal
+                    container={this}
+                    show={true}
+                    aria-labelledby="contained-modal-title"
+                >
+                    <Modal.Body>
+                        <div className="approval_loading">
+                            <Spinner/>
+                            <p>
+                                {Intl.get('user.apply.detail.submit.sending', '审批中...')}
+                            </p>
+                        </div>
+                    </Modal.Body>
+                </Modal>
+            );
+        }
+        if (this.state.applyResult.submitResult === 'success') {
+            return (
+                <div className="approval_result">
+                    <div className="approval_result_wrap">
+                        <div className="bgimg"></div>
+                        <p>
+                            {Intl.get('user.apply.detail.submit.success', '审批成功')}
+                        </p>
+                        <Button type="ghost" onClick={this.viewApprovalResult}>
+                            {Intl.get('user.apply.detail.show.content', '查看审批结果')}
+                        </Button>
+                    </div>
+                </div>
+            );
+        }
+        if (this.state.applyResult.submitResult === 'error') {
+            return (
+                <div className="approval_result">
+                    <div className="approval_result_wrap">
+                        <div className="bgimg error"></div>
+                        <p>{this.state.applyResult.errorMsg}</p>
+                        <Button type="ghost" className="re_send"
+                            onClick={this.reSendApproval}>
+                            {Intl.get('common.retry', '重试')}
+                        </Button>
+                        <Button type="ghost" className="cancel_send"
+                            onClick={this.cancelSendApproval}>
+                            {Intl.get('common.cancel', '取消')}
+                        </Button>
+                    </div>
+                </div>
+            );
+        }
+        return null;
+    };
+
+    //重新发送
+    reSendApproval = (e) => {
+        Trace.traceEvent(e, '点击重试按钮');
+        this.submitApprovalForm();
+    };
+
+    //取消发送
+    cancelSendApproval = (e) => {
+        Trace.traceEvent(e, '点击取消按钮');
+        ApplyViewDetailActions.cancelSendApproval();
+    };
+
+    submitApprovalForm = (approval) => {
+        if (approval === 'pass') {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击通过按钮');
+        } else if (approval === 'reject') {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击驳回按钮');
+        }
+        var selectedDetailItem = this.state.selectedDetailItem;
+        ApplyViewDetailActions.approveApplyPassOrReject(selectedDetailItem.id, {agree: approval});
+    };
+    //渲染详情底部区域
+    renderDetailBottom() {
+        var selectedDetailItem = this.state.selectedDetailItem;
+        var detailInfoObj = this.state.detailInfoObj.info;
+        var showBackoutApply = detailInfoObj.presenter_id === userData.getUserData().user_id;
+        //todo  true作为测试
+        //是否显示通过驳回
+        var isRealmAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ||
+            userData.hasRole(userData.ROLE_CONSTANS.REALM_OWNER) ||
+            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
+            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER) || true;
+        //是否审批
+        let isConsumed = selectedDetailItem.status === 'pass' || selectedDetailItem.status === 'reject';
+        return (
+            <div className="approval_block">
+                <Row className="approval_person clearfix">
+                    <Col span={10}>
+                        <span className="approval-info-label">
+                            {this.getNoSecondTimeStr(selectedDetailItem.create_time)}
+                        </span>
+                        <span className="approval-info-label">
+                            {_.get(selectedDetailItem, 'applicant.user_name')}
+                            {Intl.get('crm.109', '申请')}
+                        </span>
+                    </Col>
+                    <Col span={14}>
+                        {isConsumed ? (
+                            <div className="pull-right">
+                                <span className="approval-info-label">
+                                    {this.getNoSecondTimeStr(selectedDetailItem.update_time)}
+                                </span>
+                                <span className="approval-info-label">
+                                    {_.last(_.get(selectedDetailItem, 'approve_details')).user_name || ''}
+                                    {this.getApplyResultDscr(selectedDetailItem)}
+                                </span>
+                            </div>) : (
+                            <div className="pull-right">
+                                {isRealmAdmin ? (
+                                    <Button type="primary" className="btn-primary-sure" size="small"
+                                        onClick={this.submitApprovalForm.bind(this, 'pass')}>
+                                        {Intl.get('user.apply.detail.button.pass', '通过')}
+                                    </Button>) : null}
+                                {isRealmAdmin ? (
+                                    <Button type="primary" className="btn-primary-sure" size="small"
+                                        onClick={this.submitApprovalForm.bind(this, 'reject')}>
+                                        {Intl.get('common.apply.reject', '驳回')}
+                                    </Button>) : null}
+                            </div>)}
+                    </Col>
+                </Row>
+            </div>);
     }
 
     //渲染申请单详情
@@ -233,36 +494,37 @@ class ApplyViewDetail extends React.Component {
                     <GeminiScrollbar ref="gemini">
                         {this.renderDetailCustomerBlock(detailInfo)}
                         {/*渲染请假详情*/}
-                        {this.renderLeaveApplyDetail(detailInfo)}
+                        {this.renderBusinessApplyDetail(detailInfo)}
                         {/*detailInfo.comment ? (<div className="apply-detail-common apply-detail-info">
                          <div className="common-icon-block">
                          <span className="iconfont icon-common"/>
                          </div>
                          {this.renderComment()}
                          </div>) : null*/}
-                        {/*<div className="apply-detail-reply-list apply-detail-info">*/}
-                        {/*<div className="reply-icon-block">*/}
-                        {/*<span className="iconfont icon-apply-message-tip"/>*/}
-                        {/*</div>*/}
-                        {/*<div className="reply-info-block apply-info-block">*/}
-                        {/*<div className="reply-list-container apply-info-content">*/}
-                        {/*{this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}*/}
-                        {/*{hasPrivilege('GET_APPLY_COMMENTS') ? this.renderReplyList() : null}*/}
-                        {/*{hasPrivilege('CREATE_APPLY_COMMENT') ? (*/}
-                        {/*<Input addonAfter={(*/}
-                        {/*<a onClick={this.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}*/}
-                        {/*value={this.state.formData.comment}*/}
-                        {/*onChange={this.commentInputChange}*/}
-                        {/*placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}/>*/}
-                        {/*) : null}*/}
-                        {/*{this.renderReplyFormResult()}*/}
-                        {/*</div>*/}
-                        {/*</div>*/}
-                        {/*</div>*/}
+                        <div className="apply-detail-reply-list apply-detail-info">
+                            <div className="reply-icon-block">
+                                <span className="iconfont icon-apply-message-tip"/>
+                            </div>
+                            <div className="reply-info-block apply-info-block">
+                                <div className="reply-list-container apply-info-content">
+                                    {this.renderReplyList()}
+                                    {/*已经通过和驳回的申请，不能再添加回复了*/}
+                                    {selectedDetailItem.status === 'pass' || selectedDetailItem.status === 'reject' ? null :
+                                        <Input addonAfter={(
+                                            <a onClick={this.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}
+                                        value={this.state.replyFormInfo.comment}
+                                        onChange={this.commentInputChange}
+                                        placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}/>}
+
+
+                                    {this.renderReplyFormResult()}
+                                </div>
+                            </div>
+                        </div>
                     </GeminiScrollbar>
 
                 </div>
-                {/*this.renderDetailBottom()*/}
+                {this.renderDetailBottom()}
             </div>
         );
     }
@@ -278,7 +540,7 @@ class ApplyViewDetail extends React.Component {
                 {this.renderApplyDetailError()}
                 {this.renderApplyDetailNodata()}
                 {this.renderApplyDetailInfo()}
-                {/*this.renderApplyFormResult()*/}
+                {this.renderApplyFormResult()}
                 {/*this.renderBackoutApply()*/}
                 {/*该客户下的用户列表*/}
                 {
@@ -303,12 +565,10 @@ class ApplyViewDetail extends React.Component {
 ApplyViewDetail.defaultProps = {
     detailItem: {},
     showNoData: false,
-    applyData: {}
 
 };
 ApplyViewDetail.propTypes = {
     detailItem: PropTypes.string,
-    applyData: PropTypes.object,
     showNoData: PropTypes.boolean
 };
 module.exports = ApplyViewDetail;

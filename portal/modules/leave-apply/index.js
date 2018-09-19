@@ -1,12 +1,12 @@
 import Bundle from '../../public/sources/route-bundle';
 
-const LeaveApplyPage = (props) => (
+const BusinessApplyPage = (props) => (
     <Bundle load={() => import('./public')}>
-        {(LeaveApplyPage) => <LeaveApplyPage {...props}/>}
+        {(BusinessApplyPage) => <BusinessApplyPage {...props}/>}
     </Bundle>
 );
 
 module.exports = {
     path: '/leave_apply',
-    component: LeaveApplyPage
+    component: BusinessApplyPage
 };
