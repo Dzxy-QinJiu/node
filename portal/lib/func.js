@@ -199,3 +199,15 @@ export const packageTry = function(cb) {
         console.log(JSON.stringify(e));
     }
 };
+
+//antd表格日期列渲染函数
+export const dateColumnRender = function(text) {
+    let time = text ? moment(text).format(oplateConsts.DATE_FORMAT) : '';
+    return <span>{time}</span>;
+};
+
+//antd表格是否列渲染函数
+export const yesNoColumnRender = function(text) {
+    text = text === 'true' ? Intl.get('user.yes', '是') : Intl.get('user.no', '否');
+    return <span>{text}</span>;
+};
