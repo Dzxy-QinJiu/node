@@ -1,7 +1,7 @@
 import ApplyViewDetailActions from '../action/apply-view-detail-actions';
 import { altAsyncUtil } from 'ant-utils';
-const {resultHandler} = altAsyncUtil;
-import {APPLY_TYPES} from "PUB_DIR/sources/utils/consts";
+const { resultHandler } = altAsyncUtil;
+import { APPLY_TYPES } from "PUB_DIR/sources/utils/consts";
 
 class ApplyViewDetailStore {
     constructor() {
@@ -160,57 +160,117 @@ class ApplyViewDetailStore {
             this.formData.delayTimeUnit = 'days';
         }
     }
-
     //获取审批详情
-    getApplyDetail = resultHandler('detailInfoObj', function ({ data, paramObj }) {
+    getApplyDetail(obj) {
         //没有角色的时候，显示模态框，重置
         this.rolesNotSettingModalDialog = {
             show: false,
             appNames: [],
             continueSubmit: false
         };
-        const info = data;
-        const apps = info.message.apply_param && (JSON.parse(info.message.apply_param)|| []);
-        info.apps =  apps.map(app => ({
-            ...app,
-            app_id: app.client_id,
-            app_name: app.client_name
-        }));
-        info.users = _.uniqBy(apps, 'user_id').map(user => {
-            const item = _.pick(user, "user_id", "user_name");
-            return {
-                ...item,
-                apps: apps.filter(x => x.user_id === item.user_id).map(app => ({
-                    ...app,
-                    app_id: app.client_id,
-                    app_name: app.client_name
-                }))
+        if (obj.loading) {
+            this.detailInfoObj.loading = true;
+            this.detailInfoObj.info = {};
+            return
+        } else if (obj.error) {
+            this.detailInfoObj.loading = false;
+            this.detailInfoObj.info = {};
+            this.detailInfoObj.errorMsg = obj.errorMsg;
+        } else {
+            this.detailInfoObj.loading = false;
+            const info = obj.detail;
+            _.each(info.apps || [], (app) => {
+                app.app_id = app.client_id;
+                app.app_name = app.client_name;
+            });
+            this.detailInfoObj.info = info;
+            this.detailInfoObj.info = obj.detail;
+            this.detailInfoObj.errorMsg = '';
+            this.createAppsSetting();
+            if (_.isArray(this.detailInfoObj.info.user_names)) {
+                this.formData.user_name = this.detailInfoObj.info.user_names[0];
             }
-        })
+            if (_.isArray(this.detailInfoObj.info.nick_names)) {
+                this.formData.nick_name = this.detailInfoObj.info.nick_names[0];
+            }
+            let delayTime = 0;
+            if (this.detailInfoObj.info.type === 'apply_grant_delay') {
+                if (this.detailInfoObj.info.delayTime) { // 同步修改时间
+                    delayTime = this.detailInfoObj.info.delayTime;
+                    this.formData.delay_time = delayTime;
+                    this.getDelayDisplayTime(delayTime);
+                } else { // 到期时间，点开修改同步到自定义
+                    this.formData.delayTimeUnit = 'custom';
+                    this.formData.end_date = this.detailInfoObj.info.end_date;
+                }
+            }
+        }
+    }
+
+    //获取审批详情
+    getApplyMultiAppDetail = resultHandler('detailInfoObj', function ({ data, paramObj }) {
+        //没有角色的时候，显示模态框，重置
+        this.rolesNotSettingModalDialog = {
+            show: false,
+            appNames: [],
+            continueSubmit: false
+        };
+        const info = data || {};
+        if (_.get(data, "message.apply_param")) {
+            const apps = info.message.apply_param && (JSON.parse(info.message.apply_param) || []);
+            info.customer_id = info.message.customer_ids;
+            info.customer_name = info.message.customer_name;
+            info.apps = apps.map(app => ({
+                ...app,
+                app_id: app.client_id,
+                app_name: app.client_name
+            }));
+            info.users = _.uniqBy(apps, 'user_id').map(user => {
+                const item = _.pick(user, "user_id", "user_name", "nickname");
+                return {
+                    ...item,
+                    apps: apps.filter(x => x.user_id === item.user_id).map(app => ({
+                        ...app,
+                        app_id: app.client_id,
+                        app_name: app.client_name
+                    }))
+                }
+            })
+            switch (_.get(data, 'message.type')) {
+                case APPLY_TYPES.DELAY:
+                    if (apps[0].delay) { // 同步修改时间
+                        const delayTime = apps[0].delay;
+                        info.delayTime = delayTime;
+                        this.formData.delay_time = delayTime;
+                        this.getDelayDisplayTime(delayTime);
+                    } else { // 到期时间，点开修改同步到自定义
+                        this.formData.delayTimeUnit = 'custom';
+                        this.formData.end_date = this.detailInfoObj.info.end_date;
+                    }
+                    break;
+                case APPLY_TYPES.DISABLE:
+                    info.status = apps[0].status;
+                    break;
+
+            }
+
+        }
         info.customer_name = info.message.customer_name;
+        info.comment = info.message.remark;
+        info.type = info.message.type;
         this.detailInfoObj.info = info;
-        this.formData.user_name = info.producer.user_name;
-        this.formData.nick_name = info.producer.nick_name;
+        // this.formData.user_name = info.producer.user_name;
+        // this.formData.nick_name = info.producer.nick_name;
 
 
         this.createAppsSetting();
-        // if (_.isArray(this.detailInfoObj.info.user_names)) {
-        //     this.formData.user_name = this.detailInfoObj.info.user_names[0];
-        // }
-        // if (_.isArray(this.detailInfoObj.info.nick_names)) {
-        //     this.formData.nick_name = this.detailInfoObj.info.nick_names[0];
-        // }
-        let delayTime = 0;
-        if (_.get(this.detailInfoObj, 'message.type') === APPLY_TYPES.DELAY) {
-            if (this.detailInfoObj.info.delayTime) { // 同步修改时间
-                delayTime = this.detailInfoObj.info.delayTime;
-                this.formData.delay_time = delayTime;
-                this.getDelayDisplayTime(delayTime);
-            } else { // 到期时间，点开修改同步到自定义
-                this.formData.delayTimeUnit = 'custom';
-                this.formData.end_date = this.detailInfoObj.info.end_date;
-            }
+        if (_.isArray(this.detailInfoObj.info.user_names)) {
+            this.formData.user_name = this.detailInfoObj.info.user_names[0];
         }
+        if (_.isArray(this.detailInfoObj.info.nick_names)) {
+            this.formData.nick_name = this.detailInfoObj.info.nick_names[0];
+        }
+
 
     })
     //生成应用的单独配置

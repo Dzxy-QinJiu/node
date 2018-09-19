@@ -13,7 +13,7 @@ import DetailCard from 'CMP_DIR/detail-card';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const SELECT_CUSTOM_TIME_TYPE = 'custom';
-import {APPLY_TYPES} from "PUB_DIR/sources/utils/consts";
+import { APPLY_TYPES } from "PUB_DIR/sources/utils/consts";
 class CrmUserApplyForm extends React.Component {
     constructor(props) {
         super(props);
@@ -111,27 +111,36 @@ class CrmUserApplyForm extends React.Component {
         };
         const paramItem = {};
         //向data中添加delay字段
+        let delayMillis = this.getDelayTimeMillis();
         if (formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
             paramItem.end_date = formData.delayDeadlineTime;
         } else {
-            let delayMillis = this.getDelayTimeMillis();
             paramItem.delay = delayMillis;
-        }
+        }        
         //向data中添加备注
         submitObj.remark = this.state.formData.remark.delayRemark;
         //到期是否停用
         paramItem.over_draft = Number(formData.over_draft);
-        
+
         /* 构造发邮件数据
          申请审批的，需要传入用户名，客户，应用名，发邮件时候使用
          向后端传递email_customer_names,email_app_names,email_user_names，发邮件使用
          */
         //添加邮箱使用的字段, 客户名 用户名 添加应用名 用户id
         // submitObj = _.extend(submitObj, this.getSelectedUserAppData());
-        submitObj.data = this.getSelectedUserMultiAppData().map(x => ({
-            ...paramItem,
-            ...x
-        }));
+
+        submitObj.data = this.getSelectedUserMultiAppData().map(x => {
+            let delayDate = (new Date(moment(x.end_date).add(delayMillis, 'ms'))).getTime();
+            //延期时间小于当前时间时，在当前时间基础上延期
+            if (delayDate < (new Date()).getTime()) {
+                delayDate = (new Date(moment().add(delayMillis, 'ms'))).getTime()
+            }
+            return {
+                ...paramItem,
+                ...x,
+                end_date: delayDate
+            }
+        });
         return submitObj;
     }
 
@@ -152,7 +161,7 @@ class CrmUserApplyForm extends React.Component {
                 this.setState({ isApplying: false, applyErrorMsg: Intl.get('user.apply.delay.failed', '申请延期失败') });
             }
         }).catch((err) => {
-            this.setState({ isApplying: false, applyErrorMsg: (err && err.message) || Intl.get('user.apply.delay.failed', '申请延期失败')  });
+            this.setState({ isApplying: false, applyErrorMsg: (err && err.message) || Intl.get('user.apply.delay.failed', '申请延期失败') });
         });
     }
 
@@ -213,13 +222,17 @@ class CrmUserApplyForm extends React.Component {
         this.props.crmUserList.forEach(user => {
             if (user.apps && user.apps.length > 0) {
                 user.apps.forEach(app => {
-                    appArr.push(({
-                        "client_id": app.app_id,
-                        "user_id": user.user.user_id,
-                        'user_name': user.user.user_name,
-                        "nickname": user.user.nick_name,
-                        "client_name": app.app_name
-                    }))
+                    if (app.checked) {
+                        appArr.push(({
+                            "client_id": app.app_id,
+                            "user_id": user.user.user_id,
+                            'user_name': user.user.user_name,
+                            "nickname": user.user.nick_name,
+                            "client_name": app.app_name,
+                            "end_date": app.end_time,
+                            "begin_date": app.start_time
+                        }))
+                    }
                 })
             }
         })
@@ -229,25 +242,35 @@ class CrmUserApplyForm extends React.Component {
     // 申请停用
     submitStopUseData() {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '点击确定按钮(申请停用)');
-        const selectedUserAppData = this.getSelectedUserAppData();
+        const data = this.getSelectedUserMultiAppData().map(x => {
+            const item = x;
+            delete item.end_date;
+            delete item.begin_date;
+            return {
+                ...x,
+                status: 0
+            };
+        });
         const submitObj = {
-            user_ids: selectedUserAppData.user_ids,
-            application_ids: selectedUserAppData.application_ids,
+            type: APPLY_TYPES.DISABLE,
             remark: this.state.formData.remark.statusRemark,
-            status: '0'
+            data
         };
 
         this.setState({ isApplying: true });
         //调用申请修改开通状态
-        AppUserAjax.salesApplyStatus(submitObj).then((result) => {
+        AppUserAjax.applyDelayMultiApp({
+            usePromise: true,
+            data: submitObj
+        }).then((result) => {
             this.setState({ isApplying: false });
             if (result) {
                 this.props.closeApplyPanel();
             } else {
                 this.setState({ applyErrorMsg: Intl.get('user.apply.status.failed', '申请修改开通状态失败') });
             }
-        }, (errorMsg) => {
-            this.setState({ isApplying: false, applyErrorMsg: errorMsg });
+        }).catch((err) => {
+            this.setState({ isApplying: false, applyErrorMsg: (err && err.message) ||  Intl.get('user.apply.status.failed', '申请修改开通状态失败')});
         });
     }
 

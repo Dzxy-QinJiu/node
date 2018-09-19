@@ -30,6 +30,8 @@ import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { RightPanel } from '../../../../components/rightPanel';
 import { getPassStrenth, PassStrengthBar, passwordRegex } from 'CMP_DIR/password-strength-bar';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
+import { APPLY_MULTI_TITLES, APPLY_TYPES } from "PUB_DIR/sources/utils/consts";
+
 /*在审批界面显示用户的右侧面板结束*/
 //默认头像图片
 var DefaultHeadIconImage = require('../../../common/public/image/default-head-icon.png');
@@ -122,6 +124,18 @@ function getDelayDisplayTime(delay) {
             ${days ? days + Intl.get('common.time.unit.day', '天') : ''}`;
 }
 
+//根据申请标题判断是否 是延期或禁用的申请(一个用户对应多个应用)
+const isMultiAppApply = item => {
+    let flag = false;
+    _.each(APPLY_MULTI_TITLES, (value) => {
+        if (item.topic.includes(value)) {
+            flag = true;
+            return false;
+        }
+    })
+    return flag;
+};
+
 const ApplyViewDetail = createReactClass({
     displayName: 'ApplyViewDetail',
     mixins: [FieldMixin, UserNameTextField],
@@ -153,11 +167,16 @@ const ApplyViewDetail = createReactClass({
     },
 
     getApplyDetail(detailItem, applyData) {
-        ApplyViewDetailActions.getApplyDetail({
-            params: {
-                applyId: detailItem.id
-            }
-        }, applyData);
+        if (isMultiAppApply(detailItem)) {
+            ApplyViewDetailActions.getApplyMultiAppDetail({
+                params: {
+                    applyId: detailItem.id
+                }
+            }, applyData);
+        } else {
+            ApplyViewDetailActions.getApplyDetail(detailItem.id, applyData);
+        }
+
         //获取回复列表
         if (hasPrivilege('GET_APPLY_COMMENTS')) {
             ApplyViewDetailActions.getReplyList(detailItem.id);
@@ -395,7 +414,7 @@ const ApplyViewDetail = createReactClass({
             <div>
                 <div className="apply-detail-title">
                     <span className="apply-type-tip">
-                        {selectedDetailItem.topic || Intl.get('user.apply.id', '账号申请')}
+                        {this.props.detailItem.topic || Intl.get('user.apply.id', '账号申请')}
                     </span>
                     {selectedDetailItem.order_id ? (
                         <span className="order-id">
@@ -458,11 +477,11 @@ const ApplyViewDetail = createReactClass({
                     <div className="apply-info-content">
                         <div className="customer-name">
                             <a href="javascript:void(0)"
-                                onClick={this.showCustomerDetail.bind(this, _.get(detailInfo, 'message.customer_ids'))}
+                                onClick={this.showCustomerDetail.bind(this, detailInfo.customer_id)}
                                 data-tracename="查看客户详情"
                                 title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
                             >
-                                {_.get(detailInfo, 'message.customer_name')}
+                                {detailInfo.customer_name}
                                 <span className="iconfont icon-arrow-right" />
                             </a>
                         </div>
@@ -706,7 +725,7 @@ const ApplyViewDetail = createReactClass({
     },
 
     //渲染开通周期
-    renderApplyTime(app, custom_setting) {
+    renderApplyTime(app, custom_setting, isDelay) {
         let displayStartTime = '', displayEndTime = '', displayText = '';
         const UNKNOWN = Intl.get('common.unknown', '未知');
         const FOREVER = Intl.get('common.time.forever', '永久');
@@ -764,7 +783,9 @@ const ApplyViewDetail = createReactClass({
                 displayText = displayStartTime + CONNECTOR + displayEndTime;
             }
         }
-
+        if (isDelay) {
+            return displayEndTime + " " + Intl.get('apply.delay.endTime', '到期')
+        }
         return displayText;
     },
 
@@ -801,12 +822,50 @@ const ApplyViewDetail = createReactClass({
             return null;
         }
     },
-
-    // 渲染应用的名称、数量和周期
     renderAppTable() {
         const detailInfo = this.state.detailInfoObj.info;
         const appsSetting = this.appsSetting;
         const isExistUserApply = this.isExistUserApply();
+        return (
+            <Table striped bordered>
+                <tbody>
+                    <tr className="apply-detail-head">
+                        <th ><ReactIntl.FormattedMessage id="common.app" defaultMessage="应用" /></th>
+                        {isExistUserApply ? null :
+                            <th><ReactIntl.FormattedMessage id="common.app.count" defaultMessage="数量" /></th>}
+                        <th><ReactIntl.FormattedMessage id="user.apply.detail.table.time" defaultMessage="周期" /></th>
+                    </tr>
+                    {
+                        detailInfo.apps.map((app) => {
+                            //获取开通个数
+                            //如果有应用的特殊配置，使用特殊配置
+                            //没有特殊配置，使用申请单的配置
+                            const custom_setting = appsSetting[app.app_id];
+                            //数字
+                            let number;
+                            if (custom_setting) {
+                                number = custom_setting.number && custom_setting.number.value;
+                            } else {
+                                number = app.number || 1;
+                            }
+                            return (
+                                <tr key={app.app_id}>
+                                    <td className='apply-app-name'>{app.client_name}</td>
+                                    {isExistUserApply ? null : <td className="apply-app-numbers">{number}</td>}
+                                    <td className="desp_time">
+                                        {this.renderApplyTime(app, custom_setting)}
+                                    </td>
+                                </tr>
+                            );
+                        })
+                    }
+                </tbody>
+            </Table>
+        );
+    },
+    // 渲染应用的名称、数量和周期
+    renderMultiAppTable(detailInfo, isDelay) {
+        const appsSetting = this.appsSetting;        
         return (
             <ul className="applist-container">
                 {
@@ -818,7 +877,7 @@ const ApplyViewDetail = createReactClass({
                             <li key={app.app_id}>
                                 <span className='apply-app-name'>{app.client_name}</span>
                                 <span className="desp_time time-bar">
-                                    {this.renderApplyTime(app, custom_setting)}
+                                    {isDelay ? this.renderApplyTime(app, null, true) : null}
                                 </span>
                             </li>
                         );
@@ -985,33 +1044,28 @@ const ApplyViewDetail = createReactClass({
         return (
             <div className="user-info-block apply-user-detail-block apply-info-block">
                 <div className="apply-info-content">
-                    <span className="delay-days-title">
-                        <span>延期天数:</span>
-                        <span>{_.get(detailInfo.users, '0.apps.0.delay')}</span>
-                    </span>
-                    {
-                        detailInfo.users && detailInfo.users.map(user => (
-                            <div className="user-item-container">
-                                {this.renderApplyDetailSingleUserName(user)}
-                                <div className="col-12 apply_detail_apps">
-                                    <div className="apply_detail_operate clearfix">
-                                        {this.renderDetailOperateBtn()}
-                                    </div>
-                                    {/** 不显示角色和权限的情况：
-                         this.props.detailItem.approval_state === '0' &&  !hasPrivilege("GET_APP_EXTRA_GRANTS") 销售人员待审批的情况
-                         this.props.detailItem.approval_state === '2'表示是已驳回的应用，
-                         this.props.detailItem.approval_state === '3'表示是已撤销的应用，
+                    {this.renderApplyDetailUserNames(detailInfo)}
+                    <div className="apply-info-label clearfix">
+                        <span className="user-info-label">{Intl.get('common.type', '类型')}:</span>
+                        <span className="user-info-text">
+                            {detailInfo.account_type === '1' ? Intl.get('common.official', '签约') : Intl.get('common.trial', '试用')}
+                        </span>
+                    </div>
+                    <div className="col-12 apply_detail_apps">
+                        <div className="apply_detail_operate clearfix">
+                            {this.renderDetailOperateBtn()}
+                        </div>
+                        {/** 不显示角色和权限的情况：
+                         detailInfo.approval_state === '0' &&  !hasPrivilege("GET_APP_EXTRA_GRANTS") 销售人员待审批的情况
+                         detailInfo.approval_state === '2'表示是已驳回的应用，
+                         detailInfo.approval_state === '3'表示是已撤销的应用，
                          */}
-                                    {this.props.detailItem.approval_state === '0' && !hasPrivilege('GET_APP_EXTRA_GRANTS') ||
-                                        this.props.detailItem.approval_state === '2' ||
-                                        this.props.detailItem.approval_state === '3' ?
-                                        this.renderAppTable() : this.renderAppTable()
-                                        // this.renderAppTableRolePermission()
-                                    }
-                                </div>
-                            </div>
-                        ))
-                    }
+                        {detailInfo.approval_state === '0' && !hasPrivilege('GET_APP_EXTRA_GRANTS') ||
+                            detailInfo.approval_state === '2' ||
+                            detailInfo.approval_state === '3' ?
+                            this.renderAppTable() : this.renderAppTableRolePermission()
+                        }
+                    </div>
                 </div>
             </div>);
     },
@@ -1021,8 +1075,21 @@ const ApplyViewDetail = createReactClass({
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
-                    {this.renderApplyUserNames(detailInfo)}
-                    {this.renderApplyAppNames(detailInfo)}
+                    {
+                        detailInfo.users && detailInfo.users.map(user => (
+                            <div className="user-item-container">
+                                {this.renderApplyDetailSingleUserName(user)}
+                                <div className="col-12 apply_detail_apps">
+                                    <div className="apply_detail_operate clearfix">
+                                        {this.renderDetailOperateBtn()}
+                                    </div>
+                                    {
+                                        this.renderMultiAppTable(user)
+                                    }
+                                </div>
+                            </div>
+                        ))
+                    }
                     <div className="apply-info-label">
                         <span className="user-info-label">{Intl.get('common.app.status', '开通状态')}:</span>
                         <span className="user-info-text">
@@ -1116,8 +1183,25 @@ const ApplyViewDetail = createReactClass({
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
-                    {this.renderApplyUserNames(detailInfo)}
-                    {this.renderApplyAppNames(detailInfo)}
+                    <span className="delay-days-title">
+                        <span>{Intl.get('common.delay.time', '延期时间')}:</span>
+                        <span className="delay-days-bar">{getDelayDisplayTime(_.get(detailInfo.users, '0.apps.0.delay'))}</span>
+                    </span>
+                    {
+                        detailInfo.users && detailInfo.users.map(user => (
+                            <div className="user-item-container">
+                                {this.renderApplyDetailSingleUserName(user)}
+                                <div className="col-12 apply_detail_apps">
+                                    <div className="apply_detail_operate clearfix">
+                                        {this.renderDetailOperateBtn()}
+                                    </div>
+                                    {
+                                        this.renderMultiAppTable(user, true)
+                                    }
+                                </div>
+                            </div>
+                        ))
+                    }
                     <div className="apply-info-label delay-time-wrap">
                         <div className="user-info-label">{this.renderApplyDelayName()}:</div>
                         <span className="user-info-text">
@@ -1395,9 +1479,9 @@ const ApplyViewDetail = createReactClass({
             return this.renderDetailChangePassword(detailInfo);
         } else if (detailInfo.type === 'apply_sth_else') {
             return this.renderDetailChangeOther(detailInfo);
-        } else if (detailInfo.type === 'apply_grant_delay') {
+        } else if (detailInfo.type === APPLY_TYPES.DELAY) {
             return this.renderDetailDelayTime(detailInfo);
-        } else if (detailInfo.type === 'apply_grant_status_change') {
+        } else if (detailInfo.type === APPLY_TYPES.DISABLE) {
             return this.renderDetailChangeStatus(detailInfo);
         } else {
             return this.renderApplyUser(detailInfo);
@@ -1928,7 +2012,13 @@ const ApplyViewDetail = createReactClass({
     renderApplyDetailSingleUserName(userItem) {
         return (
             <div className="userName-container">
-                {userItem.user_name}<span>({userItem.nickname})</span>
+                <span 
+                    className="username"
+                    onClick={this.showUserDetail.bind(this, userItem.user_id)}
+                    data-tracename="查看用户详情">
+                    {userItem.user_name}
+                </span>
+                <span className="nickname">({userItem.nickname})</span>               
             </div>
         )
     },

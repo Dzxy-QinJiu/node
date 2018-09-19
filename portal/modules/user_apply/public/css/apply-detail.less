@@ -72,10 +72,13 @@
     }
   }
   .user-info-block {
-    &.apply-user-detail-block {
+    &.apply-info-block {
       .delay-days-title {
         font-size: 15px;
         color: @font-grey;
+        .delay-days-bar {
+          color: #5c5d5d;
+        }
       }
       .user-item-container {
         border: 1px solid #e1e9eb;
@@ -83,8 +86,13 @@
       }
       .userName-container {
         padding-left: @pd-l;
-        span {
-          color: #ccc;
+        padding-top: 7px;
+        margin-bottom: -3px;
+        span.nickname {
+          color: @font-grey;
+        }
+        .username {
+          cursor: pointer;
         }
       }
     }    

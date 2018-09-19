@@ -93,21 +93,22 @@ class ApplyViewDetailActions {
     }
 
     //获取审批单详情
-    // getApplyDetail(id, applyData) {
-    //     //如果已获取了某个详情数据，针对从url中的申请id获取的详情数据
-    //     if (applyData) {
-    //         this.dispatch({loading: false, error: false, detail: applyData.detail});
-    //     } else {
-    //         AppUserAjax.getApplyDetail(id).then((detail, apps) => {
-    //             this.dispatch({loading: false, error: false, detail: detail});
-    //         }, (errorMsg) => {
-    //             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-    //         });
-    //     }
-    // }
+    getApplyDetail(id, applyData) {        
+        //如果已获取了某个详情数据，针对从url中的申请id获取的详情数据
+        if (applyData) {
+            this.dispatch({loading: false, error: false, detail: applyData.detail});
+        } else {
+            this.dispatch({loading: true, error: false});
+            AppUserAjax.getApplyDetail(id).then((detail, apps) => {
+                this.dispatch({loading: false, error: false, detail: detail});
+            }, (errorMsg) => {
+                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            });
+        }
+    }
 
     //获取审批单详情（多应用)
-    getApplyDetail = asyncDispatcher(AppUserAjax.getApplyMultiAppDetail);
+    getApplyMultiAppDetail = asyncDispatcher(AppUserAjax.getApplyMultiAppDetail);
 
     //获取回复列表
     getReplyList(id) {
