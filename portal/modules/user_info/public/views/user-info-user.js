@@ -79,7 +79,9 @@ class UserInfo extends React.Component{
             } else {
                 this.setState({isSaving: true});
                 let userInfo = _.extend(this.state.formData, values);
-                delete userInfo.phone;
+                if (userInfo.phone) {
+                    userInfo.phone = $.trim(userInfo.phone);
+                }
                 if (userInfo.email !== this.props.userInfo.email) {
                     //修改邮箱后，邮箱的激活状态改为未激活
                     userInfo.emailEnable = false;
