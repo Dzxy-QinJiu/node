@@ -32,9 +32,6 @@
     }
     //成员名称
     .memeber-name-container {
-      float: left;
-      margin-top: 10px;
-      margin-left: 10px;
       .member-name-label {
         min-height: 26px;
         line-height: 20px;
@@ -42,13 +39,6 @@
         .basic-edit-field .basic-info-text {
           margin-left: 0;
           font-weight: bold;
-        }
-        //名称编辑
-        .ant-form-item {
-          padding-right: 0;
-          .ant-input {
-            margin-left: 0;
-          }
         }
         //编辑按钮
         .icon-edit-btn {
@@ -58,11 +48,29 @@
         }
       }
     }
+    //名称、密码区域的公共的样式
+    .memeber-name-container, .password-edit-container {
+      float: left;
+      margin-top: 10px;
+      margin-left: 10px;
+      .ant-form-item {
+        padding-right: 0;
+        margin-bottom: 6px !important;
+        .ant-input {
+          margin-left: 0;
+        }
+      }
+    }
+    //密码输入框的样式
+    .password-edit-container {
+
+    }
+
     //按钮区
     .member-title-btns {
       float: right;
-      width: 40px;
       .iconfont {
+        margin-left: 8px;
         color: @btn-color;
         cursor: pointer;
       }
