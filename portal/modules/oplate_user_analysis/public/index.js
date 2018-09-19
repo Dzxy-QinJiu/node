@@ -813,7 +813,7 @@ class OPLATE_USER_ANALYSIS extends React.Component {
 
                         return `
                             ${name}<br>
-                            ${Intl.get('common.app.minute', '分钟')}：${moment.duration(data.value).asMinutes().toFixed()}
+                            ${Intl.get('common.app.minute', '分钟')}：${data.value}
                         `;
                     },
                 },
