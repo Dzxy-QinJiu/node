@@ -706,6 +706,8 @@ var zh_CN = {
     'member.create.time': '创建时间',
     'member.forbidden.self': '禁止禁用自己',
     'member.email.extra.tip': '邮箱会作为登录时的用户名使用',
+    'member.save.logo.tip': '是否保存上传的头像？',
+    'member.status.eidt.tip': '确定要{status}该成员？',
     //后台管理-成员end
     //组织管理start
     'organization.no.organization.tip': '暂无组织，请先添加',

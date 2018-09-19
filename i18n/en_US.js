@@ -702,6 +702,8 @@ var en_US = {
     'member.create.time': 'Creating Time',//创建时间
     'member.forbidden.self': 'Can\'t disable yourself', // 禁止禁用自己
     'member.email.extra.tip': 'The mailbox will be used as the user name for login',//邮箱会作为登录时的用户名使用
+    'member.save.logo.tip': 'Do you want to save the uploaded head ?',//是否保存上传的头像？
+    'member.status.eidt.tip': 'Are you sure you want to {status} this member?',//确定要{status}该成员？
     //后台管理-成员end
     //组织管理start
     'organization.no.organization.tip': 'No organization,please add one first',//暂无组织，请先添加

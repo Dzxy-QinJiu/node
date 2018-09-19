@@ -4,9 +4,9 @@
 var React = require('react');
 const PropTypes = require('prop-types');
 var language = require('../../../../public/language/getLanguage');
-require('PUB_DIR/css/card-info-common.less');
+require('../css/user-info.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
-    require('PUB_DIR/css/card-info-es.less');
+    require('../css/user-info-es.less');
 }
 import {Spin, Icon, Pagination, Select, Alert, Popconfirm, message} from 'antd';
 import {getPassStrenth, passwordRegex} from 'CMP_DIR/password-strength-bar';
@@ -17,7 +17,7 @@ var RightPanelForbid = rightPanelUtil.RightPanelForbid;
 var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
 var UserDetailEditField = require('../../../../components/basic-edit-field/input');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
-var BasicEditSelectField = require('../../../../components/basic-edit-field/select');
+// var BasicEditSelectField = require('../../../../components/basic-edit-field/select');
 var HeadIcon = require('../../../../components/headIcon');
 import UserLog from './user-log';
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
@@ -32,11 +32,17 @@ import CommissionAndTarget from './commission-and-target';
 const UserData = require('PUB_DIR/sources/user-data');
 import RadioCard from '../views/radio-card';
 import {checkPhone, nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
+import {DetailEditBtn} from 'CMP_DIR/rightPanel';
+import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
+import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
+import {StatusWrapper} from 'antc';
+import classNames from 'classnames';
 
 class UserInfo extends React.Component {
     state = {
         userInfo: $.extend(true, {}, this.props.userInfo),
-        userBasicDetail: {id: '',createDate: ''},//要传用户的id和用户的创建时间
+        userBasicDetail: {id: '', createDate: ''},//要传用户的id和用户的创建时间
         modalStr: '',//模态框提示内容
         isDel: false,//是否删除
         userTeamList: UserFormStore.getState().userTeamList,
@@ -83,7 +89,7 @@ class UserInfo extends React.Component {
             this.layout();
         });
         var userBasicDetail = this.state.userBasicDetail;
-        if (userBasicDetail.id){
+        if (userBasicDetail.id) {
             //获取用户的详情
             UserAction.setUserLoading(true);
             UserInfoAction.getCurUserById(userBasicDetail);
@@ -125,19 +131,21 @@ class UserInfo extends React.Component {
     };
 
     forbidCard = (e) => {
-        var modalStr = Intl.get('member.start.this', '启用此');
-        if (this.state.userInfo.status === 1) {
+        let userInfo = this.state.userInfo;
+        let modalStr = Intl.get('member.start.this', '启用此');
+        if (userInfo.status === 1) {
             modalStr = Intl.get('member.stop.this', '禁用此');
         }
         Trace.traceEvent(e, '点击确认' + modalStr + '成员');
-        if (this.state.isDel) {
-            this.props.deleteCard(this.props.userInfo.id);
-        } else {
-            var status = 1;
-            if (this.props.userInfo.status === 1) {
-                status = 0;
-            }
-            this.updateUserStatus(this.props.userInfo.id, status);
+        let status = 1;
+        if (userInfo.status === 1) {
+            status = 0;
+        }
+        if (userInfo.id && _.isFunction(this.props.updateUserStatus)) {
+            this.props.updateUserStatus({
+                id: _.get(this.state, 'userInfo.id'),
+                status
+            });
         }
     };
 
@@ -174,7 +182,7 @@ class UserInfo extends React.Component {
         //更新详情中的所属团队
         let updateTeam = _.find(this.state.userTeamList, team => team.group_id === user.team);
         UserAction.updateUserTeam(updateTeam);
-        if (_.isFunction(this.props.afterEditTeamSuccess)){
+        if (_.isFunction(this.props.afterEditTeamSuccess)) {
             this.props.afterEditTeamSuccess(user);
         }
     };
@@ -190,7 +198,7 @@ class UserInfo extends React.Component {
             });
             UserAction.updateUserRoles(roleObj);
         }
-        if (_.isFunction(this.props.afterEditRoleSuccess)){
+        if (_.isFunction(this.props.afterEditRoleSuccess)) {
             this.props.afterEditRoleSuccess(user);
         }
     };
@@ -307,6 +315,81 @@ class UserInfo extends React.Component {
             saleGoalsAndCommissionRadio: updateObj
         });
     };
+
+    uploadImg = (src) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '点击上传头像');
+        let userInfo = this.state.userInfo;
+        userInfo.image = src;
+        this.setState({userInfo, showSaveIconTip: true});
+    };
+
+    saveUserIcon = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '保存上传头像');
+        this.setState({showSaveIconTip: false});
+        let userInfo = this.state.userInfo;
+        if (userInfo.image && userInfo.image !== this.props.userInfo.image) {
+            let editObj = {user_id: userInfo.id, user_logo: userInfo.image};
+            UserInfoAjax.editUser(editObj).then(function(result) {
+                //上传成功
+                if (result) {
+                    message.success(Intl.get('common.upload.success', '上传成功！'));
+                    UserAction.afterEditUser(editObj);
+                }
+            }, function(errorObj) {
+                //上传失败
+                message.error(errorObj.message || Intl.get('common.upload.error', '上传失败，请重试!'));
+            });
+        }
+    };
+
+    //切换日志分页时的处理
+    changeLogNum = (num) => {
+        UserInfoAction.changeLogNum(num);
+        UserInfoAction.getLogList({
+            user_name: this.state.userInfo.userName,
+            num: num,
+            page_size: this.state.page_size
+        });
+    };
+
+    //启用、停用
+    updateUserStatus = (userId, status) => {
+        var updateObj = {id: userId, status: status};
+        _.isFunction(this.props.updateUserStatus) && this.props.updateUserStatus(updateObj);
+    };
+
+    //展示模态框
+    showModalDialog = () => {
+        UserInfoAction.showModalDialog();
+    };
+
+    //隐藏模态框
+    hideModalDialog = () => {
+        Trace.traceEvent($('.log-infor-scroll'), '关闭模态框');
+        UserInfoAction.hideModalDialog();
+    };
+
+    cancelEditIcon = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '取消头像的保存');
+        let userInfo = this.state.userInfo;
+        userInfo.image = this.props.userInfo.image;
+        this.setState({userInfo, showSaveIconTip: false});
+    };
+
+    //保存修改的成员信息
+    saveEditMemberInfo = (type, saveObj, successFunc, errorFunc) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), `保存成员${type}的修改`);
+        UserInfoAjax.editUser(saveObj).then((result) => {
+            if (result) {
+                if (_.isFunction(successFunc)) successFunc();
+                this.changeUserFieldSuccess(saveObj);
+            } else {
+                if (_.isFunction(errorFunc)) errorFunc();
+            }
+        }, (errorMsg) => {
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+        });
+    }
 
     renderUserItems = () => {
         let userInfo = this.state.userInfo;
@@ -492,7 +575,7 @@ class UserInfo extends React.Component {
                         <CommissionAndTarget
                             id={recordId}
                             field={'goal'}
-                            userInfo = {this.state.userInfo}
+                            userInfo={this.state.userInfo}
                             setSalesGoals={UserInfoAjax.setSalesGoals}
                             value={goal}
                             displayType={'text'}
@@ -521,67 +604,7 @@ class UserInfo extends React.Component {
         );
     };
 
-    uploadImg = (src) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '点击上传头像');
-        let userInfo = this.state.userInfo;
-        userInfo.image = src;
-        this.setState({userInfo, showSaveIconTip: true});
-    };
-
-    saveUserIcon = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '保存上传头像');
-        this.setState({showSaveIconTip: false});
-        let userInfo = this.state.userInfo;
-        if (userInfo.image && userInfo.image !== this.props.userInfo.image) {
-            let editObj = {user_id: userInfo.id, user_logo: userInfo.image};
-            UserInfoAjax.editUser(editObj).then(function(result) {
-                //上传成功
-                if (result) {
-                    message.success(Intl.get('common.upload.success', '上传成功！'));
-                    UserAction.afterEditUser(editObj);
-                }
-            }, function(errorObj) {
-                //上传失败
-                message.error(errorObj.message || Intl.get('common.upload.error', '上传失败，请重试!'));
-            });
-        }
-    };
-
-    //切换日志分页时的处理
-    changeLogNum = (num) => {
-        UserInfoAction.changeLogNum(num);
-        UserInfoAction.getLogList({
-            user_name: this.state.userInfo.userName,
-            num: num,
-            page_size: this.state.page_size
-        });
-    };
-
-    //启用、停用
-    updateUserStatus = (userId, status) => {
-        var updateObj = {id: userId, status: status};
-        _.isFunction(this.props.updateUserStatus) && this.props.updateUserStatus(updateObj);
-    };
-
-    //展示模态框
-    showModalDialog = () => {
-        UserInfoAction.showModalDialog();
-    };
-
-    //隐藏模态框
-    hideModalDialog = () => {
-        Trace.traceEvent($('.log-infor-scroll'), '关闭模态框');
-        UserInfoAction.hideModalDialog();
-    };
-
-    cancelEditIcon = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '取消头像的保存');
-        let userInfo = this.state.userInfo;
-        userInfo.image = this.props.userInfo.image;
-        this.setState({userInfo, showSaveIconTip: false});
-    };
-
-    render() {
+    renderDetailContent() {
         //当前要展示的信息
         var userInfo = this.state.userInfo;
         let user_id = userInfo.id;
@@ -619,7 +642,8 @@ class UserInfo extends React.Component {
             }
         }
         var commissionRadio = '', recordId = '',
-            saleGoalsAndCommissionRadio = this.state.saleGoalsAndCommissionRadio, newCommissionRatio = '', renewalCommissionRatio = '';
+            saleGoalsAndCommissionRadio = this.state.saleGoalsAndCommissionRadio, newCommissionRatio = '',
+            renewalCommissionRatio = '';
         if ((saleGoalsAndCommissionRadio.commission_ratio && saleGoalsAndCommissionRadio.commission_ratio > -1) || saleGoalsAndCommissionRadio.commission_ratio === 0) {
             //提成比例
             commissionRadio = saleGoalsAndCommissionRadio.commission_ratio;
@@ -636,6 +660,7 @@ class UserInfo extends React.Component {
             //某条销售目标和提成比例的id
             recordId = saleGoalsAndCommissionRadio.id;
         }
+
         return (
             <div className={className} data-tracename="成员详情">
                 <RightPanelClose onClick={this.props.closeRightPanel} data-tracename="点击关闭成员详情"/>
@@ -644,8 +669,7 @@ class UserInfo extends React.Component {
                         <PrivilegeChecker check={'USER_MANAGE_EDIT_USER'}>
                             <RightPanelForbid onClick={(e) => {
                                 this.showForbidModalDialog(e);
-                            }}
-                            isActive={this.state.userInfo.status === 0}
+                            }} isActive={this.state.userInfo.status === 0}
                             />
                         </PrivilegeChecker>
                     ) : null}
@@ -677,8 +701,8 @@ class UserInfo extends React.Component {
                                 <RadioCard
                                     id={recordId}
                                     commissionRadio={commissionRadio}
-                                    newCommissionRatio= {newCommissionRatio}
-                                    renewalCommissionRatio= {renewalCommissionRatio}
+                                    newCommissionRatio={newCommissionRatio}
+                                    renewalCommissionRatio={renewalCommissionRatio}
                                     userInfo={this.state.userInfo}
                                     setSalesGoals={UserInfoAjax.setSalesGoals}
                                 /> : null}
@@ -713,6 +737,89 @@ class UserInfo extends React.Component {
                     }}
                 />
             </div>
+        );
+    }
+
+    renderMemberStatus(userInfo) {
+        let iconCls = classNames('iconfont', {
+            'icon-enable': !userInfo.status,
+            'icon-disable': userInfo.status
+        });
+        let statusTitle = userInfo.status ? Intl.get('common.stop', '停用') : Intl.get('common.enabled', '启用');
+        return (
+            <div className="status-switch-container">
+                <StatusWrapper
+                    loading={this.state.resultType === 'loading'}
+                    errorMsg={this.state.resultType === 'error' && this.state.errorMsg}
+                    size='small'
+                >
+                    <Popconfirm title={Intl.get('member.status.eidt.tip', '确定要{status}该成员？', {status: statusTitle})}
+                        placement="bottomRight" onConfirm={this.forbidCard.bind(this)}>
+                        <span title={statusTitle}
+                            className={iconCls} onClick={this.showForbidModalDialog.bind(this)}/>
+                    </Popconfirm>
+                </StatusWrapper>
+            </div>
+        );
+    }
+
+    renderTitle() {
+        let userInfo = this.state.userInfo;
+        return (
+            <div className="member-detail-title">
+                <Popconfirm title={Intl.get('member.save.logo.tip', '是否保存上传的头像？')}
+                    visible={this.state.showSaveIconTip}
+                    onConfirm={this.saveUserIcon} onCancel={this.cancelEditIcon}>
+                    <HeadIcon headIcon={userInfo.image}
+                        isEdit={true}
+                        onChange={this.uploadImg}
+                        userName={userInfo.userName || ''}
+                        isUserHeadIcon={true}
+                    />
+                </Popconfirm>
+                <div className="memeber-name-container">
+                    <div className="member-info-label">
+                        {userInfo.userName || ''}
+                    </div>
+                    <div className="member-info-label member-name-label">
+                        <BasicEditInputField
+                            width={280}
+                            id={userInfo.id}
+                            value={userInfo.name}
+                            field="nick_name"
+                            type="input"
+                            validators={[nameLengthRule]}
+                            placeholder={Intl.get('crm.90', '请输入姓名')}
+                            hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
+                            saveEditInput={this.saveEditMemberInfo.bind(this, 'nick_name')}
+                            noDataTip={Intl.get('user.nickname.add.tip', '添加昵称')}
+                            addDataTip={Intl.get('user.nickname.no.tip', '暂无昵称')}
+                        />
+                    </div>
+                </div>
+                <div className="member-title-btns">
+                    <span className="iconfont icon-edit-pw"
+                        title={Intl.get('common.edit.password', '修改密码')}
+                        onClick={() => {
+                            this.showEditPw(true);
+                        }}/>
+                    {this.renderMemberStatus(userInfo)}
+                </div>
+            </div>
+        );
+    }
+
+    render() {
+        return (
+            <RightPanelModal
+                className="member-detail-container"
+                isShowMadal={false}
+                isShowCloseBtn={true}
+                onClosePanel={this.props.closeRightPanel}
+                title={this.renderTitle()}
+                // content={this.renderDetailContent()}
+                dataTracename='成员详情'
+            />
         );
     }
 }
