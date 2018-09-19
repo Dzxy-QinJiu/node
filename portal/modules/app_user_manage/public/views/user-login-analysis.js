@@ -398,9 +398,11 @@ class UserLoginAnalysis extends React.Component {
         ].join('<br />');
     };
 
-    handleSelectRadio = (dataRange) => {
+    handleSelectRadio = (app, dataRange) => {
+        const {selectValueMap} = this.state;
+        selectValueMap[app.app_id] = dataRange;
         this.setState({
-            selectValue: dataRange
+            selectValueMap
         });
     };
 
