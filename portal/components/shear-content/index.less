@@ -3,10 +3,14 @@
         color: #5EACF0;
         cursor: pointer;
         &.collapse-btn {
-            float: right;
+            float: right;            
+            width: initial;
         }
     }
     .cut-content {
-        
+        &>span {
+            word-break: break-all;
+            white-space: initial;
+        }
     }
 }

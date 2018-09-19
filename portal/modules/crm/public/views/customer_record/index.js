@@ -34,6 +34,7 @@ import {decodeHTML} from 'PUB_DIR/sources/utils/common-method-util';
 import crmAjax from '../../ajax/index';
 import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
+import ShearContent from '../../../../../components/shear-content';
 
 var classNames = require('classnames');
 //用于布局的高度
@@ -616,7 +617,9 @@ class CustomerRecord extends React.Component {
             <div className={classNames('trace-item-content', {'day-split-line': hasSplitLine})}>
                 <p className="item-detail-tip">
                     <span className="icon-container" title={title}><i className={iconClass}></i></span>
-                    <span>{traceDsc}</span>
+                    <ShearContent>
+                        <span>{traceDsc}</span>
+                    </ShearContent>
                     {(item.type === 'phone' || item.type === 'app') && this.state.callNumber ?
                         <i className="iconfont icon-call-out call-out"
                             title={Intl.get('crm.click.call.phone', '点击拨打电话')}
