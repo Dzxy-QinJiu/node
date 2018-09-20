@@ -22,7 +22,32 @@ import {parseAmount} from 'LIB_DIR/func';
 const BasicEditField = createReactClass({
     displayName: 'BasicEditField',
     mixins: [FieldMixin],
-
+    propTypes: {
+        type: PropTypes.string,
+        displayType: PropTypes.string,
+        displayText: PropTypes.string,
+        value: PropTypes.oneOfType([PropTypes.string,PropTypes.number]),
+        afterTextTip: PropTypes.string,
+        onDisplayTypeChange: PropTypes.func,
+        id: PropTypes.string,
+        field: PropTypes.string,
+        saveEditInput: PropTypes.func,
+        cancelEditInput: PropTypes.func,
+        onValueChange: PropTypes.func,
+        hoverShowEdit: PropTypes.bool,
+        hasEditPrivilege: PropTypes.bool,
+        editBtnTip: PropTypes.string,
+        addDataTip: PropTypes.string,
+        noDataTip: PropTypes.string,
+        width: PropTypes.number,
+        validators: PropTypes.array,
+        afterValTip: PropTypes.string,
+        placeholder: PropTypes.string,
+        hideButtonBlock: PropTypes.string,
+        okBtnText: PropTypes.string,
+        cancelBtnText: PropTypes.string,
+        showPasswordStrength: PropTypes.bool
+    },
     getDefaultProps: function() {
         return {
             id: '1',
