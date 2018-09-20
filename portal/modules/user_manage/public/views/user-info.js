@@ -12,13 +12,7 @@ import {Spin, Icon, Pagination, Select, Alert, Popconfirm, message, Tabs} from '
 const TabPane = Tabs.TabPane;
 import {getPassStrenth, passwordRegex} from 'CMP_DIR/password-strength-bar';
 var Option = Select.Option;
-var rightPanelUtil = require('../../../../components/rightPanel');
-var RightPanelClose = rightPanelUtil.RightPanelClose;
-var RightPanelForbid = rightPanelUtil.RightPanelForbid;
-var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
-var UserDetailEditField = require('../../../../components/basic-edit-field/input');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
-// var BasicEditSelectField = require('../../../../components/basic-edit-field/select');
 var HeadIcon = require('../../../../components/headIcon');
 import UserLog from './user-log';
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
@@ -29,7 +23,6 @@ var UserInfoAjax = require('../ajax/user-ajax');
 var UserAction = require('../action/user-actions');
 var UserInfoAction = require('../action/user-info-action');
 import Trace from 'LIB_DIR/trace';
-import CommissionAndTarget from './commission-and-target';
 const UserData = require('PUB_DIR/sources/user-data');
 import RadioCard from '../views/radio-card';
 import {checkPhone, nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
@@ -855,6 +848,15 @@ class UserInfo extends React.Component {
         );
     }
 
+    getContainerHeight() {
+        const PADDING = 30;
+        let logListHeight = $('body').height()
+            - $('.member-detail-container .right-panel-modal-title').outerHeight(true)
+            - $('.member-detail-container .ant-tabs-bar').outerHeight(true)
+            - PADDING;
+        return logListHeight;
+    }
+
     renderBasicContent() {
         if (this.state.userIsLoading) {
             return (<Spinner/>);
@@ -888,32 +890,36 @@ class UserInfo extends React.Component {
             }
 
             return (
-                <div className="member-detail-basic-container">
-                    <DetailCard content={this.renderMemberInfoContent()}
-                        className='member-info-card-container'/>
-                    <DetailCard title={Intl.get('crm.5', '联系方式')}
-                        content={this.renderContactContent()}
-                        className='member-contact-card-container'/>
-                    <div className="">
-                        {isSales ?
-                            <DetailCard className='radio-container-wrap'
-                                content={
-                                    <RadioCard
-                                        id={recordId}
-                                        commissionRadio={commissionRadio}
-                                        newCommissionRatio={newCommissionRatio}
-                                        renewalCommissionRatio={renewalCommissionRatio}
-                                        userInfo={this.state.userInfo}
-                                        setSalesGoals={UserInfoAjax.setSalesGoals}
-                                    />}
-                            /> : null}
-                    </div>
-                    {this.props.isContinueAddButtonShow ? (
-                        <div className="btn-add-member" onClick={this.props.showEditForm.bind(null, 'add')}>
-                            <Icon type="plus"/><span><ReactIntl.FormattedMessage id="common.add.member"
-                                defaultMessage="添加成员"/></span>
+                <div className="member-detail-basic-container" style={{height: this.getContainerHeight()}}>
+                    <GeminiScrollbar>
+                        <div className="member-detail-basic-content">
+                            <DetailCard content={this.renderMemberInfoContent()}
+                                className='member-info-card-container'/>
+                            <DetailCard title={Intl.get('crm.5', '联系方式')}
+                                content={this.renderContactContent()}
+                                className='member-contact-card-container'/>
+                            <div className="">
+                                {isSales ?
+                                    <DetailCard className='radio-container-wrap'
+                                        content={
+                                            <RadioCard
+                                                id={recordId}
+                                                commissionRadio={commissionRadio}
+                                                newCommissionRatio={newCommissionRatio}
+                                                renewalCommissionRatio={renewalCommissionRatio}
+                                                userInfo={this.state.userInfo}
+                                                setSalesGoals={UserInfoAjax.setSalesGoals}
+                                            />}
+                                    /> : null}
+                            </div>
+                            {this.props.isContinueAddButtonShow ? (
+                                <div className="btn-add-member" onClick={this.props.showEditForm.bind(null, 'add')}>
+                                    <Icon type="plus"/><span><ReactIntl.FormattedMessage id="common.add.member"
+                                        defaultMessage="添加成员"/></span>
+                                </div>
+                            ) : null}
                         </div>
-                    ) : null}
+                    </GeminiScrollbar>
                 </div>
             );
         }
@@ -930,7 +936,10 @@ class UserInfo extends React.Component {
                 </TabPane>
                 <TabPane tab={Intl.get('member.operation.log', '操作日志')}
                     key={TAB_KEYS.LOG_TAB}>
-                    {this.state.activeKey === TAB_KEYS.LOG_TAB ? (<UserLog />) : null}
+                    {this.state.activeKey === TAB_KEYS.LOG_TAB ? (
+                        <UserLog getContainerHeight={this.getContainerHeight}
+                            userName={_.get(this.state, 'userInfo.userName.value') ||
+                                 _.get(this.state, 'userInfo.userName', '')}/>) : null}
                 </TabPane>
             </Tabs>);
     }

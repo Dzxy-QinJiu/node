@@ -1,3 +1,4 @@
+
 .log-label {
   font-weight: normal;
   font-size: 14px;
@@ -10,23 +11,30 @@
   text-overflow: ellipsis;
 }
 
-.log-item {
-  width: 330px;
-  text-align: left;
-  .log-username {
-    width: 50px;
-    .log-label;
-    .font-overflow;
+.member-log-list-continer {
+  .log-item {
+    //width: 330px;
+    text-align: left;
+    .log-username {
+      //width: 50px;
+      .log-label;
+      .font-overflow;
+    }
+    .log-info {
+      //width: 135px;
+      padding-left: 10px;
+      .log-label;
+      .font-overflow;
+    }
+    .log-time {
+      padding-left: 10px;
+      .log-label;
+      .font-overflow;
+    }
   }
-  .log-info {
-    width: 135px;
-    padding-left: 10px;
-    .log-label;
-    .font-overflow;
-  }
-  .log-time {
-    padding-left: 10px;
-    .log-label;
-    .font-overflow;
+  .no-more-data-tip {
+    float: left;
+    margin-left: 100px;
+    width: 180px;
   }
 }

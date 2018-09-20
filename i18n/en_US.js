@@ -710,6 +710,7 @@ var en_US = {
     'member.phone.order.null': 'No phone order',//暂无座席
     'member.sales.goal.add': 'Set sales goal',//设置销售目标
     'member.sales.goal.no.data': 'Sales goal not set',//未设置销售目标
+    'member.log.no.data': 'No operation log',//暂无操作日志
     //后台管理-成员end
     //组织管理start
     'organization.no.organization.tip': 'No organization,please add one first',//暂无组织，请先添加
