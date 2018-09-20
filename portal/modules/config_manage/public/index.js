@@ -9,6 +9,7 @@ import RealmConfig from './views/realm-config';
 import TeleConfig from './views/tele-config';
 import Trace from 'LIB_DIR/trace';
 import CompetingProductManage from './views/competing-product';
+import CustomerStageManage from './views/customer-stage';
 import SalesRoleManage from './views/sales-role-manage';
 var PrivilegeChecker = require('CMP_DIR/privilege/checker').PrivilegeChecker;
 var GeminiScrollBar = require('CMP_DIR/react-gemini-scrollbar');
@@ -18,6 +19,7 @@ const auths = {
     IP: 'GET_CONFIG_IP',//获取IP配置的权限
     TELECONFIG: 'CUSTOMER_INVALID_PHONE_GET',// 获取客服电话权限
     COMPETING_PRODUCT: 'CRM_COMPETING_PRODUCT',//竞品管理权限
+    CRM_CUSTOMER_CONF_LABEL: 'CRM_CUSTOMER_CONF_LABEL',//客户阶段管理权限
     TEAM_ROLE_MANAGE: 'TEAM_ROLE_MANAGE',//销售角色管理权限
     STRATEGY: 'GET_CONFIG_PWD_STRATEGY',// 获取安全域密码策略
 };
@@ -289,6 +291,9 @@ class ConfigManage extends React.Component {
                          </PrivilegeChecker>
                          <PrivilegeChecker check={auths.COMPETING_PRODUCT}>
                              <CompetingProductManage/>
+                         </PrivilegeChecker>
+                         <PrivilegeChecker check={auths.COMPETING_PRODUCT}>
+                             <CustomerStageManage/>
                          </PrivilegeChecker>
                          <PrivilegeChecker check={auths.TEAM_ROLE_MANAGE}>
                              <SalesRoleManage/>
