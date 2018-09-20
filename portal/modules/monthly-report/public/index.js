@@ -80,6 +80,9 @@ class MonthlyReport extends React.Component {
                 data={data}
                 userId={userId}
                 selectedDate={this.state.selectedMonth}
+                onChange={() => {
+                    teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, this.state.selectedTeam);
+                }}
             />
         );
     };
