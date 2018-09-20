@@ -45,10 +45,18 @@ UserLoginAnalysisStore.prototype.getSingleUserAppList = function({appId,appList,
     this.selectedLogAppId = appId;
     this.userOwnAppArray = appList;
     this.appListLoading = loading;
-    //默认展示第一个应用的分析数据
     if (_.get(appList, 'length') > 0) {
-        this.showDetailMap = {
-            [appList[0].app_name]: true
+        //默认展示已选择的应用的分析数据
+        if (this.selectedLogAppId) {
+            this.showDetailMap = {
+                [this.selectedLogAppId]: true
+            };
+        } 
+        //否则展示第一个应用的分析数据
+        else {
+            this.showDetailMap = {
+                [appList[0].app_id]: true
+            };
         }
     }
 };
