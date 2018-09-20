@@ -627,10 +627,13 @@ class CustomerRecord extends React.Component {
                 </p>
                 {item.type === 'data_report' ? this.renderReportContent(item) : (<div>
                     <div className="item-detail-content" id={item.id}>
-                        {item.remark ? item.remark : ( item.showAdd ? null :
-                            <span className="add-detail-tip" onClick={this.addDetailContent.bind(this, item)}>
-                                {Intl.get('click.to.add.trace.detail', '请点击此处补充跟进内容')}
-                            </span>)}
+                        {item.remark ? 
+                            <ShearContent>
+                                {item.remark}
+                            </ShearContent> : ( item.showAdd ? null :
+                                <span className="add-detail-tip" onClick={this.addDetailContent.bind(this, item)}>
+                                    {Intl.get('click.to.add.trace.detail', '请点击此处补充跟进内容')}
+                                </span>)}
                         {item.showAdd ? this.renderAddDetail(item) : null}
                     </div>
                     <div className="item-bottom-content">
