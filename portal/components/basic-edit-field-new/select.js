@@ -18,7 +18,28 @@ import SaveCancelButton from '../detail-card/save-cancel-button';
 let BasicEditSelectField = createReactClass({
     displayName: 'BasicEditSelectField',
     mixins: [FieldMixin],
-
+    propTypes: {
+        displayType: PropTypes.string,
+        displayText: PropTypes.string,
+        value: PropTypes.oneOfType([PropTypes.string,PropTypes.array]),
+        selectOptions: PropTypes.array,
+        id: PropTypes.string,
+        field: PropTypes.string,
+        saveEditSelect: PropTypes.func,
+        combobox: PropTypes.bool,
+        multiple: PropTypes.bool,
+        cancelEditField: PropTypes.func,
+        hoverShowEdit: PropTypes.bool,
+        hasEditPrivilege: PropTypes.bool,
+        editBtnTip: PropTypes.string,
+        addDataTip: PropTypes.string,
+        noDataTip: PropTypes.string,
+        width: PropTypes.number,
+        validators: PropTypes.array,
+        filterOption: PropTypes.bool,
+        placeholder: PropTypes.string,
+        hideButtonBlock: PropTypes.string
+    },
     getDefaultProps: function() {
         return {
             id: '',
@@ -130,12 +151,20 @@ let BasicEditSelectField = createReactClass({
             };
             if (value !== this.state.value) {
                 this.props.saveEditSelect(saveObj, () => {
-                    //如果select是combox格式的这样写就不对
-                    let curOptions = _.find(this.state.selectOptions, option => option.props && option.props.value === value);
-                    let displayText = _.get(curOptions,'props') ? curOptions.props.children : '';
                     //如果是可以手动输入内容的情况,就用后端提交的
+                    let displayText = '';
                     if (this.props.combobox){
                         displayText = value;
+                    } else if(this.props.multiple){
+                        //多选时的处理
+                        let valueNames = _.map(value, (item) => {
+                            let curOptions = _.find(this.state.selectOptions, option => option.props && option.props.value === item);
+                            return _.get(curOptions,'props') ? curOptions.props.children : '';
+                        });
+                        displayText = _.isArray(valueNames) ? valueNames.join(',') : '';
+                    } else {//单选时的处理
+                        let curOptions = _.find(this.state.selectOptions, option => option.props && option.props.value === value);
+                        displayText = _.get(curOptions,'props') ? curOptions.props.children : '';
                     }
                     setDisplayState(displayText);
                 }, (errorMsg) => {

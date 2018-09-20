@@ -711,6 +711,10 @@ var zh_CN = {
     'member.phone.no.data': '未添加手机号',
     'member.phone.add': '添加手机号',
     'member.email.no.data': '未添加邮箱',
+    'member.phone.order.null': '暂无座席',
+    'member.sales.goal.add': '设置销售目标',
+    'member.sales.goal.no.data': '未设置销售目标',
+
     //后台管理-成员end
     //组织管理start
     'organization.no.organization.tip': '暂无组织，请先添加',

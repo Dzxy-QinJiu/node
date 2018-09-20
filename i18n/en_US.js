@@ -707,6 +707,9 @@ var en_US = {
     'member.phone.no.data': 'No phone',//未添加手机号
     'member.phone.add': 'Add phone',//添加手机号
     'member.email.no.data': 'No email',//未添加邮箱
+    'member.phone.order.null': 'No phone order',//暂无座席
+    'member.sales.goal.add': 'Set sales goal',//设置销售目标
+    'member.sales.goal.no.data': 'Sales goal not set',//未设置销售目标
     //后台管理-成员end
     //组织管理start
     'organization.no.organization.tip': 'No organization,please add one first',//暂无组织，请先添加

@@ -177,18 +177,18 @@ class UserInfo extends React.Component {
     };
 
     //团队的选择事件
-    // onSelectTeam = (teamId) => {
-    //     Trace.traceEvent(ReactDOM.findDOMNode(this), '选择所属团队');
-    //     let userInfo = this.state.userInfo;
-    //     userInfo.teamId = teamId;
-    //     this.setState({userInfo});
-    // };
-    //
-    // cancelEditTeam = () => {
-    //     let userInfo = this.state.userInfo;
-    //     userInfo.teamId = this.props.userInfo.teamId;
-    //     this.setState({userInfo});
-    // };
+    onSelectTeam = (teamId) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '选择所属团队');
+        let userInfo = this.state.userInfo;
+        userInfo.teamId = teamId;
+        this.setState({userInfo});
+    };
+
+    cancelEditTeam = () => {
+        let userInfo = this.state.userInfo;
+        userInfo.teamId = this.props.userInfo.teamId;
+        this.setState({userInfo});
+    };
 
     //修改的所属团队成功后的处理
     afterEditTeamSuccess = (user) => {
@@ -246,18 +246,18 @@ class UserInfo extends React.Component {
         return roleOptions;
     };
 
-    // selectRole = (roleIds) => {
-    //     Trace.traceEvent(ReactDOM.findDOMNode(this), '选择角色');
-    //     let userInfo = this.state.userInfo;
-    //     userInfo.roleIds = roleIds;
-    //     this.setState({userInfo});
-    // };
-    //
-    // cancelEditRole = () => {
-    //     let userInfo = this.state.userInfo;
-    //     userInfo.roleIds = _.extend([], this.props.userInfo.roleIds);
-    //     this.setState({userInfo});
-    // };
+    selectRole = (roleIds) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '选择角色');
+        let userInfo = this.state.userInfo;
+        userInfo.roleIds = roleIds;
+        this.setState({userInfo});
+    };
+
+    cancelEditRole = () => {
+        let userInfo = this.state.userInfo;
+        userInfo.roleIds = _.extend([], this.props.userInfo.roleIds);
+        this.setState({userInfo});
+    };
 
     onPasswordDisplayChange(e) {
         this.setState({isPasswordInputShow: !this.state.isPasswordInputShow});
@@ -318,12 +318,6 @@ class UserInfo extends React.Component {
         }
         return '';
     };
-
-    // afterModifySuccess = (updateObj) => {
-    //     this.setState({
-    //         saleGoalsAndCommissionRadio: updateObj
-    //     });
-    // };
 
     uploadImg = (src) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '点击上传头像');
@@ -439,6 +433,37 @@ class UserInfo extends React.Component {
             if (_.isFunction(errorFunc)) errorFunc(errorMsg);
         });
     }
+
+    //保存编辑的角色
+    saveEditRoles = (saveObj, successFunc, errorFunc) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '保存成员角色的修改');
+        UserInfoAjax.updateUserRoles(saveObj).then((result) => {
+            if (result) {
+                if (_.isFunction(successFunc)) successFunc();
+                this.afterEditRoleSuccess(saveObj);
+            } else {
+                if (_.isFunction(errorFunc)) errorFunc();
+            }
+        }, (errorMsg) => {
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+        });
+    }
+
+    //保存编辑的团队
+    saveEditTeam = (saveObj, successFunc, errorFunc) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '保存成员团队的修改');
+        UserInfoAjax.updateUserTeam(saveObj).then((result) => {
+            if (result) {
+                if (_.isFunction(successFunc)) successFunc();
+                this.afterEditTeamSuccess(saveObj);
+            } else {
+                if (_.isFunction(errorFunc)) errorFunc();
+            }
+        }, (errorMsg) => {
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+        });
+    }
+
     renderMemberInfoContent = () => {
         let userInfo = this.state.userInfo;
         let roleSelectOptions = this.getRoleSelectOptions(userInfo);
@@ -483,9 +508,9 @@ class UserInfo extends React.Component {
                             type: 'array'
                         }]}
                         placeholder={Intl.get('member.select.role', '请选择角色')}
-                        // onSelectChange={this.selectRole}
-                        // cancelEditField={this.cancelEditRole}
-                        saveEditSelect={this.saveEditMemberInfo.bind(this, 'role')}
+                        onSelectChange={this.selectRole}
+                        cancelEditField={this.cancelEditRole}
+                        saveEditSelect={this.saveEditRoles.bind(this)}
                         noDataTip={Intl.get('member.no.role', '暂无角色')}
                         addDataTip={Intl.get('user.setting.roles', '设置角色')}
                     />
@@ -504,11 +529,11 @@ class UserInfo extends React.Component {
                             selectOptions={this.getTeamOptions()}
                             placeholder={Intl.get('member.select.group', '请选择团队')}
                             validators={[{message: Intl.get('member.select.group', '请选择团队')}]}
-                            // onSelectChange={this.onSelectTeam}
-                            // cancelEditField={this.cancelEditTeam}
+                            onSelectChange={this.onSelectTeam}
+                            cancelEditField={this.cancelEditTeam}
                             width={EDIT_FEILD_LESS_WIDTH}
                             hasEditPrivilege={hasPrivilege('USER_MANAGE_EDIT_USER')}
-                            saveEditSelect={this.saveEditMemberInfo.bind(this, 'team')}
+                            saveEditSelect={this.saveEditTeam.bind(this)}
                             noDataTip={Intl.get('member.no.groups', '暂无团队')}
                             addDataTip={Intl.get('sales.team.add.team', '添加团队')}
                         />
@@ -522,9 +547,12 @@ class UserInfo extends React.Component {
                             value={goal}
                             field="goal"
                             type="number"
+                            afterTextTip={Intl.get('contract.82', '元')}
                             afterValTip={Intl.get('contract.82', '元')}
                             hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
                             saveEditInput={this.saveSalesGole}
+                            noDataTip={Intl.get('member.sales.goal.no.data', '未设置销售目标')}
+                            addDataTip={Intl.get('member.sales.goal.add', '设置销售目标')}
                         />
                     </div> ) : null}
                 <div className="basic-info-item">
@@ -534,6 +562,7 @@ class UserInfo extends React.Component {
                         id={userInfo.id}
                         value={userInfo.phoneOrder}
                         hasEditPrivilege={false}
+                        noDataTip={Intl.get('member.phone.order.null', '暂无座席')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -931,7 +960,9 @@ UserInfo.propTypes = {
     userInfoShow: PropTypes.bool,
     userFormShow: PropTypes.bool,
     closeRightPanel: PropTypes.func,
-    showEditForm: PropTypes.func
+    showEditForm: PropTypes.func,
+    userIsLoading: PropTypes.string,
+    getUserDetailError: PropTypes.string
 };
 module.exports = UserInfo;
 
