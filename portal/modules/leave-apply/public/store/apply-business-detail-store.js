@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2018/9/18.
  */
 var ApplyViewDetailAction = require('../action/apply-view-detail-action');
+var BusinessApplyStore = require('./business-apply-store');
 function ApplyViewDetailStore() {
     //初始化state数据
     this.setInitState();
@@ -41,8 +42,17 @@ ApplyViewDetailStore.prototype.setInitState = function() {
     //审批之后数据存储
     this.applyResult = {
         //提交状态  "" loading error success
-        submitType: '',
+        submitResult: '',
         //错误信息
+        errorMsg: ''
+    };
+    //审批状态列表
+    this.replyStatusInfo = {
+        //三种状态,loading,error,''
+        result: 'loading',
+        //列表数组
+        list: [],
+        //服务端错误信息
         errorMsg: ''
     };
 };
@@ -72,32 +82,12 @@ ApplyViewDetailStore.prototype.getBusinessApplyDetailById = function(obj) {
         this.detailInfoObj.errorMsg = obj.errorMsg;
     } else {
         this.detailInfoObj.loadingResult = '';
-        const info = obj.detail;
-        _.each(info.apps || [], (app) => {
-            app.app_id = app.client_id;
-            app.app_name = app.client_name;
-        });
-        this.detailInfoObj.info = info;
+        //todo 是否展示通过和驳回的按钮
         this.detailInfoObj.info = obj.detail;
+        this.detailInfoObj.info.showApproveBtn = this.selectedDetailItem.showApproveBtn;
+        //列表中那一申请的状态以这个为准，因为申请完就不一样了
+        BusinessApplyStore.updateAllApplyItemStatus(this.detailInfoObj.info);
         this.detailInfoObj.errorMsg = '';
-        // this.createAppsSetting();
-        // if(_.isArray(this.detailInfoObj.info.user_names)) {
-        //     this.formData.user_name = this.detailInfoObj.info.user_names[0];
-        // }
-        // if(_.isArray(this.detailInfoObj.info.nick_names)) {
-        //     this.formData.nick_name = this.detailInfoObj.info.nick_names[0];
-        // }
-        // let delayTime = 0;
-        // if(this.detailInfoObj.info.type === 'apply_grant_delay'){
-        //     if (this.detailInfoObj.info.delayTime) { // 同步修改时间
-        //         delayTime = this.detailInfoObj.info.delayTime;
-        //         this.formData.delay_time = delayTime;
-        //         this.getDelayDisplayTime(delayTime);
-        //     } else { // 到期时间，点开修改同步到自定义
-        //         this.formData.delayTimeUnit = 'custom';
-        //         this.formData.end_date = this.detailInfoObj.info.end_date;
-        //     }
-        // }
     }
 };
 //显示客户详情右侧面板
@@ -182,9 +172,26 @@ ApplyViewDetailStore.prototype.approveApplyPassOrReject = function(obj) {
         this.applyResult.errorMsg = '';
     }
 };
+//获取审批的状态
+ApplyViewDetailStore.prototype.getApplyStatusById = function(obj) {
+    if (obj.loading) {
+        this.replyStatusInfo.result = 'loading';
+        this.replyStatusInfo.errorMsg = '';
+    } else if (obj.error) {
+        this.replyStatusInfo.result = 'error';
+        this.replyStatusInfo.errorMsg = obj.errorMsg;
+    } else {
+        this.replyStatusInfo.result = 'success';
+        this.replyStatusInfo.errorMsg = '';
+        this.replyStatusInfo.list = obj.list;
+    }
+};
 ApplyViewDetailStore.prototype.cancelSendApproval = function() {
     this.applyResult.submitResult = '';
     this.applyResult.errorMsg = '';
+};
+ApplyViewDetailStore.prototype.hideApprovalBtns = function() {
+    this.selectedDetailItem.showApproveBtn = false;
 };
 
 

@@ -8,20 +8,50 @@ function BusinessApplyActions() {
     this.generateActions(
         'setInitState',
         'setSelectedDetailItem',//点击某个申请
-        'changeApplyListType'
+        'changeApplyListType',
+        'changeApplyAgreeStatus'//审批完后改变出差申请的状态
     );
-    //todo 先获取需要你审批的
     this.getAllApplyList = function(queryObj) {
-        this.dispatch({error: false, loading: true});
-        BusinessApplyAjax.getWorklistBusinessApplyList(queryObj).then((data) => {
-            this.dispatch({error: false, loading: false, data: data});
+        //todo 需要先获取待审批列表，成功后获取全部列表
+        BusinessApplyAjax.getWorklistBusinessApplyList().then((workList) => {
+            this.dispatch({workList: workList});
+            BusinessApplyAjax.getAllApplyList(queryObj).then((data) => {
+                //需要对全部列表进行一下处理，知道哪些是可以审批的
+                var workListArr = workList.list;
+                _.forEach(workListArr,(item) => {
+                    var targetObj = _.find(data.list,(dataItem) => {
+                        return item.id === dataItem.id;
+                    });
+                    if (targetObj){
+                        targetObj.showApproveBtn = true;
+                    }
+                });
+
+
+                this.dispatch({error: false, loading: false, data: data});},(errorMsg) => {
+                this.dispatch({
+                    error: true,
+                    loading: false,
+                    errMsg: errorMsg || Intl.get('failed.get.all.leave.apply', '获取全部出差申请失败')
+                });});
+
         }, (errorMsg) => {
             this.dispatch({
                 error: true,
                 loading: false,
-                errMsg: errorMsg || Intl.get('failed.get.all.leave.apply', '获取全部出差申请失败')
+                worklistErrMsg: errorMsg || Intl.get('failed.get.worklist.leave.apply', '获取由我审批的出差申请失败')
             });
         });
+
+        // BusinessApplyAjax.getAllApplyList(queryObj).then((data) => {
+        //     this.dispatch({error: false, loading: false, data: data});
+        // }, (errorMsg) => {
+        //     this.dispatch({
+        //         error: true,
+        //         loading: false,
+        //         errMsg: errorMsg || Intl.get('failed.get.all.leave.apply', '获取全部出差申请失败')
+        //     });
+        // });
     };
     this.getSelfApplyList = function() {
         this.dispatch({error: false, loading: true});

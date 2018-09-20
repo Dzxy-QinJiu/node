@@ -15,24 +15,24 @@ var restApis = {
     //添加出差申请
     addBusinessApply: '/rest/base/v1/workflow/businesstrip',
     //根据出差申请的id查询申请的详情
-    getBusinessApplyDetailById: '/rest/base/v1/workflow/businesstrip/detail',
+    getApplyDetailById: '/rest/base/v1/workflow/detail',
     //获取申请列表
-    getOrAddApplyComments: '/rest/base/v1/workflow/businesstrip/comments',
+    getOrAddApplyComments: '/rest/base/v1/workflow/comments',
     //通过或者驳回申请
-    approveApplyPassOrReject: '/rest/base/v1/workflow/businesstrip/approve/:id'
+    approveApplyPassOrReject: '/rest/base/v1/workflow/businesstrip/approve/:id',
+    //获取申请的状态
+    getApplyStatusById: '/rest/base/v1/workflow/status',
 };
 exports.restUrls = restApis;
 var _ = require('lodash');
 //获取所有的出差申请
 exports.getAllBusinessApplyList = function(req, res) {
-    var queryObj = req.query;
-    var url = restApis.allBussinessTrip;
     return restUtil.authRest.get(
         {
-            url: url,
+            url: restApis.allBussinessTrip,
             req: req,
             res: res
-        }, queryObj);
+        }, req.query);
 };
 //获取当前账号发起的出差申请
 exports.getSelfBusinessApplyList = function(req, res) {
@@ -62,16 +62,16 @@ exports.addBusinessApply = function(req, res) {
         }, req.body);
 };
 //根据审批的id获取审批的详情
-exports.getBusinessApplyDetailById = function(req, res) {
+exports.getApplyDetailById = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: restApis.getBusinessApplyDetailById,
+            url: restApis.getApplyDetailById,
             req: req,
             res: res
         }, req.query);
 };
 //获取审批意见
-exports.getBusinessApplyComments = function(req, res) {
+exports.getApplyComments = function(req, res) {
     return restUtil.authRest.get(
         {
             url: restApis.getOrAddApplyComments,
@@ -80,7 +80,7 @@ exports.getBusinessApplyComments = function(req, res) {
         }, req.query);
 };
 //添加审批意见
-exports.addBusinessApplyComments = function(req, res) {
+exports.addApplyComments = function(req, res) {
     return restUtil.authRest.post(
         {
             url: restApis.getOrAddApplyComments,
@@ -96,4 +96,13 @@ exports.approveApplyPassOrReject = function(req, res) {
             req: req,
             res: res
         }, req.body);
+};
+//获取出差申请的状态
+exports.getApplyStatusById = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getApplyStatusById,
+            req: req,
+            res: res
+        }, req.query);
 };

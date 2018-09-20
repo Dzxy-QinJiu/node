@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2018/9/18.
  */
 var BusinessApplyAjax = require('../ajax/business-apply-ajax');
+import LeaveApplyUtil from '../utils/leave-apply-utils';
 import UserData from 'PUB_DIR/sources/user-data';
 function ApplyViewDetailActions() {
     this.generateActions(
@@ -14,19 +15,28 @@ function ApplyViewDetailActions() {
         'setApplyFormDataComment',
         'hideReplyCommentEmptyError',
         'showReplyCommentEmptyError',
-        'cancelSendApproval'
+        'cancelSendApproval',
+        'hideApprovalBtns'//审批完后不在显示审批按钮
     );
 
     //获取审批单详情
     this.getBusinessApplyDetailById = function(queryObj) {
-        //如果已获取了某个详情数据，针对从url中的申请id获取的详情数据
         BusinessApplyAjax.getBusinessApplyDetailById(queryObj).then((detail) => {
             this.dispatch({loading: false, error: false, detail: detail});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
-
     };
+    //根据申请的id获取审批的状态
+    this.getApplyStatusById = function(queryObj) {
+        this.dispatch({loading: true, error: false});
+        BusinessApplyAjax.getApplyStatusById(queryObj).then((list) => {
+            this.dispatch({loading: false, error: false, list: list});
+        }, (errorMsg) => {
+            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+        });
+    };
+
     //获取回复列表
     this.getBusinessApplyCommentList = function(queryObj) {
         this.dispatch({loading: true, error: false});
@@ -64,12 +74,12 @@ function ApplyViewDetailActions() {
         BusinessApplyAjax.approveApplyPassOrReject(id, obj).then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
             //更新选中的申请单类型
-            // AppUserUtil.emitter.emit('updateSelectedItem', {approval: obj.approval, status: 'success'});
+            // LeaveApplyUtil.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
             //刷新用户审批未处理数
             // updateUnapprovedCount();
         }, (errorMsg) => {
             //更新选中的申请单类型
-            // AppUserUtil.emitter.emit('updateSelectedItem', {status: 'error'});
+            // LeaveApplyUtil.emitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };

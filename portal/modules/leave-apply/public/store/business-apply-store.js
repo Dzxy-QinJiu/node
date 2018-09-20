@@ -8,6 +8,8 @@ function BusinessApplyStore() {
     //初始化state数据
     this.setInitState();
     this.bindActions(BusinessApplyAction);
+    this.exportPublicMethods({
+        updateAllApplyItemStatus: this.updateAllApplyItemStatus});
 }
 BusinessApplyStore.prototype.setInitState = function() {
     this.sort_field = 'create_time';//排序字段
@@ -73,13 +75,26 @@ BusinessApplyStore.prototype.getAllApplyList = function(obj) {
     if (obj.loading) {
         this.applyListObj.loadingResult = 'loading';
         this.applyListObj.errorMsg = '';
+        this.workListApplyObj.errorMsg = '';
     } else if (obj.error) {
         this.applyListObj.loadingResult = 'error';
-        this.applyListObj.errorMsg = obj.errorMsg;
+        //优先展示我的审批列表获取错误的信息
+        this.applyListObj.errorMsg = obj.worklistErrMsg || obj.errorMsg;
+        if (obj.worklistErrMsg){
+            this.workListApplyObj.loadingResult = 'error';
+            this.workListApplyObj.errorMsg = obj.worklistErrMsg;
+            this.workListApplyObj.list = [];
+        }
+        //获取由我审批的
         if (!this.lastApplyId) {
             this.clearData();
         }
+    } else if (_.isArray(_.get(obj,'workList.list'))) {
+        this.workListApplyObj.list = _.get(obj,'workList.list');
+        this.workListApplyObj.loadingResult = '';
+        this.workListApplyObj.errorMsg = '';
     } else {
+        //由我审批的申请列表
         this.applyListObj.loadingResult = '';
         this.applyListObj.errorMsg = '';
         this.totalSize = obj.data.total;
@@ -110,6 +125,21 @@ BusinessApplyStore.prototype.changeApplyListType = function(type) {
     this.lastApplyId = '';
     // this.showUpdateTip = false;
     // this.isCheckUnreadApplyList = false;
+};
+BusinessApplyStore.prototype.changeApplyAgreeStatus = function(message) {
+    this.selectedDetailItem.status = message.agree;
+    this.selectedDetailItem.detail = message.detail;
+    this.selectedDetailItem.update_time = message.update_time;
+};
+BusinessApplyStore.prototype.updateAllApplyItemStatus = function(updateItem) {
+    var allApplyArr = this.getState().applyListObj.list;
+    this.getState().selectedDetailItem.status = updateItem.status;
+    _.forEach(allApplyArr,(item) => {
+        if (item.id === updateItem.id){
+            item.status = updateItem.status;
+        }
+    });
+
 };
 
 module.exports = alt.createStore(BusinessApplyStore, 'BusinessApplyStore');

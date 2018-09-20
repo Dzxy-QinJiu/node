@@ -41,7 +41,22 @@ class BusinessApplyManagement extends React.Component {
         // // 如果是管理员或者是销售领导，就获取要由自己审批的申请列表
         // this.getAllBusinessApplyList();
         // }
+        // LeaveApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
+
     }
+    // updateSelectedItem = (message) => {
+    //     if(message && message.status === 'success'){
+    //         //通过或者驳回申请后改变申请的状态
+    //         if (message.agree){
+    //             message.approve_details = [{user_name: userData.getUserData().user_name}];
+    //             message.update_time = moment().valueOf();
+    //             BusinessApplyAction.changeApplyAgreeStatus(message);
+    //         }
+    //     }
+    //     //todo 暂时没用到
+    //     //处理申请成功还是失败,"success"/"error"
+    //     // BusinessApplyAction.updateDealApplyError(message && message.status || this.state.dealApplyError);
+    // };
 
     getQueryParams() {
         var params = {
@@ -74,6 +89,7 @@ class BusinessApplyManagement extends React.Component {
 
     componentWillUnmount() {
         BusinessApplyStore.unlisten(this.onStoreChange);
+        // LeaveApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
     }
 
     showAddApplyPanel = () => {
@@ -240,8 +256,6 @@ class BusinessApplyManagement extends React.Component {
                         var currentClass = classNames({
                             current: obj.id === this.state.selectedDetailItem.id && i === this.state.selectedDetailItemIdx
                         });
-                        //是否有未读回复
-                        let hasUnreadReply = _.find(unreadReplyList, unreadReply => unreadReply.apply_id === obj.id);
                         return (
                             <li key={obj.id} className={currentClass}
                                 onClick={this.clickShowDetail.bind(this, obj, i)}
@@ -249,8 +263,6 @@ class BusinessApplyManagement extends React.Component {
                                 <dl>
                                     <dt>
                                         <span>{LeaveApplyUtils.getApplyTopicText(obj)}</span>
-                                        {/*hasUnreadReply ? <span className="iconfont icon-apply-message-tip"
-                                         title={Intl.get('user.apply.unread.reply', '有未读回复')}/> : null*/}
                                         <em className={btnClass}>{this.getApplyStateText(obj)}</em>
                                     </dt>
                                     <dd className="clearfix" title={_.get(obj, 'detail.customer_name')}>
@@ -315,7 +327,6 @@ class BusinessApplyManagement extends React.Component {
                     {noShowApplyDetail ? null : (
                         <ApplyViewDetail
                             detailItem={this.state.selectedDetailItem}
-                            // isUnreadDetail={this.getIsUnreadDetail()}
                             showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
                         />
                     )}

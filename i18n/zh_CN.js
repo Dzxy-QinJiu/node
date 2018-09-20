@@ -2655,8 +2655,7 @@ var zh_CN = {
     'leave.apply.select.customer': '请先选择客户',
     'leave.apply.for.city.address': '出差地点',
     'leave.apply.for.leave.time': '出差时间',
-    'leave.apply.for.application': '出差人员'
-
-
+    'leave.apply.for.application': '出差人员',
+    'leave.apply.application.status': '出差审批状态'
 };
 export default zh_CN;

@@ -37,21 +37,21 @@ module.exports = {
         }, {
             method: 'get',
             path: '/rest/apply/detail/byId',
-            handler: 'getBusinessApplyDetailById',
+            handler: 'getApplyDetailById',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'get',
-            path: '/rest/get/business_apply/comment/list',
-            handler: 'getBusinessApplyComments',
+            path: '/rest/get/apply/comment/list',
+            handler: 'getApplyComments',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'post',
-            path: '/rest/add/business_apply/comment',
-            handler: 'addBusinessApplyComments',
+            path: '/rest/add/apply/comment',
+            handler: 'addApplyComments',
             passport: {
                 needLogin: true
             },
@@ -59,6 +59,13 @@ module.exports = {
             method: 'post',
             path: '/rest/business_trip/submitApply/:id',
             handler: 'approveApplyPassOrReject',
+            passport: {
+                needLogin: true
+            },
+        }, {
+            method: 'get',
+            path: '/rest/get/apply/status/byId',
+            handler: 'getApplyStatusById',
             passport: {
                 needLogin: true
             },

@@ -3,6 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/10.
  */
+//获取全部申请列表
 let getAllApplyListAjax = null;
 exports.getAllApplyList = function(queryObj) {
     var Deferred = $.Deferred();
@@ -21,6 +22,7 @@ exports.getAllApplyList = function(queryObj) {
     });
     return Deferred.promise();
 };
+//获取自己的申请列表
 let getSelfApplyListAjax = null;
 exports.getSelfApplyList = function() {
     var Deferred = $.Deferred();
@@ -38,6 +40,7 @@ exports.getSelfApplyList = function() {
     });
     return Deferred.promise();
 };
+//获取待我审批的申请列表
 let getWorklistBusinessApplyListAjax = null;
 exports.getWorklistBusinessApplyList = function() {
     var Deferred = $.Deferred();
@@ -55,6 +58,7 @@ exports.getWorklistBusinessApplyList = function() {
     });
     return Deferred.promise();
 };
+//添加出差申请
 let addBusinessApplyAjax = null;
 exports.addBusinessApply = function(data) {
     var Deferred = $.Deferred();
@@ -97,7 +101,7 @@ exports.getBusinessApplyCommentList = function(queryObj) {
     var Deferred = $.Deferred();
     getBusinessApplyCommentListAjax && getBusinessApplyCommentListAjax.abort();
     getBusinessApplyCommentListAjax = $.ajax({
-        url: '/rest/get/business_apply/comment/list',
+        url: '/rest/get/apply/comment/list',
         type: 'get',
         data: queryObj,
         success: function(data) {
@@ -115,7 +119,7 @@ exports.addBusinessApplyComments = function(data) {
     var Deferred = $.Deferred();
     addBusinessApplyCommentsAjax && addBusinessApplyCommentsAjax.abort();
     addBusinessApplyCommentsAjax = $.ajax({
-        url: '/rest/add/business_apply/comment',
+        url: '/rest/add/apply/comment',
         dataType: 'json',
         type: 'post',
         data: data,
@@ -138,6 +142,25 @@ exports.approveApplyPassOrReject = function(id, obj) {
         dataType: 'json',
         type: 'post',
         data: obj,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//获取某个申请的状态
+let getApplyStatusByIdAjax = null;
+exports.getApplyStatusById = function(queryObj) {
+    var Deferred = $.Deferred();
+    getApplyStatusByIdAjax && getApplyStatusByIdAjax.abort();
+    getApplyStatusByIdAjax = $.ajax({
+        url: '/rest/get/apply/status/byId',
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
         success: function(data) {
             Deferred.resolve(data);
         },

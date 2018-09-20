@@ -46,22 +46,22 @@ exports.addBusinessApply = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-exports.getBusinessApplyDetailById = function(req, res) {
-    BusinessApplyService.getBusinessApplyDetailById(req, res).on('success', function(data) {
+exports.getApplyDetailById = function(req, res) {
+    BusinessApplyService.getApplyDetailById(req, res).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-exports.getBusinessApplyComments = function(req, res) {
-    BusinessApplyService.getBusinessApplyComments(req, res).on('success', function(data) {
+exports.getApplyComments = function(req, res) {
+    BusinessApplyService.getApplyComments(req, res).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-exports.addBusinessApplyComments = function(req, res) {
-    BusinessApplyService.addBusinessApplyComments(req, res).on('success', function(data) {
+exports.addApplyComments = function(req, res) {
+    BusinessApplyService.addApplyComments(req, res).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -69,6 +69,13 @@ exports.addBusinessApplyComments = function(req, res) {
 };
 exports.approveApplyPassOrReject = function(req, res) {
     BusinessApplyService.approveApplyPassOrReject(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+exports.getApplyStatusById = function(req, res) {
+    BusinessApplyService.getApplyStatusById(req, res).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
