@@ -2619,5 +2619,6 @@ var en_US = {
     'user.get.user.info.null': 'The information that gets the logged in user is empty',//获取不到登录用户的信息
     'user.info.binding.phone': 'Bind phone',//绑定手机号
     'user.info.no.set.phone': 'The user has no phone number yet, {bindPhone}',//该用户还没有手机号，{bindPhone}
+    'shear.expand': 'expand', //'展开'
 };
 export default en_US;

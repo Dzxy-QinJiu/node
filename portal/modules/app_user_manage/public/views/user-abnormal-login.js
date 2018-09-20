@@ -21,6 +21,7 @@ import { Select, Alert, Button } from 'antd';
 import UserAbnormalLoginAjax from '../ajax/user-abnormal-login-ajax';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
+import ShearContent from '../../../../components/shear-content';
 
 var Option = Select.Option;
 // 没有消息的提醒
@@ -257,7 +258,9 @@ class UserAbnormalLogin extends React.Component {
                 </dd>
                 <dt>
                     <p>
-                        {des}
+                        <ShearContent>
+                            {des}
+                        </ShearContent>
                     </p>
                 </dt>
                 <dt>{moment(item.timeStamp).format(oplateConsts.TIME_FORMAT)}</dt>

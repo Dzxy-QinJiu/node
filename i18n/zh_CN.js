@@ -2640,5 +2640,6 @@ var zh_CN = {
     'user.get.user.info.null': '获取不到登录用户的信息',
     'user.info.binding.phone': '绑定手机号',
     'user.info.no.set.phone': '该用户还没有手机号，{bindPhone}',
+    'shear.expand': '展开',
 };
 export default zh_CN;
