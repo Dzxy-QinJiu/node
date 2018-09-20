@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 const CALENDER_COLOR = {
     BORDER: '#A2A2A2',
     CONTENT: '#7190B4'
-}
+};
 
 class UserLoginAnalysis extends React.Component {
     static defaultProps = {
@@ -309,23 +309,23 @@ class UserLoginAnalysis extends React.Component {
                             {this.renderChart(loginChartInfo.loginCount, this.chartFrequencyTooltip)}
                         </div>
                     ) : (
-                            <CardContainer
-                                radioValue={radioValue}
-                                dateRange={this.state.selectValueMap[app.app_id] || 'LoginFrequency'}
-                                onDateRangeChange={this.handleSelectRadio.bind(this, app)}
-                                title={Intl.get('user.detail.loginAnalysis.title', '近一年的活跃统计')}
-                            >
-                                <div className="duration-chart">
-                                    {
-                                        this.state.selectValueMap[app.app_id] === 'loginDuration' ?
-                                            // 时长
-                                            this.renderChart(loginChartInfo.loginDuration, this.durationTooltip) :
-                                            // 次数
-                                            this.renderChart(loginChartInfo.loginCount, this.chartFrequencyTooltip)
-                                    }
-                                </div>
-                            </CardContainer>
-                        )}
+                        <CardContainer
+                            radioValue={radioValue}
+                            dateRange={this.state.selectValueMap[app.app_id] || 'LoginFrequency'}
+                            onDateRangeChange={this.handleSelectRadio.bind(this, app)}
+                            title={Intl.get('user.detail.loginAnalysis.title', '近一年的活跃统计')}
+                        >
+                            <div className="duration-chart">
+                                {
+                                    this.state.selectValueMap[app.app_id] === 'loginDuration' ?
+                                    // 时长
+                                        this.renderChart(loginChartInfo.loginDuration, this.durationTooltip) :
+                                    // 次数
+                                        this.renderChart(loginChartInfo.loginCount, this.chartFrequencyTooltip)
+                                }
+                            </div>
+                        </CardContainer>
+                    )}
                 </div>
             );
         } else {
@@ -408,7 +408,7 @@ class UserLoginAnalysis extends React.Component {
 
     showAppDetail = (app, isShow) => {
         const showDetailMap = this.state.showDetailMap;
-        showDetailMap[app.app_name] = isShow;
+        showDetailMap[app.app_id] = isShow;
         if (isShow) {
             this.getUserAnalysisData({ appid: app.app_id });
         }
@@ -434,7 +434,7 @@ class UserLoginAnalysis extends React.Component {
                         return (
                             <DetailCard
                                 key={index}
-                                titleBottomBorderNone={!this.state.showDetailMap[app.app_name]}
+                                titleBottomBorderNone={!this.state.showDetailMap[app.app_id]}
                                 title={(
                                     <div className='title-container'>
                                         <span className="logo-container" title={app.app_name}>
@@ -446,7 +446,7 @@ class UserLoginAnalysis extends React.Component {
                                         <p title={app.app_name}>{app.app_name}</p>
                                         <span className="btn-bar">
                                             {
-                                                this.state.showDetailMap[app.app_name] ?
+                                                this.state.showDetailMap[app.app_id] ?
                                                     <span className="iconfont icon-up-twoline" onClick={this.showAppDetail.bind(this, app, false)}></span> :
                                                     <span className="iconfont icon-down-twoline" onClick={this.showAppDetail.bind(this, app, true)}></span>
                                             }
@@ -454,7 +454,7 @@ class UserLoginAnalysis extends React.Component {
                                     </div>
                                 )}
                                 content={
-                                    this.state.showDetailMap[app.app_name] ?
+                                    this.state.showDetailMap[app.app_id] ?
                                         (<StatusWrapper
                                             loading={loading}
                                             size='medium'
@@ -464,10 +464,10 @@ class UserLoginAnalysis extends React.Component {
                                                     !loading && (!_.get(userInfo, 'loginInfo', 'count') && !_.get(userInfo, 'loginInfo', 'duration') ? <div className="user-no-login">
                                                         {Intl.get('user.no.login.system', '该用户还没有登录过系统')}
                                                     </div> : <div>
-                                                            {this.renderUserLoginScore(app)}
-                                                            {this.renderUserLoginInfo(app)}
-                                                            {this.renderLoginChart(app)}
-                                                        </div>)
+                                                        {this.renderUserLoginScore(app)}
+                                                        {this.renderUserLoginInfo(app)}
+                                                        {this.renderLoginChart(app)}
+                                                    </div>)
                                                 }
                                             </div>
                                         </StatusWrapper>) : null
