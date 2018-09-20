@@ -202,6 +202,10 @@ class WeeklyReportDetail extends React.Component {
                         userId={userId}
                         selectedDate={selectedDate}
                         dateRangeType='week'
+                        onChange={diffValue => {
+                            record.real_work_day -= diffValue;
+                            this.setState(this.state);
+                        }}
                     />
                 );
             }
