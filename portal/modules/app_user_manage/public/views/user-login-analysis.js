@@ -437,7 +437,7 @@ class UserLoginAnalysis extends React.Component {
                                 titleBottomBorderNone={!this.state.showDetailMap[app.app_id]}
                                 title={(
                                     <div className='title-container'>
-                                        <span className="logo-container" title={app.app_id}>
+                                        <span className="logo-container" title={app.app_name}>
                                             <DefaultUserLogoTitle
                                                 nickName={app.app_name}
                                                 userLogo={app.app_logo}
