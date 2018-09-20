@@ -69,9 +69,9 @@ function ApplyViewDetailActions() {
     };
 
     //通过或者驳回审批
-    this.approveApplyPassOrReject = function(id, obj) {
+    this.approveApplyPassOrReject = function( obj) {
         this.dispatch({loading: true, error: false});
-        BusinessApplyAjax.approveApplyPassOrReject(id, obj).then((data) => {
+        BusinessApplyAjax.approveApplyPassOrReject(obj).then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
             //更新选中的申请单类型
             // LeaveApplyUtil.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});

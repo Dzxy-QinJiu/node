@@ -57,7 +57,7 @@ module.exports = {
             },
         }, {
             method: 'post',
-            path: '/rest/business_trip/submitApply/:id',
+            path: '/rest/business_trip/submitApply',
             handler: 'approveApplyPassOrReject',
             passport: {
                 needLogin: true

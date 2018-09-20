@@ -134,11 +134,11 @@ exports.addBusinessApplyComments = function(data) {
 };
 //通过或者驳回申请
 let approveApplyPassOrRejectAjax = null;
-exports.approveApplyPassOrReject = function(id, obj) {
+exports.approveApplyPassOrReject = function(obj) {
     var Deferred = $.Deferred();
     approveApplyPassOrRejectAjax && approveApplyPassOrRejectAjax.abort();
     approveApplyPassOrRejectAjax = $.ajax({
-        url: '/rest/business_trip/submitApply/' + id,
+        url: '/rest/business_trip/submitApply',
         dataType: 'json',
         type: 'post',
         data: obj,

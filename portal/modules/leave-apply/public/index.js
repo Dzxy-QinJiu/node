@@ -72,7 +72,7 @@ class BusinessApplyManagement extends React.Component {
     }
 
     //获取全部请假申请
-    getAllBusinessApplyList() {
+    getAllBusinessApplyList = () => {
         var queryObj = this.getQueryParams();
         BusinessApplyAction.getAllApplyList(queryObj);
     }
@@ -334,7 +334,9 @@ class BusinessApplyManagement extends React.Component {
                 {this.state.showAddApplyPanel ?
                     <div className={addPanelWrap}>
                         <AddBusinessApplyPanel
-                            hideBusinessApplyAddForm={this.hideBusinessApplyAddForm}/>
+                            hideBusinessApplyAddForm={this.hideBusinessApplyAddForm}
+                            getAllApplyList={this.getAllBusinessApplyList}
+                        />
                     </div>
                     : null}
 

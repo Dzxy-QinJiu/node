@@ -455,7 +455,7 @@ class ApplyViewDetail extends React.Component {
         }
         // var selectedDetailItem = this.state.selectedDetailItem;
         var detailInfoObj = this.state.detailInfoObj.info;
-        ApplyViewDetailActions.approveApplyPassOrReject(detailInfoObj.id, {agree: approval});
+        ApplyViewDetailActions.approveApplyPassOrReject({id: detailInfoObj.id, agree: approval});
     };
     //渲染详情底部区域
     renderDetailBottom() {

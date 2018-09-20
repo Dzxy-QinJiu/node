@@ -139,7 +139,11 @@ BusinessApplyStore.prototype.updateAllApplyItemStatus = function(updateItem) {
             item.status = updateItem.status;
         }
     });
-
+};
+BusinessApplyStore.prototype.afterAddApplySuccess = function(item) {
+    this.applyListObj.list.unshift(item);
+    this.selectedDetailItem = item;
+    this.totalSize++;
 };
 
 module.exports = alt.createStore(BusinessApplyStore, 'BusinessApplyStore');

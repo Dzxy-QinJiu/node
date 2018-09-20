@@ -150,6 +150,8 @@ class AddBusinessApply extends React.Component {
                     this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
                     setTimeout(() => {
                         this.hideBusinessApplyAddForm();
+                        //todo 添加完后的处理
+                        // BusinessApplyAction.afterAddApplySuccess(data);
                     },DELAY_TIME_RANGE.CLOSE_RANGE);
                 },
                 error: (errorMsg) => {

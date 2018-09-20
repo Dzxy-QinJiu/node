@@ -19,7 +19,7 @@ var restApis = {
     //获取申请列表
     getOrAddApplyComments: '/rest/base/v1/workflow/comments',
     //通过或者驳回申请
-    approveApplyPassOrReject: '/rest/base/v1/workflow/businesstrip/approve/:id',
+    approveApplyPassOrReject: '/rest/base/v1/workflow/businesstrip/approve',
     //获取申请的状态
     getApplyStatusById: '/rest/base/v1/workflow/status',
 };
@@ -92,7 +92,7 @@ exports.addApplyComments = function(req, res) {
 exports.approveApplyPassOrReject = function(req, res) {
     return restUtil.authRest.post(
         {
-            url: restApis.approveApplyPassOrReject.replace(':id',req.params.id),
+            url: restApis.approveApplyPassOrReject,
             req: req,
             res: res
         }, req.body);
