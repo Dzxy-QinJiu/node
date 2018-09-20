@@ -5,9 +5,6 @@ var React = require('react');
 const PropTypes = require('prop-types');
 var language = require('../../../../public/language/getLanguage');
 require('../css/user-info.less');
-if (language.lan() === 'es' || language.lan() === 'en') {
-    require('../css/user-info-es.less');
-}
 import {Icon, Select, Popconfirm, message, Tabs} from 'antd';
 const TabPane = Tabs.TabPane;
 import {getPassStrenth, passwordRegex} from 'CMP_DIR/password-strength-bar';
