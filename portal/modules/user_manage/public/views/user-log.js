@@ -55,7 +55,7 @@ class UserLog extends React.Component {
 
     renderTimeLineItem = (item) => {
         let logTime = item.logTime;
-        logTime = (logTime && logTime !== 'null') ? moment(parseInt(logTime)).format(oplateConsts.DATE_TIME_FORMAT) : '';
+        logTime = (logTime && logTime !== 'null') ? moment(parseInt(logTime)).format(oplateConsts.HOUR_MUNITE_FORMAT) : '';
         return (
             <div className="log-item">
                 <div className="log-info">{item.logInfo}</div>
