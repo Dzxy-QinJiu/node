@@ -8,7 +8,7 @@ require('../css/user-info.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/user-info-es.less');
 }
-import {Spin, Icon, Pagination, Select, Alert, Popconfirm, message, Tabs} from 'antd';
+import {Icon, Select, Popconfirm, message, Tabs} from 'antd';
 const TabPane = Tabs.TabPane;
 import {getPassStrenth, passwordRegex} from 'CMP_DIR/password-strength-bar';
 var Option = Select.Option;
@@ -16,7 +16,6 @@ var hasPrivilege = require('../../../../components/privilege/checker').hasPrivil
 var HeadIcon = require('../../../../components/headIcon');
 import UserLog from './user-log';
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
-var ModalDialog = require('../../../../components/ModalDialog');
 var UserFormStore = require('../store/user-form-store');
 var UserInfoStore = require('../store/user-info-store');
 var UserInfoAjax = require('../ajax/user-ajax');
@@ -27,7 +26,6 @@ const UserData = require('PUB_DIR/sources/user-data');
 import RadioCard from '../views/radio-card';
 import {checkPhone, nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
-import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
@@ -51,7 +49,6 @@ class UserInfo extends React.Component {
         userTeamList: UserFormStore.getState().userTeamList,
         roleList: UserFormStore.getState().roleList,
         isPasswordInputShow: false,//是否展示修改密码的输入框
-        hasLog: true,
         activeKey: TAB_KEYS.BASIC_INFO_TAB,
         ...UserInfoStore.getState(),
     };
@@ -67,7 +64,6 @@ class UserInfo extends React.Component {
             getUserDetailError: nextProps.getUserDetailError,
             userIsLoading: nextProps.userIsLoading
         });
-        this.layout();
     }
 
     onChange = () => {
@@ -84,15 +80,10 @@ class UserInfo extends React.Component {
     }
 
     componentDidMount() {
-        this.layout();
         UserFormStore.listen(this.onChange);
         UserInfoStore.listen(this.onChange);
         setTimeout(() => {
             this.getUserData(this.state.userInfo);
-        });
-        $(window).resize((e) => {
-            e.stopPropagation();
-            this.layout();
         });
         var userBasicDetail = this.state.userBasicDetail;
         if (userBasicDetail.id) {
@@ -106,34 +97,8 @@ class UserInfo extends React.Component {
         if (user.id) {
             //跟据用户的id获取销售提成和比例
             UserInfoAction.getSalesGoals({user_id: user.id});
-            UserInfoAction.setLogLoading(true);
-            UserInfoAction.getLogList({
-                user_name: _.isString(user.userName) ? user.userName : user.userName.value,
-                num: this.state.logNum,
-                page_size: this.state.page_size
-            });
         }
 
-    };
-
-    layout = () => {
-        var bHeight = $('body').height();
-        var formHeight = bHeight - $('.head-image-container').outerHeight(true);
-        if (this.props.isContinueAddButtonShow) {
-            formHeight -= 80;
-        }
-        $('.log-infor-scroll').height(formHeight);
-    };
-
-    //展示是否禁用、启用的模态框
-    showForbidModalDialog = (e) => {
-        var modalStr = Intl.get('member.start.this', '启用此');
-        if (this.state.userInfo.status === 1) {
-            modalStr = Intl.get('member.stop.this', '禁用此');
-        }
-        Trace.traceEvent(e, '点击' + modalStr + '成员');
-        this.setState({modalStr: modalStr, isDel: false});
-        this.showModalDialog();
     };
 
     forbidCard = (e) => {
@@ -294,24 +259,6 @@ class UserInfo extends React.Component {
         }
     };
 
-    getRoleUserId = () => {
-        let roleList = this.state.roleList;
-        //角色列表获取出数据后再往组件里传id（避免一开始渲染的时候就传了id，取出数据后组件内相同id不重新赋值渲染的问题）
-        if (_.isArray(roleList) && roleList.length > 0) {
-            return this.state.userInfo.id;
-        }
-        return '';
-    };
-
-    getTeamUserId = () => {
-        let userTeamList = this.state.userTeamList;
-        //团队列表获取出数据后再往组件里传id（避免一开始渲染的时候就传了id，取出数据后组件内相同id不重新赋值渲染的问题）
-        if (_.isArray(userTeamList) && userTeamList.length > 0) {
-            return this.state.userInfo.id;
-        }
-        return '';
-    };
-
     uploadImg = (src) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '点击上传头像');
         let userInfo = this.state.userInfo;
@@ -352,17 +299,6 @@ class UserInfo extends React.Component {
     updateUserStatus = (userId, status) => {
         var updateObj = {id: userId, status: status};
         _.isFunction(this.props.updateUserStatus) && this.props.updateUserStatus(updateObj);
-    };
-
-    //展示模态框
-    showModalDialog = () => {
-        UserInfoAction.showModalDialog();
-    };
-
-    //隐藏模态框
-    hideModalDialog = () => {
-        Trace.traceEvent($('.log-infor-scroll'), '关闭模态框');
-        UserInfoAction.hideModalDialog();
     };
 
     cancelEditIcon = () => {
@@ -617,120 +553,6 @@ class UserInfo extends React.Component {
         );
     }
 
-    renderContent() {
-        //当前要展示的信息
-        var userInfo = this.state.userInfo;
-        let user_id = userInfo.id;
-        let loginUserInfo = UserData.getUserData();
-        //个人日志
-        var logItems = [];
-        var logList = this.state.logList;
-        if (this.state.getLogErrorMsg) {
-            //错误提示
-            logItems = this.state.getLogErrorMsg;
-        } else if (_.isArray(logList) && logList.length > 0) {
-            for (var i = 0, iLen = logList.length; i < iLen; i++) {
-                logItems.push(<UserLog key={i} log={logList[i]}/>);
-            }
-        } else {
-            logItems = Intl.get('common.no.data', '暂无数据');
-        }
-        var modalContent = Intl.get('member.is.or.not', '是否{modalStr}{modalType}', {
-            'modalStr': this.state.modalStr,
-            'modalType': Intl.get('member.member', '成员')
-        });
-        var className = 'right-panel-content';
-
-        if (!this.props.userInfoShow && this.props.userFormShow) {
-            //展示form面板时，整体左移
-            className += ' right-panel-content-slide';
-        }
-
-        var userName = this.state.userInfo.userName ? this.state.userInfo.userName : '';
-        let isSales = false;
-        if (_.isArray(userInfo.roleNames) && userInfo.roleNames.length) {
-            if (_.indexOf(userInfo.roleNames, Intl.get('sales.home.sales', '销售')) > -1) {
-                //是否是销售角色
-                isSales = true;
-            }
-        }
-        var commissionRadio = '', recordId = '',
-            saleGoalsAndCommissionRadio = this.state.saleGoalsAndCommissionRadio, newCommissionRatio = '',
-            renewalCommissionRatio = '';
-        if ((saleGoalsAndCommissionRadio.commission_ratio && saleGoalsAndCommissionRadio.commission_ratio > -1) || saleGoalsAndCommissionRadio.commission_ratio === 0) {
-            //提成比例
-            commissionRadio = saleGoalsAndCommissionRadio.commission_ratio;
-        }
-        if ((saleGoalsAndCommissionRadio.new_commission_ratio && saleGoalsAndCommissionRadio.new_commission_ratio > -1) || saleGoalsAndCommissionRadio.new_commission_ratio === 0) {
-            //新签提成比例,该字段存在，并且不为-1的时候，才进行赋值
-            newCommissionRatio = saleGoalsAndCommissionRadio.new_commission_ratio;
-        }
-        if ((saleGoalsAndCommissionRadio.renewal_commission_ratio && saleGoalsAndCommissionRadio.renewal_commission_ratio > -1) || saleGoalsAndCommissionRadio.renewal_commission_ratio === 0) {
-            //续约提成比例，该字段存在，并且不为-1的时候，才进行赋值
-            renewalCommissionRatio = saleGoalsAndCommissionRadio.renewal_commission_ratio;
-        }
-        if (saleGoalsAndCommissionRadio.id) {
-            //某条销售目标和提成比例的id
-            recordId = saleGoalsAndCommissionRadio.id;
-        }
-
-        return (
-            <div className={className} data-tracename="成员详情">
-                <div className="log-infor-scroll">
-                    <GeminiScrollbar className="geminiScrollbar-vertical">
-                        <div className="card-infor-list" id="member-infor-list">
-                            {this.state.getUserDetailError ? (<div className="card-detail-error">
-                                <Alert message={this.state.getUserDetailError}
-                                    type="error" showIcon/>
-                            </div>) : null}
-                            {this.state.userIsLoading ? (
-                                <Spin size="small"/>) : this.renderUserItems(userInfo)
-                            }
-                        </div>
-                        <div className="radio-container-wrap">
-                            {isSales ?
-                                <RadioCard
-                                    id={recordId}
-                                    commissionRadio={commissionRadio}
-                                    newCommissionRatio={newCommissionRatio}
-                                    renewalCommissionRatio={renewalCommissionRatio}
-                                    userInfo={this.state.userInfo}
-                                    setSalesGoals={UserInfoAjax.setSalesGoals}
-                                /> : null}
-                        </div>
-                        <div className="log-infor-list" style={{display: this.state.hasLog ? 'block' : 'none'}}>
-                            <div className="log-infor-title">
-                                <ReactIntl.FormattedMessage id="member.operation.log" defaultMessage="操作日志"/></div>
-                            <div className="log-list-content">{
-                                this.state.logIsLoading ? (
-                                    <Spin size="small"/>) : logItems
-                            }
-                            </div>
-                            {this.state.logTotal / this.state.page_size > 1 ? (
-                                <Pagination current={this.state.logNum} total={this.state.logTotal}
-                                    pageSize={this.state.page_size} size="small"
-                                    onChange={this.changeLogNum}/>) : ''}
-                        </div>
-                    </GeminiScrollbar>
-                </div>
-                {this.props.isContinueAddButtonShow ? (
-                    <div className="btn-add-member" onClick={this.props.showEditForm.bind(null, 'add')}>
-                        <Icon type="plus"/><span><ReactIntl.FormattedMessage id="common.add.member"
-                            defaultMessage="添加成员"/></span>
-                    </div>
-                ) : null}
-                <ModalDialog modalContent={modalContent}
-                    modalShow={this.state.modalDialogShow}
-                    container={this}
-                    hideModalDialog={this.hideModalDialog}
-                    delete={(e) => {
-                        this.forbidCard(e);
-                    }}
-                />
-            </div>
-        );
-    }
-
     //切换tab时的处理
     changeActiveKey = (key) => {
         let keyName = key === TAB_KEYS.BASIC_INFO_TAB ? '基本信息' : '操作日志';
@@ -762,7 +584,7 @@ class UserInfo extends React.Component {
                         title={Intl.get('member.status.eidt.tip', '确定要{status}该成员？', {
                             status: userInfo.status === 0 ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用')
                         })}>
-                        <span className={iconCls} onClick={this.showForbidModalDialog.bind(this)}
+                        <span className={iconCls}
                             title={userInfo.status === 0 ? Intl.get('common.stop', '停用') : Intl.get('common.enabled', '启用')}/>
                     </Popconfirm>
                 </StatusWrapper>
