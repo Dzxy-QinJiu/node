@@ -10,6 +10,7 @@ import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import Spinner from 'CMP_DIR/spinner';
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
+import ShearContent from '../../../../../components/shear-content';
 
 class Dynamic extends React.Component {
     state = {
@@ -56,7 +57,9 @@ class Dynamic extends React.Component {
         return (
             <dl>
                 <dd>
-                    {item.message}
+                    <ShearContent>
+                        {item.message}
+                    </ShearContent>
                     {item.relate_id && item.relate_name ?
                         <span className="relate-name" onClick={this.showClueDetailOut.bind(this, item.relate_id)}>{item.relate_name}</span>
                         : null}

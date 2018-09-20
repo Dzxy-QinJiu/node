@@ -19,6 +19,7 @@ var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var Spinner = require('../../../../components/spinner');
 import { Select, Alert } from 'antd';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
+import ShearContent from '../../../../components/shear-content';
 var Option = Select.Option;
 //高度常量
 var LAYOUT_CONSTANTS = {
@@ -174,7 +175,11 @@ class UserDetailChangeRecord extends React.Component {
         return (
             <dl>
                 <dd>
-                    <p>{desc}</p>
+                    <p>
+                        <ShearContent>
+                            {desc}
+                        </ShearContent>
+                    </p>
                 </dd>
                 <dt>{moment(item.record_time).format(oplateConsts.TIME_FORMAT)}</dt>
             </dl>
