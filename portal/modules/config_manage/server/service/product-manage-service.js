@@ -8,7 +8,7 @@ var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 
 const productRestApis = {
-    product: ' /rest/base/v1/products'
+    product: '/rest/base/v1/products'
 };
 
 //获取产品列表

@@ -12,22 +12,25 @@ import {Icon, Alert} from 'antd';
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
 
 class CustomerStageManage extends React.Component {
-    state = {
-        //阶段列表
-        stageList: [],
-        //点击竞品添加按钮的loading效果是否显示
-        isAddloading: false,
-        //当前正在删除的阶段
-        DeletingItem: '',
-        //点击刷新按钮的loading效果是否显示
-        isRefreshLoading: false,
-        //加载失败的提示信息
-        getErrMsg: '',
-        //添加失败的信息
-        addErrMsg: '',
-        // 删除阶段失败
-        deleteErrMsg: '',
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            //阶段列表
+            stageList: [],
+            //点击竞品添加按钮的loading效果是否显示
+            isAddloading: false,
+            //当前正在删除的阶段
+            DeletingItem: '',
+            //点击刷新按钮的loading效果是否显示
+            isRefreshLoading: false,
+            //加载失败的提示信息
+            getErrMsg: '',
+            //添加失败的信息
+            addErrMsg: '',
+            // 删除阶段失败
+            deleteErrMsg: '',
+        };
+    }
 
     //获取阶段列表
     getStageList = () => {
@@ -40,7 +43,7 @@ class CustomerStageManage extends React.Component {
             dateType: 'json',
             success: (data) => {
                 this.setState({
-                    stageList: data ? data.result : [],
+                    stageList: _.isArray(data) ? data : [],
                     isRefreshLoading: false
                 });
             },
@@ -114,9 +117,11 @@ class CustomerStageManage extends React.Component {
             dateType: 'json',
             data: {stage},
             success: (result) => {
-                //数组开头添加输入的阶段
-                let stageList = this.state.stageList;
-                stageList.unshift(stage);
+                let stageList = this.state.stageList || [];
+                if (result) {
+                    //数组开头添加输入的阶段
+                    stageList.unshift(stage);
+                }
                 this.setState({
                     stageList,
                     isAddloading: false

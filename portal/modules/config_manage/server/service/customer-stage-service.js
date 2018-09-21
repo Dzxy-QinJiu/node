@@ -8,7 +8,7 @@ var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 
 const CustomerStageRestApis = {
-    cutomerStage: '/rest/customer/v2/customer/customer_conf'
+    cutomerStage: '/rest/customer/v2/customer_conf'
 };
 
 //获取客户阶段列表
@@ -25,7 +25,7 @@ exports.addCustomerStage = function(req, res, obj) {
         url: CustomerStageRestApis.cutomerStage,
         req: req,
         res: res
-    }, [obj.product]);
+    }, [obj.stage]);
 };
 //删除客户阶段
 exports.deleteCustomerStage = function(req, res, stage) {

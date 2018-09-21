@@ -12,22 +12,25 @@ import {Icon, Alert} from 'antd';
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
 
 class ProductManage extends React.Component {
-    state = {
-        //产品列表
-        productList: [],
-        //点击产品添加按钮的loading效果是否显示
-        isAddloading: false,
-        //当前正在删除的产品
-        DeletingItem: '',
-        //点击刷新按钮的loading效果是否显示
-        isRefreshLoading: false,
-        //加载失败的提示信息
-        getErrMsg: '',
-        //添加失败的信息
-        addErrMsg: '',
-        // 删除产品失败
-        deleteErrMsg: '',
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            //产品列表
+            productList: [],
+            //点击产品添加按钮的loading效果是否显示
+            isAddloading: false,
+            //当前正在删除的产品
+            DeletingItem: '',
+            //点击刷新按钮的loading效果是否显示
+            isRefreshLoading: false,
+            //加载失败的提示信息
+            getErrMsg: '',
+            //添加失败的信息
+            addErrMsg: '',
+            // 删除产品失败
+            deleteErrMsg: '',
+        };
+    }
 
     //获取产品列表
     getProductList = () => {
@@ -40,7 +43,7 @@ class ProductManage extends React.Component {
             dateType: 'json',
             success: (data) => {
                 this.setState({
-                    productList: data ? data.result : [],
+                    productList: _.get(data, 'list', []),
                     isRefreshLoading: false
                 });
             },
@@ -68,18 +71,18 @@ class ProductManage extends React.Component {
     };
 
     //删除产品标签
-    handleDeleteItem = (item) => {
+    handleDeleteItem = (itemId) => {
         //当前正在删除的产品的id
         this.setState({
-            DeletingItem: item
+            DeletingItem: itemId
         });
         $.ajax({
-            url: '/rest/product/' + item,
+            url: '/rest/product/' + itemId,
             type: 'delete',
             dateType: 'json',
             success: (result) => {
                 //在数组中删除当前正在删除的产品
-                let productList = _.filter(this.state.productList, (product) => product !== item);
+                let productList = _.filter(this.state.productList, (product) => product.id !== itemId);
                 this.setState({
                     DeletingItem: '',
                     productList
@@ -114,14 +117,16 @@ class ProductManage extends React.Component {
             dateType: 'json',
             data: {name: product},
             success: (result) => {
-                //数组开头添加输入的产品
-                this.state.productList.unshift(product);
+                let productList = this.state.productList || [];
+                if (result) {
+                    //数组开头添加输入的产品
+                    productList.unshift(result);
+                    this.refs.addProduct.value = '';
+                }
                 this.setState({
-                    productList: this.state.productList,
+                    productList,
                     isAddloading: false
                 });
-                this.refs.addProduct.value = '';
-
             },
             error: (errorInfo) => {
                 this.setState({
@@ -180,12 +185,12 @@ class ProductManage extends React.Component {
                     return (
                         <li className="mb-tag" key={index}>
                             <div className="mb-tag-content">
-                                <span className="mb-tag-text">{item}</span>&nbsp;&nbsp;
+                                <span className="mb-tag-text">{item.name}</span>&nbsp;&nbsp;
                                 <span className="glyphicon glyphicon-remove mb-tag-remove"
-                                    onClick={this.handleDeleteItem.bind(this, item)}
+                                    onClick={this.handleDeleteItem.bind(this, item.id)}
                                     data-tracename="点击删除某个产品按钮"
                                 />
-                                { this.state.DeletingItem === item ? (
+                                { this.state.DeletingItem === item.id ? (
                                     <Icon type="loading"/>
                                 ) : null}
                             </div>
