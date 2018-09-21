@@ -310,8 +310,8 @@ class ClueDetailOverview extends React.Component {
     handleAssociatedCustomer = (submitObj, successFunc, errorFunc) => {
         var curClueDetail = this.state.curClue;
         clueCustomerAction.setClueAssociatedCustomer(submitObj, (result) => {
-            if (result && result.errorMsg) {
-                if (_.isFunction(errorFunc)) errorFunc(result.errorMsg);
+            if (_.isString(result)) {
+                if (_.isFunction(errorFunc)) errorFunc(result);
             } else {
                 if (_.isFunction(successFunc)) successFunc();
                 curClueDetail.customer_id = submitObj.customer_id;
@@ -895,6 +895,28 @@ class ClueDetailOverview extends React.Component {
         );
     }
 }
+ClueDetailOverview.defaultProps = {
+    curClue: {},
+    divHeight: '',
+    clueSourceArray: [],
+    accessChannelArray: [],
+    clueClassifyArray: [],
+    updateClueSource: function() {},
+    updateClueChannel: function() {},
+    updateClueClassify: function() {},
+    salesManList: []
+};
+ClueDetailOverview.propTypes = {
+    curClue: PropTypes.object,
+    divHeight: PropTypes.string,
+    clueSourceArray: PropTypes.object,
+    accessChannelArray: PropTypes.object,
+    clueClassifyArray: PropTypes.object,
+    updateClueSource: PropTypes.func,
+    updateClueChannel: PropTypes.func,
+    updateClueClassify: PropTypes.func,
+    salesManList: PropTypes.object
+};
 
 module.exports = ClueDetailOverview;
 
