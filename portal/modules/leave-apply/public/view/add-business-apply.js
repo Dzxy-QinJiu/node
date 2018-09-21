@@ -42,12 +42,17 @@ class AddBusinessApply extends React.Component {
                 end_time: DateSelectorUtils.getMilliseconds(timeRange.end_time,true),//出差结束时间
                 customer_id: '',
                 customer_name: '',
-                reason: INITIALDESC,
+                reason: '',
                 milestone: '',
                 province: '',
                 city: '',
                 county: '',
-                address: ''
+                address: '',
+                customers: [{
+                    id: '',
+                }
+
+                ]
             },
         };
     }
@@ -367,14 +372,15 @@ class AddBusinessApply extends React.Component {
                                     </FormItem>
                                     <FormItem
                                         className="form-item-label"
-                                        label={Intl.get('leave.apply.add.leave.reason', '出差事由')}
+                                        label={Intl.get('common.remark', '备注')}
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('reason', {
-                                            initialValue: INITIALDESC
+                                            initialValue: ''
                                         })(
                                             <Input
                                                 type="textarea" id="reason" rows="3"
+                                                placeholder={Intl.get('leave.apply.fill.leave.reason','请填写出差事由')}
                                             />
                                         )}
                                     </FormItem>
