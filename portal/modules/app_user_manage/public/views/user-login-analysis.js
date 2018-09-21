@@ -287,7 +287,10 @@ class UserLoginAnalysis extends React.Component {
 
     renderLoginChart = (app) => {
         const loginChartInfo = _.get(this.state.appUserDataMap, [app.app_id, 'loginChartInfo']);
-        if (loginChartInfo.errorMsg) {
+        if (!loginChartInfo) {
+            return null;
+        }
+        if (_.get(loginChartInfo, 'errorMsg')) {
             return (
                 <div className="login-info">
                     <div className="alert-tip">
