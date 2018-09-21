@@ -3,7 +3,6 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2018/9/20.
  */
-var React = require('react');
 require('../css/index.less');
 const Spinner = require('CMP_DIR/spinner');
 const AlertTimer = require('CMP_DIR/alert-timer');
@@ -240,6 +239,5 @@ class CustomerStageManage extends React.Component {
         );
     }
 }
-
-module.exports = CustomerStageManage;
+export default CustomerStageManage;
 
