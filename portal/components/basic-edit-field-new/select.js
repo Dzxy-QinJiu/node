@@ -159,12 +159,12 @@ let BasicEditSelectField = createReactClass({
                         //多选时的处理
                         let valueNames = _.map(value, (item) => {
                             let curOptions = _.find(this.state.selectOptions, option => option.props && option.props.value === item);
-                            return _.get(curOptions,'props') ? curOptions.props.children : '';
+                            return _.get(curOptions,'props.children','');
                         });
                         displayText = _.isArray(valueNames) ? valueNames.join(',') : '';
                     } else {//单选时的处理
                         let curOptions = _.find(this.state.selectOptions, option => option.props && option.props.value === value);
-                        displayText = _.get(curOptions,'props') ? curOptions.props.children : '';
+                        displayText = _.get(curOptions,'props.children','');
                     }
                     setDisplayState(displayText);
                 }, (errorMsg) => {

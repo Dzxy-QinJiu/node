@@ -272,8 +272,6 @@ class UserManage extends React.Component {
                         userRoleList={this.state.userRoleList}
                         filterUserByRole={this.events_filterUserByRole.bind(this)}
                     />
-                    {/*<RightPanel className="white-space-nowrap" showFlag={this.state.userInfoShow}>*/}
-                    {/*</RightPanel>*/}
                     {this.state.userInfoShow ?
                         <UserInfo
                             userInfo={this.state.currentUser}

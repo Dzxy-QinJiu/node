@@ -343,10 +343,10 @@ class UserInfo extends React.Component {
                 if (!saveObj.id) {
                     saveObj.id = result.id;
                 }
-                if (result.goal || result.goal === 0) {
+                if (_.has(result,'goal')){
                     saveObj.goal = result.goal;
                 }
-                if (result.commission_ratio || result.commission_ratio === 0) {
+                if (_.has(result,'commission_ratio')){
                     saveObj.commission_ratio = result.commission_ratio;
                 }
                 this.setState({
@@ -691,15 +691,15 @@ class UserInfo extends React.Component {
             var commissionRadio = '', recordId = '',
                 saleGoalsAndCommissionRadio = this.state.saleGoalsAndCommissionRadio, newCommissionRatio = '',
                 renewalCommissionRatio = '';
-            if ((saleGoalsAndCommissionRadio.commission_ratio && saleGoalsAndCommissionRadio.commission_ratio > -1) || saleGoalsAndCommissionRadio.commission_ratio === 0) {
+            if (saleGoalsAndCommissionRadio.commission_ratio > -1) {
                 //提成比例
                 commissionRadio = saleGoalsAndCommissionRadio.commission_ratio;
             }
-            if ((saleGoalsAndCommissionRadio.new_commission_ratio && saleGoalsAndCommissionRadio.new_commission_ratio > -1) || saleGoalsAndCommissionRadio.new_commission_ratio === 0) {
+            if (saleGoalsAndCommissionRadio.new_commission_ratio > -1) {
                 //新签提成比例,该字段存在，并且不为-1的时候，才进行赋值
                 newCommissionRatio = saleGoalsAndCommissionRadio.new_commission_ratio;
             }
-            if ((saleGoalsAndCommissionRadio.renewal_commission_ratio && saleGoalsAndCommissionRadio.renewal_commission_ratio > -1) || saleGoalsAndCommissionRadio.renewal_commission_ratio === 0) {
+            if (saleGoalsAndCommissionRadio.renewal_commission_ratio > -1) {
                 //续约提成比例，该字段存在，并且不为-1的时候，才进行赋值
                 renewalCommissionRatio = saleGoalsAndCommissionRadio.renewal_commission_ratio;
             }
