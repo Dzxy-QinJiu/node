@@ -235,7 +235,7 @@ class SalesClueItem extends React.Component {
                     //如果角色是管理员，并且该线索之前的状态是待分配状态
                     //或者  如果角色是销售人员，并且该线索之前的状态是待跟进状态
                     //标记为无效后 ,把全局上未处理的线索数量要减一
-                    if (Oplate && Oplate.unread && ((userData.hasRole(userData.ROLE_CONSTANS.SALES) && curClue.status === SELECT_TYPE.WILL_TRACE) || (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) && salesClueItemDetail.status === SELECT_TYPE.WILL_DISTRIBUTE))) {
+                    if (Oplate && Oplate.unread && ((userData.hasRole(userData.ROLE_CONSTANS.SALES) && salesClueItemDetail.status === SELECT_TYPE.WILL_TRACE) || (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) && salesClueItemDetail.status === SELECT_TYPE.WILL_DISTRIBUTE))) {
                         Oplate.unread['unhandleClue'] -= 1;
                         if (timeoutFunc) {
                             clearTimeout(timeoutFunc);
@@ -363,7 +363,7 @@ class SalesClueItem extends React.Component {
         var handlePersonName = _.get(salesClueItem,'user_name');//当前跟进人
         var cls = 'foot-text-content';
         //是否有标记线索无效的权限
-        var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
+        var avalibilityPrivilege = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
         //分配线索给销售的权限
         var hasAssignedPrivilege = hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales);
         //是否有修改线索关联客户的权利
@@ -433,7 +433,7 @@ class SalesClueItem extends React.Component {
                         onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</Button>
                     : null}
                 {associatedPrivilege && !isWillDistributeClue ? <Button onClick={this.handleAssociateCustomer.bind(this, salesClueItem)} data-tracename="点击关联客户按钮">{Intl.get('clue.customer.associate.customer', '关联客户')}</Button> : null}
-                {avalibility ? (salesClueItem.availability === '1' ? <Button className="cancel-invalid" onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)}
+                {avalibilityPrivilege ? (salesClueItem.availability === '1' ? <Button className="cancel-invalid" onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)}
                     data-tracename="取消判定线索无效">
                     {Intl.get('clue.cancel.set.invalid', '取消无效')}
                 </Button> : <Button onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)} data-tracename="点击线索无效" disabled={this.state.isInvalidClue}>{Intl.get('sales.clue.is.enable', '无效')}{this.state.isInvalidClue ? <Icon type="loading"/> : null}</Button>) : null}
