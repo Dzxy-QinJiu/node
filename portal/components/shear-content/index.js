@@ -37,7 +37,7 @@ class ShearContent extends React.Component {
     handleShear($dom) {
         shear($dom, this.props.rowsNum,
             `<span class='append-btn-bar'>
-        ...<span class="append-icon shear-expand-btn">${Intl.get('shear.expand', '展开')}</span>
+        ... <span class="append-icon shear-expand-btn">${Intl.get('shear.expand', '展开')}</span>
         </span>`);
     }
     showDetail(isShow, e) {

@@ -561,7 +561,9 @@ class CustomerRecord extends React.Component {
                     <div className="report-content-descr">
                         {platformName ? `[${platformName}] ` : ''}
                         <a href={reportUrl}>{reportUrl}</a>
-                        {decodeHTML(reportContent)}
+                        <ShearContent>
+                            {decodeHTML(reportContent)}
+                        </ShearContent>
                     </div>
                     <div>
                         <a onClick={this.openSourceUrl.bind(this, reportDoc.url)}>{Intl.get('crm.trace.report.source', '原文')}</a>
