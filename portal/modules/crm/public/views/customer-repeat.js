@@ -436,6 +436,11 @@ class CustomerRepeat extends React.Component {
         </div>);
     }
 }
-
+CustomerRepeat.propTypes = {
+    setInitialRepeatList: PropTypes.bool,
+    initialRepeatObj: PropTypes.object,
+    closeRepeatCustomer: PropTypes.func,
+    noNeedClose: PropTypes.bool,
+}
 module.exports = CustomerRepeat;
 
