@@ -45,6 +45,7 @@ var userData = require('PUB_DIR/sources/user-data');
 const userInfo = userData.getUserData();
 const COMMON_OTHER_ITEM = 'otherSelectedItem';
 import {OTHER_FILTER_ITEMS, DAY_TIME} from 'PUB_DIR/sources/utils/consts';
+import ShearContent from 'CMP_DIR/shear-content';
 
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -1376,7 +1377,9 @@ class Crm extends React.Component {
                 dataIndex: 'contact_way',
                 className: 'column-contact-way  table-data-align-right',
                 render: (text, record, index) => {
-                    return this.getContactList(text, record, index);
+                    return <ShearContent>
+                        {this.getContactList(text, record, index)}
+                    </ShearContent>;
                 }
             },
 
@@ -1410,7 +1413,11 @@ class Crm extends React.Component {
                     return (
                         <span>
                             <div className="last-contact-time">{time}</div>
-                            <span title={last_contact} className="comments-fix">{last_contact} </span>
+                            <span title={last_contact} className="comments-fix">
+                                <ShearContent>
+                                    {last_contact}    
+                                </ShearContent>
+                            </span>
                         </span>
                     );
                 }

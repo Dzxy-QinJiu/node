@@ -34,6 +34,7 @@ import {decodeHTML} from 'PUB_DIR/sources/utils/common-method-util';
 import crmAjax from '../../ajax/index';
 import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
+import ShearContent from '../../../../../components/shear-content';
 
 var classNames = require('classnames');
 //用于布局的高度
@@ -560,7 +561,9 @@ class CustomerRecord extends React.Component {
                     <div className="report-content-descr">
                         {platformName ? `[${platformName}] ` : ''}
                         <a href={reportUrl}>{reportUrl}</a>
-                        {decodeHTML(reportContent)}
+                        <ShearContent>
+                            {decodeHTML(reportContent)}
+                        </ShearContent>
                     </div>
                     <div>
                         <a onClick={this.openSourceUrl.bind(this, reportDoc.url)}>{Intl.get('crm.trace.report.source', '原文')}</a>
@@ -616,7 +619,9 @@ class CustomerRecord extends React.Component {
             <div className={classNames('trace-item-content', {'day-split-line': hasSplitLine})}>
                 <p className="item-detail-tip">
                     <span className="icon-container" title={title}><i className={iconClass}></i></span>
-                    <span>{traceDsc}</span>
+                    <ShearContent>
+                        <span>{traceDsc}</span>
+                    </ShearContent>
                     {(item.type === 'phone' || item.type === 'app') && this.state.callNumber ?
                         <i className="iconfont icon-call-out call-out"
                             title={Intl.get('crm.click.call.phone', '点击拨打电话')}
@@ -624,10 +629,13 @@ class CustomerRecord extends React.Component {
                 </p>
                 {item.type === 'data_report' ? this.renderReportContent(item) : (<div>
                     <div className="item-detail-content" id={item.id}>
-                        {item.remark ? item.remark : ( item.showAdd ? null :
-                            <span className="add-detail-tip" onClick={this.addDetailContent.bind(this, item)}>
-                                {Intl.get('click.to.add.trace.detail', '请点击此处补充跟进内容')}
-                            </span>)}
+                        {item.remark ? 
+                            <ShearContent>
+                                {item.remark}
+                            </ShearContent> : ( item.showAdd ? null :
+                                <span className="add-detail-tip" onClick={this.addDetailContent.bind(this, item)}>
+                                    {Intl.get('click.to.add.trace.detail', '请点击此处补充跟进内容')}
+                                </span>)}
                         {item.showAdd ? this.renderAddDetail(item) : null}
                     </div>
                     <div className="item-bottom-content">
@@ -897,6 +905,15 @@ class CustomerRecord extends React.Component {
         );
     }
 }
-
+CustomerRecord.propTypes = {
+    curCustomer: PropTypes.object,
+    callNumber: PropTypes.string,
+    isOverViewPanel: PropTypes.bool,
+    refreshSrollbar: PropTypes.func,
+    refreshCustomerList: PropTypes.func,
+    getCallNumberError: PropTypes.string,
+    changeActiveKey: PropTypes.func,
+    isMerge: PropTypes.bool,
+};
 module.exports = CustomerRecord;
 

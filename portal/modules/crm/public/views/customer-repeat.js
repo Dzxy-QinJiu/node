@@ -18,6 +18,7 @@ import classNames from 'classnames';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 let PrivilegeChecker = Privilege.PrivilegeChecker;
 import Trace from 'LIB_DIR/trace';
+import ShearContent from '../../../../components/shear-content';
 
 let CONSTANTS = {
     PADDING_TOP: 84,
@@ -309,14 +310,18 @@ class CustomerRepeat extends React.Component {
                 </Col>
                 <Col span={2} className="repeat-customer-col">{customer.contact_name}</Col>
                 <Col span={3} className="repeat-customer-col">
-                    {this.renderContactWay(customer)}
+                    <ShearContent>
+                        {this.renderContactWay(customer)}
+                    </ShearContent>
                 </Col>
                 <Col span={2} className="repeat-customer-col">{customer.sales_stage}</Col>
                 <Col span={2} className="repeat-customer-col">{customer.user_name}</Col>
                 <Col span={2} className="repeat-customer-col">{customer.start_time_str}</Col>
                 <Col span={2} className="repeat-customer-col">{customer.last_contact_time_str}</Col>
                 <Col span={5} className="repeat-customer-col comments-fix">
-                    {customer.customer_trace}
+                    <ShearContent>
+                        {customer.customer_trace}
+                    </ShearContent>
                 </Col>
                 <Col span={1}>
                     <PrivilegeChecker check="CUSTOMER_DELETE">
@@ -431,6 +436,11 @@ class CustomerRepeat extends React.Component {
         </div>);
     }
 }
-
+CustomerRepeat.propTypes = {
+    setInitialRepeatList: PropTypes.bool,
+    initialRepeatObj: PropTypes.object,
+    closeRepeatCustomer: PropTypes.func,
+    noNeedClose: PropTypes.bool,
+};
 module.exports = CustomerRepeat;
 

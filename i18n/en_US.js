@@ -2635,6 +2635,7 @@ var en_US = {
     'user.get.user.info.null': 'The information that gets the logged in user is empty',//获取不到登录用户的信息
     'user.info.binding.phone': 'Bind phone',//绑定手机号
     'user.info.no.set.phone': 'The user has no phone number yet, {bindPhone}',//该用户还没有手机号，{bindPhone}
+    'shear.expand': 'expand', //'展开'
     'crm.order.stage.manage': 'Order stage management',//订单阶段管理
     'crm.order.stage.add': 'Add Order stage',//添加订单阶段
     'crm.order.stage.edit': 'Edit Order stage',//编辑订单阶段

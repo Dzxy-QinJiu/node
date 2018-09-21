@@ -16,6 +16,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import ShearContent from '../../../../../components/shear-content';
 
 
 class Dynamic extends React.Component {
@@ -100,7 +101,9 @@ class Dynamic extends React.Component {
         return (
             <dl>
                 <dd>
-                    {item.message}
+                    <ShearContent>
+                        {item.message}
+                    </ShearContent>
                     {item.relate_name && item.relate_id ? <span className="relete-name" onClick={this.showCustomerDetail.bind(this, item.relate_id)} data-tracename="查看客户详情">{item.relate_name}</span> : null}
                 </dd>
                 <dt>{moment(item.date).format(oplateConsts.TIME_FORMAT)}</dt>
@@ -152,7 +155,10 @@ class Dynamic extends React.Component {
         );
     }
 }
-
+Dynamic.propTypes = {
+    divHeight: PropTypes.number,
+    currentId: PropTypes.string,
+};
 module.exports = Dynamic;
 
 
