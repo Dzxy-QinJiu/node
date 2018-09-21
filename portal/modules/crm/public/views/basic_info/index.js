@@ -6,7 +6,7 @@ var CrmOverviewActions = require('../../action/basic-overview-actions');
 var SalesTeamStore = require('../../../../sales_team/public/store/sales-team-store');
 var PrivilegeChecker = require('../../../../../components/privilege/checker').PrivilegeChecker;
 let hasPrivilege = require('../../../../../components/privilege/checker').hasPrivilege;
-import {Tag} from 'antd';
+import {Tag, Dropdown, Menu, message} from 'antd';
 var history = require('../../../../../public/sources/history');
 let NameTextareaField = require('./name-textarea-field');
 let CrmAction = require('../../action/crm-actions');
@@ -19,7 +19,7 @@ import CrmBasicAjax from '../../ajax/index';
 import userData from 'PUB_DIR/sources/user-data';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import Trace from 'LIB_DIR/trace';
-
+let customerLabelList = [];//存储客户阶段的列表
 class BasicData extends React.Component {
     state = {
         ...CrmOverviewStore.getState(),
@@ -28,7 +28,10 @@ class BasicData extends React.Component {
         editNameFlag: false,//编辑客户名的标识
         editBasicFlag: false,//编辑客户基本信息的标识
         isLoadingIndustryList: false,
-        industryList: []
+        industryList: [],
+        isCustomerLabelLoading: false,
+        customerLabelList: customerLabelList,
+        isSavingCustomerLabel: false
     };
 
     onChange = () => {
@@ -39,6 +42,12 @@ class BasicData extends React.Component {
         CrmOverviewStore.listen(this.onChange);
         CrmOverviewActions.getBasicData(this.props.curCustomer);
         this.getIndustryList();
+        if (this.hasEditCutomerLabelPrivilege()) {
+            //如果已经获取过客户标签后，不用再获取
+            if (!_.get(customerLabelList, '[0]')) {
+                this.getCustomerLabelList();
+            }
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -51,8 +60,35 @@ class BasicData extends React.Component {
         }
     }
 
+    hasEditCutomerLabelPrivilege() {
+        return hasPrivilege('CRM_MANAGER_UPDATE_CUSTOMER_LABEL') || hasPrivilege('CRM_USER_UPDATE_CUSTOMER_LABEL');
+    }
+
     componentWillUnmount() {
         CrmOverviewStore.unlisten(this.onChange);
+    }
+
+    getCustomerLabelList() {
+        this.setState({
+            isCustomerLabelLoading: true
+        });
+        $.ajax({
+            url: '/rest/customer_stage',
+            type: 'get',
+            dateType: 'json',
+            success: (data) => {
+                customerLabelList = _.isArray(data) ? data : customerLabelList;
+                this.setState({
+                    customerLabelList: customerLabelList,
+                    isCustomerLabelLoading: false
+                });
+            },
+            error: (errorMsg) => {
+                this.setState({
+                    isCustomerLabelLoading: false
+                });
+            }
+        });
     }
 
     //获取行业列表
@@ -188,6 +224,56 @@ class BasicData extends React.Component {
         });
     };
 
+    getEditCustomerLabelType() {
+        let type = 'user';//'CRM_USER_UPDATE_CUSTOMER_LABEL'
+        if (hasPrivilege('CRM_MANAGER_UPDATE_CUSTOMER_LABEL')) {
+            type = 'manager';
+        }
+        return type;
+    }
+
+    changeCustomerLabel = (item, key) => {
+        let basicData = this.state.basicData;
+        if (key === _.get(basicData, 'customer_label')) return;
+        if (!_.get(basicData, 'id')) return;
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '保存客户阶段的修改');
+        let saveLabelObj = {
+            id: _.get(basicData, 'id'),
+            customer_label: key
+        };
+        if (this.props.isMerge) {
+            if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(saveLabelObj);
+            basicData.customer_label = key;
+            this.setState({basicData});
+        } else {
+            let type = this.getEditCustomerLabelType();
+            this.setState({
+                isSavingCustomerLabel: true
+            });
+            $.ajax({
+                url: `/rest/customer/v2/customer/${type}/customer_label`,
+                type: 'put',
+                dateType: 'json',
+                data: saveLabelObj,
+                success: (data) => {
+                    if (data) {
+                        basicData.customer_label = key;
+                        this.editBasicSuccess(saveLabelObj);
+                    }
+                    this.setState({
+                        basicData,
+                        isSavingCustomerLabel: false
+                    });
+                },
+                error: (errorMsg) => {
+                    this.setState({
+                        isSavingCustomerLabel: false
+                    });
+                    message.error(errorMsg || Intl.get('common.edit.failed', '修改失败'));
+                }
+            });
+        }
+    };
     //渲染客户的基本信息
     renderBasicBlock = (basicData) => {
         let level = crmUtil.filterAdministrativeLevel(basicData.administrative_level);
@@ -293,6 +379,16 @@ class BasicData extends React.Component {
             </div>);
     };
 
+
+    getCustomerLabelMenus = () => {
+        return (
+            <Menu onClick={this.changeCustomerLabel} selectedKeys={[_.get(this.state, 'basicData.customer_label', '')]}>
+                {_.map(this.state.customerLabelList, item => {
+                    return (<Menu.Item key={item}>{item}</Menu.Item>);
+                })}
+            </Menu>);
+    }
+
     render() {
         var basicData = this.state.basicData ? this.state.basicData : {};
         //是否是关注客户的标识
@@ -307,6 +403,10 @@ class BasicData extends React.Component {
             interestTitle = interestFlag ? Intl.get('crm.basic.concerned', '已关注') :
                 Intl.get('crm.basic.unconcerned', '未关注');
         }
+        let customerLabel = (
+            <Tag className={crmUtil.getCrmLabelCls(basicData.customer_label)}>
+                {basicData.customer_label ? basicData.customer_label.substr(0, 2) : ''}
+            </Tag>);
         return (
             <div className="basic-info-contianer" data-trace="客户基本信息">
                 {this.state.editNameFlag ? (
@@ -315,16 +415,18 @@ class BasicData extends React.Component {
                         updateMergeCustomer={this.props.updateMergeCustomer}
                         customerId={basicData.id}
                         name={basicData.name}
+                        customer_label={basicData.customer_label}
                         modifySuccess={this.editBasicSuccess}
                         setEditNameFlag={this.setEditNameFlag}
                         showRightPanel={this.props.showRightPanel}
                     /> ) : (
                     <div className="basic-info-title-block">
                         <div className="basic-info-name">
-                            {basicData.customer_label ? (
-                                <Tag className={crmUtil.getCrmLabelCls(basicData.customer_label)}>
-                                    {basicData.customer_label.substr(0, 1)}</Tag>) : null
-                            }
+                            {this.hasEditCutomerLabelPrivilege() ? (
+                                <Dropdown overlay={this.getCustomerLabelMenus()} trigger={['click']}
+                                    title={Intl.get('crm.customer.label.edit.tip', '点击修改客户阶段')}>
+                                    {customerLabel}
+                                </Dropdown>) : customerLabel}
                             {basicData.qualify_label ? (
                                 <Tag className={crmUtil.getCrmLabelCls(basicData.qualify_label)}>
                                     {basicData.qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
