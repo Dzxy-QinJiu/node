@@ -55,7 +55,7 @@ class ShearContent extends React.Component {
         const hideCls = classNames('cut-content', {
             'hide': this.state.showDetail
         });
-        const showCls = classNames('cut-content', {
+        const showCls = classNames('cut-content clearfix', {
             'hide': !this.state.showDetail
         });
         return (
