@@ -272,7 +272,7 @@ class UserManage extends React.Component {
                         userRoleList={this.state.userRoleList}
                         filterUserByRole={this.events_filterUserByRole.bind(this)}
                     />
-                    <RightPanel className="white-space-nowrap" showFlag={this.state.userInfoShow}>
+                    {this.state.userInfoShow ?
                         <UserInfo
                             userInfo={this.state.currentUser}
                             closeRightPanel={this.events_closeRightPanel}
@@ -282,8 +282,9 @@ class UserManage extends React.Component {
                             isContinueAddButtonShow={this.state.isContinueAddButtonShow}
                             changeUserFieldSuccess={this.changeUserFieldSuccess}
                             updateUserStatus={this.updateUserStatus}
-                        />
-                    </RightPanel>
+                            userIsLoading={this.state.userIsLoading}
+                            getUserDetailError={this.state.getUserDetailError}
+                        /> : null}
                     {this.state.userFormShow ?
                         <AddUserForm
                             formType={this.state.formType}

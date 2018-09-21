@@ -706,6 +706,16 @@ var zh_CN = {
     'member.create.time': '创建时间',
     'member.forbidden.self': '禁止禁用自己',
     'member.email.extra.tip': '邮箱会作为登录时的用户名使用',
+    'member.save.logo.tip': '是否保存上传的头像？',
+    'member.status.eidt.tip': '确定要{status}该成员？',
+    'member.phone.no.data': '未添加手机号',
+    'member.phone.add': '添加手机号',
+    'member.email.no.data': '未添加邮箱',
+    'member.phone.order.null': '暂无座席',
+    'member.sales.goal.add': '设置销售目标',
+    'member.sales.goal.no.data': '未设置销售目标',
+    'member.log.no.data': '暂无操作日志',
+
     //后台管理-成员end
     //组织管理start
     'organization.no.organization.tip': '暂无组织，请先添加',

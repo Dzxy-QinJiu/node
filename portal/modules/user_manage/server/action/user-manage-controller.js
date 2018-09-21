@@ -117,7 +117,8 @@ exports.updateUserRoles = function(req, res) {
  */
 exports.updateUserStatus = function(req, res) {
     if (req.session.user && req.session.user.userid && req.session.user.userid === req.body.id) {
-        res.status(500).json(BackendIntl.get('member.forbidden.self', '禁止禁用自己'));
+        let backendIntl = new BackendIntl();
+        res.status(500).json(backendIntl.get('member.forbidden.self', '禁止禁用自己'));
     } else {
         userManageService.updateUserStatus(req, res, req.body).on('success', function(data) {
             res.status(200).json(data);

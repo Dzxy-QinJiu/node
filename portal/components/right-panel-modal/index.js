@@ -17,7 +17,7 @@ class RightPanelModal extends React.Component {
                     <span className="iconfont icon-close close-modal-btn" onClick={this.props.onClosePanel}/>) : null}
                 <div className="right-panel-modal-content">
                     {this.props.title ? (
-                        <div className="top-title-container">
+                        <div className="right-panel-modal-title">
                             {this.props.title}
                         </div>
                     ) : null}

@@ -30,12 +30,14 @@ UserInfoStore.prototype.setInitialData = function() {
     this.logNum = 1;
     this.getUserDetailError = '';
     this.page_size = CONSTANTS.LOG_PAGE_SIZE;
+    //是否监听下拉加载的标识
+    this.listenScrollBottom = true;
 };
 UserInfoStore.prototype.changeLogNum = function(num) {
     this.logNum = num;
 };
 UserInfoStore.prototype.getSalesGoals = function(result) {
-    if (!result.loading && !result.error){
+    if (!result.loading && !result.error) {
         this.saleGoalsAndCommissionRadio = result.data;
     }
 };
@@ -53,23 +55,28 @@ UserInfoStore.prototype.setLogLoading = function(loadingState) {
         this.getLogErrorMsg = '';
         this.logNum = 1;
         this.logTotal = 0;
+        this.listenScrollBottom = true;
     }
 };
 UserInfoStore.prototype.getLogList = function(resObj) {
     var logListObj = resObj.logListObj;
-    var condition = resObj.condition;
     this.logIsLoading = false;
     if (_.isString(logListObj)) {
         this.getLogErrorMsg = logListObj;
     } else {
         this.getLogErrorMsg = '';
         this.logTotal = logListObj.total || 0;
-        var curUserName = condition.user_name;
         if (_.isArray(logListObj.list)) {
-            this.logList = logListObj.list.map(function(log) {
-                log.userName = curUserName;
-                return log;
-            });
+            if (this.logNum === 1) {
+                this.logList = logListObj.list;
+            } else {
+                this.logList = this.logList.concat(logListObj.list);
+            }
+            this.logNum++;
+        }
+        //下拉加载标识
+        if (this.logList.length >= this.logTotal) {
+            this.listenScrollBottom = false;
         }
     }
 };

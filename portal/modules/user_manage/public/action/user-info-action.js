@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2018/4/11.
  */
 var userAjax = require('../ajax/user-ajax');
+import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
 function UserInfoActions() {
     this.generateActions(
         'setInitialData',
@@ -18,11 +19,15 @@ function UserInfoActions() {
         userAjax.getLogList(condition).then((logListObj) => {
             if (_.isObject(logListObj)) {
                 this.dispatch({logListObj: logListObj,condition: condition});
+                scrollBarEmitter.emit(scrollBarEmitter.STOP_LOADED_DATA);
+                scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             } else {
                 this.dispatch( Intl.get('member.get.log.failed', '获取成员日志失败!'));
             }
         }, (errorMsg) => {
             this.dispatch(errorMsg || Intl.get('member.get.log.failed', '获取成员日志失败!'));
+            scrollBarEmitter.emit(scrollBarEmitter.STOP_LOADED_DATA);
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
         });
     };
     //获取销售目标和提成比例
