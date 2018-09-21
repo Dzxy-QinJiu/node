@@ -905,6 +905,15 @@ class CustomerRecord extends React.Component {
         );
     }
 }
-
+CustomerRecord.propTypes = {
+    curCustomer: PropTypes.object,
+    callNumber: PropTypes.string,
+    isOverViewPanel: PropTypes.bool,
+    refreshSrollbar: PropTypes.func,
+    refreshCustomerList: PropTypes.func,
+    getCallNumberError: PropTypes.string,
+    changeActiveKey: PropTypes.func,
+    isMerge: PropTypes.bool,
+};
 module.exports = CustomerRecord;
 
