@@ -1007,6 +1007,12 @@ var zh_CN = {
     'config.manage.sales.role': '销售角色管理',
     'config.manage.reload.role': '重新获取销售角色',
     'config.manage.no.role': '暂无销售角色，请添加！',
+    'config.no.customer.stage': '暂无客户阶段，请添加！',
+    'config.customer.stage.mange': '客户阶段管理',
+    'config.customer.stage.reload': '重新获取客户阶段',
+    'config.no.product': '暂无产品，请添加！',
+    'config.product.manage': '产品管理',
+    'config.product.reload': '重新获取产品',
     //配置end
     // 通话记录start
     'call.record.caller': '呼叫者',
