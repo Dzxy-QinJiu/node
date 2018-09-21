@@ -70,7 +70,7 @@ AppUserDetailStore.prototype.resetState = function() {
     this.getBatchRoleInfoResult = {
         loading: false,
         errorMsg: ''
-    }
+    };
 };
 
 //恢复默认状态
@@ -222,10 +222,21 @@ AppUserDetailStore.prototype.getBatchRoleInfo = resultHandler('getBatchRoleInfoR
                     //filter过滤没有对应角色信息的roleId
                     this.initialUser.apps[index].roleItems = app.roles.map(roleId => data.find(x => x.role_id === roleId)).filter(x => x);
                 }
-            })
+            });
         }        
     }
-})
-
+});
+//更新应用
+AppUserDetailStore.prototype.updateApp = function(appItem) {   
+    this.initialUser.apps.forEach((app, index) => {
+        if (app.app_id === appItem.app_id) {
+            this.initialUser.apps[index] = {
+                ...this.initialUser.apps[index],
+                ...appItem
+            };
+        }
+    });
+    
+};
 //使用alt导出store
 module.exports = alt.createStore(AppUserDetailStore , 'AppUserDetailStore');

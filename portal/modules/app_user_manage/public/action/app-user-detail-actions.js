@@ -35,7 +35,9 @@ function AppUserDetailAction() {
         'changeAppFieldSuccess',
         'showAppDetail',
         //存放应用角色
-        'setAppsRoles'
+        'setAppsRoles',
+        //修改单个应用
+        'updateApp'
     );
 
     //获取用户详情
