@@ -89,6 +89,8 @@ class Dynamic extends React.Component {
         );
     }
 }
-
+Dynamic.propTypes = {
+    currentId: PropTypes.string
+};
 module.exports = Dynamic;
 

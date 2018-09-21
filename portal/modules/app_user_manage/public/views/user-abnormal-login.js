@@ -380,5 +380,9 @@ class UserAbnormalLogin extends React.Component {
         );
     }
 }
-
+UserAbnormalLogin.propTypes = {
+    userId: PropTypes.string,
+    selectedAppId: PropTypes.string,
+    height: PropTypes.number,
+};
 module.exports = UserAbnormalLogin;

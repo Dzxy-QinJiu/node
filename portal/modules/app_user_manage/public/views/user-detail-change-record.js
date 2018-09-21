@@ -337,6 +337,9 @@ class UserDetailChangeRecord extends React.Component {
 
     }
 }
-
+UserDetailChangeRecord.propTypes = {
+    height: PropTypes.number,
+    userId: PropTypes.string
+};
 module.exports = UserDetailChangeRecord;
 
