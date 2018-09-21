@@ -180,14 +180,7 @@ class ApplyViewDetail extends React.Component {
                 </div>
                 <div className="customer-info-block apply-info-block">
                     <div className="apply-info-content">
-                        <div className="apply-info-label">
-                            <span className="user-info-label">
-                                {Intl.get('leave.apply.for.application', '出差人员')}:
-                            </span>
-                            <span className="user-info-text">
-                                {applicant.user_name}
-                            </span>
-                        </div>
+
                         <div className="apply-info-label">
                             <span className="user-info-label">
                                 {Intl.get('leave.apply.for.leave.time', '出差时间')}:
@@ -204,15 +197,22 @@ class ApplyViewDetail extends React.Component {
                                 {_.isEmpty(customers) ? '' : ('' + customers.province + customers.city + customers.county + customers.address)}
                             </span>
                         </div>
-                        {
-                            <div className="apply-info-label">
-                                <span className="user-info-label">
-                                    {Intl.get('leave.apply.application.status', '出差审批状态')}:
-                                </span>
-                                <span className="user-info-text">
-                                    {this.getApplyStatusText(detailInfo)}
-                                </span>
-                            </div>}
+                        <div className="apply-info-label">
+                            <span className="user-info-label">
+                                {Intl.get('leave.apply.for.application', '出差人员')}:
+                            </span>
+                            <span className="user-info-text">
+                                {applicant.user_name}
+                            </span>
+                        </div>
+                        <div className="apply-info-label">
+                            <span className="user-info-label">
+                                {Intl.get('leave.apply.application.status', '出差审批状态')}:
+                            </span>
+                            <span className="user-info-text">
+                                {this.getApplyStatusText(detailInfo)}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>);
@@ -254,8 +254,8 @@ class ApplyViewDetail extends React.Component {
                         <Table striped bordered>
                             <tbody>
                                 <tr className="apply-detail-head">
-                                    <th>{Intl.get('crm.41', '客户名')}</th>
-                                    <th>{Intl.get('leave.apply.add.leave.reason', '出差事由')}</th>
+                                    <th>{Intl.get('call.record.customer', '客户')}</th>
+                                    <th>{Intl.get('common.remark', '备注')}</th>
                                 </tr>
                                 {
                                     customersArr.map((customer) => {
