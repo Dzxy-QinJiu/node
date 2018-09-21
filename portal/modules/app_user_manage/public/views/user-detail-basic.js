@@ -33,7 +33,6 @@ const FORMAT = oplateConsts.DATE_FORMAT;
 var Ajax = require('./v3/app-role-permission/ajax');
 var appAjaxTrans = require('MOD_DIR/common/public/ajax/app');
 import {CONSTANTS} from '../util/consts';
-
 class UserDetailBasic extends React.Component {
     static defaultProps = {
         userId: '1'
@@ -63,8 +62,16 @@ class UserDetailBasic extends React.Component {
         if(this.getRolesListPrivilege()){
             this.getBatchRoleInfo();
         }
+        //修改角色后重新查询角色
+        AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.UPDATE_APP_INFO, this.handleUpdateRolesSucceed);
     }
-
+    //修改角色后重新查询角色
+    handleUpdateRolesSucceed = ({app_info}) => {
+        AppUserDetailAction.updateApp(app_info);
+        setTimeout(() => {
+            this.getBatchRoleInfo();
+        }); 
+    }
     //获取应用的角色和权限列表
     getBatchRoleInfo = () => {
         var apps = _.get(this.state,'initialUser.apps');
@@ -153,6 +160,7 @@ class UserDetailBasic extends React.Component {
 
     componentWillUnmount() {
         AppUserDetailStore.unlisten(this.onStateChange);
+        AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.UPDATE_APP_INFO, this.getBatchRoleInfo);
         setTimeout(() => {
             AppUserDetailAction.dismiss();
         });
@@ -348,7 +356,7 @@ class UserDetailBasic extends React.Component {
     };
     renderAppRoleLists = (roleItems) => {
         if (!hasPrivilege('APP_USER_EDIT')) {
-            return null
+            return null;
         }
         return (
             <StatusWrapper
