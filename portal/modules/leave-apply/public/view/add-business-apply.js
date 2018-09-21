@@ -7,7 +7,7 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 require('../css/add-business-apply.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {Form, Input, Button, Icon,message, DatePicker} from 'antd';
+import {Form, Input, Button, Icon, message, DatePicker} from 'antd';
 const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
@@ -27,7 +27,7 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 import {AntcAreaSelection} from 'antc';
 import Trace from 'LIB_DIR/trace';
 const DELAY_TIME_RANGE = {
-    SUCCESS_RANGE: 600 ,
+    SUCCESS_RANGE: 600,
     ERROR_RANGE: 3000,
     CLOSE_RANGE: 500
 };
@@ -39,19 +39,17 @@ class AddBusinessApply extends React.Component {
             search_customer_name: '',
             formData: {
                 begin_time: DateSelectorUtils.getMilliseconds(timeRange.start_time),//出差开始时间
-                end_time: DateSelectorUtils.getMilliseconds(timeRange.end_time,true),//出差结束时间
-                customer_id: '',
-                customer_name: '',
+                end_time: DateSelectorUtils.getMilliseconds(timeRange.end_time, true),//出差结束时间
                 reason: '',
-                milestone: '',
-                province: '',
-                city: '',
-                county: '',
-                address: '',
                 customers: [{
                     id: '',
+                    name: '',
+                    province: '',
+                    city: '',
+                    county: '',
+                    address: '',
+                    remarks: ''
                 }
-
                 ]
             },
         };
@@ -70,11 +68,13 @@ class AddBusinessApply extends React.Component {
     componentWillUnmount() {
 
     }
+
     componentDidUpdate() {
         this.addLabelRequiredCls();
     }
-    addLabelRequiredCls(){
-        if (!$('.add-leave-apply-form-wrap form .customer-name label').hasClass('ant-form-item-required')){
+
+    addLabelRequiredCls() {
+        if (!$('.add-leave-apply-form-wrap form .customer-name label').hasClass('ant-form-item-required')) {
             $('.add-leave-apply-form-wrap form .customer-name label').addClass('ant-form-item-required');
         }
     }
@@ -88,7 +88,7 @@ class AddBusinessApply extends React.Component {
         formData.begin_time = moment(date).valueOf();
         this.setState({
             formData: formData
-        },() => {
+        }, () => {
             if (this.props.form.getFieldValue('end_time')) {
                 this.props.form.validateFields(['end_time'], {force: true});
             }
@@ -99,7 +99,7 @@ class AddBusinessApply extends React.Component {
         formData.end_time = moment(date).valueOf();
         this.setState({
             formData: formData
-        },() => {
+        }, () => {
             if (this.props.form.getFieldValue('begin_time')) {
                 this.props.form.validateFields(['begin_time'], {force: true});
             }
@@ -121,6 +121,7 @@ class AddBusinessApply extends React.Component {
             saveResult: saveResult
         });
     }
+
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
@@ -131,20 +132,18 @@ class AddBusinessApply extends React.Component {
                 saveMsg: '',
                 saveResult: ''
             });
-            if (values.reason){
-                formData.reason = values.reason;
+            if (values.remarks) {
+                formData.customers[0].remarks = values.remarks;
             }
-            if (values.address){
-                formData.address = values.address;
+            if (values.address) {
+                formData.customers[0].address = values.address;
             }
-            //拼接出差地址
-            let addressItem = ['province','city','county','address'];
-            _.forEach(addressItem,(key) => {
-                if (formData[key]){
-                    formData.milestone += formData[key];
+            _.forEach(formData.customers, (customerItem,index) => {
+                if (customerItem['remarks']) {
+                    formData.reason += customerItem['remarks'];
                 }
-                delete formData[key];
             });
+
             $.ajax({
                 url: '/rest/add/apply/list',
                 dataType: 'json',
@@ -157,7 +156,7 @@ class AddBusinessApply extends React.Component {
                         this.hideBusinessApplyAddForm();
                         //todo 添加完后的处理
                         // BusinessApplyAction.afterAddApplySuccess(data);
-                    },DELAY_TIME_RANGE.CLOSE_RANGE);
+                    }, DELAY_TIME_RANGE.CLOSE_RANGE);
                 },
                 error: (errorMsg) => {
                     this.setResultData(errorMsg || Intl.get('crm.154', '添加失败'), 'error');
@@ -186,23 +185,23 @@ class AddBusinessApply extends React.Component {
     };
     customerChoosen = (selectedCustomer) => {
         var formData = this.state.formData;
-        formData.customer_name = selectedCustomer.name;
-        formData.customer_id = selectedCustomer.id;
-        formData.province = selectedCustomer.province;
-        formData.city = selectedCustomer.city;
-        formData.county = selectedCustomer.county;
-        formData.address = selectedCustomer.address;
+        formData.customers[0].name = selectedCustomer.name;
+        formData.customers[0].id = selectedCustomer.id;
+        formData.customers[0].province = selectedCustomer.province;
+        formData.customers[0].city = selectedCustomer.city;
+        formData.customers[0].county = selectedCustomer.county;
+        formData.customers[0].address = selectedCustomer.address;
         this.setState({
             formData: formData
-        },() => {
+        }, () => {
             this.props.form.validateFields(['leave_for_customer'], {force: true});
         });
     };
     checkCustomerName = (rule, value, callback) => {
-        value = $.trim(_.get(this.state, 'formData.customer_id'));
+        value = $.trim(_.get(this.state, 'formData.customers[0].id'));
         if (!value) {
-            callback(new Error(Intl.get('leave.apply.select.customer','请先选择客户')));
-        }else{
+            callback(new Error(Intl.get('leave.apply.select.customer', '请先选择客户')));
+        } else {
             callback();
         }
     };
@@ -236,9 +235,9 @@ class AddBusinessApply extends React.Component {
     //更新地址
     updateLocation = (addressObj) => {
         let formData = this.state.formData;
-        formData.province = addressObj.provName || '';
-        formData.city = addressObj.cityName || '';
-        formData.county = addressObj.countyName || '';
+        formData.customers[0].province = addressObj.provName || '';
+        formData.customers[0].city = addressObj.cityName || '';
+        formData.customers[0].county = addressObj.countyName || '';
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div .ant-form-item'), '选择地址');
     };
 
@@ -283,7 +282,7 @@ class AddBusinessApply extends React.Component {
                                         {getFieldDecorator('begin_time', {
                                             rules: [{
                                                 required: true,
-                                            },{validator: _this.validateStartAndEndTime('begin_time')}],
+                                            }, {validator: _this.validateStartAndEndTime('begin_time')}],
                                             initialValue: moment()
                                         })(
                                             <DatePicker
@@ -301,7 +300,7 @@ class AddBusinessApply extends React.Component {
                                         {getFieldDecorator('end_time', {
                                             rules: [{
                                                 required: true,
-                                            },{validator: _this.validateStartAndEndTime('end_time')}],
+                                            }, {validator: _this.validateStartAndEndTime('end_time')}],
                                             initialValue: moment()
                                         })(
                                             <DatePicker
@@ -354,15 +353,16 @@ class AddBusinessApply extends React.Component {
                                         colon={false}
                                         label={Intl.get('crm.96', '地域')}
                                         placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
-                                        provName={formData.province} cityName={formData.city}
-                                        countyName={formData.county} updateLocation={this.updateLocation}/>
+                                        provName={formData.customers[0].province} cityName={formData.customers[0].city}
+                                        countyName={formData.customers[0].county}
+                                        updateLocation={this.updateLocation}/>
                                     <FormItem
                                         className="form-item-label"
                                         label={Intl.get('realm.address', '地址')}
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('address', {
-                                            initialValue: formData.address
+                                            initialValue: formData.customers[0].address
                                         })(
                                             <Input
                                                 name="address"
@@ -375,12 +375,12 @@ class AddBusinessApply extends React.Component {
                                         label={Intl.get('common.remark', '备注')}
                                         {...formItemLayout}
                                     >
-                                        {getFieldDecorator('reason', {
+                                        {getFieldDecorator('remarks', {
                                             initialValue: ''
                                         })(
                                             <Input
-                                                type="textarea" id="reason" rows="3"
-                                                placeholder={Intl.get('leave.apply.fill.leave.reason','请填写出差事由')}
+                                                type="textarea" id="remarks" rows="3"
+                                                placeholder={Intl.get('leave.apply.fill.leave.reason', '请填写出差事由')}
                                             />
                                         )}
                                     </FormItem>
@@ -398,7 +398,8 @@ class AddBusinessApply extends React.Component {
                                         <div className="indicator">
                                             {saveResult ?
                                                 (
-                                                    <AlertTimer time={saveResult === 'error' ? DELAY_TIME_RANGE.ERROR_RANGE : DELAY_TIME_RANGE.SUCCESS_RANGE}
+                                                    <AlertTimer
+                                                        time={saveResult === 'error' ? DELAY_TIME_RANGE.ERROR_RANGE : DELAY_TIME_RANGE.SUCCESS_RANGE}
                                                         message={this.state.saveMsg}
                                                         type={saveResult} showIcon
                                                         onHide={this.hideSaveTooltip}/>

@@ -15,7 +15,7 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 require('../css/business-apply-detail.less');
 import userData from 'PUB_DIR/sources/user-data';
-import {Modal} from 'react-bootstrap';
+import {Modal, Table} from 'react-bootstrap';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -166,24 +166,53 @@ class ApplyViewDetail extends React.Component {
         });
     };
 
-    renderDetailCustomerBlock(detailInfo) {
+    renderDetailApplyBlock(detailInfo) {
+        var detail = detailInfo.detail || {};
+        var applicant = detailInfo.applicant || {};
+        var beginDate = moment(detail.begin_time).format(oplateConsts.DATE_FORMAT);
+        var endDate = moment(detail.end_time).format(oplateConsts.DATE_FORMAT);
+        var isOneDay = beginDate === endDate;
+        var customers = _.get(detail, 'customers[0]', {});
         return (
             <div className="apply-detail-customer apply-detail-info">
                 <div className="customer-icon-block">
-                    <span className="iconfont icon-customer"/>
+                    <span className="iconfont icon-leave icon-leave_apply-ico"/>
                 </div>
                 <div className="customer-info-block apply-info-block">
                     <div className="apply-info-content">
-                        <div className="customer-name">
-                            <a href="javascript:void(0)"
-                                onClick={this.showCustomerDetail.bind(this, _.get(detailInfo, 'detail.customer_id'))}
-                                data-tracename="查看客户详情"
-                                title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
-                            >
-                                {_.get(detailInfo, 'detail.customer_name')}
-                                <span className="iconfont icon-arrow-right"/>
-                            </a>
+                        <div className="apply-info-label">
+                            <span className="user-info-label">
+                                {Intl.get('leave.apply.for.application', '出差人员')}:
+                            </span>
+                            <span className="user-info-text">
+                                {applicant.user_name}
+                            </span>
                         </div>
+                        <div className="apply-info-label">
+                            <span className="user-info-label">
+                                {Intl.get('leave.apply.for.leave.time', '出差时间')}:
+                            </span>
+                            <span className="user-info-text">
+                                {isOneDay ? beginDate : (beginDate + ' - ' + endDate)}
+                            </span>
+                        </div>
+                        <div className="apply-info-label">
+                            <span className="user-info-label">
+                                {Intl.get('leave.apply.for.city.address', '出差地点')}:
+                            </span>
+                            <span className="user-info-text">
+                                {_.isEmpty(customers) ? '' : ('' + customers.province + customers.city + customers.county + customers.address)}
+                            </span>
+                        </div>
+                        {
+                            <div className="apply-info-label">
+                                <span className="user-info-label">
+                                    {Intl.get('leave.apply.application.status', '出差审批状态')}:
+                                </span>
+                                <span className="user-info-text">
+                                    {this.getApplyStatusText(detailInfo)}
+                                </span>
+                            </div>}
                     </div>
                 </div>
             </div>);
@@ -212,59 +241,44 @@ class ApplyViewDetail extends React.Component {
         }
     };
 
-    renderBusinessApplyDetail(detailInfo) {
+    renderBusinessCustomerDetail(detailInfo) {
         var detail = detailInfo.detail || {};
-        var applicant = detailInfo.applicant || {};
-        var beginDate = moment(detail.begin_time).format(oplateConsts.DATE_FORMAT);
-        var endDate = moment(detail.end_time).format(oplateConsts.DATE_FORMAT);
-        var isOneDay = beginDate === endDate;
+        var customersArr = _.get(detailInfo, 'detail.customers');
         return (
             <div className="apply-detail-customer apply-detail-info">
                 <div className="leave-detail-icon-block">
-                    <span className="iconfont icon-leave icon-leave_apply-ico"/>
+                    <span className="iconfont icon-customer"/>
                 </div>
                 <div className="leave-detail-block apply-info-block">
                     <div className="apply-info-content">
-                        <div className="apply-info-label">
-                            <span className="user-info-label">
-                                {Intl.get('leave.apply.for.application', '出差人员')}:
-                            </span>
-                            <span className="user-info-text">
-                                {applicant.user_name}
-                            </span>
-                        </div>
-                        <div className="apply-info-label">
-                            <span className="user-info-label">
-                                {Intl.get('leave.apply.for.leave.time', '出差时间')}:
-                            </span>
-                            <span className="user-info-text">
-                                {isOneDay ? beginDate : (beginDate + ' - ' + endDate)}
-                            </span>
-                        </div>
-                        <div className="apply-info-label">
-                            <span className="user-info-label">
-                                {Intl.get('leave.apply.for.city.address', '出差地点')}:
-                            </span>
-                            <span className="user-info-text">
-                                {detail.milestone}
-                            </span>
-                        </div>
-                        <div className="apply-info-label">
-                            <span className="user-info-label">
-                                {Intl.get('leave.apply.add.leave.reason', '出差事由')}:
-                            </span>
-                            <span className="user-info-text">
-                                {detail.reason}
-                            </span>
-                        </div>
-                        <div className="apply-info-label">
-                            <span className="user-info-label">
-                                {Intl.get('leave.apply.application.status', '出差审批状态')}:
-                            </span>
-                            <span className="user-info-text">
-                                {this.getApplyStatusText(detailInfo)}
-                            </span>
-                        </div>
+                        <Table striped bordered>
+                            <tbody>
+                                <tr className="apply-detail-head">
+                                    <th>{Intl.get('crm.41', '客户名')}</th>
+                                    <th>{Intl.get('leave.apply.add.leave.reason', '出差事由')}</th>
+                                </tr>
+                                {
+                                    customersArr.map((customer) => {
+                                        return (
+                                            <tr key={customer.id}>
+                                                <td className='apply-customer-name'>
+                                                    <a href="javascript:void(0)"
+                                                        onClick={this.showCustomerDetail.bind(this, customer.id)}
+                                                        data-tracename="查看客户详情"
+                                                        title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
+                                                    >
+                                                        {customer.name}
+                                                    </a>
+                                                </td>
+                                                <td className="apply-remarks">
+                                                    {customer.remarks}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                }
+                            </tbody>
+                        </Table>
                     </div>
                 </div>
             </div>
@@ -527,9 +541,9 @@ class ApplyViewDetail extends React.Component {
                 </div>
                 <div className="apply-detail-content" style={{height: applyDetailHeight}} ref="geminiWrap">
                     <GeminiScrollbar ref="gemini">
-                        {this.renderDetailCustomerBlock(detailInfo)}
-                        {/*渲染请假详情*/}
-                        {this.renderBusinessApplyDetail(detailInfo)}
+                        {this.renderDetailApplyBlock(detailInfo)}
+                        {/*渲染客户详情*/}
+                        {_.isArray(_.get(detailInfo, 'detail.customers')) ? this.renderBusinessCustomerDetail(detailInfo) : null}
                         <div className="apply-detail-reply-list apply-detail-info">
                             <div className="reply-icon-block">
                                 <span className="iconfont icon-apply-message-tip"/>

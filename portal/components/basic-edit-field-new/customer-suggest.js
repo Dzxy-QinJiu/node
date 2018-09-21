@@ -207,7 +207,6 @@ class CustomerSuggest extends React.Component {
         var customerForLeave = {
             id: '',
             name: '',
-            address: ''
         };//出差申请的目的地
         var selectedCustomer = _.find(this.state.list, function(item) {
             if (item.customer_id === value) {

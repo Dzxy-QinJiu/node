@@ -14,6 +14,7 @@ function BusinessApplyActions() {
     );
     this.getAllApplyList = function(queryObj) {
         //todo 需要先获取待审批列表，成功后获取全部列表
+        this.dispatch({loading: true, error: false});
         BusinessApplyAjax.getWorklistBusinessApplyList().then((workList) => {
             this.dispatch({workList: workList});
             BusinessApplyAjax.getAllApplyList(queryObj).then((data) => {
@@ -27,8 +28,6 @@ function BusinessApplyActions() {
                         targetObj.showApproveBtn = true;
                     }
                 });
-
-
                 this.dispatch({error: false, loading: false, data: data});},(errorMsg) => {
                 this.dispatch({
                     error: true,
