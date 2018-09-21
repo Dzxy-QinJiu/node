@@ -10,6 +10,7 @@ import TeleConfig from './views/tele-config';
 import Trace from 'LIB_DIR/trace';
 import CompetingProductManage from './views/competing-product';
 import CustomerStageManage from './views/customer-stage';
+import ProductManage from './views/product-manage';
 import SalesRoleManage from './views/sales-role-manage';
 var PrivilegeChecker = require('CMP_DIR/privilege/checker').PrivilegeChecker;
 var GeminiScrollBar = require('CMP_DIR/react-gemini-scrollbar');
@@ -20,6 +21,7 @@ const auths = {
     TELECONFIG: 'CUSTOMER_INVALID_PHONE_GET',// 获取客服电话权限
     COMPETING_PRODUCT: 'CRM_COMPETING_PRODUCT',//竞品管理权限
     CRM_CUSTOMER_CONF_LABEL: 'CRM_CUSTOMER_CONF_LABEL',//客户阶段管理权限
+    PRODUCTS_MANAGE: 'PRODUCTS_MANAGE',//产品管理
     TEAM_ROLE_MANAGE: 'TEAM_ROLE_MANAGE',//销售角色管理权限
     STRATEGY: 'GET_CONFIG_PWD_STRATEGY',// 获取安全域密码策略
 };
@@ -266,43 +268,46 @@ class ConfigManage extends React.Component {
         );
     };
 
-     render = () => {
-       
+    render = () => {
 
-         var height = $(window).height() - $('.topNav').height();
-         return (
-             <div className="config-manage-container" data-tracename="配置">
-                 <TopNav>
-                     <TopNav.MenuList />
-                 </TopNav>
-                 <div className="config-container" style={{height: height}}>
-                     <GeminiScrollBar>
-                         <PrivilegeChecker check={auths.INDUSTRY}>
-                             {this.renderIndutryConfig()}
-                         </PrivilegeChecker>
-                         <PrivilegeChecker check={auths.IP}>
-                             <IpConfig />
-                         </PrivilegeChecker>
-                         <PrivilegeChecker check={auths.STRATEGY}>
-                             <RealmConfig />
-                         </PrivilegeChecker>
-                         <PrivilegeChecker check={auths.TELECONFIG}>
-                             <TeleConfig />
-                         </PrivilegeChecker>
-                         <PrivilegeChecker check={auths.COMPETING_PRODUCT}>
-                             <CompetingProductManage/>
-                         </PrivilegeChecker>
-                         <PrivilegeChecker check={auths.COMPETING_PRODUCT}>
-                             <CustomerStageManage/>
-                         </PrivilegeChecker>
-                         <PrivilegeChecker check={auths.TEAM_ROLE_MANAGE}>
-                             <SalesRoleManage/>
-                         </PrivilegeChecker>
-                     </GeminiScrollBar>
-                 </div>
-             </div>
-         );
-     }
+
+        var height = $(window).height() - $('.topNav').height();
+        return (
+            <div className="config-manage-container" data-tracename="配置">
+                <TopNav>
+                    <TopNav.MenuList />
+                </TopNav>
+                <div className="config-container" style={{height: height}}>
+                    <GeminiScrollBar>
+                        <PrivilegeChecker check={auths.INDUSTRY}>
+                            {this.renderIndutryConfig()}
+                        </PrivilegeChecker>
+                        <PrivilegeChecker check={auths.IP}>
+                            <IpConfig />
+                        </PrivilegeChecker>
+                        <PrivilegeChecker check={auths.STRATEGY}>
+                            <RealmConfig />
+                        </PrivilegeChecker>
+                        <PrivilegeChecker check={auths.TELECONFIG}>
+                            <TeleConfig />
+                        </PrivilegeChecker>
+                        <PrivilegeChecker check={auths.COMPETING_PRODUCT}>
+                            <CompetingProductManage/>
+                        </PrivilegeChecker>
+                        <PrivilegeChecker check={auths.COMPETING_PRODUCT}>
+                            <CustomerStageManage/>
+                        </PrivilegeChecker>
+                        <PrivilegeChecker check={auths.PRODUCTS_MANAGE}>
+                            <ProductManage/>
+                        </PrivilegeChecker>
+                        <PrivilegeChecker check={auths.TEAM_ROLE_MANAGE}>
+                            <SalesRoleManage/>
+                        </PrivilegeChecker>
+                    </GeminiScrollBar>
+                </div>
+            </div>
+        );
+    }
 }
 
 module.exports = ConfigManage;

@@ -1000,6 +1000,9 @@ var zh_CN = {
     'config.no.customer.stage': '暂无客户阶段，请添加！',
     'config.customer.stage.mange': '客户阶段管理',
     'config.customer.stage.reload': '重新获取客户阶段',
+    'config.no.product': '暂无产品，请添加！',
+    'config.product.manage': '产品管理',
+    'config.product.reload': '重新获取产品',
     //配置end
     // 通话记录start
     'call.record.caller': '呼叫者',

@@ -991,6 +991,9 @@ var en_US = {
     'config.no.customer.stage': 'There is no customer stage, please add!',//暂无客户阶段，请添加
     'config.customer.stage.mange': 'Customer stage',//客户阶段管理
     'config.customer.stage.reload': 'Reload customer stage',//重新获取客户阶段
+    'config.no.product': 'There is no product, please add!',//暂无产品，请添加！
+    'config.product.mange': 'Product manage',//产品管理
+    'config.product.reload': 'Reload product',//重新获取产品
     //配置end
     // 通话记录start
     'call.record.caller': 'Caller', // 呼叫者
