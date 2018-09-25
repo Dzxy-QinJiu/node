@@ -13,12 +13,14 @@ const MonthPicker = DatePicker.MonthPicker;
 const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
+import { storageUtil } from 'ant-utils';
+const STORED_TEAM_KEY = 'monthly_report_selected_team';
 
 class MonthlyReport extends React.Component {
     state = {
         teamList: [],
         memberList: [],
-        selectedTeam: '',
+        selectedTeam: storageUtil.local.get(STORED_TEAM_KEY),
         //当月的数据下月1号才能出来,所以初始默认选中月为上月而非本月
         selectedMonth: moment().subtract(1, 'months'),
     };
@@ -34,9 +36,12 @@ class MonthlyReport extends React.Component {
         ajax.send({
             url: '/rest/get/sale/teams/' + reqData.type,
         }).then(result => {
+            const storedTeam = storageUtil.local.get(STORED_TEAM_KEY);
+            const selectedTeam = storedTeam || _.get(result, '[0]');
+
             this.setState({
                 teamList: result,
-                selectedTeam: _.get(result, '[0]'),
+                selectedTeam,
             });
         });
     };
@@ -355,7 +360,7 @@ class MonthlyReport extends React.Component {
     renderFilter = (selectedTeamId) => {
         return (
             <div className="filter">
-                {selectedTeamId ? (
+                {selectedTeamId && this.state.teamList.length ? (
                     <Select
                         defaultValue={selectedTeamId}
                         onChange={this.onTeamChange}
@@ -381,6 +386,8 @@ class MonthlyReport extends React.Component {
         const selectedTeam = _.find(this.state.teamList, team => team.group_id === teamId);
 
         this.setState({selectedTeam});
+
+        storageUtil.local.set(STORED_TEAM_KEY, selectedTeam);
 
         teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamId);
     };
