@@ -375,8 +375,7 @@ class LeftMenuClass {
                 //有这个权限，才显示入口图标
                 showPrivileges: ['APP_USER_APPLY_LIST']
 
-            },
-            {
+            }, {
                 id: 'SCHEDULE_MANAGEMENT',
                 name: backendIntl.get('schedule.list.management', '日程管理'),
                 routePath: 'schedule_management',
@@ -386,10 +385,21 @@ class LeftMenuClass {
                 //有这个权限，才显示入口图标
                 showPrivileges: ['MEMBER_SCHEDULE_MANAGE']
             },
+            {
+                id: 'LEAVE_APPLY_MANAGEMENT',
+                name: backendIntl.get('menu.leave_apply','出差审批'),
+                routePath: 'leave_apply',
+                privileges: [
+                    'BUSINESS_TRIP_MANAGE',
+                ],
+                //有这个权限，才显示入口图标
+                showPrivileges: ['BUSINESS_TRIP_MANAGE']
+
+            },
         ];
 
         var user_info_idx = -1;
-        var user_info_manage = _.find(leftMenuList, function (item, i) {
+        var user_info_manage = _.find(leftMenuList, function(item, i) {
             if (item.id === 'USER_INFO_MANAGE') {
                 user_info_idx = i;
                 return true;
