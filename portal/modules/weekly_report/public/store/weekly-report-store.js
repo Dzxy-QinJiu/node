@@ -1,5 +1,8 @@
 var weeklyReportActions = require('../action/weekly-report-actions');
 import weeklyReportUtils from '../utils/weekly-report-utils';
+import { storageUtil } from 'ant-utils';
+const STORED_TEAM_KEY = 'weekly_report_selected_team';
+
 function weeklyReportStore() {
     this.setInitState();
     this.bindActions(weeklyReportActions);
@@ -7,6 +10,10 @@ function weeklyReportStore() {
 
 //设置初始化数据
 weeklyReportStore.prototype.setInitState = function() {
+    const storedTeam = storageUtil.local.get(STORED_TEAM_KEY);
+    const selectedTeamId = _.get(storedTeam, 'group_id') || '';
+    const selectedTeamName = _.get(storedTeam, 'group_name') || '';
+
     // 团队数据
     this.teamList = {
         loading: true,
@@ -23,8 +30,8 @@ weeklyReportStore.prototype.setInitState = function() {
     this.selectedReportItem = {};//选中的团队周报
     this.selectedReportItemIdx = -1;//选中的团队周报下标
     this.searchKeyword = '';//搜索的关键词
-    this.selectedTeamId = '';//选中的团队id
-    this.selectedTeamName = '';//选中的团队名称
+    this.selectedTeamId = selectedTeamId;//选中的团队id
+    this.selectedTeamName = selectedTeamName;//选中的团队名称
     let time = moment();
     this.nWeek = time.week();//当前时间是今年的第几周
     this.yearDescr = time.year() + Intl.get('common.time.unit.year', '年');
@@ -41,8 +48,11 @@ weeklyReportStore.prototype.getSaleGroupTeams = function(result) {
         let resData = result.resData;
         if (_.isArray(resData) && resData.length) {
             this.teamList.list = resData;
-            this.selectedTeamId = _.get(resData, '[0].group_id', '');
-            this.selectedTeamName = _.get(resData, '[0].group_name');
+            const storedTeam = storageUtil.local.get(STORED_TEAM_KEY);
+            const selectedTeamId = _.get(storedTeam, 'group_id');
+            const selectedTeamName = _.get(storedTeam, 'group_name');
+            this.selectedTeamId = selectedTeamId || _.get(resData, '[0].group_id', '');
+            this.selectedTeamName = selectedTeamName || _.get(resData, '[0].group_name');
             //获取团队信息成功后，再计算今天是第几周
             var nWeek = moment(new Date()).week();
             for (var i = nWeek - 1; i > 0; i--) {
@@ -88,6 +98,9 @@ weeklyReportStore.prototype.setSelectedTeamId = function(teamId) {
     _.each(this.teamList.list, team => {
         if(team.group_id === teamId){
             this.selectedTeamName = team.group_name;
+
+            storageUtil.local.set(STORED_TEAM_KEY, team);
+
             return false;
         }
     });
