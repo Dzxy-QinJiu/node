@@ -423,9 +423,10 @@ class BasicData extends React.Component {
                     <div className="basic-info-title-block">
                         <div className="basic-info-name">
                             {this.hasEditCutomerLabelPrivilege() ? (
-                                <Dropdown overlay={this.getCustomerLabelMenus()} trigger={['click']}
-                                    title={Intl.get('crm.customer.label.edit.tip', '点击修改客户阶段')}>
-                                    {customerLabel}
+                                <Dropdown overlay={this.getCustomerLabelMenus()} trigger={['click']}>
+                                    <span title={Intl.get('crm.customer.label.edit.tip', '点击修改客户阶段')}>
+                                        {customerLabel}
+                                    </span>
                                 </Dropdown>) : customerLabel}
                             {basicData.qualify_label ? (
                                 <Tag className={crmUtil.getCrmLabelCls(basicData.qualify_label)}>
