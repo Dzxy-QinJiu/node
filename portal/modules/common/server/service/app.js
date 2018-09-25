@@ -1,7 +1,9 @@
 /**
  * ajax url定义
  */
+var auth = require('../../../../lib/utils/auth');
 var urls = {
+    getProductList: '/rest/base/v1/products/list',
     getGrantApplications: '/rest/base/v1/application/grant_applications',
     getMyApplications: '/rest/base/v1/user/manage_apps',
     getAddedTeam: 'rest/analysis/user/v1/:auth_type/added/team', //获取新增用户的团队统计
@@ -18,6 +20,7 @@ var appDto = require('../dto/app');
 var _ = require('lodash');
 var Promise = require('bluebird');
 var EventEmitter = require('events').EventEmitter;
+let BackendIntl = require('../../../../lib/utils/backend_intl');
 
 //根据当前用户数据权限，获取应用列表
 exports.getGrantApplications = function(req,res,status) {
@@ -161,3 +164,81 @@ exports.getCurAppById = function(req, res, appId) {
             }
         });
 };
+//是否有获取后台管理中配置的产品列表的权限
+function hasGetProductPrivilege(req) {
+    return auth.hasPrivilege(req, 'PRODUCTS_MANAGE') || auth.hasPrivilege(req, 'GET_PRODUCTS_LIST');
+}
+//获取所有的产品列表
+exports.getAllProductList = function(req, res) {
+    var emitter = new EventEmitter();
+    let isCurtao = req.host === global.config.curtaoUrl;
+    //curtao: 只获取产品列表
+    let promiseList = [];
+    if (hasGetProductPrivilege(req)) {
+        promiseList.push(getDataPromise(req, res, urls.getProductList));
+    }
+    if (!isCurtao) {//ketao：获取产品列表 + oplate的应用列表
+        promiseList.push(getDataPromise(req, res, urls.getGrantApplications));
+    }
+    //哪个接口都无法调用时
+    if(!_.get(promiseList, '[0]')){
+        let backendIntl = new BackendIntl(req);
+        emitter.emit('error', {httpCode: 500, message: backendIntl.get('errorcode.53', '获取应用列表失败')});
+    }
+    Promise.all(promiseList).then(resultList => {
+        let productObj = hasGetProductPrivilege(req) ? _.get(resultList, '[0]', {}) : {};
+        let appObj = hasGetProductPrivilege(req) ? _.get(resultList, '[1]', {}) : _.get(resultList, '[0]', {});
+        let allProductList = [];
+        //成功获取产品列表
+        if (_.get(productObj, 'successData.list[0]')) {
+            allProductList = _.map(productObj.successData.list, item => {
+                return {
+                    client_id: item.id,
+                    client_name: item.name,
+                    client_image: ''
+                };
+            }) || [];
+        }
+        //成功获取应用列表
+        if (_.get(appObj, 'successData[0]')) {
+            let appList = _.map(appObj.successData, item => {
+                return {
+                    client_id: item.client_id,
+                    client_name: item.client_name,
+                    client_image: item.client_logo
+                };
+            }) || [];
+            allProductList = allProductList.concat(appList);
+        }
+        //只要有一个获取成功，即可成功返回数据
+        if(_.get(productObj, 'successData') || _.get(appObj, 'successData')){
+            emitter.emit('success', allProductList);
+        } else {
+            emitter.emit('error', productObj.errorData || appObj.errorData);
+        }
+    }).catch(errorObj => {
+        emitter.emit('error', errorObj);
+    });
+    return emitter;
+};
+
+function getDataPromise(req, res, url) {
+    let resultObj = {errorData: null, successData: null};
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.get(
+            {
+                url: url,
+                req: req,
+                res: res
+            }, null, {
+                success: function(eventEmitter, data) {
+                    resultObj.successData = data;
+                    resolve(resultObj);
+                },
+                error: function(eventEmitter, errorObj) {
+                    resultObj.errorData = errorObj;
+                    resolve(resultObj);
+                }
+            });
+    });
+}
