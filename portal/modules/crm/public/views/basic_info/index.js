@@ -265,11 +265,11 @@ class BasicData extends React.Component {
                         isSavingCustomerLabel: false
                     });
                 },
-                error: (errorMsg) => {
+                error: (xhr) => {
                     this.setState({
                         isSavingCustomerLabel: false
                     });
-                    message.error(errorMsg || Intl.get('common.edit.failed', '修改失败'));
+                    message.error(xhr.responseJSON || Intl.get('common.edit.failed', '修改失败'));
                 }
             });
         }
