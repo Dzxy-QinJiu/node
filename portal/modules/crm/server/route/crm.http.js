@@ -27,7 +27,7 @@ module.exports = {
                 needLogin: true
             },
             privileges: [
-                'CRM_LIST_CUSTOMERS','CUSTOMER_ALL'
+                'CRM_LIST_CUSTOMERS', 'CUSTOMER_ALL'
             ]
         },
         {
@@ -97,7 +97,7 @@ module.exports = {
                 needLogin: true
             },
             privileges: [
-                'CRM_LIST_CUSTOMERS','CUSTOMER_ALL'
+                'CRM_LIST_CUSTOMERS', 'CUSTOMER_ALL'
             ]
         },
         {
@@ -173,7 +173,7 @@ module.exports = {
                 'needLogin': true
             },
             'privileges': [
-                'CRM_LIST_CUSTOMERS','CUSTOMER_ALL'
+                'CRM_LIST_CUSTOMERS', 'CUSTOMER_ALL'
             ]
         },
         {
@@ -184,7 +184,7 @@ module.exports = {
                 needLogin: true
             },
             privileges: [
-                'CRM_LIST_CUSTOMERS','CUSTOMER_ALL'
+                'CRM_LIST_CUSTOMERS', 'CUSTOMER_ALL'
             ]
         },
         {
@@ -261,6 +261,14 @@ module.exports = {
             privileges: [
                 'CRM_CUSTOMER_SCORE_RECORD'
             ]
+        }, {
+            method: 'put',
+            path: '/rest/crm/:type/customer_stage',
+            handler: 'editCustomerStage',
+            passport: {
+                needLogin: true
+            },
+            privileges: ['CRM_USER_UPDATE_CUSTOMER_LABEL', 'CRM_MANAGER_UPDATE_CUSTOMER_LABEL']
         }
     ]
 };

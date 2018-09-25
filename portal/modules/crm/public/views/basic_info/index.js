@@ -232,18 +232,18 @@ class BasicData extends React.Component {
         return type;
     }
 
-    changeCustomerLabel = (item, key) => {
+    changeCustomerLabel = (item) => {
         let basicData = this.state.basicData;
-        if (key === _.get(basicData, 'customer_label')) return;
+        if (item.key === _.get(basicData, 'customer_label')) return;
         if (!_.get(basicData, 'id')) return;
         Trace.traceEvent(ReactDOM.findDOMNode(this), '保存客户阶段的修改');
         let saveLabelObj = {
             id: _.get(basicData, 'id'),
-            customer_label: key
+            customer_label: item.key
         };
         if (this.props.isMerge) {
             if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(saveLabelObj);
-            basicData.customer_label = key;
+            basicData.customer_label = item.key;
             this.setState({basicData});
         } else {
             let type = this.getEditCustomerLabelType();
@@ -251,13 +251,13 @@ class BasicData extends React.Component {
                 isSavingCustomerLabel: true
             });
             $.ajax({
-                url: `/rest/customer/v2/customer/${type}/customer_label`,
+                url: `/rest/crm/${type}/customer_stage`,
                 type: 'put',
                 dateType: 'json',
                 data: saveLabelObj,
                 success: (data) => {
                     if (data) {
-                        basicData.customer_label = key;
+                        basicData.customer_label = item.key;
                         this.editBasicSuccess(saveLabelObj);
                     }
                     this.setState({
