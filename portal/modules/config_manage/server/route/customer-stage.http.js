@@ -14,7 +14,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'CRM_CUSTOMER_CONF_LABEL, CRM_USER_GET_CUSTOMER_CONF_LABEL'
+            'CRM_CUSTOMER_CONF_LABEL', 'CRM_USER_GET_CUSTOMER_CONF_LABEL'
         ]
     }, {
         'method': 'post',

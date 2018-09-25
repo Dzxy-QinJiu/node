@@ -293,7 +293,7 @@ class ConfigManage extends React.Component {
                         <PrivilegeChecker check={auths.COMPETING_PRODUCT}>
                             <CompetingProductManage/>
                         </PrivilegeChecker>
-                        <PrivilegeChecker check={auths.COMPETING_PRODUCT}>
+                        <PrivilegeChecker check={auths.CRM_CUSTOMER_CONF_LABEL}>
                             <CustomerStageManage/>
                         </PrivilegeChecker>
                         <PrivilegeChecker check={auths.PRODUCTS_MANAGE}>

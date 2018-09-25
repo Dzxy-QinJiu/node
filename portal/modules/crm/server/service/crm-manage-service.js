@@ -62,7 +62,9 @@ var crmRestApis = {
         //关注或者取消关注某客户
         updateInterest: '/rest/customer/v2/customer/:url_type/interest_member_ids',
         //转出客户
-        transferCustomer: '/rest/customer/v2/customer/:url_type/transfer'
+        transferCustomer: '/rest/customer/v2/customer/:url_type/transfer',
+        //修改客户阶段
+        editCustomerStage: '/rest/customer/v2/customer/:url_type/customer_label'
     },
     // 拨打电话
     callOut: '/rest/customer/v2/phone/call/ou',
@@ -446,4 +448,12 @@ exports.getCustomerLimit = function(req, res) {
             res: res
         }, req.query);
 };
-
+//修改客户阶段标签
+exports.editCustomerStage = function(req, res) {
+    return restUtil.authRest.put(
+        {
+            url: crmRestApis.basic.editCustomerStage.replace(':url_type',req.params.type),
+            req: req,
+            res: res
+        }, req.body);
+};
