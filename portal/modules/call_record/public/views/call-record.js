@@ -34,7 +34,6 @@ let CALL_STATUS_MAP = {
     'BUSY': Intl.get('call.record.state.busy', '用户忙')
 };
 let searchInputTimeOut = null;
-const delayTime = 800;
 var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
 //计算布局的常量
 const LAYOUT_CONSTANTS = {
@@ -253,28 +252,8 @@ class CallRecord extends React.Component {
         }, () => this.getCallListByAjax());
     };
 
-    //清空过滤框中的内容
-    clearFilterContent = (filterKey, event) => {
-        if (filterKey === 'nick_name') {
-            Trace.traceEvent(event, '清空呼叫者过滤框');
-        } else if (filterKey === 'sales_team') {
-            Trace.traceEvent(event, '清空团队过滤框');
-        }
-        this.state.filterObj[filterKey] = '';
-        //清空过滤框的内容，直接进行过滤
-        this.filterCallRecord(filterKey);
-        delete this.state.filterObj[filterKey];
-        this.setState({ filterObj: this.state.filterObj });
-    };
-
     onSearchInputKeyUp = (filterKey) => {
-        if (searchInputTimeOut) {
-            clearTimeout(searchInputTimeOut);
-        }
-        searchInputTimeOut = setTimeout(() => {
-            this.filterCallRecord(filterKey);
-        }, delayTime);
-
+        this.filterCallRecord(filterKey);
     };
 
     handleSelect = (filterKey) => {
@@ -425,18 +404,18 @@ class CallRecord extends React.Component {
     getColumnTitle = (filterKey, columnLabel) => {
         const placeholder = Intl.get('call.record.search.placeholder', '根据{search}过滤', { search: columnLabel });
         let filterValue = this.state.filterObj[filterKey];
-
         return this.state.isFilter ? (<div className="filter-input-container">
             {filterKey === 'disposition' || filterKey === 'type' ? (
                 this.filterTypeStatusKeySelect(filterKey, columnLabel)
             ) : (
                 <Input placeholder={placeholder} value={filterValue || ''}
                     onChange={this.onChangeFilterObj.bind(this, filterKey)}
-                    onKeyUp={this.onSearchInputKeyUp.bind(this, filterKey)}
+                    onPressEnter={this.onSearchInputKeyUp.bind(this, filterKey)}
                 />
             )}
-            {filterValue && filterKey !== 'disposition' && filterKey !== 'type' ? (<Icon type="cross-circle-o"
-                onClick={this.clearFilterContent.bind(this, filterKey)} />) : null}
+            {filterValue && filterKey !== 'disposition' && filterKey !== 'type' ? (
+                <Icon type="search" onClick={this.onSearchInputKeyUp.bind(this, filterKey)}/>
+            ) : null}
         </div>) : columnLabel;
     };
 
