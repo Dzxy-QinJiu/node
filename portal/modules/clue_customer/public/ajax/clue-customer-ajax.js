@@ -20,11 +20,11 @@ let salesmanAjax = require('../../../common/public/ajax/salesman');
 let teamAjax = require('../../../common/public/ajax/team');
 var userData = require('PUB_DIR/sources/user-data');
 //查询线索客户
-exports.getClueCustomerList = function(clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {
+exports.getClueCustomerList = function(clueCustomerTypeFilter, rangeParams, pageSize, sorter, lastCustomerId) {
     sorter = sorter ? sorter : {field: 'source_time', order: 'descend'};
     var data = {
         clueCustomerTypeFilter: JSON.stringify(clueCustomerTypeFilter),
-        rangParams: JSON.stringify(rangParams),
+        rangeParams: JSON.stringify(rangeParams),
         lastCustomerId: lastCustomerId
     };
     if (hasPrivilege(AUTHS.GETALL)) {

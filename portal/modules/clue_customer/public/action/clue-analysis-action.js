@@ -36,7 +36,7 @@ function ClueAnalysisActions() {
         });
     };
     this.getCustomerById = function(customerId,label) {
-        var rangParams = [{//时间范围参数
+        var rangeParams = [{//时间范围参数
             from: '',
             to: '',
             type: 'time',
@@ -45,7 +45,7 @@ function ClueAnalysisActions() {
         var queryObj = {'total_size': 1,'cursor': true,'id': ''};
         var data = {
             data: JSON.stringify({'id': customerId}),
-            rangParams: JSON.stringify(rangParams),
+            rangeParams: JSON.stringify(rangeParams),
             queryObj: JSON.stringify(queryObj)
         };
         if (hasPrivilege(AUTHS.GETALL)) {

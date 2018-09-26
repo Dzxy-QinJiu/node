@@ -307,8 +307,9 @@ exports.renderClueStatus = function(status) {
     return statusDes;
 };
 //获取线索未处理的权限
+//只有是管理员或者销售领导才有展示线索未读数的权限
 exports.getClueUnhandledPrivilege = function(){
-    return hasPrivilege('CLUECUSTOMER_QUERY_MANAGER') || hasPrivilege('CLUECUSTOMER_QUERY_USER') && !userData.hasOnlyRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+    return (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER') || hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_USER')) && (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || (userData.hasRole(userData.ROLE_CONSTANS.SALES) && !userData.getUserData().isCommonSales));
 };
 //获取线索未读数的参数
 exports.getUnhandledClueCountParams = function() {
@@ -317,12 +318,12 @@ exports.getUnhandledClueCountParams = function() {
     if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)){
         status = SELECT_TYPE.WILL_DISTRIBUTE;
     }else{
-        //销售展示待跟进的线索数量
+        //销售领导展示待跟进的线索数量
         status = SELECT_TYPE.WILL_TRACE;
     }
     var data = {
-        clueCustomerTypeFilter: JSON.stringify({status: status}),
-        rangParams: JSON.stringify([{//时间范围参数
+        typeFilter: JSON.stringify({status: status}),
+        rangeParams: JSON.stringify([{//时间范围参数
             from: moment('2010-01-01 00:00:00').valueOf(),//开始时间设置为2010年
             to: moment().valueOf(),
             type: 'time',

@@ -15,7 +15,6 @@ function ClueFilterStore() {
 }
 
 ClueFilterStore.prototype.setInitialData = function() {
-    var timeObj = datePickerUtils.getThisWeekTime(); // 本周
     var defaultValue = '';
     if (userData.getUserData().isCommonSales) {
         defaultValue = SELECT_TYPE.WILL_TRACE;
@@ -31,7 +30,7 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.timeType = 'week';
     // true:本周截止到今天为止
     var timeObj = getStartEndTimeOfDiffRange(this.timeType, true);
-    this.rangParams = [{//时间范围参数
+    this.rangeParams = [{//时间范围参数
         from: datePickerUtils.getMilliseconds(timeObj.start_time),
         to: datePickerUtils.getMilliseconds(timeObj.end_time, true),
         type: 'time',
@@ -58,8 +57,8 @@ ClueFilterStore.prototype.setCondition = function(list) {
 };
 //设置开始和结束时间
 ClueFilterStore.prototype.setTimeRange = function(timeRange) {
-    this.rangParams[0].from = timeRange.start_time;
-    this.rangParams[0].to = timeRange.end_time;
+    this.rangeParams[0].from = timeRange.start_time;
+    this.rangeParams[0].to = timeRange.end_time;
 };
 //设置时间的类型
 ClueFilterStore.prototype.setTimeType = function(timeType) {
