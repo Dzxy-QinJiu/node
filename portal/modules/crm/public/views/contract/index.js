@@ -32,7 +32,7 @@ class Contract extends React.Component {
     };
 
     getAppList = () => {
-        commonDataUtil.getAppList(appList => {
+        commonDataUtil.getAllProductList(appList => {
             this.setState({appList: appList});
         });
     };
@@ -125,5 +125,8 @@ class Contract extends React.Component {
         );
     }
 }
-
+Contract.propTypes = {
+    curCustomer: PropTypes.object,
+    isMerge: PropTypes.bool
+};
 module.exports = Contract;

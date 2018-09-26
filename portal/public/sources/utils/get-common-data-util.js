@@ -11,6 +11,7 @@ const session = storageUtil.session;
 // 缓存在sessionStorage中的座席号的key
 const sessionCallNumberKey = 'callNumber';
 let appList = [];
+let allProductList = [];
 //缓存在sessionStorage中的我能查看的团队
 const MY_TEAM_TREE_KEY = 'my_team_tree';
 const AUTH_MAP = {
@@ -40,7 +41,7 @@ exports.getUserPhoneNumber = function(cb) {
         });
     }
 };
-
+//获取oplate中的应用
 exports.getAppList = function(cb) {
     if (_.get(appList, '[0]')) {
         if (_.isFunction(cb)) cb(appList);
@@ -61,6 +62,26 @@ exports.getAppList = function(cb) {
         }).error(errorMsg => {
             appList = [];
             if (_.isFunction(cb)) cb(appList);
+        });
+    }
+};
+//获取订单\合同中的产品列表(ketao:oplate中的应用+后台管理中的产品列表, curtao:后台管理中的产品列表)
+exports.getAllProductList = function(cb) {
+    if (_.get(allProductList, '[0]')) {
+        if (_.isFunction(cb)) cb(allProductList);
+    } else {
+        $.ajax({
+            url: '/rest/product_list',
+            type: 'get',
+            dataType: 'json',
+            success: result => {
+                allProductList = _.isArray(result) ? result : [];
+                if (_.isFunction(cb)) cb(allProductList);
+            },
+            error: xhr => {
+                allProductList = [];
+                if (_.isFunction(cb)) cb(allProductList);
+            }
         });
     }
 };

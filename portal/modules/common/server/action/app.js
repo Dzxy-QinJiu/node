@@ -55,3 +55,11 @@ exports.getCurAppById = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+//获取所有的产品列表
+exports.getAllProductList = function(req, res) {
+    appService.getAllProductList(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

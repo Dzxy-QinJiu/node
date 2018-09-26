@@ -64,6 +64,11 @@ function hasRole(req,role) {
     }
     return roles.indexOf(role) >= 0;
 }
+//是否含有某个权限
+function hasPrivilege(req, privilege) {
+    let user = getUser(req);
+    return _.indexOf(user.privileges, privilege) > -1;
+}
 
 // 获取项目运行的语言
 function getLang() {
@@ -105,3 +110,4 @@ exports.clean = clean;
 exports.saveUserInfo = saveUserInfo;
 exports.getUser = getUser;
 exports.getLang = getLang;
+exports.hasPrivilege = hasPrivilege;

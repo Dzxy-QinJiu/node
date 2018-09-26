@@ -39,7 +39,7 @@ function OrderActions() {
     });
 
     this.getAppList = function() {
-        commonDataUtil.getAppList(appList => {
+        commonDataUtil.getAllProductList(appList => {
             this.dispatch(appList);
         });
     };
