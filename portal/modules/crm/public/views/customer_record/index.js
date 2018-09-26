@@ -620,7 +620,7 @@ class CustomerRecord extends React.Component {
                 <p className="item-detail-tip">
                     <span className="icon-container" title={title}><i className={iconClass}></i></span>
                     <ShearContent>
-                        <span>{traceDsc}</span>
+                        {traceDsc}
                     </ShearContent>
                     {(item.type === 'phone' || item.type === 'app') && this.state.callNumber ?
                         <i className="iconfont icon-call-out call-out"

@@ -1377,9 +1377,7 @@ class Crm extends React.Component {
                 dataIndex: 'contact_way',
                 className: 'column-contact-way  table-data-align-right',
                 render: (text, record, index) => {
-                    return <ShearContent>
-                        {this.getContactList(text, record, index)}
-                    </ShearContent>;
+                    return this.getContactList(text, record, index);
                 }
             },
 
