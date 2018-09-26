@@ -183,7 +183,7 @@ ClueCustomerStore.prototype.afterAddSalesClue = function(updateObj) {
     var typeFilter = getClueStatusValue(filterClueStatus);
     //只有筛选状态是待分配，并且筛选时间是今天的时候，才把这个新增客户加到列表中
     if (filterClueStatus && typeFilter){
-        if (((typeFilter.status === '0' || typeFilter.status === '')) && clueFilterStore.getState().rangParams[0].from <= newCustomer.start_time && newCustomer.start_time <= clueFilterStore.getState().rangParams[0].to){
+        if (((typeFilter.status === '0' || typeFilter.status === '')) && clueFilterStore.getState().rangeParams[0].from <= newCustomer.start_time && newCustomer.start_time <= clueFilterStore.getState().rangeParams[0].to){
             this.curClueLists.unshift(newCustomer);
             this.customersSize++;
         }

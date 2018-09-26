@@ -283,7 +283,7 @@ class ClueCustomer extends React.Component {
     };
     //获取线索列表
     getClueList = (data) => {
-        var rangeParams = _.get(data, 'rangeParams') || JSON.stringify(clueFilterStore.getState().rangParams);
+        var rangeParams = _.get(data, 'rangeParams') || JSON.stringify(clueFilterStore.getState().rangeParams);
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
         var existFilelds = clueFilterStore.getState().exist_fields;
@@ -344,18 +344,18 @@ class ClueCustomer extends React.Component {
     };
     //获取请求参数
     getCondition = (isGetAllClue) => {
-        var rangParams = isGetAllClue ? [{
+        var rangeParams = isGetAllClue ? [{
             from: clueStartTime,
             to: moment().valueOf(),
             type: 'time',
             name: 'source_time'
-        }] : clueFilterStore.getState().rangParams;
+        }] : clueFilterStore.getState().rangeParams;
         var keyWord = isGetAllClue ? '' : this.state.keyword;
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = isGetAllClue ? {status: ''} : getClueStatusValue(filterClueStatus);//线索类型
         var queryObj = {
             keyword: keyWord,
-            rangeParams: JSON.stringify(rangParams),
+            rangeParams: JSON.stringify(rangeParams),
             statistics_fields: 'status',
             userId: userData.getUserData().userId || '',
             typeFilter: JSON.stringify(typeFilter)
@@ -649,7 +649,7 @@ class ClueCustomer extends React.Component {
     //是否有筛选过滤条件
     hasNoFilterCondition = () => {
         var filterStoreData = clueFilterStore.getState();
-        if (_.isEmpty(filterStoreData.filterClueSource) && _.isEmpty(filterStoreData.filterClueAccess) && _.isEmpty(filterStoreData.filterClueClassify) && filterStoreData.filterClueAvailability === '' && _.get(filterStoreData,'filterClueStatus[0].selected') && _.get(filterStoreData, 'rangParams[0].from') === clueStartTime && this.state.keyword === '' && _.isEmpty(filterStoreData.exist_fields) && _.isEmpty(filterStoreData.unexist_fields) && _.isEmpty(filterStoreData.filterClueProvince)){
+        if (_.isEmpty(filterStoreData.filterClueSource) && _.isEmpty(filterStoreData.filterClueAccess) && _.isEmpty(filterStoreData.filterClueClassify) && filterStoreData.filterClueAvailability === '' && _.get(filterStoreData,'filterClueStatus[0].selected') && _.get(filterStoreData, 'rangeParams[0].from') === clueStartTime && this.state.keyword === '' && _.isEmpty(filterStoreData.exist_fields) && _.isEmpty(filterStoreData.unexist_fields) && _.isEmpty(filterStoreData.filterClueProvince)){
             return true;
         }else{
             return false;

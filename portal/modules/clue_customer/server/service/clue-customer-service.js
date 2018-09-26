@@ -64,7 +64,7 @@ exports.getClueCustomerList = function(req, res) {
     if (req.body.lastCustomerId) {
         baseUrl += '?id=' + req.body.lastCustomerId;
     }
-    queryObj.rang_params = JSON.parse(req.body.rangParams);
+    queryObj.rang_params = JSON.parse(req.body.rangeParams);
     return restUtil.authRest.post(
         {
             url: baseUrl,
@@ -192,7 +192,7 @@ exports.getClueAnalysis = function(req, res) {
 };
 exports.getClueStatics = function(req, res) {
     let queryObj = {};
-    queryObj.rang_params = JSON.parse(req.body.rangParams);
+    queryObj.rang_params = JSON.parse(req.body.rangeParams);
     //销售取值时，query参数必须有，管理员可以没有
     if (req.body.query){
         queryObj.query = JSON.parse(req.body.query);

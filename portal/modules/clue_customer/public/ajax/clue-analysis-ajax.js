@@ -25,7 +25,7 @@ exports.getCustomerById = function(data) {
     return Deferred.promise();
 };
 //获取线索统计列表
-exports.getClueStatics = function(pathParams, rangParams, queryParams) {
+exports.getClueStatics = function(pathParams, rangeParams, queryParams) {
     var type = 'self';
     if (hasPrivilege('CRM_CLUE_STATISTICAL_ALL')){
         type = 'all';
@@ -35,7 +35,7 @@ exports.getClueStatics = function(pathParams, rangParams, queryParams) {
         queryParams = {};
     }
     var data = {
-        rangParams: JSON.stringify(rangParams),
+        rangeParams: JSON.stringify(rangeParams),
         query: JSON.stringify(queryParams)
     };
     var Deferred = $.Deferred();
