@@ -128,10 +128,10 @@ class OPLATE_CUSTOMER_ANALYSIS extends React.Component {
 
     //处理试用合格客户数统计数字点击事件
     handleTrialQualifiedNumClick = (customerIds) => {
-        history.push({
+        history.push('/crm', {
             from: 'sales_home',
             trialQualifiedCustomerIds: customerIds
-        }, '/crm', {});
+        });
     };
 
     //试用合格客户数统计数字渲染函数
