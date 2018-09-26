@@ -16,6 +16,7 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 require('../css/business-apply-detail.less');
 import userData from 'PUB_DIR/sources/user-data';
 import {Modal, Table} from 'react-bootstrap';
+import ApplyDetailRemarks from './apply-detail-remarks';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -183,7 +184,7 @@ class ApplyViewDetail extends React.Component {
 
                         <div className="apply-info-label">
                             <span className="user-info-label">
-                                {Intl.get('leave.apply.for.leave.time', '出差时间')}:
+                                {Intl.get('common.login.time', '时间')}:
                             </span>
                             <span className="user-info-text">
                                 {isOneDay ? beginDate : (beginDate + ' - ' + endDate)}
@@ -191,7 +192,7 @@ class ApplyViewDetail extends React.Component {
                         </div>
                         <div className="apply-info-label">
                             <span className="user-info-label">
-                                {Intl.get('leave.apply.for.city.address', '出差地点')}:
+                                {Intl.get('user.info.login.address', '地点')}:
                             </span>
                             <span className="user-info-text">
                                 {_.isEmpty(customers) ? '' : ('' + customers.province + customers.city + customers.county + customers.address)}
@@ -199,7 +200,7 @@ class ApplyViewDetail extends React.Component {
                         </div>
                         <div className="apply-info-label">
                             <span className="user-info-label">
-                                {Intl.get('leave.apply.for.application', '出差人员')}:
+                                {Intl.get('leave.apply.for.application', '人员')}:
                             </span>
                             <span className="user-info-text">
                                 {applicant.user_name}
@@ -207,10 +208,10 @@ class ApplyViewDetail extends React.Component {
                         </div>
                         <div className="apply-info-label">
                             <span className="user-info-label">
-                                {Intl.get('leave.apply.application.status', '出差审批状态')}:
+                                {Intl.get('leave.apply.application.status', '审批状态')}:
                             </span>
                             <span className="user-info-text">
-                                {this.getApplyStatusText(detailInfo)}
+                                {Intl.get('leave.apply.detail.wait','待')}{this.getApplyStatusText(detailInfo)}
                             </span>
                         </div>
                     </div>
@@ -284,7 +285,7 @@ class ApplyViewDetail extends React.Component {
             </div>
         );
     }
-
+    //todo 待删除
     //渲染回复列表
     renderReplyList() {
         let replyListInfo = this.state.replyListInfo;
@@ -354,6 +355,7 @@ class ApplyViewDetail extends React.Component {
             ApplyViewDetailActions.hideReplyCommentEmptyError();
         }
     };
+    //todo 待删除
     //渲染回复表单loading,success,error
     renderReplyFormResult() {
         var replyFormInfo = this.state.replyFormInfo;
@@ -527,11 +529,8 @@ class ApplyViewDetail extends React.Component {
         if (this.state.detailInfoObj.loadingResult || _.isEmpty(this.state.detailInfoObj)) {
             return;
         }
-        //是否启用滚动条
-        let GeminiScrollbarEnabled = false;
         //详情高度
         let applyDetailHeight = this.getApplyListDivHeight();
-        // let selectedDetailItem = this.state.selectedDetailItem;
         return (
             <div>
                 <div className="apply-detail-title">
@@ -544,26 +543,15 @@ class ApplyViewDetail extends React.Component {
                         {this.renderDetailApplyBlock(detailInfo)}
                         {/*渲染客户详情*/}
                         {_.isArray(_.get(detailInfo, 'detail.customers')) ? this.renderBusinessCustomerDetail(detailInfo) : null}
-                        <div className="apply-detail-reply-list apply-detail-info">
-                            <div className="reply-icon-block">
-                                <span className="iconfont icon-apply-message-tip"/>
-                            </div>
-                            <div className="reply-info-block apply-info-block">
-                                <div className="reply-list-container apply-info-content">
-                                    {this.renderReplyList()}
-                                    {/*已经通过和驳回的申请，不能再添加回复了*/}
-                                    {detailInfo.status === 'pass' || detailInfo.status === 'reject' ? null :
-                                        <Input addonAfter={(
-                                            <a onClick={this.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}
-                                        value={this.state.replyFormInfo.comment}
-                                        onChange={this.commentInputChange}
-                                        placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}/>}
-
-
-                                    {this.renderReplyFormResult()}
-                                </div>
-                            </div>
-                        </div>
+                        <ApplyDetailRemarks
+                            detailInfo={detailInfo}
+                            replyListInfo={this.state.replyListInfo}
+                            replyFormInfo={this.state.replyFormInfo}
+                            refreshReplyList={this.refreshReplyList}
+                            getApplyResultDscr={this.getApplyResultDscr}
+                            addReply={this.addReply}
+                            commentInputChange={this.commentInputChange}
+                        />
                     </GeminiScrollbar>
 
                 </div>

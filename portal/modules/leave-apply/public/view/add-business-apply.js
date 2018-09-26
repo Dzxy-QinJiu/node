@@ -12,11 +12,8 @@ const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
 };
-const INITIALDESC = Intl.get('customer.visit.customer', '拜访客户');
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
-import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
-// import CustomerSuggest from 'MOD_DIR/app_user_manage/public/views/customer_suggest/customer_suggest';
 var user = require('../../../../public/sources/user-data').getUserData();
 const ADD_LEAVE_CUSTOMER_SUGGEST_ID = 'add-leave-customer-suggest-wrap';
 const DEFAULTTIMETYPE = 'day';

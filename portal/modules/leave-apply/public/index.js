@@ -12,7 +12,6 @@ var userData = require('PUB_DIR/sources/user-data');
 import {Button, Menu, Dropdown, Alert} from 'antd';
 import AddBusinessApplyPanel from './view/add-business-apply';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
-var className = require('classnames');
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 var Spinner = require('CMP_DIR/spinner');
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
@@ -20,6 +19,7 @@ var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 var classNames = require('classnames');
 var LeaveApplyUtils = require('./utils/leave-apply-utils');
 import ApplyViewDetail from './view/apply-view-detail';
+import ApplyListItem from './view/apply-list';
 class BusinessApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加出差申请面板
@@ -248,43 +248,6 @@ class BusinessApplyManagement extends React.Component {
         }
     };
 
-    renderApplyList() {
-        let unreadReplyList = this.state.unreadReplyList;
-        return (
-            <ul className="list-unstyled leave_manage_apply_list">
-                {
-                    this.state.applyListObj.list.map((obj, i) => {
-                        var btnClass = classNames({
-                            processed: obj.status !== 'ongoing'
-                        });
-                        var currentClass = classNames({
-                            current: obj.id === this.state.selectedDetailItem.id && i === this.state.selectedDetailItemIdx
-                        });
-                        return (
-                            <li key={obj.id} className={currentClass}
-                                onClick={this.clickShowDetail.bind(this, obj, i)}
-                            >
-                                <dl>
-                                    <dt>
-                                        <span>{LeaveApplyUtils.getApplyTopicText(obj)}</span>
-                                        <em className={btnClass}>{this.getApplyStateText(obj)}</em>
-                                    </dt>
-                                    <dd className="clearfix" title={_.get(obj, 'detail.customer_name')}>
-                                        <span>{_.get(obj, 'detail.customer_name')}</span>
-                                    </dd>
-                                    <dd className="clearfix">
-                                        <span>{Intl.get('user.apply.presenter', '申请人')}:{_.get(obj, 'applicant.user_name')}</span>
-                                        <em>{this.getTimeStr(obj.create_time, oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)}</em>
-                                    </dd>
-                                </dl>
-                            </li>
-                        );
-                    })
-                }
-            </ul>
-        );
-    }
-
     retryFetchApplyList = (e) => {
         if (this.state.applyListObj.errorMsg) {
             Trace.traceEvent(e, '点击了重试');
@@ -338,7 +301,7 @@ class BusinessApplyManagement extends React.Component {
     };
 
     render() {
-        var addPanelWrap = className({'show-add-modal': this.state.showAddApplyPanel});
+        var addPanelWrap = classNames({'show-add-modal': this.state.showAddApplyPanel});
         var applyListHeight = $(window).height() - LeaveApplyUtils.APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - LeaveApplyUtils.APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
         var applyType = '';
         if (this.state.applyListType === 'ongoing') {
@@ -372,7 +335,16 @@ class BusinessApplyManagement extends React.Component {
                                         listenScrollBottom={this.state.listenScrollBottom}
                                         itemCssSelector=".leave_manage_apply_list>li"
                                     >
-                                        {this.renderApplyList()}
+                                        <ApplyListItem
+                                            processedStatus='ongoing'
+                                            applyListObj={this.state.applyListObj}
+                                            selectedDetailItem={this.state.selectedDetailItem}
+                                            selectedDetailItemIdx={this.state.selectedDetailItemIdx}
+                                            clickShowDetail={this.clickShowDetail}
+                                            getApplyTopicText={LeaveApplyUtils.getApplyTopicText}
+                                            getTimeStr={this.getTimeStr}
+                                            getApplyStateText={this.getApplyStateText}
+                                        />
                                         <NoMoreDataTip
                                             fontSize="12"
                                             show={this.showNoMoreDataTip}
