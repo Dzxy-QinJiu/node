@@ -90,7 +90,7 @@ class ClueCustomer extends React.Component {
     getUnhandledClue = () => {
         var data = getUnhandledClueCountParams();
         clueFilterAction.setTimeType('all');
-        clueFilterAction.setFilterType([{value: _.get(JSON.parse(data.clueCustomerTypeFilter),'status')}]);
+        clueFilterAction.setFilterType([{value: _.get(JSON.parse(data.typeFilter),'status')}]);
         setTimeout(() => {
             this.getClueList(data);
         });
@@ -99,6 +99,7 @@ class ClueCustomer extends React.Component {
         if (_.get(nextProps,'history.action') === 'PUSH'){
             if(_.get(nextProps,'location.state.clickUnhandleNum')){
                 delete nextProps.location.state.clickUnhandleNum;
+                clueCustomerAction.setClueInitialData();
                 this.getUnhandledClue();
             }
         }
@@ -282,7 +283,7 @@ class ClueCustomer extends React.Component {
     };
     //获取线索列表
     getClueList = (data) => {
-        var rangParams = _.get(data, 'rangParams') || JSON.stringify(clueFilterStore.getState().rangParams);
+        var rangeParams = _.get(data, 'rangeParams') || JSON.stringify(clueFilterStore.getState().rangParams);
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
         var existFilelds = clueFilterStore.getState().exist_fields;
@@ -299,10 +300,10 @@ class ClueCustomer extends React.Component {
             pageSize: this.state.pageSize,
             sorter: this.state.sorter,
             keyword: this.state.keyword,
-            rangeParams: rangParams,
+            rangeParams: rangeParams,
             statistics_fields: 'status',
             userId: userData.getUserData().userId || '',
-            typeFilter: _.get(data, 'clueCustomerTypeFilter') || JSON.stringify(typeFilter)
+            typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter)
         };
 
         var filterStoreData = clueFilterStore.getState();

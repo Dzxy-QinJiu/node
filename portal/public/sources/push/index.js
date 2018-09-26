@@ -592,9 +592,6 @@ function getMessageCount(callback) {
     //获取线索未处理数的权限（除运营人员外展示）
     if (getClueUnhandledPrivilege()){
         var data = getUnhandledClueCountParams();
-        if (hasPrivilege('CLUECUSTOMER_QUERY_MANAGER')) {
-            data.hasManageAuth = true;
-        }
         getClueUnreadNum(data, callback);
     }
 }
@@ -696,8 +693,12 @@ function getNotificationUnread(queryObj, callback) {
 //获取未处理的线索数量
 function getClueUnreadNum(data, callback){
     //pageSize设置为0，只取到数据就行
+    var type = 'user';
+    if (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
+        type = 'manager';
+    }
     $.ajax({
-        url: '/rest/customer/v2/customer/range/clue/0/start_time/descend',
+        url: '/rest/get/clue/fulltext/0/source_time/descend/' + type,
         dataType: 'json',
         type: 'post',
         data: data,

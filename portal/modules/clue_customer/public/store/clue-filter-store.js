@@ -15,7 +15,6 @@ function ClueFilterStore() {
 }
 
 ClueFilterStore.prototype.setInitialData = function() {
-    var timeObj = datePickerUtils.getThisWeekTime(); // 本周
     var defaultValue = '';
     if (userData.getUserData().isCommonSales) {
         defaultValue = SELECT_TYPE.WILL_TRACE;
