@@ -1,3 +1,9 @@
+import ajaxPro from './../../../common/ajaxUtil';
+
+/**
+ * 获取申请详情(多应用)
+ */
+exports.getApplyMultiAppDetail = params => ajaxPro('getApplyDetail', params);
 
 /**
  * 获取用户审批列表
@@ -88,6 +94,9 @@ exports.submitApply = function(obj) {
     });
     return Deferred.promise();
 };
+
+//延期、停用提交审批
+exports.submitMultiAppApply = params => ajaxPro('submitMultiAppApply', params);
 
 //申请用户
 exports.applyUser = function(data) {

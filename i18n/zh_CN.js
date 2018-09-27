@@ -2658,6 +2658,7 @@ var zh_CN = {
     'user.get.user.info.null': '获取不到登录用户的信息',
     'user.info.binding.phone': '绑定手机号',
     'user.info.no.set.phone': '该用户还没有手机号，{bindPhone}',
+    'apply.delay.endTime': '到期',
     'shear.expand': '展开',
     'crm.order.stage.manage': '订单阶段管理',
     'crm.order.stage.add': '添加订单阶段',

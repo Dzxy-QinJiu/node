@@ -5,6 +5,7 @@ exports.toRestObject = function(list) {
     list = list || [];
     list.forEach(function(item) {
         result.push({
+            ...item,
             topic: item.topic,
             presenter: item.producer ? item.producer.nick_name : '',
             time: item.produce_date,

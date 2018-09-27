@@ -7,6 +7,10 @@ var notificationEmitter = require('../../../../public/sources/utils/emitters').n
 import {message} from 'antd';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
+import { altAsyncUtil } from 'ant-utils';
+const {asyncDispatcher} = altAsyncUtil;
+import { APPLY_MULTI_TYPE_VALUES } from 'PUB_DIR/sources/utils/consts';
+
 //更新申请的待审批数，通过、驳回、撤销后均减一
 function updateUnapprovedCount() {
     if (Oplate && Oplate.unread) {
@@ -75,7 +79,8 @@ class ApplyViewDetailActions {
             // 应用配置保存成功时
             'handleSaveAppConfig',
             // 将延期时间设置为截止时间（具体到xx年xx月xx日）
-            'setDelayDeadlineTime'
+            'setDelayDeadlineTime',
+            'setBottomDisplayType'
         );
     }
 
@@ -89,11 +94,12 @@ class ApplyViewDetailActions {
     }
 
     //获取审批单详情
-    getApplyDetail(id, applyData) {
+    getApplyDetail(id, applyData) {        
         //如果已获取了某个详情数据，针对从url中的申请id获取的详情数据
         if (applyData) {
             this.dispatch({loading: false, error: false, detail: applyData.detail});
         } else {
+            this.dispatch({loading: true, error: false});
             AppUserAjax.getApplyDetail(id).then((detail, apps) => {
                 this.dispatch({loading: false, error: false, detail: detail});
             }, (errorMsg) => {
@@ -101,6 +107,9 @@ class ApplyViewDetailActions {
             });
         }
     }
+
+    //获取审批单详情（多应用)
+    getApplyMultiAppDetail = asyncDispatcher(AppUserAjax.getApplyMultiAppDetail);
 
     //获取回复列表
     getReplyList(id) {
@@ -123,7 +132,20 @@ class ApplyViewDetailActions {
     //提交审批
     submitApply(obj) {
         this.dispatch({loading: true, error: false});
-        AppUserAjax.submitApply(obj).then((data) => {
+        let promise = null;
+        //延期、停用审批用新接口
+        if (APPLY_MULTI_TYPE_VALUES.includes(obj.type)) {
+            promise = AppUserAjax.submitMultiAppApply({
+                data: {
+                    message_id: obj.message_id,
+                    approval_state: obj.approval
+                }
+            });
+        }
+        else {
+            promise = AppUserAjax.submitApply(obj);
+        }
+        promise.then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
             //更新选中的申请单类型
             AppUserUtil.emitter.emit('updateSelectedItem', {approval: obj.approval, status: 'success'});

@@ -260,7 +260,7 @@ export const FILTER_RANGE = {
 };
 
 //常用筛选范围
-export const  FILTER_RANGE_OPTIONS = [
+export const FILTER_RANGE_OPTIONS = [
     FILTER_RANGE.USER,
     FILTER_RANGE.TEAM,
     FILTER_RANGE.ALL
@@ -313,3 +313,13 @@ export const SPECIAL_LABEL = {
     HAS_CALL_BACK: Intl.get('common.has.callback', '已回访'),
 };
 
+//多应用申请审批类型
+export const APPLY_TYPES = {
+    DELAY: 'apply_grant_delay_multiapp',
+    DISABLE: 'apply_grant_status_change_multiapp'
+};
+
+//多应用申请审批类型
+export const APPLY_MULTI_TYPE_VALUES = [
+    APPLY_TYPES.DELAY, APPLY_TYPES.DISABLE
+];
