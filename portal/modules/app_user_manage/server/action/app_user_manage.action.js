@@ -125,6 +125,15 @@ exports.getApplyList = function(req, res) {
     });
 };
 
+//获取未读回复列表
+exports.getUnreadReplyList = function(req, res) {
+    AppUserService.getUnreadReplyList(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 //获取申请详情
 exports.getApplyDetail = function(req, res, next) {
     //申请单id

@@ -119,6 +119,17 @@ module.exports = {
     },
     {
         'method': 'get',
+        'path': '/rest/appuser/unread_reply',
+        'handler': 'getUnreadReplyList',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': [
+            'GET_MEMBER_APPLY_LIST'//获取未读回复列表
+        ]
+    },
+    {
+        'method': 'get',
         'path': '/rest/appuser/apply/:apply_id',
         'handler': 'getApplyDetail',
         'passport': {

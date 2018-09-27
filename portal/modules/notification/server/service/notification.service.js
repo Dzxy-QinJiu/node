@@ -52,10 +52,10 @@ exports.clearUnreadNum = function(req, res, type) {
 exports.getUnreadCount = function(req, res, queryObj) {
     var emitter = new EventEmitter();
     let promiseList = [];
-    if (queryObj.type == 'unread') {
+    if (queryObj.type === 'unread') {
         //只获取未读数
         promiseList.push(getUnreadInfoCount(req, res));
-    } else if (queryObj.type == 'unapproved') {
+    } else if (queryObj.type === 'unapproved') {
         //只获取待审批数
         promiseList.push(getUnapprovedCount(req, res));
     } else {
@@ -65,12 +65,12 @@ exports.getUnreadCount = function(req, res, queryObj) {
     }
     Promise.all(promiseList).then(function(dataList) {
         var unreadObj = {};
-        if (queryObj.type == 'unread') {
+        if (queryObj.type === 'unread') {
             //只获取未读数
             unreadObj = dataList[0] || {};
-        } else if (queryObj.type == 'unapproved') {
+        } else if (queryObj.type === 'unapproved') {
             //只获取待审批数
-            unreadObj.approve = dataList[1] ? dataList[1].total || 0 : 0;
+            unreadObj.approve = dataList[0] ? dataList[0].total || 0 : 0;
         } else {
             /**
              * dataList

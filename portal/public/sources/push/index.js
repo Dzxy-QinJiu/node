@@ -59,7 +59,7 @@ function updateUnreadByPushMessage(type, isAdd) {
             //待审批数的刷新展示
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
             //刷新未读消息数
-            notificationEmitter.emit(notificationEmitter.UPDATE_NOTIFICATION_UNREAD);
+            // notificationEmitter.emit(notificationEmitter.UPDATE_NOTIFICATION_UNREAD);
             //刷新线索未处理的数量
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
         }, timeout);
@@ -87,7 +87,7 @@ function listenOnMessage(data) {
                 }
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
                 //将审批后的申请消息未读数加一（true）
-                updateUnreadByPushMessage('apply', true);
+                // updateUnreadByPushMessage('apply', true);
                 //待审批数减一
                 updateUnreadByPushMessage('approve', false);
                 break;
@@ -551,8 +551,6 @@ function startSocketIo() {
         socketIo.on('phonemsg', phoneEventListener);
         //监听日程管理
         socketIo.on('scheduleAlertMsg', scheduleAlertListener);
-        //申请审批未读回复的监听
-        socketIo.on('apply_unread_reply', applyUnreadReplyListener);
         //监听后端消息
         phoneMsgEmitter.on(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         //如果接受到主动断开的方法，调用socket的断开
@@ -566,33 +564,42 @@ function startSocketIo() {
  * @param callback 获取消息数后的回调函数
  */
 function getMessageCount(callback) {
-    //待审批数、及未读数的权限
-    if (hasPrivilege('NOTIFICATION_APPLYFOR_LIST') || hasPrivilege('APP_USER_APPLY_LIST')) {
-        let type = '';
-        if (userData.hasRole('salesmanager')) {
-            //只获取未读数，舆情秘书不展示待审批的申请
-            type = 'unread';
-        } else {
-            if (hasPrivilege('NOTIFICATION_APPLYFOR_LIST') && hasPrivilege('APP_USER_APPLY_LIST')) {
-                //获取未读数和未审批数
-                type = 'all';
-            } else if (hasPrivilege('APP_USER_APPLY_LIST')) {
-                //只获取待审批数
-                type = 'unapproved';
-            } else if (hasPrivilege('NOTIFICATION_APPLYFOR_LIST')) {
-                //只获取未读数
-                type = 'unread';
-            }
-        }
-        //获取消息未读数
-        getNotificationUnread({type: type}, callback);
-    } else {
-        typeof callback === 'function' && callback();
+    //待审批数、及未读数的权限（未读数的除了暂时不需要了所以先注释掉没用的权限判断，以防后期再用先不删）
+    // if (hasPrivilege('NOTIFICATION_APPLYFOR_LIST') || hasPrivilege('APP_USER_APPLY_LIST')) {
+    //     let type = '';
+    //     if (userData.hasRole('salesmanager')) {
+    //         //只获取未读数，舆情秘书不展示待审批的申请
+    //         type = 'unread';
+    //     } else {
+    //         if (hasPrivilege('NOTIFICATION_APPLYFOR_LIST') && hasPrivilege('APP_USER_APPLY_LIST')) {
+    //             //获取未读数和未审批数
+    //             type = 'all';
+    //         } else
+    //             if (hasPrivilege('APP_USER_APPLY_LIST')) {
+    //             //只获取待审批数
+    //             type = 'unapproved';
+    //         } else if (hasPrivilege('NOTIFICATION_APPLYFOR_LIST')) {
+    //             //只获取未读数
+    //             type = 'unread';
+    //         }
+    //     }
+    //     //获取消息未读数
+    //     getNotificationUnread({type: type}, callback);
+    // } else {
+    //     typeof callback === 'function' && callback();
+    // }
+    //获取待审批数
+    if(hasPrivilege('APP_USER_APPLY_LIST')){
+        getNotificationUnread({type: 'unapproved'}, callback);
     }
     //获取线索未处理数的权限（除运营人员外展示）
     if (getClueUnhandledPrivilege()){
         var data = getUnhandledClueCountParams();
         getClueUnreadNum(data, callback);
+    }
+    //获取未读回复列表
+    if(hasPrivilege('GET_MEMBER_APPLY_LIST')){
+        getUnreadReplyList(callback);
     }
 }
 
@@ -603,7 +610,10 @@ function unreadListener(type) {
         if (type === 'unhandleClue'){
             //监听未处理的线索
             socketIo.on('cluemsg', clueUnhandledListener);
-        }else{
+        } else if (type === 'unread_reply') {
+            //申请审批未读回复的监听
+            socketIo.on('apply_unread_reply', applyUnreadReplyListener);
+        } else {
             //获取完未读数后，监听node端推送的弹窗消息
             socketIo.on('mes', listenOnMessage);
             //监听系统消息
@@ -612,34 +622,23 @@ function unreadListener(type) {
     }
 }
 //申请审批未读回复的监听
-function applyUnreadReplyListener(applyUnreadReplyList) {
+function applyUnreadReplyListener(unreadReply) {
     const APPLY_UNREAD_REPLY = 'apply_unread_reply';
-    let userId = userData.getUserData().user_id;
     //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
-    let applyUnreadReply = session.get(APPLY_UNREAD_REPLY);
-    let applyUnreadReplyObj = {};//{userId1:unreadList1,userId2:unreadList2}
-    if (applyUnreadReply) {
-        applyUnreadReplyObj = JSON.parse(applyUnreadReply);
-        //sessionStorage中已存的未读回复列表
-        let oldUnreadList = applyUnreadReplyObj[userId];
-        if (_.isArray(oldUnreadList) && oldUnreadList.length) {
-            //遍历新推过来的未读回复列表，将新增的加入已存的未读回复列表中
-            _.each(applyUnreadReplyList, unreadReply => {
-                let hasExist = _.some(oldUnreadList, item => item.apply_id === unreadReply.apply_id);
-                //已存的未读回复列表中不存在时，即为新增的未读回复，加入已存列表
-                if (!hasExist) {
-                    oldUnreadList.push(unreadReply);
-                }
-            });
-            applyUnreadReplyObj[userId] = oldUnreadList;
-        } else {
-            applyUnreadReplyObj[userId] = applyUnreadReplyList;
+    let unreadReplyList = session.get(APPLY_UNREAD_REPLY);
+    if(unreadReplyList){
+        unreadReplyList = JSON.parse(unreadReplyList);
+        //已有回复列表，将新得回复加入回复列表中
+        if (_.get(unreadReplyList, '[0]')) {
+            unreadReplyList.push(unreadReply);
+            //根据申请id去重
+            unreadReplyList = _.uniqBy(unreadReplyList,'apply_id');
+        } else {//还没有回复列表时，将新回复组成回复列表
+            unreadReplyList = [unreadReply];
         }
-    } else {
-        applyUnreadReplyObj[userId] = applyUnreadReplyList;
+        session.set(APPLY_UNREAD_REPLY, JSON.stringify(unreadReplyList));
+        notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, unreadReplyList);
     }
-    session.set(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyObj));
-    notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, applyUnreadReplyObj[userId]);
 }
 // 判断是否已启用桌面通知
 function notificationCheckPermission() {
@@ -728,6 +727,41 @@ function getClueUnreadNum(data, callback){
         }
     });
 }
+//存储获取的未读回复列表
+function saveUnreadReplyList(applyUnreadReplyList) {
+    const APPLY_UNREAD_REPLY = 'apply_unread_reply';
+    //根据申请的id去重
+    let unreadReplyList = _.uniqBy(applyUnreadReplyList, 'apply_id');
+    //将未读回复列表存入sessionStorage（session失效时会自动清空数据）
+    session.set(APPLY_UNREAD_REPLY, JSON.stringify(unreadReplyList));
+    notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, unreadReplyList);
+}
+//获取未读回复列表
+function getUnreadReplyList(callback) {
+    $.ajax({
+        url: '/rest/appuser/unread_reply',
+        type: 'get',
+        dataType: 'json',
+        data: {
+            sort_field: 'create_time',//按回复时间倒序排
+            order: 'descend',
+            page_size: 1000,//需要获取全部的未读回复列表，预估不会超过1000条
+            id: ''
+        },
+        success: data => {
+            //将获取的未读回复列表存到session中
+            saveUnreadReplyList(_.get(data, 'list', []));
+            if (typeof callback === 'function') {
+                callback('unread_reply');
+            }
+        },
+        error: () => {
+            if (typeof callback === 'function') {
+                callback('unread_reply');
+            }
+        }
+    });
+}
 //更新全局变量里存储的未读数，以便在业务逻辑里使用
 function updateGlobalUnreadStorage(unreadObj) {
     if (Oplate && Oplate.unread && unreadObj) {
@@ -740,7 +774,7 @@ function updateGlobalUnreadStorage(unreadObj) {
         //向展示的组件发送数据
         timeoutFunc = setTimeout(function() {
             //更新未读消息数
-            notificationEmitter.emit(notificationEmitter.UPDATE_NOTIFICATION_UNREAD);
+            // notificationEmitter.emit(notificationEmitter.UPDATE_NOTIFICATION_UNREAD);
             //待审批数的刷新展示
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
             //未处理的线索数量刷新展示

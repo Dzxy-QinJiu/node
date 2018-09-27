@@ -69,7 +69,8 @@ exports.systemMsgToFrontend = function(systemMsg) {
 exports.unreadReplyToFrontend = function(unreadReply) {
     return {
         member_id: unreadReply.member_id,//谁的未读回复
-        push_type: unreadReply.push_type,//推送类型（历史-1，即可0，延时1）
+        create_time: unreadReply.create_time,//回复时间
+        id: unreadReply.id,//回复的id
         apply_id: unreadReply.apply_id//有未读回复的申请id
     };
 };

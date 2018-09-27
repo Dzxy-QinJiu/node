@@ -109,13 +109,9 @@ class ApplyTabContent extends React.Component {
     //从sessionStorage中获取该用户未读的回复列表
     getUnreadReplyList = () => {
         const APPLY_UNREAD_REPLY = 'apply_unread_reply';
-        let userId = UserData.getUserData().user_id;
-        //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
-        let applyUnreadReply = session.get(APPLY_UNREAD_REPLY);
-        if (applyUnreadReply) {
-            let applyUnreadReplyObj = JSON.parse(applyUnreadReply);
-            let applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];
-            this.refreshUnreadReplyList(applyUnreadReplyList);
+        let unreadReplyList = session.get(APPLY_UNREAD_REPLY);
+        if (unreadReplyList) {
+            this.refreshUnreadReplyList(JSON.parse(unreadReplyList) || []);
         }
     };
 
