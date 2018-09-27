@@ -745,7 +745,7 @@ const ApplyViewDetail = createReactClass({
             if (custom_setting.time.end_time === '0') {
                 displayEndTime = '-';
             } else if (end_time === 'Invalid date') {
-                displayEndTime = UNKNOWN;
+                displayEndTime = UNKNOWN; 
             } else {
                 displayEndTime = end_time;
             }
@@ -1069,16 +1069,34 @@ const ApplyViewDetail = createReactClass({
                 </div>
             </div>);
     },
-
+    //旧版申请展示
     //销售渲染申请开通状态
     renderDetailChangeStatus: function(detailInfo) {
+        return (
+            <div className="user-info-block apply-info-block">
+                <div className="apply-info-content">
+                    {this.renderApplyUserNames(detailInfo)}
+                    {this.renderApplyAppNames(detailInfo)}
+                    <div className="apply-info-label">
+                        <span className="user-info-label">{Intl.get('common.app.status', '开通状态')}:</span>
+                        <span className="user-info-text">
+                            {detailInfo.status === '1' ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        );
+    },
+    //新版申请展示
+    //销售渲染申请开通状态
+    renderMultiAppDetailChangeStatus: function(detailInfo) {
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
                     <div className="apply-info-label">
                         <span className="user-info-label">{Intl.get('common.app.status', '开通状态')}:</span>
                         <span className="user-info-text">
-                            {detailInfo.status === '1' ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')}
+                            {detailInfo.status === 1 ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')}
                         </span>
                     </div>
                     {
@@ -1174,9 +1192,32 @@ const ApplyViewDetail = createReactClass({
             </span>
         </div>);
     },
-
+    //旧版申请展示
     //渲染用户延期
     renderDetailDelayTime: function(detailInfo) {
+        var isRealmAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ||
+            userData.hasRole(userData.ROLE_CONSTANS.REALM_OWNER) ||
+            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
+            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
+        return (
+            <div className="user-info-block apply-info-block">
+                <div className="apply-info-content">
+                    {this.renderApplyUserNames(detailInfo)}
+                    {this.renderApplyAppNames(detailInfo)}
+                    <div className="apply-info-label delay-time-wrap">
+                        <div className="user-info-label">{this.renderApplyDelayName()}:</div>
+                        <span className="user-info-text">
+                            {this.state.isModifyDelayTime ? null : this.renderApplyDelayModifyTime()}
+                            {isRealmAdmin ? this.renderModifyDelayTime() : null}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        );
+    },
+    //新版申请展示
+    //渲染用户延期
+    renderMultiAppDetailDelayTime: function(detailInfo) {
         var isRealmAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ||
             userData.hasRole(userData.ROLE_CONSTANS.REALM_OWNER) ||
             userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
@@ -1476,10 +1517,18 @@ const ApplyViewDetail = createReactClass({
             return this.renderDetailChangePassword(detailInfo);
         } else if (detailInfo.type === 'apply_sth_else') {
             return this.renderDetailChangeOther(detailInfo);
-        } else if (detailInfo.type === APPLY_TYPES.DELAY) {
+        }
+        //旧版申请展示 
+        else if (detailInfo.type === 'apply_grant_delay') {
             return this.renderDetailDelayTime(detailInfo);
-        } else if (detailInfo.type === APPLY_TYPES.DISABLE) {
+        } else if (detailInfo.type === 'apply_grant_status_change') {
             return this.renderDetailChangeStatus(detailInfo);
+        } 
+        //新版申请展示
+        else if (detailInfo.type === APPLY_TYPES.DELAY) {
+            return this.renderMultiAppDetailDelayTime(detailInfo);
+        } else if (detailInfo.type === APPLY_TYPES.DISABLE) {
+            return this.renderMultiAppDetailChangeStatus(detailInfo);
         } else {
             return this.renderApplyUser(detailInfo);
         }

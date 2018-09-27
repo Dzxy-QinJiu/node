@@ -217,7 +217,7 @@ class ApplyViewDetailStore {
         };
         const info = data || {};
         let apps = [];
-        if (_.get(data, "message.apply_param")) {
+        if (_.get(info, "message.apply_param")) {
             apps = info.message.apply_param && (JSON.parse(info.message.apply_param) || []);
             info.customer_id = info.message.customer_ids;
             info.customer_name = info.message.customer_name;
@@ -246,7 +246,7 @@ class ApplyViewDetailStore {
                         this.getDelayDisplayTime(delayTime);
                     } else { // 到期时间，点开修改同步到自定义
                         this.formData.delayTimeUnit = 'custom';
-                        this.formData.end_date = this.detailInfoObj.info.end_date;
+                        this.formData.end_date = info.end_date;
                     }
                     break;
                 case APPLY_TYPES.DISABLE:
