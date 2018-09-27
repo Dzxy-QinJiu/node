@@ -59,7 +59,7 @@ function updateUnreadByPushMessage(type, isAdd) {
             //待审批数的刷新展示
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
             //刷新未读消息数
-            notificationEmitter.emit(notificationEmitter.UPDATE_NOTIFICATION_UNREAD);
+            // notificationEmitter.emit(notificationEmitter.UPDATE_NOTIFICATION_UNREAD);
             //刷新线索未处理的数量
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
         }, timeout);
@@ -87,7 +87,7 @@ function listenOnMessage(data) {
                 }
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
                 //将审批后的申请消息未读数加一（true）
-                updateUnreadByPushMessage('apply', true);
+                // updateUnreadByPushMessage('apply', true);
                 //待审批数减一
                 updateUnreadByPushMessage('approve', false);
                 break;
@@ -566,28 +566,33 @@ function startSocketIo() {
  * @param callback 获取消息数后的回调函数
  */
 function getMessageCount(callback) {
-    //待审批数、及未读数的权限
-    if (hasPrivilege('NOTIFICATION_APPLYFOR_LIST') || hasPrivilege('APP_USER_APPLY_LIST')) {
-        let type = '';
-        if (userData.hasRole('salesmanager')) {
-            //只获取未读数，舆情秘书不展示待审批的申请
-            type = 'unread';
-        } else {
-            if (hasPrivilege('NOTIFICATION_APPLYFOR_LIST') && hasPrivilege('APP_USER_APPLY_LIST')) {
-                //获取未读数和未审批数
-                type = 'all';
-            } else if (hasPrivilege('APP_USER_APPLY_LIST')) {
-                //只获取待审批数
-                type = 'unapproved';
-            } else if (hasPrivilege('NOTIFICATION_APPLYFOR_LIST')) {
-                //只获取未读数
-                type = 'unread';
-            }
-        }
-        //获取消息未读数
-        getNotificationUnread({type: type}, callback);
-    } else {
-        typeof callback === 'function' && callback();
+    //待审批数、及未读数的权限（未读数的除了暂时不需要了所以先注释掉没用的权限判断，以防后期再用先不删）
+    // if (hasPrivilege('NOTIFICATION_APPLYFOR_LIST') || hasPrivilege('APP_USER_APPLY_LIST')) {
+    //     let type = '';
+    //     if (userData.hasRole('salesmanager')) {
+    //         //只获取未读数，舆情秘书不展示待审批的申请
+    //         type = 'unread';
+    //     } else {
+    //         if (hasPrivilege('NOTIFICATION_APPLYFOR_LIST') && hasPrivilege('APP_USER_APPLY_LIST')) {
+    //             //获取未读数和未审批数
+    //             type = 'all';
+    //         } else
+    //             if (hasPrivilege('APP_USER_APPLY_LIST')) {
+    //             //只获取待审批数
+    //             type = 'unapproved';
+    //         } else if (hasPrivilege('NOTIFICATION_APPLYFOR_LIST')) {
+    //             //只获取未读数
+    //             type = 'unread';
+    //         }
+    //     }
+    //     //获取消息未读数
+    //     getNotificationUnread({type: type}, callback);
+    // } else {
+    //     typeof callback === 'function' && callback();
+    // }
+    //获取待审批数
+    if(hasPrivilege('APP_USER_APPLY_LIST')){
+        getNotificationUnread({type: 'unapproved'}, callback);
     }
     //获取线索未处理数的权限（除运营人员外展示）
     if (getClueUnhandledPrivilege()){
@@ -740,7 +745,7 @@ function updateGlobalUnreadStorage(unreadObj) {
         //向展示的组件发送数据
         timeoutFunc = setTimeout(function() {
             //更新未读消息数
-            notificationEmitter.emit(notificationEmitter.UPDATE_NOTIFICATION_UNREAD);
+            // notificationEmitter.emit(notificationEmitter.UPDATE_NOTIFICATION_UNREAD);
             //待审批数的刷新展示
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
             //未处理的线索数量刷新展示
