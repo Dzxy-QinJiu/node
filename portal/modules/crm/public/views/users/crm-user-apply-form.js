@@ -134,7 +134,7 @@ class CrmUserApplyForm extends React.Component {
             if (delayDate < moment().valueOf()) {
                 delayDate = moment().add(delayMillis, 'ms').valueOf();
             } else {
-                delayDate = delayDate.add(delayMillis, 'ms').valueOf();
+                delayDate = moment(x.end_date).add(delayMillis, 'ms').valueOf();
             }
             return {
                 ...paramItem,
