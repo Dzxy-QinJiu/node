@@ -66,20 +66,16 @@ UserApplyStore.prototype.refreshUnreadReplyList = function(unreadReplyList) {
  */
 UserApplyStore.prototype.clearUnreadReply = function(applyId) {
     const APPLY_UNREAD_REPLY = 'apply_unread_reply';
-    let userId = userData.getUserData().user_id;
     //获取sessionStorage中该用户的未读回复列表
-    let applyUnreadReply = session.get(APPLY_UNREAD_REPLY);
-    if (applyUnreadReply) {
-        let applyUnreadReplyObj = JSON.parse(applyUnreadReply);
-        let applyUnreadReplyList = [];//获取未读回复申请列表为空时，会清空所有未读回复的申请列表
+    let unreadReplyList = session.get(APPLY_UNREAD_REPLY);
+    if (unreadReplyList) {
+        let applyUnreadReplyList = JSON.parse(unreadReplyList) || [];
         //清除某条申请
         if (applyId) {
-            applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];
             applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.apply_id !== applyId);
         }
         this.unreadReplyList = applyUnreadReplyList;
-        applyUnreadReplyObj[userId] = applyUnreadReplyList;
-        session.set(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyObj));
+        session.set(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyList));
         //加延时是为了，避免循环dispatch报错：Cannot dispatch in the middle of a dispatch
         setTimeout(() => {
             notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, applyUnreadReplyList);

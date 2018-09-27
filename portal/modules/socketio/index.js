@@ -212,11 +212,11 @@ function systemNoticeListener(notice) {
 }
 
 /**
- * 申请审批未读回复的监听器
+ * 申请审批有新未读回复的监听器
  * @param unreadList 未读回复列表，数据格式如下
  * [{
  *    member_id: '3722pgujaa35ioj7klp0TgYZCfUy59xaXD0ieh6cvf4',
- *    push_type: 0,//即刻新回复（推送的数据）中push_type字段值为：0，一分钟推送一次的所有未读回复中的值为：null
+ *    push_type: 0,//即刻新回复（推送的数据）中push_type字段值为：0
  *    update_time: null,
  *    create_time: 1521170377334,
  *    apply_id: '59ec6aed-04da-4050-b464-68eeab695d68',
@@ -226,19 +226,14 @@ function systemNoticeListener(notice) {
  * }]
  */
 function applyUnreadReplyListener(unreadList) {
-    // pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
-    if (_.isArray(unreadList) && unreadList.length) {
-        //所有未读回复的列表按接收者分组{userId1:[{member_id,update_time...},{}],userId2:[{...},{...}]}
-        let memberUnreadObj = _.groupBy(unreadList, 'member_id');
-        if (!_.isEmpty(memberUnreadObj)) {
-            for (let memberId in memberUnreadObj) {
-                let memberUnreadReplyList = _.map(memberUnreadObj[memberId], unreadReply => {
-                    return pushDto.unreadReplyToFrontend(unreadReply);
-                });
+    pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
+    if (_.get(unreadList, '[0]')) {
+        _.each(unreadReply => {
+            if (unreadReply.member_id) {
                 //找到消息接收者对应的socket，将数据推送到浏览器
-                emitMsgBySocket(memberId, 'apply_unread_reply', memberUnreadReplyList);
+                emitMsgBySocket(unreadReply.member_id, 'apply_unread_reply', pushDto.unreadReplyToFrontend(unreadReply));
             }
-        }
+        });
     }
 }
 
