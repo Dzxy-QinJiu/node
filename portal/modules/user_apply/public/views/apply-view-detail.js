@@ -776,9 +776,9 @@ const ApplyViewDetail = createReactClass({
                 displayEndTime = end_time;
             }
             if (displayStartTime === '-' && displayEndTime === '-') {
-                displayText = { FOREVER };
-            } else if (displayStartTime === { UNKNOWN } && displayEndTime === { UNKNOWN }) {
-                displayText = { UNKNOWN };
+                displayText = FOREVER;
+            } else if (displayStartTime === UNKNOWN && displayEndTime === UNKNOWN ) {
+                displayText = UNKNOWN;
             } else {
                 displayText = displayStartTime + CONNECTOR + displayEndTime;
             }
