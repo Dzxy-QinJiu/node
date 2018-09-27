@@ -173,21 +173,22 @@ const ApplyViewDetail = createReactClass({
     },
 
     getApplyDetail(detailItem, applyData) {
-        if (isMultiAppApply(detailItem)) {
-            ApplyViewDetailActions.getApplyMultiAppDetail({
-                params: {
-                    applyId: detailItem.id
-                }
-            }, applyData);
-        } else {
-            ApplyViewDetailActions.getApplyDetail(detailItem.id, applyData);
-        }
+        setTimeout(() => {
+            if (isMultiAppApply(detailItem)) {
+                ApplyViewDetailActions.getApplyMultiAppDetail({
+                    params: {
+                        applyId: detailItem.id
+                    }
+                }, applyData);
+            } else {
+                ApplyViewDetailActions.getApplyDetail(detailItem.id, applyData);
+            }
 
-        //获取回复列表
-        if (hasPrivilege('GET_APPLY_COMMENTS')) {
-            ApplyViewDetailActions.getReplyList(detailItem.id);
-        }
-
+            //获取回复列表
+            if (hasPrivilege('GET_APPLY_COMMENTS')) {
+                ApplyViewDetailActions.getReplyList(detailItem.id);
+            }
+        });
     },
 
     componentDidMount() {
@@ -1110,9 +1111,6 @@ const ApplyViewDetail = createReactClass({
                             <div key={idx} className="user-item-container">
                                 {this.renderApplyDetailSingleUserName(user)}
                                 <div className="col-12 apply_detail_apps">
-                                    <div className="apply_detail_operate clearfix">
-                                        {this.renderDetailOperateBtn()}
-                                    </div>
                                     {
                                         this.renderMultiAppTable(user)
                                     }
@@ -1242,10 +1240,7 @@ const ApplyViewDetail = createReactClass({
                         detailInfo.users && detailInfo.users.map((user, idx) => (
                             <div key={idx} className="user-item-container">
                                 {this.renderApplyDetailSingleUserName(user)}
-                                <div className="col-12 apply_detail_apps">
-                                    <div className="apply_detail_operate clearfix">
-                                        {this.renderDetailOperateBtn()}
-                                    </div>
+                                <div className="col-12 apply_detail_apps">                                    
                                     {
                                         this.renderMultiAppTable(user, true)
                                     }
