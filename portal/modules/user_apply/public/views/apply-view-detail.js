@@ -1111,6 +1111,9 @@ const ApplyViewDetail = createReactClass({
                             <div key={idx} className="user-item-container">
                                 {this.renderApplyDetailSingleUserName(user)}
                                 <div className="col-12 apply_detail_apps">
+                                    <div className="apply_detail_operate clearfix">
+                                        {this.renderDetailOperateBtn()}
+                                    </div>
                                     {
                                         this.renderMultiAppTable(user)
                                     }
@@ -1240,7 +1243,10 @@ const ApplyViewDetail = createReactClass({
                         detailInfo.users && detailInfo.users.map((user, idx) => (
                             <div key={idx} className="user-item-container">
                                 {this.renderApplyDetailSingleUserName(user)}
-                                <div className="col-12 apply_detail_apps">                                    
+                                <div className="col-12 apply_detail_apps">
+                                    {/* <div className="apply_detail_operate clearfix">
+                                        {this.renderDetailOperateBtn()}
+                                    </div> */}
                                     {
                                         this.renderMultiAppTable(user, true)
                                     }
