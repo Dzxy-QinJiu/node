@@ -17,7 +17,7 @@
      CASTER_PORT：5766
      CASTER_USERNAME：oplate-test-session
      CASTER_PASSWORD：plate-test-session
-     GATEWAY：http://172.19.103.21:9090
+     GATEWAY：http://172.19.103.57:9090
      PUSH_SERVER_ADDRESS：http://172.19.103.211:9093
  * zipkin、调用链跟踪记录（只有线上的正式环境有的配置）
      ZIPKINURL：http://172.19.103.39:9002
@@ -186,12 +186,16 @@ var config = {
     },
     appId: 'COM.ANTFACT.OPLATE.NOTIFY',//从协调服务中获取推送服务地址时所需的id
     loginParams: {
-        realm: process.env.LOGIN_REALM || '3722pgujaa',//安全域Id
-        clientId: process.env.LOGIN_CLIENT_ID || '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9',//应用Id
-        clientSecret: process.env.LOGIN_CLIENT_SECRET || '477qpz3uC5fZcaz0w1YloKWA',//应用密钥
+        //安全域Id,ketao:3722pgujaa,curtao:34pj27enfq
+        realm: process.env.LOGIN_REALM || '3722pgujaa',
+        //应用Id, ketao:3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9 ,curtao:34pj27enfq34pj1oe3c4h91VbdhG4zxccX0Z3i2Z6eN
+        clientId: process.env.LOGIN_CLIENT_ID || '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9',
+        //应用密钥,ketao:477qpz3uC5fZcaz0w1YloKWA, curtao:0bMfdndoR4jPcH70Mm7SS1kg
+        clientSecret: process.env.LOGIN_CLIENT_SECRET || '477qpz3uC5fZcaz0w1YloKWA',
         grantType: process.env.LOGIN_GRANT_TYPE || 'client_credentials'//授权类型
     },
-    gateway: getGateway() || 'http://172.19.103.21:9090',//服务网关,测试环境：http://172.19.103.21:9090,正式：'http://gateway-ketao.antfact.com',
+    //服务网关,ketao测试环境：http://172.19.103.57:9090, ketao正式：'http://gateway-ketao.antfact.com',curtao:'http://gateway.curtao.com'
+    gateway: getGateway() || 'http://172.19.103.57:9090',
     metricAddress: process.env.METRIC_ADDRESS,//"http://172.19.104.253:8086/oplate_web",
     loggerTag: process.env.LOGGER_TAG || 'ketao-web',//日志标签,用来区分是oplate的还是ketao的
     errorMessagePath: path.join(__dirname, '../portal/lib/utils/errorCode.js'),//错误码处理文件路径，ant-auth-request中需要用
