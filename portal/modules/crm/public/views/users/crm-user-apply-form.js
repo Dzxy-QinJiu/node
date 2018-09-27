@@ -133,6 +133,8 @@ class CrmUserApplyForm extends React.Component {
             //到期时间小于当前时间时，在当前时间基础上延期
             if (delayDate < moment().valueOf()) {
                 delayDate = moment().add(delayMillis, 'ms').valueOf();
+            } else {
+                delayDate = delayDate.add(delayMillis, 'ms').valueOf();
             }
             return {
                 ...paramItem,
