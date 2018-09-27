@@ -1111,9 +1111,6 @@ const ApplyViewDetail = createReactClass({
                             <div key={idx} className="user-item-container">
                                 {this.renderApplyDetailSingleUserName(user)}
                                 <div className="col-12 apply_detail_apps">
-                                    <div className="apply_detail_operate clearfix">
-                                        {this.renderDetailOperateBtn()}
-                                    </div>
                                     {
                                         this.renderMultiAppTable(user)
                                     }
