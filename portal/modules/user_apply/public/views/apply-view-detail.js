@@ -1764,7 +1764,7 @@ const ApplyViewDetail = createReactClass({
             //保存以备重试时使用
             this.approval_state_selected = approval_state;
             //左侧选中的申请单
-            var selectedDetailItem = this.state.selectedDetailItem;
+            var selectedDetailItem = this.props.detailItem;
             //要提交的应用配置
             var products = [];
             //是否是已有用户申请
@@ -1847,7 +1847,7 @@ const ApplyViewDetail = createReactClass({
             var obj = {
                 approval: approval_state + '',
                 comment: this.state.formData.comment,
-                message_id: this.state.selectedDetailItem.id,
+                message_id: this.props.detailItem.id,
                 products: JSON.stringify(products),
                 //审批类型
                 type: detailInfo.type,

@@ -95,6 +95,9 @@ exports.submitApply = function(obj) {
     return Deferred.promise();
 };
 
+//延期、停用提交审批
+exports.submitMultiAppApply = params => ajaxPro('submitMultiAppApply', params);
+
 //申请用户
 exports.applyUser = function(data) {
     data = {reqData: JSON.stringify(data)};
