@@ -216,8 +216,9 @@ class ApplyViewDetailStore {
             continueSubmit: false
         };
         const info = data || {};
+        let apps = [];
         if (_.get(data, "message.apply_param")) {
-            const apps = info.message.apply_param && (JSON.parse(info.message.apply_param) || []);
+            apps = info.message.apply_param && (JSON.parse(info.message.apply_param) || []);
             info.customer_id = info.message.customer_ids;
             info.customer_name = info.message.customer_name;
             info.apps = apps.map(app => ({
@@ -238,7 +239,7 @@ class ApplyViewDetailStore {
             })
             switch (_.get(data, 'message.type')) {
                 case APPLY_TYPES.DELAY:
-                    if (apps[0].delay) { // 同步修改时间
+                    if (_.get(apps, '0.delay')) { // 同步修改时间
                         const delayTime = apps[0].delay;
                         info.delayTime = delayTime;
                         this.formData.delay_time = delayTime;
@@ -249,21 +250,21 @@ class ApplyViewDetailStore {
                     }
                     break;
                 case APPLY_TYPES.DISABLE:
-                    info.status = apps[0].status;
+                    info.status = _.get(apps, '0.status');
                     break;
             }
         }
         info.customer_name = info.message.customer_name;
         info.comment = info.message.remark;
         info.type = info.message.type;
+        info.sales_team_name = info.message.sales_team_name;
+        info.sales_name = info.message.sales_name;
         this.detailInfoObj.info = info;     
         this.createAppsSetting();
-        if (_.isArray(this.detailInfoObj.info.user_names)) {
-            this.formData.user_name = this.detailInfoObj.info.user_names[0];
-        }
-        if (_.isArray(this.detailInfoObj.info.nick_names)) {
-            this.formData.nick_name = this.detailInfoObj.info.nick_names[0];
-        }
+        if (_.isArray(apps)) {
+            this.formData.user_name = _.get(apps, '0.user_name');
+            this.formData.nick_name = _.get(apps, '0.nickname');
+        }       
     })
     //生成应用的单独配置
     createAppsSetting() {

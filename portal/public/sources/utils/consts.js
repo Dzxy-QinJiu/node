@@ -318,9 +318,3 @@ export const APPLY_TYPES = {
     DELAY: 'apply_grant_delay_multiapp',
     DISABLE: 'apply_grant_status_change_multiapp'
 };
-
-//多应用申请审批标题
-export const APPLY_MULTI_TITLES = {
-    DELAY: '延期',
-    DISABLE: '禁用'
-};

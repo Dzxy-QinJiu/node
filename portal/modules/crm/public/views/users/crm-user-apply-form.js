@@ -129,10 +129,10 @@ class CrmUserApplyForm extends React.Component {
         //添加邮箱使用的字段, 客户名 用户名 添加应用名 用户id
 
         submitObj.data = this.getSelectedUserMultiAppData().map(x => {
-            let delayDate = (new Date(moment(x.end_date).add(delayMillis, 'ms'))).getTime();
-            //延期时间小于当前时间时，在当前时间基础上延期
-            if (delayDate < (new Date()).getTime()) {
-                delayDate = (new Date(moment().add(delayMillis, 'ms'))).getTime()
+            let delayDate = moment(x.end_date).valueOf();
+            //到期时间小于当前时间时，在当前时间基础上延期
+            if (delayDate < moment().valueOf()) {
+                delayDate = moment().add(delayMillis, 'ms').valueOf();
             }
             return {
                 ...paramItem,
@@ -153,8 +153,8 @@ class CrmUserApplyForm extends React.Component {
             usePromise: true,
             data: submitObj
         }).then((result) => {
-            this.setState({ isApplying: false });
             if (result) {
+                this.setState({ isApplying: false });
                 this.props.closeApplyPanel();
             } else {
                 this.setState({ isApplying: false, applyErrorMsg: Intl.get('user.apply.delay.failed', '申请延期失败') });
@@ -291,7 +291,7 @@ class CrmUserApplyForm extends React.Component {
                 this.setState({ applyErrorMsg: Intl.get('user.apply.password.failed', '申请修改密码失败') });
             }
         }, (errorMsg) => {
-            this.setState({ isApplying: false, applyErrorMsg: errorMsg });
+            this.setState({ isApplying: false, applyErrorMsg: errorMsg || Intl.get('user.apply.password.failed', '申请修改密码失败') });
         });
     }
 

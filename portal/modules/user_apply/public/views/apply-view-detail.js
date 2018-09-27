@@ -30,7 +30,7 @@ import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { RightPanel } from '../../../../components/rightPanel';
 import { getPassStrenth, PassStrengthBar, passwordRegex } from 'CMP_DIR/password-strength-bar';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-import { APPLY_MULTI_TITLES, APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
+import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
 
 /*在审批界面显示用户的右侧面板结束*/
 //默认头像图片
@@ -124,11 +124,11 @@ function getDelayDisplayTime(delay) {
             ${days ? days + Intl.get('common.time.unit.day', '天') : ''}`;
 }
 
-//根据申请标题判断是否 是延期或禁用的申请(一个用户对应多个应用)
+//根据申请type判断是否 是延期或禁用的申请(一个用户对应多个应用)
 const isMultiAppApply = item => {
-    let flag = false;
-    _.each(APPLY_MULTI_TITLES, (value) => {
-        if (item.topic.includes(value)) {
+    let flag = false;    
+    _.each(APPLY_TYPES, (value) => {
+        if (_.get(item, 'message.type') === value) {
             flag = true;
             return false;
         }
@@ -496,7 +496,7 @@ const ApplyViewDetail = createReactClass({
                             <span className="user-info-label">
                                 {Intl.get('common.belong.sales', '所属销售')}:
                             </span>
-                            {detailInfo.message && detailInfo.message.sales_name || ''} - {detailInfo.message && detailInfo.message.sales_team_name || ''}
+                            {detailInfo.sales_name || ''} - {detailInfo.sales_team_name || ''}                           
                         </div>
                     </div>
                 </div>
@@ -750,9 +750,9 @@ const ApplyViewDetail = createReactClass({
                 displayEndTime = end_time;
             }
             if (displayStartTime === '-' && displayEndTime === '-') {
-                displayText = { FOREVER };
-            } else if (displayStartTime === { UNKNOWN } && displayEndTime === { UNKNOWN }) {
-                displayText = { UNKNOWN };
+                displayText =  FOREVER;
+            } else if (displayStartTime === UNKNOWN && displayEndTime === UNKNOWN) {
+                displayText = UNKNOWN;
             } else {
                 displayText = displayStartTime + CONNECTOR + displayEndTime;
             }
