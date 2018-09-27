@@ -1,0 +1,63 @@
+@import "../../public/css/common-variables";
+//客户、用户、备注、回复信息
+.apply-detail-info {
+  background-color: @apply-detail-bg-color;
+  margin-bottom: 10px;
+  padding: 0 10px;
+  .reply-icon-block {
+    z-index: 2;
+  }
+  .customer-icon-block, .user-icon-block, .common-icon-block, .reply-icon-block, .leave-detail-icon-block {
+    float: left;
+    width: 50px;
+    height: 60px;
+    padding-left: 8px;
+    padding-top: 15px;
+    .icon-customer, .icon-user, .icon-common, .icon-apply-message-tip ,.icon-leave{
+      color: #9faaac;
+    }
+    .icon-customer {
+      font-size: 18px;
+    }
+    .icon-user {
+      font-size: 20px;
+    }
+    .icon-common {
+      font-size: 14px;
+    }
+    .icon-leave{
+      font-size: 20px;
+    }
+  }
+  .leave-detail-icon-block{
+    padding-top: 10px;
+  }
+  .apply-info-block {
+    position: relative;
+    width: 100%;
+    padding-left: 50px;
+    z-index: 0;
+    .apply-info-content{
+      padding: 16px 10px 16px 16px;
+      border-left: 1px solid @bordercolor;
+    }
+  }
+  .apply-info-label {
+    margin-top: 4px;
+    font-size: 14px;
+    color: #9f9fa1;
+    .user-info-label {
+      padding-right: 6px;
+    }
+    .user-info-text {
+      color: @text-color;
+    }
+  }
+
+  //备注
+  .common-info-block {
+    .apply-info-label {
+      margin-top: 0;
+    }
+  }
+}

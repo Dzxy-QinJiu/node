@@ -143,8 +143,8 @@ function init() {
             case 'monthly_report_analysis':
                 childRoutes.push(require('../../modules/monthly-report'));
                 break;
-            case 'leave_apply_management':
-                childRoutes.push(require('../../modules/leave-apply'));
+            case 'application':
+                childRoutes.push(require('./application_apply_management'));
                 break;
         }
     });

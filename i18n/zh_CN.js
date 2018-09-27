@@ -2654,6 +2654,7 @@ var zh_CN = {
     'user.detail.analysis.tip.historyActivity': '总活跃天数/开通的总天数。该分项在总分钟占比10%',
     'user.detail.analysis.tip.historyFresh': '总在线分钟数/开通总分钟数。该分项在总分钟占比10%',
     'menu.leave_apply': '出差审批',
+    'menu.leave.apply.list.management': '申请审批',
     'failed.get.all.leave.apply': '获取全部出差申请失败',
     'failed.get.self.leave.apply': '获取我的出差申请失败',
     'failed.get.worklist.leave.apply': '获取由我审批的出差申请失败',
@@ -2684,6 +2685,12 @@ var zh_CN = {
     'leave.apply.application.status': '审批状态',
     'leave.apply.fill.leave.reason': '请填写出差事由',
     'leave.apply.no.filter.leave.list': '暂无符合查询条件的出差申请',
-    'leave.apply.detail.wait': '待'
+    'leave.apply.detail.wait': '待',
+    'leave.apply.sales.oppotunity': '销售机会',
+    'leave.apply.leave.application': '请假申请',
+    'leave.apply.my.worklist.apply': '待我审批',
+    'leave.apply.add.sales.oppotunity': '添加销售机会申请',
+    'leave.apply.sales.oppotunity.application': '销售机会申请',
+    'leave.apply.inspect.success.time': '预计成交时间'
 };
 export default zh_CN;
