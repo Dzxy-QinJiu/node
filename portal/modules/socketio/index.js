@@ -226,7 +226,7 @@ function systemNoticeListener(notice) {
  * }]
  */
 function applyUnreadReplyListener(unreadList) {
-    pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
+    // pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
     if (_.get(unreadList, '[0]')) {
         _.each(unreadReply => {
             if (unreadReply.member_id) {
