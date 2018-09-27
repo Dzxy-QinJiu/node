@@ -750,7 +750,7 @@ const ApplyViewDetail = createReactClass({
                 displayEndTime = end_time;
             }
             if (displayStartTime === '-' && displayEndTime === '-') {
-                displayText =  FOREVER;
+                displayText = FOREVER;
             } else if (displayStartTime === UNKNOWN && displayEndTime === UNKNOWN) {
                 displayText = UNKNOWN;
             } else {
@@ -1229,12 +1229,12 @@ const ApplyViewDetail = createReactClass({
                         <div className="user-info-label label-fix">{this.renderApplyDelayName()}:</div>
                         <span className="user-info-text">
                             {this.state.isModifyDelayTime ? null : this.renderApplyDelayModifyTime()}
-                            {isRealmAdmin ? this.renderModifyDelayTime() : null}
+                            {/* {isRealmAdmin ? this.renderModifyDelayTime() : null} */}
                         </span>
                     </div>
                     {
-                        detailInfo.users && detailInfo.users.map(user => (
-                            <div className="user-item-container">
+                        detailInfo.users && detailInfo.users.map((user, idx) => (
+                            <div key={idx} className="user-item-container">
                                 {this.renderApplyDetailSingleUserName(user)}
                                 <div className="col-12 apply_detail_apps">
                                     <div className="apply_detail_operate clearfix">
@@ -2139,6 +2139,12 @@ const ApplyViewDetail = createReactClass({
         );
     },
 });
+ApplyViewDetail.propTypes = {
+    detailItem: PropTypes.object,
+    applyData: PropTypes.object,
+    showNoData: PropTypes.bool,
+    isUnreadDetail: PropTypes.bool,
+};
 
 export default ApplyViewDetail;
 
