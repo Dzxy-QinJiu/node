@@ -137,6 +137,12 @@ const isMultiAppApply = item => {
 };
 
 const ApplyViewDetail = createReactClass({
+    propTypes: {
+        detailItem: PropTypes.object,
+        applyData: PropTypes.object,
+        showNoData: PropTypes.bool,
+        isUnreadDetail: PropTypes.bool,
+    },
     displayName: 'ApplyViewDetail',
     mixins: [FieldMixin, UserNameTextField],
 
@@ -1100,8 +1106,8 @@ const ApplyViewDetail = createReactClass({
                         </span>
                     </div>
                     {
-                        detailInfo.users && detailInfo.users.map(user => (
-                            <div className="user-item-container">
+                        detailInfo.users && detailInfo.users.map((user, idx) => (
+                            <div key={idx} className="user-item-container">
                                 {this.renderApplyDetailSingleUserName(user)}
                                 <div className="col-12 apply_detail_apps">
                                     <div className="apply_detail_operate clearfix">
@@ -1586,24 +1592,27 @@ const ApplyViewDetail = createReactClass({
 
     // 确认撤销申请
     saleConfirmBackoutApply(e) {
+        const state = this.state;
         Trace.traceEvent(e, '点击撤销申请按钮');
-        this.state.showBackoutConfirm = true;
-        this.setState(this.state);
+        state.showBackoutConfirm = true;
+        this.setState(state);
     },
 
     // 隐藏撤销申请的模态框
     hideBackoutModal: function() {
+        const state = this.state;
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-cancel'), '点击取消按钮');
-        this.state.showBackoutConfirm = false;
-        this.setState(this.state);
+        state.showBackoutConfirm = false;
+        this.setState(state);
     },
 
     // 撤销申请
     saleBackoutApply(e) {
         e.stopPropagation();
         Trace.traceEvent(e, '点击撤销按钮');
-        this.state.showBackoutConfirm = false;
-        this.setState(this.state);
+        const state = this.state;
+        state.showBackoutConfirm = false;
+        this.setState(state);
         let backoutObj = {
             apply_id: this.props.detailItem.id,
             remark: $.trim(this.state.formData.comment),
@@ -1751,6 +1760,7 @@ const ApplyViewDetail = createReactClass({
     },
 
     submitApprovalForm(approval) {
+        const state = this.state;
         if (approval === '1') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击通过按钮');
         } else if (approval === '2') {
@@ -1879,9 +1889,9 @@ const ApplyViewDetail = createReactClass({
         } else if (approval === '2') {
             //当点击驳回按钮时，不用对输入的密码进行校验
             //如果之前密码验证有错误提示，先将错误提示去掉
-            this.state.status.apply_detail_password = {};
-            this.state.status.confirmPassword = {};
-            this.setState({ status: this.state.status });
+            state.status.apply_detail_password = {};
+            state.status.confirmPassword = {};
+            this.setState({ status: state.status });
             realSubmit();
         } else {
             validation.validate((valid) => {
@@ -2139,12 +2149,5 @@ const ApplyViewDetail = createReactClass({
         );
     },
 });
-ApplyViewDetail.propTypes = {
-    detailItem: PropTypes.object,
-    applyData: PropTypes.object,
-    showNoData: PropTypes.bool,
-    isUnreadDetail: PropTypes.bool,
-};
-
 export default ApplyViewDetail;
 
