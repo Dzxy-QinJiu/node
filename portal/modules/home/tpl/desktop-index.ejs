@@ -1,4 +1,4 @@
-<% // 页头1     %>
+<% // 页头1      %>
 <% addBrowserChecker = false %>
 <% include ../../common/public/tpl/common-header.begin.ejs %>
 
@@ -14,12 +14,12 @@
         hideSomeItem: '<%- hideSomeItem %>',
         projectName: '<%= projectName %>',
         clientId: '<%- clientId %>',
-        useSso:'<%- useSso %>'
+        useSso: '<%- useSso %>'
     };
 </script>
 <script type="text/javascript">
     if (typeof String.prototype.startsWith !== 'function') {
-        String.prototype.startsWith = function (prefix) {
+        String.prototype.startsWith = function(prefix) {
             return this.slice(0, prefix.length) === prefix;
         };
     }
@@ -32,11 +32,11 @@
     _paq.push(['setUserId', '<%= username %>']);
     _paq.push(['setCustomDimension', 1, '<%= userid %>']);
     _paq.push(['setCustomDimension', 2, '<%= username %>']);
-    _paq.push(['setDocumentTitle', "/"]);
+    _paq.push(['setDocumentTitle', '/']);
     _paq.push(['trackPageView']);
     _paq.push(['enableHeartBeatTimer', 30]);
-    (function () {
-        var u = "//ustat.antfact.com/";
+    (function() {
+        var u = '//ustat.antfact.com/';
         _paq.push(['setTrackerUrl', u + 'piwik.php']);
         _paq.push(['setSiteId', '<%= siteID %>']);
         var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
@@ -49,7 +49,21 @@
 </script>
 <!-- End Piwik Code -->
 <% } %>
-<% // 页头2         %>
+<% if(addShowingIoCode == "true" && isCurtao) { %>
+<!-- Matomo Tag Manager -->
+<script type="text/javascript">
+    var _mtm = _mtm || [];
+    _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
+    var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+    g.type = 'text/javascript';
+    g.async = true;
+    g.defer = true;
+    g.src = 'https://ustatweb.antfact.com/js/container_ZyuDhaAg.js';
+    s.parentNode.insertBefore(g, s);
+</script>
+<!-- End Matomo Tag Manager -->
+<% } %>
+<% // 页头2          %>
 <% include ../../common/public/tpl/common-header.end.ejs %>
 <div id="app"></div>
 <script src="/dll/dll.vendor.js"></script>
@@ -60,6 +74,6 @@
 <script src="/resources/common.bundle.js"></script>
 <script src="/resources/app.bundle.js"></script>
 
-<% // 页脚          %>
+<% // 页脚           %>
 <% showFooterContent = false %>
 <% include ../../common/public/tpl/common-footer.ejs %>
