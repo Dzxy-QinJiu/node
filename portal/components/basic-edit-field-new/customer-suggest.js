@@ -51,6 +51,9 @@ class CustomerSuggest extends React.Component {
         hoverShowEdit: true,//编辑按钮是否在鼠标移入的时候再展示出来
         customerLable: '',//客户标签
         customer_id: '',//客户id
+        hideCustomerRequiredTip: function() {
+            
+        }
     };
 
     state = {
@@ -146,6 +149,12 @@ class CustomerSuggest extends React.Component {
     };
 
     suggestChange = (value) => {
+        if (value){
+            //隐藏客户是必填项的提示
+            _.isFunction(this.props.hideCustomerRequiredTip) && this.props.hideCustomerRequiredTip(true);
+        }else{
+            _.isFunction(this.props.hideCustomerRequiredTip) && this.props.hideCustomerRequiredTip(false);
+        }
         clearTimeout(this.suggestTimer);
         var _this = this;
         this.setState({
@@ -188,6 +197,9 @@ class CustomerSuggest extends React.Component {
                     list: list,
                     show_tip: list.length <= 0
                 }, () => {
+                    if (list.length <= 0){
+
+                    }
                     this.adjustDropDownRightPos();
                 });
             }, (errorMsg) => {
@@ -554,6 +566,7 @@ CustomerSuggest.propTypes = {
     addDataTip: PropTypes.string,
     noDataTip: PropTypes.string,
     hideButtonBlock: PropTypes.boolean,
+    hideCustomerRequiredTip: PropTypes.func,
 };
 
 module.exports = CustomerSuggest;

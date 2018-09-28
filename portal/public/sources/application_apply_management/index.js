@@ -6,19 +6,16 @@
 var RightContent = require('../../../components/privilege/right-content');
 var Checker = require('../../../components/privilege/checker');
 
-var bussinessApply = require('../../../modules/bussiness-apply');
-var salesOppotunity = require('../../../modules/sales_opportunity');
+var businessApply = require('../../../modules/business-apply');
+var salesOpportunity = require('../../../modules/sales_opportunity');
 var leaveApply = require('../../../modules/leave-apply');
 
 
 function getChildRoutes() {
-    // var bussinessApply = ApplicationApply('/application/business_apply');
-    // var salesOppotunity = ApplicationApply('/application/sales_oppotunity');
-    // var leaveApply = ApplicationApply('/application/leave_apply');
     var childRoutes = Checker.getChildRoutes('application',
         [
-            bussinessApply,
-            salesOppotunity,
+            businessApply,
+            salesOpportunity,
             leaveApply,
         ]
     );

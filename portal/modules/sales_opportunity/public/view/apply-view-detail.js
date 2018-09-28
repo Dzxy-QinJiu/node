@@ -1,11 +1,10 @@
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
- * Created by zhangshujuan on 2018/9/18.
+ * Created by zhangshujuan on 2018/9/28.
  */
-var applyBusinessDetailStore = require('../store/apply-business-detail-store');
-var ApplyViewDetailActions = require('../action/apply-view-detail-action');
-var LeaveApplyUtils = require('../utils/leave-apply-utils');
+var SalesOpportunityApplyDetailStore = require('../store/sales-opportunity-apply-detail-store');
+var SalesOpportunityApplyDetailAction = require('../action/sales-opportunity-apply-detail-action');
 var Spinner = require('CMP_DIR/spinner');
 import Trace from 'LIB_DIR/trace';
 import {Alert, Icon, Input, Row, Col, Button} from 'antd';
@@ -13,29 +12,30 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-require('../css/business-apply-detail.less');
+require('../css/sales-opportunity-apply-detail.less');
 import userData from 'PUB_DIR/sources/user-data';
-import {Modal, Table} from 'react-bootstrap';
+import {Modal} from 'react-bootstrap';
 import ApplyDetailRemarks from 'CMP_DIR/apply-detail-remarks';
 import ApplyDetailInfo from 'CMP_DIR/apply-detail-info';
 import ApplyDetailCustomer from 'CMP_DIR/apply-detail-customer';
-import { APPLY_LIST_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_LIST_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+import {getApplyTopicText} from 'PUB_DIR/sources/utils/common-method-util';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
-            ...applyBusinessDetailStore.getState()
+            ...SalesOpportunityApplyDetailStore.getState()
         };
     }
 
     onStoreChange = () => {
-        this.setState(applyBusinessDetailStore.getState());
+        this.setState(SalesOpportunityApplyDetailStore.getState());
     };
 
     componentDidMount() {
-        applyBusinessDetailStore.listen(this.onStoreChange);
+        SalesOpportunityApplyDetailStore.listen(this.onStoreChange);
         if (this.props.detailItem.id) {
             this.getBusinessApplyDetailData(this.props.detailItem);
         }
@@ -50,7 +50,7 @@ class ApplyViewDetail extends React.Component {
     }
 
     componentWillUnmount() {
-        applyBusinessDetailStore.unlisten(this.onStoreChange);
+        SalesOpportunityApplyDetailStore.unlisten(this.onStoreChange);
     }
 
     getApplyListDivHeight() {
@@ -67,16 +67,16 @@ class ApplyViewDetail extends React.Component {
 
     getBusinessApplyDetailData(detailItem) {
         setTimeout(() => {
-            ApplyViewDetailActions.setInitialData(detailItem);
-            ApplyViewDetailActions.getBusinessApplyDetailById({id: detailItem.id});
+            SalesOpportunityApplyDetailAction.setInitialData(detailItem);
+            SalesOpportunityApplyDetailAction.getSalesOpportunityApplyDetailById({id: detailItem.id});
             //如果申请的状态是已通过或者是已驳回的时候，就不用发请求获取回复列表，直接用详情中的回复列表
             //其他状态需要发请求请求回复列表
             if (detailItem.status === 'pass' || detailItem.state === 'reject') {
-                ApplyViewDetailActions.setApplyComment(detailItem.approve_details);
+                SalesOpportunityApplyDetailAction.setApplyComment(detailItem.approve_details);
             } else if (detailItem.id) {
-                ApplyViewDetailActions.getBusinessApplyCommentList({id: detailItem.id});
+                SalesOpportunityApplyDetailAction.getSalesOpportunityApplyCommentList({id: detailItem.id});
                 //根据申请的id获取申请的状态
-                ApplyViewDetailActions.getApplyStatusById({id: detailItem.id});
+                SalesOpportunityApplyDetailAction.getSalesOpportunityApplyStatusById({id: detailItem.id});
             }
         });
     }
@@ -86,15 +86,15 @@ class ApplyViewDetail extends React.Component {
         Trace.traceEvent(e, '点击了重新获取');
         var detailItem = this.props.detailItem;
         if (detailItem.status === 'pass' || detailItem.state === 'reject') {
-            ApplyViewDetailActions.setApplyComment(detailItem.approve_details);
+            SalesOpportunityApplyDetailAction.setApplyComment(detailItem.approve_details);
         } else if (detailItem.id) {
-            ApplyViewDetailActions.getBusinessApplyCommentList({id: detailItem.id});
+            SalesOpportunityApplyDetailAction.getSalesOpportunityApplyCommentList({id: detailItem.id});
         }
     };
     //重新获取申请的状态
     refreshApplyStatusList = (e) => {
         var detailItem = this.props.detailItem;
-        ApplyViewDetailActions.getApplyStatusById({id: detailItem.id});
+        SalesOpportunityApplyDetailAction.getSalesOpportunityApplyStatusById({id: detailItem.id});
     };
 
     renderApplyDetailLoading() {
@@ -145,7 +145,6 @@ class ApplyViewDetail extends React.Component {
 
     //显示客户详情
     showCustomerDetail(customerId) {
-        // ApplyViewDetailActions.showCustomerDetail(customerId);
         //触发打开带拨打电话状态的客户详情面板
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
             customer_params: {
@@ -172,25 +171,30 @@ class ApplyViewDetail extends React.Component {
 
     renderDetailApplyBlock(detailInfo) {
         var detail = detailInfo.detail || {};
-        var applicant = detailInfo.applicant || {};
-        var beginDate = moment(detail.begin_time).format(oplateConsts.DATE_FORMAT);
-        var endDate = moment(detail.end_time).format(oplateConsts.DATE_FORMAT);
-        var isOneDay = beginDate === endDate;
+        var expectdeal_time = moment(detail.expectdeal_time).format(oplateConsts.DATE_FORMAT);
         var customers = _.get(detail, 'customers[0]', {});
         var applyStatus = this.getApplyStatusText(detailInfo);
-        var showApplyInfo = [{
-            label: Intl.get('common.login.time', '时间'),
-            text: isOneDay ? beginDate : (beginDate + ' - ' + endDate)
-        }, {
-            label: Intl.get('user.info.login.address', '地点'),
-            text: _.isEmpty(customers) ? '' : ('' + customers.province + customers.city + customers.county + customers.address)
-        }, {
-            label: Intl.get('leave.apply.for.application', '人员'),
-            text: applicant.user_name,
-        }, {
-            label: Intl.get('leave.apply.application.status', '审批状态'),
-            text: applyStatus
-        }];
+        var productArr = [];
+        _.forEach(detail.apps,(app) => {
+            productArr.push(app.client_name);
+        });
+        var showApplyInfo = [
+            {
+                label: Intl.get('call.record.customer', '客户'),
+                text: _.get(detail, 'customer.name'),
+            }, {
+                label: Intl.get('leave.apply.buget.count', '预算'),
+                text: detail.budget
+            }, {
+                label: Intl.get('leave.apply.buy.apps', '产品'),
+                text: productArr.join(',')
+            }, {
+                label: Intl.get('leave.apply.inspect.success.time', '预计成交时间'),
+                text: expectdeal_time
+            }, {
+                label: Intl.get('leave.apply.application.status', '审批状态'),
+                text: applyStatus
+            }];
         return (
             <ApplyDetailInfo
                 showApplyInfo={showApplyInfo}
@@ -268,11 +272,11 @@ class ApplyViewDetail extends React.Component {
             comment: $.trim(this.state.replyFormInfo.comment),
         };
         if (!submitData.comment) {
-            ApplyViewDetailActions.showReplyCommentEmptyError();
+            SalesOpportunityApplyDetailAction.showReplyCommentEmptyError();
             return;
         }
         //提交数据
-        ApplyViewDetailActions.addBusinessApplyComments(submitData);
+        SalesOpportunityApplyDetailAction.addSalesOpportunityApplyComments(submitData);
     };
     //备注 输入框改变时候触发
     commentInputChange = (event) => {
@@ -281,9 +285,9 @@ class ApplyViewDetail extends React.Component {
             return;
         }
         var val = $.trim(event.target.value);
-        ApplyViewDetailActions.setApplyFormDataComment(val);
+        SalesOpportunityApplyDetailAction.setApplyFormDataComment(val);
         if (val) {
-            ApplyViewDetailActions.hideReplyCommentEmptyError();
+            SalesOpportunityApplyDetailAction.hideReplyCommentEmptyError();
         }
     };
 
@@ -308,7 +312,7 @@ class ApplyViewDetail extends React.Component {
         Trace.traceEvent(e, '查看审批结果');
         this.getBusinessApplyDetailData(this.props.detailItem);
         //设置这条审批不再展示通过和驳回的按钮
-        ApplyViewDetailActions.hideApprovalBtns();
+        SalesOpportunityApplyDetailAction.hideApprovalBtns();
     };
 
     renderApplyFormResult = () => {
@@ -375,7 +379,7 @@ class ApplyViewDetail extends React.Component {
     //取消发送
     cancelSendApproval = (e) => {
         Trace.traceEvent(e, '点击取消按钮');
-        ApplyViewDetailActions.cancelSendApproval();
+        SalesOpportunityApplyDetailAction.cancelSendApproval();
     };
 
     submitApprovalForm = (approval) => {
@@ -386,7 +390,10 @@ class ApplyViewDetail extends React.Component {
         }
         // var selectedDetailItem = this.state.selectedDetailItem;
         var detailInfoObj = this.state.detailInfoObj.info;
-        ApplyViewDetailActions.approveApplyPassOrReject({id: detailInfoObj.id, agree: approval});
+        SalesOpportunityApplyDetailAction.approveSalesOpportunityApplyPassOrReject({
+            id: detailInfoObj.id,
+            agree: approval
+        });
     };
     //渲染详情底部区域
     renderDetailBottom() {
@@ -450,7 +457,7 @@ class ApplyViewDetail extends React.Component {
             <div>
                 <div className="apply-detail-title">
                     <span className="apply-type-tip">
-                        {LeaveApplyUtils.getApplyTopicText(detailInfo)}
+                        {getApplyTopicText(detailInfo)}
                     </span>
                 </div>
                 <div className="apply-detail-content" style={{height: applyDetailHeight}} ref="geminiWrap">

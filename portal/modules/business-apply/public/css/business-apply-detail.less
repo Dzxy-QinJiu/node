@@ -1,9 +1,7 @@
 @import "../../../../public/css/common-variables";
 .leave_manage_apply_detail_wrap {
-  @apply-detail-bg-color: #f0f4f5;
   color: #5d5d5d;
   position: relative;
-  //height: 100vh;
   padding-right: 0;
   padding-left: 0;
   //详情头部标题
@@ -23,91 +21,6 @@
   .apply-detail-content {
     padding: 0 20px;
   }
-  //todo 待删除
-  //客户、用户、备注、回复信息
-  //.apply-detail-info {
-  //  background-color: @apply-detail-bg-color;
-  //  margin-bottom: 10px;
-  //  padding: 0 10px;
-  //  .reply-icon-block {
-  //    z-index: 2;
-  //  }
-  //  .customer-icon-block, .user-icon-block, .common-icon-block, .reply-icon-block, .leave-detail-icon-block {
-  //    float: left;
-  //    width: 50px;
-  //    height: 60px;
-  //    padding-left: 8px;
-  //    padding-top: 15px;
-  //    .icon-customer, .icon-user, .icon-common, .icon-apply-message-tip ,.icon-leave{
-  //      color: #9faaac;
-  //    }
-  //    .icon-customer {
-  //      font-size: 18px;
-  //    }
-  //    .icon-user {
-  //      font-size: 20px;
-  //    }
-  //    .icon-common {
-  //      font-size: 14px;
-  //    }
-  //    .icon-leave{
-  //      font-size: 20px;
-  //    }
-  //  }
-  //  .leave-detail-icon-block{
-  //    padding-top: 10px;
-  //  }
-  //  .apply-info-block {
-  //    position: relative;
-  //    width: 100%;
-  //    padding-left: 50px;
-  //    z-index: 0;
-  //    .apply-info-content{
-  //      padding: 16px 10px 16px 16px;
-  //      border-left: 1px solid @bordercolor;
-  //    }
-  //  }
-  //  .apply-info-label {
-  //    margin-top: 4px;
-  //    font-size: 14px;
-  //    color: #9f9fa1;
-  //    .user-info-label {
-  //      padding-right: 6px;
-  //    }
-  //    .user-info-text {
-  //      color: @text-color;
-  //    }
-  //  }
-  //  //客户信息
-  //  .customer-info-block {
-  //    .customer-name {
-  //      padding-bottom: 6px;
-  //      a {
-  //        font-size: 14px;
-  //        font-weight: bold;
-  //        color: @text-color;
-  //        text-decoration: none;
-  //      }
-  //      .icon-arrow-right {
-  //        padding-left: 4px;
-  //        font-size: 14px;
-  //        font-weight: normal;
-  //        color: #9ea9ad;
-  //      }
-  //    }
-  //  }
-  //
-  //  //备注
-  //  .common-info-block {
-  //    .apply-info-label {
-  //      margin-top: 0;
-  //    }
-  //  }
-  //  //请假申请信息
-  //  .leave-detail-block{
-  //
-  //  }
-  //}
 
   .modal-backdrop, .modal {
     position: absolute;
@@ -127,18 +40,6 @@
     dt {
       padding-top: 10px !important;
     }
-  }
-
-  .approval {
-    text-align: center;
-    color: #4d96d1;
-    font-size: 14px;
-    border-radius: 4px;
-    border: 1px solid #748fa0;
-    padding: 10px 0;
-    margin: 16px 33px 19px 38px;
-    line-height: 22px;
-    cursor: pointer;
   }
   .approval_block {
     width: 100%;
@@ -224,10 +125,10 @@
         width: 80px;
         height: 83px;
         margin: 0 auto;
-        background: transparent url("../images/approval_success.png") 0 0;
+        background: transparent url("../../../../static/images/approval_success.png") 0 0;
       }
       .bgimg.error {
-        background: transparent url("../images/approval_error.png") 0 0;
+        background: transparent url("../../../../static/images/approval_error.png") 0 0;
       }
       p {
         line-height: 28px;

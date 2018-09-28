@@ -40,7 +40,6 @@ class ApplyList extends React.Component {
                                 obj={obj}
                                 index= {index}
                                 clickShowDetail={this.props.clickShowDetail}
-                                getApplyTopicText={this.props.getApplyTopicText}
                                 processedStatus={this.props.processedStatus}
                                 selectedDetailItem={this.props.selectedDetailItem}
                                 selectedDetailItemIdx={this.props.selectedDetailItemIdx}
@@ -56,9 +55,6 @@ ApplyList.defaultProps = {
     applyListObj: {},
     selectedDetailItem: {},
     selectedDetailItemIdx: '',
-    getApplyTopicText: function() {
-
-    },
     clickShowDetail: function() {
 
     },
@@ -69,7 +65,6 @@ ApplyList.propTypes = {
     applyListObj: PropTypes.object,
     selectedDetailItem: PropTypes.object,
     selectedDetailItemIdx: PropTypes.string,
-    getApplyTopicText: PropTypes.func,
     clickShowDetail: PropTypes.func,
     processedStatus: PropTypes.string,
 };

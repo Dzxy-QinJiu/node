@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/9/10.
  */
 module.exports = {
-    module: 'bussiness-apply/server/action/business-apply-controller',
+    module: 'business-apply/server/action/business-apply-controller',
     routes: [
         {
             method: 'get',

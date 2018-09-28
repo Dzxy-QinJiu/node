@@ -1,16 +1,16 @@
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
- * Created by zhangshujuan on 2018/9/18.
+ * Created by zhangshujuan on 2018/9/28.
  */
-var ApplyViewDetailAction = require('../action/apply-view-detail-action');
-var BusinessApplyStore = require('./business-apply-store');
-function ApplyViewDetailStore() {
+var SalesOpportunityApplyDetailAction = require('../action/sales-opportunity-apply-detail-action');
+var SalesOpportunityApplyStore = require('./sales-opportunity-apply-store');
+function SalesOpportunityApplyDetailStore() {
     //初始化state数据
     this.setInitState();
-    this.bindActions(ApplyViewDetailAction);
+    this.bindActions(SalesOpportunityApplyDetailAction);
 }
-ApplyViewDetailStore.prototype.setInitState = function() {
+SalesOpportunityApplyDetailStore.prototype.setInitState = function() {
     //选中的审批条目
     this.selectedDetailItem = {};
     //审批的详情数据
@@ -57,14 +57,14 @@ ApplyViewDetailStore.prototype.setInitState = function() {
     };
 };
 //设置某条申请的回复列表
-ApplyViewDetailStore.prototype.setApplyComment = function(list) {
+SalesOpportunityApplyDetailStore.prototype.setApplyComment = function(list) {
     this.replyListInfo = {
         result: '',
         list: _.isArray(list) ? list : null,
         errorMsg: ''
     };
 };
-ApplyViewDetailStore.prototype.setInitialData = function(obj) {
+SalesOpportunityApplyDetailStore.prototype.setInitialData = function(obj) {
     //重置数据
     this.setInitState();
     //指定详情条目
@@ -75,7 +75,7 @@ ApplyViewDetailStore.prototype.setInitialData = function(obj) {
     // this.applyIsExpanded = false;
 };
 //获取审批详情
-ApplyViewDetailStore.prototype.getBusinessApplyDetailById = function(obj) {
+SalesOpportunityApplyDetailStore.prototype.getSalesOpportunityApplyDetailById = function(obj) {
     if (obj.error) {
         this.detailInfoObj.loadingResult = 'error';
         this.detailInfoObj.info = {};
@@ -86,22 +86,12 @@ ApplyViewDetailStore.prototype.getBusinessApplyDetailById = function(obj) {
         this.detailInfoObj.info = obj.detail;
         this.detailInfoObj.info.showApproveBtn = this.selectedDetailItem.showApproveBtn;
         //列表中那一申请的状态以这个为准，因为申请完就不一样了
-        BusinessApplyStore.updateAllApplyItemStatus(this.detailInfoObj.info);
+        SalesOpportunityApplyStore.updateAllApplyItemStatus(this.detailInfoObj.info);
         this.detailInfoObj.errorMsg = '';
     }
 };
-//显示客户详情右侧面板
-ApplyViewDetailStore.prototype.showCustomerDetail = function(customerId) {
-    //是否显示右侧面板
-    // this.showRightPanel = true;
-    //右侧面板显示用户详情的customerId
-    // this.rightPanelCustomerId = customerId;
-    // //用户id为空
-    // this.rightPanelUserId = '';
-    // // 应用appId为空
-    // this.rightPanelAppConfig = '';
-};
-ApplyViewDetailStore.prototype.getBusinessApplyCommentList = function(resultObj) {
+
+SalesOpportunityApplyDetailStore.prototype.getSalesOpportunityApplyCommentList = function(resultObj) {
     //回复列表
     var replyListInfo = this.replyListInfo;
     //result,list,errorMsg
@@ -126,22 +116,22 @@ ApplyViewDetailStore.prototype.getBusinessApplyCommentList = function(resultObj)
         replyListInfo.errorMsg = '';
     }
 };
-ApplyViewDetailStore.prototype.setApplyFormDataComment = function(comment) {
+SalesOpportunityApplyDetailStore.prototype.setApplyFormDataComment = function(comment) {
     this.replyFormInfo.comment = comment;
 };
-ApplyViewDetailStore.prototype.hideReplyCommentEmptyError = function() {
+SalesOpportunityApplyDetailStore.prototype.hideReplyCommentEmptyError = function() {
     this.replyFormInfo.result = '';
     this.replyFormInfo.errorMsg = '';
 };
 //显示回复输入框为空的错误
-ApplyViewDetailStore.prototype.showReplyCommentEmptyError = function() {
+SalesOpportunityApplyDetailStore.prototype.showReplyCommentEmptyError = function() {
     // if(this.replyFormInfo.result === 'success') {
     //     return;
     // }
     this.replyFormInfo.result = 'error';
     this.replyFormInfo.errorMsg = Intl.get('user.apply.reply.no.content', '请填写回复内容');
 };
-ApplyViewDetailStore.prototype.addBusinessApplyComments = function(resultObj) {
+SalesOpportunityApplyDetailStore.prototype.addSalesOpportunityApplyComments = function(resultObj) {
     //回复表单
     var replyFormInfo = this.replyFormInfo;
     if (resultObj.loading) {
@@ -160,7 +150,7 @@ ApplyViewDetailStore.prototype.addBusinessApplyComments = function(resultObj) {
     }
 };
 //提交审批
-ApplyViewDetailStore.prototype.approveApplyPassOrReject = function(obj) {
+SalesOpportunityApplyDetailStore.prototype.approveSalesOpportunityApplyPassOrReject = function(obj) {
     if (obj.loading) {
         this.applyResult.submitResult = 'loading';
         this.applyResult.errorMsg = '';
@@ -173,7 +163,7 @@ ApplyViewDetailStore.prototype.approveApplyPassOrReject = function(obj) {
     }
 };
 //获取审批的状态
-ApplyViewDetailStore.prototype.getApplyStatusById = function(obj) {
+SalesOpportunityApplyDetailStore.prototype.getSalesOpportunityApplyStatusById = function(obj) {
     if (obj.loading) {
         this.replyStatusInfo.result = 'loading';
         this.replyStatusInfo.errorMsg = '';
@@ -186,13 +176,13 @@ ApplyViewDetailStore.prototype.getApplyStatusById = function(obj) {
         this.replyStatusInfo.list = obj.list;
     }
 };
-ApplyViewDetailStore.prototype.cancelSendApproval = function() {
+SalesOpportunityApplyDetailStore.prototype.cancelSendApproval = function() {
     this.applyResult.submitResult = '';
     this.applyResult.errorMsg = '';
 };
-ApplyViewDetailStore.prototype.hideApprovalBtns = function() {
+SalesOpportunityApplyDetailStore.prototype.hideApprovalBtns = function() {
     this.selectedDetailItem.showApproveBtn = false;
 };
 
 
-module.exports = alt.createStore(ApplyViewDetailStore, 'ApplyViewDetailStore');
+module.exports = alt.createStore(SalesOpportunityApplyDetailStore, 'SalesOpportunityApplyDetailStore');

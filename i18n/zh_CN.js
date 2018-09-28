@@ -2690,8 +2690,14 @@ var zh_CN = {
     'leave.apply.sales.oppotunity': '销售机会',
     'leave.apply.leave.application': '请假申请',
     'leave.apply.my.worklist.apply': '待我审批',
-    'leave.apply.add.sales.oppotunity': '添加销售机会申请',
-    'leave.apply.sales.oppotunity.application': '销售机会申请',
-    'leave.apply.inspect.success.time': '预计成交时间'
+    'leave.apply.add.sales.opportunity': '添加销售机会申请',
+    'leave.apply.sales.opportunity.application': '销售机会申请',
+    'leave.apply.inspect.success.time': '预计成交时间',
+    'leave.apply.buy.apps': '产品',
+    'leave.apply.fill.in.remarks': '请填写销售机会备注',
+    'leave.apply.buget.count': '预算',
+    'leave.apply.select.atleast.one.app': '请选择至少一个产品',
+    'leave.apply.select.product': '请选择产品'
+
 };
 export default zh_CN;

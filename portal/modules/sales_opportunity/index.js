@@ -7,6 +7,6 @@ const SalesOpportunityPage = (props) => (
 );
 
 module.exports = {
-    path: '/application/sales_oppotunity',
+    path: '/application/sales_opportunity',
     component: SalesOpportunityPage
 };

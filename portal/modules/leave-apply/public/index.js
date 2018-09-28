@@ -258,7 +258,7 @@ class LeaveApplyManagement extends React.Component {
                  selectedDetailItem={this.state.selectedDetailItem}
                  selectedDetailItemIdx={this.state.selectedDetailItemIdx}
                  clickShowDetail={this.clickShowDetail}
-                 getApplyTopicText={LeaveApplyUtils.getApplyTopicText}
+
                  getTimeStr={this.getTimeStr}
                  getApplyStateText={this.getApplyStateText}
                  />

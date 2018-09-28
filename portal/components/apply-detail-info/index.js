@@ -25,7 +25,7 @@ class ApplyDetailInfo extends React.Component {
         return (
             <div className="apply-detail-customer apply-detail-info">
                 <div className="customer-icon-block">
-                    <span className="iconfont icon-leave icon-leave_apply-ico"/>
+                    <span className="iconfont icon-leave icon-application-ico"/>
                 </div>
                 <div className="customer-info-block apply-info-block">
                     <div className="apply-info-content">

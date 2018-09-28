@@ -3,20 +3,20 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/10.
  */
-var SalesOppotunityApplyAction = require('../action/sales-oppotunity-apply-action');
-function SalesOppotunityApplyStore() {
+var SalesOpportunityApplyAction = require('../action/sales-opportunity-apply-action');
+function SalesOpportunityApplyStore() {
     //初始化state数据
     this.setInitState();
-    this.bindActions(SalesOppotunityApplyAction);
+    this.bindActions(SalesOpportunityApplyAction);
     this.exportPublicMethods({
         updateAllApplyItemStatus: this.updateAllApplyItemStatus});
 }
-SalesOppotunityApplyStore.prototype.setInitState = function() {
+SalesOpportunityApplyStore.prototype.setInitState = function() {
     this.sort_field = 'create_time';//排序字段
     this.status = '';//请假申请的状态
     this.order = 'descend';
     this.page_size = 20;
-    this.lastSalesOppotunityApplyId = '';//用于下拉加载的id
+    this.lastSalesOpportunityApplyId = '';//用于下拉加载的id
     //所有申请列表
     this.applyListObj = {
         // "" loading error
@@ -48,30 +48,14 @@ SalesOppotunityApplyStore.prototype.setInitState = function() {
     //筛选类别 'all'(全部) pass(已通过) reject(已驳回)  ongoing(待审批)
     this.applyListType = 'all';
 };
-// SalesOppotunityApplyStore.prototype.getAllApplyList = function(data) {
-//     if (data.loading){
-//         this.isLoadingAllApply = true;
-//         this.allApplyErrMsg = '';
-//         this.allApplyList = [];
-//     }else if (data.error){
-//         this.isLoadingAllApply = false;
-//         this.allApplyErrMsg = data.errMsg;
-//         this.allApplyList = [];
-//     }else{
-//         this.isLoadingAllApply = false;
-//         this.allApplyErrMsg = '';
-//         this.allApplyList = data.list;
-//     }
-//
-// };
 //清空数据
-SalesOppotunityApplyStore.prototype.clearData = function() {
+SalesOpportunityApplyStore.prototype.clearData = function() {
     this.applyListObj.list = [];
     this.selectedDetailItem = {};
     this.selectedDetailItemIdx = -1;
     this.listenScrollBottom = false;
 };
-SalesOppotunityApplyStore.prototype.getAllApplyList = function(obj) {
+SalesOpportunityApplyStore.prototype.getAllSalesOpportunityApplyList = function(obj) {
     if (obj.loading) {
         this.applyListObj.loadingResult = 'loading';
         this.applyListObj.errorMsg = '';
@@ -116,22 +100,54 @@ SalesOppotunityApplyStore.prototype.getAllApplyList = function(obj) {
         }
     }
 };
-SalesOppotunityApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SalesOpportunityApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {
     this.selectedDetailItem = obj;
     this.selectedDetailItemIdx = idx;
 };
-SalesOppotunityApplyStore.prototype.changeApplyListType = function(type) {
+SalesOpportunityApplyStore.prototype.changeApplyListType = function(type) {
     this.applyListType = type;
     this.lastApplyId = '';
     // this.showUpdateTip = false;
     // this.isCheckUnreadApplyList = false;
 };
-SalesOppotunityApplyStore.prototype.changeApplyAgreeStatus = function(message) {
+SalesOpportunityApplyStore.prototype.changeApplyAgreeStatus = function(message) {
     this.selectedDetailItem.status = message.agree;
     this.selectedDetailItem.detail = message.detail;
     this.selectedDetailItem.update_time = message.update_time;
 };
-SalesOppotunityApplyStore.prototype.updateAllApplyItemStatus = function(updateItem) {
+SalesOpportunityApplyStore.prototype.updateAllApplyItemStatus = function(updateItem) {
     var allApplyArr = this.getState().applyListObj.list;
     this.getState().selectedDetailItem.status = updateItem.status;
     _.forEach(allApplyArr,(item) => {
@@ -140,10 +156,10 @@ SalesOppotunityApplyStore.prototype.updateAllApplyItemStatus = function(updateIt
         }
     });
 };
-SalesOppotunityApplyStore.prototype.afterAddApplySuccess = function(item) {
+SalesOpportunityApplyStore.prototype.afterAddApplySuccess = function(item) {
     this.applyListObj.list.unshift(item);
     this.selectedDetailItem = item;
     this.totalSize++;
 };
 
-module.exports = alt.createStore(SalesOppotunityApplyStore, 'SalesOppotunityApplyStore');
+module.exports = alt.createStore(SalesOpportunityApplyStore, 'SalesOpportunityApplyStore');

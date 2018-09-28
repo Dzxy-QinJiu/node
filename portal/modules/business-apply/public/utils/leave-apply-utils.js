@@ -4,10 +4,5 @@
  * Created by zhangshujuan on 2018/9/18.
  */
 var EventEmitter = require('events');
-exports.getApplyTopicText = (obj) => {
-    if (obj.topic === 'customer_visit') {
-        return Intl.get('leave.apply.add.leave.apply', '出差申请');
-    }
-};
 //暴露一个emitter，做自定义事件
 exports.emitter = new EventEmitter();

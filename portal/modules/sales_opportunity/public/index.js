@@ -4,37 +4,43 @@
  * Created by zhangshujuan on 2018/9/27.
  */
 import TopNav from 'CMP_DIR/top-nav';
-var SalesOppotunityApplyAction = require('./action/sales-oppotunity-apply-action');
-var SalesOppotunityApplyStore = require('./store/sales-oppotunity-apply-store');
+var SalesOpportunityApplyAction = require('./action/sales-opportunity-apply-action');
+var SalesOpportunityApplyStore = require('./store/sales-opportunity-apply-store');
 import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-dropdown-and-add-btn';
-import AddSalesOppotunityApplyPanel from './view/add-sales-oppotunity-apply';
+import AddSalesOpportunityApplyPanel from './view/add-sales-opportunity-apply';
 import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import Trace from 'LIB_DIR/trace';
 var classNames = require('classnames');
+var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 require('./css/index.less');
 import {Alert} from 'antd';
-class SalesOppotunityApplyManagement extends React.Component {
+import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+import ApplyListItem from 'CMP_DIR/apply-list';
+var Spinner = require('CMP_DIR/spinner');
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+import ApplyViewDetail from './view/apply-view-detail';
+class SalesOpportunityApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加销售机会申请面板
-        ...SalesOppotunityApplyStore.getState()
+        ...SalesOpportunityApplyStore.getState()
     };
 
     onStoreChange = () => {
-        this.setState(SalesOppotunityApplyStore.getState());
+        this.setState(SalesOpportunityApplyStore.getState());
     };
 
     componentDidMount() {
-        SalesOppotunityApplyStore.listen(this.onStoreChange);
-        //todo 不区分角色，都获取全部的申请列表
-        // this.getAllSalesOppotunityApplyList();
+        SalesOpportunityApplyStore.listen(this.onStoreChange);
+        //不区分角色，都获取全部的申请列表
+        this.getAllSalesOpportunityApplyList();
         // //如果是普通销售，就获取自己的申请列表
         // if (userData.getUserData().isCommonSales){
-        //     this.getSelfSalesOppotunityApplyList();
+        //     this.getSelfSalesOpportunityApplyList();
         // }else{
         // // 如果是管理员或者是销售领导，就获取要由自己审批的申请列表
-        // this.getAllSalesOppotunityApplyList();
+        // this.getAllSalesOpportunityApplyList();
         // }
-        // SalesOppotunityApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
+        // SalesOpportunityApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
 
     }
 
@@ -44,12 +50,12 @@ class SalesOppotunityApplyManagement extends React.Component {
     //         if (message.agree){
     //             message.approve_details = [{user_name: userData.getUserData().user_name}];
     //             message.update_time = moment().valueOf();
-    //             SalesOppotunityApplyAction.changeApplyAgreeStatus(message);
+    //             SalesOpportunityApplyAction.changeApplyAgreeStatus(message);
     //         }
     //     }
     //     //todo 暂时没用到
     //     //处理申请成功还是失败,"success"/"error"
-    //     // SalesOppotunityApplyAction.updateDealApplyError(message && message.status || this.state.dealApplyError);
+    //     // SalesOpportunityApplyAction.updateDealApplyError(message && message.status || this.state.dealApplyError);
     // };
 
     getQueryParams() {
@@ -57,7 +63,8 @@ class SalesOppotunityApplyManagement extends React.Component {
             sort_field: this.state.sort_field,//排序字段
             order: this.state.order,
             page_size: this.state.page_size,
-            id: this.state.lastSalesOppotunityApplyId, //用于下拉加载的id
+            id: this.state.lastSalesOpportunityApplyId, //用于下拉加载的id
+            type: 'business_opportunities'
         };
         //如果是选择的全部类型，不需要传status这个参数
         if (this.state.applyListType !== 'all') {
@@ -69,24 +76,25 @@ class SalesOppotunityApplyManagement extends React.Component {
     }
 
     //获取全部请假申请
-    getAllSalesOppotunityApplyList = () => {
+    getAllSalesOpportunityApplyList = () => {
         var queryObj = this.getQueryParams();
-        SalesOppotunityApplyAction.getAllApplyList(queryObj);
-    }
+        SalesOpportunityApplyAction.getAllSalesOpportunityApplyList(queryObj);
+    };
 
     //获取自己发起的请假申请
-    getSelfSalesOppotunityApplyList() {
-        SalesOppotunityApplyAction.getSelfApplyList();
+    getSelfSalesOpportunityApplyList() {
+        SalesOpportunityApplyAction.getSelfApplyList();
     }
 
     //获取由自己审批的请假申请
-    getWorklistSalesOppotunityApplyList() {
-        SalesOppotunityApplyAction.getWorklistSalesOppotunityApplyList();
+    getWorklistSalesOpportunityApplyList() {
+        SalesOpportunityApplyAction.getWorklistSalesOpportunityApplyList();
     }
 
     componentWillUnmount() {
-        SalesOppotunityApplyStore.unlisten(this.onStoreChange);
-        // SalesOppotunityApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
+        SalesOpportunityApplyStore.unlisten(this.onStoreChange);
+        SalesOpportunityApplyAction.setInitState();
+        // SalesOpportunityApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
     }
 
     showAddApplyPanel = () => {
@@ -94,14 +102,14 @@ class SalesOppotunityApplyManagement extends React.Component {
             showAddApplyPanel: true
         });
     };
-    hideSalesOppotunityApplyAddForm = () => {
+    hideSalesOpportunityApplyAddForm = () => {
         this.setState({
             showAddApplyPanel: false
         });
     };
     //下拉加载
     handleScrollBarBottom = () => {
-        this.getAllSalesOppotunityApplyList();
+        this.getAllSalesOpportunityApplyList();
     };
     //是否显示没有更多数据了
     showNoMoreDataTip = () => {
@@ -111,7 +119,7 @@ class SalesOppotunityApplyManagement extends React.Component {
     //点击展示详情
     clickShowDetail = (obj, idx) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '查看申请详情');
-        SalesOppotunityApplyAction.setSelectedDetailItem({obj, idx});
+        SalesOpportunityApplyAction.setSelectedDetailItem({obj, idx});
     };
     getApplyStateText = (obj) => {
         if (obj.status === 'pass') {
@@ -153,8 +161,8 @@ class SalesOppotunityApplyManagement extends React.Component {
             selectType = targetObj.value;
         }
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.pull-left'), '根据' + selectType + '过滤');
-        SalesOppotunityApplyAction.changeApplyListType(obj.key);
-        setTimeout(() => this.getAllSalesOppotunityApplyList());
+        SalesOpportunityApplyAction.changeApplyListType(obj.key);
+        setTimeout(() => this.getAllSalesOpportunityApplyList());
     };
 
     retryFetchApplyList = (e) => {
@@ -163,7 +171,7 @@ class SalesOppotunityApplyManagement extends React.Component {
         } else {
             Trace.traceEvent(e, '点击了重新获取');
         }
-        setTimeout(() => this.getAllSalesOppotunityApplyList());
+        setTimeout(() => this.getAllSalesOpportunityApplyList());
     };
     renderApplyListError = () => {
         var noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.applyListType !== '';
@@ -230,7 +238,7 @@ class SalesOppotunityApplyManagement extends React.Component {
             applyDetail = {detail: _.get(this.state, 'applyListObj.list[0]'), apps: this.state.allApps};
         }
         return (
-            <div className="sales-oppotunity-apply-container">
+            <div className="sales-opportunity-apply-container">
                 <TopNav>
                     <TopNav.MenuList />
                 </TopNav>
@@ -241,57 +249,55 @@ class SalesOppotunityApplyManagement extends React.Component {
                             getApplyListType= {this.getApplyListType}
                             addPrivilege='MEMBER_BUSINESSOPPO_APPLY'
                             showAddApplyPanel={this.showAddApplyPanel}
-                            addApplyMessage={Intl.get('leave.apply.add.sales.oppotunity','添加销售机会申请')}
+                            addApplyMessage={Intl.get('leave.apply.add.sales.opportunity','添加销售机会申请')}
                             menuList={selectMenuList}
                         />
                         {this.renderApplyListError()}
-                        {/*
-                            this.state.applyListObj.loadingResult === 'loading' && !this.state.lastApplyId ? (
-                                <Spinner/>) : (<div className="leave_apply_list_style">
-                                    <div style={{height: applyListHeight}}>
-                                        <GeminiScrollbar
-                                            handleScrollBottom={this.handleScrollBarBottom}
-                                            listenScrollBottom={this.state.listenScrollBottom}
-                                            itemCssSelector=".leave_manage_apply_list>li"
-                                        >
-                                            <ApplyListItem
-                                                processedStatus='ongoing'
-                                                applyListObj={this.state.applyListObj}
-                                                selectedDetailItem={this.state.selectedDetailItem}
-                                                selectedDetailItemIdx={this.state.selectedDetailItemIdx}
-                                                clickShowDetail={this.clickShowDetail}
-                                                getApplyTopicText={SalesOppotunityApplyUtils.getApplyTopicText}
-                                                getTimeStr={this.getTimeStr}
-                                                getApplyStateText={this.getApplyStateText}
-                                            />
-                                            <NoMoreDataTip
-                                                fontSize="12"
-                                                show={this.showNoMoreDataTip}
-                                            />
-                                        </GeminiScrollbar>
-                                    </div>
-                                    <div className="summary_info">
-                                        {Intl.get('user.apply.total.apply', '共{number}条申请{apply_type}', {
-                                            'number': this.state.totalSize,
-                                            'apply_type': applyType
-                                        })}
-                                    </div>
+                        {this.state.applyListObj.loadingResult === 'loading' && !this.state.lastApplyId ? (
+                            <Spinner/>) : (<div className="leave_apply_list_style">
+                            <div style={{height: applyListHeight}}>
+                                <GeminiScrollbar
+                                    handleScrollBottom={this.handleScrollBarBottom}
+                                    listenScrollBottom={this.state.listenScrollBottom}
+                                    itemCssSelector=".leave_manage_apply_list>li"
+                                >
+                                    <ApplyListItem
+                                        processedStatus='ongoing'
+                                        applyListObj={this.state.applyListObj}
+                                        selectedDetailItem={this.state.selectedDetailItem}
+                                        selectedDetailItemIdx={this.state.selectedDetailItemIdx}
+                                        clickShowDetail={this.clickShowDetail}
+                                        getTimeStr={this.getTimeStr}
+                                        getApplyStateText={this.getApplyStateText}
+                                    />
+                                    <NoMoreDataTip
+                                        fontSize="12"
+                                        show={this.showNoMoreDataTip}
+                                    />
+                                </GeminiScrollbar>
+                            </div>
+                            <div className="summary_info">
+                                {Intl.get('user.apply.total.apply', '共{number}条申请{apply_type}', {
+                                    'number': this.state.totalSize,
+                                    'apply_type': applyType
+                                })}
+                            </div>
 
-                                </div>
-                            )
-                        */}
+                        </div>
+                        )
+                        }
                     </div>
-                    {/*noShowApplyDetail ? null : (
+                    {noShowApplyDetail ? null : (
                         <ApplyViewDetail
                             detailItem={this.state.selectedDetailItem}
                             showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
                         />
-                    )*/}
+                    )}
                 </div>
                 {this.state.showAddApplyPanel ?
                     <div className={addPanelWrap}>
-                        <AddSalesOppotunityApplyPanel
-                            hideSalesOppotunityApplyAddForm={this.hideSalesOppotunityApplyAddForm}
+                        <AddSalesOpportunityApplyPanel
+                            hideSalesOpportunityApplyAddForm={this.hideSalesOpportunityApplyAddForm}
                         />
                     </div>
                     : null}
@@ -299,4 +305,4 @@ class SalesOppotunityApplyManagement extends React.Component {
         );
     }
 }
-module.exports = SalesOppotunityApplyManagement;
+module.exports = SalesOpportunityApplyManagement;

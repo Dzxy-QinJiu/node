@@ -4,10 +4,11 @@
  * Created by zhangshujuan on 2018/9/27.
  */
 import {RightPanel} from 'CMP_DIR/rightPanel';
-require('../css/add-sales-oppotunity-apply.less');
+require('../css/add-sales-Opportunity-apply.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {Form, Input, Button, Icon, message, DatePicker} from 'antd';
+import {Form, Input, Button, Icon, message, DatePicker, Select} from 'antd';
+var Option = Select.Option;
 const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
@@ -18,35 +19,26 @@ var user = require('PUB_DIR/sources/user-data').getUserData();
 const DEFAULTTIMETYPE = 'day';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
-var SalesOppotunityApplyAction = require('../action/sales-oppotunity-apply-action');
+var SalesOpportunityApplyAction = require('../action/sales-opportunity-apply-action');
 import AlertTimer from 'CMP_DIR/alert-timer';
-import {AntcAreaSelection} from 'antc';
+import {AntcAppSelector} from 'antc';
 import Trace from 'LIB_DIR/trace';
 const DELAY_TIME_RANGE = {
     SUCCESS_RANGE: 600,
     ERROR_RANGE: 3000,
     CLOSE_RANGE: 500
 };
-class AddSalesOppotunityApply extends React.Component {
+import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+class AddSalesOpportunityApply extends React.Component {
     constructor(props) {
         super(props);
         var timeRange = getStartEndTimeOfDiffRange(DEFAULTTIMETYPE, true);
         this.state = {
+            hideCustomerRequiredTip: false,
+            appList: [],
             search_customer_name: '',
             formData: {
-                begin_time: DateSelectorUtils.getMilliseconds(timeRange.start_time),//出差开始时间
-                end_time: DateSelectorUtils.getMilliseconds(timeRange.end_time, true),//出差结束时间
-                reason: '',
-                customers: [{
-                    id: '',
-                    name: '',
-                    province: '',
-                    city: '',
-                    county: '',
-                    address: '',
-                    remarks: ''
-                }
-                ]
+                customer: {id: '', name: ''},
             },
         };
     }
@@ -57,6 +49,8 @@ class AddSalesOppotunityApply extends React.Component {
 
     componentDidMount() {
         this.addLabelRequiredCls();
+        //获取应用列表
+        this.getAppList();
     }
 
     //获取全部请假申请
@@ -70,37 +64,16 @@ class AddSalesOppotunityApply extends React.Component {
     }
 
     addLabelRequiredCls() {
-        if (!$('.add-leave-apply-form-wrap form .customer-name label').hasClass('ant-form-item-required')) {
-            $('.add-leave-apply-form-wrap form .customer-name label').addClass('ant-form-item-required');
+        if (!$('.add-leave-apply-form-wrap form .require-item label').hasClass('ant-form-item-required')) {
+            $('.add-leave-apply-form-wrap form .require-item label').addClass('ant-form-item-required');
         }
     }
 
 
-    hideSalesOppotunityApplyAddForm = () => {
-        this.props.hideSalesOppotunityApplyAddForm();
+    hideSalesOpportunityApplyAddForm = () => {
+        this.props.hideSalesOpportunityApplyAddForm();
     };
-    onBeginTimeChange = (date, dateString) => {
-        var formData = this.state.formData;
-        formData.begin_time = moment(date).valueOf();
-        this.setState({
-            formData: formData
-        }, () => {
-            if (this.props.form.getFieldValue('end_time')) {
-                this.props.form.validateFields(['end_time'], {force: true});
-            }
-        });
-    };
-    onEndTimeChange = (date, dateString) => {
-        var formData = this.state.formData;
-        formData.end_time = moment(date).valueOf();
-        this.setState({
-            formData: formData
-        }, () => {
-            if (this.props.form.getFieldValue('begin_time')) {
-                this.props.form.validateFields(['begin_time'], {force: true});
-            }
-        });
-    };
+
 
     //去掉保存后提示信息
     hideSaveTooltip = () => {
@@ -121,43 +94,46 @@ class AddSalesOppotunityApply extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
-            var formData = _.cloneDeep(this.state.formData);
             if (err) return;
+            values['expectdeal_time'] = moment(values['expectdeal_time']).endOf('day').valueOf();
+            values['customer'] = _.get(this.state, 'formData.customer');
+            var apps = _.cloneDeep(values.apps);
+            values.apps = [];
+            _.forEach(apps,(appId) => {
+                var targetObj = _.find(this.state.appList, clientItem => clientItem.client_id === appId);
+                if (targetObj){
+                    values.apps.push({client_id: targetObj.client_id, client_name: targetObj.client_name});
+                }
+            });
             this.setState({
                 isSaving: true,
                 saveMsg: '',
                 saveResult: ''
             });
-            if (values.remarks) {
-                formData.customers[0].remarks = values.remarks;
-            }
-            if (values.address) {
-                formData.customers[0].address = values.address;
-            }
-            _.forEach(formData.customers, (customerItem,index) => {
-                if (customerItem['remarks']) {
-                    formData.reason += customerItem['remarks'];
-                }
-            });
 
             $.ajax({
-                url: '/rest/add/apply/list',
+                url: '/rest/add/sales_opportunity_apply/list',
                 dataType: 'json',
                 type: 'post',
-                data: formData,
+                data: values,
                 success: (data) => {
                     //添加成功
                     this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
                     setTimeout(() => {
-                        this.hideBusinessApplyAddForm();
+                        this.hideSalesOpportunityApplyAddForm();
                         //todo 添加完后的处理
-                        // SalesOppotunityApplyAction.afterAddApplySuccess(data);
+                        // SalesOpportunityApplyAction.afterAddApplySuccess(data);
                     }, DELAY_TIME_RANGE.CLOSE_RANGE);
                 },
                 error: (errorMsg) => {
                     this.setResultData(errorMsg || Intl.get('crm.154', '添加失败'), 'error');
                 }
             });
+        });
+    };
+    getAppList = () => {
+        commonDataUtil.getAllProductList(appList => {
+            this.setState({appList: appList});
         });
     };
     addAssignedCustomer = () => {
@@ -181,63 +157,38 @@ class AddSalesOppotunityApply extends React.Component {
     };
     customerChoosen = (selectedCustomer) => {
         var formData = this.state.formData;
-        formData.customers[0].name = selectedCustomer.name;
-        formData.customers[0].id = selectedCustomer.id;
-        formData.customers[0].province = selectedCustomer.province;
-        formData.customers[0].city = selectedCustomer.city;
-        formData.customers[0].county = selectedCustomer.county;
-        formData.customers[0].address = selectedCustomer.address;
+        formData.customer.id = selectedCustomer.id;
+        formData.customer.name = selectedCustomer.name;
         this.setState({
             formData: formData
         }, () => {
-            this.props.form.validateFields(['leave_for_customer'], {force: true});
+            this.props.form.validateFields(['customer'], {force: true});
         });
     };
     checkCustomerName = (rule, value, callback) => {
-        value = $.trim(_.get(this.state, 'formData.customers[0].id'));
-        if (!value) {
+        value = $.trim(_.get(this.state, 'formData.customer.id'));
+        if (!value && !this.state.hideCustomerRequiredTip) {
             callback(new Error(Intl.get('leave.apply.select.customer', '请先选择客户')));
         } else {
             callback();
         }
     };
-    checkBudget = () => {
-
+    hideCustomerRequiredTip = (flag) => {
+        this.setState({
+            hideCustomerRequiredTip: flag
+        },() => {
+            this.props.form.validateFields(['customer'], {force: true});
+        });
     };
-    // 验证起始时间是否小于结束时间
-    validateStartAndEndTime(timeType) {
-        return (rule, value, callback) => {
-            // 如果没有值，则没有错误
-            if (!value) {
-                callback();
-                return;
-            }
-            const begin_time = this.state.formData.begin_time;
-            const endTime = this.state.formData.end_time;
-            const isBeginTime = timeType === 'begin_time' ? true : false;
-            if (endTime && begin_time) {
-                if (moment(endTime).isBefore(begin_time)) {
-                    if (isBeginTime) {
-                        callback(Intl.get('contract.start.time.greater.than.end.time.warning', '起始时间不能大于结束时间'));
-                    } else {
-                        callback(Intl.get('contract.end.time.less.than.start.time.warning', '结束时间不能小于起始时间'));
-                    }
-                } else {
-                    callback();
-                }
-            } else {
-                callback();
-            }
-        };
-    }
 
-    //更新地址
-    updateLocation = (addressObj) => {
-        let formData = this.state.formData;
-        formData.customers[0].province = addressObj.provName || '';
-        formData.customers[0].city = addressObj.cityName || '';
-        formData.customers[0].county = addressObj.countyName || '';
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div .ant-form-item'), '选择地址');
+    checkBudget = (rule, value, callback) => {
+        if (!value) {//rules中有require：true的验证，所以此处不要验证输入内容为空的情况（避免与reuqire:true重复）
+            callback();
+        } else if (value.match(/^\d+(\.\d+)?$/)){
+            callback();
+        } else {
+            callback(new Error(Intl.get('crm.157', '预算金额必须为数字')));
+        }
     };
 
     render() {
@@ -254,36 +205,36 @@ class AddSalesOppotunityApply extends React.Component {
                 sm: {span: 18},
             },
         };
-        var formData = this.state.formData;
         let saveResult = this.state.saveResult;
         const disabledDate = function(current) {
             //不允许选择大于当前天的日期
             return current && current.valueOf() < Date.now();
         };
         return (
-            <RightPanel showFlag={true} data-tracename="添加销售机会申请" className="add-sales-oppotunity-container">
-                <span className="iconfont icon-close add-sales-oppotunity-apply-close-btn" onClick={this.hideSalesOppotunityApplyAddForm}
+            <RightPanel showFlag={true} data-tracename="添加销售机会申请" className="add-sales-opportunity-container">
+                <span className="iconfont icon-close add-sales-opportunity-apply-close-btn"
+                    onClick={this.hideSalesOpportunityApplyAddForm}
                     data-tracename="关闭添加销售机会申请面板"></span>
 
-                <div className="add-sales-oppotunity-apply-wrap">
+                <div className="add-sales-opportunity-apply-wrap">
                     <BasicData
-                        clueTypeTitle={Intl.get('leave.apply.sales.oppotunity.application','销售机会申请')}
+                        clueTypeTitle={Intl.get('leave.apply.sales.opportunity.application', '销售机会申请')}
                     />
                     <div className="add-leave-apply-form-wrap" style={{'height': divHeight}}>
                         <GeminiScrollbar>
                             <div className="add-leave-form">
-                                <Form layout='horizontal' className="sales-clue-form" id="leave-apply-form">
+                                <Form layout='horizontal' className="sales-clue-form" id="add-sales-opportunity-apply-form">
                                     <FormItem
-                                        className="form-item-label customer-name"
+                                        className="form-item-label require-item"
                                         label={Intl.get('call.record.customer', '客户')}
                                         {...formItemLayout}
                                     >
-                                        {getFieldDecorator('leave_for_customer', {
+                                        {getFieldDecorator('customer', {
                                             rules: [{validator: _this.checkCustomerName}],
                                             initialValue: ''
                                         })(
                                             <CustomerSuggest
-                                                field='leave_for_customer'
+                                                field='customer'
                                                 hasEditPrivilege={true}
                                                 displayText={''}
                                                 displayType={'edit'}
@@ -297,40 +248,58 @@ class AddSalesOppotunityApply extends React.Component {
                                                 hideButtonBlock={true}
                                                 customerChoosen={this.customerChoosen}
                                                 required={true}
+                                                hideCustomerRequiredTip={this.hideCustomerRequiredTip}
                                             />
                                         )}
-
                                     </FormItem>
                                     <FormItem
                                         className="form-item-label"
-                                        label={Intl.get('crm.148', '预算金额')}
+                                        label={Intl.get('leave.apply.buget.count','预算')}
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('budget', {
-                                            rules: [{ validator: _this.checkBudget}],
+                                            rules: [{required: true,message: Intl.get('crm.order.budget.input', '请输入预算金额')},{validator: _this.checkBudget}],
                                             initialValue: ''
                                         })(
-                                            <Input value={formData.budget}
+                                            <Input
                                                 name="budget"
                                                 addonAfter={Intl.get('contract.82', '元')}
                                             />
                                         )}
-
                                     </FormItem>
                                     <FormItem
-                                        className="form-item-label"
-                                        label={Intl.get('leave.apply.inspect.success.time','预计成交时间')}
+                                        label={Intl.get('leave.apply.buy.apps','产品')}
+                                        id="apps"
                                         {...formItemLayout}
                                     >
-                                        {getFieldDecorator('end_time', {
-                                            rules: [{
-                                                required: true,
-                                            },],
+                                        {
+                                            getFieldDecorator('apps',{
+                                                rules: [{required: true, message: Intl.get('leave.apply.select.atleast.one.app','请选择至少一个产品')}],
+                                            })(
+                                                <Select
+                                                    mode='multiple'
+                                                    placeholder={Intl.get('leave.apply.select.product','请选择产品')}
+                                                    name="apps"
+                                                    getPopupContainer={() => document.getElementById('add-sales-opportunity-apply-form')}
+
+                                                >
+                                                    {_.isArray(this.state.appList) && this.state.appList.length ?
+                                                        this.state.appList.map((appItem, idx) => {
+                                                            return (<Option key={idx} value={appItem.client_id}>{appItem.client_name}</Option>);
+                                                        }) : null
+                                                    }
+                                                </Select>
+                                            )}
+                                    </FormItem>
+                                    <FormItem
+                                        className="form-item-label require-item"
+                                        label={Intl.get('leave.apply.inspect.success.time', '预计成交时间')}
+                                        {...formItemLayout}
+                                    >
+                                        {getFieldDecorator('expectdeal_time', {
                                             initialValue: moment()
                                         })(
                                             <DatePicker
-                                                onChange={this.onEndTimeChange}
-                                                value={formData.end_time ? moment(formData.end_time) : moment()}
                                                 disabledDate={disabledDate}
                                             />
                                         )}
@@ -340,23 +309,23 @@ class AddSalesOppotunityApply extends React.Component {
                                         label={Intl.get('common.remark', '备注')}
                                         {...formItemLayout}
                                     >
-                                        {getFieldDecorator('remarks', {
+                                        {getFieldDecorator('remark', {
                                             initialValue: ''
                                         })(
                                             <Input
-                                                type="textarea" id="remarks" rows="3"
-                                                placeholder={Intl.get('leave.apply.fill.leave.reason', '请填写出差事由')}
+                                                type="textarea" id="remark" rows="3"
+                                                placeholder={Intl.get('leave.apply.fill.in.remarks','请填写销售机会备注')}
                                             />
                                         )}
                                     </FormItem>
                                     <div className="submit-button-container">
                                         <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
                                             disabled={this.state.isSaving} data-tracename="点击保存添加
-                                            出差申请">
+                                            销售机会申请">
                                             {Intl.get('common.save', '保存')}
                                             {this.state.isSaving ? <Icon type="loading"/> : null}
                                         </Button>
-                                        <Button className="cancel-btn" onClick={this.hideSalesOppotunityApplyAddForm}
+                                        <Button className="cancel-btn" onClick={this.hideSalesOpportunityApplyAddForm}
                                             data-tracename="点击取消添加出差申请按钮">
                                             {Intl.get('common.cancel', '取消')}
                                         </Button>
@@ -383,13 +352,13 @@ class AddSalesOppotunityApply extends React.Component {
         );
     }
 }
-AddSalesOppotunityApply.defaultProps = {
-    hideSalesOppotunityApplyAddForm: function() {
+AddSalesOpportunityApply.defaultProps = {
+    hideSalesOpportunityApplyAddForm: function() {
     },
     form: {}
 };
-AddSalesOppotunityApply.propTypes = {
-    hideSalesOppotunityApplyAddForm: PropTypes.func,
+AddSalesOpportunityApply.propTypes = {
+    hideSalesOpportunityApplyAddForm: PropTypes.func,
     form: PropTypes.object,
 };
-export default Form.create()(AddSalesOppotunityApply);
+export default Form.create()(AddSalesOpportunityApply);

@@ -407,7 +407,7 @@ class LeftMenuClass {
                 },{
                     id: 'SALES_BUSSINESS_APPLY_MANAGEMENT',
                     name: backendIntl.get('leave.apply.sales.oppotunity','销售机会'),
-                    routePath: 'application/sales_oppotunity',
+                    routePath: 'application/sales_opportunity',
                     privileges: [
                         'MEMBER_BUSINESSOPPO_MANAGE'
                     ],

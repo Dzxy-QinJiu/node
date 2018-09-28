@@ -374,3 +374,10 @@ exports.getTimeStr = function(d, format) {
     }
     return moment(new Date(d)).format(format || oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
 };
+exports.getApplyTopicText = function(obj){
+    if (obj.topic === 'customer_visit') {
+        return Intl.get('leave.apply.add.leave.apply', '出差申请');
+    }else if (obj.topic === 'business_opportunities'){
+        return Intl.get('leave.apply.sales.opportunity.application', '销售机会申请');
+    }
+};

@@ -5,7 +5,7 @@
  */
 var classNames = require('classnames');
 require('./index.less');
-import {getApplyStateText, getTimeStr} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyStateText, getTimeStr, getApplyTopicText} from 'PUB_DIR/sources/utils/common-method-util';
 class ApplyListItem extends React.Component {
     constructor(props) {
         super(props);
@@ -48,7 +48,7 @@ class ApplyListItem extends React.Component {
             >
                 <dl>
                     <dt>
-                        <span>{this.props.getApplyTopicText(obj)}</span>
+                        <span>{getApplyTopicText(obj)}</span>
                         <em className={btnClass}>{getApplyStateText(obj)}</em>
                     </dt>
                     <dd className="clearfix" title={_.get(obj, 'detail.customer_name')}>
@@ -70,9 +70,7 @@ ApplyListItem.defaultProps = {
     obj: {},
     index: '',
     selectedDetailItemIdx: '',
-    getApplyTopicText: function() {
 
-    },
     clickShowDetail: function() {
 
     },
@@ -83,7 +81,6 @@ ApplyListItem.propTypes = {
     obj: PropTypes.object,
     index: PropTypes.string,
     selectedDetailItemIdx: PropTypes.string,
-    getApplyTopicText: PropTypes.func,
     clickShowDetail: PropTypes.func,
     processedStatus: PropTypes.string,
 

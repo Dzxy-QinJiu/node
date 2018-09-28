@@ -32,7 +32,7 @@ class BusinessApplyManagement extends React.Component {
 
     componentDidMount() {
         BusinessApplyStore.listen(this.onStoreChange);
-        //todo 不区分角色，都获取全部的申请列表
+        //不区分角色，都获取全部的申请列表
         this.getAllBusinessApplyList();
         // //如果是普通销售，就获取自己的申请列表
         // if (userData.getUserData().isCommonSales){
@@ -93,6 +93,7 @@ class BusinessApplyManagement extends React.Component {
 
     componentWillUnmount() {
         BusinessApplyStore.unlisten(this.onStoreChange);
+        BusinessApplyAction.setInitState();
         // LeaveApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
     }
 
@@ -251,7 +252,6 @@ class BusinessApplyManagement extends React.Component {
                                             selectedDetailItem={this.state.selectedDetailItem}
                                             selectedDetailItemIdx={this.state.selectedDetailItemIdx}
                                             clickShowDetail={this.clickShowDetail}
-                                            getApplyTopicText={LeaveApplyUtils.getApplyTopicText}
                                             getApplyStateText={this.getApplyStateText}
                                         />
                                         <NoMoreDataTip
