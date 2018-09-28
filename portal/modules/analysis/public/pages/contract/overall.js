@@ -17,5 +17,7 @@ function getCharts() {
     return [
         //合同分析统计表
         contractChart.getContractChart(),
+        //签单情况统计表
+        contractChart.getSingingChart(),
     ];
 }
