@@ -259,7 +259,7 @@ class ApplyViewDetailStore {
         info.type = info.message.type;
         info.sales_team_name = info.message.sales_team_name;
         info.sales_name = info.message.sales_name;
-        this.detailInfoObj.info = info;     
+        this.detailInfoObj.info = info;
         this.createAppsSetting();
         if (_.isArray(apps)) {
             this.formData.user_name = _.get(apps, '0.user_name');

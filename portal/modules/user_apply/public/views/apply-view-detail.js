@@ -30,7 +30,7 @@ import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { RightPanel } from '../../../../components/rightPanel';
 import { getPassStrenth, PassStrengthBar, passwordRegex } from 'CMP_DIR/password-strength-bar';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-import { APPLY_TYPES, APPLY_MULTI_TYPE_VALUES } from 'PUB_DIR/sources/utils/consts';
+import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
 
 /*在审批界面显示用户的右侧面板结束*/
 //默认头像图片
@@ -1227,7 +1227,7 @@ const ApplyViewDetail = createReactClass({
             userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
             userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
         //是否是待审批
-        const isUnApproved = this.props.detailItem.approval_state === '0';
+        const isUnApproved = ['false', '0'].includes(_.get(this.state, 'detailInfoObj.info.approval_state'));
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
@@ -1678,9 +1678,7 @@ const ApplyViewDetail = createReactClass({
             userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
             userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
         //是否审批
-        let isConsumed = selectedDetailItem.isConsumed === 'true';
-        //是否是待审批
-        const isUnApproved = this.props.detailItem.approval_state === '0';
+        let isConsumed = !['false', '0'].includes(_.get(this.state, 'detailInfoObj.info.approval_state'));
         return (
             <div className="approval_block">
                 <Row className="approval_person clearfix">
@@ -1703,24 +1701,23 @@ const ApplyViewDetail = createReactClass({
                                     {detailInfoObj.approval_person || ''}
                                     {this.getApplyResultDscr(detailInfoObj)}
                                 </span>
-                            </div>) : isUnApproved ?
-                            (<div className="pull-right">
-                                {hasPrivilege('APPLY_CANCEL') && showBackoutApply ? (
-                                    <Button type="primary" className="btn-primary-sure" size="small"
-                                        onClick={this.saleConfirmBackoutApply}>
-                                        {Intl.get('user.apply.detail.backout', '撤销申请')}
-                                    </Button>) : null}
-                                {isRealmAdmin ? (
-                                    <Button type="primary" className="btn-primary-sure" size="small"
-                                        onClick={this.submitApprovalForm.bind(this, '1')}>
-                                        {Intl.get('user.apply.detail.button.pass', '通过')}
-                                    </Button>) : null}
-                                {isRealmAdmin ? (
-                                    <Button type="primary" className="btn-primary-sure" size="small"
-                                        onClick={this.submitApprovalForm.bind(this, '2')}>
-                                        {Intl.get('common.apply.reject', '驳回')}
-                                    </Button>) : null}
-                            </div>) : null}
+                            </div>) : (<div className="pull-right">
+                            {hasPrivilege('APPLY_CANCEL') && showBackoutApply ? (
+                                <Button type="primary" className="btn-primary-sure" size="small"
+                                    onClick={this.saleConfirmBackoutApply}>
+                                    {Intl.get('user.apply.detail.backout', '撤销申请')}
+                                </Button>) : null}
+                            {isRealmAdmin ? (
+                                <Button type="primary" className="btn-primary-sure" size="small"
+                                    onClick={this.submitApprovalForm.bind(this, '1')}>
+                                    {Intl.get('user.apply.detail.button.pass', '通过')}
+                                </Button>) : null}
+                            {isRealmAdmin ? (
+                                <Button type="primary" className="btn-primary-sure" size="small"
+                                    onClick={this.submitApprovalForm.bind(this, '2')}>
+                                    {Intl.get('common.apply.reject', '驳回')}
+                                </Button>) : null}
+                        </div>)}
                     </Col>
                 </Row>
             </div>);
@@ -1874,7 +1871,7 @@ const ApplyViewDetail = createReactClass({
                     obj.delay_time = this.state.formData.delay_time;
                 }
             }
-            if (APPLY_MULTI_TYPE_VALUES.includes(_.get(this.props.detailItem, 'message.type'))) {
+            if (_.get(this.props.detailItem, 'message.type') === APPLY_TYPES.DELAY) {
                 const apps = _.get(this.state.detailInfoObj, 'info.apps');
                 if (apps.length > 0) {
                     obj.data = JSON.stringify(
