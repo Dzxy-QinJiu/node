@@ -18,5 +18,7 @@ function getCharts() {
     return [
         //新增合同毛利团队分布
         contractChart.getContractNewChart(),
+        //近3个月新增合同周趋势图
+        contractChart.getContractTrendChart(),
     ];
 }
