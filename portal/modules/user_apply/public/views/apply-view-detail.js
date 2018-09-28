@@ -515,7 +515,7 @@ const ApplyViewDetail = createReactClass({
     },
 
     renderDetailOperateBtn() {
-        if (this.state.selectedDetailItem.isConsumed === 'true' || !hasPrivilege('APP_USER_APPLY_APPROVAL')) {
+        if (!['false', '0'].includes(_.get(this.state, 'detailInfoObj.info.approval_state')) || !hasPrivilege('APP_USER_APPLY_APPROVAL')) {
             return null;
         }
         if (this.state.applyIsExpanded) {
@@ -585,7 +585,7 @@ const ApplyViewDetail = createReactClass({
 
     //渲染用户名区域，文字状态，修改状态
     renderUserNameBlock(info) {
-        if (this.state.selectedDetailItem.isConsumed === 'true') {
+        if (!['false', '0'].includes(_.get(this.state, 'detailInfoObj.info.approval_state'))) {
             return <span>{info.user_names[0]}</span>;
         }
         let maxUserNumber = this.getChangeMaxUserNumber();
@@ -702,7 +702,7 @@ const ApplyViewDetail = createReactClass({
 
     //渲染昵称区域，文字状态，修改状态
     renderNickNameBlock(info) {
-        if (this.state.selectedDetailItem.isConsumed === 'true') {
+        if (!['false', '0'].includes(_.get(this.state, 'detailInfoObj.info.approval_state'))) {
             return <span>{info.nick_names[0]}</span>;
         }
         return <div>
@@ -998,7 +998,7 @@ const ApplyViewDetail = createReactClass({
         if (height !== 'auto') {
             height = height - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.ORDER_DIV_HEIGHT - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.OPERATION_BTN_HEIGHT;
         }
-        if (this.state.selectedDetailItem.isConsumed === 'true') {
+        if (!['false', '0'].includes(_.get(this.state, 'detailInfoObj.info.approval_state'))) {
             return null;
         }
         //为每个应用特殊配置的组件
@@ -1316,7 +1316,7 @@ const ApplyViewDetail = createReactClass({
     },
 
     renderModifyDelayTime() {
-        if (this.state.selectedDetailItem.isConsumed === 'true') {
+        if (!['false', '0'].includes(_.get(this.state, 'detailInfoObj.info.approval_state'))) {
             return;
         }
         return this.state.isModifyDelayTime ? (
