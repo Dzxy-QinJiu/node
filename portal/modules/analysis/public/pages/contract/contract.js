@@ -1,12 +1,12 @@
 /**
- * 总体分析
+ * 新增合同分析
  */
 
 import contractChart from '../../charts/contract';
 
 module.exports = {
-    title: '总体分析',
-    menuIndex: 1,
+    title: '新增合同分析',
+    menuIndex: 2,
     privileges: [
         'CUSTOMER_ANALYSIS_COMMON',
         'CUSTOMER_ANALYSIS_MANAGER',
@@ -16,9 +16,7 @@ module.exports = {
 
 function getCharts() {
     return [
-        //合同分析统计表
-        contractChart.getContractChart(),
-        //签单情况统计表
-        contractChart.getSingingChart(),
+        //新增合同毛利团队分布
+        contractChart.getContractNewChart(),
     ];
 }
