@@ -14,6 +14,7 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import userData from '../user-data';
 import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {selectMenuList} from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -356,4 +357,20 @@ exports.getStartEndTimeOfDiffRange = function(timeRange,disableDateAfterToday) {
             break;
     }
     return timeObj;
+};
+exports.getApplyStateText = function(obj) {
+    if (obj.status === 'pass') {
+        return Intl.get('user.apply.pass', '已通过');
+    } else if (obj.status === 'reject') {
+        return Intl.get('user.apply.reject', '已驳回');
+    } else {
+        return Intl.get('user.apply.false', '待审批');
+    }
+};
+exports.getTimeStr = function(d, format) {
+    d = parseInt(d);
+    if (isNaN(d)) {
+        return '';
+    }
+    return moment(new Date(d)).format(format || oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
 };
