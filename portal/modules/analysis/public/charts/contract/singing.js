@@ -118,7 +118,7 @@ function handleCellClick(teamIndex, record, event) {
         team_name: teamName,
     };
 
-    let targetUrl = '/contract/list';
+    let targetUrl = '/contract/sell';
     targetUrl += '?' + querystring.stringify(paramObj);
 
     window.open(targetUrl);
