@@ -1,11 +1,11 @@
 /**
- * 近3个月新增合同周趋势图
+ * 近3个月回款周趋势图
  */
 
-export function getContractTrendChart() {
+export function getRepayTrendChart() {
     return {
-        title: Intl.get('contract.147', '近3个月新增合同周趋势图'),
-        url: '/rest/analysis/contract/contract/count/trend',
+        title: Intl.get('contract.146', '近3个月回款周趋势图'),
+        url: '/rest/analysis/contract/contract/repay/trend',
         argCallback: (arg) => {
             const query = arg.query;
 
