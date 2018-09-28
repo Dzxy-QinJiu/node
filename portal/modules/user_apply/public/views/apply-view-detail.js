@@ -515,7 +515,7 @@ const ApplyViewDetail = createReactClass({
     },
 
     renderDetailOperateBtn() {
-        if (!['false', '0'].includes(_.get(this.state, 'detailInfoObj.info.approval_state')) || !hasPrivilege('APP_USER_APPLY_APPROVAL')) {
+        if (!this.isUnApproved() || !hasPrivilege('APP_USER_APPLY_APPROVAL')) {
             return null;
         }
         if (this.state.applyIsExpanded) {
@@ -585,7 +585,7 @@ const ApplyViewDetail = createReactClass({
 
     //渲染用户名区域，文字状态，修改状态
     renderUserNameBlock(info) {
-        if (!['false', '0'].includes(_.get(this.state, 'detailInfoObj.info.approval_state'))) {
+        if (!this.isUnApproved()) {
             return <span>{info.user_names[0]}</span>;
         }
         let maxUserNumber = this.getChangeMaxUserNumber();
@@ -702,7 +702,7 @@ const ApplyViewDetail = createReactClass({
 
     //渲染昵称区域，文字状态，修改状态
     renderNickNameBlock(info) {
-        if (!['false', '0'].includes(_.get(this.state, 'detailInfoObj.info.approval_state'))) {
+        if (!this.isUnApproved()) {
             return <span>{info.nick_names[0]}</span>;
         }
         return <div>
@@ -998,7 +998,7 @@ const ApplyViewDetail = createReactClass({
         if (height !== 'auto') {
             height = height - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.ORDER_DIV_HEIGHT - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.OPERATION_BTN_HEIGHT;
         }
-        if (!['false', '0'].includes(_.get(this.state, 'detailInfoObj.info.approval_state'))) {
+        if (!this.isUnApproved()) {
             return null;
         }
         //为每个应用特殊配置的组件
@@ -1227,7 +1227,7 @@ const ApplyViewDetail = createReactClass({
             userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
             userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
         //是否是待审批
-        const isUnApproved = ['false', '0'].includes(_.get(this.state, 'detailInfoObj.info.approval_state'));
+        const isUnApproved = this.isUnApproved();
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
@@ -1314,9 +1314,12 @@ const ApplyViewDetail = createReactClass({
     disabledDate(current) {
         return current && current.valueOf() < Date.now();
     },
-
+    //是否是待审批
+    isUnApproved() {
+        return ['false', '0'].includes(_.get(this.state, 'detailInfoObj.info.approval_state'));
+    },
     renderModifyDelayTime() {
-        if (!['false', '0'].includes(_.get(this.state, 'detailInfoObj.info.approval_state'))) {
+        if (!this.isUnApproved()) {
             return;
         }
         return this.state.isModifyDelayTime ? (
@@ -1678,7 +1681,7 @@ const ApplyViewDetail = createReactClass({
             userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
             userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
         //是否审批
-        let isConsumed = !['false', '0'].includes(_.get(this.state, 'detailInfoObj.info.approval_state'));
+        let isConsumed = !this.isUnApproved();
         return (
             <div className="approval_block">
                 <Row className="approval_person clearfix">
