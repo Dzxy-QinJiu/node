@@ -134,11 +134,12 @@ class ApplyViewDetailActions {
         this.dispatch({loading: true, error: false});
         let promise = null;
         //延期、停用审批用新接口
-        if (APPLY_MULTI_TYPE_VALUES.includes(obj.type)) {
+        if (APPLY_MULTI_TYPE_VALUES.includes(obj.type)) {           
             promise = AppUserAjax.submitMultiAppApply({
                 data: {
                     message_id: obj.message_id,
-                    approval_state: obj.approval
+                    approval_state: obj.approval,
+                    data: obj.data || ''
                 }
             });
         }

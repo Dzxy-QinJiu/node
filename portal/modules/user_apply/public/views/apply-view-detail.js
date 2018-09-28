@@ -515,7 +515,7 @@ const ApplyViewDetail = createReactClass({
     },
 
     renderDetailOperateBtn() {
-        if (this.state.selectedDetailItem.isConsumed === 'true' || !hasPrivilege('APP_USER_APPLY_APPROVAL')) {
+        if (!this.isUnApproved() || !hasPrivilege('APP_USER_APPLY_APPROVAL')) {
             return null;
         }
         if (this.state.applyIsExpanded) {
@@ -585,7 +585,7 @@ const ApplyViewDetail = createReactClass({
 
     //渲染用户名区域，文字状态，修改状态
     renderUserNameBlock(info) {
-        if (this.state.selectedDetailItem.isConsumed === 'true') {
+        if (!this.isUnApproved()) {
             return <span>{info.user_names[0]}</span>;
         }
         let maxUserNumber = this.getChangeMaxUserNumber();
@@ -702,7 +702,7 @@ const ApplyViewDetail = createReactClass({
 
     //渲染昵称区域，文字状态，修改状态
     renderNickNameBlock(info) {
-        if (this.state.selectedDetailItem.isConsumed === 'true') {
+        if (!this.isUnApproved()) {
             return <span>{info.nick_names[0]}</span>;
         }
         return <div>
@@ -998,7 +998,7 @@ const ApplyViewDetail = createReactClass({
         if (height !== 'auto') {
             height = height - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.ORDER_DIV_HEIGHT - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.OPERATION_BTN_HEIGHT;
         }
-        if (this.state.selectedDetailItem.isConsumed === 'true') {
+        if (!this.isUnApproved()) {
             return null;
         }
         //为每个应用特殊配置的组件
@@ -1226,6 +1226,8 @@ const ApplyViewDetail = createReactClass({
             userData.hasRole(userData.ROLE_CONSTANS.REALM_OWNER) ||
             userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
             userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
+        //是否是待审批
+        const isUnApproved = this.isUnApproved();
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
@@ -1233,7 +1235,7 @@ const ApplyViewDetail = createReactClass({
                         <div className="user-info-label label-fix">{this.renderApplyDelayName()}:</div>
                         <span className="user-info-text">
                             {this.state.isModifyDelayTime ? null : this.renderApplyDelayModifyTime()}
-                            {/* {isRealmAdmin ? this.renderModifyDelayTime() : null} */}
+                            {isRealmAdmin && isUnApproved ? this.renderModifyDelayTime() : null}
                         </span>
                     </div>
                     {
@@ -1312,9 +1314,12 @@ const ApplyViewDetail = createReactClass({
     disabledDate(current) {
         return current && current.valueOf() < Date.now();
     },
-
+    //是否是待审批
+    isUnApproved() {
+        return ['false', '0'].includes(_.get(this.state, 'detailInfoObj.info.approval_state'));
+    },
     renderModifyDelayTime() {
-        if (this.state.selectedDetailItem.isConsumed === 'true') {
+        if (!this.isUnApproved()) {
             return;
         }
         return this.state.isModifyDelayTime ? (
@@ -1676,7 +1681,7 @@ const ApplyViewDetail = createReactClass({
             userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
             userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
         //是否审批
-        let isConsumed = selectedDetailItem.isConsumed === 'true';
+        let isConsumed = !this.isUnApproved();
         return (
             <div className="approval_block">
                 <Row className="approval_person clearfix">
@@ -1699,24 +1704,23 @@ const ApplyViewDetail = createReactClass({
                                     {detailInfoObj.approval_person || ''}
                                     {this.getApplyResultDscr(detailInfoObj)}
                                 </span>
-                            </div>) : (
-                            <div className="pull-right">
-                                {hasPrivilege('APPLY_CANCEL') && showBackoutApply ? (
-                                    <Button type="primary" className="btn-primary-sure" size="small"
-                                        onClick={this.saleConfirmBackoutApply}>
-                                        {Intl.get('user.apply.detail.backout', '撤销申请')}
-                                    </Button>) : null}
-                                {isRealmAdmin ? (
-                                    <Button type="primary" className="btn-primary-sure" size="small"
-                                        onClick={this.submitApprovalForm.bind(this, '1')}>
-                                        {Intl.get('user.apply.detail.button.pass', '通过')}
-                                    </Button>) : null}
-                                {isRealmAdmin ? (
-                                    <Button type="primary" className="btn-primary-sure" size="small"
-                                        onClick={this.submitApprovalForm.bind(this, '2')}>
-                                        {Intl.get('common.apply.reject', '驳回')}
-                                    </Button>) : null}
-                            </div>)}
+                            </div>) : (<div className="pull-right">
+                            {hasPrivilege('APPLY_CANCEL') && showBackoutApply ? (
+                                <Button type="primary" className="btn-primary-sure" size="small"
+                                    onClick={this.saleConfirmBackoutApply}>
+                                    {Intl.get('user.apply.detail.backout', '撤销申请')}
+                                </Button>) : null}
+                            {isRealmAdmin ? (
+                                <Button type="primary" className="btn-primary-sure" size="small"
+                                    onClick={this.submitApprovalForm.bind(this, '1')}>
+                                    {Intl.get('user.apply.detail.button.pass', '通过')}
+                                </Button>) : null}
+                            {isRealmAdmin ? (
+                                <Button type="primary" className="btn-primary-sure" size="small"
+                                    onClick={this.submitApprovalForm.bind(this, '2')}>
+                                    {Intl.get('common.apply.reject', '驳回')}
+                                </Button>) : null}
+                        </div>)}
                     </Col>
                 </Row>
             </div>);
@@ -1860,8 +1864,8 @@ const ApplyViewDetail = createReactClass({
                 //审批类型
                 type: detailInfo.type,
                 //从邮件转到界面的链接地址
-                notice_url: getApplyDetailUrl(this.state.detailInfoObj.info)
-            };
+                notice_url: getApplyDetailUrl(this.state.detailInfoObj.info),
+            };           
             // 延期时间(需要修改到期时间的字段)
             if (detailInfo.type === 'apply_grant_delay') {
                 if (this.state.formData.delayTimeUnit === SELECT_CUSTOM_TIME_TYPE) {
@@ -1870,6 +1874,28 @@ const ApplyViewDetail = createReactClass({
                     obj.delay_time = this.state.formData.delay_time;
                 }
             }
+            if (_.get(this.props.detailItem, 'message.type') === APPLY_TYPES.DELAY) {
+                const apps = _.get(this.state.detailInfoObj, 'info.apps');
+                if (apps.length > 0) {
+                    obj.data = JSON.stringify(
+                        apps.map(x => {
+                            const item = {
+                                ...x
+                            };
+                            if (_.get(this.state, 'formData.delayTimeUnit') === 'custom') {
+                                item.end_date = _.get(this.state, 'formData.end_date');
+                                delete item.delay;
+                            }
+                            else {
+                                item.delay = _.get(this.state, 'formData.delay_time');
+                                item.end_date = moment(x.end_date).subtract(x.delay, 'ms').add(item.delay, 'ms');
+                            }
+                            return item;
+                        })
+                    );
+                }   
+            }
+            
             //修改密码
             if (detailInfo.type === 'apply_pwd_change') {
                 obj.password = AppUserUtil.encryptPassword(this.state.formData.apply_detail_password);
