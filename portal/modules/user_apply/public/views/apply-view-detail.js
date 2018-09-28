@@ -30,7 +30,7 @@ import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { RightPanel } from '../../../../components/rightPanel';
 import { getPassStrenth, PassStrengthBar, passwordRegex } from 'CMP_DIR/password-strength-bar';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
+import { APPLY_TYPES, APPLY_MULTI_TYPE_VALUES } from 'PUB_DIR/sources/utils/consts';
 
 /*在审批界面显示用户的右侧面板结束*/
 //默认头像图片
@@ -1226,6 +1226,8 @@ const ApplyViewDetail = createReactClass({
             userData.hasRole(userData.ROLE_CONSTANS.REALM_OWNER) ||
             userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
             userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
+        //是否是待审批
+        const isUnApproved = this.props.detailItem.approval_state === '0';
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
@@ -1233,7 +1235,7 @@ const ApplyViewDetail = createReactClass({
                         <div className="user-info-label label-fix">{this.renderApplyDelayName()}:</div>
                         <span className="user-info-text">
                             {this.state.isModifyDelayTime ? null : this.renderApplyDelayModifyTime()}
-                            {/* {isRealmAdmin ? this.renderModifyDelayTime() : null} */}
+                            {isRealmAdmin && isUnApproved ? this.renderModifyDelayTime() : null}
                         </span>
                     </div>
                     {
@@ -1677,6 +1679,8 @@ const ApplyViewDetail = createReactClass({
             userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
         //是否审批
         let isConsumed = selectedDetailItem.isConsumed === 'true';
+        //是否是待审批
+        const isUnApproved = this.props.detailItem.approval_state === '0';
         return (
             <div className="approval_block">
                 <Row className="approval_person clearfix">
@@ -1699,8 +1703,8 @@ const ApplyViewDetail = createReactClass({
                                     {detailInfoObj.approval_person || ''}
                                     {this.getApplyResultDscr(detailInfoObj)}
                                 </span>
-                            </div>) : (
-                            <div className="pull-right">
+                            </div>) : isUnApproved ?
+                            (<div className="pull-right">
                                 {hasPrivilege('APPLY_CANCEL') && showBackoutApply ? (
                                     <Button type="primary" className="btn-primary-sure" size="small"
                                         onClick={this.saleConfirmBackoutApply}>
@@ -1716,7 +1720,7 @@ const ApplyViewDetail = createReactClass({
                                         onClick={this.submitApprovalForm.bind(this, '2')}>
                                         {Intl.get('common.apply.reject', '驳回')}
                                     </Button>) : null}
-                            </div>)}
+                            </div>) : null}
                     </Col>
                 </Row>
             </div>);
@@ -1860,8 +1864,8 @@ const ApplyViewDetail = createReactClass({
                 //审批类型
                 type: detailInfo.type,
                 //从邮件转到界面的链接地址
-                notice_url: getApplyDetailUrl(this.state.detailInfoObj.info)
-            };
+                notice_url: getApplyDetailUrl(this.state.detailInfoObj.info),
+            };           
             // 延期时间(需要修改到期时间的字段)
             if (detailInfo.type === 'apply_grant_delay') {
                 if (this.state.formData.delayTimeUnit === SELECT_CUSTOM_TIME_TYPE) {
@@ -1870,6 +1874,28 @@ const ApplyViewDetail = createReactClass({
                     obj.delay_time = this.state.formData.delay_time;
                 }
             }
+            if (APPLY_MULTI_TYPE_VALUES.includes(_.get(this.props.detailItem, 'message.type'))) {
+                const apps = _.get(this.state.detailInfoObj, 'info.apps');
+                if (apps.length > 0) {
+                    obj.data = JSON.stringify(
+                        apps.map(x => {
+                            const item = {
+                                ...x
+                            };
+                            if (_.get(this.state, 'formData.delayTimeUnit') === 'custom') {
+                                item.end_date = _.get(this.state, 'formData.end_date');
+                                delete item.delay;
+                            }
+                            else {
+                                item.delay = _.get(this.state, 'formData.delay_time');
+                                item.end_date = moment(x.end_date).subtract(x.delay, 'ms').add(item.delay, 'ms');
+                            }
+                            return item;
+                        })
+                    );
+                }   
+            }
+            
             //修改密码
             if (detailInfo.type === 'apply_pwd_change') {
                 obj.password = AppUserUtil.encryptPassword(this.state.formData.apply_detail_password);
