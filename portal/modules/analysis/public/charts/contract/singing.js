@@ -5,6 +5,7 @@
 import { num as antUtilNum } from 'ant-utils';
 const parseAmount = antUtilNum.parseAmount;
 const querystring = require('querystring');
+const TEAM_COLUMN_WIDTH = 380;
 
 export function getSingingChart() {
     return {
@@ -93,8 +94,11 @@ function processOption(option, props) {
 
     columns = columns.concat(teamColumns);
 
+    const scrollX = data[0].teams.length * TEAM_COLUMN_WIDTH;
+
     option.columns = columns;
     option.dataSource = processData(data);
+    option.scroll = {x: scrollX};
 }
 
 //按名称将团队排序，将合计放在最后
