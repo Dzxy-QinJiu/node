@@ -120,6 +120,10 @@ class ApplyViewDetailStore {
         this.appAuthInfo = [];
         // 确定用户名是否更改  没改：false 改了：true
         this.isChangeUserName = false;
+        this.backApplyResult = {
+            loading: false,
+            errorMsg: ""
+        };
     }
     //获取应用列表
     getApps(result) {
@@ -212,6 +216,9 @@ class ApplyViewDetailStore {
             }
         }
     }
+
+    //撤销审批结果(不含errorMsg，错误信息在action中通过messag.error处理)
+    saleBackoutApply = resultHandler('backApplyResult');
 
     //获取审批详情
     getApplyMultiAppDetail = resultHandler('detailInfoObj', function({ data, paramObj }) {

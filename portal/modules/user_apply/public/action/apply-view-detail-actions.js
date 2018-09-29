@@ -141,7 +141,7 @@ class ApplyViewDetailActions {
         this.dispatch({loading: true, error: false});
         let promise = null;
         //延期、停用审批用新接口
-        if (APPLY_MULTI_TYPE_VALUES.includes(obj.type)) {           
+        if (APPLY_MULTI_TYPE_VALUES.includes(obj.type)) {
             promise = AppUserAjax.submitMultiAppApply({
                 data: {
                     message_id: obj.message_id,
@@ -156,7 +156,7 @@ class ApplyViewDetailActions {
         promise.then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
             //更新选中的申请单类型
-            AppUserUtil.emitter.emit('updateSelectedItem', {approval: obj.approval, status: 'success'});
+            AppUserUtil.emitter.emit('updateSelectedItem', {id: obj.message_id, approval: obj.approval, status: 'success'});
             //刷新用户审批未处理数
             updateUnapprovedCount();
         }, (errorMsg) => {
@@ -195,13 +195,14 @@ class ApplyViewDetailActions {
         this.dispatch({loading: true, error: false});
         AppUserAjax.saleBackoutApply(obj).then((data) => {
             if (data) {
+                this.dispatch({loading: false, error: false});
                 message.success(Intl.get('user.apply.detail.backout.success', '撤销成功'));
-                AppUserUtil.emitter.emit('updateSelectedItem', {approval: '3', status: 'success'});
-                this.dispatch(data);
+                AppUserUtil.emitter.emit('updateSelectedItem', {id: obj.apply_id, approval: '3', status: 'success'});
                 //刷新用户审批未处理数(左侧导航中待审批数)
                 updateUnapprovedCount();
             }
         }, (errorMsg) => {
+            this.dispatch({loading: false, error: true});
             AppUserUtil.emitter.emit('updateSelectedItem', {status: 'error'});
             message.error(errorMsg || Intl.get('user.apply.detail.backout.error', '撤销申请失败'));
             this.dispatch(errorMsg);
