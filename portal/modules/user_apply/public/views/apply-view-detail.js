@@ -174,6 +174,7 @@ const ApplyViewDetail = createReactClass({
 
     getApplyDetail(detailItem, applyData) {
         setTimeout(() => {
+            ApplyViewDetailActions.resetApplyResult();
             if (isMultiAppApply(detailItem)) {
                 ApplyViewDetailActions.getApplyMultiAppDetail({
                     params: {
