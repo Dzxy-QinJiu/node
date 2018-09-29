@@ -3,7 +3,6 @@
  */
 
 import accountChart from '../../charts/account';
-import { USER_TYPES, userTypeDataMap } from '../../consts';
 
 module.exports = {
     title: '新增账号分析',
