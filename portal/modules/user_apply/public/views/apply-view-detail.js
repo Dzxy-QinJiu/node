@@ -1891,6 +1891,8 @@ const ApplyViewDetail = createReactClass({
                                 item.delay = _.get(this.state, 'formData.delay_time');
                                 item.end_date = moment(x.end_date).subtract(x.delay, 'ms').add(item.delay, 'ms').valueOf();
                             }
+                            delete item.app_id;
+                            delete item.app_name;
                             return item;
                         })
                     );
