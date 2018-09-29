@@ -11,8 +11,8 @@ module.exports = {
     title: '总体分析',
     menuIndex: 1,
     privileges: [
-        'CUSTOMER_ANALYSIS_COMMON',
-        'CUSTOMER_ANALYSIS_MANAGER',
+        'USER_ANALYSIS_COMMON',
+        'USER_ANALYSIS_MANAGER',
     ],
     charts: getCharts()
 };

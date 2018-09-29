@@ -14,8 +14,8 @@ module.exports = {
     title: '账号分析',
     menuIndex: 5,
     privileges: [
-        'CUSTOMER_ANALYSIS_COMMON',
-        'CUSTOMER_ANALYSIS_MANAGER',
+        'USER_ANALYSIS_COMMON',
+        'USER_ANALYSIS_MANAGER',
     ],
     pages,
 };

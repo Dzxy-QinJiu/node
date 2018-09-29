@@ -9,8 +9,8 @@ module.exports = {
     title: '新增账号分析',
     menuIndex: 3,
     privileges: [
-        'CUSTOMER_ANALYSIS_COMMON',
-        'CUSTOMER_ANALYSIS_MANAGER',
+        'USER_ANALYSIS_COMMON',
+        'USER_ANALYSIS_MANAGER',
     ],
     charts: getCharts()
 };

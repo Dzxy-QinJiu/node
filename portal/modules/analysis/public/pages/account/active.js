@@ -94,8 +94,8 @@ module.exports = {
     title: '活跃分析',
     menuIndex: 2,
     privileges: [
-        'CUSTOMER_ANALYSIS_COMMON',
-        'CUSTOMER_ANALYSIS_MANAGER',
+        'USER_ANALYSIS_COMMON',
+        'USER_ANALYSIS_MANAGER',
     ],
     charts: getCharts()
 };

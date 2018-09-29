@@ -8,8 +8,8 @@ module.exports = {
     title: '过期账号分析',
     menuIndex: 4,
     privileges: [
-        'CUSTOMER_ANALYSIS_COMMON',
-        'CUSTOMER_ANALYSIS_MANAGER',
+        'USER_ANALYSIS_COMMON',
+        'USER_ANALYSIS_MANAGER',
     ],
     charts: getCharts()
 };
