@@ -11,7 +11,7 @@ var cookie = require('cookie');
 //cookie解码器
 var cookieParser = require('cookie-parser');
 //推送消息数据(弹窗消息)
-var notifyChannel = 'com.antfact.oplate.notify.socketio';
+var notifyChannel = 'com.antfact.ketao.apply.notice';
 //登录踢出通道
 var offlineChannel = 'com.antfact.oplate.notify.socketio.offline';
 //消息数推送频道(消息个数)
