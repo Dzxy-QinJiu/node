@@ -62,7 +62,15 @@ CrmStore.prototype.setInitialState = function() {
         loading: false,
         errorMsg: ''
     };
+    //关注客户是否置顶的标识
+    this.isConcernCustomerTop = false;
 };
+
+//关注客户是否置顶的设置
+CrmStore.prototype.setConcernCustomerTop = function(flag) {
+    this.isConcernCustomerTop = flag;
+},
+
 CrmStore.prototype.updateCurrentCustomerRemark = function(submitObj) {
     let customer = _.find(this.curCustomers, (customer) => {
         return customer.id === submitObj.customer_id;

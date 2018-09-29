@@ -1455,6 +1455,8 @@ var en_US = {
     'crm.qualify.account': 'Qualified account',//合格账号
     'crm.no.qualify.account': 'No qualified account',//暂无合格账号
     'crm.score.history.title': 'Historical score',//历史分数
+    'crm.concern.top.set': 'Concerned customers on the top',//将关注的客户置顶
+    'crm.concern.top.cancel': 'Concerned customers not on the top',//取消关注客户置顶
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
