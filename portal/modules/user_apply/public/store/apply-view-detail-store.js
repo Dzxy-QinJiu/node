@@ -163,12 +163,7 @@ class ApplyViewDetailStore {
             this.formData.delayTimeNumber = 365 * years + 30 * months + 7 * weeks + days;
             this.formData.delayTimeUnit = 'days';
         }
-    }
-    //重置审批结果
-    resetApplyResult() {
-        this.applyResult.submitResult = '';
-        this.applyResult.errorMsg = '';
-    }
+    }    
     //获取审批详情
     getApplyDetail(obj) {
         //没有角色的时候，显示模态框，重置
