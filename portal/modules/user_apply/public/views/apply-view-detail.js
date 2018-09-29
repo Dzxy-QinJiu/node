@@ -174,7 +174,7 @@ const ApplyViewDetail = createReactClass({
 
     getApplyDetail(detailItem, applyData) {
         setTimeout(() => {
-            ApplyViewDetailActions.resetApplyResult();
+            ApplyViewDetailActions.showDetailLoading(detailItem);
             if (isMultiAppApply(detailItem)) {
                 ApplyViewDetailActions.getApplyMultiAppDetail({
                     params: {
@@ -214,10 +214,12 @@ const ApplyViewDetail = createReactClass({
         ApplyViewDetailActions.closeRightPanel();
     },
 
-    componentDidUpdate(prevProps) {
-        if (this.props.detailItem.id && prevProps.detailItem.id !== this.props.detailItem.id) {
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.detailItem.id && !_.isEqual(nextProps.detailItem, this.props.detailItem)) {
             this.appsSetting = {};
-            this.getApplyDetail(this.props.detailItem);
+            if (!this.state.applyResult.submitResult || nextProps.detailItem.id !== this.props.detailItem.id) {
+                this.getApplyDetail(nextProps.detailItem);
+            }
         }
     },
 
@@ -1616,7 +1618,7 @@ const ApplyViewDetail = createReactClass({
         Trace.traceEvent(e, '点击撤销按钮');
         const state = this.state;
         state.showBackoutConfirm = false;
-        this.setState(state);
+        this.setState(state); 
         let backoutObj = {
             apply_id: this.props.detailItem.id,
             remark: $.trim(this.state.formData.comment),
@@ -1642,8 +1644,12 @@ const ApplyViewDetail = createReactClass({
                     <p><ReactIntl.FormattedMessage id="user.apply.detail.modal.content" defaultMessage="是否撤销此申请？" /></p>
                 </Modal.Body>
                 <Modal.Footer>
-                    <BootstrapButton className="btn-ok" onClick={this.saleBackoutApply}><ReactIntl.FormattedMessage
+                    {
+                        this.state.backApplyResult.loading?
+                        <Icon type="loading" />:
+                        <BootstrapButton className="btn-ok" onClick={this.saleBackoutApply}><ReactIntl.FormattedMessage
                         id="user.apply.detail.modal.ok" defaultMessage="撤销" /></BootstrapButton>
+                    }
                     <BootstrapButton className="btn-cancel" onClick={this.hideBackoutModal}><ReactIntl.FormattedMessage
                         id="common.cancel" defaultMessage="取消" /></BootstrapButton>
                 </Modal.Footer>
@@ -1706,11 +1712,14 @@ const ApplyViewDetail = createReactClass({
                                     {this.getApplyResultDscr(detailInfoObj)}
                                 </span>
                             </div>) : (<div className="pull-right">
-                            {hasPrivilege('APPLY_CANCEL') && showBackoutApply ? (
-                                <Button type="primary" className="btn-primary-sure" size="small"
+                            {hasPrivilege('APPLY_CANCEL') && showBackoutApply ?                                
+                                this.state.backApplyResult.loading?
+                                    <Icon type="loading" />:
+                                    <Button type="primary" className="btn-primary-sure" size="small"
                                     onClick={this.saleConfirmBackoutApply}>
-                                    {Intl.get('user.apply.detail.backout', '撤销申请')}
-                                </Button>) : null}
+                                        {Intl.get('user.apply.detail.backout', '撤销申请')}
+                                    </Button>
+                                 : null}
                             {isRealmAdmin ? (
                                 <Button type="primary" className="btn-primary-sure" size="small"
                                     onClick={this.submitApprovalForm.bind(this, '1')}>

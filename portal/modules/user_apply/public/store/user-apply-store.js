@@ -183,5 +183,14 @@ UserApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {
 UserApplyStore.prototype.updateDealApplyError = function(status) {
     this.dealApplyError = status;
 };
+
+UserApplyStore.prototype.backApplySuccess = function({id, approval_state, isConsumed}) {
+    this.applyListObj.list.forEach((x, idx) => {
+        if (x.id === id) {
+            this.applyListObj.list[idx].approval_state = approval_state;
+            this.applyListObj.list[idx].isConsumed = isConsumed;
+        }
+    })
+}
 //使用alt导出store
 module.exports = alt.createStore(UserApplyStore, 'UserApplyStore');

@@ -47,7 +47,8 @@ const BasicEditField = createReactClass({
         hideButtonBlock: PropTypes.string,
         okBtnText: PropTypes.string,
         cancelBtnText: PropTypes.string,
-        showPasswordStrength: PropTypes.bool
+        showPasswordStrength: PropTypes.bool,
+        textCut: PropTypes.bool,
     },
     getDefaultProps: function() {
         return {
@@ -95,7 +96,9 @@ const BasicEditField = createReactClass({
             cancelBtnText: '',
             hoverShowEdit: true,
             //展示内容后面跟的提示信息
-            afterTextTip: ''
+            afterTextTip: '',
+            //超过3行是否截断
+            textCut: false
         };
     },
 
@@ -280,12 +283,18 @@ const BasicEditField = createReactClass({
                 'hover-show-edit': this.props.hoverShowEdit && this.props.hasEditPrivilege
             });
             if (displayText) {
+                let textContent = displayText;
+                if (this.props.textCut) {
+                    textContent = (
+                        <ShearContent>
+                            {displayText}
+                        </ShearContent>
+                    );
+                }
                 textBlock = (
                     <div className={cls}>
                         <span className="inline-block basic-info-text">
-                            <ShearContent>
-                                {displayText}
-                            </ShearContent>{this.props.afterTextTip || ''}
+                            {textContent}{this.props.afterTextTip || ''}
                         </span>
                         {this.props.hasEditPrivilege ? (
                             <DetailEditBtn title={this.props.editBtnTip}

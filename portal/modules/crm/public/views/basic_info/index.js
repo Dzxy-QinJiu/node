@@ -366,6 +366,7 @@ class BasicData extends React.Component {
                             id={basicData.id}
                             type="textarea"
                             field="remarks"
+                            textCut={true}
                             value={basicData.remarks}
                             editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
                             placeholder={Intl.get('user.input.remark', '请输入备注')}
