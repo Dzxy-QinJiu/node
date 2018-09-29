@@ -252,7 +252,7 @@ class ApplyViewDetailStore {
                         this.getDelayDisplayTime(delayTime);
                     } else { // 到期时间，点开修改同步到自定义
                         this.formData.delayTimeUnit = 'custom';
-                        this.formData.end_date = info.end_date;
+                        this.formData.end_date = apps[0].end_date;
                     }
                     break;
                 case APPLY_TYPES.DISABLE:
@@ -265,6 +265,7 @@ class ApplyViewDetailStore {
         info.type = info.message.type;
         info.sales_team_name = info.message.sales_team_name;
         info.sales_name = info.message.sales_name;
+        info.presenter_id = info.producer.user_id;
         this.detailInfoObj.info = info;
         this.createAppsSetting();
         if (_.isArray(apps)) {
