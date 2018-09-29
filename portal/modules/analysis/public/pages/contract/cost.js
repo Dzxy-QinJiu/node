@@ -8,8 +8,7 @@ module.exports = {
     title: '费用分析',
     menuIndex: 4,
     privileges: [
-        'CUSTOMER_ANALYSIS_COMMON',
-        'CUSTOMER_ANALYSIS_MANAGER',
+        'OPLATE_CONTRACT_ANALYSIS',
     ],
     charts: getCharts()
 };

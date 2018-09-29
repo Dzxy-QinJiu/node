@@ -8,8 +8,7 @@ module.exports = {
     title: '新增合同分析',
     menuIndex: 2,
     privileges: [
-        'CUSTOMER_ANALYSIS_COMMON',
-        'CUSTOMER_ANALYSIS_MANAGER',
+        'OPLATE_CONTRACT_ANALYSIS',
     ],
     charts: getCharts()
 };

@@ -14,8 +14,7 @@ module.exports = {
     title: '合同分析',
     menuIndex: 1,
     privileges: [
-        'CUSTOMER_ANALYSIS_COMMON',
-        'CUSTOMER_ANALYSIS_MANAGER',
+        'OPLATE_CONTRACT_ANALYSIS',
     ],
     pages,
 };

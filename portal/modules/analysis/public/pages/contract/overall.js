@@ -8,8 +8,7 @@ module.exports = {
     title: '总体分析',
     menuIndex: 1,
     privileges: [
-        'CUSTOMER_ANALYSIS_COMMON',
-        'CUSTOMER_ANALYSIS_MANAGER',
+        'OPLATE_CONTRACT_ANALYSIS',
     ],
     charts: getCharts()
 };
