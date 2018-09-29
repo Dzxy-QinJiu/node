@@ -130,11 +130,16 @@ class CrmUserApplyForm extends React.Component {
 
         submitObj.data = this.getSelectedUserMultiAppData().map(x => {
             let delayDate = moment(x.end_date).valueOf();
-            //到期时间小于当前时间时，在当前时间基础上延期
-            if (delayDate < moment().valueOf()) {
-                delayDate = moment().add(delayMillis, 'ms').valueOf();
-            } else {
-                delayDate = moment(x.end_date).add(delayMillis, 'ms').valueOf();
+            if (delayMillis) {
+                //到期时间小于当前时间时，在当前时间基础上延期
+                if (delayDate < moment().valueOf()) {
+                    delayDate = moment().add(delayMillis, 'ms').valueOf();
+                } else {
+                    delayDate = moment(x.end_date).add(delayMillis, 'ms').valueOf();
+                }
+            }
+            else {
+                delayDate = paramItem.end_date;
             }
             return {
                 ...paramItem,

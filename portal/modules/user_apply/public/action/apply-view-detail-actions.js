@@ -110,8 +110,14 @@ class ApplyViewDetailActions {
     }
 
     //获取审批单详情（多应用)
-    getApplyMultiAppDetail = asyncDispatcher(AppUserAjax.getApplyMultiAppDetail);
-
+    getApplyMultiAppDetail = function(paramsObj, applyData) {
+        if (applyData) {
+            this.dispatch({loading: false, error: false, data: applyData.detail});
+        } else {
+            return asyncDispatcher(AppUserAjax.getApplyMultiAppDetail).call(this, paramsObj);
+        }
+    };
+ 
     //获取回复列表
     getReplyList(id) {
         this.dispatch({loading: true, error: false, list: [], errorMsg: ''});

@@ -1234,7 +1234,7 @@ const ApplyViewDetail = createReactClass({
                 <div className="apply-info-content">
                     <div className="apply-info-label delay-time-wrap">
                         <div className="user-info-label label-fix">{this.renderApplyDelayName()}:</div>
-                        <span className="user-info-text">
+                        <span className="user-info-text edit-fix">
                             {this.state.isModifyDelayTime ? null : this.renderApplyDelayModifyTime()}
                             {isRealmAdmin && isUnApproved ? this.renderModifyDelayTime() : null}
                         </span>
@@ -1673,7 +1673,7 @@ const ApplyViewDetail = createReactClass({
 
     //渲染详情底部区域
     renderDetailBottom() {
-        var selectedDetailItem = this.state.selectedDetailItem;
+        var selectedDetailItem = this.props.detailItem;
         var detailInfoObj = this.state.detailInfoObj.info;
         var showBackoutApply = detailInfoObj.presenter_id === userData.getUserData().user_id;
         //是否显示通过驳回
@@ -1889,7 +1889,7 @@ const ApplyViewDetail = createReactClass({
                             }
                             else {
                                 item.delay = _.get(this.state, 'formData.delay_time');
-                                item.end_date = moment(x.end_date).subtract(x.delay, 'ms').add(item.delay, 'ms');
+                                item.end_date = moment(x.end_date).subtract(x.delay, 'ms').add(item.delay, 'ms').valueOf();
                             }
                             return item;
                         })
