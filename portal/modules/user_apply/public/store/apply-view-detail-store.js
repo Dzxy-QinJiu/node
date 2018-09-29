@@ -160,6 +160,11 @@ class ApplyViewDetailStore {
             this.formData.delayTimeUnit = 'days';
         }
     }
+    //重置审批结果
+    resetApplyResult() {
+        this.applyResult.submitResult = '';
+        this.applyResult.errorMsg = '';
+    }
     //获取审批详情
     getApplyDetail(obj) {
         //没有角色的时候，显示模态框，重置
@@ -168,6 +173,7 @@ class ApplyViewDetailStore {
             appNames: [],
             continueSubmit: false
         };
+       
         if (obj.loading) {
             this.detailInfoObj.loading = true;
             this.detailInfoObj.info = {};
