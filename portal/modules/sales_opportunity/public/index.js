@@ -19,6 +19,8 @@ import ApplyListItem from 'CMP_DIR/apply-list';
 var Spinner = require('CMP_DIR/spinner');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import ApplyViewDetail from './view/apply-view-detail';
+var SalesOpportunityApplyUtils = require('./utils/sales-oppotunity-utils');
+let userData = require('../../../public/sources/user-data');
 class SalesOpportunityApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加销售机会申请面板
@@ -40,23 +42,20 @@ class SalesOpportunityApplyManagement extends React.Component {
         // // 如果是管理员或者是销售领导，就获取要由自己审批的申请列表
         // this.getAllSalesOpportunityApplyList();
         // }
-        // SalesOpportunityApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
+        SalesOpportunityApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
 
     }
 
-    // updateSelectedItem = (message) => {
-    //     if(message && message.status === 'success'){
-    //         //通过或者驳回申请后改变申请的状态
-    //         if (message.agree){
-    //             message.approve_details = [{user_name: userData.getUserData().user_name}];
-    //             message.update_time = moment().valueOf();
-    //             SalesOpportunityApplyAction.changeApplyAgreeStatus(message);
-    //         }
-    //     }
-    //     //todo 暂时没用到
-    //     //处理申请成功还是失败,"success"/"error"
-    //     // SalesOpportunityApplyAction.updateDealApplyError(message && message.status || this.state.dealApplyError);
-    // };
+    updateSelectedItem = (message) => {
+        if(message && message.status === 'success'){
+            //通过或者驳回申请后改变申请的状态
+            if (message.agree){
+                message.approve_details = [{user_name: userData.getUserData().user_name, status: message.agree}];
+                message.update_time = moment().valueOf();
+                SalesOpportunityApplyAction.changeApplyAgreeStatus(message);
+            }
+        }
+    };
 
     getQueryParams() {
         var params = {
@@ -94,7 +93,7 @@ class SalesOpportunityApplyManagement extends React.Component {
     componentWillUnmount() {
         SalesOpportunityApplyStore.unlisten(this.onStoreChange);
         SalesOpportunityApplyAction.setInitState();
-        // SalesOpportunityApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
+        SalesOpportunityApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
     }
 
     showAddApplyPanel = () => {
@@ -121,29 +120,13 @@ class SalesOpportunityApplyManagement extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '查看申请详情');
         SalesOpportunityApplyAction.setSelectedDetailItem({obj, idx});
     };
-    getApplyStateText = (obj) => {
-        if (obj.status === 'pass') {
-            return Intl.get('user.apply.pass', '已通过');
-        } else if (obj.status === 'reject') {
-            return Intl.get('user.apply.reject', '已驳回');
-        } else {
-            return Intl.get('user.apply.false', '待审批');
-        }
-    };
-    getTimeStr = (d, format) => {
-        d = parseInt(d);
-        if (isNaN(d)) {
-            return '';
-        }
-        return moment(new Date(d)).format(format || oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-    };
 
     getApplyListType = () => {
         switch (this.state.applyListType) {
             case 'all':
                 return Intl.get('user.apply.all', '全部申请');
             case 'ongoing':
-                return Intl.get('user.apply.false', '待审批');
+                return Intl.get('leave.apply.my.worklist.apply', '待我审批');
             case 'pass':
                 return Intl.get('user.apply.pass', '已通过');
             case 'reject':
@@ -267,8 +250,6 @@ class SalesOpportunityApplyManagement extends React.Component {
                                         selectedDetailItem={this.state.selectedDetailItem}
                                         selectedDetailItemIdx={this.state.selectedDetailItemIdx}
                                         clickShowDetail={this.clickShowDetail}
-                                        getTimeStr={this.getTimeStr}
-                                        getApplyStateText={this.getApplyStateText}
                                     />
                                     <NoMoreDataTip
                                         fontSize="12"

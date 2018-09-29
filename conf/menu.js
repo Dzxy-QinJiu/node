@@ -397,7 +397,7 @@ class LeftMenuClass {
                 routePath: 'application',
                 subMenu: [{
                     id: 'BUSSINESS_APPLY_MANAGEMENT',
-                    name: backendIntl.get('menu.leave_apply','出差审批'),
+                    name: backendIntl.get('leave.apply.add.leave.apply', '出差申请'),
                     routePath: 'application/business_apply',
                     privileges: [
                         'BUSINESS_TRIP_MANAGE'

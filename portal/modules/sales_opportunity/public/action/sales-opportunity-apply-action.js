@@ -17,6 +17,15 @@ function SalesOpportunityApplyActions() {
         this.dispatch({loading: true, error: false});
         SalesOpportunityApplyAjax.getWorklistSalesOpportunityApplyList({type: 'businessopportunities'}).then((workList) => {
             this.dispatch({workList: workList});
+            //如果是待我审批的列表，不需要在发获取全部列表的请求了
+            if (queryObj.status && queryObj.status === 'ongoing'){
+                //需要对全部列表都加一个可以审批的属性
+                _.forEach(workList.list,(workItem) => {
+                    workItem.showApproveBtn = true;
+                });
+                this.dispatch({error: false, loading: false, data: workList});
+                return;
+            }
             SalesOpportunityApplyAjax.getAllSalesOpportunityApplyList(queryObj).then((data) => {
                 //需要对全部列表进行一下处理，知道哪些是可以审批的
                 var workListArr = workList.list;

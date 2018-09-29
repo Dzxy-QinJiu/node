@@ -33,6 +33,7 @@ class AddBusinessApply extends React.Component {
         super(props);
         var timeRange = getStartEndTimeOfDiffRange(DEFAULTTIMETYPE, true);
         this.state = {
+            hideCustomerRequiredTip: false,
             search_customer_name: '',
             formData: {
                 begin_time: DateSelectorUtils.getMilliseconds(timeRange.start_time),//出差开始时间
@@ -196,7 +197,7 @@ class AddBusinessApply extends React.Component {
     };
     checkCustomerName = (rule, value, callback) => {
         value = $.trim(_.get(this.state, 'formData.customers[0].id'));
-        if (!value) {
+        if (!value && !this.state.hideCustomerRequiredTip) {
             callback(new Error(Intl.get('leave.apply.select.customer', '请先选择客户')));
         } else {
             callback();
@@ -236,6 +237,13 @@ class AddBusinessApply extends React.Component {
         formData.customers[0].city = addressObj.cityName || '';
         formData.customers[0].county = addressObj.countyName || '';
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div .ant-form-item'), '选择地址');
+    };
+    hideCustomerRequiredTip = (flag) => {
+        this.setState({
+            hideCustomerRequiredTip: flag
+        },() => {
+            this.props.form.validateFields(['leave_for_customer'], {force: true});
+        });
     };
 
     render() {
@@ -342,6 +350,7 @@ class AddBusinessApply extends React.Component {
                                                 hideButtonBlock={true}
                                                 customerChoosen={this.customerChoosen}
                                                 required={true}
+                                                hideCustomerRequiredTip={this.hideCustomerRequiredTip}
                                             />
                                         )}
 

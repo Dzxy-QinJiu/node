@@ -18,6 +18,10 @@ import {Modal} from 'react-bootstrap';
 import ApplyDetailRemarks from 'CMP_DIR/apply-detail-remarks';
 import ApplyDetailInfo from 'CMP_DIR/apply-detail-info';
 import ApplyDetailCustomer from 'CMP_DIR/apply-detail-customer';
+import ApplyLoading from 'CMP_DIR/apply-loading';
+import ApplyError from 'CMP_DIR/apply-error';
+import ApplyNoData from 'CMP_DIR/apply-no-data';
+import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
 import {APPLY_LIST_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import {getApplyTopicText} from 'PUB_DIR/sources/utils/common-method-util';
 class ApplyViewDetail extends React.Component {
@@ -68,12 +72,14 @@ class ApplyViewDetail extends React.Component {
     getBusinessApplyDetailData(detailItem) {
         setTimeout(() => {
             SalesOpportunityApplyDetailAction.setInitialData(detailItem);
-            SalesOpportunityApplyDetailAction.getSalesOpportunityApplyDetailById({id: detailItem.id});
+
             //如果申请的状态是已通过或者是已驳回的时候，就不用发请求获取回复列表，直接用详情中的回复列表
             //其他状态需要发请求请求回复列表
-            if (detailItem.status === 'pass' || detailItem.state === 'reject') {
+            if (detailItem.status === 'pass' || detailItem.status === 'reject') {
                 SalesOpportunityApplyDetailAction.setApplyComment(detailItem.approve_details);
+                SalesOpportunityApplyDetailAction.getSalesOpportunityApplyDetailById({id: detailItem.id},detailItem.status);
             } else if (detailItem.id) {
+                SalesOpportunityApplyDetailAction.getSalesOpportunityApplyDetailById({id: detailItem.id});
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyCommentList({id: detailItem.id});
                 //根据申请的id获取申请的状态
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyStatusById({id: detailItem.id});
@@ -97,51 +103,6 @@ class ApplyViewDetail extends React.Component {
         SalesOpportunityApplyDetailAction.getSalesOpportunityApplyStatusById({id: detailItem.id});
     };
 
-    renderApplyDetailLoading() {
-        if (this.state.detailInfoObj.loadingResult === 'loading') {
-            return (<div className="app_user_manage_detail app_user_manage_detail_loading">
-                <Spinner/></div>);
-        }
-        return null;
-    }
-
-    renderApplyDetailError() {
-        if (this.state.detailInfoObj.loadingResult === 'error') {
-            var retry = (
-                <span>
-                    {this.state.detailInfoObj.errorMsg}，<a href="javascript:void(0)"
-                        onClick={this.retryFetchDetail}>
-                        {Intl.get('common.retry', '重试')}
-                    </a>
-                </span>
-            );
-            return (
-                <div className="app_user_manage_detail app_user_manage_detail_error">
-                    <Alert
-                        message={retry}
-                        type="error"
-                        showIcon={true}
-                    />
-                </div>
-            );
-        }
-        return null;
-    }
-
-    renderApplyDetailNodata() {
-        if (this.props.showNoData) {
-            return (
-                <div className="app_user_manage_detail app_user_manage_detail_error">
-                    <Alert
-                        message={Intl.get('common.no.data', '暂无数据')}
-                        type="info"
-                        showIcon={true}
-                    />
-                </div>
-            );
-        }
-        return null;
-    }
 
     //显示客户详情
     showCustomerDetail(customerId) {
@@ -170,6 +131,7 @@ class ApplyViewDetail extends React.Component {
     };
 
     renderDetailApplyBlock(detailInfo) {
+        var _this = this;
         var detail = detailInfo.detail || {};
         var expectdeal_time = moment(detail.expectdeal_time).format(oplateConsts.DATE_FORMAT);
         var customers = _.get(detail, 'customers[0]', {});
@@ -182,6 +144,8 @@ class ApplyViewDetail extends React.Component {
             {
                 label: Intl.get('call.record.customer', '客户'),
                 text: _.get(detail, 'customer.name'),
+                canClick: true,
+                handleClick: _this.showCustomerDetail.bind(this, _.get(detail, 'customer.id'))
             }, {
                 label: Intl.get('leave.apply.buget.count', '预算'),
                 text: detail.budget
@@ -191,6 +155,9 @@ class ApplyViewDetail extends React.Component {
             }, {
                 label: Intl.get('leave.apply.inspect.success.time', '预计成交时间'),
                 text: expectdeal_time
+            }, {
+                label: Intl.get('common.remark', '备注'),
+                text: detail.remark
             }, {
                 label: Intl.get('leave.apply.application.status', '审批状态'),
                 text: applyStatus
@@ -219,7 +186,7 @@ class ApplyViewDetail extends React.Component {
             } else if (_.isArray(this.state.replyStatusInfo.list)) {
                 //状态可能会有多个
                 return (
-                    <span>{Intl.get('leave.apply.detail.wait', '待') + this.state.replyStatusInfo.list.join(',')}</span>
+                    <span>{Intl.get('leave.apply.detail.wait', '待') + this.state.replyStatusInfo.list.join(',') + Intl.get('contract.10', '审核')}</span>
                 );
             }
         }
@@ -315,61 +282,6 @@ class ApplyViewDetail extends React.Component {
         SalesOpportunityApplyDetailAction.hideApprovalBtns();
     };
 
-    renderApplyFormResult = () => {
-        if (this.state.applyResult.submitResult === 'loading') {
-            return (
-                <Modal
-                    container={this}
-                    show={true}
-                    aria-labelledby="contained-modal-title"
-                >
-                    <Modal.Body>
-                        <div className="approval_loading">
-                            <Spinner/>
-                            <p>
-                                {Intl.get('user.apply.detail.submit.sending', '审批中...')}
-                            </p>
-                        </div>
-                    </Modal.Body>
-                </Modal>
-            );
-        }
-        if (this.state.applyResult.submitResult === 'success') {
-            return (
-                <div className="approval_result">
-                    <div className="approval_result_wrap">
-                        <div className="bgimg"></div>
-                        <p>
-                            {Intl.get('user.apply.detail.submit.success', '审批成功')}
-                        </p>
-                        <Button type="ghost" onClick={this.viewApprovalResult}>
-                            {Intl.get('user.apply.detail.show.content', '查看审批结果')}
-                        </Button>
-                    </div>
-                </div>
-            );
-        }
-        if (this.state.applyResult.submitResult === 'error') {
-            return (
-                <div className="approval_result">
-                    <div className="approval_result_wrap">
-                        <div className="bgimg error"></div>
-                        <p>{this.state.applyResult.errorMsg}</p>
-                        <Button type="ghost" className="re_send"
-                            onClick={this.reSendApproval}>
-                            {Intl.get('common.retry', '重试')}
-                        </Button>
-                        <Button type="ghost" className="cancel_send"
-                            onClick={this.cancelSendApproval}>
-                            {Intl.get('common.cancel', '取消')}
-                        </Button>
-                    </div>
-                </div>
-            );
-        }
-        return null;
-    };
-
     //重新发送
     reSendApproval = (e) => {
         Trace.traceEvent(e, '点击重试按钮');
@@ -388,7 +300,6 @@ class ApplyViewDetail extends React.Component {
         } else if (approval === 'reject') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击驳回按钮');
         }
-        // var selectedDetailItem = this.state.selectedDetailItem;
         var detailInfoObj = this.state.detailInfoObj.info;
         SalesOpportunityApplyDetailAction.approveSalesOpportunityApplyPassOrReject({
             id: detailInfoObj.id,
@@ -397,12 +308,7 @@ class ApplyViewDetail extends React.Component {
     };
     //渲染详情底部区域
     renderDetailBottom() {
-        // var selectedDetailItem = this.state.selectedDetailItem;
         var detailInfoObj = this.state.detailInfoObj.info;
-        var showBackoutApply = detailInfoObj.presenter_id === userData.getUserData().user_id;
-        //todo  true作为测试
-        //是否显示通过驳回
-        var showApproveBtn = detailInfoObj.showApproveBtn;
         //是否审批
         let isConsumed = detailInfoObj.status === 'pass' || detailInfoObj.status === 'reject';
         return (
@@ -424,7 +330,7 @@ class ApplyViewDetail extends React.Component {
                                     {this.getNoSecondTimeStr(detailInfoObj.update_time)}
                                 </span>
                                 <span className="approval-info-label">
-                                    {_.last(_.get(detailInfoObj, 'approve_details')).user_name || ''}
+                                    {_.last(_.get(detailInfoObj, 'approve_details')) ? _.last(_.get(detailInfoObj, 'approve_details')).user_name : ''}
                                     {this.getApplyResultDscr(detailInfoObj)}
                                 </span>
                             </div>) : (
@@ -489,12 +395,28 @@ class ApplyViewDetail extends React.Component {
         }
         return (
             <div className='col-md-8 leave_manage_apply_detail_wrap' data-tracename="出差审批详情界面">
-                {this.renderApplyDetailLoading()}
-                {this.renderApplyDetailError()}
-                {this.renderApplyDetailNodata()}
+                <ApplyLoading
+                    showLoading={this.state.detailInfoObj.loadingResult === 'loading'}
+                />
+                <ApplyError
+                    showErrTip = {this.state.detailInfoObj.loadingResult === 'error'}
+                    errMsg={this.state.detailInfoObj.errorMsg}
+                    retryFetchDetail={this.retryFetchDetail}
+                />
+                <ApplyNoData
+                    showNoData={this.props.showNoData}
+                />
                 {this.renderApplyDetailInfo()}
-                {this.renderApplyFormResult()}
-                {/*this.renderBackoutApply()*/}
+                <ApplyApproveStatus
+                    showLoading = {this.state.applyResult.submitResult === 'loading'}
+                    approveSuccess={this.state.applyResult.submitResult === 'success'}
+                    viewApprovalResult={this.viewApprovalResult}
+                    approveError={this.state.applyResult.submitResult === 'error'}
+                    applyResultErrorMsg={this.state.applyResult.errorMsg}
+                    reSendApproval={this.reSendApproval}
+                    cancelSendApproval={this.cancelSendApproval}
+                    container={this}
+                />
                 {/*该客户下的用户列表*/}
                 {
                     this.state.isShowCustomerUserListPanel ?

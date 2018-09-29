@@ -21,21 +21,6 @@
   .apply-detail-content {
     padding: 0 20px;
   }
-
-  .modal-backdrop, .modal {
-    position: absolute;
-  }
-  .modal-dialog .modal-content {
-    box-shadow: none !important;
-  }
-  .apply-change-password-style {
-    width: 230px;
-    display: inline-block;
-    vertical-align: bottom;
-    .ant-form-item {
-      margin-bottom: 0;
-    }
-  }
   .ant-form-horizontal {
     dt {
       padding-top: 10px !important;
@@ -78,178 +63,14 @@
   .btn-primary-sure {
     margin-right: 10px;
   }
-  .modal-content {
-    box-shadow: none;
-  }
-  .approval_loading {
-    p {
-      padding-top: 10px;
-      padding-bottom: 10px;
-      font-size: 16px;
-    }
-    .load8 {
-      transform: scale(0.5, 0.5);
-      .loader8 {
-        border-left-color: #394144;
-      }
-    }
-
-  }
   .approval-confirm-tip{
     p {
       padding-top: 20px;
       font-size: 16px;
     }
   }
-  .approval_result {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    z-index: 2;
-    background: #fff;
-    .approval_result_wrap {
-      width: 300px;
-      height: 227px;
-      position: absolute;
-      top: 0;
-      right: 0;
-      left: 0;
-      bottom: 0;
-      margin: auto;
-      text-align: center;
-      padding: 8px 0 0 0;
-      z-index: 10;
-      .bgimg {
-        width: 80px;
-        height: 83px;
-        margin: 0 auto;
-        background: transparent url("../../../../static/images/approval_success.png") 0 0;
-      }
-      .bgimg.error {
-        background: transparent url("../../../../static/images/approval_error.png") 0 0;
-      }
-      p {
-        line-height: 28px;
-        color: #b8bdc0;
-        font-size: 20px;
-        margin-top: 23px;
-        margin-bottom: 27px;
-      }
-      .ant-btn-ghost {
-        color: #b8bdc0;
-        &:hover {
-          color: #57c5f7;
-        }
-      }
-      .re_send {
-        margin-right: 23px;
-        color: #57c5f7;
-        &:hover {
-          color: darken(#57c5f7, 20%);
-        }
-      }
-    }
-  }
-  .single_user_log_select_time, .single_user_log_select_app {
-    display: inline-block;
-    padding: 10px 0;
-    vertical-align: middle;
-  }
-  // 单个用户审计日志的搜素框样式
-  .single_user_log_search_content {
-    display: inline-block;
-    position: absolute;
-    top: 10px;
-    right: 0;
-    .search-input-container {
-      .search-input {
-        height: @input_height;
-      }
-    }
-  }
-
-  .single_user_log_information {
-    margin-bottom: 15px;
-    margin-right: 20px;
-    padding: 8px 0 2px 10px;
-    background: #dce4e7;
-  }
-
-  .single_user_log_time_operation {
-    font-size: 14px;
-    font-weight: bold;
-  }
-
-  .single_user_log_other_information {
-    font-size: 14px;
-  }
-
-  .single_user_log_detail {
-    padding-right: 20px;
-    word-wrap: break-word;
-    white-space: pre-wrap;
-  }
-
-  .user_audit_log_select_app .ant-select-selection--single,
-  .single_user_log_select_app .ant-select-selection--single {
-    height: @input_height;
-    font-size: @form_font_size;
-    line-height: @line_height30;
-  }
-
-  .user_audit_log_select_app .ant-select-selection__rendered,
-  .single_user_log_select_app .ant-select-selection__rendered {
-    line-height: @line_height30;
-  }
-
-  .right-panel-audit-log-style {
-    .load8 {
-      transform: scale(0.5, 0.5);
-      .loader8 {
-        border-left-color: #394144;
-      }
-    }
-    .call_chart {
-      position: relative;
-      height: 214px;
-      margin: 0 20px 20px 20px;
-    }
-
-    .ant-alert-error, .ant-alert-message, .ant-alert-info {
-      display: inline-block;
-    }
-
-    .alert-wrap {
-      text-align: center;
-    }
-    .alert-wrap:first-child {
-      margin-top: 20px;
-      position: absolute;
-      width: 100%;
-    }
-
-    .total_summary {
-      margin-top: 15px;
-      font-size: 14px;
-    }
-
-    .no-more-data-tip {
-      .ant-alert-info {
-        margin-right: 20px;
-        display: block;
-      }
-    }
-  }
   //加载中，出错和没有数据的展示
   .app_user_manage_detail{
     padding-top: 260px;
-    .load8 {
-      transform: scale(0.5, 0.5);
-      .loader8 {
-        border-left-color: #394144;
-      }
-    }
   }
 }

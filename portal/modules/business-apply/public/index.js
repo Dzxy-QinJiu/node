@@ -20,6 +20,7 @@ import ApplyViewDetail from './view/apply-view-detail';
 import ApplyListItem from 'CMP_DIR/apply-list';
 import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-dropdown-and-add-btn';
 import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+let userData = require('../../../public/sources/user-data');
 class BusinessApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加出差申请面板
@@ -41,23 +42,19 @@ class BusinessApplyManagement extends React.Component {
         // // 如果是管理员或者是销售领导，就获取要由自己审批的申请列表
         // this.getAllBusinessApplyList();
         // }
-        // LeaveApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
-
+        LeaveApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
     }
 
-    // updateSelectedItem = (message) => {
-    //     if(message && message.status === 'success'){
-    //         //通过或者驳回申请后改变申请的状态
-    //         if (message.agree){
-    //             message.approve_details = [{user_name: userData.getUserData().user_name}];
-    //             message.update_time = moment().valueOf();
-    //             BusinessApplyAction.changeApplyAgreeStatus(message);
-    //         }
-    //     }
-    //     //todo 暂时没用到
-    //     //处理申请成功还是失败,"success"/"error"
-    //     // BusinessApplyAction.updateDealApplyError(message && message.status || this.state.dealApplyError);
-    // };
+    updateSelectedItem = (message) => {
+        if(message && message.status === 'success'){
+            //通过或者驳回申请后改变申请的状态
+            if (message.agree){
+                message.approve_details = [{user_name: userData.getUserData().user_name, status: message.agree}];
+                message.update_time = moment().valueOf();
+                BusinessApplyAction.changeApplyAgreeStatus(message);
+            }
+        }
+    };
 
     getQueryParams() {
         var params = {
@@ -94,7 +91,7 @@ class BusinessApplyManagement extends React.Component {
     componentWillUnmount() {
         BusinessApplyStore.unlisten(this.onStoreChange);
         BusinessApplyAction.setInitState();
-        // LeaveApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
+        LeaveApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
     }
 
     showAddApplyPanel = () => {
@@ -128,7 +125,7 @@ class BusinessApplyManagement extends React.Component {
             case 'all':
                 return Intl.get('user.apply.all', '全部申请');
             case 'ongoing':
-                return Intl.get('user.apply.false', '待审批');
+                return Intl.get('leave.apply.my.worklist.apply', '待我审批');
             case 'pass':
                 return Intl.get('user.apply.pass', '已通过');
             case 'reject':
@@ -216,11 +213,6 @@ class BusinessApplyManagement extends React.Component {
         //     applyType = Intl.get('user.apply.backout', '已撤销');
         // }
         var noShowApplyDetail = this.state.applyListObj.list.length === 0;
-        //申请详情数据
-        var applyDetail = null;
-        if (!noShowApplyDetail) {
-            applyDetail = {detail: _.get(this.state, 'applyListObj.list[0]'), apps: this.state.allApps};
-        }
         return (
             <div className="bussiness-apply-container">
                 <TopNav>
@@ -252,7 +244,6 @@ class BusinessApplyManagement extends React.Component {
                                             selectedDetailItem={this.state.selectedDetailItem}
                                             selectedDetailItemIdx={this.state.selectedDetailItemIdx}
                                             clickShowDetail={this.clickShowDetail}
-                                            getApplyStateText={this.getApplyStateText}
                                         />
                                         <NoMoreDataTip
                                             fontSize="12"

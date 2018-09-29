@@ -30,14 +30,20 @@ class ApplyDetailInfo extends React.Component {
                 <div className="customer-info-block apply-info-block">
                     <div className="apply-info-content">
                         {_.map(this.props.showApplyInfo, (InfoItem) => {
+
                             return (
                                 <div className="apply-info-label">
                                     <span className="user-info-label">
                                         {InfoItem.label}:
                                     </span>
-                                    <span className="user-info-text">
+                                    {InfoItem.canClick ? <a href="javascript:void(0)"
+                                        onClick={InfoItem.handleClick}
+                                    >
                                         {InfoItem.text}
-                                    </span>
+                                    </a> : <span className="user-info-text" >
+                                        {InfoItem.text}
+                                    </span>}
+
                                 </div>
                             );
                         })}

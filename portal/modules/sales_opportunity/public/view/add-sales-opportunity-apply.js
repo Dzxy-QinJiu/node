@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/9/27.
  */
 import {RightPanel} from 'CMP_DIR/rightPanel';
-require('../css/add-sales-Opportunity-apply.less');
+require('../css/add-sales-opportunity-apply.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {Form, Input, Button, Icon, message, DatePicker, Select} from 'antd';
@@ -21,7 +21,6 @@ var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
 var SalesOpportunityApplyAction = require('../action/sales-opportunity-apply-action');
 import AlertTimer from 'CMP_DIR/alert-timer';
-import {AntcAppSelector} from 'antc';
 import Trace from 'LIB_DIR/trace';
 const DELAY_TIME_RANGE = {
     SUCCESS_RANGE: 600,

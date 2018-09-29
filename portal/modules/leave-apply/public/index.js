@@ -109,15 +109,6 @@ class LeaveApplyManagement extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '查看申请详情');
         LeaveApplyAction.setSelectedDetailItem({obj, idx});
     };
-    getApplyStateText = (obj) => {
-        if (obj.status === 'pass') {
-            return Intl.get('user.apply.pass', '已通过');
-        } else if (obj.status === 'reject') {
-            return Intl.get('user.apply.reject', '已驳回');
-        } else {
-            return Intl.get('user.apply.false', '待审批');
-        }
-    };
     getTimeStr = (d, format) => {
         d = parseInt(d);
         if (isNaN(d)) {
@@ -260,7 +251,6 @@ class LeaveApplyManagement extends React.Component {
                  clickShowDetail={this.clickShowDetail}
 
                  getTimeStr={this.getTimeStr}
-                 getApplyStateText={this.getApplyStateText}
                  />
                  <NoMoreDataTip
                  fontSize="12"

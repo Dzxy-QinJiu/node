@@ -128,7 +128,7 @@ BusinessApplyStore.prototype.changeApplyListType = function(type) {
 };
 BusinessApplyStore.prototype.changeApplyAgreeStatus = function(message) {
     this.selectedDetailItem.status = message.agree;
-    this.selectedDetailItem.detail = message.detail;
+    this.selectedDetailItem.approve_details = message.approve_details;
     this.selectedDetailItem.update_time = message.update_time;
 };
 BusinessApplyStore.prototype.updateAllApplyItemStatus = function(updateItem) {

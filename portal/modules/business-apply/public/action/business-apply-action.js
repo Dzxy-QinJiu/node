@@ -19,6 +19,10 @@ function BusinessApplyActions() {
             this.dispatch({workList: workList});
             //如果是待我审批的列表，不需要在发获取全部列表的请求了
             if (queryObj.status && queryObj.status === 'ongoing'){
+                //需要对全部列表都加一个可以审批的属性
+                _.forEach(workList.list,(workItem) => {
+                    workItem.showApproveBtn = true;
+                });
                 this.dispatch({error: false, loading: false, data: workList});
                 return;
             }
@@ -48,16 +52,6 @@ function BusinessApplyActions() {
                 worklistErrMsg: errorMsg || Intl.get('failed.get.worklist.leave.apply', '获取由我审批的出差申请失败')
             });
         });
-
-        // BusinessApplyAjax.getAllApplyList(queryObj).then((data) => {
-        //     this.dispatch({error: false, loading: false, data: data});
-        // }, (errorMsg) => {
-        //     this.dispatch({
-        //         error: true,
-        //         loading: false,
-        //         errMsg: errorMsg || Intl.get('failed.get.all.leave.apply', '获取全部出差申请失败')
-        //     });
-        // });
     };
     this.getSelfApplyList = function() {
         this.dispatch({error: false, loading: true});

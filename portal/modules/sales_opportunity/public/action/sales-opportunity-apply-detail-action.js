@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2018/9/28.
  */
 var SalesOpportunityApplyAjax = require('../ajax/sales-opportunity-apply-ajax');
+var SalesOpportunityApplyUtils = require('../utils/sales-oppotunity-utils');
 import UserData from 'PUB_DIR/sources/user-data';
 function ApplyViewDetailActions() {
     this.generateActions(
@@ -19,9 +20,9 @@ function ApplyViewDetailActions() {
     );
 
     //获取审批单详情
-    this.getSalesOpportunityApplyDetailById = function(queryObj) {
-        SalesOpportunityApplyAjax.getSalesOpportunityApplyDetailById(queryObj).then((detail) => {
-            this.dispatch({loading: false, error: false, detail: detail});
+    this.getSalesOpportunityApplyDetailById = function(queryObj, status) {
+        SalesOpportunityApplyAjax.getSalesOpportunityApplyDetailById(queryObj, status).then((detail) => {
+            this.dispatch({loading: false, error: false, detail: detail, status: status});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
@@ -58,8 +59,6 @@ function ApplyViewDetailActions() {
                     comment: replyData.comment || '',
                     comment_time: replyTime
                 };
-                // //滚动条定位到最后
-                // AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM);
                 this.dispatch({loading: false, error: false, reply: replyItem});
             }
         }, (errorMsg) => {
@@ -73,12 +72,12 @@ function ApplyViewDetailActions() {
         SalesOpportunityApplyAjax.approveSalesOpportunityApplyPassOrReject(obj).then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
             //更新选中的申请单类型
-            // LeaveApplyUtil.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
+            SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
             //刷新用户审批未处理数
             // updateUnapprovedCount();
         }, (errorMsg) => {
             //更新选中的申请单类型
-            // LeaveApplyUtil.emitter.emit('updateSelectedItem', {status: 'error'});
+            SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
