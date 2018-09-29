@@ -14,8 +14,8 @@ module.exports = {
     title: '线索分析',
     menuIndex: 4,
     privileges: [
-        'CUSTOMER_ANALYSIS_COMMON',
-        'CUSTOMER_ANALYSIS_MANAGER',
+        'CRM_CLUE_STATISTICAL_SELF',
+        'CRM_CLUE_STATISTICAL_ALL',
     ],
     pages,
 };
