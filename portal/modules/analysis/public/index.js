@@ -116,10 +116,10 @@ class CurtaoAnalysis extends React.Component {
     renderMenu() {
         return (
             <div className="analysis-menu">
-                <Collapse defaultActiveKey='0'>
-                    {this.state.groups.map((group, groupIndex) => (
+                <Collapse accordion bordered={false} defaultActiveKey='0'>
+                    {_.map(this.state.groups, (group, groupIndex) => (
                         <Panel header={group.title} key={groupIndex}>
-                            {group.pages.map((page, pageIndex) => {
+                            {_.map(group.pages, (page, pageIndex) => {
                                 const menuIndex = [groupIndex, pageIndex].join();
                                 const className = menuIndex === this.state.currentMenuIndex ? 'active' : '';
 
@@ -240,10 +240,10 @@ class CurtaoAnalysis extends React.Component {
             <div className='curtao-analysis'>
                 <TopBar />
                 <Row>
-                    <Col span={6}>
+                    <Col span={4}>
                         {this.renderMenu()}
                     </Col>
-                    <Col span={18}>
+                    <Col span={20}>
                         {this.state.isAppSelectorShow ? (
                             <div className="page-top-bar">
                                 <AppSelector storedAppIdKey={STORED_APP_ID_KEY} defaultValue={defaultAppId}/>
