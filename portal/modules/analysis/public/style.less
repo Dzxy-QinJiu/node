@@ -20,8 +20,17 @@
         .active {
             color: blue;
         }
-        .ant-collapse-header {
-            font-size: 15px;
+        .ant-collapse {
+            .ant-collapse-header {
+                font-size: 15px;
+            }
+            .ant-collapse-item {
+                border-bottom: none;
+                .ant-collapse-content {
+                    border-top: none;
+                    padding-left: 32px;
+                }
+            }
         }
     }
     .page-top-bar {
