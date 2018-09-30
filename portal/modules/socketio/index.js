@@ -228,7 +228,7 @@ function systemNoticeListener(notice) {
 function applyUnreadReplyListener(unreadList) {
     // pushLogger.debug('后端推送的申请审批未读回复数据:' + JSON.stringify(unreadList));
     if (_.get(unreadList, '[0]')) {
-        _.each(unreadReply => {
+        _.each(unreadList, unreadReply => {
             if (unreadReply.member_id) {
                 //找到消息接收者对应的socket，将数据推送到浏览器
                 emitMsgBySocket(unreadReply.member_id, 'apply_unread_reply', pushDto.unreadReplyToFrontend(unreadReply));
