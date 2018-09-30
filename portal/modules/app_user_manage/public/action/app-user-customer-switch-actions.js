@@ -40,7 +40,7 @@ function AppUserCustomerSwitchAction() {
     //获取客户基本信息
     this.getCustomerInfo = function(customerId) {
         var _this = this;
-        crmAjax.queryCustomer({id: customerId}, 1, 1).then(function(data) {
+        crmAjax.queryCustomer({data: JSON.stringify({id: customerId})}, 1).then(function(data) {
             var customerInfo = {};
             if (data && $.isArray(data.result) && data.result[0]) {
                 customerInfo = data.result[0];

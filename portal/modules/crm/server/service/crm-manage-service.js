@@ -271,7 +271,7 @@ exports.queryCustomer = function(req, res) {
             baseUrl = crmRestApis.query;
         }
         url = baseUrl + '/' + req.params.pageSize + '/' + req.params.sortFeild + '/' + req.params.sortOrder;
-        var query = JSON.parse(req.body.queryObj);
+        var query = req.body.queryObj ? JSON.parse(req.body.queryObj) : {};
         url += '?cursor=' + query.cursor;
         if (query.id) {
             url += '&id=' + query.id;

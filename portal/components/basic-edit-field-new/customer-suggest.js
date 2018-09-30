@@ -160,12 +160,6 @@ class CustomerSuggest extends React.Component {
         }
         this.suggestTimer = setTimeout(() => {
             let condition = {name: value};
-            let rangeParams = [{
-                from: '',
-                to: '',
-                type: 'time',
-                name: 'start_time'
-            }];
             let queryObj = {
                 total_size: 0,
                 cursor: true,
@@ -175,7 +169,11 @@ class CustomerSuggest extends React.Component {
                 field: 'start_time',
                 order: 'descend'
             };
-            crmCustomerAjax.queryCustomer(condition,rangeParams,10,sorter,queryObj).then((data) => {
+            let params = {
+                data: JSON.stringify(condition),
+                queryObj: JSON.stringify(queryObj)
+            }
+            crmCustomerAjax.queryCustomer(params, 10, sorter).then((data) => {
                 var list = data.result;
                 _.forEach(list, (customerItem) => {
                     customerItem.customer_name = customerItem.name;
