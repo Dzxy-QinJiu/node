@@ -20,9 +20,8 @@ class MonthlyReport extends React.Component {
     state = {
         teamList: [],
         memberList: [],
-        selectedTeam: storageUtil.local.get(STORED_TEAM_KEY),
-        //当月的数据下月1号才能出来,所以初始默认选中月为上月而非本月
-        selectedMonth: moment().subtract(1, 'months'),
+        selectedTeam: '',
+        selectedMonth: moment(),
     };
 
     componentDidMount() {
@@ -292,6 +291,15 @@ class MonthlyReport extends React.Component {
                     value: this.getDataType(),
                     type: 'params'
                 }],
+                argCallback: (arg) => {
+                    let query = arg.query;
+
+                    //因后端统计规则原因，这个统计和其他统计不太一样，其查询区间为当月的2号到下月的1号
+                    //所以查询开始时间从当月2号开始
+                    query.start_time = moment(query.start_time).startOf('month').add(1, 'days').valueOf();
+                    //查询结束时间为下月1号
+                    query.end_time = moment(query.end_time).endOf('month').add(1, 'days').valueOf();
+                },
                 dataField: 'list',
                 processData: data => {
                     _.each(data, (item, index) => {
@@ -320,14 +328,11 @@ class MonthlyReport extends React.Component {
             },
             {
                 name: 'start_time',
-                //当月的数据下月1号才能出来
-                //所以查询开始时间从当月2号开始
-                value: this.state.selectedMonth.clone().startOf('month').add(1, 'days').valueOf(),
+                value: moment().startOf('month').valueOf(),
             },
             {
                 name: 'end_time',
-                //查询结束时间为下月1号
-                value: this.state.selectedMonth.clone().endOf('month').add(1, 'days').valueOf(),
+                value: moment().valueOf(),
             },
             {
                 name: 'team_ids',
@@ -373,10 +378,10 @@ class MonthlyReport extends React.Component {
                 ) : null}
 
                 <MonthPicker
-                    defaultValue={this.state.selectedMonth}
+                    defaultValue={moment()}
                     onChange={this.onDateChange}
                     allowClear={false}
-                    disabledDate={current => current && current > moment().startOf('month')}
+                    disabledDate={current => current && current > moment()}
                 />
             </div>
         );
@@ -395,11 +400,8 @@ class MonthlyReport extends React.Component {
     onDateChange = (date) => {
         this.setState({selectedMonth: date});
 
-        //当月的数据下月1号才能出来
-        //所以查询开始时间从当月2号开始
-        const startTime = date.clone().startOf('month').add(1, 'days').valueOf();
-        //查询结束时间为下月1号
-        const endTime = date.clone().endOf('month').add(1, 'days').valueOf();
+        const startTime = date.startOf('month').valueOf();
+        const endTime = date.endOf('month').valueOf();
 
         dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
     };
