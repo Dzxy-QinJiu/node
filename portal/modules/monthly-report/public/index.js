@@ -291,6 +291,15 @@ class MonthlyReport extends React.Component {
                     value: this.getDataType(),
                     type: 'params'
                 }],
+                argCallback: (arg) => {
+                    let query = arg.query;
+
+                    //因后端统计规则原因，这个统计和其他统计不太一样，其查询区间为当月的2号到下月的1号
+                    //所以查询开始时间从当月2号开始
+                    query.start_time = moment(query.start_time).startOf('month').add(1, 'days').valueOf();
+                    //查询结束时间为下月1号
+                    query.end_time = moment(query.end_time).endOf('month').add(1, 'days').valueOf();
+                },
                 dataField: 'list',
                 processData: data => {
                     _.each(data, (item, index) => {
