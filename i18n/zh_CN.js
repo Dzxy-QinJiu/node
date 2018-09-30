@@ -2653,12 +2653,11 @@ var zh_CN = {
     'user.detail.analysis.tip.fresh': '距离最近的登录时间。该分项在总分钟占比20%',
     'user.detail.analysis.tip.historyActivity': '总活跃天数/开通的总天数。该分项在总分钟占比10%',
     'user.detail.analysis.tip.historyFresh': '总在线分钟数/开通总分钟数。该分项在总分钟占比10%',
-    'menu.leave_apply': '出差审批',
     'menu.leave.apply.list.management': '申请审批',
     'failed.get.all.leave.apply': '获取全部出差申请失败',
     'failed.get.self.leave.apply': '获取我的出差申请失败',
     'failed.get.worklist.leave.apply': '获取由我审批的出差申请失败',
-    'add.leave.apply': '添加出差申请',
+    'add.leave.apply': '添加申请',
     'failed.add.apply.list': '添加出差申请失败',
     'leave.apply.add.leave.apply': '出差申请',
     'user.info.binding.email': '绑定邮箱',
@@ -2690,14 +2689,15 @@ var zh_CN = {
     'leave.apply.sales.oppotunity': '销售机会',
     'leave.apply.leave.application': '请假申请',
     'leave.apply.my.worklist.apply': '待我审批',
-    'leave.apply.add.sales.opportunity': '添加销售机会申请',
     'leave.apply.sales.opportunity.application': '销售机会申请',
     'leave.apply.inspect.success.time': '预计成交时间',
     'leave.apply.buy.apps': '产品',
     'leave.apply.fill.in.remarks': '请填写销售机会备注',
     'leave.apply.buget.count': '预算',
     'leave.apply.select.atleast.one.app': '请选择至少一个产品',
-    'leave.apply.select.product': '请选择产品'
+    'leave.apply.select.product': '请选择产品',
+    'leave.apply.fill.in.start.time': '请填写开始时间',
+    'leave.apply.fill.in.end.time': '请填写结束时间'
 
 };
 export default zh_CN;

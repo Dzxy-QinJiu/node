@@ -14,30 +14,16 @@ class ApplyLoading extends React.Component {
         };
     }
 
-
-    componentDidMount = () => {
-
-    };
-    componentWillReceiveProps = (nextProps) => {
-
-    };
-    componentWillUnmount = () => {
-
-    };
-
     render(){
-        if (this.props.showLoading) {
-            return (<div className="app_user_manage_detail apply-loading-container">
-                <Spinner/></div>);
-        }
-        return null;
+        return (<div className="app_user_manage_detail apply-loading-container">
+            <Spinner/></div>);
     }
 }
 ApplyLoading.defaultProps = {
-    showLoading: false
+
 };
 ApplyLoading.propTypes = {
-    showLoading: PropTypes.boolean,
+
 };
 
 export default ApplyLoading;

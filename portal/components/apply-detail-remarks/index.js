@@ -5,6 +5,7 @@
  */
 import {Input, Icon, Alert} from 'antd';
 require('./index.less');
+import {getApplyResultDscr} from 'PUB_DIR/sources/utils/common-method-util';
 class ApplyDetailRemarks extends React.Component {
     constructor(props) {
         super(props);
@@ -14,19 +15,12 @@ class ApplyDetailRemarks extends React.Component {
             replyFormInfo: this.props.replyFormInfo
         };
     }
-
-    componentDidMount = () => {
-
-    };
     componentWillReceiveProps = (nextProps) => {
         this.setState({
             detailInfo: nextProps.detailInfo,
             replyListInfo: nextProps.replyListInfo,
             replyFormInfo: nextProps.replyFormInfo
         });
-    };
-    componentWillUnmount = () => {
-
     };
     //渲染回复列表
     renderReplyList() {
@@ -55,7 +49,7 @@ class ApplyDetailRemarks extends React.Component {
                             <li key={index} className="apply-info-label">
                                 <span className="user-info-label">{replyItem.user_name}:</span>
                                 <span className="user-info-text">
-                                    {replyItem.comment ? replyItem.comment : this.props.getApplyResultDscr(replyItem)}</span>
+                                    {replyItem.comment ? replyItem.comment : getApplyResultDscr(replyItem)}</span>
                                 <span className="user-info-label reply-date-text">{
                                     moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)}</span>
                             </li>);
@@ -112,9 +106,6 @@ ApplyDetailRemarks.defaultProps = {
     refreshReplyList: function() {
 
     },
-    getApplyResultDscr: function() {
-
-    },
     addReply: function() {
 
     },
@@ -127,7 +118,6 @@ ApplyDetailRemarks.propTypes = {
     replyListInfo: PropTypes.object,
     replyFormInfo: PropTypes.object,
     refreshReplyList: PropTypes.func,
-    getApplyResultDscr: PropTypes.func,
     addReply: PropTypes.func,
     commentInputChange: PropTypes.func,
 };

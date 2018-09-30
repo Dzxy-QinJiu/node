@@ -48,22 +48,6 @@ BusinessApplyStore.prototype.setInitState = function() {
     //筛选类别 'all'(全部) pass(已通过) reject(已驳回)  ongoing(待审批)
     this.applyListType = 'all';
 };
-// BusinessApplyStore.prototype.getAllApplyList = function(data) {
-//     if (data.loading){
-//         this.isLoadingAllApply = true;
-//         this.allApplyErrMsg = '';
-//         this.allApplyList = [];
-//     }else if (data.error){
-//         this.isLoadingAllApply = false;
-//         this.allApplyErrMsg = data.errMsg;
-//         this.allApplyList = [];
-//     }else{
-//         this.isLoadingAllApply = false;
-//         this.allApplyErrMsg = '';
-//         this.allApplyList = data.list;
-//     }
-//
-// };
 //清空数据
 BusinessApplyStore.prototype.clearData = function() {
     this.applyListObj.list = [];
@@ -123,8 +107,6 @@ BusinessApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {
 BusinessApplyStore.prototype.changeApplyListType = function(type) {
     this.applyListType = type;
     this.lastApplyId = '';
-    // this.showUpdateTip = false;
-    // this.isCheckUnreadApplyList = false;
 };
 BusinessApplyStore.prototype.changeApplyAgreeStatus = function(message) {
     this.selectedDetailItem.status = message.agree;

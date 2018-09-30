@@ -9,18 +9,6 @@ class ApplyDetailInfo extends React.Component {
         super(props);
         this.state = {};
     }
-
-
-    componentDidMount = () => {
-
-    };
-    componentWillReceiveProps = (nextProps) => {
-
-    };
-    componentWillUnmount = () => {
-
-    };
-
     render() {
         return (
             <div className="apply-detail-customer apply-detail-info">
@@ -36,14 +24,9 @@ class ApplyDetailInfo extends React.Component {
                                     <span className="user-info-label">
                                         {InfoItem.label}:
                                     </span>
-                                    {InfoItem.canClick ? <a href="javascript:void(0)"
-                                        onClick={InfoItem.handleClick}
-                                    >
-                                        {InfoItem.text}
-                                    </a> : <span className="user-info-text" >
+                                    {_.isFunction(InfoItem.renderText) ? InfoItem.renderText() : <span className="user-info-text" >
                                         {InfoItem.text}
                                     </span>}
-
                                 </div>
                             );
                         })}

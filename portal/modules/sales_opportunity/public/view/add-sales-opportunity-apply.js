@@ -28,6 +28,10 @@ const DELAY_TIME_RANGE = {
     CLOSE_RANGE: 500
 };
 import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+const ValidateRule = require('PUB_DIR/sources/utils/validate-rule');
+import { num as antUtilsNum } from 'ant-utils';
+const parseAmount = antUtilsNum.parseAmount;
+const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
 class AddSalesOpportunityApply extends React.Component {
     constructor(props) {
         super(props);
@@ -51,13 +55,6 @@ class AddSalesOpportunityApply extends React.Component {
         //获取应用列表
         this.getAppList();
     }
-
-    //获取全部请假申请
-
-    componentWillUnmount() {
-
-    }
-
     componentDidUpdate() {
         this.addLabelRequiredCls();
     }
@@ -67,13 +64,9 @@ class AddSalesOpportunityApply extends React.Component {
             $('.add-leave-apply-form-wrap form .require-item label').addClass('ant-form-item-required');
         }
     }
-
-
     hideSalesOpportunityApplyAddForm = () => {
         this.props.hideSalesOpportunityApplyAddForm();
     };
-
-
     //去掉保存后提示信息
     hideSaveTooltip = () => {
         this.setState({
@@ -120,8 +113,8 @@ class AddSalesOpportunityApply extends React.Component {
                     this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
                     setTimeout(() => {
                         this.hideSalesOpportunityApplyAddForm();
-                        //todo 添加完后的处理
-                        // SalesOpportunityApplyAction.afterAddApplySuccess(data);
+                        //添加完后的处理
+                        SalesOpportunityApplyAction.afterAddApplySuccess(data);
                     }, DELAY_TIME_RANGE.CLOSE_RANGE);
                 },
                 error: (errorMsg) => {
@@ -178,16 +171,6 @@ class AddSalesOpportunityApply extends React.Component {
         },() => {
             this.props.form.validateFields(['customer'], {force: true});
         });
-    };
-
-    checkBudget = (rule, value, callback) => {
-        if (!value) {//rules中有require：true的验证，所以此处不要验证输入内容为空的情况（避免与reuqire:true重复）
-            callback();
-        } else if (value.match(/^\d+(\.\d+)?$/)){
-            callback();
-        } else {
-            callback(new Error(Intl.get('crm.157', '预算金额必须为数字')));
-        }
     };
 
     render() {
@@ -257,7 +240,11 @@ class AddSalesOpportunityApply extends React.Component {
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('budget', {
-                                            rules: [{required: true,message: Intl.get('crm.order.budget.input', '请输入预算金额')},{validator: _this.checkBudget}],
+                                            rules: [ValidateRule.getNumberValidateRule(),{required: true,message: Intl.get('crm.order.budget.input', '请输入预算金额')}],
+                                            getValueFromEvent: (event) => {
+                                                // 先remove是处理已经带着逗号的数字，parse后会有多个逗号的问题
+                                                return parseAmount(removeCommaFromNum(event.target.value));
+                                            },
                                             initialValue: ''
                                         })(
                                             <Input
@@ -291,7 +278,7 @@ class AddSalesOpportunityApply extends React.Component {
                                             )}
                                     </FormItem>
                                     <FormItem
-                                        className="form-item-label require-item"
+                                        className="form-item-label require-item add-apply-time"
                                         label={Intl.get('leave.apply.inspect.success.time', '预计成交时间')}
                                         {...formItemLayout}
                                     >

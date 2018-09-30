@@ -381,3 +381,15 @@ exports.getApplyTopicText = function(obj){
         return Intl.get('leave.apply.sales.opportunity.application', '销售机会申请');
     }
 };
+exports.getApplyResultDscr = function(detailInfoObj) {
+    let resultDscr = '';
+    switch (detailInfoObj.status) {
+        case 'pass':
+            resultDscr = Intl.get('user.apply.detail.pass', '通过申请');
+            break;
+        case 'reject':
+            resultDscr = Intl.get('user.apply.detail.reject', '驳回申请');
+            break;
+    }
+    return resultDscr;
+};

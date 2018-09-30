@@ -12,22 +12,7 @@ class ApplyDetailCustomer extends React.Component {
 
         };
     }
-
-    onStoreChange = () => {
-
-    };
-    componentDidMount = () => {
-
-    };
-    componentWillReceiveProps = (nextProps) => {
-
-    };
-    componentWillUnmount = () => {
-
-    };
-
     render(){
-
         return (
             <div className="apply-detail-customer apply-detail-info">
                 <div className="leave-detail-icon-block">
@@ -44,7 +29,7 @@ class ApplyDetailCustomer extends React.Component {
                                 </tr>
                                 {
                                     this.props.data.map((customer,index) => {
-                                        return ( <tr key={index}>
+                                        return (<tr key={index}>
                                             {this.props.columns.map((column, index) => {
                                                 return (
                                                     <td className={column.className} key={index}>

@@ -5,7 +5,6 @@
  */
 var applyBusinessDetailStore = require('../store/apply-business-detail-store');
 var ApplyViewDetailActions = require('../action/apply-view-detail-action');
-var Spinner = require('CMP_DIR/spinner');
 import Trace from 'LIB_DIR/trace';
 import {Alert, Icon, Input, Row, Col, Button} from 'antd';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -13,16 +12,14 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 require('../css/business-apply-detail.less');
-import {Modal} from 'react-bootstrap';
 import ApplyDetailRemarks from 'CMP_DIR/apply-detail-remarks';
 import ApplyDetailInfo from 'CMP_DIR/apply-detail-info';
 import ApplyDetailCustomer from 'CMP_DIR/apply-detail-customer';
-import ApplyLoading from 'CMP_DIR/apply-loading';
-import ApplyError from 'CMP_DIR/apply-error';
-import ApplyNoData from 'CMP_DIR/apply-no-data';
+import ApplyDetailStatus from 'CMP_DIR/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
+import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyTopicText,getApplyResultDscr} from 'PUB_DIR/sources/utils/common-method-util';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -210,6 +207,7 @@ class ApplyViewDetail extends React.Component {
             />
         );
     }
+
     //添加一条回复
     addReply = (e) => {
         Trace.traceEvent(e, '点击回复按钮');
@@ -241,23 +239,6 @@ class ApplyViewDetail extends React.Component {
             ApplyViewDetailActions.hideReplyCommentEmptyError();
         }
     };
-
-    getNoSecondTimeStr(time) {
-        return time ? moment(time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) : '';
-    }
-
-    getApplyResultDscr(detailInfoObj) {
-        let resultDscr = '';
-        switch (detailInfoObj.status) {
-            case 'pass':
-                resultDscr = Intl.get('user.apply.detail.pass', '通过申请');
-                break;
-            case 'reject':
-                resultDscr = Intl.get('user.apply.detail.reject', '驳回申请');
-                break;
-        }
-        return resultDscr;
-    }
 
     viewApprovalResult = (e) => {
         Trace.traceEvent(e, '查看审批结果');
@@ -292,43 +273,19 @@ class ApplyViewDetail extends React.Component {
         var detailInfoObj = this.state.detailInfoObj.info;
         //是否审批
         let isConsumed = detailInfoObj.status === 'pass' || detailInfoObj.status === 'reject';
+        var userName = _.last(_.get(detailInfoObj, 'approve_details')) ? _.last(_.get(detailInfoObj, 'approve_details')).user_name : '';
+        var approvalDes = getApplyResultDscr(detailInfoObj);
         return (
-            <div className="approval_block">
-                <Row className="approval_person clearfix">
-                    <Col span={10}>
-                        <span className="approval-info-label">
-                            {this.getNoSecondTimeStr(detailInfoObj.create_time)}
-                        </span>
-                        <span className="approval-info-label">
-                            {_.get(detailInfoObj, 'applicant.user_name')}
-                            {Intl.get('crm.109', '申请')}
-                        </span>
-                    </Col>
-                    <Col span={14}>
-                        {isConsumed ? (
-                            <div className="pull-right">
-                                <span className="approval-info-label">
-                                    {this.getNoSecondTimeStr(detailInfoObj.update_time)}
-                                </span>
-                                <span className="approval-info-label">
-                                    {_.last(_.get(detailInfoObj, 'approve_details')) ? _.last(_.get(detailInfoObj, 'approve_details')).user_name : ''}
-                                    {this.getApplyResultDscr(detailInfoObj)}
-                                </span>
-                            </div>) : (
-                            detailInfoObj.showApproveBtn ? <div className="pull-right">
-                                <Button type="primary" className="btn-primary-sure" size="small"
-                                    onClick={this.submitApprovalForm.bind(this, 'pass')}>
-                                    {Intl.get('user.apply.detail.button.pass', '通过')}
-                                </Button>
-                                <Button type="primary" className="btn-primary-sure" size="small"
-                                    onClick={this.submitApprovalForm.bind(this, 'reject')}>
-                                    {Intl.get('common.apply.reject', '驳回')}
-                                </Button>
-                            </div> : null
-                        )}
-                    </Col>
-                </Row>
-            </div>);
+            <ApplyDetailBottom
+                create_time={detailInfoObj.create_time}
+                applicantText={_.get(detailInfoObj, 'applicant.user_name') + Intl.get('crm.109', '申请')}
+                isConsumed={isConsumed}
+                update_time={detailInfoObj.update_time}
+                approvalText={userName + approvalDes}
+                showApproveBtn={detailInfoObj.showApproveBtn}
+                submitApprovalForm={this.submitApprovalForm}
+            />
+        );
     }
 
     //渲染申请单详情
@@ -357,7 +314,6 @@ class ApplyViewDetail extends React.Component {
                             replyListInfo={this.state.replyListInfo}
                             replyFormInfo={this.state.replyFormInfo}
                             refreshReplyList={this.refreshReplyList}
-                            getApplyResultDscr={this.getApplyResultDscr}
                             addReply={this.addReply}
                             commentInputChange={this.commentInputChange}
                         />
@@ -376,15 +332,11 @@ class ApplyViewDetail extends React.Component {
         }
         return (
             <div className='col-md-8 leave_manage_apply_detail_wrap' data-tracename="出差审批详情界面">
-                <ApplyLoading
+                <ApplyDetailStatus
                     showLoading={this.state.detailInfoObj.loadingResult === 'loading'}
-                />
-                <ApplyError
                     showErrTip={this.state.detailInfoObj.loadingResult === 'error'}
                     errMsg={this.state.detailInfoObj.errorMsg}
                     retryFetchDetail={this.retryFetchDetail}
-                />
-                <ApplyNoData
                     showNoData={this.props.showNoData}
                 />
                 {this.renderApplyDetailInfo()}

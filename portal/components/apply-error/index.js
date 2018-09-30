@@ -8,55 +8,36 @@ require('./index.less');
 class ApplyError extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-
-
-        };
+        this.state = {};
     }
+    render() {
+        var retry = (
+            <span>
+                {this.props.errMsg}，<a href="javascript:void(0)"
+                    onClick={this.props.retryFetchDetail}>
+                    {Intl.get('common.retry', '重试')}
+                </a>
+            </span>
+        );
+        return (
+            <div className="app_user_manage_detail apply-error-container">
+                <Alert
+                    message={retry}
+                    type="error"
+                    showIcon={true}
+                />
+            </div>
+        );
 
-
-    componentDidMount = () => {
-
-    };
-    componentWillReceiveProps = (nextProps) => {
-
-    };
-    componentWillUnmount = () => {
-
-    };
-
-    render(){
-        if (this.props.showErrTip) {
-            var retry = (
-                <span>
-                    {this.props.errMsg}，<a href="javascript:void(0)"
-                        onClick={this.props.retryFetchDetail}>
-                        {Intl.get('common.retry', '重试')}
-                    </a>
-                </span>
-            );
-            return (
-                <div className="app_user_manage_detail apply-error-container">
-                    <Alert
-                        message={retry}
-                        type="error"
-                        showIcon={true}
-                    />
-                </div>
-            );
-        }
-        return null;
     }
 }
 ApplyError.defaultProps = {
-    showErrTip: false,
     errMsg: '',
-    retryFetchDetail: function(){
+    retryFetchDetail: function() {
 
     }
 };
 ApplyError.propTypes = {
-    showErrTip: PropTypes.boolean,
     errMsg: PropTypes.string,
     retryFetchDetail: PropTypes.func,
 };

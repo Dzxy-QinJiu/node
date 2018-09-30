@@ -225,7 +225,7 @@ class BusinessApplyManagement extends React.Component {
                             getApplyListType= {this.getApplyListType}
                             addPrivilege='BUSINESS_TRIP_APPLY'
                             showAddApplyPanel={this.showAddApplyPanel}
-                            addApplyMessage={Intl.get('add.leave.apply', '添加出差申请')}
+                            addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
                             menuList={selectMenuList}
                         />
                         {this.renderApplyListError()}

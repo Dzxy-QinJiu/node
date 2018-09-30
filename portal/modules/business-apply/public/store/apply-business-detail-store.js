@@ -69,10 +69,6 @@ ApplyViewDetailStore.prototype.setInitialData = function(obj) {
     this.setInitState();
     //指定详情条目
     this.selectedDetailItem = obj;
-    //设置底部类型
-    // this.setBottomDisplayType();
-    //是否是展开状态
-    // this.applyIsExpanded = false;
 };
 //获取审批详情
 ApplyViewDetailStore.prototype.getBusinessApplyDetailById = function(obj) {
@@ -82,7 +78,7 @@ ApplyViewDetailStore.prototype.getBusinessApplyDetailById = function(obj) {
         this.detailInfoObj.errorMsg = obj.errorMsg;
     } else {
         this.detailInfoObj.loadingResult = '';
-        //todo 是否展示通过和驳回的按钮
+        //是否展示通过和驳回的按钮
         this.detailInfoObj.info = obj.detail;
         if (obj.status){
             //审批通过或者驳回后立刻查询状态还没有立刻改变
@@ -129,9 +125,6 @@ ApplyViewDetailStore.prototype.hideReplyCommentEmptyError = function() {
 };
 //显示回复输入框为空的错误
 ApplyViewDetailStore.prototype.showReplyCommentEmptyError = function() {
-    // if(this.replyFormInfo.result === 'success') {
-    //     return;
-    // }
     this.replyFormInfo.result = 'error';
     this.replyFormInfo.errorMsg = Intl.get('user.apply.reply.no.content', '请填写回复内容');
 };

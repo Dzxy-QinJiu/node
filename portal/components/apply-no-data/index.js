@@ -7,41 +7,23 @@ import {Alert} from 'antd';
 class ApplyNoData extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-
-
-        };
+        this.state = {};
     }
-    componentDidMount = () => {
+    render() {
 
-    };
-    componentWillReceiveProps = (nextProps) => {
+        return (
+            <div className="app_user_manage_detail app_user_manage_detail_error">
+                <Alert
+                    message={Intl.get('common.no.data', '暂无数据')}
+                    type="info"
+                    showIcon={true}
+                />
+            </div>
+        );
 
-    };
-    componentWillUnmount = () => {
-
-    };
-
-    render(){
-        if (this.props.showNoData) {
-            return (
-                <div className="app_user_manage_detail app_user_manage_detail_error">
-                    <Alert
-                        message={Intl.get('common.no.data', '暂无数据')}
-                        type="info"
-                        showIcon={true}
-                    />
-                </div>
-            );
-        }
-        return null;
     }
 }
-ApplyNoData.defaultProps = {
-    showNoData: false
-};
-ApplyNoData.propTypes = {
-    showNoData: PropTypes.boolean,
-};
+ApplyNoData.defaultProps = {};
+ApplyNoData.propTypes = {};
 
 export default ApplyNoData;

@@ -43,7 +43,6 @@ class SalesOpportunityApplyManagement extends React.Component {
         // this.getAllSalesOpportunityApplyList();
         // }
         SalesOpportunityApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
-
     }
 
     updateSelectedItem = (message) => {
@@ -232,7 +231,7 @@ class SalesOpportunityApplyManagement extends React.Component {
                             getApplyListType= {this.getApplyListType}
                             addPrivilege='MEMBER_BUSINESSOPPO_APPLY'
                             showAddApplyPanel={this.showAddApplyPanel}
-                            addApplyMessage={Intl.get('leave.apply.add.sales.opportunity','添加销售机会申请')}
+                            addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
                             menuList={selectMenuList}
                         />
                         {this.renderApplyListError()}

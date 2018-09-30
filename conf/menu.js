@@ -386,11 +386,6 @@ class LeftMenuClass {
                 //有这个权限，才显示入口图标
                 showPrivileges: ['MEMBER_SCHEDULE_MANAGE']
             },
-
-
-
-
-
             {
                 id: 'APPLICATION_APPLY_MANAGEMENT',
                 name: backendIntl.get('menu.leave.apply.list.management','申请审批'),

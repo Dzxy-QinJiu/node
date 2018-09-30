@@ -15,7 +15,6 @@ const FORMLAYOUT = {
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 var user = require('../../../../public/sources/user-data').getUserData();
-const ADD_LEAVE_CUSTOMER_SUGGEST_ID = 'add-leave-customer-suggest-wrap';
 const DEFAULTTIMETYPE = 'day';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
@@ -53,18 +52,8 @@ class AddBusinessApply extends React.Component {
         };
     }
 
-    onStoreChange = () => {
-
-    };
-
     componentDidMount() {
         this.addLabelRequiredCls();
-    }
-
-    //获取全部请假申请
-
-    componentWillUnmount() {
-
     }
 
     componentDidUpdate() {
@@ -136,7 +125,7 @@ class AddBusinessApply extends React.Component {
             if (values.address) {
                 formData.customers[0].address = values.address;
             }
-            _.forEach(formData.customers, (customerItem,index) => {
+            _.forEach(formData.customers, (customerItem, index) => {
                 if (customerItem['remarks']) {
                     formData.reason += customerItem['remarks'];
                 }
@@ -152,8 +141,8 @@ class AddBusinessApply extends React.Component {
                     this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
                     setTimeout(() => {
                         this.hideBusinessApplyAddForm();
-                        //todo 添加完后的处理
-                        // BusinessApplyAction.afterAddApplySuccess(data);
+                        //添加完后的处理
+                        BusinessApplyAction.afterAddApplySuccess(data);
                     }, DELAY_TIME_RANGE.CLOSE_RANGE);
                 },
                 error: (errorMsg) => {
@@ -238,10 +227,11 @@ class AddBusinessApply extends React.Component {
         formData.customers[0].county = addressObj.countyName || '';
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div .ant-form-item'), '选择地址');
     };
+    //搜索不到客户的时候，隐藏掉客户必填的错误信息提示
     hideCustomerRequiredTip = (flag) => {
         this.setState({
             hideCustomerRequiredTip: flag
-        },() => {
+        }, () => {
             this.props.form.validateFields(['leave_for_customer'], {force: true});
         });
     };
@@ -278,15 +268,16 @@ class AddBusinessApply extends React.Component {
                     <div className="add-leave-apply-form-wrap" style={{'height': divHeight}}>
                         <GeminiScrollbar>
                             <div className="add-leave-form">
-                                <Form layout='horizontal' className="sales-clue-form" id="leave-apply-form">
+                                <Form layout='horizontal' id="leave-apply-form">
                                     <FormItem
-                                        className="form-item-label"
+                                        className="form-item-label add-apply-time"
                                         label={Intl.get('contract.120', '开始时间')}
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('begin_time', {
                                             rules: [{
                                                 required: true,
+                                                message: Intl.get('leave.apply.fill.in.start.time','请填写开始时间')
                                             }, {validator: _this.validateStartAndEndTime('begin_time')}],
                                             initialValue: moment()
                                         })(
@@ -298,13 +289,14 @@ class AddBusinessApply extends React.Component {
                                         )}
                                     </FormItem>
                                     <FormItem
-                                        className="form-item-label"
+                                        className="form-item-label add-apply-time"
                                         label={Intl.get('contract.105', '结束时间')}
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('end_time', {
                                             rules: [{
                                                 required: true,
+                                                message: Intl.get('leave.apply.fill.in.end.time', '请填写结束时间')
                                             }, {validator: _this.validateStartAndEndTime('end_time')}],
                                             initialValue: moment()
                                         })(
@@ -359,7 +351,8 @@ class AddBusinessApply extends React.Component {
                                         colon={false}
                                         label={Intl.get('crm.96', '地域')}
                                         placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
-                                        provName={formData.customers[0].province} cityName={formData.customers[0].city}
+                                        provName={formData.customers[0].province}
+                                        cityName={formData.customers[0].city}
                                         countyName={formData.customers[0].county}
                                         updateLocation={this.updateLocation}/>
                                     <FormItem
