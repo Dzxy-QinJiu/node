@@ -116,7 +116,7 @@ class CurtaoAnalysis extends React.Component {
     renderMenu() {
         return (
             <div className="analysis-menu">
-                <Collapse accordion defaultActiveKey='0'>
+                <Collapse defaultActiveKey='0'>
                     {this.state.groups.map((group, groupIndex) => (
                         <Panel header={group.title} key={groupIndex}>
                             {group.pages.map((page, pageIndex) => {
