@@ -1,0 +1,74 @@
+.modal-backdrop, .modal {
+  position: absolute;
+}
+.modal-dialog .modal-content {
+  box-shadow: none !important;
+}
+.modal-content {
+  box-shadow: none;
+}
+.approval_loading {
+  p {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 16px;
+  }
+  .load8 {
+    transform: scale(0.5, 0.5);
+    .loader8 {
+      border-left-color: #394144;
+    }
+  }
+
+}
+.approval_result {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 2;
+  background: #fff;
+  .approval_result_wrap {
+    width: 300px;
+    height: 227px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+    text-align: center;
+    padding: 8px 0 0 0;
+    z-index: 10;
+    .bgimg {
+      width: 80px;
+      height: 83px;
+      margin: 0 auto;
+      background: transparent url("../../static/images/approval_success.png") 0 0;
+    }
+    .bgimg.error {
+      background: transparent url("../../static/images/approval_error.png") 0 0;
+    }
+    p {
+      line-height: 28px;
+      color: #b8bdc0;
+      font-size: 20px;
+      margin-top: 23px;
+      margin-bottom: 27px;
+    }
+    .ant-btn-ghost {
+      color: #b8bdc0;
+      &:hover {
+        color: #57c5f7;
+      }
+    }
+    .re_send {
+      margin-right: 23px;
+      color: #57c5f7;
+      &:hover {
+        color: darken(#57c5f7, 20%);
+      }
+    }
+  }
+}

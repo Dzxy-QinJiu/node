@@ -194,7 +194,7 @@ var config = {
         clientSecret: process.env.LOGIN_CLIENT_SECRET || '477qpz3uC5fZcaz0w1YloKWA',
         grantType: process.env.LOGIN_GRANT_TYPE || 'client_credentials'//授权类型
     },
-    //服务网关,ketao测试环境：http://172.19.103.57:9090, ketao正式：'http://gateway-ketao.antfact.com',curtao:'http://gateway.curtao.com'
+    //服务网关,测试环境：http://172.19.103.57:9090,正式：'http://gateway-ketao.antfact.com',
     gateway: getGateway() || 'http://172.19.103.57:9090',
     metricAddress: process.env.METRIC_ADDRESS,//"http://172.19.104.253:8086/oplate_web",
     loggerTag: process.env.LOGGER_TAG || 'ketao-web',//日志标签,用来区分是oplate的还是ketao的

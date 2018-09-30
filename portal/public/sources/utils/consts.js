@@ -125,7 +125,7 @@ export const TIME_RANGE_GLOBAL = {
 };
 export const clueSourceArray = [Intl.get('crm.sales.clue.baidu', '百度搜索'), Intl.get('crm.sales.clue.weibo', '微博推广'), Intl.get('crm.sales.clue.customer.recommend', '客户推荐')];//线索来源
 export const accessChannelArray = [Intl.get('crm.sales.clue.phone', '400电话'), Intl.get('crm.sales.clue.qq', '营销QQ')];//接入渠道
-export const clueClassifyArray = [Intl.get('sales.home.customer', '客户'), Intl.get('clue.customer.classify.agend','代理商'),Intl.get('clue.customer.classify.search','学术研究')];//线索分类
+export const clueClassifyArray = [Intl.get('sales.home.customer', '客户'), Intl.get('clue.customer.classify.agend', '代理商'), Intl.get('clue.customer.classify.search', '学术研究')];//线索分类
 //销售团队中角色对应的颜色值（参照echart的颜色列表）
 export const COLOR_LIST = [
     '#33a3dc',
@@ -181,15 +181,15 @@ export const ALL_CUSTOMER_LISTS_TYPE = [
     {value: ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY, name: Intl.get('sales.frontpage.expired.not.contact', '超期未联系')},//今日到期的日程
     {
         value: ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER,
-        name: Intl.get('sales.frontpage.will.expired.try.user', '近{X}天将到期的试用客户',{X: Intl.get('user.num.ten', '十')})
+        name: Intl.get('sales.frontpage.will.expired.try.user', '近{X}天将到期的试用客户', {X: Intl.get('user.num.ten', '十')})
     },//即将到期的试用用户
     {
         value: ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER,
-        name: Intl.get('sales.frontpage.has.expired.try.user', '近{X}天已过期的试用客户',{X: Intl.get('user.num.ten', '十')})
+        name: Intl.get('sales.frontpage.has.expired.try.user', '近{X}天已过期的试用客户', {X: Intl.get('user.num.ten', '十')})
     },//已经到期的试用用户
     {
         value: ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER,
-        name: Intl.get('sales.frontpage.will.expired.assgined.user', '近{X}将到期的签约客户',{X: Intl.get('user.time.half.year1', '半年')})
+        name: Intl.get('sales.frontpage.will.expired.assgined.user', '近{X}将到期的签约客户', {X: Intl.get('user.time.half.year1', '半年')})
     },//即将到期的签约用户
     {value: ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN, name: Intl.get('sales.frontpage.login.after.stop', '停用后登录')},// 停用后登录
     {value: ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN, name: Intl.get('ketao.frontpage.focus.customer.login', '关注客户登录')},//关注客户登录
@@ -312,6 +312,25 @@ export const SPECIAL_LABEL = {
     CLUE: Intl.get('crm.sales.clue', '线索'),
     HAS_CALL_BACK: Intl.get('common.has.callback', '已回访'),
 };
+export const selectMenuList = [
+    {
+        key: 'all', value: Intl.get('user.apply.all', '全部申请'),
+    },
+    {
+        key: 'ongoing', value: Intl.get('leave.apply.my.worklist.apply', '待我审批'),
+    }
+    , {
+        key: 'pass', value: Intl.get('user.apply.pass', '已通过'),
+    }
+    , {
+        key: 'reject', value: Intl.get('user.apply.reject', '已驳回'),
+    }];
+//申请列表滚动条参数
+export const APPLY_LIST_LAYOUT_CONSTANTS = {
+    TOP_DELTA: 64 * 2,
+    BOTTOM_DELTA: 50
+};
+
 
 //多应用申请审批类型
 export const APPLY_TYPES = {

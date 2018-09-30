@@ -9,7 +9,7 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import {Button, Icon} from 'antd';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import DatePickerField from 'CMP_DIR/basic-edit-field-new/date-picker';
-import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
+import CustomerSuggest from 'MOD_DIR/app_user_manage/public/views/customer_suggest/customer_suggest';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 var clueCustomerAction = require('../../action/clue-customer-action');
 var clueCustomerAjax = require('../../ajax/clue-customer-ajax');
