@@ -43,7 +43,8 @@ module.exports = {
     //存储个人配置中的信息
     STORE_PERSONNAL_SETTING: {
         WEBSITE_CONFIG: 'websiteConfig',
-        RECENT_LOGIN_USER_SELECTED_APP_ID: 'recent-login-user-selected-app-id'
+        RECENT_LOGIN_USER_SELECTED_APP_ID: 'recent-login-user-selected-app-id',
+        CONCERN_CUSTOMER_TOP_FLAG: 'concern_customer_top_flag'//关注客户置顶的标识
     },
     MAP_COLOR: ['rgba(56, 89, 147, 1)','rgba(56, 89, 147, 0.8)','rgba(56, 89, 147, 0.6)','rgba(56, 89, 147, 0.4)','rgba(56, 89, 147, 0.2)'],
     MAP_PROVINCE: {

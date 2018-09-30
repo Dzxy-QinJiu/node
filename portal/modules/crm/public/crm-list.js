@@ -46,6 +46,7 @@ const userInfo = userData.getUserData();
 const COMMON_OTHER_ITEM = 'otherSelectedItem';
 import {OTHER_FILTER_ITEMS, DAY_TIME} from 'PUB_DIR/sources/utils/consts';
 import ShearContent from 'CMP_DIR/shear-content';
+import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
 
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -106,25 +107,27 @@ class Crm extends React.Component {
         var originCustomerListForPagination = CrmStore.getlastCurPageCustomers();
         var listForPagination = CrmStore.processForList(originCustomerListForPagination);
         var _this = this;
+        let crmStoreData = CrmStore.getState();
         return {
-            isLoading: CrmStore.getState().isLoading,//正在获取客户列表
-            getErrMsg: CrmStore.getState().getErrMsg,//获取客户列表失败时的提示
+            isLoading: crmStoreData.isLoading,//正在获取客户列表
+            getErrMsg: crmStoreData.getErrMsg,//获取客户列表失败时的提示
             customersSize: CrmStore.getCustomersLength(),
-            pageSize: CrmStore.getState().pageSize,
-            pageNum: CrmStore.getState().pageNum,
-            nextPageNum: CrmStore.getState().nextPageNum,//下次点击的页码
+            pageSize: crmStoreData.pageSize,
+            pageNum: crmStoreData.pageNum,
+            nextPageNum: crmStoreData.nextPageNum,//下次点击的页码
+            isConcernCustomerTop: crmStoreData.isConcernCustomerTop,//关注客户是否置顶
             curPageCustomers: list,//将后端返回的数据转为界面列表所需的数据
             customersBack: listForPagination,//为了便于分页保存的上一次分页成功的数据
-            pageNumBack: CrmStore.getState().pageNumBack,//为了便于分页记录上一次分页成功时的页码
+            pageNumBack: crmStoreData.pageNumBack,//为了便于分页记录上一次分页成功时的页码
             originCustomerList: originCustomerList,//后端返回的客户数据
             rightPanelIsShow: rightPanelShow,
             importAlertShow: false,//是否展示导入结果提示框
             importAlertMessage: '',//导入结果提示框内容
             importAlertType: '',//导入结果提示框类型
-            currentId: CrmStore.getState().currentId,
-            curCustomer: CrmStore.getState().curCustomer,
-            customerId: CrmStore.getState().customerId,
-            clueId: CrmStore.getState().clueId,//展示线索详情的id
+            currentId: crmStoreData.currentId,
+            curCustomer: crmStoreData.curCustomer,
+            customerId: crmStoreData.customerId,
+            clueId: crmStoreData.clueId,//展示线索详情的id
             keyword: $('.search-input').val() || '',
             isAddFlag: _this.state && _this.state.isAddFlag || false,
             batchChangeShow: _this.state && _this.state.batchChangeShow || false,
@@ -814,8 +817,30 @@ class Crm extends React.Component {
         };
         const conditionParams = (this.props.params && this.props.params.condition) || condition;
         const queryObjParams = $.extend({}, (this.props.params && this.props.params.queryObj), queryObj);
-        CrmAction.queryCustomer(conditionParams, rangParams, this.state.pageSize, this.state.sorter, queryObjParams);
-        this.setState({ rangeParams: this.state.rangParams });
+        //组合接口所需的数据结构
+        let params = {
+            data: JSON.stringify(conditionParams),
+            queryObj: JSON.stringify(queryObjParams),
+        };
+        //时间范围
+        if (_.get(rangParams, '[0].from') || _.get(rangParams, '[0].to')) {
+            params.rangParams = JSON.stringify(rangParams);
+        }
+        //设置了关注客户置顶后的处理
+        if (this.state.isConcernCustomerTop) {
+            //字符串类型的排序字段，key需要在字段后面加上.row
+            const customerSortMap = crmUtil.CUSOTMER_SORT_MAP;
+            params.sort_and_orders = JSON.stringify([
+                {key: customerSortMap['interest_member_ids'], value: 'ascend'},
+                {
+                    key: customerSortMap[this.state.sorter.field] || customerSortMap['id'],
+                    value: _.get(this.state, 'sorter.order', 'ascend')
+                }
+            ]);
+        }
+        //有关注的客户时，路径和sortAndOrders都传了排序字段时，只使用sortAndOrders中的字段进行排序（排序的优先级按数组中的顺序来排）
+        CrmAction.queryCustomer(params, this.state.pageSize, this.state.sorter);
+        this.setState({rangeParams: this.state.rangParams});
     };
 
     //清除客户的选择
@@ -1285,6 +1310,33 @@ class Crm extends React.Component {
 
     }
 
+    handleFocusCustomerTop(e) {
+        let isConcernCustomerTop = !this.state.isConcernCustomerTop;
+        CrmAction.setConcernCustomerTop(isConcernCustomerTop);
+        setTimeout(() => {
+            this.search();
+        });
+        //关注客户置顶标识修改后保存到个人配置上
+        let personnelObj = {};
+        personnelObj[oplateConsts.STORE_PERSONNAL_SETTING.CONCERN_CUSTOMER_TOP_FLAG] = isConcernCustomerTop;
+        setWebsiteConfig(personnelObj);
+    }
+
+    //渲染带关注客户置顶图标的联系人列标题
+    renderContactConcernTop() {
+        let interestClassName = classNames('iconfont concern-customer-top-icon', {
+            'icon-interested': this.state.isConcernCustomerTop,
+            'icon-uninterested': !this.state.isConcernCustomerTop
+        });
+        let title = this.state.isConcernCustomerTop ? Intl.get('crm.concern.top.cancel', '取消关注客户置顶') : Intl.get('crm.concern.top.set', '设置关注客户置顶');
+        return (
+            <span>
+                <span className={interestClassName} title={title}
+                    onClick={this.handleFocusCustomerTop.bind(this)}/>
+                <span>{Intl.get('call.record.contacts', '联系人')}</span>
+            </span>);
+    }
+
     render() {
         var _this = this;
         //只有有批量变更和合并客户的权限时，才展示选择框的处理
@@ -1366,10 +1418,10 @@ class Crm extends React.Component {
                 }
             },
             {
-                title: Intl.get('call.record.contacts', '联系人'),
+                title: this.renderContactConcernTop(),
                 width: column_width,
                 dataIndex: 'contact',
-                className: 'has-filter',
+                className: 'has-filter customer-contact-th',
             },
             {
                 title: Intl.get('crm.5', '联系方式'),

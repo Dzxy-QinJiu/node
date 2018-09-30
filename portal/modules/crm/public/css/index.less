@@ -3,6 +3,29 @@
 @import "../../../../public/css/iconfont";
 @filter-width: 288px;
 .crm_content {
+    //联系人列标题
+    .customer-contact-th{
+        position: relative;
+        //关注客户置顶的图标
+        .concern-customer-top-icon{
+            position: absolute;
+            float: left;
+            left: -25px;
+            top: 8px;
+        }
+    }
+    .customer-contact-th,.customer_name{
+        .iconfont {
+            color: #e2e2e2;
+            margin-top: -2px;
+            &:hover {
+                color: #F9B706;
+            }
+        }
+        .icon-interested {
+            color: #F9B706;
+        }
+    }
     .filter-block .block.search-input-select-block button {
         display: none;
     }
@@ -274,16 +297,6 @@
         .focus-customer {
             float: right;
             margin-left: 4px;
-        }
-        .iconfont {
-            color: #e2e2e2;
-            margin-top: -2px;
-            &:hover {
-                color: #F9B706;
-            }
-        }
-        .icon-interested {
-            color: #F9B706;
         }
     }
     .crm-filter-panel {

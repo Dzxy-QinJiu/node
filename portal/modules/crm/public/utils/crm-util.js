@@ -133,4 +133,23 @@ exports.getMyUserId = function() {
     }
     return userId;
 };
+//客户可排序字段的对应(字符串类型的字段后面需要加.raw, 加上后排序不分词)
+exports.CUSOTMER_SORT_MAP = {
+    id: 'id.raw',
+    user_name: 'user_name.raw',//销售昵称
+    name: 'name.raw',//客户名
+    province: 'province.raw',//省份
+    city: 'city.raw',//城市
+    county: 'county.raw',//区县
+    industry: 'industry.raw',//行业
+    sales_team: 'sales_team.raw',//团队
+    labels: 'labels.raw',//标签
+    interest_member_ids: 'interest_member_ids.raw',//关注客户
+    start_time: 'start_time',//添加时间
+    sign_time: 'sign_time',//签订时间
+    last_contact_time: 'last_contact_time',//最后联系时间
+    administrative_level: 'administrative_level',//行政等级
+    score: 'score',//客户分数
+    score_past: 'score_past'//客户昨天的分数
+};
 

@@ -161,24 +161,19 @@ exports.getCustomerById = function(customerId) {
     return Deferred.promise();
 };
 //查询客户
-exports.queryCustomer = function(condition, rangParams, pageSize, sorter, queryObj) {
+exports.queryCustomer = function(params, pageSize, sorter) {
     pageSize = pageSize || 10;
+    //没有关注客户置顶时
     sorter = sorter ? sorter : {field: 'id', order: 'ascend'};
-    var data = {
-        data: JSON.stringify(condition),
-        rangParams: JSON.stringify(rangParams),
-        queryObj: JSON.stringify(queryObj)
-    };
     if (hasPrivilege(AUTHS.GETALL)) {
-        data.hasManageAuth = true;
+        params.hasManageAuth = true;
     }
     var Deferred = $.Deferred();
-
     $.ajax({
         url: '/rest/customer/v2/customer/range/' + pageSize + '/' + sorter.field + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
-        data: data,
+        data: params,
         success: function(list) {
             Deferred.resolve(list);
         },

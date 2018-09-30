@@ -28,12 +28,14 @@ function CrmActions() {
         'updateCustomerDefContact',
         //展示线索详情
         'showClueDetail',
-        'setCurCustomers'
+        'setCurCustomers',
+        //设置关注客户是否置顶
+        'setConcernCustomerTop'
     );
 
-    this.queryCustomer = function(condition, rangParams, pageSize, sorter, queryObj) {
+    this.queryCustomer = function(params, pageSize, sorter) {
         this.dispatch({error: false, loading: true});
-        crmAjax.queryCustomer(condition, rangParams, pageSize, sorter, queryObj).then((result) => {
+        crmAjax.queryCustomer(params, pageSize, sorter).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({error: false, loading: false, result: result, pageSize});
         }, (errorMsg) => {

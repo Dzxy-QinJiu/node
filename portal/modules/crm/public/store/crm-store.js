@@ -5,6 +5,7 @@ var crmUtil = require('./../utils/crm-util');
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import { altAsyncUtil } from 'ant-utils';
 const {resultHandler} = altAsyncUtil;
+import {storageUtil} from 'ant-utils';
 
 function CrmStore() {
     this.setInitialState();
@@ -62,7 +63,23 @@ CrmStore.prototype.setInitialState = function() {
         loading: false,
         errorMsg: ''
     };
+    //关注客户是否置顶的标识
+    this.isConcernCustomerTop = getConcernCustomerTopFlag();
 };
+
+//获取当前用户是否设置了关注客户置顶
+function getConcernCustomerTopFlag() {
+    //登录后已获取了该用户的配置存入了localstorage中，此处可以直接取
+    let personnel_setting = storageUtil.local.get('websiteConfig');
+    personnel_setting = personnel_setting ? JSON.parse(personnel_setting) : {};
+    return _.get(personnel_setting, oplateConsts.STORE_PERSONNAL_SETTING.CONCERN_CUSTOMER_TOP_FLAG, false);
+}
+
+//关注客户是否置顶的设置
+CrmStore.prototype.setConcernCustomerTop = function(flag) {
+    this.isConcernCustomerTop = flag;
+},
+
 CrmStore.prototype.updateCurrentCustomerRemark = function(submitObj) {
     let customer = _.find(this.curCustomers, (customer) => {
         return customer.id === submitObj.customer_id;

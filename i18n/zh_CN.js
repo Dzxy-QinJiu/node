@@ -1471,6 +1471,8 @@ var zh_CN = {
     'crm.qualify.account': '合格账号',
     'crm.no.qualify.account': '暂无合格账号',
     'crm.score.history.title': '历史分数',
+    'crm.concern.top.set': '设置关注客户置顶',
+    'crm.concern.top.cancel': '取消关注客户置顶',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',

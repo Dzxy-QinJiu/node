@@ -240,7 +240,8 @@ exports.mergeRepeatCustomer = function(req, res, mergeObj) {
 };
 
 //查询客户
-exports.queryCustomer = function(req, res, condition) {
+exports.queryCustomer = function(req, res) {
+    let condition = JSON.parse(req.body.data);
     let url = '';
     let call_phone = condition && condition.call_phone;
     let id = condition && condition.id;
@@ -294,7 +295,12 @@ exports.queryCustomer = function(req, res, condition) {
         if (query && query.user_id) {
             bodyData.query.user_id = query.user_id;
         }
-        bodyData.rang_params = JSON.parse(req.body.rangParams);
+        if(req.body.rangParams){//时间范围的限制参数
+            bodyData.rang_params = JSON.parse(req.body.rangParams);
+        }
+        if(req.body.sort_and_orders){//优先级排序字段数组（靠前的优先）
+            bodyData.sort_and_orders = JSON.parse(req.body.sort_and_orders);
+        }
     }
     return restUtil.authRest.post(
         {
