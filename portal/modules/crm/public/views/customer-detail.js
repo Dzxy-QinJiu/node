@@ -80,7 +80,7 @@ class CrmRightPanel extends React.Component {
 
     getCurCustomer = (id) => {
         let condition = {id: id};
-        crmAjax.queryCustomer(condition).then(resData => {
+        crmAjax.queryCustomer({data: JSON.stringify(condition)}).then(resData => {
             if (resData && _.isArray(resData.result) && resData.result.length) {
                 this.state.curCustomer = resData.result[0];
                 this.state.getCusomerResultdMsg = '';

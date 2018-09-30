@@ -265,7 +265,14 @@ class Crm extends React.Component {
             if (from === 'sales_home') {
                 const trialQualifiedCustomerIds = locationState.trialQualifiedCustomerIds;
                 const pageSize = trialQualifiedCustomerIds.split(',').length;
-                CrmAction.queryCustomer({ id: trialQualifiedCustomerIds }, {}, pageSize, this.state.sorter, {});
+                let params = {
+                    data: JSON.stringify({id: trialQualifiedCustomerIds})
+                }
+                //设置了关注客户置顶后的处理
+                if (this.state.isConcernCustomerTop) {
+                    params = this.handleSortParams(params);
+                }
+                CrmAction.queryCustomer(params, pageSize, this.state.sorter);
             }
         } else {
             this.search();
@@ -294,6 +301,19 @@ class Crm extends React.Component {
         if (query.add === 'true') {
             this.showAddForm();
         }
+    }
+    //设置了关注客户置顶后的参数处理
+    handleSortParams(params){
+        //字符串类型的排序字段，key需要在字段后面加上.row
+        const customerSortMap = crmUtil.CUSOTMER_SORT_MAP;
+        params.sort_and_orders = JSON.stringify([
+            {key: customerSortMap['interest_member_ids'], value: 'ascend'},
+            {
+                key: customerSortMap[this.state.sorter.field] || customerSortMap['id'],
+                value: _.get(this.state, 'sorter.order', 'ascend')
+            }
+        ]);
+        return params;
     }
 
     setFilterField = ({ filterField, filterValue }) => {
@@ -828,15 +848,7 @@ class Crm extends React.Component {
         }
         //设置了关注客户置顶后的处理
         if (this.state.isConcernCustomerTop) {
-            //字符串类型的排序字段，key需要在字段后面加上.row
-            const customerSortMap = crmUtil.CUSOTMER_SORT_MAP;
-            params.sort_and_orders = JSON.stringify([
-                {key: customerSortMap['interest_member_ids'], value: 'ascend'},
-                {
-                    key: customerSortMap[this.state.sorter.field] || customerSortMap['id'],
-                    value: _.get(this.state, 'sorter.order', 'ascend')
-                }
-            ]);
+            params = this.handleSortParams(params);
         }
         //有关注的客户时，路径和sortAndOrders都传了排序字段时，只使用sortAndOrders中的字段进行排序（排序的优先级按数组中的顺序来排）
         CrmAction.queryCustomer(params, this.state.pageSize, this.state.sorter);
