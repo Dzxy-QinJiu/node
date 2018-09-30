@@ -46,6 +46,7 @@ const userInfo = userData.getUserData();
 const COMMON_OTHER_ITEM = 'otherSelectedItem';
 import {OTHER_FILTER_ITEMS, DAY_TIME} from 'PUB_DIR/sources/utils/consts';
 import ShearContent from 'CMP_DIR/shear-content';
+import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
 
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -1315,6 +1316,10 @@ class Crm extends React.Component {
         setTimeout(() => {
             this.search();
         });
+        //关注客户置顶标识修改后保存到个人配置上
+        let personnelObj = {};
+        personnelObj[oplateConsts.STORE_PERSONNAL_SETTING.CONCERN_CUSTOMER_TOP_FLAG] = isConcernCustomerTop;
+        setWebsiteConfig(personnelObj);
     }
 
     //渲染带关注客户置顶图标的联系人列标题
