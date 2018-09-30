@@ -113,10 +113,25 @@ class CurtaoAnalysis extends React.Component {
         return menus;
     }
 
+    //处理一级菜单变更事件
+    handleCollapseChange(key) {
+        const group = this.state.groups[key];
+        const pages = group.pages;
+
+        //当选中的一级菜单下只有一个二级菜单时，选中该二级菜单
+        if (pages.length === 1) {
+            const groupIndex = key;
+            const pageIndex = 0;
+            const menuIndex = groupIndex + ',' + pageIndex;
+
+            this.handleMenuClick(menuIndex, groupIndex, pageIndex); 
+        }
+    }
+
     renderMenu() {
         return (
             <div className="analysis-menu">
-                <Collapse accordion bordered={false} defaultActiveKey='0'>
+                <Collapse accordion bordered={false} defaultActiveKey='0' onChange={this.handleCollapseChange.bind(this)}>
                     {_.map(this.state.groups, (group, groupIndex) => (
                         <Panel header={group.title} key={groupIndex}>
                             {_.map(group.pages, (page, pageIndex) => {
@@ -150,8 +165,9 @@ class CurtaoAnalysis extends React.Component {
         );
     }
 
+    //处理二级菜单点击事件
     handleMenuClick(menuIndex, groupIndex, pageIndex) {
-        const page = _.get(groups, '[' + groupIndex + '].pages[' + pageIndex + ']');
+        const page = _.get(this.state.groups, '[' + groupIndex + '].pages[' + pageIndex + ']');
         const charts = _.get(page, 'charts');
 
         let isAppSelectorShow = false;
