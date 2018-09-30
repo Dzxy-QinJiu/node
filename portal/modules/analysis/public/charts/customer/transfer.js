@@ -11,22 +11,30 @@ export function getCustomerTransferChart() {
         reqType: 'post',
         conditions: [{
             type: 'data',
-            rangeParamName: 'name',
             value: 'time',
+            callback: (data, name, value) => {
+                _.set(data, 'rang_params[0].name', value);
+            }
         }, {
             type: 'data',
-            rangeParamName: 'type',
             value: 'time',
+            callback: (data, name, value) => {
+                _.set(data, 'rang_params[0].type', value);
+            }
         }, {
             name: 'starttime',
             value: initialTime.start,
             type: 'data',
-            rangeParamName: 'from',
+            callback: (data, name, value) => {
+                _.set(data, 'rang_params[0].from', value);
+            }
         }, {
             name: 'endtime',
             value: initialTime.end,
             type: 'data',
-            rangeParamName: 'to',
+            callback: (data, name, value) => {
+                _.set(data, 'rang_params[0].to', value);
+            }
         }],
         dataField: 'result',
         chartType: 'table',

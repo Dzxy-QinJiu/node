@@ -13,32 +13,44 @@ export function getStageChart() {
         reqType: 'post',
         conditions: [{
             type: 'data',
-            rangeParamName: 'name',
             value: 'source_time',
+            callback: (data, name, value) => {
+                _.set(data, 'rang_params[0].name', value);
+            }
         }, {
             type: 'data',
-            rangeParamName: 'type',
             value: 'time',
+            callback: (data, name, value) => {
+                _.set(data, 'rang_params[0].type', value);
+            }
         }, {
             name: 'starttime',
             value: initialTime.start,
             type: 'data',
-            rangeParamName: 'from',
+            callback: (data, name, value) => {
+                _.set(data, 'rang_params[0].from', value);
+            }
         }, {
             name: 'endtime',
             value: initialTime.end,
             type: 'data',
-            rangeParamName: 'to',
+            callback: (data, name, value) => {
+                _.set(data, 'rang_params[0].to', value);
+            }
         }, {
             name: 'access_channel',
             value: '',
             type: 'data',
-            inDataQuery: true,
+            callback: (data, name, value) => {
+                _.set(data, 'query[' + name + ']', value);
+            }
         }, {
             name: 'clue_source',
             value: '',
             type: 'data',
-            inDataQuery: true,
+            callback: (data, name, value) => {
+                _.set(data, 'query[' + name + ']', value);
+            }
         }],
         dataField: 'result',
         processData: processClueStaticsStageData,
