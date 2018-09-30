@@ -21,7 +21,7 @@ const CONTACT_WAY_PLACEHOLDER = {
 // 联系方式的label
 const CONTACT_WAY_LABEL = {
     phone: Intl.get('common.phone', '电话'),
-    qq: 'Q Q',
+    qq: 'QQ',
     email: Intl.get('common.email', '邮箱'),
     weChat: Intl.get('crm.58', '微信')
 };

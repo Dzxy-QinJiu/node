@@ -13,6 +13,7 @@ const FORMLAYOUT = {
     PADDINGTOTAL: 70,
 };
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
+import DynamicAddDelCustomers from 'CMP_DIR/dynamic-add-delete-customers';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 var user = require('../../../../public/sources/user-data').getUserData();
 const DEFAULTTIMETYPE = 'day';
@@ -108,7 +109,6 @@ class AddBusinessApply extends React.Component {
             saveResult: saveResult
         });
     }
-
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
@@ -119,13 +119,9 @@ class AddBusinessApply extends React.Component {
                 saveMsg: '',
                 saveResult: ''
             });
-            if (values.remarks) {
-                formData.customers[0].remarks = values.remarks;
-            }
-            if (values.address) {
-                formData.customers[0].address = values.address;
-            }
             _.forEach(formData.customers, (customerItem, index) => {
+                delete customerItem.key;
+                delete customerItem.hideCustomerRequiredTip;
                 if (customerItem['remarks']) {
                     formData.reason += customerItem['remarks'];
                 }
@@ -170,28 +166,7 @@ class AddBusinessApply extends React.Component {
             />
         );
     };
-    customerChoosen = (selectedCustomer) => {
-        var formData = this.state.formData;
-        formData.customers[0].name = selectedCustomer.name;
-        formData.customers[0].id = selectedCustomer.id;
-        formData.customers[0].province = selectedCustomer.province;
-        formData.customers[0].city = selectedCustomer.city;
-        formData.customers[0].county = selectedCustomer.county;
-        formData.customers[0].address = selectedCustomer.address;
-        this.setState({
-            formData: formData
-        }, () => {
-            this.props.form.validateFields(['leave_for_customer'], {force: true});
-        });
-    };
-    checkCustomerName = (rule, value, callback) => {
-        value = $.trim(_.get(this.state, 'formData.customers[0].id'));
-        if (!value && !this.state.hideCustomerRequiredTip) {
-            callback(new Error(Intl.get('leave.apply.select.customer', '请先选择客户')));
-        } else {
-            callback();
-        }
-    };
+
     // 验证起始时间是否小于结束时间
     validateStartAndEndTime(timeType) {
         return (rule, value, callback) => {
@@ -219,22 +194,12 @@ class AddBusinessApply extends React.Component {
         };
     }
 
-    //更新地址
-    updateLocation = (addressObj) => {
+
+    handleCustomersChange = (customers) => {
         let formData = this.state.formData;
-        formData.customers[0].province = addressObj.provName || '';
-        formData.customers[0].city = addressObj.cityName || '';
-        formData.customers[0].county = addressObj.countyName || '';
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form div .ant-form-item'), '选择地址');
-    };
-    //搜索不到客户的时候，隐藏掉客户必填的错误信息提示
-    hideCustomerRequiredTip = (flag) => {
-        this.setState({
-            hideCustomerRequiredTip: flag
-        }, () => {
-            this.props.form.validateFields(['leave_for_customer'], {force: true});
-        });
-    };
+        formData.customers = customers;
+        this.setState({formData});
+    }
 
     render() {
         var _this = this;
@@ -318,71 +283,14 @@ class AddBusinessApply extends React.Component {
                                             <Input disabled/>
                                         )}
                                     </FormItem>
-                                    <FormItem
-                                        className="form-item-label customer-name"
-                                        label={Intl.get('call.record.customer', '客户')}
-                                        {...formItemLayout}
-                                    >
-                                        {getFieldDecorator('leave_for_customer', {
-                                            rules: [{validator: _this.checkCustomerName}],
-                                            initialValue: ''
-                                        })(
-                                            <CustomerSuggest
-                                                field='leave_for_customer'
-                                                hasEditPrivilege={true}
-                                                displayText={''}
-                                                displayType={'edit'}
-                                                id={''}
-                                                show_error={this.state.isShowCustomerError}
-                                                noJumpToCrm={true}
-                                                customer_name={''}
-                                                customer_id={''}
-                                                addAssignedCustomer={this.addAssignedCustomer}
-                                                noDataTip={Intl.get('clue.has.no.data', '暂无')}
-                                                hideButtonBlock={true}
-                                                customerChoosen={this.customerChoosen}
-                                                required={true}
-                                                hideCustomerRequiredTip={this.hideCustomerRequiredTip}
-                                            />
-                                        )}
+                                    <DynamicAddDelCustomers
+                                        addAssignedCustomer={this.addAssignedCustomer}
+                                        form={this.props.form}
+                                        handleCustomersChange={this.handleCustomersChange}
+                                    />
 
-                                    </FormItem>
-                                    <AntcAreaSelection labelCol="5" wrapperCol="19" width="100%"
-                                        colon={false}
-                                        label={Intl.get('crm.96', '地域')}
-                                        placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
-                                        provName={formData.customers[0].province}
-                                        cityName={formData.customers[0].city}
-                                        countyName={formData.customers[0].county}
-                                        updateLocation={this.updateLocation}/>
-                                    <FormItem
-                                        className="form-item-label"
-                                        label={Intl.get('realm.address', '地址')}
-                                        {...formItemLayout}
-                                    >
-                                        {getFieldDecorator('address', {
-                                            initialValue: formData.customers[0].address
-                                        })(
-                                            <Input
-                                                name="address"
-                                                placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
-                                            />
-                                        )}
-                                    </FormItem>
-                                    <FormItem
-                                        className="form-item-label"
-                                        label={Intl.get('common.remark', '备注')}
-                                        {...formItemLayout}
-                                    >
-                                        {getFieldDecorator('remarks', {
-                                            initialValue: ''
-                                        })(
-                                            <Input
-                                                type="textarea" id="remarks" rows="3"
-                                                placeholder={Intl.get('leave.apply.fill.leave.reason', '请填写出差事由')}
-                                            />
-                                        )}
-                                    </FormItem>
+
+
                                     <div className="submit-button-container">
                                         <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
                                             disabled={this.state.isSaving} data-tracename="点击保存添加

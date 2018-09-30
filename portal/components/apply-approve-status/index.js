@@ -13,16 +13,6 @@ class ApplyApproveStatus extends React.Component {
         this.state = {
         };
     }
-    componentDidMount = () => {
-
-    };
-    componentWillReceiveProps = (nextProps) => {
-
-    };
-    componentWillUnmount = () => {
-
-    };
-
     render(){
         if (this.props.showLoading) {
             return (
