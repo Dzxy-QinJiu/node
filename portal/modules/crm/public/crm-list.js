@@ -954,11 +954,10 @@ class Crm extends React.Component {
             return (<div className="top-btn-wrapper">
                 <PrivilegeChecker
                     check="CUSTOMER_MERGE_CUSTOMER"
-                    className={isWebMini ? 'block handle-btn-mini' : 'block crm-merge-btn'}
-                    title={isWebMini ? Intl.get('crm.0', '合并客户') : ''}
+                    className='block crm-merge-btn'
                     onClick={this.showMergePanel}
                 >
-                    {isWebMini ? <i className="iconfont icon-merge-btn" /> : <Button>{Intl.get('crm.0', '合并客户')}</Button>}
+                    <Button type="primary">{Intl.get('crm.0', '合并客户')}</Button>
                 </PrivilegeChecker>
                 <PrivilegeChecker check="CUSTOMER_BATCH_OPERATE" className="batch-btn-wrapper">
                     <CrmBatchChange isWebMini={isWebMini}
