@@ -6,6 +6,7 @@
 'use strict';
 var crmService = require('../service/crm-manage-service');
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+var _ = require('lodash');
 
 function templateFile(res, example, filename) {
     var example = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(example)]);
