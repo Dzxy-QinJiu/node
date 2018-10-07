@@ -6,6 +6,7 @@
 'use strict';
 var crmService = require('../service/crm-manage-service');
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
+
 function templateFile(res, example, filename) {
     var example = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(example)]);
     res.setHeader('Content-disposition', 'attachement; filename=' + filename);
@@ -214,7 +215,10 @@ exports.mergeRepeatCustomer = function(req, res) {
 
 exports.addCustomer = function(req, res) {
     var newCus = req.body;
-    newCus.contacts0_phone = [newCus.contacts0_phone];
+    //不是数组，转换为数组
+    if (newCus.contacts0_phone && !_.isArray(newCus.contacts0_phone)) {
+        newCus.contacts0_phone = [newCus.contacts0_phone];
+    }
     newCus.contacts = [{}];
     for (var p in newCus) {
         if (p.indexOf('contacts0') > -1) {
