@@ -765,6 +765,11 @@ class CustomerAnalysis extends React.Component {
                     delete query.starttime;
                     delete query.endtime;
                 }
+
+                if (query && query.member_id && !query.team_ids) {
+                    //根据成员查询的时候，需要把团队id也传过去
+                    query.team_ids = this.state.currentTeamIdPersisted;
+                }
             },
             conditions: [
                 {
