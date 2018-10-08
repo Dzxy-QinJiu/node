@@ -48,22 +48,6 @@ LeaveApplyStore.prototype.setInitState = function() {
     //筛选类别 'all'(全部) pass(已通过) reject(已驳回)  ongoing(待审批)
     this.applyListType = 'all';
 };
-// LeaveApplyStore.prototype.getAllApplyList = function(data) {
-//     if (data.loading){
-//         this.isLoadingAllApply = true;
-//         this.allApplyErrMsg = '';
-//         this.allApplyList = [];
-//     }else if (data.error){
-//         this.isLoadingAllApply = false;
-//         this.allApplyErrMsg = data.errMsg;
-//         this.allApplyList = [];
-//     }else{
-//         this.isLoadingAllApply = false;
-//         this.allApplyErrMsg = '';
-//         this.allApplyList = data.list;
-//     }
-//
-// };
 //清空数据
 LeaveApplyStore.prototype.clearData = function() {
     this.applyListObj.list = [];
@@ -71,7 +55,7 @@ LeaveApplyStore.prototype.clearData = function() {
     this.selectedDetailItemIdx = -1;
     this.listenScrollBottom = false;
 };
-LeaveApplyStore.prototype.getAllApplyList = function(obj) {
+LeaveApplyStore.prototype.getAllLeaveApplyList = function(obj) {
     if (obj.loading) {
         this.applyListObj.loadingResult = 'loading';
         this.applyListObj.errorMsg = '';
@@ -116,6 +100,38 @@ LeaveApplyStore.prototype.getAllApplyList = function(obj) {
         }
     }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 LeaveApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {
     this.selectedDetailItem = obj;
     this.selectedDetailItemIdx = idx;
@@ -128,7 +144,7 @@ LeaveApplyStore.prototype.changeApplyListType = function(type) {
 };
 LeaveApplyStore.prototype.changeApplyAgreeStatus = function(message) {
     this.selectedDetailItem.status = message.agree;
-    this.selectedDetailItem.detail = message.detail;
+    this.selectedDetailItem.approve_details = message.approve_details;
     this.selectedDetailItem.update_time = message.update_time;
 };
 LeaveApplyStore.prototype.updateAllApplyItemStatus = function(updateItem) {

@@ -2699,7 +2699,8 @@ var zh_CN = {
     'leave.apply.select.atleast.one.app': '请选择至少一个产品',
     'leave.apply.select.product': '请选择产品',
     'leave.apply.fill.in.start.time': '请填写开始时间',
-    'leave.apply.fill.in.end.time': '请填写结束时间'
+    'leave.apply.fill.in.end.time': '请填写结束时间',
+    'leave.apply.no.filter.business.list': '暂无符合查询条件的销售机会申请',
 
 };
 export default zh_CN;

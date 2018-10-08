@@ -168,7 +168,7 @@ class SalesOpportunityApplyManagement extends React.Component {
             );
             var noDataMsg = (
                 <span>
-                    {Intl.get('leave.apply.no.filter.leave.list', '暂无符合查询条件的出差申请')}
+                    {Intl.get('leave.apply.no.filter.business.list', '暂无符合查询条件的销售机会申请')}
                     <span>,</span>
                     <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
                         {Intl.get('common.get.again', '重新获取')}
