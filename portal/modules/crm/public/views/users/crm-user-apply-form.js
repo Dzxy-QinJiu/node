@@ -94,6 +94,12 @@ class CrmUserApplyForm extends React.Component {
         formData[field] = value;
         this.setState({ formData: formData });
     }
+    //用户类型的修改
+    onUserTypeChange(event){
+        let formData = this.state.formData;
+        formData.user_type = event.target.value;
+        this.setState({formData});
+    }
 
     getDelayTimeMillis() {
         //延期周期
@@ -121,6 +127,10 @@ class CrmUserApplyForm extends React.Component {
         submitObj.remark = this.state.formData.remark.delayRemark;
         //到期是否停用
         paramItem.over_draft = Number(formData.over_draft);
+        //用户类型，如果不选，说明不做修改，就不需要传，如果选了就是需要改用户类型
+        if(formData.user_type){
+            paramItem.user_type = formData.user_type;
+        }
 
         /* 构造发邮件数据
          申请审批的，需要传入用户名，客户，应用名，发邮件时候使用
@@ -348,7 +358,8 @@ class CrmUserApplyForm extends React.Component {
     renderDelayForm() {
         let divWidth = (language.lan() === 'zh') ? '80px' : '74px';
         let label = '';
-        if (this.state.formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
+        let formData = this.state.formData;
+        if (formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
             label = Intl.get('user.time.end', '到期时间');
         } else {
             label = Intl.get('common.delay.time', '延期时间');
@@ -365,17 +376,17 @@ class CrmUserApplyForm extends React.Component {
                         label={label}
                         {...formItemLayout}
                     >
-                        {this.state.formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE ? (
+                        {formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE ? (
                             <DatePicker placeholder={Intl.get('my.app.change.expire.time.placeholder', '请选择到期时间')}
                                 onChange={this.setDelayDeadlineTime.bind(this)}
                                 disabledDate={this.setDisabledDate}
-                                defaultValue={moment(this.state.formData.delayDeadlineTime)}
+                                defaultValue={moment(formData.delayDeadlineTime)}
                                 allowClear={false}
                                 showToday={false}
                             />
                         ) : (
                             <InputNumber
-                                value={this.state.formData.delayTimeNumber}
+                                value={formData.delayTimeNumber}
                                 onChange={this.delayTimeNumberChange.bind(this)}
                                 style={{ width: '80px', height: '30px' }}
                                 min={1}
@@ -384,7 +395,7 @@ class CrmUserApplyForm extends React.Component {
                         )}
 
                         <Select
-                            value={this.state.formData.delayTimeRange}
+                            value={formData.delayTimeRange}
                             style={{ width: divWidth }}
                             onChange={this.delayTimeRangeChange.bind(this)}
                         >
@@ -401,10 +412,24 @@ class CrmUserApplyForm extends React.Component {
                     {...formItemLayout}
                 >
                     <RadioGroup onChange={this.radioValueChange.bind(this, 'over_draft')}
-                        value={this.state.formData.over_draft}>
+                        value={formData.over_draft}>
                         <Radio key="1" value="1">{Intl.get('user.status.stop', '停用')}</Radio>
                         <Radio key="2" value="2">{Intl.get('user.status.degrade', '降级')}</Radio>
                         <Radio key="0" value="0">{Intl.get('user.status.immutability', '不变')}</Radio>
+                    </RadioGroup>
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
+                    label={Intl.get('user.user.type', '用户类型')}
+                >
+                    <RadioGroup onChange={this.onUserTypeChange.bind(this)}
+                        value={formData.user_type}>
+                        <Radio key="try" value={Intl.get('common.trial.user', '试用用户')}>
+                            {Intl.get('common.trial.user', '试用用户')}
+                        </Radio>
+                        <Radio key="formal" value={Intl.get('common.trial.official', '正式用户')}>
+                            {Intl.get('user.signed.user', '签约用户')}
+                        </Radio>
                     </RadioGroup>
                 </FormItem>
                 {/*申请延期要填备注，批量延期不需要填备注*/}
@@ -416,7 +441,7 @@ class CrmUserApplyForm extends React.Component {
                         placeholder={Intl.get('user.remark.write.tip', '请填写备注')}
                         autosize={{ minRows: 2, maxRows: 6 }}
                         onChange={this.remarkChange.bind(this, 'delayRemark')}
-                        value={this.state.formData.remark.delayRemark}
+                        value={formData.remark.delayRemark}
                     />
                 </FormItem>
             </Form>
