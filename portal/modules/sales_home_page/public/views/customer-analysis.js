@@ -529,6 +529,12 @@ class CustomerAnalysis extends React.Component {
 
                     if (query.member_id) {
                         query.member_ids = query.member_id;
+
+                        if (!query.team_ids) {
+                            //根据成员查询的时候，需要把团队id也传过去，这样后端查询效率较高
+                            query.team_ids = this.state.currentTeamIdPersisted;
+                        }
+
                         delete query.member_id;
                     }
                 }
@@ -764,6 +770,11 @@ class CustomerAnalysis extends React.Component {
                     query.end_time = query.endtime;
                     delete query.starttime;
                     delete query.endtime;
+                }
+
+                if (query && query.member_id && !query.team_ids) {
+                    //根据成员查询的时候，需要把团队id也传过去
+                    query.team_ids = this.state.currentTeamIdPersisted;
                 }
             },
             conditions: [
