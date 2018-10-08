@@ -126,7 +126,7 @@ function clueUnhandledListener(data) {
             titleHtml += '<p class=\'clue-title\'>' + '<i class=\'iconfont icon-clue\'></i>' + '<span class=\'title-tip\'>' + title + '</span>';
 
             _.each(clueArr, (clueItem) => {
-                clueHtml += '<p class=\'clue-item\' title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(' + JSON.stringify(clueItem.id) + ')\'>' + '<span class=\'clue-item-name\'>' + clueItem.name + '</span>' + '<span class=\'clue-detail\'>' + Intl.get('call.record.show.customer.detail', '查看详情') + '<i class=\'great-than\'>&gt;</i>' + '</span>' + '</p>';
+                clueHtml += '<p class=\'clue-item\' title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(event, ' + JSON.stringify(clueItem.id) + ')\'>' + '<span class=\'clue-item-name\'>' + clueItem.name + '</span>' + '<span class=\'clue-detail\'>' + Intl.get('call.record.show.customer.detail', '查看详情') + '<i class=\'great-than\'>&gt;</i>' + '</span>' + '</p>';
             });
             tipContent = `<div>${clueHtml}</div>`;
             notificationUtil.showNotification({
@@ -336,10 +336,12 @@ window.handleClickPhone = function(phoneObj) {
     });
 };
 //点击展开线索详情
-window.handleClickClueName = function(clueId) {
+window.handleClickClueName = function(event,clueId) {
     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.noty-container .noty-content .clue-item .clue-name'), '打开线索详情');
     //展示线索详情
     notificationEmitter.emit(notificationEmitter.SHOW_CLUE_DETAIL,{clueId: clueId});
+    //点击查看详情时要把对应的通知框关掉
+    $(event.target).closest('li').remove();
 };
 
 // 获取拨打电话的座机号

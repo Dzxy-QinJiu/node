@@ -25,14 +25,11 @@ ClueFilterStore.prototype.setInitialData = function() {
             item.selected = true;
         }
     });
-    this.dateRange = 'week';
-    //默认展示本周的时间
-    this.timeType = 'week';
-    // true:本周截止到今天为止
-    var timeObj = getStartEndTimeOfDiffRange(this.timeType, true);
+    //默认展示全部时间
+    this.timeType = 'all';
     this.rangeParams = [{//时间范围参数
-        from: datePickerUtils.getMilliseconds(timeObj.start_time),
-        to: datePickerUtils.getMilliseconds(timeObj.end_time, true),
+        from: clueStartTime,
+        to: moment().valueOf(),
         type: 'time',
         name: 'source_time'
     }];
