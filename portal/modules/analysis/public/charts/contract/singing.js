@@ -58,6 +58,11 @@ function processData(data) {
 function processOption(option, props) {
     const data = props.data;
 
+    if (!data.length) {
+        option.columns = [];
+        return;
+    }
+
     let columns = [{
         title: Intl.get('common.time.unit.the_sweep_month', '月份'),
         fixed: 'left',
@@ -68,7 +73,7 @@ function processOption(option, props) {
         }]
     }];
 
-    let teams = data[0].teams || [];
+    let teams = _.get(data, '[0].teams', []);
     teams = sortTeams(teams);
     const teamColumns = teams.map((team, index) => {
         return {
@@ -94,7 +99,7 @@ function processOption(option, props) {
 
     columns = columns.concat(teamColumns);
 
-    const scrollX = data[0].teams.length * TEAM_COLUMN_WIDTH;
+    const scrollX = teams.length * TEAM_COLUMN_WIDTH;
 
     option.columns = columns;
     option.dataSource = processData(data);
