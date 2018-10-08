@@ -144,9 +144,9 @@ function SalesHomeActions() {
     //获取销售-电话列表
     this.getSalesPhoneList = function(reqData) {
         var _this = this;
-        let type = 'manager';
-        if (hasPrivilege('CALL_RECORD_VIEW_USER')) {
-            type = 'user';
+        let type = 'user';
+        if (hasPrivilege('CALL_RECORD_VIEW_MANAGER')) {
+            type = 'manager';
         }
         _this.dispatch({loading: true, error: false});
         salesHomeAjax.getSalesPhoneList(reqData, type).then(function(resData) {
