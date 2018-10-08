@@ -58,14 +58,16 @@
     z-index:10;
     background-color:fade(#4d96d1, (0.3*100));
   }
-
-  //没有用户头像时默认展示用户昵称第一个字符 样式
-  .no-user-logo-div{
-    height:@img-height;
-    width:@img-width;
-    line-height:@img-height;
-    font-size:20px;
+  .member-list-div{
+    //没有用户头像时默认展示用户昵称第一个字符 样式
+    .no-user-logo-div{
+      height:@img-height;
+      width:@img-width;
+      line-height:@img-height;
+      font-size:20px;
+    }
   }
+
 
   .sales-team-add-div{
     float:right;
