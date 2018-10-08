@@ -49,7 +49,25 @@ var MemberList = createReactClass({
             cancelAddMember: noop
         };
     },
-
+    propTypes: {
+        addMemberList: PropTypes.array,
+        curShowTeamMemberObj: PropTypes.obj,
+        salesGoals: PropTypes.obj,
+        isLoadingSalesGoal: PropTypes.bool,
+        getSalesGoalErrMsg: PropTypes.string,
+        containerHeight: PropTypes.number,
+        isAddMember: PropTypes.bool,
+        isEditMember: PropTypes.bool,
+        showMemberOperationBtn: PropTypes.bool,
+        className: PropTypes.string,
+        addMemberListTipMsg: PropTypes.string,
+        teamMemberListTipMsg: PropTypes.string,
+        salesTeamMemberWidth: PropTypes.number,
+        isLoadingTeamMember: PropTypes.bool,
+        rightPanelShow: PropTypes.bool,
+        userInfoShow: PropTypes.bool,
+        userFormShow: PropTypes.bool
+    },
     getInitialState: function() {
         var savingFlags = MemberListEditStore.getState();
         return {
@@ -806,14 +824,16 @@ var MemberList = createReactClass({
 
     //修改团队销售目标时的处理
     changeTeamSalesGoals: function(val) {
-        this.state.salesGoals.goal = this.turnGoalToSaveData(val);
-        this.setState({salesGoals: this.state.salesGoals});
+        let salesGoals = this.state.salesGoals;
+        salesGoals.goal = this.turnGoalToSaveData(val);
+        this.setState({salesGoals});
     },
 
     //修改成员销售目标时的处理
     changeMemberSalesGoals: function(val) {
-        this.state.salesGoals.member_goal = this.turnGoalToSaveData(val);
-        this.setState({salesGoals: this.state.salesGoals});
+        let salesGoals = this.state.salesGoals;
+        salesGoals.member_goal = this.turnGoalToSaveData(val);
+        this.setState({salesGoals});
     },
 
     //展示是否保存团队销售目标的确认框
@@ -942,15 +962,16 @@ var MemberList = createReactClass({
 
     //取消销售目标的保存
     cancelSaveSalesGoals: function(type,flag) {
+        let salesGoals = this.state.salesGoals;
         if (type === SALES_GOALS_TYPE.TEAM) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.member-top-operation-div'), '取消团队销售目标的保存');
-            this.state.salesGoals.goal = this.props.salesGoals.goal;
-            this.setState({teamConfirmVisible: false, salesGoals: this.state.salesGoals});
+            salesGoals.goal = this.props.salesGoals.goal;
+            this.setState({teamConfirmVisible: false, salesGoals});
             this.toggleBatchChangeTeamGoalBtn(flag);
         } else if (type === SALES_GOALS_TYPE.MEMBER) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.member-top-operation-div'), '取消个人销售目标的保存');
-            this.state.salesGoals.member_goal = this.props.salesGoals.member_goal;
-            this.setState({memberConfirmVisible: false, salesGoals: this.state.salesGoals});
+            salesGoals.member_goal = this.props.salesGoals.member_goal;
+            this.setState({memberConfirmVisible: false, salesGoals});
             this.toggleBatchChangeSelfGoalBtn(flag);
 
         }
@@ -1054,7 +1075,7 @@ var MemberList = createReactClass({
                 {this.state.isMemberListSaving ? (<div className="member-list-edit-block">
                     <Spinner className="isloading"/>
                 </div>) : ''}
-                <RightPanel className="white-space-nowrap" showFlag={this.props.rightPanelShow}>
+                {this.props.rightPanelShow ? (
                     <UserInfo
                         userInfo={this.state.currentUser}
                         closeRightPanel={this.closeRightPanel}
@@ -1063,8 +1084,7 @@ var MemberList = createReactClass({
                         userInfoShow={this.props.userInfoShow}
                         userFormShow={this.props.userFormShow}
                         afterEditTeamSuccess={this.afterEditTeamSuccess}
-                    />
-                </RightPanel>
+                    />) : null}
             </div>
         );
     },
