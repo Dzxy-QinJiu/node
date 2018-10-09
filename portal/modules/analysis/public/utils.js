@@ -99,6 +99,7 @@ export function processClueStatisticsData(isAvalibility, originData) {
 //将新增合同毛利统计数据中的值转成以万为单位的
 export function processAmountData(data) {
     return _.map(data, item => {
+        item.name = moment(item.timestamp).format(oplateConsts.DATE_FORMAT);
         item.value = formatAmount(item.value);
         return item;
     });
