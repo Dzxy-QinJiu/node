@@ -2,9 +2,9 @@
  * 趋势统计
  */
 
-export function getCustomerTrendChart(type = 'total') {
+export function getCustomerTrendChart(type = 'total', title) {
     return {
-        title: Intl.get('oplate_customer_analysis.1', '趋势统计'),
+        title: title || Intl.get('oplate_customer_analysis.1', '趋势统计'),
         url: `/rest/analysis/customer/v1/:auth_type/${type}/trend`,
         chartType: 'line',
         customOption: {
