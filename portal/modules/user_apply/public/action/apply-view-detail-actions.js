@@ -7,8 +7,6 @@ var notificationEmitter = require('../../../../public/sources/utils/emitters').n
 import {message} from 'antd';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
-import { altAsyncUtil } from 'ant-utils';
-const {asyncDispatcher} = altAsyncUtil;
 import { APPLY_MULTI_TYPE_VALUES } from 'PUB_DIR/sources/utils/consts';
 
 //更新申请的待审批数，通过、驳回、撤销后均减一
@@ -107,15 +105,6 @@ class ApplyViewDetailActions {
             });
         }
     }
-
-    //获取审批单详情（多应用)
-    getApplyMultiAppDetail = function(paramsObj, applyData) {
-        if (applyData) {
-            this.dispatch({loading: false, error: false, data: applyData.detail});
-        } else {
-            return asyncDispatcher(AppUserAjax.getApplyMultiAppDetail).call(this, paramsObj);
-        }
-    };
  
     //获取回复列表
     getReplyList(id) {

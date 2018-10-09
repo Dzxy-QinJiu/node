@@ -24,6 +24,8 @@ var CONSTANTS = {
     APPLY_PWD_CHANGE: 'apply_pwd_change',// 修改开通状态
     APPLY_GRANT_STATUS_CHANGE: 'apply_grant_status_change', // 修改密码
     APPLY_GRANT_OTHER_CHANGE: 'apply_sth_else', // 修改其他类型
+    DELAY_MULTI_APP: 'apply_grant_delay_multiapp',//延期（多应用）
+    DISABLE_MULTI_APP: 'apply_grant_status_change_multiapp',//修改开通状态（多应用）
     USER_TRIAL: '试用用户',
     USER_OFFICIAL: '正式用户',
     APPROVAL_STATE_FALSE: '0', // 待审批
@@ -378,11 +380,12 @@ exports.getCustomerUsers = function(req, res, obj) {
 exports.getApplyDetail = function(req, res, apply_id) {
     var emitter = new EventEmitter();
     getApplyBasicDetail(req, res, apply_id).then((applyBasicDetail) => {
-        // 申请正式、试用，已用用户申请正式、试用的情况
+        // 申请正式、试用，已用用户申请正式、试用的情况、延期（多应用）
         if (applyBasicDetail.type === CONSTANTS.APPLY_USER_OFFICIAL ||
             applyBasicDetail.type === CONSTANTS.APPLY_USER_TRIAL ||
             applyBasicDetail.type === CONSTANTS.EXIST_APPLY_TRIAL ||
-            applyBasicDetail.type === CONSTANTS.EXIST_APPLY_FORMAL) {
+            applyBasicDetail.type === CONSTANTS.EXIST_APPLY_FORMAL ||
+            applyBasicDetail.type === CONSTANTS.DELAY_MULTI_APP) {
             if (applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_FALSE) { // 待审批
                 // 获取登陆用户的权限
                 let privilegesArray = req.session.user && req.session.user.privileges ? req.session.user.privileges : [];
@@ -503,6 +506,9 @@ function getApplyBasicDetail(req, res, apply_id) {
                         detailObj = applyDto.toDetailChangePwdOtherRestObject(data);
                     } else if (data.message.type === CONSTANTS.APPLY_GRANT_STATUS_CHANGE) { // 更改状态
                         detailObj = applyDto.toDetailStatusRestObject(data);
+                    } else if (data.message.type === CONSTANTS.DELAY_MULTI_APP ||// 延期（多应用）
+                        data.message.type === CONSTANTS.DISABLE_MULTI_APP) { //更改状态(多应用)
+                        detailObj = applyDto.toDetailMultiAppRestObject(data, CONSTANTS);
                     } else {
                         detailObj = applyDto.toDetailRestObject(data); // 待审批、已审批、已驳回（用户申请应用）
                     }

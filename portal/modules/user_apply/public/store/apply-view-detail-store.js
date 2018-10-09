@@ -122,7 +122,7 @@ class ApplyViewDetailStore {
         this.isChangeUserName = false;
         this.backApplyResult = {
             loading: false,
-            errorMsg: ""
+            errorMsg: ''
         };
     }
     //获取应用列表
@@ -163,7 +163,7 @@ class ApplyViewDetailStore {
             this.formData.delayTimeNumber = 365 * years + 30 * months + 7 * weeks + days;
             this.formData.delayTimeUnit = 'days';
         }
-    }    
+    }
     //获取审批详情
     getApplyDetail(obj) {
         //没有角色的时候，显示模态框，重置
@@ -172,7 +172,7 @@ class ApplyViewDetailStore {
             appNames: [],
             continueSubmit: false
         };
-       
+
         if (obj.loading) {
             this.detailInfoObj.loading = true;
             this.detailInfoObj.info = {};
@@ -189,16 +189,29 @@ class ApplyViewDetailStore {
                 app.app_name = app.client_name;
             });
             this.detailInfoObj.info = info;
-            this.detailInfoObj.info = obj.detail;
             this.detailInfoObj.errorMsg = '';
             this.createAppsSetting();
-            if (_.isArray(this.detailInfoObj.info.user_names)) {
-                this.formData.user_name = this.detailInfoObj.info.user_names[0];
+            //用户的处理
+            if (_.indexOf(APPLY_TYPES, info.type) !== -1) {//延期、禁用（多应用）
+                if (_.isArray(info.apps)) {
+                    this.formData.user_name = _.get(info.apps, '0.user_name');
+                    this.formData.nick_name = _.get(info.apps, '0.nickname');
+                    //用户类型存在，则需要修改用户类型，不存在则不需要修改，也不用传到审批接口中
+                    if (_.get(info.apps, '0.user_type')) {
+                        this.formData.user_type = _.get(info.apps, '0.user_type');
+                    }
+                }
+            } else {
+                if (_.isArray(this.detailInfoObj.info.user_names)) {
+                    this.formData.user_name = this.detailInfoObj.info.user_names[0];
+                }
+                if (_.isArray(this.detailInfoObj.info.nick_names)) {
+                    this.formData.nick_name = this.detailInfoObj.info.nick_names[0];
+                }
             }
-            if (_.isArray(this.detailInfoObj.info.nick_names)) {
-                this.formData.nick_name = this.detailInfoObj.info.nick_names[0];
-            }
+            //延期的处理
             let delayTime = 0;
+            //老数据中，延期的处理
             if (this.detailInfoObj.info.type === 'apply_grant_delay') {
                 if (this.detailInfoObj.info.delayTime) { // 同步修改时间
                     delayTime = this.detailInfoObj.info.delayTime;
@@ -207,6 +220,16 @@ class ApplyViewDetailStore {
                 } else { // 到期时间，点开修改同步到自定义
                     this.formData.delayTimeUnit = 'custom';
                     this.formData.end_date = this.detailInfoObj.info.end_date;
+                }
+            } else if (this.detailInfoObj.info.type === APPLY_TYPES.DELAY) {//延期（多应用）
+                if (_.get(info.apps, '0.delay')) { // 同步修改时间
+                    const delayTime = info.apps[0].delay;
+                    info.delayTime = delayTime;
+                    this.formData.delay_time = delayTime;
+                    this.getDelayDisplayTime(delayTime);
+                } else { // 到期时间，点开修改同步到自定义
+                    this.formData.delayTimeUnit = 'custom';
+                    this.formData.end_date = info.apps[0].end_date;
                 }
             }
         }
@@ -264,16 +287,12 @@ class ApplyViewDetailStore {
         }
         info.customer_name = info.message.customer_name;
         info.comment = info.message.remark;
-        info.type = info.message.type;
-        info.sales_team_name = info.message.sales_team_name;
-        info.sales_name = info.message.sales_name;
-        info.presenter_id = info.producer.user_id;
         this.detailInfoObj.info = info;
         this.createAppsSetting();
         if (_.isArray(apps)) {
             this.formData.user_name = _.get(apps, '0.user_name');
             this.formData.nick_name = _.get(apps, '0.nickname');
-        }       
+        }
     })
     //生成应用的单独配置
     createAppsSetting() {
