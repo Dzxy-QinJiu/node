@@ -237,63 +237,7 @@ class ApplyViewDetailStore {
 
     //撤销审批结果(不含errorMsg，错误信息在action中通过messag.error处理)
     saleBackoutApply = resultHandler('backApplyResult');
-
-    //获取审批详情
-    getApplyMultiAppDetail = resultHandler('detailInfoObj', function({ data, paramObj }) {
-        //没有角色的时候，显示模态框，重置
-        this.rolesNotSettingModalDialog = {
-            show: false,
-            appNames: [],
-            continueSubmit: false
-        };
-        const info = data || {};
-        let apps = [];
-        if (_.get(info, 'message.apply_param')) {
-            apps = info.message.apply_param && (JSON.parse(info.message.apply_param) || []);
-            info.customer_id = info.message.customer_ids;
-            info.customer_name = info.message.customer_name;
-            info.apps = apps.map(app => ({
-                ...app,
-                app_id: app.client_id,
-                app_name: app.client_name
-            }));
-            info.users = _.uniqBy(apps, 'user_id').map(user => {
-                const item = _.pick(user, 'user_id', 'user_name', 'nickname');
-                return {
-                    ...item,
-                    apps: apps.filter(x => x.user_id === item.user_id).map(app => ({
-                        ...app,
-                        app_id: app.client_id,
-                        app_name: app.client_name
-                    }))
-                };
-            });
-            switch (_.get(data, 'message.type')) {
-                case APPLY_TYPES.DELAY:
-                    if (_.get(apps, '0.delay')) { // 同步修改时间
-                        const delayTime = apps[0].delay;
-                        info.delayTime = delayTime;
-                        this.formData.delay_time = delayTime;
-                        this.getDelayDisplayTime(delayTime);
-                    } else { // 到期时间，点开修改同步到自定义
-                        this.formData.delayTimeUnit = 'custom';
-                        this.formData.end_date = apps[0].end_date;
-                    }
-                    break;
-                case APPLY_TYPES.DISABLE:
-                    info.status = _.get(apps, '0.status');
-                    break;
-            }
-        }
-        info.customer_name = info.message.customer_name;
-        info.comment = info.message.remark;
-        this.detailInfoObj.info = info;
-        this.createAppsSetting();
-        if (_.isArray(apps)) {
-            this.formData.user_name = _.get(apps, '0.user_name');
-            this.formData.nick_name = _.get(apps, '0.nickname');
-        }
-    })
+    
     //生成应用的单独配置
     createAppsSetting() {
         //申请的应用列表
