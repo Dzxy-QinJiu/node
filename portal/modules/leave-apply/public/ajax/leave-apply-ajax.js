@@ -9,7 +9,7 @@ exports.getAllLeaveApplyList = function(queryObj) {
     var Deferred = $.Deferred();
     getAllLeaveApplyListAjax && getAllLeaveApplyListAjax.abort();
     getAllLeaveApplyListAjax = $.ajax({
-        url: '/rest/get/all/sales_opportunity_apply/list',
+        url: '/rest/get/all/leave_apply/list',
         dataType: 'json',
         type: 'get',
         data: queryObj,
@@ -28,7 +28,7 @@ exports.getWorklistLeaveApplyList = function(queryObj) {
     var Deferred = $.Deferred();
     getWorklistLeaveApplyListAjax && getWorklistLeaveApplyListAjax.abort();
     getWorklistLeaveApplyListAjax = $.ajax({
-        url: '/rest/get/worklist/sales_opportunity_apply/list',
+        url: '/rest/get/worklist/leave_apply/list',
         dataType: 'json',
         type: 'get',
         data: queryObj,
@@ -47,7 +47,7 @@ exports.getLeaveApplyDetailById = function(queryObj) {
     var Deferred = $.Deferred();
     getLeaveApplyDetailByIdAjax && getLeaveApplyDetailByIdAjax.abort();
     getLeaveApplyDetailByIdAjax = $.ajax({
-        url: '/rest/sales_opportunity_apply/detail/byId',
+        url: '/rest/leave_apply/detail/byId',
         type: 'get',
         data: queryObj,
         success: function(data) {
@@ -65,7 +65,7 @@ exports.getLeaveApplyCommentList = function(queryObj) {
     var Deferred = $.Deferred();
     getLeaveApplyCommentListAjax && getLeaveApplyCommentListAjax.abort();
     getLeaveApplyCommentListAjax = $.ajax({
-        url: '/rest/get/sales_opportunity_apply/comment/list',
+        url: '/rest/get/leave_apply/comment/list',
         type: 'get',
         data: queryObj,
         success: function(data) {
@@ -83,7 +83,7 @@ exports.addLeaveApplyComments = function(data) {
     var Deferred = $.Deferred();
     addLeaveApplyCommentsAjax && addLeaveApplyCommentsAjax.abort();
     addLeaveApplyCommentsAjax = $.ajax({
-        url: '/rest/add/sales_opportunity_apply/comment',
+        url: '/rest/add/leave_apply/comment',
         dataType: 'json',
         type: 'post',
         data: data,
@@ -102,7 +102,7 @@ exports.approveLeaveApplyPassOrReject = function(obj) {
     var Deferred = $.Deferred();
     approveLeaveApplyPassOrRejectAjax && approveLeaveApplyPassOrRejectAjax.abort();
     approveLeaveApplyPassOrRejectAjax = $.ajax({
-        url: '/rest/business_trip/submitApply',
+        url: '/rest/leave_apply/submitApply',
         dataType: 'json',
         type: 'post',
         data: obj,

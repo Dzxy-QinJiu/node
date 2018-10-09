@@ -15,7 +15,7 @@ function LeaveApplyActions() {
     this.getAllLeaveApplyList = function(queryObj) {
         //需要先获取待审批列表，成功后获取全部列表
         this.dispatch({loading: true, error: false});
-        LeaveApplyAjax.getWorklistLeaveApplyList({type: 'businessopportunities'}).then((workList) => {
+        LeaveApplyAjax.getWorklistLeaveApplyList({type: 'leave'}).then((workList) => {
             this.dispatch({workList: workList});
             //如果是待我审批的列表，不需要在发获取全部列表的请求了
             if (queryObj.status && queryObj.status === 'ongoing'){
@@ -41,14 +41,14 @@ function LeaveApplyActions() {
                 this.dispatch({
                     error: true,
                     loading: false,
-                    errMsg: errorMsg || Intl.get('failed.get.all.leave.apply', '获取全部出差申请失败')
+                    errMsg: errorMsg || Intl.get('failed.get.all.leave.list','获取全部请假申请失败')
                 });});
 
         }, (errorMsg) => {
             this.dispatch({
                 error: true,
                 loading: false,
-                worklistErrMsg: errorMsg || Intl.get('failed.get.worklist.leave.apply', '获取由我审批的出差申请失败')
+                worklistErrMsg: errorMsg || Intl.get('failed.get.worklist.leave.apply', '获取由我审批的请假申请失败')
             });
         });
     };

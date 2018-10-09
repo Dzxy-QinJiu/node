@@ -13,34 +13,30 @@ const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
 };
-import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
-var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 var user = require('PUB_DIR/sources/user-data').getUserData();
 const DEFAULTTIMETYPE = 'day';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
+import { LEAVE_TYPE } from 'PUB_DIR/sources/utils/consts';
 var LeaveApplyAction = require('../action/leave-apply-action');
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
 const DELAY_TIME_RANGE = {
-    SUCCESS_RANGE: 600,
+    SUCCESS_RANGE: 1600,
     ERROR_RANGE: 3000,
-    CLOSE_RANGE: 500
+    CLOSE_RANGE: 1500
 };
 import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
-const ValidateRule = require('PUB_DIR/sources/utils/validate-rule');
-import { num as antUtilsNum } from 'ant-utils';
-const parseAmount = antUtilsNum.parseAmount;
-const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
 class AddLeaveApply extends React.Component {
     constructor(props) {
+        var timeRange = getStartEndTimeOfDiffRange(DEFAULTTIMETYPE, true);
         super(props);
         this.state = {
-            hideCustomerRequiredTip: false,
-            appList: [],
-            search_customer_name: '',
             formData: {
-                customer: {id: '', name: ''},
+                begin_time: DateSelectorUtils.getMilliseconds(timeRange.start_time),//出差开始时间
+                end_time: DateSelectorUtils.getMilliseconds(timeRange.end_time, true),//出差结束时间
+                reason: '',
+                leave_type: 'personal_leave'
             },
         };
     }
@@ -51,8 +47,6 @@ class AddLeaveApply extends React.Component {
 
     componentDidMount() {
         this.addLabelRequiredCls();
-        //获取应用列表
-        this.getAppList();
     }
     componentDidUpdate() {
         this.addLabelRequiredCls();
@@ -86,24 +80,15 @@ class AddLeaveApply extends React.Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) return;
-            values['expectdeal_time'] = moment(values['expectdeal_time']).endOf('day').valueOf();
-            values['customer'] = _.get(this.state, 'formData.customer');
-            var apps = _.cloneDeep(values.apps);
-            values.apps = [];
-            _.forEach(apps,(appId) => {
-                var targetObj = _.find(this.state.appList, clientItem => clientItem.client_id === appId);
-                if (targetObj){
-                    values.apps.push({client_id: targetObj.client_id, client_name: targetObj.client_name});
-                }
-            });
             this.setState({
                 isSaving: true,
                 saveMsg: '',
                 saveResult: ''
             });
-
+            values.begin_time = moment(values.begin_time).valueOf();
+            values.end_time = moment(values.end_time).valueOf();
             $.ajax({
-                url: '/rest/add/sales_opportunity_apply/list',
+                url: '/rest/add/leave_apply/list',
                 dataType: 'json',
                 type: 'post',
                 data: values,
@@ -122,57 +107,57 @@ class AddLeaveApply extends React.Component {
             });
         });
     };
-    getAppList = () => {
-        commonDataUtil.getAllProductList(appList => {
-            this.setState({appList: appList});
-        });
-    };
-    addAssignedCustomer = () => {
-        this.setState({
-            isShowAddCustomer: true
-        });
-    };
-    //关闭添加面板
-    hideAddForm = () => {
-        this.setState({
-            isShowAddCustomer: false
-        });
-    };
-    //渲染添加客户内容
-    renderAddCustomer = () => {
-        return (
-            <CRMAddForm
-                hideAddForm={this.hideAddForm}
-            />
-        );
-    };
-    customerChoosen = (selectedCustomer) => {
+    // 验证起始时间是否小于结束时间
+    validateStartAndEndTime(timeType) {
+        return (rule, value, callback) => {
+            // 如果没有值，则没有错误
+            if (!value) {
+                callback();
+                return;
+            }
+            const begin_time = this.state.formData.begin_time;
+            const endTime = this.state.formData.end_time;
+            const isBeginTime = timeType === 'begin_time' ? true : false;
+            if (endTime && begin_time) {
+                if (moment(endTime).isBefore(begin_time)) {
+                    if (isBeginTime) {
+                        callback(Intl.get('contract.start.time.greater.than.end.time.warning', '起始时间不能大于结束时间'));
+                    } else {
+                        callback(Intl.get('contract.end.time.less.than.start.time.warning', '结束时间不能小于起始时间'));
+                    }
+                } else {
+                    callback();
+                }
+            } else {
+                callback();
+            }
+        };
+    }
+    onBeginTimeChange = (date, dateString) => {
         var formData = this.state.formData;
-        formData.customer.id = selectedCustomer.id;
-        formData.customer.name = selectedCustomer.name;
+        formData.begin_time = moment(date).valueOf();
         this.setState({
             formData: formData
         }, () => {
-            this.props.form.validateFields(['customer'], {force: true});
+            if (this.props.form.getFieldValue('end_time')) {
+                this.props.form.validateFields(['end_time'], {force: true});
+            }
         });
     };
-    checkCustomerName = (rule, value, callback) => {
-        value = $.trim(_.get(this.state, 'formData.customer.id'));
-        if (!value && !this.state.hideCustomerRequiredTip) {
-            callback(new Error(Intl.get('leave.apply.select.customer', '请先选择客户')));
-        } else {
-            callback();
-        }
-    };
-    hideCustomerRequiredTip = (flag) => {
+    onEndTimeChange = (date, dateString) => {
+        var formData = this.state.formData;
+        formData.end_time = moment(date).valueOf();
         this.setState({
-            hideCustomerRequiredTip: flag
-        },() => {
-            this.props.form.validateFields(['customer'], {force: true});
+            formData: formData
+        }, () => {
+            if (this.props.form.getFieldValue('begin_time')) {
+                this.props.form.validateFields(['begin_time'], {force: true});
+            }
         });
     };
 
     render() {
+        var formData = this.state.formData;
         var _this = this;
         var divHeight = $(window).height() - FORMLAYOUT.PADDINGTOTAL;
         const {getFieldDecorator, getFieldValue} = this.props.form;
@@ -192,126 +177,108 @@ class AddLeaveApply extends React.Component {
             return current && current.valueOf() < Date.now();
         };
         return (
-            <RightPanel showFlag={true} data-tracename="添加销售机会申请" className="add-sales-opportunity-container">
-                <span className="iconfont icon-close add-sales-opportunity-apply-close-btn"
+            <RightPanel showFlag={true} data-tracename="添加请假申请" className="add-leave-container">
+                <span className="iconfont icon-close add-leave-apply-close-btn"
                     onClick={this.hideLeaveApplyAddForm}
-                    data-tracename="关闭添加销售机会申请面板"></span>
+                    data-tracename="关闭添加请假申请面板"></span>
 
-                <div className="add-sales-opportunity-apply-wrap">
+                <div className="add-leave-apply-wrap">
                     <BasicData
-                        clueTypeTitle={Intl.get('leave.apply.sales.opportunity.application', '销售机会申请')}
+                        clueTypeTitle={Intl.get('leave.apply.leave.application', '请假申请')}
                     />
                     <div className="add-leave-apply-form-wrap" style={{'height': divHeight}}>
                         <GeminiScrollbar>
                             <div className="add-leave-form">
-                                <Form layout='horizontal' className="sales-clue-form" id="add-sales-opportunity-apply-form">
+                                <Form layout='horizontal' className="sales-clue-form" id="add-leave-apply-form">
                                     <FormItem
-                                        className="form-item-label require-item"
-                                        label={Intl.get('call.record.customer', '客户')}
+                                        className="form-item-label add-apply-time"
+                                        label={Intl.get('contract.120', '开始时间')}
                                         {...formItemLayout}
                                     >
-                                        {getFieldDecorator('customer', {
-                                            rules: [{validator: _this.checkCustomerName}],
-                                            initialValue: ''
+                                        {getFieldDecorator('begin_time', {
+                                            rules: [{
+                                                required: true,
+                                                message: Intl.get('leave.apply.fill.in.start.time','请填写开始时间')
+                                            }, {validator: _this.validateStartAndEndTime('begin_time')}],
+                                            initialValue: moment()
                                         })(
-                                            <CustomerSuggest
-                                                field='customer'
-                                                hasEditPrivilege={true}
-                                                displayText={''}
-                                                displayType={'edit'}
-                                                id={''}
-                                                show_error={this.state.isShowCustomerError}
-                                                noJumpToCrm={true}
-                                                customer_name={''}
-                                                customer_id={''}
-                                                addAssignedCustomer={this.addAssignedCustomer}
-                                                noDataTip={Intl.get('clue.has.no.data', '暂无')}
-                                                hideButtonBlock={true}
-                                                customerChoosen={this.customerChoosen}
-                                                required={true}
-                                                hideCustomerRequiredTip={this.hideCustomerRequiredTip}
+                                            <DatePicker
+                                                showTime={{ format: 'HH:mm' }}
+                                                format="YYYY-MM-DD HH:mm"
+                                                onChange={this.onBeginTimeChange}
+                                                value={formData.begin_time ? moment(formData.begin_time) : moment()}
+                                                disabledDate={disabledDate}
                                             />
                                         )}
                                     </FormItem>
                                     <FormItem
-                                        className="form-item-label"
-                                        label={Intl.get('leave.apply.buget.count','预算')}
+                                        className="form-item-label add-apply-time"
+                                        label={Intl.get('contract.105', '结束时间')}
                                         {...formItemLayout}
                                     >
-                                        {getFieldDecorator('budget', {
-                                            rules: [ValidateRule.getNumberValidateRule(),{required: true,message: Intl.get('crm.order.budget.input', '请输入预算金额')}],
-                                            getValueFromEvent: (event) => {
-                                                // 先remove是处理已经带着逗号的数字，parse后会有多个逗号的问题
-                                                return parseAmount(removeCommaFromNum(event.target.value));
-                                            },
-                                            initialValue: ''
+                                        {getFieldDecorator('end_time', {
+                                            rules: [{
+                                                required: true,
+                                                message: Intl.get('leave.apply.fill.in.end.time', '请填写结束时间')
+                                            }, {validator: _this.validateStartAndEndTime('end_time')}],
+                                            initialValue: moment()
                                         })(
-                                            <Input
-                                                name="budget"
-                                                addonAfter={Intl.get('contract.82', '元')}
+                                            <DatePicker
+                                                showTime={{ format: 'HH:mm' }}
+                                                format="YYYY-MM-DD HH:mm"
+                                                onChange={this.onEndTimeChange}
+                                                value={formData.end_time ? moment(formData.end_time) : moment()}
+                                                disabledDate={disabledDate}
                                             />
                                         )}
                                     </FormItem>
                                     <FormItem
-                                        label={Intl.get('leave.apply.buy.apps','产品')}
-                                        id="apps"
+                                        label={Intl.get('leave.apply.leave.type','请假类型')}
+                                        id="leave_type"
                                         {...formItemLayout}
                                     >
                                         {
-                                            getFieldDecorator('apps',{
-                                                rules: [{required: true, message: Intl.get('leave.apply.select.atleast.one.app','请选择至少一个产品')}],
+                                            getFieldDecorator('leave_type',{
+                                                rules: [{required: true, message: Intl.get('leave.apply.select.at.least.one.type','请选择至少一个请假类型')}],
                                             })(
                                                 <Select
-                                                    mode='multiple'
-                                                    placeholder={Intl.get('leave.apply.select.product','请选择产品')}
-                                                    name="apps"
-                                                    getPopupContainer={() => document.getElementById('add-sales-opportunity-apply-form')}
+                                                    placeholder={Intl.get('leave.apply.select.leave.type','请选择请假类型')}
+                                                    name="leave_type"
+                                                    getPopupContainer={() => document.getElementById('add-leave-apply-form')}
 
                                                 >
-                                                    {_.isArray(this.state.appList) && this.state.appList.length ?
-                                                        this.state.appList.map((appItem, idx) => {
-                                                            return (<Option key={idx} value={appItem.client_id}>{appItem.client_name}</Option>);
+                                                    {_.isArray(LEAVE_TYPE) && LEAVE_TYPE.length ?
+                                                        LEAVE_TYPE.map((leaveItem, idx) => {
+                                                            return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
                                                         }) : null
                                                     }
                                                 </Select>
                                             )}
                                     </FormItem>
                                     <FormItem
-                                        className="form-item-label require-item add-apply-time"
-                                        label={Intl.get('leave.apply.inspect.success.time', '预计成交时间')}
-                                        {...formItemLayout}
-                                    >
-                                        {getFieldDecorator('expectdeal_time', {
-                                            initialValue: moment()
-                                        })(
-                                            <DatePicker
-                                                disabledDate={disabledDate}
-                                            />
-                                        )}
-                                    </FormItem>
-                                    <FormItem
                                         className="form-item-label"
-                                        label={Intl.get('common.remark', '备注')}
+                                        label={Intl.get('leave.apply.leave.reason','请假原因')}
                                         {...formItemLayout}
                                     >
-                                        {getFieldDecorator('remark', {
-                                            initialValue: ''
+                                        {getFieldDecorator('reason', {
+                                            rules: [{required: true, message: Intl.get('leave.apply.fill.in.leave.reason','请填写请假原因')}]
+
                                         })(
                                             <Input
-                                                type="textarea" id="remark" rows="3"
-                                                placeholder={Intl.get('leave.apply.fill.in.remarks','请填写销售机会备注')}
+                                                type="textarea" id="reason" rows="3"
+                                                placeholder={Intl.get('leave.apply.fill.in.leave.reason','请填写请假原因')}
                                             />
                                         )}
                                     </FormItem>
                                     <div className="submit-button-container">
                                         <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
                                             disabled={this.state.isSaving} data-tracename="点击保存添加
-                                            销售机会申请">
+                                            请假申请">
                                             {Intl.get('common.save', '保存')}
                                             {this.state.isSaving ? <Icon type="loading"/> : null}
                                         </Button>
                                         <Button className="cancel-btn" onClick={this.hideLeaveApplyAddForm}
-                                            data-tracename="点击取消添加出差申请按钮">
+                                            data-tracename="点击取消添加请假申请按钮">
                                             {Intl.get('common.cancel', '取消')}
                                         </Button>
                                         <div className="indicator">
@@ -329,7 +296,6 @@ class AddLeaveApply extends React.Component {
                                 </Form>
                             </div>
                         </GeminiScrollbar>
-                        {this.state.isShowAddCustomer ? this.renderAddCustomer() : null}
                     </div>
                 </div>
             </RightPanel>

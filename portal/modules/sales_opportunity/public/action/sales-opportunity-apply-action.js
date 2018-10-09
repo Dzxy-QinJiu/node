@@ -41,45 +41,16 @@ function SalesOpportunityApplyActions() {
                 this.dispatch({
                     error: true,
                     loading: false,
-                    errMsg: errorMsg || Intl.get('failed.get.all.leave.apply', '获取全部出差申请失败')
+                    errMsg: errorMsg || Intl.get('failed.get.all.sales.oppotunity','获取全部销售机会申请失败')
                 });});
 
         }, (errorMsg) => {
             this.dispatch({
                 error: true,
                 loading: false,
-                worklistErrMsg: errorMsg || Intl.get('failed.get.worklist.leave.apply', '获取由我审批的出差申请失败')
+                worklistErrMsg: errorMsg || Intl.get('failed.get.worklist.leave.apply', '获取由我审批的销售机会申请失败')
             });
         });
     };
-
-
-
-
-
-    // this.getSelfApplyList = function() {
-    //     this.dispatch({error: false, loading: true});
-    //     SalesOpportunityApplyAjax.getSelfApplyList().then((data) => {
-    //         this.dispatch({error: false, loading: false, data: data});
-    //     }, (errorMsg) => {
-    //         this.dispatch({
-    //             error: true,
-    //             loading: false,
-    //             errMsg: errorMsg || Intl.get('failed.get.self.leave.apply', '获取我的出差申请失败')
-    //         });
-    //     });
-    // };
-    // this.getWorklistSalesOpportunityApplyList = function() {
-    //     this.dispatch({error: false, loading: true});
-    //     SalesOpportunityApplyAjax.getWorklistSalesOpportunityApplyList().then((data) => {
-    //         this.dispatch({error: false, loading: false, data: data});
-    //     }, (errorMsg) => {
-    //         this.dispatch({
-    //             error: true,
-    //             loading: false,
-    //             errMsg: errorMsg || Intl.get('failed.get.worklist.leave.apply', '获取由我审批的出差申请失败')
-    //         });
-    //     });
-    // };
 }
 module.exports = alt.createActions(SalesOpportunityApplyActions);

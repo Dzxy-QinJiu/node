@@ -2646,5 +2646,50 @@ var en_US = {
     'crm.order.stage.name': 'Stage name',//阶段名称
     'crm.order.stage.name.placeholder': 'Please fill in stage name',//请输入阶段名称
     'crm.order.stage.destrip.palceholder': 'Please fill in stage description',//请输入阶段的描述信息
+    'failed.get.all.leave.apply': 'Failed to get all business trip lists',//获取全部出差申请失败
+    'failed.get.all.sales.oppotunity': 'Failed to get all sales oppotunities',//获取全部销售机会申请失败
+    'failed.get.all.leave.list': 'Failed to get all leave applies',//获取全部请假申请失败
+    'failed.get.self.leave.apply': 'Failed to get my business trip applies',//获取我的出差申请失败
+    'failed.get.worklist.bussiness.apply': 'Failed to get bussiness trip applies to be approved by me',//获取由我审批的出差申请失败
+    'failed.get.worklist.sales.oppotunity.apply': 'Failed to get sales oppotunities to be approved by me',//获取由我审批的销售机会申请失败
+    'failed.get.worklist.leave.apply': 'Failed to get leave applies to be approved by me',//获取由我审批的请假申请失败
+    'add.leave.apply': 'Add apply',//添加申请
+    'failed.add.apply.list': 'Failed to add leave apply',//添加出差申请失败
+    'leave.apply.add.leave.apply': 'Business apply',//出差申请
+    'leave.apply.add.leave.person': 'Business person',//出差人员
+    'leave.apply.add.leave.destination': 'Destination',//目的地
+    'leave.apply.add.leave.reason': 'Business trip reason',//出差事由
+    'leave.apply.select.customer': 'Please select customers first',//请先选择客户
+    'leave.apply.for.city.address': 'Business trip location',//出差地点
+    'leave.apply.for.leave.time': 'Business trip time',//出差时间
+    'leave.apply.for.application': 'Personnel',//人员
+    'leave.apply.application.status': 'Approval status',//审批状态
+    'leave.apply.fill.leave.reason': 'Please fill in the business trip reason',//请填写出差事由
+    'leave.apply.no.filter.leave.list': 'There are no business travel applications that meet the search criteria.',//暂无符合查询条件的出差申请
+    'leave.apply.detail.wait': 'Wait',//待
+    'leave.apply.sales.oppotunity': 'Sales opportunity',//销售机会
+    'leave.apply.leave.application': 'Leave apply',//请假申请
+    'leave.apply.my.worklist.apply': 'Waiting for me to approve',//待我审批
+    'leave.apply.sales.opportunity.application': 'Sales opportunity application',//销售机会申请
+    'leave.apply.inspect.success.time': 'Estimated transaction time',//预计成交时间
+    'leave.apply.buy.apps': 'product',//产品
+    'leave.apply.fill.in.remarks': 'Please fill in the sales opportunity remark',//请填写销售机会备注
+    'leave.apply.buget.count': 'Budget',//预算
+    'leave.apply.select.atleast.one.app': 'Please select at least one product',//请选择至少一个产品
+    'leave.apply.select.product': 'Please select one product',//请选择产品
+    'leave.apply.fill.in.start.time': 'Please fill in the start time',//请填写开始时间
+    'leave.apply.fill.in.end.time': 'Please fill in the end time',//请填写结束时间
+    'leave.apply.no.filter.business.list': 'No sales opportunity application that meets the query conditions',//暂无符合查询条件的销售机会申请
+    'leave.apply.leave.type': 'Leave type',//请假类型
+    'leave.apply.select.at.least.one.type': 'Please select at least one leave type',//请选择至少一个请假类型
+    'leave.apply.select.leave.type': 'Please select one leave type',//请选择请假类型
+    'leave.apply.sick.leave': 'Sick leave',//病假
+    'leave.apply.personnal.leave': 'Personnal leave',//事假
+    'leave.apply.annual.leave': 'Annual leave',//年假
+    'leave.apply.fill.in.leave.reason': 'Please fill in the reason for leave',//请填写请假原因
+    'leave.apply.leave.reason': 'Leave reason',//请假原因
+    'leave.apply.leave.time': 'Leave time',//请假时间
+    'leave.apply.leave.person': 'Leave person',//请假人
+    'leave.apply.no.leave.apply': 'No eligible leave apply'//暂无符合条件的请假申请
 };
 export default en_US;

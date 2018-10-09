@@ -23,9 +23,9 @@ var SalesOpportunityApplyAction = require('../action/sales-opportunity-apply-act
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
 const DELAY_TIME_RANGE = {
-    SUCCESS_RANGE: 600,
+    SUCCESS_RANGE: 1600,
     ERROR_RANGE: 3000,
-    CLOSE_RANGE: 500
+    CLOSE_RANGE: 1500
 };
 import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 const ValidateRule = require('PUB_DIR/sources/utils/validate-rule');

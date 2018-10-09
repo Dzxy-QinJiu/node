@@ -24,9 +24,9 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 import {AntcAreaSelection} from 'antc';
 import Trace from 'LIB_DIR/trace';
 const DELAY_TIME_RANGE = {
-    SUCCESS_RANGE: 600,
+    SUCCESS_RANGE: 1600,
     ERROR_RANGE: 3000,
-    CLOSE_RANGE: 500
+    CLOSE_RANGE: 1500
 };
 class AddBusinessApply extends React.Component {
     constructor(props) {
@@ -288,9 +288,6 @@ class AddBusinessApply extends React.Component {
                                         form={this.props.form}
                                         handleCustomersChange={this.handleCustomersChange}
                                     />
-
-
-
                                     <div className="submit-button-container">
                                         <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
                                             disabled={this.state.isSaving} data-tracename="点击保存添加

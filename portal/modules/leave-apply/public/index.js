@@ -62,7 +62,7 @@ class LeaveApplyManagement extends React.Component {
             order: this.state.order,
             page_size: this.state.page_size,
             id: this.state.lastLeaveApplyId, //用于下拉加载的id
-            type: 'business_opportunities'
+            type: 'personal_leave'
         };
         //如果是选择的全部类型，不需要传status这个参数
         if (this.state.applyListType !== 'all') {
@@ -168,7 +168,7 @@ class LeaveApplyManagement extends React.Component {
             );
             var noDataMsg = (
                 <span>
-                    {Intl.get('leave.apply.no.filter.business.list', '暂无符合查询条件的销售机会申请')}
+                    {Intl.get('leave.apply.no.leave.apply','暂无符合条件的请假申请')}
                     <span>,</span>
                     <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
                         {Intl.get('common.get.again', '重新获取')}

@@ -8,13 +8,13 @@ var restUtil = require('ant-auth-request').restUtil(restLogger);
 var _ = require('lodash');
 var restApis = {
     //添加请假申请
-    addLeaveApply: '/rest/base/v1/workflow/businessopportunities',
+    addLeaveApply: '/rest/base/v1/workflow/leave',
     //查询所有的请假申请
     allWorkFlowApplyList: '/rest/base/v1/workflow/applylist',
     //查询由当前账号审批的请假申请
     applylistWorkFlowWorkList: '/rest/base/v1/workflow/worklist',
     //通过或者驳回申请
-    approveLeaveApplyPassOrReject: '/rest/base/v1/workflow/businessopportunities/approve',
+    approveLeaveApplyPassOrReject: '/rest/base/v1/workflow/leave/approve',
     //获取申请的状态
     getApplyStatusById: '/rest/base/v1/workflow/status',
     //根据请假申请的id查询申请的详情

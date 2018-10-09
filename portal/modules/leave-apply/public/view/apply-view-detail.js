@@ -11,7 +11,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-require('../css/sales-opportunity-apply-detail.less');
+require('../css/leave-apply-detail.less');
 import ApplyDetailRemarks from 'CMP_DIR/apply-detail-remarks';
 import ApplyDetailInfo from 'CMP_DIR/apply-detail-info';
 import ApplyDetailCustomer from 'CMP_DIR/apply-detail-customer';
@@ -20,6 +20,7 @@ import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import {getApplyTopicText, getApplyResultDscr} from 'PUB_DIR/sources/utils/common-method-util';
+import {LEAVE_TYPE} from 'PUB_DIR/sources/utils/consts';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -73,7 +74,7 @@ class ApplyViewDetail extends React.Component {
             //其他状态需要发请求请求回复列表
             if (detailItem.status === 'pass' || detailItem.status === 'reject') {
                 LeaveApplyDetailAction.setApplyComment(detailItem.approve_details);
-                LeaveApplyDetailAction.getLeaveApplyDetailById({id: detailItem.id},detailItem.status);
+                LeaveApplyDetailAction.getLeaveApplyDetailById({id: detailItem.id}, detailItem.status);
             } else if (detailItem.id) {
                 LeaveApplyDetailAction.getLeaveApplyDetailById({id: detailItem.id});
                 LeaveApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
@@ -118,6 +119,11 @@ class ApplyViewDetail extends React.Component {
             customerOfCurUser: {}
         });
     };
+    //重新获取申请的状态
+    refreshApplyStatusList = (e) => {
+        var detailItem = this.props.detailItem;
+        LeaveApplyDetailAction.getLeaveApplyStatusById({id: detailItem.id});
+    };
 
     ShowCustomerUserListPanel = (data) => {
         this.setState({
@@ -125,41 +131,53 @@ class ApplyViewDetail extends React.Component {
             customerOfCurUser: data.customerObj
         });
     };
-
+    getApplyStatusText = (obj) => {
+        if (obj.status === 'pass') {
+            return Intl.get('user.apply.pass', '已通过');
+        } else if (obj.status === 'reject') {
+            return Intl.get('user.apply.reject', '已驳回');
+        } else {
+            if (this.state.replyStatusInfo.result === 'loading') {
+                return (<Icon type="loading"/>);
+            } else if (this.state.replyStatusInfo.errorMsg) {
+                var message = (
+                    <span>{this.state.replyStatusInfo.errorMsg}，<Icon type="reload"
+                        onClick={this.refreshApplyStatusList}
+                        title={Intl.get('common.get.again', '重新获取')}/></span>);
+                return (<Alert message={message} type="error" showIcon={true}/> );
+            } else if (_.isArray(this.state.replyStatusInfo.list)) {
+                //状态可能会有多个
+                return (
+                    <span>{Intl.get('leave.apply.detail.wait', '待') + this.state.replyStatusInfo.list.join(',') + Intl.get('contract.10', '审核')}</span>
+                );
+            }
+        }
+    };
     renderDetailApplyBlock(detailInfo) {
-        var _this = this;
         var detail = detailInfo.detail || {};
-        var expectdeal_time = moment(detail.expectdeal_time).format(oplateConsts.DATE_FORMAT);
-        var customers = _.get(detail, 'customers[0]', {});
-        var applyStatus = this.getApplyStatusText(detailInfo);
-        var productArr = [];
-        _.forEach(detail.apps,(app) => {
-            productArr.push(app.client_name);
+        var begin_time = moment(detail.begin_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+        var end_time = moment(detail.end_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+        var targetObj = _.find(LEAVE_TYPE, (item) => {
+            return item.value === detail.leave_type;
         });
+        var leaveType = '';
+        if (targetObj) {
+            leaveType = targetObj.name;
+        }
+        var applyStatus = this.getApplyStatusText(detailInfo);
         var showApplyInfo = [
             {
-                label: Intl.get('call.record.customer', '客户'),
-                renderText: function() {
-                    return (
-                        <a href="javascript:void(0)"
-                            onClick={_this.showCustomerDetail.bind(this, _.get(detail, 'customer.id'))}
-                        >
-                            {_.get(detail, 'customer.name')}
-                        </a>
-                    );
-                }
+                label: Intl.get('leave.apply.leave.time', '请假时间'),
+                text: begin_time + ' - ' + end_time
             }, {
-                label: Intl.get('leave.apply.buget.count', '预算'),
-                text: detail.budget + Intl.get('contract.82', '元')
+                label: Intl.get('leave.apply.leave.type', '请假类型'),
+                text: leaveType
             }, {
-                label: Intl.get('leave.apply.buy.apps', '产品'),
-                text: productArr.join(',')
+                label: Intl.get('leave.apply.leave.reason', '请假原因'),
+                text: detail.reason
             }, {
-                label: Intl.get('leave.apply.inspect.success.time', '预计成交时间'),
-                text: expectdeal_time
-            }, {
-                label: Intl.get('common.remark', '备注'),
-                text: detail.remark
+                label: Intl.get('leave.apply.leave.person', '请假人'),
+                text: _.get(detailInfo, 'applicant.user_name')
             }, {
                 label: Intl.get('leave.apply.application.status', '审批状态'),
                 text: applyStatus
@@ -356,14 +374,14 @@ class ApplyViewDetail extends React.Component {
             <div className='col-md-8 leave_manage_apply_detail_wrap' data-tracename="出差审批详情界面">
                 <ApplyDetailStatus
                     showLoading={this.state.detailInfoObj.loadingResult === 'loading'}
-                    showErrTip = {this.state.detailInfoObj.loadingResult === 'error'}
+                    showErrTip={this.state.detailInfoObj.loadingResult === 'error'}
                     errMsg={this.state.detailInfoObj.errorMsg}
                     retryFetchDetail={this.retryFetchDetail}
                     showNoData={this.props.showNoData}
                 />
                 {this.renderApplyDetailInfo()}
                 <ApplyApproveStatus
-                    showLoading = {this.state.applyResult.submitResult === 'loading'}
+                    showLoading={this.state.applyResult.submitResult === 'loading'}
                     approveSuccess={this.state.applyResult.submitResult === 'success'}
                     viewApprovalResult={this.viewApprovalResult}
                     approveError={this.state.applyResult.submitResult === 'error'}

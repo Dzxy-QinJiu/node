@@ -8,56 +8,56 @@ module.exports = {
     routes: [
         {
             method: 'get',
-            path: '/rest/get/all/sales_opportunity_apply/list',
+            path: '/rest/get/all/leave_apply/list',
             handler: 'getAllLeaveApplyList',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'get',
-            path: '/rest/get/worklist/sales_opportunity_apply/list',
+            path: '/rest/get/worklist/leave_apply/list',
             handler: 'getWorklistLeaveApplyList',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'post',
-            path: '/rest/add/sales_opportunity_apply/list',
+            path: '/rest/add/leave_apply/list',
             handler: 'addLeaveApply',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'get',
-            path: '/rest/sales_opportunity_apply/detail/byId',
+            path: '/rest/leave_apply/detail/byId',
             handler: 'getLeaveApplyDetailById',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'get',
-            path: '/rest/get/sales_opportunity_apply/comment/list',
+            path: '/rest/get/leave_apply/comment/list',
             handler: 'getLeaveApplyComments',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'post',
-            path: '/rest/add/sales_opportunity_apply/comment',
+            path: '/rest/add/leave_apply/comment',
             handler: 'addLeaveApplyComments',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'post',
-            path: '/rest/sales_opportunity_apply/submitApply',
+            path: '/rest/leave_apply/submitApply',
             handler: 'approveLeaveApplyPassOrReject',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'get',
-            path: '/rest/get/sales_opportunity_apply/status/byId',
+            path: '/rest/get/leave_apply/status/byId',
             handler: 'getLeaveApplyStatusById',
             passport: {
                 needLogin: true

@@ -342,3 +342,13 @@ export const APPLY_TYPES = {
 export const APPLY_MULTI_TYPE_VALUES = [
     APPLY_TYPES.DELAY, APPLY_TYPES.DISABLE
 ];
+//请假申请的请假类型
+export const LEAVE_TYPE = [{
+    name: Intl.get('leave.apply.personnal.leave','事假'), value: 'personal_leave'
+},{
+    name: Intl.get('leave.apply.sick.leave','病假'), value: 'sick_leave'
+},{
+    name: Intl.get('leave.apply.annual.leave', '年假'), value: 'annual_leave'
+},{
+    name: Intl.get('crm.186', '其他'), value: 'other_leave'
+}];
