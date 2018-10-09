@@ -166,7 +166,7 @@ class FilterPanel extends React.Component {
              */
             switch (fieldType) {
                 case 'fieldList':
-                    configObj.group = {name: 'shared', pull: 'clone', put: false};
+                    configObj.group = {name: 'shared', pull: true, put: false};
                     configObj.sort = false;
                     break;
                 default:
