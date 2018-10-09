@@ -2690,6 +2690,7 @@ var en_US = {
     'leave.apply.leave.reason': 'Leave reason',//请假原因
     'leave.apply.leave.time': 'Leave time',//请假时间
     'leave.apply.leave.person': 'Leave person',//请假人
-    'leave.apply.no.leave.apply': 'No eligible leave apply'//暂无符合条件的请假申请
+    'leave.apply.no.leave.apply': 'No eligible leave apply',//暂无符合条件的请假申请
+    'leave.apply.time.range.at.least.one.hour': 'Start and end time should be at least one hour apart'//开始和结束时间应至少相隔一个小时
 };
 export default en_US;

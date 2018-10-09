@@ -14,8 +14,6 @@ const FORMLAYOUT = {
     PADDINGTOTAL: 70,
 };
 var user = require('PUB_DIR/sources/user-data').getUserData();
-const DEFAULTTIMETYPE = 'day';
-var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
 import { LEAVE_TYPE } from 'PUB_DIR/sources/utils/consts';
 var LeaveApplyAction = require('../action/leave-apply-action');
@@ -24,17 +22,20 @@ import Trace from 'LIB_DIR/trace';
 const DELAY_TIME_RANGE = {
     SUCCESS_RANGE: 1600,
     ERROR_RANGE: 3000,
-    CLOSE_RANGE: 1500
+    CLOSE_RANGE: 1500,
+    BEGIN_AND_END_RANGE: 1 * 60 * 60 * 1000//一个小时的毫秒数
 };
-import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+const BEGIN_AND_END_RANGE = {
+    begin_time: moment(),
+    end_time: moment().add(1,'hours')
+};
 class AddLeaveApply extends React.Component {
     constructor(props) {
-        var timeRange = getStartEndTimeOfDiffRange(DEFAULTTIMETYPE, true);
         super(props);
         this.state = {
             formData: {
-                begin_time: DateSelectorUtils.getMilliseconds(timeRange.start_time),//出差开始时间
-                end_time: DateSelectorUtils.getMilliseconds(timeRange.end_time, true),//出差结束时间
+                begin_time: moment(BEGIN_AND_END_RANGE.begin_time).valueOf(),//请假开始时间
+                end_time: moment(BEGIN_AND_END_RANGE.end_time).valueOf(),//请假结束时间
                 reason: '',
                 leave_type: 'personal_leave'
             },
@@ -126,7 +127,13 @@ class AddLeaveApply extends React.Component {
                         callback(Intl.get('contract.end.time.less.than.start.time.warning', '结束时间不能小于起始时间'));
                     }
                 } else {
-                    callback();
+                    //结束时间要比开始时间晚至少一个小时
+                    if (endTime - begin_time < DELAY_TIME_RANGE.BEGIN_AND_END_RANGE){
+                        callback(Intl.get('leave.apply.time.range.at.least.one.hour','开始和结束时间应至少相隔一个小时'));
+                    }else{
+                        callback();
+                    }
+
                 }
             } else {
                 callback();
@@ -200,7 +207,7 @@ class AddLeaveApply extends React.Component {
                                                 required: true,
                                                 message: Intl.get('leave.apply.fill.in.start.time','请填写开始时间')
                                             }, {validator: _this.validateStartAndEndTime('begin_time')}],
-                                            initialValue: moment()
+                                            initialValue: BEGIN_AND_END_RANGE.begin_time
                                         })(
                                             <DatePicker
                                                 showTime={{ format: 'HH:mm' }}
@@ -221,7 +228,7 @@ class AddLeaveApply extends React.Component {
                                                 required: true,
                                                 message: Intl.get('leave.apply.fill.in.end.time', '请填写结束时间')
                                             }, {validator: _this.validateStartAndEndTime('end_time')}],
-                                            initialValue: moment()
+                                            initialValue: BEGIN_AND_END_RANGE.end_time
                                         })(
                                             <DatePicker
                                                 showTime={{ format: 'HH:mm' }}
