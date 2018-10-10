@@ -4,7 +4,7 @@
 
 export function getChanceTeamChart() {
     return {
-        title: '团队统计',
+        title: '团队统计(假数据)',
         url: '/rest/analysis/contract_v2/statistics',
         argCallback: (arg) => {
             const query = arg.query;

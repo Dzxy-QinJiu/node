@@ -4,7 +4,7 @@
 
 export function getChanceSourceChart() {
     return {
-        title: '来源统计',
+        title: '来源统计(假数据)',
         url: '/rest/analysis/contract_v2/statistics',
         argCallback: (arg) => {
             const query = arg.query;
