@@ -91,20 +91,6 @@ function listenOnMessage(data) {
                 //待审批数减一
                 updateUnreadByPushMessage('approve', false);
                 break;
-            case 'repay':
-                //回款类型
-                //notifyRepayInfo(data);
-                break;
-            case 'customer':
-                //客户提醒(包含用户过期提醒)
-                notifyCustomerInfo(data);
-                //将客户提醒的未读数加一
-                updateUnreadByPushMessage('customer', true);
-                break;
-            case 'system':
-                //系统通知
-                //notifySystemInfo(data);
-                break;
         }
     }
 }
