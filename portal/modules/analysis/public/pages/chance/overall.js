@@ -19,5 +19,7 @@ function getCharts() {
         chanceChart.getChanceSourceChart(),
         //团队统计
         chanceChart.getChanceTeamChart(),
+        //成交率统计
+        chanceChart.getChanceDealChart(),
     ];
 }
