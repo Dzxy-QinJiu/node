@@ -17,5 +17,7 @@ function getCharts() {
     return [
         //来源统计
         chanceChart.getChanceSourceChart(),
+        //团队统计
+        chanceChart.getChanceTeamChart(),
     ];
 }
