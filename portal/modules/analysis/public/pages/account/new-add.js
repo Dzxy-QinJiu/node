@@ -17,7 +17,7 @@ module.exports = {
 function getCharts() {
     return [
         //趋势统计
-        accountChart.getUserTrendChart(),
+        accountChart.getUserTrendChart('added', '趋势统计'),
         //用户类型
         accountChart.getTypeChart(),
         //地域统计
