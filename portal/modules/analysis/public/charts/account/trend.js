@@ -1,8 +1,8 @@
 /**
- * 用户统计
+ * 总数趋势统计
  */
 
-export function getUserChart(type = 'total') {
+export function getUserTrendChart(type = 'total') {
     return {
         title: Intl.get('user.analysis.total', '用户统计'),
         url: `/rest/analysis/user/v1/:auth_type/${type}/summary`,
