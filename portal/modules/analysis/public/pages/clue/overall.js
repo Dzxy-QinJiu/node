@@ -25,5 +25,7 @@ function getCharts() {
         clueChart.getClassifyChart(),
         //有效性统计
         clueChart.getAvailabilityChart(),
+        //成交额及成交数统计
+        clueChart.getClueDealChart(),
     ];
 }
