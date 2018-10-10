@@ -96,9 +96,11 @@ function listenOnMessage(data) {
 }
 //处理线索的数据
 function clueUnhandledListener(data) {
-    //只有管理员或者运营人员才处理
-    if (_.isObject(data) && getClueUnhandledPrivilege()) {
-        updateUnreadByPushMessage('unhandleClue', data.clue_list.length);
+    if (_.isObject(data)) {
+        //只有管理员或者运营人员才处理
+        if (getClueUnhandledPrivilege()){
+            updateUnreadByPushMessage('unhandleClue', data.clue_list.length);
+        }
         var clueArr = _.get(data, 'clue_list');
         var title = Intl.get('clue.has.distribute.clue','您有新的线索'),tipContent = '';
         if (canPopDesktop()) {
@@ -584,6 +586,9 @@ function getMessageCount(callback) {
     if (getClueUnhandledPrivilege()){
         var data = getUnhandledClueCountParams();
         getClueUnreadNum(data, callback);
+    }else{
+        //运营人员和普通销售即使没有获取未读数的权限，但是在有分配给他的线索的时候，他也要收到弹窗
+        callback('unhandleClue');
     }
     //获取未读回复列表
     if(hasPrivilege('GET_MEMBER_APPLY_LIST')){
