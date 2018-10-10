@@ -16,6 +16,6 @@ module.exports = {
 
 function getCharts() {
     return [
-        customerChart.getCustomerDealChart('dealed', '团队或个人成交分析'),
+        customerChart.getCustomerDealChart('dealed', '团队或个人成交分析(假数据)'),
     ];
 }

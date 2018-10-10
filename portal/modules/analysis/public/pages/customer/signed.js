@@ -16,9 +16,9 @@ module.exports = {
 
 function getCharts() {
     return [
-        customerChart.getCustomerTrendChart('dealed', '签约客户总体趋势'),
-        customerChart.getCustomerTrendChart('dealed', '新签约客户趋势'),
-        customerChart.getCustomerIndustryChart('dealed', '新签行业分布'),
-        customerChart.getCustomerTeamChart('dealed', '新签团队分布'),
+        customerChart.getCustomerTrendChart('dealed', '签约客户总体趋势(假数据)'),
+        customerChart.getCustomerTrendChart('dealed', '新签约客户趋势(假数据)'),
+        customerChart.getCustomerIndustryChart('dealed', '新签行业分布(假数据)'),
+        customerChart.getCustomerTeamChart('dealed', '新签团队分布(假数据)'),
     ];
 }

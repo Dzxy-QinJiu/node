@@ -4,7 +4,7 @@
 
 export function getCustomerRemainChart(type = 'total') {
     return {
-        title: '留存统计',
+        title: '留存统计(假数据)',
         url: '/rest/analysis/user/v1/retention',
         chartType: 'table',
         option: {

@@ -19,12 +19,12 @@ function getCharts() {
         //试用合格客户数统计
         customerChart.getCustomerTrialEffectiveChart(),
         //趋势统计
-        customerChart.getCustomerTrendChart(),
+        customerChart.getCustomerTrendChart('total', '趋势统计(假数据)'),
         //历史净增
-        customerChart.getCustomerTrendChart('total', '历史净增'),
+        customerChart.getCustomerTrendChart('total', '历史净增(假数据)'),
         //地域统计
-        customerChart.getCustomerZoneChart(),
+        customerChart.getCustomerZoneChart('total', '地域统计(假数据)'),
         //行业统计
-        customerChart.getCustomerIndustryChart(),
+        customerChart.getCustomerIndustryChart('total', '行业统计(假数据)'),
     ];
 }

@@ -16,6 +16,11 @@ module.exports = {
 
 function getCharts() {
     return [
+        //阶段统计
         orderChart.getOrderStageChart(),
+        //各阶段数量趋势
+        orderChart.getOrderTrendChart(),
+        //转化率趋势
+        orderChart.getOrderConvertChart(),
     ];
 }

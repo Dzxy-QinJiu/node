@@ -16,9 +16,9 @@ module.exports = {
 
 function getCharts() {
     return [
-        customerChart.getCustomerTrendChart('dealed', '流失客户趋势'),
-        customerChart.getCustomerLossCashChart('dealed', '流失现金统计'),
-        customerChart.getCustomerZoneChart('dealed', '区域分析'),
-        customerChart.getCustomerLossReasonChart('dealed', '流失原因统计'),
+        customerChart.getCustomerTrendChart('dealed', '流失客户趋势(假数据)'),
+        customerChart.getCustomerLossCashChart('dealed', '流失现金统计(假数据)'),
+        customerChart.getCustomerZoneChart('dealed', '区域分析(假数据)'),
+        customerChart.getCustomerLossReasonChart('dealed', '流失原因统计(假数据)'),
     ];
 }
