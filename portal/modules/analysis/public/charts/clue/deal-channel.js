@@ -4,7 +4,7 @@
 
 export function getClueDealChannelChart() {
     return {
-        title: '成交数渠道分布',
+        title: '成交数渠道分布(假数据)',
         url: '/rest/analysis/contract_v2/statistics',
         argCallback: (arg) => {
             const query = arg.query;
