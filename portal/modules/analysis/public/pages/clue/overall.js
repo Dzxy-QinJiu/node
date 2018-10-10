@@ -27,5 +27,7 @@ function getCharts() {
         clueChart.getAvailabilityChart(),
         //成交额及成交数统计
         clueChart.getClueDealChart(),
+        //成交数渠道分布
+        clueChart.getClueDealChannelChart(),
     ];
 }
