@@ -134,7 +134,24 @@ UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
                         durationArray.push({date: data.timestamp, sum: seconds});
                     });
                 }
-                item.loginChartInfo.loginDuration = durationArray;
+                let completeDurationList = durationArray;
+                if (completeDurationList.length && completeDurationList.length < 365) {
+                    const endDate = completeDurationList[completeDurationList.length - 1].date;
+                    completeDurationList = Array.from({length: 365}, (x, idx) => {
+                        const startDate = moment(endDate).subtract(1, 'years');
+                        const dayItem = {
+                            date: startDate.add(idx, 'days').valueOf(),
+                            sum: 0
+                        };
+                        durationArray.forEach(item => {
+                            if (moment(dayItem.date).format('YYYY MM DD') === moment(item.date).format('YYYY MM DD')) {
+                                dayItem.sum = item.sum;
+                            }
+                        });
+                        return dayItem;
+                    });
+                }
+                item.loginChartInfo.loginDuration = completeDurationList;
                 let firstLoginTime = '', lastLoginTime = '';
                 if (durationArray.length) {
                     let firstLoginObj = durationArray[0];
