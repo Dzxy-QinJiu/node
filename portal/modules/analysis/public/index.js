@@ -96,21 +96,23 @@ class CurtaoAnalysis extends React.Component {
     };
 
     processMenu(menus, subMenuField = 'pages') {
-        _.each(menus, (menu, index) => {
+        return _.filter(menus, menu => {
             if (menu.privileges) {
                 const foundPrivilege = _.find(menu.privileges, privilege => hasPrivilege(privilege));
 
                 if (foundPrivilege) {
-                    const subMenus = menu[subMenuField];
+                    let subMenus = menu[subMenuField];
 
-                    this.processMenu(subMenus);
+                    if (subMenus) {
+                        subMenus = this.processMenu(subMenus);
+                    }
+
+                    return true;
                 } else {
-                    menus.splice(index, 1);
+                    return false;
                 }
             }
         });
-
-        return menus;
     }
 
     //处理一级菜单变更事件
