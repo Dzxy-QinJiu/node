@@ -6,6 +6,8 @@ export function getContractPerformanceChart() {
     return {
         title: '完成情况统计(假数据)',
         url: '/rest/analysis/contract_v2/statistics',
+        layout: {sm: 24},
+        height: 'auto',
         argCallback: (arg) => {
             const query = arg.query;
 
