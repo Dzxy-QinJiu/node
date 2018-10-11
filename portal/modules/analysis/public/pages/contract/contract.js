@@ -19,5 +19,9 @@ function getCharts() {
         contractChart.getContractNewChart(),
         //近3个月新增合同周趋势图
         contractChart.getContractTrendChart(),
+        //合同额分段统计
+        contractChart.getContractSectionChart(),
+        //成交周期分析
+        contractChart.getContractCycleChart(),
     ];
 }
