@@ -858,17 +858,6 @@ const ApplyViewDetail = createReactClass({
                                 <div key={item}>{item}</div>
                             );
                         });
-                    } else if (this.isUnApproved() && hasPrivilege('UPDATE_APP_EXTRA_GRANT')) {//待审批状态并且有配置角色的权限时
-                        return (
-                            <a href="javascript:void(0)"
-                                title={Intl.get('user.apply.detail.table.no.role.title', '配置应用')}
-                                onClick={this.showAppConfigPanel.bind(this, app, app.user_type)}
-                                data-tracename="点击了请配置"
-                            >
-                                {Intl.get('user.apply.detail.table.no.role', '请配置')}
-                            </a>);
-                    } else {
-                        return <span>{Intl.get('sales.home.role.null', '未设置角色')}</span>;
                     }
                 }
             });
@@ -987,17 +976,6 @@ const ApplyViewDetail = createReactClass({
                             <div key={item}>{item}</div>
                         );
                     });
-                } else if (this.isUnApproved() && hasPrivilege('UPDATE_APP_EXTRA_GRANT')) {//待审批状态并且有配置角色的权限时
-                    return (
-                        <a href="javascript:void(0)"
-                            title={Intl.get('user.apply.detail.table.no.role.title', '配置应用')}
-                            onClick={this.showAppConfigPanel.bind(this, app, app.user_type)}
-                            data-tracename="点击了请配置"
-                        >
-                            {Intl.get('user.apply.detail.table.no.role', '请配置')}
-                        </a>);
-                } else {
-                    return <span>{Intl.get('sales.home.role.null', '未设置角色')}</span>;
                 }
             }
         });
@@ -2200,23 +2178,6 @@ const ApplyViewDetail = createReactClass({
                                 userId={this.state.rightPanelUserId}
                             /> : null
                         }
-                        {
-                            this.state.rightPanelAppConfig ?
-                                <UserTypeConfigForm
-                                    togglePageChange={this.showAppConfigRightPanle}
-                                    addUserTypeConfigInfoShow={true}
-                                    appId={this.state.rightPanelAppConfig.app_id}
-                                    appName={this.state.rightPanelAppConfig.app_name}
-                                    item={this.state.appConfig}
-                                    handleCancel={this.handleCancel}
-                                    handleSaveAppConfig={this.handleSaveAppConfig}
-                                /> : null
-                        }
-                    </RightPanel> : null}
-                {this.state.showRightPanel && this.state.rightPanelAppConfig ?
-                    <RightPanel
-                        className="apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel apply-detail-config-form"
-                        showFlag={this.state.showRightPanel}>
                         {
                             this.state.rightPanelAppConfig ?
                                 <UserTypeConfigForm
