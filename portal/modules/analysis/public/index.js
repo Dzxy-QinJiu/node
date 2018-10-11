@@ -33,10 +33,12 @@ class CurtaoAnalysis extends React.Component {
     constructor(props) {
         super(props);
 
+        const processedGroups = this.processMenu(groups);
+
         this.state = {
             currentMenuIndex: '0,0',
-            currentCharts: _.get(groups, '[0].pages[0].charts'),
-            groups: this.processMenu(groups),
+            currentCharts: _.get(processedGroups, '[0].pages[0].charts'),
+            groups: this.processMenu(processedGroups),
             isAppSelectorShow: false,
         };
     }
