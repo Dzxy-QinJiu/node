@@ -125,6 +125,9 @@ class AddBusinessApply extends React.Component {
                 if (customerItem['remarks']) {
                     formData.reason += customerItem['remarks'];
                 }
+                if(!customerItem.id){
+                    return;
+                }
             });
 
             $.ajax({
