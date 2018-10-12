@@ -440,7 +440,7 @@ exports.callOut = function(req, res, queryObj) {
 exports.getUserPhoneNumber = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: crmRestApis.getUserPhoneNumber.replace(':user_id', req.params.member_id),
+            url: crmRestApis.getUserPhoneNumber.replace(':user_id', req.params.user_id),
             req: req,
             res: res
         }, null);
