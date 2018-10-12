@@ -185,7 +185,7 @@ class AddSalesOpportunityApply extends React.Component {
         };
         let saveResult = this.state.saveResult;
         const disabledDate = function(current) {
-            //不允许选择大于当前的日期
+            //不允许选择大于当前的时刻
             return current && current.valueOf() < Date.now();
         };
         return (

@@ -65,6 +65,8 @@ exports.addLeaveApplyComments = function(req, res) {
                 comment_time: replyTime
             };
             res.status(200).json(replyItem);
+        }else{
+            res.status(200).json({});
         }
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
