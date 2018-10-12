@@ -100,38 +100,6 @@ LeaveApplyStore.prototype.getAllLeaveApplyList = function(obj) {
         }
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 LeaveApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {
     this.selectedDetailItem = obj;
     this.selectedDetailItemIdx = idx;
@@ -139,8 +107,6 @@ LeaveApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {
 LeaveApplyStore.prototype.changeApplyListType = function(type) {
     this.applyListType = type;
     this.lastApplyId = '';
-    // this.showUpdateTip = false;
-    // this.isCheckUnreadApplyList = false;
 };
 LeaveApplyStore.prototype.changeApplyAgreeStatus = function(message) {
     this.selectedDetailItem.status = message.agree;

@@ -19,12 +19,7 @@ import { LEAVE_TYPE } from 'PUB_DIR/sources/utils/consts';
 var LeaveApplyAction = require('../action/leave-apply-action');
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
-const DELAY_TIME_RANGE = {
-    SUCCESS_RANGE: 1600,
-    ERROR_RANGE: 3000,
-    CLOSE_RANGE: 1500,
-    BEGIN_AND_END_RANGE: 1 * 60 * 60 * 1000//一个小时的毫秒数
-};
+import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 const BEGIN_AND_END_RANGE = {
     begin_time: moment(),
     end_time: moment().add(1,'hours')
@@ -42,17 +37,12 @@ class AddLeaveApply extends React.Component {
         };
     }
 
-    onStoreChange = () => {
-
-    };
-
     componentDidMount() {
         this.addLabelRequiredCls();
     }
     componentDidUpdate() {
         this.addLabelRequiredCls();
     }
-
     addLabelRequiredCls() {
         if (!$('.add-leave-apply-form-wrap form .require-item label').hasClass('ant-form-item-required')) {
             $('.add-leave-apply-form-wrap form .require-item label').addClass('ant-form-item-required');
@@ -179,10 +169,6 @@ class AddLeaveApply extends React.Component {
             },
         };
         let saveResult = this.state.saveResult;
-        const disabledDate = function(current) {
-            //不允许选择大于当前天的日期
-            return current && current.valueOf() < Date.now();
-        };
         return (
             <RightPanel showFlag={true} data-tracename="添加请假申请" className="add-leave-container">
                 <span className="iconfont icon-close add-leave-apply-close-btn"
@@ -214,7 +200,6 @@ class AddLeaveApply extends React.Component {
                                                 format="YYYY-MM-DD HH:mm"
                                                 onChange={this.onBeginTimeChange}
                                                 value={formData.begin_time ? moment(formData.begin_time) : moment()}
-                                                disabledDate={disabledDate}
                                             />
                                         )}
                                     </FormItem>
@@ -235,7 +220,6 @@ class AddLeaveApply extends React.Component {
                                                 format="YYYY-MM-DD HH:mm"
                                                 onChange={this.onEndTimeChange}
                                                 value={formData.end_time ? moment(formData.end_time) : moment()}
-                                                disabledDate={disabledDate}
                                             />
                                         )}
                                     </FormItem>

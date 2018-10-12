@@ -352,3 +352,9 @@ export const LEAVE_TYPE = [{
 },{
     name: Intl.get('crm.186', '其他'), value: 'other_leave'
 }];
+export const DELAY_TIME_RANGE = {
+    SUCCESS_RANGE: 1600,
+    ERROR_RANGE: 3000,
+    CLOSE_RANGE: 1500,
+    BEGIN_AND_END_RANGE: 1 * 60 * 60 * 1000//一个小时的毫秒数
+};

@@ -395,3 +395,18 @@ exports.getApplyResultDscr = function(detailInfoObj) {
     }
     return resultDscr;
 };
+exports.getApplyStatusDscr = function(applyStatus) {
+    let applyType = '';
+    switch (applyStatus) {
+        case 'ongoing':
+            applyType = Intl.get('leave.apply.my.worklist.apply', '待我审批');
+            break;
+        case 'pass':
+            applyType = Intl.get('user.apply.pass', '已通过');
+            break;
+        case 'reject':
+            applyType = Intl.get('leave.apply.approve.rejected','被驳回');
+            break;
+    }
+    return applyType;
+};

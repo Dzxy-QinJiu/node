@@ -2713,6 +2713,7 @@ var zh_CN = {
     'leave.apply.leave.time': '请假时间',
     'leave.apply.leave.person': '请假人',
     'leave.apply.no.leave.apply': '暂无符合条件的请假申请',
-    'leave.apply.time.range.at.least.one.hour': '开始和结束时间应至少相隔一个小时'
+    'leave.apply.time.range.at.least.one.hour': '开始和结束时间应至少相隔一个小时',
+    'leave.apply.approve.rejected': '被驳回'
 };
 export default zh_CN;

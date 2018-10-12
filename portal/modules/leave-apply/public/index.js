@@ -23,7 +23,7 @@ var LeaveApplyUtils = require('./utils/leave-apply-utils');
 let userData = require('../../../public/sources/user-data');
 class LeaveApplyManagement extends React.Component {
     state = {
-        showAddApplyPanel: false,//是否展示添加销售机会申请面板
+        showAddApplyPanel: false,//是否展示添加请假申请面板
         ...LeaveApplyStore.getState()
     };
 
@@ -35,13 +35,6 @@ class LeaveApplyManagement extends React.Component {
         LeaveApplyStore.listen(this.onStoreChange);
         //不区分角色，都获取全部的申请列表
         this.getAllLeaveApplyList();
-        // //如果是普通销售，就获取自己的申请列表
-        // if (userData.getUserData().isCommonSales){
-        //     this.getSelfLeaveApplyList();
-        // }else{
-        // // 如果是管理员或者是销售领导，就获取要由自己审批的申请列表
-        // this.getAllLeaveApplyList();
-        // }
         LeaveApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
     }
 
@@ -225,7 +218,7 @@ class LeaveApplyManagement extends React.Component {
                     <TopNav.MenuList />
                 </TopNav>
                 <div className="leave-apply-list-detail-wrap">
-                    <div className="col-md-4 leave-apply-list" data-tracename="销售机会申请列表">
+                    <div className="col-md-4 leave-apply-list" data-tracename="请假申请列表">
                         <ApplyDropdownAndAddBtn
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}

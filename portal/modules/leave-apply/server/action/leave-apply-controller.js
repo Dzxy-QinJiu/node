@@ -4,7 +4,8 @@
  * Created by zhangshujuan on 2018/9/10.
  */
 var LeaveApplyService = require('../service/leave-apply-service');
-
+var moment = require('moment');
+var _ = require('lodash');
 exports.getAllLeaveApplyList = function(req, res) {
     LeaveApplyService.getAllLeaveApplyList(req, res).on('success', function(data) {
         data = handleNodata(data);
@@ -53,8 +54,18 @@ exports.getLeaveApplyComments = function(req, res) {
     });
 };
 exports.addLeaveApplyComments = function(req, res) {
-    LeaveApplyService.addLeaveApplyComments(req, res).on('success', function(data) {
-        res.status(200).json(data);
+    LeaveApplyService.addLeaveApplyComments(req, res).on('success', function(replyData) {
+        if (_.isObject(replyData)) {
+            //创建回复数据，直接添加到store的回复数组后面
+            let replyTime = replyData.comment_time ? replyData.comment_time : moment().valueOf();
+            let replyItem = {
+                user_id: replyData.user_id || '',
+                user_name: replyData.user_name || '',
+                comment: replyData.comment || '',
+                comment_time: replyTime
+            };
+            res.status(200).json(replyItem);
+        }
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });

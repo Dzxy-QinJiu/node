@@ -50,17 +50,7 @@ function ApplyViewDetailActions() {
     this.addLeaveApplyComments = function(obj) {
         this.dispatch({loading: true, error: false});
         LeaveApplyAjax.addLeaveApplyComments(obj).then((replyData) => {
-            if (_.isObject(replyData)) {
-                //创建回复数据，直接添加到store的回复数组后面
-                let replyTime = replyData.comment_time ? replyData.comment_time : moment().valueOf();
-                let replyItem = {
-                    user_id: replyData.user_id || '',
-                    user_name: replyData.user_name || '',
-                    comment: replyData.comment || '',
-                    comment_time: replyTime
-                };
-                this.dispatch({loading: false, error: false, reply: replyItem});
-            }
+            this.dispatch({loading: false, error: false, reply: replyData});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });

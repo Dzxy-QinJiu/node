@@ -23,11 +23,7 @@ var BusinessApplyAction = require('../action/business-apply-action');
 import AlertTimer from 'CMP_DIR/alert-timer';
 import {AntcAreaSelection} from 'antc';
 import Trace from 'LIB_DIR/trace';
-const DELAY_TIME_RANGE = {
-    SUCCESS_RANGE: 1600,
-    ERROR_RANGE: 3000,
-    CLOSE_RANGE: 1500
-};
+import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 class AddBusinessApply extends React.Component {
     constructor(props) {
         super(props);
