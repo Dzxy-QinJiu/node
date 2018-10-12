@@ -345,7 +345,7 @@ exports.callOut = function(req, res) {
 
 // 获取电话座机号
 exports.getUserPhoneNumber = function(req, res) {
-    crmService.getUserPhoneNumber(req, res, req.params).on('success', function(data) {
+    crmService.getUserPhoneNumber(req, res).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);

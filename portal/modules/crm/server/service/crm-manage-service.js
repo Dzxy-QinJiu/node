@@ -437,10 +437,10 @@ exports.callOut = function(req, res, queryObj) {
 };
 
 // 获取电话座机号
-exports.getUserPhoneNumber = function(req, res, member_id) {
+exports.getUserPhoneNumber = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: crmRestApis.getUserPhoneNumber.replace(':user_id', member_id),
+            url: crmRestApis.getUserPhoneNumber.replace(':user_id', req.params.member_id),
             req: req,
             res: res
         }, null);
