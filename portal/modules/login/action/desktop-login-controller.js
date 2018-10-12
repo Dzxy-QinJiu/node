@@ -16,6 +16,8 @@ var DesktopLoginService = require('../service/desktop-login-service');
 var UserDto = require('../../../lib/utils/user-dto');
 let BackendIntl = require('../../../../portal/lib/utils/backend_intl');
 const Promise = require('bluebird');
+const commonUtil = require('../../../lib/utils/common-utils');
+
 /**
  * 首页
  * @param req
@@ -62,9 +64,9 @@ exports.showLoginPage = function(req, res) {
 
     function renderHtml() {
         var styleContent = global.__STYLE_COLLECTOR__;
-        let isCurtao = req.host === global.config.curtaoUrl;
         //ketao上的登录页
         let formHtml = ReactDOMServer.renderToString(LoginForm(obj));
+        let isCurtao = commonUtil.method.isCurtao(req);
         //正式发版的curtao上，展示带注册的登录界面，
         if(isCurtao){
             formHtml = ReactDOMServer.renderToString(LoginCurtaoForm(obj));

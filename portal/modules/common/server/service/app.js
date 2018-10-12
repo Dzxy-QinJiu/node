@@ -21,6 +21,7 @@ var _ = require('lodash');
 var Promise = require('bluebird');
 var EventEmitter = require('events').EventEmitter;
 let BackendIntl = require('../../../../lib/utils/backend_intl');
+const commonUtil = require('../../../../lib/utils/common-utils');
 
 //根据当前用户数据权限，获取应用列表
 exports.getGrantApplications = function(req,res,status) {
@@ -171,7 +172,7 @@ function hasGetProductPrivilege(req) {
 //获取所有的产品列表
 exports.getAllProductList = function(req, res) {
     var emitter = new EventEmitter();
-    let isCurtao = req.host === global.config.curtaoUrl;
+    let isCurtao = commonUtil.method.isCurtao(req);
     //curtao: 只获取产品列表
     let promiseList = [];
     if (hasGetProductPrivilege(req)) {

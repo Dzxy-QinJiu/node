@@ -117,8 +117,16 @@ var FileUtil = {
     }
 };
 
+var methodUtil = {
+    //是否是curtao
+    isCurtao: function(req) {
+        return req.hostname === global.config.curtaoUrl;
+    }
+};
+
 module.exports = {
     html: HtmlUtil,
     ip: IPUtil,
-    file: FileUtil
+    file: FileUtil,
+    method: methodUtil
 };
