@@ -379,6 +379,8 @@ exports.getApplyTopicText = function(obj){
         return Intl.get('leave.apply.add.leave.apply', '出差申请');
     }else if (obj.topic === 'business_opportunities'){
         return Intl.get('leave.apply.sales.opportunity.application', '销售机会申请');
+    }else if (obj.topic === 'personal_leave'){
+        return Intl.get('leave.apply.leave.application', '请假申请');
     }
 };
 exports.getApplyResultDscr = function(detailInfoObj) {
@@ -392,4 +394,19 @@ exports.getApplyResultDscr = function(detailInfoObj) {
             break;
     }
     return resultDscr;
+};
+exports.getApplyStatusDscr = function(applyStatus) {
+    let applyType = '';
+    switch (applyStatus) {
+        case 'ongoing':
+            applyType = Intl.get('leave.apply.my.worklist.apply', '待我审批');
+            break;
+        case 'pass':
+            applyType = Intl.get('user.apply.pass', '已通过');
+            break;
+        case 'reject':
+            applyType = Intl.get('leave.apply.approve.rejected','被驳回');
+            break;
+    }
+    return applyType;
 };

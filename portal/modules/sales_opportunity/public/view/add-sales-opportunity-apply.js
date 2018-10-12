@@ -22,11 +22,7 @@ import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-ut
 var SalesOpportunityApplyAction = require('../action/sales-opportunity-apply-action');
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
-const DELAY_TIME_RANGE = {
-    SUCCESS_RANGE: 600,
-    ERROR_RANGE: 3000,
-    CLOSE_RANGE: 500
-};
+import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 const ValidateRule = require('PUB_DIR/sources/utils/validate-rule');
 import { num as antUtilsNum } from 'ant-utils';
@@ -188,7 +184,7 @@ class AddSalesOpportunityApply extends React.Component {
         };
         let saveResult = this.state.saveResult;
         const disabledDate = function(current) {
-            //不允许选择大于当前天的日期
+            //不允许选择大于当前的时刻
             return current && current.valueOf() < Date.now();
         };
         return (

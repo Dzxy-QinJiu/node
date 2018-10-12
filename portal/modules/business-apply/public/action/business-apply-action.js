@@ -49,7 +49,7 @@ function BusinessApplyActions() {
             this.dispatch({
                 error: true,
                 loading: false,
-                worklistErrMsg: errorMsg || Intl.get('failed.get.worklist.leave.apply', '获取由我审批的出差申请失败')
+                worklistErrMsg: errorMsg || Intl.get('failed.get.worklist.bussiness.apply', '获取由我审批的出差申请失败')
             });
         });
     };
@@ -73,7 +73,7 @@ function BusinessApplyActions() {
             this.dispatch({
                 error: true,
                 loading: false,
-                errMsg: errorMsg || Intl.get('failed.get.worklist.leave.apply', '获取由我审批的出差申请失败')
+                errMsg: errorMsg || Intl.get('failed.get.worklist.bussiness.apply', '获取由我审批的出差申请失败')
             });
         });
     };

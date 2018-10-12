@@ -168,7 +168,7 @@ class SalesOpportunityApplyManagement extends React.Component {
             );
             var noDataMsg = (
                 <span>
-                    {Intl.get('leave.apply.no.filter.leave.list', '暂无符合查询条件的出差申请')}
+                    {Intl.get('leave.apply.no.filter.business.list', '暂无符合查询条件的销售机会申请')}
                     <span>,</span>
                     <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
                         {Intl.get('common.get.again', '重新获取')}
@@ -202,17 +202,7 @@ class SalesOpportunityApplyManagement extends React.Component {
     render() {
         var addPanelWrap = classNames({'show-add-modal': this.state.showAddApplyPanel});
         var applyListHeight = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
-        var applyType = '';
-        if (this.state.applyListType === 'ongoing') {
-            applyType = Intl.get('user.apply.false', '待审批');
-        } else if (this.state.applyListType === 'pass') {
-            applyType = Intl.get('user.apply.pass', '已通过');
-        } else if (this.state.applyListType === 'reject') {
-            applyType = '被驳回';
-        }
-        // else if (this.state.applyListType === 'cancel') {
-        //     applyType = Intl.get('user.apply.backout', '已撤销');
-        // }
+        var applyType = commonMethodUtil.getApplyStatusDscr(this.state.applyListType);
         var noShowApplyDetail = this.state.applyListObj.list.length === 0;
         //申请详情数据
         var applyDetail = null;

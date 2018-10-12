@@ -41,14 +41,14 @@ function SalesOpportunityApplyActions() {
                 this.dispatch({
                     error: true,
                     loading: false,
-                    errMsg: errorMsg || Intl.get('failed.get.all.leave.apply', '获取全部出差申请失败')
+                    errMsg: errorMsg || Intl.get('failed.get.all.sales.oppotunity','获取全部销售机会申请失败')
                 });});
 
         }, (errorMsg) => {
             this.dispatch({
                 error: true,
                 loading: false,
-                worklistErrMsg: errorMsg || Intl.get('failed.get.worklist.leave.apply', '获取由我审批的出差申请失败')
+                worklistErrMsg: errorMsg || Intl.get('failed.get.worklist.leave.apply', '获取由我审批的销售机会申请失败')
             });
         });
     };
