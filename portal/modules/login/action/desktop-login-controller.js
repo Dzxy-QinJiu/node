@@ -96,7 +96,8 @@ exports.showLoginPage = function(req, res) {
             clientId: global.config.loginParams.clientId,
             stopcheck: stopcheck,
             useSso: global.config.useSso,
-            isCurtao: isCurtao
+            isCurtao: isCurtao,
+            timeStamp: global.config.timeStamp
         });
     }
 };

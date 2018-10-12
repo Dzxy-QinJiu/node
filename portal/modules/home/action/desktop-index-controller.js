@@ -42,7 +42,8 @@ exports.home = function(req, res) {
         projectName: global.config.processTitle || 'oplate',
         clientId: global.config.loginParams.clientId,
         useSso: global.config.useSso,
-        isCurtao: isCurtao
+        isCurtao: isCurtao,
+        timeStamp: global.config.timeStamp
     });
 };
 
