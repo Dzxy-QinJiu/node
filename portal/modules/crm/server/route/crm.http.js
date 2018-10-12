@@ -237,7 +237,7 @@ module.exports = {
         },
         { // 获取电话座机号
             'method': 'get',
-            'path': '/rest/call/phone/:member_id',
+            'path': '/rest/call/phone/:user_id',
             'handler': 'getUserPhoneNumber',
             'passport': {
                 'needLogin': true

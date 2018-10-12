@@ -69,7 +69,7 @@ var crmRestApis = {
     // 拨打电话
     callOut: '/rest/customer/v2/phone/call/ou',
     // 获取电话座机号
-    getUserPhoneNumber: '/rest/base/v1/user/member/phoneorder',
+    getUserPhoneNumber: '/phone/seat/user/ext/:user_id',
     //获取客户是否还能继续添加客户 返回0是可以继续添加，返回大于0的值，表示超出几个客户
     getCustomerLimit: '/rest/customer/v2/customer/limit/flag',
     //线索生成客户
@@ -437,13 +437,13 @@ exports.callOut = function(req, res, queryObj) {
 };
 
 // 获取电话座机号
-exports.getUserPhoneNumber = function(req, res, member_id) {
+exports.getUserPhoneNumber = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: crmRestApis.getUserPhoneNumber,
+            url: crmRestApis.getUserPhoneNumber.replace(':user_id', req.params.user_id),
             req: req,
             res: res
-        }, member_id);
+        }, null);
 };
 //获取是否能继续添加客户
 exports.getCustomerLimit = function(req, res) {
