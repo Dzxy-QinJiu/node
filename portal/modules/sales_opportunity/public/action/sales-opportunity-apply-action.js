@@ -52,34 +52,5 @@ function SalesOpportunityApplyActions() {
             });
         });
     };
-
-
-
-
-
-    // this.getSelfApplyList = function() {
-    //     this.dispatch({error: false, loading: true});
-    //     SalesOpportunityApplyAjax.getSelfApplyList().then((data) => {
-    //         this.dispatch({error: false, loading: false, data: data});
-    //     }, (errorMsg) => {
-    //         this.dispatch({
-    //             error: true,
-    //             loading: false,
-    //             errMsg: errorMsg || Intl.get('failed.get.self.leave.apply', '获取我的出差申请失败')
-    //         });
-    //     });
-    // };
-    // this.getWorklistSalesOpportunityApplyList = function() {
-    //     this.dispatch({error: false, loading: true});
-    //     SalesOpportunityApplyAjax.getWorklistSalesOpportunityApplyList().then((data) => {
-    //         this.dispatch({error: false, loading: false, data: data});
-    //     }, (errorMsg) => {
-    //         this.dispatch({
-    //             error: true,
-    //             loading: false,
-    //             errMsg: errorMsg || Intl.get('failed.get.worklist.leave.apply', '获取由我审批的出差申请失败')
-    //         });
-    //     });
-    // };
 }
 module.exports = alt.createActions(SalesOpportunityApplyActions);

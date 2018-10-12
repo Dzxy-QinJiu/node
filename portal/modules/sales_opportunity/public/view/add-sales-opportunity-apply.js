@@ -89,6 +89,12 @@ class AddSalesOpportunityApply extends React.Component {
             if (err) return;
             values['expectdeal_time'] = moment(values['expectdeal_time']).endOf('day').valueOf();
             values['customer'] = _.get(this.state, 'formData.customer');
+            //销售机会的预算取到的值是带千分位的
+            var budget = values.budget;
+            var budgetArr = budget.split(',');
+            if (_.isArray(budgetArr) && budgetArr.length){
+                values.budget = budgetArr.join('');
+            }
             var apps = _.cloneDeep(values.apps);
             values.apps = [];
             _.forEach(apps,(appId) => {
