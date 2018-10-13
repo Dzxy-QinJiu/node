@@ -211,7 +211,7 @@ addDllPlugins();
 //热替换插件
 if (webpackMode !== 'production') {
     pluginLists.push(new webpack.HotModuleReplacementPlugin());
-    pluginLists.push(new BundleAnalyzerPlugin());
+    pluginLists.push(new BundleAnalyzerPlugin({analyzerPort:8088}));
 }
 if (webpackMode === 'production') {
     pluginLists.push(new CleanWebpackPlugin(['dist']));

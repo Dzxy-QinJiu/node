@@ -6,6 +6,8 @@
 var en_US = {
     //system
     'service.not.available': 'Sorry, service is temporarily not available, please try again later...',
+    'weixin.mini.program': 'Mini program',
+    'customer.service': 'Customer service',
     //菜单
     'menu.realm': 'Security Domain',//安全域管理
     'menu.app': 'Applications',//应用管理

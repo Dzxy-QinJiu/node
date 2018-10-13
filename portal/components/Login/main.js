@@ -8,6 +8,9 @@ const Logo = require('../Logo');
 const LoginForm = require('./login-form');
 import {Alert, Tabs, Icon, Button} from 'antd';
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from '../../lib/websso';
+import {storageUtil} from 'ant-utils';
+import SideBar from '../side-bar';
+
 const TabPane = Tabs.TabPane;
 let QRCodeLoginInterval = null;
 const LOGIN_INTERVAL_TIME = 5 * 1000;//5s:获取二维码展示后，调用登录接口的时间间隔
@@ -24,7 +27,6 @@ const VIEWS = {
     FORGOT_PASSWORD: 'forgot_password',
 };
 const USER_LANG_KEY = 'userLang';//存储用户语言环境的key
-import {storageUtil} from 'ant-utils';
 const logoScr = require('./image/wihte-logo.png');
 
 class LoginMain extends React.Component {
@@ -310,7 +312,7 @@ class LoginMain extends React.Component {
                         </Tabs>) : null
                     )}
 
-
+                    <SideBar showChat={Oplate.isCurtao}></SideBar>
                 </div>
             );
         }
