@@ -17,12 +17,13 @@ var fileExistsSync = require('../../../lib/utils/existsSync');
 var auth = require('../../../lib/utils/auth');
 let _ = require('lodash');
 let moment = require('moment');
+const commonUtil = require('../../../lib/utils/common-utils');
 
 /*
  * home page handler.
  */
 exports.home = function(req, res) {
-    let isCurtao = req.host === global.config.curtaoUrl;
+    let isCurtao = commonUtil.method.isCurtao(req);
     let user = auth.getUser(req);
     // 委内维拉项目隐藏一些项的属性
     let hideSomeItem = '';
@@ -42,7 +43,8 @@ exports.home = function(req, res) {
         projectName: global.config.processTitle || 'oplate',
         clientId: global.config.loginParams.clientId,
         useSso: global.config.useSso,
-        isCurtao: isCurtao
+        isCurtao: isCurtao,
+        timeStamp: global.config.timeStamp
     });
 };
 

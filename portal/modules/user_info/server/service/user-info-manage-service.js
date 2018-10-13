@@ -130,7 +130,7 @@ exports.checkUserInfoPwd = function(req, res, userInfoPasswd) {
 
 //获得所管理的安全域
 exports.getManagedRealm = function(req, res) {
-    let frontUrl = req.host;
+    let frontUrl = req.hostname;
     //ketao上， 获取当前登录用户所在的安全域
     let url = userInfoRestApis.getManagedRealm;
     //正式发版的curtao上，获取的是当前登录用户所在的组织

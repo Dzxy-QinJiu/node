@@ -66,13 +66,13 @@
 <% // 页头2          %>
 <% include ../../common/public/tpl/common-header.end.ejs %>
 <div id="app"></div>
-<script src="/dll/dll.vendor.js"></script>
-<script src="/dll/dll.reactRel.js"></script>
-<script src="/dll/dll.china.js"></script>
-<script src="/dll/dll.province.js"></script>
-<script src="/dll/dll.echarts.js"></script>
-<script src="/resources/common.bundle.js"></script>
-<script src="/resources/app.bundle.js"></script>
+<script src="/dll/dll.vendor.js?timestamp=<%= timeStamp %>"></script>
+<script src="/dll/dll.reactRel.js?timestamp=<%= timeStamp %>"></script>
+<script src="/dll/dll.china.js?timestamp=<%= timeStamp %>"></script>
+<script src="/dll/dll.province.js?timestamp=<%= timeStamp %>"></script>
+<script src="/dll/dll.echarts.js?timestamp=<%= timeStamp %>"></script>
+<script src="/resources/common.bundle.js?timestamp=<%= timeStamp %>"></script>
+<script src="/resources/app.bundle.js?timestamp=<%= timeStamp %>"></script>
 
 <% // 页脚           %>
 <% showFooterContent = false %>

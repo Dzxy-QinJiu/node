@@ -54,14 +54,14 @@
 <div id="react-placeholder"><%- loginForm %></div>
 <% // 页脚        %>
 <% showFooterContent = hideLangQRcode ? false : true %>
-<script src="/dll/dll.vendor.js"></script>
-<script src="/dll/dll.reactRel.js"></script>
-<script src="/resources/common.bundle.js"></script>
+<script src="/dll/dll.vendor.js?timestamp=<%= timeStamp %>"></script>
+<script src="/dll/dll.reactRel.js?timestamp=<%= timeStamp %>"></script>
+<script src="/resources/common.bundle.js?timestamp=<%= timeStamp %>"></script>
 <% if(isCurtao){ %>
 <% // --- curtao的登录界面 ---  %>
-<script src="/resources/login_curtao.bundle.js"></script>
+<script src="/resources/login_curtao.bundle.js?timestamp=<%= timeStamp %>"></script>
 <% } else { %>
 <% // --- ketao的登录界面 ---  %>
-<script src="/resources/login.bundle.js"></script>
+<script src="/resources/login.bundle.js?timestamp=<%= timeStamp %>"></script>
 <% } %>
 <% include ../../common/public/tpl/common-footer.ejs %>
