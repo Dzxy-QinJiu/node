@@ -58,7 +58,7 @@ class CustomerUsers extends React.Component {
             total: 0,
             errorMsg: '',//获取客户开通的用户列表的错误提示
             curCustomer: this.props.curCustomer,
-            applyType: '',//申请类型
+            applyType: '',//申请用户的类型
             listenScrollBottom: true,//是否监听滚动
             appList: [],
             ... this.getLayoutHeight() //用户列表、申请用户面板的高度
