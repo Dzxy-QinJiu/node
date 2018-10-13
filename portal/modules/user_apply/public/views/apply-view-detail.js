@@ -827,7 +827,7 @@ const ApplyViewDetail = createReactClass({
         }
     },
     //渲染延期多应用的table
-    renderMultiAppDelayTable(detailInfo){
+    renderMultiAppDelayTable(user, detailInfo){
         let columns = [
             {
                 title: Intl.get('common.app', '应用'),
@@ -851,18 +851,21 @@ const ApplyViewDetail = createReactClass({
                 dataIndex: 'rolesNames',
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
-                    let rolesNames = app.rolesNames;
-                    if (_.get(rolesNames, '[0]')) {
-                        return rolesNames.map((item) => {
-                            return (
-                                <div key={item}>{item}</div>
-                            );
-                        });
+                    let curApp = _.find(detailInfo.apps, item => item.client_id === app.client_id );
+                    if(curApp){
+                        let rolesNames = curApp.rolesNames;
+                        if (_.get(rolesNames, '[0]')) {
+                            return rolesNames.map((item) => {
+                                return (
+                                    <div key={item}>{item}</div>
+                                );
+                            });
+                        }
                     }
                 }
             });
         }
-        return (<AntcTable dataSource={detailInfo.apps}
+        return (<AntcTable dataSource={user.apps}
             bordered={true}
             pagination={false}
             columns={columns}/>);
@@ -1268,7 +1271,7 @@ const ApplyViewDetail = createReactClass({
                                         {this.renderDetailOperateBtn()}
                                     </div>
                                     {this.renderApplyDetailSingleUserName(user)}
-                                    {this.renderMultiAppDelayTable(detailInfo)}
+                                    {this.renderMultiAppDelayTable(user, detailInfo)}
                                 </div>);
                         })
                     }
