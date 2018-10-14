@@ -5,7 +5,7 @@
  */
 require('./index.less');
 const PropTypes = require('prop-types');
-const weixinImgUrl = require('./image/weixin.png');
+const weixinImgUrl = require('./image/weixin.jpg');
 const singleSideBarHeight = 68;//一个图标的高度
 const weixinHeight = 100;//二维码高度
 
