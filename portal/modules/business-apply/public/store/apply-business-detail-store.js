@@ -64,6 +64,18 @@ ApplyViewDetailStore.prototype.setApplyComment = function(list) {
         errorMsg: ''
     };
 };
+ApplyViewDetailStore.prototype.setDetailInfoObj = function(detailObj) {
+    delete detailObj.afterAddReplySuccess;
+    this.detailInfoObj = {
+        // "" loading error
+        loadingResult: '',
+        //获取的详情信息
+        info: detailObj,
+        //错误信息
+        errorMsg: ''
+    };
+};
+
 ApplyViewDetailStore.prototype.setInitialData = function(obj) {
     //重置数据
     this.setInitState();

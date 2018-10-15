@@ -15,13 +15,6 @@ class ApplyListItem extends React.Component {
 
         };
     }
-
-    onStoreChange = () => {
-
-    };
-    componentDidMount = () => {
-
-    };
     componentWillReceiveProps = (nextProps) => {
         this.setState({
             selectedDetailItem: nextProps.selectedDetailItem,
@@ -55,7 +48,7 @@ class ApplyListItem extends React.Component {
                         <span>{_.get(obj, 'detail.customer_name')}</span>
                     </dd>
                     <dd className="clearfix">
-                        <span>{Intl.get('user.apply.presenter', '申请人')}:{_.get(obj, 'applicant.user_name')}</span>
+                        <span>{Intl.get('user.apply.presenter', '申请人')}:{_.get(obj, 'applicant.nick_name')}</span>
                         <em>{getTimeStr(obj.create_time, oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)}</em>
                     </dd>
                 </dl>

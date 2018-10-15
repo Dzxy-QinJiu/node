@@ -44,7 +44,11 @@ class ApplyViewDetail extends React.Component {
     componentWillReceiveProps(nextProps) {
         var thisPropsId = this.props.detailItem.id;
         var nextPropsId = nextProps.detailItem.id;
-        if (thisPropsId && nextPropsId && nextPropsId !== thisPropsId) {
+        if (_.get(nextProps,'detailItem.afterAddReplySuccess')){
+            setTimeout(() => {
+                SalesOpportunityApplyDetailAction.setDetailInfoObj(nextProps.detailItem);
+            });
+        }else if (thisPropsId && nextPropsId && nextPropsId !== thisPropsId) {
             this.getBusinessApplyDetailData(nextProps.detailItem);
         }
     }
@@ -166,6 +170,7 @@ class ApplyViewDetail extends React.Component {
             }];
         return (
             <ApplyDetailInfo
+                iconClass='icon-sales-opportunity'
                 showApplyInfo={showApplyInfo}
             />
         );
@@ -296,12 +301,12 @@ class ApplyViewDetail extends React.Component {
         var detailInfoObj = this.state.detailInfoObj.info;
         //是否审批
         let isConsumed = detailInfoObj.status === 'pass' || detailInfoObj.status === 'reject';
-        var userName = _.last(_.get(detailInfoObj, 'approve_details')) ? _.last(_.get(detailInfoObj, 'approve_details')).user_name : '';
+        var userName = _.last(_.get(detailInfoObj, 'approve_details')) ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name : '' : '';
         var approvalDes = getApplyResultDscr(detailInfoObj);
         return (
             <ApplyDetailBottom
                 create_time={detailInfoObj.create_time}
-                applicantText={_.get(detailInfoObj, 'applicant.user_name') + Intl.get('crm.109', '申请')}
+                applicantText={_.get(detailInfoObj, 'applicant.nick_name','') + Intl.get('crm.109', '申请')}
                 isConsumed={isConsumed}
                 update_time={detailInfoObj.update_time}
                 approvalText={userName + approvalDes}

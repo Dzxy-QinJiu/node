@@ -56,6 +56,17 @@ LeaveApplyDetailStore.prototype.setInitState = function() {
         errorMsg: ''
     };
 };
+LeaveApplyDetailStore.prototype.setDetailInfoObj = function(detailObj) {
+    delete detailObj.afterAddReplySuccess;
+    this.detailInfoObj = {
+        // "" loading error
+        loadingResult: '',
+        //获取的详情信息
+        info: detailObj,
+        //错误信息
+        errorMsg: ''
+    };
+};
 //设置某条申请的回复列表
 LeaveApplyDetailStore.prototype.setApplyComment = function(list) {
     this.replyListInfo = {

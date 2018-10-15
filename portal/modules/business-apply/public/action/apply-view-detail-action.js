@@ -15,7 +15,8 @@ function ApplyViewDetailActions() {
         'hideReplyCommentEmptyError',
         'showReplyCommentEmptyError',
         'cancelSendApproval',
-        'hideApprovalBtns'//审批完后不在显示审批按钮
+        'hideApprovalBtns',//审批完后不在显示审批按钮
+        'setDetailInfoObj'
     );
 
     //获取审批单详情

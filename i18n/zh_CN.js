@@ -49,6 +49,7 @@ var zh_CN = {
     'menu.appuser.apply': '用户审批',
     'menu.analysis_realm': '安全域分析',
     'menu.download.app': '客套APP',
+    'menu.leave.apply.list.management': '申请审批',
     //公共部分提取start
     'common.actived': '已激活',
     'common.no.data': '暂无数据',
