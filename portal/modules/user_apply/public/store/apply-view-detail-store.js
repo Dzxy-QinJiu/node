@@ -124,6 +124,8 @@ class ApplyViewDetailStore {
             loading: false,
             errorMsg: ''
         };
+        //(多用户)延期申请审批时，当前要配置角色的用户id
+        this.curShowConfigUserId = '';
     }
     //获取应用列表
     getApps(result) {
@@ -242,6 +244,8 @@ class ApplyViewDetailStore {
     createAppsSetting() {
         //申请的应用列表
         const apps = this.detailInfoObj.info.apps;
+        //申请类型
+        let apply_type = _.get(this.detailInfoObj, 'info.type');
         _.each(apps, (appInfo) => {
             const app_id = appInfo.app_id;
             const tags = appInfo.tags || [];
@@ -272,11 +276,11 @@ class ApplyViewDetailStore {
                     }
                 }
             }
-            this.appsSetting[app_id] = {
+            let appConfigObj = {
                 //开通个数
-                number: 'number' in appInfo ? appInfo.number : 1,
+                number: _.get(appInfo, 'number', 1),
                 //到期停用
-                over_draft: 'over_draft' in appInfo ? appInfo.over_draft + '' : '1',
+                over_draft: _.get(appInfo, 'over_draft', '1'),
                 //时间
                 time: {
                     start_time: start_time,
@@ -288,6 +292,12 @@ class ApplyViewDetailStore {
                 //权限
                 permissions: appInfo.permissions || []
             };
+            //延期（多应用)时，需要分用户进行配置
+            if(apply_type === APPLY_TYPES.DELAY){
+                this.appsSetting[`${app_id}&&${appInfo.user_id}`] = appConfigObj;
+            } else {
+                this.appsSetting[app_id] = appConfigObj;
+            }
         });
     }
     //显示右侧详情加载中
@@ -335,8 +345,9 @@ class ApplyViewDetailStore {
         this.rolesNotSettingModalDialog.appNames = [];
     }
     //展开、收起
-    toggleApplyExpanded(bool) {
-        this.applyIsExpanded = bool;
+    toggleApplyExpanded({flag, user_id}) {
+        this.applyIsExpanded = flag;
+        this.curShowConfigUserId = user_id;
     }
     //设置用户名是否为编辑状态
     setUserNameEdit(type) {
@@ -564,4 +575,4 @@ class ApplyViewDetailStore {
 }
 
 //使用alt导出store
-export default alt.createStore(ApplyViewDetailStore, 'ApplyViewDetailStoreV2');
+export default alt.createStore(ApplyViewDetailStore, 'ApplyViewDetailStore');

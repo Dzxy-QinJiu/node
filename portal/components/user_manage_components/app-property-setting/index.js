@@ -46,6 +46,8 @@ const AppPropertySetting = createReactClass({
         selectedApps: PropTypes.array,
         //应用的自定义配置，修改的时候需要传(修改单个应用，审批界面，修改申请单)
         appsSetting: PropTypes.object,
+        //是否是多用户的应用设置，多用户时，appsSetting中的key组成：app_id&&user_id
+        isMultiUser: PropTypes.bool,
         //属性变化的时候触发
         onAppPropertyChange: PropTypes.func,
         //是否是单个应用的编辑，而不是添加
@@ -57,7 +59,9 @@ const AppPropertySetting = createReactClass({
         //隐藏单个应用的表单界面
         hideSingleApp: PropTypes.bool,
         //显示多人登录
-        showMultiLogin: PropTypes.bool
+        showMultiLogin: PropTypes.bool,
+        appSelectRoleError: PropTypes.string,
+        height: PropTypes.number
     },
 
     getDefaultProps() {
@@ -75,7 +79,9 @@ const AppPropertySetting = createReactClass({
             //隐藏单个应用
             hideSingleApp: false,
             //显示多人登录
-            showMultiLogin: true
+            showMultiLogin: true,
+            //是否时多用户的应用设置
+            isMultiUser: false,
         };
     },
 
@@ -183,9 +189,10 @@ const AppPropertySetting = createReactClass({
         };
         //根据传入的配置生成配置(修改单个应用，修改申请单-审批)
         const createPropertySettingByAppsSetting = () => {
+            let isMultiUser = this.props.isMultiUser;
             _.each(selectedApps , (currentApp) => {
-
-                const appSettingConfig = appsSetting[currentApp.app_id];
+                let key = isMultiUser ? `${currentApp.app_id}&&${currentApp.user_id}` : currentApp.app_id;
+                const appSettingConfig = appsSetting[key];
 
                 //检查角色、权限
                 function checkRolePermission() {
@@ -295,7 +302,10 @@ const AppPropertySetting = createReactClass({
         if (!this.compareEquals(this.state.appPropSettingsMap, prevState.appPropSettingsMap)) {
             this.props.onAppPropertyChange(this.state.appPropSettingsMap);
         }
-        if(this.state.currentApp.app_id !== prevState.currentApp.app_id) {
+        this.handleChangeAppLoading(this.state, prevState);
+    },
+    handleChangeAppLoading(state, prevState){
+        if(state.currentApp.app_id !== prevState.currentApp.app_id) {
             clearTimeout(this.changeCurrentAppLoadingTimeout);
             this.setState({
                 changeCurrentAppLoading: true
@@ -307,7 +317,6 @@ const AppPropertySetting = createReactClass({
             },100);
         }
     },
-
     changeCurrentApp(appInfo) {
         const appId = appInfo.app_id;
         if(this.state.currentApp.app_id === appId) {
@@ -342,107 +351,111 @@ const AppPropertySetting = createReactClass({
         return (
             <div className={this.state.changeCurrentAppLoading ? 'app-property-container-content change-current-app-loading' : 'app-property-container-content'}>
                 <div className="app-property-custom-settings">
-                    <div className="app-property-content basic-data-form app-property-other-property"
-                        style={{display: this.props.hideSingleApp && this.props.selectedApps.length <= 1 ? 'none' : 'block'}}
-                    >
-                        {this.props.showUserNumber ? (
-                            <div className="form-item">
-                                <div className="form-item-label"><ReactIntl.FormattedMessage id="user.batch.open.count" defaultMessage="开通个数" /></div>
-                                <div className="form-item-content">
-                                    {
-                                        this.renderUserCountNumberField({
-                                            isCustomSetting: true,
-                                            appId: currentApp.app_id,
-                                            globalNumber: defaultSettings.number
-                                        })
-                                    }
+                    {//多用户的应用设置时，只需要更改角色、权限，其他选项不需要更改
+                        this.props.isMultiUser ? null : (
+                            <div className="app-property-content basic-data-form app-property-other-property"
+                                style={{display: this.props.hideSingleApp && this.props.selectedApps.length <= 1 ? 'none' : 'block'}}
+                            >
+                                {this.props.showUserNumber ? (
+                                    <div className="form-item">
+                                        <div className="form-item-label"><ReactIntl.FormattedMessage id="user.batch.open.count" defaultMessage="开通个数" /></div>
+                                        <div className="form-item-content">
+                                            {
+                                                this.renderUserCountNumberField({
+                                                    isCustomSetting: true,
+                                                    appId: currentApp.app_id,
+                                                    globalNumber: defaultSettings.number
+                                                })
+                                            }
 
-                                </div>
-                            </div>
-                        ) : null}
-                        {this.props.isSingleAppEdit ? (
-                            !Oplate.hideSomeItem && <div className="form-item">
-                                <div className="form-item-label"><ReactIntl.FormattedMessage id="user.user.type" defaultMessage="用户类型" /></div>
-                                <div className="form-item-content">
-                                    {
-                                        this.renderUserTypeRadioBlock({
+                                        </div>
+                                    </div>
+                                ) : null}
+                                {this.props.isSingleAppEdit ? (
+                                    !Oplate.hideSomeItem && <div className="form-item">
+                                        <div className="form-item-label"><ReactIntl.FormattedMessage id="user.user.type" defaultMessage="用户类型" /></div>
+                                        <div className="form-item-content">
+                                            {
+                                                this.renderUserTypeRadioBlock({
+                                                    isCustomSetting: true,
+                                                    appId: currentApp.app_id,
+                                                    globalUserType: defaultSettings.user_type
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                ) : null}
+                                <div className="form-item">
+                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="user.open.cycle" defaultMessage="开通周期" /></div>
+                                    <div className="form-item-content">
+                                        {this.renderUserTimeRangeBlock({
                                             isCustomSetting: true,
                                             appId: currentApp.app_id,
-                                            globalUserType: defaultSettings.user_type
-                                        })
-                                    }
+                                            globalTime: defaultSettings.time,
+                                            //过期重新计算（开始时间变为从当前时间起算）
+                                            expiredRecalculate: true,
+                                        })}
+                                    </div>
                                 </div>
-                            </div>
-                        ) : null}
-                        <div className="form-item">
-                            <div className="form-item-label"><ReactIntl.FormattedMessage id="user.open.cycle" defaultMessage="开通周期" /></div>
-                            <div className="form-item-content">
-                                {this.renderUserTimeRangeBlock({
-                                    isCustomSetting: true,
-                                    appId: currentApp.app_id,
-                                    globalTime: defaultSettings.time,
-                                    //过期重新计算（开始时间变为从当前时间起算）
-                                    expiredRecalculate: true,
-                                })}
-                            </div>
-                        </div>
-                        <div className="form-item">
-                            <div className="form-item-label"><ReactIntl.FormattedMessage id="user.expire.select" defaultMessage="到期可选" /></div>
-                            <div className="form-item-content">
+                                <div className="form-item">
+                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="user.expire.select" defaultMessage="到期可选" /></div>
+                                    <div className="form-item-content">
+                                        {
+                                            this.renderUserOverDraftBlock({
+                                                isCustomSetting: true,
+                                                appId: currentApp.app_id,
+                                                globalOverDraft: defaultSettings.over_draft
+                                            })
+                                        }
+                                    </div>
+                                </div>
                                 {
-                                    this.renderUserOverDraftBlock({
-                                        isCustomSetting: true,
-                                        appId: currentApp.app_id,
-                                        globalOverDraft: defaultSettings.over_draft
-                                    })
+                                    this.props.showIsTwoFactor ? (
+                                        !Oplate.hideSomeItem && <div className="form-item">
+                                            <div className="form-item-label"><ReactIntl.FormattedMessage id="user.two.step.certification" defaultMessage="二步认证" /></div>
+                                            <div className="form-item-content">
+                                                {
+                                                    this.renderUserTwoFactorBlock({
+                                                        isCustomSetting: true,
+                                                        appId: currentApp.app_id,
+                                                        globalTwoFactor: defaultSettings.is_two_factor
+                                                    })
+                                                }
+                                            </div>
+                                        </div>) : null
+                                }
+                                {this.props.isSingleAppEdit ? (
+                                    <div className="form-item">
+                                        <div className="form-item-label"><ReactIntl.FormattedMessage id="common.app.status" defaultMessage="开通状态" /></div>
+                                        <div className="form-item-content">
+                                            {
+                                                this.renderUserStatusRadioBlock({
+                                                    isCustomSetting: true,
+                                                    appId: currentApp.app_id,
+                                                    globalStatus: defaultSettings.status
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                ) : null}
+                                {
+                                    this.props.showMultiLogin ? (
+                                        !Oplate.hideSomeItem && <div className="form-item">
+                                            <div className="form-item-label"><ReactIntl.FormattedMessage id="user.multi.login" defaultMessage="多人登录" /></div>
+                                            <div className="form-item-content">
+                                                {
+                                                    this.renderMultiLoginRadioBlock({
+                                                        isCustomSetting: true,
+                                                        appId: currentApp.app_id,
+                                                        globalMultiLogin: defaultSettings.multilogin
+                                                    })
+                                                }
+                                            </div>
+                                        </div>) : null
                                 }
                             </div>
-                        </div>
-                        {
-                            this.props.showIsTwoFactor ? (
-                                !Oplate.hideSomeItem && <div className="form-item">
-                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="user.two.step.certification" defaultMessage="二步认证" /></div>
-                                    <div className="form-item-content">
-                                        {
-                                            this.renderUserTwoFactorBlock({
-                                                isCustomSetting: true,
-                                                appId: currentApp.app_id,
-                                                globalTwoFactor: defaultSettings.is_two_factor
-                                            })
-                                        }
-                                    </div>
-                                </div>) : null
-                        }
-                        {this.props.isSingleAppEdit ? (
-                            <div className="form-item">
-                                <div className="form-item-label"><ReactIntl.FormattedMessage id="common.app.status" defaultMessage="开通状态" /></div>
-                                <div className="form-item-content">
-                                    {
-                                        this.renderUserStatusRadioBlock({
-                                            isCustomSetting: true,
-                                            appId: currentApp.app_id,
-                                            globalStatus: defaultSettings.status
-                                        })
-                                    }
-                                </div>
-                            </div>
-                        ) : null}
-                        {
-                            this.props.showMultiLogin ? (
-                                !Oplate.hideSomeItem && <div className="form-item">
-                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="user.multi.login" defaultMessage="多人登录" /></div>
-                                    <div className="form-item-content">
-                                        {
-                                            this.renderMultiLoginRadioBlock({
-                                                isCustomSetting: true,
-                                                appId: currentApp.app_id,
-                                                globalMultiLogin: defaultSettings.multilogin
-                                            })
-                                        }
-                                    </div>
-                                </div>) : null
-                        }
-                    </div>
+                        )
+                    }
                     <AppRolePermission
                         app_id={currentApp.app_id}
                         selectedRoles={selectedRoles}

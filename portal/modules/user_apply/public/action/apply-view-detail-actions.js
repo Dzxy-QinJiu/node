@@ -125,17 +125,13 @@ class ApplyViewDetailActions {
     }
 
     //提交审批
-    submitApply(obj) {
+    submitApply(obj, type) {
         this.dispatch({loading: true, error: false});
         let promise = null;
         //延期、停用审批用新接口
-        if (APPLY_MULTI_TYPE_VALUES.includes(obj.type)) {
+        if (APPLY_MULTI_TYPE_VALUES.includes(type)) {
             promise = AppUserAjax.submitMultiAppApply({
-                data: {
-                    message_id: obj.message_id,
-                    approval_state: obj.approval,
-                    data: obj.data || ''
-                }
+                data: obj
             });
         }
         else {
@@ -144,7 +140,10 @@ class ApplyViewDetailActions {
         promise.then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
             //更新选中的申请单类型
-            AppUserUtil.emitter.emit('updateSelectedItem', {id: obj.message_id, approval: obj.approval, status: 'success'});
+            AppUserUtil.emitter.emit('updateSelectedItem', {
+                id: obj.message_id,
+                approval: obj.approval || obj.approval_state, //多用户延期、禁用申请时传的是approval_state,其他申请审批时是approval
+                status: 'success'});
             //刷新用户审批未处理数
             updateUnapprovedCount();
         }, (errorMsg) => {

@@ -385,22 +385,18 @@ exports.toDetailMultiAppRestObject = function(obj, APPLY_TYPES){
             app_id: app.client_id,
             app_name: app.client_name
         }));
-        //用户
-        result.users = _.uniqBy(apps, 'user_id').map(user => {
-            const item = _.pick(user, 'user_id', 'user_name', 'nickname');
-            return {
-                ...item,
-                apps: apps.filter(x => x.user_id === item.user_id).map(app => ({
-                    ...app,
-                    app_id: app.client_id,
-                    app_name: app.client_name
-                }))
-            };
-        });
         //延期（多应用）
         if(detail.type === APPLY_TYPES.DELAY_MULTI_APP){
             if (_.get(apps, '0.delay')) {
                 result.delayTime = apps[0].delay;
+            }
+            // 到期时间
+            if (_.get(apps, '0.end_date')) {
+                result.end_date = _.get(apps, '0.end_date', '');
+            }
+            //延期时间
+            if (_.get(apps, '0.delay') && _.get(apps, '0.delay') !== '-1') {
+                result.delayTime = _.get(apps, '0.delay', '');
             }
         } else if(detail.type === APPLY_TYPES.DISABLE_MULTI_APP){//禁用（多应用）
             result.status = _.get(apps, '0.status');

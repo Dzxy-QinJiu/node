@@ -402,14 +402,16 @@ exports.getApplyDetail = function(req, res, apply_id) {
         //延期（多应用）
         if (applyBasicDetail.type === CONSTANTS.DELAY_MULTI_APP) {
             let user_type = _.get(applyBasicDetail, 'apps[0].user_type');
+            //修改的用户类型，界面上用来判断是否修改用户类型
+            applyBasicDetail.changedUserType = user_type;
             // 待审批，并且修改了用户类型时
             if (applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_FALSE && user_type) {
                 // 获取各应用此用户类型的默认配置（角色、权限）
                 getAppUserTypeDefaultConfig(req, res, applyBasicDetail, user_type, emitter);
             } else if (applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_FALSE ||//待审批，未修改用户类型时
                 applyBasicDetail.approval_state === CONSTANTS.APPROVAL_STATE_PASS) {//通过时
-                // 获取此用户在各应用的角色
-                getAppsUserRoles(req, res, applyBasicDetail, emitter);
+                // 获取此用户在各应用的角色和用户类型
+                getAppsUserRolesType(req, res, applyBasicDetail, emitter);
             } else {//驳回、撤销
                 emitter.emit('success', applyBasicDetail);
             }
@@ -612,19 +614,21 @@ function getAppRoleNames(req, res, obj) {
     });
 }
 //获取用户在各应用的角色
-function getAppsUserRoles(req, res, applyBasicDetail, emitter) {
+function getAppsUserRolesType(req, res, applyBasicDetail, emitter) {
     //所有应用的应用id列表
     let appIds = _.map(applyBasicDetail.apps, 'app_id');
-    if (_.get(applyBasicDetail, 'users[0]') && _.get(appIds,'[0]')) {
+    //从应用列表中根据user_id去重后，获取去重后的所有user_id
+    let userIds = _.uniqBy(applyBasicDetail.apps,'user_id').map(app => app.user_id);
+    if (_.get(userIds, '[0]') && _.get(appIds,'[0]')) {
         let promiseList = [];
-        _.map(applyBasicDetail.users, user => {
-            promiseList.push(getUserDetailPromise(req, res, user.user_id));
+        _.each(userIds, userId => {
+            promiseList.push(getUserDetailPromise(req, res, userId));
         });
         //获取用户在各应用上的权限、角色id列表
         Promise.all(promiseList).then(userDetailList => {
             let roleIds = [], permissionIds = [];
             _.each(userDetailList, userDetail => {
-                //从用户详情的应用列表中找到所有申请延期应用的roleIds
+                //从用户详情的应用列表中找到所有申请延期应用的roleIds、permissionIds和各应用的用户类型
                 _.each(userDetail.apps, app => {
                     if (_.indexOf(appIds, app.app_id) !== -1) {
                         if (_.get(app, 'roles[0]')) {
@@ -633,6 +637,10 @@ function getAppsUserRoles(req, res, applyBasicDetail, emitter) {
                         if (_.get(app, 'permissions[0]')) {
                             permissionIds = permissionIds.concat(app.permissions);
                         }
+                        let curApp = _.find(applyBasicDetail.apps, item => item.app_id === app.app_id);
+                        curApp.user_type = app.user_type;
+                        curApp.roles = app.roles || [];
+                        curApp.permissions = app.permissions || [];
                     }
                 });
             });

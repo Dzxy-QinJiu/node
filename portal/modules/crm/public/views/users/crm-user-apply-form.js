@@ -14,6 +14,7 @@ const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const SELECT_CUSTOM_TIME_TYPE = 'custom';
 import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
+const UNCHANGED_TYPE = 'unchanged';//保持不变的用户类型
 class CrmUserApplyForm extends React.Component {
     constructor(props) {
         super(props);
@@ -29,6 +30,7 @@ class CrmUserApplyForm extends React.Component {
                 delayTimeRange: 'days',
                 // 到期时间(选择到期时间)
                 delayDeadlineTime: moment().add('days', 1).valueOf(),
+                user_type: UNCHANGED_TYPE,
                 //到期不变
                 over_draft: '0',
                 //销售申请的备注
@@ -127,8 +129,8 @@ class CrmUserApplyForm extends React.Component {
         submitObj.remark = this.state.formData.remark.delayRemark;
         //到期是否停用
         paramItem.over_draft = Number(formData.over_draft);
-        //用户类型，如果不选，说明不做修改，就不需要传，如果选了就是需要改用户类型
-        if(formData.user_type){
+        //用户类型，如果保持不变，就不需要传
+        if(formData.user_type !== UNCHANGED_TYPE){
             paramItem.user_type = formData.user_type;
         }
 
@@ -429,6 +431,11 @@ class CrmUserApplyForm extends React.Component {
                         </Radio>
                         <Radio key="formal" value={Intl.get('common.trial.official', '正式用户')}>
                             {Intl.get('user.signed.user', '签约用户')}
+                        </Radio>
+                        <Radio key={UNCHANGED_TYPE} value={UNCHANGED_TYPE}>
+                            <span title={Intl.get('common.apply.user.type.unchanged.tip', '延期后不改变原有的用户类型')}>
+                                {Intl.get('common.apply.user.type.unchanged', '保持不变')}
+                            </span>
                         </Radio>
                     </RadioGroup>
                 </FormItem>
