@@ -31,6 +31,7 @@ class SideBar extends React.Component {
     };
 
     chatClick = () => {
+        //如果有客服时，点击触发出客服界面
         $('#chatBtn').trigger('click');
     };
 
