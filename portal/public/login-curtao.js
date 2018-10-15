@@ -1,4 +1,5 @@
 require('./sources/browser.sniff');
+require('./css/iconfont.less');
 //curtao的登录界面
 import LoginMain from '../components/Login-curtao/main';
 import Translate from './intl/i18nTemplate';

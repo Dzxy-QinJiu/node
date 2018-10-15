@@ -1,4 +1,5 @@
 require('./sources/browser.sniff');
+require('./css/iconfont.less');
 //ketao的登录界面
 import LoginMain from '../components/Login/main';
 import Translate from './intl/i18nTemplate';
