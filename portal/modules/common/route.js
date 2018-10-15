@@ -382,7 +382,15 @@ module.exports = [{
     'passport': {
         'needLogin': true
     }
-}, {    
+},{
+    //批量获取权限信息
+    'method': 'post',
+    'path': '/rest/base/v1/permission/batch_ids',
+    'handler': 'getBatchPermissionInfo',
+    'passport': {
+        'needLogin': true
+    }
+},{
     //add查询条件
     'method': 'post',
     'path': '/rest/condition/v1/condition',

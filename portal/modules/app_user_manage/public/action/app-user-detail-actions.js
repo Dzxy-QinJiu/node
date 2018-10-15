@@ -63,7 +63,24 @@ function AppUserDetailAction() {
     };
 
     //批量获取应用的角色信息
-    this.getBatchRoleInfo = asyncDispatcher(AppUserAjax.getBatchRoleInfo);
+    this.getBatchRoleInfo = function(params){
+        this.dispatch({loading: true, error: false});
+        AppUserAjax.getBatchRoleInfo(params).then((result) => {
+            //获取角色列表成功后，再批量获取权限列表
+            _.forEach(result, (roleItem, index) => {
+                var privilegeParams = {data: {ids: roleItem.permission_ids}};
+                AppUserAjax.getBatchPermissionInfo(privilegeParams).then((privilegeData) => {
+                    roleItem.permissionsObj = privilegeData;
+                    if (index === result.length - 1){
+                        this.dispatch({loading: false, error: false, roleData: result});
+                    }
+                });
+
+            });
+        },(errorMsg) => {
+            this.dispatch({loading: false, error: true , errorMsg: errorMsg});
+        });
+    };
 
 }
 
