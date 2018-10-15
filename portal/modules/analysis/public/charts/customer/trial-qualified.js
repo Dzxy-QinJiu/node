@@ -63,6 +63,11 @@ export function getCustomerTrialEffectiveChart() {
                 delete query.starttime;
                 delete query.endtime;
             }
+
+            if (query.member_id) {
+                query.member_ids = query.member_id;
+                delete query.member_id;
+            }
         },
         layout: {sm: 24},
         processData: data => {
