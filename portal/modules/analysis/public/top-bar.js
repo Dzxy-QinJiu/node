@@ -69,7 +69,7 @@ class TopBar extends React.Component {
         let selectedTeam; 
         let teamIdStr;
          
-        if (_.last(teamId) === 'all') {
+        if (_.last(teamId) === 'all' || _.isEmpty(teamId)) {
             selectedTeam = ['all'];
             teamIdStr = '';
         } else {
@@ -86,7 +86,7 @@ class TopBar extends React.Component {
         let selectedMember; 
         let memberIdStr;
          
-        if (_.last(memberId) === 'all') {
+        if (_.last(memberId) === 'all' || _.isEmpty(memberId)) {
             selectedMember = ['all'];
             memberIdStr = '';
         } else {
