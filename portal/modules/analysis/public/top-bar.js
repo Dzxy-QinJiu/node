@@ -14,12 +14,6 @@ const dateSelectorEmitter = emitters.dateSelectorEmitter;
 const teamTreeEmitter = emitters.teamTreeEmitter;
 
 class TopBar extends React.Component {
-    static defaultProps = {
-    };
-
-    static propTypes = {
-    };
-
     constructor(props) {
         super(props);
 
@@ -27,14 +21,16 @@ class TopBar extends React.Component {
             filterType: 'team',
             teamList: [{
                 group_name: '全部团队',
-                group_id: '',
+                group_id: 'all',
             }],
+            selectedTeam: ['all'],
             memberList: [{
                 user_info: {
                     nick_name: '全部销售',
-                    user_id: '',
+                    user_id: 'all',
                 }
             }],
+            selectedMember: ['all'],
         };
     }
 
@@ -70,11 +66,37 @@ class TopBar extends React.Component {
     };
 
     onTeamChange = (teamId) => {
-        teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamId);
+        let selectedTeam; 
+        let teamIdStr;
+         
+        if (_.last(teamId) === 'all') {
+            selectedTeam = ['all'];
+            teamIdStr = '';
+        } else {
+            selectedTeam = _.filter(teamId, id => id !== 'all');
+            teamIdStr = selectedTeam.join(',');
+        }
+
+        this.setState({selectedTeam}, () => {
+            teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamIdStr);
+        });
     };
 
     onMemberChange = (memberId) => {
-        teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, memberId);
+        let selectedMember; 
+        let memberIdStr;
+         
+        if (_.last(memberId) === 'all') {
+            selectedMember = ['all'];
+            memberIdStr = '';
+        } else {
+            selectedMember = _.filter(memberId, id => id !== 'all');
+            memberIdStr = selectedMember.join(',');
+        }
+
+        this.setState({selectedMember}, () => {
+            teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, memberIdStr);
+        });
     };
 
     onSelectDate(startTime, endTime) {
@@ -97,7 +119,8 @@ class TopBar extends React.Component {
 
                         {this.state.filterType === 'team' ? (
                             <Select
-                                defaultValue=""
+                                mode="multiple"
+                                value={this.state.selectedTeam}
                                 onChange={this.onTeamChange}
                                 dropdownMatchSelectWidth={false}
                             >
@@ -109,7 +132,8 @@ class TopBar extends React.Component {
 
                         {this.state.filterType === 'member' ? (
                             <Select
-                                defaultValue=""
+                                mode="multiple"
+                                value={this.state.selectedMember}
                                 onChange={this.onMemberChange}
                                 dropdownMatchSelectWidth={false}
                             >
