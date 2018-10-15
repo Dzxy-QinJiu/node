@@ -56,6 +56,7 @@ function ApplyViewDetailActions() {
                 let replyItem = {
                     user_id: replyData.user_id || '',
                     user_name: replyData.user_name || '',
+                    nick_name: replyData.nick_name || '',
                     comment: replyData.comment || '',
                     comment_time: replyTime
                 };
