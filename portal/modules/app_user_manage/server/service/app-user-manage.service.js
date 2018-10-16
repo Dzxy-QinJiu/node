@@ -470,7 +470,7 @@ function getAppUserTypeDefaultConfig(req, res, applyBasicDetail, user_type, emit
 // 根据应用的默认配置信息，封装审批详情的角色和权限名称
 function getExtraAppInfo(applyBasicDetail, appConfigInfo) {
     _.each(applyBasicDetail.apps, app => {
-        let appConfig = _.find(appConfigInfo, item => item.client_id === app.app_id);
+        let appConfig = _.find(appConfigInfo, item => item.client_id === app.client_id);
         if(appConfig){
             app.roles = appConfig.roles || [];
             app.rolesNames = appConfig.roles_name || [];
@@ -628,8 +628,8 @@ function getAppsUserRolesType(req, res, applyBasicDetail, emitter) {
             _.each(userDetailList, userDetail => {
                 //从用户详情的应用列表中找到所有申请延期应用的roleIds、permissionIds和各应用的用户类型
                 _.each(userDetail.apps, app => {
-                    //根据app_id和user_id，找到该用户下的此应用，更新角色、权限、用户类型
-                    let curApp = _.find(applyBasicDetail.apps, item => item.app_id === app.app_id && item.user_id === _.get(userDetail, 'user.user_id') );
+                    //根据client_id和user_id，找到该用户下的此应用，更新角色、权限、用户类型
+                    let curApp = _.find(applyBasicDetail.apps, item => item.client_id === app.app_id && item.user_id === _.get(userDetail, 'user.user_id') );
                     if (curApp) {
                         if (_.get(app, 'roles[0]')) {
                             roleIds = roleIds.concat(app.roles);

@@ -1125,7 +1125,7 @@ const ApplyViewDetail = createReactClass({
                     <div className="apply-info-label">
                         <span className="user-info-label">{Intl.get('common.app.status', '开通状态')}:</span>
                         <span className="user-info-text">
-                            {detailInfo.status === '1' ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')}
+                            {detailInfo.status === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用')}
                         </span>
                     </div>
                 </div>
@@ -1141,7 +1141,7 @@ const ApplyViewDetail = createReactClass({
                     <div className="apply-info-label">
                         <span className="user-info-label">{Intl.get('common.app.status', '开通状态')}:</span>
                         <span className="user-info-text">
-                            {detailInfo.status === 1 ? Intl.get('common.app.status.open', '开启') : Intl.get('common.app.status.close', '关闭')}
+                            {detailInfo.status === 1 ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用')}
                         </span>
                     </div>
                     {
