@@ -17,11 +17,13 @@ module.exports = {
 function getCharts() {
     return [
         //试用合格客户数统计
-        customerChart.getCustomerTrialEffectiveChart(),
+        customerChart.getCustomerTrialQualifiedNumChart(),
+        //试用合格组成
+        customerChart.getCustomerTrialQualifiedComposeChart(),
+        //试用合格客户数统计
+        customerChart.getCustomerTrialQualifiedChart(),
         //趋势统计
-        customerChart.getCustomerTrendChart('total', '趋势统计(假数据)'),
-        //历史净增
-        customerChart.getCustomerTrendChart('total', '历史净增(假数据)'),
+        customerChart.getCustomerTrendChart('total', '趋势图(假数据)'),
         //地域统计
         customerChart.getCustomerZoneChart('total', '地域统计(假数据)'),
         //行业统计

@@ -1,8 +1,8 @@
 /**
- * 试用合格详细统计表
+ * 试用合格组成
  */
 
-export function getCustomerTrialQualifiedChart() {
+export function getCustomerTrialQualifiedComposeChart() {
     //统计列
     const statisticsColumns = [{
         dataIndex: 'last_month',
@@ -52,7 +52,7 @@ export function getCustomerTrialQualifiedChart() {
     });
 
     return {
-        title: '试用合格详细统计表',
+        title: '试用合格组成(假数据)',
         url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
         argCallback: (arg) => {
             let query = arg.query;
