@@ -511,19 +511,34 @@ function getRolePrivilegeNameById(req, res, applyBasicDetail, emitter, roleIdsAr
 }
 
 // 角色ids获取对应的角色名称
-function getAppExtraRoleNames(applyBasicDetail, appRoleNames) {
+function getAppExtraRoleNames(applyBasicDetail, appRoleList) {
     applyBasicDetail.apps.forEach((item) => {
-        let appRolesNamesList = _.filter(appRoleNames, (roleItem) => roleItem.client_id === item.client_id);
-        item.rolesNames = _.map(appRolesNamesList, 'role_name');
+        if(_.get(item.roles,'[0]')){
+            item.rolesNames = [];
+            _.each(item.roles, roleId => {
+                let curRole = _.find(appRoleList, role => role.role_id === roleId);
+                if(curRole){
+                    item.rolesNames.push(curRole.role_name);
+                }
+            });
+        }
     });
     return applyBasicDetail;
 }
 
 // 角色ids获取对应的权限名称
-function getAppExtraPermissionNames(applyBasicDetail, appPermissionNames) {
+function getAppExtraPermissionNames(applyBasicDetail, appPermissionList) {
     applyBasicDetail.apps.forEach((item) => {
-        let appPermissionsNamesList = _.filter(appPermissionNames, (permissionItem) => permissionItem.client_id === item.client_id);
-        item.permissionsNames = _.map(appPermissionsNamesList, 'permission_name');
+        if(_.get(item.permissions,'[0]')){
+            item.permissionsNames = [];
+            //根据权限id获取对应的权限名
+            _.each(item.permissions, permissionId => {
+                let curPermission = _.find(appPermissionList, permission => permission.permission_id === permissionId);
+                if(curPermission){
+                    item.permissionsNames.push(curPermission.permission_name);
+                }
+            });
+        }
     });
     return applyBasicDetail;
 }

@@ -125,18 +125,6 @@ function getDelayDisplayTime(delay) {
             ${days ? days + Intl.get('common.time.unit.day', '天') : ''}`;
 }
 
-//根据申请type判断是否 是延期或禁用的申请(一个用户对应多个应用)
-// const isMultiAppApply = item => {
-//     let flag = false;
-//     _.each(APPLY_TYPES, (value) => {
-//         if (_.get(item, 'message.type') === value) {
-//             flag = true;
-//             return false;
-//         }
-//     });
-//     return flag;
-// };
-
 const ApplyViewDetail = createReactClass({
     propTypes: {
         detailItem: PropTypes.object,
