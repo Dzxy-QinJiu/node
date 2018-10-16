@@ -1,6 +1,6 @@
 //客户名格式验证
 import {nameRegex, ipRegex} from 'PUB_DIR/sources/utils/consts';
-import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
+import ClueAction from '../action/clue-customer-action';
 var userData = require('PUB_DIR/sources/user-data');
 import { storageUtil } from 'ant-utils';
 const local = storageUtil.local;
@@ -98,7 +98,7 @@ export const isSalesLeaderOrManager = function(){
 };
 
 function checkOnlyContactPhone(rule, value, callback) {
-    CrmAction.checkOnlyContactPhone(value, data => {
+    ClueAction.checkOnlyCluePhone(value, data => {
         if (_.isString(data)) {
             //唯一性验证出错了
             callback(Intl.get('crm.82', '电话唯一性验证出错了'));
