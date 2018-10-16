@@ -617,7 +617,7 @@ function getAppRoleNames(req, res, obj) {
 function getAppsUserRolesType(req, res, applyBasicDetail, emitter) {
     //从应用列表中根据user_id去重后，获取去重后的所有user_id
     let userIds = _.uniqBy(applyBasicDetail.apps,'user_id').map(app => app.user_id);
-    if (_.get(userIds, '[0]') && _.get(appIds,'[0]')) {
+    if (_.get(userIds, '[0]')) {
         let promiseList = [];
         _.each(userIds, userId => {
             promiseList.push(getUserDetailPromise(req, res, userId));
@@ -628,7 +628,7 @@ function getAppsUserRolesType(req, res, applyBasicDetail, emitter) {
             _.each(userDetailList, userDetail => {
                 //从用户详情的应用列表中找到所有申请延期应用的roleIds、permissionIds和各应用的用户类型
                 _.each(userDetail.apps, app => {
-                    //根据app_id和app_id，找到该用户下的此应用，更新角色、权限、用户类型
+                    //根据app_id和user_id，找到该用户下的此应用，更新角色、权限、用户类型
                     let curApp = _.find(applyBasicDetail.apps, item => item.app_id === app.app_id && item.user_id === userDetail.user_id );
                     if (curApp) {
                         if (_.get(app, 'roles[0]')) {
