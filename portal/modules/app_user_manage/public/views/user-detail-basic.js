@@ -372,10 +372,7 @@ class UserDetailBasic extends React.Component {
                             </span>;
                         }
                         //获取权限的名称列表
-                        var privilegeName = [];
-                        _.forEach(item.permissionsObj,(item) => {
-                            privilegeName.push(item.permission_name);
-                        });
+                        var privilegeName = _.map(item.permissionsObj,'permission_name');
                         return <span className="role-name">
                             <Tooltip title={privilegeName.join('，')} trigger="click">
                                 {item.role_name}

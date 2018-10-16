@@ -66,6 +66,7 @@ function AppUserDetailAction() {
     this.getBatchRoleInfo = function(params){
         this.dispatch({loading: true, error: false});
         AppUserAjax.getBatchRoleInfo(params).then((result) => {
+            this.dispatch({loading: false, error: false, roleData: result});
             //获取角色列表成功后，再批量获取权限列表
             _.forEach(result, (roleItem, index) => {
                 var privilegeParams = {data: {ids: roleItem.permission_ids}};
