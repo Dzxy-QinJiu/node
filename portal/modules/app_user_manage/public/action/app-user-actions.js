@@ -14,7 +14,9 @@ function AppUserAction() {
 
     this.generateActions(
         //获取App列表
-        'getAppList',
+        // 'getAppList',
+        //设置App列表
+        'setAppList',
         //获取客户列表
         'getCustomers',
         //获取App的用户列表

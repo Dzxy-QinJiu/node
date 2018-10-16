@@ -1,7 +1,7 @@
 var appAjaxTrans = require('../../../common/public/ajax/app');
 import routeList from 'MOD_DIR/common/route';
 import ajax from 'MOD_DIR/common/ajax';
-
+//todo 删除
 //获取审计日志用户的应用
 exports.getUserApp = function(){
     var Deferred = $.Deferred();

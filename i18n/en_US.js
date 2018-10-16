@@ -2694,6 +2694,7 @@ var en_US = {
     'leave.apply.leave.person': 'Leave person',//请假人
     'leave.apply.no.leave.apply': 'No eligible leave apply',//暂无符合条件的请假申请
     'leave.apply.time.range.at.least.one.hour': 'Start and end time should be at least one hour apart',//开始和结束时间应至少相隔一个小时
-    'leave.apply.approve.rejected': 'Was rejected'//被驳回
+    'leave.apply.approve.rejected': 'Was rejected',//被驳回
+    'app.user.manager.click.get.app': 'Click to get app lists'//点击获取应用
 };
 export default en_US;

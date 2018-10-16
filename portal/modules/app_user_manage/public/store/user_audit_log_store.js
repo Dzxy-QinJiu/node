@@ -91,6 +91,27 @@ UserAuditLogStore.prototype.getUserApp = function(result){
        
     }
 };
+//设置应用列表
+UserAuditLogStore.prototype.setUserApp = function(appList) {
+    if (_.isArray(appList) && appList.length){
+        this.userAppArray = appList;
+        var storageValue = JSON.parse(storageUtil.local.get(AppUserUtil.saveSelectAppKeyUserId));
+        var lastSelectAppId = storageValue && storageValue.logViewAppId ? storageValue.logViewAppId : '';
+        if(lastSelectAppId){
+            //缓存中存在最后一次选择的应用，直接查看该应用的审计日志
+            this.selectAppId = lastSelectAppId;
+        }else{
+            // 不存在（首次）
+            if(ShareObj.app_id){
+                // 已有用戶有选择的应用时，用户审计日志也要展示该应用的
+                this.selectAppId = ShareObj.app_id;
+            }else{
+                // 已有用户应用选择框中选择全部时，用户审计日志默认展示第一个应用的
+                this.selectAppId = appList[0].app_id;
+            }
+        }
+    }
+};
 
 // 获取用户审计日志的信息
 UserAuditLogStore.prototype.getAuditLogList = function(result) {

@@ -53,7 +53,10 @@ exports.getAppList = function(cb) {
                     return {
                         client_id: app.app_id,
                         client_name: app.app_name,
-                        client_image: app.app_logo
+                        client_image: app.app_logo,
+                        app_id: app.app_id,
+                        app_name: app.app_name,
+                        app_logo: app.app_logo,
                     };
                 });
             }

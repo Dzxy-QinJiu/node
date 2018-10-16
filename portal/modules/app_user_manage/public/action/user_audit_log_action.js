@@ -7,6 +7,7 @@ import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
 
 function UserAuditLogAction() {
     this.generateActions(
+        'setUserApp',
         'getUserApp', // 获取用户的应用
         'getAuditLogList', // 获取用户审计日志
         'handleSearchEvent', // 处理搜索框中内容的变化

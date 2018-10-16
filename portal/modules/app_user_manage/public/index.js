@@ -36,7 +36,8 @@ import { Button } from 'antd';
 import ApplyUser from './views/v2/apply-user';
 var topNavEmitter = require('../../../public/sources/utils/emitters').topNavEmitter;
 import queryString from 'query-string';
-
+import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import {RETRY_GET_APP} from './util/consts';
 /*用户管理界面外层容器*/
 class AppUserManage extends React.Component {
     getStoreData = () => {
@@ -62,7 +63,9 @@ class AppUserManage extends React.Component {
         //当前视图
         var currentView = AppUserUtil.getCurrentView();
         //获取所有应用
-        AppUserAction.getAppList();
+        commonDataUtil.getAppList(appList => {
+            AppUserAction.setAppList(appList);
+        });
         if (currentView === 'user' && this.props.location) {
             const query = queryString.parse(this.props.location.search);
             //从销售首页，点击试用用户和正式用户过期用户数字跳转过来
@@ -161,7 +164,7 @@ class AppUserManage extends React.Component {
         var currentRoutePath = AppUserUtil.getCurrentView();
         if (currentRoutePath === 'user' && this.prevRoutePath && this.prevRoutePath !== 'user') {
             //获取全部应用
-            AppUserAction.getAppList();
+            // AppUserAction.getAppList();
             //查询所有用户
             let quryObj = {
                 app_id: ShareObj.app_id || ''
@@ -196,7 +199,12 @@ class AppUserManage extends React.Component {
     showAddUserForm = () => {
         AppUserAction.showAppUserForm();
     };
-
+    handleClickRetryAppLists = () => {
+        //获取所有应用
+        commonDataUtil.getAppList(appList => {
+            AppUserAction.setAppList(appList);
+        });
+    };
     getAppOptions = () => {
         var appList = this.state.appList;
         if (!_.isArray(appList) || !appList.length) {
@@ -209,12 +217,23 @@ class AppUserManage extends React.Component {
         var list = appList.map(function(item) {
             return <Option key={item.app_id} value={item.app_id} title={item.app_name}>{item.app_name}</Option>;
         });
+        if(!appList.length){
+            list.unshift(<Option value={RETRY_GET_APP} key={RETRY_GET_APP} className="retry-get-applist-container">
+                <div className="retry-get-appList" onClick={this.handleClickRetryAppLists}>
+                    {Intl.get('app.user.manager.click.get.app','点击获取应用')}
+                </div>
+            </Option>);
+        }
         list.unshift(<Option value="" key="all" title={Intl.get('user.app.all', '全部应用')}><ReactIntl.FormattedMessage
-            id="user.app.all" defaultMessage="全部应用" /></Option>);
+            id="user.app.all" defaultMessage="全部应用"/></Option>);
         return list;
     };
 
     onSelectedAppChange = (app_id, app_name) => {
+        //如果点击的是获取全部应用
+        if (app_id === RETRY_GET_APP) {
+            app_id = '';
+        }
         //原来的应用id
         const oldSelectAppId = this.state.selectedAppId;
         //设置当前选中应用

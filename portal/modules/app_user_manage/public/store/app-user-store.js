@@ -260,6 +260,17 @@ AppUserStore.prototype.getAppList = function(obj) {
         }
     }
 };
+//设置app列表
+AppUserStore.prototype.setAppList = function(appList) {
+    if(_.isArray(appList) && appList.length) {
+        this.appList = appList;
+        ShareObj.share_app_list = this.appList;
+        this.selectedAppId = ShareObj.app_id || '';
+    } else {
+        this.appList = _.isArray(ShareObj.share_app_list) ? ShareObj.share_app_list : [];
+        this.selectedAppId = ShareObj.app_id || '';
+    }
+};
 //FromAction-直接显示没有用户数据
 AppUserStore.prototype.showNoUserData = function() {
     //调用获取用户，设置列表为空，总数为0

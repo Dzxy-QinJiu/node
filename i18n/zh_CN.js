@@ -2716,6 +2716,7 @@ var zh_CN = {
     'leave.apply.leave.person': '请假人',
     'leave.apply.no.leave.apply': '暂无符合条件的请假申请',
     'leave.apply.time.range.at.least.one.hour': '开始和结束时间应至少相隔一个小时',
-    'leave.apply.approve.rejected': '被驳回'
+    'leave.apply.approve.rejected': '被驳回',
+    'app.user.manager.click.get.app': '点击获取应用'
 };
 export default zh_CN;
