@@ -6,7 +6,7 @@ import accountChart from '../../charts/account';
 
 module.exports = {
     title: '过期账号分析',
-    menuIndex: 4,
+    menuIndex: 3,
     privileges: [
         'USER_ANALYSIS_COMMON',
         'USER_ANALYSIS_MANAGER',

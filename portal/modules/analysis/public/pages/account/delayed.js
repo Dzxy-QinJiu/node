@@ -1,12 +1,12 @@
 /**
- * 活跃分析
+ * 延期帐号分析
  */
 
 import accountChart from '../../charts/account';
 
 module.exports = {
-    title: '活跃分析',
-    menuIndex: 2,
+    title: '延期帐号分析',
+    menuIndex: 5,
     privileges: [
         'USER_ANALYSIS_COMMON',
         'USER_ANALYSIS_MANAGER',
