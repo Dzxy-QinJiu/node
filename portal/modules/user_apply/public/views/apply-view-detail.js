@@ -1067,7 +1067,9 @@ const ApplyViewDetail = createReactClass({
 
     //当应用选择器数据改变的时候，保存到变量中，提交时使用
     onAppPropertyChange(appsSetting) {
-        this.appsSetting = appsSetting;
+        _.each(appsSetting, (value, key) => {
+            this.appsSetting[key] = value;
+        });
     },
 
     //渲染用户申请

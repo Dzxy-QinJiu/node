@@ -102,7 +102,11 @@ const AppPropertySetting = createReactClass({
             changeCurrentAppLoading: false
         };
     },
-
+    //获取应用配置对象中的key
+    getAppSettingKey(appId, userId){
+        //如果是多用户的应用配置，需要app_id和user_id组合确定唯一的应用配置的key
+        return this.props.isMultiUser ? `${appId}&&${userId}` : appId;
+    },
     createPropertySettingData(props) {
         //选中的应用
         const selectedApps = props.selectedApps;
@@ -119,8 +123,9 @@ const AppPropertySetting = createReactClass({
             _.each(selectedApps , (currentApp) => {
                 //当前应用的id
                 const appId = currentApp.app_id;
+                let key = this.getAppSettingKey(currentApp.app_id, currentApp.user_id);
                 //当前应用的设置
-                const originAppSetting = appPropSettingsMap[appId] || {};
+                const originAppSetting = appPropSettingsMap[key] || {};
                 //检查角色、权限
                 function checkRolePermission() {
                     if(!originAppSetting.roles) {
@@ -191,7 +196,7 @@ const AppPropertySetting = createReactClass({
         const createPropertySettingByAppsSetting = () => {
             let isMultiUser = this.props.isMultiUser;
             _.each(selectedApps , (currentApp) => {
-                let key = isMultiUser ? `${currentApp.app_id}&&${currentApp.user_id}` : currentApp.app_id;
+                let key = this.getAppSettingKey(currentApp.app_id, currentApp.user_id);
                 const appSettingConfig = appsSetting[key];
 
                 //检查角色、权限
@@ -234,8 +239,7 @@ const AppPropertySetting = createReactClass({
                         originAppSetting.time.range = appSettingConfig.time.range;
                     }
                 }
-                const appId = currentApp.app_id;
-                const originAppSetting = appPropSettingsMap[appId] || {};
+                const originAppSetting = appPropSettingsMap[key] || {};
                 if(this.props.isSingleAppEdit) {
                     checkSingleProp('user_type');
                 }
@@ -254,7 +258,7 @@ const AppPropertySetting = createReactClass({
                 }
                 checkRolePermission();
                 checkTime();
-                finalResult[appId] = originAppSetting;
+                finalResult[key] = originAppSetting;
             });
         };
 
@@ -330,8 +334,9 @@ const AppPropertySetting = createReactClass({
 
     onRolesPermissionSelect(roles , permissions) {
         var state = this.state;
-        var app_id = state.currentApp.app_id;
-        var app_info = state.appPropSettingsMap[app_id];
+        var app_id = state.currentApp.app_id, user_id = state.currentApp.user_id;
+        let key = this.getAppSettingKey(app_id, user_id);
+        var app_info = state.appPropSettingsMap[key];
         app_info.roles = roles.slice();
         app_info.permissions = permissions.slice();
         this.setState({
@@ -345,7 +350,8 @@ const AppPropertySetting = createReactClass({
             return null;
         }
         const defaultSettings = this.props.defaultSettings;
-        var currentAppInfo = this.state.appPropSettingsMap[currentApp.app_id] || {};
+        let key = this.getAppSettingKey(currentApp.app_id, currentApp.user_id);
+        var currentAppInfo = this.state.appPropSettingsMap[key] || {};
         var selectedRoles = currentAppInfo.roles || [];
         var selectedPermissions = currentAppInfo.permissions || [];
         return (
