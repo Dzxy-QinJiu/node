@@ -1,6 +1,7 @@
 var React = require('react');
 import './style.less';
 import './index.less';
+
 const PropTypes = require('prop-types');
 const QRCode = require('qrcode.react');
 const classnames = require('classnames');
@@ -9,6 +10,8 @@ const LoginForm = require('./login-form');
 import RegisterForm from './register-form';
 import {Alert, Tabs, Icon, Button} from 'antd';
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from '../../lib/websso';
+import SideBar from '../side-bar';
+
 const TabPane = Tabs.TabPane;
 let QRCodeLoginInterval = null;
 const LOGIN_INTERVAL_TIME = 5 * 1000;//5s:获取二维码展示后，调用登录接口的时间间隔
@@ -21,6 +24,7 @@ const VIEWS = {
 };
 const USER_LANG_KEY = 'userLang';//存储用户语言环境的key
 import {storageUtil} from 'ant-utils';
+
 const logoScr = require('./image/wihte-logo.png');
 const FOMR_HEIGHT = {
     COMMON_H: 300,//只有用户名、密码时，登录表单的容器高度
@@ -33,6 +37,7 @@ const REGISTER_STEPS = {
     ACCOUNT_SET: 2//账号设置
 };
 const bgImgUrl = require('./image/login-bg.jpg');
+
 class LoginMain extends React.Component {
     constructor(props) {
         super(props);
@@ -275,7 +280,7 @@ class LoginMain extends React.Component {
                     {hasWindow ? (
                         <div className="form-wrap" style={{height: this.getFormHeight()}}>
                             <div className="form-title">
-                                {this.state.currentView === VIEWS.RIGISTER ? Intl.get('login.register', '注册') : Intl.get('login.login', '登录') }
+                                {this.state.currentView === VIEWS.RIGISTER ? Intl.get('login.register', '注册') : Intl.get('login.login', '登录')}
                             </div>
                             {this.state.currentView === VIEWS.RIGISTER ?
                                 <RegisterForm REGISTER_STEPS={REGISTER_STEPS}
@@ -292,11 +297,13 @@ class LoginMain extends React.Component {
                         </div>
                     ) : null
                     }
+                    <SideBar showChat={Oplate.isCurtao}></SideBar>
                 </div>
             );
         }
     }
 }
+
 LoginMain.propTypes = {
     loginErrorMsg: PropTypes.string,
     captchaCode: PropTypes.string

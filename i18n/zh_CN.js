@@ -6,6 +6,8 @@
 var zh_CN = {
     //system
     'service.not.available': '对不起，服务暂时不可用,请稍后重试。',
+    'weixin.mini.program': '小程序',
+    'customer.service': '客服',
     //菜单
     'menu.realm': '安全域管理',
     'menu.app': '应用管理',
