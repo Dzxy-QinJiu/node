@@ -9,15 +9,13 @@ import ajax from 'ant-ajax';
 import TopBar from './top-bar';
 import AppSelector from './app-selector';
 import { getContextContent } from './utils';
-import { initialTime } from './consts';
+import { initialTime, STORED_APP_ID_KEY } from './consts';
 import { AntcAnalysis } from 'antc';
 import { Row, Col, Collapse } from 'antd';
 const Panel = Collapse.Panel;
 
 const emitters = require('PUB_DIR/sources/utils/emitters');
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
-
-const STORED_APP_ID_KEY = 'analysis_account_active_app_id';
 
 //权限类型
 const authType = hasPrivilege('CUSTOMER_ANALYSIS_MANAGER') ? 'manager' : 'common';

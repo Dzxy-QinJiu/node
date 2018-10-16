@@ -4,10 +4,10 @@
 
 import { userTypeDataMap, USER_TYPES } from '../../consts';
 
-export function getAccountTypeChart(type, title) {
+export function getAccountTypeChart(type = 'total', title) {
     return {
         title: title || '账号类型统计',
-        url: '/rest/analysis/user/v1/:auth_type/total/type',
+        url: `/rest/analysis/user/v1/:auth_type/${type}/type`,
         chartType: 'pie',
         option: {
             legend: {

@@ -24,6 +24,8 @@ function getCharts() {
         accountChart.getAccountIndustryChart('total', '总帐号行业统计'),
         //总帐号团队统计
         accountChart.getAccountTeamChart('total', '总帐号团队统计'),
+        //单应用帐号状态统计
+        accountChart.getAccountStatusChart(),
         //销售开通账号统计
         accountChart.getAccountSalesOpenAccountChart(),
     ];

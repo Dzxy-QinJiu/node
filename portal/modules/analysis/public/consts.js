@@ -58,3 +58,6 @@ export const WEEKDAY = [
     Intl.get('user.time.friday', '周五'),
     Intl.get('user.time.saturday', '周六')
 ];
+
+//localstorage中存储选中的应用ID的键
+export const STORED_APP_ID_KEY = 'analysis_account_active_app_id';
