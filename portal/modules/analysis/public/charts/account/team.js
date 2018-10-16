@@ -4,9 +4,9 @@
 
 import { unknownDataMap, USER_TYPES, USER_TYPES_WITH_TITLE } from '../../consts';
 
-export function getTeamChart(type = 'total') {
+export function getUserTeamChart(type = 'total', title) {
     return {
-        title: Intl.get('user.analysis.team', '团队统计'),
+        title: title || Intl.get('user.analysis.team', '团队统计'),
         url: `/rest/analysis/user/v1/:auth_type/apps/${type}/team`,
         chartType: 'bar',
         nameValueMap: unknownDataMap,

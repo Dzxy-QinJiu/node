@@ -19,9 +19,9 @@ function getCharts() {
         //用户类型
         accountChart.getTypeChart(),
         //地域统计
-        accountChart.getZoneChart('added_expired'),
+        accountChart.getUserZoneChart('added_expired'),
         //行业统计
-        accountChart.getIndustryChart('added_expired'),
+        accountChart.getUserIndustryChart('added_expired'),
         //登录统计
         accountChart.getOpenAccountChart('added_expired'),
     ];

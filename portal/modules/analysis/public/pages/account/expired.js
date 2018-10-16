@@ -19,11 +19,11 @@ function getCharts() {
         //用户类型
         accountChart.getTypeChart(),
         //地域统计
-        accountChart.getZoneChart('expired'),
+        accountChart.getUserZoneChart('expired'),
         //行业统计
-        accountChart.getIndustryChart('expired'),
+        accountChart.getUserIndustryChart('expired'),
         //团队统计
-        accountChart.getTeamChart('expired'),
+        accountChart.getUserTeamChart('expired'),
         //登录统计
         accountChart.getOpenAccountChart('expired'),
     ];

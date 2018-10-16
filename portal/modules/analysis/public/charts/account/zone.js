@@ -4,9 +4,9 @@
 
 import { unknownDataMap, USER_TYPES, USER_TYPES_WITH_TITLE } from '../../consts';
 
-export function getZoneChart(type = 'total') {
+export function getUserZoneChart(type = 'total', title) {
     return {
-        title: Intl.get('user.analysis.address', '地域统计'),
+        title: title || Intl.get('user.analysis.address', '地域统计'),
         url: `/rest/analysis/user/v1/:auth_type/apps/${type}/zone`,
         chartType: 'bar',
         nameValueMap: unknownDataMap,

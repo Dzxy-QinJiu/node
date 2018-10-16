@@ -1,10 +1,10 @@
 /**
- * 总数趋势统计
+ * 账号数统计
  */
 
-export function getUserTrendChart(type = 'total', title) {
+export function getUserNumChart(type = 'total', title) {
     return {
-        title: title || Intl.get('user.analysis.total', '用户统计'),
+        title: title || '账号数统计',
         url: `/rest/analysis/user/v1/:auth_type/${type}/summary`,
         chartType: 'line',
         option: {
