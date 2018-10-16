@@ -266,7 +266,7 @@ class CurtaoAnalysis extends React.Component {
                     <Col span={20}>
                         {this.state.isAppSelectorShow ? (
                             <div className="page-top-bar">
-                                <AppSelector storedAppIdKey={STORED_APP_ID_KEY} defaultValue={defaultAppId}/>
+                                <AppSelector storedAppIdKey={STORED_APP_ID_KEY} defaultValue={defaultAppId} initialValue="all"/>
                             </div>
                         ) : null}
                         {this.renderContent()}
