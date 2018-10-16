@@ -55,6 +55,18 @@ function ClueCustomerActions() {
             _.isFunction(callback) && callback(errorMsg || Intl.get('clue.customer.check.only.exist', '线索名称唯一性校验失败'));
         });
     };
+    //校验线索电话的唯一性
+    this.checkOnlyCluePhone = function(phone, callback, customerId) {
+        let queryObj = {phone: phone};
+        if(customerId){
+            queryObj.customer_id = customerId;
+        }
+        clueCustomerAjax.checkOnlyCustomer(queryObj).then(function(data) {
+            _.isFunction(callback) && callback(data);
+        }, function(errorMsg) {
+            _.isFunction(callback) && callback(errorMsg || Intl.get('clue.customer.check.only.exist', '线索名称唯一性校验失败'));
+        });
+    };
     //获取销售列表
     this.getSalesManList = function(cb) {
         //客户所属销售（团队）下拉列表的数据获取
