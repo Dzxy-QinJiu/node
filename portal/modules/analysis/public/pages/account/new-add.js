@@ -17,15 +17,15 @@ module.exports = {
 function getCharts() {
     return [
         //趋势统计
-        accountChart.getUserNumChart('added', '趋势统计'),
+        accountChart.getAccountNumChart('added', '趋势统计'),
         //用户类型
-        accountChart.getTypeChart(),
+        accountChart.getAccountTypeChart(),
         //地域统计
-        accountChart.getUserZoneChart('added'),
+        accountChart.getAccountZoneChart('added'),
         //行业统计
-        accountChart.getUserIndustryChart('added'),
+        accountChart.getAccountIndustryChart('added'),
         //团队统计
-        accountChart.getUserTeamChart('added'),
+        accountChart.getAccountTeamChart('added'),
         //登录统计
         accountChart.getOpenAccountChart('added'),
         //留存统计

@@ -1,12 +1,12 @@
 /**
- * 账号用户类型
+ * 账号类型统计
  */
 
 import { userTypeDataMap, USER_TYPES } from '../../consts';
 
-export function getTypeChart() {
+export function getAccountTypeChart(type, title) {
     return {
-        title: Intl.get('oplate.user.analysis.user.type', '用户类型'),
+        title: title || '账号类型统计',
         url: '/rest/analysis/user/v1/:auth_type/total/type',
         chartType: 'pie',
         option: {

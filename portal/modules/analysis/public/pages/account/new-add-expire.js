@@ -17,11 +17,11 @@ module.exports = {
 function getCharts() {
     return [
         //用户类型
-        accountChart.getTypeChart(),
+        accountChart.getAccountTypeChart(),
         //地域统计
-        accountChart.getUserZoneChart('added_expired'),
+        accountChart.getAccountZoneChart('added_expired'),
         //行业统计
-        accountChart.getUserIndustryChart('added_expired'),
+        accountChart.getAccountIndustryChart('added_expired'),
         //登录统计
         accountChart.getOpenAccountChart('added_expired'),
     ];

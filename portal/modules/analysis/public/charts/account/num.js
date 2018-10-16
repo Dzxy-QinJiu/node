@@ -2,7 +2,7 @@
  * 账号数统计
  */
 
-export function getUserNumChart(type = 'total', title) {
+export function getAccountNumChart(type = 'total', title) {
     return {
         title: title || '账号数统计',
         url: `/rest/analysis/user/v1/:auth_type/${type}/summary`,
