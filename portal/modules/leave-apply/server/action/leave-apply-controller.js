@@ -62,7 +62,8 @@ exports.addLeaveApplyComments = function(req, res) {
                 user_id: replyData.user_id || '',
                 user_name: replyData.user_name || '',
                 comment: replyData.comment || '',
-                comment_time: replyTime
+                comment_time: replyTime,
+                nick_name: replyData.nick_name || ''
             };
             res.status(200).json(replyItem);
         }else{

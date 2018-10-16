@@ -10,10 +10,11 @@ class ApplyDetailInfo extends React.Component {
         this.state = {};
     }
     render() {
+        var iconCls = 'iconfont ' + this.props.iconClass;
         return (
             <div className="apply-detail-customer apply-detail-info">
                 <div className="customer-icon-block">
-                    <span className="iconfont icon-leave icon-application-ico"/>
+                    <span className={iconCls}/>
                 </div>
                 <div className="customer-info-block apply-info-block">
                     <div className="apply-info-content">
@@ -36,10 +37,12 @@ class ApplyDetailInfo extends React.Component {
     }
 }
 ApplyDetailInfo.defaultProps = {
-    showApplyInfo: {}
+    showApplyInfo: {},
+    iconClass: '',
 };
 ApplyDetailInfo.propTypes = {
     showApplyInfo: PropTypes.object,
+    iconClass: PropTypes.string
 
 };
 

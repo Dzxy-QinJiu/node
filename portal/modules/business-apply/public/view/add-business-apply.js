@@ -134,11 +134,10 @@ class AddBusinessApply extends React.Component {
                 success: (data) => {
                     //添加成功
                     this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                    setTimeout(() => {
-                        this.hideBusinessApplyAddForm();
-                        //添加完后的处理
-                        BusinessApplyAction.afterAddApplySuccess(data);
-                    }, DELAY_TIME_RANGE.CLOSE_RANGE);
+                    this.hideBusinessApplyAddForm();
+                    //添加完后的处理
+                    data.afterAddReplySuccess = true;
+                    BusinessApplyAction.afterAddApplySuccess(data);
                 },
                 error: (errorMsg) => {
                     this.setResultData(errorMsg || Intl.get('crm.154', '添加失败'), 'error');

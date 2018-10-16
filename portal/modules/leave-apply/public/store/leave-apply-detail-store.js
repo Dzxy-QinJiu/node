@@ -56,6 +56,35 @@ LeaveApplyDetailStore.prototype.setInitState = function() {
         errorMsg: ''
     };
 };
+LeaveApplyDetailStore.prototype.setDetailInfoObj = function(detailObj) {
+    delete detailObj.afterAddReplySuccess;
+    this.detailInfoObj = {
+        // "" loading error
+        loadingResult: '',
+        //获取的详情信息
+        info: detailObj,
+        //错误信息
+        errorMsg: ''
+    };
+    this.replyListInfo = {
+        //三种状态,loading,error,''
+        result: '',
+        //列表数组
+        list: [],
+        //服务端错误信息
+        errorMsg: ''
+    };
+    //审批状态列表
+    this.replyStatusInfo = {
+        //三种状态,loading,error,''
+        result: '',
+        //列表数组
+        list: [],
+        //服务端错误信息
+        errorMsg: ''
+    };
+
+};
 //设置某条申请的回复列表
 LeaveApplyDetailStore.prototype.setApplyComment = function(list) {
     this.replyListInfo = {

@@ -47,7 +47,7 @@ class ApplyDetailRemarks extends React.Component {
                     {replyList.map((replyItem, index) => {
                         return (
                             <li key={index} className="apply-info-label">
-                                <span className="user-info-label">{replyItem.user_name}:</span>
+                                <span className="user-info-label">{replyItem.nick_name}:</span>
                                 <span className="user-info-text">
                                     {replyItem.comment ? replyItem.comment : getApplyResultDscr(replyItem)}</span>
                                 <span className="user-info-label reply-date-text">{

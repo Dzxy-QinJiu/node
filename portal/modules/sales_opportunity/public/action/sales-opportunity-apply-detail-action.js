@@ -16,7 +16,8 @@ function ApplyViewDetailActions() {
         'hideReplyCommentEmptyError',
         'showReplyCommentEmptyError',
         'cancelSendApproval',
-        'hideApprovalBtns'//审批完后不在显示审批按钮
+        'hideApprovalBtns',//审批完后不在显示审批按钮
+        'setDetailInfoObj'
     );
 
     //获取审批单详情
@@ -56,6 +57,7 @@ function ApplyViewDetailActions() {
                 let replyItem = {
                     user_id: replyData.user_id || '',
                     user_name: replyData.user_name || '',
+                    nick_name: replyData.nick_name || '',
                     comment: replyData.comment || '',
                     comment_time: replyTime
                 };

@@ -43,7 +43,8 @@ const menuShortNamesMap = {
     'contract': Intl.get('contract.125', '合同'),
     'apply': Intl.get('crm.109', '申请'),
     'background_management': Intl.get('menu.shortName.config', '设置'),
-    'user_info_manage': Intl.get('menu.notification', '通知')
+    'user_info_manage': Intl.get('menu.notification', '通知'),
+    'application': Intl.get('menu.leave.apply.list.management', '申请审批')
 };
 //获取菜单
 function getMenus() {
