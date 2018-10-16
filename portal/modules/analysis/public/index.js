@@ -169,12 +169,13 @@ class CurtaoAnalysis extends React.Component {
 
     //处理二级菜单点击事件
     handleMenuClick(menuIndex, groupIndex, pageIndex) {
-        const page = _.get(this.state.groups, '[' + groupIndex + '].pages[' + pageIndex + ']');
+        const group = _.get(this.state.groups, '[' + groupIndex + ']');
+        const page = _.get(group, 'pages[' + pageIndex + ']');
         const charts = _.get(page, 'charts');
 
         let isAppSelectorShow = false;
 
-        if (page.title === '活跃分析') {
+        if (group.title === '账号分析') {
             isAppSelectorShow = true;
         }
 
