@@ -629,7 +629,7 @@ function getAppsUserRolesType(req, res, applyBasicDetail, emitter) {
                 //从用户详情的应用列表中找到所有申请延期应用的roleIds、permissionIds和各应用的用户类型
                 _.each(userDetail.apps, app => {
                     //根据app_id和user_id，找到该用户下的此应用，更新角色、权限、用户类型
-                    let curApp = _.find(applyBasicDetail.apps, item => item.app_id === app.app_id && item.user_id === userDetail.user_id );
+                    let curApp = _.find(applyBasicDetail.apps, item => item.app_id === app.app_id && item.user_id === _.get(userDetail, 'user.user_id') );
                     if (curApp) {
                         if (_.get(app, 'roles[0]')) {
                             roleIds = roleIds.concat(app.roles);
