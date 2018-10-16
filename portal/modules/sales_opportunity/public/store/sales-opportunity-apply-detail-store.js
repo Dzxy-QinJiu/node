@@ -66,6 +66,23 @@ SalesOpportunityApplyDetailStore.prototype.setDetailInfoObj = function(detailObj
         //错误信息
         errorMsg: ''
     };
+    this.replyListInfo = {
+        //三种状态,loading,error,''
+        result: '',
+        //列表数组
+        list: [],
+        //服务端错误信息
+        errorMsg: ''
+    };
+    //审批状态列表
+    this.replyStatusInfo = {
+        //三种状态,loading,error,''
+        result: '',
+        //列表数组
+        list: [],
+        //服务端错误信息
+        errorMsg: ''
+    };
 };
 //设置某条申请的回复列表
 SalesOpportunityApplyDetailStore.prototype.setApplyComment = function(list) {
