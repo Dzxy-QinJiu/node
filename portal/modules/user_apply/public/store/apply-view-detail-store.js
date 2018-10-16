@@ -122,8 +122,10 @@ class ApplyViewDetailStore {
         this.isChangeUserName = false;
         this.backApplyResult = {
             loading: false,
-            errorMsg: ""
+            errorMsg: ''
         };
+        //(多用户)延期申请审批时，当前要配置角色的用户id
+        this.curShowConfigUserId = '';
     }
     //获取应用列表
     getApps(result) {
@@ -163,7 +165,7 @@ class ApplyViewDetailStore {
             this.formData.delayTimeNumber = 365 * years + 30 * months + 7 * weeks + days;
             this.formData.delayTimeUnit = 'days';
         }
-    }    
+    }
     //获取审批详情
     getApplyDetail(obj) {
         //没有角色的时候，显示模态框，重置
@@ -172,7 +174,7 @@ class ApplyViewDetailStore {
             appNames: [],
             continueSubmit: false
         };
-       
+
         if (obj.loading) {
             this.detailInfoObj.loading = true;
             this.detailInfoObj.info = {};
@@ -189,16 +191,29 @@ class ApplyViewDetailStore {
                 app.app_name = app.client_name;
             });
             this.detailInfoObj.info = info;
-            this.detailInfoObj.info = obj.detail;
             this.detailInfoObj.errorMsg = '';
             this.createAppsSetting();
-            if (_.isArray(this.detailInfoObj.info.user_names)) {
-                this.formData.user_name = this.detailInfoObj.info.user_names[0];
+            //用户的处理
+            if (_.indexOf(APPLY_TYPES, info.type) !== -1) {//延期、禁用（多应用）
+                if (_.isArray(info.apps)) {
+                    this.formData.user_name = _.get(info.apps, '0.user_name');
+                    this.formData.nick_name = _.get(info.apps, '0.nickname');
+                    //用户类型存在，则需要修改用户类型，不存在则不需要修改，也不用传到审批接口中
+                    if (_.get(info.apps, '0.user_type')) {
+                        this.formData.user_type = _.get(info.apps, '0.user_type');
+                    }
+                }
+            } else {
+                if (_.isArray(this.detailInfoObj.info.user_names)) {
+                    this.formData.user_name = this.detailInfoObj.info.user_names[0];
+                }
+                if (_.isArray(this.detailInfoObj.info.nick_names)) {
+                    this.formData.nick_name = this.detailInfoObj.info.nick_names[0];
+                }
             }
-            if (_.isArray(this.detailInfoObj.info.nick_names)) {
-                this.formData.nick_name = this.detailInfoObj.info.nick_names[0];
-            }
+            //延期的处理
             let delayTime = 0;
+            //老数据中，延期的处理
             if (this.detailInfoObj.info.type === 'apply_grant_delay') {
                 if (this.detailInfoObj.info.delayTime) { // 同步修改时间
                     delayTime = this.detailInfoObj.info.delayTime;
@@ -208,77 +223,29 @@ class ApplyViewDetailStore {
                     this.formData.delayTimeUnit = 'custom';
                     this.formData.end_date = this.detailInfoObj.info.end_date;
                 }
+            } else if (this.detailInfoObj.info.type === APPLY_TYPES.DELAY) {//延期（多应用）
+                if (_.get(info.apps, '0.delay')) { // 同步修改时间
+                    const delayTime = info.apps[0].delay;
+                    info.delayTime = delayTime;
+                    this.formData.delay_time = delayTime;
+                    this.getDelayDisplayTime(delayTime);
+                } else { // 到期时间，点开修改同步到自定义
+                    this.formData.delayTimeUnit = 'custom';
+                    this.formData.end_date = info.apps[0].end_date;
+                }
             }
         }
     }
 
     //撤销审批结果(不含errorMsg，错误信息在action中通过messag.error处理)
     saleBackoutApply = resultHandler('backApplyResult');
-
-    //获取审批详情
-    getApplyMultiAppDetail = resultHandler('detailInfoObj', function({ data, paramObj }) {
-        //没有角色的时候，显示模态框，重置
-        this.rolesNotSettingModalDialog = {
-            show: false,
-            appNames: [],
-            continueSubmit: false
-        };
-        const info = data || {};
-        let apps = [];
-        if (_.get(info, 'message.apply_param')) {
-            apps = info.message.apply_param && (JSON.parse(info.message.apply_param) || []);
-            info.customer_id = info.message.customer_ids;
-            info.customer_name = info.message.customer_name;
-            info.apps = apps.map(app => ({
-                ...app,
-                app_id: app.client_id,
-                app_name: app.client_name
-            }));
-            info.users = _.uniqBy(apps, 'user_id').map(user => {
-                const item = _.pick(user, 'user_id', 'user_name', 'nickname');
-                return {
-                    ...item,
-                    apps: apps.filter(x => x.user_id === item.user_id).map(app => ({
-                        ...app,
-                        app_id: app.client_id,
-                        app_name: app.client_name
-                    }))
-                };
-            });
-            switch (_.get(data, 'message.type')) {
-                case APPLY_TYPES.DELAY:
-                    if (_.get(apps, '0.delay')) { // 同步修改时间
-                        const delayTime = apps[0].delay;
-                        info.delayTime = delayTime;
-                        this.formData.delay_time = delayTime;
-                        this.getDelayDisplayTime(delayTime);
-                    } else { // 到期时间，点开修改同步到自定义
-                        this.formData.delayTimeUnit = 'custom';
-                        this.formData.end_date = apps[0].end_date;
-                    }
-                    break;
-                case APPLY_TYPES.DISABLE:
-                    info.status = _.get(apps, '0.status');
-                    break;
-            }
-        }
-        info.customer_name = info.message.customer_name;
-        info.comment = info.message.remark;
-        info.type = info.message.type;
-        info.sales_team_name = info.message.sales_team_name;
-        info.sales_name = info.message.sales_name;
-        info.presenter_id = info.producer.user_id;
-        this.detailInfoObj.info = info;
-        this.createAppsSetting();
-        if (_.isArray(apps)) {
-            this.formData.user_name = _.get(apps, '0.user_name');
-            this.formData.nick_name = _.get(apps, '0.nickname');
-        }       
-    })
+    
     //生成应用的单独配置
     createAppsSetting() {
         //申请的应用列表
         const apps = this.detailInfoObj.info.apps;
+        //申请类型
+        let apply_type = _.get(this.detailInfoObj, 'info.type');
         _.each(apps, (appInfo) => {
             const app_id = appInfo.app_id;
             const tags = appInfo.tags || [];
@@ -309,11 +276,11 @@ class ApplyViewDetailStore {
                     }
                 }
             }
-            this.appsSetting[app_id] = {
+            let appConfigObj = {
                 //开通个数
-                number: 'number' in appInfo ? appInfo.number : 1,
+                number: _.get(appInfo, 'number', 1),
                 //到期停用
-                over_draft: 'over_draft' in appInfo ? appInfo.over_draft + '' : '1',
+                over_draft: _.get(appInfo, 'over_draft', '1'),
                 //时间
                 time: {
                     start_time: start_time,
@@ -325,6 +292,12 @@ class ApplyViewDetailStore {
                 //权限
                 permissions: appInfo.permissions || []
             };
+            //延期（多应用)时，需要分用户进行配置
+            if(apply_type === APPLY_TYPES.DELAY){
+                this.appsSetting[`${app_id}&&${appInfo.user_id}`] = appConfigObj;
+            } else {
+                this.appsSetting[app_id] = appConfigObj;
+            }
         });
     }
     //显示右侧详情加载中
@@ -372,8 +345,9 @@ class ApplyViewDetailStore {
         this.rolesNotSettingModalDialog.appNames = [];
     }
     //展开、收起
-    toggleApplyExpanded(bool) {
-        this.applyIsExpanded = bool;
+    toggleApplyExpanded({flag, user_id}) {
+        this.applyIsExpanded = flag;
+        this.curShowConfigUserId = user_id;
     }
     //设置用户名是否为编辑状态
     setUserNameEdit(type) {
@@ -601,4 +575,4 @@ class ApplyViewDetailStore {
 }
 
 //使用alt导出store
-export default alt.createStore(ApplyViewDetailStore, 'ApplyViewDetailStoreV2');
+export default alt.createStore(ApplyViewDetailStore, 'ApplyViewDetailStore');

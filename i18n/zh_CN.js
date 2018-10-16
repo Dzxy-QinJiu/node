@@ -185,6 +185,8 @@ var zh_CN = {
     'common.apply.user.trial': '申请试用用户',
     'common.apply.app.trial': '已有用户申请试用用户',
     'common.apply.grant.delay': '用户申请延期',
+    'common.apply.user.type.unchanged': '保持不变',
+    'common.apply.user.type.unchanged.tip': '延期后不改变原有的用户类型',
     'common.apply.reject': '驳回',
     'common.belong.customer': '所属客户',
     'common.belong.sales': '所属销售',

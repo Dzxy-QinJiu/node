@@ -36,7 +36,17 @@ const CONFIG_TYPE = {
 const ApplyUserForm = createReactClass({
     displayName: 'ApplyUserForm',
     mixins: [ValidateMixin, UserTimeRangeField],
-
+    propTypes: {
+        apps: PropTypes.array,
+        applyFrom: PropTypes.string,
+        maxHeight: PropTypes.number,
+        users: PropTypes.array,
+        customerName: PropTypes.string,
+        emailData: PropTypes.obj,
+        cancelApply: PropTypes.func,
+        appList: PropTypes.array,
+        userType: PropTypes.string
+    },
     getInitialState: function() {
         const formData = this.buildFormData(this.props, this.props.apps);
 
@@ -54,14 +64,14 @@ const ApplyUserForm = createReactClass({
     },
 
     componentWillReceiveProps: function(nextProps) {
-        this.buildFormData(nextProps, nextProps.apps);
+        let formData = this.buildFormData(nextProps, nextProps.apps);
         let oldAppIds = _.map(this.state.apps, 'client_id');
         let newAppIds = _.map(nextProps.apps, 'client_id');
         //获取newAppIds中，不存在于oldAppIds中的应用id
         let diffAppIds = _.difference(newAppIds, oldAppIds);
         //获取新增的应用的默认配置
         this.getAppsDefaultConfig(diffAppIds);
-        this.setState({apps: $.extend(true, [], nextProps.apps), maxHeight: nextProps.maxHeight});
+        this.setState({apps: $.extend(true, [], nextProps.apps), maxHeight: nextProps.maxHeight, formData});
     },
 
     buildFormData: function(props, apps) {
@@ -107,12 +117,7 @@ const ApplyUserForm = createReactClass({
             };
             return this.getAppConfig(appData, appDefaultConfigList, formData.tag, true);
         });
-
-        if (this.state) {
-            this.state.formData = formData;
-        } else {
-            return formData;
-        }
+        return formData;
     },
 
     isApplyNewUsers: function() {
@@ -206,20 +211,23 @@ const ApplyUserForm = createReactClass({
     },
 
     onNickNameChange: function(e) {
-        this.state.formData.nick_name = e.target.value.trim();
-        this.setState(this.state);
+        let formData = this.state.formData;
+        formData.nick_name = e.target.value.trim();
+        this.setState({formData});
     },
 
     onRemarkChange: function(e) {
-        this.state.formData.remark = e.target.value.trim();
-        this.setState(this.state);
+        let formData = this.state.formData;
+        formData.remark = e.target.value.trim();
+        this.setState({formData});
     },
 
     onUserNameChange: function(e) {
         let userName = e.target.value.trim();
-        this.state.formData.user_name = userName;
+        let formData = this.state.formData;
+        formData.user_name = userName;
         let isEmail = userName && userName.indexOf('@') !== -1;
-        _.each(this.state.formData.products, appFormData => {
+        _.each(formData.products, appFormData => {
             //用户名是邮箱格式时，只能申请1个用户
             if (isEmail && appFormData.number > 1) {
                 appFormData.onlyOneUserTip = true;
@@ -227,7 +235,7 @@ const ApplyUserForm = createReactClass({
                 appFormData.onlyOneUserTip = false;
             }
         });
-        this.setState(this.state);
+        this.setState({formData});
     },
 
     onCountChange: function(app, v) {
@@ -386,8 +394,9 @@ const ApplyUserForm = createReactClass({
     selectEmail: function(value, field) {
         value = $.trim(value);
         if (value) {
-            this.state.formData.user_name = value;
-            this.setState({formData: this.state.formData});
+            let formData = this.state.formData;
+            formData.user_name = value;
+            this.setState({formData});
         }
     },
 
@@ -550,7 +559,7 @@ const ApplyUserForm = createReactClass({
                             {this.state.applyFrom !== 'order' ? (
                                 <FormItem
                                     {...formItemLayout}
-                                    label={Intl.get('user.apply.type', '申请类型')}
+                                    label={Intl.get('common.type', '类型')}
                                 >
                                     <RadioGroup onChange={this.onUserTypeChange}
                                         value={formData.tag}>
@@ -607,7 +616,7 @@ const ApplyUserForm = createReactClass({
     },
 
     handleChangeApps: function(appIds) {
-        this.state.apps = _.map(appIds, appId => {
+        let apps = _.map(appIds, appId => {
             return _.find(this.props.appList, app => app.client_id === appId);
         });
         //获取的应用默认配置列表
@@ -642,7 +651,7 @@ const ApplyUserForm = createReactClass({
             this.getAppsDefaultConfig(newAddAppIds);
         }
         formData.selectAppIds = appIds;
-        this.setState({apps: this.state.apps, formData: formData});
+        this.setState({apps, formData});
         this.setFormHeight();
     },
 

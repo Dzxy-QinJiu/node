@@ -179,6 +179,8 @@ var en_US = {
     'common.apply.user.trial': 'Apply for trial users',//申请试用用户
     'common.apply.app.trial': 'Existing users apply for trial',//已有用户申请试用用户
     'common.apply.grant.delay': 'Users apply for extensions',//用户申请延期
+    'common.apply.user.type.unchanged': 'Unchanged',//保持不变
+    'common.apply.user.type.unchanged.tip': 'The original user type is not changed after the delay',//延期后不改变原有的用户类型
     'common.apply.reject': 'reject',//驳回  去驳回的话用reject，已经被驳回用rejected。
     'common.belong.customer': 'Customers',//所属客户
     'common.belong.sales': 'Sales',//所属销售

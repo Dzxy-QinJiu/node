@@ -357,6 +357,70 @@ exports.toDetailStatusRestObject = function(obj) {
     result = addProperties(result, obj);
     return result;
 };
+//延期、禁用（多应用）
+exports.toDetailMultiAppRestObject = function(obj, APPLY_TYPES){
+    //审批单内容
+    var serverResult = obj || {};
+    //申请单详情
+    var detail = serverResult.message || {};
+    //转换之后的数据
+    var result = {};
+    //申请类型， 延期、禁用（多应用）
+    result.type = detail.type || '';
+    //销售名称
+    result.sales_name = detail.sales_name || '';
+    //销售团队名称
+    result.sales_team_name = detail.sales_team_name || '';
+    //客户名
+    result.customer_name = detail.customer_name || '';
+    //客户id
+    result.customer_id = detail.customer_ids || '';
+
+    let apps = [];
+    if (detail.apply_param) {
+        apps = detail.apply_param && (JSON.parse(detail.apply_param) || []);
+        //应用
+        result.apps = apps.map(app => ({
+            ...app,
+            app_id: app.client_id,
+            app_name: app.client_name
+        }));
+        //延期（多应用）
+        if(detail.type === APPLY_TYPES.DELAY_MULTI_APP){
+            if (_.get(apps, '0.delay')) {
+                result.delayTime = apps[0].delay;
+            }
+            // 到期时间
+            if (_.get(apps, '0.end_date')) {
+                result.end_date = _.get(apps, '0.end_date', '');
+            }
+            //延期时间
+            if (_.get(apps, '0.delay') && _.get(apps, '0.delay') !== '-1') {
+                result.delayTime = _.get(apps, '0.delay', '');
+            }
+        } else if(detail.type === APPLY_TYPES.DISABLE_MULTI_APP){//禁用（多应用）
+            result.status = _.get(apps, '0.status');
+        }
+    }
+    //申请时候的备注
+    result.comment = detail.remark || '';
+    // 申请人id
+    result.presenter_id = serverResult.producer.user_id;
+    //审批备注
+    result.approval_comment = serverResult.approval_comment || '';
+    //审批状态
+    result.approval_state = 'approval_state' in serverResult ? transferApprovalStateToNumber(serverResult.approval_state) : '';
+    //审批人
+    result.approval_person = serverResult.approval_person || '';
+    //审批时间
+    result.approval_time = serverResult.consume_date || '';
+    //增加特殊属性
+    result = addProperties(result, obj);
+    return result;
+};
+
+
+
 /**
  * 增加特殊属性，用于在列表中展示数据，详情中不需要这些数据
  * @param detail  新数据对象

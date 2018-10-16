@@ -122,18 +122,19 @@ class ApplyTabContent extends React.Component {
 
     updateSelectedItem = (message) => {
         if(message && message.status === 'success'){
+            let approval_state = _.get(message,'approval',this.state.selectedDetailItem.approval_state);
             this.setState({
                 selectedDetailItem: {
                     ...this.state.selectedDetailItem,
                     isConsumed: 'true',
-                    approval_state: message && message.approval || selectedDetailItem.approval_state,
+                    approval_state: approval_state,
                 }
             }, () => {
                 UserApplyActions.backApplySuccess({
                     id: message.id,
-                    approval_state: message.approval,
+                    approval_state: approval_state,
                     isConsumed: 'true'
-                })
+                });
             });
         }
         //处理申请成功还是失败,"success"/"error"
