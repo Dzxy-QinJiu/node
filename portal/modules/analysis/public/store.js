@@ -11,7 +11,5 @@ export default {
     clueChannelList: [],
     //线索来源列表
     clueSourceList: [],
-    //选中的应用
-    selectedAppId: '',
 };
 

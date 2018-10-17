@@ -11,7 +11,8 @@ export function getAccountStatusChart(type = 'total', title) {
         chartType: 'pie',
         noShowCondition: {
             callback: conditions => {
-                const appId = conditions.app_id;
+                const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
+                const appId = _.get(appIdCondition, 'value');
 
                 if (appId && (appId.includes('all') || appId.includes(','))) {
                     return true;

@@ -73,7 +73,10 @@ class CurtaoAnalysis extends React.Component {
             url: '/rest/global/grant_applications'
         }).then(result => {
             Store.appList = result;
-            Store.selectedAppId = _.get(result, '[0].app_id');
+            Store.appList.unshift({
+                app_id: 'all',
+                app_name: '全部应用',
+            });
         });
     };
 
