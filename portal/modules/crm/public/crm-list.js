@@ -267,7 +267,7 @@ class Crm extends React.Component {
                 const pageSize = trialQualifiedCustomerIds.split(',').length;
                 let params = {
                     data: JSON.stringify({id: trialQualifiedCustomerIds})
-                }
+                };
                 //设置了关注客户置顶后的处理
                 if (this.state.isConcernCustomerTop) {
                     params = this.handleSortParams(params);
@@ -784,8 +784,26 @@ class Crm extends React.Component {
                 break;
 
         }
-        //超xx天未联系的客户过滤需传的参数
-        if (dayTime) {
+        //超30天未接通的客户筛选
+        if(condition.otherSelectedItem === OTHER_FILTER_ITEMS.THIRTY_NO_CONNECTION) {
+            let currentTime = moment().valueOf();
+            //最后拨打电话的时间在近30天内，
+            this.state.rangParams[0] = {
+                from: currentTime - DAY_TIME.THIRTY_DAY,
+                to: currentTime,
+                name: 'last_phone_time',
+                type: 'time'
+            };
+            //最后联系时间在30天之前
+            this.state.rangParams[1] = {
+                to: currentTime - DAY_TIME.THIRTY_DAY,
+                name: 'last_contact_time',
+                type: 'time'
+            };
+        }
+        //超xx天未联系（未接通）的客户过滤需传的参数
+        else if (dayTime) {
+            //超xx天未联系的客户过滤需传的参数
             this.state.rangParams[0] = {
                 to: moment().valueOf() - dayTime,
                 // from: moment().valueOf(),

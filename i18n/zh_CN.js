@@ -1325,6 +1325,7 @@ var zh_CN = {
     'crm.218': '修改成功',
     'crm.219': '修改失败',
     'crm.over.day.without.contact': '超{day}天未联系',
+    'crm.over.day.no.connection': '近{day}天未接通',
     'crm.recent.week.active': '近一周的活跃客户',
     'crm.recent.month.active': '近一个月的活跃客户',
     'crm.customer.interested': '添加关注',

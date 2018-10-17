@@ -274,6 +274,7 @@ export const OTHER_FILTER_ITEMS = {
     THIRTY_UNCONTACT: 'thirty_uncontact',
     FIFTEEN_UNCONTACT: 'fifteen_uncontact',
     SEVEN_UNCONTACT: 'seven_uncontact',
+    THIRTY_NO_CONNECTION: 'thirty_no_connection',//近30天未接通的客户
     UNDISTRIBUTED: 'undistributed',//未分配的客户
     NO_CONTACT_WAY: 'no_contact_way',//无联系方式的客户
     LAST_CALL_NO_RECORD: 'last_call_no_record',//最后联系但未写跟进记录的客户
