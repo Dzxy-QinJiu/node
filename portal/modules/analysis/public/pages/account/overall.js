@@ -34,6 +34,10 @@ function getCharts() {
         accountChart.getActiveTimeIntervalChart(),
         //在线时长统计
         accountChart.getLoginLongChart(),
+        //设备统计
+        accountChart.getAccountDeviceChart(),
+        //浏览器统计
+        accountChart.getAccountBrowserChart(),
         //用户访问次数
         accountChart.getLoginCountsChart(),
         //活跃用户地域统计
