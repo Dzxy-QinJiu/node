@@ -23,6 +23,11 @@ const dayTime = 24 * 60 * 60 * 1000;
 const ApplyUserForm = createReactClass({
     displayName: 'ApplyUserForm',
     mixins: [ValidateMixin, UserTimeRangeField],
+    propTypes: {
+        apps: PropTypes.array,
+        emailData: PropTypes.obj,
+        cancelApply: PropTypes.func
+    },
 
     getInitialState: function() {
         const formData = this.buildFormData(this.props);
@@ -37,7 +42,11 @@ const ApplyUserForm = createReactClass({
     },
 
     componentWillReceiveProps: function(nextProps) {
-        this.buildFormData(nextProps);
+        const formData = this.buildFormData(nextProps);
+        this.setState({
+            formData,
+            appFormData: formData.products[0] || {}
+        });
         let oldAppIds = _.map(this.props.apps, 'client_id');
         let newAppIds = _.map(nextProps.apps, 'client_id');
         //获取newAppIds中，不存在于oldAppIds中的应用id
@@ -67,13 +76,7 @@ const ApplyUserForm = createReactClass({
             };
             return this.getAppConfig(appData, appDefaultConfigList, formData.tag, true);
         });
-
-        if (this.state) {
-            this.state.formData = formData;
-            this.state.appFormData = formData.products[0] || {};
-        } else {
-            return formData;
-        }
+        return formData;
     },
 
     componentDidMount: function() {
@@ -146,20 +149,23 @@ const ApplyUserForm = createReactClass({
     },
 
     onRemarkChange: function(e) {
-        this.state.formData.remark = e.target.value;
-        this.setState(this.state);
+        let formData = this.state.formData;
+        formData.remark = e.target.value;
+        this.setState({formData});
     },
 
     onTimeChange: function(begin_date, end_date, range) {
-        this.state.appFormData.begin_date = parseInt(begin_date);
-        this.state.appFormData.end_date = parseInt(end_date);
-        this.state.appFormData.range = range;
-        this.setState(this.state);
+        let appFormData = this.state.appFormData;
+        appFormData.begin_date = parseInt(begin_date);
+        appFormData.end_date = parseInt(end_date);
+        appFormData.range = range;
+        this.setState({appFormData});
     },
 
     onOverDraftChange: function(e) {
-        this.state.appFormData.over_draft = parseInt(e.target.value);
-        this.setState(this.state);
+        let appFormData = this.state.appFormData;
+        appFormData.over_draft = parseInt(e.target.value);
+        this.setState({appFormData});
     },
 
     handleSubmit: function(cb) {
@@ -251,9 +257,9 @@ const ApplyUserForm = createReactClass({
                                 labelCol={{span: 4}}
                                 wrapperCol={{span: 14}}
                             >
-                                {this.state.formData.user_names.map(name => {
+                                {this.state.formData.user_names.map((name, index) => {
                                     return (
-                                        <p className="user-name-item">{name}</p>
+                                        <p className="user-name-item" key={index}>{name}</p>
                                     );
                                 })}
                             </FormItem>
@@ -307,7 +313,7 @@ const ApplyUserForm = createReactClass({
                                                 labelCol={{span: 5}}
                                                 wrapperCol={{span: 19}}
                                             >
-                                                {this.renderUserTimeRangeBlock(timePickerConfig)}
+                                                {this.renderUserTimeRangeBlock(timePickerConfig, appFormData)}
                                             </FormItem>
                                             <FormItem
                                                 label={Intl.get('user.expire.select', '到期可选')}
