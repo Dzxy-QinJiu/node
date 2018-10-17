@@ -281,10 +281,12 @@ class AppUserManage extends React.Component {
 
     //销售选择用户的提示
     getUserRowsTooltip = () => {
-        return <span><ReactIntl.FormattedMessage id="user.user.list.click" defaultMessage="请在用户列表中点击" /><i
-            className="iconfont icon-radio"
-            style={{ fontSize: '20px', verticalAlign: 'middle', position: 'relative', top: '-3px' }} /><ReactIntl.FormattedMessage
-            id="user.user.list.select" defaultMessage="选择用户" /></span>;
+        return (
+            <span>
+                <span>{Intl.get('user.user.list.click', '请在用列表中点击')}</span>
+                <span className="checkbox-style-icon" />
+                <span>{Intl.get('user.user.list.select', '选择用户')}</span>
+            </span>);
     };
 
     //发邮件使用的参数
@@ -354,7 +356,7 @@ class AppUserManage extends React.Component {
             //没有选择用户，加一个提示
             return <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
                 <div className="inline-block add-btn-common gray">
-                    <Button className="btn-item">
+                    <Button className="btn-item" disabled>
                         {Intl.get('user.batch.change', '批量变更')}
                     </Button>
                 </div>
@@ -369,16 +371,20 @@ class AppUserManage extends React.Component {
         if (hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES) && this.state.customer_id) {
             //选中了用户直接显示
             if (this.state.selectedUserRows.length) {
-                return <div className="inline-block add-btn-common " onClick={this.showApplyUserForm}>
-                    <Button className="btn-item"><ReactIntl.FormattedMessage id="user.app.open" defaultMessage="开通应用" /></Button>
-                </div>;
+                return (
+                    <div className="inline-block add-btn-common " onClick={this.showApplyUserForm}>
+                        <Button className="btn-item">{Intl.get('user.app.open', '开通应用')}</Button>
+                    </div>);
             }
             //没选中用户加提示
-            return <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
-                <div className="inline-block   gray">
-                    <span><ReactIntl.FormattedMessage id="user.app.open" defaultMessage="开通应用" /></span>
-                </div>
-            </Popover>;
+            return (
+                <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
+                    <div className="inline-block add-btn-common gray">
+                        <Button className="btn-item" disabled>
+                            {Intl.get('user.app.open', '开通应用')}
+                        </Button>
+                    </div>
+                </Popover>);
         }
         return null;
     };
@@ -602,6 +608,13 @@ class AppUserManage extends React.Component {
         );
     }
 }
-
+AppUserManage.propTypes = {
+    customer_name: PropTypes.string,
+    location: PropTypes.obj,
+    history: ProTypes.obj,
+    customer_id: PropTypes.string,
+    user_size: ProTypes.number,
+    hideCustomerUserList: PropTypes.func
+};
 module.exports = AppUserManage;
 

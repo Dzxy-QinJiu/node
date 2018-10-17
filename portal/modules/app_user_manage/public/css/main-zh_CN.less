@@ -4,6 +4,18 @@
 @import '../../../../components/antd-table-pagination/index.less';
 @import '../../../../components/ModalDialog/modalDialog-zh_CN.less';
 @import "../../../../public/css/iconfont";
+//批量操作按钮未选用户时，提示框中的选择框样式
+.ant-popover-inner-content{
+  .checkbox-style-icon{
+    height: 13px;
+    width: 13px;
+    border: 1px solid #666;
+    border-radius: 3px;
+    vertical-align: middle;
+    display: inline-block;
+    margin: 0 4px;
+  }
+}
 .app_user_manage_page {
   .topNav {
     .user_audit_log_header {
