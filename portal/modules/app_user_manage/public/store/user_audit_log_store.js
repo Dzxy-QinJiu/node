@@ -59,6 +59,8 @@ UserAuditLogStore.prototype.resetState = function() {
     this.endTime = DateSelectorUtils.getMilliseconds(timeObj.end_time, true);
     // 获取用户的应用信息是数组
     this.userAppArray = [];
+    //获取用户的应用信息出错
+    this.userAppArrayErrMsg = '';
     //选中用户的应用产品
     this.selectAppId = '';
     // 记录input框中的输入的内容
@@ -68,7 +70,7 @@ UserAuditLogStore.prototype.resetState = function() {
 // 获取应用产品的信息
 UserAuditLogStore.prototype.getUserApp = function(result){
     if (result.error){
-        this.getUserLogErrorMsg = result.errorMsg;
+        this.userAppArrayErrMsg = result.errorMsg;
     } else {
         this.userAppArray = result.data;
         var storageValue = JSON.parse(storageUtil.local.get(AppUserUtil.saveSelectAppKeyUserId));
@@ -91,7 +93,6 @@ UserAuditLogStore.prototype.getUserApp = function(result){
        
     }
 };
-
 // 获取用户审计日志的信息
 UserAuditLogStore.prototype.getAuditLogList = function(result) {
     if (result.loading){

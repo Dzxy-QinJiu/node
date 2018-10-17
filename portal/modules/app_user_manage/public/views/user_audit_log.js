@@ -26,12 +26,12 @@ var getLocalWebsiteConfig = websiteConfig.getLocalWebsiteConfig;
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 import userData from 'PUB_DIR/sources/user-data';
-
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 120,
     BOTTOM_DISTANCE: 40
 };
+import {RETRY_GET_APP} from '../util/consts';
 
 // 用户类型的常量
 const USER_TYPE_OPTION = {
@@ -63,12 +63,7 @@ class LogView extends React.Component {
         UserAuditLogStore.listen(this.onStoreChange);
         $(window).on('resize', this.changeTableHeight);
         var _this = this;
-        UserAuditLogAction.getUserApp(function(app_id) {
-            _this.getAuditLog({
-                appid: app_id,
-                sort_id: ''
-            });
-        });
+        this.getAppAndAuditData();
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
         //获取团队信息
         UserAuditLogAction.getTeamList();
@@ -76,12 +71,19 @@ class LogView extends React.Component {
         //获取成员信息
         UserAuditLogAction.getSaleMemberList(reqData);
     }
-
     componentWillReceiveProps(newProps) {
         this.setState({
             isShowRightPanel: newProps.isShowRightPanel || false
         });
     }
+    getAppAndAuditData = () => {
+        UserAuditLogAction.getUserApp((app_id) => {
+            this.getAuditLog({
+                appid: app_id,
+                sort_id: ''
+            });
+        });
+    };
 
     componentWillUnmount() {
         $('body').css('overflow', 'auto');
@@ -177,7 +179,9 @@ class LogView extends React.Component {
     addNoIdUserClass = () => {
         $('.userNoIdClass').parents('.ant-table-row').addClass('no_valid_user');
     };
-
+    handleClickRetryAppLists = () => {
+        this.getAppAndAuditData();
+    };
     // 应用下拉框的选择
     getAppOptions = () => {
         var list = this.state.userAppArray.map(function(item) {
@@ -189,13 +193,29 @@ class LogView extends React.Component {
                 {item.app_name}
             </Option>;
         });
+        if (!this.state.userAppArray.length){
+            var clickMsg = Intl.get('app.user.manager.click.get.app','点击获取应用');
+            if (this.state.userAppArrayErrMsg){
+                clickMsg = Intl.get('app.user.failed.get.apps','获取失败') + '，' + clickMsg;
+            }else{
+                clickMsg = Intl.get('user.no.app', '暂无应用') + '，' + clickMsg;
+            }
+            list.unshift(<Option value={RETRY_GET_APP} key={RETRY_GET_APP} className="get-applist-container">
+                <div className="retry-get-appList" onClick={this.handleClickRetryAppLists}>
+                    {clickMsg}
+                </div>
+            </Option>);
+        }
         return list;
     };
 
     // 选择应用
     selectApp = (app_id) => {
+        if (app_id === RETRY_GET_APP) {
+            return;
+        }
         UserAuditLogAction.setUserLogSelectedAppId(app_id);
-        Trace.traceEvent('用户审计日志','点击筛选菜单中的应用');
+        Trace.traceEvent('用户审计日志', '点击筛选菜单中的应用');
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
         this.getAuditLog({
             appid: app_id,
@@ -455,13 +475,12 @@ class LogView extends React.Component {
     };
 
     onSelectFilterUserType = (value) => {
-        this.state.userType = value;
         UserAuditLogAction.handleFilterUserType();
         this.setState({
             userType: value
         }, () => {
             this.getAuditLog({
-                user_type: this.state.userType
+                user_type: value
             });
         });
         Trace.traceEvent('用户审计日志', '用户筛选');
@@ -782,6 +801,8 @@ class LogView extends React.Component {
         );
     }
 }
-
+LogView.propTypes = {
+    isShowRightPanel: PropTypes.bool
+};
 module.exports = LogView;
 

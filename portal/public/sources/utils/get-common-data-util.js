@@ -51,9 +51,9 @@ exports.getAppList = function(cb) {
             if (_.get(result, '[0]')) {
                 list = result.map(function(app) {
                     return {
-                        client_id: app.app_id,
-                        client_name: app.app_name,
-                        client_image: app.app_logo
+                        app_id: app.app_id,
+                        app_name: app.app_name,
+                        app_logo: app.app_logo,
                     };
                 });
             }
@@ -61,7 +61,7 @@ exports.getAppList = function(cb) {
             if (_.isFunction(cb)) cb(appList);
         }).error(errorMsg => {
             appList = [];
-            if (_.isFunction(cb)) cb(appList);
+            if (_.isFunction(cb)) cb(appList, errorMsg);
         });
     }
 };

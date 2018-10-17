@@ -130,7 +130,7 @@ const ApplyUserForm = createReactClass({
         let appList = this.props.apps;
         if (_.isArray(appList) && appList.length) {
             //获取各应用的默认设置
-            this.getAppsDefaultConfig(_.map(appList, 'client_id'));
+            this.getAppsDefaultConfig(_.map(appList, 'app_id'));
         }
         //从订单中过来，或者是申请新用户时，需要获取联系人中的邮箱作为用户名的推荐选项
         if (this.props.applyFrom === 'order' || this.isApplyNewUsers()) {
@@ -617,7 +617,7 @@ const ApplyUserForm = createReactClass({
 
     handleChangeApps: function(appIds) {
         let apps = _.map(appIds, appId => {
-            return _.find(this.props.appList, app => app.client_id === appId);
+            return _.find(this.props.appList, app => app.app_id === appId);
         });
         //获取的应用默认配置列表
         let appDefaultConfigList = this.state.appDefaultConfigList || [];
@@ -669,7 +669,7 @@ const ApplyUserForm = createReactClass({
         let appList = this.props.appList;
         if (_.isArray(appList) && appList.length) {
             return _.map(appList, app => {
-                let appId = app ? app.client_id : '';
+                let appId = app ? app.app_id : '';
                 var className = '';
                 //下拉选项中，过滤掉已选的应用
                 if (_.isArray(selectAppIds) && selectAppIds.length && selectAppIds.indexOf(appId) !== -1) {
@@ -677,8 +677,8 @@ const ApplyUserForm = createReactClass({
                 }
                 return (<Option className={className} key={appId} value={appId}>
                     <SquareLogoTag
-                        name={app ? app.client_name : ''}
-                        logo={app ? app.client_logo : ''}
+                        name={app ? app.app_name : ''}
+                        logo={app ? app.app_logo : ''}
                     />
                 </Option>);
             });

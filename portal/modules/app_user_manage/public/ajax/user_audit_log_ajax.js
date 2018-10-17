@@ -1,21 +1,6 @@
 var appAjaxTrans = require('../../../common/public/ajax/app');
 import routeList from 'MOD_DIR/common/route';
 import ajax from 'MOD_DIR/common/ajax';
-
-//获取审计日志用户的应用
-exports.getUserApp = function(){
-    var Deferred = $.Deferred();
-    appAjaxTrans.getGrantApplicationListAjax().sendRequest().
-        success(function(data) {
-            Deferred.resolve(data);
-        }).error(function(xhr, code , errText) {
-            Deferred.resolve(xhr.responseJSON || Intl.get('errorcode.53', '获取应用列表失败'));
-        }).timeout(function() {
-            Deferred.resolve();
-        });
-    return Deferred.promise();
-};
-
 // 获取所有用户审计日志信息
 var auditLogAjax = null;
 exports.getAuditLogList = function(searchObj){

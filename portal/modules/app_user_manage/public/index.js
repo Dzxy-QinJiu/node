@@ -36,7 +36,8 @@ import { Button } from 'antd';
 import ApplyUser from './views/v2/apply-user';
 var topNavEmitter = require('../../../public/sources/utils/emitters').topNavEmitter;
 import queryString from 'query-string';
-
+import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import {RETRY_GET_APP} from './util/consts';
 /*用户管理界面外层容器*/
 class AppUserManage extends React.Component {
     getStoreData = () => {
@@ -196,7 +197,10 @@ class AppUserManage extends React.Component {
     showAddUserForm = () => {
         AppUserAction.showAppUserForm();
     };
-
+    handleClickRetryAppLists = () => {
+        //获取所有应用
+        AppUserAction.getAppList();
+    };
     getAppOptions = () => {
         var appList = this.state.appList;
         if (!_.isArray(appList) || !appList.length) {
@@ -209,12 +213,29 @@ class AppUserManage extends React.Component {
         var list = appList.map(function(item) {
             return <Option key={item.app_id} value={item.app_id} title={item.app_name}>{item.app_name}</Option>;
         });
+        if(!appList.length){
+            var clickMsg = Intl.get('app.user.manager.click.get.app','点击获取应用');
+            if (this.state.appListErrorMsg){
+                clickMsg = Intl.get('app.user.failed.get.apps','获取失败') + '，' + clickMsg;
+            }else{
+                clickMsg = Intl.get('user.no.app', '暂无应用') + '，' + clickMsg;
+            }
+            list.unshift(<Option value={RETRY_GET_APP} key={RETRY_GET_APP} className="retry-get-applist-container">
+                <div className="retry-get-appList" onClick={this.handleClickRetryAppLists}>
+                    {clickMsg}
+                </div>
+            </Option>);
+        }
         list.unshift(<Option value="" key="all" title={Intl.get('user.app.all', '全部应用')}><ReactIntl.FormattedMessage
-            id="user.app.all" defaultMessage="全部应用" /></Option>);
+            id="user.app.all" defaultMessage="全部应用"/></Option>);
         return list;
     };
 
     onSelectedAppChange = (app_id, app_name) => {
+        //如果点击的是获取全部应用
+        if (app_id === RETRY_GET_APP) {
+            return;
+        }
         //原来的应用id
         const oldSelectAppId = this.state.selectedAppId;
         //设置当前选中应用

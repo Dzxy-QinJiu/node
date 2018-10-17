@@ -20,6 +20,8 @@ AppUserStore.prototype.resetState = function() {
     this.getAppListErrorMsg = '';
     //应用数组
     this.appList = [];
+    //获取应用失败的信息
+    this.appListErrorMsg = '';
     //应用用户数组
     this.appUserList = [];
     //是否监听滚动
@@ -258,6 +260,8 @@ AppUserStore.prototype.getAppList = function(obj) {
             this.selectedAppId = obj.selected_app_id;
             ShareObj.app_id = this.selectedAppId;
         }
+    }else if (obj.error){
+        this.appListErrorMsg = obj.result;
     }
 };
 //FromAction-直接显示没有用户数据

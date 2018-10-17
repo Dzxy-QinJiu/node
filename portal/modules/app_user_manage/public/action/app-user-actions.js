@@ -9,6 +9,7 @@ var ShareObj = require('../util/app-id-share-util');
 var rolesAjax = require('../../../common/public/ajax/role');
 import { packageTry } from 'LIB_DIR/func';
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
+import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 
 function AppUserAction() {
 
@@ -104,13 +105,15 @@ function AppUserAction() {
     //获取App列表
     this.getAppList = function(opts) {
         var _this = this;
-        _this.dispatch({loading: true});
-        AppUserAjax.getApps().then(function(list) {
-            //默认选中第一个
-            var selectedAppId = ShareObj.app_id || '';
-            _this.dispatch({error: false,result: list,selected_app_id: selectedAppId});
-        } , function(errorMsg) {
-            _this.dispatch({error: true,result: errorMsg});
+        this.dispatch({loading: true});
+        commonDataUtil.getAppList((list,errorMsg) => {
+            if (!errorMsg){
+                //默认选中第一个
+                var selectedAppId = ShareObj.app_id || '';
+                this.dispatch({error: false,result: list,selected_app_id: selectedAppId});
+            }else{
+                this.dispatch({error: true,result: errorMsg});
+            }
         });
     };
 
