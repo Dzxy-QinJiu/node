@@ -104,3 +104,15 @@ export function processAmountData(data) {
         return item;
     });
 }
+
+//是否选中的不是单个应用
+export function ifNotSingleApp(conditions) {
+    const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
+    const appId = _.get(appIdCondition, 'value');
+
+    if (appId && (appId.includes('all') || appId.includes(','))) {
+        return true;
+    } else {
+        return false;
+    }
+}

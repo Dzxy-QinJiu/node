@@ -3,6 +3,7 @@
  */
 
 import { userTypeDataMap, USER_TYPES } from '../../consts';
+import { ifNotSingleApp } from '../../utils';
 
 export function getAccountStatusChart(type = 'total', title) {
     return {
@@ -10,16 +11,7 @@ export function getAccountStatusChart(type = 'total', title) {
         url: `/rest/analysis/user/v1/:auth_type/${type}/status`,
         chartType: 'pie',
         noShowCondition: {
-            callback: conditions => {
-                const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
-                const appId = _.get(appIdCondition, 'value');
-
-                if (appId && (appId.includes('all') || appId.includes(','))) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
+            callback: ifNotSingleApp
         },
         nameValueMap: {
             '0': Intl.get('common.stop', '停用'),
