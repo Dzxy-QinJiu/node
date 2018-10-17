@@ -4,10 +4,10 @@ var ShareObj = require('../util/app-id-share-util');
 var AppUserUtil = require('../util/app-user-util');
 import { storageUtil } from 'ant-utils';
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
+import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 
 function UserAuditLogAction() {
     this.generateActions(
-        'setUserApp',
         'getUserApp', // 获取用户的应用
         'getAuditLogList', // 获取用户审计日志
         'handleSearchEvent', // 处理搜索框中内容的变化
@@ -24,26 +24,28 @@ function UserAuditLogAction() {
     //获取应用appID
     this.getUserApp = function(callback) {
         var _this = this;
-        userAuditLogAjax.getUserApp().then(function(data) {
-            var storageValue = JSON.parse(storageUtil.local.get(AppUserUtil.saveSelectAppKeyUserId));
-            var lastSelectAppId = storageValue && storageValue.logViewAppId ? storageValue.logViewAppId : '';
-            var app_id = '';
-            if (lastSelectAppId) { //缓存中存在最后一次选择的应用，直接查看该应用的审计日志
-                app_id = lastSelectAppId;
-            } else { // 首次登陆时
-                if (ShareObj.app_id) { // 已有用户选择的应用时，用户审计日志也要展示该应用的
-                    app_id = ShareObj.app_id;
-                } else {
-                    // 已有用户应用选择框中选择全部时，用户审计日志默认展示第一个应用的
-                    if (_.isArray(data) && data.length >= 1) {
-                        app_id = data[0].app_id;
+        commonDataUtil.getAppList((data,errorMsg) => {
+            if (!errorMsg){
+                var storageValue = JSON.parse(storageUtil.local.get(AppUserUtil.saveSelectAppKeyUserId));
+                var lastSelectAppId = storageValue && storageValue.logViewAppId ? storageValue.logViewAppId : '';
+                var app_id = '';
+                if (lastSelectAppId) { //缓存中存在最后一次选择的应用，直接查看该应用的审计日志
+                    app_id = lastSelectAppId;
+                } else { // 首次登陆时
+                    if (ShareObj.app_id) { // 已有用户选择的应用时，用户审计日志也要展示该应用的
+                        app_id = ShareObj.app_id;
+                    } else {
+                        // 已有用户应用选择框中选择全部时，用户审计日志默认展示第一个应用的
+                        if (_.isArray(data) && data.length >= 1) {
+                            app_id = data[0].app_id;
+                        }
                     }
                 }
+                _this.dispatch({error: false, data: data});
+                callback && callback(app_id);
+            }else{
+                _this.dispatch({error: true, errorMsg: errorMsg});
             }
-            _this.dispatch({error: false, data: data});
-            callback && callback(app_id);
-        }, function(errorMsg) {
-            _this.dispatch({error: true, errorMsg: errorMsg});
         });
     };
 

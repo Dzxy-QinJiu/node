@@ -303,8 +303,8 @@ class UserAnlyis extends React.Component {
                     optionsCallback: () => {
                         return this.props.appList.map( (item) => {
                             return {
-                                name: item.client_name,
-                                value: item.client_id
+                                name: item.app_name,
+                                value: item.app_id
                             };
                         } );
                     },

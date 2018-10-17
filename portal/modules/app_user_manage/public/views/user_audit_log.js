@@ -26,14 +26,11 @@ var getLocalWebsiteConfig = websiteConfig.getLocalWebsiteConfig;
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 import userData from 'PUB_DIR/sources/user-data';
-import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
-var ShareObj = require('../util/app-id-share-util');
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 120,
     BOTTOM_DISTANCE: 40
 };
-import { storageUtil } from 'ant-utils';
 import {RETRY_GET_APP} from '../util/consts';
 
 // 用户类型的常量
@@ -66,7 +63,7 @@ class LogView extends React.Component {
         UserAuditLogStore.listen(this.onStoreChange);
         $(window).on('resize', this.changeTableHeight);
         var _this = this;
-        this.getAppData();
+        this.getAppAndAuditData();
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
         //获取团队信息
         UserAuditLogAction.getTeamList();
@@ -74,36 +71,19 @@ class LogView extends React.Component {
         //获取成员信息
         UserAuditLogAction.getSaleMemberList(reqData);
     }
-    getAppData = () => {
-        //获取应用列表
-        commonDataUtil.getAppList((appList) => {
-            var storageValue = JSON.parse(storageUtil.local.get(AppUserUtil.saveSelectAppKeyUserId));
-            var lastSelectAppId = storageValue && storageValue.logViewAppId ? storageValue.logViewAppId : '';
-            var app_id = '';
-            if (lastSelectAppId) { //缓存中存在最后一次选择的应用，直接查看该应用的审计日志
-                app_id = lastSelectAppId;
-            } else { // 首次登陆时
-                if (ShareObj.app_id) { // 已有用户选择的应用时，用户审计日志也要展示该应用的
-                    app_id = ShareObj.app_id;
-                } else {
-                    // 已有用户应用选择框中选择全部时，用户审计日志默认展示第一个应用的
-                    if (_.isArray(appList) && appList.length) {
-                        app_id = appList[0].client_id;
-                    }
-                }
-            }
-            this.getAuditLog({
-                appid: app_id,
-                sort_id: ''
-            });
-            UserAuditLogAction.setUserApp(appList);
-        });
-    };
     componentWillReceiveProps(newProps) {
         this.setState({
             isShowRightPanel: newProps.isShowRightPanel || false
         });
     }
+    getAppAndAuditData = () => {
+        UserAuditLogAction.getUserApp((app_id) => {
+            this.getAuditLog({
+                appid: app_id,
+                sort_id: ''
+            });
+        });
+    };
 
     componentWillUnmount() {
         $('body').css('overflow', 'auto');
@@ -200,7 +180,7 @@ class LogView extends React.Component {
         $('.userNoIdClass').parents('.ant-table-row').addClass('no_valid_user');
     };
     handleClickRetryAppLists = () => {
-        this.getAppData();
+        this.getAppAndAuditData();
     };
     // 应用下拉框的选择
     getAppOptions = () => {
@@ -214,8 +194,16 @@ class LogView extends React.Component {
             </Option>;
         });
         if (!this.state.userAppArray.length){
+            var clickMsg = Intl.get('app.user.manager.click.get.app','点击获取应用');
+            if (this.state.userAppArrayErrMsg){
+                clickMsg = Intl.get('app.user.failed.get.apps','获取失败') + '，' + clickMsg;
+            }else{
+                clickMsg = Intl.get('user.no.app', '暂无应用') + '，' + clickMsg;
+            }
             list.unshift(<Option value={RETRY_GET_APP} key={RETRY_GET_APP} className="get-applist-container">
-                <div className="retry-get-appList" onClick={this.handleClickRetryAppLists}>点击获取应用</div>
+                <div className="retry-get-appList" onClick={this.handleClickRetryAppLists}>
+                    {clickMsg}
+                </div>
             </Option>);
         }
         return list;
@@ -224,7 +212,7 @@ class LogView extends React.Component {
     // 选择应用
     selectApp = (app_id) => {
         if (app_id === RETRY_GET_APP) {
-            app_id = '';
+            return;
         }
         UserAuditLogAction.setUserLogSelectedAppId(app_id);
         Trace.traceEvent('用户审计日志', '点击筛选菜单中的应用');

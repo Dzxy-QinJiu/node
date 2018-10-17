@@ -63,9 +63,7 @@ class AppUserManage extends React.Component {
         //当前视图
         var currentView = AppUserUtil.getCurrentView();
         //获取所有应用
-        commonDataUtil.getAppList(appList => {
-            AppUserAction.setAppList(appList);
-        });
+        AppUserAction.getAppList();
         if (currentView === 'user' && this.props.location) {
             const query = queryString.parse(this.props.location.search);
             //从销售首页，点击试用用户和正式用户过期用户数字跳转过来
@@ -164,7 +162,7 @@ class AppUserManage extends React.Component {
         var currentRoutePath = AppUserUtil.getCurrentView();
         if (currentRoutePath === 'user' && this.prevRoutePath && this.prevRoutePath !== 'user') {
             //获取全部应用
-            // AppUserAction.getAppList();
+            AppUserAction.getAppList();
             //查询所有用户
             let quryObj = {
                 app_id: ShareObj.app_id || ''
@@ -201,9 +199,7 @@ class AppUserManage extends React.Component {
     };
     handleClickRetryAppLists = () => {
         //获取所有应用
-        commonDataUtil.getAppList(appList => {
-            AppUserAction.setAppList(appList);
-        });
+        AppUserAction.getAppList();
     };
     getAppOptions = () => {
         var appList = this.state.appList;
@@ -218,9 +214,15 @@ class AppUserManage extends React.Component {
             return <Option key={item.app_id} value={item.app_id} title={item.app_name}>{item.app_name}</Option>;
         });
         if(!appList.length){
+            var clickMsg = Intl.get('app.user.manager.click.get.app','点击获取应用');
+            if (this.state.appListErrorMsg){
+                clickMsg = Intl.get('app.user.failed.get.apps','获取失败') + '，' + clickMsg;
+            }else{
+                clickMsg = Intl.get('user.no.app', '暂无应用') + '，' + clickMsg;
+            }
             list.unshift(<Option value={RETRY_GET_APP} key={RETRY_GET_APP} className="retry-get-applist-container">
                 <div className="retry-get-appList" onClick={this.handleClickRetryAppLists}>
-                    {Intl.get('app.user.manager.click.get.app','点击获取应用')}
+                    {clickMsg}
                 </div>
             </Option>);
         }
@@ -232,7 +234,7 @@ class AppUserManage extends React.Component {
     onSelectedAppChange = (app_id, app_name) => {
         //如果点击的是获取全部应用
         if (app_id === RETRY_GET_APP) {
-            app_id = '';
+            return;
         }
         //原来的应用id
         const oldSelectAppId = this.state.selectedAppId;

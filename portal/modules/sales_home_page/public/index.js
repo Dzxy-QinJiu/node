@@ -85,7 +85,7 @@ class SalesHomePage extends React.Component {
 
     getAppList = () => {
         commonDataUtil.getAppList(appList => {
-            let selectedAppId = appList.length && appList[0].client_id || '';
+            let selectedAppId = appList.length && appList[0].app_id || '';
             this.setState({appList: appList, selectedAppId: selectedAppId});
         });
     };
