@@ -71,6 +71,7 @@ AppUserDetailStore.prototype.resetState = function() {
         loading: false,
         errorMsg: ''
     };
+    this.allPrivilegeLists = [];
 };
 
 //恢复默认状态
@@ -234,6 +235,12 @@ AppUserDetailStore.prototype.getBatchRoleInfo = function(result) {
                 });
             }
         }
+    }
+};
+//批量获取应用的权限信息
+AppUserDetailStore.prototype.getBatchPermissionInfo = function(privilegeList) {
+    if (_.isArray(privilegeList)){
+        this.allPrivilegeLists = privilegeList;
     }
 };
 //更新应用
