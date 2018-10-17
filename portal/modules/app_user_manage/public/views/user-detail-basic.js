@@ -360,9 +360,6 @@ class UserDetailBasic extends React.Component {
         />;
     };
     renderAppRoleLists = (roleItems) => {
-        if (!hasPrivilege('APP_USER_EDIT')) {
-            return null;
-        }
         return (
             <StatusWrapper
                 size='small'
