@@ -26,6 +26,9 @@ const otherFilterArray = [{
     name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 7 }),
     value: 'seven_uncontact'
 }, {
+    name: Intl.get('crm.over.day.no.connection', '近{day}天未接通', { day: 30 }),
+    value: 'thirty_no_connection'
+}, {
     name: Intl.get('crm.no.contact.way', '无联系方式客户'),
     value: 'no_contact_way'
 }, {
@@ -97,7 +100,7 @@ class CrmFilterPanel extends React.Component {
         FilterAction.getFilterProvinces(type);
         setTimeout(() => {
             this.getCommonFilterList();
-        })
+        });
     }
 
     componentDidUpdate(prevProps) {
@@ -121,9 +124,9 @@ class CrmFilterPanel extends React.Component {
                 page_size: 1000
             },
             //post请求不传body参数会报415
-            data: { emptyFix: "" }
+            data: { emptyFix: '' }
 
-        }
+        };
         FilterAction.getCommonFilterList(paramsObj);
     }
 
@@ -385,8 +388,8 @@ class CrmFilterPanel extends React.Component {
             params: {
                 id: item.id
             }
-        })
-    };
+        });
+    }
     render() {
         const appListJsx = this.state.appList.map((app, idx) => {
             let className = app.client_id === this.state.condition.sales_opportunities[0].apps[0] ? 'selected' : '';
