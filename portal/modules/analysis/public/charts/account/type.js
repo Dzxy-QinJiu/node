@@ -3,6 +3,7 @@
  */
 
 import { userTypeDataMap, USER_TYPES } from '../../consts';
+import { ifNotSingleApp } from '../../utils';
 
 export function getAccountTypeChart(type = 'total', title) {
     return {
@@ -16,5 +17,8 @@ export function getAccountTypeChart(type = 'total', title) {
         },
         //数据值转换映射，原始数据中的值会被转换成映射后的值
         nameValueMap: userTypeDataMap,
+        noShowCondition: {
+            callback: ifNotSingleApp
+        },
     };
 }

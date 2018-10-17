@@ -2,9 +2,11 @@
  * 活跃度
  */
 
-export function getActivityChart() {
+import { ifNotSingleApp } from '../../utils';
+
+export function getActivityChart(type = 'total', title) {
     return {
-        title: Intl.get('operation.report.activity', '活跃度'),
+        title: title || Intl.get('operation.report.activity', '活跃度'),
         url: '/rest/analysis/user/v1/:auth_type/:app_id/users/activation/:interval',
         chartType: 'line',
         valueField: 'active',
@@ -78,6 +80,9 @@ export function getActivityChart() {
                     key: 'total',
                 },
             ],
+        },
+        noShowCondition: {
+            callback: ifNotSingleApp
         },
     };
 }

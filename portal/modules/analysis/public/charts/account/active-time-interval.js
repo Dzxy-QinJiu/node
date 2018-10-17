@@ -3,6 +3,7 @@
  */
 
 import { WEEKDAY } from '../../consts';
+import { ifNotSingleApp } from '../../utils';
 
 export function getActiveTimeIntervalChart() {
     return {
@@ -38,6 +39,9 @@ export function getActiveTimeIntervalChart() {
                 csvData.push(tr);
             });
             return csvData;
+        },
+        noShowCondition: {
+            callback: ifNotSingleApp
         },
     };
 }
