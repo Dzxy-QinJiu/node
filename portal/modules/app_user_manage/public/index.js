@@ -632,9 +632,9 @@ class AppUserManage extends React.Component {
 AppUserManage.propTypes = {
     customer_name: PropTypes.string,
     location: PropTypes.obj,
-    history: ProTypes.obj,
+    history: PropTypes.obj,
     customer_id: PropTypes.string,
-    user_size: ProTypes.number,
+    user_size: PropTypes.number,
     hideCustomerUserList: PropTypes.func
 };
 module.exports = AppUserManage;
