@@ -3,12 +3,7 @@ require('../css/single-user-log.less');
 //时间范围选择
 import DatePicker from '../../../../components/datepicker';
 var Alert = require('antd').Alert;
-// 加载时的动作显示
-var Spinner = require('../../../../components/spinner');
 var SelectFullWidth = require('../../../../components/select-fullwidth');
-var AppUserUtil = require('../util/app-user-util');
-//用户日志右侧面板常量
-var USER_LOG_LAYOUT_CONSTANTS = AppUserUtil.USER_LOG_LAYOUT_CONSTANTS;
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var SingleUserLogAction = require('../action/single_user_log_action');
 var SingleUserLogStore = require('../store/single_user_log_store');
@@ -44,7 +39,7 @@ class SingleUserLog extends React.Component {
             type_filter: this.state.typeFilter.join()
         };
         if (this.state.searchName) {
-            queryObj.search = ((this.state.searchName).toString().trim()).toLowerCase();
+            queryObj.search = $.trim(this.state.searchName.toString().toLowerCase());
         }
         SingleUserLogAction.getSingleUserAppList(queryObj, selectedAppId, appLists);
         if (selectedAppId) {
@@ -89,7 +84,7 @@ class SingleUserLog extends React.Component {
         let queryObj = this.getQueryParams(queryParams);
         let search = queryParams && 'search' in queryParams ? queryParams.search : this.state.searchName;
         if (search) {
-            queryObj.search = (search.toString().trim()).toLowerCase();
+            queryObj.search = $.trim(search.toString().toLowerCase());
         }
         else {
             //参数不能为空
@@ -110,7 +105,7 @@ class SingleUserLog extends React.Component {
     // 搜索处理事件
     handleSearchEvent = (inputContent) => {
         inputContent = inputContent ? inputContent : '';
-        if (inputContent.trim() !== this.state.searchName.trim()) {
+        if ($.trim(inputContent) !== $.trim(this.state.searchName)) {
             SingleUserLogAction.getLogsBySearch();
             SingleUserLogAction.handleSearchEvent(inputContent);
             this.getSingleUserAuditLogList({
@@ -123,20 +118,22 @@ class SingleUserLog extends React.Component {
     // 改变时间
     onSelectDate = (start_time, end_time, range) => {
         let startTime = start_time;
+        let messageTips = '';
         if (Date.now() - THREE_MONTH_TIME_RANGE > start_time) {
             startTime = Date.now() - THREE_MONTH_TIME_RANGE;
-            this.state.messageTips = SELECT_TIME_TIPS.range;
+            messageTips = SELECT_TIME_TIPS.range;
         }
         let endTime = end_time;
         if (endTime - startTime > THIRTY_ONE_DAY_TIME_RANGE) {
             startTime = endTime - THIRTY_DAY_TIME_RANGE;
-            this.state.messageTips = SELECT_TIME_TIPS.time;
+            messageTips = SELECT_TIME_TIPS.time;
         }
         SingleUserLogAction.resetLogState();
         SingleUserLogAction.changeSearchTime({ startTime, endTime, range });
         this.getSingleUserAuditLogList({
             starttime: startTime,
             endtime: endTime,
+            messageTips: messageTips,
             page: 1,
             appid: this.state.selectedLogAppId
         });
@@ -389,5 +386,10 @@ class SingleUserLog extends React.Component {
         );
     }
 }
-
+SingleUserLog.propTypes = {
+    userId: PropTypes.string,
+    selectedAppId: PropTypes.string,
+    appLists: PropTypes.array,
+    height: PropTypes.number
+};
 module.exports = SingleUserLog;
