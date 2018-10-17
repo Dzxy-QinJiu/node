@@ -71,6 +71,7 @@ AppUserDetailStore.prototype.resetState = function() {
         loading: false,
         errorMsg: ''
     };
+    this.allPrivilegeLists = [];
 };
 
 //恢复默认状态
@@ -212,20 +213,36 @@ AppUserDetailStore.prototype.changeAppFieldSuccess = function(result) {
         }
     }
 };
-
 //批量获取应用的角色信息
-AppUserDetailStore.prototype.getBatchRoleInfo = resultHandler('getBatchRoleInfoResult', function({data, paramsObj}) {
-    if (data && data.length) {
-        if (_.get(this.initialUser, 'apps.length') > 0) {
-            this.initialUser.apps.forEach((app, index) => {
-                if (_.get(app, 'roles.length')) {
-                    //filter过滤没有对应角色信息的roleId
-                    this.initialUser.apps[index].roleItems = app.roles.map(roleId => data.find(x => x.role_id === roleId)).filter(x => x);
-                }
-            });
-        }        
+AppUserDetailStore.prototype.getBatchRoleInfo = function(result) {
+    if (result.loading){
+        this.getBatchRoleInfoResult.loading = true;
+        this.getBatchRoleInfoResult.errorMsg = '';
+    }else if (result.error){
+        this.getBatchRoleInfoResult.loading = false;
+        this.getBatchRoleInfoResult.errorMsg = result.errorMsg;
+    }else {
+        this.getBatchRoleInfoResult.loading = false;
+        this.getBatchRoleInfoResult.errorMsg = '';
+        var data = result.roleData;
+        if (data && data.length) {
+            if (_.get(this.initialUser, 'apps.length') > 0) {
+                this.initialUser.apps.forEach((app, index) => {
+                    if (_.get(app, 'roles.length')) {
+                        //filter过滤没有对应角色信息的roleId
+                        this.initialUser.apps[index].roleItems = app.roles.map(roleId => data.find(x => x.role_id === roleId)).filter(x => x);
+                    }
+                });
+            }
+        }
     }
-});
+};
+//批量获取应用的权限信息
+AppUserDetailStore.prototype.getBatchPermissionInfo = function(privilegeList) {
+    if (_.isArray(privilegeList)){
+        this.allPrivilegeLists = privilegeList;
+    }
+};
 //更新应用
 AppUserDetailStore.prototype.updateApp = function(appItem) {   
     this.initialUser.apps.forEach((app, index) => {

@@ -63,7 +63,21 @@ function AppUserDetailAction() {
     };
 
     //批量获取应用的角色信息
-    this.getBatchRoleInfo = asyncDispatcher(AppUserAjax.getBatchRoleInfo);
+    this.getBatchRoleInfo = function(params, callback){
+        this.dispatch({loading: true, error: false});
+        AppUserAjax.getBatchRoleInfo(params).then((result) => {
+            this.dispatch({loading: false, error: false, roleData: result});
+            _.isFunction(callback) && callback(result);
+        },(errorMsg) => {
+            this.dispatch({loading: false, error: true , errorMsg: errorMsg});
+        });
+    };
+    //批量获取应用的权限信息
+    this.getBatchPermissionInfo = function(privilegeParams) {
+        AppUserAjax.getBatchPermissionInfo(privilegeParams).then((privilegeData) => {
+            this.dispatch(privilegeData);
+        });
+    };
 
 }
 

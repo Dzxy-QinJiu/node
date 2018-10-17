@@ -85,6 +85,11 @@ class UserDetailBasic extends React.Component {
                         data: {
                             ids: roleIdList
                         }
+                    },(result) => {
+                        //所有权限的列表
+                        var permissionList = _.uniq(_.flattenDeep(_.map(result, 'permission_ids')));
+                        var privilegeParams = {data: {ids: permissionList}};
+                        AppUserDetailAction.getBatchPermissionInfo(privilegeParams);
                     });
                 }); 
             }                     
@@ -371,9 +376,17 @@ class UserDetailBasic extends React.Component {
                                 {item.role_name}
                             </span>;
                         }
-                        var privilgeName = item.permission_ids.join('， ');
+                        var privilegeName = [];
+                        _.forEach(item.permission_ids, (id) => {
+                            var targetObj = _.find(this.state.allPrivilegeLists,(item) => {
+                                return id === item.permission_id;
+                            });
+                            if (targetObj){
+                                privilegeName.push(targetObj.permission_name);
+                            }
+                        });
                         return <span className="role-name">
-                            <Tooltip title={privilgeName} trigger="click">
+                            <Tooltip title={privilegeName.join('，')} trigger="click">
                                 {item.role_name}
                             </Tooltip>
                         </span>;

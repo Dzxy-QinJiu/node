@@ -6,6 +6,8 @@ import ajaxPro from 'MOD_DIR/common/ajaxUtil';
 
 //批量获取应用的角色信息
 exports.getBatchRoleInfo = params => ajaxPro('getBatchRoleInfo', params);
+//批量获取应用的权限信息
+exports.getBatchPermissionInfo = params => ajaxPro('getBatchPermissionInfo', params);
 
 //申请延期 多应用
 exports.applyDelayMultiApp = params => ajaxPro('applyDelayMultiApp', params);
