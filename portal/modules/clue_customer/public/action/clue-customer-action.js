@@ -64,7 +64,7 @@ function ClueCustomerActions() {
         clueCustomerAjax.checkOnlyCustomer(queryObj).then(function(data) {
             _.isFunction(callback) && callback(data);
         }, function(errorMsg) {
-            _.isFunction(callback) && callback(errorMsg || Intl.get('clue.customer.check.only.exist', '线索名称唯一性校验失败'));
+            _.isFunction(callback) && callback(errorMsg || Intl.get('clue.check.only.clue.phone','线索电话唯一性校验失败'));
         });
     };
     //获取销售列表

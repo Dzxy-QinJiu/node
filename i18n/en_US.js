@@ -2697,6 +2697,7 @@ var en_US = {
     'leave.apply.leave.person': 'Leave person',//请假人
     'leave.apply.no.leave.apply': 'No eligible leave apply',//暂无符合条件的请假申请
     'leave.apply.time.range.at.least.one.hour': 'Start and end time should be at least one hour apart',//开始和结束时间应至少相隔一个小时
-    'leave.apply.approve.rejected': 'Was rejected'//被驳回
+    'leave.apply.approve.rejected': 'Was rejected',//被驳回
+    'clue.check.only.clue.phone': 'Failed to check only clue phone'//线索电话唯一性校验失败
 };
 export default en_US;
