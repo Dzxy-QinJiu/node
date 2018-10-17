@@ -2,7 +2,7 @@
  * 用户访问天数
  */
 
-import { getRangeReqData } from '../../utils';
+import { getRangeReqData, ifNotSingleApp } from '../../utils';
 
 export function getLoginDaysChart() {
     return {
@@ -17,6 +17,9 @@ export function getLoginDaysChart() {
         unit: Intl.get('common.time.unit.day', '天'),
         csvOption: {
             thead: [Intl.get('oplate.user.analysis.loginDays', '用户访问天数'), Intl.get('common.app.count', '数量')],
+        },
+        noShowCondition: {
+            callback: ifNotSingleApp
         },
     };
 }

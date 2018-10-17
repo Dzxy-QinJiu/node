@@ -2,6 +2,8 @@
  * 平均在线时长
  */
 
+import { ifNotSingleApp } from '../../utils';
+
 export function getAverageOnlineTimeChart() {
     return {
         title: Intl.get('oplate.user.analysis.averageLoginTimes', '平均在线时长'),
@@ -73,6 +75,9 @@ export function getAverageOnlineTimeChart() {
                 activeOption: 'hourly',
                 conditionName: 'interval',
             }],
+        },
+        noShowCondition: {
+            callback: ifNotSingleApp
         },
     };
 }

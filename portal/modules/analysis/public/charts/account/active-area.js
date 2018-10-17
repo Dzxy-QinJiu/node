@@ -2,6 +2,8 @@
  * 活跃用户地域统计
  */
 
+import { ifNotSingleApp } from '../../utils';
+
 export function getActiveAreaChart() {
     return {
         title: Intl.get('user.analysis.active.user.area.statistics', '活跃用户地域统计'),
@@ -22,6 +24,9 @@ export function getActiveAreaChart() {
                     pageSize: 12,
                 },
             },
+        },
+        noShowCondition: {
+            callback: ifNotSingleApp
         },
     };
 }

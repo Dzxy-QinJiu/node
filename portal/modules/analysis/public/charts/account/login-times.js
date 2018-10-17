@@ -2,7 +2,7 @@
  * 用户在线时间
  */
 
-import { getRangeReqData } from '../../utils';
+import { getRangeReqData, ifNotSingleApp } from '../../utils';
 
 export function getLoginTimesChart() {
     return {
@@ -18,6 +18,9 @@ export function getLoginTimesChart() {
         multiple: 60,
         csvOption: {
             thead: [Intl.get('oplate.user.analysis.loginTimes', '用户在线时间'), Intl.get('common.app.count', '数量')],
+        },
+        noShowCondition: {
+            callback: ifNotSingleApp
         },
     };
 }

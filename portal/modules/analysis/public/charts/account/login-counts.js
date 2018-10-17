@@ -2,7 +2,7 @@
  * 用户访问次数
  */
 
-import { getRangeReqData } from '../../utils';
+import { getRangeReqData, ifNotSingleApp } from '../../utils';
 
 export function getLoginCountsChart() {
     return {
@@ -17,6 +17,9 @@ export function getLoginCountsChart() {
         unit: Intl.get('common.label.times', '次'),
         csvOption: {
             thead: [Intl.get('user.login.time', '次数'), Intl.get('common.app.count', '数量')],
+        },
+        noShowCondition: {
+            callback: ifNotSingleApp
         },
     };
 }
