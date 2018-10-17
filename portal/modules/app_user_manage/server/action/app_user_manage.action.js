@@ -8,7 +8,7 @@ exports.getAppUserList = function(req, res) {
     var queryObj = extend(true, {}, req.query);
     for (var key in queryObj) {
         if (typeof queryObj[key] === 'string' && key.indexOf('id') < 0) {
-            queryObj[key] = queryObj[key].trim().toLowerCase();
+            queryObj[key] = $.trim(queryObj[key].toLowerCase());
         }
     }
     AppUserService.getUsers(req, res, queryObj).on('success', function(data) {

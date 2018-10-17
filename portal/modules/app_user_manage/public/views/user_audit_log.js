@@ -146,7 +146,7 @@ class LogView extends React.Component {
         };
         // 搜索字段
         var search = queryParams && 'search' in queryParams ? queryParams.search : this.state.searchName;
-        queryObj.search = search ? (search.toString().trim()).toLowerCase() : '';
+        queryObj.search = search ? $.trim(search.toString().toLowerCase()) : '';
         // 日志信息的id
         var sort_id = queryParams && 'sort_id' in queryParams ? queryParams.sort_id : this.state.sortId;
         if (sort_id) {
@@ -228,7 +228,7 @@ class LogView extends React.Component {
         Trace.traceEvent('用户审计日志','搜索框输入');
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
         inputContent = inputContent ? inputContent : '';
-        if (inputContent.trim() !== this.state.searchName.trim()) {
+        if ($.trim(inputContent) !== $.trim(this.state.searchName)) {
             UserAuditLogAction.handleSearchEvent(inputContent);
             this.getAuditLog({
                 search: inputContent,
