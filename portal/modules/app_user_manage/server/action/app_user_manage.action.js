@@ -1,6 +1,7 @@
 var AppUserService = require('../service/app-user-manage.service');
 var extend = require('extend');
 var CryptoJS = require('crypto-js');
+const _ = require('lodash');
 /**
  * 获取应用用户列表
  */
@@ -8,7 +9,7 @@ exports.getAppUserList = function(req, res) {
     var queryObj = extend(true, {}, req.query);
     for (var key in queryObj) {
         if (typeof queryObj[key] === 'string' && key.indexOf('id') < 0) {
-            queryObj[key] = $.trim(queryObj[key].toLowerCase());
+            queryObj[key] = _.trim(queryObj[key].toLowerCase());
         }
     }
     AppUserService.getUsers(req, res, queryObj).on('success', function(data) {
