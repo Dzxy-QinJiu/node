@@ -139,7 +139,7 @@ class ApplyViewDetail extends React.Component {
         var customersAdds = [];
         _.forEach(detail.customers, (item) => {
             if (!_.isEmpty(item)){
-                customersAdds.push('' + customers.province + customers.city + customers.county);
+                customersAdds.push('' + _.get(customers,'province','') + _.get(customers,'city','') + _.get(customers,'county_',''));
 
             }
         });
