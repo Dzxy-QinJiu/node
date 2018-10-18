@@ -133,7 +133,15 @@ class CustomerUsers extends React.Component {
 
     getAppList() {
         commonDataUtil.getAppList(appList => {
-            this.setState({appList: appList});
+            this.setState({
+                appList: _.map(appList, app => {
+                    return {
+                        client_id: app.app_id,
+                        client_name: app.app_name,
+                        client_logo: app.app_logo
+                    };
+                })
+            });
         });
     }
 
