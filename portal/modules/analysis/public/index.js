@@ -14,7 +14,7 @@ import { AntcAnalysis } from 'antc';
 import { Row, Col, Collapse } from 'antd';
 const Panel = Collapse.Panel;
 
-const defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY) || 'all';
+const defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY) || ['all'];
 
 const emitters = require('PUB_DIR/sources/utils/emitters');
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
@@ -187,7 +187,7 @@ class CurtaoAnalysis extends React.Component {
             isAppSelectorShow = true;
             adjustConditions = conditions => {
                 const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
-                _.set(appIdCondition, 'value', defaultAppId);
+                _.set(appIdCondition, 'value', defaultAppId.join(','));
             };
         } else {
             adjustConditions = conditions => {
@@ -281,7 +281,7 @@ class CurtaoAnalysis extends React.Component {
                     <Col span={20}>
                         {this.state.isAppSelectorShow ? (
                             <div className="page-top-bar">
-                                <AppSelector storedAppIdKey={STORED_APP_ID_KEY} defaultValue={defaultAppId} initialValue="all"/>
+                                <AppSelector storedAppIdKey={STORED_APP_ID_KEY} defaultValue={defaultAppId} />
                             </div>
                         ) : null}
                         {this.renderContent()}

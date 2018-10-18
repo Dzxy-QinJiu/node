@@ -14,23 +14,37 @@ class AppSelector extends React.Component {
         //在loacalStorage中存储选中的应用id的键名
         storedAppIdKey: '',
         //外部条件默认值
-        defaultValue: '',
-        //外部条件初始值
-        initialValue: '',
+        defaultValue: ['all'],
     };
 
     static propTypes = {
         storedAppIdKey: PropTypes.string,
         defaultValue: PropTypes.string,
-        initialValue: PropTypes.string,
     };
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            selectedApp: this.props.defaultValue,
+        };
     }
 
     onAppChange = (appId) => {
-        appSelectorEmitter.emit(appSelectorEmitter.SELECT_APP, appId);
+        let selectedApp; 
+        let appIdStr;
+         
+        if (_.last(appId) === 'all' || _.isEmpty(appId)) {
+            selectedApp = ['all'];
+            appIdStr = 'all';
+        } else {
+            selectedApp = _.filter(appId, id => id !== 'all');
+            appIdStr = selectedApp.join(',');
+        }
+
+        this.setState({selectedApp}, () => {
+            appSelectorEmitter.emit(appSelectorEmitter.SELECT_APP, appIdStr);
+        });
         storageUtil.local.set(this.props.storedAppIdKey, appId);
     };
 
@@ -38,7 +52,8 @@ class AppSelector extends React.Component {
         return (
             <div className='app-selector'>
                 <Select
-                    defaultValue={this.props.defaultValue}
+                    mode="multiple"
+                    value={this.state.selectedApp}
                     onChange={this.onAppChange}
                     dropdownMatchSelectWidth={false}
                 >
