@@ -14,6 +14,8 @@ import { AntcAnalysis } from 'antc';
 import { Row, Col, Collapse } from 'antd';
 const Panel = Collapse.Panel;
 
+const defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY) || 'all';
+
 const emitters = require('PUB_DIR/sources/utils/emitters');
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 
@@ -165,6 +167,7 @@ class CurtaoAnalysis extends React.Component {
                     conditions={this.getConditions()}
                     emitterConfigList={this.getEmitters()}
                     isGetDataOnMount={true}
+                    adjustConditions={this.state.adjustConditions}
                 />
             </div>
         );
@@ -178,14 +181,26 @@ class CurtaoAnalysis extends React.Component {
 
         let isAppSelectorShow = false;
 
+        let adjustConditions;
+
         if (group.title === '账号分析') {
             isAppSelectorShow = true;
+            adjustConditions = conditions => {
+                const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
+                _.set(appIdCondition, 'value', defaultAppId);
+            };
+        } else {
+            adjustConditions = conditions => {
+                const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
+                _.set(appIdCondition, 'value', 'all');
+            };
         }
 
         this.setState({
             currentMenuIndex: menuIndex,
             currentCharts: charts,
             isAppSelectorShow,
+            adjustConditions
         });
     }
 
@@ -256,8 +271,6 @@ class CurtaoAnalysis extends React.Component {
     }
 
     render() {
-        const defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY) || _.get(Store.appList, '[0].app_id');
-
         return (
             <div className='curtao-analysis'>
                 <TopBar />

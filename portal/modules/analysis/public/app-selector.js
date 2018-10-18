@@ -29,20 +29,6 @@ class AppSelector extends React.Component {
         super(props);
     }
 
-    componentDidMount() {
-        //组件装载时设置外部条件为默认值
-        //延时触发是为了让图表显示隐藏控制能生效
-        //TODO:改为在分析组件里实现传入的图表变化时的显示隐藏控制
-        setTimeout(() => {
-            appSelectorEmitter.emit(appSelectorEmitter.SELECT_APP, this.props.defaultValue);
-        });
-    }
-
-    componentWillUnmount() {
-        //组件卸载时让外部条件恢复初始值
-        appSelectorEmitter.emit(appSelectorEmitter.SELECT_APP, this.props.initialValue);
-    }
-
     onAppChange = (appId) => {
         appSelectorEmitter.emit(appSelectorEmitter.SELECT_APP, appId);
         storageUtil.local.set(this.props.storedAppIdKey, appId);
