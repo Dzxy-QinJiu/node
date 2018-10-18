@@ -45,7 +45,7 @@ class AppSelector extends React.Component {
         this.setState({selectedApp}, () => {
             appSelectorEmitter.emit(appSelectorEmitter.SELECT_APP, appIdStr);
         });
-        storageUtil.local.set(this.props.storedAppIdKey, appId);
+        storageUtil.local.set(this.props.storedAppIdKey, appIdStr);
     };
 
     render() {
