@@ -16,15 +16,33 @@ module.exports = {
 
 function getCharts() {
     return [
-        //用户类型
-        accountChart.getAccountTypeChart(),
-        //地域统计
-        accountChart.getAccountZoneChart('expired'),
+        //过期账号数统计
+        accountChart.getAccountNumChart('expired', '过期账号数统计'),
         //行业统计
-        accountChart.getAccountIndustryChart('expired'),
+        accountChart.getAccountIndustryChart('expired', '过期账号行业统计'),
         //团队统计
-        accountChart.getAccountTeamChart('expired'),
-        //登录统计
-        accountChart.getOpenAccountChart('expired'),
+        accountChart.getAccountTeamChart('expired', '过期帐号团队分布统计'),
+        //账号类型
+        accountChart.getAccountTypeChart('expired'),
+        //状态统计
+        accountChart.getAccountStatusChart('expired'),
+        //单应用帐号活跃度趋势
+        accountChart.getActivityChart(),
+        //在线时长统计
+        accountChart.getLoginLongChart(),
+        //设备统计
+        accountChart.getAccountDeviceChart(),
+        //浏览器统计
+        accountChart.getAccountBrowserChart(),
+        //用户访问次数
+        accountChart.getLoginCountsChart(),
+        //活跃用户地域统计
+        accountChart.getActiveAreaChart(),
+        //用户访问天数
+        accountChart.getLoginDaysChart(),
+        //用户在线时间
+        accountChart.getLoginTimesChart(),
+        //平均在线时长
+        accountChart.getAverageOnlineTimeChart(),
     ];
 }

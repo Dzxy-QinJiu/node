@@ -24,9 +24,9 @@ function getCharts() {
         accountChart.getAccountZoneChart('added_expired'),
         //行业统计
         accountChart.getAccountIndustryChart('added_expired'),
-        //用户类型
+        //账号类型
         accountChart.getAccountTypeChart('added_expired'),
-        //单应用帐号状态统计
+        //状态统计
         accountChart.getAccountStatusChart('added_expired'),
     ];
 }
