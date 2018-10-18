@@ -16,13 +16,17 @@ module.exports = {
 
 function getCharts() {
     return [
-        //用户类型
-        accountChart.getAccountTypeChart(),
+        //新增过期账号数统计
+        accountChart.getAccountNumChart('added_expired', '新增过期账号数统计'),
+        //新增过期帐号团队统计
+        accountChart.getAccountTeamChart('added_expired', '新增过期帐号团队统计'),
         //地域统计
         accountChart.getAccountZoneChart('added_expired'),
         //行业统计
         accountChart.getAccountIndustryChart('added_expired'),
-        //登录统计
-        accountChart.getOpenAccountChart('added_expired'),
+        //用户类型
+        accountChart.getAccountTypeChart('added_expired'),
+        //单应用帐号状态统计
+        accountChart.getAccountStatusChart('added_expired'),
     ];
 }
