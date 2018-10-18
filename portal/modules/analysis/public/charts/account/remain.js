@@ -2,9 +2,9 @@
  * 用户留存统计
  */
 
-export function getRemainAccountChart(type = 'total') {
+export function getRemainAccountChart(type = 'total', title) {
     return {
-        title: Intl.get('oplate.user.analysis.9', '用户留存'),
+        title: title || Intl.get('oplate.user.analysis.9', '用户留存'),
         url: '/rest/analysis/user/v1/retention',
         chartType: 'table',
         option: {

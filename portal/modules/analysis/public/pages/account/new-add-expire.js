@@ -21,9 +21,9 @@ function getCharts() {
         //新增过期帐号团队统计
         accountChart.getAccountTeamChart('added_expired', '新增过期帐号团队统计'),
         //地域统计
-        accountChart.getAccountZoneChart('added_expired'),
+        accountChart.getAccountZoneChart('added_expired', '新增过期帐号地域统计'),
         //行业统计
-        accountChart.getAccountIndustryChart('added_expired'),
+        accountChart.getAccountIndustryChart('added_expired', '新增过期帐号行业统计'),
         //账号类型
         accountChart.getAccountTypeChart('added_expired'),
         //状态统计
