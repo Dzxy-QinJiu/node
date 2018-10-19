@@ -2,7 +2,7 @@
  * 团队统计
  */
 
-import { unknownDataMap } from '../../consts';
+import { unknownDataMap, isSales } from '../../consts';
 import { handleChartClick } from '../../utils';
 
 export function getCustomerTeamChart(type = 'total', title) {
@@ -12,5 +12,8 @@ export function getCustomerTeamChart(type = 'total', title) {
         chartType: 'bar',
         nameValueMap: unknownDataMap,
         chartClickRedirectCallback: handleChartClick.bind(this, 'team'),
+        noShowCondition: {
+            callback: () => isSales
+        },
     };
 }
