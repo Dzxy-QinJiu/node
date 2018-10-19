@@ -25,6 +25,8 @@ function getCharts() {
         contractChart.getContractIndustryChart(),
         //地域分布
         contractChart.getContractZoneChart(),
+        //团队分布及完成率
+        contractChart.getContractTeamChart(),
         //签单情况统计表
         contractChart.getSingingChart(),
         //业绩同比增长情况
