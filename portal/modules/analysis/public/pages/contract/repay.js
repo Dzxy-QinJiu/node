@@ -15,7 +15,9 @@ module.exports = {
 
 function getCharts() {
     return [
-        //新增回款额团队分布
+        //类型分析
+        contractChart.getContractRepayTypeChart(),
+        //团队或个人回款毛利统计
         contractChart.getRepayChart(),
         //近3个月回款周趋势图
         contractChart.getRepayTrendChart(),

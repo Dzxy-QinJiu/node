@@ -1,12 +1,12 @@
 /**
- * 新增费用额团队分布
+ * 团队或个人费用统计 
  */
 
 import { processAmountData } from '../../utils';
 
 export function getCostChart() {
     return {
-        title: Intl.get('contract.149', '新增费用额团队分布') + '(' + Intl.get('contract.160', '单位') + ': ' + Intl.get('contract.155', '元') + ')',
+        title: '团队或个人费用统计',
         url: '/rest/analysis/contract/contract/cost/team/amount',
         argCallback: (arg) => {
             const query = arg.query;

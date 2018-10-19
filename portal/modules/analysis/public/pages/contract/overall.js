@@ -27,11 +27,11 @@ function getCharts() {
         contractChart.getContractZoneChart(),
         //团队分布及完成率
         contractChart.getContractTeamChart(),
-        //签单情况统计表
-        contractChart.getSingingChart(),
         //业绩同比增长情况
         contractChart.getContractGrowthChart(),
         //年经常性收入情况
         contractChart.getContractArrChart(),
+        //签单情况统计表
+        contractChart.getSingingChart(),
     ];
 }

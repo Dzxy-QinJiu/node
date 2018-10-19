@@ -1,12 +1,12 @@
 /**
- * 新增回款额团队分布
+ * 团队或个人回款毛利统计
  */
 
 import { processAmountData } from '../../utils';
 
 export function getRepayChart() {
     return {
-        title: Intl.get('contract.145', '新增回款额团队分布') + '(' + Intl.get('contract.160', '单位') + ': ' + Intl.get('contract.139', '万') + ')',
+        title: '团队或个人回款毛利统计',
         url: '/rest/analysis/contract/contract/repay/team/amount',
         argCallback: (arg) => {
             const query = arg.query;
