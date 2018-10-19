@@ -2,6 +2,9 @@
  * 用户留存统计
  */
 
+import { ifNotSingleApp } from '../../utils';
+import { isSales } from '../../consts';
+
 export function getRemainAccountChart(type = 'total', title) {
     return {
         title: title || Intl.get('oplate.user.analysis.9', '用户留存'),
@@ -81,6 +84,11 @@ export function getRemainAccountChart(type = 'total', title) {
                     dataItem['day' + diffDay] = activeItem.active;
                 });
             },
-        }
+        },
+        noShowCondition: {
+            callback: conditions => {
+                return isSales || ifNotSingleApp(conditions);
+            }
+        },
     };
 }

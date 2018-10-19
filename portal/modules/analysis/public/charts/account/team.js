@@ -2,7 +2,7 @@
  * 账号团队统计
  */
 
-import { unknownDataMap, USER_TYPES, USER_TYPES_WITH_TITLE } from '../../consts';
+import { unknownDataMap, USER_TYPES, USER_TYPES_WITH_TITLE, isSales } from '../../consts';
 
 export function getAccountTeamChart(type = 'total', title) {
     return {
@@ -16,6 +16,9 @@ export function getAccountTeamChart(type = 'total', title) {
         },
         csvOption: {
             rowNames: USER_TYPES_WITH_TITLE,
+        },
+        noShowCondition: {
+            callback: () => isSales
         },
     };
 }
