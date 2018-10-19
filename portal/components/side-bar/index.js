@@ -1,5 +1,3 @@
-import classNames from 'classnames';
-
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -11,9 +9,8 @@ const weixinImgUrl = require('./image/weixin.jpg');
 const singleSideBarHeight = 68;//一个图标的高度
 const weixinHeight = 100;//二维码高度
 const appHeight = 108;
-import classNames from 'classnames';
-
 const QRCode = require('qrcode.react');
+import classNames from 'classnames';
 
 class SideBar extends React.Component {
     constructor(props) {
