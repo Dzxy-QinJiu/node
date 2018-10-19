@@ -35,6 +35,24 @@ export function getCustomerStageChangeChart() {
             callback: (data, name, value) => {
                 _.set(data, 'rang_params[0].to', value);
             }
+        }, {
+            name: 'team_ids',
+            value: '',
+            type: 'data',
+            callback: (data, name, value) => {
+                if (value) {
+                    _.set(data, 'query.sales_team_id', value);
+                }
+            }
+        }, {
+            name: 'member_id',
+            value: '',
+            type: 'data',
+            callback: (data, name, value) => {
+                if (value) {
+                    _.set(data, 'query.member_id', value);
+                }
+            }
         }],
         chartType: 'table',
         layout: {
