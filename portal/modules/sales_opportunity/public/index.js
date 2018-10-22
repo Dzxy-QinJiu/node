@@ -21,9 +21,11 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import ApplyViewDetail from './view/apply-view-detail';
 var SalesOpportunityApplyUtils = require('./utils/sales-oppotunity-utils');
 let userData = require('../../../public/sources/user-data');
+import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
 class SalesOpportunityApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加销售机会申请面板
+        teamTreeList: [],
         ...SalesOpportunityApplyStore.getState()
     };
 
@@ -35,13 +37,11 @@ class SalesOpportunityApplyManagement extends React.Component {
         SalesOpportunityApplyStore.listen(this.onStoreChange);
         //不区分角色，都获取全部的申请列表
         this.getAllSalesOpportunityApplyList();
-        // //如果是普通销售，就获取自己的申请列表
-        // if (userData.getUserData().isCommonSales){
-        //     this.getSelfSalesOpportunityApplyList();
-        // }else{
-        // // 如果是管理员或者是销售领导，就获取要由自己审批的申请列表
-        // this.getAllSalesOpportunityApplyList();
-        // }
+        getMyTeamTreeList(data => {
+            this.setState({
+                teamTreeList: data.teamTreeList
+            });
+        });
         SalesOpportunityApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
     }
 
@@ -200,6 +200,7 @@ class SalesOpportunityApplyManagement extends React.Component {
     };
 
     render() {
+        var hasAddPriviledge = userData.getUserData().team_id && _.get(this.state,'teamTreeList[0].parent_group') ? true : false;
         var addPanelWrap = classNames({'show-add-modal': this.state.showAddApplyPanel});
         var applyListHeight = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
         var applyType = commonMethodUtil.getApplyStatusDscr(this.state.applyListType);
@@ -223,6 +224,7 @@ class SalesOpportunityApplyManagement extends React.Component {
                             showAddApplyPanel={this.showAddApplyPanel}
                             addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
                             menuList={selectMenuList}
+                            hasAddPrivilege = {hasAddPriviledge}
                         />
                         {this.renderApplyListError()}
                         {this.state.applyListObj.loadingResult === 'loading' && !this.state.lastApplyId ? (
