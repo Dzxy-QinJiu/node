@@ -9,11 +9,14 @@ import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import CrmAction from '../../action/crm-actions';
+import { getMyTeamTreeList } from 'PUB_DIR/sources/utils/get-common-data-util';
+import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 //展示的类型
 const DISPLAY_TYPES = {
-    TRANSFER: 'transfer',
-    EDIT: 'edit',
-    TEXT: 'text'
+    TRANSFER: 'transfer',//转出销售
+    EDIT: 'edit',//重新分配销售
+    EDIT_TEAM: 'edit_team',//分配团队
+    TEXT: 'text'//展示
 };
 
 class SalesTeamCard extends React.Component {
@@ -41,7 +44,8 @@ class SalesTeamCard extends React.Component {
         salesTeamList: [],
         loading: false,
         submitErrorMsg: '',
-        salesRole: ''
+        salesRole: '',
+        mySubTeamList: []//我所在团队及下级团队列表
     };
 
     componentDidMount() {
@@ -49,12 +53,15 @@ class SalesTeamCard extends React.Component {
         if (this.state.enableEdit) {
             //获取团队和对应的成员列表（管理员：所有，销售：所在团队及其下级团队和对应的成员列表）
             if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)){
-                // 管理员角色
+                // 管理员角色（可以将客户分给除销售外的其他人）
                 this.getAllUserList();
-            }else{
-                // 销售角色
+            } else { //销售角色
                 this.getSalesManList();
             }
+            //获取我所在团队及下级团队列表
+            getMyTeamTreeList(({teamTree, teamList}) => {
+                this.setState({mySubTeamList: teamList});
+            });
         }
         if (!this.props.hideSalesRole) {
             //获取销售对应的角色
@@ -226,7 +233,14 @@ class SalesTeamCard extends React.Component {
             this.getSalesRoleByMemberId(params.userId);
         }
     };
-
+    //修改团队
+    onTeamChange = (teamId) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '分配客户给团队');
+        if(teamId){
+            let team = _.find(this.state.mySubTeamList, item => item.group_id === teamId);
+            this.setState({salesTeamId: teamId, salesTeam: _.get(team, 'group_name', ''), userId: '', userName: ''});
+        }
+    };
     changeDisplayType = (type) => {
         if (type === DISPLAY_TYPES.TEXT) {
             Trace.traceEvent(ReactDOM.findDOMNode(this), '取消对销售人员/团队的修改');
@@ -244,8 +258,13 @@ class SalesTeamCard extends React.Component {
                 submitErrorMsg: '',
                 salesRole: ''
             });
-        } else {
+        } else if (type === DISPLAY_TYPES.EDIT) {
             Trace.traceEvent(ReactDOM.findDOMNode(this), '点击设置销售按钮');
+            this.setState({
+                displayType: type
+            });
+        } else if (type === DISPLAY_TYPES.EDIT_TEAM) {
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '点击分配团队按钮');
             this.setState({
                 displayType: type
             });
@@ -304,37 +323,100 @@ class SalesTeamCard extends React.Component {
             });
         }
     };
+    //只提交修改的团队时（分配客户给团队）
+    onlySubmitEditTeam(){
+        let submitData = {
+            id: this.state.customerId,
+            user_id: '',
+            user_name: '',
+            sales_team_id: this.state.salesTeamId,
+            sales_team: this.state.salesTeam
+        };
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '只修改所属团队');
+        this.setState({
+            loading: false
+        });
+        let type = 'user';//CRM_USER_UPDATE_CUSTOMER_SALES_TEAM
+        if(hasPrivilege('CRM_MANAGER_UPDATE_CUSTOMER_SALES_TEAM')){
+            type = 'manager';
+        }
+        $.ajax({
+            url: '/rest/crm/:type/team'.replace(':type', type),
+            dataType: 'json',
+            type: 'put',
+            data: submitData,
+            success: (data) => {
+                if(data){
+                    this.backToDisplay();
+                    //清空列表中的销售人员
+                    this.props.modifySuccess(submitData);
+                } else{
+                    this.setState({
+                        loading: false,
+                        submitErrorMsg: Intl.get('member.change.group.failed', '修改所属团队失败')
+                    });
+                }
+            },
+            error: errorMsg => {
+                this.setState({
+                    loading: false,
+                    submitErrorMsg: errorMsg || Intl.get('member.change.group.failed', '修改所属团队失败')
+                });
+            }
+        });
+
+
+        CrmBasicAjax.transferCustomer(submitData).then(result => {
+            if (result) {
+                this.backToDisplay();
+                //清空列表中的销售人员
+                this.props.modifySuccess(submitData);
+            }
+        }, errorMsg => {
+            this.setState({
+                loading: false,
+                submitErrorMsg: errorMsg || Intl.get('crm.customer.transfer.failed', '转出客户失败')
+            });
+        });
+    }
 
     handleSubmit = () => {
         if (this.state.loading) return;
-        if (this.state.userId === this.props.userId) {
-            //没做修改时，直接回到展示状态
-            this.backToDisplay();
-            return;
-        }
-        //在转出或者变更销售之前，先检查是否会超过该销售所拥有客户的数量
-        if (this.state.displayType === DISPLAY_TYPES.EDIT || this.state.displayType === DISPLAY_TYPES.TRANSFER) {
-            this.setState({loading: true});
-            CrmAction.getCustomerLimit({member_id: this.state.userId, num: 1}, (result) => {
-                //result>0 ，不可转入或变更客户
-                if (_.isNumber(result) && result > 0) {
-                    message.warn(Intl.get('crm.should.reduce.customer', '该销售拥有客户数量已达到上限！'));
-                    this.setState({loading: false});
-                } else {
-                    this.submitData();
-                }
-            });
+        //将客户分配给某个团队
+        if (this.state.displayType === DISPLAY_TYPES.EDIT_TEAM) {
+            this.onlySubmitEditTeam();
         } else {
-            this.submitData();
+            //将客户转出、分配给某个销售时
+            if (this.state.userId === this.props.userId) {
+                //没做修改时，直接回到展示状态
+                this.backToDisplay();
+                return;
+            }
+            //在转出或者变更销售之前，先检查是否会超过该销售所拥有客户的数量
+            if (this.state.displayType === DISPLAY_TYPES.EDIT || this.state.displayType === DISPLAY_TYPES.TRANSFER) {
+                this.setState({loading: true});
+                CrmAction.getCustomerLimit({member_id: this.state.userId, num: 1}, (result) => {
+                    //result>0 ，不可转入或变更客户
+                    if (_.isNumber(result) && result > 0) {
+                        message.warn(Intl.get('crm.should.reduce.customer', '该销售拥有客户数量已达到上限！'));
+                        this.setState({loading: false});
+                    } else {
+                        this.submitData();
+                    }
+                });
+            } else {
+                this.submitData();
+            }
         }
     };
 
     //更新团队
     handleTeamChange = (value) => {
         const team = _.find(this.state.salesTeamList, item => item.group_id === value);
-        this.state.salesTeamId = value;
-        this.state.salesTeam = team ? team.group_name : '';
-        this.setState(this.state);
+        this.setState({
+            salesTeamId: value,
+            salesTeam: _.get(team, 'group_name', '')
+        });
     };
 
     renderTitle = () => {
@@ -343,7 +425,8 @@ class SalesTeamCard extends React.Component {
                 <div className="sales-team">
                     <span className="sales-team-label">{Intl.get('common.belong.sales', '所属销售')}:</span>
                     <span className="sales-team-text">
-                        {this.state.userName} {this.state.salesTeam ? ` - ${this.state.salesTeam}` : ''}
+                        {this.state.userName}
+                        {/*{this.state.salesTeam ? ` - ${this.state.salesTeam}` : ''}*/}
                     </span>
                     {this.state.enableEdit ? (
                         <DetailEditBtn title={Intl.get('common.edit', '编辑')} onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}/>) : null}
@@ -355,12 +438,44 @@ class SalesTeamCard extends React.Component {
                             {this.state.salesRole || ''}
                         </span>
                     </div>}
+                <div className="sales-team">
+                    <span className="sales-team-label">{Intl.get('common.belong.team', '所属团队')}:</span>
+                    <span className="sales-team-text">
+                        {this.state.salesTeam}
+                    </span>
+                    {this.state.enableEdit ? (
+                        <DetailEditBtn title={Intl.get('common.edit', '编辑')} onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT_TEAM)}/>) : null}
+                </div>
+
             </div>
         );
     };
+    //只修改团队的界面渲染
+    renderOnlyChangeTeamSelect(){
+        let teamOptions = _.map(this.state.mySubTeamList, (item, key) => {
+            return (<Option value={item.group_id} key={key}>{item.group_name}</Option>);
+        });
 
-    renderContent = () => {
-        if (this.state.displayType === DISPLAY_TYPES.TEXT) return null;
+        return (
+            <div className="sales-team-edit-block" id="team-edit-block">
+                <Select
+                    placeholder={Intl.get('crm.31', '请选择销售团队')}
+                    showSearch
+                    onChange={this.onTeamChange}
+                    value={this.state.salesTeamId}
+                    optionFilterProp="children"
+                    notFoundContent={teamOptions.length ? Intl.get('member.no.group', '暂无此团队') : Intl.get('member.no.groups', '暂无团队') }
+                    getPopupContainer={() => document.getElementById('team-edit-block')}
+
+                >
+                    {teamOptions}
+                </Select>
+            </div>
+        );
+    }
+
+    //修改销售的界面渲染
+    renderChangeSalesSelect(){
         let dataList = [];
         //展示其所在团队的成员列表
         this.state.salesManList.forEach(function(salesman) {
@@ -407,24 +522,42 @@ class SalesTeamCard extends React.Component {
                 </Select>
             </div>
         );
+    }
+    renderContent = () => {
+        if (this.state.displayType === DISPLAY_TYPES.TEXT) {
+            return null;
+        } else if (this.state.displayType === DISPLAY_TYPES.EDIT_TEAM) {
+            //只修改团队的界面渲染
+            return this.renderOnlyChangeTeamSelect();
+        } else {
+            //修改销售的界面渲染
+            return this.renderChangeSalesSelect();
+        }
     };
 
     transferSales = () => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '转出客户');
         this.setState({displayType: DISPLAY_TYPES.TRANSFER});
     };
-
-    renderHandleSaveBtns = () => {
-        let isTransfer = this.state.displayType === DISPLAY_TYPES.TRANSFER;
-        return (<div className="button-container">
-            <Button className="button-cancel" onClick={this.changeDisplayType.bind(this, isTransfer ? DISPLAY_TYPES.EDIT : DISPLAY_TYPES.TEXT)}>
-                {Intl.get('common.cancel', '取消')}
-            </Button>
-            {isTransfer ? (
+    //编辑销售及团队时的按钮渲染
+    renderEditButtons(){
+        //点转出后，渲染确认转出按钮
+        if (this.state.displayType === DISPLAY_TYPES.TRANSFER){
+            return (
                 <Button className="button-transfer-confirm" type="primary"
                     onClick={this.handleSubmit.bind(this)}>
                     {Intl.get('crm.sales.transfer.confirm', '确认转出')}
-                </Button>) : (
+                </Button>);
+        } else if (this.state.displayType === DISPLAY_TYPES.EDIT_TEAM){
+            //将客户分配团队时，渲染分配按钮
+            return (
+                <Button className="button-edit-team" type="primary"
+                    onClick={this.handleSubmit.bind(this)}>
+                    {Intl.get('clue.customer.distribute', '分配')}
+                </Button>
+            );
+        } else {//转出、重新分配按钮的渲染
+            return (
                 <span>
                     {this.state.enableTransfer && !this.state.isMerge ? (
                         <Button className="button-transfer" type="primary"
@@ -435,8 +568,18 @@ class SalesTeamCard extends React.Component {
                         onClick={this.handleSubmit.bind(this)}>
                         {Intl.get('crm.sales.redistribution', '重新分配')}
                     </Button>
-                </span>)
-            }
+                </span>
+            );
+        }
+    }
+    renderHandleSaveBtns = () => {
+        let isTransfer = this.state.displayType === DISPLAY_TYPES.TRANSFER;
+        let isEditTeam = this.state.displayType === DISPLAY_TYPES.EDIT_TEAM;
+        return (<div className="button-container">
+            <Button className="button-cancel" onClick={this.changeDisplayType.bind(this, isTransfer ? DISPLAY_TYPES.EDIT : DISPLAY_TYPES.TEXT)}>
+                {Intl.get('common.cancel', '取消')}
+            </Button>
+            {this.renderEditButtons()}
             {this.state.loading ? (
                 <Icon type="loading" className="save-loading"/>) : this.state.submitErrorMsg ? (
                 <span className="save-error">{this.state.submitErrorMsg}</span>
@@ -453,5 +596,17 @@ class SalesTeamCard extends React.Component {
         />);
     }
 }
-
+SalesTeamCard.propTypes = {
+    enableEdit: PropTypes.bool,
+    enableTransfer: PropTypes.bool,
+    isMerge: PropTypes.bool,
+    customerId: PropTypes.string,
+    userName: PropTypes.string,
+    userId: PropTypes.string,
+    salesTeam: PropTypes.string,
+    salesTeamId: PropTypes.string,
+    hideSalesRole: PropTypes.bool,
+    updateMergeCustomer: PropTypes.func,
+    modifySuccess: PropTypes.func
+};
 module.exports = SalesTeamCard;

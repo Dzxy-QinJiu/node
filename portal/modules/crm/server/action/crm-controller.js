@@ -368,3 +368,12 @@ exports.editCustomerStage = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+//只修改客户的所属团队
+exports.onlyEditCustomerTeam = function(req, res) {
+    crmService.onlyEditCustomerTeam(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

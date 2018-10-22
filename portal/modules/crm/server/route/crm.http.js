@@ -269,6 +269,15 @@ module.exports = {
                 needLogin: true
             },
             privileges: ['CRM_USER_UPDATE_CUSTOMER_LABEL', 'CRM_MANAGER_UPDATE_CUSTOMER_LABEL']
+        },{
+            method: 'put',
+            path: '/rest/crm/:type/team',
+            handler: 'onlyEditCustomerTeam',
+            passport: {
+                needLogin: true
+            },
+            privileges: ['CRM_MANAGER_UPDATE_CUSTOMER_SALES_TEAM', 'CRM_USER_UPDATE_CUSTOMER_SALES_TEAM']
+
         }
     ]
 };
