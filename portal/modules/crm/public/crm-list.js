@@ -732,8 +732,10 @@ class Crm extends React.Component {
         //存储筛选条件所需，用于标识时间间隔
         let interval = '';
         let dayTimeLogin = '';
-        //超xxx天未联系客户
         switch (condition.otherSelectedItem) {
+            case OTHER_FILTER_ITEMS.THIRTY_NO_CALL://超30天未打过电话的客户
+                dayTime = DAY_TIME.THIRTY_DAY;
+                break;
             case OTHER_FILTER_ITEMS.THIRTY_UNCONTACT://超30天未联系的客户
                 dayTime = DAY_TIME.THIRTY_DAY;
                 interval = 30;
@@ -784,7 +786,7 @@ class Crm extends React.Component {
                 break;
 
         }
-        //超30天未接通的客户筛选
+        //近30天拨打未接通的客户筛选
         if(condition.otherSelectedItem === OTHER_FILTER_ITEMS.THIRTY_NO_CONNECTION) {
             let currentTime = moment().valueOf();
             //最后拨打电话的时间在近30天内，
@@ -801,15 +803,23 @@ class Crm extends React.Component {
                 type: 'time'
             };
         }
-        //超xx天未联系（未接通）的客户过滤需传的参数
+        //超xx天未联系的客户过滤需传的参数
         else if (dayTime) {
-            //超xx天未联系的客户过滤需传的参数
-            this.state.rangParams[0] = {
-                to: moment().valueOf() - dayTime,
-                // from: moment().valueOf(),
-                name: 'last_contact_time',
-                type: 'time'
-            };
+            //超30天未打过电话的客户
+            if(condition.otherSelectedItem === OTHER_FILTER_ITEMS.THIRTY_NO_CALL) {
+                this.state.rangParams[0] = {
+                    to: moment().valueOf() - dayTime,
+                    name: 'last_phone_time',
+                    type: 'time'
+                };
+            } else {//超xx天未联系的客户过滤需传的参数
+                this.state.rangParams[0] = {
+                    to: moment().valueOf() - dayTime,
+                    // from: moment().valueOf(),
+                    name: 'last_contact_time',
+                    type: 'time'
+                };
+            }
         }
         //xx天活跃客户过滤需传的参数
         else if (dayTimeLogin) {
