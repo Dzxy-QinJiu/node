@@ -35,9 +35,9 @@ const APPLY_TIAL_STAGES = [Intl.get('crm.143', '试用阶段'), Intl.get('crm.14
 class OrderItem extends React.Component {
     constructor(props){
         super(props);
-        this.state = this.handleInitState(props);
+        this.state = this.getInitStateData(props);
     }
-    handleInitState(props){
+    getInitStateData(props = this.props){
         return {
             modalDialogFlag: false,//是否展示模态框
             modalContent: '',//模态框提示内容
@@ -48,7 +48,7 @@ class OrderItem extends React.Component {
             submitErrorMsg: '',//修改应用时的错误提示
             apps: props.order.apps,
             stage: props.order.sale_stages,
-            formData: JSON.parse(JSON.stringify(props.order)),
+            formData: _.cloneDeep(props.order),
             isShowApplyUserForm: false,//是否展示申请用户的表单
             applyType: Intl.get('common.trial.user', '试用用户'),//申请用户的类型：试用用户、正式用户
             applyUserApps: [],//申请用户对应的应用列表
@@ -61,7 +61,7 @@ class OrderItem extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         if(this.state.formData.id !== nextProps.order.id){
-            let stateData = this.handleInitState(nextProps);
+            let stateData = this.getInitStateData(nextProps);
             delete stateData.applyUserApps;
             this.setState(stateData);
         }
