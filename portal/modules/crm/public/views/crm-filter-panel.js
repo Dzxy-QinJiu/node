@@ -26,8 +26,11 @@ const otherFilterArray = [{
     name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 7 }),
     value: 'seven_uncontact'
 }, {
-    name: Intl.get('crm.over.day.no.connection', '近{day}天未接通', { day: 30 }),
+    name: Intl.get('crm.over.day.no.connection', '近{day}天拨打未接通', { day: 30 }),
     value: 'thirty_no_connection'
+}, {
+    name: Intl.get('crm.over.day.no.phone', '超{day}天未打过电话', { day: 30 }),
+    value: 'thirty_no_call'
 }, {
     name: Intl.get('crm.no.contact.way', '无联系方式客户'),
     value: 'no_contact_way'

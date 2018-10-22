@@ -1312,8 +1312,9 @@ var en_US = {
     'crm.217': 'Failed to get the list',//获取列表失败
     'crm.218': 'Edit successfully',//修改成功
     'crm.219': 'Edit Failed',//修改失败
+    'crm.over.day.no.phone': 'Did not call over {day} days',//超{day}天未打过电话
     'crm.over.day.without.contact': 'Over {day} days without contact',//超{day}天未联系
-    'crm.over.day.no.connection': 'No connection in the past {day} days',//近{day}天未接通
+    'crm.over.day.no.connection': 'No connection in the past {day} days',//近{day}天拨打未接通
     'crm.recent.week.active': 'Recent week active customers',//近一周活跃客户
     'crm.recent.month.active': 'Recent month active customers',//近一月活跃客户
     'crm.tag.unknown': 'Non tagged customers',//未打标签的客户
