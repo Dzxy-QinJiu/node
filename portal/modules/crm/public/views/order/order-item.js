@@ -33,48 +33,37 @@ const APPLY_OFFICIALL_STAGES = [Intl.get('crm.141', '成交阶段'), Intl.get('c
 const APPLY_TIAL_STAGES = [Intl.get('crm.143', '试用阶段'), Intl.get('crm.144', '立项报价阶段'), Intl.get('crm.145', '谈判阶段')];
 
 class OrderItem extends React.Component {
-    state = {
-        modalDialogFlag: false,//是否展示模态框
-        modalContent: '',//模态框提示内容
-        modalDialogType: 0,//1：删除
-        isLoading: false,
-        isAlertShow: false,
-        isAppPanelShow: false,
-        submitErrorMsg: '',//修改应用时的错误提示
-        apps: this.props.order.apps,
-        stage: this.props.order.sale_stages,
-        formData: JSON.parse(JSON.stringify(this.props.order)),
-        isShowApplyUserForm: false,//是否展示申请用户的表单
-        applyType: Intl.get('common.trial.user', '试用用户'),//申请用户的类型：试用用户、正式用户
-        applyUserApps: [],//申请用户对应的应用列表
-        customerName: this.props.customerName,//申请用户时用客户名作为昵称
-        isClosingOrder: false,//正在关闭订单
-        closeOrderErrorMsg: '',//关闭订单失败的错误提示
-        curOrderCloseStatus: '',//当前选择的订单的关闭状态
-        isExpandDetail: false,//关闭的订单是否展示详情
-    };
-
+    constructor(props){
+        super(props);
+        this.state = this.handleInitState(props);
+    }
+    handleInitState(props){
+        return {
+            modalDialogFlag: false,//是否展示模态框
+            modalContent: '',//模态框提示内容
+            modalDialogType: 0,//1：删除
+            isLoading: false,
+            isAlertShow: false,
+            isAppPanelShow: false,
+            submitErrorMsg: '',//修改应用时的错误提示
+            apps: props.order.apps,
+            stage: props.order.sale_stages,
+            formData: JSON.parse(JSON.stringify(props.order)),
+            isShowApplyUserForm: false,//是否展示申请用户的表单
+            applyType: Intl.get('common.trial.user', '试用用户'),//申请用户的类型：试用用户、正式用户
+            applyUserApps: [],//申请用户对应的应用列表
+            customerName: props.customerName,//申请用户时用客户名作为昵称
+            isClosingOrder: false,//正在关闭订单
+            closeOrderErrorMsg: '',//关闭订单失败的错误提示
+            curOrderCloseStatus: '',//当前选择的订单的关闭状态
+            isExpandDetail: false,//关闭的订单是否展示详情
+        };
+    }
     componentWillReceiveProps(nextProps) {
         if(this.state.formData.id !== nextProps.order.id){
-            this.setState({
-                formData: JSON.parse(JSON.stringify(nextProps.order)),
-                stage: nextProps.order.sale_stages,
-                apps: nextProps.order.apps,
-                customerName: nextProps.customerName,
-                modalDialogFlag: false,//是否展示模态框
-                modalContent: '',//模态框提示内容
-                modalDialogType: 0,//1：删除
-                isLoading: false,
-                isAlertShow: false,
-                isAppPanelShow: false,
-                submitErrorMsg: '',//修改应用时的错误提示
-                isShowApplyUserForm: false,//是否展示申请用户的表单
-                applyType: Intl.get('common.trial.user', '试用用户'),//申请用户的类型：试用用户、正式用户
-                isClosingOrder: false,//正在关闭订单
-                closeOrderErrorMsg: '',//关闭订单失败的错误提示
-                curOrderCloseStatus: '',//当前选择的订单的关闭状态
-                isExpandDetail: false,//关闭的订单是否展示详情
-            });
+            let stateData = this.handleInitState(nextProps);
+            delete stateData.applyUserApps;
+            this.setState(stateData);
         }
     }
 
