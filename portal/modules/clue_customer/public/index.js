@@ -30,7 +30,6 @@ var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 import SalesClueItem from 'MOD_DIR/common_sales_home_page/public/view/sales-clue-item';
 import ClueAnalysisPanel from './views/clue-analysis-panel';
 import SalesClueAddForm from './views/add-clues-form';
-// import ClueImportRightDetail from './views/import_clue/clue_import_right_detail';
 import ClueImportRightDetail from 'CMP_DIR/import_step';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
