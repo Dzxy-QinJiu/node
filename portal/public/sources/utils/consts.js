@@ -63,7 +63,7 @@ export const emailRegex = /^(((([a-z]|\d|[!#$%&'*+-/=?^_`{|}~]|[\u00A0-\uD7FF\uF
 export const pathParamRegex = /:([a-zA-Z_\-0-9]+)/g;
 //电话号码的校验
 //普通的电话号码
-export const commonPhoneRegex = /^1[345789]\d{9}$/;
+export const commonPhoneRegex = /^1[3456789]\d{9}$/;
 // 区号 座机电话
 export const areaPhoneRegex = /^(0\d{2,3}-?)?[02-9]\d{6,7}$/;
 // 可自动填充横线的 座机电话
