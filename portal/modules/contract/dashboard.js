@@ -235,6 +235,7 @@ class ContractDashboard extends React.Component {
                     type: 'gross_profit',
                     property: 'team',
                     autoAdjustXaxisLabel: true,
+                    xAxisRotateLength: 10,
                     gridY2: 70,
                     processData: this.processAmountData,
                     refName: 'xin_zeng_he_tong_mao_li_tuan_dui_fen_bu',
