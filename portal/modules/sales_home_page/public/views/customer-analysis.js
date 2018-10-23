@@ -94,7 +94,6 @@ class CustomerAnalysis extends React.Component {
                 setTimeout(() => {
                     this.getTransferCustomers({ isFirst: true });
                     this.getStageChangeCustomers();
-                    this.getCustomerStageAnalysis();
                 });
             }
 
@@ -162,22 +161,6 @@ class CustomerAnalysis extends React.Component {
         }
     };
 
-    //获取不同阶段客户数
-    getCustomerStageAnalysis = (params) => {
-        let teamId = this.state.currentTeamId;
-        if (teamId && teamId.includes(',')) {
-            teamId = teamId.split(',')[0];//此接口需要的teamid为最上级的团队id
-        }
-        let paramsObj = {
-            ...params,
-            starttime: this.state.startTime,
-            endtime: this.state.endTime,
-            app_id: 'all',
-            team_id: teamId
-        };
-        OplateCustomerAnalysisAction.getCustomerStageAnalysis(paramsObj);
-    };
-
     //获取客户阶段变更数据
     getStageChangeCustomers = () => {
         let params = {
@@ -234,7 +217,6 @@ class CustomerAnalysis extends React.Component {
         setTimeout(() => {
             this.getStageChangeCustomers();
             this.getTransferCustomers({ isFirst: true });
-            this.getCustomerStageAnalysis();
         });
     }
 

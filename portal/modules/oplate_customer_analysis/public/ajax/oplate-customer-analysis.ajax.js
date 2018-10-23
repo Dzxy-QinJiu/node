@@ -188,23 +188,3 @@ exports.getNewCustomerCount = function(paramObj) {
     });
 };
 
-//获取不同阶段客户数
-exports.getCustomerStageAnalysis = paramObj => {
-    const handler = 'getCustomerStageAnalysis';
-    const route = routes.find(x => x.handler === handler);
-    //普通销售权限
-    let type = 'common';
-    if (hasPrivilege(AUTHS.GETALL)) {
-        //管理员权限
-        type = 'manager';
-    }
-    return ajax({
-        url: route.path,
-        type: route.method,
-        params: {
-            ...paramObj.params,
-            type,
-        },
-        data: paramObj
-    });
-};

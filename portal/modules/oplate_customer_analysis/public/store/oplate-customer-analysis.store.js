@@ -89,12 +89,6 @@ OplateCustomerAnalysisStore.prototype.resetState = function() {
         errorMsg: '',
         loading: false
     };
-    //不同阶段客户数
-    this.stageCustomerNum = {
-        data: [],
-        errorMsg: '',
-        loading: false
-    };
     //当前选中的团队id
     this.currentTeamId = '';
     //当前选中的销售人员id
@@ -427,21 +421,6 @@ OplateCustomerAnalysisStore.prototype.getNewCustomerCount = resultHandler('newCu
         }
     }
     this.newCustomerCount.data = list;
-});
-
-
-//获取不同阶段客户数
-OplateCustomerAnalysisStore.prototype.getCustomerStageAnalysis = resultHandler('stageCustomerNum', function({ loading, errorMsg, data, paramObj }) {
-    let list = [];
-    if (data) {
-        list = [
-            {
-                signed: data.signed,
-                trial: data.trial
-            }
-        ];
-    }
-    this.stageCustomerNum.data = list;
 });
 
 OplateCustomerAnalysisStore.prototype.teamChange = function(teamId) {
