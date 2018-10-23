@@ -348,7 +348,7 @@ class SalesTeamCard extends React.Component {
             type = 'manager';
         }
         $.ajax({
-            url: '/rest/crm/:type/team'.replace(':type', type),
+            url: `/rest/crm/${type}/team`,
             dataType: 'json',
             type: 'put',
             data: submitData,
