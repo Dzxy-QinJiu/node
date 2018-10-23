@@ -49,7 +49,12 @@ class PageFrame extends React.Component {
         notificationEmitter.on(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
         $(window).on('resize', this.resizeHandler);
     }
-
+    componentWillReceiveProps(nextProps) {
+        //路由切换时，关闭电话弹屏和客户详情的处理
+        if(_.get(nextProps,'location.pathname') !== _.get(this.props, 'location.pathname')){
+            this.closePhonePanel();
+        }
+    }
     resizeEmitter = () => {
         resizeEmitter.emit(resizeEmitter.WINDOW_SIZE_CHANGE, {
             width: $('#app .col-xs-10').width(),
@@ -103,10 +108,9 @@ class PageFrame extends React.Component {
     };
 
     hideReportBtn = (btnShowFlag) => {
-        this.state.audioParamObj.isShowReportButton = btnShowFlag.isShowReportButton;
-        this.setState({
-            audioParamObj: this.state.audioParamObj
-        });
+        let audioParamObj = this.state.audioParamObj;
+        audioParamObj.isShowReportButton = btnShowFlag.isShowReportButton;
+        this.setState({audioParamObj});
     };
 
     openPhonePanel = (paramObj) => {
@@ -201,5 +205,7 @@ class PageFrame extends React.Component {
         );
     }
 }
-
+PageFrame.propTypes = {
+    route: PropTypes.obj
+};
 module.exports = PageFrame;

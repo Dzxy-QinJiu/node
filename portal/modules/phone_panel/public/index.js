@@ -171,6 +171,10 @@ class PhonePanel extends React.Component {
     }
 
     componentWillUnmount() {
+        //卸载前，重置数据
+        phoneRecordObj.callid = '';
+        phoneRecordObj.received_time = '';//通话时间
+        phoneAlertAction.setInitialState();
         phoneMsgEmitter.removeListener(phoneMsgEmitter.CLOSE_PHONE_MODAL, this.closeModal);
         phoneAlertStore.unlisten(this.onStoreChange);
     }
