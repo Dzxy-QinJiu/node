@@ -2723,6 +2723,9 @@ var zh_CN = {
     'leave.apply.approve.rejected': '被驳回',
     'app.user.manager.click.get.app': '点击获取应用',
     'app.user.failed.get.apps': '获取失败',
-    'clue.check.only.clue.phone': '线索电话唯一性校验失败'
+    'clue.check.only.clue.phone': '线索电话唯一性校验失败',
+    'leave.apply.apartment.apply': '上级主管',
+    'leave.apply.general.apply': '分配销售',
+    'leave.apply.select.assigned.sales': '请选择要分配的销售'
 };
 export default zh_CN;

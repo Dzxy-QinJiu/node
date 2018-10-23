@@ -2701,6 +2701,9 @@ var en_US = {
     'leave.apply.approve.rejected': 'Was rejected',//被驳回
     'app.user.manager.click.get.app': 'Click to get app lists',//点击获取应用
     'app.user.failed.get.apps': 'Get data failed',//获取失败
-    'clue.check.only.clue.phone': 'Failed to check only clue phone'//线索电话唯一性校验失败
+    'clue.check.only.clue.phone': 'Failed to check only clue phone',//线索电话唯一性校验失败
+    'leave.apply.apartment.apply': 'Supervisor',//上级主管
+    'leave.apply.general.apply': 'Distribution sales',//分配销售
+    'leave.apply.select.assigned.sales': 'Please select the sales to be assigned'//请选择要分配的销售
 };
 export default en_US;

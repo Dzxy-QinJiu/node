@@ -38,7 +38,8 @@ let BasicEditSelectField = createReactClass({
         validators: PropTypes.array,
         filterOption: PropTypes.bool,
         placeholder: PropTypes.string,
-        hideButtonBlock: PropTypes.string
+        hideButtonBlock: PropTypes.bool,
+        onSelectChange: PropTypes.func,
     },
     getDefaultProps: function() {
         return {
@@ -76,7 +77,10 @@ let BasicEditSelectField = createReactClass({
             saveEditSelect: function() {
             },
             hideButtonBlock: false,
-            hoverShowEdit: true
+            hoverShowEdit: true,
+            onSelectChange: function() {
+
+            }
         };
     },
 
@@ -200,6 +204,7 @@ let BasicEditSelectField = createReactClass({
         this.setState({
             formData: formData
         });
+        _.isFunction(this.props.onSelectChange) && this.props.onSelectChange(selectVal);
     },
 
     render: function() {

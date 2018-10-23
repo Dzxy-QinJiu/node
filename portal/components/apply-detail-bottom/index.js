@@ -11,6 +11,23 @@ class ApplyDetailBottom extends React.Component {
         this.state = {};
     }
 
+    renderBottomText = () => {
+        if (_.isFunction(this.props.renderAssigenedContext)) {
+            return this.props.renderAssigenedContext();
+        } else {
+            return <div className="pull-right">
+                <Button type="primary" className="btn-primary-sure" size="small"
+                    onClick={this.props.submitApprovalForm.bind(this, 'pass')}>
+                    {Intl.get('user.apply.detail.button.pass', '通过')}
+                </Button>
+                <Button type="primary" className="btn-primary-sure" size="small"
+                    onClick={this.props.submitApprovalForm.bind(this, 'reject')}>
+                    {Intl.get('common.apply.reject', '驳回')}
+                </Button>
+            </div>;
+        }
+    };
+
     render() {
         return (
             <div className="approval_block">
@@ -33,16 +50,9 @@ class ApplyDetailBottom extends React.Component {
                                     {this.props.approvalText}
                                 </span>
                             </div>) : (
-                            this.props.showApproveBtn ? <div className="pull-right">
-                                <Button type="primary" className="btn-primary-sure" size="small"
-                                    onClick={this.props.submitApprovalForm.bind(this, 'pass')}>
-                                    {Intl.get('user.apply.detail.button.pass', '通过')}
-                                </Button>
-                                <Button type="primary" className="btn-primary-sure" size="small"
-                                    onClick={this.props.submitApprovalForm.bind(this, 'reject')}>
-                                    {Intl.get('common.apply.reject', '驳回')}
-                                </Button>
-                            </div> : null
+                            this.props.showApproveBtn ?
+                                this.renderBottomText()
+                                : null
                         )}
                     </Col>
                 </Row>
@@ -56,8 +66,11 @@ ApplyDetailBottom.defaultProps = {
     isConsumed: false,
     update_time: '',
     approvalText: '',
-    showApproveBtn: '',
-    submitApprovalForm: function(){
+    showApproveBtn: false,
+    submitApprovalForm: function() {
+
+    },
+    renderAssigenedContext: function(){
 
     }
 };
@@ -67,8 +80,9 @@ ApplyDetailBottom.propTypes = {
     isConsumed: PropTypes.boolean,
     update_time: PropTypes.string,
     approvalText: PropTypes.string,
-    showApproveBtn: PropTypes.string,
+    showApproveBtn: PropTypes.boolean,
     submitApprovalForm: PropTypes.func,
+    renderAssigenedContext: PropTypes.func,
 };
 
 export default ApplyDetailBottom;

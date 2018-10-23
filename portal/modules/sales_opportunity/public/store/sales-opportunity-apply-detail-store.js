@@ -216,6 +216,16 @@ SalesOpportunityApplyDetailStore.prototype.cancelSendApproval = function() {
 SalesOpportunityApplyDetailStore.prototype.hideApprovalBtns = function() {
     this.selectedDetailItem.showApproveBtn = false;
 };
+SalesOpportunityApplyDetailStore.prototype.setApplyCandate = function(selectUserId) {
+    this.detailInfoObj.info.assigned_candidate_users = selectUserId;
+};
+SalesOpportunityApplyDetailStore.prototype.setSalesMan = function(selectSales) {
+    this.detailInfoObj.info.user_ids = selectSales.salesMan;
+};
+SalesOpportunityApplyDetailStore.prototype.setSalesManName = function(selectSales) {
+    this.detailInfoObj.info.user_names = selectSales.salesManNames;
+};
+
 
 
 module.exports = alt.createStore(SalesOpportunityApplyDetailStore, 'SalesOpportunityApplyDetailStore');
