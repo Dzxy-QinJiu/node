@@ -21,7 +21,7 @@ const DISPLAY_TYPES = {
 const PRIVILEGES = {
     EDIT_TEAM_MANAGER: 'CRM_MANAGER_UPDATE_CUSTOMER_SALES_TEAM',//管理员修改所属团队的权限
     EDIT_TEAM_USER: 'CRM_USER_UPDATE_CUSTOMER_SALES_TEAM'//销售修改所属团队的权限
-}
+};
 
 class SalesTeamCard extends React.Component {
     static defaultProps = {
@@ -344,7 +344,7 @@ class SalesTeamCard extends React.Component {
             loading: false
         });
         let type = 'user';//CRM_USER_UPDATE_CUSTOMER_SALES_TEAM
-        if(hasPrivilege('CRM_MANAGER_UPDATE_CUSTOMER_SALES_TEAM')){
+        if(hasPrivilege(PRIVILEGES.EDIT_TEAM_MANAGER)){
             type = 'manager';
         }
         $.ajax({
@@ -413,8 +413,8 @@ class SalesTeamCard extends React.Component {
     };
     //是否有修改所属团的权限
     hasEditTeamPrivilege(){
-      return hasPrivilege(PRIVILEGES.EDIT_TEAM_MANAGER) || hasPrivilege(PRIVILEGES.EDIT_TEAM_USER);
-    };
+        return hasPrivilege(PRIVILEGES.EDIT_TEAM_MANAGER) || hasPrivilege(PRIVILEGES.EDIT_TEAM_USER);
+    }
     renderTitle = () => {
         return (
             <div className="sales-team-show-block">
@@ -562,7 +562,7 @@ class SalesTeamCard extends React.Component {
                         </Button>) : null}
                     {this.state.enableEdit ? (
                         <Button className="button-redistribution" type="primary"
-                                onClick={this.handleSubmit.bind(this)}>
+                            onClick={this.handleSubmit.bind(this)}>
                             {Intl.get('crm.sales.redistribution', '重新分配')}
                         </Button>) : null}
                 </span>
