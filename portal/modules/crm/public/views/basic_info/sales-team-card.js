@@ -18,6 +18,10 @@ const DISPLAY_TYPES = {
     EDIT_TEAM: 'edit_team',//分配团队
     TEXT: 'text'//展示
 };
+const PRIVILEGES = {
+    EDIT_TEAM_MANAGER: 'CRM_MANAGER_UPDATE_CUSTOMER_SALES_TEAM',//管理员修改所属团队的权限
+    EDIT_TEAM_USER: 'CRM_USER_UPDATE_CUSTOMER_SALES_TEAM'//销售修改所属团队的权限
+}
 
 class SalesTeamCard extends React.Component {
     static defaultProps = {
@@ -49,8 +53,8 @@ class SalesTeamCard extends React.Component {
     };
 
     componentDidMount() {
-        //有修改所属销售的权限时
-        if (this.state.enableEdit) {
+        //有修改所属销售或转出客户的权限时
+        if (this.state.enableEdit || this.state.enableTransfer) {
             //获取团队和对应的成员列表（管理员：所有，销售：所在团队及其下级团队和对应的成员列表）
             if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)){
                 // 管理员角色（可以将客户分给除销售外的其他人）
@@ -58,6 +62,9 @@ class SalesTeamCard extends React.Component {
             } else { //销售角色
                 this.getSalesManList();
             }
+        }
+        //有修改所属团队的权限时
+        if(this.hasEditTeamPrivilege()){
             //获取我所在团队及下级团队列表
             getMyTeamTreeList(({teamTree, teamList}) => {
                 this.setState({mySubTeamList: teamList});
@@ -235,7 +242,7 @@ class SalesTeamCard extends React.Component {
     };
     //修改团队
     onTeamChange = (teamId) => {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '分配客户给团队');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '修改所属团队');
         if(teamId){
             let team = _.find(this.state.mySubTeamList, item => item.group_id === teamId);
             this.setState({salesTeamId: teamId, salesTeam: _.get(team, 'group_name', ''), userId: '', userName: ''});
@@ -332,7 +339,7 @@ class SalesTeamCard extends React.Component {
             sales_team_id: this.state.salesTeamId,
             sales_team: this.state.salesTeam
         };
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '只修改所属团队');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '保存所属团队的修改');
         this.setState({
             loading: false
         });
@@ -363,20 +370,6 @@ class SalesTeamCard extends React.Component {
                     submitErrorMsg: errorMsg || Intl.get('member.change.group.failed', '修改所属团队失败')
                 });
             }
-        });
-
-
-        CrmBasicAjax.transferCustomer(submitData).then(result => {
-            if (result) {
-                this.backToDisplay();
-                //清空列表中的销售人员
-                this.props.modifySuccess(submitData);
-            }
-        }, errorMsg => {
-            this.setState({
-                loading: false,
-                submitErrorMsg: errorMsg || Intl.get('crm.customer.transfer.failed', '转出客户失败')
-            });
         });
     }
 
@@ -418,7 +411,10 @@ class SalesTeamCard extends React.Component {
             salesTeam: _.get(team, 'group_name', '')
         });
     };
-
+    //是否有修改所属团的权限
+    hasEditTeamPrivilege(){
+      return hasPrivilege(PRIVILEGES.EDIT_TEAM_MANAGER) || hasPrivilege(PRIVILEGES.EDIT_TEAM_USER);
+    };
     renderTitle = () => {
         return (
             <div className="sales-team-show-block">
@@ -428,7 +424,7 @@ class SalesTeamCard extends React.Component {
                         {this.state.userName}
                         {/*{this.state.salesTeam ? ` - ${this.state.salesTeam}` : ''}*/}
                     </span>
-                    {this.state.enableEdit ? (
+                    {this.state.enableEdit || this.state.enableTransfer ? (
                         <DetailEditBtn title={Intl.get('common.edit', '编辑')} onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}/>) : null}
                 </div>
                 {this.props.hideSalesRole ? null :
@@ -443,7 +439,7 @@ class SalesTeamCard extends React.Component {
                     <span className="sales-team-text">
                         {this.state.salesTeam}
                     </span>
-                    {this.state.enableEdit ? (
+                    {this.hasEditTeamPrivilege() && !this.state.isMerge ? (
                         <DetailEditBtn title={Intl.get('common.edit', '编辑')} onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT_TEAM)}/>) : null}
                 </div>
 
@@ -564,10 +560,11 @@ class SalesTeamCard extends React.Component {
                             onClick={this.transferSales.bind(this)}>
                             {Intl.get('crm.qualified.roll.out', '转出')}
                         </Button>) : null}
-                    <Button className="button-redistribution" type="primary"
-                        onClick={this.handleSubmit.bind(this)}>
-                        {Intl.get('crm.sales.redistribution', '重新分配')}
-                    </Button>
+                    {this.state.enableEdit ? (
+                        <Button className="button-redistribution" type="primary"
+                                onClick={this.handleSubmit.bind(this)}>
+                            {Intl.get('crm.sales.redistribution', '重新分配')}
+                        </Button>) : null}
                 </span>
             );
         }

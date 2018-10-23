@@ -786,7 +786,7 @@ class Crm extends React.Component {
                 break;
             case OTHER_FILTER_ITEMS.TEAM_CUSTOMER://团队客户
                 exist.push('sales_team_id');
-                unexist.push('user_id');
+                unexist.push('member_id');
                 break;
         }
         //近30天拨打未接通的客户筛选
