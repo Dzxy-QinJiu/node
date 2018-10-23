@@ -94,7 +94,6 @@ class CustomerAnalysis extends React.Component {
                 setTimeout(() => {
                     this.getTransferCustomers({ isFirst: true });
                     this.getStageChangeCustomers();
-                    this.getCustomerStageAnalysis();
                 });
             }
 
@@ -162,22 +161,6 @@ class CustomerAnalysis extends React.Component {
         }
     };
 
-    //获取不同阶段客户数
-    getCustomerStageAnalysis = (params) => {
-        let teamId = this.state.currentTeamId;
-        if (teamId && teamId.includes(',')) {
-            teamId = teamId.split(',')[0];//此接口需要的teamid为最上级的团队id
-        }
-        let paramsObj = {
-            ...params,
-            starttime: this.state.startTime,
-            endtime: this.state.endTime,
-            app_id: 'all',
-            team_id: teamId
-        };
-        OplateCustomerAnalysisAction.getCustomerStageAnalysis(paramsObj);
-    };
-
     //获取客户阶段变更数据
     getStageChangeCustomers = () => {
         let params = {
@@ -234,7 +217,6 @@ class CustomerAnalysis extends React.Component {
         setTimeout(() => {
             this.getStageChangeCustomers();
             this.getTransferCustomers({ isFirst: true });
-            this.getCustomerStageAnalysis();
         });
     }
 
@@ -933,40 +915,6 @@ class CustomerAnalysis extends React.Component {
             nameValueMap: unknownDataMap,
             resultType: this.state.teamAnalysis.resultType,
         }, {
-            title: Intl.get('crm.sales.newTrailCustomer', '新开客户数统计'),
-            chartType: 'table',
-            data: this.state.stageCustomerNum.data,
-            resultType: this.state.stageCustomerNum.loading ? 'loading' : '',
-            option: {
-                pagination: false,
-                scroll: {y: TABLE_HIGHT},
-                columns: [
-                    {
-                        title: Intl.get('common.trial', '试用'),
-                        dataIndex: 'trial',
-                        key: 'trial',
-                        width: '50%',
-                        render: (text, item, index) => {
-                            return (
-                                <span className="customer-stage-number"
-                                    onClick={this.handleNewAddedCustomerNumClick.bind(this, text, '试用')}>{text}</span>
-                            );
-                        }
-                    }, {
-                        title: Intl.get('sales.stage.signed', '签约'),
-                        dataIndex: 'signed',
-                        key: 'signed',
-                        width: '50%',
-                        render: (text, item, index) => {
-                            return (
-                                <span className="customer-stage-number"
-                                    onClick={this.handleNewAddedCustomerNumClick.bind(this, text, '签约')}>{text}</span>
-                            );
-                        }
-                    }
-                ],
-            },
-        }, {
             title: Intl.get('user.analysis.moveoutCustomer', '转出客户统计'),
             chartType: 'table',
             layout: {
@@ -1162,41 +1110,7 @@ class CustomerAnalysis extends React.Component {
         });
     };
 
-    //新开客户统计表格数字点击处理函数
-    handleNewAddedCustomerNumClick = (num, type) => {
-        //客户数为0时不打开客户列表面板
-        if (!num || num === '0') {
-            return;
-        }
-        this.setState({
-            newAddedCustomerType: type,
-            isShowCustomerTable: true
-        });
-    };
-
     render() {
-        const newAddedCustomerParams = {
-            queryObj: {},
-            rangParams: [{
-                from: this.props.startTime,
-                to: this.props.endTime,
-                type: 'time',
-                name: 'start_time'
-            }],
-            condition: {
-                customer_label: this.state.newAddedCustomerType,
-                term_fields: ['customer_label'],                
-            }
-        };
-
-        if (this.state.currentTeamId) {
-            newAddedCustomerParams.condition.sales_team_id = this.state.currentTeamId;
-        }
-
-        if (this.state.currentMemberId) {
-            newAddedCustomerParams.queryObj.user_id = this.state.currentMemberId;
-        }
-
         return (
             <div className="oplate_customer_analysis">
                 <div ref="chart_list">
@@ -1226,18 +1140,10 @@ class CustomerAnalysis extends React.Component {
                                     title={Intl.get('common.app.status.close', '关闭')}
                                     onClick={this.hideCustomerTable}
                                 />
-                                {this.state.crmLocationState ? (
-                                    <CrmList
-                                        location={{ query: '', state: this.state.crmLocationState }}
-                                        fromSalesHome={true}
-                                    />
-                                ) : (
-                                    <CrmList
-                                        location={{ query: '' }}
-                                        fromSalesHome={true}
-                                        params={newAddedCustomerParams}
-                                    />
-                                )}
+                                <CrmList
+                                    location={{ query: '', state: this.state.crmLocationState }}
+                                    fromSalesHome={true}
+                                />
                             </div> : null
                     }
                 </RightPanel>

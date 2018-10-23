@@ -73,13 +73,6 @@ module.exports = [{
     'privileges': [
         'CUSTOMER_ANALYSIS_MANAGER'
     ]
-},{
-    'method': 'get',
-    'path': '/rest/analysis/customer/stage/label/:type/summary',
-    'handler': 'getCustomerStageAnalysis',
-    'passport': {
-        'needLogin': true
-    },
 }, {
     'method': 'post',
     'path': websiteConfigUrl + '/personnel',//创建（覆盖）个性化配置

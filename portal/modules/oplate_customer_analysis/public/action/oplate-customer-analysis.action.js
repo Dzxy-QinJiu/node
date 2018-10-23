@@ -102,9 +102,6 @@ function OplateCustomerAnalysisActions() {
 
     //获取试用用户覆盖率
     this.getIndustryCustomerOverlay = asyncDispatcher(OplateCustomerAnalysisAjax.getIndustryCustomerOverlay);
-
-    //获取不同阶段客户数
-    this.getCustomerStageAnalysis = asyncDispatcher(OplateCustomerAnalysisAjax.getCustomerStageAnalysis);
 }
 
 //使用alt导出一个action
