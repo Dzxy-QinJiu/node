@@ -1483,6 +1483,7 @@ var en_US = {
     'crm.contract.select.sign.type': 'Please choose a new contract or a contract renewal', // 请选择签约类型
     'crm.contract.party.name': 'Please enter the name of Party A', // 请输入甲方名称
     'crm.customer.label.edit.tip': 'Click to edit customer stage',//点击修改客户阶段
+    'crm.filter.team.customer': 'Team customers',//团队客户
     // 客户管理end
 
     //客户分析 start

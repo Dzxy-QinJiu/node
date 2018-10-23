@@ -18,19 +18,6 @@
     "dev": "node devserver.js -d",
     "start": "node app.js -p",
     "production": "npm run dll && npm run webpack  && npm run server && npm run start",
-    "precommit": "lint-staged",
-    "eslint_fix": "eslint --fix  --ext .jsx,.js ./  -o eslint-fix.log"
-  },
-  "lint-staged": {
-    "*.{js,jsx}": [
-      "eslint --fix  -o eslint-staged-fix.log",
-      "git add"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run precommit"
-    }
   },
   "dependencies": {
     "alt": "0.17.9",

@@ -784,7 +784,10 @@ class Crm extends React.Component {
             case OTHER_FILTER_ITEMS.AVAILABILITY://有效客户
                 condition.availability = '0';
                 break;
-
+            case OTHER_FILTER_ITEMS.TEAM_CUSTOMER://团队客户
+                exist.push('sales_team_id');
+                unexist.push('user_id');
+                break;
         }
         //近30天拨打未接通的客户筛选
         if(condition.otherSelectedItem === OTHER_FILTER_ITEMS.THIRTY_NO_CONNECTION) {

@@ -58,7 +58,10 @@ const otherFilterArray = [{
 }, {
     name: Intl.get('crm.recent.month.active', '近一个月的活跃客户'),
     value: 'month_login'
-},];
+}, {
+    name: Intl.get('crm.filter.team.customer', '团队客户'),
+    value: 'team_customer'
+}];
 //只有管理员可以过滤未分配的客户
 if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
     otherFilterArray.push({
