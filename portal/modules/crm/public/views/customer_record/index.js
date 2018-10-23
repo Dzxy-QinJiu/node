@@ -129,12 +129,11 @@ class CustomerRecord extends React.Component {
         }
         //获取所有联系人的联系电话，通过电话和客户id获取跟进记录
         var customer_id = this.props.curCustomer.customer_id || this.props.curCustomer.id;
-        this.getContactPhoneNum(customer_id, () => {
-            //获取客户跟踪记录列表
-            setTimeout(() => {
+        setTimeout(() => {//此处不加setTimeout，下面获取联系电话方法中调用action中setLoading方法时会报Dispatch错误
+            this.getContactPhoneNum(customer_id, () => {
+                //获取客户跟踪记录列表
                 this.getCustomerTraceList();
-            }, 10);
-
+            });
         });
         //获取无效电话号码列表
         getInvalidPhone((data) => {
@@ -160,37 +159,28 @@ class CustomerRecord extends React.Component {
 
     //获取所有联系人的联系电话
     getContactPhoneNum = (customerId, callback) => {
-        setTimeout(() => {
-            //设置customerRecordLoading为true
-            CustomerRecordActions.setLoading();
-            ajax.getContactList(customerId).then((data) => {
-                let contactArray = data.result || [], phoneNumArray = [];
-                if (_.isArray(contactArray)) {
-                    //把所有联系人的所有电话都查出来
-                    contactArray.forEach((item) => {
-                        if (_.isArray(item.phone) && item.phone.length) {
-                            item.phone.forEach((phoneItem) => {
-                                phoneNumArray.push(phoneItem);
-                            });
-                        }
-                    });
-                }
-                this.setState({phoneNumArray: phoneNumArray});
-                if (callback) {
-                    setTimeout(() => {
-                        callback();
-                    });
-                }
-            }, (errorMsg) => {
-                this.setState({phoneNumArray: []});
-                if (callback) {
-                    setTimeout(() => {
-                        callback();
-                    });
-                }
+        //设置customerRecordLoading为true
+        CustomerRecordActions.setLoading();
+        ajax.getContactList(customerId).then((data) => {
+            let contactArray = data.result || [], phoneNumArray = [];
+            if (_.isArray(contactArray)) {
+                //把所有联系人的所有电话都查出来
+                contactArray.forEach((item) => {
+                    if (_.isArray(item.phone) && item.phone.length) {
+                        item.phone.forEach((phoneItem) => {
+                            phoneNumArray.push(phoneItem);
+                        });
+                    }
+                });
+            }
+            this.setState({phoneNumArray: phoneNumArray}, () => {
+                if (callback) callback();
+            });
+        }, (errorMsg) => {
+            this.setState({phoneNumArray: []}, () => {
+                if (callback) callback();
             });
         });
-
     };
 
     //获取客户跟踪列表
@@ -237,12 +227,12 @@ class CustomerRecord extends React.Component {
         var nextCustomerId = nextProps.curCustomer.customer_id || nextProps.curCustomer.id || '';
         var oldCustomerId = this.props.curCustomer.customer_id || this.props.curCustomer.id || '';
         if (nextCustomerId !== oldCustomerId && nextCustomerId) {
-            setTimeout(() => {
-                this.setState({
-                    playingItemAddr: '',
-                    playingItemPhone: '',
-                    customerId: nextCustomerId
-                });
+            this.setState({
+                playingItemAddr: '',
+                playingItemPhone: '',
+                customerId: nextCustomerId
+            });
+            setTimeout(() => {//此处不加setTimeout，下面调用action中dismiss方法时会报Dispatch错误
                 CustomerRecordActions.dismiss();
                 //获取所有联系人的联系电话，通过电话和客户id获取跟进记录
                 this.getContactPhoneNum(nextCustomerId, () => {
