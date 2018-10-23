@@ -64,7 +64,9 @@ var crmRestApis = {
         //转出客户
         transferCustomer: '/rest/customer/v2/customer/:url_type/transfer',
         //修改客户阶段
-        editCustomerStage: '/rest/customer/v2/customer/:url_type/customer_label'
+        editCustomerStage: '/rest/customer/v2/customer/:url_type/customer_label',
+        //只修改客户的所属团队
+        onlyEditCustomerTeam: '/rest/customer/v2/customer/:url_type/sales_team'
     },
     // 拨打电话
     callOut: '/rest/customer/v2/phone/call/ou',
@@ -459,6 +461,15 @@ exports.editCustomerStage = function(req, res) {
     return restUtil.authRest.put(
         {
             url: crmRestApis.basic.editCustomerStage.replace(':url_type',req.params.type),
+            req: req,
+            res: res
+        }, req.body);
+};
+//只修改客户的所属团队
+exports.onlyEditCustomerTeam = function(req, res) {
+    return restUtil.authRest.put(
+        {
+            url: crmRestApis.basic.onlyEditCustomerTeam.replace(':url_type',req.params.type),
             req: req,
             res: res
         }, req.body);

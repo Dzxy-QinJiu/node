@@ -1499,6 +1499,7 @@ var zh_CN = {
     'crm.contract.select.sign.type': '请选择签约类型',
     'crm.contract.party.name': '请输入甲方名称',
     'crm.customer.label.edit.tip': '点击修改客户阶段',
+    'crm.filter.team.customer': '团队客户',
     // 客户管理end
 
     // 客户分析start
