@@ -7,18 +7,19 @@ li.apply-list-item {
   border-bottom: 1px solid #f0f4f7;
   cursor: pointer;
   &:hover{
-    background-color: #f8fdff;
+    background-color: @current-item-color;
   }
   &.current {
-    background-color: #f8fdff;
+    background-color: @current-item-color;
     border-left: 3px solid @apply-active-color;
     dt span {
-      color: @apply-active-color;
+      color: @title-color;
     }
   }
   em, dt {
     font-weight: normal;
     font-style: normal;
+    font-size: 13px;
   }
   dt {
     padding-top: 12px;
@@ -26,7 +27,7 @@ li.apply-list-item {
     span {
       padding-top: 5px;
       line-height: 19px;
-      font-size: 14px;
+      font-size: 16px;
     }
     //未读回复的标识
     span.icon-apply-message-tip {
@@ -44,7 +45,7 @@ li.apply-list-item {
   }
   dd {
     line-height: 18px;
-    font-size: 12px;
+    font-size: 13px;
     padding-bottom: 6px;
     color: @LOADING_ERR_TIP;
     & > span {

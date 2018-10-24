@@ -336,7 +336,6 @@
 
 .app_user_manage_apply_wrap.user-manage-v2 {
   @font-color: #999999;
-  @apply-active-color: #5999c9;
   @bordercolor: #e1e9eb;
   padding: 0;
   min-width: @screen-md;
@@ -367,8 +366,6 @@
     height: 100vh;
     width: 420px;
     float: left;
-    @reply-message-tip-color: #f7a43e;
-    @approval-pending-color: #f68a4a;
     @text-color: #313330;
     .searchbar {
       height: @apply-top-height;
@@ -378,6 +375,7 @@
       .apply-type-filter {
         position: relative;
         float: left;
+        color: @title-color;
         cursor: pointer;
         .apply-type-filter-btn {
           float: left;
@@ -420,6 +418,7 @@
         height: 30px;
         line-height: 30px;
         .icon-refresh {
+          margin-right: 0;
           color: #a0abaf;
         }
         span.icon-apply-message-tip {
@@ -473,13 +472,13 @@
         border-bottom: 1px solid #f0f4f7;
         cursor: pointer;
         &:hover{
-          background-color: #f8fdff;
+          background-color: @current-item-color;
         }
         &.current {
-          background-color: #f8fdff;
+          background-color: @current-item-color;
           border-left: 3px solid @apply-active-color;
           dt span {
-            color: @apply-active-color;
+            color: @title-color;
           }
         }
         em, dt {
@@ -492,7 +491,7 @@
           span {
             padding-top: 5px;
             line-height: 19px;
-            font-size: 14px;
+            font-size: 16px;
           }
           //未读回复的标识
           span.icon-apply-message-tip {
@@ -502,6 +501,7 @@
           em {
             float: right;
             line-height: 20px;
+            font-size: 13px;
             color: @approval-pending-color;
             &.processed {
               color: @font-color;
@@ -510,7 +510,7 @@
         }
         dd {
           line-height: 18px;
-          font-size: 12px;
+          font-size: 13px;
           padding-bottom: 6px;
           color: @font-color;
           & > span {
@@ -533,17 +533,17 @@
 
   //申请详情
   .app_user_manage_apply_detail_wrap {
-    @apply-detail-bg-color: #f0f4f5;
     color: #5d5d5d;
     position: relative;
     height: 100vh;
+    background-color: @current-item-color;
     //详情头部标题
     .apply-detail-title {
       height: 64px;
       padding: 20px;
       .apply-type-tip {
-        font-size: 14px;
-        color: @apply-active-color;
+        font-size: 16px;
+        color: @title-color;
       }
       .order-id {
         float: right;
@@ -608,8 +608,7 @@
           padding-bottom: 6px;
           a {
             font-size: 14px;
-            font-weight: bold;
-            color: @text-color;
+            color: @title-color;
             text-decoration: none;
           }
           .icon-arrow-right {
