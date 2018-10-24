@@ -339,7 +339,7 @@
   @apply-active-color: #5999c9;
   @bordercolor: #e1e9eb;
   padding: 0;
-  min-width: 370px;
+  min-width: @screen-md;
   .app_user_manage_detail {
     dt {
       float: left;
@@ -365,6 +365,8 @@
     color: @color;
     border-right: 1px solid @bordercolor;
     height: 100vh;
+    width: 420px;
+    float: left;
     @reply-message-tip-color: #f7a43e;
     @approval-pending-color: #f68a4a;
     @text-color: #313330;
@@ -399,14 +401,14 @@
       //搜索框
       .apply-search-wrap {
         float: left;
+        width: 190px;
         margin-left: 10px;
         .search-input-container {
           height: @btn-height;
           padding: 0;
           .search-input {
             height: 30px;
-            line-height: 32px;
-            line-height: 29px;
+            line-height: 30px;
             border: none;
             outline: none;
           }
@@ -418,7 +420,6 @@
         height: 30px;
         line-height: 30px;
         .icon-refresh {
-          margin-right: 10px;
           color: #a0abaf;
         }
         span.icon-apply-message-tip {
@@ -437,7 +438,7 @@
           text-align: center;
           line-height: 24px;
           margin-top: 4px;
-          margin-left: 10px;
+          margin-left: 14px;
         }
         .check-uread-reply-bg.active {
           background-color: #e1eaf1;
@@ -1050,22 +1051,4 @@
 .app_user_manage_apply_list_wrap, .app_user_manage_apply_detail_wrap {
   padding-left: 0;
   padding-right: 0;
-}
-
-@media (min-width: @screen-md) {
-  //.app_user_manage_detail_loading {
-  //  &>.load8 {
-  //    visibility: hidden;
-  //  }
-  //}
-  .app_user_manage_apply_list_wrap .ant-pagination {
-    border-bottom: none;
-  }
-
-}
-
-@media screen and (max-width: @screen-md) {
-  .app_user_manage_apply_detail_wrap {
-    border-top: 1px solid #f3f5f7;
-  }
 }

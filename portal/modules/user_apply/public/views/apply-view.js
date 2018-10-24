@@ -532,7 +532,7 @@ class ApplyTabContent extends React.Component {
 
         return (
             <div className="app_user_manage_apply_wrap clearfix user-manage-v2">
-                <div className="col-md-4 app_user_manage_apply_list_wrap" data-tracename="申请列表">
+                <div className="app_user_manage_apply_list_wrap" data-tracename="申请列表">
                     {this.renderApplyHeader()}
                     {this.renderApplyListError()}
                     {
