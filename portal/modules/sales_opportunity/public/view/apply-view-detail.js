@@ -337,7 +337,7 @@ class ApplyViewDetail extends React.Component {
         var assigendSalesApply = _.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.ASSIGN_SALES_APPLY;
 
         //如果沒有分配负责人，要先分配负责人
-        if (!assignedCandidateUsers && readyApply){
+        if (!assignedCandidateUsers && readyApply && approval === 'pass'){
             message.warning('请先分配该申请的负责人');
         }else if (!assignedSalesUsers && assigendSalesApply){
             return;
@@ -352,7 +352,7 @@ class ApplyViewDetail extends React.Component {
                 id: detailInfoObj.id,
                 agree: approval
             };
-            if (assignedCandidateUsers){
+            if (assignedCandidateUsers && approval === 'pass'){
                 submitObj.assigned_candidate_users = [assignedCandidateUsers];
             }
             if (assignedSalesUsers){
