@@ -331,7 +331,6 @@ class ApplyViewDetail extends React.Component {
     };
 
     submitApprovalForm = (approval) => {
-
         var assignedCandidateUsers = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
         var readyApply = _.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.READY_APPLY;
         var assignedSalesUsers = _.get(this.state, 'detailInfoObj.info.user_ids','');
@@ -360,6 +359,10 @@ class ApplyViewDetail extends React.Component {
                 submitObj.user_ids = [assignedSalesUsers];
             }
             SalesOpportunityApplyDetailAction.approveSalesOpportunityApplyPassOrReject(submitObj);
+            //关闭下拉框
+            if(_.isFunction(_.get(this, 'assignSales.handleCancel'))){
+                this.assignSales.handleCancel();
+            }
         }
     };
 
@@ -408,7 +411,7 @@ class ApplyViewDetail extends React.Component {
         return (
             <div className="pull-right">
                 <AntcDropdown
-                    ref={assignSales => this.assignSales = assignSales}
+                    ref={AssignSales => this.assignSales = AssignSales}
                     content={<Button
                         data-tracename="点击分配销售按钮"
                         className='assign-btn' type="primary">{Intl.get('clue.customer.distribute', '分配')}</Button>}
