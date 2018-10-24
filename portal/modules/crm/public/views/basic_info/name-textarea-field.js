@@ -11,7 +11,7 @@ let FormItem = Form.Item;
 let crypto = require('crypto');
 let autosize = require('autosize');
 import FieldMixin from '../../../../../components/antd-form-fieldmixin';
-import {nameRegex} from 'PUB_DIR/sources/utils/consts';
+import {nameRegex} from 'PUB_DIR/sources/utils/validate-util';
 let AutosizeTextarea = require('../../../../../components/autosize-textarea');
 let CrmAction = require('../../action/crm-actions');
 let CrmBasicAjax = require('../../ajax/index');

@@ -10,8 +10,7 @@ import { Form, Input, Select, Button, Icon } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import ValidateMixin from '../../../mixins/ValidateMixin';
-import { numberAddNoMoreThan } from '../../../lib/validator/rules';
-
+import {numberAddNoMoreThan,getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 const AddRepayment = createReactClass({
     displayName: 'AddRepayment',
     mixins: [ValidateMixin],
@@ -122,7 +121,7 @@ const AddRepayment = createReactClass({
                             validateStatus={this.getValidateStatus('amount')}
                             help={this.getHelpMessage('amount')}
                         >
-                            <Validator rules={[{required: true, message: Intl.get('contract.44', '不能为空')}, this.getNumberValidateRule(), numberAddNoMoreThan.bind(this, contractAmount, repaymentsAmount, Intl.get('contract.161', '已超合同额'))]}>
+                            <Validator rules={[{required: true, message: Intl.get('contract.44', '不能为空')}, getNumberValidateRule(), numberAddNoMoreThan.bind(this, contractAmount, repaymentsAmount, Intl.get('contract.161', '已超合同额'))]}>
                                 <Input
                                     name="amount"
                                     value={this.state.formData.amount}

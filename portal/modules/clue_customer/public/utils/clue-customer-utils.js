@@ -1,5 +1,5 @@
 //客户名格式验证
-import {nameRegex, ipRegex} from 'PUB_DIR/sources/utils/consts';
+import {nameRegex, ipRegex} from 'PUB_DIR/sources/utils/validate-util';
 import ClueAction from '../action/clue-customer-action';
 var userData = require('PUB_DIR/sources/user-data');
 import { storageUtil } from 'ant-utils';

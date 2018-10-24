@@ -7,7 +7,7 @@ var React = require('react');
  */
 require('./index.less');
 import PropTypes from 'prop-types';
-import {emailRegex, qqRegex} from 'PUB_DIR/sources/utils/consts';
+import {emailRegex, qqRegex} from 'PUB_DIR/sources/utils/validate-util';
 import PhoneInput from 'CMP_DIR/phone-input';
 import classNames from 'classnames';
 import {Form, Input, Icon} from 'antd';

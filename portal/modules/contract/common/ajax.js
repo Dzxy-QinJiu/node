@@ -1,5 +1,5 @@
 //正则
-import {pathParamRegex} from 'PUB_DIR/sources/utils/consts';
+import {pathParamRegex} from 'PUB_DIR/sources/utils/validate-util';
 export default function(arg) {
     let url = arg.url;
     const Deferred = $.Deferred();

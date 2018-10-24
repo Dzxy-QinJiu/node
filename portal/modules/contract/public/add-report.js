@@ -11,7 +11,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 import ValidateMixin from '../../../mixins/ValidateMixin';
 import { REPORT_SERVICE, SERVICE_TYPE, REPORT_TYPE } from '../consts';
-
+import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 const AddReport = createReactClass({
     displayName: 'AddReport',
     mixins: [ValidateMixin],
@@ -131,7 +131,7 @@ const AddReport = createReactClass({
                                         validateStatus={this.getValidateStatus('total_price' + index)}
                                         help={this.getHelpMessage('total_price' + index)}
                                     >
-                                        <Validator rules={[this.getNumberValidateRule()]}>
+                                        <Validator rules={[getNumberValidateRule()]}>
                                             <Input
                                                 name={'total_price' + index}
                                                 value={report.total_price}
@@ -144,7 +144,7 @@ const AddReport = createReactClass({
                                         validateStatus={this.getValidateStatus('commission_rate' + index)}
                                         help={this.getHelpMessage('commission_rate' + index)}
                                     >
-                                        <Validator rules={[this.getNumberValidateRule()]}>
+                                        <Validator rules={[getNumberValidateRule()]}>
                                             <Input
                                                 name={'commission_rate' + index}
                                                 value={(isNaN(report.commission_rate) ? '' : report.commission_rate).toString()}

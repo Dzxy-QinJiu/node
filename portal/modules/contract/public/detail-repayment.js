@@ -19,7 +19,7 @@ import {DATE_FORMAT, OPERATE} from '../consts';
 import routeList from '../common/route';
 import ajax from '../common/ajax';
 import GeminiScrollBar from '../../../components/react-gemini-scrollbar';
-import {numberAddNoMoreThan} from '../../../lib/validator/rules';
+import {numberAddNoMoreThan,getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 
 const DetailRepayment = createReactClass({
     displayName: 'DetailRepayment',
@@ -149,7 +149,7 @@ const DetailRepayment = createReactClass({
                     <Validator rules={[{
                         required: true,
                         message: Intl.get('contract.44', '不能为空')
-                    }, this.getNumberValidateRule(), numberAddNoMoreThan.bind(this, this.props.contract.contract_amount, this.props.contract.total_amount, Intl.get('contract.161', '已超合同额'))]}>
+                    }, getNumberValidateRule(), numberAddNoMoreThan.bind(this, this.props.contract.contract_amount, this.props.contract.total_amount, Intl.get('contract.161', '已超合同额'))]}>
                         <Input
                             name={'amount' + index}
                             value={this.parseAmount(formData.amount)}
@@ -166,7 +166,7 @@ const DetailRepayment = createReactClass({
                     <Validator rules={[{
                         required: true,
                         message: Intl.get('contract.44', '不能为空')
-                    }, this.getNumberValidateRule()]}>
+                    }, getNumberValidateRule()]}>
                         <Input
                             name={'gross_profit' + index}
                             value={this.parseAmount(formData.gross_profit)}

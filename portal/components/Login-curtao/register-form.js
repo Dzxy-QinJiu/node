@@ -5,7 +5,7 @@
  */
 require('./css/register.less');
 const PropTypes = require('prop-types');
-import {commonPhoneRegex} from '../../public/sources/utils/consts';
+import {commonPhoneRegex} from 'PUB_DIR/sources/utils/validate-util';
 import crypto from 'crypto';
 import {Form, Button, Steps, Input} from 'antd';
 import classNames from 'classnames';

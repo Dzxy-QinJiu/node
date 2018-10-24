@@ -10,7 +10,7 @@ const GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var crmAjax = require('MOD_DIR/crm/public/ajax/index');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 var ContactUtil = require('MOD_DIR/crm/public/utils/contact-util');
-import {nameRegex} from 'PUB_DIR/sources/utils/consts';
+import {nameRegex} from 'PUB_DIR/sources/utils/validate-util';
 var crmUtil = require('MOD_DIR/crm/public/utils/crm-util');
 import {isClueTag, isTurnOutTag} from 'MOD_DIR/crm/public/utils/crm-util';
 var FormItem = Form.Item;

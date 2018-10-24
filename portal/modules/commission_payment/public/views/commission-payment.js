@@ -18,6 +18,7 @@ const RightPanelCancel = rightPanelUtil.RightPanelCancel;
 const customerAjax = require('../../../common/public/ajax/customer');
 const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 import {REMARK_LIST, OPERATE} from '../consts';
+import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 
 const formItemLayout = {
     labelCol: {span: 4},
@@ -281,7 +282,7 @@ const CommissionPayment = createReactClass({
                     <Validator rules={[{
                         required: true,
                         message: Intl.get('sales.commission.add.amount', '请添加提成金额')
-                    }, this.getNumberValidateRule()]}>
+                    }, getNumberValidateRule()]}>
                         <Input
                             name="commission"
                             value={this.parseAmount(this.state.formData.amount)}

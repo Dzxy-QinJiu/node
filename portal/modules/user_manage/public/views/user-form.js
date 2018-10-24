@@ -14,8 +14,7 @@ var AlertTimer = require('../../../../components/alert-timer');
 var classNames = require('classnames');
 import Trace from 'LIB_DIR/trace';
 import PhoneInput from 'CMP_DIR/phone-input';
-import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
-import {emailRegex} from 'PUB_DIR/sources/utils/consts';
+import {nameLengthRule, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 

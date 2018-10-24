@@ -40,7 +40,7 @@ import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-import {pathParamRegex} from 'PUB_DIR/sources/utils/consts';
+import {pathParamRegex} from 'PUB_DIR/sources/utils/validate-util';
 import {FilterInput} from 'CMP_DIR/filter';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import ClueFilterPanel from './views/clue-filter-panel';

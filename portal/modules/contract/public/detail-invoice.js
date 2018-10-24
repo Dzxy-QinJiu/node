@@ -18,7 +18,7 @@ const RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 const RightPanelCancel = rightPanelUtil.RightPanelCancel;
 const hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 import {DATE_FORMAT, OPERATE} from '../consts';
-
+import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 const DetailInvoice = createReactClass({
     displayName: 'DetailInvoice',
     mixins: [ValidateMixin],
@@ -165,7 +165,7 @@ const DetailInvoice = createReactClass({
                         <Validator rules={[{
                             required: true,
                             message: Intl.get('contract.44', '不能为空')
-                        }, this.getNumberValidateRule()]}>
+                        }, getNumberValidateRule()]}>
                             <Input
                                 name={'amount' + index}
                                 value={this.parseAmount(formData.amount)}

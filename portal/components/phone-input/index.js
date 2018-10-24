@@ -3,7 +3,7 @@ var React = require('react');
 /**
  * 电话输入框组件
  */
-import {commonPhoneRegex, hotlinePhoneRegex, autoLineAreaPhoneRegex, phone1010Regex } from 'PUB_DIR/sources/utils/consts';
+import {commonPhoneRegex, hotlinePhoneRegex, autoLineAreaPhoneRegex, phone1010Regex } from 'PUB_DIR/sources/utils/validate-util';
 import { addHyphenToPhoneNumber } from 'LIB_DIR/func';
 import { Form, Input } from 'antd';
 const FormItem = Form.Item;

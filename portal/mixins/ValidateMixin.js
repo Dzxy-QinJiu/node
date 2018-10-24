@@ -112,9 +112,4 @@ export default {
   
     //处理金额，未定义时赋空值及转成千分位格式等
     parseAmount: parseAmount,
-  
-    //获取数字验证规则
-    getNumberValidateRule() {
-        return {pattern: /^(\d|,)+(\.\d+)?$/, message: Intl.get('contract.45', '请填写数字')};
-    },
 };

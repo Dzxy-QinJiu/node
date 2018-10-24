@@ -24,7 +24,7 @@ const salesmanAjax = require('../../common/public/ajax/salesman');
 const querystring = require('querystring');
 import {VIEW_TYPE} from '../consts';
 //正则
-import {pathParamRegex} from 'PUB_DIR/sources/utils/consts';
+import {pathParamRegex} from 'PUB_DIR/sources/utils/validate-util';
 
 //根据路由地址获取页面类型  sell buy repayment
 const getTypeByPath = () => {

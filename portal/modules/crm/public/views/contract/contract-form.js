@@ -11,7 +11,7 @@ const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
 import ContractAction from '../../action/contract-action';
 const UserData = require('PUB_DIR/sources/user-data');
 const ContractAjax = require('../../ajax/contract-ajax');
-const ValidateRule = require('PUB_DIR/sources/utils/validate-rule');
+import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import Trace from 'LIB_DIR/trace';
 const { CategoryList, ContractLabel } = require('PUB_DIR/sources/utils/consts');
 
@@ -194,7 +194,7 @@ class Contract extends React.Component {
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.25', '合同额')}>
                             {getFieldDecorator('contract_amount', {
-                                rules: [ValidateRule.getNumberValidateRule()],
+                                rules: [getNumberValidateRule()],
                                 getValueFromEvent: (event) => {
                                     // 先remove是处理已经带着逗号的数字，parse后会有多个逗号的问题
                                     return parseAmount(removeCommaFromNum(event.target.value));
@@ -208,7 +208,7 @@ class Contract extends React.Component {
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.109', '毛利')}>
                             {getFieldDecorator('gross_profit', {
-                                rules: [ValidateRule.getNumberValidateRule()],
+                                rules: [getNumberValidateRule()],
                                 getValueFromEvent: (event) => {
                                     // 先remove是处理已经带着逗号的数字，parse后会有多个逗号的问题
                                     return parseAmount(removeCommaFromNum(event.target.value));

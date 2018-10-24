@@ -19,7 +19,7 @@ import {DATE_FORMAT, OPERATE} from '../consts';
 import routeList from '../common/route';
 import ajax from '../common/ajax';
 import GeminiScrollBar from '../../../components/react-gemini-scrollbar';
-
+import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 const DetailBuyPayment = createReactClass({
     displayName: 'DetailBuyPayment',
     mixins: [ValidateMixin],
@@ -151,7 +151,7 @@ const DetailBuyPayment = createReactClass({
                     <Validator rules={[{
                         required: true,
                         message: Intl.get('contract.44', '不能为空')
-                    }, this.getNumberValidateRule()]}>
+                    }, getNumberValidateRule()]}>
                         <Input
                             name={'amount' + index}
                             value={this.parseAmount(formData.amount)}
