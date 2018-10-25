@@ -17,6 +17,5 @@ module.exports = {
 function getCharts() {
     return [
         customerChart.getCustomerTrendChart('dealed', '续约客户总体趋势(假数据)'),
-        customerChart.getCustomerTimeChart('dealed', '续约客户时间统计(假数据)'),
     ];
 }

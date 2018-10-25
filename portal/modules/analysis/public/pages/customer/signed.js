@@ -30,6 +30,7 @@ function getCharts() {
         customerChart.getSignedCustomerNewTeamChart(),
         //续签客户趋势
         customerChart.getRenewalCustomerTrendChart(),
-        customerChart.getCustomerTrendChart('dealed', '续约客户时间统计(假数据)'),
+        //客户续签时间统计
+        customerChart.getRenewalCustomerTimeChart(),
     ];
 }
