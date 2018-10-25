@@ -3,6 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/10.
  */
+let salesmanAjax = require('../../../common/public/ajax/salesman');
 //获取全部申请列表
 let getAllSalesOpportunityApplyListAjax = null;
 exports.getAllSalesOpportunityApplyList = function(queryObj) {
@@ -102,7 +103,7 @@ exports.approveSalesOpportunityApplyPassOrReject = function(obj) {
     var Deferred = $.Deferred();
     approveSalesOpportunityApplyPassOrRejectAjax && approveSalesOpportunityApplyPassOrRejectAjax.abort();
     approveSalesOpportunityApplyPassOrRejectAjax = $.ajax({
-        url: '/rest/business_trip/submitApply',
+        url: '/rest/sales_opportunity_apply/submitApply',
         dataType: 'json',
         type: 'post',
         data: obj,
@@ -132,5 +133,16 @@ exports.getSalesOpportunityApplyStatusById = function(queryObj) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
+    return Deferred.promise();
+};
+//获取销售人员列表
+exports.getSalesManList = function() {
+    var Deferred = $.Deferred();
+    salesmanAjax.getSalesmanListAjax().sendRequest({filter_manager: true})
+        .success(list => {
+            Deferred.resolve(list);
+        }).error((xhr) => {//xhr:XMLHttpRequest
+            Deferred.reject(xhr.responseJSON);
+        });
     return Deferred.promise();
 };

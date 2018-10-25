@@ -17,7 +17,10 @@ function ApplyViewDetailActions() {
         'showReplyCommentEmptyError',
         'cancelSendApproval',
         'hideApprovalBtns',//审批完后不在显示审批按钮
-        'setDetailInfoObj'
+        'setDetailInfoObj',
+        'setApplyCandate',
+        'setAssignedSales',
+        'setSalesMan'
     );
 
     //获取审批单详情
@@ -69,14 +72,20 @@ function ApplyViewDetailActions() {
     };
 
     //通过或者驳回审批
-    this.approveSalesOpportunityApplyPassOrReject = function( obj) {
+    this.approveSalesOpportunityApplyPassOrReject = function(obj) {
         this.dispatch({loading: true, error: false});
         SalesOpportunityApplyAjax.approveSalesOpportunityApplyPassOrReject(obj).then((data) => {
-            this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
-            //更新选中的申请单类型
-            SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
-            //刷新用户审批未处理数
-            // updateUnapprovedCount();
+
+            //返回的data是true才是审批成功的，false也是审批失败的
+            if (data){
+                //更新选中的申请单类型
+                SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
+                this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
+            }else{
+                SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {status: 'error'});
+                this.dispatch({loading: false, error: true, errorMsg: Intl.get('errorcode.19', '审批申请失败')});
+            }
+
         }, (errorMsg) => {
             //更新选中的申请单类型
             SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {status: 'error'});

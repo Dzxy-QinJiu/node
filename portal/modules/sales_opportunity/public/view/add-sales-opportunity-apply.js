@@ -83,7 +83,7 @@ class AddSalesOpportunityApply extends React.Component {
             values['customer'] = _.get(this.state, 'formData.customer');
             //销售机会的预算取到的值是带千分位的逗号的，往后端传的时候不能传带逗号的
             var budget = values.budget;
-            values.budget = budget.replace(',','');
+            values.budget = budget.replace(/,/g,'');
             var apps = _.cloneDeep(values.apps);
             values.apps = [];
             _.forEach(apps,(appId) => {

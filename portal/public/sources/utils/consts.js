@@ -342,3 +342,8 @@ export const DELAY_TIME_RANGE = {
     CLOSE_RANGE: 1500,
     BEGIN_AND_END_RANGE: 1 * 60 * 60 * 1000//一个小时的毫秒数
 };
+
+export const APPLY_STATUS = {
+    READY_APPLY: Intl.get('leave.apply.apartment.apply', '上级主管'),
+    ASSIGN_SALES_APPLY: Intl.get('leave.apply.general.apply','分配销售'),
+};
