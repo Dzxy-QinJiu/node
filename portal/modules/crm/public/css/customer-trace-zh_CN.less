@@ -90,9 +90,19 @@
       }
       .item-detail-tip {
         color: @title_color;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
+        .trace-title-name{
+          display: inline-block;
+          max-width: 200px;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          line-height: 20px;
+          vertical-align: middle;
+          padding-bottom: 2px;
+        }
+        .trace-title-phone{
+          padding: 0 2px;
+        }
       }
       //舆情报送的内容
       .report-detail-content {

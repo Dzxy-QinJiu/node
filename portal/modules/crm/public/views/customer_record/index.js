@@ -609,9 +609,8 @@ class CustomerRecord extends React.Component {
             <div className={classNames('trace-item-content', {'day-split-line': hasSplitLine})}>
                 <p className="item-detail-tip">
                     <span className="icon-container" title={title}><i className={iconClass}></i></span>
-                    <ShearContent>
-                        {traceDsc}
-                    </ShearContent>
+                    {traceDsc ? (<span className="trace-title-name" title={traceDsc}>{traceDsc}</span>) : null}
+                    {item.dst ? (<span className="trace-title-phone">{item.dst}</span>) : null}
                     {(item.type === 'phone' || item.type === 'app') && this.state.callNumber ?
                         <i className="iconfont icon-call-out call-out"
                             title={Intl.get('crm.click.call.phone', '点击拨打电话')}
