@@ -28,7 +28,8 @@ function getCharts() {
         customerChart.getSignedCustomerNewIndustryChart(),
         //新签团队分布
         customerChart.getSignedCustomerNewTeamChart(),
-        customerChart.getCustomerTrendChart('dealed', '续约趋势(假数据)'),
+        //续签客户趋势
+        customerChart.getRenewalCustomerTrendChart(),
         customerChart.getCustomerTrendChart('dealed', '续约客户时间统计(假数据)'),
     ];
 }
