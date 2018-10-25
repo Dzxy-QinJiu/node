@@ -185,7 +185,7 @@ class AddSalesOpportunityApply extends React.Component {
         let saveResult = this.state.saveResult;
         const disabledDate = function(current) {
             //不允许选择大于当前的时刻
-            return current && current.valueOf() < Date.now() - oplateConsts.ONE_DAY_TIME_RANGE;
+            return current && current.valueOf() < moment().startOf('day');
         };
         return (
             <RightPanel showFlag={true} data-tracename="添加销售机会申请" className="add-sales-opportunity-container">

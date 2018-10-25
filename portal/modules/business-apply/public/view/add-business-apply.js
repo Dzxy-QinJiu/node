@@ -217,7 +217,7 @@ class AddBusinessApply extends React.Component {
         let saveResult = this.state.saveResult;
         const disabledDate = function(current) {
             //不允许选择大于当前天的日期
-            return current && current.valueOf() < Date.now() - oplateConsts.ONE_DAY_TIME_RANGE;
+            return current && current.valueOf() < moment().startOf('day');
         };
         return (
             <RightPanel showFlag={true} data-tracename="添加出差申请" className="add-leave-apply-container">
