@@ -20,7 +20,6 @@ function ApplyViewDetailActions() {
         'setDetailInfoObj',
         'setApplyCandate',
         'setAssignedSales',
-        'setSalesManName',
         'setSalesMan'
     );
 

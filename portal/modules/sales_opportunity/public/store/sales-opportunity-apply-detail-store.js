@@ -220,10 +220,7 @@ SalesOpportunityApplyDetailStore.prototype.setApplyCandate = function(selectUser
     this.detailInfoObj.info.assigned_candidate_users = selectUserId;
 };
 SalesOpportunityApplyDetailStore.prototype.setSalesMan = function(selectSales) {
-    this.detailInfoObj.info.user_ids = selectSales.salesMan;
-};
-SalesOpportunityApplyDetailStore.prototype.setSalesManName = function(selectSales) {
-    this.detailInfoObj.info.user_names = selectSales.salesManNames;
+    this.detailInfoObj.info.user_ids = selectSales;
 };
 
 

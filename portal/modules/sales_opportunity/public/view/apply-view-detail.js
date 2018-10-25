@@ -45,9 +45,9 @@ class ApplyViewDetail extends React.Component {
         if (this.props.detailItem.id) {
             this.getBusinessApplyDetailData(this.props.detailItem);
         }
-        this.getSaleTeamList();
+        this.getSalesManList();
     }
-    getSaleTeamList = () => {
+    getSalesManList = () => {
         salesOpportunityApplyAjax.getSalesManList().then(data => {
             this.setState({
                 salesManList: _.filter(data, sales => sales && sales.user_info && sales.user_info.status === 1)
@@ -331,15 +331,15 @@ class ApplyViewDetail extends React.Component {
     };
 
     submitApprovalForm = (approval) => {
-        var assignedCandidateUsers = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
+        var assignedCandidateUserIds = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
         var readyApply = _.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.READY_APPLY;
-        var assignedSalesUsers = _.get(this.state, 'detailInfoObj.info.user_ids','');
+        var assignedSalesUsersIds = _.get(this.state, 'detailInfoObj.info.user_ids','');
         var assigendSalesApply = _.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.ASSIGN_SALES_APPLY;
 
         //如果沒有分配负责人，要先分配负责人
-        if (!assignedCandidateUsers && readyApply && approval === 'pass'){
+        if (!assignedCandidateUserIds && readyApply && approval === 'pass'){
             message.warning('请先分配该申请的负责人');
-        }else if (!assignedSalesUsers && assigendSalesApply){
+        }else if (!assignedSalesUsersIds && assigendSalesApply){
             return;
         }else{
             if (approval === 'pass') {
@@ -352,11 +352,11 @@ class ApplyViewDetail extends React.Component {
                 id: detailInfoObj.id,
                 agree: approval
             };
-            if (assignedCandidateUsers && approval === 'pass'){
-                submitObj.assigned_candidate_users = [assignedCandidateUsers];
+            if (assignedCandidateUserIds && approval === 'pass'){
+                submitObj.assigned_candidate_users = [assignedCandidateUserIds];
             }
-            if (assignedSalesUsers){
-                submitObj.user_ids = [assignedSalesUsers];
+            if (assignedSalesUsersIds){
+                submitObj.user_ids = [assignedSalesUsersIds];
             }
             SalesOpportunityApplyDetailAction.approveSalesOpportunityApplyPassOrReject(submitObj);
             //关闭下拉框
@@ -367,16 +367,11 @@ class ApplyViewDetail extends React.Component {
     };
 
     clearSelectSales() {
-        SalesOpportunityApplyDetailAction.setSalesMan({'salesMan': ''});
-        SalesOpportunityApplyDetailAction.setSalesManName({'salesManNames': ''});
+        SalesOpportunityApplyDetailAction.setSalesMan('');
     }
     //获取已选销售的id
     onSalesmanChange = (salesMan) => {
-        SalesOpportunityApplyDetailAction.setSalesMan({'salesMan': salesMan});
-    };
-    //设置已选销售的名字
-    setSelectContent = (salesManNames) => {
-        SalesOpportunityApplyDetailAction.setSalesManName({'salesManNames': salesManNames});
+        SalesOpportunityApplyDetailAction.setSalesMan(salesMan);
     };
     renderSalesBlock = () => {
         let dataList = [];
@@ -400,7 +395,6 @@ class ApplyViewDetail extends React.Component {
                     placeholder={Intl.get('sales.team.search', '搜索')}
                     value={_.get(this.state,'detailInfoObj.info.user_ids')}
                     onChange={this.onSalesmanChange}
-                    getSelectContent={this.setSelectContent}
                     notFoundContent={dataList.length ? Intl.get('crm.29', '暂无销售') : Intl.get('crm.30', '无相关销售')}
                     dataList={dataList}
                 />
