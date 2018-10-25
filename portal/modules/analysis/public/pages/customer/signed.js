@@ -19,7 +19,8 @@ function getCharts() {
         //签约客户总体趋势
         customerChart.getSignedCustomerTotalTrendChart(),
         customerChart.getCustomerTrendChart('dealed', '新签约客户趋势(假数据)'),
-        customerChart.getCustomerIndustryChart('dealed', '行业分布(假数据)'),
+        //签约客户行业分布
+        customerChart.getSignedCustomerTotalIndustryChart(),
         //签约客户团队分布
         customerChart.getSignedCustomerTotalTeamChart(),
         customerChart.getCustomerIndustryChart('dealed', '新签行业分布(假数据)'),
