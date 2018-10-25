@@ -10,52 +10,42 @@ const processForTrace = function(item) {
     };
     if (_.isObject(item)) {
         //渲染时间线
-        var iconClass = '', title = '', des = '', contact = '', tip = [];
         //根据不同的类型
         if (item.type) {
             switch (item.type) {
                 case 'visit':
-                    iconClass = 'icon-visit-briefcase';
-                    title = Intl.get('customer.visit', '拜访');
-                    des = Intl.get('customer.visit.customer', '拜访客户');
+                    traceObj.iconClass = 'icon-visit-briefcase';
+                    traceObj.title = Intl.get('customer.visit', '拜访');
+                    traceObj.traceDsc = Intl.get('customer.visit.customer', '拜访客户');
                     break;
                 case 'phone':
-                    iconClass = 'icon-contact-phone';
-                    title = Intl.get('customer.phone.system', '电话系统');
-                    des = (!item.contact_name && !item.dst) ? Intl.get('customer.contact.customer', '联系客户') : '';
+                    traceObj.iconClass = 'icon-contact-phone';
+                    traceObj.title = Intl.get('customer.phone.system', '电话系统');
+                    traceObj.traceDsc = (!item.contact_name && !item.dst) ? Intl.get('customer.contact.customer', '联系客户') : item.contact_name || '';
                     break;
                 case 'app':
-                    iconClass = 'icon-contact-ketao-app';
-                    title = Intl.get('customer.ketao.app', '客套app');
-                    des = (!item.contact_name && !item.dst) ? Intl.get('customer.contact.customer', '联系客户') : '';
+                    traceObj.iconClass = 'icon-contact-ketao-app';
+                    traceObj.title = Intl.get('customer.ketao.app', '客套app');
+                    traceObj.traceDsc = (!item.contact_name && !item.dst) ? Intl.get('customer.contact.customer', '联系客户') : item.contact_name || '';
                     break;
                 case 'call_back':
-                    iconClass = 'icon-callback';
-                    title = Intl.get('common.callback', '回访');
-                    des = Intl.get('common.callback.customer', '回访客户');
+                    traceObj.iconClass = 'icon-callback';
+                    traceObj.title = Intl.get('common.callback', '回访');
+                    traceObj.traceDsc = Intl.get('common.callback.customer', '回访客户');
                     break;
                 case 'data_report':
-                    iconClass = 'icon-report-delivery';
-                    title = Intl.get('crm.trace.delivery.report', '舆情报送');
-                    des = Intl.get('crm.trace.delivery.report', '舆情报送');
+                    traceObj.iconClass = 'icon-report-delivery';
+                    traceObj.title = Intl.get('crm.trace.delivery.report', '舆情报送');
+                    traceObj.traceDsc = Intl.get('crm.trace.delivery.report', '舆情报送');
                     break;
                 case 'other':
-                    iconClass = 'icon-trace-other';
-                    title = Intl.get('customer.other', '其他');
-                    des = Intl.get('customer.follow.customer', '跟进客户');
+                    traceObj.iconClass = 'icon-trace-other';
+                    traceObj.title = Intl.get('customer.other', '其他');
+                    traceObj.traceDsc = Intl.get('customer.follow.customer', '跟进客户');
                     break;
             }
         }
-        des && tip.push(des);
-        iconClass += ' iconfont';
-        // contact = (item.contact_name || item.dst) ? Intl.get('customer.contact.somebody', '联系') : '';
-        contact += item.contact_name && item.dst ? (item.contact_name + ' ' + item.dst + ' ') : '';
-        contact += item.contact_name && !item.dst ? (item.contact_name) : '';
-        contact += !item.contact_name && item.dst ? (item.dst) : '';
-        contact && tip.push(contact);
-        traceObj.traceDsc = tip.join('，');
-        traceObj.iconClass = iconClass;
-        traceObj.title = title;
+        traceObj.iconClass += ' iconfont';
         traceObj.detail = item.detail;
     }
     return traceObj;

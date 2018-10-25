@@ -160,7 +160,7 @@ class CrmScoreCard extends React.Component {
                     <div className="crm-account-text">
                         {
                             _.get(this.state, 'qualifiedUserList[0]') ? _.map(this.state.qualifiedUserList, user => {
-                                return (<Tag><span className="iconfont icon-active-user-ico"/>{user.nick_name}</Tag>);
+                                return (<Tag><span className="iconfont icon-active-user-ico"/>{user.user_name}</Tag>);
                             }) : (<span className="no-qualify-account-tip">
                                 {Intl.get('crm.no.qualify.account', '暂无合格账号')}
                             </span>)
