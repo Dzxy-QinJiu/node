@@ -1545,7 +1545,7 @@ class Crm extends React.Component {
                     const isDeleteBtnShow = canDeleteOnCrmList || canDeleteOnPreviewList;
 
                     return (
-                        <span className="cus-op" data-tracename="导入预览">
+                        <span className="cus-op" data-tracename="删除客户">
                             {isDeleteBtnShow ? (
                                 <Button className="order-btn-class" icon="delete"
                                     onClick={isRepeat ? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
