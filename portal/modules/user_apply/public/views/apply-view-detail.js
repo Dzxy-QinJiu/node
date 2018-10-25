@@ -124,7 +124,7 @@ function getDelayDisplayTime(delay) {
             ${weeks ? weeks + Intl.get('common.time.unit.week', '周') : ''}
             ${days ? days + Intl.get('common.time.unit.day', '天') : ''}`;
 }
-
+const APPLY_LIST_WIDTH = 421;
 const ApplyViewDetail = createReactClass({
     propTypes: {
         detailItem: PropTypes.object,
@@ -1562,7 +1562,7 @@ const ApplyViewDetail = createReactClass({
         } else if (detailInfo.type === 'apply_sth_else') {
             return this.renderDetailChangeOther(detailInfo);
         }
-        //旧版申请展示 
+        //旧版申请展示
         else if (detailInfo.type === 'apply_grant_delay') {
             return this.renderDetailDelayTime(detailInfo);
         } else if (detailInfo.type === 'apply_grant_status_change') {
@@ -2185,12 +2185,12 @@ const ApplyViewDetail = createReactClass({
 
         var cls = classNames({
             'is_exist_user': is_exist_user,
-            'col-md-8': true,
             'app_user_manage_apply_detail_wrap': true
         });
         let customerOfCurUser = this.state.customerOfCurUser;
+        let detailWrapWidth = $('.user_apply_page').width() - APPLY_LIST_WIDTH;
         return (
-            <div className={cls} data-tracename="审批详情界面">
+            <div className={cls} data-tracename="审批详情界面" style={{width: detailWrapWidth}}>
                 {this.renderApplyDetailLoading()}
                 {this.renderApplyDetailError()}
                 {this.renderApplyDetailNodata()}
