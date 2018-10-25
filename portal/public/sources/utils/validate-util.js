@@ -1,4 +1,4 @@
-import { removeCommaFromNum } from 'LIB_DIR/func';
+import { removeCommaFromNum } from '../../../lib/func';
 import {regex} from 'ant-utils';
 //名称长度的验证规则
 export const nameLengthRule = {
