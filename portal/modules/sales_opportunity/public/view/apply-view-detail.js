@@ -358,7 +358,7 @@ class ApplyViewDetail extends React.Component {
             return null;
         }
         return (
-            <div className='col-md-8 sales_opportunity_apply_detail_wrap' data-tracename="出差审批详情界面">
+            <div className='col-md-8 sales_opportunity_apply_detail_wrap' data-tracename="销售机会审批详情界面">
                 <ApplyDetailStatus
                     showLoading={this.state.detailInfoObj.loadingResult === 'loading'}
                     showErrTip = {this.state.detailInfoObj.loadingResult === 'error'}
