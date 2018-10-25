@@ -11,7 +11,7 @@ var RightPanelClose = rightPanelUtil.RightPanelClose;
 var FormItem = Form.Item;
 var Option = Select.Option;
 var CrmAction = require('../../../crm/public/action/crm-actions');
-import {nameRegex} from 'PUB_DIR/sources/utils/consts';
+import {nameRegex} from 'PUB_DIR/sources/utils/validate-util';
 var ContactUtil = require('../../../crm/public/utils/contact-util');
 var Spinner = require('../../../../components/spinner');
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';

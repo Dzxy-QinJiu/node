@@ -23,6 +23,7 @@ import rightPanelUtil from '../../../components/rightPanel';
 const RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 import {VIEW_TYPE} from '../consts';
 import {regex} from 'ant-utils';
+import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 
 const formItemLayout = {
     labelCol: {span: 4},
@@ -418,7 +419,7 @@ export default {
                 <Validator rules={[{
                     required: true,
                     message: Intl.get('contract.69', '请填写合同金额')
-                }, this.getNumberValidateRule()]}>
+                }, getNumberValidateRule()]}>
                     <Input
                         name="contract_amount"
                         value={this.parseAmount(this.state.formData.contract_amount)}

@@ -118,16 +118,6 @@ export const exportToCsv = function(filename, rows) {
     }
 };
 
-//是否是手机号
-export const isPhone = function(value) {
-    return /^1[3-9]\d{9}$/.test(value);
-};
-
-//是否是邮箱
-export const isEmail = function(value) {
-    return /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value);
-};
-
 //两数组是否相等
 export const isEqualArray = function(array1, array2) {
     array1 = _.sortBy(array1);

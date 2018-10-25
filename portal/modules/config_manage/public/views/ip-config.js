@@ -7,7 +7,7 @@ import { Alert,Icon, Checkbox } from 'antd';
 import AlertTimer from '../../../../components/alert-timer';
 import Trace from 'LIB_DIR/trace';
 const CHECKIPMSG = Intl.get('config.manage.input.ip','请输入有效的IP（eg:192.168.1.9）');
-import {ipRegex} from 'PUB_DIR/sources/utils/consts';
+import {ipRegex} from 'PUB_DIR/sources/utils/validate-util';
 
 class IpConfig extends React.Component {
     state = {

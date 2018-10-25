@@ -10,6 +10,7 @@ import { Form, Input, Select, Button, Icon } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import ValidateMixin from '../../../mixins/ValidateMixin';
+import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 
 const AddProduct = createReactClass({
     displayName: 'AddProduct',
@@ -122,7 +123,7 @@ const AddProduct = createReactClass({
                                 validateStatus={this.getValidateStatus('total_price' + index)}
                                 help={this.getHelpMessage('total_price' + index)}
                             >
-                                <Validator rules={[{required: true, message: Intl.get('contract.90', '请填写总价')}, this.getNumberValidateRule()]}>
+                                <Validator rules={[{required: true, message: Intl.get('contract.90', '请填写总价')}, getNumberValidateRule()]}>
                                     <Input
                                         name={'total_price' + index}
                                         value={(isNaN(product.total_price) ? '' : product.total_price).toString()}
@@ -135,7 +136,7 @@ const AddProduct = createReactClass({
                                 validateStatus={this.getValidateStatus('commission_rate' + index)}
                                 help={this.getHelpMessage('commission_rate' + index)}
                             >
-                                <Validator rules={[this.getNumberValidateRule()]}>
+                                <Validator rules={[getNumberValidateRule()]}>
                                     <Input
                                         name={'commission_rate' + index}
                                         value={(isNaN(product.commission_rate) ? '' : product.commission_rate).toString()}

@@ -12,7 +12,7 @@ var FormItem = Form.Item;
 import Trace from 'LIB_DIR/trace';
 require('../css/phone-show-edit-field.less');
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-import {commonPhoneRegex} from 'PUB_DIR/sources/utils/consts';
+import {commonPhoneRegex} from 'PUB_DIR/sources/utils/validate-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 let codeEffectiveInterval = null;
 //验证码的有效时间：60s

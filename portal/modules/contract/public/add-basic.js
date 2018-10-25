@@ -14,6 +14,7 @@ const CheckboxGroup = Checkbox.Group;
 import ValidateMixin from '../../../mixins/ValidateMixin';
 import BasicMixin from './mixin-basic';
 import { COST_STRUCTURE } from '../consts';
+import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 
 const AddBasic = createReactClass({
     displayName: 'AddBasic',
@@ -69,7 +70,7 @@ const AddBasic = createReactClass({
                         validateStatus={this.getValidateStatus('cost_price')}
                         help={this.getHelpMessage('cost_price')}
                     >
-                        <Validator rules={[this.getNumberValidateRule()]}>
+                        <Validator rules={[getNumberValidateRule()]}>
                             <Input
                                 name="cost_price"
                                 value={this.parseAmount(formData.cost_price)}
@@ -95,7 +96,7 @@ const AddBasic = createReactClass({
                         validateStatus={this.getValidateStatus('gross_profit')}
                         help={this.getHelpMessage('gross_profit')}
                     >
-                        <Validator rules={[this.getNumberValidateRule()]}>
+                        <Validator rules={[getNumberValidateRule()]}>
                             <Input
                                 name="gross_profit"
                                 disabled

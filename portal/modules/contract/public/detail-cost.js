@@ -18,6 +18,7 @@ const RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 const RightPanelCancel = rightPanelUtil.RightPanelCancel;
 const hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 import { DATE_FORMAT, OPERATE, COST_TYPE } from '../consts';
+import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 
 const formItemLayout = {
     labelCol: { span: 4 },
@@ -216,7 +217,7 @@ const DetailCost = createReactClass({
                 help={this.getHelpMessage('cost')}
             >
                 {this.state.isFormShow ? (
-                    <Validator rules={[{required: true, message: Intl.get('contract.134', '请填写费用')}, this.getNumberValidateRule()]}>
+                    <Validator rules={[{required: true, message: Intl.get('contract.134', '请填写费用')}, getNumberValidateRule()]}>
                         <Input
                             name="cost"
                             value={this.parseAmount(this.state.formData.cost)}

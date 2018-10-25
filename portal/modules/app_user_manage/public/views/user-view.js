@@ -23,7 +23,7 @@ import language from 'PUB_DIR/language/getLanguage';
 import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/add-clues-form';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
-import {commonPhoneRegex, areaPhoneRegex, hotlinePhoneRegex} from 'PUB_DIR/sources/utils/consts';
+import {commonPhoneRegex, areaPhoneRegex, hotlinePhoneRegex} from 'PUB_DIR/sources/utils/validate-util';
 //异常登录的类型
 const EXCEPTION_TYPES = [{
     name: Intl.get('common.all', '全部'),

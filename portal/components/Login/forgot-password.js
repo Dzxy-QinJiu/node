@@ -3,7 +3,7 @@
  */
 
 var React = require('react');
-import { isPhone, isEmail } from '../../lib/func';
+import {isPhone, isEmail} from 'PUB_DIR/sources/utils/validate-util';
 var crypto = require('crypto');
 import { Steps } from 'antd';
 const Step = Steps.Step;

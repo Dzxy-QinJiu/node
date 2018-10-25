@@ -10,6 +10,7 @@ import { Form, Input, Select, Button, Icon } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import ValidateMixin from '../../../mixins/ValidateMixin';
+import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 
 const AddBuyPayment = createReactClass({
     displayName: 'AddBuyPayment',
@@ -107,7 +108,7 @@ const AddBuyPayment = createReactClass({
                             validateStatus={this.getValidateStatus('amount')}
                             help={this.getHelpMessage('amount')}
                         >
-                            <Validator rules={[{required: true, message: Intl.get('contract.44', '不能为空')}, this.getNumberValidateRule()]}>
+                            <Validator rules={[{required: true, message: Intl.get('contract.44', '不能为空')}, getNumberValidateRule()]}>
                                 <Input
                                     name="amount"
                                     value={this.state.formData.amount}

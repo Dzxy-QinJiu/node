@@ -24,7 +24,7 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
 import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
-const ValidateRule = require('PUB_DIR/sources/utils/validate-rule');
+import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
@@ -235,7 +235,7 @@ class AddSalesOpportunityApply extends React.Component {
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('budget', {
-                                            rules: [ValidateRule.getNumberValidateRule(),{required: true,message: Intl.get('crm.order.budget.input', '请输入预算金额')}],
+                                            rules: [getNumberValidateRule(),{required: true,message: Intl.get('crm.order.budget.input', '请输入预算金额')}],
                                             getValueFromEvent: (event) => {
                                                 // 先remove是处理已经带着逗号的数字，parse后会有多个逗号的问题
                                                 return parseAmount(removeCommaFromNum(event.target.value));

@@ -16,7 +16,7 @@ var clueCustomerAction = require('../action/clue-customer-action');
 import {checkClueName, getPhoneInputValidateRules, checkClueSourceIP} from '../utils/clue-customer-utils';
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
-import {nameRegex} from 'PUB_DIR/sources/utils/consts';
+import {nameRegex} from 'PUB_DIR/sources/utils/validate-util';
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 var uuid = require('uuid/v4');
 import AlertTimer from 'CMP_DIR/alert-timer';
