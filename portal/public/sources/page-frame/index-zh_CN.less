@@ -2,16 +2,16 @@
 @import '../../css/iconfont.less';
 @import '../../css/common-zh.less';
 @import "../../../public/css/common-variables";
-@font-family: Arial,
-"SimHei",
+@font-family: "SimHei",
 "SimSun",
-"Arial Narrow" !important;
-@font-family-macintosh: Arial,
-"SimHei",
+"Arial Narrow",
+Arial,!important;
+@font-family-macintosh: "SimHei",
 STXihei,
 "Helvetica Neue",
 Helvetica,
-sans-serif !important;
+sans-serif,
+Arial,!important;
 @bd-grey: #DEDFE3;
 body,
 pre {
@@ -175,9 +175,9 @@ body.macintosh pre {
     float: left;
     margin-right: @btn-margin;
     margin-left: 0;
-    line-height: @btn-height !important;
-    font-size: @btn-font-size !important;
-    height: @btn-height !important;
+    line-height: @btn-height ;
+    font-size: @btn-font-size ;
+    height: @btn-height ;
     vertical-align: middle;
     min-width: @btn-min-width;
     color: @btn-font-color;
@@ -188,7 +188,7 @@ body.macintosh pre {
        border-color:@BUTTON-HOVER;
     }
     &.ant-btn-primary {
-        color: white !important;
+        color: white ;
     }
     .search-input {
         font-size: @btn-font-size;
@@ -209,9 +209,9 @@ body.macintosh pre {
         }
     }
     &.ant-select-selection{
-        line-height: @btn-height !important;
-        font-size: @btn-font-size !important;
-        height: @btn-height !important;
+        line-height: @btn-height;
+        font-size: @btn-font-size;
+        height: @btn-height;
         vertical-align: middle;
         min-width: @btn-min-width;
         color: @btn-font-color;
@@ -229,21 +229,21 @@ body.macintosh pre {
         }
     }
     .float-r {
-        float: right !important;
+        float: right;
     }
     .float-l {
-        float: left !important;
+        float: left;
     }
     .btn-m-r {
-        margin-right: @btn-margin !important;
+        margin-right: @btn-margin;
     }
     .btn-m-r-2 {
-        margin-right: @btn-margin + @btn-margin !important;
+        margin-right: @btn-margin + @btn-margin;
     }
     .row {
         width: auto;
-        margin-left: -15px !important;
-        margin-right: -15px !important;
+        margin-left: -15px;
+        margin-right: -15px;
         >.col-xs-2 {
             z-index: 12;
             width: @sidebar-min-width;
@@ -301,7 +301,7 @@ body.macintosh pre {
                     display: none;
                 }
                 .navbar-toggle {
-                    display: block !important;
+                    display: block;
                 }
             }
             &.fixed-layout {
@@ -375,7 +375,7 @@ body.macintosh pre {
         }
         @media (max-width:@modal-md) {
             .ant-menu {
-                padding-left: 0 !important;
+                padding-left: 0;
                 display: inline-block;
             }
         }
@@ -395,23 +395,23 @@ body.macintosh pre {
 .btn-primary-sure {
     @basiccolor: #4d96d1;
     @hovercolor: #478ebf;
-    border-color: @basiccolor  !important;
-    background-color: @basiccolor  !important;
-    color: #fff !important;
+    border-color: @basiccolor ;
+    background-color: @basiccolor ;
+    color: #fff;
     &:hover {
-        border-color: @hovercolor  !important;
-        background-color: @hovercolor  !important;
+        border-color: @hovercolor ;
+        background-color: @hovercolor ;
     }
 }
 
 .btn-primary-cancel {
     @basiccolor: #71aad8;
-    border-color: @basiccolor  !important;
-    background-color: transparent !important;
-    color: @basiccolor  !important;
+    border-color: @basiccolor ;
+    background-color: transparent;
+    color: @basiccolor ;
     &:hover {
-        border-color: darken(@basiccolor, 20%) !important;
-        color: darken(@basiccolor, 20%) !important;
+        border-color: darken(@basiccolor, 20%);
+        color: darken(@basiccolor, 20%);
     }
 }
 
@@ -468,7 +468,7 @@ body.macintosh pre {
 #noty_bottomCenter_layout_container,
 #noty_bottomRight_layout_container {
     &>li {
-        border-radius: 6px !important;
+        border-radius: 6px;
     }
 }
 
