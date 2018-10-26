@@ -42,7 +42,11 @@ class ApplyViewDetail extends React.Component {
 
     componentDidMount() {
         SalesOpportunityApplyDetailStore.listen(this.onStoreChange);
-        if (this.props.detailItem.id) {
+        if (_.get(this.props,'detailItem.afterAddReplySuccess')){
+            setTimeout(() => {
+                SalesOpportunityApplyDetailAction.setDetailInfoObj(this.props.detailItem);
+            });
+        }else if (this.props.detailItem.id) {
             this.getBusinessApplyDetailData(this.props.detailItem);
         }
         this.getSalesManList();
@@ -238,8 +242,12 @@ class ApplyViewDetail extends React.Component {
                 return (<Alert message={message} type="error" showIcon={true}/> );
             } else if (_.isArray(this.state.replyStatusInfo.list)) {
                 //状态可能会有多个
+                var tipMsg = Intl.get('leave.apply.detail.wait', '待') + this.state.replyStatusInfo.list.join(',');
+                if (!this.state.replyStatusInfo.list.length || _.indexOf(this.state.replyStatusInfo.list,APPLY_STATUS.READY_APPLY) > -1){
+                    tipMsg += Intl.get('contract.10', '审核');
+                }
                 return (
-                    <span>{Intl.get('leave.apply.detail.wait', '待') + this.state.replyStatusInfo.list.join(',') + Intl.get('contract.10', '审核')}</span>
+                    <span>{tipMsg}</span>
                 );
             }
         }

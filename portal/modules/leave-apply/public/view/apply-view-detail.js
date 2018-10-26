@@ -18,7 +18,7 @@ import ApplyDetailCustomer from 'CMP_DIR/apply-detail-customer';
 import ApplyDetailStatus from 'CMP_DIR/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
-import {APPLY_LIST_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
 import {getApplyTopicText, getApplyResultDscr} from 'PUB_DIR/sources/utils/common-method-util';
 import {LEAVE_TYPE} from 'PUB_DIR/sources/utils/consts';
 class ApplyViewDetail extends React.Component {
@@ -37,7 +37,11 @@ class ApplyViewDetail extends React.Component {
 
     componentDidMount() {
         LeaveApplyDetailStore.listen(this.onStoreChange);
-        if (this.props.detailItem.id) {
+        if (_.get(this.props,'detailItem.afterAddReplySuccess')){
+            setTimeout(() => {
+                LeaveApplyDetailAction.setDetailInfoObj(this.props.detailItem);
+            });
+        }else if (this.props.detailItem.id) {
             this.getBusinessApplyDetailData(this.props.detailItem);
         }
     }
@@ -151,8 +155,12 @@ class ApplyViewDetail extends React.Component {
                 return (<Alert message={message} type="error" showIcon={true}/> );
             } else if (_.isArray(this.state.replyStatusInfo.list)) {
                 //状态可能会有多个
+                var tipMsg = Intl.get('leave.apply.detail.wait', '待') + this.state.replyStatusInfo.list.join(',');
+                if (!this.state.replyStatusInfo.list.length || _.indexOf(this.state.replyStatusInfo.list,APPLY_STATUS.READY_APPLY) > -1){
+                    tipMsg += Intl.get('contract.10', '审核');
+                }
                 return (
-                    <span>{Intl.get('leave.apply.detail.wait', '待') + this.state.replyStatusInfo.list.join(',') + Intl.get('contract.10', '审核')}</span>
+                    <span>{tipMsg}</span>
                 );
             }
         }
