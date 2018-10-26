@@ -404,10 +404,10 @@ class BasicData extends React.Component {
             interestTitle = interestFlag ? Intl.get('crm.basic.concerned', '已关注') :
                 Intl.get('crm.basic.unconcerned', '未关注');
         }
-        let customerLabel = (
+        let customerLabel = basicData.customer_label ? (
             <Tag className={crmUtil.getCrmLabelCls(basicData.customer_label)}>
-                {basicData.customer_label ? basicData.customer_label.substr(0, 2) : ''}
-            </Tag>);
+                {basicData.customer_label.substr(0, 2)}
+            </Tag>) : null;
         return (
             <div className="basic-info-contianer" data-trace="客户基本信息">
                 {this.state.editNameFlag ? (
