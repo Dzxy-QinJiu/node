@@ -42,7 +42,7 @@ class DynamicAddDelCustomers extends React.Component {
     }
     // 删除客户
     handleDelCustomer = (key, index, size) => {
-        if (index === 0 && size === 1) retrun;
+        if (index === 0 && size === 1) return;
         const {form} = this.props;
         let customer_keys = form.getFieldValue('customer_keys');
         // 过滤调要删除客户的key

@@ -917,11 +917,11 @@ const ApplyViewDetail = createReactClass({
                 className: 'apply-detail-th'
             }];
         //数量
-        if (isExistUserApply) {
+        if (!isExistUserApply) {
             columns.push({
                 title: Intl.get('common.app.count', '数量'),
                 dataIndex: 'number',
-                className: 'apply-detail-th',
+                className: 'apply-detail-th number-align-right',
                 render: (text, app, index) => {
                     //获取开通个数
                     const custom_setting = appsSetting[app.app_id];
