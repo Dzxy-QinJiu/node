@@ -112,6 +112,9 @@ class CustomerRepeat extends React.Component {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '点击查看客户详情');
         CustomerRepeatAction.setRightPanelShow(true);
         CustomerRepeatAction.setCurCustomer(id);
+        setTimeout(() => {
+            this.renderCustomerDetail();
+        });
     };
 
     hideRightPanel = () => {
@@ -182,13 +185,14 @@ class CustomerRepeat extends React.Component {
 
     //表头过滤框的内容修改的处理
     onChangeFilterObj = (filterKey, event) => {
-        this.state.filterObj[filterKey] = event.target.value;
+        let filterObj = this.state.filterObj;
+        filterObj[filterKey] = event.target.value;
         if (!event.target.value) {
             //清空过滤框的内容，直接进行过滤
             this.filterRepeatCustomer(filterKey);
             delete this.state.filterObj[filterKey];
         }
-        CustomerRepeatAction.setFilterObj(this.state.filterObj);
+        CustomerRepeatAction.setFilterObj(filterObj);
     };
 
     //获取过滤后的重复客户
@@ -206,11 +210,12 @@ class CustomerRepeat extends React.Component {
 
     //清空过滤框中的内容
     clearFilterContent = (filterKey) => {
-        this.state.filterObj[filterKey] = '';
+        let filterObj = this.state.filterObj;
+        filterObj[filterKey] = '';
         //清空过滤框的内容，直接进行过滤
         this.filterRepeatCustomer(filterKey);
         delete this.state.filterObj[filterKey];
-        CustomerRepeatAction.setFilterObj(this.state.filterObj);
+        CustomerRepeatAction.setFilterObj(filterObj);
         CustomerRepeatAction.toggleSearchInput({key: filterKey, isShow: false});
         if (filterKey === 'name') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.anticon-cross-circle-o'), '关闭客户名称后的搜索框');
@@ -398,9 +403,6 @@ class CustomerRepeat extends React.Component {
     render() {
         let tableData = this.state.repeatCustomerList;
         const total = Intl.get('crm.14', '共{count}条记录', {count: this.state.repeatCustomersSize});
-        if(this.state.rightPanelIsShow){
-            this.renderCustomerDetail();
-        }
         return (<div className="customer-repeat-container" data-tracename="重复客户列表">
             {!this.props.noNeedClose ? <TopNav>
                 <div className="return-btn-container" onClick={(e) => {
