@@ -26,6 +26,16 @@ module.exports = {
             'privileges': [
                 'CREATE_CONFIG_PWD_STRATEGY' // 设置安全域密码策略
             ]
+        },{
+            'method': 'get',
+            'path': '/rest/getIntegrationList',
+            'handler': 'getIntegrationList',
+            'passport': {
+                'needLogin': true
+            },
+            'privileges': [
+                'DATA_INTEGRATION_MANAGE' // 获取线索集成列表
+            ]
         }
     ]
 };

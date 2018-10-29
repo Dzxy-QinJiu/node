@@ -2708,6 +2708,8 @@ var en_US = {
     'leave.apply.general.apply': 'Distribution sales',//分配销售
     'leave.apply.select.assigned.sales': 'Please select the sales to be assigned',//请选择要分配的销售
     'schedule.expired.call.time.at': 'at',//于
-    'schedule.expired.call.in.phone.num': 'dial your phone number'//拨打过您的电话
+    'schedule.expired.call.in.phone.num': 'dial your phone number',//拨打过您的电话
+    'config.integrated.clue.manage': 'Clue integration',//线索集成
+    'config.integrated.clue.no.list': 'There is no clue integration'//暂无线索集成
 };
 export default en_US;

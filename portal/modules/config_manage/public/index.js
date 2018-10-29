@@ -11,6 +11,7 @@ import CompetingProductManage from './views/competing-product';
 import CustomerStageManage from './views/customer-stage';
 import ProductManage from './views/product-manage';
 import SalesRoleManage from './views/sales-role-manage';
+import IntegratedClueManage from './views/integrated-clue';
 var PrivilegeChecker = require('CMP_DIR/privilege/checker').PrivilegeChecker;
 var GeminiScrollBar = require('CMP_DIR/react-gemini-scrollbar');
 require('./css/index.less');
@@ -23,6 +24,7 @@ const auths = {
     PRODUCTS_MANAGE: 'PRODUCTS_MANAGE',//产品管理
     TEAM_ROLE_MANAGE: 'TEAM_ROLE_MANAGE',//销售角色管理权限
     STRATEGY: 'GET_CONFIG_PWD_STRATEGY',// 获取安全域密码策略
+    INTEGRATION_MANAGE: 'DATA_INTEGRATION_MANAGE'//获取线索集成列表权限
 };
 
 class ConfigManage extends React.Component {
@@ -301,6 +303,9 @@ class ConfigManage extends React.Component {
                         </PrivilegeChecker>
                         <PrivilegeChecker check={auths.TEAM_ROLE_MANAGE}>
                             <SalesRoleManage/>
+                        </PrivilegeChecker>
+                        <PrivilegeChecker check={auths.INTEGRATION_MANAGE}>
+                            <IntegratedClueManage/>
                         </PrivilegeChecker>
                     </GeminiScrollBar>
                 </div>

@@ -2730,6 +2730,8 @@ var zh_CN = {
     'leave.apply.general.apply': '分配销售',
     'leave.apply.select.assigned.sales': '请选择要分配的销售',
     'schedule.expired.call.time.at': '于',
-    'schedule.expired.call.in.phone.num': '拨打过您的电话'
+    'schedule.expired.call.in.phone.num': '拨打过您的电话',
+    'config.integrated.clue.manage': '线索集成',
+    'config.integrated.clue.no.list': '暂无线索集成'
 };
 export default zh_CN;
