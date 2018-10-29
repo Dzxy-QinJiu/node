@@ -728,6 +728,18 @@ class CustomerAnalysis extends React.Component {
         return chart;
     };
 
+    activeCustomerNumRender = (type, text, record) => {
+        if (parseInt(text) === 0) {
+            return <span>{text}</span>;
+        } else {
+            return <span style={{cursor: 'pointer'}} onClick={this.handleActiveCustomerNumClick.bind(this, type, record.name)}>{text}</span>;
+        }
+    };
+
+    handleActiveCustomerNumClick = (type, name) => {
+        console.log(type,name);
+    };
+
     //获取图表列表
     getCharts = () => {
         //表格内容高度
@@ -790,10 +802,12 @@ class CustomerAnalysis extends React.Component {
                     {
                         title: Intl.get('active.customer.number', '活跃客户数'),
                         dataIndex: 'active',
+                        render: this.activeCustomerNumRender.bind(this, 'active')
                     },
                     {
                         title: Intl.get('inactive.customer.number', '不活跃客户数'),
                         dataIndex: 'inactive',
+                        render: this.activeCustomerNumRender.bind(this, 'inactive')
                     },
                     {
                         title: Intl.get('effective.customer.activity.rate', '有效客户活跃率'),
