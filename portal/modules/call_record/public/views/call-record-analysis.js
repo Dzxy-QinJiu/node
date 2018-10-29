@@ -462,10 +462,10 @@ class CallRecordAnalyis extends React.Component {
         }, {
             title: Intl.get('sales.home.total.connected', '总接通数'),
             width: num_col_width,
-            dataIndex: 'calloutSuccess',
-            key: 'callout_success',
+            dataIndex: 'totalAnswer',
+            key: 'total_answer',
             sorter: function(a, b) {
-                return a.calloutSuccess - b.calloutSuccess;
+                return a.totalAnswer - b.totalAnswer;
             },
             className: 'has-filter table-data-align-right'
         }, {
