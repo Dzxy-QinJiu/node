@@ -21,7 +21,6 @@ import ApplyListItem from 'CMP_DIR/apply-list';
 import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-dropdown-and-add-btn';
 import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 let userData = require('../../../public/sources/user-data');
-import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
 class BusinessApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加出差申请面板
@@ -37,11 +36,6 @@ class BusinessApplyManagement extends React.Component {
         BusinessApplyStore.listen(this.onStoreChange);
         //不区分角色，都获取全部的申请列表
         this.getAllBusinessApplyList();
-        getMyTeamTreeList(data => {
-            this.setState({
-                teamTreeList: data.teamTreeList
-            });
-        });
         LeaveApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
     }
 
@@ -203,7 +197,7 @@ class BusinessApplyManagement extends React.Component {
         var applyListHeight = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
         var applyType = commonMethodUtil.getApplyStatusDscr(this.state.applyListType);
         var noShowApplyDetail = this.state.applyListObj.list.length === 0;
-        var hasAddPriviledge = userData.getUserData().team_id && _.get(this.state,'teamTreeList[0].parent_group') ? true : false;
+        var hasAddPriviledge = userData.getUserData().team_id ? true : false;
         return (
             <div className="bussiness-apply-container">
                 <TopNav>

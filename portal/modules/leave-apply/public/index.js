@@ -21,7 +21,6 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import ApplyViewDetail from './view/apply-view-detail';
 var LeaveApplyUtils = require('./utils/leave-apply-utils');
 let userData = require('../../../public/sources/user-data');
-import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
 class LeaveApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加请假申请面板
@@ -37,11 +36,6 @@ class LeaveApplyManagement extends React.Component {
         LeaveApplyStore.listen(this.onStoreChange);
         //不区分角色，都获取全部的申请列表
         this.getAllLeaveApplyList();
-        getMyTeamTreeList(data => {
-            this.setState({
-                teamTreeList: data.teamTreeList
-            });
-        });
         LeaveApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
     }
 
@@ -200,7 +194,7 @@ class LeaveApplyManagement extends React.Component {
     };
 
     render() {
-        var hasAddPriviledge = userData.getUserData().team_id && _.get(this.state,'teamTreeList[0].parent_group') ? true : false;
+        var hasAddPriviledge = userData.getUserData().team_id ? true : false;
         var addPanelWrap = classNames({'show-add-modal': this.state.showAddApplyPanel});
         var applyListHeight = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
         var applyType = '';
