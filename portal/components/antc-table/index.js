@@ -284,7 +284,7 @@ class AntcTable extends React.Component {
                                 onChange={this.onCheckAllChange}
                                 checked={this.state.checkAll}
                             >
-                                {Intl.get('authority.all.select', '全选')}
+                                {Intl.get('common.all.select', '全选')}
                             </Checkbox>
                             <CheckboxGroup
                                 options={columnsOptions}

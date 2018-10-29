@@ -24,10 +24,6 @@ var zh_CN = {
     'menu.salesstage': '销售阶段管理',
     'menu.salesteam': '团队管理',
     'menu.config': '配置',
-    'menu.realm.analysis': '运营分析',
-    'menu.realm.analysis.zone': '地域分析',
-    'menu.realm.analysis.industry': '行业分析',
-    'menu.realm.analysis.establish': '开启时间统计',
     'menu.user.analysis': '运营分析',
     'menu.customer.analysis': '运营分析',
     'menu.sales.homepage': '销售主页',
@@ -119,7 +115,6 @@ var zh_CN = {
     'common.owner': '所有者',
     'common.managers': '管理员',
     'common.secret.app': '密令APP',
-    'common.realm.id': '安全域ID',
     'common.captcha': '验证码',
     'common.describe': '描述',
     'common.time.connector': '至', // " 至 -"
@@ -240,6 +235,14 @@ var zh_CN = {
     'common.callback.person': '回访人',
     'common.has.callback': '已回访',
     'common.callback.customer': '回访客户',
+    'common.edit.address.placeholder': '请选择地址',
+    'common.industry': '行业',
+    'common.address': '地址',
+    'common.full.address': '详细地址',
+    'common.change.owner.name': '姓名', // 姓名
+    'common.select.address.province': '省份', // 省份
+    'common.company': '公司', // 公司
+    'common.all.select': '全选',
 
     //公共部分--end
     'login.login': '登录',
@@ -300,7 +303,6 @@ var zh_CN = {
     'register.phone.code': '短信验证码',
     'register.company.nickname': '公司名称',
     'register.code.validate.expire': '短信验证码已过期',
-
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
@@ -603,6 +605,14 @@ var zh_CN = {
     'user.position.number.tips': '请输入座席号',
     'user.position.select.user': '请选择用户',
     /*用户管理模块-end*/
+    'my.app.no.app': '暂无应用',
+    'my.app.change.expire.time.placeholder': '请选择到期时间',
+    /*角色-start*/
+    'role.default.set': '默认',
+    'role.set.default': '设为默认角色',
+    'role.normal.sales': '普通销售',
+    'role.del.role.failed': '删除角色失败',
+    'authority.auth.api': 'Service address',//服务地址
 
     //后台管理-成员start
     'member.member': '成员',
@@ -796,6 +806,7 @@ var zh_CN = {
     'sales.stage.change.sort': '变更顺序',
     'sales.stage.add.sales.stage': '添加销售阶段',
     'sales.stage.sales.stage': '销售阶段',
+    'sales.stage.input.length200.tip': '最少1个字符,最多200个字符',
     'sales.stage.delete.sales.stage': '确定删除这个销售阶段吗?',
     'sales.stage.signed': '签约',
     'sales.stage.intention': '意向',
@@ -1766,6 +1777,18 @@ var zh_CN = {
     'customer.analysis.maintain': '维护阶段',
     'customer.analysis.add.trend': '新增趋势',
 
+    //运营报告
+    'operation.report.department': '部门',
+    'operation.report.app.delay.user': '延期用户',
+    'operation.report.activity': '活跃度',
+    'operation.report.active.num': '活跃数',
+    'operation.report.total.num': '总数',
+    'operation.report.user.count': '用户数',
+    'operation.report.active': '活跃率',
+    'operation.report.day.active': '日活',
+    'operation.report.week.active': '周活',
+    'operation.report.month.active': '月活',
+
     //用户分析
     'oplate.user.analysis.4': '成员统计',
     'oplate.user.analysis.5': '活跃时间段统计',
@@ -1972,7 +1995,6 @@ var zh_CN = {
     'user.user.info': '开通信息',
     'user.input.remark': '请输入备注',
     'user.complete.ratio': '完成进度',
-    'user.fail.create.realms': '安全域创建失败',
     'user.change.grant.time': '将该用户的授权时间改为从{begin}到{end}。',
     'user.cancel.overdraft': '取消了到期停用。',
     'user.setting.overdraft': '设置了到期停用。',
@@ -2000,7 +2022,6 @@ var zh_CN = {
     'customer.contact.phone': '联系电话',
     'user.user.lists': '用户列表',
     'user.user.applies': '用户申请',
-    'realm.create.realms': '安全域创建',
     'user.account.type': '开户类型',
     'user.open.assets': '开通套数',
     'user.open.customer': '开户客户',
@@ -2275,7 +2296,6 @@ var zh_CN = {
     'item.21': '版本号',
     'item.23': '总价',
     'rightpanel_codetrace': '跟踪代码',
-    'operation.report.new.account.statistic': '新开通用户统计',
     'my_app': '默认',
     'oplate_customer_analysis.customer.stage': '客户阶段统计',
     'user.third.thirdapp.secret.reuqired': '请填写APP Secret',
@@ -2437,7 +2457,7 @@ var zh_CN = {
     'common.ranking': '排名',
     'common.telephone.statistics': '电话量统计',
     'common.ketao.app.telephone.statistics': '客套APP电话量统计',
-    'common.trial.qualified.customer.statistics': '试用合格客户数统计',	'clue.repeat.clue.list': '重复线索',
+    'common.trial.qualified.customer.statistics': '试用合格客户数统计', 'clue.repeat.clue.list': '重复线索',
     'clue.has.no.relative.customer': '没有关联客户的线索',
     'clue.export.clue.list': '导出线索',
     'clue.list.clue.availibility': '无效线索',

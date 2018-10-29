@@ -305,7 +305,7 @@ class BasicData extends React.Component {
                     </div>
                     <div className="basic-info-indestry basic-info-item">
                         <span className="basic-info-label">
-                            {Intl.get('realm.industry', '行业')}:
+                            {Intl.get('common.industry', '行业')}:
                         </span>
                         <BasicEditSelectField
                             width={EDIT_FEILD_WIDTH}
@@ -344,7 +344,7 @@ class BasicData extends React.Component {
                     </div>
                     <div className="basic-info-detail-address basic-info-item">
                         <span className="basic-info-label">
-                            {Intl.get('realm.full.address', '详细地址')}:
+                            {Intl.get('common.full.address', '详细地址')}:
                         </span>
                         <BasicEditInputField
                             width={EDIT_FEILD_WIDTH_LESS}

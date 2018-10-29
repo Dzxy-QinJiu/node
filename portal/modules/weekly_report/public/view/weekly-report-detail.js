@@ -245,7 +245,7 @@ class WeeklyReportDetail extends React.Component {
 
     getRegionOverlayListColumn = () => {
         let columns = [{
-            title: Intl.get('realm.select.address.province', '省份'),
+            title: Intl.get('common.select.address.province', '省份'),
             dataIndex: 'province_name',
             align: 'left',
         }, {

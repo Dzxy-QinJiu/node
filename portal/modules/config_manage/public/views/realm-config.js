@@ -1,11 +1,8 @@
 var React = require('react');
 import RealmConfigStore from '../store/realm-config-store';
 import RealmConfigAction from '../action/realm-config-action';
-import RealmConfigAjax from '../ajax/realm-config-ajax';
-import Spinner from '../../../../components/spinner';
 import { Alert, Icon, Checkbox, Popconfirm, message } from 'antd';
 import { Radio } from 'antd';
-import AlertTimer from '../../../../components/alert-timer';
 import Trace from 'LIB_DIR/trace';
 const RadioGroup = Radio.Group;
 const STRATEGYCONFIRMMSG = Intl.get('config.manage.realm.confirm','您确定要修改安全域密码策略吗？');

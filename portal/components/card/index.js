@@ -1,5 +1,3 @@
-import ContractStatistics from 'CMP_DIR/chart/contract-statistics';
-
 /**
  * Created by wangliping on 2015/12/23.
  */
@@ -74,7 +72,7 @@ class Card extends React.Component {
             iconClass += ' select-icon-stop';
         }
         if (card.createMsg === 'error') {
-            //右上角通知3s后关闭，在通知关闭后再在页面上移除创建失败的安全域card
+            //右上角通知 DELETE_CREATEREALM_DELAYTIME 秒后关闭，在通知关闭后再在页面上移除创建失败的安全域card
             setTimeout(() => {
                 this.props.removeFailRealm(card.taskId);
             }, DELETE_CREATEREALM_DELAYTIME);

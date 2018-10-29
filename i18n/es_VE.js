@@ -33,14 +33,6 @@ var en_VE = {
 
     'menu.config': 'Configuración',//配置
 
-    'menu.realm.analysis': 'Análisis de operación',//运营分析
-
-    'menu.realm.analysis.zone': 'Análisis de región',//地域分析
-
-    'menu.realm.analysis.industry': 'Análisis de industria',//行业分析
-
-    'menu.realm.analysis.establish': 'Start-time Statistics',//开启时间统计
-
     'menu.user.analysis': 'Análisis de operación',//运营分析
 
     'menu.customer.analysis': 'Análisis de operación',//运营分析
@@ -206,8 +198,6 @@ var en_VE = {
 
     'common.secret.app': 'APP con token',//密令APP
 
-    'common.realm.id': 'ID de dominio',//安全域ID
-
     'common.captcha': 'Código de captcha:',//验证码
 
     'common.describe': 'Descripción',//描述
@@ -310,6 +300,13 @@ var en_VE = {
     'common.email.is.used': 'Este Email está ocupado, seleccione otro',//邮箱已被使用"
     'common.email.validate.error': 'Fallo en verificación email',//邮箱校验失败,
     'common.user.lang': 'Idioma',//语言
+    'common.edit.address.placeholder': 'Selecionar dirección por favor',//请选择地址
+    'common.industry': 'Industria',//行业
+    'common.address': 'Dirección',//地址
+    'common.full.address': 'Dirección detallada',//详细地址
+    'common.change.owner.name': 'Nombre',//姓名
+    'common.select.address.province': 'Provincia',//省份
+    'common.all.select': 'Seleccionar todo',//全选
 
     //添加 by zhshj  end
     //公共部分--end
@@ -711,6 +708,13 @@ var en_VE = {
 
     'user.status.immutability': 'Sin cambio', // 不变
 
+    //用户管理-end
+
+    'role.del.role.failed': 'Fallo en eliminar papel',//删除角色失败
+    'authority.auth.api': 'Dirección de servicio ',//服务地址
+    'my.app.change.expire.time.placeholder': 'Seleccionar el vencimiento',//请选择到期时间
+    'my.app.no.app': 'No hay aplicación por el momento', // 暂无应用
+
     //在线用户
     'user.online.all.type': 'Todo', // 全部类型
     'user.online.free': 'Usuario de regalo',
@@ -912,6 +916,7 @@ var en_VE = {
     'user.log.login.fail': 'Falló en consguir la información de inico de sesión.', // 获取登录信息失败
 
     //用户管理---用户审计日志end
+
     //基本资料start
 
     'user.info.log.record.tip': 'Son registros de últimas operaciones, si existe anormalidad,{editpassword} lo antes posible',//以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}
@@ -1128,8 +1133,8 @@ var en_VE = {
     'member.create.time': 'Tiempo de creación',//创建时间
     'user.input.remark': 'Introduzca observación por favor',//请输入备注
     'user.complete.ratio': 'Grado completado de progreso',//完成进度
-    'user.fail.create.realms': 'Fallo en crear el dominio de seguridad',//安全域创建失败
     'sales.stage.sales.stage': 'Etapa de venta',//销售阶段
+    'sales.stage.input.length200.tip': '1≤ Carácteres ≤ 200 ',//最少1个字符,最多200个字符
     'user.user.lists': 'Lista de usuarios',//用户列表
     'user.user.applies': 'Solicitudes de usuario',//用户申请
     'user.change.record': 'Registro de modificación',//变更记录
@@ -1146,7 +1151,6 @@ var en_VE = {
     'user.change.phone.to': 'Modificó el teléfono de usuario a {phone}.',//修改了该用户的电话，改为{phone}。
     'user.change.desc.to': 'Modificó la nota de usuario a {description}.',//修改了该用户的备注，改为{description}。
     'fail.to.get.record': 'Fallo en conseguir el registro de modificaciones del usuario.',//获取用户变更记录失败
-    'realm.create.realms': 'Crear el dominio de seguridad',//安全域创建
     'user.batch.opener': 'El titular de la cuenta',//开户人
     'user.account.type': 'Tipo de la cuenta abierta',//开户类型
     'user.open.assets': 'Cantidad de usuarios abiertos',//开通套数
@@ -1189,7 +1193,6 @@ var en_VE = {
     'user.customer.suggest.reselect': 'Haga clic para volver a seleccionar',//点击重新选择
     'user.customer.suggest.create.customer': 'Crear cliente',//创建客户
     'user.set.single.app': 'Nota: Si desea configurar una única aplicación, por favor seleccione este elemento Cancelar',//注：若想设置单个应用，请取消此项的勾选
-    'authority.search.by.server.address': 'Entrar en el servicio de búsqueda de direcciones',//请输入服务地址搜索
     'user.username.length.tip': 'Longitud nombre de usuario debe ser mayor de 3 y menos de 50 caracteres caracteres',//用户名长度应大于3位小于50位
 
     //重新登录

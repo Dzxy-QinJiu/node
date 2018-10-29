@@ -24,10 +24,6 @@ var en_US = {
     'menu.salesstage': 'Sales Stages',//销售阶段管理
     'menu.salesteam': 'Teams',//团队管理
     'menu.config': 'Configurations',//配置
-    'menu.realm.analysis': 'Operational Analysis',//运营分析
-    'menu.realm.analysis.zone': 'Regional Analysis',//地域分析
-    'menu.realm.analysis.industry': 'Industrial Analysis',//行业分析
-    'menu.realm.analysis.establish': 'Start-time Statistics',//开启时间统计
     'menu.user.analysis': 'Operational Analysis',//运营分析
     'menu.customer.analysis': 'Operational Analysis',//运营分析
     'menu.sales.homepage': 'Sales Homepage',//销售主页
@@ -121,7 +117,6 @@ var en_US = {
     'common.owner': 'Owner',//所有者：
     'common.managers': 'Administrator',//管理员：
     'common.secret.app': 'Secret order APP',//密令APP：
-    'common.realm.id': 'Security Domain ID',//安全域id：
     'common.captcha': 'Captcha',//验证码：
     'common.describe': 'DESCR',//描述：
     'common.time.connector': ' to ',// // ' 至 -'至
@@ -235,6 +230,15 @@ var en_US = {
     'common.callback.person': 'Callback person', // '回访人',
     'common.has.callback': 'Has callbacked', // '已回访',
     'common.callback.customer': 'Callback customer', // '回访客户',
+    'common.edit.address.placeholder': 'please select address', // 请选择地址
+    'common.industry': 'Industry', // 行业
+    'common.address': 'Address', // 地址
+    'common.full.address': 'Full address', // 详细地址
+    'common.change.owner.name': 'Name', // 姓名
+    'common.select.address.province': 'province', // 省份
+    'common.company': 'company', // 公司
+    'common.all.select': 'Select all',//全选
+
     //公共部分--end
     'login.login': 'Login',//登录
     'login.register': 'Register',//注册
@@ -605,6 +609,14 @@ var en_US = {
     'user.permission.show': 'spread particular permission', //'展开具体权限',
     'user.permission.hide': 'collapse particular permission', //'收起具体权限',
     /*用户管理模块-end*/
+    'my.app.no.app': 'no apps', // 暂无应用
+    'my.app.change.expire.time.placeholder': 'please select expire time', // 请选择到期时间
+
+    'role.default.set': 'default',//默认
+    'role.set.default': 'Set default role',//设为默认角色
+    'role.normal.sales': 'Common salesman', //普通销售
+    'role.del.role.failed': 'Failed to delete roles',//删除角色失败
+    'authority.auth.api': 'Service address',//服务地址
 
     //后台管理-成员start
     'member.member': 'Member',//成员
@@ -797,6 +809,7 @@ var en_US = {
     'sales.stage.change.sort': 'Change order',//变更顺序
     'sales.stage.add.sales.stage': 'Add sales stage',//添加销售阶段
     'sales.stage.sales.stage': 'Sales Stage',//销售阶段
+    'sales.stage.input.length200.tip': '1 ~ 200 characters',//最少1个字符,最多200个字符
     'sales.stage.delete.sales.stage': 'Are you sure to delete this sales stage?',//确定删除这个销售阶段麽
     'sales.stage.signed': 'signed',//签约
     'sales.stage.intention': 'intention',//意向
@@ -1741,6 +1754,17 @@ var en_US = {
     'customer.analysis.add.customer': 'New customers',//新增客户@
     'customer.analysis.maintain': 'Maintenance phase',//维护阶段@
     'customer.analysis.add.trend': 'Trend of adding',//新增趋势@
+    //运营报告
+    'operation.report.department': 'department',//部门@
+    'operation.report.app.delay.user': 'Delayed user',//延期用户
+    'operation.report.activity': 'Activity',//活跃度@
+    'operation.report.active.num': 'Active number',//活跃数@
+    'operation.report.total.num': 'Total number',//总数@
+    'operation.report.user.count': 'User number',//用户数@
+    'operation.report.active': 'Activity rate',//活跃率@
+    'operation.report.day.active': 'Active daily',//日活@
+    'operation.report.week.active': 'Active weekly',//周活@
+    'operation.report.month.active': 'Active monthly',//月活@
 
     //用户分析
     'oplate.user.analysis.4': 'Membership statistics',//成员统计@
@@ -1945,7 +1969,6 @@ var en_US = {
     'user.user.info': 'information',//开通信息
     'user.input.remark': 'Please enter your remark',//请输入备注
     'user.complete.ratio': 'Complete schedule',//完成进度
-    'user.fail.create.realms': 'Failed to create this realm',//安全域创建失败
     'user.change.grant.time': 'Change grant timerange from {begin} to {end}',//授权时间改为从{begin}到{end}
     'user.cancel.overdraft': 'Cancel stop when expire',//取消了到期停用。
     'user.setting.overdraft': 'Setting stop when expire',//设置了到期停用。
@@ -1959,7 +1982,6 @@ var en_US = {
     'customer.fail.add.customer.trace': 'Failed to add customer trace list',//增加客户跟踪记录列表失败
     'user.user.lists': 'user lists',//用户列表
     'user.user.applies': 'user applies',//用户申请
-    'realm.create.realms': 'realms creation',//安全域创建
     'user.account.type': 'Account type',//开户类型
     'user.open.assets': 'Open sets',//开通套数
     'user.open.customer': 'Account customers',//开户客户
@@ -2000,7 +2022,6 @@ var en_US = {
     'user.customer.suggest.create.customer': 'Create a customer',//创建客户
     'contract.add.invoice.info': 'Invoice basic information has not been added, you can click on the edit button to add',//发票基本信息尚未添加，可点击后面的编辑按钮进行添加
     'user.set.single.app': 'Note: If you want to set single application, please cancel this check',//注：若想设置单个应用，请取消此项的勾选
-    'authority.search.by.server.address': 'Please search by the service address ',//请输入服务地址搜索
     'user.username.length.tip': 'User name length should be greater than 3 characters and less than 50 characters',//用户名长度应大于3位小于50位
     'user.manage.phone.order': 'Seat number',//座席号
     'user.manage.phone.order.rule': 'Please enter a number less than 7 digits',//请输入小于7位的数字
@@ -2021,7 +2042,6 @@ var en_US = {
     'retry.input.captcha': 'Enter the captcha',//请输入验证码
     'seconds.after.tip': 'after {logoutTime} seconds',//{logoutTime}秒后
     'customer.confirm.trace': 'Are you sure to add these trace content?',//是否添加此跟进内容？
-    'authority.permission.exist': 'This permission name already exists',//该权限名已存在
     'user.login.abnormal': 'Abnormal login',//异常登录
     'user.retry.login': 'Login after disabling. The user\'s {appName} account has been disabled and still trying to login.',//停用后登录。该用户的{appName}账号已经停用，仍尝试登录。
     'user.exception.login': 'Login exception. The user\'s {client_name} account is not logged in the usual location.',//登录地异常。该用户的{client_name}账号，不在常用登录地登录。
@@ -2234,7 +2254,6 @@ var en_US = {
     'item.21': 'Version number',//版本号
     'item.23': 'Total',//总价
     'rightpanel_codetrace': 'Trace code',//跟踪代码
-    'operation.report.new.account.statistic': 'New user statistics',//新开通用户统计
     'my_app': 'Default',//默认
     'oplate_customer_analysis.customer.stage': 'Customer phase statistics',//客户阶段统计
     'user.third.thirdapp.secret.reuqired': 'Please fill in APP secret',//请填写APP Secret
@@ -2271,7 +2290,6 @@ var en_US = {
     'sales.team.add.child.team': 'Add subteam',//添加子团队
     'sales.team.edit.team': 'Edit team',//编辑团队
     'sales.team.del.team': 'Delete team',//删除团队
-    'role.no.set.auth.add': 'No authority, please {add} first',//暂无权限,请先{add}
     'customer.total.record': 'A total of {num} track record',//共{num}条跟进记录
     'call.record.average.call.duration': 'Average personal call length',//人均时长
     'call.record.average.connected': 'Average personal connection number',//人均接通数
