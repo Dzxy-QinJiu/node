@@ -1,11 +1,13 @@
+import ContractStatistics from 'CMP_DIR/chart/contract-statistics';
+
 /**
  * Created by wangliping on 2015/12/23.
  */
 var React = require('react');
 var language = require('../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('./card-es_VE.less');
-}else if (language.lan() == 'zh'){
+} else if (language.lan() === 'zh') {
     require('./card-zh_CN.less');
 }
 var CardItem = require('./cardItem');
@@ -31,10 +33,10 @@ class Card extends React.Component {
     };
 
     showCardInfo = (event) => {
-        Trace.traceEvent(event,'查看应用详情');
+        Trace.traceEvent(event, '查看应用详情');
         var curCard = this.props.curCard;
         //curCard.id =='' 如果是在创建中的安全域card是不能点击的
-        if (event.target.className.indexOf('icon-role-auth-config') >= 0 || curCard.id == '') {
+        if (event.target.className.indexOf('icon-role-auth-config') >= 0 || curCard.id === '') {
             return;
         }
         this.props.showCardInfo(curCard);
@@ -42,7 +44,7 @@ class Card extends React.Component {
 
     showRightFullScreen = (event) => {
         event.stopPropagation();
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-role-auth-config'),'查看应用角色列表和权限列表');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-role-auth-config'), '查看应用角色列表和权限列表');
         this.props.showRightFullScreen(this.props.curCard);
     };
 
@@ -55,7 +57,7 @@ class Card extends React.Component {
 
         for (var key in card) {
             if (card[key] instanceof Object && card[key].showOnCard) {
-                if (key == 'date') {
+                if (key === 'date') {
                     cardItems.push(<CardItem key={key} cardItem={card[key]} noRihtValue={true}/>);
                 } else {
                     cardItems.push(<CardItem key={key} cardItem={card[key]}/>);
@@ -81,7 +83,7 @@ class Card extends React.Component {
         return (
             <div className="card-layout-container " style={{width: this.props.cardWidth}}>
                 <div className="card-box" onClick={this.showCardInfo}>
-                    <div className="card-stop-layer" style={{display: card.status == 0 ? 'block' : 'none'}}>
+                    <div className="card-stop-layer" style={{display: card.status === 0 ? 'block' : 'none'}}>
                         <div className="card-stop-bg"></div>
                         <div className="stop-icon">
                             <ReactIntl.FormattedMessage id="common.stop" defaultMessage="停用"/>
@@ -114,13 +116,25 @@ class Card extends React.Component {
                         <Icon className={iconClass} type="check-circle-o"
                             style={{display: this.props.bulkOpersShow ? 'block' : 'none'}}
                             onClick={this.selectCardEvent}/>
-                        {this.props.type == 'myApp' ? (<div className="iconfont icon-role-auth-config"
-                            onClick={this.showRightFullScreen} title={Intl.get('my.app.role.auth.config.title','设置角色、权限')}></div>) : null}
                     </div>
                 </div>
             </div>
         );
     }
 }
+
+Card.propTypes = {
+    cardWidth: PropTypes.string,
+    curCard: PropTypes.object,
+    isSelect: PropTypes.boolean,
+    unselectCard: PropTypes.func,
+    selectCard: PropTypes.func,
+    showCardInfo: PropTypes.func,
+    showRightFullScreen: PropTypes.func,
+    imgUrl: PropTypes.string,
+    removeFailRealm: PropTypes.func,
+    bulkOpersShow: PropTypes.boolean
+
+};
 
 module.exports = Card;
