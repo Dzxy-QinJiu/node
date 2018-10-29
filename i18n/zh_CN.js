@@ -2728,6 +2728,8 @@ var zh_CN = {
     'clue.check.only.clue.phone': '线索电话唯一性校验失败',
     'leave.apply.apartment.apply': '上级主管',
     'leave.apply.general.apply': '分配销售',
-    'leave.apply.select.assigned.sales': '请选择要分配的销售'
+    'leave.apply.select.assigned.sales': '请选择要分配的销售',
+    'schedule.expired.call.time.at': '于',
+    'schedule.expired.call.in.phone.num': '拨打过您的电话'
 };
 export default zh_CN;
