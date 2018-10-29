@@ -290,6 +290,9 @@ class MonthlyReport extends React.Component {
                     name: 'data_type',
                     value: this.getDataType(),
                     type: 'params'
+                }, {
+                    name: 'statistics_type',
+                    value: 'user',
                 }],
                 argCallback: (arg) => {
                     let query = arg.query;
