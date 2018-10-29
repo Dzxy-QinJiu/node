@@ -37,6 +37,7 @@ class IntegratedClueManage extends React.Component {
             url: '/rest/getIntegrationList',
             type: 'get',
             dateType: 'json',
+            data: {page_size: 100},
             success: (data) => {
                 this.setState({
                     integratedClueList: _.isArray(data.list) ? data.list : [],
@@ -46,7 +47,7 @@ class IntegratedClueManage extends React.Component {
             error: (errorMsg) => {
                 this.setState({
                     isRefreshLoading: false,
-                    getErrMsg: errorMsg.responseJSON
+                    getErrMsg: errorMsg.responseJSON || Intl.get('failed.get.config.integrate.list','获取线索集成列表失败')
                 });
             }
         });

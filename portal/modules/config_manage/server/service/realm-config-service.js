@@ -33,8 +33,8 @@ exports.getRealmStrategy = function(req, res) {
 //获取线索集成列表
 exports.getIntegrationList = function(req, res) {
     return restUtil.authRest.get({
-        url: RealmConfigRestApis.getIntegrationList + '?page_size=100',
+        url: RealmConfigRestApis.getIntegrationList,
         req: req,
         res: res
-    },null);
+    },req.query);
 };
