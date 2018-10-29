@@ -1510,6 +1510,7 @@ var en_US = {
     'active.customer.trends.last.month': 'active customer trends in the last month',//近一月活跃客户趋势
     'effective.customer.activity.rate': 'effective customer activity rate',//有效客户活跃率
     'active.customer.number': 'active customer number',//活跃客户数
+    'inactive.customer.number': 'inactive customer number',//不活跃客户数
     'effective.customer.number': 'efficient customer number',//有效客户数
     'effective.customer.statistics': 'efficient customer statistics',//有效客户统计
     'oplate_customer_analysis.industryCustomerOverlay': 'Trial customer coverage rate of all industries', //'各行业试用客户覆盖率',

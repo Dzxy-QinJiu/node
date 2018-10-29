@@ -765,8 +765,15 @@ class CustomerAnalysis extends React.Component {
                     value: 'day',
                 },
             ],
+            processData: data => {
+                data = _.get(data, 'list') || [];
+                _.each(data, item => {
+                    item.inactive = item.valid - item.active;
+                });
+
+                return data;
+            },
             chartType: 'table',
-            dataField: 'list',
             option: {
                 pagination: false,
                 scroll: {y: 170},
@@ -783,6 +790,10 @@ class CustomerAnalysis extends React.Component {
                     {
                         title: Intl.get('active.customer.number', '活跃客户数'),
                         dataIndex: 'active',
+                    },
+                    {
+                        title: Intl.get('inactive.customer.number', '不活跃客户数'),
+                        dataIndex: 'inactive',
                     },
                     {
                         title: Intl.get('effective.customer.activity.rate', '有效客户活跃率'),

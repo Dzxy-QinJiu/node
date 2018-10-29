@@ -1526,6 +1526,7 @@ var zh_CN = {
     'active.customer.trends.last.month': '近一月活跃客户趋势',
     'effective.customer.activity.rate': '有效客户活跃率',
     'active.customer.number': '活跃客户数',
+    'inactive.customer.number': '不活跃客户数',
     'effective.customer.number': '有效客户数',
     'effective.customer.statistics': '有效客户统计',
     'oplate_customer_analysis.industryCustomerOverlay': '各行业试用客户覆盖率',
