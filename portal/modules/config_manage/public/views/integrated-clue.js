@@ -114,9 +114,9 @@ class IntegratedClueManage extends React.Component {
 
     render() {
         return (
-            <div className="box integrate-clue-list-container" data-tracename="线索集成">
+            <div className="box integrate-clue-list-container" data-tracename="线索同步">
                 <div className="box-title">
-                    {Intl.get('config.integrated.clue.manage', '线索集成')}&nbsp;&nbsp;
+                    {Intl.get('config.integrated.clue.manage', '线索同步')}&nbsp;&nbsp;
                     <span
                         onClick={this.getIntegratedClueList.bind(this)}
                         className="refresh"
