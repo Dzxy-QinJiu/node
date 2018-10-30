@@ -239,7 +239,6 @@ var zh_CN = {
     'common.industry': '行业',
     'common.address': '地址',
     'common.full.address': '详细地址',
-    'common.change.owner.name': '姓名', // 姓名
     'common.select.address.province': '省份', // 省份
     'common.company': '公司', // 公司
     'common.all.select': '全选',

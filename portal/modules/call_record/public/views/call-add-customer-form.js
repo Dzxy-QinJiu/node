@@ -377,7 +377,7 @@ var CallAddCustomerForm = createReactClass({
                             <ReactIntl.FormattedMessage id="call.record.contacts" defaultMessage="联系人" />
                         </div>
                         <FormItem
-                            label={Intl.get('common.change.owner.name', '姓名')}
+                            label={Intl.get('common.name', '姓名')}
                             labelCol={{span: 6}}
                             wrapperCol={{span: 18}}
                             validateStatus={this.renderValidateStyle('contacts0_name')}

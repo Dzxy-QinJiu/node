@@ -578,7 +578,7 @@ class AddCustomerForm extends React.Component {
                                         {getFieldDecorator('contacts0_name', {rules: [{required: false}]})(
                                             <Input
                                                 name="contacts0_name"
-                                                placeholder={Intl.get('common.change.owner.name', '姓名')}
+                                                placeholder={Intl.get('common.name', '姓名')}
                                                 data-tracename="填写联系人姓名"
                                             />
                                         )}

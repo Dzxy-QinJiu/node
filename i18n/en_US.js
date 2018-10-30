@@ -234,7 +234,6 @@ var en_US = {
     'common.industry': 'Industry', // 行业
     'common.address': 'Address', // 地址
     'common.full.address': 'Full address', // 详细地址
-    'common.change.owner.name': 'Name', // 姓名
     'common.select.address.province': 'province', // 省份
     'common.company': 'company', // 公司
     'common.all.select': 'Select all',//全选

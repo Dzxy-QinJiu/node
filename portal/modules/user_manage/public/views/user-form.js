@@ -345,7 +345,7 @@ class UserForm extends React.Component {
                     <GeminiScrollbar className="geminiScrollbar-vertical">
                         <div id="user-add-form">
                             <FormItem
-                                label={Intl.get('common.change.owner.name', '姓名')}
+                                label={Intl.get('common.name', '姓名')}
                                 {...formItemLayout}
                             >
                                 {getFieldDecorator('name', {

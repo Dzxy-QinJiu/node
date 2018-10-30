@@ -304,7 +304,6 @@ var en_VE = {
     'common.industry': 'Industria',//行业
     'common.address': 'Dirección',//地址
     'common.full.address': 'Dirección detallada',//详细地址
-    'common.change.owner.name': 'Nombre',//姓名
     'common.select.address.province': 'Provincia',//省份
     'common.all.select': 'Seleccionar todo',//全选
 
