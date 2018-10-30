@@ -263,11 +263,15 @@ class Crm extends React.Component {
             const from = locationState.from;
 
             if (from === 'sales_home') {
-                const trialQualifiedCustomerIds = locationState.trialQualifiedCustomerIds;
-                const pageSize = trialQualifiedCustomerIds.split(',').length;
-                let params = {
-                    data: JSON.stringify({id: trialQualifiedCustomerIds})
-                };
+                if (analysisType === 'trialQualified') {
+                    const trialQualifiedCustomerIds = locationState.trialQualifiedCustomerIds;
+                    const pageSize = trialQualifiedCustomerIds.split(',').length;
+                    let params = {
+                        data: JSON.stringify({id: trialQualifiedCustomerIds})
+                    };
+                } else if (analysisType === 'activeCustomer') {
+                }
+
                 //设置了关注客户置顶后的处理
                 if (this.state.isConcernCustomerTop) {
                     params = this.handleSortParams(params);

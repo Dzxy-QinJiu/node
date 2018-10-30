@@ -418,6 +418,7 @@ class CustomerAnalysis extends React.Component {
             isShowCustomerTable: true,
             crmLocationState: {
                 from: 'sales_home',
+                analysisType: 'trialQualified',
                 trialQualifiedCustomerIds: customerIds
             }
         });
@@ -736,8 +737,16 @@ class CustomerAnalysis extends React.Component {
         }
     };
 
+    //处理活跃客户数点击事件
     handleActiveCustomerNumClick = (type, name) => {
-        console.log(type,name);
+        console.log(this.props.originSalesTeamTree, this.props.currShowSalesTeam, this.props.currShowSalesMan); return;
+        this.setState({
+            isShowCustomerTable: true,
+            crmLocationState: {
+                from: 'sales_home',
+                analysisType: 'activeCustomer',
+            }
+        });
     };
 
     //获取图表列表
