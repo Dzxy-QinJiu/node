@@ -467,7 +467,7 @@ class AddCustomerForm extends React.Component {
                                     </FormItem>
                                     {this.renderCustomerNameMsg()}
                                     <FormItem
-                                        label={Intl.get('realm.industry', '行业')}
+                                        label={Intl.get('common.industry', '行业')}
                                         id="industry"
                                         {...formItemLayout}
                                     >
@@ -495,7 +495,7 @@ class AddCustomerForm extends React.Component {
                                         <AntcAreaSelection
                                             labelCol="7"
                                             wrapperCol="17"
-                                            label={Intl.get('realm.address', '地址')}
+                                            label={Intl.get('common.address', '地址')}
                                             placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
                                             provName={formData.province}
                                             cityName={formData.city}
@@ -578,7 +578,7 @@ class AddCustomerForm extends React.Component {
                                         {getFieldDecorator('contacts0_name', {rules: [{required: false}]})(
                                             <Input
                                                 name="contacts0_name"
-                                                placeholder={Intl.get('realm.change.owner.name', '姓名')}
+                                                placeholder={Intl.get('common.name', '姓名')}
                                                 data-tracename="填写联系人姓名"
                                             />
                                         )}

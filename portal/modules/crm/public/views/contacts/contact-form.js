@@ -491,7 +491,7 @@ var ContactForm = createReactClass({
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     <FormItem
                         colon={false}
-                        label={Intl.get('realm.change.owner.name', '姓名')}
+                        label={Intl.get('common.name', '姓名')}
                         labelCol={{span: 2}}
                         wrapperCol={{span: 22}}
                     >

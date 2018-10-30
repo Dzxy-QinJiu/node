@@ -9,9 +9,6 @@ var en_US = {
     'weixin.mini.program': 'Mini program',
     'customer.service': 'Customer service',
     //菜单
-    'menu.realm': 'Security Domain',//安全域管理
-    'menu.app': 'Applications',//应用管理
-    'menu.myapp': 'My Applications',//我的应用
     'menu.crm': 'Customers',//客户管理
     'menu.call': 'Call Records',//通话记录
     'menu.trace': 'Trace Records',//跟踪记录
@@ -27,10 +24,6 @@ var en_US = {
     'menu.salesstage': 'Sales Stages',//销售阶段管理
     'menu.salesteam': 'Teams',//团队管理
     'menu.config': 'Configurations',//配置
-    'menu.realm.analysis': 'Operational Analysis',//运营分析
-    'menu.realm.analysis.zone': 'Regional Analysis',//地域分析
-    'menu.realm.analysis.industry': 'Industrial Analysis',//行业分析
-    'menu.realm.analysis.establish': 'Start-time Statistics',//开启时间统计
     'menu.user.analysis': 'Operational Analysis',//运营分析
     'menu.customer.analysis': 'Operational Analysis',//运营分析
     'menu.sales.homepage': 'Sales Homepage',//销售主页
@@ -100,9 +93,9 @@ var en_US = {
     'common.stop': 'Stop',//停用
     'common.nickname': 'Nickname',//昵称
     'common.remark': 'Remarks',//备注
-    'common.disable': 'Disable',//禁用 ————动词，去禁用。 新加的。
+    // 'common.disable': 'Disable',//禁用 ————动词，去禁用。 新加的。
     'common.disabled': 'Disabled',//禁用过的  ———— 已经被禁用的，过去式。
-    'common.enable': 'enable',//启用  ———— 动词，去启用。  新加的
+    // 'common.enable': 'enable',//启用  ———— 动词，去启用。  新加的
     'common.enabled': 'Enabled',//启用过的 ———— 已经被启用，过去式。
     'common.edit.password': 'Change Password',//修改密码
     'common.login.time': 'Time',//时间
@@ -124,7 +117,6 @@ var en_US = {
     'common.owner': 'Owner',//所有者：
     'common.managers': 'Administrator',//管理员：
     'common.secret.app': 'Secret order APP',//密令APP：
-    'common.realm.id': 'Security Domain ID',//安全域id：
     'common.captcha': 'Captcha',//验证码：
     'common.describe': 'DESCR',//描述：
     'common.time.connector': ' to ',// // ' 至 -'至
@@ -238,6 +230,14 @@ var en_US = {
     'common.callback.person': 'Callback person', // '回访人',
     'common.has.callback': 'Has callbacked', // '已回访',
     'common.callback.customer': 'Callback customer', // '回访客户',
+    'common.edit.address.placeholder': 'please select address', // 请选择地址
+    'common.industry': 'Industry', // 行业
+    'common.address': 'Address', // 地址
+    'common.full.address': 'Full address', // 详细地址
+    'common.select.address.province': 'province', // 省份
+    'common.company': 'company', // 公司
+    'common.all.select': 'Select all',//全选
+
     //公共部分--end
     'login.login': 'Login',//登录
     'login.register': 'Register',//注册
@@ -379,7 +379,6 @@ var en_US = {
     'user.time.yesterday': 'Yesterday',//昨天
     'user.time.this.week': 'Will be expired trial users this week',//本周即将到期的试用用户
     'user.time.prev.week': 'Last week',//上周
-    'user.time.this.month': 'This month',//本月
     'user.time.prev.month': 'Last month',//上月
     'user.time.half.year': 'Will be expired formal users in half year',//半年内即将到期的签约用户
     'user.time.half.year1': 'Half year',//半年
@@ -608,69 +607,15 @@ var en_US = {
     'user.permission.show': 'spread particular permission', //'展开具体权限',
     'user.permission.hide': 'collapse particular permission', //'收起具体权限',
     /*用户管理模块-end*/
+    'my.app.no.app': 'no apps', // 暂无应用
+    'my.app.change.expire.time.placeholder': 'please select expire time', // 请选择到期时间
 
-    /*角色管理模块-start*/
-    'role.add.role': 'Add Roles',// 添加角色
-    'role.add.auth': 'Add Privilege',//添加权限
-    'role.no.auth.set': 'no privilege, please {setting}', // 未设置权限，请先{setting}
-    'role.set.auth': 'setting privilege', // 设置权限
-    'role.no.auth.add': 'no privilege, please {add}',//未设置权限，请先添加权限
-    'role.del.role.tip': 'Are you sure to delete this role?',//确定要删除这个角色吗
-    'role.all.hide': 'All fold',//全部收起
-    'role.all.show': 'All unfold',//全部展开
-    'role.no.role.list': 'There is no roles list',//暂无角色列表
-    'role.get.role.list.failed': 'Failed to get role list',//获取角色列表失败
-    'role.del.role.failed': 'Failed to delete roles',//删除角色失败
-    'role.add.role.failed': 'Failed to add roles',//添加角色失败
-    'role.edit.role.failed': 'Failed to modify roles',//修改角色失败
-    'role.role.list': 'Roles List',//角色列表
-    'role.import.role': 'Import roles',//导入角色
-    'role.export.role': 'Export roles',//导出角色
-    'role.template': 'Roles Template', // 《角色模板》
     'role.default.set': 'default',//默认
-    'role.default.del': 'cancel default',//取消默认角色
-    'role.default.get.failed': 'Failed to get default role',//获取默认角色失败
-    'role.default.del.failed': 'Failed to cancel default role',//取消默认角色失败
-    'role.default.set.failed': 'Failed to set default role',//设置默认角色失败
     'role.set.default': 'Set default role',//设为默认角色
     'role.normal.sales': 'Common salesman', //普通销售
-
-    /*角色管理模块-end*/
-    /*权限管理模块-start*/
-    'authority.add.group': 'Add Privilege Group',//添加权限组
-    'authority.del.group': 'Are you sure to delete this privilege group?',//确定要删除这个权限组吗
-    'authority.del.auth': 'Are you sure to delete this privilege',//确定要删除该权限吗
-    'authority.del.select.auth': 'Are you sure to delete selected privileges',//确定要删除选中的权限吗
-    'authority.auth.type': 'privilege type',//权限类型
+    'role.del.role.failed': 'Failed to delete roles',//删除角色失败
     'authority.auth.api': 'Service address',//服务地址
-    'authority.data.auth': 'Data privilege',//数据权限
-    'authority.auth.flag': 'Privilege mark',//权限标识
-    //转移到xxx分组
-    'authority.turn.to': 'move to ',//转移到
-    'authority.auth.group.name': 'Privilege group name',//权限组名
-    'authority.input.length.tip': '1 ~ 200 characters',//最少1个字符,最多200个字符
-    'authority.saving.group.name': 'Is saving group name',//正在保存组名
-    'authority.current.auth': 'Current privilege',//当前权限
-    'authority.all.select': 'Select all',//全选
-    'authority.invert.select': 'Anti-election',//反选
-    'authority.add.new.auth': 'Add a new privilege',//添加一个新权限
-    'authority.need.write.one': 'Required*',//必填一项
-    'authority.need.write.one.api': 'One service address is required',//必填一项服务地址
-    'authority.need.write.one.data': 'One data privilege is required',//必填一项数据权限
-    'authority.auth.name': 'privilege name',//权限名称
-    'authority.group.name': 'group name',//分组名称
-    'authority.add.new.module': 'Add a new privilege',//添加一个权限信息模块
-    'authority.no.auth.list': 'No privilege lists',//暂无权限列表
-    'authority.del.auth.failed': 'Failed to delete the privilege',//删除权限失败
-    'authority.del.group.failed': 'Failed to delete the privilege group',//删除权限组失败
-    'authority.add.auth.failed': 'Failed to add privilege',//添加权限失败
-    'authority.edit.auth.failed': 'Failed to change privilege',//修改权限失败
-    'authority.auth.list': 'Privileges lists',//权限列表
-    'authority.import.auth': 'Import privileges',//导入权限
-    'authority.export.auth': 'Export privileges',//导出权限
-    'authority.template': 'Permissions Template', //《权限模板》
-    'authority.edit.is.save': 'Whether to save the modified permission group name', // 是否保存修改的权限组名
-    /*权限管理模块-end*/
+
     //后台管理-成员start
     'member.member': 'Member',//成员
     'member.search.placeholder': 'username/nickname/phone/email',//用户名/昵称/电话/邮箱
@@ -786,82 +731,6 @@ var en_US = {
     'user.log.single.record': 'View the operation records for nearly three months', // 只能查看近三个月的操作记录
     'user.log.single.get.error': 'Failed to get single audit log',//获取单个审计日志失败
     //用户管理---用户审计日志end
-    //我的应用start
-    'my.app.role.auth.config.title': 'configuration role and permission', // 设置角色、权限
-    'my.app.app.auth.title': 'permission', // 应用权限
-    'my.app.app.secret.key': 'keys', // 密钥
-    'my.app.app.secret.refresh': '{refresh}@',
-    'my.app.app.secret.modal.content': 'Are you sure to refresh the key?', // 确定要刷新密钥吗？
-    'my.app.change.expire.time': 'change expire time', // 修改到期时间
-    'my.app.change.expire.time.error': 'failed to modify the expire time', // 修改应用到期时间失败
-    'my.app.change.expire.time.placeholder': 'please select expire time', // 请选择到期时间
-    'my.app.no.auth': 'no data, {clickTips}', // 暂无数据
-    'my.app.click.add': 'click to add permission', // 点击添加
-    'my.app.auth.method': 'the method of request', // 请求方式
-    'my.app.auth.path': 'the path of request', // 请求路径
-    'my.app.get.app.failed': 'failed to get apps', // 获取我的应用失败
-    'my.app.no.app': 'no apps', // 暂无应用
-    //我的应用end
-    // 安全域start
-    'realm.title': 'security field manage', // 安全域管理
-    'realm.search.placeholder': 'name/domain', //安全域名称/域名
-    'realm.add.realm': 'add security field', // 添加安全域
-    'realm.name': 'domain', // 域名
-    'realm.industry': 'Industry', // 行业
-    'realm.address': 'Address', // 地址
-    'realm.full.address': 'Full address', // 详细地址
-    'realm.change.owner': 'change owner', // 更换所有者
-    'realm.change.owner.title': 'add owner {realname}for security field', // 为安全域{realname}添加新所有者
-    'realm.change.owner.name': 'Name', // 姓名
-    'realm.change.owner.password.placeholder': '6 ~ 18 characters (numbers, letters or symbols)', // 6-18位字符(由数字，字母，符号组成)
-    'realm.change.owner.phone.tip': 'call required or email required', // 电话、邮箱必填一项！
-    'realm.edit.address.placeholder': 'please select address', // 请选择地址
-    'realm.edit.address.detail.placeholder': 'Full address, such as street name, house number and other information', // 详细地址，例如街道名称，门牌号码等信息
-    'realm.select.address.province': 'province', // 省份
-    'realm.select.address.city': 'city', // 城市
-    'realm.select.address.country': 'country', // 县区
-    'realm.select.industry.placeholder': 'please select industry', // 请选择行业!
-    'realm.select.industry1': 'Computer/Internet/communication/electronics', // 计算机/互联网/通信/电子
-    'realm.select.industry2': 'Trade/consumption/manufacture/operation', // 贸易/消费/制造/营运
-    'realm.select.industry3': 'Pharmaceutical/Medical', // 制药/医疗
-    'realm.select.industry4': 'Advertising/Media', // 广告/媒体
-    'realm.select.industry5': 'Real Estate/Construct', // 房地产/建筑
-    'realm.select.industry6': 'Professional services/Education/Training', // 专业服务/教育/培训
-    'realm.select.industry7': 'Service industry', // 服务业
-    'realm.select.industry8': 'Logistics/Transportation', // 物流/运输
-    'realm.select.industry9': 'Energy/Raw materials', // 能源/原材料
-    'realm.select.industry10': 'Government/Nonprofit/Other', // 政府/非盈利机构/其他
-    'realm.disable.modal': 'whether to disable?', // 是否禁用此安全域？
-    'realm.enable.modal': 'whether to enable?', // 是否启用此安全域？
-    'realm.check.realm.name.message': 'Please fill in numbers, letters or connectors, the first letter can not be a connector', // 请输入数字、字母或连接符，首字母不能是连接符
-    'realm.no.realm': 'no security field', // 暂无安全域!
-    'realm.no.match.realm': 'no match security field', // 没有符合条件的安全域!
-    'realm.company': 'company', // 公司
-    'realm.email.host': 'Server Address', // 服务器地址
-    'realm.email.host.message': 'Please enter the mail server address', // 请输入邮件服务器地址
-    'realm.email.port': 'Port', // 端口
-    'realm.email.port.message': 'Please enter the mail server port number', // 请输入邮件服务器端口号
-    'realm.email.protocol': 'The protocol of the send email', // 发送协议
-    'realm.email.protocol.message': 'Please enter the Send Mail Protocol', // 请输入发送邮件协议
-    'realm.email.title': 'Mailbox server configuration information', // 邮箱服务器配置信息
-    'realm.email.edit.title': 'Modify the configuration information for the Mailbox server', // 修改邮箱服务器的配置信息
-    'realm.email.set.title': 'Set the email of server', // 设置邮箱服务器
-    'realm.email.set.error': 'Failed to configure the mailbox server', // 配置邮箱服务器失败
-    'realm.sms.username': 'Please enter the username of sms', // 请输入短信网关用户名
-    'realm.sms.password.message': 'Please enter the password of sms', // 请输入短信网关密码
-    'realm.sms.title': 'SMS server configuration information', // 短信服务器配置信息
-    'realm.sms.edit.title': 'Edit the SMS server configuration information', // 修改短信服务器的配置信息
-    'realm.sms.set.title': 'Set the SMS Server', // 设置短信服务器
-    'realm.sms.set.error': 'Failed to configure the SMS server', // 配置短信服务器失败
-    'realm.wechat.id.label': 'ID',
-    'realm.wechat.id.placeholder': 'Please enter the WeChat public ID', // 请输入微信公众号ID
-    'realm.wechat.secret.label': 'Key', // 密钥
-    'realm.wechat.secret.placeholder': 'Please enter the WeChat public account key', // 请输入微信公众号密钥
-    'realm.wechat.title': 'WeChat public account configuration information', // 微信公众号配置信息
-    'realm.wechat.edit.title': 'Modify the configuration information of the WeChat public account', // 修改微信公众号的配置信息
-    'realm.wechat.set.title': 'Configure the WeChat public account', // 配置微信公众号
-    'realm.wechat.set.error': 'Failed to configure the WeChat public account', // 配置微信公众号失败
-    // 安全域end
     //基本资料start
     'user.info.log.record.tip': 'The following is your operation records recently.{editpassword} if there are       unrecognized logins.',//以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}
     'user.info.login.address': 'Address',//地点
@@ -938,6 +807,7 @@ var en_US = {
     'sales.stage.change.sort': 'Change order',//变更顺序
     'sales.stage.add.sales.stage': 'Add sales stage',//添加销售阶段
     'sales.stage.sales.stage': 'Sales Stage',//销售阶段
+    'sales.stage.input.length200.tip': '1 ~ 200 characters',//最少1个字符,最多200个字符
     'sales.stage.delete.sales.stage': 'Are you sure to delete this sales stage?',//确定删除这个销售阶段麽
     'sales.stage.signed': 'signed',//签约
     'sales.stage.intention': 'intention',//意向
@@ -1006,7 +876,7 @@ var en_US = {
     'config.customer.stage.mange': 'Customer stage',//客户阶段管理
     'config.customer.stage.reload': 'Reload customer stage',//重新获取客户阶段
     'config.no.product': 'There is no product, please add!',//暂无产品，请添加！
-    'config.product.mange': 'Product manage',//产品管理
+    'config.product.manage': 'Product manage',//产品管理
     'config.product.reload': 'Reload product',//重新获取产品
     //配置end
     // 通话记录start
@@ -1053,8 +923,6 @@ var en_US = {
     'call.analysis.map.return': 'Back to previous', // 返回上一级
     'call.analysis.call.title': 'Call information', // 通话信息
     //通话分析-end
-
-
     // 用户审批start
     'user.apply.all': 'All applications',//全部申请
     'user.apply.list': 'Apply List ', //申请列表
@@ -1431,7 +1299,7 @@ var en_US = {
     'crm.order.status.win': 'Win',//赢单
     'crm.order.status.lose': 'Lose',//丢单
     'crm.order.status.won': 'Won',//赢单
-    'crm.order.status. lost': 'Lost',//赢单
+    'crm.order.status.lost': 'Lost',//赢单
     'crm.order.closing': 'Order closing',//订单关闭中
     'crm.order.close.failed': 'Closing the order failure',//关闭订单失败
     'crm.order.no.stage': 'No sales stage',//暂无销售阶段
@@ -1885,67 +1753,17 @@ var en_US = {
     'customer.analysis.maintain': 'Maintenance phase',//维护阶段@
     'customer.analysis.add.trend': 'Trend of adding',//新增趋势@
     //运营报告
-    'operation.report.login.count': 'Login number',//登录人数@
-    'operation.report.app.login': 'Login detail of every application',//各应用登录情况@
-    'operation.report.app.new.account': 'New user',//新开账号@
-    'operation.report.new.account.statistic.': 'New user statistics',//新开账号统计@
-    'operation.report.login.comparison': 'Login of nearly four weeks',//近四周登录情况对比@
-    'operation.report.login.total.time.user.comparison': 'Counts of users online for more than 1 hour of nearly four weeks',//近四周周在线总时长超过1小时的用户数对比@
-    'operation.report.expire.login.comparison': 'Login of nearly four weeks of expired users',//近四周到期用户登录情况对比
-    'operation.report.signed.user.comparison': 'Login of formal users of nearly four weeks',//近四周签约用户登录情况对比@
-    'operation.report.new.open.comparison': 'comparison of new users of nearly four weeks',//近四周新开通用户情况对比@
     'operation.report.department': 'department',//部门@
-    'operation.report.total.login': 'Ⅰ. The overall login',//一、总体登录情况@
-    'operation.report.this.week.total.login.tip': '1. There are {num} users ({lastWeekNum} last week) logined in system this week',//1、本周共有{num}个(上周{lastWeekNum}个)用户登录了应用@
-    'operation.report.login.comparison.chart': '2. The following is comparison of login of nearly four weeks',//2、近四周登录情况对比图如下所示:@
-    'operation.report.user.activity.chart': '3. Until {curTime}, a total of {total} users in system, and this week\'s activity was {percent} ({curData}/{total}). The following is comparison of users activity of nearly four weeks',//3、截止{curTime}，应用总计{total}个用户，本周的活跃度为{percent}({curData}/{total})。近四周的用户活跃度对比图如下所示:@
-    'operation.report.user.activity.comparison': 'Comparison of user activity of nearly four weeks',//近四周用户活跃度对比@
-    'operation.report.app.login.time.comparison': '4.There are {total} users({lastWeekTotal} last week) who online more than 1 hour in this week, accounting for {percent} ({total}/{loginTotal}). The following chart is users online time more than 1 hour in nearly four weeks',//4、本周共有{total}个（上周{lastWeekTotal}个）用户周在线总时长超过1小时，占比为{percent}%({total}/{loginTotal})，近四周各应用周在线总时长超过1小时的用户数对比图如下所示:@
-    'operation.report.user.activity.daily.chart': '5.{startTime} to {endTime}, daily user login for each application, as shown in the following figure:',//5、{startTime}至{endTime},各应用每日用户登录情况如下图所示：
-    'operation.report.user.login.team.table': '6.The departmental distribution of logged in users is shown in the following table:',//6、登录用户的部门分布情况如下表所示：
-    'operation.report.expire.user.login': 'Ⅱ.The logging of expired users',//二、过期用户登录情况@
-    'operation.report.expire.user.login.tip': '1. There are {num} expired users ({lastWeekNum} last week) logging in system',//1、本周共有{num}个(上周{lastWeekNum}个)过期用户登录了应用。@
-    'operation.report.expired.total.login.time.tip': '2.This week a total of {total} users a week online time more than 1 hours: ',//2、本周共有{total}个过期用户周在线总时长超过1小时：
-    'operation.report.app.online.expired.user.count': '{appName}{count}',//{appName}{count}个
-    'operation.report.total.average.login.tip': 'There are {num} expired users ({lastWeekNum} last week) staying for 8 hours in one week averagely, as shown below:',//共有{num}个(上周{lastWeekNum}个)过期用户一周内平均每天登录8个小时以上，具体情况如下表所示:@
-    'operation.report.expired.user.login.comparison': '3. The following is logins of expired users in nearly four weeks',//3、近四周过期用户登录情况对比图如下所示:@
-    'operation.report.expired.login.comparison.chart': '4. Comparison chart of expired users in nearly four weeks',//4、近四周过期用户登录情况对比图@
-    'operation.report.open.account.login': 'Ⅲ. The logining of new trial users',//三、新开通试用登录情况@
-    'operation.report.open.trial.app.distribute': '1. There are {num} trial users({lastWeekNum} last week), as shown below:',//1、本周共开设{num}个(上周{lastWeekNum}个)试用用户，应用分布情况如下图所示：@
-    'operation.report.open.account.statistic': 'New trial users statistics',//新开通试用用户情况统计@
-    'operation.report.open.user.comparison.chart': '2. As shown below is new trial users of nearly four weeks',//2、近四周新开通试用用户情况对比图如下所示:@
-    'operation.report.open.user.comparison': 'Comparison of new trial users of nearly four weeks',//近四周新开通试用用户对比@
-    'operation.report.open.trial.team.tip': '3.The distribution of the new trial users department is shown in the following table',//3、新开通试用用户部门分布情况如下表所示:
-    'operation.report.open.trial.login.tip': '4. There are {count} new trial users ({lastWeekCount} last week) logging, accounting for {percent} ( {count}/{allCount} ), accounting for {lastWeekPercent} ({lastWeekCount}/{lastWeekAllCount}) last week, and department distribution is shown below:',//3、新开通试用用户共登录{count}个（上周{lastWeekCount}个）,占比{percent}({count}/{allCount}),上周占比{lastWeekPercent}({lastWeekCount}/{lastWeekAllCount}),部门分布情况如下表所示:@
-    'operation.report.total.week.login.tip': '5. There are {count} new trial users logining in more than 1 hour in one week,and department distribution is shown below',//4、共有{count}个新开通试用用户周在线总时长超过1小时，部门分布情况如下表所示:@
-    'operation.report.signed.account.login': 'Ⅳ. The login of signed accounts',//四、签约账号登录情况@
-    'operation.report.singed.user.login.percent.tip': '1. There are {count} signed  users ({lastWeekCount} last week) logined in system, accounting for {percent}({count}/{allCount}) of the total login users this week, last week {lastWeekPercent} ({lastWeekCount}/{allCount}).',//本周共有{count}个(上周{lastWeekCount})签约用户登录各应用,占总用户数的{percent}({count}/{allCount}),上周{lastWeekPercent}（{lastWeekCount}/{allCount}）。@
-    'operation.report.app.singed.user.login.tip': 'Among them, {appName}{count}, accounting for {appName} of the total number of contracted users {percent} ({count}/{total}),last week {lastWeekPercent}({lastWeekCount}/{total})',//其中{appName}{count}个，占{appName}总签约用户数的{percent}（count/total）,上周{lastWeekPercent}(lastWeekCount/total）；
-    'operation.report.singed.user.login.table.tip': 'The department distribution of signing user login is shown in the following table:',//签约用户登录情况的部门分布如下表所示：
-    'operation.report.singed.user.login.tip': '2.The following is logins of expired users in nearly four weeks',//2、近四周签约用户登录情况对比图如下所示：@
-    'operation.report.delay.user.login': 'Ⅴ. Delayed user login',//五、新增延期用户登录情况
-    'operation.report.delay.user.app.distribute': '1. This week, there are {num} (last week\'s {lastWeekNum}) delayed users, the application distribution as shown below:',//1、本周新增了{num}个(上周{lastWeekNum}个)延期用户，应用分布情况如下图所示：
-    'operation.report.delay.user.statistic': 'New delayed user statistics',//新增延期用户情况统计
     'operation.report.app.delay.user': 'Delayed user',//延期用户
-    'operation.report.delay.user.comparison.chart': '2. For nearly four weeks, new deferred users are shown in the following diagram:',//2、近四周新增延期用户情况对比图如下所示:',
-    'operation.report.delay.user.comparison': 'New delayed user contrast in recent four weeks',
-    'operation.report.delay.user.team.tip': '3. The distribution of new delayed users is shown in the following table:',//3、新增延期用户部门分布情况如下表所示:',
-    'operation.report.delay.user.login.tip': '4. New delayed user login {count} (last week {lastWeekCount}), accounting for {percent} ({count}/{allCount}), last week, accounting for {lastWeekPercent} ({lastWeekCount}/{lastWeekAllCount}), the Distribution Department is shown in the table:',//4、新增延期用户共登录{count}个（上周{lastWeekCount}个）,占比{percent}({count}/{allCount}),上周占比{lastWeekPercent}({lastWeekCount}/{lastWeekAllCount}),部门分布情况如下表所示:',
-    'operation.report.delay.user.week.login.tip': '5. A total of {count} delayed users, the total online total length of more than 1 hours, the distribution of departments as shown in the table below:',//5、共有{count}个延期用户周在线总时长超过1小时，部门分布情况如下表所示:',
     'operation.report.activity': 'Activity',//活跃度@
-    'operation.report.activity.percent': 'Activity(%)',//活跃度(%)@
     'operation.report.active.num': 'Active number',//活跃数@
-    'operation.report.active.count': 'Active number(unit)',//活跃数(个)@
     'operation.report.total.num': 'Total number',//总数@
-    'operation.report.total.count': 'Total number(unit)',//总数(个)@
     'operation.report.user.count': 'User number',//用户数@
     'operation.report.active': 'Activity rate',//活跃率@
     'operation.report.day.active': 'Active daily',//日活@
     'operation.report.week.active': 'Active weekly',//周活@
     'operation.report.month.active': 'Active monthly',//月活@
-    'operation.report.app.login.statistic': 'Login statistics of every application ',//各应用登录统计@
-    'operation.report.time.duration': 'Until {time}',//至{time}为止@
-    'operation.report.activity.unit': 'Activity(%)',//''活跃度(%)',
+
     //用户分析
     'oplate.user.analysis.4': 'Membership statistics',//成员统计@
     'oplate.user.analysis.5': 'Active period statistics',//活跃时间段统计@
@@ -1989,12 +1807,6 @@ var en_US = {
     'oplate.user.analysis.loginDays': 'login days',//'用户访问天数',
     'oplate.user.analysis.loginTimes': 'login times',//'用户在线时间',
     'oplate.user.analysis.averageLoginTimes': 'average login times',//'平均在线时长',
-    //安全域分析-开启时间统计
-    'oplate_bd_analysis_realm_establish.5': 'Total number of this security domain',//当前安全域开通总数@
-    'oplate_bd_analysis_realm_establish.6': 'Total number of security domains',//安全域开通总数@
-    'oplate_bd_analysis_realm_establish.7': 'the latest week',//近一周@
-    'oplate_bd_analysis_realm_establish.8': 'the latest month',//近一月@
-    'oplate_bd_analysis_realm_establish.9': 'the latest year',//近一年@
     //安全域分析-行业统计
     'oplate_bd_analysis_realm_industry.6': 'Number',//个数@
     'oplate_bd_analysis_realm_industry.7': 'Proportion',//占比@
@@ -2034,6 +1846,7 @@ var en_US = {
     'errorcode.21': 'Failed to apply to open user',//申请开通用户失败
     'errorcode.22': 'Not your customers, can not apply for a user',//不是您的客户，不能申请用户
     'errorcode.25': 'The phone number has been used, please use other phone number',//该手机号已被使用，请用其他手机号
+    'errorcode.26': 'The email has been used,please use other email',//该邮箱已被使用，请使用其他邮箱
     'errorcode.28': 'Failed to edit phone',//修改手机号失败
     'errorcode.29': 'Failed to edit mailbox',//修改邮箱失败
     'errorcode.30': 'The username has been taken',//用户名已被使用
@@ -2155,7 +1968,6 @@ var en_US = {
     'user.user.info': 'information',//开通信息
     'user.input.remark': 'Please enter your remark',//请输入备注
     'user.complete.ratio': 'Complete schedule',//完成进度
-    'user.fail.create.realms': 'Failed to create this realm',//安全域创建失败
     'user.change.grant.time': 'Change grant timerange from {begin} to {end}',//授权时间改为从{begin}到{end}
     'user.cancel.overdraft': 'Cancel stop when expire',//取消了到期停用。
     'user.setting.overdraft': 'Setting stop when expire',//设置了到期停用。
@@ -2169,7 +1981,6 @@ var en_US = {
     'customer.fail.add.customer.trace': 'Failed to add customer trace list',//增加客户跟踪记录列表失败
     'user.user.lists': 'user lists',//用户列表
     'user.user.applies': 'user applies',//用户申请
-    'realm.create.realms': 'realms creation',//安全域创建
     'user.account.type': 'Account type',//开户类型
     'user.open.assets': 'Open sets',//开通套数
     'user.open.customer': 'Account customers',//开户客户
@@ -2195,7 +2006,7 @@ var en_US = {
     'fail.add.customer.trace': 'Failed to add customer trace list',//增加客户跟踪记录列表失败
     'contact.phone': 'Contact number',//联系电话
     'customer.visit': 'visit',//拜访
-    'customer.phone.system': 'phone system',//电话系统
+    'common.phone.system': 'phone system',//电话系统
     'customer.ketao.app': 'ketao app',//客套app
     'customer.other': 'other',//其他
     'data.selector.none': 'none',//无
@@ -2210,7 +2021,6 @@ var en_US = {
     'user.customer.suggest.create.customer': 'Create a customer',//创建客户
     'contract.add.invoice.info': 'Invoice basic information has not been added, you can click on the edit button to add',//发票基本信息尚未添加，可点击后面的编辑按钮进行添加
     'user.set.single.app': 'Note: If you want to set single application, please cancel this check',//注：若想设置单个应用，请取消此项的勾选
-    'authority.search.by.server.address': 'Please search by the service address ',//请输入服务地址搜索
     'user.username.length.tip': 'User name length should be greater than 3 characters and less than 50 characters',//用户名长度应大于3位小于50位
     'user.manage.phone.order': 'Seat number',//座席号
     'user.manage.phone.order.rule': 'Please enter a number less than 7 digits',//请输入小于7位的数字
@@ -2231,7 +2041,6 @@ var en_US = {
     'retry.input.captcha': 'Enter the captcha',//请输入验证码
     'seconds.after.tip': 'after {logoutTime} seconds',//{logoutTime}秒后
     'customer.confirm.trace': 'Are you sure to add these trace content?',//是否添加此跟进内容？
-    'authority.permission.exist': 'This permission name already exists',//该权限名已存在
     'user.login.abnormal': 'Abnormal login',//异常登录
     'user.retry.login': 'Login after disabling. The user\'s {appName} account has been disabled and still trying to login.',//停用后登录。该用户的{appName}账号已经停用，仍尝试登录。
     'user.exception.login': 'Login exception. The user\'s {client_name} account is not logged in the usual location.',//登录地异常。该用户的{client_name}账号，不在常用登录地登录。
@@ -2264,7 +2073,6 @@ var en_US = {
     'call.record.some.customer': 'This number has {num} corresponding customers',//此号码对应{num}个客户
     'call.record.contact.phone': 'contact phone',//联系号码
     'call.record.getting.tag.lists': 'Getting the tag list',//正在获取标签列表
-    'app.get.app.key.failed': 'Failed to get piwik information',//获取piwik信息失败
     'app.insert.code': 'We recommend that you insert the following code into the <head> tag.',//我们建议您将下面的代码插入到<head>标签中。
     'call.record.product.feedback': 'Product feedback',//产品反馈
     'call.record.add.product.feedback': 'Add product feedback',//添加产品反馈
@@ -2407,6 +2215,7 @@ var en_US = {
     'sales.frontpage.login.after.stop': 'Login after deactivation',//停用后登录
     'sales.frontpage.login.recently': 'Customers logged in {X} days',//近{X}日登录的客户
     'sales.frontpage.has.repeat.customer': 'You have duplicate customers',//您有重复的客户
+
     'sales.frontpage.schedule.has.finished': 'Has finished',//完成了
     'sales.frontpage.appilleage.login': 'User login during deactivation',//停用期间用户登录情况
     'sales.frontpage.concerned.login': 'Login in nearly {X} days ',//近{X}天登录情况
@@ -2428,7 +2237,7 @@ var en_US = {
     'common.sales.data.no.data': 'No such information',//暂无此类信息
     'common.batch.sales.target': 'Change team sales goals in bulk',//设置团队销售目标
     'common.batch.self.sales.target': 'Change personal sales goals in bulk',//批量设置个人销售目标
-
+    //缺失补充start
     'user.third.thirdapp.platform.reuqired': 'Please select or fill in the application platform',//请选择或填写应用平台
     'call.record.top.failed': 'Failed to get TOP10 call duration',//获取通话时长TOP10失败
     'config.manage.get.realm.failed': 'Failed to get password policy',//获取密码策略失败
@@ -2445,7 +2254,6 @@ var en_US = {
     'item.21': 'Version number',//版本号
     'item.23': 'Total',//总价
     'rightpanel_codetrace': 'Trace code',//跟踪代码
-    'operation.report.new.account.statistic': 'New user statistics',//新开通用户统计
     'my_app': 'Default',//默认
     'oplate_customer_analysis.customer.stage': 'Customer phase statistics',//客户阶段统计
     'user.third.thirdapp.secret.reuqired': 'Please fill in APP secret',//请填写APP Secret
@@ -2482,7 +2290,6 @@ var en_US = {
     'sales.team.add.child.team': 'Add subteam',//添加子团队
     'sales.team.edit.team': 'Edit team',//编辑团队
     'sales.team.del.team': 'Delete team',//删除团队
-    'role.no.set.auth.add': 'No authority, please {add} first',//暂无权限,请先{add}
     'customer.total.record': 'A total of {num} track record',//共{num}条跟进记录
     'call.record.average.call.duration': 'Average personal call length',//人均时长
     'call.record.average.connected': 'Average personal connection number',//人均接通数
@@ -2553,7 +2360,6 @@ var en_US = {
     'sales.home.no.show.frontpage': 'After this clue is processed, it will not be displayed on the homepage.',//本条线索处理完毕后，将不在首页展示
     'analysis.weekly.report': 'Weekly report',//周报分析
     'appEdit.basicConig': 'basic config',//'基本配置',
-    'back.openApp': 'Open app',//开通应用
     'back.openApp.range': 'range of open-app',//'开通范围',
     'back.openApp.apply': 'apply', //'申请开通',
     'back.openApp.tip.success': 'open successed',//'开通成功',
@@ -2598,8 +2404,8 @@ var en_US = {
     'clue.has.no.handle': 'Not processed yet',//暂未处理
     'clue.set.invalid': 'Invalid judgment',//判定无效
     'clue.cancel.set.invalid': 'Cancel invalid',//取消无效
-    'annalysis.sales.weekly.report': 'Sales weekly report',//销售周报
-    'annalysis.sales.monthly.report': 'Sales monthly report',//销售月报
+    'analysis.sales.weekly.report': 'Sales weekly report',//销售周报
+    'analysis.sales.monthly.report': 'Sales monthly report',//销售月报
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式

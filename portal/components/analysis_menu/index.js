@@ -7,16 +7,12 @@ const TopNav = require('CMP_DIR/top-nav');
 var UserData = require('../../public/sources/user-data');
 var moduleTextMap = {
     'oplate_user_analysis': Intl.get('sales.user.analysis', '用户分析'),
-    'analysis/realm': Intl.get('menu.analysis_realm','安全域分析'),
     'oplate_customer_analysis': Intl.get('customer.analysis', '客户分析'),
     'weekly_report_analysis': Intl.get('analysis.sales.weekly.report', '销售周报'),
     'monthly_report_analysis': Intl.get('analysis.sales.monthly.report', '销售月报')
 };
 var urlTextMap = {
     '/analysis/user': Intl.get('sales.user.analysis', '用户分析'),
-    '/analysis/realm/zone': Intl.get('menu.analysis_realm','安全域分析'),
-    '/analysis/realm/industry': Intl.get('menu.analysis_realm','安全域分析'),
-    '/analysis/realm/establish': Intl.get('menu.analysis_realm','安全域分析'),
     '/analysis/customer': Intl.get('customer.analysis', '客户分析'),
     '/analysis/weekly_report': Intl.get('analysis.sales.weekly.report', '销售周报'),
     '/analysis/monthly_report': Intl.get('analysis.sales.monthly.report', '销售月报')

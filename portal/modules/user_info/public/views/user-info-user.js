@@ -328,7 +328,7 @@ class UserInfo extends React.Component{
                     {hasPrivilege('GET_MANAGED_REALM') || hasPrivilege('GET_MEMBER_SELF_INFO') ? (
                         <div className="user-info-item">
                             <span>
-                                <ReactIntl.FormattedMessage id="realm.company" defaultMessage="公司"/>：</span>
+                                <ReactIntl.FormattedMessage id="common.company" defaultMessage="公司"/>：</span>
                             {this.renderRealm()}
                         </div>
                     ) : null}

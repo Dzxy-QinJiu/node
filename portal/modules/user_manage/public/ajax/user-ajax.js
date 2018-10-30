@@ -231,7 +231,6 @@ exports.getSalesGoals = function(queryObj) {
     return Deferred.promise();
 };
 //设置销售目标或者提成比例
-//获取销售目标和提成比例
 exports.setSalesGoals = function(queryObj) {
     var Deferred = $.Deferred();
     $.ajax({

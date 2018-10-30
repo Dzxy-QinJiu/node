@@ -13,7 +13,8 @@ var notyCloseTimeoutMap = {};
 var batchPushEmitter = require('../utils/emitters').batchPushEmitter;
 //批量操作完成后，自动关闭的延迟时间（ms）
 const BATCH_FINISH_AUTOCLOSE_TIMEOUT = 4000;
-import { storageUtil } from 'ant-utils';
+import {storageUtil} from 'ant-utils';
+
 const session = storageUtil.session;
 //批量操作监听器
 /**
@@ -34,8 +35,6 @@ const session = storageUtil.session;
  *     taskStatus:"success"                                     //任务状态（success成功）
  *
  */
-//安全域异步创建
-const TASK_REALM_CREATE = 'task_realm_create';
 function batchOperateListener(data) {
     //只在用户管理界面，显示批量操作推送
     var path = window.location.pathname;
@@ -45,15 +44,7 @@ function batchOperateListener(data) {
     //判断当前页面是否是要处理的页面
     var taskParams = getTaskParamByTaskId(taskId);
     //调用页面JS的emitter让业务代码完成后续更新
-    if (data.type == TASK_REALM_CREATE) {
-        //创建安全域，只有running等于0即后端推送完成后才向前端推送数据
-        if (data.running == 0) {
-            batchPushEmitter.emit(`batchtask.${data.type}`, data, taskParams);
-        }
-
-    } else {
-        batchPushEmitter.emit(`batchtask.${data.type}`, data, taskParams);
-    }
+    batchPushEmitter.emit(`batchtask.${data.type}`, data, taskParams);
 
     //如果taskId不存在，则不进行处理
     if (!getTaskIdExist(taskId)) {
@@ -65,41 +56,29 @@ function batchOperateListener(data) {
         return;
     }
     //当类型为批量操作，一直有弹框，或者是创建安全域创建完成且失败的时候有弹框
-    if (data.type != TASK_REALM_CREATE || (data.type == TASK_REALM_CREATE && data.running == 0 && data.failed != 0)) {
-        //不同的类型，展示内容不同
-        //拼出不同title和content
-        if (data.type == TASK_REALM_CREATE) {
-            handleBatchCreateRealm(data);
-        } else {
-            handleBatchOperation(data);
-        }
-    }
+    //不同的类型，展示内容不同
+    //拼出不同title和content
+    handleBatchOperation(data);
 }
-//批量操作安全域，只有错误的情况下有提示,只会将notify提示框渲染一次
-function handleBatchCreateRealm(data) {
-    var content = '';
-    var title = `${data.tasks[0].taskDefine}${Intl.get('user.fail.create.realms','安全域创建失败')}`;
-    var taskId = data.taskId;
-    updateNotifyContentOnce(title,content,taskId);
-}
+
 //除了创建安全域的批量操作（如用户，客户），开始任务时渲染notify提示框，如果有错误时，再次更新渲染错误提示内容
 function handleBatchOperation(data) {
     var content = '';
     var title = '';
     var operate_type = data.typeText;
     var taskId = data.taskId;
-    content = Intl.get('user.complete.ratio','完成进度') + `:${data.total - data.running}/${data.total}`;
-    title = Intl.get('user.batch.operation','批量操作');
+    content = Intl.get('user.complete.ratio', '完成进度') + `:${data.total - data.running}/${data.total}`;
+    title = Intl.get('user.batch.operation', '批量操作');
     if (operate_type) {
         title += `-${operate_type}`;
     }
-    updateNotifyContentGeneral(title,content,taskId,data);
+    updateNotifyContentGeneral(title, content, taskId, data);
 
 }
 
 //只渲染一次提示框中的内容
-function updateNotifyContentOnce(title,content,taskId) {
-    renderNotify(title,content,taskId);
+function updateNotifyContentOnce(title, content, taskId) {
+    renderNotify(title, content, taskId);
     clearTimeout(notyCloseTimeoutMap[taskId]);
     notyCloseTimeoutMap[taskId] = setTimeout(() => {
         notify.close();
@@ -107,14 +86,14 @@ function updateNotifyContentOnce(title,content,taskId) {
 }
 
 //更新两次note中的内容
-function updateNotifyContentGeneral(title,content,taskId,data) {
-    renderNotify(title,content,taskId);
+function updateNotifyContentGeneral(title, content, taskId, data) {
+    renderNotify(title, content, taskId);
     if (data.running === 0) {
         var errTip = '';
         //获取已经存在的通知节点
         var notify = NotificationMap[taskId];
         //如果存在创建失败的任务列表，将错误提示都展示出来
-        if (data.failedTasks && data.failedTasks.length !== 0){
+        if (data.failedTasks && data.failedTasks.length !== 0) {
             data.failedTasks.forEach(function(failedTask) {
                 failedTask.taskDetail && (errTip += failedTask.taskDetail.remark + '<br/>');
             });
@@ -129,8 +108,9 @@ function updateNotifyContentGeneral(title,content,taskId,data) {
         }, BATCH_FINISH_AUTOCLOSE_TIMEOUT);
     }
 }
+
 //首次渲染或者更新notify中的内容
-function renderNotify(title,content,taskId) {
+function renderNotify(title, content, taskId) {
     //获取已经存在的通知节点
     var notify = NotificationMap[taskId];
     //已经存在的通知只是更新内容
@@ -171,24 +151,25 @@ const SESSION_STORAGE_TASKID = 'batch_operation_taskid_list';
  *  //在哪个界面才进行处理
  *  urlPath : '/user/list'
  */
-function saveTaskParamByTaskId(taskId , params , taskConfig) {
+function saveTaskParamByTaskId(taskId, params, taskConfig) {
     var sessionStorageKey = TASK_PARAMS_PRE + taskId;
-    var cloneParams = $.extend(true,{},params);
+    var cloneParams = $.extend(true, {}, params);
     taskConfig = taskConfig || {};
     cloneParams.taskConfig = taskConfig;
     var jsonStr = JSON.stringify(cloneParams);
-    session.set(sessionStorageKey , jsonStr);
+    session.set(sessionStorageKey, jsonStr);
 }
+
 //按照taskid获取任务参数
 function getTaskParamByTaskId(taskId) {
     var sessionStorageKey = TASK_PARAMS_PRE + taskId;
     var sessionItem = session.get(sessionStorageKey);
-    if(!sessionItem) {
+    if (!sessionItem) {
         return null;
     }
     try {
         return JSON.parse(sessionItem);
-    } catch(e){
+    } catch (e) {
         return null;
     }
 }
@@ -196,53 +177,56 @@ function getTaskParamByTaskId(taskId) {
 //检测taskId是否存在(sessionStorage)
 function getTaskIdExist(taskId) {
     var taskIdList = session.get(SESSION_STORAGE_TASKID);
-    if(!taskIdList) {
+    if (!taskIdList) {
         return false;
     }
     try {
         taskIdList = JSON.parse(taskIdList);
-    } catch(e){
+    } catch (e) {
         return false;
     }
     return taskIdList.indexOf(taskId) >= 0;
 }
+
 //从taskId列表中移除taskId(sessionStorage)
 function removeTaskIdFromList(taskId) {
     var taskIdList = session.get(SESSION_STORAGE_TASKID);
-    if(!taskIdList) {
+    if (!taskIdList) {
         return false;
     }
     try {
         taskIdList = JSON.parse(taskIdList);
-    } catch(e){
+    } catch (e) {
         return false;
     }
-    taskIdList = _.filter(taskIdList , (id) => id !== taskId);
+    taskIdList = _.filter(taskIdList, (id) => id !== taskId);
     var jsonStr = JSON.stringify(taskIdList);
-    session.set(SESSION_STORAGE_TASKID,jsonStr);
+    session.set(SESSION_STORAGE_TASKID, jsonStr);
     return true;
 }
+
 //向任务列表中添加taskId(sessionStorage)
 function addTaskIdToList(taskId) {
     var taskIdList = session.get(SESSION_STORAGE_TASKID);
-    if(!taskIdList) {
+    if (!taskIdList) {
         taskIdList = [];
     } else {
         try {
             taskIdList = JSON.parse(taskIdList);
-        } finally{
-            if(!_.isArray(taskIdList)) {
+        } finally {
+            if (!_.isArray(taskIdList)) {
                 taskIdList = [];
             }
         }
     }
-    if(taskIdList.indexOf(taskId) < 0) {
+    if (taskIdList.indexOf(taskId) < 0) {
         taskIdList.push(taskId);
     }
     var jsonStr = JSON.stringify(taskIdList);
-    session.set(SESSION_STORAGE_TASKID,jsonStr);
+    session.set(SESSION_STORAGE_TASKID, jsonStr);
     return true;
 }
+
 //向任务列表中添加taskId
 exports.addTaskIdToList = addTaskIdToList;
 //批量操作监听器

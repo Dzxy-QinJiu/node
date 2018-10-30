@@ -353,7 +353,7 @@ var CrmBatchChange = createReactClass({
     doChangeTerritory: function() {
         let territoryObj = this.state.territoryObj;
         if (!territoryObj.city && !territoryObj.county && !territoryObj.province) {
-            BatchChangeActions.setUnSelectDataTip(Intl.get('realm.edit.address.placeholder', '请选择地址'));
+            BatchChangeActions.setUnSelectDataTip(Intl.get('common.edit.address.placeholder', '请选择地址'));
             return;
         }
         BatchChangeActions.setLoadingState(true);
@@ -741,7 +741,7 @@ var CrmBatchChange = createReactClass({
                 <AntcDropdown
                     ref="changeIndustry"
                     content={changeBtns.industry}
-                    overlayTitle={Intl.get('realm.industry', '行业')}
+                    overlayTitle={Intl.get('common.industry', '行业')}
                     isSaving={this.state.isLoading}
                     overlayContent={this.renderIndustryBlock()}
                     handleSubmit={this.handleSubmit}
@@ -765,7 +765,7 @@ var CrmBatchChange = createReactClass({
                 <AntcDropdown
                     ref="changeAddress"
                     content={changeBtns.address}
-                    overlayTitle={Intl.get('realm.address', '地址')}
+                    overlayTitle={Intl.get('common.address', '地址')}
                     isSaving={this.state.isLoading}
                     overlayContent={this.renderAddressBlock()}
                     handleSubmit={this.handleSubmit}

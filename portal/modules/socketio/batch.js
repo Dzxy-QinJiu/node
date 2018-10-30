@@ -29,8 +29,6 @@ function getOperateTextMap(lang){
         crm_batch_change_industry: backendIntl.get('crm.20','变更行业'),//变更行业
         crm_batch_change_address: backendIntl.get('crm.21','变更地域'),//变更地域
         crm_batch_change_level: backendIntl.get('crm.administrative.level.change', '变更行政级别'),//变更行政级别
-        //异步创建安全域
-        task_realm_create: backendIntl.get('realm.create.realms','安全域创建')//安全域创建
     };
 }
 

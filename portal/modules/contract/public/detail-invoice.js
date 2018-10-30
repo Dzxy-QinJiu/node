@@ -241,7 +241,7 @@ const DetailInvoice = createReactClass({
                             </FormItem>
                             <FormItem
                                 {...formItemLayout}
-                                label={Intl.get('realm.address', '地址')}
+                                label={Intl.get('common.address', '地址')}
                             >
                                 <Input
                                     value={this.state.formData.address}
@@ -315,7 +315,7 @@ const DetailInvoice = createReactClass({
                                 <span className="field-name"><ReactIntl.FormattedMessage id="contract.50"
                                     defaultMessage="开户行"/></span>：<span
                                     className="filed-value">{invoiceDetail.opening_bank}</span><br/>
-                                <span className="field-name"><ReactIntl.FormattedMessage id="realm.address"
+                                <span className="field-name"><ReactIntl.FormattedMessage id="common.address"
                                     defaultMessage="地址"/></span>：<span
                                     className="filed-value">{invoiceDetail.address}</span><br/>
                                 <span className="field-name"><ReactIntl.FormattedMessage id="common.phone"

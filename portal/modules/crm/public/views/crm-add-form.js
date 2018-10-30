@@ -423,7 +423,7 @@ var CRMAddForm = createReactClass({
                     {this.renderCustomerNameMsg()}
                     <FormItem
                         {...formItemLayout}
-                        label={Intl.get('realm.industry', '行业')}
+                        label={Intl.get('common.industry', '行业')}
                         id="industry"
                         required={true}
                         validateStatus={this.renderValidateStyle('industry')}
@@ -471,7 +471,7 @@ var CRMAddForm = createReactClass({
                         provName={formData.province} cityName={formData.city}
                         countyName={formData.county} updateLocation={this.updateLocation}/>
                     <FormItem
-                        label={Intl.get('realm.address', '地址')}
+                        label={Intl.get('common.address', '地址')}
                         {...formItemLayout}
                     >
                         <Input name="address" value={formData.address}
@@ -497,7 +497,7 @@ var CRMAddForm = createReactClass({
                         {Intl.get('call.record.contacts', '联系人')}
                     </div>
                     <FormItem
-                        label={Intl.get('realm.change.owner.name', '姓名')}
+                        label={Intl.get('common.name', '姓名')}
                         {...formItemLayout}
                         validateStatus={this.renderValidateStyle('contacts0_name')}
                         help={status.contacts0_name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.contacts0_name.errors && status.contacts0_name.errors.join(','))}

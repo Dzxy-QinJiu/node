@@ -20,7 +20,7 @@ const processForTrace = function(item) {
                     break;
                 case 'phone':
                     traceObj.iconClass = 'icon-contact-phone';
-                    traceObj.title = Intl.get('customer.phone.system', '电话系统');
+                    traceObj.title = Intl.get('common.phone.system', '电话系统');
                     traceObj.traceDsc = (!item.contact_name && !item.dst) ? Intl.get('customer.contact.customer', '联系客户') : item.contact_name || '';
                     break;
                 case 'app':

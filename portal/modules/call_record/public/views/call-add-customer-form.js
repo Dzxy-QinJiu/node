@@ -334,7 +334,7 @@ var CallAddCustomerForm = createReactClass({
                         </FormItem>
                         {this.renderCustomerNameMsg()}
                         <FormItem
-                            label={Intl.get('realm.industry', '行业')}
+                            label={Intl.get('common.industry', '行业')}
                             id="industry"
                             labelCol={{span: 6}}
                             wrapperCol={{span: 18}}
@@ -377,7 +377,7 @@ var CallAddCustomerForm = createReactClass({
                             <ReactIntl.FormattedMessage id="call.record.contacts" defaultMessage="联系人" />
                         </div>
                         <FormItem
-                            label={Intl.get('realm.change.owner.name', '姓名')}
+                            label={Intl.get('common.name', '姓名')}
                             labelCol={{span: 6}}
                             wrapperCol={{span: 18}}
                             validateStatus={this.renderValidateStyle('contacts0_name')}

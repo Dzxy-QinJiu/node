@@ -209,7 +209,7 @@ class DynamicAddDelCustomers extends React.Component {
                 />
                 <FormItem
                     className="form-item-label"
-                    label={Intl.get('realm.address', '地址')}
+                    label={Intl.get('common.address', '地址')}
                     {...formItemLayout}
                 >
                     {getFieldDecorator(`customers[${key}].address`,{initialValue: curCustomer.address })(

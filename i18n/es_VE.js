@@ -7,12 +7,6 @@ var en_VE = {
     //system
     'service.not.available': 'Lo siento,el servidor no está disponible por ahora,reinténtelo más tarde.',
     //菜单
-    'menu.realm': 'Administración de dominio',//安全域管理
-
-    'menu.app': 'Administración de aplicación',//应用管理
-
-    'menu.myapp': 'Mi app',//我的应用
-
     'menu.crm': 'Administración de clientes',//客户管理
 
     'menu.call': 'Registro de llamadas',//通话记录
@@ -38,14 +32,6 @@ var en_VE = {
     'menu.salesteam': 'Administración de equipos',//团队管理
 
     'menu.config': 'Configuración',//配置
-
-    'menu.realm.analysis': 'Análisis de operación',//运营分析
-
-    'menu.realm.analysis.zone': 'Análisis de región',//地域分析
-
-    'menu.realm.analysis.industry': 'Análisis de industria',//行业分析
-
-    'menu.realm.analysis.establish': 'Start-time Statistics',//开启时间统计
 
     'menu.user.analysis': 'Análisis de operación',//运营分析
 
@@ -212,8 +198,6 @@ var en_VE = {
 
     'common.secret.app': 'APP con token',//密令APP
 
-    'common.realm.id': 'ID de dominio',//安全域ID
-
     'common.captcha': 'Código de captcha:',//验证码
 
     'common.describe': 'Descripción',//描述
@@ -316,6 +300,12 @@ var en_VE = {
     'common.email.is.used': 'Este Email está ocupado, seleccione otro',//邮箱已被使用"
     'common.email.validate.error': 'Fallo en verificación email',//邮箱校验失败,
     'common.user.lang': 'Idioma',//语言
+    'common.edit.address.placeholder': 'Selecionar dirección por favor',//请选择地址
+    'common.industry': 'Industria',//行业
+    'common.address': 'Dirección',//地址
+    'common.full.address': 'Dirección detallada',//详细地址
+    'common.select.address.province': 'Provincia',//省份
+    'common.all.select': 'Seleccionar todo',//全选
 
     //添加 by zhshj  end
     //公共部分--end
@@ -717,6 +707,13 @@ var en_VE = {
 
     'user.status.immutability': 'Sin cambio', // 不变
 
+    //用户管理-end
+
+    'role.del.role.failed': 'Fallo en eliminar papel',//删除角色失败
+    'authority.auth.api': 'Dirección de servicio ',//服务地址
+    'my.app.change.expire.time.placeholder': 'Seleccionar el vencimiento',//请选择到期时间
+    'my.app.no.app': 'No hay aplicación por el momento', // 暂无应用
+
     //在线用户
     'user.online.all.type': 'Todo', // 全部类型
     'user.online.free': 'Usuario de regalo',
@@ -731,109 +728,6 @@ var en_VE = {
     'user.online.modal.tip': 'Si quiere cerrar la sesión del usuario?',
     'user.online.total': 'En total,{number} usuarios están en línea',
     /*客户-end*/
-    /*角色管理模块-start*/
-    'role.add.role': 'Agregar papel',//添加角色
-    'role.add.auth': 'Agregar por favor', // 添加权限
-    'role.no.auth.set': 'Configura la autorización{setting}', // 未设置权限，请先{setting}
-
-    'role.set.auth': 'primero por favor', // 设置权限
-
-    'role.no.auth.add': 'Agregue la autorización {add}',//未设置权限，请先添加权限
-
-    'role.no.set.auth.add': 'Agregue la autorización{add}',// 暂无权限,请先添加权限 *****
-
-    'role.del.role.tip': '¿Si quiere eliminar este papel?',//确定要删除这个角色吗
-
-    'role.all.hide': 'Minimizar',//全部收起 
-
-    'role.all.show': 'Ampliar',//全部展开 
-
-    'role.no.role.list': 'No hay lista de papeles por el momento',//暂无角色列表 
-
-    'role.get.role.list.failed': 'Fallo en conseguir la lista de papeles',//获取角色列表失败
-
-    'role.del.role.failed': 'Fallo en eliminar papel',//删除角色失败 
-
-    'role.add.role.failed': 'Fallo en agregar papel',//添加角色失败 
-
-    'role.edit.role.failed': 'Fallo en modificar papel',//修改角色失败 
-
-    'role.role.list': 'Lista de papel',//角色列表 
-
-    'role.import.role': 'Importar papel',//导入角色 
-
-    'role.export.role': 'Exportar papel',//导出角色 
-
-    'role.template': 'plantilla de roles',
-    /*角色管理模块-end*/
-
-    /*权限管理模块-start*/
-
-    'authority.add.group': 'Agregar organización de autorización',//添加权限组
-
-    'authority.del.group': '¿Si quiere eliminar este organización de autorización?',//确定要删除这个权限组吗
-
-    'authority.del.auth': '¿Si quiere eliminar la autorización?',//确定要删除该权限吗 
-
-    'authority.del.select.auth': '¿Si quiere eliminar la autorización seleccionada?',//确定要删除选中的权限吗 
-
-    'authority.auth.type': 'Tipo de autorización',//权限类型 
-
-    'authority.auth.api': 'Dirección de servicio ',//服务地址 
-
-    'authority.data.auth': 'Autorización de datos',//数据权限 
-
-    'authority.auth.flag': 'Marca de autorización',//权限标识 
-
-    //转移到xxx分组
-
-    'authority.turn.to': 'Trasladar a',//转移到 
-
-    'authority.auth.group.name': 'Nombre de organización de autorización',//权限组名
-
-    'authority.input.length.tip': '1≤ Carácteres ≤ 200 ',//最少1个字符,最多200个字符   
-
-    'authority.saving.group.name': 'Guardando el nombre de organización',//正在保存组名
-
-    'authority.current.auth': 'La autorización actual',//当前权限 
-
-    'authority.all.select': 'Seleccionar todo',//全选 
-
-    'authority.invert.select': 'Seleccionar lo contrario',//反选 
-
-    'authority.add.new.auth': 'Agregar una nueva autorización',//添加一个新权限 
-
-    'authority.need.write.one': 'Rellene una opción por lo menos* ',//必填一项
-
-    'authority.need.write.one.api': 'Rellene una dirección de servicio',//必填一项服务地址
-
-    'authority.need.write.one.data': 'Rellene una autorización de datos',//必填一项数据权限
-
-    'authority.auth.name': 'Nombre de autorización',//权限名称 
-
-    'authority.group.name': 'Nombre de organización',//分组名称
-
-    'authority.add.new.module': 'Agregar un módulo de informaciones sobre autorización',//添加一个权限信息模块 
-
-    'authority.no.auth.list': 'No hay lista de autorizaciones por el momento',//暂无权限列表
-
-    'authority.del.auth.failed': 'Fallo en eliminar autorización',//删除权限失败 
-
-    'authority.del.group.failed': 'Fallo en eliminar organización de autorización',//删除权限组失败
-
-    'authority.add.auth.failed': 'Fallo en agregar autorización',//添加权限失败 
-
-    'authority.edit.auth.failed': 'Fallo en modificar autorización',//修改权限失败 
-
-    'authority.auth.list': 'Lista de autorización',//权限列表 
-
-    'authority.import.auth': 'Importar autorización',//导入权限 
-
-    'authority.export.auth': 'Exportar autorización',//导出权限 
-
-    'authority.template': 'plantilla de permisos de', //《权限模板》
-    /*权限管理模块-end*/
-
     //后台管理-成员start
 
     'member.member': 'Miembro',//成员 
@@ -1021,100 +915,6 @@ var en_VE = {
     'user.log.login.fail': 'Falló en consguir la información de inico de sesión.', // 获取登录信息失败
 
     //用户管理---用户审计日志end
-
-    //我的应用start
-    'my.app.role.auth.config.title': 'Configurar papel y autorización',//设置角色、权限
-
-    'my.app.app.auth.title': 'Autorización de aplicación',//应用权限
-
-    'my.app.app.secret.key': 'Llave',//密钥 
-
-    'my.app.app.secret.refresh': 'Renovar',//刷新 
-
-    'my.app.app.secret.modal.content': '¿Si quiere renovar la llave?',//确定要刷新密钥吗？
-
-    'my.app.change.expire.time': 'Modificar el vencimiento',//修改到期时间 
-
-    'my.app.change.expire.time.error': 'Fallo en modificar el vencimiento',//修改应用到期时间失败 
-
-    'my.app.change.expire.time.placeholder': 'Seleccionar el vencimiento',//请选择到期时间 
-
-    'my.app.no.auth': 'No hay datos por el momento,{clickTips}',//暂无数据, 
-
-    'my.app.click.add': 'Haga clic para agregar', // 点击添加
-
-    'my.app.auth.method': 'Manera de petición',//请求方式 
-
-    'my.app.auth.path': 'Ruta de petición',//请求路径 
-
-    'my.app.get.app.failed': 'Fallo en conseguir mis aplicaciones',//获取我的应用失败 
-
-    'my.app.no.app': 'No hay aplicación por el momento', // 暂无应用
-    //我的应用end
-
-    // 安全域start
-
-    'realm.title': 'Administración de dominio de seguridad',//安全域管理 
-
-    'realm.search.placeholder': 'Nombre de dominio',//安全域名称/域名 
-
-    'realm.add.realm': 'Agregar dominio',//添加安全域 
-
-    'realm.name': 'Nombre de dominio',//域名 
-
-    'realm.industry': 'Industria',//行业 
-
-    'realm.address': 'Dirección',//地址 
-
-    'realm.change.owner': 'Cambiar director',//更换所有者 
-
-    'realm.change.owner.title': 'Agregar nuevo director para dominio',//为安全域{realname}添加新所有者 
-
-    'realm.change.owner.name': 'Nombre',//姓名 
-
-    'realm.change.owner.password.placeholder': '6-18 carácteres(números,letras,símbolos)',//6-18位字符(由数字，字母，符号组成)
-
-    'realm.change.owner.phone.tip': 'Se requiere móvil o email',//电话、邮箱必填一项！
-
-    'realm.edit.address.placeholder': 'Selecionar dirección por favor',//请选择地址 
-
-    'realm.edit.address.detail.placeholder': 'Dirección detallada,por ejemplo nombre de calle,número de vivienda.etc',//详细地址，例如街道名称，门牌号码等信息 
-
-    'realm.select.address.province': 'Provincia',//省份 
-
-    'realm.select.address.city': 'Ciudad',//城市 
-
-    'realm.select.address.country': 'parroquía',//县区 
-
-    'realm.select.industry.placeholder': 'Seleccione industria por favor',//请选择行业! 
-
-    'realm.select.industry1': 'Informática/Internet/Comunicación/Electrónico',//计算机/互联网/通信/电子 
-
-    'realm.select.industry2': 'Negocio/Consumo/Producción/Operación',//贸易/消费/制造/营运 
-
-    'realm.select.industry3': 'Farmacéutico/Salud',//制药/医疗 
-
-    'realm.select.industry4': 'Publicidad/Medio',//广告/媒体 
-
-    'realm.select.industry5': 'Inmoviliario/Construcción',//房地产/建筑 
-
-    'realm.select.industry6': 'Servicios profesionales/Educación/Capacitación',//专业服务/教育/培训 
-
-    'realm.select.industry7': 'Industria de servicios ',//服务业 
-
-    'realm.select.industry8': 'Logístico/Transportación',//物流/运输 
-
-    'realm.select.industry9': 'Energía/Materia prima',//能源/原材料 
-
-    'realm.select.industry10': 'Gobierno/Organización no lucrativa/otros',//政府/非盈利机构/其他 
-
-    'realm.disable.modal': '¿Si quiere deshabilitar el dominio?',//是否禁用此安全域？
-
-    'realm.enable.modal': '¿Si quiere habilitar el dominio?',//是否启用此安全域？
-
-    'realm.check.realm.name.message': 'Introduzca número, letra o guión,el primer carácter no puede ser guión',//请输入数字、字母或连接符，首字母不能是连接符 
-
-    // 安全域end
 
     //基本资料start
 
@@ -1332,8 +1132,8 @@ var en_VE = {
     'member.create.time': 'Tiempo de creación',//创建时间
     'user.input.remark': 'Introduzca observación por favor',//请输入备注
     'user.complete.ratio': 'Grado completado de progreso',//完成进度
-    'user.fail.create.realms': 'Fallo en crear el dominio de seguridad',//安全域创建失败
     'sales.stage.sales.stage': 'Etapa de venta',//销售阶段
+    'sales.stage.input.length200.tip': '1≤ Carácteres ≤ 200 ',//最少1个字符,最多200个字符
     'user.user.lists': 'Lista de usuarios',//用户列表
     'user.user.applies': 'Solicitudes de usuario',//用户申请
     'user.change.record': 'Registro de modificación',//变更记录
@@ -1350,7 +1150,6 @@ var en_VE = {
     'user.change.phone.to': 'Modificó el teléfono de usuario a {phone}.',//修改了该用户的电话，改为{phone}。
     'user.change.desc.to': 'Modificó la nota de usuario a {description}.',//修改了该用户的备注，改为{description}。
     'fail.to.get.record': 'Fallo en conseguir el registro de modificaciones del usuario.',//获取用户变更记录失败
-    'realm.create.realms': 'Crear el dominio de seguridad',//安全域创建
     'user.batch.opener': 'El titular de la cuenta',//开户人
     'user.account.type': 'Tipo de la cuenta abierta',//开户类型
     'user.open.assets': 'Cantidad de usuarios abiertos',//开通套数
@@ -1371,12 +1170,11 @@ var en_VE = {
     'user.open.multilogin': 'Ha abierto inicio de sesión por múltiples usuarios',//开启了多人登录。
     'user.total.data': 'En total {number} usuarios',//共{number}个用户
     'user.setting.roles': 'Opciones',//设置角色
-    'fail.create.realms': 'Failed to create this realm',//安全域创建失败
     'rightpanel_app_auth': 'Las competencias', // 应用权限
     'data.selector.none': 'Ninguno',//无
     'contact.phone': 'Número de contacto',//联系电话
     'customer.visit': 'Visitar',//拜访
-    'customer.phone.system': 'Sistema de teléfono',//电话系统
+    'common.phone.system': 'Sistema de teléfono',//电话系统
     'customer.ketao.app': 'ketao',//客套
     'customer.other': 'Otros',//其他
     'customer.visit.customer': 'Los clientes que visitan',//拜访客户
@@ -1393,7 +1191,6 @@ var en_VE = {
     'user.customer.suggest.reselect': 'Haga clic para volver a seleccionar',//点击重新选择
     'user.customer.suggest.create.customer': 'Crear cliente',//创建客户
     'user.set.single.app': 'Nota: Si desea configurar una única aplicación, por favor seleccione este elemento Cancelar',//注：若想设置单个应用，请取消此项的勾选
-    'authority.search.by.server.address': 'Entrar en el servicio de búsqueda de direcciones',//请输入服务地址搜索
     'user.username.length.tip': 'Longitud nombre de usuario debe ser mayor de 3 y menos de 50 caracteres caracteres',//用户名长度应大于3位小于50位
 
     //重新登录

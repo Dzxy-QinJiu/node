@@ -483,7 +483,7 @@ class CrmFilterPanel extends React.Component {
                 }))
             },
             {
-                groupName: Intl.get('realm.industry', '行业'),
+                groupName: Intl.get('common.industry', '行业'),
                 groupId: 'industry',
                 singleSelect: true,
                 data: _.drop(industryArray).map(x => ({

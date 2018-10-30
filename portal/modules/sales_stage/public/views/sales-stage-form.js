@@ -100,7 +100,7 @@ class SalesStageForm extends React.Component {
                             required: true,
                             min: 1,
                             max: 200,
-                            message: Intl.get('authority.input.length.tip', '最少1个字符,最多200个字符')
+                            message: Intl.get('sales.stage.input.length200.tip', '最少1个字符,最多200个字符')
                         }]
                     })(
                         <TextArea autosize={{minRows: 2, maxRows: 6}}
