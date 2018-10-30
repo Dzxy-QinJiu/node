@@ -22,10 +22,13 @@ import ApplyViewDetail from './view/apply-view-detail';
 var SalesOpportunityApplyUtils = require('./utils/sales-oppotunity-utils');
 let userData = require('../../../public/sources/user-data');
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 class SalesOpportunityApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加销售机会申请面板
         teamTreeList: [],
+        getErrMsg: '',//获取节点失败
+        processConfig: {},
         ...SalesOpportunityApplyStore.getState()
     };
 
@@ -43,7 +46,31 @@ class SalesOpportunityApplyManagement extends React.Component {
             });
         });
         SalesOpportunityApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
+        this.getProcessConfig();
+
     }
+    getProcessConfig = () => {
+        if (hasPrivilege('GET_MY_WORKFLOW_LIST')){
+            $.ajax({
+                url: '/rest/get/sales_opportunity_apply/process',
+                type: 'get',
+                dateType: 'json',
+                data: {type: 'businessopportunities'},
+                success: (data) => {
+                    this.setState({
+                        processConfig: _.isObject(data) ? data : {},
+                    });
+                },
+                error: (errorMsg) => {
+                    this.setState({
+                        processConfig: '',
+                        getErrMsg: errorMsg.responseJSON || Intl.get('failed.get.config.integrate.list','获取线索集成列表失败')
+                    });
+                }
+            });
+        }
+
+    };
 
     updateSelectedItem = (message) => {
         if(message && message.status === 'success'){
@@ -200,7 +227,12 @@ class SalesOpportunityApplyManagement extends React.Component {
     };
 
     render() {
-        var hasAddPriviledge = userData.getUserData().team_id && _.get(this.state,'teamTreeList[0].parent_group') ? true : false;
+        //如果是蚁坊域，必须要有团队和上级团队，
+        //如果是识微域，不需要有团队和上级团队信息
+        //区分蚁坊域和识微域的区别是跟据process_key
+        var isEefungRealm = _.get(this, 'state.processConfig.process_key') === 'BusinessOpportunitiesforSale1' ? true : false;
+        var isCiviwRealm = _.get(this, 'state.processConfig.process_key') === 'BusinessOpportunitiesforSale2' ? true : false;
+        var hasAddPriviledge = (isEefungRealm && userData.getUserData().team_id && _.get(this.state,'teamTreeList[0].parent_group')) || isCiviwRealm ? true : false;
         var addPanelWrap = classNames({'show-add-modal': this.state.showAddApplyPanel});
         var applyListHeight = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
         var applyType = commonMethodUtil.getApplyStatusDscr(this.state.applyListType);

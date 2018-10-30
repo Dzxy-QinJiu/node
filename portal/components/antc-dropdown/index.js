@@ -61,10 +61,6 @@ class AntcDropdown extends React.Component {
                         <span>{this.props.overlayTitle}</span>
                     </div>
                     <div className="dropdown-btn-container">
-                        { this.props.unSelectDataTip ? (
-                            <span className="un-select-data-tip">
-                                * {this.props.unSelectDataTip}
-                            </span>) : null}
                         {this.props.isSaving && this.props.btnAtTop ? <Icon type="loading"/> : null}
                         {this.props.btnAtTop ?
                             <span>
@@ -82,6 +78,10 @@ class AntcDropdown extends React.Component {
                     {this.props.overlayContent}
                 </div>
                 {!this.props.btnAtTop ? <div className="btn-container">
+                    {this.props.unSelectDataTip ? (
+                        <div className="un-select-data-tip">
+                                * {this.props.unSelectDataTip}
+                        </div>) : null}
                     <Button className="inline-block icon-close"
                         onClick={this.handleCancel.bind(this)} data-tracename="点击关闭按钮">{this.props.cancelTitle}
 

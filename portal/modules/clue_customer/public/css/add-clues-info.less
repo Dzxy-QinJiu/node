@@ -1,3 +1,4 @@
+@import "../../../../public/css/common-variables";
 //添加客户面板样式
 .right-pannel-default.sales-clue-add-container {
   height: 100%;
@@ -8,6 +9,12 @@
     padding: 20px 0 20px 0;
     .sales-clue-form{
       margin-right: 20px;
+    }
+    .clue-name-repeat,.clue-name-errmsg{
+      color:@error_tips_color;
+      padding-bottom:10px;
+      padding-left:100px;
+
     }
     form .ant-form-item{
       width:100%;

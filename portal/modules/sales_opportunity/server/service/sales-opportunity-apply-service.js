@@ -21,6 +21,8 @@ var restApis = {
     getApplyDetailById: '/rest/base/v1/workflow/detail',
     //获取批注和添加批注
     getOrAddApplyComments: '/rest/base/v1/workflow/comments',
+    //获取某个审批节点
+    getProcessConfig: '/rest/base/v1/workflow/process/config'
 };
 exports.restUrls = restApis;
 //获取所有的销售机会申请
@@ -91,6 +93,15 @@ exports.getSalesOpportunityApplyStatusById = function(req, res) {
     return restUtil.authRest.get(
         {
             url: restApis.getApplyStatusById,
+            req: req,
+            res: res
+        }, req.query);
+};
+//获取某个审批节点
+exports.getProcessConfig = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getProcessConfig,
             req: req,
             res: res
         }, req.query);

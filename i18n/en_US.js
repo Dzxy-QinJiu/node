@@ -2711,6 +2711,7 @@ var en_US = {
     'schedule.expired.call.in.phone.num': 'dial your phone number',//拨打过您的电话
     'config.integrated.clue.manage': 'Clue integration',//线索同步
     'config.integrated.clue.no.list': 'There is no clue integration',//暂无线索集成
-    'failed.get.config.integrate.list': 'Failed to get integrated lists'//获取线索集成列表失败
+    'failed.get.config.integrate.list': 'Failed to get integrated lists',//获取线索集成列表失败
+    'sales.opportunity.assign.department.owner': 'Please select the department head to be assigned'//请选择要分配的部门主管
 };
 export default en_US;
