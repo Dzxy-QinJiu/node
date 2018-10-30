@@ -124,15 +124,13 @@ class Card extends React.Component {
 Card.propTypes = {
     cardWidth: PropTypes.string,
     curCard: PropTypes.object,
-    isSelect: PropTypes.boolean,
+    isSelect: PropTypes.bool,
     unselectCard: PropTypes.func,
     selectCard: PropTypes.func,
     showCardInfo: PropTypes.func,
     showRightFullScreen: PropTypes.func,
     imgUrl: PropTypes.string,
     removeFailRealm: PropTypes.func,
-    bulkOpersShow: PropTypes.boolean
-
+    bulkOpersShow: PropTypes.bool
 };
-
 module.exports = Card;
