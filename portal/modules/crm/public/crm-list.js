@@ -282,17 +282,22 @@ class Crm extends React.Component {
                         name: 'last_login_time'
                     };
 
+                    //如果是要查看活跃客户，则将查询时间段设为首页的跳转过来时的查询时间段
                     if (condition.activeType === 'active') {
                         rangParams.from = condition.startTime;
                         rangParams.to = condition.endTime;
+                    //否则，查询最后登录时间截止到首页的跳转过来时的查询时间段的开始时间，来查出不活跃客户
+                    //这样查询不太准确，目前由于接口不支持查询不在某个时间段的数据，所以还没有更好的方式
                     } else {
                         rangParams.to = condition.startTime;
                     }
 
                     rangParams = [rangParams];
 
+                    //如果是按团队查询
                     if (condition.teamId) {
                         paramsData.sales_team_id = condition.teamId;
+                    //否则是按成员查询
                     } else {
                         paramsData.user_name = condition.name;
                     }

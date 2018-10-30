@@ -745,6 +745,7 @@ class CustomerAnalysis extends React.Component {
         return chart;
     };
 
+    //活跃客户数渲染函数
     activeCustomerNumRender = (type, text, record) => {
         if (parseInt(text) === 0) {
             return <span>{text}</span>;
@@ -783,7 +784,9 @@ class CustomerAnalysis extends React.Component {
             //当前筛选条件团队的子团队为整个团队树的子团队
             curConditionTeamChild =getLeafNodes(teamTree, 'child_groups'); 
         }
+
         //如果当前筛选条件有子团队，说明此时表格中的每行对应一个团队
+        //否则，说明此时表格中的每行对应一个成员
         if (curConditionTeamChild) {
             //根据当前行的名称查找对应的团队
             const team = _.find(curConditionTeamChild, teamItem => teamItem.group_name === name);
@@ -844,6 +847,7 @@ class CustomerAnalysis extends React.Component {
             processData: data => {
                 data = _.get(data, 'list') || [];
                 _.each(data, item => {
+                    //计算不活跃客户数，并加入数据集中
                     item.inactive = item.valid - item.active;
                 });
 
