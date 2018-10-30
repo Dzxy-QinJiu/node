@@ -34,6 +34,22 @@ var AppUserManage = require('MOD_DIR/app_user_manage/public');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 const showTypeConstant = constantUtil.SHOW_TYPE_CONSTANT;
 
+//获取叶子节点
+function getLeafNodes(obj, key) {
+    let leafNodes = [];
+    const child = obj[key];
+
+    if (child) {
+        _.each(child, item => {
+            leafNodes = leafNodes.concat(getLeafNodes(item, key));
+        });
+    } else {
+        leafNodes.push(obj);
+    }
+
+    return leafNodes;
+}
+
 //客户分析
 class CustomerAnalysis extends React.Component {
     static propTypes = {
@@ -733,18 +749,55 @@ class CustomerAnalysis extends React.Component {
         if (parseInt(text) === 0) {
             return <span>{text}</span>;
         } else {
-            return <span style={{cursor: 'pointer'}} onClick={this.handleActiveCustomerNumClick.bind(this, type, record.name)}>{text}</span>;
+            //把数量转为整数
+            const num = parseInt(text);
+
+            return <span style={{cursor: 'pointer'}} onClick={this.handleActiveCustomerNumClick.bind(this, type, record.name, num)}>{text}</span>;
         }
     };
 
     //处理活跃客户数点击事件
-    handleActiveCustomerNumClick = (type, name) => {
-        console.log(this.props.originSalesTeamTree, this.props.currShowSalesTeam, this.props.currShowSalesMan); return;
+    handleActiveCustomerNumClick = (type, name, num) => {
+        //查询条件
+        let condition = {
+            activeType: type,
+            name,
+            num
+        };
+
+        //团队树
+        const teamTree = this.props.originSalesTeamTree;
+        //当前筛选条件团队
+        const curConditionTeam = this.props.currShowSalesTeam;
+        //当前筛选条件团队的子团队
+        let curConditionTeamChild = [];
+
+        //如果当前筛选条件团队不为空
+        if (curConditionTeam) {
+            //获取当前筛选条件团队的子团队
+            curConditionTeamChild = curConditionTeam.child_groups; 
+        //否则
+        } else {
+            //当前筛选条件团队的子团队为整个团队树的子团队
+            curConditionTeamChild = getLeafNodes(teamTree, 'child_groups'); 
+        }
+        //如果当前筛选条件有子团队，说明此时表格中的每行对应一个团队
+        if (curConditionTeamChild) {
+            //根据当前行的名称查找对应的团队
+            const team = _.find(curConditionTeamChild, teamItem => teamItem.group_name === name);
+
+            if (team) {
+                //条件中加入团队id
+                condition.teamId = team.group_id;
+            }
+        }
+
         this.setState({
             isShowCustomerTable: true,
             crmLocationState: {
                 from: 'sales_home',
                 analysisType: 'activeCustomer',
+                condition
             }
         });
     };

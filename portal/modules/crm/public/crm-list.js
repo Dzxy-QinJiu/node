@@ -262,14 +262,28 @@ class Crm extends React.Component {
         } else if (!_.isEmpty(locationState)) {
             const from = locationState.from;
 
+            //如果是从首页跳转过来的
             if (from === 'sales_home') {
-                if (analysisType === 'trialQualified') {
+                let pageSize = 20;
+                let params = {};
+
+                //如果是从首页试用合格客户统计跳转过来的
+                if (locationState.analysisType === 'trialQualified') {
                     const trialQualifiedCustomerIds = locationState.trialQualifiedCustomerIds;
-                    const pageSize = trialQualifiedCustomerIds.split(',').length;
-                    let params = {
-                        data: JSON.stringify({id: trialQualifiedCustomerIds})
-                    };
-                } else if (analysisType === 'activeCustomer') {
+                    pageSize = trialQualifiedCustomerIds.split(',').length;
+                    params.data = JSON.stringify({id: trialQualifiedCustomerIds});
+                //如果是从首页有效客户统计跳转过来的
+                } else if (locationState.analysisType === 'activeCustomer') {
+                    const condition = locationState.condition;
+                    pageSize = condition.num;
+                    let paramsData = {};
+
+                    if (condition.teamId) {
+                        paramsData.sales_team_id = condition.teamId;
+                    } else {
+                    }
+
+                    params.data = JSON.stringify(paramsData);
                 }
 
                 //设置了关注客户置顶后的处理
