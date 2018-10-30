@@ -463,9 +463,9 @@ class CallRecordAnalyis extends React.Component {
             title: Intl.get('sales.home.total.connected', '总接通数'),
             width: num_col_width,
             dataIndex: 'totalAnswer',
-            key: 'total_answer',
+            key: 'callout_success',
             sorter: function(a, b) {
-                return a.totalAnswer - b.totalAnswer;
+                return a.calloutSuccess - b.calloutSuccess;
             },
             className: 'has-filter table-data-align-right'
         }, {
