@@ -133,7 +133,7 @@ class Crm extends React.Component {
             batchChangeShow: _this.state && _this.state.batchChangeShow || false,
             selectedCustomer: this.getSelectedCustomer(list),
             sorter: _this.state && _this.state.sorter || {
-                field: 'last_contact_time',
+                field: 'start_time',
                 order: 'descend'
             },
             condition: _this.state && _this.state.condition || {},
