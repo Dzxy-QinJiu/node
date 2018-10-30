@@ -58,7 +58,7 @@ const CALL_STATUS_MAP = {
 // 通话类型
 const CALL_TYPE_MAP = {
     'all': Intl.get('common.all', '全部'),
-    'phone': Intl.get('customer.phone.system', '电话系统'),
+    'phone': Intl.get('common.phone.system', '电话系统'),
     'app': Intl.get('customer.ketao.app', '客套app'),
     'visit': Intl.get('customer.visit', '拜访'),
     'call_back': Intl.get('common.callback', '回访'),

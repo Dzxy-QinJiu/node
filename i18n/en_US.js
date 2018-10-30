@@ -93,9 +93,9 @@ var en_US = {
     'common.stop': 'Stop',//停用
     'common.nickname': 'Nickname',//昵称
     'common.remark': 'Remarks',//备注
-    'common.disable': 'Disable',//禁用 ————动词，去禁用。 新加的。
+    // 'common.disable': 'Disable',//禁用 ————动词，去禁用。 新加的。
     'common.disabled': 'Disabled',//禁用过的  ———— 已经被禁用的，过去式。
-    'common.enable': 'enable',//启用  ———— 动词，去启用。  新加的
+    // 'common.enable': 'enable',//启用  ———— 动词，去启用。  新加的
     'common.enabled': 'Enabled',//启用过的 ———— 已经被启用，过去式。
     'common.edit.password': 'Change Password',//修改密码
     'common.login.time': 'Time',//时间
@@ -379,7 +379,6 @@ var en_US = {
     'user.time.yesterday': 'Yesterday',//昨天
     'user.time.this.week': 'Will be expired trial users this week',//本周即将到期的试用用户
     'user.time.prev.week': 'Last week',//上周
-    'user.time.this.month': 'This month',//本月
     'user.time.prev.month': 'Last month',//上月
     'user.time.half.year': 'Will be expired formal users in half year',//半年内即将到期的签约用户
     'user.time.half.year1': 'Half year',//半年
@@ -877,7 +876,7 @@ var en_US = {
     'config.customer.stage.mange': 'Customer stage',//客户阶段管理
     'config.customer.stage.reload': 'Reload customer stage',//重新获取客户阶段
     'config.no.product': 'There is no product, please add!',//暂无产品，请添加！
-    'config.product.mange': 'Product manage',//产品管理
+    'config.product.manage': 'Product manage',//产品管理
     'config.product.reload': 'Reload product',//重新获取产品
     //配置end
     // 通话记录start
@@ -1300,7 +1299,7 @@ var en_US = {
     'crm.order.status.win': 'Win',//赢单
     'crm.order.status.lose': 'Lose',//丢单
     'crm.order.status.won': 'Won',//赢单
-    'crm.order.status. lost': 'Lost',//赢单
+    'crm.order.status.lost': 'Lost',//赢单
     'crm.order.closing': 'Order closing',//订单关闭中
     'crm.order.close.failed': 'Closing the order failure',//关闭订单失败
     'crm.order.no.stage': 'No sales stage',//暂无销售阶段
@@ -1847,6 +1846,7 @@ var en_US = {
     'errorcode.21': 'Failed to apply to open user',//申请开通用户失败
     'errorcode.22': 'Not your customers, can not apply for a user',//不是您的客户，不能申请用户
     'errorcode.25': 'The phone number has been used, please use other phone number',//该手机号已被使用，请用其他手机号
+    'errorcode.26': 'The email has been used,please use other email',//该邮箱已被使用，请使用其他邮箱
     'errorcode.28': 'Failed to edit phone',//修改手机号失败
     'errorcode.29': 'Failed to edit mailbox',//修改邮箱失败
     'errorcode.30': 'The username has been taken',//用户名已被使用
@@ -2006,7 +2006,7 @@ var en_US = {
     'fail.add.customer.trace': 'Failed to add customer trace list',//增加客户跟踪记录列表失败
     'contact.phone': 'Contact number',//联系电话
     'customer.visit': 'visit',//拜访
-    'customer.phone.system': 'phone system',//电话系统
+    'common.phone.system': 'phone system',//电话系统
     'customer.ketao.app': 'ketao app',//客套app
     'customer.other': 'other',//其他
     'data.selector.none': 'none',//无
@@ -2215,6 +2215,7 @@ var en_US = {
     'sales.frontpage.login.after.stop': 'Login after deactivation',//停用后登录
     'sales.frontpage.login.recently': 'Customers logged in {X} days',//近{X}日登录的客户
     'sales.frontpage.has.repeat.customer': 'You have duplicate customers',//您有重复的客户
+
     'sales.frontpage.schedule.has.finished': 'Has finished',//完成了
     'sales.frontpage.appilleage.login': 'User login during deactivation',//停用期间用户登录情况
     'sales.frontpage.concerned.login': 'Login in nearly {X} days ',//近{X}天登录情况
@@ -2359,7 +2360,6 @@ var en_US = {
     'sales.home.no.show.frontpage': 'After this clue is processed, it will not be displayed on the homepage.',//本条线索处理完毕后，将不在首页展示
     'analysis.weekly.report': 'Weekly report',//周报分析
     'appEdit.basicConig': 'basic config',//'基本配置',
-    'back.openApp': 'Open app',//开通应用
     'back.openApp.range': 'range of open-app',//'开通范围',
     'back.openApp.apply': 'apply', //'申请开通',
     'back.openApp.tip.success': 'open successed',//'开通成功',
@@ -2404,8 +2404,8 @@ var en_US = {
     'clue.has.no.handle': 'Not processed yet',//暂未处理
     'clue.set.invalid': 'Invalid judgment',//判定无效
     'clue.cancel.set.invalid': 'Cancel invalid',//取消无效
-    'annalysis.sales.weekly.report': 'Sales weekly report',//销售周报
-    'annalysis.sales.monthly.report': 'Sales monthly report',//销售月报
+    'analysis.sales.weekly.report': 'Sales weekly report',//销售周报
+    'analysis.sales.monthly.report': 'Sales monthly report',//销售月报
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式

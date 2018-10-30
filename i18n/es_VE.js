@@ -1170,12 +1170,11 @@ var en_VE = {
     'user.open.multilogin': 'Ha abierto inicio de sesión por múltiples usuarios',//开启了多人登录。
     'user.total.data': 'En total {number} usuarios',//共{number}个用户
     'user.setting.roles': 'Opciones',//设置角色
-    'fail.create.realms': 'Failed to create this realm',//安全域创建失败
     'rightpanel_app_auth': 'Las competencias', // 应用权限
     'data.selector.none': 'Ninguno',//无
     'contact.phone': 'Número de contacto',//联系电话
     'customer.visit': 'Visitar',//拜访
-    'customer.phone.system': 'Sistema de teléfono',//电话系统
+    'common.phone.system': 'Sistema de teléfono',//电话系统
     'customer.ketao.app': 'ketao',//客套
     'customer.other': 'Otros',//其他
     'customer.visit.customer': 'Los clientes que visitan',//拜访客户
