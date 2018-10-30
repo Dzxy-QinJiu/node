@@ -326,7 +326,7 @@ var NavSidebar = createReactClass({
         //点击审批数字后，查看待审批的数量
         $('.navbar').on('click', '.sidebar-applyentry', function(e) {
             //如果点击到a标签上，不做处理
-            if ($(e.target).hasClass('iconfont')){
+            if ($(e.target).is('a')){
                 return;
             }
             //点击到数字上，进行跳转
@@ -335,7 +335,7 @@ var NavSidebar = createReactClass({
         });
         $('.navbar').on('click', '.clue-icon-container', function(e) {
             //点击到a标签上，不做处理
-            if ($(e.target).hasClass('iconfont')){
+            if ($(e.target).is('a')){
                 return;
             }
             //点击到线索未处理的数字上，进行跳转

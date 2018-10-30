@@ -53,6 +53,7 @@ class CrmScoreCard extends React.Component {
 
     //获取分数趋势数据
     getHistoryScoreList() {
+        if(!this.state.customerId) return;
         this.setState({isLoadingHistoryScore: true});
         crmAjax.getHistoryScoreList({
             customer_id: this.state.customerId,
