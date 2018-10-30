@@ -761,6 +761,8 @@ class CustomerAnalysis extends React.Component {
         //查询条件
         let condition = {
             activeType: type,
+            startTime: this.props.startTime,
+            endTime: this.props.endTime,
             name,
             num
         };
@@ -779,7 +781,7 @@ class CustomerAnalysis extends React.Component {
         //否则
         } else {
             //当前筛选条件团队的子团队为整个团队树的子团队
-            curConditionTeamChild = getLeafNodes(teamTree, 'child_groups'); 
+            curConditionTeamChild =getLeafNodes(teamTree, 'child_groups'); 
         }
         //如果当前筛选条件有子团队，说明此时表格中的每行对应一个团队
         if (curConditionTeamChild) {

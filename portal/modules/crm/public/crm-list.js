@@ -277,13 +277,28 @@ class Crm extends React.Component {
                     const condition = locationState.condition;
                     pageSize = condition.num;
                     let paramsData = {};
+                    let rangParams = {
+                        type: 'time',
+                        name: 'last_login_time'
+                    };
+
+                    if (condition.activeType === 'active') {
+                        rangParams.from = condition.startTime;
+                        rangParams.to = condition.endTime;
+                    } else {
+                        rangParams.to = condition.startTime;
+                    }
+
+                    rangParams = [rangParams];
 
                     if (condition.teamId) {
                         paramsData.sales_team_id = condition.teamId;
                     } else {
+                        paramsData.user_name = condition.name;
                     }
 
                     params.data = JSON.stringify(paramsData);
+                    params.rangParams = JSON.stringify(rangParams);
                 }
 
                 //设置了关注客户置顶后的处理
