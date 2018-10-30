@@ -6,11 +6,11 @@
 var createHistory = require('history').createBrowserHistory;
 var url = require('url');
 var history = createHistory();
-var key = '';
+var pathname = '';
 history.listen(function(location) {
     var parseObj = url.parse(window.location.href);
-    if (key !== location.key) {
-        key = location.key;
+    if (pathname !== location.pathname) {
+        pathname = location.pathname;
         alt.flush();
         if (typeof (_paq) != 'undefined') {
             var currentUrl = parseObj.href;
