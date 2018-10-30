@@ -134,7 +134,7 @@ class MonthlyReport extends React.Component {
             },
             {
                 title: Intl.get('sales.home.total.connected', '总接通数'),
-                dataIndex: 'total_num',
+                dataIndex: 'total_callout_success',
                 width: 90,
             },
             {
