@@ -364,20 +364,12 @@ class ApplyViewDetail extends React.Component {
     }
     //获取已选销售的id
     onSalesmanChange = (salesMan) => {
-        // var saleId = '';
-        // if (salesMan && _.isArray(salesMan.split('&&'))){
-        //     saleId = _.get(salesMan.split('&&'),'[0]');
-        // }
         SalesOpportunityApplyDetailAction.setSalesMan(salesMan);
     };
     clearSelectCandidate(){
         SalesOpportunityApplyDetailAction.setApplyCandate('');
     }
     onSelectApplySales = (updateUser) => {
-        // var candidate = '';
-        // if (updateUser && _.isArray(updateUser.split('&&'))){
-        //     candidate = _.get(updateUser.split('&&'),'[0]');
-        // }
         SalesOpportunityApplyDetailAction.setApplyCandate(updateUser);
     };
     getSalesOptions = () => {
@@ -398,7 +390,7 @@ class ApplyViewDetail extends React.Component {
             onChangeFunction = this.onSelectApplySales;
             defaultValue = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
             //列表中只选销售总经理,
-            salesManList = _.filter(salesManList, data => _.get(data, 'user_groups[0].owner_id') && _.get(data, 'user_info.user_id') && _.get(data, 'user_groups[0].owner_id') === _.get(data, 'user_info.user_id'));
+            salesManList = _.filter(salesManList, data => _.get(data, 'user_groups[0].owner_id') === _.get(data, 'user_info.user_id'));
         }
         let dataList = [];
         //销售领导、域管理员,展示其所有（子）团队的成员列表
@@ -482,31 +474,6 @@ class ApplyViewDetail extends React.Component {
     };
     //渲染详情底部区域
     renderDetailBottom() {
-
-        // if(_.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.READY_APPLY && _.get(this.state,'detailInfoObj.info.showApproveBtn')){
-        //     showApplyInfo.push({
-        //         label: Intl.get('crm.6', '负责人'),
-        //         renderText: function() {
-        //             return (
-        //                 <BasicEditSelectField
-        //                     displayType= 'edit'
-        //                     hasEditPrivilege={true}
-        //                     id={detail.id}
-        //                     value={displayText}
-        //                     field="user_id"
-        //                     displayText={displayText}
-        //                     selectOptions={_this.getSalesOptions()}
-        //                     onSelectChange={_this.onSelectApplySales}
-        //                     noDataTip={Intl.get('clue.handle.no.distribute.clue', '未分配')}
-        //                     hideButtonBlock={true}
-        //                 />
-        //             );
-        //         }
-        //     });
-        // }
-
-
-
         var detailInfoObj = this.state.detailInfoObj.info;
         //是否审批
         let isConsumed = detailInfoObj.status === 'pass' || detailInfoObj.status === 'reject';

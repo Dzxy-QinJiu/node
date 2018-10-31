@@ -23,6 +23,10 @@ var SalesOpportunityApplyUtils = require('./utils/sales-oppotunity-utils');
 let userData = require('../../../public/sources/user-data');
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+const REALM_REMARK = {
+    EEFUNG: 'BusinessOpportunitiesforSale1',//销售机会，蚁坊域的流程标识
+    CIVIW: 'BusinessOpportunitiesforSale2'//销售机会，识微域的流程标识
+};
 class SalesOpportunityApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加销售机会申请面板
@@ -64,7 +68,7 @@ class SalesOpportunityApplyManagement extends React.Component {
                 error: (errorMsg) => {
                     this.setState({
                         processConfig: '',
-                        getErrMsg: errorMsg.responseJSON || Intl.get('failed.get.config.integrate.list','获取线索集成列表失败')
+                        getErrMsg: errorMsg.responseJSON || Intl.get('sales.opportunity.process.config.list','获取流程节点失败')
                     });
                 }
             });
@@ -230,9 +234,9 @@ class SalesOpportunityApplyManagement extends React.Component {
         //如果是蚁坊域，必须要有团队和上级团队，
         //如果是识微域，不需要有团队和上级团队信息
         //区分蚁坊域和识微域的区别是跟据process_key
-        var isEefungRealm = _.get(this, 'state.processConfig.process_key') === 'BusinessOpportunitiesforSale1' ? true : false;
-        var isCiviwRealm = _.get(this, 'state.processConfig.process_key') === 'BusinessOpportunitiesforSale2' ? true : false;
-        var hasAddPriviledge = (isEefungRealm && userData.getUserData().team_id && _.get(this.state,'teamTreeList[0].parent_group')) || isCiviwRealm ? true : false;
+        var isEefungRealm = _.get(this, 'state.processConfig.process_key') === REALM_REMARK.EEFUNG;
+        var isCiviwRealm = _.get(this, 'state.processConfig.process_key') === REALM_REMARK.CIVIW;
+        var hasAddPriviledge = (isEefungRealm && userData.getUserData().team_id && _.get(this.state,'teamTreeList[0].parent_group')) || isCiviwRealm;
         var addPanelWrap = classNames({'show-add-modal': this.state.showAddApplyPanel});
         var applyListHeight = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
         var applyType = commonMethodUtil.getApplyStatusDscr(this.state.applyListType);

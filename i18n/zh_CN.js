@@ -2734,6 +2734,7 @@ var zh_CN = {
     'config.integrated.clue.manage': '线索同步',
     'config.integrated.clue.no.list': '暂无线索集成',
     'failed.get.config.integrate.list': '获取线索集成列表失败',
-    'sales.opportunity.assign.department.owner': '请选择要分配的部门主管'
+    'sales.opportunity.assign.department.owner': '请选择要分配的部门主管',
+    'sales.opportunity.process.config.list': '获取流程节点失败'
 };
 export default zh_CN;
