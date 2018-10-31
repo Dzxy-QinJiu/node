@@ -40,7 +40,7 @@ module.exports = function(req, res) {
             res.status(200).json(result);
         })
         .on('error', codeMessage => {
-            res.status(500).json(codeMessage);
+            res.status(500).json(codeMessage && codeMessage.message);
         });
 };
 
