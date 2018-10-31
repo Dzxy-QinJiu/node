@@ -86,7 +86,7 @@ exports.showLoginPage = function(req, res) {
             loginErrorMsg: obj.loginErrorMsg,
             username: obj.username,
             captchaCode: obj.captchaCode || '',
-            addShowingIoCode: global.config.formal,
+            isFormal: global.config.isFormal,
             company: backendIntl.get('company.name', '© 客套智能科技 鲁ICP备18038856号'),
             hotline: backendIntl.get('companay.hotline', '服务热线: {phone}', {'phone': phone}),
             contact: backendIntl.get('company.qq', '企业QQ: {qq}', {'qq': qq}),
