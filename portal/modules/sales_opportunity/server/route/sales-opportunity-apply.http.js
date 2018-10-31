@@ -62,6 +62,13 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+        }, {
+            method: 'get',
+            path: '/rest/get/sales_opportunity_apply/process',
+            handler: 'getProcessConfig',
+            passport: {
+                needLogin: true
+            },
         }
     ]
 };

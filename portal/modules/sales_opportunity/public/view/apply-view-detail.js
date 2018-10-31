@@ -25,6 +25,10 @@ import {APPLY_LIST_LAYOUT_CONSTANTS, APPLY_STATUS} from 'PUB_DIR/sources/utils/c
 import {getApplyTopicText, getApplyResultDscr} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
+const ASSIGN_TYPE = {
+    NEXT_CANDIDATED: 'nextCandidated',
+    COMMON_SALES: 'commonSales'
+};
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -57,9 +61,6 @@ class ApplyViewDetail extends React.Component {
                 salesManList: _.filter(data, sales => sales && sales.user_info && sales.user_info.status === 1)
             });
         });
-    };
-    onSelectApplySales = (updateUser) => {
-        SalesOpportunityApplyDetailAction.setApplyCandate(updateUser);
     };
     componentWillReceiveProps(nextProps) {
         var thisPropsId = this.props.detailItem.id;
@@ -149,21 +150,14 @@ class ApplyViewDetail extends React.Component {
             customerOfCurUser: data.customerObj
         });
     };
-    getSalesOptions = () => {
-        var dataLists = this.state.salesManList;
-        return dataLists.map((sales, idx) => {
-            return (<Option key={idx}
-                value={_.get(sales, 'user_info.user_id')}>
-                {_.get(sales, 'user_info.nick_name')} - {_.get(sales, 'user_groups[0].group_name')}</Option>);
-        });
-    };
+
 
     renderDetailApplyBlock(detailInfo) {
         var _this = this;
         var detail = detailInfo.detail || {};
         var expectdeal_time = moment(detail.expectdeal_time).format(oplateConsts.DATE_FORMAT);
         var customers = _.get(detail, 'customers[0]', {});
-        var applyStatus = this.getApplyStatusText(detailInfo);
+
         var productArr = [];
         var displayText = detailInfo.assigned_candidate_users || '';
         _.forEach(detail.apps,(app) => {
@@ -193,31 +187,7 @@ class ApplyViewDetail extends React.Component {
             }, {
                 label: Intl.get('common.remark', '备注'),
                 text: detail.remark
-            }, {
-                label: Intl.get('leave.apply.application.status', '审批状态'),
-                text: applyStatus
             }];
-        if(_.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.READY_APPLY && _.get(this.state,'detailInfoObj.info.showApproveBtn')){
-            showApplyInfo.push({
-                label: Intl.get('crm.6', '负责人'),
-                renderText: function() {
-                    return (
-                        <BasicEditSelectField
-                            displayType= 'edit'
-                            hasEditPrivilege={true}
-                            id={detail.id}
-                            value={displayText}
-                            field="user_id"
-                            displayText={displayText}
-                            selectOptions={_this.getSalesOptions()}
-                            onSelectChange={_this.onSelectApplySales}
-                            noDataTip={Intl.get('clue.handle.no.distribute.clue', '未分配')}
-                            hideButtonBlock={true}
-                        />
-                    );
-                }
-            });
-        }
         return (
             <ApplyDetailInfo
                 iconClass='icon-sales-opportunity'
@@ -225,6 +195,20 @@ class ApplyViewDetail extends React.Component {
             />
         );
     }
+    //审批状态
+    renderApplyStatus = (detailInfo) => {
+        var applyStatus = this.getApplyStatusText(detailInfo);
+        var showApplyInfo = [{
+            label: Intl.get('leave.apply.application.status', '审批状态'),
+            text: applyStatus,
+        }];
+        return (
+            <ApplyDetailInfo
+                iconClass='icon-apply-status'
+                showApplyInfo={showApplyInfo}
+            />
+        );
+    };
 
     getApplyStatusText = (obj) => {
         if (obj.status === 'pass') {
@@ -343,10 +327,9 @@ class ApplyViewDetail extends React.Component {
         var readyApply = _.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.READY_APPLY;
         var assignedSalesUsersIds = _.get(this.state, 'detailInfoObj.info.user_ids','');
         var assigendSalesApply = _.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.ASSIGN_SALES_APPLY;
-
         //如果沒有分配负责人，要先分配负责人
         if (!assignedCandidateUserIds && readyApply && approval === 'pass'){
-            message.warning('请先分配该申请的负责人');
+            return;
         }else if (!assignedSalesUsersIds && assigendSalesApply){
             return;
         }else{
@@ -360,11 +343,13 @@ class ApplyViewDetail extends React.Component {
                 id: detailInfoObj.id,
                 agree: approval
             };
-            if (assignedCandidateUserIds && approval === 'pass'){
-                submitObj.assigned_candidate_users = [assignedCandidateUserIds];
+            if (assignedCandidateUserIds && approval === 'pass' && _.isArray(assignedCandidateUserIds.split('&&'))){
+                var candidateUserIds = assignedCandidateUserIds.split('&&')[0];
+                submitObj.assigned_candidate_users = [candidateUserIds];
             }
-            if (assignedSalesUsersIds){
-                submitObj.user_ids = [assignedSalesUsersIds];
+            if (assignedSalesUsersIds && _.isArray(assignedSalesUsersIds.split('&&'))){
+                var salesUserIds = assignedSalesUsersIds.split('&&')[0];
+                submitObj.user_ids = [salesUserIds];
             }
             SalesOpportunityApplyDetailAction.approveSalesOpportunityApplyPassOrReject(submitObj);
             //关闭下拉框
@@ -381,10 +366,35 @@ class ApplyViewDetail extends React.Component {
     onSalesmanChange = (salesMan) => {
         SalesOpportunityApplyDetailAction.setSalesMan(salesMan);
     };
-    renderSalesBlock = () => {
+    clearSelectCandidate(){
+        SalesOpportunityApplyDetailAction.setApplyCandate('');
+    }
+    onSelectApplySales = (updateUser) => {
+        SalesOpportunityApplyDetailAction.setApplyCandate(updateUser);
+    };
+    getSalesOptions = () => {
+        var dataLists = this.state.salesManList;
+        return dataLists.map((sales, idx) => {
+            return (<Option key={idx}
+                value={_.get(sales, 'user_info.user_id')}>
+                {_.get(sales, 'user_info.nick_name')} - {_.get(sales, 'user_groups[0].group_name')}</Option>);
+        });
+    };
+    renderSalesBlock = (type) => {
+        //type 区分是分配下一节点负责人  还是分配给普通销售
+        var onChangeFunction = this.onSalesmanChange;
+        var defaultValue = _.get(this.state,'detailInfoObj.info.user_ids');
+        var salesManList = this.state.salesManList;
+        if(type === ASSIGN_TYPE.NEXT_CANDIDATED){
+            //需要选择销售总经理
+            onChangeFunction = this.onSelectApplySales;
+            defaultValue = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
+            //列表中只选销售总经理,
+            salesManList = _.filter(salesManList, data => _.get(data, 'user_groups[0].owner_id') === _.get(data, 'user_info.user_id'));
+        }
         let dataList = [];
         //销售领导、域管理员,展示其所有（子）团队的成员列表
-        this.state.salesManList.forEach((salesman) => {
+        _.each(salesManList,(salesman) => {
             let teamArray = salesman.user_groups;
             //一个销售属于多个团队的处理（旧数据中存在这种情况）
             if (_.isArray(teamArray) && teamArray.length) {
@@ -397,12 +407,13 @@ class ApplyViewDetail extends React.Component {
                 });
             }
         });
+
         return (
             <div className="op-pane change-salesman">
                 <AlwaysShowSelect
                     placeholder={Intl.get('sales.team.search', '搜索')}
-                    value={_.get(this.state,'detailInfoObj.info.user_ids')}
-                    onChange={this.onSalesmanChange}
+                    value={defaultValue}
+                    onChange={onChangeFunction}
                     notFoundContent={dataList.length ? Intl.get('crm.29', '暂无销售') : Intl.get('crm.30', '无相关销售')}
                     dataList={dataList}
                 />
@@ -410,25 +421,54 @@ class ApplyViewDetail extends React.Component {
         );
     };
     renderAssigenedContext = () => {
+        var assignedSalesUsersIds = _.get(this.state, 'detailInfoObj.info.user_ids','');
         return (
             <div className="pull-right">
                 <AntcDropdown
                     ref={AssignSales => this.assignSales = AssignSales}
                     content={<Button
                         data-tracename="点击分配销售按钮"
-                        className='assign-btn' type="primary">{Intl.get('clue.customer.distribute', '分配')}</Button>}
+                        className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('clue.customer.distribute', '分配')}</Button>}
                     overlayTitle={Intl.get('user.salesman', '销售人员')}
                     okTitle={Intl.get('common.confirm', '确认')}
                     cancelTitle={Intl.get('common.cancel', '取消')}
-                    overlayContent={this.renderSalesBlock()}
+                    overlayContent={this.renderSalesBlock(ASSIGN_TYPE.COMMON_SALES)}
                     handleSubmit={this.submitApprovalForm.bind(this, 'pass')}
-                    unSelectDataTip={Intl.get('leave.apply.select.assigned.sales','请选择要分配的销售')}
+                    unSelectDataTip={assignedSalesUsersIds ? '' : Intl.get('leave.apply.select.assigned.sales','请选择要分配的销售')}
                     clearSelectData={this.clearSelectSales}
                     btnAtTop={false}
                     isSaving={this.state.applyResult.submitResult === 'loading'}
                 />
             </div>
 
+        );
+
+    };
+    //分配下一节点的负责人
+    renderCandidatedContext = () => {
+        var assignedCandidateUserIds = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
+        return (
+            <div className="pull-right">
+                <AntcDropdown
+                    ref={AssignSales => this.assignSales = AssignSales}
+                    content={<Button
+                        data-tracename="点击分配销售总经理按钮"
+                        className='assign-candidate-btn btn-primary-sure' size="small" type="primary">{Intl.get('user.apply.detail.button.pass', '通过')}</Button>}
+                    overlayTitle={Intl.get('user.salesman', '销售人员')}
+                    okTitle={Intl.get('common.confirm', '确认')}
+                    cancelTitle={Intl.get('common.cancel', '取消')}
+                    overlayContent={this.renderSalesBlock(ASSIGN_TYPE.NEXT_CANDIDATED)}
+                    handleSubmit={this.submitApprovalForm.bind(this, 'pass')}
+                    unSelectDataTip={assignedCandidateUserIds ? '' : Intl.get('sales.opportunity.assign.department.owner','请选择要分配的部门主管')}
+                    clearSelectData={this.clearSelectCandidate}
+                    btnAtTop={false}
+                    isSaving={this.state.applyResult.submitResult === 'loading'}
+                />
+                <Button type="primary" className="btn-primary-sure" size="small"
+                    onClick={this.submitApprovalForm.bind(this, 'reject')}>
+                    {Intl.get('common.apply.reject', '驳回')}
+                </Button>
+            </div>
         );
 
     };
@@ -442,9 +482,12 @@ class ApplyViewDetail extends React.Component {
         var showApproveBtn = detailInfoObj.showApproveBtn;
         var renderAssigenedContext = null;
         //渲染分配的按钮
-        if (_.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.ASSIGN_SALES_APPLY){
-            showApproveBtn = true;
+        if (_.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.ASSIGN_SALES_APPLY && showApproveBtn){
+            //分配给普通销售
             renderAssigenedContext = this.renderAssigenedContext;
+        }else if(_.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.READY_APPLY && detailInfoObj.showApproveBtn){
+            //渲染分配给销售总经理
+            renderAssigenedContext = this.renderCandidatedContext;
         }
         return (
             <ApplyDetailBottom
@@ -480,6 +523,7 @@ class ApplyViewDetail extends React.Component {
                         {this.renderDetailApplyBlock(detailInfo)}
                         {/*渲染客户详情*/}
                         {_.isArray(_.get(detailInfo, 'detail.customers')) ? this.renderBusinessCustomerDetail(detailInfo) : null}
+                        {this.renderApplyStatus(detailInfo)}
                         <ApplyDetailRemarks
                             detailInfo={detailInfo}
                             replyListInfo={this.state.replyListInfo}

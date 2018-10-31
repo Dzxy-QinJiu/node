@@ -6,6 +6,7 @@
 import {Input, Icon, Alert} from 'antd';
 require('./index.less');
 import {getApplyResultDscr} from 'PUB_DIR/sources/utils/common-method-util';
+const UserData = require('PUB_DIR/sources/user-data');
 class ApplyDetailRemarks extends React.Component {
     constructor(props) {
         super(props);
@@ -47,7 +48,8 @@ class ApplyDetailRemarks extends React.Component {
                     {replyList.map((replyItem, index) => {
                         return (
                             <li key={index} className="apply-info-label">
-                                <span className="user-info-label">{replyItem.nick_name}:</span>
+                                <span className="user-info-label">
+                                    {replyItem.nick_name || UserData.getUserData().nick_name}:</span>
                                 <span className="user-info-text">
                                     {replyItem.comment ? replyItem.comment : getApplyResultDscr(replyItem)}</span>
                                 <span className="user-info-label reply-date-text">{

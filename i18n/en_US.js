@@ -2522,4 +2522,4 @@ var en_US = {
     'sales.opportunity.process.config.list': 'Failed to get process node',//获取流程节点失败
     'common.the.month.total': 'the month total',//本月合计
 };
-export default en_US;
+export default en_US;

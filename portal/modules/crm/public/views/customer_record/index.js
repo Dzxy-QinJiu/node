@@ -141,10 +141,10 @@ class CustomerRecord extends React.Component {
                 invalidPhoneLists: data.result,
                 getInvalidPhoneErrMsg: ''
             });
-        }, (err) => {
+        }, (errMsg) => {
             this.setState({
                 invalidPhoneLists: [],
-                getInvalidPhoneErrMsg: err.message || Intl.get('call.record.get.invalid.phone.lists', '获取无效电话列表失败')
+                getInvalidPhoneErrMsg: errMsg || Intl.get('call.record.get.invalid.phone.lists', '获取无效电话列表失败')
             });
         });
         this.getAppList();
@@ -686,10 +686,10 @@ class CustomerRecord extends React.Component {
             audioMsgEmitter.emit(audioMsgEmitter.HIDE_REPORT_BTN, {
                 isShowReportButton: false
             });
-        }, (err) => {
+        }, (errMsg) => {
             this.setState({
                 isAddingInvalidPhone: false,
-                addingInvalidPhoneErrMsg: err.message || Intl.get('fail.report.phone.err.tip', '上报无效电话失败！')
+                addingInvalidPhoneErrMsg: errMsg || Intl.get('fail.report.phone.err.tip', '上报无效电话失败！')
             });
         });
     };

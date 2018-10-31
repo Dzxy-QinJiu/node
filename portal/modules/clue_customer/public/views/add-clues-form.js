@@ -168,6 +168,10 @@ class ClueAddForm extends React.Component {
             if (this.validateContactIsEmpty(values.contacts)) {
                 return;
             }
+            //是否有重复的线索
+            if(this.state.clueNameExist){
+                return;
+            }
             let submitObj = this.getSubmitObj(values);
             let addRoute = _.find(routes, (route) => route.handler === 'addSalesClue');
             this.setState({isSaving: true, saveMsg: '', saveResult: ''});

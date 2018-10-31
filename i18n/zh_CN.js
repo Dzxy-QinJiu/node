@@ -2536,4 +2536,4 @@ var zh_CN = {
     'sales.opportunity.process.config.list': '获取流程节点失败',
     'common.the.month.total': '本月合计',
 };
-export default zh_CN;
+export default zh_CN;
