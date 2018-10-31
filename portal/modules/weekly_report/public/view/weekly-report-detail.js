@@ -164,16 +164,19 @@ class WeeklyReportDetail extends React.Component {
             dataIndex: 'name',
             align: 'left',
         }, {
-            title: Intl.get('weekly.report.total.duration', '本周总时长'),
+            title: `${Intl.get('weekly.report.total.duration', '本周总时长')}(${Intl.get('user.time.second', '秒')})`,
             dataIndex: 'total_time',
             align: 'right',
         }, {
+            title: `${Intl.get('sales.home.average.duration', '日均时长')}(${Intl.get('user.time.second', '秒')})`,
+            dataIndex: 'average_time',
+            align: 'right',
+            render: text => {
+                return <span>{parseFloat(text).toFixed()}</span>;
+            }
+        }, {
             title: Intl.get('weekly.report.total.connected', '本周总接通数'),
             dataIndex: 'total_callout_success',
-            align: 'right',
-        }, {
-            title: Intl.get('sales.home.average.duration', '日均时长'),
-            dataIndex: 'average_time',
             align: 'right',
         }, {
             title: Intl.get('sales.home.average.connected', '日均接通数'),
