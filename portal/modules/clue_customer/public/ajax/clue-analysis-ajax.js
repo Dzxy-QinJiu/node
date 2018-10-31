@@ -18,7 +18,7 @@ exports.getCustomerById = function(data) {
         },
         error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseText || Intl.get('crm.detail.get.error', '获取客户详情失败'));
+                Deferred.reject(xhr.responseJSON || Intl.get('crm.detail.get.error', '获取客户详情失败'));
             }
         }
     });

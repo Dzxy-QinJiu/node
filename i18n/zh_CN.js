@@ -2534,4 +2534,4 @@ var zh_CN = {
     'failed.get.config.integrate.list': '获取线索集成列表失败',
     'common.the.month.total': '本月合计',
 };
-export default zh_CN;
+export default zh_CN;

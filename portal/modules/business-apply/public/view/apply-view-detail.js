@@ -72,6 +72,20 @@ class ApplyViewDetail extends React.Component {
             this.getBusinessApplyDetailData(this.props.detailItem);
         }
     };
+    //审批状态
+    renderApplyStatus = (detailInfo) => {
+        var applyStatus = this.getApplyStatusText(detailInfo);
+        var showApplyInfo = [{
+            label: Intl.get('leave.apply.application.status', '审批状态'),
+            text: applyStatus,
+        }];
+        return (
+            <ApplyDetailInfo
+                iconClass='icon-apply-status'
+                showApplyInfo={showApplyInfo}
+            />
+        );
+    };
 
     getBusinessApplyDetailData(detailItem) {
         setTimeout(() => {
@@ -149,7 +163,6 @@ class ApplyViewDetail extends React.Component {
         });
         //去掉数组中的重复元素
         customersAdds = _.uniq(customersAdds);
-        var applyStatus = this.getApplyStatusText(detailInfo);
         var showApplyInfo = [{
             label: Intl.get('common.login.time', '时间'),
             text: isOneDay ? beginDate : (beginDate + ' - ' + endDate)
@@ -159,9 +172,6 @@ class ApplyViewDetail extends React.Component {
         }, {
             label: Intl.get('leave.apply.for.application', '人员'),
             text: applicant.nick_name,
-        }, {
-            label: Intl.get('leave.apply.application.status', '审批状态'),
-            text: applyStatus
         }];
         return (
             <ApplyDetailInfo
@@ -332,6 +342,7 @@ class ApplyViewDetail extends React.Component {
                         {this.renderDetailApplyBlock(detailInfo)}
                         {/*渲染客户详情*/}
                         {_.isArray(_.get(detailInfo, 'detail.customers')) ? this.renderBusinessCustomerDetail(detailInfo) : null}
+                        {this.renderApplyStatus(detailInfo)}
                         <ApplyDetailRemarks
                             detailInfo={detailInfo}
                             replyListInfo={this.state.replyListInfo}

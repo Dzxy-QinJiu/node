@@ -2520,4 +2520,4 @@ var en_US = {
     'failed.get.config.integrate.list': 'Failed to get integrated lists',//获取线索集成列表失败
     'common.the.month.total': 'the month total',//本月合计
 };
-export default en_US;
+export default en_US;

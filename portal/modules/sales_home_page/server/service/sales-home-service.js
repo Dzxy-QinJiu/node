@@ -166,7 +166,7 @@ function getUserInfoEmail(req, res) {
                     resolve(data);
                 },
                 error: function(eventEmitter, errorObj) {
-                    reject(errorObj.message);
+                    reject(errorObj && errorObj.message);
                 }
             });
     });
@@ -191,7 +191,7 @@ function getWebsiteConfig(req, res, responseObj) {
                     }
                 },
                 error: function(eventEmitter, errorObj) {
-                    reject(errorObj.message);
+                    reject(errorObj && errorObj.message);
                 }
             });
     });

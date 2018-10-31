@@ -38,7 +38,7 @@ exports.getClueCustomerList = function(req, res) {
             res.status(200).json(data);
         })
         .on('error', function(err) {
-            res.status(500).json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 //获取线索来源
@@ -47,7 +47,7 @@ exports.getClueSource = function(req, res) {
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {
-            res.status(500).json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 
@@ -57,7 +57,7 @@ exports.getClueChannel = function(req, res) {
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {
-            res.status(500).json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 //获取线索分类
@@ -66,7 +66,7 @@ exports.getClueClassify = function(req, res) {
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {
-            res.status(500).json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 
@@ -76,7 +76,7 @@ exports.addCluecustomerTrace = function(req, res) {
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {
-            res.status(500).json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 //把线索客户分配给对应的销售
@@ -85,7 +85,7 @@ exports.distributeCluecustomerToSale = function(req, res) {
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {
-            res.status(500).json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 //修改更新线索客户的详情
@@ -94,7 +94,7 @@ exports.updateCluecustomerDetail = function(req, res) {
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {
-            res.status(500).json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 //线索名、电话唯一性验证
@@ -103,7 +103,7 @@ exports.checkOnlySalesClue = function(req, res) {
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {
-            res.status(500).json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 //将线索和客户进行关联
@@ -112,7 +112,7 @@ exports.relateClueAndCustomer = function(req, res) {
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {
-            res.status(500).json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 // 处理导入线索模板文件
@@ -143,7 +143,7 @@ exports.uploadClues = function(req, res) {
                 res.json(data.result);
             })
             .on('error', function(err) {
-                res.json(err.message);
+                res.json(err && err.message);
             });
     });
 };
@@ -154,7 +154,7 @@ exports.confirmUploadClues = function(req, res) {
             res.status(200).json(data);
         })
         .on('error', function(err) {
-            res.status(500).json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 exports.deleteRepeatClue = function(req, res) {
@@ -163,7 +163,7 @@ exports.deleteRepeatClue = function(req, res) {
             res.status(200).json(data);
         })
         .on('error', function(err) {
-            res.status(500).json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 //获取线索分析
@@ -172,7 +172,7 @@ exports.getClueAnalysis = function(req, res) {
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {
-            res.status(500).json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 //获取线索统计
@@ -181,7 +181,7 @@ exports.getClueStatics = function(req, res) {
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {
-            res.status(500).json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 //获取线索趋势统计
@@ -190,7 +190,7 @@ exports.getClueTrendStatics = function(req, res) {
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {
-            res.status(500).json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 //全文搜索线索
@@ -200,7 +200,7 @@ exports.getClueFulltext = function(req, res) {
             res.status(200).json(data);
         })
         .on('error', function(err) {
-            res.status(500).json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 //获取线索动态
@@ -219,7 +219,7 @@ exports.deleteClue = function(req, res) {
             res.status(200).json(data);
         })
         .on('error', function(err) {
-            res.status(500).json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 //根据线索的id获取线索的详情

@@ -2,7 +2,6 @@ var DEFAULT_MAX_LOG_SIZE = 2048000,
     DEFAULT_LOG_BACKUP = global.config.logfileCount,
     DEFAULT_LOG_LEVEL = global.config.logLevel;
 var commonUtil = require('../portal/lib/utils/common-utils');
-var moment = require('moment');
 var _ = require('lodash');
 
 var path = require('path'),
@@ -15,7 +14,7 @@ logDir = isProduction ?
     path.resolve(__dirname, '../../data/') :
     path.resolve(__dirname, '../data/');
 //是否是正式环境
-var formal = global.config.formal;
+var isFormal = global.config.isFormal;
 
 if (!fs.existsSync(logDir)) {
     fs.mkdirSync(logDir);
@@ -148,7 +147,7 @@ module.exports = {
     //log4js的配置文件
     'log4js': {
         //如果是产品环境则使用es的appender上传日志到es中,如果不是产品环境，使用本地文件记录日志
-        'appenders': (formal === 'true' && global.config.esUrl) ? remoteAppenders : localAppenders
+        'appenders': (isFormal === 'true' && global.config.esUrl) ? remoteAppenders : localAppenders
     },
     morgan: {
         //这个是morgan的配置记录哪些http访问日志内容
