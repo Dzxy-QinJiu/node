@@ -33,7 +33,7 @@ exports.home = function(req, res) {
     let custome_service_lang = global.config.lang || 'zh_CN';
     custome_service_lang = custome_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
     res.render('home/tpl/desktop-index', {
-        addShowingIoCode: global.config.formal,
+        isFormal: global.config.isFormal,
         userid: user.user_id,
         username: user.user_name,
         siteID: global.config.siteID,

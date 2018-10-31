@@ -138,7 +138,7 @@ var config = {
     //日志的级别
     logLevel: process.env.LOG_LEVEL || 'DEBUG',
     //是否是正式环境
-    formal: isFormal,
+    isFormal: isFormal,
     // es地址
     esUrl: process.env.ES,//http://192.168.2.21:9200,
     //进程名
