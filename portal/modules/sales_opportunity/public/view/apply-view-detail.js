@@ -394,7 +394,7 @@ class ApplyViewDetail extends React.Component {
         }
         let dataList = [];
         //销售领导、域管理员,展示其所有（子）团队的成员列表
-        salesManList.forEach((salesman) => {
+        _.each(salesManList,(salesman) => {
             let teamArray = salesman.user_groups;
             //一个销售属于多个团队的处理（旧数据中存在这种情况）
             if (_.isArray(teamArray) && teamArray.length) {
