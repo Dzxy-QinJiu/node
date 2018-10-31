@@ -381,23 +381,26 @@ class UserLoginAnalysis extends React.Component {
     // 用户登录时长的统计图的提示信息
     durationTooltip = (params) => {
         const data = params.data;
-        const date = _.first(data);
-        const value = _.last(data);
-        let timeObj = TimeUtil.secondsToHourMinuteSecond(value || 0);
+        const date = _.first(data.value);
+        const value = _.last(data.value);
+        const timeObj = TimeUtil.secondsToHourMinuteSecond(value || 0);
+        const sumObj = TimeUtil.secondsToHourMinuteSecond(data.monthSum || 0);
         return [
             Intl.get('common.login.time', '时间') + ' : ' + `${date}`,
-            Intl.get('user.duration', '时长') + ' : ' + `${timeObj.timeDescr}`
+            Intl.get('user.duration', '时长') + ' : ' + `${timeObj.timeDescr}`,
+            Intl.get('common.the.month.total', '本月合计') + ' : ' + `${sumObj.timeDescr}`
         ].join('<br />');
     };
 
     // 用户登录次数的统计图的提示信息
     chartFrequencyTooltip = (params) => {
         const data = params.data;
-        const date = _.first(data);
-        const value = _.last(data);
+        const date = _.first(data.value);
+        const value = _.last(data.value);
         return [
             Intl.get('common.login.time', '时间') + ' : ' + `${date}`,
-            Intl.get('user.login.time', '次数') + ' : ' + `${value}`
+            Intl.get('user.login.time', '次数') + ' : ' + `${value}`,
+            Intl.get('common.the.month.total', '本月合计') + ' : ' + `${data.monthSum}`
         ].join('<br />');
     };
 
