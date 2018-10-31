@@ -237,8 +237,8 @@ exports.getSales = function(groupId) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error: function(codeMessage) {
-            Deferred.reject(codeMessage && codeMessage.message || '获取销售人员列表失败');
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON || '获取销售人员列表失败');
         }
     });
     return Deferred.promise();
@@ -287,9 +287,7 @@ exports.addApp = function(appList) {
             }
         },
         error: function(xhr) {
-            var responseJSON = xhr.responseJSON || {};
-            var errorMsg = responseJSON.message || DEFAULT_ERROR_MSG;
-            Deferred.reject(errorMsg);
+            Deferred.reject(xhr.responseJSON || DEFAULT_ERROR_MSG);
         }
     });
     return Deferred.promise();

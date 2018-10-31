@@ -178,8 +178,8 @@ class CrmUserApplyForm extends React.Component {
             } else {
                 this.setState({ isApplying: false, applyErrorMsg: Intl.get('user.apply.delay.failed', '申请延期失败') });
             }
-        }).catch((err) => {
-            this.setState({ isApplying: false, applyErrorMsg: (err && err.message) || Intl.get('user.apply.delay.failed', '申请延期失败') });
+        }).catch((errMsg) => {
+            this.setState({ isApplying: false, applyErrorMsg: errMsg || Intl.get('user.apply.delay.failed', '申请延期失败') });
         });
     }
 
