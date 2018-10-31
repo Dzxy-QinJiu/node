@@ -182,6 +182,7 @@ class DayAgendaScheduleLists extends React.Component {
                     item.allDay ? Intl.get('crm.alert.full.day', '全天') : moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + '-' + moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)
                 );
                 var customerContent = this.renderPopoverContent(item);
+                var phoneNum = _.get(item, 'contacts[0].phone[0]','');
                 return (
                     <div className={listCls} onClick={this.props.showCustomerDetail.bind(this, item.customer_id)}
                         data-tracename="日程列表">
@@ -194,8 +195,12 @@ class DayAgendaScheduleLists extends React.Component {
                                 <Col sm={9}>
                                     {item.contacts ? <Popover content={customerContent} placement="bottom">
                                         <div className="schedule-customer-name">
-                                            <i className={iconFontCls}></i>
-                                            {item.customer_name || item.topic}
+                                            {item.customer_name || item.topic ? <span><i className={iconFontCls}></i>{item.customer_name || item.topic}</span> :
+                                                phoneNum ? <p className="item-customer-content">
+                                                    {phoneNum + Intl.get('schedule.expired.call.time.at','于') + moment(item.create_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + Intl.get('schedule.expired.call.in.phone.num','拨打过您的电话')}
+                                                </p> : null
+                                            }
+
                                         </div>
                                     </Popover> :
                                         <div className="schedule-customer-name">
