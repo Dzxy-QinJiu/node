@@ -41,10 +41,10 @@ routes.forEach(route => {
         if (!next) return restRequest;
 
         restRequest.on('success', result => {
-            res.json(result);
+            res.status(200).json(result);
         })
             .on('error', codeMessage => {
-                res.json(codeMessage);
+                res.status(500).json(codeMessage && codeMessage.message);
             });
     };
 });

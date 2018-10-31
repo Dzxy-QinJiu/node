@@ -460,7 +460,7 @@ function getTeams(req, res) {
                     resolve(result);
                 },
                 error: function(eventEmitter, errorDesc) {
-                    reject(errorDesc.message);
+                    reject(errorDesc && errorDesc.message);
                 }
             });
     });
@@ -527,7 +527,7 @@ function getMembers(req, res) {
                                 }
                             },
                             error: function(eventEmitter, errorDesc) {
-                                reject(errorDesc.message);
+                                reject(errorDesc && errorDesc.message);
                             }
                         });
                 }
@@ -573,7 +573,7 @@ function getActiveNessLineData(req, res, reqParams, dataType, dataRange, authTyp
                     }
                 },
                 error: function(eventEmitter, errorDesc) {
-                    reject(errorDesc.message);
+                    reject(errorDesc && errorDesc.message);
                 }
             });
     });

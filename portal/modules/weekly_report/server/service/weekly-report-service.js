@@ -91,7 +91,7 @@ function getSalesStage(req, res) {
                     resolve(data);
                 },
                 error: function(eventEmitter, errorObj) {
-                    reject(errorObj.message);
+                    reject(errorObj && errorObj.message);
                 }
             });
     });
@@ -109,7 +109,7 @@ function getCustomerStageInfo(req, res, params, reqData) {
                     resolve(data);
                 },
                 error: function(eventEmitter, errorObj) {
-                    reject(errorObj.message);
+                    reject(errorObj && errorObj.message);
                 }
             });
     });
