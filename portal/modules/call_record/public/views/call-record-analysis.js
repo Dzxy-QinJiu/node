@@ -7,7 +7,7 @@
  * */
 
 var React = require('react');
-import {Select, Radio, Alert, Switch} from 'antd';
+import {Select, Radio, Alert, Switch, Checkbox} from 'antd';
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 var RightContent = require('CMP_DIR/privilege/right-content');
@@ -115,7 +115,8 @@ class CallRecordAnalyis extends React.Component {
             trendHeight: LAYOUT_HEIGHT.ORIGIN_HEIGHT,
             firstSelectValue: FIRSR_SELECT_DATA[0], // 第一个选择框的值
             secondSelectValue: LITERAL_CONSTANT.ALL, // 第二个选择宽的值，默认是全部的状态
-            switchStatus: false//是否查看各团队通话趋势图
+            switchStatus: false,//是否查看各团队通话趋势图
+            filter_phone: false,//是否过滤掉114
         };
     }
 
@@ -285,7 +286,8 @@ class CallRecordAnalyis extends React.Component {
         let queryParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
-            deviceType: params && params.deviceType || this.state.callType
+            deviceType: params && params.deviceType || this.state.callType,
+            filter_phone: this.state.filter_phone//是否过滤114
         };
         let pathParam = commonMethodUtil.getParamByPrivilege();
         if (this.state.teamList.list.length) { // 有团队时（普通销售时没有团队的）
@@ -616,17 +618,10 @@ class CallRecordAnalyis extends React.Component {
 
     // 选择通话类型的值
     selectCallTypeValue = (value) => {
-        if (value === CALL_TYPE_OPTION.PHONE) {
-            this.state.callType = CALL_TYPE_OPTION.PHONE;
-        } else if (value === CALL_TYPE_OPTION.APP) {
-            this.state.callType = CALL_TYPE_OPTION.APP;
-        } else if (value === CALL_TYPE_OPTION.ALL) {
-            this.state.callType = CALL_TYPE_OPTION.ALL;
-        }
         this.setState({
             callType: value
         }, () => {
-            if (this.state.callType === 'all') {
+            if (this.state.callType === CALL_TYPE_OPTION.ALL) {
                 this.refreshCallAnalysisData();
             } else {
                 this.refreshCallAnalysisData({deviceType: this.state.callType});
@@ -1359,7 +1354,11 @@ class CallRecordAnalyis extends React.Component {
             </div>
         );
     };
-
+    onFilter114Change = (e) => {
+        this.setState({filter_phone: e.target.checked},() => {
+            this.getCallInfoData();
+        });
+    };
     renderCallAnalysisView = () => {
         const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height();
         return (<div className="call-table-container" ref="phoneList">
@@ -1382,6 +1381,11 @@ class CallRecordAnalyis extends React.Component {
                 <GeminiScrollBar>
                     <div className="analysis-wrapper">
                         <div className="call-info col-xs-12">
+                            <div className="filter-114-wrap">
+                                <Checkbox onChange={this.onFilter114Change} checked={this.state.filter_phone}>
+                                    {Intl.get('call.analysis.filter.114', '过滤掉114')}
+                                </Checkbox>
+                            </div>
                             {this.renderCallInfo()}
                         </div>
                         <div className="call-range col-xs-12">
@@ -1622,5 +1626,7 @@ class CallRecordAnalyis extends React.Component {
         </RightContent>);
     }
 }
-
+CallRecordAnalyis.propTypes = {
+    closeCallAnalysisPanel: PropTypes.func
+};
 module.exports = CallRecordAnalyis;

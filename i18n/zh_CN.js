@@ -927,6 +927,7 @@ var zh_CN = {
     'call.analysis.zone.distrute': '客户的地域分布',
     'call.analysis.map.return': '返回上一级',
     'call.analysis.call.title': '通话信息',
+    'call.analysis.filter.114': '过滤掉114',
     //通话分析-end
 
     // 用户审批start

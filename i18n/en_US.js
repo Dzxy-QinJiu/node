@@ -923,6 +923,7 @@ var en_US = {
     'call.analysis.zone.distrute': 'Zone distribution of customers', // 客户的地域分布
     'call.analysis.map.return': 'Back to previous', // 返回上一级
     'call.analysis.call.title': 'Call information', // 通话信息
+    'call.analysis.filter.114': 'Do not contain 114',//过滤掉114
     //通话分析-end
     // 用户审批start
     'user.apply.all': 'All applications',//全部申请
