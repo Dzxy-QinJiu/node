@@ -26,6 +26,8 @@ const session = storageUtil.session;
 var NotificationType = {};
 var approveTipCount = 0;
 let systemTipCount = 0;
+let systemTimeout = null;//系统消息更新提示的setTimeout
+let approveTimeout = null;//审批消息更新提示的setTimeout
 const TIMEOUTDELAY = {
     closeTimeDelay: 5000,
     renderTimeDelay: 2000,
@@ -177,20 +179,23 @@ function listenSystemNotice(notice) {
                         onClose: function() {
                             delete NotificationType['system'];
                             systemTipCount = 0;
+                            if(systemTimeout){
+                                clearTimeout(systemTimeout);
+                            }
                         }
                     }
                 });
                 NotificationType['system'] = notify;
             } else {
-                setTimeout(() => {
+                systemTimeout = setTimeout(() => {
                     //如果页面上存在提示框，只显示有多少条消息
                     let tipContent = '';
                     if (systemTipCount > 0) {
                         tipContent = tipContent + `<p>${Intl.get('notification.system.tip.count', '您有{systemTipCount}条系统消息', {systemTipCount: systemTipCount})}</p>`;
+                        notificationUtil.updateText(notify, {
+                            content: tipContent,
+                        });
                     }
-                    notificationUtil.updateText(notify, {
-                        content: tipContent,
-                    });
                 }, TIMEOUTDELAY.renderTimeDelay);
             }
 
@@ -430,25 +435,28 @@ function notifyReplyInfo(data) {
                     title: Intl.get('user.apply.approve', '用户申请审批'),
                     content: tipContent,
                     closeWith: ['button'],
-                    timeout: TIMEOUTDELAY.closeTimeDelay,
+                    // timeout: TIMEOUTDELAY.closeTimeDelay,
                     callback: {
                         onClose: function() {
                             delete NotificationType['exist'];
                             approveTipCount = 0;
+                            if(approveTimeout){
+                                clearTimeout(approveTimeout);
+                            }
                         }
                     }
                 });
                 NotificationType['exist'] = notify;
             } else {
-                setTimeout(() => {
+                approveTimeout = setTimeout(() => {
                     //如果页面上存在提示框，只显示有多少条消息
                     let tipContent = '';
                     if (approveTipCount > 0) {
                         tipContent = tipContent + `<p>${Intl.get('user.apply.approve.count', '有{approveCount}条审批消息', {approveCount: approveTipCount})}</p>`;
+                        notificationUtil.updateText(notify, {
+                            content: tipContent
+                        });
                     }
-                    notificationUtil.updateText(notify, {
-                        content: tipContent
-                    });
                 }, TIMEOUTDELAY.renderTimeDelay);
             }
         }
