@@ -25,6 +25,7 @@ import {getClueUnhandledPrivilege, getUnhandledClueCountParams} from 'PUB_DIR/so
 const session = storageUtil.session;
 var NotificationType = {};
 var approveTipCount = 0;
+let systemTipCount = 0;
 const TIMEOUTDELAY = {
     closeTimeDelay: 5000,
     renderTimeDelay: 2000,
@@ -128,6 +129,7 @@ function clueUnhandledListener(data) {
 //监听系统消息
 function listenSystemNotice(notice) {
     if (_.isObject(notice)) {
+        systemTipCount++;//系统消息个数加一
         //申请消息列表弹出，有新数据，是否刷新数据的提示
         notificationEmitter.emit(notificationEmitter.SYSTEM_NOTICE_UPDATED, notice);
         let title = notice.type ? SYSTEM_NOTICE_TYPE_MAP[notice.type] : '';
@@ -163,12 +165,38 @@ function listenSystemNotice(notice) {
             //桌面通知的展示
             showDesktopNotification(title, tipContent, isClosedByClick);
         } else {//系统弹出通知
-            notificationUtil.showNotification({
-                title: title,
-                content: tipContent,
-                closeWith: ['button'],
-                timeout: TIMEOUTDELAY.closeTimeDelay
-            });
+            let notify = NotificationType['system'];
+            //如果界面上没有提示框，就显示推送的具体内容
+            if (!notify) {
+                notify = notificationUtil.showNotification({
+                    title: title,
+                    content: tipContent,
+                    closeWith: ['button'],
+                    timeout: TIMEOUTDELAY.closeTimeDelay,
+                    callback: {
+                        onClose: function() {
+                            delete NotificationType['system'];
+                            systemTipCount = 0;
+                        }
+                    }
+                });
+                NotificationType['system'] = notify;
+            } else {
+                setTimeout(() => {
+                    //如果页面上存在提示框，只显示有多少条消息
+                    let tipContent = '';
+                    if (systemTipCount > 0) {
+                        tipContent = tipContent + `<p>${Intl.get('notification.system.tip.count', '您有{systemTipCount}条系统消息', {systemTipCount: systemTipCount})}</p>`;
+                    }
+                    notificationUtil.updateText(notify, {
+                        content: tipContent
+                    });
+                }, TIMEOUTDELAY.renderTimeDelay);
+            }
+
+
+
+
         }
     }
 }
@@ -402,7 +430,7 @@ function notifyReplyInfo(data) {
                     title: Intl.get('user.apply.approve', '用户申请审批'),
                     content: tipContent,
                     closeWith: ['button'],
-                    timeout: TIMEOUTDELAY.closeTimeDelay,
+                    // timeout: TIMEOUTDELAY.closeTimeDelay,
                     callback: {
                         onClose: function() {
                             delete NotificationType['exist'];
@@ -419,7 +447,7 @@ function notifyReplyInfo(data) {
                         tipContent = tipContent + `<p>${Intl.get('user.apply.approve.count', '有{approveCount}条审批消息', {approveCount: approveTipCount})}</p>`;
                     }
                     notificationUtil.updateText(notify, {
-                        content: tipContent,
+                        content: tipContent
                     });
                 }, TIMEOUTDELAY.renderTimeDelay);
             }
