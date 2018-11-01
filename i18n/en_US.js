@@ -802,6 +802,7 @@ var en_US = {
     'notification.system.handled.success': 'Successfully processed', // 处理成功
     'notification.system.handled.error': 'Failed processed', // 处理失败
     'notification.system.login.count': '{count} counts, last time', // {count}次，最后一次
+    'notification.system.tip.count': 'You have {systemTipCount} system messages.',//您有{systemTipCount}条系统消息
     //通知end
     //销售阶段start
     'sales.stage.change.sort': 'Change order',//变更顺序
@@ -2522,4 +2523,4 @@ var en_US = {
     'sales.opportunity.process.config.list': 'Failed to get process node',//获取流程节点失败
     'common.the.month.total': 'the month total',//本月合计
 };
-export default en_US;
+export default en_US;

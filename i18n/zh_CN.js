@@ -800,6 +800,7 @@ var zh_CN = {
     'notification.system.handled.success': '处理成功',
     'notification.system.handled.error': '处理失败',
     'notification.system.login.count': '{count}次，最后一次',
+    'notification.system.tip.count': '您有{systemTipCount}条系统消息',
     //通知end
     //销售阶段start
     'sales.stage.change.sort': '变更顺序',
@@ -2536,4 +2537,4 @@ var zh_CN = {
     'sales.opportunity.process.config.list': '获取流程节点失败',
     'common.the.month.total': '本月合计',
 };
-export default zh_CN;
+export default zh_CN;
