@@ -198,10 +198,6 @@ function listenSystemNotice(notice) {
                     }
                 }, TIMEOUTDELAY.renderTimeDelay);
             }
-
-
-
-
         }
     }
 }
