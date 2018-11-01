@@ -172,7 +172,7 @@ function listenSystemNotice(notice) {
                     title: title,
                     content: tipContent,
                     closeWith: ['button'],
-                    timeout: TIMEOUTDELAY.closeTimeDelay,
+                    // timeout: TIMEOUTDELAY.closeTimeDelay,
                     callback: {
                         onClose: function() {
                             delete NotificationType['system'];
@@ -189,7 +189,7 @@ function listenSystemNotice(notice) {
                         tipContent = tipContent + `<p>${Intl.get('notification.system.tip.count', '您有{systemTipCount}条系统消息', {systemTipCount: systemTipCount})}</p>`;
                     }
                     notificationUtil.updateText(notify, {
-                        content: tipContent
+                        content: tipContent,
                     });
                 }, TIMEOUTDELAY.renderTimeDelay);
             }
@@ -430,7 +430,7 @@ function notifyReplyInfo(data) {
                     title: Intl.get('user.apply.approve', '用户申请审批'),
                     content: tipContent,
                     closeWith: ['button'],
-                    // timeout: TIMEOUTDELAY.closeTimeDelay,
+                    timeout: TIMEOUTDELAY.closeTimeDelay,
                     callback: {
                         onClose: function() {
                             delete NotificationType['exist'];
