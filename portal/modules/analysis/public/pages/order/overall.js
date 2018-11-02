@@ -19,8 +19,8 @@ function getCharts() {
         //阶段统计
         orderChart.getOrderStageChart(),
         //各阶段数量趋势
-        orderChart.getOrderTrendChart(),
+        //        orderChart.getOrderTrendChart(),
         //转化率趋势
-        orderChart.getOrderConvertChart(),
+        //       orderChart.getOrderConvertChart(),
     ];
 }

@@ -27,6 +27,6 @@ function getCharts() {
         //销售新开客户数统计
         customerChart.getSalesNewOpenChart(),
         //留存统计
-        customerChart.getCustomerRemainChart(),
+        //        customerChart.getCustomerRemainChart(),
     ];
 }

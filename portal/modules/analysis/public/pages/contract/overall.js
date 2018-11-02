@@ -16,9 +16,10 @@ module.exports = {
 function getCharts() {
     return [
         //完成情况统计
-        contractChart.getContractPerformanceChart(),
+        //        contractChart.getContractPerformanceChart(),
         //合同分析统计表
         contractChart.getContractChart(),
+        /*
         //合同产品分布
         contractChart.getContractProductChart(),
         //行业分布
@@ -31,6 +32,7 @@ function getCharts() {
         contractChart.getContractGrowthChart(),
         //年经常性收入情况
         contractChart.getContractArrChart(),
+        */
         //签单情况统计表
         contractChart.getSingingChart(),
     ];

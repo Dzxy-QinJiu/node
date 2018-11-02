@@ -32,9 +32,11 @@ function getCharts() {
         customerChart.getRenewalCustomerTrendChart(),
         //客户续签时间统计
         customerChart.getRenewalCustomerTimeChart(),
+        /*
         customerChart.getCustomerTrendChart('dealed', '流失客户趋势(假数据)'),
         customerChart.getCustomerLossCashChart('dealed', '流失现金统计(假数据)'),
         customerChart.getCustomerZoneChart('dealed', '区域分析(假数据)'),
         customerChart.getCustomerLossReasonChart('dealed', '流失原因统计(假数据)'),
+        */
     ];
 }
