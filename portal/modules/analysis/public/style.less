@@ -1,0 +1,67 @@
+.curtao-analysis {
+    background: #f3f5f5;
+    .top-bar {
+        height: 64px;
+        margin-bottom: 16px;
+        .btn-item {
+            float: right;
+            margin-top: 17px;
+            &>div {
+                display: inline-block;
+                vertical-align: middle;
+                margin-left: 15px;
+            }
+        }
+        .ant-select-selection--multiple {
+            .ant-select-selection__choice {
+                background: none;
+                height: 32px;
+                line-height: 32px;
+                margin-top: 0;
+                color: #8da8c5;
+            }
+        }
+    }
+    .analysis-menu {
+        margin-left: 16px;
+        font-size: 14px;
+        cursor: pointer;
+        .active {
+            color: blue;
+        }
+        .ant-collapse {
+            .ant-collapse-header {
+                font-size: 15px;
+                font-weight: bold;
+            }
+            .ant-collapse-item {
+                border-bottom: none;
+                .ant-collapse-content {
+                    border-top: none;
+                    padding-left: 32px;
+                    .ant-collapse-content-box {
+                        padding-top: 5px;
+                        padding-bottom: 5px;
+                    }
+                }
+            }
+        }
+    }
+    .page-top-bar {
+        overflow: hidden;
+        .app-selector {
+            margin: 0 0 10px 16px;
+        }
+    }
+}
+
+#app .curtao-analysis .ant-table {
+    .ant-table-fixed-left .ant-table-fixed {
+        th,td {
+            border-right: 1px dashed #edf1f2 !important;
+        }
+    }
+    td.clickable {
+        cursor: pointer;
+    }
+}

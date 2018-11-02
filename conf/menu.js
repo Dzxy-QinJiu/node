@@ -188,25 +188,19 @@ class LeftMenuClass {
                 routePath: 'analysis',
                 subMenu: [
                     {
-                        id: 'OPLATE_CUSTOMER_ANALYSIS',//唯一标识
-                        name: backendIntl.get('customer.analysis', '客户分析'),
-                        routePath: 'analysis/customer',
-                        privileges: [
-                            'OPLATE_CUSTOMER_ANALYSIS_SUMMARY',
-                        ],
-                        //有这个权限，才显示入口图标
-                        showPrivileges: ['OPLATE_CUSTOMER_ANALYSIS_SUMMARY']
-                    },
-                    {
-                        id: 'OPLATE_USER_ANALYSIS',//唯一标识
-                        name: backendIntl.get('sales.user.analysis', '用户分析'),
-                        routePath: 'analysis/user',
-                        privileges: [
-                            'OPLATE_USER_ANALYSIS_SUMMARY',
-                        ],
-                        //有这个权限，才显示入口图标
-                        showPrivileges: ['OPLATE_USER_ANALYSIS_SUMMARY']
-                    },
+                        id: 'ANALYSIS',//唯一标识
+                        name: backendIntl.get('menu.customer.analysis', '运营分析'),
+                        routePath: 'analysis/analysis',
+                        privileges: [
+                            'CUSTOMER_ANALYSIS_COMMON',
+                            'CUSTOMER_ANALYSIS_MANAGER',
+                        ],
+                        //有这个权限，才显示入口图标
+                        showPrivileges: [
+                            'CUSTOMER_ANALYSIS_COMMON',
+                            'CUSTOMER_ANALYSIS_MANAGER',
+                        ]
+                    },
                     //周报统计
                     {
                         id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
