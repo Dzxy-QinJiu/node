@@ -29,3 +29,11 @@ exports.deleteProduct = function(req,res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+// 修改产品
+exports.updateProduct = function(req,res) {
+    productService.updateProduct(req, res, req.body).on('success', function(data) {
+        res.json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

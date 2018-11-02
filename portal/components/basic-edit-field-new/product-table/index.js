@@ -71,7 +71,7 @@ class ProductTable extends React.Component {
         if (_.isEmpty(columns)) {
             columns = [
                 {
-                    title: Intl.get('crm.contract.product.name', '产品名称'),
+                    title: Intl.get('common.product.name', '产品名称'),
                     dataIndex: 'name',
                     key: 'name',
                     render: (text, record, index) => {

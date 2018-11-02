@@ -242,6 +242,7 @@ var zh_CN = {
     'common.select.address.province': '省份', // 省份
     'common.company': '公司', // 公司
     'common.all.select': '全选',
+    'common.product.name': '产品名称',
 
     //公共部分--end
     'login.login': '登录',
@@ -882,6 +883,23 @@ var zh_CN = {
     'config.no.product': '暂无产品，请添加！',
     'config.product.manage': '产品管理',
     'config.product.reload': '重新获取产品',
+    'config.product.add': '添加产品',
+    'config.product.modify': '修改产品',
+    'config.product.input.name': '请输入产品名称',
+    'config.product.code': '产品编号',
+    'config.product.input.code': '请输入产品编号',
+    'config.product.desc': '产品描述',
+    'config.product.input.desc': '请输入产品描述',
+    'config.product.price': '产品单价',
+    'config.product.input.price': '请输入产品单价',
+    'config.product.input.number': '请输入数字',
+    'config.product.sales_unit': '计价单位',
+    'config.product.input.sales_unit': '请输入计价单位',
+    'config.product.spec': '规格或版本',
+    'config.product.input.spec': '请输入产品规格或版本',
+    'config.product.url': '访问地址',
+    'config.product.input.url': '请输入访问地址',
+    'config.product.create_time': '创建时间',
     //配置end
     // 通话记录start
     'call.record.caller': '呼叫者',
@@ -1354,7 +1372,6 @@ var zh_CN = {
     'crm.contract.money': '金额(元)',
     'crm.contract.no.product.info': '暂无产品信息',
     'crm.contract.check.tips': '合同额与产品总额不相等，请核对',
-    'crm.contract.product.name': '产品名称',
     'crm.contract.account.count': '账号数量',
     'crm.contract.enter.contract.money': '请输入合同额',
     'crm.contract.no.contract.money': '暂无合同额',

@@ -36,6 +36,16 @@ module.exports = {
         'privileges': [
             'PRODUCTS_MANAGE'
         ]
+    },{
+        'method': 'put',
+        'path': '/rest/product',
+        'handler': 'updateProduct',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': [
+            'PRODUCTS_MANAGE'
+        ]
     }
     ]
 };

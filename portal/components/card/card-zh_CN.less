@@ -47,7 +47,7 @@
       z-index: 5;
     }
     //创建安全域右上角字体的样式
-    .building-icon{
+    .building-icon {
       position: absolute;
       float: right;
       top: 16px;
@@ -71,6 +71,29 @@
 
   //卡片内容的样式
   .single-card {
+    &:hover {
+      .card-btn-bar {
+        .icon-delete {
+          display: inherit;
+        }
+      }
+    }
+    .card-btn-bar {
+      position: absolute;
+      right: 2px;
+      bottom: 5px;
+      & > i, & > div {
+        margin-right: 5px;
+        display: inline-block;
+        position: initial;
+      }
+      .attention-icon {
+        margin-top: -3px;
+      }
+      .icon-delete {
+        display: none;
+      }
+    }
     .position-left;
     width: 100%;
     height: 114px;

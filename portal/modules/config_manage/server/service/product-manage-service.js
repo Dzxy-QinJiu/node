@@ -35,3 +35,11 @@ exports.deleteProduct = function(req, res, productId) {
         res: res
     }, null);
 };
+//修改产品
+exports.updateProduct = function(req, res, product) {
+    return restUtil.authRest.put({
+        url: productRestApis.product,
+        req: req,
+        res: res
+    }, product);
+};
