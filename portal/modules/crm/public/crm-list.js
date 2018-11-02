@@ -1655,11 +1655,12 @@ class Crm extends React.Component {
                                         let str = Intl.get('crm.207', '共{count}个客户', { count: total });
                                         //由于合并或删除，已经不存在了的客户数，首页点击活跃客户统计表格中的活跃或非活跃客户数跳转过来时会用到
                                         const diffNum = _.get(this.props, 'location.state.diffNum');
+                                        
                                         if (diffNum) {
                                             str += ' (' + Intl.get('crm.num.customer.not.exist', '有{count}个客户已经被合并或删除后不存在了', {count: diffNum}) + ')';
                                         }
                                         return str;
-                                        },
+                                    },
 
                                     pageSize: this.state.pageSize,
                                     onChange: this.onPageChange,
