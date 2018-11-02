@@ -1,58 +1,10 @@
 /**
- * 试用合格客户数统计
+ * 本月试用合格客户数统计
  */
 
 export function getCustomerTrialQualifiedNumChart() {
-    //统计列
-    const statisticsColumns = [{
-        dataIndex: 'last_month',
-        title: '上月',
-        width: '10%',
-        render: trialQualifiedNumRender.bind(this, 'last_month_customer_ids'),
-    }, {
-        dataIndex: 'this_month',
-        title: '本月',
-        width: '10%',
-        render: trialQualifiedNumRender.bind(this, 'this_month_customer_ids'),
-    }, {
-        dataIndex: 'this_month_new',
-        title: '本月新增',
-        width: '10%',
-        render: trialQualifiedNumRender.bind(this, 'this_month_new_customer_ids'),
-    }, {
-        dataIndex: 'this_month_lose',
-        title: '本月流失',
-        width: '10%',
-        render: trialQualifiedNumRender.bind(this, 'this_month_lose_customer_ids'),
-    }, {
-        dataIndex: 'this_month_back',
-        title: '本月回流',
-        width: '10%',
-        render: trialQualifiedNumRender.bind(this, 'this_month_back_customer_ids'),
-    }, {
-        dataIndex: 'this_month_add',
-        title: '本月比上月净增',
-        width: '15%',
-    }, {
-        dataIndex: 'highest',
-        title: '历史最高',
-        width: '10%',
-    }, {
-        dataIndex: 'this_month_add_highest',
-        title: '本月比历史最高净增',
-        width: '20%',
-    }];
-
-    //表格列
-    let columns = _.cloneDeep(statisticsColumns);
-    columns.unshift({
-        title: '团队',
-        width: '10%',
-        dataIndex: 'team_name',
-    });
-
     return {
-        title: '试用合格客户数统计(假数据)',
+        title: '本月试用合格客户数统计',
         url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
         argCallback: (arg) => {
             let query = arg.query;
@@ -70,69 +22,100 @@ export function getCustomerTrialQualifiedNumChart() {
             }
         },
         layout: {sm: 24},
-        processData: data => {
-            data = data.list || [];
-            _.each(data, dataItem => {
-                _.each(statisticsColumns, column => {
-                    const key = column.dataIndex;
-                    const customerIds = _.get(dataItem, [key, 'customer_ids']);
+        chartType: 'bar',
+        processOption: (option, chartProps) => {
+            option.legend = {
+                data: [
+                    Intl.get('common.this.month', '本月'),
+                    Intl.get('common.history', '历史'),
+                ],
+            };
 
-                    if (customerIds) {
-                        dataItem[key + '_customer_ids'] = customerIds.join(',');
+            //瀑布图的tooltip内容有问题，辅助系列的数据也会显示出来，所以先把tooltip禁掉，等找到解决方案再显示出来
+            _.set(option, 'tooltip.show', false);
+
+            _.set(option, 'xAxis[0].data', [
+                Intl.get('common.this.month', '本月'),
+                Intl.get('common.this.month.add.highest', '本月比历史最高净增'),
+                Intl.get('common.history.highest', '历史最高'),
+            ]);
+
+            const serie = {
+                type: 'bar',
+                stack: 'num',
+                label: {
+                    show: true,
+                    position: 'top',
+                }
+            };
+
+            const data = chartProps.data.list;
+
+            //本月个数
+            let thisMonthNum = _.sumBy(data, 'this_month.total');
+            //本月比历史最高净增
+            let thisMonthAddHighestNum = _.sumBy(data, 'this_month_add_highest.total');
+            //历史最高
+            let highestNum = _.sumBy(data, 'highest.total');
+
+            //原始数据数组，用于在柱子上显示实际值
+            const dataArr = [thisMonthNum, thisMonthAddHighestNum, highestNum];
+
+            //本月比历史最高净增数辅助值默认为历史最高个数
+            let thisMonthAddHighestNumAssist = highestNum;
+
+            //如果本月比历史最高净增数为负值
+            if (thisMonthAddHighestNum < 0) {
+                //则本月比历史最高净增数辅助值为历史最高个数与本月比历史最高净增之和，也即历史最高个数减去本月比历史最高净增的绝对值
+                thisMonthAddHighestNumAssist = highestNum + thisMonthAddHighestNum;
+                //将本月比历史最高净增数设为其绝对值，以避免柱子显示在横轴下方
+                thisMonthAddHighestNum = Math.abs(thisMonthAddHighestNum);
+            }
+
+            //辅助系列，会在堆积的柱子中占空间，但不会显示出来，这样就能呈现出阶梯瀑布效果了
+            let serieAssist = _.extend({}, serie, {
+
+                //通过将系列项的颜色设置为透明来实现系列项的隐藏效果
+                itemStyle: {
+                    normal: {
+                        barBorderColor: 'rgba(0,0,0,0)',
+                        color: 'rgba(0,0,0,0)'
+                    },
+                    emphasis: {
+                        barBorderColor: 'rgba(0,0,0,0)',
+                        color: 'rgba(0,0,0,0)'
                     }
-
-                    dataItem[key] = dataItem[key].total;
-                });
+                },
+                data: ['-', thisMonthAddHighestNumAssist, '-'],
             });
 
-            return data;
-        },
-        chartType: 'table',
-        height: 'auto',
-        option: {
-            columns,
-        },
-        processOption: (option, chartProps) => {
-            //从返回数据里获取一下销售昵称
-            const nickName = _.get(chartProps, 'data[0].nick_name');
+            //本月系列
+            let serieThisMonth = _.extend({}, serie, {
+                name: Intl.get('common.this.month', '本月'),
+                //数据中只有本月相关数据为实际值，其他的均为空值，在堆积时会用到
+                data: [thisMonthNum,'-', '-'],
+                label: {
+                    show: true,
+                    position: 'top',
+                    //在柱子上显示其原始值
+                    formatter: params => {
+                        return dataArr[params.dataIndex];
+                    },
+                },
+            });
 
-            //若存在销售昵称，说明返回的是销售列表
-            if (nickName) {
-                //找到名称列
-                let nameColumn = _.find(option.columns, column => column.dataIndex === 'team_name');
+            //历史系列
+            let serieHistory = _.extend({}, serie, {
+                name: Intl.get('common.history', '历史'),
+                //数据中只有历史最高数为实际值，其他的均为空值，在堆积时会用到
+                data: ['-', '-', highestNum],
+            });
 
-                if (nameColumn) {
-                    //将名称列的数据索引改为指向昵称字段
-                    nameColumn.dataIndex = 'nick_name';
-                    //将名称列的标题改为销售
-                    nameColumn.title = '销售';
-                }
-            }
+            option.series = [
+                serieAssist,
+                serieThisMonth,
+                serieHistory
+            ];
         },
     };
-}
-
-function handleTrialQualifiedNumClick(customerIds) {
-    history.push({
-        from: 'sales_home',
-        trialQualifiedCustomerIds: customerIds
-    }, '/crm', {});
-}
-
-function trialQualifiedNumRender(customerIdsField, text, record) {
-    const customerIds = record[customerIdsField];
-
-    if (customerIds) {
-        return (
-            <span onClick={handleTrialQualifiedNumClick.bind(this, customerIds)} style={{cursor: 'pointer'}}>
-                {text}
-            </span>
-        );
-    } else {
-        return (
-            <span>
-                {text}
-            </span>
-        );
-    }
 }
