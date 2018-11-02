@@ -34,22 +34,6 @@ var AppUserManage = require('MOD_DIR/app_user_manage/public');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 const showTypeConstant = constantUtil.SHOW_TYPE_CONSTANT;
 
-//获取叶子节点
-function getLeafNodes(obj, key) {
-    let leafNodes = [];
-    const child = obj[key];
-
-    if (child) {
-        _.each(child, item => {
-            leafNodes = leafNodes.concat(getLeafNodes(item, key));
-        });
-    } else {
-        leafNodes.push(obj);
-    }
-
-    return leafNodes;
-}
-
 //客户分析
 class CustomerAnalysis extends React.Component {
     static propTypes = {
@@ -428,37 +412,6 @@ class CustomerAnalysis extends React.Component {
         });
     };
 
-    //处理试用合格客户数统计数字点击事件
-    handleTrialQualifiedNumClick = (customerIds) => {
-        this.setState({
-            isShowCustomerTable: true,
-            crmLocationState: {
-                from: 'sales_home',
-                analysisType: 'trialQualified',
-                trialQualifiedCustomerIds: customerIds
-            }
-        });
-    };
-
-    //试用合格客户数统计数字渲染函数
-    trialQualifiedNumRender = (customerIdsField, text, record) => {
-        const customerIds = record[customerIdsField];
-
-        if (customerIds) {
-            return (
-                <span onClick={this.handleTrialQualifiedNumClick.bind(this, customerIds)} style={{cursor: 'pointer'}}>
-                    {text}
-                </span>
-            );
-        } else {
-            return (
-                <span>
-                    {text}
-                </span>
-            );
-        }
-    };
-
     //获取试用合格客户数统计图表
     getTrialQualifiedChart = () => {
         //统计列
@@ -466,27 +419,27 @@ class CustomerAnalysis extends React.Component {
             dataIndex: 'last_month',
             title: Intl.get('user.time.prev.month', '上月'),
             width: '10%',
-            render: this.trialQualifiedNumRender.bind(this, 'last_month_customer_ids'),
+            render: this.customerNumRender.bind(this, 'last_month_customer_ids'),
         }, {
             dataIndex: 'this_month',
             title: Intl.get('common.this.month', '本月'),
             width: '10%',
-            render: this.trialQualifiedNumRender.bind(this, 'this_month_customer_ids'),
+            render: this.customerNumRender.bind(this, 'this_month_customer_ids'),
         }, {
             dataIndex: 'this_month_new',
             title: Intl.get('common.this.month.new', '本月新增'),
             width: '10%',
-            render: this.trialQualifiedNumRender.bind(this, 'this_month_new_customer_ids'),
+            render: this.customerNumRender.bind(this, 'this_month_new_customer_ids'),
         }, {
             dataIndex: 'this_month_lose',
             title: Intl.get('common.this.month.lose', '本月流失'),
             width: '10%',
-            render: this.trialQualifiedNumRender.bind(this, 'this_month_lose_customer_ids'),
+            render: this.customerNumRender.bind(this, 'this_month_lose_customer_ids'),
         }, {
             dataIndex: 'this_month_back',
             title: Intl.get('common.this.month.back', '本月回流'),
             width: '10%',
-            render: this.trialQualifiedNumRender.bind(this, 'this_month_back_customer_ids'),
+            render: this.customerNumRender.bind(this, 'this_month_back_customer_ids'),
         }, {
             dataIndex: 'this_month_add',
             title: Intl.get('common.this.month.add', '本月比上月净增'),
@@ -547,7 +500,7 @@ class CustomerAnalysis extends React.Component {
                         const customerIds = _.get(dataItem, [key, 'customer_ids']);
 
                         if (customerIds) {
-                            dataItem[key + '_customer_ids'] = customerIds.join(',');
+                            dataItem[key + '_customer_ids'] = customerIds;
                         }
 
                         const highestDate = _.get(dataItem, [key, 'highest_date']);
@@ -745,64 +698,28 @@ class CustomerAnalysis extends React.Component {
         return chart;
     };
 
-    //活跃客户数渲染函数
-    activeCustomerNumRender = (type, text, record) => {
-        if (parseInt(text) === 0) {
-            return <span>{text}</span>;
-        } else {
-            //把数量转为整数
-            const num = parseInt(text);
+    //客户数渲染函数
+    customerNumRender = (idsField, text, record) => {
+        //把数量转为整数
+        const num = parseInt(text);
 
-            return <span style={{cursor: 'pointer'}} onClick={this.handleActiveCustomerNumClick.bind(this, type, record.name, num)}>{text}</span>;
+        if (num === 0) {
+            return <span>{num}</span>;
+        } else {
+            const customerIds = record[idsField].join(',');
+
+            return <span style={{cursor: 'pointer'}} onClick={this.handleCustomerNumClick.bind(this, customerIds, num)}>{num}</span>;
         }
     };
 
-    //处理活跃客户数点击事件
-    handleActiveCustomerNumClick = (type, name, num) => {
-        //查询条件
-        let condition = {
-            activeType: type,
-            startTime: this.props.startTime,
-            endTime: this.props.endTime,
-            name,
-            num
-        };
-
-        //团队树
-        const teamTree = this.props.originSalesTeamTree;
-        //当前筛选条件团队
-        const curConditionTeam = this.props.currShowSalesTeam;
-        //当前筛选条件团队的子团队
-        let curConditionTeamChild = [];
-
-        //如果当前筛选条件团队不为空
-        if (curConditionTeam) {
-            //获取当前筛选条件团队的子团队
-            curConditionTeamChild = curConditionTeam.child_groups; 
-        //否则
-        } else {
-            //当前筛选条件团队的子团队为整个团队树的子团队
-            curConditionTeamChild =getLeafNodes(teamTree, 'child_groups'); 
-        }
-
-        //如果当前筛选条件有子团队，说明此时表格中的每行对应一个团队
-        //否则，说明此时表格中的每行对应一个成员
-        if (curConditionTeamChild) {
-            //根据当前行的名称查找对应的团队
-            const team = _.find(curConditionTeamChild, teamItem => teamItem.group_name === name);
-
-            if (team) {
-                //条件中加入团队id
-                condition.teamId = team.group_id;
-            }
-        }
-
+    //处理客户数点击事件
+    handleCustomerNumClick = (customerIds, num) => {
         this.setState({
             isShowCustomerTable: true,
             crmLocationState: {
                 from: 'sales_home',
-                analysisType: 'activeCustomer',
-                condition
+                customerIds,
+                num
             }
         });
     };
@@ -844,15 +761,7 @@ class CustomerAnalysis extends React.Component {
                     value: 'day',
                 },
             ],
-            processData: data => {
-                data = _.get(data, 'list') || [];
-                _.each(data, item => {
-                    //计算不活跃客户数，并加入数据集中
-                    item.inactive = item.valid - item.active;
-                });
-
-                return data;
-            },
+            dataField: 'list',
             chartType: 'table',
             option: {
                 pagination: false,
@@ -870,12 +779,12 @@ class CustomerAnalysis extends React.Component {
                     {
                         title: Intl.get('active.customer.number', '活跃客户数'),
                         dataIndex: 'active',
-                        render: this.activeCustomerNumRender.bind(this, 'active')
+                        render: this.customerNumRender.bind(this, 'active_list')
                     },
                     {
                         title: Intl.get('inactive.customer.number', '不活跃客户数'),
-                        dataIndex: 'inactive',
-                        render: this.activeCustomerNumRender.bind(this, 'inactive')
+                        dataIndex: 'unactive',
+                        render: this.customerNumRender.bind(this, 'unactive_list')
                     },
                     {
                         title: Intl.get('effective.customer.activity.rate', '有效客户活跃率'),

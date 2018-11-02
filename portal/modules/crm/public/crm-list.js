@@ -260,56 +260,18 @@ class Crm extends React.Component {
             this.setFilterField({ filterField, filterValue });
 
         } else if (!_.isEmpty(locationState)) {
-            const from = locationState.from;
-
             //如果是从首页跳转过来的
-            if (from === 'sales_home') {
-                let pageSize = 20;
-                let params = {};
-
-                //如果是从首页试用合格客户统计跳转过来的
-                if (locationState.analysisType === 'trialQualified') {
-                    const trialQualifiedCustomerIds = locationState.trialQualifiedCustomerIds;
-                    pageSize = trialQualifiedCustomerIds.split(',').length;
-                    params.data = JSON.stringify({id: trialQualifiedCustomerIds});
-                //如果是从首页有效客户统计跳转过来的
-                } else if (locationState.analysisType === 'activeCustomer') {
-                    const condition = locationState.condition;
-                    pageSize = condition.num;
-                    let paramsData = {};
-                    let rangParams = {
-                        type: 'time',
-                        name: 'last_login_time'
-                    };
-
-                    //如果是要查看活跃客户，则将查询时间段设为首页的跳转过来时的查询时间段
-                    if (condition.activeType === 'active') {
-                        rangParams.from = condition.startTime;
-                        rangParams.to = condition.endTime;
-                    //否则，查询最后登录时间截止到首页的跳转过来时的查询时间段的开始时间，来查出不活跃客户
-                    //这样查询不太准确，目前由于接口不支持查询不在某个时间段的数据，所以还没有更好的方式
-                    } else {
-                        rangParams.to = condition.startTime;
-                    }
-
-                    rangParams = [rangParams];
-
-                    //如果是按团队查询
-                    if (condition.teamId) {
-                        paramsData.sales_team_id = condition.teamId;
-                    //否则是按成员查询
-                    } else {
-                        paramsData.user_name = condition.name;
-                    }
-
-                    params.data = JSON.stringify(paramsData);
-                    params.rangParams = JSON.stringify(rangParams);
-                }
+            if (locationState.from === 'sales_home') {
+                const pageSize = locationState.num;
+                let params = {
+                    data: JSON.stringify({id: locationState.customerIds})
+                };
 
                 //设置了关注客户置顶后的处理
                 if (this.state.isConcernCustomerTop) {
                     params = this.handleSortParams(params);
                 }
+
                 CrmAction.queryCustomer(params, pageSize, this.state.sorter);
             }
         } else {
