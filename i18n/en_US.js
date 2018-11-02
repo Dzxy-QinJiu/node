@@ -238,6 +238,7 @@ var en_US = {
     'common.callback.person': 'Callback person', // '回访人',
     'common.has.callback': 'Has callbacked', // '已回访',
     'common.callback.customer': 'Callback customer', // '回访客户',
+    'common.product.name': 'Product name', // 产品名称
     //公共部分--end
     'login.login': 'Login',//登录
     'login.register': 'Register',//注册
@@ -1008,6 +1009,24 @@ var en_US = {
     'config.no.product': 'There is no product, please add!',//暂无产品，请添加！
     'config.product.mange': 'Product manage',//产品管理
     'config.product.reload': 'Reload product',//重新获取产品
+    'config.product.add': 'Add product',//添加产品
+    'config.product.modify': 'Modify product',//修改产品
+    'config.product.input.name': 'Please input production name',//请输入产品名称
+    'config.product.code': 'Production code',//产品编号
+    'config.product.input.code': 'Please input production code',//请输入产品编号
+    'config.product.desc': 'Production desc',//产品描述
+    'config.product.input.desc': 'Please input production desc',//请输入产品描述
+    'config.product.price': 'Price',//产品单价
+    'config.product.input.price': 'Please input price',//请输入产品单价
+    'config.product.input.number': 'Please input number',
+    'config.product.sales_unit': 'Unit',//计价单位
+    'config.product.input.sales_unit': 'Please input unit',//请输入计价单位
+    'config.product.spec': 'Specifications',//规格或版本
+    'config.product.input.spec': 'Please input specifications',//请输入产品规格或版本
+    'config.product.url': 'URL',//访问地址
+    'config.product.input.url': 'Please input url',//请输入访问地址
+    'config.product.create_time': 'Create time',//创建时间
+
     //配置end
     // 通话记录start
     'call.record.caller': 'Caller', // 呼叫者
@@ -1473,7 +1492,6 @@ var en_US = {
     'crm.contract.money': 'Amount (yuan)', // 金额(元)
     'crm.contract.no.product.info': 'No product information', // 暂无产品信息
     'crm.contract.check.tips': 'The contract amount is not equal to the total product amount. Please check it.', // 合同额与产品总额不相等，请核对
-    'crm.contract.product.name': 'Product name', // 产品名称
     'crm.contract.account.count': 'Number of accounts', // 账号数量
     'crm.contract.enter.contract.money': 'Please enter the contract amount', // 请输入合同额
     'crm.contract.no.contract.money': 'No contract amount', // 暂无合同额

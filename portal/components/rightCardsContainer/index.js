@@ -6,13 +6,14 @@ var React = require('react');
 var language = require('../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('./rightCardsContainer-es_VE.less');
-}else if (language.lan() === 'zh'){
+} else if (language.lan() === 'zh') {
     require('./rightCardsContainer-zh_CN.less');
 }
 
 var PrivilegeChecker = require('../privilege/checker').PrivilegeChecker;
 var CardListView = require('../cardList');
 import {SearchInput} from 'antc';
+
 var Icon = require('antd').Icon;
 var Button = require('antd').Button;
 var noop = function() {
@@ -25,10 +26,10 @@ var CONSTANTS = {
 };
 
 class RihgtCardsContainer extends React.Component {
-     static defaultProps = {
-         showAddBtn: false,
-         renderAddAndImportBtns: noop
-     };
+    static defaultProps = {
+        showAddBtn: false,
+        renderAddAndImportBtns: noop
+    };
 
     showCardForm = () => {
         this.props.showCardForm('add');
@@ -49,11 +50,12 @@ class RihgtCardsContainer extends React.Component {
                         </div>
                     )}
                     {this.props.type === CONSTANTS.APP_MANAGE || this.props.type === CONSTANTS.USER_MANAGE ? (
-                        <Button type="ghost" className="tag-filter-btn btn-item" onClick={this.props.toggleFilterPanel}>
+                        <Button type="ghost" className="tag-filter-btn btn-item"
+                            onClick={this.props.toggleFilterPanel}>
 
                             <ReactIntl.FormattedMessage id="common.filter" defaultMessage="筛选"/>
-                            { this.props.isPanelShow ? <Icon type="up"/> :
-                                <Icon type="down"/> }
+                            {this.props.isPanelShow ? <Icon type="up"/> :
+                                <Icon type="down"/>}
                         </Button>) : null
                     }
                     {this.props.type === CONSTANTS.USER_MANAGE ? null : (this.props.type === CONSTANTS.MY_APP ? (
@@ -95,6 +97,7 @@ class RihgtCardsContainer extends React.Component {
                         showAppOverViewPanel={this.props.showAppOverViewPanel}
                         renderAddAndImportBtns={this.props.renderAddAndImportBtns}
                         showAddBtn={this.props.showAddBtn}
+                        deleteItem={this.props.deleteItem}
                     />
                 </div>
             </div>

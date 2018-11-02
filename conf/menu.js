@@ -1,6 +1,7 @@
 var _ = require('lodash');
 //后端国际化
 var BackendIntl = require('../portal/lib/utils/backend_intl');
+
 class LeftMenuClass {
     constructor(req) {
         this.req = req;
@@ -199,11 +200,17 @@ class LeftMenuClass {
                         id: 'OPENAPP',
                         name: backendIntl.get('app.title', '应用管理'),
                         routePath: 'background_management/openApp',
-                        privileges: [
-
-                        ],
+                        privileges: [],
                         //有这个权限，才显示入口图标
                         showPrivileges: ['ROLEP_RIVILEGE_ROLE_CLIENT_LIST']
+                    },
+                    {
+                        id: 'PRODUCTIONS',
+                        name: backendIntl.get('config.product.manage', '产品管理'),
+                        routePath: 'background_management/products',
+                        privileges: [],
+                        //有这个权限，才显示入口图标
+                        showPrivileges: ['PRODUCTS_MANAGE', 'GET_PRODUCTS_LIST']
                     }
                 ]
             },
@@ -388,7 +395,7 @@ class LeftMenuClass {
             },
             {
                 id: 'APPLICATION_APPLY_MANAGEMENT',
-                name: backendIntl.get('menu.leave.apply.list.management','申请审批'),
+                name: backendIntl.get('menu.leave.apply.list.management', '申请审批'),
                 routePath: 'application',
                 subMenu: [{
                     id: 'BUSSINESS_APPLY_MANAGEMENT',
@@ -399,25 +406,26 @@ class LeftMenuClass {
                     ],
                     //有这个权限，才显示入口图标
                     showPrivileges: ['BUSINESS_TRIP_MANAGE']
-                },{
+                }, {
                     id: 'SALES_BUSSINESS_APPLY_MANAGEMENT',
-                    name: backendIntl.get('leave.apply.sales.oppotunity','销售机会'),
+                    name: backendIntl.get('leave.apply.sales.oppotunity', '销售机会'),
                     routePath: 'application/sales_opportunity',
                     privileges: [
                         'MEMBER_BUSINESSOPPO_MANAGE'
                     ],
                     //有这个权限，才显示入口图标
                     showPrivileges: ['MEMBER_BUSINESSOPPO_MANAGE']
-                },{
+                }, {
                     id: 'LEAVE_APPLY_MANAGEMENT',
-                    name: backendIntl.get('leave.apply.leave.application','请假申请'),
+                    name: backendIntl.get('leave.apply.leave.application', '请假申请'),
                     routePath: 'application/leave_apply',
                     privileges: [
                         'MEMBER_LEAVE_MANAGE'
                     ],
                     //有这个权限，才显示入口图标
                     showPrivileges: ['MEMBER_LEAVE_MANAGE']
-                }]}
+                }]
+            }
 
         ];
 

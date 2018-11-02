@@ -58,12 +58,12 @@ class CardList extends React.Component {
     componentDidMount() {
         $('body').css('overflow', 'hidden');
         this.getInitialCardCount();
-        
+
         $(window).on('resize', this.changeWindowSize);
         cardEmitter.on(cardEmitter.ADD_CARD, this.addCard);
     }
    getInitialCardCount= () => {
-      
+
        // 初始加载卡片的个数
        var firstLoaderCount = this.getCardsCount();
        this.props.updatePageSize(firstLoaderCount);
@@ -287,6 +287,8 @@ class CardList extends React.Component {
                     showAppOverViewPanel={_this.props.showAppOverViewPanel}
                     type={_this.props.type}
                     removeFailRealm={_this.props.removeFailRealm}
+                    showDelete={card.showDelete}
+                    deleteItem={_this.props.deleteItem}
                 />;
             });
         }
