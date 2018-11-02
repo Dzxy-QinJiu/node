@@ -2525,5 +2525,7 @@ var en_US = {
     'deal.stage': 'Deal stage',//阶段
     'deal.budget': 'Deal value(10,000)',//预算
     'deal.no.more.tip': 'There is no more deals',//没有更多订单了
+    'deal.total.tip': 'A total of {count} deals',//共{count}个订单
+    'deal.stage.select.tip': 'Please select deal stage',//请选择订单阶段
 };
 export default en_US;

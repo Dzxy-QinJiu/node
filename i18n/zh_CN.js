@@ -2538,5 +2538,7 @@ var zh_CN = {
     'deal.stage': '阶段',
     'deal.budget': '预算（万）',
     'deal.no.more.tip': '没有更多订单了',
+    'deal.total.tip': '共{count}个订单',
+    'deal.stage.select.tip': '请选择订单阶段',
 };
 export default zh_CN;

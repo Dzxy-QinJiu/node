@@ -51,10 +51,14 @@ dealManageStore.prototype.getDealList = function(resultObj) {
         this.dealListObj.total = _.get(resultObj, 'data.total', 0);
         let curListLength = _.get(this.dealListObj, 'list.length');
         this.dealListObj.lastId = _.get(this.dealListObj, `list[${curListLength - 1}].id`, '');
-        if (curListLength < this.dealListObj.total) {
+        if (curListLength >= this.dealListObj.total) {
             this.dealListObj.listenScrollBottom = false;
         }
     }
+};
+
+dealManageStore.prototype.addOneDeal = function(deal) {
+    this.dealListObj.list.unshift(deal);
 };
 
 export default alt.createStore(dealManageStore, 'dealManageStore');

@@ -4,14 +4,20 @@
  * Created by wangliping on 2018/10/31.
  */
 require('./style/index.less');
+import {Button} from 'antd';
 import {AntcTable} from 'antc';
 import TopNav from 'CMP_DIR/top-nav';
 import Spinner from 'CMP_DIR/spinner';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
+import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 import dealAction from './action';
 import dealStore from './store';
+import DealForm from './views/deal-form';
+
 const PAGE_SIZE = 20;
-const TOP_NAV_HEIGHT = 64, TOTAL_HEIGHT = 40;
+const TOP_NAV_HEIGHT = 64,//头部导航区高度
+    TOTAL_HEIGHT = 40,//总数的高度
+    TH_HEIGHT = 50;//表头的高度
 class DealManage extends React.Component {
     constructor(props) {
         super(props);
@@ -19,7 +25,7 @@ class DealManage extends React.Component {
             ...dealStore.getState(),
             sort_field: 'time',//排序字段,默认：创建时间
             sort_order: 'descend',//倒序
-
+            isDealFormShow: false,//是否展示添加订单面版
         };
     }
 
@@ -104,37 +110,70 @@ class DealManage extends React.Component {
         if (dealListObj.isLoading && !dealListObj.lastId) {
             return (<Spinner />);
         } else if (_.get(dealListObj, 'list[0]')) {
-            let tableHeight = $('body').height() - TOP_NAV_HEIGHT - TOTAL_HEIGHT;
+            let tableHeight = $('body').height() - TOP_NAV_HEIGHT - TOTAL_HEIGHT - TH_HEIGHT;
             return (
-                <AntcTable
-                    columns={this.getDealColumns()}
-                    dataSource={dealListObj.list}
-                    util={{zoomInSortArea: true}}
-                    onChange={this.onTableChange}
-                    pagination={false}
-                    scroll={{y: tableHeight}}
-                    dropLoad={{
-                        listenScrollBottom: dealListObj.listenScrollBottom,
-                        handleScrollBottom: this.handleScrollBottom,
-                        loading: dealListObj.isLoading === 'loading',
-                        showNoMoreDataTip: this.showNoMoreDataTip(),
-                        noMoreDataText: Intl.get('deal.no.more.tip', '没有更多订单了')
-                    }}
-                />);
+                <div className="deal-table-container" style={{height: tableHeight}}>
+                    <AntcTable
+                        columns={this.getDealColumns()}
+                        dataSource={dealListObj.list}
+                        util={{zoomInSortArea: true}}
+                        onChange={this.onTableChange}
+                        pagination={false}
+                        scroll={{y: tableHeight}}
+                        dropLoad={{
+                            listenScrollBottom: dealListObj.listenScrollBottom,
+                            handleScrollBottom: this.handleScrollBottom,
+                            loading: dealListObj.isLoading === 'loading',
+                            showNoMoreDataTip: this.showNoMoreDataTip(),
+                            noMoreDataText: Intl.get('deal.no.more.tip', '没有更多订单了')
+                        }}
+                    />
+                </div>);
         } else {
             return (
                 <NoDataIntro noDataTip={dealListObj.errorMsg || Intl.get('deal.no.data', '暂无订单')}/>);
         }
     }
 
+    showDealForm = () => {
+        this.setState({isDealFormShow: true});
+    }
+    hideDealForm = () => {
+        this.setState({isDealFormShow: false});
+    }
+
     render() {
         return (
             <div className="deal-manage-container">
-                <TopNav></TopNav>
+                <TopNav>
+                    <PrivilegeChecker check="CUSTOMER_ADD">
+                        <Button className='btn-item add-deal-btn' onClick={this.showDealForm}>
+                            {Intl.get('crm.161', '添加订单')}
+                        </Button>
+                    </PrivilegeChecker>
+                </TopNav>
                 <div className="deal-manage-content">
                     {this.renderDealList()}
+                    {_.get(this.state, 'dealListObj.total') ?
+                        <div className="summary_info">
+                            <ReactIntl.FormattedMessage
+                                id="deal.total.tip"
+                                defaultMessage={'共{count}个订单'}
+                                values={{
+                                    'count': _.get(this.state, 'dealListObj.total')
+                                }}
+                            />
+                        </div> : null
+                    }
                 </div>
-
+                {this.state.isDealFormShow ? (
+                    <DealForm
+                        hideDealForm={this.hideDealForm}
+                        // addOne={this.addOne}
+                        // showRightPanel={this.showRightPanel}
+                        dealData={this.state.currDeal}
+                    />
+                ) : null}
             </div>);
     }
 }

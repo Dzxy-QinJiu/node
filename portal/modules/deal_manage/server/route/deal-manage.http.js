@@ -8,5 +8,13 @@ module.exports = {
             needLogin: true
         },
         privileges: ['CRM_MANAGER_LIST_SALESOPPORTUNITY', 'CRM_USER_LIST_SALESOPPORTUNITY']
+    }, {
+        method: 'post',
+        path: '/rest/deal',
+        handler: 'addDeal',
+        passport: {
+            needLogin: true
+        },
+        privileges: []
     }]
 };

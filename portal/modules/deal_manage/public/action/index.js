@@ -7,7 +7,8 @@ import dealAjax from '../ajax';
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
 function dealManageAction() {
     this.generateActions(
-        'setInitData'
+        'setInitData',
+        'addOneDeal'
     );
     //获取订单列表
     this.getDealList = function(params, body, query) {
