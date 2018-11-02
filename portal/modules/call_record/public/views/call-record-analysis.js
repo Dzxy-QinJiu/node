@@ -156,7 +156,7 @@ class CallRecordAnalyis extends React.Component {
     };
 
     // 获取团队或成员的参数
-    getTeamMemberParam = () => {
+    getTeamMemberParam = (hasReturnType) => {
         let teamList = this.state.teamList.list; // 团队数据
         let memberList = this.state.memberList.list; // 成员数据
         let secondSelectValue = this.state.secondSelectValue;
@@ -168,8 +168,13 @@ class CallRecordAnalyis extends React.Component {
             }
         } else { // 成员时
             if (this.state.secondSelectValue === LITERAL_CONSTANT.ALL) { // 全部时
-                let userIdArray = _.map(this.state.memberList.list, 'id');
-                params.user_id = userIdArray.join(',');
+                //如果参数中可以传return_type，就直接传user
+                if (hasReturnType) {
+                    params.return_type = 'user';
+                } else {//参数中没有return_type的，需要把所有的user_id传过去
+                    let userIdArray = _.map(this.state.memberList.list, 'id');
+                    params.user_id = userIdArray.join(',');
+                }
             } else if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体成员时
                 let secondSelectMemberId = this.getTeamOrMemberId(memberList, secondSelectValue);
                 params.user_id = secondSelectMemberId.join(','); // 成员
@@ -291,12 +296,14 @@ class CallRecordAnalyis extends React.Component {
         };
         let pathParam = commonMethodUtil.getParamByPrivilege();
         if (this.state.teamList.list.length) { // 有团队时（普通销售时没有团队的）
-            let teamMemberParam = this.getTeamMemberParam();
+            let teamMemberParam = this.getTeamMemberParam(true);
             if (teamMemberParam) {
                 if (teamMemberParam.sales_team_id) {
                     queryParams.team_ids = teamMemberParam.sales_team_id;
                 } else if (teamMemberParam.user_id) {
                     queryParams.member_ids = teamMemberParam.user_id;
+                } else if (teamMemberParam.return_type) {
+                    queryParams.return_type = teamMemberParam.return_type;
                 }
             }
         }
