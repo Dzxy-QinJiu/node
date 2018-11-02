@@ -1172,6 +1172,7 @@ var en_US = {
     'crm.205': 'Add labels', // 添加标签
     'crm.206': 'Update labels',//更新标签
     'crm.207': 'A total of {count} customer',//共{count}个客户
+    'crm.num.customer.not.exist': '{count} customers that have been merged or deleted do not exist',//有{count}个客户已经被合并或删除后不存在了,
     'crm.208': 'Failed to get the customer details', // 查看客户详情失败!
     'crm.209': 'Note: no more than 300 customers can be imported each time',//注意：每次导入的客户数量不能超过300条
     'crm.211': 'Trace content',//跟进内容
@@ -1380,6 +1381,7 @@ var en_US = {
     'active.customer.trends.last.month': 'active customer trends in the last month',//近一月活跃客户趋势
     'effective.customer.activity.rate': 'effective customer activity rate',//有效客户活跃率
     'active.customer.number': 'active customer number',//活跃客户数
+    'inactive.customer.number': 'inactive customer number',//不活跃客户数
     'effective.customer.number': 'efficient customer number',//有效客户数
     'effective.customer.statistics': 'efficient customer statistics',//有效客户统计
     'oplate_customer_analysis.industryCustomerOverlay': 'Trial customer coverage rate of all industries', //'各行业试用客户覆盖率',

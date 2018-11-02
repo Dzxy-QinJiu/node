@@ -412,36 +412,6 @@ class CustomerAnalysis extends React.Component {
         });
     };
 
-    //处理试用合格客户数统计数字点击事件
-    handleTrialQualifiedNumClick = (customerIds) => {
-        this.setState({
-            isShowCustomerTable: true,
-            crmLocationState: {
-                from: 'sales_home',
-                trialQualifiedCustomerIds: customerIds
-            }
-        });
-    };
-
-    //试用合格客户数统计数字渲染函数
-    trialQualifiedNumRender = (customerIdsField, text, record) => {
-        const customerIds = record[customerIdsField];
-
-        if (customerIds) {
-            return (
-                <span onClick={this.handleTrialQualifiedNumClick.bind(this, customerIds)} style={{cursor: 'pointer'}}>
-                    {text}
-                </span>
-            );
-        } else {
-            return (
-                <span>
-                    {text}
-                </span>
-            );
-        }
-    };
-
     //获取试用合格客户数统计图表
     getTrialQualifiedChart = () => {
         //统计列
@@ -449,27 +419,27 @@ class CustomerAnalysis extends React.Component {
             dataIndex: 'last_month',
             title: Intl.get('user.time.prev.month', '上月'),
             width: '10%',
-            render: this.trialQualifiedNumRender.bind(this, 'last_month_customer_ids'),
+            render: this.customerNumRender.bind(this, 'last_month_customer_ids'),
         }, {
             dataIndex: 'this_month',
             title: Intl.get('common.this.month', '本月'),
             width: '10%',
-            render: this.trialQualifiedNumRender.bind(this, 'this_month_customer_ids'),
+            render: this.customerNumRender.bind(this, 'this_month_customer_ids'),
         }, {
             dataIndex: 'this_month_new',
             title: Intl.get('common.this.month.new', '本月新增'),
             width: '10%',
-            render: this.trialQualifiedNumRender.bind(this, 'this_month_new_customer_ids'),
+            render: this.customerNumRender.bind(this, 'this_month_new_customer_ids'),
         }, {
             dataIndex: 'this_month_lose',
             title: Intl.get('common.this.month.lose', '本月流失'),
             width: '10%',
-            render: this.trialQualifiedNumRender.bind(this, 'this_month_lose_customer_ids'),
+            render: this.customerNumRender.bind(this, 'this_month_lose_customer_ids'),
         }, {
             dataIndex: 'this_month_back',
             title: Intl.get('common.this.month.back', '本月回流'),
             width: '10%',
-            render: this.trialQualifiedNumRender.bind(this, 'this_month_back_customer_ids'),
+            render: this.customerNumRender.bind(this, 'this_month_back_customer_ids'),
         }, {
             dataIndex: 'this_month_add',
             title: Intl.get('common.this.month.add', '本月比上月净增'),
@@ -530,7 +500,7 @@ class CustomerAnalysis extends React.Component {
                         const customerIds = _.get(dataItem, [key, 'customer_ids']);
 
                         if (customerIds) {
-                            dataItem[key + '_customer_ids'] = customerIds.join(',');
+                            dataItem[key + '_customer_ids'] = customerIds;
                         }
 
                         const highestDate = _.get(dataItem, [key, 'highest_date']);
@@ -728,6 +698,36 @@ class CustomerAnalysis extends React.Component {
         return chart;
     };
 
+    //客户数渲染函数
+    customerNumRender = (idsField, text, record) => {
+        //把数量转为整数
+        const num = parseInt(text);
+
+        if (num === 0) {
+            return <span>{num}</span>;
+        } else {
+            const customerIds = record[idsField];
+            const customerIdsStr = record[idsField].join(',');
+                                               //由于合并或删除，已经不存在了的客户数
+            const diffNum = num - customerIds.length;
+
+            return <span style={{cursor: 'pointer'}} onClick={this.handleCustomerNumClick.bind(this, customerIdsStr, num, diffNum)}>{num}</span>;
+        }
+    };
+
+    //处理客户数点击事件
+    handleCustomerNumClick = (customerIds, num, diffNum) => {
+        this.setState({
+            isShowCustomerTable: true,
+            crmLocationState: {
+                from: 'sales_home',
+                customerIds,
+                num,
+                diffNum
+            }
+        });
+    };
+
     //获取图表列表
     getCharts = () => {
         //表格内容高度
@@ -765,8 +765,8 @@ class CustomerAnalysis extends React.Component {
                     value: 'day',
                 },
             ],
-            chartType: 'table',
             dataField: 'list',
+            chartType: 'table',
             option: {
                 pagination: false,
                 scroll: {y: 170},
@@ -783,6 +783,12 @@ class CustomerAnalysis extends React.Component {
                     {
                         title: Intl.get('active.customer.number', '活跃客户数'),
                         dataIndex: 'active',
+                        render: this.customerNumRender.bind(this, 'active_list')
+                    },
+                    {
+                        title: Intl.get('inactive.customer.number', '不活跃客户数'),
+                        dataIndex: 'unactive',
+                        render: this.customerNumRender.bind(this, 'unactive_list')
                     },
                     {
                         title: Intl.get('effective.customer.activity.rate', '有效客户活跃率'),
