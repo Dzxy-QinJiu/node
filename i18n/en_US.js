@@ -2517,6 +2517,13 @@ var en_US = {
     'schedule.expired.call.in.phone.num': 'dial your phone number',//拨打过您的电话
     'config.integrated.clue.manage': 'Clue integration',//线索同步
     'config.integrated.clue.no.list': 'There is no clue integration',//暂无线索集成
-    'failed.get.config.integrate.list': 'Failed to get integrated lists'//获取线索集成列表失败
+    'failed.get.config.integrate.list': 'Failed to get integrated lists',//获取线索集成列表失败
+    /* 订单（交易）-start*/
+    'deal.manage': 'Deal manage',//订单管理
+    'deal.list.get.failed': 'Failed to get deal list',//获取订单列表失败
+    'deal.no.data': 'No deal',//暂无订单
+    'deal.stage': 'Deal stage',//阶段
+    'deal.budget': 'Deal value(10,000)',//预算
+    'deal.no.more.tip': 'There is no more deals',//没有更多订单了
 };
 export default en_US;

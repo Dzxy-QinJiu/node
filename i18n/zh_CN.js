@@ -2531,6 +2531,12 @@ var zh_CN = {
     'schedule.expired.call.in.phone.num': '拨打过您的电话',
     'config.integrated.clue.manage': '线索同步',
     'config.integrated.clue.no.list': '暂无线索集成',
-    'failed.get.config.integrate.list': '获取线索集成列表失败'
+    'failed.get.config.integrate.list': '获取线索集成列表失败',
+    'deal.manage': '订单管理',
+    'deal.list.get.failed': '获取订单列表失败',
+    'deal.no.data': '暂无订单',
+    'deal.stage': '阶段',
+    'deal.budget': '预算（万）',
+    'deal.no.more.tip': '没有更多订单了',
 };
 export default zh_CN;

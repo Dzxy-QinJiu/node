@@ -36,6 +36,7 @@ const menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
 const menuShortNamesMap = {
     'crm': Intl.get('call.record.customer', '客户'),
     'clue_customer': Intl.get('crm.sales.clue', '线索'),
+    'deal_manage': Intl.get('user.apply.detail.order', '订单'),
     'call_record': Intl.get('menu.shortName.call', '通话'),
     'user': Intl.get('crm.detail.user', '用户'),
     'analysis': Intl.get('user.detail.analysis', '分析'),

@@ -43,6 +43,17 @@ class LeftMenuClass {
                 showPrivileges: ['CLUECUSTOMER_VIEW']
             },
             {
+                id: 'DEAL_MANAGE',
+                name: backendIntl.get('deal.manage', '订单管理'),
+                routePath: 'deal_manage',
+                privileges: [
+                    //TODO 换成订单的权限
+                    'CRM_REPEAT'
+                ],
+                //有这个权限，才显示入口图标 TODO 换成订单的权限
+                showPrivileges: ['CRM_REPEAT']
+            },
+            {
                 id: 'CALL_RECORD',
                 name: backendIntl.get('menu.call', '通话记录'),
                 routePath: 'call_record',
