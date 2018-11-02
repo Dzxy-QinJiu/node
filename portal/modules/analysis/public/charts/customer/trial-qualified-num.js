@@ -104,7 +104,7 @@ export function getCustomerTrialQualifiedNumChart() {
             let serieHistory = _.extend({}, serie, {
                 name: Intl.get('common.history', '历史'),
                 //数据中只有历史最高数为实际值，其他的均为空值，在堆积时会用到
-                data: ['-', '-', highestNum],
+                data: ['-', thisMonthAddHighestNum, highestNum],
             });
 
             option.series = [
