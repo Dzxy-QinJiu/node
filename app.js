@@ -1,3 +1,4 @@
+var oneapm = require('oneapm');
 var config = global.config = require('./conf/config');
 var fs = require('fs');
 //项目之外有配置文件,这种情况是线上真正部署的情况
