@@ -25,10 +25,7 @@ export function getCustomerTrialQualifiedNumChart() {
         chartType: 'bar',
         processOption: (option, chartProps) => {
             option.legend = {
-                data: [
-                    Intl.get('common.this.month', '本月'),
-                    Intl.get('common.history', '历史'),
-                ],
+                show: false,
             };
 
             //瀑布图的tooltip内容有问题，辅助系列的数据也会显示出来，所以先把tooltip禁掉，等找到解决方案再显示出来
