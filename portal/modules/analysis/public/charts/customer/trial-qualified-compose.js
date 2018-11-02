@@ -21,7 +21,6 @@ export function getCustomerTrialQualifiedComposeChart() {
                 delete query.member_id;
             }
         },
-        layout: {sm: 24},
         chartType: 'bar',
         processOption: (option, chartProps) => {
             option.legend = {
