@@ -8,6 +8,7 @@ const datePickerUtils = require('CMP_DIR/datepicker/utils');
 var userData = require('PUB_DIR/sources/user-data');
 import {SELECT_TYPE, CLUE_DIFF_TYPE, AVALIBILITYSTATUS, clueStartTime} from '../utils/clue-customer-utils';
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 function ClueFilterStore() {
     this.setInitialData();
     //绑定action方法
@@ -20,6 +21,13 @@ ClueFilterStore.prototype.setInitialData = function() {
         defaultValue = SELECT_TYPE.WILL_TRACE;
     }
     var filterClueStatus = _.cloneDeep(CLUE_DIFF_TYPE);
+    //是否展示分配筛选按钮要根据权限判断
+    if(hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
+        filterClueStatus.push({
+            name: Intl.get('clue.customer.will.distribution', '待分配'),
+            value: SELECT_TYPE.WILL_DISTRIBUTE,
+        });
+    }
     _.forEach(filterClueStatus, (item) => {
         if (item.value === defaultValue) {
             item.selected = true;
