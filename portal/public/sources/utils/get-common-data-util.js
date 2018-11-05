@@ -12,6 +12,7 @@ const session = storageUtil.session;
 const sessionCallNumberKey = 'callNumber';
 let appList = [];
 let allProductList = [];
+let dealStageList = [];
 //缓存在sessionStorage中的我能查看的团队
 const MY_TEAM_TREE_KEY = 'my_team_tree';
 const AUTH_MAP = {
@@ -154,5 +155,26 @@ exports.handleCallOutResult = function(paramObj) {
         } else {
             message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
         }
+    }
+};
+
+//获取订单阶段列表
+exports.getDealStageList = function(cb) {
+    if (_.get(dealStageList, '[0]')) {
+        if (_.isFunction(cb)) cb(dealStageList);
+    } else {
+        $.ajax({
+            url: '/rest/sales_stage_list',
+            type: 'get',
+            dataType: 'json',
+            success: data => {
+                dealStageList = _.get(data, 'result[0]') ? data.result : [];
+                if (_.isFunction(cb)) cb(dealStageList);
+            },
+            error: xhr => {
+                dealStageList = [];
+                if (_.isFunction(cb)) cb(appList, errorMsg);
+            }
+        });
     }
 };
