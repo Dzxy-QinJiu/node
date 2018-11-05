@@ -2390,7 +2390,9 @@ var en_US = {
     'common.history': 'history',//历史
     'common.history.highest': 'history highest',//历史最高
     'common.this.month.add.highest': 'this month add highest',//本月比历史最高净增
+    'common.this.month.reduce.highest': 'this month reduce highest',//本月比历史最高减少
     'common.this.month.add': 'this month add',//本月比上月净增
+    'common.this.month.reduce': 'this month reduce',//本月比上月减少
     'common.this.month.lose': 'this month lose',//本月流失
     'common.this.month.back': 'this month back',//本月回流
     'common.this.month.new': 'this month new',//本月新增

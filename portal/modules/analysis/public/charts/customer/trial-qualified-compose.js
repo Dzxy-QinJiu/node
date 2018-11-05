@@ -62,9 +62,10 @@ export function getCustomerTrialQualifiedComposeChart() {
             let thisMonthBackNum = _.sumBy(data, 'this_month_back.total');
             //本月净增
             let thisMonthAddNum = _.sumBy(data, 'this_month_add.total');
-
-            //原始数据数组，用于在柱子上显示实际值
-            const dataArr = [lastMonthNum, thisMonthNewNum, thisMonthBackNum, thisMonthLoseNum, thisMonthAddNum, thisMonthNum];
+            
+            if (thisMonthAddNum < 0) {
+                _.set(option, 'xAxis[0].data[4]', Intl.get('common.this.month.reduce', '本月比上月减少'));
+            }
 
             //本月新增数据辅助，用于实现阶梯瀑布效果，默认以上月数据为基准
             let thisMonthNewNumAssist = lastMonthNum;
@@ -123,14 +124,6 @@ export function getCustomerTrialQualifiedComposeChart() {
                 name: Intl.get('common.this.month', '本月'),
                 //数据中只有本月相关数据为实际值，其他的均为空值，在堆积时会用到
                 data: ['-', thisMonthNewNum, thisMonthBackNum, thisMonthLoseNum, thisMonthAddNum, thisMonthNum],
-                label: {
-                    show: true,
-                    position: 'top',
-                    //在柱子上显示其原始值
-                    formatter: params => {
-                        return dataArr[params.dataIndex];
-                    },
-                },
             });
 
             option.series = [
