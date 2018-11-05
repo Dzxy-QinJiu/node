@@ -12,7 +12,7 @@ class ApplyDetailBottom extends React.Component {
     }
 
     renderBottomText = () => {
-        if (_.isFunction(this.props.renderAssigenedContext)) {
+        if (_.isFunction(this.props.renderAssigenedContext) && this.props.renderAssigenedContext()) {
             return this.props.renderAssigenedContext();
         } else {
             return <div className="pull-right">
