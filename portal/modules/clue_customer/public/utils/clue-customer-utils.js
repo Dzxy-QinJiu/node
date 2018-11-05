@@ -71,10 +71,6 @@ export const CLUE_DIFF_TYPE = [
         value: SELECT_TYPE.ALL,
     },
     {
-        name: Intl.get('clue.customer.will.distribution', '待分配'),
-        value: SELECT_TYPE.WILL_DISTRIBUTE,
-    },
-    {
         name: Intl.get('sales.home.will.trace', '待跟进'),
         value: SELECT_TYPE.WILL_TRACE,
     },
