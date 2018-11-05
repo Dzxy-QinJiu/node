@@ -64,7 +64,7 @@ class DealManage extends React.Component {
             {
                 title: Intl.get('deal.budget', '预算(万)'),
                 dataIndex: 'budget',
-                width: 90,
+                width: 100,
                 align: 'right'
             },
             {

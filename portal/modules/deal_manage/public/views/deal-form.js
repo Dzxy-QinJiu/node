@@ -99,13 +99,16 @@ class DealForm extends React.Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) return;
+            //需要将预算去掉千分位逗号，并转换成xxx万
+            let budget = values.budget ? _.get(values, 'budget', '').replace(/,/g, '') / 10000 : 0;
+            let predictFinishTime = values.predict_finish_time ? moment(values.predict_finish_time).endOf('day').valueOf() : moment().valueOf();
             let submitData = {
                 customer_id: _.get(this.state, 'formData.customer.id'),
                 //需要将预算去掉千分位逗号，并转换成xxx万
-                budget: _.get(values, 'budget', '').replace(/,/g, '') / 10000,
+                budget: budget,
                 apps: values.apps,
                 sale_stages: values.sale_stages,
-                predict_finish_time: moment(values['predict_finish_time']).endOf('day').valueOf(),
+                predict_finish_time: predictFinishTime,
                 remarks: values.remarks
             };
             this.setState({
@@ -125,7 +128,7 @@ class DealForm extends React.Component {
                     });
                     this.closeDealForm();
                     if (_.isObject(data.result)) {
-                        dealAction.addOneDeal(data.result);
+                        dealAction.addOneDeal({...data.result, customer_name: _.get(this.state,'formData.customer.name')});
                     }
                 },
                 error: (errorMsg) => {

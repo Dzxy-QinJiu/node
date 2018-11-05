@@ -34,13 +34,7 @@ dealManageStore.prototype.getDealList = function(resultObj) {
         let dealList = _.get(resultObj, 'data.result', []);
         if (_.get(dealList, '[0]')) {
             dealList = _.map(dealList, deal => {
-                return {
-                    ...deal,
-                    //预计成交时间，将long类型的时间转成界面上展示的格式YYYY-MM-DD
-                    predict_finish_text: deal.predict_finish_time ? moment(deal.predict_finish_time).format(oplateConsts.DATE_FORMAT) : '',
-                    //创建时间，将long类型的时间转成界面上展示的格式YYYY-MM-DD
-                    time_text: deal.time ? moment(deal.time).format(oplateConsts.DATE_FORMAT) : '',
-                };
+                return formatDeal(deal);
             });
         }
         if (this.dealListObj.lastId) {
@@ -58,7 +52,17 @@ dealManageStore.prototype.getDealList = function(resultObj) {
 };
 
 dealManageStore.prototype.addOneDeal = function(deal) {
-    this.dealListObj.list.unshift(deal);
+    this.dealListObj.list.unshift(formatDeal(deal));
 };
+//订单数据的处理
+function formatDeal(deal) {
+    return {
+        ...deal,
+        //预计成交时间，将long类型的时间转成界面上展示的格式YYYY-MM-DD
+        predict_finish_text: deal.predict_finish_time ? moment(deal.predict_finish_time).format(oplateConsts.DATE_FORMAT) : '',
+        //创建时间，将long类型的时间转成界面上展示的格式YYYY-MM-DD
+        time_text: deal.time ? moment(deal.time).format(oplateConsts.DATE_FORMAT) : '',
+    };
+}
 
 export default alt.createStore(dealManageStore, 'dealManageStore');
