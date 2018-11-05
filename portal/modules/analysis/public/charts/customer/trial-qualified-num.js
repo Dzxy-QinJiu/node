@@ -51,11 +51,13 @@ export function getCustomerTrialQualifiedNumChart() {
             let thisMonthNum = _.sumBy(data, 'this_month.total');
             //本月比历史最高净增
             let thisMonthAddHighestNum = _.sumBy(data, 'this_month_add_highest.total');
+            
+            if (thisMonthAddHighestNum < 0) {
+                _.set(option, 'xAxis[0].data[1]', Intl.get('common.this.month.reduce.highest', '本月比历史最高减少'));
+            }
+
             //历史最高
             let highestNum = _.sumBy(data, 'highest.total');
-
-            //原始数据数组，用于在柱子上显示实际值
-            const dataArr = [thisMonthNum, thisMonthAddHighestNum, highestNum];
 
             //本月比历史最高净增数辅助值默认为历史最高个数
             let thisMonthAddHighestNumAssist = highestNum;
@@ -90,14 +92,6 @@ export function getCustomerTrialQualifiedNumChart() {
                 name: Intl.get('common.this.month', '本月'),
                 //数据中只有本月相关数据为实际值，其他的均为空值，在堆积时会用到
                 data: [thisMonthNum,'-', '-'],
-                label: {
-                    show: true,
-                    position: 'top',
-                    //在柱子上显示其原始值
-                    formatter: params => {
-                        return dataArr[params.dataIndex];
-                    },
-                },
             });
 
             //历史系列
