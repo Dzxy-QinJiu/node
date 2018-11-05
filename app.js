@@ -1,9 +1,12 @@
-var oneapm = require('oneapm');
 var config = global.config = require('./conf/config');
 var fs = require('fs');
 //项目之外有配置文件,这种情况是线上真正部署的情况
 if (fs.existsSync('../oplate.config.js')) {
     config = global.config = require('../oplate.config');
+}
+//正式环境才加node端监控
+if (config.isFormal) {
+    var oneapm = require('oneapm');
 }
 //定义全局常量
 global.oplateConsts = require('./portal/lib/consts');
