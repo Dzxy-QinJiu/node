@@ -261,7 +261,7 @@ class Crm extends React.Component {
 
         } else if (!_.isEmpty(locationState)) {
             //如果是从首页跳转过来的
-            if (locationState.from === 'sales_home') {
+            if (this.props.fromSalesHome) {
                 const pageSize = locationState.num;
                 let params = {
                     data: JSON.stringify({id: locationState.customerIds})

@@ -2,6 +2,8 @@
  * 试用合格详细统计表
  */
 
+import { analysisCustomerListEmitter } from 'PUB_DIR/sources/utils/emitters';
+
 export function getCustomerTrialQualifiedChart() {
     //统计列
     const statisticsColumns = [{
@@ -112,11 +114,10 @@ export function getCustomerTrialQualifiedChart() {
     };
 }
 
-function handleTrialQualifiedNumClick(customerIds) {
-    history.push({
-        from: 'sales_home',
-        trialQualifiedCustomerIds: customerIds
-    }, '/crm', {});
+function handleTrialQualifiedNumClick(customerIds, text) {
+    const num = parseFloat(text);
+
+    analysisCustomerListEmitter.emit(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, customerIds, num); 
 }
 
 function trialQualifiedNumRender(customerIdsField, text, record) {
@@ -124,7 +125,7 @@ function trialQualifiedNumRender(customerIdsField, text, record) {
 
     if (customerIds) {
         return (
-            <span onClick={handleTrialQualifiedNumClick.bind(this, customerIds)} style={{cursor: 'pointer'}}>
+            <span onClick={handleTrialQualifiedNumClick.bind(this, customerIds, text)} style={{cursor: 'pointer'}}>
                 {text}
             </span>
         );

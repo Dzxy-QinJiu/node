@@ -14,7 +14,13 @@ import { AntcAnalysis } from 'antc';
 import { Row, Col, Collapse } from 'antd';
 const Panel = Collapse.Panel;
 
-const emitters = require('PUB_DIR/sources/utils/emitters');
+import { appSelectorEmitter, teamTreeEmitter, dateSelectorEmitter, analysisCustomerListEmitter } from 'PUB_DIR/sources/utils/emitters';
+
+import rightPanelUtil from 'CMP_DIR/rightPanel';
+const RightPanel = rightPanelUtil.RightPanel;
+const RightPanelClose = rightPanelUtil.RightPanelClose;
+const CustomerList = require('MOD_DIR/crm/public/crm-list');
+
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 
 //权限类型
@@ -38,6 +44,10 @@ class CurtaoAnalysis extends React.Component {
             currentCharts: _.get(processedGroups, '[0].pages[0].charts'),
             groups: this.processMenu(processedGroups),
             isAppSelectorShow: false,
+            //是否显示右侧面板
+            isRightPanelShow: false,
+            //是否显示客户列表
+            isCustomerListShow: false,
         };
     }
 
@@ -47,6 +57,12 @@ class CurtaoAnalysis extends React.Component {
         this.getAppList();
         this.getClueChannelList(); 
         this.getClueSourceList(); 
+
+        analysisCustomerListEmitter.on(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, this.handleCustomerListEvent);
+    }
+
+    componentWillUnmount() {
+        analysisCustomerListEmitter.removeListener(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, this.handleCustomerListEvent);
     }
 
     //获取订单阶段列表
@@ -133,6 +149,28 @@ class CurtaoAnalysis extends React.Component {
         }
     }
 
+    //处理客户列表事件
+    handleCustomerListEvent = (customerIds, num) => {
+        this.setState({
+            isRightPanelShow: true,
+            isCustomerListShow: true,
+            customerListLocation: {
+                state: {
+                    customerIds,
+                    num,
+                }
+            }
+        });
+    }
+
+    //隐藏右侧面板
+    hideRightPanel = () => {
+        this.setState({
+            isRightPanelShow: false,
+            isCustomerListShow: false,
+        });
+    }
+
     renderMenu() {
         return (
             <div className="analysis-menu">
@@ -167,6 +205,25 @@ class CurtaoAnalysis extends React.Component {
                     isGetDataOnMount={true}
                     adjustConditions={this.state.adjustConditions}
                 />
+
+                <RightPanel
+                    className="analysis-right-panel"
+                    showFlag={this.state.isRightPanelShow}
+                >
+                    <div className="customer-table-close topNav">
+                        <RightPanelClose
+                            title={Intl.get('common.app.status.close', '关闭')}
+                            onClick={this.hideRightPanel}
+                        />
+
+                        {this.state.isCustomerListShow? (
+                        <CustomerList
+                            location={this.state.customerListLocation}
+                            fromSalesHome={true}
+                        />
+                        ) : null}
+                    </div>
+                </RightPanel>
             </div>
         );
     }
@@ -240,28 +297,28 @@ class CurtaoAnalysis extends React.Component {
 
     getEmitters() {
         return [{
-            emitter: emitters.appSelectorEmitter,
-            event: emitters.appSelectorEmitter.SELECT_APP,
+            emitter: appSelectorEmitter,
+            event: appSelectorEmitter.SELECT_APP,
             callbackArgs: [{
                 name: 'app_id',
             }],
         }, {
-            emitter: emitters.teamTreeEmitter,
-            event: emitters.teamTreeEmitter.SELECT_TEAM,
+            emitter: teamTreeEmitter,
+            event: teamTreeEmitter.SELECT_TEAM,
             callbackArgs: [{
                 name: 'team_ids',
                 exclusive: 'member_id'
             }],
         }, {
-            emitter: emitters.teamTreeEmitter,
-            event: emitters.teamTreeEmitter.SELECT_MEMBER,
+            emitter: teamTreeEmitter,
+            event: teamTreeEmitter.SELECT_MEMBER,
             callbackArgs: [{
                 name: 'member_id',
                 exclusive: 'team_ids'
             }],
         }, {
-            emitter: emitters.dateSelectorEmitter,
-            event: emitters.dateSelectorEmitter.SELECT_DATE,
+            emitter: dateSelectorEmitter,
+            event: dateSelectorEmitter.SELECT_DATE,
             callbackArgs: [{
                 name: 'starttime',
             }, {

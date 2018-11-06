@@ -102,15 +102,18 @@ exports.callReordEmitter.CLOSE_RIGHT_PANEL = 'callrecord.close_right_panel';
 // 日期选择组件的emitter
 const dateSelectorEmitter = new EventEmitter();
 dateSelectorEmitter.setMaxListeners(0);
-exports.dateSelectorEmitter = dateSelectorEmitter;
 // 日期选择组件--选中日期
-exports.dateSelectorEmitter.SELECT_DATE = 'dateselector.select_date';
+dateSelectorEmitter.SELECT_DATE = 'dateselector.select_date';
+exports.dateSelectorEmitter = dateSelectorEmitter;
+export { dateSelectorEmitter };
+
 // 应用选择组件的emitter
 const appSelectorEmitter = new EventEmitter();
 appSelectorEmitter.setMaxListeners(0);
-exports.appSelectorEmitter = appSelectorEmitter;
 // 应用选择组件--选中应用
-exports.appSelectorEmitter.SELECT_APP = 'appselector.select_app';
+appSelectorEmitter.SELECT_APP = 'appselector.select_app';
+exports.appSelectorEmitter = appSelectorEmitter;
+export {appSelectorEmitter }
 
 // 分析tab选择组件的emitter
 const analysisTabEmitter = new EventEmitter();
@@ -129,11 +132,12 @@ exports.chartClickEmitter.CLICK_CHART = 'chartClick.click_chart';
 // 团队树组件的emitter
 const teamTreeEmitter = new EventEmitter();
 teamTreeEmitter.setMaxListeners(0);
-exports.teamTreeEmitter = teamTreeEmitter;
 // 团队树组件--选中团队
-exports.teamTreeEmitter.SELECT_TEAM = 'team_tree.select_team';
+teamTreeEmitter.SELECT_TEAM = 'team_tree.select_team';
 // 团队树组件--选中成员
-exports.teamTreeEmitter.SELECT_MEMBER = 'team_tree.select_member';
+teamTreeEmitter.SELECT_MEMBER = 'team_tree.select_member';
+exports.teamTreeEmitter = teamTreeEmitter;
+export { teamTreeEmitter };
 
 //session过期的emitter
 exports.sessionExpireEmitter = new EventEmitter();
@@ -148,3 +152,8 @@ export {contractEmitter};
 const resizeEmitter = new EventEmitter();
 resizeEmitter.WINDOW_SIZE_CHANGE = 'window_size_change';
 export { resizeEmitter };
+
+// 分析模块客户列表事件
+const analysisCustomerListEmitter = new EventEmitter();
+analysisCustomerListEmitter.SHOW_CUSTOMER_LIST = 'show_customer_list';
+export { analysisCustomerListEmitter };
