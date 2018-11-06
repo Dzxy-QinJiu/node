@@ -8,8 +8,6 @@ var AppUserStore = require('../store/app-user-store');
 
 var AppUserPanelSwitchStore = require('../store/app-user-panelswitch-store');
 var AppUserPanelSwitchAction = require('../action/app-user-panelswitch-actions');
-var UserDetailAddAppAction = require('../action/v2/user-detail-add-app-actions');
-var UserDetailEditAppAction = require('../action/v2/user-detail-edit-app-actions');
 
 var AppUserAction = require('../action/app-user-actions');
 var AppUserUtil = require('../util/app-user-util');
@@ -18,6 +16,8 @@ var hasPrivilege = require('../../../../components/privilege/checker').hasPrivil
 var GeminiScrollBar = require('../../../../components/react-gemini-scrollbar');
 var batchPushEmitter = require('../../../../public/sources/utils/emitters').batchPushEmitter;
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
+import UserDetailAddAppAction from '../action/v2/user-detail-add-app-actions';
+import UserDetailEditAppAction from '../action/v2/user-detail-edit-app-actions';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import language from 'PUB_DIR/language/getLanguage';
 import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/add-clues-form';

@@ -104,7 +104,7 @@ class UserDetail extends React.Component {
         AppUserPanelSwitchStore.listen(this.onStoreChange);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
-        document.querySelector('.gm-scroll-view').addEventListener('mousewheel', this.handleWheel, false);
+        document.querySelector('.user_manage_user_detail .gm-scroll-view').addEventListener('mousewheel', this.handleWheel, false);
     }
 
     componentWillUnmount() {
@@ -112,7 +112,7 @@ class UserDetail extends React.Component {
         AppUserPanelSwitchStore.unlisten(this.onStoreChange);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
-        document.querySelector('.gm-scroll-view').removeEventListener('mousewheel', this.handleWheel, false);
+        document.querySelector('.user_manage_user_detail .gm-scroll-view').removeEventListener('mousewheel', this.handleWheel, false);
     }
 
     wheelTimer = null;
@@ -255,7 +255,7 @@ class UserDetail extends React.Component {
             switch (this.state.panel_switch_currentView) {
                 case 'app':
                     var initialUser = AppUserDetailStore.getState().initialUser;
-                    moveView = (<UserDetailAddApp height={contentHeight + LAYOUT_CONSTANTS.TITLE_PADDING} initialUser={initialUser} />);
+                    moveView = (<UserDetailAddApp height={contentHeight} initialUser={initialUser} />);
                     break;
                 case 'editapp':
                     var initialUser = AppUserDetailStore.getState().initialUser;
@@ -463,5 +463,11 @@ class UserDetail extends React.Component {
         );
     }
 }
-
+UserDetail.propTypes = {
+    closeRightPanel: PropTypes.func,
+    selectedAppId: PropTypes.string,
+    appLists: PropTypes.array,
+    userId: PropTypes.string,
+    isShownExceptionTab: PropTypes.bool,
+};
 module.exports = UserDetail;
