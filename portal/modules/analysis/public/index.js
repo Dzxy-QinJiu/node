@@ -14,8 +14,7 @@ import { AntcAnalysis } from 'antc';
 import { Row, Col, Collapse } from 'antd';
 const Panel = Collapse.Panel;
 
-const emitters = require('PUB_DIR/sources/utils/emitters');
-import { analysisCustomerListEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { appSelectorEmitter, teamTreeEmitter, dateSelectorEmitter, analysisCustomerListEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
@@ -217,11 +216,11 @@ class CurtaoAnalysis extends React.Component {
                             onClick={this.hideRightPanel}
                         />
 
-                        {this.state.isCustomerListShow ? (
-                            <CustomerList
-                                location={this.state.customerListLocation}
-                                fromSalesHome={true}
-                            />
+                        {this.state.isCustomerListShow? (
+                        <CustomerList
+                            location={this.state.customerListLocation}
+                            fromSalesHome={true}
+                        />
                         ) : null}
                     </div>
                 </RightPanel>
@@ -298,28 +297,28 @@ class CurtaoAnalysis extends React.Component {
 
     getEmitters() {
         return [{
-            emitter: emitters.appSelectorEmitter,
-            event: emitters.appSelectorEmitter.SELECT_APP,
+            emitter: appSelectorEmitter,
+            event: appSelectorEmitter.SELECT_APP,
             callbackArgs: [{
                 name: 'app_id',
             }],
         }, {
-            emitter: emitters.teamTreeEmitter,
-            event: emitters.teamTreeEmitter.SELECT_TEAM,
+            emitter: teamTreeEmitter,
+            event: teamTreeEmitter.SELECT_TEAM,
             callbackArgs: [{
                 name: 'team_ids',
                 exclusive: 'member_id'
             }],
         }, {
-            emitter: emitters.teamTreeEmitter,
-            event: emitters.teamTreeEmitter.SELECT_MEMBER,
+            emitter: teamTreeEmitter,
+            event: teamTreeEmitter.SELECT_MEMBER,
             callbackArgs: [{
                 name: 'member_id',
                 exclusive: 'team_ids'
             }],
         }, {
-            emitter: emitters.dateSelectorEmitter,
-            event: emitters.dateSelectorEmitter.SELECT_DATE,
+            emitter: dateSelectorEmitter,
+            event: dateSelectorEmitter.SELECT_DATE,
             callbackArgs: [{
                 name: 'starttime',
             }, {
