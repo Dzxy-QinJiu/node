@@ -707,11 +707,16 @@ class CustomerAnalysis extends React.Component {
             return <span>{num}</span>;
         } else {
             const customerIds = record[idsField];
-            const customerIdsStr = record[idsField].join(',');
-                                               //由于合并或删除，已经不存在了的客户数
-            const diffNum = num - customerIds.length;
 
-            return <span style={{cursor: 'pointer'}} onClick={this.handleCustomerNumClick.bind(this, customerIdsStr, num, diffNum)}>{num}</span>;
+            if (!_.isArray(customerIds)) {
+                return <span>{num}</span>;
+            } else {
+                const customerIdsStr = customerIds.join(',');
+                //由于合并或删除，已经不存在了的客户数
+                const diffNum = num - customerIds.length;
+
+                return <span style={{cursor: 'pointer'}} onClick={this.handleCustomerNumClick.bind(this, customerIdsStr, num, diffNum)}>{num}</span>;
+            }
         }
     };
 
