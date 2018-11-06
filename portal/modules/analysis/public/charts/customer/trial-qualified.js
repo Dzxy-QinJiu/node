@@ -114,8 +114,10 @@ export function getCustomerTrialQualifiedChart() {
     };
 }
 
-function handleTrialQualifiedNumClick(customerIds) {
-    analysisCustomerListEmitter.emit(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, customerIds); 
+function handleTrialQualifiedNumClick(customerIds, text) {
+    const num = parseFloat(text);
+
+    analysisCustomerListEmitter.emit(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, customerIds, num); 
 }
 
 function trialQualifiedNumRender(customerIdsField, text, record) {
@@ -123,7 +125,7 @@ function trialQualifiedNumRender(customerIdsField, text, record) {
 
     if (customerIds) {
         return (
-            <span onClick={handleTrialQualifiedNumClick.bind(this, customerIds)} style={{cursor: 'pointer'}}>
+            <span onClick={handleTrialQualifiedNumClick.bind(this, customerIds, text)} style={{cursor: 'pointer'}}>
                 {text}
             </span>
         );

@@ -151,17 +151,14 @@ class CurtaoAnalysis extends React.Component {
     }
 
     //处理客户列表事件
-    handleCustomerListEvent = (customerIds) => {
+    handleCustomerListEvent = (customerIds, num) => {
         this.setState({
             isRightPanelShow: true,
             isCustomerListShow: true,
             customerListLocation: {
-                query: '',
                 state: {
-                    from: 'sales_home',
                     customerIds,
-                    //num,
-                    //diffNum
+                    num,
                 }
             }
         });
@@ -171,6 +168,7 @@ class CurtaoAnalysis extends React.Component {
     hideRightPanel = () => {
         this.setState({
             isRightPanelShow: false,
+            isCustomerListShow: false,
         });
     }
 
@@ -221,7 +219,7 @@ class CurtaoAnalysis extends React.Component {
 
                         {this.state.isCustomerListShow ? (
                             <CustomerList
-                                location={{ query: '', state: this.state.crmLocationState }}
+                                location={this.state.customerListLocation}
                                 fromSalesHome={true}
                             />
                         ) : null}
