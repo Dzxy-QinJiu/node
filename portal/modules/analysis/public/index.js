@@ -15,6 +15,13 @@ import { Row, Col, Collapse } from 'antd';
 const Panel = Collapse.Panel;
 
 const emitters = require('PUB_DIR/sources/utils/emitters');
+import { analysisCustomerListEmitter } from 'PUB_DIR/sources/utils/emitters';
+
+import rightPanelUtil from 'CMP_DIR/rightPanel';
+const RightPanel = rightPanelUtil.RightPanel;
+const RightPanelClose = rightPanelUtil.RightPanelClose;
+const CustomerList = require('MOD_DIR/crm/public/crm-list');
+
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 
 //权限类型
@@ -38,6 +45,10 @@ class CurtaoAnalysis extends React.Component {
             currentCharts: _.get(processedGroups, '[0].pages[0].charts'),
             groups: this.processMenu(processedGroups),
             isAppSelectorShow: false,
+            //是否显示右侧面板
+            isRightPanelShow: false,
+            //是否显示客户列表
+            isCustomerListShow: false,
         };
     }
 
@@ -47,6 +58,12 @@ class CurtaoAnalysis extends React.Component {
         this.getAppList();
         this.getClueChannelList(); 
         this.getClueSourceList(); 
+
+        analysisCustomerListEmitter.on(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, this.handleCustomerListEvent);
+    }
+
+    componentWillUnmount() {
+        analysisCustomerListEmitter.removeListener(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, this.handleCustomerListEvent);
     }
 
     //获取订单阶段列表
@@ -133,6 +150,30 @@ class CurtaoAnalysis extends React.Component {
         }
     }
 
+    //处理客户列表事件
+    handleCustomerListEvent = (customerIds) => {
+        this.setState({
+            isRightPanelShow: true,
+            isCustomerListShow: true,
+            customerListLocation: {
+                query: '',
+                state: {
+                    from: 'sales_home',
+                    customerIds,
+                    //num,
+                    //diffNum
+                }
+            }
+        });
+    }
+
+    //隐藏右侧面板
+    hideRightPanel = () => {
+        this.setState({
+            isRightPanelShow: false,
+        });
+    }
+
     renderMenu() {
         return (
             <div className="analysis-menu">
@@ -167,6 +208,24 @@ class CurtaoAnalysis extends React.Component {
                     isGetDataOnMount={true}
                     adjustConditions={this.state.adjustConditions}
                 />
+
+                <RightPanel
+                    showFlag={this.state.isRightPanelShow}
+                >
+                    <div className="customer-table-close topNav">
+                        <RightPanelClose
+                            title={Intl.get('common.app.status.close', '关闭')}
+                            onClick={this.hideRightPanel}
+                        />
+
+                        {this.state.isCustomerListShow ? (
+                            <CustomerList
+                                location={{ query: '', state: this.state.crmLocationState }}
+                                fromSalesHome={true}
+                            />
+                        ) : null}
+                    </div>
+                </RightPanel>
             </div>
         );
     }

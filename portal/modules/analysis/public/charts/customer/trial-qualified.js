@@ -2,6 +2,8 @@
  * 试用合格详细统计表
  */
 
+import { analysisCustomerListEmitter } from 'PUB_DIR/sources/utils/emitters';
+
 export function getCustomerTrialQualifiedChart() {
     //统计列
     const statisticsColumns = [{
@@ -113,10 +115,7 @@ export function getCustomerTrialQualifiedChart() {
 }
 
 function handleTrialQualifiedNumClick(customerIds) {
-    history.push({
-        from: 'sales_home',
-        trialQualifiedCustomerIds: customerIds
-    }, '/crm', {});
+    analysisCustomerListEmitter.emit(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, customerIds); 
 }
 
 function trialQualifiedNumRender(customerIdsField, text, record) {

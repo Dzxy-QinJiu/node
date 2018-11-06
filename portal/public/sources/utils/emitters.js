@@ -148,3 +148,8 @@ export {contractEmitter};
 const resizeEmitter = new EventEmitter();
 resizeEmitter.WINDOW_SIZE_CHANGE = 'window_size_change';
 export { resizeEmitter };
+
+// 分析模块客户列表事件
+const analysisCustomerListEmitter = new EventEmitter();
+analysisCustomerListEmitter.SHOW_CUSTOMER_LIST = 'show_customer_list';
+export { analysisCustomerListEmitter };
