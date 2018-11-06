@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/9/18.
  */
 var ApplyViewDetailAction = require('../action/apply-view-detail-action');
-var BusinessApplyStore = require('./business-apply-store');
+var BusinessApplyAction = require('../action/business-apply-action');
 function ApplyViewDetailStore() {
     //初始化state数据
     this.setInitState();
@@ -116,7 +116,8 @@ ApplyViewDetailStore.prototype.getBusinessApplyDetailById = function(obj) {
         }
         this.detailInfoObj.info.showApproveBtn = this.selectedDetailItem.showApproveBtn;
         //列表中那一申请的状态以这个为准，因为申请完就不一样了
-        BusinessApplyStore.updateAllApplyItemStatus(this.detailInfoObj.info);
+        setTimeout(() => {
+            BusinessApplyAction.updateAllApplyItemStatus(this.detailInfoObj.info);});
         this.detailInfoObj.errorMsg = '';
     }
 };

@@ -12,8 +12,9 @@ class ApplyDetailBottom extends React.Component {
     }
 
     renderBottomText = () => {
-        if (_.isFunction(this.props.renderAssigenedContext) && this.props.renderAssigenedContext()) {
-            return this.props.renderAssigenedContext();
+        var assigenedContext = _.isFunction(this.props.renderAssigenedContext) ? this.props.renderAssigenedContext() : null;
+        if (assigenedContext) {
+            return assigenedContext;
         } else {
             return <div className="pull-right">
                 <Button type="primary" className="btn-primary-sure" size="small"

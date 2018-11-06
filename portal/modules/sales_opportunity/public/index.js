@@ -23,10 +23,7 @@ var SalesOpportunityApplyUtils = require('./utils/sales-oppotunity-utils');
 let userData = require('../../../public/sources/user-data');
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-const REALM_REMARK = {
-    EEFUNG: 'BusinessOpportunitiesforSale1',//销售机会，蚁坊域的流程标识
-    CIVIW: 'BusinessOpportunitiesforSale2'//销售机会，识微域的流程标识
-};
+import {REALM_REMARK} from './utils/sales-oppotunity-utils';
 class SalesOpportunityApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加销售机会申请面板
@@ -299,6 +296,8 @@ class SalesOpportunityApplyManagement extends React.Component {
                         <ApplyViewDetail
                             detailItem={this.state.selectedDetailItem}
                             showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                            processKey={_.get(this, 'state.processConfig.process_key')}
+
                         />
                     )}
                 </div>

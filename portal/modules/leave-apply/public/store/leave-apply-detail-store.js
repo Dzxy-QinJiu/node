@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/9/28.
  */
 var LeaveApplyDetailAction = require('../action/leave-apply-detail-action');
-var LeaveApplyStore = require('./leave-apply-store');
+var LeaveApplyAction = require('../action/leave-apply-action');
 function LeaveApplyDetailStore() {
     //初始化state数据
     this.setInitState();
@@ -120,7 +120,10 @@ LeaveApplyDetailStore.prototype.getLeaveApplyDetailById = function(obj) {
         }
         this.detailInfoObj.info.showApproveBtn = this.selectedDetailItem.showApproveBtn;
         //列表中那一申请的状态以这个为准，因为申请完就不一样了
-        LeaveApplyStore.updateAllApplyItemStatus(this.detailInfoObj.info);
+        setTimeout(() => {
+            LeaveApplyAction.updateAllApplyItemStatus(this.detailInfoObj.info);
+        });
+
         this.detailInfoObj.errorMsg = '';
     }
 };

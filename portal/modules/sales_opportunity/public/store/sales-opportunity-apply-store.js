@@ -8,8 +8,6 @@ function SalesOpportunityApplyStore() {
     //初始化state数据
     this.setInitState();
     this.bindActions(SalesOpportunityApplyAction);
-    this.exportPublicMethods({
-        updateAllApplyItemStatus: this.updateAllApplyItemStatus});
 }
 SalesOpportunityApplyStore.prototype.setInitState = function() {
     this.sort_field = 'create_time';//排序字段
@@ -47,6 +45,7 @@ SalesOpportunityApplyStore.prototype.setInitState = function() {
     };
     //筛选类别 'all'(全部) pass(已通过) reject(已驳回)  ongoing(待审批)
     this.applyListType = 'all';
+    this.clearData();
 };
 //清空数据
 SalesOpportunityApplyStore.prototype.clearData = function() {
@@ -100,38 +99,6 @@ SalesOpportunityApplyStore.prototype.getAllSalesOpportunityApplyList = function(
         }
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 SalesOpportunityApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {
     this.selectedDetailItem = obj;
     this.selectedDetailItemIdx = idx;
@@ -148,8 +115,8 @@ SalesOpportunityApplyStore.prototype.changeApplyAgreeStatus = function(message) 
     this.selectedDetailItem.update_time = message.update_time;
 };
 SalesOpportunityApplyStore.prototype.updateAllApplyItemStatus = function(updateItem) {
-    var allApplyArr = this.getState().applyListObj.list;
-    this.getState().selectedDetailItem.status = updateItem.status;
+    var allApplyArr = this.applyListObj.list;
+    this.selectedDetailItem.status = updateItem.status;
     _.forEach(allApplyArr,(item) => {
         if (item.id === updateItem.id){
             item.status = updateItem.status;
