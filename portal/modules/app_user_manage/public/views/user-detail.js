@@ -255,7 +255,7 @@ class UserDetail extends React.Component {
             switch (this.state.panel_switch_currentView) {
                 case 'app':
                     var initialUser = AppUserDetailStore.getState().initialUser;
-                    moveView = (<UserDetailAddApp height={contentHeight + LAYOUT_CONSTANTS.TITLE_PADDING} initialUser={initialUser} />);
+                    moveView = (<UserDetailAddApp height={contentHeight} initialUser={initialUser} />);
                     break;
                 case 'editapp':
                     var initialUser = AppUserDetailStore.getState().initialUser;
