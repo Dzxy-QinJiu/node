@@ -16,6 +16,8 @@ module.exports = {
 
 function getCharts() {
     return [
+        //转出客户数趋势
+        customerChart.getCustomerTransferTrendChart(),
         //转出客户统计
         customerChart.getCustomerTransferChart(),
         //客户阶段变更统计
