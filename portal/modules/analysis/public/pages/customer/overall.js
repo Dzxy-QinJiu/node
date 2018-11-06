@@ -18,13 +18,15 @@ function getCharts() {
     return [
         //趋势统计
         customerChart.getCustomerTrendChart(),
+        //客户阶段统计
+        customerChart.getCustomerStageChart(),
         //地域统计
         customerChart.getCustomerZoneChart(),
         //行业统计
         customerChart.getCustomerIndustryChart(),
         //团队统计
         customerChart.getCustomerTeamChart(),
-        //客户阶段统计
-        customerChart.getCustomerStageChart(),
+        //客户覆盖率统计
+        customerChart.getCustomerCoverageChart(),
     ];
 }
