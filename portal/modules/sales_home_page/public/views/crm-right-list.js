@@ -496,7 +496,7 @@ class CrmRightList extends React.Component {
     };
 
     render() {
-        let resultType = this.props.salesTeamListObj.resultType, errorMsg = this.props.salesTeamListObj.errorMsg.responseJson;
+        let resultType = this.props.salesTeamListObj.resultType, errorMsg = this.props.salesTeamListObj.errorMsg;
         return (
             <div className="crm-sales-team-zone" data-tracename="销售（团队）列表">
                 <div className="crm-sales-team-container">
