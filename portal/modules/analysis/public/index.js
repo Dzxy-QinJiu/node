@@ -210,6 +210,7 @@ class CurtaoAnalysis extends React.Component {
                 />
 
                 <RightPanel
+                    className="analysis-right-panel"
                     showFlag={this.state.isRightPanelShow}
                 >
                     <div className="customer-table-close topNav">

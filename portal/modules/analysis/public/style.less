@@ -55,13 +55,29 @@
     }
 }
 
-#app .curtao-analysis .ant-table {
-    .ant-table-fixed-left .ant-table-fixed {
-        th,td {
-            border-right: 1px dashed #edf1f2 !important;
+#app {
+    .curtao-analysis .ant-table {
+        .ant-table-fixed-left .ant-table-fixed {
+            th,td {
+                border-right: 1px dashed #edf1f2 !important;
+            }
+        }
+        td.clickable {
+            cursor: pointer;
         }
     }
-    td.clickable {
-        cursor: pointer;
+
+    .analysis-right-panel {
+        width: auto;
+        left: 75px;
+        transform: translateX(100%);
+        -webkit-transform: translateX(100%);
+        background-color: #fff;
+        .topNav {
+            left: 0;
+        }
+        .rightContent {
+            margin-top: 64px;
+        }
     }
 }
