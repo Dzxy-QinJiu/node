@@ -5,6 +5,7 @@
 export function getCustomerDealActiveChart(title = '', stages = []) {
     return {
         title,
+        chartType: 'table',
         url: '/rest/analysis/customer/v2/:data_type/customer/active/statistics',
         argCallback: (arg) => {
             let query = arg.query;
@@ -16,15 +17,56 @@ export function getCustomerDealActiveChart(title = '', stages = []) {
                 delete query.endtime;
             }
         },
-        /*
+        cardContainer: {
+            selectors: [{
+                options: [{
+                    name: '全部行政级别',
+                    value: '',
+                },{
+                    name: '部委级',
+                    value: '0',
+                },{
+                    name: '省部级',
+                    value: '1',
+                },{
+                    name: '地市级',
+                    value: '2',
+                },{
+                    name: '区县级',
+                    value: '3',
+                }],
+                activeOption: '',
+                conditionName: 'administrative_level',
+            }, {
+                optionsCallback: () => {
+                    let options = [{
+                        name: '全部标签',
+                        value: '',
+                    }];
+
+                    _.each(stages, item => {
+                        options.push({
+                            name: item,
+                            value: item
+                        });
+                    });
+
+                    return options;
+                },
+                activeOption: '',
+                conditionName: 'label',
+            }],
+        },
         conditions: [
             {
+                name: 'administrative_level',
+                value: '',
+            },
+            {
                 name: 'label',
-                value: 'day',
+                value: '',
             },
         ],
-        */
-        chartType: 'table',
         dataField: 'list',
         option: {
             columns: [
