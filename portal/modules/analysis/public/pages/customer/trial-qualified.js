@@ -20,11 +20,11 @@ function getCharts() {
         customerChart.getCustomerTrialQualifiedNumChart(),
         //试用合格组成
         customerChart.getCustomerTrialQualifiedComposeChart(),
+        //趋势图
+        customerChart.getCustomerTrialQualifiedTrendChart(),
         //试用合格客户数统计
         customerChart.getCustomerTrialQualifiedChart(),
         /*
-        //趋势统计
-        customerChart.getCustomerTrendChart('total', '趋势图(假数据)'),
         //地域统计
         customerChart.getCustomerZoneChart('total', '地域统计(假数据)'),
         //行业统计
