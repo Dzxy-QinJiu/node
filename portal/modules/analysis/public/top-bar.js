@@ -63,6 +63,12 @@ class TopBar extends React.Component {
 
     onFilterTypeChange = (type) => {
         this.setState({filterType: type});
+
+        if (type === 'team') {
+            teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, '');
+        } else {
+            teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, 'all');
+        }
     };
 
     onTeamChange = (teamId) => {
@@ -88,7 +94,7 @@ class TopBar extends React.Component {
          
         if (_.last(memberId) === 'all' || _.isEmpty(memberId)) {
             selectedMember = ['all'];
-            memberIdStr = '';
+            memberIdStr = 'all';
         } else {
             selectedMember = _.filter(memberId, id => id !== 'all');
             memberIdStr = selectedMember.join(',');

@@ -3,127 +3,132 @@
  */
 
 import { analysisCustomerListEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { trialQualifiedCustomerAnalysisArgCallbak } from '../../utils';
 
 export function getCustomerTrialQualifiedChart() {
-    //统计列
-    const statisticsColumns = [{
-        dataIndex: 'last_month',
-        title: '上月',
-        width: '10%',
-        render: trialQualifiedNumRender.bind(this, 'last_month_customer_ids'),
-    }, {
-        dataIndex: 'this_month',
-        title: '本月',
-        width: '10%',
-        render: trialQualifiedNumRender.bind(this, 'this_month_customer_ids'),
-    }, {
-        dataIndex: 'this_month_new',
-        title: '本月新增',
-        width: '10%',
-        render: trialQualifiedNumRender.bind(this, 'this_month_new_customer_ids'),
-    }, {
-        dataIndex: 'this_month_lose',
-        title: '本月流失',
-        width: '10%',
-        render: trialQualifiedNumRender.bind(this, 'this_month_lose_customer_ids'),
-    }, {
-        dataIndex: 'this_month_back',
-        title: '本月回流',
-        width: '10%',
-        render: trialQualifiedNumRender.bind(this, 'this_month_back_customer_ids'),
-    }, {
-        dataIndex: 'this_month_add',
-        title: '本月比上月净增',
-        width: '15%',
-    }, {
-        dataIndex: 'highest',
-        title: '历史最高',
-        width: '10%',
-    }, {
-        dataIndex: 'this_month_add_highest',
-        title: '本月比历史最高净增',
-        width: '20%',
-    }];
-
-    //表格列
-    let columns = _.cloneDeep(statisticsColumns);
-    columns.unshift({
-        title: '团队',
-        width: '10%',
-        dataIndex: 'team_name',
-    });
-
     return {
         title: '试用合格详细统计表',
-        url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
-        argCallback: (arg) => {
-            let query = arg.query;
-
-            if (query && query.starttime && query.endtime) {
-                query.start_time = query.starttime;
-                query.end_time = query.endtime;
-                delete query.starttime;
-                delete query.endtime;
-            }
-
-            if (query.member_id) {
-                query.member_ids = query.member_id;
-                delete query.member_id;
-            }
-        },
-        layout: {sm: 24},
-        processData: data => {
-            data = data.list || [];
-            _.each(data, dataItem => {
-                _.each(statisticsColumns, column => {
-                    const key = column.dataIndex;
-                    const customerIds = _.get(dataItem, [key, 'customer_ids']);
-
-                    if (customerIds) {
-                        dataItem[key + '_customer_ids'] = customerIds.join(',');
-                    }
-
-                    dataItem[key] = dataItem[key].total;
-                });
-            });
-
-            return data;
-        },
         chartType: 'table',
         height: 'auto',
-        option: {
-            columns,
-        },
+        layout: {sm: 24},
+        url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
+        argCallback: trialQualifiedCustomerAnalysisArgCallbak,
         processOption: (option, chartProps) => {
-            //从返回数据里获取一下销售昵称
-            const nickName = _.get(chartProps, 'data[0].nick_name');
+            //接口数据
+            const data = _.get(chartProps, 'data.list', []);
+            //接口数据第一项
+            const firstItem = data[0];
 
-            //若存在销售昵称，说明返回的是销售列表
-            if (nickName) {
-                //找到名称列
-                let nameColumn = _.find(option.columns, column => column.dataIndex === 'team_name');
+            //若不存在接口数据第一项，说明接口数据为空
+            if (!firstItem) {
+                //将表格列定义设为空数组，防止渲染报错
+                option.columns = [];
+                //将表格数据设为空数组，防止渲染报错
+                option.dataSource = [];
 
-                if (nameColumn) {
-                    //将名称列的数据索引改为指向昵称字段
-                    nameColumn.dataIndex = 'nick_name';
-                    //将名称列的标题改为销售
-                    nameColumn.title = '销售';
-                }
+                //无需再进行其他处理，直接返回
+                return;
             }
+
+            //表格列定义
+            let columns = [];
+
+            //若接口数据第一项中存在销售昵称，说明返回的是销售列表，需要显示销售列
+            if (firstItem.nick_name) {
+                columns.push({
+                    title: '销售',
+                    dataIndex: 'nick_name',
+                    width: '10%',
+                });
+            }
+
+            //设置团队列
+            columns.push({
+                title: '团队',
+                dataIndex: 'team_name',
+                width: '10%',
+            });
+
+            //统计数据添加时间，对应查询的截止时间
+            //如查本月的数据，该时间为今天
+            //若查截止到上个月的数据，该时间为上个月的最后一天
+            const thisMoment = moment(firstItem.add_time);
+            //本月
+            const thisMonth = thisMoment.get('month') + 1;
+            //上月
+            const lastMonth = thisMoment.subtract(1, 'months').get('month') + 1;
+
+            //列定义中增加本月、上月等列
+            columns = columns.concat([{
+                title: lastMonth + '月',
+                dataIndex: 'last_month',
+                width: '10%',
+                render: trialQualifiedNumRender.bind(this, 'last_month_customer_ids'),
+            }, {
+                title: thisMonth + '月',
+                dataIndex: 'this_month',
+                width: '10%',
+                render: trialQualifiedNumRender.bind(this, 'this_month_customer_ids'),
+            }, {
+                dataIndex: 'highest',
+                title: '历史最高',
+                width: '10%',
+            }, {
+                dataIndex: 'this_month_add_highest',
+                title: '本月比历史最高净增',
+                width: '20%',
+            }]);
+
+            //表格数据
+            const dataSource = _.map(data, dataItem => {
+                //处理后的数据项
+                let processedItem = {};
+
+                //若原始数据项中包含销售昵称，则将该昵称加入处理后的数据项
+                if (dataItem.nick_name) {
+                    processedItem.nick_name = dataItem.nick_name;
+                }
+
+                //若原始数据项中包含团队名称，则将该团队名称加入处理后的数据项
+                if (dataItem.team_name) {
+                    processedItem.team_name = dataItem.team_name;
+                }
+
+                //遍历原始数据项各字段
+                _.each(dataItem, (value, key) => {
+                    //若字段值中存在总数
+                    if (_.has(value, 'total')) {
+                        //则将该总数加入处理后的数据项
+                        processedItem[key] = value.total;
+                    }
+
+                    //若字段值中存在客户id数据
+                    if (value.customer_ids) {
+                        //则将客户id数据加入处理后的数据项
+                        processedItem[key + '_customer_ids'] = value.customer_ids;
+                    }
+                });
+
+                return processedItem;
+            });
+
+            option.columns = columns;
+            option.dataSource = dataSource;
         },
     };
 }
 
 function handleTrialQualifiedNumClick(customerIds, text) {
+    const customerIdsStr = customerIds.join(',');
     const num = parseFloat(text);
 
-    analysisCustomerListEmitter.emit(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, customerIds, num); 
+    analysisCustomerListEmitter.emit(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, customerIdsStr, num); 
 }
 
 function trialQualifiedNumRender(customerIdsField, text, record) {
-    const customerIds = record[customerIdsField];
+    if (text) {
+        const customerIds = record[customerIdsField];
 
-    if (customerIds) {
         return (
             <span onClick={handleTrialQualifiedNumClick.bind(this, customerIds, text)} style={{cursor: 'pointer'}}>
                 {text}

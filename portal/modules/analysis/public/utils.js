@@ -116,3 +116,25 @@ export function ifNotSingleApp(conditions) {
         return false;
     }
 }
+
+//试用合格客户分析参数处理回调
+export function trialQualifiedCustomerAnalysisArgCallbak(arg) {
+    let query = arg.query;
+
+    if (query && query.starttime && query.endtime) {
+        query.start_time = query.starttime;
+        query.end_time = query.endtime;
+        delete query.starttime;
+        delete query.endtime;
+    }
+
+    if (query.member_id) {
+        if (query.member_id === 'all') {
+            query.statistics_type = 'user';
+        } else {
+            query.member_ids = query.member_id;
+        }
+
+        delete query.member_id;
+    }
+}
