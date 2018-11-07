@@ -29,6 +29,10 @@ class DealManage extends React.Component {
             isDealFormShow: false,//是否展示添加订单面版
             isDetailPanelShow: false,//是否展示订单详情
             currDeal: {},//当前查看详情的订单
+            sorter: {
+                field: 'time',
+                order: 'descend'
+            }
         };
     }
 
@@ -70,10 +74,11 @@ class DealManage extends React.Component {
         if (_.get(this.state, 'dealListObj.lastId')) {
             query.id = this.state.dealListObj.lastId;
         }
+        let sorter = this.state.sorter;
         dealAction.getDealList({
             page_size: PAGE_SIZE,
-            sort_field: this.state.sort_field,
-            sort_order: this.state.sort_order
+            sort_field: sorter.field,
+            sort_order: sorter.order
         }, {}, query);
     }
 
@@ -82,19 +87,21 @@ class DealManage extends React.Component {
             {
                 title: Intl.get('common.definition', '名称'),
                 dataIndex: 'customer_name',
+                className: 'has-filter',
+                sorter: true,
             },
             {
                 title: Intl.get('deal.budget', '预算(万)'),
                 dataIndex: 'budget',
-                width: 100,
+                width: 110,
                 align: 'right',
+                // sorter: true,
                 className: 'has-filter'
             },
             {
                 title: Intl.get('deal.stage', '阶段'),
                 dataIndex: 'sale_stages',
                 className: 'has-filter',
-                // width: 150,
                 render: (text, record, index) => {
                     return (
                         <span>
@@ -107,25 +114,18 @@ class DealManage extends React.Component {
                 title: Intl.get('crm.order.expected.deal', '预计成交'),
                 dataIndex: 'predict_finish_text',
                 className: 'has-filter',
-                // width: 100,
-                render: function(text, record, index) {
-                    return text ? moment(text).format(oplateConsts.DATE_FORMAT) : '';
-                }
+                // sorter: true,
             },
             {
                 title: Intl.get('member.create.time', '创建时间'),
                 dataIndex: 'time_text',
+                // sorter: true,
                 className: 'has-filter',
-                // width: 100,
-                render: function(text, record, index) {
-                    return text ? moment(text).format(oplateConsts.DATE_FORMAT) : '';
-                }
             },
             {
                 title: Intl.get('crm.6', '负责人'),
                 dataIndex: 'user_name',
                 className: 'has-filter',
-                // width: 100,
             },
         ];
     }
@@ -147,6 +147,28 @@ class DealManage extends React.Component {
             return '';
         }
     };
+    onTableChange = (pagination, filters, sorter) => {
+        let sorterChanged = false;
+        let sorterObj = _.cloneDeep(sorter);
+        if (sorterObj.field === 'predict_finish_text') {
+            sorterObj.field = 'predict_finish_time';
+        } else if (sorterObj.field === 'time_text') {
+            sorterObj.field = 'time';
+        }
+        if (!_.isEmpty(sorterObj) && (sorterObj.field !== this.state.sorter.field || sorterObj.order !== this.state.sorter.order)) {
+            sorterChanged = true;
+        }
+        if (!sorterChanged) return;
+        let dealListObj = this.state.dealListObj;
+        dealListObj.lastId = '';
+        this.setState({sorter: sorterObj, dealListObj}, () => {
+            this.getDealList(true);
+        });
+    };
+
+    rowKey(record, index) {
+        return record.id;
+    }
 
     renderDealList() {
         let dealListObj = this.state.dealListObj;
@@ -157,6 +179,7 @@ class DealManage extends React.Component {
             return (
                 <div className="deal-table-container" style={{height: tableHeight}}>
                     <AntcTable
+                        rowKey={this.rowKey}
                         rowClassName={this.handleRowClassName}
                         columns={this.getDealColumns()}
                         dataSource={dealListObj.list}
