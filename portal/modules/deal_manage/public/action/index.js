@@ -8,7 +8,12 @@ import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
 function dealManageAction() {
     this.generateActions(
         'setInitData',
-        'addOneDeal'
+        //添加订单成功后，将新加的订单加入列表中
+        'addOneDeal',
+        //修改订单成功后，更新列表中对应的内容
+        'updateDeal',
+        //删除订单成功后，删除列表中对应的订单
+        'afterDeleteDeal'
     );
     //获取订单列表
     this.getDealList = function(params, body, query) {

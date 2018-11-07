@@ -3,7 +3,6 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2018/11/2.
  */
-require('../style/deal-form.less');
 import {Form, Input, DatePicker, Select} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -14,7 +13,6 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 import CRMAddForm from 'MOD_DIR/crm/public/views/crm-add-form';
 
-import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
 import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import dealAction from '../action';
@@ -364,7 +362,7 @@ class DealForm extends React.Component {
 
 DealForm.propTypes = {
     hideDealForm: PropTypes.func,
-    form: PropTypes.obj
+    form: PropTypes.object
 };
 
 export default Form.create()(DealForm);

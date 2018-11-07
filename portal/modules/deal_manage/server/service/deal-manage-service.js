@@ -2,9 +2,13 @@
 const restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 const restUtil = require('ant-auth-request').restUtil(restLogger);
 const _ = require('lodash');
+const baseUrl = '/rest/customer/v2/salesopportunity';
 const dealUrl = {
-    getDealList: '/rest/customer/v2/salesopportunity/range/:type/:page_size/:sort_field/:sort_order',
-    addDeal: '/rest/customer/v2/salesopportunity',
+    getDealList: `${baseUrl}/range/:type/:page_size/:sort_field/:sort_order`,
+    addDeal: baseUrl,
+    editDeal: baseUrl,
+    editDealStage: `${baseUrl}/sale_stage`,
+    deleteDeal: `${baseUrl}/:deal_id`
 };
 
 exports.getDealList = function(req, res) {
@@ -35,6 +39,30 @@ exports.addDeal = function(req, res) {
         req: req,
         res: res
     }, req.body);
+};
+
+exports.editDeal = function(req, res) {
+    return restUtil.authRest.put({
+        url: dealUrl.editDeal,
+        req: req,
+        res: res
+    }, req.body);
+};
+
+exports.editDealStage = function(req, res) {
+    return restUtil.authRest.put({
+        url: dealUrl.editDealStage,
+        req: req,
+        res: res
+    }, req.body);
+};
+
+exports.deleteDeal = function(req, res) {
+    return restUtil.authRest.del({
+        url: dealUrl.deleteDeal.replace(':deal_id', req.params.deal_id),
+        req: req,
+        res: res
+    });
 };
 
     
