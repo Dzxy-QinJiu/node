@@ -20,5 +20,7 @@ function getCharts() {
         customerChart.getCustomerEffectiveChart(),
         //近一月活跃客户趋势
         customerChart.getCustomerActiveTrendChart(),
+        //成交活跃客户统计
+        customerChart.getCustomerDealActiveChart(),
     ];
 }
