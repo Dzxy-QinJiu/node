@@ -6,6 +6,7 @@ export function getCustomerTrialQualifiedTrendChart() {
     return {
         title: '趋势图',
         chartType: 'line',
+        layout: {sm: 24},
         url: '/rest/analysis/customer/v2/:data_type/trial/qualify/trend',
         conditions: [{
             name: 'interval',
