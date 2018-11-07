@@ -1,12 +1,10 @@
 /**
- * 成交活跃客户统计
+ * 成交/未成交活跃客户统计
  */
 
-import { numToPercent } from '../../utils';
-
-export function getCustomerDealActiveChart() {
+export function getCustomerDealActiveChart(title = '', stages = []) {
     return {
-        title: '成交活跃客户统计',
+        title,
         url: '/rest/analysis/customer/v2/:data_type/customer/active/statistics',
         argCallback: (arg) => {
             let query = arg.query;
@@ -33,10 +31,12 @@ export function getCustomerDealActiveChart() {
                 {
                     title: Intl.get('common.definition', '名称'),
                     dataIndex: 'name',
+                    width: '50%'
                 },
                 {
                     title: '活跃客户数',
                     dataIndex: 'count',
+                    width: '50%'
                 },
             ],
         },
@@ -45,7 +45,7 @@ export function getCustomerDealActiveChart() {
                 let count = 0;
 
                 _.each(dataItem, (value, key) => {
-                    if (['签约', '续约'].includes(key)) {
+                    if (stages.includes(key)) {
                         count += dataItem[key].total;
                     }
                 });

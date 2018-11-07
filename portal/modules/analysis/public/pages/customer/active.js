@@ -21,6 +21,8 @@ function getCharts() {
         //近一月活跃客户趋势
         customerChart.getCustomerActiveTrendChart(),
         //成交活跃客户统计
-        customerChart.getCustomerDealActiveChart(),
+        customerChart.getCustomerDealActiveChart('成交活跃客户统计', ['签约', '续约']),
+        //未成交活跃客户统计
+        customerChart.getCustomerDealActiveChart('未成交活跃客户统计', ['信息', '意向', '试用', '流失']),
     ];
 }
