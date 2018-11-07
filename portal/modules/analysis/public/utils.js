@@ -136,6 +136,5 @@ export function trialQualifiedCustomerAnalysisArgCallbak(arg) {
         }
 
         delete query.member_id;
-
     }
 }
