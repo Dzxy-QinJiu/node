@@ -29,11 +29,18 @@ const APPLY_TIAL_STAGES = [Intl.get('crm.143', '试用阶段'), Intl.get('crm.14
 class DealDetailPanel extends React.Component {
     constructor(props) {
         super(props);
+        let initData = this.getInitStateData(props);
         this.state = {
-            currDeal: this.props.currDeal,
+            ...initData,
+            appList: [],//应用列表
+            stageList: []//订单列表
+        };
+    }
+
+    getInitStateData(props) {
+        return {
+            currDeal: props.currDeal,
             isDelConfirmShow: false,//是否时删除订单确认状态的展示
-            appList: [],
-            stageList: [],
             isDeleting: false,//是否正在删除订单
             curDealCloseStatus: '',//关闭订单的状态（win:赢单，lose:丢单）
             isShowApplyUserForm: false,//是否展示申请用户的表单
@@ -47,6 +54,13 @@ class DealDetailPanel extends React.Component {
         this.getAppList();
         //获取订单阶段列表
         this.getDealStageList();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (_.get(nextProps, 'currDeal.id') !== _.get(this.state, 'currDeal.id')) {
+            let initData = this.getInitStateData(nextProps);
+            this.setState(initData);
+        }
     }
 
     //获取应用列表（ketao:产品列表+oplate的应用列表， curtao: 产品列表）

@@ -138,6 +138,15 @@ class DealManage extends React.Component {
         return !dealListObj.isLoading && !dealListObj.errorMsg &&
             dealListObj.length >= PAGE_SIZE && !dealListObj.listenScrollBottom;
     }
+    //处理选中行的样式
+    handleRowClassName = (record, index) => {
+        if ((record.id === this.state.currDeal.id) && this.state.isDetailPanelShow) {
+            return 'current-row';
+        }
+        else {
+            return '';
+        }
+    };
 
     renderDealList() {
         let dealListObj = this.state.dealListObj;
@@ -148,6 +157,7 @@ class DealManage extends React.Component {
             return (
                 <div className="deal-table-container" style={{height: tableHeight}}>
                     <AntcTable
+                        rowClassName={this.handleRowClassName}
                         columns={this.getDealColumns()}
                         dataSource={dealListObj.list}
                         util={{zoomInSortArea: true}}
