@@ -7,7 +7,10 @@ var classNames = require('classnames');
 import {NavLink} from 'react-router-dom';
 var Dropdown = require('antd').Dropdown;
 var topNavEmitter = require('../../public/sources/utils/emitters').topNavEmitter;
-
+import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+var insertStyle = require('CMP_DIR/insert-style');
+require('./index.less');
+var notificationEmitter = require('../../public/sources/utils/emitters').notificationEmitter;
 //顶部导航外层div
 class TopNav extends React.Component {
     resizeHandler = () => {
@@ -89,12 +92,53 @@ class TopNav extends React.Component {
         $(ReactDOM.findDOMNode(this)).find('.navbar-toggle').on('click' , this.navBarToggle);
         this.resizeFunc();
         topNavEmitter.on(topNavEmitter.RELAYOUT , this.resizeFunc);
+        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.renderUnhandleApplyStyle);
+        this.renderUnhandleApplyStyle();
     }
+    componentWillUpdate(){
+        this.renderUnhandleApplyStyle();
+    }
+
+    renderUnhandleNum = (count, cls,unhandleNum) => {
+        if (this[unhandleNum]) {
+            this[unhandleNum].destroy();
+            this[unhandleNum] = null;
+        }
+        var styleText = '';
+        //设置数字
+        if (count > 0) {
+            var len = (count + '').length;
+            if (len >= 3) {
+                styleText = `.${cls}:before{content:\'99+\';display:block;padding:0 2px 0 2px;}`;
+            } else {
+                styleText = `.${cls}:before{content:'${count}';display:block}`;
+            }
+        } else {
+            styleText = `.${cls}:before{content:\'\';display:none}`;
+        }
+        //展示数字
+        this[unhandleNum] = insertStyle(styleText);
+    };
+    renderUnhandleApplyStyle = () => {
+        if (Oplate && Oplate.unread) {
+            var customerVisitCount = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT] || 0;
+            var personalLeaveCount = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE] || 0;
+            var businessOpportunitiesCount = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES] || 0;
+            var totalCount = [
+                {count: customerVisitCount,cls: 'application_business_apply_ico',unhandleNum: 'unhandleBusinessApply'},
+                {count: personalLeaveCount,cls: 'application_leave_apply_ico',unhandleNum: 'unhandleLeaveApply'},
+                {count: businessOpportunitiesCount,cls: 'application_sales_opportunity_ico',unhandleNum: 'unhandleSalesOpportunityApply'}];
+            _.forEach(totalCount,(item) => {
+                this.renderUnhandleNum(item.count,item.cls,item.unhandleNum);
+            });
+        }
+    };
 
     componentWillUnmount() {
         $(window).off('resize' , this.resizeFunc);
         $('body').off('click' , this.clickBodyEmptySpace);
         topNavEmitter.removeListener(topNavEmitter.RELAYOUT , this.resizeFunc);
+        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.renderUnhandleApplyStyle);
     }
 
     render() {

@@ -14,7 +14,7 @@ var socketEmitter = require('../../../public/sources/utils/emitters').socketEmit
 var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsgEmitter;
 let ajaxGlobal = require('../jquery.ajax.global');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES} from '../utils/consts';
+import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES} from '../utils/consts';
 import logoSrc from './notification.png';
 import userData from '../user-data';
 import Trace from 'LIB_DIR/trace';
@@ -65,6 +65,8 @@ function updateUnreadByPushMessage(type, isAdd) {
             // notificationEmitter.emit(notificationEmitter.UPDATE_NOTIFICATION_UNREAD);
             //刷新线索未处理的数量
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
+            //刷新审批申请未处理的数量
+            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
         }, timeout);
     }
 }
@@ -97,6 +99,24 @@ function listenOnMessage(data) {
         }
     }
 }
+//todo 审批推送
+//更新申请审批的数量
+function applyApproveUnhandledListener(data) {
+    if (_.isObject(data)) {
+        switch (data.message_type) {
+            case APPLY_APPROVE_TYPES.CUSTOMER_VISIT:
+                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT, true);
+                break;
+            case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES:
+                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES, true);
+                break;
+            case APPLY_APPROVE_TYPES.PERSONAL_LEAVE:
+                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE, true);
+                break;
+        }
+    }
+
+}
 //处理线索的数据
 function clueUnhandledListener(data) {
     if (_.isObject(data)) {
@@ -128,6 +148,7 @@ function clueUnhandledListener(data) {
         }
     }
 }
+
 //监听系统消息
 function listenSystemNotice(notice) {
     if (_.isObject(notice)) {
@@ -547,6 +568,7 @@ function disconnectListener() {
         socketIo.off('system_notice', listenSystemNotice);
         socketIo.off('apply_unread_reply', applyUnreadReplyListener);
         socketIo.off('cluemsg', clueUnhandledListener);
+        socketIo.off('applyApprovemsg', applyApproveUnhandledListener);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         socketEmitter.removeListener(socketEmitter.DISCONNECT, socketEmitterListener);
     }
@@ -614,6 +636,12 @@ function getMessageCount(callback) {
     if(hasPrivilege('APP_USER_APPLY_LIST')){
         getNotificationUnread({type: 'unapproved'}, callback);
     }
+    //获取待我审批的申请数
+    if (hasPrivilege('GET_MY_WORKFLOW_LIST')){
+        getUnapproveBussinessTripApply(callback);//获取出差申请待我审批数量
+        getUnapproveSalesOpportunityApply();//获取销售机会待我审批数量
+        getUnapproveLeaveApply();//获取请假申请待我审批数量
+    }
     //获取线索未处理数的权限（除运营人员外展示）
     if (getClueUnhandledPrivilege()){
         var data = getUnhandledClueCountParams();
@@ -638,7 +666,10 @@ function unreadListener(type) {
         } else if (type === 'unread_reply') {
             //申请审批未读回复的监听
             socketIo.on('apply_unread_reply', applyUnreadReplyListener);
-        } else {
+        }else if(type == APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT){
+            //申请审批未读回复的监听
+            socketIo.on('applyApprovemsg', applyApproveUnhandledListener);
+        }else {
             //获取完未读数后，监听node端推送的弹窗消息
             socketIo.on('mes', listenOnMessage);
             //监听系统消息
@@ -752,6 +783,107 @@ function getClueUnreadNum(data, callback){
         }
     });
 }
+//获取待我审批的出差申请
+function getUnapproveBussinessTripApply(callback) {
+    $.ajax({
+        url: '/rest/get/worklist/business_apply/list',
+        dataType: 'json',
+        type: 'get',
+        success: function(data) {
+            var messages = {
+            };
+            messages[APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT] = 0;
+            var value = data.total;
+            if (typeof value === 'number' && value > 0) {
+                messages[APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT] = value;
+            } else if (typeof value === 'string') {
+                var num = parseInt(value);
+                if (!isNaN(num) && num > 0) {
+                    messages[APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT] = num;
+                }
+            }
+            //更新全局中存的未处理的线索数
+            updateGlobalUnreadStorage(messages);
+            if (typeof callback === 'function') {
+                callback(APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT);
+            }
+        },
+        error: function(errorMsg) {
+            if (typeof callback === 'function') {
+                callback(APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT);
+            }
+        }
+    });
+}
+//获取待我审批的销售机会申请
+function getUnapproveSalesOpportunityApply(callback) {
+    var queryObj = {type: APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES};
+    $.ajax({
+        url: '/rest/get/worklist/sales_opportunity_apply/list',
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
+        success: function(data) {
+            var messages = {
+            };
+            messages[APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES] = 0;
+            var value = data.total;
+            if (typeof value === 'number' && value > 0) {
+                messages[APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES] = value;
+            } else if (typeof value === 'string') {
+                var num = parseInt(value);
+                if (!isNaN(num) && num > 0) {
+                    messages[APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES] = num;
+                }
+            }
+            //更新全局中存的未处理的线索数
+            updateGlobalUnreadStorage(messages);
+            if (typeof callback === 'function') {
+                callback(APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES);
+            }
+        },
+        error: function(errorMsg) {
+            if (typeof callback === 'function') {
+                callback(APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES);
+            }
+        }
+    });
+}
+//获取待我审批的请假申请
+function getUnapproveLeaveApply(callback) {
+    var queryObj = {type: APPLY_APPROVE_TYPES.LEAVE};
+    $.ajax({
+        url: '/rest/get/worklist/leave_apply/list',
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
+        success: function(data) {
+            var messages = {
+            };
+            messages[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE] = 0;
+            var value = data.total;
+            if (typeof value === 'number' && value > 0) {
+                messages[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE] = value;
+            } else if (typeof value === 'string') {
+                var num = parseInt(value);
+                if (!isNaN(num) && num > 0) {
+                    messages[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE] = num;
+                }
+            }
+            //更新全局中存的未处理的线索数
+            updateGlobalUnreadStorage(messages);
+            if (typeof callback === 'function') {
+                callback(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE);
+            }
+        },
+        error: function(errorMsg) {
+            if (typeof callback === 'function') {
+                callback(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE);
+            }
+        }
+    });
+}
+
 //存储获取的未读回复列表
 function saveUnreadReplyList(applyUnreadReplyList) {
     const APPLY_UNREAD_REPLY = 'apply_unread_reply';
@@ -804,6 +936,8 @@ function updateGlobalUnreadStorage(unreadObj) {
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
             //未处理的线索数量刷新展示
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
+            //刷新审批申请未处理的数量
+            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
         }, timeout);
     }
 }

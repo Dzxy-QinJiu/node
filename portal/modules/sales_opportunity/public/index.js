@@ -8,7 +8,7 @@ var SalesOpportunityApplyAction = require('./action/sales-opportunity-apply-acti
 var SalesOpportunityApplyStore = require('./store/sales-opportunity-apply-store');
 import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-dropdown-and-add-btn';
 import AddSalesOpportunityApplyPanel from './view/add-sales-opportunity-apply';
-import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import Trace from 'LIB_DIR/trace';
 var classNames = require('classnames');
 var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
@@ -51,7 +51,6 @@ class SalesOpportunityApplyManagement extends React.Component {
         });
         SalesOpportunityApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
         this.getProcessConfig();
-
     }
     getProcessConfig = () => {
         if (hasPrivilege('GET_MY_WORKFLOW_LIST')){
@@ -59,7 +58,7 @@ class SalesOpportunityApplyManagement extends React.Component {
                 url: '/rest/get/sales_opportunity_apply/process',
                 type: 'get',
                 dateType: 'json',
-                data: {type: 'businessopportunities'},
+                data: {type: APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES},
                 success: (data) => {
                     this.setState({
                         processConfig: _.isObject(data) ? data : {},

@@ -61,6 +61,18 @@ export const SYSTEM_NOTICE_TYPES = {
     FOCUS_CUSTOMER_LOGIN: 'concerCustomerLogin',//关注客户登录
     LOGIN_FAILED: 'loginFailed',//登录失败
 };
+export const APPLY_APPROVE_TYPES = {
+    CUSTOMER_VISIT: 'customer_visit',
+    CUSTOMERVISIT: 'customervisit',
+    BUSINESS_OPPORTUNITIES: 'business_opportunities',
+    BUSINESSOPPORTUNITIES: 'businessopportunities',
+    PERSONAL_LEAVE: 'personal_leave',
+    PERSONALLEAVE: 'personalleave',
+    LEAVE: 'leave',
+    UNHANDLECUSTOMERVISIT: 'unhandleCustomerVisit',
+    UNHANDLEBUSINESSOPPORTUNITIES: 'unhandleBusinessOpportunities',
+    UNHANDLEPERSONALLEAVE: 'unhandlePersonalLeave',
+};
 
 //系统消息对应的几种类型
 export const SYSTEM_NOTICE_TYPE_MAP = {

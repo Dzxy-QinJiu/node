@@ -102,7 +102,7 @@
         font-size: @nav-text-fontSize;
         >li {
             //线索未读数
-            &.clue-icon-container, &.sidebar-applyentry {
+            &.clue-icon-container, &.sidebar-applyentry ,&.apply-approve-icon-container{
                 pointer-events:none;
                 &:before {
                     pointer-events:auto;
@@ -126,14 +126,20 @@
                     pointer-events:auto;
                 }
             }
+            &.apply-approve-icon-container:before{
+                min-width: 10px;
+                height: 10px;
+                top:11px;
+            }
+
             &.sidebar-applyentry:before {
                 left: -29px;
             }
             //文字菜单
             &.text-nav-li {
                 &.clue-icon-container:before{
-                    right: 2px;
-                }
+                     right: 2px;
+                 }
                 &.sidebar-applyentry:before {
                     left: -18px;
                 }

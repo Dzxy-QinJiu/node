@@ -2,6 +2,7 @@ var insertStyle = require('../../insert-style');
 var UserData = require('../../../public/sources/user-data');
 var notificationEmitter = require('../../../public/sources/utils/emitters').notificationEmitter;
 import {getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var UnreadMixin = {
     dynamicStyle: null,
     clueUnhandledStyle: null,
@@ -78,13 +79,42 @@ var UnreadMixin = {
             this.clueUnhandledStyle = insertStyle(styleText);
         }
     },
+    showUnhandledApplyApproveCount: function() {
+        //从全局数据中获取
+        if (Oplate && Oplate.unread) {
+            var customerVisitCount = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT] || 0;
+            var personalLeaveCount = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE] || 0;
+            var businessOpportunitiesCount = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES] || 0;
+            var count = customerVisitCount + personalLeaveCount + businessOpportunitiesCount;
+
+            if (this.applyApproveUnhandledStyle) {
+                this.applyApproveUnhandledStyle.destroy();
+                this.applyApproveUnhandledStyle = null;
+            }
+            count = parseInt(count);
+            if (window.isNaN(count)) {
+                count = 0;
+            }
+            var styleText = '';
+            //设置数字
+            if (count > 0) {
+                styleText = '.apply-approve-icon-container:before{content:\'\';display:block;padding:0 2px 0 2px;}';
+            } else {
+                styleText = '.apply-approve-icon-container:before{content:\'\';display:none}';
+            }
+            //展示数字
+            this.applyApproveUnhandledStyle = insertStyle(styleText);
+        }
+    },
     registerEventEmitter: function() {
         notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.showUnhandledApplyCount);
         notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT, this.showUnhandledClueCount);
+        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.showUnhandledApplyApproveCount);
     },
     unregisterEventEmitter: function() {
         notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.showUnhandledApplyCount);
         notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT, this.showUnhandledClueCount);
+        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.showUnhandledApplyApproveCount);
     },
     //能够获取未读数
     shouldGetUnreadData: function() {
@@ -101,6 +131,7 @@ var UnreadMixin = {
         }
         this.showUnhandledApplyCount();
         this.showUnhandledClueCount();
+        this.showUnhandledApplyApproveCount();
         this.registerEventEmitter();
     },
     componentWillUnmount: function() {

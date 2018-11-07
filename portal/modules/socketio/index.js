@@ -28,6 +28,8 @@ const scheduleNoticeChannel = 'com.antfact.ketao.schedule';
 const applyUnreadReplyChannel = 'com.antfact.ketao.apply.comment';
 //线索添加或分配后推送频道
 const clueUnhandledNum = 'com.antfact.ketao.clue.notice';
+//出差，销售机会和请假申请
+const applyApproveChannel = 'com.antfact.curtao.workflow.notice';
 //批量操作处理文件
 var userBatch = require('./batch');
 var _ = require('lodash');
@@ -131,6 +133,14 @@ function clueUnhandledNumListener(data) {
     var cluemsgObj = JSON.parse(data) || {};
     //将数据推送到浏览器
     emitMsgBySocket(cluemsgObj && cluemsgObj.user_id, 'cluemsg', pushDto.clueMsgToFrontend(cluemsgObj));
+}
+/*处理申请审批消息监听器*/
+function applyApproveNumListener(data) {
+    // pushLogger.debug('后端推送的申请审批的数据:' + JSON.stringify(data));
+    //将查询结果返给浏览器
+    var applyApprovesgObj = data || {};
+    //将数据推送到浏览器
+    emitMsgBySocket(applyApprovesgObj && applyApprovesgObj.consumers[0], 'applyApprovemsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj));
 }
 
 
@@ -265,6 +275,9 @@ function createBackendClient() {
     client.on(applyUnreadReplyChannel, applyUnreadReplyListener);
     //创建线索未处理数量变化通道
     client.on(clueUnhandledNum, clueUnhandledNumListener);
+    //创建申请审批数量变化通道
+    client.on(applyApproveChannel, applyApproveNumListener);
+
     //监听 disconnect
     client.on('disconnect', function() {
         pushLogger.info('断开后台连接');

@@ -6,6 +6,10 @@
 var SalesOpportunityApplyAjax = require('../ajax/sales-opportunity-apply-ajax');
 var SalesOpportunityApplyUtils = require('../utils/sales-oppotunity-utils');
 import UserData from 'PUB_DIR/sources/user-data';
+import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+var timeoutFunc;//定时方法
+var timeout = 1000;//1秒后刷新未读数
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -75,11 +79,20 @@ function ApplyViewDetailActions() {
     this.approveSalesOpportunityApplyPassOrReject = function(obj) {
         this.dispatch({loading: true, error: false});
         SalesOpportunityApplyAjax.approveSalesOpportunityApplyPassOrReject(obj).then((data) => {
-
             //返回的data是true才是审批成功的，false也是审批失败的
             if (data){
                 //更新选中的申请单类型
                 SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
+                if (Oplate && Oplate.unread) {
+                    Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES] -= 1;
+                    if (timeoutFunc) {
+                        clearTimeout(timeoutFunc);
+                    }
+                    timeoutFunc = setTimeout(function() {
+                        //触发展示的组件待审批数的刷新
+                        notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
+                    }, timeout);
+                }
                 this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
             }else{
                 SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {status: 'error'});

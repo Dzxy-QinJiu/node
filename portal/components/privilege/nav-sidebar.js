@@ -664,8 +664,15 @@ var NavSidebar = createReactClass({
                                         }
                                         //不隐藏图标时
                                         if (!this.state.hideNavIcon) {
+                                            var routeCls = '';
+                                            if (menu.routePath === 'clue_customer'){
+                                                routeCls = 'clue-icon-container';
+                                            }
+                                            if (menu.routePath === 'application'){
+                                                routeCls = 'apply-approve-icon-container';
+                                            }
                                             return (
-                                                <li key={i} title={menu.name} className={menu.routePath === 'clue_customer' ? 'clue-icon-container' : ''}>
+                                                <li key={i} title={menu.name} className={routeCls}>
                                                     <NavLink to={`/${menu.routePath}`}
                                                         activeClassName='active'
                                                         className={extraClass}
