@@ -2,25 +2,13 @@
  * 本月试用合格组成
  */
 
+import { trialQualifiedCustomerAnalysisArgCallbak } from '../../utils';
+
 export function getCustomerTrialQualifiedComposeChart() {
     return {
         title: '本月试用合格组成',
         url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
-        argCallback: (arg) => {
-            let query = arg.query;
-
-            if (query && query.starttime && query.endtime) {
-                query.start_time = query.starttime;
-                query.end_time = query.endtime;
-                delete query.starttime;
-                delete query.endtime;
-            }
-
-            if (query.member_id) {
-                query.member_ids = query.member_id;
-                delete query.member_id;
-            }
-        },
+        argCallback: trialQualifiedCustomerAnalysisArgCallbak,
         chartType: 'bar',
         processOption: (option, chartProps) => {
             option.legend = {

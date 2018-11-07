@@ -3,6 +3,7 @@
  */
 
 import { analysisCustomerListEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { trialQualifiedCustomerAnalysisArgCallbak } from '../../utils';
 
 export function getCustomerTrialQualifiedChart() {
     return {
@@ -11,21 +12,7 @@ export function getCustomerTrialQualifiedChart() {
         height: 'auto',
         layout: {sm: 24},
         url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
-        argCallback: (arg) => {
-            let query = arg.query;
-
-            if (query && query.starttime && query.endtime) {
-                query.start_time = query.starttime;
-                query.end_time = query.endtime;
-                delete query.starttime;
-                delete query.endtime;
-            }
-
-            if (query.member_id) {
-                query.member_ids = query.member_id;
-                delete query.member_id;
-            }
-        },
+        argCallback: trialQualifiedCustomerAnalysisArgCallbak,
         processOption: (option, chartProps) => {
             //接口数据
             const data = _.get(chartProps, 'data.list', []);
@@ -64,7 +51,7 @@ export function getCustomerTrialQualifiedChart() {
 
             //统计数据添加时间，对应查询的截止时间
             //如查本月的数据，该时间为今天
-            //若截止到上个月的数据，该时间为上个月的最后一天
+            //若查截止到上个月的数据，该时间为上个月的最后一天
             const thisMoment = moment(firstItem.add_time);
             //本月
             const thisMonth = thisMoment.get('month') + 1;
@@ -110,7 +97,7 @@ export function getCustomerTrialQualifiedChart() {
                 //遍历原始数据项各字段
                 _.each(dataItem, (value, key) => {
                     //若字段值中存在总数
-                    if (value.total) {
+                    if (_.has(value, 'total')) {
                         //则将该总数加入处理后的数据项
                         processedItem[key] = value.total;
                     }
@@ -139,9 +126,9 @@ function handleTrialQualifiedNumClick(customerIds, text) {
 }
 
 function trialQualifiedNumRender(customerIdsField, text, record) {
-    const customerIds = record[customerIdsField];
+    if (text) {
+        const customerIds = record[customerIdsField];
 
-    if (customerIds) {
         return (
             <span onClick={handleTrialQualifiedNumClick.bind(this, customerIds, text)} style={{cursor: 'pointer'}}>
                 {text}
