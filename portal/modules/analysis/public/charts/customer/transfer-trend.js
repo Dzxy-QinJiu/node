@@ -6,6 +6,7 @@ export function getCustomerTransferTrendChart() {
     return {
         title: '转出客户数趋势',
         chartType: 'line',
+        layout: {sm: 24},
         url: '/rest/analysis/customer/v2/:data_type/customer/transfer_record/trend',
         conditions: [{
             name: 'interval',
@@ -29,23 +30,14 @@ export function getCustomerTransferTrendChart() {
 
             delete query.app_id;
         },
-        //processData: data => data.list,
-        processData: data => {
-            return _.map(data.list, dataItem => {
-                return {
-                    name: dataItem.date_str,
-                    value: dataItem.number,
-                };
-            });
-        },
-        /*
+        dataField: 'list',
         processOption: (option, props) => {
             const data = props.data;
             const firstDataItem = _.first(data);
 
             if (!firstDataItem) return;
 
-            const xAxisData = _.map(firstDataItem.interval, 'date_str');
+            const xAxisData = _.map(firstDataItem.interval_list, 'date_str');
 
             let legendData = [];
             let series = [];
@@ -56,7 +48,7 @@ export function getCustomerTransferTrendChart() {
                 series.push({
                     name,
                     type: 'line',
-                    data: _.map(dataItem.interval, 'count')
+                    data: _.map(dataItem.interval_list, 'number')
                 });
             });
 
@@ -68,6 +60,5 @@ export function getCustomerTransferTrendChart() {
             };
             option.series = series;
         }
-        */
     };
 }
