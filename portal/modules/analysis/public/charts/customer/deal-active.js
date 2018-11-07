@@ -29,29 +29,31 @@ export function getCustomerDealActiveChart() {
         chartType: 'table',
         dataField: 'list',
         option: {
-            hight: 'auto',
             columns: [
                 {
                     title: Intl.get('common.definition', '名称'),
                     dataIndex: 'name',
-                    width: 80,
                 },
                 {
-                    title: Intl.get('effective.customer.number', '有效客户数'),
-                    dataIndex: 'valid',
-                },
-                {
-                    title: Intl.get('active.customer.number', '活跃客户数'),
-                    dataIndex: 'active',
-                },
-                {
-                    title: Intl.get('effective.customer.activity.rate', '有效客户活跃率'),
-                    dataIndex: 'active_rate',
-                    render: text => {
-                        return <span>{numToPercent(text)}</span>;
-                    }
+                    title: '活跃客户数',
+                    dataIndex: 'count',
                 },
             ],
+        },
+        processData: data => {
+            return _.map(data, dataItem => {
+                let count = 0;
+
+                _.each(dataItem, (value, key) => {
+                    if (['签约', '续约'].includes(key)) {
+                        count += dataItem[key].total;
+                    }
+                });
+
+                const name = dataItem.team_name;
+
+                return {name, count};
+            });
         },
     };
 }
