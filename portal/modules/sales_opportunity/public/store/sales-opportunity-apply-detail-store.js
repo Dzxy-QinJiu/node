@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/9/28.
  */
 var SalesOpportunityApplyDetailAction = require('../action/sales-opportunity-apply-detail-action');
-var SalesOpportunityApplyStore = require('./sales-opportunity-apply-store');
+var SalesOpportunityApplyAction = require('../action/sales-opportunity-apply-action');
 function SalesOpportunityApplyDetailStore() {
     //初始化state数据
     this.setInitState();
@@ -119,7 +119,9 @@ SalesOpportunityApplyDetailStore.prototype.getSalesOpportunityApplyDetailById = 
         }
         this.detailInfoObj.info.showApproveBtn = this.selectedDetailItem.showApproveBtn;
         //列表中那一申请的状态以这个为准，因为申请完就不一样了
-        SalesOpportunityApplyStore.updateAllApplyItemStatus(this.detailInfoObj.info);
+        setTimeout(() => {
+            SalesOpportunityApplyAction.updateAllApplyItemStatus(this.detailInfoObj.info);
+        });
         this.detailInfoObj.errorMsg = '';
     }
 };
