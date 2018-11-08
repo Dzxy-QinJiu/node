@@ -15,6 +15,12 @@ import dealStore from './store';
 import DealForm from './views/deal-form';
 import DealDetailPanel from './views/deal-detail-panel';
 import {DEAL_STATUS} from 'PUB_DIR/sources/utils/consts';
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {RightPanel} from 'CMP_DIR/rightPanel';
+import Trace from 'LIB_DIR/trace';
+import AppUserManage from 'MOD_DIR/app_user_manage/public';
+import classNames from 'classnames';
+
 const PAGE_SIZE = 20;
 const TOP_NAV_HEIGHT = 64,//头部导航区高度
     TOTAL_HEIGHT = 40,//总数的高度
@@ -36,7 +42,10 @@ class DealManage extends React.Component {
             searchObj: {
                 field: '',
                 value: ''
-            }
+            },
+            isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
+            customerOfCurUser: {},//当前展示用户所属客户的详情
+            curShowCustomerId: '',//当前查看的客户详情
         };
     }
 
@@ -112,13 +121,56 @@ class DealManage extends React.Component {
         }, body, query);
     }
 
+    hideRightPanel = () => {
+        this.setState({
+            curShowCustomerId: ''
+        });
+    };
+
+    showCustomerDetail = (deal) => {
+        this.setState({
+            curShowCustomerId: deal.customer_id,
+        });
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: deal.customer_id,
+                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                hideRightPanel: this.hideRightPanel
+            }
+        });
+    };
+
+    ShowCustomerUserListPanel = (data) => {
+        this.setState({
+            isShowCustomerUserListPanel: true,
+            customerOfCurUser: data.customerObj
+        });
+    };
+    closeCustomerUserListPanel = () => {
+        this.setState({
+            isShowCustomerUserListPanel: false,
+            customerOfCurUser: {}
+        });
+    };
+
     getDealColumns() {
         return [
             {
-                title: Intl.get('common.definition', '名称'),
+                title: Intl.get('common.belong.customer', '所属客户'),
                 dataIndex: 'customer_name',
-                className: 'has-filter',
                 sorter: true,
+                render: (text, record, index) => {
+                    let cls = classNames('deal-customer-name', {
+                        'customer-name-active': record.customer_id && record.customer_id === this.state.curShowCustomerId
+                    });
+                    return text ? (
+                        <div className={cls}
+                            title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
+                            onClick={this.showCustomerDetail.bind(this, record)}>
+                            {text}
+                        </div>) : '';
+                }
             },
             {
                 title: Intl.get('deal.budget', '预算(元)'),
@@ -300,6 +352,7 @@ class DealManage extends React.Component {
                 field: 'user_name'
             }
         ];
+        let customerOfCurUser = this.state.customerOfCurUser;
         return (
             <div className="deal-manage-container">
                 <TopNav>
@@ -336,6 +389,19 @@ class DealManage extends React.Component {
                 ) : this.state.isDealFormShow ? (
                     <DealForm hideDealForm={this.hideDealForm}/>
                 ) : null}
+                {/*查看该客户下的用户列表*/}
+                <RightPanel
+                    className="customer-user-list-panel"
+                    showFlag={this.state.isShowCustomerUserListPanel}
+                >
+                    {this.state.isShowCustomerUserListPanel ?
+                        <AppUserManage
+                            customer_id={customerOfCurUser.id}
+                            hideCustomerUserList={this.closeCustomerUserListPanel}
+                            customer_name={customerOfCurUser.name}
+                        /> : null
+                    }
+                </RightPanel>
             </div>);
     }
 }
