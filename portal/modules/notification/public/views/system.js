@@ -89,22 +89,23 @@ class SystemNotification extends React.Component {
         this.setState({isLoadingSystemNotices: true});
         notificationAjax.getSystemNotices(queryObj, this.state.status).then(result => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.state.isLoadingSystemNotices = false;
-            this.state.loadSystemNoticesErrorMsg = '';
+            let stateData = this.state;
+            stateData.isLoadingSystemNotices = false;
+            stateData.loadSystemNoticesErrorMsg = '';
             if (result && _.isArray(result.list)) {
-                if (this.state.lastSystemNoticeId) {
+                if (stateData.lastSystemNoticeId) {
                     //下拉加载时
-                    this.state.systemNotices = this.state.systemNotices.concat(result.list);
+                    stateData.systemNotices = this.state.systemNotices.concat(result.list);
                 } else {
                     //首次获取数据时
-                    this.state.systemNotices = result.list;
+                    stateData.systemNotices = result.list;
                 }
-                this.state.totalSize = result.total || this.state.systemNotices.length;
-                this.state.lastSystemNoticeId = this.state.systemNotices.length ? _.last(this.state.systemNotices).id : '';
+                stateData.totalSize = result.total || stateData.systemNotices.length;
+                stateData.lastSystemNoticeId = stateData.systemNotices.length ? _.last(stateData.systemNotices).id : '';
             }
             //如果当前已获取的数据还不到总数，继续监听下拉加载，否则不监听下拉加载
-            this.state.listenScrollBottom = this.state.totalSize > this.state.systemNotices.length;
-            this.setState(this.state);
+            stateData.listenScrollBottom = stateData.totalSize > stateData.systemNotices.length;
+            this.setState(stateData);
         }, errorMsg => {
             this.setState({
                 isLoadingSystemNotices: false,
@@ -196,7 +197,7 @@ class SystemNotification extends React.Component {
                         <a onClick={this.openUserDetail.bind(this, notice.user_id, idx)}>{notice.user_name}</a>) : null}
                     {notice.app_name ?
                         <span>{(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + notice.app_name}</span> : ''}
-                    {isLoginFailed ? <span>,{Intl.get('notification.login.password.error', '报密码或验证码错误')}</span> : null}
+                    {isLoginFailed ? <span>,{_.get(notice, 'content.operate_detail', Intl.get('login.username.password.error', '用户名或密码错误'))}</span> : null}
                     <span className="system-notice-time">
                         {'，' + TimeUtil.transTimeFormat(notice.create_time)}
                     </span>
@@ -257,26 +258,46 @@ class SystemNotification extends React.Component {
     };
 
     // 待处理数据整合,同一个用户登录同一个应用，计算登录次数以及获取最后一次登录时间
-    handleNoticeDetailData = (noticeDetail) => {
+    handleNoticeDetailData = (noticeDetail, isLoginFailed) => {
         let noticeDetailData = _.cloneDeep(noticeDetail);
         // 登录的用户名 eg: [a, b]
         let userName = _.chain(noticeDetailData).map('user_name').uniq().value();
         // 登录的应用名 eg: ['鹰击', '鹰眼']
         let appName = _.chain(noticeDetailData).map('app_name').uniq().value();
+        //登录失败的错误提示信息 eg: ['用户名或密码错误','验证码错误']
+        let loginErrorArray = [];
+        if(isLoginFailed){
+            loginErrorArray = _.map(noticeDetailData, item => {
+                //旧数据中没有content.operate_detail, 默认用’用户名或密码错误‘
+                return _.get(item, 'content.operate_detail', Intl.get('login.username.password.error', '用户名或密码错误'));
+            });
+            loginErrorArray = _.uniq(loginErrorArray);
+        }
         let userAppArray = [];
-        // 可能出现的用户登录应用的情况
-        // eg: [{user_name: a, app_name: '鹰击'},{user_name: a, app_name: '鹰眼'},{user_name: b, app_name: '鹰击'},{user_name: b, app_name: '鹰眼'}]
-        userName.forEach( (nameItem) => {
-            appName.forEach( (appItem) => {
-                userAppArray.push({user_name: nameItem, app_name: appItem});
+        // 可能出现的用户登录应用的情况, eg: [{user_name: a, app_name: '鹰击'},{user_name: a, app_name: '鹰眼'},{user_name: b, app_name: '鹰击'},{user_name: b, app_name: '鹰眼'}]
+        // 登录失败的情况，eg:  [{user_name: a, app_name: '鹰击', login_error_msg:'用户名密码错误'},{user_name: a, app_name: '鹰眼', login_error_msg:'用户名密码错误'},{user_name: b, app_name: '鹰击', login_error_msg:'用户名密码错误'},{user_name: b, app_name: '鹰眼', login_error_msg:'验证码错误'}]
+        _.each(userName, nameItem => {
+            _.each(appName, appItem => {
+                if(_.get(loginErrorArray,'[0]')){
+                    _.each(loginErrorArray, errorMsg => {
+                        userAppArray.push({user_name: nameItem, app_name: appItem, login_error_msg: errorMsg});
+                    });
+                } else {
+                    userAppArray.push({user_name: nameItem, app_name: appItem});
+                }
             });
         } );
         let processData = [];
         userAppArray.forEach( (item) => {
             let processObj = {};
-            // 同一个用户登录同一个应用，次数累加，获取最后一次登录时间
+            // 同一个用户登录同一个应用（同一种登录错误），次数累加，获取最后一次登录时间
             noticeDetailData.forEach( (noticeItem, index) => {
-                if (item.user_name === noticeItem.user_name && item.app_name === noticeItem.app_name) {
+                let isSame = item.user_name === noticeItem.user_name && item.app_name === noticeItem.app_name;
+                //同类登录失败错误提示的次数累计
+                if(item.login_error_msg){
+                    isSame = isSame && item.login_error_msg === _.get(noticeItem, 'content.operate_detail', Intl.get('login.username.password.error', '用户名或密码错误'));
+                }
+                if (isSame) {
                     if (processObj && processObj.app_name) {
                         processObj.login_count += 1;
                         if (processObj.create_time < noticeItem.create_time) {
@@ -284,10 +305,14 @@ class SystemNotification extends React.Component {
                         }
                     } else {
                         noticeItem.login_count = 1;
+                        //登录失败的具体错误提示
+                        if(item.login_error_msg){
+                            noticeItem.login_error_msg = item.login_error_msg;
+                        }
                         processObj = noticeItem;
                     }
                 }
-            } );
+            });
             if (processObj && processObj.app_name) {
                 processData.push(processObj);
             }
@@ -298,19 +323,19 @@ class SystemNotification extends React.Component {
     // idx表示的是系统通知的条数
     renderUnHandledNoticeContent = (notice, idx) => {
         let showList = [];
+        let isLoginFailed = notice.type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
         if (_.isArray(notice.detail) && notice.detail.length) {
-            showList = this.handleNoticeDetailData(notice.detail);
+            showList = this.handleNoticeDetailData(notice.detail, isLoginFailed);
         }
         return showList.map((item, index) => {
             //是否是异地登录的类型
             let isOffsetLogin = (item.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && item.content);
-            let isLoginFailed = item.type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
             return <div className="system-notice-item" key={index}>
                 <a onClick={this.openUserDetail.bind(this, item.user_id, index)}>{item.user_name}</a>
                 {isOffsetLogin ? (Intl.get('notification.system.on', '在') + item.content.current_location) : ''}
                 {item.app_name ?
                     <span>{(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + item.app_name}</span> : ''}
-                {isLoginFailed ? <span>，{Intl.get('notification.login.password.error', '报密码或验证码错误')}</span> : null}
+                {isLoginFailed ? <span>，{_.get(item, 'login_error_msg', '')}</span> : null}
                 <span className="system-notice-time">
                     {item.login_count === 1 ? (
                         <span>
@@ -364,10 +389,12 @@ class SystemNotification extends React.Component {
     };
 
     hideNoticeSuccessTips = () => {
+        let systemNotices = this.state.systemNotices;
         //处理成功后，将该消息从未处理消息中删除,随处理失败的提示消失
-        this.state.systemNotices = _.filter(this.state.systemNotices, item => item.id !== this.state.noticeId);
+        systemNotices = _.filter(systemNotices, item => item.id !== this.state.noticeId);
         this.setState({
-            handleNoticeMessageSuccessFlag: false
+            handleNoticeMessageSuccessFlag: false,
+            systemNotices
         });
     };
 

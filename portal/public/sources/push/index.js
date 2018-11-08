@@ -175,8 +175,8 @@ function listenSystemNotice(notice) {
             tipContent += (isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + notice.app_name;
         }
         if (isLoginFailed) {
-            //密码或验证码错误
-            tipContent += ' , ' + Intl.get('notification.login.password.error', '报密码或验证码错误');
+            //密码或验证码错误等的详细错误信息
+            tipContent += ' , ' + _.get(notice, 'content.operate_detail', Intl.get('login.username.password.error', '用户名或密码错误'));
         }
         //标签页不可见时，有桌面通知，并且允许弹出桌面通知时
         if (canPopDesktop()) {
