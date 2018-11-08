@@ -137,7 +137,7 @@ class ProductionManage extends React.Component {
             return (
                 <div className="btn-containers">
                     <Button className='add-clue-btn btn-item btn-m-r-2'
-                        onClick={this.events_showAddForm.bind(this, util.CONST.ADD)}>{Intl.get('common.add.member', '添加成员')}</Button>
+                        onClick={this.events_showAddForm.bind(this, util.CONST.ADD)}> {Intl.get('config.product.add', '添加产品')}</Button>
                 </div>
             );
         } else {
