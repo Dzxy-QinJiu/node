@@ -337,7 +337,7 @@ var NavSidebar = createReactClass({
             history.push('/apply',{clickUnhandleNum: true});
 
         });
-        $('.navbar').on('click', '.clue-icon-container', function(e) {
+        $('.navbar').on('click', '.clue_customer_icon_container', function(e) {
             //点击到a标签上，不做处理
             if ($(e.target).is('a')){
                 return;
@@ -666,10 +666,11 @@ var NavSidebar = createReactClass({
                                         if (!(_.includes(NavSidebarLists, menu))) {
                                             NavSidebarLists.push(menu);
                                         }
+                                        var routeCls = menu.routePath + '_icon_container';
                                         //不隐藏图标时
                                         if (!this.state.hideNavIcon) {
                                             return (
-                                                <li key={i} title={menu.name} className={menu.routePath === 'clue_customer' ? 'clue-icon-container' : ''}>
+                                                <li key={i} title={menu.name} className={routeCls}>
                                                     <NavLink to={`/${menu.routePath}`}
                                                         activeClassName='active'
                                                         className={extraClass}
@@ -681,7 +682,7 @@ var NavSidebar = createReactClass({
                                         //小屏幕隐藏图标
                                         else {
                                             return (
-                                                <li key={i} title={menu.name} className={menu.routePath === 'clue_customer' ? 'text-nav-li clue-icon-container' : 'text-nav-li'}>
+                                                <li key={i} title={menu.name} className= {`text-nav-li  ${routeCls}`}>
                                                     <NavLink to={`/${menu.routePath}`}
                                                         activeClassName='active'
                                                     >

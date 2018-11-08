@@ -44,6 +44,8 @@ exports.notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT = 'showUnhandledApplyCount
 exports.notificationEmitter.APPLY_UPDATED = 'applyUpdated';
 //未处理的线索数量
 exports.notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT = 'showUnhandledClueCount';
+//未审批申请的数量
+exports.notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT = 'showUnhandledApplyApproveCount';
 //展开线索详情
 exports.notificationEmitter.SHOW_CLUE_DETAIL = 'showClueDetail';
 //申请审批未读回复
@@ -113,7 +115,7 @@ appSelectorEmitter.setMaxListeners(0);
 // 应用选择组件--选中应用
 appSelectorEmitter.SELECT_APP = 'appselector.select_app';
 exports.appSelectorEmitter = appSelectorEmitter;
-export {appSelectorEmitter }
+export {appSelectorEmitter };
 
 // 分析tab选择组件的emitter
 const analysisTabEmitter = new EventEmitter();

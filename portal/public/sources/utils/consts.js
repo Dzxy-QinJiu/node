@@ -61,6 +61,17 @@ export const SYSTEM_NOTICE_TYPES = {
     FOCUS_CUSTOMER_LOGIN: 'concerCustomerLogin',//关注客户登录
     LOGIN_FAILED: 'loginFailed',//登录失败
 };
+export const APPLY_APPROVE_TYPES = {
+    CUSTOMER_VISIT: 'customer_visit',//后端传到前端的出差申请的类型
+    CUSTOMERVISIT: 'customervisit',//向后端传参数的出差申请类型
+    BUSINESS_OPPORTUNITIES: 'business_opportunities',//后端传到前端的销售机会的类型
+    BUSINESSOPPORTUNITIES: 'businessopportunities',//向后端传参数的销售机会类型
+    PERSONAL_LEAVE: 'personal_leave',//后端传到前端请假的类型
+    LEAVE: 'leave',//向后端传参数的请假类型
+    UNHANDLECUSTOMERVISIT: 'unhandleCustomerVisit',//未处理的出差申请数量
+    UNHANDLEBUSINESSOPPORTUNITIES: 'unhandleBusinessOpportunities',//未处理的销售机会申请数量
+    UNHANDLEPERSONALLEAVE: 'unhandlePersonalLeave',//未处理的请假申请数量
+};
 
 //系统消息对应的几种类型
 export const SYSTEM_NOTICE_TYPE_MAP = {

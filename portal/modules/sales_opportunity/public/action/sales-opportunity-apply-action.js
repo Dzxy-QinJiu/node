@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2018/9/10.
  */
 var SalesOpportunityApplyAjax = require('../ajax/sales-opportunity-apply-ajax');
+import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 function SalesOpportunityApplyActions() {
     this.generateActions(
         'setInitState',
@@ -16,7 +17,7 @@ function SalesOpportunityApplyActions() {
     this.getAllSalesOpportunityApplyList = function(queryObj) {
         //需要先获取待审批列表，成功后获取全部列表
         this.dispatch({loading: true, error: false});
-        SalesOpportunityApplyAjax.getWorklistSalesOpportunityApplyList({type: 'businessopportunities'}).then((workList) => {
+        SalesOpportunityApplyAjax.getWorklistSalesOpportunityApplyList({type: APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES}).then((workList) => {
             this.dispatch({workList: workList});
             //如果是待我审批的列表，不需要在发获取全部列表的请求了
             if (queryObj.status && queryObj.status === 'ongoing'){
