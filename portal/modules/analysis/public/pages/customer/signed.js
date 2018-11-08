@@ -38,6 +38,8 @@ function getCharts() {
         customerChart.getRenewalCustomerZoneChart(),
         //续签客户毛利统计
         customerChart.getRenewalCustomerGrossProfitChart(),
+        //流失客户趋势统计
+        customerChart.getLossCustomerTrendChart(),
         //客户续签时间统计
         customerChart.getRenewalCustomerTimeChart(),
         /*
