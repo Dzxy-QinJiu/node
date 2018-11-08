@@ -40,6 +40,8 @@ function getCharts() {
         customerChart.getRenewalCustomerGrossProfitChart(),
         //流失客户趋势统计
         customerChart.getLossCustomerTrendChart(),
+        //流失现金趋势统计
+        customerChart.getLossCashTrendChart(),
         //客户续签时间统计
         customerChart.getRenewalCustomerTimeChart(),
         /*
