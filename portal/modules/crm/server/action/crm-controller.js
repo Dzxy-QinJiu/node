@@ -236,9 +236,16 @@ exports.addCustomer = function(req, res) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
-
 exports.addCustomerByClue = function(req, res) {
     crmService.addCustomerByClue(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+};
+exports.editCustomer = function(req, res) {
+    crmService.editCustomer(req, res)
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(codeMessage) {

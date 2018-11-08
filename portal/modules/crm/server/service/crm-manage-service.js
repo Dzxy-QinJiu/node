@@ -379,6 +379,16 @@ exports.addCustomer = function(req, res, newCustomer) {
             res: res
         }, newCustomer);
 };
+//修改客户信息
+exports.editCustomer = function(req, res) {
+    return restUtil.authRest.put(
+        {
+            url: crmRestApis.customer,
+            req: req,
+            res: res
+        }, req.body);
+};
+
 //由线索生成客户
 exports.addCustomerByClue = function(req, res) {
     return restUtil.authRest.post(

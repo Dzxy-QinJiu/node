@@ -112,6 +112,14 @@ module.exports = {
             ]
         },
         {
+            method: 'put',
+            path: '/rest/customer/v2/editcustomer',
+            handler: 'editCustomer',
+            passport: {
+                needLogin: true
+            },
+        },
+        {
             method: 'post',
             path: '/rest/crm/add_customer_by_clue',
             handler: 'addCustomerByClue',
