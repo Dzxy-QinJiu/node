@@ -34,6 +34,8 @@ function getCharts() {
         customerChart.getSignedCustomerNewTeamChart(),
         //续签客户趋势
         customerChart.getRenewalCustomerTrendChart(),
+        //续签客户地域统计
+        customerChart.getRenewalCustomerZoneChart(),
         //客户续签时间统计
         customerChart.getRenewalCustomerTimeChart(),
         /*
