@@ -783,6 +783,22 @@ function getClueUnreadNum(data, callback){
         }
     });
 }
+function setMessageValue(applyType,data) {
+    var messages = {
+    };
+    messages[applyType] = 0;
+    var value = _.get(data, 'total');
+    if (typeof value === 'number' && value > 0) {
+        messages[applyType] = value;
+    } else if (typeof value === 'string') {
+        var num = parseInt(value);
+        if (!isNaN(num) && num > 0) {
+            messages[applyType] = num;
+        }
+    }
+    //更新全局中存的未处理的线索数
+    updateGlobalUnreadStorage(messages);
+}
 //获取待我审批的出差申请
 function getUnapproveBussinessTripApply(callback) {
     $.ajax({
@@ -790,20 +806,7 @@ function getUnapproveBussinessTripApply(callback) {
         dataType: 'json',
         type: 'get',
         success: function(data) {
-            var messages = {
-            };
-            messages[APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT] = 0;
-            var value = data.total;
-            if (typeof value === 'number' && value > 0) {
-                messages[APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT] = value;
-            } else if (typeof value === 'string') {
-                var num = parseInt(value);
-                if (!isNaN(num) && num > 0) {
-                    messages[APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT] = num;
-                }
-            }
-            //更新全局中存的未处理的线索数
-            updateGlobalUnreadStorage(messages);
+            setMessageValue(APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT,data);
             if (typeof callback === 'function') {
                 callback(APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT);
             }
@@ -816,7 +819,7 @@ function getUnapproveBussinessTripApply(callback) {
     });
 }
 //获取待我审批的销售机会申请
-function getUnapproveSalesOpportunityApply(callback) {
+function getUnapproveSalesOpportunityApply() {
     var queryObj = {type: APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES};
     $.ajax({
         url: '/rest/get/worklist/sales_opportunity_apply/list',
@@ -824,23 +827,7 @@ function getUnapproveSalesOpportunityApply(callback) {
         type: 'get',
         data: queryObj,
         success: function(data) {
-            var messages = {
-            };
-            messages[APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES] = 0;
-            var value = data.total;
-            if (typeof value === 'number' && value > 0) {
-                messages[APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES] = value;
-            } else if (typeof value === 'string') {
-                var num = parseInt(value);
-                if (!isNaN(num) && num > 0) {
-                    messages[APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES] = num;
-                }
-            }
-            //更新全局中存的未处理的线索数
-            updateGlobalUnreadStorage(messages);
-            if (typeof callback === 'function') {
-                callback(APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES);
-            }
+            setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES,data);
         },
         error: function(errorMsg) {
             if (typeof callback === 'function') {
@@ -850,7 +837,7 @@ function getUnapproveSalesOpportunityApply(callback) {
     });
 }
 //获取待我审批的请假申请
-function getUnapproveLeaveApply(callback) {
+function getUnapproveLeaveApply() {
     var queryObj = {type: APPLY_APPROVE_TYPES.LEAVE};
     $.ajax({
         url: '/rest/get/worklist/leave_apply/list',
@@ -858,23 +845,7 @@ function getUnapproveLeaveApply(callback) {
         type: 'get',
         data: queryObj,
         success: function(data) {
-            var messages = {
-            };
-            messages[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE] = 0;
-            var value = data.total;
-            if (typeof value === 'number' && value > 0) {
-                messages[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE] = value;
-            } else if (typeof value === 'string') {
-                var num = parseInt(value);
-                if (!isNaN(num) && num > 0) {
-                    messages[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE] = num;
-                }
-            }
-            //更新全局中存的未处理的线索数
-            updateGlobalUnreadStorage(messages);
-            if (typeof callback === 'function') {
-                callback(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE);
-            }
+            setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,data);
         },
         error: function(errorMsg) {
             if (typeof callback === 'function') {
