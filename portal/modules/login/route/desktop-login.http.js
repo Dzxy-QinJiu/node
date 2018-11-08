@@ -53,7 +53,7 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
-    },{
+    }, {
         'method': 'post',
         'path': '/QR_code/login/:qrcode',
         'handler': 'loginByQRCode',
@@ -67,21 +67,21 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
-    },{
+    }, {
         'method': 'get',
         'path': '/company/name/validate',
         'handler': 'getCompanyByName',
         'passport': {
             'needLogin': false
         }
-    },{
+    }, {
         'method': 'get',
         'path': '/phone/validate_code',
         'handler': 'getVertificationCode',
         'passport': {
             'needLogin': false
         }
-    },{
+    }, {
         'method': 'get',
         'path': '/phone/code/validate',
         'handler': 'validatePhoneCode',
@@ -92,6 +92,20 @@ module.exports = {
         'method': 'post',
         'path': '/account/register',
         'handler': 'registerAccount',
+        'passport': {
+            'needLogin': false
+        }
+    }, {
+        'method': 'get',
+        'path': '/page/login/wechat',
+        'handler': 'wechatLoginPage',
+        'passport': {
+            'needLogin': false
+        }
+    },{
+        'method': 'get',
+        'path': '/login/wechat',
+        'handler': 'loginWithWechat',
         'passport': {
             'needLogin': false
         }

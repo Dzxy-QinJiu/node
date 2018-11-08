@@ -68,7 +68,7 @@ exports.showLoginPage = function(req, res) {
         let formHtml = ReactDOMServer.renderToString(LoginForm(obj));
         let isCurtao = commonUtil.method.isCurtao(req);
         //正式发版的curtao上，展示带注册的登录界面，
-        if(isCurtao){
+        if (isCurtao) {
             formHtml = ReactDOMServer.renderToString(LoginCurtaoForm(obj));
         }
         var phone = '400-677-0986';
@@ -336,9 +336,9 @@ exports.wechatLogin = function(req, res) {
 //根据公司名获取公司
 exports.getCompanyByName = function(req, res) {
     DesktopLoginService.getCompanyByName(req, res).on('success', function(data) {
-        if(!data){
+        if (!data) {
             res.status(200).json(false);
-        } else{
+        } else {
             res.status(200).json(data);
         }
     }).on('error', function(errorObj) {
@@ -369,6 +369,32 @@ exports.validatePhoneCode = function(req, res) {
         res.status(500).json(errorObj && errorObj.message);
     });
 };
+exports.wechatLoginPage = function(req, res) {
+    DesktopLoginService.wechatLoginPage(req, res).on('success', function(data) {
+        res.send(data);
+    }).on('error', function(errorObj) {
+        res.status(500).send(errorObj && errorObj.message);
+    });
+};
+exports.loginWithWechat = function(req, res) {
+    let code = '';
+    if (req.query && req.query.code) {
+        if (req.sessionID === req.query.state) {
+            code = req.query.code;
+        }
+    }
+    if (code) {
+        DesktopLoginService.loginWithWechat(req, res, code).on('success', function(data) {
+            console.log('@@@@' + JSON.stringify(data));
+            // res.status(200).json(data);
+        }).on('error', function(errorObj) {
+            res.status(500).json(errorObj && errorObj.message);
+        });
+    } else {
+        res.status(500).json('微信登录失败');
+    }
+};
+
 
 //修改session数据
 function modifySessionData(req, data) {
