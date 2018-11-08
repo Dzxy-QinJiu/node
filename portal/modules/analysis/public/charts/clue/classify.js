@@ -9,7 +9,7 @@ export function getClassifyChart() {
     return {
         title: Intl.get('clue.analysis.classify.chart', '分类统计'),
         chartType: 'pie',
-        url: '/rest/customer/v2/clue/:data_type/statistical/clue_classify/1000/1',
+        url: '/rest/clue/v1/:data_type/statistical/clue_classify/1000/1',
         reqType: 'post',
         conditions: [{
             type: 'data',

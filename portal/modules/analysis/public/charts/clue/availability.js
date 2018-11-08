@@ -9,7 +9,7 @@ export function getAvailabilityChart() {
     return {
         title: Intl.get('clue.analysis.avalibility.chart', '有效性统计'),
         chartType: 'pie',
-        url: '/rest/customer/v2/clue/:data_type/statistical/availability/1000/1',
+        url: '/rest/clue/v1/:data_type/statistical/availability/1000/1',
         reqType: 'post',
         conditions: [{
             type: 'data',

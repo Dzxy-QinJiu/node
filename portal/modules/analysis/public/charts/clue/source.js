@@ -9,7 +9,7 @@ export function getSourceChart() {
     return {
         title: Intl.get('clue.analysis.source.chart', '来源统计'),
         chartType: 'pie',
-        url: '/rest/customer/v2/clue/:data_type/statistical/clue_source/1000/1',
+        url: '/rest/clue/v1/:data_type/statistical/clue_source/1000/1',
         reqType: 'post',
         conditions: [{
             type: 'data',

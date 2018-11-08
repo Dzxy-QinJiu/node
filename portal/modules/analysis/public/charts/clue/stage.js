@@ -9,7 +9,7 @@ export function getStageChart() {
     return {
         title: Intl.get('clue.stage.statics', '线索阶段统计'),
         chartType: 'funnel',
-        url: '/rest/customer/v2/clue/:data_type/statistical/customer_label/1000/1',
+        url: '/rest/clue/v1/:data_type/statistical/customer_label/1000/1',
         reqType: 'post',
         conditions: [{
             type: 'data',

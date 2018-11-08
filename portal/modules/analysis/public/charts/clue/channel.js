@@ -9,7 +9,7 @@ export function getChannelChart() {
     return {
         title: Intl.get('clue.analysis.access.chart', '渠道统计'),
         chartType: 'pie',
-        url: '/rest/customer/v2/clue/:data_type/statistical/access_channel/1000/1',
+        url: '/rest/clue/v1/:data_type/statistical/access_channel/1000/1',
         reqType: 'post',
         conditions: [{
             type: 'data',
