@@ -104,7 +104,10 @@ class UserDetail extends React.Component {
         AppUserPanelSwitchStore.listen(this.onStoreChange);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
-        document.querySelector('.user_manage_user_detail .gm-scroll-view').addEventListener('mousewheel', this.handleWheel, false);
+        let scrollWrapElem = document.querySelector('.user_manage_user_detail .gm-scroll-view');
+        if (scrollWrapElem) {
+            scrollWrapElem.addEventListener('mousewheel', this.handleWheel, false);
+        }
     }
 
     componentWillUnmount() {
@@ -112,7 +115,10 @@ class UserDetail extends React.Component {
         AppUserPanelSwitchStore.unlisten(this.onStoreChange);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
-        document.querySelector('.user_manage_user_detail .gm-scroll-view').removeEventListener('mousewheel', this.handleWheel, false);
+        let scrollWrapElem = document.querySelector('.user_manage_user_detail .gm-scroll-view');
+        if (scrollWrapElem) {
+            scrollWrapElem.removeEventListener('mousewheel', this.handleWheel, false);
+        }
     }
 
     wheelTimer = null;
@@ -147,7 +153,7 @@ class UserDetail extends React.Component {
         emitter.emit('user_detail_close_right_panel');
     };
 
-    changeTab = (key) => {        
+    changeTab = (key) => {
         this.setState({
             activeKey: key
         }, () => {
@@ -177,7 +183,7 @@ class UserDetail extends React.Component {
     };
 
     onConfirmPasswordDisplayTypeChange = () => {
-        this.setState({ isConfirmPasswordShow: false, showEditPw: false });       
+        this.setState({ isConfirmPasswordShow: false, showEditPw: false });
     };
 
     onPasswordValueChange = () => {
@@ -347,7 +353,7 @@ class UserDetail extends React.Component {
                 </TabPane>
             );
         }
-       
+
         const EDIT_FEILD_WIDTH = 395;
         return (
             <div className="right-panel-wrapper">
@@ -379,7 +385,7 @@ class UserDetail extends React.Component {
                                                         <UserDetailEditField
                                                             ref={ref => this.passwordRef = ref}
                                                             displayType="edit"
-                                                            user_id={_.get(userInfo, 'data.user_id')}                                                            
+                                                            user_id={_.get(userInfo, 'data.user_id')}
                                                             field="password"
                                                             type="password"
                                                             hideButtonBlock={true}
@@ -417,7 +423,7 @@ class UserDetail extends React.Component {
                                                                 id={_.get(userInfo, 'data.user_id')}
                                                                 value={_.get(userInfo, 'data.nick_name')}
                                                                 type="text"
-                                                                field="nick_name"                                                    
+                                                                field="nick_name"
                                                                 editBtnTip={Intl.get('user.nickname.set.tip', '设置昵称')}
                                                                 placeholder={Intl.get('user.nickname.write.tip', '请填写昵称')}
                                                                 hasEditPrivilege={hasPrivilege('APP_USER_EDIT')}
@@ -425,7 +431,7 @@ class UserDetail extends React.Component {
                                                                 noDataTip={Intl.get('user.nickname.no.tip', '暂无昵称')}
                                                                 addDataTip={Intl.get('user.nickname.add.tip', '添加昵称')}
                                                             />
-                                                        </div>   
+                                                        </div>
                                                         <div className="basic-info-remark basic-info-item">
                                                             <span className="basic-info-label">{Intl.get('common.remark', '备注')}:</span>
                                                             <BasicEditInputField
@@ -442,7 +448,7 @@ class UserDetail extends React.Component {
                                                                 noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
                                                                 addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
                                                             />
-                                                        </div>        
+                                                        </div>
                                                     </div>
                                             }
                                         </div> : null
