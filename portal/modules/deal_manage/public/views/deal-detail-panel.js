@@ -12,7 +12,7 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import DetailCard from 'CMP_DIR/detail-card';
 import StepsBar from 'CMP_DIR/steps-bar';
-
+import Trace from 'LIB_DIR/trace';
 import {disabledBeforeToday} from 'PUB_DIR/sources/utils/common-method-util';
 import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import {DEAL_STATUS} from 'PUB_DIR/sources/utils/consts';
@@ -77,25 +77,28 @@ class DealDetailPanel extends React.Component {
         });
     };
     closeDetailPanel = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.close-modal-btn'), '关闭订单详情界面');
         if (_.isFunction(this.props.hideDetailPanel)) {
             this.props.hideDetailPanel();
         }
     }
 
     hideDelConfirmTip = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.item-delete-confirm'), '取消删除订单');
         this.setState({
             isDelConfirmShow: false
         });
     };
     //展示是否删除的模态框
-    showDelConfirmTip = () => {
+    showDelConfirmTip = (e) => {
+        Trace.traceEvent(e, '点击删除订单按钮');
         this.setState({
             isDelConfirmShow: true
         });
     };
-    //模态提示框确定后的处理
+    //确定删除订单的处理
     deleteDeal = (deal) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确定删除订单');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.item-delete-confirm'), '确定删除订单');
         if (deal.id) {
             this.setState({isDeleting: true});
             dealAjax.deleteDeal(deal.id).then(result => {
@@ -144,7 +147,7 @@ class DealDetailPanel extends React.Component {
             sale_stages: sale_stages,
         };
         if (saveObj.customer_id && saveObj.id) {
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.deal-introduce-div'), '保存订单阶段的修改');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.deal-item-title'), '保存订单阶段的修改');
             dealAjax.editDealStage(saveObj).then(result => {
                 if (result && result.code === 0) {
                     currDeal.sale_stages = sale_stages;
@@ -163,12 +166,14 @@ class DealDetailPanel extends React.Component {
         this.setState({curDealCloseStatus: key});
     };
 
-    cancelCloseDeal = () => {
+    cancelCloseDeal = (e) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.deal-item-title'), '取消关闭订单');
         this.setState({curDealCloseStatus: ''});
     };
 
     //关闭订单（赢单、丢单）
     closeDeal = (status) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.deal-item-title'), '关闭订单并设为赢单');
         if (this.state.isClosingDeal) return;
         this.setState({isClosingDeal: true});
         let deal = this.state.currDeal;
@@ -250,7 +255,8 @@ class DealDetailPanel extends React.Component {
         $(event.target).parents('.step-item').find('.deal-stage-name').trigger('click');
     };
 
-    showApplyForm = (applyType, deal, apps) => {
+    showApplyForm = (applyType, deal, apps, e) => {
+        Trace.traceEvent(e, '点击订单的申请用户按钮');
         if (apps && !apps.length) {
             this.setState({isAddAppTipShow: true});
             setTimeout(() => {
@@ -310,7 +316,7 @@ class DealDetailPanel extends React.Component {
                                     </Button>
                                 </span>) : (
                                 <span className="iconfont icon-delete" title={Intl.get('common.delete', '删除')}
-                                    data-tracename="点击删除订单按钮" onClick={this.showDelConfirmTip}/>)
+                                    onClick={this.showDelConfirmTip}/>)
                             }
                         </span>
                     </span>

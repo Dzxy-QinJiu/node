@@ -67,6 +67,9 @@ dealManageStore.prototype.updateDeal = function(newDeal) {
     if (editDeal) {
         _.each(newDeal, (value, key) => {
             editDeal[key] = value;
+            if (key === 'oppo_status') {
+                editDeal.sale_stages = value;
+            }
         });
     }
 };

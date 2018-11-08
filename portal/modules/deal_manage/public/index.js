@@ -128,6 +128,7 @@ class DealManage extends React.Component {
     };
 
     showCustomerDetail = (deal) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.deal-customer-name'), '查看客户详情');
         this.setState({
             curShowCustomerId: deal.customer_id,
         });
@@ -262,7 +263,7 @@ class DealManage extends React.Component {
             sorterChanged = true;
         }
         if (!sorterChanged) return;
-
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('th.has-sorter'), `订单按 ${sorter.field} - ${sorter.order} 排序`);
         this.setState({sorter}, () => {
             dealAction.setLastDealId('');
             setTimeout(() => {
@@ -316,6 +317,7 @@ class DealManage extends React.Component {
     }
 
     showDealForm = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-deal-btn'), '点击添加订单按钮');
         this.setState({isDealFormShow: true});
     };
 
@@ -354,7 +356,7 @@ class DealManage extends React.Component {
         ];
         let customerOfCurUser = this.state.customerOfCurUser;
         return (
-            <div className="deal-manage-container">
+            <div className="deal-manage-container" data-tracename="订单管理">
                 <TopNav>
                     <div className="deal-search-block">
                         <SearchInput

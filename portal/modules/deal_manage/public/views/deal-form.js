@@ -55,12 +55,7 @@ class DealForm extends React.Component {
     componentDidUpdate() {
         this.addLabelRequiredCls();
     }
-
-    // componentWillUnmount() {
-    //    this.setState(this.getInitialState(this.props));
-    // }
-
-    //TODO 删除
+    
     addLabelRequiredCls() {
         if (!$('.deal-form .require-item label').hasClass('ant-form-item-required')) {
             $('.deal-form .require-item label').addClass('ant-form-item-required');
@@ -109,6 +104,7 @@ class DealForm extends React.Component {
                 predict_finish_time: predictFinishTime,
                 remarks: values.remarks
             };
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.button-save'), '保存添加的订单');
             this.setState({
                 isSaving: true,
                 saveMsg: '',
@@ -180,8 +176,8 @@ class DealForm extends React.Component {
             this.props.form.validateFields(['customer'], {force: true});
         });
     };
-    closeDealForm = (e) => {
-        Trace.traceEvent(e, '关闭添加订单面板');
+    closeDealForm = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.button-cancel'), '关闭添加订单面板');
         this.props.hideDealForm();
         this.setState(this.getInitialState(this.props));
     }
