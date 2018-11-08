@@ -18,6 +18,10 @@ function getCharts() {
     return [
         //签约客户总体趋势
         customerChart.getSignedCustomerTotalTrendChart(),
+        //签约客户净增分析
+        customerChart.getSignedCustomerNetIncreaseChart(),
+        //签约客户毛利分析
+        customerChart.getSignedCustomerGrossProfitChart(),
         //新签客户趋势
         customerChart.getSignedCustomerNewTrendChart(),
         //签约客户行业分布
@@ -30,6 +34,20 @@ function getCharts() {
         customerChart.getSignedCustomerNewTeamChart(),
         //续签客户趋势
         customerChart.getRenewalCustomerTrendChart(),
+        //续签客户地域统计
+        customerChart.getRenewalCustomerZoneChart(),
+        //续签客户毛利统计
+        customerChart.getRenewalCustomerGrossProfitChart(),
+        //流失客户趋势统计
+        customerChart.getLossCustomerTrendChart(),
+        //流失现金趋势统计
+        customerChart.getLossCashTrendChart(),
+        //流失客户地域统计
+        customerChart.getLossCustomerZoneChart(),
+        //流失客户团队统计
+        customerChart.getLossCustomerTeamChart(),
+        //流失客户总体情况分析
+        customerChart.getLossCustomerOverviewChart(),
         //客户续签时间统计
         customerChart.getRenewalCustomerTimeChart(),
         /*

@@ -2,15 +2,26 @@
  * 成交分析
  */
 
-import { unknownDataMap } from '../../consts';
-import { handleChartClick } from '../../utils';
-
-export function getCustomerDealChart(type = 'total', title) {
+export function getCustomerDealChart() {
     return {
-        title: title || '成交分析',
-        url: `/rest/analysis/customer/v1/:auth_type/${type}/team`,
-        chartType: 'bar',
-        nameValueMap: unknownDataMap,
-        chartClickRedirectCallback: handleChartClick.bind(this, 'team'),
+        title: '成交分析',
+        chartType: 'table',
+        url: '/rest/analysis/customer/v2/:data_type/last_contact/deal/statistics',
+        option: {
+            columns: [{
+                title: '联系客户数',
+                dataIndex: 'total',
+            }, {
+                title: '成交数',
+                dataIndex: 'deal',
+            }, {
+                title: '未成交数',
+                dataIndex: 'no_deal',
+            }, {
+                title: '成交率',
+                dataIndex: 'deal_rate',
+            }]
+        },
+        processData: data => [data.result],
     };
 }
