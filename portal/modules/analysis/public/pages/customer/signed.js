@@ -20,6 +20,8 @@ function getCharts() {
         customerChart.getSignedCustomerTotalTrendChart(),
         //签约客户净增分析
         customerChart.getSignedCustomerNetIncreaseChart(),
+        //签约客户毛利分析
+        customerChart.getSignedCustomerGrossProfitChart(),
         //新签客户趋势
         customerChart.getSignedCustomerNewTrendChart(),
         //签约客户行业分布
