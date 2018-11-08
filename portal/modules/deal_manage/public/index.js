@@ -5,7 +5,7 @@
  */
 require('./style/index.less');
 import {Button} from 'antd';
-import {AntcTable} from 'antc';
+import {AntcTable, SearchInput} from 'antc';
 import TopNav from 'CMP_DIR/top-nav';
 import Spinner from 'CMP_DIR/spinner';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
@@ -14,7 +14,7 @@ import dealAction from './action';
 import dealStore from './store';
 import DealForm from './views/deal-form';
 import DealDetailPanel from './views/deal-detail-panel';
-
+import {DEAL_STATUS} from 'PUB_DIR/sources/utils/consts';
 const PAGE_SIZE = 20;
 const TOP_NAV_HEIGHT = 64,//头部导航区高度
     TOTAL_HEIGHT = 40,//总数的高度
@@ -32,6 +32,10 @@ class DealManage extends React.Component {
             sorter: {
                 field: 'time',
                 order: 'descend'
+            },
+            searchObj: {
+                field: '',
+                value: ''
             }
         };
     }
@@ -68,18 +72,44 @@ class DealManage extends React.Component {
     hideDetailPanel = () => {
         this.setState({currDeal: {}, isDetailPanelShow: false});
     }
+    //获取搜索订单的body参数
+    getSearchBody() {
+        let searchBody = {};
+        //客户、负责人、阶段的搜索
+        let searchObj = this.state.searchObj;
+        if (_.get(searchObj, 'value')) {
+            //订单阶段的搜索
+            if (_.get(searchObj, 'field') === 'sale_stages') {
+                let dealQuery = {};
+                dealQuery.sale_stages = searchObj.value;
+                if (dealQuery.sale_stages === Intl.get('crm.order.status.won', '赢单')) {
+                    dealQuery.sale_stages = DEAL_STATUS.WIN;
+                } else if (dealQuery.sale_stages === Intl.get('crm.order.status.lost', '丢单')) {
+                    dealQuery.sale_stages = DEAL_STATUS.LOSE;
+                }
+                searchBody.query = dealQuery;
+            } else {
+                //客户名、负责人的搜索
+                let customerQuery = {};
+                customerQuery[searchObj.field] = searchObj.value;
+                searchBody.parentQuery = {query: customerQuery};
+            }
+        }
+        return searchBody;
+    }
 
     getDealList() {
         let query = {cursor: true};
         if (_.get(this.state, 'dealListObj.lastId')) {
             query.id = this.state.dealListObj.lastId;
         }
+        let body = this.getSearchBody();
         let sorter = this.state.sorter;
         dealAction.getDealList({
             page_size: PAGE_SIZE,
             sort_field: sorter.field,
             sort_order: sorter.order
-        }, {}, query);
+        }, body, query);
     }
 
     getDealColumns() {
@@ -91,41 +121,68 @@ class DealManage extends React.Component {
                 sorter: true,
             },
             {
-                title: Intl.get('deal.budget', '预算(万)'),
+                title: Intl.get('deal.budget', '预算(元)'),
                 dataIndex: 'budget',
                 width: 110,
                 align: 'right',
-                // sorter: true,
-                className: 'has-filter'
+                sorter: true,
+                className: 'has-filter',
+                render: (text, record, index) => {
+                    return text ? text * 10000 : '';
+                }
             },
             {
                 title: Intl.get('deal.stage', '阶段'),
-                dataIndex: 'sale_stages',
+                dataIndex: 'sale_stages_num',
                 className: 'has-filter',
+                sorter: true,
+                align: 'left',
                 render: (text, record, index) => {
+                    let stage = record.sale_stages;
+                    if (stage === DEAL_STATUS.LOSE) {
+                        stage = Intl.get('crm.order.status.lost', '丢单');
+                    } else if (stage === DEAL_STATUS.WIN) {
+                        stage = Intl.get('crm.order.status.won', '赢单');
+                    }
                     return (
                         <span>
-                            {text}
+                            {stage}
                             <span className="hidden record-id">{record.id}</span>
                         </span>);
                 }
             },
             {
                 title: Intl.get('crm.order.expected.deal', '预计成交'),
-                dataIndex: 'predict_finish_text',
+                dataIndex: 'predict_finish_time',
                 className: 'has-filter',
-                // sorter: true,
+                align: 'left',
+                sorter: true,
+                render: function(text, record, index) {
+                    return text ? moment(+text).format(oplateConsts.DATE_FORMAT) : '';
+                }
             },
             {
                 title: Intl.get('member.create.time', '创建时间'),
-                dataIndex: 'time_text',
-                // sorter: true,
+                dataIndex: 'time',
+                align: 'left',
+                sorter: true,
                 className: 'has-filter',
+                render: function(text, record, index) {
+                    return text ? moment(+text).format(oplateConsts.DATE_FORMAT) : '';
+                }
             },
             {
                 title: Intl.get('crm.6', '负责人'),
                 dataIndex: 'user_name',
                 className: 'has-filter',
+                sorter: true,
+                render: function(text, record, index) {
+                    if (record.sales_team) {
+                        return `${text || ''}(${record.sales_team})`;
+                    } else {
+                        return text;
+                    }
+                }
             },
         ];
     }
@@ -149,20 +206,16 @@ class DealManage extends React.Component {
     };
     onTableChange = (pagination, filters, sorter) => {
         let sorterChanged = false;
-        let sorterObj = _.cloneDeep(sorter);
-        if (sorterObj.field === 'predict_finish_text') {
-            sorterObj.field = 'predict_finish_time';
-        } else if (sorterObj.field === 'time_text') {
-            sorterObj.field = 'time';
-        }
-        if (!_.isEmpty(sorterObj) && (sorterObj.field !== this.state.sorter.field || sorterObj.order !== this.state.sorter.order)) {
+        if (!_.isEmpty(sorter) && (sorter.field !== this.state.sorter.field || sorter.order !== this.state.sorter.order)) {
             sorterChanged = true;
         }
         if (!sorterChanged) return;
-        let dealListObj = this.state.dealListObj;
-        dealListObj.lastId = '';
-        this.setState({sorter: sorterObj, dealListObj}, () => {
-            this.getDealList(true);
+
+        this.setState({sorter}, () => {
+            dealAction.setLastDealId('');
+            setTimeout(() => {
+                this.getDealList();
+            });
         });
     };
 
@@ -172,47 +225,92 @@ class DealManage extends React.Component {
 
     renderDealList() {
         let dealListObj = this.state.dealListObj;
-        if (dealListObj.isLoading && !dealListObj.lastId) {
+        //初次获取数据时展示loading效果
+        if (dealListObj.isLoading && (!_.get(dealListObj, 'list[0]'))) {
             return (<Spinner />);
         } else if (_.get(dealListObj, 'list[0]')) {
-            let tableHeight = $('body').height() - TOP_NAV_HEIGHT - TOTAL_HEIGHT - TH_HEIGHT;
+            let tableHeight = $('body').height() - TOP_NAV_HEIGHT - TOTAL_HEIGHT;
             return (
                 <div className="deal-table-container" style={{height: tableHeight}}>
                     <AntcTable
                         rowKey={this.rowKey}
                         rowClassName={this.handleRowClassName}
                         columns={this.getDealColumns()}
+                        loading={dealListObj.isLoading && !dealListObj.lastId}
                         dataSource={dealListObj.list}
                         util={{zoomInSortArea: true}}
                         onChange={this.onTableChange}
                         pagination={false}
-                        scroll={{y: tableHeight}}
+                        scroll={{y: tableHeight - TH_HEIGHT}}
                         dropLoad={{
                             listenScrollBottom: dealListObj.listenScrollBottom,
                             handleScrollBottom: this.handleScrollBottom,
-                            loading: dealListObj.isLoading === 'loading',
+                            loading: dealListObj.isLoading,
                             showNoMoreDataTip: this.showNoMoreDataTip(),
                             noMoreDataText: Intl.get('deal.no.more.tip', '没有更多订单了')
                         }}
                     />
                 </div>);
         } else {
+            let noDataTip = Intl.get('deal.no.data', '暂无订单');
+            if (dealListObj.errorMsg) {
+                noDataTip = dealListObj.errorMsg;
+            } else if (this.state.searchObj.value) {
+                noDataTip = Intl.get('deal.no.filter.deal', '没有符合条件的订单');
+            }
             return (
-                <NoDataIntro noDataTip={dealListObj.errorMsg || Intl.get('deal.no.data', '暂无订单')}/>);
+                <NoDataIntro noDataTip={noDataTip}/>);
         }
     }
 
     showDealForm = () => {
         this.setState({isDealFormShow: true});
-    }
+    };
+
     hideDealForm = () => {
         this.setState({isDealFormShow: false});
-    }
+    };
+
+    searchEvent = (value, key) => {
+        let searchObj = this.state.searchObj;
+        if (searchObj.field !== key || _.trim(value) !== searchObj.value) {
+            searchObj.field = key;
+            searchObj.value = _.trim(value);
+            this.setState({searchObj}, () => {
+                dealAction.setLastDealId('');
+                setTimeout(() => {
+                    this.getDealList();
+                });
+            });
+        }
+    };
 
     render() {
+        const searchFields = [
+            {
+                name: Intl.get('crm.41', '客户名'),
+                field: 'customer_name'
+            },
+            {
+                name: Intl.get('deal.stage', '阶段'),
+                field: 'sale_stages'
+            },
+            {
+                name: Intl.get('crm.6', '负责人'),
+                field: 'user_name'
+            }
+        ];
         return (
             <div className="deal-manage-container">
                 <TopNav>
+                    <div className="deal-search-block">
+                        <SearchInput
+                            type="select"
+                            searchFields={searchFields}
+                            searchEvent={this.searchEvent}
+                            className="btn-item"
+                        />
+                    </div>
                     <PrivilegeChecker check="CUSTOMER_ADD">
                         <Button className='btn-item add-deal-btn' onClick={this.showDealForm}>
                             {Intl.get('crm.161', '添加订单')}

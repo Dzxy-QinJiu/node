@@ -46,6 +46,7 @@ class DealDetailPanel extends React.Component {
             isShowApplyUserForm: false,//是否展示申请用户的表单
             applyType: Intl.get('common.trial.user', '试用用户'),//申请用户的类型：试用用户、正式用户
             applyUserApps: [],//申请用户对应的应用列表
+            isAddAppTipShow: false,//是否展示请先添加应用的提示
         };
     }
 
@@ -251,9 +252,9 @@ class DealDetailPanel extends React.Component {
 
     showApplyForm = (applyType, deal, apps) => {
         if (apps && !apps.length) {
-            this.setState({isAlertShow: true});
+            this.setState({isAddAppTipShow: true});
             setTimeout(() => {
-                this.setState({isAlertShow: false});
+                this.setState({isAddAppTipShow: false});
             }, 3000);
             return;
         }
@@ -344,6 +345,9 @@ class DealDetailPanel extends React.Component {
                     >
                         {applyBtnText}
                     </Button>
+                ) : null}
+                {this.state.isAddAppTipShow ? (
+                    <span className="add-app-tip"> * {Intl.get('crm.153', '请先添加应用')}</span>
                 ) : null}
                 <span className="deal-add-time">{Intl.get('crm.order.add.to', '添加于{time}', {time: createTime})}</span>
                 <span className="deal-user">{deal.user_name || ''}</span>
@@ -480,6 +484,7 @@ class DealDetailPanel extends React.Component {
                         field="budget"
                         value={deal.budget * 10000}
                         afterValTip={Intl.get('contract.82', '元')}
+                        afterTextTip={Intl.get('contract.82', '元')}
                         placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditInput={this.saveDealBasicInfo}
@@ -523,7 +528,7 @@ class DealDetailPanel extends React.Component {
     };
     cancelApply = () => {
         this.setState({
-            isAlertShow: false,
+            isAddAppTipShow: false,
             isShowApplyUserForm: false,
             applyType: Intl.get('common.trial.user', '试用用户'),
             applyUserApps: []
