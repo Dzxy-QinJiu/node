@@ -1,11 +1,11 @@
 /**
- * 已联系客户分析
+ * 其他
  */
 
 import customerChart from '../../charts/customer';
 
 module.exports = {
-    title: '已联系客户分析',
+    title: '其他',
     menuIndex: 9,
     privileges: [
         'CUSTOMER_ANALYSIS_COMMON',
@@ -16,6 +16,6 @@ module.exports = {
 
 function getCharts() {
     return [
-        customerChart.getCustomerDealChart('dealed', '团队或个人成交分析(假数据)'),
+        customerChart.getCustomerDealChart(),
     ];
 }
