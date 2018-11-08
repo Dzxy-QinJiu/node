@@ -12,6 +12,7 @@ import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 
+let HeadIcon = require('../../../../components/headIcon');
 let FormItem = Form.Item;
 let GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 let ProductionFormStore = require('../store/production-form-store');
@@ -118,8 +119,8 @@ class Production extends React.Component {
 
 
     uploadImg = (src) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.head-image-container .update-logo-desr'), '上传头像');
-        this.props.form.setFieldsValue({image: src});
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.head-image-container .update-logo-desr'), '上传产品logo');
+        this.props.form.setFieldsValue({preview_image: src});
     };
 
     //关闭
@@ -134,6 +135,8 @@ class Production extends React.Component {
 
     renderFormContent() {
         const {getFieldDecorator} = this.props.form;
+        let values = this.props.form.getFieldsValue();
+        var headDescr = Intl.get('common.product', '产品');
         let saveResult = this.state.saveResult;
         let formHeight = $('body').height() - LAYOUT_CONST.HEADICON_H - LAYOUT_CONST.TITLE_H;
         const formItemLayout = {
@@ -143,9 +146,25 @@ class Production extends React.Component {
         };
         return (
             <Form layout='horizontal' className="form" autoComplete="off">
-                <div className="user-form-scroll" style={{height: formHeight}}>
+                <FormItem id="preview_image">
+                    {getFieldDecorator('preview_image', {
+                        initialValue: this.props.info.preview_image
+                    })(
+                        <div>
+                            <HeadIcon
+                                headIcon={this.props.info.preview_image || values.preview_image}
+                                iconDescr={values.name || headDescr}
+                                isEdit={true}
+                                onChange={this.uploadImg}
+                                isUserHeadIcon={true}
+                            />
+                            <Input type="hidden" name="preview_image" id="preview_image"/>
+                        </div>
+                    )}
+                </FormItem>
+                <div className="product-form-scroll" style={{height: formHeight}}>
                     <GeminiScrollbar className="geminiScrollbar-vertical">
-                        <div id="user-add-form">
+                        <div id="product-add-form">
                             <FormItem
                                 label={Intl.get('common.product.name', '产品名称')}
                                 {...formItemLayout}
@@ -198,7 +217,9 @@ class Production extends React.Component {
                                 })(
                                     <Input name="price" id="price" type="text"/>
                                 )}
+                                < div className='currency_unit'>{Intl.get('contract.82', '元')}</div>
                             </FormItem>
+
                             <FormItem
                                 label={Intl.get('config.product.sales_unit', '计价单位')}
                                 {...formItemLayout}
@@ -220,7 +241,7 @@ class Production extends React.Component {
                                 {getFieldDecorator('specifications', {
                                     initialValue: this.props.info.specifications,
                                 })(
-                                    <Input name="specifications" id="preview_image" type="text"
+                                    <Input name="specifications" id="specifications" type="text"
                                         placeholder={Intl.get('config.product.input.spec', '请输入产品规格(或版本)')}/>
                                 )}
                             </FormItem>
@@ -277,7 +298,7 @@ class Production extends React.Component {
         let title = this.props.info.name ? Intl.get('config.product.modify', '修改产品') : Intl.get('config.product.add', '添加产品');
         return (
             <RightPanelModal
-                className="member-add-container"
+                className="product-add-container"
                 isShowMadal={true}
                 isShowCloseBtn={true}
                 onClosePanel={this.handleCancel.bind(this)}

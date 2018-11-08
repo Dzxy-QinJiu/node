@@ -243,6 +243,7 @@ var zh_CN = {
     'common.company': '公司', // 公司
     'common.all.select': '全选',
     'common.product.name': '产品名称',
+    'common.product': '产品',
 
     //公共部分--end
     'login.login': '登录',
@@ -2523,7 +2524,6 @@ var zh_CN = {
     'leave.apply.my.worklist.apply': '待我审批',
     'leave.apply.sales.opportunity.application': '销售机会申请',
     'leave.apply.inspect.success.time': '预计成交时间',
-    'leave.apply.buy.apps': '产品',
     'leave.apply.fill.in.remarks': '请填写销售机会备注',
     'leave.apply.buget.count': '预算',
     'leave.apply.select.atleast.one.app': '请选择至少一个产品',
