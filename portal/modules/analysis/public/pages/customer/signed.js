@@ -46,6 +46,8 @@ function getCharts() {
         customerChart.getLossCustomerZoneChart(),
         //流失客户团队统计
         customerChart.getLossCustomerTeamChart(),
+        //流失客户总体情况分析
+        customerChart.getLossCustomerOverviewChart(),
         //客户续签时间统计
         customerChart.getRenewalCustomerTimeChart(),
         /*
