@@ -153,7 +153,7 @@ class ProductionManage extends React.Component {
     render() {
         var firstLoading = this.state.isLoading;
         return (
-            <div className="production_manage_style backgroundManagement_production_content" data-tracename="成员管理">
+            <div className="production_manage_style backgroundManagement_production_content" data-tracename="产品管理">
                 {
                     firstLoading ? <div className="firstLoading">
                         <Spinner/>
