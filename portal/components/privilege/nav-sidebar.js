@@ -71,12 +71,10 @@ function getUserName() {
 //不需要在左侧图标列表中输出的链接
 var ExcludeLinkList = [
     {'name': Intl.get('menu.sales.homepage', '销售主页'), path: 'sales/home'},
-    {'name': Intl.get('common.my.app', '我的应用'), path: 'my_app'},
     {'name': Intl.get('menu.backend', '后台管理'), path: 'background_management'},
     {'name': Intl.get('menu.userinfo.manage', '个人信息管理'), path: 'user_info_manage'},
     {'name': Intl.get('menu.system.notification', '系统消息'), path: 'notification_system'},
-    {'name': Intl.get('menu.appuser.apply', '用户审批'), path: 'apply'},
-    {'name': Intl.get('analysis.sales.monthly.report', '销售月报'), path: 'analysis/monthly_report'}
+    {'name': Intl.get('menu.appuser.apply', '用户审批'), path: 'apply'}
 ];
 
 //后台管理配置
@@ -108,6 +106,12 @@ const BackendConfigLinkList = [
         href: '/background_management/configaration',
         key: 'configaration',
         privilege: 'CREATE_CONFIG_INDUSTRY'
+    },
+    {
+        name: Intl.get('config.product.manage', '产品管理'),
+        href: '/background_management/products',
+        key: 'product',
+        privilege: 'PRODUCTS_MANAGE'
     }
 ];
 

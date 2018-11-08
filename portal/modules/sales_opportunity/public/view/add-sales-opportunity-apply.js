@@ -249,7 +249,7 @@ class AddSalesOpportunityApply extends React.Component {
                                         )}
                                     </FormItem>
                                     <FormItem
-                                        label={Intl.get('leave.apply.buy.apps','产品')}
+                                        label={Intl.get('common.product','产品')}
                                         id="apps"
                                         {...formItemLayout}
                                     >

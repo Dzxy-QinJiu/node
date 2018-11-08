@@ -121,7 +121,7 @@ class Card extends React.Component {
                             <div className="attention-icon">
                                 {this.props.showDelete ? <div>
                                     <i className={deleteClassName} title={deleteTitle}
-                                       onClick={this.deleteItem.bind(this, card.id)}
+                                        onClick={this.deleteItem.bind(this, card.id)}
                                     ></i>
                                 </div> : null}
                             </div>
@@ -144,7 +144,6 @@ Card.propTypes = {
     showRightFullScreen: PropTypes.func,
     deleteItem: PropTypes.func,
     imgUrl: PropTypes.string,
-    showDelete: PropTypes.bool,
-    removeFailRealm: PropTypes.func
+    showDelete: PropTypes.bool
 };
 module.exports = Card;

@@ -180,7 +180,7 @@ class ApplyViewDetail extends React.Component {
                 label: Intl.get('leave.apply.buget.count', '预算'),
                 text: detail.budget + Intl.get('contract.82', '元')
             }, {
-                label: Intl.get('leave.apply.buy.apps', '产品'),
+                label: Intl.get('common.product', '产品'),
                 text: productArr.join(',')
             }, {
                 label: Intl.get('leave.apply.inspect.success.time', '预计成交时间'),

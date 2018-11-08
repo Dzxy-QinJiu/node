@@ -238,6 +238,7 @@ var en_US = {
     'common.company': 'company', // 公司
     'common.all.select': 'Select all',//全选
     'common.product.name': 'Product name', // 产品名称
+    'common.product': 'product',//产品
     //公共部分--end
     'login.login': 'Login',//登录
     'login.register': 'Register',//注册
@@ -2509,7 +2510,6 @@ var en_US = {
     'leave.apply.my.worklist.apply': 'Waiting for me to approve',//待我审批
     'leave.apply.sales.opportunity.application': 'Sales opportunity application',//销售机会申请
     'leave.apply.inspect.success.time': 'Estimated transaction time',//预计成交时间
-    'leave.apply.buy.apps': 'product',//产品
     'leave.apply.fill.in.remarks': 'Please fill in the sales opportunity remark',//请填写销售机会备注
     'leave.apply.buget.count': 'Budget',//预算
     'leave.apply.select.atleast.one.app': 'Please select at least one product',//请选择至少一个产品

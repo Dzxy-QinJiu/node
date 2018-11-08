@@ -137,7 +137,7 @@ class ProductionManage extends React.Component {
             return (
                 <div className="btn-containers">
                     <Button className='add-clue-btn btn-item btn-m-r-2'
-                            onClick={this.events_showAddForm.bind(this, util.CONST.ADD)}>{Intl.get('common.add.member', '添加成员')}</Button>
+                        onClick={this.events_showAddForm.bind(this, util.CONST.ADD)}> {Intl.get('config.product.add', '添加产品')}</Button>
                 </div>
             );
         } else {
@@ -153,7 +153,7 @@ class ProductionManage extends React.Component {
     render() {
         var firstLoading = this.state.isLoading;
         return (
-            <div className="user_manage_style backgroundManagement_user_content" data-tracename="成员管理">
+            <div className="production_manage_style backgroundManagement_production_content" data-tracename="产品管理">
                 {
                     firstLoading ? <div className="firstLoading">
                         <Spinner/>
@@ -177,8 +177,8 @@ class ProductionManage extends React.Component {
                     <TopNav>
                         <TopNav.MenuList/>
                         <PrivilegeChecker check="PRODUCTS_MANAGE" className="block float-r btn-item-container"
-                                          onClick={this.events_showAddForm.bind(this, util.CONST.ADD)}
-                                          data-tracename="添加产品">
+                            onClick={this.events_showAddForm.bind(this, util.CONST.ADD)}
+                            data-tracename="添加产品">
                             <Button className="btn-item btn-m-r-2">
                                 {Intl.get('config.product.add', '添加产品')}
                             </Button>

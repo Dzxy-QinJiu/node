@@ -195,19 +195,16 @@ class LeftMenuClass {
                 routePath: 'analysis',
                 subMenu: [
                     {
-                        id: 'ANALYSIS',//唯一标识
-                        name: backendIntl.get('menu.customer.analysis', '运营分析'),
-                        routePath: 'analysis/analysis',
-                        privileges: [
-                            'CUSTOMER_ANALYSIS_COMMON',
-                            'CUSTOMER_ANALYSIS_MANAGER',
-                        ],
-                        //有这个权限，才显示入口图标
+                        id: 'ANALYSIS',//唯一标识
+                        name: backendIntl.get('menu.customer.analysis', '运营分析'),
+                        routePath: 'analysis/analysis',
+                        privileges: ['CUSTOMER_ANALYSIS_COMMON','CUSTOMER_ANALYSIS_MANAGER'],
+                        //有这个权限，才显示入口图标
                         showPrivileges: [
                             'CUSTOMER_ANALYSIS_COMMON',
                             'CUSTOMER_ANALYSIS_MANAGER',
-                        ]
-                    },
+                        ]
+                    },
                     //周报统计
                     {
                         id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
