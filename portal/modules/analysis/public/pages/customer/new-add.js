@@ -24,9 +24,9 @@ function getCharts() {
         customerChart.getCustomerZoneChart('added'),
         //行业统计
         customerChart.getCustomerIndustryChart('added'),
+        //新开客户转化率统计
+        customerChart.getNewCustomerConvertRateChart(),
         //销售新开客户数统计
         customerChart.getSalesNewOpenChart(),
-        //留存统计
-        //        customerChart.getCustomerRemainChart(),
     ];
 }
