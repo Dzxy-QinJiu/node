@@ -1,12 +1,12 @@
 /**
- * 成交数渠道分布
+ * 成交数渠道统计
  */
 
 import { initialTime } from '../../consts';
 
 export function getClueDealChannelChart() {
     return {
-        title: '成交数渠道分布',
+        title: '成交数渠道统计',
         chartType: 'pie',
         url: '/rest/clue/v1/statistical/access_channel/1000/1',
         reqType: 'post',

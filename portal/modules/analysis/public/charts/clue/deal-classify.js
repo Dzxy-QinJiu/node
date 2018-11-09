@@ -1,12 +1,12 @@
 /**
- * 成交数分类分布
+ * 成交数分类统计
  */
 
 import { initialTime } from '../../consts';
 
 export function getClueDealClassifyChart() {
     return {
-        title: '成交数分类分布',
+        title: '成交数分类统计',
         chartType: 'pie',
         url: '/rest/clue/v1/statistical/clue_classify/1000/1',
         reqType: 'post',
