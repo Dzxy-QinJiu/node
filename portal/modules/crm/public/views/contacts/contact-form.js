@@ -91,7 +91,7 @@ var ContactForm = createReactClass({
         return {
             status: status,
             isLoading: false,
-            showNeedContact: false,
+            showNeedPhone: false,
             formData: formData,
             errorMsg: '',
             contact: $.extend(true, {}, this.props.contact),
@@ -236,12 +236,11 @@ var ContactForm = createReactClass({
         if (!this.state.isValidNameDepartment) {
             return;
         }
-        //提示至少需要添加一种联系方式
-        let contactArray = phoneArray.concat(qqArray, weChatArray, emailArray);
-        //过滤出不为空的联系方式
-        contactArray = contactArray.filter(item => item ? true : false);
-        if (contactArray.length === 0) {
-            this.setState({showNeedContact: true});
+        //过滤出不为空的联系电话
+        let hasPhone = _.some(phoneArray, phone => phone);
+        //提示电话为必填
+        if (!hasPhone) {
+            this.setState({showNeedPhone: true});
             return;
         }
         formData.phone = this.props.isMerge ? phoneArray : JSON.stringify(phoneArray);
@@ -355,6 +354,9 @@ var ContactForm = createReactClass({
             validator: (rule, value, callback) => {
                 value = $.trim(value);
                 if (value) {
+                    if(this.state.showNeedPhone){
+                        this.setState({showNeedPhone: false});
+                    }
                     let phone = value.replace('-', '');
                     let contact = this.props.contact.contact;
                     let phoneArray = contact && _.isArray(contact.phone) ? contact.phone : [];
@@ -435,20 +437,24 @@ var ContactForm = createReactClass({
             status[phoneKey] = {};
         }
         return (
-            <PhoneInput
-                id={this.state.phoneInputIds[index]}
-                colon={false}
-                label={index ? ' ' : Intl.get('common.phone', '电话')}
-                wrappedComponentRef={(inst) => this.phoneInputRefs.push(inst)}
-                placeholder={Intl.get('crm.95', '请输入联系人电话')}
-                initialValue={formData[phoneKey]}
-                labelCol={{span: 2}}
-                wrapperCol={{span: 12}}
-                key={index}
-                validateRules={this.getPhoneInputValidateRules()}
-                onChange={this.setField.bind(this, phoneKey)}
-                suffix={this.renderContactWayBtns(index, size, 'phone')}
-            />
+            <div>
+                <PhoneInput
+                    id={this.state.phoneInputIds[index]}
+                    colon={false}
+                    label={index ? ' ' : Intl.get('common.phone', '电话')}
+                    wrappedComponentRef={(inst) => this.phoneInputRefs.push(inst)}
+                    placeholder={Intl.get('crm.95', '请输入联系人电话')}
+                    initialValue={formData[phoneKey]}
+                    labelCol={{span: 2}}
+                    wrapperCol={{span: 12}}
+                    key={index}
+                    validateRules={this.getPhoneInputValidateRules()}
+                    onChange={this.setField.bind(this, phoneKey)}
+                    suffix={this.renderContactWayBtns(index, size, 'phone')}
+                />
+                {this.state.showNeedPhone && index === 0 ?
+                    <div className="validate-error-tip">{Intl.get('crm.95', '请输入联系人电话')} </div> : null}
+            </div>
         );
     },
 
@@ -566,8 +572,6 @@ var ContactForm = createReactClass({
                             return this.renderContactWayInput(Intl.get('common.email', '邮箱'), 'email', index, contactWayAddObj.email.length, formData, status);
                         }) : [this.renderContactWayInput(Intl.get('common.email', '邮箱'), 'email', 0, 1, formData, status)]
                     }
-                    {this.state.showNeedContact ?
-                        <div className="validate-error-tip">{Intl.get('crm.116', '请至少添加一种联系方式')} </div> : null}
                 </Validation>
             </Form>
         );
