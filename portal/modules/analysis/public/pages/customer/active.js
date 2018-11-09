@@ -6,7 +6,7 @@ import customerChart from '../../charts/customer';
 
 module.exports = {
     title: '客户活跃度分析',
-    menuIndex: 3,
+    menuIndex: 2,
     privileges: [
         'CUSTOMER_ANALYSIS_COMMON',
         'CUSTOMER_ANALYSIS_MANAGER',
