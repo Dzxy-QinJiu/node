@@ -11,6 +11,10 @@ import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var insertStyle = require('CMP_DIR/insert-style');
 require('./index.less');
 var notificationEmitter = require('../../public/sources/utils/emitters').notificationEmitter;
+var totalCount = [
+    {cls: 'application_business_apply_ico',unhandleNum: APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT},
+    {cls: 'application_leave_apply_ico',unhandleNum: APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE},
+    {cls: 'application_sales_opportunity_ico',unhandleNum: APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES}];
 //顶部导航外层div
 class TopNav extends React.Component {
     resizeHandler = () => {
@@ -99,12 +103,13 @@ class TopNav extends React.Component {
         this.renderUnhandleApplyStyle();
     }
 
-    renderUnhandleNum = (count, cls,unhandleNum) => {
+    renderUnhandleNum = (cls,unhandleNum) => {
         if (this[unhandleNum]) {
             this[unhandleNum].destroy();
             this[unhandleNum] = null;
         }
         var styleText = '';
+        var count = Oplate.unread[unhandleNum] || 0;
         //设置数字
         if (count > 0) {
             var len = (count + '').length;
@@ -121,15 +126,8 @@ class TopNav extends React.Component {
     };
     renderUnhandleApplyStyle = () => {
         if (Oplate && Oplate.unread) {
-            var customerVisitCount = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT] || 0;
-            var personalLeaveCount = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE] || 0;
-            var businessOpportunitiesCount = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES] || 0;
-            var totalCount = [
-                {count: customerVisitCount,cls: 'application_business_apply_ico',unhandleNum: 'unhandleBusinessApply'},
-                {count: personalLeaveCount,cls: 'application_leave_apply_ico',unhandleNum: 'unhandleLeaveApply'},
-                {count: businessOpportunitiesCount,cls: 'application_sales_opportunity_ico',unhandleNum: 'unhandleSalesOpportunityApply'}];
             _.forEach(totalCount,(item) => {
-                this.renderUnhandleNum(item.count,item.cls,item.unhandleNum);
+                this.renderUnhandleNum(item.cls,item.unhandleNum);
             });
         }
     };
@@ -139,6 +137,13 @@ class TopNav extends React.Component {
         $('body').off('click' , this.clickBodyEmptySpace);
         topNavEmitter.removeListener(topNavEmitter.RELAYOUT , this.resizeFunc);
         notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.renderUnhandleApplyStyle);
+        _.forEach(totalCount, (item) => {
+            if (this[item.unhandleNum]) {
+                this[item.unhandleNum].destroy();
+                this[item.unhandleNum] = null;
+            }
+        });
+
     }
 
     render() {
