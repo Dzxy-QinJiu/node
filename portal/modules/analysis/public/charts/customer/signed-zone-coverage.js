@@ -1,15 +1,18 @@
 /**
- * 签约客户行政级别市场占有率分析
+ * 签约客户地域市场占有率分析
  */
 
-export function getSignedCustomerAdministrativeLevelCoverageChart() {
+export function getSignedCustomerZoneCoverageChart() {
     return {
-        title: '签约客户行政级别市场占有率分析',
+        title: '签约客户地域市场占有率分析',
         chartType: 'table',
-        url: '/rest/analysis/customer/label/:data_type/share/level',
-        processData: data => [data],
+        url: '/rest/analysis/customer/label/:data_type/share/region',
         option: {
             columns: [{
+                title: '名称',
+                dataIndex: 'name',
+                width: '10%',
+            }, {
                 title: '省级客户数',
                 dataIndex: 'province_customer',
                 width: '15%',

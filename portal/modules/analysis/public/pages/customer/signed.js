@@ -24,6 +24,8 @@ function getCharts() {
         customerChart.getSignedCustomerGrossProfitChart(),
         //签约客户行政级别市场占有率分析
         customerChart.getSignedCustomerAdministrativeLevelCoverageChart(),
+        //签约客户地域市场占有率分析
+        customerChart.getSignedCustomerZoneCoverageChart(),
         //新签客户趋势
         customerChart.getSignedCustomerNewTrendChart(),
         //签约客户行业分布
