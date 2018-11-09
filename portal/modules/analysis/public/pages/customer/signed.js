@@ -22,6 +22,8 @@ function getCharts() {
         customerChart.getSignedCustomerNetIncreaseChart(),
         //签约客户毛利分析
         customerChart.getSignedCustomerGrossProfitChart(),
+        //签约客户行政级别市场占有率分析
+        customerChart.getSignedCustomerAdministrativeLevelCoverageChart(),
         //新签客户趋势
         customerChart.getSignedCustomerNewTrendChart(),
         //签约客户行业分布
