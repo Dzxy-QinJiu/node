@@ -8,10 +8,12 @@ import DetailCard from 'CMP_DIR/detail-card';
 import DatePicker from 'CMP_DIR/datepicker';
 import classNames from 'classnames';
 import crmAjax from '../../ajax';
+import crmAction from '../../action/crm-actions';
 import {AntcChart} from 'antc';
 import {Tag} from 'antd';
 const QUALIFIED_USER_SIZE = 200;//客户的所有合格用户默认先用200个
 const QUALIFY_LABEL = 1; //合格的用户
+
 class CrmScoreCard extends React.Component {
     constructor(props) {
         super(props);
@@ -53,7 +55,7 @@ class CrmScoreCard extends React.Component {
 
     //获取分数趋势数据
     getHistoryScoreList() {
-        if(!this.state.customerId) return;
+        if (!this.state.customerId) return;
         this.setState({isLoadingHistoryScore: true});
         crmAjax.getHistoryScoreList({
             customer_id: this.state.customerId,
@@ -109,6 +111,7 @@ class CrmScoreCard extends React.Component {
             let userList = _.get(result, 'data[0]') ? result.data : [];
             let qualifiedUserList = _.map(userList, item => {
                 return {
+                    user_id: _.get(item, 'user.user_id', ''),
                     nick_name: _.get(item, 'user.nick_name', ''),
                     user_name: _.get(item, 'user.user_name', '')
                 };
@@ -137,6 +140,10 @@ class CrmScoreCard extends React.Component {
         setTimeout(() => this.getHistoryScoreList());
     }
 
+    showUserDetail(userId) {
+        crmAction.setShowDetailUserId(userId);
+    }
+
     renderScoreDetail() {
         const chartOption = {
             grid: {
@@ -161,7 +168,8 @@ class CrmScoreCard extends React.Component {
                     <div className="crm-account-text">
                         {
                             _.get(this.state, 'qualifiedUserList[0]') ? _.map(this.state.qualifiedUserList, user => {
-                                return (<Tag><span className="iconfont icon-active-user-ico"/>{user.user_name}</Tag>);
+                                return (<Tag onClick={this.showUserDetail.bind(this, user.user_id)}><span
+                                    className="iconfont icon-active-user-ico"/>{user.user_name}</Tag>);
                             }) : (<span className="no-qualify-account-tip">
                                 {Intl.get('crm.no.qualify.account', '暂无合格账号')}
                             </span>)

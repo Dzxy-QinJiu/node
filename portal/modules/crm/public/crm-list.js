@@ -47,7 +47,7 @@ const COMMON_OTHER_ITEM = 'otherSelectedItem';
 import {OTHER_FILTER_ITEMS, DAY_TIME} from 'PUB_DIR/sources/utils/consts';
 import ShearContent from 'CMP_DIR/shear-content';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
-
+import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
     tried: '试用阶段',
@@ -128,6 +128,7 @@ class Crm extends React.Component {
             curCustomer: crmStoreData.curCustomer,
             customerId: crmStoreData.customerId,
             clueId: crmStoreData.clueId,//展示线索详情的id
+            showDetailUserId: crmStoreData.showDetailUserId,//展示用户详情的userId
             keyword: $('.search-input').val() || '',
             isAddFlag: _this.state && _this.state.isAddFlag || false,
             batchChangeShow: _this.state && _this.state.batchChangeShow || false,
@@ -1378,7 +1379,9 @@ class Crm extends React.Component {
                 <span>{Intl.get('call.record.contacts', '联系人')}</span>
             </span>);
     }
-
+    closeUserDetail(){
+        CrmAction.setShowDetailUserId('');
+    }
     render() {
         var _this = this;
         //只有有批量变更和合并客户的权限时，才展示选择框的处理
@@ -1655,7 +1658,7 @@ class Crm extends React.Component {
                                         let str = Intl.get('crm.207', '共{count}个客户', { count: total });
                                         //由于合并或删除，已经不存在了的客户数，首页点击活跃客户统计表格中的活跃或非活跃客户数跳转过来时会用到
                                         const diffNum = _.get(this.props, 'location.state.diffNum');
-                                        
+
                                         if (diffNum) {
                                             str += ' (' + Intl.get('crm.num.customer.not.exist', '有{count}个客户已经被合并或删除后不存在了', {count: diffNum}) + ')';
                                         }
@@ -1713,7 +1716,6 @@ class Crm extends React.Component {
                     hideRightPanel={this.hideClueRightPanel}
                     afterDeleteClue={this.afterDeleteClue}
                 /> : null}
-
                 {/*该客户下的用户列表*/}
                 <RightPanel
                     className="customer-user-list-panel"
@@ -1727,6 +1729,14 @@ class Crm extends React.Component {
                         /> : null
                     }
                 </RightPanel>
+                {this.state.showDetailUserId ?
+                    <RightPanel
+                        className="apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"
+                        showFlag={this.state.showDetailUserId}
+                    >
+                        <UserDetail userId={this.state.showDetailUserId}
+                            closeRightPanel={this.closeUserDetail}/>
+                    </RightPanel> : null}
                 <BootstrapModal
                     show={this.state.showDeleteConfirm}
                     onHide={this.hideDeleteModal}
