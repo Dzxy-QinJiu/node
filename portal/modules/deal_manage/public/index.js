@@ -20,7 +20,9 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 import Trace from 'LIB_DIR/trace';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import classNames from 'classnames';
-
+import {formatNumHasDotToFixed} from 'PUB_DIR/sources/utils/common-method-util';
+import {num as antUtilsNum} from 'ant-utils';
+const parseAmount = antUtilsNum.parseAmount;
 const PAGE_SIZE = 20;
 const TOP_NAV_HEIGHT = 64,//头部导航区高度
     TOTAL_HEIGHT = 40,//总数的高度
@@ -181,7 +183,8 @@ class DealManage extends React.Component {
                 sorter: true,
                 className: 'has-filter',
                 render: (text, record, index) => {
-                    return text ? text * 10000 : '';
+                    //有小数的预算，四舍五入精确到毛
+                    return parseAmount(formatNumHasDotToFixed(text * 10000, 1));
                 }
             },
             {

@@ -20,6 +20,7 @@ import userData from 'PUB_DIR/sources/user-data';
 import ApplyUserForm from '../../../crm/public/views/apply-user-form';
 import dealAction from '../action';
 import dealAjax from '../ajax';
+import {formatNumHasDotToFixed} from 'PUB_DIR/sources/utils/common-method-util';
 
 const TOP_STAGE_HEIGHT = 110;//头部阶段
 //展示申请签约用户的阶段
@@ -488,7 +489,7 @@ class DealDetailPanel extends React.Component {
                         id={deal.id}
                         type="number"
                         field="budget"
-                        value={deal.budget * 10000}
+                        value={formatNumHasDotToFixed(deal.budget * 10000, 1)}
                         afterValTip={Intl.get('contract.82', '元')}
                         afterTextTip={Intl.get('contract.82', '元')}
                         placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
