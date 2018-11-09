@@ -566,7 +566,7 @@ CrmStore.prototype.setNextPageNum = function(pageNum) {
 CrmStore.prototype.showClueDetail = function(clueId) {
     this.clueId = clueId;
 };
-CrmStore.prototype.setshowDetailUserId = function(userId) {
+CrmStore.prototype.setShowDetailUserId = function(userId) {
     this.showDetailUserId = userId;
 };
 CrmStore.prototype.setCurCustomers = function(curCustomers) {

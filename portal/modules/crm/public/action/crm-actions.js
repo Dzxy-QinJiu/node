@@ -32,7 +32,7 @@ function CrmActions() {
         //设置关注客户是否置顶
         'setConcernCustomerTop',
         //设置展示用户详情的userId
-        'setshowDetailUserId'
+        'setShowDetailUserId'
     );
 
     this.queryCustomer = function(params, pageSize, sorter) {

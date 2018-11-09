@@ -141,7 +141,7 @@ class CrmScoreCard extends React.Component {
     }
 
     showUserDetail(userId) {
-        crmAction.setshowDetailUserId(userId);
+        crmAction.setShowDetailUserId(userId);
     }
 
     renderScoreDetail() {

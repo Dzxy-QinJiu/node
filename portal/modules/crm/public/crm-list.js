@@ -1380,7 +1380,7 @@ class Crm extends React.Component {
             </span>);
     }
     closeUserDetail(){
-        CrmAction.setshowDetailUserId('');
+        CrmAction.setShowDetailUserId('');
     }
     render() {
         var _this = this;
