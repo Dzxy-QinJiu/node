@@ -3,6 +3,10 @@
 @import "../../../../public/css/iconfont";
 @filter-width: 288px;
 .crm_content {
+    //从客户详情中打开用户详情时，用户详情要在客户详情之上展示
+    .app_user_manage_rightpanel.detail-v3-panel{
+        z-index: 1000;
+    }
     //联系人列标题
     .customer-contact-th{
         position: relative;
@@ -234,14 +238,6 @@
         .no-more-data-tip .ant-alert {
             text-align: center;
         }
-    }
-    .ant-alert {
-        position: absolute;
-        z-index: 100;
-        width: 180px;
-        top: 20px;
-        left: 70%;
-        text-align: center;
     }
     .handle-btn-container {
         div:focus,

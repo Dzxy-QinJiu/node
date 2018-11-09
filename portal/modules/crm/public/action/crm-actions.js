@@ -30,7 +30,9 @@ function CrmActions() {
         'showClueDetail',
         'setCurCustomers',
         //设置关注客户是否置顶
-        'setConcernCustomerTop'
+        'setConcernCustomerTop',
+        //设置展示用户详情的userId
+        'setshowDetailUserId'
     );
 
     this.queryCustomer = function(params, pageSize, sorter) {
