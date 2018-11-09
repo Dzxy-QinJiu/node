@@ -17,7 +17,9 @@
     "debug": "npm run dll && npm run server && node --debug app.js",
     "dev": "node devserver.js -d",
     "start": "node app.js -p",
-    "production": "npm run dll && npm run webpack  && npm run server && npm run start"
+    "production": "npm run dll && npm run webpack  && npm run server && npm run start",
+    "precommit": "lint-staged",
+    "eslint_fix": "eslint --fix  --ext .jsx,.js ./  -o eslint-fix.log"
   },
   "lint-staged": {
     "*.{js,jsx}": [
