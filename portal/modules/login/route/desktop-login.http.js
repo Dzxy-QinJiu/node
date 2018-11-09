@@ -109,5 +109,12 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
+    },{
+        'method': 'get',
+        'path': '/login/wechat/miniprogram',
+        'handler': 'loginWithWechatMiniprogram',
+        'passport': {
+            'needLogin': false
+        }
     }]
 };

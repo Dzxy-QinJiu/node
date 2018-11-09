@@ -385,7 +385,7 @@ exports.loginWithWechat = function(req, res) {
     }
     if (code) {
         DesktopLoginService.loginWithWechat(req, res, code).on('success', function(data) {
-            console.log('@@@@' + JSON.stringify(data));
+            console.log('微信登录：' + JSON.stringify(data));
             // res.status(200).json(data);
         }).on('error', function(errorObj) {
             res.status(500).json(errorObj && errorObj.message);
@@ -393,6 +393,16 @@ exports.loginWithWechat = function(req, res) {
     } else {
         res.status(500).json('微信登录失败');
     }
+};
+//小程序登录
+exports.loginWithWechatMiniprogram = function(req, res) {
+    let code = req.query && req.query.code || '';
+    DesktopLoginService.loginWithWechatMiniprogram(req, res, code).on('success', function(data) {
+        console.log('小程序登录:' + JSON.stringify(data));
+        // res.status(200).json(data);
+    }).on('error', function(errorObj) {
+        res.status(500).json(errorObj && errorObj.message);
+    });
 };
 
 

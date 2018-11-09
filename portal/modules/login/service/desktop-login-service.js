@@ -454,7 +454,7 @@ exports.wechatLoginPage = function(req, res) {
 
 //微信登录
 exports.loginWithWechat = function(req, res, code) {
-    let access_token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?';
+    let access_token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token';
     let params = {
         appid: WECHAT_APPID,
         secret: WECHAT_SECRET,
@@ -465,6 +465,24 @@ exports.loginWithWechat = function(req, res, code) {
     //     access_token_url += key + '=' + params[key] + '&';
     // });
     // access_token_url = access_token_url.slice(access_token_url.length - 1, 1);
+    return restUtil.baseRest.get(
+        {
+            url: access_token_url,
+            req: req,
+            res: res,
+        }, params);
+
+
+};
+//微信小程序登录
+exports.loginWithWechatMiniprogram = function(req, res, code) {
+    let access_token_url = 'https://api.weixin.qq.com/sns/jscode2session';
+    let params = {
+        appid: 'wx2e0b97000e161535',
+        secret: '368f73708c6cd75901507f2bda526edf',
+        js_code: code,
+        grant_type: 'authorization_code'
+    };
     return restUtil.baseRest.get(
         {
             url: access_token_url,
