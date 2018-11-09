@@ -12,15 +12,19 @@ export function getSignedCustomerNetIncreaseChart() {
             columns: [{
                 title: '新签',
                 dataIndex: 'new_customers',
+                width: '25%',
             }, {
                 title: '回流',
                 dataIndex: 'reflux_customers',
+                width: '25%',
             }, {
                 title: '流失',
                 dataIndex: 'churn_customers',
+                width: '25%',
             }, {
                 title: '净增',
                 dataIndex: 'net_new_customers',
+                width: '25%',
             }],
         },
     };

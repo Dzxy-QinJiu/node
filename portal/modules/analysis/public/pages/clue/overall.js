@@ -25,13 +25,11 @@ function getCharts() {
         clueChart.getClassifyChart(),
         //有效性统计
         clueChart.getAvailabilityChart(),
-        /*
         //成交额及成交数统计
-        clueChart.getClueDealChart(),
-        //成交数渠道分布
+        //clueChart.getClueDealChart(),
+        //成交数渠道统计
         clueChart.getClueDealChannelChart(),
-        //成交数分类分布
+        //成交数分类统计
         clueChart.getClueDealClassifyChart(),
-        */
     ];
 }

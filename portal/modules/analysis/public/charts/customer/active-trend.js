@@ -1,60 +1,35 @@
 /**
- * 近一月活跃客户趋势
+ * 活跃客户趋势
  */
 
 import { numToPercent } from '../../utils';
 
-export function getCustomerActiveTrendChart() {
+export function getCustomerActiveTrendChart(title = '', interval = 'day') {
     return {
-        title: Intl.get('active.customer.trends.last.month', '近一月活跃客户趋势'),
-        url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
+        title,
+        chartType: 'line',
+        url: '/rest/analysis/customer/label/:data_type/active/trend',
+        conditions: [
+            {
+                name: 'interval',
+                value: interval,
+            },
+        ],
         argCallback: (arg) => {
             let query = arg.query;
 
             if (query && query.starttime && query.endtime) {
-                query.start_time = moment().subtract(1, 'months').valueOf();
-                query.end_time = moment().valueOf();
-                delete query.starttime;
-                delete query.endtime;
-            }
-        },
-        conditions: [
-            {
-                name: 'interval',
-                value: 'day',
-            },
-        ],
-        chartType: 'line',
-        dataField: 'total',
-        processData: data => {
-            _.each(data, dataItem => {
-                if (dataItem.date_str) {
-                    dataItem.name = dataItem.date_str.substr(5);
-                    dataItem.value = dataItem.active;
+                if (interval === 'day') {
+                    query.starttime = moment().subtract(1, 'months').valueOf();
+                } else if (interval === 'week') {
+                    query.starttime = moment().subtract(3, 'months').valueOf();
+                } else if (interval === 'month') {
+                    query.starttime = moment().subtract(1, 'years').valueOf();
                 }
-            });
 
-            return data;
-        },
-        option: {
-            grid: {
-                right: 0,
-            },
-            tooltip: {
-                formatter: params => {
-                    const dateStr = params[0].name;
-                    const activeNum = params[0].value;
-                    const activeRate = numToPercent(params[0].data.active_rate);
-                    const effectiveNum = params[0].data.valid;
+                query.endtime = moment().valueOf();
 
-                    return `
-                        ${dateStr}<br>
-                        ${Intl.get('active.customer.number', '活跃客户数')}: ${activeNum}<br>
-                        ${Intl.get('effective.customer.activity.rate', '有效客户活跃率')}: ${activeRate}<br>
-                        ${Intl.get('effective.customer.number', '有效客户数')}: ${effectiveNum}
-                    `;
-                },
-            },
+            }
         },
     };
 }

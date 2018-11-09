@@ -11,15 +11,19 @@ export function getCustomerDealChart() {
             columns: [{
                 title: '联系客户数',
                 dataIndex: 'total',
+                width: '25%',
             }, {
                 title: '成交数',
                 dataIndex: 'deal',
+                width: '25%',
             }, {
                 title: '未成交数',
                 dataIndex: 'no_deal',
+                width: '25%',
             }, {
                 title: '成交率',
                 dataIndex: 'deal_rate',
+                width: '25%',
             }]
         },
         processData: data => [data.result],

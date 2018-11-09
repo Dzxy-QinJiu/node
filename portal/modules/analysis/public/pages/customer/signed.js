@@ -6,7 +6,7 @@ import customerChart from '../../charts/customer';
 
 module.exports = {
     title: '签约客户分析',
-    menuIndex: 4,
+    menuIndex: 3,
     privileges: [
         'CUSTOMER_ANALYSIS_COMMON',
         'CUSTOMER_ANALYSIS_MANAGER',
@@ -22,6 +22,10 @@ function getCharts() {
         customerChart.getSignedCustomerNetIncreaseChart(),
         //签约客户毛利分析
         customerChart.getSignedCustomerGrossProfitChart(),
+        //签约客户行政级别市场占有率分析
+        customerChart.getSignedCustomerAdministrativeLevelCoverageChart(),
+        //签约客户地域市场占有率分析
+        customerChart.getSignedCustomerZoneCoverageChart(),
         //新签客户趋势
         customerChart.getSignedCustomerNewTrendChart(),
         //签约客户行业分布
