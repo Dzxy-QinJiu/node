@@ -30,6 +30,6 @@ function getCharts() {
         //成交数渠道分布
         clueChart.getClueDealChannelChart(),
         //成交数分类分布
-        //clueChart.getClueDealClassifyChart(),
+        clueChart.getClueDealClassifyChart(),
     ];
 }

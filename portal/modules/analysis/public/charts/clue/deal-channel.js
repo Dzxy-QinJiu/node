@@ -9,7 +9,6 @@ export function getClueDealChannelChart() {
         title: '成交数渠道分布',
         chartType: 'pie',
         url: '/rest/clue/v1/statistical/access_channel/1000/1',
-        //url: '/rest/clue/v1/statistical/clue_classify/1000/1',
         reqType: 'post',
         dataField: 'result',
         conditions: [{
