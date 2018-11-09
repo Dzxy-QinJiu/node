@@ -14,5 +14,11 @@ Oplate.unread = {
     //待审批数
     approve: 0,
     //线索中未处理的线索数量 管理员角色：待分配  销售： 待跟进  运营人员不展示
-    unhandleClue: 0
+    unhandleClue: 0,
+    //出差申请审批未读数
+    unhandleCustomerVisit: 0,
+    //销售机会申请未读数
+    unhandleBusinessOpportunities: 0,
+    //请假审批未读数
+    unhandlePersonalLeave: 0,
 };

@@ -104,6 +104,12 @@ var UnreadMixin = {
         if (!this.shouldGetUnreadData()) {
             return;
         }
+        _.forEach(UNREADCOUNT,(item) => {
+            if (this[item.style]) {
+                this[item.style].destroy();
+                this[item.style] = null;
+            }
+        });
         this.unregisterEventEmitter();
     }
 };

@@ -830,9 +830,6 @@ function getUnapproveSalesOpportunityApply() {
             setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES,data);
         },
         error: function(errorMsg) {
-            if (typeof callback === 'function') {
-                callback(APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES);
-            }
         }
     });
 }
@@ -848,9 +845,7 @@ function getUnapproveLeaveApply() {
             setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,data);
         },
         error: function(errorMsg) {
-            if (typeof callback === 'function') {
-                callback(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE);
-            }
+
         }
     });
 }
