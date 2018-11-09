@@ -21,7 +21,9 @@ import Trace from 'LIB_DIR/trace';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import classNames from 'classnames';
 import {formatNumHasDotToFixed} from 'PUB_DIR/sources/utils/common-method-util';
+import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
 import {num as antUtilsNum} from 'ant-utils';
+
 const parseAmount = antUtilsNum.parseAmount;
 const PAGE_SIZE = 20;
 const TOP_NAV_HEIGHT = 64,//头部导航区高度
@@ -48,11 +50,13 @@ class DealManage extends React.Component {
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
             curShowCustomerId: '',//当前查看的客户详情
+            teamList: []//团队列表（列表中的团队根据团队id获取团队名来展示）
         };
     }
 
     componentDidMount() {
         dealStore.listen(this.onStoreChange);
+        this.getTeamList();
         this.getDealList();
         let _this = this;
         //点击订单列表某一行时打开对应的详情
@@ -71,6 +75,14 @@ class DealManage extends React.Component {
 
     onStoreChange = () => {
         this.setState(dealStore.getState());
+    }
+
+    getTeamList() {
+        getMyTeamTreeList(data => {
+            this.setState({
+                teamList: data.teamList
+            });
+        });
     }
 
     showDetailPanel(id) {
@@ -213,7 +225,7 @@ class DealManage extends React.Component {
                 className: 'has-filter',
                 align: 'left',
                 sorter: true,
-                render: function(text, record, index) {
+                render: (text, record, index) => {
                     return text ? moment(+text).format(oplateConsts.DATE_FORMAT) : '';
                 }
             },
@@ -223,7 +235,7 @@ class DealManage extends React.Component {
                 align: 'left',
                 sorter: true,
                 className: 'has-filter',
-                render: function(text, record, index) {
+                render: (text, record, index) => {
                     return text ? moment(+text).format(oplateConsts.DATE_FORMAT) : '';
                 }
             },
@@ -232,15 +244,24 @@ class DealManage extends React.Component {
                 dataIndex: 'user_name',
                 className: 'has-filter',
                 sorter: true,
-                render: function(text, record, index) {
-                    if (record.sales_team) {
-                        return `${text || ''}(${record.sales_team})`;
+                render: (text, record, index) => {
+                    let teamName = record.sales_team_id ? this.getTeamNameById(record.sales_team_id) : '';
+                    if (teamName) {
+                        return `${text || ''}(${teamName})`;
                     } else {
                         return text;
                     }
                 }
             },
         ];
+    }
+
+    getTeamNameById(teamId) {
+        let curTeam = _.find(this.state.teamList, team => team.group_id === teamId);
+        if (curTeam) {
+            return curTeam.group_name || '';
+        }
+        return '';
     }
 
     handleScrollBottom = () => {
