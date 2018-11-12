@@ -372,7 +372,7 @@ exports.validatePhoneCode = function(req, res) {
 };
 exports.wechatLoginPage = function(req, res) {
     DesktopLoginService.wechatLoginPage(req, res).on('success', function(data) {
-        restLogger.log('微信登录跳转数据：' + JSON.stringify(data));
+        restLogger.info('微信登录跳转数据：' + JSON.stringify(data));
         res.send(data);
     }).on('error', function(errorObj) {
         res.status(500).send(errorObj && errorObj.message);
@@ -387,7 +387,7 @@ exports.loginWithWechat = function(req, res) {
     }
     if (code) {
         DesktopLoginService.loginWithWechat(req, res, code).on('success', function(data) {
-            restLogger.log('微信登录：' + JSON.stringify(data));
+            restLogger.info('微信登录：' + JSON.stringify(data));
             // res.status(200).json(data);
         }).on('error', function(errorObj) {
             res.status(500).json(errorObj && errorObj.message);
@@ -400,7 +400,7 @@ exports.loginWithWechat = function(req, res) {
 exports.loginWithWechatMiniprogram = function(req, res) {
     let code = req.query && req.query.code || '';
     DesktopLoginService.loginWithWechatMiniprogram(req, res, code).on('success', function(data) {
-        restLogger.log('小程序登录:' + JSON.stringify(data));
+        restLogger.info('小程序登录:' + JSON.stringify(data));
         // res.status(200).json(data);
     }).on('error', function(errorObj) {
         res.status(500).json(errorObj && errorObj.message);
