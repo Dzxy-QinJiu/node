@@ -99,7 +99,7 @@ class CurtaoAnalysis extends React.Component {
     //线索渠道列表
     getClueChannelList = () => {
         ajax.send({
-            url: '/rest/customer/v2/clue/access_channel/100/1'
+            url: '/rest/clue/v1/access_channel/100/1'
         }).then(result => {
             Store.clueChannelList = _.get(result, 'result');
         });
@@ -108,7 +108,7 @@ class CurtaoAnalysis extends React.Component {
     //线索来源列表
     getClueSourceList = () => {
         ajax.send({
-            url: '/rest/customer/v2/clue/clue_source/100/1'
+            url: '/rest/clue/v1/clue_source/100/1'
         }).then(result => {
             Store.clueSourceList = _.get(result, 'result');
         });
@@ -136,6 +136,9 @@ class CurtaoAnalysis extends React.Component {
 
     //处理一级菜单变更事件
     handleCollapseChange(key) {
+        //如果菜单当前处于展开状态，点击时key为undefined，此时无需处理
+        if (!key) return;
+
         const group = this.state.groups[key];
         const pages = group.pages;
 
@@ -216,11 +219,11 @@ class CurtaoAnalysis extends React.Component {
                             onClick={this.hideRightPanel}
                         />
 
-                        {this.state.isCustomerListShow? (
-                        <CustomerList
-                            location={this.state.customerListLocation}
-                            fromSalesHome={true}
-                        />
+                        {this.state.isCustomerListShow ? (
+                            <CustomerList
+                                location={this.state.customerListLocation}
+                                fromSalesHome={true}
+                            />
                         ) : null}
                     </div>
                 </RightPanel>
