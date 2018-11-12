@@ -287,10 +287,6 @@ class WeeklyReportDetail extends React.Component {
             dataIndex: 'city_active_scale',
             align: 'right',
         }, {
-            title: Intl.get('crm.6', '负责人'),
-            dataIndex: 'city_principal',
-            align: 'right',
-        }, {
             title: Intl.get('weekly.report.district.country', '区县'),
             dataIndex: 'district_count',
             align: 'right',
@@ -324,10 +320,6 @@ class WeeklyReportDetail extends React.Component {
         }, {
             title: Intl.get('weekly.report.active.radio', '活跃率'),
             dataIndex: 'district_active_scale',
-            align: 'right',
-        }, {
-            title: Intl.get('crm.6', '负责人'),
-            dataIndex: 'district_principal',
             align: 'right',
         },];
         return columns;
