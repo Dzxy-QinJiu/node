@@ -7,7 +7,7 @@ import { numToPercent } from '../../utils';
 export function getCustomerEffectiveChart() {
     return {
         title: Intl.get('effective.customer.statistics', '有效客户统计'),
-        url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
+        url: '/rest/analysis/customer/v2/:data_type/customer/active_rate/trend',
         argCallback: (arg) => {
             let query = arg.query;
 
