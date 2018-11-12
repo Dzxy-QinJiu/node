@@ -199,10 +199,11 @@ var NavSidebar = createReactClass({
             userInfoLogo: getUserInfoLogo(),
             userInfo: getUserName(),
             messages: {
-                customer: 0,
-                apply: 0,
-                system: 0,
-                unhandleClue: 0
+                unhandleClue: 0,//待处理的线索数
+                approve: 0,//用户申请待审批数
+                unhandleCustomerVisit: 0,//出差申请待我审批数
+                unhandleBusinessOpportunities: 0,//销售机会申请待我审批数
+                unhandlePersonalLeave: 0//请假申请待我审批数
             },
             //需要加引导功能的某个元素
             $introElement: '',
@@ -220,39 +221,6 @@ var NavSidebar = createReactClass({
 
     //轮询获取未读数的清除器
     unreadTimeout: null,
-
-    //动态添加未读数样式，以便在通知页面顶部显示未读数数字
-    insertStyleForUnreadCount: function(unreadCountObj) {
-        if (this.unreadStyle) {
-            this.unreadStyle.destroy();
-        }
-        if (!_.isObject(unreadCountObj)) {
-            return;
-        }
-        var styles = [];
-        for (var message_type in unreadCountObj) {
-            var count = unreadCountObj[message_type];
-            var className = message_type === 'apply' ? 'applyfor' : message_type;
-            styles.push(`.notification_${className}_ico a:before{
-                display: ${count > 0 ? 'block' : 'none'};
-                content : "${count > 99 ? '99+' : count}";
-           }`);
-        }
-        this.unreadStyle = insertStyle(styles.join('\n'));
-    },
-
-    //刷新未读数
-    refreshNotificationUnread: function() {
-        if (Oplate && Oplate.unread) {
-            var messages = Oplate.unread;
-            this.setState({
-                messages: messages
-            });
-            //插入样式，以便在客户提醒，系统消息，申请消息处显示未读数的小红点和未读数
-            this.insertStyleForUnreadCount(messages);
-        }
-    },
-
     changeUserInfoLogo: function(userLogoInfo) {
         //修改名称
         if (userLogoInfo.nickName) {
@@ -306,18 +274,12 @@ var NavSidebar = createReactClass({
 
     componentDidMount: function() {
         userInfoEmitter.on(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
-        notificationEmitter.on(notificationEmitter.UPDATE_NOTIFICATION_UNREAD, this.refreshNotificationUnread);
         //未读回复列表变化后触发
         notificationEmitter.on(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
-        //待审批数变化后触发
-        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.refreshNotificationUnread);
-        //待处理的线索数量变化后触发
-        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT, this.refreshNotificationUnread);
         this.getHasUnreadReply();
         $(window).on('resize', this.resizeFunction);
         var notificationPrivileges = this.getLinkListByPrivilege(NotificationLinkList);
         this.needSendNotificationRequest = notificationPrivileges.length >= 1;
-        this.refreshNotificationUnread();
         //响应式设计 logo占据的实际高度
         responsiveLayout.logoHeight = $('.header-logo').outerHeight();
         //响应式设计 如果导航存在计算导航图标 占据的实际高度
@@ -402,9 +364,7 @@ var NavSidebar = createReactClass({
 
     componentWillUnmount: function() {
         userInfoEmitter.removeListener(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
-        notificationEmitter.removeListener(notificationEmitter.UPDATE_NOTIFICATION_UNREAD, this.refreshNotificationUnread);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
-        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.refreshNotificationUnread);
         $(window).off('resize', this.resizeFunction);
         clearTimeout(this.unreadTimeout);
     },
@@ -640,7 +600,24 @@ var NavSidebar = createReactClass({
         event.stopPropagation();
         this.props.closeNotificationPanel();
     },
-
+    //展示未读回复的图标提示
+    renderUnreadReplyTip(category){
+        //是申请审批，有未读回复数并且，所有申请待审批数都为0
+        let unreadReplyTipShowFlag = category === 'application' &&//申请审批
+            this.state.hasUnreadReply &&//有未读回复
+            this.state.messages.approve === 0 &&//用户申请待审批数
+            this.state.messages.unhandleCustomerVisit === 0 && //出差申请待我审批数
+            this.state.messages.unhandleBusinessOpportunities === 0 &&//销售机会申请待我审批数
+            this.state.messages.unhandlePersonalLeave === 0;//请假申请待我审批数
+        if (unreadReplyTipShowFlag) {
+            return (
+                <span className="iconfont icon-apply-message-tip"
+                    title={Intl.get('user.apply.unread.reply', '有未读回复')}/>
+            );
+        } else {
+            return null;
+        }
+    },
     render: function() {
         var windowHeight = this.navContainerHeightFnc();
         const pathName = location.pathname.replace(/^\/|\/$/g, '');
@@ -681,6 +658,7 @@ var NavSidebar = createReactClass({
                                                         activeClassName='active'
                                                         className={extraClass}
                                                     >
+                                                        {this.renderUnreadReplyTip(category)}
                                                     </NavLink>
                                                 </li>
                                             );
@@ -692,6 +670,7 @@ var NavSidebar = createReactClass({
                                                     <NavLink to={`/${menu.routePath}`}
                                                         activeClassName='active'
                                                     >
+                                                        {this.renderUnreadReplyTip(category)}
                                                         <span>
                                                             {menuShortNamesMap[menu.routePath]}
                                                         </span>
