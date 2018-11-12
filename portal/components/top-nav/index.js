@@ -10,6 +10,7 @@ import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var insertStyle = require('CMP_DIR/insert-style');
 require('./index.less');
 var notificationEmitter = require('../../public/sources/utils/emitters').notificationEmitter;
+let history = require('../../public/sources/history');
 
 /**
  * 待处理的数据列表
@@ -130,6 +131,16 @@ class TopNav extends React.Component {
         //出差申请、请假申请、销售机会申请待我审批数的监听
         notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.renderUnhandleApplyStyle);
         this.renderUnhandleApplyStyle();
+        //点击审批数字后，查看待审批的数量
+        $('.topNav').on('click', '.application_user_apply_ico', function(e) {
+            //如果点击到a标签上，不做处理
+            if ($(e.target).is('a')){
+                return;
+            }
+            //点击到数字上，进行跳转
+            history.push('/application/user_apply',{clickUnhandleNum: true});
+
+        });
     }
     componentWillUpdate(){
         this.renderUnhandleApplyStyle();

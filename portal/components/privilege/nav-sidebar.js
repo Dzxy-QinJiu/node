@@ -74,15 +74,8 @@ var ExcludeLinkList = [
     {'name': Intl.get('menu.backend', '后台管理'), path: 'background_management'},
     {'name': Intl.get('menu.userinfo.manage', '个人信息管理'), path: 'user_info_manage'},
     {'name': Intl.get('menu.system.notification', '系统消息'), path: 'notification_system'},
-    // {'name': Intl.get('menu.appuser.apply', '用户审批'), path: 'apply'}
 ];
-const applyLinkList = [
-    {
 
-    },{
-
-    }
-];
 //后台管理配置
 const BackendConfigLinkList = [
     {
@@ -294,16 +287,6 @@ var NavSidebar = createReactClass({
             if (this.isIntroModlueNeverClicked(WebsiteConfigModuleRecord)) {
                 this.selectedIntroElement();
             }
-        });
-        //点击审批数字后，查看待审批的数量
-        $('.navbar').on('click', '.sidebar-applyentry', function(e) {
-            //如果点击到a标签上，不做处理
-            if ($(e.target).is('a')){
-                return;
-            }
-            //点击到数字上，进行跳转
-            history.push('/apply',{clickUnhandleNum: true});
-
         });
         $('.navbar').on('click', '.clue_customer_icon_container', function(e) {
             //点击到a标签上，不做处理
