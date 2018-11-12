@@ -43,17 +43,17 @@ class LeftMenuClass {
                 //有这个权限，才显示入口图标
                 showPrivileges: ['CLUECUSTOMER_VIEW']
             },
-            {
-                id: 'DEAL_MANAGE',
-                name: backendIntl.get('deal.manage', '订单管理'),
-                routePath: 'deal_manage',
-                privileges: [
-                    //TODO 换成订单的权限
-                    'CRM_REPEAT'
-                ],
-                //有这个权限，才显示入口图标 TODO 换成订单的权限
-                showPrivileges: ['CRM_REPEAT']
-            },
+            // {
+            //     id: 'DEAL_MANAGE',
+            //     name: backendIntl.get('deal.manage', '订单管理'),
+            //     routePath: 'deal_manage',
+            //     privileges: [
+            //         //TODO 换成订单的权限
+            //         'CRM_REPEAT'
+            //     ],
+            //     //有这个权限，才显示入口图标 TODO 换成订单的权限
+            //     showPrivileges: ['CRM_REPEAT']
+            // },
             {
                 id: 'CALL_RECORD',
                 name: backendIntl.get('menu.call', '通话记录'),
@@ -206,19 +206,29 @@ class LeftMenuClass {
                 routePath: 'analysis',
                 subMenu: [
                     {
-                        id: 'ANALYSIS',//唯一标识
-                        name: backendIntl.get('menu.customer.analysis', '运营分析'),
-                        routePath: 'analysis/analysis',
-                        privileges: [
-                            'CUSTOMER_ANALYSIS_COMMON',
-                            'CUSTOMER_ANALYSIS_MANAGER',
-                        ],
-                        //有这个权限，才显示入口图标
+                        id: 'ANALYSIS',//唯一标识
+
+                        name: backendIntl.get('menu.customer.analysis', '运营分析'),
+
+                        routePath: 'analysis/analysis',
+
+                        privileges: [
+
+                            'CUSTOMER_ANALYSIS_COMMON',
+
+                            'CUSTOMER_ANALYSIS_MANAGER',
+
+                        ],
+
+                        //有这个权限，才显示入口图标
+
                         showPrivileges: [
                             'CUSTOMER_ANALYSIS_COMMON',
                             'CUSTOMER_ANALYSIS_MANAGER',
-                        ]
-                    },
+                        ]
+
+                    },
+
                     //周报统计
                     {
                         id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
