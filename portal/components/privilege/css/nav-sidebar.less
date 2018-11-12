@@ -129,7 +129,9 @@
             &.application_icon_container:before{
                 min-width: 10px;
                 height: 10px;
-                top:11px;
+                top: 11px;
+                right: 20px;
+                border-radius: 10px;
             }
 
             &.sidebar-applyentry:before {
@@ -166,37 +168,38 @@
                 a:focus {
                     color: @icon-blue;
                 }
-                &.sidebar-applyentry .iconfont.icon-apply-message-tip {
+                &.application_icon_container .iconfont.icon-apply-message-tip {
                     top: -7px;
                     right: 14px;
                 }
-            } //用户审批入口
-            &.sidebar-applyentry {
-                padding: 0;
-                text-align: center;
-                position: relative;
-                &:before {
-                    &:extend(.unread-style);
-                }
-                &>a {
-                    display: block;
-                    text-decoration: none !important;
-                }
-                a:hover,
-                a.active,
-                a:active,
-                a:focus {
-                    .iconfont {
-                        color: #4a8ec4;
-                    }
-                }
-                .iconfont {
-                    cursor: pointer;
-                    position: relative;
-                } //有未读回复提示的样式
+            } //申请审批入口
+            &.application_icon_container {
+                //padding: 0;
+                //text-align: center;
+                //position: relative;
+                //&:before {
+                //    &:extend(.unread-style);
+                //}
+                //&>a {
+                //    display: block;
+                //    text-decoration: none !important;
+                //}
+                //a:hover,
+                //a.active,
+                //a:active,
+                //a:focus {
+                //    .iconfont {
+                //        color: #4a8ec4;
+                //    }
+                //}
+                //.iconfont {
+                //    cursor: pointer;
+                //    position: relative;
+                //}
+                //有未读回复提示的样式
                 .iconfont.icon-apply-message-tip {
                     position: absolute;
-                    top: -17px;
+                    top: -14px;
                     right: 17px;
                     height: 14px;
                     width: 14px;
@@ -208,16 +211,16 @@
                         font-size: initial;
                     }
                 }
-                b {
-                    position: absolute;
-                    width: 7px;
-                    height: 7px;
-                    top: 1px;
-                    right: 3px;
-                    overflow: hidden;
-                    background: #f41919;
-                    border-radius: 50%;
-                }
+                //b {
+                //    position: absolute;
+                //    width: 7px;
+                //    height: 7px;
+                //    top: 1px;
+                //    right: 3px;
+                //    overflow: hidden;
+                //    background: #f41919;
+                //    border-radius: 50%;
+                //}
             }
             float: left;
             height: @nav-item-height;

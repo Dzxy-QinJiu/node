@@ -3,19 +3,25 @@ var UserData = require('../../../public/sources/user-data');
 var notificationEmitter = require('../../../public/sources/utils/emitters').notificationEmitter;
 import {getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
-const UNREADCOUNT = [{
-    name: 'approve',//待审批数的展示
-    cls: 'sidebar-applyentry',
-    style: 'dynamicStyle',
-    showNum: true
-}, {
-    name: 'unhandleClue',//待处理线索数的展示
+
+/**
+ * 待处理的数据列表
+ * name:待处理数在Oplate.unread对象中的key或key数组
+ * cls: 左侧导航中，显示线索、申请审批图标的类
+ * style: 显示待处理数的样式
+ * showNum: 是否展示待处理数字
+ */
+const UNREADCOUNT = [{//待分配或待跟进线索数的数据
+    name: 'unhandleClue',
     cls: 'clue_customer_icon_container',
     style: 'clueUnhandledStyle',
     showNum: true
-}, {
-    name: [//待处理申请审批数的展示
-        APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT, APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE, APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES
+}, {//待处理申请审批数的数据
+    name: [
+        APPLY_APPROVE_TYPES.UNHANDLE_USER_APPLY,//用户申请待审批数
+        APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT,//出差申请待我审批数
+        APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,//请假申请的带我审批数
+        APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES//销售机会的带我审批数
     ],
     cls: 'application_icon_container',
     style: 'applyApproveUnhandledStyle',
@@ -23,18 +29,23 @@ const UNREADCOUNT = [{
 }];
 
 var UnreadMixin = {
-    dynamicStyle: null,
+    //未处理数的提示样式初始化
     clueUnhandledStyle: null,
+    applyApproveUnhandledStyle: null,
     //菜单切换时，重新获取未处理申请数
     componentWillReceiveProps: function(nextProps) {
         _.forEach(UNREADCOUNT,(item) => {
             this.showUnhandledCount(item);
         });
     },
+
     showUnhandledCount: function(item) {
         //从全局数据中获取
         if (Oplate && Oplate.unread){
             var count = 0;
+            this.setState({
+                messages: Oplate.unread
+            });
             if (_.isArray(item.name)){
                 _.forEach(item.name,(itemType) => {
                     count += Oplate.unread[itemType] || 0;
@@ -72,14 +83,17 @@ var UnreadMixin = {
         }
     },
     registerEventEmitter: function() {
-        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[0]));
-        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[1]));
-        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[2]));
+        //线索待分配（待跟进）数的监听
+        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[0]));
+        //用户申请的待审批数的监听
+        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[1]));
+        //出差申请、请假申请、销售机会申请待我审批数的监听
+        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[1]));
     },
     unregisterEventEmitter: function() {
-        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[0]));
-        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[1]));
-        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[2]));
+        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[0]));
+        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[1]));
+        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.showUnhandledCount.bind(this,UNREADCOUNT[1]));
     },
     //能够获取未读数
     shouldGetUnreadData: function() {

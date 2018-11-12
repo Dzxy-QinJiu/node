@@ -279,7 +279,7 @@ const ApplyViewDetail = createReactClass({
             return 'auto';
         }
         return $(window).height() -
-            AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.TOP_DELTA -
+            2 * AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.TOP_DELTA -
             AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.BOTTOM_DELTA;
     },
 

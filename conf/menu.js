@@ -339,17 +339,6 @@ class LeftMenuClass {
                 showPrivileges: ['NOTIFICATION_SYSTEM_LIST']
             },
             {
-                id: 'APP_USER_MANAGE_APPLY',
-                name: backendIntl.get('menu.appuser.apply', '用户审批'),
-                routePath: 'apply',
-                privileges: [
-                    'APP_USER_APPLY_LIST',//列出申请应用用户
-                    'APP_USER_APPLY_APPROVAL',//审批申请
-                ],
-                //有这个权限，才显示入口图标
-                showPrivileges: ['APP_USER_APPLY_LIST']
-
-            }, {
                 id: 'SCHEDULE_MANAGEMENT',
                 name: backendIntl.get('schedule.list.management', '日程管理'),
                 routePath: 'schedule_management',
@@ -364,6 +353,17 @@ class LeftMenuClass {
                 name: backendIntl.get('menu.leave.apply.list.management', '申请审批'),
                 routePath: 'application',
                 subMenu: [{
+                    id: 'APP_USER_MANAGE_APPLY',
+                    name: backendIntl.get('menu.appuser.apply', '用户审批'),
+                    routePath: 'application/user_apply',
+                    privileges: [
+                        'APP_USER_APPLY_LIST',//列出申请应用用户
+                        'APP_USER_APPLY_APPROVAL',//审批申请
+                    ],
+                    //有这个权限，才显示入口图标
+                    showPrivileges: ['APP_USER_APPLY_LIST']
+
+                },{
                     id: 'BUSSINESS_APPLY_MANAGEMENT',
                     name: backendIntl.get('leave.apply.add.leave.apply', '出差申请'),
                     routePath: 'application/business_apply',

@@ -5,18 +5,48 @@ var UserData = require('../../public/sources/user-data');
 var classNames = require('classnames');
 //顶部导航菜单的超链接
 import {NavLink} from 'react-router-dom';
-var Dropdown = require('antd').Dropdown;
 var topNavEmitter = require('../../public/sources/utils/emitters').topNavEmitter;
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var insertStyle = require('CMP_DIR/insert-style');
 require('./index.less');
 var notificationEmitter = require('../../public/sources/utils/emitters').notificationEmitter;
-var totalCount = [
-    {cls: 'application_business_apply_ico',unhandleNum: APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT},
-    {cls: 'application_leave_apply_ico',unhandleNum: APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE},
-    {cls: 'application_sales_opportunity_ico',unhandleNum: APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES}];
+let history = require('../../public/sources/history');
+
+/**
+ * 待处理的数据列表
+ * name:待处理数在Oplate.unread对象中的key或key数组
+ * cls: 左侧导航中，显示线索、申请审批图标的类
+ * style: 显示待处理数的样式
+ */
+const unhandleApplyNumObj = [
+    {
+        name: APPLY_APPROVE_TYPES.UNHANDLE_USER_APPLY,
+        cls: 'application_user_apply_ico',
+        style: 'unhandleUserAplplyNumStyle'
+    }, {
+        name: APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT,
+        cls: 'application_business_apply_ico',
+        style: 'unhandleBusinessApplyNumStyle'
+    }, {
+        name: APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,
+        cls: 'application_leave_apply_ico',
+        style: 'unhandleLeaveApplyNumStyle'
+    }, {
+        name: APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES,
+        cls: 'application_sales_opportunity_ico',
+        style: 'unhandleSalesOpperNumSyle'
+
+    }];
 //顶部导航外层div
 class TopNav extends React.Component {
+    constructor(props){
+        super(props);
+        //未处理数的提示样式初始化
+        this.unhandleUserAplplyNumStyle = null;
+        this.unhandleBusinessApplyNumStyle = null;
+        this.unhandleLeaveApplyNumStyle = null;
+        this.unhandleSalesOpperNumSyle = null;
+    }
     resizeHandler = () => {
         //找到外层节点
         var $wrap = $(ReactDOM.findDOMNode(this.topNav));
@@ -96,38 +126,51 @@ class TopNav extends React.Component {
         $(ReactDOM.findDOMNode(this)).find('.navbar-toggle').on('click' , this.navBarToggle);
         this.resizeFunc();
         topNavEmitter.on(topNavEmitter.RELAYOUT , this.resizeFunc);
+        //用户申请的待审批数的监听
+        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.renderUnhandleApplyStyle);
+        //出差申请、请假申请、销售机会申请待我审批数的监听
         notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.renderUnhandleApplyStyle);
         this.renderUnhandleApplyStyle();
+        //点击审批数字后，查看待审批的数量
+        $('.topNav').on('click', '.application_user_apply_ico', function(e) {
+            //如果点击到a标签上，不做处理
+            if ($(e.target).is('a')){
+                return;
+            }
+            //点击到数字上，进行跳转
+            history.push('/application/user_apply',{clickUnhandleNum: true});
+
+        });
     }
     componentWillUpdate(){
         this.renderUnhandleApplyStyle();
     }
 
-    renderUnhandleNum = (cls,unhandleNum) => {
-        if (this[unhandleNum]) {
-            this[unhandleNum].destroy();
-            this[unhandleNum] = null;
+    renderUnhandleNum = (item) => {
+        if (this[item.style]) {
+            this[item.style].destroy();
+            this[item.style] = null;
         }
         var styleText = '';
-        var count = Oplate.unread[unhandleNum] || 0;
+        var count = Oplate.unread[item.name] || 0;
         //设置数字
         if (count > 0) {
             var len = (count + '').length;
             if (len >= 3) {
-                styleText = `.${cls}:before{content:\'99+\';display:block;padding:0 2px 0 2px;}`;
+                styleText = `.${item.cls}:before{content:\'99+\';display:block;padding:0 2px 0 2px;}`;
             } else {
-                styleText = `.${cls}:before{content:'${count}';display:block}`;
+                styleText = `.${item.cls}:before{content:'${count}';display:block}`;
             }
         } else {
-            styleText = `.${cls}:before{content:\'\';display:none}`;
+            styleText = `.${item.cls}:before{content:\'\';display:none}`;
         }
         //展示数字
-        this[unhandleNum] = insertStyle(styleText);
+        this[item.style] = insertStyle(styleText);
     };
     renderUnhandleApplyStyle = () => {
         if (Oplate && Oplate.unread) {
-            _.forEach(totalCount,(item) => {
-                this.renderUnhandleNum(item.cls,item.unhandleNum);
+            _.forEach(unhandleApplyNumObj,(item) => {
+                this.renderUnhandleNum(item);
             });
         }
     };
@@ -136,11 +179,12 @@ class TopNav extends React.Component {
         $(window).off('resize' , this.resizeFunc);
         $('body').off('click' , this.clickBodyEmptySpace);
         topNavEmitter.removeListener(topNavEmitter.RELAYOUT , this.resizeFunc);
+        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.renderUnhandleApplyStyle);
         notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.renderUnhandleApplyStyle);
-        _.forEach(totalCount, (item) => {
-            if (this[item.unhandleNum]) {
-                this[item.unhandleNum].destroy();
-                this[item.unhandleNum] = null;
+        _.forEach(unhandleApplyNumObj, (item) => {
+            if (this[item.style]) {
+                this[item.style].destroy();
+                this[item.style] = null;
             }
         });
 
@@ -181,13 +225,7 @@ TopNav.MenuList = class extends React.Component {
         var subModules = this.props.menuList || AllSubModules[category] || [];
         //获取pathname
         var locationPath = getPathname();
-        //获取样式名
-        var locationPathClass = locationPath.replace(/\//g, '_');
 
-        var client_id = UserData.getUserData().auth.client_id;
-        //我的应用的菜单
-        var subMenu = this.props.subMenu;
-        var menuName = this.props.menuName;
         return (
             <div className="topnav-links-wrap">
                 <button type="button" className="navbar-toggle">
@@ -206,22 +244,22 @@ TopNav.MenuList = class extends React.Component {
 
                             var liContent = (<NavLink to={`/${menu.routePath}`}
                                 activeClassName="active" ref={(element) => this.navLinks = element}>{menu.name}</NavLink>);
-                            if (menuName === 'myAppMenu' && menu.name === '我的应用') {
-                                liContent = (<Dropdown overlay={subMenu}>
-                                    {liContent}
-                                </Dropdown>);
-                            }
                             return (
                                 <li className={cls} key={i}>
                                     {liContent}
-                                </li>
-                            );
+                                </li>);
                         })
                     }
                 </ul>
             </div>
         );
     }
+};
+TopNav.propTypes = {
+    children: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
+};
+TopNav.MenuList.propTypes = {
+    menuList: PropTypes.array
 };
 
 module.exports = TopNav;

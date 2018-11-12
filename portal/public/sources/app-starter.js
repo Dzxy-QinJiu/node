@@ -130,18 +130,9 @@ function init() {
             case 'notification':
                 childRoutes.push(require('../../modules/notification'));
                 break;
-            case 'app_user_manage_apply':
-                childRoutes.push(require('../../modules/user_apply'));
-                break;
             //日程管理
             case 'schedule_management':
                 childRoutes.push(require('../../modules/schedule_management'));
-                break;
-            case 'weekly_report_analysis':
-                childRoutes.push(require('../../modules/weekly_report'));
-                break;
-            case 'monthly_report_analysis':
-                childRoutes.push(require('../../modules/monthly-report'));
                 break;
             case 'application':
                 childRoutes.push(require('./application_apply_management'));

@@ -71,6 +71,7 @@ export const APPLY_APPROVE_TYPES = {
     UNHANDLECUSTOMERVISIT: 'unhandleCustomerVisit',//未处理的出差申请数量
     UNHANDLEBUSINESSOPPORTUNITIES: 'unhandleBusinessOpportunities',//未处理的销售机会申请数量
     UNHANDLEPERSONALLEAVE: 'unhandlePersonalLeave',//未处理的请假申请数量
+    UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
 };
 
 //系统消息对应的几种类型
