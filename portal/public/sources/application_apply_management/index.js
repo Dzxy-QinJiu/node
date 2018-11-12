@@ -9,11 +9,13 @@ var Checker = require('../../../components/privilege/checker');
 var businessApply = require('../../../modules/business-apply');
 var salesOpportunity = require('../../../modules/sales_opportunity');
 var leaveApply = require('../../../modules/leave-apply');
+import userApply from '../../../modules/user_apply';
 
 
 function getChildRoutes() {
     var childRoutes = Checker.getChildRoutes('application',
         [
+            userApply,
             businessApply,
             salesOpportunity,
             leaveApply,

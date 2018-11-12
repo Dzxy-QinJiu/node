@@ -74,9 +74,15 @@ var ExcludeLinkList = [
     {'name': Intl.get('menu.backend', '后台管理'), path: 'background_management'},
     {'name': Intl.get('menu.userinfo.manage', '个人信息管理'), path: 'user_info_manage'},
     {'name': Intl.get('menu.system.notification', '系统消息'), path: 'notification_system'},
-    {'name': Intl.get('menu.appuser.apply', '用户审批'), path: 'apply'}
+    // {'name': Intl.get('menu.appuser.apply', '用户审批'), path: 'apply'}
 ];
+const applyLinkList = [
+    {
 
+    },{
+
+    }
+];
 //后台管理配置
 const BackendConfigLinkList = [
     {
@@ -696,7 +702,7 @@ var NavSidebar = createReactClass({
 
                                     })
                                 }
-                                {_this.getApplyBlock(currentPageCategory === 'apply')}
+                                {/*{_this.getApplyBlock(currentPageCategory === 'apply')}*/}
                             </ul>
                             <Popover content={this.getNavbarLists()} trigger="hover" placement="rightTop"
                                 overlayClassName="nav-sidebar-lists">

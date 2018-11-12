@@ -308,7 +308,7 @@ class ApplyTabContent extends React.Component {
         if ($(window).width() < Oplate.layout['screen-md']) {
             return 'auto';
         }
-        var height = $(window).height() - AppUserUtil.APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA - AppUserUtil.APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA + 30;
+        var height = $(window).height() - 2 * AppUserUtil.APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA - AppUserUtil.APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA + 30;
         return height;
     };
 
