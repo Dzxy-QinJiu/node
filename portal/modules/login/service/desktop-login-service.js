@@ -433,7 +433,7 @@ exports.wechatLoginPage = function(req, res) {
     let qrconnecturl = 'https://open.weixin.qq.com/connect/qrconnect';
     let params = {
         appid: WECHAT_APPID,
-        redirect_uri: encodeURIComponent('https://ketao.antfact.com/login/wechat'),
+        redirect_uri: encodeURIComponent('https://ketao-exp.antfact.com/login/wechat'),
         response_type: 'code',
         scope: 'snsapi_login',
         state: req.sessionID
