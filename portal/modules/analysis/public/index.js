@@ -99,7 +99,7 @@ class CurtaoAnalysis extends React.Component {
     //线索渠道列表
     getClueChannelList = () => {
         ajax.send({
-            url: '/rest/customer/v2/clue/access_channel/100/1'
+            url: '/rest/clue/v1/access_channel/100/1'
         }).then(result => {
             Store.clueChannelList = _.get(result, 'result');
         });
@@ -108,7 +108,7 @@ class CurtaoAnalysis extends React.Component {
     //线索来源列表
     getClueSourceList = () => {
         ajax.send({
-            url: '/rest/customer/v2/clue/clue_source/100/1'
+            url: '/rest/clue/v1/clue_source/100/1'
         }).then(result => {
             Store.clueSourceList = _.get(result, 'result');
         });
