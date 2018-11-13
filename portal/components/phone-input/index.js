@@ -23,7 +23,7 @@ class PhoneInput extends React.Component {
 
     getValidator() {
         return (rule, value, callback) => {
-            value = value ? value.trim() : '';
+            value = _.trim(value);
 
             //空值不做校验
             if (!value) {

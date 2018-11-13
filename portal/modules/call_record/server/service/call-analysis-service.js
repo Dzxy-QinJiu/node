@@ -103,7 +103,7 @@ function batchGetCallInfo(req, res, params, reqData) {
                 resolve(callInfo);
             },
             error: function(eventEmitter, errorDesc) {
-                reject(errorDesc && errorDesc.message);
+                reject(errorDesc);
             }
         });
     });
@@ -120,7 +120,7 @@ function getActiveSalesInTeams(req, res) {
                 resolve(data);
             },
             error: function(eventEmitter, errorDesc) {
-                reject(errorDesc && errorDesc.message);
+                reject(errorDesc);
             }
         });
     });
@@ -152,8 +152,8 @@ exports.getCallInfo = function(req, res, params, reqData) {
                 });
             });
             emitter.emit('success', {salesPhoneList: allData});
-        }).catch((errorMsg) => {
-            emitter.emit('error', errorMsg);
+        }).catch((err) => {
+            emitter.emit('error', err);
         });
     } else {
         let promiseList = [batchGetCallInfo(req, res, params, reqData), getActiveSalesInTeams(req, res)];
@@ -169,8 +169,8 @@ exports.getCallInfo = function(req, res, params, reqData) {
                 }
             });
             emitter.emit('success', result);
-        }).catch((errorMsg) => {
-            emitter.emit('error', errorMsg);
+        }).catch((err) => {
+            emitter.emit('error', err);
         });
     }
     return emitter;
