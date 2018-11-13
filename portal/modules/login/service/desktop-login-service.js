@@ -430,14 +430,16 @@ exports.validatePhoneCode = function(req, res) {
 };
 //微信登录页面
 exports.wechatLoginPage = function(req, res) {
-    let qrconnecturl = 'https://open.weixin.qq.com/connect/qrconnect';
-    let params = {
-        appid: WECHAT_APPID,
-        redirect_uri: encodeURIComponent('https://ketao-exp.antfact.com/login/wechat'),
-        response_type: 'code',
-        scope: 'snsapi_login',
-        state: req.sessionID
-    };
+    let qrconnecturl = 'https://open.weixin.qq.com/connect/qrconnect?appid=' + WECHAT_APPID
+        + '&redirect_uri=' + encodeURIComponent('https://ketao-exp.antfact.com/login/wechat')
+        + '&response_type=code&scope=snsapi_login&state=' + req.sessionID;
+    // let params = {
+    //     appid: WECHAT_APPID,
+    //     redirect_uri: encodeURIComponent('https://ketao-exp.antfact.com/login/wechat'),
+    //     response_type: 'code',
+    //     scope: 'snsapi_login',
+    //     state: req.sessionID
+    // };
     // Object.keys(params).forEach(function(key) {
     //     qrconnecturl += key + '=' + params[key] + '&';
     // });
@@ -446,9 +448,8 @@ exports.wechatLoginPage = function(req, res) {
         {
             url: qrconnecturl,
             req: req,
-            res: res,
-            json: false
-        }, params);
+            res: res
+        });
 };
 
 
