@@ -48,7 +48,7 @@ exports.zoomInSortArea = function(dom, setFilterCondition) {
                         //绑定搜索按钮点击事件
                         confirmBtn.click(() => {
                             //获取搜索内容
-                            const searchContent = elm.find('.custom-filter-input').val().trim();
+                            const searchContent = _.trim(elm.find('.custom-filter-input').val());
                             //获取搜索字段
                             const searchField = elm.find('.ant-checkbox').next().text();
                             //搜索条件默认为空

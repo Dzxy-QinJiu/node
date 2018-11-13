@@ -11,7 +11,7 @@ let number = 1;
 
 const UserNameTextFieldMixin = {
     checkUserExist(rule,value,callback) {
-        var trimValue = value.trim();
+        var trimValue = _.trim(value);
         // 校验的信息提示
         UserNameTextFieldUtil.validatorMessageTips(trimValue,callback);
         var customer_id = ApplyViewDetailStore.getState().detailInfoObj.info.customer_id;

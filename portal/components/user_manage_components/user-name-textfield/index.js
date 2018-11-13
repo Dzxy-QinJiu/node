@@ -18,7 +18,7 @@ const UserNameTextFieldMixin = {
     userExistTimeout: null,
     checkUserExist(rule, value, callback) {
         clearTimeout(this.userExistTimeout);
-        var trimValue = value.trim();
+        var trimValue = _.trim(value);
         // 校验的信息提示
         UserNameTextFieldUtil.validatorMessageTips(trimValue,callback);
 
