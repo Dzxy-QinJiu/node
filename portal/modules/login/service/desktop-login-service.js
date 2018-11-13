@@ -4,8 +4,7 @@ var config = require('../../../../conf/config');
 //后端国际化
 let BackendIntl = require('../../../lib/utils/backend_intl');
 const ipUtil = require('../../../lib/utils/common-utils').ip;
-const WECHAT_APPID = 'wxf169b2a9aa1958a9';//微信appid
-const WECHAT_SECRET = 'f1fb3a0b682b9d17ade4eae252a2ff7f';//微信SECRET
+let appUtils = require('../util/appUtils');
 
 //定义url
 var urls = {
@@ -430,7 +429,7 @@ exports.validatePhoneCode = function(req, res) {
 };
 //微信登录页面
 exports.wechatLoginPage = function(req, res) {
-    let qrconnecturl = 'https://open.weixin.qq.com/connect/qrconnect?appid=' + WECHAT_APPID
+    let qrconnecturl = 'https://open.weixin.qq.com/connect/qrconnect?appid=' + appUtils.WECHAT_APPID
         + '&redirect_uri=' + encodeURIComponent('https://ketao-exp.antfact.com/login/wechat')
         + '&response_type=code&scope=snsapi_login&state=' + req.sessionID;
     // let params = {
@@ -457,8 +456,8 @@ exports.wechatLoginPage = function(req, res) {
 exports.loginWithWechat = function(req, res, code) {
     let access_token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token';
     let params = {
-        appid: WECHAT_APPID,
-        secret: WECHAT_SECRET,
+        appid: appUtils.WECHAT_APPID,
+        secret: appUtils.WECHAT_SECRET,
         code: code,
         grant_type: 'authorization_code'
     };
@@ -479,8 +478,8 @@ exports.loginWithWechat = function(req, res, code) {
 exports.loginWithWechatMiniprogram = function(req, res, code) {
     let access_token_url = 'https://api.weixin.qq.com/sns/jscode2session';
     let params = {
-        appid: 'wx2e0b97000e161535',
-        secret: '368f73708c6cd75901507f2bda526edf',
+        appid: appUtils.MINI_PROGRAM_APPID,
+        secret: appUtils.MINI_PROGRAM_SECRET,
         js_code: code,
         grant_type: 'authorization_code'
     };

@@ -17,7 +17,9 @@ var UserDto = require('../../../lib/utils/user-dto');
 let BackendIntl = require('../../../../portal/lib/utils/backend_intl');
 const Promise = require('bluebird');
 const commonUtil = require('../../../lib/utils/common-utils');
-var restLogger = require('../../../lib/utils/logger').getLogger('rest');
+let restLogger = require('../../../lib/utils/logger').getLogger('rest');
+let appUtils = require('../util/appUtils');
+let WXBizDataCrypt = require('../lib/WXBizDataCrypt');
 
 /**
  * 首页
@@ -402,9 +404,20 @@ exports.loginWithWechat = function(req, res) {
 };
 //小程序登录
 exports.loginWithWechatMiniprogram = function(req, res) {
-    let code = req.query && req.query.code || '';
-    DesktopLoginService.loginWithWechatMiniprogram(req, res, code).on('success', function(data) {
-        restLogger.info('小程序登录:' + JSON.stringify(data));
+    let code = '';
+    let encryptedData = '';
+    let iv = '';
+    if (req.query) {
+        code = req.query.code || '';
+        encryptedData = req.query.encryptedData || '';
+        iv = req.query.iv || '';
+    }
+    DesktopLoginService.loginWithWechatMiniprogram(req, res, code).on('success', function(result) {
+        restLogger.info('小程序登录:' + JSON.stringify(result));
+        let sessionKey = result.session_key;
+        let pc = new WXBizDataCrypt(appUtils.MINI_PROGRAM_APPID, sessionKey);
+        let data = pc.decryptData(encryptedData, iv);
+        restLogger.info('小程序获取unionId:' + JSON.stringify(data));
         // res.status(200).json(data);
     }).on('error', function(errorObj) {
         res.status(500).json(errorObj && errorObj.message);
