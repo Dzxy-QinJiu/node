@@ -806,7 +806,7 @@ class CustomerAnalysis extends React.Component {
             },
         }, {
             title: Intl.get('active.customer.trends.last.month', '近一月活跃客户趋势'),
-            url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
+            url: '/rest/analysis/customer/v2/:data_type/customer/active_rate/trend',
             argCallback: (arg) => {
                 let query = arg.query;
 
