@@ -16,7 +16,7 @@ import List from './list';
 import ContractRightPanel from './right-panel';
 import ImportContractTemplate from './import_contract_template';
 const scrollBarEmitter = require('../../../public/sources/utils/emitters').scrollBarEmitter;
-import DatePicker from '../../../components/datepicker';
+import { AntcDatePicker as DatePicker } from 'antc';
 import rightPanelUtil from '../../../components/rightPanel';
 import Trace from 'LIB_DIR/trace';
 const RightPanel = rightPanelUtil.RightPanel;

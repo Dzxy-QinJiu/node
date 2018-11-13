@@ -7,7 +7,7 @@ var SelectFullWidth = require('../../../../components/select-fullwidth');
 var Option = Select.Option;
 var UserAuditLogAction = require('../action/user_audit_log_action');
 var UserAuditLogStore = require('../store/user_audit_log_store');
-import DatePicker from '../../../../components/datepicker';
+import { AntcDatePicker as DatePicker } from 'antc';
 import {SearchInput} from 'antc';
 var GeminiScrollBar = require('../../../../components/react-gemini-scrollbar');
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;

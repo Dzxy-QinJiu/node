@@ -13,7 +13,7 @@ const RadioGroup = Radio.Group;
 var RightContent = require('CMP_DIR/privilege/right-content');
 var TableUtil = require('CMP_DIR/antd-table-pagination');
 var TopNav = require('CMP_DIR/top-nav');
-import DatePicker from 'CMP_DIR/datepicker';
+import { AntcDatePicker as DatePicker } from 'antc';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import CallAnalysisAction from '../action/call-analysis-action';
 import CallAnalysisStore from '../store/call-analysis-store';

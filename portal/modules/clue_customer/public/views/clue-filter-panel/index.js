@@ -9,7 +9,7 @@ var FilterAction = require('../../action/filter-action');
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
-import DatePicker from 'CMP_DIR/datepicker';
+import { AntcDatePicker as DatePicker } from 'antc';
 import {clueStartTime } from '../../utils/clue-customer-utils';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');

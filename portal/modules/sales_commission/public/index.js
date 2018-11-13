@@ -12,7 +12,7 @@ const salesmanAjax = require('../../common/public/ajax/salesman');
 import {resizeEmitter} from 'PUB_DIR/sources/utils/emitters';
 
 import {SearchInput} from 'antc';
-import DatePicker from 'CMP_DIR/datepicker';
+import { AntcDatePicker as DatePicker } from 'antc';
 
 const SelectFullWidth = require('CMP_DIR/select-fullwidth');
 import RefreshButton from 'CMP_DIR/refresh-button';

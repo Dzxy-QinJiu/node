@@ -1,7 +1,7 @@
 var React = require('react');
 require('../css/single-user-log.less');
 //时间范围选择
-import DatePicker from '../../../../components/datepicker';
+import { AntcDatePicker as DatePicker } from 'antc';
 var Alert = require('antd').Alert;
 var SelectFullWidth = require('../../../../components/select-fullwidth');
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');

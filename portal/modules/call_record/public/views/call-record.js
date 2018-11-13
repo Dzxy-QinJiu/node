@@ -9,7 +9,7 @@ import Spinner from 'CMP_DIR/spinner';
 import { Alert, Input, Icon, Button, Select, message, Popconfirm } from 'antd';
 import { AntcTable } from 'antc';
 const Option = Select.Option;
-import DatePicker from 'CMP_DIR/datepicker';
+import { AntcDatePicker as DatePicker } from 'antc';
 import { FormattedMessage, defineMessages, injectIntl } from 'react-intl';
 import CallAddCustomerForm from './call-add-customer-form'; // 添加客户
 import userData from 'PUB_DIR/sources/user-data';

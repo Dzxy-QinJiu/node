@@ -6,7 +6,7 @@ var React = require('react');
 import './style.less';
 import { storageUtil } from 'ant-utils';
 import AnalysisAppSelector from '../analysis_app_selector';
-import DatePicker from '../datepicker';
+import { AntcDatePicker as DatePicker } from 'antc';
 const Emitters = require('../../public/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const appSelectorEmitter = Emitters.appSelectorEmitter;
