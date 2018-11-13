@@ -171,26 +171,26 @@ class ForgotPassword extends React.Component {
     };
 
     handleContactInfoChange = (e) => {
-        let contactInfo = e.target.value.trim();
+        let contactInfo = _.trim(e.target.value);
         this.setState({ contactInfo });
         this.props.setErrorMsg('');
 
     };
 
     handleCaptchaCodeValueChange = (e) => {
-        let captchaCodeValue = e.target.value.trim();
+        let captchaCodeValue = _.trim(e.target.value);
         this.setState({ captchaCodeValue });
         this.props.setErrorMsg('');
 
     };
 
     handleAuthCodeChange = (e) => {
-        let authCode = e.target.value.trim();
+        let authCode = _.trim(e.target.value);
         this.setState({ authCode });
     };
 
     handleNewPasswordChange = (e) => {
-        let newPassword = e.target.value.trim();
+        let newPassword = _.trim(e.target.value);
         this.setState({ newPassword });
     };
 

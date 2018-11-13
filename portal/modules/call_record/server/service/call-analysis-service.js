@@ -103,7 +103,7 @@ function batchGetCallInfo(req, res, params, reqData) {
                 resolve(callInfo);
             },
             error: function(eventEmitter, errorDesc) {
-                reject(errorDesc.message);
+                reject(errorDesc && errorDesc.message);
             }
         });
     });
@@ -120,7 +120,7 @@ function getActiveSalesInTeams(req, res) {
                 resolve(data);
             },
             error: function(eventEmitter, errorDesc) {
-                reject(errorDesc.message);
+                reject(errorDesc && errorDesc.message);
             }
         });
     });

@@ -32,7 +32,7 @@ class TagCard extends React.Component {
     }
 
     addTag() {
-        const tag = this.refs.newTag.refs.input.value.trim();
+        const tag = _.trim(this.refs.newTag.refs.input.value);
         if (!tag) return;
         // ‘线索’、‘转出’、‘已回访’标签不可以添加
         if (isClueTag(tag) || isTurnOutTag(tag) || isHasCallBackTag(tag)) {
