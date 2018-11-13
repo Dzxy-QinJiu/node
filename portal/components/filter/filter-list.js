@@ -192,18 +192,18 @@ class FilterList extends React.Component {
                         this.setState({
                             commonData,
                             //当删除选中的筛选项时，去除选中状态
-                            selectedCommonIndex: this.state.selectedCommonIndex === index? "": this.state.selectedCommonIndex
+                            selectedCommonIndex: this.state.selectedCommonIndex === index ? '' : this.state.selectedCommonIndex
                         });                        
                     }
                 }).catch(err => {
                     message.error((err && err.message) || Intl.get('crm.139', '删除失败'));
-                })
+                });
             }
         } else {
             commonData = commonData.filter(x => x.name !== item.name);
             this.setState({
                 commonData,
-                selectedCommonIndex: this.state.selectedCommonIndex === index? "": this.state.selectedCommonIndex
+                selectedCommonIndex: this.state.selectedCommonIndex === index ? '' : this.state.selectedCommonIndex
             });            
         }
 
@@ -674,6 +674,7 @@ class FilterList extends React.Component {
                                                                                     <li
                                                                                         className={x.selected ? 'active titlecut' : 'titlecut'}
                                                                                         key={idx}
+                                                                                        title={x.name}
                                                                                         data-tracename={`选择"${groupItem.groupName}"筛选条件`}
                                                                                         onClick={this.handleAdvanedItemClick.bind(this, groupItem, x)}
                                                                                     >
@@ -705,8 +706,8 @@ FilterList.defaultProps = {
     advancedLoading: false,
     showCommonListLength: 7,
     key: '',
-    onFilterChange: function () { },
-    renderOtherDataContent: function () {
+    onFilterChange: function() { },
+    renderOtherDataContent: function() {
 
     },
     hideAdvancedTitle: false
