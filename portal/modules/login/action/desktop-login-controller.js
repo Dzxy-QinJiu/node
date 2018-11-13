@@ -371,7 +371,7 @@ exports.validatePhoneCode = function(req, res) {
     });
 };
 exports.wechatLoginPage = function(req, res) {
-    let qrconnecturl = 'https://open.weixin.qq.com/connect/qrconnect?appid=' + WECHAT_APPID
+    let qrconnecturl = 'https://open.weixin.qq.com/connect/qrconnect?appid=wxf169b2a9aa1958a9'
         + '&redirect_uri=' + encodeURIComponent('https://ketao-exp.antfact.com/login/wechat')
         + '&response_type=code&scope=snsapi_login&state=' + req.sessionID;
     res.redirect(qrconnecturl);
