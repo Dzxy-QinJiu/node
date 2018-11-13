@@ -371,12 +371,16 @@ exports.validatePhoneCode = function(req, res) {
     });
 };
 exports.wechatLoginPage = function(req, res) {
-    DesktopLoginService.wechatLoginPage(req, res).on('success', function(data) {
-        restLogger.info('微信登录跳转数据：' + JSON.stringify(data));
-        res.send(data);
-    }).on('error', function(errorObj) {
-        res.status(500).send(errorObj && errorObj.message);
-    });
+    let qrconnecturl = 'https://open.weixin.qq.com/connect/qrconnect?appid=' + WECHAT_APPID
+        + '&redirect_uri=' + encodeURIComponent('https://ketao-exp.antfact.com/login/wechat')
+        + '&response_type=code&scope=snsapi_login&state=' + req.sessionID;
+    res.redirect(qrconnecturl);
+    // DesktopLoginService.wechatLoginPage(req, res).on('success', function(data) {
+    //     restLogger.info('微信登录跳转数据：' + JSON.stringify(data));
+    //     res.send(data);
+    // }).on('error', function(errorObj) {
+    //     res.status(500).send(errorObj && errorObj.message);
+    // });
 };
 exports.loginWithWechat = function(req, res) {
     let code = '';
