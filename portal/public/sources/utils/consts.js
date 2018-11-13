@@ -359,3 +359,9 @@ export const APPLY_STATUS = {
     READY_APPLY: Intl.get('leave.apply.apartment.apply', '上级主管'),
     ASSIGN_SALES_APPLY: Intl.get('leave.apply.general.apply','分配销售'),
 };
+
+//订单状态
+export const DEAL_STATUS = {
+    WIN: 'win',//赢单
+    LOSE: 'lose'//丢单
+};

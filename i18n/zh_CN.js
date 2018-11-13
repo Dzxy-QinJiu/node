@@ -2558,6 +2558,17 @@ var zh_CN = {
     'sales.opportunity.assign.department.owner': '请选择要分配的部门主管',
     'sales.opportunity.process.config.list': '获取流程节点失败',
     'common.the.month.total': '本月合计',
-    'my.app.app.secret.key': '密钥'
+    'my.app.app.secret.key': '密钥',
+    'deal.manage': '订单管理',
+    'deal.list.get.failed': '获取订单列表失败',
+    'deal.no.data': '暂无订单',
+    'deal.stage': '阶段',
+    'deal.budget': '预算(元)',
+    'deal.no.more.tip': '没有更多订单了',
+    'deal.total.tip': '共{count}个订单',
+    'deal.stage.select.tip': '请选择订单阶段',
+    'deal.detail.panel.title': '订单详情',
+    'deal.detail.no.products': '暂无产品',
+    'deal.no.filter.deal': '没有符合条件的订单',
 };
 export default zh_CN;
