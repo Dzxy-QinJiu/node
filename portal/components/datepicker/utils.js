@@ -125,12 +125,12 @@ exports.getAllTime = function() {
  * 根据给定开始结束时间获取自定义时间范围,
  * 如果时间有效直接使用时间，如果无效则使用当前时间；
  * 如果开始时间大于结束时间时，会将时间翻转
+ * @param start_time
+ * @param end_time
+ * @param endOfToday endOfToday为true时，如果结束时间超过当前时间则设置截止时间为当前时间
+ * @returns {{start_time, end_time}}
  */
-exports.getCustomTime = function(start_time, end_time) {
-    let options = {
-        start_time: '',
-        end_time: ''
-    };
+exports.getCustomTime = function(start_time, end_time, endOfToday) {
     let start_time_moment = moment(start_time);
     let end_time_moment = moment(end_time);
     if (!start_time_moment.isValid()) {
@@ -142,17 +142,25 @@ exports.getCustomTime = function(start_time, end_time) {
     let temp = start_time_moment.clone();
     //如果开始时间大于结束时间,互换开始和结束时间
     if (start_time_moment.isAfter(end_time_moment)) {
-        start_time_moment = end_time_moment.format(MOMENT_DATE_FORMAT);
-        end_time_moment = temp.format(MOMENT_DATE_FORMAT);
-    } else {
-        start_time_moment = start_time_moment.format(MOMENT_DATE_FORMAT);
-        end_time_moment = end_time_moment.format(MOMENT_DATE_FORMAT);
+        start_time_moment = end_time_moment;
+        end_time_moment = temp;
+    }
+    //如果endOfToday为true
+    if (endOfToday) {
+        // 超过当前时间则设置时间为当前时间
+        if (start_time_moment.isAfter(moment())) {
+            start_time_moment = moment();
+        }
+        if (end_time_moment.isAfter(moment())) {
+            end_time_moment = moment();
+        }
     }
     return {
-        start_time: start_time_moment,
-        end_time: end_time_moment
+        start_time: start_time_moment.format(MOMENT_DATE_FORMAT),
+        end_time: end_time_moment.format(MOMENT_DATE_FORMAT)
     };
 };
+
 
 //获取最近时间
 exports.getLastTime = function(word) {
