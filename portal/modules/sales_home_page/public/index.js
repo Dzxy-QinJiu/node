@@ -11,7 +11,7 @@ var RightContent = require('../../../components/privilege/right-content');
 var SalesHomeStore = require('./store/sales-home-store');
 var SalesHomeAction = require('./action/sales-home-actions');
 var TopNav = require('../../../components/top-nav');
-import DatePicker from '../../../components/datepicker';
+import { AntcDatePicker as DatePicker } from 'antc';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import ActiveEmailTip from './views/active-email-tip';
 var StatisticTotal = require('./views/statistic-total');

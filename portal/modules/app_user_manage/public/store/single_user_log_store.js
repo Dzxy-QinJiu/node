@@ -1,7 +1,6 @@
 var SingleUserLogAction = require('../action/single_user_log_action');
 var ShareObj = require('../util/app-id-share-util');
 const datePickerUtils = require('CMP_DIR/datepicker/utils');
-import { ALL_LOG_INFO, AUDIT_LOG} from 'PUB_DIR/sources/utils/consts';
 
 function SingleUserLogStore(){
     //初始化state数据

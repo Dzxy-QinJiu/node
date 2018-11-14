@@ -8,7 +8,7 @@ import rightPanelUtil from 'CMP_DIR/rightPanel/index';
 const RightPanelClose = rightPanelUtil.RightPanelClose;
 import ClueAnalysisStore from '../store/clue-analysis-store';
 import ClueAnalysisAction from '../action/clue-analysis-action';
-import DatePicker from 'CMP_DIR/datepicker';
+import { AntcDatePicker as DatePicker } from 'antc';
 import {Select, Tabs} from 'antd';
 const TabPane = Tabs.TabPane;
 const Option = Select.Option;

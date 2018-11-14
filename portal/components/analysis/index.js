@@ -13,6 +13,7 @@ const Emitters = require('../../public/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const appSelectorEmitter = Emitters.appSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
+
 const DateSelectorUtils = require('../datepicker/utils');
 import { getEndDateText } from './utils';
 import { TIME_RANGE, USER_TYPE_LEGEND } from './consts';

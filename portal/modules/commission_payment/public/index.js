@@ -5,7 +5,7 @@ import CommissionPaymentActions from './action/index';
 //窗口改变的事件emitter
 import {resizeEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {SearchInput} from 'antc';
-import DatePicker from 'CMP_DIR/datepicker';
+import { AntcDatePicker as DatePicker } from 'antc';
 const SelectFullWidth = require('CMP_DIR/select-fullwidth');
 const Spinner = require('CMP_DIR/spinner');
 import { RightPanel } from 'CMP_DIR/rightPanel';

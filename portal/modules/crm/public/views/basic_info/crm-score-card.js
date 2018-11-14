@@ -5,7 +5,7 @@
  */
 import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
-import DatePicker from 'CMP_DIR/datepicker';
+import { AntcDatePicker as DatePicker } from 'antc';
 import classNames from 'classnames';
 import crmAjax from '../../ajax';
 import crmAction from '../../action/crm-actions';
