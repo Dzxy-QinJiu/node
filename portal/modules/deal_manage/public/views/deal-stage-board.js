@@ -110,7 +110,9 @@ class DealStageBoard extends React.Component {
                         listenScrollBottom={this.state.listenScrollBottom}>
                         {_.map(this.state.stageDealList, (deal, index) => {
                             return (
-                                <DealCard deal={deal} key={index}/>);
+                                <DealCard deal={deal} key={index}
+                                    showCustomerDetail={this.props.showCustomerDetail}
+                                    showDetailPanel={this.props.showDetailPanel}/>);
                         })}
                     </GeminiScrollbar>
                 </div>);
@@ -144,6 +146,8 @@ class DealStageBoard extends React.Component {
 }
 DealStageBoard.propTypes = {
     stage: PropTypes.object,
-    containerHeight: PropTypes.number
+    containerHeight: PropTypes.number,
+    showDetailPanel: PropTypes.func,
+    showCustomerDetail: PropTypes.func
 };
 export default DealStageBoard;

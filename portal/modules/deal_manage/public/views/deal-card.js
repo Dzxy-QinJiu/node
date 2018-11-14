@@ -17,12 +17,30 @@ class DealCard extends React.Component {
         return time ? moment(+time).format(oplateConsts.DATE_FORMAT) : '';
     }
 
+    showDealDetial = (e) => {
+        //点击客户名时，只打开客户详情
+        if (_.indexOf(e.target.className, 'deal-customer-name') !== -1) {
+            return;
+        }
+        if (_.isFunction(this.props.showDetailPanel)) {
+            this.props.showDetailPanel(this.state.deal);
+        }
+    }
+    showCustomerDetail = (e) => {
+        e.stopPropagation();
+        let customerId = _.get(this.state, 'deal.customer_id');
+        if (customerId && _.isFunction(this.props.showCustomerDetail)) {
+            this.props.showCustomerDetail(customerId);
+        }
+    }
+
     renderDealContent() {
         let deal = this.state.deal;
         let budget = deal.budget ? parseAmount(formatNumHasDotToFixed(deal.budget * 10000, 1)) : '';
         return (
-            <div className="deal-card-content">
-                <div className="deal-info-item deal-customer-name" title={deal.customer_name}>
+            <div className="deal-card-content" onClick={this.showDealDetial}>
+                <div className="deal-info-item deal-customer-name" title={deal.customer_name}
+                    onClick={this.showCustomerDetail}>
                     {deal.customer_name}
                 </div>
                 <div className="deal-info-item deal-budget" title={Intl.get('leave.apply.buget.count', '预算')}>
@@ -54,6 +72,8 @@ class DealCard extends React.Component {
 }
 
 DealCard.propTypes = {
-    deal: PropTypes.object
+    deal: PropTypes.object,
+    showDetailPanel: PropTypes.func,
+    showCustomerDetail: PropTypes.func
 };
 export default DealCard;

@@ -80,7 +80,8 @@ class DealManage extends React.Component {
             Trace.traceEvent($(ReactDOM.findDOMNode(_this)).find('.ant-table-tbody'), '打开订单详情');
             var $tr = $(this).closest('tr');
             var id = $tr.find('.record-id').text();
-            _this.showDetailPanel(id);
+            let currDeal = _.find(_this.state.dealListObj.list, deal => deal.id === id);
+            _this.showDetailPanel(currDeal);
         });
     }
 
@@ -121,10 +122,9 @@ class DealManage extends React.Component {
         });
     }
 
-    showDetailPanel(id) {
-        let currDeal = _.find(this.state.dealListObj.list, deal => deal.id === id);
-        if (currDeal) {
-            this.setState({currDeal, isDetailPanelShow: true});
+    showDetailPanel = (deal) => {
+        if (deal) {
+            this.setState({currDeal: deal, isDetailPanelShow: true});
         }
     }
 
@@ -177,15 +177,15 @@ class DealManage extends React.Component {
         });
     };
 
-    showCustomerDetail = (deal) => {
+    showCustomerDetail = (customerId) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.deal-customer-name'), '查看客户详情');
         this.setState({
-            curShowCustomerId: deal.customer_id,
+            curShowCustomerId: customerId,
         });
         //触发打开带拨打电话状态的客户详情面板
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
             customer_params: {
-                currentId: deal.customer_id,
+                currentId: customerId,
                 ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
                 hideRightPanel: this.hideRightPanel
             }
@@ -218,7 +218,7 @@ class DealManage extends React.Component {
                     return text ? (
                         <div className={cls}
                             title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
-                            onClick={this.showCustomerDetail.bind(this, record)}>
+                            onClick={this.showCustomerDetail.bind(this, record.customer_id)}>
                             {text}
                         </div>) : '';
                 }
@@ -412,6 +412,8 @@ class DealManage extends React.Component {
                 <div className="deal-board-list">
                     {_.map(this.state.stageList, (stage, index) => {
                         return (<DealStageBoard stage={stage} key={index}
+                            showDetailPanel={this.showDetailPanel}
+                            showCustomerDetail={this.showCustomerDetail}
                             containerHeight={containerHeight}/>);
                     })}
                 </div>);
