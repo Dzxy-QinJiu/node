@@ -27,7 +27,8 @@ class DealCard extends React.Component {
                 </div>
                 <div className="deal-info-item deal-budget" title={Intl.get('leave.apply.buget.count', '预算')}>
                     <i className="iconfont icon-deal-budget"/>
-                    {budget ? budget + Intl.get('contract.82', '元') : null}
+                    {budget ? budget + Intl.get('contract.82', '元') : (
+                        <span className="deal-no-budget">{Intl.get('crm.order.no.budget', '暂无预算')}</span>)}
                 </div>
                 <div className="deal-info-item deal-predict-finish-time">
                     <span className="deal-item-label">{Intl.get('crm.order.expected.deal', '预计成交')}</span>

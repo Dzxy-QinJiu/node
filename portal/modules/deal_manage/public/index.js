@@ -480,9 +480,7 @@ class DealManage extends React.Component {
                                 height: containerHeight,
                                 width: '100%'
                             }}>
-                            {/*<GeminiScrollbar>*/}
                             {this.renderDealBoards(containerHeight)}
-                            {/*</GeminiScrollbar>*/}
                         </div>)}
                 </div>
                 {this.state.isDetailPanelShow ? (

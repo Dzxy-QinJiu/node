@@ -28,6 +28,7 @@ class DealStageBoard extends React.Component {
             isLoadingDeal: false,//正在获取订单
             stageDealList: [],//当前阶段的订单列表
             getDealErrorMsg: '',//获取订单失败的提示
+            total_size: 0
         };
     }
 
@@ -58,19 +59,26 @@ class DealStageBoard extends React.Component {
         //         url += `&${key}=${value}`;
         //     }
         // });
+        let stage = _.get(this.state, 'stage.name', '');
+        if (!stage) return;
         this.setState({isLoadingDeal: true});
         $.ajax({
             url: url,
             dataType: 'json',
             type: 'post',
-            // data: body,
+            data: {query: {sale_stages: stage}},
             success: resData => {
-                this.setState({isLoadingDeal: false, stageDealList: _.get(resData, 'result', [])});
+                this.setState({
+                    isLoadingDeal: false,
+                    stageDealList: _.get(resData, 'result', []),
+                    total_size: _.get(resData, 'total', 0)
+                });
             },
             error: xhr => {
                 this.setState({
                     isLoadingDeal: false,
                     stageDealList: [],
+                    total_size: 0,
                     getDealErrorMsg: xhr.responseJSON || Intl.get('deal.list.get.failed', '获取订单列表失败')
                 });
             }
@@ -108,11 +116,13 @@ class DealStageBoard extends React.Component {
             <span>
                 <span className='deal-stage-name'> {_.get(stage, 'name', '')}</span>
                 <span className='deal-total-price'></span>
-                <span className='deal-total-count'></span>
+                <span
+                    className='deal-total-count'>{Intl.get('sales.home.total.count', '共{count}个', {count: this.state.total_size || '0'})}</span>
             </span>);
         return (
             <DetailCard
                 className='deal-stage-board-container'
+                height={this.state.containerHeight - 2 * BOARD_CARD_MARGIN}
                 title={title}
                 content={this.renderDealCardList()}
             />);
