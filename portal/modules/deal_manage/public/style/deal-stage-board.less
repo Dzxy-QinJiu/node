@@ -1,0 +1,48 @@
+@font-color: #999999;
+@title-color: #333333;
+@bg-color: #f5f6f8;
+@click-color: #8da8c5;
+.deal-stage-board-container {
+  position: relative;
+  display: inline-block;
+  float: none;
+  width: 360px;
+  margin-top: 20px;
+  background-color: @bg-color;
+  //订单阶段标题
+  .detail-card-title {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    font-size: 16px;
+    color: @title-color;
+  }
+  //订单卡片的内容
+  .deal-card-content {
+    .deal-customer-name.deal-info-item {
+      width: 100%;
+      font-size: 14px;
+      cursor: pointer;
+      color: @click-color;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .deal-info-item {
+      color: @font-color;
+      .deal-item-label {
+        margin-right: 4px;
+      }
+    }
+    .deal-budget {
+      font-size: 16px;
+      color: @title-color;
+      .icon-deal-budget {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+.deal-stage-board-container:not(:last-child) {
+  margin-right: 20px;
+}

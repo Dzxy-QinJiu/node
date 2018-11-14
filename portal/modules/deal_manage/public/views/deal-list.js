@@ -4,7 +4,7 @@
  * Created by wangliping on 2018/10/31.
  */
 require('./style/index.less');
-import {Button, Radio} from 'antd';
+import {Button} from 'antd';
 import {AntcTable, SearchInput} from 'antc';
 import TopNav from 'CMP_DIR/top-nav';
 import Spinner from 'CMP_DIR/spinner';
@@ -23,24 +23,13 @@ import classNames from 'classnames';
 import {formatNumHasDotToFixed} from 'PUB_DIR/sources/utils/common-method-util';
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
 import {num as antUtilsNum} from 'ant-utils';
-import DealStageBoard from './views/deal-stage-board';
-import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
 const parseAmount = antUtilsNum.parseAmount;
 const PAGE_SIZE = 20;
 const TOP_NAV_HEIGHT = 64,//头部导航区高度
-    BOTTOM_MARGIN = 5,//看板视图的下边距
     TOTAL_HEIGHT = 40,//总数的高度
     TH_HEIGHT = 50;//表头的高度
-
-const VIEW_TYPES = {
-    BOARD: 'board',//看板视图
-    LIST: 'list'//列表视图
-};
-
-class DealManage extends React.Component {
+class DealList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -61,17 +50,12 @@ class DealManage extends React.Component {
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
             curShowCustomerId: '',//当前查看的客户详情
-            teamList: [],//团队列表（列表中的团队根据团队id获取团队名来展示）
-            viewType: VIEW_TYPES.BOARD,//默认展示看板视图
-            isLoadingStage: false,//正在加载订单阶段
-            stageList: [],//订单阶段列表
-            getStageErrorMsg: ''//获取阶段列表失败时的错误信息
+            teamList: []//团队列表（列表中的团队根据团队id获取团队名来展示）
         };
     }
 
     componentDidMount() {
         dealStore.listen(this.onStoreChange);
-        this.getStageList();
         this.getTeamList();
         this.getDealList();
         let _this = this;
@@ -91,26 +75,6 @@ class DealManage extends React.Component {
 
     onStoreChange = () => {
         this.setState(dealStore.getState());
-    }
-
-    getStageList() {
-        this.setState({isLoadingStage: true});
-        $.ajax({
-            url: '/rest/customer/v2/salesopportunity/term/sale_stages',
-            dataType: 'json',
-            type: 'post',
-            data: {reqData: JSON.stringify({})},
-            success: resData => {
-                this.setState({isLoadingStage: false, stageList: _.get(resData, 'result', [])});
-            },
-            error: xhr => {
-                this.setState({
-                    isLoadingStage: false,
-                    stageList: [],
-                    getStageErrorMsg: xhr.responseJSON || Intl.get('deal.list.get.failed', '获取订单列表失败')
-                });
-            }
-        });
     }
 
     getTeamList() {
@@ -399,38 +363,6 @@ class DealManage extends React.Component {
         }
     };
 
-    getBoardContainerHeight() {
-        //body高度-头部操作区的高度-底部margin
-        return $('body').height() - TOP_NAV_HEIGHT - BOTTOM_MARGIN;
-    }
-
-    renderDealBoards(containerHeight) {
-        if (this.state.isLoadingStage) {
-            return (<Spinner />);
-        } else if (_.get(this.state, 'stageList[0]')) {
-            return (
-                <div className="deal-board-list">
-                    {_.map(this.state.stageList, (stage, index) => {
-                        return (<DealStageBoard stage={stage} key={index}
-                            containerHeight={containerHeight}/>);
-                    })}
-                </div>);
-        } else {
-            let noDataTip = Intl.get('deal.no.data', '暂无订单');
-            if (this.state.getStageErrorMsg) {
-                noDataTip = this.state.getStageErrorMsg;
-            } else if (this.state.searchObj.value) {
-                noDataTip = Intl.get('deal.no.filter.deal', '没有符合条件的订单');
-            }
-            return (
-                <NoDataIntro noDataTip={noDataTip}/>);
-        }
-    }
-
-    changViewType = (e) => {
-        this.setState({viewType: e.target.value});
-    };
-
     render() {
         const searchFields = [
             {
@@ -447,18 +379,9 @@ class DealManage extends React.Component {
             }
         ];
         let customerOfCurUser = this.state.customerOfCurUser;
-        let dealViewCls = classNames('deal-manage-content', {'board-view-style': this.state.viewType === VIEW_TYPES.BOARD});
-        let containerHeight = this.getBoardContainerHeight();
         return (
             <div className="deal-manage-container" data-tracename="订单管理">
                 <TopNav>
-                    <div className="deal-view-radio-container">
-                        <RadioGroup size="large" value={this.state.viewType} onChange={this.changViewType}>
-                            <RadioButton value={VIEW_TYPES.BOARD}><i
-                                className="iconfont icon-board-view"/></RadioButton>
-                            <RadioButton value={VIEW_TYPES.LIST}><i className="iconfont icon-list-view"/></RadioButton>
-                        </RadioGroup>
-                    </div>
                     <div className="deal-search-block">
                         <SearchInput
                             type="select"
@@ -473,17 +396,19 @@ class DealManage extends React.Component {
                         </Button>
                     </PrivilegeChecker>
                 </TopNav>
-                <div className={dealViewCls}>
-                    {this.state.viewType === VIEW_TYPES.LIST ? this.renderDealList() : (
-                        <div className="deal-board-view-container"
-                            style={{
-                                height: containerHeight,
-                                width: '100%'
-                            }}>
-                            {/*<GeminiScrollbar>*/}
-                            {this.renderDealBoards(containerHeight)}
-                            {/*</GeminiScrollbar>*/}
-                        </div>)}
+                <div className="deal-manage-content">
+                    {this.renderDealList()}
+                    {_.get(this.state, 'dealListObj.total') ?
+                        <div className="summary_info">
+                            <ReactIntl.FormattedMessage
+                                id="deal.total.tip"
+                                defaultMessage={'共{count}个订单'}
+                                values={{
+                                    'count': _.get(this.state, 'dealListObj.total')
+                                }}
+                            />
+                        </div> : null
+                    }
                 </div>
                 {this.state.isDetailPanelShow ? (
                     <DealDetailPanel currDeal={this.state.currDeal} hideDetailPanel={this.hideDetailPanel}/>
@@ -506,4 +431,4 @@ class DealManage extends React.Component {
             </div>);
     }
 }
-export default DealManage;
+export default DealList;

@@ -2570,5 +2570,7 @@ var zh_CN = {
     'deal.detail.panel.title': '订单详情',
     'deal.detail.no.products': '暂无产品',
     'deal.no.filter.deal': '没有符合条件的订单',
+    'deal.view.board': '看板视图',
+    'deal.view.list': '表格视图',
 };
 export default zh_CN;

@@ -1,4 +1,9 @@
 .deal-manage-container {
+  .deal-view-radio-container {
+    float: left;
+    margin-top: 15px;
+    margin-right: 20px;
+  }
   .deal-search-block {
     float: left;
     width: 260px;
@@ -9,6 +14,8 @@
     margin-top: 15px;
   }
   .deal-manage-content {
+    float: left;
+    width: 100%;
     padding: 64px 24px 0 24px;
     .deal-table-container {
       .current-row, .current-row:hover {
@@ -18,7 +25,7 @@
       .deal-customer-name {
         cursor: pointer;
       }
-      .customer-name-active{
+      .customer-name-active {
         color: #4d96d1;
       }
     }
@@ -27,6 +34,16 @@
       color: #7c8185;
       position: fixed;
       bottom: 20px;
+    }
+  }
+  //看板视图的样式
+  .deal-board-view-container {
+    overflow-x: scroll;
+  }
+  .deal-manage-content.board-view-style {
+    .deal-board-list {
+      float: left;
+      white-space: nowrap;
     }
   }
 }
