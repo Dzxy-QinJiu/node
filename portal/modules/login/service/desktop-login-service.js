@@ -4,6 +4,7 @@ var config = require('../../../../conf/config');
 //后端国际化
 let BackendIntl = require('../../../lib/utils/backend_intl');
 const ipUtil = require('../../../lib/utils/common-utils').ip;
+let appUtils = require('../util/appUtils');
 
 //定义url
 var urls = {
@@ -85,6 +86,7 @@ exports.loginWithTicket = function(req, res, ticket) {
         timeout: loginTimeout
     });
 };
+
 /**
  * 登录超时处理
  */
@@ -93,6 +95,7 @@ function loginTimeout(emitter, data) {
         emitter.emit('error', data);
     }
 }
+
 /*
  登录成功处理
  */
@@ -107,6 +110,7 @@ function loginSuccess(emitter, data) {
         }
     }
 }
+
 //处理返回用户信息
 function getLoginResult(data) {
     //前端登录后所需数据结构
@@ -423,5 +427,68 @@ exports.validatePhoneCode = function(req, res) {
             res: res,
         }, req.query);
 };
+//微信登录页面
+exports.wechatLoginPage = function(req, res) {
+    let qrconnecturl = 'https://open.weixin.qq.com/connect/qrconnect?appid=' + appUtils.WECHAT_APPID
+        + '&redirect_uri=' + encodeURIComponent('https://ketao-exp.antfact.com/login/wechat')
+        + '&response_type=code&scope=snsapi_login&state=' + req.sessionID;
+    // let params = {
+    //     appid: WECHAT_APPID,
+    //     redirect_uri: encodeURIComponent('https://ketao-exp.antfact.com/login/wechat'),
+    //     response_type: 'code',
+    //     scope: 'snsapi_login',
+    //     state: req.sessionID
+    // };
+    // Object.keys(params).forEach(function(key) {
+    //     qrconnecturl += key + '=' + params[key] + '&';
+    // });
+    // qrconnecturl = qrconnecturl.slice(qrconnecturl.length - 1, 1);
+    return restUtil.baseRest.get(
+        {
+            url: qrconnecturl,
+            req: req,
+            res: res
+        });
+};
 
 
+//微信登录
+exports.loginWithWechat = function(req, res, code) {
+    let access_token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token';
+    let params = {
+        appid: appUtils.WECHAT_APPID,
+        secret: appUtils.WECHAT_SECRET,
+        code: code,
+        grant_type: 'authorization_code'
+    };
+    // Object.keys(params).forEach(function(key) {
+    //     access_token_url += key + '=' + params[key] + '&';
+    // });
+    // access_token_url = access_token_url.slice(access_token_url.length - 1, 1);
+    return restUtil.baseRest.get(
+        {
+            url: access_token_url,
+            req: req,
+            res: res,
+        }, params);
+
+
+};
+//微信小程序登录
+exports.loginWithWechatMiniprogram = function(req, res, code) {
+    let access_token_url = 'https://api.weixin.qq.com/sns/jscode2session';
+    let params = {
+        appid: appUtils.MINI_PROGRAM_APPID,
+        secret: appUtils.MINI_PROGRAM_SECRET,
+        js_code: code,
+        grant_type: 'authorization_code'
+    };
+    return restUtil.baseRest.get(
+        {
+            url: access_token_url,
+            req: req,
+            res: res,
+        }, params);
+
+
+};

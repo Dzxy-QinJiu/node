@@ -17,6 +17,9 @@ var UserDto = require('../../../lib/utils/user-dto');
 let BackendIntl = require('../../../../portal/lib/utils/backend_intl');
 const Promise = require('bluebird');
 const commonUtil = require('../../../lib/utils/common-utils');
+let restLogger = require('../../../lib/utils/logger').getLogger('rest');
+let appUtils = require('../util/appUtils');
+let WXBizDataCrypt = require('../lib/WXBizDataCrypt');
 
 /**
  * 首页
@@ -68,7 +71,7 @@ exports.showLoginPage = function(req, res) {
         let formHtml = ReactDOMServer.renderToString(LoginForm(obj));
         let isCurtao = commonUtil.method.isCurtao(req);
         //正式发版的curtao上，展示带注册的登录界面，
-        if(isCurtao){
+        if (isCurtao) {
             formHtml = ReactDOMServer.renderToString(LoginCurtaoForm(obj));
         }
         var phone = '400-677-0986';
@@ -336,9 +339,9 @@ exports.wechatLogin = function(req, res) {
 //根据公司名获取公司
 exports.getCompanyByName = function(req, res) {
     DesktopLoginService.getCompanyByName(req, res).on('success', function(data) {
-        if(!data){
+        if (!data) {
             res.status(200).json(false);
-        } else{
+        } else {
             res.status(200).json(data);
         }
     }).on('error', function(errorObj) {
@@ -369,6 +372,58 @@ exports.validatePhoneCode = function(req, res) {
         res.status(500).json(errorObj && errorObj.message);
     });
 };
+exports.wechatLoginPage = function(req, res) {
+    let qrconnecturl = 'https://open.weixin.qq.com/connect/qrconnect?appid=wxf169b2a9aa1958a9'
+        + '&redirect_uri=' + encodeURIComponent('https://ketao-exp.antfact.com/login/wechat')
+        + '&response_type=code&scope=snsapi_login&state=' + req.sessionID;
+    res.redirect(qrconnecturl);
+    // DesktopLoginService.wechatLoginPage(req, res).on('success', function(data) {
+    //     restLogger.info('微信登录跳转数据：' + JSON.stringify(data));
+    //     res.send(data);
+    // }).on('error', function(errorObj) {
+    //     res.status(500).send(errorObj && errorObj.message);
+    // });
+};
+exports.loginWithWechat = function(req, res) {
+    let code = '';
+    if (req.query && req.query.code) {
+        if (req.sessionID === req.query.state) {
+            code = req.query.code;
+        }
+    }
+    if (code) {
+        DesktopLoginService.loginWithWechat(req, res, code).on('success', function(data) {
+            restLogger.info('微信登录：' + JSON.stringify(data));
+            // res.status(200).json(data);
+        }).on('error', function(errorObj) {
+            res.status(500).json(errorObj && errorObj.message);
+        });
+    } else {
+        res.status(500).json('微信登录失败');
+    }
+};
+//小程序登录
+exports.loginWithWechatMiniprogram = function(req, res) {
+    let code = '';
+    let encryptedData = '';
+    let iv = '';
+    if (req.query) {
+        code = req.query.code || '';
+        encryptedData = req.query.encryptedData || '';
+        iv = req.query.iv || '';
+    }
+    DesktopLoginService.loginWithWechatMiniprogram(req, res, code).on('success', function(result) {
+        restLogger.info('小程序登录:' + JSON.stringify(result));
+        let sessionKey = result.session_key;
+        let pc = new WXBizDataCrypt(appUtils.MINI_PROGRAM_APPID, sessionKey);
+        let data = pc.decryptData(encryptedData, iv);
+        restLogger.info('小程序获取unionId:' + JSON.stringify(data));
+        // res.status(200).json(data);
+    }).on('error', function(errorObj) {
+        res.status(500).json(errorObj && errorObj.message);
+    });
+};
+
 
 //修改session数据
 function modifySessionData(req, data) {
