@@ -1,0 +1,51 @@
+<% // 页头1  %>
+<% addBrowserChecker = true %>
+<% include ../../common/public/tpl/common-header.begin.ejs %>
+
+<script type="text/javascript">
+    if (self != top) {
+        top.location = self.location;
+    }
+
+    Oplate = {
+        lang: '<%= lang %>',
+        loginErrorMsg: '<%= loginErrorMsg %>'
+    };
+</script>
+<% if(isFormal == "true") { %>
+<!-- Piwik -->
+<script type="text/javascript">
+    var _paq = _paq || [];
+    // tracker methods like "setCustomDimension" should be called before "trackPageView"
+    _paq.push(['setUserId', '<%= username %>']);
+    _paq.push(['setCustomDimension', 2, '<%= username %>']);
+    _paq.push(['setDocumentTitle', "/"]);
+    _paq.push(['trackPageView']);
+    _paq.push(['enableHeartBeatTimer', 30]);
+    (function () {
+        var u = "//ustat.antfact.com/";
+        _paq.push(['setTrackerUrl', u + 'piwik.php']);
+        _paq.push(['setSiteId', '<%= siteID %>']);
+        var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+        g.type = 'text/javascript';
+        g.async = true;
+        g.defer = true;
+        g.src = u + 'piwik.js';
+        s.parentNode.insertBefore(g, s);
+    })();
+</script>
+<!-- End Piwik Code -->
+<% } %>
+<% // 页头2       %>
+<% include ../../common/public/tpl/common-header.end.ejs %>
+
+<style id="css-style-collector-data">
+    <%- styleContent %>
+</style>
+
+<div id="react-placeholder"><%- loginForm %></div>
+<script src="/dll/dll.vendor.js?timestamp=<%= timeStamp %>"></script>
+<script src="/dll/dll.reactRel.js?timestamp=<%= timeStamp %>"></script>
+<script src="/resources/common.bundle.js?timestamp=<%= timeStamp %>"></script>
+<% // --- 微信绑定界面 ---  %>
+<script src="/resources/wechat_bind_login.bundle.js?timestamp=<%= timeStamp %>"></script>

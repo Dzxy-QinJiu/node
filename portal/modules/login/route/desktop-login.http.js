@@ -18,6 +18,13 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
+    },{
+        'method': 'get',
+        'path': '/wechat_bind',
+        'handler': 'showWechatBindPage',
+        'passport': {
+            'needLogin': false
+        }
     }, {
         'method': 'post',
         'path': '/login',
@@ -60,7 +67,7 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
-    }, {
+    }, {//微信小程序用账号、密码登录的接口
         'method': 'post',
         'path': '/wechatLogin',
         'handler': 'wechatLogin',
@@ -113,6 +120,34 @@ module.exports = {
         'method': 'get',
         'path': '/login/wechat/miniprogram',
         'handler': 'loginWithWechatMiniprogram',
+        'passport': {
+            'needLogin': false
+        }
+    },{//微信小程序用已有账号绑定微信并登录
+        'method': 'post',
+        'path': '/bind/login/wechat/miniprogram',
+        'handler': 'bindLoginWechatMiniprogram',
+        'passport': {
+            'needLogin': false
+        }
+    },{//微信小程序注册新账号绑定微信并登录
+        'method': 'post',
+        'path': '/register/login/wechat/miniprogram',
+        'handler': 'registerLoginWechatMiniprogram',
+        'passport': {
+            'needLogin': false
+        }
+    },{//web用已有账号绑定微信并登录
+        'method': 'post',
+        'path': '/bind/login/wechat',
+        'handler': 'bindLoginWechat',
+        'passport': {
+            'needLogin': false
+        }
+    },{//web注册新账号绑定微信并登录
+        'method': 'post',
+        'path': '/register/login/wechat',
+        'handler': 'registerLoginWechat',
         'passport': {
             'needLogin': false
         }

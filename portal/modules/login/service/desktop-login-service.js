@@ -39,7 +39,16 @@ var urls = {
     //注册新公司账号
     registerAccount: '/rest/open/resource/organization',
     //短信验证码的验证
-    validatePhoneCode: 'rest/open/resource/verificationcode/check'
+    validatePhoneCode: 'rest/open/resource/verificationcode/check',
+    //检查微信是否已绑定客套账号
+    checkWechatIsBindUrl: '/auth2/authc/social/check',
+    //通过微信的unionId登录
+    wechatLoginByUnionIdUrl: '/auth2/authc/social/login',
+    //已有用户绑定微信账号
+    bindWechatUrl: '/auth2/authc/social/binding',
+    //注册新用户绑定微信号并登录
+    registBindWechatLoginUrl: '/auth2/authc/social/register',
+
 };
 //验证码的高和宽
 var captcha = {
@@ -451,6 +460,32 @@ exports.wechatLoginPage = function(req, res) {
         });
 };
 
+//通过微信的unionId登录
+exports.wechatLoginByUnionId = function(req, res, unionId) {
+    return restUtil.appAuthRest.post(
+        {
+            url: urls.wechatLoginByUnionIdUrl,
+            req: req,
+            res: res,
+            form: {
+                open_id: unionId,
+                platform: 'wechat'
+            }
+        });
+};
+
+//检查微信是否已绑定客套账号
+exports.checkWechatIsBind = function(req, res, unionId) {
+    return restUtil.appAuthRest.get(
+        {
+            url: urls.checkWechatIsBindUrl,
+            req: req,
+            res: res,
+        }, {
+            open_id: unionId,
+            platform: 'wechat'
+        });
+};
 
 //微信登录
 exports.loginWithWechat = function(req, res, code) {
@@ -489,6 +524,39 @@ exports.loginWithWechatMiniprogram = function(req, res, code) {
             req: req,
             res: res,
         }, params);
+};
 
+//注册新用户绑定微信号并登录
+exports.registBindWechatLogin = function(req, res, formObj) {
+    let formData = {
+        user_name: formObj.user_name,
+        open_id: formObj.union_id,
+        valid_days: 30,//授权有效期(Integer),默认先写死30天
+        platform: 'wechat'
+    };
+    //密码是可选项，可填可不填
+    if (formObj.password) {
+        formData.password = formObj.password;
+    }
+    return restUtil.appAuthRest.post(
+        {
+            url: urls.registBindWechatLoginUrl,
+            req: req,
+            res: res,
+            form: formData
+        });
+};
 
+//已有账号绑定微信
+exports.bindWechat = function(req, res, unionId) {
+    return restUtil.authRest.post(
+        {
+            url: urls.bindWechatUrl,
+            req: req,
+            res: res,
+            form: {
+                open_id: unionId,
+                platform: 'wechat'
+            }
+        });
 };
