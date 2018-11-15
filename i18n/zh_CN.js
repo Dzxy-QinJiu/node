@@ -240,6 +240,9 @@ var zh_CN = {
     'common.address': '地址',
     'common.full.address': '详细地址',
     'common.select.address.province': '省份', // 省份
+    'common.select.address.city': '城市',
+    'common.select.address.country': '县区',
+    'common.area.selection.city': '直筒子市',
     'common.company': '公司', // 公司
     'common.all.select': '全选',
     'common.product.name': '产品名称',

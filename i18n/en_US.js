@@ -235,6 +235,9 @@ var en_US = {
     'common.address': 'Address', // 地址
     'common.full.address': 'Full address', // 详细地址
     'common.select.address.province': 'province', // 省份
+    'common.select.address.city': 'city',
+    'common.select.address.country': 'country',
+    'common.area.selection.city': 'country',
     'common.company': 'company', // 公司
     'common.all.select': 'Select all',//全选
     'common.product.name': 'Product name', // 产品名称
