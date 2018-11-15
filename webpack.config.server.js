@@ -26,7 +26,7 @@ module.exports = {
     entry: {
         login_curtao: ['./portal/components/Login-curtao/index'],
         login: ['./portal/components/Login/index'],
-        login: ['./portal/components/Login/index']
+        wechat_bind_login: ['./portal/components/wechat-bind-login/index']
     },
     target: "node",
     output: {
