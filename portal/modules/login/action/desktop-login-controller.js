@@ -445,9 +445,10 @@ exports.loginWithWechatMiniprogram = function(req, res) {
             let sessionKey = result.session_key;
             let pc = new WXBizDataCrypt(appUtils.MINI_PROGRAM_APPID, sessionKey);
             let data = pc.decryptData(encryptedData, iv);
-            restLogger.info('小程序获取unionId:' + JSON.stringify(data));
-            let unionId = _.get(data, 'unionid');
+            restLogger.info('小程序转换后的对象:' + JSON.stringify(data));
+            let unionId = _.get(data, 'unionId');
             if (unionId) {
+                restLogger.info('小程序获取unionId:' + unionId);
                 appCheckWechatIsBind(req, res, unionId);
             } else {
                 res.status(500).json('微信登录失败');
