@@ -507,7 +507,7 @@ exports.bindLoginWechatMiniprogram = function(req, res) {
 exports.registerLoginWechat = function(req, res) {
     let unionId = req.session.union_id;
     if (unionId) {
-        DesktopLoginService.registBindWechatLogin(req, res, {user_name: req.body.user_name, union_id: unionId})
+        DesktopLoginService.registBindWechatLogin(req, res, {user_name: req.body.username, union_id: unionId})
             .on('success', loginSuccess(req, res))
             .on('error', function(errorObj) {
                 res.status(500).json(errorObj && errorObj.message);
