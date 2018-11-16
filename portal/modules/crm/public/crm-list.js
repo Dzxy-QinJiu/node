@@ -733,6 +733,8 @@ class Crm extends React.Component {
         //存储筛选条件所需，用于标识时间间隔
         let interval = '';
         let dayTimeLogin = '';
+        //近xxx天未写跟进记录的时间
+        let dayTimeNoTrace = '';
         switch (condition.otherSelectedItem) {
             case OTHER_FILTER_ITEMS.THIRTY_NO_CALL://超30天未打过电话的客户
                 dayTime = DAY_TIME.THIRTY_DAY;
@@ -763,8 +765,14 @@ class Crm extends React.Component {
             case OTHER_FILTER_ITEMS.LAST_CALL_NO_RECORD://最后联系但未写跟进记录的客户
                 condition.call_and_remark = '1';
                 break;
-            case OTHER_FILTER_ITEMS.NO_RECORD_OVER_30DAYS://超30天未写跟进记录的客户
-                condition.last_trace = '0';
+            case OTHER_FILTER_ITEMS.THIRTY_NO_LAST_TRACE://近30天未写跟进记录的客户
+                dayTimeNoTrace = DAY_TIME.THIRTY_DAY;
+                break;
+            case OTHER_FILTER_ITEMS.FIFTEEN_NO_LAST_TRACE://近15天未写跟进记录的客户
+                dayTimeNoTrace = DAY_TIME.FIFTEEN_DAY;
+                break;
+            case OTHER_FILTER_ITEMS.SEVEN_NO_LAST_TRACE://近7天未写跟进记录的客户
+                dayTimeNoTrace = DAY_TIME.SEVEN_DAY;
                 break;
             case OTHER_FILTER_ITEMS.UNDISTRIBUTED://未分配销售的客户
                 unexist.push('member_id');
@@ -832,8 +840,13 @@ class Crm extends React.Component {
                 name: 'last_login_time',
                 type: 'time'
             };
-        }
-        else if (condition.otherSelectedItem !== OTHER_FILTER_ITEMS.MULTI_ORDER) {
+        } else if (dayTimeNoTrace){//近xxx天未写跟进记录的客户过滤参数
+            this.state.rangParams[0] = {
+                to: moment().valueOf() - dayTimeNoTrace,
+                name: 'last_customer_trace_time',
+                type: 'time'
+            };
+        } else if (condition.otherSelectedItem !== OTHER_FILTER_ITEMS.MULTI_ORDER) {
             //既不是超xx天未联系的客户、也不是xx天的活跃、还不是多个订单客户的过滤时，传默认的设置
             this.state.rangParams[0] = DEFAULT_RANGE_PARAM;
         }

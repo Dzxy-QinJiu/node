@@ -269,7 +269,9 @@ export const OTHER_FILTER_ITEMS = {
     UNDISTRIBUTED: 'undistributed',//未分配的客户
     NO_CONTACT_WAY: 'no_contact_way',//无联系方式的客户
     LAST_CALL_NO_RECORD: 'last_call_no_record',//最后联系但未写跟进记录的客户
-    NO_RECORD_OVER_30DAYS: 'last_trace',//超30天未写跟进记录的客户
+    THIRTY_NO_LAST_TRACE: 'thirty_no_last_trace',//近30天未写跟进记录的客户
+    FIFTEEN_NO_LAST_TRACE: 'fifteen_no_last_trace',//近15天未写跟进记录的客户
+    SEVEN_NO_LAST_TRACE: 'seven_no_last_trace',//近7天未写跟进记录的客户
     INTEREST_MEMBER_IDS: 'interest_member_ids',//被关注的客户
     MY_INTERST: 'my_interest',//我关注的客户
     MULTI_ORDER: 'multi_order',//多个订单的客户
@@ -279,11 +281,10 @@ export const OTHER_FILTER_ITEMS = {
     TEAM_CUSTOMER: 'team_customer'//团队客户
 };
 
-const day = 24 * 60 * 60 * 1000;
 export const DAY_TIME = {
-    THIRTY_DAY: 30 * day,//30天
-    FIFTEEN_DAY: 15 * day,//15天
-    SEVEN_DAY: 7 * day//7天
+    THIRTY_DAY: 30 * oplateConsts.ONE_DAY_TIME_RANGE,//30天
+    FIFTEEN_DAY: 15 * oplateConsts.ONE_DAY_TIME_RANGE,//15天
+    SEVEN_DAY: 7 * oplateConsts.ONE_DAY_TIME_RANGE//7天
 };
 
 export const STAGE_OPTIONS = [
