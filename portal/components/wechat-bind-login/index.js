@@ -15,4 +15,4 @@ class WechatBindLogin extends React.Component {
     }
 }
 
-module.exports = Login;
+module.exports = WechatBindLogin;
