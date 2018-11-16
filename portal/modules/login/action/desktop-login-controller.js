@@ -557,11 +557,13 @@ function appCheckWechatIsBind(req, res, unionId) {
         let isBind = _.get(data, 'result');
         //已绑定
         if (isBind) {
+            restLogger.info('微信已绑定继续登录');
             appWechatLoginByUnionId(req, res, unionId);
         } else {//未绑定
             //将unionId存入session中，下面绑定微信账号时会用到
             req.session.union_id = unionId;
             req.session.save(function() {
+                restLogger.info('微信未绑定');
                 res.status(200).json(false);
             });
         }
