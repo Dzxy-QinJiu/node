@@ -304,6 +304,8 @@ var zh_CN = {
     'register.phone.code': '短信验证码',
     'register.company.nickname': '公司名称',
     'register.code.validate.expire': '短信验证码已过期',
+    'register.wechat.bind.user': '绑定已有账号',
+    'register.wechat.register.bind': '注册新账号',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
@@ -2558,6 +2560,6 @@ var zh_CN = {
     'sales.opportunity.assign.department.owner': '请选择要分配的部门主管',
     'sales.opportunity.process.config.list': '获取流程节点失败',
     'common.the.month.total': '本月合计',
-    'my.app.app.secret.key': '密钥'
+    'my.app.app.secret.key': '密钥',
 };
 export default zh_CN;

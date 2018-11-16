@@ -1,0 +1,81 @@
+/*登录界面的样式文件*/
+@wihte-color: #ffffff;
+@body-bg: #1d2b36;
+@font-color: #d8eaf4;
+.login-wrap {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  font-size: 14px;
+  color: @font-color;
+  background-color: @body-bg;
+  //LOGO
+  a.logo{
+    margin-top: 20px;
+    margin-left: 20px;
+    >span{
+      font-size: 24px;
+    }
+  }
+
+  /*切换扫码登录和普通登录的tab*/
+  .ant-tabs {
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    overflow: visible;
+  }
+  .ant-tabs-bar {
+    border-bottom: 1px solid #8ba7c2;
+    .ant-tabs-nav{
+      .ant-tabs-tab {
+        width: 163px;
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        color: #8ba7c2;
+        &:hover{
+          color: #d8eaf4;
+        }
+        &:active {
+          color: #dee9f5;
+        }
+      }
+      .ant-tabs-tab-active {
+        color: @wihte-color;
+      }
+      .ant-tabs-ink-bar {
+        height: 1px;
+        background-color: @wihte-color;
+      }
+    }
+  }
+
+  /*普通登录区*/
+  .form-wrap {
+    position: absolute;
+    width: 280px;
+    height: 200px;
+    top: 80px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+  }
+  //.login-error-tip {
+  //  background: no-repeat url("./image/error.png") 0 2px;
+  //  line-height: 22px;
+  //  font-size: 14px;
+  //  color: #ee5b44;
+  //  padding-left: 21px;
+  //  margin-top: 5px;
+  //  position: absolute;
+  //}
+}

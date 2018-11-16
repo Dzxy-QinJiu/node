@@ -9,10 +9,7 @@ var React = require('react');
 var crypto = require('crypto');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
-import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from '../../lib/websso';
 import {Icon} from 'antd';
-//常量定义
-const CAPTCHA = '/captcha';
 //错误信息提示
 const ERROR_MSGS = {
     NO_SERVICE: Intl.get('login.error.retry', '登录服务暂时不可用，请稍后重试'),
@@ -32,16 +29,14 @@ class LoginForm extends React.Component {
         //登录按钮是否可用
         loginButtonDisabled: true,
         //登录状态
-        logining: false,
-        //是否是绑定微信界面
-        isBindWechat: this.props.isBindWechat,
+        logining: false
     };
 
     beforeSubmit = (event) => {
         var userName = $.trim(this.refs.username.value);
         if (!userName) {
             //用户名不能为空
-            this.props.setErrorMsg(Intl.get('login.write.username', '请输入用户名'));
+            // this.props.setErrorMsg(Intl.get('login.write.username', '请输入用户名'));
             event.preventDefault();
             return false;
         }
@@ -53,14 +48,14 @@ class LoginForm extends React.Component {
         var value = this.refs.password_input.value;
         if (!value) {
             //密码不能为空
-            this.props.setErrorMsg(Intl.get('common.input.password', '请输入密码'));
+            // this.props.setErrorMsg(Intl.get('common.input.password', '请输入密码'));
             event.preventDefault();
             return false;
         }
         //需要输入验证码，但未输入验证码时
         if (this.state.captchaCode && !this.refs.captcha_input.value) {
             //验证码不能为空
-            this.props.setErrorMsg(Intl.get('login.write.code', '请输入验证码'));
+            // this.props.setErrorMsg(Intl.get('login.write.code', '请输入验证码'));
             //阻止缺省行为
             event.preventDefault();
             return false;
@@ -94,7 +89,7 @@ class LoginForm extends React.Component {
             window.location.href = callBackUrl + '?t=' + ticket + '&lang=' + lang;
         }).catch((data) => {
             sendMessage && sendMessage(userName + ' sso登录失败,error:' + data && data.error);
-            this.props.setErrorMsg(data && data.error);
+            // this.props.setErrorMsg(data && data.error);
             this.setState({
                 logining: false,
                 captchaCode: data && data.captcha
@@ -126,15 +121,15 @@ class LoginForm extends React.Component {
     };
 
     userNameChange = (evt) => {
-        this.setState({
-            username: evt.target.value
-        }, () => this.props.setErrorMsg(''));
+        // this.setState({
+        //     username: evt.target.value
+        // }, () => this.props.setErrorMsg(''));
     };
 
     passwordChange = (evt) => {
-        this.setState({
-            password: evt.target.value
-        }, () => this.props.setErrorMsg(''));
+        // this.setState({
+        //     password: evt.target.value
+        // }, () => this.props.setErrorMsg(''));
     };
 
     renderCaptchaBlock = (hasWindow) => {
@@ -205,7 +200,7 @@ class LoginForm extends React.Component {
                 });
             },
             error: () => {
-                this.props.setErrorMsg(ERROR_MSGS.NO_SERVICE);
+                // this.props.setErrorMsg(ERROR_MSGS.NO_SERVICE);
             },
         });
     };
@@ -246,14 +241,6 @@ class LoginForm extends React.Component {
 
         return (
             <div>
-                <button className={loginButtonClassName} onClick={this.loginWithWeixin}
-                    tabIndex="3"
-                    disabled={this.state.loginButtonDisabled}
-                    data-tracename="微信登录"
-                >
-                    {hasWindow ? '微信登录' : null}
-                    {this.state.logining ? <Icon type="loading"/> : null}
-                </button>
                 <form action="/login" method="post" onSubmit={this.beforeSubmit} autoComplete="off">
                     <div className="input-area">
                         <div className="input-item">
@@ -296,8 +283,6 @@ class LoginForm extends React.Component {
 LoginForm.propTypes = {
     username: PropTypes.string,
     captcha: PropTypes.string,
-    setErrorMsg: PropTypes.func,
-    hasWindow: PropTypes.bool,
-    isBindWechat: PropTypes.bool
+    hasWindow: PropTypes.bool
 };
 module.exports = LoginForm;

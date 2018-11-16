@@ -10,7 +10,8 @@ import {Router} from 'react-router-dom';
 var props = {
     loginErrorMsg: window.Oplate.initialProps.loginErrorMsg,
     username: window.Oplate.initialProps.username,
-    captchaCode: window.Oplate.initialProps.captchaCode
+    captchaCode: window.Oplate.initialProps.captchaCode,
+    isBindWechat: window.Oplate.initialProps.isBindWechat,
 };
 
 ReactDOM.render(<Translate Template={<Router history={history}><LoginMain {...props}/></Router>}/>, $('#react-placeholder')[0]);

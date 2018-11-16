@@ -8,7 +8,7 @@ import {Router} from 'react-router-dom';
 
 
 var props = {
-    loginErrorMsg: window.Oplate.initialProps.loginErrorMsg
+    loginErrorMsg: window.Oplate.loginErrorMsg
 };
 
 ReactDOM.render(<Translate Template={<Router history={history}><WechatBindLoginMain {...props}/></Router>}/>, $('#react-placeholder')[0]);

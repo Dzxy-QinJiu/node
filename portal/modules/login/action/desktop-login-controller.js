@@ -28,103 +28,96 @@ const _ = require('lodash');
  * @param req
  * @param res
  */
+//登录页、绑定微信
+function showLoginOrBindWechatPage(req, res) {
+    return function(isBindWechat) {
+        var loginErrorMsg = req.session.loginErrorMsg;
+        if (loginErrorMsg) {
+            delete req.session.loginErrorMsg;
+        }
+        //从session中获取上一次登录用户名
+        var last_login_user = req.session.last_login_user || '';
+        var obj = {
+            username: last_login_user,
+            loginErrorMsg: loginErrorMsg
+        };
+        //优先使用环境变量中设置的语言
+        const loginLang = global.config.lang || req.query.lang || '';
+        //session中存在stopcheck(使用ticket登录失败时，会加stopcheck参数)
+        // 或者请求路径中包含stopcheck(超时后刷新界面时，转页到登录界面会加stopcheck参数)
+        const stopcheck = req.session.stopcheck || req.query.stopcheck;
+        //将当前的语言环境存入session中
+        if (req.session) {
+            req.session.lang = loginLang;
+            req.session.save();
+        }
+        //非sso登录并且有用户名时，获取一次验证码
+        if (!global.config.useSso && last_login_user) {
+            getLoginCaptcha();
+        } else {
+            renderHtml();
+        }
 
-exports.showLoginPage = function(req, res) {
-    var loginErrorMsg = req.session.loginErrorMsg;
-    if (loginErrorMsg) {
-        delete req.session.loginErrorMsg;
-    }
-    //从session中获取上一次登录用户名
-    var last_login_user = req.session.last_login_user || '';
-    var obj = {
-        username: last_login_user,
-        loginErrorMsg: loginErrorMsg
+        //展示登录页面前先获取验证码
+        function getLoginCaptcha() {
+            DesktopLoginService.getLoginCaptcha(req, res, last_login_user).on('success', function(data) {
+                obj.captchaCode = data ? data.data : '';
+                renderHtml();
+            }).on('error', function(errorObj) {
+                renderHtml();
+            });
+        }
+
+        function renderHtml() {
+            var styleContent = global.__STYLE_COLLECTOR__;
+            //ketao上的登录页
+            let formHtml = ReactDOMServer.renderToString(LoginForm(obj));
+            let isCurtao = commonUtil.method.isCurtao(req);
+            //正式发版的curtao上，展示带注册的登录界面，
+            if (isCurtao) {
+                formHtml = ReactDOMServer.renderToString(LoginCurtaoForm(obj));
+            }
+            var phone = '400-677-0986';
+            var qq = '4006770986';
+            let backendIntl = new BackendIntl(req);
+            let hideLangQRcode = '';
+            if (global.config.lang && global.config.lang === 'es_VE') {
+                hideLangQRcode = 'true';
+            }
+            let custome_service_lang = loginLang || 'zh_CN';
+            custome_service_lang = custome_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
+            res.render('login/tpl/desktop-login', {
+                styleContent: styleContent,
+                loginForm: formHtml,
+                loginErrorMsg: obj.loginErrorMsg,
+                username: obj.username,
+                captchaCode: obj.captchaCode || '',
+                isFormal: global.config.isFormal,
+                company: backendIntl.get('company.name', '© 客套智能科技 鲁ICP备18038856号'),
+                hotline: backendIntl.get('companay.hotline', '服务热线: {phone}', {'phone': phone}),
+                contact: backendIntl.get('company.qq', '企业QQ: {qq}', {'qq': qq}),
+                siteID: global.config.siteID,
+                lang: loginLang,
+                custome_service_lang: custome_service_lang,
+                userid: obj.username,
+                hideLangQRcode: hideLangQRcode,
+                clientId: global.config.loginParams.clientId,
+                stopcheck: stopcheck,
+                useSso: global.config.useSso,
+                isCurtao: isCurtao,
+                timeStamp: global.config.timeStamp,
+                isBindWechat: isBindWechat//是否是绑定微信的界面
+            });
+        }
     };
-    //优先使用环境变量中设置的语言
-    const loginLang = global.config.lang || req.query.lang || '';
-    //session中存在stopcheck(使用ticket登录失败时，会加stopcheck参数)
-    // 或者请求路径中包含stopcheck(超时后刷新界面时，转页到登录界面会加stopcheck参数)
-    const stopcheck = req.session.stopcheck || req.query.stopcheck;
-    //将当前的语言环境存入session中
-    if (req.session) {
-        req.session.lang = loginLang;
-        req.session.save();
-    }
-    //非sso登录并且有用户名时，获取一次验证码
-    if (!global.config.useSso && last_login_user) {
-        getLoginCaptcha();
-    } else {
-        renderHtml();
-    }
-
-    //展示登录页面前先获取验证码
-    function getLoginCaptcha() {
-        DesktopLoginService.getLoginCaptcha(req, res, last_login_user).on('success', function(data) {
-            obj.captchaCode = data ? data.data : '';
-            renderHtml();
-        }).on('error', function(errorObj) {
-            renderHtml();
-        });
-    }
-
-    function renderHtml() {
-        var styleContent = global.__STYLE_COLLECTOR__;
-        //ketao上的登录页
-        let formHtml = ReactDOMServer.renderToString(LoginForm(obj));
-        let isCurtao = commonUtil.method.isCurtao(req);
-        //正式发版的curtao上，展示带注册的登录界面，
-        if (isCurtao) {
-            formHtml = ReactDOMServer.renderToString(LoginCurtaoForm(obj));
-        }
-        var phone = '400-677-0986';
-        var qq = '4006770986';
-        let backendIntl = new BackendIntl(req);
-        let hideLangQRcode = '';
-        if (global.config.lang && global.config.lang === 'es_VE') {
-            hideLangQRcode = 'true';
-        }
-        let custome_service_lang = loginLang || 'zh_CN';
-        custome_service_lang = custome_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
-        res.render('login/tpl/desktop-login', {
-            styleContent: styleContent,
-            loginForm: formHtml,
-            loginErrorMsg: obj.loginErrorMsg,
-            username: obj.username,
-            captchaCode: obj.captchaCode || '',
-            isFormal: global.config.isFormal,
-            company: backendIntl.get('company.name', '© 客套智能科技 鲁ICP备18038856号'),
-            hotline: backendIntl.get('companay.hotline', '服务热线: {phone}', {'phone': phone}),
-            contact: backendIntl.get('company.qq', '企业QQ: {qq}', {'qq': qq}),
-            siteID: global.config.siteID,
-            lang: loginLang,
-            custome_service_lang: custome_service_lang,
-            userid: obj.username,
-            hideLangQRcode: hideLangQRcode,
-            clientId: global.config.loginParams.clientId,
-            stopcheck: stopcheck,
-            useSso: global.config.useSso,
-            isCurtao: isCurtao,
-            timeStamp: global.config.timeStamp
-        });
-    }
+}
+//登录页的展示
+exports.showLoginPage = function(req, res) {
+    showLoginOrBindWechatPage(req, res)(true);
 };
-
+//绑定微信的页面展示
 exports.showWechatBindPage = function(req, res) {
-    var styleContent = global.__STYLE_COLLECTOR__;
-    let formHtml = ReactDOMServer.renderToString(WechatBindLoginForm());
-    const loginLang = global.config.lang || req.query.lang || '';
-    var loginErrorMsg = req.session.loginErrorMsg;
-    if (loginErrorMsg) {
-        delete req.session.loginErrorMsg;
-    }
-    res.render('login/tpl/wechat-bind-login', {
-        styleContent: styleContent,
-        loginErrorMsg: loginErrorMsg,
-        loginForm: formHtml,
-        siteID: global.config.siteID,
-        lang: loginLang,
-        timeStamp: global.config.timeStamp
-    });
+    showLoginOrBindWechatPage(req, res)(true);
 };
 
 /*
@@ -443,14 +436,17 @@ exports.loginWithWechatMiniprogram = function(req, res) {
         DesktopLoginService.loginWithWechatMiniprogram(req, res, code).on('success', function(result) {
             restLogger.info('小程序登录:' + JSON.stringify(result));
             let sessionKey = result.session_key;
-            let pc = new WXBizDataCrypt(appUtils.MINI_PROGRAM_APPID, sessionKey);
-            let data = pc.decryptData(encryptedData, iv);
-            restLogger.info('小程序转换后的对象:' + JSON.stringify(data));
-            let unionId = _.get(data, 'unionId');
-            if (unionId) {
-                restLogger.info('小程序获取unionId:' + unionId);
-                appCheckWechatIsBind(req, res, unionId);
-            } else {
+            try {
+                let pc = new WXBizDataCrypt(appUtils.MINI_PROGRAM_APPID, sessionKey);
+                let data = pc.decryptData(encryptedData, iv);
+                restLogger.info('小程序获取unionId:' + JSON.stringify(data));
+                let unionId = _.get(data, 'unionId');
+                if (unionId) {
+                    appCheckWechatIsBind(req, res, unionId);
+                } else {
+                    res.status(500).json('微信登录失败');
+                }
+            } catch (e) {//捕获pc.decryptData()方法中的'Illegal Buffer'异常
                 res.status(500).json('微信登录失败');
             }
         }).on('error', function(errorObj) {
@@ -486,12 +482,15 @@ exports.bindLoginWechat = function(req, res) {
 exports.bindLoginWechatMiniprogram = function(req, res) {
     let unionId = req.session.union_id;
     if (unionId) {
+        restLogger.info('小程序绑定登录unionId：' + unionId);
+        restLogger.info('小程序绑定登录body：' + JSON.stringify(req.body));
         var username = req.body.username;
         var password = req.body.password;
         //记录上一次登录用户名，到session中
         username = username.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
         DesktopLoginService.login(req, res, username, password)
             .on('success', function(data) {
+                restLogger.info('小程序绑定登录成功后，绑定微信');
                 DesktopLoginService.bindWechat(req, res, unionId)
                     .on('success', function(result) {
                         //绑定成功后将登录后的数据返回到小程序
@@ -521,12 +520,16 @@ exports.registerLoginWechat = function(req, res) {
 exports.registerLoginWechatMiniprogram = function(req, res) {
     let unionId = req.session.union_id;
     if (unionId) {
+        restLogger.info('小程序注册登录unionId：' + unionId);
+        restLogger.info('小程序注册登录body：' + JSON.stringify(req.body));
         DesktopLoginService.registBindWechatLogin(req, res, {user_name: req.body.user_name, union_id: unionId})
             .on('success', wechatLoginSuccess(req, res))
             .on('error', function(errorObj) {
+                restLogger.info('小程序注册登录失败：' + JSON.stringify(errorObj));
                 res.status(500).json(errorObj && errorObj.message);
             });
     } else {
+        restLogger.info('小程序注册登录未取到union_id');
         res.status(500).json('注册登录失败');
     }
 };

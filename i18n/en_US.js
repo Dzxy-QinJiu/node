@@ -298,6 +298,8 @@ var en_US = {
     'register.phone.code': 'SMS verification code',//短信验证码
     'register.company.nickname': 'Company nickname',//公司名称
     'register.code.validate.expire': 'SMS verification code has expired',//短信验证码已过期
+    'register.wechat.bind.user': 'Bind existing accounts',//绑定已有账号
+    'register.wechat.register.bind': 'Registration of new accounts',//注册新账号
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
