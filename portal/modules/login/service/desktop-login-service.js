@@ -471,6 +471,9 @@ exports.wechatLoginByUnionId = function(req, res, unionId) {
                 open_id: unionId,
                 platform: 'wechat'
             }
+        }, null, {
+            success: loginSuccess,
+            timeout: loginTimeout
         });
 };
 
@@ -544,6 +547,9 @@ exports.registBindWechatLogin = function(req, res, formObj) {
             req: req,
             res: res,
             form: formData
+        }, null, {
+            success: loginSuccess,
+            timeout: loginTimeout
         });
 };
 

@@ -623,6 +623,7 @@ function wechatLoginSuccess(req, res) {
                     'user_id': data.user_id,
                     'user_name': data.user_name
                 };
+                restLogger.info('微信登录成功后access_token：' + req.session['_USER_TOKEN_']);
                 //登录成功后的处理
                 res.status(200).json(result);
             }
