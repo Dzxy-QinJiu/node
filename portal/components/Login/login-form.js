@@ -281,9 +281,9 @@ class LoginForm extends React.Component {
                     <button className={loginButtonClassName} type={this.state.loginButtonDisabled ? 'button' : 'submit'}
                         tabIndex="3"
                         disabled={this.state.loginButtonDisabled}
-                        data-tracename="点击登录"
+                        data-tracename={this.props.isBindWechat ? '点击绑定' : '点击登录'}
                     >
-                        {hasWindow ? Intl.get('login.login', '登录') : null}
+                        {hasWindow ? this.props.isBindWechat ? Intl.get('login') : Intl.get('login.login', '登录') : null}
                         {this.state.logining ? <Icon type="loading"/> : null}
                     </button>
 

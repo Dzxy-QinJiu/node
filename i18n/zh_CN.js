@@ -306,6 +306,8 @@ var zh_CN = {
     'register.code.validate.expire': '短信验证码已过期',
     'register.wechat.bind.user': '绑定已有账号',
     'register.wechat.register.bind': '注册新账号',
+    'register.wechat.bind.btn': '立即绑定',
+    'register.wechat.register.btn': '注册并登录',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
@@ -2561,5 +2563,6 @@ var zh_CN = {
     'sales.opportunity.process.config.list': '获取流程节点失败',
     'common.the.month.total': '本月合计',
     'my.app.app.secret.key': '密钥',
+    'user.wechat.unbind': '解绑微信',
 };
 export default zh_CN;

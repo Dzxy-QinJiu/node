@@ -332,9 +332,26 @@ class UserInfo extends React.Component{
                             {this.renderRealm()}
                         </div>
                     ) : null}
+
+                    {<a onClick={this.unbindWechat.bind(this)} data-tracename="解绑微信">
+                        {Intl.get('user.wechat.unbind','解绑微信')}
+                    </a>}
                 </div>
             );
         }
+    }
+    unbindWechat(){
+        $.ajax({
+            url: '/wechat/unbind',
+            dataType: 'json',
+            type: 'post',
+            success: function(a) {
+                console.log('解绑成功');
+            },
+            error: function(errorMsg) {
+                console.log(errorMsg.responseJSON);
+            }
+        });
     }
     render() {
         const {getFieldDecorator} = this.props.form;

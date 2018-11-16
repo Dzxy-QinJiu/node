@@ -48,6 +48,8 @@ var urls = {
     bindWechatUrl: '/auth2/authc/social/binding',
     //注册新用户绑定微信号并登录
     registBindWechatLoginUrl: '/auth2/authc/social/register',
+    //解绑微信
+    unbindWechatUrl: '/auth2/authc/social/unbind',
 
 };
 //验证码的高和宽
@@ -562,6 +564,18 @@ exports.bindWechat = function(req, res, unionId) {
             res: res,
             form: {
                 open_id: unionId,
+                platform: 'wechat'
+            }
+        });
+};
+//解绑微信
+exports.unbindWechat = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: urls.unbindWechatUrl,
+            req: req,
+            res: res,
+            form: {
                 platform: 'wechat'
             }
         });

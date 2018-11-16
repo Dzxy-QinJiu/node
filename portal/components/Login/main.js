@@ -226,7 +226,7 @@ class LoginMain extends React.Component {
 
     renderBindWechatBlock(hasWindow) {
         return (
-            <Tabs activeKey={this.state.activeKey} onChange={this.handleTabChange.bind(this)}>
+            <Tabs activeKey={this.state.bindWechatActiveKey} onChange={this.handleTabChange.bind(this)}>
                 <TabPane tab={Intl.get('register.wechat.bind.user', '绑定已有账号')} key={BIND_WECHAT_TAB_KEYS.BIND_USER}>
                     <div className="form-wrap">
                         {this.state.bindWechatActiveKey === BIND_WECHAT_TAB_KEYS.BIND_USER ? (
@@ -293,7 +293,7 @@ class LoginMain extends React.Component {
                             <div className="scan-ketao-qrcode-download-tip">
                                 {Intl.get('scan.ketao.qrcode.download.tip', '扫码下载客套APP安卓端')}
                             </div>
-                        </div>) : (hasWindow ? this.state.isBindWechat ? this.renderBindWechatBlock() : (
+                        </div>) : (hasWindow ? this.state.isBindWechat ? this.renderBindWechatBlock(hasWindow) : (
                         <Tabs activeKey={this.state.loginActiveKey} onChange={this.handleTabChange.bind(this)}>
                             <TabPane tab={Intl.get('login.account.login', '账号登录')} key="2">
                                 <div className="form-wrap">

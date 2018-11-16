@@ -151,5 +151,12 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
+    },{//解绑微信
+        'method': 'post',
+        'path': '/wechat/unbind',
+        'handler': 'unbindWechat',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

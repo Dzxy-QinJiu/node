@@ -2546,6 +2546,7 @@ var en_US = {
     'sales.opportunity.assign.department.owner': 'Please select the department head to be assigned',//请选择要分配的部门主管
     'sales.opportunity.process.config.list': 'Failed to get process node',//获取流程节点失败
     'common.the.month.total': 'the month total',//本月合计
-    'my.app.app.secret.key': 'Secret key'//密钥
+    'my.app.app.secret.key': 'Secret key',//密钥
+    'user.wechat.unbind': 'Unbind WeChat'//解绑微信
 };
 export default en_US;

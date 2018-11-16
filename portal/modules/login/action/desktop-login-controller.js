@@ -113,7 +113,7 @@ function showLoginOrBindWechatPage(req, res) {
 }
 //登录页的展示
 exports.showLoginPage = function(req, res) {
-    showLoginOrBindWechatPage(req, res)(true);
+    showLoginOrBindWechatPage(req, res)();
 };
 //绑定微信的页面展示
 exports.showWechatBindPage = function(req, res) {
@@ -543,6 +543,16 @@ exports.registerLoginWechatMiniprogram = function(req, res) {
         res.status(500).json('注册登录失败');
     }
 };
+//解绑微信
+exports.unbindWechat = function(req, res) {
+    DesktopLoginService.unbindWechat(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(errorObj) {
+            res.status(500).json(errorObj && errorObj.message);
+        });
+};
+
 //web检查微信是否已绑定客套账号
 function checkWechatIsBind(req, res, unionId) {
     DesktopLoginService.checkWechatIsBind(req, res, unionId).on('success', function(data) {
