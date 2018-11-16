@@ -507,8 +507,8 @@ exports.bindLoginWechatMiniprogram = function(req, res) {
                     }).on('error', function(errorObj) {
                         res.status(500).json(errorObj && errorObj.message);
                     });
-                }).on('error', wechatAppLoginError(req, res));
-            });
+                });
+            }).on('error', wechatAppLoginError(req, res));
     } else {
         res.status(500).json('绑定登录失败');
     }
