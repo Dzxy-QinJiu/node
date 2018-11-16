@@ -490,15 +490,21 @@ exports.bindLoginWechatMiniprogram = function(req, res) {
         username = username.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
         DesktopLoginService.login(req, res, username, password)
             .on('success', function(data) {
-                restLogger.info('小程序绑定登录成功后，绑定微信');
-                DesktopLoginService.bindWechat(req, res, unionId)
-                    .on('success', function(result) {
-                        //绑定成功后将登录后的数据返回到小程序
-                        wechatLoginSuccess(req, res)(data);
-                    }).on('error', function(errorObj) {
-                        res.status(500).json(errorObj && errorObj.message);
-                    });
-            }).on('error', wechatAppLoginError(req, res));
+                restLogger.info('小程序绑定已有用户，登录成功');
+                modifySessionData(req, data);
+                //设置sessionStore，如果是内存session时，需要从req中获取
+                global.config.sessionStore = global.config.sessionStore || req.sessionStore;
+                req.session.save(function() {
+                    restLogger.info('小程序绑定已有用户，user_token已存到session中，发绑定的请求');
+                    DesktopLoginService.bindWechat(req, res, unionId)
+                        .on('success', function(result) {
+                            //绑定成功后将登录后的数据返回到小程序
+                            wechatLoginSuccess(req, res)(data);
+                        }).on('error', function(errorObj) {
+                            res.status(500).json(errorObj && errorObj.message);
+                        });
+                }).on('error', wechatAppLoginError(req, res));
+            });
     } else {
         res.status(500).json('绑定登录失败');
     }
