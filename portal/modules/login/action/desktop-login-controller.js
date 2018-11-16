@@ -21,6 +21,7 @@ const commonUtil = require('../../../lib/utils/common-utils');
 let restLogger = require('../../../lib/utils/logger').getLogger('rest');
 let appUtils = require('../util/appUtils');
 let WXBizDataCrypt = require('../lib/WXBizDataCrypt');
+const _ = require('lodash');
 
 /**
  * 首页
