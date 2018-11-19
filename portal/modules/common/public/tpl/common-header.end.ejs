@@ -4,6 +4,7 @@
     function sendMessage(message) {
         var loggerUrl = "/js/logger";
         if (message) {
+            message += ",user=<%= userid %>";
             new Image().src = loggerUrl + "?message=" + encodeURIComponent(message);
         }
     }
