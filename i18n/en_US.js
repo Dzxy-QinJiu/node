@@ -1244,7 +1244,7 @@ var en_US = {
     'crm.order.more.customer': 'Multi-order customers',//多个订单的客户
     'crm.available.customer': 'Available customers',//有效客户
     'crm.call.no.remark': 'Final contact but no record',//最后联系但未写跟进记录
-    'crm.call.no.remark.over': 'No follow-up records in the past {day} days',//近{day}天未写跟进记录
+    'crm.call.no.remark.over': 'No follow-up records over {day} days',//超{day}天未写跟进记录
     'crm.last.contact': 'Final contact',//最后联系
     'crm.qualified.roll.out': 'Transfer out',//转出
     'crm.contact.name.department': 'Contact name or department is required',//联系人姓名和部门必填一项

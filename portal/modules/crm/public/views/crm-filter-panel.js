@@ -38,13 +38,13 @@ const otherFilterArray = [{
     name: Intl.get('crm.call.no.remark', '最后联系但未写跟进记录'),
     value: 'last_call_no_record'
 }, {
-    name: Intl.get('crm.call.no.remark.over', '近{day}天未写跟进记录', {day: 30}),
+    name: Intl.get('crm.call.no.remark.over', '超{day}天未写跟进记录', {day: 30}),
     value: 'thirty_no_last_trace'
 }, {
-    name: Intl.get('crm.call.no.remark.over', '近{day}天未写跟进记录', {day: 15}),
+    name: Intl.get('crm.call.no.remark.over', '超{day}天未写跟进记录', {day: 15}),
     value: 'fifteen_no_last_trace'
 }, {
-    name: Intl.get('crm.call.no.remark.over', '近{day}天未写跟进记录', {day: 7}),
+    name: Intl.get('crm.call.no.remark.over', '超{day}天未写跟进记录', {day: 7}),
     value: 'seven_no_last_trace'
 }, {
     name: Intl.get('crm.concerned.customer', '被关注的客户'),
