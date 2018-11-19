@@ -765,13 +765,13 @@ class Crm extends React.Component {
             case OTHER_FILTER_ITEMS.LAST_CALL_NO_RECORD://最后联系但未写跟进记录的客户
                 condition.call_and_remark = '1';
                 break;
-            case OTHER_FILTER_ITEMS.THIRTY_NO_LAST_TRACE://近30天未写跟进记录的客户
+            case OTHER_FILTER_ITEMS.THIRTY_NO_LAST_TRACE://超30天未写跟进记录的客户
                 dayTimeNoTrace = DAY_TIME.THIRTY_DAY;
                 break;
-            case OTHER_FILTER_ITEMS.FIFTEEN_NO_LAST_TRACE://近15天未写跟进记录的客户
+            case OTHER_FILTER_ITEMS.FIFTEEN_NO_LAST_TRACE://超15天未写跟进记录的客户
                 dayTimeNoTrace = DAY_TIME.FIFTEEN_DAY;
                 break;
-            case OTHER_FILTER_ITEMS.SEVEN_NO_LAST_TRACE://近7天未写跟进记录的客户
+            case OTHER_FILTER_ITEMS.SEVEN_NO_LAST_TRACE://超7天未写跟进记录的客户
                 dayTimeNoTrace = DAY_TIME.SEVEN_DAY;
                 break;
             case OTHER_FILTER_ITEMS.UNDISTRIBUTED://未分配销售的客户
@@ -840,7 +840,7 @@ class Crm extends React.Component {
                 name: 'last_login_time',
                 type: 'time'
             };
-        } else if (dayTimeNoTrace){//近xxx天未写跟进记录的客户过滤参数
+        } else if (dayTimeNoTrace){//超xxx天未写跟进记录的客户过滤参数
             this.state.rangParams[0] = {
                 to: moment().valueOf() - dayTimeNoTrace,
                 name: 'last_customer_trace_time',
