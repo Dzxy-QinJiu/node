@@ -129,9 +129,10 @@ function removeEmptyArrayEle(arr) {
 }
 //设置当前要查看详情的申请
 weeklyReportStore.prototype.changeSearchInputValue = function(value) {
+    value = _.trim(value);
     this.searchKeyword = value;
     //把搜索的关键词按空格进行分割
-    var keyWordArr = value.trim().split(' ');
+    var keyWordArr = value.split(' ');
     //去除查询条件中值为空的项
     removeEmptyArrayEle(keyWordArr);
     this.teamDescArr = _.filter(this.initialTeamDescArr, (teamItem) => {

@@ -100,10 +100,10 @@ class UserForm extends React.Component {
                 //所有者各项唯一性验证均不存在且没有出错再添加
                 var user = _.extend({}, values);
                 if (user.phone) {
-                    user.phone = $.trim(user.phone);
+                    user.phone = _.trim(user.phone);
                 }
                 if (user.email) {
-                    user.email = $.trim(user.email);
+                    user.email = _.trim(user.email);
                 }
                 if (user.email !== this.props.user.email) {
                     //修改邮箱后，邮箱的激活状态改为未激活
@@ -124,7 +124,7 @@ class UserForm extends React.Component {
     getPhoneInputValidateRules = () => {
         return [{
             validator: (rule, value, callback) => {
-                value = $.trim(value);
+                value = _.trim(value);
                 if (value) {
                     UserFormAction.checkOnlyPhone(value, data => {
                         if (_.isString(data)) {
@@ -179,7 +179,7 @@ class UserForm extends React.Component {
         if (this.state.userNameExist || this.state.userNameError) {
             UserFormAction.resetUserNameFlags();
         }
-        value = $.trim(value);
+        value = _.trim(value);
         if (value) {
             if (!(/^[A-Za-z0-9]\w+$/).test(value)) {
                 callback(new Error(Intl.get('member.check.member.name', '请输入数字、字母或下划线，首字母不能是下划线')));
@@ -193,7 +193,7 @@ class UserForm extends React.Component {
 
     //邮箱唯一性验证
     checkOnlyEmail = (e) => {
-        let email = $.trim(this.props.form.getFieldValue('email'));
+        let email = _.trim(this.props.form.getFieldValue('email'));
         if (email && email !== this.props.user.email.value && emailRegex.test(email)) {
             //所有者的邮箱唯一性验证
             UserFormAction.checkOnlyEmail(email);
@@ -206,7 +206,7 @@ class UserForm extends React.Component {
 
     //验证所有者用户名的唯一性
     checkOnlyUserName = () => {
-        var userName = $.trim(this.props.form.getFieldValue('userName'));
+        var userName = _.trim(this.props.form.getFieldValue('userName'));
         if (userName && (/^[A-Za-z0-9]\w+$/).test(userName)) {
             UserFormAction.checkOnlyUserName(userName);
         } else {

@@ -29,7 +29,7 @@ const CONTACT_WAY_LABEL = {
 class DynamicAddDelContacts extends React.Component {
 
     checkQQ = (rule, value, callback) => {
-        value = $.trim(value);
+        value = _.trim(value);
         if (value) {
             if (qqRegex.test(value)) {
                 callback();
@@ -42,7 +42,7 @@ class DynamicAddDelContacts extends React.Component {
     }
 
     checkEmail = (rule, value, callback) => {
-        value = $.trim(value);
+        value = _.trim(value);
         if (value) {
             if (emailRegex.test(value)) {
                 callback();

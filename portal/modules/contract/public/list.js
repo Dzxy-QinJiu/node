@@ -191,7 +191,7 @@ class List extends React.Component {
             value = moment(value).valueOf();
         } else {
             //此时value为一个事件对象
-            value = value.target.value.trim();
+            value = _.trim(value.target.value);
         }
 
         if (value) {

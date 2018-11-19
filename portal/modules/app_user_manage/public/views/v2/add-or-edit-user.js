@@ -263,27 +263,27 @@ const AddOrEditUser = createReactClass({
         //formData
         const formData = this.state.formData;
         //用户名
-        result.user_name = $.trim(formData.user_name);
+        result.user_name = _.trim(formData.user_name);
         // 按添加的用户，生成用户名
-        result.force = $.trim(formData.user_name);
+        result.force = _.trim(formData.user_name);
         //个数
         result.number = formData.count_number + '';
         //客户
         result.customer = formData.customer_id || '';
         //备注
-        result.description = $.trim(formData.description) || '';
+        result.description = _.trim(formData.description) || '';
         //组织
         result.group_id = this.state.organization || '';
         if (result.number === '1') {
-            var nick_name = $.trim(formData.nick_name);
+            var nick_name = _.trim(formData.nick_name);
             if (nick_name) {
                 result.nick_name = nick_name;
             }
-            var phone = $.trim(formData.phone);
+            var phone = _.trim(formData.phone);
             if (phone) {
                 result.phone = phone;
             }
-            var email = $.trim(formData.email);
+            var email = _.trim(formData.email);
             if (email) {
                 result.email = email;
             }
@@ -409,7 +409,7 @@ const AddOrEditUser = createReactClass({
             clearTimeout(_this.restFieldTimeoutMap[field]);
             var lastAjax = _this.restFieldAjaxMap[field];
             lastAjax && lastAjax.abort();
-            var trimValue = $.trim(value);
+            var trimValue = _.trim(value);
             if (!trimValue) {
                 callback();
                 return;
@@ -442,7 +442,7 @@ const AddOrEditUser = createReactClass({
 
     // 校验用户名的合法性
     checkUserValid(rule, value, callback){
-        var trimValue = $.trim(value);
+        var trimValue = _.trim(value);
         // 用户名的不合法时的信息提示
         UserNameTextFieldUtil.validatorMessageTips(trimValue, callback);
     },

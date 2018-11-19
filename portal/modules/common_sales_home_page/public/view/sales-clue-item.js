@@ -109,7 +109,7 @@ class SalesClueItem extends React.Component {
             }, timeout);
         }
         //获取填写的保存跟进记录的内容
-        var textareVal = $.trim(this.state.submitContent);
+        var textareVal = _.trim(this.state.submitContent);
         if (!textareVal) {
             this.setState({
                 submitTraceErrMsg: Intl.get('cluecustomer.content.not.empty', '跟进内容不能为空')

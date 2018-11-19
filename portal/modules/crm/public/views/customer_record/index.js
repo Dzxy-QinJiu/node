@@ -267,7 +267,7 @@ class CustomerRecord extends React.Component {
         if (this.state.saveButtonType === 'add') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加跟进内容');
             //输入框中的内容
-            var addcontent = $.trim(_.get(this.state, 'inputContent.value'));
+            var addcontent = _.trim(_.get(this.state, 'inputContent.value'));
             var queryObj = {
                 customer_id: customerId,
                 type: this.state.selectedtracetype,
@@ -280,7 +280,7 @@ class CustomerRecord extends React.Component {
             // $('.add-content-input').focus();
         } else {
             //补充跟进记录的内容
-            var detail = $.trim(_.get(this.state, 'detailContent.value'));
+            var detail = _.trim(_.get(this.state, 'detailContent.value'));
             var item = this.state.edittingItem;
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加补充的跟进内容');
             var queryObj = {
@@ -327,7 +327,7 @@ class CustomerRecord extends React.Component {
         if (item.id) {
             Trace.traceEvent(ReactDOM.findDOMNode(this), '添加补充的跟进内容');
             //点击补充客户跟踪记录编辑状态下的保存按钮
-            var detail = $.trim(_.get(this.state, 'detailContent.value'));
+            var detail = _.trim(_.get(this.state, 'detailContent.value'));
             if (detail) {
                 CustomerRecordActions.setModalDialogFlag(true);
                 CustomerRecordActions.changeAddButtonType('update');
@@ -338,7 +338,7 @@ class CustomerRecord extends React.Component {
         } else {
             Trace.traceEvent(ReactDOM.findDOMNode(this), '保存添加跟进内容');
             //点击顶部输入框下的保存按钮
-            var addcontent = $.trim(_.get(this.state, 'inputContent.value'));
+            var addcontent = _.trim(_.get(this.state, 'inputContent.value'));
             if (addcontent) {
                 CustomerRecordActions.setModalDialogFlag(true);
                 CustomerRecordActions.changeAddButtonType('add');
@@ -843,7 +843,7 @@ class CustomerRecord extends React.Component {
         //addTrace 顶部增加记录的teaxare框
         //下部时间线列表
         var modalContent = Intl.get('customer.confirm.trace', '是否添加此跟进内容？');
-        var closedModalTip = $.trim(_.get(this.state, 'detailContent.value')) ? '取消补充跟进内容' : '取消添加跟进内容';
+        var closedModalTip = _.trim(_.get(this.state, 'detailContent.value')) ? '取消补充跟进内容' : '取消添加跟进内容';
         //是否是在跟进记录下没有数据
         let isRecordTabNoData = !_.get(this.state, 'customerRecord[0]') && !this.state.customerRecordLoading && !this.props.isOverViewPanel;
         return (

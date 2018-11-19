@@ -153,7 +153,7 @@ class AddSalesOpportunityApply extends React.Component {
         });
     };
     checkCustomerName = (rule, value, callback) => {
-        value = $.trim(_.get(this.state, 'formData.customer.id'));
+        value = _.trim(_.get(this.state, 'formData.customer.id'));
         if (!value && !this.state.hideCustomerRequiredTip) {
             callback(new Error(Intl.get('leave.apply.select.customer', '请先选择客户')));
         } else {

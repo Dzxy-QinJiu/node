@@ -75,7 +75,7 @@ class FilterSearch extends React.Component {
         // filterEmitter.emit(filterEmitter.CLEAR_FILTERS + this.props.key);
     }
     handleNameChange(e) {
-        const value = $.trim(e.target.value);
+        const value = _.trim(e.target.value);
         this.setState({
             filterName: value
         });
@@ -121,7 +121,7 @@ class FilterSearch extends React.Component {
                 filterList: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
             }).then(({data}) => {
                 if (!data && data.errorMsg) {                    
-                    message.error(err.message || Intl.get('common.save.failed', '保存失败'))
+                    message.error(err.message || Intl.get('common.save.failed', '保存失败'));
                 }
                 else {
                     filterEmitter.emit(filterEmitter.ADD_COMMON + this.props.key, {
@@ -132,9 +132,9 @@ class FilterSearch extends React.Component {
                         data: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
                     });
                 }
-           }).catch(err=> {
-               message.error(err.message || Intl.get('common.save.failed', '保存失败'))
-           });
+            }).catch(err => {
+                message.error(err.message || Intl.get('common.save.failed', '保存失败'));
+            });
         }
         else {
             filterEmitter.emit(filterEmitter.ADD_COMMON + this.props.key, {               
@@ -224,7 +224,7 @@ class FilterSearch extends React.Component {
                                             }
                                             <Button type="primary"
                                                 loading={this.props.submitting}
-                                                disabled={!$.trim(this.state.filterName) || this.props.submitting}
+                                                disabled={!_.trim(this.state.filterName) || this.props.submitting}
                                                 onClick={this.handleSubmit.bind(this)}>{Intl.get('common.sure', '确定')}</Button>
                                             <Button
                                                 onClick={this.showAddZone.bind(this, false)}

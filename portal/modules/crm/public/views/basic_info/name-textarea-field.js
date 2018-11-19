@@ -77,7 +77,7 @@ let NameTextareaField = createReactClass({
             let submitData = {
                 id: this.state.customerId,
                 type: 'name',
-                name: $.trim(this.state.formData.name)
+                name: _.trim(this.state.formData.name)
             };
             if (this.props.isMerge) {
                 if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(submitData);
@@ -117,7 +117,7 @@ let NameTextareaField = createReactClass({
 
     //客户名格式验证
     checkCustomerName: function(rule, value, callback) {
-        value = $.trim(value);
+        value = _.trim(value);
         if (value) {
             if (nameRegex.test(value)) {
                 callback();
@@ -133,7 +133,7 @@ let NameTextareaField = createReactClass({
 
     //客户名唯一性验证
     checkOnlyCustomerName: function(e) {
-        var customerName = $.trim(this.state.formData.name);
+        var customerName = _.trim(this.state.formData.name);
         //满足验证条件后再进行唯一性验证
         if (customerName && customerName !== this.props.name && nameRegex.test(customerName)) {
             Trace.traceEvent(e, '修改客户名');

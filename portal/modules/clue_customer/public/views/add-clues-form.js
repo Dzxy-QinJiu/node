@@ -202,7 +202,7 @@ class ClueAddForm extends React.Component {
     };
     //验证客户名是否重复
     checkOnlyClueCustomerName = () => {
-        let customerName = $.trim(this.props.form.getFieldValue('name'));
+        let customerName = _.trim(this.props.form.getFieldValue('name'));
         //满足验证条件后再进行唯一性验证
         if (customerName && nameRegex.test(customerName)) {
             clueCustomerAction.checkOnlyClueName(customerName, (data) => {

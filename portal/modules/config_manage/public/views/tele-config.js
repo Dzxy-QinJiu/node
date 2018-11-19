@@ -68,7 +68,7 @@ class TeleConfig extends React.Component {
         this.setState({
             isAdding: true
         });
-        var addTeleItem = $.trim(inputValue);
+        var addTeleItem = _.trim(inputValue);
         Trace.traceEvent(event,'添加客服电话');
         TeleConfigAjax.addTele({ phone: addTeleItem }).then((result) => {
             this.state.telesList.unshift(addTeleItem);

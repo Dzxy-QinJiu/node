@@ -102,7 +102,7 @@ class CustomerStageManage extends React.Component {
         Trace.traceEvent(e, '点击添加客户阶段按钮');
         e.preventDefault();
         //输入的阶段名称去左右空格
-        let stage = $.trim(this.refs.addStage.value);
+        let stage = _.trim(this.refs.addStage.value);
         if (!stage) {
             return;
         }

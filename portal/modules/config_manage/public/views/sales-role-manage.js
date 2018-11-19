@@ -128,7 +128,7 @@ class SalesRoleManage extends React.Component {
         Trace.traceEvent(e, '点击添加销售角色按钮');
         e.preventDefault();
         //输入的销售角色名称去左右空格
-        let role = $.trim(this.refs.addSalesRole.value);
+        let role = _.trim(this.refs.addSalesRole.value);
         if (role) {
             //看列表中是否有和输入的名称一样的名字
             var targetItem = _.find(this.state.salesRoleList, item => item.name === role);

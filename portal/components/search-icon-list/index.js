@@ -119,7 +119,7 @@ class SearchIconList extends React.Component {
         this.setState({onlyShowSelected});
     }
     searchInputChange(keyword) {
-        keyword = keyword ? keyword.trim() : '';
+        keyword = _.trim(keyword);
         const totalList = this.getSearchResult({keyword});
         this.setState({totalList,keyword});
     }

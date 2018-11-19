@@ -46,7 +46,7 @@ class IpConfig extends React.Component {
         });
         event.preventDefault();
         $('#addIpConfigSaveBtn').attr('disabled', 'disabled');
-        var addIpItem = $.trim(this.refs.addIpItem.value );
+        var addIpItem = _.trim(this.refs.addIpItem.value);
         IpConfigAjax.addIpConfigItem(addIpItem).then((result) => {
             this.setState({
                 isLoading: false

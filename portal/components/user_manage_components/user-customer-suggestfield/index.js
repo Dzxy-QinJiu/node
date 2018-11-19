@@ -8,7 +8,7 @@ const UserCustomerSuggestField = {
     //获取“所属客户”输入框中的内容
     getCustomerInputValue() {
         var $search_input = $('.ant-select-search__field',this.refs.customer_searchbox);
-        return $.trim($search_input.val());
+        return _.trim($search_input.val());
     },
     renderUserCustomerSuggestBlock() {
         return (

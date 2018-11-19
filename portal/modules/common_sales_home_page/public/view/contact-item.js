@@ -65,7 +65,7 @@ class ContactItem extends React.Component {
                 {this.props.showContactLabel ?
                     <div className="pull-left contact-label">{Intl.get('call.record.contacts', '联系人')}:</div> : null}
                 {_.map(contactDetail, (contactItem, idx) => {
-                    var contactName = $.trim(contactItem.name) || '';
+                    var contactName = _.trim(contactItem.name) || '';
                     var cls = classNames({
                         'contact-name': contactName
                     });

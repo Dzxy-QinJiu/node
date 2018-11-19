@@ -246,7 +246,7 @@ class LeftTree extends React.Component {
 
     //搜索团队的事件处理
     searchEvent = (searchContent) => {
-        searchContent = searchContent ? searchContent.trim() : '';
+        searchContent = _.trim(searchContent);
         if (searchContent) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.sales-team-root-add .search-input-container input'),'跟据团队名称搜索团队');
             //搜索内容的设置

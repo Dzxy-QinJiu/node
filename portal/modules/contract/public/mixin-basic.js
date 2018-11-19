@@ -60,7 +60,7 @@ export default {
     },
     //输入客户名
     enterCustomer: function(field, e) {
-        const value = e.target.value.trim();
+        const value = _.trim(e.target.value);
 
         this.state.formData[field] = value;
         //复制到甲方
@@ -601,7 +601,7 @@ export default {
     },
     //检查合同号是否已存在
     checkNumExist: function(rule, value, callback) {
-        value = value ? value.trim() : '';
+        value = _.trim(value);
 
         if (!value) {
             callback();

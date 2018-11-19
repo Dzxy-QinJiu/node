@@ -212,7 +212,7 @@ var CrmBatchChange = createReactClass({
     addTag: function(e) {
         if (e.keyCode !== 13) return;
 
-        const tag = e.target.value.trim();
+        const tag = _.trim(e.target.value);
         if (!tag) return;
         //”线索“、”转出“标签，不可以添加
         if (isClueTag(tag) || isTurnOutTag(tag)) {

@@ -102,8 +102,8 @@ exports.getParamByPrivilege = function() {
 };
 //是否通过两项必填一项的验证
 exports.validateRequiredOne = function(item1, item2) {
-    item1 = $.trim(item1);
-    item2 = $.trim(item2);
+    item1 = _.trim(item1);
+    item2 = _.trim(item2);
     if (item1 || item2) {
         //通过必填一项的验证
         return true;
@@ -205,7 +205,7 @@ exports.getErrorTipAndRetryFunction = function(errTip, callback) {
 //去掉数组中元素的回车和空格,然后对数组进行去重
 exports.removeSpacesAndEnter = function(dataArr) {
     dataArr.forEach((item, index) => {
-        dataArr[index] = $.trim(item.replace(/[\r\n]/g, ''));
+        dataArr[index] = _.trim(item.replace(/[\r\n]/g, ''));
     });
     return _.uniq(dataArr);
 };
