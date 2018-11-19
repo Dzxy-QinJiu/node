@@ -246,15 +246,7 @@ class LoginForm extends React.Component {
 
         return (
             <div>
-                <button className={loginButtonClassName} onClick={this.loginWithWeixin}
-                    tabIndex="3"
-                    disabled={this.state.loginButtonDisabled}
-                    data-tracename="微信登录"
-                >
-                    {hasWindow ? '微信登录' : null}
-                    {this.state.logining ? <Icon type="loading"/> : null}
-                </button>
-                <form action="/login" method="post" onSubmit={this.beforeSubmit} autoComplete="off">
+                <form action={this.state.isBindWechat ? '/bind/login/wechat' : '/login'} method="post" onSubmit={this.beforeSubmit} autoComplete="off">
                     <div className="input-area">
                         <div className="input-item">
                             <input
@@ -281,12 +273,20 @@ class LoginForm extends React.Component {
                     <button className={loginButtonClassName} type={this.state.loginButtonDisabled ? 'button' : 'submit'}
                         tabIndex="3"
                         disabled={this.state.loginButtonDisabled}
-                        data-tracename={this.props.isBindWechat ? '点击绑定' : '点击登录'}
+                        data-tracename={this.state.isBindWechat ? '点击立即绑定' : '点击登录'}
                     >
-                        {hasWindow ? this.props.isBindWechat ? Intl.get('login') : Intl.get('login.login', '登录') : null}
+                        {hasWindow ? this.state.isBindWechat ? Intl.get('register.wechat.bind.btn', '立即绑定') : Intl.get('login.login', '登录') : null}
                         {this.state.logining ? <Icon type="loading"/> : null}
                     </button>
-
+                    {this.state.isBindWechat ? null : (
+                        <button className={loginButtonClassName} onClick={this.loginWithWeixin}
+                            tabIndex="3"
+                            disabled={this.state.loginButtonDisabled}
+                            data-tracename="微信登录"
+                        >
+                            {hasWindow ? '微信登录' : null}
+                            {this.state.logining ? <Icon type="loading"/> : null}
+                        </button>)}
                 </form>
             </div>
         );

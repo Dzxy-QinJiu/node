@@ -35,11 +35,17 @@ function showLoginOrBindWechatPage(req, res) {
         if (loginErrorMsg) {
             delete req.session.loginErrorMsg;
         }
+        //用于记录微信注册新账号的错误，已便展示到注册新账号tab下
+        let isWechatRegisterError = req.session.isWechatRegisterError;
+        if(isWechatRegisterError){
+            delete req.session.isWechatRegisterError;
+        }
         //从session中获取上一次登录用户名
         var last_login_user = req.session.last_login_user || '';
         var obj = {
             username: last_login_user,
-            loginErrorMsg: loginErrorMsg
+            loginErrorMsg: loginErrorMsg,
+            isWechatRegisterError: isWechatRegisterError,
         };
         //优先使用环境变量中设置的语言
         const loginLang = global.config.lang || req.query.lang || '';
@@ -106,7 +112,8 @@ function showLoginOrBindWechatPage(req, res) {
                 useSso: global.config.useSso,
                 isCurtao: isCurtao,
                 timeStamp: global.config.timeStamp,
-                isBindWechat: isBindWechat//是否是绑定微信的界面
+                isBindWechat: isBindWechat,//是否是绑定微信的界面
+                isWechatRegisterError: obj.isWechatRegisterError,//是否是微信注册新账号界面报的错
             });
         }
     };
@@ -462,9 +469,10 @@ exports.bindLoginWechat = function(req, res) {
     if (unionId) {
         var username = req.body.username;
         var password = req.body.password;
+        var captcha = req.body.retcode;
         //记录上一次登录用户名，到session中
         username = username.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
-        DesktopLoginService.login(req, res, username, password)
+        DesktopLoginService.login(req, res, username, password, captcha)
             .on('success', function(data) {
                 modifySessionData(req, data);
                 //设置sessionStore，如果是内存session时，需要从req中获取
@@ -474,13 +482,12 @@ exports.bindLoginWechat = function(req, res) {
                         .on('success', function(result) {
                             //绑定成功后将登录后的数据返回到小程序
                             loginSuccess(req, res)(data);
-                        }).on('error', function(errorObj) {
-                            res.status(500).json(errorObj && errorObj.message);
-                        });
+                        }).on('error', wechatBindRegisterLoginError(req, res));
                 });
-            }).on('error', loginError(req, res));
+            }).on('error', wechatBindRegisterLoginError(req, res));
     } else {
-        res.status(500).json('绑定登录失败');
+        restLogger.error('web微信绑定已有账号登录未取到union_id');
+        wechatBindRegisterLoginError(req, res)({message: '绑定登录失败'});
     }
 };
 //微信小程序用已有账号绑定微信并登录
@@ -510,7 +517,7 @@ exports.bindLoginWechatMiniprogram = function(req, res) {
                 });
             }).on('error', wechatAppLoginError(req, res));
     } else {
-        res.status(500).json('绑定登录失败');
+        res.status(500).json('微信绑定登录失败');
     }
 };
 //web注册新账号绑定微信并登录
@@ -519,11 +526,16 @@ exports.registerLoginWechat = function(req, res) {
     if (unionId) {
         DesktopLoginService.registBindWechatLogin(req, res, {user_name: req.body.username, union_id: unionId})
             .on('success', loginSuccess(req, res))
-            .on('error', function(errorObj) {
-                res.status(500).json(errorObj && errorObj.message);
+            .on('error', function(errorObj){
+                //用于记录微信注册新账号的错误，已便展示到注册新账号tab下
+                req.session.isWechatRegisterError = true;
+                wechatBindRegisterLoginError(req, res)(errorObj);
             });
     } else {
-        res.status(500).json('注册登录失败');
+        restLogger.error('web微信注册登录未取到union_id');
+        //用于记录微信注册新账号的错误，已便展示到注册新账号tab下
+        req.session.isWechatRegisterError = true;
+        wechatBindRegisterLoginError(req, res)({message: '微信注册登录失败'});
     }
 };
 //微信小程序注册新账号绑定微信并登录
@@ -674,6 +686,30 @@ function wechatLoginError(req, res) {
         req.session.save(function() {
             //session失效时，登录失败后的处理
             res.status(500).json(data && data.message || '微信登录失败');
+        });
+    };
+}
+//微信绑定(注册)登录失败的处理
+function wechatBindRegisterLoginError(req, res) {
+    return function(data) {
+        restLogger.info('微信号绑定（注册）登录失败：' + JSON.stringify(data));
+        let backendIntl = new BackendIntl(req);
+        if (data && data.message) {
+            req.session.loginErrorMsg = data.message;
+        } else {
+            // req.session.loginErrorMsg = backendIntl.get('login.username.password.error', '用户名或密码错误');
+            req.session.loginErrorMsg = '微信号绑定（注册）登录失败';
+        }
+        req.session.save(function() {
+            if (req.xhr) {
+                //session失效时，登录失败后的处理
+                // res.status(500).json(data && data.message || backendIntl.get('login.password.error', '密码错误'));
+                res.status(500).json(data && data.message || '微信号绑定（注册）登录失败');
+            } else {
+                //绑定（注册）登录界面，登录失败的处理
+                let lang = req.session && req.session.lang || 'zh_CN';
+                res.redirect('/wechat_bind?lang=' + lang);
+            }
         });
     };
 }
