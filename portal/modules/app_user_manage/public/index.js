@@ -71,6 +71,8 @@ class AppUserManage extends React.Component {
             var _this = this;
             //有客户名时，直接按照客户名查询，应用选中全部
             if (this.props.history.action === 'PUSH') {
+                //查询团队列表
+                AppUserAction.getTeamLists();
                 //针对不同情况，查询用户列表
                 if (app_id) {
                     //从销售首页点击过期用户数字跳转过来时，有app_id
@@ -163,6 +165,8 @@ class AppUserManage extends React.Component {
         if (currentRoutePath === 'user' && this.prevRoutePath && this.prevRoutePath !== 'user') {
             //获取全部应用
             AppUserAction.getAppList();
+            //查询团队列表
+            AppUserAction.getTeamLists();
             //查询所有用户
             let quryObj = {
                 app_id: ShareObj.app_id || ''
