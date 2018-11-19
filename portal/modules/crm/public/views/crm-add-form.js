@@ -150,8 +150,8 @@ var CRMAddForm = createReactClass({
     //添加客户
     addCustomer: function() {
         var formData = JSON.parse(JSON.stringify(this.state.formData));
-        formData.name = $.trim(formData.name);
-        formData.contacts0_phone = $.trim(formData.contacts0_phone);
+        formData.name = _.trim(formData.name);
+        formData.contacts0_phone = _.trim(formData.contacts0_phone);
         var PropsFormData = this.props.formData;
         if (this.props.isAssociateClue && PropsFormData) {
             //添加客户时，新创建的客户要关联该线索
@@ -231,7 +231,7 @@ var CRMAddForm = createReactClass({
 
     //客户名唯一性验证
     checkOnlyCustomerName: function(e) {
-        var customerName = $.trim(this.state.formData.name);
+        var customerName = _.trim(this.state.formData.name);
         //满足验证条件后再进行唯一性验证
         if (customerName && nameRegex.test(customerName)) {
             Trace.traceEvent(e, '添加客户名称');
@@ -313,7 +313,7 @@ var CRMAddForm = createReactClass({
 
     //客户名格式验证
     checkCustomerName: function(rule, value, callback) {
-        value = $.trim(value);
+        value = _.trim(value);
         if (value) {
             if (nameRegex.test(value)) {
                 callback();
@@ -332,7 +332,7 @@ var CRMAddForm = createReactClass({
         return [{
             required: true,
             validator: (rule, value, callback) => {
-                value = $.trim(value);
+                value = _.trim(value);
                 if (value) {
                     CrmAction.checkOnlyContactPhone(value, data => {
                         if (_.isString(data)) {

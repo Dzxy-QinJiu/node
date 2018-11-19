@@ -213,7 +213,7 @@ var ContactForm = createReactClass({
         var formData = _.extend({}, this.state.formData);
         var phoneArray = [], qqArray = [], weChatArray = [], emailArray = [];
         for (var key in formData) {
-            let contactVal = $.trim(formData[key]);
+            let contactVal = _.trim(formData[key]);
             if (contactVal) {
                 if (key.indexOf('phone') !== -1) {
                     phoneArray.push(contactVal);
@@ -342,7 +342,7 @@ var ContactForm = createReactClass({
         let phoneArray = [];
         _.each(formData, (val, key) => {
             if (key.indexOf('phone') !== -1) {
-                phoneArray.push($.trim(val));
+                phoneArray.push(_.trim(val));
             }
         });
         return phoneArray;
@@ -352,7 +352,7 @@ var ContactForm = createReactClass({
     getPhoneInputValidateRules() {
         return [{
             validator: (rule, value, callback) => {
-                value = $.trim(value);
+                value = _.trim(value);
                 if (value) {
                     if(this.state.showNeedPhone){
                         this.setState({showNeedPhone: false});

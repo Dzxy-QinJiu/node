@@ -44,7 +44,7 @@ export const ipRegex = /^(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[1-9])\.(1\d{2}|2[0-4]
 
 //验证电话号码
 exports.checkPhone = function(rule, value, callback) {
-    value = $.trim(value);
+    value = _.trim(value);
     if (value) {
         if ((commonPhoneRegex.test(value)) ||
             (areaPhoneRegex.test(value)) ||

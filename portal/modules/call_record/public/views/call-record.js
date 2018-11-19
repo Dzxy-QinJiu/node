@@ -317,7 +317,7 @@ class CallRecord extends React.Component {
 
     // 文本框值变化时调用
     handleChange = (value) => {
-        value = $.trim(value);
+        value = _.trim(value);
         this.setState({
             selectValue: value
         }, () => {
@@ -332,7 +332,7 @@ class CallRecord extends React.Component {
     // 被选中时调用
     onSelectContentChange = (filterKey, value) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '根据电话号码过滤');
-        value = $.trim(value);
+        value = _.trim(value);
         if (this.state.recommendList.list.length) {
             this.state.filterObj[filterKey] = value;
             this.setState({
@@ -727,7 +727,7 @@ class CallRecord extends React.Component {
                 CallRecordActions.toggleConfirm({ id, flag: true });
             }
         } else { // 添加跟进内容时
-            if (value && value.trim()) {
+            if (_.trim(value)) {
                 CallRecordActions.toggleConfirm({ id, flag: true });
             }
         }
@@ -873,7 +873,7 @@ class CallRecord extends React.Component {
         },(errMsg) => {
             this.setState({
                 isAddingInvalidPhone: false,
-                addingInvalidPhoneErrMsg: errMsg ||  Intl.get('fail.report.phone.err.tip', '上报无效电话失败！')
+                addingInvalidPhoneErrMsg: errMsg || Intl.get('fail.report.phone.err.tip', '上报无效电话失败！')
             });
         });
     };

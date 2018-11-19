@@ -48,7 +48,7 @@ const AddProduct = createReactClass({
     },
 
     onAppChoosen: function(index, value) {
-        const appName = $.trim(value);
+        const appName = _.trim(value);
         const selectedApp = _.find(this.props.appList, app => app.app_name === appName);
         const appId = selectedApp ? selectedApp.app_id : '';
 

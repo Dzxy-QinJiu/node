@@ -49,7 +49,7 @@ class WeeklyReport extends React.Component {
 
     onSearchInputChange = (keyword) => {
         keyword = keyword ? keyword : '';
-        if (keyword.trim() !== this.state.searchKeyword.trim()) {
+        if (_.trim(keyword) !== _.trim(this.state.searchKeyword)) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-content'), '根据关键词搜索');
             WeeklyReportAction.changeSearchInputValue(keyword);
         }

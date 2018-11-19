@@ -95,7 +95,7 @@ class competingProductManage extends React.Component {
         Trace.traceEvent(e, '点击添加竞品按钮');
         e.preventDefault();
         //输入的竞品名称去左右空格
-        let product = $.trim(this.refs.addProduct.value);
+        let product = _.trim(this.refs.addProduct.value);
         if (!product) {
             return;
         }

@@ -56,7 +56,7 @@ class SalesStageForm extends React.Component {
             if (err) return;
             let formData = this.state.formData;
             let submitObj = {
-                name: $.trim(values.name),
+                name: _.trim(values.name),
                 description: values.description
             };
             if (formData.id) {

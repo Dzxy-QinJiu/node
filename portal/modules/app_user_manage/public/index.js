@@ -281,7 +281,7 @@ class AppUserManage extends React.Component {
 
     onSearchInputChange = (keyword) => {
         keyword = keyword ? keyword : '';
-        if ($.trim(keyword) !== $.trim(this.state.keywordValue)) {
+        if (_.trim(keyword) !== _.trim(this.state.keywordValue)) {
             AppUserAction.keywordValueChange(keyword);
             this.doSearch({
                 keyword: keyword

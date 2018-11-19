@@ -64,7 +64,7 @@ const PositionInfo = createReactClass({
 
     // 校验输入的座席号
     checkPhoneOrder(rule, value, callback) {
-        value = $.trim(value);
+        value = _.trim(value);
         if (value) {
             if (/^[0-9]*$/.test(value)) {
                 callback();

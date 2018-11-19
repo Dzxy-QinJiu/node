@@ -130,7 +130,7 @@ class ConfigManage extends React.Component {
         var _this = this;
         e.preventDefault();
         //输入的行业名称去左右空格
-        var text = $.trim(_this.refs.edit.value);
+        var text = _.trim(_this.refs.edit.value);
         //避免短时间多次点击添加按钮，将按钮类型改为button
         $('#addIndustrySaveBtn').attr({'disabled': 'disabled'});
         //显示添加的loading效果

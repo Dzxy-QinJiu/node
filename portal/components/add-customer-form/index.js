@@ -105,7 +105,7 @@ class AddCustomerForm extends React.Component {
 
     //客户名格式验证
     checkCustomerName = (rule, value, callback) => {
-        value = $.trim(value);
+        value = _.trim(value);
         if (value) {
             if (nameRegex.test(value)) {
                 callback();
@@ -189,7 +189,7 @@ class AddCustomerForm extends React.Component {
                         values[key] = this.state.formData[key];
                     }
                 }
-                values.name = $.trim(values.name);
+                values.name = _.trim(values.name);
                 //去除表单数据中值为空的项
                 commonMethodUtil.removeEmptyItem(values);
                 //默认值是一个数组
@@ -202,7 +202,7 @@ class AddCustomerForm extends React.Component {
                         return;
                     } else {
                         //验证电话通过后，再把电话的值放在values中
-                        values.contacts0_phone = $.trim(phoneVal[PHONE_INPUT_ID].replace(/-/g, ''));
+                        values.contacts0_phone = _.trim(phoneVal[PHONE_INPUT_ID].replace(/-/g, ''));
                         this.addCustomer(values);
                     }
                 });

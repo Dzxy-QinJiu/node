@@ -85,7 +85,7 @@ class UserInfo extends React.Component{
                     userInfo.emailEnable = false;
                 }
                 if (userInfo.nickName) {
-                    userInfo.nickName = $.trim(userInfo.nickName);
+                    userInfo.nickName = _.trim(userInfo.nickName);
                 }
                 UserInfoAction.editUserInfo(userInfo, (errorMsg) => {
                     //保存后的处理

@@ -121,7 +121,7 @@ class PhoneShowEditField extends React.Component {
 
     getValidateCode() {
         if (this.state.hasGetSMSCode) return;
-        let phone = $.trim(this.props.form.getFieldValue('phone'));
+        let phone = _.trim(this.props.form.getFieldValue('phone'));
         if (phone && commonPhoneRegex.test(phone)) {
             this.setState({hasGetSMSCode: true});
             $.ajax({
@@ -163,7 +163,7 @@ class PhoneShowEditField extends React.Component {
     }
 
     validateCode(rule, value, callback) {
-        let code = $.trim(value);
+        let code = _.trim(value);
         if (code) {
             callback();
         } else {
@@ -175,7 +175,7 @@ class PhoneShowEditField extends React.Component {
     }
 
     validatePhone(rule, value, callback) {
-        let phone = $.trim(value);
+        let phone = _.trim(value);
         if (this.state.getCodeErrorMsg) {
             this.setState({getCodeErrorMsg: ''});
         }

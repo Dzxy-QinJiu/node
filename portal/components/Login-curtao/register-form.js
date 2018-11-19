@@ -41,7 +41,7 @@ class RegisterForm extends React.Component {
     }
 
     validatorCompanyName(rule, value, callback) {
-        value = $.trim(value);
+        value = _.trim(value);
         if (value) {
             if (/^[a-z\-]*$/.test(value)) {
                 callback();
@@ -143,7 +143,7 @@ class RegisterForm extends React.Component {
             let formData = this.state.formData;
             //公司唯一标识的设置
             if (this.state.currentStep === REGISTER_STEPS.COMPANY_ID_SET) {
-                let name = $.trim(form.getFieldValue('name'));
+                let name = _.trim(form.getFieldValue('name'));
                 this.validateNameOnly(name, () => {
                     //验证通过，切换到下一步
                     formData.name = name;
@@ -152,8 +152,8 @@ class RegisterForm extends React.Component {
                 });
             } else if (this.state.currentStep === REGISTER_STEPS.PHONE_VALID) {
                 //手机验证
-                let code = $.trim(form.getFieldValue('code'));
-                let phone = $.trim(form.getFieldValue('phone'));
+                let code = _.trim(form.getFieldValue('code'));
+                let phone = _.trim(form.getFieldValue('phone'));
                 this.validatePhoneCode(phone, code, () => {
                     formData.phone = phone;
                     formData.code = code;
@@ -199,7 +199,7 @@ class RegisterForm extends React.Component {
 
     getValidateCode() {
         if (this.state.captchaCode) return;
-        let phone = $.trim(this.props.form.getFieldValue('phone'));
+        let phone = _.trim(this.props.form.getFieldValue('phone'));
         if (phone && commonPhoneRegex.test(phone)) {
             $.ajax({
                 url: '/phone/validate_code',
@@ -229,7 +229,7 @@ class RegisterForm extends React.Component {
     }
 
     validatePhone(rule, value, callback) {
-        let phone = $.trim(value);
+        let phone = _.trim(value);
         if (phone) {
             if (commonPhoneRegex.test(phone)) {
                 callback();
@@ -242,7 +242,7 @@ class RegisterForm extends React.Component {
     }
 
     validateCode(rule, value, callback) {
-        let code = $.trim(value);
+        let code = _.trim(value);
         if (code) {
             callback();
         } else {

@@ -36,7 +36,7 @@ class LoginForm extends React.Component {
     };
 
     beforeSubmit = (event) => {
-        var userName = $.trim(this.refs.username.value);
+        var userName = _.trim(this.refs.username.value);
         if (!userName) {
             //用户名不能为空
             this.props.setErrorMsg(Intl.get('login.write.username', '请输入用户名'));

@@ -212,18 +212,18 @@ const ApplyUserForm = createReactClass({
 
     onNickNameChange: function(e) {
         let formData = this.state.formData;
-        formData.nick_name = e.target.value.trim();
+        formData.nick_name = _.trim(e.target.value);
         this.setState({formData});
     },
 
     onRemarkChange: function(e) {
         let formData = this.state.formData;
-        formData.remark = e.target.value.trim();
+        formData.remark = _.trim(e.target.value);
         this.setState({formData});
     },
 
     onUserNameChange: function(e) {
-        let userName = e.target.value.trim();
+        let userName = _.trim(e.target.value);
         let formData = this.state.formData;
         formData.user_name = userName;
         let isEmail = userName && userName.indexOf('@') !== -1;
@@ -330,7 +330,7 @@ const ApplyUserForm = createReactClass({
     },
 
     applyUserFromOder: function(submitData) {
-        submitData.user_name = $.trim(submitData.user_name);
+        submitData.user_name = _.trim(submitData.user_name);
         //添加申请邮件中用的客户名
         submitData.email_customer_names = this.props.customerName;
         //添加申请邮件中用的用户名
@@ -380,7 +380,7 @@ const ApplyUserForm = createReactClass({
     checkUserExist(rule, value, callback) {
         let customer_id = this.state.formData.customer_id;
         let number = this.getApplyUserCount();
-        let trimValue = $.trim(value);
+        let trimValue = _.trim(value);
         // 校验的信息提示
         UserNameTextfieldUtil.validatorMessageTips(trimValue, callback);
         if (!trimValue) return;
@@ -392,7 +392,7 @@ const ApplyUserForm = createReactClass({
     },
 
     selectEmail: function(value, field) {
-        value = $.trim(value);
+        value = _.trim(value);
         if (value) {
             let formData = this.state.formData;
             formData.user_name = value;

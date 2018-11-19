@@ -39,7 +39,7 @@ class SingleUserLog extends React.Component {
             type_filter: this.state.typeFilter.join()
         };
         if (this.state.searchName) {
-            queryObj.search = $.trim(this.state.searchName.toString().toLowerCase());
+            queryObj.search = _.trim(this.state.searchName.toString().toLowerCase());
         }
         SingleUserLogAction.getSingleUserAppList(queryObj, selectedAppId, appLists);
         if (selectedAppId) {
@@ -84,7 +84,7 @@ class SingleUserLog extends React.Component {
         let queryObj = this.getQueryParams(queryParams);
         let search = queryParams && 'search' in queryParams ? queryParams.search : this.state.searchName;
         if (search) {
-            queryObj.search = $.trim(search.toString().toLowerCase());
+            queryObj.search = _.trim(search.toString().toLowerCase());
         }
         else {
             //参数不能为空
@@ -105,7 +105,7 @@ class SingleUserLog extends React.Component {
     // 搜索处理事件
     handleSearchEvent = (inputContent) => {
         inputContent = inputContent ? inputContent : '';
-        if ($.trim(inputContent) !== $.trim(this.state.searchName)) {
+        if (_.trim(inputContent) !== _.trim(this.state.searchName)) {
             SingleUserLogAction.getLogsBySearch();
             SingleUserLogAction.handleSearchEvent(inputContent);
             this.getSingleUserAuditLogList({
