@@ -117,6 +117,7 @@ const options = {
 
         //暂存变化了的字段
         instanceMap[props.id].changedFields = fields;
+        instanceMap[props.id].changeFromInput = true;
 
         let value = fields[props.id].value;
         let obj = { target: {} };
@@ -128,15 +129,28 @@ const options = {
         let instance = instanceMap[props.id];
 
         if (instance && instance.changedFields) {
-            let currentValue = instance.changedFields[props.id].value;
-            const lastValue = instance.lastValue;
-            const lastSaveTime = instance.saveTime || 0;
-            const interval = new Date().getTime() - lastSaveTime;
+            const changedField = instance.changedFields[props.id];
+            let currentValue = changedField.value;
+            const currentValueNoHyphen = currentValue.replace('-', '');
+            const propsValueNoHyphen = props.initialValue.replace('-', '');
 
-            //win10自带中文输入法下，添加区号分隔符后，会自动在分隔符后加上一位数字，这里对这种情况做一下处理
-            if (lastValue && /-$/.test(lastValue) && /-\d$/.test(currentValue) && interval < 100) {
-                currentValue = currentValue.replace(/\d$/, '');
+            if (!instance.changeFromInput && currentValueNoHyphen !== propsValueNoHyphen) {
+                currentValue = props.initialValue;
+                instance.lastValue = '';
+                instance.initialValue = '';
+                changedField.validating = false;
+            }else{
+                const lastValue = instance.lastValue;
+                const lastSaveTime = instance.saveTime || 0;
+                const interval = new Date().getTime() - lastSaveTime;
+
+                //win10自带中文输入法下，添加区号分隔符后，会自动在分隔符后加上一位数字，这里对这种情况做一下处理
+                if (lastValue && /-$/.test(lastValue) && /-\d$/.test(currentValue) && interval < 100) {
+                    currentValue = currentValue.replace(/\d$/, '');
+                }
             }
+
+            instance.changeFromInput = false;
 
             if (_.indexOf(instance.lastValue, '-') === -1) {
                 currentValue = addHyphenToPhoneNumber(currentValue, instance.initialValue);
