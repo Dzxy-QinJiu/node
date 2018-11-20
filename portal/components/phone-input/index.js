@@ -117,6 +117,8 @@ const options = {
 
         //暂存变化了的字段
         instanceMap[props.id].changedFields = fields;
+        //标识电话值的变化来自于用户输入而非外部属性变更
+        instanceMap[props.id].changeFromInput = true;
 
         let value = fields[props.id].value;
         let obj = { target: {} };
@@ -128,15 +130,42 @@ const options = {
         let instance = instanceMap[props.id];
 
         if (instance && instance.changedFields) {
-            let currentValue = instance.changedFields[props.id].value;
-            const lastValue = instance.lastValue;
-            const lastSaveTime = instance.saveTime || 0;
-            const interval = new Date().getTime() - lastSaveTime;
+            //变化了的字段
+            const changedField = instance.changedFields[props.id];
+            //字段当前值
+            let currentValue = changedField.value;
 
-            //win10自带中文输入法下，添加区号分隔符后，会自动在分隔符后加上一位数字，这里对这种情况做一下处理
-            if (lastValue && /-$/.test(lastValue) && /-\d$/.test(currentValue) && interval < 100) {
-                currentValue = currentValue.replace(/\d$/, '');
+            //如果电话值的变化不是来自用户输入，也即该变化来自外部属性传入
+            if (!instance.changeFromInput) {
+                //去掉横线后的字段当前值
+                const currentValueNoHyphen = currentValue.replace('-', '');
+                //去掉横线后的字段属性值
+                const propsValueNoHyphen = props.initialValue.replace('-', '');
+
+                //如果传入的值有变化
+                if (currentValueNoHyphen !== propsValueNoHyphen) {
+                    //将当前值设为传入的值
+                    currentValue = props.initialValue;
+                    //将实例中暂存的上次的值置空，以便进行加横线的操作
+                    instance.lastValue = '';
+                    //将实例中暂存的初始值置空，以便进行加横线的操作
+                    instance.initialValue = '';
+                    //不显示验证加载状态
+                    changedField.validating = false;
+                }
+            } else {
+                const lastValue = instance.lastValue;
+                const lastSaveTime = instance.saveTime || 0;
+                const interval = new Date().getTime() - lastSaveTime;
+
+                //win10自带中文输入法下，添加区号分隔符后，会自动在分隔符后加上一位数字，这里对这种情况做一下处理
+                if (lastValue && /-$/.test(lastValue) && /-\d$/.test(currentValue) && interval < 100) {
+                    currentValue = currentValue.replace(/\d$/, '');
+                }
             }
+
+            //将标识电话值的变化来自于用户输入而非外部属性变更的标志置为false，以便下次使用
+            instance.changeFromInput = false;
 
             if (_.indexOf(instance.lastValue, '-') === -1) {
                 currentValue = addHyphenToPhoneNumber(currentValue, instance.initialValue);
