@@ -95,6 +95,10 @@ export function getCustomerTrialQualifiedChart() {
                     processedItem.team_name = dataItem.team_name;
                 }
 
+                if (dataItem.highest) {
+                    processedItem.highest_data = dataItem.highest;
+                }
+
                 //遍历原始数据项各字段
                 _.each(dataItem, (value, key) => {
                     //若字段值中存在总数

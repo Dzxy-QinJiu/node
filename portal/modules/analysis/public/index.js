@@ -51,6 +51,8 @@ class CurtaoAnalysis extends React.Component {
             isCustomerListShow: false,
             //是否显示试用合格客户统计历史最高值明细
             isHistoricHighDetailShow: false,
+            //试用合格客户统计历史最高值记录
+            historicHighData: {},
         };
     }
 
@@ -165,6 +167,7 @@ class CurtaoAnalysis extends React.Component {
         if (customerIdsField === 'highest_customer_ids') {
             _.extend(state, {
                 isHistoricHighDetailShow: true,
+                historicHighData: record.highest_data,
             });
         } else {
             _.extend(state, {
@@ -244,8 +247,7 @@ class CurtaoAnalysis extends React.Component {
 
                         {this.state.isHistoricHighDetailShow ? (
                             <HistoricHighDetail
-                                location={this.state.customerListLocation}
-                                fromSalesHome={true}
+                                data={this.state.historicHighData}
                             />
                         ) : null}
                     </div>
