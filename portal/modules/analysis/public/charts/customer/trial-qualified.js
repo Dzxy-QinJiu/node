@@ -73,6 +73,7 @@ export function getCustomerTrialQualifiedChart() {
                 dataIndex: 'highest',
                 title: '历史最高',
                 width: '10%',
+                render: trialQualifiedNumRender.bind(this, 'highest_customer_ids'),
             }, {
                 dataIndex: 'this_month_add_highest',
                 title: '本月比历史最高净增',
@@ -118,11 +119,11 @@ export function getCustomerTrialQualifiedChart() {
     };
 }
 
-function handleTrialQualifiedNumClick(customerIds, text) {
+function handleTrialQualifiedNumClick(customerIds, text, customerIdsField, record) {
     const customerIdsStr = customerIds.join(',');
     const num = parseFloat(text);
 
-    analysisCustomerListEmitter.emit(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, customerIdsStr, num); 
+    analysisCustomerListEmitter.emit(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, customerIdsStr, num, customerIdsField, record); 
 }
 
 function trialQualifiedNumRender(customerIdsField, text, record) {
@@ -130,7 +131,7 @@ function trialQualifiedNumRender(customerIdsField, text, record) {
         const customerIds = record[customerIdsField];
 
         return (
-            <span onClick={handleTrialQualifiedNumClick.bind(this, customerIds, text)} style={{cursor: 'pointer'}}>
+            <span onClick={handleTrialQualifiedNumClick.bind(this, customerIds, text, customerIdsField, record)} style={{cursor: 'pointer'}}>
                 {text}
             </span>
         );
