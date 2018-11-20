@@ -277,7 +277,9 @@ var en_US = {
     'login.scan.ketao.qrcode.tip': 'Scan QR code to download ketao APP Android',//扫码下载客套APP安卓端
     'login.qrcode.loading': 'loading QR code...',//正在获取二维码...
     'login.wechat.login': 'WeChat login',//微信登录
-    'login.wechat.login.error': 'Failed to login with weChat',//微信登录失败
+    'login.wechat.login.error': 'WeChat login failed',//微信登录失败
+    'login.wechat.bind.error': 'WeChat binding failed',//微信绑定失败
+    'login.wechat.bind.check.error': 'Check whether or not to bind WeChat is failed',//检查是否绑定微信出错了
 
     'register.set.company.id': 'Set up company ID',//设置公司标识
     'register.valid.phone': 'Phone number verification',//验证手机
@@ -2550,6 +2552,7 @@ var en_US = {
     'sales.opportunity.process.config.list': 'Failed to get process node',//获取流程节点失败
     'common.the.month.total': 'the month total',//本月合计
     'my.app.app.secret.key': 'Secret key',//密钥
-    'user.wechat.unbind': 'Unbind WeChat'//解绑微信
+    'user.wechat.unbind': 'Unbind WeChat',//解绑微信
+    'user.wechat.unbind.error': 'Unbind WeChat Failed',//解绑微信失败
 };
 export default en_US;

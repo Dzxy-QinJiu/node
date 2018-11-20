@@ -50,6 +50,8 @@ var urls = {
     registBindWechatLoginUrl: '/auth2/authc/social/register',
     //解绑微信
     unbindWechatUrl: '/auth2/authc/social/unbind',
+    //登录后判断是否绑定微信
+    checkLoginWechatIsBindUrl: '/auth2/authc/login/social/bind'
 
 };
 //验证码的高和宽
@@ -137,7 +139,6 @@ function getLoginResult(data) {
         user_id: '',
         user_name: ''
     };
-    restLogger.info('微信注册登录成功后返回的数据' + JSON.stringify(data));
     if (data.token) {
         loginResult.auth.access_token = data.token.access_token || '';
         loginResult.auth.refresh_token = data.token.refresh_token || '';
@@ -574,6 +575,19 @@ exports.unbindWechat = function(req, res) {
     return restUtil.authRest.post(
         {
             url: urls.unbindWechatUrl,
+            req: req,
+            res: res,
+            form: {
+                platform: 'wechat'
+            }
+        });
+};
+
+//登录后判断是否已绑定微信
+exports.checkLoginWechatIsBind = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: urls.checkLoginWechatIsBindUrl,
             req: req,
             res: res,
             form: {

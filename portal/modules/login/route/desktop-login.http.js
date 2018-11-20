@@ -158,5 +158,12 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    },{//登录后判断是否绑定微信
+        'method': 'get',
+        'path': '/wechat/bind/check/login',
+        'handler': 'checkLoginWechatIsBind',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

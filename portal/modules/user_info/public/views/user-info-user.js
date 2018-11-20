@@ -47,9 +47,17 @@ class UserInfo extends React.Component{
             userInfoFormShow: this.props.userInfoFormShow,
             isSaving: false,
             saveErrorMsg: '',
-            lang: Oplate.lang || 'zh_CN'
+            lang: Oplate.lang || 'zh_CN',
+            isBindWechat: false,//是否绑定微信
+            isLoadingWechatBind: false,//是否正在绑定微信
+            weChatBindErrorMsg: ''//微信账号绑定的错误提示
         };
     }
+
+    componentDidMount() {
+        this.getWechatIsBind();
+    }
+
     componentWillReceiveProps(nextProps) {
         if(_.get(this.state, 'formData.userId') !== _.get(nextProps, 'userInfo.userId') || this.state.userInfoFormShow !== nextProps.userInfoFormShow){
             this.setState({
@@ -333,23 +341,77 @@ class UserInfo extends React.Component{
                         </div>
                     ) : null}
 
-                    {<a onClick={this.unbindWechat.bind(this)} data-tracename="解绑微信">
-                        {Intl.get('user.wechat.unbind','解绑微信')}
-                    </a>}
+                    <div className="user-info-item">
+                        <span>{Intl.get('crm.58', '微信')}：</span>
+                        <span>
+                            {this.state.isLoadingWechatBind ? (<Icon type="loading"/>) :
+                                this.state.weChatBindErrorMsg ? (
+                                    <span className="error-msg-tip">{this.state.weChatBindErrorMsg}</span>) :
+                                    this.state.isBindWechat ? (
+                                        <a onClick={this.unbindWechat.bind(this)} data-tracename="解绑微信">
+                                            {Intl.get('user.wechat.unbind', '解绑微信')}
+                                        </a>) : (
+                                        <a href="/page/login/wechat" data-tracename="绑定微信">
+                                            {Intl.get('register.wechat.bind.btn', '立即绑定')}
+                                        </a>)}
+                        </span>
+                    </div>
+
+                    {}
                 </div>
             );
         }
     }
+    //获取是否绑定微信
+    getWechatIsBind(){
+        this.setState({isLoadingWechatBind: true});
+        $.ajax({
+            url: '/wechat/bind/check/login',
+            dataType: 'json',
+            type: 'get',
+            success: (result) => {
+                this.setState({
+                    isLoadingWechatBind: false,
+                    isBindWechat: !!result,
+                    weChatBindErrorMsg: ''
+                });
+            },
+            error: (errorMsg) => {
+                this.setState({
+                    isLoadingWechatBind: false,
+                    weChatBindErrorMsg: errorMsg.responseJSON || Intl.get('login.wechat.bind.check.error', '检查是否绑定微信出错了')
+                });
+            }
+        });
+    }
+    //绑定微信
+    bindWechat(){
+        $.ajax({
+            url: '/page/login/wechat',
+            dataType: 'json',
+            type: 'get'
+        });
+    }
+
+    //解绑
     unbindWechat(){
+        this.setState({isLoadingWechatBind: true});
         $.ajax({
             url: '/wechat/unbind',
             dataType: 'json',
             type: 'post',
-            success: function(a) {
-                console.log('解绑成功');
+            success: (result) => {
+                this.setState({
+                    isLoadingWechatBind: false,
+                    isBindWechat: false,
+                    weChatBindErrorMsg: ''
+                });
             },
-            error: function(errorMsg) {
-                console.log(errorMsg.responseJSON);
+            error: (errorMsg) => {
+                this.setState({
+                    isLoadingWechatBind: false,
+                    weChatBindErrorMsg: errorMsg.responseJSON || Intl.get('user.wechat.unbind.error', '解绑微信失败')
+                });
             }
         });
     }

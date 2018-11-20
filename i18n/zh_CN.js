@@ -284,6 +284,8 @@ var zh_CN = {
     'login.qrcode.loading': '正在获取二维码...',
     'login.wechat.login': '微信登录',
     'login.wechat.login.error': '微信登录失败',
+    'login.wechat.bind.error': '微信绑定失败',
+    'login.wechat.bind.check.error': '检查是否绑定微信出错了',
 
     'register.set.company.id': '设置公司标识',
     'register.valid.phone': '验证手机',
@@ -2567,5 +2569,6 @@ var zh_CN = {
     'common.the.month.total': '本月合计',
     'my.app.app.secret.key': '密钥',
     'user.wechat.unbind': '解绑微信',
+    'user.wechat.unbind.error': '解绑微信失败',
 };
 export default zh_CN;
