@@ -282,6 +282,7 @@ var zh_CN = {
     'login.load.ketao.tip': '下载客套APP安卓端',
     'login.scan.ketao.qrcode.tip': '扫码下载客套APP安卓端',
     'login.qrcode.loading': '正在获取二维码...',
+    'login.wechat.login': '微信登录',
     'register.set.company.id': '设置公司标识',
     'register.valid.phone': '验证手机',
     'register.fill.account': '账号设置',

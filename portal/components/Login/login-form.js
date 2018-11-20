@@ -279,14 +279,17 @@ class LoginForm extends React.Component {
                         {this.state.logining ? <Icon type="loading"/> : null}
                     </button>
                     {this.state.isBindWechat ? null : (
-                        <button className={loginButtonClassName} onClick={this.loginWithWeixin}
+                        <div className='login-button wechat-login' onClick={this.loginWithWeixin}
                             tabIndex="3"
                             disabled={this.state.loginButtonDisabled}
                             data-tracename="微信登录"
                         >
-                            {hasWindow ? '微信登录' : null}
-                            {this.state.logining ? <Icon type="loading"/> : null}
-                        </button>)}
+                            {hasWindow ? (
+                                <span>
+                                    <span className="wechat-icon-wrap"><i className="iconfont icon-weChat"/></span>
+                                    <span className="wechat-login-descr">{Intl.get('login.wechat.login', '微信登录')}</span>
+                                </span>) : null}
+                        </div>)}
                 </form>
             </div>
         );
