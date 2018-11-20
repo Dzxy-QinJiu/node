@@ -167,9 +167,14 @@
     .wechat-login{
         float: left;
         margin-top: 10px;
-        color: #ffffff;
         outline: none;
+        color: #ffffff;
         cursor: pointer;
+        &:hover{
+            .wechat-icon-wrap{
+                background-color: #0e924e;
+            }
+        }
         .wechat-icon-wrap{
             display: inline-block;
             width: 24px;
@@ -179,9 +184,6 @@
             border-radius: 3px;
             text-align: center;
             background-color: #28af6a;
-            &:hover{
-                background-color: #0e924e;
-            }
             .icon-weChat{
                 font-size: 14px;
             }
