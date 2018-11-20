@@ -137,6 +137,7 @@ function getLoginResult(data) {
         user_id: '',
         user_name: ''
     };
+    restLogger.info('微信注册登录成功后返回的数据' + JSON.stringify(data));
     if (data.token) {
         loginResult.auth.access_token = data.token.access_token || '';
         loginResult.auth.refresh_token = data.token.refresh_token || '';

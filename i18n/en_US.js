@@ -277,6 +277,8 @@ var en_US = {
     'login.scan.ketao.qrcode.tip': 'Scan QR code to download ketao APP Android',//扫码下载客套APP安卓端
     'login.qrcode.loading': 'loading QR code...',//正在获取二维码...
     'login.wechat.login': 'WeChat login',//微信登录
+    'login.wechat.login.error': 'Failed to login with weChat',//微信登录失败
+
     'register.set.company.id': 'Set up company ID',//设置公司标识
     'register.valid.phone': 'Phone number verification',//验证手机
     'register.fill.account': 'Set up account',//账号设置
