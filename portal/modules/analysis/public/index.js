@@ -167,7 +167,7 @@ class CurtaoAnalysis extends React.Component {
         if (customerIdsField === 'highest_customer_ids') {
             _.extend(state, {
                 isHistoricHighDetailShow: true,
-                historicHighData: record.highest_data,
+                historicHighData: _.cloneDeep(record.highest_data),
             });
         } else {
             _.extend(state, {
