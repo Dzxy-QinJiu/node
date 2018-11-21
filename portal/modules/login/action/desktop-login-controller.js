@@ -22,6 +22,8 @@ let restLogger = require('../../../lib/utils/logger').getLogger('rest');
 let appUtils = require('../util/appUtils');
 let WXBizDataCrypt = require('../lib/WXBizDataCrypt');
 const _ = require('lodash');
+//登录后绑定微信的标识
+const bindWechatAfterLoginKey = 'isOnlyBindWechat';
 
 /**
  * 首页
@@ -395,11 +397,16 @@ exports.validatePhoneCode = function(req, res) {
         res.status(500).json(errorObj && errorObj.message);
     });
 };
-//web点击微信登录时，二位码页面的展示
+//web点击微信登录时（登录后绑定微信时），二维码页面的展示
 exports.wechatLoginPage = function(req, res) {
+    let stateData = req.sessionID;
+    //登录后绑定微信
+    if (req.query.isBindWechatAfterLogin) {
+        stateData += bindWechatAfterLoginKey;
+    }
     let qrconnecturl = 'https://open.weixin.qq.com/connect/qrconnect?appid=wxf169b2a9aa1958a9'
         + '&redirect_uri=' + encodeURIComponent('https://ketao-exp.antfact.com/login/wechat')
-        + '&response_type=code&scope=snsapi_login&state=' + req.sessionID;
+        + '&response_type=code&scope=snsapi_login&state=' + stateData;
     res.redirect(qrconnecturl);
     // DesktopLoginService.wechatLoginPage(req, res).on('success', function(data) {
     //     restLogger.info('微信登录跳转数据：' + JSON.stringify(data));
@@ -410,9 +417,15 @@ exports.wechatLoginPage = function(req, res) {
 };
 //web微信扫描二维码后，微信登录的处理
 exports.loginWithWechat = function(req, res) {
-    let code = '';
+    let code = '', isBindWechatAfterLogin = false;
     if (req.query && req.query.code) {
-        if (req.sessionID === req.query.state) {
+        let sessionId = req.query.state;
+        //是否是登录后绑定的处理
+        if (_.indexOf(sessionId, bindWechatAfterLoginKey) !== -1) {
+            isBindWechatAfterLogin = true;
+            sessionId = sessionId.split(bindWechatAfterLoginKey)[0];
+        }
+        if (req.sessionID === sessionId) {
             code = req.query.code;
         }
     }
@@ -424,18 +437,41 @@ exports.loginWithWechat = function(req, res) {
             let unionId = _.get(data, 'unionid');
             //获取到unionId后，通过unionId检查微信是否绑定
             if (unionId) {
-                checkWechatIsBind(req, res, unionId);
+                //个人资料绑定微信的处理
+                if(isBindWechatAfterLogin){
+                    DesktopLoginService.bindWechat(req, res, unionId)
+                        .on('success', function(result) {
+                            //绑定成功,个人资料界面
+                            res.redirect('/user_info_manage/user_info' );
+                        }).on('error', function(errorObj) {
+                        //绑定失败后，也跳到个人资料界面
+                            res.redirect('/user_info_manage/user_info?bind_error=true' );
+                        });
+                }else{//点微信登录的处理
+                    checkWechatIsBind(req, res, unionId);
+                }
             } else {
-                loginError(req, res)({message: backendIntl.get('login.wechat.login.error', '微信登录失败')});
-                restLogger.error('微信登录，unionId不存在');
+                loginWithWechatError(req, res, isBindWechatAfterLogin)({message: backendIntl.get('login.wechat.login.error', '微信登录失败')});
+                restLogger.error('微信扫码后，unionId不存在');
             }
-        }).on('error', loginError(req,res));
+        }).on('error', loginWithWechatError(req, res, isBindWechatAfterLogin));
     } else {
-        loginError(req, res)({message: backendIntl.get('login.wechat.login.error', '微信登录失败')});
-        restLogger.error('微信登录，code不存在');
+        loginWithWechatError(req, res, isBindWechatAfterLogin)({message: backendIntl.get('login.wechat.login.error', '微信登录失败')});
+        restLogger.error('微信扫码后，code不存在');
     }
 };
 
+//微信扫码后的错误处理
+function loginWithWechatError(req, res, isBindWechatAfterLogin, errorObj) {
+    return function(errorObj) {
+        //个人资料绑定微信的处理
+        if(isBindWechatAfterLogin) {
+            res.redirect('/user_info_manage/user_info?bind_error=true' );
+        }else{
+            loginError(req, res)(errorObj);
+        }
+    };
+}
 //小程序微信登录
 exports.loginWithWechatMiniprogram = function(req, res) {
     let code = '';
@@ -490,7 +526,7 @@ exports.bindLoginWechat = function(req, res) {
                 req.session.save(function() {
                     DesktopLoginService.bindWechat(req, res, unionId)
                         .on('success', function(result) {
-                            //绑定成功后将登录后的数据返回到小程序
+                            //绑定成功
                             loginSuccess(req, res)(data);
                         }).on('error', wechatBindRegisterLoginError(req, res));
                 });
@@ -574,7 +610,12 @@ exports.registerLoginWechatMiniprogram = function(req, res) {
 exports.checkLoginWechatIsBind = function(req, res) {
     DesktopLoginService.checkLoginWechatIsBind(req, res)
         .on('success', function(data) {
-            res.status(200).json(data);
+            //如果已绑定的话就会返回{id,user_id,open_id,platform,create_date: "2018-11-21T06:31:27.555Z"}
+            if (data) {
+                res.status(200).json(true);
+            } else {//未绑定的话会auth2返回204状态码没有返回数据
+                res.status(200).json(false);
+            }
         }).on('error', function(errorObj) {
             res.status(500).json(errorObj && errorObj.message);
         });
@@ -584,7 +625,7 @@ exports.checkLoginWechatIsBind = function(req, res) {
 exports.unbindWechat = function(req, res) {
     DesktopLoginService.unbindWechat(req, res)
         .on('success', function(data) {
-            res.status(200).json(data);
+            res.status(200).json(true);
         }).on('error', function(errorObj) {
             res.status(500).json(errorObj && errorObj.message);
         });
@@ -682,19 +723,17 @@ function wechatLoginSuccess(req, res) {
 //web微信绑定(注册)登录失败的处理
 function wechatBindRegisterLoginError(req, res) {
     return function(data) {
-        restLogger.info('微信号绑定（注册）登录失败：' + JSON.stringify(data));
+        restLogger.info('微信号注册登录失败：' + JSON.stringify(data));
         let backendIntl = new BackendIntl(req);
         if (data && data.message) {
             req.session.loginErrorMsg = data.message;
         } else {
-            // req.session.loginErrorMsg = backendIntl.get('login.username.password.error', '用户名或密码错误');
-            req.session.loginErrorMsg = '微信号绑定（注册）登录失败';
+            req.session.loginErrorMsg = backendIntl.get('login.wechat.register.login.error', '微信号注册登录失败');
         }
         req.session.save(function() {
             if (req.xhr) {
                 //session失效时，登录失败后的处理
-                // res.status(500).json(data && data.message || backendIntl.get('login.password.error', '密码错误'));
-                res.status(500).json(data && data.message || '微信号绑定（注册）登录失败');
+                res.status(500).json(data && data.message || backendIntl.get('login.wechat.register.login.error', '微信号注册登录失败'));
             } else {
                 //绑定（注册）登录界面，登录失败的处理
                 let lang = req.session && req.session.lang || 'zh_CN';

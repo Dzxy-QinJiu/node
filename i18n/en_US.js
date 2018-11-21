@@ -305,6 +305,7 @@ var en_US = {
     'register.code.validate.expire': 'SMS verification code has expired',//短信验证码已过期
     'register.wechat.bind.user': 'Bind existing accounts',//绑定已有账号
     'register.wechat.register.bind': 'Registration of new accounts',//注册新账号
+    'login.wechat.register.login.error': 'WeChat register login failed',//微信号注册登录失败
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/

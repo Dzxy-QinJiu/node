@@ -44,14 +44,14 @@ var urls = {
     checkWechatIsBindUrl: '/auth2/authc/social/check',
     //通过微信的unionId登录
     wechatLoginByUnionIdUrl: '/auth2/authc/social/login',
-    //已有用户绑定微信账号
-    bindWechatUrl: '/auth2/authc/social/binding',
     //注册新用户绑定微信号并登录
     registBindWechatLoginUrl: '/auth2/authc/social/register',
+    //已有用户绑定微信账号
+    bindWechatUrl: '/auth2/rs/self/social/binding',
     //解绑微信
-    unbindWechatUrl: '/auth2/authc/social/unbind',
+    unbindWechatUrl: '/auth2/rs/self/social/unbind',
     //登录后判断是否绑定微信
-    checkLoginWechatIsBindUrl: '/auth2/authc/login/social/bind'
+    checkLoginWechatIsBindUrl: '/auth2/rs/self/social'
 
 };
 //验证码的高和宽

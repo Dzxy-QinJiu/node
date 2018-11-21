@@ -50,12 +50,13 @@ class UserInfo extends React.Component{
             lang: Oplate.lang || 'zh_CN',
             isBindWechat: true,//是否绑定微信
             isLoadingWechatBind: false,//是否正在绑定微信
-            weChatBindErrorMsg: ''//微信账号绑定的错误提示
+            //微信扫描绑定失败后，跳到个人资料界面带着失败的标识
+            weChatBindErrorMsg: props.bind_error ? Intl.get('login.wechat.bind.error', '微信绑定失败') : ''//微信账号绑定的错误提示
         };
     }
 
     componentDidMount() {
-        // this.getWechatIsBind();
+        this.getWechatIsBind();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -351,7 +352,7 @@ class UserInfo extends React.Component{
                                         <a onClick={this.unbindWechat.bind(this)} data-tracename="解绑微信">
                                             {Intl.get('user.wechat.unbind', '解绑微信')}
                                         </a>) : (
-                                        <a href="/page/login/wechat" data-tracename="绑定微信">
+                                        <a href="/page/login/wechat?isBindWechatAfterLogin=true" data-tracename="绑定微信">
                                             {Intl.get('register.wechat.bind.btn', '立即绑定')}
                                         </a>)}
                         </span>
@@ -372,7 +373,7 @@ class UserInfo extends React.Component{
             success: (result) => {
                 this.setState({
                     isLoadingWechatBind: false,
-                    isBindWechat: !!result,
+                    isBindWechat: result,//true:已绑定，false:未绑定
                     weChatBindErrorMsg: ''
                 });
             },
@@ -382,14 +383,6 @@ class UserInfo extends React.Component{
                     weChatBindErrorMsg: errorMsg.responseJSON || Intl.get('login.wechat.bind.check.error', '检查是否绑定微信出错了')
                 });
             }
-        });
-    }
-    //绑定微信
-    bindWechat(){
-        $.ajax({
-            url: '/page/login/wechat',
-            dataType: 'json',
-            type: 'get'
         });
     }
 
@@ -526,6 +519,7 @@ UserInfo.propTypes = {
     managedRealm: PropTypes.string,
     userInfoErrorMsg: PropTypes.string,
     userInfoLoading: PropTypes.bool,
+    bind_error: PropTypes.bool
 };
 
 const UserInfoForm = Form.create()(UserInfo);

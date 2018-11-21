@@ -286,6 +286,7 @@ var zh_CN = {
     'login.wechat.login.error': '微信登录失败',
     'login.wechat.bind.error': '微信绑定失败',
     'login.wechat.bind.check.error': '检查是否绑定微信出错了',
+    'login.wechat.register.login.error': '微信号注册登录失败',
 
     'register.set.company.id': '设置公司标识',
     'register.valid.phone': '验证手机',
