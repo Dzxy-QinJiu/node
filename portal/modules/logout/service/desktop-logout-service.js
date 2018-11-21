@@ -43,13 +43,12 @@ exports.ssoLogout = function(req, res) {
  * @param sessionID
  * @param accessToken
  */
-
 exports.sessionTimeout = function(sessionID, accessToken) {
     var url = urls.ssoLogout + '?only_exit_current=yes';
     return restUtil.baseRest.get(
         {
             url: url,
-            req: {sessionID},
+            req: {sessionID, 'headers': {}},
             res: {},
             headers: {
                 Authorization: userTokenPrefix + accessToken
