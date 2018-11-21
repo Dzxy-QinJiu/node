@@ -2547,6 +2547,9 @@ var en_US = {
     'sales.opportunity.assign.department.owner': 'Please select the department head to be assigned',//请选择要分配的部门主管
     'sales.opportunity.process.config.list': 'Failed to get process node',//获取流程节点失败
     'common.the.month.total': 'the month total',//本月合计
-    'my.app.app.secret.key': 'Secret key'//密钥
+    'my.app.app.secret.key': 'Secret key',//密钥
+    'common.qualified.time': 'qualified time',//合格时间
+    'common.turn.in.time': 'turn in time',//转入时间
+    'common.turn.out.time': 'turn out time',//转出时间
 };
 export default en_US;

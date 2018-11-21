@@ -34,19 +34,21 @@ class HistoricHighDetail extends React.Component {
         let processedData = _.map(customerIds, customer_id => {
             return {
                 customer_id,
-                qualified_time: data.highest_date,
+                time: Intl.get('common.qualified.time', '合格时间') + ': ' + data.highest_date,
             };
         });
 
         _.each(data.turn_in, turnInItem => {
-            let customer = _.findIndex(processedData, dataItem => dataItem.customer_id === turnInItem.customer_id);
+            let customer = _.find(processedData, dataItem => dataItem.customer_id === turnInItem.customer_id);
 
             if (customer) {
-                customer.turn_in_time = moment(turnInItem.time).format(oplateConsts.DATE_FORMAT);
+                customer.flag = 'turn-in';
+                customer.time = customer.time + '\n' + Intl.get('common.turn.in.time', '转入时间') + ': ' + moment(turnInItem.time).format(oplateConsts.DATE_FORMAT);
             } else {
                 processedData.push({
                     customer_id: turnInItem.customer_id,
-                    turn_in_time: moment(turnInItem.time).format(oplateConsts.DATE_FORMAT),
+                    flag: 'turn-in',
+                    time: Intl.get('common.turn.in.time', '转入时间') + ': ' + moment(turnInItem.time).format(oplateConsts.DATE_FORMAT)
                 });
             }
         });
@@ -55,11 +57,14 @@ class HistoricHighDetail extends React.Component {
             let customer = _.find(processedData, dataItem => dataItem.customer_id === turnOutItem.customer_id);
 
             if (customer) {
+                customer.flag = 'turn-out';
+                customer.time = customer.time + '\n' + Intl.get('common.turn.out.time', '转出时间') + ': ' + moment(turnOutItem.time).format(oplateConsts.DATE_FORMAT);
                 customer.turn_out_time = moment(turnOutItem.time).format(oplateConsts.DATE_FORMAT);
             } else {
                 processedData.push({
                     customer_id: turnOutItem.customer_id,
-                    turn_out_time: moment(turnOutItem.time).format(oplateConsts.DATE_FORMAT),
+                    flag: 'turn-out',
+                    time: Intl.get('common.turn.out.time', '转出时间') + ': ' + moment(turnOutItem.time).format(oplateConsts.DATE_FORMAT)
                 });
             }
         });
@@ -67,6 +72,7 @@ class HistoricHighDetail extends React.Component {
         return processedData;
     }
 
+    //补全客户名
     replenishCustomerName() {
         const customers = this.state.data;
         const count = customers.length;
@@ -91,6 +97,14 @@ class HistoricHighDetail extends React.Component {
 
                     if (matchedResultDataItem) {
                         dataItem.customer_name = matchedResultDataItem.name;
+
+                        if (dataItem.flag) {
+                            if (dataItem.flag === 'turn-in') {
+                                dataItem.customer_name += '(转入客户)';
+                            } else {
+                                dataItem.customer_name += '(转出客户)';
+                            }
+                        }
                     }
                 });
 
@@ -110,17 +124,11 @@ class HistoricHighDetail extends React.Component {
 
     getColumns() {
         return [{
-            title: '客户名',
+            title: Intl.get('crm.41', '客户名'),
             dataIndex: 'customer_name',
         }, {
-            title: '合格时间',
-            dataIndex: 'qualified_time',
-        }, {
-            title: '转入时间',
-            dataIndex: 'turn_in_time',
-        }, {
-            title: '转出时间',
-            dataIndex: 'turn_out_time',
+            title: '时间',
+            dataIndex: 'time',
         }];
     }
 

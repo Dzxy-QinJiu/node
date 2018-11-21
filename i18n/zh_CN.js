@@ -2561,6 +2561,9 @@ var zh_CN = {
     'sales.opportunity.assign.department.owner': '请选择要分配的部门主管',
     'sales.opportunity.process.config.list': '获取流程节点失败',
     'common.the.month.total': '本月合计',
-    'my.app.app.secret.key': '密钥'
+    'my.app.app.secret.key': '密钥',
+    'common.qualified.time': '合格时间',
+    'common.turn.in.time': '转入时间',
+    'common.turn.out.time': '转出时间',
 };
 export default zh_CN;
