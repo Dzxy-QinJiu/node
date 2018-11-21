@@ -45,7 +45,7 @@ class OrgCard extends React.Component {
             this.setState({
                 list: []
             });
-        }).timeout(function () {
+        }).timeout(function() {
             this.setState({
                 list: []
             });
@@ -129,25 +129,11 @@ class OrgCard extends React.Component {
             }
         });
     }
-    // 获取子部门
-    getChildDepartment = (childGroup) => {
-        let childDepartName = [];
-        const getChildDepartmentData = (childGroup) => {
-            if (_.isArray(childGroup) && childGroup.length) {
-                _.each(childGroup, (childItem) => {
-                    childDepartName.push(childItem.group_name);
-                    getChildDepartmentData(childItem.child_groups);
-                });
-            }
-        }
-        getChildDepartmentData(childGroup);
-        return childDepartName;
-    };
     render() {
         const options = this.getOrganizationOptions();
         const { groupsInfo } = this.props;
         const hasEditAuth = hasPrivilege('USER_ORGANIZATION_MEMBER_EDIT') && hasPrivilege('APP_USER_EDIT');
-        const renderOrgCard = ({groupsData=null, departmentData=null, teamData=null }) => (
+        const renderOrgCard = ({groupsData = null, departmentData = null, teamData = null }) => (
             <DetailCard
                 loading={this.state.submitType === 'loading'}
                 titleBottomBorderNone={true}
@@ -201,7 +187,7 @@ class OrgCard extends React.Component {
                     </div>
                 )}
             />
-        )
+        );
         if (groupsInfo.length === 0) { // 没有组织信息时，只显示标题
             return (
                 <div>
@@ -215,6 +201,8 @@ class OrgCard extends React.Component {
         groups = _.map(groupsInfo, (groupItem) => {
             if (groupItem.category === +CATEGORY_TYPE.ORGANIZATION) { // 组织
                 groupsData = groupItem.group_name;
+            }else{
+                groupsData = null;
             }
             let departmentData = null;
             let teamData = null;
@@ -228,10 +216,7 @@ class OrgCard extends React.Component {
                                 {Intl.get('crm.113', '部门')}:
                             </span>
                             <span className="sales-team-text">
-                                {childItem.group_name}
-                                {this.getChildDepartment(childItem.child_groups).length ? (
-                                    '/' + this.getChildDepartment(childItem.child_groups).join('/')
-                                ) : ''}
+                                {_.isArray(groupItem.child_groups_names) ? groupItem.child_groups_names.join('/') : null}
                             </span>
                         </div>;
                     } else if (childItem.category === +CATEGORY_TYPE.TEAM) { // 团队
@@ -246,7 +231,7 @@ class OrgCard extends React.Component {
             }
             return (
                 <div>
-                    {renderOrgCard({groupsData, teamData, departmentData})}
+                    {groupsData || teamData || departmentData ? renderOrgCard({groupsData, teamData, departmentData}) : null}
                 </div>
             );
         });
@@ -255,10 +240,11 @@ class OrgCard extends React.Component {
 }
 
 OrgCard.defaultProps = {
-    onChange: function () { },
+    onChange: function() { },
     showBtn: false,
     organization_id: '',
-    onModifySuccess: function () { }
+    onModifySuccess: function() { },
+    groupsInfo: {}
 };
 
 OrgCard.propTypes = {
@@ -270,5 +256,6 @@ OrgCard.propTypes = {
     onChange: PropTypes.func,
     organization_name: PropTypes.string,
     organization_id: PropTypes.string,
+    groupsInfo: PropTypes.object,
 };
 export default OrgCard;
