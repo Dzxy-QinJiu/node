@@ -301,9 +301,10 @@ CrmStore.prototype.setLoadingState = function(loadingState) {
 
 CrmStore.prototype.setCurrentCustomer = function(id) {
     this.currentId = id;
-    this.curCustomer = _.find(this.curCustomers, customer => {
-        return customer.id === id;
-    });
+    let curCustomer = _.find(this.curCustomers, customer => customer.id === id);
+    if(curCustomer){
+        this.curCustomer = curCustomer;
+    }
 };
 
 //刷新客户列表
