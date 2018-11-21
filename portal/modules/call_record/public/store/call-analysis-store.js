@@ -249,8 +249,10 @@ CallAnalysisStore.prototype.getCallInfo = function(result) {
             };
 
             if (memberTotal){
-                returnObj.personAverageAnswer = (getData(salesPhone.calloutSuccess) / memberTotal).toFixed(), //人均接通数
-                returnObj.personAverageTime = (getData(salesPhone.totalTime) / memberTotal).toFixed();//人均通话时长
+                var personAverageAnswer = getData(salesPhone.calloutSuccess) / memberTotal;
+                var personAverageTime = getData(salesPhone.totalTime) / memberTotal;
+                returnObj.personAverageAnswer = !isNaN(parseFloat(personAverageAnswer)) ? personAverageAnswer.toFixed() : '', //人均接通数
+                returnObj.personAverageTime = !isNaN(parseFloat(personAverageTime)) ? personAverageTime.toFixed() : '';//人均通话时长
             }
 
             return returnObj;

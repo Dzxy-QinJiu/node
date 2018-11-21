@@ -45,14 +45,14 @@ class OrgCard extends React.Component {
             this.setState({
                 list: []
             });
-        }).timeout(function () {
+        }).timeout(function() {
             this.setState({
                 list: []
             });
         });
     }
     onSelectChange(value, text) {
-        var trimValue = $.trim(value);
+        var trimValue = _.trim(value);
         if (!trimValue) {
             this.props.onChange('');
             this.setState({
@@ -139,7 +139,7 @@ class OrgCard extends React.Component {
                     getChildDepartmentData(childItem.child_groups);
                 });
             }
-        }
+        };
         getChildDepartmentData(childGroup);
         return childDepartName;
     };
@@ -147,7 +147,7 @@ class OrgCard extends React.Component {
         const options = this.getOrganizationOptions();
         const { groupsInfo } = this.props;
         const hasEditAuth = hasPrivilege('USER_ORGANIZATION_MEMBER_EDIT') && hasPrivilege('APP_USER_EDIT');
-        const renderOrgCard = ({groupsData=null, departmentData=null, teamData=null }) => (
+        const renderOrgCard = ({groupsData = null, departmentData = null, teamData = null }) => (
             <DetailCard
                 loading={this.state.submitType === 'loading'}
                 titleBottomBorderNone={true}
@@ -201,7 +201,7 @@ class OrgCard extends React.Component {
                     </div>
                 )}
             />
-        )
+        );
         if (groupsInfo.length === 0) { // 没有组织信息时，只显示标题
             return (
                 <div>
@@ -255,10 +255,10 @@ class OrgCard extends React.Component {
 }
 
 OrgCard.defaultProps = {
-    onChange: function () { },
+    onChange: function() { },
     showBtn: false,
     organization_id: '',
-    onModifySuccess: function () { }
+    onModifySuccess: function() { }
 };
 
 OrgCard.propTypes = {

@@ -1588,7 +1588,7 @@ const ApplyViewDetail = createReactClass({
         //构造提交数据
         var submitData = {
             apply_id: this.props.detailItem.id,
-            comment: $.trim(this.state.formData.comment),
+            comment: _.trim(this.state.formData.comment),
             notice_url: getApplyDetailUrl(this.state.detailInfoObj.info)
         };
         if (!submitData.comment) {
@@ -1622,7 +1622,7 @@ const ApplyViewDetail = createReactClass({
             return;
         }
         this.setField('comment', event);
-        var val = $.trim(event.target.value);
+        var val = _.trim(event.target.value);
         if (val) {
             ApplyViewDetailActions.hideReplyCommentEmptyError();
         }
@@ -1653,7 +1653,7 @@ const ApplyViewDetail = createReactClass({
         this.setState(state);
         let backoutObj = {
             apply_id: this.props.detailItem.id,
-            remark: $.trim(this.state.formData.comment),
+            remark: _.trim(this.state.formData.comment),
             notice_url: getApplyDetailUrl(this.state.detailInfoObj.info)
         };
         ApplyViewDetailActions.saleBackoutApply(backoutObj);
@@ -1779,7 +1779,7 @@ const ApplyViewDetail = createReactClass({
     // 用户名没有更改，只改用户数量为1时，需要发送用户名的校验
     checkUserName() {
         let obj = {
-            user_name: $.trim(this.state.detailInfoObj.info.user_names[0]),
+            user_name: _.trim(this.state.detailInfoObj.info.user_names[0]),
             customer_id: this.state.detailInfoObj.info.customer_id
         };
         let userInfoData = [], errMsg = '';
@@ -1971,7 +1971,7 @@ const ApplyViewDetail = createReactClass({
                 }
                 //如果是已有用户选择开通，则不提交user_name和number
                 if (!isExistUserApply) {
-                    obj.user_name = $.trim(this.state.formData.user_name);
+                    obj.user_name = _.trim(this.state.formData.user_name);
                     obj.nick_name = this.state.formData.nick_name;
                 }
             }

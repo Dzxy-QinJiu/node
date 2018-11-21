@@ -282,7 +282,7 @@ class ApplyViewDetail extends React.Component {
         //构造提交数据
         var submitData = {
             id: this.props.detailItem.id,
-            comment: $.trim(this.state.replyFormInfo.comment),
+            comment: _.trim(this.state.replyFormInfo.comment),
         };
         if (!submitData.comment) {
             SalesOpportunityApplyDetailAction.showReplyCommentEmptyError();
@@ -297,7 +297,7 @@ class ApplyViewDetail extends React.Component {
         if (this.state.replyFormInfo.result === 'loading') {
             return;
         }
-        var val = $.trim(event.target.value);
+        var val = _.trim(event.target.value);
         SalesOpportunityApplyDetailAction.setApplyFormDataComment(val);
         if (val) {
             SalesOpportunityApplyDetailAction.hideReplyCommentEmptyError();

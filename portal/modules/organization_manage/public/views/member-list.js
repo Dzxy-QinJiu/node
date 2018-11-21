@@ -822,7 +822,7 @@ var MemberList = createReactClass({
     },
 
     onSearchInputChange: function(keyword) {
-        let searchValue = keyword ? keyword.trim() : '';
+        let searchValue = _.trim(keyword);
         if (searchValue !== this.state.searchValue) {
             this.setState({searchValue: searchValue}, () => {
                 this.getMemberList(1, this.state.addMemberPageSize);
