@@ -2552,5 +2552,6 @@ var en_US = {
     'common.turn.in.time': 'turn in time',//转入时间
     'common.turn.out.time': 'turn out time',//转出时间
     'common.data.request.error': 'Data request error',//数据请求出错
+    'common.turn.in.customer': 'turn in customer',//转入客户
 };
 export default en_US;

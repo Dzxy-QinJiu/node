@@ -2566,5 +2566,6 @@ var zh_CN = {
     'common.turn.in.time': '转入时间',
     'common.turn.out.time': '转出时间',
     'common.data.request.error': '数据请求出错',
+    'common.turn.in.customer': '转入客户',
 };
 export default zh_CN;

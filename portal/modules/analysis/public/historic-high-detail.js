@@ -131,9 +131,9 @@ class HistoricHighDetail extends React.Component {
 
                 if (record.flag) {
                     if (record.flag === 'turn-in') {
-                        flag = <b>(转入客户)</b>;
+                        flag = <b>（{Intl.get('common.turn.in.customer': '转入客户')}）</b>;
                     } else {
-                        flag = <b>(转出客户)</b>;
+                        flag = <b>（{Intl.get('crm.customer.transfer': '转出客户')}）</b>;
                     }
                 }
 
