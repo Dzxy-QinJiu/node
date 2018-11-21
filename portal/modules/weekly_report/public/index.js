@@ -28,6 +28,9 @@ class WeeklyReport extends React.Component {
     }
 
     componentDidMount() {
+        //让顶部栏上的报告菜单显示选中状态
+        $('.analysis_report_ico a').addClass('active');
+
         WeeklyReportStore.listen(this.onStoreChange);
         this.getTeamMemberData(); //获取销售团队和成员数据
     }

@@ -205,32 +205,42 @@ class LeftMenuClass {
                             'CUSTOMER_ANALYSIS_MANAGER',
                         ]
                     },
-                    //周报统计
                     {
-                        id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
-                        name: backendIntl.get('analysis.sales.weekly.report', '销售周报'),
-                        routePath: 'analysis/weekly_report',
+                        id: 'REPORT',//唯一标识
+                        name: '报告',
+                        routePath: 'analysis/report',
                         privileges: [
-                            'CALLRECORD_ASKFORLEAVE_ADD',
+                            'PHONE_ACCESS_CALL_IN',
                         ],
                         //有这个权限，才显示入口图标
-                        showPrivileges: ['CALLRECORD_ASKFORLEAVE_ADD']
+                        showPrivileges: ['PHONE_ACCESS_CALL_IN']
                     },
-                    //月报统计
-                    {
-                        id: 'MONTHLY_REPORT_ANALYSIS',//唯一标识
-                        name: backendIntl.get('analysis.sales.monthly.report', '销售月报'),
-                        routePath: 'analysis/monthly_report',
-                        privileges: [
-                            'CALL_RECORD_VIEW_MANAGER',
-                            'CALL_RECORD_VIEW_USER',
-                        ],
-                        //有这个权限，才显示入口图标
-                        showPrivileges: [
-                            'CALL_RECORD_VIEW_MANAGER',
-                            'CALL_RECORD_VIEW_USER',
-                        ]
-                    },
+                ]
+            },
+            //周报统计
+            {
+                id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
+                name: backendIntl.get('analysis.sales.weekly.report', '销售周报'),
+                routePath: 'analysis/weekly_report',
+                privileges: [
+                    'CALLRECORD_ASKFORLEAVE_ADD',
+                ],
+                //有这个权限，才显示入口图标
+                showPrivileges: ['CALLRECORD_ASKFORLEAVE_ADD']
+            },
+            //月报统计
+            {
+                id: 'MONTHLY_REPORT_ANALYSIS',//唯一标识
+                name: backendIntl.get('analysis.sales.monthly.report', '销售月报'),
+                routePath: 'analysis/monthly_report',
+                privileges: [
+                    'CALL_RECORD_VIEW_MANAGER',
+                    'CALL_RECORD_VIEW_USER',
+                ],
+                //有这个权限，才显示入口图标
+                showPrivileges: [
+                    'CALL_RECORD_VIEW_MANAGER',
+                    'CALL_RECORD_VIEW_USER',
                 ]
             },
 
