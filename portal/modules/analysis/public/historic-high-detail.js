@@ -103,14 +103,6 @@ class HistoricHighDetail extends React.Component {
 
                     if (matchedResultDataItem) {
                         dataItem.customer_name = matchedResultDataItem.name;
-
-                        if (dataItem.flag) {
-                            if (dataItem.flag === 'turn-in') {
-                                dataItem.customer_name += '(转入客户)';
-                            } else {
-                                dataItem.customer_name += '(转出客户)';
-                            }
-                        }
                     }
                 });
 
@@ -134,6 +126,19 @@ class HistoricHighDetail extends React.Component {
             title: Intl.get('crm.41', '客户名'),
             dataIndex: 'customer_name',
             width: '50%',
+            render: (text, record) => {
+                let flag = '';
+
+                if (record.flag) {
+                    if (record.flag === 'turn-in') {
+                        flag = <b>(转入客户)</b>;
+                    } else {
+                        flag = <b>(转出客户)</b>;
+                    }
+                }
+
+                return <span>{text}{flag}</span>;
+            }
         }, {
             title: '时间',
             dataIndex: 'time',
