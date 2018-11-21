@@ -25,8 +25,7 @@ module.exports = {
     name: "server-side rendering",
     entry: {
         login_curtao: ['./portal/components/Login-curtao/index'],
-        login: ['./portal/components/Login/index'],
-        wechat_bind_login: ['./portal/components/wechat-bind-login/index']
+        login: ['./portal/components/Login/index']
     },
     target: "node",
     output: {
