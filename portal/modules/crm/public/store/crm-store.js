@@ -190,19 +190,21 @@ CrmStore.prototype.deleteCustomer = function(ids) {
 CrmStore.prototype.editBasicSuccess = function(newBasic) {
     if (newBasic && newBasic.id) {
         let updateCustomer = _.find(this.curCustomers, customer => customer.id === newBasic.id);
-        for (var key in newBasic) {
-            if (newBasic[key] || newBasic[key] === '') {
-                updateCustomer[key] = newBasic[key];
-            }
-            if (key === 'member_role') {//转出客户时，打上”转出“标签
-                if (_.isArray(updateCustomer.immutable_labels)) {
-                    if (updateCustomer.immutable_labels.indexOf(Intl.get('crm.qualified.roll.out', '转出')) === -1) {
-                        updateCustomer.immutable_labels.push(Intl.get('crm.qualified.roll.out', '转出'));
-                    }
-                } else {
-                    updateCustomer.immutable_labels = [Intl.get('crm.qualified.roll.out', '转出')];
+        if(updateCustomer){
+            for (var key in newBasic) {
+                if (newBasic[key] || newBasic[key] === '') {
+                    updateCustomer[key] = newBasic[key];
                 }
+                if (key === 'member_role') {//转出客户时，打上”转出“标签
+                    if (_.isArray(updateCustomer.immutable_labels)) {
+                        if (updateCustomer.immutable_labels.indexOf(Intl.get('crm.qualified.roll.out', '转出')) === -1) {
+                            updateCustomer.immutable_labels.push(Intl.get('crm.qualified.roll.out', '转出'));
+                        }
+                    } else {
+                        updateCustomer.immutable_labels = [Intl.get('crm.qualified.roll.out', '转出')];
+                    }
 
+                }
             }
         }
     }
