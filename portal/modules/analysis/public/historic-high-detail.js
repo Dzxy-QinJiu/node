@@ -49,7 +49,7 @@ class HistoricHighDetail extends React.Component {
 
             if (customer) {
                 customer.flag = 'turn-in';
-                customer.time = customer.time + '\n' + Intl.get('common.turn.in.time', '转入时间') + ': ' + moment(turnInItem.time).format(oplateConsts.DATE_FORMAT);
+                customer.time = customer.time + ', ' + Intl.get('common.turn.in.time', '转入时间') + ': ' + moment(turnInItem.time).format(oplateConsts.DATE_FORMAT);
             } else {
                 processedData.push({
                     customer_id: turnInItem.customer_id,
@@ -64,7 +64,7 @@ class HistoricHighDetail extends React.Component {
 
             if (customer) {
                 customer.flag = 'turn-out';
-                customer.time = customer.time + '\n' + Intl.get('common.turn.out.time', '转出时间') + ': ' + moment(turnOutItem.time).format(oplateConsts.DATE_FORMAT);
+                customer.time = customer.time + ', ' + Intl.get('common.turn.out.time', '转出时间') + ': ' + moment(turnOutItem.time).format(oplateConsts.DATE_FORMAT);
                 customer.turn_out_time = moment(turnOutItem.time).format(oplateConsts.DATE_FORMAT);
             } else {
                 processedData.push({
