@@ -34,9 +34,11 @@ CustomerRepeatStore.prototype.updateCustomerDefContact = function(contact) {
 CustomerRepeatStore.prototype.editBasicSuccess = function(newBasic) {
     if (newBasic && newBasic.id) {
         let updateCustomer = _.find(this.originCustomerList, customer => customer.id === newBasic.id);
-        for (var key in newBasic) {
-            if (newBasic[key] || newBasic[key] === '') {
-                updateCustomer[key] = newBasic[key];
+        if(updateCustomer){
+            for (var key in newBasic) {
+                if (newBasic[key] || newBasic[key] === '') {
+                    updateCustomer[key] = newBasic[key];
+                }
             }
         }
         this.repeatCustomerList = this.processForList(this.originCustomerList);
@@ -54,30 +56,30 @@ CustomerRepeatStore.prototype.setFilterObj = function(filterObj) {
 CustomerRepeatStore.prototype.toggleSearchInput = function(keyObj) {
     this.filterObj = {};
     switch (keyObj.key) {
-    case 'name':
-        this.nameSearchIsShow = keyObj.isShow;
-        if (keyObj.isShow) {
+        case 'name':
+            this.nameSearchIsShow = keyObj.isShow;
+            if (keyObj.isShow) {
             //展示客户搜索时，关闭其他搜索
-            this.userNameSearchIsShow = false;
-            this.remarksSearchIsShow = false;
-        }
-        break;
-    case 'user_name':
-        this.userNameSearchIsShow = keyObj.isShow;
-        if (keyObj.isShow) {
+                this.userNameSearchIsShow = false;
+                this.remarksSearchIsShow = false;
+            }
+            break;
+        case 'user_name':
+            this.userNameSearchIsShow = keyObj.isShow;
+            if (keyObj.isShow) {
             //展示客户搜索时，关闭其他搜索
-            this.nameSearchIsShow = false;
-            this.remarksSearchIsShow = false;
-        }
-        break;
-    case 'remarks':
-        this.remarksSearchIsShow = keyObj.isShow;
-        if (keyObj.isShow) {
+                this.nameSearchIsShow = false;
+                this.remarksSearchIsShow = false;
+            }
+            break;
+        case 'remarks':
+            this.remarksSearchIsShow = keyObj.isShow;
+            if (keyObj.isShow) {
             //展示客户搜索时，关闭其他搜索
-            this.nameSearchIsShow = false;
-            this.userNameSearchIsShow = false;
-        }
-        break;
+                this.nameSearchIsShow = false;
+                this.userNameSearchIsShow = false;
+            }
+            break;
     }
 };
 
