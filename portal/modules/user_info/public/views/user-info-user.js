@@ -48,14 +48,14 @@ class UserInfo extends React.Component{
             isSaving: false,
             saveErrorMsg: '',
             lang: Oplate.lang || 'zh_CN',
-            isBindWechat: false,//是否绑定微信
+            isBindWechat: true,//是否绑定微信
             isLoadingWechatBind: false,//是否正在绑定微信
             weChatBindErrorMsg: ''//微信账号绑定的错误提示
         };
     }
 
     componentDidMount() {
-        this.getWechatIsBind();
+        // this.getWechatIsBind();
     }
 
     componentWillReceiveProps(nextProps) {
