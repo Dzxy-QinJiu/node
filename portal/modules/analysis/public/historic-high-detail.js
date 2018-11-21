@@ -2,7 +2,6 @@
  * 试用合格客户统计历史最高值明细
  */
 
-//require('./style.less');
 import ajax from 'ant-ajax';
 import { AntcTable } from 'antc';
 
@@ -37,6 +36,7 @@ class HistoricHighDetail extends React.Component {
     processData(data) {
         const customerIds = data.customer_ids;
 
+        //将历史最高客户id数组转为客户数组
         let processedData = _.map(customerIds, customer_id => {
             return {
                 customer_id,
@@ -44,6 +44,7 @@ class HistoricHighDetail extends React.Component {
             };
         });
 
+        //将转入客户加入客户数组
         _.each(data.turn_in, turnInItem => {
             let customer = _.find(processedData, dataItem => dataItem.customer_id === turnInItem.customer_id);
 
@@ -59,6 +60,7 @@ class HistoricHighDetail extends React.Component {
             }
         });
 
+        //将转出客户加入客户数组
         _.each(data.turn_out, turnOutItem => {
             let customer = _.find(processedData, dataItem => dataItem.customer_id === turnOutItem.customer_id);
 
@@ -111,13 +113,12 @@ class HistoricHighDetail extends React.Component {
                     loading: false
                 });
             }
-        })
-            .fail(() => {
-                this.setState({
-                    isShowError: true,
-                    loading: false
-                });
+        }).fail(() => {
+            this.setState({
+                isShowError: true,
+                loading: false
             });
+        });
     }
 
     //获取表格列定义
