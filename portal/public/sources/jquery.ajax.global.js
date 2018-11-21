@@ -5,6 +5,7 @@
  *       页面会使用$.tooltip提示一个错误信息 "您已很长时间没有进行操作，为了保障帐号安全，请重新登录系统"
  */
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from '../../lib/websso';
+
 var UI_ERROR = require('../../lib/utils/request-error-util');
 import {Modal} from 'antd';
 
@@ -16,6 +17,7 @@ import {Modal} from 'antd';
     const BASE64_PREFIX = 'data:image/png;base64,';
     const NO_SERVICE_ERROR = Intl.get('login.error.retry', '登录服务暂时不可用，请稍后重试');
     module.exports.handleSessionExpired = handel401Ajax;
+
     /*处理ajax时，session过期的问题*/
     function handel401Ajax() {
         sendMessage && sendMessage('session过期, globalError status: 401');
@@ -148,14 +150,15 @@ import {Modal} from 'antd';
                 dataType: 'json',
                 type: 'post',
                 data: submitObj,
-                success: loginSuccess,
+                success: loginSuccess.bind(this, submitObj.username),
                 error: loginError.bind(this, submitObj.username)
             });
         }
     }
 
     //登录成功处理
-    function loginSuccess() {
+    function loginSuccess(username, data) {
+        sendMessage && sendMessage(username + ' 登录成功: ' + JSON.stringify(data));
         userData.getUserDataByAjax().done(function() {
             //重新建立socket连接
             !Oplate.hideSomeItem && require('./push').startSocketIo();
@@ -169,8 +172,9 @@ import {Modal} from 'antd';
     }
 
     //登录失败处理
-    function loginError(username, error) {
-        let errorMsg = error && error.responseJSON;
+    function loginError(username, xhr, error) {
+        sendMessage && sendMessage(username + ' 登录失败 : ' + JSON.stringify(xhr && xhr.responseJSON) + ',  error: ' + JSON.stringify(error));
+        let errorMsg = xhr && xhr.responseJSON || error;
         if (errorMsg === Intl.get('errorcode.39', '用户名或密码错误') || !errorMsg) {
             errorMsg = Intl.get('login.password.error', '密码错误');
         }
@@ -215,8 +219,8 @@ import {Modal} from 'antd';
                 $submitBtn.html(Intl.get('retry.submit.again', '提交'));
             },
             error: function() {
-                sendMessage && sendMessage(Intl.get('retry.failed.get.code', '获取验证码错误'));
-                $error.html(NO_SERVICE_ERROR);
+                sendMessage && sendMessage(username + ',获取验证码错误');
+                $error.html(errorMsg || NO_SERVICE_ERROR);
                 $submitBtn.html(Intl.get('retry.submit.again', '提交'));
             }
         });
@@ -294,22 +298,22 @@ import {Modal} from 'antd';
     function globalErrorHandler(xhr, options) {
         var status = xhr.status;
         switch (status) {
-        case 401:
-            handel401Ajax();
-            break;
-        case 403:
-            //不允许多人登录被踢出的统一处理
-            if (xhr.responseJSON === UI_ERROR.LOGIN_ONLY_ONE || xhr.responseJSON === UI_ERROR.KICKED_BY_ADMIN) {
-                let reloginError = Intl.get('login.by.another', '您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！');
-                let kickedByAmdin = Intl.get('kicked.by.admin', '您已被被管理员踢出，请重新登录!');
-                handleReloginError((xhr.responseJSON === UI_ERROR.LOGIN_ONLY_ONE ) ? reloginError : kickedByAmdin);
-            } else {
-                handel403Ajax(xhr);
-            }
-            break;
-        case 408:
-            handleTimeout(xhr, options);
-            break;
+            case 401:
+                handel401Ajax();
+                break;
+            case 403:
+                //不允许多人登录被踢出的统一处理
+                if (xhr.responseJSON === UI_ERROR.LOGIN_ONLY_ONE || xhr.responseJSON === UI_ERROR.KICKED_BY_ADMIN) {
+                    let reloginError = Intl.get('login.by.another', '您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！');
+                    let kickedByAmdin = Intl.get('kicked.by.admin', '您已被被管理员踢出，请重新登录!');
+                    handleReloginError((xhr.responseJSON === UI_ERROR.LOGIN_ONLY_ONE) ? reloginError : kickedByAmdin);
+                } else {
+                    handel403Ajax(xhr);
+                }
+                break;
+            case 408:
+                handleTimeout(xhr, options);
+                break;
         }
     }
 
