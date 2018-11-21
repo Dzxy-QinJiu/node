@@ -51,8 +51,7 @@ var urls = {
     //解绑微信
     unbindWechatUrl: '/auth2/rs/self/social/unbind',
     //登录后判断是否绑定微信
-    checkLoginWechatIsBindUrl: '/auth2/rs/self/social'
-
+    checkLoginWechatIsBindUrl: '/auth2/rs/self/social?platform=wechat'
 };
 //验证码的高和宽
 var captcha = {
@@ -589,9 +588,6 @@ exports.checkLoginWechatIsBind = function(req, res) {
         {
             url: urls.checkLoginWechatIsBindUrl,
             req: req,
-            res: res,
-            form: {
-                platform: 'wechat'
-            }
+            res: res
         });
 };
