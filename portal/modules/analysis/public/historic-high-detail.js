@@ -12,7 +12,7 @@ class HistoricHighDetail extends React.Component {
     };
 
     static propTypes = {
-        data: PropsTypes.object
+        data: PropTypes.object
     };
 
     constructor(props) {
@@ -25,6 +25,7 @@ class HistoricHighDetail extends React.Component {
     }
 
     componentDidMount() {
+        this.replenishCustomerName();
     }
 
     processData(data) {
@@ -66,11 +67,38 @@ class HistoricHighDetail extends React.Component {
         return processedData;
     }
 
-    getNames() {
+    replenishCustomerName() {
+        const customers = this.state.data;
+        const count = customers.length;
+        const customerIds = _.map(customers, 'customer_id').join(',');
+
         ajax.send({
-            url: '/rest/customer/v2/salestage'
+            url: `/rest/customer/v2/customer/range/${count}/id/asc/force_use_common_rest`,
+            type: 'post',
+            data: {
+                query: {
+                    id: customerIds
+                }
+            }
         }).then(result => {
-            Store.stageList = result.result;
+            const resultData = _.get(result, 'result');
+
+            if (_.isArray(resultData)) {
+                const processedData = _.cloneDeep(this.state.data);
+
+                _.each(processedData, dataItem => {
+                    const matchedResultDataItem = _.find(resultData, resultDataItem => resultDataItem.id === dataItem.customer_id);
+
+                    if (matchedResultDataItem) {
+                        dataItem.customer_name = matchedResultDataItem.name;
+                    }
+                });
+
+                this.setState({
+                    data: processedData,
+                    loading: false
+                });
+            }
         });
     }
 
@@ -80,12 +108,27 @@ class HistoricHighDetail extends React.Component {
     componentWillUnmount() {
     }
 
+    getColumns() {
+        return [{
+            title: '客户名',
+            dataIndex: 'customer_name',
+        }, {
+            title: '合格时间',
+            dataIndex: 'qualified_time',
+        }, {
+            title: '转入时间',
+            dataIndex: 'turn_in_time',
+        }, {
+            title: '转出时间',
+            dataIndex: 'turn_out_time',
+        }];
+    }
+
     render() {
-        console.log(this.state.data);
         return (
             <div className='historic-high-detail'>
                 <AntcTable
-                    columns={this.getColumns}
+                    columns={this.getColumns()}
                     dataSource={this.state.data}
                     loading={this.state.loading}
                     pagination={false}

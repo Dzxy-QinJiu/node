@@ -232,11 +232,13 @@ class CurtaoAnalysis extends React.Component {
                     className="analysis-right-panel"
                     showFlag={this.state.isRightPanelShow}
                 >
-                    <div className="customer-table-close topNav">
+                    <div className="topNav">
                         <RightPanelClose
                             title={Intl.get('common.app.status.close', '关闭')}
                             onClick={this.hideRightPanel}
                         />
+                    </div>
+                    <div className="right-panel-content">
 
                         {this.state.isCustomerListShow ? (
                             <CustomerList
