@@ -19,15 +19,21 @@ class HistoricHighDetail extends React.Component {
         super(props);
 
         this.state = {
+            //数据
             data: this.processData(props.data),
+            //加载状态
             loading: true,
+            //是否显示出错信息
+            isShowError: false,
         };
     }
 
     componentDidMount() {
+        //补全客户名
         this.replenishCustomerName();
     }
 
+    //处理数据
     processData(data) {
         const customerIds = data.customer_ids;
 
@@ -86,7 +92,7 @@ class HistoricHighDetail extends React.Component {
                     id: customerIds
                 }
             }
-        }).then(result => {
+        }).done(result => {
             const resultData = _.get(result, 'result');
 
             if (_.isArray(resultData)) {
@@ -113,15 +119,16 @@ class HistoricHighDetail extends React.Component {
                     loading: false
                 });
             }
-        });
+        })
+            .fail(() => {
+                this.setState({
+                    isShowError: true,
+                    loading: false
+                });
+            });
     }
 
-    componentWillReceiveProps(nextProps) {
-    }
-
-    componentWillUnmount() {
-    }
-
+    //获取表格列定义
     getColumns() {
         return [{
             title: Intl.get('crm.41', '客户名'),
@@ -146,13 +153,19 @@ class HistoricHighDetail extends React.Component {
 
         return (
             <div className='historic-high-detail'>
-                <AntcTable
-                    columns={this.getColumns()}
-                    dataSource={this.state.data}
-                    loading={this.state.loading}
-                    pagination={false}
-                    scroll={{y: tableBodyHeight}}
-                />
+                {this.state.isShowError ? (
+                    <div className='error-info'>
+                        {Intl.get('common.data.request.error', '数据请求出错')}, <span className="retry-btn" onClick={this.replenishCustomerName.bind(this)}>{Intl.get('user.info.retry': '请重试')}</span>
+                    </div>
+                ) : (
+                    <AntcTable
+                        columns={this.getColumns()}
+                        dataSource={this.state.data}
+                        loading={this.state.loading}
+                        pagination={false}
+                        scroll={{y: tableBodyHeight}}
+                    />
+                )}
             </div>
         );
     }

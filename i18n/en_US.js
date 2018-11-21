@@ -2551,5 +2551,6 @@ var en_US = {
     'common.qualified.time': 'qualified time',//合格时间
     'common.turn.in.time': 'turn in time',//转入时间
     'common.turn.out.time': 'turn out time',//转出时间
+    'common.data.request.error': 'Data request error',//数据请求出错
 };
 export default en_US;

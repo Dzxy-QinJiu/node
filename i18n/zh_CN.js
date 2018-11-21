@@ -2565,5 +2565,6 @@ var zh_CN = {
     'common.qualified.time': '合格时间',
     'common.turn.in.time': '转入时间',
     'common.turn.out.time': '转出时间',
+    'common.data.request.error': '数据请求出错',
 };
 export default zh_CN;
