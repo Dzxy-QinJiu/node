@@ -126,13 +126,24 @@ class HistoricHighDetail extends React.Component {
         return [{
             title: Intl.get('crm.41', '客户名'),
             dataIndex: 'customer_name',
+            width: '50%',
         }, {
             title: '时间',
             dataIndex: 'time',
+            width: '50%',
         }];
     }
 
     render() {
+        //顶部栏高度
+        const topNavHeight = 64;
+        //表头高度
+        const tableHeaderHeight = 40;
+        //底边距
+        const bottomMargin = 16;
+        //表体高度
+        const tableBodyHeight = $(window).height() - topNavHeight - tableHeaderHeight - bottomMargin;
+
         return (
             <div className='historic-high-detail'>
                 <AntcTable
@@ -140,6 +151,7 @@ class HistoricHighDetail extends React.Component {
                     dataSource={this.state.data}
                     loading={this.state.loading}
                     pagination={false}
+                    scroll={{y: tableBodyHeight}}
                 />
             </div>
         );
