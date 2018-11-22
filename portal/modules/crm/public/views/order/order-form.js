@@ -1,193 +1,159 @@
-var React = require('react');
-var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
-const Validator = Validation.Validator;
 import {Form, Input, Select, DatePicker} from 'antd';
 const FormItem = Form.Item;
 const OrderAction = require('../../action/order-actions');
 import SearchIconList from '../../../../../components/search-icon-list';
-import ValidateMixin from '../../../../../mixins/ValidateMixin';
 import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
 import {disabledBeforeToday} from 'PUB_DIR/sources/utils/common-method-util';
-const OrderForm = createReactClass({
-    displayName: 'OrderForm',
-    mixins: [ValidateMixin],
-
-    getInitialState: function() {
-        return {
+class OrderForm extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
             isLoading: false,
             isAppPanelShow: false,
-            formData: JSON.parse(JSON.stringify(this.props.order)),
             errorMsg: ''
         };
-    },
+    }
 
-    handleCancel: function(e) {
+    handleCancel(e) {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '取消添加订单');
         e.preventDefault();
         OrderAction.hideForm();
-    },
+    }
 
-    handleSubmit: function(e) {
+    handleSubmit = (e) => {
         e.preventDefault();
-        const validation = this.refs.validation;
         Trace.traceEvent(ReactDOM.findDOMNode(this), '保存订单');
-        validation.validate(valid => {
-            if (!valid) {
-                return;
-            } else {
-                let reqData = JSON.parse(JSON.stringify(this.state.formData));
-                //接口中需要转换成万后的数据
-                _.set(reqData,'budget',reqData.budget / 10000);
-                delete reqData.isEdit;
-                //保存
-                reqData.customer_id = this.props.customerId;
-                this.setState({isLoading: true});
-                OrderAction.addOrder(reqData, {}, (data) => {
-                    this.setState({isLoading: false});
-                    this.state.isLoading = false;
-                    if (data && data.code === 0) {
-                        this.state.errorMsg = '';
-                        OrderAction.afterAddOrder(data.result);
-                        //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
-                        setTimeout(() => {
-                            _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(reqData.customer_id);
-                        }, 200);
-                    }
-                    else {
-                        this.state.errorMsg = data || Intl.get('crm.154', '添加失败');
-                    }
-                    this.setState(this.state);
-                });
-            }
+        this.props.form.validateFieldsAndScroll((err, values) => {
+            if (err) return;
+            let reqData = JSON.parse(JSON.stringify(values));
+            //接口中需要转换成万后的数据
+            reqData.budget = reqData.budget ? reqData.budget / 10000 : 0;
+            reqData.predict_finish_time = reqData.predict_finish_time ? moment(reqData.predict_finish_time).valueOf() : moment().valueOf();
+            //保存
+            reqData.customer_id = this.props.customerId;
+            this.setState({isLoading: true});
+            OrderAction.addOrder(reqData, {}, (data) => {
+                let errorMsg = '';
+                if (data && data.code === 0) {
+                    OrderAction.afterAddOrder(data.result);
+                    //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
+                    setTimeout(() => {
+                        _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(reqData.customer_id);
+                    }, 200);
+                }
+                else {
+                    errorMsg = data || Intl.get('crm.154', '添加失败');
+                }
+                this.setState({isLoading: false, errorMsg});
+            });
         });
-    },
+    }
 
-    onAppsChange: function(selectedApps) {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击选中/取消选中某个应用');
-        this.state.formData.apps = _.map(selectedApps, 'client_id');
-        this.setState(this.state);
-    },
-
-    changeExpectedTime: function(value) {
-        let timestamp = value && value.valueOf() || '';
-        let formData = this.state.formData;
-        formData.predict_finish_time = timestamp;
-        this.setState({
-            formDate: formData
+    onAppsChange = (selectedApps) => {
+        let selectAppIds = _.map(selectedApps, 'client_id');
+        this.props.form.setFieldsValue({
+            apps: selectAppIds,
         });
-    },
+    }
 
-    handleSelect: function() {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '选择销售阶段');
-    },
-
-    renderOrderForm: function() {
-        const formData = this.state.formData;
+    renderOrderForm() {
+        const { getFieldDecorator, getFieldsValue } = this.props.form;
+        const formData = getFieldsValue();
         //添加时，app的添加，修改时不需要展示
         let selectedAppList = [];
         let selectedAppListId = [];
         const appList = this.props.appList;
-        let apps = [];
         if (!formData.id) {
             if (formData.apps && formData.apps.length > 0) {
-                selectedAppList = this.props.appList.filter(app => {
-                    if (formData.apps.indexOf(app.client_id) > -1) {
-                        return true;
-                    }
-                });
+                selectedAppList = _.filter(appList, app => _.indexOf(formData.apps, app.client_id) !== -1);
                 selectedAppListId = _.map(selectedAppList, 'client_id');
             }
-            if (appList && appList.length > 0 && formData.apps && formData.apps.length > 0) {
-                apps = _.filter(appList, app => {
-                    if (formData.apps.indexOf(app.client_id) > -1) return true;
-                });
-            }
         }
+        const formItemLayout = {
+            labelCol: {span: 5},
+            wrapperCol: {span: 19},
+        };
         return (
             <Form layout='horizontal' className="order-form" id="order-form">
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     <FormItem
-                        label={Intl.get('sales.stage.sales.stage', '销售阶段')}
-                        labelCol={{span: 4}}
-                        wrapperCol={{span: 20}}
-                        validateStatus={this.getValidateStatus('sale_stages')}
-                        help={this.getHelpMessage('sale_stages')}
+                        label={Intl.get('deal.stage', '阶段')}
+                        {...formItemLayout}
                     >
-                        <Validator rules={[{required: true, message: Intl.get('crm.155', '请选择销售阶段')}]}>
+                        {getFieldDecorator('sale_stages', {
+                            initialValue: _.get(this.props,'stageList[0].name',''),
+                            rules: [{required: true, message: Intl.get('crm.155', '请选择销售阶段')}]
+                        })(
                             <Select size="large" placeholder={Intl.get('crm.155', '请选择销售阶段')}
                                 style={{width: '100%'}}
-                                value={formData.sale_stages}
-                                onChange={this.setField.bind(this, 'sale_stages')}
-                                name="sale_stages"
-                                onSelect={this.handleSelect}
                                 getPopupContainer={() => document.getElementById('order-form')}
                             >
                                 {this.props.stageList.map(function(stage, index) {
                                     return (<Option value={stage.name} key={index}>{stage.name}</Option>);
                                 })}
                             </Select>
-                        </Validator>
+                        )}
                     </FormItem>
                     <FormItem
-                        label={Intl.get('crm.148', '预算金额')}
-                        labelCol={{span: 4}}
-                        wrapperCol={{span: 20}}
-                        validateStatus={this.getValidateStatus('budget')}
-                        help={this.getHelpMessage('budget')}
+                        label={Intl.get('leave.apply.buget.count', '预算')}
+                        {...formItemLayout}
                     >
-                        <Validator
-                            rules={[{pattern: /^\d+(\.\d+)?$/, message: Intl.get('crm.157', '预算金额必须为数字')}]}>
-                            <Input value={formData.budget}
-                                name="budget"
-                                onChange={this.setField.bind(this, 'budget')}
+                        {getFieldDecorator('budget', {
+                            rules: [{required: true, message: Intl.get('crm.order.budget.input', '请输入预算金额')},
+                                {pattern: /^\d+(\.\d+)?$/, message: Intl.get('crm.157', '预算金额必须为数字')}]
+                        })(
+                            <Input placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
                                 addonAfter={Intl.get('contract.82', '元')}
                             />
-                        </Validator>
+                        )}
                     </FormItem>
                     <FormItem
                         label={Intl.get('crm.order.expected.deal', '预计成交')}
-                        labelCol={{span: 4}}
-                        wrapperCol={{span: 20}}
+                        {...formItemLayout}
                     >
-                        <DatePicker
-                            disabledDate={disabledBeforeToday}
-                            defaultValue={formData.predict_finish_time ? moment(formData.predict_finish_time) : null}
-                            onChange={this.changeExpectedTime.bind(this)}
-                            allowClear={false}/>
+                        {getFieldDecorator('predict_finish_time', {
+                            rules: [{required: true, message: Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}]
+                        })(
+                            <DatePicker
+                                disabledDate={disabledBeforeToday}
+                                allowClear={false}/>
+                        )}
                     </FormItem>
                     <FormItem
                         className="order-app-edit-block"
-                        label={Intl.get('common.app', '应用')}
-                        labelCol={{span: 4}}
-                        wrapperCol={{span: 20}}
+                        label={Intl.get('common.product', '产品')}
+                        {...formItemLayout}
                     >
-                        <SearchIconList
-                            totalList={this.props.appList}
-                            selectedList={selectedAppList}
-                            selectedListId={selectedAppListId}
-                            id_field="client_id"
-                            name_field="client_name"
-                            image_field="client_image"
-                            search_fields={['client_name']}
-                            onItemsChange={this.onAppsChange}
-                        />
+                        {getFieldDecorator('apps', {
+                            rules: [{required: true, message: Intl.get('leave.apply.select.product', '请选择产品')}]
+                        })(
+                            <SearchIconList
+                                totalList={this.props.appList}
+                                selectedList={selectedAppList}
+                                selectedListId={selectedAppListId}
+                                id_field="client_id"
+                                name_field="client_name"
+                                image_field="client_image"
+                                search_fields={['client_name']}
+                                onItemsChange={this.onAppsChange}
+                                searchPlaceholder={Intl.get('common.product.search.placeholder', '请输入产品名进行筛选')}
+                            />
+                        )}
                     </FormItem>
                     <FormItem
                         label={Intl.get('common.remark', '备注')}
-                        labelCol={{span: 4}}
-                        wrapperCol={{span: 20}}>
-                        <Input type="textarea" rows="3"
-                            value={formData.remarks}
-                            onChange={this.setField.bind(this, 'remarks')}
-                            data-tracename="填写备注"
-                        />
+                        {...formItemLayout}
+                    >
+                        {getFieldDecorator('remarks')(
+                            <Input type="textarea" rows="3"/>
+                        )}
                     </FormItem>
                 </Validation>
             </Form>
         );
-    },
+    }
 
     render(){
         return (<DetailCard content={this.renderOrderForm()}
@@ -198,8 +164,15 @@ const OrderForm = createReactClass({
             handleSubmit={this.handleSubmit}
             handleCancel={this.handleCancel}
         />);
-    },
-});
-
-module.exports = OrderForm;
+    }
+}
+OrderForm.propTypes = {
+    form: PropTypes.object,
+    order: PropTypes.object,
+    appList: PropTypes.array,
+    stageList: PropTypes.array,
+    customerId: PropTypes.string,
+    refreshCustomerList: PropTypes.func
+};
+module.exports = Form.create()(OrderForm);
 

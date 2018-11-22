@@ -161,11 +161,17 @@ class OrderItem extends React.Component {
         } else {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-icon-list-content'), '取消选中某个应用');
         }
-        this.setState({apps: _.map(selectedApps, 'client_id')});
+        let submitErrorMsg = _.get(selectedApps, '[0]') && this.state.submitErrorMsg ? '' : this.state.submitErrorMsg;
+        this.setState({apps: _.map(selectedApps, 'client_id'), submitErrorMsg});
     };
 
-    //修改订单的预算、备注
+    //修改订单的预算、备注、预计成交时间
     saveOrderBasicInfo = (saveObj, successFunc, errorFunc) => {
+        //预计成交时间为空时的处理
+        if(_.has(saveObj,'predict_finish_time') && !saveObj.predict_finish_time){
+            if (_.isFunction(errorFunc)) errorFunc(Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间'));
+            return;
+        }
         saveObj.customer_id = this.props.order.customer_id;
         //预算展示的是元，接口中需要的是万
         if (_.has(saveObj, 'budget')) {
@@ -221,6 +227,10 @@ class OrderItem extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.order-introduce-div'), '保存应用的修改');
         let reqData = JSON.parse(JSON.stringify(this.props.order));
         reqData.apps = this.state.apps;
+        if(!_.get(reqData.apps,'[0]')){
+            this.setState({submitErrorMsg: Intl.get('leave.apply.select.atleast.one.app', '请选择至少一个产品')});
+            return;
+        }
         if (this.props.isMerge) {
             //合并客户时，修改订单的销售阶段或应用
             if (_.isFunction(this.props.updateMergeCustomerOrder)) this.props.updateMergeCustomerOrder(reqData);
@@ -414,6 +424,7 @@ class OrderItem extends React.Component {
                                 afterValTip={Intl.get('contract.82', '元')}
                                 placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
                                 hasEditPrivilege={order.oppo_status ? false : true}
+                                validators={[{required: true, message: Intl.get('crm.order.budget.input', '请输入预算金额')}]}
                                 saveEditInput={this.saveOrderBasicInfo}
                                 noDataTip={Intl.get('crm.order.no.budget', '暂无预算')}
                                 addDataTip={Intl.get('crm.order.add.budget', '添加预算')}

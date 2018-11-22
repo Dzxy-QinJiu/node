@@ -242,6 +242,8 @@ var en_US = {
     'common.all.select': 'Select all',//全选
     'common.product.name': 'Product name', // 产品名称
     'common.product': 'product',//产品
+    'common.product.search.placeholder': 'Please enter the product name for search',//请输入产品名进行筛选
+
     //公共部分--end
     'login.login': 'Login',//登录
     'login.register': 'Register',//注册
@@ -2553,5 +2555,6 @@ var en_US = {
     'common.turn.out.time': 'turn out time',//转出时间
     'common.data.request.error': 'Data request error',//数据请求出错
     'common.turn.in.customer': 'turn in customer',//转入客户
+    'deal.stage': 'Deal stage',//阶段
 };
 export default en_US;

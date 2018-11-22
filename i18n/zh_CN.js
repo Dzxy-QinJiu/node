@@ -247,6 +247,7 @@ var zh_CN = {
     'common.all.select': '全选',
     'common.product.name': '产品名称',
     'common.product': '产品',
+    'common.product.search.placeholder': '请输入产品名进行筛选',
 
     //公共部分--end
     'login.login': '登录',
@@ -2567,5 +2568,6 @@ var zh_CN = {
     'common.turn.out.time': '转出时间',
     'common.data.request.error': '数据请求出错',
     'common.turn.in.customer': '转入客户',
+    'deal.stage': '阶段',
 };
 export default zh_CN;
