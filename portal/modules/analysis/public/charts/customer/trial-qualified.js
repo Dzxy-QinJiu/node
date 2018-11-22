@@ -36,7 +36,7 @@ export function getCustomerTrialQualifiedChart() {
             //若接口数据第一项中存在销售昵称，说明返回的是销售列表，需要显示销售列
             if (firstItem.nick_name) {
                 columns.push({
-                    title: '销售',
+                    title: Intl.get('sales.home.sales', '销售'),
                     dataIndex: 'nick_name',
                     width: '10%',
                 });
@@ -44,7 +44,7 @@ export function getCustomerTrialQualifiedChart() {
 
             //设置团队列
             columns.push({
-                title: '团队',
+                title: Intl.get('user.user.team', '团队'),
                 dataIndex: 'team_name',
                 width: '10%',
             });
@@ -60,23 +60,23 @@ export function getCustomerTrialQualifiedChart() {
 
             //列定义中增加本月、上月等列
             columns = columns.concat([{
-                title: lastMonth + '月',
+                title: lastMonth + Intl.get('common.time.unit.month', '月'),
                 dataIndex: 'last_month',
                 width: '10%',
                 render: trialQualifiedNumRender.bind(this, 'last_month_customer_ids'),
             }, {
-                title: thisMonth + '月',
+                title: thisMonth + Intl.get('common.time.unit.month', '月'),
                 dataIndex: 'this_month',
                 width: '10%',
                 render: trialQualifiedNumRender.bind(this, 'this_month_customer_ids'),
             }, {
                 dataIndex: 'highest',
-                title: '历史最高',
+                title: Intl.get('common.history.highest', '历史最高'),
                 width: '10%',
                 render: trialQualifiedNumRender.bind(this, 'highest_customer_ids'),
             }, {
                 dataIndex: 'this_month_add_highest',
-                title: '本月比历史最高净增',
+                title: Intl.get('common.this.month.add.highest', '本月比历史最高净增'),
                 width: '20%',
             }]);
 

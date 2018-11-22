@@ -141,7 +141,7 @@ class HistoricHighDetail extends React.Component {
                 return <span>{text}{flag}</span>;
             }
         }, {
-            title: '时间',
+            title: Intl.get('common.login.time', '时间'),
             dataIndex: 'time',
             width: '50%',
         }];
