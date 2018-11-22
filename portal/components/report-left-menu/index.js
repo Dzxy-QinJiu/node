@@ -14,14 +14,14 @@ class ReportLeftMenu extends React.Component {
                         <NavLink
                             to='/analysis/weekly_report'
                             activeClassName="active">
-                            {Intl.get('analysis.sales.weekly.report', '销售周报')}
+                            {Intl.get('contract.14', '周报')}
                         </NavLink>
                     </li>
                     <li>
                         <NavLink
                             to='/analysis/monthly_report'
                             activeClassName="active">
-                            {Intl.get('analysis.sales.monthly.report', '销售月报')}
+                            {Intl.get('contract.15', '月报')}
                         </NavLink>
                     </li>
                 </ul>

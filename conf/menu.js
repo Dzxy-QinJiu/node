@@ -196,7 +196,7 @@ class LeftMenuClass {
                 subMenu: [
                     {
                         id: 'ANALYSIS',//唯一标识
-                        name: backendIntl.get('menu.customer.analysis', '运营分析'),
+                        name: backendIntl.get('user.detail.analysis', '分析'),
                         routePath: 'analysis/analysis',
                         privileges: ['CUSTOMER_ANALYSIS_COMMON','CUSTOMER_ANALYSIS_MANAGER'],
                         //有这个权限，才显示入口图标
@@ -220,7 +220,7 @@ class LeftMenuClass {
             //周报统计
             {
                 id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
-                name: backendIntl.get('analysis.sales.weekly.report', '销售周报'),
+                name: backendIntl.get('contract.14', '周报'),
                 routePath: 'analysis/weekly_report',
                 privileges: [
                     'CALLRECORD_ASKFORLEAVE_ADD',
@@ -231,7 +231,7 @@ class LeftMenuClass {
             //月报统计
             {
                 id: 'MONTHLY_REPORT_ANALYSIS',//唯一标识
-                name: backendIntl.get('analysis.sales.monthly.report', '销售月报'),
+                name: backendIntl.get('contract.15', '月报'),
                 routePath: 'analysis/monthly_report',
                 privileges: [
                     'CALL_RECORD_VIEW_MANAGER',

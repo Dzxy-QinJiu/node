@@ -154,10 +154,10 @@ class WeeklyReport extends React.Component {
                 </TopNav>
                 <div className="weekly-report-wrap">
                     <Row>
-                        <Col span={4}>
+                        <Col span={3}>
                             <ReportLeftMenu />
                         </Col>
-                        <Col span={20}>
+                        <Col span={21}>
                             <div className="weekly-report-content clearfix">
                                 <div className="col-md-12 weekly-report-detail-wrap">
                                     <WeeklyReportDetail
