@@ -10,10 +10,11 @@ import WeeklyReportStore from './store/weekly-report-store';
 require('./css/index.less');
 var WeekReportUtil = require('./utils/weekly-report-utils');
 import WeeklyReportDetail from './view/weekly-report-detail';
-import { Alert } from 'antd';
+import { Row, Col, Alert } from 'antd';
 var TopNav = require('CMP_DIR/top-nav');
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import NatureTimeSelect from 'CMP_DIR/nature-time-select';
+import ReportLeftMenu from 'CMP_DIR/report-left-menu';
 
 class WeeklyReport extends React.Component {
     constructor(props) {
@@ -152,15 +153,22 @@ class WeeklyReport extends React.Component {
                     {this.renderTeamSelect()}
                 </TopNav>
                 <div className="weekly-report-wrap">
-                    <div className="weekly-report-content clearfix">
-                        <div className="col-md-12 weekly-report-detail-wrap">
-                            <WeeklyReportDetail
-                                selectedItem={{ teamId: this.state.selectedTeamId, nWeek: this.state.nWeek }}
-                                selectedTeamName={this.state.selectedTeamName}
-                                memberList={this.state.memberList}
-                            />
-                        </div>
-                    </div>
+                    <Row>
+                        <Col span={4}>
+                            <ReportLeftMenu />
+                        </Col>
+                        <Col span={20}>
+                            <div className="weekly-report-content clearfix">
+                                <div className="col-md-12 weekly-report-detail-wrap">
+                                    <WeeklyReportDetail
+                                        selectedItem={{ teamId: this.state.selectedTeamId, nWeek: this.state.nWeek }}
+                                        selectedTeamName={this.state.selectedTeamName}
+                                        memberList={this.state.memberList}
+                                    />
+                                </div>
+                            </div>
+                        </Col>
+                    </Row>
                 </div>
             </div>
         );
