@@ -158,7 +158,7 @@ import {Modal} from 'antd';
 
     //登录成功处理
     function loginSuccess(username, data) {
-        sendMessage && sendMessage(username + ' 登录成功: ' + JSON.stringify(data));
+        sendMessage && sendMessage(username + ' 登录成功 data: ' + JSON.stringify(data));
         userData.getUserDataByAjax().done(function() {
             //重新建立socket连接
             !Oplate.hideSomeItem && require('./push').startSocketIo();
@@ -173,8 +173,8 @@ import {Modal} from 'antd';
 
     //登录失败处理
     function loginError(username, xhr, error) {
-        sendMessage && sendMessage(username + ' 登录失败 : ' + JSON.stringify(xhr && xhr.responseJSON) + ',  error: ' + JSON.stringify(error));
         let errorMsg = xhr && xhr.responseJSON || error;
+        sendMessage && sendMessage(username + ' 登录失败，error: ' + errorMsg);
         if (errorMsg === Intl.get('errorcode.39', '用户名或密码错误') || !errorMsg) {
             errorMsg = Intl.get('login.password.error', '密码错误');
         }

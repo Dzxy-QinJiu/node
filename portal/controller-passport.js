@@ -12,7 +12,14 @@ var checkLogin = function(passport) {
         // 登入登出的一种特殊检测
         if (/^\/login/i.test(req.url)) {
             if (req.session.user) {
-                return res.redirect('/');
+                if (req.xhr) {
+                    accessLogger.debug('user: ' + req.session.user.username + ' ajax重新登录时，session还存在');
+                    //session失效时，登录成功后的处理
+                    return res.status(200).json('success');
+                } else {
+                    //登录界面，登录成功后的处理
+                    return res.redirect('/');
+                }
             }
             return next();
         } else if (/^\/logout/i.test(req.url)) {
@@ -43,6 +50,7 @@ var checkLogin = function(passport) {
             }
         }
     };
+
     /**
      * 处理转页的情况，
      * 例如浏览器直接请求某个模块的路径，但是还未登录时，预存之前的请求路径
