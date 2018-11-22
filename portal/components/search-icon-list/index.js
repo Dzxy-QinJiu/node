@@ -134,7 +134,7 @@ class SearchIconList extends React.Component {
                         <SearchInput
                             ref="searchInput"
                             type="input"
-                            searchPlaceHolder={Intl.get('user.keyword.filter','输入关键词筛选')}
+                            searchPlaceHolder={this.props.searchPlaceholder || Intl.get('user.keyword.filter','输入关键词筛选')}
                             searchOnTyped={true}
                             searchEvent={this.searchInputChange.bind(this)}
                         />
@@ -191,7 +191,8 @@ SearchIconList.defaultProps = {
     id_field: 'app_id',
     search_fields: ['app_name'],
     notFoundContent: Intl.get('user.no.related.app','暂无符合条件的应用'),
-    onItemsChange: noop
+    onItemsChange: noop,
+    searchPlaceholder: ''//搜索框的提示内容
 };
 
 SearchIconList.propTypes = {
@@ -201,7 +202,8 @@ SearchIconList.propTypes = {
     id_field: PropTypes.string,
     search_fields: PropTypes.array,
     onItemsChange: PropTypes.func,
-    notFoundContent: PropTypes.string
+    notFoundContent: PropTypes.string,
+    searchPlaceholder: PropTypes.string
 };
 
 export default SearchIconList;
