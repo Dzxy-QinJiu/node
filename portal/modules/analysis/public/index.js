@@ -7,9 +7,10 @@ import { storageUtil } from 'ant-utils';
 import Store from './store';
 import ajax from 'ant-ajax';
 import TopBar from './top-bar';
+import HistoricHighDetail from './historic-high-detail';
 import AppSelector from './app-selector';
 import { getContextContent } from './utils';
-import { initialTime, STORED_APP_ID_KEY } from './consts';
+import { initialTime, STORED_APP_ID_KEY, CUSTOMER_IDS_FIELD } from './consts';
 import { AntcAnalysis } from 'antc';
 import { Row, Col, Collapse } from 'antd';
 const Panel = Collapse.Panel;
@@ -48,6 +49,10 @@ class CurtaoAnalysis extends React.Component {
             isRightPanelShow: false,
             //是否显示客户列表
             isCustomerListShow: false,
+            //是否显示试用合格客户统计历史最高值明细
+            isHistoricHighDetailShow: false,
+            //试用合格客户统计历史最高值记录
+            historicHighData: {},
         };
     }
 
@@ -153,17 +158,30 @@ class CurtaoAnalysis extends React.Component {
     }
 
     //处理客户列表事件
-    handleCustomerListEvent = (customerIds, num) => {
-        this.setState({
+    handleCustomerListEvent = (customerIds, num, customerIdsField, record) => {
+        let state = {
             isRightPanelShow: true,
-            isCustomerListShow: true,
-            customerListLocation: {
-                state: {
-                    customerIds,
-                    num,
+        };
+
+        //如果是点击历史最高数触发的
+        if (customerIdsField === CUSTOMER_IDS_FIELD) {
+            _.extend(state, {
+                isHistoricHighDetailShow: true,
+                historicHighData: _.cloneDeep(record.highest_data),
+            });
+        } else {
+            _.extend(state, {
+                isCustomerListShow: true,
+                customerListLocation: {
+                    state: {
+                        customerIds,
+                        num,
+                    }
                 }
-            }
-        });
+            });
+        }
+
+        this.setState(state);
     }
 
     //隐藏右侧面板
@@ -171,6 +189,7 @@ class CurtaoAnalysis extends React.Component {
         this.setState({
             isRightPanelShow: false,
             isCustomerListShow: false,
+            isHistoricHighDetailShow: false,
         });
     }
 
@@ -213,16 +232,24 @@ class CurtaoAnalysis extends React.Component {
                     className="analysis-right-panel"
                     showFlag={this.state.isRightPanelShow}
                 >
-                    <div className="customer-table-close topNav">
+                    <div className="topNav">
                         <RightPanelClose
                             title={Intl.get('common.app.status.close', '关闭')}
                             onClick={this.hideRightPanel}
                         />
+                    </div>
+                    <div className="right-panel-content">
 
                         {this.state.isCustomerListShow ? (
                             <CustomerList
                                 location={this.state.customerListLocation}
                                 fromSalesHome={true}
+                            />
+                        ) : null}
+
+                        {this.state.isHistoricHighDetailShow ? (
+                            <HistoricHighDetail
+                                data={this.state.historicHighData}
                             />
                         ) : null}
                     </div>
