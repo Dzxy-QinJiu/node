@@ -39,7 +39,7 @@ class AnalysisRankList extends React.Component {
                                         <em data-rank={idx + 1}></em>
                                         <span>{item.name}</span>
                                         <i>{item.value + (_this.props.unit || '')}</i>
-                                        <b>{!isNaN(parseFloat(100 * (item.value / total))) ? (100 * (item.value / total)).toFixed(1) + '%' : ''}</b>
+                                        <b>{!isNaN(parseFloat(100 * (item.value / total))) ? parseFloat(100 * (item.value / total)).toFixed(1) + '%' : ''}</b>
                                     </li>
                                 );
                             })

@@ -92,7 +92,7 @@ class ProductTable extends React.Component {
                     //                    componentType: 'inputNumber',
                     key: 'total_price',
                     render: (text) => {
-                        return <span>{parseAmount(!isNaN(parseFloat(text)) ? text.toFixed(2) : '')}</span>;
+                        return <span>{parseAmount(!isNaN(parseFloat(text)) ? parseFloat(text).toFixed(2) : '')}</span>;
                     }
                 }
             ];

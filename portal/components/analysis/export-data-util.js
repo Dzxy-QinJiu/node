@@ -251,7 +251,7 @@ export function handleActivelyData(processData) {
         let totalArray = [];
         _.each( datas, (activeStats) => {
             if (activeStats.percent) {
-                percentArray.push( !isNaN(parseFloat(activeStats.percent * 100)) ? (activeStats.percent * 100).toFixed(2) + '%' : '' );
+                percentArray.push( !isNaN(parseFloat(activeStats.percent * 100)) ? parseFloat(activeStats.percent * 100).toFixed(2) + '%' : '' );
             } else {
                 percentArray.push((0).toFixed(2) + '%');
             }

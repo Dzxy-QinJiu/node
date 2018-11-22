@@ -251,8 +251,8 @@ CallAnalysisStore.prototype.getCallInfo = function(result) {
             if (memberTotal){
                 var personAverageAnswer = getData(salesPhone.calloutSuccess) / memberTotal;
                 var personAverageTime = getData(salesPhone.totalTime) / memberTotal;
-                returnObj.personAverageAnswer = !isNaN(parseFloat(personAverageAnswer)) ? personAverageAnswer.toFixed() : '', //人均接通数
-                returnObj.personAverageTime = !isNaN(parseFloat(personAverageTime)) ? personAverageTime.toFixed() : '';//人均通话时长
+                returnObj.personAverageAnswer = !isNaN(parseFloat(personAverageAnswer)) ? parseFloat(personAverageAnswer).toFixed() : '', //人均接通数
+                returnObj.personAverageTime = !isNaN(parseFloat(personAverageTime)) ? parseFloat(personAverageTime).toFixed() : '';//人均通话时长
             }
 
             return returnObj;

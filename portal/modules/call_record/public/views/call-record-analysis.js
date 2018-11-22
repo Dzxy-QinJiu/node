@@ -1061,7 +1061,7 @@ class CallRecordAnalyis extends React.Component {
         return {
             show: true,
             formatter: function(obj) {
-                var rate = !isNaN(parseFloat(obj.value[2])) ? (obj.value[2]).toFixed(2) + '%' : '';
+                var rate = !isNaN(parseFloat(obj.value[2])) ? parseFloat(obj.value[2]).toFixed(2) + '%' : '';
                 return `<div>
                            <span>${(obj.data[0])}</span>  
                            <br/>  
