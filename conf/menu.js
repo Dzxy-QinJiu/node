@@ -210,10 +210,14 @@ class LeftMenuClass {
                         name: '报告',
                         routePath: 'analysis/report',
                         privileges: [
-                            'PHONE_ACCESS_CALL_IN',
+                            'CALL_RECORD_VIEW_MANAGER',
+                            'CALL_RECORD_VIEW_USER',
                         ],
                         //有这个权限，才显示入口图标
-                        showPrivileges: ['PHONE_ACCESS_CALL_IN']
+                        showPrivileges: [
+                            'CALL_RECORD_VIEW_MANAGER',
+                            'CALL_RECORD_VIEW_USER',
+                        ]
                     },
                 ]
             },
@@ -225,8 +229,6 @@ class LeftMenuClass {
                 privileges: [
                     'CALLRECORD_ASKFORLEAVE_ADD',
                 ],
-                //有这个权限，才显示入口图标
-                showPrivileges: ['CALLRECORD_ASKFORLEAVE_ADD']
             },
             //月报统计
             {
@@ -237,11 +239,6 @@ class LeftMenuClass {
                     'CALL_RECORD_VIEW_MANAGER',
                     'CALL_RECORD_VIEW_USER',
                 ],
-                //有这个权限，才显示入口图标
-                showPrivileges: [
-                    'CALL_RECORD_VIEW_MANAGER',
-                    'CALL_RECORD_VIEW_USER',
-                ]
             },
 
             {
