@@ -66,3 +66,6 @@ export const STORED_APP_ID_KEY = 'analysis_account_active_app_id';
 
 //是否是销售
 export const isSales = userData.hasRole(userData.ROLE_CONSTANS.SALES); 
+
+//历史最高客户id字段
+export const CUSTOMER_IDS_FIELD = 'highest_customer_ids';

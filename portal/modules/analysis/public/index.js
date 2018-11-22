@@ -10,7 +10,7 @@ import TopBar from './top-bar';
 import HistoricHighDetail from './historic-high-detail';
 import AppSelector from './app-selector';
 import { getContextContent } from './utils';
-import { initialTime, STORED_APP_ID_KEY } from './consts';
+import { initialTime, STORED_APP_ID_KEY, CUSTOMER_IDS_FIELD } from './consts';
 import { AntcAnalysis } from 'antc';
 import { Row, Col, Collapse } from 'antd';
 const Panel = Collapse.Panel;
@@ -164,7 +164,7 @@ class CurtaoAnalysis extends React.Component {
         };
 
         //如果是点击历史最高数触发的
-        if (customerIdsField === 'highest_customer_ids') {
+        if (customerIdsField === CUSTOMER_IDS_FIELD) {
             _.extend(state, {
                 isHistoricHighDetailShow: true,
                 historicHighData: _.cloneDeep(record.highest_data),

@@ -4,6 +4,7 @@
 
 import { analysisCustomerListEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { trialQualifiedCustomerAnalysisArgCallbak } from '../../utils';
+import { CUSTOMER_IDS_FIELD } from '../../consts';
 
 export function getCustomerTrialQualifiedChart() {
     return {
@@ -73,7 +74,7 @@ export function getCustomerTrialQualifiedChart() {
                 dataIndex: 'highest',
                 title: Intl.get('common.history.highest', '历史最高'),
                 width: '10%',
-                render: trialQualifiedNumRender.bind(this, 'highest_customer_ids'),
+                render: trialQualifiedNumRender.bind(this, CUSTOMER_IDS_FIELD),
             }, {
                 dataIndex: 'this_month_add_highest',
                 title: Intl.get('common.this.month.add.highest', '本月比历史最高净增'),
