@@ -2018,6 +2018,8 @@ var zh_CN = {
     'errorcode.147': '二维码已失效',
     'errorcode.148': '电话时长统计视图获取失败',
     'errorcode.149': '该角色已经分配给销售',
+    'errorcoe.different.realm': '安全域不一致',
+    'errorcode.invalid.wechat': '无效的微信账号',
 
     //遗漏部分
     'user.input.phone': '请输入手机号',
