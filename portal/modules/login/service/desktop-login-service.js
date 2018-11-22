@@ -563,6 +563,9 @@ exports.bindWechat = function(req, res, unionId) {
             url: urls.bindWechatUrl,
             req: req,
             res: res,
+            headers: {
+                realm: global.config.loginParams.realm
+            },
             form: {
                 open_id: unionId,
                 platform: 'wechat'
@@ -576,6 +579,9 @@ exports.unbindWechat = function(req, res) {
             url: urls.unbindWechatUrl,
             req: req,
             res: res,
+            headers: {
+                realm: global.config.loginParams.realm
+            },
             form: {
                 platform: 'wechat'
             }
@@ -588,6 +594,9 @@ exports.checkLoginWechatIsBind = function(req, res) {
         {
             url: urls.checkLoginWechatIsBindUrl,
             req: req,
-            res: res
+            res: res,
+            headers: {
+                realm: global.config.loginParams.realm
+            }
         });
 };
