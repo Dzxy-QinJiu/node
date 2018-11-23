@@ -294,14 +294,14 @@ class UserDetail extends React.Component {
         ];
         if (hasPrivilege('USER_AUDIT_LOG_LIST')) {
             tabPaneList.push(
-                <TabPane tab="用户分析" key="2">
+                <TabPane tab={Intl.get('sales.user.analysis', '用户分析')} key="2">
                     {this.state.activeKey === '2' ? <div className="user-analysis">
                         <UserLoginAnalysis height={contentHeight} userId={this.props.userId} selectedAppId={this.props.selectedAppId} />
                     </div> : null}
                 </TabPane>
             );
             tabPaneList.push(
-                <TabPane tab="审计日志" key="3">
+                <TabPane tab={Intl.get('menu.appuser.auditlog', '操作记录')} key="3">
                     {this.state.activeKey === '3' ? <div className="user-log">
                         <SingleUserLog
                             height={contentHeight}
