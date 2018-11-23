@@ -211,6 +211,44 @@ function getSubModulesByUser(req) {
     return mapToObj(result);
 }
 
+//根据权限获取三级菜单
+function getThirdLevelMenusByUser(req) {
+    const userInfo = auth.getUser(req);
+    const userPrivileges = userInfo.privileges;
+    const menus = _getLeftMenus(req);
+
+    let thirdLevelMenus = {};
+
+    _.each(menus, firstLevelMenu => {
+        if (firstLevelMenu.subMenu) {
+            _.each(firstLevelMenu.subMenu, secondLevelMenu => {
+                if (secondLevelMenu.subMenu) {
+                    _.each(secondLevelMenu.subMenu, thirdLevelMenu => {
+                        _.some(thirdLevelMenu.showPrivileges, privilege => {
+                            const matched = _.find(userPrivileges, userPrivilege => userPrivilege = privilege);
+
+                            if (matched) {
+                                if (!thirdLevelMenus[secondLevelMenu.id]) {
+                                    thirdLevelMenus[secondLevelMenu.id] = [];
+                                }
+
+                                thirdLevelMenus[secondLevelMenu.id].push({
+                                    name: thirdLevelMenu.name,
+                                    routePath: thirdLevelMenu.routePath
+                                });
+
+                                return true;
+                            }
+                        });
+                    });
+                }
+            });
+        }
+    });
+
+    return thirdLevelMenus;
+}
+
 
 //获取用户权限
 function getPrivileges(req) {
@@ -359,3 +397,4 @@ exports.getSidebarMenus = getSidebarMenus;
 exports.getModulesByUser = getModulesByUser;
 exports.getSubModulesByUser = getSubModulesByUser;
 exports.getPrivileges = getPrivileges;
+exports.getThirdLevelMenusByUser = getThirdLevelMenusByUser;
