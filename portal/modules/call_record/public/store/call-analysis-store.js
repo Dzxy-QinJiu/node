@@ -249,10 +249,12 @@ CallAnalysisStore.prototype.getCallInfo = function(result) {
             };
 
             if (memberTotal){
-                var personAverageAnswer = getData(salesPhone.calloutSuccess) / memberTotal;
-                var personAverageTime = getData(salesPhone.totalTime) / memberTotal;
-                returnObj.personAverageAnswer = !isNaN(parseFloat(personAverageAnswer)) ? parseFloat(personAverageAnswer).toFixed() : '', //人均接通数
-                returnObj.personAverageTime = !isNaN(parseFloat(personAverageTime)) ? parseFloat(personAverageTime).toFixed() : '';//人均通话时长
+                var parsePersonAverageAnswer = parseFloat(getData(salesPhone.calloutSuccess) / memberTotal);
+                var personAverageAnswerCount = !isNaN(parsePersonAverageAnswer) ? parsePersonAverageAnswer.toFixed() : '';
+                var parsePersonAverageTime = parseFloat(getData(salesPhone.totalTime) / memberTotal);
+                var personAverageTimeCount = !isNaN(parsePersonAverageTime) ? parsePersonAverageTime.toFixed() : '';
+                returnObj.personAverageAnswer = personAverageAnswerCount, //人均接通数
+                returnObj.personAverageTime = personAverageTimeCount;//人均通话时长
             }
 
             return returnObj;
