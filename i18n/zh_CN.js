@@ -2573,5 +2573,6 @@ var zh_CN = {
     'my.app.app.secret.key': '密钥',
     'user.wechat.unbind': '解绑微信',
     'user.wechat.unbind.error': '解绑微信失败',
+    'user.wechat.unbind.confim': '您确定要解除绑定微信账号？',
 };
 export default zh_CN;

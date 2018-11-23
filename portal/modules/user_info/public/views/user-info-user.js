@@ -1,6 +1,6 @@
 var React = require('react');
 const PropTypes = require('prop-types');
-import {Button, Form, Input, Icon, message} from 'antd';
+import {Button, Form, Input, Icon, message, Popconfirm} from 'antd';
 const FormItem = Form.Item;
 var HeadIcon = require('../../../../components/headIcon');
 var AlertTimer = require('../../../../components/alert-timer');
@@ -349,9 +349,13 @@ class UserInfo extends React.Component{
                                 this.state.weChatBindErrorMsg ? (
                                     <span className="error-msg-tip">{this.state.weChatBindErrorMsg}</span>) :
                                     this.state.isBindWechat ? (
-                                        <a onClick={this.unbindWechat.bind(this)} data-tracename="解绑微信">
-                                            {Intl.get('user.wechat.unbind', '解绑微信')}
-                                        </a>) : (
+                                        <Popconfirm
+                                            placement="top" onConfirm={this.unbindWechat.bind(this)}
+                                            title={Intl.get('user.wechat.unbind.confim', '您确定要解除绑定微信账号？')}>
+                                            <a data-tracename="解绑微信">
+                                                {Intl.get('user.wechat.unbind', '解绑微信')}
+                                            </a>
+                                        </Popconfirm>) : (
                                         <a href="/page/login/wechat?isBindWechatAfterLogin=true" data-tracename="绑定微信">
                                             {Intl.get('register.wechat.bind.btn', '立即绑定')}
                                         </a>)}

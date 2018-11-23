@@ -2558,5 +2558,6 @@ var en_US = {
     'my.app.app.secret.key': 'Secret key',//密钥
     'user.wechat.unbind': 'Unbind WeChat',//解绑微信
     'user.wechat.unbind.error': 'Unbind WeChat Failed',//解绑微信失败
+    'user.wechat.unbind.confim': 'Are you sure you want to unbind Wechat account?',//您确定要解除绑定微信账号
 };
 export default en_US;
