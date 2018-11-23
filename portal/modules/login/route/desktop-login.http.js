@@ -109,10 +109,10 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
-    },{
+    },{//通过微信二维码登录或绑定时的接口
         'method': 'get',
-        'path': '/login/wechat',
-        'handler': 'loginWithWechat',
+        'path': '/wechat/login_bind/code',
+        'handler': 'wechatLoginBindByCode',
         'passport': {
             'needLogin': false
         }
