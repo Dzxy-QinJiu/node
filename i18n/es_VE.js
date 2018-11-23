@@ -13,11 +13,11 @@ var en_VE = {
 
     'menu.appuser': 'Administración de usuarios',//用户管理
 
-    'menu.appuser.list': 'Usuarios existentes',//已有用户
+    'menu.appuser.list': 'Lista de usuarios',//用户列表
 
     'menu.appuser.org': 'Administración de organizaciones',//组织管理
 
-    'menu.appuser.auditlog': 'Registro de supervisión de usuarios',//用户审计日志
+    'menu.appuser.auditlog': 'Registro de operación',//操作记录
 
     'menu.backend': 'Administración de backstage',//后台管理
 

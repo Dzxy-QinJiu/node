@@ -59,7 +59,7 @@ class LeftMenuClass {
                 routePath: 'user',
                 subMenu: [{
                     id: 'APP_USER_MANAGE_USER',
-                    name: backendIntl.get('menu.appuser.list', '已有用户'),
+                    name: backendIntl.get('menu.appuser.list', '用户列表'),
                     routePath: 'user/list',
                     privileges: [
                         'APP_USER_LIST',//列出应用用户
@@ -86,8 +86,8 @@ class LeftMenuClass {
                     showPrivileges: ['USER_ORGANIZATION_LIST']
                 }, {
                     id: 'USER_AUDIT_LOG', // 用户审计日志的唯一标识
-                    name: backendIntl.get('menu.appuser.auditlog', '用户审计日志'),
-                    displayName: backendIntl.get('menu.appuser.auditlog', '用户审计日志'),
+                    name: backendIntl.get('menu.appuser.auditlog', '操作记录'),
+                    displayName: backendIntl.get('menu.appuser.auditlog', '操作记录'),
                     routePath: 'user/log',
                     privileges: [
                         'USER_AUDIT_LOG_LIST' // 查看用户审计日志

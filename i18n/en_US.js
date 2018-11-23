@@ -13,9 +13,9 @@ var en_US = {
     'menu.call': 'Call Records',//通话记录
     'menu.trace': 'Trace Records',//跟踪记录
     'menu.appuser': 'Users',//用户管理
-    'menu.appuser.list': 'Existing Users',//已有用户
+    'menu.appuser.list': 'Users Lists',//用户列表
     'menu.appuser.org': 'Organizations',//组织管理
-    'menu.appuser.auditlog': 'Auditting Logs',//用户审计日志
+    'menu.appuser.auditlog': 'Operation record',//操作记录
     'menu.appuser.position': 'Position Order', // 座席号管理
     'menu.backend': 'Background',//后台管理
     'menu.user': 'Members',//成员管理
