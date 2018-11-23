@@ -9,7 +9,6 @@ var ShareObj = require('../util/app-id-share-util');
 var rolesAjax = require('../../../common/public/ajax/role');
 import { packageTry } from 'LIB_DIR/func';
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/get-common-data-util';
-import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 
 function AppUserAction() {
 
@@ -173,7 +172,7 @@ function AppUserAction() {
     //获取用于展示的团队列表
     this.getTeamLists = function(cb) {
         this.dispatch({loading: true});
-        getMyTeamTreeAndFlattenList(data => {
+        commonDataUtil.getMyTeamTreeAndFlattenList(data => {
             if(data.errorMsg) {
                 this.dispatch({loading: false, errorMsg: data.errorMsg});
             } else {
