@@ -207,7 +207,7 @@ class LeftMenuClass {
                     },
                     {
                         id: 'REPORT',//唯一标识
-                        name: '报告',
+                        name: backendIntl.get('common.report', '报告'),
                         routePath: 'analysis/report',
                         privileges: [
                             'CALL_RECORD_VIEW_MANAGER',
@@ -217,30 +217,31 @@ class LeftMenuClass {
                         showPrivileges: [
                             'CALL_RECORD_VIEW_MANAGER',
                             'CALL_RECORD_VIEW_USER',
-                        ]
+                        ],
+                        subMenu: [
+                            //周报统计
+                            {
+                                id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
+                                name: backendIntl.get('contract.14', '周报'),
+                                routePath: 'analysis/weekly_report',
+                                privileges: [
+                                    'CALLRECORD_ASKFORLEAVE_ADD',
+                                ],
+                            },
+                            //月报统计
+                            {
+                                id: 'MONTHLY_REPORT_ANALYSIS',//唯一标识
+                                name: backendIntl.get('contract.15', '月报'),
+                                routePath: 'analysis/monthly_report',
+                                privileges: [
+                                    'CALL_RECORD_VIEW_MANAGER',
+                                    'CALL_RECORD_VIEW_USER',
+                                ],
+                            },
+                        ],
                     },
                 ]
             },
-            //周报统计
-            {
-                id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
-                name: backendIntl.get('contract.14', '周报'),
-                routePath: 'analysis/weekly_report',
-                privileges: [
-                    'CALLRECORD_ASKFORLEAVE_ADD',
-                ],
-            },
-            //月报统计
-            {
-                id: 'MONTHLY_REPORT_ANALYSIS',//唯一标识
-                name: backendIntl.get('contract.15', '月报'),
-                routePath: 'analysis/monthly_report',
-                privileges: [
-                    'CALL_RECORD_VIEW_MANAGER',
-                    'CALL_RECORD_VIEW_USER',
-                ],
-            },
-
             {
                 id: 'SALES_HOME_PAGE', //唯一标识，销售首页
                 name: backendIntl.get('menu.sales.homepage', '销售主页'),

@@ -432,7 +432,7 @@ class MonthlyReport extends React.Component {
                             {selectedTeamName ? (
                                 <div className="report-title">
                                     <span className="team-name">
-                                        {selectedTeamName + Intl.get('analysis.sales.monthly.report', '销售月报')}
+                                        {selectedTeamName + Intl.get('contract.15', '月报')}
                                     </span>
                                     <span className="year-month">
                                     （{this.state.selectedMonth.format(oplateConsts.DATE_YEAR_MONTH_FORMAT)}）
