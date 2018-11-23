@@ -1061,12 +1061,15 @@ class CallRecordAnalyis extends React.Component {
         return {
             show: true,
             formatter: function(obj) {
+                var parseText = parseFloat(obj.value[2]);
+                var rate = !isNaN(parseText) ? parseText.toFixed(2) + '%' : '';
                 return `<div>
                            <span>${(obj.data[0])}</span>  
                            <br/>  
                            <span>${Intl.get('common.app.count', '数量')}:${(obj.data[1])}</span>  
                            <br/>  
-                           <span>${Intl.get('oplate_bd_analysis_realm_industry.7', '占比')}:${(obj.value[2]).toFixed(2) + '%'}</span>
+                           <span>${Intl.get('oplate_bd_analysis_realm_industry.7', '占比')}:${
+                    rate}</span>
                         </div>`;
             }
         };

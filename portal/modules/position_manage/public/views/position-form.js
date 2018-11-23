@@ -76,7 +76,7 @@ const BatchPositionForm = createReactClass({
 
     // 校验输入的座席号（数字即可，对位数没有限制）
     checkPhoneOrder(rule, value, callback) {
-        value = $.trim(value);
+        value = _.trim(value);
         if (value) {
             if (/^[0-9]*$/.test(value)) {
                 callback();

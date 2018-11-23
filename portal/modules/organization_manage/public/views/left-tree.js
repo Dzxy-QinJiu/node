@@ -272,7 +272,7 @@ var LeftTree = createReactClass({
 
     //搜索组织的事件处理
     searchEvent: function(searchContent) {
-        searchContent = searchContent ? searchContent.trim() : '';
+        searchContent = _.trim(searchContent);
         if (searchContent) {
             //搜索内容的设置
             OrganizationAction.setSearchContent(searchContent);

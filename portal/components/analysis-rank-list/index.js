@@ -34,12 +34,14 @@ class AnalysisRankList extends React.Component {
                                 );
                             }) :
                             this.props.dataList.map(function(item , idx) {
+                                var parseText = parseFloat(100 * (item.value / total));
+                                var count = !isNaN(parseText) ? parseText.toFixed(1) + '%' : '';
                                 return (
                                     <li key={idx}>
                                         <em data-rank={idx + 1}></em>
                                         <span>{item.name}</span>
                                         <i>{item.value + (_this.props.unit || '')}</i>
-                                        <b>{(100 * (item.value / total)).toFixed(1) + '%'}</b>
+                                        <b>{count}</b>
                                     </li>
                                 );
                             })

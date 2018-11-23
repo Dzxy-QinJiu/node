@@ -251,7 +251,9 @@ export function handleActivelyData(processData) {
         let totalArray = [];
         _.each( datas, (activeStats) => {
             if (activeStats.percent) {
-                percentArray.push( (activeStats.percent * 100).toFixed(2) + '%');
+                var parseText = parseFloat(activeStats.percent * 100);
+                var count = !isNaN(parseText) ? parseText.toFixed(2) + '%' : '';
+                percentArray.push(count);
             } else {
                 percentArray.push((0).toFixed(2) + '%');
             }
@@ -452,7 +454,9 @@ export function handleMultiLineActivelyData(processData) {
             itemData.datas.forEach( (data) => {
                 dataRows.push( data.active || 0);
                 dataRows.push( data.total || 0);
-                dataRows.push(( (data.percent || 0) * 100).toFixed(2) + '%' );
+                var parseText = parseFloat((data.percent || 0) * 100);
+                var count = !isNaN(parseText) ? parseText.toFixed(2) + '%' : '';
+                dataRows.push(count);
             } );
             exportData.push( dataRows );
         } );

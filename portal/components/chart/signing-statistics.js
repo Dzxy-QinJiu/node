@@ -52,8 +52,12 @@ class SigningStatistics extends React.Component {
 
             const teams = this.sortTeams(monthData.teams);
             teams.forEach((team, index) => {
-                processedMonthData['amount' + index] = parseAmount( team.amount.toFixed(2) );
-                processedMonthData['gross_profit' + index] = parseAmount( team.gross_profit.toFixed(2) );
+                var parseTeamAmount = parseFloat(team.amount);
+                var amount = !isNaN(parseTeamAmount) ? parseTeamAmount.toFixed(2) : '';
+                processedMonthData['amount' + index] = parseAmount(amount);
+                var parseGrossProfit = parseFloat(team.gross_profit);
+                var grossProfit = !isNaN(parseGrossProfit) ? parseGrossProfit.toFixed(2) : '';
+                processedMonthData['gross_profit' + index] = parseAmount(grossProfit);
                 processedMonthData['gross_profit_margin' + index] = team.gross_profit_margin + '%';
                 processedMonthData.teamNames.push(team.name);
             });
