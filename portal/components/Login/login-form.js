@@ -238,7 +238,10 @@ class LoginForm extends React.Component {
         e.stopPropagation();
         window.location.href = '/page/login/wechat';
     };
-
+    returnLoginPage = (e) => {
+        e.stopPropagation();
+        window.location.href = '/login';
+    };
     render() {
         const loginButtonClassName = classnames('login-button', {'not-allowed': this.state.loginButtonDisabled});
 
@@ -278,10 +281,17 @@ class LoginForm extends React.Component {
                         {hasWindow ? this.state.isBindWechat ? Intl.get('register.wechat.bind.btn', '立即绑定') : Intl.get('login.login', '登录') : null}
                         {this.state.logining ? <Icon type="loading"/> : null}
                     </button>
-                    {this.state.isBindWechat ? null : (
+                    {this.state.isBindWechat ? (
+                        <div className='login-button wechat-login' onClick={this.returnLoginPage}
+                            data-tracename="返回登录页"
+                        >
+                            {hasWindow ? (
+                                <span>
+                                    <span className="wechat-icon-wrap"><i className="iconfont icon-return-btn"/></span>
+                                    <span className="wechat-login-descr">{Intl.get('login.return_to_login_page', '返回登录页')}</span>
+                                </span>) : null}
+                        </div>) : (
                         <div className='login-button wechat-login' onClick={this.loginWithWeixin}
-                            tabIndex="3"
-                            disabled={this.state.loginButtonDisabled}
                             data-tracename="微信登录"
                         >
                             {hasWindow ? (
