@@ -428,8 +428,8 @@ exports.wechatLoginBindByCode = function(req, res) {
         if (req.sessionID === sessionId) {
             code = req.query.code;
         }
+        restLogger.info('绑定微信' + req.sessionID + '===========' + sessionId);
     }
-    restLogger.info('绑定微信' + req.sessionID + '===========' + sessionId);
     restLogger.info('绑定微信code==============' + code);
     restLogger.info('绑定微信isBindWechatAfterLogin==============' + isBindWechatAfterLogin);
     let backendIntl = new BackendIntl(req);
