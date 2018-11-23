@@ -214,8 +214,8 @@ class CrmScoreCard extends React.Component {
                 <span className="crm-score-label crm-score-text">
                     {customerScore || customerScore === 0 ? Intl.get('crm.score.text', '{score}分', {score: customerScore}) : ''}
                 </span>
-                {customerScore ? <span className={expandIconCls} title={ expandIconTip}
-                    onClick={this.toggleScoreDetail.bind(this)}/> : null}
+                <span className={expandIconCls} title={ expandIconTip}
+                    onClick={this.toggleScoreDetail.bind(this)}/>
             </div>);
     }
 
