@@ -1,3 +1,4 @@
+const _ = require('lodash');
 /**
  * App是前端界面使用的应用对象
  * @param obj 服务端返回的应用对象
@@ -48,4 +49,17 @@ exports.toFrontObject = function(restObject) {
         frontObj.expireDate = restObject.expire_date;
     }
     return frontObj;
+};
+// 删除子部门里一些没用的属性
+exports.DeleteChildDepartment = function(childGroup) {
+    const removeChildSomeData = (childGroup) => {
+        if (_.isArray(childGroup) && childGroup.length) {
+            _.each(childGroup, (childItem) => {
+                delete childItem.client_id;
+                delete childItem.create_date;
+                removeChildSomeData(childItem.child_groups);
+            });
+        }
+    };
+    removeChildSomeData(childGroup);
 };

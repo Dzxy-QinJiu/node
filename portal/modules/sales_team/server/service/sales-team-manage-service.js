@@ -5,7 +5,6 @@
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var salesTeamRestApis = {
-    getSalesTeamList: '/rest/base/v1/group/list',
     filterSalesTeamList: '/rest/base/v1/group',
     getMemberList: '/rest/base/v1/group/nonmember',
     addMember: '/rest/base/v1/group/members',
@@ -20,15 +19,6 @@ var salesTeamRestApis = {
     saveSalesGoals: '/rest/contract/v2/goal'
 };
 exports.urls = salesTeamRestApis;
-
-exports.getSalesTeamList = function(req, res) {
-    return restUtil.authRest.get(
-        {
-            url: salesTeamRestApis.getSalesTeamList,
-            req: req,
-            res: res
-        });
-};
 
 exports.getSalesGoals = function(req, res, team_id) {
     return restUtil.authRest.get(
@@ -104,13 +94,13 @@ exports.editMember = function(req, res, obj) {
         operate: obj.operate
     };
     var url = '';
-    if (obj.type == 'owner') {
+    if (obj.type === 'owner') {
         url = salesTeamRestApis.editOwner;
         editObj.owner_id = obj.owner_id;
-    } else if (obj.type == 'manager') {
+    } else if (obj.type === 'manager') {
         url = salesTeamRestApis.editManager;
         editObj.user_ids = JSON.parse(obj.user_ids);
-    } else if (obj.type == 'user') {
+    } else if (obj.type === 'user') {
         url = salesTeamRestApis.editUser;
         editObj.user_ids = JSON.parse(obj.user_ids);
     }

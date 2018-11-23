@@ -1,5 +1,5 @@
 var callAnalysisAjax = require('../ajax/call-analysis-ajax');
-
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/get-common-data-util';
 function CallAnalysisActions() {
     this.generateActions(
         'resetState',//初始化数据的设置
@@ -89,12 +89,15 @@ function CallAnalysisActions() {
 
     // 团队信息
     this.getSaleGroupTeams = function(reqData) {
-        callAnalysisAjax.getSaleGroupTeams(reqData).then((resData) => {
-            this.dispatch({error: false, resData: resData});
-        }, (errorMsg) => {
-            this.dispatch({error: true, errMsg: errorMsg});
-        }
-        );
+        getMyTeamTreeAndFlattenList(data => {
+            if(data.errorMsg) {
+                this.dispatch({error: true, errMsg: data.errorMsg});
+            } else {
+                this.dispatch({error: false, resData: data.teamList});
+            }
+        });
+
+
     };
 
     // 成员信息

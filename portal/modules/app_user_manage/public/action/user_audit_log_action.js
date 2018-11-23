@@ -3,7 +3,7 @@ var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scro
 var ShareObj = require('../util/app-id-share-util');
 var AppUserUtil = require('../util/app-user-util');
 import { storageUtil } from 'ant-utils';
-import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/get-common-data-util';
 import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 
 function UserAuditLogAction() {
@@ -64,7 +64,7 @@ function UserAuditLogAction() {
         });
     };
     this.getTeamList = function(cb) {
-        getMyTeamTreeList(data => {
+        getMyTeamTreeAndFlattenList(data => {
             let list = data.teamList || [];
             // list.unshift({group_id: '', group_name: Intl.get('common.all', '全部')});
             this.dispatch({teamList: list, teamTreeList: data.teamTreeList, errorMsg: data.errorMsg});

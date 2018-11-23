@@ -1,4 +1,5 @@
 var weeklyReportAjax = require('../ajax/weekly-report-ajax');
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/get-common-data-util';
 function weeklyReportActions() {
     this.generateActions(
         'setInitState',//初始化数据的设置
@@ -11,12 +12,13 @@ function weeklyReportActions() {
     // 团队信息
     this.getSaleGroupTeams = function(reqData) {
         this.dispatch({loading: true, error: false});
-        weeklyReportAjax.getSaleGroupTeams(reqData).then((resData) => {
-            this.dispatch({loading: false ,error: false, resData: resData});
-        }, (errorMsg) => {
-            this.dispatch({loading: false ,error: true, errMsg: errorMsg});
-        }
-        );
+        getMyTeamTreeAndFlattenList(data => {
+            if(data.errorMsg) {
+                this.dispatch({loading: false,error: true, errMsg: data.errorMsg});
+            } else {
+                this.dispatch({loading: false,error: false, resData: data.teamList});
+            }
+        });
     };
 
     // 成员信息

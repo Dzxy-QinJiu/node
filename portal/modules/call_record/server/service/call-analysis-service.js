@@ -24,8 +24,6 @@ const restApis = {
     getTeamCallRate: '/rest/callrecord/v2/callrecord/term/:start_time/:end_time',
     // 114占比（个人）
     getUserCallRate: '/rest/callrecord/v2/callrecord/term/user/:start_time/:end_time',
-    // 获取团队信息
-    getSaleGroupTeams: '/rest/base/v1/group/teams/:type',
     // 获取成员信息
     getSaleMemberList: '/rest/base/v1/group/team/members/:type',
     //获取通话时间段(数量\时长)的统计数据, authType = manager管理员（可以查看所有团队的数据），user:销售（只能看我的及我的下级团队的数据）
@@ -219,16 +217,6 @@ exports.getCallTotalList = function(req, res, reqQuery) {
             req: req,
             res: res
         }, reqQuery);
-};
-
-// 获取团队信息
-exports.getSaleGroupTeams = function(req, res, params) {
-    return restUtil.authRest.get(
-        {
-            url: restApis.getSaleGroupTeams.replace(':type', params.type),
-            req: req,
-            res: res
-        });
 };
 
 // 获取成员信息

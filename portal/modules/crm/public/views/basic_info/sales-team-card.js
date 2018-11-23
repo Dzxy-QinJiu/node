@@ -9,7 +9,7 @@ import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import CrmAction from '../../action/crm-actions';
-import { getMyTeamTreeList } from 'PUB_DIR/sources/utils/get-common-data-util';
+import { getMyTeamTreeAndFlattenList } from 'PUB_DIR/sources/utils/get-common-data-util';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 //展示的类型
 const DISPLAY_TYPES = {
@@ -66,7 +66,7 @@ class SalesTeamCard extends React.Component {
         //有修改所属团队的权限时
         if(this.hasEditTeamPrivilege()){
             //获取我所在团队及下级团队列表
-            getMyTeamTreeList(({teamTree, teamList}) => {
+            getMyTeamTreeAndFlattenList(({teamTree, teamList}) => {
                 this.setState({mySubTeamList: teamList});
             });
         }

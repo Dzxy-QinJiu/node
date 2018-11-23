@@ -88,9 +88,34 @@ exports.getAllProductList = function(cb) {
 //获取我能看的团队树
 exports.getMyTeamTreeList = function(cb) {
     let teamTreeList = getUserData().my_team_tree || [];
+    if (_.get(teamTreeList, '[0]')) {
+        if (_.isFunction(cb)) cb({teamTreeList});
+    } else {
+        let type = 'self';//GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS
+        if (hasPrivilege(AUTH_MAP.ALL_TEAM_AUTH)) {
+            type = 'all';
+        }
+        teamAjaxTrans.getMyTeamTreeListAjax().sendRequest({
+            type: type,
+        }).success(function(teamTreeList) {
+            if (_.isFunction(cb)) cb({teamTreeList});
+            //保存到userData中
+            setUserData(MY_TEAM_TREE_KEY, teamTreeList);
+        }).error(errorMsg => {
+            teamTreeList = [];
+            if (_.isFunction(cb)) cb({teamTreeList, errorMsg});
+            //保存到userData中
+            setUserData(MY_TEAM_TREE_KEY, teamTreeList);
+        });
+    }
+};
+
+//获取平铺的和树状团队列表
+exports.getMyTeamTreeAndFlattenList = function(cb,flag) {
+    let teamTreeList = getUserData().my_team_tree || [];
     let teamList = [];
     if (_.get(teamTreeList, '[0]')) {
-        traversingTeamTree(teamTreeList, teamList);
+        traversingTeamTree(teamTreeList, teamList,flag);
         if (_.isFunction(cb)) cb({teamTreeList, teamList});
     } else {
         let type = 'self';//GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS
@@ -103,7 +128,7 @@ exports.getMyTeamTreeList = function(cb) {
             if (_.get(treeList, '[0]')) {
                 teamTreeList = treeList;
                 //遍历团队树取出我能看的所有的团队列表list
-                traversingTeamTree(teamTreeList, teamList);
+                traversingTeamTree(teamTreeList, teamList,flag);
             }
             if (_.isFunction(cb)) cb({teamTreeList, teamList});
             //保存到userData中

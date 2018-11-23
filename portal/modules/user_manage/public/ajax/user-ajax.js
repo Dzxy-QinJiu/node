@@ -151,22 +151,6 @@ exports.getRoleList = function(clientId) {
     return Deferred.promise();
 };
 
-//获取团队列表
-exports.getUserTeamList = function() {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/sales_team_list',
-        dataType: 'json',
-        type: 'get',
-        success: function(list) {
-            Deferred.resolve(list);
-        }, error: function(errorInfo) {
-            Deferred.reject(errorInfo.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-
 //验证用户名唯一性
 exports.checkOnlyUserName = function(userName) {
     var Deferred = $.Deferred();

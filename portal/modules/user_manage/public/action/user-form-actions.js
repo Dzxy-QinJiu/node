@@ -5,7 +5,7 @@ var userData = require('../../../../public/sources/user-data');
 var userAjax = require('../ajax/user-ajax');
 var UserActions = require('./user-actions');
 var cardEmitter = require('../../../../public/sources/utils/emitters').cardEmitter;
-
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/get-common-data-util';
 function UserFormActions() {
     this.generateActions(
         //设置是否正在保存
@@ -34,12 +34,12 @@ function UserFormActions() {
 
     //获取团队列表
     this.getUserTeamList = function() {
-        var _this = this;
-        var clientId = userData.getUserData().auth.client_id;
-        userAjax.getUserTeamList(clientId).then(function(salesTeamList) {
-            _this.dispatch(salesTeamList);
-        }, function(errorMsg) {
-            _this.dispatch(errorMsg || Intl.get('common.get.team.list.failed', '获取团队列表失败'));
+        getMyTeamTreeAndFlattenList(data => {
+            if(data.errorMsg) {
+                this.dispatch(data.errorMsg || Intl.get('common.get.team.list.failed', '获取团队列表失败'));
+            } else {
+                this.dispatch(data.teamList);
+            }
         });
     };
 
