@@ -403,6 +403,7 @@ class UserInfo extends React.Component{
                     isBindWechat: false,
                     weChatBindErrorMsg: ''
                 });
+                message.success(Intl.get('user.wechat.unbind.success', '已成功解绑微信'));
             },
             error: (errorMsg) => {
                 this.setState({
