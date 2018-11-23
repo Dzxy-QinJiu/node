@@ -21,8 +21,6 @@ let restLogger = require('../../../lib/utils/logger').getLogger('rest');
 let appUtils = require('../util/appUtils');
 let WXBizDataCrypt = require('../lib/WXBizDataCrypt');
 const _ = require('lodash');
-//登录后绑定微信的标识
-const bindWechatAfterLoginKey = 'isOnlyBindWechat';
 
 /**
  * 首页
@@ -398,14 +396,13 @@ exports.validatePhoneCode = function(req, res) {
 };
 //web点击微信登录时（登录后绑定微信时），二维码页面的展示
 exports.wechatLoginPage = function(req, res) {
-    let stateData = req.sessionID;
-    //登录后绑定微信
-    if (req.query.isBindWechatAfterLogin) {
-        stateData += bindWechatAfterLoginKey;
-    }
     let qrconnecturl = 'https://open.weixin.qq.com/connect/qrconnect?appid=wxf169b2a9aa1958a9'
         + '&redirect_uri=' + encodeURIComponent('https://ketao-exp.antfact.com/login/wechat')
-        + '&response_type=code&scope=snsapi_login&state=' + stateData;
+        + '&response_type=code&scope=snsapi_login&state=' + req.sessionID;
+    //登录后绑定微信
+    if (req.query.isBindWechatAfterLogin) {
+        qrconnecturl += '&isOnlyBindWechat=true';
+    }
     res.redirect(qrconnecturl);
     // DesktopLoginService.wechatLoginPage(req, res).on('success', function(data) {
     //     restLogger.info('微信登录跳转数据：' + JSON.stringify(data));
@@ -420,9 +417,8 @@ exports.loginWithWechat = function(req, res) {
     if (req.query && req.query.code) {
         let sessionId = req.query.state;
         //是否是登录后绑定的处理
-        if (_.indexOf(sessionId, bindWechatAfterLoginKey) !== -1) {
+        if (req.query.isOnlyBindWechat) {
             isBindWechatAfterLogin = true;
-            sessionId = sessionId.split(bindWechatAfterLoginKey)[0];
         }
         if (req.sessionID === sessionId) {
             code = req.query.code;
