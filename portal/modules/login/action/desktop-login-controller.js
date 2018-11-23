@@ -421,7 +421,7 @@ exports.wechatLoginBindByCode = function(req, res) {
     if (req.query && req.query.code) {
         let sessionId = req.query.state;
         //是否是登录后绑定的处理
-        if (_.indexOf(sessionId, bindWechatAfterLoginKey) !== -1) {
+        if (sessionId && sessionId.indexOf(bindWechatAfterLoginKey) !== -1) {
             isBindWechatAfterLogin = true;
             sessionId = sessionId.split(bindWechatAfterLoginKey)[0];
         }
