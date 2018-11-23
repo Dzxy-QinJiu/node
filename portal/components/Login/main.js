@@ -249,17 +249,17 @@ class LoginMain extends React.Component {
 
                     </div>
                 </TabPane>
-                <TabPane tab={Intl.get('register.wechat.register.bind', '注册新账号')}
-                    key={BIND_WECHAT_TAB_KEYS.REGISTER_BIND}>
-                    <div className="form-wrap">
-                        {this.state.bindWechatActiveKey === BIND_WECHAT_TAB_KEYS.REGISTER_BIND ? (
-                            <WeChatRegisterForm setErrorMsg={this.setErrorMsg} hasWindow={hasWindow}/>
-                        ) : null}
-                        {this.state.errorMsg ? (
-                            <Alert message={this.state.errorMsg} type="error" showIcon/>
-                        ) : null}
-                    </div>
-                </TabPane>
+                {/*<TabPane tab={Intl.get('register.wechat.register.bind', '注册新账号')}*/}
+                {/*key={BIND_WECHAT_TAB_KEYS.REGISTER_BIND}>*/}
+                {/*<div className="form-wrap">*/}
+                {/*{this.state.bindWechatActiveKey === BIND_WECHAT_TAB_KEYS.REGISTER_BIND ? (*/}
+                {/*<WeChatRegisterForm setErrorMsg={this.setErrorMsg} hasWindow={hasWindow}/>*/}
+                {/*) : null}*/}
+                {/*{this.state.errorMsg ? (*/}
+                {/*<Alert message={this.state.errorMsg} type="error" showIcon/>*/}
+                {/*) : null}*/}
+                {/*</div>*/}
+                {/*</TabPane>*/}
             </Tabs>);
     }
 

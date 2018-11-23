@@ -428,11 +428,12 @@ exports.loginWithWechat = function(req, res) {
             code = req.query.code;
         }
     }
+    restLogger.info('绑定微信================================' + JSON.stringify(req.query));
     let backendIntl = new BackendIntl(req);
     //通过扫描的二维码获取unionId
     if (code) {
         DesktopLoginService.loginWithWechat(req, res, code).on('success', function(data) {
-            restLogger.info('微信登录：' + JSON.stringify(data));
+            restLogger.info('微信unionId的获取======================：' + JSON.stringify(data));
             let unionId = _.get(data, 'unionid');
             //获取到unionId后，通过unionId检查微信是否绑定
             if (unionId) {
@@ -450,13 +451,13 @@ exports.loginWithWechat = function(req, res) {
                     checkWechatIsBind(req, res, unionId);
                 }
             } else {
-                loginWithWechatError(req, res, isBindWechatAfterLogin)({message: backendIntl.get('login.wechat.login.error', '微信登录失败')});
                 restLogger.error('微信扫码后，unionId不存在');
+                loginWithWechatError(req, res, isBindWechatAfterLogin)({message: backendIntl.get('login.wechat.login.error', '微信登录失败')});
             }
         }).on('error', loginWithWechatError(req, res, isBindWechatAfterLogin));
     } else {
-        loginWithWechatError(req, res, isBindWechatAfterLogin)({message: backendIntl.get('login.wechat.login.error', '微信登录失败')});
         restLogger.error('微信扫码后，code不存在');
+        loginWithWechatError(req, res, isBindWechatAfterLogin)({message: backendIntl.get('login.wechat.login.error', '微信登录失败')});
     }
 };
 
