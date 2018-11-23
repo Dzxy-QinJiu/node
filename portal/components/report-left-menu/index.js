@@ -4,28 +4,26 @@
 
 require('./style.less');
 import {NavLink} from 'react-router-dom';
+const userData = require('PUB_DIR/sources/user-data');
 
 class ReportLeftMenu extends React.Component {
     render() {
+        const data = userData.getUserData();
+        const subMenus = _.get(data, 'thirdLevelMenus.REPORT');
+
         return (
             <div className='report-left-menu'>
                 <ul>
-                    <li>
-                        <NavLink
-                            to='/analysis/weekly_report'
-                            activeClassName="active"
-                        >
-                            {Intl.get('contract.14', '周报')}
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink
-                            to='/analysis/monthly_report'
-                            activeClassName="active"
-                        >
-                            {Intl.get('contract.15', '月报')}
-                        </NavLink>
-                    </li>
+                    {_.map(subMenus, menuItem => (
+                        <li>
+                            <NavLink
+                                to={'/' + menuItem.routePath}
+                                activeClassName="active"
+                            >
+                                {menuItem.name}
+                            </NavLink>
+                        </li>
+                    ))}
                 </ul>
             </div>
         );

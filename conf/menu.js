@@ -225,7 +225,12 @@ class LeftMenuClass {
                                 name: backendIntl.get('contract.14', '周报'),
                                 routePath: 'analysis/weekly_report',
                                 privileges: [
-                                    'CALLRECORD_ASKFORLEAVE_ADD',
+                                    'KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER',
+                                    'KETAO_SALES_TEAM_WEEKLY_REPORTS_COMMON',
+                                ],
+                                showPrivileges: [
+                                    'KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER',
+                                    'KETAO_SALES_TEAM_WEEKLY_REPORTS_COMMON',
                                 ],
                             },
                             //月报统计
@@ -234,8 +239,12 @@ class LeftMenuClass {
                                 name: backendIntl.get('contract.15', '月报'),
                                 routePath: 'analysis/monthly_report',
                                 privileges: [
-                                    'CALL_RECORD_VIEW_MANAGER',
-                                    'CALL_RECORD_VIEW_USER',
+                                    'CALLRECORD_ASKFORLEAVE_QUERY_MANAGER',
+                                    'CALLRECORD_ASKFORLEAVE_QUERY_USER',
+                                ],
+                                showPrivileges: [
+                                    'CALLRECORD_ASKFORLEAVE_QUERY_MANAGER',
+                                    'CALLRECORD_ASKFORLEAVE_QUERY_USER',
                                 ],
                             },
                         ],

@@ -9,10 +9,16 @@ var Checker = require('../../../components/privilege/checker');
 const analysis = require('MOD_DIR/analysis');
 const weeklyReport = require('MOD_DIR/weekly_report');
 const monthlyReport = require('MOD_DIR/monthly-report');
+const userData = require('../user-data');
 
 class ReportIndexRoute extends React.Component {
     componentWillMount() {
-        history.replace('weekly_report');
+        const data = userData.getUserData();
+        const subMenus = _.get(data, 'thirdLevelMenus.REPORT');
+
+        if (subMenus && subMenus[0]) {
+            history.replace('/' + subMenus[0].routePath);
+        }
     }
 
     render() {
@@ -26,15 +32,15 @@ function getChildRoutes() {
             analysis,
             {
                 path: '/analysis/report',
-                component: ReportIndexRoute
+                component: ReportIndexRoute,
             }
         ]
     );
 
-    childRoutes = childRoutes.concat([
+    childRoutes.push(
         weeklyReport,
         monthlyReport,
-    ]);
+    );
 
     return childRoutes;
 }
