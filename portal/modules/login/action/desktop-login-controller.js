@@ -429,6 +429,9 @@ exports.wechatLoginBindByCode = function(req, res) {
             code = req.query.code;
         }
     }
+    restLogger.info('绑定微信' + req.sessionID + '===========' + sessionId);
+    restLogger.info('绑定微信code==============' + code);
+    restLogger.info('绑定微信isBindWechatAfterLogin==============' + isBindWechatAfterLogin);
     let backendIntl = new BackendIntl(req);
     //通过扫描的二维码获取unionId
     if (code) {
@@ -462,7 +465,7 @@ exports.wechatLoginBindByCode = function(req, res) {
 };
 
 //微信扫码后的错误处理
-function loginWithWechatError(req, res, isBindWechatAfterLogin, errorObj) {
+function loginWithWechatError(req, res, isBindWechatAfterLogin) {
     return function(errorObj) {
         //个人资料绑定微信的处理
         if(isBindWechatAfterLogin) {
