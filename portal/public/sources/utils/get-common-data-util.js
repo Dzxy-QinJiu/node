@@ -3,7 +3,7 @@ import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import teamAjaxTrans from 'MOD_DIR/common/public/ajax/team';
 import {storageUtil} from 'ant-utils';
-import {traversingTeamTree} from 'PUB_DIR/sources/utils/common-method-util';
+import {traversingTeamTree, getParamByPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {message} from 'antd';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -91,12 +91,9 @@ exports.getMyTeamTreeList = function(cb) {
     if (_.get(teamTreeList, '[0]')) {
         if (_.isFunction(cb)) cb({teamTreeList});
     } else {
-        let type = 'self';//GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS
-        if (hasPrivilege(AUTH_MAP.ALL_TEAM_AUTH)) {
-            type = 'all';
-        }
+        const reqData = getParamByPrivilege();
         teamAjaxTrans.getMyTeamTreeListAjax().sendRequest({
-            type: type,
+            type: reqData.type,
         }).success(function(teamTreeList) {
             if (_.isFunction(cb)) cb({teamTreeList});
             //保存到userData中
@@ -118,12 +115,9 @@ exports.getMyTeamTreeAndFlattenList = function(cb,flag) {
         traversingTeamTree(teamTreeList, teamList,flag);
         if (_.isFunction(cb)) cb({teamTreeList, teamList});
     } else {
-        let type = 'self';//GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS
-        if (hasPrivilege(AUTH_MAP.ALL_TEAM_AUTH)) {
-            type = 'all';
-        }
+        const reqData = getParamByPrivilege();
         teamAjaxTrans.getMyTeamTreeListAjax().sendRequest({
-            type: type,
+            type: reqData.type,
         }).success(function(treeList) {
             if (_.get(treeList, '[0]')) {
                 teamTreeList = treeList;
