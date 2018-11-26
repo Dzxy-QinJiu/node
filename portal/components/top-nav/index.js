@@ -229,14 +229,12 @@ TopNav.MenuList = class extends React.Component {
         //获取第一层路由
         var category = getCategory();
         //获取所有子模块
-        var userData = UserData.getUserData() && UserData.getUserData();
-        var AllSubModules = (userData.subModules) || {};
-        //获取当前界面的子模块
-        var subModules = [];
-        if (category.indexOf('/') !== -1) {
+        var AllSubModules = (UserData.getUserData() && UserData.getUserData().subModules) || {};
+        if (category.indexOf('/') > 0) {
             category = category.substring(0, category.indexOf('/'));
         }
-        subModules = this.props.menuList || AllSubModules[category] || [];
+        //获取当前界面的子模块
+        var subModules = this.props.menuList || AllSubModules[category] || [];
 
         //获取pathname
         var locationPath = getPathname();
