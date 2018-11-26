@@ -8,6 +8,7 @@ import CustomerSuggest from 'MOD_DIR/app_user_manage/public/views/customer_sugge
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import {StatusWrapper} from 'antc';
 import {PropTypes} from 'prop-types';
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 
 var React = require('react');
 //class的前缀
@@ -18,6 +19,7 @@ class UserBasicCard extends React.Component {
     constructor(props) {
         super();
         this.state = {
+            curShowCustomerId: '', //查看右侧详情的客户id
             showEdit: false,
             //客户ids
             customer_id: props.customer_id,
@@ -184,6 +186,25 @@ class UserBasicCard extends React.Component {
         };
         this.changeCustomerAjax(appUser);
     }
+    hideRightPanel = () => {
+        this.setState({
+            curShowCustomerId: ''
+        });
+    };
+    showCustomerDetail = (customer_id) => {
+        this.setState({
+            curShowCustomerId: customer_id,
+        });
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: customer_id,
+                curCustomer: this.state.curCustomer,
+                userViewShowCustomerUserListPanel: true,
+                hideRightPanel: this.hideRightPanel
+            }
+        });
+    };
 
     render() {
         return (
@@ -200,7 +221,8 @@ class UserBasicCard extends React.Component {
                             <div className="sales-team">
                                 <span className="sales-team-label">{Intl.get('common.belong.customer', '所属客户')}:</span>
                                 <span className="sales-team-text">
-                                    {this.props.customer_name}
+                                    <a onClick={this.showCustomerDetail.bind(this, this.props.customer_id)}
+                                        data-tracename="点击所属客户列">{this.props.customer_name}</a>
                                 </span>
                                 <DetailEditBtn
                                     title={Intl.get('common.edit', '编辑')}
