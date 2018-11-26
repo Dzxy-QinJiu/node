@@ -365,10 +365,10 @@ class CurtaoAnalysis extends React.Component {
             <div className='curtao-analysis'>
                 <TopBar />
                 <Row>
-                    <Col span={4}>
+                    <Col span={3}>
                         {this.renderMenu()}
                     </Col>
-                    <Col span={20}>
+                    <Col span={21}>
                         {this.state.isAppSelectorShow ? (
                             <div className="page-top-bar">
                                 <AppSelector storedAppIdKey={STORED_APP_ID_KEY} defaultValue={defaultAppId} />

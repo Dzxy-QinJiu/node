@@ -1,13 +1,14 @@
 var React = require('react');
 require('./style.less');
 import { AntcAnalysis } from 'antc';
-import { Select, DatePicker} from 'antd';
+import { Row, Col, Select, DatePicker} from 'antd';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import ajax from 'ant-ajax';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import { LEAVE_TYPES } from './consts';
 import {AntcAttendanceRemarks} from 'antc';
 const TopNav = require('CMP_DIR/top-nav');
+import ReportLeftMenu from 'CMP_DIR/report-left-menu';
 const Option = Select.Option;
 const MonthPicker = DatePicker.MonthPicker;
 const Emitters = require('PUB_DIR/sources/utils/emitters');
@@ -25,6 +26,9 @@ class MonthlyReport extends React.Component {
     };
 
     componentDidMount() {
+        //让顶部栏上的报告菜单显示选中状态
+        $('.analysis_report_ico a').addClass('active');
+
         this.getTeamList();
         this.getMemberList();
     }
@@ -420,26 +424,33 @@ class MonthlyReport extends React.Component {
                     {this.renderFilter(selectedTeamId)}
                 </TopNav>
                 <div className="monthly-report-content">
-                    {selectedTeamName ? (
-                        <div className="report-title">
-                            <span className="team-name">
-                                {selectedTeamName + Intl.get('analysis.sales.monthly.report', '销售月报')}
-                            </span>
-                            <span className="year-month">
-                            （{this.state.selectedMonth.format(oplateConsts.DATE_YEAR_MONTH_FORMAT)}）
-                            </span>
-                        </div>
-                    ) : null}
+                    <Row>
+                        <Col span={3}>
+                            <ReportLeftMenu />
+                        </Col>
+                        <Col span={21}>
+                            {selectedTeamName ? (
+                                <div className="report-title">
+                                    <span className="team-name">
+                                        {selectedTeamName + Intl.get('contract.15', '月报')}
+                                    </span>
+                                    <span className="year-month">
+                                    （{this.state.selectedMonth.format(oplateConsts.DATE_YEAR_MONTH_FORMAT)}）
+                                    </span>
+                                </div>
+                            ) : null}
 
-                    {selectedTeamId ? (
-                        <AntcAnalysis
-                            charts={this.getCharts()}
-                            conditions={this.getConditions(selectedTeamId)}
-                            emitterConfigList={this.getEmitters()}
-                            isGetDataOnMount={true}
-                            isUseScrollBar={true}
-                        />
-                    ) : null}
+                            {selectedTeamId ? (
+                                <AntcAnalysis
+                                    charts={this.getCharts()}
+                                    conditions={this.getConditions(selectedTeamId)}
+                                    emitterConfigList={this.getEmitters()}
+                                    isGetDataOnMount={true}
+                                    isUseScrollBar={true}
+                                />
+                            ) : null}
+                        </Col>
+                    </Row>
                 </div>
             </div>
         );

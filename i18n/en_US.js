@@ -2556,5 +2556,6 @@ var en_US = {
     'common.data.request.error': 'Data request error',//数据请求出错
     'common.turn.in.customer': 'turn in customer',//转入客户
     'deal.stage': 'Deal stage',//阶段
+    'common.report': 'report',//报告
 };
 export default en_US;

@@ -10,7 +10,7 @@ const MonthlyReportPage = (props) => (
 );
 
 module.exports = {
-    path: '/analysis/monthly_report',
+    path: '/analysis/report/monthly_report',
     component: MonthlyReportPage
 };
 

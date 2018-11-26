@@ -79,6 +79,7 @@ exports.getUserData = function(req, res) {
     function getUserInfo(lang) {
         user.modules = DesktopIndexService.getModulesByUser(req);
         user.subModules = DesktopIndexService.getSubModulesByUser(req);
+        user.thirdLevelMenus = DesktopIndexService.getThirdLevelMenusByUser(req);
         user.privileges = DesktopIndexService.getPrivileges(req);
         user.sideBarMenus = DesktopIndexService.getSidebarMenus(req);
         //删除认证数据
