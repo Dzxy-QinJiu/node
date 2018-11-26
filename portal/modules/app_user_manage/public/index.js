@@ -440,11 +440,6 @@ class AppUserManage extends React.Component {
         AppUserAction.setRecentLoginPanelFlag(true);
     };
 
-    hideRecentLoginPanel = (e) => {
-        Trace.traceEvent(e, '关闭查看近期登录用户列表');
-        AppUserAction.setRecentLoginPanelFlag(false);
-    };
-
     //关闭属于某个客户的用户列表
     hideCustomerUserList = () => {
         this.props.hideCustomerUserList();
@@ -523,6 +518,16 @@ class AppUserManage extends React.Component {
             case 'log':
                 showView = (<UserAuditLog />);
                 break;
+            case 'active':
+                showView = (
+                    <RecentLoginUsersPanel
+                        teamlists={this.state.filterTeams.teamlists}
+                        teamTreeList={this.state.teamTreeList}
+                        selectedAppId={this.state.selectedAppId}
+                        appList={this.state.appList}
+                    />
+                );
+                break;
         }
         //是否显示“过滤”按钮
         var showFilterBtn = this.state.selectedAppId;
@@ -577,13 +582,6 @@ class AppUserManage extends React.Component {
                                     </div>
                                 )
                             }
-                            {!Oplate.hideSomeItem && !this.state.customer_id ?
-                                <PrivilegeChecker
-                                    onClick={this.showRecentLoginPanel}
-                                    check="APP_USER_LIST"
-                                    className="inline-block recent-login-btn btn-item float-r btn-m-r-2">
-                                    <span className="iconfont icon-online recent-login-user-btn" title="查看近期登录用户列表" />
-                                </PrivilegeChecker> : null}
                             <PrivilegeChecker
                                 onClick={this.addAppUser}
                                 check={this.addUserBtnCheckun}
@@ -615,18 +613,6 @@ class AppUserManage extends React.Component {
                     {
                         rightPanelView
                     }
-                </RightPanel>
-                <RightPanel
-                    className="recent_login_users_panel"
-                    showFlag={this.state.isShowRecentLoginPanel}
-                    data-tracename="查看近期登录用户列表"
-                >
-                    {this.state.isShowRecentLoginPanel ? (<RecentLoginUsersPanel
-                        teamlists={this.state.filterTeams.teamlists}
-                        teamTreeList={this.state.teamTreeList}
-                        selectedAppId={this.state.selectedAppId}
-                        appList={this.state.appList}
-                        hideRecentLoginPanel={this.hideRecentLoginPanel} />) : null}
                 </RightPanel>
             </div>
         );

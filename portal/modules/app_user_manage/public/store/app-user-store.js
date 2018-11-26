@@ -93,16 +93,10 @@ AppUserStore.prototype.resetState = function() {
     this.sort_order = '';
     // 安全域列表
     this.realmList = [];
-    //是否展示近期登录列表
-    this.isShowRecentLoginPanel = false;
 };
 //恢复初始值
 AppUserStore.prototype.setInitialData = function() {
     this.resetState();
-};
-//设置是否展示近期登录用户列表面板
-AppUserStore.prototype.setRecentLoginPanelFlag = function(flag) {
-    this.isShowRecentLoginPanel = flag;
 };
 
 //关键词改变

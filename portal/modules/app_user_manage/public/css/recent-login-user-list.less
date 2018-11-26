@@ -1,76 +1,71 @@
 @import '../../../../public/css/common-variables';
 // /近期登录用户列表的样式
-#app{
-  .recent_login_users_panel.right-pannel-default{
-    width:auto;
-    left:75px;
-    transform:translateX(100%);
-    -webkit-transform:translateX(100%);
-    background-color:#fff;
-    display:block;
-
-    .recent-login-users-container{
-      .close-pannel {
-        margin-top: 0;
+.recent-login-users-container {
+  .topNav {
+    //时间选择组件
+    .recent-login-time-select {
+      margin-top: @filter_area_margin_top;
+      margin-left: 25px;
+    }
+    //应用选择下拉框
+    .recent-login-app-select {
+      margin-top: @filter_area_margin_top;
+      margin-left: 20px;
+      .ant-select {
+        width: auto;
       }
-      .topNav{
-        margin-left:-75px;
-        //时间选择组件
-        .recent-login-time-select{
-          margin-top:@filter_area_margin_top;
-          margin-left:25px;
-        }
-        //应用选择下拉框
-        .recent-login-app-select{
-          margin-top: @filter_area_margin_top;
-          margin-left:20px;
-          .ant-select{
-            width:auto;
-          }
-        }
-        //类型选择下拉框
-        .recent-login-type-select, .recent-login-filter-type-select{
-          margin-top: @filter_area_margin_top;
-          margin-left: 20px;
-          .ant-select{
-            width: auto;
-          }
-        }
+    }
+    //类型选择下拉框
+    .recent-login-type-select, .recent-login-filter-type-select {
+      margin-top: @filter_area_margin_top;
+      margin-left: 20px;
+      .ant-select {
+        width: auto;
       }
-      //近期登录用户列表
-      .recent-login-users-table-wrap{
-        padding:@top_nav_height+2 @container_padding 0 @container_padding;
-        .user-list-thead {
-          .ant-table-content {
-            .ant-table-placeholder {
-              display: none;
-            }
-          }
-        }
+    }
+    .recent_login_header{
+      position: absolute;
+      top: 16px;
+      right: 24px;
+      z-index: 11;
+      .btn-item{
+        margin-top:0;
       }
 
-      .ant-table-empty{
-        .ant-table-large{
-          .ant-table-body{
-            border-bottom:none !important;
-          }
+    }
+  }
+  //近期登录用户列表
+  .recent-login-users-table-wrap {
+    .user-list-thead {
+      .ant-table-content {
+        .ant-table-placeholder {
+          display: none;
         }
-      }
-      .ant-table-row.current_row:hover,
-      .ant-table-row.current_row {
-        background: #DFEAF3;
-      }
-      .unnormal-login{
-        margin-right: 5px;
-        color: #f41919;
-        font-size: 12px
-      }
-      .summary_info{
-        font-size:13px;
-        color:#7c8185;
-        position:fixed;
-        bottom:20px;
       }
     }
   }
+
+  .ant-table-empty {
+    .ant-table-large {
+      .ant-table-body {
+        border-bottom: none !important;
+      }
+    }
+  }
+  .ant-table-row.current_row:hover,
+  .ant-table-row.current_row {
+    background: #DFEAF3;
+  }
+  .unnormal-login {
+    margin-right: 5px;
+    color: #f41919;
+    font-size: 12px
+  }
+  .summary_info {
+    font-size: 13px;
+    color: #7c8185;
+    position: fixed;
+    bottom: 20px;
+  }
 }
+

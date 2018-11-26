@@ -95,6 +95,16 @@ class LeftMenuClass {
                     //有这个权限，才显示入口图标
                     showPrivileges: ['USER_AUDIT_LOG_LIST']
                 }, {
+                    id: 'ACTIVE_USER_LIST', // 活跃用户
+                    name: backendIntl.get('menu.active.user.lists','活跃用户'),
+                    routePath: 'user/active',
+                    privileges: [
+                        'USER_TIME_LINE' // 查看用户变更记录
+                    ],
+                    //有这个权限，才显示入口图标
+                    showPrivileges: ['USER_TIME_LINE']
+                }
+                    , {
                     id: 'POSITION_MANAGE', // 座席号管理的唯一标识
                     name: backendIntl.get('menu.appuser.position', '座席号管理'),
                     displayName: backendIntl.get('menu.appuser.position', '座席号管理'),

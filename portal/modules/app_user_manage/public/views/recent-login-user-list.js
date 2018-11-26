@@ -485,12 +485,12 @@ class RecentLoginUsers extends React.Component {
             </Option>
         );
         return (
-            <div className="recent-login-type-select">
+            <div className="team-member-select inline-block btn-item">
                 <Select
                     value={this.state.selectedSalesId}
                     onChange={this.onMemberChange}
                     showSearch={true}
-                    className="team-member-select-options btn-item"
+                    className="team-member-select-options"
                     filterOption={(inputValue, option) => {
                         return option.props.children.includes(inputValue);
                     }}
@@ -501,84 +501,92 @@ class RecentLoginUsers extends React.Component {
                 </Select>
             </div>
         );
+    };
+    renderRecentLoginHeader(){
+        let appOptions = this.getAppOptions();
+        return (
+            <div className="recent_login_header-wrap">
+                <TopNav>
+                    <TopNav.MenuList/>
+                    <div className="recent_login_header">
+                        <div className="inline-block recent-login-time-select btn-item">
+                            <DatePicker
+                                disableDateAfterToday={true}
+                                range="day"
+                                onSelect={this.onSelectDate.bind(this)}>
+                                <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
+                                <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
+                                <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
+                                <DatePicker.Option
+                                    value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
+                                <DatePicker.Option
+                                    value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
+                                <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
+                            </DatePicker>
+                        </div>
+                        <div className="inline-block recent-login-app-select btn-item">
+                            <SelectFullWidth
+                                optionFilterProp="children"
+                                showSearch
+                                minWidth={120}
+                                value={this.state.selectedAppId}
+                                onChange={this.onSelectedAppChange.bind(this)}
+                                notFoundContent={!appOptions.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
+                            >
+                                {appOptions}
+                            </SelectFullWidth>
+                        </div>
+                        <div className="inline-block recent-login-type-select btn-item">
+                            <Select
+                                value={this.state.user_type}
+                                onChange={this.onUserTypeChange.bind(this)}
+                            >
+                                {
+                                    _.map(userTypeList, (userType, idx) => {
+                                        return <Option key={idx} value={userType.value}>{userType.name}</Option>;
+                                    })
+                                }
+                            </Select>
+                        </div>
+                        <div className="inline-block recent-login-filter-type-select btn-item">
+                            <SelectFullWidth
+                                value={this.state.team_ids}
+                                onChange={this.onTeamChange.bind(this)}
+                            >
+                                {
+                                    _.map(this.state.teamlists, (teamItem, index) => {
+                                        return <Option key={index} value={teamItem.group_id}>{teamItem.group_name}</Option>;
+                                    })
+                                }
+                            </SelectFullWidth>
+                        </div>
+                        {this.renderTeamMembersSelect()}
+                        <div className="inline-block btn-item select-init-width">
+                            <SelectFullWidth
+                                value={this.state.filter_type}
+                                onChange={this.onFilterTypeChange.bind(this)}
+                            >
+
+                                {
+                                    _.map(filterTypeList, (filterType, index) => {
+                                        return <Option key={index} value={filterType.value}>{filterType.name}</Option>;
+                                    })
+                                }
+                            </SelectFullWidth>
+                        </div>
+                    </div>
+                </TopNav>
+            </div>
+        );
     }
 
     render() {
         let divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
-        let appOptions = this.getAppOptions();
+
         let columns = this.getTableColumns();
         return (
             <div className="recent-login-users-container" data-tracename="近期登录用户列表">
-                <TopNav>
-                    <div className="inline-block recent-login-time-select btn-item">
-                        <DatePicker
-                            disableDateAfterToday={true}
-                            range="day"
-                            onSelect={this.onSelectDate.bind(this)}>
-                            <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
-                            <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
-                            <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
-                            <DatePicker.Option
-                                value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
-                            <DatePicker.Option
-                                value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
-                            <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
-                        </DatePicker>
-                    </div>
-                    <div className="inline-block recent-login-app-select btn-item">
-                        <SelectFullWidth
-                            optionFilterProp="children"
-                            showSearch
-                            minWidth={120}
-                            value={this.state.selectedAppId}
-                            onChange={this.onSelectedAppChange.bind(this)}
-                            notFoundContent={!appOptions.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
-                        >
-                            {appOptions}
-                        </SelectFullWidth>
-                    </div>
-
-                    <div className="inline-block recent-login-type-select btn-item">
-                        <Select
-                            value={this.state.user_type}
-                            onChange={this.onUserTypeChange.bind(this)}
-                        >
-                            {
-                                _.map(userTypeList, (userType, idx) => {
-                                    return <Option key={idx} value={userType.value}>{userType.name}</Option>;
-                                })
-                            }
-                        </Select>
-                    </div>
-                    <div className="inline-block recent-login-filter-type-select btn-item">
-                        <SelectFullWidth
-                            value={this.state.team_ids}
-                            onChange={this.onTeamChange.bind(this)}
-                        >
-                            {
-                                _.map(this.state.teamlists, (teamItem, index) => {
-                                    return <Option key={index} value={teamItem.group_id}>{teamItem.group_name}</Option>;
-                                })
-                            }
-                        </SelectFullWidth>
-                    </div>
-                    {this.renderTeamMembersSelect()}
-                    <div className="inline-block btn-item select-init-width">
-                        <SelectFullWidth
-                            value={this.state.filter_type}
-                            onChange={this.onFilterTypeChange.bind(this)}
-                        >
-
-                            {
-                                _.map(filterTypeList, (filterType, index) => {
-                                    return <Option key={index} value={filterType.value}>{filterType.name}</Option>;
-                                })
-                            }
-                        </SelectFullWidth>
-                    </div>
-                    <RightPanelClose title={Intl.get('common.app.status.close', '关闭')}
-                        onClick={this.props.hideRecentLoginPanel} />
-                </TopNav>
+                {this.renderRecentLoginHeader()}
                 <div className="recent-login-users-table-wrap splice-table">
                     <div className="user-list-thead custom-thead">
                         <Table
