@@ -757,7 +757,7 @@ class CustomerRecord extends React.Component {
                 <div className="show-customer-trace">
                     {this.props.isOverViewPanel ? this.renderTimeLine() : (
                         <div className="show-content" style={{'height': this.getRecordListShowHeight()}}>
-                            <GeminiScrollbar
+                            <GeminiScrollbar className="srollbar-out-card-style"
                                 handleScrollBottom={this.handleScrollBarBottom}
                                 listenScrollBottom={this.state.listenScrollBottom}
                             >
@@ -849,7 +849,7 @@ class CustomerRecord extends React.Component {
         return (
             <div className="customer-container" data-tracename="跟进记录页面" id="customer-container">
                 {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : (
-                    <div className="trace-top-block">
+                    <div className="trace-top-block crm-detail-top-total-block">
                         <span className="total-tip crm-detail-total-tip">
                             {isRecordTabNoData ? Intl.get('crm.no.trace.record', '还没有跟进过该客户') : (
                                 <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={'共{n}条'}

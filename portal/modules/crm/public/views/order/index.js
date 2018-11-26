@@ -69,8 +69,10 @@ class OrderIndex extends React.Component {
     componentWillReceiveProps(nextProps) {
         let oldCustomerId = this.state.curCustomer.id;
         if (nextProps.isMerge || nextProps.curCustomer && nextProps.curCustomer.id !== oldCustomerId) {
-            this.state.orderList = nextProps.curCustomer.sales_opportunities || [];
-            this.setState({curCustomer: nextProps.curCustomer});
+            this.setState({
+                curCustomer: nextProps.curCustomer,
+                orderList: nextProps.curCustomer.sales_opportunities || []
+            });
             setTimeout(() => {
                 this.getOrderList(nextProps.curCustomer, nextProps.isMerge);
             });
@@ -231,7 +233,7 @@ class OrderIndex extends React.Component {
         let orderListLength = _.isArray(this.state.orderList) ? this.state.orderList.length : 0;
         return (
             <div className="order-container" data-tracename="订单页面">
-                {this.state.isAddFormShow ? null : (<div className="order-top-block">
+                {this.state.isAddFormShow ? null : (<div className="order-top-block crm-detail-top-total-block">
                     <span className="total-tip crm-detail-total-tip">
                         {this.state.orderListLoading ? null : orderListLength ? (
                             <ReactIntl.FormattedMessage
@@ -249,7 +251,7 @@ class OrderIndex extends React.Component {
                 </div>)
                 }
                 <div className="order-container-scroll" style={{height: divHeight}} ref="scrollOrderList">
-                    <GeminiScrollbar>
+                    <GeminiScrollbar className="srollbar-out-card-style">
                         {this.state.isAddFormShow ? (
                             <OrderForm order={{}}
                                 stageList={_this.state.stageList}
@@ -294,6 +296,10 @@ class OrderIndex extends React.Component {
         );
     }
 }
+OrderIndex.propTypes = {
+    curCustomer: PropTypes.object,
+    isMerge: PropTypes.bool,
 
+};
 module.exports = OrderIndex;
 

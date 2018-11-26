@@ -560,7 +560,8 @@ class CustomerUsers extends React.Component {
                 : null
             }
             <div className="crm-user-scroll-wrap" style={{height: this.state.userListHeight}}>
-                <GeminiScrollbar listenScrollBottom={this.state.listenScrollBottom}
+                <GeminiScrollbar className="srollbar-out-card-style"
+                    listenScrollBottom={this.state.listenScrollBottom}
                     handleScrollBottom={this.handleScrollBottom.bind(this)}>
                     {this.renderCrmUserList(isApplyButtonShow)}
                 </GeminiScrollbar>
