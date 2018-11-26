@@ -12,6 +12,10 @@ export function getAccountValidChart(type = 'total') {
         noShowCondition: {
             callback: ifNotSingleApp
         },
+        argCallback: args => {
+            delete args.query.starttime;
+            delete args.query.endtime;
+        },
         processData: data => {
             return [{
                 name: '有效数',
