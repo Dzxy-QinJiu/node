@@ -220,7 +220,7 @@ class CrmScoreCard extends React.Component {
     }
 
     render() {
-        if (this.state.isExpandDetail && this.state.customerScore) {
+        if (this.state.isExpandDetail) {
             return (<DetailCard className="crm-score-card-container" title={this.renderScoreTitle()}
                 content={this.renderScoreDetail()}/>);
         } else {
