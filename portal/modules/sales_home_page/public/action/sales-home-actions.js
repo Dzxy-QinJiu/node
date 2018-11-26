@@ -3,7 +3,7 @@ var userData = require('../../../../public/sources/user-data');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 let scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 var _ = require('lodash');
-import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
 
 function SalesHomeActions() {
     this.generateActions(

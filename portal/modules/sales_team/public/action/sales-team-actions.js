@@ -3,7 +3,7 @@
  */
 //联系人的ajax
 var SalesTeamAjax = require('../ajax/sales-team-ajax');
-
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 function SalesTeamAction() {
 
     this.generateActions(
@@ -51,12 +51,13 @@ function SalesTeamAction() {
         );
     };
     this.getSalesTeamList = function() {
-        var _this = this;
-        SalesTeamAjax.getSalesTeamList().then(function(list) {
-            _this.dispatch(list);
-        }, function(errorMsg) {
-            _this.dispatch(errorMsg || Intl.get('common.get.sale.lists.failed', '获取销售团队列表失败'));
-        });
+        getMyTeamTreeAndFlattenList(data => {
+            if(data.errorMsg) {
+                this.dispatch(data.errorMsg || Intl.get('common.get.sale.lists.failed', '获取销售团队列表失败'));
+            } else {
+                this.dispatch(data.teamList);
+            }
+        },true);
     };
 
     this.filterByUserName = function(userName) {

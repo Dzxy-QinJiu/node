@@ -21,7 +21,7 @@ import crmAjax from '../../ajax';
 import classNames from 'classnames';
 import ErrorDataTip from '../components/error-data-tip';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
-import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {

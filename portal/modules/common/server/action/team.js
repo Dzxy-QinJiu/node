@@ -3,6 +3,8 @@
  */
 var TeamService = require('../service/team');
 var Resolver = require('fastjson_ref_resolver').Resolver;
+const _ = require('lodash');
+import {DeleteChildDepartment} from '../dto/app';
 
 //根据团队id获取团队下的成员列表
 exports.getSalesTeamMemberList = function(req, res) {
@@ -31,10 +33,18 @@ exports.getTeamMemberCountList = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
 //获取我能看的团队树列表
 exports.getMyteamTreeList = function(req, res) {
     TeamService.getMyteamTreeList(req, res).on('success', function(data) {
         data = new Resolver(data).resolve();
+        _.forEach(data, (teamItem) => {
+            delete teamItem.client_id;
+            delete teamItem.create_date;
+            if (teamItem.child_groups && _.isArray(teamItem.child_groups) && teamItem.child_groups.length) {
+                DeleteChildDepartment(teamItem.child_groups);
+            }
+        });
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);

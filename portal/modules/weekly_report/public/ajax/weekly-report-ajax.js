@@ -3,27 +3,6 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/2/6.
  */
-// 获取团队信息
-var getSaleGroupTeamsAjax = null;
-exports.getSaleGroupTeams = function(reqData) {
-    var Deferred = $.Deferred();
-    getSaleGroupTeamsAjax && getSaleGroupTeamsAjax.abort();
-    getSaleGroupTeamsAjax = $.ajax({
-        url: '/rest/get/sale/teams/' + reqData.type,
-        dataType: 'json',
-        type: 'get',
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(xhr,statusText) {
-            if(statusText !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
-            }
-        }
-    });
-    return Deferred.promise();
-};
-
 // 获取成员信息
 var getSaleMemberListAjax = null;
 exports.getSaleMemberList = function(reqData) {

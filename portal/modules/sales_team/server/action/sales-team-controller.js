@@ -4,16 +4,6 @@
 'use strict';
 
 var SalesTeamManageServic = require('../service/sales-team-manage-service');
-
-exports.getSalesTeamList = function(req, res) {
-    SalesTeamManageServic.getSalesTeamList(req, res)
-        .on('success', function(data) {
-            res.status(200).json(data);
-        }).on('error', function(codeMessage) {
-            res.status(500).json(codeMessage && codeMessage.message);
-        });
-};
-
 exports.filterSalesTeamList = function(req, res) {
     var userName = encodeURI(req.params.user_name);
     SalesTeamManageServic.filterSalesTeamList(req, res, userName)

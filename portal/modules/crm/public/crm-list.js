@@ -34,7 +34,7 @@ import crmUtil from './utils/crm-util';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 const extend = require('extend');
-import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import CallNumberUtil from 'PUB_DIR/sources/utils/common-data-util';
 import { FilterInput } from 'CMP_DIR/filter';
 var classNames = require('classnames');
 import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';

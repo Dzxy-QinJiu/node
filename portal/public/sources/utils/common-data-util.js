@@ -3,7 +3,7 @@ import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import teamAjaxTrans from 'MOD_DIR/common/public/ajax/team';
 import {storageUtil} from 'ant-utils';
-import {traversingTeamTree} from 'PUB_DIR/sources/utils/common-method-util';
+import {traversingTeamTree, getParamByPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {message} from 'antd';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -88,22 +88,41 @@ exports.getAllProductList = function(cb) {
 //获取我能看的团队树
 exports.getMyTeamTreeList = function(cb) {
     let teamTreeList = getUserData().my_team_tree || [];
+    if (_.get(teamTreeList, '[0]')) {
+        if (_.isFunction(cb)) cb({teamTreeList});
+    } else {
+        const reqData = getParamByPrivilege();
+        teamAjaxTrans.getMyTeamTreeListAjax().sendRequest({
+            type: reqData.type,
+        }).success(function(teamTreeList) {
+            if (_.isFunction(cb)) cb({teamTreeList});
+            //保存到userData中
+            setUserData(MY_TEAM_TREE_KEY, teamTreeList);
+        }).error(errorMsg => {
+            teamTreeList = [];
+            if (_.isFunction(cb)) cb({teamTreeList, errorMsg});
+            //保存到userData中
+            setUserData(MY_TEAM_TREE_KEY, teamTreeList);
+        });
+    }
+};
+
+//获取平铺的和树状团队列表
+exports.getMyTeamTreeAndFlattenList = function(cb,flag) {
+    let teamTreeList = getUserData().my_team_tree || [];
     let teamList = [];
     if (_.get(teamTreeList, '[0]')) {
-        traversingTeamTree(teamTreeList, teamList);
+        traversingTeamTree(teamTreeList, teamList,flag);
         if (_.isFunction(cb)) cb({teamTreeList, teamList});
     } else {
-        let type = 'self';//GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS
-        if (hasPrivilege(AUTH_MAP.ALL_TEAM_AUTH)) {
-            type = 'all';
-        }
+        const reqData = getParamByPrivilege();
         teamAjaxTrans.getMyTeamTreeListAjax().sendRequest({
-            type: type,
+            type: reqData.type,
         }).success(function(treeList) {
             if (_.get(treeList, '[0]')) {
                 teamTreeList = treeList;
                 //遍历团队树取出我能看的所有的团队列表list
-                traversingTeamTree(teamTreeList, teamList);
+                traversingTeamTree(teamTreeList, teamList,flag);
             }
             if (_.isFunction(cb)) cb({teamTreeList, teamList});
             //保存到userData中

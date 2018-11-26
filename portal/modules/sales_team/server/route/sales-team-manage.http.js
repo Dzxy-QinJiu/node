@@ -11,13 +11,6 @@ module.exports = {
     module: 'sales_team/server/action/sales-team-controller',
     routes: [{
         'method': 'get',
-        'path': '/rest/sales_team_list',
-        'handler': 'getSalesTeamList',
-        'passport': {
-            'needLogin': true
-        }
-    }, {
-        'method': 'get',
         'path': '/rest/filter/sales_team_list/:user_name',
         'handler': 'filterSalesTeamList',
         'passport': {

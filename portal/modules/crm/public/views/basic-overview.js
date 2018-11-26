@@ -23,7 +23,7 @@ import CustomerRecord from './customer_record';
 import ScheduleItem from './schedule/schedule-item';
 import Trace from 'LIB_DIR/trace';
 import RightPanelScrollBar from './components/rightPanelScrollBar';
-import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import CustomerRecordStore from '../store/customer-record-store';
 import ApplyUserForm from './apply-user-form';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';

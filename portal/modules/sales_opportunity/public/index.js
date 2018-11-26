@@ -21,7 +21,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import ApplyViewDetail from './view/apply-view-detail';
 var SalesOpportunityApplyUtils = require('./utils/sales-oppotunity-utils');
 let userData = require('../../../public/sources/user-data');
-import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {REALM_REMARK} from './utils/sales-oppotunity-utils';
 class SalesOpportunityApplyManagement extends React.Component {

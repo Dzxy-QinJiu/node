@@ -9,7 +9,7 @@ import Trace from 'LIB_DIR/trace';
 import {isEqualArray} from 'LIB_DIR/func';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import {handleCallOutResult} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
 class ContactItem extends React.Component {
     constructor(props) {
         super(props);

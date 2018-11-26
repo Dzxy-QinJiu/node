@@ -1,5 +1,5 @@
 var FilterAjax = require('../ajax/filter-ajax');
-import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 import { altAsyncUtil } from 'ant-utils';
 const {asyncDispatcher} = altAsyncUtil;
 
@@ -39,7 +39,7 @@ function FilterAction() {
     };
 
     this.getTeamList = function(cb) {
-        getMyTeamTreeList(data => {
+        getMyTeamTreeAndFlattenList(data => {
             let list = data.teamList || [];
             list.unshift({group_id: '', group_name: Intl.get('common.all', '全部')});
             this.dispatch({teamList: list, teamTreeList: data.teamTreeList});

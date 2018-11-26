@@ -22,7 +22,7 @@ var curWeek = '';//今天所在的周
 var scheduleManagementEmitter = require('PUB_DIR/sources/utils/emitters').scheduleManagementEmitter;
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import Trace from 'LIB_DIR/trace';
-import {handleCallOutResult} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
 import {isEqualArray} from 'LIB_DIR/func';
 class DayAgendaScheduleLists extends React.Component {
     constructor(props) {

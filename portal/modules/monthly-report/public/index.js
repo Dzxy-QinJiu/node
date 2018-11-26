@@ -16,6 +16,7 @@ const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
 import { storageUtil } from 'ant-utils';
 const STORED_TEAM_KEY = 'monthly_report_selected_team';
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 
 class MonthlyReport extends React.Component {
     state = {
@@ -35,17 +36,16 @@ class MonthlyReport extends React.Component {
 
     getTeamList = () => {
         const reqData = commonMethodUtil.getParamByPrivilege();
-
-        ajax.send({
-            url: '/rest/get/sale/teams/' + reqData.type,
-        }).then(result => {
-            const storedTeam = storageUtil.local.get(STORED_TEAM_KEY);
-            const selectedTeam = storedTeam || _.get(result, '[0]');
-
-            this.setState({
-                teamList: result,
-                selectedTeam,
-            });
+        getMyTeamTreeAndFlattenList(data => {
+            var result = data.teamList;
+            if(!data.errorMsg) {
+                const storedTeam = storageUtil.local.get(STORED_TEAM_KEY);
+                const selectedTeam = storedTeam || _.get(result, '[0]');
+                this.setState({
+                    teamList: result,
+                    selectedTeam,
+                });
+            }
         });
     };
 

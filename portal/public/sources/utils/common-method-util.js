@@ -214,13 +214,21 @@ exports.removeSpacesAndEnter = function(dataArr) {
  * 递归遍历团队树
  * @param treeList 要遍历的团队树，
  * @param list 遍历出的所有团队的列表
+ * @param flag 把root_group，parent_group等信息也返回回去
  */
-function traversingTeamTree(treeList, list) {
+function traversingTeamTree(treeList, list, flag) {
     if (_.isArray(treeList) && treeList.length) {
         _.each(treeList, team => {
-            list.push({group_id: team.group_id, group_name: team.group_name});
+            var childObj = {group_id: team.group_id, group_name: team.group_name};
+            if (flag){
+                childObj.parent_group = team.parent_group;
+                childObj.user_ids = team.user_ids;
+                childObj.owner_id = team.owner_id;
+                childObj.manager_ids = team.manager_ids;
+            }
+            list.push(childObj);
             if (team.child_groups) {
-                traversingTeamTree(team.child_groups, list);
+                traversingTeamTree(team.child_groups, list, flag);
             }
         });
     }

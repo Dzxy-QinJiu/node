@@ -150,24 +150,6 @@ exports.getCallTotalList = function(authType, reqData) {
     return Deferred.promise();
 };
 
-
-// 获取团队信息
-exports.getSaleGroupTeams = function(reqData) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/get/sale/teams/' + reqData.type,
-        dataType: 'json',
-        type: 'get',
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-
 // 获取成员信息
 exports.getSaleMemberList = function(reqData) {
     var Deferred = $.Deferred();

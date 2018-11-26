@@ -11,7 +11,7 @@ var ContactAction = require('../../action/contact-action');
 //滚动条
 var GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
 import Spinner from 'CMP_DIR/spinner';
-import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import CallNumberUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import {Button} from 'antd';
 //高度常量

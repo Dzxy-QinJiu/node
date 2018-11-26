@@ -43,13 +43,6 @@ module.exports = {
             'passport': {
                 'needLogin': true
             }
-        }, { // 获取团队信息
-            'method': 'get',
-            'path': '/rest/get/sale/teams/:type',
-            'handler': 'getSaleGroupTeams',
-            'passport': {
-                'needLogin': true
-            }
         }, { // 获取成员信息
             'method': 'get',
             'path': '/rest/get/sale/member/:type',

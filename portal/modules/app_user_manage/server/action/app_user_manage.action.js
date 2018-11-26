@@ -2,6 +2,8 @@ var AppUserService = require('../service/app-user-manage.service');
 var extend = require('extend');
 var CryptoJS = require('crypto-js');
 const _ = require('lodash');
+var appUserDetailDto = require('../dto/apps');
+
 /**
  * 获取应用用户列表
  */
@@ -73,7 +75,7 @@ exports.editAppUser = function(req, res) {
 exports.getUserDetail = function(req, res) {
     var user_id = req.params.id;
     AppUserService.getUserDetail(req, res, user_id).on('success', function(data) {
-        res.json(data);
+        res.json(appUserDetailDto.toFrontUserDetail(data));
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });

@@ -52,7 +52,7 @@ class OrgCard extends React.Component {
         });
     }
     onSelectChange(value, text) {
-        var trimValue = _.trim(value);
+        var trimValue = $.trim(value);
         if (!trimValue) {
             this.props.onChange('');
             this.setState({
@@ -129,20 +129,6 @@ class OrgCard extends React.Component {
             }
         });
     }
-    // 获取子部门
-    getChildDepartment = (childGroup) => {
-        let childDepartName = [];
-        const getChildDepartmentData = (childGroup) => {
-            if (_.isArray(childGroup) && childGroup.length) {
-                _.each(childGroup, (childItem) => {
-                    childDepartName.push(childItem.group_name);
-                    getChildDepartmentData(childItem.child_groups);
-                });
-            }
-        };
-        getChildDepartmentData(childGroup);
-        return childDepartName;
-    };
     render() {
         const options = this.getOrganizationOptions();
         const { groupsInfo } = this.props;
@@ -215,6 +201,8 @@ class OrgCard extends React.Component {
         groups = _.map(groupsInfo, (groupItem) => {
             if (groupItem.category === +CATEGORY_TYPE.ORGANIZATION) { // 组织
                 groupsData = groupItem.group_name;
+            }else{
+                groupsData = null;
             }
             let departmentData = null;
             let teamData = null;
@@ -228,10 +216,7 @@ class OrgCard extends React.Component {
                                 {Intl.get('crm.113', '部门')}:
                             </span>
                             <span className="sales-team-text">
-                                {childItem.group_name}
-                                {this.getChildDepartment(childItem.child_groups).length ? (
-                                    '/' + this.getChildDepartment(childItem.child_groups).join('/')
-                                ) : ''}
+                                {_.isArray(groupItem.child_groups_names) ? groupItem.child_groups_names.join('/') : null}
                             </span>
                         </div>;
                     } else if (childItem.category === +CATEGORY_TYPE.TEAM) { // 团队
@@ -246,7 +231,7 @@ class OrgCard extends React.Component {
             }
             return (
                 <div>
-                    {renderOrgCard({groupsData, teamData, departmentData})}
+                    {groupsData || teamData || departmentData ? renderOrgCard({groupsData, teamData, departmentData}) : null}
                 </div>
             );
         });
@@ -258,7 +243,8 @@ OrgCard.defaultProps = {
     onChange: function() { },
     showBtn: false,
     organization_id: '',
-    onModifySuccess: function() { }
+    onModifySuccess: function() { },
+    groupsInfo: {}
 };
 
 OrgCard.propTypes = {
@@ -270,5 +256,6 @@ OrgCard.propTypes = {
     onChange: PropTypes.func,
     organization_name: PropTypes.string,
     organization_id: PropTypes.string,
+    groupsInfo: PropTypes.object,
 };
 export default OrgCard;
