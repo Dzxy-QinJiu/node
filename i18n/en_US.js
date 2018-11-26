@@ -2554,7 +2554,18 @@ var en_US = {
     'common.turn.in.time': 'turn in time',//转入时间
     'common.turn.out.time': 'turn out time',//转出时间
     'common.data.request.error': 'Data request error',//数据请求出错
-    'common.turn.in.customer': 'turn in customer',//转入客户
+    'common.turn.in.customer': 'turn in customer',//转入客户 
+    /* 订单（交易）-start*/
+    'deal.manage': 'Deal manage',//订单管理
+    'deal.list.get.failed': 'Failed to get deal list',//获取订单列表失败
+    'deal.no.data': 'No deal',//暂无订单
     'deal.stage': 'Deal stage',//阶段
+    'deal.budget': 'Deal value(yuan)',//预算
+    'deal.no.more.tip': 'There is no more deals',//没有更多订单了
+    'deal.total.tip': 'A total of {count} deals',//共{count}个订单
+    'deal.stage.select.tip': 'Please select deal stage',//请选择订单阶段
+    'deal.detail.panel.title': 'Deal Details',//订单详情
+    'deal.detail.no.products': 'No products',//暂无产品
+    'deal.no.filter.deal': 'There is no deal match condition',//没有符合条件的订单
 };
 export default en_US;

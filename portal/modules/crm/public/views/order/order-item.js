@@ -645,6 +645,9 @@ class OrderItem extends React.Component {
                         {applyBtnText}
                     </Button>
                 ) : null}
+                {this.state.isAlertShow ? (
+                    <span className="add-app-tip"> * {Intl.get('crm.153', '请先添加应用')}</span>
+                ) : null}
                 <span className="order-add-time">{Intl.get('crm.order.add.to', '添加于{time}', {time: createTime})}</span>
                 <span className="order-user">{order.user_name || ''}</span>
             </div>

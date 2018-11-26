@@ -114,6 +114,10 @@ function init() {
             case 'clue_customer':
                 childRoutes.push(require('../../modules/clue_customer'));
                 break;
+            //订单的管理
+            case 'deal_manage':
+                childRoutes.push(require('../../modules/deal_manage'));
+                break;
             //通话记录
             case 'call_record':
                 childRoutes.push(require('../../modules/call_record'));

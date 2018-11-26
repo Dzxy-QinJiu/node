@@ -2568,6 +2568,18 @@ var zh_CN = {
     'common.turn.out.time': '转出时间',
     'common.data.request.error': '数据请求出错',
     'common.turn.in.customer': '转入客户',
+    'deal.manage': '订单管理',
+    'deal.list.get.failed': '获取订单列表失败',
+    'deal.no.data': '暂无订单',
     'deal.stage': '阶段',
+    'deal.budget': '预算(元)',
+    'deal.no.more.tip': '没有更多订单了',
+    'deal.total.tip': '共{count}个订单',
+    'deal.stage.select.tip': '请选择订单阶段',
+    'deal.detail.panel.title': '订单详情',
+    'deal.detail.no.products': '暂无产品',
+    'deal.no.filter.deal': '没有符合条件的订单',
+    'deal.view.board': '看板视图',
+    'deal.view.list': '表格视图',
 };
 export default zh_CN;
