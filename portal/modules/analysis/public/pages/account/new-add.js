@@ -18,6 +18,28 @@ function getCharts() {
     return [
         //新增账号数统计
         accountChart.getAccountNumChart('added', '新增账号数统计'),
+        //新增帐号来源分类统计
+        accountChart.getAccountSourceChart('added', '新增帐号来源分类统计'),
+        //总帐号地域统计
+        accountChart.getAccountZoneChart('total', '总帐号地域统计'),
+        //总帐号行业统计
+        accountChart.getAccountIndustryChart('total', '总帐号行业统计'),
+        //总帐号团队统计
+        accountChart.getAccountTeamChart('total', '总帐号团队统计'),
+        //单应用帐号类型统计
+        accountChart.getAccountTypeChart(),
+        //单应用帐号状态统计
+        accountChart.getAccountStatusChart(),
+        //单应用帐号活跃度趋势
+        accountChart.getActivityChart(),
+        //活跃时间段
+        accountChart.getActiveTimeIntervalChart(),
+        //在线时长统计
+        accountChart.getLoginLongChart(),
+        //设备统计
+        accountChart.getAccountDeviceChart(),
+        //浏览器统计
+        accountChart.getAccountBrowserChart(),
         //行业统计
         accountChart.getAccountIndustryChart('added', '新增账号行业统计'),
         //团队统计

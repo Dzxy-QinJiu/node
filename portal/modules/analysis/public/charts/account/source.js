@@ -4,9 +4,9 @@
 
 import { ifNotSingleApp } from '../../utils';
 
-export function getAccountSourceChart(type = 'total') {
+export function getAccountSourceChart(type = 'total', title = '') {
     return {
-        title: '总账号来源分类统计',
+        title,
         url: `/rest/analysis/user/v3/:data_type/${type}/source`,
         chartType: 'pie',
         noShowCondition: {
