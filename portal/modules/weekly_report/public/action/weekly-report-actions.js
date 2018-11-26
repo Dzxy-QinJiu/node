@@ -1,5 +1,5 @@
 var weeklyReportAjax = require('../ajax/weekly-report-ajax');
-import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 function weeklyReportActions() {
     this.generateActions(
         'setInitState',//初始化数据的设置

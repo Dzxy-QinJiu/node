@@ -10,7 +10,7 @@ import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import classNames from 'classnames';
-import {handleCallOutResult} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
 
 class ContactItem extends React.Component {
     static defaultProps = {

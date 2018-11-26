@@ -12,7 +12,7 @@ const TopNav = require('CMP_DIR/top-nav');
 const emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = emitters.dateSelectorEmitter;
 const teamTreeEmitter = emitters.teamTreeEmitter;
-import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 class TopBar extends React.Component {
     constructor(props) {
         super(props);

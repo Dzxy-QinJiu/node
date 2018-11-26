@@ -5,7 +5,7 @@ var userData = require('../../../../public/sources/user-data');
 var userAjax = require('../ajax/user-ajax');
 var UserActions = require('./user-actions');
 var cardEmitter = require('../../../../public/sources/utils/emitters').cardEmitter;
-import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 function UserFormActions() {
     this.generateActions(
         //设置是否正在保存

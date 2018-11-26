@@ -3,7 +3,7 @@
  */
 //联系人的ajax
 var SalesTeamAjax = require('../ajax/sales-team-ajax');
-import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 function SalesTeamAction() {
 
     this.generateActions(

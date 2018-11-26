@@ -36,7 +36,6 @@ import { Button } from 'antd';
 import ApplyUser from './views/v2/apply-user';
 var topNavEmitter = require('../../../public/sources/utils/emitters').topNavEmitter;
 import queryString from 'query-string';
-import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
 import {RETRY_GET_APP} from './util/consts';
 /*用户管理界面外层容器*/
 class AppUserManage extends React.Component {

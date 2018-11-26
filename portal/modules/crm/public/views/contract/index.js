@@ -7,7 +7,7 @@ import ContractAction from '../../action/contract-action';
 import ContractStore from '../../store/contract-store';
 import ContractItem from './contract-item';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
-import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import ContractForm from './contract-form';
 import Trace from 'LIB_DIR/trace';
 

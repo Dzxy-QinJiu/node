@@ -8,7 +8,7 @@ var UserData = require('../../../../public/sources/user-data');
 var ShareObj = require('../util/app-id-share-util');
 var rolesAjax = require('../../../common/public/ajax/role');
 import { packageTry } from 'LIB_DIR/func';
-import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 
 function AppUserAction() {
 

@@ -33,7 +33,7 @@ import history from 'PUB_DIR/sources/history';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
-import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 const SORT_ICON_WIDTH = 16;
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;

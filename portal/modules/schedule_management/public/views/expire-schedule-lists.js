@@ -20,8 +20,8 @@ var scheduleManagementEmitter = require('PUB_DIR/sources/utils/emitters').schedu
 let history = require('PUB_DIR/sources/history');
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import Trace from 'LIB_DIR/trace';
-import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
-import {handleCallOutResult} from 'PUB_DIR/sources/utils/get-common-data-util';
+import CallNumberUtil from 'PUB_DIR/sources/utils/common-data-util';
+import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
 const DELAY_RANGE = {
     ANIMATION: 1000,//动画结束的时间
 };

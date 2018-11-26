@@ -1,5 +1,5 @@
 var FilterAjax = require('../ajax/filter-ajax');
-import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 import { altAsyncUtil } from 'ant-utils';
 const {asyncDispatcher} = altAsyncUtil;
 

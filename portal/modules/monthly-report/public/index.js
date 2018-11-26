@@ -15,7 +15,7 @@ const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
 import { storageUtil } from 'ant-utils';
 const STORED_TEAM_KEY = 'monthly_report_selected_team';
-import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 
 class MonthlyReport extends React.Component {
     state = {

@@ -3,7 +3,7 @@ var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scro
 var ShareObj = require('../util/app-id-share-util');
 var AppUserUtil = require('../util/app-user-util');
 import { storageUtil } from 'ant-utils';
-import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 
 function UserAuditLogAction() {
     this.generateActions(

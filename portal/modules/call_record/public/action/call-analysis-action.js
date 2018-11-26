@@ -1,5 +1,5 @@
 var callAnalysisAjax = require('../ajax/call-analysis-ajax');
-import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 function CallAnalysisActions() {
     this.generateActions(
         'resetState',//初始化数据的设置

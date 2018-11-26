@@ -32,7 +32,7 @@ import ErrorDataTip from '../components/error-data-tip';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import {decodeHTML} from 'PUB_DIR/sources/utils/common-method-util';
 import crmAjax from '../../ajax/index';
-import CallNumberUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import CallNumberUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import ShearContent from '../../../../../components/shear-content';
 

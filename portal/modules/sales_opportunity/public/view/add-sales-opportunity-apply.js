@@ -23,7 +23,7 @@ var SalesOpportunityApplyAction = require('../action/sales-opportunity-apply-act
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
 import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
-import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;

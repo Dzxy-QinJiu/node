@@ -9,7 +9,7 @@ import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import CrmAction from '../../action/crm-actions';
-import { getMyTeamTreeAndFlattenList } from 'PUB_DIR/sources/utils/get-common-data-util';
+import { getMyTeamTreeAndFlattenList } from 'PUB_DIR/sources/utils/common-data-util';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 //展示的类型
 const DISPLAY_TYPES = {

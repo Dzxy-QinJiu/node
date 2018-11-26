@@ -2,7 +2,7 @@ import ajax from '../../common/ajax';
 import crmAjax from '../ajax/index';
 const routes = require('../../common/route');
 var appAjaxTrans = require('../../../common/public/ajax/app');
-import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 function OrderActions() {
     this.generateActions(
         'getMergeOrderList',
