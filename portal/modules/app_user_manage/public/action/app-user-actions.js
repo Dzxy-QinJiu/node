@@ -8,8 +8,7 @@ var UserData = require('../../../../public/sources/user-data');
 var ShareObj = require('../util/app-id-share-util');
 var rolesAjax = require('../../../common/public/ajax/role');
 import { packageTry } from 'LIB_DIR/func';
-import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
-import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import {getMyTeamTreeList, getAppList} from 'PUB_DIR/sources/utils/get-common-data-util';
 
 function AppUserAction() {
 
@@ -104,7 +103,7 @@ function AppUserAction() {
     this.getAppList = function(opts) {
         var _this = this;
         this.dispatch({loading: true});
-        commonDataUtil.getAppList((list,errorMsg) => {
+        getAppList((list,errorMsg) => {
             if (!errorMsg){
                 //默认选中第一个
                 var selectedAppId = ShareObj.app_id || '';
