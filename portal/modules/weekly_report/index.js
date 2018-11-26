@@ -12,6 +12,6 @@ const WeeklyReportPage = (props) => (
 );
 
 module.exports = {
-    path: '/analysis/weekly_report',
+    path: '/analysis/report/weekly_report',
     component: WeeklyReportPage
 };

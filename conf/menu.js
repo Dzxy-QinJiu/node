@@ -223,7 +223,7 @@ class LeftMenuClass {
                             {
                                 id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
                                 name: backendIntl.get('contract.14', '周报'),
-                                routePath: 'analysis/weekly_report',
+                                routePath: 'analysis/report/weekly_report',
                                 privileges: [
                                     'KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER',
                                     'KETAO_SALES_TEAM_WEEKLY_REPORTS_COMMON',
@@ -237,7 +237,7 @@ class LeftMenuClass {
                             {
                                 id: 'MONTHLY_REPORT_ANALYSIS',//唯一标识
                                 name: backendIntl.get('contract.15', '月报'),
-                                routePath: 'analysis/monthly_report',
+                                routePath: 'analysis/report/monthly_report',
                                 privileges: [
                                     'CALLRECORD_ASKFORLEAVE_QUERY_MANAGER',
                                     'CALLRECORD_ASKFORLEAVE_QUERY_USER',

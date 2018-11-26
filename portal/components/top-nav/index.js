@@ -5,8 +5,10 @@ var UserData = require('../../public/sources/user-data');
 var classNames = require('classnames');
 //顶部导航菜单的超链接
 import {NavLink} from 'react-router-dom';
+
 var topNavEmitter = require('../../public/sources/utils/emitters').topNavEmitter;
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+
 var insertStyle = require('CMP_DIR/insert-style');
 require('./index.less');
 var notificationEmitter = require('../../public/sources/utils/emitters').notificationEmitter;
@@ -37,9 +39,10 @@ const unhandleApplyNumObj = [
         style: 'unhandleSalesOpperNumSyle'
 
     }];
+
 //顶部导航外层div
 class TopNav extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         //未处理数的提示样式初始化
         this.unhandleUserAplplyNumStyle = null;
@@ -47,6 +50,7 @@ class TopNav extends React.Component {
         this.unhandleLeaveApplyNumStyle = null;
         this.unhandleSalesOpperNumSyle = null;
     }
+
     resizeHandler = () => {
         //找到外层节点
         var $wrap = $(ReactDOM.findDOMNode(this.topNav));
@@ -56,6 +60,7 @@ class TopNav extends React.Component {
         var childNodes = $wrap.children().filter(':visible');
         //是否已经处于窄界面的下拉菜单显示状态
         var isNarrowDropdownOn = $topLinks.hasClass('fixed-layout');
+
         //界面清理操作
         function cleanUp() {
             //将菜单节点设置为显示状态
@@ -63,22 +68,23 @@ class TopNav extends React.Component {
             //下拉菜单归位
             $topLinks.removeClass('fixed-layout');
         }
-        if(!$topLinks[0] || childNodes.length === 1) {
+
+        if (!$topLinks[0] || childNodes.length === 1) {
             cleanUp();
             return;
         }
         cleanUp();
         //将子节点过滤掉菜单
-        var extraNodes = _.filter(childNodes , (node) => node !== $topLinks[0]);
+        var extraNodes = _.filter(childNodes, (node) => node !== $topLinks[0]);
         //获取菜单在页面中的位置
         var topLinksPosStart = $topLinks.offset().left;
         var topLinksPosEnd = topLinksPosStart + $topLinks.outerWidth();
         //计算子节点是否存在覆盖情况
-        var intersect = _.some(extraNodes , (dom) => {
+        var intersect = _.some(extraNodes, (dom) => {
             var $dom = $(dom);
             var domPosStart = $dom.offset().left;
             var domPosEnd = domPosStart + $dom.outerWidth();
-            if(
+            if (
                 topLinksPosStart <= domPosEnd &&
                 domPosStart <= topLinksPosEnd
             ) {
@@ -86,9 +92,9 @@ class TopNav extends React.Component {
             }
         });
         //如果存在覆盖的情况，则将菜单节点变成汉堡包
-        if(intersect) {
-            $topLinks.attr('hidden','true');
-            if(isNarrowDropdownOn) {
+        if (intersect) {
+            $topLinks.attr('hidden', 'true');
+            if (isNarrowDropdownOn) {
                 $topLinks.addClass('fixed-layout');
             }
         }
@@ -96,7 +102,7 @@ class TopNav extends React.Component {
 
     resizeFunc = () => {
         clearTimeout(this.resizeFunc.timeout);
-        this.resizeFunc.timeout = setTimeout(this.resizeHandler , 10);
+        this.resizeFunc.timeout = setTimeout(this.resizeHandler, 10);
     };
 
     //点击页面空白处，下拉菜单消失
@@ -105,10 +111,10 @@ class TopNav extends React.Component {
         var $topNav = $(ReactDOM.findDOMNode(this.topNav));
         var $topNavLinksWrap = $topNav.find('.topnav-links-wrap');
         var $dropDown = $topNav.find('.topnav-links');
-        if($target.is('.navbar-toggle') || $.contains($dropDown[0] , $target[0])) {
+        if ($target.is('.navbar-toggle') || $.contains($dropDown[0], $target[0])) {
             return;
         }
-        $('body').off('click' , this.clickBodyEmptySpace);
+        $('body').off('click', this.clickBodyEmptySpace);
         $topNavLinksWrap.removeClass('fixed-layout');
     };
 
@@ -116,16 +122,16 @@ class TopNav extends React.Component {
         var $topNav = $(ReactDOM.findDOMNode(this));
         var $topLinks = $topNav.find('.topnav-links-wrap');
         $topLinks.toggleClass('fixed-layout');
-        if($topLinks.hasClass('fixed-layout')) {
-            $('body').on('click' , this.clickBodyEmptySpace);
+        if ($topLinks.hasClass('fixed-layout')) {
+            $('body').on('click', this.clickBodyEmptySpace);
         }
     };
 
     componentDidMount() {
-        $(window).on('resize' , this.resizeFunc);
-        $(ReactDOM.findDOMNode(this)).find('.navbar-toggle').on('click' , this.navBarToggle);
+        $(window).on('resize', this.resizeFunc);
+        $(ReactDOM.findDOMNode(this)).find('.navbar-toggle').on('click', this.navBarToggle);
         this.resizeFunc();
-        topNavEmitter.on(topNavEmitter.RELAYOUT , this.resizeFunc);
+        topNavEmitter.on(topNavEmitter.RELAYOUT, this.resizeFunc);
         //用户申请的待审批数的监听
         notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.renderUnhandleApplyStyle);
         //出差申请、请假申请、销售机会申请待我审批数的监听
@@ -134,15 +140,16 @@ class TopNav extends React.Component {
         //点击审批数字后，查看待审批的数量
         $('.topNav').on('click', '.application_user_apply_ico', function(e) {
             //如果点击到a标签上，不做处理
-            if ($(e.target).is('a')){
+            if ($(e.target).is('a')) {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/user_apply',{clickUnhandleNum: true});
+            history.push('/application/user_apply', {clickUnhandleNum: true});
 
         });
     }
-    componentWillUpdate(){
+
+    componentWillUpdate() {
         this.renderUnhandleApplyStyle();
     }
 
@@ -169,16 +176,16 @@ class TopNav extends React.Component {
     };
     renderUnhandleApplyStyle = () => {
         if (Oplate && Oplate.unread) {
-            _.forEach(unhandleApplyNumObj,(item) => {
+            _.forEach(unhandleApplyNumObj, (item) => {
                 this.renderUnhandleNum(item);
             });
         }
     };
 
     componentWillUnmount() {
-        $(window).off('resize' , this.resizeFunc);
-        $('body').off('click' , this.clickBodyEmptySpace);
-        topNavEmitter.removeListener(topNavEmitter.RELAYOUT , this.resizeFunc);
+        $(window).off('resize', this.resizeFunc);
+        $('body').off('click', this.clickBodyEmptySpace);
+        topNavEmitter.removeListener(topNavEmitter.RELAYOUT, this.resizeFunc);
         notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.renderUnhandleApplyStyle);
         notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.renderUnhandleApplyStyle);
         _.forEach(unhandleApplyNumObj, (item) => {
@@ -192,7 +199,7 @@ class TopNav extends React.Component {
 
     render() {
         return (
-            <div className="topNav" ref={(element) => this.topNav = element }>
+            <div className="topNav" ref={(element) => this.topNav = element}>
                 {this.props.children}
             </div>
         );
@@ -203,6 +210,7 @@ class TopNav extends React.Component {
 function getPathname() {
     return window.location.pathname.replace(/^\//, '');
 }
+
 //获取第一层路由
 function getCategory() {
     var pathname = getPathname();
@@ -214,15 +222,22 @@ function getCategory() {
     }
     return '';
 }
+
 //顶部导航的导航菜单
 TopNav.MenuList = class extends React.Component {
     render() {
         //获取第一层路由
         var category = getCategory();
         //获取所有子模块
-        var AllSubModules = (UserData.getUserData() && UserData.getUserData().subModules) || {};
+        var userData = UserData.getUserData() && UserData.getUserData();
+        var AllSubModules = (userData.subModules) || {};
         //获取当前界面的子模块
-        var subModules = this.props.menuList || AllSubModules[category] || [];
+        var subModules = [];
+        if (category.indexOf('/') !== -1) {
+            category = category.substring(0, category.indexOf('/'));
+        }
+        subModules = this.props.menuList || AllSubModules[category] || [];
+
         //获取pathname
         var locationPath = getPathname();
 
@@ -243,7 +258,8 @@ TopNav.MenuList = class extends React.Component {
                             });
 
                             var liContent = (<NavLink to={`/${menu.routePath}`}
-                                activeClassName="active" ref={(element) => this.navLinks = element}>{menu.name}</NavLink>);
+                                activeClassName="active"
+                                ref={(element) => this.navLinks = element}>{menu.name}</NavLink>);
                             return (
                                 <li className={cls} key={i}>
                                     {liContent}

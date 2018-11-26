@@ -1,47 +1,20 @@
 /**
-* Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
-* 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
-* Created by xuning on 2018 9.17
-*/
-var history = require('../history');
+ * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
+ * Created by xuning on 2018 9.17
+ */
 var RightContent = require('../../../components/privilege/right-content');
 var Checker = require('../../../components/privilege/checker');
 const analysis = require('MOD_DIR/analysis');
-const weeklyReport = require('MOD_DIR/weekly_report');
-const monthlyReport = require('MOD_DIR/monthly-report');
-const userData = require('../user-data');
 
-class ReportIndexRoute extends React.Component {
-    componentWillMount() {
-        const data = userData.getUserData();
-        const subMenus = _.get(data, 'thirdLevelMenus.REPORT');
-
-        if (subMenus && subMenus[0]) {
-            history.replace('/' + subMenus[0].routePath);
-        }
-    }
-
-    render() {
-        return null;
-    }
-}
 
 function getChildRoutes() {
     var childRoutes = Checker.getChildRoutes('analysis',
         [
             analysis,
-            {
-                path: '/analysis/report',
-                component: ReportIndexRoute,
-            }
+            require('./report')
         ]
     );
-
-    childRoutes.push(
-        weeklyReport,
-        monthlyReport,
-    );
-
     return childRoutes;
 }
 
