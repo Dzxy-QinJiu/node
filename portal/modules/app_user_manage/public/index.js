@@ -583,13 +583,6 @@ class AppUserManage extends React.Component {
                                     </div>
                                 )
                             }
-                            {!Oplate.hideSomeItem && !this.state.customer_id ?
-                                <PrivilegeChecker
-                                    onClick={this.showRecentLoginPanel}
-                                    check="APP_USER_LIST"
-                                    className="inline-block recent-login-btn btn-item float-r btn-m-r-2">
-                                    <span className="iconfont icon-online recent-login-user-btn" title="查看近期登录用户列表" />
-                                </PrivilegeChecker> : null}
                             <PrivilegeChecker
                                 onClick={this.addAppUser}
                                 check={this.addUserBtnCheckun}
