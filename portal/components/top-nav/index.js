@@ -145,7 +145,30 @@ class TopNav extends React.Component {
             }
             //点击到数字上，进行跳转
             history.push('/application/user_apply', {clickUnhandleNum: true});
-
+        });
+        $('.topNav').on('click', '.application_business_apply_ico', function(e) {
+            //如果点击到a标签上，不做处理
+            if ($(e.target).is('a')) {
+                return;
+            }
+            //点击到数字上，进行跳转
+            history.push('/application/business_apply', {clickUnhandleNum: true});
+        });
+        $('.topNav').on('click', '.application_sales_opportunity_ico', function(e) {
+            //如果点击到a标签上，不做处理
+            if ($(e.target).is('a')) {
+                return;
+            }
+            //点击到数字上，进行跳转
+            history.push('/application/sales_opportunity', {clickUnhandleNum: true});
+        });
+        $('.topNav').on('click', '.application_leave_apply_ico', function(e) {
+            //如果点击到a标签上，不做处理
+            if ($(e.target).is('a')) {
+                return;
+            }
+            //点击到数字上，进行跳转
+            history.push('/application/leave_apply', {clickUnhandleNum: true});
         });
     }
 
