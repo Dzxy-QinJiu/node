@@ -87,8 +87,6 @@ function AppUserAction() {
         'getTeamLists',
         // 获取安全域列表
         'getRealmList',
-        //设置是否展示近期登录用户列表的标识
-        'setRecentLoginPanelFlag',
         //恢复初始数据
         'setInitialData',
         //用户生成线索客户后，更新apps中的clue_created属性

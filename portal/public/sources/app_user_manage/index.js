@@ -13,13 +13,16 @@ function getChildRoutes() {
     var logRoute = AppUserManage('/user/log');
     var organizationRoute = OrganizationManage('/user/organization');
     let positionManage = PositionManage('/user/position');
+    var activeUser = AppUserManage('/user/active');
 
     var childRoutes = Checker.getChildRoutes('user',
         [
             listRoute,
             logRoute,
+            activeUser,
             organizationRoute,
-            positionManage
+            positionManage,
+
         ]
     );
     return childRoutes;

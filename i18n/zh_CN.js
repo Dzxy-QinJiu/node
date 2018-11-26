@@ -44,6 +44,7 @@ var zh_CN = {
     'menu.appuser.apply': '用户审批',
     'menu.download.app': '客套APP',
     'menu.leave.apply.list.management': '申请审批',
+    'menu.active.user.lists': '活跃用户',
     //公共部分提取start
     'common.actived': '已激活',
     'common.no.data': '暂无数据',

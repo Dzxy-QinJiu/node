@@ -62,6 +62,9 @@ exports.getCurrentView = function() {
     if (window.location.href.indexOf('/user/log') >= 0){
         currentView = 'log';
     }
+    if (window.location.href.indexOf('/user/active') >= 0){
+        currentView = 'active';
+    }
     return currentView;
 };
 //根据user_id从用户列表中找到一个具体的用户
