@@ -31,5 +31,7 @@ function getCharts() {
         clueChart.getClueDealChannelChart(),
         //成交数分类统计
         clueChart.getClueDealClassifyChart(),
+        //历史同期数量统计对比
+        clueChart.getClueHistoricalPeriodComparisionChart(),
     ];
 }

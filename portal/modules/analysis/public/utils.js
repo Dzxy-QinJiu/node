@@ -117,8 +117,8 @@ export function ifNotSingleApp(conditions) {
     }
 }
 
-//试用合格客户分析参数处理回调
-export function trialQualifiedCustomerAnalysisArgCallbak(arg) {
+//处理开始结束时间和成员id的参数回调函数
+export function argCallbackTimeMember(arg) {
     let query = arg.query;
 
     if (query && query.starttime && query.endtime) {
