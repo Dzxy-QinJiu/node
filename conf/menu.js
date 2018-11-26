@@ -99,10 +99,10 @@ class LeftMenuClass {
                     name: backendIntl.get('menu.active.user.lists','活跃用户'),
                     routePath: 'user/active',
                     privileges: [
-                        'APP_USER_ADD' // 查看活跃用户列表
+                        'USER_TIME_LINE' // 查看用户变更记录
                     ],
                     //有这个权限，才显示入口图标
-                    showPrivileges: ['APP_USER_ADD']
+                    showPrivileges: ['USER_TIME_LINE']
                 }
                     , {
                     id: 'POSITION_MANAGE', // 座席号管理的唯一标识
