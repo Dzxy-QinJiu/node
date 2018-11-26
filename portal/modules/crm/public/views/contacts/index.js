@@ -126,7 +126,7 @@ class Contacts extends React.Component {
                         customer_name={this.state.curCustomer ? this.state.curCustomer.name : ''}
                         contactListLength={contactListLength}
                         refreshCustomerList={this.props.refreshCustomerList}/>) : (
-                    <div className="contact-top-block">
+                    <div className="contact-top-block crm-detail-top-total-block">
                         {this.state.contactListLoading ? null : (
                             <span className="total-tip crm-detail-total-tip">
                                 {contactListLength ? (
@@ -145,7 +145,7 @@ class Contacts extends React.Component {
                     </div>
                 )}
                 <div className="contact-list-container" style={{height: divHeight}} ref="scrollList">
-                    <GeminiScrollbar>
+                    <GeminiScrollbar className="srollbar-out-card-style">
                         {this.state.contactListLoading ? (
                             <Spinner/>) : contactListLength ? this.state.contactList.map((contact, i) => {
                             if (contact) {
@@ -178,6 +178,15 @@ class Contacts extends React.Component {
         );
     }
 }
-
+Contacts.propTypes = {
+    callNumber: PropTypes.string,
+    curCustomer: PropTypes.object,
+    isMerge: PropTypes.bool,
+    refreshCustomerList: PropTypes.array,
+    updateMergeCustomerContact: PropTypes.func,
+    updateCustomerDefContact: PropTypes.func,
+    setMergeCustomerDefaultContact: PropTypes.func,
+    delMergeCustomerContact: PropTypes.func,
+};
 module.exports = Contacts;
 

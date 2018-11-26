@@ -542,7 +542,7 @@ const ApplyUserForm = createReactClass({
         let selectAppIds = _.map(this.state.apps, 'client_id');
         return (
             <div style={{maxHeight: this.state.maxHeight, height: this.state.formHeight}}>
-                <GeminiScrollbar>
+                <GeminiScrollbar className="srollbar-out-card-style">
                     <Form layout='horizontal' className="apply-user-form" id="crm-apply-user-form">
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             {this.state.applyFrom === 'order' || this.isApplyNewUsers() ?

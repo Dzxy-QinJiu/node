@@ -80,18 +80,20 @@ class Contract extends React.Component {
         let loading = this.state.contractList.loading;
         return (
             <div className="crm-contract-container" data-tracename="合同页面">
-                {
-                    this.state.isAddFormShow || loading ? null : (contractListLength ? <ReactIntl.FormattedMessage
-                        id="sales.frontpage.total.list"
-                        defaultMessage={'共{n}条'}
-                        values={{'n': contractListLength + ''}}/> : Intl.get('crm.no.contract.tip', '该客户还没有签订过合同'))
-                }
-                {this.props.isMerge || this.state.isAddFormShow ? null : (
-                    <Button className='crm-detail-add-btn'
-                        onClick={this.showForm.bind(this, '')}>
-                        {Intl.get('contract.98', '添加合同')}
-                    </Button>
-                )}
+                <div className="crm-detail-top-total-block">
+                    {
+                        this.state.isAddFormShow || loading ? null : (contractListLength ? <ReactIntl.FormattedMessage
+                            id="sales.frontpage.total.list"
+                            defaultMessage={'共{n}条'}
+                            values={{'n': contractListLength + ''}}/> : Intl.get('crm.no.contract.tip', '该客户还没有签订过合同'))
+                    }
+                    {this.props.isMerge || this.state.isAddFormShow ? null : (
+                        <Button className='crm-detail-add-btn'
+                            onClick={this.showForm.bind(this, '')}>
+                            {Intl.get('contract.98', '添加合同')}
+                        </Button>
+                    )}
+                </div>
                 <RightPanelScrollBar totalHeight={contractListLength}>
                     <div className="contract-container-scroll">
                         {
