@@ -39,8 +39,12 @@ class SalesOpportunityApplyManagement extends React.Component {
 
     componentDidMount() {
         SalesOpportunityApplyStore.listen(this.onStoreChange);
-        //不区分角色，都获取全部的申请列表
-        this.getAllSalesOpportunityApplyList();
+        if(_.get(this.props,'location.state.clickUnhandleNum')){
+            this.menuClick({key: 'ongoing'});
+        }else{
+            //不区分角色，都获取全部的申请列表
+            this.getAllSalesOpportunityApplyList();
+        }
         getMyTeamTreeList(data => {
             this.setState({
                 teamTreeList: data.teamTreeList
@@ -48,6 +52,15 @@ class SalesOpportunityApplyManagement extends React.Component {
         });
         SalesOpportunityApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
         this.getProcessConfig();
+    }
+    componentWillReceiveProps(nextProps) {
+        if (_.get(nextProps,'history.action') === 'PUSH'){
+            if (_.get(nextProps,'location.state.clickUnhandleNum')){
+                delete nextProps.location.state.clickUnhandleNum;
+                //取待审批的审批数
+                this.menuClick({key: 'ongoing'});
+            }
+        }
     }
     getProcessConfig = () => {
         if (hasPrivilege('GET_MY_WORKFLOW_LIST')){
@@ -311,4 +324,10 @@ class SalesOpportunityApplyManagement extends React.Component {
         );
     }
 }
+SalesOpportunityApplyManagement.defaultProps = {
+    location: {},
+};
+SalesOpportunityApplyManagement.propTypes = {
+    location: PropTypes.object
+};
 module.exports = SalesOpportunityApplyManagement;
