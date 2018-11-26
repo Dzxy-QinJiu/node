@@ -18,6 +18,8 @@ function getCharts() {
     return [
         //新增账号数统计
         accountChart.getAccountNumChart('added', '新增账号数统计'),
+        //新增帐号来源分类统计
+        accountChart.getAccountSourceChart('added', '新增帐号来源分类统计'),
         //行业统计
         accountChart.getAccountIndustryChart('added', '新增账号行业统计'),
         //团队统计
