@@ -7,6 +7,5 @@ var EventEmitter = require('events');
 //暴露一个emitter，做自定义事件
 exports.emitter = new EventEmitter();
 export const REALM_REMARK = {
-    EEFUNG: 'BusinessOpportunitiesforSale1',//销售机会，蚁坊域的流程标识
-    CIVIW: 'BusinessOpportunitiesforSale2'//销售机会，识微域的流程标识
+    CIVIW: '36duh3ok3i'//销识微域的安全域id
 };

@@ -29,6 +29,7 @@ const ASSIGN_TYPE = {
     NEXT_CANDIDATED: 'nextCandidated',
     COMMON_SALES: 'commonSales'
 };
+let userData = require('PUB_DIR/sources/user-data');
 import {REALM_REMARK} from '../utils/sales-oppotunity-utils';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
@@ -487,14 +488,15 @@ class ApplyViewDetail extends React.Component {
             //分配给普通销售
             renderAssigenedContext = this.renderAssigenedContext;
         }else if(_.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.READY_APPLY && detailInfoObj.showApproveBtn){
-            var isEefungRealm = this.props.processKey === REALM_REMARK.EEFUNG;
-            var isCiviwRealm = this.props.processKey === REALM_REMARK.CIVIW;
-            if (isEefungRealm){
-                //如果是蚁坊域,需要选择所分配给的销售总经理
-                renderAssigenedContext = this.renderCandidatedContext;
-            }else{
+            var userDetail = userData.getUserData();
+            var realmId = _.get(userDetail, 'auth.realm_id');
+            var isCiviwRealm = realmId === REALM_REMARK.CIVIW;
+            if (isCiviwRealm){
                 //如果是识微域，直接点通过就可以，不需要手动选择分配销售总经理
                 renderAssigenedContext = null;
+            }else{
+                //如果是不是识微域,需要选择所分配给的销售总经理
+                renderAssigenedContext = this.renderCandidatedContext;
             }
         }
         return (
@@ -596,12 +598,10 @@ class ApplyViewDetail extends React.Component {
 ApplyViewDetail.defaultProps = {
     detailItem: {},
     showNoData: false,
-    processKey: ''
 
 };
 ApplyViewDetail.propTypes = {
     detailItem: PropTypes.string,
     showNoData: PropTypes.boolean,
-    processKey: PropTypes.string,
 };
 module.exports = ApplyViewDetail;
