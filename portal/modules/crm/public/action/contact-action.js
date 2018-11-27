@@ -42,7 +42,7 @@ function ContactAction() {
     //获取联系人列表
     this.getContactList = function(curCustomer, isMerge) {
         if (isMerge) {
-            let contactList = curCustomer && curCustomer.contacts || [];
+            let contactList = _.get(curCustomer, 'contacts', []);
             setTimeout(() => {
                 this.dispatch({list: contactList});
             });

@@ -24,10 +24,12 @@ function CustomerRepeatStore() {
 CustomerRepeatStore.prototype.updateCustomerDefContact = function(contact) {
     if (contact && contact.customer_id) {
         let updateCustomer = _.find(this.originCustomerList, customer => customer.id === contact.customer_id);
-        updateCustomer.contacts = [contact];
-        updateCustomer.contact_name = contact.name;
-        updateCustomer.phones = contact.phone;
-        this.repeatCustomerList = this.processForList(this.originCustomerList);
+        if(updateCustomer){
+            updateCustomer.contacts = [contact];
+            updateCustomer.contact_name = contact.name;
+            updateCustomer.phones = contact.phone;
+            this.repeatCustomerList = this.processForList(this.originCustomerList);
+        }
     }
 };
 

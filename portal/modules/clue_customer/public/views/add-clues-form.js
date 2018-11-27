@@ -154,7 +154,7 @@ class ClueAddForm extends React.Component {
             }];
         }
         //把订单的第一个设置为默认联系人
-        if (_.isArray(submitObj.contacts) && submitObj.contacts.length) {
+        if (_.get(submitObj,'contacts[0]')) {
             submitObj.contacts[0]['def_contancts'] = 'true';
         }
         return submitObj;

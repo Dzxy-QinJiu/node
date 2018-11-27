@@ -285,8 +285,7 @@ SalesHomeStore.prototype.getRecentLoginCustomers = function(result) {
         //把客户的id加到联系人中，这样在拨打电话时，可以用客户的id查询客户的详情
         if (_.isArray(result.resData.result) && result.resData.result.length) {
             _.each(result.resData.result, (customerItem) => {
-                var contacts = result.resData.result.contacts;
-                if (_.isArray(customerItem.contacts) && customerItem.contacts.length) {
+                if (_.get(customerItem, 'contacts[0]')) {
                     _.map(customerItem.contacts, (contactItem) => {
                         contactItem.customer_id = customerItem.id;
                     });

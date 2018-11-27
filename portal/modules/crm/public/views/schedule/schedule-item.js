@@ -57,7 +57,7 @@ class ScheduleItem extends React.Component {
 
     getContactPhoneArray(item) {
         let phoneArray = [];
-        _.each(item.contacts, contact => {
+        _.each(_.get(item, 'contacts'), contact => {
             let contactName = contact.name || '';
             _.each(contact.phone, phone => {
                 if (phone) {
