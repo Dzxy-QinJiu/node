@@ -20,15 +20,13 @@ function getCharts() {
         customerChart.getCustomerTrialQualifiedNumChart(),
         //试用合格组成
         customerChart.getCustomerTrialQualifiedComposeChart(),
+        //地域统计
+        customerChart.getCustomerTrialQualifiedDistributionChart('地域统计', 'province'),
+        //行业统计
+        customerChart.getCustomerTrialQualifiedDistributionChart('行业统计', 'industry'),
         //趋势图
         customerChart.getCustomerTrialQualifiedTrendChart(),
         //试用合格客户数统计
         customerChart.getCustomerTrialQualifiedChart(),
-        /*
-        //地域统计
-        customerChart.getCustomerZoneChart('total', '地域统计(假数据)'),
-        //行业统计
-        customerChart.getCustomerIndustryChart('total', '行业统计(假数据)'),
-        */
     ];
 }
