@@ -217,14 +217,13 @@ class SalesOpportunityApplyManagement extends React.Component {
     };
 
     render() {
-        //如果是蚁坊域，必须要有团队和上级团队，
+        //如果不是识微域，必须要有团队和上级团队，
         //如果是识微域，不需要有团队和上级团队信息
         //区分蚁坊域和识微域的区别是跟据安全域的id
         var userDetail = userData.getUserData();
         var realmId = _.get(userDetail, 'auth.realm_id');
-        var isEefungRealm = realmId === REALM_REMARK.EEFUNG;
         var isCiviwRealm = realmId === REALM_REMARK.CIVIW;
-        var hasAddPriviledge = (isEefungRealm && userDetail.team_id && _.get(this.state,'teamTreeList[0].parent_group')) || isCiviwRealm;
+        var hasAddPriviledge = (!isCiviwRealm && userDetail.team_id && _.get(this.state,'teamTreeList[0].parent_group')) || isCiviwRealm;
         var addPanelWrap = classNames({'show-add-modal': this.state.showAddApplyPanel});
         var applyListHeight = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
         var applyType = commonMethodUtil.getApplyStatusDscr(this.state.applyListType);

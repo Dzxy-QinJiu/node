@@ -490,14 +490,13 @@ class ApplyViewDetail extends React.Component {
         }else if(_.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.READY_APPLY && detailInfoObj.showApproveBtn){
             var userDetail = userData.getUserData();
             var realmId = _.get(userDetail, 'auth.realm_id');
-            var isEefungRealm = realmId === REALM_REMARK.EEFUNG;
             var isCiviwRealm = realmId === REALM_REMARK.CIVIW;
-            if (isEefungRealm){
-                //如果是蚁坊域,需要选择所分配给的销售总经理
-                renderAssigenedContext = this.renderCandidatedContext;
-            }else{
+            if (isCiviwRealm){
                 //如果是识微域，直接点通过就可以，不需要手动选择分配销售总经理
                 renderAssigenedContext = null;
+            }else{
+                //如果是不是识微域,需要选择所分配给的销售总经理
+                renderAssigenedContext = this.renderCandidatedContext;
             }
         }
         return (
