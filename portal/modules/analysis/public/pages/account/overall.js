@@ -20,6 +20,8 @@ function getCharts() {
         accountChart.getAccountNumChart('total', '总体账号数统计'),
         //总帐号来源分类统计
         accountChart.getAccountSourceChart('total', '总帐号来源分类统计'),
+        //有效账号数统计
+        accountChart.getAccountValidChart(),
         //总帐号地域统计
         accountChart.getAccountZoneChart('total', '总帐号地域统计'),
         //总帐号行业统计
