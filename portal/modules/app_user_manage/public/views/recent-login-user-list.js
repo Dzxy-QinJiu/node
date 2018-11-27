@@ -52,8 +52,7 @@ class RecentLoginUsers extends React.Component {
     constructor(props) {
         super(props);
         let timeRange = this.getTodayTimeRange();
-        var defaultTeam = { group_id: '', group_name: Intl.get('user.list.all.teamlist', '全部团队') };
-        var teamlists = _.flatten([[defaultTeam], this.props.teamlists]);
+        var teamlists = this.concatTeamList(this.props);
         this.state = {
             ...RecentUserStore.getState(),
             selectedAppId: this.getSelectedAppId(this.props),
@@ -135,6 +134,13 @@ class RecentLoginUsers extends React.Component {
         }
         return selectedAppId;
     }
+    concatTeamList(props){
+        var teamList = [{group_id: '', group_name: Intl.get('user.list.all.teamlist', '全部团队')}];
+        if (_.isArray(props.teamlists)){
+            teamList = _.concat(teamList,props.teamlists);
+        }
+        return _.uniq(teamList);
+    }
 
     componentWillReceiveProps(nextProps) {
         let oldAppId = this.state.selectedAppId;
@@ -148,7 +154,7 @@ class RecentLoginUsers extends React.Component {
         }
         if (_.isArray(nextProps.teamlists) && !isEqualArray(nextProps.teamlists, this.props.teamlists)){
             this.setState({
-                teamlists: _.concat(this.state.teamlists,nextProps.teamlists)
+                teamlists: this.concatTeamList(nextProps)
             });
 
         }

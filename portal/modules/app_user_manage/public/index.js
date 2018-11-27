@@ -182,9 +182,10 @@ class AppUserManage extends React.Component {
             }
             AppUserAction.changeTableSort(quryObj);
             AppUserAction.getAppUserList(quryObj);
-
             //顶部导航输入框的值清空
-            this.refs.searchInput.refs.searchInput.value = '';
+            if (_.isFunction(this.refs.searchInput.closeSearchInput)){
+                this.refs.searchInput.closeSearchInput();
+            }
         }
         this.prevRoutePath = AppUserUtil.getCurrentView();
     }
