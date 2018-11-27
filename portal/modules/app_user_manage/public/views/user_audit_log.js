@@ -26,6 +26,7 @@ var getLocalWebsiteConfig = websiteConfig.getLocalWebsiteConfig;
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 import userData from 'PUB_DIR/sources/user-data';
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 120,
@@ -45,6 +46,7 @@ const USER_TYPE_OPTION = {
 
 class LogView extends React.Component {
     state = {
+        curShowCustomerId: '', //查看右侧详情的客户id
         userType: USER_TYPE_OPTION.ALL, // 用户类型类型
         selectedRowIndex: null, // 点击的行索引
         isShowRightPanel: this.props.isShowRightPanel,
@@ -257,8 +259,29 @@ class LogView extends React.Component {
             sort_id: ''
         });
     };
+    hideRightPanel = () => {
+        this.setState({
+            curShowCustomerId: ''
+        });
+    };
+
+    showCustomerDetail = (customer_id) => {
+        this.setState({
+            curShowCustomerId: customer_id,
+        });
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: customer_id,
+                curCustomer: this.state.curCustomer,
+                userViewShowCustomerUserListPanel: true,
+                hideRightPanel: this.hideRightPanel
+            }
+        });
+    };
 
     getTableColumns = () => {
+        var _this = this;
         var columns = [
             {
                 title: Intl.get('common.username', '用户名'),
@@ -317,6 +340,23 @@ class LogView extends React.Component {
                     return (<span title={operate}>
                         {operate === 'null' ? '' : operate}
                     </span>);
+                }
+            },
+            {
+                title: Intl.get('common.belong.customer', '所属客户'),
+                dataIndex: 'customer_name',
+                key: 'customer_name',
+                className: 'has-filter owner-customer-wrap',
+                width: '160px',
+                render: function($1, rowData, idx) {
+                    var customer_name = _.get(rowData,'customer_name','');
+                    var customer_id = _.get(rowData,'customer_id','');
+                    return (
+                        <div title={customer_name} className="owner-customer"
+                            onClick={_this.showCustomerDetail.bind(this, customer_id)}
+                            data-tracename="点击所属客户列">{customer_name}
+                        </div>
+                    );
                 }
             },
             {
