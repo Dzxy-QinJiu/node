@@ -34,10 +34,11 @@ class CrmRightMergePanel extends React.Component {
     getRepeatCustomersById = (mergeCustomerList) => {
         let mergedCustomerIds = _.map(mergeCustomerList, 'id');
         ajax.getRepeatCustomersById(mergedCustomerIds.join(',')).then((data) => {
-            if (data && _.isArray(data.result) && data.result.length) {
-                this.state.originCustomerList = data.result;
-                this.state.selectedCustomer = this.getMergedCustomer(mergeCustomerList, data.result);
-                this.setState(this.state);
+            if (_.get(data, 'result[0]')) {
+                this.setState({
+                    originCustomerList: data.result,
+                    selectedCustomer: this.getMergedCustomer(mergeCustomerList, data.result)
+                });
             }
         }, (errorMsg) => {
             message.error(errorMsg);
@@ -136,12 +137,12 @@ class CrmRightMergePanel extends React.Component {
                         mergedRemarks.push(customer.remarks);
                     }
                     //合并联系人
-                    if (_.isArray(customer.contacts) && customer.contacts.length > 0) {
+                    if (_.get(customer, 'contacts[0]')) {
                         customer.contacts.forEach((contact) => {
                             //去掉默认联系方式
                             contact.def_contancts = 'false';
                         });
-                        if (_.isArray(mergedCustomer.contacts) && mergedCustomer.contacts.length > 0) {
+                        if (_.get(mergedCustomer,'contacts[0]')) {
                             mergedCustomer.contacts = mergedCustomer.contacts.concat(customer.contacts);
                         } else {
                             mergedCustomer.contacts = customer.contacts;
@@ -176,7 +177,7 @@ class CrmRightMergePanel extends React.Component {
 
             //联系人去重
             let mergedContacts = [];//合并后的联系人
-            if (_.isArray(mergedCustomer.contacts) && mergedCustomer.contacts.length) {
+            if (_.get(mergedCustomer, 'contacts[0]')) {
                 mergedCustomer.contacts.forEach(contact => {
                     if (mergedContacts.length > 0) {
                         //查找相同名称的联系人
@@ -202,7 +203,7 @@ class CrmRightMergePanel extends React.Component {
             }
             mergedCustomer.contacts = mergedContacts;
             //默认联系方式的设置
-            if (_.isArray(mergedCustomer.contacts) && mergedCustomer.contacts.length > 0) {
+            if (_.get(mergedCustomer, 'contacts[0]')) {
                 let hasDefault = _.some(mergedCustomer.contacts, (contact) => contact.def_contancts === 'true');
                 if (!hasDefault) {
                     mergedCustomer.contacts[0].def_contancts = 'true';
@@ -269,7 +270,7 @@ class CrmRightMergePanel extends React.Component {
         }
         //联系人的处理
         let contactPhone = [];//联系电话
-        if (_.isArray(selectedCustomer.contacts) && selectedCustomer.contacts.length) {
+        if (_.get(selectedCustomer, 'contacts[0]')) {
             selectedCustomer.contacts.forEach(contact => {
                 if (contact.customer_id !== selectedCustomer.id) {
                     //将联系方式对应的客户id改为要保存客户的id
@@ -398,7 +399,7 @@ class CrmRightMergePanel extends React.Component {
         if (newContact.id) {
             let mergedCustomer = this.state.selectedCustomer;
             //修改联系方式
-            if (_.isArray(mergedCustomer.contacts) && mergedCustomer.contacts.length) {
+            if (_.get(mergedCustomer, 'contacts[0]')) {
                 //找到修改的联系方式并更新
                 _.some(mergedCustomer.contacts, (contact, index) => {
                     if (contact.id === newContact.id) {
@@ -415,7 +416,7 @@ class CrmRightMergePanel extends React.Component {
     delMergeCustomerContact = (delContactId) => {
         if (delContactId) {
             let mergedCustomer = this.state.selectedCustomer;
-            if (_.isArray(mergedCustomer.contacts) && mergedCustomer.contacts.length) {
+            if (_.get(mergedCustomer, 'contacts[0]')) {
                 mergedCustomer.contacts = _.filter(mergedCustomer.contacts, contact => contact.id !== delContactId);
             }
             this.setState({selectedCustomer: mergedCustomer});
@@ -426,7 +427,7 @@ class CrmRightMergePanel extends React.Component {
     setMergeCustomerDefaultContact = (defaultContactId) => {
         if (defaultContactId) {
             let mergedCustomer = this.state.selectedCustomer;
-            if (_.isArray(mergedCustomer.contacts) && mergedCustomer.contacts.length) {
+            if (_.get(mergedCustomer,'contacts[0]')) {
                 mergedCustomer.contacts.forEach(contact => {
                     if (contact.id === defaultContactId) {
                         contact.def_contancts = 'true';
@@ -648,7 +649,18 @@ class CrmRightMergePanel extends React.Component {
         );
     }
 }
-
+CrmRightMergePanel.propTypes = {
+    mergeCustomerList: PropTypes.array,
+    originCustomerList: PropTypes.array,
+    showFlag: PropTypes.bool,
+    isRepeat: PropTypes.bool,
+    hideMergePanel: PropTypes.func,
+    afterMergeCustomer: PropTypes.func,
+    refreshCustomerList: PropTypes.func,
+    handleFocusCustomer: PropTypes.func,
+    hideRightPanel: PropTypes.func,
+    showRightPanel: PropTypes.func,
+};
 module.exports = CrmRightMergePanel;
 
 

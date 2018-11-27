@@ -88,7 +88,7 @@ var CallAddCustomerForm = createReactClass({
         var status = this.state.status;
         var arr = item.split('.');
         if (arr[1]) {
-            status = status.contacts[0];
+            status = _.get(status, 'contacts[0]', {});
             item = arr[1];
         }
 
