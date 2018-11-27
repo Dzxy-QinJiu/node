@@ -9,7 +9,7 @@ import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import {StatusWrapper} from 'antc';
 import {PropTypes} from 'prop-types';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
-
+import Trace from 'LIB_DIR/trace';
 var React = require('react');
 //class的前缀
 const USER_CUSTOMER_SUGGEST_ID = 'user-customer-suggest-wrap';
@@ -192,6 +192,7 @@ class UserBasicCard extends React.Component {
         });
     };
     showCustomerDetail = (customer_id) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.sales-team-text'), '查看所属客户');
         this.setState({
             curShowCustomerId: customer_id,
         });
@@ -222,7 +223,7 @@ class UserBasicCard extends React.Component {
                                 <span className="sales-team-label">{Intl.get('common.belong.customer', '所属客户')}:</span>
                                 <span className="sales-team-text">
                                     <a onClick={this.showCustomerDetail.bind(this, this.props.customer_id)}
-                                        data-tracename="点击所属客户列">{this.props.customer_name}</a>
+                                    >{this.props.customer_name}</a>
                                 </span>
                                 <DetailEditBtn
                                     title={Intl.get('common.edit', '编辑')}
