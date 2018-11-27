@@ -4,7 +4,7 @@
 
 import { ifNotSingleApp } from '../../utils';
 
-export function getAccountValidChart(type = 'total') {
+export function getAccountValidChart() {
     return {
         title: '有效账号数统计',
         url: '/rest/analysis/user/v3/:data_type/total/valid',
