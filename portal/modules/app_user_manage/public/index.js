@@ -37,6 +37,7 @@ import ApplyUser from './views/v2/apply-user';
 var topNavEmitter = require('../../../public/sources/utils/emitters').topNavEmitter;
 import queryString from 'query-string';
 import {RETRY_GET_APP} from './util/consts';
+import Trace from 'LIB_DIR/trace';
 /*用户管理界面外层容器*/
 class AppUserManage extends React.Component {
     getStoreData = () => {
@@ -139,6 +140,10 @@ class AppUserManage extends React.Component {
                 //传递客户id
                 customer_id: customer_id,
             });
+        }else if (currentView === 'active' && this.props.location){
+            //点击活跃用户tab页的时候，需要查询团队列表
+            //查询团队列表
+            AppUserAction.getTeamLists();
         }
         //记住上一次路由
         this.prevRoutePath = currentView;
@@ -177,6 +182,7 @@ class AppUserManage extends React.Component {
             }
             AppUserAction.changeTableSort(quryObj);
             AppUserAction.getAppUserList(quryObj);
+
             //顶部导航输入框的值清空
             this.refs.searchInput.refs.searchInput.value = '';
         }

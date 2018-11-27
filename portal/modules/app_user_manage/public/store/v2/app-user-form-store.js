@@ -115,15 +115,15 @@ class AppUserFormStore {
     //选中客户的回调
     customerChoosen(resultObj) {
         this.formData.sales_team = {
-            id: resultObj.sales_team.id || '',
-            name: resultObj.sales_team.name || ''
+            id: _.get(resultObj,'sales_team.id',''),
+            name: _.get(resultObj,'sales_team.name','')
         };
         this.formData.sales = {
-            id: resultObj.sales.id || '',
-            name: resultObj.sales.name || ''
+            id: _.get(resultObj,'sales.id',''),
+            name: _.get(resultObj,'sales.name','')
         };
-        this.formData.customer_name = resultObj.customer.name || '';
-        this.formData.customer_id = resultObj.customer.id || '';
+        this.formData.customer_name = _.get(resultObj,'customer.name','');
+        this.formData.customer_id = _.get(resultObj,'customer.id','');
     }
     //获取当前安全域下的应用
     getCurrentRealmApps(result) {

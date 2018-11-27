@@ -52,7 +52,7 @@ class OrgCard extends React.Component {
         });
     }
     onSelectChange(value, text) {
-        var trimValue = $.trim(value);
+        var trimValue = _.trim(value);
         if (!trimValue) {
             this.props.onChange('');
             this.setState({
