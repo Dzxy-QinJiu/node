@@ -46,17 +46,17 @@ const LAYOUT_CONSTANTS = {
 
 const PAGE_SIZE = 20;//一页获取20条数据
 const ALL_MEMBER_VALUE = 'ALL_MEMBER';
+import {isEqualArray} from 'LIB_DIR/func';
 
 class RecentLoginUsers extends React.Component {
     constructor(props) {
         super(props);
         let timeRange = this.getTodayTimeRange();
-        var defaultTeam = { group_id: '', group_name: Intl.get('user.list.all.teamlist', '全部团队') };
-        var teamLists = _.flatten([[defaultTeam], this.props.teamlists]);
+        var teamlists = this.concatTeamList(this.props);
         this.state = {
             ...RecentUserStore.getState(),
             selectedAppId: this.getSelectedAppId(this.props),
-            teamlists: teamLists,
+            teamlists: teamlists,
             start_time: timeRange.start_time,
             end_time: timeRange.end_time,
             user_type: '',
@@ -134,12 +134,29 @@ class RecentLoginUsers extends React.Component {
         }
         return selectedAppId;
     }
+    concatTeamList(props){
+        var teamList = [{group_id: '', group_name: Intl.get('user.list.all.teamlist', '全部团队')}];
+        if (_.isArray(props.teamlists)){
+            teamList = _.concat(teamList,props.teamlists);
+        }
+        return _.uniq(teamList);
+    }
 
     componentWillReceiveProps(nextProps) {
         let oldAppId = this.state.selectedAppId;
         let newAppId = this.getSelectedAppId(nextProps);
         if (oldAppId !== newAppId) {
-            this.setState({ selectedAppId: newAppId }, this.getRecentLoginUsers());
+            this.setState({ selectedAppId: newAppId },
+                () => {
+                    this.getRecentLoginUsers();
+                }
+            );
+        }
+        if (_.isArray(nextProps.teamlists) && !isEqualArray(nextProps.teamlists, this.props.teamlists)){
+            this.setState({
+                teamlists: this.concatTeamList(nextProps)
+            });
+
         }
     }
 
@@ -595,7 +612,7 @@ class RecentLoginUsers extends React.Component {
                             pagination={false}
                         />
                     </div>
-                    <div className="user-list-tbody custom-tbody" style={{ height: divHeight }}
+                    <div className="user-list-tbody custom-tbody" id="custom-tbody" style={{ height: divHeight }}
                         ref="recentLoginUsersTable">
                         <GeminiScrollBar
                             listenScrollBottom={this.state.listenScrollBottom}
@@ -607,7 +624,7 @@ class RecentLoginUsers extends React.Component {
                                 columns={columns}
                                 loading={this.state.isLoadingUserList}
                                 pagination={false}
-                                locale={{ emptyText: this.state.getUserListErrorMsg || Intl.get('common.no.more.user', '没有更多用户了') }}
+                                locale={{emptyText: this.state.getUserListErrorMsg || Intl.get('common.no.more.user', '没有更多用户了') }}
                             />
                         </GeminiScrollBar>
                     </div>

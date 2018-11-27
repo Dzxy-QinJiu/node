@@ -62,14 +62,15 @@ class LogView extends React.Component {
         $('body').css('overflow', 'hidden');
         UserAuditLogStore.listen(this.onStoreChange);
         $(window).on('resize', this.changeTableHeight);
-        var _this = this;
-        this.getAppAndAuditData();
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
-        //获取团队信息
-        UserAuditLogAction.getTeamList();
         let reqData = commonMethodUtil.getParamByPrivilege();
         //获取成员信息
         UserAuditLogAction.getSaleMemberList(reqData);
+        //获取团队信息
+        //必须在获取完团队后再获取操作日志，因为如果选中的是全部团队，需要把所有团队的id都传过去
+        UserAuditLogAction.getTeamList(() => {
+            this.getAppAndAuditData();
+        });
     }
     componentWillReceiveProps(newProps) {
         this.setState({
@@ -762,7 +763,7 @@ class LogView extends React.Component {
                         columns={columns}
                         pagination={false}
                         rowClassName={this.handleRowClassName}
-                        locale={{ emptyText: Intl.get('common.no.audit', '暂无审计') }}
+                        locale={{ emptyText: Intl.get('common.no.audit', '暂无审计日志') }}
                         scroll={{ y: tableHeight }}
                     />
                 </div>
