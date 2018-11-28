@@ -19,9 +19,9 @@ function getCharts() {
         //        contractChart.getContractPerformanceChart(),
         //合同分析统计表
         contractChart.getContractChart(),
-        /*
         //合同产品分布
         contractChart.getContractProductChart(),
+        /*
         //行业分布
         contractChart.getContractIndustryChart(),
         //地域分布
