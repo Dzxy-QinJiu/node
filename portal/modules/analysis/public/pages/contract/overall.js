@@ -21,11 +21,11 @@ function getCharts() {
         contractChart.getContractChart(),
         //合同产品分布
         contractChart.getContractProductChart(),
-        /*
         //行业分布
         contractChart.getContractIndustryChart(),
         //地域分布
         contractChart.getContractZoneChart(),
+        /*
         //团队分布及完成率
         contractChart.getContractTeamChart(),
         //业绩同比增长情况

@@ -24,12 +24,15 @@ export function getContractProductChart() {
                 {
                     title: '名称',
                     dataIndex: 'name',
+                    width: '33%'
                 }, {
                     title: '个数',
                     dataIndex: 'count',
+                    width: '33%'
                 }, {
                     title: '毛利',
                     dataIndex: 'gross_profit',
+                    width: '33%'
                 }
             ],
         },
