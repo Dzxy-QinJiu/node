@@ -43,7 +43,7 @@ SalesOpportunityApplyStore.prototype.setInitState = function() {
         //错误信息
         errorMsg: ''
     };
-    //筛选类别 'all'(全部) pass(已通过) reject(已驳回)  ongoing(待审批)
+    //筛选类别 'all'(全部) pass(已通过) reject(已驳回)  ongoing(待审批) cancel(已撤销)
     this.applyListType = 'all';
     this.clearData();
 };

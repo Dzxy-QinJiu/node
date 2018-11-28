@@ -19,8 +19,8 @@ import ApplyDetailInfo from 'CMP_DIR/apply-detail-info';
 import ApplyDetailCustomer from 'CMP_DIR/apply-detail-customer';
 import ApplyDetailStatus from 'CMP_DIR/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
-import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
+import ApplyApproveCancel from 'CMP_DIR/apply-approve-cancel';
 import {APPLY_LIST_LAYOUT_CONSTANTS, APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
 import {getApplyTopicText, getApplyResultDscr} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
@@ -31,6 +31,7 @@ const ASSIGN_TYPE = {
 };
 let userData = require('PUB_DIR/sources/user-data');
 import {REALM_REMARK} from '../utils/sales-oppotunity-utils';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -38,6 +39,7 @@ class ApplyViewDetail extends React.Component {
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
             salesManList: [],//销售列表
+            showBackoutConfirm: false,
             ...SalesOpportunityApplyDetailStore.getState()
         };
     }
@@ -271,8 +273,6 @@ class ApplyViewDetail extends React.Component {
             />
         );
     }
-
-
     //添加一条回复
     addReply = (e) => {
         Trace.traceEvent(e, '点击回复按钮');
@@ -474,15 +474,43 @@ class ApplyViewDetail extends React.Component {
         );
 
     };
+    // 确认撤销申请
+    saleConfirmBackoutApply = (e) => {
+        Trace.traceEvent(e, '点击撤销申请按钮');
+        this.setState({
+            showBackoutConfirm: true
+        });
+    };
+    // 隐藏撤销申请的模态框
+    hideBackoutModal = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-cancel'), '点击取消按钮');
+        this.setState({
+            showBackoutConfirm: false
+        });
+    };
+    // 撤销申请
+    cancelApplyApprove = (e) => {
+        e.stopPropagation();
+        Trace.traceEvent(e, '点击撤销按钮');
+        let backoutObj = {
+            id: this.props.detailItem.id,
+        };
+        SalesOpportunityApplyDetailAction.cancelApplyApprove(backoutObj,() => {
+            this.setState({
+                showBackoutConfirm: false
+            });
+        });
+    };
     //渲染详情底部区域
     renderDetailBottom() {
         var detailInfoObj = this.state.detailInfoObj.info;
         //是否审批
-        let isConsumed = detailInfoObj.status === 'pass' || detailInfoObj.status === 'reject';
+        let isConsumed = detailInfoObj.status === 'pass' || detailInfoObj.status === 'reject' || detailInfoObj.status === 'cancel';
         var userName = _.last(_.get(detailInfoObj, 'approve_details')) ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name : '' : '';
         var approvalDes = getApplyResultDscr(detailInfoObj);
         var showApproveBtn = detailInfoObj.showApproveBtn;
         var renderAssigenedContext = null;
+        let showCancelBtn = detailInfoObj.showCancelBtn;
         //渲染分配的按钮
         if (_.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.ASSIGN_SALES_APPLY && showApproveBtn){
             //分配给普通销售
@@ -498,6 +526,9 @@ class ApplyViewDetail extends React.Component {
                 //如果是不是识微域,需要选择所分配给的销售总经理
                 renderAssigenedContext = this.renderCandidatedContext;
             }
+        }else if(hasPrivilege('GET_MY_WORKFLOW_LIST') && showCancelBtn ){
+            // 在没有通过申请前，可以撤销自己的申请
+            renderAssigenedContext = this.renderCancelApplyApproveBtn;
         }
         return (
             <ApplyDetailBottom
@@ -506,11 +537,38 @@ class ApplyViewDetail extends React.Component {
                 isConsumed={isConsumed}
                 update_time={detailInfoObj.update_time}
                 approvalText={userName + approvalDes}
-                showApproveBtn={showApproveBtn}
+                showApproveBtn={showApproveBtn || showCancelBtn}
                 submitApprovalForm={this.submitApprovalForm}
                 renderAssigenedContext={renderAssigenedContext}
             />);
     }
+    renderCancelApplyApproveBtn = () => {
+        return (
+            <div className="pull-right">
+                {this.state.backApplyResult.loading ?
+                    <Icon type="loading"/> :
+                    <Button type="primary" className="btn-primary-sure" size="small"
+                        onClick={this.saleConfirmBackoutApply}>
+                        {Intl.get('user.apply.detail.backout', '撤销申请')}
+                    </Button>}
+            </div>
+        );
+    };
+    renderCancelApplyApprove = () => {
+        if (this.state.showBackoutConfirm){
+            return (
+                <ApplyApproveCancel
+                    showBackoutConfirm={this.state.showBackoutConfirm}
+                    hideBackoutModal={this.hideBackoutModal}
+                    container={this}
+                    showResultLoading={this.state.backApplyResult.loading}
+                    clickOkBtn={this.cancelApplyApprove}
+                />
+            );
+        }else{
+            return null;
+        }
+    };
 
     //渲染申请单详情
     renderApplyDetailInfo() {
@@ -546,6 +604,7 @@ class ApplyViewDetail extends React.Component {
 
                 </div>
                 {this.renderDetailBottom()}
+                {this.renderCancelApplyApprove()}
             </div>
         );
     }

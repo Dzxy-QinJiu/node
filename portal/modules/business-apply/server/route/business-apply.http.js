@@ -69,6 +69,13 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+        }, {
+            method: 'post',
+            path: '/rest/cancel/apply/approve',
+            handler: 'cancelApplyApprove',
+            passport: {
+                needLogin: true
+            },
         }
     ]
 };

@@ -5,6 +5,7 @@
  */
 var SalesOpportunityApplyAjax = require('../ajax/sales-opportunity-apply-ajax');
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+let userData = require('PUB_DIR/sources/user-data');
 function SalesOpportunityApplyActions() {
     this.generateActions(
         'setInitState',
@@ -24,6 +25,7 @@ function SalesOpportunityApplyActions() {
                 //需要对全部列表都加一个可以审批的属性
                 _.forEach(workList.list,(workItem) => {
                     workItem.showApproveBtn = true;
+
                 });
                 this.dispatch({error: false, loading: false, data: workList});
                 return;
@@ -37,6 +39,12 @@ function SalesOpportunityApplyActions() {
                     });
                     if (targetObj){
                         targetObj.showApproveBtn = true;
+                    }
+                });
+                //给 自己申请的并且是未通过的审批加上可以撤销的标识
+                _.forEach(data.list,(item) => {
+                    if (item.status === 'ongoing' && _.get(item,'applicant.user_id') === userData.getUserData().user_id){
+                        item.showCancelBtn = true;
                     }
                 });
                 this.dispatch({error: false, loading: false, data: data});},(errorMsg) => {

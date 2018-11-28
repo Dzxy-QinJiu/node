@@ -372,7 +372,9 @@ exports.getApplyStateText = function(obj) {
         return Intl.get('user.apply.pass', '已通过');
     } else if (obj.status === 'reject') {
         return Intl.get('user.apply.reject', '已驳回');
-    } else {
+    } else if (obj.status === 'cancel') {
+        return Intl.get('user.apply.backout', '已撤销');
+    }else {
         return Intl.get('user.apply.false', '待审批');
     }
 };
@@ -401,6 +403,9 @@ exports.getApplyResultDscr = function(detailInfoObj) {
         case 'reject':
             resultDscr = Intl.get('user.apply.detail.reject', '驳回申请');
             break;
+        case 'cancel':
+            resultDscr = Intl.get('user.apply.detail.backout', '撤销申请');
+            break;
     }
     return resultDscr;
 };
@@ -415,6 +420,9 @@ exports.getApplyStatusDscr = function(applyStatus) {
             break;
         case 'reject':
             applyType = Intl.get('leave.apply.approve.rejected','被驳回');
+            break;
+        case 'cancel':
+            applyType = Intl.get('user.apply.be.canceled','被撤销');
             break;
     }
     return applyType;

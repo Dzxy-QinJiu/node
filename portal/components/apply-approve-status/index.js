@@ -82,21 +82,17 @@ ApplyApproveStatus.defaultProps = {
 
     },
     applyResultErrorMsg: '',
+    container: {}
 };
 ApplyApproveStatus.propTypes = {
-    showLoading: false,
-    approveSuccess: false,
-    approveError: false,
-    viewApprovalResult: function() {
-
-    },
-    reSendApproval: function() {
-
-    },
-    cancelSendApproval: function() {
-
-    },
-    applyResultErrorMsg: '',
+    showLoading: PropTypes.boolean,
+    approveSuccess: PropTypes.boolean,
+    approveError: PropTypes.boolean,
+    viewApprovalResult: PropTypes.func,
+    reSendApproval: PropTypes.func,
+    cancelSendApproval: PropTypes.func,
+    applyResultErrorMsg: PropTypes.string,
+    container: PropTypes.object
 
 };
 
