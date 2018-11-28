@@ -19,7 +19,6 @@ function getCharts() {
         //        contractChart.getContractPerformanceChart(),
         //合同分析统计表
         contractChart.getContractChart(),
-        /*
         //合同产品分布
         contractChart.getContractProductChart(),
         //行业分布
@@ -27,12 +26,9 @@ function getCharts() {
         //地域分布
         contractChart.getContractZoneChart(),
         //团队分布及完成率
-        contractChart.getContractTeamChart(),
-        //业绩同比增长情况
-        contractChart.getContractGrowthChart(),
+        //contractChart.getContractTeamChart(),
         //年经常性收入情况
         contractChart.getContractArrChart(),
-        */
         //签单情况统计表
         contractChart.getSingingChart(),
     ];
