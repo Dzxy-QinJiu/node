@@ -5,7 +5,12 @@
 export function getContractZoneChart() {
     return {
         title: '地域分布',
-        chartType: 'table',
+        chartType: 'bar',
+        option: {
+            grid: {
+                left: 80,
+            },
+        },
         url: '/rest/analysis/contract/contract/:data_type/region',
         argCallback: (arg) => {
             const query = arg.query;
@@ -18,19 +23,6 @@ export function getContractZoneChart() {
                     delete query.team_ids;
                 }
             }
-        },
-        option: {
-            columns: [
-                {
-                    title: '名称',
-                    dataIndex: 'name',
-                    width: '50%'
-                }, {
-                    title: '毛利',
-                    dataIndex: 'value',
-                    width: '50%'
-                }
-            ],
         },
     };
 }
