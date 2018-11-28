@@ -16,6 +16,8 @@ module.exports = {
 
 function getCharts() {
     return [
+        //团队分布统计
+        accountChart.getDelayedAccountTeamChart(),
         //设备统计
         accountChart.getAccountDeviceChart(),
         //浏览器统计

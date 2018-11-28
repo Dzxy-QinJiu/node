@@ -51,6 +51,6 @@ function getCharts() {
         //平均在线时长
         accountChart.getAverageOnlineTimeChart(),
         //销售开通单应用账号登录统计
-        accountChart.getAccountSalesOpenAccountChart(),
+        accountChart.getSalesOpenAccountLoginChart(),
     ];
 }
