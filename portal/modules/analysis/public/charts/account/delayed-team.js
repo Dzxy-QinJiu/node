@@ -2,7 +2,7 @@
  * 延期账号团队统计
  */
 
-import { unknownDataMap, USER_TYPES, USER_TYPES_WITH_TITLE, isSales } from '../../consts';
+import { isSales } from '../../consts';
 import { argCallbackTimeMember } from '../../utils';
 
 export function getDelayedAccountTeamChart() {
