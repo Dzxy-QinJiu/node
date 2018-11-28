@@ -19,7 +19,7 @@ export function getCustomerTrialQualifiedTrendChart() {
             let query = arg.query;
 
             if (query && query.starttime && query.endtime) {
-                query.start_time = query.starttime;
+                query.start_time = moment(query.endtime).subtract(1, 'years').valueOf();
                 query.end_time = query.endtime;
                 delete query.starttime;
                 delete query.endtime;
