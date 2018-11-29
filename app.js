@@ -30,8 +30,6 @@ require('log4js-config').init(function() {
 });
 
 var app = express();
-var restLogger = require('./portal/lib/utils/logger').getLogger('rest');
-var restUtil = require('ant-auth-request').restUtil(restLogger);
 app.set('port', config.port);
 // view engine setup
 app.set('views', path.join(__dirname, 'portal/modules'));
@@ -89,6 +87,11 @@ global.module_root_path = path.resolve(__dirname, './portal/modules');
 //定义全局的配置文件路径
 global.config_root_path = path.resolve(__dirname, './conf');
 
+var restLogger = require('./portal/lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+require('callcenter-sdk-server').server(app, {callout_url: '/rest/customer/v2/phone/call/ou'}, restUtil.authRest);
+
+
 //初始化controller
 require('./portal/controller')(app);
 //处理404
@@ -107,12 +110,7 @@ var server = app.listen(app.get('port'), function() {
     // eslint-disable-next-line no-console
     console.log('Oplate Server Running At http://localhost:' + app.get('port'));
 });
-//config, authcheck, authRequest
-require('callcenter-web-sdk').server(app, {
-    authcheck: (req, res) => {
-        return !!req.session.user;
-    }
-}, restUtil.authRest);
+
 //初始化coordinator
 if (auth.getLang() !== 'es_VE') {
     coordinator(function() {

@@ -1,4 +1,9 @@
 require('./sources/dependence');
+import {storageUtil} from 'ant-utils';
+
+let callcenter = require('callcenter-sdk-client');
+let CallcenterClient = callcenter.client, CallcenterType = callcenter.type;
+
 var userData = require('./sources/user-data');
 var AppStarter = require('./sources/app-starter');
 var PrivilegeGet = require('./sources/privilege-get');
@@ -6,9 +11,7 @@ var PrivilegeGetReact = null;
 var appDom = $('#app')[0];
 var websiteConfig = require('../lib/utils/websiteConfig');
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
-import {storageUtil} from 'ant-utils';
-import {callcenter as client} from 'callcenter-web-sdk';
-import CallNumberUtil from 'PUB_DIR/sources/utils/common-data-util';
+var CallNumberUtil = require('PUB_DIR/sources/utils/common-data-util');
 
 function hideLoading(errorTip) {
     if (PrivilegeGetReact) {
@@ -72,9 +75,9 @@ function getUserPrivilegeAndStart() {
         });
         CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
             if (callNumberInfo && callNumberInfo.callNumber) {
-                window.callClient = callcenter.client('huawei', user_id, callNumberInfo.callNumber);
-                callClient.init().then(() => {
-                    console.log('电话系统启动成功!');
+                window.callClient = new CallcenterClient(CallcenterType.HUAWEI, user_id, callNumberInfo.callNumber);
+                window.callClient.init().then(() => {
+                    console.log('可以打电话了!');
                 });
             }
         });

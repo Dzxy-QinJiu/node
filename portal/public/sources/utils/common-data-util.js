@@ -163,7 +163,7 @@ exports.handleCallOutResult = function(paramObj) {
                     to: phoneNumber
                 };
                 if (window.callClient && window.callClient.isInited()) {
-                    callClient.callout(phone).then((result) => {
+                    callClient.callout(paramObj.phoneNumber).then((result) => {
                         if (result.code === 0) {
                             message.success(Intl.get('crm.call.phone.success', '拨打成功'));
                         }
@@ -171,13 +171,6 @@ exports.handleCallOutResult = function(paramObj) {
                         message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
                     });
                 }
-                // crmAjax.callOut(reqData).then((result) => {
-                //     if (result.code === 0) {
-                //         message.success(Intl.get('crm.call.phone.success', '拨打成功'));
-                //     }
-                // }, (errMsg) => {
-                //     message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
-                // });
             }
         } else {
             message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
