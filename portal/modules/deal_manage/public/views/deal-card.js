@@ -3,8 +3,6 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2018/11/14.
  */
-import {DragSource, DropTarget} from 'react-dnd';
-import DetailCard from 'CMP_DIR/detail-card';
 import {formatNumHasDotToFixed} from 'PUB_DIR/sources/utils/common-method-util';
 import {num as antUtilsNum} from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
@@ -14,13 +12,6 @@ class DealCard extends React.Component {
         super(props);
         this.state = {deal: props.deal};
     }
-
-    // componentDidMount() {
-    // this.props.connectDragPreview(
-    //     <div style={{color: 'red', height: 100, width: 100, float: 'left'}}>
-    //         拖动视图============================</div>
-    // );
-    // }
 
     formatTime(time) {
         return time ? moment(+time).format(oplateConsts.DATE_FORMAT) : '';
@@ -72,19 +63,10 @@ class DealCard extends React.Component {
     }
 
     render() {
-        const {
-            connectDragSource,
-            connectDropTarget,
-            isOver,
-            isDragging
-        } = this.props;
-        return connectDropTarget(connectDragSource(
-            <div className="single-deal-card" style={{
-                opacity: isDragging ? 0 : 1,
-                backgroundColor: isOver ? '#f1f8ff' : '#ffffff'
-            }}>
+        return (
+            <div className="single-deal-card">
                 {this.renderDealContent()}
-            </div>));
+            </div>);
     }
 }
 
@@ -92,55 +74,7 @@ DealCard.propTypes = {
     deal: PropTypes.object,
     showDetailPanel: PropTypes.func,
     removeDeal: PropTypes.func,
-    showCustomerDetail: PropTypes.func,
-    connectDragSource: PropTypes.func,
-    connectDropTarget: PropTypes.func,
-    isDragging: PropTypes.bool,
-    isOver: PropTypes.bool
+    showCustomerDetail: PropTypes.func
 };
 
-const dragSpec = {
-    beginDrag(props) {
-        // console.log(props.deal);
-        return props.deal;
-    },
-    endDrag(props, monitor, component) {
-        if (!monitor.didDrop()) {
-            return;
-        }
-
-        const item = monitor.getItem();
-
-        const dropResult = monitor.getDropResult();
-
-        _.isFunction(props.removeDeal) && props.removeDeal(item.id);
-    }
-};
-
-function dragCollect(connect, monitor) {
-    return {
-        connectDragSource: connect.dragSource(),
-        isDragging: monitor.isDragging()
-    };
-}
-
-const dropSpec = {
-    drop(props, monitor) {
-        return props.deal;
-    },
-    canDrop(props, monitor) {
-        console.log(monitor.getItem());
-        return props.deal.id !== monitor.getItem().id;
-    },
-};
-
-function dropCollect(connect, monitor) {
-    return {
-        connectDropTarget: connect.dropTarget(),
-        isOver: monitor.isOver()
-    };
-}
-
-export default DropTarget('dealDragKey', dropSpec, dropCollect)(
-    DragSource('dealDragKey', dragSpec, dragCollect)(DealCard)
-);
+export default DealCard;

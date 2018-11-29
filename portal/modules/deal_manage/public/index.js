@@ -62,15 +62,11 @@ class DealManage extends React.Component {
             curShowCustomerId: '',//当前查看的客户详情
             teamList: [],//团队列表（列表中的团队根据团队id获取团队名来展示）
             viewType: VIEW_TYPES.BOARD,//默认展示看板视图
-            isLoadingStage: false,//正在加载订单阶段
-            stageList: [],//订单阶段列表
-            getStageErrorMsg: ''//获取阶段列表失败时的错误信息
         };
     }
 
     componentDidMount() {
         dealStore.listen(this.onStoreChange);
-        this.getStageList();
         this.getTeamList();
         this.getDealList();
         let _this = this;
@@ -91,26 +87,6 @@ class DealManage extends React.Component {
 
     onStoreChange = () => {
         this.setState(dealStore.getState());
-    }
-
-    getStageList() {
-        this.setState({isLoadingStage: true});
-        $.ajax({
-            url: '/rest/customer/v2/salesopportunity/term/sale_stages',
-            dataType: 'json',
-            type: 'post',
-            data: {reqData: JSON.stringify({})},
-            success: resData => {
-                this.setState({isLoadingStage: false, stageList: _.get(resData, 'result', [])});
-            },
-            error: xhr => {
-                this.setState({
-                    isLoadingStage: false,
-                    stageList: [],
-                    getStageErrorMsg: xhr.responseJSON || Intl.get('deal.list.get.failed', '获取订单列表失败')
-                });
-            }
-        });
     }
 
     getTeamList() {
@@ -403,28 +379,6 @@ class DealManage extends React.Component {
         return $('body').height() - TOP_NAV_HEIGHT - BOTTOM_MARGIN;
     }
 
-    renderDealBoards(containerHeight) {
-        if (this.state.isLoadingStage) {
-            return (<Spinner />);
-        } else if (_.get(this.state, 'stageList[0]')) {
-            return (
-                <DealBoardList stageList={this.state.stageList}
-                    containerHeight={containerHeight}
-                    showCustomerDetail={this.showCustomerDetail}
-                    showDetailPanel={this.showDetailPanel()}
-                />);
-        } else {
-            let noDataTip = Intl.get('deal.no.data', '暂无订单');
-            if (this.state.getStageErrorMsg) {
-                noDataTip = this.state.getStageErrorMsg;
-            } else if (this.state.searchObj.value) {
-                noDataTip = Intl.get('deal.no.filter.deal', '没有符合条件的订单');
-            }
-            return (
-                <NoDataIntro noDataTip={noDataTip}/>);
-        }
-    }
-
     changViewType = (e) => {
         this.setState({viewType: e.target.value});
     };
@@ -478,7 +432,10 @@ class DealManage extends React.Component {
                                 height: containerHeight,
                                 width: '100%'
                             }}>
-                            {this.renderDealBoards(containerHeight)}
+                            <DealBoardList containerHeight={containerHeight}
+                                showCustomerDetail={this.showCustomerDetail}
+                                showDetailPanel={this.showDetailPanel()}
+                            />
                         </div>)}
                 </div>
                 {this.state.isDetailPanelShow ? (

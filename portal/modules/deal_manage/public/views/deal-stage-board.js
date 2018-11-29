@@ -4,13 +4,13 @@
  * Created by wangliping on 2018/11/13.
  */
 require('../style/deal-stage-board.less');
-import {DropTarget} from 'react-dnd';
-import Spinner from 'CMP_DIR/spinner';
+import {Icon} from 'antd';
 import DetailCard from 'CMP_DIR/detail-card';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import DealCard from './deal-card';
+import dealBoardAction from '../action/deal-board-action';
 const AUTHS = {
     MANAGER_DEAL_LIST: 'CRM_MANAGER_LIST_SALESOPPORTUNITY',
 };
@@ -24,79 +24,22 @@ class DealStageBoard extends React.Component {
 
     getInitState(props) {
         return {
-            stage: props.stage,//阶段名称
-            containerHeight: props.containerHeight,//看板的高度
-            isLoadingDeal: false,//正在获取订单
-            stageDealList: [],//当前阶段的订单列表
-            getDealErrorMsg: '',//获取订单失败的提示
-            total_size: 0,
-            lastDealId: '',//用于下拉加载的订单id
-            listenScrollBottom: true//下拉加载的监听
+            stageObj: props.stageObj,//此阶段的数据对象
+            containerHeight: props.containerHeight//看板的高度
         };
-    }
-
-    componentDidMount() {
-        this.getStageDealList();
     }
 
     componentWillUnmount() {
         this.setState(this.getInitState(this.props));
     }
 
-    getStageDealList() {
-        //权限与路径的处理
-        let type = 'user';
-        if (hasPrivilege(AUTHS.MANAGER_DEAL_LIST)) {
-            type = 'manager';
-        }
-        //params路径参数的处理
-        let url = `/rest/deal/${type}/20/time/descend`;
-        if (_.get(this.state, 'lastDealId')) {
-            url += `?id=${this.state.lastDealId}&cursor=true`;
-        }
-        let stage = _.get(this.state, 'stage.value', '');
-        if (!stage) return;
-        this.setState({isLoadingDeal: true});
-        $.ajax({
-            url: url,
-            dataType: 'json',
-            type: 'post',
-            data: {query: {sale_stages: stage}},
-            success: resData => {
-                let stageDealList = this.state.stageDealList;
-                let listenScrollBottom = this.state.listenScrollBottom;
-                if (this.state.lastDealId) {
-                    stageDealList = stageDealList.concat(_.get(resData, 'result', []));
-                } else {
-                    stageDealList = _.get(resData, 'result', []);
-                }
-                let totalSize = _.get(resData, 'total', 0);
-                let listLength = stageDealList.length;
-                if (listLength >= totalSize) {
-                    listenScrollBottom = false;
-                }
-                this.setState({
-                    isLoadingDeal: false,
-                    stageDealList: stageDealList,
-                    listenScrollBottom: listenScrollBottom,
-                    total_size: totalSize,
-                    lastDealId: listLength ? _.get(stageDealList, `[${listLength - 1}].id`) : ''
-                });
-            },
-            error: xhr => {
-                this.setState({
-                    isLoadingDeal: false,
-                    stageDealList: [],
-                    total_size: 0,
-                    getDealErrorMsg: xhr.responseJSON || Intl.get('deal.list.get.failed', '获取订单列表失败')
-                });
-            }
-        });
-    }
-
     //监听下拉加载
     handleScrollBarBottom = () => {
-        this.getStageDealList();
+        let stageName = _.get(this.state, 'stageObj.stage', '');
+        if (stageName) {
+            let lastDealId = _.get(this.state, 'stageObj.lastId');
+            dealBoardAction.getStageDealList(stageName, lastDealId);
+        }
     };
 
     // 插入拖进来的订单,dropId:插入到哪个订单前面
@@ -120,19 +63,19 @@ class DealStageBoard extends React.Component {
     };
 
     renderDealCardList() {
-        if (this.state.isLoadingDeal && !this.state.lastDealId) {
-            return (<Spinner />);
-        } else if (_.get(this.state, 'stageDealList[0]')) {
+        let stageObj = this.state.stageObj;
+        if (stageObj.isLoading && !stageObj.lastId) {
+            return (<Icon type="loading"/>);
+        } else if (_.get(stageObj, 'list[0]')) {
             let boradHeight = this.state.containerHeight - BOARD_TITLE_HEIGHT - 3 * BOARD_CARD_MARGIN;
             return (
                 <div className="deal-board-content"
                     style={{height: boradHeight}}>
                     <GeminiScrollbar handleScrollBottom={this.handleScrollBarBottom}
-                        listenScrollBottom={this.state.listenScrollBottom}>
-                        {_.map(this.state.stageDealList, (deal, index) => {
+                        listenScrollBottom={stageObj.listenScrollBottom}>
+                        {_.map(stageObj.list, (deal, index) => {
                             return (
                                 <DealCard deal={deal} key={index}
-                                    removeDeal={this.removeDeal}
                                     showCustomerDetail={this.props.showCustomerDetail}
                                     showDetailPanel={this.props.showDetailPanel}/>);
                         })}
@@ -140,25 +83,37 @@ class DealStageBoard extends React.Component {
                 </div>);
         } else {
             let noDataTip = Intl.get('deal.no.data', '暂无订单');
-            if (this.state.getDealErrorMsg) {
-                noDataTip = this.state.getDealErrorMsg;
+            if (stageObj.errorMsg) {
+                noDataTip = stageObj.errorMsg;
             }
             return (
                 <NoDataIntro noDataTip={noDataTip}/>);
         }
     }
 
+    getStageName(stageObj) {
+        let stageName = _.get(stageObj, 'stage', '');
+        switch (stageName) {
+            case 'win':
+                stageName = Intl.get('crm.order.status.win', '赢单');
+                break;
+            case 'lose':
+                stageName = Intl.get('crm.order.status.lose', '丢单');
+                break;
+        }
+        return stageName;
+    }
+
     render() {
-        let stage = this.state.stage;
+        let stageObj = this.state.stageObj;
         let title = (
             <span>
-                <span className='deal-stage-name'> {_.get(stage, 'name', '')}</span>
+                <span className='deal-stage-name'> {this.getStageName(stageObj)}</span>
                 <span className='deal-total-price'></span>
                 <span
-                    className='deal-total-count'>{Intl.get('sales.home.total.count', '共{count}个', {count: this.state.total_size || '0'})}</span>
+                    className='deal-total-count'>{Intl.get('sales.home.total.count', '共{count}个', {count: stageObj.total || '0'})}</span>
             </span>);
-        const {connectDropTarget} = this.props;
-        return connectDropTarget(
+        return (
             <div className='deal-stage-board-wrap'>
                 <DetailCard
                     className='deal-stage-board-container'
@@ -171,33 +126,10 @@ class DealStageBoard extends React.Component {
 }
 
 DealStageBoard.propTypes = {
-    stage: PropTypes.object,
+    stageObj: PropTypes.object,
     containerHeight: PropTypes.number,
     showDetailPanel: PropTypes.func,
-    showCustomerDetail: PropTypes.func,
-    connectDropTarget: PropTypes.func
+    showCustomerDetail: PropTypes.func
 };
-const dropSpec = {
-    // monitor.getItem()可获取之前dragsource在beginDrag中return的Object
-    //component可直接调用组件内部方法
-    drop(props, monitor, component) {
-        console.log('Column Drop Fired');
-        // const id = monitor.getItem().id;
-        // if (!props.cards.some(card => card.id === id)) {
-        //     props.drop(id, column);
-        // }
-        //卡片被拖拽到哪个订单的位置
-        let dropId = '';
-        if (monitor.getDropResult()) {
-            dropId = monitor.getDropResult().id;
-        }
-        component.insertDeal(monitor.getItem(), dropId);
-    }
-};
-function collect(connect, monitor) {
-    return {
-        connectDropTarget: connect.dropTarget(),
-        isOver: monitor.isOver()
-    };
-}
-export default DropTarget('dealDragKey', dropSpec, collect)(DealStageBoard);
+
+export default DealStageBoard;

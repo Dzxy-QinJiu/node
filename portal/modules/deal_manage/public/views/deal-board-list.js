@@ -4,52 +4,80 @@
  * Created by wangliping on 2018/11/27.
  */
 
-import HTML5Backend from 'react-dnd-html5-backend';
-import {DragDropContext} from 'react-dnd';
+import Spinner from 'CMP_DIR/spinner';
+import NoDataIntro from 'CMP_DIR/no-data-intro';
+import dealBoardAction from '../action/deal-board-action';
+import dealBoardStore from '../store/deal-board-store';
 import DealStageBoard from './deal-stage-board';
+
 
 class DealBoardList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            stageList: this.getFormatStageList(props.stageList),
+            ...dealBoardStore.getState(),
             containerHeight: props.containerHeight
         };
     }
+
+    componentDidMount() {
+        dealBoardStore.listen(this.onStoreChange);
+        this.getDealBoardData();
+    }
+
     componentWillReceiveProps(nextProps) {
         if (this.state.containerHeight !== nextProps.containerHeight) {
             this.setState({containerHeight: nextProps.containerHeight});
         }
     }
 
-    getFormatStageList(stageList) {
-        stageList = _.map(stageList, stage => {
-            return {...stage, value: stage.name};
-        });
-        //丢单、赢单的添加
-        stageList = _.concat(stageList, [
-            {
-                name: Intl.get('crm.order.status.won', '赢单'),
-                value: 'win'
-            },
-            {
-                name: Intl.get('crm.order.status.lost', '丢单'),
-                value: 'lose'
+    componentWillUnmount() {
+        dealBoardAction.setInitData();
+        dealBoardStore.unlisten(this.onStoreChange);
+    }
+
+    onStoreChange = () => {
+        this.setState(dealBoardStore.getState());
+    };
+
+    getDealBoardData() {
+        dealBoardAction.getStageList((stageList => {
+            if (_.get(stageList, '[0]')) {
+                //获取各阶段的交易列表
+                _.each(stageList, stage => {
+                    let stageName = _.get(stage, 'name');
+                    if (stageName) {
+                        let curStageLastDealId = _.get(this.state, `stageDealMap[${stageName}].lastId`, '');
+                        dealBoardAction.getStageDealList(stageName, curStageLastDealId);
+                    }
+                });
             }
-        ]);
-        return stageList;
+        }));
     }
 
     render() {
-        return (
-            <div className="deal-board-list">
-                {_.map(this.state.stageList, (stage, index) => {
-                    return (<DealStageBoard stage={stage} key={index}
-                        showDetailPanel={this.props.showDetailPanel}
-                        showCustomerDetail={this.props.showCustomerDetail}
-                        containerHeight={this.state.containerHeight}/>);
-                })}
-            </div>);
+        if (this.state.isLoadingStage) {
+            return (<Spinner />);
+        } else if (_.get(this.state, 'stageList[0]')) {
+            return (
+                <div className="deal-board-list">
+                    {_.map(this.state.stageDealMap, (stageObj, key) => {
+                        return (<DealStageBoard key={key} stageObj={stageObj}
+                            showDetailPanel={this.props.showDetailPanel}
+                            showCustomerDetail={this.props.showCustomerDetail}
+                            containerHeight={this.state.containerHeight}/>);
+                    })}
+                </div>);
+        } else {
+            let noDataTip = Intl.get('deal.no.data', '暂无订单');
+            // if (this.state.getStageErrorMsg) {
+            //     noDataTip = this.state.getStageErrorMsg;
+            // } else if (this.state.searchObj.value) {
+            //     noDataTip = Intl.get('deal.no.filter.deal', '没有符合条件的订单');
+            // }
+            return (
+                <NoDataIntro noDataTip={noDataTip}/>);
+        }
     }
 }
 
@@ -60,4 +88,4 @@ DealBoardList.propTypes = {
     showCustomerDetail: PropTypes.func
 };
 
-export default DragDropContext(HTML5Backend)(DealBoardList);
+export default DealBoardList;

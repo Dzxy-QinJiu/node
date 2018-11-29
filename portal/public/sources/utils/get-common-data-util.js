@@ -173,7 +173,7 @@ exports.getDealStageList = function(cb) {
             },
             error: xhr => {
                 dealStageList = [];
-                if (_.isFunction(cb)) cb(appList);
+                if (_.isFunction(cb)) cb(dealStageList);
             }
         });
     }
