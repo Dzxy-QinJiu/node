@@ -8,7 +8,14 @@ export function getContractTeamChart() {
     return {
         title: '团队分布',
         chartType: 'bar',
+        noShowCondition: {
+            callback: () => isSales
+        },
         url: '/rest/analysis/contract/contract/:data_type/gross/profit/team',
+        conditions: [{
+            name: 'contract_type',
+            value: 'total'
+        }],
         argCallback: (arg) => {
             const query = arg.query;
 
@@ -20,9 +27,6 @@ export function getContractTeamChart() {
                     delete query.team_ids;
                 }
             }
-        },
-        noShowCondition: {
-            callback: () => isSales
         },
     };
 }
