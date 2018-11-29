@@ -88,7 +88,7 @@ SalesOpportunityApplyDetailStore.prototype.setDetailInfoObj = function(detailObj
 SalesOpportunityApplyDetailStore.prototype.setApplyComment = function(list) {
     this.replyListInfo = {
         result: '',
-        list: _.isArray(list) ? list : null,
+        list: _.isArray(list) ? _.concat(this.replyListInfo.list,list) : null,
         errorMsg: ''
     };
 };

@@ -2558,5 +2558,8 @@ var en_US = {
     'common.turn.in.customer': 'turn in customer',//转入客户
     'deal.stage': 'Deal stage',//阶段
     'common.report': 'report',//报告
+    'user.apply.submit.list': 'Submit apply',//提交申请
+    'user.apply.distribute.to': 'distribute to',//分配给
+    'user.apply.distribute.to.sales': 'has been distributed to sales'//已分配给销售
 };
 export default en_US;

@@ -12,14 +12,14 @@ class ApplyDetailBlock extends React.Component {
         };
     }
     render(){
-        var cls = 'iconfont' + this.props.iconclass;
+        var cls = 'iconfont ' + this.props.iconclass;
         return (
-            <div className="apply-detail-customer apply-detail-info">
-                <div className="common-icon-block">
+            <div className="apply-detail-reply-list apply-detail-info">
+                <div className="reply-icon-block">
                     <span className={cls}/>
                 </div>
-                <div className="leave-detail-block apply-info-block">
-                    <div className="apply-info-content">
+                <div className="reply-info-block apply-info-block">
+                    <div className="reply-list-container apply-info-content">
                         {this.props.renderApplyInfoContent()}
                     </div>
                 </div>

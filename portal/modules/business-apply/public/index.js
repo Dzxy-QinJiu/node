@@ -55,7 +55,7 @@ class BusinessApplyManagement extends React.Component {
         if(message && message.status === 'success'){
             //通过或者驳回申请后改变申请的状态
             if (message.agree){
-                message.approve_details = [{user_name: userData.getUserData().user_name, status: message.agree}];
+                message.approve_details = [{user_name: userData.getUserData().user_name, status: message.agree,nick_name: userData.getUserData().nick_name,comment_time: moment().valueOf()}];
                 message.update_time = moment().valueOf();
                 BusinessApplyAction.changeApplyAgreeStatus(message);
             }
