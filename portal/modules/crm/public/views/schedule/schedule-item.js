@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import userData from 'PUB_DIR/sources/user-data';
 import crmAjax from '../../ajax/index';
 import Trace from 'LIB_DIR/trace';
+
 const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 
 class ScheduleItem extends React.Component {
@@ -85,6 +86,7 @@ class ScheduleItem extends React.Component {
             this.props.deleteSchedule(itemId);
         }
     }
+
     // 自动拨号
     handleClickCallOut(phone) {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.schedule-contact-phone-block'), '拨打电话');
@@ -96,13 +98,15 @@ class ScheduleItem extends React.Component {
                     from: this.props.callNumber,
                     to: phone
                 };
-                crmAjax.callOut(reqData).then((result) => {
-                    if (result.code === 0) {
-                        message.success('拨打成功！');
-                    }
-                }, (errMsg) => {
-                    message.error(errMsg || '拨打失败！');
-                });
+                if (window.callClient && window.callClient.isInited()) {
+                    callClient.callout(phone).then((result) => {
+                        if (result.code === 0) {
+                            message.success('拨打成功！');
+                        }
+                    }, (errMsg) => {
+                        message.error(errMsg || '拨打失败！');
+                    });
+                }
             } else {
                 message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
             }
@@ -115,7 +119,8 @@ class ScheduleItem extends React.Component {
         const scheduleShowObj = this.getScheduleShowObj(item);
         const phoneArray = this.getContactPhoneArray(item);
         return (
-            <div className={classNames(`schedule-item ${scheduleShowObj.timeClass}`, {'day-split-line': this.props.hasSplitLine})}>
+            <div
+                className={classNames(`schedule-item ${scheduleShowObj.timeClass}`, {'day-split-line': this.props.hasSplitLine})}>
                 <div className='schedule-item-title'>
                     <span className={`iconfont ${scheduleShowObj.iconClass}`}/>
                     <span className='schedule-time-stage'>{scheduleShowObj.startTime}</span>
@@ -151,7 +156,7 @@ class ScheduleItem extends React.Component {
                         {user_id === item.member_id ?
                             <Button className='schedule-status-btn' onClick={this.handleItemStatus.bind(this, item)}
                                 size='small'>
-                                {item.status === 'false' ? Intl.get('crm.schedule.set.compelete','标为已完成') : Intl.get('crm.schedule.set.unfinished','标为未完成')}
+                                {item.status === 'false' ? Intl.get('crm.schedule.set.compelete', '标为已完成') : Intl.get('crm.schedule.set.unfinished', '标为未完成')}
                             </Button> : null}
                         <span className='right-handle-buttons'>
                             {item.socketio_notice && item.alert_time ? (<Popover

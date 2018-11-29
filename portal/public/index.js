@@ -7,6 +7,8 @@ var appDom = $('#app')[0];
 var websiteConfig = require('../lib/utils/websiteConfig');
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 import {storageUtil} from 'ant-utils';
+import {callcenter as client} from 'callcenter-web-sdk';
+import CallNumberUtil from 'PUB_DIR/sources/utils/common-data-util';
 
 function hideLoading(errorTip) {
     if (PrivilegeGetReact) {
@@ -63,10 +65,20 @@ function getUserPrivilegeAndStart() {
         unmountPrivilegeGet();
         suppressWarnings();
         getWebsiteConfig();
-        storageUtil.setUserId(userData.getUserData().user_id);
+        const user_id = userData.getUserData().user_id;
+        storageUtil.setUserId(user_id);
         AppStarter.init({
             goIndex: false
         });
+        CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
+            if (callNumberInfo && callNumberInfo.callNumber) {
+                window.callClient = callcenter.client('huawei', user_id, callNumberInfo.callNumber);
+                callClient.init().then(() => {
+                    console.log('电话系统启动成功!');
+                });
+            }
+        });
+
         //启动socketio接收数据
         !Oplate.hideSomeItem && require('./sources/push').startSocketIo();
     }).fail(function(errorTip) {

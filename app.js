@@ -20,6 +20,7 @@ var coordinator = require('./portal/lib/middlewares/coordinator-client');
 var commonUtils = require('./portal/lib/utils/common-utils');
 var auth = require('./portal/lib/utils/auth');
 
+
 //让config模块使用conf/config.js里的配置，而不用去找config/default.js文件
 process.env.NODE_CONFIG = JSON.stringify(config);
 
@@ -29,7 +30,8 @@ require('log4js-config').init(function() {
 });
 
 var app = express();
-
+var restLogger = require('./portal/lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
 app.set('port', config.port);
 // view engine setup
 app.set('views', path.join(__dirname, 'portal/modules'));
@@ -105,7 +107,12 @@ var server = app.listen(app.get('port'), function() {
     // eslint-disable-next-line no-console
     console.log('Oplate Server Running At http://localhost:' + app.get('port'));
 });
-
+//config, authcheck, authRequest
+require('callcenter-web-sdk').server(app, {
+    authcheck: (req, res) => {
+        return !!req.session.user;
+    }
+}, restUtil.authRest);
 //初始化coordinator
 if (auth.getLang() !== 'es_VE') {
     coordinator(function() {
