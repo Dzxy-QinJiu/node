@@ -4,7 +4,6 @@
  * Created by wangliping on 2018/11/13.
  */
 require('../style/deal-stage-board.less');
-import {DropTarget} from 'react-dnd';
 import Spinner from 'CMP_DIR/spinner';
 import DetailCard from 'CMP_DIR/detail-card';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
@@ -24,7 +23,7 @@ class DealStageBoard extends React.Component {
 
     getInitState(props) {
         return {
-            stage: props.stage,//阶段名称
+            stage: props.stage,//此阶段的订单看板
             containerHeight: props.containerHeight,//看板的高度
             isLoadingDeal: false,//正在获取订单
             stageDealList: [],//当前阶段的订单列表
@@ -54,7 +53,7 @@ class DealStageBoard extends React.Component {
         if (_.get(this.state, 'lastDealId')) {
             url += `?id=${this.state.lastDealId}&cursor=true`;
         }
-        let stage = _.get(this.state, 'stage.value', '');
+        let stage = _.get(this.state, 'stage.name', '');
         if (!stage) return;
         this.setState({isLoadingDeal: true});
         $.ajax({
@@ -99,26 +98,6 @@ class DealStageBoard extends React.Component {
         this.getStageDealList();
     };
 
-    // 插入拖进来的订单,dropId:插入到哪个订单前面
-    insertDeal = (deal, dropId) => {
-        let stageDealList = this.state.stageDealList;
-        if (dropId) {
-            let insertIndex = _.findIndex(stageDealList, item => item.id === dropId);
-            stageDealList.splice(insertIndex, 0, deal);
-        } else {
-            stageDealList.push(deal);
-        }
-        this.setState({stageDealList});
-    };
-
-    removeDeal = (dealId) => {
-        if (dealId) {
-            let stageDealList = this.state.stageDealList;
-            stageDealList = _.filter(stageDealList, item => item.id !== dealId);
-            this.setState({stageDealList});
-        }
-    };
-
     renderDealCardList() {
         if (this.state.isLoadingDeal && !this.state.lastDealId) {
             return (<Spinner />);
@@ -132,7 +111,6 @@ class DealStageBoard extends React.Component {
                         {_.map(this.state.stageDealList, (deal, index) => {
                             return (
                                 <DealCard deal={deal} key={index}
-                                    removeDeal={this.removeDeal}
                                     showCustomerDetail={this.props.showCustomerDetail}
                                     showDetailPanel={this.props.showDetailPanel}/>);
                         })}
@@ -157,47 +135,19 @@ class DealStageBoard extends React.Component {
                 <span
                     className='deal-total-count'>{Intl.get('sales.home.total.count', '共{count}个', {count: this.state.total_size || '0'})}</span>
             </span>);
-        const {connectDropTarget} = this.props;
-        return connectDropTarget(
-            <div className='deal-stage-board-wrap'>
-                <DetailCard
-                    className='deal-stage-board-container'
-                    height={this.state.containerHeight - 2 * BOARD_CARD_MARGIN}
-                    title={title}
-                    content={this.renderDealCardList()}
-                />
-            </div>);
+        return (
+            <DetailCard
+                className='deal-stage-board-container'
+                height={this.state.containerHeight - 2 * BOARD_CARD_MARGIN}
+                title={title}
+                content={this.renderDealCardList()}
+            />);
     }
 }
-
 DealStageBoard.propTypes = {
     stage: PropTypes.object,
     containerHeight: PropTypes.number,
     showDetailPanel: PropTypes.func,
-    showCustomerDetail: PropTypes.func,
-    connectDropTarget: PropTypes.func
+    showCustomerDetail: PropTypes.func
 };
-const dropSpec = {
-    // monitor.getItem()可获取之前dragsource在beginDrag中return的Object
-    //component可直接调用组件内部方法
-    drop(props, monitor, component) {
-        console.log('Column Drop Fired');
-        // const id = monitor.getItem().id;
-        // if (!props.cards.some(card => card.id === id)) {
-        //     props.drop(id, column);
-        // }
-        //卡片被拖拽到哪个订单的位置
-        let dropId = '';
-        if (monitor.getDropResult()) {
-            dropId = monitor.getDropResult().id;
-        }
-        component.insertDeal(monitor.getItem(), dropId);
-    }
-};
-function collect(connect, monitor) {
-    return {
-        connectDropTarget: connect.dropTarget(),
-        isOver: monitor.isOver()
-    };
-}
-export default DropTarget('dealDragKey', dropSpec, collect)(DealStageBoard);
+export default DealStageBoard;

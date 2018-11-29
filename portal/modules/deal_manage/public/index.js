@@ -23,8 +23,7 @@ import classNames from 'classnames';
 import {formatNumHasDotToFixed} from 'PUB_DIR/sources/utils/common-method-util';
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
 import {num as antUtilsNum} from 'ant-utils';
-import DealStageBoard from './views/deal-stage-board';
-import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+import DealBoardList from './views/deal-board-list';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -409,14 +408,11 @@ class DealManage extends React.Component {
             return (<Spinner />);
         } else if (_.get(this.state, 'stageList[0]')) {
             return (
-                <div className="deal-board-list">
-                    {_.map(this.state.stageList, (stage, index) => {
-                        return (<DealStageBoard stage={stage} key={index}
-                            showDetailPanel={this.showDetailPanel}
-                            showCustomerDetail={this.showCustomerDetail}
-                            containerHeight={containerHeight}/>);
-                    })}
-                </div>);
+                <DealBoardList stageList={this.state.stageList}
+                    containerHeight={containerHeight}
+                    showCustomerDetail={this.showCustomerDetail}
+                    showDetailPanel={this.showDetailPanel()}
+                />);
         } else {
             let noDataTip = Intl.get('deal.no.data', '暂无订单');
             if (this.state.getStageErrorMsg) {
