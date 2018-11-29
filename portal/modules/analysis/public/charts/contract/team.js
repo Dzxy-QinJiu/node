@@ -1,23 +1,26 @@
 /**
- * 团队分布及完成率
+ * 团队分布
  */
 
 import { isSales } from '../../consts';
-import { processAmountData } from '../../utils';
 
 export function getContractTeamChart() {
     return {
-        title: '团队分布及完成率(假数据)',
-        url: '/rest/analysis/contract/contract/gross_profit/team',
+        title: '团队分布',
+        chartType: 'bar',
+        url: '/rest/analysis/contract/contract/:data_type/gross/profit/team',
         argCallback: (arg) => {
             const query = arg.query;
 
             if (query) {
                 delete query.app_id;
+                
+                if (query.team_ids) {
+                    query.team_id = query.team_ids;
+                    delete query.team_ids;
+                }
             }
         },
-        chartType: 'bar',
-        processData: processAmountData,
         noShowCondition: {
             callback: () => isSales
         },
