@@ -2556,6 +2556,7 @@ var en_US = {
     'common.turn.out.time': 'turn out time',//转出时间
     'common.data.request.error': 'Data request error',//数据请求出错
     'common.turn.in.customer': 'turn in customer',//转入客户
+    'common.qualified.customer': 'qualified customer',//合格客户
     'deal.stage': 'Deal stage',//阶段
     'common.report': 'report',//报告
 };
