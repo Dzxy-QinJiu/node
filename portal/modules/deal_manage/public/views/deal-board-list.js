@@ -63,10 +63,20 @@ class DealBoardList extends React.Component {
         if (!destination) return;
         //同列内做拖动时，不做排序的处理
         if (source.droppableId === destination.droppableId) return;
-        //拖动后交易阶段的修改
-        this.editDealStage(source, destination, draggableId);
+        //拖动的是关闭的订单时
+        if (source.droppableId === 'win' || source.droppableId === 'lose') {
+            message.warn(Intl.get('deal.drag.data.disabled', '关闭的订单不可以修改'));
+            return;
+        }
+        //关闭订单（赢单、丢单）
+        if (destination.droppableId === 'win' || destination.droppableId === 'lose') {
+            this.closeDeal(source, destination, draggableId);
+        } else {
+            //拖动后交易阶段的修改
+            this.editDealStage(source, destination, draggableId);
+        }
     }
-
+    //修改订单阶段
     editDealStage(source, destination, draggableId) {
         //拖动源列的数据对象
         let sourceStageObj = this.state.stageDealMap[source.droppableId];
@@ -93,6 +103,36 @@ class DealBoardList extends React.Component {
             message.error(errorMsg || Intl.get('common.edit.failed', '修改失败'));
         });
     }
+
+    //关闭订单（赢单、丢单）
+    closeDeal = (source, destination, draggableId) => {
+        //拖动源列的数据对象
+        let sourceStageObj = this.state.stageDealMap[source.droppableId];
+        // 拖动的交易数据
+        let dragDeal = _.find(sourceStageObj.list, deal => deal.id === draggableId);
+        let saveDeal = {
+            customer_id: dragDeal.customer_id,
+            id: dragDeal.id,
+            oppo_status: draggableId
+        };
+        if (saveDeal.customer_id && saveDeal.id) {
+            dealBoardAction.setIsSavingDragData(true);
+            dealAjax.editDeal(saveDeal).then(result => {
+                dealBoardAction.setIsSavingDragData(false);
+                if (result && result.code === 0) {
+                    //不同列拖动时的处理(从源列中移除，从目标列中加入)
+                    dealBoardAction.dragDealEnd({source, destination, draggableId});
+                    message.success(Intl.get('user.edit.success', '修改成功'));
+                } else {
+                    message.error(Intl.get('common.edit.failed', '修改失败'));
+                }
+
+            }, (errorMsg) => {
+                dealBoardAction.setIsSavingDragData(false);
+                message.error(errorMsg || Intl.get('common.edit.failed', '修改失败'));
+            });
+        }
+    };
 
     render() {
         if (this.state.isLoadingStage) {

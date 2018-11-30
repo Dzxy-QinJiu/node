@@ -2582,5 +2582,6 @@ var zh_CN = {
     'deal.view.board': '看板视图',
     'deal.view.list': '表格视图',
     'deal.drag.data.saving': '正在保存拖动的数据...',
+    'deal.drag.data.disabled': '关闭的订单不可以修改',
 };
 export default zh_CN;

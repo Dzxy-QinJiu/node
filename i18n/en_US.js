@@ -2568,5 +2568,6 @@ var en_US = {
     'deal.detail.no.products': 'No products',//暂无产品
     'deal.no.filter.deal': 'There is no deal match condition',//没有符合条件的订单
     'deal.drag.data.saving': 'Is saving dragged data...',//正在保存拖动的数据...
+    'deal.drag.data.disabled': 'Closed orders cannot be modified',//关闭的订单不可以修改
 };
 export default en_US;

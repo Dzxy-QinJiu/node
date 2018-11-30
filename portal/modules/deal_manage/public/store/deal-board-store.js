@@ -86,12 +86,16 @@ dealBoardStore.prototype.dragDealEnd = function(dragResult) {
     let sourceStageObj = this.stageDealMap[source.droppableId];
     //拖动的交易数据
     let dragDeal = _.find(sourceStageObj.list, deal => deal.id === draggableId);
-
+    //赢单、丢单的处理
+    if (destination.droppableId === 'win' || destination.droppableId === 'lose') {
+        dragDeal.oppo_status = draggableId;
+        delete dragDeal.sale_stages;
+        delete dragDeal.sale_stages_num;
+    }
     //交易插入的位置
     let dropIndex = destination.index;
     //插入列的数据对象
     let dropStageObj = this.stageDealMap[destination.droppableId];
-    let dropStageDealList = _.get(dropStageObj, 'list', []);
     //插入拖动的交易
     if (_.get(dropStageObj, 'list[0]')) {
         dropStageObj.list.splice(dropIndex, 0, dragDeal);

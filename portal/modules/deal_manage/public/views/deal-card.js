@@ -69,30 +69,23 @@ class DealCard extends React.Component {
     render() {
         let deal = this.props.deal;
         //赢单或丢单后，状态不可改，不可拖动
-        if (deal.oppo_status === 'win' || deal.oppo_status === 'lose') {
-            return (
-                <div className="single-deal-card">
-                    {this.renderDealContent()}
-                </div>);
-        } else {
-            return (
-                <Draggable
-                    draggableId={deal.id}
-                    index={this.props.index}>
-                    {(provided, snapshot) => (
-                        <div className="single-deal-card draggable-style"
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            style={getItemStyle(
-                                snapshot.isDragging,
-                                provided.draggableProps.style
-                            )}>
-                            {this.renderDealContent()}
-                        </div>
-                    )}
-                </Draggable>);
-        }
+        return (
+            <Draggable
+                draggableId={deal.id}
+                index={this.props.index}>
+                {(provided, snapshot) => (
+                    <div className="single-deal-card draggable-style"
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        style={getItemStyle(
+                            snapshot.isDragging,
+                            provided.draggableProps.style
+                        )}>
+                        {this.renderDealContent()}
+                    </div>
+                )}
+            </Draggable>);
     }
 }
 
