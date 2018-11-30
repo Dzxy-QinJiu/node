@@ -7,7 +7,8 @@ var SalesOpportunityApplyDetailStore = require('../store/sales-opportunity-apply
 var SalesOpportunityApplyDetailAction = require('../action/sales-opportunity-apply-detail-action');
 import salesOpportunityApplyAjax from '../ajax/sales-opportunity-apply-ajax';
 import Trace from 'LIB_DIR/trace';
-import {Alert, Icon, Input, Row, Col, Button,message, Select} from 'antd';
+import {Alert, Icon, Input, Row, Col, Button,message, Select, Steps} from 'antd';
+const Step = Steps.Step;
 const Option = Select.Option;
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -20,9 +21,10 @@ import ApplyDetailCustomer from 'CMP_DIR/apply-detail-customer';
 import ApplyDetailStatus from 'CMP_DIR/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
+import ApplyDetailBlock from 'CMP_DIR/apply-detail-block';
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import {APPLY_LIST_LAYOUT_CONSTANTS, APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText, getApplyResultDscr} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 const ASSIGN_TYPE = {
@@ -97,11 +99,10 @@ class ApplyViewDetail extends React.Component {
     getBusinessApplyDetailData(detailItem) {
         setTimeout(() => {
             SalesOpportunityApplyDetailAction.setInitialData(detailItem);
-
             //如果申请的状态是已通过或者是已驳回的时候，就不用发请求获取回复列表，直接用详情中的回复列表
             //其他状态需要发请求请求回复列表
             if (detailItem.status === 'pass' || detailItem.status === 'reject') {
-                SalesOpportunityApplyDetailAction.setApplyComment(detailItem.approve_details);
+                SalesOpportunityApplyDetailAction.getSalesOpportunityApplyCommentList({id: detailItem.id});
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyDetailById({id: detailItem.id},detailItem.status);
             } else if (detailItem.id) {
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyDetailById({id: detailItem.id});
@@ -544,6 +545,7 @@ class ApplyViewDetail extends React.Component {
                 renderAssigenedContext={renderAssigenedContext}
             />);
     }
+
     renderCancelApplyApproveBtn = () => {
         return (
             <div className="pull-right">
@@ -575,6 +577,75 @@ class ApplyViewDetail extends React.Component {
         }
     };
 
+    renderApplyApproveSteps =() => {
+        var stepStatus = '';
+        //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据
+        var applicantList = _.get(this.state, 'detailInfoObj.info');
+        var replyList = [];
+        if ((applicantList.status === 'pass' || applicantList.status === 'reject' || applicantList.status === 'cancel') && _.isArray(_.get(this.state, 'detailInfoObj.info.approve_details'))){
+            replyList = _.get(this.state, 'detailInfoObj.info.approve_details');
+        }else{
+            replyList = _.get(this,'state.replyListInfo.list');
+            replyList = _.filter(replyList,(item) => {return !item.comment;});
+            replyList = _.sortBy( _.cloneDeep(replyList), [(item) => { return item.comment_time; }]);
+        }
+        var applicateName = _.get(applicantList, 'applicant.nick_name');
+        var applicateTime = moment(_.get(applicantList, 'create_time')).format(oplateConsts.DATE_TIME_FORMAT);
+        var userDetail = userData.getUserData();
+        var realmId = _.get(userDetail, 'auth.realm_id');
+        var isCiviwRealm = realmId === REALM_REMARK.CIVIW;
+        var descriptionArr = [];
+        if(isCiviwRealm){
+            descriptionArr = [Intl.get('user.apply.submit.list', '提交申请'),Intl.get('user.apply.detail.pass', '通过申请'),Intl.get('user.apply.distribute.to.sales','已分配给销售')];
+        }else{
+            descriptionArr = [Intl.get('user.apply.submit.list', '提交申请'),Intl.get('user.apply.detail.pass', '通过申请'),Intl.get('user.apply.distribute.to','分配给'),Intl.get('user.apply.distribute.to.sales','已分配给销售')];
+        }
+        //如果是识微域，
+        var stepArr = [{
+            title: descriptionArr[0],
+            description: applicateName + ' ' + applicateTime
+        }];
+        var currentLength = '0';
+        currentLength = replyList.length;
+        if (currentLength){
+            _.forEach(replyList,(replyItem,index) => {
+                var descrpt = descriptionArr[index + 1];
+                if (index === 1 && !isCiviwRealm){
+                    //todo 下一个节点的执行人
+                    descrpt += Intl.get('sales.commission.role.manager', '销售总经理');
+                }
+                descrpt = getApplyStatusTimeLineDesc(replyItem.status);
+                if (replyItem.status === 'reject'){
+                    stepStatus = 'error';
+                    currentLength--;
+                }
+                stepArr.push({
+                    title: descrpt,
+                    description: (replyItem.nick_name || userData.getUserData().nick_name) + ' ' + moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
+                });
+            });
+        }
+
+        //如果下一个节点是直接主管审核
+        if (applicantList.status === 'ongoing'){
+            stepArr.push({
+                title: Intl.get('user.apply.false','待审批'),
+                description: ''
+            });
+        }
+
+
+        return (
+            <Steps current={currentLength + 1} status={stepStatus} >
+                {_.map(stepArr,(stepItem) => {
+                    return (
+                        <Step title={stepItem.title} description={stepItem.description}/>
+                    );
+                })}
+            </Steps>
+        );
+    };
+
     //渲染申请单详情
     renderApplyDetailInfo() {
         var detailInfo = this.state.detailInfoObj.info;
@@ -597,6 +668,11 @@ class ApplyViewDetail extends React.Component {
                         {/*渲染客户详情*/}
                         {_.isArray(_.get(detailInfo, 'detail.customers')) ? this.renderBusinessCustomerDetail(detailInfo) : null}
                         {this.renderApplyStatus(detailInfo)}
+                        {/*流程步骤图*/}
+                        <ApplyDetailBlock
+                            iconclass='icon-apply-message-tip'
+                            renderApplyInfoContent={this.renderApplyApproveSteps}
+                        />
                         <ApplyDetailRemarks
                             detailInfo={detailInfo}
                             replyListInfo={this.state.replyListInfo}

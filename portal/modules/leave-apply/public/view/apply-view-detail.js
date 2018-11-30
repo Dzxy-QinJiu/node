@@ -6,12 +6,14 @@
 var LeaveApplyDetailStore = require('../store/leave-apply-detail-store');
 var LeaveApplyDetailAction = require('../action/leave-apply-detail-action');
 import Trace from 'LIB_DIR/trace';
-import {Alert, Icon, Input, Row, Col, Button} from 'antd';
+import {Alert, Icon, Input, Row, Col, Button, Steps} from 'antd';
+const Step = Steps.Step;
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 require('../css/leave-apply-detail.less');
+import ApplyDetailBlock from 'CMP_DIR/apply-detail-block';
 import ApplyDetailRemarks from 'CMP_DIR/apply-detail-remarks';
 import ApplyDetailInfo from 'CMP_DIR/apply-detail-info';
 import ApplyDetailCustomer from 'CMP_DIR/apply-detail-customer';
@@ -19,8 +21,9 @@ import ApplyDetailStatus from 'CMP_DIR/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText, getApplyResultDscr} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc} from 'PUB_DIR/sources/utils/common-method-util';
 import {LEAVE_TYPE} from 'PUB_DIR/sources/utils/consts';
+let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 class ApplyViewDetail extends React.Component {
@@ -125,7 +128,7 @@ class ApplyViewDetail extends React.Component {
             //如果申请的状态是已通过或者是已驳回的时候，就不用发请求获取回复列表，直接用详情中的回复列表
             //其他状态需要发请求请求回复列表
             if (detailItem.status === 'pass' || detailItem.status === 'reject') {
-                LeaveApplyDetailAction.setApplyComment(detailItem.approve_details);
+                LeaveApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
                 LeaveApplyDetailAction.getLeaveApplyDetailById({id: detailItem.id}, detailItem.status);
             } else if (detailItem.id) {
                 LeaveApplyDetailAction.getLeaveApplyDetailById({id: detailItem.id});
@@ -368,18 +371,69 @@ class ApplyViewDetail extends React.Component {
                 renderAssigenedContext={renderAssigenedContext}
             />);
     }
-    renderCancelApplyApproveBtn = () => {
+    renderApplyApproveSteps =() => {
+        var stepStatus = '';
+        //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据
+        var applicantList = _.get(this.state, 'detailInfoObj.info');
+        var replyList = [];
+        if ((applicantList.status === 'pass' || applicantList.status === 'reject' || applicantList.status === 'cancel') && _.isArray(_.get(this.state, 'detailInfoObj.info.approve_details'))){
+            replyList = _.get(this.state, 'detailInfoObj.info.approve_details');
+        }else{
+            replyList = _.get(this,'state.replyListInfo.list');
+            replyList = _.filter(replyList,(item) => {return !item.comment;});
+            replyList = _.sortBy( _.cloneDeep(replyList), [(item) => { return item.comment_time; }]);
+        }
+        var applicateName = _.get(applicantList, 'applicant.nick_name') || '';
+        var applicateTime = moment(_.get(applicantList, 'create_time')).format(oplateConsts.DATE_TIME_FORMAT);
+        var stepArr = [{
+            title: Intl.get('user.apply.submit.list', '提交申请'),
+            description: applicateName + ' ' + applicateTime
+        }];
+        var currentLength = 0;
+        //过滤掉手动添加的回复
+        currentLength = replyList.length;
+        if (currentLength) {
+            _.forEach(replyList, (replyItem, index) => {
+                var descrpt = getApplyStatusTimeLineDesc(replyItem.status);
+                if (replyItem.status === 'reject'){
+                    stepStatus = 'error';
+                    currentLength--;
+                }
+                stepArr.push({
+                    title: descrpt,
+                    description: (replyItem.nick_name || userData.getUserData().nick_name || '') + ' ' + moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
+                });
+            });
+        }
+        //如果下一个节点是直接主管审核
+        if (applicantList.status === 'ongoing') {
+            stepArr.push({
+                title: Intl.get('user.apply.false', '待审批'),
+                description: ''
+            });
+        }
         return (
-            <div className="pull-right">
-                {this.state.backApplyResult.loading ?
-                    <Icon type="loading"/> :
-                    <Button type="primary" className="btn-primary-sure" size="small"
-                        onClick={this.saleConfirmBackoutApply}>
-                        {Intl.get('user.apply.detail.backout', '撤销申请')}
-                    </Button>}
-            </div>
+            <Steps current={currentLength + 1} status={stepStatus}>
+                {_.map(stepArr, (stepItem) => {
+                    return (
+                        <Step title={stepItem.title} description={stepItem.description}/>
+                    );
+                })}
+            </Steps>
         );
     };
+ renderCancelApplyApproveBtn = () => {
+     return (
+         <div className="pull-right">
+             {this.state.backApplyResult.loading ?
+                 <Icon type="loading"/> :
+                 <Button type="primary" className="btn-primary-sure" size="small"
+                     onClick={this.saleConfirmBackoutApply}>
+                     {Intl.get('user.apply.detail.backout', '撤销申请')}
+                 </Button>}
+         </div>
+     );
+ };
     renderCancelApplyApprove = () => {
         if (this.state.showBackoutConfirm){
             return (
@@ -398,7 +452,6 @@ class ApplyViewDetail extends React.Component {
             return null;
         }
     };
-
     //渲染申请单详情
     renderApplyDetailInfo() {
         var detailInfo = this.state.detailInfoObj.info;
@@ -421,6 +474,11 @@ class ApplyViewDetail extends React.Component {
                         {/*渲染客户详情*/}
                         {_.isArray(_.get(detailInfo, 'detail.customers')) ? this.renderBusinessCustomerDetail(detailInfo) : null}
                         {this.renderApplyStatus(detailInfo)}
+                        {/*流程步骤图*/}
+                        <ApplyDetailBlock
+                            iconclass='icon-apply-message-tip'
+                            renderApplyInfoContent={this.renderApplyApproveSteps}
+                        />
                         <ApplyDetailRemarks
                             detailInfo={detailInfo}
                             replyListInfo={this.state.replyListInfo}

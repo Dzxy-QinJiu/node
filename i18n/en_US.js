@@ -2511,7 +2511,7 @@ var en_US = {
     'leave.apply.fill.leave.reason': 'Please fill in the business trip reason',//请填写出差事由
     'leave.apply.no.filter.leave.list': 'There are no business travel applications that meet the search criteria.',//暂无符合查询条件的出差申请
     'leave.apply.detail.wait': 'Wait',//待
-    'leave.apply.sales.oppotunity': 'Sales opportunity',//销售机会
+    'leave.apply.sales.oppotunity': 'Opportunity apply',//机会申请
     'leave.apply.leave.application': 'Leave apply',//请假申请
     'leave.apply.my.worklist.apply': 'Waiting for me to approve',//待我审批
     'leave.apply.sales.opportunity.application': 'Sales opportunity application',//销售机会申请
@@ -2560,6 +2560,9 @@ var en_US = {
     'deal.stage': 'Deal stage',//阶段
     'common.report': 'report',//报告
     'common.valid.time': 'valid time',//有效时间
-    'user.apply.be.canceled': 'It is revoked'//被撤销
+    'user.apply.be.canceled': 'It is revoked',//被撤销
+    'user.apply.submit.list': 'Submit apply',//提交申请
+    'user.apply.distribute.to': 'distribute to',//分配给
+    'user.apply.distribute.to.sales': 'has been distributed to sales'//已分配给销售
 };
 export default en_US;

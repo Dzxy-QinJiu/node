@@ -427,3 +427,14 @@ exports.getApplyStatusDscr = function(applyStatus) {
     }
     return applyType;
 };
+exports.getApplyStatusTimeLineDesc = function(replyItemStatus) {
+    var description = '';
+    if (replyItemStatus === 'reject'){
+        description = Intl.get('user.apply.detail.reject', '驳回申请');
+    }else if(replyItemStatus === 'cancel'){
+        description = Intl.get('user.apply.detail.backout', '撤销申请');
+    }else if (replyItemStatus === 'pass'){
+        description = Intl.get('user.apply.detail.pass', '通过申请');
+    }
+    return description;
+};

@@ -93,7 +93,7 @@ LeaveApplyDetailStore.prototype.setDetailInfoObj = function(detailObj) {
 LeaveApplyDetailStore.prototype.setApplyComment = function(list) {
     this.replyListInfo = {
         result: '',
-        list: _.isArray(list) ? list : null,
+        list: _.isArray(list) ? _.concat(this.replyListInfo.list,list) : null,
         errorMsg: ''
     };
 };

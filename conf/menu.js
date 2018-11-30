@@ -401,7 +401,7 @@ class LeftMenuClass {
                     showPrivileges: ['BUSINESS_TRIP_MANAGE']
                 }, {
                     id: 'SALES_BUSSINESS_APPLY_MANAGEMENT',
-                    name: backendIntl.get('leave.apply.sales.oppotunity', '销售机会'),
+                    name: backendIntl.get('leave.apply.sales.oppotunity', '机会申请'),
                     routePath: 'application/sales_opportunity',
                     privileges: [
                         'MEMBER_BUSINESSOPPO_MANAGE'
@@ -419,7 +419,6 @@ class LeftMenuClass {
                     showPrivileges: ['MEMBER_LEAVE_MANAGE']
                 }]
             }
-
         ];
 
         var user_info_idx = -1;
