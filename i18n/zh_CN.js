@@ -2524,7 +2524,7 @@ var zh_CN = {
     'leave.apply.fill.leave.reason': '请填写出差事由',
     'leave.apply.no.filter.leave.list': '暂无符合查询条件的出差申请',
     'leave.apply.detail.wait': '待',
-    'leave.apply.sales.oppotunity': '销售机会',
+    'leave.apply.sales.oppotunity': '机会申请',
     'leave.apply.leave.application': '请假申请',
     'leave.apply.my.worklist.apply': '待我审批',
     'leave.apply.sales.opportunity.application': '销售机会申请',

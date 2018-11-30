@@ -513,6 +513,7 @@ class ApplyViewDetail extends React.Component {
             />);
     }
     renderApplyApproveSteps =() => {
+        var stepStatus = '';
         //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据
         var applicantList = _.get(this.state, 'detailInfoObj.info');
         var replyList = [];
@@ -549,6 +550,10 @@ class ApplyViewDetail extends React.Component {
                     descrpt += Intl.get('sales.commission.role.manager', '销售总经理');
                 }
                 descrpt = getApplyStatusTimeLineDesc(replyItem.status);
+                if (replyItem.status === 'reject'){
+                    stepStatus = 'error';
+                    currentLength--;
+                }
                 stepArr.push({
                     title: descrpt,
                     description: (replyItem.nick_name || userData.getUserData().nick_name) + ' ' + moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
@@ -566,7 +571,7 @@ class ApplyViewDetail extends React.Component {
 
 
         return (
-            <Steps current={currentLength + 1}>
+            <Steps current={currentLength + 1} status={stepStatus} >
                 {_.map(stepArr,(stepItem) => {
                     return (
                         <Step title={stepItem.title} description={stepItem.description}/>
