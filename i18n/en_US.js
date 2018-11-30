@@ -282,6 +282,11 @@ var en_US = {
     'login.load.ketao.tip': 'Download ketao APP Android',//下载客套APP安卓端
     'login.scan.ketao.qrcode.tip': 'Scan QR code to download ketao APP Android',//扫码下载客套APP安卓端
     'login.qrcode.loading': 'loading QR code...',//正在获取二维码...
+    'login.wechat.login': 'WeChat login',//微信登录
+    'login.wechat.login.error': 'WeChat login failed',//微信登录失败
+    'login.wechat.bind.error': 'WeChat binding failed',//微信绑定失败
+    'login.wechat.bind.check.error': 'Check whether or not to bind WeChat is failed',//检查是否绑定微信出错了
+
     'register.set.company.id': 'Set up company ID',//设置公司标识
     'register.valid.phone': 'Phone number verification',//验证手机
     'register.fill.account': 'Set up account',//账号设置
@@ -304,6 +309,9 @@ var en_US = {
     'register.phone.code': 'SMS verification code',//短信验证码
     'register.company.nickname': 'Company nickname',//公司名称
     'register.code.validate.expire': 'SMS verification code has expired',//短信验证码已过期
+    'register.wechat.bind.user': 'Bind existing accounts',//绑定已有账号
+    'register.wechat.register.bind': 'Registration of new accounts',//注册新账号
+    'login.wechat.register.login.error': 'WeChat register login failed',//微信号注册登录失败
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
@@ -1991,6 +1999,8 @@ var en_US = {
     'errorcode.147': 'The qr code has expired',//二维码已失效
     'errorcode.148': 'The call duration statistics view fails to be obtained',//电话时长统计视图获取失败
     'errorcode.149': 'The role has been allocated to sales',//该角色已经分配给销售
+    'errorcoe.different.realm': 'Different realms',//安全域不一致
+    'errorcode.invalid.wechat': 'Invalid Wechat Account',//无效的微信账号
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
     'user.user.info': 'information',//开通信息

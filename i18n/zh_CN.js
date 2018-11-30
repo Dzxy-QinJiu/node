@@ -287,6 +287,12 @@ var zh_CN = {
     'login.load.ketao.tip': '下载客套APP安卓端',
     'login.scan.ketao.qrcode.tip': '扫码下载客套APP安卓端',
     'login.qrcode.loading': '正在获取二维码...',
+    'login.wechat.login': '微信登录',
+    'login.wechat.login.error': '微信登录失败',
+    'login.wechat.bind.error': '微信绑定失败',
+    'login.wechat.bind.check.error': '检查是否绑定微信出错了',
+    'login.wechat.register.login.error': '微信号注册登录失败',
+
     'register.set.company.id': '设置公司标识',
     'register.valid.phone': '验证手机',
     'register.fill.account': '账号设置',
@@ -309,6 +315,10 @@ var zh_CN = {
     'register.phone.code': '短信验证码',
     'register.company.nickname': '公司名称',
     'register.code.validate.expire': '短信验证码已过期',
+    'register.wechat.bind.user': '绑定已有账号',
+    'register.wechat.register.bind': '注册新账号',
+    'register.wechat.bind.btn': '立即绑定',
+    'register.wechat.register.btn': '注册并登录',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
@@ -2013,6 +2023,8 @@ var zh_CN = {
     'errorcode.147': '二维码已失效',
     'errorcode.148': '电话时长统计视图获取失败',
     'errorcode.149': '该角色已经分配给销售',
+    'errorcoe.different.realm': '安全域不一致',
+    'errorcode.invalid.wechat': '无效的微信账号',
 
     //遗漏部分
     'user.input.phone': '请输入手机号',
