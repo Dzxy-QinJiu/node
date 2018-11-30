@@ -6,6 +6,7 @@
 import TopNav from 'CMP_DIR/top-nav';
 var SalesOpportunityApplyAction = require('./action/sales-opportunity-apply-action');
 var SalesOpportunityApplyStore = require('./store/sales-opportunity-apply-store');
+var SalesOpportunityApplyDetailAction = require('./action/sales-opportunity-apply-detail-action');
 import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-dropdown-and-add-btn';
 import AddSalesOpportunityApplyPanel from './view/add-sales-opportunity-apply';
 import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
@@ -64,11 +65,15 @@ class SalesOpportunityApplyManagement extends React.Component {
 
     updateSelectedItem = (message) => {
         if(message && message.status === 'success'){
-            //通过或者驳回申请后改变申请的状态
-            if (message.agree){
+            //通过或者驳回申请后改变申请的状态  
+            if (message.agree) {
                 message.approve_details = [{user_name: userData.getUserData().user_name, status: message.agree}];
                 message.update_time = moment().valueOf();
                 SalesOpportunityApplyAction.changeApplyAgreeStatus(message);
+            }else if (message.cancel){
+                //撤销的申请成功后改变状态
+                SalesOpportunityApplyAction.updateAllApplyItemStatus({id: message.id, status: 'cancel'});
+                SalesOpportunityApplyDetailAction.hideCancelBtns();
             }
         }
     };
@@ -147,10 +152,8 @@ class SalesOpportunityApplyManagement extends React.Component {
                 return Intl.get('user.apply.pass', '已通过');
             case 'reject':
                 return Intl.get('user.apply.reject', '已驳回');
-            // case 'true':
-            //     return Intl.get('user.apply.applied', '已审批');
-            // case 'cancel':
-            //     return Intl.get('user.apply.backout', '已撤销');
+            case 'cancel':
+                return Intl.get('user.apply.backout', '已撤销');
         }
     };
     menuClick = (obj) => {

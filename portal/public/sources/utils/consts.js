@@ -321,6 +321,8 @@ export const selectMenuList = [
     }
     , {
         key: 'reject', value: Intl.get('user.apply.reject', '已驳回'),
+    },{
+        key: 'cancel', value: Intl.get('user.apply.backout', '已撤销'),
     }];
 //申请列表滚动条参数
 export const APPLY_LIST_LAYOUT_CONSTANTS = {

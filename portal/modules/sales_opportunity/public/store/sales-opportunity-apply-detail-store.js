@@ -55,6 +55,10 @@ SalesOpportunityApplyDetailStore.prototype.setInitState = function() {
         //服务端错误信息
         errorMsg: ''
     };
+    this.backApplyResult = {
+        loading: false,
+        errorMsg: ''
+    };
 };
 SalesOpportunityApplyDetailStore.prototype.setDetailInfoObj = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
@@ -118,11 +122,25 @@ SalesOpportunityApplyDetailStore.prototype.getSalesOpportunityApplyDetailById = 
             this.selectedDetailItem.status = obj.status;
         }
         this.detailInfoObj.info.showApproveBtn = this.selectedDetailItem.showApproveBtn;
+        this.detailInfoObj.info.showCancelBtn = this.selectedDetailItem.showCancelBtn;
         //列表中那一申请的状态以这个为准，因为申请完就不一样了
         setTimeout(() => {
             SalesOpportunityApplyAction.updateAllApplyItemStatus(this.detailInfoObj.info);
         });
         this.detailInfoObj.errorMsg = '';
+    }
+};
+
+SalesOpportunityApplyDetailStore.prototype.cancelApplyApprove = function(resultObj) {
+    if (resultObj.loading){
+        this.backApplyResult.loading = true;
+        this.backApplyResult.errorMsg = '';
+    }else if (resultObj.error){
+        this.backApplyResult.loading = false;
+        this.backApplyResult.errorMsg = resultObj.errorMsg;
+    }else{
+        this.backApplyResult.loading = false;
+        this.backApplyResult.errorMsg = '';
     }
 };
 
@@ -217,6 +235,10 @@ SalesOpportunityApplyDetailStore.prototype.cancelSendApproval = function() {
 };
 SalesOpportunityApplyDetailStore.prototype.hideApprovalBtns = function() {
     this.selectedDetailItem.showApproveBtn = false;
+};
+SalesOpportunityApplyDetailStore.prototype.hideCancelBtns = function() {
+    this.selectedDetailItem.showCancelBtn = false;
+    this.detailInfoObj.info.showCancelBtn = false;
 };
 SalesOpportunityApplyDetailStore.prototype.setApplyCandate = function(selectUserId) {
     this.detailInfoObj.info.assigned_candidate_users = selectUserId;

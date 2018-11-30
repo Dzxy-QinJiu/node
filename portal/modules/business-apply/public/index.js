@@ -6,6 +6,7 @@
 import Trace from 'LIB_DIR/trace';
 var BusinessApplyStore = require('./store/business-apply-store');
 var BusinessApplyAction = require('./action/business-apply-action');
+var BusinessDetailApplyAction = require('./action/apply-view-detail-action');
 import TopNav from 'CMP_DIR/top-nav';
 require('./css/index.less');
 import {Alert} from 'antd';
@@ -58,6 +59,10 @@ class BusinessApplyManagement extends React.Component {
                 message.approve_details = [{user_name: userData.getUserData().user_name, status: message.agree}];
                 message.update_time = moment().valueOf();
                 BusinessApplyAction.changeApplyAgreeStatus(message);
+            }else if (message.cancel){
+                //撤销的申请成功后改变状态
+                BusinessApplyAction.updateAllApplyItemStatus({id: message.id, status: 'cancel'});
+                BusinessDetailApplyAction.hideCancelBtns();
             }
         }
     };

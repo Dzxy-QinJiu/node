@@ -6,6 +6,7 @@
 import TopNav from 'CMP_DIR/top-nav';
 var LeaveApplyAction = require('./action/leave-apply-action');
 var LeaveApplyStore = require('./store/leave-apply-store');
+var LeaveApplyDetailAction = require('./action/leave-apply-detail-action');
 import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-dropdown-and-add-btn';
 import AddLeaveApplyPanel from './view/add-leave-apply';
 import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
@@ -21,6 +22,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import ApplyViewDetail from './view/apply-view-detail';
 var LeaveApplyUtils = require('./utils/leave-apply-utils');
 let userData = require('../../../public/sources/user-data');
+
 class LeaveApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加请假申请面板
@@ -59,6 +61,10 @@ class LeaveApplyManagement extends React.Component {
                 message.approve_details = [{user_name: userData.getUserData().user_name, status: message.agree}];
                 message.update_time = moment().valueOf();
                 LeaveApplyAction.changeApplyAgreeStatus(message);
+            }else if (message.cancel){
+                //撤销的申请成功后改变状态
+                LeaveApplyAction.updateAllApplyItemStatus({id: message.id, status: 'cancel'});
+                LeaveApplyDetailAction.hideCancelBtns();
             }
         }
     };
@@ -137,10 +143,8 @@ class LeaveApplyManagement extends React.Component {
                 return Intl.get('user.apply.pass', '已通过');
             case 'reject':
                 return Intl.get('user.apply.reject', '已驳回');
-            // case 'true':
-            //     return Intl.get('user.apply.applied', '已审批');
-            // case 'cancel':
-            //     return Intl.get('user.apply.backout', '已撤销');
+            case 'cancel':
+                return Intl.get('user.apply.backout', '已撤销');
         }
     };
     menuClick = (obj) => {

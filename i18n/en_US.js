@@ -2559,5 +2559,6 @@ var en_US = {
     'common.qualified.customer': 'qualified customer',//合格客户
     'deal.stage': 'Deal stage',//阶段
     'common.report': 'report',//报告
+    'user.apply.be.canceled': 'It is revoked'//被撤销
 };
 export default en_US;

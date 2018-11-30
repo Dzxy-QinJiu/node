@@ -146,3 +146,26 @@ exports.getSalesManList = function() {
         });
     return Deferred.promise();
 };
+//撤销某个申请审批
+exports.cancelApplyApprove = function(obj) {
+    const ERROR_MSG = Intl.get('user.apply.detail.backout.error', '撤销申请失败');
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/cancel/apply/approve',
+        type: 'post',
+        dataType: 'json',
+        data: obj,
+        success: function(result) {
+            //操作成功返回true
+            if(result === true) {
+                Deferred.resolve(result);
+            } else {
+                Deferred.reject(ERROR_MSG);
+            }
+        },
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON || ERROR_MSG);
+        }
+    });
+    return Deferred.promise();
+};

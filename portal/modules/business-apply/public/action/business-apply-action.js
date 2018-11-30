@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2018/9/10.
  */
 var BusinessApplyAjax = require('../ajax/business-apply-ajax');
+let userData = require('PUB_DIR/sources/user-data');
 function BusinessApplyActions() {
     this.generateActions(
         'setInitState',
@@ -37,6 +38,12 @@ function BusinessApplyActions() {
                     });
                     if (targetObj){
                         targetObj.showApproveBtn = true;
+                    }
+                });
+                //给 自己申请的并且是未通过的审批加上可以撤销的标识
+                _.forEach(data.list,(item) => {
+                    if (item.status === 'ongoing' && _.get(item,'applicant.user_id') === userData.getUserData().user_id){
+                        item.showCancelBtn = true;
                     }
                 });
                 this.dispatch({error: false, loading: false, data: data});},(errorMsg) => {

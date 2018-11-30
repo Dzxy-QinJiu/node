@@ -5,7 +5,7 @@
  */
 var LeaveApplyAjax = require('../ajax/leave-apply-ajax');
 var LeaveApplyUtils = require('../utils/leave-apply-utils');
-import UserData from 'PUB_DIR/sources/user-data';
+import {message} from 'antd';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
@@ -21,6 +21,7 @@ function ApplyViewDetailActions() {
         'showReplyCommentEmptyError',
         'cancelSendApproval',
         'hideApprovalBtns',//审批完后不在显示审批按钮
+        'hideCancelBtns',//审批完后不再显示撤销按钮
         'setDetailInfoObj'
     );
 
@@ -82,6 +83,29 @@ function ApplyViewDetailActions() {
             //更新选中的申请单类型
             LeaveApplyUtils.emitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+        });
+    };
+    // 撤销申请
+    this.cancelApplyApprove = function(obj,callback) {
+        var errTip = Intl.get('user.apply.detail.backout.error', '撤销申请失败');
+        this.dispatch({loading: true, error: false});
+        LeaveApplyAjax.cancelApplyApprove(obj).then((data) => {
+            _.isFunction(callback) && callback();
+            if (data) {
+                this.dispatch({loading: false, error: false});
+                message.success(Intl.get('user.apply.detail.backout.success', '撤销成功'));
+                LeaveApplyUtils.emitter.emit('updateSelectedItem', {id: obj.id, cancel: true, status: 'success'});
+            }else {
+                this.dispatch({loading: false, error: true, errorMsg: errTip});
+                LeaveApplyUtils.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
+                message.error(errTip);
+            }
+        }, (errorMsg) => {
+            _.isFunction(callback) && callback();
+            var errMsg = errorMsg || errTip;
+            this.dispatch({loading: false, error: true, errorMsg: errMsg});
+            LeaveApplyUtils.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
+            message.error(errMsg);
         });
     };
 }
