@@ -2570,6 +2570,7 @@ var zh_CN = {
     'common.data.request.error': '数据请求出错',
     'common.turn.in.customer': '转入客户',
     'deal.stage': '阶段',
-    'common.report': '报告'
+    'common.report': '报告',
+    'common.valid.time': '有效时间',
 };
 export default zh_CN;
