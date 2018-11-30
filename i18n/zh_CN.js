@@ -2572,6 +2572,7 @@ var zh_CN = {
     'common.qualified.customer': '合格客户',
     'deal.stage': '阶段',
     'common.report': '报告',
+    'common.valid.time': '有效时间',
     'user.apply.be.canceled': '被撤销'
 };
 export default zh_CN;
