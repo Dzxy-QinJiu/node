@@ -2569,6 +2569,7 @@ var zh_CN = {
     'common.turn.out.time': '转出时间',
     'common.data.request.error': '数据请求出错',
     'common.turn.in.customer': '转入客户',
+    'common.qualified.customer': '合格客户',
     'deal.stage': '阶段',
     'common.report': '报告'
 };
