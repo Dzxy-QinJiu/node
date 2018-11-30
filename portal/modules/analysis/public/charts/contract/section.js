@@ -56,11 +56,12 @@ function getSectionReqData() {
     let sections = [];
 
     const spec = 100;
+    const step = 5;
 
-    for (let i = 0; i <= spec; i += 5) {
+    for (let i = 0; i <= spec; i += step) {
         sections.push({
             from: i * 10000,
-            to: (i + 5) <= spec ? (i + 5) * 10000 : 0,
+            to: (i + step) <= spec ? (i + step) * 10000 : 0,
         });
     }
 
