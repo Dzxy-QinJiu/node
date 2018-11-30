@@ -24,7 +24,7 @@ import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
 import ApplyDetailBlock from 'CMP_DIR/apply-detail-block';
 import {APPLY_LIST_LAYOUT_CONSTANTS, APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText, getApplyResultDscr} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 const ASSIGN_TYPE = {
@@ -513,8 +513,16 @@ class ApplyViewDetail extends React.Component {
             />);
     }
     renderApplyApproveSteps =() => {
-        var replyList = _.get(this,'state.replyListInfo.list');
+        //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据
         var applicantList = _.get(this.state, 'detailInfoObj.info');
+        var replyList = [];
+        if ((applicantList.status === 'pass' || applicantList.status === 'reject' || applicantList.status === 'cancel') && _.isArray(_.get(this.state, 'detailInfoObj.info.approve_details'))){
+            replyList = _.get(this.state, 'detailInfoObj.info.approve_details');
+        }else{
+            replyList = _.get(this,'state.replyListInfo.list');
+            replyList = _.filter(replyList,(item) => {return !item.comment;});
+            replyList = _.sortBy( _.cloneDeep(replyList), [(item) => { return item.comment_time; }]);
+        }
         var applicateName = _.get(applicantList, 'applicant.nick_name');
         var applicateTime = moment(_.get(applicantList, 'create_time')).format(oplateConsts.DATE_TIME_FORMAT);
         var userDetail = userData.getUserData();
@@ -532,38 +540,30 @@ class ApplyViewDetail extends React.Component {
             description: applicateName + ' ' + applicateTime
         }];
         var currentLength = '0';
-        if (_.isArray(replyList)){
-            //过滤掉手动添加的回复
-            replyList = _.filter(replyList,(item) => {return !item.comment;});
-            replyList = _.sortBy( _.cloneDeep(replyList), [(item) => { return item.comment_time; }]);
-            currentLength = replyList.length;
-            if (currentLength){
-                _.forEach(replyList,(replyItem,index) => {
-                    var descrpt = descriptionArr[index + 1];
-                    if (index === 1 && !isCiviwRealm){
-                        //todo 下一个节点的执行人
-                        descrpt += Intl.get('sales.commission.role.manager', '销售总经理');
-                    }
-                    if (replyItem.status === 'reject'){
-                        descrpt = Intl.get('user.apply.detail.reject', '驳回申请');
-                    }else if (replyItem.status === 'cancel'){
-                        descrpt = Intl.get('user.apply.detail.backout', '撤销申请');
-                    }
-                    stepArr.push({
-                        title: descrpt,
-                        description: (replyItem.nick_name || userData.getUserData().nick_name) + ' ' + moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
-                    });
-                });
-            }
-
-            //如果下一个节点是直接主管审核
-            if (applicantList.status === 'ongoing'){
+        currentLength = replyList.length;
+        if (currentLength){
+            _.forEach(replyList,(replyItem,index) => {
+                var descrpt = descriptionArr[index + 1];
+                if (index === 1 && !isCiviwRealm){
+                    //todo 下一个节点的执行人
+                    descrpt += Intl.get('sales.commission.role.manager', '销售总经理');
+                }
+                descrpt = getApplyStatusTimeLineDesc(replyItem.status);
                 stepArr.push({
-                    title: Intl.get('user.apply.false','待审批'),
-                    description: ''
+                    title: descrpt,
+                    description: (replyItem.nick_name || userData.getUserData().nick_name) + ' ' + moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
                 });
-            }
+            });
         }
+
+        //如果下一个节点是直接主管审核
+        if (applicantList.status === 'ongoing'){
+            stepArr.push({
+                title: Intl.get('user.apply.false','待审批'),
+                description: ''
+            });
+        }
+
 
         return (
             <Steps current={currentLength + 1}>

@@ -21,7 +21,7 @@ import ApplyDetailStatus from 'CMP_DIR/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText, getApplyResultDscr} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc} from 'PUB_DIR/sources/utils/common-method-util';
 import {LEAVE_TYPE} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 class ApplyViewDetail extends React.Component {
@@ -354,48 +354,44 @@ class ApplyViewDetail extends React.Component {
             />);
     }
     renderApplyApproveSteps =() => {
-        var replyList = _.get(this,'state.replyListInfo.list');
+        //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据
         var applicantList = _.get(this.state, 'detailInfoObj.info');
-        var applicateName = _.get(applicantList, 'applicant.nick_name');
-        var applicateTime = moment(_.get(applicantList, 'create_time')).format(oplateConsts.DATE_TIME_FORMAT);
-        var descriptionArr = [Intl.get('user.apply.submit.list', '提交申请'),Intl.get('user.apply.detail.pass', '通过申请')];
-        var stepArr = [{
-            title: descriptionArr[0],
-            description: applicateName + ' ' + applicateTime
-        }];
-        var currentLength = '0';
-        if (_.isArray(replyList)){
-            //过滤掉手动添加的回复
+        var replyList = [];
+        if ((applicantList.status === 'pass' || applicantList.status === 'reject' || applicantList.status === 'cancel') && _.isArray(_.get(this.state, 'detailInfoObj.info.approve_details'))){
+            replyList = _.get(this.state, 'detailInfoObj.info.approve_details');
+        }else{
+            replyList = _.get(this,'state.replyListInfo.list');
             replyList = _.filter(replyList,(item) => {return !item.comment;});
             replyList = _.sortBy( _.cloneDeep(replyList), [(item) => { return item.comment_time; }]);
-            currentLength = replyList.length;
-            if (currentLength){
-                _.forEach(replyList,(replyItem,index) => {
-                    var descrpt = descriptionArr[index + 1];
-                    if (replyItem.status === 'reject'){
-                        descrpt = Intl.get('user.apply.detail.reject', '驳回申请');
-                    }else if (replyItem.status === 'cancel'){
-                        descrpt = Intl.get('user.apply.detail.backout', '撤销申请');
-                    }
-                    stepArr.push({
-                        title: descrpt,
-                        description: (replyItem.nick_name || userData.getUserData().nick_name) + ' ' + moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
-                    });
-                });
-            }
-
-            //如果下一个节点是直接主管审核
-            if (applicantList.status === 'ongoing'){
-                stepArr.push({
-                    title: Intl.get('user.apply.false','待审批'),
-                    description: ''
-                });
-            }
         }
-
+        var applicateName = _.get(applicantList, 'applicant.nick_name') || '';
+        var applicateTime = moment(_.get(applicantList, 'create_time')).format(oplateConsts.DATE_TIME_FORMAT);
+        var stepArr = [{
+            title: Intl.get('user.apply.submit.list', '提交申请'),
+            description: applicateName + ' ' + applicateTime
+        }];
+        var currentLength = 0;
+        //过滤掉手动添加的回复
+        currentLength = replyList.length;
+        if (currentLength) {
+            _.forEach(replyList, (replyItem, index) => {
+                var descrpt = getApplyStatusTimeLineDesc(replyItem.status);
+                stepArr.push({
+                    title: descrpt,
+                    description: (replyItem.nick_name || userData.getUserData().nick_name || '') + ' ' + moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
+                });
+            });
+        }
+        //如果下一个节点是直接主管审核
+        if (applicantList.status === 'ongoing') {
+            stepArr.push({
+                title: Intl.get('user.apply.false', '待审批'),
+                description: ''
+            });
+        }
         return (
             <Steps current={currentLength + 1}>
-                {_.map(stepArr,(stepItem) => {
+                {_.map(stepArr, (stepItem) => {
                     return (
                         <Step title={stepItem.title} description={stepItem.description}/>
                     );
