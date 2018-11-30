@@ -56,6 +56,8 @@ dealBoardStore.prototype.getStageDealList = function(resultObj) {
         curStageDealObj.isLoading = false;
         curStageDealObj.errorMsg = '';
         let dealList = _.get(resultObj, 'data.result', []);
+        //过滤掉没有id的交易，以防影响界面操作（下拉加载、拖动）
+        dealList = _.filter(dealList, deal => deal.id);
         if (curStageDealObj.lastId) {
             curStageDealObj.list = curStageDealObj.list.concat(dealList);
         } else {
@@ -70,6 +72,31 @@ dealBoardStore.prototype.getStageDealList = function(resultObj) {
     }
     this.stageDealMap[resultObj.stage] = curStageDealObj;
 };
+
+//拖动订单结束后的处理
+dealBoardStore.prototype.dragDealEnd = function(dragResult) {
+    const {source, destination, draggableId} = dragResult;
+    //拖动源列的数据对象
+    let sourceStageObj = this.stageDealMap[source.droppableId];
+    //拖动的交易数据
+    let dragDeal = _.find(sourceStageObj.list, deal => deal.id === draggableId);
+
+    //交易插入的位置
+    let dropIndex = destination.index;
+    //插入列的数据对象
+    let dropStageObj = this.stageDealMap[destination.droppableId];
+    let dropStageDealList = _.get(dropStageObj, 'list', []);
+    //插入拖动的交易
+    if (_.get(dropStageObj, 'list[0]')) {
+        dropStageObj.list.splice(dropIndex, 0, dragDeal);
+    } else {
+        dropStageObj.list = [dragDeal];
+    }
+
+    //移除源列的交易数据
+    sourceStageObj.list = _.filter(sourceStageObj.list, deal => deal.id !== draggableId);
+};
+
 
 dealBoardStore.prototype.setLastDealId = function(id) {
     this.dealListObj.lastId = id;

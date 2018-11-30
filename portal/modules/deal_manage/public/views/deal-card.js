@@ -3,10 +3,23 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2018/11/14.
  */
+import {Draggable} from 'react-beautiful-dnd';
 import {formatNumHasDotToFixed} from 'PUB_DIR/sources/utils/common-method-util';
 import {num as antUtilsNum} from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 
+const getItemStyle = (isDragging, draggableStyle) => ({
+    // some basic styles to make the items look a bit nicer
+    userSelect: 'none',
+    // padding: 16,
+    // margin: '0 0 8px 0',
+
+    // change background colour if dragging
+    background: isDragging ? 'lightgreen' : '#ffffff',
+
+    // styles we need to apply on draggables
+    ...draggableStyle
+});
 class DealCard extends React.Component {
     constructor(props) {
         super(props);
@@ -63,14 +76,29 @@ class DealCard extends React.Component {
     }
 
     render() {
+        let deal = this.state.deal;
         return (
-            <div className="single-deal-card">
-                {this.renderDealContent()}
-            </div>);
+            <Draggable
+                draggableId={deal.id}
+                index={this.props.index}>
+                {(provided, snapshot) => (
+                    <div className="single-deal-card"
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        style={getItemStyle(
+                            snapshot.isDragging,
+                            provided.draggableProps.style
+                        )}>
+                        {this.renderDealContent()}
+                    </div>
+                )}
+            </Draggable>);
     }
 }
 
 DealCard.propTypes = {
+    index: PropTypes.boolean,
     deal: PropTypes.object,
     showDetailPanel: PropTypes.func,
     removeDeal: PropTypes.func,

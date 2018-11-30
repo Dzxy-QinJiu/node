@@ -5,17 +5,19 @@
  */
 require('../style/deal-stage-board.less');
 import {Icon} from 'antd';
+import {Droppable} from 'react-beautiful-dnd';
+import classNames from 'classnames';
 import DetailCard from 'CMP_DIR/detail-card';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import DealCard from './deal-card';
 import dealBoardAction from '../action/deal-board-action';
-const AUTHS = {
-    MANAGER_DEAL_LIST: 'CRM_MANAGER_LIST_SALESOPPORTUNITY',
-};
 const BOARD_TITLE_HEIGHT = 40;//看板卡片头部标题的高度
 const BOARD_CARD_MARGIN = 20;//看板卡片的marginRight
+const getListStyle = isDraggingOver => ({
+    background: isDraggingOver ? 'lightblue' : 'lightgrey',
+});
+
 class DealStageBoard extends React.Component {
     constructor(props) {
         super(props);
@@ -29,6 +31,11 @@ class DealStageBoard extends React.Component {
         };
     }
 
+    componentWillReceiveProps(nextProps) {
+        console.log(nextProps.stageObj);
+        this.setState(this.getInitState(nextProps));
+    }
+
     componentWillUnmount() {
         this.setState(this.getInitState(this.props));
     }
@@ -39,26 +46,6 @@ class DealStageBoard extends React.Component {
         if (stageName) {
             let lastDealId = _.get(this.state, 'stageObj.lastId');
             dealBoardAction.getStageDealList(stageName, lastDealId);
-        }
-    };
-
-    // 插入拖进来的订单,dropId:插入到哪个订单前面
-    insertDeal = (deal, dropId) => {
-        let stageDealList = this.state.stageDealList;
-        if (dropId) {
-            let insertIndex = _.findIndex(stageDealList, item => item.id === dropId);
-            stageDealList.splice(insertIndex, 0, deal);
-        } else {
-            stageDealList.push(deal);
-        }
-        this.setState({stageDealList});
-    };
-
-    removeDeal = (dealId) => {
-        if (dealId) {
-            let stageDealList = this.state.stageDealList;
-            stageDealList = _.filter(stageDealList, item => item.id !== dealId);
-            this.setState({stageDealList});
         }
     };
 
@@ -75,7 +62,7 @@ class DealStageBoard extends React.Component {
                         listenScrollBottom={stageObj.listenScrollBottom}>
                         {_.map(stageObj.list, (deal, index) => {
                             return (
-                                <DealCard deal={deal} key={index}
+                                <DealCard deal={deal} index={index}
                                     showCustomerDetail={this.props.showCustomerDetail}
                                     showDetailPanel={this.props.showDetailPanel}/>);
                         })}
@@ -114,14 +101,19 @@ class DealStageBoard extends React.Component {
                     className='deal-total-count'>{Intl.get('sales.home.total.count', '共{count}个', {count: stageObj.total || '0'})}</span>
             </span>);
         return (
-            <div className='deal-stage-board-wrap'>
-                <DetailCard
-                    className='deal-stage-board-container'
-                    height={this.state.containerHeight - 2 * BOARD_CARD_MARGIN}
-                    title={title}
-                    content={this.renderDealCardList()}
-                />
-            </div>);
+            <Droppable droppableId={_.get(stageObj, 'stage', '')}>
+                {(provided, snapshot) => (
+                    <div className='deal-stage-board-wrap' ref={provided.innerRef}>
+                        <DetailCard
+                            className={classNames('deal-stage-board-container', {'dragging-over-style': snapshot.isDraggingOver})}
+                            height={this.state.containerHeight - 2 * BOARD_CARD_MARGIN}
+                            title={title}
+                            content={this.renderDealCardList()}
+                        />
+                        {provided.placeholder}
+                    </div>
+                )}
+            </Droppable>);
     }
 }
 

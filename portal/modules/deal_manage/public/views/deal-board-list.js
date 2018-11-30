@@ -3,13 +3,12 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2018/11/27.
  */
-
+import {DragDropContext} from 'react-beautiful-dnd';
 import Spinner from 'CMP_DIR/spinner';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import dealBoardAction from '../action/deal-board-action';
 import dealBoardStore from '../store/deal-board-store';
 import DealStageBoard from './deal-stage-board';
-
 
 class DealBoardList extends React.Component {
     constructor(props) {
@@ -37,6 +36,7 @@ class DealBoardList extends React.Component {
     }
 
     onStoreChange = () => {
+        // console.log(dealBoardStore.getState());
         this.setState(dealBoardStore.getState());
     };
 
@@ -55,19 +55,34 @@ class DealBoardList extends React.Component {
         }));
     }
 
+    onDragEnd = (dragResult) => {
+        const {source, destination, draggableId} = dragResult;
+        // dropped outside the list
+        if (!destination) return;
+        //同列内做拖动时，不做排序的处理
+        if (source.droppableId === destination.droppableId) return;
+        //不同列拖动时的处理(从源列中移除，从目标列中加入)
+        dealBoardAction.dragDealEnd({source, destination, draggableId});
+
+        //TODO 需要修改当前拖动交易的阶段
+    }
+
     render() {
         if (this.state.isLoadingStage) {
             return (<Spinner />);
         } else if (_.get(this.state, 'stageList[0]')) {
             return (
                 <div className="deal-board-list">
-                    {_.map(this.state.stageDealMap, (stageObj, key) => {
-                        return (<DealStageBoard key={key} stageObj={stageObj}
-                            showDetailPanel={this.props.showDetailPanel}
-                            showCustomerDetail={this.props.showCustomerDetail}
-                            containerHeight={this.state.containerHeight}/>);
-                    })}
-                </div>);
+                    <DragDropContext onDragEnd={this.onDragEnd}>
+                        {_.map(this.state.stageDealMap, (stageObj, key) => {
+                            return (<DealStageBoard key={key} stageObj={stageObj}
+                                showDetailPanel={this.props.showDetailPanel}
+                                showCustomerDetail={this.props.showCustomerDetail}
+                                containerHeight={this.state.containerHeight}/>);
+                        })}
+                    </DragDropContext>
+                </div>
+            );
         } else {
             let noDataTip = Intl.get('deal.no.data', '暂无订单');
             // if (this.state.getStageErrorMsg) {

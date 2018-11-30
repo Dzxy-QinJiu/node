@@ -16,7 +16,9 @@ function dealBoardAction() {
         //删除订单成功后，删除列表中对应的订单
         'afterDeleteDeal',
         //设置下拉加载的lastId
-        'setLastDealId'
+        'setLastDealId',
+        //拖动交易结束的处理
+        'dragDealEnd'
     );
     this.getStageList = function(callback) {
         this.dispatch({isLoadingStage: true});

@@ -1,11 +1,16 @@
 @font-color: #999999;
 @title-color: #333333;
-@bg-color: #f5f6f8;
+@bg-color: #f3f5f5;
+@drag-over-color: lightblue;
 @click-color: #2196f3;
 .deal-stage-board-wrap {
   position: relative;
   display: inline-block;
   margin-right: 10px;
+}
+//拖拽经过时的背景设置
+.dragging-over-style.deal-stage-board-container {
+  background-color: @drag-over-color;
 }
 
 .deal-stage-board-container {
@@ -32,7 +37,7 @@
   //订单卡片的内容
   .deal-card-content {
     cursor: pointer;
-    .anticon-loading{
+    .anticon-loading {
       font-size: 20px;
       margin-top: 20px;
       width: 100%;
