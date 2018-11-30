@@ -2576,6 +2576,10 @@ var zh_CN = {
     'user.apply.be.canceled': '被撤销',
     'user.apply.submit.list': '提交申请',
     'user.apply.distribute.to': '分配给',
-    'user.apply.distribute.to.sales': '已分配给销售'
+    'user.apply.distribute.to.sales': '已分配给销售',
+    'user.wechat.unbind': '解绑微信',
+    'user.wechat.unbind.error': '解绑微信失败',
+    'user.wechat.unbind.success': '已成功解绑微信',
+    'user.wechat.unbind.confim': '您确定要解除绑定微信账号？',
 };
 export default zh_CN;

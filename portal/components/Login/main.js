@@ -10,6 +10,7 @@ import {Alert, Tabs, Icon, Button} from 'antd';
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from '../../lib/websso';
 import {storageUtil} from 'ant-utils';
 import SideBar from '../side-bar';
+import WeChatRegisterForm from './wechat-register-form';
 
 const TabPane = Tabs.TabPane;
 let QRCodeLoginInterval = null;
@@ -28,7 +29,11 @@ const VIEWS = {
 };
 const USER_LANG_KEY = 'userLang';//存储用户语言环境的key
 const logoScr = require('./image/wihte-logo.png');
-
+//微信绑定的tab-key
+const BIND_WECHAT_TAB_KEYS = {
+    BIND_USER: 'bind_user',//绑定已有用户
+    REGISTER_BIND: 'register_bind'//注册新用户并绑定
+};
 class LoginMain extends React.Component {
     constructor(props) {
         super(props);
@@ -47,6 +52,8 @@ class LoginMain extends React.Component {
             ketaoQRCodeShow: false,//是否展示下载展示客套App的二维码
             QRCodeErrorMsg: '',//扫码登录相关的错误
             isLoadingQRCode: false,//是否正在获取二维码
+            bindWechatActiveKey: this.props.isWechatRegisterError ? BIND_WECHAT_TAB_KEYS.REGISTER_BIND : BIND_WECHAT_TAB_KEYS.BIND_USER,
+            isBindWechat: this.props.isBindWechat,
         };
 
         this.setErrorMsg = this.setErrorMsg.bind(this);
@@ -145,6 +152,10 @@ class LoginMain extends React.Component {
         }
     }
 
+    bindWechatTabChange(activeKey) {
+        this.setState({bindWechatActiveKey: activeKey});
+    }
+
     //获取二维码
     getLoginQRCode() {
         this.setState({isLoadingQRCode: true});
@@ -218,6 +229,40 @@ class LoginMain extends React.Component {
         this.setState({ketaoQRCodeShow: false});
     }
 
+    renderBindWechatBlock(hasWindow) {
+        return (
+            <Tabs activeKey={this.state.bindWechatActiveKey} onChange={this.bindWechatTabChange.bind(this)}>
+                <TabPane tab={Intl.get('register.wechat.bind.user', '绑定已有账号')} key={BIND_WECHAT_TAB_KEYS.BIND_USER}>
+                    <div className="form-wrap">
+                        {this.state.bindWechatActiveKey === BIND_WECHAT_TAB_KEYS.BIND_USER ? (
+                            <LoginForm
+                                captcha={this.state.captcha}
+                                hasWindow={hasWindow}
+                                setErrorMsg={this.setErrorMsg}
+                                isBindWechat={true}
+                                {...this.props}
+                            />
+                        ) : null}
+                        {this.state.errorMsg ? (
+                            <Alert message={this.state.errorMsg} type="error" showIcon/>
+                        ) : null}
+
+                    </div>
+                </TabPane>
+                {/*<TabPane tab={Intl.get('register.wechat.register.bind', '注册新账号')}*/}
+                {/*key={BIND_WECHAT_TAB_KEYS.REGISTER_BIND}>*/}
+                {/*<div className="form-wrap">*/}
+                {/*{this.state.bindWechatActiveKey === BIND_WECHAT_TAB_KEYS.REGISTER_BIND ? (*/}
+                {/*<WeChatRegisterForm setErrorMsg={this.setErrorMsg} hasWindow={hasWindow}/>*/}
+                {/*) : null}*/}
+                {/*{this.state.errorMsg ? (*/}
+                {/*<Alert message={this.state.errorMsg} type="error" showIcon/>*/}
+                {/*) : null}*/}
+                {/*</div>*/}
+                {/*</TabPane>*/}
+            </Tabs>);
+    }
+
     render() {
         //如果是初次渲染不展示表单;
         //如果有错误信息，则不显示loading状态
@@ -230,7 +275,7 @@ class LoginMain extends React.Component {
 
             return (
                 <div className="login-wrap">
-                    <Logo logoSrc={logoScr} />
+                    <Logo logoSrc={logoScr}/>
                     {/*{ hasWindow ? (Oplate.hideLangQRcode ? null :*/}
                     {/*(<div>*/}
                     {/*<div className="lang-wrap">*/}
@@ -256,7 +301,7 @@ class LoginMain extends React.Component {
                             <div className="scan-ketao-qrcode-download-tip">
                                 {Intl.get('scan.ketao.qrcode.download.tip', '扫码下载客套APP安卓端')}
                             </div>
-                        </div>) : (hasWindow ? (
+                        </div>) : (hasWindow ? this.state.isBindWechat ? this.renderBindWechatBlock(hasWindow) : (
                         <Tabs activeKey={this.state.loginActiveKey} onChange={this.handleTabChange.bind(this)}>
                             <TabPane tab={Intl.get('login.account.login', '账号登录')} key="2">
                                 <div className="form-wrap">
@@ -268,8 +313,6 @@ class LoginMain extends React.Component {
                                             {...this.props}
                                         />
                                     ) : null}
-
-
                                     {this.state.errorMsg ? (
                                         <Alert message={this.state.errorMsg} type="error" showIcon/>
                                     ) : null}
@@ -320,6 +363,8 @@ class LoginMain extends React.Component {
 }
 LoginMain.propTypes = {
     loginErrorMsg: PropTypes.string,
-    captchaCode: PropTypes.string
+    captchaCode: PropTypes.string,
+    isBindWechat: PropTypes.bool,
+    isWechatRegisterError: PropTypes.bool,
 };
 export default LoginMain;

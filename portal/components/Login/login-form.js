@@ -19,7 +19,7 @@ const ERROR_MSGS = {
     ERROR_CAPTCHA: 'error-captcha'//刷新验证码失败
 };
 var base64_prefix = 'data:image/png;base64,';
-import { storageUtil } from 'ant-utils';
+import {storageUtil} from 'ant-utils';
 
 class LoginForm extends React.Component {
     state = {
@@ -32,7 +32,9 @@ class LoginForm extends React.Component {
         //登录按钮是否可用
         loginButtonDisabled: true,
         //登录状态
-        logining: false
+        logining: false,
+        //是否是绑定微信界面
+        isBindWechat: this.props.isBindWechat,
     };
 
     beforeSubmit = (event) => {
@@ -149,11 +151,11 @@ class LoginForm extends React.Component {
     renderCaptchaImg = (hasWindow) => {
         if (hasWindow && window.Oplate && window.Oplate.useSso) {
             return (
-                <img ref="captcha_img" src={ this.state.captchaCode} width="120" height="40"
+                <img ref="captcha_img" src={this.state.captchaCode} width="120" height="40"
                     title={Intl.get('login.dim.exchange', '看不清？点击换一张')}
-                    onClick={this.refreshCaptchaCode}/> );
+                    onClick={this.refreshCaptchaCode}/>);
         } else {
-            return ( <img src={base64_prefix + this.state.captchaCode} width="120"
+            return (<img src={base64_prefix + this.state.captchaCode} width="120"
                 height="40"
                 title={Intl.get('login.dim.exchange', '看不清？点击换一张')}
                 onClick={this.refreshCaptchaCode}/>);
@@ -232,53 +234,83 @@ class LoginForm extends React.Component {
             }
         });
     };
-
+    loginWithWeixin = (e) => {
+        e.stopPropagation();
+        window.location.href = '/page/login/wechat';
+    };
+    returnLoginPage = (e) => {
+        e.stopPropagation();
+        window.location.href = '/login';
+    };
     render() {
         const loginButtonClassName = classnames('login-button', {'not-allowed': this.state.loginButtonDisabled});
 
         const hasWindow = this.props.hasWindow;
 
         return (
-            <form action="/login" method="post" onSubmit={this.beforeSubmit} autoComplete="off">
-                <div className="input-area">
-                    <div className="input-item">
-                        <input
-                            placeholder={hasWindow ? Intl.get('login.username.phone.email', '用户名/手机/邮箱') : null}
-                            type="text"
-                            name="username" autoComplete="off" tabIndex="1"
-                            ref="username" value={this.state.username} onChange={this.userNameChange}
-                            onBlur={this.getLoginCaptcha}/>
+            <div>
+                <form action={this.state.isBindWechat ? '/bind/login/wechat' : '/login'} method="post" onSubmit={this.beforeSubmit} autoComplete="off">
+                    <div className="input-area">
+                        <div className="input-item">
+                            <input
+                                placeholder={hasWindow ? Intl.get('login.username.phone.email', '用户名/手机/邮箱') : null}
+                                type="text"
+                                name="username" autoComplete="off" tabIndex="1"
+                                ref="username" value={this.state.username} onChange={this.userNameChange}
+                                onBlur={this.getLoginCaptcha}/>
+                        </div>
+
+                        <div className="input-item">
+                            <input placeholder={hasWindow ? Intl.get('common.password', '密码') : null}
+                                type="password" tabIndex="2"
+                                ref="password_input"
+                                onChange={this.passwordChange} value={this.state.password} autoComplete="off"/>
+                        </div>
+
+
+                        {this.renderCaptchaBlock(hasWindow)}
                     </div>
 
-                    <div className="input-item">
-                        <input placeholder={hasWindow ? Intl.get('common.password', '密码') : null}
-                            type="password" tabIndex="2"
-                            ref="password_input"
-                            onChange={this.passwordChange} value={this.state.password} autoComplete="off"/>
-                    </div>
+                    <input type="hidden" name="password" id="hidedInput" ref="password"/>
 
-
-                    {this.renderCaptchaBlock(hasWindow)}
-                </div>
-
-                <input type="hidden" name="password" id="hidedInput" ref="password"/>
-
-                <button className={loginButtonClassName} type={this.state.loginButtonDisabled ? 'button' : 'submit'}
-                    tabIndex="3"
-                    disabled={this.state.loginButtonDisabled }
-                    data-tracename="点击登录"
-                >
-                    {hasWindow ? Intl.get('login.login', '登录') : null}
-                    {this.state.logining ? <Icon type="loading"/> : null}
-                </button>
-            </form>
+                    <button className={loginButtonClassName} type={this.state.loginButtonDisabled ? 'button' : 'submit'}
+                        tabIndex="3"
+                        disabled={this.state.loginButtonDisabled}
+                        data-tracename={this.state.isBindWechat ? '点击立即绑定' : '点击登录'}
+                    >
+                        {hasWindow ? this.state.isBindWechat ? Intl.get('register.wechat.bind.btn', '立即绑定') : Intl.get('login.login', '登录') : null}
+                        {this.state.logining ? <Icon type="loading"/> : null}
+                    </button>
+                    {this.state.isBindWechat ? (
+                        <div className='login-button wechat-login' onClick={this.returnLoginPage}
+                            data-tracename="返回登录页"
+                        >
+                            {hasWindow ? (
+                                <span>
+                                    <span className="wechat-icon-wrap"><i className="iconfont icon-return-btn"/></span>
+                                    <span className="wechat-login-descr">{Intl.get('login.return_to_login_page', '返回登录页')}</span>
+                                </span>) : null}
+                        </div>) : (
+                        <div className='login-button wechat-login' onClick={this.loginWithWeixin}
+                            data-tracename="微信登录"
+                        >
+                            {hasWindow ? (
+                                <span>
+                                    <span className="wechat-icon-wrap"><i className="iconfont icon-weChat"/></span>
+                                    <span className="wechat-login-descr">{Intl.get('login.wechat.login', '微信登录')}</span>
+                                </span>) : null}
+                        </div>)}
+                </form>
+            </div>
         );
     }
 }
+
 LoginForm.propTypes = {
     username: PropTypes.string,
     captcha: PropTypes.string,
     setErrorMsg: PropTypes.func,
-    hasWindow: PropTypes.bool
+    hasWindow: PropTypes.bool,
+    isBindWechat: PropTypes.bool
 };
 module.exports = LoginForm;

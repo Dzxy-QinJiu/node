@@ -2563,6 +2563,10 @@ var en_US = {
     'user.apply.be.canceled': 'It is revoked',//被撤销
     'user.apply.submit.list': 'Submit apply',//提交申请
     'user.apply.distribute.to': 'distribute to',//分配给
-    'user.apply.distribute.to.sales': 'has been distributed to sales'//已分配给销售
+    'user.apply.distribute.to.sales': 'has been distributed to sales',//已分配给销售
+    'user.wechat.unbind': 'Unbind WeChat',//解绑微信
+    'user.wechat.unbind.error': 'Unbind WeChat Failed',//解绑微信失败
+    'user.wechat.unbind.success': 'Wechat has been successfully unbound',//已成功解绑微信
+    'user.wechat.unbind.confim': 'Are you sure you want to unbind Wechat account?',//您确定要解除绑定微信账号
 };
 export default en_US;
