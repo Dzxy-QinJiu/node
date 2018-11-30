@@ -21,7 +21,7 @@ import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
 import {getApplyTopicText, getApplyResultDscr} from 'PUB_DIR/sources/utils/common-method-util';
 import {LEAVE_TYPE} from 'PUB_DIR/sources/utils/consts';
-import ApplyApproveCancel from 'CMP_DIR/apply-approve-cancel';
+import ModalDialog from 'CMP_DIR/ModalDialog';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
@@ -188,7 +188,9 @@ class ApplyViewDetail extends React.Component {
             return Intl.get('user.apply.pass', '已通过');
         } else if (obj.status === 'reject') {
             return Intl.get('user.apply.reject', '已驳回');
-        } else {
+        } else if (obj.status === 'cancel'){
+            return Intl.get('user.apply.backout', '已撤销');
+        }else {
             if (this.state.replyStatusInfo.result === 'loading') {
                 return (<Icon type="loading"/>);
             } else if (this.state.replyStatusInfo.errorMsg) {
@@ -242,28 +244,7 @@ class ApplyViewDetail extends React.Component {
         );
     }
 
-    getApplyStatusText = (obj) => {
-        if (obj.status === 'pass') {
-            return Intl.get('user.apply.pass', '已通过');
-        } else if (obj.status === 'reject') {
-            return Intl.get('user.apply.reject', '已驳回');
-        } else {
-            if (this.state.replyStatusInfo.result === 'loading') {
-                return (<Icon type="loading"/>);
-            } else if (this.state.replyStatusInfo.errorMsg) {
-                var message = (
-                    <span>{this.state.replyStatusInfo.errorMsg}，<Icon type="reload"
-                        onClick={this.refreshApplyStatusList}
-                        title={Intl.get('common.get.again', '重新获取')}/></span>);
-                return (<Alert message={message} type="error" showIcon={true}/> );
-            } else if (_.isArray(this.state.replyStatusInfo.list)) {
-                //状态可能会有多个
-                return (
-                    <span>{Intl.get('leave.apply.detail.wait', '待') + this.state.replyStatusInfo.list.join(',') + Intl.get('contract.10', '审核')}</span>
-                );
-            }
-        }
-    };
+
 
     renderBusinessCustomerDetail(detailInfo) {
         var detail = detailInfo.detail || {};
@@ -402,12 +383,15 @@ class ApplyViewDetail extends React.Component {
     renderCancelApplyApprove = () => {
         if (this.state.showBackoutConfirm){
             return (
-                <ApplyApproveCancel
-                    showBackoutConfirm={this.state.showBackoutConfirm}
-                    hideBackoutModal={this.hideBackoutModal}
+                <ModalDialog
+                    modalShow={this.state.showBackoutConfirm}
                     container={this}
+                    hideModalDialog={this.hideBackoutModal}
+                    modalContent={Intl.get('user.apply.detail.modal.content', '是否撤销此申请？')}
+                    delete={this.cancelApplyApprove}
                     showResultLoading={this.state.backApplyResult.loading}
-                    clickOkBtn={this.cancelApplyApprove}
+                    okText={Intl.get('user.apply.detail.modal.ok', '撤销')}
+                    delayClose={true}
                 />
             );
         }else{

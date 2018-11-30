@@ -85,9 +85,9 @@ ApplyApproveStatus.defaultProps = {
     container: {}
 };
 ApplyApproveStatus.propTypes = {
-    showLoading: PropTypes.boolean,
-    approveSuccess: PropTypes.boolean,
-    approveError: PropTypes.boolean,
+    showLoading: PropTypes.bool,
+    approveSuccess: PropTypes.bool,
+    approveError: PropTypes.bool,
     viewApprovalResult: PropTypes.func,
     reSendApproval: PropTypes.func,
     cancelSendApproval: PropTypes.func,
