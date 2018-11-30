@@ -17,6 +17,12 @@ dealBoardStore.prototype.setInitData = function() {
     this.stageList = [];
     //各阶段数据对象组成的map{stageName:{isLoading: false, errorMsg: '', list: [], total: 0, lastId: '',listenScrollBottom: true}}
     this.stageDealMap = {};
+    //正在保存拖动后的数据
+    this.isSavingDragData = false;
+};
+//设置是否正在保存拖拽的数据
+dealBoardStore.prototype.setIsSavingDragData = function(flag) {
+    this.isSavingDragData = flag;
 };
 
 dealBoardStore.prototype.getStageList = function(resultObj) {

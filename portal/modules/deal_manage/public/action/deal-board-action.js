@@ -18,7 +18,9 @@ function dealBoardAction() {
         //设置下拉加载的lastId
         'setLastDealId',
         //拖动交易结束的处理
-        'dragDealEnd'
+        'dragDealEnd',
+        //设置是否正在拖动数据
+        'setIsSavingDragData'
     );
     this.getStageList = function(callback) {
         this.dispatch({isLoadingStage: true});

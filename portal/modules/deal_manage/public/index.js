@@ -61,7 +61,7 @@ class DealManage extends React.Component {
             customerOfCurUser: {},//当前展示用户所属客户的详情
             curShowCustomerId: '',//当前查看的客户详情
             teamList: [],//团队列表（列表中的团队根据团队id获取团队名来展示）
-            viewType: VIEW_TYPES.BOARD,//默认展示看板视图
+            viewType: VIEW_TYPES.LIST,//默认展示看板视图
         };
     }
 
@@ -406,9 +406,8 @@ class DealManage extends React.Component {
                 <TopNav>
                     <div className="deal-view-radio-container">
                         <RadioGroup size="large" value={this.state.viewType} onChange={this.changViewType}>
-                            <RadioButton value={VIEW_TYPES.BOARD}><i
-                                className="iconfont icon-board-view"/></RadioButton>
                             <RadioButton value={VIEW_TYPES.LIST}><i className="iconfont icon-list-view"/></RadioButton>
+                            <RadioButton value={VIEW_TYPES.BOARD}><i className="iconfont icon-board-view"/></RadioButton>
                         </RadioGroup>
                     </div>
                     <div className="deal-search-block">

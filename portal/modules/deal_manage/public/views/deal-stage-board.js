@@ -14,9 +14,6 @@ import DealCard from './deal-card';
 import dealBoardAction from '../action/deal-board-action';
 const BOARD_TITLE_HEIGHT = 40;//看板卡片头部标题的高度
 const BOARD_CARD_MARGIN = 20;//看板卡片的marginRight
-const getListStyle = isDraggingOver => ({
-    background: isDraggingOver ? 'lightblue' : 'lightgrey',
-});
 
 class DealStageBoard extends React.Component {
 
