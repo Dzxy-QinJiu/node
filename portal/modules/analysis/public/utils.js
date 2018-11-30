@@ -138,3 +138,15 @@ export function argCallbackTimeMember(arg) {
         delete query.member_id;
     }
 }
+
+//处理团队id的参数回调函数
+export function argCallbackTeamId(arg) {
+    const query = arg.query;
+
+    if (query) {
+        if (query.team_ids) {
+            query.team_id = query.team_ids;
+            delete query.team_ids;
+        }
+    }
+}

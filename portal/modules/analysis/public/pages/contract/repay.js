@@ -21,9 +21,9 @@ function getCharts() {
         contractChart.getRepayChart(),
         //近3个月回款周趋势图
         contractChart.getRepayTrendChart(),
-        /*
         //回款同期对比
         contractChart.getContractRepayCompareChart(),
+        /*
         //预计回款统计
         contractChart.getContractRepayExpectChart(),
         */
