@@ -401,28 +401,32 @@ class DealManage extends React.Component {
         let customerOfCurUser = this.state.customerOfCurUser;
         let dealViewCls = classNames('deal-manage-content', {'board-view-style': this.state.viewType === VIEW_TYPES.BOARD});
         let containerHeight = this.getBoardContainerHeight();
+        let isBoardView = this.state.viewType === VIEW_TYPES.BOARD;
         return (
             <div className="deal-manage-container" data-tracename="订单管理">
                 <TopNav>
                     <div className="deal-view-radio-container">
                         <RadioGroup size="large" value={this.state.viewType} onChange={this.changViewType}>
                             <RadioButton value={VIEW_TYPES.LIST}><i className="iconfont icon-list-view"/></RadioButton>
-                            <RadioButton value={VIEW_TYPES.BOARD}><i className="iconfont icon-board-view"/></RadioButton>
+                            <RadioButton value={VIEW_TYPES.BOARD}><i
+                                className="iconfont icon-board-view"/></RadioButton>
                         </RadioGroup>
                     </div>
-                    <div className="deal-search-block">
-                        <SearchInput
-                            type="select"
-                            searchFields={searchFields}
-                            searchEvent={this.searchEvent}
-                            className="btn-item"
-                        />
-                    </div>
-                    <PrivilegeChecker check="CUSTOMER_ADD">
-                        <Button className='btn-item add-deal-btn' onClick={this.showDealForm}>
-                            {Intl.get('crm.161', '添加订单')}
-                        </Button>
-                    </PrivilegeChecker>
+                    {isBoardView ? null : (
+                        <div className="deal-search-block">
+                            <SearchInput
+                                type="select"
+                                searchFields={searchFields}
+                                searchEvent={this.searchEvent}
+                                className="btn-item"
+                            />
+                        </div>)}
+                    {isBoardView ? null : (
+                        <PrivilegeChecker check="CUSTOMER_ADD">
+                            <Button className='btn-item add-deal-btn' onClick={this.showDealForm}>
+                                {Intl.get('crm.161', '添加订单')}
+                            </Button>
+                        </PrivilegeChecker>)}
                 </TopNav>
                 <div className={dealViewCls}>
                     {this.state.viewType === VIEW_TYPES.LIST ? this.renderDealList() : (

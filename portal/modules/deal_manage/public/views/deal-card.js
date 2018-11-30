@@ -42,7 +42,7 @@ class DealCard extends React.Component {
         let deal = this.props.deal;
         let budget = deal.budget ? parseAmount(formatNumHasDotToFixed(deal.budget * 10000, 1)) : '';
         return (
-            <div className="deal-card-content" onClick={this.showDealDetial}>
+            <div className="deal-card-content">
                 <div className="deal-info-item deal-customer-name" title={deal.customer_name}
                     onClick={this.showCustomerDetail}>
                     {deal.customer_name}
@@ -68,23 +68,31 @@ class DealCard extends React.Component {
 
     render() {
         let deal = this.props.deal;
-        return (
-            <Draggable
-                draggableId={deal.id}
-                index={this.props.index}>
-                {(provided, snapshot) => (
-                    <div className="single-deal-card"
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        style={getItemStyle(
-                            snapshot.isDragging,
-                            provided.draggableProps.style
-                        )}>
-                        {this.renderDealContent()}
-                    </div>
-                )}
-            </Draggable>);
+        //赢单或丢单后，状态不可改，不可拖动
+        if (deal.oppo_status === 'win' || deal.oppo_status === 'lose') {
+            return (
+                <div className="single-deal-card">
+                    {this.renderDealContent()}
+                </div>);
+        } else {
+            return (
+                <Draggable
+                    draggableId={deal.id}
+                    index={this.props.index}>
+                    {(provided, snapshot) => (
+                        <div className="single-deal-card draggable-style"
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={getItemStyle(
+                                snapshot.isDragging,
+                                provided.draggableProps.style
+                            )}>
+                            {this.renderDealContent()}
+                        </div>
+                    )}
+                </Draggable>);
+        }
     }
 }
 

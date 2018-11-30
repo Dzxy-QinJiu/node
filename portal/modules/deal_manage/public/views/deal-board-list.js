@@ -98,9 +98,9 @@ class DealBoardList extends React.Component {
         if (this.state.isLoadingStage) {
             return (<Spinner />);
         } else if (_.get(this.state, 'stageList[0]')) {
-            let spinIcon = (<Icon type="loading" spin/>);
             return (
-                <Spin tip="Loading..." indicator={spinIcon} spinning={this.state.isSavingDragData}>
+                <Spin tip={Intl.get('deal.drag.data.saving', '正在保存拖动的数据...')}
+                    spinning={this.state.isSavingDragData}>
                     <div className="deal-board-list">
                         <DragDropContext onDragEnd={this.onDragEnd}>
                             {_.map(this.state.stageDealMap, (stageObj, key) => {

@@ -8,6 +8,7 @@
   display: inline-block;
   margin-right: 10px;
 }
+
 //拖拽经过时的背景设置
 .dragging-over-style.deal-stage-board-container {
   background-color: @drag-over-color;
@@ -42,7 +43,6 @@
   }
   //订单卡片的内容
   .deal-card-content {
-    cursor: pointer;
     .deal-customer-name.deal-info-item {
       width: 100%;
       font-size: 14px;
@@ -50,6 +50,7 @@
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
+      cursor: pointer;
     }
     .deal-info-item {
       color: @font-color;
@@ -58,6 +59,7 @@
       }
     }
     .deal-budget {
+      cursor: pointer;
       font-size: 16px;
       color: @title-color;
       .icon-deal-budget {
@@ -76,6 +78,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
     background-color: #ffffff;
+  }
+  .single-deal-card.draggable-style {
+    cursor: move;
   }
 }
 

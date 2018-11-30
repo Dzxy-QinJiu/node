@@ -2581,5 +2581,6 @@ var zh_CN = {
     'deal.no.filter.deal': '没有符合条件的订单',
     'deal.view.board': '看板视图',
     'deal.view.list': '表格视图',
+    'deal.drag.data.saving': '正在保存拖动的数据...',
 };
 export default zh_CN;
