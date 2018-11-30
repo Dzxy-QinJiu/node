@@ -8,7 +8,8 @@ const userData = require('PUB_DIR/sources/user-data');
 export const initialTime = {
     range: 'week',
     start: moment().startOf('isoWeek').valueOf(),
-    end: moment().valueOf(),
+    //结束时间设为当天的结束时间，以便后端对某些数据做缓存
+    end: moment().endOf('day').valueOf(),
 };
 
 const intlUnknown = Intl.get('user.unknown', '未知');
