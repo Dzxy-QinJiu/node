@@ -9,22 +9,13 @@ import {num as antUtilsNum} from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 
 const getItemStyle = (isDragging, draggableStyle) => ({
-    // some basic styles to make the items look a bit nicer
     userSelect: 'none',
-    // padding: 16,
-    // margin: '0 0 8px 0',
-
     // change background colour if dragging
     background: isDragging ? 'lightgreen' : '#ffffff',
-
     // styles we need to apply on draggables
     ...draggableStyle
 });
 class DealCard extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {deal: props.deal};
-    }
 
     formatTime(time) {
         return time ? moment(+time).format(oplateConsts.DATE_FORMAT) : '';
@@ -36,19 +27,19 @@ class DealCard extends React.Component {
             return;
         }
         if (_.isFunction(this.props.showDetailPanel)) {
-            this.props.showDetailPanel(this.state.deal);
+            this.props.showDetailPanel(this.props.deal);
         }
     }
     showCustomerDetail = (e) => {
         e.stopPropagation();
-        let customerId = _.get(this.state, 'deal.customer_id');
+        let customerId = _.get(this.props, 'deal.customer_id');
         if (customerId && _.isFunction(this.props.showCustomerDetail)) {
             this.props.showCustomerDetail(customerId);
         }
     }
 
     renderDealContent() {
-        let deal = this.state.deal;
+        let deal = this.props.deal;
         let budget = deal.budget ? parseAmount(formatNumHasDotToFixed(deal.budget * 10000, 1)) : '';
         return (
             <div className="deal-card-content" onClick={this.showDealDetial}>
@@ -76,7 +67,7 @@ class DealCard extends React.Component {
     }
 
     render() {
-        let deal = this.state.deal;
+        let deal = this.props.deal;
         return (
             <Draggable
                 draggableId={deal.id}

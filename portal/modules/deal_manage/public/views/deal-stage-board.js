@@ -19,42 +19,22 @@ const getListStyle = isDraggingOver => ({
 });
 
 class DealStageBoard extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = this.getInitState(props);
-    }
-
-    getInitState(props) {
-        return {
-            stageObj: props.stageObj,//此阶段的数据对象
-            containerHeight: props.containerHeight//看板的高度
-        };
-    }
-
-    componentWillReceiveProps(nextProps) {
-        console.log(nextProps.stageObj);
-        this.setState(this.getInitState(nextProps));
-    }
-
-    componentWillUnmount() {
-        this.setState(this.getInitState(this.props));
-    }
 
     //监听下拉加载
     handleScrollBarBottom = () => {
-        let stageName = _.get(this.state, 'stageObj.stage', '');
+        let stageName = _.get(this.props, 'stageObj.stage', '');
         if (stageName) {
-            let lastDealId = _.get(this.state, 'stageObj.lastId');
+            let lastDealId = _.get(this.props, 'stageObj.lastId');
             dealBoardAction.getStageDealList(stageName, lastDealId);
         }
     };
 
     renderDealCardList() {
-        let stageObj = this.state.stageObj;
+        let stageObj = this.props.stageObj;
         if (stageObj.isLoading && !stageObj.lastId) {
             return (<Icon type="loading"/>);
         } else if (_.get(stageObj, 'list[0]')) {
-            let boradHeight = this.state.containerHeight - BOARD_TITLE_HEIGHT - 3 * BOARD_CARD_MARGIN;
+            let boradHeight = this.props.containerHeight - BOARD_TITLE_HEIGHT - 3 * BOARD_CARD_MARGIN;
             return (
                 <div className="deal-board-content"
                     style={{height: boradHeight}}>
@@ -92,7 +72,7 @@ class DealStageBoard extends React.Component {
     }
 
     render() {
-        let stageObj = this.state.stageObj;
+        let stageObj = this.props.stageObj;
         let title = (
             <span>
                 <span className='deal-stage-name'> {this.getStageName(stageObj)}</span>
@@ -106,7 +86,7 @@ class DealStageBoard extends React.Component {
                     <div className='deal-stage-board-wrap' ref={provided.innerRef}>
                         <DetailCard
                             className={classNames('deal-stage-board-container', {'dragging-over-style': snapshot.isDraggingOver})}
-                            height={this.state.containerHeight - 2 * BOARD_CARD_MARGIN}
+                            height={this.props.containerHeight - 2 * BOARD_CARD_MARGIN}
                             title={title}
                             content={this.renderDealCardList()}
                         />
