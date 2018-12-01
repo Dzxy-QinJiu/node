@@ -113,7 +113,7 @@ class DealBoardList extends React.Component {
         let saveDeal = {
             customer_id: dragDeal.customer_id,
             id: dragDeal.id,
-            oppo_status: draggableId
+            oppo_status: destination.droppableId
         };
         if (saveDeal.customer_id && saveDeal.id) {
             dealBoardAction.setIsSavingDragData(true);
