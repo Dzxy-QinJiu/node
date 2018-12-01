@@ -2567,7 +2567,6 @@ var en_US = {
     'common.data.request.error': 'Data request error',//数据请求出错
     'common.turn.in.customer': 'turn in customer',//转入客户
     'common.qualified.customer': 'qualified customer',//合格客户
-    'deal.stage': 'Deal stage',//阶段
     'common.report': 'report',//报告
     'common.valid.time': 'valid time',//有效时间
     'user.apply.be.canceled': 'It is revoked',//被撤销
@@ -2578,5 +2577,20 @@ var en_US = {
     'user.wechat.unbind.error': 'Unbind WeChat Failed',//解绑微信失败
     'user.wechat.unbind.success': 'Wechat has been successfully unbound',//已成功解绑微信
     'user.wechat.unbind.confim': 'Are you sure you want to unbind Wechat account?',//您确定要解除绑定微信账号
+    /* 订单（交易）-start*/
+    'deal.manage': 'Deal manage',//订单管理
+    'deal.list.get.failed': 'Failed to get deal list',//获取订单列表失败
+    'deal.no.data': 'No deal',//暂无订单
+    'deal.stage': 'Deal stage',//阶段
+    'deal.budget': 'Deal value(yuan)',//预算
+    'deal.no.more.tip': 'There is no more deals',//没有更多订单了
+    'deal.total.tip': 'A total of {count} deals',//共{count}个订单
+    'deal.stage.select.tip': 'Please select deal stage',//请选择订单阶段
+    'deal.detail.panel.title': 'Deal Details',//订单详情
+    'deal.detail.no.products': 'No products',//暂无产品
+    'deal.no.filter.deal': 'There is no deal match condition',//没有符合条件的订单
+    'deal.drag.data.saving': 'Is saving dragged data...',//正在保存拖动的数据...
+    'deal.drag.data.disabled': 'Closed orders cannot be modified',//关闭的订单不可以修改
+
 };
 export default en_US;

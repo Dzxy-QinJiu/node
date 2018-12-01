@@ -1,0 +1,231 @@
+//订单详情
+@font_color: #999999;
+@btn_color: #8ba9c3;
+//@title_color: #333333;
+@delete_confirm_color: #ec5f56;
+@lose-deal-color: #eea145;
+@win-deal-color: #1f94f3;
+@error-tip-color: #f5222d;
+.deal-detail-container {
+  //每个订单展示的卡片样式
+  .item-delete-border {
+    border: 1px solid @delete_confirm_color;
+  }
+  //赢单后隐藏订单详情时的样式
+  .deal-win-hide-detail {
+    .detail-card-title {
+      margin-bottom: 0;
+    }
+  }
+  .right-panel-modal-title {
+    float: left;
+    width: 100%;
+  }
+  .deal-item-title {
+    float: left;
+    width: 100%;
+    .step-bar-component {
+      float: left;
+      width: 90%;
+      margin-left: -20px;
+    }
+    .close-deal-lose-wrap {
+      background-color: #eef7fe;
+      padding: 6px 6px 0 6px;
+      .basic-edit-field form .ant-form-item .ant-input {
+        margin-left: 0;
+      }
+    }
+    //订单状态
+    .deal-status-win {
+      color: @win-deal-color;
+    }
+    .deal-status-lose {
+      color: @lose-deal-color;
+    }
+    .deal-status-descr {
+      margin-left: 4px;
+    }
+    //订单关闭后展开收起按钮
+    .deal-expand-icon {
+      float: right;
+      font-size: 14px;
+      font-weight: bold;
+      color: @btn_color;
+      cursor: pointer;
+    }
+    //操作按钮区
+    .deal-item-buttons {
+      float: right;
+      .iconfont {
+        float: right;
+        font-size: 16px;
+        color: #8da8c5;
+        margin-left: 4px;
+      }
+      .iconfont.icon-delete {
+        width: 24px;
+        height: 24px;
+        font-size: 20px;
+        cursor: pointer;
+      }
+      //删除确认按钮区
+      .item-delete-buttons {
+        float: right;
+        .delete-button-style {
+          width: 72px;
+          height: 24px;
+          line-height: 24px;
+          padding: 0;
+          border-radius: 4px;
+          text-align: center;
+          font-size: 12px;
+        }
+        //确认删除
+        .item-delete-confirm {
+          color: #ffffff;
+          border: 1px solid @delete_confirm_color;
+          background-color: @delete_confirm_color;
+          &:hover {
+            background-color: #f04134;
+            border: 1px solid #f04134;
+          }
+        }
+        .item-delete-cancel {
+          color: #8da8c5;
+          margin-right: 6px;
+        }
+      }
+
+    }
+  }
+  .deal-detail-content {
+    float: left;
+    width: 100%;
+    padding: 0 20px;
+    .deal-detail-card-container {
+      margin-top: 0;
+    }
+    .app-config-content {
+      .ant-form-item {
+        padding-right: 0;
+        margin-bottom: 0;
+        .ant-form-item-label label{
+          font-size: 13px;
+        }
+      }
+    }
+  }
+  .deal-item {
+    width: 100%;
+    font-size: 14px;
+    .deal-item-content {
+      margin-bottom: 4px;
+      .ant-form-item {
+        padding-right: 0;
+        .ant-select {
+          margin-left: 3px;
+        }
+        .ant-calendar-picker {
+          margin-left: 0;
+        }
+      }
+      .basic-edit-field .basic-info-text {
+        max-width: 330px;
+      }
+      //编辑按钮hover时才展示
+      .icon-edit-btn {
+        display: none;
+      }
+      &:hover {
+        background-color: #f6fbff;
+        .icon-edit-btn {
+          display: block;
+          float: right;
+        }
+      }
+      //描述与值
+      .deal-key {
+        float: left;
+        line-height: 24px;
+        color: @font_color;
+      }
+      .deal-lose-reason {
+        color: @lose-deal-color;
+      }
+      .deal-value {
+        line-height: 24px;
+        padding-left: 8px;
+      }
+      //申请按钮
+      .deal-introduce-btn {
+        color: #fff;
+        background-color: #2ea3e6;
+        border-color: #2ea3e6;
+        height: 25px;
+        line-height: 23px;
+        padding: 0px;
+        width: 80px;
+      }
+    }
+
+    //应用列表样式
+    .deal-application-list {
+      overflow: hidden;
+      margin-bottom: 0;
+      .search-icon-list {
+        .search-icon-list-header {
+          margin-bottom: 10px;
+        }
+      }
+      .deal-application-wrap {
+        float: left;
+        &:extend(.break_line);
+        .app-item {
+          display: inline-block;
+          background-color: #d7e6f7;
+          border-radius: 4px;
+          color: #4c8ec4;
+          padding: 2px 9px;
+          margin: 0 0 8px 8px;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+  .deal-bottom-button {
+    height: 22px;
+    padding: 0 12px;
+    margin-right: 8px;
+    margin-top: 6px;
+    float: left;
+    color: #8da8c5;
+    border: 1px solid #d9d9d9;
+  }
+  .deal-close-error-tip {
+    line-height: 20px;
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: @error-tip-color;
+  }
+  //请先选择应用的提示
+  .add-app-tip{
+    color: @error-tip-color;
+    font-size: 12px;
+    line-height: 22px;
+    float: left;
+    margin-top: 6px;
+  }
+  .deal-user, .deal-add-time {
+    float: right;
+    line-height: 22px;
+    margin-top: 6px;
+    color: @font_color;
+    font-size: 12px;
+  }
+  .deal-add-time {
+    padding-left: 4px;
+  }
+
+}

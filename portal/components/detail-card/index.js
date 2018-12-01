@@ -33,7 +33,7 @@ class DetailCard extends React.Component {
         //若果没有标题时，编辑状态的内容不显示border
         let contentCl = classNames('detail-card-content', {'card-content-edit-status': this.props.isEdit && this.props.title});
         return (
-            <div className={className}>
+            <div className={className} style={{height: this.props.height || 'auto'}}>
                 {this.props.title || this.props.titleDescr || this.props.titleRightBlock ? (
                     <div className={titleClass}>
                         {this.props.title}
@@ -65,6 +65,7 @@ DetailCard.defaultProps = {
     loading: false,//是否正在保存
     okBtnText: '',//保存按钮上的描述
     cancelBtnText: '',//取消按钮上的描述
+    height: 'auto',//高度的设置
     handleSubmit: function() {
     },//保存的处理
     handleCancel: function() {
@@ -85,6 +86,7 @@ DetailCard.propTypes = {
     loading: PropTypes.bool,
     okBtnText: PropTypes.string,
     cancelBtnText: PropTypes.string,
+    height: PropTypes.number,
     handleSubmit: PropTypes.func,
     handleCancel: PropTypes.func,
     renderHandleSaveBtns: PropTypes.func,
