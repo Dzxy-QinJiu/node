@@ -126,7 +126,7 @@ class DealManage extends React.Component {
                 //客户名、负责人的搜索
                 let customerQuery = {};
                 customerQuery[searchObj.field] = searchObj.value;
-                searchBody.parentQuery = {query: customerQuery};
+                searchBody.parent_query = {query: customerQuery};
             }
         }
         return searchBody;
