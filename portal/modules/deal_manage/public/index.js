@@ -387,7 +387,7 @@ class DealManage extends React.Component {
         const searchFields = [
             {
                 name: Intl.get('crm.41', '客户名'),
-                field: 'customer_name'
+                field: 'name'
             },
             {
                 name: Intl.get('deal.stage', '阶段'),
