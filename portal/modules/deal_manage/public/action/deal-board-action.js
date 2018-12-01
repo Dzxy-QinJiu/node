@@ -5,7 +5,7 @@
  */
 import dealAjax from '../ajax';
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
-import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 function dealBoardAction() {
     this.generateActions(
         'setInitData',

@@ -21,7 +21,7 @@ import Trace from 'LIB_DIR/trace';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import classNames from 'classnames';
 import {formatNumHasDotToFixed} from 'PUB_DIR/sources/utils/common-method-util';
-import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/get-common-data-util';
+import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
 import {num as antUtilsNum} from 'ant-utils';
 import DealBoardList from './views/deal-board-list';
 

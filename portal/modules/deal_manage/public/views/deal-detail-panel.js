@@ -14,7 +14,7 @@ import DetailCard from 'CMP_DIR/detail-card';
 import StepsBar from 'CMP_DIR/steps-bar';
 import Trace from 'LIB_DIR/trace';
 import {disabledBeforeToday} from 'PUB_DIR/sources/utils/common-method-util';
-import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {DEAL_STATUS} from 'PUB_DIR/sources/utils/consts';
 import userData from 'PUB_DIR/sources/user-data';
 import ApplyUserForm from '../../../crm/public/views/apply-user-form';

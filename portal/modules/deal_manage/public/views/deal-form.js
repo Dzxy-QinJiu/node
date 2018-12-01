@@ -13,7 +13,7 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 import CRMAddForm from 'MOD_DIR/crm/public/views/crm-add-form';
 
-import commonDataUtil from 'PUB_DIR/sources/utils/get-common-data-util';
+import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import dealAction from '../action';
 
