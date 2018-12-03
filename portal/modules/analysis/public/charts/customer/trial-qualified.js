@@ -13,7 +13,14 @@ export function getCustomerTrialQualifiedChart() {
         height: 'auto',
         layout: {sm: 24},
         url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
-        argCallback: argCallbackTimeMember,
+        argCallback: args => {
+            argCallbackTimeMember(args);
+            let endTime = args.query.end_time;
+            if (endTime) {
+                //试用合格详细统计要求传参时，结束时间需要后推一天
+                args.query.end_time = moment(endTime).add(1, 'days').valueOf();
+            }
+        },
         processOption: (option, chartProps) => {
             //接口数据
             const data = _.get(chartProps, 'data.list', []);
