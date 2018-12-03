@@ -5,6 +5,7 @@
 import customerChart from '../../charts/customer';
 
 module.exports = {
+    id: 'TRIAL_QUALIFIED',
     title: '试用合格客户分析',
     menuIndex: 5,
     privileges: [

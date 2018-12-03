@@ -14,6 +14,15 @@ const dateSelectorEmitter = emitters.dateSelectorEmitter;
 const teamTreeEmitter = emitters.teamTreeEmitter;
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 class TopBar extends React.Component {
+    static defaultProps = {
+        //当前显示页面的id
+        currentPageId: '',
+    };
+
+    static propTypes = {
+        currentPageId: PropTypes.string,
+    };
+
     constructor(props) {
         super(props);
 
@@ -108,6 +117,40 @@ class TopBar extends React.Component {
     }
 
     render() {
+        console.log(this.props.currentPageId);
+        let range = initialTime.range;
+        let datePickerOptions = [{
+            name: Intl.get('user.time.all', '全部时间'),
+            value: 'all'
+        }, {
+            name: Intl.get('common.time.unit.day', '天'),
+            value: 'day'
+        }, {
+            name: Intl.get('common.time.unit.week', '周'),
+            value: 'week'
+        }, {
+            name: Intl.get('common.time.unit.month', '月'),
+            value: 'month'
+        }, {
+            name: Intl.get('common.time.unit.quarter', '季度'),
+            value: 'quarter'
+        }, {
+            name: Intl.get('common.time.unit.year', '年'),
+            value: 'year'
+        }, {
+            name: Intl.get('user.time.custom', '自定义'),
+            value: 'custom'
+        }];
+
+        //如果当前显示的是试用合格客户分析
+        if (this.props.currentPageId === 'TRIAL_QUALIFIED') {
+            //时间区间设为月
+            range = 'month';
+
+            //日期选择器只能选择月，所以无需提供时间区间选项
+            datePickerOptions = [];
+        }
+
         return (
             <div className='top-bar'>
                 <TopNav>
@@ -149,15 +192,11 @@ class TopBar extends React.Component {
 
                         <AntcDatePicker
                             disableDateAfterToday={true}
-                            range={initialTime.range}
+                            range={range}
                             onSelect={this.onSelectDate}>
-                            <AntcDatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option value="month">{Intl.get('common.time.unit.month', '月')}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option value="year">{Intl.get('common.time.unit.year','年')}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</AntcDatePicker.Option>
+                            {datePickerOptions.map((option, index) => (
+                                <AntcDatePicker.Option value={option.value} key={index}>{option.name}</AntcDatePicker.Option>
+                            ))}
                         </AntcDatePicker>
                     </div>
                 </TopNav>
