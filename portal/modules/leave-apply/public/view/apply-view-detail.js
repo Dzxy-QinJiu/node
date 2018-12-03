@@ -52,6 +52,7 @@ class ApplyViewDetail extends React.Component {
         }
     }
     getReplyList = () => {
+        //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据,但是都需要过滤掉有comment内容的条数
         var applicantList = _.get(this.state, 'detailInfoObj.info');
         var replyList = [];
         if ((applicantList.status === 'pass' || applicantList.status === 'reject' || applicantList.status === 'cancel') && _.isArray(_.get(this.state, 'detailInfoObj.info.approve_details'))){
@@ -354,7 +355,6 @@ class ApplyViewDetail extends React.Component {
     }
     renderApplyApproveSteps =() => {
         var stepStatus = '';
-        //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据,但是都需要过滤掉有comment内容的条数
         var applicantList = _.get(this.state, 'detailInfoObj.info');
         var replyList = this.getReplyList();
         var applicateName = _.get(applicantList, 'applicant.nick_name') || '';
