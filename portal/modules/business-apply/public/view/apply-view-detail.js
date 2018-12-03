@@ -199,35 +199,6 @@ class ApplyViewDetail extends React.Component {
         );
     }
 
-    getApplyStatusText = (obj) => {
-        if (obj.status === 'pass') {
-            return Intl.get('user.apply.detail.pass', '通过申请');
-        } else if (obj.status === 'reject') {
-            return Intl.get('user.apply.detail.reject', '驳回申请');
-        } else if (obj.status === 'cancel'){
-            return Intl.get('user.apply.detail.backout', '撤销申请');
-        } else {
-            if (this.state.replyStatusInfo.result === 'loading') {
-                return (<Icon type="loading"/>);
-            } else if (this.state.replyStatusInfo.errorMsg) {
-                var message = (
-                    <span>{this.state.replyStatusInfo.errorMsg}，<Icon type="reload"
-                        onClick={this.refreshApplyStatusList}
-                        title={Intl.get('common.get.again', '重新获取')}/></span>);
-                return (<Alert message={message} type="error" showIcon={true}/> );
-            } else if (_.isArray(this.state.replyStatusInfo.list)) {
-                //状态可能会有多个
-                var tipMsg = Intl.get('leave.apply.detail.wait', '待') + this.state.replyStatusInfo.list.join(',');
-                if (!this.state.replyStatusInfo.list.length || _.indexOf(this.state.replyStatusInfo.list,APPLY_STATUS.READY_APPLY) > -1){
-                    tipMsg += Intl.get('contract.10', '审核');
-                }
-                return (
-                    <span>{tipMsg}</span>
-                );
-            }
-        }
-    };
-
     renderBusinessCustomerDetail(detailInfo) {
         var detail = detailInfo.detail || {};
         var customersArr = _.get(detailInfo, 'detail.customers');
