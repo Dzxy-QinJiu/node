@@ -116,7 +116,10 @@ class TopBar extends React.Component {
         });
     };
 
-    onSelectDate(startTime, endTime) {
+    onSelectDate = (startTime, endTime) => {
+        startTime = parseInt(startTime);
+        endTime = parseInt(endTime);
+
         this.setState({startTime, endTime});
 
         dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
