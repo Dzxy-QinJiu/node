@@ -383,7 +383,7 @@ var CallAddCustomerForm = createReactClass({
                             validateStatus={this.renderValidateStyle('contacts0_name')}
                             help={status.contacts0_name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.contacts0_name.errors && status.contacts0_name.errors.join(','))}
                         >
-                            <Validator rules={[{required: false,min: 1,max: 50, message: Intl.get('crm.contact.name.length', '请输入最多50个字符的姓名')}]}>
+                            <Validator rules={[{required: false,min: 1,max: 50, message: Intl.get('crm.contact.name.length', '请输入最多50个字符')}]}>
                                 <Input name="contacts0_name" placeholder={Intl.get('crm.90', '请输入姓名')} value={formData.contacts0_name}
                                     onChange={this.setField.bind(this, 'contacts0_name')}/>
                             </Validator>

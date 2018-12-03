@@ -1253,7 +1253,7 @@ var zh_CN = {
     'crm.sales.clue.add.disable': '不能手动添加\'{label}\'标签',
     'crm.clue.require.one': '电话、邮箱、QQ、微信必填一项',
     'crm.contact.list.failed': '获取联系人列表失败',
-    'crm.contact.name.length': '请输入最多50个字符的姓名',
+    'crm.contact.name.length': '请输入最多50个字符',
     'crm.last.trace.content': '最后跟进内容',
     'crm.competing.products': '竞品',
     'crm.no.contact.way': '无联系方式客户',

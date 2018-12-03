@@ -91,8 +91,8 @@ function showLoginOrBindWechatPage(req, res) {
             if (global.config.lang && global.config.lang === 'es_VE') {
                 hideLangQRcode = 'true';
             }
-            let custome_service_lang = loginLang || 'zh_CN';
-            custome_service_lang = custome_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
+            let custom_service_lang = loginLang || 'zh_CN';
+            custom_service_lang = custom_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
             res.render('login/tpl/desktop-login', {
                 styleContent: styleContent,
                 loginForm: formHtml,
@@ -105,7 +105,7 @@ function showLoginOrBindWechatPage(req, res) {
                 contact: backendIntl.get('company.qq', '企业QQ: {qq}', {'qq': qq}),
                 siteID: global.config.siteID,
                 lang: loginLang,
-                custome_service_lang: custome_service_lang,
+                custom_service_lang: custom_service_lang,
                 userid: obj.username,
                 hideLangQRcode: hideLangQRcode,
                 clientId: global.config.loginParams.clientId,

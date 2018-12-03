@@ -506,11 +506,11 @@ var ContactForm = createReactClass({
                                 help={status.name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.name.errors && status.name.errors.join(','))}>
                                 <Validator rules={[{
                                     max: 50,
-                                    message: Intl.get('crm.contact.name.length', '请输入最多50个字符的姓名')
+                                    message: Intl.get('crm.contact.name.length', '请输入最多50个字符')
                                 }]}>
                                     <Input name="name" value={formData.name}
                                         autocomplete="off"
-                                        placeholder={Intl.get('crm.contact.name.length', '请输入最多50个字符的姓名')}
+                                        placeholder={Intl.get('crm.contact.name.length', '请输入最多50个字符')}
                                         onBlur={this.validateContactNameDepartment.bind(this)}
                                         onChange={this.setField.bind(this, 'name')}
                                     />

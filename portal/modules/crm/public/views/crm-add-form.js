@@ -506,7 +506,7 @@ var CRMAddForm = createReactClass({
                             required: false,
                             min: 1,
                             max: 50,
-                            message: Intl.get('crm.contact.name.length', '请输入最多50个字符的姓名')
+                            message: Intl.get('crm.contact.name.length', '请输入最多50个字符')
                         }]}>
                             <Input name="contacts0_name" placeholder={Intl.get('crm.90', '请输入姓名')}
                                 value={formData.contacts0_name}
