@@ -1242,7 +1242,7 @@ var en_US = {
     'crm.sales.clue.add.disable': '\'{label}\' tags cannot be added manually',//不能手动添加'{label}'标签
     'crm.clue.require.one': 'Telephone, mail, QQ and weChat required one',//电话、邮箱、QQ必填一项
     'crm.contact.list.failed': 'Failed to get contact list',//获取联系人列表失败
-    'crm.contact.name.length': 'Please enter a name with a maximum of 50 characters',//请输入最多50个字符的姓名
+    'crm.contact.name.length': 'Please enter not more than 50 characters',//请输入最多50个字符
     'crm.last.trace.content': 'Last Trace content',//最后跟进内容
     'crm.competing.products': 'Competing products',//竞品
     'crm.no.contact.way': 'No contact customers',//无联系方式客户

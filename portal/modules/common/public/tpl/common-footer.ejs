@@ -50,7 +50,7 @@
             </style>
         <% } %>
 	</body>
-    <% if(isCurtao && custome_service_lang) { %>
+    <% if((isCurtao && custom_service_lang) || show_custom_service) { %>
     <!-- custome service-->
     <script type='text/javascript'
             src='https://webchat.7moor.com/javascripts/7moorInit.js?accessId=54b78f00-b4bb-11e8-b0d9-4953cb7c5819&autoShow=true&language=<%= custome_service_lang %>'
