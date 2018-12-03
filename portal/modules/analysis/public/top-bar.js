@@ -117,8 +117,8 @@ class TopBar extends React.Component {
     }
 
     render() {
-        console.log(this.props.currentPageId);
         let range = initialTime.range;
+
         let datePickerOptions = [{
             name: Intl.get('user.time.all', '全部时间'),
             value: 'all'
