@@ -10,8 +10,6 @@ var React = require('react');
 var ReactDOMServer = require('react-dom/server');
 global.__STYLE_COLLECTOR_MODULES__ = [];
 global.__STYLE_COLLECTOR__ = '';
-var LoginForm = React.createFactory(require('../../../../dist/server-render/login'));
-var LoginCurtaoForm = React.createFactory(require('../../../../dist/server-render/login_curtao'));
 var DesktopLoginService = require('../service/desktop-login-service');
 var UserDto = require('../../../lib/utils/user-dto');
 let BackendIntl = require('../../../../portal/lib/utils/backend_intl');
@@ -38,7 +36,7 @@ function showLoginOrBindWechatPage(req, res) {
         }
         //用于记录微信注册新账号的错误，已便展示到注册新账号tab下
         let isWechatRegisterError = req.session.isWechatRegisterError;
-        if(isWechatRegisterError){
+        if (isWechatRegisterError) {
             delete req.session.isWechatRegisterError;
         }
         //从session中获取上一次登录用户名
@@ -78,14 +76,17 @@ function showLoginOrBindWechatPage(req, res) {
         function renderHtml() {
             var styleContent = global.__STYLE_COLLECTOR__;
             //ketao上的登录页
-            let formHtml = ReactDOMServer.renderToString(LoginForm(obj));
+            let LoginForm = null;
             let isCurtao = commonUtil.method.isCurtao(req);
             //正式发版的curtao上，展示带注册的登录界面，
             if (isCurtao) {
-                formHtml = ReactDOMServer.renderToString(LoginCurtaoForm(obj));
+                LoginForm = React.createFactory(require('../../../../dist/server-render/login_curtao'));
+            } else {
+                LoginForm = React.createFactory(require('../../../../dist/server-render/login'));
             }
-            var phone = '400-677-0986';
-            var qq = '4006770986';
+            let formHtml = ReactDOMServer.renderToString(LoginForm(obj));
+            const phone = '400-677-0986';
+            const qq = '4006770986';
             let backendIntl = new BackendIntl(req);
             let hideLangQRcode = '';
             if (global.config.lang && global.config.lang === 'es_VE') {
@@ -441,16 +442,16 @@ exports.wechatLoginBindByCode = function(req, res) {
             //获取到unionId后，通过unionId检查微信是否绑定
             if (unionId) {
                 //个人资料绑定微信的处理
-                if(isBindWechatAfterLogin){
+                if (isBindWechatAfterLogin) {
                     DesktopLoginService.bindWechat(req, res, unionId)
                         .on('success', function(result) {
                             //绑定成功,个人资料界面
-                            res.redirect('/user_info_manage/user_info' );
+                            res.redirect('/user_info_manage/user_info');
                         }).on('error', function(errorObj) {
                         //绑定失败后，也跳到个人资料界面
-                            res.redirect('/user_info_manage/user_info?bind_error=true' );
+                            res.redirect('/user_info_manage/user_info?bind_error=true');
                         });
-                }else{//点微信登录的处理
+                } else {//点微信登录的处理
                     checkWechatIsBind(req, res, unionId);
                 }
             } else {
@@ -468,9 +469,9 @@ exports.wechatLoginBindByCode = function(req, res) {
 function loginWithWechatError(req, res, isBindWechatAfterLogin) {
     return function(errorObj) {
         //个人资料绑定微信的处理
-        if(isBindWechatAfterLogin) {
-            res.redirect('/user_info_manage/user_info?bind_error=true' );
-        }else{
+        if (isBindWechatAfterLogin) {
+            res.redirect('/user_info_manage/user_info?bind_error=true');
+        } else {
             loginError(req, res)(errorObj);
         }
     };
@@ -579,7 +580,7 @@ exports.registerLoginWechat = function(req, res) {
     if (unionId) {
         DesktopLoginService.registBindWechatLogin(req, res, {user_name: req.body.username, union_id: unionId})
             .on('success', loginSuccess(req, res))
-            .on('error', function(errorObj){
+            .on('error', function(errorObj) {
                 //用于记录微信注册新账号的错误，已便展示到注册新账号tab下
                 req.session.isWechatRegisterError = true;
                 wechatBindRegisterLoginError(req, res)(errorObj);
@@ -650,7 +651,7 @@ function checkWechatIsBind(req, res, unionId) {
                 res.redirect('/wechat_bind');
             });
         }
-    }).on('error',loginError(req, res));
+    }).on('error', loginError(req, res));
 }
 //小程序检查微信是否已绑定客套账号
 function checkWechatIsBindMiniprogram(req, res, unionId) {
