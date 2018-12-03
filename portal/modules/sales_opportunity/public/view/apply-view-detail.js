@@ -200,16 +200,28 @@ class ApplyViewDetail extends React.Component {
             />
         );
     }
+    getReplyList = () => {
+        var applicantList = _.get(this.state, 'detailInfoObj.info');
+        var replyList = [];
+        if ((applicantList.status === 'pass' || applicantList.status === 'reject' || applicantList.status === 'cancel') && _.isArray(_.get(this.state, 'detailInfoObj.info.approve_details'))){
+            replyList = _.get(this.state, 'detailInfoObj.info.approve_details');
+        }else{
+            replyList = _.get(this,'state.replyListInfo.list');
+        }
+        replyList = _.filter(replyList,(item) => {return !item.comment;});
+        replyList = _.sortBy( _.cloneDeep(replyList), [(item) => { return item.comment_time; }]);
+        return replyList;
+    };
     //审批状态
-    renderApplyStatus = (detailInfo) => {
-        var applyStatus = this.getApplyStatusText(detailInfo);
+    renderApplyStatus = () => {
         var showApplyInfo = [{
             label: Intl.get('leave.apply.application.status', '审批状态'),
-            text: applyStatus,
+            renderText: this.renderApplyApproveSteps,
         }];
         return (
             <ApplyDetailInfo
                 iconClass='icon-apply-status'
+                textCls='show-time-line'
                 showApplyInfo={showApplyInfo}
             />
         );
@@ -217,11 +229,11 @@ class ApplyViewDetail extends React.Component {
 
     getApplyStatusText = (obj) => {
         if (obj.status === 'pass') {
-            return Intl.get('user.apply.pass', '已通过');
+            return Intl.get('user.apply.detail.pass', '通过申请');
         } else if (obj.status === 'reject') {
-            return Intl.get('user.apply.reject', '已驳回');
+            return Intl.get('user.apply.detail.reject', '驳回申请');
         } else if (obj.status === 'cancel'){
-            return Intl.get('user.apply.backout', '已撤销');
+            return Intl.get('user.apply.detail.backout', '撤销申请');
         }else {
             if (this.state.replyStatusInfo.result === 'loading') {
                 return (<Icon type="loading"/>);
@@ -581,14 +593,7 @@ class ApplyViewDetail extends React.Component {
         var stepStatus = '';
         //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据
         var applicantList = _.get(this.state, 'detailInfoObj.info');
-        var replyList = [];
-        if ((applicantList.status === 'pass' || applicantList.status === 'reject' || applicantList.status === 'cancel') && _.isArray(_.get(this.state, 'detailInfoObj.info.approve_details'))){
-            replyList = _.get(this.state, 'detailInfoObj.info.approve_details');
-        }else{
-            replyList = _.get(this,'state.replyListInfo.list');
-            replyList = _.filter(replyList,(item) => {return !item.comment;});
-            replyList = _.sortBy( _.cloneDeep(replyList), [(item) => { return item.comment_time; }]);
-        }
+        var replyList = this.getReplyList();
         var applicateName = _.get(applicantList, 'applicant.nick_name');
         var applicateTime = moment(_.get(applicantList, 'create_time')).format(oplateConsts.DATE_TIME_FORMAT);
         var userDetail = userData.getUserData();
@@ -602,8 +607,8 @@ class ApplyViewDetail extends React.Component {
         }
         //如果是识微域，
         var stepArr = [{
-            title: descriptionArr[0],
-            description: applicateName + ' ' + applicateTime
+            title: applicateName + descriptionArr[0],
+            description: applicateTime
         }];
         var currentLength = '0';
         currentLength = replyList.length;
@@ -620,8 +625,8 @@ class ApplyViewDetail extends React.Component {
                     currentLength--;
                 }
                 stepArr.push({
-                    title: descrpt,
-                    description: (replyItem.nick_name || userData.getUserData().nick_name) + ' ' + moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
+                    title: (replyItem.nick_name || userData.getUserData().nick_name) + descrpt,
+                    description: moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
                 });
             });
         }
@@ -667,12 +672,7 @@ class ApplyViewDetail extends React.Component {
                         {this.renderDetailApplyBlock(detailInfo)}
                         {/*渲染客户详情*/}
                         {_.isArray(_.get(detailInfo, 'detail.customers')) ? this.renderBusinessCustomerDetail(detailInfo) : null}
-                        {this.renderApplyStatus(detailInfo)}
-                        {/*流程步骤图*/}
-                        <ApplyDetailBlock
-                            iconclass='icon-apply-message-tip'
-                            renderApplyInfoContent={this.renderApplyApproveSteps}
-                        />
+                        {this.renderApplyStatus()}
                         <ApplyDetailRemarks
                             detailInfo={detailInfo}
                             replyListInfo={this.state.replyListInfo}

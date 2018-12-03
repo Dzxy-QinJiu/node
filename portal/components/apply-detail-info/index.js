@@ -11,6 +11,7 @@ class ApplyDetailInfo extends React.Component {
     }
     render() {
         var iconCls = 'iconfont ' + this.props.iconClass;
+        var infoCls = 'user-info-text ' + this.props.textCls;
         return (
             <div className="apply-detail-customer apply-detail-info">
                 <div className="customer-icon-block">
@@ -24,7 +25,7 @@ class ApplyDetailInfo extends React.Component {
                                     <div className="user-info-label">
                                         {InfoItem.label}:
                                     </div>
-                                    <div className="user-info-text">
+                                    <div className={infoCls}>
                                         {_.isFunction(InfoItem.renderText) ? InfoItem.renderText() :
                                             InfoItem.text
                                         }
@@ -40,10 +41,12 @@ class ApplyDetailInfo extends React.Component {
 ApplyDetailInfo.defaultProps = {
     showApplyInfo: {},
     iconClass: '',
+    textCls: ''
 };
 ApplyDetailInfo.propTypes = {
     showApplyInfo: PropTypes.object,
-    iconClass: PropTypes.string
+    iconClass: PropTypes.string,
+    textCls: PropTypes.string,
 
 };
 

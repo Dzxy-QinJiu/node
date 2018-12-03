@@ -409,7 +409,7 @@ exports.getApplyTopicText = function(obj) {
     if (obj.topic === 'customer_visit') {
         return Intl.get('leave.apply.add.leave.apply', '出差申请');
     } else if (obj.topic === 'business_opportunities') {
-        return Intl.get('leave.apply.sales.opportunity.application', '销售机会申请');
+        return _.get(obj,'detail.customer.name');
     } else if (obj.topic === 'personal_leave') {
         return Intl.get('leave.apply.leave.application', '请假申请');
     }

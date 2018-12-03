@@ -51,16 +51,28 @@ class ApplyViewDetail extends React.Component {
             this.getBusinessApplyDetailData(this.props.detailItem);
         }
     }
+    getReplyList = () => {
+        var applicantList = _.get(this.state, 'detailInfoObj.info');
+        var replyList = [];
+        if ((applicantList.status === 'pass' || applicantList.status === 'reject' || applicantList.status === 'cancel') && _.isArray(_.get(this.state, 'detailInfoObj.info.approve_details'))){
+            replyList = _.get(this.state, 'detailInfoObj.info.approve_details');
+        }else{
+            replyList = _.get(this,'state.replyListInfo.list');
+        }
+        replyList = _.filter(replyList,(item) => {return !item.comment;});
+        replyList = _.sortBy( _.cloneDeep(replyList), [(item) => { return item.comment_time; }]);
+        return replyList;
+    };
     //审批状态
-    renderApplyStatus = (detailInfo) => {
-        var applyStatus = this.getApplyStatusText(detailInfo);
+    renderApplyStatus = () => {
         var showApplyInfo = [{
             label: Intl.get('leave.apply.application.status', '审批状态'),
-            text: applyStatus,
+            renderText: this.renderApplyApproveSteps,
         }];
         return (
             <ApplyDetailInfo
                 iconClass='icon-apply-status'
+                textCls='show-time-line'
                 showApplyInfo={showApplyInfo}
             />
         );
@@ -186,34 +198,6 @@ class ApplyViewDetail extends React.Component {
             customerOfCurUser: data.customerObj
         });
     };
-    getApplyStatusText = (obj) => {
-        if (obj.status === 'pass') {
-            return Intl.get('user.apply.pass', '已通过');
-        } else if (obj.status === 'reject') {
-            return Intl.get('user.apply.reject', '已驳回');
-        } else if (obj.status === 'cancel'){
-            return Intl.get('user.apply.backout', '已撤销');
-        }else {
-            if (this.state.replyStatusInfo.result === 'loading') {
-                return (<Icon type="loading"/>);
-            } else if (this.state.replyStatusInfo.errorMsg) {
-                var message = (
-                    <span>{this.state.replyStatusInfo.errorMsg}，<Icon type="reload"
-                        onClick={this.refreshApplyStatusList}
-                        title={Intl.get('common.get.again', '重新获取')}/></span>);
-                return (<Alert message={message} type="error" showIcon={true}/> );
-            } else if (_.isArray(this.state.replyStatusInfo.list)) {
-                //状态可能会有多个
-                var tipMsg = Intl.get('leave.apply.detail.wait', '待') + this.state.replyStatusInfo.list.join(',');
-                if (!this.state.replyStatusInfo.list.length || _.indexOf(this.state.replyStatusInfo.list,APPLY_STATUS.READY_APPLY) > -1){
-                    tipMsg += Intl.get('contract.10', '审核');
-                }
-                return (
-                    <span>{tipMsg}</span>
-                );
-            }
-        }
-    };
     renderDetailApplyBlock(detailInfo) {
         var detail = detailInfo.detail || {};
         var begin_time = moment(detail.begin_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
@@ -246,9 +230,6 @@ class ApplyViewDetail extends React.Component {
             />
         );
     }
-
-
-
     renderBusinessCustomerDetail(detailInfo) {
         var detail = detailInfo.detail || {};
         var customersArr = _.get(detailInfo, 'detail.customers');
@@ -373,21 +354,14 @@ class ApplyViewDetail extends React.Component {
     }
     renderApplyApproveSteps =() => {
         var stepStatus = '';
-        //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据
+        //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据,但是都需要过滤掉有comment内容的条数
         var applicantList = _.get(this.state, 'detailInfoObj.info');
-        var replyList = [];
-        if ((applicantList.status === 'pass' || applicantList.status === 'reject' || applicantList.status === 'cancel') && _.isArray(_.get(this.state, 'detailInfoObj.info.approve_details'))){
-            replyList = _.get(this.state, 'detailInfoObj.info.approve_details');
-        }else{
-            replyList = _.get(this,'state.replyListInfo.list');
-            replyList = _.filter(replyList,(item) => {return !item.comment;});
-            replyList = _.sortBy( _.cloneDeep(replyList), [(item) => { return item.comment_time; }]);
-        }
+        var replyList = this.getReplyList();
         var applicateName = _.get(applicantList, 'applicant.nick_name') || '';
         var applicateTime = moment(_.get(applicantList, 'create_time')).format(oplateConsts.DATE_TIME_FORMAT);
         var stepArr = [{
-            title: Intl.get('user.apply.submit.list', '提交申请'),
-            description: applicateName + ' ' + applicateTime
+            title: applicateName + Intl.get('user.apply.submit.list', '提交申请'),
+            description: applicateTime
         }];
         var currentLength = 0;
         //过滤掉手动添加的回复
@@ -400,8 +374,8 @@ class ApplyViewDetail extends React.Component {
                     currentLength--;
                 }
                 stepArr.push({
-                    title: descrpt,
-                    description: (replyItem.nick_name || userData.getUserData().nick_name || '') + ' ' + moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
+                    title: (replyItem.nick_name || userData.getUserData().nick_name || '') + descrpt,
+                    description: moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
                 });
             });
         }
@@ -473,12 +447,7 @@ class ApplyViewDetail extends React.Component {
                         {this.renderDetailApplyBlock(detailInfo)}
                         {/*渲染客户详情*/}
                         {_.isArray(_.get(detailInfo, 'detail.customers')) ? this.renderBusinessCustomerDetail(detailInfo) : null}
-                        {this.renderApplyStatus(detailInfo)}
-                        {/*流程步骤图*/}
-                        <ApplyDetailBlock
-                            iconclass='icon-apply-message-tip'
-                            renderApplyInfoContent={this.renderApplyApproveSteps}
-                        />
+                        {this.renderApplyStatus()}
                         <ApplyDetailRemarks
                             detailInfo={detailInfo}
                             replyListInfo={this.state.replyListInfo}
