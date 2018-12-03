@@ -43,6 +43,7 @@ class CurtaoAnalysis extends React.Component {
         this.state = {
             currentMenuIndex: '0,0',
             currentCharts: _.get(processedGroups, '[0].pages[0].charts'),
+            //当前显示页面的id
             currentPageId: '',
             groups: this.processMenu(processedGroups),
             isAppSelectorShow: false,
@@ -278,10 +279,30 @@ class CurtaoAnalysis extends React.Component {
                 _.set(appIdCondition, 'value', defaultAppId);
             };
         } else {
-            adjustConditions = conditions => {
-                const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
-                _.set(appIdCondition, 'value', 'all');
-            };
+            if (page.id === 'TRIAL_QUALIFIED') {
+                adjustConditions = conditions => {
+                    const startTime = _.find(conditions, condition => condition.name === 'starttime');
+                    const endTime = _.find(conditions, condition => condition.name === 'endtime');
+
+                    if (endTime && endTime) {
+                        const startOfMonth = moment(endTime.value).startOf('month').valueOf();
+                        const endOfMonth = moment(endTime.value).endOf('month').valueOf();
+
+                        if (startTime.value !== startOfMonth) {
+                            startTime.value = startOfMonth;
+                        }
+
+                        if (endTime.value !== endOfMonth) {
+                            endTime.value = endOfMonth;
+                        }
+                    }
+                };
+            } else {
+                adjustConditions = conditions => {
+                    const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
+                    _.set(appIdCondition, 'value', 'all');
+                };
+            }
         }
 
         this.setState({

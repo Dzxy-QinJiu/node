@@ -40,6 +40,10 @@ class TopBar extends React.Component {
                 }
             }],
             selectedMember: ['all'],
+            //开始时间
+            startTime: initialTime.start,
+            //结束时间
+            endTime: initialTime.end,
         };
     }
 
@@ -113,11 +117,15 @@ class TopBar extends React.Component {
     };
 
     onSelectDate(startTime, endTime) {
+        this.setState({startTime, endTime});
+
         dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
     }
 
     render() {
         let range = initialTime.range;
+        let startTime = this.state.startTime;
+        let endTime = this.state.endTime;
 
         let datePickerOptions = [{
             name: Intl.get('user.time.all', '全部时间'),
@@ -146,7 +154,10 @@ class TopBar extends React.Component {
         if (this.props.currentPageId === 'TRIAL_QUALIFIED') {
             //时间区间设为月
             range = 'month';
-
+            //结束时间设为当前结束时间所在月的第一天
+            startTime = moment(this.state.endTime).startOf('month').valueOf();
+            //结束时间设为当前结束时间所在月的最后一天
+            endTime = moment(this.state.endTime).endOf('month').valueOf();
             //日期选择器只能选择月，所以无需提供时间区间选项
             datePickerOptions = [];
         }
@@ -193,6 +204,8 @@ class TopBar extends React.Component {
                         <AntcDatePicker
                             disableDateAfterToday={true}
                             range={range}
+                            start_time={startTime}
+                            end_time={endTime}
                             onSelect={this.onSelectDate}>
                             {datePickerOptions.map((option, index) => (
                                 <AntcDatePicker.Option value={option.value} key={index}>{option.name}</AntcDatePicker.Option>
