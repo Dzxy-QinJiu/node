@@ -12,7 +12,8 @@ module.exports = {
         'CUSTOMER_ANALYSIS_COMMON',
         'CUSTOMER_ANALYSIS_MANAGER',
     ],
-    charts: getCharts()
+    charts: getCharts(),
+    adjustConditions,
 };
 
 function getCharts() {
@@ -30,4 +31,23 @@ function getCharts() {
         //试用合格客户数统计
         customerChart.getCustomerTrialQualifiedChart(),
     ];
+}
+
+//调整分析组件中的过滤条件
+function adjustConditions(conditions) {
+    const startTime = _.find(conditions, condition => condition.name === 'starttime');
+    const endTime = _.find(conditions, condition => condition.name === 'endtime');
+
+    if (startTime && endTime) {
+        const startOfMonth = moment(endTime.value).startOf('month').valueOf();
+        const endOfMonth = moment(endTime.value).endOf('month').valueOf();
+
+        if (startTime.value !== startOfMonth) {
+            startTime.value = startOfMonth;
+        }
+
+        if (endTime.value !== endOfMonth) {
+            endTime.value = endOfMonth;
+        }
+    }
 }

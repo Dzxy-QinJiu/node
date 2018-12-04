@@ -279,24 +279,8 @@ class CurtaoAnalysis extends React.Component {
                 _.set(appIdCondition, 'value', defaultAppId);
             };
         } else {
-            if (page.id === 'TRIAL_QUALIFIED') {
-                adjustConditions = conditions => {
-                    const startTime = _.find(conditions, condition => condition.name === 'starttime');
-                    const endTime = _.find(conditions, condition => condition.name === 'endtime');
-
-                    if (endTime && endTime) {
-                        const startOfMonth = moment(endTime.value).startOf('month').valueOf();
-                        const endOfMonth = moment(endTime.value).endOf('month').valueOf();
-
-                        if (startTime.value !== startOfMonth) {
-                            startTime.value = startOfMonth;
-                        }
-
-                        if (endTime.value !== endOfMonth) {
-                            endTime.value = endOfMonth;
-                        }
-                    }
-                };
+            if (page.adjustConditions) {
+                adjustConditions = page.adjustConditions;
             } else {
                 adjustConditions = conditions => {
                     const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
