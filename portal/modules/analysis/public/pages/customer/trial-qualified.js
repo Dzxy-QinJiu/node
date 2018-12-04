@@ -5,7 +5,6 @@
 import customerChart from '../../charts/customer';
 
 module.exports = {
-    id: 'TRIAL_QUALIFIED',
     title: '试用合格客户分析',
     menuIndex: 5,
     privileges: [
@@ -14,6 +13,7 @@ module.exports = {
     ],
     charts: getCharts(),
     adjustConditions,
+    adjustDatePicker
 };
 
 function getCharts() {
@@ -42,12 +42,21 @@ function adjustConditions(conditions) {
         const startOfMonth = moment(endTime.value).startOf('month').valueOf();
         const endOfMonth = moment(endTime.value).endOf('month').valueOf();
 
-        if (startTime.value !== startOfMonth) {
-            startTime.value = startOfMonth;
-        }
-
-        if (endTime.value !== endOfMonth) {
-            endTime.value = endOfMonth;
-        }
+        //开始时间设为当前选择月的开始时间
+        startTime.value = startOfMonth;
+        //结束时间设为当前选择月的结束时间
+        endTime.value = endOfMonth;
     }
+}
+
+//调整日期选择器
+function adjustDatePicker(option, startTime, endTime) {
+    //时间区间设为月
+    option.range = 'month';
+    //结束时间设为当前结束时间所在月的第一天
+    option.startTime = moment(endTime).startOf('month').valueOf();
+    //结束时间设为当前结束时间所在月的最后一天
+    option.endTime = moment(endTime).endOf('month').valueOf();
+    //日期选择器只能选择月，所以无需提供时间区间选项
+    option.periodOptions = [];
 }

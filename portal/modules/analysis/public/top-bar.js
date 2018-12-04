@@ -15,12 +15,12 @@ const teamTreeEmitter = emitters.teamTreeEmitter;
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 class TopBar extends React.Component {
     static defaultProps = {
-        //当前显示页面的id
-        currentPageId: '',
+        //当前显示页面
+        currentPage: {}
     };
 
     static propTypes = {
-        currentPageId: PropTypes.string,
+        currentPage: PropTypes.object,
     };
 
     constructor(props) {
@@ -126,43 +126,41 @@ class TopBar extends React.Component {
     }
 
     render() {
-        let range = initialTime.range;
-        let startTime = this.state.startTime;
-        let endTime = this.state.endTime;
+        //日期选择器选项
+        let datePickerOption = {
+            range: initialTime.range,
+            startTime: this.state.startTime,
+            endTime: this.state.endTime,
 
-        let datePickerOptions = [{
-            name: Intl.get('user.time.all', '全部时间'),
-            value: 'all'
-        }, {
-            name: Intl.get('common.time.unit.day', '天'),
-            value: 'day'
-        }, {
-            name: Intl.get('common.time.unit.week', '周'),
-            value: 'week'
-        }, {
-            name: Intl.get('common.time.unit.month', '月'),
-            value: 'month'
-        }, {
-            name: Intl.get('common.time.unit.quarter', '季度'),
-            value: 'quarter'
-        }, {
-            name: Intl.get('common.time.unit.year', '年'),
-            value: 'year'
-        }, {
-            name: Intl.get('user.time.custom', '自定义'),
-            value: 'custom'
-        }];
+            periodOptions: [{
+                name: Intl.get('user.time.all', '全部时间'),
+                value: 'all'
+            }, {
+                name: Intl.get('common.time.unit.day', '天'),
+                value: 'day'
+            }, {
+                name: Intl.get('common.time.unit.week', '周'),
+                value: 'week'
+            }, {
+                name: Intl.get('common.time.unit.month', '月'),
+                value: 'month'
+            }, {
+                name: Intl.get('common.time.unit.quarter', '季度'),
+                value: 'quarter'
+            }, {
+                name: Intl.get('common.time.unit.year', '年'),
+                value: 'year'
+            }, {
+                name: Intl.get('user.time.custom', '自定义'),
+                value: 'custom'
+            }]
+        };
 
-        //如果当前显示的是试用合格客户分析
-        if (this.props.currentPageId === 'TRIAL_QUALIFIED') {
-            //时间区间设为月
-            range = 'month';
-            //结束时间设为当前结束时间所在月的第一天
-            startTime = moment(this.state.endTime).startOf('month').valueOf();
-            //结束时间设为当前结束时间所在月的最后一天
-            endTime = moment(this.state.endTime).endOf('month').valueOf();
-            //日期选择器只能选择月，所以无需提供时间区间选项
-            datePickerOptions = [];
+        const adjustDatePicker = _.get(this.props.currentPage, 'adjustDatePicker');
+
+        //如果当前页存在日期选择器调整函数，则调用该函数对选择器选项进行调整
+        if (adjustDatePicker) {
+            adjustDatePicker(datePickerOption, this.state.startTime, this.state.endTime);
         }
 
         return (
@@ -206,11 +204,11 @@ class TopBar extends React.Component {
 
                         <AntcDatePicker
                             disableDateAfterToday={true}
-                            range={range}
-                            start_time={startTime}
-                            end_time={endTime}
+                            range={datePickerOption.range}
+                            start_time={datePickerOption.startTime}
+                            end_time={datePickerOption.endTime}
                             onSelect={this.onSelectDate}>
-                            {datePickerOptions.map((option, index) => (
+                            {datePickerOption.periodOptions.map((option, index) => (
                                 <AntcDatePicker.Option value={option.value} key={index}>{option.name}</AntcDatePicker.Option>
                             ))}
                         </AntcDatePicker>

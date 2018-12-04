@@ -44,7 +44,7 @@ class CurtaoAnalysis extends React.Component {
             currentMenuIndex: '0,0',
             currentCharts: _.get(processedGroups, '[0].pages[0].charts'),
             //当前显示页面的id
-            currentPageId: '',
+            currentPage: '',
             groups: this.processMenu(processedGroups),
             isAppSelectorShow: false,
             //是否显示右侧面板
@@ -292,7 +292,7 @@ class CurtaoAnalysis extends React.Component {
         this.setState({
             currentMenuIndex: menuIndex,
             currentCharts: charts,
-            currentPageId: page.id,
+            currentPage: page,
             isAppSelectorShow,
             adjustConditions
         });
@@ -371,7 +371,7 @@ class CurtaoAnalysis extends React.Component {
         return (
             <div className='curtao-analysis'>
                 <TopBar
-                    currentPageId={this.state.currentPageId}
+                    currentPage={this.state.currentPage}
                 />
                 <Row>
                     <Col span={3}>
