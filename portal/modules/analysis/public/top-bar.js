@@ -14,6 +14,15 @@ const dateSelectorEmitter = emitters.dateSelectorEmitter;
 const teamTreeEmitter = emitters.teamTreeEmitter;
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 class TopBar extends React.Component {
+    static defaultProps = {
+        //当前显示页面
+        currentPage: {}
+    };
+
+    static propTypes = {
+        currentPage: PropTypes.object,
+    };
+
     constructor(props) {
         super(props);
 
@@ -31,6 +40,10 @@ class TopBar extends React.Component {
                 }
             }],
             selectedMember: ['all'],
+            //开始时间
+            startTime: initialTime.start,
+            //结束时间
+            endTime: initialTime.end,
         };
     }
 
@@ -103,11 +116,53 @@ class TopBar extends React.Component {
         });
     };
 
-    onSelectDate(startTime, endTime) {
+    onSelectDate = (startTime, endTime) => {
+        startTime = parseInt(startTime);
+        endTime = parseInt(endTime);
+
+        this.setState({startTime, endTime});
+
         dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
     }
 
     render() {
+        //日期选择器选项
+        let datePickerOption = {
+            range: initialTime.range,
+            startTime: this.state.startTime,
+            endTime: this.state.endTime,
+
+            periodOptions: [{
+                name: Intl.get('user.time.all', '全部时间'),
+                value: 'all'
+            }, {
+                name: Intl.get('common.time.unit.day', '天'),
+                value: 'day'
+            }, {
+                name: Intl.get('common.time.unit.week', '周'),
+                value: 'week'
+            }, {
+                name: Intl.get('common.time.unit.month', '月'),
+                value: 'month'
+            }, {
+                name: Intl.get('common.time.unit.quarter', '季度'),
+                value: 'quarter'
+            }, {
+                name: Intl.get('common.time.unit.year', '年'),
+                value: 'year'
+            }, {
+                name: Intl.get('user.time.custom', '自定义'),
+                value: 'custom'
+            }]
+        };
+
+        const adjustDatePicker = _.get(this.props.currentPage, 'adjustDatePicker');
+
+        //如果当前页存在日期选择器调整函数，则调用该函数对选择器选项进行调整
+        if (adjustDatePicker) {
+            adjustDatePicker(datePickerOption, this.state.startTime, this.state.endTime);
+        }
+
         return (
             <div className='top-bar'>
                 <TopNav>
@@ -149,15 +204,13 @@ class TopBar extends React.Component {
 
                         <AntcDatePicker
                             disableDateAfterToday={true}
-                            range={initialTime.range}
+                            range={datePickerOption.range}
+                            start_time={datePickerOption.startTime}
+                            end_time={datePickerOption.endTime}
                             onSelect={this.onSelectDate}>
-                            <AntcDatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option value="month">{Intl.get('common.time.unit.month', '月')}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option value="year">{Intl.get('common.time.unit.year','年')}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</AntcDatePicker.Option>
+                            {datePickerOption.periodOptions.map((option, index) => (
+                                <AntcDatePicker.Option value={option.value} key={index}>{option.name}</AntcDatePicker.Option>
+                            ))}
                         </AntcDatePicker>
                     </div>
                 </TopNav>

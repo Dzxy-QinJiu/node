@@ -43,6 +43,8 @@ class CurtaoAnalysis extends React.Component {
         this.state = {
             currentMenuIndex: '0,0',
             currentCharts: _.get(processedGroups, '[0].pages[0].charts'),
+            //当前显示页面的id
+            currentPage: '',
             groups: this.processMenu(processedGroups),
             isAppSelectorShow: false,
             //是否显示右侧面板
@@ -277,15 +279,20 @@ class CurtaoAnalysis extends React.Component {
                 _.set(appIdCondition, 'value', defaultAppId);
             };
         } else {
-            adjustConditions = conditions => {
-                const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
-                _.set(appIdCondition, 'value', 'all');
-            };
+            if (page.adjustConditions) {
+                adjustConditions = page.adjustConditions;
+            } else {
+                adjustConditions = conditions => {
+                    const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
+                    _.set(appIdCondition, 'value', 'all');
+                };
+            }
         }
 
         this.setState({
             currentMenuIndex: menuIndex,
             currentCharts: charts,
+            currentPage: page,
             isAppSelectorShow,
             adjustConditions
         });
@@ -363,7 +370,9 @@ class CurtaoAnalysis extends React.Component {
 
         return (
             <div className='curtao-analysis'>
-                <TopBar />
+                <TopBar
+                    currentPage={this.state.currentPage}
+                />
                 <Row>
                     <Col span={3}>
                         {this.renderMenu()}
