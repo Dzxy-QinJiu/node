@@ -8,7 +8,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by xuning on 2018 9.17
  */
-var RightContent = require('../../../components/privilege/right-content');
+var Content = require('../../../components/privilege/content');
 const weeklyReport = require('MOD_DIR/weekly_report');
 const monthlyReport = require('MOD_DIR/monthly-report');
 const userData = require('../user-data');
@@ -46,5 +46,5 @@ module.exports = {
     //在RightContent中用来做跳转,重要
     routesExports: getChildRoutes(),
     routes: getChildRoutes(),
-    component: RightContent
+    component: Content
 };
