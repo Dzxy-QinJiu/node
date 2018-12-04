@@ -7,7 +7,7 @@
  * */
 
 var React = require('react');
-import {Select, Radio, Alert, Switch, Checkbox} from 'antd';
+import {Select, Radio, Alert, Switch, Checkbox,Icon} from 'antd';
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 var RightContent = require('CMP_DIR/privilege/right-content');
@@ -1003,6 +1003,13 @@ class CallRecordAnalyis extends React.Component {
             }
         ];
     };
+    renderRefreshText = () => {
+        return (
+            <div className="refresh-container">
+                <Icon type="reload" onClick={this.getCallInfoData} />
+            </div>
+        );
+    };
 
     // 通话率列表
     renderCallInfo = () => {
@@ -1018,6 +1025,11 @@ class CallRecordAnalyis extends React.Component {
                 pagination: false,
                 bordered: true,
                 columns: this.getPhoneListColumn(),
+            },
+            cardContainer: {
+                props: {
+                    subTitle: this.renderRefreshText(),
+                },
             },
         }];
         return (
