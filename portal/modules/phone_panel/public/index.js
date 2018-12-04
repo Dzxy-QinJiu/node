@@ -24,6 +24,7 @@ import ApplyUserForm from 'MOD_DIR/crm/public/views/apply-user-form';
 import classNames from 'classnames';
 import Trace from 'LIB_DIR/trace';
 import PhoneStatusTop from './view/phone-status-top';
+import PhoneAddToCustomerForm from 'CMP_DIR/phone-add-to-customer-form';
 var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsgEmitter;
 import {PHONERINGSTATUS} from './consts';
 const DIVLAYOUT = {
@@ -67,7 +68,8 @@ class PhonePanel extends React.Component {
             addCustomer: false,//是否需要添加客户 true代码需要添加客户，false代表不需要添加客户
             applyFormCustomerName: '',//申请用户面板用到的客户名
             openAppShowFlag: false,//是否展示开通应用面板
-            isAddingPlanInfo: false//是否展示添加联系计划面板
+            isAddingPlanInfo: false,//是否展示添加联系计划面板
+            isAddToCustomerFlag: false,//是否展示关联客户面板
         };
     }
 
@@ -162,6 +164,7 @@ class PhonePanel extends React.Component {
         this.setState({
             phoneNum: phoneNum,
             isAddFlag: false,
+            isAddToCustomerFlag: false,
             applyUserShowFlag: false,
             openAppShowFlag: false
         });
@@ -185,6 +188,7 @@ class PhonePanel extends React.Component {
             this.setState({
                 isModalShown: false,
                 isAddFlag: false,
+                isAddToCustomerFlag: false,
             });
             //在最后阶段，将数据清除掉
             if (this.state.phonemsgObj && (this.state.phonemsgObj.type === PHONERINGSTATUS.phone || this.state.phonemsgObj.type === PHONERINGSTATUS.call_back)) {
@@ -209,11 +213,26 @@ class PhonePanel extends React.Component {
     };
 
     showAddCustomerForm = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.handle-btn-container'), '点击添加客户按钮');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.handle-btn-container .add-customer'), '点击添加客户按钮');
         this.setState({
             isAddFlag: true
         });
     };
+
+    showAssociateCustomerForm = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.handle-btn-container .associate-customer'), '点击添加到已有客户按钮');
+        this.setState({
+            isAddToCustomerFlag: true
+        });
+    };
+
+    cancelAddToCustomer = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.phone-alert-inner-content'), '关闭添加到已有客户的面板');
+        this.setState({
+            isAddToCustomerFlag: false
+        });
+    };
+
     hideAddForm = () => {
         this.setState({
             isAddFlag: false
@@ -354,13 +373,18 @@ class PhonePanel extends React.Component {
             }
         } else if (_.isArray(customerInfoArr) && customerInfoArr[0]) {//原来无客户，添加完客户时，展示添加的客户详情
             return this.renderCustomerDetail(customerInfoArr[0]);
-        } else {
-            //客户不存在时，展示添加客户的按钮(添加完客户后，此提示不再提示添加客户)
+        } else if (!this.state.isAddToCustomerFlag && !this.state.isAddFlag) {
+            //客户不存在时，展示关联已有客户、添加客户的按钮(关联/添加完客户后，此提示不再提示添加客户)
             return (
-                <span className="handle-btn-container" onClick={this.showAddCustomerForm}>
-                    {Intl.get('crm.3', '添加客户')}
-                </span>
-            );
+                <span>
+                    <span className="handle-btn-container associate-customer"
+                        onClick={this.showAssociateCustomerForm}>
+                        {Intl.get('crm.add.to.exist.customer', '添加到已有客户')}
+                    </span>
+                    <span className="handle-btn-container add-customer" onClick={this.showAddCustomerForm}>
+                        {Intl.get('crm.3', '添加客户')}
+                    </span>
+                </span>);
         }
     }
 
@@ -436,14 +460,16 @@ class PhonePanel extends React.Component {
             }
         });
     }
+
     //取消保存联系计划
     handleScheduleCancel = () => {
         this.setState({
             isAddingPlanInfo: false
         });
     };
+
     renderMainContent() {
-        let defalutCustomerInfoArr = _.get(this.state,'customerInfoArr[0]',{});
+        let defalutCustomerInfoArr = _.get(this.state, 'customerInfoArr[0]', {});
         var phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
         const newSchedule = {
             customer_id: defalutCustomerInfoArr.id,
@@ -467,7 +493,7 @@ class PhonePanel extends React.Component {
                     />
                 </div>
             );
-        } else if (this.state.isAddingPlanInfo){
+        } else if (this.state.isAddingPlanInfo) {
             return (
                 <div className={`add-plan ${cls}`}>
                     <AddScheduleForm
@@ -477,8 +503,8 @@ class PhonePanel extends React.Component {
                     />
                 </div>
             );
-        }else if (this.state.isAddFlag) {
-            var phoneNum = this.state.phoneNum || phonemsgObj.to;
+        } else if (this.state.isAddFlag) {
+            let phoneNum = this.state.phoneNum || phonemsgObj.to;
             //添加客户表单
             return (
                 <div className={cls}>
@@ -492,13 +518,26 @@ class PhonePanel extends React.Component {
                 </div>
 
             );
+        } else if (this.state.isAddToCustomerFlag) {
+            let phoneNum = this.state.phoneNum || phonemsgObj.to;
+            return (
+                <div className={cls}>
+                    <PhoneAddToCustomerForm phoneNum={phoneNum}
+                        cancelAddToCustomer={this.cancelAddToCustomer}
+                        afterAddToCustomerSuccess={this.afterAddToCustomerSuccess}/>
+                </div>);
         }
+    }
+
+    afterAddToCustomerSuccess = (customer) => {
+        this.getCustomerInfoByCustomerId({customers: [customer]});
+        this.cancelAddToCustomer();
     }
 
     renderCustomerSizeTip(phonemsgObj) {
         let tipContent = '';
-        //未点击添加客户按钮时，展示该电话对应客户数的提示
-        if (!this.state.isAddFlag) {
+        //未点击添加和关联客户按钮时，展示该电话对应客户数的提示
+        if (!this.state.isAddFlag && !this.state.isAddToCustomerFlag) {
             if (_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length) {
                 //只对应一个客户时不用提示
                 if (phonemsgObj.customers.length !== 1) {
@@ -584,6 +623,7 @@ class PhonePanel extends React.Component {
         }
         return customerId;
     }
+
     renderPhoneStatus() {
         var phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
         //有监听到推送消息时再渲染出页面
@@ -615,7 +655,7 @@ class PhonePanel extends React.Component {
                     />
                     {this.renderMainContent()}
                     {!this.isCustomerDetailCall(this.state.paramObj) ? //不是从客户详情中拨打的电话时
-                    //客户信息展示或者添加客户按钮
+                        //客户信息展示或者添加客户按钮
 
                         <div className="customer-info-container">
                             <div>

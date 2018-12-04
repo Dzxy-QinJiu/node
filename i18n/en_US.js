@@ -1368,6 +1368,9 @@ var en_US = {
     'crm.score.history.title': 'Historical score',//历史分数
     'crm.concern.top.set': 'Concerned customers on the top',//将关注的客户置顶
     'crm.concern.top.cancel': 'Concerned customers not on the top',//取消关注客户置顶
+    'crm.concat.exist.customer': 'Associated existing customers',//关联已有客户
+    'crm.add.to.exist.customer': 'Add to existing customers',//添加到已有客户
+    'crm.select.add.contact': 'Please select or fill contact name',//请选择或输入联系人名称
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
