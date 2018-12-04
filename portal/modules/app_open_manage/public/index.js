@@ -29,6 +29,7 @@ class OpenApp extends React.Component {
     componentDidMount() {
         OpenAppStore.listen(this.onStoreChange);
         this.getAppList();
+        this.props.renderTopNavOperation && this.props.renderTopNavOperation(null);
     }
     onStoreChange = () => {
         this.setState(

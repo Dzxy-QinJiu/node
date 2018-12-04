@@ -1,7 +1,9 @@
-import { PropTypes } from 'prop-types';
+import {PropTypes} from 'prop-types';
+
 require('./css/nav-sidebar.less');
 var userData = require('../../public/sources/user-data');
 import {NavLink} from 'react-router-dom';
+
 var Logo = require('../Logo/index.js');
 var Avatar = require('../Avatar/index.js');
 var LogOut = require('../../modules/logout/views/index.js');
@@ -22,7 +24,8 @@ let history = require('../../public/sources/history');
 import ModalIntro from '../modal-intro';
 import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import { storageUtil } from 'ant-utils';
+import {storageUtil} from 'ant-utils';
+
 const session = storageUtil.session;
 //需要加引导的模块
 const menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
@@ -47,17 +50,20 @@ const menuShortNamesMap = {
     'user_info_manage': Intl.get('menu.notification', '通知'),
     'application': Intl.get('menu.leave.apply.list.management', '申请审批')
 };
+
 //获取菜单
 function getMenus() {
     var userInfo = userData.getUserData();
     var sideBarMenus = userInfo.sideBarMenus;
     return sideBarMenus;
 }
+
 //获取用户logo
 function getUserInfoLogo() {
     var userInfoLogo = userData.getUserData().user_logo;
     return userInfoLogo;
 }
+
 //获取用户名、昵称
 function getUserName() {
     var nick_name = userData.getUserData().nick_name;
@@ -242,7 +248,7 @@ var NavSidebar = createReactClass({
     selectedIntroElement: function() {
         //查看汉堡包按钮是否存在
         var hamburger = document.getElementById('hamburger');
-        var isHamburgerShow = hamburger.style.display;
+        var isHamburgerShow = hamburger && hamburger.style.display;
         //要加引导的元素
         var $introElement = '', introModalLayout = {};
         if (isHamburgerShow === 'none') {
@@ -291,11 +297,11 @@ var NavSidebar = createReactClass({
         });
         $('.navbar').on('click', '.clue_customer_icon_container', function(e) {
             //点击到a标签上，不做处理
-            if ($(e.target).is('a')){
+            if ($(e.target).is('a')) {
                 return;
             }
             //点击到线索未处理的数字上，进行跳转
-            history.push('/clue_customer',{clickUnhandleNum: true});
+            history.push('/clue_customer', {clickUnhandleNum: true});
         });
     },
 
@@ -438,7 +444,7 @@ var NavSidebar = createReactClass({
             if (hasMessage) {
                 return (
                     <span className="iconfont icon-apply-message-tip"
-                        title={Intl.get('user.apply.unread.reply', '有未读回复')} />
+                          title={Intl.get('user.apply.unread.reply', '有未读回复')}/>
                 );
             }
             else {
@@ -451,7 +457,8 @@ var NavSidebar = createReactClass({
         if (!this.state.hideNavIcon) {
             return (
                 <li className="sidebar-applyentry" title={Intl.get('menu.appuser.apply', '用户审批')}>
-                    <NavLink to={applyLinks[0].href} activeClassName="active" className={isActive ? 'iconfont icon-active-apply-ico' : 'iconfont icon-apply-ico'}>
+                    <NavLink to={applyLinks[0].href} activeClassName="active"
+                             className={isActive ? 'iconfont icon-active-apply-ico' : 'iconfont icon-apply-ico'}>
                         {renderMessageTip()}
                     </NavLink>
                 </li>
@@ -500,9 +507,9 @@ var NavSidebar = createReactClass({
             return (
                 <div className="sidebar-backend-config">
                     <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
-                        overlayClassName="nav-sidebar-backend-config">
+                             overlayClassName="nav-sidebar-backend-config">
                         <NavLink to={defaultLink.href} activeClassName="active">
-                            <i className="iconfont icon-role-auth-config" />
+                            <i className="iconfont icon-role-auth-config"/>
                         </NavLink>
                     </Popover>
                 </div>
@@ -512,7 +519,7 @@ var NavSidebar = createReactClass({
             return (
                 <div className="sidebar-backend-config text-nav-li">
                     <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
-                        overlayClassName="nav-sidebar-backend-config">
+                             overlayClassName="nav-sidebar-backend-config">
                         <NavLink to={defaultLink.href} activeClassName="active">
                             {menuShortNamesMap.background_management}
                         </NavLink>
@@ -529,15 +536,15 @@ var NavSidebar = createReactClass({
         return (
             <div className="sidebar-userinfo">
                 <Popover content={userinfoList} trigger="hover"
-                    placement="rightBottom"
-                    overlayClassName="nav-sidebar-userinfo">
+                         placement="rightBottom"
+                         overlayClassName="nav-sidebar-userinfo">
                     <div className="avatar_container">
                         <Avatar className="avatar"
-                            size="51px"
-                            src={this.state.userInfoLogo}
-                            userName={this.state.userInfo.user_name}
-                            nickName={this.state.userInfo.nick_name}
-                            round="true" link="true" url="/user_info_manage"/>
+                                size="51px"
+                                src={this.state.userInfoLogo}
+                                userName={this.state.userInfo.user_name}
+                                nickName={this.state.userInfo.nick_name}
+                                round="true" link="true" url="/user_info_manage"/>
                     </div>
                 </Popover>
             </div>
@@ -585,7 +592,7 @@ var NavSidebar = createReactClass({
         this.props.closeNotificationPanel();
     },
     //展示未读回复的图标提示
-    renderUnreadReplyTip(category){
+    renderUnreadReplyTip(category) {
         //是申请审批，有未读回复数并且，所有申请待审批数都为0
         let unreadReplyTipShowFlag = category === 'application' &&//申请审批
             this.state.hasUnreadReply &&//有未读回复
@@ -596,7 +603,7 @@ var NavSidebar = createReactClass({
         if (unreadReplyTipShowFlag) {
             return (
                 <span className="iconfont icon-apply-message-tip"
-                    title={Intl.get('user.apply.unread.reply', '有未读回复')}/>
+                      title={Intl.get('user.apply.unread.reply', '有未读回复')}/>
             );
         } else {
             return null;
@@ -614,8 +621,8 @@ var NavSidebar = createReactClass({
                 <div className="container">
                     <div className="logo-and-menus" ref="logoAndMenus"
                     >
-                        <div className="header-logo" >
-                            <Logo />
+                        <div className="header-logo">
+                            <Logo/>
                         </div>
                         <div className="collapse navbar-collapse">
                             <ul className="nav navbar-nav" id="menusLists">
@@ -639,8 +646,8 @@ var NavSidebar = createReactClass({
                                             return (
                                                 <li key={i} title={menu.name} className={routeCls}>
                                                     <NavLink to={`/${menu.routePath}`}
-                                                        activeClassName='active'
-                                                        className={extraClass}
+                                                             activeClassName='active'
+                                                             className={extraClass}
                                                     >
                                                         {this.renderUnreadReplyTip(category)}
                                                     </NavLink>
@@ -650,9 +657,9 @@ var NavSidebar = createReactClass({
                                         //小屏幕隐藏图标
                                         else {
                                             return (
-                                                <li key={i} title={menu.name} className= {`text-nav-li  ${routeCls}`}>
+                                                <li key={i} title={menu.name} className={`text-nav-li  ${routeCls}`}>
                                                     <NavLink to={`/${menu.routePath}`}
-                                                        activeClassName='active'
+                                                             activeClassName='active'
                                                     >
                                                         {this.renderUnreadReplyTip(category)}
                                                         <span>
@@ -668,7 +675,7 @@ var NavSidebar = createReactClass({
                                 {/*{_this.getApplyBlock(currentPageCategory === 'apply')}*/}
                             </ul>
                             <Popover content={this.getNavbarLists()} trigger="hover" placement="rightTop"
-                                overlayClassName="nav-sidebar-lists">
+                                     overlayClassName="nav-sidebar-lists">
                                 <div className="hamburger" id="hamburger">
                                     <span className="line"></span>
                                     <span className="line"></span>

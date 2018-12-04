@@ -13,7 +13,6 @@ let ProductionStore = require('./store/production-store');
 let ProductionAction = require('./action/production-actions');
 let RightCardsContainer = require('../../../components/rightCardsContainer');
 let Production = require('./views/production');
-let TopNav = require('../../../components/top-nav');
 let PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
 let Spinner = require('../../../components/spinner');
 let openTimeout = null;//打开面板时的时间延迟设置
@@ -32,6 +31,7 @@ class ProductionManage extends React.Component {
     componentDidMount() {
         $('body').css('overflow', 'hidden');
         ProductionStore.listen(this.onChange);
+        this.props.renderTopNavOperation && this.props.renderTopNavOperation(this.renderTopNavOperation());
     }
 
     componentWillUnmount() {

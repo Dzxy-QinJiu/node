@@ -75,6 +75,7 @@ SalesStageStore.prototype.saveSalesStageOrder = function(salesStageModified) {
     }
     this.salesStageEditOrder = false;
     this.isSavingSalesStage = false;
+    console.log('in saveSalesStageOrder ' + this.salesStageEditOrder);
 };
 
 //删除销售阶段

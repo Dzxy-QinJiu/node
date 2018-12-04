@@ -33,7 +33,7 @@ class SalesStagePage extends React.Component {
         $(window).on('resize', this.resizeWindow);
         SalesStageStore.listen(this.onChange);
         SalesStageAction.getSalesStageList();
-        this.props.renderTopNavOperation && this.props.renderTopNavOperation(this.renderTopNavOperation());
+        this.renderTopNavOperation();
     }
 
     componentWillUnmount() {
@@ -102,6 +102,9 @@ class SalesStagePage extends React.Component {
         }
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .sales-stage-top-div:first-child span'), '变更销售阶段顺序');
         SalesStageAction.showSalesStageEditOrder();
+        setTimeout(() => {
+            this.renderTopNavOperation();
+        });
     };
 
     events_hideSalesStageEditOrder = () => {
@@ -110,6 +113,9 @@ class SalesStagePage extends React.Component {
         }
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .sales-stage-top-btn:last-child span'), '取消对销售阶段顺序更改的保存');
         SalesStageAction.hideSalesStageEditOrder();
+        setTimeout(() => {
+            this.renderTopNavOperation();
+        });
     };
 
     events_salesStageOrderUp = (salesStage) => {
@@ -126,16 +132,18 @@ class SalesStagePage extends React.Component {
         }
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .sales-stage-top-btn:last-child span'), '保存对销售阶段的更改');
         SalesStageAction.changeIsSavingSalesStage();
-        SalesStageAction.saveSalesStageOrder(this.state.salesStageList);
+        SalesStageAction.saveSalesStageOrder(this.state.salesStageList,this.renderTopNavOperation);
     };
 
     state = {
         saveStageErrMsg: '',
         ...getStateFromStore(this)
     };
+
+
     //渲染操作按钮区
     renderTopNavOperation = () => {
-        return this.state.salesStageEditOrder ?
+        let operations = this.state.salesStageEditOrder ?
             (<div className="sales-stage-top-div-group">
                 <div className="sales-stage-top-div">
                     <Button type="ghost" className="sales-stage-top-btn btn-item"
@@ -164,6 +172,7 @@ class SalesStagePage extends React.Component {
                                                  defaultMessage="添加销售阶段"/></Button>
                 </PrivilegeChecker>
             </div>);
+        this.props.renderTopNavOperation && this.props.renderTopNavOperation(operations);
     };
 
     render() {
