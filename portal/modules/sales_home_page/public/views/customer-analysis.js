@@ -92,20 +92,20 @@ class CustomerAnalysis extends React.Component {
         this.setState(timeObj, () => {
             if (timeChanged) {
                 setTimeout(() => {
-                    this.getTransferCustomers({ isFirst: true });
+                    this.getTransferCustomers(true);
                     this.getStageChangeCustomers();
                 });
             }
 
             if (teamChanged) {
                 setTimeout(() => {
-                    this.getTransferCustomers({ isFirst: true }, nextPropsTeamId);
+                    this.getTransferCustomers(true, nextPropsTeamId);
                 });
             }
 
             if (memberChanged) {
                 setTimeout(() => {
-                    this.getTransferCustomers({ isFirst: true }, null, nextPropsMemberId);
+                    this.getTransferCustomers(true, null, nextPropsMemberId);
                 });
             }
         });
@@ -216,7 +216,7 @@ class CustomerAnalysis extends React.Component {
         this.getChartData();
         setTimeout(() => {
             this.getStageChangeCustomers();
-            this.getTransferCustomers({ isFirst: true });
+            this.getTransferCustomers(true);
         });
     }
 
@@ -248,13 +248,13 @@ class CustomerAnalysis extends React.Component {
         this.setState({
             transferCustomers
         }, () => {
-            this.getTransferCustomers({ isFirst: true });
+            this.getTransferCustomers(true);
         });
 
     };
 
     //获取转出客户统计数据
-    getTransferCustomers = ({ isFirst = false }, teamId, memberId) => {
+    getTransferCustomers = (isFirst = false, teamId = this.state.currentTeamId, memberId = this.state.currentMemberId) => {
         let params = {
             isFirst,
             sort_field: this.state.transferCustomers.sorter.field,
@@ -279,16 +279,8 @@ class CustomerAnalysis extends React.Component {
         if (lastId && !isFirst) {
             params.query.id = lastId;
         }
-        if (isFirst) {
-            let transferCustomers = _.cloneDeep(this.state.transferCustomers);
-            transferCustomers.lastId = '';
-            transferCustomers.listenScrollBottom = true;
-            this.setState({ transferCustomers }, () => {
-                OplateCustomerAnalysisAction.getTransferCustomers(params);
-            });
-        } else {
-            OplateCustomerAnalysisAction.getTransferCustomers(params);
-        }
+
+        OplateCustomerAnalysisAction.getTransferCustomers(params);
     };
 
     getStartDateText = () => {
@@ -935,7 +927,13 @@ class CustomerAnalysis extends React.Component {
             resultType: this.state.transferCustomers.loading ? 'loading' : '',
             option: {
                 pagination: false,
-                scroll: {y: TABLE_HIGHT},
+                dropLoad: {
+                    loading: this.state.transferCustomers.loading,
+                    handleScrollBottom: this.getTransferCustomers,
+                    listenScrollBottom: this.state.transferCustomers.listenScrollBottom && !this.state.transferCustomers.loading,
+                    showNoMoreDataTip: !this.state.transferCustomers.listenScrollBottom,
+                    noMoreDataText: Intl.get('noMoreTip.customer', '没有更多客户了')
+                },
                 columns: [
                     {
                         title: Intl.get('common.login.time', '时间'),
