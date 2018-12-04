@@ -41,10 +41,11 @@ class RightContent extends React.Component {
         return (
             <div className="rightContent">
                 <div className="main">
-                    <TopNav>
-                        <TopNav.MenuList/>
-                        {this.state.topNavOperation}
-                    </TopNav>
+                    {this.props.route ? (<TopNav>
+                            <TopNav.MenuList/>
+                            {this.state.topNavOperation}
+                        </TopNav>
+                    ) : null}
                     {this.props.route ? renderRoutes(this.props.route.routes,
                         {renderTopNavOperation: this.renderTopNavOperation}) : this.props.children}
                 </div>

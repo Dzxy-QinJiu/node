@@ -167,7 +167,7 @@ class TopBar extends React.Component {
             adjustDatePicker(datePickerOption, this.state.startTime, this.state.endTime);
         }
         return (
-            <div className="btn-item">
+            <div className="analysis-filter-btn-item">
                 <Select
                     defaultValue="team"
                     onChange={this.onFilterTypeChange}

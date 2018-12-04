@@ -374,7 +374,7 @@ class MonthlyReport extends React.Component {
 
     renderFilter = (selectedTeamId) => {
         return (
-            <div className="filter">
+            <div className="monthly-report-filter">
                 {selectedTeamId && this.state.teamList.length ? (
                     <Select
                         defaultValue={selectedTeamId}
