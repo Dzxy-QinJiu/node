@@ -21,7 +21,7 @@ import ApplyDetailStatus from 'CMP_DIR/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc, getFilterReplyList} from 'PUB_DIR/sources/utils/common-method-util';
 import {LEAVE_TYPE} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
@@ -51,19 +51,6 @@ class ApplyViewDetail extends React.Component {
             this.getBusinessApplyDetailData(this.props.detailItem);
         }
     }
-    getReplyList = () => {
-        //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据,但是都需要过滤掉有comment内容的条数
-        var applicantList = _.get(this.state, 'detailInfoObj.info');
-        var replyList = [];
-        if ((applicantList.status === 'pass' || applicantList.status === 'reject' || applicantList.status === 'cancel') && _.isArray(_.get(this.state, 'detailInfoObj.info.approve_details'))){
-            replyList = _.get(this.state, 'detailInfoObj.info.approve_details');
-        }else{
-            replyList = _.get(this,'state.replyListInfo.list');
-        }
-        replyList = _.filter(replyList,(item) => {return !item.comment;});
-        replyList = _.sortBy( _.cloneDeep(replyList), [(item) => { return item.comment_time; }]);
-        return replyList;
-    };
     //审批状态
     renderApplyStatus = () => {
         var showApplyInfo = [{
@@ -356,7 +343,7 @@ class ApplyViewDetail extends React.Component {
     renderApplyApproveSteps =() => {
         var stepStatus = '';
         var applicantList = _.get(this.state, 'detailInfoObj.info');
-        var replyList = this.getReplyList();
+        var replyList = getFilterReplyList(this.state);
         var applicateName = _.get(applicantList, 'applicant.nick_name') || '';
         var applicateTime = moment(_.get(applicantList, 'create_time')).format(oplateConsts.DATE_TIME_FORMAT);
         var stepArr = [{

@@ -24,7 +24,7 @@ import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
 import ApplyDetailBlock from 'CMP_DIR/apply-detail-block';
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import {APPLY_LIST_LAYOUT_CONSTANTS, APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc,getFilterReplyList} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 const ASSIGN_TYPE = {
@@ -200,19 +200,6 @@ class ApplyViewDetail extends React.Component {
             />
         );
     }
-    getReplyList = () => {
-        //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据
-        var applicantList = _.get(this.state, 'detailInfoObj.info');
-        var replyList = [];
-        if ((applicantList.status === 'pass' || applicantList.status === 'reject' || applicantList.status === 'cancel') && _.isArray(_.get(this.state, 'detailInfoObj.info.approve_details'))){
-            replyList = _.get(this.state, 'detailInfoObj.info.approve_details');
-        }else{
-            replyList = _.get(this,'state.replyListInfo.list');
-        }
-        replyList = _.filter(replyList,(item) => {return !item.comment;});
-        replyList = _.sortBy( _.cloneDeep(replyList), [(item) => { return item.comment_time; }]);
-        return replyList;
-    };
     //审批状态
     renderApplyStatus = () => {
         var showApplyInfo = [{
@@ -564,7 +551,7 @@ class ApplyViewDetail extends React.Component {
     renderApplyApproveSteps =() => {
         var stepStatus = '';
         var applicantList = _.get(this.state, 'detailInfoObj.info');
-        var replyList = this.getReplyList();
+        var replyList = getFilterReplyList(this.state);
         var applicateName = _.get(applicantList, 'applicant.nick_name');
         var applicateTime = moment(_.get(applicantList, 'create_time')).format(oplateConsts.DATE_TIME_FORMAT);
         var userDetail = userData.getUserData();
