@@ -23,6 +23,8 @@ import CallRecordAnalyis from './call-record-analysis';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import Trace from 'LIB_DIR/trace';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
+import PhoneAddToCustomerForm from 'CMP_DIR/phone-add-to-customer-form';
 import RefreshButton from 'CMP_DIR/refresh-button';
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 //获取无效电话的列表  设置某个电话为无效电话
@@ -98,6 +100,7 @@ class CallRecord extends React.Component {
             filterObj: {},//表头过滤条件
             isFilter: false, //是否是过滤状态，是：展示带搜索框的标题，否：展示可排序的表头
             isAddFlag: false, // 添加客户的标志
+            isAssociateFlag: false, //关联客户的标识
             phoneNumber: '', // 电话号码
             rightPanelIsShow: false, // 若添加客户已存在，打开客户详情的标志
             currentId: '', // 查看右侧详情的id
@@ -421,7 +424,7 @@ class CallRecord extends React.Component {
 
     // 添加客户和联系人面板
     showAddCustomerForm = (phoneNumber) => {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击+添加客户和联系人');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击添加客户链接');
         this.setState({
             isAddFlag: true,
             phoneNumber: phoneNumber
@@ -433,6 +436,22 @@ class CallRecord extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-customer'), '关闭添加客户和联系人面板');
         this.setState({
             isAddFlag: false
+        });
+    };
+
+    //关联客户面板
+    showAssociateCustomerForm = (phoneNumber) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击关联已有客户');
+        this.setState({
+            isAssociateFlag: true,
+            phoneNumber: phoneNumber
+        });
+    };
+    // 隐藏关联客户和联系人面板
+    hideAssociateCustomerForm = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.associate-customer'), '关闭关联客户和联系人面板');
+        this.setState({
+            isAssociateFlag: false
         });
     };
 
@@ -657,8 +676,11 @@ class CallRecord extends React.Component {
                                     <input type="hidden" value={record.customer_name} className="customer_name_hidden" />
                                 </div>
                             ) : (
-                                <div title="点击添加客户和联系人" onClick={this.showAddCustomerForm.bind(this, record.dst)}>
-                                    <Icon type="plus"/>
+                                <div className="customer-column-click-wrap">
+                                    <a className="add-customer" title={Intl.get('crm.3', '添加客户')}
+                                        onClick={this.showAddCustomerForm.bind(this, record.dst)}>{Intl.get('common.add', '添加')}</a>
+                                    <a className="associate-customer" title={Intl.get('crm.add.to.exist.customer', '关联已有客户')}
+                                        onClick={this.showAssociateCustomerForm.bind(this, record.dst)}>{Intl.get('common.associate', '关联')}</a>
                                 </div>
                             )}
                         </div>
@@ -904,7 +926,7 @@ class CallRecord extends React.Component {
                         <DatePicker.Option value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
                         <DatePicker.Option value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
                         <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
-                    </DatePicker>                    
+                    </DatePicker>
                     <div className="filter-phone-button float-r">
                         <Select
                             className="btn-item"
@@ -914,10 +936,10 @@ class CallRecord extends React.Component {
                         >
                             {filterOptions}
                         </Select>
-                        <Button onClick={this.handleRefresh} className="btn-item">{Intl.get('common.refresh', '刷新')}</Button>                    
+                        <Button onClick={this.handleRefresh} className="btn-item">{Intl.get('common.refresh', '刷新')}</Button>
                         <Button className="btn-item btn-m-r-2" onClick={this.handleCallAnalysis} data-tracename="点击通话分析按钮">
                             {Intl.get('user.detail.analysis', '分析')}
-                        </Button>                        
+                        </Button>
                     </div>
                 </TopNav>
                 <div className="call_record_wrap splice-table" id="new-table" >
@@ -961,9 +983,35 @@ class CallRecord extends React.Component {
                         />
                     </RightPanel>
                 ) : null}
+                {this.state.isAssociateFlag ? (
+                    <RightPanelModal
+                        className="phone-associate-customer-container"
+                        isShowMadal={true}
+                        isShowCloseBtn={true}
+                        onClosePanel={this.hideAssociateCustomerForm}
+                        title={Intl.get('crm.add.to.exist.customer', '关联已有客户')}
+                        content={this.renderAssociateForm()}
+                        dataTracename="关联已客户"
+                    />) : null}
             </div>
         </RightContent >
         );
+    }
+
+    renderAssociateForm() {
+        return (<PhoneAddToCustomerForm phoneNum={this.state.phoneNumber} hideTitleFlag={true}
+            cancelAddToCustomer={this.hideAssociateCustomerForm}
+            afterAddToCustomerSuccess={this.afterAddToCustomerSuccess}/>);
+    }
+
+    afterAddToCustomerSuccess = (customer) => {
+        CallRecordActions.updateCallRecord({
+            id: customer.id,
+            name: customer.name,
+            contacts0_phone: this.state.phoneNumber,
+            contacts0_name: customer.contact_name
+        });
+        this.hideAssociateCustomerForm();
     }
 
     /**
@@ -1040,7 +1088,7 @@ class CallRecord extends React.Component {
             //电话记录类型
             phone_type: this.getReqParam(queryParam, 'phone_type'),
         };
-        
+
         CallRecordActions.getCallRecordList(queryObj, this.state.filterObj);
     };
 

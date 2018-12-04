@@ -379,7 +379,7 @@ class PhonePanel extends React.Component {
                 <span>
                     <span className="handle-btn-container associate-customer"
                         onClick={this.showAssociateCustomerForm}>
-                        {Intl.get('crm.add.to.exist.customer', '添加到已有客户')}
+                        {Intl.get('crm.add.to.exist.customer', '关联已有客户')}
                     </span>
                     <span className="handle-btn-container add-customer" onClick={this.showAddCustomerForm}>
                         {Intl.get('crm.3', '添加客户')}

@@ -37,11 +37,14 @@ class PhoneAddToCustomerForm extends React.Component {
             dataType: 'json',
             type: 'put',
             data: {customer_id: contact.customer_id, id: contact.id, phone: JSON.stringify(contact.phone)},
-            success: contact => {
-                if (contact) {
+            success: data => {
+                if (data) {
                     this.setState({isSaving: false});
                     if (_.isFunction(this.props.afterAddToCustomerSuccess)) {
-                        this.props.afterAddToCustomerSuccess(this.state.selectedCustomer);
+                        this.props.afterAddToCustomerSuccess({
+                            ...this.state.selectedCustomer,
+                            contact_name: contact.name
+                        });
                     }
                 } else {
                     this.setState({isSaving: false, saveErrorMsg: Intl.get('common.save.failed', '保存失败')});
@@ -65,7 +68,10 @@ class PhoneAddToCustomerForm extends React.Component {
                 if (data && _.isArray(data.result) && data.result[0]) {
                     this.setState({isSaving: false});
                     if (_.isFunction(this.props.afterAddToCustomerSuccess)) {
-                        this.props.afterAddToCustomerSuccess(this.state.selectedCustomer);
+                        this.props.afterAddToCustomerSuccess({
+                            ...this.state.selectedCustomer,
+                            contact_name: contact.name
+                        });
                     }
                 } else {
                     this.setState({isSaving: false, saveErrorMsg: Intl.get('common.save.failed', '保存失败')});
@@ -196,9 +202,10 @@ class PhoneAddToCustomerForm extends React.Component {
         };
         return (
             <Form className="add-to-customer-container" id="add-to-customer-form">
-                <div className="add-to-customer-label">
-                    {Intl.get('crm.add.to.exist.customer', '添加到已有客户')}
-                </div>
+                {this.props.hideTitleFlag ? null : (
+                    <div className="add-to-customer-label">
+                        {Intl.get('crm.add.to.exist.customer', '关联已有客户')}
+                    </div>)}
                 <FormItem
                     label={Intl.get('call.record.customer', '客户')}
                     {...formItemLayout}
@@ -274,6 +281,7 @@ class PhoneAddToCustomerForm extends React.Component {
 }
 
 PhoneAddToCustomerForm.propTypes = {
+    hideTitleFlag: PropTypes.bool,//是否隐藏标题
     phoneNum: PropTypes.string,
     form: PropTypes.object,
     afterAddToCustomerSuccess: PropTypes.func,

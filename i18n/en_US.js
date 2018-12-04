@@ -73,6 +73,7 @@ var en_US = {
     'common.my.app': 'My Applications',//我的应用
     'common.filter': 'Filter',//筛选
     'common.add': 'Add ',//添加
+    'common.associate': 'Associate',//关联
     'common.image.type.tip': 'The type of image must be one of gif, jpeg, jpg, png, bmp!',//图片类型必须是gif,jpeg,jpg,png,bmp中的一种！
     'common.image.upload': 'upload',//上传
     'common.image.upload.size': 'The size of image must be less than 300 kb!',//请上传小于300kb的图片
@@ -1368,8 +1369,7 @@ var en_US = {
     'crm.score.history.title': 'Historical score',//历史分数
     'crm.concern.top.set': 'Concerned customers on the top',//将关注的客户置顶
     'crm.concern.top.cancel': 'Concerned customers not on the top',//取消关注客户置顶
-    'crm.concat.exist.customer': 'Associated existing customers',//关联已有客户
-    'crm.add.to.exist.customer': 'Add to existing customers',//添加到已有客户
+    'crm.add.to.exist.customer': 'Add to existing customers',//关联已有客户
     'crm.select.add.contact': 'Please select or fill contact name',//请选择或输入联系人名称
 
     // 客户详情中，合同项

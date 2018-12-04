@@ -125,16 +125,16 @@ var CallAddCustomerForm = createReactClass({
                 let formData = _this.state.formData;
                 //去除表单数据中值为空的项
                 commonMethodUtil.removeEmptyItem(formData);
-                CrmAction.addCustomer(formData, function(result) {
+                CrmAction.addCustomer(formData, function(data) {
                     _this.state.isLoading = false;
-                    if (result.code === 0) {
+                    if (data.code === 0) {
                         formData.contacts0_phone = _this.props.phoneNumber;
-                        CallRecordAction.updateCallRecord(formData);
+                        CallRecordAction.updateCallRecord({...formData, id: _.get(data,'result[0].id','')});
                         message.success( Intl.get('user.user.add.success', '添加成功'));
                         _this.props.addOne();
                         _this.setState(_this.getInitialState());
                     } else {
-                        message.error(result);
+                        message.error(data);
                         _this.setState(_this.state);
                     }
                 });

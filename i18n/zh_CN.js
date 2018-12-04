@@ -73,6 +73,7 @@ var zh_CN = {
     'common.my.app': '我的应用',
     'common.filter': '筛选',
     'common.add': '添加',
+    'common.associate': '关联',
     'common.image.type.tip': '图片类型必须是gif,jpeg,jpg,png,bmp中的一种！',
     'common.image.upload': '上传',
     'common.image.upload.size': '请上传小于300kb的图片',
@@ -1379,9 +1380,10 @@ var zh_CN = {
     'crm.score.history.title': '历史分数',
     'crm.concern.top.set': '设置关注客户置顶',
     'crm.concern.top.cancel': '取消关注客户置顶',
-    'crm.add.to.exist.customer': '添加到已有客户',
+    'crm.add.to.exist.customer': '关联已有客户',
     'crm.select.add.contact': '请选择或输入联系人名称',
     'crm.fill.contact.name': '请输入联系人名称',
+
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
