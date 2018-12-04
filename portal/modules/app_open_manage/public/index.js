@@ -185,9 +185,6 @@ class OpenApp extends React.Component {
         );
         return (
             <div className="open-app-wrapper">
-                <TopNav>
-                    <TopNav.MenuList />
-                </TopNav>
                 <StatusWrapper
                     loading={this.state.appList.loading}
                     errorMsg={this.state.appList.errorMsg}

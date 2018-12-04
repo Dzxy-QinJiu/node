@@ -33,6 +33,7 @@ class SalesStagePage extends React.Component {
         $(window).on('resize', this.resizeWindow);
         SalesStageStore.listen(this.onChange);
         SalesStageAction.getSalesStageList();
+        this.props.renderTopNavOperation && this.props.renderTopNavOperation(this.renderTopNavOperation());
     }
 
     componentWillUnmount() {
@@ -132,6 +133,38 @@ class SalesStagePage extends React.Component {
         saveStageErrMsg: '',
         ...getStateFromStore(this)
     };
+    //渲染操作按钮区
+    renderTopNavOperation = () => {
+        return this.state.salesStageEditOrder ?
+            (<div className="sales-stage-top-div-group">
+                <div className="sales-stage-top-div">
+                    <Button type="ghost" className="sales-stage-top-btn btn-item"
+                            onClick={this.events_hideSalesStageEditOrder.bind(this)}
+                    ><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/></Button>
+                </div>
+                <div className="sales-stage-top-div">
+                    <Button type="ghost" className="sales-stage-top-btn btn-item"
+                            onClick={this.events_saveSalesStageOrder.bind(this)}
+                    ><ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/></Button>
+                </div>
+            </div>) :
+            (<div className="sales-stage-top-div-group">
+                <PrivilegeChecker check="BGM_SALES_STAGE_SORT" className="sales-stage-top-div">
+                    <Button type="ghost" className="sales-stage-top-btn btn-item btn-m-r-2"
+                            onClick={this.events_showSalesStageEditOrder.bind(this)}
+
+                    ><ReactIntl.FormattedMessage id="sales.stage.change.sort"
+                                                 defaultMessage="变更顺序"/></Button>
+                </PrivilegeChecker>
+                <PrivilegeChecker check="BGM_SALES_STAGE_ADD" className="sales-stage-top-div">
+                    <Button type="ghost" className="sales-stage-top-btn btn-item"
+                            onClick={this.events_showSalesStageForm.bind(this, 'addSalesStage')}
+                            data-tracename="添加销售阶段"
+                    ><ReactIntl.FormattedMessage id="sales.stage.add.sales.stage"
+                                                 defaultMessage="添加销售阶段"/></Button>
+                </PrivilegeChecker>
+            </div>);
+    };
 
     render() {
         var _this = this;
@@ -139,41 +172,6 @@ class SalesStagePage extends React.Component {
         var salesStageList = this.state.salesStageList;
         return (
             <div className="sales-stage-manage-container" data-tracename="订单阶段管理">
-                <TopNav>
-                    <TopNav.MenuList/>
-                    {
-                        this.state.salesStageEditOrder ?
-                            (<div className="sales-stage-top-div-group">
-                                <div className="sales-stage-top-div">
-                                    <Button type="ghost" className="sales-stage-top-btn btn-item"
-                                        onClick={_this.events_hideSalesStageEditOrder.bind(this)}
-                                    ><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/></Button>
-                                </div>
-                                <div className="sales-stage-top-div">
-                                    <Button type="ghost" className="sales-stage-top-btn btn-item"
-                                        onClick={_this.events_saveSalesStageOrder.bind(this)}
-                                    ><ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/></Button>
-                                </div>
-                            </div>) :
-                            (<div className="sales-stage-top-div-group">
-                                <PrivilegeChecker check="BGM_SALES_STAGE_SORT" className="sales-stage-top-div">
-                                    <Button type="ghost" className="sales-stage-top-btn btn-item btn-m-r-2"
-                                        onClick={_this.events_showSalesStageEditOrder.bind(this)}
-
-                                    ><ReactIntl.FormattedMessage id="sales.stage.change.sort"
-                                            defaultMessage="变更顺序"/></Button>
-                                </PrivilegeChecker>
-                                <PrivilegeChecker check="BGM_SALES_STAGE_ADD" className="sales-stage-top-div">
-                                    <Button type="ghost" className="sales-stage-top-btn btn-item"
-                                        onClick={_this.events_showSalesStageForm.bind(this, 'addSalesStage')}
-                                        data-tracename="添加销售阶段"
-                                    ><ReactIntl.FormattedMessage id="sales.stage.add.sales.stage"
-                                            defaultMessage="添加销售阶段"/></Button>
-                                </PrivilegeChecker>
-                            </div>)
-                    }
-
-                </TopNav>
                 {this.state.salesStageFormShow ? (
                     <SalesStageForm
                         salesStage={this.state.currentSalesStage}

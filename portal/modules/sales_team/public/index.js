@@ -169,9 +169,6 @@ class SalesTeamPage extends React.Component {
         let leftTreeData = this.state.searchContent ? this.state.searchSalesTeamTree : this.state.salesTeamListArray;
         return (
             <div className="sales-team-manage-container" data-tracename="团队管理">
-                <TopNav>
-                    <TopNav.MenuList/>
-                </TopNav>
                 {this.state.salesTeamLisTipMsg ? (this.state.salesTeamLisTipMsg == CONSTANT.SALES_TEAM_IS_NULL ? this.renderAddSalesTeam() :
                     <NoData msg={this.state.salesTeamLisTipMsg}/>) : (this.state.isLoadingSalesTeam ? (
                     <Spinner className="isloading"/>) : (
