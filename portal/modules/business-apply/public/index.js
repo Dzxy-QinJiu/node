@@ -217,9 +217,6 @@ class BusinessApplyManagement extends React.Component {
         var hasAddPriviledge = userData.getUserData().team_id ? true : false;
         return (
             <div className="bussiness-apply-container">
-                <TopNav>
-                    <TopNav.MenuList />
-                </TopNav>
                 <div className="leave-apply-list-detail-wrap">
                     <div className="col-md-4 leave-apply-list" data-tracename="出差申请列表">
                         <ApplyDropdownAndAddBtn

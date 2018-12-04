@@ -23,9 +23,6 @@ class UserApply extends React.Component {
         const query = queryString.parse(this.props.location.search);
         return (
             <div className="user_apply_page" data-tracename="用户审批">
-                <TopNav>
-                    <TopNav.MenuList />
-                </TopNav>
                 <ApplyView applyId={query && query.id} {...this.props}/>
             </div>
         );

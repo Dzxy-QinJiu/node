@@ -238,9 +238,6 @@ class SalesOpportunityApplyManagement extends React.Component {
         }
         return (
             <div className="sales-opportunity-apply-container">
-                <TopNav>
-                    <TopNav.MenuList />
-                </TopNav>
                 <div className="leave-apply-list-detail-wrap">
                     <div className="col-md-4 leave-apply-list" data-tracename="销售机会申请列表">
                         <ApplyDropdownAndAddBtn
