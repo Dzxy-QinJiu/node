@@ -1,9 +1,17 @@
 var React = require('react');
 var history = require('../../public/sources/history');
+var TopNav = require('CMP_DIR/top-nav');
 
 import {renderRoutes} from 'react-router-config';
 
 class RightContent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            topNavOperation: null
+        };
+    }
+
     checkRoute = () => {
         var locationPath = location.pathname;
         if (this.props.route && locationPath === this.props.route.path) {
@@ -16,6 +24,13 @@ class RightContent extends React.Component {
         return false;
     };
 
+    //子组件渲染回调
+    renderTopNavOperation = (children) => {
+        this.setState({
+            topNavOperation: children
+        });
+    };
+
     render() {
         if (this.props.route) {
             var jump = this.checkRoute();
@@ -26,7 +41,12 @@ class RightContent extends React.Component {
         return (
             <div className="rightContent">
                 <div className="main">
-                    {this.props.route ? renderRoutes(this.props.route.routes) : this.props.children}
+                    <TopNav>
+                        <TopNav.MenuList/>
+                        {this.state.topNavOperation}
+                    </TopNav>
+                    {this.props.route ? renderRoutes(this.props.route.routes,
+                        {renderTopNavOperation: this.renderTopNavOperation}) : this.props.children}
                 </div>
             </div>
         );

@@ -7,6 +7,10 @@ var history = require('../../public/sources/history');
 import {renderRoutes} from 'react-router-config';
 
 class Content extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
     checkRoute = () => {
         var locationPath = location.pathname;
         if (this.props.route && locationPath === this.props.route.path) {
@@ -28,7 +32,7 @@ class Content extends React.Component {
         }
         return (
             <div className="content">
-                {this.props.route ? renderRoutes(this.props.route.routes) : this.props.children}
+                {this.props.route ? renderRoutes(this.props.route.routes, {renderTopNavOperation: this.props.renderTopNavOperation}) : this.props.children}
             </div>
         );
     }
