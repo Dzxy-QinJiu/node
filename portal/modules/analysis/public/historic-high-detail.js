@@ -46,12 +46,26 @@ class HistoricHighDetail extends React.Component {
         });
 
         //转入客户数组
-        const turnInCustomers = _.map(data.turn_in, turnInItem => {
+        let turnInCustomers = _.map(data.turn_in, turnInItem => {
             return {
                 customer_id: turnInItem.customer_id,
                 time: moment(turnInItem.time).format(oplateConsts.DATE_FORMAT)
             };
         });
+
+        //如果存在分配入的客户
+        if (data.allot_ids) {
+            const turnInCustomerIds = _.map(turnInCustomers, 'customer_id');
+
+            _.each(data.allot_ids, allot_id => {
+                //若分配入的客户不在转入的客户列表中，则将其加入转入的客户列表
+                if (!turnInCustomerIds.includes(allot_id)) {
+                    turnInCustomers.push({
+                        customer_id: allot_id,
+                    });
+                }
+            });
+        }
 
         //转出客户数组
         const turnOutCustomers = _.map(data.turn_out, turnOutItem => {
