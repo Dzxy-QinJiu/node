@@ -463,12 +463,12 @@ exports.getFilterReplyList = function(thisState) {
     //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据
     var applicantList = _.get(thisState, 'detailInfoObj.info');
     var replyList = [];
-    if ((applicantList.status === 'pass' || applicantList.status === 'reject' || applicantList.status === 'cancel') && _.isArray(_.get(thisState, 'detailInfoObj.info.approve_details'))){
+    if ((['pass', 'reject', 'cancel'].includes(applicantList.status)) && _.isArray(_.get(thisState, 'detailInfoObj.info.approve_details'))){
         replyList = _.get(thisState, 'detailInfoObj.info.approve_details');
     }else{
         replyList = _.get(thisState,'replyListInfo.list');
     }
     replyList = _.filter(replyList,(item) => {return !item.comment;});
-    replyList = _.sortBy( _.cloneDeep(replyList), [(item) => { return item.comment_time; }]);
+    replyList = _.sortBy( _.cloneDeep(replyList), [item => item.comment_time]);
     return replyList;
 };
