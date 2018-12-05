@@ -106,7 +106,7 @@ exports.getRecentLoginCustomers = function(condition, rangParams, pageSize, sort
     var Deferred = $.Deferred();
 
     $.ajax({
-        url: '/rest/customer/v2/customer/range/' + pageSize + '/' + sorter.field + '/' + sorter.order,
+        url: '/rest/customer/range/' + pageSize + '/' + sorter.field + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
         data: data,
