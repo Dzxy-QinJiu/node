@@ -5,7 +5,7 @@ var _ = require('lodash');
 
 //上传超时时长
 var uploadTimeOut = 5 * 60 * 1000;
-
+const editCustomerBaseUrl = '/rest/customer/v3/customer/property/:url_type';
 var crmRestApis = {
     customer: '/rest/customer/v3/customer',
     //获取客户开通的用户列表
@@ -42,31 +42,31 @@ var crmRestApis = {
     getFilterSalesRoleList: '/rest/customer/v2/customer/:type/member/role',
     basic: {//type:manager(管理员调用)，type:user(非管理员调用)
         //修改客户名
-        updateName: '/rest/customer/v3/customer/:url_type/name',
+        updateName: `${editCustomerBaseUrl}/name`,
         //修改客户标签
-        updateLabel: '/rest/customer/v3/customer/:url_type/label',
+        updateLabel: `${editCustomerBaseUrl}/label`,
         //修改客户竞品
-        updateCompetitor: 'rest/customer/v3/customer/:url_type/competing_product',
+        updateCompetitor: `${editCustomerBaseUrl}/competing_product`,
         //修改客户地域
-        updateAddress: '/rest/customer/v3/customer/:url_type/address',
+        updateAddress: `${editCustomerBaseUrl}/address`,
         //更新客户行业
-        updateIndustry: '/rest/customer/v3/customer/:url_type/industry',
+        updateIndustry: `${editCustomerBaseUrl}/industry`,
         //更新客户备注
-        updateComment: '/rest/customer/v3/customer/:url_type/remark',
+        updateComment: `${editCustomerBaseUrl}/remark`,
         //修改客户所属销售（团队）
-        updateSales: '/rest/customer/v3/customer/:url_type/sales',
+        updateSales: `${editCustomerBaseUrl}/sales`,
         //修改客户的行政级别
-        updateAdministrativeLevel: '/rest/customer/v3/customer/:url_type/administrative_level',
+        updateAdministrativeLevel: `${editCustomerBaseUrl}/administrative_level`,
         //修改客户的详细地址
-        updateDetailAddress: '/rest/customer/v3/customer/:url_type/detail_address',
+        updateDetailAddress: `${editCustomerBaseUrl}/detail_address`,
         //关注或者取消关注某客户
-        updateInterest: '/rest/customer/v3/customer/:url_type/interest_member_ids',
+        updateInterest: `${editCustomerBaseUrl}/interest_member_ids`,
         //转出客户
-        transferCustomer: '/rest/customer/v3/customer/:url_type/transfer',
+        transferCustomer: `${editCustomerBaseUrl}/transfer`,
         //修改客户阶段(v3的版本里后端不让改客户阶段)
         editCustomerStage: '/rest/customer/v2/customer/:url_type/customer_label',
         //只修改客户的所属团队
-        onlyEditCustomerTeam: '/rest/customer/v3/customer/:url_type/sales_team'
+        onlyEditCustomerTeam: `${editCustomerBaseUrl}/sales_team`
     },
     // 拨打电话
     callOut: '/rest/customer/v2/phone/call/ou',
