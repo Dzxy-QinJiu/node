@@ -277,7 +277,7 @@ class CustomerAnalysis extends React.Component {
 
         const lastId = this.state.transferCustomers.lastId;
         if (lastId && !isFirst) {
-            params.query.id = lastId;
+            params.lastId = lastId;
         }
 
         OplateCustomerAnalysisAction.getTransferCustomers(params);
@@ -931,7 +931,7 @@ class CustomerAnalysis extends React.Component {
                     loading: this.state.transferCustomers.loading,
                     handleScrollBottom: this.getTransferCustomers,
                     listenScrollBottom: this.state.transferCustomers.listenScrollBottom && !this.state.transferCustomers.loading,
-                    showNoMoreDataTip: !this.state.transferCustomers.listenScrollBottom,
+                    showNoMoreDataTip: this.state.transferCustomers.data.length && !this.state.transferCustomers.listenScrollBottom,
                     noMoreDataText: Intl.get('noMoreTip.customer', '没有更多客户了')
                 },
                 columns: [

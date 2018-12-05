@@ -87,7 +87,12 @@ exports.getTransferCustomers = function(paramObj) {
     const handler = 'getTransferCustomers';
     const route = routes.find(x => x.handler === handler);
     const { page_size, sort_field, order } = paramObj;
-    let queryObj = $.extend(true, {}, paramObj.query);
+    let queryObj = {};
+
+    if (paramObj.lastId) {
+        queryObj.id = paramObj.lastId;
+    }
+
     return ajax({
         url: route.path,
         type: route.method,
@@ -97,7 +102,10 @@ exports.getTransferCustomers = function(paramObj) {
             sort_field,
             order
         },
-        data: paramObj
+        data: {
+            query: paramObj.query,
+            rang_params: paramObj.rang_params,
+        }
     });
 };
 
