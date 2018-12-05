@@ -214,20 +214,29 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
     //修改客户相关的属性，直接传属性和客户的id
     //如果修改联系人相关的属性，还要把联系人的id传过去
     var customerProperty = ['access_channel', 'clue_source','clue_classify','source', 'user_id', 'user_name', 'sales_team', 'sales_team_id','name','availability','source_time','status'];
+    var contact_id = newCustomerDetail.contact_id || '';
+    if (newCustomerDetail.contact_id){
+        delete newCustomerDetail.contact_id;
+    }
+
     for (var key in newCustomerDetail) {
         if (_.indexOf(customerProperty, key) > -1) {
             //修改客户的相关属性
             this.curClue[key] = newCustomerDetail[key];
         } else {
             //修改联系人的相关属性
-            if (key === 'contact_name') {
-                this.curClue.contacts[0].name = newCustomerDetail[key];
+            if (key === 'contact_name' && contact_id) {
+                var target = _.find(this.curClue.contacts,item => item.id === contact_id);
+                //联系人是多个
+                target.name = newCustomerDetail[key];
                 this.curClue.contact = newCustomerDetail[key];
-            } else {
-                this.curClue.contacts[0][key][0] = newCustomerDetail[key];
-                if (key === 'phone'){
-                    this.curClue.contact_way = newCustomerDetail[key];
-                }
+            } else if (contact_id){
+                var target = _.find(this.curClue.contacts,item => item.id === contact_id);
+                target[key] = newCustomerDetail[key];
+                // this.curClue.contacts[0][key][0] = newCustomerDetail[key];
+                // if (key === 'phone'){
+                //     this.curClue.contact_way = newCustomerDetail[key];
+                // }
             }
         }
     }

@@ -218,7 +218,7 @@ exports.updateCluecustomerDetail = function(submitObj, isMarkingAvalibility) {
                 //联系人的名字
                 updateObj.contacts[0]['name'] = submitObj[key];
             }else{
-                updateObj.contacts[0][key] = [submitObj[key]];
+                updateObj.contacts[0][key] = submitObj[key];
             }
         }
     }else{
