@@ -18,12 +18,12 @@ var crmRestApis = {
     //获取所有的客户列表（包括：未分配给销售的客户）
     managerQuery: '/rest/customer/v3/customer/range/:type/:page_size/:sort_field/:sort_order',
     dynamic: '/rest/customer/v2/customerdynamic',
-    upload: '/rest/customer/v2/customer/upload/preview',
+    upload: '/rest/customer/v3/customer/upload/preview',
     repeatCustomer: '/rest/customer/v2/customer/query/repeat',
     getRepeatCustomerById: '/rest/customer/v2/customer/:customerId',
     delRepeatCustomer: '/rest/customer/v2/customer/delete',
     getCustomerById: '/rest/customer/v2/customer/query/1/name/descend',
-    mergeRepeatCustomer: '/rest/customer/v2/customer/merge/customer',
+    mergeRepeatCustomer: '/rest/customer/v3/customer/merge/customer',
     checkCustomerRepeat: '/rest/customer/v2/customer/repeat/search',
     getFilterIndustries: '/rest/customer/v2/customer/industries',
     //获取筛选面板负责人名称列表
@@ -73,7 +73,7 @@ var crmRestApis = {
     // 获取电话座机号
     getUserPhoneNumber: '/phone/seat/user/ext/:user_id',
     //获取客户是否还能继续添加客户 返回0是可以继续添加，返回大于0的值，表示超出几个客户
-    getCustomerLimit: '/rest/customer/v2/customer/limit/flag',
+    getCustomerLimit: '/rest/customer/v3/customer/limit/flag',
     //线索生成客户
     addCustomerByClue: '/rest/customer/v2/customer/clue_create_customer',
 };

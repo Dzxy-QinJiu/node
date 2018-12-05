@@ -257,7 +257,10 @@ module.exports = {
             handler: 'getCustomerLimit',
             passport: {
                 needLogin: true
-            }
+            },
+            privileges: [
+                'CRM_CUSTOMER_LIMIT_FLAG'
+            ]
         },
         {
             method: 'get',
