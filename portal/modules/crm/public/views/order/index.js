@@ -62,7 +62,7 @@ class OrderIndex extends React.Component {
                 type = 'manager';
             }
             OrderAction.setOrderListLoading(true);
-            OrderAction.getOrderList({customer_id: curCustomer.id}, {type: type});
+            OrderAction.getOrderList({query: {id: curCustomer.id}}, {type: type});
         }
     };
 
