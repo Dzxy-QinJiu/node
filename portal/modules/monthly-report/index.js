@@ -1,7 +1,7 @@
 /**
  * 销售月报
  */
-import Bundle from '../../public/sources/route-bundle';
+import Bundle from '../../public/sources/route/route-bundle';
 
 const MonthlyReportPage = (props) => (
     <Bundle load={() => import('./public')}>

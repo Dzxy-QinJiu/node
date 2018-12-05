@@ -1,7 +1,7 @@
 /**
  * Created by wangliping on 2016/10/18.
  */
-import Bundle from '../../public/sources/route-bundle';
+import Bundle from '../../public/sources/route/route-bundle';
 
 const OrganizationPage = (props) => (
     <Bundle load={() => import('./public')}>
