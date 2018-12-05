@@ -221,7 +221,9 @@ exports.getLoginCaptcha = function(req, res) {
         return;
     }
     DesktopLoginService.getLoginCaptcha(req, res, username, type).on('success', function(data) {
-        res.status(200).json(data ? data.data : '');
+        req.session.save(() => {
+            res.status(200).json(data ? data.data : '');
+        });
     }).on('error', function(errorObj) {
         res.status(500).json(errorObj && errorObj.message);
     });
