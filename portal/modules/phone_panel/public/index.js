@@ -69,7 +69,7 @@ class PhonePanel extends React.Component {
             applyFormCustomerName: '',//申请用户面板用到的客户名
             openAppShowFlag: false,//是否展示开通应用面板
             isAddingPlanInfo: false,//是否展示添加联系计划面板
-            isAddToCustomerFlag: false,//是否展示关联客户面板
+            isAddToCustomerFlag: false,//是否展示添加到已有客户面板
         };
     }
 
@@ -219,8 +219,8 @@ class PhonePanel extends React.Component {
         });
     };
 
-    showAssociateCustomerForm = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.handle-btn-container .associate-customer'), '点击添加到已有客户按钮');
+    showAddToCustomerForm = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.handle-btn-container .add-to-customer'), '点击添加到已有客户按钮');
         this.setState({
             isAddToCustomerFlag: true
         });
@@ -374,12 +374,12 @@ class PhonePanel extends React.Component {
         } else if (_.isArray(customerInfoArr) && customerInfoArr[0]) {//原来无客户，添加完客户时，展示添加的客户详情
             return this.renderCustomerDetail(customerInfoArr[0]);
         } else if (!this.state.isAddToCustomerFlag && !this.state.isAddFlag) {
-            //客户不存在时，展示关联已有客户、添加客户的按钮(关联/添加完客户后，此提示不再提示添加客户)
+            //客户不存在时，展示添加到已有客户、添加客户的按钮(添加到已有客户/添加完客户后，此提示不再提示添加客户)
             return (
                 <span>
-                    <span className="handle-btn-container associate-customer"
-                        onClick={this.showAssociateCustomerForm}>
-                        {Intl.get('crm.add.to.exist.customer', '关联已有客户')}
+                    <span className="handle-btn-container add-to-customer"
+                        onClick={this.showAddToCustomerForm}>
+                        {Intl.get('crm.add.to.exist.customer', '添加到已有客户')}
                     </span>
                     <span className="handle-btn-container add-customer" onClick={this.showAddCustomerForm}>
                         {Intl.get('crm.3', '添加客户')}
@@ -536,7 +536,7 @@ class PhonePanel extends React.Component {
 
     renderCustomerSizeTip(phonemsgObj) {
         let tipContent = '';
-        //未点击添加和关联客户按钮时，展示该电话对应客户数的提示
+        //未点击添加和添加到已有客户按钮时，展示该电话对应客户数的提示
         if (!this.state.isAddFlag && !this.state.isAddToCustomerFlag) {
             if (_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length) {
                 //只对应一个客户时不用提示

@@ -6,7 +6,7 @@ import TopNav from 'CMP_DIR/top-nav';
 import CallRecordActions from '../action/call-record-actions';
 import CallRecordStore from '../store/call-record-store';
 import Spinner from 'CMP_DIR/spinner';
-import { Alert, Input, Icon, Button, Select, message, Popconfirm } from 'antd';
+import { Alert, Input, Icon, Button, Select, message, Popconfirm, Menu, Dropdown} from 'antd';
 import { AntcTable } from 'antc';
 const Option = Select.Option;
 import { AntcDatePicker as DatePicker } from 'antc';
@@ -84,6 +84,11 @@ const FILTER_OPTION = [
         label: Intl.get('call.record.filter.tip.service', '客服电话')
     }
 ];
+//添加客户、添加到已有客户的menu选项
+const ADD_CUSTOMER_MENUS = {
+    ADD_CUSTOMER: 'addCustomer',
+    ADD_TO_CUSTOMER: 'addToCustomer'
+};
 
 const filterOptions = FILTER_OPTION.map((x, index) => (
     <Option key={index} value={x.value}>{x.label}</Option>
@@ -100,7 +105,7 @@ class CallRecord extends React.Component {
             filterObj: {},//表头过滤条件
             isFilter: false, //是否是过滤状态，是：展示带搜索框的标题，否：展示可排序的表头
             isAddFlag: false, // 添加客户的标志
-            isAssociateFlag: false, //关联客户的标识
+            isAddToCustomerFlag: false, //添加到已有客户的标识
             phoneNumber: '', // 电话号码
             rightPanelIsShow: false, // 若添加客户已存在，打开客户详情的标志
             currentId: '', // 查看右侧详情的id
@@ -439,19 +444,19 @@ class CallRecord extends React.Component {
         });
     };
 
-    //关联客户面板
-    showAssociateCustomerForm = (phoneNumber) => {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击关联已有客户');
+    //展示添加到已有客户面板
+    showAddToCustomerForm = (phoneNumber) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击添加到已有客户');
         this.setState({
-            isAssociateFlag: true,
+            isAddToCustomerFlag: true,
             phoneNumber: phoneNumber
         });
     };
-    // 隐藏关联客户和联系人面板
-    hideAssociateCustomerForm = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.associate-customer'), '关闭关联客户和联系人面板');
+    // 隐藏添加到已有客户面板
+    hideAddToCustomerForm = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '关闭添加到已有客户面板');
         this.setState({
-            isAssociateFlag: false
+            isAddToCustomerFlag: false
         });
     };
 
@@ -553,6 +558,27 @@ class CallRecord extends React.Component {
         item.showTextEdit = !item.showTextEdit;
         this.setState(this.state);
     };
+
+    onClickAddCustomerMenu = (record, params) => {
+        if (params.key === ADD_CUSTOMER_MENUS.ADD_CUSTOMER) {
+            this.showAddCustomerForm(record.dst);
+        } else if (params.key === ADD_CUSTOMER_MENUS.ADD_TO_CUSTOMER) {
+            this.showAddToCustomerForm(record.dst);
+        }
+    };
+
+    getAddCustomerMenus(record){
+        return (
+            <Menu onClick={this.onClickAddCustomerMenu.bind(this,record)}>
+                <Menu.Item key={ADD_CUSTOMER_MENUS.ADD_CUSTOMER}>
+                    <a>{Intl.get('crm.3', '添加客户')}</a>
+                </Menu.Item>
+                <Menu.Item key={ADD_CUSTOMER_MENUS.ADD_TO_CUSTOMER}>
+                    <a>{Intl.get('crm.add.to.exist.customer', '添加到已有客户')}</a>
+                </Menu.Item>
+            </Menu>
+        );
+    }
 
     //通话记录表格列
     getCallRecordColumns = () => {
@@ -676,12 +702,9 @@ class CallRecord extends React.Component {
                                     <input type="hidden" value={record.customer_name} className="customer_name_hidden" />
                                 </div>
                             ) : (
-                                <div className="customer-column-click-wrap">
-                                    <a className="add-customer" title={Intl.get('crm.3', '添加客户')}
-                                        onClick={this.showAddCustomerForm.bind(this, record.dst)}>{Intl.get('common.add', '添加')}</a>
-                                    <a className="associate-customer" title={Intl.get('crm.add.to.exist.customer', '关联已有客户')}
-                                        onClick={this.showAssociateCustomerForm.bind(this, record.dst)}>{Intl.get('common.associate', '关联')}</a>
-                                </div>
+                                <Dropdown overlay={this.getAddCustomerMenus(record)} trigger={['click']}>
+                                        <Icon type="plus" className="add-customer-icon"/>
+                                </Dropdown>
                             )}
                         </div>
                     );
@@ -983,24 +1006,24 @@ class CallRecord extends React.Component {
                         />
                     </RightPanel>
                 ) : null}
-                {this.state.isAssociateFlag ? (
+                {this.state.isAddToCustomerFlag ? (
                     <RightPanelModal
-                        className="phone-associate-customer-container"
+                        className="phone-add-to-customer-container"
                         isShowMadal={true}
                         isShowCloseBtn={true}
-                        onClosePanel={this.hideAssociateCustomerForm}
-                        title={Intl.get('crm.add.to.exist.customer', '关联已有客户')}
-                        content={this.renderAssociateForm()}
-                        dataTracename="关联已客户"
+                        onClosePanel={this.hideAddToCustomerForm}
+                        title={Intl.get('crm.add.to.exist.customer', '添加到已有客户')}
+                        content={this.renderAddToCustomerForm()}
+                        dataTracename="添加到已有客户"
                     />) : null}
             </div>
         </RightContent >
         );
     }
 
-    renderAssociateForm() {
+    renderAddToCustomerForm() {
         return (<PhoneAddToCustomerForm phoneNum={this.state.phoneNumber} hideTitleFlag={true}
-            cancelAddToCustomer={this.hideAssociateCustomerForm}
+            cancelAddToCustomer={this.hideAddToCustomerForm}
             afterAddToCustomerSuccess={this.afterAddToCustomerSuccess}/>);
     }
 
@@ -1011,7 +1034,7 @@ class CallRecord extends React.Component {
             contacts0_phone: this.state.phoneNumber,
             contacts0_name: customer.contact_name
         });
-        this.hideAssociateCustomerForm();
+        this.hideAddToCustomerForm();
     }
 
     /**

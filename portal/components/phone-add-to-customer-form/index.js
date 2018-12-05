@@ -204,7 +204,7 @@ class PhoneAddToCustomerForm extends React.Component {
             <Form className="add-to-customer-container" id="add-to-customer-form">
                 {this.props.hideTitleFlag ? null : (
                     <div className="add-to-customer-label">
-                        {Intl.get('crm.add.to.exist.customer', '关联已有客户')}
+                        {Intl.get('crm.add.to.exist.customer', '添加到已有客户')}
                     </div>)}
                 <FormItem
                     label={Intl.get('call.record.customer', '客户')}
