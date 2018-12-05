@@ -2,12 +2,12 @@
 const restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 const restUtil = require('ant-auth-request').restUtil(restLogger);
 const _ = require('lodash');
-const baseUrl = '/rest/customer/v2/salesopportunity';
+const baseUrl = '/rest/customer/v3/salesopportunity';
 const dealUrl = {
     getDealList: `${baseUrl}/range/:type/:page_size/:sort_field/:sort_order`,
     addDeal: baseUrl,
     editDeal: baseUrl,
-    editDealStage: `${baseUrl}/sale_stage`,
+    editDealStage: `${baseUrl}/property/sale_stage`,
     deleteDeal: `${baseUrl}/:deal_id`
 };
 
