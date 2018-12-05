@@ -273,7 +273,7 @@ class CustomerAnalysis extends React.Component {
 
         if (teamId) params.query.sales_team_id = teamId;
 
-        if (memberId) params.query.new_member_id = memberId;
+        if (memberId) params.query.old_member_id = memberId;
 
         const lastId = this.state.transferCustomers.lastId;
         if (lastId && !isFirst) {
