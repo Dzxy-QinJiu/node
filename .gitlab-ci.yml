@@ -8,7 +8,7 @@ code_quality:
         --env SOURCE_CODE="$PWD"
         --volume "$PWD":/code
         --volume /var/run/docker.sock:/var/run/docker.sock
-        codeclimate /code
+        codeclimate/codeclimate /code
   artifacts:
     reports:
       codequality: gl-code-quality-report.json
