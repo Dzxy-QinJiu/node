@@ -62,9 +62,15 @@ export function getCustomerTrialQualifiedChart() {
             //若查截止到上个月的数据，该时间为上个月的最后一天
             const thisMoment = moment(firstItem.add_time);
             //本月
-            const thisMonth = thisMoment.get('month') + 1;
+            let thisMonth = thisMoment.get('month');
             //上月
-            const lastMonth = thisMoment.subtract(1, 'months').get('month') + 1;
+            let lastMonth = thisMoment.clone().subtract(1, 'months').get('month');
+
+            //如果统计是截止到今天，月数加1
+            if (thisMoment.isSame(moment(), 'day')) {
+                thisMonth++;
+                lastMonth++;
+            }
 
             //列定义中增加本月、上月等列
             columns = columns.concat([{
