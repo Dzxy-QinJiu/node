@@ -285,6 +285,8 @@ OplateCustomerAnalysisStore.prototype.getTransferCustomers = resultHandler('tran
     //总数等于前端数组长度时，不监听下拉加载
     if (data.total === this.transferCustomers.data.length) {
         this.transferCustomers.listenScrollBottom = false;
+    } else {
+        this.transferCustomers.listenScrollBottom = true;
     }
 });
 
