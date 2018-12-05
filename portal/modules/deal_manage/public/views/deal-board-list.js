@@ -87,9 +87,10 @@ class DealBoardList extends React.Component {
             customer_id: dragDeal.customer_id,
             id: dragDeal.id,
             sale_stages: destination.droppableId,
+            property: 'sale_stages'
         };
         dealBoardAction.setIsSavingDragData(true);
-        dealAjax.editDealStage(editParams).then(result => {
+        dealAjax.editDeal(editParams).then(result => {
             dealBoardAction.setIsSavingDragData(false);
             if (result && result.code === 0) {
                 //不同列拖动时的处理(从源列中移除，从目标列中加入)

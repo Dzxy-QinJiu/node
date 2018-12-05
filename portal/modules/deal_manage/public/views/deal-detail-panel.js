@@ -146,10 +146,11 @@ class DealDetailPanel extends React.Component {
             customer_id: _.get(currDeal, 'customer_id'),
             id: _.get(currDeal, 'id'),
             sale_stages: sale_stages,
+            property: 'sale_stages'
         };
         if (saveObj.customer_id && saveObj.id) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.deal-item-title'), '保存订单阶段的修改');
-            dealAjax.editDealStage(saveObj).then(result => {
+            dealAjax.editDeal(saveObj).then(result => {
                 if (result && result.code === 0) {
                     currDeal.sale_stages = sale_stages;
                     this.setState({currDeal});
@@ -181,7 +182,8 @@ class DealDetailPanel extends React.Component {
         let saveDeal = {
             customer_id: deal.customer_id,
             id: deal.id,
-            oppo_status: status
+            oppo_status: status,
+            property: 'oppo_status'
         };
         if (saveDeal.customer_id && saveDeal.id) {
             dealAjax.editDeal(saveDeal).then(result => {
@@ -362,9 +364,10 @@ class DealDetailPanel extends React.Component {
         );
     };
     //修改订单的预算、备注
-    saveDealBasicInfo = (saveObj, successFunc, errorFunc) => {
+    saveDealBasicInfo = (property, saveObj, successFunc, errorFunc) => {
         let currDeal = this.state.currDeal;
         saveObj.customer_id = currDeal.customer_id;
+        saveObj.property = property;
         //预算展示的是元，接口中需要的是万
         if (_.has(saveObj, 'budget')) {
             saveObj.budget = saveObj.budget / 10000;
@@ -454,7 +457,7 @@ class DealDetailPanel extends React.Component {
                             value={deal.lose_reason}
                             placeholder={Intl.get('crm.order.lose.reason.input', '请输入丢单原因')}
                             hasEditPrivilege={!this.state.isDelConfirmShow}
-                            saveEditInput={this.saveDealBasicInfo}
+                            saveEditInput={this.saveDealBasicInfo.bind(this, 'lose_reason')}
                             noDataTip={Intl.get('crm.no.order.lose.reason', '暂无丢单原因')}
                             addDataTip={Intl.get('crm.fill.order.lose.reason', '补充丢单原因')}
                         />
@@ -477,7 +480,7 @@ class DealDetailPanel extends React.Component {
                                 type: 'array'
                             }]}
                             placeholder={Intl.get('leave.apply.select.product', '请选择产品')}
-                            saveEditSelect={this.saveDealBasicInfo.bind(this)}
+                            saveEditSelect={this.saveDealBasicInfo.bind(this, 'apps')}
                             noDataTip={Intl.get('deal.detail.no.products', '暂无产品')}
                             addDataTip={Intl.get('config.product.add', '添加产品')}
                         />) : null}
@@ -494,7 +497,7 @@ class DealDetailPanel extends React.Component {
                         afterTextTip={Intl.get('contract.82', '元')}
                         placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
                         hasEditPrivilege={hasEditPrivilege}
-                        saveEditInput={this.saveDealBasicInfo}
+                        saveEditInput={this.saveDealBasicInfo.bind(this, 'budget')}
                         noDataTip={Intl.get('crm.order.no.budget', '暂无预算')}
                         addDataTip={Intl.get('crm.order.add.budget', '添加预算')}
                     />
@@ -508,7 +511,7 @@ class DealDetailPanel extends React.Component {
                         value={deal.predict_finish_time}
                         placeholder={Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}
                         hasEditPrivilege={hasEditPrivilege}
-                        saveEditDateInput={this.saveDealBasicInfo}
+                        saveEditDateInput={this.saveDealBasicInfo.bind(this, 'predict_finish_time')}
                         disabledDate={disabledBeforeToday}
                         noDataTip={Intl.get('crm.order.no.expected.deal.time', '暂无预计成交时间')}
                         addDataTip={Intl.get('crm.order.add.expected.deal.time', '添加预计成交时间')}
@@ -525,7 +528,7 @@ class DealDetailPanel extends React.Component {
                         editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
                         placeholder={Intl.get('user.input.remark', '请输入备注')}
                         hasEditPrivilege={hasEditPrivilege}
-                        saveEditInput={this.saveDealBasicInfo}
+                        saveEditInput={this.saveDealBasicInfo.bind(this, 'remarks')}
                         noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
                         addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
                     />

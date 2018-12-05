@@ -24,15 +24,8 @@ module.exports = [{
     }
 }, {
     'method': 'put',
-    'path': orderUrl,
+    'path': orderUrl + '/property/:property',
     'handler': 'editOrder',
-    'passport': {
-        'needLogin': true
-    }
-}, {
-    'method': 'put',
-    'path': orderUrl + '/property/sale_stage',
-    'handler': 'editOrderStage',
     'passport': {
         'needLogin': true
     }
