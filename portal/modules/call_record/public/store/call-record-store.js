@@ -97,9 +97,10 @@ SalesCallRecordStore.prototype.filterPhone = function(status) {
 SalesCallRecordStore.prototype.updateCallRecord = function(addData) {
     let addNumber = addData.contacts0_phone;
     _.each(this.callRecord.data_list, (item) => {
-        if (item.dst == addNumber) {
+        if (item.dst === addNumber) {
             item.customer_name = addData.name;
             item.contact_name = addData.contacts0_name || '';
+            item.customer_id = addData.id;
         }
     });
 };
@@ -108,7 +109,7 @@ SalesCallRecordStore.prototype.updateCallRecord = function(addData) {
 SalesCallRecordStore.prototype.updateCallContent = function(editContent) {
     let id = editContent.id;
     _.each(this.callRecord.data_list, (item) => {
-        if (item.id == id) {
+        if (item.id === id) {
             item.remark = editContent.remark;
         }
     });
@@ -117,7 +118,7 @@ SalesCallRecordStore.prototype.updateCallContent = function(editContent) {
 // 控制确认框是否出现
 SalesCallRecordStore.prototype.toggleConfirm = function(obj){
     _.each(this.callRecord.data_list, (item) => {
-        if (item.id == obj.id) {
+        if (item.id === obj.id) {
             item.confirmVisible = obj.flag;
         }
     });

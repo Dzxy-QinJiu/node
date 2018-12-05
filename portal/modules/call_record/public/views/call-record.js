@@ -6,7 +6,7 @@ import TopNav from 'CMP_DIR/top-nav';
 import CallRecordActions from '../action/call-record-actions';
 import CallRecordStore from '../store/call-record-store';
 import Spinner from 'CMP_DIR/spinner';
-import { Alert, Input, Icon, Button, Select, message, Popconfirm } from 'antd';
+import { Alert, Input, Icon, Button, Select, message, Popconfirm, Menu, Dropdown} from 'antd';
 import { AntcTable } from 'antc';
 const Option = Select.Option;
 import { AntcDatePicker as DatePicker } from 'antc';
@@ -23,6 +23,8 @@ import CallRecordAnalyis from './call-record-analysis';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import Trace from 'LIB_DIR/trace';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
+import PhoneAddToCustomerForm from 'CMP_DIR/phone-add-to-customer-form';
 import RefreshButton from 'CMP_DIR/refresh-button';
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 //获取无效电话的列表  设置某个电话为无效电话
@@ -82,6 +84,11 @@ const FILTER_OPTION = [
         label: Intl.get('call.record.filter.tip.service', '客服电话')
     }
 ];
+//添加客户、添加到已有客户的menu选项
+const ADD_CUSTOMER_MENUS = {
+    ADD_CUSTOMER: 'addCustomer',
+    ADD_TO_CUSTOMER: 'addToCustomer'
+};
 
 const filterOptions = FILTER_OPTION.map((x, index) => (
     <Option key={index} value={x.value}>{x.label}</Option>
@@ -98,6 +105,7 @@ class CallRecord extends React.Component {
             filterObj: {},//表头过滤条件
             isFilter: false, //是否是过滤状态，是：展示带搜索框的标题，否：展示可排序的表头
             isAddFlag: false, // 添加客户的标志
+            isAddToCustomerFlag: false, //添加到已有客户的标识
             phoneNumber: '', // 电话号码
             rightPanelIsShow: false, // 若添加客户已存在，打开客户详情的标志
             currentId: '', // 查看右侧详情的id
@@ -421,7 +429,7 @@ class CallRecord extends React.Component {
 
     // 添加客户和联系人面板
     showAddCustomerForm = (phoneNumber) => {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击+添加客户和联系人');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击添加客户链接');
         this.setState({
             isAddFlag: true,
             phoneNumber: phoneNumber
@@ -433,6 +441,22 @@ class CallRecord extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-customer'), '关闭添加客户和联系人面板');
         this.setState({
             isAddFlag: false
+        });
+    };
+
+    //展示添加到已有客户面板
+    showAddToCustomerForm = (phoneNumber) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击添加到已有客户');
+        this.setState({
+            isAddToCustomerFlag: true,
+            phoneNumber: phoneNumber
+        });
+    };
+    // 隐藏添加到已有客户面板
+    hideAddToCustomerForm = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '关闭添加到已有客户面板');
+        this.setState({
+            isAddToCustomerFlag: false
         });
     };
 
@@ -534,6 +558,27 @@ class CallRecord extends React.Component {
         item.showTextEdit = !item.showTextEdit;
         this.setState(this.state);
     };
+
+    onClickAddCustomerMenu = (record, params) => {
+        if (params.key === ADD_CUSTOMER_MENUS.ADD_CUSTOMER) {
+            this.showAddCustomerForm(record.dst);
+        } else if (params.key === ADD_CUSTOMER_MENUS.ADD_TO_CUSTOMER) {
+            this.showAddToCustomerForm(record.dst);
+        }
+    };
+
+    getAddCustomerMenus(record){
+        return (
+            <Menu onClick={this.onClickAddCustomerMenu.bind(this,record)}>
+                <Menu.Item key={ADD_CUSTOMER_MENUS.ADD_CUSTOMER}>
+                    <a>{Intl.get('crm.3', '添加客户')}</a>
+                </Menu.Item>
+                <Menu.Item key={ADD_CUSTOMER_MENUS.ADD_TO_CUSTOMER}>
+                    <a>{Intl.get('crm.add.to.exist.customer', '添加到已有客户')}</a>
+                </Menu.Item>
+            </Menu>
+        );
+    }
 
     //通话记录表格列
     getCallRecordColumns = () => {
@@ -657,9 +702,9 @@ class CallRecord extends React.Component {
                                     <input type="hidden" value={record.customer_name} className="customer_name_hidden" />
                                 </div>
                             ) : (
-                                <div title="点击添加客户和联系人" onClick={this.showAddCustomerForm.bind(this, record.dst)}>
-                                    <Icon type="plus"/>
-                                </div>
+                                <Dropdown overlay={this.getAddCustomerMenus(record)} trigger={['click']}>
+                                        <Icon type="plus" className="add-customer-icon"/>
+                                </Dropdown>
                             )}
                         </div>
                     );
@@ -904,7 +949,7 @@ class CallRecord extends React.Component {
                         <DatePicker.Option value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
                         <DatePicker.Option value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
                         <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
-                    </DatePicker>                    
+                    </DatePicker>
                     <div className="filter-phone-button float-r">
                         <Select
                             className="btn-item"
@@ -914,10 +959,10 @@ class CallRecord extends React.Component {
                         >
                             {filterOptions}
                         </Select>
-                        <Button onClick={this.handleRefresh} className="btn-item">{Intl.get('common.refresh', '刷新')}</Button>                    
+                        <Button onClick={this.handleRefresh} className="btn-item">{Intl.get('common.refresh', '刷新')}</Button>
                         <Button className="btn-item btn-m-r-2" onClick={this.handleCallAnalysis} data-tracename="点击通话分析按钮">
                             {Intl.get('user.detail.analysis', '分析')}
-                        </Button>                        
+                        </Button>
                     </div>
                 </TopNav>
                 <div className="call_record_wrap splice-table" id="new-table" >
@@ -961,9 +1006,35 @@ class CallRecord extends React.Component {
                         />
                     </RightPanel>
                 ) : null}
+                {this.state.isAddToCustomerFlag ? (
+                    <RightPanelModal
+                        className="phone-add-to-customer-container"
+                        isShowMadal={true}
+                        isShowCloseBtn={true}
+                        onClosePanel={this.hideAddToCustomerForm}
+                        title={Intl.get('crm.add.to.exist.customer', '添加到已有客户')}
+                        content={this.renderAddToCustomerForm()}
+                        dataTracename="添加到已有客户"
+                    />) : null}
             </div>
         </RightContent >
         );
+    }
+
+    renderAddToCustomerForm() {
+        return (<PhoneAddToCustomerForm phoneNum={this.state.phoneNumber} hideTitleFlag={true}
+            cancelAddToCustomer={this.hideAddToCustomerForm}
+            afterAddToCustomerSuccess={this.afterAddToCustomerSuccess}/>);
+    }
+
+    afterAddToCustomerSuccess = (customer) => {
+        CallRecordActions.updateCallRecord({
+            id: customer.id,
+            name: customer.name,
+            contacts0_phone: this.state.phoneNumber,
+            contacts0_name: customer.contact_name
+        });
+        this.hideAddToCustomerForm();
     }
 
     /**
@@ -1040,7 +1111,7 @@ class CallRecord extends React.Component {
             //电话记录类型
             phone_type: this.getReqParam(queryParam, 'phone_type'),
         };
-        
+
         CallRecordActions.getCallRecordList(queryObj, this.state.filterObj);
     };
 
