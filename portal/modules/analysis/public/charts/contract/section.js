@@ -2,6 +2,8 @@
  * 合同额分段统计
  */
 
+import { argCallbackTeamId } from '../../utils';
+
 export function getContractSectionChart() {
     return {
         title: '合同额分段统计',
@@ -12,18 +14,7 @@ export function getContractSectionChart() {
             value: getSectionReqData(),
             type: 'data',
         }],
-        argCallback: (arg) => {
-            const query = arg.query;
-
-            if (query) {
-                delete query.app_id;
-                
-                if (query.team_ids) {
-                    query.team_id = query.team_ids;
-                    delete query.team_ids;
-                }
-            }
-        },
+        argCallback: argCallbackTeamId,
         processData: data => {
             return _.map(data, dataItem => {
                 let name;
