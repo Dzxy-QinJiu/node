@@ -124,7 +124,7 @@ class CrmUserApplyForm extends React.Component {
             paramItem.end_date = formData.delayDeadlineTime;
         } else {
             paramItem.delay = delayMillis;
-        }        
+        }
         //向data中添加备注
         submitObj.remark = this.state.formData.remark.delayRemark;
         //到期是否停用
@@ -317,10 +317,17 @@ class CrmUserApplyForm extends React.Component {
     //申请其他类型的修改
     submitEditOtherData() {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '点击确定按钮(申请其他类型的修改)');
-        const selectedUserAppData = this.getSelectedUserAppData();
+        let selectedUserAppData = this.getSelectedUserMultiAppData();
+        const data = _.map(selectedUserAppData, item => {
+            delete item.end_date;
+            delete item.begin_date;
+            return item;
+        });
+        let userIds = _.map(selectedUserAppData, 'user_id');
         const submitObj = {
-            user_ids: selectedUserAppData.user_ids,
-            remark: this.state.formData.remark.otherRemark
+            user_ids: userIds,
+            remark: this.state.formData.remark.otherRemark,
+            data
         };
         this.setState({ isApplying: true });
         //调用修改其他类型的申请
