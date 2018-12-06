@@ -1243,6 +1243,7 @@ const ApplyViewDetail = createReactClass({
             </div>
         );
     },
+    //禁用、其他类型的表格渲染
     renderOtherStatusTable: function(user){
         let columns = [
             {
