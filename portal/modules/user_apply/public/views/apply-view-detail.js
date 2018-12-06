@@ -1123,6 +1123,14 @@ const ApplyViewDetail = createReactClass({
     //新版申请展示
     //销售渲染申请开通状态
     renderMultiAppDetailChangeStatus: function(detailInfo) {
+        //把apps数据根据user_id重组
+        let users = _.uniqBy(detailInfo.apps,'user_id').map(app => {
+            const item = _.pick(app, 'user_id', 'user_name', 'nickname');
+            return {
+                ...item,
+                apps: _.filter(detailInfo.apps, x => x.user_id === item.user_id)
+            };
+        });
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
@@ -1132,17 +1140,16 @@ const ApplyViewDetail = createReactClass({
                             {detailInfo.status === 1 ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用')}
                         </span>
                     </div>
-                    {
-                        detailInfo.users && detailInfo.users.map((user, idx) => (
-                            <div key={idx} className="user-item-container">
-                                {this.renderApplyDetailSingleUserName(user)}
-                                <div className="col-12 apply_detail_apps">
-                                    {
-                                        this.renderMultiAppTable(user)
-                                    }
-                                </div>
+                    {_.map(users, (user, idx) => (
+                        <div key={idx} className="user-item-container">
+                            {this.renderApplyDetailSingleUserName(user)}
+                            <div className="col-12 apply_detail_apps">
+                                {
+                                    this.renderOtherStatusTable(user)
+                                }
                             </div>
-                        ))
+                        </div>
+                    ))
                     }
 
                 </div>
@@ -1205,15 +1212,50 @@ const ApplyViewDetail = createReactClass({
 
     //渲染销售申请修改其他信息
     renderDetailChangeOther: function(detailInfo) {
+        //把apps数据根据user_id重组
+        let users = _.uniqBy(detailInfo.apps,'user_id').map(app => {
+            const item = _.pick(app, 'user_id', 'user_name', 'nickname');
+            return {
+                ...item,
+                apps: _.filter(detailInfo.apps, x => x.user_id === item.user_id)
+            };
+        });
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
-                    {this.renderApplyUserNames(detailInfo)}
+                    <div className="apply-info-label">
+                        <span className="user-info-label">{Intl.get('common.app.status', '开通状态')}:</span>
+                        <span className="user-info-text">
+                            {detailInfo.status === 1 ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用')}
+                        </span>
+                    </div>
+                    {_.map(users, (user, idx) => (
+                        <div key={idx} className="user-item-container">
+                            {this.renderApplyDetailSingleUserName(user)}
+                            <div className="col-12 apply_detail_apps">
+                                {
+                                    this.renderOtherStatusTable(user)
+                                }
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         );
     },
-
+    //禁用、其他类型的表格渲染
+    renderOtherStatusTable: function(user){
+        let columns = [
+            {
+                title: Intl.get('common.app', '应用'),
+                dataIndex: 'client_name',
+                className: 'apply-detail-th'
+            }];
+        return (<AntcTable dataSource={user.apps}
+            bordered={true}
+            pagination={false}
+            columns={columns}/>);
+    },
     renderApplyAppNames: function(detailInfo) {
         return (<div className="apply-info-label">
             <span className="user-info-label">{Intl.get('common.app', '应用')}:</span>
