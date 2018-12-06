@@ -31,7 +31,7 @@ export function getContractRepayCompareChart() {
             //统计时间区间
             const interval = _.get(firstDataItem, 'interval');
 
-            //将横轴标签设置为时间点中的月
+            //设置横轴标签
             option.xAxis[0].data = _.map(timePoints, timePoint => {
                 let label = '';
 
