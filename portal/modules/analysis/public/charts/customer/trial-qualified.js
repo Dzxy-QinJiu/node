@@ -57,19 +57,31 @@ export function getCustomerTrialQualifiedChart() {
                 width: '10%',
             });
 
-            //统计数据添加时间，对应查询的截止时间
-            //如查本月的数据，该时间为今天
-            //若查截止到上个月的数据，该时间为上个月的最后一天
-            const thisMoment = moment(firstItem.add_time);
-            //本月
-            let thisMonth = thisMoment.get('month');
-            //上月
-            let lastMonth = thisMoment.clone().subtract(1, 'months').get('month');
+            //统计数据的生成时间
+            //如果查询截止到本月的数据，该时间为今天
+            //如果查询非截止到本月的数据，该时间为截止的那个月的最后一天再往后推一天，也就是截止的那个月的下一个月的第一天
+            const addMoment = moment(firstItem.add_time);
 
-            //如果统计是截止到今天，月数加1
-            if (thisMoment.isSame(moment(), 'day')) {
-                thisMonth++;
-                lastMonth++;
+            //统计数据产生的截止月
+            let thisMonth;
+
+            //统计数据产生的截止月的上一个月
+            let lastMonth;
+
+            //如果统计是截止到今天
+            if (addMoment.isSame(moment(), 'day')) {
+                //因为本月还未过完，所以数据产生的截止月就是数据统计时的月
+                thisMonth = addMoment.get('month') + 1;
+
+                //数据产生的截止月的上一个月就是数据统计时的月往前推一个月
+                lastMonth = addMoment.clone().subtract(1, 'months').get('month') + 1;
+            //如果统计是截止到本月之前的月份
+            } else {
+                //因为对于已经过完的月，当月产生的数据要到下月1号才能统计出来，所以数据产生的截止月为数据统计时的月的上一个月
+                thisMonth = addMoment.clone().subtract(1, 'months').get('month') + 1;
+
+                //数据产生的截止月的上一个月就是数据统计时的月往前推两个月
+                lastMonth = addMoment.clone().subtract(2, 'months').get('month') + 1;
             }
 
             //列定义中增加本月、上月等列
