@@ -54,15 +54,6 @@
 </style>
 <% } %>
 </body>
-<% if(isHome){%>
-<script defer="defer"  src="/dll/dll.vendor.js?timestamp=<%= timeStamp %>"></script>
-<script defer="defer" src="/dll/dll.reactRel.js?timestamp=<%= timeStamp %>"></script>
-<script  defer="defer" src="/dll/dll.china.js?timestamp=<%= timeStamp %>"></script>
-<script defer="defer" src="/dll/dll.province.js?timestamp=<%= timeStamp %>"></script>
-<script defer="defer" src="/dll/dll.echarts.js?timestamp=<%= timeStamp %>"></script>
-<script defer="defer"  src="/resources/common.bundle.js?timestamp=<%= timeStamp %>"></script>
-<script defer="defer"  src="/resources/app.bundle.js?timestamp=<%= timeStamp %>"></script>
-<% }%>
 <% if((isCurtao && custom_service_lang) || show_custom_service) { %>
 <!-- custome service-->
 <script type='text/javascript'
