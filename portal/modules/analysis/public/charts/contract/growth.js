@@ -28,8 +28,8 @@ export function getContractGrowthChart() {
 
                 if (dataItem.interval === 'first_half_year') {
                     unit = '上半年';
-                } else if (dataItem.interval === 'first_half_year') {
-                    unit = '上半年';
+                } else if (dataItem.interval === 'second_half_year') {
+                    unit = '下半年';
                 }
 
                 return {
