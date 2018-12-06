@@ -7,7 +7,6 @@ import {Icon,Input,Button} from 'antd';
 var SalesTeamStore = require('./store/sales-team-store');
 var SalesTeamAction = require('./action/sales-team-actions');
 var Spinner = require('../../../components/spinner');
-var TopNav = require('../../../components/top-nav');
 var NoData = require('../../../components/analysis-nodata');
 var AlertTimer = require('../../../components/alert-timer');
 var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;

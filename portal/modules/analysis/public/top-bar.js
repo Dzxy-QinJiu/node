@@ -9,7 +9,6 @@ import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {Select} from 'antd';
 
 const Option = Select.Option;
-const TopNav = require('CMP_DIR/top-nav');
 const emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = emitters.dateSelectorEmitter;
 const teamTreeEmitter = emitters.teamTreeEmitter;
