@@ -16,7 +16,12 @@ export function getContractRepayCompareChart() {
             name: 'interval',
             value: 'month'
         }],
-        argCallback: argCallbackTeamId,
+        argCallback: args => {
+            argCallbackTeamId(args),
+
+            args.query.starttime = moment().startOf('year').valueOf();
+            args.query.endtime = moment().endOf('year').valueOf();
+        },
         processData: data => data,
         processOption: (option, chartProps) => {
             //设置纵轴左边距，以便能完整显示金额数值
