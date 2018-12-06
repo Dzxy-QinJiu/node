@@ -3,7 +3,6 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/27.
  */
-import TopNav from 'CMP_DIR/top-nav';
 var LeaveApplyAction = require('./action/leave-apply-action');
 var LeaveApplyStore = require('./store/leave-apply-store');
 var LeaveApplyDetailAction = require('./action/leave-apply-detail-action');

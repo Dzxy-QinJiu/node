@@ -8,7 +8,6 @@ import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {LEAVE_TYPES} from './consts';
 import {AntcAttendanceRemarks} from 'antc';
 
-const TopNav = require('CMP_DIR/top-nav');
 import ReportLeftMenu from 'CMP_DIR/report-left-menu';
 
 const Option = Select.Option;

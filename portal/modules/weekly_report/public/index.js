@@ -13,7 +13,6 @@ var WeekReportUtil = require('./utils/weekly-report-utils');
 import WeeklyReportDetail from './view/weekly-report-detail';
 import {Row, Col, Alert} from 'antd';
 
-var TopNav = require('CMP_DIR/top-nav');
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import NatureTimeSelect from 'CMP_DIR/nature-time-select';
 import ReportLeftMenu from 'CMP_DIR/report-left-menu';

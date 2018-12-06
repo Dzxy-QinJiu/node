@@ -10,7 +10,6 @@ var UserAction = require('./action/user-actions');
 var AddUserForm = require('./views/user-form');
 var UserInfo = require('./views/user-info');
 var rightPanelUtil = require('../../../components/rightPanel');
-var TopNav = require('../../../components/top-nav');
 var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
 var UserFormAction = require('./action/user-form-actions');
 var Spinner = require('../../../components/spinner');

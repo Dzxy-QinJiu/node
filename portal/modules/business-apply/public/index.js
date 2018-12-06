@@ -7,7 +7,6 @@ import Trace from 'LIB_DIR/trace';
 var BusinessApplyStore = require('./store/business-apply-store');
 var BusinessApplyAction = require('./action/business-apply-action');
 var BusinessDetailApplyAction = require('./action/apply-view-detail-action');
-import TopNav from 'CMP_DIR/top-nav';
 require('./css/index.less');
 import {Alert} from 'antd';
 import AddBusinessApplyPanel from './view/add-business-apply';

@@ -12,7 +12,6 @@ if (language.lan() == 'es' || language.lan() == 'en') {
 var OrganizationStore = require('./store/organization-store');
 var OrganizationAction = require('./action/organization-actions');
 var Spinner = require('../../../components/spinner');
-var TopNav = require('../../../components/top-nav');
 var LeftTree = require('./views/left-tree');
 var MemberList = require('./views/member-list');
 var OrganizationAjax = require('./ajax/organization-ajax');
@@ -190,9 +189,6 @@ var OrganizationPage = createReactClass({
         let leftTreeData = this.state.searchContent ? this.state.searchOrganizationTree : this.state.organizationListArray;
         return (
             <div className="organization-manage-container">
-                <TopNav>
-                    <TopNav.MenuList/>
-                </TopNav>
                 {this.state.organizationLisTipMsg ?
                     (this.state.organizationLisTipMsg == CONSTANT.ORGANIZATION_IS_NULL ? this.renderAddOrganization() :
                         <NoData msg={this.state.organizationLisTipMsg}/>) : (this.state.isLoadingOrganization ? (
