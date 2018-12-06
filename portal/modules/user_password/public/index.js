@@ -15,8 +15,6 @@ const FormItem = Form.Item;
 var crypto = require('crypto');//用于密码md5SSSS
 var AlertTimer = require('../../../components/alert-timer');
 
-//顶部导航
-var TopNav = require('../../../components/top-nav');
 var UserInfoStore = require('../../user_info/public/store/user-info-store');
 var UserInfoAction = require('../../user_info/public/action/user-info-actions');
 var userInfoAjax = require('../../user_info/public/ajax/user-info-ajax');
@@ -171,9 +169,6 @@ var UserPwdPage = createReactClass({
         return (
             <div className="userInfoManage_userPwd_content" data-tracename="密码管理">
                 <div className="user-pwd-manage-container">
-                    <TopNav>
-                        <TopNav.MenuList/>
-                    </TopNav>
                     <div className="user-pwd-manage-div">
                         <Form layout='horizontal' className="user-info-edit-pwd-form" autoComplete="off">
                             <FormItem

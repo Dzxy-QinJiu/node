@@ -1,4 +1,5 @@
-var React = require('react');
+require('./bundle.less');
+const Spinner = require('CMP_DIR/spinner/index');
 
 class Bundle extends React.Component {
     constructor(props) {
@@ -7,6 +8,7 @@ class Bundle extends React.Component {
             mod: null
         };
     }
+
     //加载文件
     load = props => {
         this.setState({
@@ -17,14 +19,15 @@ class Bundle extends React.Component {
                 mod: mod ? mod.default : null
             });
         });
-    }
+    };
 
     componentWillMount() {
         this.load(this.props);
     }
 
     render() {
-        return this.state.mod ? this.props.children(this.state.mod) : null;
+        return this.state.mod ? this.props.children(this.state.mod) : <Spinner  className="bundle-isloading"/>;
     }
 }
+
 export default Bundle;

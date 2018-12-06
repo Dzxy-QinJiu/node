@@ -33,12 +33,12 @@ function SalesStageActions() {
         var _this = this;
         var salesStageArray = [];
         salesStageArray.push(salesStage);
-        _this.dispatch({loading: true,error: false});
+        _this.dispatch({loading: true, error: false});
         salesStageAjax.addSalesStage(salesStageArray).then(function(salesStageCreated) {
             _.isFunction(callback) && callback();
-            _this.dispatch({loading: false,error: false, value: salesStageCreated.result});
-        },function(errorMsg) {
-            _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
+            _this.dispatch({loading: false, error: false, value: salesStageCreated.result});
+        }, function(errorMsg) {
+            _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
 
@@ -47,20 +47,21 @@ function SalesStageActions() {
         var _this = this;
         var salesStageArray = [];
         salesStageArray.push(salesStage);
-        _this.dispatch({loading: true,error: false});
+        _this.dispatch({loading: true, error: false});
         salesStageAjax.editSalesStage(salesStageArray).then(function(salesStageModified) {
             _.isFunction(callback) && callback();
-            _this.dispatch({loading: false,error: false, value: salesStageModified.result});
-        },function(errorMsg) {
-            _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
+            _this.dispatch({loading: false, error: false, value: salesStageModified.result});
+        }, function(errorMsg) {
+            _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
 
     //销售阶段排序
-    this.saveSalesStageOrder = function(salesStageList) {
+    this.saveSalesStageOrder = function(salesStageList, callback) {
         var _this = this;
         salesStageAjax.editSalesStage(salesStageList).then(function(salesStageModified) {
             _this.dispatch(salesStageModified.result);
+            _.isFunction(callback) && callback();
         });
     };
 
@@ -69,12 +70,12 @@ function SalesStageActions() {
         var _this = this;
         var idArray = [];
         idArray.push(salesStage.id);
-        _this.dispatch({loading: true,error: false});
+        _this.dispatch({loading: true, error: false});
         salesStageAjax.deleteSalesStage(idArray).then(function() {
-            _this.dispatch({loading: false,error: false, value: salesStage});
+            _this.dispatch({loading: false, error: false, value: salesStage});
             _.isFunction(callback) && callback({error: false});
-        },function(errorMsg) {
-            _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
+        }, function(errorMsg) {
+            _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
             _.isFunction(callback) && callback({error: true});
 
         });

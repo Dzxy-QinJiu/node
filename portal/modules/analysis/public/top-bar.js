@@ -2,17 +2,18 @@
  * 顶部栏
  */
 
-import { AntcDatePicker } from 'antc';
+import {AntcDatePicker} from 'antc';
 import ajax from 'ant-ajax';
-import { initialTime } from './consts';
+import {initialTime} from './consts';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-import { Select} from 'antd';
+import {Select} from 'antd';
+
 const Option = Select.Option;
-const TopNav = require('CMP_DIR/top-nav');
 const emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = emitters.dateSelectorEmitter;
 const teamTreeEmitter = emitters.teamTreeEmitter;
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
+
 class TopBar extends React.Component {
     static defaultProps = {
         //当前显示页面
@@ -50,11 +51,12 @@ class TopBar extends React.Component {
     componentDidMount() {
         this.getTeamList();
         this.getMemberList();
+        this.props.renderTopNavOperation && this.props.renderTopNavOperation(this.renderTopNavOperation());
     }
 
     getTeamList = () => {
         getMyTeamTreeAndFlattenList(data => {
-            if(!data.errorMsg) {
+            if (!data.errorMsg) {
                 this.setState({
                     teamList: this.state.teamList.concat(data.teamList),
                 });
@@ -83,9 +85,9 @@ class TopBar extends React.Component {
     };
 
     onTeamChange = (teamId) => {
-        let selectedTeam; 
+        let selectedTeam;
         let teamIdStr;
-         
+
         if (_.last(teamId) === 'all' || _.isEmpty(teamId)) {
             selectedTeam = ['all'];
             teamIdStr = '';
@@ -100,9 +102,9 @@ class TopBar extends React.Component {
     };
 
     onMemberChange = (memberId) => {
-        let selectedMember; 
+        let selectedMember;
         let memberIdStr;
-         
+
         if (_.last(memberId) === 'all' || _.isEmpty(memberId)) {
             selectedMember = ['all'];
             memberIdStr = 'all';
@@ -123,9 +125,10 @@ class TopBar extends React.Component {
         this.setState({startTime, endTime});
 
         dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
-    }
+    };
 
-    render() {
+    //渲染操作按钮区
+    renderTopNavOperation() {
         //日期选择器选项
         let datePickerOption = {
             range: initialTime.range,
@@ -162,60 +165,60 @@ class TopBar extends React.Component {
         if (adjustDatePicker) {
             adjustDatePicker(datePickerOption, this.state.startTime, this.state.endTime);
         }
-
         return (
-            <div className='top-bar'>
-                <TopNav>
-                    <TopNav.MenuList/>
-                    <div className="btn-item">
-                        <Select
-                            defaultValue="team"
-                            onChange={this.onFilterTypeChange}
-                        >
-                            <Option key="1" value="team">按团队</Option>
-                            <Option key="2" value="member">按销售</Option>
-                        </Select>
+            <div className="analysis-filter-btn-item">
+                <Select
+                    defaultValue="team"
+                    onChange={this.onFilterTypeChange}
+                >
+                    <Option key="1" value="team">按团队</Option>
+                    <Option key="2" value="member">按销售</Option>
+                </Select>
 
-                        {this.state.filterType === 'team' ? (
-                            <Select
-                                mode="multiple"
-                                value={this.state.selectedTeam}
-                                onChange={this.onTeamChange}
-                                dropdownMatchSelectWidth={false}
-                            >
-                                {_.map(this.state.teamList, (teamItem, index) => {
-                                    return <Option key={index} value={teamItem.group_id}>{teamItem.group_name}</Option>;
-                                })}
-                            </Select>
-                        ) : null}
+                {this.state.filterType === 'team' ? (
+                    <Select
+                        mode="multiple"
+                        value={this.state.selectedTeam}
+                        onChange={this.onTeamChange}
+                        dropdownMatchSelectWidth={false}
+                    >
+                        {_.map(this.state.teamList, (teamItem, index) => {
+                            return <Option key={index} value={teamItem.group_id}>{teamItem.group_name}</Option>;
+                        })}
+                    </Select>
+                ) : null}
 
-                        {this.state.filterType === 'member' ? (
-                            <Select
-                                mode="multiple"
-                                value={this.state.selectedMember}
-                                onChange={this.onMemberChange}
-                                dropdownMatchSelectWidth={false}
-                            >
-                                {_.map(this.state.memberList, (memberItem, index) => {
-                                    return <Option key={index} value={memberItem.user_info.user_id}>{memberItem.user_info.nick_name}</Option>;
-                                })}
-                            </Select>
-                        ) : null}
+                {this.state.filterType === 'member' ? (
+                    <Select
+                        mode="multiple"
+                        value={this.state.selectedMember}
+                        onChange={this.onMemberChange}
+                        dropdownMatchSelectWidth={false}
+                    >
+                        {_.map(this.state.memberList, (memberItem, index) => {
+                            return <Option key={index}
+                                           value={memberItem.user_info.user_id}>{memberItem.user_info.nick_name}</Option>;
+                        })}
+                    </Select>
+                ) : null}
 
-                        <AntcDatePicker
-                            disableDateAfterToday={true}
-                            range={datePickerOption.range}
-                            start_time={datePickerOption.startTime}
-                            end_time={datePickerOption.endTime}
-                            onSelect={this.onSelectDate}>
-                            {datePickerOption.periodOptions.map((option, index) => (
-                                <AntcDatePicker.Option value={option.value} key={index}>{option.name}</AntcDatePicker.Option>
-                            ))}
-                        </AntcDatePicker>
-                    </div>
-                </TopNav>
+                <AntcDatePicker
+                    disableDateAfterToday={true}
+                    range={datePickerOption.range}
+                    start_time={datePickerOption.startTime}
+                    end_time={datePickerOption.endTime}
+                    onSelect={this.onSelectDate}>
+                    {datePickerOption.periodOptions.map((option, index) => (
+                        <AntcDatePicker.Option value={option.value}
+                                               key={index}>{option.name}</AntcDatePicker.Option>
+                    ))}
+                </AntcDatePicker>
             </div>
         );
+    }
+
+    render() {
+        return (null);
     }
 }
 

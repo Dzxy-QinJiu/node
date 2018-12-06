@@ -1,4 +1,3 @@
-
 let language = require('PUB_DIR/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('./css/index-es_VE.less');
@@ -11,13 +10,12 @@ var UserAction = require('./action/user-actions');
 var AddUserForm = require('./views/user-form');
 var UserInfo = require('./views/user-info');
 var rightPanelUtil = require('../../../components/rightPanel');
-var RightPanel = rightPanelUtil.RightPanel;
-var TopNav = require('../../../components/top-nav');
 var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
 var UserFormAction = require('./action/user-form-actions');
 var Spinner = require('../../../components/spinner');
 var UserFilterAdv = require('./views/user-filter-adv');
 import {Button} from 'antd';
+
 var openTimeout = null;//打开面板时的时间延迟设置
 var focusTimeout = null;//focus事件的时间延迟设置
 var CONSTANTS = {
@@ -36,6 +34,7 @@ class UserManage extends React.Component {
     componentDidMount() {
         $('body').css('overflow', 'hidden');
         UserStore.listen(this.onChange);
+        this.props.renderTopNavOperation && this.props.renderTopNavOperation(this.renderTopNavOperation());
     }
 
     componentWillUnmount() {
@@ -46,7 +45,7 @@ class UserManage extends React.Component {
     events_showUserForm = (type) => {
         //type：“edit”/"add"
         if (type === 'add') {
-            Trace.traceEvent('成员管理','成员详情面板点击添加成员按钮');
+            Trace.traceEvent('成员管理', '成员详情面板点击添加成员按钮');
             //获取团队列表
             if (!Oplate.hideSomeItem) { // v8环境下，不显示所属团队，所以不用发请求
                 UserFormAction.setTeamListLoading(true);
@@ -82,7 +81,7 @@ class UserManage extends React.Component {
         if (this.state.userIsLoading || this.state.logIsLoading) {
             return;
         }
-        Trace.traceEvent('成员管理','点击查看成员详情');
+        Trace.traceEvent('成员管理', '点击查看成员详情');
         UserAction.setCurUser(user.id);
         // //获取用户的详情
         UserAction.setUserLoading(true);
@@ -110,9 +109,9 @@ class UserManage extends React.Component {
 
     events_searchEvent = (searchContent) => {
         if (searchContent) {
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-input-container input'),'跟据用户名/昵称/电话/邮箱搜索成员');
-        }else{
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-input-container input'),'清空搜索内容');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-input-container input'), '跟据用户名/昵称/电话/邮箱搜索成员');
+        } else {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-input-container input'), '清空搜索内容');
         }
         UserAction.updateCurPage(1);
         UserAction.updateSearchContent(searchContent);
@@ -205,33 +204,46 @@ class UserManage extends React.Component {
         UserAction.updateUserStatus(updateObj);
         UserAction.updateCurrentUserStatus(updateObj.status);
     };
-   hasNoFilterCondition = () => {
-       if (this.state.searchContent || this.state.selectRole){
-           return false;
-       }else{
-           return true;
-       }
+    hasNoFilterCondition = () => {
+        if (this.state.searchContent || this.state.selectRole) {
+            return false;
+        } else {
+            return true;
+        }
 
-   };
+    };
     renderAddAndImportBtns = () => {
-        if (hasPrivilege('USER_MANAGE_ADD_USER')){
+        if (hasPrivilege('USER_MANAGE_ADD_USER')) {
             return (
                 <div className="btn-containers">
-                    <Button className='add-clue-btn btn-item btn-m-r-2' onClick={this.events_showUserForm.bind(this,'add')}>{Intl.get('common.add.member', '添加成员')}</Button>
+                    <Button className='add-clue-btn btn-item btn-m-r-2'
+                            onClick={this.events_showUserForm.bind(this, 'add')}>{Intl.get('common.add.member', '添加成员')}</Button>
                 </div>
             );
-        }else{
+        } else {
             return null;
         }
 
     };
+    //渲染操作按钮区
+    renderTopNavOperation = () => {
+        return (
+            <PrivilegeChecker check="USER_MANAGE_ADD_USER" className="block float-r btn-item-container"
+                              onClick={this.events_showUserForm.bind(this, 'add')}
+                              data-tracename="添加成员">
+                <Button className="btn-item btn-m-r-2">
+                    <ReactIntl.FormattedMessage id="common.add.member" defaultMessage="添加成员"/>
+                </Button>
+            </PrivilegeChecker>);
+    };
+
     render() {
         var firstLoading = this.state.isLoading;
         return (
             <div className="user_manage_style backgroundManagement_user_content" data-tracename="成员管理">
                 {
                     firstLoading ? <div className="firstLoading">
-                        <Spinner />
+                        <Spinner/>
                     </div> : null
                 }
                 <RightCardsContainer
@@ -256,21 +268,11 @@ class UserManage extends React.Component {
                     renderAddAndImportBtns={this.renderAddAndImportBtns}
                     showAddBtn={this.hasNoFilterCondition()}
                 >
-                    <TopNav>
-                        <TopNav.MenuList />
-                        <PrivilegeChecker check="USER_MANAGE_ADD_USER" className="block float-r btn-item-container"
-                            onClick={this.events_showUserForm.bind(this,'add')}
-                            data-tracename="添加成员" >
-                            <Button className="btn-item btn-m-r-2">
-                                <ReactIntl.FormattedMessage id="common.add.member" defaultMessage="添加成员"/>
-                            </Button>
-                        </PrivilegeChecker>
-                    </TopNav>
                     <UserFilterAdv isFilterPanelShow={this.state.isFilterPanelShow}
-                        allUserTotal={this.state.allUserTotal}
-                        selectRole={this.state.selectRole}
-                        userRoleList={this.state.userRoleList}
-                        filterUserByRole={this.events_filterUserByRole.bind(this)}
+                                   allUserTotal={this.state.allUserTotal}
+                                   selectRole={this.state.selectRole}
+                                   userRoleList={this.state.userRoleList}
+                                   filterUserByRole={this.events_filterUserByRole.bind(this)}
                     />
                     {this.state.userInfoShow ?
                         <UserInfo

@@ -1,105 +1,105 @@
+.topNav {
+  .analysis-filter-btn-item {
+    float: right;
+    margin-top: 17px;
+    & > div {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 15px;
+    }
+  }
+  .ant-select-selection--multiple {
+    .ant-select-selection__choice {
+      background: none;
+      height: 32px;
+      line-height: 32px;
+      margin-top: 0;
+      color: #8da8c5;
+    }
+  }
+}
+
 .curtao-analysis {
-    background: #f3f5f5;
-    .top-bar {
-        height: 64px;
-        margin-bottom: 16px;
-        .btn-item {
-            float: right;
-            margin-top: 17px;
-            &>div {
-                display: inline-block;
-                vertical-align: middle;
-                margin-left: 15px;
-            }
-        }
-        .ant-select-selection--multiple {
-            .ant-select-selection__choice {
-                background: none;
-                height: 32px;
-                line-height: 32px;
-                margin-top: 0;
-                color: #8da8c5;
-            }
-        }
+  background: #f3f5f5;
+  padding-top: 74px;
+  .analysis-menu {
+    margin-left: 16px;
+    font-size: 14px;
+    cursor: pointer;
+    .active {
+      color: blue;
     }
-    .analysis-menu {
-        margin-left: 16px;
-        font-size: 14px;
-        cursor: pointer;
-        .active {
-            color: blue;
+    .ant-collapse {
+      .ant-collapse-header {
+        font-size: 15px;
+        font-weight: bold;
+      }
+      .ant-collapse-item {
+        border-bottom: none;
+        .ant-collapse-content {
+          border-top: none;
+          padding-left: 32px;
+          .ant-collapse-content-box {
+            padding-top: 5px;
+            padding-bottom: 5px;
+          }
         }
-        .ant-collapse {
-            .ant-collapse-header {
-                font-size: 15px;
-                font-weight: bold;
-            }
-            .ant-collapse-item {
-                border-bottom: none;
-                .ant-collapse-content {
-                    border-top: none;
-                    padding-left: 32px;
-                    .ant-collapse-content-box {
-                        padding-top: 5px;
-                        padding-bottom: 5px;
-                    }
-                }
-            }
-        }
+      }
     }
-    .page-top-bar {
-        overflow: hidden;
-        .app-selector {
-            margin: 0 0 10px 16px;
-        }
+  }
+  .page-top-bar {
+    overflow: hidden;
+    .app-selector {
+      margin: 0 0 10px 16px;
     }
-    .historic-high-detail {
-        dl {
-            margin-right: 16px;
-            dt {
-                font-size: 16px;
-                line-height: 40px;
-            }
-        }
+  }
+  .historic-high-detail {
+    dl {
+      margin-right: 16px;
+      dt {
+        font-size: 16px;
+        line-height: 40px;
+      }
     }
+  }
 }
 
 #app {
-    .curtao-analysis .ant-table {
-        .ant-table-fixed-left .ant-table-fixed {
-            th,td {
-                border-right: 1px dashed #edf1f2 !important;
-            }
-        }
-        td.clickable {
-            cursor: pointer;
-        }
+  .curtao-analysis .ant-table {
+    .ant-table-fixed-left .ant-table-fixed {
+      th, td {
+        border-right: 1px dashed #edf1f2 !important;
+      }
     }
+    td.clickable {
+      cursor: pointer;
+    }
+  }
 
-    .analysis-right-panel {
-        width: auto;
-        left: 75px;
-        transform: translateX(100%);
-        -webkit-transform: translateX(100%);
-        background-color: #fff;
-        .topNav {
-            left: 0;
-        }
-        .right-panel-content {
-            margin: 64px auto 16px 16px;
-            padding-right: 24px;
-            .error-info {
-                text-align: center;
-                padding: 30px;
-                font-size: 14px;
-                .retry-btn {
-                    cursor: pointer;
-                    color: #2196F3;
-                }
-            }
-            .crm_content #content-block {
-                margin: 0;
-            }
-        }
+  .analysis-right-panel {
+    width: auto;
+    left: 75px;
+    transform: translateX(100%);
+    -webkit-transform: translateX(100%);
+    background-color: #fff;
+    .topNav {
+      left: 0;
     }
+    .right-panel-content {
+      margin: 64px auto 16px 16px;
+      padding-right: 24px;
+      .error-info {
+        text-align: center;
+        padding: 30px;
+        font-size: 14px;
+        .retry-btn {
+          cursor: pointer;
+          color: #2196F3;
+        }
+      }
+      .crm_content #content-block {
+        margin: 0;
+      }
+    }
+  }
 }

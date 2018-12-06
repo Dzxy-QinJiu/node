@@ -4,7 +4,7 @@
  * Created by liwenjun on 2018/8/30.
  */
 
-import Bundle from '../../public/sources/route-bundle';
+import Bundle from '../../public/sources/route/route-bundle';
 
 const SalesTeamPage = (props) => (
     <Bundle load={() => import('./public')}>

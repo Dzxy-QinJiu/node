@@ -3,26 +3,33 @@
  */
 
 require('./style.less');
-import { storageUtil } from 'ant-utils';
+import {storageUtil} from 'ant-utils';
 import Store from './store';
 import ajax from 'ant-ajax';
 import TopBar from './top-bar';
 import HistoricHighDetail from './historic-high-detail';
 import AppSelector from './app-selector';
-import { getContextContent } from './utils';
-import { initialTime, STORED_APP_ID_KEY, CUSTOMER_IDS_FIELD } from './consts';
-import { AntcAnalysis } from 'antc';
-import { Row, Col, Collapse } from 'antd';
+import {getContextContent} from './utils';
+import {initialTime, STORED_APP_ID_KEY, CUSTOMER_IDS_FIELD} from './consts';
+import {AntcAnalysis} from 'antc';
+import {Row, Col, Collapse} from 'antd';
+
 const Panel = Collapse.Panel;
 
-import { appSelectorEmitter, teamTreeEmitter, dateSelectorEmitter, analysisCustomerListEmitter } from 'PUB_DIR/sources/utils/emitters';
+import {
+    appSelectorEmitter,
+    teamTreeEmitter,
+    dateSelectorEmitter,
+    analysisCustomerListEmitter
+} from 'PUB_DIR/sources/utils/emitters';
 
 import rightPanelUtil from 'CMP_DIR/rightPanel';
+
 const RightPanel = rightPanelUtil.RightPanel;
 const RightPanelClose = rightPanelUtil.RightPanelClose;
 const CustomerList = require('MOD_DIR/crm/public/crm-list');
 
-import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 
 //权限类型
 const authType = hasPrivilege('CUSTOMER_ANALYSIS_MANAGER') ? 'manager' : 'common';
@@ -62,8 +69,8 @@ class CurtaoAnalysis extends React.Component {
         this.getStageList();
         this.getIndustryList();
         this.getAppList();
-        this.getClueChannelList(); 
-        this.getClueSourceList(); 
+        this.getClueChannelList();
+        this.getClueSourceList();
 
         analysisCustomerListEmitter.on(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, this.handleCustomerListEvent);
     }
@@ -155,7 +162,7 @@ class CurtaoAnalysis extends React.Component {
             const pageIndex = 0;
             const menuIndex = groupIndex + ',' + pageIndex;
 
-            this.handleMenuClick(menuIndex, groupIndex, pageIndex); 
+            this.handleMenuClick(menuIndex, groupIndex, pageIndex);
         }
     }
 
@@ -184,7 +191,7 @@ class CurtaoAnalysis extends React.Component {
         }
 
         this.setState(state);
-    }
+    };
 
     //隐藏右侧面板
     hideRightPanel = () => {
@@ -193,12 +200,13 @@ class CurtaoAnalysis extends React.Component {
             isCustomerListShow: false,
             isHistoricHighDetailShow: false,
         });
-    }
+    };
 
     renderMenu() {
         return (
             <div className="analysis-menu">
-                <Collapse accordion bordered={false} defaultActiveKey='0' onChange={this.handleCollapseChange.bind(this)}>
+                <Collapse accordion bordered={false} defaultActiveKey='0'
+                          onChange={this.handleCollapseChange.bind(this)}>
                     {_.map(this.state.groups, (group, groupIndex) => (
                         <Panel header={group.title} key={groupIndex}>
                             {_.map(group.pages, (page, pageIndex) => {
@@ -206,7 +214,8 @@ class CurtaoAnalysis extends React.Component {
                                 const className = menuIndex === this.state.currentMenuIndex ? 'active' : '';
 
                                 return (
-                                    <div key={pageIndex} className={className} onClick={this.handleMenuClick.bind(this, menuIndex, groupIndex, pageIndex)}>{page.title}</div>
+                                    <div key={pageIndex} className={className}
+                                         onClick={this.handleMenuClick.bind(this, menuIndex, groupIndex, pageIndex)}>{page.title}</div>
                                 );
                             })}
                         </Panel>
@@ -372,6 +381,7 @@ class CurtaoAnalysis extends React.Component {
             <div className='curtao-analysis'>
                 <TopBar
                     currentPage={this.state.currentPage}
+                    renderTopNavOperation={this.props.renderTopNavOperation}
                 />
                 <Row>
                     <Col span={3}>
@@ -380,7 +390,7 @@ class CurtaoAnalysis extends React.Component {
                     <Col span={21}>
                         {this.state.isAppSelectorShow ? (
                             <div className="page-top-bar">
-                                <AppSelector storedAppIdKey={STORED_APP_ID_KEY} defaultValue={defaultAppId} />
+                                <AppSelector storedAppIdKey={STORED_APP_ID_KEY} defaultValue={defaultAppId}/>
                             </div>
                         ) : null}
                         {this.renderContent()}

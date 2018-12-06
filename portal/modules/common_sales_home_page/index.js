@@ -1,4 +1,4 @@
-import Bundle from '../../public/sources/route-bundle';
+import Bundle from '../../public/sources/route/route-bundle';
 
 const CommonSalesHomePage = (props) => (
     <Bundle load={() => import('./public')}>

@@ -1,7 +1,7 @@
 /**
  * 说明：统计分析-客户分析
  */
-import Bundle from '../../public/sources/route-bundle';
+import Bundle from '../../public/sources/route/route-bundle';
 
 const CustomerAnalysisPage = (props) => (
     <Bundle load={() => import('./public')}>

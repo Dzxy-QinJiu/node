@@ -1,20 +1,22 @@
 var React = require('react');
 require('./style.less');
-import { AntcAnalysis } from 'antc';
-import { Row, Col, Select, DatePicker} from 'antd';
-import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import {AntcAnalysis} from 'antc';
+import {Row, Col, Select, DatePicker} from 'antd';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import ajax from 'ant-ajax';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-import { LEAVE_TYPES } from './consts';
+import {LEAVE_TYPES} from './consts';
 import {AntcAttendanceRemarks} from 'antc';
-const TopNav = require('CMP_DIR/top-nav');
+
 import ReportLeftMenu from 'CMP_DIR/report-left-menu';
+
 const Option = Select.Option;
 const MonthPicker = DatePicker.MonthPicker;
 const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
-import { storageUtil } from 'ant-utils';
+import {storageUtil} from 'ant-utils';
+
 const STORED_TEAM_KEY = 'monthly_report_selected_team';
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 
@@ -29,16 +31,16 @@ class MonthlyReport extends React.Component {
     componentDidMount() {
         //让顶部栏上的报告菜单显示选中状态
         $('.analysis_report_ico a').addClass('active');
-
         this.getTeamList();
         this.getMemberList();
+        this.props.renderTopNavOperation && this.props.renderTopNavOperation(this.renderTopNavOperation());
     }
 
     getTeamList = () => {
         const reqData = commonMethodUtil.getParamByPrivilege();
         getMyTeamTreeAndFlattenList(data => {
             var result = data.teamList;
-            if(!data.errorMsg) {
+            if (!data.errorMsg) {
                 const storedTeam = storageUtil.local.get(STORED_TEAM_KEY);
                 const selectedTeam = storedTeam || _.get(result, '[0]');
                 this.setState({
@@ -63,7 +65,7 @@ class MonthlyReport extends React.Component {
 
     getAuthType = () => {
         let authType = 'user';//CALL_RECORD_VIEW_USER
-        
+
         if (hasPrivilege('CALL_RECORD_VIEW_MANAGER')) {
             authType = 'manager';
         }
@@ -371,7 +373,7 @@ class MonthlyReport extends React.Component {
 
     renderFilter = (selectedTeamId) => {
         return (
-            <div className="filter">
+            <div className="monthly-report-filter">
                 {selectedTeamId && this.state.teamList.length ? (
                     <Select
                         defaultValue={selectedTeamId}
@@ -412,6 +414,11 @@ class MonthlyReport extends React.Component {
 
         dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
     };
+    //渲染操作按钮区
+    renderTopNavOperation = () => {
+        const selectedTeamId = _.get(this.state.selectedTeam, 'group_id');
+        return this.renderFilter(selectedTeamId);
+    };
 
     render() {
         const selectedTeamId = _.get(this.state.selectedTeam, 'group_id');
@@ -419,14 +426,10 @@ class MonthlyReport extends React.Component {
 
         return (
             <div className="monthly-report" data-tracename='销售月报'>
-                <TopNav>
-                    <TopNav.MenuList/>
-                    {this.renderFilter(selectedTeamId)}
-                </TopNav>
                 <div className="monthly-report-content">
                     <Row>
                         <Col span={3}>
-                            <ReportLeftMenu />
+                            <ReportLeftMenu/>
                         </Col>
                         <Col span={21}>
                             {selectedTeamName ? (

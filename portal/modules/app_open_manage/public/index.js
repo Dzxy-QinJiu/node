@@ -1,20 +1,23 @@
-import { Button, Modal, Form, Select, Icon, message } from 'antd';
+import {Button, Modal, Form, Select, Icon, message} from 'antd';
+
 const Option = Select.Option;
 require('./style/index.less');
 import rightPanelUtil from 'CMP_DIR/rightPanel';
+
 const RightPanel = rightPanelUtil.RightPanel;
-import { RightPanelClose } from 'CMP_DIR/rightPanel/index';
+import {RightPanelClose} from 'CMP_DIR/rightPanel/index';
+
 const OpenAppAction = require('./action');
 const OpenAppStore = require('./store');
 const FormItem = Form.Item;
-var TopNav = require('CMP_DIR/top-nav');
 import StatusWrapper from 'CMP_DIR/status-wrapper';
-import { USER_STATUS, APP_STATUS, MAX_PAGESIZE } from './consts';
-import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import {USER_STATUS, APP_STATUS, MAX_PAGESIZE} from './consts';
+const Spinner = require('CMP_DIR/spinner/index');
+import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 
 const itemLayout = {
-    labelCol: { span: 5 },
-    wrapperCol: { span: 18 },
+    labelCol: {span: 5},
+    wrapperCol: {span: 18},
 };
 
 class OpenApp extends React.Component {
@@ -26,18 +29,23 @@ class OpenApp extends React.Component {
             ...OpenAppStore.getState()
         };
     }
+
     componentDidMount() {
         OpenAppStore.listen(this.onStoreChange);
         this.getAppList();
+        this.props.renderTopNavOperation && this.props.renderTopNavOperation(null);
     }
+
     onStoreChange = () => {
         this.setState(
             OpenAppStore.getState()
         );
-    }
+    };
+
     getAppList() {
         OpenAppAction.getAppList();
     }
+
     getRoleList(app) {
         OpenAppAction.getAppRoleList({
             query: {
@@ -47,9 +55,11 @@ class OpenApp extends React.Component {
             }
         });
     }
+
     getUserList(role) {
         OpenAppAction.getAllUsers();
     }
+
     handleCheckDetail(app) {
         if (this.state.selectedApp.tags_name !== app.tags_name) {
             this.setState({
@@ -61,6 +71,7 @@ class OpenApp extends React.Component {
             });
         }
     }
+
     handleApplyOpen(app) {
         Modal.confirm({
             title: Intl.get('back.openApp.confirm', '确认要开通{appName}功能吗', {appName: app.tags_name}),
@@ -82,6 +93,7 @@ class OpenApp extends React.Component {
             }
         });
     }
+
     handleCloseDetail() {
         this.setState({
             selectedApp: {}
@@ -89,11 +101,13 @@ class OpenApp extends React.Component {
             this.showAppDetail(false);
         });
     }
+
     showAppDetail(isShow) {
         this.setState({
             isShowAppDetail: isShow
         });
     }
+
     handleSubmit(index) {
         const editRoleId = _.get(this.state.roleList, ['data', index, 'role_id']);
         const userList = _.get(this.state.roleList, ['data', index, 'userList']);
@@ -118,7 +132,7 @@ class OpenApp extends React.Component {
         }
         OpenAppAction.editRoleOfUsers({
             data: params
-        }).then(({ data }) => {
+        }).then(({data}) => {
             if (data.success) {
                 message.success(Intl.get('common.save.success', '保存成功'));
                 this.changeItemEdit({
@@ -133,16 +147,19 @@ class OpenApp extends React.Component {
             message.error((err && err.message) || Intl.get('common.save.failed', '保存失败'));
         });
     }
-    handleSelectChange({ role_id }, value) {
+
+    handleSelectChange({role_id}, value) {
         OpenAppAction.changeRoleUser({
             role_id,
             ids: value
         });
     }
+
     //此处为防止event充当参数，所以把参数放到对象中
     changeItemEdit(params) {
         OpenAppAction.changeRoleItemEdit(params);
     }
+
     render() {
         const renderRoleFormItem = (role, index) => (
             <FormItem {...itemLayout} key={index} label={role.role_name}>
@@ -170,32 +187,28 @@ class OpenApp extends React.Component {
                                 size='small'
                             >
                                 <span className="">
-                                    <Icon type="check" onClick={this.handleSubmit.bind(this, index)} />
+                                    <Icon type="check" onClick={this.handleSubmit.bind(this, index)}/>
                                     <Icon type="close" onClick={this.changeItemEdit.bind(this, {
                                         isShow: false, index, isCancel: true
-                                    })} />
+                                    })}/>
                                 </span>
                             </StatusWrapper> :
                             <Icon type="edit" onClick={this.changeItemEdit.bind(this, {
                                 isShow: true, index
-                            })} />
+                            })}/>
                     }
                 </div>
             </FormItem>
         );
         return (
             <div className="open-app-wrapper">
-                <TopNav>
-                    <TopNav.MenuList />
-                </TopNav>
-                <StatusWrapper
-                    loading={this.state.appList.loading}
-                    errorMsg={this.state.appList.errorMsg}
-                >
+                {this.state.appList.loading ? <Spinner className='open-app-loading'/> : this.state.appList.errorMsg ? (
+                    <span className="">{this.state.appList.errorMsg}</span>) : _.get(this.state, 'appList.data[0]') ? (
                     <div className="">
                         {
                             this.state.appList.data.map((app, index) => (
-                                <fieldset key={index} className={app.status === APP_STATUS.ENABLED ? 'app-container' : 'app-container disabled'}>
+                                <fieldset key={index}
+                                          className={app.status === APP_STATUS.ENABLED ? 'app-container' : 'app-container disabled'}>
                                     <legend>{app.tags_name}</legend>
                                     <p>{app.tags_description}</p>
                                     {app.status === APP_STATUS.ENABLED ? null : (
@@ -209,8 +222,7 @@ class OpenApp extends React.Component {
                                 </fieldset>
                             ))
                         }
-                    </div>
-                </StatusWrapper>
+                    </div>) : <NoDataIconTip tipContent={Intl.get('user.no.app', '暂无应用')}/>}
                 <RightPanel
                     className="app-detail-wrapper"
                     showFlag={this.state.isShowAppDetail}
@@ -251,4 +263,5 @@ class OpenApp extends React.Component {
 
     }
 }
+
 module.exports = OpenApp;

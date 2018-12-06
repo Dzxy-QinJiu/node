@@ -4,7 +4,6 @@
 //顶部导航
 var React = require('react');
 var createReactClass = require('create-react-class');
-var TopNav = require('../../../components/top-nav');
 require('./css/user-info-zh_CN.less');
 var language = require('../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
@@ -97,9 +96,6 @@ var UserInfoPage = createReactClass({
         return (
             <div className="userInfoManage_userInfo_content" data-tracename="个人资料">
                 <div className="user-info-manage-container">
-                    <TopNav>
-                        <TopNav.MenuList />
-                    </TopNav>
                     <UserInfo
                         userInfoFormShow={this.state.userInfoFormShow}
                         userInfo={this.state.userInfo}
