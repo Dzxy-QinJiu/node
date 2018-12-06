@@ -214,7 +214,6 @@ class BusinessApplyManagement extends React.Component {
         var applyListHeight = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
         var applyType = commonMethodUtil.getApplyStatusDscr(this.state.applyListType);
         var noShowApplyDetail = this.state.applyListObj.list.length === 0;
-        var hasAddPriviledge = userData.getUserData().team_id ? true : false;
         return (
             <div className="bussiness-apply-container">
                 <TopNav>
@@ -226,7 +225,6 @@ class BusinessApplyManagement extends React.Component {
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
                             addPrivilege='BUSINESS_TRIP_APPLY'
-                            hasAddPrivilege = {hasAddPriviledge}
                             showAddApplyPanel={this.showAddApplyPanel}
                             addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
                             menuList={selectMenuList}
