@@ -18,6 +18,7 @@ class Avatar extends React.Component {
             <div className={this.props.className} style={ innerStyle }>
                 {this.props.link ?
                     (<Aimg url={this.props.url} round={this.props.round} src={this.props.src}
+                        size={this.props.size}
                         userName={this.props.userName} nickName={this.props.nickName}
                         showName={this.props.showName} name={this.props.name}/>) :
                     (<a style={aStyle}><Img src={this.props.src} size={this.props.size} round={this.props.round}/>
@@ -35,6 +36,7 @@ class Aimg extends React.Component {
             <NavLink to={this.props.url} activeClassName="active">
                 <Img alt={this.props.name} src={this.props.src} round={this.props.round}
                     userName={this.props.userName} nickName={this.props.nickName}
+                    size={this.props.size}
                 />
                 {this.props.showName ? <Name name={this.props.name}/> : ''}
             </NavLink>
@@ -49,7 +51,7 @@ class Img extends React.Component {
             width: '100%',
             height: '100%',
             fontSize: '24px',
-            lineHeight: '45px',
+            lineHeight: this.props.size || '45px',
             borderRadius: this.props.round ? '50%' : 0
         };
         return (

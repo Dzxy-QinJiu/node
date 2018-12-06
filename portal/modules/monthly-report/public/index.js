@@ -27,9 +27,6 @@ class MonthlyReport extends React.Component {
     };
 
     componentDidMount() {
-        //让顶部栏上的报告菜单显示选中状态
-        $('.analysis_report_ico a').addClass('active');
-
         this.getTeamList();
         this.getMemberList();
     }

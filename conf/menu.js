@@ -268,6 +268,21 @@ class LeftMenuClass {
                                     'CALLRECORD_ASKFORLEAVE_QUERY_USER',
                                 ],
                             },
+                            //销售报告
+                            {
+                                id: 'SALES_REPORT_ANALYSIS',//唯一标识
+                                name: backendIntl.get('common.sales.report', '销售报告'),
+                                routePath: 'analysis/report/sales_report',
+                                privileges: [
+                                    'CURTAO_SALES_REPORTS_COMMON',
+                                    'CURTAO_SALES_REPORTS_MANAGER',
+                                ],
+                                //有这个权限，才显示入口图标
+                                showPrivileges: [
+                                    'CURTAO_SALES_REPORTS_COMMON',
+                                    'CURTAO_SALES_REPORTS_MANAGER',
+                                ]
+                            },
                         ],
                     },
                 ]

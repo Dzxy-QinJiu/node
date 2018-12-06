@@ -2613,5 +2613,12 @@ var zh_CN = {
     'deal.view.list': '表格视图',
     'deal.drag.data.saving': '正在保存拖动的数据...',
     'deal.drag.data.disabled': '关闭的订单不可以修改',
+    'common.sales.report': '销售报告',
+    'common.entry.time': '入职时间',
+    'common.sales.performance': '销售业绩',
+    'common.sales.behavior': '销售行为',
+    'common.sales.behavior.statistics': '销售行为统计',
+    'common.new.customer.login.statistics': '新开客户登录情况统计',
+    'common.customer.active.statistics': '客户活跃度统计',
 };
 export default zh_CN;
