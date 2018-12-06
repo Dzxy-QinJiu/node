@@ -211,7 +211,6 @@ class LeaveApplyManagement extends React.Component {
     };
 
     render() {
-        var hasAddPriviledge = userData.getUserData().team_id ? true : false;
         var addPanelWrap = classNames({'show-add-modal': this.state.showAddApplyPanel});
         var applyListHeight = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
         var applyType = '';
@@ -241,11 +240,10 @@ class LeaveApplyManagement extends React.Component {
                         <ApplyDropdownAndAddBtn
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
-                            addPrivilege='MEMBER_BUSINESSOPPO_APPLY'
+                            addPrivilege='MEMBER_LEAVE_APPLY'
                             showAddApplyPanel={this.showAddApplyPanel}
                             addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
                             menuList={selectMenuList}
-                            hasAddPrivilege = {hasAddPriviledge}
                         />
                         {this.renderApplyListError()}
                         {this.state.applyListObj.loadingResult === 'loading' && !this.state.lastApplyId ? (

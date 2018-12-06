@@ -53,7 +53,7 @@ class ApplyDropdownAndAddBtn extends React.Component {
                         </Dropdown>
                     }
                 </div>
-                {hasPrivilege(this.props.addPrivilege) && this.props.hasAddPrivilege ?
+                {hasPrivilege(this.props.addPrivilege) ?
                     <Button className='pull-right add-leave-btn' onClick={this.props.showAddApplyPanel}
                     >{this.props.addApplyMessage}</Button>
                     : null}
@@ -73,8 +73,7 @@ ApplyDropdownAndAddBtn.defaultProps = {
     showAddApplyPanel: function() {
 
     },
-    addApplyMessage: '',
-    hasAddPrivilege: true
+    addApplyMessage: ''
 };
 ApplyDropdownAndAddBtn.propTypes = {
     menuClick: PropTypes.func,
@@ -83,7 +82,7 @@ ApplyDropdownAndAddBtn.propTypes = {
     addPrivilege: PropTypes.string,
     showAddApplyPanel: PropTypes.func,
     addApplyMessage: PropTypes.string,
-    hasAddPrivilege: PropTypes.boolean
+
 };
 
 export default ApplyDropdownAndAddBtn;
