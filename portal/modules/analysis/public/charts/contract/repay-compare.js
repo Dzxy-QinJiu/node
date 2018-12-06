@@ -12,6 +12,9 @@ export function getContractRepayCompareChart() {
         conditions: [{
             name: 'year',
             value: 3
+        }, {
+            name: 'interval',
+            value: 'month'
         }],
         argCallback: argCallbackTeamId,
         processData: data => data,
@@ -19,12 +22,26 @@ export function getContractRepayCompareChart() {
             //设置纵轴左边距，以便能完整显示金额数值
             option.grid.left = 80;
 
-            //数值第一项中的时间点列表
-            const timePoints = _.get(chartProps.data, '[0].timePoints');
+            //数值第一项
+            const firstDataItem = _.get(chartProps.data, '[0]');
+
+            //时间点列表
+            const timePoints = _.get(firstDataItem, 'timePoints');
+
+            //统计时间区间
+            const interval = _.get(firstDataItem, 'interval');
 
             //将横轴标签设置为时间点中的月
             option.xAxis[0].data = _.map(timePoints, timePoint => {
-                return moment(timePoint.timestamp).month() + 1 + Intl.get('common.time.unit.month', '月');
+                let label = '';
+
+                if (interval === 'month') {
+                    label = moment(timePoint.timestamp).month() + 1 + Intl.get('common.time.unit.month', '月');
+                } else if (interval === 'quarter') {
+                    label = moment(timePoint.timestamp).quarter() + Intl.get('common.time.unit.quarter', '季度');
+                }
+
+                return label;
             });
 
             //图表组件生成的默认系列
@@ -55,6 +72,34 @@ export function getContractRepayCompareChart() {
                 //将当前系列加入图表系列数组
                 option.series.push(serie);
             });
+        },
+        cardContainer: {
+            selectors: [{
+                options: [{
+                    name: '统计区间：月',
+                    value: 'month',
+                }, {
+                    name: '统计区间：季度',
+                    value: 'quarter',
+                }],
+                activeOption: 'month',
+                conditionName: 'interval',
+            }, {
+                optionsCallback: () => {
+                    let options = [];
+
+                    for (let i = 2; i <= 10; i++) {
+                        options.push({
+                            name: `统计范围：近${i}年`,
+                            value: i,
+                        });
+                    }
+
+                    return options;
+                },
+                activeOption: 3,
+                conditionName: 'year',
+            }],
         },
     };
 }
