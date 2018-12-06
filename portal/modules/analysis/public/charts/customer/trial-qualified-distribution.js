@@ -25,6 +25,12 @@ export function getCustomerTrialQualifiedDistributionChart(title, field) {
 
             _.each(chartProps.data, dataItem => {
                 let name = dataItem.team_name;
+
+                //如果存在昵称，说明返回的是成员的数据，名称列需要显示销售昵称
+                if (dataItem.nick_name) {
+                    name = dataItem.nick_name;
+                }
+
                 //区域或行业数据
                 const staList = dataItem.sta_list;
 
