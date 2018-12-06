@@ -2595,7 +2595,7 @@ var en_US = {
     'deal.drag.data.saving': 'Is saving dragged data...',//正在保存拖动的数据...
     'deal.drag.data.disabled': 'Closed orders cannot be modified',//关闭的订单不可以修改
 
-    'common.sales.report': 'Sales report',//销售报告
+    'common.individual.report': 'Individual report',//个人报告
     'common.entry.time': 'Entry time',//入职时间
     'common.sales.performance': 'Sales performance',//销售业绩
     'common.sales.behavior': 'Sales behavior',//销售行为

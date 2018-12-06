@@ -271,7 +271,7 @@ class LeftMenuClass {
                             //销售报告
                             {
                                 id: 'SALES_REPORT_ANALYSIS',//唯一标识
-                                name: backendIntl.get('common.sales.report', '销售报告'),
+                                name: backendIntl.get('common.individual.report', '个人报告'),
                                 routePath: 'analysis/report/sales_report',
                                 privileges: [
                                     'CURTAO_SALES_REPORTS_COMMON',
