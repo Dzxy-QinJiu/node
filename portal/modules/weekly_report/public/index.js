@@ -30,8 +30,7 @@ class WeeklyReport extends React.Component {
     }
 
     componentDidMount() {
-        //让顶部栏上的报告菜单显示选中状态
-        $('.analysis_report_ico a').addClass('active');
+     
 
         WeeklyReportStore.listen(this.onStoreChange);
         this.getTeamMemberData(); //获取销售团队和成员数据
@@ -46,7 +45,7 @@ class WeeklyReport extends React.Component {
         WeeklyReportStore.unlisten(this.onStoreChange);
     }
 
-// 获取销售团队和成员数据
+    // 获取销售团队和成员数据
     getTeamMemberData = () => {
         let reqData = commonMethodUtil.getParamByPrivilege();
         WeeklyReportAction.getSaleGroupTeams(reqData);
@@ -110,7 +109,7 @@ class WeeklyReport extends React.Component {
         }
     };
 
-//周的选择
+    //周的选择
     onChangeWeek = (week, e) => {
         if (this.state.weekTime === week) {
             return;
@@ -123,12 +122,12 @@ class WeeklyReport extends React.Component {
         return (
             <div className='report-time-container'>
                 <NatureTimeSelect onChangeYear={this.onChangeYear}
-                                  onChangeWeek={this.onChangeWeek}
-                                  showTimeTypeSelect={false}
-                                  hideYearSelect={true}
-                                  timeType='week'
-                                  yearTime={this.state.yearDescr}
-                                  weekTime={this.state.nWeek}/>
+                    onChangeWeek={this.onChangeWeek}
+                    showTimeTypeSelect={false}
+                    hideYearSelect={true}
+                    timeType='week'
+                    yearTime={this.state.yearDescr}
+                    weekTime={this.state.nWeek}/>
             </div>);
     };
 

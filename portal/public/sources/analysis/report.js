@@ -11,6 +11,7 @@
 var Content = require('../../../components/privilege/content');
 const weeklyReport = require('MOD_DIR/weekly_report');
 const monthlyReport = require('MOD_DIR/monthly-report');
+const salesReport = require('MOD_DIR/sales-report');
 const userData = require('../user-data');
 
 function getChildRoutesByPrivilege(menu, fullModuleList) {
@@ -35,6 +36,7 @@ function getChildRoutes() {
         [
             weeklyReport,
             monthlyReport,
+            salesReport,
         ]
     );
 

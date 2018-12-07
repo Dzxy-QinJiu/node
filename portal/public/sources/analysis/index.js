@@ -7,7 +7,6 @@ var RightContent = require('../../../components/privilege/right-content');
 var Checker = require('../../../components/privilege/checker');
 const analysis = require('MOD_DIR/analysis');
 
-
 function getChildRoutes() {
     var childRoutes = Checker.getChildRoutes('analysis',
         [
