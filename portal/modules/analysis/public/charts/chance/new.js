@@ -4,7 +4,7 @@
 
 import { argCallbackTimeMember } from '../../utils';
 
-export function getChanceSourceChart() {
+export function getNewChanceChart() {
     return {
         title: '团队或成员新机会统计',
         chartType: 'funnel',
