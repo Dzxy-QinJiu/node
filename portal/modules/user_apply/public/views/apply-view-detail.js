@@ -1223,12 +1223,6 @@ const ApplyViewDetail = createReactClass({
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
-                    <div className="apply-info-label">
-                        <span className="user-info-label">{Intl.get('common.app.status', '开通状态')}:</span>
-                        <span className="user-info-text">
-                            {detailInfo.status === 1 ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用')}
-                        </span>
-                    </div>
                     {_.map(users, (user, idx) => (
                         <div key={idx} className="user-item-container">
                             {this.renderApplyDetailSingleUserName(user)}
