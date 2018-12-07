@@ -298,7 +298,7 @@ exports.toDetailChangePwdOtherRestObject = function(obj) {
     result = addProperties(result, obj);
     //其他类型申请的应用数据
     if (detail.type === 'apply_sth_else') {
-        result.apps = detail.data ? JSON.parse(detail.data) : [];
+        result.apps = detail.app_list ? JSON.parse(detail.app_list) : [];
     }
     return result;
 };
