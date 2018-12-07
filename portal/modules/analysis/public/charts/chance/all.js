@@ -32,9 +32,9 @@ export function getAllChanceChart() {
             const firstDataItem = _.get(chartProps.data, '[0]');
 
             if (!firstDataItem.nick_name) {
-                const memberNameColumnIndex = _.find(option.columns, column => column.dataIndex === 'nick_name');
+                const memberNameColumnIndex = _.findIndex(option.columns, column => column.dataIndex === 'nick_name');
 
-                if (memberNameColumnIndex) {
+                if (memberNameColumnIndex > -1) {
                     option.columns.splice(memberNameColumnIndex, 1);
                 }
             }
