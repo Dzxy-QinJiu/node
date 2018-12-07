@@ -318,16 +318,16 @@ class CrmUserApplyForm extends React.Component {
     submitEditOtherData() {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '点击确定按钮(申请其他类型的修改)');
         let selectedUserAppData = this.getSelectedUserMultiAppData();
-        const data = _.map(selectedUserAppData, item => {
+        const apps = _.map(selectedUserAppData, item => {
             delete item.end_date;
             delete item.begin_date;
             return item;
         });
         let userIds = _.map(selectedUserAppData, 'user_id');
         const submitObj = {
-            user_ids: userIds,
+            user_ids: JSON.stringify(userIds),
             remark: this.state.formData.remark.otherRemark,
-            data
+            apps: JSON.stringify(apps)
         };
         this.setState({ isApplying: true });
         //调用修改其他类型的申请
