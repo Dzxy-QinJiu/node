@@ -5,7 +5,6 @@
 import {AntcDatePicker} from 'antc';
 import ajax from 'ant-ajax';
 import {initialTime} from './consts';
-import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {Select} from 'antd';
 
 const Option = Select.Option;
@@ -22,6 +21,7 @@ class TopBar extends React.Component {
 
     static propTypes = {
         currentPage: PropTypes.object,
+        renderTopNavOperation: PropTypes.func
     };
 
     constructor(props) {
@@ -51,7 +51,6 @@ class TopBar extends React.Component {
     componentDidMount() {
         this.getTeamList();
         this.getMemberList();
-        this.props.renderTopNavOperation && this.props.renderTopNavOperation(this.renderTopNavOperation());
     }
 
     getTeamList = () => {
@@ -59,7 +58,7 @@ class TopBar extends React.Component {
             if (!data.errorMsg) {
                 this.setState({
                     teamList: this.state.teamList.concat(data.teamList),
-                });
+                }, this.renderTopNavOperation);
             }
         });
     };
@@ -70,12 +69,12 @@ class TopBar extends React.Component {
         }).then(result => {
             this.setState({
                 memberList: this.state.memberList.concat(result),
-            });
+            }, this.renderTopNavOperation);
         });
     };
 
     onFilterTypeChange = (type) => {
-        this.setState({filterType: type});
+        this.setState({filterType: type}, this.renderTopNavOperation);
 
         if (type === 'team') {
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, '');
@@ -98,6 +97,7 @@ class TopBar extends React.Component {
 
         this.setState({selectedTeam}, () => {
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamIdStr);
+            this.renderTopNavOperation();
         });
     };
 
@@ -165,7 +165,7 @@ class TopBar extends React.Component {
         if (adjustDatePicker) {
             adjustDatePicker(datePickerOption, this.state.startTime, this.state.endTime);
         }
-        return (
+        this.props.renderTopNavOperation && this.props.renderTopNavOperation(
             <div className="analysis-filter-btn-item">
                 <Select
                     defaultValue="team"
@@ -197,7 +197,7 @@ class TopBar extends React.Component {
                     >
                         {_.map(this.state.memberList, (memberItem, index) => {
                             return <Option key={index}
-                                           value={memberItem.user_info.user_id}>{memberItem.user_info.nick_name}</Option>;
+                                value={memberItem.user_info.user_id}>{memberItem.user_info.nick_name}</Option>;
                         })}
                     </Select>
                 ) : null}
@@ -210,7 +210,7 @@ class TopBar extends React.Component {
                     onSelect={this.onSelectDate}>
                     {datePickerOption.periodOptions.map((option, index) => (
                         <AntcDatePicker.Option value={option.value}
-                                               key={index}>{option.name}</AntcDatePicker.Option>
+                            key={index}>{option.name}</AntcDatePicker.Option>
                     ))}
                 </AntcDatePicker>
             </div>
