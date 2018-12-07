@@ -114,17 +114,16 @@ class SalesReport extends React.Component {
 
     //获取销售角色
     getSalesRole = (id) => {
+        let roleName = '';
+
         ajax.send({
             url: '/rest/sales/role?member_id=' + id,
-        }).then(result => {
-            let roleName;
-
+        }).done(result => {
             if (result && result.teamrole_name) {
                 roleName = result.teamrole_name;
-            } else {
-                roleName = '';
             }
-
+        }).fail(err => {
+        }).always(() => {
             const currentMember = _.extend({}, this.state.currentMember, {role_name: roleName});
 
             this.setState({
@@ -298,7 +297,6 @@ class SalesReport extends React.Component {
         if (roleName === '销售经理') {
         } else {
             charts.push(
-                reportCharts.contractRankingChart,
                 reportCharts.contractChart,
                 reportCharts.repaymentChart,
             );
