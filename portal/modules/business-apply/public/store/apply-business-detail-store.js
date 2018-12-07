@@ -96,6 +96,8 @@ ApplyViewDetailStore.prototype.setDetailInfoObj = function(detailObj) {
         //服务端错误信息
         errorMsg: ''
     };
+    //下一节点负责人的列表
+    this.candidateList = [];
 };
 
 ApplyViewDetailStore.prototype.setInitialData = function(obj) {
@@ -235,6 +237,8 @@ ApplyViewDetailStore.prototype.hideApprovalBtns = function() {
     this.selectedDetailItem.showApproveBtn = false;
     this.selectedDetailItem.showCancelBtn = false;
 };
-
+ApplyViewDetailStore.prototype.getNextCandidate = function(list) {
+    this.candidateList = list;
+};
 
 module.exports = alt.createStore(ApplyViewDetailStore, 'ApplyViewDetailStore');

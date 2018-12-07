@@ -88,6 +88,8 @@ SalesOpportunityApplyDetailStore.prototype.setDetailInfoObj = function(detailObj
         //服务端错误信息
         errorMsg: ''
     };
+    //下一节点负责人的列表
+    this.candidateList = [];
 };
 //设置某条申请的回复列表
 SalesOpportunityApplyDetailStore.prototype.setApplyComment = function(list) {
@@ -249,6 +251,9 @@ SalesOpportunityApplyDetailStore.prototype.setApplyCandate = function(selectUser
 };
 SalesOpportunityApplyDetailStore.prototype.setSalesMan = function(selectSales) {
     this.detailInfoObj.info.user_ids = selectSales;
+};
+SalesOpportunityApplyDetailStore.prototype.getNextCandidate = function(list) {
+    this.candidateList = list;
 };
 
 

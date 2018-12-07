@@ -88,6 +88,8 @@ LeaveApplyDetailStore.prototype.setDetailInfoObj = function(detailObj) {
         //服务端错误信息
         errorMsg: ''
     };
+    //下一节点负责人的列表
+    this.candidateList = [];
 
 };
 //设置某条申请的回复列表
@@ -245,6 +247,9 @@ LeaveApplyDetailStore.prototype.cancelSendApproval = function() {
 LeaveApplyDetailStore.prototype.hideApprovalBtns = function() {
     this.selectedDetailItem.showApproveBtn = false;
     this.selectedDetailItem.showCancelBtn = false;
+};
+LeaveApplyDetailStore.prototype.getNextCandidate = function(list) {
+    this.candidateList = list;
 };
 
 

@@ -23,7 +23,9 @@ var restApis = {
     //获取申请的状态
     getApplyStatusById: '/rest/base/v1/workflow/status',
     //撤销申请审批
-    cancelApplyApprove: '/rest/base/v1/workflow/cancel'
+    cancelApplyApprove: '/rest/base/v1/workflow/cancel',
+    //下一节点审批人
+    getNextCandidate: '/rest/base/v1/workflow/next/candidates'
 
 };
 exports.restUrls = restApis;
@@ -116,4 +118,12 @@ exports.cancelApplyApprove = function(req, res) {
         req: req,
         res: res
     }, req.body);
+};
+exports.getNextCandidate = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getNextCandidate,
+            req: req,
+            res: res
+        }, req.query);
 };

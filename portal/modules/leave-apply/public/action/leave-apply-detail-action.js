@@ -106,5 +106,13 @@ function ApplyViewDetailActions() {
             message.error(errMsg);
         });
     };
+    //获取下一节点的负责人
+    this.getNextCandidate = function(queryObj) {
+        LeaveApplyAjax.getNextCandidate(queryObj).then((list) => {
+            if (_.isArray(list)){
+                this.dispatch(list);
+            }
+        });
+    };
 }
 module.exports = alt.createActions(ApplyViewDetailActions);

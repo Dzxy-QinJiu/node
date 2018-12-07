@@ -109,7 +109,7 @@ class ApplyViewDetail extends React.Component {
                 ApplyViewDetailActions.getBusinessApplyCommentList({id: detailItem.id});
                 //根据申请的id获取申请的状态
                 ApplyViewDetailActions.getApplyStatusById({id: detailItem.id});
-
+                ApplyViewDetailActions.getNextCandidate({id: detailItem.id});
             }
         });
     }
@@ -334,8 +334,14 @@ class ApplyViewDetail extends React.Component {
         }
         //如果下一个节点是直接主管审核
         if (applicantList.status === 'ongoing') {
+            var candidate = this.state.candidateList,candidateName = [];
+            if (_.isArray(candidate) && candidate.length){
+                _.forEach(candidate,(item) => {
+                    candidateName.push(item.nick_name);
+                });
+            }
             stepArr.push({
-                title: Intl.get('user.apply.false', '待审批'),
+                title: Intl.get('leave.apply.detail.wait', '待') + candidateName.join('/') + Intl.get('apply.approve.worklist','审批'),
                 description: ''
             });
         }
