@@ -117,9 +117,15 @@ class SalesReport extends React.Component {
         ajax.send({
             url: '/rest/sales/role?member_id=' + id,
         }).then(result => {
-            if (!result) return;
+            let roleName;
 
-            const currentMember = _.extend({}, this.state.currentMember, {role_name: result.teamrole_name});
+            if (result && result.teamrole_name) {
+                roleName = result.teamrole_name;
+            } else {
+                roleName = '';
+            }
+
+            const currentMember = _.extend({}, this.state.currentMember, {role_name: roleName});
 
             this.setState({
                 currentMember
@@ -287,16 +293,15 @@ class SalesReport extends React.Component {
     renderSalesPerformance = () => {
         const roleName = this.state.currentMember.role_name;
 
-        if (!roleName) return;
-
         let charts = [];
 
-        if (roleName === '客户经理') {
+        if (roleName === '销售经理') {
+        } else {
             charts.push(
+                reportCharts.contractRankingChart,
                 reportCharts.contractChart,
                 reportCharts.repaymentChart,
             );
-        } else if (roleName === '销售经理') {
         }
 
         return (
@@ -321,20 +326,9 @@ class SalesReport extends React.Component {
 
         const roleName = this.state.currentMember.role_name;
 
-        if (!roleName) return;
-
         let charts = [];
 
-        if (roleName === '客户经理') {
-            charts.push(
-                //销售行为统计
-                reportCharts.salesBehaviorChart,
-                //订单阶段
-                reportCharts.getOrderStageChart(this.state.stageList),
-                //客户阶段
-                reportCharts.customerStageChart,
-            );
-        } else if (roleName === '销售经理') {
+        if (roleName === '销售经理') {
             charts.push(
                 //电话量
                 reportCharts.callVolumeChart,
@@ -344,6 +338,15 @@ class SalesReport extends React.Component {
                 reportCharts.customerActiveChart,
                 //新开客户登录
                 reportCharts.newCustomerLoginChart(this.state.currentMember.team_id, this.state.currentMember.member_id),
+            );
+        } else {
+            charts.push(
+                //销售行为统计
+                reportCharts.salesBehaviorChart,
+                //订单阶段
+                reportCharts.getOrderStageChart(this.state.stageList),
+                //客户阶段
+                reportCharts.customerStageChart,
             );
         }
 
