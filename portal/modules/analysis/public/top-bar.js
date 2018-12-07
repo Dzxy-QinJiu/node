@@ -115,17 +115,22 @@ class TopBar extends React.Component {
 
         this.setState({selectedMember}, () => {
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, memberIdStr);
+            this.renderTopNavOperation();
         });
     };
 
     onSelectDate = (startTime, endTime) => {
         startTime = parseInt(startTime);
         endTime = parseInt(endTime);
-
-        this.setState({startTime, endTime});
-
+        this.setState({startTime, endTime},this.renderTopNavOperation);
         dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
     };
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.currentPage !== nextProps.currentPage){
+            this.renderTopNavOperation();
+        }
+    }
 
     //渲染操作按钮区
     renderTopNavOperation() {
