@@ -45,6 +45,7 @@ class TopBar extends React.Component {
             startTime: initialTime.start,
             //结束时间
             endTime: initialTime.end,
+            currentPage: this.props.currentPage
         };
     }
 
@@ -122,13 +123,14 @@ class TopBar extends React.Component {
     onSelectDate = (startTime, endTime) => {
         startTime = parseInt(startTime);
         endTime = parseInt(endTime);
-        this.setState({startTime, endTime},this.renderTopNavOperation);
+        this.setState({startTime, endTime}, this.renderTopNavOperation);
         dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
     };
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.currentPage !== nextProps.currentPage){
-            this.renderTopNavOperation();
+        if (this.props.currentPage !== nextProps.currentPage) {
+            this.setState({currentPage: nextProps.currentPage},
+                this.renderTopNavOperation);
         }
     }
 
@@ -164,7 +166,7 @@ class TopBar extends React.Component {
             }]
         };
 
-        const adjustDatePicker = _.get(this.props.currentPage, 'adjustDatePicker');
+        const adjustDatePicker = _.get(this.state.currentPage, 'adjustDatePicker');
 
         //如果当前页存在日期选择器调整函数，则调用该函数对选择器选项进行调整
         if (adjustDatePicker) {
