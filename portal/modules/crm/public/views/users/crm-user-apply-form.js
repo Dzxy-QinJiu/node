@@ -327,7 +327,7 @@ class CrmUserApplyForm extends React.Component {
         const submitObj = {
             user_ids: JSON.stringify(userIds),
             remark: this.state.formData.remark.otherRemark,
-            apps: JSON.stringify(apps)
+            app_list: JSON.stringify(apps)
         };
         this.setState({ isApplying: true });
         //调用修改其他类型的申请
