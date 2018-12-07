@@ -20,6 +20,6 @@ function getCharts() {
         //团队或成员所有机会统计
         chanceChart.getAllChanceChart(),
         //成交率趋势统计
-        chanceChart.getChanceDealChart(),
+        chanceChart.getChanceDealTrendChart(),
     ];
 }
