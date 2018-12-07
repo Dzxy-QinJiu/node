@@ -114,12 +114,10 @@ function ApplyViewDetailActions() {
             _.isFunction(callback) && callback();
             if (data) {
                 this.dispatch({loading: false, error: false});
-                message.success(Intl.get('user.apply.detail.backout.success', '撤销成功'));
                 SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {id: obj.id, cancel: true, status: 'success'});
             }else {
                 this.dispatch({loading: false, error: true, errorMsg: errTip});
                 SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
-                message.error(errTip);
             }
         }, (errorMsg) => {
             _.isFunction(callback) && callback();

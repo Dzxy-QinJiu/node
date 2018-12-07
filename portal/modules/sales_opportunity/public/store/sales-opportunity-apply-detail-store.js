@@ -56,7 +56,8 @@ SalesOpportunityApplyDetailStore.prototype.setInitState = function() {
         errorMsg: ''
     };
     this.backApplyResult = {
-        loading: false,
+        //提交状态  "" loading error success
+        submitResult: '',
         errorMsg: ''
     };
 };
@@ -133,13 +134,13 @@ SalesOpportunityApplyDetailStore.prototype.getSalesOpportunityApplyDetailById = 
 
 SalesOpportunityApplyDetailStore.prototype.cancelApplyApprove = function(resultObj) {
     if (resultObj.loading){
-        this.backApplyResult.loading = true;
+        this.backApplyResult.submitResult = 'loading';
         this.backApplyResult.errorMsg = '';
     }else if (resultObj.error){
-        this.backApplyResult.loading = false;
+        this.backApplyResult.submitResult = 'error';
         this.backApplyResult.errorMsg = resultObj.errorMsg;
     }else{
-        this.backApplyResult.loading = false;
+        this.backApplyResult.submitResult = 'success';
         this.backApplyResult.errorMsg = '';
     }
 };
@@ -232,9 +233,12 @@ SalesOpportunityApplyDetailStore.prototype.getSalesOpportunityApplyStatusById = 
 SalesOpportunityApplyDetailStore.prototype.cancelSendApproval = function() {
     this.applyResult.submitResult = '';
     this.applyResult.errorMsg = '';
+    this.backApplyResult.submitResult = '';
+    this.backApplyResult.errorMsg = '';
 };
 SalesOpportunityApplyDetailStore.prototype.hideApprovalBtns = function() {
     this.selectedDetailItem.showApproveBtn = false;
+    this.selectedDetailItem.showCancelBtn = false;
 };
 SalesOpportunityApplyDetailStore.prototype.hideCancelBtns = function() {
     this.selectedDetailItem.showCancelBtn = false;

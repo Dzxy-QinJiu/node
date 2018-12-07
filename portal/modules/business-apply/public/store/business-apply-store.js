@@ -43,8 +43,8 @@ BusinessApplyStore.prototype.setInitState = function() {
         //错误信息
         errorMsg: ''
     };
-    //筛选类别 'all'(全部) pass(已通过) reject(已驳回)  ongoing(待审批)
-    this.applyListType = 'all';
+    //筛选类别 'all'(全部) pass(已通过) reject(已驳回)  ongoing(待我审批)
+    this.applyListType = 'ongoing';
     this.clearData();
 };
 //清空数据

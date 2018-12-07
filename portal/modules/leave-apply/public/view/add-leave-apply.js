@@ -89,6 +89,7 @@ class AddLeaveApply extends React.Component {
                     this.hideLeaveApplyAddForm();
                     //添加完后的处理
                     data.afterAddReplySuccess = true;
+                    data.showCancelBtn = true;
                     LeaveApplyAction.afterAddApplySuccess(data);
 
                 },

@@ -41,7 +41,7 @@ class ApplyViewDetail extends React.Component {
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
             salesManList: [],//销售列表
-            showBackoutConfirm: false,
+            showBackoutConfirmType: '',//操作的确认框类型
             ...SalesOpportunityApplyDetailStore.getState()
         };
     }
@@ -77,6 +77,9 @@ class ApplyViewDetail extends React.Component {
             });
         }else if (thisPropsId && nextPropsId && nextPropsId !== thisPropsId) {
             this.getBusinessApplyDetailData(nextProps.detailItem);
+            this.setState({
+                showBackoutConfirmType: ''
+            });
         }
     }
 
@@ -281,15 +284,18 @@ class ApplyViewDetail extends React.Component {
 
     viewApprovalResult = (e) => {
         Trace.traceEvent(e, '查看审批结果');
+        this.setState({
+            showBackoutConfirmType: ''
+        });
         this.getBusinessApplyDetailData(this.props.detailItem);
         //设置这条审批不再展示通过和驳回的按钮
         SalesOpportunityApplyDetailAction.hideApprovalBtns();
     };
 
     //重新发送
-    reSendApproval = (e) => {
+    reSendApproval = (approval,e) => {
         Trace.traceEvent(e, '点击重试按钮');
-        this.submitApprovalForm();
+        this.submitApprovalForm(approval);
     };
 
     //取消发送
@@ -313,25 +319,10 @@ class ApplyViewDetail extends React.Component {
                 Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击通过按钮');
             } else if (approval === 'reject') {
                 Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击驳回按钮');
+            }else if (approval === 'cancel'){
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击撤销申请按钮');
             }
-            var detailInfoObj = this.state.detailInfoObj.info;
-            var submitObj = {
-                id: detailInfoObj.id,
-                agree: approval
-            };
-            if (assignedCandidateUserIds && approval === 'pass' && _.isArray(assignedCandidateUserIds.split('&&'))){
-                var candidateUserIds = assignedCandidateUserIds.split('&&')[0];
-                submitObj.assigned_candidate_users = [candidateUserIds];
-            }
-            if (assignedSalesUsersIds && _.isArray(assignedSalesUsersIds.split('&&'))){
-                var salesUserIds = assignedSalesUsersIds.split('&&')[0];
-                submitObj.user_ids = [salesUserIds];
-            }
-            SalesOpportunityApplyDetailAction.approveSalesOpportunityApplyPassOrReject(submitObj);
-            //关闭下拉框
-            if(_.isFunction(_.get(this, 'assignSales.handleCancel'))){
-                this.assignSales.handleCancel();
-            }
+            this.showConfirmModal(approval);
         }
     };
 
@@ -459,7 +450,7 @@ class ApplyViewDetail extends React.Component {
     hideBackoutModal = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-cancel'), '点击取消按钮');
         this.setState({
-            showBackoutConfirm: false
+            showBackoutConfirmType: ''
         });
     };
     // 撤销申请
@@ -469,11 +460,7 @@ class ApplyViewDetail extends React.Component {
         let backoutObj = {
             id: this.props.detailItem.id,
         };
-        SalesOpportunityApplyDetailAction.cancelApplyApprove(backoutObj,() => {
-            this.setState({
-                showBackoutConfirm: false
-            });
-        });
+        SalesOpportunityApplyDetailAction.cancelApplyApprove(backoutObj);
     };
     //渲染详情底部区域
     renderDetailBottom() {
@@ -484,7 +471,6 @@ class ApplyViewDetail extends React.Component {
         var approvalDes = getApplyResultDscr(detailInfoObj);
         var showApproveBtn = detailInfoObj.showApproveBtn;
         var renderAssigenedContext = null;
-        let showCancelBtn = detailInfoObj.showCancelBtn;
         //渲染分配的按钮
         if (_.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.ASSIGN_SALES_APPLY && showApproveBtn){
             //分配给普通销售
@@ -500,9 +486,6 @@ class ApplyViewDetail extends React.Component {
                 //如果是不是识微域,需要选择所分配给的销售总经理
                 renderAssigenedContext = this.renderCandidatedContext;
             }
-        }else if(hasPrivilege('GET_MY_WORKFLOW_LIST') && showCancelBtn ){
-            // 在没有通过申请前，可以撤销自己的申请
-            renderAssigenedContext = this.renderCancelApplyApproveBtn;
         }
         return (
             <ApplyDetailBottom
@@ -511,35 +494,64 @@ class ApplyViewDetail extends React.Component {
                 isConsumed={isConsumed}
                 update_time={detailInfoObj.update_time}
                 approvalText={userName + approvalDes}
-                showApproveBtn={showApproveBtn || showCancelBtn}
+                showApproveBtn={showApproveBtn}
+                showCancelBtn={detailInfoObj.showCancelBtn}
                 submitApprovalForm={this.submitApprovalForm}
                 renderAssigenedContext={renderAssigenedContext}
             />);
     }
 
-    renderCancelApplyApproveBtn = () => {
-        return (
-            <div className="pull-right">
-                {this.state.backApplyResult.loading ?
-                    <Icon type="loading"/> :
-                    <Button type="primary" className="btn-primary-sure" size="small"
-                        onClick={this.saleConfirmBackoutApply}>
-                        {Intl.get('user.apply.detail.backout', '撤销申请')}
-                    </Button>}
-            </div>
-        );
+    passOrRejectApplyApprove = (confirmType) => {
+        var assignedCandidateUserIds = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
+        var assignedSalesUsersIds = _.get(this.state, 'detailInfoObj.info.user_ids','');
+        var detailInfoObj = this.state.detailInfoObj.info;
+        var submitObj = {
+            id: detailInfoObj.id,
+            agree: confirmType
+        };
+        if (assignedCandidateUserIds && confirmType === 'pass' && _.isArray(assignedCandidateUserIds.split('&&'))){
+            var candidateUserIds = assignedCandidateUserIds.split('&&')[0];
+            submitObj.assigned_candidate_users = [candidateUserIds];
+        }
+        if (assignedSalesUsersIds && _.isArray(assignedSalesUsersIds.split('&&'))){
+            var salesUserIds = assignedSalesUsersIds.split('&&')[0];
+            submitObj.user_ids = [salesUserIds];
+        }
+        SalesOpportunityApplyDetailAction.approveSalesOpportunityApplyPassOrReject(submitObj);
+        //关闭下拉框
+        if(_.isFunction(_.get(this, 'assignSales.handleCancel'))){
+            this.assignSales.handleCancel();
+        }
     };
     renderCancelApplyApprove = () => {
-        if (this.state.showBackoutConfirm){
+        var confirmType = this.state.showBackoutConfirmType,modalContent = '', deleteFunction = function() {
+            },okText = '',modalShow = false, resultType = {};
+        if (confirmType){
+            //不同类型的操作，展示的描述和后续操作也不一样
+            if (confirmType === 'pass' || confirmType === 'reject'){
+                deleteFunction = this.passOrRejectApplyApprove.bind(this, confirmType);
+                modalContent = Intl.get('apply.approve.modal.text.pass','是否通过此申请');
+                okText = Intl.get('user.apply.detail.button.pass', '通过');
+                if (confirmType === 'reject'){
+                    modalContent = Intl.get('apply.approve.modal.text.reject','是否驳回此申请');
+                    okText = Intl.get('common.apply.reject', '驳回');
+                }
+                resultType = this.state.applyResult;
+            }else if (confirmType === 'cancel'){
+                modalContent = Intl.get('user.apply.detail.modal.content', '是否撤销此申请？');
+                deleteFunction = this.cancelApplyApprove;
+                okText = Intl.get('user.apply.detail.modal.ok', '撤销');
+                resultType = this.state.backApplyResult;
+            }
+            modalShow = confirmType && resultType.submitResult === '';
             return (
                 <ModalDialog
-                    modalShow={this.state.showBackoutConfirm}
+                    modalShow={modalShow}
                     container={this}
                     hideModalDialog={this.hideBackoutModal}
-                    modalContent={Intl.get('user.apply.detail.modal.content', '是否撤销此申请？')}
-                    delete={this.cancelApplyApprove}
-                    showResultLoading={this.state.backApplyResult.loading}
-                    okText={Intl.get('user.apply.detail.modal.ok', '撤销')}
+                    modalContent={modalContent}
+                    delete={deleteFunction}
+                    okText={okText}
                     delayClose={true}
                 />
             );
@@ -547,6 +559,38 @@ class ApplyViewDetail extends React.Component {
             return null;
         }
     };
+    showConfirmModal = (approval,e) => {
+        Trace.traceEvent(e, '点击撤销申请按钮');
+        this.setState({
+            showBackoutConfirmType: approval
+        });
+    };
+    renderApplyApproveStatus(){
+        var showLoading = false,approveSuccess = false, approveError = false,applyResultErrorMsg = '',
+            confirmType = this.state.showBackoutConfirmType,resultType = {};
+        if (confirmType === 'cancel'){
+            resultType = this.state.backApplyResult;
+        }else if(confirmType === 'pass' || confirmType === 'reject') {
+            resultType = this.state.applyResult;
+        }else{
+            return;
+        }
+        showLoading = resultType.submitResult === 'loading';
+        approveSuccess = resultType.submitResult === 'success';
+        approveError = resultType.submitResult === 'error';
+        applyResultErrorMsg = resultType.errorMsg;
+
+        return <ApplyApproveStatus
+            showLoading={showLoading}
+            approveSuccess={approveSuccess}
+            viewApprovalResult={this.viewApprovalResult}
+            approveError={approveError}
+            applyResultErrorMsg={applyResultErrorMsg}
+            reSendApproval={this.reSendApproval.bind(this,confirmType)}
+            cancelSendApproval={this.cancelSendApproval.bind(this, confirmType)}
+            container={this}
+        />;
+    }
 
     renderApplyApproveSteps =() => {
         var stepStatus = '';
@@ -663,16 +707,7 @@ class ApplyViewDetail extends React.Component {
                     showNoData={this.props.showNoData}
                 />
                 {this.renderApplyDetailInfo()}
-                <ApplyApproveStatus
-                    showLoading = {this.state.applyResult.submitResult === 'loading'}
-                    approveSuccess={this.state.applyResult.submitResult === 'success'}
-                    viewApprovalResult={this.viewApprovalResult}
-                    approveError={this.state.applyResult.submitResult === 'error'}
-                    applyResultErrorMsg={this.state.applyResult.errorMsg}
-                    reSendApproval={this.reSendApproval}
-                    cancelSendApproval={this.cancelSendApproval}
-                    container={this}
-                />
+                {this.renderApplyApproveStatus()}
                 {/*该客户下的用户列表*/}
                 {
                     this.state.isShowCustomerUserListPanel ?

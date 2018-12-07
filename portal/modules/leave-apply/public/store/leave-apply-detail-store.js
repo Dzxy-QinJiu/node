@@ -56,7 +56,8 @@ LeaveApplyDetailStore.prototype.setInitState = function() {
         errorMsg: ''
     };
     this.backApplyResult = {
-        loading: false,
+        //提交状态  "" loading error success
+        submitResult: '',
         errorMsg: ''
     };
 };
@@ -163,13 +164,13 @@ LeaveApplyDetailStore.prototype.setApplyFormDataComment = function(comment) {
 };
 LeaveApplyDetailStore.prototype.cancelApplyApprove = function(resultObj) {
     if (resultObj.loading){
-        this.backApplyResult.loading = true;
+        this.backApplyResult.submitResult = 'loading';
         this.backApplyResult.errorMsg = '';
     }else if (resultObj.error){
-        this.backApplyResult.loading = false;
+        this.backApplyResult.submitResult = 'error';
         this.backApplyResult.errorMsg = resultObj.errorMsg;
     }else{
-        this.backApplyResult.loading = false;
+        this.backApplyResult.submitResult = 'success';
         this.backApplyResult.errorMsg = '';
     }
 };
@@ -238,9 +239,12 @@ LeaveApplyDetailStore.prototype.getLeaveApplyStatusById = function(obj) {
 LeaveApplyDetailStore.prototype.cancelSendApproval = function() {
     this.applyResult.submitResult = '';
     this.applyResult.errorMsg = '';
+    this.backApplyResult.submitResult = '';
+    this.backApplyResult.errorMsg = '';
 };
 LeaveApplyDetailStore.prototype.hideApprovalBtns = function() {
     this.selectedDetailItem.showApproveBtn = false;
+    this.selectedDetailItem.showCancelBtn = false;
 };
 
 
