@@ -68,7 +68,8 @@ var CRMAddForm = createReactClass({
             checkNameError: false,//客户名唯一性验证出错
             checkPhoneErrorMsg: '',//联系人电话验证提示信息
             isLoadingIndustry: false,//是否正在加载行业列表
-            submitErrorMsg: ''//保存失败的错误提示
+            submitErrorMsg: '',//保存失败的错误提示
+            phoneNum: this.props.phoneNum,//外部传入的电话值
         };
     },
     propTypes: {
@@ -82,7 +83,13 @@ var CRMAddForm = createReactClass({
     componentDidMount: function() {
         this.getIndustry();
     },
-
+    componentWillReceiveProps: function(nextProps) {
+        if (nextProps.phoneNum && nextProps.phoneNum !== this.state.phoneNum) {
+            this.setState({
+                phoneNum: nextProps.phoneNum
+            });
+        }
+    },
     getIndustry: function() {
         //获取后台管理中设置的行业列表
         this.setState({isLoadingIndustry: true});
@@ -387,7 +394,12 @@ var CRMAddForm = createReactClass({
             return (<Option key={index} value={industry}>{industry}</Option>);
         });
         //拨打电话弹屏后，再点击添加客户，自动将电话号码放入到添加客户的右侧面板内
-        var initialValue = this.props.phoneNum || '';
+        var initialValue = '';
+        if (_.get(this, 'state.formData.contacts0_phone','')){
+            initialValue = _.get(this, 'state.formData.contacts0_phone','');
+        }else if (this.state.phoneNum){
+            initialValue = this.state.phoneNum;
+        }
         const formItemLayout = {
             colon: false,
             labelCol: {span: 5},

@@ -12,6 +12,7 @@ const Option = Select.Option;
 import { AntcDatePicker as DatePicker } from 'antc';
 import { FormattedMessage, defineMessages, injectIntl } from 'react-intl';
 import CallAddCustomerForm from './call-add-customer-form'; // 添加客户
+var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import userData from 'PUB_DIR/sources/user-data';
 import CrmAction from '../../../crm/public/action/crm-actions';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -703,7 +704,7 @@ class CallRecord extends React.Component {
                                 </div>
                             ) : (
                                 <Dropdown overlay={this.getAddCustomerMenus(record)} trigger={['click']}>
-                                        <Icon type="plus" className="add-customer-icon"/>
+                                    <Icon type="plus" className="add-customer-icon"/>
                                 </Dropdown>
                             )}
                         </div>
@@ -987,15 +988,17 @@ class CallRecord extends React.Component {
                 {/**
                      * 添加客户
                      */}
-                <div className="add-customer">
-                    <CallAddCustomerForm
-                        showFlag={this.state.isAddFlag}
-                        hideAddForm={this.hideAddCustomerForm}
-                        addOne={this.addOne}
-                        showRightPanel={this.showRightPanel}
-                        phoneNumber={this.state.phoneNumber}
-                    />
-                </div>
+                {this.state.isAddFlag ?
+                    <div className="add-customer">
+                        <CRMAddForm
+                            phoneNum={this.state.phoneNumber}
+                            addOne={this.addOne}
+                            hideAddForm={this.hideAddCustomerForm}
+                            showRightPanel={this.showRightPanel}
+                        />
+                    </div>
+                    : null}
+
                 {this.state.isShowCallAnalysisPanel ? (
                     <RightPanel
                         className="call-analysis-panel"
