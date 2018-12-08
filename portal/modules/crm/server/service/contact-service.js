@@ -30,60 +30,17 @@ exports.setDefault = function(req, res, id) {
 };
 
 //修改联系人
-exports.updateContact = function(req, res, newContact) {
-    let contactObj = JSON.parse(JSON.stringify(newContact));
+exports.editContact = function(req, res) {
+    let bodyData = req.body;
+    let property = bodyData.property;
+    delete bodyData.property;
     return restUtil.authRest.put(
         {
-            url: contactUrl,
+            url: contactUrl + '/property/' + property,
             req: req,
             res: res
-        }, contactObj);
+        }, bodyData);
 };
-
-//更新联系人
-function updateContact(req, res, newContact) {
-    let contactObj = JSON.parse(JSON.stringify(newContact));
-    delete contactObj.phone;
-    return new Promise((resolve, reject) => {
-        restUtil.authRest.put(
-            {
-                url: contactUrl,
-                req: req,
-                res: res
-            }, contactObj, {
-                success: function(eventEmitter, result) {
-                    resolve(result);
-                },
-                error: function(eventEmitter, errorDesc) {
-                    reject(errorDesc.message);
-                }
-            });
-    });
-}
-
-//更新联系人电话
-function updateContactPhone(req, res, newContact) {
-    let phoneContact = {
-        customer_id: newContact.customer_id,
-        id: newContact.id,
-        phone: newContact.phone
-    };
-    return new Promise((resolve, reject) => {
-        restUtil.authRest.put(
-            {
-                url: contactUrl + '/phone',
-                req: req,
-                res: res
-            }, phoneContact, {
-                success: function(eventEmitter, result) {
-                    resolve(result);
-                },
-                error: function(eventEmitter, errorDesc) {
-                    reject(errorDesc.message);
-                }
-            });
-    });
-}
 
 //添加联系人
 exports.addContact = function(req, res, newContact) {

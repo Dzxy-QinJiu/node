@@ -1383,7 +1383,18 @@ var zh_CN = {
     'crm.add.to.exist.customer': '添加到已有客户',
     'crm.select.add.contact': '请选择或输入联系人名称',
     'crm.fill.contact.name': '请输入联系人名称',
-
+    'crm.contact.name.add': '添加姓名',
+    'crm.contact.name.none': '未添加姓名',
+    'crm.contact.positon.none': '未设置职位',
+    'crm.contact.positon.add': '设置职位',
+    'crm.contact.phone.none': '暂无电话',
+    'crm.contact.phone.add': '添加电话',
+    'crm.contact.qq.none': '暂无QQ',
+    'crm.contact.qq.add': '添加QQ',
+    'crm.contact.wechat.none': '暂无微信',
+    'crm.contact.wechat.add': '添加微信',
+    'crm.contact.email.none': '暂无邮箱',
+    'crm.contact.email.add': '添加邮箱',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',

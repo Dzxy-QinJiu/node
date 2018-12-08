@@ -1,7 +1,7 @@
 var React = require('react');
 require('../../css/contact.less');
 //一个用于显示的联系人
-var ContactItem = require('./contact-item');
+import ContactItem from './contact-item';
 //联系人表单
 var ContactForm = require('./contact-form');
 //联系人store

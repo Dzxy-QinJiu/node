@@ -52,10 +52,10 @@ exports.addContact = function(contact) {
 };
 
 //修改一个联系人
-exports.editContact = function(contact, editType) {
+exports.editContact = function(contact) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/contact/' + editType,
+        url: '/rest/contact',
         dataType: 'json',
         type: 'put',
         data: contact,
