@@ -24,14 +24,6 @@ exports.editDeal = function(req, res) {
     });
 };
 
-exports.editDealStage = function(req, res) {
-    dealManageService.editDealStage(req, res).on('success', function(data) {
-        res.status(200).json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
-
 exports.deleteDeal = function(req, res) {
     dealManageService.deleteDeal(req, res).on('success', function(data) {
         res.status(200).json(data);

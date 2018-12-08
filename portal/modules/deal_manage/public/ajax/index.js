@@ -60,24 +60,6 @@ exports.editDeal = function(saveObj) {
     return Deferred.promise();
 };
 
-//修改订单阶段
-exports.editDealStage = function(saveObj) {
-    let Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/deal/sale_stage',
-        dataType: 'json',
-        type: 'put',
-        data: saveObj,
-        success: result => {
-            Deferred.resolve(result);
-        },
-        error: xhr => {
-            Deferred.reject(xhr.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-
 //删除订单
 exports.deleteDeal = function(deal_id) {
     let Deferred = $.Deferred();

@@ -5,25 +5,25 @@ var _ = require('lodash');
 
 //上传超时时长
 var uploadTimeOut = 5 * 60 * 1000;
-
+const editCustomerBaseUrl = '/rest/customer/v3/customer/property/:url_type';
 var crmRestApis = {
-    customer: '/rest/customer/v2/customer',
+    customer: '/rest/customer/v3/customer',
     //获取客户开通的用户列表
     getCrmUserList: '/rest/base/v1/user/customer/users',
     //获取客户的历史分数
     getHistoryScoreList: '/rest/customer/v2/customer/score/:customer_id/:start_time/:end_time',
     list: '/rest/customer/v2/customer/all',
     //我可以查看的客户列表（已分配销售的客户）
-    query: '/rest/customer/v2/customer/range',
+    // query: '/rest/customer/v2/customer/range',
     //获取所有的客户列表（包括：未分配给销售的客户）
-    managerQuery: '/rest/customer/v2/customer/range/manager',
+    managerQuery: '/rest/customer/v3/customer/range/:type/:page_size/:sort_field/:sort_order',
     dynamic: '/rest/customer/v2/customerdynamic',
-    upload: '/rest/customer/v2/customer/upload/preview',
+    upload: '/rest/customer/v3/customer/upload/preview',
     repeatCustomer: '/rest/customer/v2/customer/query/repeat',
     getRepeatCustomerById: '/rest/customer/v2/customer/:customerId',
     delRepeatCustomer: '/rest/customer/v2/customer/delete',
     getCustomerById: '/rest/customer/v2/customer/query/1/name/descend',
-    mergeRepeatCustomer: '/rest/customer/v2/customer/merge/customer',
+    mergeRepeatCustomer: '/rest/customer/v3/customer/merge/customer',
     checkCustomerRepeat: '/rest/customer/v2/customer/repeat/search',
     getFilterIndustries: '/rest/customer/v2/customer/industries',
     //获取筛选面板负责人名称列表
@@ -42,38 +42,38 @@ var crmRestApis = {
     getFilterSalesRoleList: '/rest/customer/v2/customer/:type/member/role',
     basic: {//type:manager(管理员调用)，type:user(非管理员调用)
         //修改客户名
-        updateName: '/rest/customer/v2/customer/:url_type/name',
+        updateName: `${editCustomerBaseUrl}/name`,
         //修改客户标签
-        updateLabel: '/rest/customer/v2/customer/:url_type/label',
+        updateLabel: `${editCustomerBaseUrl}/label`,
         //修改客户竞品
-        updateCompetitor: 'rest/customer/v2/customer/:url_type/competing_product',
+        updateCompetitor: `${editCustomerBaseUrl}/competing_product`,
         //修改客户地域
-        updateAddress: '/rest/customer/v2/customer/:url_type/address',
+        updateAddress: `${editCustomerBaseUrl}/address`,
         //更新客户行业
-        updateIndustry: '/rest/customer/v2/customer/:url_type/industry',
+        updateIndustry: `${editCustomerBaseUrl}/industry`,
         //更新客户备注
-        updateComment: '/rest/customer/v2/customer/:url_type/remark',
+        updateComment: `${editCustomerBaseUrl}/remark`,
         //修改客户所属销售（团队）
-        updateSales: '/rest/customer/v2/customer/:url_type/sales',
+        updateSales: `${editCustomerBaseUrl}/sales`,
         //修改客户的行政级别
-        updateAdministrativeLevel: '/rest/customer/v2/customer/:url_type/administrative_level',
+        updateAdministrativeLevel: `${editCustomerBaseUrl}/administrative_level`,
         //修改客户的详细地址
-        updateDetailAddress: '/rest/customer/v2/customer/:url_type/detail_address',
+        updateDetailAddress: `${editCustomerBaseUrl}/detail_address`,
         //关注或者取消关注某客户
-        updateInterest: '/rest/customer/v2/customer/:url_type/interest_member_ids',
+        updateInterest: `${editCustomerBaseUrl}/interest_member_ids`,
         //转出客户
-        transferCustomer: '/rest/customer/v2/customer/:url_type/transfer',
-        //修改客户阶段
+        transferCustomer: `${editCustomerBaseUrl}/transfer`,
+        //修改客户阶段(v3的版本里后端不让改客户阶段)
         editCustomerStage: '/rest/customer/v2/customer/:url_type/customer_label',
         //只修改客户的所属团队
-        onlyEditCustomerTeam: '/rest/customer/v2/customer/:url_type/sales_team'
+        onlyEditCustomerTeam: `${editCustomerBaseUrl}/sales_team`
     },
     // 拨打电话
     callOut: '/rest/customer/v2/phone/call/ou',
     // 获取电话座机号
     getUserPhoneNumber: '/phone/seat/user/ext/:user_id',
     //获取客户是否还能继续添加客户 返回0是可以继续添加，返回大于0的值，表示超出几个客户
-    getCustomerLimit: '/rest/customer/v2/customer/limit/flag',
+    getCustomerLimit: '/rest/customer/v3/customer/limit/flag',
     //线索生成客户
     addCustomerByClue: '/rest/customer/v2/customer/clue_create_customer',
 };
@@ -252,28 +252,25 @@ exports.queryCustomer = function(req, res) {
     delete condition.call_phone;
     let bodyData = {};
     if (call_phone) { // 通话记录，查看客户详情
-        url = crmRestApis.getCustomerByPhone + '/' + req.params.pageSize + '/' + req.params.sortFeild + '/' + req.params.sortOrder;
+        url = crmRestApis.getCustomerByPhone + '/' + req.params.pageSize + '/' + req.params.sortField + '/' + req.params.sortOrder;
         bodyData = _.clone(condition);
     } else if (id || customer_clue_id) { // 根据客户的id,或者线索的id查询客户详情
-        url = crmRestApis.query;
-        if (req.body.hasManageAuth) {
-            url = crmRestApis.managerQuery;
-        }
-        url += '/' + req.params.pageSize + '/' + req.params.sortFeild + '/' + req.params.sortOrder;
+        let type = req.body.hasManageAuth ? 'manager' : 'user';
+        //.replace(':page_num',req.params.pageNum)改为图数据库后翻页需要
+        url = crmRestApis.managerQuery.replace(':type', type).replace(':page_size', req.params.pageSize)
+            .replace(':sort_field', req.params.sortField)
+            .replace(':sort_order',req.params.sortOrder);
         if (id){
             bodyData.query = {'id': id};
         }else if (customer_clue_id){
             bodyData.query = {'customer_clue_id': customer_clue_id};
         }
     } else { // 客户列表
-        let baseUrl = '';
-        if (req.body.hasManageAuth) {
-            baseUrl = crmRestApis.managerQuery;
-        } else {
-            baseUrl = crmRestApis.query;
-        }
-        url = baseUrl + '/' + req.params.pageSize + '/' + req.params.sortFeild + '/' + req.params.sortOrder;
-        var query = req.body.queryObj ? JSON.parse(req.body.queryObj) : {};
+        let type = req.body.hasManageAuth ? 'manager' : 'user';
+        url = crmRestApis.managerQuery.replace(':type', type).replace(':page_size', req.params.pageSize)
+            .replace(':page_num',req.params.pageNum).replace(':sort_field', req.params.sortField)
+            .replace(':sort_order',req.params.sortOrder);
+        let query = req.body.queryObj ? JSON.parse(req.body.queryObj) : {};
         url += '?cursor=' + query.cursor;
         if (query.id) {
             url += '&id=' + query.id;

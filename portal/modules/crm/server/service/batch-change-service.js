@@ -13,8 +13,9 @@ exports.getGroupList = function(req, res) {
 
 //客户批量操作
 exports.doBatch = function(req,res) {
+    let url = `/rest/customer/v3/customer/batch/${req.params.auth_type}/customer?type=${req.query.type}`;
     return restUtil.authRest.put({
-        url: '/rest/customer/v2/customer/batch/customer?type=' + req.query.type,
+        url: url,
         req: req,
         res: res
     } , req.body);

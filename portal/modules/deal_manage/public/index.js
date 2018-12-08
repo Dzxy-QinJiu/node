@@ -114,19 +114,18 @@ class DealManage extends React.Component {
         if (_.get(searchObj, 'value')) {
             //订单阶段的搜索
             if (_.get(searchObj, 'field') === 'sale_stages') {
-                let dealQuery = {};
-                dealQuery.sale_stages = searchObj.value;
-                if (dealQuery.sale_stages === Intl.get('crm.order.status.won', '赢单')) {
-                    dealQuery.sale_stages = DEAL_STATUS.WIN;
-                } else if (dealQuery.sale_stages === Intl.get('crm.order.status.lost', '丢单')) {
-                    dealQuery.sale_stages = DEAL_STATUS.LOSE;
+                let sale_stages = searchObj.value;
+                if (sale_stages === Intl.get('crm.order.status.won', '赢单')) {
+                    sale_stages = DEAL_STATUS.WIN;
+                } else if (sale_stages === Intl.get('crm.order.status.lost', '丢单')) {
+                    sale_stages = DEAL_STATUS.LOSE;
                 }
-                searchBody.query = dealQuery;
+                searchBody.query = {sales_opportunities: [{sale_stages}]};
             } else {
                 //客户名、负责人的搜索
                 let customerQuery = {};
                 customerQuery[searchObj.field] = searchObj.value;
-                searchBody.parent_query = {query: customerQuery};
+                searchBody.query = customerQuery;
             }
         }
         return searchBody;

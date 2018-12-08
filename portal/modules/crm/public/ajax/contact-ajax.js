@@ -17,7 +17,7 @@ exports.getContactList = function(customerId) {
         url: `/rest/crm/contact_list/${type}`,
         dataType: 'json',
         type: 'post',
-        data: {customer_id: customerId},
+        data: {query: {id: customerId}},
         success: function(result) {
             Deferred.resolve(result);
         },

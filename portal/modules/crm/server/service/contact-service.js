@@ -7,13 +7,13 @@
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var EventEmitter = require('events').EventEmitter;
-const v2Url = '/rest/customer/v2/contacts';
+const contactUrl = '/rest/customer/v3/contacts';
 
 //获取联系人列表
 exports.getContactList = function(req, res, reqBody) {
     return restUtil.authRest.post(
         {
-            url: v2Url + '/query/' + req.params.type + '/all/50',
+            url: contactUrl + '/query/' + req.params.type + '/50',
             req: req,
             res: res
         }, reqBody);
@@ -23,7 +23,7 @@ exports.getContactList = function(req, res, reqBody) {
 exports.setDefault = function(req, res, id) {
     return restUtil.authRest.post(
         {
-            url: v2Url + '/default/' + id,
+            url: contactUrl + '/default/' + id,
             req: req,
             res: res
         }, null);
@@ -34,7 +34,7 @@ exports.updateContact = function(req, res, newContact) {
     let contactObj = JSON.parse(JSON.stringify(newContact));
     return restUtil.authRest.put(
         {
-            url: v2Url,
+            url: contactUrl,
             req: req,
             res: res
         }, contactObj);
@@ -47,7 +47,7 @@ function updateContact(req, res, newContact) {
     return new Promise((resolve, reject) => {
         restUtil.authRest.put(
             {
-                url: v2Url,
+                url: contactUrl,
                 req: req,
                 res: res
             }, contactObj, {
@@ -71,7 +71,7 @@ function updateContactPhone(req, res, newContact) {
     return new Promise((resolve, reject) => {
         restUtil.authRest.put(
             {
-                url: v2Url + '/phone',
+                url: contactUrl + '/phone',
                 req: req,
                 res: res
             }, phoneContact, {
@@ -89,7 +89,7 @@ function updateContactPhone(req, res, newContact) {
 exports.addContact = function(req, res, newContact) {
     return restUtil.authRest.post(
         {
-            url: v2Url,
+            url: contactUrl,
             req: req,
             res: res
         }, newContact);
@@ -99,7 +99,7 @@ exports.addContact = function(req, res, newContact) {
 exports.deleteContact = function(req, res, ids) {
     return restUtil.authRest.del(
         {
-            url: v2Url + '/' + ids,
+            url: contactUrl + '/' + ids,
             req: req,
             res: res
         }, null);
