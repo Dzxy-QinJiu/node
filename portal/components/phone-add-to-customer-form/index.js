@@ -139,7 +139,7 @@ class PhoneAddToCustomerForm extends React.Component {
             url: `/rest/crm/contact_list/${type}`,
             dataType: 'json',
             type: 'post',
-            data: {customer_id: customerId},
+            data: {query: {id: customerId}},
             success: data => {
                 let contactList = _.get(data, 'result', []);
                 this.setState({contactList, isLoadingContactList: false});
