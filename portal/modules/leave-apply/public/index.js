@@ -9,7 +9,7 @@ var LeaveApplyStore = require('./store/leave-apply-store');
 var LeaveApplyDetailAction = require('./action/leave-apply-detail-action');
 import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-dropdown-and-add-btn';
 import AddLeaveApplyPanel from './view/add-leave-apply';
-import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import Trace from 'LIB_DIR/trace';
 var classNames = require('classnames');
 var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
@@ -38,6 +38,8 @@ class LeaveApplyManagement extends React.Component {
         LeaveApplyStore.listen(this.onStoreChange);
         if(_.get(this.props,'location.state.clickUnhandleNum')){
             this.menuClick({key: 'ongoing'});
+        }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE]){
+            this.menuClick({key: 'all'});
         }else{
             //不区分角色，都获取全部的申请列表
             this.getAllLeaveApplyList();
@@ -53,7 +55,6 @@ class LeaveApplyManagement extends React.Component {
             }
         }
     }
-
     updateSelectedItem = (message) => {
         if(message && message.status === 'success'){
             //通过或者驳回申请后改变申请的状态

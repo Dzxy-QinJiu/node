@@ -24,7 +24,6 @@ var SalesOpportunityApplyUtils = require('./utils/sales-oppotunity-utils');
 let userData = require('../../../public/sources/user-data');
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import {REALM_REMARK} from './utils/sales-oppotunity-utils';
 class SalesOpportunityApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加销售机会申请面板
@@ -42,6 +41,8 @@ class SalesOpportunityApplyManagement extends React.Component {
         SalesOpportunityApplyStore.listen(this.onStoreChange);
         if(_.get(this.props,'location.state.clickUnhandleNum')){
             this.menuClick({key: 'ongoing'});
+        }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES]){
+            this.menuClick({key: 'all'});
         }else{
             //不区分角色，都获取全部的申请列表
             this.getAllSalesOpportunityApplyList();

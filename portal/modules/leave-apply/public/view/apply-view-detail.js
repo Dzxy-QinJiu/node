@@ -21,7 +21,7 @@ import ApplyDetailStatus from 'CMP_DIR/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc, getFilterReplyList} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc, getFilterReplyList,handleDiffTypeApply} from 'PUB_DIR/sources/utils/common-method-util';
 import {LEAVE_TYPE} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
@@ -65,9 +65,9 @@ class ApplyViewDetail extends React.Component {
             />
         );
     };
-    // 隐藏撤销申请的模态框
+    // 隐藏确认的模态框
     hideBackoutModal = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-cancel'), '点击取消按钮');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-cancel'), '点击关闭模态框按钮');
         this.setState({
             showBackoutConfirmType: ''
         });
@@ -357,14 +357,12 @@ class ApplyViewDetail extends React.Component {
         }
         //如果下一个节点是直接主管审核
         if (applicantList.status === 'ongoing') {
-            var candidate = this.state.candidateList,candidateName = [];
-            if (_.isArray(candidate) && candidate.length){
-                _.forEach(candidate,(item) => {
-                    candidateName.push(item.nick_name);
-                });
+            var candidate = this.state.candidateList,candidateName = '';
+            if (_.isArray(candidate) && candidate.length === 1){
+                candidateName = _.get(candidate,'[0].nickname');
             }
             stepArr.push({
-                title: Intl.get('leave.apply.detail.wait', '待') + candidateName.join('/') + Intl.get('apply.approve.worklist','审批'),
+                title: Intl.get('apply.approve.worklist','待{applyer}审批',{'applyer': candidateName}),
                 description: ''
             });
         }
@@ -383,34 +381,17 @@ class ApplyViewDetail extends React.Component {
         LeaveApplyDetailAction.approveLeaveApplyPassOrReject({id: detailInfoObj.id, agree: confirmType});
     };
     renderCancelApplyApprove = () => {
-        var confirmType = this.state.showBackoutConfirmType,modalContent = '', deleteFunction = function() {
-            },okText = '',modalShow = false, resultType = {};
+        var confirmType = this.state.showBackoutConfirmType;
         if (confirmType){
-            //不同类型的操作，展示的描述和后续操作也不一样
-            if (confirmType === 'pass' || confirmType === 'reject'){
-                deleteFunction = this.passOrRejectApplyApprove.bind(this, confirmType);
-                modalContent = Intl.get('apply.approve.modal.text.pass','是否通过此申请');
-                okText = Intl.get('user.apply.detail.button.pass', '通过');
-                if (confirmType === 'reject'){
-                    modalContent = Intl.get('apply.approve.modal.text.reject','是否驳回此申请');
-                    okText = Intl.get('common.apply.reject', '驳回');
-                }
-                resultType = this.state.applyResult;
-            }else if (confirmType === 'cancel'){
-                modalContent = Intl.get('user.apply.detail.modal.content', '是否撤销此申请？');
-                deleteFunction = this.cancelApplyApprove;
-                okText = Intl.get('user.apply.detail.modal.ok', '撤销');
-                resultType = this.state.backApplyResult;
-            }
-            modalShow = confirmType && resultType.submitResult === '';
+            var typeObj = handleDiffTypeApply(this);
             return (
                 <ModalDialog
-                    modalShow={modalShow}
+                    modalShow={typeObj.modalShow}
                     container={this}
                     hideModalDialog={this.hideBackoutModal}
-                    modalContent={modalContent}
-                    delete={deleteFunction}
-                    okText={okText}
+                    modalContent={typeObj.modalContent}
+                    delete={typeObj.deleteFunction}
+                    okText={typeObj.okText}
                     delayClose={true}
                 />
             );

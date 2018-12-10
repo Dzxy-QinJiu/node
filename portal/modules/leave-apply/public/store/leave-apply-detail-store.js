@@ -248,8 +248,12 @@ LeaveApplyDetailStore.prototype.hideApprovalBtns = function() {
     this.selectedDetailItem.showApproveBtn = false;
     this.selectedDetailItem.showCancelBtn = false;
 };
-LeaveApplyDetailStore.prototype.getNextCandidate = function(list) {
-    this.candidateList = list;
+LeaveApplyDetailStore.prototype.getNextCandidate = function(result) {
+    if (result.error){
+        this.candidateList = [];
+    }else{
+        this.candidateList = result;
+    }
 };
 
 

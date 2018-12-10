@@ -76,13 +76,6 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-        }, {
-            method: 'get',
-            path: '/rest/get/apply/next/candidate',
-            handler: 'getNextCandidate',
-            passport: {
-                needLogin: true
-            },
         }
     ]
 };

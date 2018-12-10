@@ -2615,6 +2615,6 @@ var zh_CN = {
     'deal.drag.data.disabled': '关闭的订单不可以修改',
     'apply.approve.modal.text.reject': '是否驳回此申请',
     'apply.approve.modal.text.pass': '是否通过此申请',
-    'apply.approve.worklist': '审批'
+    'apply.approve.worklist': '待{applyer}审批'
 };
 export default zh_CN;

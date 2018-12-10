@@ -237,8 +237,13 @@ ApplyViewDetailStore.prototype.hideApprovalBtns = function() {
     this.selectedDetailItem.showApproveBtn = false;
     this.selectedDetailItem.showCancelBtn = false;
 };
-ApplyViewDetailStore.prototype.getNextCandidate = function(list) {
-    this.candidateList = list;
+ApplyViewDetailStore.prototype.getNextCandidate = function(result) {
+    if (result.error){
+        this.candidateList = [];
+    }else{
+        this.candidateList = result;
+    }
+
 };
 
 module.exports = alt.createStore(ApplyViewDetailStore, 'ApplyViewDetailStore');

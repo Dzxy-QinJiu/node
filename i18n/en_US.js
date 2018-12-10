@@ -2596,7 +2596,7 @@ var en_US = {
     'deal.drag.data.disabled': 'Closed orders cannot be modified',//关闭的订单不可以修改
     'apply.approve.modal.text.reject': ' Whether to reject this application?',//是否驳回此申请
     'apply.approve.modal.text.pass': 'Whether to apply for this application',//是否通过此申请
-    'apply.approve.worklist': 'approve'//审批
+    'apply.approve.worklist': 'wait for {applyer} to approve'//待{applyer}审批
 
 };
 export default en_US;

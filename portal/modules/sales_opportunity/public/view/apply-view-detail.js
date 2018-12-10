@@ -24,7 +24,7 @@ import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
 import ApplyDetailBlock from 'CMP_DIR/apply-detail-block';
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import {APPLY_LIST_LAYOUT_CONSTANTS, APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc,getFilterReplyList} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc,getFilterReplyList,handleDiffTypeApply} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 const ASSIGN_TYPE = {
@@ -447,9 +447,9 @@ class ApplyViewDetail extends React.Component {
             showBackoutConfirm: true
         });
     };
-    // 隐藏撤销申请的模态框
+    // 隐藏确认的模态框
     hideBackoutModal = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-cancel'), '点击取消按钮');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-cancel'), '点击关闭模态框按钮');
         this.setState({
             showBackoutConfirmType: ''
         });
@@ -525,34 +525,17 @@ class ApplyViewDetail extends React.Component {
         }
     };
     renderCancelApplyApprove = () => {
-        var confirmType = this.state.showBackoutConfirmType,modalContent = '', deleteFunction = function() {
-            },okText = '',modalShow = false, resultType = {};
+        var confirmType = this.state.showBackoutConfirmType;
         if (confirmType){
-            //不同类型的操作，展示的描述和后续操作也不一样
-            if (confirmType === 'pass' || confirmType === 'reject'){
-                deleteFunction = this.passOrRejectApplyApprove.bind(this, confirmType);
-                modalContent = Intl.get('apply.approve.modal.text.pass','是否通过此申请');
-                okText = Intl.get('user.apply.detail.button.pass', '通过');
-                if (confirmType === 'reject'){
-                    modalContent = Intl.get('apply.approve.modal.text.reject','是否驳回此申请');
-                    okText = Intl.get('common.apply.reject', '驳回');
-                }
-                resultType = this.state.applyResult;
-            }else if (confirmType === 'cancel'){
-                modalContent = Intl.get('user.apply.detail.modal.content', '是否撤销此申请？');
-                deleteFunction = this.cancelApplyApprove;
-                okText = Intl.get('user.apply.detail.modal.ok', '撤销');
-                resultType = this.state.backApplyResult;
-            }
-            modalShow = confirmType && resultType.submitResult === '';
+            var typeObj = handleDiffTypeApply(this);
             return (
                 <ModalDialog
-                    modalShow={modalShow}
+                    modalShow={typeObj.modalShow}
                     container={this}
                     hideModalDialog={this.hideBackoutModal}
-                    modalContent={modalContent}
-                    delete={deleteFunction}
-                    okText={okText}
+                    modalContent={typeObj.modalContent}
+                    delete={typeObj.deleteFunction}
+                    okText={typeObj.okText}
                     delayClose={true}
                 />
             );
@@ -560,8 +543,7 @@ class ApplyViewDetail extends React.Component {
             return null;
         }
     };
-    showConfirmModal = (approval,e) => {
-        Trace.traceEvent(e, '点击撤销申请按钮');
+    showConfirmModal = (approval) => {
         this.setState({
             showBackoutConfirmType: approval
         });
@@ -619,7 +601,7 @@ class ApplyViewDetail extends React.Component {
             _.forEach(replyList,(replyItem,index) => {
                 var descrpt = descriptionArr[index + 1];
                 if (index === 1 && !isCiviwRealm){
-                    //todo 下一个节点的执行人
+                    //下一个节点的执行人
                     descrpt += Intl.get('sales.commission.role.manager', '销售总经理');
                 }
                 descrpt = getApplyStatusTimeLineDesc(replyItem.status);
@@ -636,14 +618,12 @@ class ApplyViewDetail extends React.Component {
 
         //如果下一个节点是直接主管审核
         if (applicantList.status === 'ongoing'){
-            var candidate = this.state.candidateList,candidateName = [];
-            if (_.isArray(candidate) && candidate.length){
-                _.forEach(candidate,(item) => {
-                    candidateName.push(item.nick_name);
-                });
+            var candidate = this.state.candidateList,candidateName = '';
+            if (_.isArray(candidate) && candidate.length === 1){
+                candidateName = _.get(candidate,'[0].nickname');
             }
             stepArr.push({
-                title: Intl.get('leave.apply.detail.wait', '待') + candidateName.join('/') + Intl.get('apply.approve.worklist','审批'),
+                title: Intl.get('apply.approve.worklist','待{applyer}审批',{'applyer': candidateName}),
                 description: ''
             });
         }

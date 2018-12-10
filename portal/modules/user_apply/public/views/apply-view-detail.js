@@ -204,9 +204,11 @@ const ApplyViewDetail = createReactClass({
                     showBackoutConfirmType: ''
                 });
             }
-            if (!this.state.applyResult.submitResult || nextProps.detailItem.id !== this.props.detailItem.id) {
+            if ((!this.state.applyResult.submitResult && !this.state.backApplyResult.submitResult) || nextProps.detailItem.id !== this.props.detailItem.id) {
                 this.getApplyDetail(nextProps.detailItem);
             }
+            
+
         }
     },
 
@@ -1674,7 +1676,6 @@ const ApplyViewDetail = createReactClass({
                 deleteFunction = this.saleBackoutApply;
                 okText = Intl.get('user.apply.detail.modal.ok', '撤销');
                 resultType = this.state.backApplyResult;
-
             }
             modalShow = confirmType && resultType.submitResult === '';
             return (
@@ -1729,28 +1730,15 @@ const ApplyViewDetail = createReactClass({
     renderApplyApproveStatus(){
         //如果没有进行角色设置，显示角色设置的模态框
         if (this.state.rolesNotSettingModalDialog.show) {
-            return <Modal
+            return (<ModalDialog
                 container={this}
-                show={true}
-                aria-labelledby="contained-modal-title"
-            >
-                <Modal.Body>
-                    <div className="approval-confirm-tip">
-                        <p>
-                            {this.state.rolesNotSettingModalDialog.appNames.join('、')}
-                            <ReactIntl.FormattedMessage id="user.apply.detail.role.modal.content"
-                                defaultMessage="中，没有为用户分配角色，是否继续"/>
-                        </p>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button type="primary" className="roles-notset-btn-continue"
-                        onClick={this.continueSubmit}><ReactIntl.FormattedMessage
-                            id="user.apply.detail.role.modal.continue" defaultMessage="继续"/></Button>
-                    <Button type="ghost" onClick={this.cancelShowRolesModal}><ReactIntl.FormattedMessage
-                        id="user.apply.detail.role.modal.cancel" defaultMessage="我再改改"/></Button>
-                </Modal.Footer>
-            </Modal>;
+                modalShow={true}
+                modalContent={this.state.rolesNotSettingModalDialog.appNames.join('、') + Intl.get('user.apply.detail.role.modal.content', '中，没有为用户分配角色，是否继续')}
+                okText={Intl.get('user.apply.detail.role.modal.continue', '继续')}
+                cancelText={Intl.get('user.apply.detail.role.modal.cancel', '我再改改')}
+                delete={this.continueSubmit}
+                hideModalDialog={this.cancelShowRolesModal}
+            />);
         }else{
             var showLoading = false,approveSuccess = false, approveError = false,applyResultErrorMsg = '',
                 confirmType = this.state.showBackoutConfirmType,resultType = {};
@@ -2073,6 +2061,9 @@ const ApplyViewDetail = createReactClass({
 
     //我再改改
     cancelShowRolesModal(e) {
+        this.setState({
+            showBackoutConfirmType: ''
+        });
         Trace.traceEvent(e, '点击了我再改改');
         ApplyViewDetailActions.setRolesNotSettingModalDialog({
             show: false,
@@ -2099,6 +2090,9 @@ const ApplyViewDetail = createReactClass({
     //取消发送
     cancelSendApproval(e) {
         Trace.traceEvent(e, '点击取消按钮');
+        this.setState({
+            showBackoutConfirmType: ''
+        });
         ApplyViewDetailActions.cancelSendApproval();
     },
 

@@ -252,8 +252,12 @@ SalesOpportunityApplyDetailStore.prototype.setApplyCandate = function(selectUser
 SalesOpportunityApplyDetailStore.prototype.setSalesMan = function(selectSales) {
     this.detailInfoObj.info.user_ids = selectSales;
 };
-SalesOpportunityApplyDetailStore.prototype.getNextCandidate = function(list) {
-    this.candidateList = list;
+SalesOpportunityApplyDetailStore.prototype.getNextCandidate = function(result) {
+    if (result.error){
+        this.candidateList = [];
+    }else{
+        this.candidateList = result;
+    }
 };
 
 

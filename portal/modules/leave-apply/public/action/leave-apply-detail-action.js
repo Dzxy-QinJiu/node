@@ -10,6 +10,7 @@ import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -108,11 +109,11 @@ function ApplyViewDetailActions() {
     };
     //获取下一节点的负责人
     this.getNextCandidate = function(queryObj) {
-        LeaveApplyAjax.getNextCandidate(queryObj).then((list) => {
+        ApplyApproveAjax.getNextCandidate().sendRequest(queryObj).success((list) => {
             if (_.isArray(list)){
                 this.dispatch(list);
             }
-        });
+        }).error( this.dispatch({error: true}));
     };
 }
 module.exports = alt.createActions(ApplyViewDetailActions);

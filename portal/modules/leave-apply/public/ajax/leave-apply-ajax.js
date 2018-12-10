@@ -157,22 +157,3 @@ exports.cancelApplyApprove = function(obj) {
     });
     return Deferred.promise();
 };
-//获取申请审批下一节点的负责人
-let getNextCandidateAjax = null;
-exports.getNextCandidate = function(queryObj) {
-    var Deferred = $.Deferred();
-    getNextCandidateAjax && getNextCandidateAjax.abort();
-    getNextCandidateAjax = $.ajax({
-        url: '/rest/get/apply/next/candidate',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
