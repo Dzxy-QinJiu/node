@@ -472,3 +472,30 @@ exports.getFilterReplyList = function(thisState) {
     replyList = _.sortBy( _.cloneDeep(replyList), [item => item.comment_time]);
     return replyList;
 };
+exports.handleDiffTypeApply = function(that) {
+    var confirmType = that.state.showBackoutConfirmType, modalContent = '', deleteFunction = function() {
+        }, okText = '', modalShow = false, resultType = {};
+    //不同类型的操作，展示的描述和后续操作也不一样
+    if (confirmType === 'pass' || confirmType === 'reject') {
+        deleteFunction = that.passOrRejectApplyApprove.bind(that, confirmType);
+        modalContent = Intl.get('apply.approve.modal.text.pass', '是否通过此申请');
+        okText = Intl.get('user.apply.detail.button.pass', '通过');
+        if (confirmType === 'reject') {
+            modalContent = Intl.get('apply.approve.modal.text.reject', '是否驳回此申请');
+            okText = Intl.get('common.apply.reject', '驳回');
+        }
+        resultType = that.state.applyResult;
+    } else if (confirmType === 'cancel') {
+        modalContent = Intl.get('user.apply.detail.modal.content', '是否撤销此申请？');
+        deleteFunction = this.cancelApplyApprove;
+        okText = Intl.get('user.apply.detail.modal.ok', '撤销');
+        resultType = that.state.backApplyResult;
+    }
+    modalShow = confirmType && resultType.submitResult === '';
+    return {
+        modalShow: modalShow,
+        modalContent: modalContent,
+        deleteFunction: deleteFunction,
+        okText: okText
+    };
+};

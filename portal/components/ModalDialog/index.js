@@ -52,7 +52,7 @@ class ModalDialog extends React.Component {
                         {this.props.showResultLoading ? <Icon type="loading"/> : null}
                     </Button>
                     <Button className="btn-cancel" onClick={this.close} data-tracename={closedModalTip}>
-                        {Intl.get('common.cancel')}
+                        {this.props.cancelText || Intl.get('common.cancel')}
                     </Button>
                 </Modal.Footer>
             </Modal>
@@ -74,6 +74,7 @@ ModalDialog.defaultProps = {
     modalContent: '',
     showResultLoading: false,
     okText: '',
+    cancelText: '',
     delayClose: false
 };
 ModalDialog.propTypes = {
@@ -87,6 +88,7 @@ ModalDialog.propTypes = {
     modalContent: PropTypes.string,
     showResultLoading: PropTypes.bool,
     okText: PropTypes.string,
+    cancelText: PropTypes.string,
     delayClose: PropTypes.bool,
 };
 

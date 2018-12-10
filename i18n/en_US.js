@@ -2594,7 +2594,6 @@ var en_US = {
     'deal.no.filter.deal': 'There is no deal match condition',//没有符合条件的订单
     'deal.drag.data.saving': 'Is saving dragged data...',//正在保存拖动的数据...
     'deal.drag.data.disabled': 'Closed orders cannot be modified',//关闭的订单不可以修改
-
     'common.individual.report': 'Individual report',//个人报告
     'common.entry.time': 'Entry time',//入职时间
     'common.sales.performance': 'Sales performance',//销售业绩
@@ -2602,5 +2601,8 @@ var en_US = {
     'common sales behavior statistics': 'Sales behavior statistics',//销售行为统计
     'common.new.customer.login.statistics': 'New customer login statistics',//新开客户登录情况统计
     'common.customer.active.statistics': 'Customer acive statistics',//客户活跃度统计
+    'apply.approve.modal.text.reject': ' Whether to reject this application?',//是否驳回此申请
+    'apply.approve.modal.text.pass': 'Whether to apply for this application',//是否通过此申请
+    'apply.approve.worklist': 'wait for {applyer} to approve'//待{applyer}审批
 };
 export default en_US;

@@ -56,7 +56,8 @@ SalesOpportunityApplyDetailStore.prototype.setInitState = function() {
         errorMsg: ''
     };
     this.backApplyResult = {
-        loading: false,
+        //提交状态  "" loading error success
+        submitResult: '',
         errorMsg: ''
     };
 };
@@ -87,6 +88,8 @@ SalesOpportunityApplyDetailStore.prototype.setDetailInfoObj = function(detailObj
         //服务端错误信息
         errorMsg: ''
     };
+    //下一节点负责人的列表
+    this.candidateList = [];
 };
 //设置某条申请的回复列表
 SalesOpportunityApplyDetailStore.prototype.setApplyComment = function(list) {
@@ -133,13 +136,13 @@ SalesOpportunityApplyDetailStore.prototype.getSalesOpportunityApplyDetailById = 
 
 SalesOpportunityApplyDetailStore.prototype.cancelApplyApprove = function(resultObj) {
     if (resultObj.loading){
-        this.backApplyResult.loading = true;
+        this.backApplyResult.submitResult = 'loading';
         this.backApplyResult.errorMsg = '';
     }else if (resultObj.error){
-        this.backApplyResult.loading = false;
+        this.backApplyResult.submitResult = 'error';
         this.backApplyResult.errorMsg = resultObj.errorMsg;
     }else{
-        this.backApplyResult.loading = false;
+        this.backApplyResult.submitResult = 'success';
         this.backApplyResult.errorMsg = '';
     }
 };
@@ -232,9 +235,12 @@ SalesOpportunityApplyDetailStore.prototype.getSalesOpportunityApplyStatusById = 
 SalesOpportunityApplyDetailStore.prototype.cancelSendApproval = function() {
     this.applyResult.submitResult = '';
     this.applyResult.errorMsg = '';
+    this.backApplyResult.submitResult = '';
+    this.backApplyResult.errorMsg = '';
 };
 SalesOpportunityApplyDetailStore.prototype.hideApprovalBtns = function() {
     this.selectedDetailItem.showApproveBtn = false;
+    this.selectedDetailItem.showCancelBtn = false;
 };
 SalesOpportunityApplyDetailStore.prototype.hideCancelBtns = function() {
     this.selectedDetailItem.showCancelBtn = false;
@@ -245,6 +251,13 @@ SalesOpportunityApplyDetailStore.prototype.setApplyCandate = function(selectUser
 };
 SalesOpportunityApplyDetailStore.prototype.setSalesMan = function(selectSales) {
     this.detailInfoObj.info.user_ids = selectSales;
+};
+SalesOpportunityApplyDetailStore.prototype.getNextCandidate = function(result) {
+    if (result.error){
+        this.candidateList = [];
+    }else{
+        this.candidateList = result;
+    }
 };
 
 

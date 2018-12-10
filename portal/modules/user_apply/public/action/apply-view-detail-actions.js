@@ -179,19 +179,22 @@ class ApplyViewDetailActions {
 
     // 撤销申请
     saleBackoutApply(obj) {
+        var errTip = Intl.get('user.apply.detail.backout.error', '撤销申请失败');
         this.dispatch({loading: true, error: false});
         AppUserAjax.saleBackoutApply(obj).then((data) => {
             if (data) {
                 this.dispatch({loading: false, error: false});
-                message.success(Intl.get('user.apply.detail.backout.success', '撤销成功'));
                 AppUserUtil.emitter.emit('updateSelectedItem', {id: obj.apply_id, approval: '3', status: 'success'});
                 //刷新用户审批未处理数(左侧导航中待审批数)
                 updateUnapprovedCount();
+            }else{
+                this.dispatch({loading: false, error: true, errorMsg: errTip});
+                AppUserUtil.emitter.emit('updateSelectedItem', {status: 'error'});
             }
         }, (errorMsg) => {
-            this.dispatch({loading: false, error: true});
+            var errMsg = errorMsg || errTip;
+            this.dispatch({loading: false, error: true, errorMsg: errMsg});
             AppUserUtil.emitter.emit('updateSelectedItem', {status: 'error'});
-            message.error(errorMsg || Intl.get('user.apply.detail.backout.error', '撤销申请失败'));
             this.dispatch(errorMsg);
         });
     }

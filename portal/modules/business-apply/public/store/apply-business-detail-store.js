@@ -56,7 +56,8 @@ ApplyViewDetailStore.prototype.setInitState = function() {
         errorMsg: ''
     };
     this.backApplyResult = {
-        loading: false,
+        //提交状态  "" loading error success
+        submitResult: '',
         errorMsg: ''
     };
 };
@@ -95,6 +96,8 @@ ApplyViewDetailStore.prototype.setDetailInfoObj = function(detailObj) {
         //服务端错误信息
         errorMsg: ''
     };
+    //下一节点负责人的列表
+    this.candidateList = [];
 };
 
 ApplyViewDetailStore.prototype.setInitialData = function(obj) {
@@ -128,13 +131,13 @@ ApplyViewDetailStore.prototype.getBusinessApplyDetailById = function(obj) {
 };
 ApplyViewDetailStore.prototype.cancelApplyApprove = function(resultObj) {
     if (resultObj.loading){
-        this.backApplyResult.loading = true;
+        this.backApplyResult.submitResult = 'loading';
         this.backApplyResult.errorMsg = '';
     }else if (resultObj.error){
-        this.backApplyResult.loading = false;
+        this.backApplyResult.submitResult = 'error';
         this.backApplyResult.errorMsg = resultObj.errorMsg;
     }else{
-        this.backApplyResult.loading = false;
+        this.backApplyResult.submitResult = 'success';
         this.backApplyResult.errorMsg = '';
     }
 };
@@ -227,10 +230,20 @@ ApplyViewDetailStore.prototype.getApplyStatusById = function(obj) {
 ApplyViewDetailStore.prototype.cancelSendApproval = function() {
     this.applyResult.submitResult = '';
     this.applyResult.errorMsg = '';
+    this.backApplyResult.submitResult = '';
+    this.backApplyResult.errorMsg = '';
 };
 ApplyViewDetailStore.prototype.hideApprovalBtns = function() {
     this.selectedDetailItem.showApproveBtn = false;
+    this.selectedDetailItem.showCancelBtn = false;
 };
+ApplyViewDetailStore.prototype.getNextCandidate = function(result) {
+    if (result.error){
+        this.candidateList = [];
+    }else{
+        this.candidateList = result;
+    }
 
+};
 
 module.exports = alt.createStore(ApplyViewDetailStore, 'ApplyViewDetailStore');

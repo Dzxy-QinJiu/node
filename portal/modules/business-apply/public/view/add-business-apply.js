@@ -137,6 +137,7 @@ class AddBusinessApply extends React.Component {
                     this.hideBusinessApplyAddForm();
                     //添加完后的处理
                     data.afterAddReplySuccess = true;
+                    data.showCancelBtn = true;
                     BusinessApplyAction.afterAddApplySuccess(data);
                 },
                 error: (xhr) => {

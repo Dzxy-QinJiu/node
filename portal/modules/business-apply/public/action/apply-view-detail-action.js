@@ -10,6 +10,7 @@ import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -104,12 +105,10 @@ function ApplyViewDetailActions() {
             _.isFunction(callback) && callback();
             if (data) {
                 this.dispatch({loading: false, error: false});
-                message.success(Intl.get('user.apply.detail.backout.success', '撤销成功'));
                 LeaveApplyUtil.emitter.emit('updateSelectedItem', {id: obj.id, cancel: true, status: 'success'});
             }else {
                 this.dispatch({loading: false, error: true, errorMsg: errTip});
                 LeaveApplyUtil.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
-                message.error(errTip);
             }
         }, (errorMsg) => {
             _.isFunction(callback) && callback();
@@ -118,6 +117,16 @@ function ApplyViewDetailActions() {
             LeaveApplyUtil.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
             message.error(errMsg);
         });
+    };
+    //获取下一节点的负责人
+    this.getNextCandidate = function(queryObj) {
+        ApplyApproveAjax.getNextCandidate().sendRequest(queryObj).success((list) => {
+            if (_.isArray(list)){
+                this.dispatch(list);
+            }
+        }).error(
+            this.dispatch({error: true})
+        );
     };
 }
 module.exports = alt.createActions(ApplyViewDetailActions);

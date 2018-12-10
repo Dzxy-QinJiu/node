@@ -2620,5 +2620,8 @@ var zh_CN = {
     'common.sales.behavior.statistics': '销售行为统计',
     'common.new.customer.login.statistics': '新开客户登录情况统计',
     'common.customer.active.statistics': '客户活跃度统计',
+    'apply.approve.modal.text.reject': '是否驳回此申请',
+    'apply.approve.modal.text.pass': '是否通过此申请',
+    'apply.approve.worklist': '待{applyer}审批'
 };
 export default zh_CN;

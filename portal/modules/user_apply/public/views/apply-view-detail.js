@@ -32,6 +32,8 @@ import {RightPanel} from '../../../../components/rightPanel';
 import {getPassStrenth, PassStrengthBar, passwordRegex} from 'CMP_DIR/password-strength-bar';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {APPLY_TYPES, userTypeList} from 'PUB_DIR/sources/utils/consts';
+import ModalDialog from 'CMP_DIR/ModalDialog';
+import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
 
 /*在审批界面显示用户的右侧面板结束*/
 //默认头像图片
@@ -142,7 +144,6 @@ const ApplyViewDetail = createReactClass({
     getDefaultProps() {
         return {
             showNoData: false,
-            showBackoutConfirm: false,
             detailItem: {},
             isUnreadDetail: false//是否有未读回复
         };
@@ -153,6 +154,7 @@ const ApplyViewDetail = createReactClass({
             appConfig: appConfig,
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
+            showBackoutConfirmType: '',//操作的确认框类型
             ...ApplyViewDetailStore.getState()
         };
     },
@@ -197,9 +199,16 @@ const ApplyViewDetail = createReactClass({
     componentWillReceiveProps(nextProps) {
         if (nextProps.detailItem.id && !_.isEqual(nextProps.detailItem, this.props.detailItem)) {
             this.appsSetting = {};
-            if (!this.state.applyResult.submitResult || nextProps.detailItem.id !== this.props.detailItem.id) {
+            if (nextProps.detailItem.id !== _.get(this, 'props.detailItem.id')){
+                this.setState({
+                    showBackoutConfirmType: ''
+                });
+            }
+            if ((!this.state.applyResult.submitResult && !this.state.backApplyResult.submitResult) || nextProps.detailItem.id !== this.props.detailItem.id) {
                 this.getApplyDetail(nextProps.detailItem);
             }
+            
+
         }
     },
 
@@ -1664,29 +1673,18 @@ const ApplyViewDetail = createReactClass({
         }
     },
 
-    // 确认撤销申请
-    saleConfirmBackoutApply(e) {
-        const state = this.state;
-        Trace.traceEvent(e, '点击撤销申请按钮');
-        state.showBackoutConfirm = true;
-        this.setState(state);
-    },
-
     // 隐藏撤销申请的模态框
     hideBackoutModal: function() {
-        const state = this.state;
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-cancel'), '点击取消按钮');
-        state.showBackoutConfirm = false;
-        this.setState(state);
+        this.setState({
+            showBackoutConfirmType: ''
+        });
     },
 
     // 撤销申请
     saleBackoutApply(e) {
         e.stopPropagation();
         Trace.traceEvent(e, '点击撤销按钮');
-        const state = this.state;
-        state.showBackoutConfirm = false;
-        this.setState(state);
         let backoutObj = {
             apply_id: this.props.detailItem.id,
             remark: _.trim(this.state.formData.comment),
@@ -1694,38 +1692,43 @@ const ApplyViewDetail = createReactClass({
         };
         ApplyViewDetailActions.saleBackoutApply(backoutObj);
     },
+    renderCancelApplyApprove() {
+        var confirmType = this.state.showBackoutConfirmType,modalContent = '', deleteFunction = function() {
 
-    // 撤销申请的模态框
-    renderBackoutApply() {
-        return (
-            <Modal
-                show={this.state.showBackoutConfirm}
-                onHide={this.hideBackoutModal}
-                container={this}
-                aria-labelledby="contained-modal-title"
-                className="backout-apply"
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title />
-                </Modal.Header>
-                <Modal.Body>
-                    <p><ReactIntl.FormattedMessage id="user.apply.detail.modal.content" defaultMessage="是否撤销此申请？"/></p>
-                </Modal.Body>
-                <Modal.Footer>
-                    {
-                        this.state.backApplyResult.loading ?
-                            <Icon type="loading"/> :
-                            <BootstrapButton className="btn-ok"
-                                onClick={this.saleBackoutApply}><ReactIntl.FormattedMessage
-                                    id="user.apply.detail.modal.ok" defaultMessage="撤销"/></BootstrapButton>
-                    }
-                    <BootstrapButton className="btn-cancel" onClick={this.hideBackoutModal}><ReactIntl.FormattedMessage
-                        id="common.cancel" defaultMessage="取消"/></BootstrapButton>
-                </Modal.Footer>
-            </Modal>
-        );
+            },okText = '',modalShow = false, resultType = {};
+        if (confirmType){
+            //不同类型的操作，展示的描述和后续操作也不一样
+            if (confirmType === '1' || confirmType === '2'){
+                deleteFunction = this.submitApprovalForm.bind(this, confirmType);
+                modalContent = Intl.get('apply.approve.modal.text.pass','是否通过此申请');
+                okText = Intl.get('user.apply.detail.button.pass', '通过');
+                if (confirmType === '2'){
+                    modalContent = Intl.get('apply.approve.modal.text.reject','是否驳回此申请');
+                    okText = Intl.get('common.apply.reject', '驳回');
+                }
+                resultType = this.state.applyResult;
+            }else if (confirmType === '3'){
+                modalContent = Intl.get('user.apply.detail.modal.content', '是否撤销此申请？');
+                deleteFunction = this.saleBackoutApply;
+                okText = Intl.get('user.apply.detail.modal.ok', '撤销');
+                resultType = this.state.backApplyResult;
+            }
+            modalShow = confirmType && resultType.submitResult === '';
+            return (
+                <ModalDialog
+                    modalShow={modalShow}
+                    container={this}
+                    hideModalDialog={this.hideBackoutModal}
+                    modalContent={modalContent}
+                    delete={deleteFunction}
+                    okText={okText}
+                    delayClose={true}
+                />
+            );
+        }else{
+            return null;
+        }
     },
-
     getApplyResultDscr(detailInfoObj) {
         let resultDscr = '';
         switch (this.props.detailItem.approval_state) {
@@ -1744,6 +1747,59 @@ const ApplyViewDetail = createReactClass({
 
     getNoSecondTimeStr(time) {
         return time ? moment(time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) : '';
+    },
+    clickApprovalFormBtn(approval){
+        if (approval === '1') {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击通过按钮');
+        } else if (approval === '2') {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击驳回按钮');
+        }else if (approval === '3'){
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击撤销申请按钮');
+        }
+        this.showConfirmModal(approval);
+    },
+    showConfirmModal(approval){
+        this.setState({
+            showBackoutConfirmType: approval
+        });
+    },
+    renderApplyApproveStatus(){
+        //如果没有进行角色设置，显示角色设置的模态框
+        if (this.state.rolesNotSettingModalDialog.show) {
+            return (<ModalDialog
+                container={this}
+                modalShow={true}
+                modalContent={this.state.rolesNotSettingModalDialog.appNames.join('、') + Intl.get('user.apply.detail.role.modal.content', '中，没有为用户分配角色，是否继续')}
+                okText={Intl.get('user.apply.detail.role.modal.continue', '继续')}
+                cancelText={Intl.get('user.apply.detail.role.modal.cancel', '我再改改')}
+                delete={this.continueSubmit}
+                hideModalDialog={this.cancelShowRolesModal}
+            />);
+        }else{
+            var showLoading = false,approveSuccess = false, approveError = false,applyResultErrorMsg = '',
+                confirmType = this.state.showBackoutConfirmType,resultType = {};
+            if (confirmType === '3'){
+                resultType = this.state.backApplyResult;
+            }else if(confirmType === '1' || confirmType === '2') {
+                resultType = this.state.applyResult;
+            }else{
+                return;
+            }
+            showLoading = resultType.submitResult === 'loading';
+            approveSuccess = resultType.submitResult === 'success';
+            approveError = resultType.submitResult === 'error';
+            applyResultErrorMsg = resultType.errorMsg;
+            return <ApplyApproveStatus
+                showLoading={showLoading}
+                approveSuccess={approveSuccess}
+                viewApprovalResult={this.viewApprovalResult}
+                approveError={approveError}
+                applyResultErrorMsg={applyResultErrorMsg}
+                reSendApproval={this.reSendApproval.bind(this,confirmType)}
+                cancelSendApproval={this.cancelSendApproval.bind(this, confirmType)}
+                container={this}
+            />;
+        }
     },
 
     //渲染详情底部区域
@@ -1782,21 +1838,19 @@ const ApplyViewDetail = createReactClass({
                                 </span>
                             </div>) : (<div className="pull-right">
                             {hasPrivilege('APPLY_CANCEL') && showBackoutApply ?
-                                this.state.backApplyResult.loading ?
-                                    <Icon type="loading"/> :
-                                    <Button type="primary" className="btn-primary-sure" size="small"
-                                        onClick={this.saleConfirmBackoutApply}>
-                                        {Intl.get('user.apply.detail.backout', '撤销申请')}
-                                    </Button>
+                                <Button type="primary" className="btn-primary-sure" size="small"
+                                    onClick={this.clickApprovalFormBtn.bind(this, '3')}>
+                                    {Intl.get('user.apply.detail.backout', '撤销申请')}
+                                </Button>
                                 : null}
                             {isRealmAdmin ? (
                                 <Button type="primary" className="btn-primary-sure" size="small"
-                                    onClick={this.submitApprovalForm.bind(this, '1')}>
+                                    onClick={this.clickApprovalFormBtn.bind(this, '1')}>
                                     {Intl.get('user.apply.detail.button.pass', '通过')}
                                 </Button>) : null}
                             {isRealmAdmin ? (
                                 <Button type="primary" className="btn-primary-sure" size="small"
-                                    onClick={this.submitApprovalForm.bind(this, '2')}>
+                                    onClick={this.clickApprovalFormBtn.bind(this, '2')}>
                                     {Intl.get('common.apply.reject', '驳回')}
                                 </Button>) : null}
                         </div>)}
@@ -2035,11 +2089,17 @@ const ApplyViewDetail = createReactClass({
 
     viewApprovalResult(e) {
         Trace.traceEvent(e, '查看审批结果');
+        this.setState({
+            showBackoutConfirmType: ''
+        });
         this.getApplyDetail(this.props.detailItem);
     },
 
     //我再改改
     cancelShowRolesModal(e) {
+        this.setState({
+            showBackoutConfirmType: ''
+        });
         Trace.traceEvent(e, '点击了我再改改');
         ApplyViewDetailActions.setRolesNotSettingModalDialog({
             show: false,
@@ -2053,93 +2113,22 @@ const ApplyViewDetail = createReactClass({
         Trace.traceEvent(e, '点击了继续');
         ApplyViewDetailActions.rolesNotSettingContinueSubmit();
         setTimeout(() => {
-            this.submitApprovalForm();
+            this.submitApprovalForm(this.state.showBackoutConfirmType);
         });
     },
 
-    renderApplyFormResult() {
-        //如果没有进行角色设置，显示角色设置的模态框
-        if (this.state.rolesNotSettingModalDialog.show) {
-            return <Modal
-                container={this}
-                show={true}
-                aria-labelledby="contained-modal-title"
-            >
-                <Modal.Body>
-                    <div className="approval-confirm-tip">
-                        <p>
-                            {this.state.rolesNotSettingModalDialog.appNames.join('、')}
-                            <ReactIntl.FormattedMessage id="user.apply.detail.role.modal.content"
-                                defaultMessage="中，没有为用户分配角色，是否继续"/>
-                        </p>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button type="primary" className="roles-notset-btn-continue"
-                        onClick={this.continueSubmit}><ReactIntl.FormattedMessage
-                            id="user.apply.detail.role.modal.continue" defaultMessage="继续"/></Button>
-                    <Button type="ghost" onClick={this.cancelShowRolesModal}><ReactIntl.FormattedMessage
-                        id="user.apply.detail.role.modal.cancel" defaultMessage="我再改改"/></Button>
-                </Modal.Footer>
-            </Modal>;
-        }
-        if (this.state.applyResult.submitResult === 'loading') {
-            return (
-                <Modal
-                    container={this}
-                    show={true}
-                    aria-labelledby="contained-modal-title"
-                >
-                    <Modal.Body>
-                        <div className="approval_loading">
-                            <Spinner />
-                            <p><ReactIntl.FormattedMessage id="user.apply.detail.submit.sending"
-                                defaultMessage="审批中..."/></p>
-                        </div>
-                    </Modal.Body>
-                </Modal>
-            );
-        }
-        if (this.state.applyResult.submitResult === 'success') {
-            return (
-                <div className="approval_result">
-                    <div className="approval_result_wrap">
-                        <div className="bgimg"></div>
-                        <p><ReactIntl.FormattedMessage id="user.apply.detail.submit.success" defaultMessage="审批成功"/></p>
-                        <Button type="ghost" onClick={this.viewApprovalResult}><ReactIntl.FormattedMessage
-                            id="user.apply.detail.show.content" defaultMessage="查看审批结果"/></Button>
-                    </div>
-                </div>
-            );
-        }
-        if (this.state.applyResult.submitResult === 'error') {
-            return (
-                <div className="approval_result">
-                    <div className="approval_result_wrap">
-                        <div className="bgimg error"></div>
-                        <p>{this.state.applyResult.errorMsg}</p>
-                        <Button type="ghost" className="re_send"
-                            onClick={this.reSendApproval}><ReactIntl.FormattedMessage id="common.retry"
-                                defaultMessage="重试"/></Button>
-                        <Button type="ghost" className="cancel_send"
-                            onClick={this.cancelSendApproval}><ReactIntl.FormattedMessage id="common.cancel"
-                                defaultMessage="取消"/></Button>
-                    </div>
-                </div>
-            );
-        }
-        return null;
-    },
-
     //重新发送
-    reSendApproval(e) {
+    reSendApproval(approval,e) {
         Trace.traceEvent(e, '点击重试按钮');
-        this.submitApprovalForm();
+        this.submitApprovalForm(approval);
     },
 
     //取消发送
     cancelSendApproval(e) {
         Trace.traceEvent(e, '点击取消按钮');
+        this.setState({
+            showBackoutConfirmType: ''
+        });
         ApplyViewDetailActions.cancelSendApproval();
     },
 
@@ -2234,8 +2223,8 @@ const ApplyViewDetail = createReactClass({
                     !this.state.detailInfoObj.loading ?
                         this.renderApplyDetailInfo() : null
                 }
-                {this.renderApplyFormResult()}
-                {this.renderBackoutApply()}
+                {this.renderApplyApproveStatus()}
+                {this.renderCancelApplyApprove()}
                 {this.state.showRightPanel && this.state.rightPanelUserId ?
                     <RightPanel
                         className="apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"

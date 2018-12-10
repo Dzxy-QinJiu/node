@@ -6,6 +6,7 @@
 var LeaveApplyAjax = require('../ajax/leave-apply-ajax');
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 function LeaveApplyActions() {
     this.generateActions(
         'setInitState',
@@ -25,6 +26,10 @@ function LeaveApplyActions() {
                 //需要对全部列表都加一个可以审批的属性
                 _.forEach(workList.list,(workItem) => {
                     workItem.showApproveBtn = true;
+                    //如果是我申请的，除了可以审批之外，我也可以撤回
+                    if (_.get(workItem,'applicant.user_id') === userData.getUserData().user_id && hasPrivilege('GET_MY_WORKFLOW_LIST')){
+                        workItem.showCancelBtn = true;
+                    }
                 });
                 this.dispatch({error: false, loading: false, data: workList});
                 return;
@@ -42,7 +47,7 @@ function LeaveApplyActions() {
                 });
                 //给 自己申请的并且是未通过的审批加上可以撤销的标识
                 _.forEach(data.list,(item) => {
-                    if (item.status === 'ongoing' && _.get(item,'applicant.user_id') === userData.getUserData().user_id){
+                    if (item.status === 'ongoing' && _.get(item,'applicant.user_id') === userData.getUserData().user_id && hasPrivilege('GET_MY_WORKFLOW_LIST')){
                         item.showCancelBtn = true;
                     }
                 });

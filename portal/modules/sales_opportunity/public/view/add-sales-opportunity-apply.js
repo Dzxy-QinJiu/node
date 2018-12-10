@@ -109,6 +109,7 @@ class AddSalesOpportunityApply extends React.Component {
                     this.hideSalesOpportunityApplyAddForm();
                     //添加完后的处理
                     data.afterAddReplySuccess = true;
+                    data.showCancelBtn = true;
                     SalesOpportunityApplyAction.afterAddApplySuccess(data);
 
                 },

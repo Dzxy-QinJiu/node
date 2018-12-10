@@ -3,7 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/30.
  */
-import {Row, Col, Button} from 'antd';
+import {Row, Col, Button, Icon} from 'antd';
 require('./index.less');
 class ApplyDetailBottom extends React.Component {
     constructor(props) {
@@ -17,14 +17,21 @@ class ApplyDetailBottom extends React.Component {
             return assigenedContext;
         } else {
             return <div className="pull-right">
-                <Button type="primary" className="btn-primary-sure" size="small"
-                    onClick={this.props.submitApprovalForm.bind(this, 'pass')}>
-                    {Intl.get('user.apply.detail.button.pass', '通过')}
-                </Button>
-                <Button type="primary" className="btn-primary-sure" size="small"
-                    onClick={this.props.submitApprovalForm.bind(this, 'reject')}>
-                    {Intl.get('common.apply.reject', '驳回')}
-                </Button>
+                {this.props.showCancelBtn ?
+                    <Button type="primary" className="btn-primary-sure" size="small"
+                        onClick={this.props.submitApprovalForm.bind(this, 'cancel')}>
+                        {Intl.get('user.apply.detail.backout', '撤销申请')}
+                    </Button> : null}
+                {this.props.showApproveBtn ? <div className="pass-and-reject-wrap">
+                    <Button type="primary" className="btn-primary-sure" size="small"
+                        onClick={this.props.submitApprovalForm.bind(this, 'pass')}>
+                        {Intl.get('user.apply.detail.button.pass', '通过')}
+                    </Button>
+                    <Button type="primary" className="btn-primary-sure" size="small"
+                        onClick={this.props.submitApprovalForm.bind(this, 'reject')}>
+                        {Intl.get('common.apply.reject', '驳回')}
+                    </Button>
+                </div> : null}
             </div>;
         }
     };
@@ -51,7 +58,7 @@ class ApplyDetailBottom extends React.Component {
                                     {this.props.approvalText}
                                 </span>
                             </div>) : (
-                            this.props.showApproveBtn ?
+                            this.props.showApproveBtn || this.props.showCancelBtn ?
                                 this.renderBottomText()
                                 : null
                         )}
@@ -68,6 +75,7 @@ ApplyDetailBottom.defaultProps = {
     update_time: '',
     approvalText: '',
     showApproveBtn: false,
+    showCancelBtn: false,
     submitApprovalForm: function() {
 
     },
@@ -84,6 +92,7 @@ ApplyDetailBottom.propTypes = {
     showApproveBtn: PropTypes.boolean,
     submitApprovalForm: PropTypes.func,
     renderAssigenedContext: PropTypes.func,
+    showCancelBtn: PropTypes.boolean
 };
 
 export default ApplyDetailBottom;
