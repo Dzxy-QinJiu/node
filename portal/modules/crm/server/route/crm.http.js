@@ -91,7 +91,7 @@ module.exports = {
         },
         {
             method: 'post',
-            path: '/rest/customer/v2/customer/range/:pageSize/:sortFeild/:sortOrder',
+            path: '/rest/customer/range/:pageSize/:sortField/:sortOrder',
             handler: 'queryCustomer',
             passport: {
                 needLogin: true
@@ -257,7 +257,10 @@ module.exports = {
             handler: 'getCustomerLimit',
             passport: {
                 needLogin: true
-            }
+            },
+            privileges: [
+                'CRM_CUSTOMER_LIMIT_FLAG'
+            ]
         },
         {
             method: 'get',

@@ -11,12 +11,12 @@ module.exports = {
         },
         {
             method: 'put',
-            path: '/rest/crm/batch',
+            path: '/rest/crm/batch/:auth_type',
             handler: 'doBatch',
             passport: {
                 needLogin: true
             },
-            privileges: []
+            privileges: ['CUSTOMER_UPDATE', 'CUSTOMER_MANAGER_UPDATE_ALL']
         },
         {
             method: 'get',

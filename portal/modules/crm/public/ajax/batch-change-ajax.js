@@ -1,6 +1,12 @@
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 let teamAjax = require('../../../common/public/ajax/team');
 let salesmanAjax = require('../../../common/public/ajax/salesman');
+
+const PRIVILEGES = {
+    MANAGER_BATCH: 'CUSTOMER_MANAGER_UPDATE_ALL',//批量修改的管理员权限（销售：CUSTOMER_UPDATE）
+    MANAGER_RECOMMEND_LABEL: 'CUSTOMER_MANAGER_LABEL_GET'//管理员获取推荐标签的权限（销售: CUSTOMER_UER_LABEL_GET）
+};
+
 //获取销售人员列表
 exports.getSalesManList = function() {
     var Deferred = $.Deferred();
@@ -54,8 +60,12 @@ exports.getSalesTeamMembers = function(teamId) {
 exports.doBatch = function(type, condition) {
     var Deferred = $.Deferred();
     var jsonStr = JSON.stringify(condition);
+    let authType = 'user';
+    if(hasPrivilege(PRIVILEGES.MANAGER_BATCH)){
+        authType = 'manager';
+    }
     $.ajax({
-        url: '/rest/crm/batch?type=' + type,
+        url: `/rest/crm/batch/${authType}?type=${type}`,
         dataType: 'json',
         contentType: 'application/json',
         type: 'put',
@@ -75,7 +85,7 @@ exports.getRecommendTags = function() {
     var pageSize = 100;
     var num = 1;
     let type = 'user';
-    if(hasPrivilege('CUSTOMER_MANAGER_LABEL_GET')){
+    if(hasPrivilege(PRIVILEGES.MANAGER_RECOMMEND_LABEL)){
         type = 'manager';
     }
     var Deferred = $.Deferred();

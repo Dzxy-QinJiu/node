@@ -2,12 +2,11 @@
 const restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 const restUtil = require('ant-auth-request').restUtil(restLogger);
 const _ = require('lodash');
-const baseUrl = '/rest/customer/v2/salesopportunity';
+const baseUrl = '/rest/customer/v3/salesopportunity';
 const dealUrl = {
     getDealList: `${baseUrl}/range/:type/:page_size/:sort_field/:sort_order`,
     addDeal: baseUrl,
-    editDeal: baseUrl,
-    editDealStage: `${baseUrl}/sale_stage`,
+    editDeal: `${baseUrl}/property/:property`,
     deleteDeal: `${baseUrl}/:deal_id`
 };
 
@@ -42,19 +41,14 @@ exports.addDeal = function(req, res) {
 };
 
 exports.editDeal = function(req, res) {
+    let bodyData = req.body;
+    let property = bodyData.property;
+    delete bodyData.property;
     return restUtil.authRest.put({
-        url: dealUrl.editDeal,
+        url: dealUrl.editDeal.replace(':property', property),
         req: req,
         res: res
-    }, req.body);
-};
-
-exports.editDealStage = function(req, res) {
-    return restUtil.authRest.put({
-        url: dealUrl.editDealStage,
-        req: req,
-        res: res
-    }, req.body);
+    }, bodyData);
 };
 
 exports.deleteDeal = function(req, res) {

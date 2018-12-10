@@ -403,7 +403,7 @@ class CrmRightMergePanel extends React.Component {
                 //找到修改的联系方式并更新
                 _.some(mergedCustomer.contacts, (contact, index) => {
                     if (contact.id === newContact.id) {
-                        mergedCustomer.contacts[index] = newContact;
+                        mergedCustomer.contacts[index][newContact.property] = newContact[newContact.property];
                         return true;
                     }
                 });

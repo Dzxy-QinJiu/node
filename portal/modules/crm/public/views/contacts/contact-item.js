@@ -1,5 +1,6 @@
 var React = require('react');
-import {Button, message} from 'antd';
+import {Button, message, Select} from 'antd';
+const Option = Select.Option;
 var BootstrapButton = require('react-bootstrap').Button;
 var ContactUtil = require('../../utils/contact-util');
 var ContactAction = require('../../action/contact-action');
@@ -11,6 +12,12 @@ import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import classNames from 'classnames';
 import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
+import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
+import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
+import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-field';
+import CrmAction from '../../action/crm-actions';
+import contactAjax from '../../ajax/contact-ajax';
+const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 
 class ContactItem extends React.Component {
     static defaultProps = {
@@ -20,12 +27,7 @@ class ContactItem extends React.Component {
     state = {
         isLoading: false
     };
-
-    showEditContactForm = () => {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '编辑联系人');
-        ContactAction.showEditContactForm(this.props.contact);
-    };
-
+    
     showDeleteContactConfirm = () => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '删除联系人');
         ContactAction.showDeleteContactConfirm(this.props.contact);
@@ -80,17 +82,6 @@ class ContactItem extends React.Component {
         }
     };
 
-    // 自动拨号
-    handleClickCallOut = (phone) => {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '拨打电话');
-        handleCallOutResult({
-            errorMsg: this.props.getCallNumberError,//获取坐席号失败的错误提示
-            callNumber: this.props.callNumber,//坐席号
-            contactName: _.get(this.props,'contact.contact.name') || '',//联系人姓名
-            phoneNumber: phone,//拨打的电话
-        });
-    };
-
     //展开、收起联系方式的处理
     toggleContactWay = () => {
         ContactAction.toggleContactWay(this.props.contact);
@@ -118,7 +109,7 @@ class ContactItem extends React.Component {
     };
 
     //渲染联系人标题区
-    renderContactTitle = (contactEleList) => {
+    renderContactTitle = () => {
         let contact = this.props.contact.contact;
         let isExpanded = this.props.contact.isExpanded;
         //默认联系人
@@ -155,119 +146,236 @@ class ContactItem extends React.Component {
                         <span className="iconfont icon-delete" title={Intl.get('common.delete', '删除')}
                             data-tracename="点击删除联系人按钮"
                             onClick={this.showDeleteContactConfirm}/>
-                        <DetailEditBtn title={Intl.get('common.edit', '编辑')} onClick={this.showEditContactForm}
-                            data-tracename="点击编辑联系人按钮"/>
-                        {_.isArray(contactEleList) && contactEleList.length > 1 ? (//超过一种联系方式时，再展示展开其他联系方式的按钮
-                            <span className={contactWayClassName}
-                                data-tracename={isExpanded ? '收起联系方式' : '展开其他联系方式'}
-                                title={isExpanded ? Intl.get('crm.contact.way.hide', '收起') : Intl.get('crm.contact.way.show', '展开其他联系方式')}
-                                onClick={this.toggleContactWay}/>) : null}
+                        <span className={contactWayClassName}
+                            data-tracename={isExpanded ? '收起详情' : '展开详情'}
+                            title={isExpanded ? Intl.get('crm.basic.detail.hide', '收起详情') : Intl.get('crm.basic.detail.show', '展开详情')}
+                            onClick={this.toggleContactWay}/>
                     </span>)}
             </span>);
     };
 
-    //是否有某种联系方式（电话、qq、微信、邮箱）
-    hasContactWay = (contact, type) => {
-        return contact[type] && _.isArray(contact[type]) && contact[type].length;
-    };
-
-    renderContactWayContent = (contact, type) => {
-        return this.hasContactWay(contact, type) ? _.map(contact[type], item => {
-            return ( <div className="contact-way-item">
-                <span className="contact-way-text">{addHyphenToPhoneNumber(item)}</span>
-                {type === 'phone' && this.props.callNumber ? (
-                    <span className="phone-call-button" onClick={this.handleClickCallOut.bind(this, item)}>
-                        {Intl.get('schedule.call.out', '拨打')}
-                    </span>) : null}
-            </div>);
-        }) : null;
-    };
-
-    getContactEleList = () => {
-        let contact = this.props.contact.contact;
-        let contactList = [];
-        if (this.hasContactWay(contact, 'phone')) {
-            contactList.push(
-                <div className="contact-way-type">
-                    <div className="iconfont icon-phone-call-out contact-way-icon"
-                        title={Intl.get('common.phone', '电话')}/>
-                    <div className="contact-phone-content contact-way-content">
-                        {this.renderContactWayContent(contact, 'phone')}
-                    </div>
-                </div>);
-        }
-        if (this.hasContactWay(contact, 'qq')) {
-            contactList.push(
-                <div className="contact-way-type">
-                    <div className="iconfont icon-qq contact-way-icon" title="QQ"/>
-                    <div className="contact-way-content">
-                        {this.renderContactWayContent(contact, 'qq')}
-                    </div>
-                </div>);
-        }
-        if (this.hasContactWay(contact, 'weChat')) {
-            contactList.push(
-                <div className="contact-way-type">
-                    <div className="iconfont icon-weChat contact-way-icon" title={Intl.get('crm.58', '微信')}/>
-                    <div className="contact-way-content">
-                        {this.renderContactWayContent(contact, 'weChat')}
-                    </div>
-                </div>);
-        }
-        if (this.hasContactWay(contact, 'email')) {
-            contactList.push(
-                <div className="contact-way-type">
-                    <div className="iconfont icon-email contact-way-icon" title={Intl.get('common.email', '邮箱')}/>
-                    <div className="contact-way-content">
-                        {this.renderContactWayContent(contact, 'email')}
-                    </div>
-                </div>);
-        }
-        return contactList;
-    };
-
-    //渲染联系方式展示区
-    renderContactWay = (contactEleList) => {
-        if (_.get(contactEleList, '[0]')) {
-            return (
-                <div className="contact-way-container">
-                    {contactEleList[0]}
-                    {contactEleList.length > 1 && this.props.contact.isExpanded ? (
-                        <div className="contact-way-other">
-                            {contactEleList.map((contactEle, index) => {
-                                if (index > 0) {
-                                    return contactEle;
-                                }
-                                return null;
-                            })}
-                        </div>) : null}
-                </div>);
+    saveContactInfo(property, saveObj, successFunc, errorFunc) {
+        saveObj.property = property;
+        saveObj.customer_id = _.get(this.props, 'contact.contact.customer_id', '');
+        if (this.props.isMerge) {
+            //合并重复客户时的处理
+            this.props.updateMergeCustomerContact(saveObj);
         } else {
-            return (
-                <div className="contact-way-container">
-                    <div className="no-contact-way-tip">
-                        <ReactIntl.FormattedMessage
-                            id='crm.no.contact.way.tip'
-                            defaultMessage={'暂无联系方式，请{addTip}'}
-                            values={{
-                                'addTip': <a onClick={this.showEditContactForm}>{Intl.get('common.add', '添加')}</a>,
-                            }}
-                        />
-                    </div>
-                </div>);
+            contactAjax.editContact(saveObj).then(data => {
+                if (data) {
+                    if (_.isFunction(successFunc)) successFunc();
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc(Intl.get('crm.180', '添加联系人失败'));
+                }
+            }, errorMsg => {
+                if (_.isFunction(errorFunc)) errorFunc(errorMsg || Intl.get('crm.180', '添加联系人失败'));
+            });
         }
-    };
+    }
+
+    getRoleSelectOptions() {
+        return _.map(ContactUtil.roleArray, (role, index) => {
+            return (<Option value={role} key={index}>{role}</Option>);
+        });
+    }
+
+    //获取联系人电话验证规则
+    getPhoneInputValidateRules() {
+        return [{
+            validator: (rule, value, callback) => {
+                value = _.trim(value);
+                if (value) {
+                    let phone = value.replace('-', '');
+                    let contact = this.props.contact.contact;
+                    let phoneArray = contact && _.isArray(contact.phone) ? contact.phone : [];
+                    //该联系人原电话列表中不存在该电话
+                    if (phoneArray.indexOf(phone) === -1) {
+                        //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
+                        CrmAction.checkOnlyContactPhone(phone, data => {
+                            if (_.isString(data)) {
+                                //唯一性验证出错了
+                                callback(Intl.get('crm.82', '电话唯一性验证出错了'));
+                            } else {
+                                if (_.isObject(data) && data.result === 'true') {
+                                    callback();
+                                } else {
+                                    //已存在
+                                    callback(Intl.get('crm.83', '该电话已存在'));
+                                }
+                            }
+                        });
+                    } else {//该联系人员电话列表中已存在该电话
+                        // 该联系人原本的电话未做修改时（删除原本的，再添加上时）
+                        callback();
+                    }
+                } else {
+                    callback();
+                }
+            }
+        }];
+    }
+
+    renderContactContent() {
+        let contact = this.props.contact.contact;
+        let isExpanded = this.props.contact.isExpanded;
+        const EDIT_FEILD_WIDTH = 350;
+        let hasEditPrivilege = hasPrivilege('CRM_EDIT_CONTACT');
+        return (
+            <div className="contact-item-wrap">
+                {isExpanded ? (
+                    <div>
+                        <div className="contact-item-content">
+                            <span className="contact-label">{Intl.get('common.name', '姓名')}:</span>
+                            <BasicEditInputField
+                                width={EDIT_FEILD_WIDTH}
+                                id={contact.id}
+                                type="input"
+                                field="name"
+                                value={contact.name}
+                                placeholder={Intl.get('crm.90', '请输入姓名')}
+                                hasEditPrivilege={hasEditPrivilege}
+                                saveEditInput={this.saveContactInfo.bind(this, 'name')}
+                                noDataTip={Intl.get('crm.contact.name.none', '未添加姓名')}
+                                addDataTip={Intl.get('crm.contact.name.add', '添加姓名')}
+                            />
+                        </div>
+                        <div className="contact-item-content">
+                            <span className="contact-label">{Intl.get('crm.113', '部门')}:</span>
+                            <BasicEditInputField
+                                width={EDIT_FEILD_WIDTH}
+                                id={contact.id}
+                                type="input"
+                                field="department"
+                                value={contact.department}
+                                placeholder={Intl.get('crm.contact.deparment.input', '请输入部门')}
+                                hasEditPrivilege={hasEditPrivilege}
+                                saveEditInput={this.saveContactInfo.bind(this, 'department')}
+                                noDataTip={Intl.get('contract.68', '暂无部门')}
+                                addDataTip={Intl.get('organization.add.department', '添加部门')}
+                            />
+                        </div>
+                        <div className="contact-item-content">
+                            <span className="contact-label">{Intl.get('crm.91', '职位')}:</span>
+                            <BasicEditInputField
+                                width={EDIT_FEILD_WIDTH}
+                                id={contact.id}
+                                type="input"
+                                field="position"
+                                value={contact.position}
+                                placeholder={Intl.get('crm.114', '请输入职位')}
+                                hasEditPrivilege={hasEditPrivilege}
+                                saveEditInput={this.saveContactInfo.bind(this, 'position')}
+                                noDataTip={Intl.get('crm.contact.positon.none', '未设置职位')}
+                                addDataTip={Intl.get('crm.contact.positon.add', '设置职位')}
+                            />
+                        </div>
+                        <div className="contact-item-content">
+                            <span className="contact-label">{Intl.get('common.role', '角色')}:</span>
+                            <BasicEditSelectField
+                                width={EDIT_FEILD_WIDTH}
+                                id={contact.id}
+                                type="input"
+                                field="role"
+                                displayText={contact.role}
+                                value={contact.role}
+                                placeholder={Intl.get('member.select.role', '请选择角色')}
+                                hasEditPrivilege={hasEditPrivilege}
+                                selectOptions={this.getRoleSelectOptions()}
+                                validators={[{
+                                    required: true,
+                                    message: Intl.get('member.select.role', '请选择角色'),
+                                }]}
+                                saveEditSelect={this.saveContactInfo.bind(this, 'role')}
+                                noDataTip={Intl.get('member.no.role', '暂无角色')}
+                                addDataTip={Intl.get('user.setting.roles', '设置角色')}
+                            />
+                        </div>
+                    </div>) : null}
+                <div className="contact-item-content">
+                    <DynamicAddDelField
+                        id={contact.id}
+                        field='phone'
+                        value={contact.phone}
+                        type='phone'
+                        label={<div className="iconfont icon-phone-call-out contact-way-icon"
+                            title={Intl.get('common.phone', '电话')}/>}
+                        hasEditPrivilege={hasEditPrivilege}
+                        placeholder={Intl.get('crm.95', '请输入联系人电话')}
+                        validateRules={this.getPhoneInputValidateRules()}
+                        saveEditData={this.saveContactInfo.bind(this, 'phone')}
+                        noDataTip={Intl.get('crm.contact.phone.none', '暂无电话')}
+                        addDataTip={Intl.get('crm.contact.phone.add', '添加电话')}
+                    />
+                </div>
+                {isExpanded ? (
+                    <div>
+                        <div className="contact-item-content">
+                            <DynamicAddDelField
+                                id={contact.id}
+                                field='qq'
+                                value={contact.qq}
+                                type='input'
+                                label={<div className="iconfont icon-qq contact-way-icon" title="QQ"/>}
+                                hasEditPrivilege={hasEditPrivilege}
+                                placeholder={Intl.get('member.input.qq', '请输入QQ号')}
+                                saveEditData={this.saveContactInfo.bind(this, 'qq')}
+                                noDataTip={Intl.get('crm.contact.qq.none', '暂无QQ')}
+                                addDataTip={Intl.get('crm.contact.qq.add', '添加QQ')}
+                            />
+                        </div>
+                        <div className="contact-item-content">
+                            <DynamicAddDelField
+                                id={contact.id}
+                                field='weChat'
+                                value={contact.weChat}
+                                type='input'
+                                label={<div className="iconfont icon-weChat contact-way-icon"
+                                    title={Intl.get('crm.58', '微信')}/>}
+                                hasEditPrivilege={hasEditPrivilege}
+                                placeholder={Intl.get('member.input.wechat', '请输入微信号')}
+                                saveEditData={this.saveContactInfo.bind(this, 'weChat')}
+                                noDataTip={Intl.get('crm.contact.wechat.none', '暂无微信')}
+                                addDataTip={Intl.get('crm.contact.wechat.add', '添加微信')}
+                            />
+                        </div>
+                        <div className="contact-item-content">
+                            <DynamicAddDelField
+                                id={contact.id}
+                                field='email'
+                                value={contact.email}
+                                type='input'
+                                label={<div className="iconfont icon-email contact-way-icon"
+                                    title={Intl.get('common.email', '邮箱')}/>}
+                                hasEditPrivilege={hasEditPrivilege}
+                                placeholder={Intl.get('member.input.email', '请输入邮箱')}
+                                saveEditData={this.saveContactInfo.bind(this, 'email')}
+                                noDataTip={Intl.get('crm.contact.email.none', '暂无邮箱')}
+                                addDataTip={Intl.get('crm.contact.email.add', '添加邮箱')}
+                            />
+                        </div>
+                    </div>
+                ) : null}
+            </div>
+        );
+    }
 
     render() {
         let containerClassName = classNames('contact-item-container', {
             'contact-delete-border': this.props.contact.isShowDeleteContactConfirm
         });
-        let contactEleList = this.getContactEleList();
-        return (<DetailCard title={this.renderContactTitle(contactEleList)}
-            content={this.renderContactWay(contactEleList)}
+        return (<DetailCard title={this.renderContactTitle()}
+            content={this.renderContactContent()}
             className={containerClassName}/>);
     }
 }
-
-module.exports = ContactItem;
+ContactItem.propTypes = {
+    customerId: PropTypes.string,
+    contact: PropTypes.object,
+    isMerge: PropTypes.bool,
+    delMergeCustomerContact: PropTypes.func,
+    updateCustomerDefContact: PropTypes.func,
+    updateMergeCustomerContact: PropTypes.func,
+    setMergeCustomerDefaultContact: PropTypes.func,
+};
+export default ContactItem;
 
