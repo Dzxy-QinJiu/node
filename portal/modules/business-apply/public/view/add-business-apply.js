@@ -139,8 +139,12 @@ class AddBusinessApply extends React.Component {
                     data.afterAddReplySuccess = true;
                     BusinessApplyAction.afterAddApplySuccess(data);
                 },
-                error: (errorMsg) => {
-                    this.setResultData(errorMsg || Intl.get('crm.154', '添加失败'), 'error');
+                error: (xhr) => {
+                    var errTip = Intl.get('crm.154', '添加失败');
+                    if (xhr.responseJSON && _.isString(xhr.responseJSON)){
+                        errTip = xhr.responseJSON;
+                    }
+                    this.setResultData(errTip, 'error');
                 }
             });
         });
