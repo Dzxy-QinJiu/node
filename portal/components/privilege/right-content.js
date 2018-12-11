@@ -3,6 +3,7 @@ var history = require('../../public/sources/history');
 var TopNav = require('CMP_DIR/top-nav');
 
 import {renderRoutes} from 'react-router-config';
+import classNames from 'classnames';
 
 class RightContent extends React.Component {
     constructor(props) {
@@ -38,6 +39,9 @@ class RightContent extends React.Component {
                 return null;
             }
         }
+        const cls = classNames({
+            'moduleContent': this.props.route ? true : false
+        });
         return (
             <div className="rightContent">
                 <div className="main">
@@ -46,7 +50,7 @@ class RightContent extends React.Component {
                         {this.state.topNavOperation}
                     </TopNav>
                     ) : null}
-                    < div className='moduleContent'>
+                    <div className={cls}>
                         {this.props.route ? renderRoutes(this.props.route.routes,
                             {renderTopNavOperation: this.renderTopNavOperation}) : this.props.children}
                     </div>

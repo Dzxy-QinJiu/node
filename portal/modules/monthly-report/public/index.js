@@ -15,6 +15,8 @@ const MonthPicker = DatePicker.MonthPicker;
 const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
+
+import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {storageUtil} from 'ant-utils';
 
 const STORED_TEAM_KEY = 'monthly_report_selected_team';
@@ -33,7 +35,6 @@ class MonthlyReport extends React.Component {
         $('.analysis_report_ico a').addClass('active');
         this.getTeamList();
         this.getMemberList();
-        this.props.renderTopNavOperation && this.props.renderTopNavOperation(this.renderTopNavOperation());
     }
 
     getTeamList = () => {
@@ -417,7 +418,7 @@ class MonthlyReport extends React.Component {
     //渲染操作按钮区
     renderTopNavOperation = () => {
         const selectedTeamId = _.get(this.state.selectedTeam, 'group_id');
-        return this.renderFilter(selectedTeamId);
+        return (<ButtonZones>{this.renderFilter(selectedTeamId)}</ButtonZones>);
     };
 
     render() {
@@ -426,6 +427,9 @@ class MonthlyReport extends React.Component {
 
         return (
             <div className="monthly-report" data-tracename='销售月报'>
+                {
+                    this.renderTopNavOperation()
+                }
                 <div className="monthly-report-content">
                     <Row>
                         <Col span={3}>

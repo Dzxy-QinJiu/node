@@ -1,11 +1,11 @@
+import ReportLeftMenu from 'CMP_DIR/report-left-menu';
+
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by liwenjun on 2018/12/10.
  */
 require('./button-zones.less');
-let topnavPaddingLeft = 24;//左边内边框
-//顶部导航外层div
 class ButtonZones extends React.Component {
     constructor(props) {
         super(props);
@@ -83,4 +83,4 @@ ButtonZones.propTypes = {
     children: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
 };
 
-module.exports = ButtonZones;
+export default ButtonZones;

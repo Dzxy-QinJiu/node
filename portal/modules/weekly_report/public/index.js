@@ -16,6 +16,7 @@ import {Row, Col, Alert} from 'antd';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import NatureTimeSelect from 'CMP_DIR/nature-time-select';
 import ReportLeftMenu from 'CMP_DIR/report-left-menu';
+import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 
 class WeeklyReport extends React.Component {
     constructor(props) {
@@ -30,11 +31,8 @@ class WeeklyReport extends React.Component {
     }
 
     componentDidMount() {
-     
-
         WeeklyReportStore.listen(this.onStoreChange);
         this.getTeamMemberData(); //获取销售团队和成员数据
-        this.props.renderTopNavOperation && this.props.renderTopNavOperation(this.renderTopNavOperation());
     }
 
     onStoreChange = () => {
@@ -133,11 +131,12 @@ class WeeklyReport extends React.Component {
 
     //渲染操作按钮区
     renderTopNavOperation = () => {
-        return (
+        return (<ButtonZones>
             <div className='weekly-report-operation-area'>
                 {this.renderWeekSelect()}
                 {this.renderTeamSelect()}
             </div>
+        </ButtonZones>
         );
     };
 
@@ -159,6 +158,9 @@ class WeeklyReport extends React.Component {
 
         return (
             <div className='weekly-report-container' data-tracename='销售周报'>
+                {
+                    this.renderTopNavOperation()
+                }
                 <div className='weekly-report-wrap'>
                     <Row>
                         <Col span={3}>

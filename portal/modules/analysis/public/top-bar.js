@@ -7,8 +7,7 @@ import ajax from 'ant-ajax';
 import {initialTime} from './consts';
 import {Select} from 'antd';
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
-
-let ButtonZones = require('CMP_DIR/top-nav/button-zones');
+import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 
 const Option = Select.Option;
 const emitters = require('PUB_DIR/sources/utils/emitters');
@@ -139,8 +138,6 @@ class TopBar extends React.Component {
     //渲染操作按钮区
     renderTopNavOperation = () => {
         this.props.renderTopNavOperation && this.props.renderTopNavOperation(null);
-        // this.props.renderTopNavOperation && this.props.renderTopNavOperation(
-        // this.renderButtonZones());
     };
 
     //渲染操作按钮区

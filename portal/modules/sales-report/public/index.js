@@ -2,20 +2,22 @@ require('./style.less');
 import ajax from 'ant-ajax';
 import userData from 'PUB_DIR/sources/user-data';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-import { AntcAnalysis, AntcDatePicker } from 'antc';
-import { hasPrivilege } from 'CMP_DIR/privilege/checker';
-import { dateSelectorEmitter, teamTreeEmitter } from 'PUB_DIR/sources/utils/emitters';
-import { storageUtil } from 'ant-utils';
-import { Row, Col, Select } from 'antd';
+import {AntcAnalysis, AntcDatePicker} from 'antc';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import {dateSelectorEmitter, teamTreeEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {storageUtil} from 'ant-utils';
+import {Row, Col, Select} from 'antd';
 import reportCharts from './charts';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import ReportLeftMenu from 'CMP_DIR/report-left-menu';
+
 const Avatar = require('CMP_DIR/Avatar');
 const Option = Select.Option;
 const TopNav = require('CMP_DIR/top-nav');
 const STORED_MEMBER_ID_KEY = 'sales_report_selected_member_id';
 const authType = hasPrivilege('CALL_RECORD_VIEW_MANAGER') ? 'manager' : 'user';
 const dataType = hasPrivilege('GET_TEAM_LIST_ALL') ? 'all' : 'self';
+import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 
 class SalesReport extends React.Component {
     state = {
@@ -201,13 +203,13 @@ class SalesReport extends React.Component {
         const memberList = this.state.memberList;
         const currentMember = this.state.currentMember;
 
-        return (
+        return (<ButtonZones>
             <div className="filter">
                 {memberList.length ? (
                     <Select
                         showSearch
                         optionFilterProp="children"
-                        style={{ width: 100 }}
+                        style={{width: 100}}
                         value={currentMember.user_id}
                         onChange={this.onMemberChange}
                     >
@@ -222,14 +224,21 @@ class SalesReport extends React.Component {
                     range='week'
                     onSelect={this.onDateChange}>
                     <AntcDatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</AntcDatePicker.Option>
-                    <AntcDatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</AntcDatePicker.Option>
-                    <AntcDatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</AntcDatePicker.Option>
-                    <AntcDatePicker.Option value="month">{Intl.get('common.time.unit.month', '月')}</AntcDatePicker.Option>
-                    <AntcDatePicker.Option value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</AntcDatePicker.Option>
-                    <AntcDatePicker.Option value="year">{Intl.get('common.time.unit.year','年')}</AntcDatePicker.Option>
-                    <AntcDatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</AntcDatePicker.Option>
+                    <AntcDatePicker.Option
+                        value="day">{Intl.get('common.time.unit.day', '天')}</AntcDatePicker.Option>
+                    <AntcDatePicker.Option
+                        value="week">{Intl.get('common.time.unit.week', '周')}</AntcDatePicker.Option>
+                    <AntcDatePicker.Option
+                        value="month">{Intl.get('common.time.unit.month', '月')}</AntcDatePicker.Option>
+                    <AntcDatePicker.Option
+                        value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</AntcDatePicker.Option>
+                    <AntcDatePicker.Option
+                        value="year">{Intl.get('common.time.unit.year', '年')}</AntcDatePicker.Option>
+                    <AntcDatePicker.Option
+                        value="custom">{Intl.get('user.time.custom', '自定义')}</AntcDatePicker.Option>
                 </AntcDatePicker>
             </div>
+        </ButtonZones>
         );
     };
 
@@ -367,14 +376,11 @@ class SalesReport extends React.Component {
     render() {
         return (
             <div className="sales-report" data-tracename='销售报告'>
-                <TopNav>
-                    <TopNav.MenuList/>
-                    {this.renderFilter()}
-                </TopNav>
+                {this.renderFilter()}
                 <div className="report-content">
                     <Row>
                         <Col span={3}>
-                            <ReportLeftMenu />
+                            <ReportLeftMenu/>
                         </Col>
                         <Col span={21} style={{height: this.state.contentHeight}}>
                             <GeminiScrollBar>
