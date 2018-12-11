@@ -34,6 +34,14 @@ const ASSIGN_TYPE = {
 let userData = require('PUB_DIR/sources/user-data');
 import {REALM_REMARK} from '../utils/sales-oppotunity-utils';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+//在内存中记录分配下一节点销售领导的id 和 分配给销售的id
+//为了避免点击确认模态框后，下拉框收起后把所分配的下一节点的负责人的id清除掉或者是出错后下拉框收起，下一节点的负责人清空
+let ASSIGN_IDS = {
+    assignedCandidateUsers: '',//下一节点销售领导的id
+    //所分配的销售的id,只有在点击确认的时候才会修改这个值
+    assignedSalesUsersIds: '',
+};
+
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -49,6 +57,10 @@ class ApplyViewDetail extends React.Component {
     onStoreChange = () => {
         this.setState(SalesOpportunityApplyDetailStore.getState());
     };
+    setInitialIds = () => {
+        ASSIGN_IDS.assignedSalesUsersIds = '';
+        ASSIGN_IDS.assignedCandidateUsers = '';
+    };
 
     componentDidMount() {
         SalesOpportunityApplyDetailStore.listen(this.onStoreChange);
@@ -60,6 +72,7 @@ class ApplyViewDetail extends React.Component {
             this.getBusinessApplyDetailData(this.props.detailItem);
         }
         this.getSalesManList();
+        this.setInitialIds();
     }
     getSalesManList = () => {
         salesOpportunityApplyAjax.getSalesManList().then(data => {
@@ -81,9 +94,11 @@ class ApplyViewDetail extends React.Component {
                 showBackoutConfirmType: ''
             });
         }
+        this.setInitialIds();
     }
 
     componentWillUnmount() {
+        this.setInitialIds();
         SalesOpportunityApplyDetailStore.unlisten(this.onStoreChange);
     }
 
@@ -166,9 +181,7 @@ class ApplyViewDetail extends React.Component {
         var detail = detailInfo.detail || {};
         var expectdeal_time = moment(detail.expectdeal_time).format(oplateConsts.DATE_FORMAT);
         var customers = _.get(detail, 'customers[0]', {});
-
         var productArr = [];
-        var displayText = detailInfo.assigned_candidate_users || '';
         _.forEach(detail.apps,(app) => {
             productArr.push(app.client_name);
         });
@@ -296,19 +309,27 @@ class ApplyViewDetail extends React.Component {
     //重新发送
     reSendApproval = (approval,e) => {
         Trace.traceEvent(e, '点击重试按钮');
-        this.submitApprovalForm(approval);
+        this.submitApprovalForm(approval,true);
     };
 
     //取消发送
     cancelSendApproval = (e) => {
+        this.setState({
+            showBackoutConfirmType: ''
+        });
         Trace.traceEvent(e, '点击取消按钮');
         SalesOpportunityApplyDetailAction.cancelSendApproval();
     };
 
-    submitApprovalForm = (approval) => {
-        var assignedCandidateUserIds = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
+    submitApprovalForm = (approval,flag) => {
+        //flag 为true的情况，是在出错的情况下再次点击重试发请求，为了避免使用清空掉的值把内存里下一节点的id和所分配的销售的id覆盖掉
+        if (approval === 'pass' && !_.isBoolean(flag)){
+            ASSIGN_IDS.assignedCandidateUsers = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
+            ASSIGN_IDS.assignedSalesUsersIds = _.get(this.state, 'detailInfoObj.info.user_ids','');
+        }
+        var assignedCandidateUserIds = ASSIGN_IDS.assignedCandidateUsers;
         var readyApply = _.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.READY_APPLY;
-        var assignedSalesUsersIds = _.get(this.state, 'detailInfoObj.info.user_ids','');
+        var assignedSalesUsersIds = ASSIGN_IDS.assignedSalesUsersIds;
         var assigendSalesApply = _.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.ASSIGN_SALES_APPLY;
         //如果沒有分配负责人，要先分配负责人
         if (!assignedCandidateUserIds && readyApply && approval === 'pass'){
@@ -503,8 +524,8 @@ class ApplyViewDetail extends React.Component {
     }
 
     passOrRejectApplyApprove = (confirmType) => {
-        var assignedCandidateUserIds = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
-        var assignedSalesUsersIds = _.get(this.state, 'detailInfoObj.info.user_ids','');
+        var assignedCandidateUserIds = ASSIGN_IDS.assignedCandidateUsers;
+        var assignedSalesUsersIds = ASSIGN_IDS.assignedSalesUsersIds;
         var detailInfoObj = this.state.detailInfoObj.info;
         var submitObj = {
             id: detailInfoObj.id,
