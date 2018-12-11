@@ -37,7 +37,9 @@ function ContactAction() {
         //设置初始化数据
         'setInitData',
         //展开、关闭联系方式
-        'toggleContactWay'
+        'toggleContactWay',
+        //修改联系人后的处理
+        'afterEditContact'
     );
     //获取联系人列表
     this.getContactList = function(curCustomer, isMerge) {

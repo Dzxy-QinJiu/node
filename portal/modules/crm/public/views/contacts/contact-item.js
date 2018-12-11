@@ -164,6 +164,7 @@ class ContactItem extends React.Component {
             contactAjax.editContact(saveObj).then(data => {
                 if (data) {
                     if (_.isFunction(successFunc)) successFunc();
+                    ContactAction.afterEditContact(saveObj);
                 } else {
                     if (_.isFunction(errorFunc)) errorFunc(Intl.get('crm.180', '添加联系人失败'));
                 }

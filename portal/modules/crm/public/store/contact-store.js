@@ -120,6 +120,21 @@ ContactStore.prototype.submitEditContact = function(result) {
         targetContact.contactWayAddObj = afterEditContact.contactWayAddObj;
     }
 };
+ContactStore.prototype.afterEditContact = function(editContact) {
+    let targetContact = ContactUtils.getContactFromContactListView(this.contactList, editContact);
+    let editProperty = editContact.property;//修改的属性
+    if(!targetContact) return;
+    //更新对应的属性值
+    if(_.get(targetContact,'contact')){
+        targetContact.contact[editProperty] = editContact[editProperty];
+        const contactWays = ['phone','qq','weChat','email'];
+        if (_.indexOf(contactWays, editProperty) !== -1) {
+            //该联系人对应的联系方式数组对象的修改
+            // contactWayAddObj: {phone: [], email: [],qq: [],weChat: []}
+            targetContact.contactWayAddObj[editProperty] = editContact[editProperty];
+        }
+    }
+};
 
 //FromAction-添加一个联系方式
 ContactStore.prototype.addContactWay = function(array) {

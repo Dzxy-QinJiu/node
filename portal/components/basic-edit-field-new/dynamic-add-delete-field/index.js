@@ -25,6 +25,14 @@ class DynamicAddDelField extends React.Component {
         };
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.value !== this.props.value) {
+            this.setState({
+                value: nextProps.value,
+                item_keys: this.getInitItemKeys(nextProps.value)
+            });
+        }
+    }
     getInitItemKeys(value) {
         if (_.get(value, '[0]')) {
             return _.map(value, (item, index) => index);
@@ -95,7 +103,7 @@ class DynamicAddDelField extends React.Component {
         };
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const fieldKey = `${this.props.field}[${key}]`;
-        let initValue = this.props.value[key];
+        let initValue = this.state.value[key];
         if (this.props.type === 'phone') {
             let validateRules = this.props.validateRules || [];
             if (index === 0) {//电话必填的验证
