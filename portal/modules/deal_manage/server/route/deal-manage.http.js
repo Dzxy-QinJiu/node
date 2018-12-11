@@ -25,14 +25,6 @@ module.exports = {
         },
         privileges: []
     }, {
-        method: 'put',
-        path: '/rest/deal/sale_stage',
-        handler: 'editDealStage',
-        passport: {
-            needLogin: true
-        },
-        privileges: []
-    }, {
         method: 'delete',
         path: '/rest/deal/:deal_id',
         handler: 'deleteDeal',

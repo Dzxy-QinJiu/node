@@ -1371,6 +1371,18 @@ var en_US = {
     'crm.concern.top.cancel': 'Concerned customers not on the top',//取消关注客户置顶
     'crm.add.to.exist.customer': 'Add to existing customers',//添加到已有客户
     'crm.select.add.contact': 'Please select or fill contact name',//请选择或输入联系人名称
+    'crm.contact.name.add': 'Add name',//添加联系人姓名
+    'crm.contact.name.none': 'No name added',//未添加姓名
+    'crm.contact.positon.none': 'No position',//未设置职位
+    'crm.contact.positon.add': 'Set positon',//设置职位
+    'crm.contact.phone.none': 'No phone',//暂无电话
+    'crm.contact.phone.add': 'Add phone',//添加电话
+    'crm.contact.qq.none': 'No QQ',//暂无QQ
+    'crm.contact.qq.add': 'Add QQ',//添加QQ
+    'crm.contact.wechat.none': 'No weChat',//暂无微信
+    'crm.contact.wechat.add': 'Add weChat',//添加微信
+    'crm.contact.email.none': 'No email',//暂无邮箱
+    'crm.contact.email.add': 'Add email',//添加邮箱
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期

@@ -34,7 +34,7 @@ module.exports = {
         ]
     },{
         'method': 'put',
-        'path': '/rest/contact/:editType',
+        'path': '/rest/contact',
         'handler': 'editContact',
         'passport': {
             'needLogin': true

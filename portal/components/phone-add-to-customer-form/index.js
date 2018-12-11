@@ -33,10 +33,15 @@ class PhoneAddToCustomerForm extends React.Component {
     editContactPhone(contact) {
         this.setState({isSaving: true});
         $.ajax({
-            url: '/rest/contact/phone',
+            url: '/rest/contact',
             dataType: 'json',
             type: 'put',
-            data: {customer_id: contact.customer_id, id: contact.id, phone: JSON.stringify(contact.phone)},
+            data: {
+                customer_id: contact.customer_id,
+                id: contact.id,
+                phone: contact.phone,
+                property: 'phone'
+            },
             success: data => {
                 if (data) {
                     this.setState({isSaving: false});
@@ -134,7 +139,7 @@ class PhoneAddToCustomerForm extends React.Component {
             url: `/rest/crm/contact_list/${type}`,
             dataType: 'json',
             type: 'post',
-            data: {customer_id: customerId},
+            data: {query: {id: customerId}},
             success: data => {
                 let contactList = _.get(data, 'result', []);
                 this.setState({contactList, isLoadingContactList: false});

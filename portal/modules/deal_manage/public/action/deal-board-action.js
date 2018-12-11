@@ -43,7 +43,7 @@ function dealBoardAction() {
             query.id = lastDealId;
             query.cursor = true;
         }
-        let bodyData = {query: {sale_stages: stage}};
+        let bodyData = {query: {sales_opportunities: [{sale_stages: stage}]}};
 
         this.dispatch({loading: true, stage});
         dealAjax.getDealList(params, bodyData, query).then((data) => {

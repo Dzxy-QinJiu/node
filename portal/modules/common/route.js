@@ -1,5 +1,5 @@
 const geoUrl = '/rest/geo/service/v1/';
-const customerUrl = '/rest/customer/v2/customer/';
+const customerUrl = '/rest/customer/v3/customer/';
 const userAnalysisUrl = '/rest/analysis/user/v1/';
 const contractAnalysisUrl = '/rest/analysis/contract/contract/';
 const contractV2AnalysisUrl = '/rest/analysis/contract_v2/statistics';
