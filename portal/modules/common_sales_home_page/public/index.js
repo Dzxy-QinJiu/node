@@ -392,7 +392,7 @@ class SalesHomePage extends React.Component {
                     if (item.value === ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER && this.state.newDistributeCustomer.data.list.length === 0) {
                         return;
                     }
-                    if (item.value === ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER && this.state.repeatCustomerObj.data.list.length === 0) {
+                    if (item.value === ALL_LISTS_TYPE.REPEAT_CUSTOMER && this.state.repeatCustomerObj.data.list.length === 0) {
                         return;
                     }
                     if (item.value === ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE && this.state.missCallObj.data.list.length === 0) {
