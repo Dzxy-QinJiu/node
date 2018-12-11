@@ -21,8 +21,7 @@ class TopBar extends React.Component {
     };
 
     static propTypes = {
-        currentPage: PropTypes.object,
-        renderTopNavOperation: PropTypes.func
+        currentPage: PropTypes.object
     };
 
     constructor(props) {
@@ -60,7 +59,7 @@ class TopBar extends React.Component {
             if (!data.errorMsg) {
                 this.setState({
                     teamList: this.state.teamList.concat(data.teamList),
-                }, this.renderTopNavOperation);
+                });
             }
         });
     };
@@ -71,12 +70,12 @@ class TopBar extends React.Component {
         }).then(result => {
             this.setState({
                 memberList: this.state.memberList.concat(result),
-            }, this.renderTopNavOperation);
+            });
         });
     };
 
     onFilterTypeChange = (type) => {
-        this.setState({filterType: type}, this.renderTopNavOperation);
+        this.setState({filterType: type});
 
         if (type === 'team') {
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, '');
@@ -99,7 +98,6 @@ class TopBar extends React.Component {
 
         this.setState({selectedTeam}, () => {
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamIdStr);
-            this.renderTopNavOperation();
         });
     };
 
@@ -117,28 +115,21 @@ class TopBar extends React.Component {
 
         this.setState({selectedMember}, () => {
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, memberIdStr);
-            this.renderTopNavOperation();
         });
     };
 
     onSelectDate = (startTime, endTime) => {
         startTime = parseInt(startTime);
         endTime = parseInt(endTime);
-        this.setState({startTime, endTime}, this.renderTopNavOperation);
+        this.setState({startTime, endTime});
         dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
     };
 
     componentWillReceiveProps(nextProps) {
         if (this.props.currentPage !== nextProps.currentPage) {
-            this.setState({currentPage: nextProps.currentPage},
-                this.renderTopNavOperation);
+            this.setState({currentPage: nextProps.currentPage});
         }
     }
-
-    //渲染操作按钮区
-    renderTopNavOperation = () => {
-        this.props.renderTopNavOperation && this.props.renderTopNavOperation(null);
-    };
 
     //渲染操作按钮区
     renderButtonZones = () => {

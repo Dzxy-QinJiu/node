@@ -25,12 +25,6 @@ class RightContent extends React.Component {
         return false;
     };
 
-    //子组件渲染回调
-    renderTopNavOperation = (children) => {
-        this.setState({
-            topNavOperation: children
-        });
-    };
 
     render() {
         if (this.props.route) {
@@ -51,8 +45,7 @@ class RightContent extends React.Component {
                     </TopNav>
                     ) : null}
                     <div className={cls}>
-                        {this.props.route ? renderRoutes(this.props.route.routes,
-                            {renderTopNavOperation: this.renderTopNavOperation}) : this.props.children}
+                        {this.props.route ? renderRoutes(this.props.route.routes) : this.props.children}
                     </div>
                 </div>
             </div>

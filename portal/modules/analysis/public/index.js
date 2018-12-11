@@ -381,7 +381,6 @@ class CurtaoAnalysis extends React.Component {
             <div className='curtao-analysis'>
                 <TopBar
                     currentPage={this.state.currentPage}
-                    renderTopNavOperation={this.props.renderTopNavOperation}
                 />
                 <Row>
                     <Col span={3}>
