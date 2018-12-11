@@ -29,9 +29,11 @@ export function getAllChanceChart() {
             ],
         },
         processOption: (option, chartProps) => {
+            //接口返回数据中的第一条记录
             const firstDataItem = _.get(chartProps.data, '[0]');
 
-            if (!firstDataItem.nick_name) {
+            //如果接口返回数据中的第一条记录中不包含昵称字段，说明返回的是团队数据，需要把列定义中的成员列移除掉
+            if (!_.has(firstDataItem, 'nick_name')) {
                 const memberNameColumnIndex = _.findIndex(option.columns, column => column.dataIndex === 'nick_name');
 
                 if (memberNameColumnIndex > -1) {
