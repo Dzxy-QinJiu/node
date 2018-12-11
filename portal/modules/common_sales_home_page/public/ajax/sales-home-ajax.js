@@ -275,7 +275,7 @@ exports.getNewDistributeCustomer = function(condition, rangParams, pageSize, sor
     }
     var Deferred = $.Deferred();
     getNewDistributeCustomerAjax = $.ajax({
-        url: '/rest/customer/v2/customer/range/' + pageSize + '/' + sorter.field + '/' + sorter.order,
+        url: '/rest/customer/range/' + pageSize + '/' + sorter.field + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
         data: data,
