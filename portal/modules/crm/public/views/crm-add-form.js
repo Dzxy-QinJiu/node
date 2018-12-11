@@ -214,23 +214,23 @@ var CRMAddForm = createReactClass({
             if (_.isEmpty(result)) return;
             let formData = this.state.formData;
             //下面的数据都没有时，再用获取的默认数据，（以防自己先填写了下面的数据，再修改用户名时，直接给清空或替换掉的问题）
-            // if (!formData.address) {
-            formData.address = result.address;
-            // }
-            // if (!formData.location) {
-            formData.location = result.location;
-            // }
-            // if (!formData.province) {
-            formData.province = result.pname;
-            formData.city = result.cityname;
-            formData.county = result.adname;
-            formData.province_code = result.pcode;
-            formData.city_code = result.citycode;
-            formData.county_code = result.adcode;
-            // }
-            // if (!formData.contacts0_phone) {
-            formData.contacts0_phone = result.tel;
-            // }
+            if (!formData.address) {
+                formData.address = result.address;
+            }
+            if (!formData.location) {
+                formData.location = result.location;
+            }
+            if (!formData.province) {
+                formData.province = result.pname;
+                formData.city = result.cityname;
+                formData.county = result.adname;
+                formData.province_code = result.pcode;
+                formData.city_code = result.citycode;
+                formData.county_code = result.adcode;
+            }
+            if (!formData.contacts0_phone) {
+                formData.contacts0_phone = result.tel;
+            }
             this.setState({formData});
         });
     },
