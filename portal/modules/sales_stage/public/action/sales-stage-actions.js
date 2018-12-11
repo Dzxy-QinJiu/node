@@ -57,11 +57,10 @@ function SalesStageActions() {
     };
 
     //销售阶段排序
-    this.saveSalesStageOrder = function(salesStageList, callback) {
+    this.saveSalesStageOrder = function(salesStageList) {
         var _this = this;
         salesStageAjax.editSalesStage(salesStageList).then(function(salesStageModified) {
             _this.dispatch(salesStageModified.result);
-            _.isFunction(callback) && callback();
         });
     };
 
