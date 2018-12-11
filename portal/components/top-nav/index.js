@@ -203,7 +203,7 @@ class TopNav extends React.Component {
                 this.renderUnhandleNum(item);
             });
         }
-    };
+    };z
 
     componentWillUnmount() {
         $(window).off('resize', this.resizeFunc);

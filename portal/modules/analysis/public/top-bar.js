@@ -6,12 +6,14 @@ import {AntcDatePicker} from 'antc';
 import ajax from 'ant-ajax';
 import {initialTime} from './consts';
 import {Select} from 'antd';
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
+
+let ButtonZones = require('CMP_DIR/top-nav/button-zones');
 
 const Option = Select.Option;
 const emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = emitters.dateSelectorEmitter;
 const teamTreeEmitter = emitters.teamTreeEmitter;
-import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 
 class TopBar extends React.Component {
     static defaultProps = {
@@ -135,7 +137,14 @@ class TopBar extends React.Component {
     }
 
     //渲染操作按钮区
-    renderTopNavOperation() {
+    renderTopNavOperation = () => {
+        this.props.renderTopNavOperation && this.props.renderTopNavOperation(null);
+        // this.props.renderTopNavOperation && this.props.renderTopNavOperation(
+        // this.renderButtonZones());
+    };
+
+    //渲染操作按钮区
+    renderButtonZones = () => {
         //日期选择器选项
         let datePickerOption = {
             range: initialTime.range,
@@ -172,7 +181,7 @@ class TopBar extends React.Component {
         if (adjustDatePicker) {
             adjustDatePicker(datePickerOption, this.state.startTime, this.state.endTime);
         }
-        this.props.renderTopNavOperation && this.props.renderTopNavOperation(
+        return (
             <div className="analysis-filter-btn-item btn-item">
                 <Select
                     defaultValue="team"
@@ -222,10 +231,10 @@ class TopBar extends React.Component {
                 </AntcDatePicker>
             </div>
         );
-    }
+    };
 
     render() {
-        return (null);
+        return (<ButtonZones>{this.renderButtonZones()}</ButtonZones>);
     }
 }
 

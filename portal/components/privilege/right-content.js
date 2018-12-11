@@ -1,4 +1,4 @@
-var React = require('react');
+require('./css/right-content.less');
 var history = require('../../public/sources/history');
 var TopNav = require('CMP_DIR/top-nav');
 
@@ -42,16 +42,22 @@ class RightContent extends React.Component {
             <div className="rightContent">
                 <div className="main">
                     {this.props.route ? (<TopNav>
-                            <TopNav.MenuList/>
-                            {this.state.topNavOperation}
-                        </TopNav>
+                        <TopNav.MenuList/>
+                        {this.state.topNavOperation}
+                    </TopNav>
                     ) : null}
-                    {this.props.route ? renderRoutes(this.props.route.routes,
-                        {renderTopNavOperation: this.renderTopNavOperation}) : this.props.children}
+                    < div className='moduleContent'>
+                        {this.props.route ? renderRoutes(this.props.route.routes,
+                            {renderTopNavOperation: this.renderTopNavOperation}) : this.props.children}
+                    </div>
                 </div>
             </div>
         );
     }
 }
 
+RightContent.propTypes = {
+    route: PropTypes.object,
+    children: PropTypes.element
+};
 module.exports = RightContent;
