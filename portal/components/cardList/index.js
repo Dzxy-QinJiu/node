@@ -298,8 +298,6 @@ class CardList extends React.Component {
         if (this.props.isPanelShow) {
             if (this.props.type === TYPES.APP_MANAGE) {
                 paddingTop = paddingTop + $('.app_content .app-filter-adv').outerHeight(true);
-            } else if (this.props.type === TYPES.USER_MANAGE) {
-                paddingTop = paddingTop + $('.backgroundManagement_user_content .user-filter-adv').outerHeight(true);
             }
         }
         return (

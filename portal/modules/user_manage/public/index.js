@@ -9,20 +9,18 @@ var UserStore = require('./store/user-store');
 var UserAction = require('./action/user-actions');
 var AddUserForm = require('./views/user-form');
 var UserInfo = require('./views/user-info');
-var rightPanelUtil = require('../../../components/rightPanel');
 var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
 var UserFormAction = require('./action/user-form-actions');
 var Spinner = require('../../../components/spinner');
 var UserFilterAdv = require('./views/user-filter-adv');
-import {Button} from 'antd';
-
 var openTimeout = null;//打开面板时的时间延迟设置
 var focusTimeout = null;//focus事件的时间延迟设置
-var CONSTANTS = {
-    LOG_PAGE_SIZE: 11//个人操作日志一页展示的条数
-};
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
+
+import {Button, Icon} from 'antd';
 import Trace from 'LIB_DIR/trace';
+import ButtonZones from 'CMP_DIR/top-nav/button-zones';
+import {SearchInput} from 'antc';
 
 class UserManage extends React.Component {
     state = UserStore.getState();
@@ -34,7 +32,6 @@ class UserManage extends React.Component {
     componentDidMount() {
         $('body').css('overflow', 'hidden');
         UserStore.listen(this.onChange);
-        this.props.renderTopNavOperation && this.props.renderTopNavOperation(this.renderTopNavOperation());
     }
 
     componentWillUnmount() {
@@ -217,7 +214,7 @@ class UserManage extends React.Component {
             return (
                 <div className="btn-containers">
                     <Button className='add-clue-btn btn-item btn-m-r-2'
-                            onClick={this.events_showUserForm.bind(this, 'add')}>{Intl.get('common.add.member', '添加成员')}</Button>
+                        onClick={this.events_showUserForm.bind(this, 'add')}>{Intl.get('common.add.member', '添加成员')}</Button>
                 </div>
             );
         } else {
@@ -227,14 +224,27 @@ class UserManage extends React.Component {
     };
     //渲染操作按钮区
     renderTopNavOperation = () => {
-        return (
-            <PrivilegeChecker check="USER_MANAGE_ADD_USER" className="block float-r btn-item-container"
-                              onClick={this.events_showUserForm.bind(this, 'add')}
-                              data-tracename="添加成员">
-                <Button className="btn-item btn-m-r-2">
-                    <ReactIntl.FormattedMessage id="common.add.member" defaultMessage="添加成员"/>
+        return (<ButtonZones>
+            <div className="block float-r btn-item-container">
+                <Button type="ghost" className="tag-filter-btn btn-item"
+                    onClick={this.events_toggleFilterPanel.bind(this)}>
+
+                    <ReactIntl.FormattedMessage id="common.filter" defaultMessage="筛选"/>
+                    {this.state.isFilterPanelShow ? <Icon type="up"/> :
+                        <Icon type="down"/>}
                 </Button>
-            </PrivilegeChecker>);
+                <div className="block search-input-block btn-item">
+                    <SearchInput searchPlaceHolder={Intl.get('member.search.placeholder', '用户名/昵称/电话/邮箱')}
+                        searchEvent={this.events_searchEvent.bind(this)}/>
+                </div>
+                <PrivilegeChecker check="USER_MANAGE_ADD_USER" className="btn-item">
+                    <Button className="btn-m-r-2 vertical-initial" onClick={this.events_showUserForm.bind(this, 'add')}
+                        data-tracename="添加成员">
+                        <ReactIntl.FormattedMessage id="common.add.member" defaultMessage="添加成员"/>
+                    </Button>
+                </PrivilegeChecker>
+            </div>
+        </ButtonZones>);
     };
 
     render() {
@@ -246,6 +256,10 @@ class UserManage extends React.Component {
                         <Spinner/>
                     </div> : null
                 }
+                {
+                    this.renderTopNavOperation()
+                }
+
                 <RightCardsContainer
                     currentCard={this.state.currentUser}
                     cardListSize={this.state.userListSize}
@@ -254,25 +268,24 @@ class UserManage extends React.Component {
                     listTipMsg={this.state.userListTipMsg}
                     curPage={this.state.curPage}
                     pageSize={this.state.pageSize}
-                    searchPlaceHolder={Intl.get('member.search.placeholder', '用户名/昵称/电话/邮箱')}
                     updatePageSize={this.events_updatePageSize.bind(this)}
                     hideCardForm={this.events_hideUserForm}
                     submitCardForm={this.events_submitUserForm}
                     editCard={this.events_editUser}
                     changePageEvent={this.events_onChangePage.bind(this)}
                     showCardInfo={this.events_showUserInfo.bind(this)}
-                    searchEvent={this.events_searchEvent.bind(this)}
+                    // searchEvent={this.events_searchEvent.bind(this)}
                     isPanelShow={this.state.isFilterPanelShow}
-                    toggleFilterPanel={this.events_toggleFilterPanel.bind(this)}
+                    // toggleFilterPanel={this.events_toggleFilterPanel.bind(this)}
                     type="userManage"
                     renderAddAndImportBtns={this.renderAddAndImportBtns}
                     showAddBtn={this.hasNoFilterCondition()}
                 >
                     <UserFilterAdv isFilterPanelShow={this.state.isFilterPanelShow}
-                                   allUserTotal={this.state.allUserTotal}
-                                   selectRole={this.state.selectRole}
-                                   userRoleList={this.state.userRoleList}
-                                   filterUserByRole={this.events_filterUserByRole.bind(this)}
+                        allUserTotal={this.state.allUserTotal}
+                        selectRole={this.state.selectRole}
+                        userRoleList={this.state.userRoleList}
+                        filterUserByRole={this.events_filterUserByRole.bind(this)}
                     />
                     {this.state.userInfoShow ?
                         <UserInfo

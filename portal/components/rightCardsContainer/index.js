@@ -43,13 +43,13 @@ class RihgtCardsContainer extends React.Component {
                     {this.props.type === CONSTANTS.MY_APP ? (
                         <div className="block search-input-block my-app-title">
                             <ReactIntl.FormattedMessage id="common.my.app" defaultMessage="我的应用"/>
-                        </div>) : (
+                        </div>) : (this.props.searchEvent ? (
                         <div className="block search-input-block btn-item">
                             <SearchInput searchPlaceHolder={this.props.searchPlaceHolder}
                                 searchEvent={this.props.searchEvent}/>
-                        </div>
+                        </div>) : null
                     )}
-                    {this.props.type === CONSTANTS.APP_MANAGE || this.props.type === CONSTANTS.USER_MANAGE ? (
+                    {this.props.type === CONSTANTS.APP_MANAGE ? (
                         <Button type="ghost" className="tag-filter-btn btn-item"
                             onClick={this.props.toggleFilterPanel}>
 
