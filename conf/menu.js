@@ -443,6 +443,30 @@ class LeftMenuClass {
                     ],
                     //有这个权限，才显示入口图标
                     showPrivileges: ['MEMBER_LEAVE_MANAGE']
+                }, {
+                    id: 'REPORTSEND_APPLY_MANAGEMENT',
+                    name: backendIntl.get('apply.approve.lyrical.report','舆情报告'),
+                    routePath: 'application/report_send',
+                    privileges: [
+                        'MEMBER_OPINION_APPLY'
+                    ],
+                    //有这个权限，才显示入口图标
+                    showPrivileges: ['MEMBER_OPINION_APPLY']
+                }, {
+                    id: 'DOCUMENTWRITING_APPLY_MANAGEMENT',
+                    name: backendIntl.get('apply.approve.document.writing','文件撰写'),
+                    routePath: 'application/document_writing',
+                    privileges: [
+                        'GET_MY_CALL_RECORD'
+                    ],
+                    //有这个权限，才显示入口图标
+                    showPrivileges: ['GET_MY_CALL_RECORD']
+                    //todo 测试
+                    // privileges: [
+                    //     'MEMBER_OPINION_APPLY'
+                    // ],
+                    // //有这个权限，才显示入口图标
+                    // showPrivileges: ['MEMBER_OPINION_APPLY']
                 }]
             }
         ];

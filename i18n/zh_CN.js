@@ -2633,6 +2633,13 @@ var zh_CN = {
     'common.customer.active.statistics': '客户活跃度统计',
     'apply.approve.modal.text.reject': '是否驳回此申请',
     'apply.approve.modal.text.pass': '是否通过此申请',
-    'apply.approve.worklist': '待{applyer}审批'
+    'apply.approve.worklist': '待{applyer}审批',
+    'apply.approve.lyrical.report': '舆情报告',
+    'apply.approve.document.writing': '文件撰写',
+    'apply.approve.quarty.report': '季报',
+    'apply.approve.tender.documents': '招标文件',
+    'apply.approve.bide.documents': '投标文件',
+    'apply.approve.construction.plan': '建设方案',
+    'apply.approve.other.plan': '其他文件'
 };
 export default zh_CN;
