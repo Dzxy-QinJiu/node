@@ -16,7 +16,6 @@ require('../../app_user_manage/public/css/main-zh_CN.less');
 
 var ApplyView = require('./views/apply-view');
 import queryString from 'query-string';
-import TopNav from 'CMP_DIR/top-nav';
 
 class UserApply extends React.Component {
     render() {
