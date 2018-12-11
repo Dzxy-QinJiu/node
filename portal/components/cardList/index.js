@@ -294,14 +294,8 @@ class CardList extends React.Component {
         }
 
         var cardListHeight = this.getCardListHeight();
-        var paddingTop = CONSTANTS.TOP_NAV_HEIGHT;
-        if (this.props.isPanelShow) {
-            if (this.props.type === TYPES.APP_MANAGE) {
-                paddingTop = paddingTop + $('.app_content .app-filter-adv').outerHeight(true);
-            }
-        }
         return (
-            <div className="card-list-container" style={{paddingTop: paddingTop}}>
+            <div className="card-list-container">
                 {
                     this.props.listTipMsg ? ((<NoDataIntro
                         noDataTip={this.props.listTipMsg}

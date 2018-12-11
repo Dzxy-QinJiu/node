@@ -20,6 +20,7 @@ let hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 let util = require('./utils/production-util');
 import {Button} from 'antd';
 import Trace from 'LIB_DIR/trace';
+import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 
 class ProductionManage extends React.Component {
     state = ProductionStore.getState();
@@ -31,7 +32,6 @@ class ProductionManage extends React.Component {
     componentDidMount() {
         $('body').css('overflow', 'hidden');
         ProductionStore.listen(this.onChange);
-        this.props.renderTopNavOperation && this.props.renderTopNavOperation(this.renderTopNavOperation());
     }
 
     componentWillUnmount() {
@@ -137,7 +137,7 @@ class ProductionManage extends React.Component {
             return (
                 <div className="btn-containers">
                     <Button className='add-clue-btn btn-item btn-m-r-2'
-                        onClick={this.events_showAddForm.bind(this, util.CONST.ADD)}> {Intl.get('config.product.add', '添加产品')}</Button>
+                            onClick={this.events_showAddForm.bind(this, util.CONST.ADD)}> {Intl.get('config.product.add', '添加产品')}</Button>
                 </div>
             );
         } else {
@@ -151,20 +151,22 @@ class ProductionManage extends React.Component {
     };
     //渲染操作按钮区
     renderTopNavOperation = () => {
-        return (
+        return (<ButtonZones>
             <PrivilegeChecker check="PRODUCTS_MANAGE" className="block float-r btn-item-container"
                               onClick={this.events_showAddForm.bind(this, util.CONST.ADD)}
                               data-tracename="添加产品">
                 <Button className="btn-item btn-m-r-2">
                     {Intl.get('config.product.add', '添加产品')}
                 </Button>
-            </PrivilegeChecker>);
+            </PrivilegeChecker>
+        </ButtonZones>);
     };
 
     render() {
         var firstLoading = this.state.isLoading;
         return (
             <div className="production_manage_style backgroundManagement_production_content" data-tracename="产品管理">
+                {this.renderTopNavOperation()}
                 {
                     firstLoading ? <div className="firstLoading">
                         <Spinner/>

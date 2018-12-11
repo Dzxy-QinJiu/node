@@ -73,9 +73,6 @@ class ConfigManage extends React.Component {
         });
 
     };
-    componentDidMount(){
-        this.props.renderTopNavOperation && this.props.renderTopNavOperation(null);
-    }
     componentWillMount() {
         this.getInitialData();
     }
