@@ -142,10 +142,8 @@ class BusinessApplyManagement extends React.Component {
                 return Intl.get('user.apply.pass', '已通过');
             case 'reject':
                 return Intl.get('user.apply.reject', '已驳回');
-            // case 'true':
-            //     return Intl.get('user.apply.applied', '已审批');
-            // case 'cancel':
-            //     return Intl.get('user.apply.backout', '已撤销');
+            case 'cancel':
+                return Intl.get('user.apply.backout', '已撤销');
         }
     };
     menuClick = (obj) => {

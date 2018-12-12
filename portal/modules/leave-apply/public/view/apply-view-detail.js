@@ -359,7 +359,7 @@ class ApplyViewDetail extends React.Component {
         if (applicantList.status === 'ongoing') {
             var candidate = this.state.candidateList,candidateName = '';
             if (_.isArray(candidate) && candidate.length === 1){
-                candidateName = _.get(candidate,'[0].nickname');
+                candidateName = _.get(candidate,'[0].nick_name');
             }
             stepArr.push({
                 title: Intl.get('apply.approve.worklist','待{applyer}审批',{'applyer': candidateName}),
