@@ -14,7 +14,7 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import userData from '../user-data';
 import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import {selectMenuList} from './consts';
+import {selectMenuList, APPLY_APPROVE_TYPES} from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -406,12 +406,16 @@ exports.getTimeStr = function(d, format) {
     return moment(new Date(d)).format(format || oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
 };
 exports.getApplyTopicText = function(obj) {
-    if (obj.topic === 'customer_visit') {
+    if (obj.topic === APPLY_APPROVE_TYPES.CUSTOMER_VISIT) {
         return Intl.get('leave.apply.add.leave.apply', '出差申请');
-    } else if (obj.topic === 'business_opportunities') {
+    } else if (obj.topic === APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES) {
         return _.get(obj,'detail.customer.name');
-    } else if (obj.topic === 'personal_leave') {
+    } else if (obj.topic === APPLY_APPROVE_TYPES.PERSONAL_LEAVE) {
         return Intl.get('leave.apply.leave.application', '请假申请');
+    } else if (obj.topic === APPLY_APPROVE_TYPES.REPORT){
+        return Intl.get('apply.approve.lyrical.report', '舆情报告');
+    }else if (obj.topic === APPLY_APPROVE_TYPES.DOCUMENT){
+        return Intl.get('apply.approve.document.writing', '文件撰写');
     }
 };
 exports.getApplyResultDscr = function(detailInfoObj) {

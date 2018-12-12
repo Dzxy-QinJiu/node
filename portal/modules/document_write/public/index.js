@@ -7,8 +7,8 @@ var DocumentWriteApplyAction = require('./action/document-write-apply-action');
 var DocumentWriteApplyStore = require('./store/document-write-apply-store');
 var DocumentWriteApplyDetailAction = require('./action/document-write-apply-detail-action');
 import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-dropdown-and-add-btn';
-import AddDocumentWriteApplyPanel from './view/add-document-write-apply';
-import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import AddDocumentWriteApplyPanel from 'CMP_DIR/add-send-document-template';
+import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES,DOCUMENT_TYPE} from 'PUB_DIR/sources/utils/consts';
 import Trace from 'LIB_DIR/trace';
 var classNames = require('classnames');
 var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
@@ -37,6 +37,7 @@ class DocumentWriteApplyManagement extends React.Component {
         DocumentWriteApplyStore.listen(this.onStoreChange);
         if(_.get(this.props,'location.state.clickUnhandleNum')){
             this.menuClick({key: 'ongoing'});
+            //todo 待修改 别忘了啊啊啊啊啊啊啊啊啊啊
         }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE]){
             this.menuClick({key: 'all'});
         }else{
@@ -75,7 +76,7 @@ class DocumentWriteApplyManagement extends React.Component {
             order: this.state.order,
             page_size: this.state.page_size,
             id: this.state.lastLeaveApplyId, //用于下拉加载的id
-            type: 'report_type'
+            type: APPLY_APPROVE_TYPES.DOCUMENT
         };
         //如果是选择的全部类型，不需要传status这个参数
         if (this.state.applyListType !== 'all') {
@@ -286,7 +287,16 @@ class DocumentWriteApplyManagement extends React.Component {
                 {this.state.showAddApplyPanel ?
                     <div className={addPanelWrap}>
                         <AddDocumentWriteApplyPanel
+                            titleType={Intl.get('apply.approve.document.write','文件撰写申请')}
                             hideLeaveApplyAddForm={this.hideLeaveApplyAddForm}
+                            applyType = {DOCUMENT_TYPE}
+                            applyAjaxType={APPLY_APPROVE_TYPES.DOCUMENT}
+                            afterAddApplySuccess = {DocumentWriteApplyAction.afterAddApplySuccess}
+                            addType = 'document_type'
+                            selectTip= {Intl.get('apply.approve.write.select.at.least.one.type','请选择至少一个文件类型')}
+                            selectPlaceholder={Intl.get('apply.approve.document.select.type','请选择文件报告类型')}
+                            applyLabel={Intl.get('apply.approve.document.write.type','文件类型')}
+                            remarkPlaceholder={Intl.get('apply.approve.report.remark', '请填写{type}备注',{type: Intl.get('apply.approve.document.writing', '文件撰写')})}
                         />
                     </div>
                     : null}

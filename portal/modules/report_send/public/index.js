@@ -7,8 +7,9 @@ var ReportSendApplyAction = require('./action/report-send-apply-action');
 var ReportSendApplyStore = require('./store/report-send-apply-store');
 var ReportSendApplyDetailAction = require('./action/report-send-apply-detail-action');
 import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-dropdown-and-add-btn';
-import AddReportSendApplyPanel from './view/add-report-send-apply';
-import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+// import AddReportSendApplyPanel from './view/add-report-send-apply';
+import AddReportSendApplyPanel from 'CMP_DIR/add-send-document-template';
+import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES,REPORT_TYPE} from 'PUB_DIR/sources/utils/consts';
 import Trace from 'LIB_DIR/trace';
 var classNames = require('classnames');
 var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
@@ -37,6 +38,7 @@ class ReportSendApplyManagement extends React.Component {
         ReportSendApplyStore.listen(this.onStoreChange);
         if(_.get(this.props,'location.state.clickUnhandleNum')){
             this.menuClick({key: 'ongoing'});
+            //todo 待修改 别忘了啊啊啊啊啊啊啊啊啊啊
         }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE]){
             this.menuClick({key: 'all'});
         }else{
@@ -75,7 +77,7 @@ class ReportSendApplyManagement extends React.Component {
             order: this.state.order,
             page_size: this.state.page_size,
             id: this.state.lastLeaveApplyId, //用于下拉加载的id
-            type: 'report_type'
+            type: APPLY_APPROVE_TYPES.REPORT
         };
         //如果是选择的全部类型，不需要传status这个参数
         if (this.state.applyListType !== 'all') {
@@ -276,7 +278,7 @@ class ReportSendApplyManagement extends React.Component {
                         }
                     </div>
                     {/* todo $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$待删除*/}
-                    {noShowApplyDetail || true ? null : (
+                    {noShowApplyDetail ? null : (
                         <ApplyViewDetail
                             detailItem={this.state.selectedDetailItem}
                             showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
@@ -286,7 +288,16 @@ class ReportSendApplyManagement extends React.Component {
                 {this.state.showAddApplyPanel ?
                     <div className={addPanelWrap}>
                         <AddReportSendApplyPanel
+                            titleType={Intl.get('apply.approve.report.send','舆情报告申请')}
+                            applyType = {REPORT_TYPE}
+                            applyAjaxType={APPLY_APPROVE_TYPES.REPORT}
+                            afterAddApplySuccess = {ReportSendApplyAction.afterAddApplySuccess}
                             hideLeaveApplyAddForm={this.hideLeaveApplyAddForm}
+                            addType = 'report_type'
+                            selectTip = {Intl.get('leave.apply.select.at.least.one.type','请选择至少一个舆情报告类型')}
+                            selectPlaceholder={Intl.get('apply.approve.report.select.type','请选择舆情报告类型')}
+                            applyLabel={Intl.get('apply.approve.report.send.type','报告类型')}
+                            remarkPlaceholder={Intl.get('apply.approve.report.remark', '请填写{type}备注',{type: Intl.get('apply.approve.lyrical.report', '舆情报告')})}
                         />
                     </div>
                     : null}

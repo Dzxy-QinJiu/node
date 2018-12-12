@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/9/27.
  */
 import {RightPanel} from 'CMP_DIR/rightPanel';
-require('../css/add-report-send-apply.less');
+require('./index.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {Form, Input, Button, Icon, message, DatePicker, Select} from 'antd';
@@ -15,11 +15,8 @@ const FORMLAYOUT = {
 };
 var user = require('PUB_DIR/sources/user-data').getUserData();
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
-import { REPORT_TYPE } from 'PUB_DIR/sources/utils/consts';
-var ReportSendApplyAction = require('../action/report-send-apply-action');
 import AlertTimer from 'CMP_DIR/alert-timer';
 import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
-const EXPECT_SUBMIT_TIME = moment();
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 class AddReportSendApply extends React.Component {
@@ -28,10 +25,8 @@ class AddReportSendApply extends React.Component {
         this.state = {
             hideCustomerRequiredTip: false,
             formData: {
-                report_type: '',//报告类型
                 customer: {id: '', name: ''},//客户的信息
-                expect_submit_time: moment().valueOf(),//
-                remarks: '',
+                expect_submit_time: moment().valueOf(),//预计成交时间
             },
         };
     }
@@ -85,7 +80,7 @@ class AddReportSendApply extends React.Component {
             values['expect_submit_time'] = moment(values['expect_submit_time']).valueOf();
             values['customer'] = _.get(this.state, 'formData.customer');
             $.ajax({
-                url: '/rest/add/opinionreport/list/opinion',
+                url: '/rest/add/opinionreport/list/' + this.props.applyAjaxType,
                 dataType: 'json',
                 type: 'post',
                 data: values,
@@ -96,8 +91,7 @@ class AddReportSendApply extends React.Component {
                     //添加完后的处理
                     data.afterAddReplySuccess = true;
                     data.showCancelBtn = true;
-                    ReportSendApplyAction.afterAddApplySuccess(data);
-
+                    _.isFunction(this.props.afterAddApplySuccess) && this.props.afterAddApplySuccess(data);
                 },
                 error: (xhr) => {
                     var errTip = Intl.get('crm.154', '添加失败');
@@ -178,29 +172,29 @@ class AddReportSendApply extends React.Component {
                     data-tracename="关闭添加舆情报告申请面板"></span>
                 <div className="add-leave-apply-wrap">
                     <BasicData
-                        clueTypeTitle={Intl.get('apply.approve.report.send','舆情报告申请')}
+                        clueTypeTitle={this.props.titleType}
                     />
                     <div className="add-leave-apply-form-wrap" style={{'height': divHeight}}>
                         <GeminiScrollbar>
                             <div className="add-leave-form">
                                 <Form layout='horizontal' className="sales-clue-form" id="add-leave-apply-form">
                                     <FormItem
-                                        label={Intl.get('apply.approve.report.send.type','报告类型')}
-                                        id="report_type"
+                                        label={this.props.applyLabel}
+                                        id={this.props.addType}
                                         {...formItemLayout}
                                     >
                                         {
-                                            getFieldDecorator('report_type',{
-                                                rules: [{required: true, message: Intl.get('leave.apply.select.at.least.one.type','请选择至少一个舆情报告类型')}],
+                                            getFieldDecorator(this.props.addType,{
+                                                rules: [{required: true, message: this.props.selectTip}],
                                             })(
                                                 <Select
-                                                    placeholder={Intl.get('apply.approve.report.select.type','请选择舆情报告类型')}
-                                                    name="report_type"
+                                                    placeholder={this.props.selectPlaceholder}
+                                                    name={this.props.addType}
                                                     getPopupContainer={() => document.getElementById('add-leave-apply-form')}
 
                                                 >
-                                                    {_.isArray(REPORT_TYPE) && REPORT_TYPE.length ?
-                                                        REPORT_TYPE.map((reportItem, idx) => {
+                                                    {_.isArray(this.props.applyType) && this.props.applyType.length ?
+                                                        this.props.applyType.map((reportItem, idx) => {
                                                             return (<Option key={idx} value={reportItem.value}>{reportItem.name}</Option>);
                                                         }) : null
                                                     }
@@ -237,11 +231,11 @@ class AddReportSendApply extends React.Component {
                                     </FormItem>
                                     <FormItem
                                         className="form-item-label add-apply-time"
-                                        label={Intl.get('contract.120', '开始时间')}
+                                        label={Intl.get('leave.apply.inspect.success.time', '预计成交时间')}
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('expect_submit_time', {
-                                            initialValue: moment
+                                            initialValue: moment()
                                         })(
                                             <DatePicker
                                                 showTime={{ format: 'HH:mm' }}
@@ -261,7 +255,7 @@ class AddReportSendApply extends React.Component {
                                         })(
                                             <Input
                                                 type="textarea" id="remarks" rows="3"
-                                                placeholder={Intl.get('apply.approve.report.remark','请填写舆情报告备注')}
+                                                placeholder={this.props.remarkPlaceholder}
                                             />
                                         )}
                                     </FormItem>
@@ -302,10 +296,30 @@ class AddReportSendApply extends React.Component {
 AddReportSendApply.defaultProps = {
     hideLeaveApplyAddForm: function() {
     },
-    form: {}
+    form: {},
+    applyAjaxType: '',
+    afterAddApplySuccess: function() {
+
+    },
+    titleType: '',
+    applyLabel: '',
+    addType: '',
+    applyType: [],
+    selectTip: '',
+    selectPlaceholder: '',
+    remarkPlaceholder: '',
 };
 AddReportSendApply.propTypes = {
     hideLeaveApplyAddForm: PropTypes.func,
     form: PropTypes.object,
+    applyAjaxType: PropTypes.string,
+    afterAddApplySuccess: PropTypes.func,
+    titleType: PropTypes.string,
+    applyLabel: PropTypes.string,
+    addType: PropTypes.string,
+    selectTip: PropTypes.string,
+    selectPlaceholder: PropTypes.string,
+    remarkPlaceholder: PropTypes.string,
+    applyType: PropTypes.object,
 };
 export default Form.create()(AddReportSendApply);

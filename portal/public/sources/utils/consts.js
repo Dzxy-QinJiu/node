@@ -72,8 +72,9 @@ export const APPLY_APPROVE_TYPES = {
     UNHANDLEBUSINESSOPPORTUNITIES: 'unhandleBusinessOpportunities',//未处理的销售机会申请数量
     UNHANDLEPERSONALLEAVE: 'unhandlePersonalLeave',//未处理的请假申请数量
     UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
-    REPORT_TYPE: 'opinionreport',//舆情报送的类型
-    DOCUMENT_TYPE: 'opinionreport',//文件撰写的类型
+    REPORT: 'report',//舆情报送的类型
+    DOCUMENT: 'document',//文件撰写的类型
+    OPINIONREPORT: 'opinionreport'//舆情报送和文件撰写的类型
 
 };
 
@@ -394,6 +395,6 @@ export const REPORT_TYPE = [{
 export const DOCUMENT_TYPE = [
     {name: Intl.get('apply.approve.tender.documents', '招标文件'), value: 'tender_document'},
     {name: Intl.get('apply.approve.bide.documents', '投标文件'), value: 'bid_document'},
-    {name: Intl.get('apply.approve.construction.plan', '建设方案'), value: 'build_plan'},
+    {name: Intl.get('apply.approve.construction.plan', '建设方案'), value: 'build_document'},
     {name: Intl.get('apply.approve.other.plan', '其他文件'), value: 'other_document'},
 ];
