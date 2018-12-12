@@ -231,7 +231,7 @@ class AddReportSendApply extends React.Component {
                                     </FormItem>
                                     <FormItem
                                         className="form-item-label add-apply-time"
-                                        label={Intl.get('leave.apply.inspect.success.time', '预计成交时间')}
+                                        label={Intl.get('apply.approve.expect.submit.time','期望提交时间')}
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('expect_submit_time', {

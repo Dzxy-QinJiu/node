@@ -37,8 +37,7 @@ class DocumentWriteApplyManagement extends React.Component {
         DocumentWriteApplyStore.listen(this.onStoreChange);
         if(_.get(this.props,'location.state.clickUnhandleNum')){
             this.menuClick({key: 'ongoing'});
-            //todo 待修改 别忘了啊啊啊啊啊啊啊啊啊啊
-        }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE]){
+        }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE]){
             this.menuClick({key: 'all'});
         }else{
             //不区分角色，都获取全部的申请列表

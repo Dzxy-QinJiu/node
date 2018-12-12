@@ -37,7 +37,14 @@ const unhandleApplyNumObj = [
         name: APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES,
         cls: 'application_sales_opportunity_ico',
         style: 'unhandleSalesOpperNumSyle'
-
+    }, {
+        name: APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND,
+        cls: 'application_report_send_ico',
+        style: 'unhandleReportSendNumSyle'
+    }, {
+        name: APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE,
+        cls: 'application_document_write_ico',
+        style: 'unhandleDocumentWriteNumSyle'
     }];
 
 //顶部导航外层div
@@ -45,10 +52,9 @@ class TopNav extends React.Component {
     constructor(props) {
         super(props);
         //未处理数的提示样式初始化
-        this.unhandleUserAplplyNumStyle = null;
-        this.unhandleBusinessApplyNumStyle = null;
-        this.unhandleLeaveApplyNumStyle = null;
-        this.unhandleSalesOpperNumSyle = null;
+        _.forEach(unhandleApplyNumObj,(item) => {
+            this[item.style] = null;
+        });
     }
 
     resizeHandler = () => {
@@ -170,6 +176,23 @@ class TopNav extends React.Component {
             //点击到数字上，进行跳转
             history.push('/application/leave_apply', {clickUnhandleNum: true});
         });
+        $('.topNav').on('click', '.application_report_send_ico', function(e) {
+            //如果点击到a标签上，不做处理
+            if ($(e.target).is('a')) {
+                return;
+            }
+            //点击到数字上，进行跳转
+            history.push('/application/report_send', {clickUnhandleNum: true});
+        });
+        $('.topNav').on('click', '.application_document_write_ico', function(e) {
+            //如果点击到a标签上，不做处理
+            if ($(e.target).is('a')) {
+                return;
+            }
+            //点击到数字上，进行跳转
+            history.push('/application/document_writing', {clickUnhandleNum: true});
+        });
+
     }
 
     componentWillUpdate() {

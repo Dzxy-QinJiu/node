@@ -113,6 +113,12 @@ function applyApproveUnhandledListener(data) {
             case APPLY_APPROVE_TYPES.PERSONAL_LEAVE:
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE, true);
                 break;
+            case APPLY_APPROVE_TYPES.REPORT:
+                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND, true);
+                break;
+            case APPLY_APPROVE_TYPES.DOCUMENT:
+                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE, true);
+                break;
         }
     }
 
@@ -641,6 +647,7 @@ function getMessageCount(callback) {
         getUnapproveBussinessTripApply(callback);//获取出差申请待我审批数量
         getUnapproveSalesOpportunityApply();//获取销售机会待我审批数量
         getUnapproveLeaveApply();//获取请假申请待我审批数量
+        getUnapproveReportSendApply();//获取舆情报送和文件审批的待我审批数量
     }
     //获取线索未处理数的权限（除运营人员外展示）
     if (getClueUnhandledPrivilege()){
@@ -858,7 +865,20 @@ function getUnapproveReportSendApply() {
         type: 'get',
         data: queryObj,
         success: function(data) {
-            setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,data);
+            //获取的是两类的待我审批列表需要对数字区分一下
+            var reportData = {total: 0},documentData = {total: 0};
+            if (_.isArray(data.list) && data.list.length){
+                _.forEach(data.list,(item) => {
+                    if (item.topic === APPLY_APPROVE_TYPES.REPORT){
+                        reportData.total++;
+                    }
+                    if (item.topic === APPLY_APPROVE_TYPES.DOCUMENT){
+                        documentData.total++;
+                    }
+                });
+            }
+            setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND,reportData);
+            setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE,documentData);
         },
         error: function(errorMsg) {
 

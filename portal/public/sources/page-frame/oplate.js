@@ -21,4 +21,8 @@ Oplate.unread = {
     unhandleBusinessOpportunities: 0,
     //请假审批未读数
     unhandlePersonalLeave: 0,
+    //舆情报送的审批未读数
+    unhandleReportSend: 0,
+    //文件撰写的审批未读数
+    unhandleDocumentWrite: 0
 };

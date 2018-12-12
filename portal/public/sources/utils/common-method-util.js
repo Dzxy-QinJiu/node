@@ -413,7 +413,7 @@ exports.getApplyTopicText = function(obj) {
     } else if (obj.topic === APPLY_APPROVE_TYPES.PERSONAL_LEAVE) {
         return Intl.get('leave.apply.leave.application', '请假申请');
     } else if (obj.topic === APPLY_APPROVE_TYPES.REPORT){
-        return Intl.get('apply.approve.lyrical.report', '舆情报告');
+        return Intl.get('apply.approve.specific.report','{customer}客户的专报',{customer: _.get(obj,'detail.customer.name')});
     }else if (obj.topic === APPLY_APPROVE_TYPES.DOCUMENT){
         return Intl.get('apply.approve.document.writing', '文件撰写');
     }
@@ -491,7 +491,7 @@ exports.handleDiffTypeApply = function(that) {
         resultType = that.state.applyResult;
     } else if (confirmType === 'cancel') {
         modalContent = Intl.get('user.apply.detail.modal.content', '是否撤销此申请？');
-        deleteFunction = this.cancelApplyApprove;
+        deleteFunction = that.cancelApplyApprove;
         okText = Intl.get('user.apply.detail.modal.ok', '撤销');
         resultType = that.state.backApplyResult;
     }

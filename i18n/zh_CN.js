@@ -2651,6 +2651,8 @@ var zh_CN = {
     'apply.approve.report.remark': '请填写{type}备注',
     'apply.approve.report.select.expected.time': '请选择期望成交时间',
     'apply.approve.no.condition.list': '暂无符合条件的舆情报告',
-    'apply.approve.no.document.write': '暂无符合条件的文件撰写'
+    'apply.approve.no.document.write': '暂无符合条件的文件撰写',
+    'apply.approve.expect.submit.time': '期望提交时间',
+    'apply.approve.specific.report': '{customer}客户的专报'
 };
 export default zh_CN;

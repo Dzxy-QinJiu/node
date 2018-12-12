@@ -202,7 +202,7 @@ class ApplyViewDetail extends React.Component {
                 }
             },
             {
-                label: Intl.get('leave.apply.inspect.success.time', '预计成交时间'),
+                label: Intl.get('apply.approve.expect.submit.time','期望提交时间'),
                 text: expect_submit_time
             }, {
                 label: Intl.get('common.remark', '备注'),
