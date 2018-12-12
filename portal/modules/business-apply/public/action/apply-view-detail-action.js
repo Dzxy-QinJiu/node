@@ -5,7 +5,6 @@
  */
 var BusinessApplyAjax = require('../ajax/business-apply-ajax');
 import LeaveApplyUtil from '../utils/leave-apply-utils';
-import {message} from 'antd';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
@@ -115,7 +114,6 @@ function ApplyViewDetailActions() {
             var errMsg = errorMsg || errTip;
             this.dispatch({loading: false, error: true, errorMsg: errMsg});
             LeaveApplyUtil.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
-            message.error(errMsg);
         });
     };
     //获取下一节点的负责人

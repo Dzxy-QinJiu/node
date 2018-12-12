@@ -2633,6 +2633,24 @@ var zh_CN = {
     'common.customer.active.statistics': '客户活跃度统计',
     'apply.approve.modal.text.reject': '是否驳回此申请',
     'apply.approve.modal.text.pass': '是否通过此申请',
-    'apply.approve.worklist': '待{applyer}审批'
+    'apply.approve.worklist': '待{applyer}审批',
+    'apply.approve.lyrical.report': '舆情报告',
+    'apply.approve.document.writing': '文件撰写',
+    'apply.approve.quarty.report': '季报',
+    'apply.approve.tender.documents': '招标文件',
+    'apply.approve.bide.documents': '投标文件',
+    'apply.approve.construction.plan': '建设方案',
+    'apply.approve.other.plan': '其他文件',
+    'apply.approve.report.send': '舆情报告申请',
+    'apply.approve.document.write': '文件撰写申请',
+    'apply.approve.report.send.type': '报告类型',
+    'apply.approve.document.write.type': '文件类型',
+    'apply.approve.report.select.type': '请选择舆情报告类型',
+    'apply.approve.document.select.type': '请选择文件报告类型',
+    'apply.approve.write.select.at.least.one.type': '请选择至少一个文件类型',
+    'apply.approve.report.remark': '请填写{type}备注',
+    'apply.approve.report.select.expected.time': '请选择期望成交时间',
+    'apply.approve.no.condition.list': '暂无符合条件的舆情报告',
+    'apply.approve.no.document.write': '暂无符合条件的文件撰写'
 };
 export default zh_CN;

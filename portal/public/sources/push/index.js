@@ -666,7 +666,7 @@ function unreadListener(type) {
         } else if (type === 'unread_reply') {
             //申请审批未读回复的监听
             socketIo.on('apply_unread_reply', applyUnreadReplyListener);
-        }else if(type == APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT){
+        }else if(type === APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT){
             //申请审批未读回复的监听
             socketIo.on('applyApprovemsg', applyApproveUnhandledListener);
         }else {
@@ -849,6 +849,23 @@ function getUnapproveLeaveApply() {
         }
     });
 }
+//获取待我审批的舆情报告和文件撰写申请
+function getUnapproveReportSendApply() {
+    var queryObj = {type: APPLY_APPROVE_TYPES.OPINIONREPORT};
+    $.ajax({
+        url: '/rest/get/worklist/leave_apply/list',
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
+        success: function(data) {
+            setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,data);
+        },
+        error: function(errorMsg) {
+
+        }
+    });
+}
+
 
 //存储获取的未读回复列表
 function saveUnreadReplyList(applyUnreadReplyList) {
