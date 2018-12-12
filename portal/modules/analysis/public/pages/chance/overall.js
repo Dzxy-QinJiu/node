@@ -15,9 +15,9 @@ module.exports = {
 
 function getCharts() {
     return [
-        //团队或成员新机会统计
+        //新机会统计
         chanceChart.getNewChanceChart(),
-        //团队或成员所有机会统计
+        //所有机会统计
         chanceChart.getAllChanceChart(),
         //成交率趋势统计
         chanceChart.getChanceDealTrendChart(),

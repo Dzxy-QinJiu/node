@@ -1,12 +1,12 @@
 /**
- * 团队或成员新机会统计
+ * 新机会统计
  */
 
 import { argCallbackTimeMember } from '../../utils';
 
 export function getNewChanceChart() {
     return {
-        title: '团队或成员新机会统计',
+        title: '新机会统计',
         chartType: 'funnel',
         url: '/rest/analysis/customer/v2/sales_opportunity/:data_type/apply/opportunity/rate',
         argCallback: argCallbackTimeMember,
@@ -54,7 +54,7 @@ export function getNewChanceChart() {
                     }
 
                     if (convertRate) {
-                        convertRate = convertTitle + ': ' + (convertRate * 100) + '%';
+                        convertRate = convertTitle + ': ' + (convertRate * 100).toFixed(2) + '%';
                     }
 
                     processedData.push({
