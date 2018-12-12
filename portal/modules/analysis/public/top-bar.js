@@ -185,6 +185,8 @@ class TopBar extends React.Component {
                 {this.state.filterType === 'team' ? (
                     <Select
                         mode="multiple"
+                        showSearch
+                        optionFilterProp="children"
                         value={this.state.selectedTeam}
                         onChange={this.onTeamChange}
                         dropdownMatchSelectWidth={false}
@@ -198,6 +200,8 @@ class TopBar extends React.Component {
                 {this.state.filterType === 'member' ? (
                     <Select
                         mode="multiple"
+                        showSearch
+                        optionFilterProp="children"
                         value={this.state.selectedMember}
                         onChange={this.onMemberChange}
                         dropdownMatchSelectWidth={false}
