@@ -19,9 +19,6 @@ import { REPORT_TYPE } from 'PUB_DIR/sources/utils/consts';
 var ReportSendApplyAction = require('../action/report-send-apply-action');
 import AlertTimer from 'CMP_DIR/alert-timer';
 import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
-const BEGIN_AND_END_RANGE = {
-    expect_submit_time: moment()
-};
 const EXPECT_SUBMIT_TIME = moment();
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
@@ -33,7 +30,7 @@ class AddReportSendApply extends React.Component {
             formData: {
                 report_type: '',//报告类型
                 customer: {id: '', name: ''},//客户的信息
-                expect_submit_time: moment(EXPECT_SUBMIT_TIME).valueOf(),//
+                expect_submit_time: moment().valueOf(),//
                 remarks: '',
             },
         };
@@ -244,7 +241,7 @@ class AddReportSendApply extends React.Component {
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('expect_submit_time', {
-                                            initialValue: EXPECT_SUBMIT_TIME
+                                            initialValue: moment
                                         })(
                                             <DatePicker
                                                 showTime={{ format: 'HH:mm' }}

@@ -2640,6 +2640,13 @@ var zh_CN = {
     'apply.approve.tender.documents': '招标文件',
     'apply.approve.bide.documents': '投标文件',
     'apply.approve.construction.plan': '建设方案',
-    'apply.approve.other.plan': '其他文件'
+    'apply.approve.other.plan': '其他文件',
+    'apply.approve.report.send': '舆情报告申请',
+    'apply.approve.report.send.type': '报告类型',
+    'apply.approve.report.select.type': '请选择舆情报告类型',
+    'apply.approve.report.remark': '请填写舆情报告备注',
+    'apply.approve.report.select.expected.time': '请选择期望成交时间',
+    'apply.approve.no.condition.list': '暂无符合条件的舆情报告',
+    'apply.approve.no.document.write': '暂无符合条件的文件撰写'
 };
 export default zh_CN;

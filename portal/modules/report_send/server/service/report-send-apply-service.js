@@ -8,7 +8,7 @@ var restUtil = require('ant-auth-request').restUtil(restLogger);
 var _ = require('lodash');
 var restApis = {
     //添加舆情报送申请
-    addReportSendApply: '/rest/base/v1/workflow/opinionreport',
+    addReportSendApply: '/rest/base/v1/workflow/opinionreport/:type',
     //通过或者驳回申请
     approveLeaveApplyPassOrReject: '/rest/base/v1/workflow/leave/approve',
 
@@ -18,7 +18,7 @@ exports.restUrls = restApis;
 exports.addReportSendApply = function(req, res) {
     return restUtil.authRest.post(
         {
-            url: restApis.addReportSendApply,
+            url: restApis.addReportSendApply.replace(':type',req.params.type),
             req: req,
             res: res
         }, req.body);

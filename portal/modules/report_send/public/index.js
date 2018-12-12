@@ -179,7 +179,7 @@ class ReportSendApplyManagement extends React.Component {
             );
             var noDataMsg = (
                 <span>
-                    {Intl.get('leave.apply.no.leave.apply','暂无符合条件的请假申请')}
+                    {Intl.get('apply.approve.no.condition.list','暂无符合条件的舆情报告')}
                     <span>,</span>
                     <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
                         {Intl.get('common.get.again', '重新获取')}

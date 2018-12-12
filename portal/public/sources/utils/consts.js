@@ -72,8 +72,8 @@ export const APPLY_APPROVE_TYPES = {
     UNHANDLEBUSINESSOPPORTUNITIES: 'unhandleBusinessOpportunities',//未处理的销售机会申请数量
     UNHANDLEPERSONALLEAVE: 'unhandlePersonalLeave',//未处理的请假申请数量
     UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
-    REPORT_TYPE: 'report_type',//舆情报送的类型
-    DOCUMENT_TYPE: 'document_type',//文件撰写的类型
+    REPORT_TYPE: 'opinionreport',//舆情报送的类型
+    DOCUMENT_TYPE: 'opinionreport',//文件撰写的类型
 
 };
 

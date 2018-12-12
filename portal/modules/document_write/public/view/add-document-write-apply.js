@@ -16,7 +16,7 @@ const FORMLAYOUT = {
 var user = require('PUB_DIR/sources/user-data').getUserData();
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
 import { REPORT_TYPE } from 'PUB_DIR/sources/utils/consts';
-var ReportSendApplyAction = require('../action/report-send-apply-action');
+var DocumentWriteApplyAction = require('../action/document-write-apply-action');
 import AlertTimer from 'CMP_DIR/alert-timer';
 import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 const BEGIN_AND_END_RANGE = {
@@ -85,10 +85,10 @@ class AddReportSendApply extends React.Component {
                 saveMsg: '',
                 saveResult: ''
             });
-            values['expect_submit_time'] = moment(values['expect_submit_time']).valueOf();
-            values['customer'] = _.get(this.state, 'formData.customer');
+            values.begin_time = moment(values.begin_time).valueOf();
+            values.end_time = moment(values.end_time).valueOf();
             $.ajax({
-                url: '/rest/add/opinionreport/list/opinion',
+                url: '/rest/add/leave_apply/list',
                 dataType: 'json',
                 type: 'post',
                 data: values,
@@ -99,7 +99,7 @@ class AddReportSendApply extends React.Component {
                     //添加完后的处理
                     data.afterAddReplySuccess = true;
                     data.showCancelBtn = true;
-                    ReportSendApplyAction.afterAddApplySuccess(data);
+                    DocumentWriteApplyAction.afterAddApplySuccess(data);
 
                 },
                 error: (xhr) => {
@@ -189,16 +189,16 @@ class AddReportSendApply extends React.Component {
                                 <Form layout='horizontal' className="sales-clue-form" id="add-leave-apply-form">
                                     <FormItem
                                         label={Intl.get('apply.approve.report.send.type','报告类型')}
-                                        id="report_type"
+                                        id="report_send"
                                         {...formItemLayout}
                                     >
                                         {
-                                            getFieldDecorator('report_type',{
+                                            getFieldDecorator('report_send',{
                                                 rules: [{required: true, message: Intl.get('leave.apply.select.at.least.one.type','请选择至少一个舆情报告类型')}],
                                             })(
                                                 <Select
                                                     placeholder={Intl.get('apply.approve.report.select.type','请选择舆情报告类型')}
-                                                    name="report_type"
+                                                    name="report_send"
                                                     getPopupContainer={() => document.getElementById('add-leave-apply-form')}
 
                                                 >
@@ -243,7 +243,7 @@ class AddReportSendApply extends React.Component {
                                         label={Intl.get('contract.120', '开始时间')}
                                         {...formItemLayout}
                                     >
-                                        {getFieldDecorator('expect_submit_time', {
+                                        {getFieldDecorator('begin_time', {
                                             initialValue: EXPECT_SUBMIT_TIME
                                         })(
                                             <DatePicker
