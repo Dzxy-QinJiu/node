@@ -2,6 +2,14 @@
  * 销售排名
  */
 
+//维度
+const DIMENSIONS = [
+    '合同数排名',
+    '回款毛利排名',
+    '流失客户数排名',
+    '跟进客户数排名'
+];
+
 export const salesRankingChart = {
     title: '销售排名',
     chartType: 'radar',
@@ -110,12 +118,9 @@ export const salesRankingChart = {
 
         function getIndicator(max, centerLeft) {
             return {
-                indicator: [
-                    {text: '合同数排名', max},
-                    {text: '回款毛利排名', max},
-                    {text: '流失客户数排名', max},
-                    {text: '跟进客户数排名', max}
-                ],
+                indicator: _.map(DIMENSIONS, dimension => {
+                    return {text: dimension, max};
+                }),
                 center: [centerLeft, '55%'],
                 radius: 80
             };
@@ -140,4 +145,22 @@ export const salesRankingChart = {
             };
         });
     },
+    generateCsvData: data => {
+        let csvData = [];
+        let header = [];
+        let body = [];
+
+        _.each(data, dataItem => {
+            _.each(dataItem.value, (valueItem, index) => {
+                const colName = dataItem.name.replace('排名', '') + DIMENSIONS[index];
+
+                header.push(colName);
+                body.push(valueItem);
+            });
+        });
+
+        csvData.push(header, body);
+
+        return csvData;
+    }
 };
