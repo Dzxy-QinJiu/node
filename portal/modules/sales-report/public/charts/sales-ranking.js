@@ -4,8 +4,9 @@
 
 export const salesRankingChart = {
     title: '销售排名',
-    chartType: 'table',
+    chartType: 'radar',
     layout: {sm: 24},
+    height: 300,
     url: [
         //合同数排名
         '/rest/analysis/contract/contract/:data_type/order/contract/count',
@@ -34,26 +35,109 @@ export const salesRankingChart = {
         }
     },
     processData: data => {
-        console.log(data);
-        return data;
+        let processedData = [];
+
+        //团队内排名
+        let intraTeamRanking = {
+            name: '团队内排名',
+            value: []
+        };
+        //上级团队内排名
+        let intraSuperiorTeamRanking = {
+            name: '上级团队内排名',
+            value: []
+        };
+        //销售部内排名
+        let intraSalesDepartmentRanking = {
+            name: '销售部内排名',
+            value: []
+        };
+
+        //数据是否有效
+        let isDataValid = true;
+
+        _.each(data, (dataItem, index) => {
+            let rankingData; 
+
+            if (_.isArray(dataItem)) {
+                rankingData = dataItem[0];
+            } else if (_.isObject(dataItem)) {
+                rankingData = _.get(dataItem, 'list[0].sales_list[0]');
+            } else {
+                isDataValid = false;
+                return false;
+            }
+
+            //团队内排名
+            if (_.has(rankingData, 'order')) {
+                intraTeamRanking.value.push(rankingData.order);
+            } else {
+                isDataValid = false;
+                return false;
+            }
+
+            //上级团队内排名
+            if (_.has(rankingData, 'superior_order')) {
+                intraSuperiorTeamRanking.value.push(rankingData.superior_order);
+            } else {
+                isDataValid = false;
+                return false;
+            }
+
+            //销售部内排名
+            if (_.has(rankingData, 'sales_order')) {
+                intraSalesDepartmentRanking.value.push(rankingData.sales_order);
+            } else {
+                isDataValid = false;
+                return false;
+            }
+        });
+
+        if (isDataValid) {
+            processedData.push(intraTeamRanking, intraSuperiorTeamRanking, intraSalesDepartmentRanking);
+        }
+
+        return processedData;
     },
-    option: {
-        columns: [{
-            title: Intl.get('sales.home.customer', '客户'),
-            dataIndex: 'customerName',
-            width: '40%',
-        }, {
-            title: Intl.get('weekly.report.assign.time', '签约时间'),
-            dataIndex: 'date',
-            width: '20%'
-        }, {
-            title: Intl.get('weekly.report.contract.account', '合同金额'),
-            dataIndex: 'amount',
-            width: '20%'
-        }, {
-            title: Intl.get('contract.109', '毛利'),
-            dataIndex: 'grossProfit',
-            width: '20%'
-        }],
+    processOption: (option, chartProps) => {
+        option.legend = {
+            data: _.map(chartProps.data, 'name')
+        };
+
+        option.tooltip = {
+            trigger: 'item'
+        };
+
+        function getIndicator(max, centerLeft) {
+            return {
+                indicator: [
+                    {text: '合同数排名', max},
+                    {text: '回款毛利排名', max},
+                    {text: '流失客户数排名', max},
+                    {text: '跟进客户数排名', max}
+                ],
+                center: [centerLeft, '55%'],
+                radius: 80
+            };
+        }
+
+        option.radar = [
+            getIndicator(30, '15%'),
+            getIndicator(80, '50%'),
+            getIndicator(200, '85%')
+        ];
+
+        option.series = _.map(chartProps.data, (dataItem, index) => {
+            return {
+                type: 'radar',
+                radarIndex: index,
+                itemStyle: {
+                    normal: {
+                        areaStyle: {type: 'default'}
+                    }
+                },
+                data: [dataItem]
+            };
+        });
     },
 };
