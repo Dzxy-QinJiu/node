@@ -288,6 +288,35 @@ class SalesReport extends React.Component {
         );
     };
 
+    //渲染总体分析
+    renderOverallAnalysis = () => {
+        const roleName = this.state.currentMember.role_name;
+
+        let charts = [];
+
+        if (roleName === '销售经理') {
+        } else {
+            charts.push(
+                reportCharts.salesRankingChart,
+            );
+        }
+
+        return (
+            <dl>
+                <dt>{Intl.get('common.overall.analysis', '总体分析')}</dt>
+                <dd>
+                    <AntcAnalysis
+                        charts={charts}
+                        conditions={this.getConditions()}
+                        emitterConfigList={this.getEmitters()}
+                        isGetDataOnMount={true}
+                        forceUpdate={true}
+                    />
+                </dd>
+            </dl>
+        );
+    };
+
     //渲染销售业绩
     renderSalesPerformance = () => {
         const roleName = this.state.currentMember.role_name;
@@ -379,6 +408,7 @@ class SalesReport extends React.Component {
                         <Col span={21} style={{height: this.state.contentHeight}}>
                             <GeminiScrollBar>
                                 {this.renderBaseInfo()}
+                                {this.renderOverallAnalysis()}
                                 {this.renderSalesPerformance()}
                                 {this.renderSalesBehavior()}
                             </GeminiScrollBar>
