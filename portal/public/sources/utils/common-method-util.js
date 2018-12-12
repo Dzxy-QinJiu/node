@@ -487,7 +487,7 @@ exports.handleDiffTypeApply = function(that) {
         resultType = that.state.applyResult;
     } else if (confirmType === 'cancel') {
         modalContent = Intl.get('user.apply.detail.modal.content', '是否撤销此申请？');
-        deleteFunction = this.cancelApplyApprove;
+        deleteFunction = that.cancelApplyApprove;
         okText = Intl.get('user.apply.detail.modal.ok', '撤销');
         resultType = that.state.backApplyResult;
     }
