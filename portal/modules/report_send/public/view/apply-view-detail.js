@@ -21,7 +21,7 @@ import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
 import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc, getFilterReplyList,handleDiffTypeApply} from 'PUB_DIR/sources/utils/common-method-util';
-import {LEAVE_TYPE} from 'PUB_DIR/sources/utils/consts';
+import {REPORT_TYPE} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
@@ -165,11 +165,6 @@ class ApplyViewDetail extends React.Component {
             customerOfCurUser: {}
         });
     };
-    //重新获取申请的状态
-    refreshApplyStatusList = (e) => {
-        var detailItem = this.props.detailItem;
-        ReportSendApplyDetailAction.getLeaveApplyStatusById({id: detailItem.id});
-    };
 
     ShowCustomerUserListPanel = (data) => {
         this.setState({
@@ -178,29 +173,40 @@ class ApplyViewDetail extends React.Component {
         });
     };
     renderDetailApplyBlock(detailInfo) {
+        var _this = this;
         var detail = detailInfo.detail || {};
-        var begin_time = moment(detail.begin_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-        var end_time = moment(detail.end_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-        var targetObj = _.find(LEAVE_TYPE, (item) => {
-            return item.value === detail.leave_type;
+        var expect_submit_time
+            = moment(detail.expect_submit_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+        var targetObj = _.find(REPORT_TYPE, (item) => {
+            return item.value === detail.report_type;
         });
-        var leaveType = '';
+        var reportType = '';
         if (targetObj) {
-            leaveType = targetObj.name;
+            reportType = targetObj.name;
         }
         var showApplyInfo = [
             {
-                label: Intl.get('leave.apply.leave.time', '请假时间'),
-                text: begin_time + ' - ' + end_time
+                label: Intl.get('contract.77', '报告类型'),
+                text: reportType
+            },
+            {
+                label: Intl.get('call.record.customer', '客户'),
+                renderText: function() {
+                    return (
+                        <a href="javascript:void(0)"
+                            onClick={_this.showCustomerDetail.bind(this, _.get(detail, 'customer.id'))}
+                        >
+                            {_.get(detail, 'customer.name')}
+                        </a>
+                    );
+                }
+            },
+            {
+                label: Intl.get('leave.apply.inspect.success.time', '预计成交时间'),
+                text: expect_submit_time
             }, {
-                label: Intl.get('leave.apply.leave.type', '请假类型'),
-                text: leaveType
-            }, {
-                label: Intl.get('leave.apply.leave.reason', '请假原因'),
-                text: detail.reason
-            }, {
-                label: Intl.get('leave.apply.leave.person', '请假人'),
-                text: _.get(detailInfo, 'applicant.nick_name')
+                label: Intl.get('common.remark', '备注'),
+                text: detail.remarks
             }];
         return (
             <ApplyDetailInfo
@@ -209,39 +215,6 @@ class ApplyViewDetail extends React.Component {
             />
         );
     }
-    renderBusinessCustomerDetail(detailInfo) {
-        var detail = detailInfo.detail || {};
-        var customersArr = _.get(detailInfo, 'detail.customers');
-        var _this = this;
-        var columns = [
-            {
-                title: Intl.get('call.record.customer', '客户'),
-                dataIndex: 'name',
-                className: 'apply-customer-name',
-                render: function(text, record, index) {
-                    return (
-                        <a href="javascript:void(0)"
-                            onClick={_this.showCustomerDetail.bind(this, record.id)}
-                            data-tracename="查看客户详情"
-                            title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
-                        >
-                            {text}
-                        </a>
-                    );
-                }
-            }, {
-                title: Intl.get('common.remark', '备注'),
-                dataIndex: 'remarks',
-                className: 'apply-remarks'
-            }];
-        return (
-            <ApplyDetailCustomer
-                columns={columns}
-                data={customersArr}
-            />
-        );
-    }
-
 
     //添加一条回复
     addReply = (e) => {
@@ -285,14 +258,11 @@ class ApplyViewDetail extends React.Component {
         ReportSendApplyDetailAction.hideApprovalBtns();
     };
 
-    //重新发送
-    reSendApproval = (approval,e) => {
-        Trace.traceEvent(e, '点击重试按钮');
-        this.submitApprovalForm(approval);
-    };
-
     //取消发送
     cancelSendApproval = (e) => {
+        this.setState({
+            showBackoutConfirmType: ''
+        });
         Trace.traceEvent(e, '点击取消按钮');
         ReportSendApplyDetailAction.cancelSendApproval();
     };
@@ -358,7 +328,7 @@ class ApplyViewDetail extends React.Component {
         if (applicantList.status === 'ongoing') {
             var candidate = this.state.candidateList,candidateName = '';
             if (_.isArray(candidate) && candidate.length === 1){
-                candidateName = _.get(candidate,'[0].nickname');
+                candidateName = _.get(candidate,'[0].nick_name');
             }
             stepArr.push({
                 title: Intl.get('apply.approve.worklist','待{applyer}审批',{'applyer': candidateName}),
@@ -422,8 +392,6 @@ class ApplyViewDetail extends React.Component {
                 <div className="apply-detail-content" style={{height: applyDetailHeight}} ref="geminiWrap">
                     <GeminiScrollbar ref="gemini">
                         {this.renderDetailApplyBlock(detailInfo)}
-                        {/*渲染客户详情*/}
-                        {_.isArray(_.get(detailInfo, 'detail.customers')) ? this.renderBusinessCustomerDetail(detailInfo) : null}
                         {this.renderApplyStatus()}
                         <ApplyDetailRemarks
                             detailInfo={detailInfo}
@@ -455,6 +423,7 @@ class ApplyViewDetail extends React.Component {
         approveSuccess = resultType.submitResult === 'success';
         approveError = resultType.submitResult === 'error';
         applyResultErrorMsg = resultType.errorMsg;
+        var typeObj = handleDiffTypeApply(this);
 
         return <ApplyApproveStatus
             showLoading={showLoading}
@@ -462,7 +431,7 @@ class ApplyViewDetail extends React.Component {
             viewApprovalResult={this.viewApprovalResult}
             approveError={approveError}
             applyResultErrorMsg={applyResultErrorMsg}
-            reSendApproval={this.reSendApproval.bind(this,confirmType)}
+            reSendApproval={typeObj.deleteFunction}
             cancelSendApproval={this.cancelSendApproval.bind(this, confirmType)}
             container={this}
         />;

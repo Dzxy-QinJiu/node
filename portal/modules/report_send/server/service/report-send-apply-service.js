@@ -10,7 +10,7 @@ var restApis = {
     //添加舆情报送申请
     addReportSendApply: '/rest/base/v1/workflow/opinionreport/:type',
     //通过或者驳回申请
-    approveLeaveApplyPassOrReject: '/rest/base/v1/workflow/leave/approve',
+    approveOpinionreportApplyPassOrReject: '/rest/base/v1/workflow/opinionreport/approve',
 
 };
 exports.restUrls = restApis;
@@ -27,7 +27,7 @@ exports.addReportSendApply = function(req, res) {
 exports.approveReportSendApplyPassOrReject = function(req, res) {
     return restUtil.authRest.post(
         {
-            url: restApis.approveReportSendApplyPassOrReject,
+            url: restApis.approveOpinionreportApplyPassOrReject,
             req: req,
             res: res
         }, req.body);

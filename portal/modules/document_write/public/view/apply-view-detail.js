@@ -285,14 +285,11 @@ class ApplyViewDetail extends React.Component {
         DocumentWriteApplyDetailAction.hideApprovalBtns();
     };
 
-    //重新发送
-    reSendApproval = (approval,e) => {
-        Trace.traceEvent(e, '点击重试按钮');
-        this.submitApprovalForm(approval);
-    };
-
     //取消发送
     cancelSendApproval = (e) => {
+        this.setState({
+            showBackoutConfirmType: ''
+        });
         Trace.traceEvent(e, '点击取消按钮');
         DocumentWriteApplyDetailAction.cancelSendApproval();
     };
@@ -358,7 +355,7 @@ class ApplyViewDetail extends React.Component {
         if (applicantList.status === 'ongoing') {
             var candidate = this.state.candidateList,candidateName = '';
             if (_.isArray(candidate) && candidate.length === 1){
-                candidateName = _.get(candidate,'[0].nickname');
+                candidateName = _.get(candidate,'[0].nick_name');
             }
             stepArr.push({
                 title: Intl.get('apply.approve.worklist','待{applyer}审批',{'applyer': candidateName}),
@@ -455,14 +452,14 @@ class ApplyViewDetail extends React.Component {
         approveSuccess = resultType.submitResult === 'success';
         approveError = resultType.submitResult === 'error';
         applyResultErrorMsg = resultType.errorMsg;
-
+        var typeObj = handleDiffTypeApply(this);
         return <ApplyApproveStatus
             showLoading={showLoading}
             approveSuccess={approveSuccess}
             viewApprovalResult={this.viewApprovalResult}
             approveError={approveError}
             applyResultErrorMsg={applyResultErrorMsg}
-            reSendApproval={this.reSendApproval.bind(this,confirmType)}
+            reSendApproval={typeObj.deleteFunction}
             cancelSendApproval={this.cancelSendApproval.bind(this, confirmType)}
             container={this}
         />;

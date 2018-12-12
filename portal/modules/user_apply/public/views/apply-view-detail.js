@@ -1789,13 +1789,14 @@ const ApplyViewDetail = createReactClass({
             approveSuccess = resultType.submitResult === 'success';
             approveError = resultType.submitResult === 'error';
             applyResultErrorMsg = resultType.errorMsg;
+            var typeObj = handleDiffTypeApply(this);
             return <ApplyApproveStatus
                 showLoading={showLoading}
                 approveSuccess={approveSuccess}
                 viewApprovalResult={this.viewApprovalResult}
                 approveError={approveError}
                 applyResultErrorMsg={applyResultErrorMsg}
-                reSendApproval={this.reSendApproval.bind(this,confirmType)}
+                reSendApproval={typeObj.deleteFunction}
                 cancelSendApproval={this.cancelSendApproval.bind(this, confirmType)}
                 container={this}
             />;
@@ -2115,12 +2116,6 @@ const ApplyViewDetail = createReactClass({
         setTimeout(() => {
             this.submitApprovalForm(this.state.showBackoutConfirmType);
         });
-    },
-
-    //重新发送
-    reSendApproval(approval,e) {
-        Trace.traceEvent(e, '点击重试按钮');
-        this.submitApprovalForm(approval);
     },
 
     //取消发送
