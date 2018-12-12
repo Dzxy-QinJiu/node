@@ -1,12 +1,12 @@
 /**
- * 团队或成员所有机会统计
+ * 所有机会统计
  */
 
 import { argCallbackTimeMember } from '../../utils';
 
 export function getAllChanceChart() {
     return {
-        title: '团队或成员所有机会统计',
+        title: '所有机会统计',
         chartType: 'table',
         url: '/rest/analysis/customer/v2/sales_opportunity/:data_type/apply/opportunity/statistics',
         argCallback: argCallbackTimeMember,
