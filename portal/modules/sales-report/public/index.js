@@ -295,9 +295,12 @@ class SalesReport extends React.Component {
         let charts = [];
 
         if (roleName === '销售经理') {
+            charts.push(
+                reportCharts.getSalesRankingChart('salesManager')
+            );
         } else {
             charts.push(
-                reportCharts.salesRankingChart,
+                reportCharts.getSalesRankingChart('customerManager')
             );
         }
 
