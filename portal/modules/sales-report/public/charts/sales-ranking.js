@@ -2,6 +2,16 @@
  * 销售排名
  */
 
+//销售人数
+const NUM_OF_SALES = {
+    //所在团队
+    team: 30,
+    //上级团队
+    superior: 80,
+    //所有
+    all: 200
+};
+
 export function getSalesRankingChart(role) {
     let url = [
         //合同数排名
@@ -75,17 +85,20 @@ export function getSalesRankingChart(role) {
             //团队内排名
             let intraTeamRanking = {
                 name: '团队内排名',
-                value: []
+                value: [],
+                realValue: []
             };
             //上级团队内排名
             let intraSuperiorTeamRanking = {
                 name: '上级团队内排名',
-                value: []
+                value: [],
+                realValue: []
             };
             //销售部内排名
             let intraSalesDepartmentRanking = {
                 name: '销售部内排名',
-                value: []
+                value: [],
+                realValue: []
             };
 
             //数据是否有效
@@ -109,7 +122,10 @@ export function getSalesRankingChart(role) {
 
                 //团队内排名
                 if (_.has(rankingData, 'order')) {
-                    intraTeamRanking.value.push(rankingData.order);
+                    //画图用的值要用其所在团队的人数减去其排名，以使其在图上的位置与其排名成反比，即排名越小的在图上的位置越靠外
+                    intraTeamRanking.value.push(NUM_OF_SALES.team - rankingData.order);
+                    //真实值，用于在tooltip上显示
+                    intraTeamRanking.realValue.push(rankingData.order);
                 } else {
                     isDataValid = false;
                     return false;
@@ -117,7 +133,8 @@ export function getSalesRankingChart(role) {
 
                 //上级团队内排名
                 if (_.has(rankingData, 'superior_order')) {
-                    intraSuperiorTeamRanking.value.push(rankingData.superior_order);
+                    intraSuperiorTeamRanking.value.push(NUM_OF_SALES.superior - rankingData.superior_order);
+                    intraSuperiorTeamRanking.realValue.push(rankingData.superior_order);
                 } else {
                     isDataValid = false;
                     return false;
@@ -125,7 +142,8 @@ export function getSalesRankingChart(role) {
 
                 //销售部内排名
                 if (_.has(rankingData, 'sales_order')) {
-                    intraSalesDepartmentRanking.value.push(rankingData.sales_order);
+                    intraSalesDepartmentRanking.value.push(NUM_OF_SALES.all - rankingData.sales_order);
+                    intraSalesDepartmentRanking.realValue.push(rankingData.sales_order);
                 } else {
                     isDataValid = false;
                     return false;
@@ -144,7 +162,20 @@ export function getSalesRankingChart(role) {
             };
 
             option.tooltip = {
-                trigger: 'item'
+                trigger: 'item',
+                formatter: params => {
+                    let content = [params.name];
+
+                    _.each(dimensions, (item, index) => {
+                        const text = item + ': ' + params.data.realValue[index];
+
+                        content.push(text);
+                    });
+
+                    const contentHtml = content.join('<br>');
+
+                    return contentHtml;
+                }
             };
 
             function getIndicator(max, centerLeft) {
@@ -158,9 +189,9 @@ export function getSalesRankingChart(role) {
             }
 
             option.radar = [
-                getIndicator(30, '15%'),
-                getIndicator(80, '50%'),
-                getIndicator(200, '85%')
+                getIndicator(NUM_OF_SALES.team, '15%'),
+                getIndicator(NUM_OF_SALES.superior, '50%'),
+                getIndicator(NUM_OF_SALES.all, '85%')
             ];
 
             option.series = _.map(chartProps.data, (dataItem, index) => {
