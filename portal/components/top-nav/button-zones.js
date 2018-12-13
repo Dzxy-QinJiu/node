@@ -6,6 +6,7 @@ import ReportLeftMenu from 'CMP_DIR/report-left-menu';
  * Created by liwenjun on 2018/12/10.
  */
 require('./button-zones.less');
+let topNavEmitter = require('../../public/sources/utils/emitters').topNavEmitter;
 class ButtonZones extends React.Component {
     constructor(props) {
         super(props);
@@ -14,6 +15,8 @@ class ButtonZones extends React.Component {
     componentDidMount() {
         $(window).on('resize', this.resizeFunc);
         this.resizeFunc();
+        //监听重新布局事件
+        topNavEmitter.on(topNavEmitter.RELAYOUT, this.resizeFunc);
     }
 
     componentWillUnmount() {

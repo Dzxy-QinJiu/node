@@ -29,13 +29,25 @@
     margin-left:@filter_btn_internal;
     position:relative;
     float:left;
-    height:@input_height;
+    height:@btn-height;
   }
   .user_audit_log_header{
-    position:absolute;
-    top:@filter_area_margin_top;
+    margin-top:@filter_area_margin_top;
     right:@container_padding;
     z-index:11;
+    .btn-item {
+      margin-top: 0;
+      margin-left: 0;
+      &.customize-btn {
+        width: @btn-height;
+        height: @btn-height;
+        min-width: @btn-height;
+      }
+    }
+    .search-input-container .search-input {
+      height: @btn-height;
+      line-height: @btn-height;
+    }
     .select-user-type, .user_audit_log_select_time, .user_audit_log_select_app, .user-audit-log-select, .team-member-select{
       .filter_btn_default;
     }
@@ -43,7 +55,7 @@
       .filter_btn_default;
       .search-input-container{
         .search-input{
-          height:@input_height;
+          height:@btn-height;
         }
       }
     }
