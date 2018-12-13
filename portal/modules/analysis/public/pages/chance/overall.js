@@ -16,7 +16,7 @@ module.exports = {
 function getCharts() {
     return [
         //新机会统计
-        chanceChart.getNewChanceChart(),
+        chanceChart.getNewChanceChart('funnel'),
         //所有机会统计
         chanceChart.getAllChanceChart(),
         //成交率趋势统计
