@@ -7,6 +7,7 @@ import ReportLeftMenu from 'CMP_DIR/report-left-menu';
  */
 require('./button-zones.less');
 let topNavEmitter = require('../../public/sources/utils/emitters').topNavEmitter;
+
 class ButtonZones extends React.Component {
     constructor(props) {
         super(props);
@@ -21,8 +22,19 @@ class ButtonZones extends React.Component {
 
     componentWillUnmount() {
         $(window).off('resize', this.resizeFunc);
+        this.cleanUpStyle();
     }
-
+    //清除样式
+    cleanUpStyle = () => {
+        //找到外层节点
+        let $wrap = $('.rightContent .topNav').first();
+        let $content = $('.rightContent .moduleContent');
+        //按钮区
+        let $buttonZones = $(ReactDOM.findDOMNode(this));
+        $wrap && $wrap.removeClass('fixed-position');
+        $content && $content.removeClass('fixed-position');
+        $buttonZones && $buttonZones.removeClass('fixed-position');
+    };
     resizeFunc = () => {
         clearTimeout(this.resizeFunc.timeout);
         this.resizeFunc.timeout = setTimeout(this.resizeHandler, 10);
@@ -36,21 +48,12 @@ class ButtonZones extends React.Component {
         if (!$wrap || !$content || !$topLinks) {
             return;
         }
-
         //获取菜单在页面中的位置
         let topLinksPosStart = $topLinks && $topLinks.offset() && $topLinks.offset().left || 0;
         let topLinksPosEnd = topLinksPosStart + $topLinks.outerWidth();
         //按钮区
         let $buttonZones = $(ReactDOM.findDOMNode(this));
-
-        //清除样式，再计算
-        function cleanUp() {
-            $wrap.removeClass('fixed-position');
-            $content.removeClass('fixed-position');
-            $buttonZones.removeClass('fixed-position');
-        }
-
-        cleanUp();
+        this.cleanUpStyle();
         //找到所有显示出来的子节点
         let childNodes = $buttonZones.children().filter(':visible');
         //计算节点是否存在覆盖情况
