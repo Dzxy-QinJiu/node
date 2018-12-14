@@ -213,7 +213,7 @@ export function getSalesRankingChart(role) {
             let body = [];
 
             _.each(data, dataItem => {
-                _.each(dataItem.value, (valueItem, index) => {
+                _.each(dataItem.realValue, (valueItem, index) => {
                     const colName = dataItem.name.replace('排名', '') + dimensions[index];
 
                     header.push(colName);
