@@ -61,7 +61,7 @@ ReportSendApplyDetailStore.prototype.setInitState = function() {
         errorMsg: ''
     };
 };
-ReportSendApplyDetailStore.prototype.setDetailInfoObj = function(detailObj) {
+ReportSendApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
     this.detailInfoObj = {
         // "" loading error

@@ -103,6 +103,9 @@ function listenOnMessage(data) {
 //更新申请审批的数量
 function applyApproveUnhandledListener(data) {
     if (_.isObject(data)) {
+        if (data.message_type.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1 ){
+            updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND, true);
+        }
         switch (data.message_type) {
             case APPLY_APPROVE_TYPES.CUSTOMER_VISIT:
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT, true);
@@ -112,9 +115,6 @@ function applyApproveUnhandledListener(data) {
                 break;
             case APPLY_APPROVE_TYPES.PERSONAL_LEAVE:
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE, true);
-                break;
-            case APPLY_APPROVE_TYPES.REPORT:
-                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND, true);
                 break;
             case APPLY_APPROVE_TYPES.DOCUMENT:
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE, true);
@@ -869,7 +869,7 @@ function getUnapproveReportSendApply() {
             var reportData = {total: 0},documentData = {total: 0};
             if (_.isArray(data.list) && data.list.length){
                 _.forEach(data.list,(item) => {
-                    if (item.topic === APPLY_APPROVE_TYPES.REPORT){
+                    if (item.topic.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1 ){
                         reportData.total++;
                     }
                     if (item.topic === APPLY_APPROVE_TYPES.DOCUMENT){

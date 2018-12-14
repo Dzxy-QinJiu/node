@@ -453,7 +453,6 @@ class LeftMenuClass {
                     //有这个权限，才显示入口图标
                     showPrivileges: ['MEMBER_OPINION_MANAGE']
                 }
-
                 // , {
                 //     id: 'DOCUMENTWRITING_APPLY_MANAGEMENT',
                 //     name: backendIntl.get('apply.approve.document.writing','文件撰写'),

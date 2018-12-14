@@ -20,6 +20,14 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+        },
+        {
+            method: 'post',
+            path: '/rest/reportsend/upload',
+            handler: 'uploadReportSend',
+            passport: {
+                'needLogin': true
+            }
         }
     ]
 };

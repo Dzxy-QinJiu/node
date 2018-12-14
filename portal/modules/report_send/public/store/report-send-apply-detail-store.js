@@ -61,7 +61,7 @@ ReportSendApplyDetailStore.prototype.setInitState = function() {
         errorMsg: ''
     };
 };
-ReportSendApplyDetailStore.prototype.setDetailInfoObj = function(detailObj) {
+ReportSendApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
     this.detailInfoObj = {
         // "" loading error
@@ -91,6 +91,16 @@ ReportSendApplyDetailStore.prototype.setDetailInfoObj = function(detailObj) {
     //下一节点负责人的列表
     this.candidateList = [];
 
+};
+ReportSendApplyDetailStore.prototype.setDetailInfo = function(detailObj) {
+    this.detailInfoObj = {
+        // "" loading error
+        loadingResult: '',
+        //获取的详情信息
+        info: detailObj,
+        //错误信息
+        errorMsg: ''
+    };
 };
 //设置某条申请的回复列表
 ReportSendApplyDetailStore.prototype.setApplyComment = function(list) {

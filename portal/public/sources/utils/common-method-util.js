@@ -412,7 +412,7 @@ exports.getApplyTopicText = function(obj) {
         return _.get(obj,'detail.customer.name');
     } else if (obj.topic === APPLY_APPROVE_TYPES.PERSONAL_LEAVE) {
         return Intl.get('leave.apply.leave.application', '请假申请');
-    } else if (obj.topic === APPLY_APPROVE_TYPES.REPORT){
+    } else if (obj.topic.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1 ){
         return Intl.get('apply.approve.specific.report','{customer}客户的专报',{customer: _.get(obj,'detail.customer.name')});
     }else if (obj.topic === APPLY_APPROVE_TYPES.DOCUMENT){
         return Intl.get('apply.approve.document.writing', '文件撰写');
@@ -462,7 +462,17 @@ exports.getApplyStatusTimeLineDesc = function(replyItemStatus) {
     }
     return description;
 };
-
+exports.getReportSendApplyStatusTimeLineDesc = function(replyItemStatus) {
+    var description = '';
+    if (replyItemStatus === 'reject'){
+        description = Intl.get('user.apply.detail.reject', '驳回申请');
+    }else if(replyItemStatus === 'cancel'){
+        description = Intl.get('user.apply.detail.backout', '撤销申请');
+    }else if (replyItemStatus === 'pass'){
+        description = Intl.get('apply.approve.confirm.apply','确认申请');
+    }
+    return description;
+};
 exports.getFilterReplyList = function(thisState) {
     //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据
     var applicantList = _.get(thisState, 'detailInfoObj.info');

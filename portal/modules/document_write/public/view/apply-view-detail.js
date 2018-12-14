@@ -44,7 +44,7 @@ class ApplyViewDetail extends React.Component {
         DocumentWriteApplyDetailStore.listen(this.onStoreChange);
         if (_.get(this.props,'detailItem.afterAddReplySuccess')){
             setTimeout(() => {
-                DocumentWriteApplyDetailAction.setDetailInfoObj(this.props.detailItem);
+                DocumentWriteApplyDetailAction.setDetailInfoObjAfterAdd(this.props.detailItem);
             });
         }else if (this.props.detailItem.id) {
             this.getBusinessApplyDetailData(this.props.detailItem);
@@ -86,7 +86,7 @@ class ApplyViewDetail extends React.Component {
         var nextPropsId = nextProps.detailItem.id;
         if (_.get(nextProps,'detailItem.afterAddReplySuccess')){
             setTimeout(() => {
-                DocumentWriteApplyDetailAction.setDetailInfoObj(nextProps.detailItem);
+                DocumentWriteApplyDetailAction.setDetailInfoObjAfterAdd(nextProps.detailItem);
             });
         }else if (thisPropsId && nextPropsId && nextPropsId !== thisPropsId) {
             this.getBusinessApplyDetailData(nextProps.detailItem);

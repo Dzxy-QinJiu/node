@@ -2653,6 +2653,11 @@ var zh_CN = {
     'apply.approve.no.condition.list': '暂无符合条件的舆情报告',
     'apply.approve.no.document.write': '暂无符合条件的文件撰写',
     'apply.approve.expect.submit.time': '期望提交时间',
-    'apply.approve.specific.report': '{customer}客户的专报'
+    'apply.approve.specific.report': '{customer}客户的专报',
+    'apply.approve.import.file': '上传文件',
+    'apply.approve.confirm.apply': '确认申请',
+    'apply.approve.wait.confirm': '待{confirmer}确认',
+    'apply.approve.wait.upload': '待{uploader}上传',
+    'apply.approve.confirm.finish': '确认完成'
 };
 export default zh_CN;

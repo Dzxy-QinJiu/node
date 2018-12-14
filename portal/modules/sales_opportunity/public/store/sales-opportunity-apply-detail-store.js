@@ -61,7 +61,7 @@ SalesOpportunityApplyDetailStore.prototype.setInitState = function() {
         errorMsg: ''
     };
 };
-SalesOpportunityApplyDetailStore.prototype.setDetailInfoObj = function(detailObj) {
+SalesOpportunityApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
     this.detailInfoObj = {
         // "" loading error

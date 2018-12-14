@@ -22,9 +22,12 @@ class ApplyDetailInfo extends React.Component {
                         {_.map(this.props.showApplyInfo, (InfoItem) => {
                             return (
                                 <div className="apply-info-label">
-                                    <div className="user-info-label">
-                                        {InfoItem.label}:
-                                    </div>
+                                    {InfoItem.label ?
+                                        <div className="user-info-label">
+                                            {InfoItem.label}:
+                                        </div>
+                                        : null}
+
                                     <div className={infoCls}>
                                         {_.isFunction(InfoItem.renderText) ? InfoItem.renderText() :
                                             InfoItem.text
