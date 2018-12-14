@@ -17,32 +17,17 @@
   }
 }
 .app_user_manage_page {
-  .topNav {
-    .user_audit_log_header {
-      .btn-item {
-        margin-top: 0;
-        margin-left: 0;
-        &.customize-btn {
-          width: @btn-height!important;
-          height: @btn-height!important;
-          min-width: @btn-height!important;
-        }
-      }
-      .search-input-container .search-input {
-        height: @btn-height!important;
-        line-height: @btn-height!important;
-      }
-    }
     .btn-item {
       margin-top:@filter_area_margin_top;
+      button{
+        vertical-align: initial;
+      }
     }
     .recent-login-btn.btn-item {
       min-width: @btn-height;
       width: @btn-height;
       height: @btn-height;
     }
-  }
-
 }
 .user_manage_filter_block .customer-switch-search{
   .search-input-container{
@@ -568,7 +553,6 @@
     vertical-align:top !important;
     margin-top:@filter_area_margin_top;
     margin-right:@filter_btn_internal;
-    .filter_btn;
   }
   .search-input-block{
     width:@edit_input_width;
@@ -686,7 +670,7 @@
     }
   }
   .app_user_manage_contentwrap{
-    padding: @top_nav_height @container_padding 25px @container_padding;
+    padding: 0 @container_padding 25px @container_padding;
 
     .status{
       display:inline;

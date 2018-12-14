@@ -5,11 +5,9 @@ if (language.lan() === 'es' || language.lan() === 'en') {
     require('./css/main-es_VE.less');
 }
 import RecentLoginUsersPanel from './views/recent-login-user-list';
-import { RightPanelReturn } from 'CMP_DIR/rightPanel';
-var RightPanel = require('../../../components/rightPanel').RightPanel;
-//顶部导航
-var TopNav = require('../../../components/top-nav');
+import {RightPanelReturn} from 'CMP_DIR/rightPanel';
 
+var RightPanel = require('../../../components/rightPanel').RightPanel;
 var AppUserStore = require('./store/app-user-store');
 var AppUserPanelSwitchStore = require('./store/app-user-panelswitch-store');
 var AppUserAction = require('./action/app-user-actions');
@@ -18,26 +16,32 @@ var AppUserUtil = require('./util/app-user-util');
 var UserView = require('./views/user-view');
 var UserDetail = require('./views/user-detail');
 import AddOrEditUser from './views/v2/add-or-edit-user';
+
 var UserAuditLog = require('./views/user-audit-log-show-user-detail');
 
 var Select = require('antd').Select;
 var Icon = require('antd').Icon;
 import {SearchInput} from 'antc';
+
 var Option = Select.Option;
 var classNames = require('classnames');
 import UserDetailAddApp from './views/user-detail-add-app';
+
 var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
 var ShareObj = require('./util/app-id-share-util');
 var FilterBtn = require('../../../components/filter-btn');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 var SelectFullWidth = require('../../../components/select-fullwidth');
 var Popover = require('antd').Popover;
-import { Button } from 'antd';
+import {Button} from 'antd';
 import ApplyUser from './views/v2/apply-user';
+
 var topNavEmitter = require('../../../public/sources/utils/emitters').topNavEmitter;
 import queryString from 'query-string';
 import {RETRY_GET_APP} from './util/consts';
 import Trace from 'LIB_DIR/trace';
+import ButtonZones from 'CMP_DIR/top-nav/button-zones';
+
 /*用户管理界面外层容器*/
 class AppUserManage extends React.Component {
     getStoreData = () => {
@@ -102,24 +106,24 @@ class AppUserManage extends React.Component {
                     delete query.analysis_filter_value;
 
                     for (let key in query) {
-                        AppUserAction.toggleSearchField({ field: key, value: query[key] });
+                        AppUserAction.toggleSearchField({field: key, value: query[key]});
                     }
 
                     if (filterField === 'team_ids') {
                         if (filterValue === 'unknown') {
-                            AppUserAction.toggleSearchField({ field: 'is_filter_unknown_team', value: true });
+                            AppUserAction.toggleSearchField({field: 'is_filter_unknown_team', value: true});
                         }
                         AppUserAction.getTeamLists(teams => {
                             const team = _.find(teams, item => item.group_name === filterValue);
                             const teamId = team && team.group_id || '';
-                            AppUserAction.toggleSearchField({ field: filterField, value: teamId });
+                            AppUserAction.toggleSearchField({field: filterField, value: teamId});
                             setTimeout(() => {
                                 AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.FETCH_USER_LIST);
                             });
                         });
                     } else if (filterField === 'sales_id') {
                         //通过销售首页点击团队成员统计图转过来的，查看某个销售对应的用户列表
-                        AppUserAction.toggleSearchField({ field: filterField, value: filterValue });
+                        AppUserAction.toggleSearchField({field: filterField, value: filterValue});
                         setTimeout(() => {
                             AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.FETCH_USER_LIST);
                         });
@@ -140,7 +144,7 @@ class AppUserManage extends React.Component {
                 //传递客户id
                 customer_id: customer_id,
             });
-        }else if (currentView === 'active' && this.props.location){
+        } else if (currentView === 'active' && this.props.location) {
             //点击活跃用户tab页的时候，需要查询团队列表
             //查询团队列表
             AppUserAction.getTeamLists();
@@ -183,7 +187,7 @@ class AppUserManage extends React.Component {
             AppUserAction.changeTableSort(quryObj);
             AppUserAction.getAppUserList(quryObj);
             //顶部导航输入框的值清空
-            if (_.isFunction(this.refs.searchInput.closeSearchInput)){
+            if (_.isFunction(this.refs.searchInput.closeSearchInput)) {
                 this.refs.searchInput.closeSearchInput();
             }
         }
@@ -223,11 +227,11 @@ class AppUserManage extends React.Component {
         var list = appList.map(function(item) {
             return <Option key={item.app_id} value={item.app_id} title={item.app_name}>{item.app_name}</Option>;
         });
-        if(!appList.length){
-            var clickMsg = Intl.get('app.user.manager.click.get.app','点击获取应用');
-            if (this.state.appListErrorMsg){
-                clickMsg = Intl.get('app.user.failed.get.apps','获取失败') + '，' + clickMsg;
-            }else{
+        if (!appList.length) {
+            var clickMsg = Intl.get('app.user.manager.click.get.app', '点击获取应用');
+            if (this.state.appListErrorMsg) {
+                clickMsg = Intl.get('app.user.failed.get.apps', '获取失败') + '，' + clickMsg;
+            } else {
                 clickMsg = Intl.get('user.no.app', '暂无应用') + '，' + clickMsg;
             }
             list.unshift(<Option value={RETRY_GET_APP} key={RETRY_GET_APP} className="retry-get-applist-container">
@@ -315,7 +319,7 @@ class AppUserManage extends React.Component {
         return (
             <span>
                 <span>{Intl.get('user.user.list.click', '请在用列表中点击')}</span>
-                <span className="checkbox-style-icon" />
+                <span className="checkbox-style-icon"/>
                 <span>{Intl.get('user.user.list.select', '选择用户')}</span>
             </span>);
     };
@@ -350,12 +354,12 @@ class AppUserManage extends React.Component {
         if (this.isShowBatchOperateBtn()) {
             if (this.state.selectedUserRows.length) {
                 return <div className="inline-block add-btn-mini" onClick={this.showBatchOperate}>
-                    <i className="iconfont icon-piliangcaozuo" />
+                    <i className="iconfont icon-piliangcaozuo"/>
                 </div>;
             }
             return <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
                 <div className="inline-block add-btn-mini gray">
-                    <i className="iconfont icon-piliangcaozuo" />
+                    <i className="iconfont icon-piliangcaozuo"/>
                 </div>
             </Popover>;
         }
@@ -379,15 +383,15 @@ class AppUserManage extends React.Component {
         if (this.isShowBatchOperateBtn()) {
             //如果选择了用户，直接显示
             if (this.state.selectedUserRows.length) {
-                return <div className="inline-block">
-                    <Button className="btn-item" onClick={this.showBatchOperate}>
+                return <div className="inline-block btn-item">
+                    <Button onClick={this.showBatchOperate}>
                         {Intl.get('user.batch.change', '批量变更')}
                     </Button></div>;
             }
             //没有选择用户，加一个提示
             return <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
-                <div className="inline-block add-btn-common gray">
-                    <Button className="btn-item" disabled>
+                <div className="inline-block add-btn-common gray btn-item">
+                    <Button disabled>
                         {Intl.get('user.batch.change', '批量变更')}
                     </Button>
                 </div>
@@ -403,7 +407,7 @@ class AppUserManage extends React.Component {
             //选中了用户直接显示
             if (this.state.selectedUserRows.length) {
                 return (
-                    <div className="inline-block add-btn-common " onClick={this.showApplyUserForm}>
+                    <div className="inline-block add-btn-common btn-item" onClick={this.showApplyUserForm}>
                         <Button className="btn-item">{Intl.get('user.app.open', '开通应用')}</Button>
                     </div>);
             }
@@ -425,12 +429,12 @@ class AppUserManage extends React.Component {
         if (hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES) && this.state.customer_id) {
             if (this.state.selectedUserRows.length) {
                 return <div className="inline-block  add-btn-mini" onClick={this.showApplyUserForm}>
-                    <i className="iconfont icon-shenqing" />
+                    <i className="iconfont icon-shenqing"/>
                 </div>;
             }
             return <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
                 <div className="inline-block  add-btn-mini gray">
-                    <i className="iconfont icon-shenqing" />
+                    <i className="iconfont icon-shenqing"/>
                 </div>
             </Popover>;
         }
@@ -456,10 +460,85 @@ class AppUserManage extends React.Component {
 
     //获取初始状态
     state = this.getStoreData();
+    //渲染按钮区域
+    renderTopNavOperation = () => {
+        var currentView = AppUserUtil.getCurrentView();
+        var appOptions = this.getAppOptions();
+        var topNavRightClass = classNames({
+            'pull-right': true,
+            'user_manage_filter_block': true,
+            'none': currentView !== 'user'
+        });
+        var topNavLeftClass = classNames({
+            'pull-left': true,
+            'user_manage_return_block': true
+        });
+        return (<ButtonZones>{/*如果是从客户页面跳转过来的，增加一个返回按钮*/}
+            {this.state.customer_id ?
+                <div className={topNavLeftClass}>
+                    <RightPanelReturn onClick={this.hideCustomerUserList}/>
+                    <div className="customer_name_wrap">
+                        {Intl.get('crm.customer.user', '{customer}客户的用户', {'customer': this.state.customer_name})}
+                    </div>
+                </div>
+                : null}
+            <div className={topNavRightClass} data-tracename="已有用户">
+                <div className="inline-block btn-item">
+                    <SelectFullWidth
+                        optionFilterProp="children"
+                        showSearch
+                        minWidth={120}
+                        value={this.state.selectedAppId}
+                        onChange={this.onSelectedAppChange}
+                        notFoundContent={!appOptions.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
+                    >
+                        {appOptions}
+                    </SelectFullWidth>
+                </div>
+                {/*如果是从客户界面点击过来的，不要显示搜索框*/}
+                {/*如果是按照角色筛选，则不能再按照关键字搜索了*/}
+                {
+                    this.state.customer_id || this.state.filterRoles.selectedRole ? null : (
+                        <div className="inline-block  user_manage_droplist btn-item">
+                            <SearchInput
+                                ref="searchInput"
+                                type="input"
+                                searchPlaceHolder={Intl.get('user.search.placeholder', '请输入关键词搜索')}
+                                searchEvent={this.onSearchInputChange}
+                            />
+                        </div>
+                    )
+                }
+                {
+                    this.state.selectedAppId ? <FilterBtn
+                        expanded={this.state.filterAreaExpanded}
+                        onClick={this.toggleFilterArea}
+                        className="inline-block app_user_filter_btn  btn-item"
+                    /> : null
+                }
+                <PrivilegeChecker
+                    onClick={this.addAppUser}
+                    check={this.addUserBtnCheckun}
+                    className="inline-block add-btn-common btn-item">
+                    <Button><ReactIntl.FormattedMessage id="user.user.add" defaultMessage="添加用户"/></Button>
+                </PrivilegeChecker>
+                {this.getApplyUserBtn()}
+                {this.getBatchOperateBtn()}
+                <PrivilegeChecker
+                    onClick={this.addAppUser}
+                    check={this.addUserBtnCheckun}
+                    title={Intl.get('user.user.add', '添加用户')}
+                    className="inline-block add-btn-mini">
+                    <Icon type="plus"/>
+                </PrivilegeChecker>
+                {this.getApplyUserBtnMini()}
+                {this.getBatchOperateBtnMini()}
+            </div>
+        </ButtonZones>);
+    };
 
     render() {
         var currentView = AppUserUtil.getCurrentView();
-        var appOptions = this.getAppOptions();
         var rightPanelView = null;
         if (this.state.isShowRightPanel) {
             switch (this.state.rightPanelType) {
@@ -475,13 +554,13 @@ class AppUserManage extends React.Component {
                     break;
                 case 'addOrEditUser':
                     rightPanelView = (
-                        <AddOrEditUser operation_type={this.state.appUserFormType} />
+                        <AddOrEditUser operation_type={this.state.appUserFormType}/>
                     );
                     break;
                 case 'batch':
                     rightPanelView = (
                         <div className="full_size wrap_padding">
-                            <UserDetailAddApp multiple={true} initialUser={this.state.selectedUserRows} />
+                            <UserDetailAddApp multiple={true} initialUser={this.state.selectedUserRows}/>
                         </div>
                     );
                     break;
@@ -507,23 +586,14 @@ class AppUserManage extends React.Component {
                     );
             }
         }
-        var topNavRightClass = classNames({
-            'pull-right': true,
-            'user_manage_filter_block': true,
-            'none': currentView !== 'user'
-        });
-        var topNavLeftClass = classNames({
-            'pull-left': true,
-            'user_manage_return_block': true
-        });
 
         var showView = null;
         switch (currentView) {
             case 'user':
-                showView = (<UserView customer_id={this.state.customer_id} />);
+                showView = (<UserView customer_id={this.state.customer_id}/>);
                 break;
             case 'log':
-                showView = (<UserAuditLog />);
+                showView = (<UserAuditLog/>);
                 break;
             case 'active':
                 showView = (
@@ -537,77 +607,13 @@ class AppUserManage extends React.Component {
                 break;
         }
         //是否显示“过滤”按钮
-        var showFilterBtn = this.state.selectedAppId;
         const cls = classNames('app_user_manage_rightpanel white-space-nowrap right-panel', {
             'detail-v3-panel': this.state.rightPanelType === 'detail'
         });
         return (
             <div>
                 <div className="app_user_manage_page table-btn-fix" data-tracename="用户管理">
-                    <TopNav>
-                        <TopNav.MenuList />
-                        {/*如果是从客户页面跳转过来的，增加一个返回按钮*/}
-                        {this.state.customer_id ?
-                            <div className={topNavLeftClass}>
-                                <RightPanelReturn onClick={this.hideCustomerUserList} />
-                                <div className="customer_name_wrap">
-                                    {Intl.get('crm.customer.user', '{customer}客户的用户', { 'customer': this.state.customer_name })}
-                                </div>
-                            </div>
-                            : null}
-                        <div className={topNavRightClass} data-tracename="已有用户">
-                            {
-                                showFilterBtn ? <FilterBtn
-                                    expanded={this.state.filterAreaExpanded}
-                                    onClick={this.toggleFilterArea}
-                                    className="inline-block app_user_filter_btn"
-                                /> : null
-                            }
-                            <div className="inline-block btn-item">
-                                <SelectFullWidth
-                                    optionFilterProp="children"
-                                    showSearch
-                                    minWidth={120}
-                                    value={this.state.selectedAppId}
-                                    onChange={this.onSelectedAppChange}
-                                    notFoundContent={!appOptions.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
-                                >
-                                    {appOptions}
-                                </SelectFullWidth>
-                            </div>
-                            {/*如果是从客户界面点击过来的，不要显示搜索框*/}
-                            {/*如果是按照角色筛选，则不能再按照关键字搜索了*/}
-                            {
-                                this.state.customer_id || this.state.filterRoles.selectedRole ? null : (
-                                    <div className="inline-block btn-item user_manage_droplist">
-                                        <SearchInput
-                                            ref="searchInput"
-                                            type="input"
-                                            searchPlaceHolder={Intl.get('user.search.placeholder', '请输入关键词搜索')}
-                                            searchEvent={this.onSearchInputChange}
-                                        />
-                                    </div>
-                                )
-                            }
-                            <PrivilegeChecker
-                                onClick={this.addAppUser}
-                                check={this.addUserBtnCheckun}
-                                className="inline-block add-btn-common">
-                                <Button className="btn-item"><ReactIntl.FormattedMessage id="user.user.add" defaultMessage="添加用户" /></Button>
-                            </PrivilegeChecker>
-                            {this.getApplyUserBtn()}
-                            {this.getBatchOperateBtn()}
-                            <PrivilegeChecker
-                                onClick={this.addAppUser}
-                                check={this.addUserBtnCheckun}
-                                title={Intl.get('user.user.add', '添加用户')}
-                                className="inline-block add-btn-mini">
-                                <Icon type="plus" />
-                            </PrivilegeChecker>
-                            {this.getApplyUserBtnMini()}
-                            {this.getBatchOperateBtnMini()}
-                        </div>
-                    </TopNav>
+                    {this.renderTopNavOperation()}
                     <div className="app_user_manage_contentwrap">
                         {
                             showView
@@ -625,6 +631,7 @@ class AppUserManage extends React.Component {
         );
     }
 }
+
 AppUserManage.propTypes = {
     customer_name: PropTypes.string,
     location: PropTypes.obj,

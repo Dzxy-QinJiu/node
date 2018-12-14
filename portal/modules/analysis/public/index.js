@@ -206,7 +206,7 @@ class CurtaoAnalysis extends React.Component {
         return (
             <div className="analysis-menu">
                 <Collapse accordion bordered={false} defaultActiveKey='0'
-                          onChange={this.handleCollapseChange.bind(this)}>
+                    onChange={this.handleCollapseChange.bind(this)}>
                     {_.map(this.state.groups, (group, groupIndex) => (
                         <Panel header={group.title} key={groupIndex}>
                             {_.map(group.pages, (page, pageIndex) => {
@@ -215,7 +215,7 @@ class CurtaoAnalysis extends React.Component {
 
                                 return (
                                     <div key={pageIndex} className={className}
-                                         onClick={this.handleMenuClick.bind(this, menuIndex, groupIndex, pageIndex)}>{page.title}</div>
+                                        onClick={this.handleMenuClick.bind(this, menuIndex, groupIndex, pageIndex)}>{page.title}</div>
                                 );
                             })}
                         </Panel>
@@ -381,7 +381,6 @@ class CurtaoAnalysis extends React.Component {
             <div className='curtao-analysis'>
                 <TopBar
                     currentPage={this.state.currentPage}
-                    renderTopNavOperation={this.props.renderTopNavOperation}
                 />
                 <Row>
                     <Col span={3}>

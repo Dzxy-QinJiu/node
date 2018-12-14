@@ -10,7 +10,7 @@ var businessApply = require('../../../modules/business-apply');
 var salesOpportunity = require('../../../modules/sales_opportunity');
 var leaveApply = require('../../../modules/leave-apply');
 import userApply from '../../../modules/user_apply';
-
+require('./index.less');
 
 function getChildRoutes() {
     var childRoutes = Checker.getChildRoutes('application',

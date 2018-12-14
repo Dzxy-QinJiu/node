@@ -61,7 +61,6 @@ class SalesTeamPage extends React.Component {
         SalesTeamAction.setSalesTeamLoading(true);
         SalesTeamAction.getSalesTeamList();
         SalesTeamAction.getMemberList();
-        this.props.renderTopNavOperation && this.props.renderTopNavOperation(null);
     }
 
     componentWillUnmount() {

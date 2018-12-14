@@ -13,7 +13,7 @@ var insertStyle = require('CMP_DIR/insert-style');
 require('./index.less');
 var notificationEmitter = require('../../public/sources/utils/emitters').notificationEmitter;
 let history = require('../../public/sources/history');
-
+let RIGHT_MARGIN = 10;//右边预留宽度，用户计算
 /**
  * 待处理的数据列表
  * name:待处理数在Oplate.unread对象中的key或key数组
@@ -69,28 +69,29 @@ class TopNav extends React.Component {
             $topLinks.removeClass('fixed-layout');
         }
 
-        if (!$topLinks[0] || childNodes.length === 1) {
+        if (!$topLinks[0]) {
             cleanUp();
             return;
         }
         cleanUp();
         //将子节点过滤掉菜单
-        var extraNodes = _.filter(childNodes, (node) => node !== $topLinks[0]);
+        // var extraNodes = _.filter(childNodes, (node) => node !== $topLinks[0]);
         //获取菜单在页面中的位置
         var topLinksPosStart = $topLinks.offset().left;
         var topLinksPosEnd = topLinksPosStart + $topLinks.outerWidth();
         //计算子节点是否存在覆盖情况
-        var intersect = _.some(extraNodes, (dom) => {
-            var $dom = $(dom);
-            var domPosStart = $dom.offset().left;
-            var domPosEnd = domPosStart + $dom.outerWidth();
-            if (
-                topLinksPosStart <= domPosEnd &&
-                domPosStart <= topLinksPosEnd
-            ) {
-                return true;
-            }
-        });
+        var intersect = topLinksPosEnd + RIGHT_MARGIN > $(window).width();
+        // var intersect = _.some(extraNodes, (dom) => {
+        //     var $dom = $(dom);
+        //     var domPosStart = $dom.offset().left;
+        //     var domPosEnd = domPosStart + $dom.outerWidth();
+        //     if (
+        //         topLinksPosStart <= domPosEnd &&
+        //         domPosStart <= topLinksPosEnd
+        //     ) {
+        //         return true;
+        //     }
+        // });
         //如果存在覆盖的情况，则将菜单节点变成汉堡包
         if (intersect) {
             $topLinks.attr('hidden', 'true');
@@ -204,6 +205,7 @@ class TopNav extends React.Component {
             });
         }
     };
+    z;
 
     componentWillUnmount() {
         $(window).off('resize', this.resizeFunc);

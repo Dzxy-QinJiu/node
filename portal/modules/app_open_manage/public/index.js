@@ -33,7 +33,6 @@ class OpenApp extends React.Component {
     componentDidMount() {
         OpenAppStore.listen(this.onStoreChange);
         this.getAppList();
-        this.props.renderTopNavOperation && this.props.renderTopNavOperation(null);
     }
 
     onStoreChange = () => {
@@ -208,7 +207,7 @@ class OpenApp extends React.Component {
                         {
                             this.state.appList.data.map((app, index) => (
                                 <fieldset key={index}
-                                          className={app.status === APP_STATUS.ENABLED ? 'app-container' : 'app-container disabled'}>
+                                    className={app.status === APP_STATUS.ENABLED ? 'app-container' : 'app-container disabled'}>
                                     <legend>{app.tags_name}</legend>
                                     <p>{app.tags_description}</p>
                                     {app.status === APP_STATUS.ENABLED ? null : (

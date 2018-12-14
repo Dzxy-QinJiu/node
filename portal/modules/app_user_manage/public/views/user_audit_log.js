@@ -13,7 +13,7 @@ var GeminiScrollBar = require('../../../../components/react-gemini-scrollbar');
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
 import {LITERAL_CONSTANT, FIRSR_SELECT_DATA} from 'PUB_DIR/sources/utils/consts';
 //顶部导航
-var TopNav = require('../../../../components/top-nav');
+import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 var classnames = require('classnames');
 var AppUserUtil = require('../util/app-user-util');
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -644,20 +644,19 @@ class LogView extends React.Component {
         var appOptions = this.getAppOptions();
         return (
             <div className="user_audit_log_container">
-                <TopNav>
-                    <TopNav.MenuList />
+                <ButtonZones>
                     <div className="user_audit_log_header">
+                        {/**
+                         * 团队和成员筛选框
+                         * */}
+                        <div className="team-member-select">
+                            {
+                                this.state.teamList.list.length && !userData.getUserData().isCommonSales ?
+                                    this.renderTeamMembersSelect() :
+                                    null
+                            }
+                        </div>
                         <div className="user_audit_log_select_time btn-item" data-tracename="时间筛选">
-                            {/**
-                             * 团队和成员筛选框
-                             * */}
-                            <div className="team-member-select">
-                                {
-                                    this.state.teamList.list.length && !userData.getUserData().isCommonSales ?
-                                        this.renderTeamMembersSelect() :
-                                        null
-                                }
-                            </div>
                             <DatePicker
                                 disableDateAfterToday={true}
                                 dateSelectRange={THREE_MONTH_TIME_RANGE}
@@ -708,7 +707,7 @@ class LogView extends React.Component {
                             ></i>
                         </span>                       
                     </div>
-                </TopNav>
+                </ButtonZones>
 
             </div>
         );

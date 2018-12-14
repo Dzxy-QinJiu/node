@@ -1,18 +1,121 @@
-.application_user_apply_ico:before,.application_sales_opportunity_ico:before,.application_business_apply_ico:before,.application_leave_apply_ico:before{
-  pointer-events:auto;
-  cursor: pointer;
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  min-width: 16px;
-  height: 16px;
-  overflow: hidden;
-  background: #f41919;
-  border-radius: 8px;
-  color: #fff;
-  line-height: 16px;
-  font-size: 12px;
-  text-align: center;
-  font-family: "SimHei", "Helvetica Neue", Helvetica, sans-serif;
-  z-index: 1000;
+@import '../../public/css/bootstrap-variables.less';
+@import (optional) "../../public/css/common-variables.less";
+
+@sidebar-min-width: 75px;
+@sidebar-default-width: 155px;
+.topNav {
+  position: fixed;
+  z-index: 11;
+  top: 0;
+  right: 0; //overflow: hidden;
+  left: @sidebar-min-width;
+  height: @top_nav_height;
+  background: #fff;
+  padding-left: @container_padding;
+  font-size: 16px;
+  &.fixed-position {
+    height: 2*@top_nav_height;
+  }
+  &:before {
+    content: " ";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 10px;
+    border-bottom: 1px solid @bd-grey;
+  }
+  .topnav-links-wrap {
+    display: inline-block;
+    vertical-align: middle;
+    @bright: #4d96d1;
+    .navbar-toggle {
+      display: none;
+      margin-top: 21px;
+      border-color: @bright;
+      .icon-bar {
+        background: @bright;
+      }
+    }
+    &[hidden] {
+      ul {
+        display: none;
+      }
+      .navbar-toggle {
+        display: block;
+      }
+    }
+    &.fixed-layout {
+      ul {
+        position: fixed;
+        top: 74px;
+        left: 75px;
+        right: 0;
+        display: block;
+        background: #fff;
+        border-top: 1px solid #d9d9d9;
+        border-bottom: 1px solid #d9d9d9;
+        li {
+          display: block;
+          float: none;
+          padding: 0;
+          line-height: 20px;
+          a {
+            padding: 10px 20px;
+            &:hover {
+              color: #4d96d1;
+              background-color: #f9f9f9;
+            }
+          }
+        }
+      }
+      .navbar-toggle {
+        background: @bright;
+        .icon-bar {
+          background: #fff;
+        }
+      }
+    }
+  }
+  ul.topnav-links {
+    line-height: @top_nav_height - 4;
+    li {
+      padding: 0 20px 0 0;
+      position: relative;
+      float: left;
+      a {
+        font-size: @btn-font-size;
+        display: block;
+        color: #b6c2c9;
+        outline: none;
+      }
+    }
+    .topNav-menu-item-selected {
+      color: @BORDER-BLUE;
+    }
+    a.active,
+    a:hover {
+      color: @BORDER-BLUE;
+    }
+  }
+  .inline-block {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  a:hover,
+  a:focus {
+    text-decoration: none;
+  }
+  .ant-menu-horizontal {
+    border-bottom: none;
+  }
+  .ant-menu {
+    line-height: @top_nav_height - 3;
+    padding-left: 63px;
+  }
+  @media (max-width: @modal-md) {
+    .ant-menu {
+      padding-left: 0;
+      display: inline-block;
+    }
+  }
 }

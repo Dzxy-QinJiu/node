@@ -7,7 +7,7 @@ require('../css/recent-login-user-list.less');
 import { Select, Table } from 'antd';
 import ShareObj from '../util/app-id-share-util';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
-import TopNav from 'CMP_DIR/top-nav';
+import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import { RightPanelClose } from 'CMP_DIR/rightPanel/index';
 import { AntcDatePicker as DatePicker } from 'antc';
@@ -523,8 +523,7 @@ class RecentLoginUsers extends React.Component {
         let appOptions = this.getAppOptions();
         return (
             <div className="recent_login_header-wrap">
-                <TopNav>
-                    <TopNav.MenuList/>
+                <ButtonZones>
                     <div className="recent_login_header">
                         <div className="inline-block recent-login-time-select btn-item">
                             <DatePicker
@@ -592,7 +591,7 @@ class RecentLoginUsers extends React.Component {
                             </SelectFullWidth>
                         </div>
                     </div>
-                </TopNav>
+                </ButtonZones>
             </div>
         );
     }

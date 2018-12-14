@@ -32,7 +32,7 @@ class Content extends React.Component {
         }
         return (
             <div className="content">
-                {this.props.route ? renderRoutes(this.props.route.routes, {renderTopNavOperation: this.props.renderTopNavOperation}) : this.props.children}
+                {this.props.route ? renderRoutes(this.props.route.routes) : this.props.children}
             </div>
         );
     }
