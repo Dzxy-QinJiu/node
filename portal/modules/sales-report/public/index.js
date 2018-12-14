@@ -16,6 +16,11 @@ const TopNav = require('CMP_DIR/top-nav');
 const STORED_MEMBER_ID_KEY = 'sales_report_selected_member_id';
 const authType = hasPrivilege('CALL_RECORD_VIEW_MANAGER') ? 'manager' : 'user';
 const dataType = hasPrivilege('GET_TEAM_LIST_ALL') ? 'all' : 'self';
+//销售角色
+const SALES_ROLE = {
+    sales_manager: '销售经理',
+    customer_manager: '客户经理'
+};
 
 class SalesReport extends React.Component {
     state = {
@@ -294,7 +299,7 @@ class SalesReport extends React.Component {
 
         let charts = [];
 
-        if (roleName === '销售经理') {
+        if (roleName === SALES_ROLE.sales_manager) {
             charts.push(
                 reportCharts.getSalesRankingChart('salesManager')
             );
@@ -326,7 +331,7 @@ class SalesReport extends React.Component {
 
         let charts = [];
 
-        if (roleName === '销售经理') {
+        if (roleName === SALES_ROLE.sales_manager) {
         } else {
             charts.push(
                 reportCharts.contractChart,
@@ -358,7 +363,7 @@ class SalesReport extends React.Component {
 
         let charts = [];
 
-        if (roleName === '销售经理') {
+        if (roleName === SALES_ROLE.sales_manager) {
             charts.push(
                 //电话量
                 reportCharts.callVolumeChart,
