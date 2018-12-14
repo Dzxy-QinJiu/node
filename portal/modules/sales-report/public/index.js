@@ -16,6 +16,11 @@ const TopNav = require('CMP_DIR/top-nav');
 const STORED_MEMBER_ID_KEY = 'sales_report_selected_member_id';
 const authType = hasPrivilege('CALL_RECORD_VIEW_MANAGER') ? 'manager' : 'user';
 const dataType = hasPrivilege('GET_TEAM_LIST_ALL') ? 'all' : 'self';
+//销售角色
+const SALES_ROLE = {
+    sales_manager: '销售经理',
+    customer_manager: '客户经理'
+};
 
 class SalesReport extends React.Component {
     state = {
@@ -288,13 +293,45 @@ class SalesReport extends React.Component {
         );
     };
 
+    //渲染总体分析
+    renderOverallAnalysis = () => {
+        const roleName = this.state.currentMember.role_name;
+
+        let charts = [];
+
+        if (roleName === SALES_ROLE.sales_manager) {
+            charts.push(
+                reportCharts.getSalesRankingChart('salesManager')
+            );
+        } else {
+            charts.push(
+                reportCharts.getSalesRankingChart('customerManager')
+            );
+        }
+
+        return (
+            <dl>
+                <dt>{Intl.get('common.overall.analysis', '总体分析')}</dt>
+                <dd>
+                    <AntcAnalysis
+                        charts={charts}
+                        conditions={this.getConditions()}
+                        emitterConfigList={this.getEmitters()}
+                        isGetDataOnMount={true}
+                        forceUpdate={true}
+                    />
+                </dd>
+            </dl>
+        );
+    };
+
     //渲染销售业绩
     renderSalesPerformance = () => {
         const roleName = this.state.currentMember.role_name;
 
         let charts = [];
 
-        if (roleName === '销售经理') {
+        if (roleName === SALES_ROLE.sales_manager) {
         } else {
             charts.push(
                 reportCharts.contractChart,
@@ -326,7 +363,7 @@ class SalesReport extends React.Component {
 
         let charts = [];
 
-        if (roleName === '销售经理') {
+        if (roleName === SALES_ROLE.sales_manager) {
             charts.push(
                 //电话量
                 reportCharts.callVolumeChart,
@@ -379,6 +416,7 @@ class SalesReport extends React.Component {
                         <Col span={21} style={{height: this.state.contentHeight}}>
                             <GeminiScrollBar>
                                 {this.renderBaseInfo()}
+                                {this.renderOverallAnalysis()}
                                 {this.renderSalesPerformance()}
                                 {this.renderSalesBehavior()}
                             </GeminiScrollBar>

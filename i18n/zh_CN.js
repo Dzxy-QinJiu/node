@@ -2626,6 +2626,7 @@ var zh_CN = {
     'deal.drag.data.disabled': '关闭的订单不可以修改',
     'common.individual.report': '个人报告',
     'common.entry.time': '入职时间',
+    'common.overall.analysis': '总体分析',
     'common.sales.performance': '销售业绩',
     'common.sales.behavior': '销售行为',
     'common.sales.behavior.statistics': '销售行为统计',
