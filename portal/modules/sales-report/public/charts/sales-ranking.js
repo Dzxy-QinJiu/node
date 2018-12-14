@@ -104,6 +104,19 @@ export function getSalesRankingChart(role) {
             //数据是否有效
             let isDataValid = true;
 
+            //将排名值设置到对应的排名对象
+            function setRankingValue(data, field, rankingObj, total) {
+                if (_.has(data, field)) {
+                    //画图用的值要用参与排名的总人数减去其排名，以使其在图上的位置与其排名成反比，即排名越小的在图上的位置越靠外
+                    rankingObj.value.push(total - data[field]);
+                    //真实值，用于在tooltip上显示
+                    rankingObj.realValue.push(data[field]);
+                } else {
+                    isDataValid = false;
+                    return false;
+                }
+            }
+
             _.each(data, (dataItem, index) => {
                 let rankingData; 
 
@@ -120,34 +133,12 @@ export function getSalesRankingChart(role) {
                     return false;
                 }
 
-                //团队内排名
-                if (_.has(rankingData, 'order')) {
-                    //画图用的值要用其所在团队的人数减去其排名，以使其在图上的位置与其排名成反比，即排名越小的在图上的位置越靠外
-                    intraTeamRanking.value.push(NUM_OF_SALES.team - rankingData.order);
-                    //真实值，用于在tooltip上显示
-                    intraTeamRanking.realValue.push(rankingData.order);
-                } else {
-                    isDataValid = false;
-                    return false;
-                }
-
-                //上级团队内排名
-                if (_.has(rankingData, 'superior_order')) {
-                    intraSuperiorTeamRanking.value.push(NUM_OF_SALES.superior - rankingData.superior_order);
-                    intraSuperiorTeamRanking.realValue.push(rankingData.superior_order);
-                } else {
-                    isDataValid = false;
-                    return false;
-                }
-
-                //销售部内排名
-                if (_.has(rankingData, 'sales_order')) {
-                    intraSalesDepartmentRanking.value.push(NUM_OF_SALES.all - rankingData.sales_order);
-                    intraSalesDepartmentRanking.realValue.push(rankingData.sales_order);
-                } else {
-                    isDataValid = false;
-                    return false;
-                }
+                //设置团队内排名
+                setRankingValue(rankingData, 'order', intraTeamRanking, NUM_OF_SALES.team);
+                //设置上级团队内排名
+                setRankingValue(rankingData, 'superior_order', intraSuperiorTeamRanking, NUM_OF_SALES.superior);
+                //设置销售部内排名
+                setRankingValue(rankingData, 'sales_order', intraSalesDepartmentRanking, NUM_OF_SALES.all);
             });
 
             if (isDataValid) {
