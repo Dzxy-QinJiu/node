@@ -112,8 +112,8 @@ export function getSalesRankingChart(role) {
                     //真实值，用于在tooltip上显示
                     rankingObj.realValue.push(data[field]);
                 } else {
-                    isDataValid = false;
-                    return false;
+                    rankingObj.value.push(0);
+                    rankingObj.realValue.push(0);
                 }
             }
 
