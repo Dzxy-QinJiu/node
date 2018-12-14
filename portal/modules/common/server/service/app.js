@@ -12,7 +12,10 @@ var urls = {
     //获取应用的默认配置
     getAppConfigPromise: '/rest/base/v1/application/extra/grantinfos',
     //通过id获取应用详细信息
-    getCurAppById: '/rest/base/v1/application/id'
+    getCurAppById: '/rest/base/v1/application/id',
+    //获取产品集成的配置
+    getIntegrationConfig: 'http://172.19.103.39:8391/rest/base/v1/products/integration/config'
+
 };
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
@@ -22,6 +25,20 @@ var Promise = require('bluebird');
 var EventEmitter = require('events').EventEmitter;
 let BackendIntl = require('../../../../lib/utils/backend_intl');
 const commonUtil = require('../../../../lib/utils/common-utils');
+
+//获取集成配置
+exports.getIntegrationConfig = function(req, res) {
+    return restUtil.authRest.get({
+        url: urls.getIntegrationConfig,
+        req: req,
+        res: res
+    }, {}, {
+        success: function(emitter, resultObj) {
+            //返回集成类型（matomo、oplate、uem-默认），过滤掉其他暂时不用的数据
+            emitter.emit('success', {type: _.get(resultObj, 'name', '')});
+        }
+    });
+};
 
 //根据当前用户数据权限，获取应用列表
 exports.getGrantApplications = function(req,res,status) {

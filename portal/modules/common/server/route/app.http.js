@@ -1,6 +1,15 @@
 module.exports = {
     module: 'common/server/action/app',
     routes: [{
+        //获取集成配置
+        'method': 'get',
+        'path': '/rest/global/integration/config',
+        'handler': 'getIntegrationConfig',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': ['PRODUCT_BASE_PERMISSION']
+    },{
         //根据当前用户数据权限，获取应用列表
         'method': 'get',
         'path': '/rest/global/grant_applications',

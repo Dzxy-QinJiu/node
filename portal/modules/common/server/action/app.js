@@ -1,4 +1,14 @@
 var appService = require('../service/app');
+
+//获取集成配置
+exports.getIntegrationConfig = function(req, res) {
+    appService.getIntegrationConfig(req, res).on('success' , function(data) {
+        res.status(200).json(data);
+    }).on('error' , function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 //根据当前用户数据权限，获取应用列表
 exports.getGrantApplications = function(req , res) {
     //获取应用状态

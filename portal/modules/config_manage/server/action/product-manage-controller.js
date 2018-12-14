@@ -37,3 +37,30 @@ exports.updateProduct = function(req,res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+// 添加产品
+exports.addUemProduct = function(req,res) {
+    productService.addUemProduct(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 测试
+exports.testUemProduct = function(req,res) {
+    productService.testUemProduct(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 获取js代码
+exports.getUemJsCode = function(req,res) {
+    productService.getUemJsCode(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

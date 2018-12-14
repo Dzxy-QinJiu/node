@@ -4,7 +4,7 @@ exports.getProductions = function() {
     $.ajax({
         url: '/rest/product',
         type: 'get',
-        dateType: 'json',
+        dataType: 'json',
         success: function(data) {
             Deferred.resolve(_.get(data, 'list', []));
         },
@@ -41,7 +41,7 @@ exports.addProduction = function(production) {
     $.ajax({
         url: '/rest/product',
         type: 'post',
-        dateType: 'json',
+        dataType: 'json',
         data: production,
         success: function(result) {
             Deferred.resolve(result);
@@ -74,7 +74,7 @@ exports.deleteItemById = (itemId) => {
     $.ajax({
         url: '/rest/product/' + itemId,
         type: 'delete',
-        dateType: 'json',
+        dataType: 'json',
         success: function(result) {
             if(result){
                 Deferred.resolve(itemId);

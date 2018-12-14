@@ -368,3 +368,10 @@ export const DEAL_STATUS = {
     WIN: 'win',//赢单
     LOSE: 'lose'//丢单
 };
+
+//集成类型
+export const INTEGRATE_TYPES = {
+    UEM: 'uem',//默认类型（客套-用户参与度）
+    OPLATE: 'oplate',
+    MATOMO: 'matomo'
+};

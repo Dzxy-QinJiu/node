@@ -9,14 +9,14 @@ class Logo extends React.Component {
     render() {
         // 链接样式
         var aStyle = {
-            height: this.props.size ? this.props.size : '40px',
+            height: this.props.size || '40px',
             display: 'inline-block',
             textDecoration: 'none'
         };
         // 图片样式
         var imgStyle = {
-            width: this.props.size ? this.props.size : '40px',
-            height: this.props.size ? this.props.size : '40px',
+            width: this.props.size || '40px',
+            height: this.props.size || '40px',
             marginRight: '10px',
             verticalAlign: 'top'
         };
@@ -24,15 +24,20 @@ class Logo extends React.Component {
         var textStyle = {
             lineHeight: this.props.size ? this.props.size : '40px',
             fontSize: '14px',
-            color: '#ffffff'
+            color: this.props.fontColor || '#ffffff'
         };
         return (
             <Link to="/" className="logo" style={aStyle}>
                 <img style={imgStyle} src={this.props.logoSrc || LogoSrc}/>
-                <span style={textStyle}>客套</span>
+                <span style={textStyle}>{this.props.logoText || Intl.get('customer.ketao.app', '客套')}</span>
             </Link>
         );
     }
 }
-
+Logo.propTypes = {
+    size: PropTypes.string,
+    fontColor: PropTypes.string,
+    logoSrc: PropTypes.string,
+    logoText: PropTypes.sting,
+};
 module.exports = Logo;

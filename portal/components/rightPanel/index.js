@@ -166,7 +166,7 @@ class RightPanelUserTypeConfig extends React.Component {
 class RightPanelAppCodeTrace extends React.Component {
     render() {
         return (
-            <div {...this.props} className="icon-trace circle-button iconfont" title={Intl.get('rightpanel_codetrace','跟踪代码')}>
+            <div {...this.props} className="icon-trace circle-button iconfont" title={Intl.get('common.trace.code','跟踪代码')}>
             </div>
         );
     }
