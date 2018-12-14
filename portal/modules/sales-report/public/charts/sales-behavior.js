@@ -5,31 +5,36 @@
 export const salesBehaviorChart = {
     title: Intl.get('common.sales.behavior.statistics', '销售行为统计'),
     chartType: 'table',
-    url: '/rest/analysis/customer/v2/:data_type/last_contact/deal/statistics',
+    url: '/rest/analysis/customer/v2/customertrace/:data_type/sale/trace/statistics',
     argCallback: arg => {
         if (arg.query.member_id) {
             arg.query.member_ids = arg.query.member_id;
             delete arg.query.member_id;
         }
     },
+    dataField: 'list',
     option: {
         columns: [{
+            title: '拜访客户数',
+            dataIndex: 'visit',
+            width: '25%',
+        }, {
             title: '联系客户数',
-            dataIndex: 'total',
+            dataIndex: 'phone_all',
             width: '25%',
         }, {
-            title: '成交数',
-            dataIndex: 'deal',
+            title: '接通数',
+            dataIndex: 'phone_answer',
             width: '25%',
         }, {
-            title: '未成交数',
-            dataIndex: 'no_deal',
+            title: '未接通数',
             width: '25%',
-        }, {
-            title: '成交率',
-            dataIndex: 'deal_rate',
-            width: '25%',
+            align: 'right',
+            render: (value, record) => {
+                return {
+                    children: record.phone_all - record.phone_answer
+                };
+            }
         }]
     },
-    processData: data => [data.result],
 };
