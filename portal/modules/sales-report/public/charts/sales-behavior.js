@@ -12,7 +12,18 @@ export const salesBehaviorChart = {
             delete arg.query.member_id;
         }
     },
-    dataField: 'list',
+    processData: data => {
+        const list = _.get(data, 'list');
+        return _.map(list, item => {
+            ['visit', 'phone_all', 'phone_answer'].forEach(field => {
+                if (isNaN(item[field])) item[field] = 0;
+            });
+
+            item.phone_no_answer = item.phone_all - item.phone_answer;
+
+            return item;
+        });
+    },
     option: {
         columns: [{
             title: '拜访客户数',
@@ -28,13 +39,8 @@ export const salesBehaviorChart = {
             width: '25%',
         }, {
             title: '未接通数',
+            dataIndex: 'phone_no_answer',
             width: '25%',
-            align: 'right',
-            render: (value, record) => {
-                return {
-                    children: record.phone_all - record.phone_answer
-                };
-            }
         }]
     },
 };
