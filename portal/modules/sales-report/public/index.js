@@ -8,6 +8,7 @@ import { dateSelectorEmitter, teamTreeEmitter } from 'PUB_DIR/sources/utils/emit
 import { storageUtil } from 'ant-utils';
 import { Row, Col, Select } from 'antd';
 import reportCharts from './charts';
+import chanceCharts from 'MOD_DIR/analysis/public/charts/chance';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import ReportLeftMenu from 'CMP_DIR/report-left-menu';
 const Avatar = require('CMP_DIR/Avatar');
@@ -332,6 +333,12 @@ class SalesReport extends React.Component {
         let charts = [];
 
         if (roleName === SALES_ROLE.sales_manager) {
+            charts.push(
+                //新销售机会统计
+                chanceCharts.getNewChanceChart('table'),
+                //所有销售机会统计
+                chanceCharts.getAllChanceChart(['total', 'deal', 'deal_rate'])
+            );
         } else {
             charts.push(
                 reportCharts.contractChart,
