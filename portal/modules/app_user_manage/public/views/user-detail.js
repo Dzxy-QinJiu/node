@@ -58,7 +58,14 @@ class UserDetail extends React.Component {
         showEditPw: false,
         ...AppUserPanelSwitchStore.getState()
     };
-
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.userId !== this.props.userId) {
+            this.setState({
+                activeKey: '1'
+            });
+        }
+    }
+    
     reLayout = () => {
         this.onStoreChange();
     };
