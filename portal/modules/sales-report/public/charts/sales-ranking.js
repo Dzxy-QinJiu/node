@@ -164,7 +164,7 @@ export function getSalesRankingChart(role) {
             option.tooltip = {
                 trigger: 'item',
                 formatter: params => {
-                    let content = [params.name];
+                    let content = ['<b style="font-size: 15px">' + params.name + '</b>'];
 
                     _.each(dimensions, (item, index) => {
                         const text = item + ': ' + params.data.realValue[index];
