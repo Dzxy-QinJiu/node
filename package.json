@@ -36,7 +36,7 @@
     "alt": "0.17.9",
     "ant-ajax": "^1.0.2",
     "ant-auth-request": "^1.0.13",
-    "ant-utils": "^1.0.9",
+    "ant-utils": "1.0.10",
     "antc": "^1.0.117",
     "antd": "^2.13.0",
     "app-root-path": "1.0.0",
