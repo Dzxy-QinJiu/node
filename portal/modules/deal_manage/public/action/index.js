@@ -14,8 +14,8 @@ function dealManageAction() {
         'updateDeal',
         //删除订单成功后，删除列表中对应的订单
         'afterDeleteDeal',
-        //设置下拉加载的lastId
-        'setLastDealId'
+        //设置翻页的当前页数
+        'setPageNum'
     );
     //获取订单列表
     this.getDealList = function(params, body, query) {

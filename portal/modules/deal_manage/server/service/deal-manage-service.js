@@ -4,7 +4,7 @@ const restUtil = require('ant-auth-request').restUtil(restLogger);
 const _ = require('lodash');
 const baseUrl = '/rest/customer/v3/salesopportunity';
 const dealUrl = {
-    getDealList: `${baseUrl}/range/:type/:page_size/:sort_field/:sort_order`,
+    getDealList: `${baseUrl}/range/:type/:page_size/:page_num/:sort_field/:sort_order`,
     addDeal: baseUrl,
     editDeal: `${baseUrl}/property/:property`,
     deleteDeal: `${baseUrl}/:deal_id`
@@ -12,19 +12,10 @@ const dealUrl = {
 
 exports.getDealList = function(req, res) {
     let url = dealUrl.getDealList.replace(':type', req.params.type)
+        .replace(':page_num', req.params.page_num)
         .replace(':page_size', req.params.page_size)
         .replace(':sort_field', req.params.sort_field)
         .replace(':sort_order', req.params.sort_order);
-    let isFirstKey = true;
-    _.each(req.query, (value, key) => {
-        //第一个key前面需要加?
-        if (isFirstKey) {
-            isFirstKey = false;
-            url += `?${key}=${value}`;
-        } else {
-            url += `&${key}=${value}`;
-        }
-    });
     return restUtil.authRest.post({
         url: url,
         req: req,

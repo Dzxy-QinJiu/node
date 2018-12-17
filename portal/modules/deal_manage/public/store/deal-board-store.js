@@ -15,7 +15,7 @@ dealBoardStore.prototype.setInitData = function() {
     this.isLoadingStage = true;
     //阶段列表
     this.stageList = [];
-    //各阶段数据对象组成的map{stageName:{isLoading: false, errorMsg: '', list: [], total: 0, lastId: '',listenScrollBottom: true}}
+    //各阶段数据对象组成的map{stageName:{isLoading: false, errorMsg: '', list: [], total: 0, pageNum: 1, listenScrollBottom: true}}
     this.stageDealMap = {};
     //正在保存拖动后的数据
     this.isSavingDragData = false;
@@ -45,7 +45,7 @@ function getInitStageDealObj(stage) {
         errorMsg: '',
         list: [],
         total: 0,
-        lastId: '',//用来处理下拉加载的id
+        pageNum: 1,//用来翻页的页数
         listenScrollBottom: true,//是否监听下拉加载
     };
 }
@@ -64,16 +64,18 @@ dealBoardStore.prototype.getStageDealList = function(resultObj) {
         let dealList = _.get(resultObj, 'data.result', []);
         //过滤掉没有id的交易，以防影响界面操作（下拉加载、拖动）
         dealList = _.filter(dealList, deal => deal.id);
-        if (curStageDealObj.lastId) {
+        if (curStageDealObj.pageNum === 1) {
             curStageDealObj.list = curStageDealObj.list.concat(dealList);
         } else {
             curStageDealObj.list = dealList;
         }
         curStageDealObj.total = _.get(resultObj, 'data.total', 0);
         let curListLength = _.get(curStageDealObj, 'list.length');
-        curStageDealObj.lastId = _.get(curStageDealObj, `list[${curListLength - 1}].id`, '');
         if (curListLength >= curStageDealObj.total) {
             curStageDealObj.listenScrollBottom = false;
+        }
+        if(_.get(dealList,'[0]')){
+            curStageDealObj.pageNum++;
         }
     }
     this.stageDealMap[resultObj.stage] = curStageDealObj;
@@ -108,8 +110,8 @@ dealBoardStore.prototype.dragDealEnd = function(dragResult) {
 };
 
 
-dealBoardStore.prototype.setLastDealId = function(id) {
-    this.dealListObj.lastId = id;
+dealBoardStore.prototype.setPageNum = function(num) {
+    this.dealListObj.pageNum = num;
 };
 
 dealBoardStore.prototype.addOneDeal = function(deal) {

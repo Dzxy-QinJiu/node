@@ -170,7 +170,7 @@ exports.queryCustomer = function(params, pageSize, pageNum, sorter) {
     }
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/customer/range/' + pageSize + '/' + sorter.field + '/' + pageNum + '/' + sorter.order,
+        url: '/rest/customer/range/' + pageSize + '/' + pageNum + '/' + sorter.field + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
         data: params,

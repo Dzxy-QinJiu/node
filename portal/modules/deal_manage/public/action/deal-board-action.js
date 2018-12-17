@@ -15,8 +15,8 @@ function dealBoardAction() {
         'updateDeal',
         //删除订单成功后，删除列表中对应的订单
         'afterDeleteDeal',
-        //设置下拉加载的lastId
-        'setLastDealId',
+        //设置用于翻页的当前页数
+        'setPageNum',
         //拖动交易结束的处理
         'dragDealEnd',
         //设置是否正在拖动数据
@@ -32,21 +32,17 @@ function dealBoardAction() {
         });
     };
     //获取各阶段的订单列表
-    this.getStageDealList = function(stage, lastDealId) {
+    this.getStageDealList = function(stage, pageNum) {
         let params = {
             page_size: 20,
+            page_num: pageNum,
             sort_field: 'time',
             sort_order: 'descend'
         };
-        let query = {};
-        if (lastDealId) {
-            query.id = lastDealId;
-            query.cursor = true;
-        }
         let bodyData = {query: {sales_opportunities: [{sale_stages: stage}]}};
 
         this.dispatch({loading: true, stage});
-        dealAjax.getDealList(params, bodyData, query).then((data) => {
+        dealAjax.getDealList(params, bodyData).then((data) => {
             this.dispatch({loading: false, stage, data: data});
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
         }, (errorMsg) => {

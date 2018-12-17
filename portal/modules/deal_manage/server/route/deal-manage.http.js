@@ -2,7 +2,7 @@ module.exports = {
     module: 'deal_manage/server/action/deal-manage-controller',
     routes: [{
         method: 'post',
-        path: '/rest/deal/:type/:page_size/:sort_field/:sort_order',
+        path: '/rest/deal/:type/:page_size/:page_num/:sort_field/:sort_order',
         handler: 'getDealList',
         passport: {
             needLogin: true

@@ -132,17 +132,14 @@ class DealManage extends React.Component {
     }
 
     getDealList() {
-        let query = {cursor: true};
-        if (_.get(this.state, 'dealListObj.lastId')) {
-            query.id = this.state.dealListObj.lastId;
-        }
         let body = this.getSearchBody();
         let sorter = this.state.sorter;
         dealAction.getDealList({
             page_size: PAGE_SIZE,
+            page_num: _.get(this.state, 'dealListObj.pageNum', 1),
             sort_field: sorter.field,
             sort_order: sorter.order
-        }, body, query);
+        }, body);
     }
 
     hideRightPanel = () => {
@@ -299,7 +296,7 @@ class DealManage extends React.Component {
         if (!sorterChanged) return;
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('th.has-sorter'), `订单按 ${sorter.field} - ${sorter.order} 排序`);
         this.setState({sorter}, () => {
-            dealAction.setLastDealId('');
+            dealAction.setPageNum(1);
             setTimeout(() => {
                 this.getDealList();
             });
@@ -323,7 +320,7 @@ class DealManage extends React.Component {
                         rowKey={this.rowKey}
                         rowClassName={this.handleRowClassName}
                         columns={this.getDealColumns()}
-                        loading={dealListObj.isLoading && !dealListObj.lastId}
+                        loading={dealListObj.isLoading && !dealListObj.pageNum !== 1}
                         dataSource={dealListObj.list}
                         util={{zoomInSortArea: true}}
                         onChange={this.onTableChange}
@@ -365,7 +362,7 @@ class DealManage extends React.Component {
             searchObj.field = key;
             searchObj.value = _.trim(value);
             this.setState({searchObj}, () => {
-                dealAction.setLastDealId('');
+                dealAction.setPageNum(1);
                 setTimeout(() => {
                     this.getDealList();
                 });
