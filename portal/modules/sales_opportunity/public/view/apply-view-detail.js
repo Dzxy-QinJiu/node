@@ -331,8 +331,8 @@ class ApplyViewDetail extends React.Component {
         var readyApply = _.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.READY_APPLY;
         var assignedSalesUsersIds = ASSIGN_IDS.assignedSalesUsersIds;
         var assigendSalesApply = _.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.ASSIGN_SALES_APPLY;
-        //如果沒有分配负责人，要先分配负责人
-        if (!assignedCandidateUserIds && readyApply && approval === 'pass'){
+        //如果沒有分配负责人，要先分配负责人,识微域的不需要分配负责人
+        if (!assignedCandidateUserIds && readyApply && approval === 'pass' && !this.isCiviwRealm()){
             return;
         }else if (!assignedSalesUsersIds && assigendSalesApply){
             return;
@@ -484,6 +484,11 @@ class ApplyViewDetail extends React.Component {
         };
         SalesOpportunityApplyDetailAction.cancelApplyApprove(backoutObj);
     };
+    isCiviwRealm = () => {
+        var userDetail = userData.getUserData();
+        var realmId = _.get(userDetail, 'auth.realm_id');
+        return realmId === REALM_REMARK.CIVIW;
+    };
     //渲染详情底部区域
     renderDetailBottom() {
         var detailInfoObj = this.state.detailInfoObj.info;
@@ -498,10 +503,7 @@ class ApplyViewDetail extends React.Component {
             //分配给普通销售
             renderAssigenedContext = this.renderAssigenedContext;
         }else if(_.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.READY_APPLY && detailInfoObj.showApproveBtn){
-            var userDetail = userData.getUserData();
-            var realmId = _.get(userDetail, 'auth.realm_id');
-            var isCiviwRealm = realmId === REALM_REMARK.CIVIW;
-            if (isCiviwRealm){
+            if (this.isCiviwRealm()){
                 //如果是识微域，直接点通过就可以，不需要手动选择分配销售总经理
                 renderAssigenedContext = null;
             }else{
