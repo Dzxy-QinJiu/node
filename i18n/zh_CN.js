@@ -2624,6 +2624,7 @@ var zh_CN = {
     'deal.view.list': '表格视图',
     'deal.drag.data.saving': '正在保存拖动的数据...',
     'deal.drag.data.disabled': '关闭的订单不可以修改',
+    'clue.customer.edit.contact': '请填写联系人名称',
     'common.individual.report': '个人报告',
     'common.entry.time': '入职时间',
     'common.overall.analysis': '总体分析',

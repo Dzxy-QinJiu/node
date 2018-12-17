@@ -56,7 +56,7 @@ class ClueDetailOverview extends React.Component {
         }
     }
 
-    changeClueFieldSuccess = (newCustomerDetail) => {
+    changeClueFieldSuccess = (newCustomerDetail, contact_id) => {
         //如果是修改的线索来源和接入渠道，要看是不是重新添加的
         for (var key in newCustomerDetail) {
             if (key === 'clue_source' && !_.includes(this.props.clueSourceArray, newCustomerDetail[key])) {
@@ -68,6 +68,9 @@ class ClueDetailOverview extends React.Component {
             if (key === 'clue_classify' && !_.includes(this.props.clueClassifyArray, newCustomerDetail[key])) {
                 this.props.updateClueClassify(newCustomerDetail[key]);
             }
+        }
+        if (contact_id){
+            newCustomerDetail.contact_id = contact_id;
         }
         clueCustomerAction.afterEditCustomerDetail(newCustomerDetail);
     };
@@ -180,11 +183,35 @@ class ClueDetailOverview extends React.Component {
 
     //保存修改的基本信息
     saveEditBasicInfo = (type, saveObj, successFunc, errorFunc) => {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), `保存线索${type}的修改`);
+        var contacts = _.get(this, 'state.curClue.contacts',[]);
+        var item = type,contact_id = '';
+        if (_.isObject(type) ){
+            //修改联系人的名称
+            item = type.editItem;
+            contact_id = type.id;
+            saveObj.contact_id = contact_id;
+            saveObj.user_id = saveObj.id;
+            delete saveObj.id;
+            if(item === 'contact_name'){
+
+            }else if (item === 'phone'){
+                //其他选项修改的时候，需要把没改的值也传过去
+                var target = _.find(contacts, contactItem => contactItem.id === contact_id);
+                var updateItem = _.get(target, item, []);
+                updateItem[type.index] = saveObj[item];
+                saveObj[item] = updateItem;
+            }else{
+
+            }
+
+
+        }
+        Trace.traceEvent(ReactDOM.findDOMNode(this), `保存线索${item}的修改`);
         clueCustomerAjax.updateCluecustomerDetail(saveObj).then((result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
-                this.changeClueFieldSuccess(saveObj);
+                //修改联系人的时候，需要把联系人的下标加上
+                this.changeClueFieldSuccess(saveObj, contact_id);
             } else {
                 if (_.isFunction(errorFunc)) errorFunc();
             }
@@ -797,39 +824,76 @@ class ClueDetailOverview extends React.Component {
                             {_.map(curClue.contacts, (contactItem) => {
                                 return (
                                     <div className="contact-item">
-                                        <div className="contact-name">{contactItem.name}</div>
-                                        {contactItem.phone ? _.map(contactItem.phone, (phone) => {
-                                            return (
-                                                <span className="phone-item contact-way">
-                                                    <i className="iconfont icon-phone-call-out"></i>
-                                                    {phone}
-                                                </span>
-                                            );
-                                        }) : null}
-                                        {contactItem.qq ? _.map(contactItem.qq, (qq) => {
-                                            return (
-                                                <span className="phone-item contact-way">
-                                                    <i className="iconfont icon-qq"></i>
-                                                    {qq}
-                                                </span>
-                                            );
-                                        }) : null}
-                                        {contactItem.email ? _.map(contactItem.email, (email) => {
-                                            return (
-                                                <span className="phone-item contact-way">
-                                                    <i className="iconfont icon-email"></i>
-                                                    {email}
-                                                </span>
-                                            );
-                                        }) : null}
-                                        {contactItem.weChat ? _.map(contactItem.weChat, (weChat) => {
-                                            return (
-                                                <span className="phone-item contact-way">
-                                                    <i className="iconfont icon-weChat"></i>
-                                                    {weChat}
-                                                </span>
-                                            );
-                                        }) : null}
+                                        <div className="contact-name">
+                                            <BasicEditInputField
+                                                hasEditPrivilege={hasPrivilegeEdit}
+                                                id={curClue.id}
+                                                saveEditInput={this.saveEditBasicInfo.bind(this, {editItem: 'contact_name',id: contactItem.id})}
+                                                value={contactItem.name}
+                                                field='contact_name'
+                                                noDataTip={Intl.get('common.unknown', '未知')}
+                                                addDataTip={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
+                                                placeholder={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
+                                            />
+                                        </div>
+                                        <div className="contact-ways">
+                                            {contactItem.phone ? _.map(contactItem.phone, (phone,index) => {
+                                                return (
+                                                    <div className="phone-item contact-way">
+                                                        <i className="iconfont icon-phone-call-out"></i>
+                                                        <BasicEditInputField
+                                                            hasEditPrivilege={hasPrivilegeEdit}
+                                                            id={curClue.id}
+                                                            saveEditInput={this.saveEditBasicInfo.bind(this, {editItem: 'phone',id: contactItem.id,index: index})}
+                                                            value={phone}
+                                                            field='phone'
+                                                        />
+                                                    </div>
+                                                );
+                                            }) : null}
+                                            {contactItem.qq ? _.map(contactItem.qq, (qq, index) => {
+                                                return (
+                                                    <div className="phone-item contact-way">
+                                                        <i className="iconfont icon-qq"></i>
+                                                        <BasicEditInputField
+                                                            hasEditPrivilege={hasPrivilegeEdit}
+                                                            id={curClue.id}
+                                                            saveEditInput={this.saveEditBasicInfo.bind(this, {editItem: 'qq',id: contactItem.id,index: index})}
+                                                            value={qq}
+                                                            field='qq'
+                                                        />
+                                                    </div>
+                                                );
+                                            }) : null}
+                                            {contactItem.email ? _.map(contactItem.email, (email,index) => {
+                                                return (
+                                                    <div className="phone-item contact-way">
+                                                        <i className="iconfont icon-email"></i>
+                                                        <BasicEditInputField
+                                                            hasEditPrivilege={hasPrivilegeEdit}
+                                                            id={curClue.id}
+                                                            saveEditInput={this.saveEditBasicInfo.bind(this, {editItem: 'email',id: contactItem.id,index: index})}
+                                                            value={email}
+                                                            field='email'
+                                                        />
+                                                    </div>
+                                                );
+                                            }) : null}
+                                            {contactItem.weChat ? _.map(contactItem.weChat, (weChat,index) => {
+                                                return (
+                                                    <div className="phone-item contact-way">
+                                                        <i className="iconfont icon-weChat"></i>
+                                                        <BasicEditInputField
+                                                            hasEditPrivilege={hasPrivilegeEdit}
+                                                            id={curClue.id}
+                                                            saveEditInput={this.saveEditBasicInfo.bind(this, {editItem: 'weChat',id: contactItem.id,index: index})}
+                                                            value={weChat}
+                                                            field='weChat'
+                                                        />
+                                                    </div>
+                                                );
+                                            }) : null}
+                                        </div>
                                     </div>
                                 );
 
