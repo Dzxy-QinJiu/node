@@ -981,6 +981,8 @@ class ClueCustomer extends React.Component {
                             currentId={this.state.currentId}
                             curClue={this.state.curClue}
                             hideRightPanel={this.hideRightPanel}
+                            callNumber={this.state.callNumber}
+                            errMsg={this.state.errMsg}
                         /> : null}
 
                     {this.state.clueAnalysisPanelShow ? <RightPanel
