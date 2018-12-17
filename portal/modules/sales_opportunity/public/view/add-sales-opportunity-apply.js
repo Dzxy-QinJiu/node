@@ -81,6 +81,9 @@ class AddSalesOpportunityApply extends React.Component {
             if (err) return;
             values['expectdeal_time'] = moment(values['expectdeal_time']).endOf('day').valueOf();
             values['customer'] = _.get(this.state, 'formData.customer');
+            if (!_.get(values, 'customer.id')){
+                return;
+            }
             //销售机会的预算取到的值是带千分位的逗号的，往后端传的时候不能传带逗号的
             var budget = values.budget;
             values.budget = budget.replace(/,/g,'');
