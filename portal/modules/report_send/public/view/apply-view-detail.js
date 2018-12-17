@@ -446,16 +446,18 @@ class ApplyViewDetail extends React.Component {
         }
     };
     renderUploadAndDownloadInfo = () => {
+        var detailInfoObj = this.state.detailInfoObj.info;
         var props = {
             name: 'reportsend',
             action: '/rest/reportsend/upload',
             showUploadList: false,
-            onChange: this.handleChange
+            onChange: this.handleChange,
+            data: detailInfoObj.id
         };
-        var detailInfoObj = this.state.detailInfoObj.info;
+        var fileName = this.state.fileUploadName || _.get(detailInfoObj,'detail.file_name');
         return (
             <div>
-                {this.state.fileUploadName ? <div>{this.state.fileUploadName}</div> : null}
+                {fileName ? <div>{fileName}</div> : null}
                 {detailInfoObj.status === 'ongoing' ?
                     <Upload {...props} className="import-reportsend" data-tracename="上传表格">
                         <Button type='primary'>{Intl.get('apply.approve.import.file','上传文件')}{this.state.isUpLoading ?

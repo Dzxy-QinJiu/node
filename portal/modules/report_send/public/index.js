@@ -276,7 +276,6 @@ class ReportSendApplyManagement extends React.Component {
                         )
                         }
                     </div>
-                    {/* todo $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$待删除*/}
                     {noShowApplyDetail ? null : (
                         <ApplyViewDetail
                             detailItem={this.state.selectedDetailItem}

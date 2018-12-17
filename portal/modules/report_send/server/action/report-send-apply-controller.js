@@ -6,6 +6,7 @@
 var ReportSendApplyService = require('../service/report-send-apply-service');
 const multiparty = require('multiparty');
 const fs = require('fs');
+const _ = require('lodash');
 function handleNodata(data) {
     if (!data){
         data = {
@@ -46,6 +47,10 @@ exports.uploadReportSend = function(req, res) {
             res.json(false);
             return;
         }
+        var idArr = [];
+        _.forEach(fields,(item) => {
+            idArr = _.concat(idArr,item);
+        });
         // 文件不为空的处理
         var formData = {
             doc: {
@@ -53,7 +58,8 @@ exports.uploadReportSend = function(req, res) {
                 options: {
                     filename: filename
                 }
-            }
+            },
+            id: idArr.join('')
         };
 
         //调用上传请求服务

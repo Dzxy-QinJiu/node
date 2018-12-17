@@ -14,7 +14,7 @@ var restApis = {
     //通过或者驳回申请
     approveOpinionreportApplyPassOrReject: '/rest/base/v1/workflow/opinionreport/approve',
     //上传文件
-    uploadReportFile: '/rest/base/v1/usergroup/upload'
+    uploadReportFile: '/rest/base/v1/workflow/upload'
 
 };
 exports.restUrls = restApis;
@@ -37,7 +37,7 @@ exports.approveReportSendApplyPassOrReject = function(req, res) {
         }, req.body);
 };
 //上传舆情上报文件
-exports.uploadReportSend = function(req, res,formData) {
+exports.uploadReportSend = function(req, res, formData) {
     return restUtil.authRest.post({
         url: restApis.uploadReportFile,
         req: req,

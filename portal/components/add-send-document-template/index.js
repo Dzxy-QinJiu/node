@@ -72,13 +72,16 @@ class AddReportSendApply extends React.Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) return;
+            values['expect_submit_time'] = moment(values['expect_submit_time']).valueOf();
+            values['customer'] = _.get(this.state, 'formData.customer');
+            if (!_.get(values, 'customer.id')){
+                return;
+            }
             this.setState({
                 isSaving: true,
                 saveMsg: '',
                 saveResult: ''
             });
-            values['expect_submit_time'] = moment(values['expect_submit_time']).valueOf();
-            values['customer'] = _.get(this.state, 'formData.customer');
             $.ajax({
                 url: '/rest/add/opinionreport/list/' + this.props.applyAjaxType,
                 dataType: 'json',
