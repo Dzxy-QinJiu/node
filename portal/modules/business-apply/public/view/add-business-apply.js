@@ -110,11 +110,7 @@ class AddBusinessApply extends React.Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             var formData = _.cloneDeep(this.state.formData);
             if (err) return;
-            this.setState({
-                isSaving: true,
-                saveMsg: '',
-                saveResult: ''
-            });
+            var hasNoExistCustomer = false;
             _.forEach(formData.customers, (customerItem, index) => {
                 delete customerItem.key;
                 delete customerItem.hideCustomerRequiredTip;
@@ -122,8 +118,17 @@ class AddBusinessApply extends React.Component {
                     formData.reason += customerItem['remarks'];
                 }
                 if(!customerItem.id){
+                    hasNoExistCustomer = true;
                     return;
                 }
+            });
+            if (hasNoExistCustomer){
+                return;
+            }
+            this.setState({
+                isSaving: true,
+                saveMsg: '',
+                saveResult: ''
             });
 
             $.ajax({
