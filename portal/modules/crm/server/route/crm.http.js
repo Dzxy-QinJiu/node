@@ -91,7 +91,7 @@ module.exports = {
         },
         {
             method: 'post',
-            path: '/rest/customer/range/:pageSize/:sortField/:sortOrder',
+            path: '/rest/customer/range/:pageSize/:pageNum/:sortField/:sortOrder',
             handler: 'queryCustomer',
             passport: {
                 needLogin: true

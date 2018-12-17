@@ -161,8 +161,8 @@ exports.getCustomerById = function(customerId) {
     return Deferred.promise();
 };
 //查询客户
-exports.queryCustomer = function(params, pageSize, sorter) {
-    pageSize = pageSize || 10;
+exports.queryCustomer = function(params, pageSize, pageNum, sorter) {
+    pageSize = pageSize || 20;
     //没有关注客户置顶时
     sorter = sorter ? sorter : {field: 'id', order: 'ascend'};
     if (hasPrivilege(AUTHS.GETALL)) {
@@ -170,7 +170,7 @@ exports.queryCustomer = function(params, pageSize, sorter) {
     }
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/customer/range/' + pageSize + '/' + sorter.field + '/' + sorter.order,
+        url: '/rest/customer/range/' + pageSize + '/' + sorter.field + '/' + pageNum + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
         data: params,

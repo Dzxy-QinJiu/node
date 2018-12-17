@@ -114,11 +114,8 @@ class Crm extends React.Component {
             customersSize: CrmStore.getCustomersLength(),
             pageSize: crmStoreData.pageSize,
             pageNum: crmStoreData.pageNum,
-            nextPageNum: crmStoreData.nextPageNum,//下次点击的页码
             isConcernCustomerTop: crmStoreData.isConcernCustomerTop,//关注客户是否置顶
             curPageCustomers: list,//将后端返回的数据转为界面列表所需的数据
-            customersBack: listForPagination,//为了便于分页保存的上一次分页成功的数据
-            pageNumBack: crmStoreData.pageNumBack,//为了便于分页记录上一次分页成功时的页码
             originCustomerList: originCustomerList,//后端返回的客户数据
             rightPanelIsShow: rightPanelShow,
             importAlertShow: false,//是否展示导入结果提示框
@@ -126,7 +123,6 @@ class Crm extends React.Component {
             importAlertType: '',//导入结果提示框类型
             currentId: crmStoreData.currentId,
             curCustomer: crmStoreData.curCustomer,
-            customerId: crmStoreData.customerId,
             clueId: crmStoreData.clueId,//展示线索详情的id
             showDetailUserId: crmStoreData.showDetailUserId,//展示用户详情的userId
             keyword: $('.search-input').val() || '',
@@ -273,7 +269,7 @@ class Crm extends React.Component {
                     params = this.handleSortParams(params);
                 }
 
-                CrmAction.queryCustomer(params, pageSize, this.state.sorter);
+                CrmAction.queryCustomer(params, pageSize, 1, this.state.sorter);
             }
         } else {
             this.search();
@@ -593,14 +589,11 @@ class Crm extends React.Component {
 
         //当重置标志为true时，重新从第一页加载，并重置客户列表
         if (reset) {
-            this.state.customerId = '';
-            CrmAction.setCustomerId('');
+            this.state.pageNum = 1;
             //清除客户的选择
             this.clearSelectedCustomer();
             //将分页器默认选中为第一页
             CrmAction.setPageNum(1);
-            //清空state上的nextPageNum，避免显示上次的nextPageNum
-            CrmAction.setNextPageNum(1);
             CrmAction.setCurCustomers([]);
         }
         //联系方式(电话、邮箱)搜索的处理
@@ -874,14 +867,8 @@ class Crm extends React.Component {
 
         const condition = this.processCondition(filterStoreCondition, reset);
         const rangParams = (this.props.params && this.props.params.rangParams) || this.state.rangParams;
-
-        var queryObj = {
-            total_size: this.state.pageSize * this.state.pageValue,
-            cursor: this.state.cursor,
-            id: this.state.customerId
-        };
         const conditionParams = (this.props.params && this.props.params.condition) || condition;
-        const queryObjParams = $.extend({}, (this.props.params && this.props.params.queryObj), queryObj);
+        const queryObjParams = $.extend({}, (this.props.params && this.props.params.queryObj));
         //组合接口所需的数据结构
         let params = {
             data: JSON.stringify(conditionParams),
@@ -896,7 +883,7 @@ class Crm extends React.Component {
             params = this.handleSortParams(params);
         }
         //有关注的客户时，路径和sortAndOrders都传了排序字段时，只使用sortAndOrders中的字段进行排序（排序的优先级按数组中的顺序来排）
-        CrmAction.queryCustomer(params, this.state.pageSize, this.state.sorter);
+        CrmAction.queryCustomer(params, this.state.pageSize, this.state.pageNum, this.state.sorter);
         this.setState({rangeParams: this.state.rangParams});
     };
 
@@ -1140,7 +1127,7 @@ class Crm extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.antc-table .ant-table-wrapper'), '翻页至第' + page + '页');
         var currPageNum = this.state.pageNumBack;
         var curCustomerList = this.state.customersBack;
-        if (page === currPageNum) {
+        if (page === this.state.pageNum) {
             return;
         } else {
             let selectedCustomer = this.state.selectedCustomer;
@@ -1150,25 +1137,9 @@ class Crm extends React.Component {
                 this.setState({ selectedCustomer: [] });
             }
             //设置要跳转到的页码数值
-            CrmAction.setNextPageNum(page);
-            var pageValue = 0, cursor = true, customerId = '';
-            if (page > currPageNum) {
-                //向后翻页
-                pageValue = page - currPageNum;
-                customerId = _.last(curCustomerList).id;
-            } else {
-                //向前翻页
-                if (page !== '1') {
-                    pageValue = currPageNum - page;
-                    cursor = false;
-                    customerId = _.first(curCustomerList).id;
-                }
-            }
-            this.setState({
-                pageValue: pageValue,
-                cursor: cursor,
-                customerId: customerId,
-            }, () => {
+            //设置要跳转到的页码数值
+            CrmAction.setPageNum(page);
+            setTimeout(() => {
                 this.search();
             });
         }

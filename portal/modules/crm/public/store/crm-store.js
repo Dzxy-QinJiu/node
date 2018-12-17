@@ -31,10 +31,6 @@ CrmStore.prototype.setInitialState = function() {
     this.customersSize = 0;
     //当前客户列表
     this.curCustomers = [];
-    //为了便于翻页,记录的上次获取正确的客户列表
-    this.customersBack = [];
-    //为了便于翻页，记录的上次翻页正确的页数
-    this.pageNumBack = 1;
     //当前选择的客户
     this.selectCustomers = [];
     //一页可显示的客户的个数
@@ -53,10 +49,6 @@ CrmStore.prototype.setInitialState = function() {
     this.curCustomer = {};
     //是否展示客户查重界面
     this.isRepeatCustomerShow = false;
-    //向前或者向后翻页时传的id值
-    this.customerId = '';
-    //下次点击的页数
-    this.nextPageNum = 0;
     //展示的线索详情的id
     this.clueId = '';
     this.addCommonFilterResult = {
@@ -115,9 +107,9 @@ CrmStore.prototype.setRepeatCustomerShow = function(flag) {
 };
 
 //是否展示客户查重界面的设置
-CrmStore.prototype.setCustomerId = function(id) {
-    this.customerId = id;
-};
+// CrmStore.prototype.setCustomerId = function(id) {
+//     this.customerId = id;
+// };
 
 //公开方法，获取当前页展示客户数量
 CrmStore.prototype.getCustomersLength = function() {
@@ -142,10 +134,8 @@ CrmStore.prototype.queryCustomer = function(data) {
     } else if (data.error) {
         this.getErrMsg = data.errorMsg;
         this.isLoading = false;
-        if (this.nextPageNum !== 0) {
-            this.pageNum = this.nextPageNum;
-        }
         this.curCustomers = [];
+        this.pageNum = 1;
         this.customersSize = 0;
     } else {
         this.getErrMsg = '';
@@ -153,13 +143,12 @@ CrmStore.prototype.queryCustomer = function(data) {
         this.pageSize = data.pageSize;
         data = data && data.result;
         let list = data && data.result;
+        //过滤掉空的测试数据
+        list = _.filter(list, item => item);
         if (list && _.isArray(list) && list.length) {
             this.customersBack = list;
             this.curCustomers = list;
-            if (this.nextPageNum !== 0) {
-                this.pageNum = this.nextPageNum;
-                this.pageNumBack = this.nextPageNum;
-            }
+            this.pageNum++;
             this.customersSize = data && data.total || 0;
             //刷新当前右侧面板中打开的客户的数据
             if (this.currentId) {
@@ -167,7 +156,7 @@ CrmStore.prototype.queryCustomer = function(data) {
             }
         } else {
             this.curCustomers = [];
-            this.pageNum = this.nextPageNum;
+            this.pageNum = 1;
             this.customersSize = 0;
         }
 
@@ -563,9 +552,7 @@ CrmStore.prototype.batchChangeTerritory = function({taskInfo, taskParams, curCus
 CrmStore.prototype.setPageNum = function(pageNum) {
     this.pageNum = pageNum;
 };
-CrmStore.prototype.setNextPageNum = function(pageNum) {
-    this.nextPageNum = pageNum;
-};
+
 CrmStore.prototype.showClueDetail = function(clueId) {
     this.clueId = clueId;
 };

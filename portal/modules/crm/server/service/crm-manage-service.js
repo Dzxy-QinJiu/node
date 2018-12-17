@@ -16,7 +16,7 @@ var crmRestApis = {
     //我可以查看的客户列表（已分配销售的客户）
     // query: '/rest/customer/v2/customer/range',
     //获取所有的客户列表（包括：未分配给销售的客户）
-    managerQuery: '/rest/customer/v3/customer/range/:type/:page_size/:sort_field/:sort_order',
+    managerQuery: '/rest/customer/v3/customer/range/:type/:page_size/:page_num/:sort_field/:sort_order',
     dynamic: '/rest/customer/v2/customerdynamic',
     upload: '/rest/customer/v3/customer/upload/preview',
     repeatCustomer: '/rest/customer/v2/customer/query/repeat',
@@ -258,6 +258,7 @@ exports.queryCustomer = function(req, res) {
         let type = req.body.hasManageAuth ? 'manager' : 'user';
         //.replace(':page_num',req.params.pageNum)改为图数据库后翻页需要
         url = crmRestApis.managerQuery.replace(':type', type).replace(':page_size', req.params.pageSize)
+            .replace(':page_num',req.params.pageNum)
             .replace(':sort_field', req.params.sortField)
             .replace(':sort_order',req.params.sortOrder);
         if (id){
@@ -271,13 +272,6 @@ exports.queryCustomer = function(req, res) {
             .replace(':page_num',req.params.pageNum).replace(':sort_field', req.params.sortField)
             .replace(':sort_order',req.params.sortOrder);
         let query = req.body.queryObj ? JSON.parse(req.body.queryObj) : {};
-        url += '?cursor=' + query.cursor;
-        if (query.id) {
-            url += '&id=' + query.id;
-        }
-        if (query.total_size) {
-            url += '&total_size=' + query.total_size;
-        }
         if (condition.exist_fields) {
             bodyData.exist_fields = condition.exist_fields;
             delete condition.exist_fields;

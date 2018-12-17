@@ -35,9 +35,9 @@ function CrmActions() {
         'setShowDetailUserId'
     );
 
-    this.queryCustomer = function(params, pageSize, sorter) {
+    this.queryCustomer = function(params, pageSize, pageNum, sorter) {
         this.dispatch({error: false, loading: true});
-        crmAjax.queryCustomer(params, pageSize, sorter).then((result) => {
+        crmAjax.queryCustomer(params, pageSize, pageNum, sorter).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({error: false, loading: false, result: result, pageSize});
         }, (errorMsg) => {

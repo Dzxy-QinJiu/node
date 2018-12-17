@@ -92,7 +92,7 @@ class HistoricHighDetail extends React.Component {
         const customerIds = allIds.join(',');
 
         ajax.send({
-            url: `/rest/customer/v2/customer/range/${count}/id/asc/force_use_common_rest`,
+            url: `/rest/customer/range/${count}/1/id/asc/force_use_common_rest`,
             type: 'post',
             data: {
                 query: {
@@ -171,7 +171,7 @@ class HistoricHighDetail extends React.Component {
                 <GeminiScrollBar>
                     {this.state.isShowError ? (
                         <div className='error-info'>
-                            {Intl.get('common.data.request.error', '数据请求出错')}, <span className="retry-btn" onClick={this.replenishCustomerName.bind(this)}>{Intl.get('user.info.retry': '请重试')}</span>
+                            {Intl.get('common.data.request.error', '数据请求出错')}, <span className="retry-btn" onClick={this.replenishCustomerName.bind(this)}>{Intl.get('user.info.retry', '请重试')}</span>
                         </div>
                     ) : (
                         <div>
