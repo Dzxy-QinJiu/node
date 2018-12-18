@@ -18,14 +18,7 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
         argCallback: (arg) => {
             let query = arg.query;
 
-            if (query && query.start_time && query.end_time) {
-                query.starttime = query.start_time;
-                query.endtime = query.end_time;
-                delete query.start_time;
-                delete query.end_time;
-            }
-
-            if (query && query.starttime && query.endtime) {
+            if (query) {
                 const interval = query.interval;
 
                 if (interval === 'day') {
