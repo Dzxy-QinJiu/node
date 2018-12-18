@@ -33,9 +33,9 @@ dealManageStore.prototype.getDealList = function(resultObj) {
         this.dealListObj.errorMsg = '';
         let dealList = _.get(resultObj, 'data.result', []);
         if (this.dealListObj.pageNum === 1) {
-            this.dealListObj.list = this.dealListObj.list.concat(dealList);
-        } else {
             this.dealListObj.list = dealList;
+        } else {
+            this.dealListObj.list = this.dealListObj.list.concat(dealList);
         }
         this.dealListObj.total = _.get(resultObj, 'data.total', 0);
         let curListLength = _.get(this.dealListObj, 'list.length');
