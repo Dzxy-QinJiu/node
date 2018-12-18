@@ -24,7 +24,14 @@ import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
 import ApplyDetailBlock from 'CMP_DIR/apply-detail-block';
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import {APPLY_LIST_LAYOUT_CONSTANTS, APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc,getFilterReplyList,handleDiffTypeApply} from 'PUB_DIR/sources/utils/common-method-util';
+import {
+    getApplyTopicText,
+    getApplyResultDscr,
+    getApplyStatusTimeLineDesc,
+    getFilterReplyList,
+    handleDiffTypeApply,
+    formatSalesmanList
+} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 const ASSIGN_TYPE = {
@@ -381,22 +388,8 @@ class ApplyViewDetail extends React.Component {
             //列表中只选销售总经理,
             salesManList = _.filter(salesManList, data => _.get(data, 'user_groups[0].owner_id') === _.get(data, 'user_info.user_id'));
         }
-        let dataList = [];
         //销售领导、域管理员,展示其所有（子）团队的成员列表
-        _.each(salesManList,(salesman) => {
-            let teamArray = salesman.user_groups;
-            //一个销售属于多个团队的处理（旧数据中存在这种情况）
-            if (_.isArray(teamArray) && teamArray.length) {
-                //销售与所属团队的组合数据，用来区分哪个团队中的销售
-                teamArray.forEach(team => {
-                    dataList.push({
-                        name: salesman.user_info.nick_name + '-' + team.group_name,
-                        value: salesman.user_info.user_id + '&&' + team.group_id,
-                    });
-                });
-            }
-        });
-
+        let dataList = formatSalesmanList(salesManList);
         return (
             <div className="op-pane change-salesman">
                 <AlwaysShowSelect
