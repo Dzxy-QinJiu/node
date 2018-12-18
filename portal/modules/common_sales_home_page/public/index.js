@@ -227,7 +227,7 @@ class SalesHomePage extends React.Component {
     getNewDistributeCustomer = () => {
         //客户被分配后是否已联系 allot_no_contact  未联系 : "0" ，已联系 :"1"
         //获取新分配的客户
-        SalesHomeAction.getNewDistributeCustomer({allot_no_contact: '0'}, this.state.rangParamsDistribute, this.state.page_size, _.get(this.state, 'newDistributeCustomer.curPage'), this.state.sorterDistribute);
+        SalesHomeAction.getNewDistributeCustomer({allot_no_contact: '0'}, this.state.rangParamsDistribute, this.state.page_size, _.get(this.state, 'newDistributeCustomer.curPage', 1), this.state.sorterDistribute);
     };
 
     //获取今日的日程列表
