@@ -37,7 +37,7 @@ class ButtonZones extends React.Component {
     };
     resizeFunc = () => {
         clearTimeout(this.resizeFunc.timeout);
-        this.resizeFunc.timeout = setTimeout(this.resizeHandler, 10);
+        this.resizeFunc.timeout = setTimeout(this.resizeHandler, 100);
     };
     resizeHandler = () => {
         //找到外层节点
@@ -45,12 +45,12 @@ class ButtonZones extends React.Component {
         let $content = $('.rightContent .moduleContent');
         //找到菜单列表
         let $topLinks = $wrap.find('.topnav-links-wrap');
-        if (!$wrap || !$content || !$topLinks) {
+        if (!$wrap.length || !$content.length || !$topLinks.length) {
             return;
         }
         //获取菜单在页面中的位置
         let topLinksPosStart = $topLinks && $topLinks.offset() && $topLinks.offset().left || 0;
-        let topLinksPosEnd = topLinksPosStart + $topLinks.outerWidth();
+        let topLinksPosEnd = topLinksPosStart + ($topLinks.outerWidth() || 0);
         //按钮区
         let $buttonZones = $(ReactDOM.findDOMNode(this));
         this.cleanUpStyle();
