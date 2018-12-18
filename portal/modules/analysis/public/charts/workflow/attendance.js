@@ -4,7 +4,7 @@
 
 export function getAttendanceChart() {
     return {
-        title: '出差次数、请假天数',
+        title: '出差请假统计',
         chartType: 'table',
         url: [
             '/rest/base/v1/workflow/businesstrip/statistic',
@@ -30,12 +30,24 @@ export function getAttendanceChart() {
             }
 
             if (_.isNumber(askForLeaveDuration)) {
+                //一小时的毫秒数
+                const oneHour = 60 * 60 * 1000;
+                //请假一天按8小时算
+                const oneDay = 8 * oneHour;
                 //请假天数
-                let askForLeaveDayNum = moment.duration(askForLeaveDuration).asDays();
-                //请假天数最多保留两位小数
-                askForLeaveDayNum = Math.ceil(askForLeaveDayNum * 100) / 100;
+                let askForLeaveDayNum = (askForLeaveDuration / oneDay).toFixed();
+                //请假小时数
+                let askForLeaveHourNum = (askForLeaveDuration % oneDay) / oneHour;
+                //请假小时数最多保留两位小数
+                askForLeaveHourNum = Math.ceil(askForLeaveHourNum * 100) / 100;
 
-                _.set(processedData, '[0].ask_for_leave_day_num', askForLeaveDayNum);
+                let askForLeaveDurationStr = askForLeaveDayNum + '天';
+
+                if (askForLeaveHourNum) {
+                    askForLeaveDurationStr += askForLeaveHourNum + '小时';
+                }
+
+                _.set(processedData, '[0].ask_for_leave_duration', askForLeaveDurationStr);
             }
 
             return processedData;
@@ -47,8 +59,9 @@ export function getAttendanceChart() {
                     dataIndex: 'business_trip_num',
                     width: '50%',
                 }, {
-                    title: '请假天数',
-                    dataIndex: 'ask_for_leave_day_num',
+                    title: '请假时长',
+                    dataIndex: 'ask_for_leave_duration',
+                    align: 'right',
                     width: '50%',
                 }
             ],
