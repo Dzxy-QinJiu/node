@@ -9,6 +9,7 @@ import {storageUtil} from 'ant-utils';
 import {Row, Col, Select} from 'antd';
 import reportCharts from './charts';
 import chanceCharts from 'MOD_DIR/analysis/public/charts/chance';
+import customerCharts from 'MOD_DIR/analysis/public/charts/customer';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import ReportLeftMenu from 'CMP_DIR/report-left-menu';
 
@@ -398,6 +399,8 @@ class SalesReport extends React.Component {
                 reportCharts.getOrderStageChart(this.state.stageList),
                 //客户阶段
                 reportCharts.customerStageChart,
+                //客户流失率统计
+                customerCharts.getCustomerLoseRateChart(),
             );
         }
 
