@@ -26,6 +26,8 @@ export const contractChart = {
                 amount: amountSum,
                 grossProfit: grossProfitSum
             });
+        } else {
+            data = [];
         }
 
         return data;

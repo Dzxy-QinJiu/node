@@ -26,6 +26,8 @@ export const repaymentChart = {
                 amount: amountSum,
                 grossProfit: grossProfitSum
             });
+        } else {
+            data = [];
         }
 
         return data;
