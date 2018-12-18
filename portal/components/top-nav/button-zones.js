@@ -37,7 +37,7 @@ class ButtonZones extends React.Component {
     };
     resizeFunc = () => {
         clearTimeout(this.resizeFunc.timeout);
-        this.resizeFunc.timeout = setTimeout(this.resizeHandler, 10);
+        this.resizeFunc.timeout = setTimeout(this.resizeHandler, 100);
     };
     resizeHandler = () => {
         //找到外层节点
