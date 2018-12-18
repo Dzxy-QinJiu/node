@@ -5,7 +5,10 @@
 import ajax from 'ant-ajax';
 import { AntcTable } from 'antc';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
-
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+const AUTHS = {
+    'GETALL': 'CUSTOMER_ALL'
+};
 class HistoricHighDetail extends React.Component {
     static defaultProps = {
         data: {}
@@ -90,9 +93,9 @@ class HistoricHighDetail extends React.Component {
         const allIds = _.chain(qulifyCustomerIds).concat(turnInCustomerIds, turnOutCustomerIds).uniq().value();
         const count = allIds.length;
         const customerIds = allIds.join(',');
-
+        let type = hasPrivilege(AUTHS.GETALL) ? 'manager' : 'user';
         ajax.send({
-            url: `/rest/customer/range/${count}/1/id/asc/force_use_common_rest`,
+            url: `/rest/customer/v3/customer/range/${type}/${count}/1/id/ascend/force_use_common_rest`,
             type: 'post',
             data: {
                 query: {
