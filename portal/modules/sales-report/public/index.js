@@ -9,6 +9,7 @@ import {storageUtil} from 'ant-utils';
 import {Row, Col, Select} from 'antd';
 import reportCharts from './charts';
 import chanceCharts from 'MOD_DIR/analysis/public/charts/chance';
+import workflowChart from 'MOD_DIR/analysis/public/charts/workflow';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import ReportLeftMenu from 'CMP_DIR/report-left-menu';
 
@@ -417,6 +418,28 @@ class SalesReport extends React.Component {
         );
     };
 
+    //渲染出勤统计
+    renderAttendance = () => {
+        if (!this.state.currentMember.team_id) return;
+
+        const charts = [workflowChart.getAttendanceChart()];
+
+        return (
+            <dl>
+                <dt>出勤统计</dt>
+                <dd>
+                    <AntcAnalysis
+                        charts={charts}
+                        conditions={this.getConditions()}
+                        emitterConfigList={this.getEmitters()}
+                        isGetDataOnMount={true}
+                        forceUpdate={true}
+                    />
+                </dd>
+            </dl>
+        );
+    };
+
     render() {
         return (
             <div className="sales-report" data-tracename='销售报告'>
@@ -432,6 +455,7 @@ class SalesReport extends React.Component {
                                 {this.renderOverallAnalysis()}
                                 {this.renderSalesPerformance()}
                                 {this.renderSalesBehavior()}
+                                {this.renderAttendance()}
                             </GeminiScrollBar>
                         </Col>
                     </Row>
