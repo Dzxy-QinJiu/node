@@ -286,7 +286,11 @@ class ApplyViewDetail extends React.Component {
     };
     confirmFinishApply = () => {
         var detailInfoObj = this.state.detailInfoObj.info;
-        ReportSendApplyDetailAction.approveLeaveApplyPassOrReject({id: detailInfoObj.id, agree: 'pass',report_id: this.state.fileUploadId},() => {
+        var fileId = this.state.fileUploadId || _.get(detailInfoObj,'detail.upload_id');
+        if (!fileId){
+            return;
+        }
+        ReportSendApplyDetailAction.approveLeaveApplyPassOrReject({id: detailInfoObj.id, agree: 'pass',report_id: fileId},() => {
             detailInfoObj.showApproveBtn = false;
             detailInfoObj.status = 'pass';
             var replyList = _.get(this.state,'replyListInfo.list');
@@ -317,15 +321,19 @@ class ApplyViewDetail extends React.Component {
         var approvalDes = getApplyResultDscr(detailInfoObj);
         var renderAssigenedContext = null,passText = '',showApproveBtn = detailInfoObj.showApproveBtn;
         if (detailInfoObj.status === 'ongoing' && showApproveBtn){
-            if(_.isArray(detailInfoObj.approver_ids)){
-                showApproveBtn = false;
-            }else{
+            //有approver_ids是表示已经确认过 待确认申请
+            if (!_.isArray(detailInfoObj.approver_ids)){
                 passText = Intl.get('apply.approve.confirm.apply','确认申请');
                 showApproveBtn = true;
-            }
-            if (this.state.fileUploadId){
-                renderAssigenedContext = this.renderConfirmFinish;
-                showApproveBtn = true;
+            }else if (_.isArray(detailInfoObj.approver_ids)){
+                //有upload_id表示已经上传过文件 已经上传文件了
+                if (_.get(detailInfoObj,'detail.upload_id','') || this.state.fileUploadId){
+                    renderAssigenedContext = this.renderConfirmFinish;
+                    showApproveBtn = true;
+                }else{
+                    //还没有上传文件
+                    showApproveBtn = false;
+                }
             }
         }
         return (
@@ -435,7 +443,7 @@ class ApplyViewDetail extends React.Component {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-reportsend'), '上传表格');
             if (response) {
                 //上传表格成功
-                this.setState({fileUploadId: response.file_id,fileUploadName: response.file_name});
+                this.setState({fileUploadId: response.upload_id,fileUploadName: response.file_name});
             } else {
                 message.error(Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!',{type: Intl.get('apply.approve.lyrical.report', '舆情报告')}));
             }
@@ -454,14 +462,21 @@ class ApplyViewDetail extends React.Component {
             onChange: this.handleChange,
             data: detailInfoObj.id
         };
+        const reqData = {
+            file_dir_id: _.get(detailInfoObj,'detail.file_dir_id'),
+            file_id: _.get(detailInfoObj,'detail.file_id'),
+            file_name: _.get(detailInfoObj,'detail.file_name'),
+        };
         var fileName = this.state.fileUploadName || _.get(detailInfoObj,'detail.file_name');
         return (
             <div>
-                {fileName ? <div>{fileName}</div> : null}
+                {fileName ? <div className="upload-file-name"><a href={'/rest/reportsend/download/' + JSON.stringify(reqData) }>{fileName}</a></div> : null}
                 {detailInfoObj.status === 'ongoing' ?
                     <Upload {...props} className="import-reportsend" data-tracename="上传表格">
-                        <Button type='primary'>{Intl.get('apply.approve.import.file','上传文件')}{this.state.isUpLoading ?
-                            <Icon type="loading" className="icon-loading"/> : null}</Button>
+                        <Button type='primary' className='download-btn'>
+                            {fileName ? Intl.get('apply.approve.update.file', '更新文件') : Intl.get('apply.approve.import.file', '上传文件')}
+                            {this.state.isUpLoading ?
+                                <Icon type="loading" className="icon-loading"/> : null}</Button>
                     </Upload>
                     : null}
 

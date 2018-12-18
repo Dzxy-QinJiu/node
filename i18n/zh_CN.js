@@ -2658,6 +2658,7 @@ var zh_CN = {
     'apply.approve.confirm.apply': '确认申请',
     'apply.approve.wait.confirm': '待{confirmer}确认',
     'apply.approve.wait.upload': '待{uploader}上传',
-    'apply.approve.confirm.finish': '确认完成'
+    'apply.approve.confirm.finish': '确认完成',
+    'apply.approve.update.file': '更新文件'
 };
 export default zh_CN;

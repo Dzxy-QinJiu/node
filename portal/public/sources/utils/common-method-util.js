@@ -14,7 +14,7 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import userData from '../user-data';
 import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import {selectMenuList, APPLY_APPROVE_TYPES} from './consts';
+import {selectMenuList, APPLY_APPROVE_TYPES,DOCUMENT_TYPE} from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -412,12 +412,24 @@ exports.getApplyTopicText = function(obj) {
         return _.get(obj,'detail.customer.name');
     } else if (obj.topic === APPLY_APPROVE_TYPES.PERSONAL_LEAVE) {
         return Intl.get('leave.apply.leave.application', '请假申请');
-    } else if (obj.topic.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1 ){
+    } else if (obj.workflow_type === APPLY_APPROVE_TYPES.REPORT){
         return Intl.get('apply.approve.specific.report','{customer}客户的专报',{customer: _.get(obj,'detail.customer.name')});
-    }else if (obj.topic === APPLY_APPROVE_TYPES.DOCUMENT){
-        return Intl.get('apply.approve.document.writing', '文件撰写');
+    }else if (obj.workflow_type === APPLY_APPROVE_TYPES.DOCUMENT){
+
+        return getDocumentReportTypeText(DOCUMENT_TYPE,_.get(obj,'detail.document_type'));
     }
 };
+function getDocumentReportTypeText(AllTypeList,specificType) {
+    var targetObj = _.find(AllTypeList, (item) => {
+        return item.value === specificType;
+    });
+    var type = '';
+    if (targetObj) {
+        type = targetObj.name;
+    }
+    return type;
+}
+exports.getDocumentReportTypeText = getDocumentReportTypeText;
 exports.getApplyResultDscr = function(detailInfoObj) {
     let resultDscr = '';
     switch (detailInfoObj.status) {

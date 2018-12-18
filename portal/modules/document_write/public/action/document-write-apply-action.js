@@ -7,6 +7,7 @@ var DocumentWriteAjax = require('../ajax/document-write-apply-ajax');
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 function ReportSendApplyActions() {
     this.generateActions(
         'setInitState',
@@ -26,7 +27,7 @@ function ReportSendApplyActions() {
                 //需要对全部列表都加一个可以审批的属性
                 //舆情报送的审批和文件撰写的审批是一个接口，获取回来的是两类数据，需要在前端进行过滤
                 //这个接口不是下拉加载，是一次全部取出，所以需要把total的值也一起改掉
-                workList.list = _.filter(workList.list, item => item.topic === APPLY_APPROVE_TYPES.DOCUMENT);
+                workList.list = _.filter(workList.list, item => item.workflow_type === APPLY_APPROVE_TYPES.DOCUMENT);
                 workList.total = workList.list.length;
                 _.forEach(workList.list,(workItem) => {
                     workItem.showApproveBtn = true;
@@ -39,6 +40,7 @@ function ReportSendApplyActions() {
                 return;
             }
             DocumentWriteAjax.getAllLeaveApplyList(queryObj).then((data) => {
+                scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
                 //需要对全部列表进行一下处理，知道哪些是可以审批的
                 var workListArr = workList.list;
                 _.forEach(workListArr,(item) => {

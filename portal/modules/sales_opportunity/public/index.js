@@ -83,7 +83,7 @@ class SalesOpportunityApplyManagement extends React.Component {
             sort_field: this.state.sort_field,//排序字段
             order: this.state.order,
             page_size: this.state.page_size,
-            id: this.state.lastSalesOpportunityApplyId, //用于下拉加载的id
+            id: this.state.lastApplyId, //用于下拉加载的id
             type: 'business_opportunities'
         };
         //如果是选择的全部类型，不需要传status这个参数

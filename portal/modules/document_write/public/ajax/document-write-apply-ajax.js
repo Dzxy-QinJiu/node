@@ -102,7 +102,7 @@ exports.approveLeaveApplyPassOrReject = function(obj) {
     var Deferred = $.Deferred();
     approveLeaveApplyPassOrRejectAjax && approveLeaveApplyPassOrRejectAjax.abort();
     approveLeaveApplyPassOrRejectAjax = $.ajax({
-        url: '/rest/leave_apply/submitApply',
+        url: '/rest/documentwrite/submitApply',
         dataType: 'json',
         type: 'post',
         data: obj,

@@ -11,7 +11,7 @@ const DocumentWriteApplyPage = (props) => (
     </Bundle>
 );
 module.exports = {
-    path: '/application/document_writing',
+    path: '/application/document_write',
     component: DocumentWriteApplyPage
 
 };

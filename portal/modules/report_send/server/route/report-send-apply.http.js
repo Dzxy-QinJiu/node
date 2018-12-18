@@ -20,11 +20,34 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+        }, {
+            method: 'post',
+            path: '/rest/documentwrite/submitApply',
+            handler: 'approveDocumentWriteApplyPassOrReject',
+            passport: {
+                needLogin: true
+            },
         },
         {
             method: 'post',
             path: '/rest/reportsend/upload',
             handler: 'uploadReportSend',
+            passport: {
+                'needLogin': true
+            }
+        },
+        {
+            method: 'get',
+            path: '/rest/reportsend/download/:fileObj',
+            handler: 'downLoadReportSend',
+            passport: {
+                'needLogin': true
+            }
+        },
+        {
+            method: 'delete',
+            path: '/rest/reportsend/delete',
+            handler: 'deleteReportSend',
             passport: {
                 'needLogin': true
             }

@@ -22,7 +22,8 @@ function ApplyViewDetailActions() {
         'cancelSendApproval',
         'hideApprovalBtns',//审批完后不在显示审批按钮
         'hideCancelBtns',//审批完后不再显示撤销按钮
-        'setDetailInfoObjAfterAdd'
+        'setDetailInfoObjAfterAdd',
+        'setDetailInfo'
     );
 
     //获取审批单详情
@@ -63,21 +64,25 @@ function ApplyViewDetailActions() {
     };
 
     //通过或者驳回审批
-    this.approveLeaveApplyPassOrReject = function( obj) {
+    this.approveLeaveApplyPassOrReject = function( obj,callback) {
         this.dispatch({loading: true, error: false});
         DocumentWriteApplyAjax.approveLeaveApplyPassOrReject(obj).then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
             //更新选中的申请单类型
-            DocumentWriteUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
-            if (Oplate && Oplate.unread) {
-                Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE] -= 1;
-                if (timeoutFunc) {
-                    clearTimeout(timeoutFunc);
-                }
-                timeoutFunc = setTimeout(function() {
+            //如果不是最后确认的那一步，状态就还是ongoing
+            if(obj.report_id || obj.agree === 'reject'){
+                DocumentWriteUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
+                if (Oplate && Oplate.unread) {
+                    Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE] -= 1;
+                    if (timeoutFunc) {
+                        clearTimeout(timeoutFunc);
+                    }
+                    timeoutFunc = setTimeout(function() {
                     //触发展示的组件待审批数的刷新
-                    notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
-                }, timeout);
+                        notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
+                    }, timeout);
+                }
+                _.isFunction(callback) && callback();
             }
         }, (errorMsg) => {
             //更新选中的申请单类型

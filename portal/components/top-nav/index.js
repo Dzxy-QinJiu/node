@@ -190,7 +190,7 @@ class TopNav extends React.Component {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/document_writing', {clickUnhandleNum: true});
+            history.push('/application/document_write', {clickUnhandleNum: true});
         });
 
     }

@@ -14,7 +14,6 @@ BusinessApplyStore.prototype.setInitState = function() {
     this.status = '';//请假申请的状态
     this.order = 'descend';
     this.page_size = 20;
-    this.lastBusinessApplyId = '';//用于下拉加载的id
     //所有申请列表
     this.applyListObj = {
         // "" loading error
@@ -45,6 +44,7 @@ BusinessApplyStore.prototype.setInitState = function() {
     };
     //筛选类别 'all'(全部) pass(已通过) reject(已驳回)  ongoing(待我审批)
     this.applyListType = 'ongoing';
+    this.listenScrollBottom = false;
     this.clearData();
 };
 //清空数据

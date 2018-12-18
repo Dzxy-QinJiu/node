@@ -92,6 +92,16 @@ ReportSendApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailO
     this.candidateList = [];
 
 };
+ReportSendApplyDetailStore.prototype.setDetailInfo = function(detailObj) {
+    this.detailInfoObj = {
+        // "" loading error
+        loadingResult: '',
+        //获取的详情信息
+        info: detailObj,
+        //错误信息
+        errorMsg: ''
+    };
+};
 //设置某条申请的回复列表
 ReportSendApplyDetailStore.prototype.setApplyComment = function(list) {
     this.replyListInfo = {

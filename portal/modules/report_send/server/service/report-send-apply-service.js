@@ -13,8 +13,14 @@ var restApis = {
     addReportSendApply: '/rest/base/v1/workflow/opinionreport/:type',
     //通过或者驳回申请
     approveOpinionreportApplyPassOrReject: '/rest/base/v1/workflow/opinionreport/approve',
+    //文件撰写的通过或者驳回
+    approveDocumentApplyPassOrReject: '/rest/base/v1/workflow/document/approve',
     //上传文件
-    uploadReportFile: '/rest/base/v1/workflow/upload'
+    uploadReportFile: '/rest/base/v1/workflow/upload',
+    //下载相关文件
+    downLoadReportFile: '/rest/base/v1/workflow/download',
+    //删除相关文件
+    delReportFile: '/rest/base/v1/workflow/delete'
 
 };
 exports.restUrls = restApis;
@@ -36,6 +42,14 @@ exports.approveReportSendApplyPassOrReject = function(req, res) {
             res: res
         }, req.body);
 };
+exports.approveDocumentWriteApplyPassOrReject = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.approveDocumentApplyPassOrReject,
+            req: req,
+            res: res
+        }, req.body);
+};
 //上传舆情上报文件
 exports.uploadReportSend = function(req, res, formData) {
     return restUtil.authRest.post({
@@ -45,4 +59,26 @@ exports.uploadReportSend = function(req, res, formData) {
         timeout: uploadTimeOut,
         formData: formData
     }, null);
+};
+
+exports.downLoadReportSend = function(req, res) {
+    var fileObj = JSON.parse(req.params.fileObj);
+    return restUtil.authRest.get({
+        url: restApis.downLoadReportFile,
+        req: req,
+        res: res,
+        headers: {
+            'Accept': 'application/octet-stream'
+        },
+        'pipe-download-file': true
+    }, fileObj);
+};
+//删除相关文件
+exports.deleteReportSend = function(req, res) {
+    return restUtil.authRest.del(
+        {
+            url: restApis.delReportFile,
+            req: req,
+            res: res
+        }, req.query);
 };

@@ -14,7 +14,6 @@ ReportSendApplyStore.prototype.setInitState = function() {
     this.status = '';//请假申请的状态
     this.order = 'descend';
     this.page_size = 20;
-    this.lastLeaveApplyId = '';//用于下拉加载的id
     //所有申请列表
     this.applyListObj = {
         // "" loading error

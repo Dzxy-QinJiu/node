@@ -2615,6 +2615,32 @@ var en_US = {
     'common.customer.active.statistics': 'Customer acive statistics',//客户活跃度统计
     'apply.approve.modal.text.reject': ' Whether to reject this application?',//是否驳回此申请
     'apply.approve.modal.text.pass': 'Whether to apply for this application',//是否通过此申请
-    'apply.approve.worklist': 'wait for {applyer} to approve'//待{applyer}审批
+    'apply.approve.worklist': 'wait for {applyer} to approve',//待{applyer}审批
+    'apply.approve.lyrical.report': 'Lyric report',//舆情报告
+    'apply.approve.document.writing': 'Document writing',//文件撰写
+    'apply.approve.quarty.report': 'Quarterly report',//季报
+    'apply.approve.tender.documents': 'Bidding Documents',//招标文件
+    'apply.approve.bide.documents': 'Tender Documents',//投标文件
+    'apply.approve.construction.plan': 'Construction plan',//建设方案
+    'apply.approve.other.plan': 'Other files',//其他文件
+    'apply.approve.report.send': 'Public opinion report application',//舆情报告申请
+    'apply.approve.document.write': 'Document writing application',//文件撰写申请
+    'apply.approve.report.send.type': 'Report type',//报告类型
+    'apply.approve.document.write.type': 'File type',//文件类型
+    'apply.approve.report.select.type': 'Please select the type of public opinion report',//请选择舆情报告类型
+    'apply.approve.document.select.type': 'Please select a file report type',//请选择文件报告类型
+    'apply.approve.write.select.at.least.one.type': 'Please select at least one file type',//请选择至少一个文件类型
+    'apply.approve.report.remark': 'Please fill in the {type} note',//请填写{type}备注
+    'apply.approve.report.select.expected.time': 'Please select the expected time',//请选择期望成交时间
+    'apply.approve.no.condition.list': 'No eligible public opinion report',//暂无符合条件的舆情报告
+    'apply.approve.no.document.write': 'No eligible documents for writing',//暂无符合条件的文件撰写
+    'apply.approve.expect.submit.time': 'Expected submission time',//期望提交时间
+    'apply.approve.specific.report': 'special report of {customer}',//{customer}客户的专报
+    'apply.approve.import.file': 'upload files',//上传文件
+    'apply.approve.confirm.apply': 'Confirm application',//确认申请
+    'apply.approve.wait.confirm': 'To be confirmed by {confirmer}',//待{confirmer}确认
+    'apply.approve.wait.upload': 'Waiting for {uploader} to upload',//待{uploader}上传
+    'apply.approve.confirm.finish': 'Confirmation completed',//确认完成
+    'apply.approve.update.file': 'Update file'//更新文件
 };
 export default en_US;

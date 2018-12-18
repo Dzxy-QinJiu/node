@@ -32,6 +32,13 @@ exports.approveReportSendApplyPassOrReject = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+exports.approveDocumentWriteApplyPassOrReject = function(req, res) {
+    ReportSendApplyService.approveDocumentWriteApplyPassOrReject(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
 
 exports.uploadReportSend = function(req, res) {
     var form = new multiparty.Form();
@@ -40,7 +47,7 @@ exports.uploadReportSend = function(req, res) {
         // 获取上传文件的临时路径
         let tmpPath = files['reportsend'][0].path;
         // 获取文件名
-        var filename = files['reportsend'][0].originalFilename;
+        // var filename = files['reportsend'][0].originalFilename;
         // 文件内容为空的处理
         let file_size = files['reportsend'][0].size;
         if(file_size === 0) {
@@ -51,14 +58,20 @@ exports.uploadReportSend = function(req, res) {
         _.forEach(fields,(item) => {
             idArr = _.concat(idArr,item);
         });
+        // // 文件不为空的处理
+        // var formData = {
+        //     doc: {
+        //         value: fs.createReadStream(tmpPath),
+        //         options: {
+        //             filename: filename
+        //         }
+        //     },
+        //     id: idArr.join('')
+        // };
+
         // 文件不为空的处理
-        var formData = {
-            doc: {
-                value: fs.createReadStream(tmpPath),
-                options: {
-                    filename: filename
-                }
-            },
+        let formData = {
+            attachments: [fs.createReadStream(tmpPath)],
             id: idArr.join('')
         };
 
@@ -69,6 +82,16 @@ exports.uploadReportSend = function(req, res) {
             res.status(500).json(err.message);
         });
     });
-
-
+};
+exports.downLoadReportSend = function(req, res) {
+    ReportSendApplyService.downLoadReportSend(req, res).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+exports.deleteReportSend = function(req, res) {
+    ReportSendApplyService.deleteReportSend(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
 };
