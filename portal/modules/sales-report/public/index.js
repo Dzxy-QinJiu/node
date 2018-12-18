@@ -401,6 +401,8 @@ class SalesReport extends React.Component {
                 reportCharts.customerStageChart,
                 //客户流失率统计
                 customerCharts.getCustomerLoseRateChart(),
+                //客户活跃度、活跃率统计
+                customerCharts.getCustomerActiveTrendChart('客户活跃度、活跃率统计', 'day', true),
             );
         }
 
