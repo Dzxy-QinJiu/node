@@ -29,7 +29,7 @@ export function getCustomerLoseRateChart() {
                 render: value => <span>{value * 100 + '%'}</span>,
                 width: '25%'
             }, {
-                title: '流失毛利(单位：万)',
+                title: '流失毛利',
                 dataIndex: 'gross_profit',
                 width: '25%'
             }, {
