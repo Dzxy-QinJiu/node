@@ -61,7 +61,7 @@ function ReportSendApplyActions() {
                 this.dispatch({
                     error: true,
                     loading: false,
-                    errMsg: errorMsg || Intl.get('failed.get.all.leave.list','获取全部请假申请失败')
+                    errMsg: errorMsg || Intl.get('apply.failed.get.type.application','获取全部{type}申请失败',{type: Intl.get('apply.approve.document.writing', '文件撰写')})
                 });});
 
         }, (errorMsg) => {

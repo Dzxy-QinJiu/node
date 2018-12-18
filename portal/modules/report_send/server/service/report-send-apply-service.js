@@ -51,9 +51,9 @@ exports.approveDocumentWriteApplyPassOrReject = function(req, res) {
         }, req.body);
 };
 //上传舆情上报文件
-exports.uploadReportSend = function(req, res, formData) {
+exports.uploadReportSend = function(req, res, formData,id,filename) {
     return restUtil.authRest.post({
-        url: restApis.uploadReportFile,
+        url: restApis.uploadReportFile + '?id=' + id + '&doc_name=' + encodeURI(filename) ,
         req: req,
         res: res,
         timeout: uploadTimeOut,
@@ -62,16 +62,17 @@ exports.uploadReportSend = function(req, res, formData) {
 };
 
 exports.downLoadReportSend = function(req, res) {
+    // var fileObj = JSON.parse(req.query.reqData);
     var fileObj = JSON.parse(req.params.fileObj);
     return restUtil.authRest.get({
-        url: restApis.downLoadReportFile,
+        url: restApis.downLoadReportFile + `?file_dir_id=${fileObj.file_dir_id}&file_id=${fileObj.file_id}&file_name=${encodeURI(fileObj.file_name)}`,
         req: req,
         res: res,
         headers: {
             'Accept': 'application/octet-stream'
         },
         'pipe-download-file': true
-    }, fileObj);
+    }, null);
 };
 //删除相关文件
 exports.deleteReportSend = function(req, res) {

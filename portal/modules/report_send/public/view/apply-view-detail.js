@@ -440,10 +440,10 @@ class ApplyViewDetail extends React.Component {
         this.setState({isUpLoading: true});
         if (info.file.status === 'done') {
             const response = info.file.response;
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-reportsend'), '上传表格');
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-reportsend'), '上传舆情报告成功');
             if (response) {
-                //上传表格成功
-                this.setState({fileUploadId: response.upload_id,fileUploadName: response.file_name});
+                //上传成功
+                this.setState({fileUploadId: response.id,fileUploadName: response.file_name});
             } else {
                 message.error(Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!',{type: Intl.get('apply.approve.lyrical.report', '舆情报告')}));
             }
@@ -453,6 +453,26 @@ class ApplyViewDetail extends React.Component {
             this.afterUpload();
         }
     };
+    downLoadFile = (reqData) => {
+        // var $eleForm = $("<form method='get'></form>");
+        // $eleForm.attr("action", '/rest/reportsend/download/' + JSON.stringify(reqData));
+        // $(document.body).append($eleForm);
+        // //提交表单，实现下载
+        // $eleForm.submit();
+
+
+        const url = '/rest/reportsend/download';
+        let form = $('<form>', {action: url, method: 'get'});
+        form.append($('<input>', {name: 'reqData', value: JSON.stringify(reqData)}));
+        //将构造的表单添加到body上
+        //Chrome 56 以后不在body上的表单不允许提交了
+        $(document.body).append(form);
+        form.submit();
+        form.remove();
+
+
+
+    }
     renderUploadAndDownloadInfo = () => {
         var detailInfoObj = this.state.detailInfoObj.info;
         var props = {
@@ -471,6 +491,7 @@ class ApplyViewDetail extends React.Component {
         return (
             <div>
                 {fileName ? <div className="upload-file-name"><a href={'/rest/reportsend/download/' + JSON.stringify(reqData) }>{fileName}</a></div> : null}
+                {/*{fileName ? <div className="upload-file-name"><a onClick={this.downLoadFile.bind(this, reqData)}>{fileName}</a></div> : null}*/}
                 {detailInfoObj.status === 'ongoing' ?
                     <Upload {...props} className="import-reportsend" data-tracename="上传表格">
                         <Button type='primary' className='download-btn'>

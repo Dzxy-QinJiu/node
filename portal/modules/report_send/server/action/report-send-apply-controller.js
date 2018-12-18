@@ -47,7 +47,7 @@ exports.uploadReportSend = function(req, res) {
         // 获取上传文件的临时路径
         let tmpPath = files['reportsend'][0].path;
         // 获取文件名
-        // var filename = files['reportsend'][0].originalFilename;
+        var filename = files['reportsend'][0].originalFilename;
         // 文件内容为空的处理
         let file_size = files['reportsend'][0].size;
         if(file_size === 0) {
@@ -58,25 +58,12 @@ exports.uploadReportSend = function(req, res) {
         _.forEach(fields,(item) => {
             idArr = _.concat(idArr,item);
         });
-        // // 文件不为空的处理
-        // var formData = {
-        //     doc: {
-        //         value: fs.createReadStream(tmpPath),
-        //         options: {
-        //             filename: filename
-        //         }
-        //     },
-        //     id: idArr.join('')
-        // };
-
         // 文件不为空的处理
         let formData = {
-            attachments: [fs.createReadStream(tmpPath)],
-            id: idArr.join('')
+            doc: [fs.createReadStream(tmpPath)]
         };
-
         //调用上传请求服务
-        ReportSendApplyService.uploadReportSend(req, res,formData ).on('success', function(data) {
+        ReportSendApplyService.uploadReportSend(req, res, formData, idArr.join(''), filename).on('success', function(data) {
             res.json(data);
         }).on('error', function(err) {
             res.status(500).json(err.message);
