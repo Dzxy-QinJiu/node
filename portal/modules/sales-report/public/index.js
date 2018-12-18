@@ -9,6 +9,7 @@ import {storageUtil} from 'ant-utils';
 import {Row, Col, Select} from 'antd';
 import reportCharts from './charts';
 import chanceCharts from 'MOD_DIR/analysis/public/charts/chance';
+import customerCharts from 'MOD_DIR/analysis/public/charts/customer';
 import workflowChart from 'MOD_DIR/analysis/public/charts/workflow';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import ReportLeftMenu from 'CMP_DIR/report-left-menu';
@@ -386,8 +387,8 @@ class SalesReport extends React.Component {
                 reportCharts.callVolumeChart,
                 //客户阶段
                 reportCharts.customerStageChart,
-                //客户活跃率
-                reportCharts.customerActiveChart,
+                //客户活跃度统计
+                customerCharts.getCustomerActiveTrendChart('客户活跃度统计', 'day', true),
                 //新开客户登录
                 reportCharts.newCustomerLoginChart(this.state.currentMember.team_id, this.state.currentMember.member_id),
             );
@@ -399,6 +400,10 @@ class SalesReport extends React.Component {
                 reportCharts.getOrderStageChart(this.state.stageList),
                 //客户阶段
                 reportCharts.customerStageChart,
+                //客户流失率统计
+                customerCharts.getCustomerLoseRateChart(),
+                //客户活跃度统计
+                customerCharts.getCustomerActiveTrendChart('客户活跃度统计', 'day', true),
             );
         }
 
