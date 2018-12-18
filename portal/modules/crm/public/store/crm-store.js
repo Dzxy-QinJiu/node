@@ -148,7 +148,6 @@ CrmStore.prototype.queryCustomer = function(data) {
         if (list && _.isArray(list) && list.length) {
             this.customersBack = list;
             this.curCustomers = list;
-            this.pageNum++;
             this.customersSize = data && data.total || 0;
             //刷新当前右侧面板中打开的客户的数据
             if (this.currentId) {
