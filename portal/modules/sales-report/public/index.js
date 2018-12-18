@@ -386,8 +386,8 @@ class SalesReport extends React.Component {
                 reportCharts.callVolumeChart,
                 //客户阶段
                 reportCharts.customerStageChart,
-                //客户活跃度、活跃率统计
-                customerCharts.getCustomerActiveTrendChart('客户活跃度、活跃率统计', 'day', true),
+                //客户活跃度统计
+                customerCharts.getCustomerActiveTrendChart('客户活跃度统计', 'day', true),
                 //新开客户登录
                 reportCharts.newCustomerLoginChart(this.state.currentMember.team_id, this.state.currentMember.member_id),
             );
@@ -401,8 +401,8 @@ class SalesReport extends React.Component {
                 reportCharts.customerStageChart,
                 //客户流失率统计
                 customerCharts.getCustomerLoseRateChart(),
-                //客户活跃度、活跃率统计
-                customerCharts.getCustomerActiveTrendChart('客户活跃度、活跃率统计', 'day', true),
+                //客户活跃度统计
+                customerCharts.getCustomerActiveTrendChart('客户活跃度统计', 'day', true),
             );
         }
 
