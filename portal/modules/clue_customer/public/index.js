@@ -481,9 +481,11 @@ class ClueCustomer extends React.Component {
             if (_.isArray(teamArray) && teamArray.length) {
                 //销售与所属团队的组合数据，用来区分哪个团队中的销售
                 teamArray.forEach(team => {
+                    let teamName = _.get(team, 'group_name') ? ` - ${team.group_name}` : '';
+                    let teamId = _.get(team, 'group_id') ? `&&${team.group_id}` : '';
                     dataList.push({
-                        name: salesman.user_info.nick_name + '-' + team.group_name,
-                        value: salesman.user_info.user_id + '&&' + team.group_id,
+                        name: _.get(salesman, 'user_info.nick_name', '') + teamName,
+                        value: _.get(salesman, 'user_info.user_id', '') + teamId,
                         clickCount: clickCount
                     });
                 });

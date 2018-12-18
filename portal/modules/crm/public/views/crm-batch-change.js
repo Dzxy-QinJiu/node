@@ -20,6 +20,7 @@ import {isClueTag, isTurnOutTag} from '../utils/crm-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import crmUtil from '../utils/crm-util';
+import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 var CrmAction = require('../action/crm-actions');
 const BATCH_OPERATE_TYPE = {
     CHANGE_SALES: 'changeSales',//变更销售人员
@@ -574,26 +575,8 @@ var CrmBatchChange = createReactClass({
     },
 
     renderSalesBlock: function() {
-        let dataList = [];
-        //展示其所在团队的成员列表
-        this.state.salesManList.forEach(function(salesman) {
-            let teamArray = salesman.user_groups;
-            //一个销售属于多个团队的处理（旧数据中存在这种情况）
-            if (_.isArray(teamArray) && teamArray.length) {
-                //销售与所属团队的组合数据，用来区分哪个团队中的销售
-                teamArray.forEach(team => {
-                    dataList.push({
-                        name: salesman.user_info.nick_name + '(' + team.group_name + ')',
-                        value: salesman.user_info.user_id + '&&' + team.group_id
-                    });
-                });
-            }else {
-                dataList.push({
-                    name: `${salesman.user_info.nick_name}`,
-                    value: `${salesman.user_info.user_id}`
-                });
-            }
-        });
+        //获取销售所在团队的成员列表
+        let dataList = formatSalesmanList(this.state.salesManList);
         return (
             <div className="op-pane change-salesman">
                 <AlwaysShowSelect

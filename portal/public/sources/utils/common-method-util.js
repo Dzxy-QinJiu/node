@@ -499,3 +499,30 @@ exports.handleDiffTypeApply = function(that) {
         okText: okText
     };
 };
+
+//转换成‘销售-团队’对应格式的数据
+exports.formatSalesmanList = function(salesManList) {
+    let dataList = [];
+    //展示其所在团队的成员列表
+    _.each(salesManList, salesman => {
+        let teamArray = salesman.user_groups;
+        //一个销售属于多个团队的处理（旧数据中存在这种情况）
+        if (_.isArray(teamArray) && teamArray.length) {
+            //销售与所属团队的组合数据，用来区分哪个团队中的销售
+            teamArray.forEach(team => {
+                let teamName = _.get(team, 'group_name') ? ` - ${team.group_name}` : '';
+                let teamId = _.get(team, 'group_id') ? `&&${team.group_id}` : '';
+                dataList.push({
+                    name: _.get(salesman, 'user_info.nick_name', '') + teamName,
+                    value: _.get(salesman, 'user_info.user_id', '') + teamId
+                });
+            });
+        } else {
+            dataList.push({
+                name: `${_.get(salesman, 'user_info.nick_name', '')}`,
+                value: `${_.get(salesman, 'user_info.user_id', '')}`
+            });
+        }
+    });
+    return dataList;
+};

@@ -11,6 +11,7 @@ import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import CrmAction from '../../action/crm-actions';
 import { getMyTeamTreeAndFlattenList } from 'PUB_DIR/sources/utils/common-data-util';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 //展示的类型
 const DISPLAY_TYPES = {
     TRANSFER: 'transfer',//转出销售
@@ -472,26 +473,7 @@ class SalesTeamCard extends React.Component {
 
     //修改销售的界面渲染
     renderChangeSalesSelect(){
-        let dataList = [];
-        //展示其所在团队的成员列表
-        this.state.salesManList.forEach(function(salesman) {
-            let teamArray = salesman.user_groups;
-            //一个销售属于多个团队的处理（旧数据中存在这种情况）
-            if (_.isArray(teamArray) && teamArray.length) {
-                //销售与所属团队的组合数据，用来区分哪个团队中的销售
-                teamArray.forEach(team => {
-                    dataList.push({
-                        name: `${salesman.user_info.nick_name} - ${team.group_name}`,
-                        value: `${salesman.user_info.user_id}&&${team.group_id}`
-                    });
-                });
-            }else{
-                dataList.push({
-                    name: `${salesman.user_info.nick_name}`,
-                    value: `${salesman.user_info.user_id}`
-                });
-            }
-        });
+        let dataList = formatSalesmanList(this.state.salesManList);
         //销售人员与销售团队下拉列表的填充内容
         let salesmanOptions = dataList.map(function(item) {
             return (<Option value={item.value} key={item.value}>{item.name}</Option>);
