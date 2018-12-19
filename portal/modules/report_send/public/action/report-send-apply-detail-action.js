@@ -27,17 +27,17 @@ function ApplyViewDetailActions() {
     );
 
     //获取审批单详情
-    this.getLeaveApplyDetailById = function(queryObj, status) {
-        ReportSendApplyAjax.getLeaveApplyDetailById(queryObj, status).then((detail) => {
+    this.getApplyDetailById = function(queryObj, status) {
+        ReportSendApplyAjax.getApplyDetailById(queryObj, status).then((detail) => {
             this.dispatch({loading: false, error: false, detail: detail, status: status});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
     //根据申请的id获取审批的状态
-    this.getLeaveApplyStatusById = function(queryObj) {
+    this.getApplyStatusById = function(queryObj) {
         this.dispatch({loading: true, error: false});
-        ReportSendApplyAjax.getLeaveApplyStatusById(queryObj).then((list) => {
+        ReportSendApplyAjax.getApplyStatusById(queryObj).then((list) => {
             this.dispatch({loading: false, error: false, list: list});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
@@ -45,18 +45,18 @@ function ApplyViewDetailActions() {
     };
 
     //获取回复列表
-    this.getLeaveApplyCommentList = function(queryObj) {
+    this.getApplyCommentList = function(queryObj) {
         this.dispatch({loading: true, error: false});
-        ReportSendApplyAjax.getLeaveApplyCommentList(queryObj).then((list) => {
+        ReportSendApplyAjax.getApplyCommentList(queryObj).then((list) => {
             this.dispatch({loading: false, error: false, list: list});
         }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('failed.get.reply.comment', '获取回复列表失败')});
         });
     };
     //添加回复
-    this.addLeaveApplyComments = function(obj) {
+    this.addApplyComments = function(obj) {
         this.dispatch({loading: true, error: false});
-        ReportSendApplyAjax.addLeaveApplyComments(obj).then((replyData) => {
+        ReportSendApplyAjax.addApplyComments(obj).then((replyData) => {
             this.dispatch({loading: false, error: false, reply: replyData});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
@@ -64,13 +64,13 @@ function ApplyViewDetailActions() {
     };
 
     //通过或者驳回审批
-    this.approveLeaveApplyPassOrReject = function(obj,callback) {
+    this.approveApplyPassOrReject = function(obj,callback) {
         this.dispatch({loading: true, error: false});
-        ReportSendApplyAjax.approveLeaveApplyPassOrReject(obj).then((data) => {
+        ReportSendApplyAjax.approveApplyPassOrReject(obj).then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
             //更新选中的申请单类型
             //如果不是最后确认的那一步，状态就还是ongoing
-            if(obj.report_id || obj.agree === 'reject'){
+            if(obj.report_id || obj.agree === 'reject' || obj.agree === 'cancel'){
                 ReportSendUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
                 if (Oplate && Oplate.unread) {
                     Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND] -= 1;

@@ -115,11 +115,12 @@ BusinessApplyStore.prototype.changeApplyAgreeStatus = function(message) {
 BusinessApplyStore.prototype.updateAllApplyItemStatus = function(updateItem) {
     var allApplyArr = this.applyListObj.list;
     this.selectedDetailItem.status = updateItem.status;
-    _.forEach(allApplyArr,(item) => {
-        if (item.id === updateItem.id){
-            item.status = updateItem.status;
-        }
+    var targetObj = _.find(allApplyArr,(item) => {
+        return item.id === updateItem.id;
     });
+    if (targetObj){
+        targetObj.status = updateItem.status;
+    }
 };
 BusinessApplyStore.prototype.afterAddApplySuccess = function(item) {
     this.applyListObj.list.unshift(item);

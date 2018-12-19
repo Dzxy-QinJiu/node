@@ -4,12 +4,12 @@
  * Created by zhangshujuan on 2018/9/10.
  */
 //获取全部申请列表
-let getAllLeaveApplyListAjax = null;
-exports.getAllLeaveApplyList = function(queryObj) {
+let getAllApplyListAjax = null;
+exports.getAllApplyList = function(queryObj) {
     var Deferred = $.Deferred();
-    getAllLeaveApplyListAjax && getAllLeaveApplyListAjax.abort();
-    getAllLeaveApplyListAjax = $.ajax({
-        url: '/rest/get/all/leave_apply/list',
+    getAllApplyListAjax && getAllApplyListAjax.abort();
+    getAllApplyListAjax = $.ajax({
+        url: '/rest/get/all/apply_approve/list',
         dataType: 'json',
         type: 'get',
         data: queryObj,
@@ -23,12 +23,12 @@ exports.getAllLeaveApplyList = function(queryObj) {
     return Deferred.promise();
 };
 //获取待我审批的申请列表
-let getWorklistLeaveApplyListAjax = null;
-exports.getWorklistLeaveApplyList = function(queryObj) {
+let getWorklistApplyListAjax = null;
+exports.getWorklistApplyList = function(queryObj) {
     var Deferred = $.Deferred();
-    getWorklistLeaveApplyListAjax && getWorklistLeaveApplyListAjax.abort();
-    getWorklistLeaveApplyListAjax = $.ajax({
-        url: '/rest/get/worklist/leave_apply/list',
+    getWorklistApplyListAjax && getWorklistApplyListAjax.abort();
+    getWorklistApplyListAjax = $.ajax({
+        url: '/rest/get/worklist/apply_approve/list',
         dataType: 'json',
         type: 'get',
         data: queryObj,
@@ -42,12 +42,12 @@ exports.getWorklistLeaveApplyList = function(queryObj) {
     return Deferred.promise();
 };
 //根据申请的id获取申请的详情
-let getLeaveApplyDetailByIdAjax = null;
-exports.getLeaveApplyDetailById = function(queryObj) {
+let getApplyDetailByIdAjax = null;
+exports.getApplyDetailById = function(queryObj) {
     var Deferred = $.Deferred();
-    getLeaveApplyDetailByIdAjax && getLeaveApplyDetailByIdAjax.abort();
-    getLeaveApplyDetailByIdAjax = $.ajax({
-        url: '/rest/leave_apply/detail/byId',
+    getApplyDetailByIdAjax && getApplyDetailByIdAjax.abort();
+    getApplyDetailByIdAjax = $.ajax({
+        url: '/rest/apply_approve/detail/byId',
         type: 'get',
         data: queryObj,
         success: function(data) {
@@ -60,12 +60,12 @@ exports.getLeaveApplyDetailById = function(queryObj) {
     return Deferred.promise();
 };
 //获取回复列表
-let getLeaveApplyCommentListAjax = null;
-exports.getLeaveApplyCommentList = function(queryObj) {
+let getApplyCommentListAjax = null;
+exports.getApplyCommentList = function(queryObj) {
     var Deferred = $.Deferred();
-    getLeaveApplyCommentListAjax && getLeaveApplyCommentListAjax.abort();
-    getLeaveApplyCommentListAjax = $.ajax({
-        url: '/rest/get/leave_apply/comment/list',
+    getApplyCommentListAjax && getApplyCommentListAjax.abort();
+    getApplyCommentListAjax = $.ajax({
+        url: '/rest/get/apply_approve/comment/list',
         type: 'get',
         data: queryObj,
         success: function(data) {
@@ -78,12 +78,12 @@ exports.getLeaveApplyCommentList = function(queryObj) {
     return Deferred.promise();
 };
 //添加审批回复
-let addLeaveApplyCommentsAjax = null;
-exports.addLeaveApplyComments = function(data) {
+let addApplyCommentsAjax = null;
+exports.addApplyComments = function(data) {
     var Deferred = $.Deferred();
-    addLeaveApplyCommentsAjax && addLeaveApplyCommentsAjax.abort();
-    addLeaveApplyCommentsAjax = $.ajax({
-        url: '/rest/add/leave_apply/comment',
+    addApplyCommentsAjax && addApplyCommentsAjax.abort();
+    addApplyCommentsAjax = $.ajax({
+        url: '/rest/add/apply_approve/comment',
         dataType: 'json',
         type: 'post',
         data: data,
@@ -97,11 +97,11 @@ exports.addLeaveApplyComments = function(data) {
     return Deferred.promise();
 };
 //通过或者驳回申请
-let approveLeaveApplyPassOrRejectAjax = null;
-exports.approveLeaveApplyPassOrReject = function(obj) {
+let approveApplyPassOrRejectAjax = null;
+exports.approveApplyPassOrReject = function(obj) {
     var Deferred = $.Deferred();
-    approveLeaveApplyPassOrRejectAjax && approveLeaveApplyPassOrRejectAjax.abort();
-    approveLeaveApplyPassOrRejectAjax = $.ajax({
+    approveApplyPassOrRejectAjax && approveApplyPassOrRejectAjax.abort();
+    approveApplyPassOrRejectAjax = $.ajax({
         url: '/rest/documentwrite/submitApply',
         dataType: 'json',
         type: 'post',
@@ -116,11 +116,11 @@ exports.approveLeaveApplyPassOrReject = function(obj) {
     return Deferred.promise();
 };
 //获取某个申请的状态
-let getLeaveApplyStatusByIdAjax = null;
-exports.getLeaveApplyStatusById = function(queryObj) {
+let getApplyStatusByIdAjax = null;
+exports.getApplyStatusById = function(queryObj) {
     var Deferred = $.Deferred();
-    getLeaveApplyStatusByIdAjax && getLeaveApplyStatusByIdAjax.abort();
-    getLeaveApplyStatusByIdAjax = $.ajax({
+    getApplyStatusByIdAjax && getApplyStatusByIdAjax.abort();
+    getApplyStatusByIdAjax = $.ajax({
         url: '/rest/get/apply/status/byId',
         dataType: 'json',
         type: 'get',

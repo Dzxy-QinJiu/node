@@ -53,7 +53,7 @@ function ApplyViewDetailActions() {
         SalesOpportunityApplyAjax.getSalesOpportunityApplyCommentList(queryObj).then((list) => {
             this.dispatch({loading: false, error: false, list: list});
         }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('failed.get.reply.comment', '获取回复列表失败')});
         });
     };
     //添加回复

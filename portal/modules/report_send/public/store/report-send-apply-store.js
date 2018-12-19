@@ -11,7 +11,7 @@ function ReportSendApplyStore() {
 }
 ReportSendApplyStore.prototype.setInitState = function() {
     this.sort_field = 'create_time';//排序字段
-    this.status = '';//请假申请的状态
+    this.status = '';//申请的状态
     this.order = 'descend';
     this.page_size = 20;
     //所有申请列表
@@ -33,7 +33,7 @@ ReportSendApplyStore.prototype.setInitState = function() {
         //错误信息
         errorMsg: ''
     };
-    //由我发起的出差申请
+    //由我发起的舆情报送申请
     this.selfApplyList = {
         // "" loading error
         loadingResult: 'loading',
@@ -53,7 +53,7 @@ ReportSendApplyStore.prototype.clearData = function() {
     this.selectedDetailItemIdx = -1;
     this.listenScrollBottom = false;
 };
-ReportSendApplyStore.prototype.getAllLeaveApplyList = function(obj) {
+ReportSendApplyStore.prototype.getAllApplyList = function(obj) {
     if (obj.loading) {
         this.applyListObj.loadingResult = 'loading';
         this.applyListObj.errorMsg = '';
@@ -114,11 +114,12 @@ ReportSendApplyStore.prototype.changeApplyAgreeStatus = function(message) {
 ReportSendApplyStore.prototype.updateAllApplyItemStatus = function(updateItem) {
     var allApplyArr = this.applyListObj.list;
     this.selectedDetailItem.status = updateItem.status;
-    _.forEach(allApplyArr,(item) => {
-        if (item.id === updateItem.id){
-            item.status = updateItem.status;
-        }
+    var targetObj = _.find(allApplyArr,(item) => {
+        return item.id === updateItem.id;
     });
+    if (targetObj){
+        targetObj.status = updateItem.status;
+    }
 };
 ReportSendApplyStore.prototype.afterAddApplySuccess = function(item) {
     this.applyListObj.list.unshift(item);

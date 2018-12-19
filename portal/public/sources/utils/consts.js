@@ -400,3 +400,5 @@ export const DOCUMENT_TYPE = [
     {name: Intl.get('apply.approve.construction.plan', '建设方案'), value: 'build_document'},
     {name: Intl.get('apply.approve.other.plan', '其他文件'), value: 'other_document'},
 ];
+//顶部导航的高度
+export const TOP_NAV_HEIGHT = 64;

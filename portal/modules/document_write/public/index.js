@@ -15,7 +15,7 @@ var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 require('./css/index.less');
 import {Alert} from 'antd';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-import ApplyListItem from 'CMP_DIR/apply-list';
+import ApplyListItem from 'CMP_DIR/apply-list-item';
 var Spinner = require('CMP_DIR/spinner');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import ApplyViewDetail from './view/apply-view-detail';
@@ -24,7 +24,7 @@ let userData = require('../../../public/sources/user-data');
 
 class DocumentWriteApplyManagement extends React.Component {
     state = {
-        showAddApplyPanel: false,//是否展示添加请假申请面板
+        showAddApplyPanel: false,//是否展示添加申请面板
         teamTreeList: [],
         ...DocumentWriteApplyStore.getState()
     };
@@ -41,7 +41,7 @@ class DocumentWriteApplyManagement extends React.Component {
             this.menuClick({key: 'all'});
         }else{
             //不区分角色，都获取全部的申请列表
-            this.getAllLeaveApplyList();
+            this.getAllApplyList();
         }
         DocumentWriteUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
     }
@@ -86,20 +86,20 @@ class DocumentWriteApplyManagement extends React.Component {
         return params;
     }
 
-    //获取全部请假申请
-    getAllLeaveApplyList = () => {
+    //获取全部申请
+    getAllApplyList = () => {
         var queryObj = this.getQueryParams();
-        DocumentWriteApplyAction.getAllLeaveApplyList(queryObj);
+        DocumentWriteApplyAction.getAllApplyList(queryObj);
     };
 
-    //获取自己发起的请假申请
-    getSelfLeaveApplyList() {
+    //获取自己发起的申请
+    getSelfApplyList() {
         DocumentWriteApplyAction.getSelfApplyList();
     }
 
-    //获取由自己审批的请假申请
-    getWorklistLeaveApplyList() {
-        DocumentWriteApplyAction.getWorklistLeaveApplyList();
+    //获取由自己审批的申请
+    getWorklistApplyList() {
+        DocumentWriteApplyAction.getWorklistApplyList();
     }
 
     componentWillUnmount() {
@@ -113,14 +113,14 @@ class DocumentWriteApplyManagement extends React.Component {
             showAddApplyPanel: true
         });
     };
-    hideLeaveApplyAddForm = () => {
+    hideApplyAddForm = () => {
         this.setState({
             showAddApplyPanel: false
         });
     };
     //下拉加载
     handleScrollBarBottom = () => {
-        this.getAllLeaveApplyList();
+        this.getAllApplyList();
     };
     //是否显示没有更多数据了
     showNoMoreDataTip = () => {
@@ -155,7 +155,7 @@ class DocumentWriteApplyManagement extends React.Component {
         }
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.pull-left'), '根据' + selectType + '过滤');
         DocumentWriteApplyAction.changeApplyListType(obj.key);
-        setTimeout(() => this.getAllLeaveApplyList());
+        setTimeout(() => this.getAllApplyList());
     };
 
     retryFetchApplyList = (e) => {
@@ -164,7 +164,7 @@ class DocumentWriteApplyManagement extends React.Component {
         } else {
             Trace.traceEvent(e, '点击了重新获取');
         }
-        setTimeout(() => this.getAllLeaveApplyList());
+        setTimeout(() => this.getAllApplyList());
     };
     renderApplyListError = () => {
         var noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.applyListType !== '';
@@ -233,11 +233,11 @@ class DocumentWriteApplyManagement extends React.Component {
         return (
             <div className="sales-opportunity-apply-container">
                 <div className="leave-apply-list-detail-wrap">
-                    <div className="col-md-4 leave-apply-list" data-tracename="请假申请列表">
+                    <div className="col-md-4 leave-apply-list" data-tracename="文件撰写申请列表">
                         <ApplyDropdownAndAddBtn
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
-                            addPrivilege='MEMBER_LEAVE_APPLY'
+                            addPrivilege='MEMBER_OPINION_APPLY'
                             showAddApplyPanel={this.showAddApplyPanel}
                             addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
                             menuList={selectMenuList}
@@ -251,13 +251,23 @@ class DocumentWriteApplyManagement extends React.Component {
                                     listenScrollBottom={this.state.listenScrollBottom}
                                     itemCssSelector=".leave_manage_apply_list>li"
                                 >
-                                    <ApplyListItem
-                                        processedStatus='ongoing'
-                                        applyListObj={this.state.applyListObj}
-                                        selectedDetailItem={this.state.selectedDetailItem}
-                                        selectedDetailItemIdx={this.state.selectedDetailItemIdx}
-                                        clickShowDetail={this.clickShowDetail}
-                                    />
+                                    <ul className="list-unstyled leave_manage_apply_list">
+                                        {
+                                            this.state.applyListObj.list.map((obj, index) => {
+                                                return (
+                                                    <ApplyListItem
+                                                        key={index}
+                                                        obj={obj}
+                                                        index= {index}
+                                                        clickShowDetail={this.clickShowDetail}
+                                                        processedStatus='ongoing'
+                                                        selectedDetailItem={this.state.selectedDetailItem}
+                                                        selectedDetailItemIdx={this.state.selectedDetailItemIdx}
+                                                    />
+                                                );
+                                            })
+                                        }
+                                    </ul>
                                     <NoMoreDataTip
                                         fontSize="12"
                                         show={this.showNoMoreDataTip}
@@ -286,7 +296,7 @@ class DocumentWriteApplyManagement extends React.Component {
                     <div className={addPanelWrap}>
                         <AddDocumentWriteApplyPanel
                             titleType={Intl.get('apply.approve.document.write','文件撰写申请')}
-                            hideLeaveApplyAddForm={this.hideLeaveApplyAddForm}
+                            hideApplyAddForm={this.hideApplyAddForm}
                             applyType = {DOCUMENT_TYPE}
                             applyAjaxType={APPLY_APPROVE_TYPES.DOCUMENT}
                             afterAddApplySuccess = {DocumentWriteApplyAction.afterAddApplySuccess}

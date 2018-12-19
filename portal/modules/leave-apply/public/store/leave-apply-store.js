@@ -33,7 +33,7 @@ LeaveApplyStore.prototype.setInitState = function() {
         //错误信息
         errorMsg: ''
     };
-    //由我发起的出差申请
+    //由我发起的请假申请
     this.selfApplyList = {
         // "" loading error
         loadingResult: 'loading',
@@ -114,11 +114,12 @@ LeaveApplyStore.prototype.changeApplyAgreeStatus = function(message) {
 LeaveApplyStore.prototype.updateAllApplyItemStatus = function(updateItem) {
     var allApplyArr = this.applyListObj.list;
     this.selectedDetailItem.status = updateItem.status;
-    _.forEach(allApplyArr,(item) => {
-        if (item.id === updateItem.id){
-            item.status = updateItem.status;
-        }
+    var targetObj = _.find(allApplyArr,(item) => {
+        return item.id === updateItem.id;
     });
+    if (targetObj){
+        targetObj.status = updateItem.status;
+    }
 };
 LeaveApplyStore.prototype.afterAddApplySuccess = function(item) {
     this.applyListObj.list.unshift(item);

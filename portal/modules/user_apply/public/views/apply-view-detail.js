@@ -31,7 +31,7 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from '../../../../components/rightPanel';
 import {getPassStrenth, PassStrengthBar, passwordRegex} from 'CMP_DIR/password-strength-bar';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-import {APPLY_TYPES, userTypeList} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_TYPES, userTypeList,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
 
@@ -2209,8 +2209,9 @@ const ApplyViewDetail = createReactClass({
         });
         let customerOfCurUser = this.state.customerOfCurUser;
         let detailWrapWidth = $('.user_apply_page').width() - APPLY_LIST_WIDTH;
+        var divHeight = $(window).height() - TOP_NAV_HEIGHT;
         return (
-            <div className={cls} data-tracename="审批详情界面" style={{width: detailWrapWidth}}>
+            <div className={cls} data-tracename="审批详情界面" style={{'width': detailWrapWidth,'height': divHeight}}>
                 {this.renderApplyDetailLoading()}
                 {this.renderApplyDetailError()}
                 {this.renderApplyDetailNodata()}

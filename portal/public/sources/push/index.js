@@ -844,7 +844,7 @@ function getUnapproveSalesOpportunityApply() {
 function getUnapproveLeaveApply() {
     var queryObj = {type: APPLY_APPROVE_TYPES.LEAVE};
     $.ajax({
-        url: '/rest/get/worklist/leave_apply/list',
+        url: '/rest/get/worklist/apply_approve/list',
         dataType: 'json',
         type: 'get',
         data: queryObj,
@@ -860,7 +860,7 @@ function getUnapproveLeaveApply() {
 function getUnapproveReportSendApply() {
     var queryObj = {type: APPLY_APPROVE_TYPES.OPINIONREPORT};
     $.ajax({
-        url: '/rest/get/worklist/leave_apply/list',
+        url: '/rest/get/worklist/apply_approve/list',
         dataType: 'json',
         type: 'get',
         data: queryObj,

@@ -5,7 +5,7 @@
  */
 import {Input, Icon, Alert} from 'antd';
 require('./index.less');
-import {getApplyResultDscr} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyResultDscr,getReportSendApplyStatusTimeLineDesc} from 'PUB_DIR/sources/utils/common-method-util';
 const UserData = require('PUB_DIR/sources/user-data');
 class ApplyDetailRemarks extends React.Component {
     constructor(props) {
@@ -46,12 +46,18 @@ class ApplyDetailRemarks extends React.Component {
             return (
                 <ul>
                     {replyList.map((replyItem, index) => {
+                        var des = this.props.isReportOrDocument ? getReportSendApplyStatusTimeLineDesc(replyItem.status) : getApplyResultDscr(replyItem);
+                        if (this.props.isReportOrDocument && !replyItem.comment && index === 0 && _.get(this.state.detailInfo,'status') === 'pass'){
+                            des = Intl.get('apply.approver.confirm.task.done','确认任务完成');
+                        }
                         return (
                             <li key={index} className="apply-info-label">
                                 <span className="user-info-label">
                                     {replyItem.nick_name || UserData.getUserData().nick_name}:</span>
                                 <span className="user-info-text">
-                                    {replyItem.comment ? replyItem.comment : getApplyResultDscr(replyItem)}</span>
+                                    {replyItem.comment ? replyItem.comment :
+                                        des
+                                    }</span>
                                 <span className="user-info-label reply-date-text">{
                                     moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)}</span>
                             </li>);
@@ -114,6 +120,7 @@ ApplyDetailRemarks.defaultProps = {
     commentInputChange: function() {
 
     },
+    isReportOrDocument: false,
 };
 ApplyDetailRemarks.propTypes = {
     detailInfo: PropTypes.object,
@@ -122,6 +129,7 @@ ApplyDetailRemarks.propTypes = {
     refreshReplyList: PropTypes.func,
     addReply: PropTypes.func,
     commentInputChange: PropTypes.func,
+    isReportOrDocument: PropTypes.boolean,
 };
 
 export default ApplyDetailRemarks;

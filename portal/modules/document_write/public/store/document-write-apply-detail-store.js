@@ -121,7 +121,7 @@ ReportSendApplyDetailStore.prototype.setInitialData = function(obj) {
     // this.applyIsExpanded = false;
 };
 //获取审批详情
-ReportSendApplyDetailStore.prototype.getLeaveApplyDetailById = function(obj) {
+ReportSendApplyDetailStore.prototype.getApplyDetailById = function(obj) {
     if (obj.error) {
         this.detailInfoObj.loadingResult = 'error';
         this.detailInfoObj.info = {};
@@ -146,7 +146,7 @@ ReportSendApplyDetailStore.prototype.getLeaveApplyDetailById = function(obj) {
     }
 };
 
-ReportSendApplyDetailStore.prototype.getLeaveApplyCommentList = function(resultObj) {
+ReportSendApplyDetailStore.prototype.getApplyCommentList = function(resultObj) {
     //回复列表
     var replyListInfo = this.replyListInfo;
     //result,list,errorMsg
@@ -203,7 +203,7 @@ ReportSendApplyDetailStore.prototype.showReplyCommentEmptyError = function() {
     this.replyFormInfo.result = 'error';
     this.replyFormInfo.errorMsg = Intl.get('user.apply.reply.no.content', '请填写回复内容');
 };
-ReportSendApplyDetailStore.prototype.addLeaveApplyComments = function(resultObj) {
+ReportSendApplyDetailStore.prototype.addApplyComments = function(resultObj) {
     //回复表单
     var replyFormInfo = this.replyFormInfo;
     if (resultObj.loading) {
@@ -222,7 +222,7 @@ ReportSendApplyDetailStore.prototype.addLeaveApplyComments = function(resultObj)
     }
 };
 //提交审批
-ReportSendApplyDetailStore.prototype.approveLeaveApplyPassOrReject = function(obj) {
+ReportSendApplyDetailStore.prototype.approveApplyPassOrReject = function(obj) {
     if (obj.loading) {
         this.applyResult.submitResult = 'loading';
         this.applyResult.errorMsg = '';
@@ -235,7 +235,7 @@ ReportSendApplyDetailStore.prototype.approveLeaveApplyPassOrReject = function(ob
     }
 };
 //获取审批的状态
-ReportSendApplyDetailStore.prototype.getLeaveApplyStatusById = function(obj) {
+ReportSendApplyDetailStore.prototype.getApplyStatusById = function(obj) {
     if (obj.loading) {
         this.replyStatusInfo.result = 'loading';
         this.replyStatusInfo.errorMsg = '';

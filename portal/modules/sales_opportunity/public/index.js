@@ -15,7 +15,7 @@ var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 require('./css/index.less');
 import {Alert} from 'antd';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-import ApplyListItem from 'CMP_DIR/apply-list';
+import ApplyListItem from 'CMP_DIR/apply-list-item';
 var Spinner = require('CMP_DIR/spinner');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import ApplyViewDetail from './view/apply-view-detail';
@@ -251,13 +251,23 @@ class SalesOpportunityApplyManagement extends React.Component {
                                     listenScrollBottom={this.state.listenScrollBottom}
                                     itemCssSelector=".leave_manage_apply_list>li"
                                 >
-                                    <ApplyListItem
-                                        processedStatus='ongoing'
-                                        applyListObj={this.state.applyListObj}
-                                        selectedDetailItem={this.state.selectedDetailItem}
-                                        selectedDetailItemIdx={this.state.selectedDetailItemIdx}
-                                        clickShowDetail={this.clickShowDetail}
-                                    />
+                                    <ul className="list-unstyled leave_manage_apply_list">
+                                        {
+                                            this.state.applyListObj.list.map((obj, index) => {
+                                                return (
+                                                    <ApplyListItem
+                                                        key={index}
+                                                        obj={obj}
+                                                        index= {index}
+                                                        clickShowDetail={this.clickShowDetail}
+                                                        processedStatus='ongoing'
+                                                        selectedDetailItem={this.state.selectedDetailItem}
+                                                        selectedDetailItemIdx={this.state.selectedDetailItemIdx}
+                                                    />
+                                                );
+                                            })
+                                        }
+                                    </ul>
                                     <NoMoreDataTip
                                         fontSize="12"
                                         show={this.showNoMoreDataTip}

@@ -24,7 +24,7 @@ var restApis = {
 
 };
 exports.restUrls = restApis;
-//添加请假申请
+//添加申请
 exports.addReportSendApply = function(req, res) {
     return restUtil.authRest.post(
         {
@@ -62,15 +62,11 @@ exports.uploadReportSend = function(req, res, formData,id,filename) {
 };
 
 exports.downLoadReportSend = function(req, res) {
-    // var fileObj = JSON.parse(req.query.reqData);
     var fileObj = JSON.parse(req.params.fileObj);
     return restUtil.authRest.get({
         url: restApis.downLoadReportFile + `?file_dir_id=${fileObj.file_dir_id}&file_id=${fileObj.file_id}&file_name=${encodeURI(fileObj.file_name)}`,
         req: req,
         res: res,
-        headers: {
-            'Accept': 'application/octet-stream'
-        },
         'pipe-download-file': true
     }, null);
 };

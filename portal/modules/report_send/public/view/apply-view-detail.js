@@ -20,7 +20,7 @@ import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
 import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc, getFilterReplyList,handleDiffTypeApply,getReportSendApplyStatusTimeLineDesc} from 'PUB_DIR/sources/utils/common-method-util';
-import {REPORT_TYPE} from 'PUB_DIR/sources/utils/consts';
+import {REPORT_TYPE,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
@@ -32,8 +32,11 @@ class ApplyViewDetail extends React.Component {
             customerOfCurUser: {},//当前展示用户所属客户的详情
             showBackoutConfirmType: '',//操作的确认框类型
             isUpLoading: false,
+            fileDirId: '',
+            fileReportId: '',
             fileUploadId: '',//上传文件成功后后端返回的id
             fileUploadName: '',//上传文件名
+            clickConfirmBtn: false,//为了防止点击确认按钮后，立刻打开查看详情，详情属性中没有approver_ids这个数组,所以在点击确认申请后加上这样的标识
             ...ReportSendApplyDetailStore.getState()
         };
     }
@@ -95,12 +98,17 @@ class ApplyViewDetail extends React.Component {
             this.setState({
                 showBackoutConfirmType: '',
                 fileUploadId: '',
-                fileUploadName: ''
+                fileReportId: '',
+                fileUploadName: '',
+                clickConfirmBtn: false
             });
         }
     }
 
     componentWillUnmount() {
+        this.setState({
+            clickConfirmBtn: false
+        });
         ReportSendApplyDetailStore.unlisten(this.onStoreChange);
     }
 
@@ -122,13 +130,13 @@ class ApplyViewDetail extends React.Component {
             //如果申请的状态是已通过或者是已驳回的时候，就不用发请求获取回复列表，直接用详情中的回复列表
             //其他状态需要发请求请求回复列表
             if (detailItem.status === 'pass' || detailItem.status === 'reject') {
-                ReportSendApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
-                ReportSendApplyDetailAction.getLeaveApplyDetailById({id: detailItem.id}, detailItem.status);
+                ReportSendApplyDetailAction.getApplyCommentList({id: detailItem.id});
+                ReportSendApplyDetailAction.getApplyDetailById({id: detailItem.id}, detailItem.status);
             } else if (detailItem.id) {
-                ReportSendApplyDetailAction.getLeaveApplyDetailById({id: detailItem.id});
-                ReportSendApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
+                ReportSendApplyDetailAction.getApplyDetailById({id: detailItem.id});
+                ReportSendApplyDetailAction.getApplyCommentList({id: detailItem.id});
                 //根据申请的id获取申请的状态
-                ReportSendApplyDetailAction.getLeaveApplyStatusById({id: detailItem.id});
+                ReportSendApplyDetailAction.getApplyStatusById({id: detailItem.id});
                 ReportSendApplyDetailAction.getNextCandidate({id: detailItem.id});
             }
         });
@@ -141,13 +149,13 @@ class ApplyViewDetail extends React.Component {
         if (detailItem.status === 'pass' || detailItem.state === 'reject') {
             ReportSendApplyDetailAction.setApplyComment(detailItem.approve_details);
         } else if (detailItem.id) {
-            ReportSendApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
+            ReportSendApplyDetailAction.getApplyCommentList({id: detailItem.id});
         }
     };
     //重新获取申请的状态
     refreshApplyStatusList = (e) => {
         var detailItem = this.props.detailItem;
-        ReportSendApplyDetailAction.getLeaveApplyStatusById({id: detailItem.id});
+        ReportSendApplyDetailAction.getApplyStatusById({id: detailItem.id});
     };
 
 
@@ -237,7 +245,7 @@ class ApplyViewDetail extends React.Component {
             return;
         }
         //提交数据
-        ReportSendApplyDetailAction.addLeaveApplyComments(submitData);
+        ReportSendApplyDetailAction.addApplyComments(submitData);
     };
     //备注 输入框改变时候触发
     commentInputChange = (event) => {
@@ -257,6 +265,10 @@ class ApplyViewDetail extends React.Component {
         if (this.state.showBackoutConfirmType === 'reject'){
             //设置这条审批不再展示通过和驳回的按钮
             ReportSendApplyDetailAction.hideApprovalBtns();
+        }else if (this.state.showBackoutConfirmType === 'pass'){
+            this.setState({
+                clickConfirmBtn: true
+            });
         }
         this.setState({
             showBackoutConfirmType: ''
@@ -286,11 +298,11 @@ class ApplyViewDetail extends React.Component {
     };
     confirmFinishApply = () => {
         var detailInfoObj = this.state.detailInfoObj.info;
-        var fileId = this.state.fileUploadId || _.get(detailInfoObj,'detail.upload_id');
+        var fileId = this.state.fileReportId || _.get(detailInfoObj,'detail.upload_id');
         if (!fileId){
             return;
         }
-        ReportSendApplyDetailAction.approveLeaveApplyPassOrReject({id: detailInfoObj.id, agree: 'pass',report_id: fileId},() => {
+        ReportSendApplyDetailAction.approveApplyPassOrReject({id: detailInfoObj.id, agree: 'pass',report_id: fileId},() => {
             detailInfoObj.showApproveBtn = false;
             detailInfoObj.status = 'pass';
             var replyList = _.get(this.state,'replyListInfo.list');
@@ -321,19 +333,19 @@ class ApplyViewDetail extends React.Component {
         var approvalDes = getApplyResultDscr(detailInfoObj);
         var renderAssigenedContext = null,passText = '',showApproveBtn = detailInfoObj.showApproveBtn;
         if (detailInfoObj.status === 'ongoing' && showApproveBtn){
-            //有approver_ids是表示已经确认过 待确认申请
-            if (!_.isArray(detailInfoObj.approver_ids)){
-                passText = Intl.get('apply.approve.confirm.apply','确认申请');
-                showApproveBtn = true;
-            }else if (_.isArray(detailInfoObj.approver_ids)){
+            //有approver_ids是表示已经确认过 待确认申请,
+            if (_.isArray(detailInfoObj.approver_ids) || this.state.clickConfirmBtn){
                 //有upload_id表示已经上传过文件 已经上传文件了
-                if (_.get(detailInfoObj,'detail.upload_id','') || this.state.fileUploadId){
+                if (_.get(detailInfoObj,'detail.upload_id','') || this.state.fileReportId){
                     renderAssigenedContext = this.renderConfirmFinish;
                     showApproveBtn = true;
                 }else{
                     //还没有上传文件
                     showApproveBtn = false;
                 }
+            }else if (!_.isArray(detailInfoObj.approver_ids)){
+                passText = Intl.get('apply.approve.confirm.apply','确认申请');
+                showApproveBtn = true;
             }
         }
         return (
@@ -370,6 +382,9 @@ class ApplyViewDetail extends React.Component {
                     stepStatus = 'error';
                     currentLength--;
                 }
+                if (index + 1 === currentLength && applicantList.status === 'pass'){
+                    descrpt = Intl.get('apply.approver.confirm.task.done','确认任务完成');
+                }
                 stepArr.push({
                     title: (replyItem.nick_name || userData.getUserData().nick_name || '') + descrpt,
                     description: moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
@@ -383,10 +398,10 @@ class ApplyViewDetail extends React.Component {
                 candidateName = _.get(candidate,'[0].nick_name');
             }
             var stepTip = '';
-            if (_.isArray(applicantList.approver_ids)){
+            if ((_.isArray(applicantList.approver_ids) || this.state.clickConfirmBtn) && !_.get(applicantList,'detail.upload_id')){
                 stepTip = Intl.get('apply.approve.wait.upload','待{uploader}上传',{'uploader': candidateName});
             }else{
-                stepTip = Intl.get('apply.approve.wait.confirm','待{confirmer}确认',{'confirmer': candidateName});
+                stepTip = Intl.get('apply.approve.wait.confirm','待{confirmer}确认任务完成',{'confirmer': candidateName});
             }
             stepArr.push({
                 title: stepTip,
@@ -405,7 +420,7 @@ class ApplyViewDetail extends React.Component {
     };
     passOrRejectApplyApprove = (confirmType) => {
         var detailInfoObj = this.state.detailInfoObj.info;
-        ReportSendApplyDetailAction.approveLeaveApplyPassOrReject({id: detailInfoObj.id, agree: confirmType});
+        ReportSendApplyDetailAction.approveApplyPassOrReject({id: detailInfoObj.id, agree: confirmType});
     };
     renderCancelApplyApprove = () => {
         var confirmType = this.state.showBackoutConfirmType;
@@ -443,7 +458,7 @@ class ApplyViewDetail extends React.Component {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-reportsend'), '上传舆情报告成功');
             if (response) {
                 //上传成功
-                this.setState({fileUploadId: response.id,fileUploadName: response.file_name});
+                this.setState({fileUploadId: response.file_id,fileUploadName: response.file_name,fileDirId: response.file_dir_id,fileReportId: response.id});
             } else {
                 message.error(Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!',{type: Intl.get('apply.approve.lyrical.report', '舆情报告')}));
             }
@@ -453,26 +468,6 @@ class ApplyViewDetail extends React.Component {
             this.afterUpload();
         }
     };
-    downLoadFile = (reqData) => {
-        // var $eleForm = $("<form method='get'></form>");
-        // $eleForm.attr("action", '/rest/reportsend/download/' + JSON.stringify(reqData));
-        // $(document.body).append($eleForm);
-        // //提交表单，实现下载
-        // $eleForm.submit();
-
-
-        const url = '/rest/reportsend/download';
-        let form = $('<form>', {action: url, method: 'get'});
-        form.append($('<input>', {name: 'reqData', value: JSON.stringify(reqData)}));
-        //将构造的表单添加到body上
-        //Chrome 56 以后不在body上的表单不允许提交了
-        $(document.body).append(form);
-        form.submit();
-        form.remove();
-
-
-
-    }
     renderUploadAndDownloadInfo = () => {
         var detailInfoObj = this.state.detailInfoObj.info;
         var props = {
@@ -482,18 +477,19 @@ class ApplyViewDetail extends React.Component {
             onChange: this.handleChange,
             data: detailInfoObj.id
         };
-        const reqData = {
-            file_dir_id: _.get(detailInfoObj,'detail.file_dir_id'),
-            file_id: _.get(detailInfoObj,'detail.file_id'),
-            file_name: _.get(detailInfoObj,'detail.file_name'),
-        };
         var fileName = this.state.fileUploadName || _.get(detailInfoObj,'detail.file_name');
+        const reqData = {
+            file_dir_id: this.state.fileDirId || _.get(detailInfoObj,'detail.file_dir_id'),
+            file_id: this.state.fileUploadId || _.get(detailInfoObj,'detail.file_id'),
+            file_name: fileName,
+        };
         return (
             <div>
-                {fileName ? <div className="upload-file-name"><a href={'/rest/reportsend/download/' + JSON.stringify(reqData) }>{fileName}</a></div> : null}
-                {/*{fileName ? <div className="upload-file-name"><a onClick={this.downLoadFile.bind(this, reqData)}>{fileName}</a></div> : null}*/}
-                {detailInfoObj.status === 'ongoing' ?
-                    <Upload {...props} className="import-reportsend" data-tracename="上传表格">
+                {fileName ? <div className="upload-file-name">
+                    {hasPrivilege('DOCUMENT_DOWNLOAD') ? <a href={'/rest/reportsend/download/' + JSON.stringify(reqData)}>{fileName}</a> : fileName}
+                </div> : null}
+                {detailInfoObj.status === 'ongoing' && hasPrivilege('DOCUMENT_UPLOAD') ?
+                    <Upload {...props} className="import-reportsend" data-tracename="上传文件">
                         <Button type='primary' className='download-btn'>
                             {fileName ? Intl.get('apply.approve.update.file', '更新文件') : Intl.get('apply.approve.import.file', '上传文件')}
                             {this.state.isUpLoading ?
@@ -505,7 +501,8 @@ class ApplyViewDetail extends React.Component {
         );
     };
     renderUploadAndDownload = (detailInfo) => {
-        if (_.isArray(detailInfo.approver_ids) && hasPrivilege('DOCUMENT_UPLOAD')){
+        // 驳回的时候也会有这个属性，所以再加上status的判断
+        if ((_.isArray(detailInfo.approver_ids) && detailInfo.status !== 'reject') || this.state.clickConfirmBtn){
             var showApplyInfo = [{
                 label: '',
                 renderText: this.renderUploadAndDownloadInfo,
@@ -548,6 +545,7 @@ class ApplyViewDetail extends React.Component {
                             refreshReplyList={this.refreshReplyList}
                             addReply={this.addReply}
                             commentInputChange={this.commentInputChange}
+                            isReportOrDocument={true}
                         />
                         {this.renderUploadAndDownload(detailInfo)}
                     </GeminiScrollbar>
@@ -590,8 +588,9 @@ class ApplyViewDetail extends React.Component {
         if (this.props.showNoData) {
             return null;
         }
+        var divHeight = $(window).height() - TOP_NAV_HEIGHT;
         return (
-            <div className='col-md-8 leave_manage_apply_detail_wrap' data-tracename="请假审批详情界面">
+            <div className='col-md-8 leave_manage_apply_detail_wrap' style={{'height': divHeight}} data-tracename="舆情报送审批详情界面">
                 <ApplyDetailStatus
                     showLoading={this.state.detailInfoObj.loadingResult === 'loading'}
                     showErrTip={this.state.detailInfoObj.loadingResult === 'error'}

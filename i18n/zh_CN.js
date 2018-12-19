@@ -2656,11 +2656,13 @@ var zh_CN = {
     'apply.approve.specific.report': '{customer}客户的专报',
     'apply.approve.import.file': '上传文件',
     'apply.approve.confirm.apply': '确认申请',
-    'apply.approve.wait.confirm': '待{confirmer}确认',
+    'apply.approve.wait.confirm': '待{confirmer}确认任务完成',
     'apply.approve.wait.upload': '待{uploader}上传',
     'apply.approve.confirm.finish': '确认完成',
     'apply.approve.update.file': '更新文件',
     'apply.failed.get.type.application': '获取全部{type}申请失败',
-    'apply.failed.get.my.worklist.application': '获取由我审批的{type}申请失败'
+    'apply.failed.get.my.worklist.application': '获取由我审批的{type}申请失败',
+    'apply.approver.confirm.task.done': '确认任务完成',
+    'failed.get.reply.comment': '获取回复列表失败'
 };
 export default zh_CN;

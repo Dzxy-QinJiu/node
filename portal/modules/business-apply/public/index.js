@@ -17,7 +17,7 @@ var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 var classNames = require('classnames');
 var LeaveApplyUtils = require('./utils/leave-apply-utils');
 import ApplyViewDetail from './view/apply-view-detail';
-import ApplyListItem from 'CMP_DIR/apply-list';
+import ApplyListItem from 'CMP_DIR/apply-list-item';
 import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-dropdown-and-add-btn';
 import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 let userData = require('../../../public/sources/user-data');
@@ -235,13 +235,23 @@ class BusinessApplyManagement extends React.Component {
                                         listenScrollBottom={this.state.listenScrollBottom}
                                         itemCssSelector=".leave_manage_apply_list>li"
                                     >
-                                        <ApplyListItem
-                                            processedStatus='ongoing'
-                                            applyListObj={this.state.applyListObj}
-                                            selectedDetailItem={this.state.selectedDetailItem}
-                                            selectedDetailItemIdx={this.state.selectedDetailItemIdx}
-                                            clickShowDetail={this.clickShowDetail}
-                                        />
+                                        <ul className="list-unstyled leave_manage_apply_list">
+                                            {
+                                                this.state.applyListObj.list.map((obj, index) => {
+                                                    return (
+                                                        <ApplyListItem
+                                                            key={index}
+                                                            obj={obj}
+                                                            index= {index}
+                                                            clickShowDetail={this.clickShowDetail}
+                                                            processedStatus='ongoing'
+                                                            selectedDetailItem={this.state.selectedDetailItem}
+                                                            selectedDetailItemIdx={this.state.selectedDetailItemIdx}
+                                                        />
+                                                    );
+                                                })
+                                            }
+                                        </ul>
                                         <NoMoreDataTip
                                             fontSize="12"
                                             show={this.showNoMoreDataTip}

@@ -42,8 +42,8 @@ class AddReportSendApply extends React.Component {
             $('.add-leave-apply-form-wrap form .require-item label').addClass('ant-form-item-required');
         }
     }
-    hideLeaveApplyAddForm = () => {
-        this.props.hideLeaveApplyAddForm();
+    hideApplyAddForm = () => {
+        this.props.hideApplyAddForm();
     };
     hideCustomerRequiredTip = (flag) => {
         this.setState({
@@ -90,7 +90,7 @@ class AddReportSendApply extends React.Component {
                 success: (data) => {
                     //添加成功
                     this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                    this.hideLeaveApplyAddForm();
+                    this.hideApplyAddForm();
                     //添加完后的处理
                     data.afterAddReplySuccess = true;
                     data.showCancelBtn = true;
@@ -171,7 +171,7 @@ class AddReportSendApply extends React.Component {
         return (
             <RightPanel showFlag={true} data-tracename="添加舆情报告申请" className="add-leave-container">
                 <span className="iconfont icon-close add-leave-apply-close-btn"
-                    onClick={this.hideLeaveApplyAddForm}
+                    onClick={this.hideApplyAddForm}
                     data-tracename="关闭添加舆情报告申请面板"></span>
                 <div className="add-leave-apply-wrap">
                     <BasicData
@@ -269,7 +269,7 @@ class AddReportSendApply extends React.Component {
                                             {Intl.get('common.save', '保存')}
                                             {this.state.isSaving ? <Icon type="loading"/> : null}
                                         </Button>
-                                        <Button className="cancel-btn" onClick={this.hideLeaveApplyAddForm}
+                                        <Button className="cancel-btn" onClick={this.hideApplyAddForm}
                                             data-tracename="点击取消添加舆情报告申请按钮">
                                             {Intl.get('common.cancel', '取消')}
                                         </Button>
@@ -297,7 +297,7 @@ class AddReportSendApply extends React.Component {
     }
 }
 AddReportSendApply.defaultProps = {
-    hideLeaveApplyAddForm: function() {
+    hideApplyAddForm: function() {
     },
     form: {},
     applyAjaxType: '',
@@ -313,7 +313,7 @@ AddReportSendApply.defaultProps = {
     remarkPlaceholder: '',
 };
 AddReportSendApply.propTypes = {
-    hideLeaveApplyAddForm: PropTypes.func,
+    hideApplyAddForm: PropTypes.func,
     form: PropTypes.object,
     applyAjaxType: PropTypes.string,
     afterAddApplySuccess: PropTypes.func,
