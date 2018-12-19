@@ -20,7 +20,9 @@ function dealBoardAction() {
         //拖动交易结束的处理
         'dragDealEnd',
         //设置是否正在拖动数据
-        'setIsSavingDragData'
+        'setIsSavingDragData',
+        //设置各阶段订单数据的初始值
+        'setInitStageDealData'
     );
     this.getStageList = function(callback) {
         this.dispatch({isLoadingStage: true});
@@ -32,7 +34,7 @@ function dealBoardAction() {
         });
     };
     //获取各阶段的订单列表
-    this.getStageDealList = function(stage, lastDealId) {
+    this.getStageDealList = function(stage, searchObj, lastDealId) {
         let params = {
             page_size: 20,
             sort_field: 'time',
@@ -44,7 +46,9 @@ function dealBoardAction() {
             query.cursor = true;
         }
         let bodyData = {query: {sales_opportunities: [{sale_stages: stage}]}};
-
+        if(!_.isEmpty(searchObj)){
+            bodyData.query[searchObj.field] = searchObj.value;
+        }
         this.dispatch({loading: true, stage});
         dealAjax.getDealList(params, bodyData, query).then((data) => {
             this.dispatch({loading: false, stage, data: data});

@@ -38,6 +38,15 @@ dealBoardStore.prototype.getStageList = function(resultObj) {
         });
     }
 };
+
+//设置各阶段订单数据的初始值
+dealBoardStore.prototype.setInitStageDealData = function() {
+    _.each(this.stageList, stage => {
+        if (stage.name) {
+            this.stageDealMap[stage.name] = getInitStageDealObj(stage.name);
+        }
+    });
+};
 function getInitStageDealObj(stage) {
     return {
         stage,

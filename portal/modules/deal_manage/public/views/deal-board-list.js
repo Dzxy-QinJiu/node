@@ -50,10 +50,7 @@ class DealBoardList extends React.Component {
                     let stageName = _.get(stage, 'name');
                     if (stageName) {
                         let curStageLastDealId = _.get(this.state, `stageDealMap[${stageName}].lastId`, '');
-                        if(_.isFunction(this.props.getSearchBody)){
-                            let searchObj = this.props.getSearchBody();
-                        }
-                        dealBoardAction.getStageDealList(stageName, searchObj, curStageLastDealId);
+                        dealBoardAction.getStageDealList(stageName, this.props.searchObj, curStageLastDealId);
                     }
                 });
             }
@@ -162,9 +159,10 @@ class DealBoardList extends React.Component {
             let noDataTip = Intl.get('deal.no.data', '暂无订单');
             // if (this.state.getStageErrorMsg) {
             //     noDataTip = this.state.getStageErrorMsg;
-            // } else if (this.state.searchObj.value) {
-            //     noDataTip = Intl.get('deal.no.filter.deal', '没有符合条件的订单');
-            // }
+            // } else
+            if (_.get(this.props, 'searchObj.value')) {
+                noDataTip = Intl.get('deal.no.filter.deal', '没有符合条件的订单');
+            }
             return (
                 <NoDataIntro noDataTip={noDataTip}/>);
         }
@@ -175,7 +173,7 @@ DealBoardList.propTypes = {
     currDeal: PropTypes.object,
     stageList: PropTypes.array,
     containerHeight: PropTypes.number,
-    getSearchBody: PropTypes.func,
+    searchObj: PropTypes.object,
     showDetailPanel: PropTypes.func,
     showCustomerDetail: PropTypes.func
 };
