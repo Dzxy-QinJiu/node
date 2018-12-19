@@ -9,8 +9,6 @@ import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 function dealBoardAction() {
     this.generateActions(
         'setInitData',
-        //添加订单成功后，将新加的订单加入列表中
-        'addOneDeal',
         //修改订单成功后，更新列表中对应的内容
         'updateDeal',
         //删除订单成功后，删除列表中对应的订单
@@ -22,7 +20,9 @@ function dealBoardAction() {
         //设置是否正在拖动数据
         'setIsSavingDragData',
         //设置各阶段订单数据的初始值
-        'setInitStageDealData'
+        'setInitStageDealData',
+        //添加完订单后的处理
+        'afterAddDeal'
     );
     this.getStageList = function(callback) {
         this.dispatch({isLoadingStage: true});

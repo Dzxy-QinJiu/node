@@ -121,10 +121,6 @@ dealBoardStore.prototype.setLastDealId = function(id) {
     this.dealListObj.lastId = id;
 };
 
-dealBoardStore.prototype.addOneDeal = function(deal) {
-    this.dealListObj.list.unshift(deal);
-};
-
 //删除订单成功后，删除列表中对应的订单
 dealBoardStore.prototype.afterDeleteDeal = function(dealId) {
     //过滤掉删除的订单
@@ -142,6 +138,13 @@ dealBoardStore.prototype.updateDeal = function(newDeal) {
                 editDeal.sale_stages = value;
             }
         });
+    }
+};
+//添加完订单后的处理
+dealBoardStore.prototype.afterAddDeal = function(newDeal) {
+    let stageDealObj = newDeal.sale_stages ? this.stageDealMap[newDeal.sale_stages] : {};
+    if (_.isObject(stageDealObj) && _.isArray(stageDealObj.list)) {
+        this.stageDealMap[newDeal.sale_stages].list.unshift(newDeal);
     }
 };
 

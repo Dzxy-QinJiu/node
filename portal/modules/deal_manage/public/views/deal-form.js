@@ -16,6 +16,7 @@ import CRMAddForm from 'MOD_DIR/crm/public/views/crm-add-form';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import dealAction from '../action';
+import dealBoardAction from '../action/deal-board-action';
 
 import {num as antUtilsNum} from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
@@ -122,7 +123,11 @@ class DealForm extends React.Component {
                     });
                     this.closeDealForm();
                     if (_.isObject(data.result)) {
-                        dealAction.addOneDeal({...data.result, customer_name: _.get(this.state,'formData.customer.name')});
+                        if(this.props.isBoardView){
+                            dealBoardAction.afterAddDeal({...data.result, customer_name: _.get(this.state,'formData.customer.name')});
+                        }else{
+                            dealAction.addOneDeal({...data.result, customer_name: _.get(this.state,'formData.customer.name')});
+                        }
                     }
                 },
                 error: (errorMsg) => {
@@ -357,8 +362,9 @@ class DealForm extends React.Component {
 }
 
 DealForm.propTypes = {
+    isBoardView: PropTypes.bool,
     hideDealForm: PropTypes.func,
-    form: PropTypes.object
+    form: PropTypes.object,
 };
 
 export default Form.create()(DealForm);
