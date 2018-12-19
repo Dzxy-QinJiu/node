@@ -60,12 +60,6 @@ export function getCustomerNumChart(stage) {
 
             option.columns = columns;
             option.dataSource = dataSource;
-        },
-        option: {
-            columns: [{
-                title: '客户总数',
-                dataIndex: 'total'
-            }]
-        },
+        }
     };
 }
