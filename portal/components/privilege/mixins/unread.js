@@ -20,8 +20,10 @@ const UNREADCOUNT = [{//待分配或待跟进线索数的数据
     name: [
         APPLY_APPROVE_TYPES.UNHANDLE_USER_APPLY,//用户申请待审批数
         APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT,//出差申请待我审批数
-        APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,//请假申请的带我审批数
-        APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES//销售机会的带我审批数
+        APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,//请假申请的待我审批数
+        APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES,//销售机会的待我审批数
+        APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND,//舆情报送的待我审批数
+        APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE//文件撰写的待我审批数
     ],
     cls: 'application_icon_container',
     style: 'applyApproveUnhandledStyle',

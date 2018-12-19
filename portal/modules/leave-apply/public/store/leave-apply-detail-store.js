@@ -61,7 +61,7 @@ LeaveApplyDetailStore.prototype.setInitState = function() {
         errorMsg: ''
     };
 };
-LeaveApplyDetailStore.prototype.setDetailInfoObj = function(detailObj) {
+LeaveApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
     this.detailInfoObj = {
         // "" loading error

@@ -75,7 +75,6 @@ class ImportTemplate extends React.Component {
     afterUpload = () => {
         this.setState({
             isLoading: false,
-            current: 1
         });
     };
     renderFirstStepContent = () => {

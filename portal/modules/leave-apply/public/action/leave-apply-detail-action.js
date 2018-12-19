@@ -5,7 +5,6 @@
  */
 var LeaveApplyAjax = require('../ajax/leave-apply-ajax');
 var LeaveApplyUtils = require('../utils/leave-apply-utils');
-import {message} from 'antd';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
@@ -23,7 +22,7 @@ function ApplyViewDetailActions() {
         'cancelSendApproval',
         'hideApprovalBtns',//审批完后不在显示审批按钮
         'hideCancelBtns',//审批完后不再显示撤销按钮
-        'setDetailInfoObj'
+        'setDetailInfoObjAfterAdd'
     );
 
     //获取审批单详情
@@ -50,7 +49,7 @@ function ApplyViewDetailActions() {
         LeaveApplyAjax.getLeaveApplyCommentList(queryObj).then((list) => {
             this.dispatch({loading: false, error: false, list: list});
         }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('failed.get.reply.comment', '获取回复列表失败')});
         });
     };
     //添加回复
@@ -104,7 +103,6 @@ function ApplyViewDetailActions() {
             var errMsg = errorMsg || errTip;
             this.dispatch({loading: false, error: true, errorMsg: errMsg});
             LeaveApplyUtils.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
-            message.error(errMsg);
         });
     };
     //获取下一节点的负责人

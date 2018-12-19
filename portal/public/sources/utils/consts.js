@@ -71,7 +71,13 @@ export const APPLY_APPROVE_TYPES = {
     UNHANDLECUSTOMERVISIT: 'unhandleCustomerVisit',//未处理的出差申请数量
     UNHANDLEBUSINESSOPPORTUNITIES: 'unhandleBusinessOpportunities',//未处理的销售机会申请数量
     UNHANDLEPERSONALLEAVE: 'unhandlePersonalLeave',//未处理的请假申请数量
+    UNHANDLEREPORTSEND: 'unhandleReportSend',//未处理的请假申请数量
+    UNHANDLEDOCUMENTWRITE: 'unhandleDocumentWrite',//未处理的请假申请数量
     UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
+    REPORT: 'report',//舆情报送的类型
+    DOCUMENT: 'document',//文件撰写的类型
+    OPINIONREPORT: 'opinionreport'//舆情报送和文件撰写的类型
+
 };
 
 //系统消息对应的几种类型
@@ -368,3 +374,31 @@ export const DEAL_STATUS = {
     WIN: 'win',//赢单
     LOSE: 'lose'//丢单
 };
+//舆情报告类型
+export const REPORT_TYPE = [{
+    name: Intl.get('contract.13', '日报'), value: 'daily_report'
+}, {
+    name: Intl.get('contract.14', '周报'), value: 'weekly_report'
+},
+{
+    name: Intl.get('contract.15', '月报'), value: 'monthly_report'
+},
+{
+    name: Intl.get('apply.approve.quarty.report', '季报'), value: 'quarterly_report'
+}, {
+    name: Intl.get('contract.16', '年报'), value: 'annual_report'
+},
+{
+    name: Intl.get('contract.17', '专报'), value: 'special_report'
+}, {
+    name: Intl.get('crm.186', '其他'), value: 'other_report'
+},];
+//文件撰写类型
+export const DOCUMENT_TYPE = [
+    {name: Intl.get('apply.approve.tender.documents', '招标文件'), value: 'tender_document'},
+    {name: Intl.get('apply.approve.bide.documents', '投标文件'), value: 'bid_document'},
+    {name: Intl.get('apply.approve.construction.plan', '建设方案'), value: 'build_document'},
+    {name: Intl.get('apply.approve.other.plan', '其他文件'), value: 'other_document'},
+];
+//顶部导航的高度
+export const TOP_NAV_HEIGHT = 64;

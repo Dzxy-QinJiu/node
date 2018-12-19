@@ -7,6 +7,7 @@ var LeaveApplyAjax = require('../ajax/leave-apply-ajax');
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 function LeaveApplyActions() {
     this.generateActions(
         'setInitState',
@@ -35,6 +36,7 @@ function LeaveApplyActions() {
                 return;
             }
             LeaveApplyAjax.getAllLeaveApplyList(queryObj).then((data) => {
+                scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
                 //需要对全部列表进行一下处理，知道哪些是可以审批的
                 var workListArr = workList.list;
                 _.forEach(workListArr,(item) => {

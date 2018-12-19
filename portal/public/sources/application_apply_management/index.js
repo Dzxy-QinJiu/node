@@ -9,6 +9,8 @@ var Checker = require('../../../components/privilege/checker');
 var businessApply = require('../../../modules/business-apply');
 var salesOpportunity = require('../../../modules/sales_opportunity');
 var leaveApply = require('../../../modules/leave-apply');
+var reportSendApply = require('../../../modules/report_send');
+var documentWriteApply = require('../../../modules/document_write');
 import userApply from '../../../modules/user_apply';
 require('./index.less');
 
@@ -19,6 +21,8 @@ function getChildRoutes() {
             businessApply,
             salesOpportunity,
             leaveApply,
+            reportSendApply,
+            documentWriteApply
         ]
     );
     return childRoutes;

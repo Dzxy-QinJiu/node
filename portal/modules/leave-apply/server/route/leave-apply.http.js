@@ -8,14 +8,14 @@ module.exports = {
     routes: [
         {
             method: 'get',
-            path: '/rest/get/all/leave_apply/list',
+            path: '/rest/get/all/apply_approve/list',
             handler: 'getAllLeaveApplyList',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'get',
-            path: '/rest/get/worklist/leave_apply/list',
+            path: '/rest/get/worklist/apply_approve/list',
             handler: 'getWorklistLeaveApplyList',
             passport: {
                 needLogin: true
@@ -29,21 +29,21 @@ module.exports = {
             },
         }, {
             method: 'get',
-            path: '/rest/leave_apply/detail/byId',
+            path: '/rest/apply_approve/detail/byId',
             handler: 'getLeaveApplyDetailById',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'get',
-            path: '/rest/get/leave_apply/comment/list',
+            path: '/rest/get/apply_approve/comment/list',
             handler: 'getLeaveApplyComments',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'post',
-            path: '/rest/add/leave_apply/comment',
+            path: '/rest/add/apply_approve/comment',
             handler: 'addLeaveApplyComments',
             passport: {
                 needLogin: true

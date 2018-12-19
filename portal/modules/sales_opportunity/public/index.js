@@ -15,7 +15,7 @@ var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 require('./css/index.less');
 import {Alert} from 'antd';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-import ApplyListItem from 'CMP_DIR/apply-list';
+import ApplyListItem from 'CMP_DIR/apply-list-item';
 var Spinner = require('CMP_DIR/spinner');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import ApplyViewDetail from './view/apply-view-detail';
@@ -83,7 +83,7 @@ class SalesOpportunityApplyManagement extends React.Component {
             sort_field: this.state.sort_field,//排序字段
             order: this.state.order,
             page_size: this.state.page_size,
-            id: this.state.lastSalesOpportunityApplyId, //用于下拉加载的id
+            id: this.state.lastApplyId, //用于下拉加载的id
             type: 'business_opportunities'
         };
         //如果是选择的全部类型，不需要传status这个参数
@@ -251,13 +251,23 @@ class SalesOpportunityApplyManagement extends React.Component {
                                     listenScrollBottom={this.state.listenScrollBottom}
                                     itemCssSelector=".leave_manage_apply_list>li"
                                 >
-                                    <ApplyListItem
-                                        processedStatus='ongoing'
-                                        applyListObj={this.state.applyListObj}
-                                        selectedDetailItem={this.state.selectedDetailItem}
-                                        selectedDetailItemIdx={this.state.selectedDetailItemIdx}
-                                        clickShowDetail={this.clickShowDetail}
-                                    />
+                                    <ul className="list-unstyled leave_manage_apply_list">
+                                        {
+                                            this.state.applyListObj.list.map((obj, index) => {
+                                                return (
+                                                    <ApplyListItem
+                                                        key={index}
+                                                        obj={obj}
+                                                        index= {index}
+                                                        clickShowDetail={this.clickShowDetail}
+                                                        processedStatus='ongoing'
+                                                        selectedDetailItem={this.state.selectedDetailItem}
+                                                        selectedDetailItemIdx={this.state.selectedDetailItemIdx}
+                                                    />
+                                                );
+                                            })
+                                        }
+                                    </ul>
                                     <NoMoreDataTip
                                         fontSize="12"
                                         show={this.showNoMoreDataTip}

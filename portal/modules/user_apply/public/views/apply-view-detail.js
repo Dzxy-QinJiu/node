@@ -31,7 +31,7 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from '../../../../components/rightPanel';
 import {getPassStrenth, PassStrengthBar, passwordRegex} from 'CMP_DIR/password-strength-bar';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-import {APPLY_TYPES, userTypeList} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_TYPES, userTypeList,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
 
@@ -1789,13 +1789,14 @@ const ApplyViewDetail = createReactClass({
             approveSuccess = resultType.submitResult === 'success';
             approveError = resultType.submitResult === 'error';
             applyResultErrorMsg = resultType.errorMsg;
+            var typeObj = handleDiffTypeApply(this);
             return <ApplyApproveStatus
                 showLoading={showLoading}
                 approveSuccess={approveSuccess}
                 viewApprovalResult={this.viewApprovalResult}
                 approveError={approveError}
                 applyResultErrorMsg={applyResultErrorMsg}
-                reSendApproval={this.reSendApproval.bind(this,confirmType)}
+                reSendApproval={typeObj.deleteFunction}
                 cancelSendApproval={this.cancelSendApproval.bind(this, confirmType)}
                 container={this}
             />;
@@ -2117,12 +2118,6 @@ const ApplyViewDetail = createReactClass({
         });
     },
 
-    //重新发送
-    reSendApproval(approval,e) {
-        Trace.traceEvent(e, '点击重试按钮');
-        this.submitApprovalForm(approval);
-    },
-
     //取消发送
     cancelSendApproval(e) {
         Trace.traceEvent(e, '点击取消按钮');
@@ -2214,8 +2209,9 @@ const ApplyViewDetail = createReactClass({
         });
         let customerOfCurUser = this.state.customerOfCurUser;
         let detailWrapWidth = $('.user_apply_page').width() - APPLY_LIST_WIDTH;
+        var divHeight = $(window).height() - TOP_NAV_HEIGHT;
         return (
-            <div className={cls} data-tracename="审批详情界面" style={{width: detailWrapWidth}}>
+            <div className={cls} data-tracename="审批详情界面" style={{'width': detailWrapWidth,'height': divHeight}}>
                 {this.renderApplyDetailLoading()}
                 {this.renderApplyDetailError()}
                 {this.renderApplyDetailNodata()}
