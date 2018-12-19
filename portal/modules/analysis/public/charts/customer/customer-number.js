@@ -24,7 +24,7 @@ export function getCustomerNumChart(stage) {
         processOption: (option, chartProps) => {
             let columns = [];
             let dataSource = [];
-            const data = chartProps.data;
+            let data = chartProps.data;
 
             if (_.isObject(data)) {
                 const stageNameMap = {
@@ -40,7 +40,6 @@ export function getCustomerNumChart(stage) {
                     columns.push({
                         title: stageNameMap[stage] + '客户数',
                         dataIndex: stage,
-                        width: '50%',
                     });
                 } else {
                     data.total = data.message + data.intention + data.trial + data.signed + data.unknown;
@@ -51,7 +50,8 @@ export function getCustomerNumChart(stage) {
                         width: '50%',
                     }, {
                         title: '签约客户数',
-                        dataIndex: 'signed'
+                        dataIndex: 'signed',
+                        width: '50%',
                     });
                 }
 
