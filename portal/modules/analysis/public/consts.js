@@ -30,6 +30,16 @@ export const USER_TYPES = [
     unknownObj,
 ];
 
+//客户阶段
+export const CUSTOMER_STAGE = {
+    message: '信息',
+    intention: '意向',
+    trial: '试用',
+    signed: '签约',
+    qualified: '合格',
+    unknown: '未知'
+};
+
 let userTypeDataObj = {};
 
 _.each(USER_TYPES, userType => {

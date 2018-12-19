@@ -2,6 +2,8 @@
  * 客户数统计
  */
 
+import { CUSTOMER_STAGE } from '../../consts';
+
 export function getCustomerNumChart(stage) {
     return {
         title: '客户数统计',
@@ -27,18 +29,9 @@ export function getCustomerNumChart(stage) {
             let data = chartProps.data;
 
             if (_.isObject(data)) {
-                const stageNameMap = {
-                    message: '信息',
-                    intention: '意向',
-                    trial: '试用',
-                    signed: '签约',
-                    qualified: '合格',
-                    unknown: '未知'
-                };
-                
                 if (stage) {
                     columns.push({
-                        title: stageNameMap[stage] + '客户数',
+                        title: CUSTOMER_STAGE[stage] + '客户数',
                         dataIndex: stage,
                     });
                 } else {
