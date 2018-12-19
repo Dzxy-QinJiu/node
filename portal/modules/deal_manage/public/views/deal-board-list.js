@@ -50,7 +50,10 @@ class DealBoardList extends React.Component {
                     let stageName = _.get(stage, 'name');
                     if (stageName) {
                         let curStageLastDealId = _.get(this.state, `stageDealMap[${stageName}].lastId`, '');
-                        dealBoardAction.getStageDealList(stageName, curStageLastDealId);
+                        if(_.isFunction(this.props.getSearchBody)){
+                            let searchObj = this.props.getSearchBody();
+                        }
+                        dealBoardAction.getStageDealList(stageName, searchObj, curStageLastDealId);
                     }
                 });
             }
@@ -146,6 +149,7 @@ class DealBoardList extends React.Component {
                         <DragDropContext onDragEnd={this.onDragEnd}>
                             {_.map(this.state.stageDealMap, (stageObj, key) => {
                                 return (<DealStageBoard key={key} stageObj={stageObj}
+                                    currDeal={this.props.currDeal}
                                     showDetailPanel={this.props.showDetailPanel}
                                     showCustomerDetail={this.props.showCustomerDetail}
                                     containerHeight={this.state.containerHeight}/>);
@@ -168,8 +172,10 @@ class DealBoardList extends React.Component {
 }
 
 DealBoardList.propTypes = {
+    currDeal: PropTypes.object,
     stageList: PropTypes.array,
     containerHeight: PropTypes.number,
+    getSearchBody: PropTypes.func,
     showDetailPanel: PropTypes.func,
     showCustomerDetail: PropTypes.func
 };

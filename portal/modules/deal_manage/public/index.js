@@ -400,7 +400,6 @@ class DealManage extends React.Component {
         let customerOfCurUser = this.state.customerOfCurUser;
         let dealViewCls = classNames('deal-manage-content', {'board-view-style': this.state.viewType === VIEW_TYPES.BOARD});
         let containerHeight = this.getBoardContainerHeight();
-        let isBoardView = this.state.viewType === VIEW_TYPES.BOARD;
         return (
             <div className="deal-manage-container" data-tracename="订单管理">
                 <TopNav>
@@ -411,21 +410,19 @@ class DealManage extends React.Component {
                                 className="iconfont icon-board-view"/></RadioButton>
                         </RadioGroup>
                     </div>
-                    {isBoardView ? null : (
-                        <div className="deal-search-block">
-                            <SearchInput
-                                type="select"
-                                searchFields={searchFields}
-                                searchEvent={this.searchEvent}
-                                className="btn-item"
-                            />
-                        </div>)}
-                    {isBoardView ? null : (
-                        <PrivilegeChecker check="CUSTOMER_ADD">
-                            <Button className='btn-item add-deal-btn' onClick={this.showDealForm}>
-                                {Intl.get('crm.161', '添加订单')}
-                            </Button>
-                        </PrivilegeChecker>)}
+                    <div className="deal-search-block">
+                        <SearchInput
+                            type="select"
+                            searchFields={searchFields}
+                            searchEvent={this.searchEvent}
+                            className="btn-item"
+                        />
+                    </div>
+                    <PrivilegeChecker check="CUSTOMER_ADD">
+                        <Button className='btn-item add-deal-btn' onClick={this.showDealForm}>
+                            {Intl.get('crm.161', '添加订单')}
+                        </Button>
+                    </PrivilegeChecker>
                 </TopNav>
                 <div className={dealViewCls}>
                     {this.state.viewType === VIEW_TYPES.LIST ? this.renderDealList() : (
@@ -436,7 +433,9 @@ class DealManage extends React.Component {
                             }}>
                             <DealBoardList containerHeight={containerHeight}
                                 showCustomerDetail={this.showCustomerDetail}
-                                showDetailPanel={this.showDetailPanel()}
+                                showDetailPanel={this.showDetailPanel}
+                                currDeal={this.state.currDeal}
+                                searchObj={this.state.searchObj}
                             />
                         </div>)}
                 </div>

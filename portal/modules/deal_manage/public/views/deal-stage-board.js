@@ -35,11 +35,13 @@ class DealStageBoard extends React.Component {
             return (
                 <div className="deal-board-content"
                     style={{height: boradHeight}}>
-                    <GeminiScrollbar handleScrollBottom={this.handleScrollBarBottom}
+                    <GeminiScrollbar className="srollbar-out-card-style"
+                        handleScrollBottom={this.handleScrollBarBottom}
                         listenScrollBottom={stageObj.listenScrollBottom}>
                         {_.map(stageObj.list, (deal, index) => {
                             return (
                                 <DealCard deal={deal} index={index}
+                                    isDetailShow={deal.id === _.get(this.props,'currDeal.id','')}
                                     showCustomerDetail={this.props.showCustomerDetail}
                                     showDetailPanel={this.props.showDetailPanel}/>);
                         })}
@@ -77,6 +79,7 @@ class DealStageBoard extends React.Component {
                 <span
                     className='deal-total-count'>{Intl.get('sales.home.total.count', '共{count}个', {count: stageObj.total || '0'})}</span>
             </span>);
+
         return (
             <Droppable droppableId={_.get(stageObj, 'stage', '')}>
                 {(provided, snapshot) => (
@@ -95,6 +98,7 @@ class DealStageBoard extends React.Component {
 }
 
 DealStageBoard.propTypes = {
+    currDeal: PropTypes.object,
     stageObj: PropTypes.object,
     containerHeight: PropTypes.number,
     showDetailPanel: PropTypes.func,

@@ -20,8 +20,15 @@
   float: none;
   width: 360px;
   margin-top: 20px;
+  padding-right: 2px;
   background-color: @bg-color;
   vertical-align: top;
+  //将滚动条调到卡片外面
+  .srollbar-out-card-style{
+    >.gm-scroll-view{
+      padding-right: 12px;
+    }
+  }
   //订单阶段标题
   .detail-card-title {
     margin-bottom: 0;
@@ -30,9 +37,10 @@
     color: @title-color;
     .deal-total-count {
       float: right;
+      padding-right: 8px;
+      line-height: 24px;
       font-size: 12px;
       color: #999;
-      line-height: 24px;
     }
   }
   .anticon-spin.anticon-loading {
@@ -50,7 +58,9 @@
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
-      cursor: pointer;
+      span{
+        cursor: pointer;
+      }
     }
     .deal-info-item {
       color: @font-color;
@@ -59,7 +69,6 @@
       }
     }
     .deal-budget {
-      cursor: pointer;
       font-size: 16px;
       color: @title-color;
       .icon-deal-budget {
@@ -79,6 +88,7 @@
     text-overflow: ellipsis;
     background-color: #ffffff;
   }
+
   .single-deal-card.draggable-style {
     cursor: move;
   }
