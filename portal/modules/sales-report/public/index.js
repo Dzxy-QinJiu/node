@@ -386,20 +386,24 @@ class SalesReport extends React.Component {
                 //电话量
                 reportCharts.callVolumeChart,
                 //客户阶段
-                reportCharts.customerStageChart,
+                customerCharts.getCustomerStageChart(),
                 //客户活跃度统计
                 customerCharts.getCustomerActiveTrendChart('客户活跃度统计', 'day', true),
                 //新开客户登录
                 reportCharts.newCustomerLoginChart(this.state.currentMember.team_id, this.state.currentMember.member_id),
+                //合格客户统计
+                customerCharts.getCustomerNumChart('qualified'),
             );
         } else {
             charts.push(
+                //客户数统计
+                customerCharts.getCustomerNumChart(),
                 //销售行为统计
                 reportCharts.salesBehaviorChart,
                 //订单阶段
                 reportCharts.getOrderStageChart(this.state.stageList),
                 //客户阶段
-                reportCharts.customerStageChart,
+                customerCharts.getCustomerStageChart(),
                 //客户流失率统计
                 customerCharts.getCustomerLoseRateChart(),
                 //客户活跃度统计

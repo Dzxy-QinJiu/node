@@ -10,10 +10,17 @@ export function getCustomerStageChart(type = 'total') {
         url: '/rest/analysis/customer/stage/label/:auth_type/summary',
         chartType: 'funnel',
         argCallback: (arg) => {
-            let query = arg.query;
+            if (arg.query) {
+                arg.query.starttime = 0;
 
-            if (query && query.starttime) {
-                query.starttime = 0;
+                if (arg.query.end_time) {
+                    arg.query.endtime = arg.query.end_time;
+                    delete arg.query.end_time;
+                }
+
+                if (!arg.query.app_id) {
+                    arg.query.app_id = 'all';
+                }
             }
         },
         processData: processCustomerStageData,
