@@ -7,6 +7,7 @@ var ReportSendApplyService = require('../service/report-send-apply-service');
 const multiparty = require('multiparty');
 const fs = require('fs');
 const _ = require('lodash');
+let BackendIntl = require('../../../../lib/utils/backend_intl');
 function handleNodata(data) {
     if (!data){
         data = {
@@ -50,6 +51,11 @@ exports.uploadReportSend = function(req, res) {
         var filename = files['reportsend'][0].originalFilename;
         // 文件内容为空的处理
         let file_size = files['reportsend'][0].size;
+        if (filename.indexOf(' ') >= 0){
+            let backendIntl = new BackendIntl(req);
+            res.status(500).json(backendIntl.get('apply.approve.upload.no.container.space','文件名称中不要含有空格！'));
+            return;
+        }
         if(file_size === 0) {
             res.json(false);
             return;

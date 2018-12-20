@@ -448,8 +448,8 @@ class ApplyViewDetail extends React.Component {
     };
     handleChange = (info) => {
         this.setState({isUpLoading: true});
+        const response = info.file.response;
         if (info.file.status === 'done') {
-            const response = info.file.response;
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-reportsend'), '上传文件成功');
             if (response) {
                 //上传成功
@@ -459,7 +459,7 @@ class ApplyViewDetail extends React.Component {
             }
             this.afterUpload();
         }else if(info.file.status === 'error'){
-            message.error(Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!',{type: Intl.get('apply.approve.document.writing', '文件撰写')}));
+            message.error(_.isString(response) ? response : Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!',{type: Intl.get('apply.approve.document.writing', '文件撰写')}));
             this.afterUpload();
         }
     };
