@@ -96,7 +96,9 @@ class OrderItem extends React.Component {
                     this.setState({isLoading: true});
                     OrderAction.deleteOrder({}, {id: order.id}, result => {
                         this.setState({isLoading: false});
-                        if (result.code === 0) {
+                        if (_.isString(result)) {
+                            message.error(Intl.get('crm.139', '删除失败'));
+                        }else{
                             message.success(Intl.get('crm.138', '删除成功'));
                             OrderAction.afterDelOrder(order.id);
                             //稍后后再去重新获取数据，以防止后端更新未完成从而取到的还是旧数据
@@ -104,9 +106,6 @@ class OrderItem extends React.Component {
                                 //删除订单后，更新客户列表中的客户信息
                                 _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(order.customer_id);
                             }, 1000);
-                        }
-                        else {
-                            message.error(Intl.get('crm.139', '删除失败'));
                         }
                     });
                 }

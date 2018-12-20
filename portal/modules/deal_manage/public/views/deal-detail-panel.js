@@ -18,6 +18,7 @@ import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {DEAL_STATUS} from 'PUB_DIR/sources/utils/consts';
 import userData from 'PUB_DIR/sources/user-data';
 import ApplyUserForm from '../../../crm/public/views/apply-user-form';
+import dealBoardAction from '../action/deal-board-action';
 import dealAction from '../action';
 import dealAjax from '../ajax';
 import {formatNumHasDotToFixed} from 'PUB_DIR/sources/utils/common-method-util';
@@ -103,16 +104,16 @@ class DealDetailPanel extends React.Component {
         if (deal.id) {
             this.setState({isDeleting: true});
             dealAjax.deleteDeal(deal.id).then(result => {
-                if (result && result.code === 0) {
-                    //关闭此订单详情
-                    this.closeDetailPanel();
-                    message.success(Intl.get('crm.138', '删除成功'));
-                    //将列表中的订单删掉
-                    dealAction.afterDeleteDeal(deal.id);
-                } else {
-                    message.error(Intl.get('crm.139', '删除失败'));
-                }
                 this.setState({isDeleting: false});
+                //关闭此订单详情
+                this.closeDetailPanel();
+                message.success(Intl.get('crm.138', '删除成功'));
+                //将列表中的订单删掉
+                if (this.props.isBoardView) {
+                    dealBoardAction.afterDeleteDeal(deal);
+                } else {
+                    dealAction.afterDeleteDeal(deal.id);
+                }
             }, (errorMsg) => {
                 this.setState({isDeleting: false});
                 message.error(errorMsg || Intl.get('crm.139', '删除失败'));
@@ -155,7 +156,11 @@ class DealDetailPanel extends React.Component {
                     currDeal.sale_stages = sale_stages;
                     this.setState({currDeal});
                     //更新列表中的订单阶段
-                    dealAction.updateDeal(saveObj);
+                    if (this.props.isBoardView) {
+                        dealBoardAction.updateDealStage(saveObj);
+                    } else {
+                        dealAction.updateDeal(saveObj);
+                    }
                 } else {
                     message.error(Intl.get('common.edit.failed', '修改失败'));
                 }
@@ -173,7 +178,7 @@ class DealDetailPanel extends React.Component {
         this.setState({curDealCloseStatus: ''});
     };
 
-    //关闭订单（赢单、丢单）
+    //关闭订单（赢单）
     closeDeal = (status) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.deal-item-title'), '关闭订单并设为赢单');
         if (this.state.isClosingDeal) return;
@@ -194,8 +199,15 @@ class DealDetailPanel extends React.Component {
                         closeOrderErrorMsg: '',
                         currDeal: deal
                     });
-                    //更新订单的关闭状态
-                    dealAction.updateDeal(saveDeal);
+                    if (this.props.isBoardView) {
+                        dealBoardAction.afterCloseDeal({
+                            ...saveDeal,
+                            sale_stages: _.get(deal, 'sale_stages', '')
+                        });
+                    } else {
+                        //更新订单的关闭状态
+                        dealAction.updateDeal(saveDeal);
+                    }
                 } else {
                     this.setState({
                         isClosingDeal: false,
@@ -285,7 +297,7 @@ class DealDetailPanel extends React.Component {
                     field="lose_reason"
                     value={deal.lose_reason}
                     placeholder={Intl.get('crm.order.lose.reason.input', '请输入丢单原因')}
-                    saveEditInput={this.saveDealBasicInfo}
+                    saveEditInput={this.saveDealBasicInfo.bind('oppo_status')}
                     okBtnText={Intl.get('crm.order.lose.confirm', '确认丢单')}
                     cancelEditInput={this.cancelCloseDeal}
                 />
@@ -363,16 +375,16 @@ class DealDetailPanel extends React.Component {
             </div>
         );
     };
-    //修改订单的预算、备注
+    //修改订单的预算、备注、应用、丢单原因、预计成交、丢单+丢单原因
     saveDealBasicInfo = (property, saveObj, successFunc, errorFunc) => {
         let currDeal = this.state.currDeal;
         saveObj.customer_id = currDeal.customer_id;
         saveObj.property = property;
         //预算展示的是元，接口中需要的是万
-        if (_.has(saveObj, 'budget')) {
+        if (property === 'budget') {
             saveObj.budget = saveObj.budget / 10000;
         }
-        if (!_.get(currDeal, 'oppo_status') && _.has(saveObj, 'lose_reason')) {//没有订单状态，有丢单原因，说明是丢单的处理；有丢单状态时，就是单独的修改丢单原因
+        if (property === 'oppo_status') {//丢单+丢单原因
             saveObj.oppo_status = DEAL_STATUS.LOSE;
         }
         if (saveObj.id && saveObj.customer_id) {
@@ -383,8 +395,17 @@ class DealDetailPanel extends React.Component {
                     });
                     this.setState({currDeal});
                     if (_.isFunction(successFunc)) successFunc();
-                    //更新订单的关闭状态
-                    dealAction.updateDeal(saveObj);
+                    if (this.props.isBoardView) {
+                        //丢单+丢单原因
+                        if (property === 'oppo_status') {
+                            dealBoardAction.afterCloseDeal({...saveObj, sale_stages: currDeal.sale_stages});
+                        } else {
+                            dealBoardAction.updateDeal({...saveObj, sale_stages: currDeal.sale_stages});
+                        }
+                    } else {
+                        //更新订单的关闭状态
+                        dealAction.updateDeal(saveObj);
+                    }
                 } else {
                     if (_.isFunction(errorFunc)) errorFunc(Intl.get('common.save.failed', '保存失败'));
                 }
@@ -585,6 +606,7 @@ class DealDetailPanel extends React.Component {
 }
 
 DealDetailPanel.propTypes = {
+    isBoardView: PropTypes.bool,
     currDeal: PropTypes.object,
     hideDetailPanel: PropTypes.func
 };

@@ -22,7 +22,9 @@ function dealBoardAction() {
         //设置各阶段订单数据的初始值
         'setInitStageDealData',
         //添加完订单后的处理
-        'afterAddDeal'
+        'afterAddDeal',
+        //关闭订单后的处理
+        'afterCloseDeal'
     );
     this.getStageList = function(callback) {
         this.dispatch({isLoadingStage: true});

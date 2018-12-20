@@ -122,29 +122,57 @@ dealBoardStore.prototype.setLastDealId = function(id) {
 };
 
 //删除订单成功后，删除列表中对应的订单
-dealBoardStore.prototype.afterDeleteDeal = function(dealId) {
+dealBoardStore.prototype.afterDeleteDeal = function(deal) {
     //过滤掉删除的订单
-    this.dealListObj.list = _.filter(this.dealListObj.list, deal => deal.id !== dealId);
-    this.dealListObj.total -= 1;
+    let stageDealObj = deal.sale_stages ? this.stageDealMap[deal.sale_stages] : {};
+    if (_.isObject(stageDealObj) && _.isArray(stageDealObj.list)) {
+        this.stageDealMap[deal.sale_stages].list = _.filter(stageDealObj.list, item => item.id !== deal.id);
+        this.stageDealMap[deal.sale_stages].total--;
+    }
 };
 
 //修改订单成功后，更新列表中对应的内容（newDeal:修改了哪些属性，传哪些属性和订单id）
 dealBoardStore.prototype.updateDeal = function(newDeal) {
-    let editDeal = _.find(this.dealListObj.list, deal => deal.id === newDeal.id);
-    if (editDeal) {
-        _.each(newDeal, (value, key) => {
-            editDeal[key] = value;
-            if (key === 'oppo_status') {
-                editDeal.sale_stages = value;
-            }
-        });
+    let stageDealObj = {};
+    //丢单原因的修改
+    if (newDeal.property === 'lose_reson') {
+        stageDealObj = this.stageDealMap.lose || {};
+    } else {//订单的预算、备注、应用、预计成交的修改
+        stageDealObj = newDeal.sale_stages ? this.stageDealMap[newDeal.sale_stages] : {};
+    }
+    if (_.isObject(stageDealObj) && _.isArray(stageDealObj.list)) {
+        let editDeal = _.find(stageDealObj.list, deal => deal.id === newDeal.id);
+        if (editDeal) {
+            editDeal[newDeal.property] = newDeal[newDeal.property];
+        }
     }
 };
+
+//关闭订单后的处理
+dealBoardStore.prototype.afterCloseDeal = function(newDeal) {
+    let stageDealObj = newDeal.sale_stages ? this.stageDealMap[newDeal.sale_stages] : {};
+    if (_.isObject(stageDealObj) && _.isArray(stageDealObj.list)) {
+        let editDeal = _.find(stageDealObj.list, deal => deal.id === newDeal.id);
+        if (editDeal) {
+            editDeal.oppo_status = newDeal.oppo_status;//win/lose
+            if (newDeal.oppo_status === 'lose') {//丢单的话，丢单原因的修改
+                editDeal.lose_reason = newDeal.lose_reason;
+            }
+            delete editDeal.sale_stages;
+        }
+        //将关闭的订单加入到对应的赢单/丢单列表中
+        this.stageDealMap[newDeal.oppo_status].list.push(editDeal);
+        //从原阶段列表中过滤掉
+        stageDealObj.list = _.filter(stageDealObj.list, deal => deal.id !== newDeal.id);
+    }
+};
+
 //添加完订单后的处理
 dealBoardStore.prototype.afterAddDeal = function(newDeal) {
     let stageDealObj = newDeal.sale_stages ? this.stageDealMap[newDeal.sale_stages] : {};
     if (_.isObject(stageDealObj) && _.isArray(stageDealObj.list)) {
         this.stageDealMap[newDeal.sale_stages].list.unshift(newDeal);
+        this.stageDealMap[newDeal.sale_stages].total++;
     }
 };
 
