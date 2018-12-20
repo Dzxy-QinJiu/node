@@ -5,6 +5,7 @@
  */
 var BusinessApplyAjax = require('../ajax/business-apply-ajax');
 let userData = require('PUB_DIR/sources/user-data');
+var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 function BusinessApplyActions() {
     this.generateActions(
@@ -35,6 +36,7 @@ function BusinessApplyActions() {
             }
 
             BusinessApplyAjax.getAllApplyList(queryObj).then((data) => {
+                scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
                 //需要对全部列表进行一下处理，知道哪些是可以审批的
                 var workListArr = workList.list;
                 _.forEach(workListArr,(item) => {

@@ -69,7 +69,7 @@ ApplyViewDetailStore.prototype.setApplyComment = function(list) {
         errorMsg: ''
     };
 };
-ApplyViewDetailStore.prototype.setDetailInfoObj = function(detailObj) {
+ApplyViewDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
     this.detailInfoObj = {
         // "" loading error

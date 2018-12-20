@@ -23,7 +23,7 @@ function ApplyViewDetailActions() {
         'cancelSendApproval',
         'hideApprovalBtns',//审批完后不在显示审批按钮
         'hideCancelBtns',//审批完后不再显示撤销按钮
-        'setDetailInfoObj',
+        'setDetailInfoObjAfterAdd',
         'setApplyCandate',
         'setAssignedSales',
         'setSalesMan'
@@ -53,7 +53,7 @@ function ApplyViewDetailActions() {
         SalesOpportunityApplyAjax.getSalesOpportunityApplyCommentList(queryObj).then((list) => {
             this.dispatch({loading: false, error: false, list: list});
         }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('failed.get.reply.comment', '获取回复列表失败')});
         });
     };
     //添加回复

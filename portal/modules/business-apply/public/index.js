@@ -17,7 +17,7 @@ var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 var classNames = require('classnames');
 var LeaveApplyUtils = require('./utils/leave-apply-utils');
 import ApplyViewDetail from './view/apply-view-detail';
-import ApplyListItem from 'CMP_DIR/apply-list';
+import ApplyListItem from 'CMP_DIR/apply-list-item';
 import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-dropdown-and-add-btn';
 import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 let userData = require('../../../public/sources/user-data');
@@ -73,7 +73,7 @@ class BusinessApplyManagement extends React.Component {
             sort_field: this.state.sort_field,//排序字段
             order: this.state.order,
             page_size: this.state.page_size,
-            id: this.state.lastBusinessApplyId, //用于下拉加载的id
+            id: this.state.lastApplyId, //用于下拉加载的id
         };
         //如果是选择的全部类型，不需要传status这个参数
         if (this.state.applyListType !== 'all') {
@@ -235,13 +235,23 @@ class BusinessApplyManagement extends React.Component {
                                         listenScrollBottom={this.state.listenScrollBottom}
                                         itemCssSelector=".leave_manage_apply_list>li"
                                     >
-                                        <ApplyListItem
-                                            processedStatus='ongoing'
-                                            applyListObj={this.state.applyListObj}
-                                            selectedDetailItem={this.state.selectedDetailItem}
-                                            selectedDetailItemIdx={this.state.selectedDetailItemIdx}
-                                            clickShowDetail={this.clickShowDetail}
-                                        />
+                                        <ul className="list-unstyled leave_manage_apply_list">
+                                            {
+                                                this.state.applyListObj.list.map((obj, index) => {
+                                                    return (
+                                                        <ApplyListItem
+                                                            key={index}
+                                                            obj={obj}
+                                                            index= {index}
+                                                            clickShowDetail={this.clickShowDetail}
+                                                            processedStatus='ongoing'
+                                                            selectedDetailItem={this.state.selectedDetailItem}
+                                                            selectedDetailItemIdx={this.state.selectedDetailItemIdx}
+                                                        />
+                                                    );
+                                                })
+                                            }
+                                        </ul>
                                         <NoMoreDataTip
                                             fontSize="12"
                                             show={this.showNoMoreDataTip}

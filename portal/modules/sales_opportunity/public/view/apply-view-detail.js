@@ -23,7 +23,7 @@ import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
 import ApplyDetailBlock from 'CMP_DIR/apply-detail-block';
 import ModalDialog from 'CMP_DIR/ModalDialog';
-import {APPLY_LIST_LAYOUT_CONSTANTS, APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_LIST_LAYOUT_CONSTANTS, APPLY_STATUS,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 import {
     getApplyTopicText,
     getApplyResultDscr,
@@ -73,7 +73,7 @@ class ApplyViewDetail extends React.Component {
         SalesOpportunityApplyDetailStore.listen(this.onStoreChange);
         if (_.get(this.props,'detailItem.afterAddReplySuccess')){
             setTimeout(() => {
-                SalesOpportunityApplyDetailAction.setDetailInfoObj(this.props.detailItem);
+                SalesOpportunityApplyDetailAction.setDetailInfoObjAfterAdd(this.props.detailItem);
             });
         }else if (this.props.detailItem.id) {
             this.getBusinessApplyDetailData(this.props.detailItem);
@@ -93,7 +93,7 @@ class ApplyViewDetail extends React.Component {
         var nextPropsId = nextProps.detailItem.id;
         if (_.get(nextProps,'detailItem.afterAddReplySuccess')){
             setTimeout(() => {
-                SalesOpportunityApplyDetailAction.setDetailInfoObj(nextProps.detailItem);
+                SalesOpportunityApplyDetailAction.setDetailInfoObjAfterAdd(nextProps.detailItem);
             });
         }else if (thisPropsId && nextPropsId && nextPropsId !== thisPropsId) {
             this.getBusinessApplyDetailData(nextProps.detailItem);
@@ -311,12 +311,6 @@ class ApplyViewDetail extends React.Component {
         this.getBusinessApplyDetailData(this.props.detailItem);
         //设置这条审批不再展示通过和驳回的按钮
         SalesOpportunityApplyDetailAction.hideApprovalBtns();
-    };
-
-    //重新发送
-    reSendApproval = (approval,e) => {
-        Trace.traceEvent(e, '点击重试按钮');
-        this.submitApprovalForm(approval,true);
     };
 
     //取消发送
@@ -578,14 +572,14 @@ class ApplyViewDetail extends React.Component {
         approveSuccess = resultType.submitResult === 'success';
         approveError = resultType.submitResult === 'error';
         applyResultErrorMsg = resultType.errorMsg;
-
+        var typeObj = handleDiffTypeApply(this);
         return <ApplyApproveStatus
             showLoading={showLoading}
             approveSuccess={approveSuccess}
             viewApprovalResult={this.viewApprovalResult}
             approveError={approveError}
             applyResultErrorMsg={applyResultErrorMsg}
-            reSendApproval={this.reSendApproval.bind(this,confirmType)}
+            reSendApproval={typeObj.deleteFunction}
             cancelSendApproval={this.cancelSendApproval.bind(this, confirmType)}
             container={this}
         />;
@@ -700,8 +694,9 @@ class ApplyViewDetail extends React.Component {
         if (this.props.showNoData) {
             return null;
         }
+        var divHeight = $(window).height() - TOP_NAV_HEIGHT;
         return (
-            <div className='col-md-8 sales_opportunity_apply_detail_wrap' data-tracename="销售机会审批详情界面">
+            <div className='col-md-8 sales_opportunity_apply_detail_wrap' style={{'height': divHeight}} data-tracename="销售机会审批详情界面">
                 <ApplyDetailStatus
                     showLoading={this.state.detailInfoObj.loadingResult === 'loading'}
                     showErrTip = {this.state.detailInfoObj.loadingResult === 'error'}

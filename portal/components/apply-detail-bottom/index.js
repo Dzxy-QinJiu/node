@@ -25,11 +25,11 @@ class ApplyDetailBottom extends React.Component {
                 {this.props.showApproveBtn ? <div className="pass-and-reject-wrap">
                     <Button type="primary" className="btn-primary-sure" size="small"
                         onClick={this.props.submitApprovalForm.bind(this, 'pass')}>
-                        {Intl.get('user.apply.detail.button.pass', '通过')}
+                        {this.props.passText}
                     </Button>
                     <Button type="primary" className="btn-primary-sure" size="small"
                         onClick={this.props.submitApprovalForm.bind(this, 'reject')}>
-                        {Intl.get('common.apply.reject', '驳回')}
+                        {this.props.rejectText}
                     </Button>
                 </div> : null}
             </div>;
@@ -81,7 +81,9 @@ ApplyDetailBottom.defaultProps = {
     },
     renderAssigenedContext: function(){
 
-    }
+    },
+    passText: Intl.get('user.apply.detail.button.pass', '通过'),
+    rejectText: Intl.get('common.apply.reject', '驳回')
 };
 ApplyDetailBottom.propTypes = {
     create_time: PropTypes.string,
@@ -92,7 +94,9 @@ ApplyDetailBottom.propTypes = {
     showApproveBtn: PropTypes.boolean,
     submitApprovalForm: PropTypes.func,
     renderAssigenedContext: PropTypes.func,
-    showCancelBtn: PropTypes.boolean
+    showCancelBtn: PropTypes.boolean,
+    rejectText: PropTypes.string,
+    passText: PropTypes.string,
 };
 
 export default ApplyDetailBottom;
