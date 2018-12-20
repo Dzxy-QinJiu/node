@@ -116,25 +116,6 @@ exports.approveSalesOpportunityApplyPassOrReject = function(obj) {
     });
     return Deferred.promise();
 };
-//获取某个申请的状态
-let getSalesOpportunityApplyStatusByIdAjax = null;
-exports.getSalesOpportunityApplyStatusById = function(queryObj) {
-    var Deferred = $.Deferred();
-    getSalesOpportunityApplyStatusByIdAjax && getSalesOpportunityApplyStatusByIdAjax.abort();
-    getSalesOpportunityApplyStatusByIdAjax = $.ajax({
-        url: '/rest/get/apply/status/byId',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
 //获取销售人员列表
 exports.getSalesManList = function() {
     var Deferred = $.Deferred();
@@ -144,28 +125,5 @@ exports.getSalesManList = function() {
         }).error((xhr) => {//xhr:XMLHttpRequest
             Deferred.reject(xhr.responseJSON);
         });
-    return Deferred.promise();
-};
-//撤销某个申请审批
-exports.cancelApplyApprove = function(obj) {
-    const ERROR_MSG = Intl.get('user.apply.detail.backout.error', '撤销申请失败');
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/cancel/apply/approve',
-        type: 'post',
-        dataType: 'json',
-        data: obj,
-        success: function(result) {
-            //操作成功返回true
-            if(result === true) {
-                Deferred.resolve(result);
-            } else {
-                Deferred.reject(ERROR_MSG);
-            }
-        },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || ERROR_MSG);
-        }
-    });
     return Deferred.promise();
 };

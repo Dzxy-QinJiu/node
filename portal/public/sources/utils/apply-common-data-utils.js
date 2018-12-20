@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
- * Created by zhangshujuan on 2018/9/10.
+ * Created by zhangshujuan on 2018/12/20.
  */
 //获取全部申请列表
 let getAllApplyListAjax = null;
@@ -9,7 +9,7 @@ exports.getAllApplyList = function(queryObj) {
     var Deferred = $.Deferred();
     getAllApplyListAjax && getAllApplyListAjax.abort();
     getAllApplyListAjax = $.ajax({
-        url: '/rest/get/all/business_apply/list',
+        url: '/rest/get/all/apply_approve/list',
         dataType: 'json',
         type: 'get',
         data: queryObj,
@@ -22,52 +22,16 @@ exports.getAllApplyList = function(queryObj) {
     });
     return Deferred.promise();
 };
-//获取自己的申请列表
-let getSelfApplyListAjax = null;
-exports.getSelfApplyList = function() {
-    var Deferred = $.Deferred();
-    getSelfApplyListAjax && getSelfApplyListAjax.abort();
-    getSelfApplyListAjax = $.ajax({
-        url: '/rest/get/self/business_apply/list',
-        dataType: 'json',
-        type: 'get',
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
 //获取待我审批的申请列表
-let getWorklistBusinessApplyListAjax = null;
-exports.getWorklistBusinessApplyList = function() {
+let getWorklistApplyListAjax = null;
+exports.getWorklistApplyList = function(queryObj) {
     var Deferred = $.Deferred();
-    getWorklistBusinessApplyListAjax && getWorklistBusinessApplyListAjax.abort();
-    getWorklistBusinessApplyListAjax = $.ajax({
-        url: '/rest/get/worklist/business_apply/list',
+    getWorklistApplyListAjax && getWorklistApplyListAjax.abort();
+    getWorklistApplyListAjax = $.ajax({
+        url: '/rest/get/worklist/apply_approve/list',
         dataType: 'json',
         type: 'get',
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-//添加出差申请
-let addBusinessApplyAjax = null;
-exports.addBusinessApply = function(data) {
-    var Deferred = $.Deferred();
-    addBusinessApplyAjax && addBusinessApplyAjax.abort();
-    addBusinessApplyAjax = $.ajax({
-        url: '/rest/add/apply/list',
-        dataType: 'json',
-        type: 'post',
-        data: data,
+        data: queryObj,
         success: function(data) {
             Deferred.resolve(data);
         },
@@ -78,12 +42,12 @@ exports.addBusinessApply = function(data) {
     return Deferred.promise();
 };
 //根据申请的id获取申请的详情
-let getBusinessApplyDetailByIdAjax = null;
-exports.getBusinessApplyDetailById = function(queryObj) {
+let getApplyDetailByIdAjax = null;
+exports.getApplyDetailById = function(queryObj) {
     var Deferred = $.Deferred();
-    getBusinessApplyDetailByIdAjax && getBusinessApplyDetailByIdAjax.abort();
-    getBusinessApplyDetailByIdAjax = $.ajax({
-        url: '/rest/apply/detail/byId',
+    getApplyDetailByIdAjax && getApplyDetailByIdAjax.abort();
+    getApplyDetailByIdAjax = $.ajax({
+        url: '/rest/apply_approve/detail/byId',
         type: 'get',
         data: queryObj,
         success: function(data) {
@@ -96,12 +60,12 @@ exports.getBusinessApplyDetailById = function(queryObj) {
     return Deferred.promise();
 };
 //获取回复列表
-let getBusinessApplyCommentListAjax = null;
-exports.getBusinessApplyCommentList = function(queryObj) {
+let getApplyCommentListAjax = null;
+exports.getApplyCommentList = function(queryObj) {
     var Deferred = $.Deferred();
-    getBusinessApplyCommentListAjax && getBusinessApplyCommentListAjax.abort();
-    getBusinessApplyCommentListAjax = $.ajax({
-        url: '/rest/get/apply/comment/list',
+    getApplyCommentListAjax && getApplyCommentListAjax.abort();
+    getApplyCommentListAjax = $.ajax({
+        url: '/rest/get/apply_approve/comment/list',
         type: 'get',
         data: queryObj,
         success: function(data) {
@@ -114,12 +78,12 @@ exports.getBusinessApplyCommentList = function(queryObj) {
     return Deferred.promise();
 };
 //添加审批回复
-let addBusinessApplyCommentsAjax = null;
-exports.addBusinessApplyComments = function(data) {
+let addApplyCommentsAjax = null;
+exports.addApplyComments = function(data) {
     var Deferred = $.Deferred();
-    addBusinessApplyCommentsAjax && addBusinessApplyCommentsAjax.abort();
-    addBusinessApplyCommentsAjax = $.ajax({
-        url: '/rest/add/apply/comment',
+    addApplyCommentsAjax && addApplyCommentsAjax.abort();
+    addApplyCommentsAjax = $.ajax({
+        url: '/rest/add/apply_approve/comment',
         dataType: 'json',
         type: 'post',
         data: data,
@@ -132,13 +96,55 @@ exports.addBusinessApplyComments = function(data) {
     });
     return Deferred.promise();
 };
-//通过或者驳回申请
-let approveApplyPassOrRejectAjax = null;
-exports.approveApplyPassOrReject = function(obj) {
+//获取某个申请的状态
+let getApplyStatusByIdAjax = null;
+exports.getApplyStatusById = function(queryObj) {
     var Deferred = $.Deferred();
-    approveApplyPassOrRejectAjax && approveApplyPassOrRejectAjax.abort();
-    approveApplyPassOrRejectAjax = $.ajax({
-        url: '/rest/business_trip/submitApply',
+    getApplyStatusByIdAjax && getApplyStatusByIdAjax.abort();
+    getApplyStatusByIdAjax = $.ajax({
+        url: '/rest/get/apply/status/byId',
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//撤销某个申请审批
+exports.cancelApplyApprove = function(obj) {
+    const ERROR_MSG = Intl.get('user.apply.detail.backout.error', '撤销申请失败');
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/cancel/apply/approve',
+        type: 'post',
+        dataType: 'json',
+        data: obj,
+        success: function(result) {
+            //操作成功返回true
+            if(result === true) {
+                Deferred.resolve(result);
+            } else {
+                Deferred.reject(ERROR_MSG);
+            }
+        },
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON || ERROR_MSG);
+        }
+    });
+    return Deferred.promise();
+};
+//通过或者驳回申请
+let approveApplyPassOrRejectReportOrDocumentAjax = null;
+exports.approveApplyPassOrRejectReportOrDocument = function(obj) {
+    var Deferred = $.Deferred();
+    approveApplyPassOrRejectReportOrDocumentAjax && approveApplyPassOrRejectReportOrDocumentAjax.abort();
+    approveApplyPassOrRejectReportOrDocumentAjax = $.ajax({
+        url: '/rest/opinionreport/submitApply',
         dataType: 'json',
         type: 'post',
         data: obj,
@@ -151,5 +157,3 @@ exports.approveApplyPassOrReject = function(obj) {
     });
     return Deferred.promise();
 };
-
-

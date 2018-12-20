@@ -10,6 +10,7 @@ var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
+import {getApplyStatusById,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -36,7 +37,7 @@ function ApplyViewDetailActions() {
     //根据申请的id获取审批的状态
     this.getApplyStatusById = function(queryObj) {
         this.dispatch({loading: true, error: false});
-        BusinessApplyAjax.getApplyStatusById(queryObj).then((list) => {
+        getApplyStatusById(queryObj).then((list) => {
             this.dispatch({loading: false, error: false, list: list});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
@@ -100,7 +101,7 @@ function ApplyViewDetailActions() {
     this.cancelApplyApprove = function(obj,callback) {
         var errTip = Intl.get('user.apply.detail.backout.error', '撤销申请失败');
         this.dispatch({loading: true, error: false});
-        BusinessApplyAjax.cancelApplyApprove(obj).then((data) => {
+        cancelApplyApprove(obj).then((data) => {
             _.isFunction(callback) && callback();
             if (data) {
                 this.dispatch({loading: false, error: false});

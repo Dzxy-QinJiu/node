@@ -10,6 +10,7 @@ var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
+import {getApplyDetailById,getApplyStatusById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -27,7 +28,7 @@ function ApplyViewDetailActions() {
 
     //获取审批单详情
     this.getLeaveApplyDetailById = function(queryObj, status) {
-        LeaveApplyAjax.getLeaveApplyDetailById(queryObj, status).then((detail) => {
+        getApplyDetailById(queryObj, status).then((detail) => {
             this.dispatch({loading: false, error: false, detail: detail, status: status});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
@@ -36,7 +37,7 @@ function ApplyViewDetailActions() {
     //根据申请的id获取审批的状态
     this.getLeaveApplyStatusById = function(queryObj) {
         this.dispatch({loading: true, error: false});
-        LeaveApplyAjax.getLeaveApplyStatusById(queryObj).then((list) => {
+        getApplyStatusById(queryObj).then((list) => {
             this.dispatch({loading: false, error: false, list: list});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
@@ -46,7 +47,7 @@ function ApplyViewDetailActions() {
     //获取回复列表
     this.getLeaveApplyCommentList = function(queryObj) {
         this.dispatch({loading: true, error: false});
-        LeaveApplyAjax.getLeaveApplyCommentList(queryObj).then((list) => {
+        getApplyCommentList(queryObj).then((list) => {
             this.dispatch({loading: false, error: false, list: list});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('failed.get.reply.comment', '获取回复列表失败')});
@@ -55,7 +56,7 @@ function ApplyViewDetailActions() {
     //添加回复
     this.addLeaveApplyComments = function(obj) {
         this.dispatch({loading: true, error: false});
-        LeaveApplyAjax.addLeaveApplyComments(obj).then((replyData) => {
+        addApplyComments(obj).then((replyData) => {
             this.dispatch({loading: false, error: false, reply: replyData});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
@@ -89,7 +90,7 @@ function ApplyViewDetailActions() {
     this.cancelApplyApprove = function(obj,callback) {
         var errTip = Intl.get('user.apply.detail.backout.error', '撤销申请失败');
         this.dispatch({loading: true, error: false});
-        LeaveApplyAjax.cancelApplyApprove(obj).then((data) => {
+        cancelApplyApprove(obj).then((data) => {
             _.isFunction(callback) && callback();
             if (data) {
                 this.dispatch({loading: false, error: false});

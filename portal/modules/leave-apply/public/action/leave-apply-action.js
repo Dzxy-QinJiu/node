@@ -3,11 +3,11 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/10.
  */
-var LeaveApplyAjax = require('../ajax/leave-apply-ajax');
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
+import {getAllApplyList,getWorklistApplyList} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 function LeaveApplyActions() {
     this.generateActions(
         'setInitState',
@@ -20,7 +20,7 @@ function LeaveApplyActions() {
     this.getAllLeaveApplyList = function(queryObj) {
         //需要先获取待审批列表，成功后获取全部列表
         this.dispatch({loading: true, error: false});
-        LeaveApplyAjax.getWorklistLeaveApplyList({type: APPLY_APPROVE_TYPES.LEAVE}).then((workList) => {
+        getWorklistApplyList({type: APPLY_APPROVE_TYPES.LEAVE}).then((workList) => {
             this.dispatch({workList: workList});
             //如果是待我审批的列表，不需要在发获取全部列表的请求了
             if (queryObj.status && queryObj.status === 'ongoing'){
@@ -35,7 +35,7 @@ function LeaveApplyActions() {
                 this.dispatch({error: false, loading: false, data: workList});
                 return;
             }
-            LeaveApplyAjax.getAllLeaveApplyList(queryObj).then((data) => {
+            getAllApplyList(queryObj).then((data) => {
                 scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
                 //需要对全部列表进行一下处理，知道哪些是可以审批的
                 var workListArr = workList.list;
