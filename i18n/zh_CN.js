@@ -2665,6 +2665,7 @@ var zh_CN = {
     'apply.failed.get.type.application': '获取全部{type}申请失败',
     'apply.failed.get.my.worklist.application': '获取由我审批的{type}申请失败',
     'apply.approver.confirm.task.done': '确认任务完成',
-    'failed.get.reply.comment': '获取回复列表失败'
+    'failed.get.reply.comment': '获取回复列表失败',
+    'apply.approve.upload.no.container.space': '文件名称中不要含有空格！'
 };
 export default zh_CN;
