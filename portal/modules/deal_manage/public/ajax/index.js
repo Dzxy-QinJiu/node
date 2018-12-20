@@ -3,7 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2018/10/31.
  */
-const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
+import {hasPrivilege, getDataAuthType} from 'CMP_DIR/privilege/checker';
 const AUTHS = {
     MANAGER_DEAL_LIST: 'CRM_MANAGER_LIST_SALESOPPORTUNITY',
 };
@@ -67,6 +67,25 @@ exports.deleteDeal = function(deal_id) {
         url: `/rest/deal/${deal_id}`,
         dataType: 'json',
         type: 'delete',
+        success: result => {
+            Deferred.resolve(result);
+        },
+        error: xhr => {
+            Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+//各阶段总预算的获取
+exports.getStageTotalBudget = function(query) {
+    let type = getDataAuthType().toLowerCase();
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: `/rest/deal/${type}/stage/total_budget`,
+        dataType: 'json',
+        type: 'get',
+        data: query,
         success: result => {
             Deferred.resolve(result);
         },

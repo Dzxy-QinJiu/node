@@ -2616,6 +2616,7 @@ var zh_CN = {
     'deal.budget': '预算(元)',
     'deal.no.more.tip': '没有更多订单了',
     'deal.total.tip': '共{count}个订单',
+    'deal.total.budget.tip': '共{count}万',
     'deal.stage.select.tip': '请选择订单阶段',
     'deal.detail.panel.title': '订单详情',
     'deal.detail.no.products': '暂无产品',

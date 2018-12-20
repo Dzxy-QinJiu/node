@@ -61,6 +61,14 @@ function dealBoardAction() {
             this.dispatch({loading: false, stage, errorMsg: errorMsg || Intl.get('deal.list.get.failed', '获取订单列表失败')});
         });
     };
+    //各阶段总预算的获取
+    this.getStageTotalBudget = function(query) {
+        dealAjax.getStageTotalBudget(query).then((data) => {
+            this.dispatch(data);
+        }, (errorMsg) => {
+            this.dispatch(errorMsg);
+        });
+    };
 }
 
 export default alt.createActions(dealBoardAction);

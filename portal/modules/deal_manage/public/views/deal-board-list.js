@@ -53,6 +53,12 @@ class DealBoardList extends React.Component {
                         dealBoardAction.getStageDealList(stageName, this.props.searchObj, curStageLastDealId);
                     }
                 });
+                //获取各阶段订单的总预算
+                dealBoardAction.getStageTotalBudget({
+                    start_time: 0,//所有时间的订单,所以start_time:0
+                    end_time: moment().valueOf(),
+                    app_id: 'all'
+                });
             }
         }));
     }

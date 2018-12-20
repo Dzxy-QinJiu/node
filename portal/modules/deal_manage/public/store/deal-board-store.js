@@ -24,6 +24,16 @@ dealBoardStore.prototype.setInitData = function() {
 dealBoardStore.prototype.setIsSavingDragData = function(flag) {
     this.isSavingDragData = flag;
 };
+//各阶段总预算的获取
+dealBoardStore.prototype.getStageTotalBudget = function(totalBudgetList) {
+    if (_.isArray(totalBudgetList)) {
+        _.each(totalBudgetList, item => {
+            if (item.name) {
+                this.stageDealMap[item.name].totalBudget = item.budget;
+            }
+        });
+    }
+};
 
 dealBoardStore.prototype.getStageList = function(resultObj) {
     if (resultObj.isLoadingStage) {
@@ -56,6 +66,7 @@ function getInitStageDealObj(stage) {
         total: 0,
         lastId: '',//用来处理下拉加载的id
         listenScrollBottom: true,//是否监听下拉加载
+        totalBudget: 0//总预算
     };
 }
 //获取订单列表

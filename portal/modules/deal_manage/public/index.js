@@ -339,6 +339,17 @@ class DealManage extends React.Component {
                             noMoreDataText: Intl.get('deal.no.more.tip', '没有更多订单了')
                         }}
                     />
+                    {dealListObj.total ?
+                        <div className="summary_info">
+                            <ReactIntl.FormattedMessage
+                                id='deal.total.tip'
+                                defaultMessage={'共{count}个订单'}
+                                values={{
+                                    'count': dealListObj.total
+                                }}
+                            />
+                        </div> : null
+                    }
                 </div>);
         } else {
             let noDataTip = Intl.get('deal.no.data', '暂无订单');

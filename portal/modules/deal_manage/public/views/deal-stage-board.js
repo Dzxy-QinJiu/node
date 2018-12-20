@@ -41,7 +41,7 @@ class DealStageBoard extends React.Component {
                         {_.map(stageObj.list, (deal, index) => {
                             return (
                                 <DealCard deal={deal} index={index}
-                                    isDetailShow={deal.id === _.get(this.props,'currDeal.id','')}
+                                    isDetailShow={deal.id === _.get(this.props, 'currDeal.id', '')}
                                     showCustomerDetail={this.props.showCustomerDetail}
                                     showDetailPanel={this.props.showDetailPanel}/>);
                         })}
@@ -75,9 +75,12 @@ class DealStageBoard extends React.Component {
         let title = (
             <span>
                 <span className='deal-stage-name'> {this.getStageName(stageObj)}</span>
-                <span className='deal-total-price'></span>
-                <span
-                    className='deal-total-count'>{Intl.get('sales.home.total.count', '共{count}个', {count: stageObj.total || '0'})}</span>
+                <span className='deal-total-count'>
+                    {Intl.get('sales.home.total.count', '共{count}个', {count: stageObj.total || '0'})}
+                </span>
+                <span className='deal-total-price'>
+                    {stageObj.totalBudget ? Intl.get('deal.total.budget.tip', '共{count}万', {count: stageObj.totalBudget || '0'}) : null}
+                </span>
             </span>);
 
         return (
