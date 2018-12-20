@@ -16,10 +16,12 @@ import GeminiScrollbar from '../../../../components/react-gemini-scrollbar';
 import AppProperty from '../../../../components/user_manage_components/app-property-setting';
 import {Modal} from 'react-bootstrap';
 import {Alert, Tooltip, Form, Button, Input, InputNumber, Select, Icon, message, DatePicker, Row, Col} from 'antd';
+
 const Option = Select.Option;
 import FieldMixin from '../../../../components/antd-form-fieldmixin';
 import UserNameTextField from '../../../../components/user_manage_components/user-name-textfield/apply-input-index';
 import UserNameTextfieldUtil from '../../../../components/user_manage_components/user-name-textfield/util';
+
 const FormItem = Form.Item;
 import {Table} from 'react-bootstrap';
 import classNames from 'classnames';
@@ -31,7 +33,7 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from '../../../../components/rightPanel';
 import {getPassStrenth, PassStrengthBar, passwordRegex} from 'CMP_DIR/password-strength-bar';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-import {APPLY_TYPES, userTypeList,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_TYPES, userTypeList, TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 
@@ -47,8 +49,9 @@ var UserData = require('../../../../public/sources/user-data');
 var UserTypeConfigForm = require('./user-type-config-form');
 var BootstrapButton = require('react-bootstrap').Button;
 import Trace from 'LIB_DIR/trace';
-var moment = require('moment');
 
+var moment = require('moment');
+import {handleDiffTypeApply} from 'PUB_DIR/sources/utils/common-method-util';
 //表单默认配置
 var appConfig = {
     //默认没id，用id区分增加和修改类型，有id是修改，没id是增加
@@ -91,6 +94,7 @@ var CONSTANTS = {
     DETAIL_NO_COMMENT_HEIGHT: 55
 };
 const SELECT_CUSTOM_TIME_TYPE = 'custom';
+
 //获取查看申请详情的路径,回复,审批，驳回中需要添加
 function getApplyDetailUrl(detailInfo) {
     //申请id
@@ -99,6 +103,7 @@ function getApplyDetailUrl(detailInfo) {
     //跳转到具体申请详情的链接url
     return basePath + (applyId ? '?id=' + applyId : '');
 }
+
 //获取延期时间
 function getDelayDisplayTime(delay) {
     //年毫秒数
@@ -126,6 +131,7 @@ function getDelayDisplayTime(delay) {
             ${weeks ? weeks + Intl.get('common.time.unit.week', '周') : ''}
             ${days ? days + Intl.get('common.time.unit.day', '天') : ''}`;
 }
+
 const APPLY_LIST_WIDTH = 421;
 const ApplyViewDetail = createReactClass({
     propTypes: {
@@ -199,7 +205,7 @@ const ApplyViewDetail = createReactClass({
     componentWillReceiveProps(nextProps) {
         if (nextProps.detailItem.id && !_.isEqual(nextProps.detailItem, this.props.detailItem)) {
             this.appsSetting = {};
-            if (nextProps.detailItem.id !== _.get(this, 'props.detailItem.id')){
+            if (nextProps.detailItem.id !== _.get(this, 'props.detailItem.id')) {
                 this.setState({
                     showBackoutConfirmType: ''
                 });
@@ -207,7 +213,7 @@ const ApplyViewDetail = createReactClass({
             if ((!this.state.applyResult.submitResult && !this.state.backApplyResult.submitResult) || nextProps.detailItem.id !== this.props.detailItem.id) {
                 this.getApplyDetail(nextProps.detailItem);
             }
-            
+
 
         }
     },
@@ -227,7 +233,7 @@ const ApplyViewDetail = createReactClass({
                 height += 60;
             }
             return (<div className="app_user_manage_detail app_user_manage_detail_loading" style={{height: height}}>
-                <Spinner /></div>);
+                <Spinner/></div>);
         }
         return null;
     },
@@ -824,7 +830,7 @@ const ApplyViewDetail = createReactClass({
         }
     },
     //渲染延期多应用的table
-    renderMultiAppDelayTable(user){
+    renderMultiAppDelayTable(user) {
         let columns = [
             {
                 title: Intl.get('common.app', '应用'),
@@ -916,7 +922,7 @@ const ApplyViewDetail = createReactClass({
             </ul>
         );
     },
-    getTableColunms(){
+    getTableColunms() {
         const appsSetting = this.appsSetting;
         const isExistUserApply = this.isExistUserApply();
         let columns = [
@@ -948,7 +954,7 @@ const ApplyViewDetail = createReactClass({
             });
         }
         columns.push({
-            title: Intl.get('user.apply.detail.table.time','周期'),
+            title: Intl.get('user.apply.detail.table.time', '周期'),
             dataIndex: 'start_time',
             className: 'apply-detail-th',
             render: (text, app, index) => {
@@ -979,7 +985,7 @@ const ApplyViewDetail = createReactClass({
         let columns = this.getTableColunms();
         //角色、权限
         columns.push({
-            title: Intl.get('user.apply.detail.table.role','角色'),
+            title: Intl.get('user.apply.detail.table.role', '角色'),
             dataIndex: 'roleNames',
             className: 'apply-detail-th',
             render: (text, app, index) => {
@@ -1133,7 +1139,7 @@ const ApplyViewDetail = createReactClass({
     //销售渲染申请开通状态
     renderMultiAppDetailChangeStatus: function(detailInfo) {
         //把apps数据根据user_id重组
-        let users = _.uniqBy(detailInfo.apps,'user_id').map(app => {
+        let users = _.uniqBy(detailInfo.apps, 'user_id').map(app => {
             const item = _.pick(app, 'user_id', 'user_name', 'nickname');
             return {
                 ...item,
@@ -1222,7 +1228,7 @@ const ApplyViewDetail = createReactClass({
     //渲染销售申请修改其他信息
     renderDetailChangeOther: function(detailInfo) {
         //把apps数据根据user_id重组
-        let users = _.uniqBy(detailInfo.apps,'user_id').map(app => {
+        let users = _.uniqBy(detailInfo.apps, 'user_id').map(app => {
             const item = _.pick(app, 'user_id', 'user_name', 'nickname');
             return {
                 ...item,
@@ -1247,7 +1253,7 @@ const ApplyViewDetail = createReactClass({
         );
     },
     //禁用、其他类型的表格渲染
-    renderOtherStatusTable: function(user){
+    renderOtherStatusTable: function(user) {
         let columns = [
             {
                 title: Intl.get('common.app', '应用'),
@@ -1300,7 +1306,7 @@ const ApplyViewDetail = createReactClass({
         //是否是待审批
         const isUnApproved = this.isUnApproved();
         //把apps数据根据user_id重组
-        let users = _.uniqBy(detailInfo.apps,'user_id').map(app => {
+        let users = _.uniqBy(detailInfo.apps, 'user_id').map(app => {
             const item = _.pick(app, 'user_id', 'user_name', 'nickname');
             return {
                 ...item,
@@ -1693,21 +1699,21 @@ const ApplyViewDetail = createReactClass({
         ApplyViewDetailActions.saleBackoutApply(backoutObj);
     },
     renderCancelApplyApprove() {
-        var confirmType = this.state.showBackoutConfirmType,modalContent = '', deleteFunction = function() {
+        var confirmType = this.state.showBackoutConfirmType, modalContent = '', deleteFunction = function() {
 
-            },okText = '',modalShow = false, resultType = {};
-        if (confirmType){
+            }, okText = '', modalShow = false, resultType = {};
+        if (confirmType) {
             //不同类型的操作，展示的描述和后续操作也不一样
-            if (confirmType === '1' || confirmType === '2'){
+            if (confirmType === '1' || confirmType === '2') {
                 deleteFunction = this.submitApprovalForm.bind(this, confirmType);
-                modalContent = Intl.get('apply.approve.modal.text.pass','是否通过此申请');
+                modalContent = Intl.get('apply.approve.modal.text.pass', '是否通过此申请');
                 okText = Intl.get('user.apply.detail.button.pass', '通过');
-                if (confirmType === '2'){
-                    modalContent = Intl.get('apply.approve.modal.text.reject','是否驳回此申请');
+                if (confirmType === '2') {
+                    modalContent = Intl.get('apply.approve.modal.text.reject', '是否驳回此申请');
                     okText = Intl.get('common.apply.reject', '驳回');
                 }
                 resultType = this.state.applyResult;
-            }else if (confirmType === '3'){
+            } else if (confirmType === '3') {
                 modalContent = Intl.get('user.apply.detail.modal.content', '是否撤销此申请？');
                 deleteFunction = this.saleBackoutApply;
                 okText = Intl.get('user.apply.detail.modal.ok', '撤销');
@@ -1725,7 +1731,7 @@ const ApplyViewDetail = createReactClass({
                     delayClose={true}
                 />
             );
-        }else{
+        } else {
             return null;
         }
     },
@@ -1748,22 +1754,22 @@ const ApplyViewDetail = createReactClass({
     getNoSecondTimeStr(time) {
         return time ? moment(time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) : '';
     },
-    clickApprovalFormBtn(approval){
+    clickApprovalFormBtn(approval) {
         if (approval === '1') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击通过按钮');
         } else if (approval === '2') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击驳回按钮');
-        }else if (approval === '3'){
+        } else if (approval === '3') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击撤销申请按钮');
         }
         this.showConfirmModal(approval);
     },
-    showConfirmModal(approval){
+    showConfirmModal(approval) {
         this.setState({
             showBackoutConfirmType: approval
         });
     },
-    renderApplyApproveStatus(){
+    renderApplyApproveStatus() {
         //如果没有进行角色设置，显示角色设置的模态框
         if (this.state.rolesNotSettingModalDialog.show) {
             return (<ModalDialog
@@ -1775,14 +1781,14 @@ const ApplyViewDetail = createReactClass({
                 delete={this.continueSubmit}
                 hideModalDialog={this.cancelShowRolesModal}
             />);
-        }else{
-            var showLoading = false,approveSuccess = false, approveError = false,applyResultErrorMsg = '',
-                confirmType = this.state.showBackoutConfirmType,resultType = {};
-            if (confirmType === '3'){
+        } else {
+            var showLoading = false, approveSuccess = false, approveError = false, applyResultErrorMsg = '',
+                confirmType = this.state.showBackoutConfirmType, resultType = {};
+            if (confirmType === '3') {
                 resultType = this.state.backApplyResult;
-            }else if(confirmType === '1' || confirmType === '2') {
+            } else if (confirmType === '1' || confirmType === '2') {
                 resultType = this.state.applyResult;
-            }else{
+            } else {
                 return;
             }
             showLoading = resultType.submitResult === 'loading';
@@ -1895,7 +1901,7 @@ const ApplyViewDetail = createReactClass({
         }
     },
     //获取多用户申请延期时，审批参数
-    getMultiDelaySubmitData(obj){
+    getMultiDelaySubmitData(obj) {
         const apps = _.get(this.state.detailInfoObj, 'info.apps');
         //修改的用户类型，如果存在，说明修改过用户类型，需要把角色权限传过去，如果不存在，未修改用户类型，不需要把用户类型、角色、权限传过去
         let changedUserType = _.get(this.state.detailInfoObj, 'info.changedUserType');
@@ -1905,7 +1911,7 @@ const ApplyViewDetail = createReactClass({
                     let item = _.pick(x, 'client_id', 'client_name', 'user_id',
                         'user_name', 'nickname', 'begin_date', 'over_draft');
                     //如果修改了用户类型，需要把修改后的用户类型传过去
-                    if(changedUserType){
+                    if (changedUserType) {
                         item.user_type = changedUserType;
                     }
                     //延期时间为：自定义的到期时间时
@@ -1917,7 +1923,7 @@ const ApplyViewDetail = createReactClass({
                     }
                     let appConfig = this.appsSetting[`${item.client_id}&&${item.user_id}`];
                     //角色、权限，如果修改了用户类型，需要传设置的角色、权限
-                    if(appConfig && changedUserType){
+                    if (appConfig && changedUserType) {
                         item.roles = _.map(appConfig.roles, roleId => {
                             return {role_id: roleId};
                         });
@@ -1956,7 +1962,7 @@ const ApplyViewDetail = createReactClass({
                     message_id: this.props.detailItem.id
                 };
                 //多用户申请延期时，需要提交的数据处理
-                if(detailInfo.type === APPLY_TYPES.DELAY){
+                if (detailInfo.type === APPLY_TYPES.DELAY) {
                     obj = this.getMultiDelaySubmitData(obj);
                 }
             } else {
@@ -1997,9 +2003,9 @@ const ApplyViewDetail = createReactClass({
                 if (
                     approval === '1' && !this.state.rolesNotSettingModalDialog.continueSubmit &&
                     (detailInfo.type === CONSTANTS.APPLY_USER_OFFICIAL ||
-                    detailInfo.type === CONSTANTS.APPLY_USER_TRIAL ||
-                    detailInfo.type === CONSTANTS.EXIST_APPLY_FORMAL ||
-                    detailInfo.type === CONSTANTS.EXIST_APPLY_TRIAL)
+                        detailInfo.type === CONSTANTS.APPLY_USER_TRIAL ||
+                        detailInfo.type === CONSTANTS.EXIST_APPLY_FORMAL ||
+                        detailInfo.type === CONSTANTS.EXIST_APPLY_TRIAL)
                 ) {
                     //遍历每个应用，找到没有设置角色的应用
                     var rolesNotSetAppNames = _.chain(products).filter((obj) => {
@@ -2211,7 +2217,7 @@ const ApplyViewDetail = createReactClass({
         let detailWrapWidth = $('.user_apply_page').width() - APPLY_LIST_WIDTH;
         var divHeight = $(window).height() - TOP_NAV_HEIGHT;
         return (
-            <div className={cls} data-tracename="审批详情界面" style={{'width': detailWrapWidth,'height': divHeight}}>
+            <div className={cls} data-tracename="审批详情界面" style={{'width': detailWrapWidth, 'height': divHeight}}>
                 {this.renderApplyDetailLoading()}
                 {this.renderApplyDetailError()}
                 {this.renderApplyDetailNodata()}
