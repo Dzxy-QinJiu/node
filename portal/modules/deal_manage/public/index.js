@@ -208,7 +208,7 @@ class DealManage extends React.Component {
                 className: 'has-filter',
                 render: (text, record, index) => {
                     //有小数的预算，四舍五入精确到毛
-                    return parseAmount(formatNumHasDotToFixed(text * 10000, 1));
+                    return text === 0 ? text : parseAmount(formatNumHasDotToFixed(text * 10000, 1));
                 }
             },
             {
