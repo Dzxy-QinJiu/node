@@ -93,7 +93,7 @@ export const isSalesLeaderOrManager = function(){
     return !userData.getUserData().isCommonSales || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
 };
 
-function checkOnlyContactPhone(rule, value, callback) {
+export const checkOnlyContactPhone = function(rule, value, callback) {
     ClueAction.checkOnlyCluePhone(value, data => {
         if (_.isString(data)) {
             //唯一性验证出错了
@@ -107,7 +107,8 @@ function checkOnlyContactPhone(rule, value, callback) {
             }
         }
     });
-}
+};
+
 //获取线索联系电话唯一性的验证规则
 export const getPhoneInputValidateRules = () => {
     return [{

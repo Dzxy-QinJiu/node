@@ -25,7 +25,7 @@ const RELATEAUTHS = {
     'RELATEALL': 'CRM_MANAGER_CUSTOMER_CLUE_ID',//管理员通过线索id查询客户的权限
     'RELATESELF': 'CRM_USER_CUSTOMER_CLUE_ID'//普通销售通过线索id查询客户的权限
 };
-import {SELECT_TYPE, AVALIBILITYSTATUS,getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount} from '../../utils/clue-customer-utils';
+import {SELECT_TYPE, AVALIBILITYSTATUS,getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,checkOnlyContactPhone} from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 var timeoutFunc;//定时方法
@@ -681,19 +681,7 @@ class ClueDetailOverview extends React.Component {
                     //该联系人原电话列表中不存在该电话
                     if (phoneArray.indexOf(phone) === -1) {
                         //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
-                        CrmAction.checkOnlyContactPhone(phone, data => {
-                            if (_.isString(data)) {
-                                //唯一性验证出错了
-                                callback(Intl.get('crm.82', '电话唯一性验证出错了'));
-                            } else {
-                                if (_.isObject(data) && data.result === 'true') {
-                                    callback();
-                                } else {
-                                    //已存在
-                                    callback(Intl.get('crm.83', '该电话已存在'));
-                                }
-                            }
-                        });
+                        checkOnlyContactPhone(rule, phone, callback);
                     } else {//该联系人员电话列表中已存在该电话
                         // 该联系人原本的电话未做修改时（删除原本的，再添加上时）
                         callback();
