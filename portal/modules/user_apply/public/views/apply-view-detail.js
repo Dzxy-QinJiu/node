@@ -33,7 +33,7 @@ import {getPassStrenth, PassStrengthBar, passwordRegex} from 'CMP_DIR/password-s
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {APPLY_TYPES, userTypeList,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 import ModalDialog from 'CMP_DIR/ModalDialog';
-import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
+import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 
 /*在审批界面显示用户的右侧面板结束*/
 //默认头像图片

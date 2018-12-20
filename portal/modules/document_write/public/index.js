@@ -6,7 +6,7 @@
 var DocumentWriteApplyAction = require('./action/document-write-apply-action');
 var DocumentWriteApplyStore = require('./store/document-write-apply-store');
 var DocumentWriteApplyDetailAction = require('./action/document-write-apply-detail-action');
-import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-dropdown-and-add-btn';
+import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-components/apply-dropdown-and-add-btn';
 import AddDocumentWriteApplyPanel from 'CMP_DIR/add-send-document-template';
 import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES,DOCUMENT_TYPE} from 'PUB_DIR/sources/utils/consts';
 import Trace from 'LIB_DIR/trace';
@@ -15,7 +15,7 @@ var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 require('./css/index.less');
 import {Alert} from 'antd';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-import ApplyListItem from 'CMP_DIR/apply-list-item';
+import ApplyListItem from 'CMP_DIR/apply-components/apply-list-item';
 var Spinner = require('CMP_DIR/spinner');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import ApplyViewDetail from './view/apply-view-detail';
@@ -253,7 +253,7 @@ class DocumentWriteApplyManagement extends React.Component {
                                 >
                                     <ul className="list-unstyled leave_manage_apply_list">
                                         {
-                                            this.state.applyListObj.list.map((obj, index) => {
+                                            _.map(this.state.applyListObj.list,(obj, index) => {
                                                 return (
                                                     <ApplyListItem
                                                         key={index}

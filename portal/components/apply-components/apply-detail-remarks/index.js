@@ -47,6 +47,7 @@ class ApplyDetailRemarks extends React.Component {
                 <ul>
                     {replyList.map((replyItem, index) => {
                         var des = this.props.isReportOrDocument ? getReportSendApplyStatusTimeLineDesc(replyItem.status) : getApplyResultDscr(replyItem);
+                        //加index的判断是因为在列表中确认通过和最后的确认通过完成的状态都是pass，只能靠index为0的来判断哪一条是最后的确认任务完成的
                         if (this.props.isReportOrDocument && !replyItem.comment && index === 0 && _.get(this.state.detailInfo,'status') === 'pass'){
                             des = Intl.get('apply.approver.confirm.task.done','确认任务完成');
                         }
