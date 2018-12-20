@@ -33,11 +33,12 @@ const APPLY_OFFICIALL_STAGES = [Intl.get('crm.141', '成交阶段'), Intl.get('c
 const APPLY_TIAL_STAGES = [Intl.get('crm.143', '试用阶段'), Intl.get('crm.144', '立项报价阶段'), Intl.get('crm.145', '谈判阶段')];
 
 class OrderItem extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = this.getInitStateData(props);
     }
-    getInitStateData(props = this.props){
+
+    getInitStateData(props = this.props) {
         return {
             modalDialogFlag: false,//是否展示模态框
             modalContent: '',//模态框提示内容
@@ -59,8 +60,9 @@ class OrderItem extends React.Component {
             isExpandDetail: false,//关闭的订单是否展示详情
         };
     }
+
     componentWillReceiveProps(nextProps) {
-        if(this.state.formData.id !== nextProps.order.id){
+        if (this.state.formData.id !== nextProps.order.id) {
             let stateData = this.getInitStateData(nextProps);
             delete stateData.applyUserApps;
             this.setState(stateData);
@@ -98,7 +100,7 @@ class OrderItem extends React.Component {
                         this.setState({isLoading: false});
                         if (_.isString(result)) {
                             message.error(Intl.get('crm.139', '删除失败'));
-                        }else{
+                        } else {
                             message.success(Intl.get('crm.138', '删除成功'));
                             OrderAction.afterDelOrder(order.id);
                             //稍后后再去重新获取数据，以防止后端更新未完成从而取到的还是旧数据
@@ -164,19 +166,19 @@ class OrderItem extends React.Component {
         this.setState({apps: _.map(selectedApps, 'client_id'), submitErrorMsg});
     };
 
-    //修改订单的预算、备注、预计成交时间
+    //修改订单的预算、备注、预计成交时间, 丢单+丢单原因
     saveOrderBasicInfo = (property, saveObj, successFunc, errorFunc) => {
         //预计成交时间为空时的处理
-        if(_.has(saveObj,'predict_finish_time') && !saveObj.predict_finish_time){
+        if (property === 'predict_finish_time' && !saveObj.predict_finish_time) {
             if (_.isFunction(errorFunc)) errorFunc(Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间'));
             return;
         }
         saveObj.customer_id = this.props.order.customer_id;
         //预算展示的是元，接口中需要的是万
-        if (_.has(saveObj, 'budget')) {
+        if (property === 'budget') {
             saveObj.budget = saveObj.budget / 10000;
         }
-        if (!_.get(this.state, 'formdata.oppo_status') && _.has(saveObj, 'lose_reason')) {//没有订单状态，有丢单原因，说明是丢单的处理；有丢单状态时，就是单独的修改丢单原因
+        if (property === 'oppo_status') {//丢单+丢单原因
             saveObj.oppo_status = ORDER_STATUS.LOSE;
         }
         if (this.props.isMerge) {
@@ -187,6 +189,11 @@ class OrderItem extends React.Component {
                 if (result && result.code === 0) {
                     if (_.isFunction(successFunc)) successFunc();
                     OrderAction.afterEditOrder(saveObj);
+                    let formData = this.state.formData;
+                    _.each(saveObj, (value, key) => {
+                        formData[key] = value;
+                    });
+                    this.setState({formData});
                 } else {
                     if (_.isFunction(errorFunc)) errorFunc(result || Intl.get('common.save.failed', '保存失败'));
                 }
@@ -226,7 +233,7 @@ class OrderItem extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.order-introduce-div'), '保存应用的修改');
         let reqData = JSON.parse(JSON.stringify(this.props.order));
         reqData.apps = this.state.apps;
-        if(!_.get(reqData.apps,'[0]')){
+        if (!_.get(reqData.apps, '[0]')) {
             this.setState({submitErrorMsg: Intl.get('leave.apply.select.atleast.one.app', '请选择至少一个产品')});
             return;
         }
@@ -569,7 +576,7 @@ class OrderItem extends React.Component {
                     field="lose_reason"
                     value={order.lose_reason}
                     placeholder={Intl.get('crm.order.lose.reason.input', '请输入丢单原因')}
-                    saveEditInput={this.saveOrderBasicInfo.bind(this, 'lose_reason')}
+                    saveEditInput={this.saveOrderBasicInfo.bind(this, 'oppo_status')}
                     okBtnText={Intl.get('crm.order.lose.confirm', '确认丢单')}
                     cancelEditInput={this.cancelCloseOrder}
                 />
