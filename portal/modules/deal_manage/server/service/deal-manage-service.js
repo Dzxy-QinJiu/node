@@ -7,7 +7,9 @@ const dealUrl = {
     getDealList: `${baseUrl}/range/:type/:page_size/:sort_field/:sort_order`,
     addDeal: baseUrl,
     editDeal: `${baseUrl}/property/:property`,
-    deleteDeal: `${baseUrl}/:deal_id`
+    deleteDeal: `${baseUrl}/:deal_id`,
+    //各阶段总预算的获取
+    getStageTotalBudget: '/rest/analysis/customer/v2/:type/total/stage'
 };
 
 exports.getDealList = function(req, res) {
@@ -58,5 +60,14 @@ exports.deleteDeal = function(req, res) {
         res: res
     });
 };
+//各阶段总预算的获取
+exports.getStageTotalBudget = function(req, res) {
+    return restUtil.authRest.get({
+        url: dealUrl.getStageTotalBudget.replace(':type', req.params.type),
+        req: req,
+        res: res
+    }, req.query);
+};
+
 
     

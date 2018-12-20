@@ -12,6 +12,7 @@ import NoDataIntro from 'CMP_DIR/no-data-intro';
 import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 import dealAction from './action';
 import dealStore from './store';
+import dealBoardAction from './action/deal-board-action';
 import DealForm from './views/deal-form';
 import DealDetailPanel from './views/deal-detail-panel';
 import {DEAL_STATUS} from 'PUB_DIR/sources/utils/consts';
@@ -63,6 +64,7 @@ class DealManage extends React.Component {
             teamList: [],//团队列表（列表中的团队根据团队id获取团队名来展示）
             viewType: VIEW_TYPES.LIST,//默认展示看板视图
         };
+        this.boardListRef = null;
     }
 
     componentDidMount() {
@@ -206,7 +208,7 @@ class DealManage extends React.Component {
                 className: 'has-filter',
                 render: (text, record, index) => {
                     //有小数的预算，四舍五入精确到毛
-                    return parseAmount(formatNumHasDotToFixed(text * 10000, 1));
+                    return text === 0 ? text : parseAmount(formatNumHasDotToFixed(text * 10000, 1));
                 }
             },
             {
@@ -337,6 +339,17 @@ class DealManage extends React.Component {
                             noMoreDataText: Intl.get('deal.no.more.tip', '没有更多订单了')
                         }}
                     />
+                    {dealListObj.total ?
+                        <div className="summary_info">
+                            <ReactIntl.FormattedMessage
+                                id='deal.total.tip'
+                                defaultMessage={'共{count}个订单'}
+                                values={{
+                                    'count': dealListObj.total
+                                }}
+                            />
+                        </div> : null
+                    }
                 </div>);
         } else {
             let noDataTip = Intl.get('deal.no.data', '暂无订单');
@@ -365,10 +378,22 @@ class DealManage extends React.Component {
             searchObj.field = key;
             searchObj.value = _.trim(value);
             this.setState({searchObj}, () => {
-                dealAction.setLastDealId('');
-                setTimeout(() => {
-                    this.getDealList();
-                });
+                if (this.state.viewType === VIEW_TYPES.BOARD) {
+                    dealBoardAction.setInitStageDealData();
+                    setTimeout(() => {
+                        _.each(this.boardListRef.state.stageList, stage => {
+                            let stageName = _.get(stage, 'name');
+                            if (stageName) {
+                                dealBoardAction.getStageDealList(stageName, searchObj);
+                            }
+                        });
+                    });
+                } else {//订单列表的查询
+                    dealAction.setLastDealId('');
+                    setTimeout(() => {
+                        this.getDealList();
+                    });
+                }
             });
         }
     };
@@ -389,18 +414,20 @@ class DealManage extends React.Component {
                 field: 'name'
             },
             {
-                name: Intl.get('deal.stage', '阶段'),
-                field: 'sale_stages'
-            },
-            {
                 name: Intl.get('crm.6', '负责人'),
                 field: 'user_name'
             }
         ];
+        let isBoardView = this.state.viewType === VIEW_TYPES.BOARD;
+        if (!isBoardView) {
+            searchFields.unshift({
+                name: Intl.get('deal.stage', '阶段'),
+                field: 'sale_stages'
+            });
+        }
         let customerOfCurUser = this.state.customerOfCurUser;
         let dealViewCls = classNames('deal-manage-content', {'board-view-style': this.state.viewType === VIEW_TYPES.BOARD});
         let containerHeight = this.getBoardContainerHeight();
-        let isBoardView = this.state.viewType === VIEW_TYPES.BOARD;
         return (
             <div className="deal-manage-container" data-tracename="订单管理">
                 <TopNav>
@@ -411,21 +438,19 @@ class DealManage extends React.Component {
                                 className="iconfont icon-board-view"/></RadioButton>
                         </RadioGroup>
                     </div>
-                    {isBoardView ? null : (
-                        <div className="deal-search-block">
-                            <SearchInput
-                                type="select"
-                                searchFields={searchFields}
-                                searchEvent={this.searchEvent}
-                                className="btn-item"
-                            />
-                        </div>)}
-                    {isBoardView ? null : (
-                        <PrivilegeChecker check="CUSTOMER_ADD">
-                            <Button className='btn-item add-deal-btn' onClick={this.showDealForm}>
-                                {Intl.get('crm.161', '添加订单')}
-                            </Button>
-                        </PrivilegeChecker>)}
+                    <div className="deal-search-block">
+                        <SearchInput
+                            type="select"
+                            searchFields={searchFields}
+                            searchEvent={this.searchEvent}
+                            className="btn-item"
+                        />
+                    </div>
+                    <PrivilegeChecker check="CUSTOMER_ADD">
+                        <Button className='btn-item add-deal-btn' onClick={this.showDealForm}>
+                            {Intl.get('crm.161', '添加订单')}
+                        </Button>
+                    </PrivilegeChecker>
                 </TopNav>
                 <div className={dealViewCls}>
                     {this.state.viewType === VIEW_TYPES.LIST ? this.renderDealList() : (
@@ -435,15 +460,21 @@ class DealManage extends React.Component {
                                 width: '100%'
                             }}>
                             <DealBoardList containerHeight={containerHeight}
+                                ref={(boardList) => {
+                                    this.boardListRef = boardList;
+                                }}
                                 showCustomerDetail={this.showCustomerDetail}
-                                showDetailPanel={this.showDetailPanel()}
+                                showDetailPanel={this.showDetailPanel}
+                                currDeal={this.state.currDeal}
+                                searchObj={this.state.searchObj}
                             />
                         </div>)}
                 </div>
                 {this.state.isDetailPanelShow ? (
-                    <DealDetailPanel currDeal={this.state.currDeal} hideDetailPanel={this.hideDetailPanel}/>
+                    <DealDetailPanel currDeal={this.state.currDeal} isBoardView={isBoardView}
+                        hideDetailPanel={this.hideDetailPanel}/>
                 ) : this.state.isDealFormShow ? (
-                    <DealForm hideDealForm={this.hideDealForm}/>
+                    <DealForm hideDealForm={this.hideDealForm} isBoardView={isBoardView}/>
                 ) : null}
                 {/*查看该客户下的用户列表*/}
                 <RightPanel

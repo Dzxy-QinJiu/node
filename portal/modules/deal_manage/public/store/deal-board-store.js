@@ -24,6 +24,16 @@ dealBoardStore.prototype.setInitData = function() {
 dealBoardStore.prototype.setIsSavingDragData = function(flag) {
     this.isSavingDragData = flag;
 };
+//各阶段总预算的获取
+dealBoardStore.prototype.getStageTotalBudget = function(totalBudgetList) {
+    if (_.isArray(totalBudgetList)) {
+        _.each(totalBudgetList, item => {
+            if (item.name) {
+                this.stageDealMap[item.name].totalBudget = item.budget;
+            }
+        });
+    }
+};
 
 dealBoardStore.prototype.getStageList = function(resultObj) {
     if (resultObj.isLoadingStage) {
@@ -38,6 +48,15 @@ dealBoardStore.prototype.getStageList = function(resultObj) {
         });
     }
 };
+
+//设置各阶段订单数据的初始值
+dealBoardStore.prototype.setInitStageDealData = function() {
+    _.each(this.stageList, stage => {
+        if (stage.name) {
+            this.stageDealMap[stage.name] = getInitStageDealObj(stage.name);
+        }
+    });
+};
 function getInitStageDealObj(stage) {
     return {
         stage,
@@ -47,6 +66,7 @@ function getInitStageDealObj(stage) {
         total: 0,
         lastId: '',//用来处理下拉加载的id
         listenScrollBottom: true,//是否监听下拉加载
+        totalBudget: 0//总预算
     };
 }
 //获取订单列表
@@ -66,6 +86,8 @@ dealBoardStore.prototype.getStageDealList = function(resultObj) {
         dealList = _.filter(dealList, deal => deal.id);
         if (curStageDealObj.lastId) {
             curStageDealObj.list = curStageDealObj.list.concat(dealList);
+            //去重,以防新增了订单(或修改订单阶段)后,前端已加入list中,下拉后取到的数据里会有新加的订单,此时会重复
+            curStageDealObj.list = _.uniqBy(curStageDealObj.list, 'id');
         } else {
             curStageDealObj.list = dealList;
         }
@@ -112,27 +134,81 @@ dealBoardStore.prototype.setLastDealId = function(id) {
     this.dealListObj.lastId = id;
 };
 
-dealBoardStore.prototype.addOneDeal = function(deal) {
-    this.dealListObj.list.unshift(deal);
-};
-
 //删除订单成功后，删除列表中对应的订单
-dealBoardStore.prototype.afterDeleteDeal = function(dealId) {
+dealBoardStore.prototype.afterDeleteDeal = function(deal) {
     //过滤掉删除的订单
-    this.dealListObj.list = _.filter(this.dealListObj.list, deal => deal.id !== dealId);
-    this.dealListObj.total -= 1;
+    let stageDealObj = deal.sale_stages ? this.stageDealMap[deal.sale_stages] : {};
+    if (_.isObject(stageDealObj) && _.isArray(stageDealObj.list)) {
+        this.stageDealMap[deal.sale_stages].list = _.filter(stageDealObj.list, item => item.id !== deal.id);
+        this.stageDealMap[deal.sale_stages].total--;
+    }
 };
 
 //修改订单成功后，更新列表中对应的内容（newDeal:修改了哪些属性，传哪些属性和订单id）
 dealBoardStore.prototype.updateDeal = function(newDeal) {
-    let editDeal = _.find(this.dealListObj.list, deal => deal.id === newDeal.id);
-    if (editDeal) {
-        _.each(newDeal, (value, key) => {
-            editDeal[key] = value;
-            if (key === 'oppo_status') {
-                editDeal.sale_stages = value;
+    let stageDealObj = {};
+    //丢单原因的修改
+    if (newDeal.property === 'lose_reson') {
+        stageDealObj = this.stageDealMap.lose || {};
+    } else {//订单的预算、备注、应用、预计成交的修改
+        stageDealObj = newDeal.sale_stages ? this.stageDealMap[newDeal.sale_stages] : {};
+    }
+    if (_.isObject(stageDealObj) && _.isArray(stageDealObj.list)) {
+        let editDeal = _.find(stageDealObj.list, deal => deal.id === newDeal.id);
+        if (editDeal) {
+            editDeal[newDeal.property] = newDeal[newDeal.property];
+        }
+    }
+};
+
+//关闭订单后的处理
+dealBoardStore.prototype.afterCloseDeal = function(newDeal) {
+    let stageDealObj = newDeal.sale_stages ? this.stageDealMap[newDeal.sale_stages] : {};
+    if (_.isObject(stageDealObj) && _.isArray(stageDealObj.list)) {
+        let editDeal = _.find(stageDealObj.list, deal => deal.id === newDeal.id);
+        if (editDeal) {
+            editDeal.oppo_status = newDeal.oppo_status;//win/lose
+            if (newDeal.oppo_status === 'lose') {//丢单的话，丢单原因的修改
+                editDeal.lose_reason = newDeal.lose_reason;
             }
-        });
+            delete editDeal.sale_stages;
+        }
+        //将关闭的订单加入到对应的赢单/丢单列表中
+        this.stageDealMap[newDeal.oppo_status].list.unshift(editDeal);
+        this.stageDealMap[newDeal.oppo_status].total++;
+        //从原阶段列表中过滤掉
+        stageDealObj.list = _.filter(stageDealObj.list, deal => deal.id !== newDeal.id);
+        stageDealObj.total--;
+    }
+};
+
+//修改订单阶段
+dealBoardStore.prototype.afterEditDealStage = function(newDeal) {
+    //根据修改前的订单阶段，找到订单所在原阶段列
+    let oldStageDealObj = newDeal.old_stages ? this.stageDealMap[newDeal.old_stages] : {};
+    if (_.isObject(oldStageDealObj) && _.isArray(oldStageDealObj.list)) {
+        let editDeal = _.find(oldStageDealObj.list, deal => deal.id === newDeal.id);
+        if (editDeal) {
+            editDeal.sale_stages = newDeal.sale_stages;
+            //根据修改后的订单阶段,找到订单所在新阶段列
+            let stageDealObj = newDeal.sale_stages ? this.stageDealMap[newDeal.sale_stages] : {};
+            //将修改后的订单加入到修改订单阶段后所在列表中
+            if (_.isObject(stageDealObj) && _.isArray(stageDealObj.list)) {
+                stageDealObj.list.unshift(editDeal);
+                stageDealObj.total++;
+            }
+            //从原阶段列表中过滤掉
+            oldStageDealObj.list = _.filter(oldStageDealObj.list, deal => deal.id !== newDeal.id);
+            oldStageDealObj.total--;
+        }
+    }
+};
+//添加完订单后的处理
+dealBoardStore.prototype.afterAddDeal = function(newDeal) {
+    let stageDealObj = newDeal.sale_stages ? this.stageDealMap[newDeal.sale_stages] : {};
+    if (_.isObject(stageDealObj) && _.isArray(stageDealObj.list)) {
+        this.stageDealMap[newDeal.sale_stages].list.unshift(newDeal);
+        this.stageDealMap[newDeal.sale_stages].total++;
     }
 };
 

@@ -8,10 +8,11 @@ import {formatNumHasDotToFixed} from 'PUB_DIR/sources/utils/common-method-util';
 import {num as antUtilsNum} from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 
-const getItemStyle = (isDragging, draggableStyle) => ({
+const getItemStyle = (isDetailShow, isDragging, draggableStyle) => ({
     userSelect: 'none',
     // change background colour if dragging
-    background: isDragging ? 'lightgreen' : '#ffffff',
+    background: isDragging ? 'lightgreen' : isDetailShow ? '#d2e7f7' : '#ffffff',
+    border: 'none',
     // styles we need to apply on draggables
     ...draggableStyle
 });
@@ -22,6 +23,7 @@ class DealCard extends React.Component {
     }
 
     showDealDetial = (e) => {
+        e.stopPropagation();
         //点击客户名时，只打开客户详情
         if (_.indexOf(e.target.className, 'deal-customer-name') !== -1) {
             return;
@@ -42,10 +44,9 @@ class DealCard extends React.Component {
         let deal = this.props.deal;
         let budget = deal.budget ? parseAmount(formatNumHasDotToFixed(deal.budget * 10000, 1)) : '';
         return (
-            <div className="deal-card-content">
-                <div className="deal-info-item deal-customer-name" title={deal.customer_name}
-                    onClick={this.showCustomerDetail}>
-                    {deal.customer_name}
+            <div className="deal-card-content" onClick={this.showDealDetial}>
+                <div className="deal-info-item deal-customer-name">
+                    <span title={deal.customer_name} onClick={this.showCustomerDetail}>{deal.customer_name}</span>
                 </div>
                 <div className="deal-info-item deal-budget" title={Intl.get('leave.apply.buget.count', '预算')}>
                     <i className="iconfont icon-deal-budget"/>
@@ -79,6 +80,7 @@ class DealCard extends React.Component {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                         style={getItemStyle(
+                            this.props.isDetailShow,
                             snapshot.isDragging,
                             provided.draggableProps.style
                         )}>
@@ -92,6 +94,7 @@ class DealCard extends React.Component {
 DealCard.propTypes = {
     index: PropTypes.boolean,
     deal: PropTypes.object,
+    isDetailShow: PropTypes.boolean,
     showDetailPanel: PropTypes.func,
     removeDeal: PropTypes.func,
     showCustomerDetail: PropTypes.func

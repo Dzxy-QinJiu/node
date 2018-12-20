@@ -9,8 +9,6 @@ import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 function dealBoardAction() {
     this.generateActions(
         'setInitData',
-        //添加订单成功后，将新加的订单加入列表中
-        'addOneDeal',
         //修改订单成功后，更新列表中对应的内容
         'updateDeal',
         //删除订单成功后，删除列表中对应的订单
@@ -20,7 +18,15 @@ function dealBoardAction() {
         //拖动交易结束的处理
         'dragDealEnd',
         //设置是否正在拖动数据
-        'setIsSavingDragData'
+        'setIsSavingDragData',
+        //设置各阶段订单数据的初始值
+        'setInitStageDealData',
+        //添加完订单后的处理
+        'afterAddDeal',
+        //关闭订单后的处理
+        'afterCloseDeal',
+        //修改订单阶段后的处理
+        'afterEditDealStage'
     );
     this.getStageList = function(callback) {
         this.dispatch({isLoadingStage: true});
@@ -32,7 +38,7 @@ function dealBoardAction() {
         });
     };
     //获取各阶段的订单列表
-    this.getStageDealList = function(stage, lastDealId) {
+    this.getStageDealList = function(stage, searchObj, lastDealId) {
         let params = {
             page_size: 20,
             sort_field: 'time',
@@ -44,13 +50,23 @@ function dealBoardAction() {
             query.cursor = true;
         }
         let bodyData = {query: {sales_opportunities: [{sale_stages: stage}]}};
-
+        if(!_.isEmpty(searchObj)){
+            bodyData.query[searchObj.field] = searchObj.value;
+        }
         this.dispatch({loading: true, stage});
         dealAjax.getDealList(params, bodyData, query).then((data) => {
             this.dispatch({loading: false, stage, data: data});
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
         }, (errorMsg) => {
             this.dispatch({loading: false, stage, errorMsg: errorMsg || Intl.get('deal.list.get.failed', '获取订单列表失败')});
+        });
+    };
+    //各阶段总预算的获取
+    this.getStageTotalBudget = function(query) {
+        dealAjax.getStageTotalBudget(query).then((data) => {
+            this.dispatch(data);
+        }, (errorMsg) => {
+            this.dispatch(errorMsg);
         });
     };
 }

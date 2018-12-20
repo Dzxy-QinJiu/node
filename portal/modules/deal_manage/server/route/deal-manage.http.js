@@ -32,5 +32,13 @@ module.exports = {
             needLogin: true
         },
         privileges: []
+    }, {
+        method: 'get',
+        path: '/rest/deal/:type/stage/total_budget',
+        handler: 'getStageTotalBudget',
+        passport: {
+            needLogin: true
+        },
+        privileges: []
     }]
 };
