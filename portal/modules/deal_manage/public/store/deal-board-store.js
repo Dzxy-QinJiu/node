@@ -75,6 +75,8 @@ dealBoardStore.prototype.getStageDealList = function(resultObj) {
         dealList = _.filter(dealList, deal => deal.id);
         if (curStageDealObj.lastId) {
             curStageDealObj.list = curStageDealObj.list.concat(dealList);
+            //去重,以防新增了订单(或修改订单阶段)后,前端已加入list中,下拉后取到的数据里会有新加的订单,此时会重复
+            curStageDealObj.list = _.uniqBy(curStageDealObj.list, 'id');
         } else {
             curStageDealObj.list = dealList;
         }
@@ -161,12 +163,35 @@ dealBoardStore.prototype.afterCloseDeal = function(newDeal) {
             delete editDeal.sale_stages;
         }
         //将关闭的订单加入到对应的赢单/丢单列表中
-        this.stageDealMap[newDeal.oppo_status].list.push(editDeal);
+        this.stageDealMap[newDeal.oppo_status].list.unshift(editDeal);
+        this.stageDealMap[newDeal.oppo_status].total++;
         //从原阶段列表中过滤掉
         stageDealObj.list = _.filter(stageDealObj.list, deal => deal.id !== newDeal.id);
+        stageDealObj.total--;
     }
 };
 
+//修改订单阶段
+dealBoardStore.prototype.afterEditDealStage = function(newDeal) {
+    //根据修改前的订单阶段，找到订单所在原阶段列
+    let oldStageDealObj = newDeal.old_stages ? this.stageDealMap[newDeal.old_stages] : {};
+    if (_.isObject(oldStageDealObj) && _.isArray(oldStageDealObj.list)) {
+        let editDeal = _.find(oldStageDealObj.list, deal => deal.id === newDeal.id);
+        if (editDeal) {
+            editDeal.sale_stages = newDeal.sale_stages;
+            //根据修改后的订单阶段,找到订单所在新阶段列
+            let stageDealObj = newDeal.sale_stages ? this.stageDealMap[newDeal.sale_stages] : {};
+            //将修改后的订单加入到修改订单阶段后所在列表中
+            if (_.isObject(stageDealObj) && _.isArray(stageDealObj.list)) {
+                stageDealObj.list.unshift(editDeal);
+                stageDealObj.total++;
+            }
+            //从原阶段列表中过滤掉
+            oldStageDealObj.list = _.filter(oldStageDealObj.list, deal => deal.id !== newDeal.id);
+            oldStageDealObj.total--;
+        }
+    }
+};
 //添加完订单后的处理
 dealBoardStore.prototype.afterAddDeal = function(newDeal) {
     let stageDealObj = newDeal.sale_stages ? this.stageDealMap[newDeal.sale_stages] : {};

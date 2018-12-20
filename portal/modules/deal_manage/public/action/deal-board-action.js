@@ -24,7 +24,9 @@ function dealBoardAction() {
         //添加完订单后的处理
         'afterAddDeal',
         //关闭订单后的处理
-        'afterCloseDeal'
+        'afterCloseDeal',
+        //修改订单阶段后的处理
+        'afterEditDealStage'
     );
     this.getStageList = function(callback) {
         this.dispatch({isLoadingStage: true});
