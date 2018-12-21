@@ -64,8 +64,10 @@ export function processOrderStageData(stageList = [], data) {
     _.map(data, stage => {
         stage.value = stage.total;
         if (_.isNumber(stage.budget)) {
+            //转换成以万为单位的数值
+            stage.budget = (stage.budget / 10000).toFixed(2);
             //对预算额做千分位分隔及加单位处理
-            stage.budget = NumUtils.parseAmount(stage.budget) + Intl.get('contract.155', '元');
+            stage.budget = NumUtils.parseAmount(stage.budget) + Intl.get('contract.139', '万');
         }
     });
 
