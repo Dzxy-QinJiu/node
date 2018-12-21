@@ -174,10 +174,6 @@ class OrderItem extends React.Component {
             return;
         }
         saveObj.customer_id = this.props.order.customer_id;
-        //预算展示的是元，接口中需要的是万
-        if (property === 'budget') {
-            saveObj.budget = saveObj.budget / 10000;
-        }
         if (property === 'oppo_status') {//丢单+丢单原因
             saveObj.oppo_status = ORDER_STATUS.LOSE;
         }
@@ -426,7 +422,7 @@ class OrderItem extends React.Component {
                                 id={order.id}
                                 type="number"
                                 field="budget"
-                                value={order.budget * 10000}
+                                value={order.budget}
                                 afterValTip={Intl.get('contract.82', '元')}
                                 placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
                                 hasEditPrivilege={order.oppo_status ? false : true}

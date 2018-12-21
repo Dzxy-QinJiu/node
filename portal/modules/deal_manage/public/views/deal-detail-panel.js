@@ -372,10 +372,6 @@ class DealDetailPanel extends React.Component {
         let currDeal = this.state.currDeal;
         saveObj.customer_id = currDeal.customer_id;
         saveObj.property = property;
-        //预算展示的是元，接口中需要的是万
-        if (property === 'budget') {
-            saveObj.budget = saveObj.budget / 10000;
-        }
         if (property === 'oppo_status') {//丢单+丢单原因
             saveObj.oppo_status = DEAL_STATUS.LOSE;
         }
@@ -501,7 +497,7 @@ class DealDetailPanel extends React.Component {
                         id={deal.id}
                         type="number"
                         field="budget"
-                        value={formatNumHasDotToFixed(deal.budget * 10000, 1)}
+                        value={formatNumHasDotToFixed(deal.budget, 1)}
                         afterValTip={Intl.get('contract.82', '元')}
                         afterTextTip={Intl.get('contract.82', '元')}
                         placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}

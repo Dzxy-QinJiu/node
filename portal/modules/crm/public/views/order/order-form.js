@@ -28,8 +28,6 @@ class OrderForm extends React.Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) return;
             let reqData = JSON.parse(JSON.stringify(values));
-            //接口中需要转换成万后的数据
-            reqData.budget = reqData.budget ? reqData.budget / 10000 : 0;
             reqData.predict_finish_time = reqData.predict_finish_time ? moment(reqData.predict_finish_time).valueOf() : moment().valueOf();
             //保存
             reqData.customer_id = this.props.customerId;

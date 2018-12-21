@@ -12,6 +12,9 @@ import NoDataIntro from 'CMP_DIR/no-data-intro';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import DealCard from './deal-card';
 import dealBoardAction from '../action/deal-board-action';
+import {formatNumHasDotToFixed} from 'PUB_DIR/sources/utils/common-method-util';
+import {num as antUtilsNum} from 'ant-utils';
+const parseAmount = antUtilsNum.parseAmount;
 const BOARD_TITLE_HEIGHT = 40;//看板卡片头部标题的高度
 const BOARD_CARD_MARGIN = 20;//看板卡片的marginRight
 
@@ -72,6 +75,7 @@ class DealStageBoard extends React.Component {
 
     render() {
         let stageObj = this.props.stageObj;
+        let totalBudget = stageObj.totalBudget ? parseAmount(formatNumHasDotToFixed(stageObj.totalBudget, 1)) : '';
         let title = (
             <span>
                 <span className='deal-stage-name'> {this.getStageName(stageObj)}</span>
@@ -79,10 +83,9 @@ class DealStageBoard extends React.Component {
                     {Intl.get('sales.home.total.count', '共{count}个', {count: stageObj.total || '0'})}
                 </span>
                 <span className='deal-total-price'>
-                    {stageObj.totalBudget ? Intl.get('deal.total.budget.tip', '共{count}万', {count: stageObj.totalBudget || '0'}) : null}
+                    {stageObj.totalBudget ? Intl.get('deal.total.budget.tip', '共{count}元', {count: totalBudget || '0'}) : null}
                 </span>
             </span>);
-
         return (
             <Droppable droppableId={_.get(stageObj, 'stage', '')}>
                 {(provided, snapshot) => (
