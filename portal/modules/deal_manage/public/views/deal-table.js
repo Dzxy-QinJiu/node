@@ -27,27 +27,12 @@ class DealTable extends React.Component {
         super(props);
         this.state = {
             ...dealStore.getState(),
-            isDetailPanelShow: false,//是否展示订单详情
-            curShowCustomerId: props.curShowCustomerId,
-            currDeal: props.currDeal,//当前查看详情的订单
             sorter: {
                 field: 'time',//排序字段,默认：创建时间
                 order: 'descend'//倒序
             },
             teamList: [],//团队列表（列表中的团队根据团队id获取团队名来展示）
         };
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (!_.isEqual(this.state.currDeal, nextProps.currDeal)) {
-            this.setState({currDeal: nextProps.currDeal, isDetailPanelShow: nextProps.isDetailPanelShow});
-        }
-        if (this.state.isDetailPanelShow !== nextProps.isDetailPanelShow) {
-            this.setState({isDetailPanelShow: nextProps.isDetailPanelShow});
-        }
-        if (this.state.curShowCustomerId !== nextProps.curShowCustomerId) {
-            this.setState({curShowCustomerId: nextProps.curShowCustomerId});
-        }
     }
 
     componentDidMount() {
@@ -112,7 +97,7 @@ class DealTable extends React.Component {
                 sorter: true,
                 render: (text, record, index) => {
                     let cls = classNames('deal-customer-name', {
-                        'customer-name-active': record.customer_id && record.customer_id === this.state.curShowCustomerId
+                        'customer-name-active': record.customer_id && record.customer_id === this.props.curShowCustomerId
                     });
                     return text ? (
                         <div className={cls}
@@ -209,7 +194,7 @@ class DealTable extends React.Component {
     }
     //处理选中行的样式
     handleRowClassName = (record, index) => {
-        if ((record.id === this.state.currDeal.id) && this.state.isDetailPanelShow) {
+        if ((record.id === this.props.currDeal.id) && this.props.isDetailPanelShow) {
             return 'current-row';
         }
         else {
@@ -288,7 +273,6 @@ class DealTable extends React.Component {
 }
 DealTable.propTypes = {
     currDeal: PropTypes.object,
-    containerHeight: PropTypes.number,
     searchObj: PropTypes.object,
     curShowCustomerId: PropTypes.string,
     isDetailPanelShow: PropTypes.bool,
