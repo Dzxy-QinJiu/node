@@ -47,13 +47,12 @@ exports.addCustomerByClue = function(newCus) {
 };
 
 //删除客户
-exports.deleteCustomer = function(ids) {
+exports.deleteCustomer = function(id) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/crm/delete_customer',
+        url: `/rest/crm/delete_customer/${id}`,
         dataType: 'json',
         type: 'delete',
-        data: {ids: JSON.stringify(ids)},
         success: function(data) {
             Deferred.resolve(data);
         },

@@ -254,12 +254,11 @@ exports.editCustomer = function(req, res) {
 };
 
 exports.deleteCustomer = function(req, res) {
-    var ids = JSON.parse(req.body.ids);
-    crmService.deleteCustomer(req, res, ids)
+    crmService.deleteCustomer(req, res)
         .on('success', function(data) {
-            res.json(data);
+            res.status(200).json(data);
         }).on('error', function(err) {
-            res.json(err.message);
+            res.status(500).json(err && err.message);
         });
 };
 

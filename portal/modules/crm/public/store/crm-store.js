@@ -180,11 +180,11 @@ CrmStore.prototype.addCustomer = function(added) {
 };
 
 //监听Action的deleteCustomer方法
-CrmStore.prototype.deleteCustomer = function(ids) {
+CrmStore.prototype.deleteCustomer = function(id) {
     //从列表中移除已删除项
-    this.curCustomers = _.filter(this.curCustomers, item => ids.indexOf(item.id) === -1);
+    this.curCustomers = _.filter(this.curCustomers, item => id !== item.id);
     //列表下面客户的总数减去已删除的客户数量
-    this.customersSize -= ids.length;
+    this.customersSize--;
 };
 //修改基本资料后，更新客户列表
 CrmStore.prototype.editBasicSuccess = function(newBasic) {

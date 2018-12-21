@@ -513,8 +513,9 @@ class Crm extends React.Component {
     deleteCustomer = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确定删除客户');
         this.hideDeleteModal();
-        const ids = [this.state.currentId];
-        CrmAction.deleteCustomer(ids);
+        if(this.state.currentId){
+            CrmAction.deleteCustomer(this.state.currentId);
+        }
     };
 
     refreshCustomerList = (customerId) => {
