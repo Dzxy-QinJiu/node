@@ -129,7 +129,7 @@ module.exports = {
         },
         {
             method: 'delete',
-            path: '/rest/crm/delete_customer',
+            path: '/rest/crm/delete_customer/:customer_id',
             handler: 'deleteCustomer',
             passport: {
                 needLogin: true

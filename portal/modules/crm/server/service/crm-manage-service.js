@@ -397,13 +397,13 @@ exports.addCustomerByClue = function(req, res) {
 };
 
 //删除客户
-exports.deleteCustomer = function(req, res, ids) {
-    return restUtil.authRest.put(
+exports.deleteCustomer = function(req, res) {
+    return restUtil.authRest.del(
         {
-            url: crmRestApis.customer + '/delete',
+            url: crmRestApis.customer + '/' + req.params.customer_id,
             req: req,
             res: res
-        }, ids);
+        });
 };
 
 //获取动态列表

@@ -80,14 +80,10 @@ function CrmActions() {
     };
 
 
-    this.deleteCustomer = function(ids) {
-        crmAjax.deleteCustomer(ids).then((data) => {
-            if (data && data.code === 0) {
-                message.success(Intl.get('crm.138', '删除成功'));
-                this.dispatch(ids);
-            } else {
-                message.error(data && data.msg || Intl.get('crm.139', '删除失败'));
-            }
+    this.deleteCustomer = function(id) {
+        crmAjax.deleteCustomer(id).then((data) => {
+            message.success(Intl.get('crm.138', '删除成功'));
+            this.dispatch(id);
         }, (errMsg) => {
             message.error(errMsg || Intl.get('crm.139', '删除失败'));
         });
