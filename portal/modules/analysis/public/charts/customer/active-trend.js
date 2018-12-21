@@ -37,7 +37,7 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
             tooltip: {
                 formatter: params => {
                     const param = params[0];
-                    const activeRate = param.data.percent * 100 + '%';
+                    const activeRate = (param.data.percent * 100).toFixed() + '%';
 
                     return `
                         ${param.name}<br>
