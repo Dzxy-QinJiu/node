@@ -3,8 +3,8 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by liwenjun on 2018/12/19.
  */
-const MODULE_PATH = '/portal/modules/';
-let _ = require('lodash');
+const MODULE_PATH = 'modules/';
+
 let routers = [
     {
         id: 'CRM',
@@ -68,11 +68,11 @@ let routers = [
         id: 'APP_USER_MANAGE',//唯一标识
         name: 'menu.appuser',//用户管理
         routePath: '/user',
-        component: `${MODULE_PATH}call_record/public`,
         subMenu: [{
             id: 'APP_USER_MANAGE_USER',
             name: 'menu.appuser.list',//用户列表
             routePath: '/user/list',
+            component: `${MODULE_PATH}app_user_manage/public`,
             privileges: [
                 'APP_USER_LIST',//列出应用用户
                 'APP_USER_ADD',//添加应用用户
@@ -85,6 +85,7 @@ let routers = [
             id: 'ORGANIZATION_MANAGE',
             name: 'menu.appuser.org',//组织管理
             routePath: '/user/organization',
+            component: `${MODULE_PATH}organization_manage/public`,
             privileges: [
                 'USER_ORGANIZATION_LIST',//查看用户组织列表
                 'USER_ORGANIZATION_MEMBER_ADD',//用户组织添加成员
@@ -99,8 +100,8 @@ let routers = [
         }, {
             id: 'USER_AUDIT_LOG', // 用户审计日志的唯一标识
             name: 'menu.appuser.auditlog',//操作记录
-            displayName: 'menu.appuser.auditlog',//操作记录
             routePath: '/user/log',
+            component: `${MODULE_PATH}app_user_manage/public`,
             privileges: [
                 'USER_AUDIT_LOG_LIST' // 查看用户审计日志
             ],
@@ -110,6 +111,7 @@ let routers = [
             id: 'ACTIVE_USER_LIST', // 活跃用户
             name: 'menu.active.user.lists',//活跃用户
             routePath: '/user/active',
+            component: `${MODULE_PATH}app_user_manage/public`,
             privileges: [
                 'USER_TIME_LINE' // 查看用户变更记录
             ],
@@ -118,8 +120,8 @@ let routers = [
         }, {
             id: 'POSITION_MANAGE', // 座席号管理的唯一标识
             name: 'menu.appuser.position',//座席号管理
-            displayName: 'menu.appuser.position',//座席号管理
             routePath: '/user/position',
+            component: `${MODULE_PATH}position_manage/public`,
             privileges: [
                 'MEMBER_PHONE_ORDER_MANAGE' // （实际权限）座席号添加、修改、删除、绑定，显示列表
             ],
@@ -136,6 +138,7 @@ let routers = [
                 id: 'ANALYSIS',//唯一标识
                 name: 'user.detail.analysis',//分析
                 routePath: '/analysis/analysis',
+                component: `${MODULE_PATH}analysis/public`,
                 privileges: ['CUSTOMER_ANALYSIS_COMMON', 'CUSTOMER_ANALYSIS_MANAGER'],
                 //有这个权限，才显示入口图标
                 showPrivileges: [
@@ -162,6 +165,7 @@ let routers = [
                         id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
                         name: 'contract.14',//周报
                         routePath: '/analysis/report/weekly_report',
+                        component: `${MODULE_PATH}weekly_report/public`,
                         privileges: [
                             'KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER',
                             'KETAO_SALES_TEAM_WEEKLY_REPORTS_COMMON',
@@ -176,6 +180,7 @@ let routers = [
                         id: 'MONTHLY_REPORT_ANALYSIS',//唯一标识
                         name: 'contract.15',//月报
                         routePath: '/analysis/report/monthly_report',
+                        component: `${MODULE_PATH}monthly-report/public`,
                         privileges: [
                             'CALLRECORD_ASKFORLEAVE_QUERY_MANAGER',
                             'CALLRECORD_ASKFORLEAVE_QUERY_USER',
@@ -190,6 +195,7 @@ let routers = [
                         id: 'SALES_REPORT_ANALYSIS',//唯一标识
                         name: 'common.individual.report',//个人报告
                         routePath: '/analysis/report/sales_report',
+                        component: `${MODULE_PATH}sales-report/public`,
                         privileges: [
                             'CURTAO_SALES_REPORTS_COMMON',
                             'CURTAO_SALES_REPORTS_MANAGER',
@@ -208,6 +214,22 @@ let routers = [
         id: 'SALES_HOME_PAGE', //唯一标识，销售首页
         name: 'menu.sales.homepage',//销售主页
         routePath: '/sales/home',
+        isNotShow: 'true',//不在菜单中展示
+        component: `${MODULE_PATH}common_sales_home_page/public`,
+        otherAuth: 'isCommonSale',
+        privileges: [
+            'GET_MY_CALL_RECORD',// 获取我的电话统计记录
+            'GET_ALL_CALL_RECORD'
+        ],
+        //有这个权限，才显示入口图标
+        showPrivileges: ['GET_MY_CALL_RECORD', 'GET_ALL_CALL_RECORD']// 获取我的电话统计记录
+    },
+    {
+        id: 'SALES_HOME_PAGE', //唯一标识，销售首页
+        name: 'menu.sales.homepage',//销售主页
+        routePath: '/sales/home',
+        isNotShow: 'true',//不在菜单中展示
+        component: `${MODULE_PATH}sales_home_page/public`,
         privileges: [
             'GET_MY_CALL_RECORD',// 获取我的电话统计记录
             'GET_ALL_CALL_RECORD'
@@ -228,48 +250,56 @@ let routers = [
             id: 'CONTRACT_DASHBOARD',
             name: 'contract.175',//合同概览
             routePath: '/contract/dashboard',
+            component: `${MODULE_PATH}contract/dashboard`,
             privileges: ['OPLATE_SALES_COST_QUERY'],
             showPrivileges: ['OPLATE_SALES_COST_QUERY']
         }, {
             id: 'CONTRACT_SALES_LIST',
             name: 'contract.112',//销售合同
             routePath: '/contract/sell',
+            component: `${MODULE_PATH}contract/public`,
             privileges: ['OPLATE_CONTRACT_UPLOAD'],
             showPrivileges: ['OPLATE_CONTRACT_UPLOAD']
         }, {
             id: 'CONTRACT_BUY_LIST',
             name: 'contract.9',//采购合同
             routePath: '/contract/buy',
+            component: `${MODULE_PATH}contract/public`,
             privileges: ['OPLATE_CONTRACT_QUERY'],
             showPrivileges: ['OPLATE_CONTRACT_QUERY']
         }, {
             id: 'CONTRACT_REPAYMENT_LIST',
             name: 'contract.102',//合同回款
             routePath: '/contract/repayment',
+            component: `${MODULE_PATH}contract/public`,
             privileges: ['OPLATE_REPAYMENT_ADD'],
             showPrivileges: ['OPLATE_REPAYMENT_ADD']
         }, {
             id: 'CONTRACT_COST_LIST',
             name: 'contract.133',//费用
             routePath: '/contract/cost',
+            component: `${MODULE_PATH}contract/public`,
             privileges: ['OPLATE_PAYMENT_ADD'],
             showPrivileges: ['OPLATE_PAYMENT_ADD']
         }, {
             id: 'CONTRACT_ANALYSIS',
             name: 'contract.188',//分析
             routePath: '/contract/analysis',
+            component: `${MODULE_PATH}contract/analysis/public`,
             privileges: ['OPLATE_CONTRACT_ANALYSIS'],
             showPrivileges: ['OPLATE_CONTRACT_ANALYSIS']
         }, {
             id: 'CONTRACT_SALES_COMMISSION',
             name: 'contract.181',//提成计算
             routePath: '/contract/sales_commission',
+            component: `${MODULE_PATH}sales_commission/public`,
             privileges: ['OPLATE_CONTRACT_SALERS_COMMISSION'],
             showPrivileges: ['OPLATE_CONTRACT_SALERS_COMMISSION']
         }, {
             id: 'CONTRACT_COMMISSION_PAYMENT',
             name: 'contract.189',//提成发放
             routePath: '/contract/commission_payment',
+            component: `${MODULE_PATH}commission_payment/public`,
             privileges: ['OPLATE_CONTRACT_SALERS_COMMISSION_RECORD'],
             showPrivileges: ['OPLATE_CONTRACT_SALERS_COMMISSION_RECORD']
         }]
@@ -278,6 +308,7 @@ let routers = [
         id: 'SCHEDULE_MANAGEMENT',
         name: 'schedule.list.management',//日程管理
         routePath: '/schedule_management',
+        component: `${MODULE_PATH}schedule_management/public`,
         privileges: [
             'MEMBER_SCHEDULE_MANAGE'//日程管理的查询
         ],
@@ -292,6 +323,7 @@ let routers = [
             id: 'APP_USER_MANAGE_APPLY',
             name: 'menu.appuser.apply',//用户审批
             routePath: '/application/user_apply',
+            component: `${MODULE_PATH}user_apply/public`,
             privileges: [
                 'APP_USER_APPLY_LIST',//列出申请应用用户
                 'APP_USER_APPLY_APPROVAL',//审批申请
@@ -303,6 +335,7 @@ let routers = [
             id: 'BUSSINESS_APPLY_MANAGEMENT',
             name: 'leave.apply.add.leave.apply',//出差申请
             routePath: '/application/business_apply',
+            component: `${MODULE_PATH}business-apply/public`,
             privileges: [
                 'BUSINESS_TRIP_MANAGE'
             ],
@@ -312,6 +345,7 @@ let routers = [
             id: 'SALES_BUSSINESS_APPLY_MANAGEMENT',
             name: 'leave.apply.sales.oppotunity',//机会申请
             routePath: '/application/sales_opportunity',
+            component: `${MODULE_PATH}sales_opportunity/public`,
             privileges: [
                 'MEMBER_BUSINESSOPPO_MANAGE'
             ],
@@ -321,6 +355,7 @@ let routers = [
             id: 'LEAVE_APPLY_MANAGEMENT',
             name: 'leave.apply.leave.application',//请假申请
             routePath: '/application/leave_apply',
+            component: `${MODULE_PATH}leave-apply/public`,
             privileges: [
                 'MEMBER_LEAVE_MANAGE'
             ],
@@ -332,6 +367,7 @@ let routers = [
         id: 'NOTIFICATION',//唯一标识 - 通知
         name: 'menu.system.notification',//系统消息
         routePath: '/notification_system',
+        component: `${MODULE_PATH}notification/public`,
         bottom: true,
         privileges: [
             'NOTIFICATION_SYSTEM_LIST'//查看通知-系统消息
@@ -349,6 +385,7 @@ let routers = [
                 id: 'USER_MANAGE', //唯一标识
                 name: 'menu.user',//成员管理
                 routePath: '/background_management/user',
+                component: `${MODULE_PATH}user_manage/public`,
                 privileges: [
                     'USER_MANAGE_ADD_USER', //添
                     'USER_MANAGE_EDIT_USER', //改
@@ -364,6 +401,7 @@ let routers = [
                 id: 'SALESSTAGE',
                 name: 'crm.order.stage.manage',//订单阶段管理
                 routePath: '/background_management/sales_stage',
+                component: `${MODULE_PATH}sales_stage/public`,
                 privileges: [
                     'BGM_SALES_STAGE_LIST',//查看订单阶段
                     'BGM_SALES_STAGE_DELETE',//删除订单阶段
@@ -377,6 +415,7 @@ let routers = [
                 id: 'SALESTEAM',
                 name: 'menu.salesteam',//团队管理
                 routePath: '/background_management/sales_team',
+                component: `${MODULE_PATH}sales_team/public`,
                 privileges: [
                     'BGM_SALES_TEAM_LIST',//查看销售团队
                     'BGM_SALES_TEAM_MEMBER_ADD',//销售团队添加成员
@@ -392,6 +431,7 @@ let routers = [
                 id: 'CONFIGARATION',
                 name: 'menu.config',//配置
                 routePath: '/background_management/configaration',
+                component: `${MODULE_PATH}config_manage/public`,
                 privileges: [
                     'GET_CONFIG_INDUSTRY', // 查看行业管理配置
                     'CREATE_CONFIG_INDUSTRY', // 添加行业管理配置
@@ -408,6 +448,7 @@ let routers = [
                 id: 'OPENAPP',
                 name: 'app.title',//应用管理
                 routePath: '/background_management/openApp',
+                component: `${MODULE_PATH}app_open_manage/public`,
                 privileges: [],
                 //有这个权限，才显示入口图标
                 showPrivileges: ['ROLEP_RIVILEGE_ROLE_CLIENT_LIST']
@@ -416,6 +457,7 @@ let routers = [
                 id: 'PRODUCTIONS',
                 name: 'config.product.manage',//产品管理
                 routePath: '/background_management/products',
+                component: `${MODULE_PATH}production-manage/public`,
                 privileges: [],
                 //有这个权限，才显示入口图标
                 showPrivileges: ['PRODUCTS_MANAGE', 'GET_PRODUCTS_LIST']
@@ -431,6 +473,7 @@ let routers = [
             id: 'USER_INFO',
             name: 'menu.userinfo',//个人资料
             routePath: '/user_info_manage/user_info',
+            component: `${MODULE_PATH}user_info/public`,
             privileges: [
                 'USER_INFO_USER'//查看个人信息
             ],
@@ -440,6 +483,7 @@ let routers = [
             id: 'USER_PASSWORD',
             name: 'menu.user.password',//密码管理
             routePath: '/user_info_manage/user_pwd',
+            component: `${MODULE_PATH}user_password/public`,
             privileges: [
                 'USER_INFO_PWD'//修改密码
             ],
@@ -450,23 +494,8 @@ let routers = [
     {
         id: 'NO_MATCH',
         routePath: '*',
-        component: '../portal/public/sources/404'
+        component: 'public/sources/404'
     }
 ];
 
-let Routers = (() => {
-    var user_info_idx = -1;
-    var user_info_manage = _.find(routers, function(item, i) {
-        if (item.id === 'USER_INFO_MANAGE') {
-            user_info_idx = i;
-            return true;
-        }
-    });
-    if (user_info_idx >= 0) {
-        routers.splice(user_info_idx, 1);
-        routers.push(user_info_manage);
-    }
-    return routers;
-})();
-
-exports.Routers = Routers;
+exports.routers = routers;

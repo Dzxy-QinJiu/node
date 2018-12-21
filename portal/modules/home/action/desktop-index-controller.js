@@ -18,7 +18,7 @@ var auth = require('../../../lib/utils/auth');
 let _ = require('lodash');
 let moment = require('moment');
 const commonUtil = require('../../../lib/utils/common-utils');
-
+const routers = require('../../../lib/routers');
 /*
  * home page handler.
  */
@@ -96,6 +96,7 @@ exports.getUserData = function(req, res) {
                 user.roles = data.roles;
                 user.lang = lang;
                 user.isCommonSales = data.isCommonSales;//是否是普通销售
+                user.routers = routers.getAuthedRouters(user.privileges);
                 req.session.user.roles = user.roles;
                 req.session.user.nickname = data.nick_name;
                 req.session.save(function() {

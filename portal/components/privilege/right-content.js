@@ -8,15 +8,12 @@ import classNames from 'classnames';
 class RightContent extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            topNavOperation: null
-        };
     }
 
     checkRoute = () => {
         var locationPath = location.pathname;
         if (this.props.route && locationPath === this.props.route.path) {
-            var routes = this.props.route.routesExports;
+            var routes = this.props.route.routes;
             if (routes && routes[0] && routes[0].path) {
                 history.replace(routes[0].path);
                 return true;
@@ -41,7 +38,6 @@ class RightContent extends React.Component {
                 <div className="main">
                     {this.props.route ? (<TopNav>
                         <TopNav.MenuList/>
-                        {this.state.topNavOperation}
                     </TopNav>
                     ) : null}
                     <div className={cls}>

@@ -3,11 +3,6 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by liwenjun on 2018/11/26.
  */
-/**
- * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
- * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
- * Created by xuning on 2018 9.17
- */
 var Content = require('../../../components/privilege/content');
 const weeklyReport = require('MOD_DIR/weekly_report');
 const monthlyReport = require('MOD_DIR/monthly-report');
