@@ -231,6 +231,10 @@ exports.addCustomer = function(req, res) {
     newCus.contacts[0].def_contancts = 'true';
     crmService.addCustomer(req, res, newCus)
         .on('success', function(data) {
+            //后端没有返回联系人的数据，需要用前端的数据组合
+            if(_.get(data, 'result[0]')){
+                data.result[0].contacts = newCus.contacts;
+            }
             res.status(200).json(data);
         }).on('error', function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
