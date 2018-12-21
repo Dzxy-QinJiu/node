@@ -1,12 +1,10 @@
 @import "../../../public/css/common-variables";
 @import "../../../components/antd-table-pagination/index.less";
-.contract-container{
-    padding:64px 16px 16px 20px;
+.moduleContent{
     height: 100%;
     .contract-dashboard {
         background: #eee;
-        margin-left: -20px;
-        margin-bottom: -10px;
+        margin: 0 16px 10px 20px;
         padding: 10px 0 0 15px;
     }
 }
@@ -84,7 +82,7 @@
         }
     }
 }
-.contract-container {
+.moduleContent {
     .contract-list {
         padding: 16px;
         background: #fff;
@@ -92,7 +90,7 @@
             height: 30px;
             line-height: 30px;
         }
-    
+
         .filter {
             display: inline-block;
             .search-input-container {
@@ -104,7 +102,7 @@
                 }
             }
         }
-    
+
         .privilege-btns {
             float: right;
             margin-right: 75px;
@@ -123,7 +121,7 @@
                 }
             }
         }
-    
+
         .btn-filter {
             display: inline-block;
             margin-right: 15px;
@@ -136,12 +134,12 @@
                 font-size: 12px;
             }
         }
-    
+
         .date-type {
             font-size: 14px;
             vertical-align: middle;
         }
-    
+
         .date-filter {
             display: inline-block;
             vertical-align: middle;
@@ -150,7 +148,7 @@
                 font-size: 14px;
             }
         }
-    
+
         .list-wrap {
             position: relative;
         }
@@ -159,7 +157,7 @@
             width: 100%;
             overflow-x: auto;
         }
-    
+
         .table-wrap-outer.fixed-table {
             position: absolute;
             top: 2px;
@@ -177,7 +175,7 @@
                 display: none;
             }
         }
-    
+
         .table-wrap {
             margin-top: 10px;
             table {
@@ -221,14 +219,14 @@
                 padding-right: 15px;
             }
         }
-    
+
         @custom-column-right: 0;
         .custom-column-button {
             position: absolute;
             top: -28px;
             right: @custom-column-right;
         }
-    
+
         .custom-column-div {
             box-sizing: border-box;
             position: absolute;
@@ -251,7 +249,7 @@
                 margin-left: 5px;
             }
         }
-    
+
         .custom-column-div-fullscreen-background {
             position: fixed;
             top: 64px;
@@ -261,11 +259,11 @@
             z-index: 90;
             background: transparent;
         }
-        
+
         .hide-custom-column-div {
             display: none;
         }
-    
+
         .right-pannel-default {
             width: 700px;
             transform: translateX(700px);
@@ -785,7 +783,7 @@
             width: 500px;
         }
     }
-    
+
     .contract-export-modal {
         .ant-modal-body {
             line-height: 30px;
@@ -797,7 +795,7 @@
             font-weight: normal;
         }
     }
-    
+
     // 合同模板样式
     .import-contract-template-panel .right-pannel-default {
         width: 420px;
@@ -834,7 +832,7 @@
             }
         }
     }
-    
+
     .contract-dashboard {
         overflow: hidden;
         .dashboard-content {
@@ -863,7 +861,7 @@
                 td.clickable {
                     cursor: pointer;
                 }
-    
+
                 .chart-box {
                     padding: 10px 15px;
                     height: 100px;
@@ -877,7 +875,7 @@
                         font-size: 20px;
                     }
                 }
-    
+
                 .ant-table {
                     overflow: hidden;
                     tbody tr:nth-child(2n) {

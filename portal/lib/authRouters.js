@@ -5,8 +5,6 @@
  */
 
 let authRouters = require('../../conf/router-config').routers;
-let path = require('path');
-let auth = require('./utils/auth');
 let _ = require('lodash');
 
 /**
@@ -95,10 +93,7 @@ const checkPermissions = (needPrivileges, currentPrivilege) => {
         }
         return false;
     }
-
     throw new Error('needPrivileges unsupported parameters');
 };
-
-// console.log(JSON.stringify(getAuthedRouters()));
 
 module.exports.getAuthedRouters = getAuthedRouters;

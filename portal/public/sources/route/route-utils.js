@@ -174,7 +174,7 @@ function dealCommonSaleRoute(routes, isCommonSales) {
  */
 function filterRoute(allRoutes) {
     let user = userData.getUserData();
-    let childRoutes = matchRoute(user.routers, allRoutes);
+    let childRoutes = matchRoute(user.routes, allRoutes);
     dealCommonSaleRoute(childRoutes, user.isCommonSales);
     //路由配置
     const routePaths = [
