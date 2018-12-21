@@ -65,7 +65,7 @@ export function processOrderStageData(stageList = [], data) {
         stage.value = stage.total;
         if (_.isNumber(stage.budget)) {
             //对预算额做千分位分隔及加单位处理
-            stage.budget = NumUtils.parseAmount(stage.budget) + Intl.get('contract.139', '万');
+            stage.budget = NumUtils.parseAmount(stage.budget) + Intl.get('contract.155', '元');
         }
     });
 
