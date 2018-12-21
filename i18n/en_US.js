@@ -2600,7 +2600,7 @@ var en_US = {
     'deal.budget': 'Deal value(yuan)',//预算
     'deal.no.more.tip': 'There is no more deals',//没有更多订单了
     'deal.total.tip': 'Total: {count}',//共{count}个订单
-    'deal.total.budget.tip': 'Total: {count} ten thousand',//共{count}万
+    'deal.total.budget.tip': 'Total: {count} yuan',//共{count}万
     'deal.stage.select.tip': 'Please select deal stage',//请选择订单阶段
     'deal.detail.panel.title': 'Deal Details',//订单详情
     'deal.detail.no.products': 'No products',//暂无产品
