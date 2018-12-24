@@ -46,7 +46,7 @@ function dealBoardAction() {
             sort_order: 'descend'
         };
         let bodyData = {query: {sales_opportunities: [{sale_stages: stage}]}};
-        if (searchObj.field || searchObj.value) {
+        if (searchObj.field) {
             bodyData.query[searchObj.field] = searchObj.value;
         }
         this.dispatch({loading: true, stage});

@@ -82,8 +82,6 @@ dealBoardStore.prototype.getStageDealList = function(resultObj) {
         curStageDealObj.isLoading = false;
         curStageDealObj.errorMsg = '';
         let dealList = _.get(resultObj, 'data.result', []);
-        //过滤掉没有id的交易，以防影响界面操作（下拉加载、拖动）
-        dealList = _.filter(dealList, deal => deal && deal.id);
         if (curStageDealObj.pageNum === 1) {
             curStageDealObj.list = dealList;
         } else {
