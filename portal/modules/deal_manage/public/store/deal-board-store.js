@@ -15,7 +15,7 @@ dealBoardStore.prototype.setInitData = function() {
     this.isLoadingStage = true;
     //阶段列表
     this.stageList = [];
-    //各阶段数据对象组成的map{stageName:{isLoading: false, errorMsg: '', list: [], total: 0, lastId: '',listenScrollBottom: true}}
+    //各阶段数据对象组成的map{stageName:{isLoading: false, errorMsg: '', list: [], total: 0, pageNum: 1, listenScrollBottom: true}}
     this.stageDealMap = {};
     //正在保存拖动后的数据
     this.isSavingDragData = false;
@@ -64,7 +64,7 @@ function getInitStageDealObj(stage) {
         errorMsg: '',
         list: [],
         total: 0,
-        lastId: '',//用来处理下拉加载的id
+        pageNum: 1,//用来翻页的页数
         listenScrollBottom: true,//是否监听下拉加载
         totalBudget: 0//总预算
     };
@@ -83,19 +83,21 @@ dealBoardStore.prototype.getStageDealList = function(resultObj) {
         curStageDealObj.errorMsg = '';
         let dealList = _.get(resultObj, 'data.result', []);
         //过滤掉没有id的交易，以防影响界面操作（下拉加载、拖动）
-        dealList = _.filter(dealList, deal => deal.id);
-        if (curStageDealObj.lastId) {
+        dealList = _.filter(dealList, deal => deal && deal.id);
+        if (curStageDealObj.pageNum === 1) {
+            curStageDealObj.list = dealList;
+        } else {
             curStageDealObj.list = curStageDealObj.list.concat(dealList);
             //去重,以防新增了订单(或修改订单阶段)后,前端已加入list中,下拉后取到的数据里会有新加的订单,此时会重复
             curStageDealObj.list = _.uniqBy(curStageDealObj.list, 'id');
-        } else {
-            curStageDealObj.list = dealList;
         }
         curStageDealObj.total = _.get(resultObj, 'data.total', 0);
         let curListLength = _.get(curStageDealObj, 'list.length');
-        curStageDealObj.lastId = _.get(curStageDealObj, `list[${curListLength - 1}].id`, '');
         if (curListLength >= curStageDealObj.total) {
             curStageDealObj.listenScrollBottom = false;
+        }
+        if(_.get(dealList,'[0]')){
+            curStageDealObj.pageNum++;
         }
     }
     this.stageDealMap[resultObj.stage] = curStageDealObj;
@@ -130,8 +132,8 @@ dealBoardStore.prototype.dragDealEnd = function(dragResult) {
 };
 
 
-dealBoardStore.prototype.setLastDealId = function(id) {
-    this.dealListObj.lastId = id;
+dealBoardStore.prototype.setPageNum = function(num) {
+    this.dealListObj.pageNum = num;
 };
 
 //删除订单成功后，删除列表中对应的订单

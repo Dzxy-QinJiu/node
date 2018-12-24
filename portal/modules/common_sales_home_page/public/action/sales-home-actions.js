@@ -105,9 +105,9 @@ function SalesHomeActions() {
         });
     };
     //获取新分配，但未联系的客户
-    this.getNewDistributeCustomer = function(condition, rangParams, pageSize, sorter, queryObj) {
+    this.getNewDistributeCustomer = function(condition, rangParams, pageSize, pageNum, sorter) {
         this.dispatch({error: false, loading: true});
-        salesHomeAjax.getNewDistributeCustomer(condition, rangParams, pageSize, sorter, queryObj).then((resData) => {
+        salesHomeAjax.getNewDistributeCustomer(condition, rangParams, pageSize, pageNum, sorter).then((resData) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({error: false, loading: false, resData: resData});
         }, (errMsg) => {
@@ -119,9 +119,9 @@ function SalesHomeActions() {
         });
     };
     //查询最近登录的客户
-    this.getRecentLoginCustomers = function(condition, rangParams, pageSize, sorter, queryObj) {
+    this.getRecentLoginCustomers = function(condition, rangParams, pageSize, pageNum, sorter) {
         this.dispatch({error: false, loading: true});
-        salesHomeAjax.getRecentLoginCustomers(condition, rangParams, pageSize, sorter, queryObj).then((result) => {
+        salesHomeAjax.getRecentLoginCustomers(condition, rangParams, pageSize, pageNum, sorter).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({error: false, loading: false, resData: result});
         }, (errorMsg) => {

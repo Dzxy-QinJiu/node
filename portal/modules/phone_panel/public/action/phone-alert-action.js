@@ -24,11 +24,9 @@ function PhoneAlertAction() {
             type: 'time',
             name: 'start_time'
         }];
-        var queryObj = {'total_size': 1,'cursor': true,'id': ''};
         var data = {
             data: JSON.stringify({'id': customerId}),
-            rangParams: JSON.stringify(rangParams),
-            queryObj: JSON.stringify(queryObj)
+            rangParams: JSON.stringify(rangParams)
         };
         if (hasPrivilege(AUTHS.GETALL)) {
             data.hasManageAuth = true;

@@ -207,17 +207,10 @@ class SalesHomePage extends React.Component {
     };
 
     //获取最近登录的客户
-    getRecentLoginCustomers = (lastId) => {
-        var queryObj = {
-            total_size: this.state.page_size,
-            cursor: true,
-        };
-        if (lastId) {
-            queryObj.id = lastId;
-        }
+    getRecentLoginCustomers = () => {
         //获取最近登录的客户
         //默认获取近7天登录的客户
-        SalesHomeAction.getRecentLoginCustomers({}, this.state.rangParamsLogin, this.state.page_size, this.state.sorterLogin, queryObj);
+        SalesHomeAction.getRecentLoginCustomers({}, this.state.rangParamsLogin, this.state.page_size, _.get(this.state,'recentLoginCustomerObj.curPage', 1), this.state.sorterLogin);
     };
 
     //重复客户列表
@@ -231,18 +224,10 @@ class SalesHomePage extends React.Component {
     };
 
     //获取新分配但未联系的客户
-    getNewDistributeCustomer = (lastId) => {
+    getNewDistributeCustomer = () => {
         //客户被分配后是否已联系 allot_no_contact  未联系 : "0" ，已联系 :"1"
-        var queryObj = {
-            total_size: this.state.page_size,
-            cursor: true,
-
-        };
-        if (lastId) {
-            queryObj.id = lastId;
-        }
         //获取新分配的客户
-        SalesHomeAction.getNewDistributeCustomer({allot_no_contact: '0'}, this.state.rangParamsDistribute, this.state.page_size, this.state.sorterDistribute, queryObj);
+        SalesHomeAction.getNewDistributeCustomer({allot_no_contact: '0'}, this.state.rangParamsDistribute, this.state.page_size, _.get(this.state, 'newDistributeCustomer.curPage', 1), this.state.sorterDistribute);
     };
 
     //获取今日的日程列表

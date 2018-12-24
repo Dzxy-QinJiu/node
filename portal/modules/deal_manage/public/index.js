@@ -86,18 +86,15 @@ class DealManage extends React.Component {
     }
 
     getDealList() {
-        let query = {cursor: true};
         let dealTableState = this.dealTableRef.state;
-        if (_.get(dealTableState, 'dealListObj.lastId')) {
-            query.id = dealTableState.dealListObj.lastId;
-        }
         let body = this.getSearchBody();
         let sorter = dealTableState.sorter;
         dealAction.getDealList({
             page_size: PAGE_SIZE,
+            page_num: _.get(dealTableState, 'dealListObj.pageNum', 1),
             sort_field: sorter.field,
             sort_order: sorter.order
-        }, body, query);
+        }, body);
     }
 
     hideRightPanel = () => {
@@ -160,7 +157,7 @@ class DealManage extends React.Component {
                         });
                     });
                 } else {//订单列表的查询
-                    dealAction.setLastDealId('');
+                    dealAction.setPageNum(1);
                     setTimeout(() => {
                         this.getDealList();
                     });

@@ -42,11 +42,9 @@ function ClueAnalysisActions() {
             type: 'time',
             name: 'start_time'
         }];
-        var queryObj = {'total_size': 1,'cursor': true,'id': ''};
         var data = {
             data: JSON.stringify({'id': customerId}),
-            rangeParams: JSON.stringify(rangeParams),
-            queryObj: JSON.stringify(queryObj)
+            rangeParams: JSON.stringify(rangeParams)
         };
         if (hasPrivilege(AUTHS.GETALL)) {
             data.hasManageAuth = true;

@@ -49,8 +49,8 @@ class DealBoardList extends React.Component {
                 _.each(stageList, stage => {
                     let stageName = _.get(stage, 'name');
                     if (stageName) {
-                        let curStageLastDealId = _.get(this.state, `stageDealMap[${stageName}].lastId`, '');
-                        dealBoardAction.getStageDealList(stageName, this.props.searchObj, curStageLastDealId);
+                        let pageNum = _.get(this.state, `stageDealMap[${stageName}].pageNum`, 1);
+                        dealBoardAction.getStageDealList(stageName, this.props.searchObj, pageNum);
                     }
                 });
                 //获取各阶段订单的总预算
@@ -151,10 +151,12 @@ class DealBoardList extends React.Component {
                     <div className="deal-board-list">
                         <DragDropContext onDragEnd={this.onDragEnd}>
                             {_.map(this.state.stageDealMap, (stageObj, key) => {
-                                return (<DealStageBoard key={key} stageObj={stageObj}
+                                return (<DealStageBoard
+                                    key={key} stageObj={stageObj}
                                     currDeal={this.props.currDeal}
                                     showDetailPanel={this.props.showDetailPanel}
                                     showCustomerDetail={this.props.showCustomerDetail}
+                                    searchObj={this.props.searchObj}
                                     containerHeight={this.state.containerHeight}/>);
                             })}
                         </DragDropContext>

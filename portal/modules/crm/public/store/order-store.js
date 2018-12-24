@@ -108,7 +108,8 @@ OrderStore.prototype.getMergeOrderList = function(customer) {
 OrderStore.prototype.getOrderList = function(data) {
     this.setOrderListLoading(false);
     if (data.result && _.isArray(data.result)) {
-        this.orderList = data.result;
+        //过滤掉null及没有id的订单
+        this.orderList = _.filter(data.result, item => item && item.id);
     } else {
         this.orderList = [];
     }
