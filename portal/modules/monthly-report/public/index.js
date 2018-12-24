@@ -15,6 +15,8 @@ const MonthPicker = DatePicker.MonthPicker;
 const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
+const userData = require('PUB_DIR/sources/user-data');
+const isCommonSales = userData.getUserData().isCommonSales;
 
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {storageUtil} from 'ant-utils';
@@ -88,6 +90,7 @@ class MonthlyReport extends React.Component {
 
         return (
             <AntcAttendanceRemarks
+                readOnly={isCommonSales}
                 data={data}
                 userId={userId}
                 selectedDate={this.state.selectedMonth}
@@ -252,6 +255,13 @@ class MonthlyReport extends React.Component {
                     name: 'return_type',
                     value: 'user'
                 }],
+                argCallback: arg => {
+                    if (isCommonSales) {
+                        const userId = userData.getUserData().user_id;
+                        arg.query.member_id = userId;
+                        delete arg.query.team_ids;
+                    }
+                },
                 dataField: 'list',
                 processData: data => {
                     data = _.orderBy(data, 'assessment_index', 'desc');
@@ -281,6 +291,13 @@ class MonthlyReport extends React.Component {
                     name: 'deviceType',
                     value: 'app'
                 }],
+                argCallback: arg => {
+                    if (isCommonSales) {
+                        const userId = userData.getUserData().user_id;
+                        arg.query.member_id = userId;
+                        delete arg.query.team_ids;
+                    }
+                },
                 dataField: 'list',
                 chartType: 'table',
                 option: {
