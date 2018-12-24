@@ -70,17 +70,15 @@ class DealTable extends React.Component {
     }
 
     getDealList() {
-        let query = {cursor: true};
-        if (_.get(this.state, 'dealListObj.lastId')) {
-            query.id = this.state.dealListObj.lastId;
-        }
         let body = this.props.getSearchBody();
         let sorter = this.state.sorter;
         dealAction.getDealList({
             page_size: PAGE_SIZE,
+            page_num: _.get(this.state, 'dealListObj.pageNum', 1),
             sort_field: sorter.field,
             sort_order: sorter.order
-        }, body, query);
+        }, body);
+
     }
 
     showCustomerDetail = (customerId) => {
@@ -209,7 +207,7 @@ class DealTable extends React.Component {
         if (!sorterChanged) return;
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('th.has-sorter'), `订单按 ${sorter.field} - ${sorter.order} 排序`);
         this.setState({sorter}, () => {
-            dealAction.setLastDealId('');
+            dealAction.setPageNum(1);
             setTimeout(() => {
                 this.getDealList();
             });

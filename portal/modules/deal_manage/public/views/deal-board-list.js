@@ -151,10 +151,12 @@ class DealBoardList extends React.Component {
                     <div className="deal-board-list">
                         <DragDropContext onDragEnd={this.onDragEnd}>
                             {_.map(this.state.stageDealMap, (stageObj, key) => {
-                                return (<DealStageBoard key={key} stageObj={stageObj}
+                                return (<DealStageBoard
+                                    key={key} stageObj={stageObj}
                                     currDeal={this.props.currDeal}
                                     showDetailPanel={this.props.showDetailPanel}
                                     showCustomerDetail={this.props.showCustomerDetail}
+                                    searchObj={this.props.searchObj}
                                     containerHeight={this.state.containerHeight}/>);
                             })}
                         </DragDropContext>

@@ -263,7 +263,7 @@ class OrderIndex extends React.Component {
                         {this.state.orderListLoading ? (
                             <Spinner />) : orderListLength ? (this.state.orderList.map(function(order, i) {
                             return (
-                                order.isEdit ?
+                                order && order.isEdit ?
                                     (<OrderForm key={i}
                                         order={order}
                                         stageList={_this.state.stageList}

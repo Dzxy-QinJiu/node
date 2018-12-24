@@ -25,7 +25,7 @@ class DealStageBoard extends React.Component {
         let stageName = _.get(this.props, 'stageObj.stage', '');
         if (stageName) {
             let pageNum = _.get(this.props, 'stageObj.pageNum', 1);
-            dealBoardAction.getStageDealList(stageName, pageNum);
+            dealBoardAction.getStageDealList(stageName, this.props.searchObj, pageNum);
         }
     };
 
@@ -106,6 +106,7 @@ class DealStageBoard extends React.Component {
 DealStageBoard.propTypes = {
     currDeal: PropTypes.object,
     stageObj: PropTypes.object,
+    searchObj: PropTypes.object
     containerHeight: PropTypes.number,
     showDetailPanel: PropTypes.func,
     showCustomerDetail: PropTypes.func
