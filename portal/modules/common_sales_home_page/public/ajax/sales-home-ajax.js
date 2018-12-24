@@ -49,8 +49,12 @@ exports.getTodayContactCustomer = function(rangParams, pageSize, sorter) {
     var data = {
         rangParams: JSON.stringify(rangParams),
     };
+    let type = 'user';
+    if(hasPrivilege('CUSTOMER_ALL')){
+        type = 'manager';
+    }
     getTodayContactCustomerAjax = $.ajax({
-        url: '/rest/contact_customer/' + pageSize + '/1/' + sorter.field + '/' + sorter.order,
+        url: '/rest/contact_customer/' + type + '/' + pageSize + '/1/' + sorter.field + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
         data: data,
