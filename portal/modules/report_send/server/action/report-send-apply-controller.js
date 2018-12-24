@@ -66,7 +66,7 @@ exports.uploadReportSend = function(req, res) {
         });
         // 文件不为空的处理
         let formData = {
-            doc: [fs.createReadStream(tmpPath)]
+            files: [fs.createReadStream(tmpPath)]
         };
         //调用上传请求服务
         ReportSendApplyService.uploadReportSend(req, res, formData, idArr.join(''), filename).on('success', function(data) {

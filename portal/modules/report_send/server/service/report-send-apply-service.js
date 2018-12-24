@@ -53,7 +53,7 @@ exports.approveDocumentWriteApplyPassOrReject = function(req, res) {
 //上传舆情上报文件
 exports.uploadReportSend = function(req, res, formData,id,filename) {
     return restUtil.authRest.post({
-        url: restApis.uploadReportFile + '?id=' + id + '&doc_name=' + encodeURI(filename) ,
+        url: restApis.uploadReportFile + '?id=' + id + '&file_name=' + encodeURI(filename) ,
         req: req,
         res: res,
         timeout: uploadTimeOut,
@@ -72,10 +72,11 @@ exports.downLoadReportSend = function(req, res) {
 };
 //删除相关文件
 exports.deleteReportSend = function(req, res) {
+    var fileObj = req.body;
     return restUtil.authRest.del(
         {
-            url: restApis.delReportFile,
+            url: restApis.delReportFile + `?file_dir_id=${fileObj.file_dir_id}` + `&file_id=${fileObj.file_id}`,
             req: req,
             res: res
-        }, req.query);
+        }, null);
 };

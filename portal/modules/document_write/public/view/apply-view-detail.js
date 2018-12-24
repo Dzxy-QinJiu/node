@@ -463,25 +463,38 @@ class ApplyViewDetail extends React.Component {
             this.afterUpload();
         }
     };
+    //删除已经上传的文件
+    handleDeleteFile = (fileDirId,fileId) => {
+        var submitObj = {
+            file_dir_id: fileDirId,
+            file_id: fileId
+        };
+        DocumentWriteApplyDetailAction.deleteLoadApplyApproveFile(submitObj);
+    };
     renderUploadAndDownloadInfo = () => {
         var detailInfoObj = this.state.detailInfoObj.info;
         var props = {
             name: 'reportsend',
             action: '/rest/reportsend/upload',
             showUploadList: false,
+            multiple: true,
             onChange: this.handleChange,
             data: detailInfoObj.id
         };
         var fileName = this.state.fileUploadName || _.get(detailInfoObj,'detail.file_name');
+        var fileId = this.state.fileUploadId || _.get(detailInfoObj,'detail.file_id');
+        var fileDirId = this.state.fileDirId || _.get(detailInfoObj,'detail.file_dir_id');
         const reqData = {
-            file_dir_id: this.state.fileDirId || _.get(detailInfoObj,'detail.file_dir_id'),
-            file_id: this.state.fileUploadId || _.get(detailInfoObj,'detail.file_id'),
+            file_dir_id: fileDirId,
+            file_id: fileId,
             file_name: fileName,
         };
         return (
             <div>
                 {fileName ? <div className="upload-file-name">
                     {hasPrivilege('DOCUMENT_DOWNLOAD') ? <a href={'/rest/reportsend/download/' + JSON.stringify(reqData)}>{fileName}</a> : fileName}
+                    {/*todo 有删除权限的可以删除文件*/}
+                    <Icon type="close" onClick={this.handleDeleteFile.bind(this,fileDirId,fileId)}/>
                 </div> : null}
                 {detailInfoObj.status === 'ongoing' && hasPrivilege('DOCUMENT_UPLOAD') ?
                     <Upload {...props} className="import-reportsend" data-tracename="上传文件">

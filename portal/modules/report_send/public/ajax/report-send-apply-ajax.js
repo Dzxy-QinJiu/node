@@ -22,21 +22,3 @@ exports.approveApplyPassOrReject = function(obj) {
     });
     return Deferred.promise();
 };
-let deleteLoadReportSendAjax = null;
-exports.deleteLoadReportSend = function(queryObj) {
-    var Deferred = $.Deferred();
-    deleteLoadReportSendAjax && deleteLoadReportSendAjax.abort();
-    deleteLoadReportSendAjax = $.ajax({
-        url: '/rest/reportsend/delete',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};

@@ -60,6 +60,11 @@ ReportSendApplyDetailStore.prototype.setInitState = function() {
         submitResult: '',
         errorMsg: ''
     };
+    this.deleteResult = {
+        result: 'loading',
+        delId: '',//被删除的那个文件的文件id
+        errorMsg: ''
+    };
 };
 ReportSendApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
@@ -264,6 +269,26 @@ ReportSendApplyDetailStore.prototype.getNextCandidate = function(result) {
     }else{
         this.candidateList = result;
     }
+};
+ReportSendApplyDetailStore.prototype.deleteLoadApplyApproveFile = function(result) {
+    if (result.loading){
+        this.deleteResult.result = 'loading';
+        this.deleteResult.delId = result.file_id;
+        this.deleteResult.errorMsg = '';
+    }else if (result.error){
+        this.deleteResult.result = 'error';
+        this.deleteResult.delId = '';
+        this.deleteResult.errorMsg = result.errorMsg;
+    }else{
+        this.deleteResult.result = '';
+        this.deleteResult.delId = '';
+        this.deleteResult.errorMsg = '';
+    }
+};
+ReportSendApplyDetailStore.prototype.setDeleteApplyApproveFile = function() {
+    this.deleteResult.result = '';
+    this.deleteResult.delId = '';
+    this.deleteResult.errorMsg = '';
 };
 
 
