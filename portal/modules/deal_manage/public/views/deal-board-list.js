@@ -49,8 +49,8 @@ class DealBoardList extends React.Component {
                 _.each(stageList, stage => {
                     let stageName = _.get(stage, 'name');
                     if (stageName) {
-                        let curStageLastDealId = _.get(this.state, `stageDealMap[${stageName}].lastId`, '');
-                        dealBoardAction.getStageDealList(stageName, this.props.searchObj, curStageLastDealId);
+                        let pageNum = _.get(this.state, `stageDealMap[${stageName}].pageNum`, 1);
+                        dealBoardAction.getStageDealList(stageName, this.props.searchObj, pageNum);
                     }
                 });
                 //获取各阶段订单的总预算

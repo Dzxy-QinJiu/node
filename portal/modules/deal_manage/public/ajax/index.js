@@ -8,25 +8,14 @@ const AUTHS = {
     MANAGER_DEAL_LIST: 'CRM_MANAGER_LIST_SALESOPPORTUNITY',
 };
 //获取订单列表
-exports.getDealList = function(params, body, query) {
+exports.getDealList = function(params, body) {
     //权限与路径的处理
     let type = 'user';
     if (hasPrivilege(AUTHS.MANAGER_DEAL_LIST)) {
         type = 'manager';
     }
     //params路径参数的处理
-    let url = `/rest/deal/${type}/${params.page_size}/${params.sort_field}/${params.sort_order}`;
-    //query参数的处理
-    let isFirstKey = true;
-    _.each(query, (value, key) => {
-        //第一个key前面需要加?
-        if (isFirstKey) {
-            isFirstKey = false;
-            url += `?${key}=${value}`;
-        } else {
-            url += `&${key}=${value}`;
-        }
-    });
+    let url = `/rest/deal/${type}/${params.page_size}/${params.page_num}/${params.sort_field}/${params.sort_order}`;
     let Deferred = $.Deferred();
     $.ajax({
         url: url,

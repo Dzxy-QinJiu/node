@@ -16,7 +16,7 @@ dealManageStore.prototype.setInitData = function() {
         errorMsg: '',
         list: [],
         total: 0,
-        lastId: '',//用来处理下拉加载的id
+        pageNum: 1,//用来处理下拉加载的id
         listenScrollBottom: true,//是否监听下拉加载
     };
 };
@@ -32,22 +32,24 @@ dealManageStore.prototype.getDealList = function(resultObj) {
         this.dealListObj.isLoading = false;
         this.dealListObj.errorMsg = '';
         let dealList = _.get(resultObj, 'data.result', []);
-        if (this.dealListObj.lastId) {
-            this.dealListObj.list = this.dealListObj.list.concat(dealList);
-        } else {
+        if (this.dealListObj.pageNum === 1) {
             this.dealListObj.list = dealList;
+        } else {
+            this.dealListObj.list = this.dealListObj.list.concat(dealList);
         }
         this.dealListObj.total = _.get(resultObj, 'data.total', 0);
         let curListLength = _.get(this.dealListObj, 'list.length');
-        this.dealListObj.lastId = _.get(this.dealListObj, `list[${curListLength - 1}].id`, '');
         if (curListLength >= this.dealListObj.total) {
             this.dealListObj.listenScrollBottom = false;
+        }
+        if (_.get(dealList, '[0]')) {
+            this.dealListObj.pageNum++;
         }
     }
 };
 
-dealManageStore.prototype.setLastDealId = function(id) {
-    this.dealListObj.lastId = id;
+dealManageStore.prototype.setPageNum = function(num) {
+    this.dealListObj.pageNum = num;
 };
 
 dealManageStore.prototype.addOneDeal = function(deal) {

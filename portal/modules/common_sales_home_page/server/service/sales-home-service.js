@@ -11,7 +11,7 @@ var EventEmitter = require('events').EventEmitter;
 var restApis = {
     //获取销售-电话列表
     getSalesPhone: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
-    queryContactCustomer: '/rest/customer/v2/customer/range',//查询客户
+    queryContactCustomer: '/rest/customer/v3/customer/range',//查询客户
     //过期或者即将到期的客户
     getExpiredCustomers: '/rest/analysis/customer/v2/statistic/:type/expire/customer',
     //查询线索 用户查询
@@ -59,7 +59,7 @@ exports.queryContactCustomer = function(req, res) {
     var queryObj = {};
     queryObj.rang_params = JSON.parse(req.body.rangParams);
     return restUtil.authRest.post({
-        url: url + '/' + req.params.pageSize + '/' + req.params.sortFeild + '/' + req.params.sortOrder,
+        url: url + '/' + req.params.pageSize + '/' + req.params.pageNum + '/' + req.params.sortFeild + '/' + req.params.sortOrder,
         req: req,
         res: res
     }, queryObj);

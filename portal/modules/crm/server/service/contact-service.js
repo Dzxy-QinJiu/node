@@ -13,7 +13,7 @@ const contactUrl = '/rest/customer/v3/contacts';
 exports.getContactList = function(req, res, reqBody) {
     return restUtil.authRest.post(
         {
-            url: contactUrl + '/query/' + req.params.type + '/50',
+            url: contactUrl + '/query/' + req.params.type + '/50/1',
             req: req,
             res: res
         }, reqBody);

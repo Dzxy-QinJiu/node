@@ -24,14 +24,14 @@ class DealStageBoard extends React.Component {
     handleScrollBarBottom = () => {
         let stageName = _.get(this.props, 'stageObj.stage', '');
         if (stageName) {
-            let lastDealId = _.get(this.props, 'stageObj.lastId');
-            dealBoardAction.getStageDealList(stageName, lastDealId);
+            let pageNum = _.get(this.props, 'stageObj.pageNum', 1);
+            dealBoardAction.getStageDealList(stageName, pageNum);
         }
     };
 
     renderDealCardList() {
         let stageObj = this.props.stageObj;
-        if (stageObj.isLoading && !stageObj.lastId) {
+        if (stageObj.isLoading && stageObj.pageNum === 1) {
             return (<Icon type="loading"/>);
         } else if (_.get(stageObj, 'list[0]')) {
             let boradHeight = this.props.containerHeight - BOARD_TITLE_HEIGHT - 3 * BOARD_CARD_MARGIN;

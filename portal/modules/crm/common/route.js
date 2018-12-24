@@ -10,7 +10,7 @@ const addSalesClueUrl = '/rest/clue/v1/add';
 
 module.exports = [{
     'method': 'post',
-    'path': orderUrl + '/range/:type/10/time/descend',
+    'path': orderUrl + '/range/:type/10/1/time/descend',
     'handler': 'getOrderList',
     'passport': {
         'needLogin': true
