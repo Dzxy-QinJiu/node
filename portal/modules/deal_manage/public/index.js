@@ -152,7 +152,8 @@ class DealManage extends React.Component {
                         _.each(this.boardListRef.state.stageList, stage => {
                             let stageName = _.get(stage, 'name');
                             if (stageName) {
-                                dealBoardAction.getStageDealList(stageName, searchObj);
+                                let pageNum = _.get(this.boardListRef.state, `stageDealMap[${stageName}].pageNum`, 1);
+                                dealBoardAction.getStageDealList(stageName, searchObj, pageNum);
                             }
                         });
                     });
