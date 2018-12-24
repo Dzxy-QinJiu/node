@@ -22,6 +22,9 @@ function getMenu(route) {
         menu.id = route.id.toLowerCase();
         menu.name = route.name;
         menu.routePath = route.routePath;
+        menu.isNotShow = route.isNotShow;
+        menu.bottom = route.bottom;
+        menu.shortName = route.shortName;
     }
     return menu;
 }

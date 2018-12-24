@@ -29,6 +29,10 @@ import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
 //需要加引导的模块
 const menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
+//个人信息菜单部分距离底部的绝对高度18
+const USER_INFO_BOTTOM = 18;
+//单个菜单的最小高度
+const ONE_MENU_HEIGHT = 32;
 /**
  *[
  * {"routePath":"user","name":"用户管理"},
@@ -54,8 +58,24 @@ const menuShortNamesMap = {
 //获取菜单
 function getMenus() {
     var userInfo = userData.getUserData();
-    var sideBarMenus = userInfo.sideBarMenus;
+    var sideBarMenus = userInfo.routes;
     return sideBarMenus;
+}
+
+//获取要显示的菜单
+function shouldShowMenus() {
+    return _.map(_.filter(getMenus(), (menu) => {
+        //过滤掉不展示的，没有名称的，需要展示到底部的
+        if (menu.isNotShow || !menu.name || menu.bottom === true) {
+            return false;
+        }
+        return true;
+    }), (menu) => {
+        let showMenu = {...menu};
+        delete showMenu.routes;
+        showMenu.name = Intl.get(showMenu.name, showMenu.name);
+        return showMenu;
+    });
 }
 
 //获取用户logo
@@ -74,14 +94,6 @@ function getUserName() {
     };
     return userInfo;
 }
-
-//不需要在左侧图标列表中输出的链接
-var ExcludeLinkList = [
-    {'name': Intl.get('menu.sales.homepage', '销售主页'), path: 'sales/home'},
-    {'name': Intl.get('menu.backend', '后台管理'), path: 'background_management'},
-    {'name': Intl.get('menu.userinfo.manage', '个人信息管理'), path: 'user_info_manage'},
-    {'name': Intl.get('menu.system.notification', '系统消息'), path: 'notification_system'},
-];
 
 //后台管理配置
 const BackendConfigLinkList = [
@@ -143,12 +155,12 @@ var applyentryLink = [
 var NavSidebarLists = [];
 //左侧响应式导航栏所用各部分高度
 var responsiveLayout = {
-    //logo 所占的高度
-    logoHeight: 0,
-    //图标的高度
-    MenusHeight: 0,
+    //logo和菜单占据的实际高度
+    logoAndMenusHeight: 0,
     //通知、二维码、个人信息的总高度
-    userInfoHeight: 0
+    userInfoHeight: 0,
+    //只显示名字的菜单高度
+    showNameMenuHeight: 0
 };
 //侧边普通按钮时引导模态框的样式
 var commonIntroModalLayout = {
@@ -195,7 +207,7 @@ var NavSidebar = createReactClass({
 
     getInitialState: function() {
         return {
-            menus: getMenus(),
+            menus: shouldShowMenus(),
             userInfoLogo: getUserInfoLogo(),
             userInfo: getUserName(),
             messages: {
@@ -269,23 +281,15 @@ var NavSidebar = createReactClass({
         }
     },
 
-    //是否需要发送ajax请求获取"未读数"数据
-    needSendNotificationRequest: false,
-
     componentDidMount: function() {
         userInfoEmitter.on(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         //未读回复列表变化后触发
         notificationEmitter.on(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
         this.getHasUnreadReply();
-        $(window).on('resize', this.resizeFunction);
-        var notificationPrivileges = this.getLinkListByPrivilege(NotificationLinkList);
-        this.needSendNotificationRequest = notificationPrivileges.length >= 1;
-        //响应式设计 logo占据的实际高度
-        responsiveLayout.logoHeight = $('.header-logo').outerHeight();
-        //响应式设计 如果导航存在计算导航图标 占据的实际高度
-        responsiveLayout.MenusHeight = $('.navbar-collapse').outerHeight();
+        //响应式设计 logo和菜单占据的实际高度
+        responsiveLayout.logoAndMenusHeight = $('.logo-and-menus').outerHeight(true);
         //计算 通知、二维码、个人信息 占据的实际高度
-        responsiveLayout.userInfoHeight = $(this.refs.userInfo).outerHeight();
+        responsiveLayout.userInfoHeight = $(this.refs.userInfo).outerHeight(true);
         this.calculateHeight();
         $(window).on('resize', this.calculateHeight);
         //获取已经点击过的模块
@@ -329,27 +333,48 @@ var NavSidebar = createReactClass({
     isIntroModlueNeverClicked: function(WebsiteConfigModuleRecord) {
         return (_.indexOf(WebsiteConfigModuleRecord, menu.name) < 0);
     },
-
+    //菜单展示成汉堡包
+    showHamburger: () => {
+        $('#hamburger').show();
+        $('#menusLists').hide();
+    },
+    //隐藏汉堡包，展示菜单
+    hideHamburger: () => {
+        $('#hamburger').hide();
+        $('#menusLists').show();
+    },
+    //计算并设置菜单展示样式
     calculateHeight: function() {
-        //>75  目的是左侧只有一个导航图标时不会出现汉堡包按钮
-        //窗口高度小于 （logo高度+导航高度+个人信息高度）时，出现汉堡包按钮，隐藏导航图标
-        if ($(window).height() < (responsiveLayout.logoHeight + responsiveLayout.MenusHeight + responsiveLayout.userInfoHeight) && (responsiveLayout.MenusHeight > 75)) {
-            // $('#hamburger').show();
-            // $('#menusLists').hide();
-            this.setState({
-                hideNavIcon: true
-            });
-        } else {
-            // $('#hamburger').hide();
-            // $('#menusLists').show();
-            this.setState({
-                hideNavIcon: false
-            });
+        if (this.calculateHeightTimeOut) {
+            clearTimeout(this.calculateHeightTimeOut);
+            this.calculateHeightTimeOut = null;
         }
-        //模态框存在时，才需要选要加引导的元素
-        if (this.state.isShowIntroModal) {
-            this.selectedIntroElement();
-        }
+        this.calculateHeightTimeOut = setTimeout(() => {
+            //窗口高度小于 （logo和菜单高度+个人信息高度+个人信息离底部的绝对高度）时，隐藏导航图标，只展示文字
+            if ($(window).height() < (responsiveLayout.logoAndMenusHeight + responsiveLayout.userInfoHeight + USER_INFO_BOTTOM)) {
+                this.hideHamburger();
+                this.setState({
+                    hideNavIcon: true
+                }, () => {
+                    //如果再缩放，则展示汉堡包
+                    responsiveLayout.shortNamemenusHeight = $('.logo-and-menus').outerHeight(true);
+                    if ($(window).height() < (responsiveLayout.shortNamemenusHeight + responsiveLayout.userInfoHeight + USER_INFO_BOTTOM)
+                        && (responsiveLayout.shortNamemenusHeight > ONE_MENU_HEIGHT)) {
+                        //>32  目的是左侧只有一个导航菜单时不会出现汉堡包按钮
+                        this.showHamburger();
+                    }
+                });
+            } else {
+                this.hideHamburger();
+                this.setState({
+                    hideNavIcon: false
+                });
+            }
+            //模态框存在时，才需要选要加引导的元素
+            if (this.state.isShowIntroModal) {
+                this.selectedIntroElement();
+            }
+        }, 100);
     },
 
     componentWillUnmount: function() {
@@ -359,9 +384,6 @@ var NavSidebar = createReactClass({
         clearTimeout(this.unreadTimeout);
     },
 
-    navContainerHeightFnc: function() {
-        return $(window).height();
-    },
 
     getNotificationClass: function() {
         var urlInfo = url.parse(window.location.href);
@@ -444,7 +466,7 @@ var NavSidebar = createReactClass({
             if (hasMessage) {
                 return (
                     <span className="iconfont icon-apply-message-tip"
-                          title={Intl.get('user.apply.unread.reply', '有未读回复')}/>
+                        title={Intl.get('user.apply.unread.reply', '有未读回复')}/>
                 );
             }
             else {
@@ -458,7 +480,7 @@ var NavSidebar = createReactClass({
             return (
                 <li className="sidebar-applyentry" title={Intl.get('menu.appuser.apply', '用户审批')}>
                     <NavLink to={applyLinks[0].href} activeClassName="active"
-                             className={isActive ? 'iconfont icon-active-apply-ico' : 'iconfont icon-apply-ico'}>
+                        className={isActive ? 'iconfont icon-active-apply-ico' : 'iconfont icon-apply-ico'}>
                         {renderMessageTip()}
                     </NavLink>
                 </li>
@@ -507,7 +529,7 @@ var NavSidebar = createReactClass({
             return (
                 <div className="sidebar-backend-config">
                     <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
-                             overlayClassName="nav-sidebar-backend-config">
+                        overlayClassName="nav-sidebar-backend-config">
                         <NavLink to={defaultLink.href} activeClassName="active">
                             <i className="iconfont icon-role-auth-config"/>
                         </NavLink>
@@ -519,7 +541,7 @@ var NavSidebar = createReactClass({
             return (
                 <div className="sidebar-backend-config text-nav-li">
                     <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
-                             overlayClassName="nav-sidebar-backend-config">
+                        overlayClassName="nav-sidebar-backend-config">
                         <NavLink to={defaultLink.href} activeClassName="active">
                             {menuShortNamesMap.background_management}
                         </NavLink>
@@ -536,15 +558,15 @@ var NavSidebar = createReactClass({
         return (
             <div className="sidebar-userinfo">
                 <Popover content={userinfoList} trigger="hover"
-                         placement="rightBottom"
-                         overlayClassName="nav-sidebar-userinfo">
+                    placement="rightBottom"
+                    overlayClassName="nav-sidebar-userinfo">
                     <div className="avatar_container">
                         <Avatar className="avatar"
-                                size="51px"
-                                src={this.state.userInfoLogo}
-                                userName={this.state.userInfo.user_name}
-                                nickName={this.state.userInfo.nick_name}
-                                round="true" link="true" url="/user_info_manage"/>
+                            size="51px"
+                            src={this.state.userInfoLogo}
+                            userName={this.state.userInfo.user_name}
+                            nickName={this.state.userInfo.nick_name}
+                            round="true" link="true" url="/user_info_manage"/>
                     </div>
                 </Popover>
             </div>
@@ -603,18 +625,15 @@ var NavSidebar = createReactClass({
         if (unreadReplyTipShowFlag) {
             return (
                 <span className="iconfont icon-apply-message-tip"
-                      title={Intl.get('user.apply.unread.reply', '有未读回复')}/>
+                    title={Intl.get('user.apply.unread.reply', '有未读回复')}/>
             );
         } else {
             return null;
         }
     },
     render: function() {
-        var windowHeight = this.navContainerHeightFnc();
         const pathName = location.pathname.replace(/^\/|\/$/g, '');
         var currentPageCategory = pathName.split('/')[0];
-        //不在左侧循环输出的链接
-        var excludePathList = _.map(ExcludeLinkList, 'path');
         var _this = this;
         return (
             <nav className="navbar" onClick={this.closeNotificationPanel}>
@@ -627,27 +646,21 @@ var NavSidebar = createReactClass({
                         <div className="collapse navbar-collapse">
                             <ul className="nav navbar-nav" id="menusLists">
                                 {
-                                    //过滤掉不显示的
-                                    this.state.menus.filter((menu, i) => {
-                                        if (excludePathList.indexOf(menu.routePath) < 0) {
-                                            return true;
-                                        }
-                                        return false;
-                                    }).map((menu, i) => {
-                                        var category = menu.routePath.replace(/\/.*$/, '');
-                                        var extraClass = currentPageCategory === category ? `iconfont icon-active-${menu.routePath.replace(/\//g, '_')}-ico active` : `iconfont icon-${menu.routePath.replace(/\//g, '_')}-ico`;
+                                    this.state.menus.map((menu, i) => {
+                                        var category = menu.routePath.replace(/\//, '');
+                                        var extraClass = currentPageCategory === category ? `iconfont icon-active-${category}-ico active` : `iconfont icon-${category}-ico`;
                                         //将侧边导航图标的名称和路径放在数组NavSidebarLists中
                                         if (!(_.includes(NavSidebarLists, menu))) {
                                             NavSidebarLists.push(menu);
                                         }
-                                        var routeCls = menu.routePath + '_icon_container';
+                                        var routeCls = category + '_icon_container';
                                         //不隐藏图标时
                                         if (!this.state.hideNavIcon) {
                                             return (
                                                 <li key={i} title={menu.name} className={routeCls}>
-                                                    <NavLink to={`/${menu.routePath}`}
-                                                             activeClassName='active'
-                                                             className={extraClass}
+                                                    <NavLink to={`${menu.routePath}`}
+                                                        activeClassName='active'
+                                                        className={extraClass}
                                                     >
                                                         {this.renderUnreadReplyTip(category)}
                                                     </NavLink>
@@ -658,12 +671,12 @@ var NavSidebar = createReactClass({
                                         else {
                                             return (
                                                 <li key={i} title={menu.name} className={`text-nav-li  ${routeCls}`}>
-                                                    <NavLink to={`/${menu.routePath}`}
-                                                             activeClassName='active'
+                                                    <NavLink to={`${menu.routePath}`}
+                                                        activeClassName='active'
                                                     >
                                                         {this.renderUnreadReplyTip(category)}
                                                         <span>
-                                                            {menuShortNamesMap[menu.routePath]}
+                                                            {Intl.get(`${menu.shortName}`, menu.shortName)}
                                                         </span>
                                                     </NavLink>
                                                 </li>
@@ -675,7 +688,7 @@ var NavSidebar = createReactClass({
                                 {/*{_this.getApplyBlock(currentPageCategory === 'apply')}*/}
                             </ul>
                             <Popover content={this.getNavbarLists()} trigger="hover" placement="rightTop"
-                                     overlayClassName="nav-sidebar-lists">
+                                overlayClassName="nav-sidebar-lists">
                                 <div className="hamburger" id="hamburger">
                                     <span className="line"></span>
                                     <span className="line"></span>

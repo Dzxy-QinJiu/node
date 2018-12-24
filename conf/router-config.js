@@ -11,6 +11,7 @@ let routers = [
         name: 'menu.crm',//客户管理
         routePath: '/crm',
         component: `${MODULE_PATH}crm/public`,
+        shortName: 'call.record.customer',//客户
         privileges: [
             'CUSTOMER_ALL',
             'CRM_LIST_CUSTOMERS',
@@ -33,6 +34,7 @@ let routers = [
         name: 'sales.lead.customer',//线索客户
         routePath: '/clue_customer',
         component: `${MODULE_PATH}clue_customer/public`,
+        shortName: 'crm.sales.clue',//线索
         privileges: [
             'CLUECUSTOMER_VIEW',
             'CUSTOMER_ACCESS_CHANNEL_GET',//获取接入渠道
@@ -46,6 +48,7 @@ let routers = [
         name: 'deal.manage',//订单管理
         routePath: '/deal_manage',
         component: `${MODULE_PATH}deal_manage/public`,
+        shortName: 'user.apply.detail.order',//订单
         privileges: [
             //TODO 换成订单的权限
             'CRM_REPEAT'
@@ -58,6 +61,7 @@ let routers = [
         name: 'menu.call',//通话记录
         routePath: '/call_record',
         component: `${MODULE_PATH}call_record/public`,
+        shortName: 'menu.shortName.call',//通话
         privileges: [
             'CUSTOMER_CALLRECORD_SALE_ONLY'//通话记录的查询
         ],
@@ -68,6 +72,7 @@ let routers = [
         id: 'APP_USER_MANAGE',//唯一标识
         name: 'menu.appuser',//用户管理
         routePath: '/user',
+        shortName: 'crm.detail.user',//用户
         subMenu: [{
             id: 'APP_USER_MANAGE_USER',
             name: 'menu.appuser.list',//用户列表
@@ -133,6 +138,7 @@ let routers = [
         id: 'OPLATE_ANALYSIS',//唯一标识
         name: 'menu.customer.analysis',//运营分析
         routePath: '/analysis',
+        shortName: 'user.detail.analysis',//分析
         subMenu: [
             {
                 id: 'ANALYSIS',//唯一标识
@@ -241,6 +247,7 @@ let routers = [
         id: 'CONTRACT',
         name: 'menu.contract',//合同管理
         routePath: '/contract',
+        shortName: 'contract.125',//合同
         privileges: [
             'OPLATE_CONTRACT_QUERY',
         ],
@@ -309,6 +316,7 @@ let routers = [
         name: 'schedule.list.management',//日程管理
         routePath: '/schedule_management',
         component: `${MODULE_PATH}schedule_management/public`,
+        shortName: 'menu.shortName.schedule',//日程
         privileges: [
             'MEMBER_SCHEDULE_MANAGE'//日程管理的查询
         ],
@@ -319,6 +327,7 @@ let routers = [
         id: 'APPLICATION_APPLY_MANAGEMENT',
         name: 'menu.leave.apply.list.management',//申请审批
         routePath: '/application',
+        shortName: 'menu.leave.apply.list.management',//申请审批
         subMenu: [{
             id: 'APP_USER_MANAGE_APPLY',
             name: 'menu.appuser.apply',//用户审批
@@ -368,6 +377,7 @@ let routers = [
         name: 'menu.system.notification',//系统消息
         routePath: '/notification_system',
         component: `${MODULE_PATH}notification/public`,
+        shortName: 'menu.notification',//通知
         bottom: true,
         privileges: [
             'NOTIFICATION_SYSTEM_LIST'//查看通知-系统消息
@@ -379,6 +389,7 @@ let routers = [
         id: 'BACKGROUND_MANAGEMENT',//唯一标识
         name: 'menu.backend',//后台管理
         routePath: '/background_management',
+        shortName: 'menu.shortName.config',//设置
         bottom: true,
         subMenu: [
             {

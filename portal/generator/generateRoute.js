@@ -57,9 +57,6 @@ function dealRouteData(route) {
         if (route.routePath) {
             data += 'path:\'' + route.routePath + '\',';
         }
-        if (route.isNotShow) {
-            data += 'isNotShow:\'' + route.isNotShow + '\',';
-        }
         if (route.otherAuth) {
             data += 'otherAuth:\'' + route.otherAuth + '\',';
         }
@@ -110,12 +107,12 @@ var writeFile = function(fileName, fileData) {
                     if (err) {
                         throw err;
                     } else {
-                        console.info('保存数据成功');
+                        console.info('生成路由成功！');
                     }
                 }
             );
         } catch (e) {
-            console.info('保存数据失败:' + JSON.stringify(e));
+            console.info('生成路由失败，' + JSON.stringify(e));
         }
     });
 };
