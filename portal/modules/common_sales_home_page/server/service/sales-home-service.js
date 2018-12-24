@@ -59,7 +59,7 @@ exports.queryContactCustomer = function(req, res) {
     var queryObj = {};
     queryObj.rang_params = JSON.parse(req.body.rangParams);
     return restUtil.authRest.post({
-        url: url + '/' + req.params.pageSize + '/' + req.params.pageNum + '/' + req.params.sortFeild + '/' + req.params.sortOrder,
+        url: url + '/' + req.params.type + '/' + req.params.pageSize + '/' + req.params.pageNum + '/' + req.params.sortFeild + '/' + req.params.sortOrder,
         req: req,
         res: res
     }, queryObj);
