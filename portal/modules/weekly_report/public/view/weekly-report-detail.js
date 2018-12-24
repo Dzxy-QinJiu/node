@@ -22,6 +22,7 @@ const PRIVILEGE_MAP = {
     CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
 };
 import {formatRoundingData} from 'PUB_DIR/sources/utils/common-method-util';
+const isCommonSales = userData.getUserData().isCommonSales;
 
 class WeeklyReportDetail extends React.Component {
     static defaultProps = {
@@ -201,6 +202,7 @@ class WeeklyReportDetail extends React.Component {
 
                 return (
                     <AntcAttendanceRemarks
+                        readOnly={isCommonSales}
                         data={data}
                         userId={userId}
                         selectedDate={selectedDate}
@@ -390,6 +392,13 @@ class WeeklyReportDetail extends React.Component {
         var queryObj = _.clone(this.getCallInfoParams());
         queryObj.deviceType = this.state.call_type;
         queryObj.return_type = 'user';
+
+        if (isCommonSales) {
+            const userId = userData.getUserData().user_id;
+            queryObj.member_id = userId;
+            delete queryObj.team_ids;
+        }
+
         let type = this.getCallInfoAuth();
         WeeklyReportDetailAction.getCallInfo(queryObj, type);
     };
