@@ -435,7 +435,7 @@ class Contract extends React.Component {
     };
 
     getUserList = () => {
-        salesmanAjax.getSalesmanListAjax().addQueryParam({with_ketao_member: true}).sendRequest()
+        salesmanAjax.getSalesmanListAjax().sendRequest({filter_manager: true})
             .success(result => {
                 if (_.isArray(result)) {
                     let list = [];
