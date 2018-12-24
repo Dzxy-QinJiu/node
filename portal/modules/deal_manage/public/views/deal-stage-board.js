@@ -106,7 +106,7 @@ class DealStageBoard extends React.Component {
 DealStageBoard.propTypes = {
     currDeal: PropTypes.object,
     stageObj: PropTypes.object,
-    searchObj: PropTypes.object
+    searchObj: PropTypes.object,
     containerHeight: PropTypes.number,
     showDetailPanel: PropTypes.func,
     showCustomerDetail: PropTypes.func

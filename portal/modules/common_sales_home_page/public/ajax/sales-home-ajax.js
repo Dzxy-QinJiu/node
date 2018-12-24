@@ -50,7 +50,7 @@ exports.getTodayContactCustomer = function(rangParams, pageSize, sorter) {
         rangParams: JSON.stringify(rangParams),
     };
     getTodayContactCustomerAjax = $.ajax({
-        url: '/rest/contact_customer/' + pageSize + '/1' + sorter.field + '/' + sorter.order,
+        url: '/rest/contact_customer/' + pageSize + '/1/' + sorter.field + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
         data: data,
