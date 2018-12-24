@@ -162,6 +162,7 @@ exports.getCustomerById = function(customerId) {
 //查询客户
 exports.queryCustomer = function(params, pageSize, pageNum, sorter) {
     pageSize = pageSize || 20;
+    pageNum = pageNum || 1;
     //没有关注客户置顶时
     sorter = sorter ? sorter : {field: 'id', order: 'ascend'};
     if (hasPrivilege(AUTHS.GETALL)) {
