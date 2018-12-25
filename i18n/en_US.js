@@ -1217,6 +1217,9 @@ var en_US = {
     'crm.217': 'Failed to get the list',//获取列表失败
     'crm.218': 'Edit successfully',//修改成功
     'crm.219': 'Edit Failed',//修改失败
+    'crm.customer.recycle.bin': 'Recycle bin',//回收站
+    'crm.customer.recovery': 'Recovery',//恢复
+    'crm.customer.delete.time': 'Delete time',//删除时间
     'crm.over.day.no.phone': 'Did not call over {day} days',//超{day}天未打过电话
     'crm.over.day.without.contact': 'Over {day} days without contact',//超{day}天未联系
     'crm.over.day.no.connection': 'No connection in the past {day} days',//近{day}天拨打未接通
