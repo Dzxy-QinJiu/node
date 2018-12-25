@@ -1395,6 +1395,7 @@ var zh_CN = {
     'crm.contact.wechat.add': '添加微信',
     'crm.contact.email.none': '暂无邮箱',
     'crm.contact.email.add': '添加邮箱',
+    'crm.second.sales': '联合跟进人',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
