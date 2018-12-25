@@ -1,6 +1,6 @@
 //引入用户数据
 var React = require('react');
-var UserData = require('../../public/sources/user-data');
+var menuUtil = require('../../public/sources/utils/menu-util');
 //class名
 var classNames = require('classnames');
 //顶部导航菜单的超链接
@@ -254,7 +254,7 @@ TopNav.MenuList = class extends React.Component {
         //获取第一层路由
         var category = getCategory();
         //获取当前界面的子模块
-        var subModules = this.props.menuList || (UserData && UserData.getSubModules(category));
+        var subModules = this.props.menuList || (menuUtil.getSubMenus(category));
         //获取pathname
         var locationPath = window.location.pathname;
 
@@ -274,9 +274,9 @@ TopNav.MenuList = class extends React.Component {
                                 'topNav-menu-item-selected': locationPath === menu.routePath
                             });
 
-                            var liContent = (<NavLink to={`${menu.routePath}`}
+                            var liContent = (<NavLink to={menu.routePath}
                                 activeClassName="active"
-                                ref={(element) => this.navLinks = element}>{Intl.get(menu.name, menu.name)}</NavLink>);
+                                ref={(element) => this.navLinks = element}> {menu.name}</NavLink>);
                             return (
                                 <li className={cls} key={i}>
                                     {liContent}

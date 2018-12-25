@@ -1,7 +1,4 @@
 var UserData;
-import Intl from '../intl/intl';
-import memoizeOne from 'memoize-one';
-
 //通过ajax获取
 exports.getUserDataByAjax = function() {
     var deferred = $.Deferred();
@@ -48,74 +45,6 @@ exports.getUserData = function() {
     return UserData;
 };
 
-//获取同一级别菜单项
-function getModulesInOneParent(routes) {
-    let modules = [];
-    if (routes) {
-        modules = _.map(routes, (route) => {
-            let module = _.clone(route);
-            delete module.routes;
-            return module;
-        });
-    }
-    return modules;
-}
-
-/**
- * 根据路径查找菜单
- * @param routes
- * @param path
- * @returns {Array}
- */
-function findRoute(routes, path) {
-    let subModules = [];
-    _.find(routes, (route) => {
-        //相同时，返回下级菜单
-        if (route.routePath === path) {
-            subModules = getModulesInOneParent(route.routes);
-            return true;
-        }
-    });
-    return subModules;
-}
-
-/**
- * 获取下级菜单
- * @param rootPath
- * @returns {Array}
- */
-
-const innerGetSubModules = function(rootPath) {
-    let subModules = [];
-    //存在并且是字符串
-    if (rootPath && _.isString(rootPath) && UserData && UserData.routes) {
-        //开头没有"/"时候，添加上"/"
-        if (rootPath.indexOf('/') !== 0) {
-            rootPath = '/' + rootPath;
-        }
-        //不是"/",结尾有"/"时，删除"/"
-        if (rootPath !== '/' && rootPath[rootPath.length - 1] === '/') {
-            rootPath = rootPath.slice(0, rootPath.length - 1);
-        }
-        //是一级路径
-        if (rootPath.match(/^\/[^\/|^\\]*$/g)) {
-            //返回子菜单
-            subModules = findRoute(UserData.routes, rootPath);
-        } else {
-            //  如果是二级路径，todo 三级路径未处理
-            _.find(UserData.routes, (route) => {
-                //返回子菜单
-                subModules = findRoute(route.routes, rootPath);
-                return true;
-            });
-        }
-    }
-    return subModules;
-};
-//使用memoizeOne封装innerGetSubModules
-const memoizeOneGetSubModules = memoizeOne(innerGetSubModules);
-//获取下级菜单项
-exports.getSubModules = memoizeOneGetSubModules;
 
 //设置用户数据
 exports.setUserData = function(key, value) {

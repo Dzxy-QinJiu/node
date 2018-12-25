@@ -1,5 +1,6 @@
 require('./css/nav-sidebar.less');
 var userData = require('../../public/sources/user-data');
+var menuUtil = require('../../public/sources/utils/menu-util');
 var Logo = require('../Logo/index.js');
 var Avatar = require('../Avatar/index.js');
 var LogOut = require('../../modules/logout/views/index.js');
@@ -36,41 +37,6 @@ const MENU = {
     'USER_INFO': 'user_info_manage'
 };
 
-//国际化菜单名称
-function setIntlName(menus) {
-    _.each(menus, (menu) => {
-        if (menu.name) {
-            menu.name = Intl.get(menu.name, menu.name);
-        }
-        if (menu.shortName) {
-            menu.shortName = Intl.get(menu.shortName, menu.shortName);
-        }
-        if (menu.routes) {
-            setIntlName(menu.routes);
-        }
-    });
-    return menus;
-}
-
-//获取菜单
-function getMenus() {
-    let userInfo = userData.getUserData();
-    let sideBarMenus = userInfo && userInfo.routes;
-    sideBarMenus = _.cloneDeep(sideBarMenus);
-    return setIntlName(sideBarMenus);
-}
-
-//获取要显示的一级菜单
-function shouldShowMenus() {
-    return _.filter(getMenus(), (menu) => {
-        //过滤掉不展示的，没有名称的，需要展示到底部的
-        if (menu.isNotShow || !menu.name || menu.bottom === true) {
-            return false;
-        }
-        return true;
-    });
-}
-
 //获取用户logo
 function getUserInfoLogo() {
     return userData.getUserData().user_logo;
@@ -87,13 +53,6 @@ function getUserName() {
     return userInfo;
 }
 
-//根据菜单id获取菜单数据
-function getMenuById(menuId) {
-    return _.find(getMenus(), (menu) => {
-        if (menu.id === menuId)
-            return true;
-    });
-}
 
 //左侧响应式导航栏所用各部分高度
 const responsiveLayout = {
@@ -151,7 +110,7 @@ var NavSidebar = createReactClass({
 
     getInitialState: function() {
         return {
-            menus: shouldShowMenus(),
+            menus: menuUtil.getFirstLevelMenus(),
             userInfoLogo: getUserInfoLogo(),
             userInfo: getUserName(),
             messages: {
@@ -329,7 +288,7 @@ var NavSidebar = createReactClass({
     },
     //渲染通知菜单
     getNotificationBlock: function() {
-        let notification = getMenuById(MENU.NOTE);
+        let notification = menuUtil.getMenuById(MENU.NOTE);
         if (!notification) {
             return null;
         }
@@ -363,7 +322,7 @@ var NavSidebar = createReactClass({
     },
     //后台管理配置模块
     renderBackendConfigBlock: function() {
-        let backendConfigMenu = getMenuById(MENU.BACK_CONFIG);
+        let backendConfigMenu = menuUtil.getMenuById(MENU.BACK_CONFIG);
         if (!backendConfigMenu || !backendConfigMenu.routes) {
             return null;
         }
@@ -387,7 +346,7 @@ var NavSidebar = createReactClass({
     //个人信息部分右侧弹框
     getUserInfoLinks: function() {
         //个人资料部分
-        let userInfoLinkList = getMenuById(MENU.USER_INFO);
+        let userInfoLinkList = menuUtil.getMenuById(MENU.USER_INFO);
         if (!userInfoLinkList || !userInfoLinkList.routes) {
             return;
         }
