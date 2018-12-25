@@ -330,6 +330,9 @@ exports.exportData = function(req, res) {
                 if (column.dataIndex === 'availability'){
                     value = value === '1' ? Intl.get('user.yes', '是') : Intl.get('user.no', '否');
                 }
+                //处理特殊字符
+                value = value.replace(/,/g, '，');
+                value = value.replace(/\n/g, ' ');
                 return value;
             });
             return values.join();
