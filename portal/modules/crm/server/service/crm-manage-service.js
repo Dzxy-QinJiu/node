@@ -76,6 +76,8 @@ var crmRestApis = {
     getCustomerLimit: '/rest/customer/v3/customer/limit/flag',
     //线索生成客户
     addCustomerByClue: '/rest/customer/v2/customer/clue_create_customer',
+    //获取客户所属销售及联合跟进人
+    getSalesByCustomerId: '/rest/customer/v3/customer/users/:customer_id',
 };
 exports.urls = crmRestApis;
 
@@ -474,4 +476,14 @@ exports.onlyEditCustomerTeam = function(req, res) {
             req: req,
             res: res
         }, req.body);
+};
+
+//获取联合跟进人
+exports.getSalesByCustomerId = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: crmRestApis.getSalesByCustomerId.replace(':customer_id',req.params.customer_id),
+            req: req,
+            res: res
+        });
 };
