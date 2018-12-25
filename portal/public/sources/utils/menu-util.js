@@ -48,6 +48,19 @@ function getIntledMenus(isGetNew = false) {
     }
 }
 
+//获取所有菜单
+function getAllMenu() {
+    let menus = getIntledMenus();
+    return _.filter(menus, (menu) => {
+        //过滤掉没有名称的,如：* 路由
+        if (!menu.name) {
+            return false;
+        } else {
+            return true;
+        }
+    });
+}
+
 //获取要显示的一级菜单
 function getFirstLevelMenus() {
     let menus = getIntledMenus();
@@ -80,8 +93,8 @@ function getItemById(menus, menuId) {
             childMenus.push(...menu.routes);
         }
     });
-    //如果没有找到，查找下一级菜单
-    if (!finedMenu) {
+    //如果没有找到,子菜单不为空时，查找下一级菜单
+    if (!finedMenu && childMenus.length > 0) {
         finedMenu = getItemById(childMenus, menuId);
     }
     return finedMenu;
@@ -89,7 +102,7 @@ function getItemById(menus, menuId) {
 
 //获取同一级别菜单项
 function getMenusInOneParent(menus) {
-    let modules = [];
+    let modules;
     if (menus) {
         modules = _.map(menus, (menu) => {
             delete menu.routes;
@@ -106,7 +119,7 @@ function getMenusInOneParent(menus) {
  * @returns {Array}
  */
 function findRoute(menus, path) {
-    let subMenus = [];
+    let subMenus;
     _.find(menus, (menu) => {
         //相同时，返回下级菜单
         if (menu.routePath === path) {
@@ -124,7 +137,7 @@ function findRoute(menus, path) {
  */
 
 const innerGetSubMenus = function(rootPath) {
-    let subMenus = [];
+    let subMenus;
     let menus = getIntledMenus(true);
     //存在并且是字符串
     if (rootPath && _.isString(rootPath) && menus) {
@@ -145,7 +158,9 @@ const innerGetSubMenus = function(rootPath) {
             _.find(menus, (menu) => {
                 //返回子菜单
                 subMenus = findRoute(menu.routes, rootPath);
-                return true;
+                if (subMenus) {
+                    return true;
+                }
             });
         }
     }
@@ -158,6 +173,7 @@ const memoizeOneGetMenuById = memoizeOne(getMenuById);
 exports.getMenuById = memoizeOneGetMenuById;
 //获取一级菜单项
 exports.getFirstLevelMenus = getFirstLevelMenus;
+exports.getAllMenu = getAllMenu;
 //使用memoizeOne封装innerGetSubMenus
 const memoizeOneGetSubMenus = memoizeOne(innerGetSubMenus);
 //获取下级菜单项

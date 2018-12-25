@@ -230,22 +230,17 @@ class TopNav extends React.Component {
     }
 }
 
-//获取路径，去掉开头的/
-function getPathname() {
-    return window.location.pathname.replace(/^\//, '');
-}
 
 //获取第一层路由
 function getCategory() {
-    var pathname = getPathname();
-    var reg = /[\w-]+/gi;
-    var ret = pathname.match(reg);
-    //删除最后的路径
-    if (ret) {
-        ret.pop();
-        return ret.join('/');
+    //获取路径，去掉开头的/
+    let pathname = window.location.pathname.replace(/^\//, '');
+    let firstLevelPathes = pathname.split('/');
+    if (firstLevelPathes) {
+        return '/' + firstLevelPathes[0];
+    } else {
+        return '';
     }
-    return '';
 }
 
 //顶部导航的导航菜单

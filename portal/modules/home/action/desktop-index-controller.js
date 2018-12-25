@@ -77,9 +77,7 @@ exports.getUserData = function(req, res) {
 
     //获取登录用户的相关信息
     function getUserInfo(lang) {
-        user.thirdLevelMenus = DesktopIndexService.getThirdLevelMenusByUser(req);
         user.privileges = DesktopIndexService.getPrivileges(req);
-        user.sideBarMenus = DesktopIndexService.getSidebarMenus(req);
         user.routes = authRouters.getAuthedRouters(user.privileges);
         //删除认证数据
         delete user.auth.access_token;

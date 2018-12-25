@@ -8,15 +8,19 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 
 const history = require('../history');
 const userData = require('../user-data');
+const menuUtil = require('../utils/menu-util');
+const ROUTE_CONST = {
+    'SALES_HOME': 'sales_home_page',//销售首页id
+    'CONTRACT_DASHBOARD': 'contract_dashboard'//合同概览id
+};
 
 //如果访问/，跳转到左侧导航菜单的第一个路由
 class HomeIndexRoute extends React.Component {
     //当组件即将加载的时候，跳转到第一个路由
     componentWillMount() {
-        var data = userData.getUserData();
-        var sideBarMenus = data.sideBarMenus;
-        if (sideBarMenus[0] && sideBarMenus[0].routePath) {
-            history.replace(sideBarMenus[0].routePath);
+        var allMenus = menuUtil.getAllMenu();
+        if (allMenus[0] && allMenus[0].routePath) {
+            history.replace(allMenus[0].routePath);
         }
     }
 
@@ -30,15 +34,12 @@ class HomeIndexRoute extends React.Component {
 class SalesIndexRoute extends React.Component {
     //当组件即将加载的时候，跳转到第一个路由
     componentWillMount() {
-        var data = userData.getUserData();
-        var sideBarMenus = data.sideBarMenus;
-        _.some(sideBarMenus, function(menu) {
-            if (menu.routePath === 'sales/home') {
-                //跳到销售首页
-                history.replace('sales/home');
-                return true;
-            }
-        });
+        var home_page = menuUtil.getMenuById(ROUTE_CONST.SALES_HOME);
+        //跳到销售首页
+        if (home_page) {
+            history.replace(home_page.routePath);
+            return true;
+        }
     }
 
     //渲染内容为空，只做跳转
@@ -50,14 +51,11 @@ class SalesIndexRoute extends React.Component {
 //跳转到合同仪表盘
 class ContractIndexRoute extends React.Component {
     componentWillMount() {
-        var data = userData.getUserData();
-        var subModules = data.subModules.contract;
-        _.some(subModules, function(module) {
-            if (module.routePath === 'contract/dashboard') {
-                history.replace('contract/dashboard');
-                return true;
-            }
-        });
+        var contract_dashboard = menuUtil.getMenuById(ROUTE_CONST.CONTRACT_DASHBOARD);
+        if (contract_dashboard) {
+            history.replace(contract_dashboard.routePath);
+            return true;
+        }
     }
 
     render() {
