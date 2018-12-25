@@ -28,6 +28,7 @@ exports.getCurUserList = function(req, res) {
     var curPage = req.query.cur_page, pageSize = req.query.page_size,
         filterContent = req.query.search_content, roleParam = req.query.role_param;
     var status = req.query.status;
+    //current_page用于翻页的接口，下拉里传了不受影响
     if (curPage) {
         params.current_page = curPage;
     }
@@ -46,6 +47,10 @@ exports.getCurUserList = function(req, res) {
     }
     if (status) {
         params.status = status;
+    }
+    //用于下拉加载的接口，翻页的接口里传了也不受影响
+    if(req.query.id){
+        params.id = req.query.id;
     }
 
     userManageService.getUsers(req, res, params === {} ? null : params, isGetAllUser).on('success', function(data) {

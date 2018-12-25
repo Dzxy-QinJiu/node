@@ -61,11 +61,16 @@ class UserManage extends React.Component {
         UserAction.showUserForm(type);
     };
 
+    getLastId() {
+        let userListLength = _.get(this.state, 'curUserList.length', 0);
+        return _.get(this.state, `curUserList[${userListLength - 1}].id`, '');
+    }
     //切换页数时，当前页展示数据的修改
     events_onChangePage = (count, curPage) => {
         UserAction.updateCurPage(curPage);
         var searchObj = {
             cur_page: curPage,
+            id: this.getLastId(),
             page_size: count,
             search_content: this.state.searchContent,
             role_param: this.state.selectRole
@@ -114,6 +119,7 @@ class UserManage extends React.Component {
         UserAction.updateSearchContent(searchContent);
         var searchObj = {
             cur_page: 1,
+            id: '',
             page_size: this.state.pageSize,
             search_content: searchContent,
             role_param: this.state.selectRole
@@ -158,6 +164,7 @@ class UserManage extends React.Component {
         $('.backgroundManagement_user_content .search-input').val('');
         var searchObj = {
             cur_page: 1,
+            id: '',
             page_size: this.state.pageSize,
             search_content: '',
             role_param: role
