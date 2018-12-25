@@ -23,6 +23,9 @@ exports.logout = function(req, res) {
             url: urls.logout,
             req: req,
             res: res,
+            headers: {
+                realm: global.config.loginParams.realm
+            },
         }, null);
 };
 /**
@@ -35,7 +38,10 @@ exports.ssoLogout = function(req, res) {
         {
             url: urls.ssoLogout,
             req: req,
-            res: res
+            res: res,
+            headers: {
+                realm: global.config.loginParams.realm
+            },
         }, null);
 };
 /**
@@ -51,7 +57,8 @@ exports.sessionTimeout = function(sessionID, accessToken) {
             req: {sessionID, 'headers': {}},
             res: {},
             headers: {
-                Authorization: userTokenPrefix + accessToken
+                Authorization: userTokenPrefix + accessToken,
+                realm: global.config.loginParams.realm
             }
         }, null);
 };
