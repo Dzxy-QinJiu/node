@@ -8,10 +8,12 @@ import '../css/customer-recycle-bin.less';
 import TopNav from'CMP_DIR/top-nav';
 import Spinner from 'CMP_DIR/spinner';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import userData from 'PUB_DIR/sources/user-data';
 import Trace from 'LIB_DIR/trace';
 import {AntcTable} from 'antc';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import ShearContent from 'CMP_DIR/shear-content';
+import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 const PRIVILEGES = {
     MANAGER_CUSTOMER_BAK_AUTH: 'CRM_MANAGER_GET_CUSTOMER_BAK_OPERATOR_RECORD'//管理员获取回收站中客户列表的权限
 };
@@ -41,18 +43,19 @@ class CustomerRecycleBin extends React.Component {
     }
 
     getRecycleBinCustomers() {
-        let url = '/rest/customer/recycle_bin/:type';
+        let url = '/rest/crm/recycle_bin/customer/:type';
         let type = 'user';
         if (hasPrivilege(PRIVILEGES.MANAGER_CUSTOMER_BAK_AUTH)) {
             type = 'manager';
         }
-        url.replace(':type', type);
+        url = url.replace(':type', type);
         if (this.state.lastId) {
             url = `${url}?id=${this.state.lastId}`;
         }
+        this.setState({isLoading: true});
         $.ajax({
             url: url,
-            type: 'get',
+            type: 'post',
             dateType: 'json',
             // data: {},
             success: (data) => {
@@ -79,9 +82,9 @@ class CustomerRecycleBin extends React.Component {
                 });
 
             },
-            error: (errorMsg) => {
+            error: (xhr) => {
                 this.setState({
-                    errorMsg: errorMsg || Intl.get('failed.get.crm.list', '获取客户列表失败'),
+                    errorMsg: xhr.responseJSON || Intl.get('failed.get.crm.list', '获取客户列表失败'),
                     isLoading: false
                 });
             }
@@ -91,7 +94,9 @@ class CustomerRecycleBin extends React.Component {
     //返回客户列表
     returnCustomerList = (e) => {
         Trace.traceEvent(e, '点击返回按钮回到客户列表页面');
-        // this.props.closeRepeatCustomer();
+        if (_.isFunction(this.props.closeRecycleBin)) {
+            this.props.closeRecycleBin();
+        }
         //重置获取数据页数，保证下次进来获取第一页数据时界面的刷新
         // CustomerRepeatAction.resetPage();
         // CustomerRepeatAction.setSelectedCustomer([]);
@@ -109,11 +114,11 @@ class CustomerRecycleBin extends React.Component {
     }
 
     getColumns() {
-        const column_width = '80px';
+        const column_width = 80;
         let columns = [
             {
                 title: Intl.get('crm.4', '客户名称'),
-                width: '240px',
+                width: 200,
                 dataIndex: 'name',
                 sorter: true
             },
@@ -124,18 +129,13 @@ class CustomerRecycleBin extends React.Component {
             },
             {
                 title: Intl.get('crm.5', '联系方式'),
-                width: '130px',
+                width: 130,
                 dataIndex: 'contact_way',
                 className: 'column-contact-way',
                 render: (text, record, index) => {
-                    let phoneArray = text && text.split('\n') || [];
-                    return phoneArray.map((item) => {
+                    return _.map(record.contact_way, item => {
                         if (item) {
-                            return (
-                                <div>
-                                    <span>{item}</span>
-                                </div>
-                            );
+                            return (<div>{item}</div>);
                         }
                     });
                 }
@@ -144,54 +144,34 @@ class CustomerRecycleBin extends React.Component {
                 width: column_width,
                 dataIndex: 'order',
                 className: 'has-filter'
-            }, {
+            },
+            {
                 title: Intl.get('crm.6', '负责人'),
                 width: column_width,
                 dataIndex: 'user_name',
                 sorter: true,
                 className: 'has-filter'
-            }, {
+            },
+            {
                 title: Intl.get('crm.last.contact', '最后联系'),
-                width: '240px',
+                width: 100,
                 dataIndex: 'last_contact_time',
-                sorter: true,
-                className: 'has-filter',
-                render: function(text, record, index) {
-                    //最后联系时间和跟进记录的合并
-                    let time = record.last_contact_time || '';
-                    let last_contact = record.trace || '';
-                    return (
-                        <span>
-                            <div className="last-contact-time">{time}</div>
-                            <span title={last_contact} className="comments-fix">
-                                <ShearContent>
-                                    {last_contact}
-                                </ShearContent>
-                            </span>
-                        </span>
-                    );
-                }
-            }, {
-                title: Intl.get('user.login.score', '分数'),
-                width: 60,
-                dataIndex: 'score',
-                align: 'right',
                 sorter: true,
                 className: 'has-filter'
             }, {
                 title: Intl.get('member.create.time', '创建时间'),
-                width: '100px',
+                width: 100,
                 dataIndex: 'start_time',
                 sorter: true,
                 className: 'has-filter table-data-align-right'
             }, {
                 title: Intl.get('crm.customer.delete.time', '删除时间'),
-                width: '240px',
+                width: 100,
                 dataIndex: 'time',
                 sorter: true
             }, {
                 title: Intl.get('user.operator', '操作人'),
-                width: '240px',
+                width: column_width,
                 dataIndex: 'operator_name',
                 sorter: true
             }, {
@@ -215,23 +195,43 @@ class CustomerRecycleBin extends React.Component {
         if (!userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
             columns = _.filter(columns, column => column.title !== Intl.get('common.operate', '操作'));
         }
-        return colums;
+        return columns;
     }
 
-    renderTableContent() {
+    getTableData() {
+        let tableData = _.map(this.state.customerList, item => {
+            let start_time = item.start_time ? moment(item.start_time).format(oplateConsts.DATE_FORMAT) : '';
+            let last_contact_time = item.last_contact_time ? moment(item.last_contact_time).format(oplateConsts.DATE_FORMAT) : '';
+            let phoneArray = _.get(item, 'contacts[0].phone', []);
+            phoneArray = _.map(phoneArray, phone => addHyphenToPhoneNumber(phone));
+            return {
+                name: item.name,
+                contact: _.get(item, 'contacts[0].name', ''),
+                contact_way: phoneArray,
+                order: _.get(item, 'sales_opportunities[0].sale_stages', ''),
+                user_name: _.get(item, 'user_name', ''),
+                start_time,
+                last_contact_time,
+                time: item.time ? moment(parseInt(item.time)).format(oplateConsts.DATE_FORMAT) : '',
+                operator_name: _.get(item, 'operator_name', '')
+            };
+        });
+        return tableData;
+    }
+
+    renderTableContent(tableHeight) {
         //初次获取数据时展示loading效果
         if (this.state.isLoading && !_.get(this.state, 'lastId')) {
             return (<Spinner />);
         } else if (_.get(this.state, 'customerList[0]')) {
-            let tableHeight = $('body').height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.TOTAL_HEIGHT;
             return (
-                <div className="customer-table-container" style={{height: tableHeight}} data-tracename="回收站客户列表">
+                <div>
                     <AntcTable
                         rowKey={this.rowKey}
                         rowClassName={this.handleRowClassName}
                         columns={this.getColumns()}
                         loading={this.state.isLoading}
-                        dataSource={this.state.customerList}
+                        dataSource={this.getTableData()}
                         util={{zoomInSortArea: true}}
                         onChange={this.onTableChange}
                         pagination={false}
@@ -260,15 +260,17 @@ class CustomerRecycleBin extends React.Component {
             let noDataTip = Intl.get('contract.60', '暂无客户');
             if (this.state.errorMsg) {
                 noDataTip = this.state.errorMsg;
-            } else if (this.state.searchObj.value) {
-                noDataTip = Intl.get('common.no.filter.crm', '没有符合条件的客户');
             }
+            // else if (this.state.searchObj.value) {
+            //     noDataTip = Intl.get('common.no.filter.crm', '没有符合条件的客户');
+            // }
             return (
                 <NoDataIntro noDataTip={noDataTip}/>);
         }
     }
 
     render() {
+        let tableHeight = $('body').height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.TOTAL_HEIGHT;
         return (
             <div className="customer-recycle-bin" data-tracename="客户回收站">
                 <TopNav>
@@ -277,12 +279,16 @@ class CustomerRecycleBin extends React.Component {
                         <span className="return-btn-font">{Intl.get('crm.52', '返回')}</span>
                     </div>
                 </TopNav>
-                {this.renderTableContent()}
+                <div className="customer-table-container" style={{height: tableHeight}} data-tracename="回收站客户列表">
+                    {this.renderTableContent(tableHeight)}
+                </div>
             </div>
         );
     }
 }
 
-CustomerRecycleBin.prototype = {};
+CustomerRecycleBin.propTypes = {
+    closeRecycleBin: PropTypes.func,
+};
 
 export default CustomerRecycleBin;

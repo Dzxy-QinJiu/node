@@ -64,7 +64,7 @@ class CrmIndex extends React.Component {
             case VIEW_TYPE.RECYCLE_BIN_CUSTOMER:
                 currView = (
                     <div data-tracename="客户回收站">
-                        <CustomerRecycleBin closeRepeatCustomer={this.returnCustomerView}/>
+                        <CustomerRecycleBin closeRecycleBin={this.returnCustomerView}/>
                     </div>);
                 break;
         }
