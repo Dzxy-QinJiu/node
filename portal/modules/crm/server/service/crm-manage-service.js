@@ -77,7 +77,7 @@ var crmRestApis = {
     //线索生成客户
     addCustomerByClue: '/rest/customer/v2/customer/clue_create_customer',
     //获取客户所属销售及联合跟进人
-    getSalesByCustomerId: '/rest/customer/v3/customer/users/:customer_id',
+    getSalesByCustomerId: '/rest/customer/v3/customer/customer/users/:customer_id',
 };
 exports.urls = crmRestApis;
 

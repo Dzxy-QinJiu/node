@@ -296,7 +296,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: []
+            privileges: ['CRM_GET_CUSTOMER_TRACE_USER']
         }
     ]
 };
