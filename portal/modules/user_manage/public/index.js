@@ -70,7 +70,7 @@ class UserManage extends React.Component {
         UserAction.updateCurPage(curPage);
         var searchObj = {
             cur_page: curPage,
-            id: this.getLastId(),
+            id: curPage === 1 ? '' : this.getLastId(),
             page_size: count,
             search_content: this.state.searchContent,
             role_param: this.state.selectRole
