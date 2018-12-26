@@ -32,8 +32,8 @@ export default {
     },
 
     //设置字段值的方法
-    //参数说明：field为字段名，index为表单索引（用于多表单的场景），e为事件对象
-    setField: function(field, index, e) {
+    //参数说明：field为字段名，index为表单索引（用于多表单的场景），e为事件对象，cb为回调函数
+    setField: function(field, index, e, cb) {
         //如果没有事件对象或事件对象为react对象，则认为是单表单的场景
         //此时index参数所传的值应该是e的值，index应视为没有
         if (e === undefined || e.refs) {
@@ -74,7 +74,10 @@ export default {
             }
         }
 
-        this.setState(this.state);
+        this.setState(this.state, () => {
+            //若传了回调函数则执行该函数
+            if (_.isFunction(cb)) cb();
+        });
     },
 
     getValidateStatus: function(field) {
@@ -112,4 +115,9 @@ export default {
   
     //处理金额，未定义时赋空值及转成千分位格式等
     parseAmount: parseAmount,
+  
+    //获取数字验证规则
+    getNumberValidateRule() {
+        return {pattern: /^(\d|,)+(\.\d+)?$/, message: Intl.get('contract.45', '请填写数字')};
+    },
 };
