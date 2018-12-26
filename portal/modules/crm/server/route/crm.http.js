@@ -289,6 +289,14 @@ module.exports = {
             },
             privileges: ['CRM_MANAGER_UPDATE_CUSTOMER_SALES_TEAM', 'CRM_USER_UPDATE_CUSTOMER_SALES_TEAM']
 
+        },{//获取客户所属销售及联合跟进人
+            method: 'get',
+            path: '/rest/customer/sales/:customer_id',
+            handler: 'getSalesByCustomerId',
+            passport: {
+                needLogin: true
+            },
+            privileges: ['CRM_GET_CUSTOMER_TRACE_USER']
         }
     ]
 };

@@ -1383,6 +1383,7 @@ var en_US = {
     'crm.contact.wechat.add': 'Add weChat',//添加微信
     'crm.contact.email.none': 'No email',//暂无邮箱
     'crm.contact.email.add': 'Add email',//添加邮箱
+    'crm.second.sales': 'Second Sales',//联合跟进人
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期

@@ -387,3 +387,11 @@ exports.onlyEditCustomerTeam = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+//获取客户所属销售及联合跟进人
+exports.getSalesByCustomerId = function(req, res) {
+    crmService.getSalesByCustomerId(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
