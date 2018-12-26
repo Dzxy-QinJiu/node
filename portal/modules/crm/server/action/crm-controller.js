@@ -71,6 +71,17 @@ exports.getCurCustomers = function(req, res) {
             res.json(err.message);
         });
 };
+
+//获取回收站中的客户列表
+exports.getRecycleBinCustomers = function(req, res) {
+    crmService.getRecycleBinCustomers(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err.message);
+        });
+};
+
 //获取客户的历史分数
 exports.getHistoryScoreList = function(req, res) {
     crmService.getHistoryScoreList(req, res, req.query)
