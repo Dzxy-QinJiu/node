@@ -5,6 +5,7 @@
  */
 var classNames = require('classnames');
 require('./index.less');
+
 class ModalIntro extends React.Component {
     constructor(props) {
         super(props);
@@ -30,6 +31,7 @@ class ModalIntro extends React.Component {
     //计算小蚂蚁和提示的位置
     calculateLayout = () => {
         var $introElement = this.state.$introElement;
+        if (!$introElement) return;
         //圈出某个要引导元素的框
         $('#modal-intro .modal-hole').height($introElement.outerHeight() + this.state.introModalLayout.holeGapHeight)
             .width($introElement.outerWidth() + this.state.introModalLayout.holeGapWidth)
@@ -62,7 +64,8 @@ class ModalIntro extends React.Component {
                 <div className="modal-tip">
                     <p className="ant-intro"></p>
                     <div className="modal-message-box" data-tracename="引导元素右侧的提示框">
-                        <i className="iconfont icon-close-pannel" onClick={this.props.hideModalIntro} data-tracename="点击关闭引导模态框按钮"></i>
+                        <i className="iconfont icon-close-pannel" onClick={this.props.hideModalIntro}
+                            data-tracename="点击关闭引导模态框按钮"></i>
                         <p className="message-wrap">
                             {this.props.message}
                         </p>
@@ -73,11 +76,14 @@ class ModalIntro extends React.Component {
         );
     }
 }
+
 ModalIntro.defaultProps = {
     message: '',
     introModalLayout: {},
     $introElement: '',
-    hideModalIntro: function() {},
-    handleOnclickHole: function() {},
+    hideModalIntro: function() {
+    },
+    handleOnclickHole: function() {
+    },
 };
 export default ModalIntro;
