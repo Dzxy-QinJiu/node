@@ -24,6 +24,7 @@ import {REPORT_TYPE,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import UploadAndDeleteFile from 'CMP_DIR/apply-components/upload-and-delete-file';
 let AlertTimer = require('CMP_DIR/alert-timer');
 // var initialDataObj = {
 //     fileDirId: '',
@@ -43,7 +44,7 @@ class ApplyViewDetail extends React.Component {
             // fileReportId: [],
             // fileUploadId: [],//上传文件成功后后端返回的id
             // fileUploadName: [],//上传文件名
-            // fileUploadFileArrs:[],
+            fileUploadFileArrs: [],//所有上传文件的信息
             clickConfirmBtn: false,//为了防止点击确认按钮后，立刻打开查看详情，详情属性中没有approver_ids这个数组,所以在点击确认申请后加上这样的标识
             ...ReportSendApplyDetailStore.getState()
         };
@@ -105,9 +106,9 @@ class ApplyViewDetail extends React.Component {
             this.getBusinessApplyDetailData(nextProps.detailItem);
             this.setState({
                 showBackoutConfirmType: '',
-                fileUploadId: '',
-                fileReportId: '',
-                fileUploadName: '',
+                // fileUploadId: '',
+                // fileReportId: '',
+                // fileUploadName: '',
                 clickConfirmBtn: false
             });
         }
@@ -306,11 +307,16 @@ class ApplyViewDetail extends React.Component {
     };
     confirmFinishApply = () => {
         var detailInfoObj = this.state.detailInfoObj.info;
-        var fileId = this.state.fileReportId || _.get(detailInfoObj,'detail.upload_id');
-        if (!fileId){
+        //todo 这个地方需要传一个数组啊啊啊
+        var fileIds = [];
+        var fileArrs = _.get(detailInfoObj,'detail.file_upload_logs',[]);
+        _.forEach(fileArrs,(item) => {
+            fileIds.push(item.id);
+        });
+        if (!fileIds.length){
             return;
         }
-        ReportSendApplyDetailAction.approveApplyPassOrReject({id: detailInfoObj.id, agree: 'pass',report_id: fileId},() => {
+        ReportSendApplyDetailAction.approveApplyPassOrReject({id: detailInfoObj.id, agree: 'pass',report_ids: fileIds},() => {
             detailInfoObj.showApproveBtn = false;
             detailInfoObj.status = 'pass';
             var replyList = _.get(this.state,'replyListInfo.list');
@@ -344,7 +350,7 @@ class ApplyViewDetail extends React.Component {
             //有approver_ids是表示已经确认过 待确认申请,
             if (_.isArray(detailInfoObj.approver_ids) || this.state.clickConfirmBtn){
                 //有upload_id表示已经上传过文件 已经上传文件了
-                if (_.get(detailInfoObj,'detail.upload_id','') || this.state.fileReportId){
+                if (_.get(detailInfoObj,'detail.file_upload_logs',[]).length){
                     renderAssigenedContext = this.renderConfirmFinish;
                     showApproveBtn = true;
                 }else{
@@ -459,114 +465,116 @@ class ApplyViewDetail extends React.Component {
             isUpLoading: false,
         });
     };
-    handleChange = (info) => {
-        this.setState({isUpLoading: true});
-        const response = info.file.response;
-        if (info.file.status === 'done') {
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-reportsend'), '上传舆情报告成功');
-            if (response) {
-                // var fileDirId = this.state.fileDirId;
-                // var fileUploadId = this.state.fileUploadId;
-                // var fileName = this.state.fileUploadName;
-                // var fileRportId = this.state.fileReportId;
-                //todo 待修改啊啊啊啊啊啊 啊啊啊啊啊 啊 啊啊啊啊啊啊
-                var fileUploadFileArrs = this.state.fileUploadFileArrs;
-                //上传成功
-                //todo 修改state上的值
-                this.setState({
-                    // fileUploadId: fileUploadId.push(response.file_id),
-                    // fileUploadName: fileName.push(response.file_name),
-                    // fileDirId: fileDirId.push(response.file_dir_id),
-                    // fileReportId: fileRportId.push(response.id),
-                    fileUploadFileArrs: fileUploadFileArrs.push(
-                        {fileUploadId: response.file_id,
-                            fileUploadName: response.file_name,
-                            fileReportId: response.id,
-                            fileDirId: response.file_dir_id
-                        })
-                });
-            } else {
-                message.error(Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!',{type: Intl.get('apply.approve.lyrical.report', '舆情报告')}));
-            }
-            this.afterUpload();
-        }else if(info.file.status === 'error'){
-            message.error(_.isString(response) ? response : Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!',{type: Intl.get('apply.approve.lyrical.report', '舆情报告')}));
-            this.afterUpload();
-        }
-    };
-    handleDeleteFile = (fileDirId,fileId) => {
-        var submitObj = {
-            file_dir_id: fileDirId,
-            file_id: fileId
-        };
-        ReportSendApplyDetailAction.deleteLoadApplyApproveFile(submitObj,() => {
-            this.setState({
-
-            });
-
-        });
+    // handleChange = (info) => {
+    //     this.setState({isUpLoading: true});
+    //     const response = info.file.response;
+    //     if (info.file.status === 'done') {
+    //         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-reportsend'), '上传舆情报告成功');
+    //         if (response) {
+    //             var fileUploadFileArrs = this.state.fileUploadFileArrs;
+    //             //上传成功
+    //             //todo 修改state上的值
+    //             this.setState({
+    //                 fileUploadFileArrs: fileUploadFileArrs.push(response)
+    //             });
+    //         } else {
+    //             message.error(Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!',{type: Intl.get('apply.approve.lyrical.report', '舆情报告')}));
+    //         }
+    //         this.afterUpload();
+    //     }else if(info.file.status === 'error'){
+    //         message.error(_.isString(response) ? response : Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!',{type: Intl.get('apply.approve.lyrical.report', '舆情报告')}));
+    //         this.afterUpload();
+    //     }
+    // };
+    // handleDeleteFile = (fileDirId,fileId) => {
+    //     var submitObj = {
+    //         file_dir_id: fileDirId,
+    //         file_id: fileId
+    //     };
+    //     ReportSendApplyDetailAction.deleteLoadApplyApproveFile(submitObj,() => {
+    //         this.setState({
+    //
+    //         });
+    //
+    //     });
+    // };
+    //添加成功或者失败后修改state中的值
+    setUpdateFiles = (updateLists) => {
+        ReportSendApplyDetailAction.setUpdateFilesLists(updateLists);
     };
     renderUploadAndDownloadInfo = () => {
         var detailInfoObj = this.state.detailInfoObj.info;
-        var props = {
-            name: 'reportsend',
-            multiple: true,
-            action: '/rest/reportsend/upload',
-            showUploadList: false,
-            onChange: this.handleChange,
-            data: detailInfoObj.id
-        };
-        // var fileName = this.state.fileUploadName || _.get(detailInfoObj,'detail.file_name');
-        // var fileDirId = this.state.fileDirId || _.get(detailInfoObj,'detail.file_dir_id');
-        // var fileId = this.state.fileUploadId || _.get(detailInfoObj,'detail.file_id');
-        //todo 上传文件的数组
-        var fileArrs = this.state.fileUploadFileArrs;
-
-        const hide = function() {
-            ReportSendApplyDetailAction.setDeleteApplyApproveFile();
-        };
         return (
-            <div>
-                {_.map(fileArrs,(fileItem) => {
-                    //todo 待修改?????????????????????????????????????
-                    var fileName = fileItem.fileUploadName;
-                    var fileDirId = '';
-                    var fileId = '';
-                    const reqData = {
-                        file_dir_id: fileDirId,
-                        file_id: fileId,
-                        file_name: fileName,
-                    };
-                    return (
-                        <div>
-                            {fileName ? <div className="upload-file-name">
-                                {hasPrivilege('DOCUMENT_DOWNLOAD') ? <a href={'/rest/reportsend/download/' + JSON.stringify(reqData)}>{fileName}</a> : fileName}
-                                <Icon type="close" onClick={this.handleDeleteFile.bind(this,fileDirId,fileId)}/>
-                                {/*删除文件失败后的提示*/}
-                                {this.state.deleteResult.errorMsg ?
-                                    <AlertTimer
-                                        time={4000}
-                                        message={this.state.deleteResult.errorMsg}
-                                        type="error"
-                                        showIcon
-                                        onHide={hide}
-                                    /> : null}
-
-                            </div> : null}
-                            {detailInfoObj.status === 'ongoing' && hasPrivilege('DOCUMENT_UPLOAD') ?
-                                <Upload {...props} className="import-reportsend" data-tracename="上传文件">
-                                    <Button type='primary' className='download-btn'>
-                                        {fileName ? Intl.get('apply.approve.update.file', '更新文件') : Intl.get('apply.approve.import.file', '上传文件')}
-                                        {this.state.isUpLoading ?
-                                            <Icon type="loading" className="icon-loading"/> : null}</Button>
-                                </Upload>
-                                : null}
-                        </div>
-                    );
-                })}
-
-            </div>
+            <UploadAndDeleteFile
+                detailInfoObj={detailInfoObj}
+                setUpdateFiles={this.setUpdateFiles}
+                uploadFileArrs={_.get(detailInfoObj,'detail.file_upload_logs')}
+            />
         );
+
+
+
+
+        // var detailInfoObj = this.state.detailInfoObj.info;
+        // var props = {
+        //     name: 'reportsend',
+        //     multiple: true,
+        //     action: '/rest/reportsend/upload',
+        //     showUploadList: false,
+        //     onChange: this.handleChange,
+        //     data: detailInfoObj.id
+        // };
+        // // var fileName = this.state.fileUploadName || _.get(detailInfoObj,'detail.file_name');
+        // // var fileDirId = this.state.fileDirId || _.get(detailInfoObj,'detail.file_dir_id');
+        // // var fileId = this.state.fileUploadId || _.get(detailInfoObj,'detail.file_id');
+        // //todo 上传文件的数组
+        // var fileArrs = this.state.fileUploadFileArrs;
+        //
+        // const hide = function() {
+        //     ReportSendApplyDetailAction.setDeleteApplyApproveFile();
+        // };
+        // return (
+        //     <div>
+        //         {_.map(fileArrs,(fileItem) => {
+        //             //todo 待修改?????????????????????????????????????
+        //             var fileName = fileItem.file_name;
+        //             var fileDirId = fileItem.file_dir_id;
+        //             var fileId = fileItem.file_id;
+        //             const reqData = {
+        //                 file_dir_id: fileDirId,
+        //                 file_id: fileId,
+        //                 file_name: fileName,
+        //             };
+        //             return (
+        //                 <div>
+        //                     {fileName ? <div className="upload-file-name">
+        //                         {hasPrivilege('DOCUMENT_DOWNLOAD') ? <a href={'/rest/reportsend/download/' + JSON.stringify(reqData)}>{fileName}</a> : fileName}
+        //                         <Icon type="close" onClick={this.handleDeleteFile.bind(this,fileDirId,fileId)}/>
+        //                         {/*删除文件失败后的提示*/}
+        //                         {this.state.deleteResult.errorMsg ?
+        //                             <AlertTimer
+        //                                 time={4000}
+        //                                 message={this.state.deleteResult.errorMsg}
+        //                                 type="error"
+        //                                 showIcon
+        //                                 onHide={hide}
+        //                             /> : null}
+        //
+        //                     </div> : null}
+        //                     {detailInfoObj.status === 'ongoing' && hasPrivilege('DOCUMENT_UPLOAD') ?
+        //                         <Upload {...props} className="import-reportsend" data-tracename="上传文件">
+        //                             <Button type='primary' className='download-btn'>
+        //                                 {fileName ? Intl.get('apply.approve.update.file', '更新文件') : Intl.get('apply.approve.import.file', '上传文件')}
+        //                                 {this.state.isUpLoading ?
+        //                                     <Icon type="loading" className="icon-loading"/> : null}</Button>
+        //                         </Upload>
+        //                         : null}
+        //                 </div>
+        //             );
+        //         })}
+        //
+        //     </div>
+        // );
     };
     renderUploadAndDownload = (detailInfo) => {
         // 驳回的时候也会有这个属性，所以再加上status的判断

@@ -73,7 +73,8 @@ exports.login = function(req, res, username, password, captchaCode) {
             req: req,
             res: res,
             headers: {
-                session_id: req.sessionID
+                session_id: req.sessionID,
+                realm: global.config.loginParams.realm
             },
             //后端要求用form的post提交
             form: formData
@@ -90,6 +91,9 @@ exports.loginWithTicket = function(req, res, ticket) {
         url: urls.loginWithTicket,
         req: req,
         res: res,
+        headers: {
+            realm: global.config.loginParams.realm
+        },
         form: {
             ticket: ticket
         }
@@ -179,7 +183,8 @@ function getLoginResult(data) {
 exports.getLoginCaptcha = function(req, res, user_name, type) {
     var url = urls.getLoginCaptcha;
     var headers = {
-        session_id: req.sessionID
+        session_id: req.sessionID,
+        realm: global.config.loginParams.realm
     };
     if (type) {
         url = urls.getResetPasswordCaptcha;
@@ -206,7 +211,8 @@ exports.getLoginCaptcha = function(req, res, user_name, type) {
 exports.refreshLoginCaptcha = function(req, res, user_name, type) {
     var url = urls.refreshLoginCaptcha;
     var headers = {
-        session_id: req.sessionID
+        session_id: req.sessionID,
+        realm: global.config.loginParams.realm
     };
 
     if (type) {
@@ -260,7 +266,8 @@ exports.checkContactInfoExists = function(req, res) {
             req: req,
             res: res,
             headers: {
-                session_id: req.sessionID
+                session_id: req.sessionID,
+                realm: global.config.loginParams.realm
             }
         }, null);
 };
@@ -281,6 +288,7 @@ exports.getOperateCode = function(req, res, user_name, captcha) {
                 session_id: req.sessionID,
                 remote_addr: ipUtil.getServerAddresses(),
                 user_ip: ipUtil.getClientIp(req),
+                realm: global.config.loginParams.realm
             },
             form: {
                 user_name: user_name,
@@ -304,6 +312,7 @@ exports.sendResetPasswordMsg = function(req, res, user_name, send_type, operate_
             headers: {
                 remote_addr: ipUtil.getServerAddresses(),
                 user_ip: ipUtil.getClientIp(req),
+                realm: global.config.loginParams.realm
             },
             form: {
                 user_name: user_name,
@@ -328,6 +337,7 @@ exports.getTicket = function(req, res, user_id, code) {
             headers: {
                 remote_addr: ipUtil.getServerAddresses(),
                 user_ip: ipUtil.getClientIp(req),
+                realm: global.config.loginParams.realm
             },
             form: {
                 user_id,
@@ -351,6 +361,7 @@ exports.resetPassword = function(req, res, user_id, ticket, new_password) {
             headers: {
                 remote_addr: ipUtil.getServerAddresses(),
                 user_ip: ipUtil.getClientIp(req),
+                realm: global.config.loginParams.realm
             },
             form: {
                 user_id,
@@ -369,7 +380,10 @@ exports.getLoginQRCode = function(req, res) {
         {
             url: urls.getLoginQRCode,
             req: req,
-            res: res
+            res: res,
+            headers: {
+                realm: global.config.loginParams.realm
+            },
         }, null);
 };
 
@@ -383,6 +397,9 @@ exports.loginByQRCode = function(req, res, qrcode) {
             url: urls.loginByQRCode,
             req: req,
             res: res,
+            headers: {
+                realm: global.config.loginParams.realm
+            },
             //后端要求用form的post提交
             form: {
                 screen_code: qrcode
@@ -473,7 +490,10 @@ exports.wechatLoginByUnionId = function(req, res, unionId) {
             form: {
                 open_id: unionId,
                 platform: 'wechat'
-            }
+            },
+            headers: {
+                realm: global.config.loginParams.realm
+            },
         }, null, {
             success: loginSuccess,
             timeout: loginTimeout
@@ -487,6 +507,9 @@ exports.checkWechatIsBind = function(req, res, unionId) {
             url: urls.checkWechatIsBindUrl,
             req: req,
             res: res,
+            headers: {
+                realm: global.config.loginParams.realm
+            },
         }, {
             open_id: unionId,
             platform: 'wechat'
@@ -549,6 +572,9 @@ exports.registBindWechatLogin = function(req, res, formObj) {
             url: urls.registBindWechatLoginUrl,
             req: req,
             res: res,
+            headers: {
+                realm: global.config.loginParams.realm
+            },
             form: formData
         }, null, {
             success: loginSuccess,

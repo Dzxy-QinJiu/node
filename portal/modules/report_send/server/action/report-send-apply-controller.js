@@ -9,7 +9,7 @@ const fs = require('fs');
 const _ = require('lodash');
 let BackendIntl = require('../../../../lib/utils/backend_intl');
 function handleNodata(data) {
-    if (!data){
+    if (!data) {
         data = {
             list: [],
             total: 0
@@ -47,33 +47,46 @@ exports.uploadReportSend = function(req, res) {
     form.parse(req, function(err, fields, files) {
         // 获取上传文件的临时路径
         let tmpPath = files['reportsend'][0].path;
+        let newTmpPath = tmpPath;
+        // 获取生成的文件名称
+        var tempName = _.last(_.split(tmpPath, '\\'));
         // 获取文件名
         var filename = files['reportsend'][0].originalFilename;
-        // 文件内容为空的处理
-        let file_size = files['reportsend'][0].size;
-        if (filename.indexOf(' ') >= 0){
-            let backendIntl = new BackendIntl(req);
-            res.status(500).json(backendIntl.get('apply.approve.upload.no.container.space','文件名称中不要含有空格！'));
-            return;
-        }
-        if(file_size === 0) {
-            res.json(false);
-            return;
-        }
-        var idArr = [];
-        _.forEach(fields,(item) => {
-            idArr = _.concat(idArr,item);
+        newTmpPath = _.replace(newTmpPath, tempName, filename);
+        //将文件名称重命名
+        fs.rename(tmpPath, newTmpPath, (err) => {
+            if (err) {
+                res.json(false);
+            } else {
+                // 文件内容为空的处理
+                let file_size = files['reportsend'][0].size;
+                if (filename.indexOf(' ') >= 0) {
+                    let backendIntl = new BackendIntl(req);
+                    res.status(500).json(backendIntl.get('apply.approve.upload.no.container.space', '文件名称中不要含有空格！'));
+                    return;
+                }
+                if (file_size === 0) {
+                    res.json(false);
+                    return;
+                }
+                var idArr = [];
+                _.forEach(fields, (item) => {
+                    idArr = _.concat(idArr, item);
+                });
+                // 文件不为空的处理
+                let formData = {
+                    docs: [fs.createReadStream(newTmpPath)]
+                };
+                //调用上传请求服务
+                ReportSendApplyService.uploadReportSend(req, res, formData, idArr.join('')).on('success', function(data) {
+                    res.json(data);
+                }).on('error', function(err) {
+                    res.status(500).json(err.message);
+                });
+            }
         });
-        // 文件不为空的处理
-        let formData = {
-            files: [fs.createReadStream(tmpPath)]
-        };
-        //调用上传请求服务
-        ReportSendApplyService.uploadReportSend(req, res, formData, idArr.join(''), filename).on('success', function(data) {
-            res.json(data);
-        }).on('error', function(err) {
-            res.status(500).json(err.message);
-        });
+
+
     });
 };
 exports.downLoadReportSend = function(req, res) {

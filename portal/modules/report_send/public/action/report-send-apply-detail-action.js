@@ -10,7 +10,7 @@ var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
-import {getApplyDetailById,getApplyStatusById,getApplyCommentList,addApplyComments,cancelApplyApprove, deleteLoadApplyApproveFile} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+import {getApplyDetailById,getApplyStatusById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -25,7 +25,8 @@ function ApplyViewDetailActions() {
         'hideCancelBtns',//审批完后不再显示撤销按钮
         'setDetailInfoObjAfterAdd',
         'setDetailInfo',
-        'setDeleteApplyApproveFile'
+        'setUpdateFilesLists'
+        // 'setDeleteApplyApproveFile'
     );
 
     //获取审批单详情
@@ -120,19 +121,19 @@ function ApplyViewDetailActions() {
             }
         }).error( this.dispatch({error: true}));
     };
-    this.deleteLoadApplyApproveFile = function(queryObj,callback) {
-        this.dispatch({loading: true, error: false, file_id: queryObj.file_id});
-        deleteLoadApplyApproveFile(queryObj).then((replyData) => {
-            if (replyData){
-                this.dispatch({loading: false, error: false, reply: replyData});
-                _.isFunction(callback) && callback();
-            }else{
-                this.dispatch({loading: false, error: true, errorMsg: Intl.get('failed.delete.apply.load.approve','删除文件失败！')});
-            }
-        }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
-    };
+    // this.deleteLoadApplyApproveFile = function(queryObj,callback) {
+    //     this.dispatch({loading: true, error: false, file_id: queryObj.file_id});
+    //     deleteLoadApplyApproveFile(queryObj).then((replyData) => {
+    //         if (replyData){
+    //             this.dispatch({loading: false, error: false, reply: replyData});
+    //             _.isFunction(callback) && callback();
+    //         }else{
+    //             this.dispatch({loading: false, error: true, errorMsg: Intl.get('failed.delete.apply.load.approve','删除文件失败！')});
+    //         }
+    //     }, (errorMsg) => {
+    //         this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+    //     });
+    // };
 
 }
 module.exports = alt.createActions(ApplyViewDetailActions);

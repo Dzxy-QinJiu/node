@@ -21,19 +21,14 @@ import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import Trace from 'LIB_DIR/trace';
+import UploadAndDeleteFile from 'CMP_DIR/apply-components/upload-and-delete-file';
 
 class AddReportSendApply extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             hideCustomerRequiredTip: false,
-            isUpLoading: false,
             uploadFileArrs: [],
-            deleteResult: {
-                result: '',
-                delId: '',//删除申请的id
-                errMsg: '',//删除失败后的提示
-            },
             formData: {
                 customer: {id: '', name: ''},//客户的信息
                 expect_submit_time: moment().valueOf(),//预计成交时间
@@ -72,11 +67,6 @@ class AddReportSendApply extends React.Component {
             saveResult: ''
         });
     };
-    afterUpload = () => {
-        this.setState({
-            isUpLoading: false,
-        });
-    };
     //保存结果的处理
     setResultData(saveMsg, saveResult) {
         this.setState({
@@ -95,6 +85,20 @@ class AddReportSendApply extends React.Component {
             if (!_.get(values, 'customer.id')) {
                 return;
             }
+            const formData = new FormData();
+            var uploadFileArrs = this.state.uploadFileArrs;
+            //是否有上传过文件
+            if (_.isArray(uploadFileArrs) && uploadFileArrs.length){
+                uploadFileArrs.forEach((file) => {
+                    formData.append('files', file);
+                });
+                // values['files'] = formData;
+            }
+
+            // fields为表单其他项的数据,在antd-pro中是fileds.f
+            // Object.keys(values).map((item)=>{
+            //     formData.append(item,values[item]);
+            // });
             this.setState({
                 isSaving: true,
                 saveMsg: '',
@@ -102,9 +106,13 @@ class AddReportSendApply extends React.Component {
             });
             $.ajax({
                 url: '/rest/add/opinionreport/list/' + this.props.applyAjaxType,
-                dataType: 'json',
+                // dataType: 'json',
+                // contentType: false, // 注意这里应设为false
+                // contentType: 'multipart/form-data;charset=UTF-8',
+                processData: false,
+                // cache: false,
                 type: 'post',
-                data: values,
+                data: formData,
                 success: (data) => {
                     //添加成功
                     this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
@@ -169,45 +177,28 @@ class AddReportSendApply extends React.Component {
             />
         );
     };
-    handleChange = (info) => {
-        this.setState({isUpLoading: true});
-        const response = info.file.response;
-        if (info.file.status === 'done') {
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-reportsend'), '上传报告成功');
-            if (response) {
-                var uploadFileArrs = this.state.uploadFileArrs;
-                //上传成功
-                this.setState({
-                    uploadFileArrs: uploadFileArrs.push(
-                        {
-                            fileUploadId: response.file_id,
-                            fileUploadName: response.file_name,
-                            fileReportId: response.id,
-                            fileDirId: response.file_dir_id
-                        })
-                });
-            } else {
-                message.error(Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')}));
-            }
-            this.afterUpload();
-        } else if (info.file.status === 'error') {
-            message.error(_.isString(response) ? response : Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')}));
-            this.afterUpload();
-        }
+    setUpdateFiles = (updateFiles) => {
+        this.setState({
+
+        });
     };
-    handleDeleteFile = (fileDirId,fileId) => {
-        var submitObj = {
-            file_dir_id: fileDirId,
-            file_id: fileId
-        };
-        // ReportSendApplyDetailAction.deleteLoadApplyApproveFile(submitObj,()=>{
-        //     this.setState({
-        //
-        //     });
-        //
-        // });
+    beforeUpload = (file) => {
+        this.setState(({uploadFileArrs}) => ({
+            uploadFileArrs: [...uploadFileArrs, file],
+        }));
+        return false;
     };
 
+    fileRemove=(file) => {
+        this.setState(({fileData}) => {
+            const index = fileData.indexOf(file);
+            const newFileList = fileData.slice();
+            newFileList.splice(index,1);
+            return {
+                uploadFileArrs: newFileList
+            };
+        });
+    };
     render() {
         var formData = this.state.formData;
         var _this = this;
@@ -231,7 +222,6 @@ class AddReportSendApply extends React.Component {
             showUploadList: false,
             onChange: this.handleChange,
         };
-        var uploadFileArrs = this.state.uploadFileArrs;
         return (
             <RightPanel showFlag={true} data-tracename="添加舆情报告申请" className="add-leave-container">
                 <span className="iconfont icon-close add-leave-apply-close-btn"
@@ -327,6 +317,12 @@ class AddReportSendApply extends React.Component {
                                             />
                                         )}
                                     </FormItem>
+                                    <UploadAndDeleteFile
+                                        setUpdateFiles={this.setUpdateFiles}
+                                        beforeUpload = {this.beforeUpload}
+                                        fileList={this.state.uploadFileArrs}
+                                        fileRemove={this.fileRemove}
+                                    />
                                     <div className="submit-button-container">
                                         <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
                                             disabled={this.state.isSaving} data-tracename="点击保存添加
@@ -350,39 +346,6 @@ class AddReportSendApply extends React.Component {
                                             }
                                         </div>
                                     </div>
-                                    {_.map(uploadFileArrs, (fileItem) => {
-                                        const reqData = {
-                                            file_dir_id: '',
-                                            file_id: '',
-                                            file_name: '',
-                                        };
-                                        return (
-                                            <div className="upload-file-name">
-                                                {hasPrivilege('DOCUMENT_DOWNLOAD') ?
-                                                    <a href={'/rest/reportsend/download/' + JSON.stringify(reqData)}>{fileName}</a> : fileName}
-                                                <Icon type="close"
-                                                    onClick={this.handleDeleteFile.bind(this, fileDirId, fileId)}/>
-                                                {/*删除文件失败后的提示*/}
-                                                {this.state.deleteResult.errorMsg ?
-                                                    <AlertTimer
-                                                        time={4000}
-                                                        message={this.state.deleteResult.errorMsg}
-                                                        type="error"
-                                                        showIcon
-                                                        onHide={hide}
-                                                    /> : null}
-
-                                            </div>
-                                        );
-                                    })}
-                                    {hasPrivilege('DOCUMENT_UPLOAD') ?
-                                        <Upload {...props} className="import-reportsend" data-tracename="上传文件">
-                                            <Button type='primary' className='download-btn'>
-                                                {_.isArray(uploadFileArrs) && uploadFileArrs.length ? Intl.get('apply.approve.update.file', '更新文件') : Intl.get('apply.approve.import.file', '上传文件')}
-                                                {this.state.isUpLoading ?
-                                                    <Icon type="loading" className="icon-loading"/> : null}</Button>
-                                        </Upload>
-                                        : null}
                                 </Form>
                             </div>
                         </GeminiScrollbar>

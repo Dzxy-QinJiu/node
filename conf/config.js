@@ -187,11 +187,11 @@ var config = {
     appId: 'COM.ANTFACT.OPLATE.NOTIFY',//从协调服务中获取推送服务地址时所需的id
     loginParams: {
         //安全域Id,ketao:3722pgujaa,curtao:34pj27enfq
-        realm: process.env.LOGIN_REALM || '3722pgujaa',
+        realm: process.env.LOGIN_REALM || '34suklsvlP',
         //应用Id, ketao:3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9 ,curtao:34pj27enfq34pj1oe3c4h91VbdhG4zxccX0Z3i2Z6eN
         clientId: process.env.LOGIN_CLIENT_ID || '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9',
         //应用密钥,ketao:477qpz3uC5fZcaz0w1YloKWA, curtao:0bMfdndoR4jPcH70Mm7SS1kg
-        clientSecret: process.env.LOGIN_CLIENT_SECRET || '477qpz3uC5fZcaz0w1YloKWA',
+        clientSecret: process.env.LOGIN_CLIENT_SECRET || '41yhR18RW4nebW305HAvf23t',
         grantType: process.env.LOGIN_GRANT_TYPE || 'client_credentials'//授权类型
     },
     //服务网关,测试环境：http://172.19.103.57:9090,正式：'http://gateway-ketao.antfact.com', curtao：http://gateway.curtao.com

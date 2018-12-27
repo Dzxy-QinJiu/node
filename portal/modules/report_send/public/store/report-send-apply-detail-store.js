@@ -270,25 +270,28 @@ ReportSendApplyDetailStore.prototype.getNextCandidate = function(result) {
         this.candidateList = result;
     }
 };
-ReportSendApplyDetailStore.prototype.deleteLoadApplyApproveFile = function(result) {
-    if (result.loading){
-        this.deleteResult.result = 'loading';
-        this.deleteResult.delId = result.file_id;
-        this.deleteResult.errorMsg = '';
-    }else if (result.error){
-        this.deleteResult.result = 'error';
-        this.deleteResult.delId = '';
-        this.deleteResult.errorMsg = result.errorMsg;
-    }else{
-        this.deleteResult.result = '';
-        this.deleteResult.delId = '';
-        this.deleteResult.errorMsg = '';
-    }
-};
-ReportSendApplyDetailStore.prototype.setDeleteApplyApproveFile = function() {
-    this.deleteResult.result = '';
-    this.deleteResult.delId = '';
-    this.deleteResult.errorMsg = '';
+// ReportSendApplyDetailStore.prototype.deleteLoadApplyApproveFile = function(result) {
+//     if (result.loading){
+//         this.deleteResult.result = 'loading';
+//         this.deleteResult.delId = result.file_id;
+//         this.deleteResult.errorMsg = '';
+//     }else if (result.error){
+//         this.deleteResult.result = 'error';
+//         this.deleteResult.delId = '';
+//         this.deleteResult.errorMsg = result.errorMsg;
+//     }else{
+//         this.deleteResult.result = '';
+//         this.deleteResult.delId = '';
+//         this.deleteResult.errorMsg = '';
+//     }
+// };
+// ReportSendApplyDetailStore.prototype.setDeleteApplyApproveFile = function() {
+//     this.deleteResult.result = '';
+//     this.deleteResult.delId = '';
+//     this.deleteResult.errorMsg = '';
+// };
+ReportSendApplyDetailStore.prototype.setUpdateFilesLists = function(updateLists) {
+    this.detailInfoObj.info.detail.file_upload_logs = updateLists;
 };
 
 

@@ -51,9 +51,13 @@ exports.approveDocumentWriteApplyPassOrReject = function(req, res) {
         }, req.body);
 };
 //上传舆情上报文件
-exports.uploadReportSend = function(req, res, formData,id,filename) {
+exports.uploadReportSend = function(req, res, formData,id) {
+    var url = restApis.uploadReportFile;
+    if (id){
+        url += `?id=${id}`;
+    }
     return restUtil.authRest.post({
-        url: restApis.uploadReportFile + '?id=' + id + '&file_name=' + encodeURI(filename) ,
+        url: url,
         req: req,
         res: res,
         timeout: uploadTimeOut,

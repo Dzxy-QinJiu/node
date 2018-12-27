@@ -230,6 +230,7 @@ class ReportSendApplyManagement extends React.Component {
         if (!noShowApplyDetail) {
             applyDetail = {detail: _.get(this.state, 'applyListObj.list[0]'), apps: this.state.allApps};
         }
+        {/*todo 地方撒旦法撒旦法反反复复 待修改啊啊啊啊啊啊啊啊*/}
         return (
             <div className="sales-opportunity-apply-container">
                 <div className="leave-apply-list-detail-wrap">
