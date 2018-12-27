@@ -433,7 +433,7 @@ export default {
     renderDateField: function() {
         if (!this.state.formData.date) {
             let formData = this.state.formData;
-            formData.date = new Date;
+            formData.date = moment().valueOf();
         }
 
         return (
