@@ -123,10 +123,13 @@ class LogView extends React.Component {
         let secondSelectValue = this.state.secondSelectValue;
         let params = {};
         if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && teamList.length > 1) { // 团队时
-            if (this.state.secondSelectValue === LITERAL_CONSTANT.ALL){//选择全部团队时，把所有团队的id传过去
-                let teamIdArray = _.map(teamList, 'id');
-                params.sale_team_ids = teamIdArray;
-            }else { // 具体团队时
+            //选全部团队时, 销售领导需要传他能看的所有团队的id,管理员要看所有的审计日志，包括不在团队里的，所以什么都不用传
+            if (this.state.secondSelectValue === LITERAL_CONSTANT.ALL) {
+                if (!userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
+                    let teamIdArray = _.map(teamList, 'id');
+                    params.sale_team_ids = teamIdArray;
+                }
+            } else { //选择具体团队时，传团队及下级团队的团队id
                 let secondSelectTeamId = this.getTeamOrMemberId(teamList, secondSelectValue, true);
                 params.sale_team_ids = secondSelectTeamId;
             }
@@ -696,7 +699,7 @@ class LogView extends React.Component {
                             />
                         </div>
                         <div className="user_audit_log_all">
-                            <Button onClick={this.handleRefresh} className="btn-item">{Intl.get('common.refresh', '刷新')}</Button>  
+                            <Button onClick={this.handleRefresh} className="btn-item">{Intl.get('common.refresh', '刷新')}</Button>
                         </div>
                         <span className="refresh-btn customize-btn btn-item">
                             <i
@@ -705,7 +708,7 @@ class LogView extends React.Component {
                                 data-tracename="点击自定义表格列按钮"
                                 title={Intl.get('common.table.customize', '自定义表格列')}
                             ></i>
-                        </span>                       
+                        </span>
                     </div>
                 </ButtonZones>
 
