@@ -18,7 +18,7 @@ var auth = require('../../../lib/utils/auth');
 let _ = require('lodash');
 let moment = require('moment');
 const commonUtil = require('../../../lib/utils/common-utils');
-
+const authRouters = require('../../../lib/authRouters');
 /*
  * home page handler.
  */
@@ -77,11 +77,8 @@ exports.getUserData = function(req, res) {
 
     //获取登录用户的相关信息
     function getUserInfo(lang) {
-        user.modules = DesktopIndexService.getModulesByUser(req);
-        user.subModules = DesktopIndexService.getSubModulesByUser(req);
-        user.thirdLevelMenus = DesktopIndexService.getThirdLevelMenusByUser(req);
         user.privileges = DesktopIndexService.getPrivileges(req);
-        user.sideBarMenus = DesktopIndexService.getSidebarMenus(req);
+        user.routes = authRouters.getAuthedRouters(user.privileges);
         //删除认证数据
         delete user.auth.access_token;
         delete user.auth.refresh_token;

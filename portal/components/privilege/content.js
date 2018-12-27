@@ -14,7 +14,7 @@ class Content extends React.Component {
     checkRoute = () => {
         var locationPath = location.pathname;
         if (this.props.route && locationPath === this.props.route.path) {
-            var routes = this.props.route.routesExports;
+            var routes = this.props.route.routes;
             if (routes && routes[0] && routes[0].path) {
                 history.replace(routes[0].path);
                 return true;
@@ -37,5 +37,9 @@ class Content extends React.Component {
         );
     }
 }
+Content.propTypes = {
+    route: PropTypes.object,
+    children: PropTypes.element
+};
 
 module.exports = Content;

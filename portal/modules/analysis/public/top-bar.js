@@ -170,9 +170,10 @@ class TopBar extends React.Component {
             adjustDatePicker(datePickerOption, this.state.startTime, this.state.endTime);
         }
         return (
-            <div className="analysis-filter-btn-item btn-item">
+            <div className="analysis-filter-btn-item">
                 <Select
                     defaultValue="team"
+                    className='btn-item'
                     onChange={this.onFilterTypeChange}
                 >
                     <Option key="1" value="team">按团队</Option>
@@ -181,6 +182,7 @@ class TopBar extends React.Component {
 
                 {this.state.filterType === 'team' ? (
                     <Select
+                        className='btn-item'
                         mode="multiple"
                         showSearch
                         optionFilterProp="children"
@@ -196,6 +198,7 @@ class TopBar extends React.Component {
 
                 {this.state.filterType === 'member' ? (
                     <Select
+                        className='btn-item'
                         mode="multiple"
                         showSearch
                         optionFilterProp="children"
@@ -211,6 +214,7 @@ class TopBar extends React.Component {
                 ) : null}
 
                 <AntcDatePicker
+                    className='btn-item'
                     disableDateAfterToday={true}
                     range={datePickerOption.range}
                     start_time={datePickerOption.startTime}

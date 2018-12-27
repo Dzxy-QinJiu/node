@@ -1,7 +1,6 @@
 var insertStyle = require('../../insert-style');
 var UserData = require('../../../public/sources/user-data');
 var notificationEmitter = require('../../../public/sources/utils/emitters').notificationEmitter;
-import {getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 
 /**

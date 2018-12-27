@@ -1,6 +1,6 @@
 //引入用户数据
 var React = require('react');
-var UserData = require('../../public/sources/user-data');
+var menuUtil = require('../../public/sources/utils/menu-util');
 //class名
 var classNames = require('classnames');
 //顶部导航菜单的超链接
@@ -228,7 +228,6 @@ class TopNav extends React.Component {
             });
         }
     };
-    z;
 
     componentWillUnmount() {
         $(window).off('resize', this.resizeFunc);
@@ -254,21 +253,17 @@ class TopNav extends React.Component {
     }
 }
 
-//获取路径，去掉开头的/
-function getPathname() {
-    return window.location.pathname.replace(/^\//, '');
-}
 
 //获取第一层路由
 function getCategory() {
-    var pathname = getPathname();
-    var reg = /[\w-]+/gi;
-    var ret = pathname.match(reg);
-    if (ret) {
-        ret.pop();
-        return ret.join('/');
+    //获取路径，去掉开头的/
+    let pathname = window.location.pathname.replace(/^\//, '');
+    let firstLevelPathes = pathname.split('/');
+    if (firstLevelPathes) {
+        return '/' + firstLevelPathes[0];
+    } else {
+        return '';
     }
-    return '';
 }
 
 //顶部导航的导航菜单
@@ -276,16 +271,10 @@ TopNav.MenuList = class extends React.Component {
     render() {
         //获取第一层路由
         var category = getCategory();
-        //获取所有子模块
-        var AllSubModules = (UserData.getUserData() && UserData.getUserData().subModules) || {};
-        if (category.indexOf('/') > 0) {
-            category = category.substring(0, category.indexOf('/'));
-        }
         //获取当前界面的子模块
-        var subModules = this.props.menuList || AllSubModules[category] || [];
-
+        var subModules = this.props.menuList || (menuUtil.getSubMenus(category));
         //获取pathname
-        var locationPath = getPathname();
+        var locationPath = window.location.pathname;
 
         return (
             <div className="topnav-links-wrap">
@@ -297,15 +286,15 @@ TopNav.MenuList = class extends React.Component {
                 <ul className="clearfix topnav-links">
                     {
                         subModules.map(function(menu, i) {
-                            var menuRoutePath = menu.routePath.replace(/\//g, '_');
+                            var menuRoutePath = menu.routePath.slice(1).replace(/\//g, '_');
                             var icoClassName = 'ico ' + menuRoutePath + '_ico';
                             var cls = classNames(icoClassName, {
                                 'topNav-menu-item-selected': locationPath === menu.routePath
                             });
 
-                            var liContent = (<NavLink to={`/${menu.routePath}`}
+                            var liContent = (<NavLink to={menu.routePath}
                                 activeClassName="active"
-                                ref={(element) => this.navLinks = element}>{menu.name}</NavLink>);
+                                ref={(element) => this.navLinks = element}> {menu.name}</NavLink>);
                             return (
                                 <li className={cls} key={i}>
                                     {liContent}
