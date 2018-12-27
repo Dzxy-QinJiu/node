@@ -160,6 +160,7 @@ exports.getCustomerById = function(customerId) {
     return Deferred.promise();
 };
 //查询客户
+let queryCustomerAjax;
 exports.queryCustomer = function(params, pageSize, pageNum, sorter) {
     pageSize = pageSize || 20;
     pageNum = pageNum || 1;
@@ -168,8 +169,9 @@ exports.queryCustomer = function(params, pageSize, pageNum, sorter) {
     if (hasPrivilege(AUTHS.GETALL)) {
         params.hasManageAuth = true;
     }
+    queryCustomerAjax && queryCustomerAjax.abort();
     var Deferred = $.Deferred();
-    $.ajax({
+    queryCustomerAjax = $.ajax({
         url: '/rest/customer/range/' + pageSize + '/' + pageNum + '/' + sorter.field + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
@@ -177,8 +179,10 @@ exports.queryCustomer = function(params, pageSize, pageNum, sorter) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(xhr, statusText) {
+            if (statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
