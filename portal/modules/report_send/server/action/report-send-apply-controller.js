@@ -18,12 +18,110 @@ function handleNodata(data) {
     return data;
 }
 exports.addReportSendApply = function(req, res) {
-    ReportSendApplyService.addReportSendApply(req, res).on('success', function(data) {
-        data = handleNodata(data);
-        res.status(200).json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
+    var form = new multiparty.Form();
+    //开始处理上传请求
+    form.parse(req, function(err, fields, files) {
+        let receiveFiles = files['files'];
+        let formData = {},newTmpPath = '';
+        if (receiveFiles) {
+            let tmpPath = receiveFiles[0].path;
+            newTmpPath = tmpPath;
+            // 获取生成的文件名称
+            var tempName = _.last(_.split(tmpPath, '\\'));
+            // 获取文件名
+            var filename = files['files'][0].originalFilename;
+            newTmpPath = _.replace(newTmpPath, tempName, filename);
+            fs.renameSync(tmpPath, newTmpPath);
+            // 文件不为空的处理
+            formData['files'] = [fs.createReadStream(newTmpPath)];
+        }
+
+        //处理数据
+        Object.keys(fields).forEach((name) => {
+            if (name === 'customer') {
+                formData[name] = JSON.parse(_.get(fields[name], '[0]'));
+            } else {
+                formData[name] = _.get(fields[name], '[0]');
+            }
+
+        });
+        try {
+            //调用上传请求服务
+            ReportSendApplyService.addReportSendApply(req, res, formData).on('success', function(data) {
+                data = handleNodata(data);
+                res.status(200).json(data);
+            }).on('error', function(codeMessage) {
+                res.status(500).json(codeMessage && codeMessage.message);
+            });
+        } catch (e) {
+            if (newTmpPath){
+                //删除文件
+                fs.unlinkSync(newTmpPath);
+            }
+            console.log(JSON.stringify(e));
+        }
+
+        // let newTmpPath = tmpPath;
+        // // 获取生成的文件名称
+        // var tempName = _.last(_.split(tmpPath, '\\'));
+        // // 获取文件名
+        // var filename = files['files'][0].originalFilename;
+        // newTmpPath = _.replace(newTmpPath, tempName, filename);
+        // fs.renameSync(tmpPath, newTmpPath);
+        // // 获取上传文件的临时路径
+        // let tmpPath = files['files'][0].path;
+        // let newTmpPath = tmpPath;
+        // // 获取生成的文件名称
+        // var tempName = _.last(_.split(tmpPath, '\\'));
+        // // 获取文件名
+        // var filename = files['files'][0].originalFilename;
+        // newTmpPath = _.replace(newTmpPath, tempName, filename);
+        // //将文件路径重命名，避免多个人上传同一个文件的时候会发生rename错误的情况
+        // fs.rename(tmpPath, newTmpPath, (err) => {
+        //     if (err) {
+        //         res.json(false);
+        //     } else {
+        //         // 文件内容为空的处理
+        //         let file_size = files['files'][0].size;
+        //         if (filename.indexOf(' ') >= 0) {
+        //             let backendIntl = new BackendIntl(req);
+        //             res.status(500).json(backendIntl.get('apply.approve.upload.no.container.space', '文件名称中不要含有空格！'));
+        //             return;
+        //         }
+        //         if (file_size === 0) {
+        //             res.json(false);
+        //             return;
+        //         }
+        //         var idArr = [];
+        //         _.forEach(fields, (item) => {
+        //             idArr = _.concat(idArr, item);
+        //         });
+        //         // 文件不为空的处理
+        //         let formData = {
+        //             files: [fs.createReadStream(newTmpPath)]
+        //         };
+        //         //处理数据
+        //         Object.keys(fields).forEach((name) => {
+        //             if (name === 'customer') {
+        //                 formData[name] = JSON.parse(_.get(fields[name], '[0]'));
+        //             } else {
+        //                 formData[name] = _.get(fields[name], '[0]');
+        //             }
+        //
+        //         });
+        //         //调用上传请求服务
+        //         ReportSendApplyService.addReportSendApply(req, res, formData).on('success', function (data) {
+        //             data = handleNodata(data);
+        //             res.status(200).json(data);
+        //         }).on('error', function (codeMessage) {
+        //             res.status(500).json(codeMessage && codeMessage.message);
+        //         });
+        //     }
+        // });
+
+
     });
+
 };
 
 exports.approveReportSendApplyPassOrReject = function(req, res) {
@@ -53,7 +151,7 @@ exports.uploadReportSend = function(req, res) {
         // 获取文件名
         var filename = files['reportsend'][0].originalFilename;
         newTmpPath = _.replace(newTmpPath, tempName, filename);
-        //将文件名称重命名
+        //将文件路径重命名，避免多个人上传同一个文件的时候会发生rename错误的情况
         fs.rename(tmpPath, newTmpPath, (err) => {
             if (err) {
                 res.json(false);

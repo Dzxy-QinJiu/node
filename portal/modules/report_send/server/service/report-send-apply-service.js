@@ -25,13 +25,15 @@ var restApis = {
 };
 exports.restUrls = restApis;
 //添加申请
-exports.addReportSendApply = function(req, res) {
+exports.addReportSendApply = function(req, res,formData) {
     return restUtil.authRest.post(
         {
             url: restApis.addReportSendApply.replace(':type',req.params.type),
             req: req,
-            res: res
-        }, req.body);
+            res: res,
+            formData: formData,
+            timeout: uploadTimeOut,
+        }, null);
 };
 //批准或驳回审批
 exports.approveReportSendApplyPassOrReject = function(req, res) {

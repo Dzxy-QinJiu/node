@@ -80,11 +80,11 @@ class AddReportSendApply extends React.Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) return;
-            values['expect_submit_time'] = moment(values['expect_submit_time']).valueOf();
-            values['customer'] = _.get(this.state, 'formData.customer');
-            if (!_.get(values, 'customer.id')) {
+            if (!_.get(this.state, 'formData.customer.id')) {
                 return;
             }
+            values['expect_submit_time'] = moment(values['expect_submit_time']).valueOf();
+            values['customer'] = JSON.stringify(_.get(this.state, 'formData.customer'));
             const formData = new FormData();
             var fileList = this.state.fileList;
             //是否有上传过文件
@@ -94,11 +94,10 @@ class AddReportSendApply extends React.Component {
                 });
                 // values['files'] = formData;
             }
-
             // fields为表单其他项的数据,在antd-pro中是fileds.f
-            // Object.keys(values).map((item)=>{
-            //     formData.append(item,values[item]);
-            // });
+            Object.keys(values).map((item) => {
+                formData.append(item,values[item]);
+            });
             this.setState({
                 isSaving: true,
                 saveMsg: '',
@@ -107,10 +106,10 @@ class AddReportSendApply extends React.Component {
             $.ajax({
                 url: '/rest/add/opinionreport/list/' + this.props.applyAjaxType,
                 // dataType: 'json',
-                // contentType: false, // 注意这里应设为false
+                contentType: false, // 注意这里应设为false
                 // contentType: 'multipart/form-data;charset=UTF-8',
                 processData: false,
-                // cache: false,
+                cache: false,
                 type: 'post',
                 data: formData,
                 success: (data) => {
