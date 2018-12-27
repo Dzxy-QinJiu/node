@@ -34,9 +34,9 @@ export default {
     //设置字段值的方法
     //参数说明：field为字段名，index为表单索引（用于多表单的场景），e为事件对象，cb为回调函数
     setField: function(field, index, e, cb) {
-        //如果没有事件对象或事件对象为react对象，则认为是单表单的场景
+        //如果索引不是整数，则认为是单表单的场景
         //此时index参数所传的值应该是e的值，index应视为没有
-        if (e === undefined || e.refs) {
+        if (!_.isInteger(index)) {
             e = index;
             index = undefined;
         }
@@ -62,7 +62,7 @@ export default {
         value = removeCommaFromNum(value);
 
         //如果index不是数字，则认为是单表单场景，只需给formData下的对应字段赋值
-        if (isNaN(index)) {
+        if (!_.isInteger(index)) {
             this.state.formData[field] = value;
         } else {
             //如果index是数字，但e不是对象，也认为是单表单场景，只需给formData下的对应字段赋值
