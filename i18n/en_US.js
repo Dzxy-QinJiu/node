@@ -1220,6 +1220,9 @@ var en_US = {
     'crm.customer.recycle.bin': 'Recycle bin',//回收站
     'crm.customer.recovery': 'Recovery',//恢复
     'crm.customer.delete.time': 'Delete time',//删除时间
+    'crm.recovery.customer.success': 'Rcovery customer success',//恢复客户成功
+    'crm.recovery.customer.failed': 'Rcovery customer failed',//恢复客户失败
+    'crm.recovery.customer.confirm.tip': 'Are you sure you want to restore customer {name}?',//确定要恢复客户 {name} 吗？
     'crm.over.day.no.phone': 'Did not call over {day} days',//超{day}天未打过电话
     'crm.over.day.without.contact': 'Over {day} days without contact',//超{day}天未联系
     'crm.over.day.no.connection': 'No connection in the past {day} days',//近{day}天拨打未接通

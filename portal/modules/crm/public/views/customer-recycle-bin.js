@@ -8,11 +8,11 @@ import '../css/customer-recycle-bin.less';
 import TopNav from'CMP_DIR/top-nav';
 import Spinner from 'CMP_DIR/spinner';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import userData from 'PUB_DIR/sources/user-data';
 import Trace from 'LIB_DIR/trace';
 import {AntcTable} from 'antc';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
-import ShearContent from 'CMP_DIR/shear-content';
+import {SearchInput} from 'antc';
+import {message, Popconfirm, Icon} from 'antd';
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 const PRIVILEGES = {
     MANAGER_CUSTOMER_BAK_AUTH: 'CRM_MANAGER_GET_CUSTOMER_BAK_OPERATOR_RECORD'//管理员获取回收站中客户列表的权限
@@ -34,7 +34,15 @@ class CustomerRecycleBin extends React.Component {
             lastId: '',//用于下拉加载的id
             errorMsg: '',//获取客户列表错误信息
             listenScrollBottom: true,//是否监听下拉加载
-
+            isRecoveringId: '',//正在恢复的客户id
+            sorter: {//默认按操作时间排序
+                field: 'time',
+                order: 'descend'
+            },
+            searchObj: {
+                field: '',
+                value: ''
+            }
         };
     }
 
@@ -42,45 +50,49 @@ class CustomerRecycleBin extends React.Component {
         this.getRecycleBinCustomers();
     }
 
-    getRecycleBinCustomers() {
-        let url = '/rest/crm/recycle_bin/customer/:type';
+    getAuthType() {
         let type = 'user';
         if (hasPrivilege(PRIVILEGES.MANAGER_CUSTOMER_BAK_AUTH)) {
             type = 'manager';
         }
-        url = url.replace(':type', type);
+        return type;
+    }
+
+    //获取body中的参数
+    getBodyData() {
+        let bodyData = {
+            query: {//过滤条件
+                operation: '删除,合并'//只取删除和合并的客户，去掉更新的
+            }
+        };
+        //排序
+        if (!_.isEmpty(this.state.sorter)) {
+            // bodyData.sortAndOrders.push({key: this.sorter.field, value: this.sorter.value});
+            bodyData.sortAndOrders = [{key: this.sorter.field, value: this.sorter.value}];
+        }
+        //搜索
+        if (!_isEmpty(this.state.searchObj)) {
+            bodyData.query[this.state.searchObj.field] = this.state.searchObj.value;
+        }
+        return bodyData;
+    }
+
+    //获取回收站中的客户列表
+    getRecycleBinCustomers() {
+        let type = this.getAuthType();
+        let url = `/rest/crm/recycle_bin/customer/${type}`;
         if (this.state.lastId) {
             url = `${url}?id=${this.state.lastId}`;
         }
+        let bodyData = this.getBodyData();
         this.setState({isLoading: true});
         $.ajax({
             url: url,
             type: 'post',
             dateType: 'json',
-            // data: {},
+            data: bodyData,
             success: (data) => {
-                let list = _.get(data, 'result', []);
-                let customerList = this.state.customerList;
-                let totalSize = _.get(data, 'total', 0);
-                if (this.state.lastId) {
-                    customerList = _.concat(customerList, list);
-                } else {
-                    customerList = list;
-                }
-                //是否监听下拉加载的处理
-                let listenScrollBottom = false;
-                if (_.get(customerList, 'length') < totalSize) {
-                    listenScrollBottom = true;
-                }
-                this.setState({
-                    errorMsg: '',
-                    isLoading: false,
-                    totalSize,
-                    customerList,
-                    listenScrollBottom,
-                    lastId: _.get(customerList, `[${customerList.length - 1}].id`, '')
-                });
-
+                this.handleSuccessData(data);
             },
             error: (xhr) => {
                 this.setState({
@@ -88,6 +100,31 @@ class CustomerRecycleBin extends React.Component {
                     isLoading: false
                 });
             }
+        });
+    }
+
+    //获取客户列表成功后的数据处理
+    handleSuccessData(data) {
+        let list = _.get(data, 'result', []);
+        let customerList = this.state.customerList;
+        let totalSize = _.get(data, 'total', 0);
+        if (this.state.lastId) {
+            customerList = _.concat(customerList, list);
+        } else {
+            customerList = list;
+        }
+        //是否监听下拉加载的处理
+        let listenScrollBottom = false;
+        if (_.get(customerList, 'length') < totalSize) {
+            listenScrollBottom = true;
+        }
+        this.setState({
+            errorMsg: '',
+            isLoading: false,
+            totalSize,
+            customerList,
+            listenScrollBottom,
+            lastId: _.get(customerList, `[${customerList.length - 1}].id`, '')
         });
     }
 
@@ -109,9 +146,42 @@ class CustomerRecycleBin extends React.Component {
             this.state.customerList.length >= PAGE_SIZE && !this.state.listenScrollBottom;
     }
     //恢复客户
-    recoveryCustomer = (customer) => {
-
+    recoveryCustomer = (customerId) => {
+        if (!customerId || this.state.isRecoveringId) return;
+        let recoveryCustomer = _.find(this.state.customerList, item => item.id === customerId);
+        if (!recoveryCustomer) return;
+        this.setState({isRecoveringId: customerId});
+        $.ajax({
+            url: '/rest/crm/recovery/customer',
+            type: 'post',
+            dateType: 'json',
+            data: recoveryCustomer,
+            success: (data) => {
+                message.success(Intl.get('crm.recovery.customer.success', '恢复客户成功'));
+                //回收站中，去掉恢复成功的客户
+                let customerList = _.filter(this.state.customerList, item => item.id !== customerId);
+                let totalSize = this.state.totalSize;
+                totalSize--;
+                this.setState({
+                    isRecoveringId: '',
+                    customerList: customerList || [],
+                    totalSize: totalSize > 0 ? totalSize : 0
+                });
+            },
+            error: (xhr) => {
+                this.setState({isRecoveringId: ''});
+                message.error(xhr.responseJSON || Intl.get('crm.recovery.customer.failed', '恢复客户失败'));
+            }
+        });
     }
+
+    onTableChange = (pagination, filters, sorter) => {
+        if (!_.isEmpty(sorter) && (sorter.field !== this.state.sorter.field || sorter.order !== this.state.sorter.order)) {
+            this.setState({sorter, lastId: ''}, () => {
+                this.getRecycleBinCustomers();
+            });
+        }
+    };
 
     getColumns() {
         const column_width = 80;
@@ -178,21 +248,27 @@ class CustomerRecycleBin extends React.Component {
                 title: Intl.get('common.operate', '操作'),
                 width: 50,
                 render: (text, record, index) => {
-                    return (
-                        <span className="iconfont icon-recovery"
-                            data-tracename="恢复客户"
-                            title={Intl.get('crm.customer.recovery', '恢复')}
-                            onClick={this.recoveryCustomer.bind(this, record)}
-                        />
-                    );
+                    if (record.id === this.state.isRecoveringId) {
+                        return (<Icon type="loading" className='operate-icon'/>);
+                    } else {
+                        return (
+                            <Popconfirm
+                                placement="leftTop"
+                                title={Intl.get('crm.recovery.customer.confirm.tip', '确定要恢复客户 {name} 吗？', {name: _.get(record, 'name', '')})}
+                                onConfirm={this.recoveryCustomer.bind(this, _.get(record, 'id', ''))}>
+                                <span className="iconfont icon-recovery operate-icon" data-tracename="恢复客户"
+                                    title={Intl.get('crm.customer.recovery', '恢复')}/>
+                            </Popconfirm>);
+                    }
+
                 }
             }
         ];
         if (!hasPrivilege('CRM_CUSTOMER_SCORE_RECORD')) {
             columns = _.filter(columns, column => column.title !== Intl.get('user.login.score', '分数'));
         }
-        //只对域管理员开放删除功能
-        if (!userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
+        //只对有添加客户权限的人开放恢复功能
+        if (!hasPrivilege('CUSTOMER_ADD')) {
             columns = _.filter(columns, column => column.title !== Intl.get('common.operate', '操作'));
         }
         return columns;
@@ -205,6 +281,7 @@ class CustomerRecycleBin extends React.Component {
             let phoneArray = _.get(item, 'contacts[0].phone', []);
             phoneArray = _.map(phoneArray, phone => addHyphenToPhoneNumber(phone));
             return {
+                id: item.id,
                 name: item.name,
                 contact: _.get(item, 'contacts[0].name', ''),
                 contact_way: phoneArray,
@@ -269,14 +346,51 @@ class CustomerRecycleBin extends React.Component {
         }
     }
 
+    searchEvent = (value, key) => {
+        let searchObj = this.state.searchObj;
+        if (searchObj.field !== key || _.trim(value) !== searchObj.value) {
+            searchObj.field = key;
+            searchObj.value = _.trim(value);
+            this.setState({searchObj, lastId: ''}, () => {
+                this.getRecycleBinCustomers();
+            });
+        }
+    };
+
     render() {
         let tableHeight = $('body').height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.TOTAL_HEIGHT;
+        const searchFields = [
+            {
+                name: Intl.get('crm.41', '客户名'),
+                field: 'name'
+            },
+            {
+                name: Intl.get('user.operator', '操作人'),
+                field: 'operator_name'
+            },
+            {
+                name: Intl.get('call.record.contacts', '联系人'),
+                field: 'contact_name'
+            },
+            {
+                name: Intl.get('common.phone', '电话'),
+                field: 'phone'
+            }
+        ];
         return (
             <div className="customer-recycle-bin" data-tracename="客户回收站">
                 <TopNav>
                     <div className="return-btn-container" onClick={this.returnCustomerList}>
                         <span className="iconfont icon-return-btn"/>
                         <span className="return-btn-font">{Intl.get('crm.52', '返回')}</span>
+                    </div>
+                    <div className="customer-search-block">
+                        <SearchInput
+                            type="select"
+                            searchFields={searchFields}
+                            searchEvent={this.searchEvent}
+                            className="btn-item"
+                        />
                     </div>
                 </TopNav>
                 <div className="customer-table-container" style={{height: tableHeight}} data-tracename="回收站客户列表">

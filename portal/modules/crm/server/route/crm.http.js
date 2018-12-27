@@ -28,6 +28,15 @@ module.exports = {
             },
             privileges: ['CRM_MANAGER_GET_CUSTOMER_BAK_OPERATOR_RECORD', 'CRM_USER_GET_CUSTOMER_BAK_OPERATOR_RECORD']
         },
+        {//恢复客户
+            method: 'post',
+            path: '/rest/crm/recovery/customer',
+            handler: 'recoveryCustomer',
+            passport: {
+                needLogin: true
+            },
+            privileges: ['CUSTOMER_ADD']
+        },
         {
             method: 'get',
             path: '/rest/crm/customer_list',
