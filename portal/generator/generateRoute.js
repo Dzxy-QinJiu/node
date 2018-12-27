@@ -31,15 +31,17 @@ function generateRouters(routerConfig, routeLevel) {
             let path = route.component;
             chars += '{' + dealRouteData(route) + 'component: ' + dynamic(path) + '},';
         } else {
-            //第一层的渲染组件是right-content
+            //如果有子路由
             if (routeLevel === ROUTE_LEVEL_1) {
+                //第一层的渲染组件是right-content，递归处理第二层路由
                 chars += '{' + dealRouteData(route) + 'component:require(\'CMP_DIR/privilege/right-content\'),routes:'
                     + generateRouters(route.routes, ROUTE_LEVEL_2) + '},';
             } else if (routeLevel === ROUTE_LEVEL_2) {
-                //第二层渲染组件是content，todo 可以用right-content,需要修改
+                //第二层渲染组件是content，递归处理第三层路由. (todo content可以用right-content,需要修改)
                 chars += '{' + dealRouteData(route) + 'component:require(\'CMP_DIR/privilege/content\'),routes:'
                     + generateRouters(route.routes) + '},';
             } else {
+                //第三层没有子路由，如果程序到这里，说明配置有问题
                 throw Error('没有第四级菜单，路由配置错误');
             }
         }
