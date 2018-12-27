@@ -125,7 +125,7 @@ class LogView extends React.Component {
         if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && teamList.length > 1) { // 团队时
             //选全部团队时, 销售领导需要传他能看的所有团队的id,管理员、运营要看所有的审计日志，包括不在团队里的，所以什么都不用传
             if (this.state.secondSelectValue === LITERAL_CONSTANT.ALL) {
-                if (!userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
+                if (!userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
                     let teamIdArray = _.map(teamList, 'id');
                     params.sale_team_ids = teamIdArray;
                 }
