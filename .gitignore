@@ -13,3 +13,4 @@ dll
 *.gzip
 cache
 *.log
+portal/public/sources/route/routers.js
