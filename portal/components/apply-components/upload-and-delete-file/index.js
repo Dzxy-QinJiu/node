@@ -47,12 +47,12 @@ class UploadAndDeleteFile extends React.Component {
             } else {
                 message.error(Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')}));
             }
-
+            this.afterUpload();
         } else if (info.file.status === 'error') {
             message.error(_.isString(response) ? response : Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')}));
-
+            this.afterUpload();
         }
-        this.afterUpload();
+
 
     };
     onRemove = (file) => {
@@ -67,13 +67,40 @@ class UploadAndDeleteFile extends React.Component {
         this.props.fileRemove(file);
     };
     beforeUpload = (file) => {
-        // this.setState(state => ({
-        //     fileList: [...state.fileList, file],
-        // }));
-        _.isFunction(this.props.beforeUpload) && this.props.beforeUpload(file);
+        setTimeout(() => {
+            this.setState(state => ({
+                fileList: [...state.fileList, file],
+            }),() => {
+                this.afterUpload();
+                this.props.beforeUpload(file);
+            });
+        },500);
+        //如果props中有detailObj，不需要返回false，直接添加就可以
         return false;
     };
-    handleDeleteFile = (fileDirId, fileId) => {
+    isDetailObjExist = () => {
+        var detailInfoObj = this.props.detailInfoObj;
+        return detailInfoObj && !_.isEmpty(detailInfoObj);
+    };
+    deleteFailed = (errorMsg) => {
+        //删除文件失败后的提示
+        var deleteResult = this.state.deleteResult;
+        deleteResult.result = 'error';
+        deleteResult.delId = '';
+        deleteResult.errorMsg = errorMsg || Intl.get('failed.delete.apply.load.approve', '删除文件失败！');
+        this.setState({
+            deleteResult: deleteResult
+        });
+
+    };
+    handleDeleteFile = (fileItem) => {
+        var fileDirId = fileItem.file_dir_id;
+        var fileId = fileItem.file_id;
+
+        if (!fileDirId || !fileId){
+            this.onRemove(fileItem);
+            return;
+        }
         var submitObj = {
             file_dir_id: fileDirId,
             file_id: fileId
@@ -91,80 +118,95 @@ class UploadAndDeleteFile extends React.Component {
             type: 'delete',
             data: submitObj,
             success: (data) => {
-                //删除成功了之后
-                deleteResult.result = 'success';
-                deleteResult.delId = '';
-                deleteResult.errorMsg = '';
-                //把state上之前保存上传的文件的数组中删除这个已经上传过的
-                var fileList = this.state.fileList;
-                fileList = _.filter(fileList, item => item.file_id !== fileId);
-                this.setState({
-                    deleteResult: deleteResult,
-                    fileList: fileList
-                },() => {
-                    _.isFunction(this.props.setUpdateFiles) && this.props.setUpdateFiles(this.state.fileList);
-                });
+                //data是true的情况才是删除成功，否则就是删除失败
+                if (data){
+                    this.onRemove(fileItem);
+                    //删除成功了之后
+                    deleteResult.result = 'success';
+                    deleteResult.delId = '';
+                    deleteResult.errorMsg = '';
+                    // //把state上之前保存上传的文件的数组中删除这个已经上传过的
+                    // var fileList = this.state.fileList;
+                    // fileList = _.filter(fileList, item => item.file_id !== fileId);
+                    this.setState({
+                        deleteResult: deleteResult,
+                        // fileList: fileList
+                    },() => {
+                        this.props.setUpdateFiles(this.state.fileList);
+                    });
+                }else {
+                    this.deleteFailed();
+                }
             },
             error: (errorMsg) => {
-                deleteResult.result = 'error';
-                deleteResult.delId = '';
-                deleteResult.errorMsg = errorMsg || Intl.get('failed.delete.apply.load.approve', '删除文件失败！');
-                this.setState({
-                    deleteResult: deleteResult
-                });
+                this.deleteFailed(errorMsg);
             }
         });
     };
 
     render() {
+        var fileList = this.state.fileList;
         var props = {
             name: 'reportsend',
             multiple: true,
             action: '/rest/reportsend/upload',
             showUploadList: false,
             onChange: this.handleChange,
-            onRemove: this.onRemove
+            // onRemove: this.onRemove,
+            // fileList:fileList,
+            // beforeUpload: this.beforeUpload
         };
         var detailInfoObj = this.props.detailInfoObj;
         var showOperateBtn = true;
-        if(!_.isEmpty(detailInfoObj)){
+        if(this.isDetailObjExist()){
             props.data = detailInfoObj.id;
+            props.beforeUpload = function() {
+
+            };
             if (detailInfoObj.status !== 'ongoing'){
                 showOperateBtn = false;
             }
-        }
-        var fileList = this.state.fileList;
-        if (_.isFunction(this.props.beforeUpload)){
+        }else{
+            props.data = '';
             props.beforeUpload = this.beforeUpload;
-            props.fileList = fileList;
         }
-
+        var hide = () => {
+            var deleteResult = this.state.deleteResult;
+            deleteResult.errorMsg = '';
+            deleteResult.result = '';
+            deleteResult.delId = '';
+            this.setState({
+                deleteResult: deleteResult
+            });
+        };
         return (
             <div className="upload-wrap">
                 {_.map(fileList, (fileItem) => {
+                    var fileName = fileItem.file_name || fileItem.name;
+                    var fileId = fileItem.file_id;
                     const reqData = {
                         file_dir_id: fileItem.file_dir_id,
-                        file_id: fileItem.file_id,
-                        file_name: fileItem.file_name,
+                        file_id: fileId,
+                        file_name: fileName,
                     };
                     return (
                         <div className="upload-file-name">
-                            {hasPrivilege('DOCUMENT_DOWNLOAD') ?
-                                <a href={'/rest/reportsend/download/' + JSON.stringify(reqData)}>{fileItem.file_name}</a> : fileItem.file_name}
+                            {hasPrivilege('DOCUMENT_DOWNLOAD') && fileId ?
+                                <a href={'/rest/reportsend/download/' + JSON.stringify(reqData)}>{fileName}</a> : fileName}
                             {showOperateBtn ? <Icon type="close"
-                                onClick={this.handleDeleteFile.bind(this, fileItem.file_dir_id, fileItem.file_id)}/> : null}
-                            {/*删除文件失败后的提示*/}
-                            {this.state.deleteResult.errorMsg ?
-                                <AlertTimer
-                                    time={4000}
-                                    message={this.state.deleteResult.errorMsg}
-                                    type="error"
-                                    showIcon
-                                    onHide={hide}
-                                /> : null}
+                                onClick={this.handleDeleteFile.bind(this, fileItem)}/> : null}
                         </div>
                     );
                 })}
+                {/*删除文件失败后的提示*/}
+                {this.state.deleteResult.errorMsg ?
+                    <AlertTimer
+                        time={4000}
+                        message={this.state.deleteResult.errorMsg}
+                        type="error"
+                        showIcon
+                        onHide={hide}
+                    /> : null}
                 {hasPrivilege('DOCUMENT_UPLOAD') && showOperateBtn ?
                     <div>
                         <Upload {...props} className="import-reportsend" data-tracename="上传文件">

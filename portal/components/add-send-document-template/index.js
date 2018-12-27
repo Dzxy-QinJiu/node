@@ -28,7 +28,7 @@ class AddReportSendApply extends React.Component {
         super(props);
         this.state = {
             hideCustomerRequiredTip: false,
-            uploadFileArrs: [],
+            fileList: [],
             formData: {
                 customer: {id: '', name: ''},//客户的信息
                 expect_submit_time: moment().valueOf(),//预计成交时间
@@ -86,10 +86,10 @@ class AddReportSendApply extends React.Component {
                 return;
             }
             const formData = new FormData();
-            var uploadFileArrs = this.state.uploadFileArrs;
+            var fileList = this.state.fileList;
             //是否有上传过文件
-            if (_.isArray(uploadFileArrs) && uploadFileArrs.length){
-                uploadFileArrs.forEach((file) => {
+            if (_.isArray(fileList) && fileList.length){
+                fileList.forEach((file) => {
                     formData.append('files', file);
                 });
                 // values['files'] = formData;
@@ -183,19 +183,19 @@ class AddReportSendApply extends React.Component {
         });
     };
     beforeUpload = (file) => {
-        this.setState(({uploadFileArrs}) => ({
-            uploadFileArrs: [...uploadFileArrs, file],
+        this.setState(({fileList}) => ({
+            fileList: [...fileList, file],
         }));
         return false;
     };
 
     fileRemove=(file) => {
-        this.setState(({fileData}) => {
-            const index = fileData.indexOf(file);
-            const newFileList = fileData.slice();
-            newFileList.splice(index,1);
+        this.setState((state) => {
+            const index = state.fileList.indexOf(file);
+            const newFileList = state.fileList.slice();
+            newFileList.splice(index, 1);
             return {
-                uploadFileArrs: newFileList
+                fileList: newFileList,
             };
         });
     };
@@ -215,13 +215,6 @@ class AddReportSendApply extends React.Component {
             },
         };
         let saveResult = this.state.saveResult;
-        var props = {
-            name: 'reportsend',
-            multiple: true,
-            action: '/rest/reportsend/upload',
-            showUploadList: false,
-            onChange: this.handleChange,
-        };
         return (
             <RightPanel showFlag={true} data-tracename="添加舆情报告申请" className="add-leave-container">
                 <span className="iconfont icon-close add-leave-apply-close-btn"
@@ -320,7 +313,7 @@ class AddReportSendApply extends React.Component {
                                     <UploadAndDeleteFile
                                         setUpdateFiles={this.setUpdateFiles}
                                         beforeUpload = {this.beforeUpload}
-                                        fileList={this.state.uploadFileArrs}
+                                        fileList={this.state.fileList}
                                         fileRemove={this.fileRemove}
                                     />
                                     <div className="submit-button-container">
