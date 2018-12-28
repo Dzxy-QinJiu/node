@@ -4,18 +4,25 @@
  * Created by liwenjun on 2018/12/20.
  */
 let path = require('path');
-let portal_root_path = path.resolve(__dirname, '../');
+//路由配置
 let routerConfig = require('../../conf/router-config').routers;
+//生成的路由存储的文件
+let routePath = path.join(__dirname, '../public/sources/route/routers.js') || path.join(__dirname, 'routers.js');
+
 let _ = require('lodash');
 let fs = require('fs');
-let ROUTE_LEVEL_1 = 1;
-let ROUTE_LEVEL_2 = 2;
 
+//一级路由标示
+let ROUTE_LEVEL_1 = 1;
+//二级路由标示
+let ROUTE_LEVEL_2 = 2;
+let COMPONENT_BASE_PATH = '../../../';//组件基础路径
+
+//动态加载文件
 function dynamic(path) {
     return `(props) => (<Bundle load={() => import('${path}')}>{(DynamicComponet) => <DynamicComponet {...props}/>}</Bundle>)`;
 }
 
-let header = 'import Bundle from \'PUB_DIR/sources/route/route-bundle\';';
 
 /**
  * 生成路由
@@ -77,7 +84,7 @@ function formatter(routers) {
                 delete menu.privileges;
                 delete menu.showPrivileges;
                 menu.id = menu.id.toLowerCase();
-                menu.component = '../../../' + menu.component;
+                menu.component = COMPONENT_BASE_PATH + menu.component;
                 menuData.push(menu);
             } else {
                 //有子菜单就需要展示父菜单
@@ -90,7 +97,7 @@ function formatter(routers) {
                     delete menu.subMenu;
                     menu.id = menu.id.toLowerCase();
                     menu.routes = children;
-                    menu.component = '../../../' + menu.component;
+                    menu.component = COMPONENT_BASE_PATH + menu.component;
                     menuData.push(menu);
                 }
             }
@@ -99,8 +106,7 @@ function formatter(routers) {
     return menuData;
 }
 
-// console.log(JSON.stringify(routerConfig));
-
+//将内容写到文件中
 var writeFile = function(fileName, fileData) {
     fs.exists(fileName, function(exists) {
         try {
@@ -119,10 +125,14 @@ var writeFile = function(fileName, fileData) {
     });
 };
 
-let routePath = path.join(portal_root_path, 'public/sources/route/routers.js');
-let routes = formatter(routerConfig);
-routes = generateRouters(routes, 1);
-let data = header + 'let routers=' + routes + ';';
-data += ' exports.routers=routers;';
+//组装文件数据
+function assembleFileData() {
+    let routes = formatter(routerConfig);
+    routes = generateRouters(routes, 1);
+    let header = 'import Bundle from \'PUB_DIR/sources/route/route-bundle\';';
+    let data = header + 'let routers=' + routes + ';';
+    data += ' exports.routers=routers;';
+    return data;
+}
 
-writeFile(routePath, data);
+writeFile(routePath, assembleFileData());
