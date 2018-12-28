@@ -449,7 +449,7 @@ export default {
         );
     },
     handleFieldChange: function(field, e) {
-        this.setField(field, '', e, () => {
+        this.setField(field, e, () => {
             if (_.isFunction(this.handleSubmit)) this.handleSubmit();
         });
     },
