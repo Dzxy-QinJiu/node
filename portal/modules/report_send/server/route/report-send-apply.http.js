@@ -8,7 +8,7 @@ module.exports = {
     routes: [
         {
             method: 'post',
-            path: '/rest/add/opinionreport/list/:type',
+            path: '/rest/add/opinionreport/list',
             handler: 'addReportSendApply',
             passport: {
                 needLogin: true

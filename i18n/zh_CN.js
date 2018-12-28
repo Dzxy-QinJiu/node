@@ -2670,6 +2670,9 @@ var zh_CN = {
     'failed.get.reply.comment': '获取回复列表失败',
     'apply.approve.upload.no.container.space': '文件名称中不要含有空格！',
     'failed.delete.apply.load.approve': '删除文件失败！',
-    'click.ctrl.upload.mutil.file': '可上传多个文件！'
+    'click.ctrl.upload.mutil.file': '可上传多个文件！',
+    'apply.approve.customer.info': '客户资料',
+    'apply.approve.add.files': '补充文件',
+    'fail.apply.approve.result': '审批失败'
 };
 export default zh_CN;

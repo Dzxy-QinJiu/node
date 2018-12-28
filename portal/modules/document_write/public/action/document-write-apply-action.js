@@ -20,7 +20,7 @@ function ReportSendApplyActions() {
     this.getAllApplyList = function(queryObj) {
         //需要先获取待审批列表，成功后获取全部列表
         this.dispatch({loading: true, error: false});
-        getWorklistApplyList({type: APPLY_APPROVE_TYPES.OPINIONREPORT}).then((workList) => {
+        getWorklistApplyList({type: APPLY_APPROVE_TYPES.DOCUMENTWRITING}).then((workList) => {
             this.dispatch({workList: workList});
             //如果是待我审批的列表，不需要在发获取全部列表的请求了
             if (queryObj.status && queryObj.status === 'ongoing') {

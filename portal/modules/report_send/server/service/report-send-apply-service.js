@@ -28,13 +28,9 @@ var restApis = {
 exports.restUrls = restApis;
 //添加申请
 exports.addReportSendApply = function(req, res,formData) {
-    var url = restApis.addReportSendApply;
-    if (req.params.type === 'document'){
-        url = restApis.addDocumentWriteApply;
-    }
     return restUtil.authRest.post(
         {
-            url: url,
+            url: restApis.addReportSendApply,
             req: req,
             res: res,
             formData: formData,
@@ -87,7 +83,7 @@ exports.deleteReportSend = function(req, res) {
     var fileObj = req.body;
     return restUtil.authRest.del(
         {
-            url: restApis.delReportFile + `?file_dir_id=${fileObj.file_dir_id}` + `&file_id=${fileObj.file_id}`,
+            url: restApis.delReportFile + `?id=${fileObj.id}` + `&upload_id=${fileObj.upload_id}`,
             req: req,
             res: res
         }, null);

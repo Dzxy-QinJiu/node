@@ -101,22 +101,21 @@ class UploadAndDeleteFile extends React.Component {
 
     };
     handleDeleteFile = (fileItem) => {
-        var fileDirId = fileItem.file_dir_id;
-        var fileId = fileItem.file_id;
+        //删除文件的时候传文件上传的id和工作流的id，不需要传文件的id和文件父目录的id
+        var uploadId = fileItem.id;
         //工作流的id
         var id = _.get(this, 'props.detailInfoObj.id','');
-        if (!fileDirId || !fileId || !id){
+        if (!uploadId || !id){
             this.onRemove(fileItem);
             return;
         }
         var submitObj = {
-            file_dir_id: fileDirId,
-            file_id: fileId,
-            id: id
+            id: id,
+            upload_id: uploadId
         };
         var deleteResult = this.state.deleteResult;
         deleteResult.result = 'loading';
-        deleteResult.delId = fileId;
+        deleteResult.delId = uploadId;
         deleteResult.errorMsg = '';
         this.setState({
             deleteResult: deleteResult
@@ -182,11 +181,24 @@ class UploadAndDeleteFile extends React.Component {
             </div>
         );
     };
+    renderDeleteAndLoadingBtn = (fileItem) => {
+        var deleteResult = this.state.deleteResult;
+        return (
+            <span>
+                {deleteResult.result === 'loading' && deleteResult.delId === fileItem.id ?
+                    <Icon type="loading"/> :
+                    <Icon type="close"
+                        onClick={this.handleDeleteFile.bind(this, fileItem)}/>
+                }
+            </span>
+        );
+
+    };
     //继续上传文件
     renderContinueUploadFiles = () => {
         var fileList = this.state.fileList;
         //销售上传的文件
-        var salesFiles = _.filter(fileList,item => item.log_type === 'sale_upload');
+        var salesFiles = _.filter(fileList,item => item.log_type === 'sale_upload' || item.log_type === 'sale_upload_new');
         //管理员确认后上传的文件
         var managerFiles = _.filter(fileList,item => item.log_type === 'approver_upload');
         //销售可以上传和删除的权限
@@ -196,6 +208,7 @@ class UploadAndDeleteFile extends React.Component {
         return (
             <div>
                 <div className="sales-upload-lists">
+                    { salesFiles.length ? Intl.get('apply.approve.customer.info','客户资料') : ''}
                     {_.map(salesFiles, (fileItem) => {
                         var fileName = fileItem.file_name || fileItem.name;
                         var fileId = fileItem.file_id;
@@ -206,17 +219,16 @@ class UploadAndDeleteFile extends React.Component {
                         };
                         return (
                             <div className="upload-file-name">
-                                A类文件：
-                                {hasPrivilege('DOCUMENT_DOWNLOAD') && fileId && salesUploadAndDeletePrivilege ?
+                                {hasPrivilege('DOCUMENT_DOWNLOAD') && fileId ?
                                     <a href={'/rest/reportsend/download/' + JSON.stringify(reqData)}>{fileName}</a> : fileName}
-                                { salesUploadAndDeletePrivilege ? <Icon type="close"
-                                    onClick={this.handleDeleteFile.bind(this, fileItem)}/> : null}
+                                { salesUploadAndDeletePrivilege ? this.renderDeleteAndLoadingBtn(fileItem) : null}
                             </div>
                         );
                     })}
                     {salesUploadAndDeletePrivilege ? this.renderUploadBtns() : null}
                 </div>
                 <div className="approver-upload-lists">
+                    {managerFiles.length ? Intl.get( 'apply.approve.add.files','补充文件') : ''}
                     {_.map(managerFiles, (fileItem) => {
                         var fileName = fileItem.file_name || fileItem.name;
                         var fileId = fileItem.file_id;
@@ -227,11 +239,10 @@ class UploadAndDeleteFile extends React.Component {
                         };
                         return (
                             <div className="upload-file-name">
-                                B类文件：
-                                {hasPrivilege('DOCUMENT_DOWNLOAD') && fileId && approverUploadAndDeletePrivilege ?
+
+                                {hasPrivilege('DOCUMENT_DOWNLOAD') && fileId ?
                                     <a href={'/rest/reportsend/download/' + JSON.stringify(reqData)}>{fileName}</a> : fileName}
-                                {approverUploadAndDeletePrivilege ? <Icon type="close"
-                                    onClick={this.handleDeleteFile.bind(this, fileItem)}/> : null}
+                                {approverUploadAndDeletePrivilege ? this.renderDeleteAndLoadingBtn(fileItem) : null}
                             </div>
                         );
                     })}
@@ -253,7 +264,7 @@ class UploadAndDeleteFile extends React.Component {
                     return (
                         <div className="upload-file-name">
                             {fileName}
-                            <Icon type="close" onClick={this.handleDeleteFile.bind(this, fileItem)}/>
+                            {this.renderDeleteAndLoadingBtn(fileItem)}
                         </div>
                     );
                 })}

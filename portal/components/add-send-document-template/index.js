@@ -104,7 +104,7 @@ class AddReportSendApply extends React.Component {
             });
             var errTip = Intl.get('crm.154', '添加失败');
             $.ajax({
-                url: '/rest/add/opinionreport/list/' + this.props.applyAjaxType,
+                url: '/rest/add/opinionreport/list',
                 contentType: false, // 注意这里应设为false
                 processData: false,
                 cache: false,

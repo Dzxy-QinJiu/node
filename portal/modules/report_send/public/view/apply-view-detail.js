@@ -25,6 +25,7 @@ let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import UploadAndDeleteFile from 'CMP_DIR/apply-components/upload-and-delete-file';
+import AlertTimer from 'CMP_DIR/alert-timer';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -291,9 +292,10 @@ class ApplyViewDetail extends React.Component {
     };
     confirmFinishApply = () => {
         var detailInfoObj = this.state.detailInfoObj.info;
-        //这个地方需要传一个数组啊啊啊
+        //这个地方需要传一个数组
         var fileIds = [];
         var fileArrs = _.get(detailInfoObj,'detail.file_upload_logs',[]);
+        fileArrs = _.filter(fileArrs, item => item.log_type === 'approver_upload');
         _.forEach(fileArrs,(item) => {
             fileIds.push(item.id);
         });
@@ -304,7 +306,7 @@ class ApplyViewDetail extends React.Component {
             detailInfoObj.showApproveBtn = false;
             detailInfoObj.status = 'pass';
             var replyList = _.get(this.state,'replyListInfo.list');
-            replyList.unshift({comment_time: moment().valueOf(),
+            replyList.push({comment_time: moment().valueOf(),
                 nick_name: userData.getUserData().nick_name,
                 status: 'pass'
             });
@@ -314,11 +316,14 @@ class ApplyViewDetail extends React.Component {
     };
     renderConfirmFinish = () => {
         var isLoading = this.state.applyResult.submitResult === 'loading';
+        var resultErrMsg = _.get(this,'state.applyResult.errorMsg','');
+        var onHide = function() {
+            ReportSendApplyDetailAction.cancelSendApproval();
+        };
         return (
             <Button type='primary' className='pull-right' onClick={this.confirmFinishApply} disabled={isLoading}>
                 {Intl.get('apply.approve.confirm.finish','确认完成')}
-                {isLoading ? <Icon type="loading"/> : null}
-                <Icon/>
+                {isLoading ? <Icon type="loading"/> : resultErrMsg ? <AlertTimer time={3000} message={resultErrMsg} type="error" onHide={onHide} showIcon/> : null}
             </Button>
         );
     };
@@ -332,16 +337,18 @@ class ApplyViewDetail extends React.Component {
         var renderAssigenedContext = null,passText = '',showApproveBtn = detailInfoObj.showApproveBtn;
         if (detailInfoObj.status === 'ongoing' && showApproveBtn){
             //有approver_ids是表示已经确认过 待确认申请,
-            if (_.isArray(detailInfoObj.approver_ids) || this.state.clickConfirmBtn){
-                //有upload_id表示已经上传过文件 已经上传文件了
-                if (_.get(detailInfoObj,'detail.file_upload_logs',[]).length){
+            if (_.isArray(detailInfoObj.approver_ids) && detailInfoObj.approver_ids.length === 2 || this.state.clickConfirmBtn){
+                //approverUpload存在表示已经上传过文件 已经上传文件了
+                var upLoadFileArrs = _.get(detailInfoObj,'detail.file_upload_logs',[]);
+                var approverUpload = _.filter(upLoadFileArrs, item => item.log_type === 'approver_upload');
+                if (approverUpload.length){
                     renderAssigenedContext = this.renderConfirmFinish;
                     showApproveBtn = true;
                 }else{
                     //还没有上传文件
                     showApproveBtn = false;
                 }
-            }else if (!_.isArray(detailInfoObj.approver_ids)){
+            }else if (!_.isArray(detailInfoObj.approver_ids) || _.isArray(detailInfoObj.approver_ids) && detailInfoObj.approver_ids.length < 2){
                 passText = Intl.get('apply.approve.confirm.apply','确认申请');
                 showApproveBtn = true;
             }
@@ -395,8 +402,9 @@ class ApplyViewDetail extends React.Component {
             if (_.isArray(candidate) && candidate.length === 1){
                 candidateName = _.get(candidate,'[0].nick_name');
             }
-            var stepTip = '';
-            if ((_.isArray(applicantList.approver_ids) || this.state.clickConfirmBtn) && !_.get(applicantList,'detail.upload_id')){
+            var stepTip = '',file_upload_logs = _.get(applicantList,'detail.file_upload_logs',[]);
+            file_upload_logs = _.filter(file_upload_logs, item => item.log_type === 'approver_upload');
+            if ((_.isArray(applicantList.approver_ids) && applicantList.approver_ids.length === 2 || this.state.clickConfirmBtn) && !file_upload_logs.length){
                 stepTip = Intl.get('apply.approve.wait.upload','待{uploader}上传',{'uploader': candidateName});
             }else{
                 stepTip = Intl.get('apply.approve.wait.confirm','待{confirmer}确认任务完成',{'confirmer': candidateName});
@@ -450,7 +458,7 @@ class ApplyViewDetail extends React.Component {
     };
     renderUploadAndDownloadInfo = () => {
         var detailInfoObj = this.state.detailInfoObj.info;
-        var hasApproved = _.get(detailInfoObj, 'approver_ids',[]).length;
+        var hasApproved = _.get(detailInfoObj, 'approver_ids',[]).length === 2;
         //销售可以继续添加或者删除上传的文件
         var salesUploadAndDeletePrivilege = false;
         let user_id = userData.getUserData().user_id;
@@ -460,7 +468,7 @@ class ApplyViewDetail extends React.Component {
 
         //管理员可以继续添加或者删除上传的文件
         var approverUploadAndDeletePrivilege = false;
-        if (detailInfoObj.status === 'ongoing' && hasApproved){
+        if (detailInfoObj.status === 'ongoing' && hasApproved && detailInfoObj.showApproveBtn){
             approverUploadAndDeletePrivilege = true;
         }
         return (
@@ -475,7 +483,10 @@ class ApplyViewDetail extends React.Component {
     };
     renderUploadAndDownload = (detailInfo) => {
         // 驳回的时候也会有这个属性，所以再加上status的判断
-        if ((_.isArray(detailInfo.approver_ids) && detailInfo.status !== 'reject') || this.state.clickConfirmBtn || _.get(detailInfo,'detail.file_upload_logs',[]).length){
+        //如果是销售添加的申请，并且还没有确认审核之前是可以添加的
+        var salesAddPrivilege = _.get(detailInfo,'applicant.user_id') === userData.getUserData().user_id && !detailInfo.approver_ids && detailInfo.status === 'ongoing';
+        var managerAddPrivilege = (_.isArray(detailInfo.approver_ids) && detailInfo.status !== 'reject') || this.state.clickConfirmBtn || _.get(detailInfo,'detail.file_upload_logs',[]).length;//管理员在确认通过审核后或者在点击了确认按钮也可以展示添加区域
+        if (managerAddPrivilege || salesAddPrivilege){
             var showApplyInfo = [{
                 label: '',
                 renderText: this.renderUploadAndDownloadInfo,

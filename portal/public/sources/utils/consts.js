@@ -76,7 +76,8 @@ export const APPLY_APPROVE_TYPES = {
     UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
     REPORT: 'report',//舆情报送的类型
     DOCUMENT: 'document',//文件撰写的类型
-    OPINIONREPORT: 'opinionreport'//舆情报送和文件撰写的类型
+    OPINIONREPORT: 'opinionreport',//舆情报送的类型
+    DOCUMENTWRITING: 'documentwriting'//文件撰写的类型
 
 };
 

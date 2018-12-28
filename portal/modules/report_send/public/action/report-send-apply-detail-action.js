@@ -69,22 +69,28 @@ function ApplyViewDetailActions() {
     this.approveApplyPassOrReject = function(obj,callback) {
         this.dispatch({loading: true, error: false});
         ReportSendApplyAjax.approveApplyPassOrReject(obj).then((data) => {
-            this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
-            //更新选中的申请单类型
-            //如果不是最后确认的那一步，状态就还是ongoing
-            if(obj.report_id || obj.agree === 'reject' || obj.agree === 'cancel'){
-                ReportSendUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
-                if (Oplate && Oplate.unread) {
-                    Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND] -= 1;
-                    if (timeoutFunc) {
-                        clearTimeout(timeoutFunc);
+            if (data){
+                this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
+                //更新选中的申请单类型
+                //如果不是最后确认的那一步，状态就还是ongoing
+                if(obj.report_ids || obj.agree === 'reject' || obj.agree === 'cancel'){
+                    ReportSendUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
+                    if (Oplate && Oplate.unread) {
+                        Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND] -= 1;
+                        if (timeoutFunc) {
+                            clearTimeout(timeoutFunc);
+                        }
+                        timeoutFunc = setTimeout(function() {
+                            //触发展示的组件待审批数的刷新
+                            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
+                        }, timeout);
                     }
-                    timeoutFunc = setTimeout(function() {
-                        //触发展示的组件待审批数的刷新
-                        notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
-                    }, timeout);
+                    _.isFunction(callback) && callback();
                 }
-                _.isFunction(callback) && callback();
+            }else{
+                //更新选中的申请单类型
+                ReportSendUtils.emitter.emit('updateSelectedItem', {status: 'error'});
+                this.dispatch({loading: false, error: true, errorMsg: Intl.get('fail.apply.approve.result','审批失败')});
             }
         }, (errorMsg) => {
             //更新选中的申请单类型
