@@ -2668,6 +2668,10 @@ var zh_CN = {
     'apply.failed.get.my.worklist.application': '获取由我审批的{type}申请失败',
     'apply.approver.confirm.task.done': '确认任务完成',
     'failed.get.reply.comment': '获取回复列表失败',
-    'apply.approve.upload.no.container.space': '文件名称中不要含有空格！'
+    'apply.approve.upload.no.container.space': '文件名称中不要含有空格！',
+    'apply.approve.leave.am': '上午',
+    'apply.approve.leave.pm': '下午',
+    'apply.approve.select.leave.range': '请选择上午或下午',
+    'apply.approve.total.leave.time': '总请假时长'
 };
 export default zh_CN;

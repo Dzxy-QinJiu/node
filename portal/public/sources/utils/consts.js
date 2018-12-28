@@ -402,3 +402,8 @@ export const DOCUMENT_TYPE = [
 ];
 //顶部导航的高度
 export const TOP_NAV_HEIGHT = 64;
+//请假申请的类型
+export const LEAVE_TIME_RANGE = [
+    {name: Intl.get('apply.approve.leave.am','上午'),value: 'AM'},
+    {name: Intl.get('apply.approve.leave.pm','下午'),value: 'PM'}
+];
