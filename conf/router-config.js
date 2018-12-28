@@ -370,6 +370,26 @@ let routers = [
             ],
             //有这个权限，才显示入口图标
             showPrivileges: ['MEMBER_LEAVE_MANAGE']
+        }, {
+            id: 'REPORTSEND_APPLY_MANAGEMENT',
+            name: 'apply.approve.lyrical.report',//舆情报告
+            routePath: '/application/report_send',
+            component: `${MODULE_PATH}report_send/public`,
+            privileges: [
+                'MEMBER_OPINION_MANAGE'
+            ],
+            //有这个权限，才显示入口图标
+            showPrivileges: ['MEMBER_OPINION_MANAGE']
+        }, {
+            id: 'DOCUMENTWRITING_APPLY_MANAGEMENT',
+            name: 'apply.approve.document.writing',//文件撰写
+            routePath: '/application/document_write',
+            component: `${MODULE_PATH}document_write/public`,
+            privileges: [
+                'MEMBER_DOCUMENT_MANAGE'
+            ],
+            //有这个权限，才显示入口图标
+            showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
         }]
     },
     {
