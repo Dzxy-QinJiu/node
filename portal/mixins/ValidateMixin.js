@@ -37,6 +37,7 @@ export default {
         //如果索引不是整数，则认为是单表单的场景
         //此时index参数所传的值应该是e的值，index应视为没有
         if (!_.isInteger(index)) {
+            cb = e;
             e = index;
             index = undefined;
         }
