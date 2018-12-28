@@ -491,7 +491,7 @@ let routers = [
                 component: `${MODULE_PATH}production-manage/public`,
                 privileges: [],
                 //有这个权限，才显示入口图标
-                showPrivileges: ['PRODUCTS_MANAGE', 'GET_PRODUCTS_LIST']
+                showPrivileges: ['PRODUCTS_MANAGE']
             }
         ]
     },
