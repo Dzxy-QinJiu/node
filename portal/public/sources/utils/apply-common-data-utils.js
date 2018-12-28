@@ -157,3 +157,21 @@ exports.approveApplyPassOrRejectReportOrDocument = function(obj) {
     });
     return Deferred.promise();
 };
+let deleteLoadApplyApproveFileAjax = null;
+exports.deleteLoadApplyApproveFile = function(queryObj) {
+    var Deferred = $.Deferred();
+    deleteLoadApplyApproveFileAjax && deleteLoadApplyApproveFileAjax.abort();
+    deleteLoadApplyApproveFileAjax = $.ajax({
+        url: '/rest/applyapprove/delete',
+        dataType: 'json',
+        type: 'delete',
+        data: queryObj,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

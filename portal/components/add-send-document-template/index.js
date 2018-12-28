@@ -7,7 +7,7 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 require('./index.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {Form, Input, Button, Icon, message, DatePicker, Select} from 'antd';
+import {Form, Input, Button, Icon, message, DatePicker, Select, Upload} from 'antd';
 var Option = Select.Option;
 const FormItem = Form.Item;
 const FORMLAYOUT = {
@@ -19,11 +19,16 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import Trace from 'LIB_DIR/trace';
+import UploadAndDeleteFile from 'CMP_DIR/apply-components/upload-and-delete-file';
+
 class AddReportSendApply extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             hideCustomerRequiredTip: false,
+            fileList: [],
             formData: {
                 customer: {id: '', name: ''},//客户的信息
                 expect_submit_time: moment().valueOf(),//预计成交时间
@@ -34,21 +39,24 @@ class AddReportSendApply extends React.Component {
     componentDidMount() {
         this.addLabelRequiredCls();
     }
+
     componentDidUpdate() {
         this.addLabelRequiredCls();
     }
+
     addLabelRequiredCls() {
         if (!$('.add-leave-apply-form-wrap form .require-item label').hasClass('ant-form-item-required')) {
             $('.add-leave-apply-form-wrap form .require-item label').addClass('ant-form-item-required');
         }
     }
+
     hideApplyAddForm = () => {
         this.props.hideApplyAddForm();
     };
     hideCustomerRequiredTip = (flag) => {
         this.setState({
             hideCustomerRequiredTip: flag
-        },() => {
+        }, () => {
             this.props.form.validateFields(['customer'], {force: true});
         });
     };
@@ -72,22 +80,41 @@ class AddReportSendApply extends React.Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) return;
-            values['expect_submit_time'] = moment(values['expect_submit_time']).valueOf();
-            values['customer'] = _.get(this.state, 'formData.customer');
-            if (!_.get(values, 'customer.id')){
+            if (!_.get(this.state, 'formData.customer.id')) {
                 return;
             }
+            values['expect_submit_time'] = moment(values['expect_submit_time']).valueOf();
+            values['customer'] = JSON.stringify(_.get(this.state, 'formData.customer'));
+            const formData = new FormData();
+            var fileList = this.state.fileList;
+            //是否有上传过文件
+            if (_.isArray(fileList) && fileList.length){
+                fileList.forEach((file) => {
+                    formData.append('files', file);
+                });
+            }
+            // fields为表单其他项的数据,在antd-pro中是fileds.f
+            Object.keys(values).map((item) => {
+                formData.append(item,values[item]);
+            });
             this.setState({
                 isSaving: true,
                 saveMsg: '',
                 saveResult: ''
             });
+            var errTip = Intl.get('crm.154', '添加失败');
             $.ajax({
                 url: '/rest/add/opinionreport/list/' + this.props.applyAjaxType,
-                dataType: 'json',
+                contentType: false, // 注意这里应设为false
+                processData: false,
+                cache: false,
                 type: 'post',
-                data: values,
+                data: formData,
                 success: (data) => {
+                    if (_.get(data,'list[0]')){
+                        this.setResultData(errTip, 'error');
+                        return;
+                    }
                     //添加成功
                     this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
                     this.hideApplyAddForm();
@@ -97,8 +124,8 @@ class AddReportSendApply extends React.Component {
                     _.isFunction(this.props.afterAddApplySuccess) && this.props.afterAddApplySuccess(data);
                 },
                 error: (xhr) => {
-                    var errTip = Intl.get('crm.154', '添加失败');
-                    if (xhr.responseJSON && _.isString(xhr.responseJSON)){
+
+                    if (xhr.responseJSON && _.isString(xhr.responseJSON)) {
                         errTip = xhr.responseJSON;
                     }
                     this.setResultData(errTip, 'error');
@@ -151,7 +178,22 @@ class AddReportSendApply extends React.Component {
             />
         );
     };
-
+    beforeUpload = (file) => {
+        this.setState(({fileList}) => ({
+            fileList: [...fileList, file],
+        }));
+        return false;
+    };
+    fileRemove=(file) => {
+        this.setState((state) => {
+            const index = state.fileList.indexOf(file);
+            const newFileList = state.fileList.slice();
+            newFileList.splice(index, 1);
+            return {
+                fileList: newFileList,
+            };
+        });
+    };
     render() {
         var formData = this.state.formData;
         var _this = this;
@@ -187,7 +229,7 @@ class AddReportSendApply extends React.Component {
                                         {...formItemLayout}
                                     >
                                         {
-                                            getFieldDecorator(this.props.addType,{
+                                            getFieldDecorator(this.props.addType, {
                                                 rules: [{required: true, message: this.props.selectTip}],
                                             })(
                                                 <Select
@@ -198,7 +240,8 @@ class AddReportSendApply extends React.Component {
                                                 >
                                                     {_.isArray(this.props.applyType) && this.props.applyType.length ?
                                                         this.props.applyType.map((reportItem, idx) => {
-                                                            return (<Option key={idx} value={reportItem.value}>{reportItem.name}</Option>);
+                                                            return (<Option key={idx}
+                                                                value={reportItem.value}>{reportItem.name}</Option>);
                                                         }) : null
                                                     }
                                                 </Select>
@@ -234,14 +277,14 @@ class AddReportSendApply extends React.Component {
                                     </FormItem>
                                     <FormItem
                                         className="form-item-label add-apply-time"
-                                        label={Intl.get('apply.approve.expect.submit.time','期望提交时间')}
+                                        label={Intl.get('apply.approve.expect.submit.time', '期望提交时间')}
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('expect_submit_time', {
                                             initialValue: moment()
                                         })(
                                             <DatePicker
-                                                showTime={{ format: 'HH:mm' }}
+                                                showTime={{format: 'HH:mm'}}
                                                 format="YYYY-MM-DD HH:mm"
                                                 onChange={this.onExpectTimeChange}
                                                 value={formData.expect_submit_time ? moment(formData.expect_submit_time) : moment()}
@@ -262,6 +305,11 @@ class AddReportSendApply extends React.Component {
                                             />
                                         )}
                                     </FormItem>
+                                    <UploadAndDeleteFile
+                                        beforeUpload = {this.beforeUpload}
+                                        fileList={this.state.fileList}
+                                        fileRemove={this.fileRemove}
+                                    />
                                     <div className="submit-button-container">
                                         <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
                                             disabled={this.state.isSaving} data-tracename="点击保存添加

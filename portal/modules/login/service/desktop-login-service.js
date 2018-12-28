@@ -494,7 +494,7 @@ exports.wechatLoginByUnionId = function(req, res, unionId) {
             form: {
                 open_id: unionId,
                 platform: 'wechat'
-            }
+            },
         }, null, {
             success: loginSuccess,
             timeout: loginTimeout

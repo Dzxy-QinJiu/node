@@ -4,12 +4,12 @@
  * Created by zhangshujuan on 2018/9/10.
  */
 var DocumentWriteApplyAction = require('../action/document-write-apply-action');
-function ReportSendApplyStore() {
+function DocumentWriteApplyStore() {
     //初始化state数据
     this.setInitState();
     this.bindActions(DocumentWriteApplyAction);
 }
-ReportSendApplyStore.prototype.setInitState = function() {
+DocumentWriteApplyStore.prototype.setInitState = function() {
     this.sort_field = 'create_time';//排序字段
     this.status = '';//申请的状态
     this.order = 'descend';
@@ -47,13 +47,13 @@ ReportSendApplyStore.prototype.setInitState = function() {
     this.clearData();
 };
 //清空数据
-ReportSendApplyStore.prototype.clearData = function() {
+DocumentWriteApplyStore.prototype.clearData = function() {
     this.applyListObj.list = [];
     this.selectedDetailItem = {};
     this.selectedDetailItemIdx = -1;
     this.listenScrollBottom = false;
 };
-ReportSendApplyStore.prototype.getAllApplyList = function(obj) {
+DocumentWriteApplyStore.prototype.getAllApplyList = function(obj) {
     if (obj.loading) {
         this.applyListObj.loadingResult = 'loading';
         this.applyListObj.errorMsg = '';
@@ -98,20 +98,20 @@ ReportSendApplyStore.prototype.getAllApplyList = function(obj) {
         }
     }
 };
-ReportSendApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {
+DocumentWriteApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {
     this.selectedDetailItem = obj;
     this.selectedDetailItemIdx = idx;
 };
-ReportSendApplyStore.prototype.changeApplyListType = function(type) {
+DocumentWriteApplyStore.prototype.changeApplyListType = function(type) {
     this.applyListType = type;
     this.lastApplyId = '';
 };
-ReportSendApplyStore.prototype.changeApplyAgreeStatus = function(message) {
+DocumentWriteApplyStore.prototype.changeApplyAgreeStatus = function(message) {
     this.selectedDetailItem.status = message.agree;
     this.selectedDetailItem.approve_details = message.approve_details;
     this.selectedDetailItem.update_time = message.update_time;
 };
-ReportSendApplyStore.prototype.updateAllApplyItemStatus = function(updateItem) {
+DocumentWriteApplyStore.prototype.updateAllApplyItemStatus = function(updateItem) {
     var allApplyArr = this.applyListObj.list;
     this.selectedDetailItem.status = updateItem.status;
     var targetObj = _.find(allApplyArr,(item) => {
@@ -121,10 +121,10 @@ ReportSendApplyStore.prototype.updateAllApplyItemStatus = function(updateItem) {
         targetObj.status = updateItem.status;
     }
 };
-ReportSendApplyStore.prototype.afterAddApplySuccess = function(item) {
+DocumentWriteApplyStore.prototype.afterAddApplySuccess = function(item) {
     this.applyListObj.list.unshift(item);
     this.selectedDetailItem = item;
     this.totalSize++;
 };
 
-module.exports = alt.createStore(ReportSendApplyStore, 'ReportSendApplyStore');
+module.exports = alt.createStore(DocumentWriteApplyStore, 'DocumentWriteApplyStore');

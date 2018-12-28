@@ -24,7 +24,8 @@ function ApplyViewDetailActions() {
         'hideApprovalBtns',//审批完后不在显示审批按钮
         'hideCancelBtns',//审批完后不再显示撤销按钮
         'setDetailInfoObjAfterAdd',
-        'setDetailInfo'
+        'setDetailInfo',
+        'setUpdateFilesLists'
     );
 
     //获取审批单详情
@@ -119,5 +120,19 @@ function ApplyViewDetailActions() {
             }
         }).error( this.dispatch({error: true}));
     };
+    // this.deleteLoadApplyApproveFile = function(queryObj,callback) {
+    //     this.dispatch({loading: true, error: false, file_id: queryObj.file_id});
+    //     deleteLoadApplyApproveFile(queryObj).then((replyData) => {
+    //         if (replyData){
+    //             this.dispatch({loading: false, error: false, reply: replyData});
+    //             _.isFunction(callback) && callback();
+    //         }else{
+    //             this.dispatch({loading: false, error: true, errorMsg: Intl.get('failed.delete.apply.load.approve','删除文件失败！')});
+    //         }
+    //     }, (errorMsg) => {
+    //         this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+    //     });
+    // };
+
 }
 module.exports = alt.createActions(ApplyViewDetailActions);

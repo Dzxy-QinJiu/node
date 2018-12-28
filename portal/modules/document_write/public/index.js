@@ -220,10 +220,9 @@ class DocumentWriteApplyManagement extends React.Component {
             applyType = Intl.get('user.apply.pass', '已通过');
         } else if (this.state.applyListType === 'reject') {
             applyType = '被驳回';
+        } else if (this.state.applyListType === 'cancel') {
+            applyType = Intl.get('user.apply.backout', '已撤销');
         }
-        // else if (this.state.applyListType === 'cancel') {
-        //     applyType = Intl.get('user.apply.backout', '已撤销');
-        // }
         var noShowApplyDetail = this.state.applyListObj.list.length === 0;
         //申请详情数据
         var applyDetail = null;

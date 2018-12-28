@@ -46,7 +46,7 @@ module.exports = {
         },
         {
             method: 'delete',
-            path: '/rest/reportsend/delete',
+            path: '/rest/applyapprove/delete',
             handler: 'deleteReportSend',
             passport: {
                 'needLogin': true

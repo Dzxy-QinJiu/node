@@ -2644,11 +2644,13 @@ var en_US = {
     'apply.approve.wait.confirm': 'To be confirmed finished by {confirmer}',//待{confirmer}确认任务完成
     'apply.approve.wait.upload': 'Waiting for {uploader} to upload',//待{uploader}上传
     'apply.approve.confirm.finish': 'Confirmation completed',//确认完成
-    'apply.approve.update.file': 'Update file',//更新文件
+    'apply.approve.update.file': 'Continue to upload file',//继续添加文件
     'apply.failed.get.type.application': 'Failed to get all {type} applies',//获取全部{type}申请失败
     'apply.failed.get.my.worklist.application': 'Failed to get applies to be approved by me',//获取由我审批的{type}申请失败
     'apply.approver.confirm.task.done': 'Confirm the task done',//确认任务完成
     'failed.get.reply.comment': 'Failed to get comment lists',//获取回复列表失败
-    'apply.approve.upload.no.container.space': 'Please do not has space in your file name!'//文件名称中不要含有空格！
+    'apply.approve.upload.no.container.space': 'Please do not has space in your file name!',//文件名称中不要含有空格！
+    'failed.delete.apply.load.approve': 'Failed to delete files',//删除文件失败！
+    'click.ctrl.upload.mutil.file': 'You can upload more than one file at one time'//可上传多个文件！
 };
 export default en_US;

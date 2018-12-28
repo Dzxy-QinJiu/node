@@ -10,7 +10,9 @@ var restUtil = require('ant-auth-request').restUtil(restLogger);
 var _ = require('lodash');
 var restApis = {
     //添加舆情报送申请
-    addReportSendApply: '/rest/base/v1/workflow/opinionreport/:type',
+    addReportSendApply: '/rest/base/v1/workflow/report/apply',
+    //添加文件撰写申请
+    addDocumentWriteApply: '/rest/base/v1/workflow/document/apply',
     //通过或者驳回申请
     approveOpinionreportApplyPassOrReject: '/rest/base/v1/workflow/opinionreport/approve',
     //文件撰写的通过或者驳回
@@ -25,13 +27,19 @@ var restApis = {
 };
 exports.restUrls = restApis;
 //添加申请
-exports.addReportSendApply = function(req, res) {
+exports.addReportSendApply = function(req, res,formData) {
+    var url = restApis.addReportSendApply;
+    if (req.params.type === 'document'){
+        url = restApis.addDocumentWriteApply;
+    }
     return restUtil.authRest.post(
         {
-            url: restApis.addReportSendApply.replace(':type',req.params.type),
+            url: url,
             req: req,
-            res: res
-        }, req.body);
+            res: res,
+            formData: formData,
+            timeout: uploadTimeOut,
+        }, null);
 };
 //批准或驳回审批
 exports.approveReportSendApplyPassOrReject = function(req, res) {
@@ -51,9 +59,13 @@ exports.approveDocumentWriteApplyPassOrReject = function(req, res) {
         }, req.body);
 };
 //上传舆情上报文件
-exports.uploadReportSend = function(req, res, formData,id,filename) {
+exports.uploadReportSend = function(req, res, formData,id) {
+    var url = restApis.uploadReportFile;
+    if (id){
+        url += `?id=${id}`;
+    }
     return restUtil.authRest.post({
-        url: restApis.uploadReportFile + '?id=' + id + '&doc_name=' + encodeURI(filename) ,
+        url: url,
         req: req,
         res: res,
         timeout: uploadTimeOut,
@@ -72,10 +84,11 @@ exports.downLoadReportSend = function(req, res) {
 };
 //删除相关文件
 exports.deleteReportSend = function(req, res) {
+    var fileObj = req.body;
     return restUtil.authRest.del(
         {
-            url: restApis.delReportFile,
+            url: restApis.delReportFile + `?file_dir_id=${fileObj.file_dir_id}` + `&file_id=${fileObj.file_id}`,
             req: req,
             res: res
-        }, req.query);
+        }, null);
 };

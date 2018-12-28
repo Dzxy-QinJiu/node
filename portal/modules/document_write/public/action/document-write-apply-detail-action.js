@@ -24,7 +24,8 @@ function ApplyViewDetailActions() {
         'hideApprovalBtns',//审批完后不在显示审批按钮
         'hideCancelBtns',//审批完后不再显示撤销按钮
         'setDetailInfoObjAfterAdd',
-        'setDetailInfo'
+        'setDetailInfo',
+        'setUpdateFilesLists'
     );
 
     //获取审批单详情
