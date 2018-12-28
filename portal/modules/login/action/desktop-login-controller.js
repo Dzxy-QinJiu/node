@@ -94,6 +94,7 @@ function showLoginOrBindWechatPage(req, res) {
             }
             let custom_service_lang = loginLang || 'zh_CN';
             custom_service_lang = custom_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
+            let company = isCurtao ? backendIntl.get('company.name.curtao', '© 客套智能科技 鲁ICP备18038856号') : backendIntl.get('company.name.eefung', '© 蚁坊软件 湘ICP备14007253号-1');
             res.render('login/tpl/desktop-login', {
                 styleContent: styleContent,
                 loginForm: formHtml,
@@ -101,7 +102,7 @@ function showLoginOrBindWechatPage(req, res) {
                 username: obj.username,
                 captchaCode: obj.captchaCode || '',
                 isFormal: global.config.isFormal,
-                company: backendIntl.get('company.name', '© 客套智能科技 鲁ICP备18038856号'),
+                company: company,
                 hotline: backendIntl.get('companay.hotline', '服务热线: {phone}', {'phone': phone}),
                 contact: backendIntl.get('company.qq', '企业QQ: {qq}', {'qq': qq}),
                 siteID: global.config.siteID,
