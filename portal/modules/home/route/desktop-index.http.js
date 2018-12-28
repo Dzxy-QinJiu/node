@@ -3,11 +3,35 @@
  * 版权所有 (c) 2010-2015 湖南蚁坊软件有限公司。保留所有权利。
  */
 
-'use strict';
+let routers = require(require('path').join(config_root_path, 'router-config.js'));
+let _ = require('lodash');
+
+function getRoutesFromConfig(routers) {
+    //遍历所有react-router的路由，这些路由，都渲染index.html
+    let list = [];
+    _.each(routers, (route) => {
+        //只要有名称，也就是正常路由，都要处理。不正常路由是错误处理的路由，例如：*
+        if (route.name && route.routePath) {
+            list.push({
+                'method': 'get',
+                'path': route.routePath,
+                'handler': 'home',
+                'passport': {
+                    'needLogin': true
+                }
+            });
+        }
+        if (route.subMenu) {
+            list.push(...getRoutesFromConfig(route.subMenu));
+        }
+    });
+    return list;
+}
 
 /**
  * 请求路径 - home
  */
+
 
 module.exports = {
     module: 'home/action/desktop-index-controller',
@@ -70,25 +94,7 @@ module.exports = {
             }
         }
         ];
-
-        //遍历所有react-router的路由，这些路由，都渲染index.html
-        var MenusAll = require(require('path').join(config_root_path, 'menu.js'));
-        var leftMenus = new MenusAll();
-        var leftMenuList = leftMenus.getLeftMenuList();
-        var treeWalk = require('tree-walk');
-        treeWalk.preorder(leftMenuList, function(value, key, parent) {
-            if (key === 'routePath') {
-                list.push({
-                    'method': 'get',
-                    'path': '/' + value,
-                    'handler': 'home',
-                    'passport': {
-                        'needLogin': true
-                    }
-                });
-            }
-        });
-
+        list.push(...(_.unionBy(getRoutesFromConfig(routers.routers), 'path')));
         return list;
     })()
 };
