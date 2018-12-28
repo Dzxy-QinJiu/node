@@ -412,10 +412,9 @@ exports.getApplyTopicText = function(obj) {
         return _.get(obj,'detail.customer.name');
     } else if (obj.topic === APPLY_APPROVE_TYPES.PERSONAL_LEAVE) {
         return Intl.get('leave.apply.leave.application', '请假申请');
-    } else if (obj.workflow_type === APPLY_APPROVE_TYPES.REPORT){
+    } else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1){
         return Intl.get('apply.approve.specific.report','{customer}客户的专报',{customer: _.get(obj,'detail.customer.name')});
-    }else if (obj.workflow_type === APPLY_APPROVE_TYPES.DOCUMENT){
-
+    }else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1){
         return getDocumentReportTypeText(DOCUMENT_TYPE,_.get(obj,'detail.document_type'));
     }
 };

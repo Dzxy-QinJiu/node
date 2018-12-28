@@ -60,6 +60,11 @@ ReportSendApplyDetailStore.prototype.setInitState = function() {
         submitResult: '',
         errorMsg: ''
     };
+    this.deleteResult = {
+        result: 'loading',
+        delId: '',//被删除的那个文件的文件id
+        errorMsg: ''
+    };
 };
 ReportSendApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
@@ -264,6 +269,9 @@ ReportSendApplyDetailStore.prototype.getNextCandidate = function(result) {
     }else{
         this.candidateList = result;
     }
+};
+ReportSendApplyDetailStore.prototype.setUpdateFilesLists = function(updateLists) {
+    this.detailInfoObj.info.detail.file_upload_logs = updateLists;
 };
 
 

@@ -647,7 +647,8 @@ function getMessageCount(callback) {
         getUnapproveBussinessTripApply(callback);//获取出差申请待我审批数量
         getUnapproveSalesOpportunityApply();//获取销售机会待我审批数量
         getUnapproveLeaveApply();//获取请假申请待我审批数量
-        getUnapproveReportSendApply();//获取舆情报送和文件审批的待我审批数量
+        getUnapproveReportSendApply();//获取舆情报送待我审批数量
+        getUnapproveDocumentWritingApply();//获取文件撰写的待我审批数
     }
     //获取线索未处理数的权限（除运营人员外展示）
     if (getClueUnhandledPrivilege()){
@@ -866,22 +867,31 @@ function getUnapproveReportSendApply() {
         data: queryObj,
         success: function(data) {
             //获取的是两类的待我审批列表需要对数字区分一下
-            var reportData = {total: 0},documentData = {total: 0};
+            var reportData = {total: 0};
             if (_.isArray(data.list) && data.list.length){
-                _.forEach(data.list,(item) => {
-                    if (item.workflow_type === APPLY_APPROVE_TYPES.REPORT){
-                        reportData.total++;
-                    }
-                    if (item.workflow_type === APPLY_APPROVE_TYPES.DOCUMENT){
-                        documentData.total++;
-                    }
-                });
+                reportData.total = data.list.length;
             }
             setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND,reportData);
+        },
+        error: function(errorMsg) {
+        }
+    });
+}
+function getUnapproveDocumentWritingApply() {
+    var queryObj = {type: APPLY_APPROVE_TYPES.DOCUMENTWRITING};
+    $.ajax({
+        url: '/rest/get/worklist/apply_approve/list',
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
+        success: function(data) {
+            var documentData = {total: 0};
+            if (_.isArray(data.list) && data.list.length){
+                documentData.total = data.list.length;
+            }
             setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE,documentData);
         },
         error: function(errorMsg) {
-
         }
     });
 }

@@ -8,7 +8,7 @@ module.exports = {
     routes: [
         {
             method: 'post',
-            path: '/rest/add/opinionreport/list/:type',
+            path: '/rest/add/opinionreport/list',
             handler: 'addReportSendApply',
             passport: {
                 needLogin: true
@@ -46,7 +46,7 @@ module.exports = {
         },
         {
             method: 'delete',
-            path: '/rest/reportsend/delete',
+            path: '/rest/applyapprove/delete',
             handler: 'deleteReportSend',
             passport: {
                 'needLogin': true

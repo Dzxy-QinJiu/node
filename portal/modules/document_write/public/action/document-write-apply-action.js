@@ -20,14 +20,14 @@ function ReportSendApplyActions() {
     this.getAllApplyList = function(queryObj) {
         //需要先获取待审批列表，成功后获取全部列表
         this.dispatch({loading: true, error: false});
-        getWorklistApplyList({type: APPLY_APPROVE_TYPES.OPINIONREPORT}).then((workList) => {
+        getWorklistApplyList({type: APPLY_APPROVE_TYPES.DOCUMENTWRITING}).then((workList) => {
             this.dispatch({workList: workList});
             //如果是待我审批的列表，不需要在发获取全部列表的请求了
             if (queryObj.status && queryObj.status === 'ongoing') {
                 //需要对全部列表都加一个可以审批的属性
                 //舆情报送的审批和文件撰写的审批是一个接口，获取回来的是两类数据，需要在前端进行过滤
                 //这个接口不是下拉加载，是一次全部取出，所以需要把total的值也一起改掉
-                workList.list = _.filter(workList.list, item => item.workflow_type === APPLY_APPROVE_TYPES.DOCUMENT);
+                workList.list = _.filter(workList.list, item => item.workflow_type.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1);
                 workList.total = workList.list.length;
                 _.forEach(workList.list, (workItem) => {
                     workItem.showApproveBtn = true;

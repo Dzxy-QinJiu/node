@@ -2664,11 +2664,16 @@ var zh_CN = {
     'apply.approve.wait.confirm': '待{confirmer}确认任务完成',
     'apply.approve.wait.upload': '待{uploader}上传',
     'apply.approve.confirm.finish': '确认完成',
-    'apply.approve.update.file': '更新文件',
+    'apply.approve.update.file': '继续添加文件',
     'apply.failed.get.type.application': '获取全部{type}申请失败',
     'apply.failed.get.my.worklist.application': '获取由我审批的{type}申请失败',
     'apply.approver.confirm.task.done': '确认任务完成',
     'failed.get.reply.comment': '获取回复列表失败',
-    'apply.approve.upload.no.container.space': '文件名称中不要含有空格！'
+    'apply.approve.upload.no.container.space': '文件名称中不要含有空格！',
+    'failed.delete.apply.load.approve': '删除文件失败！',
+    'click.ctrl.upload.mutil.file': '可上传多个文件！',
+    'apply.approve.customer.info': '客户资料',
+    'apply.approve.add.files': '补充文件',
+    'fail.apply.approve.result': '审批失败'
 };
 export default zh_CN;
