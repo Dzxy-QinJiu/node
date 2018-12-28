@@ -145,7 +145,7 @@ class UserInfo extends React.Component{
 
     }
     //设置邮箱订阅功能
-    handleSubscribe(e) {
+    handleSubscribe = (e) => {
         var formData = this.state.formData;
         var configObj = {'config': true};
         if (formData.reject < 1) {
@@ -207,7 +207,7 @@ class UserInfo extends React.Component{
                         id="user.info.receive.email"
                         defaultMessage={'如果您想接受审批通知邮件提醒，可以{receive}'}
                         values={{
-                            'receive': <a onClick={this.handleSubscribe.bind(this)}>
+                            'receive': <a onClick={this.handleSubscribe}>
                                 <ReactIntl.FormattedMessage id="user.info.receive.subscribe" defaultMessage="重新订阅"/>
                             </a>
                         }}

@@ -2047,7 +2047,8 @@ var en_US = {
     'common.gross_profit_rate': 'gross profit rate', //毛利率
     'common.summation': 'summation',//合计
 
-    'company.name': '© Curtao Smart Technology 鲁ICP备18038856号',//© 客套智能科技 鲁ICP备18038856号
+    'company.name.curtao': '© Curtao Smart Technology 鲁ICP备18038856号',//© 客套智能科技 鲁ICP备18038856号
+    'company.name.eefung': '© Eefung Software 湘ICP备14007253号-1',//© 蚁坊软件 湘ICP备14007253号-1
     'companay.hotline': 'Service Hotline:400-677-0986',//服务热线: 400-677-0986
     'company.qq': 'QQ:{qq}',//企业QQ: 4006770986
     'login.fail.login': 'Login service is temporarily unavailable. Please try again later',//登录服务暂时不可用，请稍后重试
