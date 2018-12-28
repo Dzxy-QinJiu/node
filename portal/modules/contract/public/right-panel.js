@@ -251,18 +251,6 @@ class ContractRightPanel extends React.Component {
             contractData = _.extend({}, this.props.contract, this.refs.addBasic.state.formData);
             contractData.category = this.state.currentCategory;
 
-            if (contractData.start_time) {
-                //在用Validation组件验证开始时间是否小于结束时间时，该组件会用一个缓存的值覆盖通过赋值方法setField赋到state上的最新的值
-                //现象就是，本来选择了开始时间后，赋到state里的开始时间是个时间戳，但经过验证组件验证后，就又变回了moment对象
-                //所以在提交数据之前需要把moment再转成时间戳，否则接口会报错
-                //下面的结束时间同理
-                contractData.start_time = moment(contractData.start_time).valueOf()
-            }
-
-            if (contractData.end_time) {
-                contractData.end_time = moment(contractData.end_time).valueOf()
-            }
-
             const addProduct = this.refs.addProduct;
             if (addProduct && !_.isEmpty(addProduct.state.products[0])) {
                 contractData.products = addProduct.state.products;
@@ -286,6 +274,18 @@ class ContractRightPanel extends React.Component {
             } else {
                 contractData = _.extend({}, this.props.contract, this.refs.detailBuyBasic.state.formData);
             }
+        }
+
+        if (contractData.start_time) {
+            //在用Validation组件验证开始时间是否小于结束时间时，该组件会用一个缓存的值覆盖通过赋值方法setField赋到state上的最新的值
+            //现象就是，本来选择了开始时间后，赋到state里的开始时间是个时间戳，但经过验证组件验证后，就又变回了moment对象
+            //所以在提交数据之前需要把moment再转成时间戳，否则接口会报错
+            //下面的结束时间同理
+            contractData.start_time = moment(contractData.start_time).valueOf();
+        }
+
+        if (contractData.end_time) {
+            contractData.end_time = moment(contractData.end_time).valueOf();
         }
 
         const reqData = contractData;
