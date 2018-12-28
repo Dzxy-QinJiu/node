@@ -92,7 +92,6 @@ class AddReportSendApply extends React.Component {
                 fileList.forEach((file) => {
                     formData.append('files', file);
                 });
-                // values['files'] = formData;
             }
             // fields为表单其他项的数据,在antd-pro中是fileds.f
             Object.keys(values).map((item) => {
@@ -103,16 +102,19 @@ class AddReportSendApply extends React.Component {
                 saveMsg: '',
                 saveResult: ''
             });
+            var errTip = Intl.get('crm.154', '添加失败');
             $.ajax({
                 url: '/rest/add/opinionreport/list/' + this.props.applyAjaxType,
-                // dataType: 'json',
                 contentType: false, // 注意这里应设为false
-                // contentType: 'multipart/form-data;charset=UTF-8',
                 processData: false,
                 cache: false,
                 type: 'post',
                 data: formData,
                 success: (data) => {
+                    if (_.get(data,'list[0]')){
+                        this.setResultData(errTip, 'error');
+                        return;
+                    }
                     //添加成功
                     this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
                     this.hideApplyAddForm();
@@ -122,7 +124,7 @@ class AddReportSendApply extends React.Component {
                     _.isFunction(this.props.afterAddApplySuccess) && this.props.afterAddApplySuccess(data);
                 },
                 error: (xhr) => {
-                    var errTip = Intl.get('crm.154', '添加失败');
+
                     if (xhr.responseJSON && _.isString(xhr.responseJSON)) {
                         errTip = xhr.responseJSON;
                     }
@@ -176,18 +178,12 @@ class AddReportSendApply extends React.Component {
             />
         );
     };
-    setUpdateFiles = (updateFiles) => {
-        this.setState({
-
-        });
-    };
     beforeUpload = (file) => {
         this.setState(({fileList}) => ({
             fileList: [...fileList, file],
         }));
         return false;
     };
-
     fileRemove=(file) => {
         this.setState((state) => {
             const index = state.fileList.indexOf(file);
@@ -310,7 +306,6 @@ class AddReportSendApply extends React.Component {
                                         )}
                                     </FormItem>
                                     <UploadAndDeleteFile
-                                        setUpdateFiles={this.setUpdateFiles}
                                         beforeUpload = {this.beforeUpload}
                                         fileList={this.state.fileList}
                                         fileRemove={this.fileRemove}

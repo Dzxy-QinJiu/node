@@ -35,12 +35,11 @@ exports.addReportSendApply = function(req, res) {
             // 文件不为空的处理
             formData['files'] = [fs.createReadStream(newTmpPath)];
         }
-
         //处理数据
         Object.keys(fields).forEach((name) => {
-            if (name === 'customer') {
-                formData[name] = JSON.parse(_.get(fields[name], '[0]'));
-            } else {
+            if (name === 'expect_submit_time'){
+                formData[name] = parseInt(_.get(fields[name], '[0]'));
+            }else{
                 formData[name] = _.get(fields[name], '[0]');
             }
 

@@ -869,10 +869,10 @@ function getUnapproveReportSendApply() {
             var reportData = {total: 0},documentData = {total: 0};
             if (_.isArray(data.list) && data.list.length){
                 _.forEach(data.list,(item) => {
-                    if (item.workflow_type === APPLY_APPROVE_TYPES.REPORT){
+                    if (item.workflow_type.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1){
                         reportData.total++;
                     }
-                    if (item.workflow_type === APPLY_APPROVE_TYPES.DOCUMENT){
+                    if (item.workflow_type.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1){
                         documentData.total++;
                     }
                 });

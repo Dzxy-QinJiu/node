@@ -5,12 +5,12 @@
  */
 var DocumentWriteApplyDetailAction = require('../action/document-write-apply-detail-action');
 var DocumentWriteApplyAction = require('../action/document-write-apply-action');
-function ReportSendApplyDetailStore() {
+function DocumentWriteApplyDetailStore() {
     //初始化state数据
     this.setInitState();
     this.bindActions(DocumentWriteApplyDetailAction);
 }
-ReportSendApplyDetailStore.prototype.setInitState = function() {
+DocumentWriteApplyDetailStore.prototype.setInitState = function() {
     //选中的审批条目
     this.selectedDetailItem = {};
     //审批的详情数据
@@ -61,7 +61,7 @@ ReportSendApplyDetailStore.prototype.setInitState = function() {
         errorMsg: ''
     };
 };
-ReportSendApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
+DocumentWriteApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
     this.detailInfoObj = {
         // "" loading error
@@ -92,7 +92,7 @@ ReportSendApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailO
     this.candidateList = [];
 
 };
-ReportSendApplyDetailStore.prototype.setDetailInfo = function(detailObj) {
+DocumentWriteApplyDetailStore.prototype.setDetailInfo = function(detailObj) {
     this.detailInfoObj = {
         // "" loading error
         loadingResult: '',
@@ -103,14 +103,14 @@ ReportSendApplyDetailStore.prototype.setDetailInfo = function(detailObj) {
     };
 };
 //设置某条申请的回复列表
-ReportSendApplyDetailStore.prototype.setApplyComment = function(list) {
+DocumentWriteApplyDetailStore.prototype.setApplyComment = function(list) {
     this.replyListInfo = {
         result: '',
         list: _.isArray(list) ? _.concat(this.replyListInfo.list,list) : null,
         errorMsg: ''
     };
 };
-ReportSendApplyDetailStore.prototype.setInitialData = function(obj) {
+DocumentWriteApplyDetailStore.prototype.setInitialData = function(obj) {
     //重置数据
     this.setInitState();
     //指定详情条目
@@ -121,7 +121,7 @@ ReportSendApplyDetailStore.prototype.setInitialData = function(obj) {
     // this.applyIsExpanded = false;
 };
 //获取审批详情
-ReportSendApplyDetailStore.prototype.getApplyDetailById = function(obj) {
+DocumentWriteApplyDetailStore.prototype.getApplyDetailById = function(obj) {
     if (obj.error) {
         this.detailInfoObj.loadingResult = 'error';
         this.detailInfoObj.info = {};
@@ -146,7 +146,7 @@ ReportSendApplyDetailStore.prototype.getApplyDetailById = function(obj) {
     }
 };
 
-ReportSendApplyDetailStore.prototype.getApplyCommentList = function(resultObj) {
+DocumentWriteApplyDetailStore.prototype.getApplyCommentList = function(resultObj) {
     //回复列表
     var replyListInfo = this.replyListInfo;
     //result,list,errorMsg
@@ -171,10 +171,10 @@ ReportSendApplyDetailStore.prototype.getApplyCommentList = function(resultObj) {
         replyListInfo.errorMsg = '';
     }
 };
-ReportSendApplyDetailStore.prototype.setApplyFormDataComment = function(comment) {
+DocumentWriteApplyDetailStore.prototype.setApplyFormDataComment = function(comment) {
     this.replyFormInfo.comment = comment;
 };
-ReportSendApplyDetailStore.prototype.cancelApplyApprove = function(resultObj) {
+DocumentWriteApplyDetailStore.prototype.cancelApplyApprove = function(resultObj) {
     if (resultObj.loading){
         this.backApplyResult.submitResult = 'loading';
         this.backApplyResult.errorMsg = '';
@@ -186,24 +186,24 @@ ReportSendApplyDetailStore.prototype.cancelApplyApprove = function(resultObj) {
         this.backApplyResult.errorMsg = '';
     }
 };
-ReportSendApplyDetailStore.prototype.hideCancelBtns = function() {
+DocumentWriteApplyDetailStore.prototype.hideCancelBtns = function() {
     this.selectedDetailItem.showCancelBtn = false;
     this.detailInfoObj.info.showCancelBtn = false;
 };
 
-ReportSendApplyDetailStore.prototype.hideReplyCommentEmptyError = function() {
+DocumentWriteApplyDetailStore.prototype.hideReplyCommentEmptyError = function() {
     this.replyFormInfo.result = '';
     this.replyFormInfo.errorMsg = '';
 };
 //显示回复输入框为空的错误
-ReportSendApplyDetailStore.prototype.showReplyCommentEmptyError = function() {
+DocumentWriteApplyDetailStore.prototype.showReplyCommentEmptyError = function() {
     // if(this.replyFormInfo.result === 'success') {
     //     return;
     // }
     this.replyFormInfo.result = 'error';
     this.replyFormInfo.errorMsg = Intl.get('user.apply.reply.no.content', '请填写回复内容');
 };
-ReportSendApplyDetailStore.prototype.addApplyComments = function(resultObj) {
+DocumentWriteApplyDetailStore.prototype.addApplyComments = function(resultObj) {
     //回复表单
     var replyFormInfo = this.replyFormInfo;
     if (resultObj.loading) {
@@ -222,7 +222,7 @@ ReportSendApplyDetailStore.prototype.addApplyComments = function(resultObj) {
     }
 };
 //提交审批
-ReportSendApplyDetailStore.prototype.approveApplyPassOrReject = function(obj) {
+DocumentWriteApplyDetailStore.prototype.approveApplyPassOrReject = function(obj) {
     if (obj.loading) {
         this.applyResult.submitResult = 'loading';
         this.applyResult.errorMsg = '';
@@ -235,7 +235,7 @@ ReportSendApplyDetailStore.prototype.approveApplyPassOrReject = function(obj) {
     }
 };
 //获取审批的状态
-ReportSendApplyDetailStore.prototype.getApplyStatusById = function(obj) {
+DocumentWriteApplyDetailStore.prototype.getApplyStatusById = function(obj) {
     if (obj.loading) {
         this.replyStatusInfo.result = 'loading';
         this.replyStatusInfo.errorMsg = '';
@@ -248,23 +248,27 @@ ReportSendApplyDetailStore.prototype.getApplyStatusById = function(obj) {
         this.replyStatusInfo.list = obj.list;
     }
 };
-ReportSendApplyDetailStore.prototype.cancelSendApproval = function() {
+DocumentWriteApplyDetailStore.prototype.cancelSendApproval = function() {
     this.applyResult.submitResult = '';
     this.applyResult.errorMsg = '';
     this.backApplyResult.submitResult = '';
     this.backApplyResult.errorMsg = '';
 };
-ReportSendApplyDetailStore.prototype.hideApprovalBtns = function() {
+DocumentWriteApplyDetailStore.prototype.hideApprovalBtns = function() {
     this.selectedDetailItem.showApproveBtn = false;
     this.selectedDetailItem.showCancelBtn = false;
 };
-ReportSendApplyDetailStore.prototype.getNextCandidate = function(result) {
+DocumentWriteApplyDetailStore.prototype.getNextCandidate = function(result) {
     if (result.error){
         this.candidateList = [];
     }else{
         this.candidateList = result;
     }
 };
+DocumentWriteApplyDetailStore.prototype.setUpdateFilesLists = function(updateLists) {
+    this.detailInfoObj.info.detail.file_upload_logs = updateLists;
+};
 
 
-module.exports = alt.createStore(ReportSendApplyDetailStore, 'ReportSendApplyDetailStore');
+
+module.exports = alt.createStore(DocumentWriteApplyDetailStore, 'DocumentWriteApplyDetailStore');

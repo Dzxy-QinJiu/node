@@ -26,7 +26,6 @@ function ApplyViewDetailActions() {
         'setDetailInfoObjAfterAdd',
         'setDetailInfo',
         'setUpdateFilesLists'
-        // 'setDeleteApplyApproveFile'
     );
 
     //获取审批单详情

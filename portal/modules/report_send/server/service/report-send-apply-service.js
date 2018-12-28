@@ -10,7 +10,9 @@ var restUtil = require('ant-auth-request').restUtil(restLogger);
 var _ = require('lodash');
 var restApis = {
     //添加舆情报送申请
-    addReportSendApply: '/rest/base/v1/workflow/opinionreport/:type',
+    addReportSendApply: '/rest/base/v1/workflow/report/apply',
+    //添加文件撰写申请
+    addDocumentWriteApply: '/rest/base/v1/workflow/document/apply',
     //通过或者驳回申请
     approveOpinionreportApplyPassOrReject: '/rest/base/v1/workflow/opinionreport/approve',
     //文件撰写的通过或者驳回
@@ -26,9 +28,13 @@ var restApis = {
 exports.restUrls = restApis;
 //添加申请
 exports.addReportSendApply = function(req, res,formData) {
+    var url = restApis.addReportSendApply;
+    if (req.params.type === 'document'){
+        url = restApis.addDocumentWriteApply;
+    }
     return restUtil.authRest.post(
         {
-            url: restApis.addReportSendApply.replace(':type',req.params.type),
+            url: url,
             req: req,
             res: res,
             formData: formData,
