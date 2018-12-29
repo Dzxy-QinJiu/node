@@ -403,3 +403,8 @@ export const DOCUMENT_TYPE = [
 ];
 //顶部导航的高度
 export const TOP_NAV_HEIGHT = 64;
+export const DIFF_TYPE_LOG_FILES = {
+    SALE_UPLOAD: 'sale_upload',//销售添加申请时上传的文件
+    SALE_UPLOAD_NEW: 'sale_upload_new',//销售在支持部人确认申请前添加的文件和销售添加申请后添加的文件
+    APPROVER_UPLOAD: 'approver_upload'//支持部上传的文件
+};

@@ -551,3 +551,4 @@ exports.formatSalesmanList = function(salesManList) {
     });
     return dataList;
 };
+

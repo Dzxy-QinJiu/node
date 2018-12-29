@@ -2645,7 +2645,6 @@ var en_US = {
     'apply.approve.wait.confirm': 'To be confirmed finished by {confirmer}',//待{confirmer}确认任务完成
     'apply.approve.wait.upload': 'Waiting for {uploader} to upload',//待{uploader}上传
     'apply.approve.confirm.finish': 'Confirmation completed',//确认完成
-    'apply.approve.update.file': 'Continue to upload file',//继续添加文件
     'apply.failed.get.type.application': 'Failed to get all {type} applies',//获取全部{type}申请失败
     'apply.failed.get.my.worklist.application': 'Failed to get applies to be approved by me',//获取由我审批的{type}申请失败
     'apply.approver.confirm.task.done': 'Confirm the task done',//确认任务完成
@@ -2655,6 +2654,9 @@ var en_US = {
     'click.ctrl.upload.mutil.file': 'You can upload more than one file at one time',//可上传多个文件！
     'apply.approve.customer.info': 'Customer Info',//客户资料
     'apply.approve.add.files': 'Added files',//补充文件
-    'fail.apply.approve.result': 'Failed to approve'//审批失败
+    'fail.apply.approve.result': 'Failed to approve',//审批失败
+    'apply.approve.upload.file.type': 'Upload {fileType}',//上传{fileType}
+    'apply.approve.continue.file.type': 'Continue to upload {fileType}',//继续上传{fileType}
+    'apply.approve.delete.this.file': 'Whether to delete this file',//是否删除此文件
 };
 export default en_US;

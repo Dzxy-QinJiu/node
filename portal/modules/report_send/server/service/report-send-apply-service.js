@@ -18,11 +18,11 @@ var restApis = {
     //文件撰写的通过或者驳回
     approveDocumentApplyPassOrReject: '/rest/base/v1/workflow/document/approve',
     //上传文件
-    uploadReportFile: '/rest/base/v1/workflow/upload',
+    uploadReportFile: '/rest/base/v1/workflow/file/upload',
     //下载相关文件
-    downLoadReportFile: '/rest/base/v1/workflow/download',
+    downLoadReportFile: '/rest/base/v1/workflow/file/download',
     //删除相关文件
-    delReportFile: '/rest/base/v1/workflow/delete'
+    delReportFile: '/rest/base/v1/workflow/file/delete'
 
 };
 exports.restUrls = restApis;

@@ -2664,7 +2664,6 @@ var zh_CN = {
     'apply.approve.wait.confirm': '待{confirmer}确认任务完成',
     'apply.approve.wait.upload': '待{uploader}上传',
     'apply.approve.confirm.finish': '确认完成',
-    'apply.approve.update.file': '继续添加文件',
     'apply.failed.get.type.application': '获取全部{type}申请失败',
     'apply.failed.get.my.worklist.application': '获取由我审批的{type}申请失败',
     'apply.approver.confirm.task.done': '确认任务完成',
@@ -2674,6 +2673,9 @@ var zh_CN = {
     'click.ctrl.upload.mutil.file': '可上传多个文件！',
     'apply.approve.customer.info': '客户资料',
     'apply.approve.add.files': '补充文件',
-    'fail.apply.approve.result': '审批失败'
+    'fail.apply.approve.result': '审批失败',
+    'apply.approve.upload.file.type': '上传{fileType}',
+    'apply.approve.continue.file.type': '继续上传{fileType}',
+    'apply.approve.delete.this.file': '是否删除此文件',
 };
 export default zh_CN;
