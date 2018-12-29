@@ -4,9 +4,11 @@ function merge() {
     var ret = {};
     var args = [].slice.call(arguments, 0);
     args.forEach(function(a) {
-        Object.keys(a).forEach(function(k) {
-            ret[k] = a[k];
-        });
+        if(a){
+            Object.keys(a).forEach(function(k) {
+                ret[k] = a[k];
+            });
+        }
     });
     return ret;
 }
