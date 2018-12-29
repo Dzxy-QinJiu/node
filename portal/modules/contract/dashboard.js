@@ -22,6 +22,12 @@ const resizeEmitter = require('PUB_DIR/sources/utils/emitters').resizeEmitter;
 const threeMonthAgo = moment().subtract(3, 'month').valueOf();
 const now = moment().valueOf();
 
+const userData = require('PUB_DIR/sources/user-data');
+//是否是销售角色
+const isSalesRole = userData.hasRole(userData.ROLE_CONSTANS.SALES) ||
+    userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER) ||
+    userData.hasRole(userData.ROLE_CONSTANS.SECRETARY);
+
 class ContractDashboard extends React.Component {
     state = {
         //是否隐藏团队分布图
@@ -231,9 +237,8 @@ class ContractDashboard extends React.Component {
                 hide: this.state.isTeamDisChartHide,
                 content: this.getComponent(Analysis, {
                     chartType: 'bar',
-                    target: 'Contract',
-                    type: 'gross_profit',
-                    property: 'team',
+                    target: 'ContractGross',
+                    type: isSalesRole ? 'self' : 'all',
                     autoAdjustXaxisLabel: true,
                     xAxisRotateLength: 10,
                     gridY2: 70,
@@ -246,9 +251,8 @@ class ContractDashboard extends React.Component {
                 hide: this.state.isTeamDisChartHide,
                 content: this.getComponent(Analysis, {
                     chartType: 'bar',
-                    target: 'Contract',
-                    type: 'repay',
-                    property: 'team=amount',
+                    target: 'ContractRepay',
+                    type: isSalesRole ? 'self' : 'all',
                     autoAdjustXaxisLabel: true,
                     gridY2: 70,
                     processData: this.processAmountData,
@@ -369,8 +373,8 @@ class ContractDashboard extends React.Component {
                                                 <div className="chart-wrap">
                                                     {chart.title && !chart.isTitleHide ? (
                                                         <AntcCardContainer title={chart.title}
-                                                            csvFileName={refName + '.csv'}
-                                                            exportData={exportData.bind(this)}
+                                                                           csvFileName={refName + '.csv'}
+                                                                           exportData={exportData.bind(this)}
                                                         >
                                                             {this.renderChartContent(chart.content)}
                                                         </AntcCardContainer>

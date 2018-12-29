@@ -41,6 +41,20 @@ module.exports = [{
     }
 }, {
     'method': 'get',
+    'path': contractAnalysisUrl + ':type/gross/profit/team',
+    'handler': 'getContractGrossAnalysisData',
+    'passport': {
+        'needLogin': true
+    }
+}, {
+    'method': 'get',
+    'path': contractAnalysisUrl + ':type/repay/team/gross/profit',
+    'handler': 'getContractRepayAnalysisData',
+    'passport': {
+        'needLogin': true
+    }
+}, {
+    'method': 'get',
     'path': teamUrl + 'myteam',
     'handler': 'getTeamList',
     'passport': {
@@ -63,7 +77,7 @@ module.exports = [{
     'privileges': [
         'CUSTOMER_ANALYSIS_COMMON'
     ]
-},{
+}, {
     'method': 'get',
     'path': customerManagerAnalysisUrl + ':type/:property',
     'handler': 'getCustomerManagerAnalysisData',
@@ -112,7 +126,7 @@ module.exports = [{
     passport: {
         'needLogin': true
     }
-},{
+}, {
     'method': 'get',//获取设备类型统计manager
     'path': userAnalysisV3Url + '/manager/device',
     'handler': 'getDeviceTypeBymanager',
@@ -269,7 +283,7 @@ module.exports = [{
     'passport': {
         'needLogin': true
     }
-}, {     
+}, {
     //获取各行业试用客户覆盖率
     'method': 'get',
     'path': '/rest/analysis/customer/v2/statistic/:type/industry/stage/region/overlay',
@@ -326,7 +340,7 @@ module.exports = [{
     'passport': {
         'needLogin': true
     }
-},{
+}, {
     //开通应用
     'method': 'put',
     'path': '/rest/base/v1/role/:roleId/visible/true',
@@ -334,7 +348,7 @@ module.exports = [{
     'passport': {
         'needLogin': true
     }
-},{
+}, {
     //给成员增加角色
     'method': 'put',
     'path': '/rest/base/v1/user/role/updates',
@@ -342,7 +356,7 @@ module.exports = [{
     'passport': {
         'needLogin': true
     }
-},{
+}, {
     //给成员删除角色
     'method': 'delete',
     'path': '/rest/base/v1/user/role/updates',
@@ -359,7 +373,7 @@ module.exports = [{
     'passport': {
         'needLogin': true
     }
-}, {    
+}, {
     //获取指定用户全部应用的审计日志
     'method': 'post',
     'path': '/rest/analysis/auditlog/v1/apps/userdetail/:user_id',
@@ -375,7 +389,7 @@ module.exports = [{
     'passport': {
         'needLogin': true
     }
-},{
+}, {
     //批量获取权限信息
     'method': 'post',
     'path': '/rest/base/v1/permission/batch_ids',
@@ -383,7 +397,7 @@ module.exports = [{
     'passport': {
         'needLogin': true
     }
-},{
+}, {
     //add查询条件
     'method': 'post',
     'path': '/rest/condition/v1/condition',
@@ -391,7 +405,7 @@ module.exports = [{
     'passport': {
         'needLogin': true
     }
-}, {    
+}, {
     //update查询条件
     'method': 'put',
     'path': '/rest/condition/v1/condition',
@@ -399,7 +413,7 @@ module.exports = [{
     'passport': {
         'needLogin': true
     }
-}, {    
+}, {
     //get查询条件
     'method': 'post',
     'path': '/rest/condition/v1/condition/range/:type/:page_size/:sort_field/:order',
@@ -407,7 +421,7 @@ module.exports = [{
     'passport': {
         'needLogin': true
     }
-}, {    
+}, {
     //delete查询条件
     'method': 'delete',
     'path': '/rest/condition/v1/condition/:id',
@@ -415,7 +429,7 @@ module.exports = [{
     'passport': {
         'needLogin': true
     }
-}, {    
+}, {
     //申请延期（多应用
     'method': 'post',
     'path': '/rest/base/v1/user/grants/update/apply',
