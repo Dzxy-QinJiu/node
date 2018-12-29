@@ -120,6 +120,13 @@ class ContractDashboard extends React.Component {
         });
     };
 
+    processContractRepayAmount = (data) => {
+        return _.map(data, item => {
+            item.value = formatAmount(item.total);
+            return item;
+        });
+    };
+
     renderChartContent = (content) => {
         return (
             <div className="chart-content">
@@ -255,7 +262,7 @@ class ContractDashboard extends React.Component {
                     type: isSalesRole ? 'self' : 'all',
                     autoAdjustXaxisLabel: true,
                     gridY2: 70,
-                    processData: this.processAmountData,
+                    processData: this.processContractRepayAmount,
                     refName: 'xin_zeng_hui_kuan_tuan_dui_fen_bu',
                 })
             },
@@ -373,8 +380,8 @@ class ContractDashboard extends React.Component {
                                                 <div className="chart-wrap">
                                                     {chart.title && !chart.isTitleHide ? (
                                                         <AntcCardContainer title={chart.title}
-                                                                           csvFileName={refName + '.csv'}
-                                                                           exportData={exportData.bind(this)}
+                                                            csvFileName={refName + '.csv'}
+                                                            exportData={exportData.bind(this)}
                                                         >
                                                             {this.renderChartContent(chart.content)}
                                                         </AntcCardContainer>
