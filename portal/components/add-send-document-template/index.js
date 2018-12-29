@@ -93,9 +93,9 @@ class AddReportSendApply extends React.Component {
                     formData.append('files', file);
                 });
             }
-            // fields为表单其他项的数据,在antd-pro中是fileds.f
-            Object.keys(values).map((item) => {
-                formData.append(item,values[item]);
+            //其他表单的提交项
+            _.forEach(values, (value, key) => {
+                formData.append(key,value);
             });
             this.setState({
                 isSaving: true,
@@ -185,14 +185,14 @@ class AddReportSendApply extends React.Component {
         return false;
     };
     fileRemove=(file) => {
-        this.setState((state) => {
-            const index = state.fileList.indexOf(file);
-            const newFileList = state.fileList.slice();
-            newFileList.splice(index, 1);
-            return {
-                fileList: newFileList,
-            };
-        });
+        var fileList = this.state.fileList;
+        const index = fileList.indexOf(file);
+        fileList.splice(index, 1);
+        this.setState(
+            {
+                fileList: fileList
+            }
+        );
     };
     render() {
         var formData = this.state.formData;

@@ -18,6 +18,7 @@ const MY_TEAM_TREE_KEY = 'my_team_tree';
 const AUTH_MAP = {
     ALL_TEAM_AUTH: 'GET_TEAM_LIST_ALL'//管理员获取所有团队树的权限
 };
+import {DIFF_TYPE_LOG_FILES} from './consts';
 // 获取拨打电话的座席号
 exports.getUserPhoneNumber = function(cb) {
     let user_id = getUserData().user_id;
@@ -195,5 +196,27 @@ exports.getDealStageList = function(cb) {
                 if (_.isFunction(cb)) cb(dealStageList);
             }
         });
+    }
+};
+//将文件分为客户资料和各种类型的报告
+exports.seperateFilesDiffType = function(fileList) {
+    var allUploadFiles = {
+        customerFiles: [],//销售添加申请时上传的文件
+        customerAddedFiles: [],//销售在申请确认之前补充上传的文件
+        approverUploadFiles: []//支持部上传的文件
+    };
+    if (_.isArray(fileList)){
+        allUploadFiles.customerFiles = _.filter(fileList, item => item.log_type === DIFF_TYPE_LOG_FILES.SALE_UPLOAD);
+        allUploadFiles.customerAddedFiles = _.filter(fileList, item => item.log_type === DIFF_TYPE_LOG_FILES.SALE_UPLOAD_NEW);
+        allUploadFiles.approverUploadFiles = _.filter(fileList, item => item.log_type === DIFF_TYPE_LOG_FILES.APPROVER_UPLOAD);
+    }
+    return allUploadFiles;
+};
+//标识是否已经确认过审批,因为文件类型和舆情报告前面是有两个节点
+exports.hasApprovedReportAndDocumentApply = function(approverIds) {
+    if (_.isArray(approverIds)){
+        return approverIds.length === 2;
+    }else{
+        return false;
     }
 };

@@ -41,15 +41,9 @@ exports.addReportSendApply = function(req, res) {
                     formData['files'] = [fs.createReadStream(newTmpPath)];
                 }
             });
-
         }
-        //处理数据
-        Object.keys(fields).forEach((name) => {
-            if (name === 'expect_submit_time'){
-                formData[name] = parseInt(_.get(fields[name], '[0]'));
-            }else{
-                formData[name] = _.get(fields[name], '[0]');
-            }
+        _.forEach(fields, (value, key) => {
+            formData[key] = _.get(value, '[0]');
         });
         try {
             //调用上传请求服务
