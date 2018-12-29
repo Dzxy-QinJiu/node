@@ -136,7 +136,7 @@ const DetailRepayment = createReactClass({
                 >
                     <DatePicker
                         name={'date' + index}
-                        onChange={this.setField.bind(this, 'date', index)}
+                        onChange={_.isInteger(index) ? this.setField.bind(this, 'date', index) : this.setField.bind(this, 'date')}
                         value={formData.date ? moment(formData.date) : moment()}
                         disabledDate={disabledDate}
                     />
@@ -153,7 +153,7 @@ const DetailRepayment = createReactClass({
                         <Input
                             name={'amount' + index}
                             value={this.parseAmount(formData.amount)}
-                            onChange={this.setField.bind(this, 'amount', index)}
+                            onChange={_.isInteger(index) ? this.setField.bind(this, 'amount', index) : this.setField.bind(this, 'amount')}
                         />
                     </Validator>
                 </FormItem>
@@ -170,7 +170,7 @@ const DetailRepayment = createReactClass({
                         <Input
                             name={'gross_profit' + index}
                             value={this.parseAmount(formData.gross_profit)}
-                            onChange={this.setField.bind(this, 'gross_profit', index)}
+                            onChange={_.isInteger(index) ? this.setField.bind(this, 'gross_profit', index) : this.setField.bind(this, 'gross_profit')}
                         />
                     </Validator>
                 </FormItem>
@@ -180,7 +180,7 @@ const DetailRepayment = createReactClass({
                     <Checkbox
                         name="is_first"
                         checked={['true', true].indexOf(formData.is_first) > -1}
-                        onChange={this.setField.bind(this, 'is_first', index)}
+                        onChange={_.isInteger(index) ? this.setField.bind(this, 'is_first', index) : this.setField.bind(this, 'is_first')}
                     >
                         {Intl.get('contract.167', '首笔回款')}
                     </Checkbox>
