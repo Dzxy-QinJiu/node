@@ -186,7 +186,7 @@ class ContractDashboard extends React.Component {
                 title: Intl.get('contract.143', '新增回款额'),
                 isTitleHide: true,
                 content: this.getComponent(Analysis, {
-                    target: 'OPLATE_REALM_ADMIN',
+                    target: 'Contract',
                     chartType: 'box',
                     type: 'repay',
                     property: 'total=amount',
