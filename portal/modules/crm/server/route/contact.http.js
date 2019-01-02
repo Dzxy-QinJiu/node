@@ -43,6 +43,7 @@ module.exports = {
             'CRM_EDIT_CONTACT'
         ]
     },{
+        //小程序中使用
         'method': 'put',
         'path': '/rest/edit/contact/entirety',
         'handler': 'editContactEntirety',

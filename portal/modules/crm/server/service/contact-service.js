@@ -51,7 +51,8 @@ exports.addContact = function(req, res, newContact) {
             res: res
         }, newContact);
 };
-//整体修改联系人的信息
+/*整体修改联系人的信息
+小程序中使用*/
 exports.editContactEntirety = function(req, res) {
     return restUtil.authRest.put(
         {
