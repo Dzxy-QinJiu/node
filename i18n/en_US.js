@@ -572,7 +572,14 @@ var en_US = {
     'user.disable.logon': 'Disable logon',//停用登录
     'user.frequent.logon': 'Frequent logon',//频繁登录
     'user.get.score.failed': 'Failed to get user score',//获取用户分数失败
-
+    'user.access.steps.tip': 'You have not accessed the user yet. Please access the user first by the following way',//您还没有接入用户，请先通过以下方式接入用户
+    'user.jscode.copy': 'Copy',//复制
+    'user.copy.success.tip': 'Copied success',//复制成功！
+    'user.access.way.tip': 'If you use the following products, you can also access users in the following ways',//您如果使用了以下产品，还可以通过以下方式接入用户
+    'user.jscode.test.btn': 'Click test',//点击测试
+    'user.jscode.use.tip': 'Please add the above JS code to the header of the application page if it has been added ',//请将以上js代码添加到应用页面的header中，如已添加
+    'user.test.error.tip': 'Test failed',//测试失败
+    'user.list.check.refresh': 'Refresh to view the user list',//刷新查看用户列表
     // 用户分析
     'user.login.total.score': 'Total score', // 总分
     'user.login.latest.activity.score': 'Latest activity score', // 最新活跃度分数

@@ -8,16 +8,17 @@ var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 
 const productRestApis = {
-    product: '/rest/base/v1/products'
+    product: 'http://172.19.103.39:8391/rest/base/v1/products'
 };
 
 //获取产品列表
 exports.getProduct = function(req, res) {
+    let query = req.query || {page_size: 1000};
     return restUtil.authRest.get({
         url: productRestApis.product + '/list',
         req: req,
         res: res
-    }, {page_size: 100});
+    }, query);
 };
 //添加产品
 exports.addProduct = function(req, res, product) {
@@ -43,3 +44,31 @@ exports.updateProduct = function(req, res, product) {
         res: res
     }, product);
 };
+
+//添加uem产品
+exports.addUemProduct = function(req, res) {
+    return restUtil.authRest.post({
+        url: productRestApis.product + '/uem',
+        req: req,
+        res: res
+    }, req.body);
+};
+
+// 测试
+exports.testUemProduct = function(req, res) {
+    return restUtil.authRest.get({
+        url: productRestApis.product + '/uem/test',
+        req: req,
+        res: res
+    }, req.query);
+};
+
+// 获取js代码
+exports.getUemJsCode = function(req,res) {
+    return restUtil.authRest.get({
+        url: productRestApis.product + '/uem/js',
+        req: req,
+        res: res,
+    }, req.query);
+};
+

@@ -11,7 +11,10 @@ const session = storageUtil.session;
 // 缓存在sessionStorage中的座席号的key
 const sessionCallNumberKey = 'callNumber';
 let appList = [];
+//oplate中的应用+客套中的产品列表
 let allProductList = [];
+//已集成的产品列表
+let integrationProductList = [];
 let dealStageList = [];
 //缓存在sessionStorage中的我能查看的团队
 const MY_TEAM_TREE_KEY = 'my_team_tree';
@@ -198,6 +201,7 @@ exports.getDealStageList = function(cb) {
         });
     }
 };
+
 //将文件分为客户资料和各种类型的报告
 exports.seperateFilesDiffType = function(fileList) {
     var allUploadFiles = {
@@ -218,5 +222,54 @@ exports.hasApprovedReportAndDocumentApply = function(approverIds) {
         return approverIds.length === 2;
     }else{
         return false;
+    }
+};
+
+//获取集成配置
+exports.getIntegrationConfig = function(cb) {
+    //集成配置信息{type: matomo、oplate、uem}
+    let integrationConfig = getUserData().integration_config;
+    if (integrationConfig) {
+        if (_.isFunction(cb)) cb(integrationConfig);
+    } else {
+        const userProperty = 'integration_config';
+        $.ajax({
+            url: '/rest/global/integration/config',
+            type: 'get',
+            dataType: 'json',
+            success: data => {
+                if (_.isFunction(cb)) cb(data);
+                //保存到userData中
+                setUserData(userProperty, data);
+            },
+            error: xhr => {
+                if (_.isFunction(cb)) cb({errorMsg: xhr.responseJSON});
+            }
+        });
+    }
+};
+//获取已集成的产品列表
+exports.getProductList = function(cb, isRefresh) {
+    //需要刷新产品列表或产品列表中没有数据时，发请求获取已集成的产品列表
+    if(isRefresh || !_.get(integrationProductList, '[0]')){
+        $.ajax({
+            url: '/rest/product',
+            type: 'get',
+            dataType: 'json',
+            data: {
+                page_size: 1000, //为确保能获取到全部的产品，所以传了个比较大的数1000
+                integration: true //集成的应用
+            },
+            success: result => {
+                integrationProductList = _.get(result, 'list', []);
+                if (_.isFunction(cb)) cb(integrationProductList);
+            },
+            error: xhr => {
+                integrationProductList = [];
+                if (_.isFunction(cb)) cb(integrationProductList);
+            }
+        });
+    } else {
+        if (_.isFunction(cb)) cb(integrationProductList);
     }
 };
