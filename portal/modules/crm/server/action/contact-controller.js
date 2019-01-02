@@ -79,7 +79,8 @@ exports.editContact = function(req, res) {
     });
 };
 /*
-* 整体修改联系人的信息*/
+* 整体修改联系人的信息
+* 小程序上在用*/
 
 exports.editContactEntirety = function(req, res) {
     contactService.editContactEntirety(req, res).on('success', function(data) {
