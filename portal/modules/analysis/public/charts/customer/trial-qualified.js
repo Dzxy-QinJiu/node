@@ -132,7 +132,7 @@ function handleTrialQualifiedNumClick(customerIds, text, customerIdsField, recor
 }
 
 function trialQualifiedNumRender(customerIdsField, text, record) {
-    if (text) {
+    if (text || customerIdsField === CUSTOMER_IDS_FIELD) {
         const customerIds = record[customerIdsField] || [];
 
         return (
