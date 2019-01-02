@@ -218,6 +218,8 @@ exports.updateCluecustomerDetail = function(submitObj, isMarkingAvalibility) {
                 //联系人的名字
                 updateObj.contacts[0]['name'] = submitObj[key];
             }else{
+                //过滤掉值为空
+                submitObj[key] = submitObj[key].filter(item => item);
                 updateObj.contacts[0][key] = submitObj[key];
             }
         }

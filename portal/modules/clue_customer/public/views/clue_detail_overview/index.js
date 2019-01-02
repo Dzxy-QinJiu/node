@@ -19,7 +19,6 @@ import Trace from 'LIB_DIR/trace';
 var className = require('classnames');
 var userData = require('PUB_DIR/sources/user-data');
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
-import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 const RELATEAUTHS = {
     'RELATEALL': 'CRM_MANAGER_CUSTOMER_CLUE_ID',//管理员通过线索id查询客户的权限
