@@ -269,10 +269,12 @@ class UploadAndDeleteFile extends React.Component {
                         };
                         return (
                             <div className="upload-file-name">
-
-                                {hasPrivilege('DOCUMENT_DOWNLOAD') && fileId ?
-                                    <a href={'/rest/reportsend/download/' + JSON.stringify(reqData)}>{fileName}</a> : fileName}
+                                <span className="file-name">
+                                    {hasPrivilege('DOCUMENT_DOWNLOAD') && fileId ?
+                                        <a href={'/rest/reportsend/download/' + JSON.stringify(reqData)}>{fileName}</a> : fileName}
+                                </span>
                                 {approverUploadAndDeletePrivilege ? this.renderDeleteAndLoadingBtn(fileItem) : null}
+
                             </div>
                         );
                     })}
@@ -293,7 +295,7 @@ class UploadAndDeleteFile extends React.Component {
                     var fileName = fileItem.name;
                     return (
                         <div className="upload-file-name">
-                            {fileName}
+                            <span className="file-name">{fileName}</span>
                             {this.renderDeleteAndLoadingBtn(fileItem)}
                         </div>
                     );

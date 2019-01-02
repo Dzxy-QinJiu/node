@@ -73,7 +73,7 @@ function ApplyViewDetailActions() {
                 this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
                 //更新选中的申请单类型
                 //如果不是最后确认的那一步，状态就还是ongoing
-                if(obj.report_id || obj.agree === 'reject' || obj.agree === 'cancel'){
+                if(obj.report_ids || obj.agree === 'reject' || obj.agree === 'cancel'){
                     ReportSendUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
                     if (Oplate && Oplate.unread) {
                         Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND] -= 1;
@@ -95,7 +95,7 @@ function ApplyViewDetailActions() {
         }, (errMsg) => {
             //更新选中的申请单类型
             ReportSendUtils.emitter.emit('updateSelectedItem', {status: 'error'});
-            this.dispatch({loading: false, error: true, errorMsg: errMsg || Intl.get('fail.apply.approve.result','审批失败')});
+            this.dispatch({loading: false, error: true, errorMsg: errMsg});
         });
     };
     // 撤销申请
