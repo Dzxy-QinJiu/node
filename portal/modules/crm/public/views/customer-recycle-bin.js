@@ -66,12 +66,11 @@ class CustomerRecycleBin extends React.Component {
             }
         };
         //排序
-        if (!_.isEmpty(this.state.sorter)) {
-            // bodyData.sortAndOrders.push({key: this.sorter.field, value: this.sorter.value});
-            bodyData.sortAndOrders = [{key: this.sorter.field, value: this.sorter.value}];
+        if (_.get(this.state, 'sorter.field')) {
+            bodyData.sort_and_orders = [{key: this.state.sorter.field, value: this.state.sorter.order}];
         }
         //搜索
-        if (!_isEmpty(this.state.searchObj)) {
+        if (_.get(this.state, 'searchObj.field')) {
             bodyData.query[this.state.searchObj.field] = this.state.searchObj.value;
         }
         return bodyData;
@@ -189,8 +188,7 @@ class CustomerRecycleBin extends React.Component {
             {
                 title: Intl.get('crm.4', '客户名称'),
                 width: 200,
-                dataIndex: 'name',
-                sorter: true
+                dataIndex: 'name'
             },
             {
                 title: Intl.get('call.record.contacts', '联系人'),
@@ -219,7 +217,6 @@ class CustomerRecycleBin extends React.Component {
                 title: Intl.get('crm.6', '负责人'),
                 width: column_width,
                 dataIndex: 'user_name',
-                sorter: true,
                 className: 'has-filter'
             },
             {
@@ -242,8 +239,7 @@ class CustomerRecycleBin extends React.Component {
             }, {
                 title: Intl.get('user.operator', '操作人'),
                 width: column_width,
-                dataIndex: 'operator_name',
-                sorter: true
+                dataIndex: 'operator_name'
             }, {
                 title: Intl.get('common.operate', '操作'),
                 width: 50,
@@ -296,9 +292,23 @@ class CustomerRecycleBin extends React.Component {
         return tableData;
     }
 
+    rowKey(record, index) {
+        return record.id;
+    }
+
+    //处理选中行的样式
+    handleRowClassName = (record, index) => {
+        // if ((record.id === this.props.currDeal.id) && this.props.isDetailPanelShow) {
+        //     return 'current-row';
+        // }
+        // else {
+        return '';
+        // }
+    };
+
     renderTableContent(tableHeight) {
         //初次获取数据时展示loading效果
-        if (this.state.isLoading && !_.get(this.state, 'lastId')) {
+        if (this.state.isLoading && !_.get(this.state, 'customerList[0]')) {
             return (<Spinner />);
         } else if (_.get(this.state, 'customerList[0]')) {
             return (
@@ -369,12 +379,13 @@ class CustomerRecycleBin extends React.Component {
                 field: 'operator_name'
             },
             {
-                name: Intl.get('call.record.contacts', '联系人'),
-                field: 'contact_name'
+                name: Intl.get('crm.6', '负责人'),
+                field: 'user_name'
+
             },
             {
-                name: Intl.get('common.phone', '电话'),
-                field: 'phone'
+                name: Intl.get('call.record.contacts', '联系人'),
+                field: 'contact_name'
             }
         ];
         return (
