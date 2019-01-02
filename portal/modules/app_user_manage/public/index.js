@@ -31,8 +31,6 @@ var ShareObj = require('./util/app-id-share-util');
 var FilterBtn = require('../../../components/filter-btn');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 var SelectFullWidth = require('../../../components/select-fullwidth');
-var Popover = require('antd').Popover;
-import {Button} from 'antd';
 import ApplyUser from './views/v2/apply-user';
 
 var topNavEmitter = require('../../../public/sources/utils/emitters').topNavEmitter;
