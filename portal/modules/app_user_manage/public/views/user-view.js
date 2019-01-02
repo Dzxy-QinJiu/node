@@ -24,6 +24,7 @@ import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/add-clues-form'
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import {commonPhoneRegex, areaPhoneRegex, hotlinePhoneRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 //异常登录的类型
 const EXCEPTION_TYPES = [{
     name: Intl.get('common.all', '全部'),
@@ -1097,7 +1098,8 @@ class UserTabContent extends React.Component {
         //销售可以批量操作
         const hasSelectAuth = hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN) ||
             hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES);
-        var rowSelection = hasSelectAuth ? this.getRowSelection() : null;
+        //只有oplate的用户才有批量操作
+        var rowSelection = hasSelectAuth && isOplateUser() ? this.getRowSelection() : null;
         var divHeight = $(window).height() -
             LAYOUT_CONSTANTS.TOP_DISTANCE -
             LAYOUT_CONSTANTS.BOTTOM_DISTANCE -

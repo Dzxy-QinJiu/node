@@ -39,6 +39,7 @@ const WHEEL_DELAY = 10;//滚轮事件延时
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import UserStatusSwitch from './user-status-switch';
 import { getPassStrenth, passwordRegex } from 'CMP_DIR/password-strength-bar';
+import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 
 class UserDetail extends React.Component {
     static defaultProps = {
@@ -238,7 +239,8 @@ class UserDetail extends React.Component {
 
     renderUserStatus = (user, useIcon = false) => {
         let userStatus = user && user.status;
-        if (!hasPrivilege('APP_USER_EDIT')) {
+        let hasEditPrivilege = hasPrivilege('APP_USER_EDIT') && isOplateUser();
+        if (!hasEditPrivilege) {
             return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
         }
         return (<UserStatusSwitch useIcon={useIcon} userId={_.get(user, 'user_id')} status={userStatus === '1' ? true : false} />);
@@ -362,6 +364,7 @@ class UserDetail extends React.Component {
         }
 
         const EDIT_FEILD_WIDTH = 395;
+        let hasEditPrivilege = hasPrivilege('APP_USER_EDIT') && isOplateUser();
         return (
             <div className="right-panel-wrapper">
                 <span className="iconfont icon-close" onClick={this.closeRightPanel} />
@@ -376,7 +379,7 @@ class UserDetail extends React.Component {
                                     </div>
                                     <div className="basic-info-btns">
                                         {
-                                            !userInfo.loading ? <span className="iconfont icon-edit-pw" title={Intl.get('common.edit.password', '修改密码')} onClick={() => { this.showEditPw(true); }} /> : null
+                                            !userInfo.loading && hasEditPrivilege ? <span className="iconfont icon-edit-pw" title={Intl.get('common.edit.password', '修改密码')} onClick={() => { this.showEditPw(true); }} /> : null
                                         }
                                         {
                                             !userInfo.loading ? this.renderUserStatus(userInfo.data, true) : null
@@ -397,7 +400,7 @@ class UserDetail extends React.Component {
                                                             type="password"
                                                             hideButtonBlock={true}
                                                             showPasswordStrength={true}
-                                                            disabled={hasPrivilege('APP_USER_EDIT') ? false : true}
+                                                            disabled={hasEditPrivilege ? false : true}
                                                             validators={[{ validator: this.checkPass }]}
                                                             placeholder={Intl.get('login.please_enter_new_password', '请输入新密码')}
                                                             title={Intl.get('user.batch.password.reset', '重置密码')}
@@ -433,7 +436,7 @@ class UserDetail extends React.Component {
                                                                 field="nick_name"
                                                                 editBtnTip={Intl.get('user.nickname.set.tip', '设置昵称')}
                                                                 placeholder={Intl.get('user.nickname.write.tip', '请填写昵称')}
-                                                                hasEditPrivilege={hasPrivilege('APP_USER_EDIT')}
+                                                                hasEditPrivilege={hasEditPrivilege}
                                                                 saveEditInput={this.handleUserInfoEdit}
                                                                 noDataTip={Intl.get('user.nickname.no.tip', '暂无昵称')}
                                                                 addDataTip={Intl.get('user.nickname.add.tip', '添加昵称')}
@@ -450,7 +453,7 @@ class UserDetail extends React.Component {
                                                                 textCut={true}
                                                                 editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
                                                                 placeholder={Intl.get('user.input.remark', '请输入备注')}
-                                                                hasEditPrivilege={hasPrivilege('APP_USER_EDIT')}
+                                                                hasEditPrivilege={hasEditPrivilege}
                                                                 saveEditInput={this.handleUserInfoEdit}
                                                                 noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
                                                                 addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}

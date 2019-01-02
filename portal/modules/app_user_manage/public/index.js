@@ -39,6 +39,7 @@ import {RETRY_GET_APP} from './util/consts';
 import Trace from 'LIB_DIR/trace';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {getIntegrationConfig, getProductList} from 'PUB_DIR/sources/utils/common-data-util';
+import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import Spinner from 'CMP_DIR/spinner';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
@@ -580,23 +581,27 @@ class AppUserManage extends React.Component {
                         className="inline-block app_user_filter_btn  btn-item"
                     /> : null
                 }
-                <PrivilegeChecker
-                    onClick={this.addAppUser}
-                    check={this.addUserBtnCheckun}
-                    className="inline-block add-btn-common btn-item">
-                    <Button><ReactIntl.FormattedMessage id="user.user.add" defaultMessage="添加用户"/></Button>
-                </PrivilegeChecker>
-                {this.getApplyUserBtn()}
-                {this.getBatchOperateBtn()}
-                <PrivilegeChecker
-                    onClick={this.addAppUser}
-                    check={this.addUserBtnCheckun}
-                    title={Intl.get('user.user.add', '添加用户')}
-                    className="inline-block add-btn-mini">
-                    <Icon type="plus"/>
-                </PrivilegeChecker>
-                {this.getApplyUserBtnMini()}
-                {this.getBatchOperateBtnMini()}
+                {//只有oplate的用户才可以进行添加、申请等操作
+                    isOplateUser() ? (
+                        <span>
+                            <PrivilegeChecker
+                                onClick={this.addAppUser}
+                                check={this.addUserBtnCheckun}
+                                className="inline-block add-btn-common btn-item">
+                                <Button><ReactIntl.FormattedMessage id="user.user.add" defaultMessage="添加用户"/></Button>
+                            </PrivilegeChecker>
+                            {this.getApplyUserBtn()}
+                            {this.getBatchOperateBtn()}
+                            <PrivilegeChecker
+                                onClick={this.addAppUser}
+                                check={this.addUserBtnCheckun}
+                                title={Intl.get('user.user.add', '添加用户')}
+                                className="inline-block add-btn-mini">
+                                <Icon type="plus"/>
+                            </PrivilegeChecker>
+                            {this.getApplyUserBtnMini()}
+                            {this.getBatchOperateBtnMini()}
+                        </span>) : null}
             </div>
         </ButtonZones>);
     };

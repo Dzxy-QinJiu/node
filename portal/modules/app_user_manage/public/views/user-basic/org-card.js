@@ -13,6 +13,7 @@ import { PropTypes } from 'prop-types';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import OrganizationAjax from 'MOD_DIR/common/public/ajax/organization';
+import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 const Option = Select.Option;
 const CATEGORY_TYPE = oplateConsts.CATEGORY_TYPE;
 
@@ -150,7 +151,7 @@ class OrgCard extends React.Component {
                                 {groupsData}
                             </span>
                             {
-                                hasEditAuth ?
+                                hasEditAuth && isOplateUser() ?
                                     <DetailEditBtn
                                         title={Intl.get('common.edit', '编辑')}
                                         onClick={this.toggleEdit}

@@ -33,6 +33,7 @@ const FORMAT = oplateConsts.DATE_FORMAT;
 var Ajax = require('./v3/app-role-permission/ajax');
 var appAjaxTrans = require('MOD_DIR/common/public/ajax/app');
 import {CONSTANTS} from '../util/consts';
+import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 class UserDetailBasic extends React.Component {
     static defaultProps = {
         userId: '1'
@@ -339,7 +340,8 @@ class UserDetailBasic extends React.Component {
         if (typeof is_disabled === 'boolean') {
             is_disabled = is_disabled.toString();
         }
-        if (!hasPrivilege('APP_USER_EDIT')) {
+        //没有编辑的权限或者不是oplate用户时
+        if (!hasPrivilege('APP_USER_EDIT') || !isOplateUser()) {
             return is_disabled ? (is_disabled === 'true' ? Intl.get('common.app.status.close', '关闭') : Intl.get('common.app.status.open', '开启')) : is_disabled;
         }
         if (!is_disabled) {
@@ -517,7 +519,7 @@ class UserDetailBasic extends React.Component {
                             </div>
 
                             {
-                                !hideDetail ?
+                                !hideDetail && isOplateUser() ?
                                     <PrivilegeChecker
                                         check="APP_USER_EDIT"
                                         tagName="div"
@@ -549,7 +551,7 @@ class UserDetailBasic extends React.Component {
             return existAppIds.indexOf(app.app_id) < 0;
         });
         return (
-            leftApps.length ? (
+            leftApps.length && isOplateUser() ? (
                 <PrivilegeChecker
                     check="APP_USER_ADD"
                     tagName="a"
@@ -685,9 +687,11 @@ class UserDetailBasic extends React.Component {
         })();
         let userInfo = this.state.initialUser.user;
         let groupsInfo = this.state.initialUser.groups || [];
+        let hasEditPrivilege = hasPrivilege('APP_USER_EDIT') && isOplateUser();
         var DetailBlock = !this.state.isLoading && !this.state.getDetailErrorMsg ? (
             <div className='user-detail-baisc-v3'>
                 <UserBasicCard
+                    hasEditPrivilege={hasEditPrivilege}
                     customer_id={this.state.customer_id}
                     customer_name={this.state.customer_name}
                     sales_id={this.state.initialUser.sales.sales_id}
@@ -704,7 +708,7 @@ class UserDetailBasic extends React.Component {
                         value: userInfo.phone,
                         field: 'phone',
                         type: 'text',
-                        disabled: hasPrivilege('APP_USER_EDIT') ? false : true,
+                        disabled: hasEditPrivilege ? false : true,
                         validators: [{ validator: checkPhone }],
                         placeholder: Intl.get('user.input.phone', '请输入手机号'),
                         title: Intl.get('user.phone.set.tip', '修改手机号')
@@ -713,7 +717,7 @@ class UserDetailBasic extends React.Component {
                         value: userInfo.email,
                         field: 'email',
                         type: 'text',
-                        disabled: hasPrivilege('APP_USER_EDIT') ? false : true,
+                        disabled: hasEditPrivilege ? false : true,
                         validators: [{
                             type: 'email',
                             required: true,

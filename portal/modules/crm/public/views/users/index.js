@@ -23,6 +23,8 @@ import ErrorDataTip from '../components/error-data-tip';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
+import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
+
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
     STOP_USE: 'stopUse',//停用
@@ -474,7 +476,7 @@ class CustomerUsers extends React.Component {
             return <ErrorDataTip errorMsg={this.state.errorMsg} isRetry={true}
                 retryFunc={this.getCrmUserList.bind(this)}/>;
         }
-        let isShowCheckbox = isApplyButtonShow && !this.props.isMerge;
+        let isShowCheckbox = isApplyButtonShow && !this.props.isMerge && isOplateUser();
         let crmUserList = this.state.crmUserList;
         if (_.isArray(crmUserList) && crmUserList.length) {
             return (
@@ -548,7 +550,7 @@ class CustomerUsers extends React.Component {
                     <span className="crm-detail-total-tip">
                         {Intl.get('crm.overview.apply.user.tip', '该客户还没有用户')}
                     </span>)}
-                {isApplyButtonShow && !this.props.isMerge ? this.renderApplyBtns()
+                {isApplyButtonShow && !this.props.isMerge && isOplateUser() ? this.renderApplyBtns()
                     : null}
             </div>
             {this.state.applyType ?
