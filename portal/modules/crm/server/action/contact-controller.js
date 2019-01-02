@@ -78,6 +78,18 @@ exports.editContact = function(req, res) {
         res.status(500).json(err.message);
     });
 };
+/*
+* 整体修改联系人的信息
+* 小程序中使用*/
+
+exports.editContactEntirety = function(req, res) {
+    contactService.editContactEntirety(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(err) {
+        res.status(500).json(err.message);
+    });
+};
+
 
 /**
  * 设置默认联系人
