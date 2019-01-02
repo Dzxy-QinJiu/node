@@ -16,8 +16,8 @@ exports.approveApplyPassOrReject = function(obj) {
         success: function(data) {
             Deferred.resolve(data);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON || Intl.get('fail.apply.approve.result','审批失败'));
         }
     });
     return Deferred.promise();
