@@ -51,6 +51,15 @@ exports.addContact = function(req, res, newContact) {
             res: res
         }, newContact);
 };
+//整体修改联系人的信息
+exports.editContactEntirety = function(req, res) {
+    return restUtil.authRest.put(
+        {
+            url: contactUrl,
+            req: req,
+            res: res
+        }, req.body);
+};
 
 //删除联系人
 exports.deleteContact = function(req, res, ids) {

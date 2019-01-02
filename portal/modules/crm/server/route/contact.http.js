@@ -43,6 +43,14 @@ module.exports = {
             'CRM_EDIT_CONTACT'
         ]
     },{
+        'method': 'put',
+        'path': '/rest/edit/contact/entirety',
+        'handler': 'editContactEntirety',
+        'passport': {
+            'needLogin': true
+        },
+    },
+    {
         'method': 'post',
         'path': '/rest/contact/setdefault/:contactId',
         'handler': 'setDefault',
