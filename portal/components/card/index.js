@@ -103,6 +103,14 @@ class Card extends React.Component {
                             <div className="stop-triangle"></div>
                         </div>
                     )}
+                    {card.leftFlagDesc ? (
+                        <div className="card-left-layer">
+                            <div className="building-icon">
+                                {card.leftFlagDesc}
+                            </div>
+                            <div className="left-triangle"></div>
+                        </div>
+                    ) : null}
                     <div className="single-card">
                         <div className="img-container">
                             <DefaultUserLogoTitle

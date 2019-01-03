@@ -926,6 +926,7 @@ var zh_CN = {
     'config.product.url': '访问地址',
     'config.product.input.url': '请输入访问地址',
     'config.product.create_time': '创建时间',
+    'config.product.type': '产品类型',
     //配置end
     // 通话记录start
     'call.record.caller': '呼叫者',

@@ -118,7 +118,8 @@ class ProductionManage extends React.Component {
                     value: production.url,
                     showOnCard: true
                 },
-                showDelete: true
+                showDelete: true,
+                leftFlagDesc: production.integration_type ? production.integration_type.toUpperCase() : ''
             };
         });
 

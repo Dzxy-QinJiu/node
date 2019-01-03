@@ -919,6 +919,7 @@ var en_US = {
     'config.product.url': 'URL',//访问地址
     'config.product.input.url': 'Please input url',//请输入访问地址
     'config.product.create_time': 'Create time',//创建时间
+    'config.product.type': 'Product type',//产品类型
 
     //配置end
     // 通话记录start
