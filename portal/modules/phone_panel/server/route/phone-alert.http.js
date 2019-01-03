@@ -7,14 +7,6 @@
 module.exports = {
     module: 'phone_panel/server/action/phone-alert-controller',
     routes: [{
-        // 获取应用列表
-        'method': 'get',
-        'path': '/rest/base/phonecall/application',
-        'handler': 'getAppLists',
-        'passport': {
-            'needLogin': true
-        }
-    },{
         // 增加产品反馈
         'method': 'post',
         'path': '/rest/base/add/appfeedback',

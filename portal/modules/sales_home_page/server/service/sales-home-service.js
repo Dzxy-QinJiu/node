@@ -18,8 +18,6 @@ var restApis = {
     getSalesUser: '/rest/base/v1/view/user',
     //获取销售-合同列表
     getSalesContract: '/rest/base/v1/view/contract',
-    // 获取应用列表
-    getGrantApplications: '/rest/base/v1/application/grant_applications',
     //获取即将过期用户列表
     getExpireUser: '/rest/base/v1/view/expireuser',
     //获取网站个性化配置 或对网站进行个性化设置
@@ -35,29 +33,6 @@ var restApis = {
 };
 exports.restUrls = restApis;
 
-//获取应用的id列表
-function getGrantApplications(req, res, status) {
-    return new Promise((resolve, reject) => {
-        return restUtil.authRest.get({
-            url: restApis.getGrantApplications,
-            req: req,
-            res: res
-        }, {
-            status: status
-        }, {
-            success: function(eventEmitter, list) {
-                if (!_.isArray(list)) {
-                    list = [];
-                }
-                var responseList = list.map(function(originApp) {
-                    return originApp.client_id;
-                });
-                resolve(responseList);
-            }
-        });
-    });
-
-}
 //获取各销售对应的通话状态
 exports.getSalesCallStatus = function(req, res, queryObj) {
     return restUtil.authRest.get(

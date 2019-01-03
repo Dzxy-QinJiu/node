@@ -214,7 +214,7 @@ exports.editAppUser = function(user) {
  */
 exports.getApps = function() {
     var Deferred = $.Deferred();
-    appAjaxTrans.getGrantApplicationListAjax().sendRequest().
+    appAjaxTrans.getGrantApplicationListAjax().sendRequest({isIntegration: true}).
         success(function(list) {
             Deferred.resolve(list);
         }).error(function(xhr, code , errText) {

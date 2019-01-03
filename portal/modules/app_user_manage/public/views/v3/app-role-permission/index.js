@@ -50,21 +50,6 @@ class AppRolePermission extends React.Component {
         this.getPermissionsByAjax(app_id);
     };
 
-    isMyApp = () => {
-        return _.some(this.state.myApps, (app) => app.app_id === this.props.app_id);
-    };
-
-    getMyApps = () => {
-        //获取我的应用列表
-        appAjaxTrans.getOwnerAppListAjax().sendRequest().success((list) => {
-            this.setState({myApps: list});
-        }).error(() => {
-            this.setState({myApps: []});
-        }).timeout(() => {
-            this.setState({myApps: []});
-        });
-    };
-
     getRolesByAjax = (app_id) => {
         this.setState({
             ajaxRolesResult: CONSTANTS.LOADING,
@@ -132,9 +117,6 @@ class AppRolePermission extends React.Component {
         var app_id = this.props.app_id;
         if (this.props.app_id) {
             this.getRolesPermissionsByAjax(app_id);
-        }
-        if (userData.hasRole(userData.ROLE_CONSTANS.APP_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.APP_OWNER)) {
-            this.getMyApps();
         }
     }
 
@@ -228,12 +210,7 @@ class AppRolePermission extends React.Component {
             state.ajaxPermissionResult === CONSTANTS.SUCCESS &&
             state.ajaxPermissionList.length === 0
         ) {
-            var noDataTip = this.isMyApp() ?
-                (<span>{CONSTANTS.NO_ROLE_PERMISSION_DATA}，<ReactIntl.FormattedMessage id="common.yesno"
-                    defaultMessage="是否"/> <a
-                    href="javascript:void(0)" onClick={this.goAddRole}><ReactIntl.FormattedMessage
-                        id="user.batch.set.role" defaultMessage="设置角色"/></a> ?</span>) :
-                (<span>{CONSTANTS.NO_ROLE_PERMISSION_DATA}，{CONSTANTS.CONTACT_APP_ADMIN}</span>);
+            var noDataTip = (<span>{CONSTANTS.NO_ROLE_PERMISSION_DATA}，{CONSTANTS.CONTACT_APP_ADMIN}</span>);
 
             return <div className="no-data">
                 <Alert message={noDataTip} showIcon type="info"/>
@@ -341,11 +318,7 @@ class AppRolePermission extends React.Component {
             </div>;
         }
         if (state.ajaxRolesResult === CONSTANTS.SUCCESS && state.ajaxRolesList.length === 0) {
-            var noDataTip = this.isMyApp() ?
-                (<span>{CONSTANTS.NO_ROLE_DATA}，{Intl.get('common.yesno', '是否')} <a href="javascript:void(0)"
-                    onClick={this.goAddRole}><ReactIntl.FormattedMessage
-                        id="user.batch.set.role" defaultMessage="设置角色"/></a> ?</span>) :
-                (<span>{CONSTANTS.NO_ROLE_DATA}，{CONSTANTS.CONTACT_APP_ADMIN}</span>);
+            var noDataTip = (<span>{CONSTANTS.NO_ROLE_DATA}，{CONSTANTS.CONTACT_APP_ADMIN}</span>);
             return <div className="no-data">
                 <Alert message={noDataTip} showIcon type={CONSTANTS.INFO}/>
                 <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE}
@@ -415,12 +388,7 @@ class AppRolePermission extends React.Component {
             </div>;
         }
         if (state.ajaxPermissionResult === CONSTANTS.SUCCESS && state.ajaxPermissionList.length === 0) {
-            var noDataTip = this.isMyApp() ?
-                (<span>{CONSTANTS.NO_PERMISSION_DATA}，<ReactIntl.FormattedMessage id="common.yesno"
-                    defaultMessage="是否"/> <a
-                    href="javascript:void(0)" onClick={this.goAddPermission}><ReactIntl.FormattedMessage
-                        id="user.batch.set.auth" defaultMessage="设置权限"/></a> ?</span>) :
-                (<span>{CONSTANTS.NO_PERMISSION_DATA}，{CONSTANTS.CONTACT_APP_ADMIN}</span>);
+            var noDataTip = (<span>{CONSTANTS.NO_PERMISSION_DATA}，{CONSTANTS.CONTACT_APP_ADMIN}</span>);
             return <div className="no-data">
                 <Alert message={noDataTip} showIcon type={CONSTANTS.INFO}/>
                 <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE}

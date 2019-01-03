@@ -51,7 +51,7 @@ exports.getAppList = function(cb) {
     if (_.get(appList, '[0]')) {
         if (_.isFunction(cb)) cb(appList);
     } else {
-        appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(result => {
+        appAjaxTrans.getGrantApplicationListAjax().sendRequest({isIntegration: true}).success(result => {
             let list = [];
             if (_.get(result, '[0]')) {
                 list = result.map(function(app) {
@@ -70,23 +70,27 @@ exports.getAppList = function(cb) {
         });
     }
 };
-//获取订单\合同中的产品列表(ketao:oplate中的应用+后台管理中的产品列表, curtao:后台管理中的产品列表)
+//获取订单\合同中的产品列表,所有的产品列表，包括：集成+自己添加的
 exports.getAllProductList = function(cb) {
     if (_.get(allProductList, '[0]')) {
         if (_.isFunction(cb)) cb(allProductList);
     } else {
-        $.ajax({
-            url: '/rest/product_list',
-            type: 'get',
-            dataType: 'json',
-            success: result => {
-                allProductList = _.isArray(result) ? result : [];
-                if (_.isFunction(cb)) cb(allProductList);
-            },
-            error: xhr => {
-                allProductList = [];
-                if (_.isFunction(cb)) cb(allProductList);
+        appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(result => {
+            let list = [];
+            if (_.get(result, '[0]')) {
+                list = result.map(function(app) {
+                    return {
+                        client_id: app.app_id,
+                        client_name: app.app_name,
+                        client_image: app.app_logo,
+                    };
+                });
             }
+            allProductList = list;
+            if (_.isFunction(cb)) cb(allProductList);
+        }).error(errorMsg => {
+            allProductList = [];
+            if (_.isFunction(cb)) cb(allProductList, errorMsg);
         });
     }
 };
