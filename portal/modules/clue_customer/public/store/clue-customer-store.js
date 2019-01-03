@@ -9,6 +9,7 @@ const datePickerUtils = require('CMP_DIR/datepicker/utils');
 import {SELECT_TYPE, isOperation, isSalesLeaderOrManager, getClueStatusValue} from '../utils/clue-customer-utils';
 var clueFilterStore = require('./clue-filter-store');
 var user = require('../../../../public/sources/user-data').getUserData();
+const clueContactType = ['phone','qq','weChat','email'];
 function ClueCustomerStore() {
     //初始化state数据
     this.resetState();
@@ -75,6 +76,20 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
         this.curClueLists = _.sortBy(this.curClueLists, (item) => {
             return item.status;
         });
+        //把线索详情中电话，邮箱，微信，qq里的空值删掉
+        _.forEach(this.curClueLists,(clueItem) => {
+            if (_.isArray(clueItem.contacts) && clueItem.contacts.length){
+                _.forEach(clueItem.contacts,(contactItem) => {
+                    _.forEach(clueContactType,(item) => {
+                        if (_.isArray(contactItem[item]) && contactItem[item].length){
+                            contactItem[item] = contactItem[item].filter(item => item);
+                        }
+                    });
+                });
+
+            }
+        });
+
     }
 };
 //更新线索客户的一些属性
