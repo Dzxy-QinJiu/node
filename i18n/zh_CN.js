@@ -2677,5 +2677,9 @@ var zh_CN = {
     'apply.approve.upload.file.type': '上传{fileType}',
     'apply.approve.continue.file.type': '继续上传{fileType}',
     'apply.approve.delete.this.file': '是否删除此文件',
+    'apply.approve.leave.am': '上午',
+    'apply.approve.leave.pm': '下午',
+    'apply.approve.select.leave.range': '请选择上午或下午',
+    'apply.approve.total.leave.time': '总请假时长'
 };
 export default zh_CN;
