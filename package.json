@@ -100,7 +100,7 @@
     "os-locale": "2.0.0",
     "q": "1.4.1",
     "qrcode.react": "0.8.0",
-    "rc-form-validation-for-react16": "2.5.1",
+    "rc-form-validation-for-react16": "^2.5.1",
     "react": "16.4.1",
     "react-beautiful-dnd": "^10.0.2",
     "react-big-calendar": "0.19.2",
