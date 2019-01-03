@@ -2680,6 +2680,7 @@ var zh_CN = {
     'apply.approve.leave.am': '上午',
     'apply.approve.leave.pm': '下午',
     'apply.approve.select.leave.range': '请选择上午或下午',
-    'apply.approve.total.leave.time': '总请假时长'
+    'apply.approve.total.leave.time': '请假时长',
+    'apply.approve.total.days': '共{X}天'
 };
 export default zh_CN;

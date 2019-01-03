@@ -21,6 +21,7 @@ import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
 import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc, getFilterReplyList,handleDiffTypeApply} from 'PUB_DIR/sources/utils/common-method-util';
+import {handleTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
 import {LEAVE_TYPE,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
@@ -177,10 +178,9 @@ class ApplyViewDetail extends React.Component {
             customerOfCurUser: data.customerObj
         });
     };
+
     renderDetailApplyBlock(detailInfo) {
         var detail = detailInfo.detail || {};
-        var begin_time = moment(detail.begin_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-        var end_time = moment(detail.end_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
         var targetObj = _.find(LEAVE_TYPE, (item) => {
             return item.value === detail.leave_type;
         });
@@ -188,11 +188,19 @@ class ApplyViewDetail extends React.Component {
         if (targetObj) {
             leaveType = targetObj.name;
         }
+        var leaveRange = handleTimeRange(_.get(detail, 'apply_time[0].start',''),_.get(detail, 'apply_time[0].end',''));
+        if (_.get(detail,'days')){
+            leaveRange += Intl.get('apply.approve.total.days','共{X}天',{X: _.get(detail,'days')});
+        }
+        if (!leaveRange){
+            var begin_time = moment(detail.begin_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+            var end_time = moment(detail.end_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+        }
         var showApplyInfo = [
             {
                 label: Intl.get('leave.apply.leave.time', '请假时间'),
-                text: begin_time + ' - ' + end_time
-            }, {
+                text: leaveRange ? leaveRange : (begin_time + ' - ' + end_time)
+            },{
                 label: Intl.get('leave.apply.leave.type', '请假类型'),
                 text: leaveType
             }, {
