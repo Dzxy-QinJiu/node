@@ -2658,5 +2658,10 @@ var en_US = {
     'apply.approve.upload.file.type': 'Upload {fileType}',//上传{fileType}
     'apply.approve.continue.file.type': 'Continue to upload {fileType}',//继续上传{fileType}
     'apply.approve.delete.this.file': 'Whether to delete this file',//是否删除此文件
+    'apply.approve.leave.am': 'am',//上午
+    'apply.approve.leave.pm': 'pm',//下午
+    'apply.approve.select.leave.range': 'Please select am or pm',//请选择上午或下午
+    'apply.approve.total.leave.time': 'Leave range',//请假时长
+    'apply.approve.total.days': 'A total of {X} day'//共{X}天
 };
 export default en_US;
