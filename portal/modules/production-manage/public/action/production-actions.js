@@ -17,8 +17,8 @@ function ProductionActions() {
         'closeInfoPanel',
         'setCurProduction'
     );
-    this.getProductions = function() {
-        productionAjax.getProductions().then((listObj) => {
+    this.getProductions = function(query) {
+        productionAjax.getProductions(query).then((listObj) => {
             this.dispatch(listObj);
         }, (errorMsg) => {
             this.dispatch(errorMsg);

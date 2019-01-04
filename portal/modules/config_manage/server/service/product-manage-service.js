@@ -6,10 +6,11 @@
 'use strict';
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
-
+var _ = require('lodash');
 const productRestApis = {
     product: '/rest/base/v1/products',
-    application: '/rest/base/v1/application',
+    oplateProductList: '/rest/base/v1/application/oplate',
+    matomoProductList: '/rest/base/v1/matomo/sites'
 };
 
 //获取产品列表
@@ -73,19 +74,48 @@ exports.getUemJsCode = function(req, res) {
     }, req.query);
 };
 
-// 获取oplate产品列表
-exports.getOplateProductList = function(req, res) {
+// 获取oplate\matomo产品列表
+exports.getProductList = function(req, res) {
+    let url = '';
+    if (req.params.integration_type === 'oplate') {
+        url = productRestApis.oplateProductList;
+    } else if (req.params.integration_type === 'matomo') {
+        url = productRestApis.matomoProductList;
+    }
     return restUtil.authRest.get({
-        url: productRestApis.application + '/oplate',
+        url: url,
         req: req,
         res: res,
-    }, req.query);
+    }, req.query, {
+        success: function(emitter, data) {
+            let responseList = _.map(data, item => {
+                if (req.params.integration_type === 'oplate') {
+                    return {
+                        id: item.client_id,
+                        name: item.client_name
+                    };
+                } else if (req.params.integration_type === 'matomo') {
+                    return {
+                        id: item.idsite,
+                        name: item.name
+                    };
+                }
+            });
+            emitter.emit('success', responseList);
+        }
+    });
 };
 
-// 集成oplate产品
-exports.integrateOplateProduct = function(req, res) {
+// 集成oplate\matomo产品
+exports.integrateProduct = function(req, res) {
+    let url = '';
+    if (req.params.integration_type === 'oplate') {
+        url = productRestApis.product + '/oplate/';
+    } else if (req.params.integration_type === 'matomo') {
+        url = productRestApis.product + '/matomo/';
+    }
     return restUtil.authRest.post({
-        url: productRestApis.product + '/oplate/' + req.body.ids,
+        url: url + req.body.ids,
         req: req,
         res: res,
     });

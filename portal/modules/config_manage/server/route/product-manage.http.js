@@ -72,18 +72,18 @@ module.exports = {
             'needLogin': true
         },
         'privileges': []
-    }, {//获取oplate的产品列表
+    }, {//获取oplate\matomo的产品列表
         'method': 'get',
-        'path': '/rest/product/oplate',
-        'handler': 'getOplateProductList',
+        'path': '/rest/product/:integration_type',
+        'handler': 'getProductList',
         'passport': {
             'needLogin': true
         },
         'privileges': []
-    }, {//集成oplate产品
+    }, {//集成oplate\matomo产品
         'method': 'post',
-        'path': '/rest/product/oplate',
-        'handler': 'integrateOplateProduct',
+        'path': '/rest/product/:integration_type',
+        'handler': 'integrateProduct',
         'passport': {
             'needLogin': true
         },

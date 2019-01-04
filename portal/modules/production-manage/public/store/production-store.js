@@ -31,6 +31,8 @@ function ProductionStore() {
     this.curPage = 1;
     //一页可显示的个数
     this.pageSize = 0;
+    //用于下拉加载数据的id
+    this.lastId = '';
     //加载数据中。。。
     this.isLoading = true;
     //表单的类型：添加/修改
@@ -53,19 +55,21 @@ ProductionStore.prototype.getProductions = function(data) {
         this.listTipMsg = data;
         this.productionList = [];
         this.userListSize = 0;
-    } else if (data && _.isObject(data)) {
-        //确保返回的是个数组
-        if (!_.isArray(data)) {
-            data = [];
+    } else {
+        let list = _.get(data, 'list', []);
+        if (this.curPage === 1) {
+            this.productionList = list;
+        } else {
+            this.productionList = _.concat(this.productionList, list);
         }
-        if (data.length > 0) {
-            //清空提示
+        this.userListSize = _.get(data, 'total', 0);
+        this.lastId = _.last( this.productionList).id;
+        if (_.get(this.productionList, '[0]')) {
+            //清空无数据的提示
             this.listTipMsg = '';
         } else {
             this.listTipMsg = Intl.get('common.no.data', '暂无数据') + '!';
         }
-        this.productionList = data;
-        this.userListSize = data.length;
     }
 };
 //添加产品后更新列表

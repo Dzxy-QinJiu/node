@@ -1,12 +1,13 @@
 //获取当前页的用户列表
-exports.getProductions = function() {
+exports.getProductions = function(query) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/product',
         type: 'get',
         dataType: 'json',
+        data: query,
         success: function(data) {
-            Deferred.resolve(_.get(data, 'list', []));
+            Deferred.resolve(data);
         },
         error: function(xhr, textStatus) {
             if ('abort' !== textStatus) {

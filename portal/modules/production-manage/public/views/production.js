@@ -30,8 +30,8 @@ const LAYOUT_CONST = {
     HEADICON_H: 107,//头像的高度
     TITLE_H: 94//标题的高度
 };
-//用来存储获取的oplate产品列表，不用每次添加产品时都获取一遍
-let oplateProductList = [];
+//用来存储获取的oplate\matomo产品列表，不用每次添加产品时都获取一遍
+let productList = [];
 class Production extends React.Component {
     constructor(props) {
         super(props);
@@ -69,7 +69,7 @@ class Production extends React.Component {
             testResult: '',
             isTesting: false,
             jsCopied: false,
-            oplateProductList: oplateProductList,//oplate的产品列表
+            productList: productList,//oplate\matomo的产品列表
         };
     };
 
@@ -97,14 +97,21 @@ class Production extends React.Component {
             //获取集成类型
             this.getIntegrationConfig();
         } else {//修改产品面板
-            if (_.get(this.props, 'info.integration_type') === INTEGRATE_TYPES.UEM && _.get(this.props, 'info.integration_id')) {
+            let integrationType = _.get(this.props, 'info.integration_type');
+            if (integrationType === INTEGRATE_TYPES.UEM && _.get(this.props, 'info.integration_id')) {
                 this.getIntegrateJSCode(this.props.info.integration_id);
             }
-            //获取oplate产品列表
-            if (_.get(this.props, 'info.integration_type') === INTEGRATE_TYPES.OPLATE) {
-                this.getOplateProductList();
+            //获取oplate\matomo产品列表
+            if (this.isOplateOrMatomoType(integrationType)) {
+                this.getProductList(integrationType);
             }
         }
+    }
+
+    //是否是oplate或matomo类型
+    isOplateOrMatomoType(integration_type) {
+        let typeList = [INTEGRATE_TYPES.OPLATE, INTEGRATE_TYPES.MATOMO];
+        return typeList.indexOf(integration_type) !== -1;
     }
 
     getIntegrationConfig() {
@@ -117,44 +124,44 @@ class Production extends React.Component {
                 //集成类型： uem、oplate、matomo
                 let integrateType = _.get(resultObj, 'type');
                 this.setState({isGettingIntegrateType: false, integrateType, getItegrateTypeErrorMsg: ''});
-                //获取oplate产品列表
-                if (integrateType === INTEGRATE_TYPES.OPLATE) {
-                    this.getOplateProductList();
+                //获取oplate\matomo产品列表
+                if (this.isOplateOrMatomoType(integrateType)) {
+                    this.getProductList(integrateType);
                 }
             }
         });
     }
 
-    getOplateProductList() {
-        if (_.get(oplateProductList, '[0]')) {
-            this.setState({oplateProductList: oplateProductList});
+    getProductList(integrationType) {
+        if (_.get(productList, '[0]')) {
+            this.setState({productList: productList});
         } else {
             $.ajax({
-                url: '/rest/product/oplate',
+                url: '/rest/product/' + integrationType,
                 type: 'get',
                 dataType: 'json',
                 data: {page_num: 1, page_size: 1000},
                 success: (result) => {
-                    oplateProductList = result.list || [];
-                    this.setState({oplateProductList: oplateProductList});
+                    productList = result || [];
+                    this.setState({productList: productList});
                 },
                 error: (xhr) => {
-                    oplateProductList = [];
-                    this.setState({oplateProductList: oplateProductList});
+                    productList = [];
+                    this.setState({productList: productList});
                 }
             });
         }
     }
 
-    //集成opalte产品
-    integrateOplateProdcut = () => {
+    //集成opalte、Matomo产品
+    integrateProdcut = () => {
         this.props.form.validateFields((err, values) => {
             if (err) {
                 return;
             } else {
                 this.setState({isAddingProduct: true});
                 $.ajax({
-                    url: '/rest/product/oplate',
+                    url: '/rest/product/' + values.type,
                     type: 'post',
                     dataType: 'json',
                     data: {ids: values.products.join(',')},
@@ -163,6 +170,12 @@ class Production extends React.Component {
                             isAddingProduct: false,
                             addErrorMsg: ''
                         });
+                        if (_.get(result, '[0]')) {
+                            _.each(result, item => {
+                                this.props.afterOperation(this.props.formType, item);
+                            });
+                            this.props.closeRightPanel();
+                        }
                     },
                     error: (xhr) => {
                         this.setState({
@@ -215,10 +228,7 @@ class Production extends React.Component {
                         //集成类型不存在或集成类型为uem时，
                         if (values.type === INTEGRATE_TYPES.UEM) {
                             this.addUemProduction(production);
-                        } else {//集成类型为：oplate或matomo时，直接获取用户列表并展示
-
                         }
-
                     } else {//添加默认类型的产品
                         //设置正在保存中
                         ProductionFormAction.setSaveFlag(true);
@@ -405,7 +415,7 @@ class Production extends React.Component {
                                         </RadioGroup>)
                                 )}
                             </FormItem>
-                            {values.type === INTEGRATE_TYPES.OPLATE ? (
+                            {this.isOplateOrMatomoType(values.type) ? (
                                 <div>
                                     <FormItem
                                         label={Intl.get('common.product', '产品')}
@@ -416,7 +426,7 @@ class Production extends React.Component {
                                                 mode="multiple"
                                                 placeholder={Intl.get('config.product.select.tip', '请选择产品（可多选）')}
                                             >
-                                                { _.map(this.state.oplateProductList, (item, idx) => {
+                                                { _.map(this.state.productList, (item, idx) => {
                                                     return <Option key={idx} value={item.id}>{item.name}</Option>;
                                                 })}
                                             </Select>
@@ -426,7 +436,7 @@ class Production extends React.Component {
                                         <SaveCancelButton
                                             loading={this.state.isAddingProduct}
                                             saveErrorMsg={this.state.addErrorMsg}
-                                            handleSubmit={this.integrateOplateProdcut}
+                                            handleSubmit={this.integrateProdcut}
                                             handleCancel={this.handleCancel.bind(this)}
                                         />
                                     </FormItem>

@@ -65,18 +65,18 @@ exports.getUemJsCode = function(req,res) {
     });
 };
 
-// 获取oplate产品列表
-exports.getOplateProductList = function(req,res) {
-    productService.getOplateProductList(req, res).on('success', function(data) {
+// 获取oplate\matomo产品列表
+exports.getProductList = function(req,res) {
+    productService.getProductList(req, res).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
-//集成oplate产品
-exports.integrateOplateProduct = function(req,res) {
-    productService.integrateOplateProduct(req, res).on('success', function(data) {
+//集成oplate\matomo产品
+exports.integrateProduct = function(req,res) {
+    productService.integrateProduct(req, res).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
