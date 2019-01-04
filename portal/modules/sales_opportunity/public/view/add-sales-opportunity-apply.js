@@ -100,24 +100,26 @@ class AddSalesOpportunityApply extends React.Component {
                 saveMsg: '',
                 saveResult: ''
             });
-
+            var errTip = Intl.get('crm.154', '添加失败');
             $.ajax({
                 url: '/rest/add/sales_opportunity_apply/list',
                 dataType: 'json',
                 type: 'post',
                 data: values,
                 success: (data) => {
-                    //添加成功
-                    this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                    this.hideSalesOpportunityApplyAddForm();
-                    //添加完后的处理
-                    data.afterAddReplySuccess = true;
-                    data.showCancelBtn = true;
-                    SalesOpportunityApplyAction.afterAddApplySuccess(data);
-
+                    if (data){
+                        //添加成功
+                        this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
+                        this.hideSalesOpportunityApplyAddForm();
+                        //添加完后的处理
+                        data.afterAddReplySuccess = true;
+                        data.showCancelBtn = true;
+                        SalesOpportunityApplyAction.afterAddApplySuccess(data);
+                    }else{
+                        this.setResultData(errTip, 'error');
+                    }
                 },
                 error: (xhr) => {
-                    var errTip = Intl.get('crm.154', '添加失败');
                     if (xhr.responseJSON && _.isString(xhr.responseJSON)){
                         errTip = xhr.responseJSON;
                     }

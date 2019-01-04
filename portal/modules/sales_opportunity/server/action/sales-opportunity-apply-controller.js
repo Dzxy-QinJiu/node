@@ -32,7 +32,6 @@ exports.getWorklistSalesOpportunityApplyList = function(req, res) {
 };
 exports.addSalesOpportunityApply = function(req, res) {
     SalesOpportunityApplyService.addSalesOpportunityApply(req, res).on('success', function(data) {
-        data = handleNodata(data);
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);

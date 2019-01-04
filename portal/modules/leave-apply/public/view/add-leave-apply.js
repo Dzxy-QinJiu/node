@@ -87,22 +87,26 @@ class AddLeaveApply extends React.Component {
             delete values.begin_time;
             delete values.end_time;
             delete values.total_range;
+            var errTip = Intl.get('crm.154', '添加失败');
             $.ajax({
                 url: '/rest/add/leave_apply/list',
                 dataType: 'json',
                 type: 'post',
                 data: values,
                 success: (data) => {
-                    //添加成功
-                    this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                    this.hideLeaveApplyAddForm();
-                    //添加完后的处理
-                    data.afterAddReplySuccess = true;
-                    data.showCancelBtn = true;
-                    LeaveApplyAction.afterAddApplySuccess(data);
+                    if (data){
+                        //添加成功
+                        this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
+                        this.hideLeaveApplyAddForm();
+                        //添加完后的处理
+                        data.afterAddReplySuccess = true;
+                        data.showCancelBtn = true;
+                        LeaveApplyAction.afterAddApplySuccess(data);
+                    }else{
+                        this.setResultData(errTip, 'error');
+                    }
                 },
                 error: (xhr) => {
-                    var errTip = Intl.get('crm.154', '添加失败');
                     if (xhr.responseJSON && _.isString(xhr.responseJSON)){
                         errTip = xhr.responseJSON;
                     }

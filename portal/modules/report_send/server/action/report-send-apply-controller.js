@@ -8,15 +8,6 @@ const multiparty = require('multiparty');
 const fs = require('fs');
 const _ = require('lodash');
 let BackendIntl = require('../../../../lib/utils/backend_intl');
-function handleNodata(data) {
-    if (!data) {
-        data = {
-            list: [],
-            total: 0
-        };
-    }
-    return data;
-}
 exports.addReportSendApply = function(req, res) {
     var form = new multiparty.Form();
     //开始处理上传请求
@@ -48,7 +39,6 @@ exports.addReportSendApply = function(req, res) {
         try {
             //调用上传请求服务
             ReportSendApplyService.addReportSendApply(req, res, formData).on('success', function(data) {
-                data = handleNodata(data);
                 res.status(200).json(data);
             }).on('error', function(codeMessage) {
                 res.status(500).json(codeMessage && codeMessage.message);
