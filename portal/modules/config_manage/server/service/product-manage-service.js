@@ -8,7 +8,8 @@ var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 
 const productRestApis = {
-    product: 'http://172.19.103.39:8391/rest/base/v1/products'
+    product: '/rest/base/v1/products',
+    application: '/rest/base/v1/application',
 };
 
 //获取产品列表
@@ -64,7 +65,7 @@ exports.testUemProduct = function(req, res) {
 };
 
 // 获取js代码
-exports.getUemJsCode = function(req,res) {
+exports.getUemJsCode = function(req, res) {
     return restUtil.authRest.get({
         url: productRestApis.product + '/uem/js',
         req: req,
@@ -72,3 +73,20 @@ exports.getUemJsCode = function(req,res) {
     }, req.query);
 };
 
+// 获取oplate产品列表
+exports.getOplateProductList = function(req, res) {
+    return restUtil.authRest.get({
+        url: productRestApis.application + '/oplate',
+        req: req,
+        res: res,
+    }, req.query);
+};
+
+// 集成oplate产品
+exports.integrateOplateProduct = function(req, res) {
+    return restUtil.authRest.post({
+        url: productRestApis.product + '/oplate/' + req.body.ids,
+        req: req,
+        res: res,
+    });
+};

@@ -14,9 +14,9 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'PRODUCTS_MANAGE','GET_PRODUCTS_LIST'
+            'PRODUCTS_MANAGE', 'GET_PRODUCTS_LIST'
         ]
-    },{
+    }, {
         'method': 'post',
         'path': '/rest/product',
         'handler': 'addProduct',
@@ -26,7 +26,7 @@ module.exports = {
         'privileges': [
             'PRODUCTS_MANAGE'
         ]
-    },{
+    }, {
         'method': 'delete',
         'path': '/rest/product/:product',
         'handler': 'deleteProduct',
@@ -36,7 +36,7 @@ module.exports = {
         'privileges': [
             'PRODUCTS_MANAGE'
         ]
-    },{
+    }, {
         'method': 'put',
         'path': '/rest/product',
         'handler': 'updateProduct',
@@ -54,7 +54,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'PRODUCTS_MANAGE','GET_PRODUCTS_LIST'
+            'PRODUCTS_MANAGE', 'GET_PRODUCTS_LIST'
         ]
     }, {
         'method': 'get',
@@ -68,6 +68,22 @@ module.exports = {
         'method': 'get',
         'path': '/rest/product/uem/js',
         'handler': 'getUemJsCode',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': []
+    }, {//获取oplate的产品列表
+        'method': 'get',
+        'path': '/rest/product/oplate',
+        'handler': 'getOplateProductList',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': []
+    }, {//集成oplate产品
+        'method': 'post',
+        'path': '/rest/product/oplate',
+        'handler': 'integrateOplateProduct',
         'passport': {
             'needLogin': true
         },

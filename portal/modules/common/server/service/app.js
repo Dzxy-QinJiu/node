@@ -12,7 +12,7 @@ var urls = {
     //通过id获取应用详细信息
     getCurAppById: '/rest/base/v1/application/id',
     //获取产品集成的配置
-    getIntegrationConfig: 'http://172.19.103.39:8391/rest/base/v1/products/integration/config'
+    getIntegrationConfig: '/rest/base/v1/products/integration/config'
 
 };
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
