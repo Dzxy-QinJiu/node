@@ -23,20 +23,20 @@ class Filter extends React.Component {
     render() {
         const searchFields = [
             {
-                name: Intl.get('contract.24', '合同号'),
-                field: 'num',
-            },
-            {
                 name: Intl.get('crm.41', '客户名'),
                 field: 'customer_name',
+            },
+            {
+                name: Intl.get('contract.4', '甲方'),
+                field: 'buyer',
             },
             {
                 name: Intl.get('crm.6', '负责人'),
                 field: 'user_name',
             },
             {
-                name: Intl.get('contract.4', '甲方'),
-                field: 'buyer',
+                name: Intl.get('contract.24', '合同号'),
+                field: 'num',
             },
         ];
 
