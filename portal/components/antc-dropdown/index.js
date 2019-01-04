@@ -86,7 +86,7 @@ class AntcDropdown extends React.Component {
                         onClick={this.handleCancel.bind(this)} data-tracename="点击关闭按钮">{this.props.cancelTitle}
 
                     </Button>
-                    <Button type='primary' className="inline-block icon-choose" disabled={this.props.isSaving}
+                    <Button type='primary' className="inline-block icon-choose" disabled={this.props.isSaving || this.props.isDisabled}
                         onClick={this.props.handleSubmit.bind(this)} data-tracename="点击保存按钮">{this.props.okTitle}
                         {this.props.isSaving ? <Icon type="loading"/> : null}</Button>
                 </div> : null}
@@ -119,7 +119,8 @@ AntcDropdown.defaultProps = {
     clearSelectData: function() {
     },//关面板后，清空选择数据的处理
     btnAtTop: true,//是否在顶部展示确定按钮
-    stopContentHide: false//避免选中选项后会关闭content内容区域
+    stopContentHide: false,//避免选中选项后会关闭content内容区域
+    isDisabled: false//未选选项时按钮是禁用状态
 };
 AntcDropdown.propTypes = {
     showMenu: PropTypes.bool,
@@ -134,5 +135,6 @@ AntcDropdown.propTypes = {
     clearSelectData: PropTypes.func,
     btnAtTop: PropTypes.bool,
     stopContentHide: PropTypes.bool,
+    isDisabled: false
 };
 export default AntcDropdown;

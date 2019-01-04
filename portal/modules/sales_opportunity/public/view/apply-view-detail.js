@@ -384,6 +384,7 @@ class ApplyViewDetail extends React.Component {
                     clearSelectData={this.clearSelectSales}
                     btnAtTop={false}
                     isSaving={this.state.applyResult.submitResult === 'loading'}
+                    isDisabled={!assignedSalesUsersIds}
                 />
             </div>
 
@@ -409,6 +410,7 @@ class ApplyViewDetail extends React.Component {
                     clearSelectData={this.clearSelectCandidate}
                     btnAtTop={false}
                     isSaving={this.state.applyResult.submitResult === 'loading'}
+                    isDisabled={!assignedCandidateUserIds}
                 />
                 <Button type="primary" className="btn-primary-sure" size="small"
                     onClick={this.submitApprovalForm.bind(this, 'reject')}>
@@ -489,14 +491,6 @@ class ApplyViewDetail extends React.Component {
             assignedCandidateUserIds = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
             assignedSalesUsersIds = _.get(this.state, 'detailInfoObj.info.user_ids','');
         }
-        var readyApply = _.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.READY_APPLY;//下一节点是分配负责人
-        var assigendSalesApply = _.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.ASSIGN_SALES_APPLY;//下一节点是分配销售
-        //如果沒有分配负责人，要先分配负责人,识微域的不需要分配负责人
-        if (!assignedCandidateUserIds && readyApply && confirmType === 'pass' && !this.isCiviwRealm()){
-            return;
-        }else if (!assignedSalesUsersIds && assigendSalesApply){
-            return;
-        }
         var detailInfoObj = this.state.detailInfoObj.info;
         var submitObj = {
             id: detailInfoObj.id,
@@ -510,13 +504,13 @@ class ApplyViewDetail extends React.Component {
             var salesUserIds = assignedSalesUsersIds.split('&&')[0];
             submitObj.user_ids = [salesUserIds];
         }
-        SalesOpportunityApplyDetailAction.approveSalesOpportunityApplyPassOrReject(submitObj,(flag) => {
-            if (flag){
-                if (submitObj.assigned_candidate_users || submitObj.user_ids){
+        SalesOpportunityApplyDetailAction.approveSalesOpportunityApplyPassOrReject(submitObj, (flag) => {
+            if ((submitObj.assigned_candidate_users || submitObj.user_ids)) {
+                if (flag) {
                     this.viewApprovalResult();
+                } else {
+                    message.error(Intl.get('failed.distribute.sales.opportunity', '分配销售机会失败！'));
                 }
-            }else{
-                message.error(Intl.get('failed.distribute.sales.opportunity','分配销售机会失败！'));
             }
         });
         //关闭下拉框
