@@ -111,9 +111,9 @@ module.exports = {
                 'CUSTOMER_ADD'
             ]
         },
-        {
+        { //小程序中使用
             method: 'put',
-            path: '/rest/customer/v2/editcustomer',
+            path: '/rest/customer/editcustomer/entirety',
             handler: 'editCustomer',
             passport: {
                 needLogin: true
