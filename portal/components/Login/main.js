@@ -275,7 +275,7 @@ class LoginMain extends React.Component {
 
             return (
                 <div className="login-wrap">
-                    <Logo logoSrc={logoScr}/>
+                    <Logo logoSrc={logoScr} size='36px'/>
                     {/*{ hasWindow ? (Oplate.hideLangQRcode ? null :*/}
                     {/*(<div>*/}
                     {/*<div className="lang-wrap">*/}
