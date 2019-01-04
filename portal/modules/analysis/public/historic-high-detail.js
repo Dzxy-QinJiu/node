@@ -128,6 +128,7 @@ class HistoricHighDetail extends React.Component {
                         }
                     });
 
+                    //过滤掉因被合并而查询不到了的客户
                     processedData[key] = _.filter(value, dataItem => dataItem.customer_name);
                 });
 
