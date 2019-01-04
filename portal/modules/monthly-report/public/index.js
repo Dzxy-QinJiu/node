@@ -112,7 +112,7 @@ class MonthlyReport extends React.Component {
     };
 
     numberRender = text => {
-        return <span>{text.toFixed()}</span>;
+        return <span>{_.isNumber(text) && text.toFixed()}</span>;
     };
 
     //电话量统计表格列定义
