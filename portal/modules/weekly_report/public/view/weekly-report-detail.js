@@ -48,7 +48,7 @@ class WeeklyReportDetail extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.selectedItem.teamId !== this.state.selectedItem.teamId || nextProps.selectedItem.nWeek !== this.state.selectedItem.nWeek) {
+        if (!_.isEqual(nextProps.selectedItem, this.state.selectedItem)) {
             this.setState({
                 selectedTeamName: nextProps.selectedTeamName,
                 selectedItem: nextProps.selectedItem,
@@ -67,21 +67,21 @@ class WeeklyReportDetail extends React.Component {
     }
 
     //获取今年某周的开始日期
-    getBeginDateOfWeek = (weekIndex) => {
+    getBeginDateOfWeek = (year, weekIndex) => {
         var time = (weekIndex - 1) * 7 * oplateConsts.ONE_DAY_TIME_RANGE;
-        return moment().startOf('year').valueOf() + time;
+        return moment().year(year).startOf('year').valueOf() + time;
     };
 
     //获取某年某周的结束日期
-    getEndDateOfWeek = (weekIndex) => {
+    getEndDateOfWeek = (year, weekIndex) => {
         //获取今年第一天是周几
-        var firstDayWeek = new Date(moment().startOf('year').valueOf()).getDay();
+        var firstDayWeek = new Date(moment().year(year).startOf('year').valueOf()).getDay();
         var spendDay = 1;
         if (firstDayWeek !== 0) {
             spendDay = 7 - firstDayWeek + 1;
         }
         var time = ((weekIndex - 1) * 7 + spendDay ) * oplateConsts.ONE_DAY_TIME_RANGE;
-        return moment().startOf('year').valueOf() + time - 1;
+        return moment().year(year).startOf('year').valueOf() + time - 1;
     };
 
     getWeeklyReportData = () => {
@@ -354,8 +354,8 @@ class WeeklyReportDetail extends React.Component {
     //获取query参数
     getQueryParams = () => {
         let queryParams = {
-            start_time: this.getBeginDateOfWeek(this.state.selectedItem.nWeek),
-            end_time: this.getEndDateOfWeek(this.state.selectedItem.nWeek),
+            start_time: this.getBeginDateOfWeek(this.state.selectedItem.nYear, this.state.selectedItem.nWeek),
+            end_time: this.getEndDateOfWeek(this.state.selectedItem.nYear, this.state.selectedItem.nWeek),
         };
         if (this.state.selectedItem.teamId){
             queryParams.team_id = this.state.selectedItem.teamId;
@@ -366,8 +366,8 @@ class WeeklyReportDetail extends React.Component {
     //合同和回款的query参数
     getContractAndRepayParams = () => {
         let queryParams = {
-            start_time: this.getBeginDateOfWeek(this.state.selectedItem.nWeek),
-            end_time: this.getEndDateOfWeek(this.state.selectedItem.nWeek),
+            start_time: this.getBeginDateOfWeek(this.state.selectedItem.nYear, this.state.selectedItem.nWeek),
+            end_time: this.getEndDateOfWeek(this.state.selectedItem.nYear, this.state.selectedItem.nWeek),
         };
         if (this.state.selectedItem.teamId){
             queryParams.sale_team_ids = this.state.selectedItem.teamId;
@@ -378,8 +378,8 @@ class WeeklyReportDetail extends React.Component {
     //获取通话的queryparams参数
     getCallInfoParams = () => {
         let queryParams = {
-            start_time: this.getBeginDateOfWeek(this.state.selectedItem.nWeek),
-            end_time: this.getEndDateOfWeek(this.state.selectedItem.nWeek),
+            start_time: this.getBeginDateOfWeek(this.state.selectedItem.nYear, this.state.selectedItem.nWeek),
+            end_time: this.getEndDateOfWeek(this.state.selectedItem.nYear, this.state.selectedItem.nWeek),
         };
         if (this.state.selectedItem.teamId){
             queryParams.team_ids = this.state.selectedItem.teamId;
@@ -496,8 +496,8 @@ class WeeklyReportDetail extends React.Component {
 
     getStartAndEndTime = () => {
         return {
-            startTime: moment(this.getBeginDateOfWeek(this.state.selectedItem.nWeek)).format(oplateConsts.DATE_FORMAT),
-            endTime: moment(this.getEndDateOfWeek(this.state.selectedItem.nWeek)).format(oplateConsts.DATE_FORMAT)
+            startTime: moment(this.getBeginDateOfWeek(this.state.selectedItem.nYear, this.state.selectedItem.nWeek)).format(oplateConsts.DATE_FORMAT),
+            endTime: moment(this.getEndDateOfWeek(this.state.selectedItem.nYear, this.state.selectedItem.nWeek)).format(oplateConsts.DATE_FORMAT)
         };
     };
 

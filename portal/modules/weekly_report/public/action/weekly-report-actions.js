@@ -7,6 +7,7 @@ function weeklyReportActions() {
         'setSelectedWeeklyReportItem',//设置选中项
         'changeSearchInputValue',//修改搜索框的值
         'setSelectedTeamId',//设置选中的团队id
+        'setSelectedYear',//设置选择的第几年
         'setSelectedWeek'//设置选择的第几周
     );
     // 团队信息

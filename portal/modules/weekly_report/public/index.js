@@ -107,6 +107,15 @@ class WeeklyReport extends React.Component {
         }
     };
 
+    //年的选择
+    onChangeYear = (year, e) => {
+        if (this.state.yearTime === year) {
+            return;
+        }
+        Trace.traceEvent(e, `时间范围-选择第${year}年`);
+        WeeklyReportAction.setSelectedYear(year);
+    };
+
     //周的选择
     onChangeWeek = (week, e) => {
         if (this.state.weekTime === week) {
@@ -122,9 +131,8 @@ class WeeklyReport extends React.Component {
                 <NatureTimeSelect onChangeYear={this.onChangeYear}
                     onChangeWeek={this.onChangeWeek}
                     showTimeTypeSelect={false}
-                    hideYearSelect={true}
                     timeType='week'
-                    yearTime={this.state.yearDescr}
+                    yearTime={this.state.nYear + Intl.get('common.time.unit.year', '年')}
                     weekTime={this.state.nWeek}/>
             </div>);
     };
@@ -170,7 +178,7 @@ class WeeklyReport extends React.Component {
                             <div className='weekly-report-content clearfix'>
                                 <div className='col-md-12 weekly-report-detail-wrap'>
                                     <WeeklyReportDetail
-                                        selectedItem={{teamId: this.state.selectedTeamId, nWeek: this.state.nWeek}}
+                                        selectedItem={{teamId: this.state.selectedTeamId, nYear: this.state.nYear, nWeek: this.state.nWeek}}
                                         selectedTeamName={this.state.selectedTeamName}
                                         memberList={this.state.memberList}
                                     />

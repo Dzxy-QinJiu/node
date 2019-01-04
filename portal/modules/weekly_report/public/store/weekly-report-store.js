@@ -33,8 +33,8 @@ weeklyReportStore.prototype.setInitState = function() {
     this.selectedTeamId = selectedTeamId;//选中的团队id
     this.selectedTeamName = selectedTeamName;//选中的团队名称
     let time = moment();
-    this.nWeek = time.week();//当前时间是今年的第几周
-    this.yearDescr = time.year() + Intl.get('common.time.unit.year', '年');
+    this.nWeek = time.week();//当前时间是第几周
+    this.nYear = time.year();//当前时间是第几年
 };
 
 // 获取团队信息
@@ -104,6 +104,11 @@ weeklyReportStore.prototype.setSelectedTeamId = function(teamId) {
             return false;
         }
     });
+};
+
+// 设置选择的第几年
+weeklyReportStore.prototype.setSelectedYear = function(nYear) {
+    this.nYear = nYear;
 };
 
 // 设置选择的第几周
