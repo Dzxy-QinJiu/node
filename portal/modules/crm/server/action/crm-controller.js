@@ -248,6 +248,7 @@ exports.addCustomerByClue = function(req, res) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
+//小程序中使用
 exports.editCustomer = function(req, res) {
     crmService.editCustomer(req, res)
         .on('success', function(data) {

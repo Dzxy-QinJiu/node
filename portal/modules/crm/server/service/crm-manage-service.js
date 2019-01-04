@@ -373,6 +373,7 @@ exports.addCustomer = function(req, res, newCustomer) {
         }, newCustomer);
 };
 //修改客户信息
+//小程序中使用
 exports.editCustomer = function(req, res) {
     return restUtil.authRest.put(
         {
