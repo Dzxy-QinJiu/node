@@ -79,7 +79,7 @@ function ApplyViewDetailActions() {
     };
 
     //通过或者驳回审批
-    this.approveSalesOpportunityApplyPassOrReject = function(obj) {
+    this.approveSalesOpportunityApplyPassOrReject = function(obj,callback) {
         this.dispatch({loading: true, error: false});
         SalesOpportunityApplyAjax.approveSalesOpportunityApplyPassOrReject(obj).then((data) => {
             //返回的data是true才是审批成功的，false也是审批失败的
@@ -97,12 +97,14 @@ function ApplyViewDetailActions() {
                     }, timeout);
                 }
                 this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
+                _.isFunction(callback) && callback(true);
             }else{
                 SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {status: 'error'});
                 this.dispatch({loading: false, error: true, errorMsg: Intl.get('errorcode.19', '审批申请失败')});
+                _.isFunction(callback) && callback(false);
             }
-
         }, (errorMsg) => {
+            _.isFunction(callback) && callback(false);
             //更新选中的申请单类型
             SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});

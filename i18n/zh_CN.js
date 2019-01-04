@@ -2677,5 +2677,6 @@ var zh_CN = {
     'apply.approve.upload.file.type': '上传{fileType}',
     'apply.approve.continue.file.type': '继续上传{fileType}',
     'apply.approve.delete.this.file': '是否删除此文件',
+    'failed.distribute.sales.opportunity': '分配销售机会失败！',
 };
 export default zh_CN;

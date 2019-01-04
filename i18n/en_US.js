@@ -2658,5 +2658,6 @@ var en_US = {
     'apply.approve.upload.file.type': 'Upload {fileType}',//上传{fileType}
     'apply.approve.continue.file.type': 'Continue to upload {fileType}',//继续上传{fileType}
     'apply.approve.delete.this.file': 'Whether to delete this file',//是否删除此文件
+    'failed.distribute.sales.opportunity': 'Failed to distribute sales opportunity!',//分配销售机会失败！
 };
 export default en_US;

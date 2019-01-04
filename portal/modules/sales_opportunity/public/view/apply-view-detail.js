@@ -40,13 +40,6 @@ const ASSIGN_TYPE = {
 let userData = require('PUB_DIR/sources/user-data');
 import {REALM_REMARK} from '../utils/sales-oppotunity-utils';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-//在内存中记录分配下一节点销售领导的id 和 分配给销售的id
-//为了避免点击确认模态框后，下拉框收起后把所分配的下一节点的负责人的id清除掉或者是出错后下拉框收起，下一节点的负责人清空
-let ASSIGN_IDS = {
-    assignedCandidateUsers: '',//下一节点销售领导的id
-    //所分配的销售的id,只有在点击确认的时候才会修改这个值
-    assignedSalesUsersIds: '',
-};
 
 class ApplyViewDetail extends React.Component {
     constructor(props) {
@@ -63,10 +56,6 @@ class ApplyViewDetail extends React.Component {
     onStoreChange = () => {
         this.setState(SalesOpportunityApplyDetailStore.getState());
     };
-    setInitialIds = () => {
-        ASSIGN_IDS.assignedSalesUsersIds = '';
-        ASSIGN_IDS.assignedCandidateUsers = '';
-    };
 
     componentDidMount() {
         SalesOpportunityApplyDetailStore.listen(this.onStoreChange);
@@ -78,7 +67,6 @@ class ApplyViewDetail extends React.Component {
             this.getBusinessApplyDetailData(this.props.detailItem);
         }
         this.getSalesManList();
-        this.setInitialIds();
     }
     getSalesManList = () => {
         salesOpportunityApplyAjax.getSalesManList().then(data => {
@@ -100,11 +88,9 @@ class ApplyViewDetail extends React.Component {
                 showBackoutConfirmType: ''
             });
         }
-        this.setInitialIds();
     }
 
     componentWillUnmount() {
-        this.setInitialIds();
         SalesOpportunityApplyDetailStore.unlisten(this.onStoreChange);
     }
 
@@ -321,31 +307,16 @@ class ApplyViewDetail extends React.Component {
         SalesOpportunityApplyDetailAction.cancelSendApproval();
     };
 
-    submitApprovalForm = (approval,flag) => {
-        //flag 为true的情况，是在出错的情况下再次点击重试发请求，为了避免使用清空掉的值把内存里下一节点的id和所分配的销售的id覆盖掉
-        if (approval === 'pass' && !_.isBoolean(flag)){
-            ASSIGN_IDS.assignedCandidateUsers = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
-            ASSIGN_IDS.assignedSalesUsersIds = _.get(this.state, 'detailInfoObj.info.user_ids','');
+    submitApprovalForm = (approval) => {
+        if (approval === 'pass') {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击通过按钮');
+        } else if (approval === 'reject') {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击驳回按钮');
+        }else if (approval === 'cancel'){
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击撤销申请按钮');
         }
-        var assignedCandidateUserIds = ASSIGN_IDS.assignedCandidateUsers;
-        var readyApply = _.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.READY_APPLY;
-        var assignedSalesUsersIds = ASSIGN_IDS.assignedSalesUsersIds;
-        var assigendSalesApply = _.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.ASSIGN_SALES_APPLY;
-        //如果沒有分配负责人，要先分配负责人,识微域的不需要分配负责人
-        if (!assignedCandidateUserIds && readyApply && approval === 'pass' && !this.isCiviwRealm()){
-            return;
-        }else if (!assignedSalesUsersIds && assigendSalesApply){
-            return;
-        }else{
-            if (approval === 'pass') {
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击通过按钮');
-            } else if (approval === 'reject') {
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击驳回按钮');
-            }else if (approval === 'cancel'){
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击撤销申请按钮');
-            }
-            this.showConfirmModal(approval);
-        }
+        this.showConfirmModal(approval);
+
     };
 
     clearSelectSales() {
@@ -408,7 +379,7 @@ class ApplyViewDetail extends React.Component {
                     okTitle={Intl.get('common.confirm', '确认')}
                     cancelTitle={Intl.get('common.cancel', '取消')}
                     overlayContent={this.renderSalesBlock(ASSIGN_TYPE.COMMON_SALES)}
-                    handleSubmit={this.submitApprovalForm.bind(this, 'pass')}
+                    handleSubmit={this.passOrRejectApplyApprove.bind(this, 'pass')}//分配销售的时候直接分配，不需要再展示模态框
                     unSelectDataTip={assignedSalesUsersIds ? '' : Intl.get('leave.apply.select.assigned.sales','请选择要分配的销售')}
                     clearSelectData={this.clearSelectSales}
                     btnAtTop={false}
@@ -433,7 +404,7 @@ class ApplyViewDetail extends React.Component {
                     okTitle={Intl.get('common.confirm', '确认')}
                     cancelTitle={Intl.get('common.cancel', '取消')}
                     overlayContent={this.renderSalesBlock(ASSIGN_TYPE.NEXT_CANDIDATED)}
-                    handleSubmit={this.submitApprovalForm.bind(this, 'pass')}
+                    handleSubmit={this.passOrRejectApplyApprove.bind(this, 'pass')}//直接分配，不需要展示模态框
                     unSelectDataTip={assignedCandidateUserIds ? '' : Intl.get('sales.opportunity.assign.department.owner','请选择要分配的部门主管')}
                     clearSelectData={this.clearSelectCandidate}
                     btnAtTop={false}
@@ -512,8 +483,20 @@ class ApplyViewDetail extends React.Component {
     }
 
     passOrRejectApplyApprove = (confirmType) => {
-        var assignedCandidateUserIds = ASSIGN_IDS.assignedCandidateUsers;
-        var assignedSalesUsersIds = ASSIGN_IDS.assignedSalesUsersIds;
+        var assignedCandidateUserIds = '';//要分配下一节点的负责人的id
+        var assignedSalesUsersIds = '';//要分配下一节点的销售的id
+        if (confirmType === 'pass'){
+            assignedCandidateUserIds = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
+            assignedSalesUsersIds = _.get(this.state, 'detailInfoObj.info.user_ids','');
+        }
+        var readyApply = _.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.READY_APPLY;//下一节点是分配负责人
+        var assigendSalesApply = _.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.ASSIGN_SALES_APPLY;//下一节点是分配销售
+        //如果沒有分配负责人，要先分配负责人,识微域的不需要分配负责人
+        if (!assignedCandidateUserIds && readyApply && confirmType === 'pass' && !this.isCiviwRealm()){
+            return;
+        }else if (!assignedSalesUsersIds && assigendSalesApply){
+            return;
+        }
         var detailInfoObj = this.state.detailInfoObj.info;
         var submitObj = {
             id: detailInfoObj.id,
@@ -527,7 +510,15 @@ class ApplyViewDetail extends React.Component {
             var salesUserIds = assignedSalesUsersIds.split('&&')[0];
             submitObj.user_ids = [salesUserIds];
         }
-        SalesOpportunityApplyDetailAction.approveSalesOpportunityApplyPassOrReject(submitObj);
+        SalesOpportunityApplyDetailAction.approveSalesOpportunityApplyPassOrReject(submitObj,(flag) => {
+            if (flag){
+                if (submitObj.assigned_candidate_users || submitObj.user_ids){
+                    this.viewApprovalResult();
+                }
+            }else{
+                message.error(Intl.get('failed.distribute.sales.opportunity','分配销售机会失败！'));
+            }
+        });
         //关闭下拉框
         if(_.isFunction(_.get(this, 'assignSales.handleCancel'))){
             this.assignSales.handleCancel();
