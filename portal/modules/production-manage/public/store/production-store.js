@@ -30,7 +30,7 @@ function ProductionStore() {
     //当前正在展示的是第几页的数据
     this.curPage = 1;
     //一页可显示的个数
-    this.pageSize = 0;
+    this.pageSize = 20;
     //用于下拉加载数据的id
     this.lastId = '';
     //加载数据中。。。
@@ -63,8 +63,8 @@ ProductionStore.prototype.getProductions = function(data) {
             this.productionList = _.concat(this.productionList, list);
         }
         this.userListSize = _.get(data, 'total', 0);
-        this.lastId = _.last( this.productionList).id;
         if (_.get(this.productionList, '[0]')) {
+            this.lastId = _.last(this.productionList).id;
             //清空无数据的提示
             this.listTipMsg = '';
         } else {
