@@ -110,8 +110,10 @@ class SalesReport extends React.Component {
         ajax.send({
             url: '/rest/global/user/' + id,
         }).then(result => {
-            if (result && result.create_date) {
-                result.create_date = moment(result.create_date).format(oplateConsts.DATE_FORMAT);
+            if (result && result.user_id) {
+                if (result.create_date) {
+                    result.create_date = moment(result.create_date).format(oplateConsts.DATE_FORMAT);
+                }
 
                 const currentMember = _.extend({}, this.state.currentMember, result);
 
