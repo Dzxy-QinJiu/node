@@ -21,9 +21,20 @@ class HistoricHighDetail extends React.Component {
     constructor(props) {
         super(props);
 
+        const data = this.processData(props.data);
+
+        //各类别客户数
+        let customerNum = {};
+
+        _.each(data, (value, key) => {
+            customerNum[key] = value.length;
+        });
+
         this.state = {
             //数据
-            data: this.processData(props.data),
+            data,
+            //客户数
+            customerNum,
             //加载状态
             loading: true,
             //是否显示出错信息
@@ -116,6 +127,9 @@ class HistoricHighDetail extends React.Component {
                             dataItem.customer_name = matchedResultDataItem.name;
                         }
                     });
+
+                    //过滤掉因被合并而查询不到了的客户
+                    processedData[key] = _.filter(value, dataItem => dataItem.customer_name);
                 });
 
                 this.setState({
@@ -153,11 +167,23 @@ class HistoricHighDetail extends React.Component {
     }
 
     //获取分页器定义
-    getPagination(total) {
+    //@total 实际的总条数
+    //@oriTotal 过滤掉因合并而不存在的客户前的原始总条数
+    getPagination(total, oriTotal) {
         return {
             total,
             pageSize: 10,
-            showTotal: total => Intl.get('crm.207', '共{count}个客户', { count: total }),
+            showTotal: total => {
+                let text = Intl.get('crm.207', '共{count}个客户', { count: oriTotal });
+
+                const mergedCustomerCount = oriTotal - total; 
+
+                if (mergedCustomerCount > 0) {
+                    text += ' ' + Intl.get('common.customer.can.not.found.because.merged', '其中有{count}个客户因被合并而查询不到了', {count: mergedCustomerCount});
+                }
+
+                return text;
+            }
         };
     }
 
@@ -187,7 +213,7 @@ class HistoricHighDetail extends React.Component {
                                         columns={this.getColumns()}
                                         dataSource={this.state.data.qualifyCustomers}
                                         loading={this.state.loading}
-                                        pagination={this.getPagination(this.state.data.qualifyCustomers.length)}
+                                        pagination={this.getPagination(this.state.data.qualifyCustomers.length, this.state.customerNum.qualifyCustomers)}
                                     />
                                 </dd>
                             </dl>
@@ -202,7 +228,7 @@ class HistoricHighDetail extends React.Component {
                                             columns={this.getColumns('turnIn')}
                                             dataSource={this.state.data.turnInCustomers}
                                             loading={this.state.loading}
-                                            pagination={this.getPagination(this.state.data.turnInCustomers.length)}
+                                            pagination={this.getPagination(this.state.data.turnInCustomers.length, this.state.customerNum.turnInCustomers)}
                                         />
                                     </dd>
                                 </dl>
@@ -218,7 +244,7 @@ class HistoricHighDetail extends React.Component {
                                             columns={this.getColumns('turnOut')}
                                             dataSource={this.state.data.turnOutCustomers}
                                             loading={this.state.loading}
-                                            pagination={this.getPagination(this.state.data.turnOutCustomers.length)}
+                                            pagination={this.getPagination(this.state.data.turnOutCustomers.length, this.state.customerNum.turnOutCustomers)}
                                         />
                                     </dd>
                                 </dl>

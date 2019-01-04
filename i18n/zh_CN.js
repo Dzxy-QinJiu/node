@@ -2677,5 +2677,6 @@ var zh_CN = {
     'apply.approve.upload.file.type': '上传{fileType}',
     'apply.approve.continue.file.type': '继续上传{fileType}',
     'apply.approve.delete.this.file': '是否删除此文件',
+    'common.customer.can.not.found.because.merged': '其中有{count}个客户因被合并而查询不到了',
 };
 export default zh_CN;
