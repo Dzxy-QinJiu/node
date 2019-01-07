@@ -221,6 +221,16 @@ exports.hasApprovedReportAndDocumentApply = function(approverIds) {
         return false;
     }
 };
+function calculateTimeRange(beginType,endType) {
+    var timeRange = '';
+    if (beginType === endType){
+        timeRange = 0.5;
+    }else if (beginType === AM_AND_PM.AM && endType === AM_AND_PM.PM){
+        timeRange = 1;
+    }
+    return timeRange;
+
+}
 //计算两个日期中间相隔的天数
 exports.calculateTotalTimeRange = (formData) => {
     var beginTime = formData.begin_time,beginType = formData.begin_type,endTime = formData.end_time,endType = formData.end_type;
@@ -228,21 +238,11 @@ exports.calculateTotalTimeRange = (formData) => {
     //如果开始和结束时间是同一天的
     var isSameDay = moment(beginTime).isSame(endTime, 'day');
     if (isSameDay){
-        if (beginType === endType){
-            timeRange = 0.5;
-        }else if (beginType === AM_AND_PM.AM && endType === AM_AND_PM.PM){
-            timeRange = 1;
-        }else{
-            timeRange = '';
-        }
+        timeRange = calculateTimeRange(beginType,endType);
     }else {
         //相差几天
         timeRange = moment(endTime).diff(moment(beginTime), 'days');
-        if (beginType === AM_AND_PM.AM && endType === AM_AND_PM.PM){
-            timeRange += 1;
-        }else if (beginType === AM_AND_PM.AM && endType === AM_AND_PM.AM || beginType === AM_AND_PM.PM && endType === AM_AND_PM.PM ){
-            timeRange += 0.5;
-        }
+        timeRange += calculateTimeRange(beginType,endType);
     }
     return timeRange;
 };
