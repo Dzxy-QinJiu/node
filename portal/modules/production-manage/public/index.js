@@ -118,12 +118,25 @@ class ProductionManage extends React.Component {
                     value: production.url,
                     showOnCard: true
                 },
-                showDelete: true,
-                leftFlagDesc: production.integration_type ? production.integration_type.toUpperCase() : ''
+                showDelete: production.integration_type ? false : true,//集成的产品不可以删除，自己加的普通产品可以删
+                leftFlagDesc: this.getProductFlagDesc(production)
             };
         });
 
     };
+    //获取产品标识的描述
+    getProductFlagDesc(production) {
+        let integration_type = _.get(production, 'integration_type');
+        if (integration_type) {
+            if (integration_type === 'uem') {
+                return Intl.get('customer.ketao.app', '客套');
+            } else {
+                return integration_type.toUpperCase();
+            }
+        } else {
+            return '';
+        }
+    }
 
     hasNoFilterCondition = () => {
         if (this.state.searchContent) {
