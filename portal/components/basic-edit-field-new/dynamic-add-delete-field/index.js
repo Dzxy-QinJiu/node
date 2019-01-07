@@ -199,7 +199,7 @@ class DynamicAddDelField extends React.Component {
                 </div>);
         } else {
             return (
-                <Form className="item-container">
+                <Form className="dynamic-item-form">
                     {_.map(item_keys, (key, index) => {
                         return (
                             <div className="item-wrap" key={key}>
