@@ -48,7 +48,13 @@ const CommissionPayment = createReactClass({
     },
 
     componentWillReceiveProps(nextProps) {
-        this.clearState();
+        //提成条目改变时
+        if (nextProps.commission.id !== this.props.commission.id) {
+            //将视图设为展示状态
+            this.setState({
+                isFormShow: false
+            })
+        }
     },
 
     showForm() {
@@ -125,6 +131,9 @@ const CommissionPayment = createReactClass({
             } else {
                 message.error(result.msg || OPERATE[type] + Intl.get('sales.commission.failed', '提成信息失败'));
             }
+        }, (err) => {
+            this.props.hideLoading();
+            message.error(OPERATE[type] + Intl.get('sales.commission.failed', '提成信息失败'));
         });
     },
 
