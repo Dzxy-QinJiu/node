@@ -48,7 +48,12 @@ const CommissionPayment = createReactClass({
     },
 
     componentWillReceiveProps(nextProps) {
-        this.clearState();
+        //处于编辑状态，并且提成条目改变时，用改变后的提成数据更新表单数据
+        if (this.state.isFormShow && nextProps.commission.id !== this.props.commission.id) {
+            this.setState({
+                formData: _.clone(nextProps.commission)
+            })
+        }
     },
 
     showForm() {
@@ -125,6 +130,9 @@ const CommissionPayment = createReactClass({
             } else {
                 message.error(result.msg || OPERATE[type] + Intl.get('sales.commission.failed', '提成信息失败'));
             }
+        }, (err) => {
+            this.props.hideLoading();
+            message.error(OPERATE[type] + Intl.get('sales.commission.failed', '提成信息失败'));
         });
     },
 
