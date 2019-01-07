@@ -6,8 +6,8 @@ trans.register('grantApplicationList' , {url: '/rest/global/grant_applications',
 trans.register('appsDefaultConfig' , {url: '/rest/global/apps/default_config' , type: 'get'});
 
 //暴露方法 获取应用列表(isIntegration:是否只获取集成的产品)
-exports.getGrantApplicationListAjax = function(isIntegration) {
-    return trans.getAjax('grantApplicationList', {integration: !!isIntegration, page_size: 1000});
+exports.getGrantApplicationListAjax = function() {
+    return trans.getAjax('grantApplicationList');
 };
 
 //暴露方法 获取各应用的默认设置,appIds:[1,2]

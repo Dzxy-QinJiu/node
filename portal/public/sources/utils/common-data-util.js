@@ -51,7 +51,7 @@ exports.getAppList = function(cb) {
     if (_.get(appList, '[0]')) {
         if (_.isFunction(cb)) cb(appList);
     } else {
-        appAjaxTrans.getGrantApplicationListAjax().sendRequest({isIntegration: true}).success(result => {
+        appAjaxTrans.getGrantApplicationListAjax().sendRequest({integration: true, page_size: 1000}).success(result => {
             let list = [];
             if (_.get(result, '[0]')) {
                 list = result.map(function(app) {
