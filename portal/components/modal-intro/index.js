@@ -44,7 +44,7 @@ class ModalIntro extends React.Component {
             //小蚂蚁和提示信息所占区域的样式
             $('#modal-intro .modal-tip')
                 .css({
-                    top: offsetf.top + this.state.introModalLayout.tipAreaTop,
+                    top: offset.top + this.state.introModalLayout.tipAreaTop,
                     left: offset.left + this.state.introModalLayout.tipAreaLeft,
                 });
         }
