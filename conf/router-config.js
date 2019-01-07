@@ -8,7 +8,7 @@ const MODULE_PATH = 'modules/';
 let routers = [
     {
         id: 'CRM',
-        name: 'menu.crm',//客户管理
+        name: 'call.record.customer',//客户
         routePath: '/crm',
         component: `${MODULE_PATH}crm/public`,
         shortName: 'call.record.customer',//客户
@@ -17,7 +17,7 @@ let routers = [
     },
     {
         id: 'ClUE_CUSTOMER',
-        name: 'sales.lead.customer',//线索客户
+        name: 'crm.sales.clue',//线索
         routePath: '/clue_customer',
         component: `${MODULE_PATH}clue_customer/public`,
         shortName: 'crm.sales.clue',//线索
@@ -26,7 +26,7 @@ let routers = [
     },
     {
         id: 'DEAL_MANAGE',
-        name: 'deal.manage',//订单管理
+        name: 'user.apply.detail.order',//订单
         routePath: '/deal_manage',
         component: `${MODULE_PATH}deal_manage/public`,
         shortName: 'user.apply.detail.order',//订单
@@ -35,7 +35,7 @@ let routers = [
     },
     {
         id: 'CALL_RECORD',
-        name: 'menu.call',//通话记录
+        name: 'menu.shortName.call',//通话
         routePath: '/call_record',
         component: `${MODULE_PATH}call_record/public`,
         shortName: 'menu.shortName.call',//通话
@@ -44,7 +44,7 @@ let routers = [
     },
     {
         id: 'APP_USER_MANAGE',//唯一标识
-        name: 'menu.appuser',//用户管理
+        name: 'crm.detail.user',//用户
         routePath: '/user',
         shortName: 'crm.detail.user',//用户
         subMenu: [{
@@ -79,7 +79,7 @@ let routers = [
     },
     {
         id: 'OPLATE_ANALYSIS',//唯一标识
-        name: 'menu.customer.analysis',//运营分析
+        name: 'user.detail.analysis',//分析
         routePath: '/analysis',
         shortName: 'user.detail.analysis',//分析
         subMenu: [
@@ -159,7 +159,7 @@ let routers = [
     },
     {
         id: 'CONTRACT',
-        name: 'menu.contract',//合同管理
+        name: 'contract.125',//合同
         routePath: '/contract',
         shortName: 'contract.125',//合同
         subMenu: [{
@@ -214,7 +214,7 @@ let routers = [
     },
     {
         id: 'SCHEDULE_MANAGEMENT',
-        name: 'schedule.list.management',//日程管理
+        name: 'menu.shortName.schedule',//日程
         routePath: '/schedule_management',
         component: `${MODULE_PATH}schedule_management/public`,
         shortName: 'menu.shortName.schedule',//日程
@@ -223,9 +223,9 @@ let routers = [
     },
     {
         id: 'APPLICATION_APPLY_MANAGEMENT',
-        name: 'menu.leave.apply.list.management',//申请审批
+        name: 'crm.109',//申请
         routePath: '/application',
-        shortName: 'menu.leave.apply.list.management',//申请审批
+        shortName: 'crm.109',//申请
         subMenu: [{
             id: 'APP_USER_MANAGE_APPLY',
             name: 'menu.appuser.apply',//用户审批
@@ -273,7 +273,7 @@ let routers = [
     },
     {
         id: 'NOTIFICATION',//唯一标识 - 通知
-        name: 'menu.system.notification',//系统消息
+        name: 'menu.notification',//通知
         routePath: '/notification_system',
         component: `${MODULE_PATH}notification/public`,
         shortName: 'menu.notification',//通知
@@ -283,7 +283,7 @@ let routers = [
     },
     {
         id: 'BACKGROUND_MANAGEMENT',//唯一标识
-        name: 'menu.backend',//后台管理
+        name: 'menu.shortName.config',//设置
         routePath: '/background_management',
         shortName: 'menu.shortName.config',//设置
         bottom: true,
@@ -295,14 +295,6 @@ let routers = [
                 component: `${MODULE_PATH}user_manage/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['USER_MANAGE_LIST_USERS']
-            },
-            {
-                id: 'SALESSTAGE',
-                name: 'crm.order.stage.manage',//订单阶段管理
-                routePath: '/background_management/sales_stage',
-                component: `${MODULE_PATH}sales_stage/public`,
-                //有这个权限，才显示入口图标
-                showPrivileges: ['BGM_SALES_STAGE_ADD']
             }, {
                 id: 'SALESTEAM',
                 name: 'menu.salesteam',//团队管理
@@ -311,6 +303,13 @@ let routers = [
                 //有这个权限，才显示入口图标
                 showPrivileges: ['BGM_SALES_TEAM_LIST']
             }, {
+                id: 'SALESSTAGE',
+                name: 'crm.order.stage.manage',//订单阶段管理
+                routePath: '/background_management/sales_stage',
+                component: `${MODULE_PATH}sales_stage/public`,
+                //有这个权限，才显示入口图标
+                showPrivileges: ['BGM_SALES_STAGE_ADD']
+            },{
                 id: 'CONFIGARATION',
                 name: 'menu.config',//配置
                 routePath: '/background_management/configaration',
@@ -338,7 +337,7 @@ let routers = [
     },
     {
         id: 'USER_INFO_MANAGE',//唯一标识
-        name: 'menu.userinfo.manage',//个人信息管理
+        name: 'menu.userinfo',//个人资料
         routePath: '/user_info_manage',
         bottom: true,
         subMenu: [{
