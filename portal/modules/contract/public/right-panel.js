@@ -35,7 +35,7 @@ class ContractRightPanel extends React.Component {
     state = {
         isLoading: false,
         currentView: this.props.view,
-        currentCategory: this.props.view === 'buyForm' ? PURCHASE : PRODUCT,
+        currentCategory: '',
         currentTabKey: '1',
         userList: JSON.parse(JSON.stringify(this.props.userList)),
         teamList: JSON.parse(JSON.stringify(this.props.teamList)),
