@@ -48,10 +48,11 @@ const CommissionPayment = createReactClass({
     },
 
     componentWillReceiveProps(nextProps) {
-        //处于编辑状态，并且提成条目改变时，用改变后的提成数据更新表单数据
-        if (this.state.isFormShow && nextProps.commission.id !== this.props.commission.id) {
+        //提成条目改变时
+        if (nextProps.commission.id !== this.props.commission.id) {
+            //将视图设为展示状态
             this.setState({
-                formData: _.clone(nextProps.commission)
+                isFormShow: false
             })
         }
     },
