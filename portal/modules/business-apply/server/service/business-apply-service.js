@@ -13,7 +13,7 @@ var restApis = {
     //查询由当前账号审批的出差申请
     applylistBussinessTrip: '/rest/base/v1/workflow/businesstrip/worklist',
     //添加出差申请
-    addBusinessApply: 'http://172.19.103.211:8391/rest/base/v1/workflow/businesstrip',
+    addBusinessApply: '/rest/base/v1/workflow/businesstrip',
     //根据出差申请的id查询申请的详情
     getApplyDetailById: '/rest/base/v1/workflow/detail',
     //获取申请列表

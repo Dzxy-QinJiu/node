@@ -8,7 +8,7 @@ var restUtil = require('ant-auth-request').restUtil(restLogger);
 var _ = require('lodash');
 var restApis = {
     //添加请假申请
-    addLeaveApply: 'http://172.19.103.211:8391/rest/base/v1/workflow/leave',
+    addLeaveApply: '/rest/base/v1/workflow/leave',
     //查询所有的请假申请
     allWorkFlowApplyList: '/rest/base/v1/workflow/applylist',
     //查询由当前账号审批的请假申请
