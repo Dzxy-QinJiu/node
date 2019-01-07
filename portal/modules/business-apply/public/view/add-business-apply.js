@@ -7,7 +7,8 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 require('../css/add-business-apply.less');
 import BasicData from 'MOD_DIR/clue_customer/public/views/right_panel_top';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import {Form, Input, Button, Icon, message, DatePicker} from 'antd';
+import {Form, Input, Button, Icon, message, DatePicker,Select} from 'antd';
+var Option = Select.Option;
 const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
@@ -19,11 +20,12 @@ var user = require('../../../../public/sources/user-data').getUserData();
 const DEFAULTTIMETYPE = 'day';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
+import {calculateTotalTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
 var BusinessApplyAction = require('../action/business-apply-action');
 import AlertTimer from 'CMP_DIR/alert-timer';
 import {AntcAreaSelection} from 'antc';
 import Trace from 'LIB_DIR/trace';
-import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
+import {DELAY_TIME_RANGE,LEAVE_TIME_RANGE,AM_AND_PM} from 'PUB_DIR/sources/utils/consts';
 class AddBusinessApply extends React.Component {
     constructor(props) {
         super(props);
@@ -33,7 +35,9 @@ class AddBusinessApply extends React.Component {
             search_customer_name: '',
             formData: {
                 begin_time: DateSelectorUtils.getMilliseconds(timeRange.start_time),//出差开始时间
+                begin_type: '',//请假开始的类型
                 end_time: DateSelectorUtils.getMilliseconds(timeRange.end_time, true),//出差结束时间
+                end_type: '',//请假结束的类型
                 reason: '',
                 customers: [{
                     id: '',
@@ -75,6 +79,9 @@ class AddBusinessApply extends React.Component {
         }, () => {
             if (this.props.form.getFieldValue('end_time')) {
                 this.props.form.validateFields(['end_time'], {force: true});
+                if (formData.begin_type && formData.end_type){
+                    this.calculateTotalLeaveRange();
+                }
             }
         });
     };
@@ -86,7 +93,41 @@ class AddBusinessApply extends React.Component {
         }, () => {
             if (this.props.form.getFieldValue('begin_time')) {
                 this.props.form.validateFields(['begin_time'], {force: true});
+                if (formData.begin_type && formData.end_type){
+                    this.calculateTotalLeaveRange();
+                }
             }
+        });
+    };
+    handleChangeStartRange = (value) => {
+        var formData = this.state.formData;
+        formData.begin_type = value;
+        this.setState({
+            formData: formData
+        },() => {
+            this.props.form.validateFields(['begin_time'], {force: true});
+            if (formData.end_type){
+                this.calculateTotalLeaveRange();
+            }
+        });
+    };
+    handleChangeEndRange = (value) => {
+        var formData = this.state.formData;
+        formData.end_type = value;
+        this.setState({
+            formData: formData
+        },() => {
+            this.props.form.validateFields(['end_time'], {force: true});
+            if (formData.begin_type){
+                this.calculateTotalLeaveRange();
+            }
+        });
+    };
+    calculateTotalLeaveRange = () => {
+        var formData = this.state.formData;
+        formData.total_range = calculateTotalTimeRange(formData);
+        this.setState({
+            formData: formData
         });
     };
 
@@ -110,6 +151,15 @@ class AddBusinessApply extends React.Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             var formData = _.cloneDeep(this.state.formData);
             if (err) return;
+            formData.apply_time = [{
+                start: moment(values.begin_time).format(oplateConsts.DATE_FORMAT) + `_${formData.begin_type}`,
+                end: moment(values.end_time).format(oplateConsts.DATE_FORMAT) + `_${formData.end_type}`
+            }];
+            delete formData.total_range;
+            delete formData.begin_time;
+            delete formData.end_time;
+            delete formData.begin_type;
+            delete formData.end_type;
             var hasNoExistCustomer = false;
             _.forEach(formData.customers, (customerItem, index) => {
                 delete customerItem.key;
@@ -130,23 +180,26 @@ class AddBusinessApply extends React.Component {
                 saveMsg: '',
                 saveResult: ''
             });
-
+            var errTip = Intl.get('crm.154', '添加失败');
             $.ajax({
                 url: '/rest/add/apply/list',
                 dataType: 'json',
                 type: 'post',
                 data: formData,
                 success: (data) => {
-                    //添加成功
-                    this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                    this.hideBusinessApplyAddForm();
-                    //添加完后的处理
-                    data.afterAddReplySuccess = true;
-                    data.showCancelBtn = true;
-                    BusinessApplyAction.afterAddApplySuccess(data);
+                    if (data){
+                        //添加成功
+                        this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
+                        this.hideBusinessApplyAddForm();
+                        //添加完后的处理
+                        data.afterAddReplySuccess = true;
+                        data.showCancelBtn = true;
+                        BusinessApplyAction.afterAddApplySuccess(data);
+                    }else{
+                        this.setResultData(errTip, 'error');
+                    }
                 },
                 error: (xhr) => {
-                    var errTip = Intl.get('crm.154', '添加失败');
                     if (xhr.responseJSON && _.isString(xhr.responseJSON)){
                         errTip = xhr.responseJSON;
                     }
@@ -183,17 +236,29 @@ class AddBusinessApply extends React.Component {
                 callback();
                 return;
             }
-            const begin_time = this.state.formData.begin_time;
-            const endTime = this.state.formData.end_time;
+            var formData = this.state.formData;
+            const begin_time = formData.begin_time;
+            const endTime = formData.end_time;
             const isBeginTime = timeType === 'begin_time' ? true : false;
             if (endTime && begin_time) {
-                if (moment(endTime).isBefore(begin_time)) {
-                    if (isBeginTime) {
+                if (formData.begin_type && formData.end_type){
+                    if (moment(endTime).isBefore(begin_time)) {
+                        if (isBeginTime) {
+                            callback(Intl.get('contract.start.time.greater.than.end.time.warning', '起始时间不能大于结束时间'));
+                        } else {
+                            callback(Intl.get('contract.end.time.less.than.start.time.warning', '结束时间不能小于起始时间'));
+                        }
+                    } else if (moment(endTime).isSame(begin_time,'day') && formData.begin_type === AM_AND_PM.PM && formData.end_type === AM_AND_PM.AM){
+                        //是同一天的时候，不能开始时间选下午，结束时间选上午
                         callback(Intl.get('contract.start.time.greater.than.end.time.warning', '起始时间不能大于结束时间'));
-                    } else {
-                        callback(Intl.get('contract.end.time.less.than.start.time.warning', '结束时间不能小于起始时间'));
+                    }else{
+                        callback();
                     }
-                } else {
+                }else if (!formData.begin_type && isBeginTime ){
+                    callback(Intl.get('apply.approve.select.leave.range', '请选择上午或下午'));
+                }else if (!isBeginTime && !formData.end_type){
+                    callback(Intl.get('apply.approve.select.leave.range', '请选择上午或下午'));
+                }else{
                     callback();
                 }
             } else {
@@ -259,7 +324,20 @@ class AddBusinessApply extends React.Component {
                                                 value={formData.begin_time ? moment(formData.begin_time) : moment()}
                                                 disabledDate={disabledDate}
                                             />
+
                                         )}
+                                        <Select
+                                            placeholder={Intl.get('apply.approve.select.leave.range','请选择上午或下午')}
+                                            getPopupContainer={() => document.getElementById('leave-apply-form')}
+                                            onChange={this.handleChangeStartRange}
+
+                                        >
+                                            {_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?
+                                                LEAVE_TIME_RANGE.map((leaveItem, idx) => {
+                                                    return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
+                                                }) : null
+                                            }
+                                        </Select>
                                     </FormItem>
                                     <FormItem
                                         className="form-item-label add-apply-time"
@@ -279,7 +357,31 @@ class AddBusinessApply extends React.Component {
                                                 disabledDate={disabledDate}
                                             />
                                         )}
+                                        <Select
+                                            placeholder={Intl.get('apply.approve.select.leave.range','请选择上午或下午')}
+                                            getPopupContainer={() => document.getElementById('leave-apply-form')}
+                                            onChange={this.handleChangeEndRange}
+                                        >
+                                            {_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?
+                                                LEAVE_TIME_RANGE.map((leaveItem, idx) => {
+                                                    return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
+                                                }) : null
+                                            }
+                                        </Select>
                                     </FormItem>
+                                    {formData.total_range ?
+                                        <FormItem
+                                            className="form-item-label add-apply-time"
+                                            label={Intl.get('apply.approve.total.leave.time','请假时长')}
+                                            {...formItemLayout}
+                                        >
+                                            {getFieldDecorator('total_range')(
+                                                <div className="total-range">
+                                                    {Intl.get('weekly.report.n.days', '{n}天',{n: formData.total_range})}
+                                                </div>
+                                            )}
+                                        </FormItem>
+                                        : null}
                                     <FormItem
                                         className="form-item-label"
                                         label={Intl.get('leave.apply.add.leave.person', '出差人员')}

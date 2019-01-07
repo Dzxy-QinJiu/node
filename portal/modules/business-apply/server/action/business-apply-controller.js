@@ -40,7 +40,6 @@ exports.getWorklistBusinessApplyList = function(req, res) {
 };
 exports.addBusinessApply = function(req, res) {
     BusinessApplyService.addBusinessApply(req, res).on('success', function(data) {
-        data = handleNodata(data);
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);

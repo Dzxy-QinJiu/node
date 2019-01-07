@@ -2651,14 +2651,19 @@ var en_US = {
     'failed.get.reply.comment': 'Failed to get comment lists',//获取回复列表失败
     'apply.approve.upload.no.container.space': 'Please do not has space in your file name!',//文件名称中不要含有空格！
     'failed.delete.apply.load.approve': 'Failed to delete files',//删除文件失败！
-    'click.ctrl.upload.mutil.file': 'You can upload more than one file at one time',//可上传多个文件！
+    'click.ctrl.upload.mutil.file': 'You can upload more than one file not larger than 50M at one time',//可同时上传多个文件，文件大小不要超过50M！
     'apply.approve.customer.info': 'Customer Info',//客户资料
     'apply.approve.add.files': 'Added files',//补充文件
     'fail.apply.approve.result': 'Failed to approve',//审批失败
     'apply.approve.upload.file.type': 'Upload {fileType}',//上传{fileType}
     'apply.approve.continue.file.type': 'Continue to upload {fileType}',//继续上传{fileType}
     'apply.approve.delete.this.file': 'Whether to delete this file',//是否删除此文件
-    'failed.distribute.sales.opportunity': 'Failed to distribute sales opportunity!',//分配销售机会失败！
+	'failed.distribute.sales.opportunity': 'Failed to distribute sales opportunity!',//分配销售机会失败！
     'common.customer.can.not.found.because.merged': '{count} of these customers were not queried because they were merged',//其中有{count}个客户因被合并而查询不到了
+    'apply.approve.leave.am': 'am',//上午
+    'apply.approve.leave.pm': 'pm',//下午
+    'apply.approve.select.leave.range': 'Please select am or pm',//请选择上午或下午
+    'apply.approve.total.leave.time': 'Leave range',//请假时长
+    'apply.approve.total.days': 'A total of {X} day'//共{X}天
 };
 export default en_US;

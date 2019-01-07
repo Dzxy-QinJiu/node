@@ -18,7 +18,8 @@ const MY_TEAM_TREE_KEY = 'my_team_tree';
 const AUTH_MAP = {
     ALL_TEAM_AUTH: 'GET_TEAM_LIST_ALL'//管理员获取所有团队树的权限
 };
-import {DIFF_TYPE_LOG_FILES} from './consts';
+import {DIFF_TYPE_LOG_FILES, AM_AND_PM} from './consts';
+import {isEqualArray} from 'LIB_DIR/func';
 // 获取拨打电话的座席号
 exports.getUserPhoneNumber = function(cb) {
     let user_id = getUserData().user_id;
@@ -219,4 +220,51 @@ exports.hasApprovedReportAndDocumentApply = function(approverIds) {
     }else{
         return false;
     }
+};
+function calculateTimeRange(beginType,endType) {
+    var timeRange = '';
+    if (beginType === endType){
+        timeRange = 0.5;
+    }else if (beginType === AM_AND_PM.AM && endType === AM_AND_PM.PM){
+        timeRange = 1;
+    }
+    return timeRange;
+
+}
+//计算两个日期中间相隔的天数
+exports.calculateTotalTimeRange = (formData) => {
+    var beginTime = formData.begin_time,beginType = formData.begin_type,endTime = formData.end_time,endType = formData.end_type;
+    var timeRange = '';
+    //如果开始和结束时间是同一天的
+    var isSameDay = moment(beginTime).isSame(endTime, 'day');
+    if (isSameDay){
+        timeRange = calculateTimeRange(beginType,endType);
+    }else {
+        //相差几天
+        timeRange = moment(endTime).diff(moment(beginTime), 'days');
+        timeRange += calculateTimeRange(beginType,endType);
+    }
+    return timeRange;
+};
+function showAmAndPmDes(time){
+    var des = '';
+    if (time === AM_AND_PM.AM){
+        des = Intl.get('apply.approve.leave.am', '上午');
+    }else if (time === AM_AND_PM.PM){
+        des = Intl.get('apply.approve.leave.pm', '下午');
+    }
+    return des;
+}
+exports.handleTimeRange = function(start,end){
+    var beginTimeArr = start.split('_');
+    var endTimeArr = end.split('_');
+    var leaveTime = _.get(beginTimeArr,[0]);
+    if (isEqualArray(beginTimeArr,endTimeArr)){
+        leaveTime += showAmAndPmDes(_.get(beginTimeArr,[1]));
+    }else if (_.get(beginTimeArr,[0]) !== _.get(endTimeArr,[0])){
+        leaveTime += showAmAndPmDes(_.get(beginTimeArr,[1]));
+        leaveTime = leaveTime + '—' + _.get(endTimeArr,[0]);
+        leaveTime += showAmAndPmDes(_.get(endTimeArr,[1]));
+    }
+    return leaveTime;
 };

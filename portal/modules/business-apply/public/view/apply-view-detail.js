@@ -21,6 +21,7 @@ import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 import {getApplyTopicText,getApplyResultDscr,getApplyStatusTimeLineDesc,getFilterReplyList,handleDiffTypeApply} from 'PUB_DIR/sources/utils/common-method-util';
+import {handleTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
@@ -157,9 +158,6 @@ class ApplyViewDetail extends React.Component {
     renderDetailApplyBlock(detailInfo) {
         var detail = detailInfo.detail || {};
         var applicant = detailInfo.applicant || {};
-        var beginDate = moment(detail.begin_time).format(oplateConsts.DATE_FORMAT);
-        var endDate = moment(detail.end_time).format(oplateConsts.DATE_FORMAT);
-        var isOneDay = beginDate === endDate;
         var customers = _.get(detail, 'customers[0]', {});
         //展示客户的地址，只展示到县区就可以，不用展示到街道
         var customersAdds = [];
@@ -171,9 +169,18 @@ class ApplyViewDetail extends React.Component {
         });
         //去掉数组中的重复元素
         customersAdds = _.uniq(customersAdds);
+        var leaveRange = handleTimeRange(_.get(detail, 'apply_time[0].start',''),_.get(detail, 'apply_time[0].end',''));
+        if (_.get(detail,'days')){
+            leaveRange += Intl.get('apply.approve.total.days','共{X}天',{X: _.get(detail,'days')});
+        }
+        if (!leaveRange){
+            var begin_time = moment(detail.begin_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+            var end_time = moment(detail.end_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+        }
+
         var showApplyInfo = [{
             label: Intl.get('common.login.time', '时间'),
-            text: isOneDay ? beginDate : (beginDate + ' - ' + endDate)
+            text: leaveRange ? leaveRange : (begin_time + ' - ' + end_time)
         }, {
             label: Intl.get('user.info.login.address', '地点'),
             text: customersAdds.join('，')

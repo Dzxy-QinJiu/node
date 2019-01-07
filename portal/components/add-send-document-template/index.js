@@ -111,20 +111,19 @@ class AddReportSendApply extends React.Component {
                 type: 'post',
                 data: formData,
                 success: (data) => {
-                    if (_.get(data,'list[0]')){
+                    if(data){
+                        //添加成功
+                        this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
+                        this.hideApplyAddForm();
+                        //添加完后的处理
+                        data.afterAddReplySuccess = true;
+                        data.showCancelBtn = true;
+                        _.isFunction(this.props.afterAddApplySuccess) && this.props.afterAddApplySuccess(data);
+                    }else{
                         this.setResultData(errTip, 'error');
-                        return;
                     }
-                    //添加成功
-                    this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                    this.hideApplyAddForm();
-                    //添加完后的处理
-                    data.afterAddReplySuccess = true;
-                    data.showCancelBtn = true;
-                    _.isFunction(this.props.afterAddApplySuccess) && this.props.afterAddApplySuccess(data);
                 },
                 error: (xhr) => {
-
                     if (xhr.responseJSON && _.isString(xhr.responseJSON)) {
                         errTip = xhr.responseJSON;
                     }

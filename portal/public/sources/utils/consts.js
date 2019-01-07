@@ -408,3 +408,12 @@ export const DIFF_TYPE_LOG_FILES = {
     SALE_UPLOAD_NEW: 'sale_upload_new',//销售在支持部人确认申请前添加的文件和销售添加申请后添加的文件
     APPROVER_UPLOAD: 'approver_upload'//支持部上传的文件
 };
+export const AM_AND_PM = {
+    AM: 'AM',
+    PM: 'PM'
+};
+//请假申请的类型
+export const LEAVE_TIME_RANGE = [
+    {name: Intl.get('apply.approve.leave.am','上午'),value: AM_AND_PM.AM},
+    {name: Intl.get('apply.approve.leave.pm','下午'),value: AM_AND_PM.PM}
+];
