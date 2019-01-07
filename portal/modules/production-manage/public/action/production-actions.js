@@ -4,7 +4,7 @@
  * Created by liwenjun on 2018/10/31.
  */
 let productionAjax = require('../ajax/production-ajax');
-
+var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 function ProductionActions() {
     this.generateActions(
         'setInitialData',
@@ -20,8 +20,12 @@ function ProductionActions() {
     this.getProductions = function(query) {
         productionAjax.getProductions(query).then((listObj) => {
             this.dispatch(listObj);
+            scrollBarEmitter.emit(scrollBarEmitter.STOP_LOADED_DATA);
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
         }, (errorMsg) => {
             this.dispatch(errorMsg);
+            scrollBarEmitter.emit(scrollBarEmitter.STOP_LOADED_DATA);
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
         });
     };
 
