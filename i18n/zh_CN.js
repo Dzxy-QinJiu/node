@@ -928,6 +928,7 @@ var zh_CN = {
     'config.product.create_time': '创建时间',
     'config.product.type': '产品类型',
     'config.product.select.tip': '请选择产品（可多选）',
+    'config.product.js.collect.user': '使用JS脚本采集用户数据',
     //配置end
     // 通话记录start
     'call.record.caller': '呼叫者',

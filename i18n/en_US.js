@@ -921,6 +921,7 @@ var en_US = {
     'config.product.create_time': 'Create time',//创建时间
     'config.product.type': 'Product type',//产品类型
     'config.product.select.tip': 'Please choose products (Multiple choices)',//请选择产品（可多选）
+    'config.product.js.collect.user': 'Use JS script to collect user data',//使用JS脚本采集用户数据
 
     //配置end
     // 通话记录start
