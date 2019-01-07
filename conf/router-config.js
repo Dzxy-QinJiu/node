@@ -75,13 +75,6 @@ let routers = [
             component: `${MODULE_PATH}app_user_manage/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['USER_TIME_LINE']
-        }, {
-            id: 'POSITION_MANAGE', // 座席号管理的唯一标识
-            name: 'menu.appuser.position',//座席号管理
-            routePath: '/user/position',
-            component: `${MODULE_PATH}position_manage/public`,
-            //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_PHONE_ORDER_MANAGE']
         }]
     },
     {
