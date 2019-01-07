@@ -23,7 +23,8 @@ function ApplyViewDetailActions() {
         'hideApprovalBtns',//审批完后不在显示审批按钮
         'hideCancelBtns',//审批完后不再显示撤销按钮
         'setDetailInfoObjAfterAdd',
-        'updateAllApplyItemStatus'
+        'updateAllApplyItemStatus',
+        'setNextCandidateIds'
     );
 
     //获取审批单详情

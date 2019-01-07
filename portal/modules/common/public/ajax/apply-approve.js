@@ -5,6 +5,10 @@
  */
 var trans = $.ajaxTrans();
 trans.register('candidateList', {url: '/rest/get/apply/next/candidate', type: 'get'});
+trans.register('addNewCandidate', {url: '/rest/add/apply/new/candidate', type: 'post'});
 exports.getNextCandidate = function(reqParams) {
     return trans.getAjax('candidateList', reqParams);
+};
+exports.addNewCandidate = function(reqParams) {
+    return trans.getAjax('addNewCandidate', reqParams);
 };

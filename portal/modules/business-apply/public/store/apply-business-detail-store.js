@@ -245,5 +245,8 @@ ApplyViewDetailStore.prototype.getNextCandidate = function(result) {
     }
 
 };
+ApplyViewDetailStore.prototype.setNextCandidateIds = function (candidateId) {
+    this.detailInfoObj.info.nextCandidateId = candidateId;
+};
 
 module.exports = alt.createStore(ApplyViewDetailStore, 'ApplyViewDetailStore');

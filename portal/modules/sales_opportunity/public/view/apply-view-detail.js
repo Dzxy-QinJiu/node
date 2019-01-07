@@ -332,14 +332,6 @@ class ApplyViewDetail extends React.Component {
     onSelectApplySales = (updateUser) => {
         SalesOpportunityApplyDetailAction.setApplyCandate(updateUser);
     };
-    getSalesOptions = () => {
-        var dataLists = this.state.salesManList;
-        return dataLists.map((sales, idx) => {
-            return (<Option key={idx}
-                value={_.get(sales, 'user_info.user_id')}>
-                {_.get(sales, 'user_info.nick_name')} - {_.get(sales, 'user_groups[0].group_name')}</Option>);
-        });
-    };
     renderSalesBlock = (type) => {
         //type 区分是分配下一节点负责人  还是分配给普通销售
         var onChangeFunction = this.onSalesmanChange;

@@ -2679,5 +2679,7 @@ var zh_CN = {
     'apply.approve.delete.this.file': '是否删除此文件',
     'failed.distribute.sales.opportunity': '分配销售机会失败！',
     'common.customer.can.not.found.because.merged': '其中有{count}个客户因被合并而查询不到了',
+    'apply.will.select.transfer.approver':'请选择要转给的待审批人',
+    'apply.will.approve.apply.item':'待审批人'
 };
 export default zh_CN;
