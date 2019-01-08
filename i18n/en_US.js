@@ -159,7 +159,6 @@ var en_US = {
     'common.no.audit': 'There is no audit',//暂无审计日志
     'common.no.call.record': 'There is no call record',//暂无通话记录
 
-
     'common.yesno': 'whether',//是否
     'common.add.member': 'Add members',//添加成员
     'common.input.keyword': 'Please enter keywords',//输入关键词
@@ -245,6 +244,7 @@ var en_US = {
     'common.product.name': 'Product name', // 产品名称
     'common.product': 'product',//产品
     'common.product.search.placeholder': 'Please enter the product name for search',//请输入产品名进行筛选
+    'common.or': 'Or', // 或
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -1871,7 +1871,6 @@ var en_US = {
     'rightpanel_notice': 'notice',//公告
     'rightpanel_delete_record': 'delete this record',//删除该记录
     'rightpanel_usertypeconfig': 'user type configuration',//用户类型设置
-
 
     //错误码
     'errorcode.0': 'Parameter error',//参数错误

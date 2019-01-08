@@ -4,17 +4,17 @@
  * Created by wangliping on 2018/10/31.
  */
 require('./style/index.less');
-import {Button, Radio} from 'antd';
-import {SearchInput} from 'antc';
+import { Button, Radio } from 'antd';
+import { SearchInput } from 'antc';
 import TopNav from 'CMP_DIR/top-nav';
-import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
+import { PrivilegeChecker } from 'CMP_DIR/privilege/checker';
 import dealAction from './action';
 import dealBoardAction from './action/deal-board-action';
 import DealForm from './views/deal-form';
 import DealDetailPanel from './views/deal-detail-panel';
-import {DEAL_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
-import {RightPanel} from 'CMP_DIR/rightPanel';
+import { DEAL_STATUS } from 'PUB_DIR/sources/utils/consts';
+import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { RightPanel } from 'CMP_DIR/rightPanel';
 import Trace from 'LIB_DIR/trace';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import classNames from 'classnames';
@@ -55,11 +55,11 @@ class DealManage extends React.Component {
         if (deal) {
             this.setState({currDeal: deal, isDetailPanelShow: true});
         }
-    }
+    };
 
     hideDetailPanel = () => {
         this.setState({currDeal: {}, isDetailPanelShow: false});
-    }
+    };
     //获取搜索订单的body参数
     getSearchBody = () => {
         let searchBody = {};
@@ -83,7 +83,7 @@ class DealManage extends React.Component {
             }
         }
         return searchBody;
-    }
+    };
 
     getDealList() {
         let dealTableState = this.dealTableRef.state;
@@ -202,13 +202,6 @@ class DealManage extends React.Component {
         return (
             <div className="deal-manage-container" data-tracename="订单管理">
                 <TopNav>
-                    <div className="deal-view-radio-container">
-                        <RadioGroup size="large" value={this.state.viewType} onChange={this.changViewType}>
-                            <RadioButton value={VIEW_TYPES.LIST}><i className="iconfont icon-list-view"/></RadioButton>
-                            <RadioButton value={VIEW_TYPES.BOARD}><i
-                                className="iconfont icon-board-view"/></RadioButton>
-                        </RadioGroup>
-                    </div>
                     <div className="deal-search-block">
                         <SearchInput
                             type="select"
@@ -222,6 +215,14 @@ class DealManage extends React.Component {
                             {Intl.get('crm.161', '添加订单')}
                         </Button>
                     </PrivilegeChecker>
+                    <div className="deal-view-radio-container">
+                        <RadioGroup size="large" value={this.state.viewType} onChange={this.changViewType}>
+                            <RadioButton value={VIEW_TYPES.LIST}><i
+                                className="iconfont icon-list-view"/></RadioButton>
+                            <RadioButton value={VIEW_TYPES.BOARD}><i
+                                className="iconfont icon-board-view"/></RadioButton>
+                        </RadioGroup>
+                    </div>
                 </TopNav>
                 <div className={dealViewCls}>
                     {this.state.viewType === VIEW_TYPES.LIST ? (
@@ -276,4 +277,5 @@ class DealManage extends React.Component {
             </div>);
     }
 }
+
 export default DealManage;

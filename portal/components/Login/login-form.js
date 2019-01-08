@@ -281,6 +281,7 @@ class LoginForm extends React.Component {
                         {hasWindow ? this.state.isBindWechat ? Intl.get('register.wechat.bind.btn', '立即绑定') : Intl.get('login.login', '登录') : null}
                         {this.state.logining ? <Icon type="loading"/> : null}
                     </button>
+                    <p className="line"><span>{Intl.get('common.or','或')}</span></p>
                     {this.state.isBindWechat ? (
                         <div className='login-button wechat-login' onClick={this.returnLoginPage}
                             data-tracename="返回登录页"
