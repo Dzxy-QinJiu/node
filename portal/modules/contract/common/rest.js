@@ -29,15 +29,17 @@ routes.forEach(route => {
             res: res
         };
 
+        //如果是上传合同
         if (route.handler === 'uploadContractPreview') {
             options['timeout'] = 5 * 60 * 1000;
             const form = new multiparty.Form();
 
             form.parse(req, function(err, fields, files) {
                 const file = files.contracts[0].path;
+                //multiple value 类型的参数需要放到options.formData中向后端传递
                 options.formData = {
                     attachments: [fs.createReadStream(file)];
-                }
+                };
 
                 doRequest(null, () => {
                     fs.unlink(file, err => {
