@@ -23,7 +23,8 @@ function ApplyViewDetailActions() {
         'hideApprovalBtns',//审批完后不在显示审批按钮
         'hideCancelBtns',//审批完后不再显示撤销按钮
         'setDetailInfoObjAfterAdd',
-        'updateAllApplyItemStatus'
+        'updateAllApplyItemStatus',
+        'setNextCandidateIds'
     );
 
     //获取审批单详情
@@ -125,6 +126,20 @@ function ApplyViewDetailActions() {
             }
         }).error(
             this.dispatch({error: true})
+        );
+    };
+    //把申请转给另外一个人
+    this.transferNextCandidate = function(queryObj) {
+        this.dispatch({loading: true, error: false});
+        ApplyApproveAjax.transferNextCandidate().sendRequest(queryObj).success((data) => {
+            if (data){
+                this.dispatch({loading: false, error: false})
+            }else{
+                this.dispatch({loading: false, error: true, errorMsg: Intl.get('apply.approve.transfer.failed','转出申请失败')})
+            }
+        }).error(errMsg =>{
+                this.dispatch({loading: false, error: true, errorMsg:errMsg})
+        }
         );
     };
 }

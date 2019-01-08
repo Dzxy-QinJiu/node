@@ -13,6 +13,7 @@ const sessionCallNumberKey = 'callNumber';
 let appList = [];
 let allProductList = [];
 let dealStageList = [];
+let allUserList = [];
 //缓存在sessionStorage中的我能查看的团队
 const MY_TEAM_TREE_KEY = 'my_team_tree';
 const AUTH_MAP = {
@@ -84,6 +85,29 @@ exports.getAllProductList = function(cb) {
             error: xhr => {
                 allProductList = [];
                 if (_.isFunction(cb)) cb(allProductList);
+            }
+        });
+    }
+};
+//获取所有的成员列表
+exports.getAllUserList = function(cb) {
+    if (_.get(allUserList, '[0]')) {
+        if (_.isFunction(cb)) cb(allUserList);
+    } else {
+        $.ajax({
+            url: '/rest/user',
+            type: 'get',
+            dataType: 'json',
+            data: {},
+            success: result => {
+                if (_.isArray(result.data)){
+                    allUserList = _.filter(result.data, sales => sales  && sales.status === 1);
+                    if (_.isFunction(cb)) cb(allUserList);
+                }
+            },
+            error: xhr => {
+                allUserList = [];
+                if (_.isFunction(cb)) cb(allUserList);
             }
         });
     }

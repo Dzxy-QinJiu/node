@@ -20,11 +20,15 @@ import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText,getApplyResultDscr,getApplyStatusTimeLineDesc,getFilterReplyList,handleDiffTypeApply} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyTopicText,getApplyResultDscr,getApplyStatusTimeLineDesc,getFilterReplyList,handleDiffTypeApply,formatSalesmanList,formatUsersmanList} from 'PUB_DIR/sources/utils/common-method-util';
 import {handleTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+const salesmanAjax = require('MOD_DIR/common/public/ajax/salesman');
+import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
+import AlwaysShowSelect from 'CMP_DIR/always-show-select';
+import AntcDropdown from 'CMP_DIR/antc-dropdown';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -32,6 +36,7 @@ class ApplyViewDetail extends React.Component {
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
             showBackoutConfirmType: '',//操作的确认框类型
+            usersManList: [],//销售列表
             ...applyBusinessDetailStore.getState()
         };
     }
@@ -48,8 +53,72 @@ class ApplyViewDetail extends React.Component {
             });
         }else if (this.props.detailItem.id) {
             this.getBusinessApplyDetailData(this.props.detailItem);
-        }
-    }
+        };
+        this.getAllUserList();
+    };
+    getAllUserList = () => {
+        getAllUserList(data => {
+            this.setState({
+                usersManList: data
+            });
+        });
+    };
+    onSelectApplyNextCandidate = (updateUser) => {
+        ApplyViewDetailActions.setNextCandidateIds(updateUser);
+    };
+    renderTransferCandidateBlock = () => {
+        var usersManList = this.state.usersManList;
+            //需要选择销售总经理
+        var onChangeFunction = this.onSelectApplyNextCandidate;
+        var defaultValue = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
+            //列表中只选销售总经理,
+            // usersManList = _.filter(usersManList, data => _.get(data, 'user_groups[0].owner_id') === _.get(data, 'user_info.user_id'));
+
+        //销售领导、域管理员,展示其所有（子）团队的成员列表
+        let dataList = formatUsersmanList(usersManList);
+        return (
+            <div className="op-pane change-salesman">
+                <AlwaysShowSelect
+                    placeholder={Intl.get('sales.team.search', '搜索')}
+                    value={defaultValue}
+                    onChange={onChangeFunction}
+                    notFoundContent={dataList.length ? Intl.get('common.no.member','暂无成员') : Intl.get('apply.no.relate.user','无相关成员')}
+                    dataList={dataList}
+                />
+            </div>
+        );
+    };
+    addNewApplyCandidate = (transferCandidateId) =>{
+        var submitObj = {
+            id: _.get(this, 'state.detailInfoObj.info.id',''),
+            user_ids:transferCandidateId
+        };
+        ApplyViewDetailActions.transferNextCandidate(submitObj);
+
+    };
+    renderAddApplyNextCandidate = () => {
+        var addNextCandidateId = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
+        return (
+            <div className="pull-right">
+                <AntcDropdown
+                    ref={AssignSales => this.assignSales = AssignSales}
+                    content={<Button
+                        data-tracename="点击转出申请按钮"
+                        className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('crm.qualified.roll.out', '转出')}</Button>}
+                    overlayTitle={Intl.get('apply.will.approve.apply.item','待审批人')}
+                    okTitle={Intl.get('common.confirm', '确认')}
+                    cancelTitle={Intl.get('common.cancel', '取消')}
+                    overlayContent={this.renderTransferCandidateBlock()}
+                    handleSubmit={this.addNewApplyCandidate.bind(this, assignedSalesUsersIds)}//分配销售的时候直接分配，不需要再展示模态框
+                    unSelectDataTip={addNextCandidateId ? '' : Intl.get('apply.will.select.transfer.approver','请选择要转给的待审批人')}
+                    clearSelectData={this.clearSelectSales}
+                    btnAtTop={false}
+                    isSaving={this.state.transferStatusInfo.result === 'loading'}
+                    isDisabled={!addNextCandidateId}
+                />
+            </div>
+        );
+    };
 
     componentWillReceiveProps(nextProps) {
         var thisPropsId = this.props.detailItem.id;
@@ -297,6 +366,11 @@ class ApplyViewDetail extends React.Component {
         let isConsumed = detailInfoObj.status === 'pass' || detailInfoObj.status === 'reject';
         var userName = _.last(_.get(detailInfoObj, 'approve_details')) ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name : '' : '';
         var approvalDes = getApplyResultDscr(detailInfoObj);
+        var addApplyNextCandidate = null;
+        //如果是管理员或者是待我审批的申请，我都可以把申请进行转出
+        if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || detailInfoObj.showApproveBtn){
+            addApplyNextCandidate = this.renderAddApplyNextCandidate;
+        }
         return (
             <ApplyDetailBottom
                 create_time={detailInfoObj.create_time}
@@ -307,6 +381,7 @@ class ApplyViewDetail extends React.Component {
                 showApproveBtn={detailInfoObj.showApproveBtn}
                 showCancelBtn={detailInfoObj.showCancelBtn}
                 submitApprovalForm={this.submitApprovalForm}
+                addApplyNextCandidate={addApplyNextCandidate}
             />
         );
     }

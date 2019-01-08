@@ -2683,5 +2683,9 @@ var zh_CN = {
     'apply.approve.leave.pm': '下午',
     'apply.approve.total.leave.time': '请假时长',
     'apply.approve.total.days': '共{X}天',
+    'apply.will.select.transfer.approver':'请选择要转给的待审批人',
+    'apply.will.approve.apply.item':'待审批人',
+    'apply.no.relate.user':'无相关成员',
+    'apply.approve.transfer.failed':'转出申请失败',
 };
 export default zh_CN;
