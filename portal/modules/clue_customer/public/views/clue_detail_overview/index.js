@@ -903,7 +903,7 @@ class ClueDetailOverview extends React.Component {
                                                     title={Intl.get('common.email', '邮箱')}/>}
                                                 hasEditPrivilege={hasPrivilegeEdit}
                                                 validateRules={[{
-                                                    message: '邮箱格式不正确',
+                                                    message: Intl.get('user.email.validate.tip','请输入正确格式的邮箱'),
                                                     pattern: emailRegex
                                                 }]}
                                                 placeholder={Intl.get('member.input.email', '请输入邮箱')}

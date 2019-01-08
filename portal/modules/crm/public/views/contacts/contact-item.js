@@ -352,7 +352,7 @@ class ContactItem extends React.Component {
                                 label={<div className="iconfont icon-email contact-way-icon"
                                     title={Intl.get('common.email', '邮箱')}/>}
                                 validateRules={[{
-                                    message: '邮箱格式不正确',
+                                    message: Intl.get('user.email.validate.tip','请输入正确格式的邮箱'),
                                     pattern: emailRegex
                                 }]}
                                 hasEditPrivilege={hasEditPrivilege}
