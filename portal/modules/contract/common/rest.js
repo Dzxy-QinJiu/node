@@ -32,31 +32,21 @@ routes.forEach(route => {
         if (route.handler === 'uploadContractPreview') {
             options['timeout'] = 5 * 60 * 1000;
             const form = new multiparty.Form();
+
             form.parse(req, function(err, fields, files) {
-                const file = files.contracts[0].path
+                const file = files.contracts[0].path;
                 options.formData = {
-                    attachments: [fs.createReadStream(file)]
+                    attachments: [fs.createReadStream(file)];
                 }
 
                 doRequest(null, () => {
                     fs.unlink(file, err => {
-                        if (err) throw err
-                    })
-                })
-                /*
-                fs.readFile(file, (err, data) => {
-                    if (err) throw err
-                    data.attachments = [data]
-                    fs.unlink(file, err => {
-                        if (err) throw err
-                    })
-
-                    doRequest(data)
-                })
-                */
+                        if (err) throw err;
+                    });
+                });
             })
         } else {
-            doRequest(data)
+            doRequest(data);
         }
 
         function doRequest(data, cb) {
@@ -70,10 +60,10 @@ routes.forEach(route => {
 
             restRequest.on('success', result => {
                 res.status(200).json(result);
-                if (cb) cb()
+                if (cb) cb();
             }).on('error', codeMessage => {
                 res.status(500).json(codeMessage && codeMessage.message);
-                if (cb) cb()
+                if (cb) cb();
             });
         }
     }
