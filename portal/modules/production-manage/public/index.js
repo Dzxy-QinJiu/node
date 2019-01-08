@@ -23,6 +23,7 @@ import Trace from 'LIB_DIR/trace';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {getIntegrationConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import ProductDropDown from './views/product-dropdown';
 
 //用来存储获取的oplate\matomo产品列表，不用每次添加产品时都获取一遍
 let productList = [];
@@ -94,35 +95,6 @@ class ProductionManage extends React.Component {
                 }
             });
         }
-    }
-
-    //集成opalte、Matomo产品
-    integrateProdcut = (productList) => {
-        this.setState({isAddingProduct: true});
-        $.ajax({
-            url: '/rest/product/' + this.state.integrateType,
-            type: 'post',
-            dataType: 'json',
-            data: {ids: productList.join(',')},
-            success: (result) => {
-                this.setState({
-                    isAddingProduct: false,
-                    addErrorMsg: ''
-                });
-                if (_.get(result, '[0]')) {
-                    _.each(result, item => {
-                        this.events_afterOperation(util.CONST.ADD, item);
-                    });
-                    this.events_closeRightPanel();
-                }
-            },
-            error: (xhr) => {
-                this.setState({
-                    isAddingProduct: false,
-                    addErrorMsg: xhr.responseJSON || Intl.get('crm.154', '添加失败')
-                });
-            }
-        });
     }
 
     //展示产品信息
@@ -260,20 +232,9 @@ class ProductionManage extends React.Component {
                 </Button>
             </PrivilegeChecker>
             {this.isOplateOrMatomoType(this.state.integrateType) && _.get(this.state, 'productList[0]') ? (
-                <Select
-                    mode="multiple"
-                    placeholder={Intl.get('config.product.select.tip', '请选择产品（可多选）')}
-                >
-                    { _.map(this.state.productList, (item, idx) => {
-                        return <Option key={idx} value={item.id}>{item.name}</Option>;
-                    })}
-                </Select>) : null}
-            {/*<SaveCancelButton*/}
-            {/*     loading={this.state.isAddingProduct}*/}
-            {/*     saveErrorMsg={this.state.addErrorMsg}*/}
-            {/*     handleSubmit={this.integrateProdcut}*/}
-            {/*     handleCancel={this.handleCancel.bind(this)}*/}
-            {/* />*/}
+                <ProductDropDown integrateType={this.state.integrateType} productList={this.state.productList}
+                    afterOperation={this.events_afterOperation}/>
+            ) : null}
         </ButtonZones>);
     };
 

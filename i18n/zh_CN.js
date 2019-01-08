@@ -929,6 +929,10 @@ var zh_CN = {
     'config.product.type': '产品类型',
     'config.product.select.tip': '请选择产品（可多选）',
     'config.product.js.collect.user': '使用JS脚本采集用户数据',
+    'config.product.list.import': '导入{type}产品',
+    'config.product.import.tip': '您已集成{type}，可以导入以下{type}的产品',
+    'config.product.import.finish': '导入完成',
+    'config.product.import.failed': '导入失败',
     //配置end
     // 通话记录start
     'call.record.caller': '呼叫者',
