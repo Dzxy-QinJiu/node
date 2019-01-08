@@ -171,7 +171,7 @@ class ApplyViewDetail extends React.Component {
         customersAdds = _.uniq(customersAdds);
         var leaveRange = handleTimeRange(_.get(detail, 'apply_time[0].start',''),_.get(detail, 'apply_time[0].end',''));
         if (_.get(detail,'days')){
-            leaveRange += Intl.get('apply.approve.total.days','共{X}天',{X: _.get(detail,'days')});
+            leaveRange += " " + Intl.get('apply.approve.total.days','共{X}天',{X: _.get(detail,'days')});
         }
         if (!leaveRange){
             var begin_time = moment(detail.begin_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
