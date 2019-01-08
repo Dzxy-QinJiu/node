@@ -101,7 +101,11 @@ const DetailRepayment = createReactClass({
 
             if (result.code === 0) {
                 message.success(OPERATE[type] + '成功');
-                this.props.refreshCurrentContract(this.props.contract.id);
+                //延迟1秒后再刷新合同数据，以防止查询到的还是旧数据
+                setTimeout(() => {
+                    this.props.refreshCurrentContract(this.props.contract.id);
+                }, 1000)
+
                 if (_.isFunction(cb)) cb();
             } else {
                 message.error(result.msg || OPERATE[type] + '失败');
