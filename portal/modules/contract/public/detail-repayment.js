@@ -170,7 +170,7 @@ const DetailRepayment = createReactClass({
                     <Validator rules={[{
                         required: true,
                         message: Intl.get('contract.44', '不能为空')
-                    }, getNumberValidateRule()]}>
+                    }, getNumberValidateRule(), numberAddNoMoreThan.bind(this, formData.amount, 0, Intl.get('contract.gross.profit.can.not.exceed.repayment', '毛利不能大于回款'))]}>
                         <Input
                             name={'gross_profit' + index}
                             value={this.parseAmount(formData.gross_profit)}

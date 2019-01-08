@@ -1624,6 +1624,7 @@ var en_US = {
     'contract.189': 'Commission payment', // 提成发放
     'contract.190': 'Sales contract template', // 《销售合同模板》
     'contract.191': 'Purchase contract template', // 《采购合同模板》
+    'contract.gross.profit.can.not.exceed.repayment': 'gross profit can not exceed repayment',//毛利不能大于回款
     'contract.loadMore': 'load more',//"加载更多",
     'contract.valueTypeConfig': 'value calculate type config',//"值字段设置",
     'contract.filterCondition': 'filter conditions',//"筛选条件",
