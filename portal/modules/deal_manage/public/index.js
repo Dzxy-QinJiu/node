@@ -202,13 +202,6 @@ class DealManage extends React.Component {
         return (
             <div className="deal-manage-container" data-tracename="订单管理">
                 <TopNav>
-                    {/*<div className="deal-view-radio-container">
-                        <RadioGroup size="large" value={this.state.viewType} onChange={this.changViewType}>
-                            <RadioButton value={VIEW_TYPES.LIST}><i className="iconfont icon-list-view"/></RadioButton>
-                            <RadioButton value={VIEW_TYPES.BOARD}><i
-                                className="iconfont icon-board-view"/></RadioButton>
-                        </RadioGroup>
-                    </div>*/}
                     <div className="deal-search-block">
                         <SearchInput
                             type="select"
@@ -217,20 +210,18 @@ class DealManage extends React.Component {
                             className="btn-item"
                         />
                     </div>
-                    <div style={{float: 'right'}}>
-                        <div className="deal-view-radio-container">
-                            <RadioGroup size="large" value={this.state.viewType} onChange={this.changViewType}>
-                                <RadioButton value={VIEW_TYPES.LIST}><i
-                                    className="iconfont icon-list-view"/></RadioButton>
-                                <RadioButton value={VIEW_TYPES.BOARD}><i
-                                    className="iconfont icon-board-view"/></RadioButton>
-                            </RadioGroup>
-                        </div>
-                        <PrivilegeChecker check="CUSTOMER_ADD" style={{float: 'right'}}>
-                            <Button className='btn-item add-deal-btn' onClick={this.showDealForm}>
-                                {Intl.get('crm.161', '添加订单')}
-                            </Button>
-                        </PrivilegeChecker>
+                    <PrivilegeChecker check="CUSTOMER_ADD">
+                        <Button className='btn-item add-deal-btn' onClick={this.showDealForm}>
+                            {Intl.get('crm.161', '添加订单')}
+                        </Button>
+                    </PrivilegeChecker>
+                    <div className="deal-view-radio-container">
+                        <RadioGroup size="large" value={this.state.viewType} onChange={this.changViewType}>
+                            <RadioButton value={VIEW_TYPES.LIST}><i
+                                className="iconfont icon-list-view"/></RadioButton>
+                            <RadioButton value={VIEW_TYPES.BOARD}><i
+                                className="iconfont icon-board-view"/></RadioButton>
+                        </RadioGroup>
                     </div>
                 </TopNav>
                 <div className={dealViewCls}>

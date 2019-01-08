@@ -164,7 +164,6 @@ var zh_CN = {
     'common.no.more.trace.record': '暂无跟进记录',
     'common.no.call.record': '暂无通话记录',
 
-
     'common.yesno': '是否',
     'common.add.member': '添加成员',
     'common.input.keyword': '输入关键词',
@@ -250,6 +249,7 @@ var zh_CN = {
     'common.product.name': '产品名称',
     'common.product': '产品',
     'common.product.search.placeholder': '请输入产品名进行筛选',
+    'common.or': '或',
 
     //公共部分--end
     'login.login': '登录',
@@ -1896,7 +1896,6 @@ var zh_CN = {
     'rightpanel_notice': '公告',
     'rightpanel_delete_record': '删除该记录',
     'rightpanel_usertypeconfig': '用户类型设置',
-
 
     //错误码
     'errorcode.0': '参数错误',
