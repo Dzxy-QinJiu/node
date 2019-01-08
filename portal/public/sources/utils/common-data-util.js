@@ -100,7 +100,7 @@ exports.getAllUserList = function(cb) {
             data: {},
             success: result => {
                 if (_.isArray(result.data)){
-                    allUserList = _.filter(result.data, sales => sales && sales.user_info && sales.user_info.status === 1);
+                    allUserList = _.filter(result.data, sales => sales  && sales.status === 1);
                     if (_.isFunction(cb)) cb(allUserList);
                 }
             },

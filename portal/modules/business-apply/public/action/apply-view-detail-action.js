@@ -128,5 +128,19 @@ function ApplyViewDetailActions() {
             this.dispatch({error: true})
         );
     };
+    //把申请转给另外一个人
+    this.transferNextCandidate = function(queryObj) {
+        this.dispatch({loading: true, error: false});
+        ApplyApproveAjax.transferNextCandidate().sendRequest(queryObj).success((data) => {
+            if (data){
+                this.dispatch({loading: false, error: false})
+            }else{
+                this.dispatch({loading: false, error: true, errorMsg: Intl.get('apply.approve.transfer.failed','转出申请失败')})
+            }
+        }).error(errMsg =>{
+                this.dispatch({loading: false, error: true, errorMsg:errMsg})
+        }
+        );
+    };
 }
 module.exports = alt.createActions(ApplyViewDetailActions);

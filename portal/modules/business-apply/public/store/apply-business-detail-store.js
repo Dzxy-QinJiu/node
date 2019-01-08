@@ -55,6 +55,13 @@ ApplyViewDetailStore.prototype.setInitState = function() {
         //服务端错误信息
         errorMsg: ''
     };
+    //转出申请的状态列表
+    this.transferStatusInfo = {
+        //三种状态,loading,error,''
+        result: '',
+        //服务端错误信息
+        errorMsg: ''
+    };
     this.backApplyResult = {
         //提交状态  "" loading error success
         submitResult: '',
@@ -243,10 +250,21 @@ ApplyViewDetailStore.prototype.getNextCandidate = function(result) {
     }else{
         this.candidateList = result;
     }
-
 };
 ApplyViewDetailStore.prototype.setNextCandidateIds = function (candidateId) {
     this.detailInfoObj.info.nextCandidateId = candidateId;
+};
+ApplyViewDetailStore.prototype.transferNextCandidate = function(result) {
+    if (result.loading) {
+        this.transferStatusInfo.result = 'loading';
+        this.transferStatusInfo.errorMsg = '';
+    } else if (result.error) {
+        this.transferStatusInfo.result = 'error';
+        this.transferStatusInfo.errorMsg = result.errorMsg;
+    } else {
+        this.transferStatusInfo.result = 'success';
+        this.transferStatusInfo.errorMsg = '';
+    }
 };
 
 module.exports = alt.createStore(ApplyViewDetailStore, 'ApplyViewDetailStore');

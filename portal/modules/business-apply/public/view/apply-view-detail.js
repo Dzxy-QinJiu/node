@@ -20,7 +20,7 @@ import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText,getApplyResultDscr,getApplyStatusTimeLineDesc,getFilterReplyList,handleDiffTypeApply,formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyTopicText,getApplyResultDscr,getApplyStatusTimeLineDesc,getFilterReplyList,handleDiffTypeApply,formatSalesmanList,formatUsersmanList} from 'PUB_DIR/sources/utils/common-method-util';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
@@ -35,7 +35,7 @@ class ApplyViewDetail extends React.Component {
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
             showBackoutConfirmType: '',//操作的确认框类型
-            salesManList: [],//销售列表
+            usersManList: [],//销售列表
             ...applyBusinessDetailStore.getState()
         };
     }
@@ -58,40 +58,45 @@ class ApplyViewDetail extends React.Component {
     getAllUserList = () => {
         getAllUserList(data => {
             this.setState({
-                salesManList: data
+                usersManList: data
             });
         });
     };
-    onSelectApplySales = (updateUser) => {
-        ApplyViewDetailActions.setApplyCandate(updateUser);
+    onSelectApplyNextCandidate = (updateUser) => {
+        ApplyViewDetailActions.setNextCandidateIds(updateUser);
     };
-    renderCandidateBlock = () => {
-        var salesManList = this.state.salesManList;
+    renderTransferCandidateBlock = () => {
+        var usersManList = this.state.usersManList;
             //需要选择销售总经理
-        var onChangeFunction = this.onSelectApplySales;
-        var defaultValue = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
+        var onChangeFunction = this.onSelectApplyNextCandidate;
+        var defaultValue = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
             //列表中只选销售总经理,
-            // salesManList = _.filter(salesManList, data => _.get(data, 'user_groups[0].owner_id') === _.get(data, 'user_info.user_id'));
+            // usersManList = _.filter(usersManList, data => _.get(data, 'user_groups[0].owner_id') === _.get(data, 'user_info.user_id'));
 
         //销售领导、域管理员,展示其所有（子）团队的成员列表
-        let dataList = formatSalesmanList(salesManList);
+        let dataList = formatUsersmanList(usersManList);
         return (
             <div className="op-pane change-salesman">
                 <AlwaysShowSelect
                     placeholder={Intl.get('sales.team.search', '搜索')}
                     value={defaultValue}
                     onChange={onChangeFunction}
-                    notFoundContent={dataList.length ? Intl.get('crm.29', '暂无销售') : Intl.get('crm.30', '无相关销售')}
+                    notFoundContent={dataList.length ? Intl.get('common.no.member','暂无成员') : Intl.get('apply.no.relate.user','无相关成员')}
                     dataList={dataList}
                 />
             </div>
         );
     };
-    addNewApplyCandidate = () =>{
+    addNewApplyCandidate = (transferCandidateId) =>{
+        var submitObj = {
+            id: _.get(this, 'state.detailInfoObj.info.id',''),
+            user_ids:transferCandidateId
+        };
+        ApplyViewDetailActions.transferNextCandidate(submitObj);
 
     };
     renderAddApplyNextCandidate = () => {
-        var assignedSalesUsersIds = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
+        var addNextCandidateId = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
         return (
             <div className="pull-right">
                 <AntcDropdown
@@ -102,18 +107,16 @@ class ApplyViewDetail extends React.Component {
                     overlayTitle={Intl.get('apply.will.approve.apply.item','待审批人')}
                     okTitle={Intl.get('common.confirm', '确认')}
                     cancelTitle={Intl.get('common.cancel', '取消')}
-                    overlayContent={this.renderCandidateBlock()}
-                    handleSubmit={this.addNewApplyCandidate}//分配销售的时候直接分配，不需要再展示模态框
-                    unSelectDataTip={assignedSalesUsersIds ? '' : Intl.get('apply.will.select.transfer.approver','请选择要转给的待审批人')}
+                    overlayContent={this.renderTransferCandidateBlock()}
+                    handleSubmit={this.addNewApplyCandidate.bind(this, assignedSalesUsersIds)}//分配销售的时候直接分配，不需要再展示模态框
+                    unSelectDataTip={addNextCandidateId ? '' : Intl.get('apply.will.select.transfer.approver','请选择要转给的待审批人')}
                     clearSelectData={this.clearSelectSales}
                     btnAtTop={false}
-                    isSaving={this.state.applyResult.submitResult === 'loading'}
-                    isDisabled={!assignedSalesUsersIds}
+                    isSaving={this.state.transferStatusInfo.result === 'loading'}
+                    isDisabled={!addNextCandidateId}
                 />
             </div>
-
         );
-
     };
 
     componentWillReceiveProps(nextProps) {

@@ -2660,5 +2660,9 @@ var en_US = {
     'apply.approve.delete.this.file': 'Whether to delete this file',//是否删除此文件
     'failed.distribute.sales.opportunity': 'Failed to distribute sales opportunity!',//分配销售机会失败！
     'common.customer.can.not.found.because.merged': '{count} of these customers were not queried because they were merged',//其中有{count}个客户因被合并而查询不到了
+    'apply.will.select.transfer.approver':'Please select the person to be approved to be transferred to',//请选择要转给的待审批人
+    'apply.will.approve.apply.item':'Pending person',//待审批人
+    'apply.no.relate.user':'No related members',//无相关成员
+    'apply.approve.transfer.failed':'Failed to transfer apply'//转出申请失败
 };
 export default en_US;
