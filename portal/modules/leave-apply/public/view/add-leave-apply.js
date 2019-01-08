@@ -15,24 +15,20 @@ const FORMLAYOUT = {
 };
 var user = require('PUB_DIR/sources/user-data').getUserData();
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
-import {calculateTotalTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
+import {calculateTotalTimeRange,calculateRangeType} from 'PUB_DIR/sources/utils/common-data-util';
 import { LEAVE_TYPE } from 'PUB_DIR/sources/utils/consts';
 var LeaveApplyAction = require('../action/leave-apply-action');
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
 import {DELAY_TIME_RANGE, LEAVE_TIME_RANGE,AM_AND_PM} from 'PUB_DIR/sources/utils/consts';
-const BEGIN_AND_END_RANGE = {
-    begin_time: moment(),
-    end_time: moment().add(1,'hours')
-};
 class AddLeaveApply extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             formData: {
-                begin_time: moment(BEGIN_AND_END_RANGE.begin_time).valueOf(),//请假开始时间
+                begin_time: moment().valueOf(),//请假开始时间
                 begin_type: '',//请假开始的类型
-                end_time: moment(BEGIN_AND_END_RANGE.end_time).valueOf(),//请假结束时间
+                end_time: moment().valueOf(),//请假结束时间
                 end_type: '',//请假结束的类型
                 total_range: '',//总的请假时长
             },
@@ -40,6 +36,16 @@ class AddLeaveApply extends React.Component {
     }
 
     componentDidMount() {
+        var newSetting = calculateRangeType();
+        var formData = this.state.formData;
+        for (var key in newSetting){
+            formData[key] = newSetting[key];
+        };
+        this.setState({
+            formData:formData
+        },()=>{
+            this.calculateTotalLeaveRange();
+        });
         this.addLabelRequiredCls();
     }
     componentDidUpdate() {
@@ -87,6 +93,8 @@ class AddLeaveApply extends React.Component {
             delete values.begin_time;
             delete values.end_time;
             delete values.total_range;
+            delete values.begin_type;
+            delete values.end_type;
             var errTip = Intl.get('crm.154', '添加失败');
             $.ajax({
                 url: '/rest/add/leave_apply/list',
@@ -141,10 +149,6 @@ class AddLeaveApply extends React.Component {
                     }else{
                         callback();
                     }
-                }else if (!formData.begin_type && isBeginTime ){
-                    callback(Intl.get('apply.approve.select.leave.range', '请选择上午或下午'));
-                }else if (!isBeginTime && !formData.end_type){
-                    callback(Intl.get('apply.approve.select.leave.range', '请选择上午或下午'));
                 }else{
                     callback();
                 }
@@ -262,7 +266,7 @@ class AddLeaveApply extends React.Component {
                                                 required: true,
                                                 message: Intl.get('leave.apply.fill.in.start.time','请填写开始时间')
                                             }, {validator: _this.validateStartAndEndTime('begin_time')}],
-                                            initialValue: BEGIN_AND_END_RANGE.begin_time
+                                            initialValue: moment(formData.begin_time)
                                         })(
                                             <DatePicker
                                                 format="YYYY-MM-DD"
@@ -270,18 +274,20 @@ class AddLeaveApply extends React.Component {
                                                 value={formData.begin_time ? moment(formData.begin_time) : moment()}
                                             />
                                         )}
-                                        <Select
-                                            placeholder={Intl.get('apply.approve.select.leave.range','请选择上午或下午')}
-                                            getPopupContainer={() => document.getElementById('add-leave-apply-form')}
-                                            onChange={this.handleChangeStartRange}
+                                        {getFieldDecorator('begin_type', {initialValue: formData.begin_type})(
+                                            <Select
+                                                getPopupContainer={() => document.getElementById('add-leave-apply-form')}
+                                                onChange={this.handleChangeStartRange}
 
-                                        >
-                                            {_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?
-                                                LEAVE_TIME_RANGE.map((leaveItem, idx) => {
-                                                    return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
-                                                }) : null
-                                            }
-                                        </Select>
+                                            >
+                                                {_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?
+                                                    LEAVE_TIME_RANGE.map((leaveItem, idx) => {
+                                                        return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
+                                                    }) : null
+                                                }
+                                            </Select>
+                                        )}
+
                                     </FormItem>
                                     <FormItem
                                         className="form-item-label add-apply-time"
@@ -293,7 +299,7 @@ class AddLeaveApply extends React.Component {
                                                 required: true,
                                                 message: Intl.get('leave.apply.fill.in.end.time', '请填写结束时间')
                                             }, {validator: _this.validateStartAndEndTime('end_time')}],
-                                            initialValue: BEGIN_AND_END_RANGE.end_time
+                                            initialValue:  moment(formData.end_time)
                                         })(
                                             <DatePicker
                                                 format="YYYY-MM-DD"
@@ -301,17 +307,19 @@ class AddLeaveApply extends React.Component {
                                                 value={formData.end_time ? moment(formData.end_time) : moment()}
                                             />
                                         )}
-                                        <Select
-                                            placeholder={Intl.get('apply.approve.select.leave.range','请选择上午或下午')}
-                                            getPopupContainer={() => document.getElementById('add-leave-apply-form')}
-                                            onChange={this.handleChangeEndRange}
-                                        >
-                                            {_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?
-                                                LEAVE_TIME_RANGE.map((leaveItem, idx) => {
-                                                    return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
-                                                }) : null
-                                            }
-                                        </Select>
+                                        {getFieldDecorator('end_type', {initialValue: formData.end_type})(
+                                            <Select
+                                                getPopupContainer={() => document.getElementById('add-leave-apply-form')}
+                                                onChange={this.handleChangeEndRange}
+                                            >
+                                                {_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?
+                                                    LEAVE_TIME_RANGE.map((leaveItem, idx) => {
+                                                        return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
+                                                    }) : null
+                                                }
+                                            </Select>
+                                        )}
+
                                     </FormItem>
                                     {formData.total_range ?
                                         <FormItem

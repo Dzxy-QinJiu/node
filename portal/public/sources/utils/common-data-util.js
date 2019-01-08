@@ -263,8 +263,26 @@ exports.handleTimeRange = function(start,end){
         leaveTime += showAmAndPmDes(_.get(beginTimeArr,[1]));
     }else if (_.get(beginTimeArr,[0]) !== _.get(endTimeArr,[0])){
         leaveTime += showAmAndPmDes(_.get(beginTimeArr,[1]));
-        leaveTime = leaveTime + '—' + _.get(endTimeArr,[0]);
+        leaveTime = leaveTime + ' — ' + _.get(endTimeArr,[0]);
         leaveTime += showAmAndPmDes(_.get(endTimeArr,[1]));
     }
     return leaveTime;
+};
+exports.calculateRangeType = function () {
+    //今天上午12点前请假，默认请假时间选今天一天，下午12点到6点请假，默认请今天一下午，6点之后请假，默认请明天一天
+    var newSetting = {};
+    var curHour = moment().hours();
+    if (curHour >= 0 && curHour < 12) {
+        newSetting.begin_type = AM_AND_PM.AM;
+        newSetting.end_type = AM_AND_PM.PM;
+    } else if (curHour >= 12 && curHour < 18) {
+        newSetting.begin_type = AM_AND_PM.PM;
+        newSetting.end_type = AM_AND_PM.PM;
+    } else if (curHour >= 18 && curHour < 24) {
+        newSetting.begin_type = AM_AND_PM.AM;
+        newSetting.end_type = AM_AND_PM.PM;
+        newSetting.begin_time = moment().add(1, 'day').valueOf();
+        newSetting.end_time = moment().add(1, 'day').valueOf();
+    };
+    return newSetting;
 };

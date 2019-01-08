@@ -20,7 +20,7 @@ var user = require('../../../../public/sources/user-data').getUserData();
 const DEFAULTTIMETYPE = 'day';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
-import {calculateTotalTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
+import {calculateTotalTimeRange, calculateRangeType} from 'PUB_DIR/sources/utils/common-data-util';
 var BusinessApplyAction = require('../action/business-apply-action');
 import AlertTimer from 'CMP_DIR/alert-timer';
 import {AntcAreaSelection} from 'antc';
@@ -51,9 +51,19 @@ class AddBusinessApply extends React.Component {
                 ]
             },
         };
-    }
+    };
 
     componentDidMount() {
+        var newSetting = calculateRangeType();
+        var formData = this.state.formData;
+        for (var key in newSetting){
+            formData[key] = newSetting[key];
+        };
+        this.setState({
+            formData:formData
+        },()=>{
+            this.calculateTotalLeaveRange();
+        });
         this.addLabelRequiredCls();
     }
 
@@ -254,10 +264,6 @@ class AddBusinessApply extends React.Component {
                     }else{
                         callback();
                     }
-                }else if (!formData.begin_type && isBeginTime ){
-                    callback(Intl.get('apply.approve.select.leave.range', '请选择上午或下午'));
-                }else if (!isBeginTime && !formData.end_type){
-                    callback(Intl.get('apply.approve.select.leave.range', '请选择上午或下午'));
                 }else{
                     callback();
                 }
@@ -317,7 +323,7 @@ class AddBusinessApply extends React.Component {
                                                 required: true,
                                                 message: Intl.get('leave.apply.fill.in.start.time','请填写开始时间')
                                             }, {validator: _this.validateStartAndEndTime('begin_time')}],
-                                            initialValue: moment()
+                                            initialValue: moment(formData.begin_time)
                                         })(
                                             <DatePicker
                                                 onChange={this.onBeginTimeChange}
@@ -326,18 +332,20 @@ class AddBusinessApply extends React.Component {
                                             />
 
                                         )}
-                                        <Select
-                                            placeholder={Intl.get('apply.approve.select.leave.range','请选择上午或下午')}
-                                            getPopupContainer={() => document.getElementById('leave-apply-form')}
-                                            onChange={this.handleChangeStartRange}
+                                        {getFieldDecorator('begin_type', {initialValue: formData.begin_type})(
+                                            <Select
+                                                getPopupContainer={() => document.getElementById('leave-apply-form')}
+                                                onChange={this.handleChangeStartRange}
 
-                                        >
-                                            {_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?
-                                                LEAVE_TIME_RANGE.map((leaveItem, idx) => {
-                                                    return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
-                                                }) : null
-                                            }
-                                        </Select>
+                                            >
+                                                {_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?
+                                                    LEAVE_TIME_RANGE.map((leaveItem, idx) => {
+                                                        return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
+                                                    }) : null
+                                                }
+                                            </Select>
+                                        )}
+
                                     </FormItem>
                                     <FormItem
                                         className="form-item-label add-apply-time"
@@ -349,7 +357,7 @@ class AddBusinessApply extends React.Component {
                                                 required: true,
                                                 message: Intl.get('leave.apply.fill.in.end.time', '请填写结束时间')
                                             }, {validator: _this.validateStartAndEndTime('end_time')}],
-                                            initialValue: moment()
+                                            initialValue: moment(formData.end_time)
                                         })(
                                             <DatePicker
                                                 onChange={this.onEndTimeChange}
@@ -357,17 +365,20 @@ class AddBusinessApply extends React.Component {
                                                 disabledDate={disabledDate}
                                             />
                                         )}
-                                        <Select
-                                            placeholder={Intl.get('apply.approve.select.leave.range','请选择上午或下午')}
-                                            getPopupContainer={() => document.getElementById('leave-apply-form')}
-                                            onChange={this.handleChangeEndRange}
-                                        >
-                                            {_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?
-                                                LEAVE_TIME_RANGE.map((leaveItem, idx) => {
-                                                    return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
-                                                }) : null
-                                            }
-                                        </Select>
+                                        {getFieldDecorator('end_type', {initialValue: formData.end_type})(
+                                            <Select
+                                                getPopupContainer={() => document.getElementById('leave-apply-form')}
+                                                onChange={this.handleChangeEndRange}
+                                                defaultValue={formData.end_type}
+                                            >
+                                                {_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?
+                                                    LEAVE_TIME_RANGE.map((leaveItem, idx) => {
+                                                        return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
+                                                    }) : null
+                                                }
+                                            </Select>
+                                        )}
+
                                     </FormItem>
                                     {formData.total_range ?
                                         <FormItem

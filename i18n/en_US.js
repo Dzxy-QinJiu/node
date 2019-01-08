@@ -2662,7 +2662,6 @@ var en_US = {
     'common.customer.can.not.found.because.merged': '{count} of these customers were not queried because they were merged',//其中有{count}个客户因被合并而查询不到了
     'apply.approve.leave.am': 'am',//上午
     'apply.approve.leave.pm': 'pm',//下午
-    'apply.approve.select.leave.range': 'Please select am or pm',//请选择上午或下午
     'apply.approve.total.leave.time': 'Leave range',//请假时长
     'apply.approve.total.days': 'A total of {X} day'//共{X}天
 };
