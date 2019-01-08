@@ -10,7 +10,9 @@ var _ = require('lodash');
 const productRestApis = {
     product: '/rest/base/v1/products',
     oplateProductList: '/rest/base/v1/application/oplate',
-    matomoProductList: '/rest/base/v1/matomo/sites'
+    matomoProductList: '/rest/base/v1/matomo/sites',
+    //uem产品转普通产品，普通产品转uem产品,type=uem\normal
+    changeProductType: '/rest/base/v1/products/uem/interconversion/:product_id/:type'
 };
 
 //获取产品列表
@@ -38,13 +40,67 @@ exports.deleteProduct = function(req, res, productId) {
         res: res
     }, null);
 };
+
+//修改产品的基本信息
+function editProductBasic(req, res, bodyData) {
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.put(
+            {
+                url: productRestApis.product,
+                req: req,
+                res: res
+            }, bodyData, {
+                success: function(eventEmitter, data) {
+                    resolve(data);
+                },
+                error: function(eventEmitter, errorObj) {
+                    reject(errorObj);
+                }
+            });
+    });
+}
+
+//修改产品的集成类型
+function editProductType(req, res, id, type) {
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.put(
+            {
+                url: productRestApis.changeProductType.replace(':product_id', id).replace(':type', type),
+                req: req,
+                res: res
+            }, {}, {
+                success: function(eventEmitter, data) {
+                    resolve(data);
+                },
+                error: function(eventEmitter, errorObj) {
+                    reject(errorObj);
+                }
+            });
+    });
+}
+
+
 //修改产品
-exports.updateProduct = function(req, res, product) {
-    return restUtil.authRest.put({
-        url: productRestApis.product,
-        req: req,
-        res: res
-    }, product);
+exports.updateProduct = function(req, res) {
+    let product = _.cloneDeep(req.body);
+    var emitter = new EventEmitter();
+    let promiseList = [];
+    //修改集成类型
+    if (product.changeType) {
+        promiseList.push(editProductType(req, res, product.id, product.changeType));
+        delete product.changeType;
+    }
+    //基本信息的修改
+    if (product.isEditBasic) {
+        delete product.isEditBasic;
+        promiseList.push(editProductBasic(req, res, product));
+    }
+    Promise.all(promiseList).then((dataList) => {
+        emitter.emit('success', dataList);
+    }, function(errorObj) {
+        emitter.emit('error', errorObj);
+    });
+    return emitter;
 };
 
 //添加uem产品

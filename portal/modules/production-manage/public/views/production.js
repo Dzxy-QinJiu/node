@@ -96,8 +96,6 @@ class Production extends React.Component {
     }
 
 
-
-
     handleCancel = (e) => {
         e.preventDefault();
         this.props.closeRightPanel();
@@ -110,28 +108,32 @@ class Production extends React.Component {
                 return;
             } else {
                 //所有者各项唯一性验证均不存在且没有出错再添加
-                let production = _.extend({}, values);
-                if (production.name) {
-                    production.name = _.trim(production.name);
-                }
-                if (production.code) {
-                    production.code = _.trim(production.code);
-                }
-                if (production.description) {
-                    production.description = _.trim(production.description);
-                }
-                if (production.price) {
-                    production.price = _.toNumber(_.trim(production.price));
-                }
-                if (production.sales_unit) {
-                    production.sales_unit = _.trim(production.sales_unit);
-                }
-                if (production.specifications) {
-                    production.specifications = _.trim(production.specifications);
-                }
-                if (production.url) {
-                    production.url = _.trim(production.url);
-                }
+                let production = {};
+                let oldProduct = this.props.info;
+                //数据处理
+                _.each(values, (value, key) => {
+                    //添加
+                    if (this.props.formType === util.CONST.ADD) {
+                        if (key === 'price') {
+                            production.price = _.toNumber(_.trim(value));
+                        } else if (key !== 'useJS') {
+                            production[key] = _.trim(value);
+                        }
+                    } else {//修改（修改哪些项传哪些项）
+                        if (key === 'price') {
+                            let priceVal = _.toNumber(_.trim(value));
+                            if (priceVal !== oldProduct.price) {
+                                production.price = priceVal;
+                            }
+                        } else if (key !== 'useJS') {
+                            let newVal = _.trim(value);
+                            if (newVal !== oldProduct[key]) {
+                                production[key] = newVal;
+                            }
+                        }
+                    }
+                });
+                //添加
                 if (this.props.formType === util.CONST.ADD) {
                     production.create_time = new Date().getTime();
                     if (values.useJS) {
@@ -142,17 +144,28 @@ class Production extends React.Component {
                         ProductionFormAction.setSaveFlag(true);
                         ProductionFormAction.addProduction(production);
                     }
-                } else {
-                    production.id = this.props.info.id;
-                    //选中了使用js集成用户数据，并且之前不是集成类型时
-                    if(values.useJS && !_.get(this.props, 'info.integration_type')){
-                        //由普通产品改为uem集成类型的产品
-
-                    } else {
-                        //设置正在保存中
-                        ProductionFormAction.setSaveFlag(true);
-                        ProductionFormAction.editProduction(production);
+                } else {//修改
+                    //是否修改基本信息
+                    production.isEditBasic = true;
+                    if (_.isEmpty(production)) {
+                        //未修改基本信息
+                        production.isEditBasic = false;
                     }
+                    //选中了使用js集成用户数据，并且之前不是集成类型时
+                    if (values.useJS && !_.get(this.props, 'info.integration_type')) {
+                        //由普通产品改为uem集成类型的产品
+                        production.changeType = INTEGRATE_TYPES.UEM;
+                    } else if (!values.useJS && _.get(this.props, 'info.integration_type') === INTEGRATE_TYPES.UEM) {
+                        //由uem集成类型的产品改为普通产品
+                        production.changeType = INTEGRATE_TYPES.UEM;
+                    }
+                    //未修改基本信息，也未修改集成类型
+                    if (!production.isEditBasic && !production.changeType) return;
+                    production.id = oldProduct.id;
+                    //设置正在保存中
+                    ProductionFormAction.setSaveFlag(true);
+                    ProductionFormAction.editProduction(production);
+
                 }
             }
         });
