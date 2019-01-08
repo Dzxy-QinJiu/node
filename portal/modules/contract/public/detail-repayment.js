@@ -101,7 +101,11 @@ const DetailRepayment = createReactClass({
 
             if (result.code === 0) {
                 message.success(OPERATE[type] + '成功');
-                this.props.refreshCurrentContract(this.props.contract.id);
+                //延迟1秒后再刷新合同数据，以防止查询到的还是旧数据
+                setTimeout(() => {
+                    this.props.refreshCurrentContract(this.props.contract.id);
+                }, 1000)
+
                 if (_.isFunction(cb)) cb();
             } else {
                 message.error(result.msg || OPERATE[type] + '失败');
@@ -166,7 +170,7 @@ const DetailRepayment = createReactClass({
                     <Validator rules={[{
                         required: true,
                         message: Intl.get('contract.44', '不能为空')
-                    }, getNumberValidateRule()]}>
+                    }, getNumberValidateRule(), numberAddNoMoreThan.bind(this, formData.amount, 0, Intl.get('contract.gross.profit.can.not.exceed.repayment', '毛利不能大于回款'))]}>
                         <Input
                             name={'gross_profit' + index}
                             value={this.parseAmount(formData.gross_profit)}
