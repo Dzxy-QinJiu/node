@@ -38,7 +38,7 @@ routes.forEach(route => {
                 const file = files.contracts[0].path;
                 //multiple value 类型的参数需要放到options.formData中向后端传递
                 options.formData = {
-                    attachments: [fs.createReadStream(file)];
+                    attachments: [fs.createReadStream(file)]
                 };
 
                 doRequest(null, () => {
