@@ -23,7 +23,6 @@ class ApplyDetailBottom extends React.Component {
                         {Intl.get('user.apply.detail.backout', '撤销申请')}
                     </Button> : null}
                 {this.props.showApproveBtn ? <div className="pass-and-reject-wrap">
-                    {this.props.addApplyNextCandidate()}
                     <Button type="primary" className="btn-primary-sure" size="small"
                         onClick={this.props.submitApprovalForm.bind(this, 'pass')}>
                         {this.props.passText}
@@ -63,6 +62,7 @@ class ApplyDetailBottom extends React.Component {
                                 this.renderBottomText()
                                 : null
                         )}
+                        {_.isFunction(this.props.addApplyNextCandidate)? this.props.addApplyNextCandidate():null}
                     </Col>
                 </Row>
             </div>

@@ -264,7 +264,11 @@ ApplyViewDetailStore.prototype.transferNextCandidate = function(result) {
     } else {
         this.transferStatusInfo.result = 'success';
         this.transferStatusInfo.errorMsg = '';
+        //如果转出成功，要隐藏审批的按钮
+        this.selectedDetailItem.showApproveBtn = false;
+        this.detailInfoObj.info.showApproveBtn = false;
     }
 };
+
 
 module.exports = alt.createStore(ApplyViewDetailStore, 'ApplyViewDetailStore');

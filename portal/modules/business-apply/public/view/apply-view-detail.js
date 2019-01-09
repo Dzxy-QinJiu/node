@@ -5,8 +5,9 @@
  */
 var applyBusinessDetailStore = require('../store/apply-business-detail-store');
 var ApplyViewDetailActions = require('../action/apply-view-detail-action');
+var BusinessApplyActions = require('../action/business-apply-action');
 import Trace from 'LIB_DIR/trace';
-import {Alert, Icon, Input, Row, Col, Button,Steps} from 'antd';
+import {Alert, Icon, Input, Row, Col, Button,Steps,message} from 'antd';
 const Step = Steps.Step;
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -29,6 +30,10 @@ const salesmanAjax = require('MOD_DIR/common/public/ajax/salesman');
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
+import AlertTimer from 'CMP_DIR/alert-timer';
+import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE} from 'PUB_DIR/sources/utils/consts';
+var timeoutFunc;//定时方法
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -36,7 +41,7 @@ class ApplyViewDetail extends React.Component {
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
             showBackoutConfirmType: '',//操作的确认框类型
-            usersManList: [],//销售列表
+            usersManList: [],//成员列表
             ...applyBusinessDetailStore.getState()
         };
     }
@@ -93,15 +98,50 @@ class ApplyViewDetail extends React.Component {
             id: _.get(this, 'state.detailInfoObj.info.id',''),
             user_ids:transferCandidateId
         };
-        ApplyViewDetailActions.transferNextCandidate(submitObj);
-
+        var hasApprovePrivilege = _.get(this,'state.detailInfoObj.info.showApproveBtn',false);
+        //如果操作转出的人是这条审批的待审批者，需要在这个操作人的待审批列表中删除这条申请
+        if (hasApprovePrivilege){
+            submitObj.user_ids_delete = userData.getUserData().user_id;
+        };
+        ApplyViewDetailActions.transferNextCandidate(submitObj,(flag)=>{
+            //关闭下拉框
+            if (flag){
+                if(_.isFunction(_.get(this, 'addNextCandidate.handleCancel'))){
+                    this.addNextCandidate.handleCancel();
+                }
+                //转出成功后，如果左边选中的是待审批的列表，在待审批列表中把这条记录删掉
+                if (this.props.applyListType === 'ongoing'){
+                    BusinessApplyActions.afterTransferApplySuccess(submitObj.id);
+                }else{
+                    message.success(Intl.get('apply.approve.transfer.success','转出申请成功'))
+                }
+                if (hasApprovePrivilege){
+                    //上面待审批的数字也需要减一
+                    if (Oplate && Oplate.unread) {
+                        Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT] -= 1;
+                        if (timeoutFunc) {
+                            clearTimeout(timeoutFunc);
+                        }
+                        timeoutFunc = setTimeout(function() {
+                            //触发展示的组件待审批数的刷新
+                            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
+                        }, REFRESH_APPLY_RANGE);
+                    }
+                }
+            }else{
+                message.error(Intl.get('apply.approve.transfer.failed','转出申请失败'));
+            }
+        });
+    };
+    clearSelectCandidate = () =>{
+        ApplyViewDetailActions.setNextCandidateIds('');
     };
     renderAddApplyNextCandidate = () => {
         var addNextCandidateId = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
         return (
             <div className="pull-right">
                 <AntcDropdown
-                    ref={AssignSales => this.assignSales = AssignSales}
+                    ref={AssignSales => this.addNextCandidate = AssignSales}
                     content={<Button
                         data-tracename="点击转出申请按钮"
                         className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('crm.qualified.roll.out', '转出')}</Button>}
@@ -109,9 +149,9 @@ class ApplyViewDetail extends React.Component {
                     okTitle={Intl.get('common.confirm', '确认')}
                     cancelTitle={Intl.get('common.cancel', '取消')}
                     overlayContent={this.renderTransferCandidateBlock()}
-                    handleSubmit={this.addNewApplyCandidate.bind(this, assignedSalesUsersIds)}//分配销售的时候直接分配，不需要再展示模态框
+                    handleSubmit={this.addNewApplyCandidate.bind(this, addNextCandidateId)}//分配销售的时候直接分配，不需要再展示模态框
                     unSelectDataTip={addNextCandidateId ? '' : Intl.get('apply.will.select.transfer.approver','请选择要转给的待审批人')}
-                    clearSelectData={this.clearSelectSales}
+                    clearSelectData={this.clearSelectCandidate}
                     btnAtTop={false}
                     isSaving={this.state.transferStatusInfo.result === 'loading'}
                     isDisabled={!addNextCandidateId}
@@ -476,6 +516,20 @@ class ApplyViewDetail extends React.Component {
             id: this.props.detailItem.id,
         };
         ApplyViewDetailActions.cancelApplyApprove(backoutObj);
+    };
+    //todo 待删除
+    renderErrAlertTimer = ()=>{
+      var errMsg = this.state.transferStatusInfo.errorMsg;
+      const hide = function () {
+
+      };
+      if (errMsg){
+          return (
+              <AlertTimer time={3000} message={errMsg} type="error" showIcon onHide={hide}/>
+          )
+      }else {
+          return null;
+      }
     };
 
     //渲染申请单详情

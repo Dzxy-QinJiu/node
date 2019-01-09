@@ -273,6 +273,7 @@ class BusinessApplyManagement extends React.Component {
                         <ApplyViewDetail
                             detailItem={this.state.selectedDetailItem}
                             showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                            applyListType={this.state.applyListType}
                         />
                     )}
                 </div>

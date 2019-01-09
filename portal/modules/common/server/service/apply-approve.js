@@ -16,7 +16,7 @@ exports.getNextCandidate = function(req, res) {
 exports.addNewCandidate = function(req, res) {
     return restUtil.authRest.post(
         {
-            url: 'http://172.19.104.11:3000/mock/23/base/v1/workflow/taskcandidateusers',
+            url: '/rest/base/v1/workflow/taskcandidateusers',
             req: req,
             res: res
         }, req.body);

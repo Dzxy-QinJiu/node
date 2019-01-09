@@ -129,16 +129,19 @@ function ApplyViewDetailActions() {
         );
     };
     //把申请转给另外一个人
-    this.transferNextCandidate = function(queryObj) {
+    this.transferNextCandidate = function(queryObj,callback) {
         this.dispatch({loading: true, error: false});
         ApplyApproveAjax.transferNextCandidate().sendRequest(queryObj).success((data) => {
             if (data){
-                this.dispatch({loading: false, error: false})
+                this.dispatch({loading: false, error: false});
+                _.isFunction(callback) && callback(true);
             }else{
-                this.dispatch({loading: false, error: true, errorMsg: Intl.get('apply.approve.transfer.failed','转出申请失败')})
+                this.dispatch({loading: false, error: true, errorMsg: Intl.get('apply.approve.transfer.failed','转出申请失败')});
+                _.isFunction(callback) && callback(false);
             }
         }).error(errMsg =>{
-                this.dispatch({loading: false, error: true, errorMsg:errMsg})
+                this.dispatch({loading: false, error: true, errorMsg:errMsg});
+                _.isFunction(callback) && callback(false);
         }
         );
     };

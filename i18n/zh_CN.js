@@ -2687,5 +2687,6 @@ var zh_CN = {
     'apply.will.approve.apply.item':'待审批人',
     'apply.no.relate.user':'无相关成员',
     'apply.approve.transfer.failed':'转出申请失败',
+    'apply.approve.transfer.success':'转出申请成功'
 };
 export default zh_CN;
