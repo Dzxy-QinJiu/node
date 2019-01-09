@@ -21,7 +21,7 @@ import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText,getApplyResultDscr,getApplyStatusTimeLineDesc,getFilterReplyList,handleDiffTypeApply,formatSalesmanList,formatUsersmanList} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyTopicText,getApplyResultDscr,getApplyStatusTimeLineDesc,getFilterReplyList,handleDiffTypeApply,formatUsersmanList} from 'PUB_DIR/sources/utils/common-method-util';
 import {handleTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
@@ -408,7 +408,7 @@ class ApplyViewDetail extends React.Component {
         var approvalDes = getApplyResultDscr(detailInfoObj);
         var addApplyNextCandidate = null;
         //如果是管理员或者是待我审批的申请，我都可以把申请进行转出
-        if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || detailInfoObj.showApproveBtn){
+        if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || detailInfoObj.showApproveBtn) && detailInfoObj.status === 'ongoing'){
             addApplyNextCandidate = this.renderAddApplyNextCandidate;
         }
         return (

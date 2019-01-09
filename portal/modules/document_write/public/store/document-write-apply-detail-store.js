@@ -60,6 +60,13 @@ DocumentWriteApplyDetailStore.prototype.setInitState = function() {
         submitResult: '',
         errorMsg: ''
     };
+    //转出申请的状态列表
+    this.transferStatusInfo = {
+        //三种状态,loading,error,''
+        result: '',
+        //服务端错误信息
+        errorMsg: ''
+    };
 };
 DocumentWriteApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
@@ -268,6 +275,25 @@ DocumentWriteApplyDetailStore.prototype.getNextCandidate = function(result) {
 DocumentWriteApplyDetailStore.prototype.setUpdateFilesLists = function(updateLists) {
     this.detailInfoObj.info.detail.file_upload_logs = updateLists;
 };
+DocumentWriteApplyDetailStore.prototype.setNextCandidateIds = function (candidateId) {
+    this.detailInfoObj.info.nextCandidateId = candidateId;
+};
+DocumentWriteApplyDetailStore.prototype.transferNextCandidate = function(result) {
+    if (result.loading) {
+        this.transferStatusInfo.result = 'loading';
+        this.transferStatusInfo.errorMsg = '';
+    } else if (result.error) {
+        this.transferStatusInfo.result = 'error';
+        this.transferStatusInfo.errorMsg = result.errorMsg;
+    } else {
+        this.transferStatusInfo.result = 'success';
+        this.transferStatusInfo.errorMsg = '';
+        //如果转出成功，要隐藏审批的按钮
+        this.selectedDetailItem.showApproveBtn = false;
+        this.detailInfoObj.info.showApproveBtn = false;
+    }
+};
+
 
 
 
