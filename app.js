@@ -89,8 +89,13 @@ global.config_root_path = path.resolve(__dirname, './conf');
 
 var restLogger = require('./portal/lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
-require('callcenter-sdk-server').server(app, {callout_url: '/rest/customer/v2/phone/call/ou'}, restUtil.authRest);
-
+// require('callcenter-sdk-server').server(app, {callout_url: '/rest/customer/v2/phone/call/ou'}, restUtil.authRest);
+require('callcenter-sdk-server').server(app, {
+    ronglian: {
+        appid: '8aaf070866235bc501665684bbb9144f',//容联中的应用id,
+        apptoken: 'e4ca6bcf5bf566b8587f16b77b8b9375',//'容联中的应用token',
+    }
+}, restUtil.authRest);
 
 //初始化controller
 require('./portal/controller')(app);

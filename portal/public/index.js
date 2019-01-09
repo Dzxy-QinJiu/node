@@ -75,7 +75,7 @@ function getUserPrivilegeAndStart() {
         });
         CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
             if (callNumberInfo && callNumberInfo.callNumber) {
-                window.callClient = new CallcenterClient(CallcenterType.HUAWEI, user_id, callNumberInfo.callNumber);
+                window.callClient = new CallcenterClient(CallcenterType.RONGLIAN, user_id, callNumberInfo.callNumber);
                 window.callClient.init().then(() => {
                     console.log('可以打电话了!');
                 });
