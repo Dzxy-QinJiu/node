@@ -863,7 +863,7 @@ var en_US = {
     //销售团队end
     //配置start
     'config.manage.industry.manage': 'Industry',//行业管理
-    'config.manage.add.industry.error': 'Failed to add industry',
+    'config.manage.add.industry.error': 'Failed to add industry',//添加行业失败
     'config.manage.reload.industry': 'Retry',//重新获取行业
     'config.manage.no.industry': 'There is no industry, please add!',//暂无行业配置，请添加！
     'config.manage.input.ip': 'Please enter correct IP(eg:192.168.1.9)',//请输入有效的IP（eg:192.168.1.9）
