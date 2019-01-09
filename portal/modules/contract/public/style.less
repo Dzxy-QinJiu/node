@@ -425,9 +425,11 @@
                 }
                 form {
                     background: #dde6ed;
+                    padding-left: 10px;
                     padding-bottom: 0;
                     .circle-button {
                         margin-top: 6px;
+                        margin-right: 8px;
                     }
                     .ant-form-item {
                         label {
@@ -459,11 +461,26 @@
                         position: absolute;
                     }
                 }
-                .ant-form-item:first-child {
-                    width: 200px;
+                .app-name {
+                    width: 100px;
                     margin-right: 17px;
                     .ant-select {
                         margin-top: -3px;
+                    }
+                }
+                .start-end-time {
+                    .ant-calendar-picker {
+                        width: 175px;
+                        .ant-input {
+                            height: 30px;
+                            input {
+                                width: 65px;
+                                height: 16px;
+                            }
+                        }
+                        .ant-calendar-range-picker-separator {
+                            line-height: 26px;
+                        }
                     }
                 }
             }

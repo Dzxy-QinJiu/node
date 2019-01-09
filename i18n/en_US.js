@@ -2664,6 +2664,7 @@ var en_US = {
     'apply.approve.leave.am': 'am',//上午
     'apply.approve.leave.pm': 'pm',//下午
     'apply.approve.total.leave.time': 'Leave range',//请假时长
-    'apply.approve.total.days': 'A total of {X} day'//共{X}天
+    'apply.approve.total.days': 'A total of {X} day',//共{X}天
+    'common.start.end.time': 'start end time',//起止时间
 };
 export default en_US;

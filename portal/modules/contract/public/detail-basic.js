@@ -242,6 +242,30 @@ const DetailBasic = createReactClass({
                     return <span>{text ? text + ' %' : ''}</span>;
                 }
             },
+            {
+                title: Intl.get('contract.120', '开始时间'),
+                dataIndex: 'account_start_time',
+                key: 'account_start_time',
+                render: function(text) {
+                    if (text) {
+                        return <span>{moment(text).format(oplateConsts.DATE_FORMAT)}</span>;
+                    } else {
+                        return null
+                    }
+                }
+            },
+            {
+                title: Intl.get('contract.105', '结束时间'),
+                dataIndex: 'account_end_time',
+                key: 'account_end_time',
+                render: function(text) {
+                    if (text) {
+                        return <span>{moment(text).format(oplateConsts.DATE_FORMAT)}</span>;
+                    } else {
+                        return null
+                    }
+                }
+            },
         ];
 
         const repaymentColumns = extend(true, [], REPAYMENT_OWN_COLUMNS).map(column => {
