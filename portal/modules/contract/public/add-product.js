@@ -6,9 +6,10 @@ const Validator = Validation.Validator;
  * 产品信息添加表单
  */
 
-import { Form, Input, Select, Button, Icon } from 'antd';
+import { Form, Input, Select, Button, Icon, DatePicker } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
+const RangePicker = DatePicker.RangePicker
 import ValidateMixin from '../../../mixins/ValidateMixin';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 
@@ -85,9 +86,11 @@ const AddProduct = createReactClass({
                         <Form key={index}>
                             <FormItem 
                                 label={index === 0 ? Intl.get('common.app.name', '应用名称') : ''}
+                                className='app-name'
                             >
                                 <Select
                                     mode="combobox"
+                                    dropdownMatchSelectWidth={false}
                                     placeholder={Intl.get('user.app.select.please', '请选择应用')}
                                     value={value}
                                     onSearch={this.onAppChoosen.bind(this, index)}
@@ -144,6 +147,12 @@ const AddProduct = createReactClass({
                                     />
                                 </Validator>
                             &nbsp;%
+                            </FormItem>
+                            <FormItem
+                                label={index === 0 ? Intl.get('common.start.end.time', '起止时间') : ''}
+                                className='start-end-time'
+                            >
+                                <RangePicker/>
                             </FormItem>
                             <div className="circle-button circle-button-minus"
                                 title={Intl.get('common.delete', '删除')}
