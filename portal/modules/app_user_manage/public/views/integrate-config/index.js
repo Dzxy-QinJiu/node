@@ -25,10 +25,6 @@ class IntegrateConfigView extends React.Component {
         };
     }
 
-    componentDidMount() {
-        this.getIntegrateJSCode('33');
-    }
-
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {

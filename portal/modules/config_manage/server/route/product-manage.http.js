@@ -96,5 +96,13 @@ module.exports = {
             'needLogin': true
         },
         'privileges': []
+    }, {//集成配置（matomo\oplate）
+        'method': 'post',
+        'path': '/rest/integration/config',
+        'handler': 'integrationConfig',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': []
     }]
 };

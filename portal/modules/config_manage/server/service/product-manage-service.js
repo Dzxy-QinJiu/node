@@ -13,7 +13,9 @@ const productRestApis = {
     oplateProductList: '/rest/base/v1/application/oplate',
     matomoProductList: '/rest/base/v1/matomo/sites',
     //uem产品转普通产品，普通产品转uem产品,type=uem\normal
-    changeProductType: '/rest/base/v1/products/uem/interconversion/:product_id/:type'
+    changeProductType: '/rest/base/v1/products/uem/interconversion/:product_id/:type',
+    //集成配置（oplate\matomo）
+    integrationConfig: '/rest/base/v1/products/integration/config'
 };
 
 //获取产品列表
@@ -110,7 +112,7 @@ exports.updateProduct = function(req, res) {
     Promise.all(promiseList).then((dataList) => {
         let result = {editBasicSuccess: true, editTypeSuccess: true};
         //修改集成类型
-        if(changeType){
+        if (changeType) {
             result.editTypeSuccess = _.get(dataList, '[0]');//true\false
         }
         //基本信息的修改
@@ -201,4 +203,13 @@ exports.integrateProduct = function(req, res) {
         req: req,
         res: res,
     });
+};
+
+//集成配置（oplate\matomo）
+exports.integrationConfig = function(req, res) {
+    return restUtil.authRest.post({
+        url: productRestApis.integrationConfig,
+        req: req,
+        res: res,
+    }, req.body);
 };

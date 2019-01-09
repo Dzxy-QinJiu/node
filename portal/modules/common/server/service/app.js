@@ -33,7 +33,12 @@ exports.getIntegrationConfig = function(req, res) {
     }, {}, {
         success: function(emitter, resultObj) {
             //返回集成类型（matomo、oplate、uem-默认），过滤掉其他暂时不用的数据
-            emitter.emit('success', {type: _.get(resultObj, 'name', '')});
+            emitter.emit('success', {
+                type: _.get(resultObj, 'name', ''),
+                create_time: _.get(resultObj, 'create_time', ''),
+                server: _.get(resultObj, 'server', ''),
+                authToken: _.get(resultObj, 'authToken', '')
+            });
         }
     });
 };

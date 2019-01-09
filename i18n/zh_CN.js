@@ -638,7 +638,7 @@ var zh_CN = {
     'role.set.default': '设为默认角色',
     'role.normal.sales': '普通销售',
     'role.del.role.failed': '删除角色失败',
-    'authority.auth.api': 'Service address',//服务地址
+    'authority.auth.api': '服务地址',
 
     //后台管理-成员start
     'member.member': '成员',
@@ -933,6 +933,13 @@ var zh_CN = {
     'config.product.import.tip': '您已集成{type}，可以导入以下{type}的产品',
     'config.product.import.finish': '导入完成',
     'config.product.import.failed': '导入失败',
+    'config.integration': '集成',
+    'config.integration.type': '集成类型',
+    'config.integration.domain': '域名',
+    'config.integration.token': '验证token',
+    'config.integration.server.placeholder': '请输入Matomo域名',
+    'config.integration.token.placeholder': '请输入API验证token',
+    'config.integration.config.get.error': '获取集成配置的信息出错了',
     //配置end
     // 通话记录start
     'call.record.caller': '呼叫者',

@@ -926,6 +926,13 @@ var en_US = {
     'config.product.import.tip': 'You have integrated {type} to import the following {type} products',//您已集成{type}，可以导入以下{type}的产品
     'config.product.import.finish': 'Import finished',//导入完成
     'config.product.import.failed': 'Import failed',//导入失败
+    'config.integration': 'Integration',//集成
+    'config.integration.type': 'Integration type',//集成类型
+    'config.integration.domain': 'Domain',//域名
+    'config.integration.token': 'Verify token',//验证token
+    'config.integration.server.placeholder': 'Please enter the Matomo domain name',//请输入Matomo域名
+    'config.integration.token.placeholder': 'Please enter API verify token',//请输入API验证token
+    'config.integration.config.get.error': 'Failed to get integrate config',//获取集成配置的信息出错了
     //配置end
     // 通话记录start
     'call.record.caller': 'Caller', // 呼叫者
