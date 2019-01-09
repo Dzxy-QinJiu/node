@@ -867,6 +867,7 @@ var zh_CN = {
     //销售团队end
     //配置start
     'config.manage.industry.manage': '行业管理',
+    'config.manage.add.industry.error': '添加行业失败',
     'config.manage.reload.industry': '重新获取行业',
     'config.manage.no.industry': '暂无行业配置，请添加！',
     'config.manage.input.ip': '请输入有效的IP（eg:192.168.1.9）',
