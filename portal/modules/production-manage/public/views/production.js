@@ -445,6 +445,7 @@ class Production extends React.Component {
                                     labelCol={{span: 2}}
                                     wrapperCol={{span: 22}}
                                     colon={false}
+                                    className='useJS-form-item'
                                 >
                                     {getFieldDecorator('useJS', {
                                         initialValue: !!_.get(this.props, 'info.integration_type'),//编辑时，集成类型存在，选中
