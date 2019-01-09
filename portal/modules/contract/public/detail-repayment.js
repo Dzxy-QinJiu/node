@@ -101,10 +101,18 @@ const DetailRepayment = createReactClass({
 
             if (result.code === 0) {
                 message.success(OPERATE[type] + '成功');
-                //延迟1秒后再刷新合同数据，以防止查询到的还是旧数据
-                setTimeout(() => {
-                    this.props.refreshCurrentContract(this.props.contract.id);
-                }, 1000)
+
+                //返回数据
+                let resultData = result.result
+
+                //删除的时候没有返回数据，需要根据id从当前回款列表中取
+                if (type === 'delete') {
+                    const repaymentId = data[0]
+                    resultData = _.find(this.props.contract.repayments, repayment => repayment.id === repaymentId)
+                }
+
+                //刷新合同列表中的回款信息
+                this.props.refreshCurrentContractRepayment(type, resultData)
 
                 if (_.isFunction(cb)) cb();
             } else {
