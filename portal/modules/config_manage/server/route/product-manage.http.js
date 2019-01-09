@@ -16,7 +16,15 @@ module.exports = {
         'privileges': [
             'PRODUCTS_MANAGE', 'GET_PRODUCTS_LIST'
         ]
-    }, {
+    },{
+        'method': 'get',
+        'path': '/rest/product/:client_id',
+        'handler': 'getProductById',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': []
+    },{
         'method': 'post',
         'path': '/rest/product',
         'handler': 'addProduct',

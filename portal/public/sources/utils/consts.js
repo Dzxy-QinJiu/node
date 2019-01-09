@@ -413,5 +413,6 @@ export const DIFF_TYPE_LOG_FILES = {
 export const INTEGRATE_TYPES = {
     UEM: 'uem',//默认类型（客套-用户参与度）
     OPLATE: 'oplate',
-    MATOMO: 'matomo'
+    MATOMO: 'matomo',
+    NORMAL: 'normal'//普通产品
 };

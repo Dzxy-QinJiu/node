@@ -7,6 +7,7 @@
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var _ = require('lodash');
+var EventEmitter = require('events').EventEmitter;
 const productRestApis = {
     product: '/rest/base/v1/products',
     oplateProductList: '/rest/base/v1/application/oplate',
@@ -24,6 +25,16 @@ exports.getProduct = function(req, res) {
         res: res
     }, query);
 };
+
+//通过id获取产品信息
+exports.getProductById = function(req, res) {
+    return restUtil.authRest.get({
+        url: productRestApis.product + '/' + req.params.client_id,
+        req: req,
+        res: res
+    }, {});
+};
+
 //添加产品
 exports.addProduct = function(req, res, product) {
     return restUtil.authRest.post({
@@ -82,21 +93,36 @@ function editProductType(req, res, id, type) {
 
 //修改产品
 exports.updateProduct = function(req, res) {
-    let product = _.cloneDeep(req.body);
-    var emitter = new EventEmitter();
+    let product = req.body;
+    let emitter = new EventEmitter();
     let promiseList = [];
+    let changeType = product.changeType, isEditBasic = product.isEditBasic;
     //修改集成类型
-    if (product.changeType) {
-        promiseList.push(editProductType(req, res, product.id, product.changeType));
+    if (changeType) {
+        promiseList.push(editProductType(req, res, product.id, changeType));
         delete product.changeType;
     }
     //基本信息的修改
-    if (product.isEditBasic) {
+    if (isEditBasic) {
         delete product.isEditBasic;
         promiseList.push(editProductBasic(req, res, product));
     }
     Promise.all(promiseList).then((dataList) => {
-        emitter.emit('success', dataList);
+        let result = {editBasicSuccess: true, editTypeSuccess: true};
+        //修改集成类型
+        if(changeType){
+            result.editTypeSuccess = _.get(dataList, '[0]');//true\false
+        }
+        //基本信息的修改
+        if (isEditBasic) {
+            //也修改了集成类型时
+            if (changeType) {
+                result.editBasicSuccess = _.get(dataList, '[1]');//true\false
+            } else {
+                result.editBasicSuccess = _.get(dataList, '[0]');//true\false
+            }
+        }
+        emitter.emit('success', result);
     }, function(errorObj) {
         emitter.emit('error', errorObj);
     });

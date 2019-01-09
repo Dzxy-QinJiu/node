@@ -12,6 +12,15 @@ exports.getProduct = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+//通过id获取产品信息
+exports.getProductById = function(req, res) {
+    productService.getProductById(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 // 添加产品
 exports.addProduct = function(req,res) {
     productService.addProduct(req, res, req.body).on('success', function(data) {

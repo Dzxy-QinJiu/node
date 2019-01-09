@@ -36,7 +36,14 @@ function ProductionActions() {
             this.dispatch(errorMsg || Intl.get('crm.139', '删除失败'));
         });
     };
-
+    this.getProductById = function(id, callback) {
+        productionAjax.getProductById(id).then((obj) => {
+            this.dispatch(obj);
+            if (_.isFunction(callback)) callback(obj);
+        }, (errorMsg) => {
+            this.dispatch(errorMsg);
+        });
+    };
 }
 
 module.exports = alt.createActions(ProductionActions);

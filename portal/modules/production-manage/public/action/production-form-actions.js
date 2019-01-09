@@ -40,8 +40,8 @@ function ProductionFormActions() {
     this.editProduction = function(production) {
         var _this = this;
         productionAjax.editProduction(production).then(function(data) {
-            //修改成功data=true，false:修改失败
-            if (data) {
+            //修改成功{editBasicSuccess: true, editTypeSuccess:true}
+            if (_.get(data,'editBasicSuccess') && _.get(data, 'editTypeSuccess')) {
                 //保存成功后的处理
                 _this.dispatch({
                     saveResult: 'success',

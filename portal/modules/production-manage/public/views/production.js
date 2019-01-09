@@ -18,6 +18,7 @@ let FormItem = Form.Item;
 let GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 let ProductionFormStore = require('../store/production-form-store');
 let ProductionFormAction = require('../action/production-form-actions');
+let ProductionAction = require('../action/production-actions');
 let AlertTimer = require('../../../../components/alert-timer');
 let util = require('../utils/production-util');
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
@@ -157,7 +158,7 @@ class Production extends React.Component {
                         production.changeType = INTEGRATE_TYPES.UEM;
                     } else if (!values.useJS && _.get(this.props, 'info.integration_type') === INTEGRATE_TYPES.UEM) {
                         //由uem集成类型的产品改为普通产品
-                        production.changeType = INTEGRATE_TYPES.UEM;
+                        production.changeType = INTEGRATE_TYPES.NORMAL;
                     }
                     //未修改基本信息，也未修改集成类型
                     if (!production.isEditBasic && !production.changeType) return;
@@ -235,7 +236,17 @@ class Production extends React.Component {
     //去掉保存后提示信息
     hideSaveTooltip = () => {
         this.props.afterOperation(this.props.formType, this.state.savedProduction);
-        this.props.closeRightPanel();
+        //将普通产品成功修改为uem产品时
+        if (_.get(this.state, 'savedProduction.changeType') === INTEGRATE_TYPES.UEM && _.get(this.state, 'savedProduction.id')) {
+            //获取该产品的integration_id更新列表中的integration_id，并根据integration_id获取jsCode
+            ProductionAction.getProductById(this.state.savedProduction.id, (data) => {
+                if (_.get(data, 'integration_id')) {
+                    this.getIntegrateJSCode(data.integration_id);
+                }
+            });
+        } else {
+            this.props.closeRightPanel();
+        }
     };
     testUemProduct = () => {
         let integration_id = this.props.formType === util.CONST.ADD ? this.state.integrationId : _.get(this.props, 'info.integration_id');

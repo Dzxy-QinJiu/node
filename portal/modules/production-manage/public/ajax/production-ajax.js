@@ -88,3 +88,18 @@ exports.deleteItemById = (itemId) => {
     });
     return Deferred.promise();
 };
+
+exports.getProductById = (itemId) => {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/product/' + itemId,
+        type: 'get',
+        dataType: 'json',
+        success: function(result) {
+            Deferred.resolve(result);
+        }, error: function(errorInfo) {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

@@ -4,6 +4,7 @@
  * Created by liwenjun on 2018/10/31.
  */
 let ProductionActions = require('../action/production-actions');
+import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 let emptyProduction = {
     id: '',
     name: '',
@@ -72,6 +73,14 @@ ProductionStore.prototype.getProductions = function(data) {
         }
     }
 };
+
+ProductionStore.prototype.getProductById = function(data) {
+    if (_.get(data, 'id')) {
+        let production = _.find(this.productionList, item => item.id === data.id);
+        production = production = _.extend(production, data);
+    }
+};
+
 //添加产品后更新列表
 ProductionStore.prototype.addProduction = function(production) {
     this.productionList.unshift(production);
@@ -79,12 +88,21 @@ ProductionStore.prototype.addProduction = function(production) {
 };
 //更新产品
 ProductionStore.prototype.updateProduction = function(updatedProduction) {
-    _.find(this.productionList, function(production) {
-        if (updatedProduction.id === production.id) {
-            production = _.extend(production, updatedProduction);
-            return true;
+    let production = _.find(this.productionList, item => item.id === updatedProduction.id);
+    //修改产品的集成类型
+    if (updatedProduction.changeType) {
+        production.integration_type = updatedProduction.changeType === INTEGRATE_TYPES.UEM ? INTEGRATE_TYPES.UEM : '';
+        //将uem产品改为普通产品时，去掉集成的id
+        if (!production.integration_type) {
+            delete production.integration_id;
         }
-    });
+        delete updatedProduction.changeType;
+    }
+    //基本信息的修改
+    if (updatedProduction.isEditBasic) {
+        delete updatedProduction.isEditBasic;
+        production = _.extend(production, updatedProduction);
+    }
 };
 
 //点击产品查看详情时
