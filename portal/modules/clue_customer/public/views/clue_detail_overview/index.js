@@ -1,3 +1,5 @@
+import { emailRegex } from 'PUB_DIR/sources/utils/validate-util';
+
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -900,6 +902,10 @@ class ClueDetailOverview extends React.Component {
                                                 label={<div className="iconfont icon-email contact-way-icon"
                                                     title={Intl.get('common.email', '邮箱')}/>}
                                                 hasEditPrivilege={hasPrivilegeEdit}
+                                                validateRules={[{
+                                                    message: Intl.get('user.email.validate.tip','请输入正确格式的邮箱'),
+                                                    pattern: emailRegex
+                                                }]}
                                                 placeholder={Intl.get('member.input.email', '请输入邮箱')}
                                                 saveEditData={this.saveEditBasicInfo.bind(this, {editItem: 'email',id: contactItem.id})}
                                                 noDataTip={Intl.get('crm.contact.email.none', '暂无邮箱')}

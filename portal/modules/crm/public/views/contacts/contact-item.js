@@ -18,6 +18,7 @@ import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-
 import CrmAction from '../../action/crm-actions';
 import contactAjax from '../../ajax/contact-ajax';
 const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
+import {emailRegex} from 'PUB_DIR/sources/utils/validate-util';
 
 class ContactItem extends React.Component {
     static defaultProps = {
@@ -27,7 +28,7 @@ class ContactItem extends React.Component {
     state = {
         isLoading: false
     };
-    
+
     showDeleteContactConfirm = () => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '删除联系人');
         ContactAction.showDeleteContactConfirm(this.props.contact);
@@ -350,6 +351,10 @@ class ContactItem extends React.Component {
                                 type='input'
                                 label={<div className="iconfont icon-email contact-way-icon"
                                     title={Intl.get('common.email', '邮箱')}/>}
+                                validateRules={[{
+                                    message: Intl.get('user.email.validate.tip','请输入正确格式的邮箱'),
+                                    pattern: emailRegex
+                                }]}
                                 hasEditPrivilege={hasEditPrivilege}
                                 placeholder={Intl.get('member.input.email', '请输入邮箱')}
                                 saveEditData={this.saveContactInfo.bind(this, 'email')}
