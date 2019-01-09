@@ -103,16 +103,16 @@ const DetailRepayment = createReactClass({
                 message.success(OPERATE[type] + '成功');
 
                 //返回数据
-                let resultData = result.result
+                let resultData = result.result;
 
                 //删除的时候没有返回数据，需要根据id从当前回款列表中取
                 if (type === 'delete') {
-                    const repaymentId = data[0]
-                    resultData = _.find(this.props.contract.repayments, repayment => repayment.id === repaymentId)
+                    const repaymentId = data[0];
+                    resultData = _.find(this.props.contract.repayments, repayment => repayment.id === repaymentId);
                 }
 
                 //刷新合同列表中的回款信息
-                this.props.refreshCurrentContractRepayment(type, resultData)
+                this.props.refreshCurrentContractRepayment(type, resultData);
 
                 if (_.isFunction(cb)) cb();
             } else {
