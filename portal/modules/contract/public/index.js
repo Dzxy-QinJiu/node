@@ -415,7 +415,7 @@ class Contract extends React.Component {
             sum.total_amount -= data.amount;
             //合计里的回款毛利减去已删除的回款毛利
             sum.total_gross_profit -= data.gross_profit;
-            //合计里的应收款减去已删除的回款额
+            //合计里的应收款加上已删除的回款额
             sum.total_plan_amount += data.amount;
         } else if (opType === 'update') {
             const repaymentId = data.id;
@@ -437,9 +437,9 @@ class Contract extends React.Component {
             currentContract.total_plan_amount -= diffAmount;
 
             //合计里的回款额加上回款变化值
-            sum.total_amount -= diffAmount;
+            sum.total_amount += diffAmount;
             //合计里的回款毛利加上毛利变化值
-            sum.total_gross_profit -= diffGrossProfit;
+            sum.total_gross_profit += diffGrossProfit;
             //合计里的应收款减去回款变化值
             sum.total_plan_amount -= diffAmount;
         }
