@@ -1,4 +1,6 @@
 const querystring = require('querystring');
+const fs = require('fs');
+const multiparty = require('multiparty');
 const restLogger = require('../../../lib/utils/logger').getLogger('rest');
 const restUtil = require('ant-auth-request').restUtil(restLogger);
 const routes = require('./route');
@@ -27,25 +29,44 @@ routes.forEach(route => {
             res: res
         };
 
+        //如果是上传合同
         if (route.handler === 'uploadContractPreview') {
-            options['pipe-upload-file'] = true;
             options['timeout'] = 5 * 60 * 1000;
+            const form = new multiparty.Form();
+
+            form.parse(req, function(err, fields, files) {
+                const file = files.contracts[0].path;
+                //multiple value 类型的参数需要放到options.formData中向后端传递
+                options.formData = {
+                    attachments: [fs.createReadStream(file)];
+                };
+
+                doRequest(null, () => {
+                    fs.unlink(file, err => {
+                        if (err) throw err;
+                    });
+                });
+            })
+        } else {
+            doRequest(data);
         }
 
-        const restRequest = restUtil.authRest[method](
-            options,
-            data
-        );
+        function doRequest(data, cb) {
+            const restRequest = restUtil.authRest[method](
+                options,
+                data
+            );
 
-        //没有next函数时，返回一个request对象，供调用者自己处理请求结果
-        if (!next) return restRequest;
+            //没有next函数时，返回一个request对象，供调用者自己处理请求结果
+            if (!next) return restRequest;
 
-        restRequest.on('success', result => {
-            res.status(200).json(result);
-        })
-            .on('error', codeMessage => {
+            restRequest.on('success', result => {
+                res.status(200).json(result);
+                if (cb) cb();
+            }).on('error', codeMessage => {
                 res.status(500).json(codeMessage && codeMessage.message);
+                if (cb) cb();
             });
-    };
+        }
+    }
 });
-
