@@ -146,11 +146,11 @@ class IntegrateConfigView extends React.Component {
             <div className="integrate-config-wrap">
                 <div className="access-step-tip">{Intl.get('user.access.steps.tip', '您还没有接入用户，请先通过以下方式接入用户')}</div>
                 <div className="curtao-access-wrap">
-                    <div className="accesss-title">
-                        <Logo size="24px" fontColor='#333'/>
-                    </div>
                     {_.get(this.state, 'addProduct.name') ? (
                         <div className="integrate-js-code-wrap">
+                            <div className="accesss-title">
+                                <Logo size="24px" fontColor='#333'/>
+                            </div>
                             <div className="access-step-tip margin-style curtao-product-name">
                                 <span className="js-code-label">{Intl.get('common.product.name', '产品名称')}：</span>
                                 <span>{this.state.addProduct.name} </span>
