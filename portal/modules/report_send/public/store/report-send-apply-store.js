@@ -124,7 +124,32 @@ ReportSendApplyStore.prototype.updateAllApplyItemStatus = function(updateItem) {
 ReportSendApplyStore.prototype.afterAddApplySuccess = function(item) {
     this.applyListObj.list.unshift(item);
     this.selectedDetailItem = item;
+    this.selectedDetailItemIdx = 0;
     this.totalSize++;
+};
+//成功转出一条审批后的处理，如果当前展示的是待审批列表
+ReportSendApplyStore.prototype.afterTransferApplySuccess = function (targetId) {
+    //查到该条记录
+    var targetIndex = _.findIndex(this.applyListObj.list, item => item.id === targetId);
+    //删除转出的这一条后，展示前面的或者后面的那一条审批
+    if (targetIndex === 0){
+        if (this.applyListObj.list.length > targetIndex+1){
+            this.selectedDetailItem = _.get(this,`applyListObj.list[${targetIndex+1}]`);
+            this.selectedDetailItemIdx = targetIndex;
+            this.applyListObj.list.splice(targetIndex,1);
+            this.totalSize -= 1;
+        }else{
+            this.applyListObj.list = [];
+            this.selectedDetailItem = {};
+            this.selectedDetailItemIdx = -1;
+            this.totalSize = 0;
+        }
+    }else if (targetIndex > 0){
+        this.selectedDetailItem = _.get(this,`applyListObj.list[${targetIndex-1}]`);
+        this.selectedDetailItemIdx = targetIndex -1;
+        this.applyListObj.list.splice(targetIndex,1);
+        this.totalSize -= 1;
+    }
 };
 
 module.exports = alt.createStore(ReportSendApplyStore, 'ReportSendApplyStore');

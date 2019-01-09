@@ -121,7 +121,7 @@ class ApplyViewDetail extends React.Component {
                 if (hasApprovePrivilege){
                     //上面待审批的数字也需要减一
                     if (Oplate && Oplate.unread) {
-                        Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT] -= 1;
+                        Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE] -= 1;
                         if (timeoutFunc) {
                             clearTimeout(timeoutFunc);
                         }
@@ -136,7 +136,7 @@ class ApplyViewDetail extends React.Component {
             }
         });
     };
-    clearSelectCandidate = () =>{
+    clearNextCandidateIds = () =>{
         DocumentWriteApplyDetailAction.setNextCandidateIds('');
     };
     renderAddApplyNextCandidate = () => {
@@ -154,7 +154,7 @@ class ApplyViewDetail extends React.Component {
                     overlayContent={this.renderTransferCandidateBlock()}
                     handleSubmit={this.addNewApplyCandidate.bind(this, addNextCandidateId)}//分配销售的时候直接分配，不需要再展示模态框
                     unSelectDataTip={addNextCandidateId ? '' : Intl.get('apply.will.select.transfer.approver','请选择要转给的待审批人')}
-                    clearSelectData={this.clearSelectCandidate}
+                    clearSelectData={this.clearNextCandidateIds}
                     btnAtTop={false}
                     isSaving={this.state.transferStatusInfo.result === 'loading'}
                     isDisabled={!addNextCandidateId}

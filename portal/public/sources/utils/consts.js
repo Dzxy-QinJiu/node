@@ -71,8 +71,8 @@ export const APPLY_APPROVE_TYPES = {
     UNHANDLECUSTOMERVISIT: 'unhandleCustomerVisit',//未处理的出差申请数量
     UNHANDLEBUSINESSOPPORTUNITIES: 'unhandleBusinessOpportunities',//未处理的销售机会申请数量
     UNHANDLEPERSONALLEAVE: 'unhandlePersonalLeave',//未处理的请假申请数量
-    UNHANDLEREPORTSEND: 'unhandleReportSend',//未处理的请假申请数量
-    UNHANDLEDOCUMENTWRITE: 'unhandleDocumentWrite',//未处理的请假申请数量
+    UNHANDLEREPORTSEND: 'unhandleReportSend',//未处理的舆情报送申请数量
+    UNHANDLEDOCUMENTWRITE: 'unhandleDocumentWrite',//未处理的文件撰写申请数量
     UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
     REPORT: 'report',//舆情报送的类型
     DOCUMENT: 'document',//文件撰写的类型

@@ -133,7 +133,7 @@ class ApplyViewDetail extends React.Component {
             }
         });
     };
-    clearSelectCandidate = () =>{
+    clearNextCandidateIds = () =>{
         ApplyViewDetailActions.setNextCandidateIds('');
     };
     renderAddApplyNextCandidate = () => {
@@ -151,7 +151,7 @@ class ApplyViewDetail extends React.Component {
                     overlayContent={this.renderTransferCandidateBlock()}
                     handleSubmit={this.addNewApplyCandidate.bind(this, addNextCandidateId)}//分配销售的时候直接分配，不需要再展示模态框
                     unSelectDataTip={addNextCandidateId ? '' : Intl.get('apply.will.select.transfer.approver','请选择要转给的待审批人')}
-                    clearSelectData={this.clearSelectCandidate}
+                    clearSelectData={this.clearNextCandidateIds}
                     btnAtTop={false}
                     isSaving={this.state.transferStatusInfo.result === 'loading'}
                     isDisabled={!addNextCandidateId}
