@@ -371,6 +371,85 @@ class Contract extends React.Component {
         });
     };
 
+    //在合同详情中修改完回款信息后，将修改后的数据同步到合同列表
+    refreshCurrentContractRepayment = (opType, data) => {
+        //当前合同
+        let currentContract = this.state.currentContract;
+        //当前合同里的回款数组
+        let repayments = currentContract.repayments;
+        //合计
+        let sum = this.state.sum;
+
+        if (opType === 'add') {
+            //将新添加的回款加入合同信息的回款数组
+            repayments.unshift(data);
+
+            //合同信息里的回款额加上新添加的回款额
+            currentContract.total_amount += data.amount;
+            //合同信息里的回款毛利加上新添加的回款毛利
+            currentContract.total_gross_profit += data.gross_profit;
+            //合同信息里的应收款减去新添加的回款额
+            currentContract.total_plan_amount -= data.amount;
+
+            //合计里的回款额加上新添加的回款额
+            sum.total_amount += data.amount;
+            //合计里的回款毛利加上新添加的回款毛利
+            sum.total_gross_profit += data.gross_profit;
+            //合计里的应收款减去新添加的回款额
+            sum.total_plan_amount -= data.amount;
+        } else if (opType === 'delete') {
+            const repaymentId = data.id;
+            const index = _.findIndex(repayments, repayment => repayment.id === repaymentId);
+
+            //在合同信息的回款数组中删掉已删除的回款
+            repayments.splice(index, 1);
+
+            //合同信息里的回款额减去已删除的回款额
+            currentContract.total_amount -= data.amount;
+            //合同信息里的回款毛利减去已删除的回款毛利
+            currentContract.total_gross_profit -= data.gross_profit;
+            //合同信息里的应收款加上已删除的回款额
+            currentContract.total_plan_amount += data.amount;
+
+            //合计里的回款额减去已删除的回款额
+            sum.total_amount -= data.amount;
+            //合计里的回款毛利减去已删除的回款毛利
+            sum.total_gross_profit -= data.gross_profit;
+            //合计里的应收款加上已删除的回款额
+            sum.total_plan_amount += data.amount;
+        } else if (opType === 'update') {
+            const repaymentId = data.id;
+            const index = _.findIndex(repayments, repayment => repayment.id === repaymentId);
+            const oldData = repayments[index];
+            //回款变化值
+            const diffAmount = data.amount - oldData.amount;
+            //毛利变化值
+            const diffGrossProfit = data.gross_profit - oldData.gross_profit;
+
+            //更新合同信息的回款数组中对应的回款
+            repayments[index] = data;
+
+            //合同信息里的回款额加上回款变化值
+            currentContract.total_amount += diffAmount;
+            //合同信息里的回款毛利加上毛利变化值
+            currentContract.total_gross_profit += diffGrossProfit;
+            //合同信息里的应收款减去回款变化值
+            currentContract.total_plan_amount -= diffAmount;
+
+            //合计里的回款额加上回款变化值
+            sum.total_amount += diffAmount;
+            //合计里的回款毛利加上毛利变化值
+            sum.total_gross_profit += diffGrossProfit;
+            //合计里的应收款减去回款变化值
+            sum.total_plan_amount -= diffAmount;
+        }
+
+        this.setState({
+            currentContract,
+            sum
+        });
+    };
+
     deleteContract = (id) => {
         let index = _.findIndex(this.state.contractList, item => item.id === id);
         if (index > -1) this.state.contractList.splice(index, 1);
@@ -759,6 +838,7 @@ class Contract extends React.Component {
                             getContractList={this.getContractList.bind(this, true)}
                             refreshCurrentContract={this.refreshCurrentContract}
                             refreshCurrentContractNoAjax={this.refreshCurrentContractNoAjax}
+                            refreshCurrentContractRepayment={this.refreshCurrentContractRepayment}
                             addContract={this.addContract}
                             deleteContract={this.deleteContract}
                             viewType={this.state.type}

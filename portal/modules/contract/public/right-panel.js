@@ -17,7 +17,6 @@ import AddRepayment from './add-repayment';
 import AddBuyBasic from './add-buy-basic';
 import AddBuyPayment from './add-buy-payment';
 import DetailBasic from './detail-basic';
-import DetailRepayment from './detail-repayment';
 import DetailInvoice from './detail-invoice';
 import DetailBuyBasic from './detail-buy-basic';
 import DetailBuyPayment from './detail-buy-payment';
@@ -564,6 +563,7 @@ class ContractRightPanel extends React.Component {
                                             showLoading={this.showLoading}
                                             hideLoading={this.hideLoading}
                                             refreshCurrentContract={this.props.refreshCurrentContract}
+                                            refreshCurrentContractRepayment={this.props.refreshCurrentContractRepayment}
                                             viewType={this.props.viewType}
                                         />
                                     </GeminiScrollBar>

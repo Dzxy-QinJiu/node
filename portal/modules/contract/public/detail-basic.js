@@ -416,6 +416,7 @@ const DetailBasic = createReactClass({
                             showLoading={this.props.showLoading}
                             hideLoading={this.props.hideLoading}
                             refreshCurrentContract={this.props.refreshCurrentContract}
+                            refreshCurrentContractRepayment={this.props.refreshCurrentContractRepayment}
                         />
                     </div>
                 ) : null}
