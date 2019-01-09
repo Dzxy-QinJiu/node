@@ -58,6 +58,16 @@ const AddProduct = createReactClass({
         this.setState(this.state);
     },
 
+    onStartEndTimeChange: function(index, momentArr) {
+        let products = _.cloneDeep(this.state.products);
+        let product = products[index];
+
+        product.account_start_time = momentArr[0].valueOf()
+        product.account_end_time = momentArr[1].valueOf()
+
+        this.setState({products});
+    },
+
     setField2: function(field, index, e) {
         let value = _.isObject(e) ? e.target.value : e;
 
@@ -152,7 +162,10 @@ const AddProduct = createReactClass({
                                 label={index === 0 ? Intl.get('common.start.end.time', '起止时间') : ''}
                                 className='start-end-time'
                             >
-                                <RangePicker/>
+                                <RangePicker
+                                    defaultValue={this.state.products[index].account_start_time? [moment(this.state.products[index].account_start_time), moment(this.state.products[index].account_end_time)] : []}
+                                    onChange={this.onStartEndTimeChange.bind(this, index)}
+                                />
                             </FormItem>
                             <div className="circle-button circle-button-minus"
                                 title={Intl.get('common.delete', '删除')}
