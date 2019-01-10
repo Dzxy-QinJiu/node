@@ -45,7 +45,7 @@ exports.getIntegrationConfig = function(req, res) {
 
 //根据当前用户数据权限，获取应用列表
 exports.getGrantApplications = function(req, res) {
-    //什么都不传时，获取所有的产品列表（由于时下拉加载的接口，所以取所有时需要传一个比较大的page_size:1000）
+    //什么都不传时，获取所有的产品列表（由于是下拉加载的接口，所以取所有时需要传一个比较大的page_size:1000）
     let queryObj = req.query || {page_size: 1000};
     return restUtil.authRest.get({
         url: urls.getGrantApplications,

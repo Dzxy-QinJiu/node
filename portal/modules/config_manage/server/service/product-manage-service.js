@@ -192,14 +192,9 @@ exports.getProductList = function(req, res) {
 
 // 集成oplate\matomo产品
 exports.integrateProduct = function(req, res) {
-    let url = '';
-    if (req.params.integration_type === 'oplate') {
-        url = productRestApis.product + '/oplate/';
-    } else if (req.params.integration_type === 'matomo') {
-        url = productRestApis.product + '/matomo/';
-    }
+    let url = `${productRestApis.product}/${req.params.integration_type}/${req.body.ids}`;
     return restUtil.authRest.post({
-        url: url + req.body.ids,
+        url: url,
         req: req,
         res: res,
     });
