@@ -342,7 +342,7 @@ var zh_CN = {
     'user.time.end': '到期时间',
     'user.login.times': '登录次数',
     'user.login.score': '分数',
-    'user.login.days': '登录天数',
+    'user.login.days': '活跃天数',
     'user.remark.write.tip': '请填写备注',
     'user.remark.set.tip': '设置备注',
     'user.user.list.click': '请在用户列表中点击',

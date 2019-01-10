@@ -423,7 +423,7 @@ class RecentLoginUsers extends React.Component {
                     );
                 }
             }, {
-                title: Intl.get('user.login.days', '登录天数'),
+                title: Intl.get('user.login.days', '活跃天数'),
                 dataIndex: 'login_day_count',
                 key: 'login_day_count',
                 width: '100px',

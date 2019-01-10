@@ -335,7 +335,7 @@ var en_US = {
     'user.time.end': 'Expire time',//到期时间
     'user.login.times': 'Login Times',//登录次数
     'user.login.score': 'Score', // 分数
-    'user.login.days': 'Login Days', // 登录天数
+    'user.login.days': 'Active days', // 活跃天数
     'user.detail.return': 'return to basic info', //'返回基本信息',
     'user.detail.loginAnalysis.title': 'Statistic of login times in a year',//'近一年的活跃统计',
     'user.detail.tip.collapse': 'Collapse config', //'收起停用前设置',
