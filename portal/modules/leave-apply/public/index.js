@@ -8,7 +8,7 @@ var LeaveApplyStore = require('./store/leave-apply-store');
 var LeaveApplyDetailAction = require('./action/leave-apply-detail-action');
 import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-components/apply-dropdown-and-add-btn';
 import AddLeaveApplyPanel from './view/add-leave-apply';
-import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES,APPLY_TYPE_STATUS_CONST} from 'PUB_DIR/sources/utils/consts';
 import Trace from 'LIB_DIR/trace';
 var classNames = require('classnames');
 var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
@@ -21,7 +21,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import ApplyViewDetail from './view/apply-view-detail';
 var LeaveApplyUtils = require('./utils/leave-apply-utils');
 let userData = require('../../../public/sources/user-data');
-
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 class LeaveApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加请假申请面板
@@ -44,7 +44,10 @@ class LeaveApplyManagement extends React.Component {
             this.getAllLeaveApplyList();
         }
         LeaveApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
-    }
+        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_LEAVE, this.pushDataListener);
+    };
+
+
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps,'history.action') === 'PUSH'){
             if (_.get(nextProps,'location.state.clickUnhandleNum')){
@@ -84,7 +87,21 @@ class LeaveApplyManagement extends React.Component {
         //去除查询条件中值为空的项
         commonMethodUtil.removeEmptyItem(params);
         return params;
-    }
+    };
+    refreshPage = (e) => {
+        if (!this.state.showUpdateTip) return;
+        Trace.traceEvent(e, '点击了刷新');
+        LeaveApplyAction.setLastApplyId('');
+        setTimeout(() => this.getAllLeaveApplyList());
+        LeaveApplyAction.setShowUpdateTip(false);
+    };
+    //监听推送数据
+    pushDataListener = (data) => {
+        //有数据，将是否展示更新tip
+       if (data){
+           LeaveApplyAction.setShowUpdateTip(true);
+       }
+    };
 
     //获取全部请假申请
     getAllLeaveApplyList = () => {
@@ -106,6 +123,7 @@ class LeaveApplyManagement extends React.Component {
         LeaveApplyStore.unlisten(this.onStoreChange);
         LeaveApplyAction.setInitState();
         LeaveApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_LEAVE, this.pushDataListener);
     }
 
     showAddApplyPanel = () => {
@@ -213,17 +231,8 @@ class LeaveApplyManagement extends React.Component {
     render() {
         var addPanelWrap = classNames({'show-add-modal': this.state.showAddApplyPanel});
         var applyListHeight = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
-        var applyType = '';
-        if (this.state.applyListType === 'ongoing') {
-            applyType = Intl.get('user.apply.false', '待审批');
-        } else if (this.state.applyListType === 'pass') {
-            applyType = Intl.get('user.apply.pass', '已通过');
-        } else if (this.state.applyListType === 'reject') {
-            applyType = '被驳回';
-        }
-        // else if (this.state.applyListType === 'cancel') {
-        //     applyType = Intl.get('user.apply.backout', '已撤销');
-        // }
+        var applyListType = this.state.applyListType;
+        var applyType = commonMethodUtil.getApplyStatusDscr(applyListType);
         var noShowApplyDetail = this.state.applyListObj.list.length === 0;
         //申请详情数据
         var applyDetail = null;
@@ -241,6 +250,9 @@ class LeaveApplyManagement extends React.Component {
                             showAddApplyPanel={this.showAddApplyPanel}
                             addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
                             menuList={selectMenuList}
+                            refreshPage={this.refreshPage}
+                            showUpdateTip={this.state.showUpdateTip}
+                            showRefreshIcon={applyListType === APPLY_TYPE_STATUS_CONST.ALL || applyListType === APPLY_TYPE_STATUS_CONST.ONGOING}
                         />
                         {this.renderApplyListError()}
                         {this.state.applyListObj.loadingResult === 'loading' && !this.state.lastApplyId ? (

@@ -44,7 +44,13 @@ DocumentWriteApplyStore.prototype.setInitState = function() {
     };
     //筛选类别 'all'(全部) pass(已通过) reject(已驳回)  ongoing(待我审批)
     this.applyListType = 'ongoing';
+    //是否显示更新数据提示
+    this.showUpdateTip = false;
     this.clearData();
+};
+//是否显示更新数据提示,flag:true/false
+DocumentWriteApplyStore.prototype.setShowUpdateTip = function(flag) {
+    this.showUpdateTip = flag;
 };
 //清空数据
 DocumentWriteApplyStore.prototype.clearData = function() {
@@ -105,6 +111,11 @@ DocumentWriteApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {
 DocumentWriteApplyStore.prototype.changeApplyListType = function(type) {
     this.applyListType = type;
     this.lastApplyId = '';
+    this.showUpdateTip = false;
+};
+DocumentWriteApplyStore.prototype.setLastApplyId = function(applyId) {
+    this.lastApplyId = applyId;
+    this.listenScrollBottom = true;
 };
 DocumentWriteApplyStore.prototype.changeApplyAgreeStatus = function(message) {
     this.selectedDetailItem.status = message.agree;

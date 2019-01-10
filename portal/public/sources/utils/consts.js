@@ -419,3 +419,10 @@ export const LEAVE_TIME_RANGE = [
 ];
 //申请审批刷新待审批数的时间间隔
 export const REFRESH_APPLY_RANGE = 1000;//1秒后刷新未读数
+export const APPLY_TYPE_STATUS_CONST = {
+    ONGOING:'ongoing',
+    PASS:'pass',
+    CANCEL:'cancel',
+    REJECT:'reject',
+    ALL:'all'
+}

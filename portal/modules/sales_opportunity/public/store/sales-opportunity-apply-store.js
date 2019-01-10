@@ -44,7 +44,13 @@ SalesOpportunityApplyStore.prototype.setInitState = function() {
     };
     //筛选类别 'all'(全部) pass(已通过) reject(已驳回)  ongoing(待我审批) cancel(已撤销)
     this.applyListType = 'ongoing';
+    //是否显示更新数据提示
+    this.showUpdateTip = false;
     this.clearData();
+};
+//是否显示更新数据提示,flag:true/false
+SalesOpportunityApplyStore.prototype.setShowUpdateTip = function(flag) {
+    this.showUpdateTip = flag;
 };
 //清空数据
 SalesOpportunityApplyStore.prototype.clearData = function() {
@@ -105,8 +111,12 @@ SalesOpportunityApplyStore.prototype.setSelectedDetailItem = function({obj, idx}
 SalesOpportunityApplyStore.prototype.changeApplyListType = function(type) {
     this.applyListType = type;
     this.lastApplyId = '';
-    // this.showUpdateTip = false;
+    this.showUpdateTip = false;
     // this.isCheckUnreadApplyList = false;
+};
+SalesOpportunityApplyStore.prototype.setLastApplyId = function(applyId) {
+    this.lastApplyId = applyId;
+    this.listenScrollBottom = true;
 };
 SalesOpportunityApplyStore.prototype.changeApplyAgreeStatus = function(message) {
     this.selectedDetailItem.status = message.agree;

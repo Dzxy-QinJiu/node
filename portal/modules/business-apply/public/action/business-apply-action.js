@@ -15,7 +15,9 @@ function BusinessApplyActions() {
         'changeApplyAgreeStatus',//审批完后改变出差申请的状态
         'afterAddApplySuccess',
         'updateAllApplyItemStatus',
-        'afterTransferApplySuccess'
+        'afterTransferApplySuccess',
+        'setLastApplyId',
+        'setShowUpdateTip'
     );
     this.getAllApplyList = function(queryObj) {
         // 需要先获取待审批列表，成功后获取全部列表

@@ -444,6 +444,7 @@ exports.getApplyResultDscr = function(detailInfoObj) {
     }
     return resultDscr;
 };
+
 exports.getApplyStatusDscr = function(applyStatus) {
     let applyType = '';
     switch (applyStatus) {
