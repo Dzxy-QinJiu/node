@@ -1,21 +1,20 @@
-/*成员管理样式设置*/
+/*产品管理样式设置*/
 @import "../../../../public/css/common-variables";
 
-//成员管理样式设置
+.handle-btn-container {
+  float: right;
+  width: 110px;
+  height: @top_nav_height;
+  line-height: @top_nav_height;
+  border-left: 1px solid #edf1f2;
+  font-size: 14px;
+  text-align: center;
+  color: #4d96d1;
+  cursor: pointer;
+}
+
+//产品管理样式设置
 .backgroundManagement_production_content {
-
-  .topNav .handle-btn-container {
-    float: right;
-    width: 110px;
-    height: @top_nav_height;
-    line-height: @top_nav_height;
-    border-left: 1px solid #edf1f2;
-    font-size: 14px;
-    text-align: center;
-    color: #4d96d1;
-    cursor: pointer;
-  }
-
   .right-cards-container {
     ul.topnav-links {
       min-width: 412px;
@@ -24,26 +23,15 @@
       display: none;
     }
     .card-list-container {
-      padding-top: @top_nav_height;
       .no-data-intro, .no-data {
         margin: 260px auto;
       }
       .no-data-intro .no-data-container {
         top: -34px;
       }
-      .card-box .single-card .card-content .card-item .card-item-right{
-        width:auto;
+      .card-box .single-card .card-content .card-item .card-item-right {
+        width: 60%;
       }
     }
   }
 }
-
-.production_manage_style {
-  .firstLoading {
-    position: fixed;
-    top: 40%;
-    left: 50%;
-    z-index: 999;
-  }
-}
-

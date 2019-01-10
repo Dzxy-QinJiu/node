@@ -1,6 +1,6 @@
 //引入用户数据
 var React = require('react');
-var UserData = require('../../public/sources/user-data');
+var menuUtil = require('../../public/sources/utils/menu-util');
 //class名
 var classNames = require('classnames');
 //顶部导航菜单的超链接
@@ -13,7 +13,7 @@ var insertStyle = require('CMP_DIR/insert-style');
 require('./index.less');
 var notificationEmitter = require('../../public/sources/utils/emitters').notificationEmitter;
 let history = require('../../public/sources/history');
-
+let RIGHT_MARGIN = 10;//右边预留宽度，用户计算
 /**
  * 待处理的数据列表
  * name:待处理数在Oplate.unread对象中的key或key数组
@@ -37,7 +37,14 @@ const unhandleApplyNumObj = [
         name: APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES,
         cls: 'application_sales_opportunity_ico',
         style: 'unhandleSalesOpperNumSyle'
-
+    }, {
+        name: APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND,
+        cls: 'application_report_send_ico',
+        style: 'unhandleReportSendNumSyle'
+    }, {
+        name: APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE,
+        cls: 'application_document_write_ico',
+        style: 'unhandleDocumentWriteNumSyle'
     }];
 
 //顶部导航外层div
@@ -45,10 +52,9 @@ class TopNav extends React.Component {
     constructor(props) {
         super(props);
         //未处理数的提示样式初始化
-        this.unhandleUserAplplyNumStyle = null;
-        this.unhandleBusinessApplyNumStyle = null;
-        this.unhandleLeaveApplyNumStyle = null;
-        this.unhandleSalesOpperNumSyle = null;
+        _.forEach(unhandleApplyNumObj,(item) => {
+            this[item.style] = null;
+        });
     }
 
     resizeHandler = () => {
@@ -69,28 +75,29 @@ class TopNav extends React.Component {
             $topLinks.removeClass('fixed-layout');
         }
 
-        if (!$topLinks[0] || childNodes.length === 1) {
+        if (!$topLinks[0]) {
             cleanUp();
             return;
         }
         cleanUp();
         //将子节点过滤掉菜单
-        var extraNodes = _.filter(childNodes, (node) => node !== $topLinks[0]);
+        // var extraNodes = _.filter(childNodes, (node) => node !== $topLinks[0]);
         //获取菜单在页面中的位置
         var topLinksPosStart = $topLinks.offset().left;
         var topLinksPosEnd = topLinksPosStart + $topLinks.outerWidth();
         //计算子节点是否存在覆盖情况
-        var intersect = _.some(extraNodes, (dom) => {
-            var $dom = $(dom);
-            var domPosStart = $dom.offset().left;
-            var domPosEnd = domPosStart + $dom.outerWidth();
-            if (
-                topLinksPosStart <= domPosEnd &&
-                domPosStart <= topLinksPosEnd
-            ) {
-                return true;
-            }
-        });
+        var intersect = topLinksPosEnd + RIGHT_MARGIN > $(window).width();
+        // var intersect = _.some(extraNodes, (dom) => {
+        //     var $dom = $(dom);
+        //     var domPosStart = $dom.offset().left;
+        //     var domPosEnd = domPosStart + $dom.outerWidth();
+        //     if (
+        //         topLinksPosStart <= domPosEnd &&
+        //         domPosStart <= topLinksPosEnd
+        //     ) {
+        //         return true;
+        //     }
+        // });
         //如果存在覆盖的情况，则将菜单节点变成汉堡包
         if (intersect) {
             $topLinks.attr('hidden', 'true');
@@ -170,6 +177,23 @@ class TopNav extends React.Component {
             //点击到数字上，进行跳转
             history.push('/application/leave_apply', {clickUnhandleNum: true});
         });
+        $('.topNav').on('click', '.application_report_send_ico', function(e) {
+            //如果点击到a标签上，不做处理
+            if ($(e.target).is('a')) {
+                return;
+            }
+            //点击到数字上，进行跳转
+            history.push('/application/report_send', {clickUnhandleNum: true});
+        });
+        $('.topNav').on('click', '.application_document_write_ico', function(e) {
+            //如果点击到a标签上，不做处理
+            if ($(e.target).is('a')) {
+                return;
+            }
+            //点击到数字上，进行跳转
+            history.push('/application/document_write', {clickUnhandleNum: true});
+        });
+
     }
 
     componentWillUpdate() {
@@ -229,21 +253,17 @@ class TopNav extends React.Component {
     }
 }
 
-//获取路径，去掉开头的/
-function getPathname() {
-    return window.location.pathname.replace(/^\//, '');
-}
 
 //获取第一层路由
 function getCategory() {
-    var pathname = getPathname();
-    var reg = /[\w-]+/gi;
-    var ret = pathname.match(reg);
-    if (ret) {
-        ret.pop();
-        return ret.join('/');
+    //获取路径，去掉开头的/
+    let pathname = window.location.pathname.replace(/^\//, '');
+    let firstLevelPathes = pathname.split('/');
+    if (firstLevelPathes) {
+        return '/' + firstLevelPathes[0];
+    } else {
+        return '';
     }
-    return '';
 }
 
 //顶部导航的导航菜单
@@ -251,16 +271,10 @@ TopNav.MenuList = class extends React.Component {
     render() {
         //获取第一层路由
         var category = getCategory();
-        //获取所有子模块
-        var AllSubModules = (UserData.getUserData() && UserData.getUserData().subModules) || {};
-        if (category.indexOf('/') > 0) {
-            category = category.substring(0, category.indexOf('/'));
-        }
         //获取当前界面的子模块
-        var subModules = this.props.menuList || AllSubModules[category] || [];
-
+        var subModules = this.props.menuList || (menuUtil.getSubMenus(category));
         //获取pathname
-        var locationPath = getPathname();
+        var locationPath = window.location.pathname;
 
         return (
             <div className="topnav-links-wrap">
@@ -272,15 +286,15 @@ TopNav.MenuList = class extends React.Component {
                 <ul className="clearfix topnav-links">
                     {
                         subModules.map(function(menu, i) {
-                            var menuRoutePath = menu.routePath.replace(/\//g, '_');
+                            var menuRoutePath = menu.routePath.slice(1).replace(/\//g, '_');
                             var icoClassName = 'ico ' + menuRoutePath + '_ico';
                             var cls = classNames(icoClassName, {
                                 'topNav-menu-item-selected': locationPath === menu.routePath
                             });
 
-                            var liContent = (<NavLink to={`/${menu.routePath}`}
+                            var liContent = (<NavLink to={menu.routePath}
                                 activeClassName="active"
-                                ref={(element) => this.navLinks = element}>{menu.name}</NavLink>);
+                                ref={(element) => this.navLinks = element}> {menu.name}</NavLink>);
                             return (
                                 <li className={cls} key={i}>
                                     {liContent}

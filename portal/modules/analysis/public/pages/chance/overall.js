@@ -15,11 +15,11 @@ module.exports = {
 
 function getCharts() {
     return [
-        //来源统计
-        chanceChart.getChanceSourceChart(),
-        //团队统计
-        chanceChart.getChanceTeamChart(),
-        //成交率统计
-        chanceChart.getChanceDealChart(),
+        //新机会统计
+        chanceChart.getNewChanceChart('funnel'),
+        //所有机会统计
+        chanceChart.getAllChanceChart(),
+        //成交率趋势统计
+        chanceChart.getChanceDealTrendChart(),
     ];
 }

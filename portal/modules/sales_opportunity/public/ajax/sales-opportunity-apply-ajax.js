@@ -116,25 +116,6 @@ exports.approveSalesOpportunityApplyPassOrReject = function(obj) {
     });
     return Deferred.promise();
 };
-//获取某个申请的状态
-let getSalesOpportunityApplyStatusByIdAjax = null;
-exports.getSalesOpportunityApplyStatusById = function(queryObj) {
-    var Deferred = $.Deferred();
-    getSalesOpportunityApplyStatusByIdAjax && getSalesOpportunityApplyStatusByIdAjax.abort();
-    getSalesOpportunityApplyStatusByIdAjax = $.ajax({
-        url: '/rest/get/apply/status/byId',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
 //获取销售人员列表
 exports.getSalesManList = function() {
     var Deferred = $.Deferred();

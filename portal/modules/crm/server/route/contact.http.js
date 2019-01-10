@@ -34,7 +34,7 @@ module.exports = {
         ]
     },{
         'method': 'put',
-        'path': '/rest/contact/:editType',
+        'path': '/rest/contact',
         'handler': 'editContact',
         'passport': {
             'needLogin': true
@@ -43,6 +43,15 @@ module.exports = {
             'CRM_EDIT_CONTACT'
         ]
     },{
+        //小程序中使用
+        'method': 'put',
+        'path': '/rest/edit/contact/entirety',
+        'handler': 'editContactEntirety',
+        'passport': {
+            'needLogin': true
+        },
+    },
+    {
         'method': 'post',
         'path': '/rest/contact/setdefault/:contactId',
         'handler': 'setDefault',

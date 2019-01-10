@@ -13,7 +13,6 @@ let ProductionStore = require('./store/production-store');
 let ProductionAction = require('./action/production-actions');
 let RightCardsContainer = require('../../../components/rightCardsContainer');
 let Production = require('./views/production');
-let TopNav = require('../../../components/top-nav');
 let PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
 let Spinner = require('../../../components/spinner');
 let openTimeout = null;//打开面板时的时间延迟设置
@@ -21,6 +20,7 @@ let hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 let util = require('./utils/production-util');
 import {Button} from 'antd';
 import Trace from 'LIB_DIR/trace';
+import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 
 class ProductionManage extends React.Component {
     state = ProductionStore.getState();
@@ -149,11 +149,24 @@ class ProductionManage extends React.Component {
     deleteItem = (itemId) => {
         ProductionAction.deleteItemById(itemId);
     };
+    //渲染操作按钮区
+    renderTopNavOperation = () => {
+        return (<ButtonZones>
+            <PrivilegeChecker check="PRODUCTS_MANAGE" className="block float-r btn-item-container"
+                onClick={this.events_showAddForm.bind(this, util.CONST.ADD)}
+                data-tracename="添加产品">
+                <Button className="btn-item btn-m-r-2">
+                    {Intl.get('config.product.add', '添加产品')}
+                </Button>
+            </PrivilegeChecker>
+        </ButtonZones>);
+    };
 
     render() {
         var firstLoading = this.state.isLoading;
         return (
             <div className="production_manage_style backgroundManagement_production_content" data-tracename="产品管理">
+                {this.renderTopNavOperation()}
                 {
                     firstLoading ? <div className="firstLoading">
                         <Spinner/>
@@ -174,16 +187,6 @@ class ProductionManage extends React.Component {
                     showAddBtn={this.hasNoFilterCondition()}
                     deleteItem={this.deleteItem}
                 >
-                    <TopNav>
-                        <TopNav.MenuList/>
-                        <PrivilegeChecker check="PRODUCTS_MANAGE" className="block float-r btn-item-container"
-                            onClick={this.events_showAddForm.bind(this, util.CONST.ADD)}
-                            data-tracename="添加产品">
-                            <Button className="btn-item btn-m-r-2">
-                                {Intl.get('config.product.add', '添加产品')}
-                            </Button>
-                        </PrivilegeChecker>
-                    </TopNav>
                     {this.state.formShow ?
                         <Production
                             formType={this.state.currentProduction.id ? '' : util.CONST.ADD}

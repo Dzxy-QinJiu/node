@@ -81,6 +81,9 @@ class AddSalesOpportunityApply extends React.Component {
             if (err) return;
             values['expectdeal_time'] = moment(values['expectdeal_time']).endOf('day').valueOf();
             values['customer'] = _.get(this.state, 'formData.customer');
+            if (!_.get(values, 'customer.id')){
+                return;
+            }
             //销售机会的预算取到的值是带千分位的逗号的，往后端传的时候不能传带逗号的
             var budget = values.budget;
             values.budget = budget.replace(/,/g,'');
@@ -97,23 +100,30 @@ class AddSalesOpportunityApply extends React.Component {
                 saveMsg: '',
                 saveResult: ''
             });
-
+            var errTip = Intl.get('crm.154', '添加失败');
             $.ajax({
                 url: '/rest/add/sales_opportunity_apply/list',
                 dataType: 'json',
                 type: 'post',
                 data: values,
                 success: (data) => {
-                    //添加成功
-                    this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                    this.hideSalesOpportunityApplyAddForm();
-                    //添加完后的处理
-                    data.afterAddReplySuccess = true;
-                    SalesOpportunityApplyAction.afterAddApplySuccess(data);
-
+                    if (data){
+                        //添加成功
+                        this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
+                        this.hideSalesOpportunityApplyAddForm();
+                        //添加完后的处理
+                        data.afterAddReplySuccess = true;
+                        data.showCancelBtn = true;
+                        SalesOpportunityApplyAction.afterAddApplySuccess(data);
+                    }else{
+                        this.setResultData(errTip, 'error');
+                    }
                 },
-                error: (errorMsg) => {
-                    this.setResultData(errorMsg || Intl.get('crm.154', '添加失败'), 'error');
+                error: (xhr) => {
+                    if (xhr.responseJSON && _.isString(xhr.responseJSON)){
+                        errTip = xhr.responseJSON;
+                    }
+                    this.setResultData(errTip, 'error');
                 }
             });
         });

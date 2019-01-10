@@ -101,7 +101,19 @@ const DetailRepayment = createReactClass({
 
             if (result.code === 0) {
                 message.success(OPERATE[type] + '成功');
-                this.props.refreshCurrentContract(this.props.contract.id);
+
+                //返回数据
+                let resultData = result.result;
+
+                //删除的时候没有返回数据，需要根据id从当前回款列表中取
+                if (type === 'delete') {
+                    const repaymentId = data[0];
+                    resultData = _.find(this.props.contract.repayments, repayment => repayment.id === repaymentId);
+                }
+
+                //刷新合同列表中的回款信息
+                this.props.refreshCurrentContractRepayment(type, resultData);
+
                 if (_.isFunction(cb)) cb();
             } else {
                 message.error(result.msg || OPERATE[type] + '失败');
@@ -136,7 +148,7 @@ const DetailRepayment = createReactClass({
                 >
                     <DatePicker
                         name={'date' + index}
-                        onChange={this.setField.bind(this, 'date', index)}
+                        onChange={_.isInteger(index) ? this.setField.bind(this, 'date', index) : this.setField.bind(this, 'date')}
                         value={formData.date ? moment(formData.date) : moment()}
                         disabledDate={disabledDate}
                     />
@@ -153,7 +165,7 @@ const DetailRepayment = createReactClass({
                         <Input
                             name={'amount' + index}
                             value={this.parseAmount(formData.amount)}
-                            onChange={this.setField.bind(this, 'amount', index)}
+                            onChange={_.isInteger(index) ? this.setField.bind(this, 'amount', index) : this.setField.bind(this, 'amount')}
                         />
                     </Validator>
                 </FormItem>
@@ -166,11 +178,11 @@ const DetailRepayment = createReactClass({
                     <Validator rules={[{
                         required: true,
                         message: Intl.get('contract.44', '不能为空')
-                    }, getNumberValidateRule()]}>
+                    }, getNumberValidateRule(), numberAddNoMoreThan.bind(this, formData.amount, 0, Intl.get('contract.gross.profit.can.not.exceed.repayment', '毛利不能大于回款'))]}>
                         <Input
                             name={'gross_profit' + index}
                             value={this.parseAmount(formData.gross_profit)}
-                            onChange={this.setField.bind(this, 'gross_profit', index)}
+                            onChange={_.isInteger(index) ? this.setField.bind(this, 'gross_profit', index) : this.setField.bind(this, 'gross_profit')}
                         />
                     </Validator>
                 </FormItem>
@@ -180,7 +192,7 @@ const DetailRepayment = createReactClass({
                     <Checkbox
                         name="is_first"
                         checked={['true', true].indexOf(formData.is_first) > -1}
-                        onChange={this.setField.bind(this, 'is_first', index)}
+                        onChange={_.isInteger(index) ? this.setField.bind(this, 'is_first', index) : this.setField.bind(this, 'is_first')}
                     >
                         {Intl.get('contract.167', '首笔回款')}
                     </Checkbox>

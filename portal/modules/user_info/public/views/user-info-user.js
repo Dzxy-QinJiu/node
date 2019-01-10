@@ -1,6 +1,6 @@
 var React = require('react');
 const PropTypes = require('prop-types');
-import {Button, Form, Input, Icon, message} from 'antd';
+import {Button, Form, Input, Icon, message, Popconfirm} from 'antd';
 const FormItem = Form.Item;
 var HeadIcon = require('../../../../components/headIcon');
 var AlertTimer = require('../../../../components/alert-timer');
@@ -47,9 +47,18 @@ class UserInfo extends React.Component{
             userInfoFormShow: this.props.userInfoFormShow,
             isSaving: false,
             saveErrorMsg: '',
-            lang: Oplate.lang || 'zh_CN'
+            lang: Oplate.lang || 'zh_CN',
+            isBindWechat: true,//是否绑定微信
+            isLoadingWechatBind: false,//是否正在绑定微信
+            //微信扫描绑定失败后，跳到个人资料界面带着失败的标识
+            weChatBindErrorMsg: props.bind_error ? Intl.get('login.wechat.bind.error', '微信绑定失败') : ''//微信账号绑定的错误提示
         };
     }
+
+    componentDidMount() {
+        this.getWechatIsBind();
+    }
+
     componentWillReceiveProps(nextProps) {
         if(_.get(this.state, 'formData.userId') !== _.get(nextProps, 'userInfo.userId') || this.state.userInfoFormShow !== nextProps.userInfoFormShow){
             this.setState({
@@ -136,7 +145,7 @@ class UserInfo extends React.Component{
 
     }
     //设置邮箱订阅功能
-    handleSubscribe(e) {
+    handleSubscribe = (e) => {
         var formData = this.state.formData;
         var configObj = {'config': true};
         if (formData.reject < 1) {
@@ -198,7 +207,7 @@ class UserInfo extends React.Component{
                         id="user.info.receive.email"
                         defaultMessage={'如果您想接受审批通知邮件提醒，可以{receive}'}
                         values={{
-                            'receive': <a onClick={this.handleSubscribe.bind(this)}>
+                            'receive': <a onClick={this.handleSubscribe}>
                                 <ReactIntl.FormattedMessage id="user.info.receive.subscribe" defaultMessage="重新订阅"/>
                             </a>
                         }}
@@ -332,9 +341,77 @@ class UserInfo extends React.Component{
                             {this.renderRealm()}
                         </div>
                     ) : null}
+
+                    <div className="user-info-item">
+                        <span>{Intl.get('crm.58', '微信')}：</span>
+                        <span>
+                            {this.state.isLoadingWechatBind ? (<Icon type="loading"/>) :
+                                this.state.weChatBindErrorMsg ? (
+                                    <span className="error-msg-tip">{this.state.weChatBindErrorMsg}</span>) :
+                                    this.state.isBindWechat ? (
+                                        <Popconfirm
+                                            placement="top" onConfirm={this.unbindWechat.bind(this)}
+                                            title={Intl.get('user.wechat.unbind.confim', '您确定要解除绑定微信账号？')}>
+                                            <a data-tracename="解绑微信">
+                                                {Intl.get('user.wechat.unbind', '解绑微信')}
+                                            </a>
+                                        </Popconfirm>) : (
+                                        <a href="/page/login/wechat?isBindWechatAfterLogin=true" data-tracename="绑定微信">
+                                            {Intl.get('register.wechat.bind.btn', '立即绑定')}
+                                        </a>)}
+                        </span>
+                    </div>
+
+                    {}
                 </div>
             );
         }
+    }
+    //获取是否绑定微信
+    getWechatIsBind(){
+        this.setState({isLoadingWechatBind: true});
+        $.ajax({
+            url: '/wechat/bind/check/login',
+            dataType: 'json',
+            type: 'get',
+            success: (result) => {
+                this.setState({
+                    isLoadingWechatBind: false,
+                    isBindWechat: result,//true:已绑定，false:未绑定
+                    weChatBindErrorMsg: ''
+                });
+            },
+            error: (errorMsg) => {
+                this.setState({
+                    isLoadingWechatBind: false,
+                    weChatBindErrorMsg: errorMsg.responseJSON || Intl.get('login.wechat.bind.check.error', '检查是否绑定微信出错了')
+                });
+            }
+        });
+    }
+
+    //解绑
+    unbindWechat(){
+        this.setState({isLoadingWechatBind: true});
+        $.ajax({
+            url: '/wechat/unbind',
+            dataType: 'json',
+            type: 'post',
+            success: (result) => {
+                this.setState({
+                    isLoadingWechatBind: false,
+                    isBindWechat: false,
+                    weChatBindErrorMsg: ''
+                });
+                message.success(Intl.get('user.wechat.unbind.success', '已成功解绑微信'));
+            },
+            error: (errorMsg) => {
+                this.setState({
+                    isLoadingWechatBind: false,
+                    weChatBindErrorMsg: errorMsg.responseJSON || Intl.get('user.wechat.unbind.error', '解绑微信失败')
+                });
+            }
+        });
     }
     render() {
         const {getFieldDecorator} = this.props.form;
@@ -447,6 +524,7 @@ UserInfo.propTypes = {
     managedRealm: PropTypes.string,
     userInfoErrorMsg: PropTypes.string,
     userInfoLoading: PropTypes.bool,
+    bind_error: PropTypes.bool
 };
 
 const UserInfoForm = Form.create()(UserInfo);

@@ -24,7 +24,7 @@ class ApplyViewDetailStore {
         //审批之后数据存储
         this.applyResult = {
             //提交状态  "" loading error success
-            submitType: '',
+            submitResult: '',
             //错误信息
             errorMsg: ''
         };
@@ -120,8 +120,9 @@ class ApplyViewDetailStore {
         this.appAuthInfo = [];
         // 确定用户名是否更改  没改：false 改了：true
         this.isChangeUserName = false;
+        //撤销状态  "" loading error success
         this.backApplyResult = {
-            loading: false,
+            submitResult: '',
             errorMsg: ''
         };
         //(多用户)延期申请审批时，当前要配置角色的用户id
@@ -236,10 +237,19 @@ class ApplyViewDetailStore {
             }
         }
     }
+    saleBackoutApply(resultObj){
+        if (resultObj.loading){
+            this.backApplyResult.submitResult = 'loading';
+            this.backApplyResult.errorMsg = '';
+        }else if (resultObj.error){
+            this.backApplyResult.submitResult = 'error';
+            this.backApplyResult.errorMsg = resultObj.errorMsg;
+        }else{
+            this.backApplyResult.submitResult = 'success';
+            this.backApplyResult.errorMsg = '';
+        }
+    }
 
-    //撤销审批结果(不含errorMsg，错误信息在action中通过messag.error处理)
-    saleBackoutApply = resultHandler('backApplyResult');
-    
     //生成应用的单独配置
     createAppsSetting() {
         //申请的应用列表

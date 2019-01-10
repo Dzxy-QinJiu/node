@@ -46,7 +46,7 @@ class UploadBtn extends React.Component {
         };
         return (
             <Upload {...props} className="import-clue" data-tracename="上传表格">
-                <Button type='primary'>{Intl.get('clue.import.csv', '上传表格')}{this.state.isLoading ?
+                <Button type='primary'>{this.props.uploadTip}{this.state.isLoading ?
                     <Icon type="loading" className="icon-loading"/> : null}</Button>
             </Upload>
         );
@@ -61,7 +61,8 @@ UploadBtn.defaultProps = {
     },
     importType: '',
     uploadActionName: '',
-    uploadHref: ''
+    uploadHref: '',
+    uploadTip: Intl.get('clue.import.csv', '上传表格')
 };
 UploadBtn.propTypes = {
     isLoading: PropTypes.bool,
@@ -70,6 +71,7 @@ UploadBtn.propTypes = {
     importType: PropTypes.string,
     uploadActionName: PropTypes.string,
     uploadHref: PropTypes.string,
+    uploadTip: PropTypes.string,
 };
 
 export default UploadBtn;

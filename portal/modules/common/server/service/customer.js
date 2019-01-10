@@ -2,7 +2,7 @@
  * url定义
  */
 var urls = {
-    getCustomerSuggest: '/rest/customer/v2/customer/range/manager/10/start_time/descend'
+    getCustomerSuggest: '/rest/customer/v3/customer/range/manager/10/1/start_time/descend'
 };
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);

@@ -13,7 +13,7 @@ module.exports = {
         }
     },{
         'method': 'post',
-        'path': '/rest/contact_customer/:pageSize/:sortFeild/:sortOrder',
+        'path': '/rest/contact_customer/:type/:pageSize/:pageNum/:sortFeild/:sortOrder',
         'handler': 'queryContactCustomer',
         'passport': {
             'needLogin': true

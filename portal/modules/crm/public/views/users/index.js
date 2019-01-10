@@ -230,7 +230,7 @@ class CustomerUsers extends React.Component {
                     : (<span className="crm-user-app-logo-font">{appName.substr(0, 1)}</span>)
                 }
                 <span className="user-app-name">{appName || ''}</span>
-                {/*<span className="user-app-type">{app.user_type ? USER_TYPE_MAP[app.user_type] : ""}</span>*/}
+                <span className="user-app-type">{app.user_type ? USER_TYPE_MAP[app.user_type] : ''}</span>
                 <span className="user-last-login">{lastLoginTime}</span>
                 <span className={overDraftCls}>{this.renderOverDraft(app)}</span>
             </span>);
@@ -459,7 +459,7 @@ class CustomerUsers extends React.Component {
         return (
             <span>
                 <span className="user-app-name">{Intl.get('sales.frontpage.open.app', '已开通应用')}</span>
-                {/*<span className="user-app-type">{Intl.get("user.user.type", "用户类型")}</span>*/}
+                <span className="user-app-type">{Intl.get('common.type', '类型')}</span>
                 <span className="user-last-login">{Intl.get('user.last.login', '最近登录')}</span>
                 <span className="user-app-over-draft">{Intl.get('sales.frontpage.expired.date', '到期情况')}</span>
             </span>

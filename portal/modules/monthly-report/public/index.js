@@ -1,20 +1,36 @@
 var React = require('react');
 require('./style.less');
-import { AntcAnalysis } from 'antc';
-import { Row, Col, Select, DatePicker} from 'antd';
-import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import {AntcAnalysis} from 'antc';
+import {Row, Col, Select, DatePicker} from 'antd';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import ajax from 'ant-ajax';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-import { LEAVE_TYPES } from './consts';
+import {LEAVE_TYPES} from './consts';
 import {AntcAttendanceRemarks} from 'antc';
-const TopNav = require('CMP_DIR/top-nav');
+
 import ReportLeftMenu from 'CMP_DIR/report-left-menu';
+
 const Option = Select.Option;
 const MonthPicker = DatePicker.MonthPicker;
 const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
-import { storageUtil } from 'ant-utils';
+const userData = require('PUB_DIR/sources/user-data');
+//是否普通销售
+const isCommonSales = userData.getUserData().isCommonSales;
+const commanSalesCallback = function(arg) {
+    //如果是普通销售
+    if (isCommonSales) {
+        const userId = userData.getUserData().user_id;
+        //只查询他自己的数据
+        arg.query.member_id = userId;
+        delete arg.query.team_ids;
+    }
+};
+
+import ButtonZones from 'CMP_DIR/top-nav/button-zones';
+import {storageUtil} from 'ant-utils';
+
 const STORED_TEAM_KEY = 'monthly_report_selected_team';
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 
@@ -29,7 +45,6 @@ class MonthlyReport extends React.Component {
     componentDidMount() {
         //让顶部栏上的报告菜单显示选中状态
         $('.analysis_report_ico a').addClass('active');
-
         this.getTeamList();
         this.getMemberList();
     }
@@ -38,7 +53,7 @@ class MonthlyReport extends React.Component {
         const reqData = commonMethodUtil.getParamByPrivilege();
         getMyTeamTreeAndFlattenList(data => {
             var result = data.teamList;
-            if(!data.errorMsg) {
+            if (!data.errorMsg) {
                 const storedTeam = storageUtil.local.get(STORED_TEAM_KEY);
                 const selectedTeam = storedTeam || _.get(result, '[0]');
                 this.setState({
@@ -63,7 +78,7 @@ class MonthlyReport extends React.Component {
 
     getAuthType = () => {
         let authType = 'user';//CALL_RECORD_VIEW_USER
-        
+
         if (hasPrivilege('CALL_RECORD_VIEW_MANAGER')) {
             authType = 'manager';
         }
@@ -85,6 +100,7 @@ class MonthlyReport extends React.Component {
 
         return (
             <AntcAttendanceRemarks
+                readOnly={isCommonSales}
                 data={data}
                 userId={userId}
                 selectedDate={this.state.selectedMonth}
@@ -96,7 +112,7 @@ class MonthlyReport extends React.Component {
     };
 
     numberRender = text => {
-        return <span>{text.toFixed()}</span>;
+        return <span>{_.isNumber(text) && text.toFixed()}</span>;
     };
 
     //电话量统计表格列定义
@@ -249,6 +265,7 @@ class MonthlyReport extends React.Component {
                     name: 'return_type',
                     value: 'user'
                 }],
+                argCallback: commanSalesCallback,
                 dataField: 'list',
                 processData: data => {
                     data = _.orderBy(data, 'assessment_index', 'desc');
@@ -278,6 +295,7 @@ class MonthlyReport extends React.Component {
                     name: 'deviceType',
                     value: 'app'
                 }],
+                argCallback: commanSalesCallback,
                 dataField: 'list',
                 chartType: 'table',
                 option: {
@@ -371,7 +389,7 @@ class MonthlyReport extends React.Component {
 
     renderFilter = (selectedTeamId) => {
         return (
-            <div className="filter">
+            <div className="monthly-report-filter">
                 {selectedTeamId && this.state.teamList.length ? (
                     <Select
                         defaultValue={selectedTeamId}
@@ -412,6 +430,11 @@ class MonthlyReport extends React.Component {
 
         dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
     };
+    //渲染操作按钮区
+    renderTopNavOperation = () => {
+        const selectedTeamId = _.get(this.state.selectedTeam, 'group_id');
+        return (<ButtonZones>{this.renderFilter(selectedTeamId)}</ButtonZones>);
+    };
 
     render() {
         const selectedTeamId = _.get(this.state.selectedTeam, 'group_id');
@@ -419,14 +442,13 @@ class MonthlyReport extends React.Component {
 
         return (
             <div className="monthly-report" data-tracename='销售月报'>
-                <TopNav>
-                    <TopNav.MenuList/>
-                    {this.renderFilter(selectedTeamId)}
-                </TopNav>
+                {
+                    this.renderTopNavOperation()
+                }
                 <div className="monthly-report-content">
                     <Row>
                         <Col span={3}>
-                            <ReportLeftMenu />
+                            <ReportLeftMenu/>
                         </Col>
                         <Col span={21}>
                             {selectedTeamName ? (

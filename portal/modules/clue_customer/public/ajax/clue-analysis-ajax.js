@@ -9,7 +9,7 @@ exports.getCustomerById = function(data) {
     var Deferred = $.Deferred();
     var pageSize = 10;
     $.ajax({
-        url: '/rest/customer/v2/customer/range/' + pageSize + '/' + 'start_time' + '/' + 'descend',
+        url: '/rest/customer/range/' + pageSize + '/1' + 'start_time' + '/' + 'descend',
         dataType: 'json',
         type: 'post',
         data: data,

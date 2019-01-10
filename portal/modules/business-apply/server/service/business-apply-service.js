@@ -22,6 +22,9 @@ var restApis = {
     approveApplyPassOrReject: '/rest/base/v1/workflow/businesstrip/approve',
     //获取申请的状态
     getApplyStatusById: '/rest/base/v1/workflow/status',
+    //撤销申请审批
+    cancelApplyApprove: '/rest/base/v1/workflow/cancel'
+
 };
 exports.restUrls = restApis;
 var _ = require('lodash');
@@ -105,4 +108,12 @@ exports.getApplyStatusById = function(req, res) {
             req: req,
             res: res
         }, req.query);
+};
+// 撤销申请
+exports.cancelApplyApprove = function(req, res) {
+    return restUtil.authRest.post({
+        url: restApis.cancelApplyApprove,
+        req: req,
+        res: res
+    }, req.body);
 };

@@ -91,7 +91,7 @@ module.exports = {
         },
         {
             method: 'post',
-            path: '/rest/customer/v2/customer/range/:pageSize/:sortFeild/:sortOrder',
+            path: '/rest/customer/range/:pageSize/:pageNum/:sortField/:sortOrder',
             handler: 'queryCustomer',
             passport: {
                 needLogin: true
@@ -111,9 +111,9 @@ module.exports = {
                 'CUSTOMER_ADD'
             ]
         },
-        {
+        { //小程序中使用
             method: 'put',
-            path: '/rest/customer/v2/editcustomer',
+            path: '/rest/customer/editcustomer/entirety',
             handler: 'editCustomer',
             passport: {
                 needLogin: true
@@ -129,7 +129,7 @@ module.exports = {
         },
         {
             method: 'delete',
-            path: '/rest/crm/delete_customer',
+            path: '/rest/crm/delete_customer/:customer_id',
             handler: 'deleteCustomer',
             passport: {
                 needLogin: true
@@ -257,7 +257,10 @@ module.exports = {
             handler: 'getCustomerLimit',
             passport: {
                 needLogin: true
-            }
+            },
+            privileges: [
+                'CRM_CUSTOMER_LIMIT_FLAG'
+            ]
         },
         {
             method: 'get',
@@ -286,6 +289,14 @@ module.exports = {
             },
             privileges: ['CRM_MANAGER_UPDATE_CUSTOMER_SALES_TEAM', 'CRM_USER_UPDATE_CUSTOMER_SALES_TEAM']
 
+        },{//获取客户所属销售及联合跟进人
+            method: 'get',
+            path: '/rest/customer/sales/:customer_id',
+            handler: 'getSalesByCustomerId',
+            passport: {
+                needLogin: true
+            },
+            privileges: ['CRM_GET_CUSTOMER_TRACE_USER']
         }
     ]
 };

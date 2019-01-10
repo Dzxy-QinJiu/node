@@ -1,4 +1,3 @@
-var TopNav = require('CMP_DIR/top-nav');
 var Spinner = require('CMP_DIR/spinner');
 var Icon = require('antd').Icon;
 var Alert = require('antd').Alert;
@@ -74,7 +73,6 @@ class ConfigManage extends React.Component {
         });
 
     };
-
     componentWillMount() {
         this.getInitialData();
     }
@@ -131,6 +129,10 @@ class ConfigManage extends React.Component {
         e.preventDefault();
         //输入的行业名称去左右空格
         var text = _.trim(_this.refs.edit.value);
+        // 判断是否是空格
+        if(!text) {
+            return;
+        }
         //避免短时间多次点击添加按钮，将按钮类型改为button
         $('#addIndustrySaveBtn').attr({'disabled': 'disabled'});
         //显示添加的loading效果
@@ -156,7 +158,7 @@ class ConfigManage extends React.Component {
             error: function(errorInfo) {
                 _this.setState({
                     isAddloading: -1,
-                    addErrMsg: errorInfo.responseJSON
+                    addErrMsg: errorInfo.responseJSON || Intl.get('config.manage.add.industry.error','添加行业失败')
                 });
             }
         });
@@ -270,14 +272,9 @@ class ConfigManage extends React.Component {
     };
 
     render = () => {
-
-
         var height = $(window).height() - $('.topNav').height();
         return (
             <div className="config-manage-container" data-tracename="配置">
-                <TopNav>
-                    <TopNav.MenuList />
-                </TopNav>
                 <div className="config-container" style={{height: height}}>
                     <GeminiScrollBar>
                         <PrivilegeChecker check={auths.INDUSTRY}>

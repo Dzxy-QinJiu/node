@@ -235,10 +235,9 @@ class CrmRightList extends React.Component {
                     member.teamRoleColor = role.color;
                 }
             });
-            this.state.salesTeamMembersObj.data = salesTeamMemberList;
-            this.setState({
-                salesTeamMembersObj: this.state.salesTeamMembersObj
-            });
+            let salesTeamMembersObj = this.state.salesTeamMembersObj;
+            salesTeamMembersObj.data = salesTeamMemberList;
+            this.setState({salesTeamMembersObj});
         }
     };
 
@@ -318,9 +317,10 @@ class CrmRightList extends React.Component {
     //获取销售团队的成员列表
     renderSalesRole = (salesman) => {
         let color = salesman.teamRoleColor || '#123';
-        if (salesman.status === 0) {//停用的就展示灰色的方块
-            return (<span className="sales-item-icon"/>);
-        } else if (salesman.teamRoleName) {//有销售角色时，展示不同颜色的角色图标
+        // if (salesman.status === 0) {//停用的就展示灰色的方块
+        //     return (<span className="sales-item-icon"/>);
+        // } else
+        if (salesman.teamRoleName) {//有销售角色时，展示不同颜色的角色图标
             return (<span className="iconfont icon-team-role sales-role-icon" style={{color: color}}
                 title={salesman.teamRoleName}/>);
         } else {//无销售角色时，展示“未设置角色”的图标
@@ -331,7 +331,8 @@ class CrmRightList extends React.Component {
 
     renderSalesRoleSetBtn = (salesman) => {
         let salesRoleList = this.state.salesRoleList;
-        if (salesman.status !== 0 && hasPrivilege('MEMBER_TEAM_ROLE_MANAGE') && _.isArray(salesRoleList) && salesRoleList.length) {
+        // salesman.status !== 0 &&
+        if (hasPrivilege('MEMBER_TEAM_ROLE_MANAGE') && _.isArray(salesRoleList) && salesRoleList.length) {
             return (
                 <Dropdown overlay={this.getSalesRoleMenus(salesman)}
                     getPopupContainer={() => document.getElementById('sales-member-li' + salesman.userId)}>
@@ -367,7 +368,7 @@ class CrmRightList extends React.Component {
                                 <li key={salesman.userId} className={salesman.status === 0 ? 'user-stop-li' : ''}
                                     id={'sales-member-li' + salesman.userId}>
                                     {this.renderSalesRole(salesman)}
-                                    <span onClick={ e => this.selectSalesman(e, salesman)}>{name}</span>
+                                    <span className="sales-member-name" title={name} onClick={ e => this.selectSalesman(e, salesman)}>{name}</span>
                                     {salesman.status !== 0 && this.props.salesCallStatus[salesman.userId] === CALLING_STATUS ?
                                         <span className="iconfont icon-phone-waiting"
                                             title={Intl.get('sales.status.calling', '正在打电话')}/>
@@ -506,6 +507,19 @@ class CrmRightList extends React.Component {
         );
     }
 }
-
+CrmRightList.propTypes = {
+    salesTeamMembersObj: PropTypes.object,
+    salesTeamListObj: PropTypes.object,
+    updateScrollBar: PropTypes.bool,
+    originSalesTeamTree: PropTypes.object,
+    currShowSalesman: PropTypes.object,
+    currShowSalesTeam: PropTypes.object,
+    scrollbarEnabled: PropTypes.object,
+    salesCallStatus: PropTypes.object,
+    teamMemberCountList: PropTypes.array,
+    currShowType: PropTypes.string,
+    refreshDataByChangeSales: PropTypes.func,
+    getSalesListHeight: PropTypes.func,
+};
 module.exports = CrmRightList;
 

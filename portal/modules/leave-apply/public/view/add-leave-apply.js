@@ -15,29 +15,37 @@ const FORMLAYOUT = {
 };
 var user = require('PUB_DIR/sources/user-data').getUserData();
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
+import {calculateTotalTimeRange,calculateRangeType} from 'PUB_DIR/sources/utils/common-data-util';
 import { LEAVE_TYPE } from 'PUB_DIR/sources/utils/consts';
 var LeaveApplyAction = require('../action/leave-apply-action');
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
-import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
-const BEGIN_AND_END_RANGE = {
-    begin_time: moment(),
-    end_time: moment().add(1,'hours')
-};
+import {DELAY_TIME_RANGE, LEAVE_TIME_RANGE,AM_AND_PM} from 'PUB_DIR/sources/utils/consts';
 class AddLeaveApply extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             formData: {
-                begin_time: moment(BEGIN_AND_END_RANGE.begin_time).valueOf(),//请假开始时间
-                end_time: moment(BEGIN_AND_END_RANGE.end_time).valueOf(),//请假结束时间
-                reason: '',
-                leave_type: 'personal_leave'
+                begin_time: moment().valueOf(),//请假开始时间
+                begin_type: '',//请假开始的类型
+                end_time: moment().valueOf(),//请假结束时间
+                end_type: '',//请假结束的类型
+                total_range: '',//总的请假时长
             },
         };
     }
 
     componentDidMount() {
+        var newSetting = calculateRangeType();
+        var formData = this.state.formData;
+        for (var key in newSetting){
+            formData[key] = newSetting[key];
+        };
+        this.setState({
+            formData:formData
+        },()=>{
+            this.calculateTotalLeaveRange();
+        });
         this.addLabelRequiredCls();
     }
     componentDidUpdate() {
@@ -70,30 +78,47 @@ class AddLeaveApply extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
+            values = _.cloneDeep(values);
+            var formData = this.state.formData;
             if (err) return;
             this.setState({
                 isSaving: true,
                 saveMsg: '',
                 saveResult: ''
             });
-            values.begin_time = moment(values.begin_time).valueOf();
-            values.end_time = moment(values.end_time).valueOf();
+            values.apply_time = [{
+                start: moment(values.begin_time).format(oplateConsts.DATE_FORMAT) + `_${formData.begin_type}`,
+                end: moment(values.end_time).format(oplateConsts.DATE_FORMAT) + `_${formData.end_type}`,
+            }];
+            delete values.begin_time;
+            delete values.end_time;
+            delete values.total_range;
+            delete values.begin_type;
+            delete values.end_type;
+            var errTip = Intl.get('crm.154', '添加失败');
             $.ajax({
                 url: '/rest/add/leave_apply/list',
                 dataType: 'json',
                 type: 'post',
                 data: values,
                 success: (data) => {
-                    //添加成功
-                    this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                    this.hideLeaveApplyAddForm();
-                    //添加完后的处理
-                    data.afterAddReplySuccess = true;
-                    LeaveApplyAction.afterAddApplySuccess(data);
-
+                    if (data){
+                        //添加成功
+                        this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
+                        this.hideLeaveApplyAddForm();
+                        //添加完后的处理
+                        data.afterAddReplySuccess = true;
+                        data.showCancelBtn = true;
+                        LeaveApplyAction.afterAddApplySuccess(data);
+                    }else{
+                        this.setResultData(errTip, 'error');
+                    }
                 },
-                error: (errorMsg) => {
-                    this.setResultData(errorMsg || Intl.get('crm.154', '添加失败'), 'error');
+                error: (xhr) => {
+                    if (xhr.responseJSON && _.isString(xhr.responseJSON)){
+                        errTip = xhr.responseJSON;
+                    }
+                    this.setResultData(errTip, 'error');
                 }
             });
         });
@@ -106,24 +131,26 @@ class AddLeaveApply extends React.Component {
                 callback();
                 return;
             }
-            const begin_time = this.state.formData.begin_time;
-            const endTime = this.state.formData.end_time;
+            const formData = this.state.formData;
+            const begin_time = formData.begin_time;
+            const endTime = formData.end_time;
             const isBeginTime = timeType === 'begin_time' ? true : false;
             if (endTime && begin_time) {
-                if (moment(endTime).isBefore(begin_time)) {
-                    if (isBeginTime) {
+                if (formData.begin_type && formData.end_type){
+                    if (moment(endTime).isBefore(begin_time)) {
+                        if (isBeginTime) {
+                            callback(Intl.get('contract.start.time.greater.than.end.time.warning', '起始时间不能大于结束时间'));
+                        } else {
+                            callback(Intl.get('contract.end.time.less.than.start.time.warning', '结束时间不能小于起始时间'));
+                        }
+                    }else if (moment(endTime).isSame(begin_time,'day') && formData.begin_type === AM_AND_PM.PM && formData.end_type === AM_AND_PM.AM){
+                        //是同一天的时候，不能开始时间选下午，结束时间选上午
                         callback(Intl.get('contract.start.time.greater.than.end.time.warning', '起始时间不能大于结束时间'));
-                    } else {
-                        callback(Intl.get('contract.end.time.less.than.start.time.warning', '结束时间不能小于起始时间'));
-                    }
-                } else {
-                    //结束时间要比开始时间晚至少一个小时
-                    if (endTime - begin_time < DELAY_TIME_RANGE.BEGIN_AND_END_RANGE){
-                        callback(Intl.get('leave.apply.time.range.at.least.one.hour','开始和结束时间应至少相隔一个小时'));
                     }else{
                         callback();
                     }
-
+                }else{
+                    callback();
                 }
             } else {
                 callback();
@@ -138,6 +165,9 @@ class AddLeaveApply extends React.Component {
         }, () => {
             if (this.props.form.getFieldValue('end_time')) {
                 this.props.form.validateFields(['end_time'], {force: true});
+                if (formData.begin_type && formData.end_type){
+                    this.calculateTotalLeaveRange();
+                }
             }
         });
     };
@@ -149,10 +179,43 @@ class AddLeaveApply extends React.Component {
         }, () => {
             if (this.props.form.getFieldValue('begin_time')) {
                 this.props.form.validateFields(['begin_time'], {force: true});
+                if (formData.begin_type && formData.end_type){
+                    this.calculateTotalLeaveRange();
+                }
             }
         });
     };
-
+    handleChangeStartRange = (value) => {
+        var formData = this.state.formData;
+        formData.begin_type = value;
+        this.setState({
+            formData: formData
+        },() => {
+            this.props.form.validateFields(['begin_time'], {force: true});
+            if (formData.end_type){
+                this.calculateTotalLeaveRange();
+            }
+        });
+    };
+    handleChangeEndRange = (value) => {
+        var formData = this.state.formData;
+        formData.end_type = value;
+        this.setState({
+            formData: formData
+        },() => {
+            this.props.form.validateFields(['end_time'], {force: true});
+            if (formData.begin_type){
+                this.calculateTotalLeaveRange();
+            }
+        });
+    };
+    calculateTotalLeaveRange = () => {
+        var formData = this.state.formData;
+        formData.total_range = calculateTotalTimeRange(formData);
+        this.setState({
+            formData: formData
+        });
+    };
     render() {
         var formData = this.state.formData;
         var _this = this;
@@ -166,6 +229,16 @@ class AddLeaveApply extends React.Component {
             wrapperCol: {
                 xs: {span: 24},
                 sm: {span: 18},
+            },
+        };
+        const formDataLayout = {
+            labelCol: {
+                xs: {span: 24},
+                sm: {span: 6},
+            },
+            wrapperCol: {
+                xs: {span: 24},
+                sm: {span: 15},
             },
         };
         let saveResult = this.state.saveResult;
@@ -193,15 +266,28 @@ class AddLeaveApply extends React.Component {
                                                 required: true,
                                                 message: Intl.get('leave.apply.fill.in.start.time','请填写开始时间')
                                             }, {validator: _this.validateStartAndEndTime('begin_time')}],
-                                            initialValue: BEGIN_AND_END_RANGE.begin_time
+                                            initialValue: moment(formData.begin_time)
                                         })(
                                             <DatePicker
-                                                showTime={{ format: 'HH:mm' }}
-                                                format="YYYY-MM-DD HH:mm"
+                                                format="YYYY-MM-DD"
                                                 onChange={this.onBeginTimeChange}
                                                 value={formData.begin_time ? moment(formData.begin_time) : moment()}
                                             />
                                         )}
+                                        {getFieldDecorator('begin_type', {initialValue: formData.begin_type})(
+                                            <Select
+                                                getPopupContainer={() => document.getElementById('add-leave-apply-form')}
+                                                onChange={this.handleChangeStartRange}
+
+                                            >
+                                                {_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?
+                                                    LEAVE_TIME_RANGE.map((leaveItem, idx) => {
+                                                        return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
+                                                    }) : null
+                                                }
+                                            </Select>
+                                        )}
+
                                     </FormItem>
                                     <FormItem
                                         className="form-item-label add-apply-time"
@@ -213,16 +299,41 @@ class AddLeaveApply extends React.Component {
                                                 required: true,
                                                 message: Intl.get('leave.apply.fill.in.end.time', '请填写结束时间')
                                             }, {validator: _this.validateStartAndEndTime('end_time')}],
-                                            initialValue: BEGIN_AND_END_RANGE.end_time
+                                            initialValue:  moment(formData.end_time)
                                         })(
                                             <DatePicker
-                                                showTime={{ format: 'HH:mm' }}
-                                                format="YYYY-MM-DD HH:mm"
+                                                format="YYYY-MM-DD"
                                                 onChange={this.onEndTimeChange}
                                                 value={formData.end_time ? moment(formData.end_time) : moment()}
                                             />
                                         )}
+                                        {getFieldDecorator('end_type', {initialValue: formData.end_type})(
+                                            <Select
+                                                getPopupContainer={() => document.getElementById('add-leave-apply-form')}
+                                                onChange={this.handleChangeEndRange}
+                                            >
+                                                {_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?
+                                                    LEAVE_TIME_RANGE.map((leaveItem, idx) => {
+                                                        return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
+                                                    }) : null
+                                                }
+                                            </Select>
+                                        )}
+
                                     </FormItem>
+                                    {formData.total_range ?
+                                        <FormItem
+                                            className="form-item-label add-apply-time"
+                                            label={Intl.get('apply.approve.total.leave.time','请假时长')}
+                                            {...formItemLayout}
+                                        >
+                                            {getFieldDecorator('total_range')(
+                                                <div className="total-range">
+                                                    {Intl.get('weekly.report.n.days', '{n}天',{n: formData.total_range})}
+                                                </div>
+                                            )}
+                                        </FormItem>
+                                        : null}
                                     <FormItem
                                         label={Intl.get('leave.apply.leave.type','请假类型')}
                                         id="leave_type"

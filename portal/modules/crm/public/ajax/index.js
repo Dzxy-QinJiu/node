@@ -47,13 +47,12 @@ exports.addCustomerByClue = function(newCus) {
 };
 
 //删除客户
-exports.deleteCustomer = function(ids) {
+exports.deleteCustomer = function(id) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/crm/delete_customer',
+        url: `/rest/crm/delete_customer/${id}`,
         dataType: 'json',
         type: 'delete',
-        data: {ids: JSON.stringify(ids)},
         success: function(data) {
             Deferred.resolve(data);
         },
@@ -161,24 +160,29 @@ exports.getCustomerById = function(customerId) {
     return Deferred.promise();
 };
 //查询客户
-exports.queryCustomer = function(params, pageSize, sorter) {
-    pageSize = pageSize || 10;
+let queryCustomerAjax;
+exports.queryCustomer = function(params, pageSize, pageNum, sorter) {
+    pageSize = pageSize || 20;
+    pageNum = pageNum || 1;
     //没有关注客户置顶时
     sorter = sorter ? sorter : {field: 'id', order: 'ascend'};
     if (hasPrivilege(AUTHS.GETALL)) {
         params.hasManageAuth = true;
     }
+    queryCustomerAjax && queryCustomerAjax.abort();
     var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/customer/v2/customer/range/' + pageSize + '/' + sorter.field + '/' + sorter.order,
+    queryCustomerAjax = $.ajax({
+        url: '/rest/customer/range/' + pageSize + '/' + pageNum + '/' + sorter.field + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
         data: params,
         success: function(list) {
             Deferred.resolve(list);
         },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function(xhr, statusText) {
+            if (statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();

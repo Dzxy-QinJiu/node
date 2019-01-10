@@ -8,7 +8,8 @@ const userData = require('PUB_DIR/sources/user-data');
 export const initialTime = {
     range: 'week',
     start: moment().startOf('isoWeek').valueOf(),
-    end: moment().valueOf(),
+    //结束时间设为当天的结束时间，以便后端对某些数据做缓存
+    end: moment().endOf('day').valueOf(),
 };
 
 const intlUnknown = Intl.get('user.unknown', '未知');
@@ -28,6 +29,16 @@ export const USER_TYPES = [
     {name: Intl.get('user.type.employee', '员工'), key: 'internal'},
     unknownObj,
 ];
+
+//客户阶段
+export const CUSTOMER_STAGE = {
+    message: '信息',
+    intention: '意向',
+    trial: '试用',
+    signed: '签约',
+    qualified: '合格',
+    unknown: '未知'
+};
 
 let userTypeDataObj = {};
 

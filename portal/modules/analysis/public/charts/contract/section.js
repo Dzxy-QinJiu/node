@@ -2,43 +2,59 @@
  * 合同额分段统计
  */
 
+import { argCallbackTeamId } from '../../utils';
+
 export function getContractSectionChart() {
     return {
-        title: '合同额分段统计(假数据)',
-        url: '/rest/analysis/contract_v2/statistics',
-        argCallback: (arg) => {
-            const query = arg.query;
+        title: '合同额分段统计',
+        chartType: 'bar',
+        url: '/rest/analysis/contract/contract/:data_type/distribution/amount',
+        reqType: 'post',
+        conditions: [{
+            value: getSectionReqData(),
+            type: 'data',
+        }],
+        argCallback: argCallbackTeamId,
+        processData: data => {
+            return _.map(data, dataItem => {
+                let name;
 
-            if (query) {
-                delete query.app_id;
-            }
-        },
-        chartType: 'table',
-        option: {
-            columns: [
-                {
-                    title: Intl.get('common.type', '类型'),
-                    dataIndex: 'name',
-                }, {
-                    title: Intl.get('sales.home.total.compute', '总计'),
-                    dataIndex: 'amount',
-                }, {
-                    title: Intl.get('sales.home.new.add', '新增'),
-                    dataIndex: 'new',
-                }, {
-                    title: Intl.get('contract.163', '续约'),
-                    dataIndex: 'renewal',
-                },{
-                    title: Intl.get('contract.171', '流失'),
-                    dataIndex: 'runOff',
-                }, {
-                    title: Intl.get('contract.172', '流失率'),
-                    dataIndex: 'churnRate',
-                }, {
-                    title: Intl.get('contract.173', '年度流失率'),
-                    dataIndex: 'yearRate',
+                if (dataItem.from && dataItem.to) {
+                    name = (dataItem.from / 10000) + '-' + (dataItem.to / 10000) + '万';
+                } else if (!dataItem.from && dataItem.to) {
+                    name = (dataItem.to / 10000) + '万以下';
+                } else if (dataItem.from && !dataItem.to) {
+                    name = (dataItem.from / 10000) + '万以上';
+                } else {
+                    name = '';
                 }
-            ],
+
+                const value = dataItem.percent;
+
+                return {
+                    name,
+                    value
+                };
+            });
+        },
+        customOption: {
+            reverse: true,
         },
     };
+}
+
+function getSectionReqData() {
+    let sections = [];
+
+    const spec = 100;
+    const step = 5;
+
+    for (let i = 0; i <= spec; i += step) {
+        sections.push({
+            from: i * 10000,
+            to: (i + step) <= spec ? (i + step) * 10000 : 0,
+        });
+    }
+
+    return sections;
 }

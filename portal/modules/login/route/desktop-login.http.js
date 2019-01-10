@@ -18,6 +18,13 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
+    },{
+        'method': 'get',
+        'path': '/wechat_bind',
+        'handler': 'showWechatBindPage',
+        'passport': {
+            'needLogin': false
+        }
     }, {
         'method': 'post',
         'path': '/login',
@@ -53,35 +60,35 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
-    },{
+    }, {
         'method': 'post',
         'path': '/QR_code/login/:qrcode',
         'handler': 'loginByQRCode',
         'passport': {
             'needLogin': false
         }
-    }, {
+    }, {//微信小程序用账号、密码登录的接口
         'method': 'post',
         'path': '/wechatLogin',
         'handler': 'wechatLogin',
         'passport': {
             'needLogin': false
         }
-    },{
+    }, {
         'method': 'get',
         'path': '/company/name/validate',
         'handler': 'getCompanyByName',
         'passport': {
             'needLogin': false
         }
-    },{
+    }, {
         'method': 'get',
         'path': '/phone/validate_code',
         'handler': 'getVertificationCode',
         'passport': {
             'needLogin': false
         }
-    },{
+    }, {
         'method': 'get',
         'path': '/phone/code/validate',
         'handler': 'validatePhoneCode',
@@ -94,6 +101,69 @@ module.exports = {
         'handler': 'registerAccount',
         'passport': {
             'needLogin': false
+        }
+    }, {
+        'method': 'get',
+        'path': '/page/login/wechat',
+        'handler': 'wechatLoginPage',
+        'passport': {
+            'needLogin': false
+        }
+    },{//通过微信二维码登录或绑定时的接口
+        'method': 'get',
+        'path': '/wechat/login_bind/code',
+        'handler': 'wechatLoginBindByCode',
+        'passport': {
+            'needLogin': false
+        }
+    },{
+        'method': 'get',
+        'path': '/login/wechat/miniprogram',
+        'handler': 'loginWithWechatMiniprogram',
+        'passport': {
+            'needLogin': false
+        }
+    },{//微信小程序用已有账号绑定微信并登录
+        'method': 'post',
+        'path': '/bind/login/wechat/miniprogram',
+        'handler': 'bindLoginWechatMiniprogram',
+        'passport': {
+            'needLogin': false
+        }
+    },{//微信小程序注册新账号绑定微信并登录
+        'method': 'post',
+        'path': '/register/login/wechat/miniprogram',
+        'handler': 'registerLoginWechatMiniprogram',
+        'passport': {
+            'needLogin': false
+        }
+    },{//web用已有账号绑定微信并登录
+        'method': 'post',
+        'path': '/bind/login/wechat',
+        'handler': 'bindLoginWechat',
+        'passport': {
+            'needLogin': false
+        }
+    },{//web注册新账号绑定微信并登录
+        'method': 'post',
+        'path': '/register/login/wechat',
+        'handler': 'registerLoginWechat',
+        'passport': {
+            'needLogin': false
+        }
+    },{//解绑微信
+        'method': 'post',
+        'path': '/wechat/unbind',
+        'handler': 'unbindWechat',
+        'passport': {
+            'needLogin': true
+        }
+    },{//登录后判断是否绑定微信
+        'method': 'get',
+        'path': '/wechat/bind/check/login',
+        'handler': 'checkLoginWechatIsBind',
+        'passport': {
+            'needLogin': true
         }
     }]
 };

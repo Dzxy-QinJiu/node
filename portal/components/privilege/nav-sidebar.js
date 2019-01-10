@@ -1,14 +1,11 @@
-import { PropTypes } from 'prop-types';
 require('./css/nav-sidebar.less');
 var userData = require('../../public/sources/user-data');
-import {NavLink} from 'react-router-dom';
+var menuUtil = require('../../public/sources/utils/menu-util');
 var Logo = require('../Logo/index.js');
 var Avatar = require('../Avatar/index.js');
 var LogOut = require('../../modules/logout/views/index.js');
-var url = require('url');
 var Popover = require('antd').Popover;
 var classNames = require('classnames');
-var insertStyle = require('../insert-style');
 var React = require('react');
 var createReactClass = require('create-react-class');
 var userInfoEmitter = require('../../public/sources/utils/emitters').userInfoEmitter;
@@ -19,44 +16,32 @@ var websiteConfig = require('../../lib/utils/websiteConfig');
 var setWebsiteConfigModuleRecord = websiteConfig.setWebsiteConfigModuleRecord;
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 let history = require('../../public/sources/history');
+import {NavLink} from 'react-router-dom';
 import ModalIntro from '../modal-intro';
 import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import { storageUtil } from 'ant-utils';
+import {storageUtil} from 'ant-utils';
+
 const session = storageUtil.session;
 //需要加引导的模块
-const menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
-/**
- *[
- * {"routePath":"user","name":"用户管理"},
- * {"routePath":"analysis","name":"运营分析"}
- *]
- */
-//小屏幕显示的菜单文字
-const menuShortNamesMap = {
-    'crm': Intl.get('call.record.customer', '客户'),
-    'clue_customer': Intl.get('crm.sales.clue', '线索'),
-    'call_record': Intl.get('menu.shortName.call', '通话'),
-    'user': Intl.get('crm.detail.user', '用户'),
-    'analysis': Intl.get('user.detail.analysis', '分析'),
-    'schedule_management': Intl.get('menu.shortName.schedule', '日程'),
-    'contract': Intl.get('contract.125', '合同'),
-    'apply': Intl.get('crm.109', '申请'),
-    'background_management': Intl.get('menu.shortName.config', '设置'),
-    'user_info_manage': Intl.get('menu.notification', '通知'),
-    'application': Intl.get('menu.leave.apply.list.management', '申请审批')
+const schedule_menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
+//个人信息菜单部分距离底部的绝对高度18
+const USER_INFO_BOTTOM = 18;
+//单个菜单的最小高度
+const ONE_MENU_HEIGHT = 32;
+
+//需要特殊处理的菜单的id
+const MENU = {
+    'NOTE': 'notification',
+    'BACK_CONFIG': 'background_management',
+    'USER_INFO': 'user_info_manage'
 };
-//获取菜单
-function getMenus() {
-    var userInfo = userData.getUserData();
-    var sideBarMenus = userInfo.sideBarMenus;
-    return sideBarMenus;
-}
+
 //获取用户logo
 function getUserInfoLogo() {
-    var userInfoLogo = userData.getUserData().user_logo;
-    return userInfoLogo;
+    return userData.getUserData().user_logo;
 }
+
 //获取用户名、昵称
 function getUserName() {
     var nick_name = userData.getUserData().nick_name;
@@ -68,83 +53,20 @@ function getUserName() {
     return userInfo;
 }
 
-//不需要在左侧图标列表中输出的链接
-var ExcludeLinkList = [
-    {'name': Intl.get('menu.sales.homepage', '销售主页'), path: 'sales/home'},
-    {'name': Intl.get('menu.backend', '后台管理'), path: 'background_management'},
-    {'name': Intl.get('menu.userinfo.manage', '个人信息管理'), path: 'user_info_manage'},
-    {'name': Intl.get('menu.system.notification', '系统消息'), path: 'notification_system'},
-];
 
-//后台管理配置
-const BackendConfigLinkList = [
-    {
-        name: Intl.get('menu.user', '成员管理'),
-        href: '/background_management/user',
-        key: 'user',
-        privilege: 'USER_MANAGE_LIST_USERS'
-    }, {
-        name: Intl.get('crm.order.stage.manage', '订单阶段管理'),
-        href: '/background_management/sales_stage',
-        key: 'sales_stage',
-        privilege: 'BGM_SALES_STAGE_ADD'
-    }, {
-        name: Intl.get('menu.salesteam', '团队管理'),
-        href: '/background_management/sales_team',
-        key: 'sales_team',
-        privilege: 'BGM_SALES_TEAM_LIST'
-    },
-    {
-        name: Intl.get('app.title', '应用管理'),
-        href: '/background_management/openApp',
-        key: 'open_app',
-        privilege: 'ROLEP_RIVILEGE_ROLE_CLIENT_LIST'
-    },
-    {
-        name: Intl.get('menu.config', '配置'),
-        href: '/background_management/configaration',
-        key: 'configaration',
-        privilege: 'CREATE_CONFIG_INDUSTRY'
-    },
-    {
-        name: Intl.get('config.product.manage', '产品管理'),
-        href: '/background_management/products',
-        key: 'product',
-        privilege: 'PRODUCTS_MANAGE'
-    }
-];
-
-//通知类型
-var NotificationLinkList = [
-    {
-        name: Intl.get('menu.system.notification', '系统消息'),
-        href: '/notification_system',
-        key: 'notification_system',
-        privilege: 'NOTIFICATION_SYSTEM_LIST'
-    }
-];
-//审批入口
-var applyentryLink = [
-    {
-        name: Intl.get('menu.appuser.apply', '用户审批'),
-        href: '/apply',
-        key: 'apply', privilege: 'APP_USER_APPLY_LIST'
-    }
-];
-
-//左侧导航图标名称和路径列表
-var NavSidebarLists = [];
 //左侧响应式导航栏所用各部分高度
-var responsiveLayout = {
-    //logo 所占的高度
-    logoHeight: 0,
-    //图标的高度
-    MenusHeight: 0,
+const responsiveLayout = {
+    //logo和菜单占据的实际高度
+    logoAndMenusHeight: 0,
     //通知、二维码、个人信息的总高度
-    userInfoHeight: 0
+    userInfoHeight: 0,
+    //只显示名字的菜单高度
+    shortNameMenusHeight: 0,
+    //只显示名字的个人信息高度
+    shortNameUserInfoHeight: 0
 };
 //侧边普通按钮时引导模态框的样式
-var commonIntroModalLayout = {
+const commonIntroModalLayout = {
     //展示孔比原图标要变化的宽度
     holeGapWidth: 16,
     //展示孔比原图标要变化的高度
@@ -159,7 +81,7 @@ var commonIntroModalLayout = {
     tipAreaTop: -50,
 };
 //变成汉堡包按钮后引导模态框的样式
-var hamburgerIntroModalLayout = {
+const hamburgerIntroModalLayout = {
     //展示孔比原图标要变化的宽度
     holeGapWidth: -17,
     //展示孔比原图标要变化的高度
@@ -188,7 +110,7 @@ var NavSidebar = createReactClass({
 
     getInitialState: function() {
         return {
-            menus: getMenus(),
+            menus: menuUtil.getFirstLevelMenus(),
             userInfoLogo: getUserInfoLogo(),
             userInfo: getUserName(),
             messages: {
@@ -212,8 +134,6 @@ var NavSidebar = createReactClass({
         closeNotificationPanel: PropTypes.func,
     },
 
-    //轮询获取未读数的清除器
-    unreadTimeout: null,
     changeUserInfoLogo: function(userLogoInfo) {
         //修改名称
         if (userLogoInfo.nickName) {
@@ -233,19 +153,15 @@ var NavSidebar = createReactClass({
         }
     },
 
-    resizeFunction: function() {
-        this.setState({});
-    },
-
     //确定要加引导的元素是日程管理的图标还是汉堡包按钮
     selectedIntroElement: function() {
         //查看汉堡包按钮是否存在
         var hamburger = document.getElementById('hamburger');
-        var isHamburgerShow = hamburger.style.display;
+        var isHamburgerShow = hamburger && hamburger.style.display;
         //要加引导的元素
         var $introElement = '', introModalLayout = {};
         if (isHamburgerShow === 'none') {
-            $introElement = $('li.' + menu.routePath + '_ico a i');
+            $introElement = $('li.' + schedule_menu.routePath + '_ico a i');
             introModalLayout = commonIntroModalLayout;
         } else if (isHamburgerShow === 'block') {
             $introElement = $('#hamburger');
@@ -262,23 +178,15 @@ var NavSidebar = createReactClass({
         }
     },
 
-    //是否需要发送ajax请求获取"未读数"数据
-    needSendNotificationRequest: false,
-
     componentDidMount: function() {
         userInfoEmitter.on(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         //未读回复列表变化后触发
         notificationEmitter.on(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
         this.getHasUnreadReply();
-        $(window).on('resize', this.resizeFunction);
-        var notificationPrivileges = this.getLinkListByPrivilege(NotificationLinkList);
-        this.needSendNotificationRequest = notificationPrivileges.length >= 1;
-        //响应式设计 logo占据的实际高度
-        responsiveLayout.logoHeight = $('.header-logo').outerHeight();
-        //响应式设计 如果导航存在计算导航图标 占据的实际高度
-        responsiveLayout.MenusHeight = $('.navbar-collapse').outerHeight();
+        //响应式设计 logo和菜单占据的实际高度
+        responsiveLayout.logoAndMenusHeight = $('.logo-and-menus').outerHeight(true);
         //计算 通知、二维码、个人信息 占据的实际高度
-        responsiveLayout.userInfoHeight = $(this.refs.userInfo).outerHeight();
+        responsiveLayout.userInfoHeight = $(this.userInfo).outerHeight(true);
         this.calculateHeight();
         $(window).on('resize', this.calculateHeight);
         //获取已经点击过的模块
@@ -290,11 +198,11 @@ var NavSidebar = createReactClass({
         });
         $('.navbar').on('click', '.clue_customer_icon_container', function(e) {
             //点击到a标签上，不做处理
-            if ($(e.target).is('a')){
+            if ($(e.target).is('a')) {
                 return;
             }
             //点击到线索未处理的数字上，进行跳转
-            history.push('/clue_customer',{clickUnhandleNum: true});
+            history.push('/clue_customer', {clickUnhandleNum: true});
         });
     },
 
@@ -320,82 +228,135 @@ var NavSidebar = createReactClass({
 
     //本次要加的引导是否没有被点击过
     isIntroModlueNeverClicked: function(WebsiteConfigModuleRecord) {
-        return (_.indexOf(WebsiteConfigModuleRecord, menu.name) < 0);
+        return (_.indexOf(WebsiteConfigModuleRecord, schedule_menu.name) < 0);
     },
-
+    //菜单展示成汉堡包
+    showHamburger: () => {
+        $('#hamburger').show();
+        $('#menusLists').hide();
+    },
+    //隐藏汉堡包，展示菜单
+    hideHamburger: () => {
+        $('#hamburger').hide();
+        $('#menusLists').show();
+    },
+    //计算并设置菜单展示样式
     calculateHeight: function() {
-        //>75  目的是左侧只有一个导航图标时不会出现汉堡包按钮
-        //窗口高度小于 （logo高度+导航高度+个人信息高度）时，出现汉堡包按钮，隐藏导航图标
-        if ($(window).height() < (responsiveLayout.logoHeight + responsiveLayout.MenusHeight + responsiveLayout.userInfoHeight) && (responsiveLayout.MenusHeight > 75)) {
-            // $('#hamburger').show();
-            // $('#menusLists').hide();
-            this.setState({
-                hideNavIcon: true
-            });
-        } else {
-            // $('#hamburger').hide();
-            // $('#menusLists').show();
-            this.setState({
-                hideNavIcon: false
-            });
+        if (this.calculateHeightTimeOut) {
+            clearTimeout(this.calculateHeightTimeOut);
+            this.calculateHeightTimeOut = null;
         }
-        //模态框存在时，才需要选要加引导的元素
-        if (this.state.isShowIntroModal) {
-            this.selectedIntroElement();
-        }
+        this.calculateHeightTimeOut = setTimeout(() => {
+            //窗口高度小于 （logo和菜单高度+个人信息高度+个人信息离底部的绝对高度）时，隐藏导航图标，只展示文字
+            if ($(window).height() < (responsiveLayout.logoAndMenusHeight + responsiveLayout.userInfoHeight + USER_INFO_BOTTOM)) {
+                this.hideHamburger();
+                this.setState({
+                    hideNavIcon: true
+                }, () => {
+                    //如果再缩放，则展示汉堡包
+                    responsiveLayout.shortNameMenusHeight = $('.logo-and-menus').outerHeight(true);
+                    responsiveLayout.shortNameUserInfoHeight = $(this.userInfo).outerHeight(true);
+                    if ($(window).height() < (responsiveLayout.shortNameMenusHeight + responsiveLayout.shortNameUserInfoHeight + USER_INFO_BOTTOM)
+                        && (responsiveLayout.shortNameMenusHeight > ONE_MENU_HEIGHT)) {
+                        //>32  目的是左侧只有一个导航菜单时不会出现汉堡包按钮
+                        this.showHamburger();
+                    }
+                });
+            } else {
+                this.hideHamburger();
+                this.setState({
+                    hideNavIcon: false
+                });
+            }
+            //模态框存在时，才需要选要加引导的元素
+            if (this.state.isShowIntroModal) {
+                this.selectedIntroElement();
+            }
+        }, 100);
     },
 
     componentWillUnmount: function() {
         userInfoEmitter.removeListener(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
-        $(window).off('resize', this.resizeFunction);
-        clearTimeout(this.unreadTimeout);
+        $(window).off('resize', this.calculateHeight);
     },
 
-    navContainerHeightFnc: function() {
-        return $(window).height();
-    },
 
-    getNotificationClass: function() {
-        var urlInfo = url.parse(window.location.href);
-        if (/^\/notification\//.test(urlInfo.pathname)) {
-            return 'active';
-        } else {
-            return '';
+    toggleNotificationPanel(event) {
+        event.stopPropagation();
+        this.props.toggleNotificationPanel();
+    },
+    //渲染通知菜单
+    getNotificationBlock: function() {
+        let notification = menuUtil.getMenuById(MENU.NOTE);
+        if (!notification) {
+            return null;
         }
+        return (
+            <div className="notification" onClick={this.toggleNotificationPanel}>
+                {
+                    this.state.hideNavIcon ? <a>{notification.shortName}</a> :
+                        <i className="iconfont icon-tongzhi" title={notification.name}></i>
+                }
+            </div>
+        );
     },
 
-    getLinkListByPrivilege: function(linkList) {
-        let userPrivileges = userData.getUserData().privileges;
-        return linkList.filter(function(item) {
-            if (userPrivileges.indexOf(item.privilege) >= 0) {
-                return true;
-            }
-        });
-    },
-
-    //个人信息部分右侧弹框
-    getUserInfoLinks: function() {
-        //个人资料部分
-        var UserInfoLinkList = [
-            {
-                name: Intl.get('user.info.user.info', '个人资料'),
-                href: '/user_info_manage/user_info',
-                key: 'user_info'
-            },
-            {
-                name: Intl.get('common.edit.password', '修改密码'),
-                href: '/user_info_manage/user_pwd',
-                key: 'user_pwd'
-            }
-        ];
+    //后台管理的二级菜单
+    getBackendConfigLinks: function(backendConfigLinks) {
         return (
             <ul className="ul-unstyled">
                 {
-                    UserInfoLinkList.map(function(obj) {
+                    backendConfigLinks.map(function(obj) {
                         return (
-                            <li key={obj.key}>
-                                <NavLink to={obj.href} activeClassName="active">
+                            <li key={obj.id}>
+                                <NavLink to={obj.routePath} activeClassName="active">
+                                    {obj.name}
+                                </NavLink>
+                            </li>
+                        );
+                    })
+                }
+            </ul>
+        );
+    },
+    //后台管理配置模块
+    renderBackendConfigBlock: function() {
+        let backendConfigMenu = menuUtil.getMenuById(MENU.BACK_CONFIG);
+        if (!backendConfigMenu || !backendConfigMenu.routes) {
+            return null;
+        }
+        let backendConfigList = this.getBackendConfigLinks(backendConfigMenu.routes);
+        let wrapperCls = classNames({
+            'sidebar-backend-config': true,
+            'text-nav-li': this.state.hideNavIcon
+        });
+        return (
+            <div className={wrapperCls}>
+                <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
+                    overlayClassName="nav-sidebar-backend-config">
+                    <NavLink to={backendConfigMenu.routePath} activeClassName="active">
+                        {this.state.hideNavIcon ? backendConfigMenu.shortName :
+                            <i className="iconfont icon-role-auth-config" title={backendConfigMenu.name}/>}
+                    </NavLink>
+                </Popover>
+            </div>
+        );
+    },
+    //个人信息部分右侧弹框
+    getUserInfoLinks: function() {
+        //个人资料部分
+        let userInfoLinkList = menuUtil.getMenuById(MENU.USER_INFO);
+        if (!userInfoLinkList || !userInfoLinkList.routes) {
+            return;
+        }
+        return (
+            <ul className="ul-unstyled">
+                {
+                    userInfoLinkList.routes.map(function(obj) {
+                        return (
+                            <li key={obj.id}>
+                                <NavLink to={obj.routePath} activeClassName="active">
                                     {obj.name}
                                 </NavLink>
                             </li>
@@ -408,126 +369,11 @@ var NavSidebar = createReactClass({
             </ul>
         );
     },
-
-    toggleNotificationPanel(event) {
-        event.stopPropagation();
-        this.props.toggleNotificationPanel();
-    },
-
-    getNotificationBlock: function() {
-        var notificationLinks = this.getLinkListByPrivilege(NotificationLinkList);
-        if (!notificationLinks.length) {
-            return null;
-        }
-        return (
-            <div className="notification" onClick={this.toggleNotificationPanel}>
-                {
-                    !this.state.hideNavIcon ?
-                        <i className="iconfont icon-tongzhi" title={Intl.get('menu.system.notification', '系统消息')}></i> :
-                        <a>{menuShortNamesMap.user_info_manage}</a>
-                }
-            </div>
-        );
-    },
-
-    getApplyBlock: function(isActive) {
-        var applyLinks = this.getLinkListByPrivilege(applyentryLink);
-        const hasMessage = this.state.messages.approve === 0 && this.state.hasUnreadReply;
-        const renderMessageTip = () => {
-            if (hasMessage) {
-                return (
-                    <span className="iconfont icon-apply-message-tip"
-                        title={Intl.get('user.apply.unread.reply', '有未读回复')} />
-                );
-            }
-            else {
-                return null;
-            }
-        };
-        if (!applyLinks.length) {
-            return null;
-        }
-        if (!this.state.hideNavIcon) {
-            return (
-                <li className="sidebar-applyentry" title={Intl.get('menu.appuser.apply', '用户审批')}>
-                    <NavLink to={applyLinks[0].href} activeClassName="active" className={isActive ? 'iconfont icon-active-apply-ico' : 'iconfont icon-apply-ico'}>
-                        {renderMessageTip()}
-                    </NavLink>
-                </li>
-            );
-        }
-        else {
-            return (
-                <li className="sidebar-applyentry text-nav-li" title={Intl.get('menu.appuser.apply', '用户审批')}>
-                    <NavLink to={applyLinks[0].href} activeClassName="active">
-                        {renderMessageTip()}
-                        <span>
-                            {menuShortNamesMap.apply}
-                        </span>
-                    </NavLink>
-                </li>
-            );
-        }
-
-    },
-    getBackendConfigLinks: function(backendConfigLinks) {
-        return (
-            <ul className="ul-unstyled">
-                {
-                    backendConfigLinks.map(function(obj) {
-                        return (
-                            <li key={obj.key}>
-                                <NavLink to={obj.href} activeClassName="active">
-                                    {obj.name}
-                                </NavLink>
-                            </li>
-                        );
-                    })
-                }
-            </ul>
-        );
-    },
-    //后台管理配置模块
-    renderBackendConfigBlock: function() {
-        let backendConfigLinks = this.getLinkListByPrivilege(BackendConfigLinkList);
-        if (!backendConfigLinks.length) {
-            return null;
-        }
-        let backendConfigList = this.getBackendConfigLinks(backendConfigLinks);
-        let defaultLink = backendConfigLinks[0];
-        if (!this.state.hideNavIcon) {
-            return (
-                <div className="sidebar-backend-config">
-                    <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
-                        overlayClassName="nav-sidebar-backend-config">
-                        <NavLink to={defaultLink.href} activeClassName="active">
-                            <i className="iconfont icon-role-auth-config" />
-                        </NavLink>
-                    </Popover>
-                </div>
-            );
-        }
-        else {
-            return (
-                <div className="sidebar-backend-config text-nav-li">
-                    <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
-                        overlayClassName="nav-sidebar-backend-config">
-                        <NavLink to={defaultLink.href} activeClassName="active">
-                            {menuShortNamesMap.background_management}
-                        </NavLink>
-                    </Popover>
-                </div>
-            );
-        }
-
-    },
-
     //侧边导航左下个人信息
     getUserInfoBlock: function() {
-        var userinfoList = this.getUserInfoLinks();
         return (
             <div className="sidebar-userinfo">
-                <Popover content={userinfoList} trigger="hover"
+                <Popover content={this.getUserInfoLinks()} trigger="hover"
                     placement="rightBottom"
                     overlayClassName="nav-sidebar-userinfo">
                     <div className="avatar_container">
@@ -543,13 +389,14 @@ var NavSidebar = createReactClass({
         );
     },
 
+    //汉堡包弹窗列表
     getNavbarLists: function() {
         //侧边导航高度减少后，出现汉堡包按钮，汉堡包按钮的弹出框
         return (
             <ul className="ul-unstyled">
-                {NavSidebarLists.map(function(obj, index) {
+                {this.state.menus.map(function(obj) {
                     return (
-                        <li key={index}>
+                        <li key={obj.id}>
                             <NavLink to={`/${obj.routePath}`} activeClassName="active">
                                 {obj.name}
                             </NavLink>
@@ -563,7 +410,7 @@ var NavSidebar = createReactClass({
 
     handleOnclickHole: function() {
         //跳转到新加模块界面
-        history.push('/' + menu.routePath, {});
+        history.push('/' + schedule_menu.routePath, {});
         this.saveModalClicked();
     },
 
@@ -572,7 +419,7 @@ var NavSidebar = createReactClass({
         this.setState({
             isShowIntroModal: false
         });
-        setWebsiteConfigModuleRecord({'module_record': [menu.name]});
+        setWebsiteConfigModuleRecord({'module_record': [schedule_menu.name]});
     },
 
     hideModalIntro: function() {
@@ -584,7 +431,7 @@ var NavSidebar = createReactClass({
         this.props.closeNotificationPanel();
     },
     //展示未读回复的图标提示
-    renderUnreadReplyTip(category){
+    renderUnreadReplyTip(category) {
         //是申请审批，有未读回复数并且，所有申请待审批数都为0
         let unreadReplyTipShowFlag = category === 'application' &&//申请审批
             this.state.hasUnreadReply &&//有未读回复
@@ -601,72 +448,56 @@ var NavSidebar = createReactClass({
             return null;
         }
     },
-    render: function() {
-        var windowHeight = this.navContainerHeightFnc();
+    //生成主菜单
+    generateMenu: function() {
         const pathName = location.pathname.replace(/^\/|\/$/g, '');
-        var currentPageCategory = pathName.split('/')[0];
-        //不在左侧循环输出的链接
-        var excludePathList = _.map(ExcludeLinkList, 'path');
+        const currentPageCategory = pathName.split('/')[0];
+        return this.state.menus.map((menu, i) => {
+            let category = menu.routePath.replace(/\//, '');
+            //是否添加选中的菜单样式类
+            const addActive = !this.state.hideNavIcon && currentPageCategory === category;
+            //选中状态类
+            let extraClass = classNames({
+                'iconfont': !this.state.hideNavIcon,
+                [`icon-${category}-ico`]: !this.state.hideNavIcon && currentPageCategory !== category,
+                [`icon-active-${category}-ico`]: addActive,
+                'active': addActive
+            });
+            //菜单项类
+            let routeCls = classNames({
+                [`${category}_icon_container`]: true,
+                'text-nav-li': this.state.hideNavIcon
+            });
+            return (
+                <li key={i} title={menu.name} className={routeCls}>
+                    <NavLink to={`${menu.routePath}`}
+                        activeClassName='active'
+                        className={extraClass}
+                    >
+                        {this.renderUnreadReplyTip(category)}
+                        {this.state.hideNavIcon ? (<span> {menu.shortName} </span>) : null}
+                    </NavLink>
+                </li>
+            );
+        });
+    },
+    render: function() {
         var _this = this;
         return (
             <nav className="navbar" onClick={this.closeNotificationPanel}>
                 <div className="container">
                     <div className="logo-and-menus" ref="logoAndMenus"
                     >
-                        <div className="header-logo" >
-                            <Logo />
+                        <div className="header-logo">
+                            <Logo/>
                         </div>
                         <div className="collapse navbar-collapse">
                             <ul className="nav navbar-nav" id="menusLists">
                                 {
-                                    //过滤掉不显示的
-                                    this.state.menus.filter((menu, i) => {
-                                        if (excludePathList.indexOf(menu.routePath) < 0) {
-                                            return true;
-                                        }
-                                        return false;
-                                    }).map((menu, i) => {
-                                        var category = menu.routePath.replace(/\/.*$/, '');
-                                        var extraClass = currentPageCategory === category ? `iconfont icon-active-${menu.routePath.replace(/\//g, '_')}-ico active` : `iconfont icon-${menu.routePath.replace(/\//g, '_')}-ico`;
-                                        //将侧边导航图标的名称和路径放在数组NavSidebarLists中
-                                        if (!(_.includes(NavSidebarLists, menu))) {
-                                            NavSidebarLists.push(menu);
-                                        }
-                                        var routeCls = menu.routePath + '_icon_container';
-                                        //不隐藏图标时
-                                        if (!this.state.hideNavIcon) {
-                                            return (
-                                                <li key={i} title={menu.name} className={routeCls}>
-                                                    <NavLink to={`/${menu.routePath}`}
-                                                        activeClassName='active'
-                                                        className={extraClass}
-                                                    >
-                                                        {this.renderUnreadReplyTip(category)}
-                                                    </NavLink>
-                                                </li>
-                                            );
-                                        }
-                                        //小屏幕隐藏图标
-                                        else {
-                                            return (
-                                                <li key={i} title={menu.name} className= {`text-nav-li  ${routeCls}`}>
-                                                    <NavLink to={`/${menu.routePath}`}
-                                                        activeClassName='active'
-                                                    >
-                                                        {this.renderUnreadReplyTip(category)}
-                                                        <span>
-                                                            {menuShortNamesMap[menu.routePath]}
-                                                        </span>
-                                                    </NavLink>
-                                                </li>
-                                            );
-                                        }
-
-                                    })
+                                    _this.generateMenu()
                                 }
-                                {/*{_this.getApplyBlock(currentPageCategory === 'apply')}*/}
                             </ul>
-                            <Popover content={this.getNavbarLists()} trigger="hover" placement="rightTop"
+                            <Popover content={_this.getNavbarLists()} trigger="hover" placement="rightTop"
                                 overlayClassName="nav-sidebar-lists">
                                 <div className="hamburger" id="hamburger">
                                     <span className="line"></span>
@@ -678,7 +509,9 @@ var NavSidebar = createReactClass({
 
                     </div>
 
-                    <div className="sidebar-user" ref="userInfo">
+                    <div className="sidebar-user" ref={(element) => {
+                        this.userInfo = element;
+                    }}>
                         {_this.getNotificationBlock()}
                         {_this.renderBackendConfigBlock()}
                         {_this.getUserInfoBlock()}

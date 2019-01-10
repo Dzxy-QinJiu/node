@@ -125,16 +125,16 @@ var CallAddCustomerForm = createReactClass({
                 let formData = _this.state.formData;
                 //去除表单数据中值为空的项
                 commonMethodUtil.removeEmptyItem(formData);
-                CrmAction.addCustomer(formData, function(result) {
+                CrmAction.addCustomer(formData, function(data) {
                     _this.state.isLoading = false;
-                    if (result.code === 0) {
+                    if (data.code === 0) {
                         formData.contacts0_phone = _this.props.phoneNumber;
-                        CallRecordAction.updateCallRecord(formData);
+                        CallRecordAction.updateCallRecord({...formData, id: _.get(data,'result[0].id','')});
                         message.success( Intl.get('user.user.add.success', '添加成功'));
                         _this.props.addOne();
                         _this.setState(_this.getInitialState());
                     } else {
-                        message.error(result);
+                        message.error(data);
                         _this.setState(_this.state);
                     }
                 });
@@ -383,7 +383,7 @@ var CallAddCustomerForm = createReactClass({
                             validateStatus={this.renderValidateStyle('contacts0_name')}
                             help={status.contacts0_name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.contacts0_name.errors && status.contacts0_name.errors.join(','))}
                         >
-                            <Validator rules={[{required: false,min: 1,max: 50, message: Intl.get('crm.contact.name.length', '请输入最多50个字符的姓名')}]}>
+                            <Validator rules={[{required: false,min: 1,max: 50, message: Intl.get('crm.contact.name.length', '请输入最多50个字符')}]}>
                                 <Input name="contacts0_name" placeholder={Intl.get('crm.90', '请输入姓名')} value={formData.contacts0_name}
                                     onChange={this.setField.bind(this, 'contacts0_name')}/>
                             </Validator>

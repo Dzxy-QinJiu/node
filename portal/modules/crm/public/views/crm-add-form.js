@@ -26,7 +26,7 @@ import FieldMixin from 'CMP_DIR/antd-form-fieldmixin';
 const PHONE_INPUT_ID = 'phoneInput';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
-const ADD_TITLE_HEIGHT = 70;//添加客户标题的高度
+const ADD_TITLE_HEIGHT = 70 + 24;//添加客户标题的高度+下边距marginBottom
 var CRMAddForm = createReactClass({
     displayName: 'CRMAddForm',
     mixins: [FieldMixin],
@@ -68,7 +68,8 @@ var CRMAddForm = createReactClass({
             checkNameError: false,//客户名唯一性验证出错
             checkPhoneErrorMsg: '',//联系人电话验证提示信息
             isLoadingIndustry: false,//是否正在加载行业列表
-            submitErrorMsg: ''//保存失败的错误提示
+            submitErrorMsg: '',//保存失败的错误提示
+            phoneNum: this.props.phoneNum,//外部传入的电话值
         };
     },
     propTypes: {
@@ -82,7 +83,13 @@ var CRMAddForm = createReactClass({
     componentDidMount: function() {
         this.getIndustry();
     },
-
+    componentWillReceiveProps: function(nextProps) {
+        if (nextProps.phoneNum && nextProps.phoneNum !== this.state.phoneNum) {
+            this.setState({
+                phoneNum: nextProps.phoneNum
+            });
+        }
+    },
     getIndustry: function() {
         //获取后台管理中设置的行业列表
         this.setState({isLoadingIndustry: true});
@@ -206,15 +213,24 @@ var CRMAddForm = createReactClass({
         ajax(arg).then(result => {
             if (_.isEmpty(result)) return;
             let formData = this.state.formData;
-            formData.address = result.address;
-            formData.location = result.location;
-            formData.province = result.pname;
-            formData.city = result.cityname;
-            formData.county = result.adname;
-            formData.province_code = result.pcode;
-            formData.city_code = result.citycode;
-            formData.county_code = result.adcode;
-            formData.contacts0_phone = result.tel;
+            //下面的数据都没有时，再用获取的默认数据，（以防自己先填写了下面的数据，再修改用户名时，直接给清空或替换掉的问题）
+            if (!formData.address) {
+                formData.address = result.address;
+            }
+            if (!formData.location) {
+                formData.location = result.location;
+            }
+            if (!formData.province) {
+                formData.province = result.pname;
+                formData.city = result.cityname;
+                formData.county = result.adname;
+                formData.province_code = result.pcode;
+                formData.city_code = result.citycode;
+                formData.county_code = result.adcode;
+            }
+            if (!formData.contacts0_phone) {
+                formData.contacts0_phone = result.tel;
+            }
             this.setState({formData});
         });
     },
@@ -387,7 +403,12 @@ var CRMAddForm = createReactClass({
             return (<Option key={index} value={industry}>{industry}</Option>);
         });
         //拨打电话弹屏后，再点击添加客户，自动将电话号码放入到添加客户的右侧面板内
-        var initialValue = this.props.phoneNum || '';
+        var initialValue = '';
+        if (_.get(this, 'state.formData.contacts0_phone','')){
+            initialValue = _.get(this, 'state.formData.contacts0_phone','');
+        }else if (this.state.phoneNum){
+            initialValue = this.state.phoneNum;
+        }
         const formItemLayout = {
             colon: false,
             labelCol: {span: 5},
@@ -506,7 +527,7 @@ var CRMAddForm = createReactClass({
                             required: false,
                             min: 1,
                             max: 50,
-                            message: Intl.get('crm.contact.name.length', '请输入最多50个字符的姓名')
+                            message: Intl.get('crm.contact.name.length', '请输入最多50个字符')
                         }]}>
                             <Input name="contacts0_name" placeholder={Intl.get('crm.90', '请输入姓名')}
                                 value={formData.contacts0_name}

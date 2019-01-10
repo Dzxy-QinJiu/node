@@ -52,7 +52,8 @@ exports.getUserLogList = function(req, res){
                 url += `&search=${search}`;
             }
             if (queryObj.sort_id){
-                url += `&sort_id=${queryObj.sort_id}`;
+                //sort_id中带有中阔号时不会自动编码，需要手动处理
+                url += `&sort_id=${encodeURIComponent(queryObj.sort_id)}`;
             }
             if (queryObj.load_size){
                 url += `&load_size=${queryObj.load_size}`;

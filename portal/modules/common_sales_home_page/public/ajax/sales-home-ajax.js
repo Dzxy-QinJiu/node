@@ -49,8 +49,12 @@ exports.getTodayContactCustomer = function(rangParams, pageSize, sorter) {
     var data = {
         rangParams: JSON.stringify(rangParams),
     };
+    let type = 'user';
+    if(hasPrivilege('CUSTOMER_ALL')){
+        type = 'manager';
+    }
     getTodayContactCustomerAjax = $.ajax({
-        url: '/rest/contact_customer/' + pageSize + '/' + sorter.field + '/' + sorter.order,
+        url: '/rest/contact_customer/' + type + '/' + pageSize + '/1/' + sorter.field + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
         data: data,
@@ -92,13 +96,13 @@ const AUTHS = {
     'TRANSFER_MANAGER': 'CRM_MANAGER_TRANSFER'
 };
 //最近登录的客户
-exports.getRecentLoginCustomers = function(condition, rangParams, pageSize, sorter, queryObj) {
+exports.getRecentLoginCustomers = function(condition, rangParams, pageSize, pageNum, sorter) {
     pageSize = pageSize || 10;
+    pageNum = pageNum || 1;
     sorter = sorter ? sorter : {field: 'id', order: 'ascend'};
     var data = {
         data: JSON.stringify(condition),
-        rangParams: JSON.stringify(rangParams),
-        queryObj: JSON.stringify(queryObj)
+        rangParams: JSON.stringify(rangParams)
     };
     if (hasPrivilege(AUTHS.GETALL)) {
         data.hasManageAuth = true;
@@ -106,7 +110,7 @@ exports.getRecentLoginCustomers = function(condition, rangParams, pageSize, sort
     var Deferred = $.Deferred();
 
     $.ajax({
-        url: '/rest/customer/v2/customer/range/' + pageSize + '/' + sorter.field + '/' + sorter.order,
+        url: '/rest/customer/range/' + pageSize + '/' + pageNum + '/' + sorter.field + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
         data: data,
@@ -259,23 +263,23 @@ exports.handleScheduleStatus = function(reqData) {
  *  }
  */
 let getNewDistributeCustomerAjax;
-exports.getNewDistributeCustomer = function(condition, rangParams, pageSize, sorter, queryObj) {
+exports.getNewDistributeCustomer = function(condition, rangParams, pageSize, pageNum, sorter) {
     if (getNewDistributeCustomerAjax) {
         getNewDistributeCustomerAjax.abort();
     }
     pageSize = pageSize || 20;
+    pageNum = pageNum || 1;
     sorter = sorter ? sorter : {field: 'id', order: 'ascend'};
     var data = {
         data: JSON.stringify(condition),
-        rangParams: JSON.stringify(rangParams),
-        queryObj: JSON.stringify(queryObj)
+        rangParams: JSON.stringify(rangParams)
     };
     if (hasPrivilege(AUTHS.GETALL)) {
         data.hasManageAuth = true;
     }
     var Deferred = $.Deferred();
     getNewDistributeCustomerAjax = $.ajax({
-        url: '/rest/customer/v2/customer/range/' + pageSize + '/' + sorter.field + '/' + sorter.order,
+        url: '/rest/customer/range/' + pageSize + '/' + pageNum + '/' + sorter.field + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
         data: data,

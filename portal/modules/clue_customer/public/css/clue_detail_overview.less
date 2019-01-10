@@ -24,6 +24,18 @@
         font-size: 14px;
         color:#333;
       }
+      .clue-info-detail.clue-contact-container{
+
+        .basic-edit-field form .ant-form-item .ant-input{
+          margin-left:0;
+        }
+        .ant-col-3.ant-form-item-label{
+          width: 18%;
+        }
+        .ant-col-21.ant-form-item-control-wrapper{
+          width: 80%;
+        }
+      }
       .clue-info-detail.no-handled{
         color: #cccccc;
       }
@@ -34,15 +46,20 @@
     .contact-item{
       overflow: hidden;
       margin-left:6px;
+      margin-bottom:10px;
        .contact-name{
-         float: left;
          margin-right:10px;
        }
        .contact-way{
-         margin-left: 100px;
          display: block;
-         .iconfont{
+         &>.iconfont{
+           float: left;
            margin:0 5px;
+           width: 10%;
+         }
+         .basic-edit-field{
+          float: left;
+           width: 80%;
          }
        }
     }

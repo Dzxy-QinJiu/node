@@ -51,8 +51,6 @@ class ApplyTabContent extends React.Component {
         if (approvedTypes.indexOf(approval_state) !== -1) {
             sort_field = 'consume_date';
         }
-        //如果是待审批的请求，获取到申请列表后，更新下待审批的数量。
-        // 解决通过或驳回操作失败（后台其实是成功）后，刷新没有待审批的申请但数量不变的问题
         UserApplyActions.getApplyList({
             id: this.state.lastApplyId,
             page_size: this.state.pageSize,
@@ -62,11 +60,14 @@ class ApplyTabContent extends React.Component {
             sort_field: sort_field,
             order: 'descend'
         }, (count) => {
-            //处理申请有过失败的情况，并且是筛选待审批的申请时,重新获取消息数；否则不发请求
-            if (this.state.dealApplyError === 'error' && this.state.applyListType === 'false') {
+            //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
+            if (this.state.applyListType === 'false') {
                 //触发更新待审批数
                 updateUnapprovedCount(count);
-                UserApplyActions.updateDealApplyError('success');
+                // 解决通过或驳回操作失败（后台其实是成功）后的状态更新
+                if(this.state.dealApplyError === 'error'){
+                    UserApplyActions.updateDealApplyError('success');
+                }
             }
         });
     };
@@ -419,8 +420,9 @@ class ApplyTabContent extends React.Component {
                 )
             );
             let unreadReplyList = this.state.unreadReplyList;
+            let applyListType = this.state.applyListType;
             //是否展示有未读申请的提示，后端推送过来的未读回复列表中有数据，并且是在全部类型下可展示，其他待审批、已通过等类型下不展示
-            let showUnreadTip = _.isArray(unreadReplyList) && unreadReplyList.length > 0 && this.state.applyListType === 'all' && !this.state.searchKeyword;
+            let showUnreadTip = _.isArray(unreadReplyList) && unreadReplyList.length > 0 && applyListType === 'all' && !this.state.searchKeyword;
             return (
                 <div className="searchbar clearfix">
                     <div className="apply-type-filter btn-item" id="apply-type-container">
@@ -444,20 +446,22 @@ class ApplyTabContent extends React.Component {
                             searchEvent={this.changeSearchInputValue}
                         />
                     </div>
-                    {this.state.applyListType === 'all' && !this.state.searchKeyword ? (//只有在全部申请和没有搜索时才会展示刷新和查看未读回复的按钮
+                    {!this.state.searchKeyword ? (//没有搜索时才会展示刷新和查看未读回复的按钮
                         <div className="search-btns">
-                            <span onClick={this.refreshPage}
-                                className={classNames('iconfont icon-refresh', {'has-new-apply': this.state.showUpdateTip})}
-                                title={this.state.showUpdateTip ? Intl.get('user.apply.new.refresh.tip', '有新申请，点此刷新') : Intl.get('user.apply.no.new.refresh.tip', '无新申请')}/>
-                            <div className={classNames('check-uread-reply-bg', {
-                                'active': this.state.isCheckUnreadApplyList
-                            })}>
-                                <span onClick={this.toggleUnreadApplyList.bind(this, showUnreadTip)}
-                                    className={classNames('iconfont icon-apply-message-tip', {
-                                        'has-unread-reply': showUnreadTip
-                                    })}
-                                    title={this.getUnreadReplyTitle(showUnreadTip)}/>
-                            </div>
+                            {applyListType === 'all' || applyListType === 'false' ? (//只有在全部\待审批申请下才会展示刷新按钮
+                                <span onClick={this.refreshPage}
+                                    className={classNames('iconfont icon-refresh', {'has-new-apply': this.state.showUpdateTip})}
+                                    title={this.state.showUpdateTip ? Intl.get('user.apply.new.refresh.tip', '有新申请，点此刷新') : Intl.get('user.apply.no.new.refresh.tip', '无新申请')}/>) : null}
+                            {applyListType === 'all' ? (//只有在全部申请下才会展示未读回复的按钮
+                                <div className={classNames('check-uread-reply-bg', {
+                                    'active': this.state.isCheckUnreadApplyList
+                                })}>
+                                    <span onClick={this.toggleUnreadApplyList.bind(this, showUnreadTip)}
+                                        className={classNames('iconfont icon-apply-message-tip', {
+                                            'has-unread-reply': showUnreadTip
+                                        })}
+                                        title={this.getUnreadReplyTitle(showUnreadTip)}/>
+                                </div>) : null}
                         </div>) : null}
                 </div>
             );

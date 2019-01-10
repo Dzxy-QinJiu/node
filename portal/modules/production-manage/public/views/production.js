@@ -184,6 +184,12 @@ class Production extends React.Component {
                             >
                                 {getFieldDecorator('code', {
                                     initialValue: this.props.info.code,
+                                    rules: [{
+                                        required: false,
+                                        min: 0,
+                                        max: 50,
+                                        message: Intl.get('crm.contact.name.length', '请输入最多50个字符')
+                                    }]
                                 })(
                                     <Input name="code" id="code" type="text"
                                         placeholder={Intl.get('config.product.input.code', '请输入产品编号')}/>

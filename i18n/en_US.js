@@ -73,6 +73,7 @@ var en_US = {
     'common.my.app': 'My Applications',//我的应用
     'common.filter': 'Filter',//筛选
     'common.add': 'Add ',//添加
+    'common.associate': 'Associate',//关联
     'common.image.type.tip': 'The type of image must be one of gif, jpeg, jpg, png, bmp!',//图片类型必须是gif,jpeg,jpg,png,bmp中的一种！
     'common.image.upload': 'upload',//上传
     'common.image.upload.size': 'The size of image must be less than 300 kb!',//请上传小于300kb的图片
@@ -157,7 +158,6 @@ var en_US = {
     'common.no.clue': 'There is no clue',//暂无线索
     'common.no.audit': 'There is no audit',//暂无审计日志
     'common.no.call.record': 'There is no call record',//暂无通话记录
-
 
     'common.yesno': 'whether',//是否
     'common.add.member': 'Add members',//添加成员
@@ -244,6 +244,7 @@ var en_US = {
     'common.product.name': 'Product name', // 产品名称
     'common.product': 'product',//产品
     'common.product.search.placeholder': 'Please enter the product name for search',//请输入产品名进行筛选
+    'common.or': 'Or', // 或
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -282,6 +283,11 @@ var en_US = {
     'login.load.ketao.tip': 'Download ketao APP Android',//下载客套APP安卓端
     'login.scan.ketao.qrcode.tip': 'Scan QR code to download ketao APP Android',//扫码下载客套APP安卓端
     'login.qrcode.loading': 'loading QR code...',//正在获取二维码...
+    'login.wechat.login': 'WeChat login',//微信登录
+    'login.wechat.login.error': 'WeChat login failed',//微信登录失败
+    'login.wechat.bind.error': 'WeChat binding failed',//微信绑定失败
+    'login.wechat.bind.check.error': 'Check whether or not to bind WeChat is failed',//检查是否绑定微信出错了
+
     'register.set.company.id': 'Set up company ID',//设置公司标识
     'register.valid.phone': 'Phone number verification',//验证手机
     'register.fill.account': 'Set up account',//账号设置
@@ -304,6 +310,9 @@ var en_US = {
     'register.phone.code': 'SMS verification code',//短信验证码
     'register.company.nickname': 'Company nickname',//公司名称
     'register.code.validate.expire': 'SMS verification code has expired',//短信验证码已过期
+    'register.wechat.bind.user': 'Bind existing accounts',//绑定已有账号
+    'register.wechat.register.bind': 'Registration of new accounts',//注册新账号
+    'login.wechat.register.login.error': 'WeChat register login failed',//微信号注册登录失败
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
@@ -854,6 +863,7 @@ var en_US = {
     //销售团队end
     //配置start
     'config.manage.industry.manage': 'Industry',//行业管理
+    'config.manage.add.industry.error': 'Failed to add industry',//添加行业失败
     'config.manage.reload.industry': 'Retry',//重新获取行业
     'config.manage.no.industry': 'There is no industry, please add!',//暂无行业配置，请添加！
     'config.manage.input.ip': 'Please enter correct IP(eg:192.168.1.9)',//请输入有效的IP（eg:192.168.1.9）
@@ -1234,7 +1244,7 @@ var en_US = {
     'crm.sales.clue.add.disable': '\'{label}\' tags cannot be added manually',//不能手动添加'{label}'标签
     'crm.clue.require.one': 'Telephone, mail, QQ and weChat required one',//电话、邮箱、QQ必填一项
     'crm.contact.list.failed': 'Failed to get contact list',//获取联系人列表失败
-    'crm.contact.name.length': 'Please enter a name with a maximum of 50 characters',//请输入最多50个字符的姓名
+    'crm.contact.name.length': 'Please enter not more than 50 characters',//请输入最多50个字符
     'crm.last.trace.content': 'Last Trace content',//最后跟进内容
     'crm.competing.products': 'Competing products',//竞品
     'crm.no.contact.way': 'No contact customers',//无联系方式客户
@@ -1360,6 +1370,21 @@ var en_US = {
     'crm.score.history.title': 'Historical score',//历史分数
     'crm.concern.top.set': 'Concerned customers on the top',//将关注的客户置顶
     'crm.concern.top.cancel': 'Concerned customers not on the top',//取消关注客户置顶
+    'crm.add.to.exist.customer': 'Add to existing customers',//添加到已有客户
+    'crm.select.add.contact': 'Please select or fill contact name',//请选择或输入联系人名称
+    'crm.contact.name.add': 'Add name',//添加联系人姓名
+    'crm.contact.name.none': 'No name added',//未添加姓名
+    'crm.contact.positon.none': 'No position',//未设置职位
+    'crm.contact.positon.add': 'Set positon',//设置职位
+    'crm.contact.phone.none': 'No phone',//暂无电话
+    'crm.contact.phone.add': 'Add phone',//添加电话
+    'crm.contact.qq.none': 'No QQ',//暂无QQ
+    'crm.contact.qq.add': 'Add QQ',//添加QQ
+    'crm.contact.wechat.none': 'No weChat',//暂无微信
+    'crm.contact.wechat.add': 'Add weChat',//添加微信
+    'crm.contact.email.none': 'No email',//暂无邮箱
+    'crm.contact.email.add': 'Add email',//添加邮箱
+    'crm.second.sales': 'Second Sales',//联合跟进人
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
@@ -1600,6 +1625,7 @@ var en_US = {
     'contract.189': 'Commission payment', // 提成发放
     'contract.190': 'Sales contract template', // 《销售合同模板》
     'contract.191': 'Purchase contract template', // 《采购合同模板》
+    'contract.gross.profit.can.not.exceed.repayment': 'gross profit can not exceed repayment',//毛利不能大于回款
     'contract.loadMore': 'load more',//"加载更多",
     'contract.valueTypeConfig': 'value calculate type config',//"值字段设置",
     'contract.filterCondition': 'filter conditions',//"筛选条件",
@@ -1848,7 +1874,6 @@ var en_US = {
     'rightpanel_delete_record': 'delete this record',//删除该记录
     'rightpanel_usertypeconfig': 'user type configuration',//用户类型设置
 
-
     //错误码
     'errorcode.0': 'Parameter error',//参数错误
     'errorcode.1': 'Failed to get list of members',//获取成员列表失败
@@ -1991,6 +2016,8 @@ var en_US = {
     'errorcode.147': 'The qr code has expired',//二维码已失效
     'errorcode.148': 'The call duration statistics view fails to be obtained',//电话时长统计视图获取失败
     'errorcode.149': 'The role has been allocated to sales',//该角色已经分配给销售
+    'errorcoe.different.realm': 'Different realms',//安全域不一致
+    'errorcode.invalid.wechat': 'Invalid Wechat Account',//无效的微信账号
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
     'user.user.info': 'information',//开通信息
@@ -2021,7 +2048,8 @@ var en_US = {
     'common.gross_profit_rate': 'gross profit rate', //毛利率
     'common.summation': 'summation',//合计
 
-    'company.name': '© Curtao Smart Technology 鲁ICP备18038856号',//© 客套智能科技 鲁ICP备18038856号
+    'company.name.curtao': '© Curtao Smart Technology 鲁ICP备18038856号',//© 客套智能科技 鲁ICP备18038856号
+    'company.name.eefung': '© Eefung Software 湘ICP备14007253号-1',//© 蚁坊软件 湘ICP备14007253号-1
     'companay.hotline': 'Service Hotline:400-677-0986',//服务热线: 400-677-0986
     'company.qq': 'QQ:{qq}',//企业QQ: 4006770986
     'login.fail.login': 'Login service is temporarily unavailable. Please try again later',//登录服务暂时不可用，请稍后重试
@@ -2511,7 +2539,7 @@ var en_US = {
     'leave.apply.fill.leave.reason': 'Please fill in the business trip reason',//请填写出差事由
     'leave.apply.no.filter.leave.list': 'There are no business travel applications that meet the search criteria.',//暂无符合查询条件的出差申请
     'leave.apply.detail.wait': 'Wait',//待
-    'leave.apply.sales.oppotunity': 'Sales opportunity',//销售机会
+    'leave.apply.sales.oppotunity': 'Opportunity apply',//机会申请
     'leave.apply.leave.application': 'Leave apply',//请假申请
     'leave.apply.my.worklist.apply': 'Waiting for me to approve',//待我审批
     'leave.apply.sales.opportunity.application': 'Sales opportunity application',//销售机会申请
@@ -2556,7 +2584,87 @@ var en_US = {
     'common.turn.out.time': 'turn out time',//转出时间
     'common.data.request.error': 'Data request error',//数据请求出错
     'common.turn.in.customer': 'turn in customer',//转入客户
-    'deal.stage': 'Deal stage',//阶段
+    'common.qualified.customer': 'qualified customer',//合格客户
     'common.report': 'report',//报告
+    'common.valid.time': 'valid time',//有效时间
+    'user.apply.be.canceled': 'It is revoked',//被撤销
+    'user.apply.submit.list': 'Submit apply',//提交申请
+    'user.apply.distribute.to': 'distribute to',//分配给
+    'user.apply.distribute.to.sales': 'has been distributed to sales',//已分配给销售
+    'user.wechat.unbind': 'Unbind WeChat',//解绑微信
+    'user.wechat.unbind.error': 'Unbind WeChat Failed',//解绑微信失败
+    'user.wechat.unbind.success': 'Wechat has been successfully unbound',//已成功解绑微信
+    'user.wechat.unbind.confim': 'Are you sure you want to unbind Wechat account?',//您确定要解除绑定微信账号
+    /* 订单（交易）-start*/
+    'deal.manage': 'Deal manage',//订单管理
+    'deal.list.get.failed': 'Failed to get deal list',//获取订单列表失败
+    'deal.no.data': 'No deal',//暂无订单
+    'deal.stage': 'Deal stage',//阶段
+    'deal.budget': 'Deal value(yuan)',//预算
+    'deal.no.more.tip': 'There is no more deals',//没有更多订单了
+    'deal.total.tip': 'Total: {count}',//共{count}个订单
+    'deal.total.budget.tip': 'Total: {count} yuan',//共{count}万
+    'deal.stage.select.tip': 'Please select deal stage',//请选择订单阶段
+    'deal.detail.panel.title': 'Deal Details',//订单详情
+    'deal.detail.no.products': 'No products',//暂无产品
+    'deal.no.filter.deal': 'There is no deal match condition',//没有符合条件的订单
+    'deal.drag.data.saving': 'Is saving dragged data...',//正在保存拖动的数据...
+    'deal.drag.data.disabled': 'Closed orders cannot be modified',//关闭的订单不可以修改
+    'common.individual.report': 'Individual report',//个人报告
+    'common.entry.time': 'Entry time',//入职时间
+    'common.overall.analysis': 'Overall analysis',//总体分析
+    'common.sales.performance': 'Sales performance',//销售业绩
+    'common.sales.behavior': 'Sales behavior',//销售行为
+    'common sales behavior statistics': 'Sales behavior statistics',//销售行为统计
+    'common.new.customer.login.statistics': 'New customer login statistics',//新开客户登录情况统计
+    'common.customer.active.statistics': 'Customer acive statistics',//客户活跃度统计
+    'apply.approve.modal.text.reject': ' Whether to reject this application?',//是否驳回此申请
+    'apply.approve.modal.text.pass': 'Whether to apply for this application',//是否通过此申请
+    'apply.approve.worklist': 'wait for {applyer} to approve',//待{applyer}审批
+    'apply.approve.lyrical.report': 'Lyric report',//舆情报告
+    'apply.approve.document.writing': 'Document writing',//文件撰写
+    'apply.approve.quarty.report': 'Quarterly report',//季报
+    'apply.approve.tender.documents': 'Bidding Documents',//招标文件
+    'apply.approve.bide.documents': 'Tender Documents',//投标文件
+    'apply.approve.construction.plan': 'Construction plan',//建设方案
+    'apply.approve.other.plan': 'Other files',//其他文件
+    'apply.approve.report.send': 'Public opinion report application',//舆情报告申请
+    'apply.approve.document.write': 'Document writing application',//文件撰写申请
+    'apply.approve.report.send.type': 'Report type',//报告类型
+    'apply.approve.document.write.type': 'File type',//文件类型
+    'apply.approve.report.select.type': 'Please select the type of public opinion report',//请选择舆情报告类型
+    'apply.approve.document.select.type': 'Please select a file report type',//请选择文件报告类型
+    'apply.approve.write.select.at.least.one.type': 'Please select at least one file type',//请选择至少一个文件类型
+    'apply.approve.report.remark': 'Please fill in the {type} note',//请填写{type}备注
+    'apply.approve.report.select.expected.time': 'Please select the expected time',//请选择期望成交时间
+    'apply.approve.no.condition.list': 'No eligible public opinion report',//暂无符合条件的舆情报告
+    'apply.approve.no.document.write': 'No eligible documents for writing',//暂无符合条件的文件撰写
+    'apply.approve.expect.submit.time': 'Expected submission time',//期望提交时间
+    'apply.approve.specific.report': 'special report of {customer}',//{customer}客户的专报
+    'apply.approve.import.file': 'upload files',//上传文件
+    'apply.approve.confirm.apply': 'Confirm application',//确认申请
+    'apply.approve.wait.confirm': 'To be confirmed finished by {confirmer}',//待{confirmer}确认任务完成
+    'apply.approve.wait.upload': 'Waiting for {uploader} to upload',//待{uploader}上传
+    'apply.approve.confirm.finish': 'Confirmation completed',//确认完成
+    'apply.failed.get.type.application': 'Failed to get all {type} applies',//获取全部{type}申请失败
+    'apply.failed.get.my.worklist.application': 'Failed to get applies to be approved by me',//获取由我审批的{type}申请失败
+    'apply.approver.confirm.task.done': 'Confirm the task done',//确认任务完成
+    'failed.get.reply.comment': 'Failed to get comment lists',//获取回复列表失败
+    'apply.approve.upload.no.container.space': 'Please do not has space in your file name!',//文件名称中不要含有空格！
+    'failed.delete.apply.load.approve': 'Failed to delete files',//删除文件失败！
+    'click.ctrl.upload.mutil.file': 'You can upload more than one file not larger than 50M at one time',//可同时上传多个文件，文件大小不要超过50M！
+    'apply.approve.customer.info': 'Customer Info',//客户资料
+    'apply.approve.add.files': 'Added files',//补充文件
+    'fail.apply.approve.result': 'Failed to approve',//审批失败
+    'apply.approve.upload.file.type': 'Upload {fileType}',//上传{fileType}
+    'apply.approve.continue.file.type': 'Continue to upload {fileType}',//继续上传{fileType}
+    'apply.approve.delete.this.file': 'Whether to delete this file',//是否删除此文件
+	'failed.distribute.sales.opportunity': 'Failed to distribute sales opportunity!',//分配销售机会失败！
+    'common.customer.can.not.found.because.merged': '{count} of these customers were not queried because they were merged',//其中有{count}个客户因被合并而查询不到了
+    'apply.approve.leave.am': 'am',//上午
+    'apply.approve.leave.pm': 'pm',//下午
+    'apply.approve.total.leave.time': 'Leave range',//请假时长
+    'apply.approve.total.days': 'A total of {X} day',//共{X}天
+    'common.start.end.time': 'start end time',//起止时间
 };
 export default en_US;

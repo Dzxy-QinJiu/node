@@ -55,7 +55,7 @@ class TimeSelect extends React.Component {
         var yearOptions = [];
         var curYear = moment().year();
         for (var i = 0; i <= 10; i++) {
-            yearOptions.push(<Option key={i} Value={curYear - i}>{curYear - i}年</Option>);
+            yearOptions.push(<Option key={i} value={curYear - i}>{curYear - i}{Intl.get('common.time.unit.year', '年')}</Option>);
         }
         return yearOptions;
     };

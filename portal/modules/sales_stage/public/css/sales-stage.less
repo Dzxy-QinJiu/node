@@ -5,12 +5,19 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
+//添加阶段按钮区域样式
+.sales-stage-top-div-group {
+  float: right;
+  .sales-stage-top-div {
+    float: right;
+    z-index: 101;
+    margin-top: @filter_area_margin_top;
+  }
+}
 //销售阶段管理展示区域样式
 .sales-stage-manage-container {
   padding-right: @container_padding;
   padding-left: @container_padding;
-  padding-top: @top_nav_height;
   form .ant-form-item {
     input {
       width: 275px;
@@ -141,7 +148,7 @@
 
             .sales-stage-btn-class {
               border: 0px;
-              width: 25px;
+              width: 28px;
               float: right;
               background-color: #b6c2c9;
               margin-right: 12px;
@@ -200,15 +207,6 @@
       }
     }
 
-  }
-  //添加角色按钮区域样式
-  .sales-stage-top-div-group {
-    float: right;
-    .sales-stage-top-div {
-      float: right;      
-      z-index: 101;
-      margin-top: @filter_area_margin_top;
-    }
   }
 
   .right-form-scroll-div {

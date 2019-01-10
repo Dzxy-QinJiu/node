@@ -3,24 +3,28 @@
  */
 var React = require('react');
 var language = require('../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('./modalDialog-es_VE.less');
-}else if (language.lan() == 'zh'){
+}else if (language.lan() === 'zh'){
     require('./modalDialog-zh_CN.less');
 }
+import {Icon} from 'antd';
 //require("./modalDialog.less");
 var Modal = require('react-bootstrap').Modal;
 var Button = require('react-bootstrap').Button;
 var classNames = require('classnames');
 
 class ModalDialog extends React.Component {
-    delete = () => {
-        this.props.delete();
-        this.close();
+    delete = (e) => {
+        this.props.delete(e);
+        if (!this.props.delayClose){
+            this.close();
+        }
+
     };
 
     close = () => {
-        this.props.hideModalDialog();
+        _.isFunction(this.props.hideModalDialog) && this.props.hideModalDialog();
     };
 
     render() {
@@ -43,17 +47,50 @@ class ModalDialog extends React.Component {
                     <p>{this.props.modalContent}</p>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button className="btn-ok" onClick={this.delete} >
-                        {Intl.get('common.sure')}
+                    <Button className="btn-ok" onClick={this.delete} disabled={this.props.showResultLoading} >
+                        {this.props.okText || Intl.get('common.sure')}
+                        {this.props.showResultLoading ? <Icon type="loading"/> : null}
                     </Button>
                     <Button className="btn-cancel" onClick={this.close} data-tracename={closedModalTip}>
-                        {Intl.get('common.cancel')}
+                        {this.props.cancelText || Intl.get('common.cancel')}
                     </Button>
                 </Modal.Footer>
             </Modal>
         );
     }
 }
+ModalDialog.defaultProps = {
+    delete: function() {
+
+    },
+    hideModalDialog: function() {
+
+    },
+    className: '',
+    transparentBgFlag: false,
+    closedModalTip: '',
+    modalShow: false,
+    container: null,
+    modalContent: '',
+    showResultLoading: false,
+    okText: '',
+    cancelText: '',
+    delayClose: false
+};
+ModalDialog.propTypes = {
+    delete: PropTypes.func,
+    hideModalDialog: PropTypes.func,
+    className: PropTypes.string,
+    transparentBgFlag: PropTypes.bool,
+    closedModalTip: PropTypes.string,
+    modalShow: PropTypes.bool,
+    container: PropTypes.object,
+    modalContent: PropTypes.string,
+    showResultLoading: PropTypes.bool,
+    okText: PropTypes.string,
+    cancelText: PropTypes.string,
+    delayClose: PropTypes.bool,
+};
 
 module.exports = ModalDialog;
 

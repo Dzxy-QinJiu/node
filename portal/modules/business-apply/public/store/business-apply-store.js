@@ -14,7 +14,6 @@ BusinessApplyStore.prototype.setInitState = function() {
     this.status = '';//请假申请的状态
     this.order = 'descend';
     this.page_size = 20;
-    this.lastBusinessApplyId = '';//用于下拉加载的id
     //所有申请列表
     this.applyListObj = {
         // "" loading error
@@ -43,8 +42,9 @@ BusinessApplyStore.prototype.setInitState = function() {
         //错误信息
         errorMsg: ''
     };
-    //筛选类别 'all'(全部) pass(已通过) reject(已驳回)  ongoing(待审批)
-    this.applyListType = 'all';
+    //筛选类别 'all'(全部) pass(已通过) reject(已驳回)  ongoing(待我审批)
+    this.applyListType = 'ongoing';
+    this.listenScrollBottom = false;
     this.clearData();
 };
 //清空数据
@@ -115,11 +115,12 @@ BusinessApplyStore.prototype.changeApplyAgreeStatus = function(message) {
 BusinessApplyStore.prototype.updateAllApplyItemStatus = function(updateItem) {
     var allApplyArr = this.applyListObj.list;
     this.selectedDetailItem.status = updateItem.status;
-    _.forEach(allApplyArr,(item) => {
-        if (item.id === updateItem.id){
-            item.status = updateItem.status;
-        }
+    var targetObj = _.find(allApplyArr,(item) => {
+        return item.id === updateItem.id;
     });
+    if (targetObj){
+        targetObj.status = updateItem.status;
+    }
 };
 BusinessApplyStore.prototype.afterAddApplySuccess = function(item) {
     this.applyListObj.list.unshift(item);

@@ -9,7 +9,7 @@ var uploadTimeOut = 5 * 60 * 1000;
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 const _ = require('lodash');
-const clueBaseUrl = '/rest/clue/v1';
+const clueBaseUrl = '/rest/clue/v2';
 const restApis = {
     //获取线索来源
     getClueSource: clueBaseUrl + '/clue_source/100/1',
@@ -46,7 +46,7 @@ const restApis = {
     //线索的全文搜索
     getClueFulltext: clueBaseUrl + '/query/range/fulltext/:type/:page_size/:sort_field/:order',
     //获取线索的动态
-    getClueDynamic: '/rest/customer/v2/customerdynamic/clue/:clue_id/:page_size',
+    getClueDynamic: clueBaseUrl + '/dynamic/:clue_id/:page_size',
     //根据线索的id查询线索的详情
     getClueDetailById: clueBaseUrl + '/query/clue/:clueId',
     //删除某个线索

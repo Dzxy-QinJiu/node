@@ -1,4 +1,5 @@
 @import "../../../../public/css/common-variables";
+
 @filter-width: 300px;
 .clue_customer_content {
   //线索顶部筛选区域
@@ -14,15 +15,15 @@
       float: left;
       text-align: center;
     }
-    .search-container{
+    .search-container {
       float: left;
-      .search-input-wrapper{
+      .search-input-wrapper {
         float: left;
-        .search-wrapper.collapsed{
+        .search-wrapper.collapsed {
           top: -4px;
         }
-        .search-wrapper{
-          top:-1px;
+        .search-wrapper {
+          top: -1px;
           margin-right: 10px;
           .filter-contianer .show-zone ul.collapse {
             padding: 2px 0;
@@ -35,7 +36,7 @@
           }
         }
       }
-      .search-input-container{
+      .search-input-container {
         width: auto;
         float: left;
         .search-input {
@@ -50,24 +51,24 @@
       }
     }
     .add-anlysis-handle-btns {
-      margin-right:12px;
+      margin-right: 12px;
       button {
         margin-right: 12px;
         font-size: 16px;
         color: @FILTER-BUTTON;
-        border-color:@SEARCH-INPUT-BORDER;
-        &:hover{
+        border-color: @SEARCH-INPUT-BORDER;
+        &:hover {
           color: @BUTTON-HOVER;
-          border-color:@BUTTON-HOVER;
+          border-color: @BUTTON-HOVER;
         }
       }
-      button.ant-btn-primary{
+      button.ant-btn-primary {
         background-color: @BORDER-BLUE;
         border-color: @BORDER-BLUE;
         color: #ffffff;
-        &:hover{
+        &:hover {
           color: #ffffff;
-          background-color:  @BUTTON-HOVER;
+          background-color: @BUTTON-HOVER;
           border-color: @BUTTON-HOVER;
         }
       }
@@ -82,7 +83,7 @@
     bottom: 0;
     background: @NOTICE-BACKGROUND;
     //加载中，加载完毕和出错的状态
-    .load-content, .err-content, .no-data-intro, .no-data{
+    .load-content, .err-content, .no-data-intro, .no-data {
       margin-top: 260px;
       font-size: 20px;
       color: #cecece;
@@ -94,11 +95,18 @@
         text-align: center;
         color: #999;
         font-size: 20px;
-        margin-top:10px;
+        margin-top: 10px;
+      }
+    }
+    .load-content {
+      .load8 {
+        position: relative;
+        top: 0;
+        left: 0;
       }
     }
     .clue-customer-total-tip {
-      margin-top:12px;
+      margin-top: 12px;
       margin-left: 44px;
     }
     .filter-container {
@@ -114,34 +122,33 @@
         left: 0 - @filter-width - 20;
         border-right: 1px solid transparent;
       }
-      .filter-wrapper{
-        .status-wrapper:first-child{
+      .filter-wrapper {
+        .status-wrapper:first-child {
           min-height: 0;
         }
-       .advanced-container ul.item-container{
-         margin-left: -3px;
-         margin-right: 0;
-       }
+        .advanced-container ul.item-container {
+          margin-left: -3px;
+          margin-right: 0;
+        }
       }
-      .time-range-wrap{
-        margin:10px 0;
+      .time-range-wrap {
+        margin: 10px 0;
         padding-left: 10px;
-        .consult-time{
+        .consult-time {
           font-size: 12px;
           line-height: 24px;
           font-weight: initial;
           color: #333333;
         }
-        .range-datepicker{
-          margin-top:2px;
-          .datepicker_wrap{
+        .range-datepicker {
+          margin-top: 2px;
+          .datepicker_wrap {
             position: fixed;
-            top:129px;
+            top: 129px;
             left: 103px !important;
           }
         }
       }
-
 
     }
     .content-container {
@@ -151,13 +158,12 @@
       }
     }
 
-
-    .content-block{
-      .clue-customer-list{
-        .no-more-data-tip{
+    .content-block {
+      .clue-customer-list {
+        .no-more-data-tip {
           margin-left: 20px;
           font-size: 12px;
-          .anticon-info-circle{
+          .anticon-info-circle {
             position: static;
             margin-right: 5px;
           }
@@ -188,9 +194,10 @@
       cursor: pointer;
     }
   }
-  }
-.ant-calendar{
-  width: 331px!important;
+}
+
+.ant-calendar {
+  width: 331px !important;
 }
 
 #app .customer-stage-table-wrapper.right-pannel-default {
@@ -210,8 +217,9 @@
     }
   }
 }
-.ant-select-dropdown{
-  .ant-select-dropdown-menu-item.ant-select-dropdown-menu-item-selected{
-    color:#58ABF5;
+
+.ant-select-dropdown {
+  .ant-select-dropdown-menu-item.ant-select-dropdown-menu-item-selected {
+    color: #58ABF5;
   }
 }

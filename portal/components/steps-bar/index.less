@@ -3,6 +3,11 @@
 @current-step-color: #2698f2;
 @finished-step-color: #8da9c5;
 .step-bar-component {
+  .step-current-item.step-item {
+    .step-title, .step-dot-line .step-icon {
+      cursor: default;
+    }
+  }
   .step-item {
     float: left;
     text-align: center;
@@ -17,10 +22,14 @@
       line-height: 14px;
       .step-icon {
         font-size: 10px;
+        cursor: pointer;
+        width: 12px;
+        display: inline-block;
+        vertical-align: middle;
       }
       .step-line {
         display: inline-block;
-        width: calc(50% - 5px);
+        width: calc(50% - 6px);
         height: 3px;
         border: none;
       }

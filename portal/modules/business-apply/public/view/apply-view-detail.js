@@ -6,26 +6,32 @@
 var applyBusinessDetailStore = require('../store/apply-business-detail-store');
 var ApplyViewDetailActions = require('../action/apply-view-detail-action');
 import Trace from 'LIB_DIR/trace';
-import {Alert, Icon, Input, Row, Col, Button} from 'antd';
+import {Alert, Icon, Input, Row, Col, Button,Steps} from 'antd';
+const Step = Steps.Step;
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 require('../css/business-apply-detail.less');
-import ApplyDetailRemarks from 'CMP_DIR/apply-detail-remarks';
-import ApplyDetailInfo from 'CMP_DIR/apply-detail-info';
-import ApplyDetailCustomer from 'CMP_DIR/apply-detail-customer';
-import ApplyDetailStatus from 'CMP_DIR/apply-detail-status';
-import ApplyApproveStatus from 'CMP_DIR/apply-approve-status';
-import ApplyDetailBottom from 'CMP_DIR/apply-detail-bottom';
-import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText,getApplyResultDscr} from 'PUB_DIR/sources/utils/common-method-util';
+import ApplyDetailRemarks from 'CMP_DIR/apply-components/apply-detail-remarks';
+import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
+import ApplyDetailCustomer from 'CMP_DIR/apply-components/apply-detail-customer';
+import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
+import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
+import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
+import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
+import {getApplyTopicText,getApplyResultDscr,getApplyStatusTimeLineDesc,getFilterReplyList,handleDiffTypeApply} from 'PUB_DIR/sources/utils/common-method-util';
+import {handleTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
+let userData = require('PUB_DIR/sources/user-data');
+import ModalDialog from 'CMP_DIR/ModalDialog';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
+            showBackoutConfirmType: '',//操作的确认框类型
             ...applyBusinessDetailStore.getState()
         };
     }
@@ -38,7 +44,7 @@ class ApplyViewDetail extends React.Component {
         applyBusinessDetailStore.listen(this.onStoreChange);
         if (_.get(this.props,'detailItem.afterAddReplySuccess')){
             setTimeout(() => {
-                ApplyViewDetailActions.setDetailInfoObj(this.props.detailItem);
+                ApplyViewDetailActions.setDetailInfoObjAfterAdd(this.props.detailItem);
             });
         }else if (this.props.detailItem.id) {
             this.getBusinessApplyDetailData(this.props.detailItem);
@@ -50,10 +56,13 @@ class ApplyViewDetail extends React.Component {
         var nextPropsId = nextProps.detailItem.id;
         if (_.get(nextProps,'detailItem.afterAddReplySuccess')){
             setTimeout(() => {
-                ApplyViewDetailActions.setDetailInfoObj(nextProps.detailItem);
+                ApplyViewDetailActions.setDetailInfoObjAfterAdd(nextProps.detailItem);
             });
         }else if (thisPropsId && nextPropsId && nextPropsId !== thisPropsId) {
             this.getBusinessApplyDetailData(nextProps.detailItem);
+            this.setState({
+                showBackoutConfirmType: ''
+            });
         }
     }
 
@@ -73,15 +82,15 @@ class ApplyViewDetail extends React.Component {
         }
     };
     //审批状态
-    renderApplyStatus = (detailInfo) => {
-        var applyStatus = this.getApplyStatusText(detailInfo);
+    renderApplyStatus = () => {
         var showApplyInfo = [{
             label: Intl.get('leave.apply.application.status', '审批状态'),
-            text: applyStatus,
+            renderText: this.renderApplyApproveSteps,
         }];
         return (
             <ApplyDetailInfo
                 iconClass='icon-apply-status'
+                textCls='show-time-line'
                 showApplyInfo={showApplyInfo}
             />
         );
@@ -93,14 +102,14 @@ class ApplyViewDetail extends React.Component {
             //如果申请的状态是已通过或者是已驳回的时候，就不用发请求获取回复列表，直接用详情中的回复列表
             //其他状态需要发请求请求回复列表
             if (detailItem.status === 'pass' || detailItem.status === 'reject') {
-                ApplyViewDetailActions.setApplyComment(detailItem.approve_details);
+                ApplyViewDetailActions.getBusinessApplyCommentList({id: detailItem.id});
                 ApplyViewDetailActions.getBusinessApplyDetailById({id: detailItem.id}, detailItem.status);
             } else if (detailItem.id) {
                 ApplyViewDetailActions.getBusinessApplyDetailById({id: detailItem.id});
                 ApplyViewDetailActions.getBusinessApplyCommentList({id: detailItem.id});
                 //根据申请的id获取申请的状态
                 ApplyViewDetailActions.getApplyStatusById({id: detailItem.id});
-
+                ApplyViewDetailActions.getNextCandidate({id: detailItem.id});
             }
         });
     }
@@ -149,9 +158,6 @@ class ApplyViewDetail extends React.Component {
     renderDetailApplyBlock(detailInfo) {
         var detail = detailInfo.detail || {};
         var applicant = detailInfo.applicant || {};
-        var beginDate = moment(detail.begin_time).format(oplateConsts.DATE_FORMAT);
-        var endDate = moment(detail.end_time).format(oplateConsts.DATE_FORMAT);
-        var isOneDay = beginDate === endDate;
         var customers = _.get(detail, 'customers[0]', {});
         //展示客户的地址，只展示到县区就可以，不用展示到街道
         var customersAdds = [];
@@ -163,9 +169,18 @@ class ApplyViewDetail extends React.Component {
         });
         //去掉数组中的重复元素
         customersAdds = _.uniq(customersAdds);
+        var leaveRange = handleTimeRange(_.get(detail, 'apply_time[0].start',''),_.get(detail, 'apply_time[0].end',''));
+        if (_.get(detail,'days')){
+            leaveRange += " " + Intl.get('apply.approve.total.days','共{X}天',{X: _.get(detail,'days')});
+        }
+        if (!leaveRange){
+            var begin_time = moment(detail.begin_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+            var end_time = moment(detail.end_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+        }
+
         var showApplyInfo = [{
             label: Intl.get('common.login.time', '时间'),
-            text: isOneDay ? beginDate : (beginDate + ' - ' + endDate)
+            text: leaveRange ? leaveRange : (begin_time + ' - ' + end_time)
         }, {
             label: Intl.get('user.info.login.address', '地点'),
             text: customersAdds.join('，')
@@ -180,33 +195,6 @@ class ApplyViewDetail extends React.Component {
             />
         );
     }
-
-    getApplyStatusText = (obj) => {
-        if (obj.status === 'pass') {
-            return Intl.get('user.apply.pass', '已通过');
-        } else if (obj.status === 'reject') {
-            return Intl.get('user.apply.reject', '已驳回');
-        } else {
-            if (this.state.replyStatusInfo.result === 'loading') {
-                return (<Icon type="loading"/>);
-            } else if (this.state.replyStatusInfo.errorMsg) {
-                var message = (
-                    <span>{this.state.replyStatusInfo.errorMsg}，<Icon type="reload"
-                        onClick={this.refreshApplyStatusList}
-                        title={Intl.get('common.get.again', '重新获取')}/></span>);
-                return (<Alert message={message} type="error" showIcon={true}/> );
-            } else if (_.isArray(this.state.replyStatusInfo.list)) {
-                //状态可能会有多个
-                var tipMsg = Intl.get('leave.apply.detail.wait', '待') + this.state.replyStatusInfo.list.join(',');
-                if (!this.state.replyStatusInfo.list.length || _.indexOf(this.state.replyStatusInfo.list,APPLY_STATUS.READY_APPLY) > -1){
-                    tipMsg += Intl.get('contract.10', '审核');
-                }
-                return (
-                    <span>{tipMsg}</span>
-                );
-            }
-        }
-    };
 
     renderBusinessCustomerDetail(detailInfo) {
         var detail = detailInfo.detail || {};
@@ -275,18 +263,19 @@ class ApplyViewDetail extends React.Component {
 
     viewApprovalResult = (e) => {
         Trace.traceEvent(e, '查看审批结果');
+        this.setState({
+            showBackoutConfirmType: ''
+        });
         this.getBusinessApplyDetailData(this.props.detailItem);
         //设置这条审批不再展示通过和驳回的按钮
         ApplyViewDetailActions.hideApprovalBtns();
     };
-    //重新发送
-    reSendApproval = (e) => {
-        Trace.traceEvent(e, '点击重试按钮');
-        this.submitApprovalForm();
-    };
 
     //取消发送
     cancelSendApproval = (e) => {
+        this.setState({
+            showBackoutConfirmType: ''
+        });
         Trace.traceEvent(e, '点击取消按钮');
         ApplyViewDetailActions.cancelSendApproval();
     };
@@ -296,10 +285,10 @@ class ApplyViewDetail extends React.Component {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击通过按钮');
         } else if (approval === 'reject') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击驳回按钮');
+        }else if (approval === 'cancel'){
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击撤销申请按钮');
         }
-        // var selectedDetailItem = this.state.selectedDetailItem;
-        var detailInfoObj = this.state.detailInfoObj.info;
-        ApplyViewDetailActions.approveApplyPassOrReject({id: detailInfoObj.id, agree: approval});
+        this.showConfirmModal(approval);
     };
     //渲染详情底部区域
     renderDetailBottom() {
@@ -316,10 +305,103 @@ class ApplyViewDetail extends React.Component {
                 update_time={detailInfoObj.update_time}
                 approvalText={userName + approvalDes}
                 showApproveBtn={detailInfoObj.showApproveBtn}
+                showCancelBtn={detailInfoObj.showCancelBtn}
                 submitApprovalForm={this.submitApprovalForm}
             />
         );
     }
+    renderApplyApproveSteps = () => {
+        var stepStatus = '';
+        var applicantList = _.get(this.state, 'detailInfoObj.info');
+        var replyList = getFilterReplyList(this.state);
+        var applicateName = _.get(applicantList, 'applicant.nick_name') || '';
+        var applicateTime = moment(_.get(applicantList, 'create_time')).format(oplateConsts.DATE_TIME_FORMAT);
+        var stepArr = [{
+            title: applicateName + Intl.get('user.apply.submit.list', '提交申请'),
+            description: applicateTime
+        }];
+        var currentLength = 0;
+        //过滤掉手动添加的回复
+        currentLength = replyList.length;
+        if (currentLength) {
+            _.forEach(replyList, (replyItem, index) => {
+                var descrpt = getApplyStatusTimeLineDesc(replyItem.status);
+                if (replyItem.status === 'reject') {
+                    stepStatus = 'error';
+                    currentLength--;
+                }
+                stepArr.push({
+                    title: (replyItem.nick_name || userData.getUserData().nick_name || '') + descrpt,
+                    description: moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
+                });
+            });
+        }
+        //如果下一个节点是直接主管审核
+        if (applicantList.status === 'ongoing') {
+            var candidate = this.state.candidateList,candidateName = '';
+            if (_.isArray(candidate) && candidate.length === 1){
+                candidateName = _.get(candidate,'[0].nick_name');
+            }
+            stepArr.push({
+                title: Intl.get('apply.approve.worklist','待{applyer}审批',{'applyer': candidateName}),
+                description: ''
+            });
+        }
+        return (
+            <Steps current={currentLength + 1} status={stepStatus}>
+                {_.map(stepArr, (stepItem) => {
+                    return (
+                        <Step title={stepItem.title} description={stepItem.description}/>
+                    );
+                })}
+            </Steps>
+        );
+    };
+    passOrRejectApplyApprove = (confirmType) => {
+        var detailInfoObj = this.state.detailInfoObj.info;
+        ApplyViewDetailActions.approveApplyPassOrReject({id: detailInfoObj.id, agree: confirmType});
+    };
+    renderCancelApplyApprove = () => {
+        var confirmType = this.state.showBackoutConfirmType;
+        if (confirmType){
+            var typeObj = handleDiffTypeApply(this);
+            return (
+                <ModalDialog
+                    modalShow={typeObj.modalShow}
+                    container={this}
+                    hideModalDialog={this.hideBackoutModal}
+                    modalContent={typeObj.modalContent}
+                    delete={typeObj.deleteFunction}
+                    okText={typeObj.okText}
+                    delayClose={true}
+                />
+            );
+        }else{
+            return null;
+        }
+    };
+
+    showConfirmModal = (approval) => {
+        this.setState({
+            showBackoutConfirmType: approval
+        });
+    };
+    // 隐藏确认模态框
+    hideBackoutModal = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-cancel'), '点击关闭模态框按钮');
+        this.setState({
+            showBackoutConfirmType: ''
+        });
+    };
+    // 撤销申请
+    cancelApplyApprove = (e) => {
+        e.stopPropagation();
+        Trace.traceEvent(e, '点击撤销按钮');
+        let backoutObj = {
+            id: this.props.detailItem.id,
+        };
+        ApplyViewDetailActions.cancelApplyApprove(backoutObj);
+    };
 
     //渲染申请单详情
     renderApplyDetailInfo() {
@@ -342,7 +424,7 @@ class ApplyViewDetail extends React.Component {
                         {this.renderDetailApplyBlock(detailInfo)}
                         {/*渲染客户详情*/}
                         {_.isArray(_.get(detailInfo, 'detail.customers')) ? this.renderBusinessCustomerDetail(detailInfo) : null}
-                        {this.renderApplyStatus(detailInfo)}
+                        {this.renderApplyStatus()}
                         <ApplyDetailRemarks
                             detailInfo={detailInfo}
                             replyListInfo={this.state.replyListInfo}
@@ -355,8 +437,35 @@ class ApplyViewDetail extends React.Component {
 
                 </div>
                 {this.renderDetailBottom()}
+                {this.renderCancelApplyApprove()}
             </div>
         );
+    }
+    renderApplyApproveStatus(){
+        var showLoading = false,approveSuccess = false, approveError = false,applyResultErrorMsg = '',
+            confirmType = this.state.showBackoutConfirmType,resultType = {};
+        if (confirmType === 'cancel'){
+            resultType = this.state.backApplyResult;
+        }else if(confirmType === 'pass' || confirmType === 'reject') {
+            resultType = this.state.applyResult;
+        }else{
+            return;
+        }
+        showLoading = resultType.submitResult === 'loading';
+        approveSuccess = resultType.submitResult === 'success';
+        approveError = resultType.submitResult === 'error';
+        applyResultErrorMsg = resultType.errorMsg;
+        var typeObj = handleDiffTypeApply(this);
+        return <ApplyApproveStatus
+            showLoading={showLoading}
+            approveSuccess={approveSuccess}
+            viewApprovalResult={this.viewApprovalResult}
+            approveError={approveError}
+            applyResultErrorMsg={applyResultErrorMsg}
+            reSendApproval={typeObj.deleteFunction}
+            cancelSendApproval={this.cancelSendApproval.bind(this, confirmType)}
+            container={this}
+        />;
     }
 
     render() {
@@ -364,8 +473,9 @@ class ApplyViewDetail extends React.Component {
         if (this.props.showNoData) {
             return null;
         }
+        var divHeight = $(window).height() - TOP_NAV_HEIGHT;
         return (
-            <div className='col-md-8 business_apply_detail_wrap' data-tracename="出差审批详情界面">
+            <div className='col-md-8 business_apply_detail_wrap' style={{'height': divHeight}} data-tracename="出差审批详情界面">
                 <ApplyDetailStatus
                     showLoading={this.state.detailInfoObj.loadingResult === 'loading'}
                     showErrTip={this.state.detailInfoObj.loadingResult === 'error'}
@@ -374,16 +484,8 @@ class ApplyViewDetail extends React.Component {
                     showNoData={this.props.showNoData}
                 />
                 {this.renderApplyDetailInfo()}
-                <ApplyApproveStatus
-                    showLoading={this.state.applyResult.submitResult === 'loading'}
-                    approveSuccess={this.state.applyResult.submitResult === 'success'}
-                    viewApprovalResult={this.viewApprovalResult}
-                    approveError={this.state.applyResult.submitResult === 'error'}
-                    applyResultErrorMsg={this.state.applyResult.errorMsg}
-                    reSendApproval={this.reSendApproval}
-                    cancelSendApproval={this.cancelSendApproval}
-                    container={this}
-                />
+                {this.renderApplyApproveStatus()}
+
                 {/*该客户下的用户列表*/}
                 {
                     this.state.isShowCustomerUserListPanel ?
@@ -398,7 +500,6 @@ class ApplyViewDetail extends React.Component {
                             />
                         </RightPanel> : null
                 }
-
             </div>
 
         );

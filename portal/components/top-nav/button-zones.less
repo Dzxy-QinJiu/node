@@ -1,0 +1,25 @@
+.button-zones {
+  position: fixed;
+  z-index: 11;
+  top: 0;
+  right: 0;
+  height: 64px;
+  background: #fff;
+  font-size: 16px;
+  &:before {
+    content: " ";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 10px;
+    border-bottom: 1px solid #DEDFE3;
+  }
+  &.fixed-position{
+    top: 63px;
+    left: 85px;
+    right: auto;
+    &:before {
+      border-bottom: none;
+    }
+  }
+}

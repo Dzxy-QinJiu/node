@@ -13,7 +13,7 @@ var GeminiScrollBar = require('../../../../components/react-gemini-scrollbar');
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
 import {LITERAL_CONSTANT, FIRSR_SELECT_DATA} from 'PUB_DIR/sources/utils/consts';
 //顶部导航
-var TopNav = require('../../../../components/top-nav');
+import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 var classnames = require('classnames');
 var AppUserUtil = require('../util/app-user-util');
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -123,10 +123,13 @@ class LogView extends React.Component {
         let secondSelectValue = this.state.secondSelectValue;
         let params = {};
         if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && teamList.length > 1) { // 团队时
-            if (this.state.secondSelectValue === LITERAL_CONSTANT.ALL){//选择全部团队时，把所有团队的id传过去
-                let teamIdArray = _.map(teamList, 'id');
-                params.sale_team_ids = teamIdArray;
-            }else { // 具体团队时
+            //选全部团队时, 销售领导需要传他能看的所有团队的id,管理员、运营要看所有的审计日志，包括不在团队里的，所以什么都不用传
+            if (this.state.secondSelectValue === LITERAL_CONSTANT.ALL) {
+                if (!userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
+                    let teamIdArray = _.map(teamList, 'id');
+                    params.sale_team_ids = teamIdArray;
+                }
+            } else { //选择具体团队时，传团队及下级团队的团队id
                 let secondSelectTeamId = this.getTeamOrMemberId(teamList, secondSelectValue, true);
                 params.sale_team_ids = secondSelectTeamId;
             }
@@ -644,20 +647,19 @@ class LogView extends React.Component {
         var appOptions = this.getAppOptions();
         return (
             <div className="user_audit_log_container">
-                <TopNav>
-                    <TopNav.MenuList />
+                <ButtonZones>
                     <div className="user_audit_log_header">
+                        {/**
+                         * 团队和成员筛选框
+                         * */}
+                        <div className="team-member-select">
+                            {
+                                this.state.teamList.list.length && !userData.getUserData().isCommonSales ?
+                                    this.renderTeamMembersSelect() :
+                                    null
+                            }
+                        </div>
                         <div className="user_audit_log_select_time btn-item" data-tracename="时间筛选">
-                            {/**
-                             * 团队和成员筛选框
-                             * */}
-                            <div className="team-member-select">
-                                {
-                                    this.state.teamList.list.length && !userData.getUserData().isCommonSales ?
-                                        this.renderTeamMembersSelect() :
-                                        null
-                                }
-                            </div>
                             <DatePicker
                                 disableDateAfterToday={true}
                                 dateSelectRange={THREE_MONTH_TIME_RANGE}
@@ -697,7 +699,7 @@ class LogView extends React.Component {
                             />
                         </div>
                         <div className="user_audit_log_all">
-                            <Button onClick={this.handleRefresh} className="btn-item">{Intl.get('common.refresh', '刷新')}</Button>  
+                            <Button onClick={this.handleRefresh} className="btn-item">{Intl.get('common.refresh', '刷新')}</Button>
                         </div>
                         <span className="refresh-btn customize-btn btn-item">
                             <i
@@ -706,9 +708,9 @@ class LogView extends React.Component {
                                 data-tracename="点击自定义表格列按钮"
                                 title={Intl.get('common.table.customize', '自定义表格列')}
                             ></i>
-                        </span>                       
+                        </span>
                     </div>
-                </TopNav>
+                </ButtonZones>
 
             </div>
         );

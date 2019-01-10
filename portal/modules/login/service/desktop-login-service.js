@@ -4,6 +4,7 @@ var config = require('../../../../conf/config');
 //后端国际化
 let BackendIntl = require('../../../lib/utils/backend_intl');
 const ipUtil = require('../../../lib/utils/common-utils').ip;
+let appUtils = require('../util/appUtils');
 
 //定义url
 var urls = {
@@ -38,7 +39,19 @@ var urls = {
     //注册新公司账号
     registerAccount: '/rest/open/resource/organization',
     //短信验证码的验证
-    validatePhoneCode: 'rest/open/resource/verificationcode/check'
+    validatePhoneCode: 'rest/open/resource/verificationcode/check',
+    //检查微信是否已绑定客套账号
+    checkWechatIsBindUrl: '/auth2/authc/social/check',
+    //通过微信的unionId登录
+    wechatLoginByUnionIdUrl: '/auth2/authc/social/login',
+    //注册新用户绑定微信号并登录
+    registBindWechatLoginUrl: '/auth2/authc/social/register',
+    //已有用户绑定微信账号
+    bindWechatUrl: '/auth2/rs/self/social/binding',
+    //解绑微信
+    unbindWechatUrl: '/auth2/rs/self/social/unbind',
+    //登录后判断是否绑定微信
+    checkLoginWechatIsBindUrl: '/auth2/rs/self/social?platform=wechat'
 };
 //验证码的高和宽
 var captcha = {
@@ -60,7 +73,8 @@ exports.login = function(req, res, username, password, captchaCode) {
             req: req,
             res: res,
             headers: {
-                session_id: req.sessionID
+                session_id: req.sessionID,
+                realm: global.config.loginParams.realm
             },
             //后端要求用form的post提交
             form: formData
@@ -77,6 +91,9 @@ exports.loginWithTicket = function(req, res, ticket) {
         url: urls.loginWithTicket,
         req: req,
         res: res,
+        headers: {
+            realm: global.config.loginParams.realm
+        },
         form: {
             ticket: ticket
         }
@@ -85,6 +102,7 @@ exports.loginWithTicket = function(req, res, ticket) {
         timeout: loginTimeout
     });
 };
+
 /**
  * 登录超时处理
  */
@@ -93,6 +111,7 @@ function loginTimeout(emitter, data) {
         emitter.emit('error', data);
     }
 }
+
 /*
  登录成功处理
  */
@@ -107,6 +126,7 @@ function loginSuccess(emitter, data) {
         }
     }
 }
+
 //处理返回用户信息
 function getLoginResult(data) {
     //前端登录后所需数据结构
@@ -130,9 +150,10 @@ function getLoginResult(data) {
     if (userData) {
         //realm_id
         loginResult.auth.realm_id = userData.realm_id;//如果managed_realms不存在（curtao会不存在），就用realm_id
-        if (userData.managed_realms && userData.managed_realms.length > 0) {
-            loginResult.auth.realm_id = userData.managed_realms[0];
-        }
+        // managed_realms已不存在，先注释掉，已备之后再用
+        // if (userData.managed_realms && userData.managed_realms.length > 0) {
+        //     loginResult.auth.realm_id = userData.managed_realms[0];
+        // }
         var userClients = userData.user_client;
         if (userClients && userClients.length > 0) {
             var userClient = userClients[0];
@@ -163,7 +184,8 @@ function getLoginResult(data) {
 exports.getLoginCaptcha = function(req, res, user_name, type) {
     var url = urls.getLoginCaptcha;
     var headers = {
-        session_id: req.sessionID
+        session_id: req.sessionID,
+        realm: global.config.loginParams.realm
     };
     if (type) {
         url = urls.getResetPasswordCaptcha;
@@ -190,7 +212,8 @@ exports.getLoginCaptcha = function(req, res, user_name, type) {
 exports.refreshLoginCaptcha = function(req, res, user_name, type) {
     var url = urls.refreshLoginCaptcha;
     var headers = {
-        session_id: req.sessionID
+        session_id: req.sessionID,
+        realm: global.config.loginParams.realm
     };
 
     if (type) {
@@ -244,7 +267,8 @@ exports.checkContactInfoExists = function(req, res) {
             req: req,
             res: res,
             headers: {
-                session_id: req.sessionID
+                session_id: req.sessionID,
+                realm: global.config.loginParams.realm
             }
         }, null);
 };
@@ -265,6 +289,7 @@ exports.getOperateCode = function(req, res, user_name, captcha) {
                 session_id: req.sessionID,
                 remote_addr: ipUtil.getServerAddresses(),
                 user_ip: ipUtil.getClientIp(req),
+                realm: global.config.loginParams.realm
             },
             form: {
                 user_name: user_name,
@@ -288,6 +313,7 @@ exports.sendResetPasswordMsg = function(req, res, user_name, send_type, operate_
             headers: {
                 remote_addr: ipUtil.getServerAddresses(),
                 user_ip: ipUtil.getClientIp(req),
+                realm: global.config.loginParams.realm
             },
             form: {
                 user_name: user_name,
@@ -312,6 +338,7 @@ exports.getTicket = function(req, res, user_id, code) {
             headers: {
                 remote_addr: ipUtil.getServerAddresses(),
                 user_ip: ipUtil.getClientIp(req),
+                realm: global.config.loginParams.realm
             },
             form: {
                 user_id,
@@ -335,6 +362,7 @@ exports.resetPassword = function(req, res, user_id, ticket, new_password) {
             headers: {
                 remote_addr: ipUtil.getServerAddresses(),
                 user_ip: ipUtil.getClientIp(req),
+                realm: global.config.loginParams.realm
             },
             form: {
                 user_id,
@@ -353,7 +381,10 @@ exports.getLoginQRCode = function(req, res) {
         {
             url: urls.getLoginQRCode,
             req: req,
-            res: res
+            res: res,
+            headers: {
+                realm: global.config.loginParams.realm
+            },
         }, null);
 };
 
@@ -367,6 +398,9 @@ exports.loginByQRCode = function(req, res, qrcode) {
             url: urls.loginByQRCode,
             req: req,
             res: res,
+            headers: {
+                realm: global.config.loginParams.realm
+            },
             //后端要求用form的post提交
             form: {
                 screen_code: qrcode
@@ -423,5 +457,173 @@ exports.validatePhoneCode = function(req, res) {
             res: res,
         }, req.query);
 };
+//微信登录页面
+exports.wechatLoginPage = function(req, res) {
+    let qrconnecturl = 'https://open.weixin.qq.com/connect/qrconnect?appid=' + appUtils.WECHAT_APPID
+        + '&redirect_uri=' + encodeURIComponent('https://ketao.antfact.com/login/wechat')
+        + '&response_type=code&scope=snsapi_login&state=' + req.sessionID;
+    // let params = {
+    //     appid: WECHAT_APPID,
+    //     redirect_uri: encodeURIComponent('https://ketao.antfact.com/login/wechat'),
+    //     response_type: 'code',
+    //     scope: 'snsapi_login',
+    //     state: req.sessionID
+    // };
+    // Object.keys(params).forEach(function(key) {
+    //     qrconnecturl += key + '=' + params[key] + '&';
+    // });
+    // qrconnecturl = qrconnecturl.slice(qrconnecturl.length - 1, 1);
+    return restUtil.baseRest.get(
+        {
+            url: qrconnecturl,
+            req: req,
+            res: res
+        });
+};
+
+//通过微信的unionId登录
+exports.wechatLoginByUnionId = function(req, res, unionId) {
+    return restUtil.appAuthRest.post(
+        {
+            url: urls.wechatLoginByUnionIdUrl,
+            req: req,
+            res: res,
+            headers: {
+                realm: global.config.loginParams.realm
+            },
+            form: {
+                open_id: unionId,
+                platform: 'wechat'
+            },
+        }, null, {
+            success: loginSuccess,
+            timeout: loginTimeout
+        });
+};
+
+//检查微信是否已绑定客套账号
+exports.checkWechatIsBind = function(req, res, unionId) {
+    return restUtil.appAuthRest.get(
+        {
+            url: urls.checkWechatIsBindUrl,
+            req: req,
+            res: res,
+            headers: {
+                realm: global.config.loginParams.realm
+            },
+        }, {
+            open_id: unionId,
+            platform: 'wechat'
+        });
+};
+
+//微信登录
+exports.loginWithWechat = function(req, res, code) {
+    let access_token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token';
+    let params = {
+        appid: appUtils.WECHAT_APPID,
+        secret: appUtils.WECHAT_SECRET,
+        code: code,
+        grant_type: 'authorization_code'
+    };
+    // Object.keys(params).forEach(function(key) {
+    //     access_token_url += key + '=' + params[key] + '&';
+    // });
+    // access_token_url = access_token_url.slice(access_token_url.length - 1, 1);
+    return restUtil.baseRest.get(
+        {
+            url: access_token_url,
+            req: req,
+            res: res,
+        }, params);
 
 
+};
+//微信小程序登录
+exports.loginWithWechatMiniprogram = function(req, res, code) {
+    let access_token_url = 'https://api.weixin.qq.com/sns/jscode2session';
+    let params = {
+        appid: appUtils.MINI_PROGRAM_APPID,
+        secret: appUtils.MINI_PROGRAM_SECRET,
+        js_code: code,
+        grant_type: 'authorization_code'
+    };
+    return restUtil.baseRest.get(
+        {
+            url: access_token_url,
+            req: req,
+            res: res,
+        }, params);
+};
+
+//注册新用户绑定微信号并登录
+exports.registBindWechatLogin = function(req, res, formObj) {
+    let formData = {
+        user_name: formObj.user_name,
+        open_id: formObj.union_id,
+        valid_days: 30,//授权有效期(Integer),默认先写死30天
+        platform: 'wechat'
+    };
+    //密码是可选项，可填可不填
+    if (formObj.password) {
+        formData.password = formObj.password;
+    }
+    return restUtil.appAuthRest.post(
+        {
+            url: urls.registBindWechatLoginUrl,
+            req: req,
+            res: res,
+            headers: {
+                realm: global.config.loginParams.realm
+            },
+            form: formData,
+        }, null, {
+            success: loginSuccess,
+            timeout: loginTimeout
+        });
+};
+
+//已有账号绑定微信
+exports.bindWechat = function(req, res, unionId) {
+    return restUtil.authRest.post(
+        {
+            url: urls.bindWechatUrl,
+            req: req,
+            res: res,
+            headers: {
+                realm: global.config.loginParams.realm
+            },
+            form: {
+                open_id: unionId,
+                platform: 'wechat'
+            }
+        });
+};
+//解绑微信
+exports.unbindWechat = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: urls.unbindWechatUrl,
+            req: req,
+            res: res,
+            headers: {
+                realm: global.config.loginParams.realm
+            },
+            form: {
+                platform: 'wechat'
+            }
+        });
+};
+
+//登录后判断是否已绑定微信
+exports.checkLoginWechatIsBind = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: urls.checkLoginWechatIsBindUrl,
+            req: req,
+            res: res,
+            headers: {
+                realm: global.config.loginParams.realm
+            }
+        });
+};

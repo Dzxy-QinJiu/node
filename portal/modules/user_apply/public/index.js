@@ -16,16 +16,12 @@ require('../../app_user_manage/public/css/main-zh_CN.less');
 
 var ApplyView = require('./views/apply-view');
 import queryString from 'query-string';
-import TopNav from 'CMP_DIR/top-nav';
 
 class UserApply extends React.Component {
     render() {
         const query = queryString.parse(this.props.location.search);
         return (
             <div className="user_apply_page" data-tracename="用户审批">
-                <TopNav>
-                    <TopNav.MenuList />
-                </TopNav>
                 <ApplyView applyId={query && query.id} {...this.props}/>
             </div>
         );

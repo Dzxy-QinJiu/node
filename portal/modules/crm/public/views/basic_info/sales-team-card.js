@@ -9,8 +9,9 @@ import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import CrmAction from '../../action/crm-actions';
-import { getMyTeamTreeAndFlattenList } from 'PUB_DIR/sources/utils/common-data-util';
-import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 //展示的类型
 const DISPLAY_TYPES = {
     TRANSFER: 'transfer',//转出销售
@@ -33,30 +34,40 @@ class SalesTeamCard extends React.Component {
     };
 
     state = {
-        list: [],//下拉列表中的数据
-        displayType: DISPLAY_TYPES.TEXT,
-        isLoadingList: true,//正在获取下拉列表中的数据
-        enableEdit: this.props.enableEdit,
-        enableTransfer: this.props.enableTransfer,
-        isMerge: this.props.isMerge,
-        customerId: this.props.customerId,
-        userName: this.props.userName,
-        userId: this.props.userId,
-        salesTeam: this.props.salesTeam,
-        salesTeamId: this.props.salesTeamId,
+        ...this.getInitStateData(this.props),
         salesManList: [],
-        salesTeamList: [],
-        loading: false,
-        submitErrorMsg: '',
-        salesRole: '',
-        mySubTeamList: []//我所在团队及下级团队列表
+        mySubTeamList: [],//我所在团队及下级团队列表
     };
+
+    getInitStateData(props){
+        return {
+            list: [],//下拉列表中的数据
+            displayType: DISPLAY_TYPES.TEXT,
+            isLoadingList: true,//正在获取下拉列表中的数据
+            enableEdit: props.enableEdit,
+            enableTransfer: props.enableTransfer,
+            isMerge: props.isMerge,
+            customerId: props.customerId,
+            userName: props.userName,
+            userId: props.userId,
+            salesTeam: props.salesTeam,
+            salesTeamId: props.salesTeamId,
+            salesTeamList: [],
+            loading: false,
+            submitErrorMsg: '',
+            salesRole: '',
+            secondUserId: '',//联合跟进人
+            secondUserName: '',
+            secondTeamId: '',//联合跟进人所在团队
+            secondTeamName: ''
+        };
+    }
 
     componentDidMount() {
         //有修改所属销售或转出客户的权限时
         if (this.state.enableEdit || this.state.enableTransfer) {
             //获取团队和对应的成员列表（管理员：所有，销售：所在团队及其下级团队和对应的成员列表）
-            if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)){
+            if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
                 // 管理员角色（可以将客户分给除销售外的其他人）
                 this.getAllUserList();
             } else { //销售角色
@@ -64,7 +75,7 @@ class SalesTeamCard extends React.Component {
             }
         }
         //有修改所属团队的权限时
-        if(this.hasEditTeamPrivilege()){
+        if (this.hasEditTeamPrivilege()) {
             //获取我所在团队及下级团队列表
             getMyTeamTreeAndFlattenList(({teamTree, teamList}) => {
                 this.setState({mySubTeamList: teamList});
@@ -74,32 +85,20 @@ class SalesTeamCard extends React.Component {
             //获取销售对应的角色
             this.getSalesRoleByMemberId(this.state.userId);
         }
+        //获取销售及联合跟进人
+        this.getSalesByCustomerId(this.state.customerId);
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.customerId !== this.state.customerId) {
             //切换客户时，重新设置state数据
-            this.setState({
-                isMerge: nextProps.isMerge,
-                customerId: nextProps.customerId,
-                userName: nextProps.userName,
-                userId: nextProps.userId,
-                salesTeam: nextProps.salesTeam,
-                salesTeamId: nextProps.salesTeamId,
-                salesTeamList: this.getSalesTeamList(nextProps.userId, this.state.salesManList),
-                enableEdit: nextProps.enableEdit,
-                enableTransfer: nextProps.enableTransfer,
-                list: [],//下拉列表中的数据
-                displayType: DISPLAY_TYPES.TEXT,
-                isLoadingList: true,//正在获取下拉列表中的数据
-                loading: false,
-                submitErrorMsg: '',
-                salesRole: ''
-            });
+            this.setState(this.getInitStateData(nextProps));
             if (!nextProps.hideSalesRole) {
                 //获取销售对应的角色
                 this.getSalesRoleByMemberId(nextProps.userId);
             }
+            //获取销售及联合跟进人
+            this.getSalesByCustomerId(nextProps.customerId);
         }
         //由于是否能转出客户的标识需要通过接口获取团队数据后来判断重现赋值，所以如果变了需要重新赋值
         if (this.state.enableTransfer !== nextProps.enableTransfer) {
@@ -173,6 +172,34 @@ class SalesTeamCard extends React.Component {
             }
         });
     };
+    //获取客户的销售及联合跟进人
+    getSalesByCustomerId = (customerId) => {
+        if (!customerId) return;
+        $.ajax({
+            url: '/rest/customer/sales/' + customerId,
+            type: 'get',
+            dateType: 'json',
+            success: (salesList) => {
+                //不是所属销售的即为联合跟进人
+                let secondSales = _.find(salesList, sales => sales.user_id !== this.state.userId);
+                this.setState({
+                    secondUserId: _.get(secondSales, 'user_id', ''),//联合跟进人
+                    secondUserName: _.get(secondSales, 'user_name', ''),
+                    secondTeamId: _.get(secondSales, 'team_id', ''),//联合跟进人所在团队
+                    secondTeamName: _.get(secondSales, 'team_name', '')
+                });
+            },
+            error: (errorMsg) => {
+                this.setState({
+                    secondUserId: '',//联合跟进人
+                    secondUserName: '',
+                    secondTeamId: '',//联合跟进人所在团队
+                    secondTeamName: ''
+                });
+            }
+        });
+    };
+
 
     // 获取普通销售所在团队里的成员列表
     getSalesTeamMembers = () => {
@@ -208,10 +235,10 @@ class SalesTeamCard extends React.Component {
         //销售id和所属团队的id
         let idArray = idStr.split('&&');
         if (_.isArray(idArray) && idArray.length) {
-            if (idArray.length === 1){
+            if (idArray.length === 1) {
                 params.userId = idArray[0];
                 params.salesTeamId = '';
-            }else{
+            } else {
                 params.userId = idArray[0];
                 params.salesTeamId = idArray[1];
             }
@@ -243,7 +270,7 @@ class SalesTeamCard extends React.Component {
     //修改团队
     onTeamChange = (teamId) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '修改所属团队');
-        if(teamId){
+        if (teamId) {
             let team = _.find(this.state.mySubTeamList, item => item.group_id === teamId);
             this.setState({salesTeamId: teamId, salesTeam: _.get(team, 'group_name', ''), userId: '', userName: ''});
         }
@@ -331,7 +358,7 @@ class SalesTeamCard extends React.Component {
         }
     };
     //只提交修改的团队时（分配客户给团队）
-    onlySubmitEditTeam(){
+    onlySubmitEditTeam() {
         let submitData = {
             id: this.state.customerId,
             user_id: '',
@@ -344,7 +371,7 @@ class SalesTeamCard extends React.Component {
             loading: false
         });
         let type = 'user';//CRM_USER_UPDATE_CUSTOMER_SALES_TEAM
-        if(hasPrivilege(PRIVILEGES.EDIT_TEAM_MANAGER)){
+        if (hasPrivilege(PRIVILEGES.EDIT_TEAM_MANAGER)) {
             type = 'manager';
         }
         $.ajax({
@@ -353,11 +380,11 @@ class SalesTeamCard extends React.Component {
             type: 'put',
             data: submitData,
             success: (data) => {
-                if(data){
+                if (data) {
                     this.backToDisplay();
                     //清空列表中的销售人员
                     this.props.modifySuccess(submitData);
-                } else{
+                } else {
                     this.setState({
                         loading: false,
                         submitErrorMsg: Intl.get('member.change.group.failed', '修改所属团队失败')
@@ -412,9 +439,10 @@ class SalesTeamCard extends React.Component {
         });
     };
     //是否有修改所属团的权限
-    hasEditTeamPrivilege(){
+    hasEditTeamPrivilege() {
         return hasPrivilege(PRIVILEGES.EDIT_TEAM_MANAGER) || hasPrivilege(PRIVILEGES.EDIT_TEAM_USER);
     }
+
     renderTitle = () => {
         return (
             <div className="sales-team-show-block">
@@ -425,7 +453,8 @@ class SalesTeamCard extends React.Component {
                         {/*{this.state.salesTeam ? ` - ${this.state.salesTeam}` : ''}*/}
                     </span>
                     {this.state.enableEdit || this.state.enableTransfer ? (
-                        <DetailEditBtn title={Intl.get('common.edit', '编辑')} onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}/>) : null}
+                        <DetailEditBtn title={Intl.get('common.edit', '编辑')}
+                            onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}/>) : null}
                 </div>
                 {this.props.hideSalesRole ? null :
                     <div className="sales-role">
@@ -440,14 +469,23 @@ class SalesTeamCard extends React.Component {
                         {this.state.salesTeam}
                     </span>
                     {this.hasEditTeamPrivilege() && !this.state.isMerge ? (
-                        <DetailEditBtn title={Intl.get('common.edit', '编辑')} onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT_TEAM)}/>) : null}
+                        <DetailEditBtn title={Intl.get('common.edit', '编辑')}
+                            onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT_TEAM)}/>) : null}
                 </div>
-
+                {this.state.secondUserName ? (
+                    <div className="sales-team">
+                        <span className="sales-team-label">{Intl.get('crm.second.sales', '联合跟进人')}:</span>
+                        <span className="sales-team-text">
+                            {this.state.secondUserName}
+                            {this.state.secondTeamName ? ` - ${this.state.secondTeamName}` : null}
+                        </span>
+                    </div>
+                ) : null}
             </div>
         );
     };
     //只修改团队的界面渲染
-    renderOnlyChangeTeamSelect(){
+    renderOnlyChangeTeamSelect() {
         let teamOptions = _.map(this.state.mySubTeamList, (item, key) => {
             return (<Option value={item.group_id} key={key}>{item.group_name}</Option>);
         });
@@ -471,35 +509,16 @@ class SalesTeamCard extends React.Component {
     }
 
     //修改销售的界面渲染
-    renderChangeSalesSelect(){
-        let dataList = [];
-        //展示其所在团队的成员列表
-        this.state.salesManList.forEach(function(salesman) {
-            let teamArray = salesman.user_groups;
-            //一个销售属于多个团队的处理（旧数据中存在这种情况）
-            if (_.isArray(teamArray) && teamArray.length) {
-                //销售与所属团队的组合数据，用来区分哪个团队中的销售
-                teamArray.forEach(team => {
-                    dataList.push({
-                        name: `${salesman.user_info.nick_name} - ${team.group_name}`,
-                        value: `${salesman.user_info.user_id}&&${team.group_id}`
-                    });
-                });
-            }else{
-                dataList.push({
-                    name: `${salesman.user_info.nick_name}`,
-                    value: `${salesman.user_info.user_id}`
-                });
-            }
-        });
+    renderChangeSalesSelect() {
+        let dataList = formatSalesmanList(this.state.salesManList);
         //销售人员与销售团队下拉列表的填充内容
         let salesmanOptions = dataList.map(function(item) {
             return (<Option value={item.value} key={item.value}>{item.name}</Option>);
         });
         var selectValue = '';
-        if (this.state.salesTeamId && !userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)){
+        if (this.state.salesTeamId && !userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
             selectValue = `${this.state.userId}&&${this.state.salesTeamId}`;
-        }else{
+        } else {
             selectValue = `${this.state.userId}`;
         }
         return (
@@ -519,6 +538,7 @@ class SalesTeamCard extends React.Component {
             </div>
         );
     }
+
     renderContent = () => {
         if (this.state.displayType === DISPLAY_TYPES.TEXT) {
             return null;
@@ -536,15 +556,15 @@ class SalesTeamCard extends React.Component {
         this.setState({displayType: DISPLAY_TYPES.TRANSFER});
     };
     //编辑销售及团队时的按钮渲染
-    renderEditButtons(){
+    renderEditButtons() {
         //点转出后，渲染确认转出按钮
-        if (this.state.displayType === DISPLAY_TYPES.TRANSFER){
+        if (this.state.displayType === DISPLAY_TYPES.TRANSFER) {
             return (
                 <Button className="button-transfer-confirm" type="primary"
                     onClick={this.handleSubmit.bind(this)}>
                     {Intl.get('crm.sales.transfer.confirm', '确认转出')}
                 </Button>);
-        } else if (this.state.displayType === DISPLAY_TYPES.EDIT_TEAM){
+        } else if (this.state.displayType === DISPLAY_TYPES.EDIT_TEAM) {
             //将客户分配团队时，渲染分配按钮
             return (
                 <Button className="button-edit-team" type="primary"
@@ -569,11 +589,13 @@ class SalesTeamCard extends React.Component {
             );
         }
     }
+
     renderHandleSaveBtns = () => {
         let isTransfer = this.state.displayType === DISPLAY_TYPES.TRANSFER;
         let isEditTeam = this.state.displayType === DISPLAY_TYPES.EDIT_TEAM;
         return (<div className="button-container">
-            <Button className="button-cancel" onClick={this.changeDisplayType.bind(this, isTransfer ? DISPLAY_TYPES.EDIT : DISPLAY_TYPES.TEXT)}>
+            <Button className="button-cancel"
+                onClick={this.changeDisplayType.bind(this, isTransfer ? DISPLAY_TYPES.EDIT : DISPLAY_TYPES.TEXT)}>
                 {Intl.get('common.cancel', '取消')}
             </Button>
             {this.renderEditButtons()}

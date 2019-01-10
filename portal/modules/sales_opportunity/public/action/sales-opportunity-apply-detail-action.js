@@ -5,11 +5,13 @@
  */
 var SalesOpportunityApplyAjax = require('../ajax/sales-opportunity-apply-ajax');
 var SalesOpportunityApplyUtils = require('../utils/sales-oppotunity-utils');
-import UserData from 'PUB_DIR/sources/user-data';
+import {message} from 'antd';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
+import {getApplyStatusById,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -21,7 +23,8 @@ function ApplyViewDetailActions() {
         'showReplyCommentEmptyError',
         'cancelSendApproval',
         'hideApprovalBtns',//审批完后不在显示审批按钮
-        'setDetailInfoObj',
+        'hideCancelBtns',//审批完后不再显示撤销按钮
+        'setDetailInfoObjAfterAdd',
         'setApplyCandate',
         'setAssignedSales',
         'setSalesMan'
@@ -38,7 +41,7 @@ function ApplyViewDetailActions() {
     //根据申请的id获取审批的状态
     this.getSalesOpportunityApplyStatusById = function(queryObj) {
         this.dispatch({loading: true, error: false});
-        SalesOpportunityApplyAjax.getSalesOpportunityApplyStatusById(queryObj).then((list) => {
+        getApplyStatusById(queryObj).then((list) => {
             this.dispatch({loading: false, error: false, list: list});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
@@ -51,7 +54,7 @@ function ApplyViewDetailActions() {
         SalesOpportunityApplyAjax.getSalesOpportunityApplyCommentList(queryObj).then((list) => {
             this.dispatch({loading: false, error: false, list: list});
         }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('failed.get.reply.comment', '获取回复列表失败')});
         });
     };
     //添加回复
@@ -76,7 +79,7 @@ function ApplyViewDetailActions() {
     };
 
     //通过或者驳回审批
-    this.approveSalesOpportunityApplyPassOrReject = function(obj) {
+    this.approveSalesOpportunityApplyPassOrReject = function(obj,callback) {
         this.dispatch({loading: true, error: false});
         SalesOpportunityApplyAjax.approveSalesOpportunityApplyPassOrReject(obj).then((data) => {
             //返回的data是true才是审批成功的，false也是审批失败的
@@ -94,16 +97,49 @@ function ApplyViewDetailActions() {
                     }, timeout);
                 }
                 this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
+                _.isFunction(callback) && callback(true);
             }else{
                 SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {status: 'error'});
                 this.dispatch({loading: false, error: true, errorMsg: Intl.get('errorcode.19', '审批申请失败')});
+                _.isFunction(callback) && callback(false);
             }
-
         }, (errorMsg) => {
+            _.isFunction(callback) && callback(false);
             //更新选中的申请单类型
             SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
+    };
+    // 撤销申请
+    this.cancelApplyApprove = function(obj,callback) {
+        var errTip = Intl.get('user.apply.detail.backout.error', '撤销申请失败');
+        this.dispatch({loading: true, error: false});
+        cancelApplyApprove(obj).then((data) => {
+            _.isFunction(callback) && callback();
+            if (data) {
+                this.dispatch({loading: false, error: false});
+                SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {id: obj.id, cancel: true, status: 'success'});
+            }else {
+                this.dispatch({loading: false, error: true, errorMsg: errTip});
+                SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
+            }
+        }, (errorMsg) => {
+            _.isFunction(callback) && callback();
+            var errMsg = errorMsg || errTip;
+            this.dispatch({loading: false, error: true, errorMsg: errMsg});
+            SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
+            message.error(errMsg);
+        });
+    };
+    //获取下一节点的负责人
+    this.getNextCandidate = function(queryObj) {
+        ApplyApproveAjax.getNextCandidate().sendRequest(queryObj).success((list) => {
+            if (_.isArray(list)){
+                this.dispatch(list);
+            }
+        }).error(
+            this.dispatch({error: true})
+        );
     };
 }
 module.exports = alt.createActions(ApplyViewDetailActions);

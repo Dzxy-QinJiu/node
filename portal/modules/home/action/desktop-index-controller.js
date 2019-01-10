@@ -18,7 +18,7 @@ var auth = require('../../../lib/utils/auth');
 let _ = require('lodash');
 let moment = require('moment');
 const commonUtil = require('../../../lib/utils/common-utils');
-
+const authRouters = require('../../../lib/authRouters');
 /*
  * home page handler.
  */
@@ -30,15 +30,15 @@ exports.home = function(req, res) {
     if (global.config.lang && global.config.lang === 'es_VE') {
         hideSomeItem = 'true';
     }
-    let custome_service_lang = global.config.lang || 'zh_CN';
-    custome_service_lang = custome_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
+    let custom_service_lang = global.config.lang || 'zh_CN';
+    custom_service_lang = custom_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
     res.render('home/tpl/desktop-index', {
         isFormal: global.config.isFormal,
         userid: user.user_id,
         username: user.user_name,
         siteID: global.config.siteID,
         lang: global.config.lang || '',
-        custome_service_lang: custome_service_lang,
+        custom_service_lang: custom_service_lang,
         hideSomeItem: hideSomeItem,
         projectName: global.config.processTitle || 'oplate',
         clientId: global.config.loginParams.clientId,
@@ -77,11 +77,8 @@ exports.getUserData = function(req, res) {
 
     //获取登录用户的相关信息
     function getUserInfo(lang) {
-        user.modules = DesktopIndexService.getModulesByUser(req);
-        user.subModules = DesktopIndexService.getSubModulesByUser(req);
-        user.thirdLevelMenus = DesktopIndexService.getThirdLevelMenusByUser(req);
         user.privileges = DesktopIndexService.getPrivileges(req);
-        user.sideBarMenus = DesktopIndexService.getSidebarMenus(req);
+        user.routes = authRouters.getAuthedRouters(user.privileges);
         //删除认证数据
         delete user.auth.access_token;
         delete user.auth.refresh_token;

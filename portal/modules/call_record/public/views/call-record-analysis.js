@@ -7,7 +7,7 @@
  * */
 
 var React = require('react');
-import {Select, Radio, Alert, Switch, Checkbox} from 'antd';
+import {Select, Radio, Alert, Switch, Checkbox,Icon} from 'antd';
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 var RightContent = require('CMP_DIR/privilege/right-content');
@@ -1003,6 +1003,22 @@ class CallRecordAnalyis extends React.Component {
             }
         ];
     };
+    renderRefreshText = () => {
+        return (
+            <div className="refresh-container">
+                <Icon type="reload" onClick={this.getCallInfoData} />
+            </div>
+        );
+    };
+    renderFilter114 = () => {
+        return (
+            <div className="filter-114-wrap">
+                <Checkbox onChange={this.onFilter114Change} checked={this.state.filter_phone}>
+                    {Intl.get('call.analysis.filter.114', '过滤掉114')}
+                </Checkbox>
+            </div>
+        );
+    };
 
     // 通话率列表
     renderCallInfo = () => {
@@ -1018,6 +1034,13 @@ class CallRecordAnalyis extends React.Component {
                 pagination: false,
                 bordered: true,
                 columns: this.getPhoneListColumn(),
+            },
+            cardContainer: {
+                props: {
+                    subTitle: this.renderFilter114(),
+                    isShowRefreshButton: true,
+                    refreshData: this.getCallInfoData
+                },
             },
         }];
         return (
@@ -1391,11 +1414,6 @@ class CallRecordAnalyis extends React.Component {
                 <GeminiScrollBar>
                     <div className="analysis-wrapper">
                         <div className="call-info col-xs-12">
-                            <div className="filter-114-wrap">
-                                <Checkbox onChange={this.onFilter114Change} checked={this.state.filter_phone}>
-                                    {Intl.get('call.analysis.filter.114', '过滤掉114')}
-                                </Checkbox>
-                            </div>
                             {this.renderCallInfo()}
                         </div>
                         <div className="call-range col-xs-12">

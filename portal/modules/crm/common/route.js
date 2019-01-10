@@ -1,4 +1,4 @@
-const orderUrl = '/rest/customer/v2/salesopportunity';
+const orderUrl = '/rest/customer/v3/salesopportunity';
 //获取全部销售阶段，包括系统设置的和导入的旧数据中的
 const stageUrl = '/rest/customer/v2/salesopportunity/term/sale_stages';
 //获取系统设置的销售阶段
@@ -10,7 +10,7 @@ const addSalesClueUrl = '/rest/clue/v1/add';
 
 module.exports = [{
     'method': 'post',
-    'path': orderUrl + '/query/:type/10',
+    'path': orderUrl + '/range/:type/10/1/time/descend',
     'handler': 'getOrderList',
     'passport': {
         'needLogin': true
@@ -24,15 +24,8 @@ module.exports = [{
     }
 }, {
     'method': 'put',
-    'path': orderUrl,
+    'path': orderUrl + '/property/:property',
     'handler': 'editOrder',
-    'passport': {
-        'needLogin': true
-    }
-}, {
-    'method': 'put',
-    'path': orderUrl + '/sale_stage',
-    'handler': 'editOrderStage',
     'passport': {
         'needLogin': true
     }

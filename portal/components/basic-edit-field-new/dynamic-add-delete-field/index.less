@@ -1,0 +1,107 @@
+@hover_bg_color: #E8F5FE;
+//动态添加、删除元素的组件样式
+.dynamic-item-form {
+  float: left;
+  width: 100%;
+  .item-wrap{
+    .item-content {
+      float: left;
+      width: calc(100% - 60px);
+      .ant-form-item{
+        width: 100%;
+        input{
+          width: 100%;
+        }
+      }
+      .ant-form-item-label label {
+        line-height: 24px;
+      }
+    }
+  }
+  .anticon {
+    line-height: 30px;
+    margin-right: 10px;
+    float: left;
+    color: #8EABC6;
+    font-size: 14px;
+    margin-left: 5px;
+    cursor: pointer;
+  }
+  .item-minus-button {
+    float: left;
+  }
+  .item-plus-button {
+    float: right;
+  }
+}
+
+.item-content, .item-show-container {
+  .iconfont.contact-way-icon {
+    float: left;
+    width: auto;
+    font-size: 16px;
+    color: #d7d7d7;
+    margin-right: 6px;
+  }
+}
+
+//展示区域
+.item-show-container {
+  float: left;
+  width: 100%;
+  &:hover {
+    background-color: @hover_bg_color;
+    .item-show-content {
+      .icon-edit-btn {
+        display: block;
+      }
+    }
+  }
+  .no-data-descr {
+    vertical-align: middle;
+    color: #ccc;
+    a {
+      color: #8fa8c6;
+    }
+  }
+
+  .item-show-content {
+    position: relative;
+    padding-left: 30px;
+    line-height: 24px;
+    font-size: 14px;
+    .icon-edit-btn {
+      display: none;
+      position: absolute;
+      float: right;
+      font-size: 16px;
+      color: #8da8c5;
+      top: 0;
+      right: 0;
+    }
+    .item-content {
+      cursor: default;
+      .item-text {
+        line-height: 24px;
+      }
+      //拨打按钮
+      .phone-call-button {
+        display: none;
+        width: 70px;
+        height: 24px;
+        line-height: 24px;
+        margin-left: 20px;
+        border-radius: 4px;
+        text-align: center;
+        background-color: #f7a340;
+        color: #ffffff;
+        cursor: pointer;
+      }
+      &:hover {
+        .phone-call-button {
+          display: inline-block;
+        }
+      }
+    }
+  }
+}

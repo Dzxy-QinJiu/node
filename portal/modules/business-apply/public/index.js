@@ -6,7 +6,7 @@
 import Trace from 'LIB_DIR/trace';
 var BusinessApplyStore = require('./store/business-apply-store');
 var BusinessApplyAction = require('./action/business-apply-action');
-import TopNav from 'CMP_DIR/top-nav';
+var BusinessDetailApplyAction = require('./action/apply-view-detail-action');
 require('./css/index.less');
 import {Alert} from 'antd';
 import AddBusinessApplyPanel from './view/add-business-apply';
@@ -17,9 +17,9 @@ var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 var classNames = require('classnames');
 var LeaveApplyUtils = require('./utils/leave-apply-utils');
 import ApplyViewDetail from './view/apply-view-detail';
-import ApplyListItem from 'CMP_DIR/apply-list';
-import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-dropdown-and-add-btn';
-import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+import ApplyListItem from 'CMP_DIR/apply-components/apply-list-item';
+import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-components/apply-dropdown-and-add-btn';
+import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 let userData = require('../../../public/sources/user-data');
 class BusinessApplyManagement extends React.Component {
     state = {
@@ -36,6 +36,8 @@ class BusinessApplyManagement extends React.Component {
         BusinessApplyStore.listen(this.onStoreChange);
         if(_.get(this.props,'location.state.clickUnhandleNum')){
             this.menuClick({key: 'ongoing'});
+        }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT]){
+            this.menuClick({key: 'all'});
         }else{
             //不区分角色，都获取全部的申请列表
             this.getAllBusinessApplyList();
@@ -55,9 +57,13 @@ class BusinessApplyManagement extends React.Component {
         if(message && message.status === 'success'){
             //通过或者驳回申请后改变申请的状态
             if (message.agree){
-                message.approve_details = [{user_name: userData.getUserData().user_name, status: message.agree}];
+                message.approve_details = [{user_name: userData.getUserData().user_name, status: message.agree,nick_name: userData.getUserData().nick_name,comment_time: moment().valueOf()}];
                 message.update_time = moment().valueOf();
                 BusinessApplyAction.changeApplyAgreeStatus(message);
+            }else if (message.cancel){
+                //撤销的申请成功后改变状态
+                BusinessApplyAction.updateAllApplyItemStatus({id: message.id, status: 'cancel'});
+                BusinessDetailApplyAction.hideCancelBtns();
             }
         }
     };
@@ -67,7 +73,7 @@ class BusinessApplyManagement extends React.Component {
             sort_field: this.state.sort_field,//排序字段
             order: this.state.order,
             page_size: this.state.page_size,
-            id: this.state.lastBusinessApplyId, //用于下拉加载的id
+            id: this.state.lastApplyId, //用于下拉加载的id
         };
         //如果是选择的全部类型，不需要传status这个参数
         if (this.state.applyListType !== 'all') {
@@ -136,10 +142,8 @@ class BusinessApplyManagement extends React.Component {
                 return Intl.get('user.apply.pass', '已通过');
             case 'reject':
                 return Intl.get('user.apply.reject', '已驳回');
-            // case 'true':
-            //     return Intl.get('user.apply.applied', '已审批');
-            // case 'cancel':
-            //     return Intl.get('user.apply.backout', '已撤销');
+            case 'cancel':
+                return Intl.get('user.apply.backout', '已撤销');
         }
     };
     menuClick = (obj) => {
@@ -209,19 +213,14 @@ class BusinessApplyManagement extends React.Component {
         var applyListHeight = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
         var applyType = commonMethodUtil.getApplyStatusDscr(this.state.applyListType);
         var noShowApplyDetail = this.state.applyListObj.list.length === 0;
-        var hasAddPriviledge = userData.getUserData().team_id ? true : false;
         return (
             <div className="bussiness-apply-container">
-                <TopNav>
-                    <TopNav.MenuList />
-                </TopNav>
                 <div className="leave-apply-list-detail-wrap">
                     <div className="col-md-4 leave-apply-list" data-tracename="出差申请列表">
                         <ApplyDropdownAndAddBtn
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
                             addPrivilege='BUSINESS_TRIP_APPLY'
-                            hasAddPrivilege = {hasAddPriviledge}
                             showAddApplyPanel={this.showAddApplyPanel}
                             addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
                             menuList={selectMenuList}
@@ -236,13 +235,23 @@ class BusinessApplyManagement extends React.Component {
                                         listenScrollBottom={this.state.listenScrollBottom}
                                         itemCssSelector=".leave_manage_apply_list>li"
                                     >
-                                        <ApplyListItem
-                                            processedStatus='ongoing'
-                                            applyListObj={this.state.applyListObj}
-                                            selectedDetailItem={this.state.selectedDetailItem}
-                                            selectedDetailItemIdx={this.state.selectedDetailItemIdx}
-                                            clickShowDetail={this.clickShowDetail}
-                                        />
+                                        <ul className="list-unstyled leave_manage_apply_list">
+                                            {
+                                                _.map(this.state.applyListObj.list,(obj, index) => {
+                                                    return (
+                                                        <ApplyListItem
+                                                            key={index}
+                                                            obj={obj}
+                                                            index= {index}
+                                                            clickShowDetail={this.clickShowDetail}
+                                                            processedStatus='ongoing'
+                                                            selectedDetailItem={this.state.selectedDetailItem}
+                                                            selectedDetailItemIdx={this.state.selectedDetailItemIdx}
+                                                        />
+                                                    );
+                                                })
+                                            }
+                                        </ul>
                                         <NoMoreDataTip
                                             fontSize="12"
                                             show={this.showNoMoreDataTip}

@@ -291,6 +291,7 @@ SalesHomeStore.prototype.getRecentLoginCustomers = function(result) {
                     });
                 }
             });
+            recentLoginCustomerObj.curPage++;
         }
         recentLoginCustomerObj.data.list = recentLoginCustomerObj.data.list.concat(result.resData.result);
         recentLoginCustomerObj.data.total = result.resData.total;
@@ -304,6 +305,7 @@ SalesHomeStore.prototype.getNewDistributeCustomer = function(result) {
         newDistributeCustomer.errMsg = result.errMsg;
     } else if (result.resData) {
         newDistributeCustomer.data.list = newDistributeCustomer.data.list.concat(result.resData.result);
+        newDistributeCustomer.curPage++;
         newDistributeCustomer.data.total = result.resData.total;
     }
 };

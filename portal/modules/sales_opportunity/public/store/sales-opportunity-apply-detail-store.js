@@ -55,8 +55,13 @@ SalesOpportunityApplyDetailStore.prototype.setInitState = function() {
         //服务端错误信息
         errorMsg: ''
     };
+    this.backApplyResult = {
+        //提交状态  "" loading error success
+        submitResult: '',
+        errorMsg: ''
+    };
 };
-SalesOpportunityApplyDetailStore.prototype.setDetailInfoObj = function(detailObj) {
+SalesOpportunityApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
     this.detailInfoObj = {
         // "" loading error
@@ -83,12 +88,14 @@ SalesOpportunityApplyDetailStore.prototype.setDetailInfoObj = function(detailObj
         //服务端错误信息
         errorMsg: ''
     };
+    //下一节点负责人的列表
+    this.candidateList = [];
 };
 //设置某条申请的回复列表
 SalesOpportunityApplyDetailStore.prototype.setApplyComment = function(list) {
     this.replyListInfo = {
         result: '',
-        list: _.isArray(list) ? list : null,
+        list: _.isArray(list) ? _.concat(this.replyListInfo.list,list) : null,
         errorMsg: ''
     };
 };
@@ -118,11 +125,25 @@ SalesOpportunityApplyDetailStore.prototype.getSalesOpportunityApplyDetailById = 
             this.selectedDetailItem.status = obj.status;
         }
         this.detailInfoObj.info.showApproveBtn = this.selectedDetailItem.showApproveBtn;
+        this.detailInfoObj.info.showCancelBtn = this.selectedDetailItem.showCancelBtn;
         //列表中那一申请的状态以这个为准，因为申请完就不一样了
         setTimeout(() => {
             SalesOpportunityApplyAction.updateAllApplyItemStatus(this.detailInfoObj.info);
         });
         this.detailInfoObj.errorMsg = '';
+    }
+};
+
+SalesOpportunityApplyDetailStore.prototype.cancelApplyApprove = function(resultObj) {
+    if (resultObj.loading){
+        this.backApplyResult.submitResult = 'loading';
+        this.backApplyResult.errorMsg = '';
+    }else if (resultObj.error){
+        this.backApplyResult.submitResult = 'error';
+        this.backApplyResult.errorMsg = resultObj.errorMsg;
+    }else{
+        this.backApplyResult.submitResult = 'success';
+        this.backApplyResult.errorMsg = '';
     }
 };
 
@@ -214,15 +235,29 @@ SalesOpportunityApplyDetailStore.prototype.getSalesOpportunityApplyStatusById = 
 SalesOpportunityApplyDetailStore.prototype.cancelSendApproval = function() {
     this.applyResult.submitResult = '';
     this.applyResult.errorMsg = '';
+    this.backApplyResult.submitResult = '';
+    this.backApplyResult.errorMsg = '';
 };
 SalesOpportunityApplyDetailStore.prototype.hideApprovalBtns = function() {
     this.selectedDetailItem.showApproveBtn = false;
+    this.selectedDetailItem.showCancelBtn = false;
+};
+SalesOpportunityApplyDetailStore.prototype.hideCancelBtns = function() {
+    this.selectedDetailItem.showCancelBtn = false;
+    this.detailInfoObj.info.showCancelBtn = false;
 };
 SalesOpportunityApplyDetailStore.prototype.setApplyCandate = function(selectUserId) {
     this.detailInfoObj.info.assigned_candidate_users = selectUserId;
 };
 SalesOpportunityApplyDetailStore.prototype.setSalesMan = function(selectSales) {
     this.detailInfoObj.info.user_ids = selectSales;
+};
+SalesOpportunityApplyDetailStore.prototype.getNextCandidate = function(result) {
+    if (result.error){
+        this.candidateList = [];
+    }else{
+        this.candidateList = result;
+    }
 };
 
 

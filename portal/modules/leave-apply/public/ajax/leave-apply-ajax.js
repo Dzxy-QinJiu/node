@@ -3,99 +3,6 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/10.
  */
-//获取全部申请列表
-let getAllLeaveApplyListAjax = null;
-exports.getAllLeaveApplyList = function(queryObj) {
-    var Deferred = $.Deferred();
-    getAllLeaveApplyListAjax && getAllLeaveApplyListAjax.abort();
-    getAllLeaveApplyListAjax = $.ajax({
-        url: '/rest/get/all/leave_apply/list',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-//获取待我审批的申请列表
-let getWorklistLeaveApplyListAjax = null;
-exports.getWorklistLeaveApplyList = function(queryObj) {
-    var Deferred = $.Deferred();
-    getWorklistLeaveApplyListAjax && getWorklistLeaveApplyListAjax.abort();
-    getWorklistLeaveApplyListAjax = $.ajax({
-        url: '/rest/get/worklist/leave_apply/list',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-//根据申请的id获取申请的详情
-let getLeaveApplyDetailByIdAjax = null;
-exports.getLeaveApplyDetailById = function(queryObj) {
-    var Deferred = $.Deferred();
-    getLeaveApplyDetailByIdAjax && getLeaveApplyDetailByIdAjax.abort();
-    getLeaveApplyDetailByIdAjax = $.ajax({
-        url: '/rest/leave_apply/detail/byId',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-//获取回复列表
-let getLeaveApplyCommentListAjax = null;
-exports.getLeaveApplyCommentList = function(queryObj) {
-    var Deferred = $.Deferred();
-    getLeaveApplyCommentListAjax && getLeaveApplyCommentListAjax.abort();
-    getLeaveApplyCommentListAjax = $.ajax({
-        url: '/rest/get/leave_apply/comment/list',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-//添加审批回复
-let addLeaveApplyCommentsAjax = null;
-exports.addLeaveApplyComments = function(data) {
-    var Deferred = $.Deferred();
-    addLeaveApplyCommentsAjax && addLeaveApplyCommentsAjax.abort();
-    addLeaveApplyCommentsAjax = $.ajax({
-        url: '/rest/add/leave_apply/comment',
-        dataType: 'json',
-        type: 'post',
-        data: data,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
 //通过或者驳回申请
 let approveLeaveApplyPassOrRejectAjax = null;
 exports.approveLeaveApplyPassOrReject = function(obj) {
@@ -106,25 +13,6 @@ exports.approveLeaveApplyPassOrReject = function(obj) {
         dataType: 'json',
         type: 'post',
         data: obj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-//获取某个申请的状态
-let getLeaveApplyStatusByIdAjax = null;
-exports.getLeaveApplyStatusById = function(queryObj) {
-    var Deferred = $.Deferred();
-    getLeaveApplyStatusByIdAjax && getLeaveApplyStatusByIdAjax.abort();
-    getLeaveApplyStatusByIdAjax = $.ajax({
-        url: '/rest/get/apply/status/byId',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
         success: function(data) {
             Deferred.resolve(data);
         },

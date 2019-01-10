@@ -3,24 +3,25 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/27.
  */
-import TopNav from 'CMP_DIR/top-nav';
 var LeaveApplyAction = require('./action/leave-apply-action');
 var LeaveApplyStore = require('./store/leave-apply-store');
-import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-dropdown-and-add-btn';
+var LeaveApplyDetailAction = require('./action/leave-apply-detail-action');
+import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-components/apply-dropdown-and-add-btn';
 import AddLeaveApplyPanel from './view/add-leave-apply';
-import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import Trace from 'LIB_DIR/trace';
 var classNames = require('classnames');
 var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
 require('./css/index.less');
 import {Alert} from 'antd';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-import ApplyListItem from 'CMP_DIR/apply-list';
+import ApplyListItem from 'CMP_DIR/apply-components/apply-list-item';
 var Spinner = require('CMP_DIR/spinner');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import ApplyViewDetail from './view/apply-view-detail';
 var LeaveApplyUtils = require('./utils/leave-apply-utils');
 let userData = require('../../../public/sources/user-data');
+
 class LeaveApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加请假申请面板
@@ -36,6 +37,8 @@ class LeaveApplyManagement extends React.Component {
         LeaveApplyStore.listen(this.onStoreChange);
         if(_.get(this.props,'location.state.clickUnhandleNum')){
             this.menuClick({key: 'ongoing'});
+        }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE]){
+            this.menuClick({key: 'all'});
         }else{
             //不区分角色，都获取全部的申请列表
             this.getAllLeaveApplyList();
@@ -51,14 +54,17 @@ class LeaveApplyManagement extends React.Component {
             }
         }
     }
-
     updateSelectedItem = (message) => {
         if(message && message.status === 'success'){
             //通过或者驳回申请后改变申请的状态
             if (message.agree){
-                message.approve_details = [{user_name: userData.getUserData().user_name, status: message.agree}];
+                message.approve_details = [{user_name: userData.getUserData().user_name, status: message.agree,nick_name: userData.getUserData().nick_name,comment_time: moment().valueOf()}];
                 message.update_time = moment().valueOf();
                 LeaveApplyAction.changeApplyAgreeStatus(message);
+            }else if (message.cancel){
+                //撤销的申请成功后改变状态
+                LeaveApplyAction.updateAllApplyItemStatus({id: message.id, status: 'cancel'});
+                LeaveApplyDetailAction.hideCancelBtns();
             }
         }
     };
@@ -68,7 +74,7 @@ class LeaveApplyManagement extends React.Component {
             sort_field: this.state.sort_field,//排序字段
             order: this.state.order,
             page_size: this.state.page_size,
-            id: this.state.lastLeaveApplyId, //用于下拉加载的id
+            id: this.state.lastApplyId, //用于下拉加载的id
             type: 'personal_leave'
         };
         //如果是选择的全部类型，不需要传status这个参数
@@ -137,10 +143,8 @@ class LeaveApplyManagement extends React.Component {
                 return Intl.get('user.apply.pass', '已通过');
             case 'reject':
                 return Intl.get('user.apply.reject', '已驳回');
-            // case 'true':
-            //     return Intl.get('user.apply.applied', '已审批');
-            // case 'cancel':
-            //     return Intl.get('user.apply.backout', '已撤销');
+            case 'cancel':
+                return Intl.get('user.apply.backout', '已撤销');
         }
     };
     menuClick = (obj) => {
@@ -207,7 +211,6 @@ class LeaveApplyManagement extends React.Component {
     };
 
     render() {
-        var hasAddPriviledge = userData.getUserData().team_id ? true : false;
         var addPanelWrap = classNames({'show-add-modal': this.state.showAddApplyPanel});
         var applyListHeight = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
         var applyType = '';
@@ -229,19 +232,15 @@ class LeaveApplyManagement extends React.Component {
         }
         return (
             <div className="sales-opportunity-apply-container">
-                <TopNav>
-                    <TopNav.MenuList />
-                </TopNav>
                 <div className="leave-apply-list-detail-wrap">
                     <div className="col-md-4 leave-apply-list" data-tracename="请假申请列表">
                         <ApplyDropdownAndAddBtn
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
-                            addPrivilege='MEMBER_BUSINESSOPPO_APPLY'
+                            addPrivilege='MEMBER_LEAVE_APPLY'
                             showAddApplyPanel={this.showAddApplyPanel}
                             addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
                             menuList={selectMenuList}
-                            hasAddPrivilege = {hasAddPriviledge}
                         />
                         {this.renderApplyListError()}
                         {this.state.applyListObj.loadingResult === 'loading' && !this.state.lastApplyId ? (
@@ -252,13 +251,23 @@ class LeaveApplyManagement extends React.Component {
                                     listenScrollBottom={this.state.listenScrollBottom}
                                     itemCssSelector=".leave_manage_apply_list>li"
                                 >
-                                    <ApplyListItem
-                                        processedStatus='ongoing'
-                                        applyListObj={this.state.applyListObj}
-                                        selectedDetailItem={this.state.selectedDetailItem}
-                                        selectedDetailItemIdx={this.state.selectedDetailItemIdx}
-                                        clickShowDetail={this.clickShowDetail}
-                                    />
+                                    <ul className="list-unstyled leave_manage_apply_list">
+                                        {
+                                            _.map(this.state.applyListObj.list,(obj, index) => {
+                                                return (
+                                                    <ApplyListItem
+                                                        key={index}
+                                                        obj={obj}
+                                                        index= {index}
+                                                        clickShowDetail={this.clickShowDetail}
+                                                        processedStatus='ongoing'
+                                                        selectedDetailItem={this.state.selectedDetailItem}
+                                                        selectedDetailItemIdx={this.state.selectedDetailItemIdx}
+                                                    />
+                                                );
+                                            })
+                                        }
+                                    </ul>
                                     <NoMoreDataTip
                                         fontSize="12"
                                         show={this.showNoMoreDataTip}

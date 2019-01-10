@@ -9,6 +9,7 @@ const datePickerUtils = require('CMP_DIR/datepicker/utils');
 import {SELECT_TYPE, isOperation, isSalesLeaderOrManager, getClueStatusValue} from '../utils/clue-customer-utils';
 var clueFilterStore = require('./clue-filter-store');
 var user = require('../../../../public/sources/user-data').getUserData();
+const clueContactType = ['phone','qq','weChat','email'];
 function ClueCustomerStore() {
     //初始化state数据
     this.resetState();
@@ -75,6 +76,20 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
         this.curClueLists = _.sortBy(this.curClueLists, (item) => {
             return item.status;
         });
+        //把线索详情中电话，邮箱，微信，qq里的空值删掉
+        _.forEach(this.curClueLists,(clueItem) => {
+            if (_.isArray(clueItem.contacts) && clueItem.contacts.length){
+                _.forEach(clueItem.contacts,(contactItem) => {
+                    _.forEach(clueContactType,(item) => {
+                        if (_.isArray(contactItem[item]) && contactItem[item].length){
+                            contactItem[item] = contactItem[item].filter(item => item);
+                        }
+                    });
+                });
+
+            }
+        });
+
     }
 };
 //更新线索客户的一些属性
@@ -214,25 +229,28 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
     //修改客户相关的属性，直接传属性和客户的id
     //如果修改联系人相关的属性，还要把联系人的id传过去
     var customerProperty = ['access_channel', 'clue_source','clue_classify','source', 'user_id', 'user_name', 'sales_team', 'sales_team_id','name','availability','source_time','status'];
+    var contact_id = newCustomerDetail.contact_id || '';
+    if (newCustomerDetail.contact_id){
+        delete newCustomerDetail.contact_id;
+    }
+
     for (var key in newCustomerDetail) {
         if (_.indexOf(customerProperty, key) > -1) {
             //修改客户的相关属性
             this.curClue[key] = newCustomerDetail[key];
         } else {
             //修改联系人的相关属性
-            if (key === 'contact_name') {
-                this.curClue.contacts[0].name = newCustomerDetail[key];
+            if (key === 'contact_name' && contact_id) {
+                var target = _.find(this.curClue.contacts,item => item.id === contact_id);
+                //联系人是多个
+                target.name = newCustomerDetail[key];
                 this.curClue.contact = newCustomerDetail[key];
-            } else {
-                this.curClue.contacts[0][key][0] = newCustomerDetail[key];
-                if (key === 'phone'){
-                    this.curClue.contact_way = newCustomerDetail[key];
-                }
+            } else if (contact_id){
+                var target = _.find(this.curClue.contacts,item => item.id === contact_id);
+                target[key] = newCustomerDetail[key];
             }
         }
     }
-    //修改完相关属性后，把列表中的数据也改掉
-
 };
 //如果原来的筛选条件是在待跟进的时候，要添加完跟进记录后，该类型的线索要删除添加跟进记录的这个线索
 ClueCustomerStore.prototype.afterAddClueTrace = function(updateId) {

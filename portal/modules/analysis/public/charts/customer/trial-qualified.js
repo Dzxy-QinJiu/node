@@ -50,14 +50,14 @@ export function getCustomerTrialQualifiedChart() {
                 width: '10%',
             });
 
-            //统计数据添加时间，对应查询的截止时间
-            //如查本月的数据，该时间为今天
-            //若查截止到上个月的数据，该时间为上个月的最后一天
-            const thisMoment = moment(firstItem.add_time);
-            //本月
-            const thisMonth = thisMoment.get('month') + 1;
-            //上月
-            const lastMonth = thisMoment.subtract(1, 'months').get('month') + 1;
+            //统计数据的生成时间
+            const addMoment = moment(firstItem.add_time);
+
+            //统计数据产生的截止月
+            const thisMonth = addMoment.get('month') + 1;
+
+            //统计数据产生的截止月的上一个月
+            const lastMonth = addMoment.clone().subtract(1, 'months').get('month') + 1;
 
             //列定义中增加本月、上月等列
             columns = columns.concat([{
@@ -132,8 +132,8 @@ function handleTrialQualifiedNumClick(customerIds, text, customerIdsField, recor
 }
 
 function trialQualifiedNumRender(customerIdsField, text, record) {
-    if (text) {
-        const customerIds = record[customerIdsField];
+    if (text || customerIdsField === CUSTOMER_IDS_FIELD) {
+        const customerIds = record[customerIdsField] || [];
 
         return (
             <span onClick={handleTrialQualifiedNumClick.bind(this, customerIds, text, customerIdsField, record)} style={{cursor: 'pointer'}}>

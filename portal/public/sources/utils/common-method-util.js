@@ -14,7 +14,7 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import userData from '../user-data';
 import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import {selectMenuList} from './consts';
+import {selectMenuList, APPLY_APPROVE_TYPES,DOCUMENT_TYPE} from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -139,6 +139,26 @@ exports.formatRoundingData = function(data, n) {
         return data.toFixed(n);
     }
 };
+
+//有小数才四舍五入保留n位小数，四舍五入后是整数的直接去掉小数
+exports.formatNumHasDotToFixed = function(num, n) {
+    num = num + '';
+    if (isNaN(num)) {
+        return '-';
+    } else {
+        //有小数的数字，四舍五入保留n位小数
+        if (num.split('.').length > 1) {
+            num = (+num).toFixed(n);
+            let numArray = num.split('.');
+            //小数部分为0时，直接去掉小数
+            if (+numArray[1] === 0) {
+                num = numArray[0];
+            }
+        }
+        return +num;
+    }
+};
+
 //把数字转化成百分数，并进行四舍五入保留n位小数的方法
 exports.formatRoundingPercentData = function(data, n) {
     if (isNaN(data)) {
@@ -271,7 +291,7 @@ function traversingSelectTeamTree(teamTreeList, selectedTeams) {
         _.each(teamTreeList, team => {
             if (selectedTeams === team.group_id) {
                 teamTotalArr.push(team);
-            }else if (team.child_groups) {
+            } else if (team.child_groups) {
                 teamTotalArr = _.union(teamTotalArr, traversingSelectTeamTree(team.child_groups, selectedTeams));
             }
         });
@@ -318,16 +338,16 @@ exports.renderClueStatus = function(status) {
 //获取线索未处理的权限
 //只有是管理员或者销售领导或者銷售才有展示线索未读数的权限
 //管理员，销售，运营人员有获取线索列表的权限，但是运营人员不用展示线索未处理数
-exports.getClueUnhandledPrivilege = function(){
+exports.getClueUnhandledPrivilege = function() {
     return (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER') || hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_USER')) && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
 };
 //获取线索未读数的参数
 exports.getUnhandledClueCountParams = function() {
     let status = '';
     //如果是域管理员，展示待分配的线索数量
-    if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)){
+    if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
         status = SELECT_TYPE.WILL_DISTRIBUTE;
-    }else{
+    } else {
         //销售领导和销售展示待跟进的线索数量
         status = SELECT_TYPE.WILL_TRACE;
     }
@@ -343,7 +363,7 @@ exports.getUnhandledClueCountParams = function() {
     return data;
 };
 //获取不同时间范围的开始和结束时间
-exports.getStartEndTimeOfDiffRange = function(timeRange,disableDateAfterToday) {
+exports.getStartEndTimeOfDiffRange = function(timeRange, disableDateAfterToday) {
     var timeObj = {};
     switch (timeRange) {
         case 'day':
@@ -372,7 +392,9 @@ exports.getApplyStateText = function(obj) {
         return Intl.get('user.apply.pass', '已通过');
     } else if (obj.status === 'reject') {
         return Intl.get('user.apply.reject', '已驳回');
-    } else {
+    } else if (obj.status === 'cancel') {
+        return Intl.get('user.apply.backout', '已撤销');
+    }else {
         return Intl.get('user.apply.false', '待审批');
     }
 };
@@ -383,15 +405,30 @@ exports.getTimeStr = function(d, format) {
     }
     return moment(new Date(d)).format(format || oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
 };
-exports.getApplyTopicText = function(obj){
-    if (obj.topic === 'customer_visit') {
+exports.getApplyTopicText = function(obj) {
+    if (obj.topic === APPLY_APPROVE_TYPES.CUSTOMER_VISIT) {
         return Intl.get('leave.apply.add.leave.apply', '出差申请');
-    }else if (obj.topic === 'business_opportunities'){
-        return Intl.get('leave.apply.sales.opportunity.application', '销售机会申请');
-    }else if (obj.topic === 'personal_leave'){
+    } else if (obj.topic === APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES) {
+        return _.get(obj,'detail.customer.name');
+    } else if (obj.topic === APPLY_APPROVE_TYPES.PERSONAL_LEAVE) {
         return Intl.get('leave.apply.leave.application', '请假申请');
+    } else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1){
+        return Intl.get('apply.approve.specific.report','{customer}客户的专报',{customer: _.get(obj,'detail.customer.name')});
+    }else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1){
+        return getDocumentReportTypeText(DOCUMENT_TYPE,_.get(obj,'detail.document_type'));
     }
 };
+function getDocumentReportTypeText(AllTypeList,specificType) {
+    var targetObj = _.find(AllTypeList, (item) => {
+        return item.value === specificType;
+    });
+    var type = '';
+    if (targetObj) {
+        type = targetObj.name;
+    }
+    return type;
+}
+exports.getDocumentReportTypeText = getDocumentReportTypeText;
 exports.getApplyResultDscr = function(detailInfoObj) {
     let resultDscr = '';
     switch (detailInfoObj.status) {
@@ -400,6 +437,9 @@ exports.getApplyResultDscr = function(detailInfoObj) {
             break;
         case 'reject':
             resultDscr = Intl.get('user.apply.detail.reject', '驳回申请');
+            break;
+        case 'cancel':
+            resultDscr = Intl.get('user.apply.detail.backout', '撤销申请');
             break;
     }
     return resultDscr;
@@ -414,8 +454,101 @@ exports.getApplyStatusDscr = function(applyStatus) {
             applyType = Intl.get('user.apply.pass', '已通过');
             break;
         case 'reject':
-            applyType = Intl.get('leave.apply.approve.rejected','被驳回');
+            applyType = Intl.get('leave.apply.approve.rejected', '被驳回');
+            break;
+        case 'cancel':
+            applyType = Intl.get('user.apply.be.canceled','被撤销');
             break;
     }
     return applyType;
 };
+exports.getApplyStatusTimeLineDesc = function(replyItemStatus) {
+    var description = '';
+    if (replyItemStatus === 'reject'){
+        description = Intl.get('user.apply.detail.reject', '驳回申请');
+    }else if(replyItemStatus === 'cancel'){
+        description = Intl.get('user.apply.detail.backout', '撤销申请');
+    }else if (replyItemStatus === 'pass'){
+        description = Intl.get('user.apply.detail.pass', '通过申请');
+    }
+    return description;
+};
+exports.getReportSendApplyStatusTimeLineDesc = function(replyItemStatus) {
+    var description = '';
+    if (replyItemStatus === 'reject'){
+        description = Intl.get('user.apply.detail.reject', '驳回申请');
+    }else if(replyItemStatus === 'cancel'){
+        description = Intl.get('user.apply.detail.backout', '撤销申请');
+    }else if (replyItemStatus === 'pass'){
+        description = Intl.get('apply.approve.confirm.apply','确认申请');
+    }
+    return description;
+};
+exports.getFilterReplyList = function(thisState) {
+    //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据
+    var applicantList = _.get(thisState, 'detailInfoObj.info');
+    var replyList = [];
+    if ((['pass', 'reject', 'cancel'].includes(applicantList.status)) && _.isArray(_.get(thisState, 'detailInfoObj.info.approve_details'))){
+        replyList = _.get(thisState, 'detailInfoObj.info.approve_details');
+    }else{
+        replyList = _.get(thisState,'replyListInfo.list');
+    }
+    replyList = _.filter(replyList,(item) => {return !item.comment;});
+    replyList = _.sortBy( _.cloneDeep(replyList), [item => item.comment_time]);
+    return replyList;
+};
+exports.handleDiffTypeApply = function(that) {
+    var confirmType = that.state.showBackoutConfirmType, modalContent = '', deleteFunction = function() {
+        }, okText = '', modalShow = false, resultType = {};
+    //不同类型的操作，展示的描述和后续操作也不一样
+    if (confirmType === 'pass' || confirmType === 'reject') {
+        deleteFunction = that.passOrRejectApplyApprove.bind(that, confirmType);
+        modalContent = Intl.get('apply.approve.modal.text.pass', '是否通过此申请');
+        okText = Intl.get('user.apply.detail.button.pass', '通过');
+        if (confirmType === 'reject') {
+            modalContent = Intl.get('apply.approve.modal.text.reject', '是否驳回此申请');
+            okText = Intl.get('common.apply.reject', '驳回');
+        }
+        resultType = that.state.applyResult;
+    } else if (confirmType === 'cancel') {
+        modalContent = Intl.get('user.apply.detail.modal.content', '是否撤销此申请？');
+        deleteFunction = that.cancelApplyApprove;
+        okText = Intl.get('user.apply.detail.modal.ok', '撤销');
+        resultType = that.state.backApplyResult;
+    }
+    modalShow = confirmType && resultType.submitResult === '';
+    return {
+        modalShow: modalShow,
+        modalContent: modalContent,
+        deleteFunction: deleteFunction,
+        okText: okText
+    };
+};
+
+//转换成‘销售-团队’对应格式的数据
+exports.formatSalesmanList = function(salesManList) {
+    let dataList = [];
+    //展示其所在团队的成员列表
+    _.each(salesManList, salesman => {
+        let teamArray = salesman.user_groups;
+        //一个销售属于多个团队的处理（旧数据中存在这种情况）
+        if (_.isArray(teamArray) && teamArray.length) {
+            //销售与所属团队的组合数据，用来区分哪个团队中的销售
+            teamArray.forEach(team => {
+                let teamName = _.get(team, 'group_name') ? ` - ${team.group_name}` : '';
+                let teamId = _.get(team, 'group_id') ? `&&${team.group_id}` : '';
+                dataList.push({
+                    name: _.get(salesman, 'user_info.nick_name', '') + teamName,
+                    value: _.get(salesman, 'user_info.user_id', '') + teamId
+                });
+            });
+        } else {
+            dataList.push({
+                name: `${_.get(salesman, 'user_info.nick_name', '')}`,
+                value: `${_.get(salesman, 'user_info.user_id', '')}`
+            });
+        }
+    });
+    return dataList;
+};
+

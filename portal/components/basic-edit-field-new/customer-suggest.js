@@ -22,6 +22,7 @@ class CustomerSuggest extends React.Component {
         required: true,
         //是否显示错误提示，一般在点击提交的时候，这个值为true
         show_error: false,
+        canCreateCustomer: true,//找不到客户时能否创建客户
         //客户的id
         id: '',
         //客户的name
@@ -170,20 +171,14 @@ class CustomerSuggest extends React.Component {
         }
         this.suggestTimer = setTimeout(() => {
             let condition = {name: value};
-            let queryObj = {
-                total_size: 0,
-                cursor: true,
-                id: ''
-            };
             let sorter = {
                 field: 'start_time',
                 order: 'descend'
             };
             let params = {
-                data: JSON.stringify(condition),
-                queryObj: JSON.stringify(queryObj)
-            }
-            crmCustomerAjax.queryCustomer(params, 10, sorter).then((data) => {
+                data: JSON.stringify(condition)
+            };
+            crmCustomerAjax.queryCustomer(params, 10, 1, sorter).then((data) => {
                 var list = data.result;
                 _.forEach(list, (customerItem) => {
                     customerItem.customer_name = customerItem.name;
@@ -313,7 +308,7 @@ class CustomerSuggest extends React.Component {
                     </div>
                 );
             } else {
-                var canCreateCustomer = userData.getUserData().privileges.indexOf('CRM_CUSTOMER_INFO_EDIT') >= 0;
+                var canCreateCustomer = this.props.canCreateCustomer && userData.getUserData().privileges.indexOf('CRM_CUSTOMER_INFO_EDIT') >= 0;
                 //是否跳转到crm页面添加客户
                 var noJumpToAddCrmPanel = this.props.noJumpToCrm;
                 return (
@@ -550,6 +545,7 @@ CustomerSuggest.propTypes = {
     keyword: PropTypes.string,
     show_error: PropTypes.boolean,
     required: PropTypes.boolean,
+    canCreateCustomer: PropTypes.boolean,
     hideCustomerError: PropTypes.func,
     customerChoosen: PropTypes.func,
     noJumpToCrm: PropTypes.boolean,

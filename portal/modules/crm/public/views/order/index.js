@@ -62,7 +62,7 @@ class OrderIndex extends React.Component {
                 type = 'manager';
             }
             OrderAction.setOrderListLoading(true);
-            OrderAction.getOrderList({customer_id: curCustomer.id}, {type: type});
+            OrderAction.getOrderList({query: {id: curCustomer.id}}, {type: type});
         }
     };
 
@@ -263,7 +263,7 @@ class OrderIndex extends React.Component {
                         {this.state.orderListLoading ? (
                             <Spinner />) : orderListLength ? (this.state.orderList.map(function(order, i) {
                             return (
-                                order.isEdit ?
+                                order && order.isEdit ?
                                     (<OrderForm key={i}
                                         order={order}
                                         stageList={_this.state.stageList}

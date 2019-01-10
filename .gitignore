@@ -1,6 +1,6 @@
 .idea
 .vscode
-node_modules
+node_modules*
 data
 .DS_Store
 *.swp
@@ -13,3 +13,4 @@ dll
 *.gzip
 cache
 *.log
+portal/public/sources/route/routers.js

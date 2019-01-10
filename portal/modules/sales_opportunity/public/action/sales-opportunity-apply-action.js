@@ -5,6 +5,9 @@
  */
 var SalesOpportunityApplyAjax = require('../ajax/sales-opportunity-apply-ajax');
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+let userData = require('PUB_DIR/sources/user-data');
+var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 function SalesOpportunityApplyActions() {
     this.generateActions(
         'setInitState',
@@ -24,11 +27,17 @@ function SalesOpportunityApplyActions() {
                 //需要对全部列表都加一个可以审批的属性
                 _.forEach(workList.list,(workItem) => {
                     workItem.showApproveBtn = true;
+                    //如果是我申请的，除了可以审批之外，我也可以撤回
+                    if (_.get(workItem,'applicant.user_id') === userData.getUserData().user_id && hasPrivilege('GET_MY_WORKFLOW_LIST') && hasPrivilege('GET_MY_WORKFLOW_LIST')){
+                        workItem.showCancelBtn = true;
+                    }
+
                 });
                 this.dispatch({error: false, loading: false, data: workList});
                 return;
             }
             SalesOpportunityApplyAjax.getAllSalesOpportunityApplyList(queryObj).then((data) => {
+                scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
                 //需要对全部列表进行一下处理，知道哪些是可以审批的
                 var workListArr = workList.list;
                 _.forEach(workListArr,(item) => {
@@ -37,6 +46,12 @@ function SalesOpportunityApplyActions() {
                     });
                     if (targetObj){
                         targetObj.showApproveBtn = true;
+                    }
+                });
+                //给 自己申请的并且是未通过的审批加上可以撤销的标识
+                _.forEach(data.list,(item) => {
+                    if (item.status === 'ongoing' && _.get(item,'applicant.user_id') === userData.getUserData().user_id){
+                        item.showCancelBtn = true;
                     }
                 });
                 this.dispatch({error: false, loading: false, data: data});},(errorMsg) => {

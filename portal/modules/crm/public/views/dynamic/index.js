@@ -1,9 +1,9 @@
 var React = require('react');
 require('../../css/dynamic.less');
 //动态store
-var DynamicStore = require('../../store/dynamic-store');
+var CustomerDynamicStore = require('../../store/customer-dynamic-store');
 //动态action
-var DynamicAction = require('../../action/dynamic-action');
+var CustomerDynamicAction = require('../../action/customer-dynamic-action');
 var crmAction = require('../../action/crm-actions');
 import {AntcTimeLine} from 'antc';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
@@ -14,30 +14,30 @@ import ShearContent from '../../../../../components/shear-content';
 
 class Dynamic extends React.Component {
     state = {
-        ...DynamicStore.getState(),
+        ...CustomerDynamicStore.getState(),
         windowHeight: $(window).height()
     };
 
     onStoreChange = () => {
-        this.setState({...DynamicStore.getState()});
+        this.setState({...CustomerDynamicStore.getState()});
     };
 
     componentDidMount() {
-        DynamicStore.listen(this.onStoreChange);
-        DynamicAction.getDynamicList(this.props.currentId);
+        CustomerDynamicStore.listen(this.onStoreChange);
+        CustomerDynamicAction.getDynamicList(this.props.currentId);
         $(window).on('resize', this.onStoreChange);
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.currentId !== this.props.currentId) {
             setTimeout(() => {
-                DynamicAction.getDynamicList(nextProps.currentId);
+                CustomerDynamicAction.getDynamicList(nextProps.currentId);
             });
         }
     }
 
     componentWillUnmount() {
-        DynamicStore.unlisten(this.onStoreChange);
+        CustomerDynamicStore.unlisten(this.onStoreChange);
         $(window).off('resize', this.onStoreChange);
     }
 

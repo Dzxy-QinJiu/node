@@ -17,7 +17,7 @@ exports.getContactList = function(customerId) {
         url: `/rest/crm/contact_list/${type}`,
         dataType: 'json',
         type: 'post',
-        data: {customer_id: customerId},
+        data: {query: {id: customerId}},
         success: function(result) {
             Deferred.resolve(result);
         },
@@ -41,8 +41,8 @@ exports.addContact = function(contact) {
         dataType: 'json',
         type: 'post',
         data: contact,
-        success: function(contact) {
-            Deferred.resolve(contact);
+        success: function(data) {
+            Deferred.resolve(data);
         },
         error: function(xhr) {
             Deferred.reject(xhr.responseJSON || Intl.get('crm.180', '添加联系人失败'));
@@ -52,10 +52,10 @@ exports.addContact = function(contact) {
 };
 
 //修改一个联系人
-exports.editContact = function(contact, editType) {
+exports.editContact = function(contact) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/contact/' + editType,
+        url: '/rest/contact',
         dataType: 'json',
         type: 'put',
         data: contact,

@@ -296,6 +296,10 @@ exports.toDetailChangePwdOtherRestObject = function(obj) {
     result.approval_time = serverResult.consume_date || '';
     //增加特殊属性
     result = addProperties(result, obj);
+    //其他类型申请的应用数据
+    if (detail.type === 'apply_sth_else') {
+        result.apps = detail.app_list ? JSON.parse(detail.app_list) : [];
+    }
     return result;
 };
 

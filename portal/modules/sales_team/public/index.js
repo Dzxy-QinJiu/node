@@ -7,7 +7,6 @@ import {Icon,Input,Button} from 'antd';
 var SalesTeamStore = require('./store/sales-team-store');
 var SalesTeamAction = require('./action/sales-team-actions');
 var Spinner = require('../../../components/spinner');
-var TopNav = require('../../../components/top-nav');
 var NoData = require('../../../components/analysis-nodata');
 var AlertTimer = require('../../../components/alert-timer');
 var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
@@ -169,9 +168,6 @@ class SalesTeamPage extends React.Component {
         let leftTreeData = this.state.searchContent ? this.state.searchSalesTeamTree : this.state.salesTeamListArray;
         return (
             <div className="sales-team-manage-container" data-tracename="团队管理">
-                <TopNav>
-                    <TopNav.MenuList/>
-                </TopNav>
                 {this.state.salesTeamLisTipMsg ? (this.state.salesTeamLisTipMsg == CONSTANT.SALES_TEAM_IS_NULL ? this.renderAddSalesTeam() :
                     <NoData msg={this.state.salesTeamLisTipMsg}/>) : (this.state.isLoadingSalesTeam ? (
                     <Spinner className="isloading"/>) : (

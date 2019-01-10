@@ -1,0 +1,15 @@
+code_quality:
+  allow_failure: true
+  script:
+    - pwd
+    - echo $(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run
+        --env SOURCE_CODE="$PWD"
+        --volume "$PWD":/code
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        registry.gitlab.com/gitlab-org/security-products/codequality:11-5-stable /code
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+  tags:
+    - quality

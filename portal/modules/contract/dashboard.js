@@ -22,6 +22,12 @@ const resizeEmitter = require('PUB_DIR/sources/utils/emitters').resizeEmitter;
 const threeMonthAgo = moment().subtract(3, 'month').valueOf();
 const now = moment().valueOf();
 
+const userData = require('PUB_DIR/sources/user-data');
+//是否是销售角色
+const isSalesRole = userData.hasRole(userData.ROLE_CONSTANS.SALES) ||
+    userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER) ||
+    userData.hasRole(userData.ROLE_CONSTANS.SECRETARY);
+
 class ContractDashboard extends React.Component {
     state = {
         //是否隐藏团队分布图
@@ -110,6 +116,13 @@ class ContractDashboard extends React.Component {
     processAmountData = (data) => {
         return _.map(data, item => {
             item.value = formatAmount(item.value);
+            return item;
+        });
+    };
+
+    processContractRepayAmount = (data) => {
+        return _.map(data, item => {
+            item.value = formatAmount(item.total);
             return item;
         });
     };
@@ -231,11 +244,10 @@ class ContractDashboard extends React.Component {
                 hide: this.state.isTeamDisChartHide,
                 content: this.getComponent(Analysis, {
                     chartType: 'bar',
-                    target: 'Contract',
-                    type: 'gross_profit',
-                    property: 'team',
+                    target: 'ContractGross',
+                    type: isSalesRole ? 'self' : 'all',
                     autoAdjustXaxisLabel: true,
-                    xAxisRotateLength: 10,
+                    xAxisRotateLength: 8,
                     gridY2: 70,
                     processData: this.processAmountData,
                     refName: 'xin_zeng_he_tong_mao_li_tuan_dui_fen_bu',
@@ -246,12 +258,12 @@ class ContractDashboard extends React.Component {
                 hide: this.state.isTeamDisChartHide,
                 content: this.getComponent(Analysis, {
                     chartType: 'bar',
-                    target: 'Contract',
-                    type: 'repay',
-                    property: 'team=amount',
+                    target: 'ContractRepay',
+                    type: isSalesRole ? 'self' : 'all',
                     autoAdjustXaxisLabel: true,
+                    xAxisRotateLength: 8,
                     gridY2: 70,
-                    processData: this.processAmountData,
+                    processData: this.processContractRepayAmount,
                     refName: 'xin_zeng_hui_kuan_tuan_dui_fen_bu',
                 })
             },

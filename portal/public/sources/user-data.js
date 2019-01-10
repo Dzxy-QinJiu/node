@@ -1,5 +1,4 @@
 var UserData;
-import Intl from '../intl/intl';
 //通过ajax获取
 exports.getUserDataByAjax = function() {
     var deferred = $.Deferred();
@@ -45,6 +44,8 @@ exports.updateUserLogo = function(userLogoInfo) {
 exports.getUserData = function() {
     return UserData;
 };
+
+
 //设置用户数据
 exports.setUserData = function(key, value) {
     UserData[key] = value;

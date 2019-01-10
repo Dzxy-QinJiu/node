@@ -17,7 +17,6 @@ import AddRepayment from './add-repayment';
 import AddBuyBasic from './add-buy-basic';
 import AddBuyPayment from './add-buy-payment';
 import DetailBasic from './detail-basic';
-import DetailRepayment from './detail-repayment';
 import DetailInvoice from './detail-invoice';
 import DetailBuyBasic from './detail-buy-basic';
 import DetailBuyPayment from './detail-buy-payment';
@@ -35,7 +34,7 @@ class ContractRightPanel extends React.Component {
     state = {
         isLoading: false,
         currentView: this.props.view,
-        currentCategory: this.props.view === 'buyForm' ? PURCHASE : PRODUCT,
+        currentCategory: '',
         currentTabKey: '1',
         userList: JSON.parse(JSON.stringify(this.props.userList)),
         teamList: JSON.parse(JSON.stringify(this.props.teamList)),
@@ -274,6 +273,18 @@ class ContractRightPanel extends React.Component {
             } else {
                 contractData = _.extend({}, this.props.contract, this.refs.detailBuyBasic.state.formData);
             }
+        }
+
+        if (contractData.start_time) {
+            //在用Validation组件验证开始时间是否小于结束时间时，该组件会用一个缓存的值覆盖通过赋值方法setField赋到state上的最新的值
+            //现象就是，本来选择了开始时间后，赋到state里的开始时间是个时间戳，但经过验证组件验证后，就又变回了moment对象
+            //所以在提交数据之前需要把moment再转成时间戳，否则接口会报错
+            //下面的结束时间同理
+            contractData.start_time = moment(contractData.start_time).valueOf();
+        }
+
+        if (contractData.end_time) {
+            contractData.end_time = moment(contractData.end_time).valueOf();
         }
 
         const reqData = contractData;
@@ -552,6 +563,7 @@ class ContractRightPanel extends React.Component {
                                             showLoading={this.showLoading}
                                             hideLoading={this.hideLoading}
                                             refreshCurrentContract={this.props.refreshCurrentContract}
+                                            refreshCurrentContractRepayment={this.props.refreshCurrentContractRepayment}
                                             viewType={this.props.viewType}
                                         />
                                     </GeminiScrollBar>

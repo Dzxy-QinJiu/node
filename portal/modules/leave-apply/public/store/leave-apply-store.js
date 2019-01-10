@@ -14,7 +14,6 @@ LeaveApplyStore.prototype.setInitState = function() {
     this.status = '';//请假申请的状态
     this.order = 'descend';
     this.page_size = 20;
-    this.lastLeaveApplyId = '';//用于下拉加载的id
     //所有申请列表
     this.applyListObj = {
         // "" loading error
@@ -34,7 +33,7 @@ LeaveApplyStore.prototype.setInitState = function() {
         //错误信息
         errorMsg: ''
     };
-    //由我发起的出差申请
+    //由我发起的请假申请
     this.selfApplyList = {
         // "" loading error
         loadingResult: 'loading',
@@ -43,8 +42,8 @@ LeaveApplyStore.prototype.setInitState = function() {
         //错误信息
         errorMsg: ''
     };
-    //筛选类别 'all'(全部) pass(已通过) reject(已驳回)  ongoing(待审批)
-    this.applyListType = 'all';
+    //筛选类别 'all'(全部) pass(已通过) reject(已驳回)  ongoing(待我审批)
+    this.applyListType = 'ongoing';
     this.clearData();
 };
 //清空数据
@@ -115,11 +114,12 @@ LeaveApplyStore.prototype.changeApplyAgreeStatus = function(message) {
 LeaveApplyStore.prototype.updateAllApplyItemStatus = function(updateItem) {
     var allApplyArr = this.applyListObj.list;
     this.selectedDetailItem.status = updateItem.status;
-    _.forEach(allApplyArr,(item) => {
-        if (item.id === updateItem.id){
-            item.status = updateItem.status;
-        }
+    var targetObj = _.find(allApplyArr,(item) => {
+        return item.id === updateItem.id;
     });
+    if (targetObj){
+        targetObj.status = updateItem.status;
+    }
 };
 LeaveApplyStore.prototype.afterAddApplySuccess = function(item) {
     this.applyListObj.list.unshift(item);
