@@ -97,12 +97,12 @@ class ApplyViewDetail extends React.Component {
     addNewApplyCandidate = (transferCandidateId) =>{
         var submitObj = {
             id: _.get(this, 'state.detailInfoObj.info.id',''),
-            user_ids:transferCandidateId
+            user_ids:[transferCandidateId]
         };
         var hasApprovePrivilege = _.get(this,'state.detailInfoObj.info.showApproveBtn',false);
         //如果操作转出的人是这条审批的待审批者，需要在这个操作人的待审批列表中删除这条申请
         if (hasApprovePrivilege){
-            submitObj.user_ids_delete = userData.getUserData().user_id;
+            submitObj.user_ids_delete = [userData.getUserData().user_id];
         };
         LeaveApplyDetailAction.transferNextCandidate(submitObj,(flag)=>{
             //关闭下拉框
