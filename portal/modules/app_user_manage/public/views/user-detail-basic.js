@@ -687,7 +687,7 @@ class UserDetailBasic extends React.Component {
         })();
         let userInfo = this.state.initialUser.user;
         let groupsInfo = this.state.initialUser.groups || [];
-        let hasEditPrivilege = hasPrivilege('APP_USER_EDIT') && isOplateUser();
+        let hasEditPrivilege = hasPrivilege('APP_USER_EDIT');
         var DetailBlock = !this.state.isLoading && !this.state.getDetailErrorMsg ? (
             <div className='user-detail-baisc-v3'>
                 <UserBasicCard
