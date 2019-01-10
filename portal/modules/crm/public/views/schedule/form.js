@@ -1,3 +1,5 @@
+import * as LANGLOBAL from 'MOD_DIR/position_manage/public/consts';
+
 var React = require('react');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
@@ -20,6 +22,7 @@ const DATE_FORMAT = oplateConsts.DATE_FORMAT;
 const HOUR_MUNITE_FORMAT = oplateConsts.HOUR_MUNITE_FORMAT;
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 const TIME_CONSTS = {
     'ZERO': 0,
     'ZERO_POINT_FIVE': 0.5,
@@ -83,6 +86,8 @@ var CrmAlertForm = createReactClass({
         getScheduleList: PropTypes.func,
         formItemLayout: PropTypes.object,
         customerArr: PropTypes.array,
+        isAddToDoClicked: PropTypes.bool,
+        handleScheduleAdd: PropTypes.func
     },
     getInitialState: function() {
         var formData = this.getInitialFormData();
@@ -95,7 +100,8 @@ var CrmAlertForm = createReactClass({
             messageContent: '',
             selectedTimeRange: '1h',//选中的联系时间
             selectedAlertTimeRange: selectedAlertTimeRange,//选中的提醒时间的类型
-            isSelectFullday: true//是否已经选择了全天
+            isSelectFullday: true,//是否已经选择了全天
+            hideCustomerRequiredTip: false,
         };
     },
 
@@ -241,11 +247,16 @@ var CrmAlertForm = createReactClass({
                 if (resData.id) {
                     this.showMessage(Intl.get('user.user.add.success', '添加成功'));
                     _.isFunction(this.props.handleScheduleCancel) && this.props.handleScheduleCancel();
-                    ScheduleAction.afterAddSchedule(resData);
-                    var todayTimeObj = TimeStampUtil.getTodayTimeStamp();
-                    //如果添加的是今天的电联联系计划，就在基本资料的日程列表中加一个计划
-                    if (resData.type === 'calls' && resData.start_time > todayTimeObj.start_time && resData.end_time < todayTimeObj.end_time){
-                        basicOverviewAction.afterAddSchedule(resData);
+                    // 判断是否是添加待办项
+                    if(this.props.isAddToDoClicked) {
+                        _.isFunction(this.props.handleScheduleAdd) && this.props.handleScheduleAdd(resData);
+                    } else {
+                        ScheduleAction.afterAddSchedule(resData);
+                        var todayTimeObj = TimeStampUtil.getTodayTimeStamp();
+                        //如果添加的是今天的电联联系计划，就在基本资料的日程列表中加一个计划
+                        if (resData.type === 'calls' && resData.start_time > todayTimeObj.start_time && resData.end_time < todayTimeObj.end_time){
+                            basicOverviewAction.afterAddSchedule(resData);
+                        }
                     }
                 } else {
                     this.showMessage(resData || Intl.get('crm.154', '添加失败'), 'error');
@@ -286,6 +297,37 @@ var CrmAlertForm = createReactClass({
             isMessageShow: true,
             messageType: type || 'success',
             messageContent: content || '',
+        });
+    },
+
+    // 选择客户
+    customerChoosen: function(selectedCustomer) {
+        let formData = this.state.formData;
+        formData.customer_id = selectedCustomer.id;
+        formData.customer_name = selectedCustomer.name;
+        formData.topic = selectedCustomer.name;
+        this.setState({
+            formData
+        }, () => {
+            this.refs.validation.forceValidate(['customer']);
+        });
+    },
+
+    // 选择客户验证事件
+    checkCustomerName: function(rule, value, callback){
+        value = _.trim(_.get(this.state, 'formData.customer_id'));
+        if (!value && !this.state.hideCustomerRequiredTip) {
+            callback(new Error(Intl.get('leave.apply.select.customer', '请先选择客户')));
+        } else {
+            callback();
+        }
+    },
+
+    hideCustomerRequiredTip: function(flag) {
+        this.setState({
+            hideCustomerRequiredTip: flag
+        },() => {
+            this.refs.validation.forceValidate(['customer']);
         });
     },
 
@@ -338,6 +380,11 @@ var CrmAlertForm = createReactClass({
             message.warn(Intl.get('crm.alert.finish.longer', '结束时间必须要大于开始时间'));
             return;
         }
+
+        if(this.props.isAddToDoClicked && !submitObj.customer_id){
+            this.refs.validation.forceValidate(['customer']);
+            return;
+        }
         this.handleSubmit(submitObj);
     },
 
@@ -375,6 +422,7 @@ var CrmAlertForm = createReactClass({
     handleCancel: function(e) {
         Trace.traceEvent(e, '取消添加联系计划');
         _.isFunction(this.props.handleScheduleCancel) && this.props.handleScheduleCancel();
+        if(this.props.isAddToDoClicked) return;
         //如果是批量添加联系计划,关闭后应该清空数据
         if (_.isArray(this.props.selectedCustomer)) {
             this.setState({
@@ -521,7 +569,6 @@ var CrmAlertForm = createReactClass({
             this.setState({formData});
         }
     },
-
     render: function() {
         const formItemLayout = this.props.formItemLayout || {
             colon: false,
@@ -534,8 +581,36 @@ var CrmAlertForm = createReactClass({
         return (
             <Form layout='horizontal' data-tracename="添加联系计划表单" className="schedule-form" id="schedule-form">
                 <Validation ref="validation" onValidate={this.handleValidate}>
-                    {/*如果是批量操作的时候，不需要展示标题*/
-                        this.props.selectedCustomer ? null : (
+                    {/*如果是点击待办项，显示客户选择框，否则如果是批量操作的时候，不需要展示标题*/
+                        this.props.isAddToDoClicked ? (
+                            <FormItem
+                                {...formItemLayout}
+                                required
+                                validateStatus={this.getValidateStatus('customer')}
+                                help={this.getHelpMessage('customer')}
+                                label={Intl.get('call.record.customer', '客户')}
+                            >
+                                <Validator rules={[{validator: this.checkCustomerName}]}>
+                                    <CustomerSuggest
+                                        name='customer'
+                                        field='customer'
+                                        hasEditPrivilege={true}
+                                        displayText={''}
+                                        displayType={'edit'}
+                                        id={''}
+                                        show_error={false}
+                                        noJumpToCrm={true}
+                                        customer_name={''}
+                                        customer_id={''}
+                                        noDataTip={Intl.get('clue.has.no.data', '暂无')}
+                                        hideButtonBlock={true}
+                                        customerChoosen={this.customerChoosen}
+                                        required={true}
+                                        hideCustomerRequiredTip={this.hideCustomerRequiredTip}
+                                    />
+                                </Validator>
+                            </FormItem>
+                        ) : (this.props.selectedCustomer ? null : (
                             <FormItem
                                 {...formItemLayout}
                                 label={Intl.get('crm.alert.topic', '标题')}
@@ -553,7 +628,7 @@ var CrmAlertForm = createReactClass({
                                         : <Input name="topic" value={formData.topic} disabled/>}
 
                                 </Validator>
-                            </FormItem>)
+                            </FormItem>))
                     }
                     <FormItem
                         {...formItemLayout}
@@ -579,7 +654,6 @@ var CrmAlertForm = createReactClass({
                         <div className="content-wrap">
                             <Validator
                                 rules={[{required: true, message: Intl.get('crm.schedule.fill.content', '请填写联系内容')}]}
-
                             >
                                 <Input
                                     name="content"

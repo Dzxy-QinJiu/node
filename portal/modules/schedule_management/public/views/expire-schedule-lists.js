@@ -304,8 +304,8 @@ class ExpireScheduleLists extends React.Component {
     };
     //点击添加待办按钮
     handleAddTodo = () => {
-        //跳转到客户列表页面
-        history.push('/crm', {});
+        // 这里改为右侧滑出待办项面板
+        this.props.showAddToDo();
     };
 
     render() {
@@ -352,11 +352,13 @@ ExpireScheduleLists.defaultProps = {
     showCustomerDetail: function() {
 
     },
+    showAddToDo: function(){},
     callNumber: ''
 };
 
 ExpireScheduleLists.propTypes = {
     showCustomerDetail: PropTypes.func,
+    showAddToDo: PropTypes.func,
     callNumber: PropTypes.string
 };
 
