@@ -210,7 +210,6 @@ class Crm extends React.Component {
         OrderAction.getSysStageList();
         this.getUserPhoneNumber();
         const query = queryString.parse(this.props.location.search);
-        const locationState = this.props.location.state;
         if (query.analysis_filter_field) {
             var filterField = query.analysis_filter_field;
             var filterValue = query.analysis_filter_value;
@@ -255,22 +254,6 @@ class Crm extends React.Component {
                 }
             }
             this.setFilterField({ filterField, filterValue });
-
-        } else if (!_.isEmpty(locationState)) {
-            //如果是从首页跳转过来的
-            if (this.props.fromSalesHome) {
-                const pageSize = locationState.num;
-                let params = {
-                    data: JSON.stringify({id: locationState.customerIds})
-                };
-
-                //设置了关注客户置顶后的处理
-                if (this.state.isConcernCustomerTop) {
-                    params = this.handleSortParams(params);
-                }
-
-                CrmAction.queryCustomer(params, pageSize, 1, this.state.sorter);
-            }
         } else {
             this.search();
         }
@@ -883,6 +866,14 @@ class Crm extends React.Component {
         if (this.state.isConcernCustomerTop) {
             params = this.handleSortParams(params);
         }
+
+        //如果是从首页跳转过来的
+        if (this.props.fromSalesHome) {
+            params = {
+                data: JSON.stringify({id: this.props.location.state.customerIds})
+            };
+        }
+
         //有关注的客户时，路径和sortAndOrders都传了排序字段时，只使用sortAndOrders中的字段进行排序（排序的优先级按数组中的顺序来排）
         CrmAction.queryCustomer(params, this.state.pageSize, this.state.pageNum, this.state.sorter);
         this.setState({rangeParams: this.state.rangParams});
