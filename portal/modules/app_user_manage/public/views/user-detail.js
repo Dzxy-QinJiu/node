@@ -449,7 +449,7 @@ class UserDetail extends React.Component {
                                                                 id={_.get(userInfo, 'data.user_id')}
                                                                 value={_.get(userInfo, 'data.description')}
                                                                 type="textarea"
-                                                                field="remarks"
+                                                                field="description"
                                                                 textCut={true}
                                                                 editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
                                                                 placeholder={Intl.get('user.input.remark', '请输入备注')}
