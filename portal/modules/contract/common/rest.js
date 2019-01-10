@@ -48,7 +48,7 @@ routes.forEach(route => {
                 });
             })
         } else {
-            doRequest(data);
+            return doRequest(data);
         }
 
         function doRequest(data, cb) {
