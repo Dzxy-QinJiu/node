@@ -8,6 +8,7 @@ require('./index.less');
 import {Input, Button, Form, Icon} from 'antd';
 const FormItem = Form.Item;
 import Logo from 'CMP_DIR/Logo';
+import {Link} from 'react-router-dom';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 const matomoSrc = require('./matomo.png');
 const oplateSrc = require('./oplate.png');
@@ -142,14 +143,15 @@ class IntegrateConfigView extends React.Component {
     render() {
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {colon: false};
+        let integrateConfigUrl = '/background_management/integration';
         return (
             <div className="integrate-config-wrap">
-                <div className="access-step-tip">{Intl.get('user.access.steps.tip', '您还没有接入用户，请先通过以下方式接入用户')}</div>
+                <div className="access-step-tip">{Intl.get('user.access.steps.tip', '您还没有接入用户，请按照下面流程接入用户')}</div>
                 <div className="curtao-access-wrap">
                     {_.get(this.state, 'addProduct.name') ? (
                         <div className="integrate-js-code-wrap">
                             <div className="accesss-title">
-                                <Logo size="24px" fontColor='#333'/>
+                                <Logo size="24px" fontColor='#333' jumpUrl="#"/>
                             </div>
                             <div className="access-step-tip margin-style curtao-product-name">
                                 <span className="js-code-label">{Intl.get('common.product.name', '产品名称')}：</span>
@@ -183,13 +185,6 @@ class IntegrateConfigView extends React.Component {
                                         {this.renderTestResult()}
                                     </span>
                                 </div>) : null}
-                            <div className="access-step-tip other-access-way-wrap">
-                                <span>{Intl.get('user.access.way.tip', '您如果使用了以下产品，还可以通过以下方式接入用户')}: </span>
-                                <div className="other-access-way">
-                                    <img src={matomoSrc} className="matomo-image"/>
-                                    <Logo size="24px" fontColor='#6da5e1' logoSrc={oplateSrc} logoText='OPLATE'/>
-                                </div>
-                            </div>
                         </div>
                     ) : (
                         <Form className="integrate-config-form">
@@ -214,6 +209,13 @@ class IntegrateConfigView extends React.Component {
                                     <span className="save-error">{this.state.addErrorMsg}</span>
                                 ) : null}
                             </FormItem>
+                            <div className="access-step-tip other-access-way-wrap">
+                                <span>{Intl.get('user.access.way.tip', '您如果使用了以下产品，还可以通过以下方式接入用户')}: </span>
+                                <div className="other-access-way">
+                                    <Link to={integrateConfigUrl}><img src={matomoSrc} className="matomo-image"/></Link>
+                                    <Logo size="24px" fontColor='#6da5e1' logoSrc={oplateSrc} logoText='OPLATE' jumpUrl={integrateConfigUrl}/>
+                                </div>
+                            </div>
                         </Form>)}
                 </div>
             </div>

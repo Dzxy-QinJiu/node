@@ -28,7 +28,7 @@ class Logo extends React.Component {
             color: this.props.fontColor || '#ffffff'
         };
         return (
-            <Link to="/" className="logo" style={aStyle}>
+            <Link to={this.props.jumpUrl || '/'} className="logo" style={aStyle}>
                 <img style={imgStyle} src={this.props.logoSrc || LogoSrc}/>
                 <span style={textStyle}>{this.props.logoText || Intl.get('customer.ketao.app', '客套')}</span>
             </Link>
@@ -36,6 +36,7 @@ class Logo extends React.Component {
     }
 }
 Logo.propTypes = {
+    jumpUrl: PropTypes.string,
     size: PropTypes.string,
     fontColor: PropTypes.string,
     logoSrc: PropTypes.string,

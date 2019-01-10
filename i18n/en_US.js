@@ -572,7 +572,7 @@ var en_US = {
     'user.disable.logon': 'Disable logon',//停用登录
     'user.frequent.logon': 'Frequent logon',//频繁登录
     'user.get.score.failed': 'Failed to get user score',//获取用户分数失败
-    'user.access.steps.tip': 'You have not accessed the user yet. Please access the user first by the following way',//您还没有接入用户，请先通过以下方式接入用户
+    'user.access.steps.tip': 'You have not accessed the user yet, please follow the following procedure to access the user',//您还没有接入用户，请按照下面流程接入用户
     'user.jscode.copy': 'Copy',//复制
     'user.copy.success.tip': 'Copied success',//复制成功！
     'user.access.way.tip': 'If you use the following products, you can also access users in the following ways',//您如果使用了以下产品，还可以通过以下方式接入用户

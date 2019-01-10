@@ -44,6 +44,7 @@ import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import Spinner from 'CMP_DIR/spinner';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import IntegrateConfigView from './views/integrate-config/index';
+import TopNav from 'CMP_DIR/top-nav';
 
 /*用户管理界面外层容器*/
 class AppUserManage extends React.Component {
@@ -690,7 +691,10 @@ class AppUserManage extends React.Component {
         return (
             <div>
                 <div className="app_user_manage_page table-btn-fix" data-tracename="用户管理">
-                    {this.renderTopNavOperation()}
+                    { this.state.isGettingIntegrateType || this.state.getItegrateTypeError || this.state.isShowAddProductView ? (
+                        <div className='app-user-nodata-topnav'><TopNav/></div>
+                    ) : this.renderTopNavOperation()}
+
                     <div className="app_user_manage_contentwrap">
                         {
                             showView

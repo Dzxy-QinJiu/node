@@ -573,7 +573,7 @@ var zh_CN = {
     'user.get.score.failed': '获取用户分数失败',
     'user.permission.show': '展开具体权限',
     'user.permission.hide': '收起具体权限',
-    'user.access.steps.tip': '您还没有接入用户，请先通过以下方式接入用户',
+    'user.access.steps.tip': '您还没有接入用户，请按照下面流程接入用户',
     'user.jscode.copy': '复制',
     'user.copy.success.tip': '复制成功！',
     'user.access.way.tip': '您如果使用了以下产品，还可以通过以下方式接入用户',
