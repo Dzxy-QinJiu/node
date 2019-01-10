@@ -706,22 +706,23 @@ class CustomerAnalysis extends React.Component {
                 const customerIdsStr = customerIds.join(',');
                 //由于合并或删除，已经不存在了的客户数
                 const diffNum = num - customerIds.length;
+                const argsObj = {
+                    from: 'sales_home',
+                    customerIds: customerIdsStr,
+                    num,
+                    diffNum
+                };
 
-                return <span style={{cursor: 'pointer'}} onClick={this.handleCustomerNumClick.bind(this, customerIdsStr, num, diffNum)}>{num}</span>;
+                return <span style={{cursor: 'pointer'}} onClick={this.handleCustomerNumClick.bind(this, argsObj)}>{num}</span>;
             }
         }
     };
 
     //处理客户数点击事件
-    handleCustomerNumClick = (customerIds, num, diffNum) => {
+    handleCustomerNumClick = argsObj => {
         this.setState({
             isShowCustomerTable: true,
-            crmLocationState: {
-                from: 'sales_home',
-                customerIds,
-                num,
-                diffNum
-            }
+            crmLocationState: argsObj
         });
     };
 
