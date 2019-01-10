@@ -362,7 +362,7 @@ var en_VE = {
 
     'user.login.times': 'Veces de inicio de sesión',//登录次数
 
-    'user.login.days': 'Días de inicio de sesión', // 登录天数
+    'user.login.days': 'Días de inicio de sesión', // 活跃天数
 
     'user.remark.write.tip': 'Rellene nota',//请填写备注
 

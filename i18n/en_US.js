@@ -335,7 +335,7 @@ var en_US = {
     'user.time.end': 'Expire time',//到期时间
     'user.login.times': 'Login Times',//登录次数
     'user.login.score': 'Score', // 分数
-    'user.login.days': 'Login Days', // 登录天数
+    'user.login.days': 'Active days', // 活跃天数
     'user.detail.return': 'return to basic info', //'返回基本信息',
     'user.detail.loginAnalysis.title': 'Statistic of login times in a year',//'近一年的活跃统计',
     'user.detail.tip.collapse': 'Collapse config', //'收起停用前设置',
@@ -572,7 +572,14 @@ var en_US = {
     'user.disable.logon': 'Disable logon',//停用登录
     'user.frequent.logon': 'Frequent logon',//频繁登录
     'user.get.score.failed': 'Failed to get user score',//获取用户分数失败
-
+    'user.access.steps.tip': 'You have not accessed the user yet, please follow the following procedure to access the user',//您还没有接入用户，请按照下面流程接入用户
+    'user.jscode.copy': 'Copy',//复制
+    'user.copy.success.tip': 'Copied success',//复制成功！
+    'user.access.way.tip': 'If you use the following products, you can also access users in the following ways',//您如果使用了以下产品，还可以通过以下方式接入用户
+    'user.jscode.test.btn': 'Click test',//点击测试
+    'user.jscode.use.tip': 'Please add the above JS code to the header of the application page if it has been added ',//请将以上js代码添加到应用页面的header中，如已添加
+    'user.test.error.tip': 'Test failed',//测试失败
+    'user.list.check.refresh': 'Refresh to view the user list',//刷新查看用户列表
     // 用户分析
     'user.login.total.score': 'Total score', // 总分
     'user.login.latest.activity.score': 'Latest activity score', // 最新活跃度分数
@@ -913,7 +920,20 @@ var en_US = {
     'config.product.url': 'URL',//访问地址
     'config.product.input.url': 'Please input url',//请输入访问地址
     'config.product.create_time': 'Create time',//创建时间
-
+    'config.product.type': 'Product type',//产品类型
+    'config.product.select.tip': 'Please choose products (Multiple choices)',//请选择产品（可多选）
+    'config.product.js.collect.user': 'Use JS script to collect user data',//使用JS脚本采集用户数据
+    'config.product.list.import': 'Import {type} Products',//导入{type}产品
+    'config.product.import.tip': 'You have integrated {type} to import the following {type} products',//您已集成{type}，可以导入以下{type}的产品
+    'config.product.import.finish': 'Import finished',//导入完成
+    'config.product.import.failed': 'Import failed',//导入失败
+    'config.integration': 'Integration',//集成
+    'config.integration.type': 'Integration type',//集成类型
+    'config.integration.domain': 'Domain',//域名
+    'config.integration.token': 'Verify token',//验证token
+    'config.integration.server.placeholder': 'Please enter the Matomo domain name',//请输入Matomo域名
+    'config.integration.token.placeholder': 'Please enter API verify token',//请输入API验证token
+    'config.integration.config.get.error': 'Failed to get integrate config',//获取集成配置的信息出错了
     //配置end
     // 通话记录start
     'call.record.caller': 'Caller', // 呼叫者
@@ -2659,7 +2679,7 @@ var en_US = {
     'apply.approve.upload.file.type': 'Upload {fileType}',//上传{fileType}
     'apply.approve.continue.file.type': 'Continue to upload {fileType}',//继续上传{fileType}
     'apply.approve.delete.this.file': 'Whether to delete this file',//是否删除此文件
-	'failed.distribute.sales.opportunity': 'Failed to distribute sales opportunity!',//分配销售机会失败！
+    'failed.distribute.sales.opportunity': 'Failed to distribute sales opportunity!',//分配销售机会失败！
     'common.customer.can.not.found.because.merged': '{count} of these customers were not queried because they were merged',//其中有{count}个客户因被合并而查询不到了
     'apply.approve.leave.am': 'am',//上午
     'apply.approve.leave.pm': 'pm',//下午

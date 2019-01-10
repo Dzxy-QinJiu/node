@@ -38,7 +38,9 @@ class UserBasicCard extends React.Component {
             //销售id
             sales_team_id: props.sales_team_id,
             //销售名称
-            sales_team_name: props.sales_team_name
+            sales_team_name: props.sales_team_name,
+            //是否有修改权限
+            hasEditPrivilege: props.hasEditPrivilege || false,
         };
     }
 
@@ -225,10 +227,12 @@ class UserBasicCard extends React.Component {
                                     <a onClick={this.showCustomerDetail.bind(this, this.props.customer_id)}
                                     >{this.props.customer_name}</a>
                                 </span>
-                                <DetailEditBtn
-                                    title={Intl.get('common.edit', '编辑')}
-                                    onClick={this.toggleEdit}
-                                />
+                                {this.state.hasEditPrivilege ? (
+                                    <DetailEditBtn
+                                        title={Intl.get('common.edit', '编辑')}
+                                        onClick={this.toggleEdit}
+                                    />) : null}
+
                             </div>
                         </div>
                     )
@@ -279,5 +283,6 @@ UserBasicCard.propTypes = {
     sales_team_name: PropTypes.string,
     onChangeSuccess: PropTypes.func,
     user_id: PropTypes.string,
+    hasEditPrivilege: PropTypes.bool,
 };
 export default UserBasicCard;

@@ -316,6 +316,13 @@ let routers = [
                 component: `${MODULE_PATH}config_manage/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['CRM_COMPETING_PRODUCT']
+            }, {
+                id: 'INTEGRATION',
+                name: 'config.integration',//集成
+                routePath: '/background_management/integration',
+                component: `${MODULE_PATH}integration_config/public`,
+                //有这个权限，才显示入口图标
+                showPrivileges: ['PRODUCTS_MANAGE']
             },
             {
                 id: 'OPENAPP',

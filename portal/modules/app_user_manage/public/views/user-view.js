@@ -24,6 +24,7 @@ import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/add-clues-form'
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import {commonPhoneRegex, areaPhoneRegex, hotlinePhoneRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 //异常登录的类型
 const EXCEPTION_TYPES = [{
     name: Intl.get('common.all', '全部'),
@@ -560,24 +561,26 @@ class UserTabContent extends React.Component {
                         <div title={sales_name}>{sales_name}</div>
                     );
                 }
-            }, {
-                title: Intl.get('user.login.times', '登录次数'),
-                dataIndex: 'logins',
-                key: 'logins',
-                width: fourWordWidth,
-                className: numClass,
-                sorter: sortable,
-                render: function(text, rowData, idx) {
-                    let loginCount = 0;
-                    if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
-                        loginCount = rowData.apps[0].logins || 0;
-                    }
-                    return (
-                        <div className="num-float-right" title={loginCount}>{loginCount} </div>
-                    );
-                }
-            }, {
-                title: Intl.get('user.login.days', '登录天数'),
+            },
+            // {
+            //     title: Intl.get('user.login.times', '登录次数'),
+            //     dataIndex: 'logins',
+            //     key: 'logins',
+            //     width: fourWordWidth,
+            //     className: numClass,
+            //     sorter: sortable,
+            //     render: function(text, rowData, idx) {
+            //         let loginCount = 0;
+            //         if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
+            //             loginCount = rowData.apps[0].logins || 0;
+            //         }
+            //         return (
+            //             <div className="num-float-right" title={loginCount}>{loginCount} </div>
+            //         );
+            //     }
+            // },
+            {
+                title: Intl.get('user.login.days', '活跃天数'),
                 dataIndex: 'login_day_count',
                 key: 'login_day_count',
                 width: fourWordWidth,
@@ -629,6 +632,10 @@ class UserTabContent extends React.Component {
                 }
             }
         ];
+        //选中应用后，去掉应用列的展示
+        if(this.state.selectedAppId){
+            columns = _.filter(columns, item => item.dataIndex !== 'apps');
+        }
         return columns;
     };
 
@@ -1097,7 +1104,8 @@ class UserTabContent extends React.Component {
         //销售可以批量操作
         const hasSelectAuth = hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN) ||
             hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES);
-        var rowSelection = hasSelectAuth ? this.getRowSelection() : null;
+        //只有oplate的用户才有批量操作
+        var rowSelection = hasSelectAuth && isOplateUser() ? this.getRowSelection() : null;
         var divHeight = $(window).height() -
             LAYOUT_CONSTANTS.TOP_DISTANCE -
             LAYOUT_CONSTANTS.BOTTOM_DISTANCE -
@@ -1128,7 +1136,7 @@ class UserTabContent extends React.Component {
                             filterReset: Intl.get('user.reset', '重置'),
                             emptyText: this.state.appUserListResult === 'error' ? this.state.getAppUserListErrorMsg || Intl.get('user.list.get.failed', '获取用户列表失败') : Intl.get('common.no.more.user', '没有更多用户了')
                         }}
-                        scroll={{x: Oplate.hideSomeItem ? 1130 : (hasSelectAuth ? 1460 : 1440), y: divHeight}}
+                        scroll={{x: Oplate.hideSomeItem ? 1030 : (hasSelectAuth ? 1360 : 1340), y: divHeight}}
                         util={{
                             zoomInSortArea: true
                         }}

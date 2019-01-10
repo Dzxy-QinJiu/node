@@ -1,4 +1,5 @@
 
+var appAjaxTrans = require('MOD_DIR/common/public/ajax/app');
 //根据客户id获取客户信息
 exports.getCustomerById = function(data) {
     var Deferred = $.Deferred();
@@ -25,19 +26,14 @@ var getAppListsAjax;
 exports.getAppLists = function() {
     getAppListsAjax && getAppListsAjax.abort();
     var Deferred = $.Deferred();
-    getAppListsAjax = $.ajax({
-        url: '/rest/base/phonecall/application',
-        dataType: 'json',
-        type: 'get',
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(xhr, textStatus) {
-            if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseText);
-            }
-        }
-    });
+    getAppListsAjax = appAjaxTrans.getGrantApplicationListAjax().sendRequest()
+        .success(function(list) {
+            Deferred.resolve(list);
+        }).error(function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }).timeout(function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        });
     return Deferred.promise();
 };
 //增加产品反馈

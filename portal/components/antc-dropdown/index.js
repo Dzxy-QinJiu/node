@@ -98,7 +98,7 @@ class AntcDropdown extends React.Component {
             <Dropdown overlay={menu} visible={this.state.menuVisible}
                 placement="bottomLeft" trigger={['click']}
                 onVisibleChange={this.handleVisibleChange.bind(this)}
-
+                overlayClassName={this.props.overlayClassName}
             >
                 {this.props.content}
             </Dropdown>
@@ -106,6 +106,7 @@ class AntcDropdown extends React.Component {
     }
 }
 AntcDropdown.defaultProps = {
+    overlayClassName: 'dropdown-container',
     showMenu: false,//是否展示下拉菜单（boolean）
     content: '',//Dropdown默认展示的内容（string|ReactNode）
     overlayTitle: '',//下拉菜单中的标题（string|ReactNode）
@@ -135,6 +136,7 @@ AntcDropdown.propTypes = {
     clearSelectData: PropTypes.func,
     btnAtTop: PropTypes.bool,
     stopContentHide: PropTypes.bool,
-    isDisabled: false
+    isDisabled: false,
+    overlayClassName: PropTypes.string
 };
 export default AntcDropdown;

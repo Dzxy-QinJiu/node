@@ -45,8 +45,6 @@ var AppUserRestApis = {
     addApp: '/rest/base/v1/user/grant_applications',
     //修改引用
     editApp: '/rest/base/v1/user/grant_application',
-    //获取应用列表
-    getAppList: '/rest/base/v1/application',
     //获取用户列表
     getUsers: '/rest/base/v1/user/search',
     //获取用户详情

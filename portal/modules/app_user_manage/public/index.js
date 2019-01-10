@@ -19,8 +19,7 @@ import AddOrEditUser from './views/v2/add-or-edit-user';
 
 var UserAuditLog = require('./views/user-audit-log-show-user-detail');
 
-var Select = require('antd').Select;
-var Icon = require('antd').Icon;
+import {Icon, Select, Button, Popover, message} from 'antd';
 import {SearchInput} from 'antc';
 
 var Option = Select.Option;
@@ -32,8 +31,6 @@ var ShareObj = require('./util/app-id-share-util');
 var FilterBtn = require('../../../components/filter-btn');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 var SelectFullWidth = require('../../../components/select-fullwidth');
-var Popover = require('antd').Popover;
-import {Button} from 'antd';
 import ApplyUser from './views/v2/apply-user';
 
 var topNavEmitter = require('../../../public/sources/utils/emitters').topNavEmitter;
@@ -41,19 +38,33 @@ import queryString from 'query-string';
 import {RETRY_GET_APP} from './util/consts';
 import Trace from 'LIB_DIR/trace';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
+import {getIntegrationConfig, getProductList} from 'PUB_DIR/sources/utils/common-data-util';
+import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
+import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import Spinner from 'CMP_DIR/spinner';
+import NoDataIntro from 'CMP_DIR/no-data-intro';
+import IntegrateConfigView from './views/integrate-config/index';
+import TopNav from 'CMP_DIR/top-nav';
 
 /*用户管理界面外层容器*/
 class AppUserManage extends React.Component {
+
     getStoreData = () => {
         var AppUserStoreData = AppUserStore.getState();
         var AppUserPanelSwitchStoreData = AppUserPanelSwitchStore.getState();
         return {
             ...AppUserStoreData,
-            ...AppUserPanelSwitchStoreData,
-            customer_name: this.props.customer_name//从客户页面跳转过来传过的客户名字
+            ...AppUserPanelSwitchStoreData
         };
     };
-
+    //获取初始状态
+    state = {
+        ...this.getStoreData(),
+        customer_name: this.props.customer_name,//从客户页面跳转过来传过的客户名字
+        isGettingIntegrateType: false,//正在获取集成类型
+        getItegrateTypeError: false,//获取集成类型是否出错
+        isShowAddProductView: false,//添加产品的配置视图
+    };
     onStoreChange = () => {
         this.setState(this.getStoreData());
     };
@@ -68,7 +79,60 @@ class AppUserManage extends React.Component {
         var currentView = AppUserUtil.getCurrentView();
         //获取所有应用
         AppUserAction.getAppList();
-        if (currentView === 'user' && this.props.location) {
+        if (currentView === 'user') {
+            //获取产品的集成类型
+            this.getIntegrationConfig(this.getUserViewData);
+        } else if (currentView === 'active' && this.props.location) {
+            //点击活跃用户tab页的时候，需要查询团队列表
+            //查询团队列表
+            AppUserAction.getTeamLists();
+        }
+        //记住上一次路由
+        this.prevRoutePath = currentView;
+    }
+
+    getIntegrationConfig(getUserDataCallback) {
+        this.setState({isGettingIntegrateType: true});
+        getIntegrationConfig(resultObj => {
+            // 获取集成配置信息失败后的处理
+            if (resultObj.errorMsg) {
+                this.setState({isShowAddProductView: false, isGettingIntegrateType: false, getItegrateTypeError: true});
+            } else {
+                let integrationType = _.get(resultObj, 'type');
+                //集成类型不存在或集成类型为uem时，
+                if (!integrationType || integrationType === INTEGRATE_TYPES.UEM) {
+                    //获取已集成的产品列表
+                    getProductList(productList => {
+                        //有产品时，直接获取用户列表并展示
+                        if (_.get(productList, '[0]')) {
+                            this.setState({
+                                isShowAddProductView: false,
+                                isGettingIntegrateType: false,
+                                getItegrateTypeError: false
+                            });
+                            _.isFunction(getUserDataCallback) && getUserDataCallback();
+                        } else {//没有产品时，展示添加产品及配置界面
+                            this.setState({
+                                isShowAddProductView: true,
+                                isGettingIntegrateType: false,
+                                getItegrateTypeError: false
+                            });
+                        }
+                    });
+                } else {//集成类型为：oplate或matomo时，直接获取用户列表并展示
+                    this.setState({
+                        isShowAddProductView: false,
+                        isGettingIntegrateType: false,
+                        getItegrateTypeError: false
+                    });
+                    _.isFunction(getUserDataCallback) && getUserDataCallback();
+                }
+            }
+        });
+    }
+
+    getUserViewData = () => {
+        if (this.props.location) {
             const query = queryString.parse(this.props.location.search);
             //从销售首页，点击试用用户和正式用户过期用户数字跳转过来
             var app_id = this.props.location.state && this.props.location.state.app_id;
@@ -136,7 +200,7 @@ class AppUserManage extends React.Component {
                     AppUserAction.getTeamLists();
                 }
             }
-        } else if (currentView === 'user' && this.props.customer_id) {
+        } else if (this.props.customer_id) {
             //在客户详情中查看某个客户下的用户
             var customer_id = this.props.customer_id;
             //按照客户名进行查询
@@ -149,20 +213,20 @@ class AppUserManage extends React.Component {
             //查询团队列表
             AppUserAction.getTeamLists();
         }
-        //记住上一次路由
-        this.prevRoutePath = currentView;
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.customer_id && this.state.customer_id !== nextProps.customer_id) {
-            this.setState({
-                customer_id: nextProps.customer_id,
-                customer_name: nextProps.customer_name
-            });
-            AppUserAction.getAppUserList({
-                //传递客户id
-                customer_id: nextProps.customer_id,
-                page_size: nextProps.user_size
+            this.getIntegrationConfig(() => {
+                this.setState({
+                    customer_id: nextProps.customer_id,
+                    customer_name: nextProps.customer_name
+                });
+                AppUserAction.getAppUserList({
+                    //传递客户id
+                    customer_id: nextProps.customer_id,
+                    page_size: nextProps.user_size
+                });
             });
         }
     }
@@ -171,25 +235,27 @@ class AppUserManage extends React.Component {
         //如果当前路由是用户，上一次路由是用户审批时，重新获取应用列表
         var currentRoutePath = AppUserUtil.getCurrentView();
         if (currentRoutePath === 'user' && this.prevRoutePath && this.prevRoutePath !== 'user') {
-            //获取全部应用
-            AppUserAction.getAppList();
-            //查询团队列表
-            AppUserAction.getTeamLists();
-            //查询所有用户
-            let quryObj = {
-                app_id: ShareObj.app_id || ''
-            };
-            //如果有选择的应用，则默认按创建时间排序
-            if (ShareObj.app_id) {//用户列表，选择某个应用后，切换到审计日志再回来时，列表需要排序
-                quryObj.sort_field = 'grant_create_date';
-                quryObj.sort_order = 'desc';
-            }
-            AppUserAction.changeTableSort(quryObj);
-            AppUserAction.getAppUserList(quryObj);
-            //顶部导航输入框的值清空
-            if (_.isFunction(this.refs.searchInput.closeSearchInput)) {
-                this.refs.searchInput.closeSearchInput();
-            }
+            this.getIntegrationConfig(() => {
+                //获取全部应用
+                AppUserAction.getAppList();
+                //查询团队列表
+                AppUserAction.getTeamLists();
+                //查询所有用户
+                let quryObj = {
+                    app_id: ShareObj.app_id || ''
+                };
+                //如果有选择的应用，则默认按创建时间排序
+                if (ShareObj.app_id) {//用户列表，选择某个应用后，切换到审计日志再回来时，列表需要排序
+                    quryObj.sort_field = 'grant_create_date';
+                    quryObj.sort_order = 'desc';
+                }
+                AppUserAction.changeTableSort(quryObj);
+                AppUserAction.getAppUserList(quryObj);
+                //顶部导航输入框的值清空
+                if (_.isFunction(this.refs.searchInput.closeSearchInput)) {
+                    this.refs.searchInput.closeSearchInput();
+                }
+            });
         }
         this.prevRoutePath = AppUserUtil.getCurrentView();
     }
@@ -516,23 +582,27 @@ class AppUserManage extends React.Component {
                         className="inline-block app_user_filter_btn  btn-item"
                     /> : null
                 }
-                <PrivilegeChecker
-                    onClick={this.addAppUser}
-                    check={this.addUserBtnCheckun}
-                    className="inline-block add-btn-common btn-item">
-                    <Button><ReactIntl.FormattedMessage id="user.user.add" defaultMessage="添加用户"/></Button>
-                </PrivilegeChecker>
-                {this.getApplyUserBtn()}
-                {this.getBatchOperateBtn()}
-                <PrivilegeChecker
-                    onClick={this.addAppUser}
-                    check={this.addUserBtnCheckun}
-                    title={Intl.get('user.user.add', '添加用户')}
-                    className="inline-block add-btn-mini">
-                    <Icon type="plus"/>
-                </PrivilegeChecker>
-                {this.getApplyUserBtnMini()}
-                {this.getBatchOperateBtnMini()}
+                {//只有oplate的用户才可以进行添加、申请等操作
+                    isOplateUser() ? (
+                        <span>
+                            <PrivilegeChecker
+                                onClick={this.addAppUser}
+                                check={this.addUserBtnCheckun}
+                                className="inline-block add-btn-common btn-item">
+                                <Button><ReactIntl.FormattedMessage id="user.user.add" defaultMessage="添加用户"/></Button>
+                            </PrivilegeChecker>
+                            {this.getApplyUserBtn()}
+                            {this.getBatchOperateBtn()}
+                            <PrivilegeChecker
+                                onClick={this.addAppUser}
+                                check={this.addUserBtnCheckun}
+                                title={Intl.get('user.user.add', '添加用户')}
+                                className="inline-block add-btn-mini">
+                                <Icon type="plus"/>
+                            </PrivilegeChecker>
+                            {this.getApplyUserBtnMini()}
+                            {this.getBatchOperateBtnMini()}
+                        </span>) : null}
             </div>
         </ButtonZones>);
     };
@@ -590,7 +660,15 @@ class AppUserManage extends React.Component {
         var showView = null;
         switch (currentView) {
             case 'user':
-                showView = (<UserView customer_id={this.state.customer_id}/>);
+                if (this.state.isGettingIntegrateType) {
+                    showView = (<Spinner />);
+                } else if (this.state.getItegrateTypeError) {
+                    showView = (<NoDataIntro noDataTip={Intl.get('user.list.get.failed', '获取用户列表失败')}/>);
+                } else if (this.state.isShowAddProductView) {
+                    showView = (<IntegrateConfigView/>);
+                } else {
+                    showView = (<UserView customer_id={this.state.customer_id}/>);
+                }
                 break;
             case 'log':
                 showView = (<UserAuditLog/>);
@@ -613,7 +691,10 @@ class AppUserManage extends React.Component {
         return (
             <div>
                 <div className="app_user_manage_page table-btn-fix" data-tracename="用户管理">
-                    {this.renderTopNavOperation()}
+                    { this.state.isGettingIntegrateType || this.state.getItegrateTypeError || this.state.isShowAddProductView ? (
+                        <div className='app-user-nodata-topnav'><TopNav/></div>
+                    ) : this.renderTopNavOperation()}
+
                     <div className="app_user_manage_contentwrap">
                         {
                             showView

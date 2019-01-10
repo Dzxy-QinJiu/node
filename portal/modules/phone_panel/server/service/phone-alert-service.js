@@ -9,18 +9,9 @@ var EventEmitter = require('events').EventEmitter;
 var Promise = require('bluebird');
 var _ = require('lodash');
 var urls = {
-    getAppLists: '/rest/base/v1/application/grant_applications',
-    addAppFeedback: '/rest/base/v1/notice/customer/application/feedback',
+    addAppFeedback: '/rest/base/v1/notice/customer/application/feedback'
 };
-// 获取应用列表
-exports.getAppLists = function(req, res) {
-    return restUtil.authRest.get(
-        {
-            url: urls.getAppLists,
-            req: req,
-            res: res
-        },null);
-};
+
 //添加产品反馈
 exports.addAppFeedback = function(req, res, reqBody) {
     // reqBody.product = JSON.parse(reqBody.product);

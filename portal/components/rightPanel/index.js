@@ -5,9 +5,9 @@
 
 var React = require('react');
 var language = require('../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('./index-es_VE.less');
-}else if (language.lan() == 'zh'){
+}else if (language.lan() === 'zh'){
     require('./index-zh_CN.less');
 }
 var classNames = require('classnames');
@@ -26,7 +26,11 @@ class RightPanel extends React.Component {
         );
     }
 }
-
+RightPanel.propTypes = {
+    showFlag: PropTypes.bool,
+    className: PropTypes.string,
+    children: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+};
 //渲染右侧面板确认按钮
 class RightPanelSubmit extends React.Component {
     render() {
@@ -37,7 +41,9 @@ class RightPanelSubmit extends React.Component {
         );
     }
 }
-
+RightPanelSubmit.propTypes = {
+    children: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+};
 //渲染右侧面板取消按钮
 class RightPanelCancel extends React.Component {
     render() {
@@ -48,6 +54,9 @@ class RightPanelCancel extends React.Component {
         );
     }
 }
+RightPanelCancel.propTypes = {
+    children: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+};
 
 //渲染关闭按钮
 class RightPanelClose extends React.Component {
@@ -91,6 +100,9 @@ class RightPanelForbid extends React.Component {
         );
     }
 }
+RightPanelForbid.propTypes = {
+    isActive: PropTypes.bool
+};
 
 //渲染返回按钮
 class RightPanelReturn extends React.Component {
@@ -166,7 +178,7 @@ class RightPanelUserTypeConfig extends React.Component {
 class RightPanelAppCodeTrace extends React.Component {
     render() {
         return (
-            <div {...this.props} className="icon-trace circle-button iconfont" title={Intl.get('rightpanel_codetrace','跟踪代码')}>
+            <div {...this.props} className="icon-trace circle-button iconfont" title={Intl.get('common.trace.code','跟踪代码')}>
             </div>
         );
     }

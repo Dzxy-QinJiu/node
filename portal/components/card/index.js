@@ -12,6 +12,7 @@ let CardItem = require('./cardItem');
 let DefaultUserLogoTitle = require('../default-user-logo-title');
 const DELETE_CREATEREALM_DELAYTIME = 4000;//超时时间
 import Trace from 'LIB_DIR/trace';
+import { Popconfirm } from 'antd';
 
 class Card extends React.Component {
     static defaultProps = {
@@ -32,8 +33,11 @@ class Card extends React.Component {
     showCardInfo = (event) => {
         Trace.traceEvent(event, '查看应用详情');
         let curCard = this.props.curCard;
+        let eventCls = event.target.className;
+        //点删除按钮时，不触发打开下详情的事件
+        if (eventCls && eventCls.indexOf('icon-delete') !== -1) return;
         //curCard.id =='' 如果是在创建中的安全域card是不能点击的
-        if (event.target.className.indexOf('icon-role-auth-config') >= 0 || curCard.id === '') {
+        if ((eventCls && eventCls.indexOf('icon-role-auth-config') >= 0) || curCard.id === '') {
             return;
         }
         this.props.showCardInfo(curCard);
@@ -103,6 +107,14 @@ class Card extends React.Component {
                             <div className="stop-triangle"></div>
                         </div>
                     )}
+                    {card.leftFlagDesc ? (
+                        <div className="card-left-layer">
+                            <div className="building-icon">
+                                {card.leftFlagDesc}
+                            </div>
+                            <div className="left-triangle"></div>
+                        </div>
+                    ) : null}
                     <div className="single-card">
                         <div className="img-container">
                             <DefaultUserLogoTitle
@@ -119,11 +131,12 @@ class Card extends React.Component {
 
                         <span className="card-btn-bar">
                             <div className="attention-icon">
-                                {this.props.showDelete ? <div>
-                                    <i className={deleteClassName} title={deleteTitle}
-                                        onClick={this.deleteItem.bind(this, card.id)}
-                                    ></i>
-                                </div> : null}
+                                {this.props.showDelete ? (
+                                    <Popconfirm
+                                        title={Intl.get('organization.whether.del.organization', '确定要删除\'{groupName}\'？', {groupName: card.name})}
+                                        onConfirm={this.deleteItem.bind(this, card.id)}>
+                                        <i className={deleteClassName} title={deleteTitle}/>
+                                    </Popconfirm>) : null}
                             </div>
                         </span>
                     </div>
