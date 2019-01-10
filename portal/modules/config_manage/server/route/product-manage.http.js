@@ -82,7 +82,7 @@ module.exports = {
         'privileges': []
     }, {//获取oplate\matomo的产品列表
         'method': 'get',
-        'path': '/rest/product/:integration_type',
+        'path': '/rest/product_list/:integration_type',
         'handler': 'getProductList',
         'passport': {
             'needLogin': true

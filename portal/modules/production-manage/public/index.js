@@ -81,7 +81,7 @@ class ProductionManage extends React.Component {
             this.setState({productList: productList});
         } else {
             $.ajax({
-                url: '/rest/product/' + integrationType,
+                url: '/rest/product_list/' + integrationType,
                 type: 'get',
                 dataType: 'json',
                 data: {page_num: 1, page_size: 1000},
