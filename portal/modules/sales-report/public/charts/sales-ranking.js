@@ -49,7 +49,7 @@ export function getSalesRankingChart(role) {
 
         dimensions = [
             '合格客户数排名',
-            '电话排名',
+            '电话数排名',
             '客户活跃率排名',
             '提交机会排名',
             '成交数排名'
@@ -82,24 +82,25 @@ export function getSalesRankingChart(role) {
         processData: data => {
             let processedData = [];
 
+            //获取排名对象
+            function getRankingObj(name) {
+                return {
+                    name,
+                    //绘图值
+                    value: [],
+                    //真实值
+                    realValue: [],
+                    //具体数值，如客户数、成交数等
+                    countArr: []
+                };
+            }
+
             //团队内排名
-            let intraTeamRanking = {
-                name: '团队内排名',
-                value: [],
-                realValue: []
-            };
+            let intraTeamRanking = getRankingObj('团队内排名');
             //上级团队内排名
-            let intraSuperiorTeamRanking = {
-                name: '上级团队内排名',
-                value: [],
-                realValue: []
-            };
+            let intraSuperiorTeamRanking = getRankingObj('上级团队内排名');
             //销售部内排名
-            let intraSalesDepartmentRanking = {
-                name: '销售部内排名',
-                value: [],
-                realValue: []
-            };
+            let intraSalesDepartmentRanking = getRankingObj('销售部内排名');
 
             //数据是否有效
             let isDataValid = true;
@@ -111,9 +112,12 @@ export function getSalesRankingChart(role) {
                     rankingObj.value.push(total - data[field]);
                     //真实值，用于在tooltip上显示
                     rankingObj.realValue.push(data[field]);
+                    //具体数值，如客户数、成交数等
+                    rankingObj.countArr.push(data.value);
                 } else {
                     rankingObj.value.push(0);
                     rankingObj.realValue.push(0);
+                    rankingObj.countArr.push(0);
                 }
             }
 
@@ -158,9 +162,10 @@ export function getSalesRankingChart(role) {
                     let content = ['<b style="font-size: 15px">' + params.name + '</b>'];
 
                     _.each(dimensions, (item, index) => {
-                        const text = item + ': ' + params.data.realValue[index];
+                        const rankText = item + ': ' + params.data.realValue[index];
+                        const countText = item.replace('排名', '') + ': ' + params.data.countArr[index];
 
-                        content.push(text);
+                        content.push(rankText, countText);
                     });
 
                     const contentHtml = content.join('<br>');
