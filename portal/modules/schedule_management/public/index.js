@@ -110,7 +110,6 @@ class ScheduleManagement extends React.Component {
             var monthEvent = [];
             //以日程所在天的零点为key，对数据按天进行分组
             var lists = _.groupBy(events, 'DayStart');
-            console.log(lists);
             for (var key in lists) {
                 var item = lists[key];
                 monthEvent.push(
@@ -147,7 +146,6 @@ class ScheduleManagement extends React.Component {
             type: 'get',
             data: constObj,
             success: function (data) {
-                console.log(data.list);
                 _this.setState({
                     scheduleLists: _.clone(data.list)
                 });
@@ -278,10 +276,8 @@ class ScheduleManagement extends React.Component {
         });
     };
 
-    // 保存和取消待办项的回调函数
-    handleScheduleCancel = (resData) => {
-        this.handleCancel();
-        if (!resData) return; //取消添加时，直接返回
+    // 添加待办项
+    handleScheduleAdd = (resData) => {
         // 判断当前的日程视图
         let view = this.state.curViewName;
         let scheduleLists = this.state.scheduleLists;
@@ -312,10 +308,12 @@ class ScheduleManagement extends React.Component {
             <DetailCard className='add-todo' content={
                 <CrmScheduleForm
                     isAddToDoClicked
-                    handleScheduleCancel={this.handleScheduleCancel}
-                    currentSchedule={{}}/>}
-            >
+                    handleScheduleAdd={this.handleScheduleAdd}
+                    handleScheduleCancel={this.handleCancel}
+                    currentSchedule={{}}/>
+            }>
             </DetailCard>
+
         );
     }
 

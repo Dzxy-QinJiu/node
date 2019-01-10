@@ -86,7 +86,8 @@ var CrmAlertForm = createReactClass({
         getScheduleList: PropTypes.func,
         formItemLayout: PropTypes.object,
         customerArr: PropTypes.array,
-        isAddToDoClicked: PropTypes.bool
+        isAddToDoClicked: PropTypes.bool,
+        handleScheduleAdd: PropTypes.func
     },
     getInitialState: function() {
         var formData = this.getInitialFormData();
@@ -245,12 +246,17 @@ var CrmAlertForm = createReactClass({
             ScheduleAction.addSchedule(submitObj, (resData) => {
                 if (resData.id) {
                     this.showMessage(Intl.get('user.user.add.success', '添加成功'));
-                    _.isFunction(this.props.handleScheduleCancel) && this.props.handleScheduleCancel(resData);
-                    ScheduleAction.afterAddSchedule(resData);
-                    var todayTimeObj = TimeStampUtil.getTodayTimeStamp();
-                    //如果添加的是今天的电联联系计划，就在基本资料的日程列表中加一个计划
-                    if (resData.type === 'calls' && resData.start_time > todayTimeObj.start_time && resData.end_time < todayTimeObj.end_time){
-                        basicOverviewAction.afterAddSchedule(resData);
+                    _.isFunction(this.props.handleScheduleCancel) && this.props.handleScheduleCancel();
+                    // 判断是否是添加待办项
+                    if(this.props.isAddToDoClicked) {
+                        _.isFunction(this.props.handleScheduleAdd) && this.props.handleScheduleAdd(resData);
+                    } else {
+                        ScheduleAction.afterAddSchedule(resData);
+                        var todayTimeObj = TimeStampUtil.getTodayTimeStamp();
+                        //如果添加的是今天的电联联系计划，就在基本资料的日程列表中加一个计划
+                        if (resData.type === 'calls' && resData.start_time > todayTimeObj.start_time && resData.end_time < todayTimeObj.end_time){
+                            basicOverviewAction.afterAddSchedule(resData);
+                        }
                     }
                 } else {
                     this.showMessage(resData || Intl.get('crm.154', '添加失败'), 'error');
@@ -296,8 +302,6 @@ var CrmAlertForm = createReactClass({
 
     // 选择客户
     customerChoosen: function(selectedCustomer) {
-        // if(!selectedCustomer.id) { return; }
-        console.log(selectedCustomer);
         let formData = this.state.formData;
         formData.customer_id = selectedCustomer.id;
         formData.customer_name = selectedCustomer.name;
@@ -312,12 +316,9 @@ var CrmAlertForm = createReactClass({
     // 选择客户验证事件
     checkCustomerName: function(rule, value, callback){
         value = _.trim(_.get(this.state, 'formData.customer_id'));
-        console.log('haha');
         if (!value && !this.state.hideCustomerRequiredTip) {
-            console.log('false');
             callback(new Error(Intl.get('leave.apply.select.customer', '请先选择客户')));
         } else {
-            console.log('true');
             callback();
         }
     },
@@ -421,6 +422,7 @@ var CrmAlertForm = createReactClass({
     handleCancel: function(e) {
         Trace.traceEvent(e, '取消添加联系计划');
         _.isFunction(this.props.handleScheduleCancel) && this.props.handleScheduleCancel();
+        if(this.props.isAddToDoClicked) return;
         //如果是批量添加联系计划,关闭后应该清空数据
         if (_.isArray(this.props.selectedCustomer)) {
             this.setState({
@@ -600,7 +602,6 @@ var CrmAlertForm = createReactClass({
                                         noJumpToCrm={true}
                                         customer_name={''}
                                         customer_id={''}
-                                        // addAssignedCustomer={this.addAssignedCustomer}
                                         noDataTip={Intl.get('clue.has.no.data', '暂无')}
                                         hideButtonBlock={true}
                                         customerChoosen={this.customerChoosen}
