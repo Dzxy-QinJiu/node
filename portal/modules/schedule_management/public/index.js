@@ -6,14 +6,16 @@
 var React = require('react');
 require('./css/index.less');
 require('react-big-calendar/lib/css/react-big-calendar.css');
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import Trace from 'LIB_DIR/trace';
-import {message} from 'antd';
+import { message } from 'antd';
+
 var scheduleManagementStore = require('./store/schedule-management-store');
 var scheduleManagementAction = require('./action/schedule-management-action');
 var classNames = require('classnames');
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-import {RightPanel} from 'CMP_DIR/rightPanel';
+import { RightPanel } from 'CMP_DIR/rightPanel';
 //天视图组件
 import DayAgendaScheduleLists from './views/day-agenda-schedule-lists';
 //周视图组件
@@ -21,13 +23,18 @@ import WeekAgendaScheduleLists from './views/week-agenda-schedule-list';
 import ExpireScheduleLists from './views/expire-schedule-lists';
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
+// 引入联系计划表单
+import CrmScheduleForm from 'MOD_DIR/crm/public/views/schedule/form';
+import DetailCard from 'CMP_DIR/detail-card';
+
+require('MOD_DIR/crm/public/css/schedule.less');
 BigCalendar.momentLocalizer(moment);
 const CALENDAR_LAYOUT = {
     TOPANDBOTTOM: 50
 };
 //自定义的点击日程数字后，日程列表的样式
 import CustomEvent from './views/customer-event';
-import {LESSONESECOND} from './utils/schedule-manage-utils';
+import { LESSONESECOND } from './utils/schedule-manage-utils';
 
 class ScheduleManagement extends React.Component {
     state = {
@@ -38,6 +45,8 @@ class ScheduleManagement extends React.Component {
         calendarLists: [],//右侧日程列表中的日程数据
         curViewName: 'day',//当前被按下的视图的名称
         curCustomerId: '',//查看详情的客户的id
+        isShowAddToDo: false,// 是否显示右侧添加待办项
+        scheduleLists: [],// 用于存放请求接口后返回的日程数据
         ...scheduleManagementStore.getState()
     };
 
@@ -57,31 +66,38 @@ class ScheduleManagement extends React.Component {
     //根据不同视图对日程数据进行处理
     handleScheduleData = (events, viewType) => {
         var _this = this;
-        if (viewType === 'day'){
+        if (viewType === 'day') {
             this.setState({
                 dayLists: events//日视图的数据
             });
-        }else if (viewType === 'week') {
+        } else if (viewType === 'week') {
             var weekScheduleLists = {
-                'Mon': [],'Tus': [],'Wed': [],'Thur': [],'Fri': [],'Sat': [],'Sun': []
+                'Mon': [], 'Tus': [], 'Wed': [], 'Thur': [], 'Fri': [], 'Sat': [], 'Sun': []
             };
             _.map(events, (even) => {
                 //对数据进行处理
                 var Week = moment(even.start_time).format('dddd');
-                switch (Week){
-                    case Intl.get('schedule.user.time.monday', '星期一'): weekScheduleLists.Mon.push(even);
+                switch (Week) {
+                    case Intl.get('schedule.user.time.monday', '星期一'):
+                        weekScheduleLists.Mon.push(even);
                         break;
-                    case Intl.get('schedule.user.time.tuesday', '星期二'): weekScheduleLists.Tus.push(even);
+                    case Intl.get('schedule.user.time.tuesday', '星期二'):
+                        weekScheduleLists.Tus.push(even);
                         break;
-                    case Intl.get('schedule.user.time.wednesday', '星期三'): weekScheduleLists.Wed.push(even);
+                    case Intl.get('schedule.user.time.wednesday', '星期三'):
+                        weekScheduleLists.Wed.push(even);
                         break;
-                    case Intl.get('schedule.user.time.thursday', '星期四'): weekScheduleLists.Thur.push(even);
+                    case Intl.get('schedule.user.time.thursday', '星期四'):
+                        weekScheduleLists.Thur.push(even);
                         break;
-                    case Intl.get('schedule.user.time.friday', '星期五'): weekScheduleLists.Fri.push(even);
+                    case Intl.get('schedule.user.time.friday', '星期五'):
+                        weekScheduleLists.Fri.push(even);
                         break;
-                    case Intl.get('schedule.user.time.saturday', '星期六'): weekScheduleLists.Sat.push(even);
+                    case Intl.get('schedule.user.time.saturday', '星期六'):
+                        weekScheduleLists.Sat.push(even);
                         break;
-                    case Intl.get('schedule.user.time.sunday', '星期日'): weekScheduleLists.Sun.push(even);
+                    case Intl.get('schedule.user.time.sunday', '星期日'):
+                        weekScheduleLists.Sun.push(even);
                         break;
                     default:
                         break;
@@ -90,17 +106,18 @@ class ScheduleManagement extends React.Component {
             this.setState({
                 weekLists: weekScheduleLists//周视图的数据
             });
-        }else{
+        } else {
             var monthEvent = [];
             //以日程所在天的零点为key，对数据按天进行分组
             var lists = _.groupBy(events, 'DayStart');
+            console.log(lists);
             for (var key in lists) {
                 var item = lists[key];
                 monthEvent.push(
                     {
                         'start': item[0].start,//某个日程的开始时间
                         'end': item[0].end,//某个日程的结束时间
-                        'count': item.length > 99 ? '99+' : item.length ,
+                        'count': item.length > 99 ? '99+' : item.length,
                         'totalCustomerObj': item,
                         'showCustomerDetail': _this.showCustomerDetail,
                     }
@@ -129,11 +146,15 @@ class ScheduleManagement extends React.Component {
             dataType: 'json',
             type: 'get',
             data: constObj,
-            success: function(data) {
+            success: function (data) {
+                console.log(data.list);
+                _this.setState({
+                    scheduleLists: _.clone(data.list)
+                });
                 var events = _this.processForList(data.list);
-                _this.handleScheduleData(events,viewType);
+                _this.handleScheduleData(events, viewType);
             },
-            error: function(errorMsg) {
+            error: function (errorMsg) {
                 message.error(Intl.get('schedule.get.schedule.list.failed', '获取日程管理列表失败'));
             }
         });
@@ -242,6 +263,62 @@ class ScheduleManagement extends React.Component {
         });
     };
 
+    // 显示待办项
+    showAddToDo = () => {
+        this.setState({
+            isShowAddToDo: true
+        });
+    };
+
+    // 处理待办项的关闭事件
+    handleCancel = (e) => {
+        e && e.preventDefault();
+        this.setState({
+            isShowAddToDo: false
+        });
+    };
+
+    // 保存和取消待办项的回调函数
+    handleScheduleCancel = (resData) => {
+        this.handleCancel();
+        if (!resData) return; //取消添加时，直接返回
+        // 判断当前的日程视图
+        let view = this.state.curViewName;
+        let scheduleLists = this.state.scheduleLists;
+        let start_time = moment(resData.start_time).startOf('day');
+        let end_time = moment(scheduleManagementStore.getViewDate()).startOf('day');
+        let result;
+        // 得判断待办项的日期是否在当前日程内
+        if (view === 'day') {// 判断是否大于当天
+            result = start_time.diff(end_time, 'days') > 0; // 大于当天
+        } else if (view === 'week') {// 判断是否大于这一周
+            result = start_time.diff(end_time, 'weeks') > 0;
+        } else if (view === 'month') {// 判断是否大于这一月
+            result = start_time.diff(end_time, 'months') > 0;
+        }
+        if(result) return; // 如果为true，说明不在当前日程内，不做其他操作
+        scheduleLists.unshift(resData);//插入第一个
+        this.setState({
+            scheduleLists
+        });
+        // 调用日程处理函数对日程数据重新处理
+        let events = this.processForList(scheduleLists);
+        this.handleScheduleData(events, view);
+    };
+
+    // 渲染待办项
+    renderCrmFormContent() {
+        return (
+            <DetailCard className='add-todo' content={
+                <CrmScheduleForm
+                    isAddToDoClicked
+                    handleScheduleCancel={this.handleScheduleCancel}
+                    currentSchedule={{}}/>}
+            >
+            </DetailCard>
+        );
+    }
+
     renderModalContent = () => {
         return (
             <div>
@@ -258,17 +335,17 @@ class ScheduleManagement extends React.Component {
             curViewName: this.state.curViewName
         });
         //如果从月视图点击日期跳转到日视图，也会触发handleNavigateChange，先走changeView方法，这时候取到的日期是上一次的日期，取到的数据是上次的数据，走handleNavigateChange会取到正确的数据，但是不知道两次谁先返回，故会出现错误数据，所以在月视图跳转到日视图的时候，限制值发一次请求就可以了
-        if (preViewName === 'month' && viewName === 'day'){
+        if (preViewName === 'month' && viewName === 'day') {
             return;
         }
         var dateObj = this.getDifTypeStartAndEnd(scheduleManagementStore.getViewDate(), viewName);
         //获取日程数据
         this.getAgendaData(dateObj, viewName);
-        if(viewName === 'day'){
+        if (viewName === 'day') {
             Trace.traceEvent('日程界面管理', '点击day的日程筛选');
-        }else if(viewName === 'week'){
+        } else if (viewName === 'week') {
             Trace.traceEvent('日程界面管理', '点击week的日程筛选');
-        }else if(viewName === 'month'){
+        } else if (viewName === 'month') {
             Trace.traceEvent('日程界面管理', '点击month的日程筛选');
         }
     };
@@ -305,6 +382,7 @@ class ScheduleManagement extends React.Component {
         this.getAgendaData(dateObj, view);
         Trace.traceEvent('日程管理界面', '点击 前，后翻页图,或者返回今天的按钮');
     };
+
     render() {
         //右侧日程列表动画 如果没有超时日程，那么左侧日程列表不显示
         var calendarCls = classNames({
@@ -325,38 +403,49 @@ class ScheduleManagement extends React.Component {
                 <ExpireScheduleLists
                     updateExpiredPanelState={this.updateExpiredPanelState}
                     showCustomerDetail={this.showCustomerDetail}
+                    showAddToDo={this.showAddToDo}
                 />
                 <div id="calendar-wrap" className={calendarCls} data-tracename="日程列表界面">
                     <div id="calendar" style={{height: height}}>
                         <BigCalendar
-                            events = {this.state.calendarLists}
-                            onView = {this.changeView}
-                            defaultView = "day"
+                            events={this.state.calendarLists}
+                            onView={this.changeView}
+                            defaultView="day"
                             views={{
                                 month: true,
                                 week: WeekAgendaScheduleLists,
                                 day: DayAgendaScheduleLists,
                             }}
                             components={{event: CustomEvent}}
-                            messages = {{
+                            messages={{
                                 month: Intl.get('common.time.unit.month', '月'),
                                 week: Intl.get('common.time.unit.week', '周'),
-                                today: Intl.get('schedule.back.to.today','今'),
+                                today: Intl.get('schedule.back.to.today', '今'),
                                 previous: '<',
                                 next: '>',
                                 allDay: Intl.get('crm.alert.full.day', '全天'),
                                 day: Intl.get('common.time.unit.day', '天'),
                             }}
                             scheduleList={this.state.dayLists}//日视图数据
-                            weekLists = {this.state.weekLists}
+                            weekLists={this.state.weekLists}
                             handleScheduleItemStatus={this.handleScheduleItemStatus}
                             showCustomerDetail={this.showCustomerDetail}
-                            onNavigate = {this.handleNavigateChange}
-                            curCustomerId = {this.state.curCustomerId}
+                            onNavigate={this.handleNavigateChange}
+                            curCustomerId={this.state.curCustomerId}
                             formats={formats}
                         />
                     </div>
                 </div>
+                {/*添加待办项*/}
+                {this.state.isShowAddToDo ? (
+                    <RightPanelModal
+                        className="todo-add-container"
+                        isShowMadal={true}
+                        isShowCloseBtn={true}
+                        onClosePanel={this.handleCancel.bind(this)}
+                        title={Intl.get('shedule.list.add.todo', '添加待办')}
+                        content={this.renderCrmFormContent()}
+                        dataTracename='添加待办项'/>) : null}
                 {/*该客户下的用户列表*/}
                 <RightPanel
                     className="customer-user-list-panel"

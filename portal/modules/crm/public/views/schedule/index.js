@@ -190,6 +190,7 @@ class CrmSchedule extends React.Component {
 
     renderTimeLineItem = (item, hasSplitLine) => {
         if (item.edit) {
+            console.log(item)
             return (
                 <div className="form-wrapper">
                     <CrmScheduleForm
