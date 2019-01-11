@@ -224,11 +224,9 @@ class ContractAnalysis extends React.Component {
 
     handleNameChange(e) {
         const tableName = e.target.value;
-        if (tableName) {
-            this.setState({
-                tableName
-            });
-        }
+        this.setState({
+            tableName
+        });
     }
 
     handleHideIntro() {
