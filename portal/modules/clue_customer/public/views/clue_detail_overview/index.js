@@ -586,7 +586,7 @@ class ClueDetailOverview extends React.Component {
                     {avalibility ?
                         <span className="cancel-invalid" onClick={this.handleClickInvalidBtn.bind(this, curClue)}
                             data-tracename="取消判定线索无效">
-                            {Intl.get('clue.cancel.set.invalid', '取消无效')}
+                            {Intl.get('clue.cancel.set.invalid', '改为有效')}
                         </span> : null}
 
                 </div>

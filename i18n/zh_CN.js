@@ -2478,7 +2478,7 @@ var zh_CN = {
     'clue.handle.clue': '线索处理',
     'clue.has.no.handle': '暂未处理',
     'clue.set.invalid': '判定无效',
-    'clue.cancel.set.invalid': '取消无效',
+    'clue.cancel.set.invalid': '改为有效',
     'analysis.sales.weekly.report': '销售周报',
     'analysis.sales.monthly.report': '销售月报',
     'common.font.the': '第',
@@ -2685,5 +2685,6 @@ var zh_CN = {
     'apply.approve.total.leave.time': '请假时长',
     'apply.approve.total.days': '共{X}天',
     'common.start.end.time': '起止时间',
+    'apply.approve.word.message':'留言'
 };
 export default zh_CN;

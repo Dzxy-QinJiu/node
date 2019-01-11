@@ -27,7 +27,8 @@ import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-
+import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
+import Trace from 'LIB_DIR/trace';
 class SalesClueItem extends React.Component {
     constructor(props) {
         super(props);
@@ -433,31 +434,15 @@ class SalesClueItem extends React.Component {
                         onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</Button>
                     : null}
                 {associatedPrivilege && !isWillDistributeClue ? <Button onClick={this.handleAssociateCustomer.bind(this, salesClueItem)} data-tracename="点击关联客户按钮">{Intl.get('clue.customer.associate.customer', '关联客户')}</Button> : null}
-                {avalibilityPrivilege ? (salesClueItem.availability === '1' ? <Button className="cancel-invalid" onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)}
+
+                {avalibilityPrivilege ? (salesClueItem.availability === '1' ?
+
+                    <Button className="cancel-invalid" onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)}
                     data-tracename="取消判定线索无效">
-                    {Intl.get('clue.cancel.set.invalid', '取消无效')}
+                    {Intl.get('clue.cancel.set.invalid', '改为有效')}
                 </Button> : <Button onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)} data-tracename="点击线索无效" disabled={this.state.isInvalidClue}>{Intl.get('sales.clue.is.enable', '无效')}{this.state.isInvalidClue ? <Icon type="loading"/> : null}</Button>) : null}
             </div>
         </div>;
-    }
-
-    renderClueStatus(status) {
-        var statusDes = '';
-        switch (status) {
-            case '0':
-                statusDes = <span
-                    className="clue-stage will-distribute">{Intl.get('clue.customer.will.distribution', '待分配')}</span>;
-                break;
-            case '1':
-                statusDes =
-                    <span className="clue-stage has-distribute">{Intl.get('sales.home.will.trace', '待跟进')}</span>;
-                break;
-            case '2':
-                statusDes =
-                    <span className="clue-stage has-follow">{Intl.get('clue.customer.has.follow', '已跟进')}</span>;
-                break;
-        }
-        return statusDes;
     }
 
     render() {
@@ -481,7 +466,7 @@ class SalesClueItem extends React.Component {
             <div className={itemCls} data-tracename="线索概览信息">
                 <div className="clue-top-title">
                     <span className="hidden record-id">{salesClueItem.id}</span>
-                    {this.renderClueStatus(salesClueItem.status)}
+                    {renderClueStatus(salesClueItem.status)}
                     <span className="clue-name" data-tracename="查看线索详情"
                         onClick={this.handleShowClueDetail.bind(this, salesClueItem)}>{salesClueItem.name}</span>
                     {salesClueItem.availability === '1' ? <Tag>{Intl.get('sales.clue.is.enable', '无效')}</Tag> : null}
@@ -546,7 +531,6 @@ class SalesClueItem extends React.Component {
                                     customer_id={this.state.customerOfCurUser.id}
                                     hideCustomerUserList={this.closeCustomerUserListPanel}
                                     customer_name={this.state.customerOfCurUser.name}
-                                    user_size={customerUserSize}
                                 /> : null
                             }
                         </RightPanel> : null

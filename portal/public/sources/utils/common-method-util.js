@@ -551,4 +551,22 @@ exports.formatSalesmanList = function(salesManList) {
     });
     return dataList;
 };
+exports.renderClueStatus = function(status) {
+    var statusDes = '';
+    switch (status) {
+        case '0':
+            statusDes = <span
+                className="clue-stage will-distribute">{Intl.get('clue.customer.will.distribution', '待分配')}</span>;
+            break;
+        case '1':
+            statusDes =
+                <span className="clue-stage has-distribute">{Intl.get('sales.home.will.trace', '待跟进')}</span>;
+            break;
+        case '2':
+            statusDes =
+                <span className="clue-stage has-follow">{Intl.get('clue.customer.has.follow', '已跟进')}</span>;
+            break;
+    }
+    return statusDes;
+}
 

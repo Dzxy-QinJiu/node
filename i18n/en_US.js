@@ -2461,7 +2461,7 @@ var en_US = {
     'clue.handle.clue': 'Clue handle',//线索处理
     'clue.has.no.handle': 'Not processed yet',//暂未处理
     'clue.set.invalid': 'Invalid judgment',//判定无效
-    'clue.cancel.set.invalid': 'Cancel invalid',//取消无效
+    'clue.cancel.set.invalid': 'Cancel invalid',//改为有效
     'analysis.sales.weekly.report': 'Sales weekly report',//销售周报
     'analysis.sales.monthly.report': 'Sales monthly report',//销售月报
     'common.font.the': 'The',//第
