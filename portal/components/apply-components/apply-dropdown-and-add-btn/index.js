@@ -80,6 +80,10 @@ ApplyDropdownAndAddBtn.defaultProps = {
     showAddApplyPanel: function() {
 
     },
+    refreshPage: function() {
+
+    },
+    showUpdateTip: false,
     addApplyMessage: '',
     showRefreshIcon: false
 };
@@ -90,7 +94,9 @@ ApplyDropdownAndAddBtn.propTypes = {
     addPrivilege: PropTypes.string,
     showAddApplyPanel: PropTypes.func,
     addApplyMessage: PropTypes.string,
-    showRefreshIcon: PropTypes.boolean
+    showRefreshIcon: PropTypes.boolean,
+    refreshPage: PropTypes.func,
+    showUpdateTip: PropTypes.boolean,
 
 };
 
