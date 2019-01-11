@@ -474,14 +474,14 @@ class AppUserManage extends React.Component {
             if (this.state.selectedUserRows.length) {
                 return (
                     <div className="inline-block add-btn-common btn-item" onClick={this.showApplyUserForm}>
-                        <Button className="btn-item">{Intl.get('user.app.open', '开通应用')}</Button>
+                        <Button>{Intl.get('user.app.open', '开通应用')}</Button>
                     </div>);
             }
             //没选中用户加提示
             return (
                 <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
-                    <div className="inline-block add-btn-common gray">
-                        <Button className="btn-item" disabled>
+                    <div className="inline-block add-btn-common gray btn-item">
+                        <Button disabled>
                             {Intl.get('user.app.open', '开通应用')}
                         </Button>
                     </div>
