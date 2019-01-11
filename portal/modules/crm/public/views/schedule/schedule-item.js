@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import userData from 'PUB_DIR/sources/user-data';
 import Trace from 'LIB_DIR/trace';
-import {callClient,useCallCenter} from 'PUB_DIR/sources/utils/phone-util';
+import {callClient, useCallCenter} from 'PUB_DIR/sources/utils/phone-util';
 
 const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 
@@ -102,10 +102,10 @@ class ScheduleItem extends React.Component {
                     };
                     crmAjax.callOut(reqData).then((result) => {
                         if (result.code === 0) {
-                            message.success('拨打成功！');
+                            message.success(Intl.get('crm.call.phone.success', '拨打成功'));
                         }
                     }, (errMsg) => {
-                        message.error(errMsg || '拨打失败！');
+                        message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
                     });
                 } else {
                     message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));

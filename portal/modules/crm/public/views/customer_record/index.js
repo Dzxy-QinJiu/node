@@ -11,11 +11,13 @@ if (language.lan() === 'es' || language.lan() === 'en') {
     require('../../css/customer-trace-zh_CN.less');
 }
 import {Icon, message, Radio, Input, Menu, Dropdown, Button, Form} from 'antd';
+
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const {TextArea} = Input;
 import CustomerRecordActions from '../../action/customer-record-action';
 import CustomerRecordStore from '../../store/customer-record-store';
+
 var crmUtil = require('./../../utils/crm-util');
 var GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
 var Spinner = require('../../../../../components/spinner');
@@ -35,6 +37,8 @@ import crmAjax from '../../ajax/index';
 import CallNumberUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import ShearContent from '../../../../../components/shear-content';
+import {callClient, useCallCenter} from 'PUB_DIR/sources/utils/phone-util';
+import userData from 'PUB_DIR/sources/user-data';
 
 var classNames = require('classnames');
 //用于布局的高度
@@ -378,15 +382,15 @@ class CustomerRecord extends React.Component {
                     help={_.get(this.state, 'inputContent.errorMsg')}
                 >
                     <TextArea placeholder={Intl.get('customer.input.customer.trace.content', '请填写跟进内容，保存后不可修改')}
-                        value={_.get(this.state, 'inputContent.value') || ''}
-                        onChange={this.handleInputChange.bind(this)}
-                        autosize={AUTO_SIZE_MAP}
+                              value={_.get(this.state, 'inputContent.value') || ''}
+                              onChange={this.handleInputChange.bind(this)}
+                              autosize={AUTO_SIZE_MAP}
                     />
                 </FormItem>
                 <SaveCancelButton loading={this.state.addCustomerLoading}
-                    saveErrorMsg={this.state.addCustomerErrMsg}
-                    handleSubmit={this.showModalDialog}
-                    handleCancel={this.handleCancel}
+                                  saveErrorMsg={this.state.addCustomerErrMsg}
+                                  handleSubmit={this.showModalDialog}
+                                  handleCancel={this.handleCancel}
                 />
             </Form>
         );
@@ -439,19 +443,19 @@ class CustomerRecord extends React.Component {
                     help={_.get(this.state, 'detailContent.errorMsg')}
                 >
                     <TextArea placeholder={Intl.get('add.customer.trace.detail', '请补充跟进记录详情，保存后不可修改')}
-                        value={_.get(this.state, 'detailContent.value') || ''}
-                        onChange={this.handleAddDetailChange.bind(this)}
-                        autosize={AUTO_SIZE_MAP}
+                              value={_.get(this.state, 'detailContent.value') || ''}
+                              onChange={this.handleAddDetailChange.bind(this)}
+                              autosize={AUTO_SIZE_MAP}
                     />
                 </FormItem>
                 {this.state.editRecordNullTip ? (
                     <div className="record-null-tip">{this.state.editRecordNullTip}</div>) : null}
                 <SaveCancelButton loading={this.state.addCustomerLoading}
-                    saveErrorMsg={this.state.addCustomerErrMsg}
-                    handleSubmit={this.showModalDialog.bind(this, item)}
-                    handleCancel={this.handleCancelDetail.bind(this, item)}
+                                  saveErrorMsg={this.state.addCustomerErrMsg}
+                                  handleSubmit={this.showModalDialog.bind(this, item)}
+                                  handleCancel={this.handleCancelDetail.bind(this, item)}
                 />
-            </Form >);
+            </Form>);
     };
 
     //点击播放录音
@@ -579,20 +583,33 @@ class CustomerRecord extends React.Component {
         if (this.props.getCallNumberError) {
             message.error(this.props.getCallNumberError || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
         } else {
-            if (this.state.callNumber) {
-                let reqData = {
-                    from: this.state.callNumber,
-                    to: phone
-                };
-                crmAjax.callOut(reqData).then((result) => {
-                    if (result.code === 0) {
-                        message.success('拨打成功！');
-                    }
-                }, (errMsg) => {
-                    message.error(errMsg || '拨打失败！');
-                });
+            //eefung，civiw，oshdan，使用原来的电话系统
+            if (useCallCenter(userData.organization)) {
+                if (this.props.callNumber) {
+                    let reqData = {
+                        from: this.props.callNumber,
+                        to: phone
+                    };
+                    crmAjax.callOut(reqData).then((result) => {
+                        if (result.code === 0) {
+                            message.success(Intl.get('crm.call.phone.success', '拨打成功'));
+                        }
+                    }, (errMsg) => {
+                        message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
+                    });
+                } else {
+                    message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
+                }
             } else {
-                message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
+                if (callClient && callClient.isInited()) {
+                    callClient.callout(phone).then((result) => {
+                        if (result.code === 0) {
+                            message.success('拨打成功！');
+                        }
+                    }, (errMsg) => {
+                        message.error(errMsg || '拨打失败！');
+                    });
+                }
             }
         }
     };
@@ -613,30 +630,30 @@ class CustomerRecord extends React.Component {
                     {item.dst ? (<span className="trace-title-phone">{item.dst}</span>) : null}
                     {(item.type === 'phone' || item.type === 'app') && this.state.callNumber ?
                         <i className="iconfont icon-call-out call-out"
-                            title={Intl.get('crm.click.call.phone', '点击拨打电话')}
-                            onClick={this.handleClickCallOut.bind(this, item.dst)}></i> : null}
+                           title={Intl.get('crm.click.call.phone', '点击拨打电话')}
+                           onClick={this.handleClickCallOut.bind(this, item.dst)}></i> : null}
                 </p>
                 {item.type === 'data_report' ? this.renderReportContent(item) : (<div>
                     <div className="item-detail-content" id={item.id}>
-                        {item.remark ? 
+                        {item.remark ?
                             <ShearContent>
                                 {item.remark}
-                            </ShearContent> : ( item.showAdd ? null :
+                            </ShearContent> : (item.showAdd ? null :
                                 <span className="add-detail-tip" onClick={this.addDetailContent.bind(this, item)}>
                                     {Intl.get('click.to.add.trace.detail', '请点击此处补充跟进内容')}
                                 </span>)}
                         {item.showAdd ? this.renderAddDetail(item) : null}
                     </div>
                     <div className="item-bottom-content">
-                        { item.billsec === 0 ? (/*未接听*/
-                            <span className="call-un-answer">
+                        {item.billsec === 0 ? (/*未接听*/
+                                <span className="call-un-answer">
                                 {Intl.get('call.record.state.no.answer', '未接听')}
                             </span>
-                        ) : /* 电话已接通并且有recording这个字段展示播放图标*/
+                            ) : /* 电话已接通并且有recording这个字段展示播放图标*/
                             item.recording ? (<span className="audio-container">
                                 <span className={cls} onClick={this.handleAudioPlay.bind(this, item)}
-                                    title={Intl.get('call.record.play', '播放录音')}
-                                    data-tracename="点击播放录音按钮">
+                                      title={Intl.get('call.record.play', '播放录音')}
+                                      data-tracename="点击播放录音按钮">
                                     <span className="call-time-descr">
                                         {TimeUtil.getFormatMinuteTime(item.billsec)}
                                     </span>
@@ -736,14 +753,14 @@ class CustomerRecord extends React.Component {
             //加载中的情况
             return (
                 <div className="customer-trace-loading">
-                    <Spinner />
+                    <Spinner/>
                 </div>
             );
         } else if (this.state.customerRecordErrMsg && !this.state.customerRecordLoading) {
             //加载完成，出错的情况
             return (
                 <ErrorDataTip errorMsg={this.state.customerRecordErrMsg} isRetry={true}
-                    retryFunc={this.retryChangeRecord}/>
+                              retryFunc={this.retryChangeRecord}/>
             );
         } else if (recordLength === 0 && !this.state.customerRecordLoading && !this.props.isOverViewPanel) {
             //加载完成，没有数据的情况（概览页的跟进记录是在标题上展示）
@@ -758,8 +775,8 @@ class CustomerRecord extends React.Component {
                     {this.props.isOverViewPanel ? this.renderTimeLine() : (
                         <div className="show-content" style={{'height': this.getRecordListShowHeight()}}>
                             <GeminiScrollbar className="srollbar-out-card-style"
-                                handleScrollBottom={this.handleScrollBarBottom}
-                                listenScrollBottom={this.state.listenScrollBottom}
+                                             handleScrollBottom={this.handleScrollBarBottom}
+                                             listenScrollBottom={this.state.listenScrollBottom}
                             >
                                 {this.renderTimeLine()}
                             </GeminiScrollbar>
@@ -831,7 +848,7 @@ class CustomerRecord extends React.Component {
             return (
                 <div className="trace-record-bottom">
                     <span className="more-customer-record"
-                        onClick={this.turnToTraceRecordList}>
+                          onClick={this.turnToTraceRecordList}>
                         {Intl.get('crm.basic.more', '更多')}
                     </span>
                 </div>);
@@ -853,13 +870,13 @@ class CustomerRecord extends React.Component {
                         <span className="total-tip crm-detail-total-tip">
                             {isRecordTabNoData ? Intl.get('crm.no.trace.record', '还没有跟进过该客户') : (
                                 <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={'共{n}条'}
-                                    values={{'n': this.state.total + ''}}/>)}
+                                                            values={{'n': this.state.total + ''}}/>)}
                         </span>
                         {this.props.isMerge ? null : this.props.isOverViewPanel ? (
                             <span className="iconfont icon-add" onClick={this.toggleAddRecordPanel.bind(this)}
-                                title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>) : (
+                                  title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>) : (
                             <Button className='crm-detail-add-btn'
-                                onClick={this.toggleAddRecordPanel.bind(this, '')} data-tracename="添加跟进记录" >
+                                    onClick={this.toggleAddRecordPanel.bind(this, '')} data-tracename="添加跟进记录">
                                 {Intl.get('sales.frontpage.add.customer', '添加跟进记录')}
                             </Button>)
                         }
@@ -884,16 +901,17 @@ class CustomerRecord extends React.Component {
                     {this.renderTraceRecordBottom()}
                 </div>
                 <ModalDialog modalContent={modalContent}
-                    modalShow={this.state.modalDialogFlag}
-                    container={this}
-                    hideModalDialog={this.hideModalDialog}
-                    delete={this.saveAddTraceContent}
-                    closedModalTip={closedModalTip}
+                             modalShow={this.state.modalDialogFlag}
+                             container={this}
+                             hideModalDialog={this.hideModalDialog}
+                             delete={this.saveAddTraceContent}
+                             closedModalTip={closedModalTip}
                 />
             </div>
         );
     }
 }
+
 CustomerRecord.propTypes = {
     curCustomer: PropTypes.object,
     callNumber: PropTypes.string,
