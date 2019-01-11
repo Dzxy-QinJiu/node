@@ -710,7 +710,9 @@ class CustomerAnalysis extends React.Component {
                     from: 'sales_home',
                     customerIds: customerIdsStr,
                     num,
-                    diffNum
+                    diffNum,
+                    active_cache_key: record.active_cache_key,
+                    unactive_cache_key: record.unactive_cache_key
                 };
 
                 return <span style={{cursor: 'pointer'}} onClick={this.handleCustomerNumClick.bind(this, argsObj)}>{num}</span>;

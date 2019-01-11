@@ -869,9 +869,17 @@ class Crm extends React.Component {
 
         //如果是从首页跳转过来的
         if (this.props.fromSalesHome) {
-            params = {
-                data: JSON.stringify({id: this.props.location.state.customerIds})
-            };
+            const locationState = this.props.location.state;
+
+            params = {};
+
+            if (locationState.active_cache_key) {
+                params.cache_key = locationState.active_cache_key;
+            } else if (locationState.unactive_cache_key) {
+                params.cache_key = locationState.unactive_cache_key;
+            } else {
+                params.data = JSON.stringify({id: locationState.customerIds});
+            }
         }
 
         //有关注的客户时，路径和sortAndOrders都传了排序字段时，只使用sortAndOrders中的字段进行排序（排序的优先级按数组中的顺序来排）

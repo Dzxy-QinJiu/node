@@ -171,10 +171,18 @@ exports.queryCustomer = function(params, pageSize, pageNum, sorter) {
     }
     queryCustomerAjax && queryCustomerAjax.abort();
     var Deferred = $.Deferred();
+    let url = '/rest/customer/range/' + pageSize + '/' + pageNum + '/' + sorter.field + '/' + sorter.order;
+    let type = 'post';
+
+    if (params.cache_key) {
+        url = `/rest/analysis/customer/v2/customer/active_rate/detail/${pageSize}/${pageNum}`;
+        type = 'get';
+    }
+
     queryCustomerAjax = $.ajax({
-        url: '/rest/customer/range/' + pageSize + '/' + pageNum + '/' + sorter.field + '/' + sorter.order,
+        url,
+        type,
         dataType: 'json',
-        type: 'post',
         data: params,
         success: function(list) {
             Deferred.resolve(list);
