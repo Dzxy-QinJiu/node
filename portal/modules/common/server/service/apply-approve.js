@@ -13,3 +13,11 @@ exports.getNextCandidate = function(req, res) {
             res: res
         }, req.query);
 };
+exports.addNewCandidate = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: '/rest/base/v1/workflow/taskcandidateusers',
+            req: req,
+            res: res
+        }, req.body);
+};

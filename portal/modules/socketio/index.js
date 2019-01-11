@@ -139,8 +139,13 @@ function applyApproveNumListener(data) {
     // pushLogger.debug('后端推送的申请审批的数据:' + JSON.stringify(data));
     //将查询结果返给浏览器
     var applyApprovesgObj = data || {};
-    //将数据推送到浏览器
-    emitMsgBySocket(applyApprovesgObj && applyApprovesgObj.consumers[0], 'applyApprovemsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj));
+    if (_.isArray(applyApprovesgObj.consumers) && _.get(applyApprovesgObj,'consumers[0]')) {
+        //遍历消息接收者
+        applyApprovesgObj.consumers.forEach(function(consumer) {
+            //将数据推送到浏览器
+            emitMsgBySocket(consumer, 'applyApprovemsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
+        });
+    }
 }
 
 

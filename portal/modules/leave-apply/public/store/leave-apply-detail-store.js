@@ -60,6 +60,13 @@ LeaveApplyDetailStore.prototype.setInitState = function() {
         submitResult: '',
         errorMsg: ''
     };
+    //转出申请的状态列表
+    this.transferStatusInfo = {
+        //三种状态,loading,error,''
+        result: '',
+        //服务端错误信息
+        errorMsg: ''
+    };
 };
 LeaveApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
@@ -255,6 +262,25 @@ LeaveApplyDetailStore.prototype.getNextCandidate = function(result) {
         this.candidateList = result;
     }
 };
+LeaveApplyDetailStore.prototype.setNextCandidateIds = function(candidateId) {
+    this.detailInfoObj.info.nextCandidateId = candidateId;
+};
+LeaveApplyDetailStore.prototype.transferNextCandidate = function(result) {
+    if (result.loading) {
+        this.transferStatusInfo.result = 'loading';
+        this.transferStatusInfo.errorMsg = '';
+    } else if (result.error) {
+        this.transferStatusInfo.result = 'error';
+        this.transferStatusInfo.errorMsg = result.errorMsg;
+    } else {
+        this.transferStatusInfo.result = 'success';
+        this.transferStatusInfo.errorMsg = '';
+        //如果转出成功，要隐藏审批的按钮
+        this.selectedDetailItem.showApproveBtn = false;
+        this.detailInfoObj.info.showApproveBtn = false;
+    }
+};
+
 
 
 module.exports = alt.createStore(LeaveApplyDetailStore, 'LeaveApplyDetailStore');

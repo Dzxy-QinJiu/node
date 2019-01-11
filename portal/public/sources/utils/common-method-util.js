@@ -556,3 +556,14 @@ exports.isOplateUser = function() {
     let user = userData.getUserData();
     return _.get(user, 'integration_config.type') === INTEGRATE_TYPES.OPLATE;
 };
+exports.formatUsersmanList = function(usersManList) {
+    let dataList = [];
+    //展示其所在团队的成员列表
+    _.each(usersManList, usersman => {
+        dataList.push({
+            name: `${_.get(usersman, 'nickName', '')}`,
+            value: `${_.get(usersman, 'userId', '')}`
+        });
+    });
+    return dataList;
+};

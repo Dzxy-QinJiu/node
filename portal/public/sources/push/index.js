@@ -105,20 +105,26 @@ function applyApproveUnhandledListener(data) {
     if (_.isObject(data)) {
         if (data.message_type.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1 ){
             updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND, true);
+            notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_REPORT_SEND, data);
+        }
+        if (data.message_type.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1){
+            updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE, true);
+            notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_DOCUMENT_WRITE, data);
         }
         switch (data.message_type) {
             case APPLY_APPROVE_TYPES.CUSTOMER_VISIT:
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT, true);
+                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_CUSTOMER_VISIT, data);
                 break;
             case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES:
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES, true);
+                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY, data);
                 break;
             case APPLY_APPROVE_TYPES.PERSONAL_LEAVE:
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE, true);
+                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_LEAVE, data);
                 break;
-            case APPLY_APPROVE_TYPES.DOCUMENT:
-                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE, true);
-                break;
+
         }
     }
 

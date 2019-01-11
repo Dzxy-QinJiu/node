@@ -2686,5 +2686,9 @@ var en_US = {
     'apply.approve.total.leave.time': 'Leave range',//请假时长
     'apply.approve.total.days': 'A total of {X} day',//共{X}天
     'common.start.end.time': 'start end time',//起止时间
+    'apply.will.select.transfer.approver': 'Please select the person to be approved to be transferred to',//请选择要转给的待审批人
+    'apply.will.approve.apply.item': 'Pending person',//待审批人
+    'apply.no.relate.user': 'No related members',//无相关成员
+    'apply.approve.transfer.failed': 'Failed to transfer apply',//转出申请失败
 };
 export default en_US;

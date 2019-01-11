@@ -22,10 +22,7 @@ module.exports = {
         'handler': 'getCurUserList',
         'passport': {
             'needLogin': true
-        },
-        'privileges': [
-            'USER_MANAGE_LIST_USERS'
-        ]
+        }
     }, {
         'method': 'get',
         'path': '/rest/user/id/:user_id',

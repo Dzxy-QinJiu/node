@@ -5,6 +5,7 @@
  */
 var ReportSendApplyDetailStore = require('../store/report-send-apply-detail-store');
 var ReportSendApplyDetailAction = require('../action/report-send-apply-detail-action');
+var ReportSendApplyAction = require('../action/report-send-apply-action');
 import Trace from 'LIB_DIR/trace';
 import {Alert, Icon, Input, Row, Col, Button, Steps,Upload,message} from 'antd';
 const Step = Steps.Step;
@@ -19,7 +20,7 @@ import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc, getFilterReplyList,handleDiffTypeApply,getReportSendApplyStatusTimeLineDesc} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc, getFilterReplyList,handleDiffTypeApply,getReportSendApplyStatusTimeLineDesc,formatUsersmanList} from 'PUB_DIR/sources/utils/common-method-util';
 import {REPORT_TYPE,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
@@ -27,6 +28,14 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import UploadAndDeleteFile from 'CMP_DIR/apply-components/upload-and-delete-file';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import {seperateFilesDiffType, hasApprovedReportAndDocumentApply} from 'PUB_DIR/sources/utils/common-data-util';
+const salesmanAjax = require('MOD_DIR/common/public/ajax/salesman');
+import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
+import AlwaysShowSelect from 'CMP_DIR/always-show-select';
+import AntcDropdown from 'CMP_DIR/antc-dropdown';
+import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE} from 'PUB_DIR/sources/utils/consts';
+var timeoutFunc;//定时方法
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -35,6 +44,7 @@ class ApplyViewDetail extends React.Component {
             customerOfCurUser: {},//当前展示用户所属客户的详情
             showBackoutConfirmType: '',//操作的确认框类型
             clickConfirmBtn: false,//为了防止点击确认按钮后，立刻打开查看详情，详情属性中没有approver_ids这个数组,所以在点击确认申请后加上这样的标识
+            usersManList: [],//成员列表
             ...ReportSendApplyDetailStore.getState()
         };
     }
@@ -52,7 +62,106 @@ class ApplyViewDetail extends React.Component {
         }else if (this.props.detailItem.id) {
             this.getBusinessApplyDetailData(this.props.detailItem);
         }
+        this.getAllUserList();
     }
+    getAllUserList = () => {
+        getAllUserList(data => {
+            this.setState({
+                usersManList: data
+            });
+        });
+    };
+    onSelectApplyNextCandidate = (updateUser) => {
+        ReportSendApplyDetailAction.setNextCandidateIds(updateUser);
+    };
+    renderTransferCandidateBlock = () => {
+        var usersManList = this.state.usersManList;
+        //需要选择销售总经理
+        var onChangeFunction = this.onSelectApplyNextCandidate;
+        var defaultValue = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
+        //列表中只选销售总经理,
+        // usersManList = _.filter(usersManList, data => _.get(data, 'user_groups[0].owner_id') === _.get(data, 'user_info.user_id'));
+
+        //销售领导、域管理员,展示其所有（子）团队的成员列表
+        let dataList = formatUsersmanList(usersManList);
+        return (
+            <div className="op-pane change-salesman">
+                <AlwaysShowSelect
+                    placeholder={Intl.get('sales.team.search', '搜索')}
+                    value={defaultValue}
+                    onChange={onChangeFunction}
+                    notFoundContent={dataList.length ? Intl.get('common.no.member','暂无成员') : Intl.get('apply.no.relate.user','无相关成员')}
+                    dataList={dataList}
+                />
+            </div>
+        );
+    };
+    addNewApplyCandidate = (transferCandidateId) => {
+        var submitObj = {
+            id: _.get(this, 'state.detailInfoObj.info.id',''),
+            user_ids: [transferCandidateId]
+        };
+        var hasApprovePrivilege = _.get(this,'state.detailInfoObj.info.showApproveBtn',false);
+        //如果操作转出的人是这条审批的待审批者，需要在这个操作人的待审批列表中删除这条申请
+        if (hasApprovePrivilege){
+            submitObj.user_ids_delete = [userData.getUserData().user_id];
+        }
+        ReportSendApplyDetailAction.transferNextCandidate(submitObj,(flag) => {
+            //关闭下拉框
+            if (flag){
+                if(_.isFunction(_.get(this, 'addNextCandidate.handleCancel'))){
+                    this.addNextCandidate.handleCancel();
+                }
+                //转出成功后，如果左边选中的是待审批的列表，在待审批列表中把这条记录删掉
+                if (this.props.applyListType === 'ongoing'){
+                    ReportSendApplyAction.afterTransferApplySuccess(submitObj.id);
+                }else{
+                    message.success(Intl.get('apply.approve.transfer.success','转出申请成功'));
+                }
+                if (hasApprovePrivilege){
+                    //上面待审批的数字也需要减一
+                    if (Oplate && Oplate.unread) {
+                        Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND] -= 1;
+                        if (timeoutFunc) {
+                            clearTimeout(timeoutFunc);
+                        }
+                        timeoutFunc = setTimeout(function() {
+                            //触发展示的组件待审批数的刷新
+                            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
+                        }, REFRESH_APPLY_RANGE);
+                    }
+                }
+            }else{
+                message.error(Intl.get('apply.approve.transfer.failed','转出申请失败'));
+            }
+        });
+    };
+    clearNextCandidateIds = () => {
+        ReportSendApplyDetailAction.setNextCandidateIds('');
+    };
+    renderAddApplyNextCandidate = () => {
+        var addNextCandidateId = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
+        return (
+            <div className="pull-right">
+                <AntcDropdown
+                    ref={AssignSales => this.addNextCandidate = AssignSales}
+                    content={<Button
+                        data-tracename="点击转出申请按钮"
+                        className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('crm.qualified.roll.out', '转出')}</Button>}
+                    overlayTitle={Intl.get('apply.will.approve.apply.item','待审批人')}
+                    okTitle={Intl.get('common.confirm', '确认')}
+                    cancelTitle={Intl.get('common.cancel', '取消')}
+                    overlayContent={this.renderTransferCandidateBlock()}
+                    handleSubmit={this.addNewApplyCandidate.bind(this, addNextCandidateId)}//分配销售的时候直接分配，不需要再展示模态框
+                    unSelectDataTip={addNextCandidateId ? '' : Intl.get('apply.will.select.transfer.approver','请选择要转给的待审批人')}
+                    clearSelectData={this.clearNextCandidateIds}
+                    btnAtTop={false}
+                    isSaving={this.state.transferStatusInfo.result === 'loading'}
+                    isDisabled={!addNextCandidateId}
+                />
+            </div>
+        );
+    };
     //审批状态
     renderApplyStatus = () => {
         var showApplyInfo = [{
@@ -355,6 +464,11 @@ class ApplyViewDetail extends React.Component {
                 showApproveBtn = true;
             }
         }
+        var addApplyNextCandidate = null;
+        //如果是管理员或者是待我审批的申请，我都可以把申请进行转出
+        if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || detailInfoObj.showApproveBtn) && detailInfoObj.status === 'ongoing'){
+            addApplyNextCandidate = this.renderAddApplyNextCandidate;
+        }
         return (
             <ApplyDetailBottom
                 create_time={detailInfoObj.create_time}
@@ -367,6 +481,7 @@ class ApplyViewDetail extends React.Component {
                 submitApprovalForm={this.submitApprovalForm}
                 renderAssigenedContext={renderAssigenedContext}
                 passText ={passText}
+                addApplyNextCandidate={addApplyNextCandidate}
             />);
     }
     renderApplyApproveSteps =() => {
