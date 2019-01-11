@@ -1,17 +1,11 @@
 var React = require('react');
 import {Button, message, Select} from 'antd';
 const Option = Select.Option;
-var BootstrapButton = require('react-bootstrap').Button;
 var ContactUtil = require('../../utils/contact-util');
 var ContactAction = require('../../action/contact-action');
-var Modal = require('react-bootstrap').Modal;
-var Spinner = require('../../../../../components/spinner');
-import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
-import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import classNames from 'classnames';
-import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-field';

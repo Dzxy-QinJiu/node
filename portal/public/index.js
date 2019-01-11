@@ -1,9 +1,6 @@
 require('./sources/dependence');
 import {storageUtil} from 'ant-utils';
 
-let callcenter = require('callcenter-sdk-client');
-let CallcenterClient = callcenter.client, CallcenterType = callcenter.type;
-
 var userData = require('./sources/user-data');
 var AppStarter = require('./sources/app-starter');
 var PrivilegeGet = require('./sources/privilege-get');
@@ -11,7 +8,7 @@ var PrivilegeGetReact = null;
 var appDom = $('#app')[0];
 var websiteConfig = require('../lib/utils/websiteConfig');
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
-var CallNumberUtil = require('PUB_DIR/sources/utils/common-data-util');
+let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 
 function hideLoading(errorTip) {
     if (PrivilegeGetReact) {
@@ -68,20 +65,12 @@ function getUserPrivilegeAndStart() {
         unmountPrivilegeGet();
         suppressWarnings();
         getWebsiteConfig();
-        const user_id = userData.getUserData().user_id;
-        storageUtil.setUserId(user_id);
+        const user = userData.getUserData();
+        storageUtil.setUserId(user.user_id);
         AppStarter.init({
             goIndex: false
         });
-        CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
-            if (callNumberInfo && callNumberInfo.callNumber) {
-                window.callClient = new CallcenterClient(CallcenterType.RONGLIAN, user_id, callNumberInfo.callNumber);
-                window.callClient.init().then(() => {
-                    console.log('可以打电话了!');
-                });
-            }
-        });
-
+        phoneUtil.initPhone(user);
         //启动socketio接收数据
         !Oplate.hideSomeItem && require('./sources/push').startSocketIo();
     }).fail(function(errorTip) {

@@ -9,8 +9,8 @@ import {Button, Popover, message} from 'antd';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import userData from 'PUB_DIR/sources/user-data';
-import crmAjax from '../../ajax/index';
 import Trace from 'LIB_DIR/trace';
+import {callClient,useCallCenter} from 'PUB_DIR/sources/utils/phone-util';
 
 const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 
@@ -93,12 +93,25 @@ class ScheduleItem extends React.Component {
         if (this.props.getCallNumberError) {
             message.error(this.props.getCallNumberError || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
         } else {
-            if (this.props.callNumber) {
-                let reqData = {
-                    from: this.props.callNumber,
-                    to: phone
-                };
-                if (window.callClient && window.callClient.isInited()) {
+            //eefung，civiw，oshdan，使用原来的电话系统
+            if (useCallCenter(userData.organization)) {
+                if (this.props.callNumber) {
+                    let reqData = {
+                        from: this.props.callNumber,
+                        to: phone
+                    };
+                    crmAjax.callOut(reqData).then((result) => {
+                        if (result.code === 0) {
+                            message.success('拨打成功！');
+                        }
+                    }, (errMsg) => {
+                        message.error(errMsg || '拨打失败！');
+                    });
+                } else {
+                    message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
+                }
+            } else {
+                if (callClient && callClient.isInited()) {
                     callClient.callout(phone).then((result) => {
                         if (result.code === 0) {
                             message.success('拨打成功！');
@@ -107,8 +120,6 @@ class ScheduleItem extends React.Component {
                         message.error(errMsg || '拨打失败！');
                     });
                 }
-            } else {
-                message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
             }
         }
     }
@@ -134,28 +145,28 @@ class ScheduleItem extends React.Component {
                 {this.props.isMerge ? null : (
                     <div className='schedule-item-buttons'>
                         {item.type === 'calls' && _.isArray(phoneArray) && phoneArray.length ? item.isShowContactPhone ? (
-                            <div className='schedule-contact-phone-block'>
-                                {_.map(phoneArray, obj => {
-                                    return (
-                                        <Button size='small' onClick={this.handleClickCallOut.bind(this, obj.phone)}>
-                                            {obj.name || ''}
-                                            <span className='contact-phone'>{obj.phone}</span>
-                                            {this.props.callNumber ?
-                                                <span className='iconfont icon-phone-call-out'
-                                                    title={Intl.get('crm.click.call.phone', '点击拨打电话')}></span> : null}
-                                        </Button>);
-                                })}
-                                <span className='iconfont icon-close'
-                                    title={Intl.get('common.app.status.close', '关闭')}
-                                    onClick={this.toggleScheduleContact.bind(this, item, false)}/>
-                            </div>) : (
-                            <Button className='schedule-contact-btn'
-                                onClick={this.toggleScheduleContact.bind(this, item, true)}
-                                size='small'>{Intl.get('customer.contact.customer', '联系客户')}</Button>)
+                                <div className='schedule-contact-phone-block'>
+                                    {_.map(phoneArray, obj => {
+                                        return (
+                                            <Button size='small' onClick={this.handleClickCallOut.bind(this, obj.phone)}>
+                                                {obj.name || ''}
+                                                <span className='contact-phone'>{obj.phone}</span>
+                                                {this.props.callNumber ?
+                                                    <span className='iconfont icon-phone-call-out'
+                                                          title={Intl.get('crm.click.call.phone', '点击拨打电话')}></span> : null}
+                                            </Button>);
+                                    })}
+                                    <span className='iconfont icon-close'
+                                          title={Intl.get('common.app.status.close', '关闭')}
+                                          onClick={this.toggleScheduleContact.bind(this, item, false)}/>
+                                </div>) : (
+                                <Button className='schedule-contact-btn'
+                                        onClick={this.toggleScheduleContact.bind(this, item, true)}
+                                        size='small'>{Intl.get('customer.contact.customer', '联系客户')}</Button>)
                             : null}
                         {user_id === item.member_id ?
                             <Button className='schedule-status-btn' onClick={this.handleItemStatus.bind(this, item)}
-                                size='small'>
+                                    size='small'>
                                 {item.status === 'false' ? Intl.get('crm.schedule.set.compelete', '标为已完成') : Intl.get('crm.schedule.set.unfinished', '标为未完成')}
                             </Button> : null}
                         <span className='right-handle-buttons'>
@@ -169,9 +180,9 @@ class ScheduleItem extends React.Component {
                             {/*只能删除自己创建的日程*/}
                             {user_id === item.member_id && !this.props.hideDelete && !this.props.isMerge ?
                                 <Popover content={Intl.get('common.delete', '删除')}
-                                    trigger='hover' placement='bottom' overlayClassName='schedule-alert-time'>
+                                         trigger='hover' placement='bottom' overlayClassName='schedule-alert-time'>
                                     <span className='iconfont icon-delete' data-tracename='点击删除日程按钮'
-                                        onClick={this.deleteSchedule.bind(this, item.id)}/>
+                                          onClick={this.deleteSchedule.bind(this, item.id)}/>
                                 </Popover> : null}
                         </span>
                     </div>)}
