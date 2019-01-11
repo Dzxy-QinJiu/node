@@ -59,4 +59,10 @@ function adjustDatePicker(option, startTime, endTime) {
     option.endTime = moment(endTime).endOf('month').valueOf();
     //日期选择器只能选择月，所以无需提供时间区间选项
     option.periodOptions = [];
+    //调整日期选择器内部state
+    option.adjustState = state => {
+        state.showTwoCalendarRecord = false;
+        state.showYearRecord = false;
+        state.showDateRecord = true;
+    };
 }
