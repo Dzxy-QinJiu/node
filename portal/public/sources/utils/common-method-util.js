@@ -15,7 +15,6 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import userData from '../user-data';
 import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {selectMenuList, APPLY_APPROVE_TYPES, DOCUMENT_TYPE, INTEGRATE_TYPES} from './consts';
-import {getIntegrationConfig} from './common-data-util';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -554,12 +553,6 @@ exports.formatSalesmanList = function(salesManList) {
 };
 //是否是oplate用户，只有oplate的用户才可以进行添加、申请等操作
 exports.isOplateUser = function() {
-    getIntegrationConfig(resultObj => {
-        // 获取集成配置信息失败
-        if (resultObj.errorMsg) {
-            return false;
-        } else {
-            return _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
-        }
-    });
+    let user = userData.getUserData();
+    return _.get(user, 'integration_config.type') === INTEGRATE_TYPES.OPLATE;
 };

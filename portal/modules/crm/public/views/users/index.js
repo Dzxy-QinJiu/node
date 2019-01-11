@@ -23,7 +23,7 @@ import ErrorDataTip from '../components/error-data-tip';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
-import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
+import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
@@ -63,6 +63,7 @@ class CustomerUsers extends React.Component {
             applyType: '',//申请用户的类型
             listenScrollBottom: true,//是否监听滚动
             appList: [],
+            isOplateUser: false,
             ... this.getLayoutHeight() //用户列表、申请用户面板的高度
         };
     }
@@ -72,6 +73,7 @@ class CustomerUsers extends React.Component {
         this.getCrmUserList();
         //获取应用列表
         this.getAppList();
+        this.getIntegrateConfig();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -82,6 +84,13 @@ class CustomerUsers extends React.Component {
                 this.getCrmUserList();
             });
         }
+    }
+    
+    getIntegrateConfig(){
+        commonDataUtil.getIntegrationConfig((resultObj) => {
+            let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
+            this.setState({isOplateUser});
+        });
     }
 
     //获取客户开通的用户列表
@@ -381,7 +390,8 @@ class CustomerUsers extends React.Component {
         }
         return rightPanelView;
     }
-    getLayoutHeight(){
+
+    getLayoutHeight() {
         let divHeight = $(window).height() - LAYOUT.TOP_NAV_HEIGHT - LAYOUT.TOTAL_HEIGHT;
         //减头部的客户基本信息高度
         divHeight -= parseInt($('.basic-info-contianer').outerHeight(true));
@@ -390,12 +400,13 @@ class CustomerUsers extends React.Component {
         }
         let userListHeight = divHeight;
         //减去申请用户面板的高度
-        if($('.apply-user-form-container').size()){
+        if ($('.apply-user-form-container').size()) {
             userListHeight -= $('.apply-user-form-container').outerHeight(true);
         }
         let applyFormMaxHeight = divHeight - LAYOUT.APPLY_FORM_SAVE_BTN_H - 2 * LAYOUT.APPLY_PANEL_PADDING;
-        return {userListHeight,applyFormMaxHeight};
+        return {userListHeight, applyFormMaxHeight};
     }
+
     renderUserApplyForm() {
         //有选择用户时，是已有用户开通新用户；无选择的应用时，是开通新用户
         let checkedUsers = _.filter(this.state.crmUserList, userObj => userObj.user && userObj.user.checked);
@@ -476,7 +487,7 @@ class CustomerUsers extends React.Component {
             return <ErrorDataTip errorMsg={this.state.errorMsg} isRetry={true}
                 retryFunc={this.getCrmUserList.bind(this)}/>;
         }
-        let isShowCheckbox = isApplyButtonShow && !this.props.isMerge && isOplateUser();
+        let isShowCheckbox = isApplyButtonShow && !this.props.isMerge && this.state.isOplateUser;
         let crmUserList = this.state.crmUserList;
         if (_.isArray(crmUserList) && crmUserList.length) {
             return (
@@ -512,7 +523,7 @@ class CustomerUsers extends React.Component {
                         );
                     })}
                 </ul>);
-        } else if(this.state.applyType !== APPLY_TYPES.NEW_USERS ){//没有用户时，展开申请用户面板时，不展示暂无用户的提示
+        } else if (this.state.applyType !== APPLY_TYPES.NEW_USERS) {//没有用户时，展开申请用户面板时，不展示暂无用户的提示
             //加载完成，没有数据的情况
             return (<NoDataIconTip tipContent={Intl.get('crm.detail.no.user', '暂无用户')}/>);
         }
@@ -550,7 +561,7 @@ class CustomerUsers extends React.Component {
                     <span className="crm-detail-total-tip">
                         {Intl.get('crm.overview.apply.user.tip', '该客户还没有用户')}
                     </span>)}
-                {isApplyButtonShow && !this.props.isMerge && isOplateUser() ? this.renderApplyBtns()
+                {isApplyButtonShow && !this.props.isMerge && this.state.isOplateUser ? this.renderApplyBtns()
                     : null}
             </div>
             {this.state.applyType ?
