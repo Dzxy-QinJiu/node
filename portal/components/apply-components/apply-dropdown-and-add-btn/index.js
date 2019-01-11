@@ -6,6 +6,7 @@
 import {Button, Menu, Dropdown} from 'antd';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 require('./index.less');
+var classNames = require('classnames');
 class ApplyDropdownAndAddBtn extends React.Component {
     constructor(props) {
         super(props);
@@ -57,6 +58,12 @@ class ApplyDropdownAndAddBtn extends React.Component {
                     <Button className='pull-right add-leave-btn' onClick={this.props.showAddApplyPanel}
                     >{this.props.addApplyMessage}</Button>
                     : null}
+                <div className="pull-right search-btns">
+                    {this.props.showRefreshIcon ? <span onClick={this.props.refreshPage}
+                        className={classNames('iconfont pull-right icon-refresh', {'has-new-apply': this.props.showUpdateTip})}
+                        title={this.props.showUpdateTip ? Intl.get('user.apply.new.refresh.tip', '有新申请，点此刷新') : Intl.get('user.apply.no.new.refresh.tip', '无新申请')}/> : null}
+
+                </div>
             </div>
         );
     }
@@ -73,7 +80,8 @@ ApplyDropdownAndAddBtn.defaultProps = {
     showAddApplyPanel: function() {
 
     },
-    addApplyMessage: ''
+    addApplyMessage: '',
+    showRefreshIcon: false
 };
 ApplyDropdownAndAddBtn.propTypes = {
     menuClick: PropTypes.func,
@@ -82,6 +90,7 @@ ApplyDropdownAndAddBtn.propTypes = {
     addPrivilege: PropTypes.string,
     showAddApplyPanel: PropTypes.func,
     addApplyMessage: PropTypes.string,
+    showRefreshIcon: PropTypes.boolean
 
 };
 

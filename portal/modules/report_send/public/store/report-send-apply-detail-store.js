@@ -65,6 +65,13 @@ ReportSendApplyDetailStore.prototype.setInitState = function() {
         delId: '',//被删除的那个文件的文件id
         errorMsg: ''
     };
+    //转出申请的状态列表
+    this.transferStatusInfo = {
+        //三种状态,loading,error,''
+        result: '',
+        //服务端错误信息
+        errorMsg: ''
+    };
 };
 ReportSendApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
@@ -273,6 +280,23 @@ ReportSendApplyDetailStore.prototype.getNextCandidate = function(result) {
 ReportSendApplyDetailStore.prototype.setUpdateFilesLists = function(updateLists) {
     this.detailInfoObj.info.detail.file_upload_logs = updateLists;
 };
-
+ReportSendApplyDetailStore.prototype.setNextCandidateIds = function(candidateId) {
+    this.detailInfoObj.info.nextCandidateId = candidateId;
+};
+ReportSendApplyDetailStore.prototype.transferNextCandidate = function(result) {
+    if (result.loading) {
+        this.transferStatusInfo.result = 'loading';
+        this.transferStatusInfo.errorMsg = '';
+    } else if (result.error) {
+        this.transferStatusInfo.result = 'error';
+        this.transferStatusInfo.errorMsg = result.errorMsg;
+    } else {
+        this.transferStatusInfo.result = 'success';
+        this.transferStatusInfo.errorMsg = '';
+        //如果转出成功，要隐藏审批的按钮
+        this.selectedDetailItem.showApproveBtn = false;
+        this.detailInfoObj.info.showApproveBtn = false;
+    }
+};
 
 module.exports = alt.createStore(ReportSendApplyDetailStore, 'ReportSendApplyDetailStore');

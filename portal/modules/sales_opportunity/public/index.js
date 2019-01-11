@@ -8,7 +8,7 @@ var SalesOpportunityApplyStore = require('./store/sales-opportunity-apply-store'
 var SalesOpportunityApplyDetailAction = require('./action/sales-opportunity-apply-detail-action');
 import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-components/apply-dropdown-and-add-btn';
 import AddSalesOpportunityApplyPanel from './view/add-sales-opportunity-apply';
-import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES,APPLY_TYPE_STATUS_CONST} from 'PUB_DIR/sources/utils/consts';
 import Trace from 'LIB_DIR/trace';
 var classNames = require('classnames');
 var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
@@ -23,6 +23,7 @@ var SalesOpportunityApplyUtils = require('./utils/sales-oppotunity-utils');
 let userData = require('../../../public/sources/user-data');
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 class SalesOpportunityApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加销售机会申请面板
@@ -52,7 +53,22 @@ class SalesOpportunityApplyManagement extends React.Component {
             });
         });
         SalesOpportunityApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
+        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY, this.pushDataListener);
     }
+    refreshPage = (e) => {
+        if (!this.state.showUpdateTip) return;
+        Trace.traceEvent(e, '点击了刷新');
+        SalesOpportunityApplyAction.setLastApplyId('');
+        setTimeout(() => this.getAllSalesOpportunityApplyList());
+        SalesOpportunityApplyAction.setShowUpdateTip(false);
+    };
+    //监听推送数据
+    pushDataListener = (data) => {
+        //有数据，将是否展示更新tip
+        if (data){
+            SalesOpportunityApplyAction.setShowUpdateTip(true);
+        }
+    };
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps,'history.action') === 'PUSH'){
             if (_.get(nextProps,'location.state.clickUnhandleNum')){
@@ -115,6 +131,7 @@ class SalesOpportunityApplyManagement extends React.Component {
         SalesOpportunityApplyStore.unlisten(this.onStoreChange);
         SalesOpportunityApplyAction.setInitState();
         SalesOpportunityApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY, this.pushDataListener);
     }
 
     showAddApplyPanel = () => {
@@ -223,7 +240,8 @@ class SalesOpportunityApplyManagement extends React.Component {
         var userDetail = userData.getUserData();
         var addPanelWrap = classNames({'show-add-modal': this.state.showAddApplyPanel});
         var applyListHeight = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
-        var applyType = commonMethodUtil.getApplyStatusDscr(this.state.applyListType);
+        var applyListType = this.state.applyListType;
+        var applyType = commonMethodUtil.getApplyStatusDscr(applyListType);
         var noShowApplyDetail = this.state.applyListObj.list.length === 0;
         //申请详情数据
         var applyDetail = null;
@@ -241,6 +259,9 @@ class SalesOpportunityApplyManagement extends React.Component {
                             showAddApplyPanel={this.showAddApplyPanel}
                             addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
                             menuList={selectMenuList}
+                            refreshPage={this.refreshPage}
+                            showUpdateTip={this.state.showUpdateTip}
+                            showRefreshIcon = {applyListType === APPLY_TYPE_STATUS_CONST.ALL || applyListType === APPLY_TYPE_STATUS_CONST.ONGOING}
                         />
                         {this.renderApplyListError()}
                         {this.state.applyListObj.loadingResult === 'loading' && !this.state.lastApplyId ? (
@@ -282,13 +303,13 @@ class SalesOpportunityApplyManagement extends React.Component {
                             </div>
 
                         </div>
-                        )
-                        }
+                        )}
                     </div>
                     {noShowApplyDetail ? null : (
                         <ApplyViewDetail
                             detailItem={this.state.selectedDetailItem}
                             showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                            applyListType={this.state.applyListType}
 
                         />
                     )}

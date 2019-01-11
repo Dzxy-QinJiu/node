@@ -83,9 +83,9 @@ exports.clueMsgToFrontend = function(clueMsg) {
     };
 };
 //申请审批数量变化后的数据
-exports.applyApproveMsgToFrontend = function(applyApproveMsg) {
+exports.applyApproveMsgToFrontend = function(applyApproveMsg,memberId) {
     return {
         message_type: applyApproveMsg.topic,//申请审批的类型
-        member_id: applyApproveMsg.consumers[0],//分配给谁的申请审批
+        member_id: memberId,//分配给谁的申请审批
     };
 };

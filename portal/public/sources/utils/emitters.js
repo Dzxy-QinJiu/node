@@ -42,6 +42,12 @@ exports.notificationEmitter.UPDATE_NOTIFICATION_UNREAD = 'updateNotificationUnre
 exports.notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT = 'showUnhandledApplyCount';
 
 exports.notificationEmitter.APPLY_UPDATED = 'applyUpdated';
+exports.notificationEmitter.APPLY_UPDATED_CUSTOMER_VISIT = 'applyUpdatedCustomerVisit';
+exports.notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY = 'applyUpdatedSalesOpportunity';
+exports.notificationEmitter.APPLY_UPDATED_LEAVE = 'applyUpdatedLeave';
+exports.notificationEmitter.APPLY_UPDATED_REPORT_SEND = 'applyUpdatedReportSend';
+exports.notificationEmitter.APPLY_UPDATED_DOCUMENT_WRITE = 'applyUpdatedDocumentWrite';
+
 //未处理的线索数量
 exports.notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT = 'showUnhandledClueCount';
 //未审批申请的数量

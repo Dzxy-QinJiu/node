@@ -62,6 +62,7 @@ class ApplyDetailBottom extends React.Component {
                                 this.renderBottomText()
                                 : null
                         )}
+                        {_.isFunction(this.props.addApplyNextCandidate) ? this.props.addApplyNextCandidate() : null}
                     </Col>
                 </Row>
             </div>
@@ -82,6 +83,9 @@ ApplyDetailBottom.defaultProps = {
     renderAssigenedContext: function(){
 
     },
+    addApplyNextCandidate: function() {
+
+    },
     passText: Intl.get('user.apply.detail.button.pass', '通过'),
     rejectText: Intl.get('common.apply.reject', '驳回')
 };
@@ -94,6 +98,7 @@ ApplyDetailBottom.propTypes = {
     showApproveBtn: PropTypes.boolean,
     submitApprovalForm: PropTypes.func,
     renderAssigenedContext: PropTypes.func,
+    addApplyNextCandidate: PropTypes.func,
     showCancelBtn: PropTypes.boolean,
     rejectText: PropTypes.string,
     passText: PropTypes.string,
