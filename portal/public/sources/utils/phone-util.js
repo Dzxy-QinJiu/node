@@ -23,7 +23,9 @@ exports.initPhone = function(user) {
     // });
 };
 
-exports.callClient = callClient;
+exports.getCallClient = function() {
+    return callClient;
+};
 
 //是否使用电话系统
 exports.useCallCenter = function(organization) {

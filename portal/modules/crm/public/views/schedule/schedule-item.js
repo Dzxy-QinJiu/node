@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import userData from 'PUB_DIR/sources/user-data';
 import Trace from 'LIB_DIR/trace';
-import {callClient, useCallCenter} from 'PUB_DIR/sources/utils/phone-util';
+import {getCallClient, useCallCenter} from 'PUB_DIR/sources/utils/phone-util';
 
 const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 
@@ -111,6 +111,7 @@ class ScheduleItem extends React.Component {
                     message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
                 }
             } else {
+                let callClient = getCallClient();
                 if (callClient && callClient.isInited()) {
                     callClient.callout(phone).then((result) => {
                         if (result.code === 0) {

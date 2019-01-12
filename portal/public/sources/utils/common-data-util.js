@@ -6,7 +6,7 @@ import {storageUtil} from 'ant-utils';
 import {traversingTeamTree, getParamByPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {message} from 'antd';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
-import {callClient, useCallCenter} from 'PUB_DIR/sources/utils/phone-util';
+import {getCallClient, useCallCenter} from 'PUB_DIR/sources/utils/phone-util';
 
 const session = storageUtil.session;
 // 缓存在sessionStorage中的座席号的key
@@ -187,6 +187,7 @@ exports.handleCallOutResult = function(paramObj) {
                     message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
                 }
             } else {
+                let callClient = getCallClient();
                 if (callClient && callClient.isInited()) {
                     callClient.callout(phoneNumber).then((result) => {
                         if (result.code === 0) {

@@ -37,7 +37,7 @@ import crmAjax from '../../ajax/index';
 import CallNumberUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import ShearContent from '../../../../../components/shear-content';
-import {callClient, useCallCenter} from 'PUB_DIR/sources/utils/phone-util';
+import {getCallClient, useCallCenter} from 'PUB_DIR/sources/utils/phone-util';
 import userData from 'PUB_DIR/sources/user-data';
 
 var classNames = require('classnames');
@@ -583,7 +583,7 @@ class CustomerRecord extends React.Component {
         if (this.props.getCallNumberError) {
             message.error(this.props.getCallNumberError || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
         } else {
-            //eefung，civiw，oshdan，使用原来的电话系统
+            // eefung，civiw，oshdan，使用原来的电话系统
             if (useCallCenter(userData.organization)) {
                 if (this.props.callNumber) {
                     let reqData = {
@@ -601,6 +601,7 @@ class CustomerRecord extends React.Component {
                     message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
                 }
             } else {
+                let callClient = getCallClient();
                 if (callClient && callClient.isInited()) {
                     callClient.callout(phone).then((result) => {
                         if (result.code === 0) {
