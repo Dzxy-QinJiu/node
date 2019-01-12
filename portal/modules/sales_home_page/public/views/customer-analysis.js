@@ -931,7 +931,7 @@ class CustomerAnalysis extends React.Component {
                     loading: this.state.transferCustomers.loading,
                     handleScrollBottom: this.getTransferCustomers,
                     listenScrollBottom: this.state.transferCustomers.listenScrollBottom && !this.state.transferCustomers.loading,
-                    showNoMoreDataTip: this.state.transferCustomers.data.length && !this.state.transferCustomers.listenScrollBottom,
+                    showNoMoreDataTip: this.state.transferCustomers.showNoMoreDataTip,
                     noMoreDataText: Intl.get('noMoreTip.customer', '没有更多客户了')
                 },
                 columns: [

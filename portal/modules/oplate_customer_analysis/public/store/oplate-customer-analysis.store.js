@@ -44,6 +44,7 @@ OplateCustomerAnalysisStore.prototype.resetState = function() {
         errorMsg: '',
         lastId: '',
         listenScrollBottom: true,
+        showNoMoreDataTip: false,
         sorter: {
             field: 'time',
             order: 'descend'
@@ -282,9 +283,17 @@ OplateCustomerAnalysisStore.prototype.getTransferCustomers = resultHandler('tran
     } else {
         this.transferCustomers.data = this.transferCustomers.data.concat(customers);
     }
+
+    //默认不显示“没有更多数据”的提示
+    this.transferCustomers.showNoMoreDataTip = false;
+
     //总数等于前端数组长度时，不监听下拉加载
     if (data.total === this.transferCustomers.data.length) {
         this.transferCustomers.listenScrollBottom = false;
+        //若非首次请求，说明是下拉加载之后获取到了全部数据，此时显示“没有更多数据”的提示
+        if (!paramObj.isFirst) {
+            this.transferCustomers.showNoMoreDataTip = true;
+        }
     } else {
         this.transferCustomers.listenScrollBottom = true;
     }
