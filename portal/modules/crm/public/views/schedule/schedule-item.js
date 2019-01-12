@@ -8,7 +8,7 @@ var React = require('react');
 import {Button, Popover, message} from 'antd';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import userData from 'PUB_DIR/sources/user-data';
+import {getUserData} from 'PUB_DIR/sources/user-data';
 import Trace from 'LIB_DIR/trace';
 import {getCallClient, useCallCenter} from 'PUB_DIR/sources/utils/phone-util';
 
@@ -94,7 +94,7 @@ class ScheduleItem extends React.Component {
             message.error(this.props.getCallNumberError || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
         } else {
             //eefung，civiw，oshdan，使用原来的电话系统
-            if (useCallCenter(userData.organization)) {
+            if (useCallCenter(getUserData().organization)) {
                 if (this.props.callNumber) {
                     let reqData = {
                         from: this.props.callNumber,
@@ -126,7 +126,7 @@ class ScheduleItem extends React.Component {
     }
 
     render() {
-        const user_id = userData.getUserData().user_id;
+        const user_id = getUserData().user_id;
         const item = this.props.item;
         const scheduleShowObj = this.getScheduleShowObj(item);
         const phoneArray = this.getContactPhoneArray(item);

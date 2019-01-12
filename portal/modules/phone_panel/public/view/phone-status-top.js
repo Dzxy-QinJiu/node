@@ -1,18 +1,23 @@
-const PropTypes = require('prop-types');
-var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/5/23.
  */
+const PropTypes = require('prop-types');
+var React = require('react');
 import {Button, Tag, Select} from 'antd';
+
 const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
+import {PHONERINGSTATUS, commonPhoneDesArray} from '../consts';
+import {getUserData} from 'PUB_DIR/sources/user-data';
+import {getCallClient, useCallCenter} from 'PUB_DIR/sources/utils/phone-util';
+
 var phoneAlertAction = require('../action/phone-alert-action');
 var phoneAlertStore = require('../store/phone-alert-store');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 var AlertTimer = require('CMP_DIR/alert-timer');
-import {PHONERINGSTATUS, commonPhoneDesArray} from '../consts';
+
 class phoneStatusTop extends React.Component {
     constructor(props) {
         super(props);
@@ -82,6 +87,7 @@ class phoneStatusTop extends React.Component {
             showCancelBtn: true,
         });
     };
+
     //获取添加跟进记录的客户id
     getSaveTraceCustomerId() {
         let customerInfoArr = this.state.customerInfoArr;
@@ -95,6 +101,7 @@ class phoneStatusTop extends React.Component {
         }
         return customer_id;
     }
+
     //取消保存跟进记录
     handleTraceCancel = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.trace-content-container'), '取消保存跟进记录');
@@ -157,16 +164,16 @@ class phoneStatusTop extends React.Component {
                 <div className="trace-content edit-trace">
                     <div className="input-item">
                         <Select combobox
-                            searchPlaceholder={Intl.get('phone.status.record.content', '请填写本次跟进内容')}
-                            onChange={this.handleInputChange}
-                            value={this.state.inputContent}
-                            getPopupContainer={() => document.getElementById('phone-alert-modal-inner')}
+                                searchPlaceholder={Intl.get('phone.status.record.content', '请填写本次跟进内容')}
+                                onChange={this.handleInputChange}
+                                value={this.state.inputContent}
+                                getPopupContainer={() => document.getElementById('phone-alert-modal-inner')}
                         >
                             {
                                 _.isArray(commonPhoneDesArray) ?
                                     commonPhoneDesArray.map((Des, idx) => {
-                                    //如果电话已经接通，不需要展示 “未接通这个提示”
-                                        if (phonemsgObj.billsec > 0 && idx === 0){
+                                        //如果电话已经接通，不需要展示 “未接通这个提示”
+                                        if (phonemsgObj.billsec > 0 && idx === 0) {
                                             return;
                                         }
                                         return (<Option key={idx} value={Des}>{Des}</Option>);
@@ -177,9 +184,9 @@ class phoneStatusTop extends React.Component {
                     <div className="modal-submit-tip">
                         {this.state.submittingTraceMsg ? (
                             <AlertTimer time={3000}
-                                message={this.state.submittingTraceMsg}
-                                type="error" showIcon
-                                onHide={onHide}
+                                        message={this.state.submittingTraceMsg}
+                                        type="error" showIcon
+                                        onHide={onHide}
                             />
                         ) : null}
                     </div>
@@ -198,11 +205,12 @@ class phoneStatusTop extends React.Component {
 
                             </div> : null}
                         <Button type='primary' className="modal-submit-btn" onClick={this.handleTraceSubmit}
-                            data-tracename="保存跟进记录">
+                                data-tracename="保存跟进记录">
                             {this.state.submittingTrace ? (Intl.get('retry.is.submitting', '提交中...')) : (Intl.get('common.save', '保存'))}
                         </Button>
                         {this.state.showCancelBtn ?
-                            <Button onClick={this.handleTraceCancel} data-tracename="取消保存跟进记录">{Intl.get('common.cancel', '取消')}</Button>
+                            <Button onClick={this.handleTraceCancel}
+                                    data-tracename="取消保存跟进记录">{Intl.get('common.cancel', '取消')}</Button>
                             : null}
                     </div>
                 </div>
@@ -259,6 +267,15 @@ class phoneStatusTop extends React.Component {
     handleAddPlan = () => {
         this.props.handleAddPlan();
     };
+    //挂断电话
+    releaseCall = (called) => {
+        if (useCallCenter(getUserData().organization)) {
+            if (getCallClient()) {
+                getCallClient().releaseCall();
+            }
+        }
+    };
+
     render() {
         var iconFontCls = 'modal-icon iconfont';
         var phonemsgObj = this.state.phonemsgObj;
@@ -282,6 +299,7 @@ class phoneStatusTop extends React.Component {
                 <div className={phoneStatusContainer}>
                     <div id="iconfont-tip">
                         <i className={iconFontCls}></i>
+                        <span onClick={this.releaseCall.bind(this, phoneDes.phoneNum)}>挂断</span>
                     </div>
                     <div className="phone-status-tip">
                         <div className="contact-phone-title">
@@ -302,11 +320,11 @@ class phoneStatusTop extends React.Component {
                         <div className="add-trace-and-plan">
                             <div className="add-more-info-container">
                                 <Button size="small"
-                                    onClick={this.handleAddProductFeedback}>{Intl.get('call.record.add.product.feedback', '添加产品反馈')}</Button>
+                                        onClick={this.handleAddProductFeedback}>{Intl.get('call.record.add.product.feedback', '添加产品反馈')}</Button>
                             </div>
                             <div className="add-plan-info-container">
                                 <Button size="small"
-                                    onClick={this.handleAddPlan}>{Intl.get('crm.214', '添加联系计划')}</Button>
+                                        onClick={this.handleAddPlan}>{Intl.get('crm.214', '添加联系计划')}</Button>
                             </div>
                         </div>
                         : null}
@@ -315,6 +333,7 @@ class phoneStatusTop extends React.Component {
         );
     }
 }
+
 phoneStatusTop.defaultProps = {
     addMoreInfoCls: '',
     phoneAlertModalTitleCls: '',
@@ -323,7 +342,8 @@ phoneStatusTop.defaultProps = {
     detailCustomerId: '',
     isAddingMoreProdctInfo: false,
     contactNameObj: {},
-    handleAddProductFeedback: function() {},
+    handleAddProductFeedback: function() {
+    },
     isAddingPlanInfo: false,
     handleAddPlan: function() {
 
