@@ -1,5 +1,3 @@
-
-import TestUtils from 'react-addons-test-utils';
 var expect = require('expect.js');
 var Crm = require('../public');
 
