@@ -51,14 +51,13 @@ exports.ssoLogout = function(req, res) {
  */
 exports.sessionTimeout = function(sessionID, accessToken) {
     var url = urls.ssoLogout + '?only_exit_current=yes';
-    return restUtil.baseRest.get(
+    return restUtil.appAuthRest.get(
         {
             url: url,
             req: {sessionID, 'headers': {}},
             res: {},
             headers: {
-                Authorization: userTokenPrefix + accessToken,
-                realm: global.config.loginParams.realm
+                Authorization: userTokenPrefix + accessToken
             }
         }, null);
 };
