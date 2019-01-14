@@ -6,10 +6,6 @@
 'use strict';
 //var JSX = require('node-jsx').install({ extension: '.jsx' });
 require('babel-core/register');
-var React = require('react');
-var ReactDOMServer = require('react-dom/server');
-global.__STYLE_COLLECTOR_MODULES__ = [];
-global.__STYLE_COLLECTOR__ = '';
 var DesktopLoginService = require('../service/desktop-login-service');
 var UserDto = require('../../../lib/utils/user-dto');
 let BackendIntl = require('../../../../portal/lib/utils/backend_intl');
@@ -74,17 +70,7 @@ function showLoginOrBindWechatPage(req, res) {
         }
 
         function renderHtml() {
-            var styleContent = global.__STYLE_COLLECTOR__;
-            //ketao上的登录页
-            let LoginForm = null;
             let isCurtao = commonUtil.method.isCurtao(req);
-            //正式发版的curtao上，展示带注册的登录界面，
-            if (isCurtao) {
-                LoginForm = React.createFactory(require('../../../../dist/server-render/login_curtao'));
-            } else {
-                LoginForm = React.createFactory(require('../../../../dist/server-render/login'));
-            }
-            let formHtml = ReactDOMServer.renderToString(LoginForm(obj));
             const phone = '400-677-0986';
             const qq = '4006770986';
             let backendIntl = new BackendIntl(req);
@@ -96,8 +82,6 @@ function showLoginOrBindWechatPage(req, res) {
             custom_service_lang = custom_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
             let company = isCurtao ? backendIntl.get('company.name.curtao', '© 客套智能科技 鲁ICP备18038856号') : backendIntl.get('company.name.eefung', '© 蚁坊软件 湘ICP备14007253号-1');
             res.render('login/tpl/desktop-login', {
-                styleContent: styleContent,
-                loginForm: formHtml,
                 loginErrorMsg: obj.loginErrorMsg,
                 username: obj.username,
                 captchaCode: obj.captchaCode || '',

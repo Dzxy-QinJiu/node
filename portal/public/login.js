@@ -16,10 +16,3 @@ var props = {
 };
 
 ReactDOM.render(<Translate Template={<Router history={history}><LoginMain {...props}/></Router>}/>, $('#react-placeholder')[0]);
-
-var styleEl = document.getElementById('css-style-collector-data');
-
-if (styleEl) {
-    styleEl.remove();
-}
-
