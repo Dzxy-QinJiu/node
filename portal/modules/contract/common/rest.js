@@ -5,7 +5,6 @@ const restLogger = require('../../../lib/utils/logger').getLogger('rest');
 const restUtil = require('ant-auth-request').restUtil(restLogger);
 const routes = require('./route');
 const _ = require('lodash');
-const moment = require('moment');
 const path = require('path');
 //正则
 import {pathParamRegex} from '../../../lib/utils/regex-util';
