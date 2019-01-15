@@ -33,12 +33,10 @@ import TimeLine from 'CMP_DIR/time-line-new';
 import ErrorDataTip from '../components/error-data-tip';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import {decodeHTML} from 'PUB_DIR/sources/utils/common-method-util';
-import crmAjax from '../../ajax/index';
 import CallNumberUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import ShearContent from '../../../../../components/shear-content';
-import {getCallClient, useCallCenter} from 'PUB_DIR/sources/utils/phone-util';
-import {getUserData} from 'PUB_DIR/sources/user-data';
+import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 
 var classNames = require('classnames');
 //用于布局的高度
@@ -462,7 +460,7 @@ class CustomerRecord extends React.Component {
     handleAudioPlay = (item) => {
         //如果是点击切换不同的录音，找到上次点击播放的那一条记录，把他的playSelected属性去掉
         var oldItemId = '';
-        var oldSelected = _.find(this.state.customerRecord, function(record) {
+        var oldSelected = _.find(this.state.customerRecord, function (record) {
             return record.playSelected;
         });
         if (oldSelected) {
@@ -506,7 +504,7 @@ class CustomerRecord extends React.Component {
     closeAudioPlayContainer = (e) => {
         Trace.traceEvent(e, '关闭播放器按钮');
         //找到当前正在播放的那条记录
-        var oldSelected = _.find(this.state.customerRecord, function(item) {
+        var oldSelected = _.find(this.state.customerRecord, function (item) {
             return item.playSelected;
         });
         if (oldSelected) {
@@ -583,34 +581,13 @@ class CustomerRecord extends React.Component {
         if (this.props.getCallNumberError) {
             message.error(this.props.getCallNumberError || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
         } else {
-            // eefung，civiw，oshdan，使用原来的电话系统
-            if (useCallCenter(getUserData().organization)) {
-                if (this.props.callNumber) {
-                    let reqData = {
-                        from: this.props.callNumber,
-                        to: phone
-                    };
-                    crmAjax.callOut(reqData).then((result) => {
-                        if (result.code === 0) {
-                            message.success(Intl.get('crm.call.phone.success', '拨打成功'));
-                        }
-                    }, (errMsg) => {
-                        message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
-                    });
-                } else {
-                    message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
-                }
-            } else {
-                let callClient = getCallClient();
-                if (callClient && callClient.isInited()) {
-                    callClient.callout(phone).then((result) => {
-                        if (result.code === 0) {
-                            message.success('拨打成功！');
-                        }
-                    }, (errMsg) => {
-                        message.error(errMsg || '拨打失败！');
-                    });
-                }
+            let callClient = getCallClient();
+            if (callClient && callClient.isInited()) {
+                callClient.callout(phone).then((result) => {
+                    message.success(Intl.get('crm.call.phone.success', '拨打成功'));
+                }, (errMsg) => {
+                    message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
+                });
             }
         }
     };

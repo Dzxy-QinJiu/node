@@ -6,7 +6,7 @@ import {storageUtil} from 'ant-utils';
 import {traversingTeamTree, getParamByPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {message} from 'antd';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
-import {getCallClient, useCallCenter} from 'PUB_DIR/sources/utils/phone-util';
+import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 
 const session = storageUtil.session;
 // 缓存在sessionStorage中的座席号的key
@@ -22,7 +22,7 @@ const AUTH_MAP = {
 import {DIFF_TYPE_LOG_FILES, AM_AND_PM} from './consts';
 import {isEqualArray} from 'LIB_DIR/func';
 // 获取拨打电话的座席号
-exports.getUserPhoneNumber = function(cb) {
+exports.getUserPhoneNumber = function (cb) {
     var Deferred = $.Deferred();
     let user_id = getUserData().user_id;
     let callNumberObj = {};
@@ -51,14 +51,14 @@ exports.getUserPhoneNumber = function(cb) {
     return Deferred.promise();
 };
 //获取oplate中的应用
-exports.getAppList = function(cb) {
+exports.getAppList = function (cb) {
     if (_.get(appList, '[0]')) {
         if (_.isFunction(cb)) cb(appList);
     } else {
         appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(result => {
             let list = [];
             if (_.get(result, '[0]')) {
-                list = result.map(function(app) {
+                list = result.map(function (app) {
                     return {
                         app_id: app.app_id,
                         app_name: app.app_name,
@@ -75,7 +75,7 @@ exports.getAppList = function(cb) {
     }
 };
 //获取订单\合同中的产品列表(ketao:oplate中的应用+后台管理中的产品列表, curtao:后台管理中的产品列表)
-exports.getAllProductList = function(cb) {
+exports.getAllProductList = function (cb) {
     if (_.get(allProductList, '[0]')) {
         if (_.isFunction(cb)) cb(allProductList);
     } else {
@@ -95,7 +95,7 @@ exports.getAllProductList = function(cb) {
     }
 };
 //获取我能看的团队树
-exports.getMyTeamTreeList = function(cb) {
+exports.getMyTeamTreeList = function (cb) {
     let teamTreeList = getUserData().my_team_tree || [];
     if (_.get(teamTreeList, '[0]')) {
         if (_.isFunction(cb)) cb({teamTreeList});
@@ -103,7 +103,7 @@ exports.getMyTeamTreeList = function(cb) {
         const reqData = getParamByPrivilege();
         teamAjaxTrans.getMyTeamTreeListAjax().sendRequest({
             type: reqData.type,
-        }).success(function(teamTreeList) {
+        }).success(function (teamTreeList) {
             if (_.isFunction(cb)) cb({teamTreeList});
             //保存到userData中
             setUserData(MY_TEAM_TREE_KEY, teamTreeList);
@@ -117,7 +117,7 @@ exports.getMyTeamTreeList = function(cb) {
 };
 
 //获取平铺的和树状团队列表
-exports.getMyTeamTreeAndFlattenList = function(cb, flag) {
+exports.getMyTeamTreeAndFlattenList = function (cb, flag) {
     let teamTreeList = getUserData().my_team_tree || [];
     let teamList = [];
     if (_.get(teamTreeList, '[0]')) {
@@ -127,7 +127,7 @@ exports.getMyTeamTreeAndFlattenList = function(cb, flag) {
         const reqData = getParamByPrivilege();
         teamAjaxTrans.getMyTeamTreeListAjax().sendRequest({
             type: reqData.type,
-        }).success(function(treeList) {
+        }).success(function (treeList) {
             if (_.get(treeList, '[0]')) {
                 teamTreeList = treeList;
                 //遍历团队树取出我能看的所有的团队列表list
@@ -154,7 +154,7 @@ exports.getMyTeamTreeAndFlattenList = function(cb, flag) {
  * customerId: 客户的id
  * }
  */
-exports.handleCallOutResult = function(paramObj) {
+exports.handleCallOutResult = function (paramObj) {
     if (!paramObj) {
         return;
     }
@@ -169,41 +169,20 @@ exports.handleCallOutResult = function(paramObj) {
                     phone: phoneNumber
                 }
             );
-            //eefung，civiw，oshdan，使用原来的电话系统
-            if (useCallCenter(getUserData().organization)) {
-                if (paramObj.callNumber) {
-                    let reqData = {
-                        from: paramObj.callNumber,
-                        to: phoneNumber
-                    };
-                    crmAjax.callOut(reqData).then((result) => {
-                        if (result.code === 0) {
-                            message.success(Intl.get('crm.call.phone.success', '拨打成功'));
-                        }
-                    }, (errMsg) => {
-                        message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
-                    });
-                } else {
-                    message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
-                }
-            } else {
-                let callClient = getCallClient();
-                if (callClient && callClient.isInited()) {
-                    callClient.callout(phoneNumber).then((result) => {
-                        if (result.code === 0) {
-                            message.success(Intl.get('crm.call.phone.success', '拨打成功'));
-                        }
-                    }, (errMsg) => {
-                        message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
-                    });
-                }
+            let callClient = getCallClient();
+            if (callClient && callClient.isInited()) {
+                callClient.callout(phoneNumber).then((result) => {
+                    message.success(Intl.get('crm.call.phone.success', '拨打成功'));
+                }, (errMsg) => {
+                    message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
+                });
             }
         }
     }
 };
 
 //获取订单阶段列表
-exports.getDealStageList = function(cb) {
+exports.getDealStageList = function (cb) {
     if (_.get(dealStageList, '[0]')) {
         if (_.isFunction(cb)) cb(dealStageList);
     } else {
@@ -223,7 +202,7 @@ exports.getDealStageList = function(cb) {
     }
 };
 //将文件分为客户资料和各种类型的报告
-exports.seperateFilesDiffType = function(fileList) {
+exports.seperateFilesDiffType = function (fileList) {
     var allUploadFiles = {
         customerFiles: [],//销售添加申请时上传的文件
         customerAddedFiles: [],//销售在申请确认之前补充上传的文件
@@ -237,7 +216,7 @@ exports.seperateFilesDiffType = function(fileList) {
     return allUploadFiles;
 };
 //标识是否已经确认过审批,因为文件类型和舆情报告前面是有两个节点
-exports.hasApprovedReportAndDocumentApply = function(approverIds) {
+exports.hasApprovedReportAndDocumentApply = function (approverIds) {
     if (_.isArray(approverIds)) {
         return approverIds.length === 2;
     } else {
@@ -283,7 +262,7 @@ function showAmAndPmDes(time) {
     return des;
 }
 
-exports.handleTimeRange = function(start, end) {
+exports.handleTimeRange = function (start, end) {
     var beginTimeArr = start.split('_');
     var endTimeArr = end.split('_');
     var leaveTime = _.get(beginTimeArr, [0]);
@@ -296,7 +275,7 @@ exports.handleTimeRange = function(start, end) {
     }
     return leaveTime;
 };
-exports.calculateRangeType = function() {
+exports.calculateRangeType = function () {
     //今天上午12点前请假，默认请假时间选今天一天，下午12点到6点请假，默认请今天一下午，6点之后请假，默认请明天一天
     var newSetting = {};
     var curHour = moment().hours();
@@ -323,7 +302,7 @@ let ORGANIZATION_KEY = 'orgnization';
  * @param cb
  * @returns {*}
  */
-exports.getOrganization = function(cb) {
+exports.getOrganization = function (cb) {
     var Deferred = $.Deferred();
     let user = getUserData();
     if (user.organization) {
@@ -334,7 +313,7 @@ exports.getOrganization = function(cb) {
             url: '/rest/get_managed_realm',
             dataType: 'json',
             type: 'get',
-            success: function(organization) {
+            success: function (organization) {
                 user.organization = organization;
                 Deferred.resolve(organization);
                 setUserData('organization', organization);

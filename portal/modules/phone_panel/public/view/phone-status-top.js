@@ -10,8 +10,7 @@ import {Button, Tag, Select} from 'antd';
 const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
 import {PHONERINGSTATUS, commonPhoneDesArray} from '../consts';
-import {getUserData} from 'PUB_DIR/sources/user-data';
-import {getCallClient, useCallCenter} from 'PUB_DIR/sources/utils/phone-util';
+import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 
 var phoneAlertAction = require('../action/phone-alert-action');
 var phoneAlertStore = require('../store/phone-alert-store');
@@ -152,7 +151,7 @@ class phoneStatusTop extends React.Component {
     };
 
     renderTraceItem(phonemsgObj) {
-        var onHide = function() {
+        var onHide = function () {
             phoneAlertAction.setSubmitErrMsg('');
         };
         const options = this.state.customerInfoArr.map((item) => (
@@ -269,10 +268,8 @@ class phoneStatusTop extends React.Component {
     };
     //挂断电话
     releaseCall = (called) => {
-        if (useCallCenter(getUserData().organization)) {
-            if (getCallClient()) {
-                getCallClient().releaseCall();
-            }
+        if (getCallClient()) {
+            getCallClient().releaseCall();
         }
     };
 
@@ -342,10 +339,10 @@ phoneStatusTop.defaultProps = {
     detailCustomerId: '',
     isAddingMoreProdctInfo: false,
     contactNameObj: {},
-    handleAddProductFeedback: function() {
+    handleAddProductFeedback: function () {
     },
     isAddingPlanInfo: false,
-    handleAddPlan: function() {
+    handleAddPlan: function () {
 
     }
 };

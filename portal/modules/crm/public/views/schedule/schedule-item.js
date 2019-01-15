@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import {getUserData} from 'PUB_DIR/sources/user-data';
 import Trace from 'LIB_DIR/trace';
-import {getCallClient, useCallCenter} from 'PUB_DIR/sources/utils/phone-util';
+import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 
 const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 
@@ -93,34 +93,13 @@ class ScheduleItem extends React.Component {
         if (this.props.getCallNumberError) {
             message.error(this.props.getCallNumberError || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
         } else {
-            //eefung，civiw，oshdan，使用原来的电话系统
-            if (useCallCenter(getUserData().organization)) {
-                if (this.props.callNumber) {
-                    let reqData = {
-                        from: this.props.callNumber,
-                        to: phone
-                    };
-                    crmAjax.callOut(reqData).then((result) => {
-                        if (result.code === 0) {
-                            message.success(Intl.get('crm.call.phone.success', '拨打成功'));
-                        }
-                    }, (errMsg) => {
-                        message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
-                    });
-                } else {
-                    message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
-                }
-            } else {
-                let callClient = getCallClient();
-                if (callClient && callClient.isInited()) {
-                    callClient.callout(phone).then((result) => {
-                        if (result.code === 0) {
-                            message.success('拨打成功！');
-                        }
-                    }, (errMsg) => {
-                        message.error(errMsg || '拨打失败！');
-                    });
-                }
+            let callClient = getCallClient();
+            if (callClient && callClient.isInited()) {
+                callClient.callout(phone).then((result) => {
+                    message.success(Intl.get('crm.call.phone.success', '拨打成功'));
+                }, (errMsg) => {
+                    message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
+                });
             }
         }
     }
@@ -197,11 +176,11 @@ ScheduleItem.defaultProps = {
     hasSplitLine: false,//是否展示分割线
     isMerge: false,//是否是合并面板
     hideDelete: false,//是否隐藏删除按钮
-    toggleScheduleContact: function() {
+    toggleScheduleContact: function () {
     },
-    deleteSchedule: function() {
+    deleteSchedule: function () {
     },
-    handleItemStatus: function() {
+    handleItemStatus: function () {
     }
 };
 ScheduleItem.propTypes = {

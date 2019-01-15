@@ -2,6 +2,7 @@ var React = require('react');
 var language = require('../../../public/language/getLanguage');
 import Trace from 'LIB_DIR/trace';
 import {renderRoutes} from 'react-router-config';
+
 require('./index-zh_CN.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('./index-es_VE.less');
@@ -17,7 +18,10 @@ import Notification from 'MOD_DIR/notification/public/index';
 //窗口改变的事件emitter
 var resizeEmitter = require('../../../public/sources/utils/emitters').resizeEmitter;
 import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
+
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
+
 
 const emptyParamObj = {
     customer_params: null,//客户详情相关的参数
@@ -49,12 +53,14 @@ class PageFrame extends React.Component {
         notificationEmitter.on(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
         $(window).on('resize', this.resizeHandler);
     }
+
     componentWillReceiveProps(nextProps) {
         //路由切换时，关闭电话弹屏和客户详情的处理
-        if(_.get(nextProps,'location.pathname') !== _.get(this.props, 'location.pathname')){
+        if (_.get(nextProps, 'location.pathname') !== _.get(this.props, 'location.pathname')) {
             this.closePhonePanel();
         }
     }
+
     resizeEmitter = () => {
         resizeEmitter.emit(resizeEmitter.WINDOW_SIZE_CHANGE, {
             width: $('#app .col-xs-10').width(),
@@ -78,7 +84,7 @@ class PageFrame extends React.Component {
         this.setState({
             rightContentHeight: height
         });
-    };
+    }
 
     componentWillUnmount() {
         Trace.detachEventListener(window, 'click', Trace.eventHandler);
@@ -87,6 +93,9 @@ class PageFrame extends React.Component {
         audioMsgEmitter.removeListener(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
         notificationEmitter.removeListener(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
         $(window).off('resize', this.resizeHandler);
+        phoneUtil.unload(() => {
+            console.log('成功登出电话系统!');
+        });
     }
 
     showClueDetailFromNotification = (clueObj) => {
@@ -126,7 +135,7 @@ class PageFrame extends React.Component {
 
     closePhonePanel = () => {
         //关闭电话弹屏面板时，将系统内拨打电话时，记录的电话联系人信息清掉
-        if(this.state.paramObj.call_params && _.isFunction(this.state.paramObj.call_params.setInitialPhoneObj)) {
+        if (this.state.paramObj.call_params && _.isFunction(this.state.paramObj.call_params.setInitialPhoneObj)) {
             this.state.paramObj.call_params.setInitialPhoneObj();
         }
         this.setState({phonePanelShow: false, paramObj: $.extend(true, {}, emptyParamObj)});
@@ -134,7 +143,7 @@ class PageFrame extends React.Component {
 
     closeAudioPanel = () => {
         this.setState({audioPanelShow: false, audioParamObj: {}});
-        if (this.state.audioParamObj && _.isFunction(this.state.audioParamObj.closeAudioPlayContainer)){
+        if (this.state.audioParamObj && _.isFunction(this.state.audioParamObj.closeAudioPlayContainer)) {
             this.state.audioParamObj.closeAudioPlayContainer();
         }
     };
@@ -164,7 +173,8 @@ class PageFrame extends React.Component {
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-xs-2">
-                        <LeftMenu toggleNotificationPanel={this.toggleNotificationPanel} closeNotificationPanel={this.closeNotificationPanel}/>
+                        <LeftMenu toggleNotificationPanel={this.toggleNotificationPanel}
+                                  closeNotificationPanel={this.closeNotificationPanel}/>
                     </div>
                     <div className="col-xs-10">
                         {renderRoutes(this.props.route.routes)}
@@ -177,7 +187,7 @@ class PageFrame extends React.Component {
                             />) : null}
                         {
                             this.state.isShowNotificationPanel ? (
-                                <Notification />
+                                <Notification/>
                             ) : null
                         }
                     </div>
@@ -205,6 +215,7 @@ class PageFrame extends React.Component {
         );
     }
 }
+
 PageFrame.propTypes = {
     route: PropTypes.obj
 };

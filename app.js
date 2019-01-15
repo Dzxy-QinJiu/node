@@ -25,7 +25,7 @@ var auth = require('./portal/lib/utils/auth');
 process.env.NODE_CONFIG = JSON.stringify(config);
 
 //让log4js-config模块使用conf/config.js里的配置，而不用去找config/app-logging.json文件
-require('log4js-config').init(function() {
+require('log4js-config').init(function () {
     return require('./conf/logger.js');
 });
 
@@ -87,15 +87,11 @@ global.module_root_path = path.resolve(__dirname, './portal/modules');
 //定义全局的配置文件路径
 global.config_root_path = path.resolve(__dirname, './conf');
 
+//引入rest请求辅助工具
 var restLogger = require('./portal/lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
-// require('callcenter-sdk-server').server(app, {callout_url: '/rest/customer/v2/phone/call/ou'}, restUtil.authRest);
-require('callcenter-sdk-server').server(app, {
-    ronglian: {
-        appid: '8aaf070866235bc501665684bbb9144f',//容联中的应用id,
-        apptoken: 'e4ca6bcf5bf566b8587f16b77b8b9375',//'容联中的应用token',
-    }
-}, restUtil.authRest);
+//引入呼叫中心
+require('./portal/lib/middlewares/callcenter')(app, restUtil.authRest);
 
 //初始化controller
 require('./portal/controller')(app);
@@ -103,7 +99,7 @@ require('./portal/controller')(app);
 app.use(require('./portal/lib/middlewares/404'));
 //处理uncaughtException
 var errorLogger = require('./portal/lib/utils/logger').getLogger('error');
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function (err) {
     errorLogger.error(err.stack || err.message || 'uncaughtException');
 });
 //为程序指定一个进程名
@@ -111,14 +107,14 @@ process.title = config.processTitle;
 // init rest-global-handler
 require('./portal/global/rest-global-handler');
 //启动应用
-var server = app.listen(app.get('port'), function() {
+var server = app.listen(app.get('port'), function () {
     // eslint-disable-next-line no-console
     console.log('Oplate Server Running At http://localhost:' + app.get('port'));
 });
 
 //初始化coordinator
 if (auth.getLang() !== 'es_VE') {
-    coordinator(function() {
+    coordinator(function () {
         //Coordinator启动后，创建socketIO,启动推送
         require('./portal/modules/socketio').startSocketio(server);
     });
