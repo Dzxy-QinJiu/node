@@ -27,36 +27,33 @@ class IntegrationConfig extends React.Component {
 
     getIntegrateConfig() {
         this.setState({isGettingIntegrateConfig: true});
-        getIntegrationConfig(resultObj => {
-            // 获取集成配置信息失败后的处理
-            if (resultObj.errorMsg) {
+        getIntegrationConfig().then(resultObj => {
+            let integrateType = _.get(resultObj, 'type');
+            //由于默认类型就是uem，所以无法判断是已配置了uem还是默认的，
+            // 所以需要用create_time来判断，存在说明已配置，不存在说明是默认
+            if (integrateType === INTEGRATE_TYPES.UEM && !_.get(resultObj, 'create_time')) {
+                integrateType = '';
+            }
+            if (integrateType === INTEGRATE_TYPES.MATOMO) {
                 this.setState({
+                    integrateType,
                     isGettingIntegrateConfig: false,
-                    getItegrateConfigError: resultObj.errorMsg || Intl.get('config.integration.config.get.error', '获取集成配置的信息出错了')
+                    getItegrateConfigError: ''
                 });
             } else {
-                let integrateType = _.get(resultObj, 'type');
-                //由于默认类型就是uem，所以无法判断是已配置了uem还是默认的，
-                // 所以需要用create_time来判断，存在说明已配置，不存在说明是默认
-                if (integrateType === INTEGRATE_TYPES.UEM && !_.get(resultObj, 'create_time')) {
-                    integrateType = '';
-                }
-                if (integrateType === INTEGRATE_TYPES.MATOMO) {
-                    this.setState({
-                        integrateType,
-                        isGettingIntegrateConfig: false,
-                        getItegrateConfigError: ''
-                    });
-                } else {
-                    this.setState({
-                        integrateType,
-                        server: _.get(resultObj, 'server'),
-                        authToken: _.get(resultObj, 'authToken'),
-                        isGettingIntegrateConfig: false,
-                        getItegrateConfigError: ''
-                    });
-                }
+                this.setState({
+                    integrateType,
+                    server: _.get(resultObj, 'server'),
+                    authToken: _.get(resultObj, 'authToken'),
+                    isGettingIntegrateConfig: false,
+                    getItegrateConfigError: ''
+                });
             }
+        }, errorMsg => {
+            this.setState({
+                isGettingIntegrateConfig: false,
+                getItegrateConfigError: errorMsg || Intl.get('config.integration.config.get.error', '获取集成配置的信息出错了')
+            });
         });
     }
 

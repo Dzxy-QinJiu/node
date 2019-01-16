@@ -1,5 +1,3 @@
-
-
 var React = require('react');
 var language = require('../../../../public/language/getLanguage');
 require('../css/user-detail-zh_CN.less');
@@ -39,8 +37,8 @@ const WHEEL_DELAY = 10;//滚轮事件延时
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import UserStatusSwitch from './user-status-switch';
 import { getPassStrenth, passwordRegex } from 'CMP_DIR/password-strength-bar';
-import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
-
+import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {getIntegrationConfig} from 'PUB_DIR/sources/utils/common-data-util';
 class UserDetail extends React.Component {
     static defaultProps = {
         userId: '1',
@@ -106,10 +104,16 @@ class UserDetail extends React.Component {
             }, timeout);
         }
     };
-
+    getIntegrateConfig(){
+        getIntegrationConfig().then(resultObj => {
+            let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
+            this.setState({isOplateUser});
+        });
+    }
     componentDidMount() {
         $(window).on('resize', this.reLayout);
         AppUserPanelSwitchStore.listen(this.onStoreChange);
+        this.getIntegrateConfig();
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
         let scrollWrapElem = document.querySelector('.user_manage_user_detail .gm-scroll-view');
@@ -239,7 +243,7 @@ class UserDetail extends React.Component {
 
     renderUserStatus = (user, useIcon = false) => {
         let userStatus = user && user.status;
-        let hasEditPrivilege = hasPrivilege('APP_USER_EDIT') && isOplateUser();
+        let hasEditPrivilege = hasPrivilege('APP_USER_EDIT') && this.state.isOplateUser;
         if (!hasEditPrivilege) {
             return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
         }
@@ -364,7 +368,7 @@ class UserDetail extends React.Component {
         }
 
         const EDIT_FEILD_WIDTH = 395;
-        let hasEditPrivilege = hasPrivilege('APP_USER_EDIT') && isOplateUser();
+        let hasEditPrivilege = hasPrivilege('APP_USER_EDIT') && this.state.isOplateUser;
         return (
             <div className="right-panel-wrapper">
                 <span className="iconfont icon-close" onClick={this.closeRightPanel} />

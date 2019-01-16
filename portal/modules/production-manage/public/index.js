@@ -54,19 +54,17 @@ class ProductionManage extends React.Component {
 
     getIntegrationConfig() {
         this.setState({isGettingIntegrateType: true});
-        getIntegrationConfig(resultObj => {
-            // 获取集成配置信息失败后的处理
-            if (resultObj.errorMsg) {
-                this.setState({isGettingIntegrateType: false, getItegrateTypeErrorMsg: resultObj.errorMsg});
-            } else {
-                //集成类型： uem、oplate、matomo
-                let integrateType = _.get(resultObj, 'type');
-                this.setState({isGettingIntegrateType: false, integrateType, getItegrateTypeErrorMsg: ''});
-                //获取oplate\matomo产品列表
-                if (this.isOplateOrMatomoType(integrateType)) {
-                    this.getProductList(integrateType);
-                }
+        getIntegrationConfig().then(resultObj => {
+            //集成类型： uem、oplate、matomo
+            let integrateType = _.get(resultObj, 'type');
+            this.setState({isGettingIntegrateType: false, integrateType, getItegrateTypeErrorMsg: ''});
+            //获取oplate\matomo产品列表
+            if (this.isOplateOrMatomoType(integrateType)) {
+                this.getProductList(integrateType);
             }
+        }, errorMsg => {
+            // 获取集成配置信息失败后的处理
+            this.setState({isGettingIntegrateType: false, getItegrateTypeErrorMsg: errorMsg});
         });
     }
 
