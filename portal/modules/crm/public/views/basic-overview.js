@@ -29,7 +29,6 @@ import ApplyUserForm from './apply-user-form';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import CrmScoreCard from './basic_info/crm-score-card';
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
-import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 const PRIVILEGE_MAP = {
     USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS',//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
@@ -108,7 +107,7 @@ class BasicOverview extends React.Component {
         basicOverviewAction.getBasicData(this.props.curCustomer);
         this.getRecommendTags();
         this.getCompetitorList();
-        this.getIntegrateConfig()
+        this.getIntegrateConfig();
         setTimeout(() => {
             if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
                 this.getCrmUserList(this.props.curCustomer);
