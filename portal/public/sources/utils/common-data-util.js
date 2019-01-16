@@ -321,28 +321,31 @@ exports.calculateRangeType = function() {
 };
 
 //获取集成配置
-exports.getIntegrationConfig = function(cb) {
-    //集成配置信息{type: matomo、oplate、uem}
-    let integrationConfig = getUserData().integration_config;
-    if (integrationConfig) {
-        if (_.isFunction(cb)) cb(integrationConfig);
-    } else {
+exports.getIntegrationConfig = function() {
+    return new Promise((resolve, reject) => {
         const userProperty = 'integration_config';
-        $.ajax({
-            url: '/rest/global/integration/config',
-            type: 'get',
-            dataType: 'json',
-            success: data => {
-                if (_.isFunction(cb)) cb(data);
-                //保存到userData中
-                setUserData(userProperty, data);
-            },
-            error: xhr => {
-                if (_.isFunction(cb)) cb({errorMsg: xhr.responseJSON});
-            }
-        });
-    }
+        //集成配置信息{type: matomo、oplate、uem}
+        let integrationConfig = getUserData()[userProperty];
+        if (integrationConfig) {
+            resolve(integrationConfig);
+        } else {
+            $.ajax({
+                url: '/rest/global/integration/config',
+                type: 'get',
+                dataType: 'json',
+                success: data => {
+                    //保存到userData中
+                    setUserData(userProperty, data);
+                    resolve(data);
+                },
+                error: xhr => {
+                    reject(xhr.responseJSON);
+                }
+            });
+        }
+    });
 };
+
 //获取已集成的产品列表
 exports.getProductList = function(cb, isRefresh) {
     //需要刷新产品列表或产品列表中没有数据时，发请求获取已集成的产品列表

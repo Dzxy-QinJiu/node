@@ -87,7 +87,7 @@ class CustomerUsers extends React.Component {
     }
     
     getIntegrateConfig(){
-        commonDataUtil.getIntegrationConfig((resultObj) => {
+        commonDataUtil.getIntegrationConfig().then(resultObj => {
             let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
             this.setState({isOplateUser});
         });

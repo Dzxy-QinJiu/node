@@ -93,41 +93,38 @@ class AppUserManage extends React.Component {
 
     getIntegrationConfig(getUserDataCallback) {
         this.setState({isGettingIntegrateType: true});
-        getIntegrationConfig(resultObj => {
-            // 获取集成配置信息失败后的处理
-            if (resultObj.errorMsg) {
-                this.setState({isShowAddProductView: false, isGettingIntegrateType: false, getItegrateTypeError: true});
-            } else {
-                let integrationType = _.get(resultObj, 'type');
-                //集成类型不存在或集成类型为uem时，
-                if (!integrationType || integrationType === INTEGRATE_TYPES.UEM) {
-                    //获取已集成的产品列表
-                    getProductList(productList => {
-                        //有产品时，直接获取用户列表并展示
-                        if (_.get(productList, '[0]')) {
-                            this.setState({
-                                isShowAddProductView: false,
-                                isGettingIntegrateType: false,
-                                getItegrateTypeError: false
-                            });
-                            _.isFunction(getUserDataCallback) && getUserDataCallback();
-                        } else {//没有产品时，展示添加产品及配置界面
-                            this.setState({
-                                isShowAddProductView: true,
-                                isGettingIntegrateType: false,
-                                getItegrateTypeError: false
-                            });
-                        }
-                    });
-                } else {//集成类型为：oplate或matomo时，直接获取用户列表并展示
-                    this.setState({
-                        isShowAddProductView: false,
-                        isGettingIntegrateType: false,
-                        getItegrateTypeError: false
-                    });
-                    _.isFunction(getUserDataCallback) && getUserDataCallback();
-                }
+        getIntegrationConfig().then(resultObj => {
+            let integrationType = _.get(resultObj, 'type');
+            //集成类型不存在或集成类型为uem时，
+            if (!integrationType || integrationType === INTEGRATE_TYPES.UEM) {
+                //获取已集成的产品列表
+                getProductList(productList => {
+                    //有产品时，直接获取用户列表并展示
+                    if (_.get(productList, '[0]')) {
+                        this.setState({
+                            isShowAddProductView: false,
+                            isGettingIntegrateType: false,
+                            getItegrateTypeError: false
+                        });
+                        _.isFunction(getUserDataCallback) && getUserDataCallback();
+                    } else {//没有产品时，展示添加产品及配置界面
+                        this.setState({
+                            isShowAddProductView: true,
+                            isGettingIntegrateType: false,
+                            getItegrateTypeError: false
+                        });
+                    }
+                });
+            } else {//集成类型为：oplate或matomo时，直接获取用户列表并展示
+                this.setState({
+                    isShowAddProductView: false,
+                    isGettingIntegrateType: false,
+                    getItegrateTypeError: false
+                });
+                _.isFunction(getUserDataCallback) && getUserDataCallback();
             }
+        }, errorMsg => {
+            this.setState({isShowAddProductView: false, isGettingIntegrateType: false, getItegrateTypeError: true});
         });
     }
 
