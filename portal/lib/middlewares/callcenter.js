@@ -9,16 +9,14 @@ module.exports = function (app, authRest) {
     callcenter.server(app, authRest, {
         routes: [
             {
-                method: 'get',
-                path: '/rest/config/phone',//前端路径
-                serviceMethod: '',
-                serviceUrl: '',//电话配置信息的地址
+                serviceMethod: 'get',
+                serviceUrl: '/phone/seat/phone',//电话配置信息的地址
             },
             {
                 method: 'post',
                 path: '/rest/call/out',//前端路径
                 serviceMethod: 'post',
-                serviceUrl: '/rest/customer/v2/phone/call/ou',//呼出电话接口地址
+                serviceUrl: '/phone/user/out',//呼出电话接口地址
             }
         ]
     });

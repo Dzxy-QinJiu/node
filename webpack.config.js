@@ -25,7 +25,7 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 var webpackMode = config.webpackMode || 'dev';
 
 //webpack entry入口
-var entry = function() {
+var entry = function () {
     var entryMap = {
         app: ['./portal/public/index'],
         login: ['./portal/public/login'],
@@ -61,7 +61,8 @@ var loadersLists = [
         ],
         include: [
             path.join(__dirname, 'portal'),
-            path.join(__dirname, 'node_modules/component-util')
+            path.join(__dirname, 'node_modules/component-util'),
+            path.join(__dirname, 'node_modules/callcenter-sdk-client')
         ]
     },
     {
@@ -200,7 +201,7 @@ function addDllPlugins() {
             context: path.join(__dirname),
             manifest: require('./dll/vendor-manifest.json')
         })];
-    dllPluins.forEach(function(plugin) {
+    dllPluins.forEach(function (plugin) {
         pluginLists.push(plugin);
     });
 }

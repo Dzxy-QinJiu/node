@@ -67,7 +67,9 @@ function getUserPrivilegeAndStart() {
         getWebsiteConfig();
         const user = userData.getUserData();
         storageUtil.setUserId(user.user_id);
-        AppStarter.init();
+        AppStarter.init({
+            goIndex: false
+        });
         phoneUtil.initPhone(user);
         //启动socketio接收数据
         !Oplate.hideSomeItem && require('./sources/push').startSocketIo();
