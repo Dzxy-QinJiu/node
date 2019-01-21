@@ -1045,7 +1045,7 @@ class ClueCustomer extends React.Component {
         var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
         if (this.state.curClueLists.length) {
             return (
-                <div id="content-block" className="content-block" ref="clueCustomerList">
+                <div id="clue-content-block" className="clue-content-block" ref="clueCustomerList">
                     <div className="clue-customer-list"
                         style={{height: divHeight}}
                         id="area"
