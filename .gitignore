@@ -14,3 +14,4 @@ dll
 cache
 *.log
 portal/public/sources/route/routers.js
+package-lock.json

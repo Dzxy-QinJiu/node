@@ -10,11 +10,12 @@ module.exports = function (app, authRest) {
         routes: [
             {
                 serviceMethod: 'get',
-                serviceUrl: 'http://10.20.2.57:5598/phone/seat/phone',//电话配置信息的地址
+                // serviceUrl: 'http://10.20.2.57:5598/phone/seat/phone',
+                serviceUrl: '/phone/seat/phone',//电话配置信息的地址
             },
             {
                 serviceMethod: 'post',
-                serviceUrl: 'http://10.20.2.57:5598/phone/user/out',//呼出电话接口地址
+                serviceUrl: '/phone/user/out',//呼出电话接口地址
             }
         ]
     });
