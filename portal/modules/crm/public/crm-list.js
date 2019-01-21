@@ -873,6 +873,7 @@ class Crm extends React.Component {
 
             params = {};
 
+            //如果locationState中包含cache_key，表明是查的有效客户活跃数详细列表，需要在查询参数中增加cache_key和sub_cache_key
             if (locationState.cache_key) {
                 params.cache_key = locationState.cache_key;
                 params.sub_cache_key = locationState.sub_cache_key;
