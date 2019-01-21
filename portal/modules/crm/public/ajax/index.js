@@ -171,12 +171,26 @@ exports.queryCustomer = function(params, pageSize, pageNum, sorter) {
     }
     queryCustomerAjax && queryCustomerAjax.abort();
     var Deferred = $.Deferred();
+    let url = '/rest/customer/range/' + pageSize + '/' + pageNum + '/' + sorter.field + '/' + sorter.order;
+    let type = 'post';
+
+    //如果查询参数中包含cache_key，表明是查的有效客户活跃数详细列表，需要设置为对应的url和请求类型
+    if (params.cache_key) {
+        url = `/rest/analysis/customer/v2/customer/active_rate/detail/${pageSize}/${pageNum}`;
+        type = 'get';
+    }
+
     queryCustomerAjax = $.ajax({
-        url: '/rest/customer/range/' + pageSize + '/' + pageNum + '/' + sorter.field + '/' + sorter.order,
+        url,
+        type,
         dataType: 'json',
-        type: 'post',
         data: params,
         success: function(list) {
+            //如果查询参数中包含cache_key，表明是查的有效客户活跃数详细列表，需要对返回结果处理一下，以便能和客户列表的处理匹配起来
+            if (params.cache_key) {
+                list.result = list.list
+            }
+
             Deferred.resolve(list);
         },
         error: function(xhr, statusText) {
