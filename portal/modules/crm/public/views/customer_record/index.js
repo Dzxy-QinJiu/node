@@ -129,6 +129,7 @@ class CustomerRecord extends React.Component {
         }
         //获取所有联系人的联系电话，通过电话和客户id获取跟进记录
         var customer_id = this.props.curCustomer.customer_id || this.props.curCustomer.id;
+        if(!customer_id) return;
         setTimeout(() => {//此处不加setTimeout，下面获取联系电话方法中调用action中setLoading方法时会报Dispatch错误
             this.getContactPhoneNum(customer_id, () => {
                 //获取客户跟踪记录列表
