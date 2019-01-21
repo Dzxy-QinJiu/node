@@ -1,15 +1,15 @@
 var UserData;
 //通过ajax获取
-exports.getUserDataByAjax = function() {
+exports.getUserDataByAjax = function () {
     var deferred = $.Deferred();
 
     function ajax() {
-        $.getJSON('/user/data.js?callback=?').done(function(data) {
+        $.getJSON('/user/data.js?callback=?').done(function (data) {
             UserData = _.isObject(data) ? data : {};
             //语言环境的设置
             Oplate.lang = _.isObject(data) ? data.lang : 'zh_CN';
             deferred.resolve();
-        }).error(function(data) {
+        }).fail(function (data) {
             let errorMsg = '';
             if (_.isObject(data.responseJSON)) {
                 //语言环境的设置
@@ -30,29 +30,28 @@ exports.getUserDataByAjax = function() {
     }
 
     ajax();
-
     return deferred.promise();
 };
 //更新缓存中的登录用户的头像信息
-exports.updateUserLogo = function(userLogoInfo) {
+exports.updateUserLogo = function (userLogoInfo) {
     //修改完个人资料或成员管理中对应的登录用户的信息后更新
     UserData.nick_name = userLogoInfo.nickName;
     UserData.user_logo = userLogoInfo.userLogo;
 };
 
 //直接获取用户数据
-exports.getUserData = function() {
+exports.getUserData = function () {
     return UserData;
 };
 
 
 //设置用户数据
-exports.setUserData = function(key, value) {
+exports.setUserData = function (key, value) {
     UserData[key] = value;
 };
 
 //用户是否含有某个角色
-exports.hasRole = function(role) {
+exports.hasRole = function (role) {
     const roles = UserData.roles || [];
     if (roles.indexOf(role) >= 0) {
         return true;
@@ -61,7 +60,7 @@ exports.hasRole = function(role) {
 };
 
 //用户是否含有某个角色
-exports.hasOnlyRole = function(role) {
+exports.hasOnlyRole = function (role) {
     const roles = UserData.roles || [];
     if (roles.indexOf(role) >= 0 && roles.length === 1) {
         return true;

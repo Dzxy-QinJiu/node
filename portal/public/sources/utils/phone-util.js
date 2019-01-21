@@ -5,7 +5,7 @@
  */
 
 let callcenter = require('callcenter-sdk-client');
-let CallcenterClient = callcenter.client, CallcenterType = callcenter.type;
+let CallcenterClient = callcenter.client;
 let CommonDataUtil = require('PUB_DIR/sources/utils/common-data-util');
 
 let callClient;
