@@ -1825,6 +1825,8 @@ var zh_CN = {
     'sales.home.phone.callout': '呼出次数',
     'sales.home.phone.callout.success': '成功呼出',
     'sales.home.phone.callout.rate': '呼出接通率',
+    'sales.home.phone.effective.time': '有效通话时长',
+    'sales.home.phone.effective.connected': '有效接通数',
     'sales.home.call.cout': '通话数量',
     'sales.home.call.top.ten': '单次通话时长',
     'sales.home.set.role': '点此设置销售角色',

@@ -65,7 +65,8 @@ class SalesHomePage extends React.Component {
             phoneSorter: {},//电话的排序对象
             callBackSorter: {}, // 回访的排序对象
             appList: [], //应用数组
-            selectedAppId: '' //选中的应用id
+            selectedAppId: '', //选中的应用id
+            effective_phone: true, // 是否获取有效通话时长
         };
     }
 
@@ -244,7 +245,8 @@ class SalesHomePage extends React.Component {
         let phoneParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
-            deviceType: this.state.callType || CALL_TYPE_OPTION.ALL
+            deviceType: this.state.callType || CALL_TYPE_OPTION.ALL,
+            effective_phone: this.state.effective_phone, // 是否获取有效通话时长
         };
         if (this.state.currShowSalesman) {
             //查看当前选择销售的统计数据
@@ -425,6 +427,31 @@ class SalesHomePage extends React.Component {
             },
             className: 'has-filter',
             width: this.getColumnMinWidth(col_width, 'calloutRate')
+        }, {
+            title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.effective.connected', '有效接通数')),
+            width: col_width,
+            dataIndex: 'effectiveCount',
+            key: 'effective_count',
+            sorter: function(a, b) {
+                return a.effectiveCount - b.effectiveCount;
+            },
+            className: 'has-filter'
+        }, {
+            title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.effective.time', '有效通话时长')),
+            width: col_width,
+            dataIndex: 'effectiveTime',
+            key: 'effective_time',
+            sorter: function(a, b) {
+                return a.effectiveTime - b.effectiveTime;
+            },
+            className: 'has-filter',
+            render: function(text, record, index){
+                return (
+                    <span>
+                        {TimeUtil.getFormatTime(text)}
+                    </span>
+                );
+            }
         }];
         //当前展示的是客套类型的通话记录时，展示计费时长
         if (this.state.callType === CALL_TYPE_OPTION.APP) {

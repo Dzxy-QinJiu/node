@@ -546,7 +546,9 @@ SalesHomeStore.prototype.getSalesPhoneList = function(result) {
                 calloutCount: getData(salesPhone.calloutCount),//呼出次数
                 calloutSuccess: getData(salesPhone.calloutSuccess),//成功呼出
                 calloutRate: formatRoundingPercentData(salesPhone.calloutRate),//呼出接通率
-                billingTime: getBillingTime(salesPhone.totalTime)//计费时长
+                billingTime: getBillingTime(salesPhone.totalTime),//计费时长
+                effectiveCount: getData(salesPhone.calloutSuccess),//有效接通数
+                effectiveTime: getData(salesPhone.totalTime),//有效通话时长
             };
         });
         this.salesPhoneList = _.isArray(salesPhoneList) ? salesPhoneList : [];
