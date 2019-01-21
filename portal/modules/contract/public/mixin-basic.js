@@ -43,11 +43,11 @@ export default {
         //所属客户是否是选择的，以数组的形式记录了各个所属客户在输入后是否经过了点击选择的过程
         let belongCustomerIsChoosen = [];
 
-        if (!formData.customers) {
-            formData.customers = [{}];
-        } else {
+        if (_.isArray(formData.customers)) {
             //编辑已有所属客户时，将选中状态都设为true
             belongCustomerIsChoosen = _.map(formData.customers, customer => true);
+        } else {
+            formData.customers = [{}];
         }
 
         return {
