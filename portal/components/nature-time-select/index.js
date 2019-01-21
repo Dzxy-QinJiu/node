@@ -28,22 +28,12 @@ class TimeSelect extends React.Component {
 
     //获取周的开始结束时间
     getWeekTimeRange = (yearTime, weekTime) => {
-        let weekStartTime = '', weekEndTime = '';
-        //当前年中的第几周的日期
-        let curYear = JSON.stringify(parseInt(yearTime));
-        let firstDay = moment(curYear + '-01-01').format(DATE_FORMAT);
-        //第一天是第几周
-        let firstDayWeek = moment(firstDay).week();
-        let firstWeekFirstDay = '';//该年第一周的第一天
-        if (firstDayWeek === 1) {
-            //该年的第一天就是该年第一周的第一天
-            firstWeekFirstDay = moment(firstDay).format(DATE_FORMAT);
-        } else {
-            //该年的第一天在去年最后一周里,那么该年第一周的第一天则是下一周的开始时间
-            firstWeekFirstDay = moment(firstDay).add(7, 'days').startOf('week').format(oplateConsts.DATE_FORMAT);
-        }
-        weekStartTime = moment(firstWeekFirstDay).add(7 * (weekTime - 1), 'days').format(oplateConsts.DATE_FORMAT);
-        weekEndTime = moment(weekStartTime).add(6, 'days').format(oplateConsts.DATE_FORMAT);
+        //传进来的yearTime是带单位的，需要转成整数以供后续计算使用
+        yearTime = parseInt(yearTime);
+
+        const weekStartTime = moment().year(yearTime).isoWeek(weekTime).startOf('isoWeek').format(oplateConsts.DATE_FORMAT);
+        const weekEndTime = moment().year(yearTime).isoWeek(weekTime).endOf('isoWeek').format(oplateConsts.DATE_FORMAT);
+
         return {
             weekStartTime: weekStartTime,
             weekEndTime: weekEndTime
