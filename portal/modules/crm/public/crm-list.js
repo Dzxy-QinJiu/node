@@ -873,10 +873,9 @@ class Crm extends React.Component {
 
             params = {};
 
-            if (locationState.active_cache_key) {
-                params.cache_key = locationState.active_cache_key;
-            } else if (locationState.unactive_cache_key) {
-                params.cache_key = locationState.unactive_cache_key;
+            if (locationState.cache_key) {
+                params.cache_key = locationState.cache_key;
+                params.sub_cache_key = locationState.sub_cache_key;
             } else {
                 params.data = JSON.stringify({id: locationState.customerIds});
             }

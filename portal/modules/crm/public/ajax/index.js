@@ -185,6 +185,10 @@ exports.queryCustomer = function(params, pageSize, pageNum, sorter) {
         dataType: 'json',
         data: params,
         success: function(list) {
+            if (params.cache_key) {
+                list.result = list.list;
+            }
+
             Deferred.resolve(list);
         },
         error: function(xhr, statusText) {

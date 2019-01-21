@@ -711,8 +711,8 @@ class CustomerAnalysis extends React.Component {
                     customerIds: customerIdsStr,
                     num,
                     diffNum,
-                    active_cache_key: record.active_cache_key,
-                    unactive_cache_key: record.unactive_cache_key
+                    cache_key: record.cache_key,
+                    sub_cache_key: idsField === 'active_list' ? record.active_cache_key : record.unactive_cache_key,
                 };
 
                 return <span style={{cursor: 'pointer'}} onClick={this.handleCustomerNumClick.bind(this, argsObj)}>{num}</span>;
@@ -765,7 +765,20 @@ class CustomerAnalysis extends React.Component {
                     value: 'day',
                 },
             ],
-            dataField: 'list',
+            processData: data => {
+                const cacheKey = data.cache_key;
+                let list = data.list;
+
+                if (cacheKey && list) {
+                    _.each(list, item => {
+                        item.cache_key = cacheKey;
+                    });
+
+                    return list;
+                } else {
+                    return [];
+                }
+            },
             chartType: 'table',
             option: {
                 pagination: false,
