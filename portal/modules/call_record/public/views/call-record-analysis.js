@@ -391,7 +391,15 @@ class CallRecordAnalyis extends React.Component {
         let authType = this.getCallInfoAuth();
         CallAnalysisAction.getCallIntervalData(authType, queryParams);
         let callTotalAuth = this.getCallTotalAuth();
-        CallAnalysisAction.getCallTotalList(callTotalAuth, queryParams);//通话总次数、总时长TOP10
+
+        //通话总次数、总时长TOP10统计的请求参数和其他统计的略有不同，team_id需要改成team_ids，member_id需要改成member_ids
+        let totalListQueryParams = _.cloneDeep(queryParams);
+        totalListQueryParams.team_ids = totalListQueryParams.team_id;
+        delete totalListQueryParams.team_id;
+        totalListQueryParams.member_ids = totalListQueryParams.member_id;
+        delete totalListQueryParams.member_id;
+
+        CallAnalysisAction.getCallTotalList(callTotalAuth, totalListQueryParams);//通话总次数、总时长TOP10
     };
 
     // 通话客户的地域和阶段分布参数
