@@ -540,30 +540,9 @@ class RecentLoginUsers extends React.Component {
                                 <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
                             </DatePicker>
                         </div>
-                        <div className="inline-block recent-login-app-select btn-item">
-                            <SelectFullWidth
-                                optionFilterProp="children"
-                                showSearch
-                                minWidth={120}
-                                value={this.state.selectedAppId}
-                                onChange={this.onSelectedAppChange.bind(this)}
-                                notFoundContent={!appOptions.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
-                            >
-                                {appOptions}
-                            </SelectFullWidth>
-                        </div>
-                        <div className="inline-block recent-login-type-select btn-item">
-                            <Select
-                                value={this.state.user_type}
-                                onChange={this.onUserTypeChange.bind(this)}
-                            >
-                                {
-                                    _.map(userTypeList, (userType, idx) => {
-                                        return <Option key={idx} value={userType.value}>{userType.name}</Option>;
-                                    })
-                                }
-                            </Select>
-                        </div>
+                        {/**
+                         * 团队筛选框
+                         * */}
                         <div className="inline-block recent-login-filter-type-select btn-item">
                             <SelectFullWidth
                                 value={this.state.team_ids}
@@ -576,7 +555,43 @@ class RecentLoginUsers extends React.Component {
                                 }
                             </SelectFullWidth>
                         </div>
+                        {/**
+                         * 成员筛选框
+                         * */}
                         {this.renderTeamMembersSelect()}
+                        {/**
+                         * 应用筛选框
+                         * */}
+                        <div className="inline-block recent-login-app-select btn-item">
+                            <SelectFullWidth
+                                optionFilterProp="children"
+                                showSearch
+                                minWidth={120}
+                                value={this.state.selectedAppId}
+                                onChange={this.onSelectedAppChange.bind(this)}
+                                notFoundContent={!appOptions.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
+                            >
+                                {appOptions}
+                            </SelectFullWidth>
+                        </div>
+                        {/**
+                         * 用户类型筛选框
+                         * */}
+                        <div className="inline-block recent-login-type-select btn-item">
+                            <Select
+                                value={this.state.user_type}
+                                onChange={this.onUserTypeChange.bind(this)}
+                            >
+                                {
+                                    _.map(userTypeList, (userType, idx) => {
+                                        return <Option key={idx} value={userType.value}>{userType.name}</Option>;
+                                    })
+                                }
+                            </Select>
+                        </div>
+                        {/**
+                         * 用户状态筛选框
+                         * */}
                         <div className="inline-block btn-item select-init-width">
                             <SelectFullWidth
                                 value={this.state.filter_type}
