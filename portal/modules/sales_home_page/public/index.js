@@ -200,10 +200,10 @@ class SalesHomePage extends React.Component {
         };
         if (this.state.currShowSalesman) {
             //查看当前选择销售的统计数据
-            queryParams.member_id = this.state.currShowSalesman.userId;
+            queryParams.member_ids = this.state.currShowSalesman.userId;
         } else if (this.state.currShowSalesTeam) {
             //查看当前选择销售团队内所有成员的统计数据
-            queryParams.team_id = this.state.currShowSalesTeam.group_id;
+            queryParams.team_ids = this.state.currShowSalesTeam.group_id;
         }
         return queryParams;
     };
