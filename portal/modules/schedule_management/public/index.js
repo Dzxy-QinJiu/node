@@ -329,9 +329,9 @@ class ScheduleManagement extends React.Component {
     //切换不同的视图
     changeView = (viewName) => {
         var preViewName = this.state.curViewName;
-        preViewName = viewName;
+        this.state.curViewName = viewName;
         this.setState({
-            curViewName: preViewName
+            curViewName: this.state.curViewName
         });
         //如果从月视图点击日期跳转到日视图，也会触发handleNavigateChange，先走changeView方法，这时候取到的日期是上一次的日期，取到的数据是上次的数据，走handleNavigateChange会取到正确的数据，但是不知道两次谁先返回，故会出现错误数据，所以在月视图跳转到日视图的时候，限制值发一次请求就可以了
         if (preViewName === 'month' && viewName === 'day') {
