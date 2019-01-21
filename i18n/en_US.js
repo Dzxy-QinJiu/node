@@ -1797,6 +1797,8 @@ var en_US = {
     'sales.home.phone.callout.success': 'Call out successfully',//成功呼出@
     'sales.home.phone.callout.rate': 'Call out completing rate',//呼出接通率@
     'sales.home.phone.billing.time': 'The billing time',//计费时长
+    'sales.home.phone.effective.time': 'Effective time',// 有效通话时长
+    'sales.home.phone.effective.connected': 'Effective number of connected', // 有效接通数
     'sales.home.call.cout': 'Count', // 通话数量
     'sales.home.call.top.ten': 'Single call duration', // 单次通话时长
     'sales.home.set.role': 'Click here to set up the sales role',//点此设置销售角色
