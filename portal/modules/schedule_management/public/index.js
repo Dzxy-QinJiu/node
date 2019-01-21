@@ -145,14 +145,14 @@ class ScheduleManagement extends React.Component {
             dataType: 'json',
             type: 'get',
             data: constObj,
-            success: function (data) {
+            success: function(data) {
                 _this.setState({
                     scheduleLists: _.clone(data.list)
                 });
                 var events = _this.processForList(data.list);
                 _this.handleScheduleData(events, viewType);
             },
-            error: function (errorMsg) {
+            error: function(errorMsg) {
                 message.error(Intl.get('schedule.get.schedule.list.failed', '获取日程管理列表失败'));
             }
         });
@@ -205,6 +205,7 @@ class ScheduleManagement extends React.Component {
 
     //点击日程列表中的标记为完成
     handleScheduleItemStatus = (item, event) => {
+        var target = event.target;
         const reqData = {
             id: item.id,
             status: 'handle',
@@ -212,7 +213,7 @@ class ScheduleManagement extends React.Component {
         scheduleManagementAction.handleScheduleStatus(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {
                 //标记为完成后，把样式改成标记完成的样式
-                $(event.target).closest('.list-item').removeClass('selected-customer').addClass('has-handled').find('button').hide();
+                $(target).closest('.list-item').removeClass('selected-customer').addClass('has-handled').find('button').hide();
             } else {
                 message.error(resData || Intl.get('crm.failed.alert.todo.list', '修改待办事项状态失败'));
             }
