@@ -2666,5 +2666,6 @@ var en_US = {
     'apply.approve.total.leave.time': 'Leave range',//请假时长
     'apply.approve.total.days': 'A total of {X} day',//共{X}天
     'common.start.end.time': 'start end time',//起止时间
+    'apply.approve.word.message':'leave a message'//留言
 };
 export default en_US;
