@@ -34,11 +34,11 @@ import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil, { getManagedRealm } from 'PUB_DIR/sources/utils/common-data-util';
+import {REALM} from 'PUB_DIR/sources/utils/consts';
 const SORT_ICON_WIDTH = 16;
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
-const REALM = '36v8tudu9Z'; // 蚁坊
 class SalesHomePage extends React.Component {
     constructor(props) {
         super(props);
@@ -66,7 +66,7 @@ class SalesHomePage extends React.Component {
             callBackSorter: {}, // 回访的排序对象
             appList: [], //应用数组
             selectedAppId: '', //选中的应用id
-            realm: '',//安全域id
+            realm: '',//组织id
         };
     }
 
@@ -148,7 +148,7 @@ class SalesHomePage extends React.Component {
         SalesHomeAction.getWebsiteConfig();
     };
 
-    // 获取安全域id
+    // 获取组织id
     getRealm = (callback) => {
         commonDataUtil.getManagedRealm().then((resData) => {
             this.state.realm || this.setState({
@@ -258,7 +258,7 @@ class SalesHomePage extends React.Component {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
             deviceType: this.state.callType || CALL_TYPE_OPTION.ALL,
-            effective_phone: this.state.realm.realm_id === REALM, // 是否获取有效通话时长
+            effective_phone: this.state.realm.realm_id === REALM.EEFUNG, // 是否获取有效通话时长
         };
         if (this.state.currShowSalesman) {
             //查看当前选择销售的统计数据
@@ -441,7 +441,7 @@ class SalesHomePage extends React.Component {
             width: this.getColumnMinWidth(col_width, 'calloutRate')
         }];
         // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        if(this.state.realm.realm_id === REALM){
+        if(this.state.realm.realm_id === REALM.EEFUNG){
             columns.push({
                 title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.effective.connected', '有效接通数')),
                 width: this.getColumnMinWidth(col_width, 'calloutRate'),

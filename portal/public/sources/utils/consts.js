@@ -434,3 +434,7 @@ export const APPLY_TYPE_STATUS_CONST = {
     REJECT: 'reject',
     ALL: 'all'
 };
+//组织类型
+export const REALM = {
+    EEFUNG: '36v8tudu9Z', // 蚁坊
+};
