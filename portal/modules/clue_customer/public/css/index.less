@@ -77,11 +77,12 @@
   //线索列表
   .clue-content-container {
     position: absolute;
-    top: 63px;
+    top: 73px;
     right: 0;
     left: 70px;
     bottom: 0;
-    background: @NOTICE-BACKGROUND;
+    padding-left: 24px;
+    padding-right:12px;
     //加载中，加载完毕和出错的状态
     .load-content, .err-content, .no-data-intro, .no-data {
       margin-top: 260px;
@@ -152,16 +153,118 @@
 
     }
     .content-container {
-      padding-left: @filter-width + 22px;
+      padding-left: @filter-width + 27px;
       &.content-full {
         padding-left: 0;
       }
+      //table表格中相关样式的调整
+      #clue-content-block .clue-customer-list{
+        //线索顶部标题
+        .clue-top-title {
+          padding: 5px 0;
+          .clue-stage {
+            margin-right: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            padding:4px;
+          }
+          .clue-name {
+            cursor: pointer;
+            font-size: 16px;
+            color: #333333;
+            font-weight: bold;
+          }
+          .clue-trace-content{
+            margin-top: 5px;
+            font-size: 14px;
+            color:#777;
+          }
+        }
+        .recent-contacter-detail{
+          background: none;
+          padding: 0;
+          overflow: hidden;
+          text-overflow:ellipsis;
+          white-space: nowrap;
+        }
+        //联系人面板
+        .contact-container{
+          position: relative;
+          .iconfont.icon-more{
+            position: absolute;
+            color:#ddd;
+            font-size: 25px;
+            cursor: pointer;
+            right: 0;
+            top:-4px;
+          }
+        }
+        //当前跟进人
+        .handle-and-trace{
+          color: #777;
+          font-size: 14px;
+          cursor: pointer;
+
+        }
+        //跟进内容
+        .clue-foot{
+          //編輯跟进内容
+          .edit-trace-content{
+            padding: 14px 28px 12px 4px;
+            .save-cancel-btn{
+              margin-top:8px;
+              text-align: right;
+              button{
+               margin-left: 4px;
+              }
+            }
+          }
+          //展示跟进内容
+          .foot-text-content{
+            .add-trace-content{
+              color:#8da8c5;
+              cursor:pointer;
+            };
+            .trace-author{
+              .trace-name{
+                font-weight: bold;
+                margin:0 10px;
+              }
+            }
+          }
+
+        }
+        //关联客户
+        .avalibity-or-invalid-container{
+          //有效客户
+          .avalibility-container{
+            .associate-btn{
+              margin-right: 24px;
+            }
+            .associate-customer{
+              .customer-name{
+                cursor: pointer;
+              }
+              .arrow-right{
+                margin-left:5px;
+              }
+            }
+          }
+          //无效客户
+          .valid-or-invalid-container{
+              .invalid-name{
+                cursor: pointer;
+              }
+          }
+
+        }
+
+      }
     }
 
-    .content-block {
+    .clue-content-block {
       .clue-customer-list {
         .no-more-data-tip {
-          margin-left: 20px;
           font-size: 12px;
           .anticon-info-circle {
             position: static;
@@ -221,5 +324,38 @@
 .ant-select-dropdown {
   .ant-select-dropdown-menu-item.ant-select-dropdown-menu-item-selected {
     color: #58ABF5;
+  }
+}
+//表格中样式的调整
+#app #clue-content-block .ant-table{
+  tr.ant-table-row.invalid-clue{
+    td{
+      opacity:0.5;
+    }
+    td.invalid-td-clue{
+      opacity: 1;
+    }
+  }
+  tr>td{
+    font-size: 14px;
+    .can-edit{
+      cursor: pointer;
+      color:#8da8c5;
+    }
+    .clue-stage.will-distribute {
+      background: @will-distribute-background;
+      color: @will-distribute-color;
+    }
+    .clue-stage.has-distribute {
+      background: @has-distribute-background;
+      color: @has-distribute-color;
+    }
+    .clue-stage.has-follow {
+      color: @has-follow-color;
+      background: @has-follow-background;
+    }
+    .ant-tag {
+      margin-left: 10px;
+    }
   }
 }

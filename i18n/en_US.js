@@ -2483,7 +2483,7 @@ var en_US = {
     'clue.handle.clue': 'Clue handle',//线索处理
     'clue.has.no.handle': 'Not processed yet',//暂未处理
     'clue.set.invalid': 'Invalid judgment',//判定无效
-    'clue.cancel.set.invalid': 'Cancel invalid',//取消无效
+    'clue.cancel.set.invalid': 'Cancel invalid',//改为有效
     'analysis.sales.weekly.report': 'Sales weekly report',//销售周报
     'analysis.sales.monthly.report': 'Sales monthly report',//销售月报
     'common.font.the': 'The',//第
@@ -2687,6 +2687,7 @@ var en_US = {
     'apply.approve.total.leave.time': 'Leave range',//请假时长
     'apply.approve.total.days': 'A total of {X} day',//共{X}天
     'common.start.end.time': 'start end time',//起止时间
+    'apply.approve.word.message':'leave a message',//留言
     'apply.will.select.transfer.approver': 'Please select the person to be approved to be transferred to',//请选择要转给的待审批人
     'apply.will.approve.apply.item': 'Pending person',//待审批人
     'apply.no.relate.user': 'No related members',//无相关成员
