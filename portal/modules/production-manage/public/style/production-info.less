@@ -5,6 +5,7 @@
 
 // 错误提示的字体以及边框颜色
 @error_tips_color: #f04134;
+@success-tip-color: #06ae06;
 //添加成员面版样式
 .product-add-container {
   form {
@@ -25,5 +26,64 @@
       display: inline-block;
       width: 5%;
     }
+    label.ant-checkbox-wrapper{
+      font-weight: normal;
+      font-size: 14px;
+    }
+    //jscode-----------------start
+    .ant-form-item.jscode-form-item, .ant-form-item.useJS-form-item{
+      margin-bottom: 0;
+    }
+    .copy-btn {
+      float: right;
+      height: 28px;
+      font-size: 12px;
+    }
+    //复制成功的提示
+    .copy-success-tip {
+      float: right;
+      display: inline-block;
+      margin-left: 10px;
+      line-height: 28px;
+      color: @success-tip-color;
+    }
+    .js-code-label {
+      display: inline-block;
+      line-height: 28px;
+      color: #999999;
+    }
+    //jscode展示区
+    .js-code-contianer {
+      margin-top: 4px;
+      margin-left: 30px;
+      pre {
+        padding: 10px;
+      }
+      .js-code-user-tip {
+        display: inline-block;
+        margin-top: 8px;
+        color: #999999;
+        .attention-flag {
+          color: @error_tips_color;
+        }
+        button {
+          margin-left: 4px;
+        }
+      }
+    }
+    .test-success-tip{
+      color: @success-tip-color;
+    }
+    .test-error-tip{
+      color: @error_tips_color;
+    }
+    .test-error-tip,.test-success-tip{
+      display: inline-block;
+      margin-left: 10px;
+      line-height: 24px;
+      float: right;
+      margin-right: 45px;
+    }
+    //jscode--------------end
   }
 }

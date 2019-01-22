@@ -1,12 +1,13 @@
 //获取当前页的用户列表
-exports.getProductions = function() {
+exports.getProductions = function(query) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/product',
         type: 'get',
-        dateType: 'json',
+        dataType: 'json',
+        data: query,
         success: function(data) {
-            Deferred.resolve(_.get(data, 'list', []));
+            Deferred.resolve(data);
         },
         error: function(xhr, textStatus) {
             if ('abort' !== textStatus) {
@@ -41,7 +42,7 @@ exports.addProduction = function(production) {
     $.ajax({
         url: '/rest/product',
         type: 'post',
-        dateType: 'json',
+        dataType: 'json',
         data: production,
         success: function(result) {
             Deferred.resolve(result);
@@ -74,13 +75,28 @@ exports.deleteItemById = (itemId) => {
     $.ajax({
         url: '/rest/product/' + itemId,
         type: 'delete',
-        dateType: 'json',
+        dataType: 'json',
         success: function(result) {
             if(result){
                 Deferred.resolve(itemId);
             }else{
                 Deferred.reject('');
             }
+        }, error: function(errorInfo) {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+exports.getProductById = (itemId) => {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/product/' + itemId,
+        type: 'get',
+        dataType: 'json',
+        success: function(result) {
+            Deferred.resolve(result);
         }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }

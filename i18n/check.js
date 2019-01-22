@@ -7,7 +7,7 @@ require('babel-core/register');
 var cn = require("./zh_CN").default;
 var ve = require("./es_VE").default;
 var en = require("./en_US").default;
-var _ = require("underscore");
+var _ = require('lodash');
 
 var count = 0;
 function countProperties(obj) {

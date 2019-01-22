@@ -19,7 +19,6 @@ class ApplyListItem extends React.Component {
         this.setState({
             selectedDetailItem: nextProps.selectedDetailItem,
             selectedDetailItemIdx: nextProps.selectedDetailItemIdx,
-
         });
     };
     componentWillUnmount = () => {

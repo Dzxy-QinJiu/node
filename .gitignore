@@ -13,4 +13,5 @@ dll
 *.gzip
 cache
 *.log
+package-lock.json
 portal/public/sources/route/routers.js

@@ -706,22 +706,27 @@ class CustomerAnalysis extends React.Component {
                 const customerIdsStr = customerIds.join(',');
                 //由于合并或删除，已经不存在了的客户数
                 const diffNum = num - customerIds.length;
+                const argsObj = {
+                    from: 'sales_home',
+                    customerIds: customerIdsStr,
+                    num,
+                    diffNum,
+                    //缓存key，用于查寻有效客户活跃数详细列表
+                    cache_key: record.cache_key,
+                    //二级缓存key，用于查寻有效客户活跃数详细列表
+                    sub_cache_key: idsField === 'active_list'? record.active_cache_key : record.unactive_cache_key,
+                };
 
-                return <span style={{cursor: 'pointer'}} onClick={this.handleCustomerNumClick.bind(this, customerIdsStr, num, diffNum)}>{num}</span>;
+                return <span style={{cursor: 'pointer'}} onClick={this.handleCustomerNumClick.bind(this, argsObj)}>{num}</span>;
             }
         }
     };
 
     //处理客户数点击事件
-    handleCustomerNumClick = (customerIds, num, diffNum) => {
+    handleCustomerNumClick = argsObj => {
         this.setState({
             isShowCustomerTable: true,
-            crmLocationState: {
-                from: 'sales_home',
-                customerIds,
-                num,
-                diffNum
-            }
+            crmLocationState: argsObj
         });
     };
 
@@ -762,7 +767,22 @@ class CustomerAnalysis extends React.Component {
                     value: 'day',
                 },
             ],
-            dataField: 'list',
+            processData: data => {
+                //缓存key，用于查寻活跃数详细列表
+                const cacheKey = data.cache_key
+                let list = data.list
+
+                if (cacheKey && list) {
+                    //将缓存key加到每一条记录中，方便在点击事件中获取
+                    _.each(list, item => {
+                        item.cache_key = cacheKey
+                    })
+
+                    return list
+                } else {
+                    return []
+                }
+            },
             chartType: 'table',
             option: {
                 pagination: false,
@@ -931,7 +951,7 @@ class CustomerAnalysis extends React.Component {
                     loading: this.state.transferCustomers.loading,
                     handleScrollBottom: this.getTransferCustomers,
                     listenScrollBottom: this.state.transferCustomers.listenScrollBottom && !this.state.transferCustomers.loading,
-                    showNoMoreDataTip: this.state.transferCustomers.data.length && !this.state.transferCustomers.listenScrollBottom,
+                    showNoMoreDataTip: this.state.transferCustomers.showNoMoreDataTip,
                     noMoreDataText: Intl.get('noMoreTip.customer', '没有更多客户了')
                 },
                 columns: [

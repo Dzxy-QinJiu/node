@@ -49,7 +49,7 @@ class PhoneInput extends React.Component {
     getRules() {
         let rules = [{validator: this.getValidator()}];
 
-        rules = this.props.validateRules.concat(rules);
+        rules = rules.concat(this.props.validateRules);
 
         return rules;
     }

@@ -15,6 +15,7 @@ import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 
 class CustomerSuggest extends React.Component {
     static defaultProps = {
+        name: '',//用于老式验证方式下，不明确指定name属性，不会走验证的设置
         showCustomerId: '',//正在展示客户详情的客户id
         isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
         customerOfCurUser: {},//当前展示用户所属客户的详情
@@ -480,6 +481,7 @@ class CustomerSuggest extends React.Component {
         var selectBlock = this.state.displayType === 'edit' ? (
             <div ref="customer_searchbox" className="associate-customer-wrap">
                 <Select
+                    name={this.props.name}
                     combobox
                     autoFocus = {true}
                     placeholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
@@ -535,6 +537,7 @@ class CustomerSuggest extends React.Component {
     }
 }
 CustomerSuggest.propTypes = {
+    name: PropTypes.string,
     customer_id: PropTypes.string,
     customer_name: PropTypes.string,
     customerSuggestWrapId: PropTypes.string,

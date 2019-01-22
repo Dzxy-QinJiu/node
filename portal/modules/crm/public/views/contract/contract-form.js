@@ -194,7 +194,10 @@ class Contract extends React.Component {
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.25', '合同额')}>
                             {getFieldDecorator('contract_amount', {
-                                rules: [getNumberValidateRule()],
+                                rules: [
+                                    {required: true, message: Intl.get('crm.contract.enter.contract.money', '请输入合同额')},
+                                    getNumberValidateRule()
+                                ],
                                 getValueFromEvent: (event) => {
                                     // 先remove是处理已经带着逗号的数字，parse后会有多个逗号的问题
                                     return parseAmount(removeCommaFromNum(event.target.value));

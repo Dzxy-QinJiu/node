@@ -101,7 +101,7 @@ function emitMsgBySocket(user_id, emitUrl, msgData) {
  * @param data 消息数据
  */
 function notifyChannelListener(data) {
-    pushLogger.debug('后端推送的消息数据:' + data);
+    // pushLogger.debug('后端推送的消息数据:' + data);
     // 将查询结果返给浏览器
     let messageObj = JSON.parse(data);
     if (messageObj.consumers && messageObj.consumers.length > 0) {
@@ -118,7 +118,7 @@ function notifyChannelListener(data) {
  * 拨打电话消息监听器
  * */
 function phoneEventChannelListener(data) {
-    // pushLogger.debug('后端推送的拨打电话的数据:' + JSON.stringify(data));
+    pushLogger.debug('后端推送的拨打电话的数据:' + JSON.stringify(data));
     // 将查询结果返给浏览器
     var phonemsgObj = JSON.parse(data) || {};
     //将数据推送到浏览器
@@ -139,8 +139,13 @@ function applyApproveNumListener(data) {
     // pushLogger.debug('后端推送的申请审批的数据:' + JSON.stringify(data));
     //将查询结果返给浏览器
     var applyApprovesgObj = data || {};
-    //将数据推送到浏览器
-    emitMsgBySocket(applyApprovesgObj && applyApprovesgObj.consumers[0], 'applyApprovemsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj));
+    if (_.isArray(applyApprovesgObj.consumers) && _.get(applyApprovesgObj,'consumers[0]')) {
+        //遍历消息接收者
+        applyApprovesgObj.consumers.forEach(function(consumer) {
+            //将数据推送到浏览器
+            emitMsgBySocket(consumer, 'applyApprovemsg', pushDto.applyApproveMsgToFrontend(applyApprovesgObj, consumer));
+        });
+    }
 }
 
 
@@ -216,7 +221,7 @@ function offlineChannelListener(data) {
  * @param data 系统消息
  */
 function systemNoticeListener(notice) {
-    pushLogger.debug('后端推送的系统消息数据:' + JSON.stringify(notice));
+    // pushLogger.debug('后端推送的系统消息数据:' + JSON.stringify(notice));
     //将数据推送到浏览器
     emitMsgBySocket(notice && notice.member_id, 'system_notice', pushDto.systemMsgToFrontend(notice));
 }

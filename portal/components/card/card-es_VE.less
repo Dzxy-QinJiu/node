@@ -73,7 +73,36 @@
       z-index: 4;
     }
   }
-
+  //卡片左侧三角标识的样式
+  .card-left-layer{
+    position: absolute;
+    width: 100%;
+    height: 114px;
+    z-index: 1;
+    .left-triangle {
+      position: absolute;
+      float: left;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-width: 24px;
+      border-color: #3c7cbc transparent transparent #3c7cbc;
+      border-style: solid;
+      border-top-left-radius: 4px;
+      z-index: 4;
+    }
+    .building-icon{
+      position: absolute;
+      float: left;
+      top: 8px;
+      left: 0;
+      color: #fff;
+      z-index: 5;
+      width: 36px;
+      text-align: center;
+      transform: rotate(-45deg);
+    }
+  }
   //卡片内容的样式
   .single-card {
     .position-left;

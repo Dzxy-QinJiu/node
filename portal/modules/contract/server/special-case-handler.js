@@ -189,6 +189,8 @@ exports.exportData = function(req, res, next) {
                 const products = item.products;
                 if (products && products.length) {
                     products.forEach(product => {
+                        if (!product) return;
+
                         const productName = product.name;
                         if (productName) {
                             const productValue = `${Intl.get('common.app.count', '数量')}:${product.count || ''} ${Intl.get('item.23', '总价')}:${product.total_price || ''}`;

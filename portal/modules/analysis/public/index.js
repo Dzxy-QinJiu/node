@@ -100,7 +100,13 @@ class CurtaoAnalysis extends React.Component {
     //获取应用列表
     getAppList = () => {
         ajax.send({
-            url: '/rest/global/grant_applications'
+            url: '/rest/global/grant_applications',
+            data: {
+                query: {
+                    integration: true,
+                    page_size: 1000
+                }
+            }
         }).then(result => {
             Store.appList = result;
             Store.appList.unshift({

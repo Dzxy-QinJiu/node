@@ -11,8 +11,12 @@ const session = storageUtil.session;
 // 缓存在sessionStorage中的座席号的key
 const sessionCallNumberKey = 'callNumber';
 let appList = [];
+//oplate中的应用+客套中的产品列表
 let allProductList = [];
+//已集成的产品列表
+let integrationProductList = [];
 let dealStageList = [];
+let allUserList = [];
 //缓存在sessionStorage中的我能查看的团队
 const MY_TEAM_TREE_KEY = 'my_team_tree';
 const AUTH_MAP = {
@@ -49,7 +53,7 @@ exports.getAppList = function(cb) {
     if (_.get(appList, '[0]')) {
         if (_.isFunction(cb)) cb(appList);
     } else {
-        appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(result => {
+        appAjaxTrans.getGrantApplicationListAjax().sendRequest({integration: true, page_size: 1000}).success(result => {
             let list = [];
             if (_.get(result, '[0]')) {
                 list = result.map(function(app) {
@@ -68,22 +72,49 @@ exports.getAppList = function(cb) {
         });
     }
 };
-//获取订单\合同中的产品列表(ketao:oplate中的应用+后台管理中的产品列表, curtao:后台管理中的产品列表)
+//获取订单\合同中的产品列表,所有的产品列表，包括：集成+自己添加的
 exports.getAllProductList = function(cb) {
     if (_.get(allProductList, '[0]')) {
         if (_.isFunction(cb)) cb(allProductList);
     } else {
+        appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(result => {
+            let list = [];
+            if (_.get(result, '[0]')) {
+                list = result.map(function(app) {
+                    return {
+                        client_id: app.app_id,
+                        client_name: app.app_name,
+                        client_image: app.app_logo,
+                    };
+                });
+            }
+            allProductList = list;
+            if (_.isFunction(cb)) cb(allProductList);
+        }).error(errorMsg => {
+            allProductList = [];
+            if (_.isFunction(cb)) cb(allProductList, errorMsg);
+        });
+    }
+};
+//获取所有的成员列表
+exports.getAllUserList = function(cb) {
+    if (_.get(allUserList, '[0]')) {
+        if (_.isFunction(cb)) cb(allUserList);
+    } else {
         $.ajax({
-            url: '/rest/product_list',
+            url: '/rest/user',
             type: 'get',
             dataType: 'json',
+            data: {},
             success: result => {
-                allProductList = _.isArray(result) ? result : [];
-                if (_.isFunction(cb)) cb(allProductList);
+                if (_.isArray(result.data)){
+                    allUserList = _.filter(result.data, sales => sales && sales.status === 1);
+                    if (_.isFunction(cb)) cb(allUserList);
+                }
             },
             error: xhr => {
-                allProductList = [];
-                if (_.isFunction(cb)) cb(allProductList);
+                allUserList = [];
+                if (_.isFunction(cb)) cb(allUserList);
             }
         });
     }
@@ -199,6 +230,7 @@ exports.getDealStageList = function(cb) {
         });
     }
 };
+
 //将文件分为客户资料和各种类型的报告
 exports.seperateFilesDiffType = function(fileList) {
     var allUploadFiles = {
@@ -221,6 +253,7 @@ exports.hasApprovedReportAndDocumentApply = function(approverIds) {
         return false;
     }
 };
+
 function calculateTimeRange(beginType,endType) {
     var timeRange = '';
     if (beginType === endType){
@@ -268,7 +301,7 @@ exports.handleTimeRange = function(start,end){
     }
     return leaveTime;
 };
-exports.calculateRangeType = function () {
+exports.calculateRangeType = function() {
     //今天上午12点前请假，默认请假时间选今天一天，下午12点到6点请假，默认请今天一下午，6点之后请假，默认请明天一天
     var newSetting = {};
     var curHour = moment().hours();
@@ -283,6 +316,58 @@ exports.calculateRangeType = function () {
         newSetting.end_type = AM_AND_PM.PM;
         newSetting.begin_time = moment().add(1, 'day').valueOf();
         newSetting.end_time = moment().add(1, 'day').valueOf();
-    };
+    }
     return newSetting;
+};
+
+//获取集成配置
+exports.getIntegrationConfig = function() {
+    return new Promise((resolve, reject) => {
+        const userProperty = 'integration_config';
+        //集成配置信息{type: matomo、oplate、uem}
+        let integrationConfig = getUserData()[userProperty];
+        if (integrationConfig) {
+            resolve(integrationConfig);
+        } else {
+            $.ajax({
+                url: '/rest/global/integration/config',
+                type: 'get',
+                dataType: 'json',
+                success: data => {
+                    //保存到userData中
+                    setUserData(userProperty, data);
+                    resolve(data);
+                },
+                error: xhr => {
+                    reject(xhr.responseJSON);
+                }
+            });
+        }
+    });
+};
+
+//获取已集成的产品列表
+exports.getProductList = function(cb, isRefresh) {
+    //需要刷新产品列表或产品列表中没有数据时，发请求获取已集成的产品列表
+    if(isRefresh || !_.get(integrationProductList, '[0]')){
+        $.ajax({
+            url: '/rest/product',
+            type: 'get',
+            dataType: 'json',
+            data: {
+                page_size: 1000, //为确保能获取到全部的产品，所以传了个比较大的数1000
+                integration: true //集成的应用
+            },
+            success: result => {
+                integrationProductList = _.get(result, 'list', []);
+                if (_.isFunction(cb)) cb(integrationProductList);
+            },
+            error: xhr => {
+                integrationProductList = [];
+                if (_.isFunction(cb)) cb(integrationProductList);
+            }
+        });
+    } else {
+        if (_.isFunction(cb)) cb(integrationProductList);
+    }
 };

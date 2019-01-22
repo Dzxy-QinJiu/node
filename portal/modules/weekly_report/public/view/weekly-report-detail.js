@@ -66,22 +66,14 @@ class WeeklyReportDetail extends React.Component {
         WeeklyReportDetailStore.unlisten(this.onStoreChange);
     }
 
-    //获取今年某周的开始日期
+    //获取某年某周的开始日期
     getBeginDateOfWeek = (year, weekIndex) => {
-        var time = (weekIndex - 1) * 7 * oplateConsts.ONE_DAY_TIME_RANGE;
-        return moment().year(year).startOf('year').valueOf() + time;
+        return moment().year(year).isoWeek(weekIndex).startOf('isoWeek').valueOf();
     };
 
     //获取某年某周的结束日期
     getEndDateOfWeek = (year, weekIndex) => {
-        //获取今年第一天是周几
-        var firstDayWeek = new Date(moment().year(year).startOf('year').valueOf()).getDay();
-        var spendDay = 1;
-        if (firstDayWeek !== 0) {
-            spendDay = 7 - firstDayWeek + 1;
-        }
-        var time = ((weekIndex - 1) * 7 + spendDay ) * oplateConsts.ONE_DAY_TIME_RANGE;
-        return moment().year(year).startOf('year').valueOf() + time - 1;
+        return moment().year(year).isoWeek(weekIndex).endOf('isoWeek').valueOf();
     };
 
     getWeeklyReportData = () => {

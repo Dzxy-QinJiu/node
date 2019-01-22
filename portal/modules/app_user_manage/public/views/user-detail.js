@@ -1,5 +1,3 @@
-
-
 var React = require('react');
 var language = require('../../../../public/language/getLanguage');
 require('../css/user-detail-zh_CN.less');
@@ -39,7 +37,8 @@ const WHEEL_DELAY = 10;//滚轮事件延时
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import UserStatusSwitch from './user-status-switch';
 import { getPassStrenth, passwordRegex } from 'CMP_DIR/password-strength-bar';
-
+import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {getIntegrationConfig} from 'PUB_DIR/sources/utils/common-data-util';
 class UserDetail extends React.Component {
     static defaultProps = {
         userId: '1',
@@ -105,10 +104,16 @@ class UserDetail extends React.Component {
             }, timeout);
         }
     };
-
+    getIntegrateConfig(){
+        getIntegrationConfig().then(resultObj => {
+            let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
+            this.setState({isOplateUser});
+        });
+    }
     componentDidMount() {
         $(window).on('resize', this.reLayout);
         AppUserPanelSwitchStore.listen(this.onStoreChange);
+        this.getIntegrateConfig();
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
         let scrollWrapElem = document.querySelector('.user_manage_user_detail .gm-scroll-view');
@@ -238,7 +243,8 @@ class UserDetail extends React.Component {
 
     renderUserStatus = (user, useIcon = false) => {
         let userStatus = user && user.status;
-        if (!hasPrivilege('APP_USER_EDIT')) {
+        let hasEditPrivilege = hasPrivilege('APP_USER_EDIT') && this.state.isOplateUser;
+        if (!hasEditPrivilege) {
             return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
         }
         return (<UserStatusSwitch useIcon={useIcon} userId={_.get(user, 'user_id')} status={userStatus === '1' ? true : false} />);
@@ -362,6 +368,7 @@ class UserDetail extends React.Component {
         }
 
         const EDIT_FEILD_WIDTH = 395;
+        let hasEditPrivilege = hasPrivilege('APP_USER_EDIT') && this.state.isOplateUser;
         return (
             <div className="right-panel-wrapper">
                 <span className="iconfont icon-close" onClick={this.closeRightPanel} />
@@ -376,7 +383,7 @@ class UserDetail extends React.Component {
                                     </div>
                                     <div className="basic-info-btns">
                                         {
-                                            !userInfo.loading ? <span className="iconfont icon-edit-pw" title={Intl.get('common.edit.password', '修改密码')} onClick={() => { this.showEditPw(true); }} /> : null
+                                            !userInfo.loading && hasEditPrivilege ? <span className="iconfont icon-edit-pw" title={Intl.get('common.edit.password', '修改密码')} onClick={() => { this.showEditPw(true); }} /> : null
                                         }
                                         {
                                             !userInfo.loading ? this.renderUserStatus(userInfo.data, true) : null
@@ -397,7 +404,7 @@ class UserDetail extends React.Component {
                                                             type="password"
                                                             hideButtonBlock={true}
                                                             showPasswordStrength={true}
-                                                            disabled={hasPrivilege('APP_USER_EDIT') ? false : true}
+                                                            disabled={hasEditPrivilege ? false : true}
                                                             validators={[{ validator: this.checkPass }]}
                                                             placeholder={Intl.get('login.please_enter_new_password', '请输入新密码')}
                                                             title={Intl.get('user.batch.password.reset', '重置密码')}
@@ -446,7 +453,7 @@ class UserDetail extends React.Component {
                                                                 id={_.get(userInfo, 'data.user_id')}
                                                                 value={_.get(userInfo, 'data.description')}
                                                                 type="textarea"
-                                                                field="remarks"
+                                                                field="description"
                                                                 textCut={true}
                                                                 editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
                                                                 placeholder={Intl.get('user.input.remark', '请输入备注')}

@@ -6,7 +6,8 @@
 
 require('../style/production-info.less');
 
-import {Form, Input, Icon} from 'antd';
+import {Form, Input, Icon, Radio, Button, Select, Checkbox} from 'antd';
+const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
 import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
@@ -17,9 +18,11 @@ let FormItem = Form.Item;
 let GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 let ProductionFormStore = require('../store/production-form-store');
 let ProductionFormAction = require('../action/production-form-actions');
+let ProductionAction = require('../action/production-actions');
 let AlertTimer = require('../../../../components/alert-timer');
 let util = require('../utils/production-util');
-
+import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 const LAYOUT_CONST = {
     HEADICON_H: 107,//头像的高度
@@ -49,12 +52,30 @@ class Production extends React.Component {
         }
     };
     initData = (props) => {
-        return {create_time: props.info.create_time ? moment(props.info.create_time).format(oplateConsts.DATE_FORMAT) : ''};
+        return {
+            create_time: props.info.create_time ? moment(props.info.create_time).format(oplateConsts.DATE_FORMAT) : '',
+            isGettingIntegrateType: false,//正在获取集成类型
+            getItegrateTypeErrorMsg: '',//获取集成类型是否
+            integrateType: _.get(props, 'info.integration_type') || props.integrateType,//集成类型
+            integrationId: '',//新加产品的集成id
+            productType: '',//产品类型
+            isAddingProduct: false, //正在添加产品
+            addErrorMsg: '',//添加失败的错误提示
+            jsCode: '',//uem产品的jsCode
+            getJSCodeMsg: '',//获取jsCode的错误提示
+            testResult: '',
+            isTesting: false,
+            jsCopied: false
+        };
     };
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.info.id !== nextProps.info.id)
+        if (this.props.info.id !== nextProps.info.id) {
             this.setState(this.initData(nextProps));
+            if (_.get(nextProps, 'info.integration_type') === INTEGRATE_TYPES.UEM && _.get(nextProps, 'info.integration_id')) {
+                this.getIntegrateJSCode(nextProps.info.integration_id);
+            }
+        }
     }
 
     onChange = () => {
@@ -67,6 +88,12 @@ class Production extends React.Component {
 
     componentDidMount() {
         ProductionFormStore.listen(this.onChange);
+        if (this.props.formType === util.CONST.EDIT) {//修改产品面板
+            let integrationType = _.get(this.props, 'info.integration_type');
+            if (integrationType === INTEGRATE_TYPES.UEM && _.get(this.props, 'info.integration_id')) {
+                this.getIntegrateJSCode(this.props.info.integration_id);
+            }
+        }
     }
 
 
@@ -82,41 +109,120 @@ class Production extends React.Component {
                 return;
             } else {
                 //所有者各项唯一性验证均不存在且没有出错再添加
-                let production = _.extend({}, values);
-                if (production.name) {
-                    production.name = _.trim(production.name);
-                }
-                if (production.code) {
-                    production.code = _.trim(production.code);
-                }
-                if (production.description) {
-                    production.description = _.trim(production.description);
-                }
-                if (production.price) {
-                    production.price = _.toNumber(_.trim(production.price));
-                }
-                if (production.sales_unit) {
-                    production.sales_unit = _.trim(production.sales_unit);
-                }
-                if (production.specifications) {
-                    production.specifications = _.trim(production.specifications);
-                }
-                if (production.url) {
-                    production.url = _.trim(production.url);
-                }
-                //设置正在保存中
-                ProductionFormAction.setSaveFlag(true);
+                let production = {};
+                let oldProduct = this.props.info;
+                //数据处理
+                _.each(values, (value, key) => {
+                    //添加
+                    if (this.props.formType === util.CONST.ADD) {
+                        if (key === 'price') {
+                            production.price = _.toNumber(_.trim(value));
+                        } else if (key !== 'useJS') {
+                            production[key] = _.trim(value);
+                        }
+                    } else {//修改（修改哪些项传哪些项）
+                        if (key === 'price') {
+                            let priceVal = _.toNumber(_.trim(value));
+                            if (priceVal !== oldProduct.price) {
+                                production.price = priceVal;
+                            }
+                        } else if (key !== 'useJS') {
+                            let newVal = _.trim(value);
+                            if (newVal !== oldProduct[key]) {
+                                production[key] = newVal;
+                            }
+                        }
+                    }
+                });
+                //添加
                 if (this.props.formType === util.CONST.ADD) {
                     production.create_time = new Date().getTime();
-                    ProductionFormAction.addProduction(production);
-                } else {
-                    production.id = this.props.info.id;
+                    if (values.useJS) {
+                        //添加集成类型为uem的产品，
+                        this.addUemProduction(production);
+                    } else {//添加默认的产品
+                        //设置正在保存中
+                        ProductionFormAction.setSaveFlag(true);
+                        ProductionFormAction.addProduction(production);
+                    }
+                } else {//修改
+                    //是否修改基本信息
+                    production.isEditBasic = true;
+                    if (_.isEmpty(production)) {
+                        //未修改基本信息
+                        production.isEditBasic = false;
+                    }
+                    //选中了使用js集成用户数据，并且之前不是集成类型时
+                    if (values.useJS && !_.get(this.props, 'info.integration_type')) {
+                        //由普通产品改为uem集成类型的产品
+                        production.changeType = INTEGRATE_TYPES.UEM;
+                    } else if (!values.useJS && _.get(this.props, 'info.integration_type') === INTEGRATE_TYPES.UEM) {
+                        //由uem集成类型的产品改为普通产品
+                        production.changeType = INTEGRATE_TYPES.NORMAL;
+                    }
+                    //未修改基本信息，也未修改集成类型
+                    if (!production.isEditBasic && !production.changeType) return;
+                    production.id = oldProduct.id;
+                    //设置正在保存中
+                    ProductionFormAction.setSaveFlag(true);
                     ProductionFormAction.editProduction(production);
+
                 }
             }
         });
     };
 
+    addUemProduction = (production) => {
+        this.setState({isAddingProduct: true});
+        $.ajax({
+            url: '/rest/product/uem',
+            type: 'post',
+            dataType: 'json',
+            data: production,
+            success: (result) => {
+                if (result) {
+                    let integration_id = _.get(result, 'integration_id');
+                    this.setState({addErrorMsg: '', isAddingProduct: false, integrationId: integration_id});
+                    if (integration_id) {
+                        this.getIntegrateJSCode(integration_id);
+                    }
+                    this.props.afterOperation(this.props.formType, result);
+                } else {
+                    this.setState({
+                        isAddingProduct: false,
+                        addErrorMsg: Intl.get('crm.154', '添加失败')
+                    });
+                }
+            },
+            error: (xhr) => {
+                this.setState({
+                    isAddingProduct: false,
+                    addErrorMsg: xhr.responseJSON || Intl.get('crm.154', '添加失败')
+                });
+            }
+        });
+    }
+
+    getIntegrateJSCode(integration_id) {
+        $.ajax({
+            url: '/rest/product/uem/js',
+            type: 'get',
+            dataType: 'json',
+            data: {integration_id},
+            success: (jsCode) => {
+                this.setState({
+                    jsCode: jsCode.code,
+                    getJSCodeMsg: ''
+                });
+
+            },
+            error: (xhr) => {
+                this.setState({
+                    getJSCodeMsg: xhr.responseJSON || Intl.get('app.user.failed.get.apps', '获取失败')
+                });
+            }
+        });
+    }
 
     uploadImg = (src) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.head-image-container .update-logo-desr'), '上传产品logo');
@@ -130,8 +236,67 @@ class Production extends React.Component {
     //去掉保存后提示信息
     hideSaveTooltip = () => {
         this.props.afterOperation(this.props.formType, this.state.savedProduction);
-        this.props.closeRightPanel();
+        //将普通产品成功修改为uem产品时
+        if (_.get(this.state, 'savedProduction.changeType') === INTEGRATE_TYPES.UEM && _.get(this.state, 'savedProduction.id')) {
+            //获取该产品的integration_id更新列表中的integration_id，并根据integration_id获取jsCode
+            ProductionAction.getProductById(this.state.savedProduction.id, (data) => {
+                if (_.get(data, 'integration_id')) {
+                    this.getIntegrateJSCode(data.integration_id);
+                }
+            });
+        } else {
+            this.props.closeRightPanel();
+        }
     };
+    testUemProduct = () => {
+        let integration_id = this.props.formType === util.CONST.ADD ? this.state.integrationId : _.get(this.props, 'info.integration_id');
+        if (!integration_id) return;
+        this.setState({isTesting: true});
+        $.ajax({
+            url: '/rest/product/uem/test',
+            type: 'get',
+            dataType: 'json',
+            data: {integration_id},
+            success: (result) => {
+                if (result) {
+                    this.setState({
+                        testResult: 'success',
+                        isTesting: false,
+                    });
+                } else {
+                    this.setState({
+                        testResult: 'error',
+                        isTesting: false,
+                    });
+                }
+            },
+            error: (xhr) => {
+                this.setState({
+                    testResult: 'error',
+                    isTesting: false,
+                });
+            }
+        });
+    }
+    copyJSCode = () => {
+        this.setState({jsCopied: true});
+        setTimeout(() => {
+            this.setState({jsCopied: false});
+        }, 1000);
+    }
+
+    renderTestResult() {
+        if (this.state.testResult === 'success') {
+            return (<span className="test-success-tip">
+                {Intl.get('user.user.add.success', '添加成功')},
+                <a href="/user/list">{Intl.get('user.list.check.refresh', '刷新查看用户列表')}</a>
+            </span>);
+        } else if (this.state.testResult === 'error') {
+            return (<span className="test-error-tip">{Intl.get('user.test.error.tip', '测试失败')}</span>);
+        } else {
+            return null;
+        }
+    }
 
     renderFormContent() {
         const {getFieldDecorator} = this.props.form;
@@ -274,13 +439,61 @@ class Production extends React.Component {
                                     )}
                                 </FormItem> : null
                             }
-                            <FormItem>
-                                <SaveCancelButton loading={this.state.isSaving}
-                                    saveErrorMsg={saveResult === 'error' ? this.state.saveMsg : ''}
-                                    handleSubmit={this.handleSubmit.bind(this)}
-                                    handleCancel={this.handleCancel.bind(this)}
-                                />
-                            </FormItem>
+                            {this.state.integrateType === INTEGRATE_TYPES.UEM ? (
+                                <FormItem
+                                    label=' '
+                                    labelCol={{span: 2}}
+                                    wrapperCol={{span: 22}}
+                                    colon={false}
+                                    className='useJS-form-item'
+                                >
+                                    {getFieldDecorator('useJS', {
+                                        initialValue: !!_.get(this.props, 'info.integration_type'),//编辑时，集成类型存在，选中
+                                        valuePropName: 'checked'
+                                    })(
+                                        <Checkbox>{Intl.get('config.product.js.collect.user', '使用JS脚本采集用户数据')}</Checkbox>
+                                    )}
+                                </FormItem>) : null}
+                            {this.state.jsCode && values.useJS ? (
+                                <FormItem
+                                    className='jscode-form-item'
+                                    label={Intl.get('common.trace.code', '跟踪代码')}
+                                    {...formItemLayout}
+                                >
+                                    <CopyToClipboard text={this.state.jsCode}
+                                        onCopy={this.copyJSCode}>
+                                        <Button size='default' type="primary" className='copy-btn'>
+                                            {Intl.get('user.jscode.copy', '复制')}
+                                        </Button>
+                                    </CopyToClipboard>
+                                    {this.state.jsCopied ? (
+                                        <span className="copy-success-tip">
+                                            {Intl.get('user.copy.success.tip', '复制成功！')}
+                                        </span>) : null}
+                                </FormItem>) : null}
+                            {this.state.jsCode && values.useJS ? (
+                                <FormItem>
+                                    <div className="access-step-tip margin-style js-code-contianer">
+                                        <pre id='matomo-js-code'>{this.state.jsCode}</pre>
+                                        <span className="js-code-user-tip">
+                                            <span className="attention-flag"> * </span>
+                                            {Intl.get('user.jscode.use.tip', '请将以上js代码添加到应用页面的header中，如已添加')}
+                                            <Button size='default' type="primary"
+                                                onClick={this.testUemProduct}>{Intl.get('user.jscode.test.btn', '点击测试')}</Button>
+                                            {this.renderTestResult()}
+                                        </span>
+                                    </div>
+                                </FormItem>) : null}
+                            {//添加完uem产品，展示jscode时，不需要再展示保存按钮
+                                this.props.formType === util.CONST.ADD && this.state.integrationId ? null : (
+                                    <FormItem>
+                                        <SaveCancelButton
+                                            loading={this.state.isSaving || this.state.isAddingProduct}
+                                            saveErrorMsg={saveResult === 'error' ? this.state.saveMsg : this.state.addErrorMsg}
+                                            handleSubmit={this.handleSubmit.bind(this)}
+                                            handleCancel={this.handleCancel.bind(this)}
+                                        />
+                                    </FormItem>)}
                             <FormItem>
                                 <div className="indicator">
                                     {saveResult === 'success' ?
@@ -316,6 +529,7 @@ class Production extends React.Component {
 }
 
 Production.propTypes = {
+    integrateType: PropTypes.string,
     info: PropTypes.object,
     formType: PropTypes.string,
     closeRightPanel: PropTypes.func,

@@ -220,7 +220,7 @@ export default {
     },
     //渲染所属客户表单项
     renderBelongCustomerField: function(popupContainer = document.getElementById('contractRightPanel')) {
-        const customers = this.state.formData.customers;
+        const customers = this.state.formData.customers || [{}];
 
         return (
             <div className="belong-customer-form">

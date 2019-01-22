@@ -12,6 +12,15 @@ exports.getProduct = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+//通过id获取产品信息
+exports.getProductById = function(req, res) {
+    productService.getProductById(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 // 添加产品
 exports.addProduct = function(req,res) {
     productService.addProduct(req, res, req.body).on('success', function(data) {
@@ -31,8 +40,62 @@ exports.deleteProduct = function(req,res) {
 };
 // 修改产品
 exports.updateProduct = function(req,res) {
-    productService.updateProduct(req, res, req.body).on('success', function(data) {
+    productService.updateProduct(req, res).on('success', function(data) {
         res.json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 添加产品
+exports.addUemProduct = function(req,res) {
+    productService.addUemProduct(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 测试
+exports.testUemProduct = function(req,res) {
+    productService.testUemProduct(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 获取js代码
+exports.getUemJsCode = function(req,res) {
+    productService.getUemJsCode(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 获取oplate\matomo产品列表
+exports.getProductList = function(req,res) {
+    productService.getProductList(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+//集成oplate\matomo产品
+exports.integrateProduct = function(req,res) {
+    productService.integrateProduct(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+//集成配置（oplate\matomo）
+exports.integrationConfig = function(req,res) {
+    productService.integrationConfig(req, res).on('success', function(data) {
+        res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });

@@ -14,4 +14,11 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    },{
+        'method': 'post',
+        'path': '/rest/add/apply/new/candidate',
+        'handler': 'addNewCandidate',
+        'passport': {
+            'needLogin': true
+        }
     }]};

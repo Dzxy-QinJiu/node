@@ -289,6 +289,7 @@ class CardList extends React.Component {
                     removeFailRealm={_this.props.removeFailRealm}
                     showDelete={card.showDelete}
                     deleteItem={_this.props.deleteItem}
+                    leftFlagDesc={card.leftFlagDesc}
                 />;
             });
         }

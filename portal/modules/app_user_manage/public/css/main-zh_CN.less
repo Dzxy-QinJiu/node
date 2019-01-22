@@ -17,17 +17,22 @@
   }
 }
 .app_user_manage_page {
-    .btn-item {
-      margin-top:@filter_area_margin_top;
-      button{
-        vertical-align: initial;
-      }
+  .app-user-nodata-topnav {
+    .topNav:before {
+      border-bottom:none;
     }
-    .recent-login-btn.btn-item {
-      min-width: @btn-height;
-      width: @btn-height;
-      height: @btn-height;
+  }
+  .btn-item {
+    margin-top:@filter_area_margin_top;
+    button{
+      vertical-align: initial;
     }
+  }
+  .recent-login-btn.btn-item {
+    min-width: @btn-height;
+    width: @btn-height;
+    height: @btn-height;
+  }
 }
 .user_manage_filter_block .customer-switch-search{
   .search-input-container{

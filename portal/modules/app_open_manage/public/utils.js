@@ -16,18 +16,16 @@ export const asyncDispatcher = function(ajax, usePromise) {
                 ajax(paramObj).then(function(data) {
                     _this.dispatch({ loading: false, data, paramObj, errorMsg: '' });
                     resolve({ data });
-                }, function(error) {
-                    const errorObj = JSON.parse(error);
-                    _this.dispatch({ loading: false, data: null, errorMsg: errorObj && errorObj.message || errorObj, paramObj });
-                    reject(error);
+                }, function(errorMsg) {
+                    _this.dispatch({ loading: false, data: null, errorMsg, paramObj });
+                    reject(errorMsg);
                 });
             });
         }
         ajax(paramObj).then(function(data) {
             _this.dispatch({ loading: false, data, paramObj, errorMsg: '' });
-        }, function(error) {
-            const errorObj = JSON.parse(error);
-            _this.dispatch({ loading: false, data: null, errorMsg: errorObj && errorObj.message || errorObj, paramObj });
+        }, function(errorMsg) {
+            _this.dispatch({ loading: false, data: null, errorMsg, paramObj });
         });
         
     };

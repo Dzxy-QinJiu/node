@@ -28,6 +28,8 @@ import CustomerRecordStore from '../store/customer-record-store';
 import ApplyUserForm from './apply-user-form';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import CrmScoreCard from './basic_info/crm-score-card';
+import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
+import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 const PRIVILEGE_MAP = {
     USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS',//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
     CRM_CUSTOMER_SCORE_RECORD: 'CRM_CUSTOMER_SCORE_RECORD'//获取分数趋势的权限
@@ -49,7 +51,8 @@ class BasicOverview extends React.Component {
             customerRecord: customerRecordState.customerRecord,
             appList: [],
             applyFormShowFlag: false,
-            competitorList: []
+            competitorList: [],
+            isOplateUser: false,
         };
     }
 
@@ -104,13 +107,19 @@ class BasicOverview extends React.Component {
         basicOverviewAction.getBasicData(this.props.curCustomer);
         this.getRecommendTags();
         this.getCompetitorList();
+        this.getIntegrateConfig();
         setTimeout(() => {
             if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
                 this.getCrmUserList(this.props.curCustomer);
             }
         });
     }
-
+    getIntegrateConfig(){
+        commonDataUtil.getIntegrationConfig().then(resultObj => {
+            let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
+            this.setState({isOplateUser});
+        });
+    }
     getAppList = () => {
         commonDataUtil.getAppList(appList => {
             this.setState({appList: _.map(appList, app => {
@@ -375,7 +384,8 @@ class BasicOverview extends React.Component {
     //渲染申请用户的提示\面板
     renderApplyUserBlock = () => {
         //只有销售和销售主管才会申请
-        if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
+        let hasApplyPrivilege = userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER);
+        if (hasApplyPrivilege && !this.props.isMerge && this.state.isOplateUser) {
             if (this.state.applyFormShowFlag) {
                 return (
                     <ApplyUserForm

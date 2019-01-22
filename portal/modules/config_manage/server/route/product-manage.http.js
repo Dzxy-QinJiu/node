@@ -14,8 +14,16 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'PRODUCTS_MANAGE','GET_PRODUCTS_LIST'
+            'PRODUCTS_MANAGE', 'GET_PRODUCTS_LIST'
         ]
+    },{
+        'method': 'get',
+        'path': '/rest/product/:client_id',
+        'handler': 'getProductById',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': []
     },{
         'method': 'post',
         'path': '/rest/product',
@@ -26,7 +34,7 @@ module.exports = {
         'privileges': [
             'PRODUCTS_MANAGE'
         ]
-    },{
+    }, {
         'method': 'delete',
         'path': '/rest/product/:product',
         'handler': 'deleteProduct',
@@ -36,7 +44,7 @@ module.exports = {
         'privileges': [
             'PRODUCTS_MANAGE'
         ]
-    },{
+    }, {
         'method': 'put',
         'path': '/rest/product',
         'handler': 'updateProduct',
@@ -46,6 +54,55 @@ module.exports = {
         'privileges': [
             'PRODUCTS_MANAGE'
         ]
-    }
-    ]
+    }, {
+        'method': 'post',
+        'path': '/rest/product/uem',
+        'handler': 'addUemProduct',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': [
+            'PRODUCTS_MANAGE', 'GET_PRODUCTS_LIST'
+        ]
+    }, {
+        'method': 'get',
+        'path': '/rest/product/uem/test',
+        'handler': 'testUemProduct',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': []
+    }, {
+        'method': 'get',
+        'path': '/rest/product/uem/js',
+        'handler': 'getUemJsCode',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': []
+    }, {//获取oplate\matomo的产品列表
+        'method': 'get',
+        'path': '/rest/product_list/:integration_type',
+        'handler': 'getProductList',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': []
+    }, {//集成oplate\matomo产品
+        'method': 'post',
+        'path': '/rest/product/:integration_type',
+        'handler': 'integrateProduct',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': []
+    }, {//集成配置（matomo\oplate）
+        'method': 'post',
+        'path': '/rest/integration/config',
+        'handler': 'integrationConfig',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': []
+    }]
 };

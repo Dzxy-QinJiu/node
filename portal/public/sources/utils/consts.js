@@ -417,3 +417,20 @@ export const LEAVE_TIME_RANGE = [
     {name: Intl.get('apply.approve.leave.am','上午'),value: AM_AND_PM.AM},
     {name: Intl.get('apply.approve.leave.pm','下午'),value: AM_AND_PM.PM}
 ];
+
+//集成类型
+export const INTEGRATE_TYPES = {
+    UEM: 'uem',//默认类型（客套-用户参与度）
+    OPLATE: 'oplate',
+    MATOMO: 'matomo',
+    NORMAL: 'normal'//普通产品
+};
+//申请审批刷新待审批数的时间间隔
+export const REFRESH_APPLY_RANGE = 1000;//1秒后刷新未读数
+export const APPLY_TYPE_STATUS_CONST = {
+    ONGOING: 'ongoing',
+    PASS: 'pass',
+    CANCEL: 'cancel',
+    REJECT: 'reject',
+    ALL: 'all'
+};

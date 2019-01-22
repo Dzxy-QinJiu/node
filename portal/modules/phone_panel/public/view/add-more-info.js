@@ -75,7 +75,7 @@ class AddMoreInfo extends React.Component {
         var appLists = this.state.appLists || [];
         //应用下拉列表
         var appListsOptions = appLists.map(function(app, index) {
-            return (<Option key={index} value={app.client_id}>{app.client_name}</Option>);
+            return (<Option key={index} value={app.app_id}>{app.app_name}</Option>);
         });
         return (
             <div className="add-more-info-content-container" data-tracename="增加产品反馈">

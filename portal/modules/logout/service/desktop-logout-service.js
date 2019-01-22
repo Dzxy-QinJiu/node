@@ -22,10 +22,7 @@ exports.logout = function(req, res) {
         {
             url: urls.logout,
             req: req,
-            res: res,
-            headers: {
-                realm: global.config.loginParams.realm
-            },
+            res: res
         }, null);
 };
 /**
@@ -38,10 +35,7 @@ exports.ssoLogout = function(req, res) {
         {
             url: urls.ssoLogout,
             req: req,
-            res: res,
-            headers: {
-                realm: global.config.loginParams.realm
-            },
+            res: res
         }, null);
 };
 /**
@@ -51,14 +45,10 @@ exports.ssoLogout = function(req, res) {
  */
 exports.sessionTimeout = function(sessionID, accessToken) {
     var url = urls.ssoLogout + '?only_exit_current=yes';
-    return restUtil.baseRest.get(
+    return restUtil.appAuthRest.get(
         {
             url: url,
             req: {sessionID, 'headers': {}},
-            res: {},
-            headers: {
-                Authorization: userTokenPrefix + accessToken,
-                realm: global.config.loginParams.realm
-            }
+            res: {}
         }, null);
 };
