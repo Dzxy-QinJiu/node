@@ -14,7 +14,7 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import userData from '../user-data';
 import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import {selectMenuList, APPLY_APPROVE_TYPES, DOCUMENT_TYPE, INTEGRATE_TYPES} from './consts';
+import {selectMenuList, APPLY_APPROVE_TYPES, DOCUMENT_TYPE, INTEGRATE_TYPES, REPORT_TYPE} from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -413,7 +413,7 @@ exports.getApplyTopicText = function(obj) {
     } else if (obj.topic === APPLY_APPROVE_TYPES.PERSONAL_LEAVE) {
         return Intl.get('leave.apply.leave.application', '请假申请');
     } else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1){
-        return Intl.get('apply.approve.specific.report','{customer}客户的专报',{customer: _.get(obj,'detail.customer.name')});
+        return Intl.get('apply.approve.specific.report','{customer}客户的{reporttype}',{customer: _.get(obj,'detail.customer.name'),reporttype: getDocumentReportTypeDes(REPORT_TYPE,_.get(obj,'detail.report_type'))});
     }else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1){
         return getDocumentReportTypeText(DOCUMENT_TYPE,_.get(obj,'detail.document_type'));
     }
@@ -425,6 +425,20 @@ function getDocumentReportTypeText(AllTypeList,specificType) {
     var type = '';
     if (targetObj) {
         type = targetObj.name;
+    }
+    return type;
+}
+function getDocumentReportTypeDes(AllTypeList,specificType) {
+    var targetObj = _.find(AllTypeList, (item) => {
+        return item.value === specificType;
+    });
+    var type = '';
+    if (targetObj) {
+        type = targetObj.name;
+        if (type === Intl.get('crm.186', '其他')){
+            type = Intl.get('common.report', '报告');
+        }
+
     }
     return type;
 }
