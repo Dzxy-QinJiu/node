@@ -302,7 +302,7 @@ class SalesHomePage extends React.Component {
                 sortIcon = <span className='iconfont icon-jiantou-up phone-sort-icon'/>;
             }
         }
-        return <span>{label}{sortIcon}</span>;
+        return label;
     };
 
     getCallBackColumnTitle = (label, key) => {
