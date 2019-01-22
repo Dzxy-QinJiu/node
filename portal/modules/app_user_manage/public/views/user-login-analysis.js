@@ -434,7 +434,7 @@ class UserLoginAnalysis extends React.Component {
         const userLoginBlock = (
             <ul>
                 {
-                    this.state.userOwnAppArray.map((app, index) => {
+                    _.map(this.state.userOwnAppArray, (app, index) => {
                         const userInfo = this.state.appUserDataMap[app.app_id] || {};
                         const loading = userInfo.loading;
                         return (

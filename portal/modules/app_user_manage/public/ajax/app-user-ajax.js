@@ -154,7 +154,12 @@ exports.getUserDetail = function(userId) {
         type: 'get',
         timeout: 180 * 1000,
         success: function(userDetail) {
-            Deferred.resolve(userDetail);
+            //获取的用户详情为空时，说明详情获取失败了
+            if (_.isEmpty(userDetail)) {
+                Deferred.reject(Intl.get('user.get.user.detail.failed', '获取用户详情失败'));
+            } else {
+                Deferred.resolve(userDetail);
+            }
         },
         error: function(xhr,status) {
             if(status !== 'abort') {

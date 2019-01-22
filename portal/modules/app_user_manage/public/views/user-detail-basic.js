@@ -682,8 +682,9 @@ class UserDetailBasic extends React.Component {
             }
             return null;
         })();
-        let userInfo = this.state.initialUser.user;
-        let groupsInfo = this.state.initialUser.groups || [];
+        let initialUser = _.get(this.state, 'initialUser', {});
+        let userInfo = _.get(initialUser, 'user', {});
+        let groupsInfo = _.get(initialUser, 'groups', []);
         let hasEditPrivilege = hasPrivilege('APP_USER_EDIT');
         var DetailBlock = !this.state.isLoading && !this.state.getDetailErrorMsg ? (
             <div className='user-detail-baisc-v3'>
@@ -691,16 +692,16 @@ class UserDetailBasic extends React.Component {
                     hasEditPrivilege={hasEditPrivilege}
                     customer_id={this.state.customer_id}
                     customer_name={this.state.customer_name}
-                    sales_id={this.state.initialUser.sales.sales_id}
-                    sales_name={this.state.initialUser.sales.sales_name}
-                    sales_team_id={this.state.initialUser.sales_team.sales_team_id}
-                    sales_team_name={this.state.initialUser.sales_team.sales_team_name}
+                    sales_id={_.get(initialUser, 'sales.sales_id','')}
+                    sales_name={_.get(initialUser, 'sales.sales_name', '')}
+                    sales_team_id={_.get(initialUser, 'sales_team.sales_team_id', '')}
+                    sales_team_name={_.get(initialUser, 'sales_team.sales_team_name', '')}
                     onChangeSuccess={this.userCustomerChangeSuccess}
                     user_id={userInfo.user_id}
                 />
                 <ContactCard
                     id={userInfo.user_id}
-                    userInfo={this.state.initialUser.user}
+                    userInfo={userInfo}
                     phone={{
                         value: userInfo.phone,
                         field: 'phone',
@@ -730,8 +731,8 @@ class UserDetailBasic extends React.Component {
                     showBtn={true} 
                     groupsInfo={groupsInfo}
                     onModifySuccess={this.organizationChangeSuccess}
-                    userInfo={this.state.initialUser.user}
-                    sales_team={this.state.initialUser.sales_team}
+                    userInfo={userInfo}
+                    sales_team={_.get(initialUser, 'sales_team', {})}
                 />
                 <div className="app_wrap" ref="app_wrap"> 
                     <DetailCard
@@ -749,7 +750,7 @@ class UserDetailBasic extends React.Component {
                     />
                 </div>
                 <BootstrapModal
-                    show={this.state.modalStatus.disable_all.showModal}
+                    show={_.get(this.state, 'modalStatus.disable_all.showModal', false)}
                     onHide={this.cancelAllAppsModal}
                     container={this}
                     aria-labelledby="contained-modal-title"
