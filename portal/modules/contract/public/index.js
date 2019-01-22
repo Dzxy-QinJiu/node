@@ -1,7 +1,8 @@
 var React = require('react');
 import './style.less';
 import classNames from 'classnames';
-import {message, Button, Icon, Modal, Radio, Select} from 'antd';
+import { message, Button, Icon, Modal, Radio, Select, Menu, Dropdown } from 'antd';
+const Option = Select.Option;
 const RadioGroup = Radio.Group;
 import ajax from '../common/ajax';
 import appAjaxTrans from '../../common/public/ajax/app';
@@ -22,16 +23,17 @@ import Trace from 'LIB_DIR/trace';
 const RightPanel = rightPanelUtil.RightPanel;
 const salesmanAjax = require('../../common/public/ajax/salesman');
 const querystring = require('querystring');
-import {VIEW_TYPE} from '../consts';
+import { VIEW_TYPE, PRODUCT, PROJECT, SERVICE, PURCHASE, CATEGORY } from '../consts';
 //正则
-import {pathParamRegex} from 'PUB_DIR/sources/utils/validate-util';
+import { pathParamRegex } from 'PUB_DIR/sources/utils/consts';
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
 
 //根据路由地址获取页面类型  sell buy repayment
 const getTypeByPath = () => {
     return location.pathname.split('/').pop();
 };
 
-const defaultSorter = {field: 'date', order: 'descend'};
+const defaultSorter = { field: 'date', order: 'descend' };
 
 class Contract extends React.Component {
     constructor(props) {
@@ -74,7 +76,8 @@ class Contract extends React.Component {
             //根据订单生成的合同id
             orderGenerateContractId: orderGenerateContractId,
             exportRange: 'filtered',
-            contractTemplateRightPanelShow: false
+            contractTemplateRightPanelShow: false,
+            contractType: PURCHASE,
         };
     }
 
@@ -114,14 +117,14 @@ class Contract extends React.Component {
         let sorter = defaultSorter;
 
         if (type === VIEW_TYPE.REPAYMENT) {
-            sorter = {field: 'repayment_date', order: 'descend'};
+            sorter = { field: 'repayment_date', order: 'descend' };
         }
 
         return sorter;
     };
 
     getCondition = () => {
-        let reqData = {query: {}};
+        let reqData = { query: {} };
 
         const Filter = this.refs.filter;
         const ContractList = this.refs.contractList;
@@ -330,7 +333,7 @@ class Contract extends React.Component {
         const arg = {
             url: route.path,
             type: route.method,
-            data: {query: {id: id}},
+            data: { query: { id: id } },
             params: params
         };
 
@@ -352,7 +355,7 @@ class Contract extends React.Component {
     // 前端更新操作后的数据（不请求后端接口获取最新数据）
     refreshCurrentContractNoAjax = (propName, type, data = {}, id) => {
         let currentContract = this.state.currentContract;
-        switch(type) {
+        switch (type) {
             case 'add':
                 currentContract[propName].unshift(data);
                 break;
@@ -477,11 +480,11 @@ class Contract extends React.Component {
             return params[$1];
         });
 
-        const reqData = this.state.exportRange === 'all' ? {query: {type: this.state.type}} : this.getCondition();
+        const reqData = this.state.exportRange === 'all' ? { query: { type: this.state.type } } : this.getCondition();
 
-        let form = $('<form>', {action: url, method: 'post'});
+        let form = $('<form>', { action: url, method: 'post' });
 
-        form.append($('<input>', {name: 'reqData', value: JSON.stringify(reqData)}));
+        form.append($('<input>', { name: 'reqData', value: JSON.stringify(reqData) }));
 
         //将构造的表单添加到body上
         //Chrome 56 以后不在body上的表单不允许提交了
@@ -502,19 +505,19 @@ class Contract extends React.Component {
     getAppList = () => {
         appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(list => {
             list = _.isArray(list) ? list : [];
-            this.setState({appList: list});
+            this.setState({ appList: list });
         });
     };
 
     getTeamList = () => {
         teamAjaxTrans.getTeamListAjax().sendRequest().success(list => {
             list = _.isArray(list) ? list : [];
-            this.setState({teamList: list});
+            this.setState({ teamList: list });
         });
     };
 
     getUserList = () => {
-        salesmanAjax.getSalesmanListAjax().sendRequest({filter_manager: true})
+        salesmanAjax.getSalesmanListAjax().addQueryParam({ with_ketao_member: true }).sendRequest()
             .success(result => {
                 if (_.isArray(result)) {
                     let list = [];
@@ -661,7 +664,14 @@ class Contract extends React.Component {
             this.getContractList(true);
         });
     };
-
+    handleChangeContractType = (addBtnView, {key}) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '添加合同>选择\'' + key + '\'类型');
+        this.setState({
+            contractType: key
+        }, () => {
+            this.showRightPanel(addBtnView);
+        });
+    };
     render() {
         //点击添加合同按钮时，默认打开哪个视图
         const addBtnView = this.state.type === VIEW_TYPE.SELL ? 'chooseType' : 'buyForm';
@@ -691,63 +701,91 @@ class Contract extends React.Component {
 
         return (
             <div className="contract-list" data-tracename="合同管理">
+                <TopNav>
+                    <TopNav.MenuList />
+                    <span className="btn-item-container float-r">
+                        <div className="privilege-btns">
+                            {isContractView || this.state.type === VIEW_TYPE.REPAYMENT ? (
+                                <PrivilegeChecker
+                                    onClick={this.showExportModal}
+                                    check="OPLATE_CONTRACT_QUERY"
+                                    className="btn-item"
+                                >
+                                    {this.state.type === VIEW_TYPE.REPAYMENT ? (
+                                        <Button>
+                                            <ReactIntl.FormattedMessage id="contract.140" defaultMessage="导出回款" />
+                                        </Button>
+                                    ) : (
+                                        <Button>
+                                            <ReactIntl.FormattedMessage id="contract.113" defaultMessage="导出合同" />
+                                        </Button>
+                                    )}
+                                </PrivilegeChecker>
+                            ) : null}
+
+                            {this.state.type === VIEW_TYPE.COST ? (
+                                <PrivilegeChecker
+                                    onClick={this.showExportModal}
+                                    check="OPLATE_SALES_COST_QUERY"
+                                    className="btn-item"
+                                >
+                                    <Button>
+                                        {Intl.get('common.export', '导出')}{Intl.get('contract.133', '费用')}
+                                    </Button>
+                                </PrivilegeChecker>
+                            ) : null}
+
+                            {isContractView ? (
+                                <PrivilegeChecker
+                                    onClick={this.showContractTemplateRightPanel}
+                                    check="OPLATE_CONTRACT_ADD"
+                                    className="btn-item"
+                                >
+                                    <Button>
+                                        <ReactIntl.FormattedMessage id="contract.114" defaultMessage="导入合同" />
+                                    </Button>
+                                </PrivilegeChecker>
+                            ) : null}
+
+                            {isContractView ? (
+                                <PrivilegeChecker                                    
+                                    check="OPLATE_CONTRACT_ADD"
+                                    className="btn-item"
+                                >
+                                    <Dropdown overlay={
+                                        <Menu onClick={this.handleChangeContractType.bind(this, addBtnView)}>
+                                            {
+                                                //此处使用value作为key，是为了在Menu的onCLick中获取点击的值
+                                                CATEGORY.map((x) => (
+                                                    <Menu.Item key={x}>{x}</Menu.Item>
+                                                ))
+                                            }
+                                        </Menu>
+                                    }>
+                                        <Button>
+                                            <ReactIntl.FormattedMessage id="contract.98" defaultMessage="添加合同" />
+                                        </Button>
+                                    </Dropdown>
+                                </PrivilegeChecker>
+                            ) : null}
+
+                            {this.state.type === VIEW_TYPE.COST ? (
+                                <PrivilegeChecker
+                                    onClick={this.showRightPanel.bind(this, 'detailCost')}
+                                    check="OPLATE_SALES_COST_ADD"
+                                    className="btn-item"
+                                >
+                                    <Button>
+                                        <ReactIntl.FormattedMessage id="contract.127" defaultMessage="添加费用" />
+                                    </Button>
+                                </PrivilegeChecker>
+                            ) : null}
+                        </div>                        
+                    </span>
+                </TopNav>
                 <div className="top-wrap">
-                    <div className="privilege-btns">
-                        {isContractView || this.state.type === VIEW_TYPE.REPAYMENT ? (
-                            <PrivilegeChecker
-                                onClick={this.showExportModal}
-                                check="OPLATE_CONTRACT_QUERY"
-                                className="btn"
-                            >
-                                {this.state.type === VIEW_TYPE.REPAYMENT ? (
-                                    <ReactIntl.FormattedMessage id="contract.140" defaultMessage="导出回款"/>
-                                ) : (
-                                    <ReactIntl.FormattedMessage id="contract.113" defaultMessage="导出合同"/>
-                                )}
-                            </PrivilegeChecker>
-                        ) : null}
 
-                        {this.state.type === VIEW_TYPE.COST ? (
-                            <PrivilegeChecker
-                                onClick={this.showExportModal}
-                                check="OPLATE_SALES_COST_QUERY"
-                                className="btn"
-                            >
-                                {Intl.get('common.export', '导出')}{Intl.get('contract.133', '费用')}
-                            </PrivilegeChecker>
-                        ) : null}
-
-                        {isContractView ? (
-                            <PrivilegeChecker
-                                onClick={this.showContractTemplateRightPanel}
-                                check="OPLATE_CONTRACT_ADD"
-                                className="btn"
-                            >
-                                <ReactIntl.FormattedMessage id="contract.114" defaultMessage="导入合同"/>
-                            </PrivilegeChecker>
-                        ) : null}
-
-                        {isContractView ? (
-                            <PrivilegeChecker
-                                onClick={this.showRightPanel.bind(this, addBtnView)}
-                                check="OPLATE_CONTRACT_ADD"
-                                className="btn"
-                            >
-                                <ReactIntl.FormattedMessage id="contract.98" defaultMessage="添加合同"/>
-                            </PrivilegeChecker>
-                        ) : null}
-
-                        {this.state.type === VIEW_TYPE.COST ? (
-                            <PrivilegeChecker
-                                onClick={this.showRightPanel.bind(this, 'detailCost')}
-                                check="OPLATE_SALES_COST_ADD"
-                                className="btn"
-                            >
-                                <ReactIntl.FormattedMessage id="contract.127" defaultMessage="添加费用"/>
-                            </PrivilegeChecker>
-                        ) : null}
-                    </div>
-                    <div className="pull-left" style={this.state.type === VIEW_TYPE.REPAYMENT ? {marginRight: 40} : {}}>
+                    <div className="pull-left" style={this.state.type === VIEW_TYPE.REPAYMENT ? { marginRight: 40 } : {}}>
                         {isContractView ? (
                             <Filter
                                 ref="filter"
@@ -756,8 +794,8 @@ class Contract extends React.Component {
                             />
                         ) : null}
                         <Button type="ghost" className="btn-filter" onClick={this.toggleTheadFilter}>
-                            <ReactIntl.FormattedMessage id="common.filter" defaultMessage="筛选"/>
-                            { this.state.isTheadFilterShow ? <Icon type="up"/> : <Icon type="down"/> }
+                            <ReactIntl.FormattedMessage id="common.filter" defaultMessage="筛选" />
+                            {this.state.isTheadFilterShow ? <Icon type="up" /> : <Icon type="down" />}
                         </Button>
 
                         {this.state.type !== VIEW_TYPE.COST ? (
@@ -821,30 +859,37 @@ class Contract extends React.Component {
                     getContractList={this.getContractList}
                     showRightPanel={this.showRightPanel}
                 />
-                <RightPanel
-                    showFlag={this.state.isRightPanelShow}
-                    className={'right-panel-' + this.state.type}
-                >
-                    {this.state.isRightPanelShow ? (
-                        <ContractRightPanel
-                            view={this.state.rightPanelView}
-                            contract={this.state.currentContract}
-                            appList={this.state.appList}
-                            teamList={this.state.teamList}
-                            userList={this.state.userList}
-                            getUserList={this.getUserList}
-                            isGetUserSuccess={this.state.isGetUserSuccess}
-                            hideRightPanel={this.hideRightPanel}
-                            getContractList={this.getContractList.bind(this, true)}
-                            refreshCurrentContract={this.refreshCurrentContract}
-                            refreshCurrentContractNoAjax={this.refreshCurrentContractNoAjax}
-                            refreshCurrentContractRepayment={this.refreshCurrentContractRepayment}
-                            addContract={this.addContract}
-                            deleteContract={this.deleteContract}
-                            viewType={this.state.type}
-                        />
-                    ) : null}
-                </RightPanel>
+                {
+                    this.state.isRightPanelShow ?
+                        <RightPanelModal
+                            isShowModal={false}
+                            className={'contract-panel-v2 right-panel-' + this.state.type}
+                            data-tracename="添加合同"
+                            isShowCloseBtn={true}
+                            onClosePanel={this.hideRightPanel}
+                            title={'添加' + this.state.contractType}
+                            content={this.state.isRightPanelShow ? (
+                                <ContractRightPanel
+                                    view={this.state.rightPanelView}
+                                    contract={this.state.currentContract}
+                                    appList={this.state.appList}
+                                    teamList={this.state.teamList}
+                                    userList={this.state.userList}
+                                    getUserList={this.getUserList}
+                                    isGetUserSuccess={this.state.isGetUserSuccess}
+                                    getContractList={this.getContractList.bind(this, true)}
+                                    refreshCurrentContract={this.refreshCurrentContract}
+                                    refreshCurrentContractNoAjax={this.refreshCurrentContractNoAjax}
+                                    refreshCurrentContractRepayment={this.refreshCurrentContractRepayment}
+                                    addContract={this.addContract}
+                                    deleteContract={this.deleteContract}
+                                    viewType={this.state.type}
+                                    contractType={this.state.contractType}
+                                />
+                            ) : null}
+                        /> : null
+                }
+
                 <Modal
                     className="contract-export-modal"
                     visible={this.state.isExportModalShow}
@@ -853,20 +898,20 @@ class Contract extends React.Component {
                     onCancel={this.hideExportModal}
                 >
                     <div>
-                        <ReactIntl.FormattedMessage id="contract.116" defaultMessage="导出范围"/>：
+                        <ReactIntl.FormattedMessage id="contract.116" defaultMessage="导出范围" />：
                         <RadioGroup
                             value={this.state.exportRange}
                             onChange={this.onExportRangeChange}
                         >
                             <Radio key="all" value="all"><ReactIntl.FormattedMessage id="common.all"
-                                defaultMessage="全部"/></Radio>
+                                defaultMessage="全部" /></Radio>
                             <Radio key="filtered" value="filtered"><ReactIntl.FormattedMessage id="contract.117"
-                                defaultMessage="符合当前筛选条件"/></Radio>
+                                defaultMessage="符合当前筛选条件" /></Radio>
                         </RadioGroup>
                     </div>
                     <div>
-                        <ReactIntl.FormattedMessage id="contract.118" defaultMessage="导出类型"/>：
-                        <ReactIntl.FormattedMessage id="contract.152" defaultMessage="excel格式"/>
+                        <ReactIntl.FormattedMessage id="contract.118" defaultMessage="导出类型" />：
+                        <ReactIntl.FormattedMessage id="contract.152" defaultMessage="excel格式" />
                     </div>
                 </Modal>
             </div>

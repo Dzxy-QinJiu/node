@@ -5,10 +5,9 @@ var React = require('react');
 require('./style.less');
 import PropTypes from 'prop-types'; 
 import classNames from 'classnames';
-import { AntcEditableTable } from 'antc';
 import {DetailEditBtn} from '../../rightPanel';
 import SaveCancelButton from '../../detail-card/save-cancel-button';
-import { AntcAppSelector } from 'antc';
+import {AntcAppSelector, AntcEditableTable} from 'antc';
 import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 // 开通应用，默认的数量和金额
@@ -39,6 +38,11 @@ class ProductTable extends React.Component {
         onSave: function() {},
         //预设总金额，用于验证所有产品的金额之和是否正确
         totalAmount: 0,
+        //默认值和对应key的map
+        defaultValueMap: {
+            count: APP_DEFAULT_INFO.COUNT,
+            total_price: APP_DEFAULT_INFO.PRICE
+        }
     };
 
     static propTypes = {
@@ -58,49 +62,40 @@ class ProductTable extends React.Component {
         super(props);
         this.state = {
             isEdit: this.props.isEdit,
-            columns: this.getColumns(),
             data: this.props.dataSource,
             loading: false,
             saveErrMsg: '',
         };
     }
 
-    getColumns() {
-        let columns = this.props.columns;
-
-        if (_.isEmpty(columns)) {
-            columns = [
-                {
-                    title: Intl.get('common.product.name', '产品名称'),
-                    dataIndex: 'name',
-                    key: 'name',
-                    render: (text, record, index) => {
-                        return <span className='app-info'>{this.renderAppIconName(text, record.id)}</span>;
-                    }
-                },
-                {
-                    title: Intl.get('crm.contract.account.count', '账号数量'),
-                    dataIndex: 'count',
-                    editable: true,
-                    //                    componentType: 'inputNumber',
-                    key: 'count'
-                },
-                {
-                    title: Intl.get('crm.contract.money', '金额(元)'),
-                    dataIndex: 'total_price',
-                    editable: true,
-                    //                    componentType: 'inputNumber',
-                    key: 'total_price',
-                    render: (text) => {
-                        var parseText = parseFloat(text);
-                        var count = !isNaN(parseText) ? parseText.toFixed(2) : '';
-                        return <span>{parseAmount(count)}</span>;
-                    }
+    getDefaultColumns() {
+        return [
+            {
+                title: Intl.get('crm.contract.product.name', '产品名称'),
+                dataIndex: 'name',
+                key: 'name',
+                render: (text, record, index) => {
+                    return <span className='app-info'>{this.renderAppIconName(text, record.id)}</span>;
                 }
-            ];
-        }
-
-        return columns;
+            },
+            {
+                title: Intl.get('crm.contract.account.count', '账号数量'),
+                dataIndex: 'count',
+                editable: true,
+                //                    componentType: 'inputNumber',
+                key: 'count'
+            },
+            {
+                title: Intl.get('crm.contract.money', '金额(元)'),
+                dataIndex: 'total_price',
+                editable: true,
+                //                    componentType: 'inputNumber',
+                key: 'total_price',
+                render: (text) => {
+                    return <span>{parseAmount(text.toFixed(2))}</span>;
+                }
+            }
+        ];
     }
 
     componentWillReceiveProps(nextProps) {
@@ -202,8 +197,7 @@ class ProductTable extends React.Component {
             data.push({
                 id: app.client_id,
                 name: app.client_name,
-                count: APP_DEFAULT_INFO.COUNT,
-                total_price: APP_DEFAULT_INFO.PRICE,
+                ...this.props.defaultValueMap
             });
         });
 
@@ -221,7 +215,7 @@ class ProductTable extends React.Component {
         const className = classNames('product-table', {
             'is-edit': this.state.isEdit,
         });
-
+        const columns = _.isEmpty(this.props.columns) ? this.getDefaultColumns() : this.props.columns;
         return (
             <div className={className}>
                 {this.state.isEdit || !this.props.isEditBtnShow ? null : (
@@ -229,21 +223,23 @@ class ProductTable extends React.Component {
                         onClick={this.showEdit}
                     /> 
                 )}
-                {_.isEmpty(this.state.data) ? null : (
-                    <AntcEditableTable
-                        isEdit={this.state.isEdit}
-                        onChange={this.handleChange}
-                        columns={this.state.columns}
-                        dataSource={this.state.data}
-                        bordered={this.props.bordered}
-                    /> 
-                )}
+                <AntcEditableTable
+                    isEdit={this.state.isEdit}
+                    onChange={this.handleChange}
+                    columns={columns}
+                    dataSource={this.props.data || this.state.data}
+                    bordered={this.props.bordered}
+                />
                 {this.state.isEdit ? (
                     <div>
-                        <AntcAppSelector
-                            appList={appList}
-                            onConfirm={this.handleAppSelect}
-                        /> 
+                        <div className="add-app-container">
+                            <AntcAppSelector
+                                appList={appList}
+                                onConfirm={this.handleAppSelect}
+                                appendDOM={this.props.appendDOM}    
+                                addBtnText={this.props.addBtnText}                                               
+                            /> 
+                        </div>
                         {this.props.isSaveCancelBtnShow ? (
                             <SaveCancelButton
                                 handleSubmit={this.handleSubmit}

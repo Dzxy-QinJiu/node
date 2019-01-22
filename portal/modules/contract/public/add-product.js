@@ -6,29 +6,38 @@ const Validator = Validation.Validator;
  * 产品信息添加表单
  */
 
-import { Form, Input, Select, Button, Icon, DatePicker } from 'antd';
+import { Form, Input, Select, Button, Icon, Alert, DatePicker } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
-const RangePicker = DatePicker.RangePicker
+const RangePicker = DatePicker.RangePicker;
 import ValidateMixin from '../../../mixins/ValidateMixin';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
+import ProductTable from 'CMP_DIR/basic-edit-field-new/product-table';
+
+const defaultValueMap = {
+    count: 1,
+    total_price: 1000, 
+    commission_rate: 6
+};
 
 const AddProduct = createReactClass({
     displayName: 'AddProduct',
     mixins: [ValidateMixin],
-
+    
     getInitialState: function() {
         let products;
 
         if (_.isArray(this.props.products) && this.props.products.length) {
             products = JSON.parse(JSON.stringify(this.props.products));
         } else {
-            products = [{}];
+            products = [];
         }
-
         return {
             products: products,
             formData: {},
+            valid: false,
+            pristine: true,
+            validator: null
         };
     },
 
@@ -62,8 +71,8 @@ const AddProduct = createReactClass({
         let products = _.cloneDeep(this.state.products);
         let product = products[index];
 
-        product.account_start_time = momentArr[0].valueOf()
-        product.account_end_time = momentArr[1].valueOf()
+        product.account_start_time = momentArr[0].valueOf();
+        product.account_end_time = momentArr[1].valueOf();
 
         this.setState({products});
     },
@@ -94,7 +103,7 @@ const AddProduct = createReactClass({
 
                     return (
                         <Form key={index}>
-                            <FormItem 
+                            <FormItem
                                 label={index === 0 ? Intl.get('common.app.name', '应用名称') : ''}
                                 className='app-name'
                             >
@@ -110,7 +119,7 @@ const AddProduct = createReactClass({
                                     {appOptions}
                                 </Select>
                             </FormItem>
-                            <FormItem 
+                            <FormItem
                                 label={index === 0 ? Intl.get('contract.21', '版本号') : ''}
                             >
                                 <Input
@@ -118,12 +127,12 @@ const AddProduct = createReactClass({
                                     onChange={this.setField2.bind(this, 'version', index)}
                                 />
                             </FormItem>
-                            <FormItem 
+                            <FormItem
                                 label={index === 0 ? '数量（个）' : ''}
                                 validateStatus={this.getValidateStatus('count' + index)}
                                 help={this.getHelpMessage('count' + index)}
                             >
-                                <Validator rules={[{required: true, message: Intl.get('contract.89', '请填写数量')}, {pattern: /^\d+$/, message: Intl.get('contract.45', '请填写数字')}]}>
+                                <Validator rules={[{ required: true, message: Intl.get('contract.89', '请填写数量') }, { pattern: /^\d+$/, message: Intl.get('contract.45', '请填写数字') }]}>
                                     <Input
                                         name={'count' + index}
                                         value={(isNaN(product.count) ? '' : product.count).toString()}
@@ -131,12 +140,12 @@ const AddProduct = createReactClass({
                                     />
                                 </Validator>
                             </FormItem>
-                            <FormItem 
+                            <FormItem
                                 label={index === 0 ? '总价' : ''}
                                 validateStatus={this.getValidateStatus('total_price' + index)}
                                 help={this.getHelpMessage('total_price' + index)}
                             >
-                                <Validator rules={[{required: true, message: Intl.get('contract.90', '请填写总价')}, getNumberValidateRule()]}>
+                                <Validator rules={[{ required: true, message: Intl.get('contract.90', '请填写总价') }, this.getNumberValidateRule()]}>
                                     <Input
                                         name={'total_price' + index}
                                         value={(isNaN(product.total_price) ? '' : product.total_price).toString()}
@@ -144,7 +153,7 @@ const AddProduct = createReactClass({
                                     />
                                 </Validator>
                             </FormItem>
-                            <FormItem 
+                            <FormItem
                                 label={index === 0 ? Intl.get('contract.141', '提成比例') : ''}
                                 validateStatus={this.getValidateStatus('commission_rate' + index)}
                                 help={this.getHelpMessage('commission_rate' + index)}
@@ -156,21 +165,21 @@ const AddProduct = createReactClass({
                                         onChange={this.setField2.bind(this, 'commission_rate', index)}
                                     />
                                 </Validator>
-                            &nbsp;%
+                                &nbsp;%
                             </FormItem>
                             <FormItem
                                 label={index === 0 ? Intl.get('common.start.end.time', '起止时间') : ''}
                                 className='start-end-time'
                             >
                                 <RangePicker
-                                    defaultValue={this.state.products[index].account_start_time? [moment(this.state.products[index].account_start_time), moment(this.state.products[index].account_end_time)] : []}
+                                    defaultValue={this.state.products[index].account_start_time ? [moment(this.state.products[index].account_start_time), moment(this.state.products[index].account_end_time)] : []}
                                     onChange={this.onStartEndTimeChange.bind(this, index)}
                                 />
                             </FormItem>
                             <div className="circle-button circle-button-minus"
                                 title={Intl.get('common.delete', '删除')}
                                 onClick={this.deleteProduct.bind(this, index)}>
-                                <Icon type="minus"/>
+                                <Icon type="minus" />
                             </div>
                         </Form>
                     );
@@ -178,20 +187,136 @@ const AddProduct = createReactClass({
             </Validation>
         );
     },
-
-    render: function() {
+    validate(cb) {
+        const products = this.state.products;
+        let flag = true;
+        products.forEach(x => {
+            //存在无数据的单元格，不通过验证
+            ['count', 'version', 'commission_rate', 'total_price'].forEach(key => {
+                if (!x[key]) {
+                    flag = false;
+                    return false;
+                }
+            });
+        });
+        this.setState({
+            products,
+            valid: flag,
+            //点击下一步后展示错误提示
+            pristine: false,
+            validator: text => text
+        });
+        return cb(flag);
+    },
+    handleProductChange(data) {
+        this.setState({ products: data });
+    },
+    renderAppIconName(appName, appId) {
+        let appList = this.props.appList;
+        let matchAppObj = _.find(appList, (appItem) => {
+            return appItem.client_id === appId;
+        });
         return (
-            <div className="add-products">
-                <div className="add-product">
-                    <Button
-                        className="btn-primary-sure"
-                        onClick={this.addProduct}
-                    >
-                        <ReactIntl.FormattedMessage id="common.add.app" defaultMessage="添加应用" />
-                    </Button>
-                </div>
-                <div className="product-forms">
-                    {this.renderFormContent()}
+            <span className='app-icon-name'>
+                {appName ? (
+                    matchAppObj && matchAppObj.client_image ? (
+                        <span className='app-self'>
+                            <img src={matchAppObj.client_image} />
+                        </span>
+                    ) : (
+                        <span className='app-default'>
+                            <i className='iconfont icon-app-default'></i>
+                        </span>
+                    )
+                ) : null}
+                <span className='app-name' title={appName}>{appName}</span>
+            </span>
+        );
+    },
+    handleAddCustomeizeApp() { 
+        const {products} = this.state;
+        products.push({
+            editable: true,
+            ...defaultValueMap
+        });
+        this.setState({
+            products
+        });
+    },
+    render: function() {
+        
+        const columns = [
+            {
+                title: Intl.get('crm.contract.product.name', '产品名称'),
+                dataIndex: 'name',
+                key: 'name',
+                render: (text, record, index) => {
+                    return <span className='app-info'>{this.renderAppIconName(text, record.id)}</span>;
+                },
+                validator: this.state.validator,
+                getIsEdit: text => !text
+            },
+            {
+                title: Intl.get('contract.21', '版本号'),
+                dataIndex: 'version',
+                editable: true,
+                key: 'version',
+                validator: this.state.validator
+            },
+            {
+                title: Intl.get('common.app.count', '数量'),
+                dataIndex: 'count',
+                editable: true,
+                key: 'count',
+                render: (text) => {
+                    return <span>{parseAmount(text.toFixed(2))}</span>;
+                },
+                validator: this.state.validator
+            },
+            {
+                title: Intl.get('contract.23', '总价') + '(' + Intl.get('contract.82', '元') + ')',
+                dataIndex: 'total_price',
+                key: 'total_price',
+                editable: true,
+                validator: text => text
+            },
+            {
+                title: Intl.get('contract.141', '提成比例') + '(%)',
+                dataIndex: 'commission_rate',
+                key: 'commission_rate',
+                editable: true,
+                validator: text => text
+            }
+        ];
+        const customizeBTN = (
+            <span onClick={this.handleAddCustomeizeApp}>{Intl.get('contract.form.customize', '添加自定义产品')}</span>
+        );
+        return (
+            <div className="add-products">               
+                <div className="product-forms product-table-container">
+                    <ProductTable
+                        ref={ref => this.producTableRef = ref}
+                        appendDOM={customizeBTN}
+                        defaultValueMap={defaultValueMap}
+                        appList={this.props.appList.map(x => ({
+                            client_id: x.app_id,
+                            client_image: x.app_logo,
+                            client_name: x.app_name
+                        }))}
+                        data={this.state.products}
+                        isEdit={true}
+                        columns={columns}
+                        isSaveCancelBtnShow={false}
+                        onChange={this.handleProductChange}
+                    />
+                    {
+                        !this.state.pristine && !this.state.valid ?
+                            <div className="alert-container">
+                                <Alert type="error" message="请填写表格内容" showIcon/>
+                            </div> : null
+                    }
+                    {/* {this.renderFormContent()} */}
+
                 </div>
             </div>
         );

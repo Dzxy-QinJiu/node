@@ -14,7 +14,10 @@ import {numberAddNoMoreThan,getNumberValidateRule} from 'PUB_DIR/sources/utils/v
 const AddRepayment = createReactClass({
     displayName: 'AddRepayment',
     mixins: [ValidateMixin],
-
+    propTypes: {
+        rightPanel: PropTypes.element,
+        updateScrollBar: PropTypes.updateScrollBar
+    },
     getInitialFormData: function() {
         return {
             type: 'repay_plan',
@@ -34,10 +37,11 @@ const AddRepayment = createReactClass({
             if (!valid) {
                 return;
             } else {
-                delete this.state.formData.unit;
-                this.state.repayments.push(_.clone(this.state.formData));
-                this.state.formData = this.getInitialFormData();
-                this.setState(this.state, () => {
+                const state = this.state;
+                delete state.formData.unit;
+                state.repayments.push(_.clone(state.formData));
+                state.formData = this.getInitialFormData();
+                this.setState(state, () => {
                     this.props.updateScrollBar();
                 });
             }
@@ -45,41 +49,44 @@ const AddRepayment = createReactClass({
     },
 
     deleteRepayment: function(index) {
-        this.state.repayments.splice(index, 1);
+        const state = this.state;
+        state.repayments.splice(index, 1);
 
-        this.setState(this.state);
+        this.setState(state);
     },
 
     onNumChange: function(e) {
         const num = e.target.value;
-        this.state.formData.num = num;
+        const state = this.state;
+        state.formData.num = num;
 
         if (!isNaN(num)) {
             const count = parseInt(num);
             const signDate = this.props.rightPanel.refs.addBasic.state.formData.date;
-            this.state.formData.date = moment(signDate).add(count, this.state.formData.unit).valueOf();
+            state.formData.date = moment(signDate).add(count, state.formData.unit).valueOf();
         }
 
-        this.setState(this.state);
+        this.setState(state);
     },
 
     onUnitChange: function(value) {
-        this.state.formData.unit = value;
+        const state = this.state;
+        state.formData.unit = value;
 
-        const num = this.state.formData.num;
+        const num = state.formData.num;
 
         if (!isNaN(num)) {
             const signDate = this.props.rightPanel.refs.addBasic.state.formData.date;
             const count = parseInt(num);
-            this.state.formData.date = moment(signDate).add(count, value).valueOf();
+            state.formData.date = moment(signDate).add(count, value).valueOf();
         }
 
-        this.setState(this.state);
+        this.setState(state);
     },
 
     render: function() {
         //合同额
-        const contractAmount = this.props.parent.refs.addBasic.state.formData.contract_amount;
+        const contractAmount = _.get(this, 'props.parent.refs.addBasic.state.formData.contract_amount');
         //已添加的回款总额
         let repaymentsAmount = 0;
         const repayments = this.state.repayments;
@@ -93,7 +100,23 @@ const AddRepayment = createReactClass({
 
         return (
             <div className="add-repayments">
-                <div className="add-finance">
+                {this.state.repayments.length ? (
+                    <div className="finance-list">
+                        <ul>
+                            {this.state.repayments.map((repayment, index) => { return (
+                                <li key={index}>                                    
+                                    {moment(repayment.date).format(oplateConsts.DATE_FORMAT)}前 {Intl.get('contract.94', '应收金额')}{repayment.amount}{Intl.get('contract.155', '元')}
+                                    <span className="btn-bar"
+                                        title={Intl.get('common.delete', '删除')}
+                                        onClick={this.deleteRepayment.bind(this, index)}>
+                                        <Icon type="close" theme="outlined" />
+                                    </span>
+                                </li>
+                            );})}
+                        </ul>
+                    </div>
+                ) : null}
+                <div className="add-finance new-add-repayment-container">
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <ReactIntl.FormattedMessage id="contract.78" defaultMessage="从签订日起" />
                         <FormItem 
@@ -139,27 +162,11 @@ const AddRepayment = createReactClass({
                     </Validation>
                 </div>
 
-                {this.state.repayments.length ? (
-                    <div className="finance-list">
-                        <ul>
-                            {this.state.repayments.map((repayment, index) => { return (
-                                <li key={index}>
-                                    <div className="circle-button circle-button-minus"
-                                        title={Intl.get('common.delete', '删除')}
-                                        onClick={this.deleteRepayment.bind(this, index)}>
-                                        <Icon type="minus"/>
-                                    </div>
-                                    {Intl.get('contract.83', '至')}{moment(repayment.date).format(oplateConsts.DATE_FORMAT)} {Intl.get('contract.94', '应收金额')}{repayment.amount}{Intl.get('contract.155', '元')}
-                                </li>
-                            );})}
-                        </ul>
-                    </div>
-                ) : null}
+                
             </div>
         );
     },
 });
-
 module.exports = AddRepayment;
 
 

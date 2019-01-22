@@ -34,13 +34,13 @@ const AddBasic = createReactClass({
         }
 
         const formItemLayout = {
-            labelCol: { span: 4 },
-            wrapperCol: { span: 12 },
+            labelCol: { span: 5 },
+            wrapperCol: { span: 18 },
         };
 
         const formItemLayout2 = {
-            labelCol: { span: 4 },
-            wrapperCol: { span: 10 },
+            labelCol: { span: 5 },
+            wrapperCol: { span: 18 },
         };
 
         //成本额默认为0
@@ -57,56 +57,21 @@ const AddBasic = createReactClass({
             <Form layout='horizontal' className="add-basic" data-tracename="添加合同>基本信息">
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     {this.renderNumField()}
+                    {this.renderDateField()}
                     {this.renderCustomerField()}
                     {this.renderBuyerField()}
                     {this.renderUserField()}
                     {this.renderTeamField()}
-                    {this.renderSalesRepField()}
-                    {this.renderSalesRepTeamField()}
-                    {this.renderAmountField()}
-                    <FormItem 
-                        {...formItemLayout2}
-                        label={Intl.get('contract.153', '成本额')}
-                        validateStatus={this.getValidateStatus('cost_price')}
-                        help={this.getHelpMessage('cost_price')}
-                    >
-                        <Validator rules={[getNumberValidateRule()]}>
-                            <Input
-                                name="cost_price"
-                                value={this.parseAmount(formData.cost_price)}
-                                onChange={this.setField.bind(this, 'cost_price')}
-                            />
-                        </Validator>
-                        <span className="ant-form-text">{Intl.get('contract.155', '元')}</span>
-                    </FormItem>
-                    <FormItem 
-                        {...formItemLayout2}
-                        label={Intl.get('contract.165', '成本构成')}
-                    >
-                        <CheckboxGroup
-                            name="cost_structure"
-                            options={COST_STRUCTURE}
-                            value={formData.cost_structure ? formData.cost_structure.split(',') : []}
-                            onChange={this.handleCostStructureChange}
-                        />
-                    </FormItem>
-                    <FormItem 
-                        {...formItemLayout2}
-                        label={Intl.get('contract.154', '合同毛利')}
-                        validateStatus={this.getValidateStatus('gross_profit')}
-                        help={this.getHelpMessage('gross_profit')}
-                    >
-                        <Validator rules={[getNumberValidateRule()]}>
-                            <Input
-                                name="gross_profit"
-                                disabled
-                                value={formData.gross_profit}
-                            />
-                        </Validator>
-                        <span className="ant-form-text">{Intl.get('contract.155', '元')}</span>
-                    </FormItem>
-                    {this.renderDateField()}
-                    <FormItem 
+                    {this.props.isEdit ? null : (
+                        <FormItem
+                            {...formItemLayout2}
+                            label={Intl.get('common.belong.customer', '所属客户')}
+                            className="form-item-append-icon-container"
+                        >
+                            {this.renderBelongCustomerField()}
+                        </FormItem>
+                    )}
+                    <FormItem
                         {...formItemLayout}
                         label={Intl.get('contract.35', '起始时间')}
                         validateStatus={this.getValidateStatus('start_time')}
@@ -120,7 +85,7 @@ const AddBasic = createReactClass({
                             />
                         </Validator>
                     </FormItem>
-                    <FormItem 
+                    <FormItem
                         {...formItemLayout}
                         label={Intl.get('contract.105', '结束时间')}
                         validateStatus={this.getValidateStatus('end_time')}
@@ -134,7 +99,7 @@ const AddBasic = createReactClass({
                             />
                         </Validator>
                     </FormItem>
-                    <FormItem 
+                    <FormItem
                         {...formItemLayout2}
                         label={Intl.get('contract.106', '份数（份）')}
                     >
@@ -143,12 +108,61 @@ const AddBasic = createReactClass({
                             value={formData.copy_number}
                             onChange={this.setField.bind(this, 'copy_number')}
                         >
-                            {copyNumArray.map(copyNum => { return (
-                                <Option key={copyNum} value={copyNum}>{copyNum}</Option>
-                            );})}
+                            {copyNumArray.map(copyNum => {
+                                return (
+                                    <Option key={copyNum} value={copyNum}>{copyNum}</Option>
+                                );
+                            })}
                         </Select>
                     </FormItem>
-                    <FormItem 
+                    <hr className="contract-divide-line" />
+
+                    {this.renderAmountField()}
+                    <FormItem
+                        {...formItemLayout2}
+                        label={Intl.get('contract.153', '成本额')}
+                        validateStatus={this.getValidateStatus('cost_price')}
+                        help={this.getHelpMessage('cost_price')}
+                        className="form-item-append-icon-container"
+                    >
+                        <Validator rules={[getNumberValidateRule()]}>
+                            <Input
+                                name="cost_price"
+                                value={this.parseAmount(formData.cost_price)}
+                                onChange={this.setField.bind(this, 'cost_price')}
+                            />
+                        </Validator>
+                        <span className="ant-form-text">{Intl.get('contract.155', '元')}</span>
+                    </FormItem>
+                    <FormItem
+                        {...formItemLayout2}
+                        label={Intl.get('contract.165', '成本构成')}
+                    >
+                        <CheckboxGroup
+                            name="cost_structure"
+                            options={COST_STRUCTURE}
+                            value={formData.cost_structure ? formData.cost_structure.split(',') : []}
+                            onChange={this.handleCostStructureChange}
+                        />
+                    </FormItem>
+                    <FormItem
+                        {...formItemLayout2}
+                        label={Intl.get('contract.154', '合同毛利')}
+                        validateStatus={this.getValidateStatus('gross_profit')}
+                        help={this.getHelpMessage('gross_profit')}
+                        className="form-item-append-icon-container"
+                    >
+                        <Validator rules={[getNumberValidateRule()]}>
+                            <Input
+                                name="gross_profit"
+                                disabled
+                                value={formData.gross_profit}
+                            />
+                        </Validator>
+                        <span className="ant-form-text">{Intl.get('contract.155', '元')}</span>
+                    </FormItem>
+                    <hr className="contract-divide-line" />            
+                    <FormItem
                         {...formItemLayout2}
                         label={Intl.get('contract.107', '开发票')}
                     >
@@ -163,15 +177,11 @@ const AddBasic = createReactClass({
                     {this.renderStageField()}
                     {this.renderLabelField()}
                     {formData.category ? this.renderCategoryField() : null}
+                    <hr className="contract-divide-line" />
+                    {this.renderSalesRepField()}
+                    {this.renderSalesRepTeamField()}
                     {this.renderRemarksField()}
-                    {this.props.isEdit ? null : (
-                        <FormItem 
-                            {...formItemLayout2}
-                            label={Intl.get('common.belong.customer', '所属客户')}
-                        >
-                            {this.renderBelongCustomerField()}
-                        </FormItem>
-                    )}
+
                 </Validation>
             </Form>
         );

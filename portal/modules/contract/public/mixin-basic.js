@@ -26,13 +26,13 @@ import {regex} from 'ant-utils';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 
 const formItemLayout = {
-    labelCol: {span: 4},
-    wrapperCol: {span: 12},
+    labelCol: {span: 5},
+    wrapperCol: {span: 18},
 };
 
 const formItemLayout2 = {
-    labelCol: {span: 4},
-    wrapperCol: {span: 10},
+    labelCol: {span: 5},
+    wrapperCol: {span: 18},
 };
 
 let queryCustomerTimeout = null;
@@ -229,8 +229,7 @@ export default {
 
                     return (
                         <FormItem
-                            key={index}
-                            wrapperCol={{span: 24}}
+                            key={index}                           
                             validateStatus={this.getValidateStatus(fieldName)}
                             help={this.getHelpMessage(fieldName)}
                         >
@@ -415,6 +414,7 @@ export default {
                 label="合同额"
                 validateStatus={this.getValidateStatus('contract_amount')}
                 help={this.getHelpMessage('contract_amount')}
+                className="form-item-append-icon-container"
             >
                 <Validator rules={[{
                     required: true,

@@ -81,6 +81,7 @@ export const REPORT_SERVICE = Intl.get('contract.18', '报告服务');
 export const DATA_SERVICE = Intl.get('contract.19', '数据服务');
 export const COLLECTION_SERVICE = Intl.get('contract.20', '采集服务');
 export const SERVICE_TYPE = [REPORT_SERVICE, DATA_SERVICE, COLLECTION_SERVICE];
+export const LITE_SERVICE_TYPE = [DATA_SERVICE, COLLECTION_SERVICE];
 
 //费用类型
 export const COST_TYPE = [Intl.get('contract.130', '交际费'), Intl.get('contract.131', '市内交通费'), Intl.get('contract.132', '售前技术支持费')];
