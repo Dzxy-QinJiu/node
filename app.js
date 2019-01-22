@@ -20,6 +20,7 @@ var coordinator = require('./portal/lib/middlewares/coordinator-client');
 var commonUtils = require('./portal/lib/utils/common-utils');
 var auth = require('./portal/lib/utils/auth');
 
+
 //让config模块使用conf/config.js里的配置，而不用去找config/default.js文件
 process.env.NODE_CONFIG = JSON.stringify(config);
 
@@ -29,7 +30,6 @@ require('log4js-config').init(function() {
 });
 
 var app = express();
-
 app.set('port', config.port);
 // view engine setup
 app.set('views', path.join(__dirname, 'portal/modules'));
@@ -86,6 +86,12 @@ global.portal_root_path = path.resolve(__dirname, './portal');
 global.module_root_path = path.resolve(__dirname, './portal/modules');
 //定义全局的配置文件路径
 global.config_root_path = path.resolve(__dirname, './conf');
+
+//引入rest请求辅助工具
+var restLogger = require('./portal/lib/utils/logger').getLogger('rest');
+var restUtil = require('ant-auth-request').restUtil(restLogger);
+//引入呼叫中心
+require('./portal/lib/middlewares/callcenter')(app, restUtil.authRest);
 
 //初始化controller
 require('./portal/controller')(app);

@@ -11,12 +11,10 @@ import userData from 'PUB_DIR/sources/user-data';
 var user_id = userData.getUserData().user_id;
 import Spinner from 'CMP_DIR/spinner';
 import DetailCard from 'CMP_DIR/detail-card';
-import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import ScheduleItem from './schedule-item';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import ErrorDataTip from '../components/error-data-tip';
 import CallNumberUtil from 'PUB_DIR/sources/utils/common-data-util';
-import classNames from 'classnames';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 
 class CrmSchedule extends React.Component {

@@ -4,9 +4,10 @@ import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import teamAjaxTrans from 'MOD_DIR/common/public/ajax/team';
 import {storageUtil} from 'ant-utils';
 import {traversingTeamTree, getParamByPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {message} from 'antd';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
+
 const session = storageUtil.session;
 // 缓存在sessionStorage中的座席号的key
 const sessionCallNumberKey = 'callNumber';
@@ -26,12 +27,14 @@ import {DIFF_TYPE_LOG_FILES, AM_AND_PM} from './consts';
 import {isEqualArray} from 'LIB_DIR/func';
 // 获取拨打电话的座席号
 exports.getUserPhoneNumber = function(cb) {
+    var Deferred = $.Deferred();
     let user_id = getUserData().user_id;
     let callNumberObj = {};
     let storageObj = JSON.parse(session.get(sessionCallNumberKey));
     let callNumber = storageObj && storageObj[user_id] ? storageObj[user_id] : '';
     if (callNumber) {
         callNumberObj.callNumber = callNumber;
+        Deferred.resolve(callNumberObj);
         cb(callNumberObj);
     } else {
         crmAjax.getUserPhoneNumber(user_id).then((result) => {
@@ -40,13 +43,16 @@ exports.getUserPhoneNumber = function(cb) {
                 storageCallNumberObj[user_id] = result.phone_order;
                 session.set(sessionCallNumberKey, JSON.stringify(storageCallNumberObj));
                 callNumberObj.callNumber = result.phone_order;
-                cb(callNumberObj);
             }
+            Deferred.resolve(callNumberObj);
+            cb(callNumberObj);
         }, (errMsg) => {
             callNumberObj.errMsg = errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!');
+            Deferred.reject(errMsg);
             cb(callNumberObj);
         });
     }
+    return Deferred.promise();
 };
 //获取oplate中的应用
 exports.getAppList = function(cb) {
@@ -142,11 +148,11 @@ exports.getMyTeamTreeList = function(cb) {
 };
 
 //获取平铺的和树状团队列表
-exports.getMyTeamTreeAndFlattenList = function(cb,flag) {
+exports.getMyTeamTreeAndFlattenList = function(cb, flag) {
     let teamTreeList = getUserData().my_team_tree || [];
     let teamList = [];
     if (_.get(teamTreeList, '[0]')) {
-        traversingTeamTree(teamTreeList, teamList,flag);
+        traversingTeamTree(teamTreeList, teamList, flag);
         if (_.isFunction(cb)) cb({teamTreeList, teamList});
     } else {
         const reqData = getParamByPrivilege();
@@ -156,7 +162,7 @@ exports.getMyTeamTreeAndFlattenList = function(cb,flag) {
             if (_.get(treeList, '[0]')) {
                 teamTreeList = treeList;
                 //遍历团队树取出我能看的所有的团队列表list
-                traversingTeamTree(teamTreeList, teamList,flag);
+                traversingTeamTree(teamTreeList, teamList, flag);
             }
             if (_.isFunction(cb)) cb({teamTreeList, teamList});
             //保存到userData中
@@ -180,32 +186,28 @@ exports.getMyTeamTreeAndFlattenList = function(cb,flag) {
  * }
  */
 exports.handleCallOutResult = function(paramObj) {
+    if (!paramObj) {
+        return;
+    }
     if (paramObj.errorMsg) {
         message.error(paramObj.errorMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!'));
     } else {
-        if (paramObj.callNumber) {
-            let phoneNumber = paramObj.phoneNumber ? paramObj.phoneNumber.replace('-', '') : '';
-            if (phoneNumber) {
-                phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
-                    {
-                        contact: paramObj.contactName,
-                        phone: phoneNumber
-                    }
-                );
-                let reqData = {
-                    from: paramObj.callNumber,
-                    to: phoneNumber
-                };
-                crmAjax.callOut(reqData).then((result) => {
-                    if (result.code === 0) {
-                        message.success(Intl.get('crm.call.phone.success', '拨打成功'));
-                    }
+        let phoneNumber = paramObj.phoneNumber ? paramObj.phoneNumber.replace('-', '') : '';
+        if (phoneNumber) {
+            phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
+                {
+                    contact: paramObj.contactName,
+                    phone: phoneNumber
+                }
+            );
+            let callClient = getCallClient();
+            if (callClient && callClient.isInited()) {
+                callClient.callout(phoneNumber).then((result) => {
+                    message.success(Intl.get('crm.call.phone.success', '拨打成功'));
                 }, (errMsg) => {
                     message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
                 });
             }
-        } else {
-            message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
         }
     }
 };
@@ -238,7 +240,7 @@ exports.seperateFilesDiffType = function(fileList) {
         customerAddedFiles: [],//销售在申请确认之前补充上传的文件
         approverUploadFiles: []//支持部上传的文件
     };
-    if (_.isArray(fileList)){
+    if (_.isArray(fileList)) {
         allUploadFiles.customerFiles = _.filter(fileList, item => item.log_type === DIFF_TYPE_LOG_FILES.SALE_UPLOAD);
         allUploadFiles.customerAddedFiles = _.filter(fileList, item => item.log_type === DIFF_TYPE_LOG_FILES.SALE_UPLOAD_NEW);
         allUploadFiles.approverUploadFiles = _.filter(fileList, item => item.log_type === DIFF_TYPE_LOG_FILES.APPROVER_UPLOAD);
@@ -247,9 +249,9 @@ exports.seperateFilesDiffType = function(fileList) {
 };
 //标识是否已经确认过审批,因为文件类型和舆情报告前面是有两个节点
 exports.hasApprovedReportAndDocumentApply = function(approverIds) {
-    if (_.isArray(approverIds)){
+    if (_.isArray(approverIds)) {
         return approverIds.length === 2;
-    }else{
+    } else {
         return false;
     }
 };
@@ -264,40 +266,44 @@ function calculateTimeRange(beginType,endType) {
     return timeRange;
 
 }
+
 //计算两个日期中间相隔的天数
 exports.calculateTotalTimeRange = (formData) => {
-    var beginTime = formData.begin_time,beginType = formData.begin_type,endTime = formData.end_time,endType = formData.end_type;
+    var beginTime = formData.begin_time, beginType = formData.begin_type, endTime = formData.end_time,
+        endType = formData.end_type;
     var timeRange = '';
     //如果开始和结束时间是同一天的
     var isSameDay = moment(beginTime).isSame(endTime, 'day');
-    if (isSameDay){
-        timeRange = calculateTimeRange(beginType,endType);
-    }else {
+    if (isSameDay) {
+        timeRange = calculateTimeRange(beginType, endType);
+    } else {
         //相差几天
         timeRange = moment(endTime).diff(moment(beginTime), 'days');
-        timeRange += calculateTimeRange(beginType,endType);
+        timeRange += calculateTimeRange(beginType, endType);
     }
     return timeRange;
 };
-function showAmAndPmDes(time){
+
+function showAmAndPmDes(time) {
     var des = '';
-    if (time === AM_AND_PM.AM){
+    if (time === AM_AND_PM.AM) {
         des = Intl.get('apply.approve.leave.am', '上午');
-    }else if (time === AM_AND_PM.PM){
+    } else if (time === AM_AND_PM.PM) {
         des = Intl.get('apply.approve.leave.pm', '下午');
     }
     return des;
 }
-exports.handleTimeRange = function(start,end){
+
+exports.handleTimeRange = function(start, end) {
     var beginTimeArr = start.split('_');
     var endTimeArr = end.split('_');
-    var leaveTime = _.get(beginTimeArr,[0]);
-    if (isEqualArray(beginTimeArr,endTimeArr)){
-        leaveTime += showAmAndPmDes(_.get(beginTimeArr,[1]));
-    }else if (_.get(beginTimeArr,[0]) !== _.get(endTimeArr,[0])){
-        leaveTime += showAmAndPmDes(_.get(beginTimeArr,[1]));
-        leaveTime = leaveTime + ' — ' + _.get(endTimeArr,[0]);
-        leaveTime += showAmAndPmDes(_.get(endTimeArr,[1]));
+    var leaveTime = _.get(beginTimeArr, [0]);
+    if (isEqualArray(beginTimeArr, endTimeArr)) {
+        leaveTime += showAmAndPmDes(_.get(beginTimeArr, [1]));
+    } else if (_.get(beginTimeArr, [0]) !== _.get(endTimeArr, [0])) {
+        leaveTime += showAmAndPmDes(_.get(beginTimeArr, [1]));
+        leaveTime = leaveTime + ' — ' + _.get(endTimeArr, [0]);
+        leaveTime += showAmAndPmDes(_.get(endTimeArr, [1]));
     }
     return leaveTime;
 };
@@ -371,3 +377,36 @@ exports.getProductList = function(cb, isRefresh) {
         if (_.isFunction(cb)) cb(integrationProductList);
     }
 };
+
+
+/**
+ * 获取所在组织
+ * @param cb
+ * @returns {*}
+ */
+exports.getOrganization = function(cb) {
+    var Deferred = $.Deferred();
+    let user = getUserData();
+    if (user.organization) {
+        Deferred.resolve(user.organization);
+        _.isFunction(cb) && cb(user.organization);
+    } else {
+        $.ajax({
+            url: '/rest/get_managed_realm',
+            dataType: 'json',
+            type: 'get',
+            success: function(organization) {
+                user.organization = organization;
+                Deferred.resolve(organization);
+                setUserData('organization', organization);
+                _.isFunction(cb) && cb(organization);
+            },
+            error: (errMsg) => {
+                Deferred.reject(errMsg);
+                _.isFunction(cb) && cb();
+            }
+        });
+    }
+    return Deferred.promise();
+};
+

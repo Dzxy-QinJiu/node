@@ -1,4 +1,6 @@
 require('./sources/dependence');
+import {storageUtil} from 'ant-utils';
+
 var userData = require('./sources/user-data');
 var AppStarter = require('./sources/app-starter');
 var PrivilegeGet = require('./sources/privilege-get');
@@ -6,7 +8,7 @@ var PrivilegeGetReact = null;
 var appDom = $('#app')[0];
 var websiteConfig = require('../lib/utils/websiteConfig');
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
-import {storageUtil} from 'ant-utils';
+let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 
 function hideLoading(errorTip) {
     if (PrivilegeGetReact) {
@@ -63,10 +65,12 @@ function getUserPrivilegeAndStart() {
         unmountPrivilegeGet();
         suppressWarnings();
         getWebsiteConfig();
-        storageUtil.setUserId(userData.getUserData().user_id);
+        const user = userData.getUserData();
+        storageUtil.setUserId(user.user_id);
         AppStarter.init({
             goIndex: false
         });
+        phoneUtil.initPhone(user);
         //启动socketio接收数据
         !Oplate.hideSomeItem && require('./sources/push').startSocketIo();
     }).fail(function(errorTip) {

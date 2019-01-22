@@ -1,18 +1,22 @@
-const PropTypes = require('prop-types');
-var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/5/23.
  */
+const PropTypes = require('prop-types');
+var React = require('react');
 import {Button, Tag, Select} from 'antd';
+
 const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
+import {PHONERINGSTATUS, commonPhoneDesArray} from '../consts';
+import {getCallClient, AcceptButton, ReleaseButton} from 'PUB_DIR/sources/utils/phone-util';
+
 var phoneAlertAction = require('../action/phone-alert-action');
 var phoneAlertStore = require('../store/phone-alert-store');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 var AlertTimer = require('CMP_DIR/alert-timer');
-import {PHONERINGSTATUS, commonPhoneDesArray} from '../consts';
+
 class phoneStatusTop extends React.Component {
     constructor(props) {
         super(props);
@@ -82,6 +86,7 @@ class phoneStatusTop extends React.Component {
             showCancelBtn: true,
         });
     };
+
     //获取添加跟进记录的客户id
     getSaveTraceCustomerId() {
         let customerInfoArr = this.state.customerInfoArr;
@@ -95,6 +100,7 @@ class phoneStatusTop extends React.Component {
         }
         return customer_id;
     }
+
     //取消保存跟进记录
     handleTraceCancel = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.trace-content-container'), '取消保存跟进记录');
@@ -165,8 +171,8 @@ class phoneStatusTop extends React.Component {
                             {
                                 _.isArray(commonPhoneDesArray) ?
                                     commonPhoneDesArray.map((Des, idx) => {
-                                    //如果电话已经接通，不需要展示 “未接通这个提示”
-                                        if (phonemsgObj.billsec > 0 && idx === 0){
+                                        //如果电话已经接通，不需要展示 “未接通这个提示”
+                                        if (phonemsgObj.billsec > 0 && idx === 0) {
                                             return;
                                         }
                                         return (<Option key={idx} value={Des}>{Des}</Option>);
@@ -202,7 +208,8 @@ class phoneStatusTop extends React.Component {
                             {this.state.submittingTrace ? (Intl.get('retry.is.submitting', '提交中...')) : (Intl.get('common.save', '保存'))}
                         </Button>
                         {this.state.showCancelBtn ?
-                            <Button onClick={this.handleTraceCancel} data-tracename="取消保存跟进记录">{Intl.get('common.cancel', '取消')}</Button>
+                            <Button onClick={this.handleTraceCancel}
+                                data-tracename="取消保存跟进记录">{Intl.get('common.cancel', '取消')}</Button>
                             : null}
                     </div>
                 </div>
@@ -237,14 +244,18 @@ class phoneStatusTop extends React.Component {
             phoneNum: phoneNum,
             tip: ''
         };
+        let callClient = getCallClient();
         if (phonemsgObj.type === PHONERINGSTATUS.ALERT) {
             if (phonemsgObj.call_type === 'IN') {
-                desTipObj.tip = `${Intl.get('call.record.call.in.pick.phone', '有电话打入，请拿起话机')}`;
+                //如果是呼入，并且是需要展示接听按钮的情况，如：容联。需要点击接听才开始获取对方声音
+                desTipObj.tip = (<AcceptButton callClient={callClient}></AcceptButton>);
             } else {
-                desTipObj.tip = `${Intl.get('call.record.phone.alerting', '已振铃，等待对方接听')}`;
+                let tip = `${Intl.get('call.record.phone.alerting', '已振铃，等待对方接听')}`;
+                desTipObj.tip = (<ReleaseButton callClient={callClient} tip={tip}> </ReleaseButton>);
             }
         } else if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
-            desTipObj.tip = `${Intl.get('call.record.phone.answered', '正在通话中')}`;
+            let tip = `${Intl.get('call.record.phone.answered', '正在通话中')}`;
+            desTipObj.tip = (<ReleaseButton callClient={callClient} tip={tip}> </ReleaseButton>);
         } else if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
             desTipObj.tip = `${Intl.get('call.record.phone.unknown', '结束通话')}`;
         }
@@ -259,6 +270,13 @@ class phoneStatusTop extends React.Component {
     handleAddPlan = () => {
         this.props.handleAddPlan();
     };
+    //挂断电话
+    releaseCall = (called) => {
+        if (getCallClient()) {
+            getCallClient().releaseCall();
+        }
+    };
+
     render() {
         var iconFontCls = 'modal-icon iconfont';
         var phonemsgObj = this.state.phonemsgObj;
@@ -315,6 +333,7 @@ class phoneStatusTop extends React.Component {
         );
     }
 }
+
 phoneStatusTop.defaultProps = {
     addMoreInfoCls: '',
     phoneAlertModalTitleCls: '',
@@ -323,7 +342,8 @@ phoneStatusTop.defaultProps = {
     detailCustomerId: '',
     isAddingMoreProdctInfo: false,
     contactNameObj: {},
-    handleAddProductFeedback: function() {},
+    handleAddProductFeedback: function() {
+    },
     isAddingPlanInfo: false,
     handleAddPlan: function() {
 

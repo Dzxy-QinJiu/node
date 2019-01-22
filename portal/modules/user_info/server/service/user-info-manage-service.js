@@ -18,8 +18,7 @@ var userInfoRestApis = {
     checkUserInfoPwd: '/rest/base/checkUserInfoPwd',
     editUserInfoPwd: '/rest/base/v1/user',
     activeUserEmail: '/rest/base/v1/user/bunding/email',//邮箱激活接口
-    getManagedRealm: '/rest/base/v1/realm/managedrealm',//所管理的安全域
-    getOrganization: '/rest/base/v1/user/organization',//获取当前登录用户所在的组织
+    getManagedRealm: '/rest/base/v1/realm/managedrealm',//获取当前登录用户所在的组织
     setSubscribeEmail: '/rest/base/v1/user/email/rejection',//是否订阅通知邮件
     getUserInfoPhoneCode: '/rest/base/v1/user/bunding/phone',//获取短信验证码
     bindUserInfoPhone: '/rest/base/v1/user/baseinfo'//绑定邮箱
@@ -130,16 +129,9 @@ exports.checkUserInfoPwd = function(req, res, userInfoPasswd) {
 
 //获得所管理的安全域
 exports.getManagedRealm = function(req, res) {
-    let frontUrl = req.hostname;
-    //ketao上， 获取当前登录用户所在的安全域
-    let url = userInfoRestApis.getManagedRealm;
-    //正式发版的curtao上，获取的是当前登录用户所在的组织
-    if(frontUrl === global.config.curtaoUrl){
-        url = userInfoRestApis.getOrganization;
-    }
     return restUtil.authRest.get(
         {
-            url: url,
+            url: userInfoRestApis.getManagedRealm,
             req: req,
             res: res
         }, null);

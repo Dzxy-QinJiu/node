@@ -30,7 +30,6 @@ exports.getUserDataByAjax = function() {
     }
 
     ajax();
-
     return deferred.promise();
 };
 //更新缓存中的登录用户的头像信息

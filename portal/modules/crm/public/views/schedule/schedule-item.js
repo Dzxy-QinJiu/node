@@ -8,9 +8,10 @@ var React = require('react');
 import {Button, Popover, message} from 'antd';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import userData from 'PUB_DIR/sources/user-data';
-import crmAjax from '../../ajax/index';
+import {getUserData} from 'PUB_DIR/sources/user-data';
 import Trace from 'LIB_DIR/trace';
+import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
+
 const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 
 class ScheduleItem extends React.Component {
@@ -85,37 +86,32 @@ class ScheduleItem extends React.Component {
             this.props.deleteSchedule(itemId);
         }
     }
+
     // 自动拨号
     handleClickCallOut(phone) {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.schedule-contact-phone-block'), '拨打电话');
         if (this.props.getCallNumberError) {
             message.error(this.props.getCallNumberError || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
         } else {
-            if (this.props.callNumber) {
-                let reqData = {
-                    from: this.props.callNumber,
-                    to: phone
-                };
-                crmAjax.callOut(reqData).then((result) => {
-                    if (result.code === 0) {
-                        message.success('拨打成功！');
-                    }
+            let callClient = getCallClient();
+            if (callClient && callClient.isInited()) {
+                callClient.callout(phone).then((result) => {
+                    message.success(Intl.get('crm.call.phone.success', '拨打成功'));
                 }, (errMsg) => {
-                    message.error(errMsg || '拨打失败！');
+                    message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
                 });
-            } else {
-                message.error(Intl.get('crm.bind.phone', '请先绑定分机号！'));
             }
         }
     }
 
     render() {
-        const user_id = userData.getUserData().user_id;
+        const user_id = getUserData().user_id;
         const item = this.props.item;
         const scheduleShowObj = this.getScheduleShowObj(item);
         const phoneArray = this.getContactPhoneArray(item);
         return (
-            <div className={classNames(`schedule-item ${scheduleShowObj.timeClass}`, {'day-split-line': this.props.hasSplitLine})}>
+            <div
+                className={classNames(`schedule-item ${scheduleShowObj.timeClass}`, {'day-split-line': this.props.hasSplitLine})}>
                 <div className='schedule-item-title'>
                     <span className={`iconfont ${scheduleShowObj.iconClass}`}/>
                     <span className='schedule-time-stage'>{scheduleShowObj.startTime}</span>
@@ -151,7 +147,7 @@ class ScheduleItem extends React.Component {
                         {user_id === item.member_id ?
                             <Button className='schedule-status-btn' onClick={this.handleItemStatus.bind(this, item)}
                                 size='small'>
-                                {item.status === 'false' ? Intl.get('crm.schedule.set.compelete','标为已完成') : Intl.get('crm.schedule.set.unfinished','标为未完成')}
+                                {item.status === 'false' ? Intl.get('crm.schedule.set.compelete', '标为已完成') : Intl.get('crm.schedule.set.unfinished', '标为未完成')}
                             </Button> : null}
                         <span className='right-handle-buttons'>
                             {item.socketio_notice && item.alert_time ? (<Popover

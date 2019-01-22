@@ -16,24 +16,6 @@ exports.getUserInfo = function(userId) {
     return Deferred.promise();
 };
 
-//获取用户所管理的安全域信息
-exports.getManagedRealm = function() {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/get_managed_realm',
-        dataType: 'json',
-        type: 'get',
-        success: function(realmInfo) {
-            Deferred.resolve(realmInfo);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    })
-    ;
-    return Deferred.promise();
-};
-
 //获取登录日志
 exports.getLogList = function(params) {
     var Deferred = $.Deferred();

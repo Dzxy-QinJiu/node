@@ -943,6 +943,9 @@ var zh_CN = {
     'config.integration.config.get.error': '获取集成配置的信息出错了',
     //配置end
     // 通话记录start
+    'call.record.call.in.to.click': '有电话打入,请点击',
+    'call.record.answer': '接听',
+    'call.record.to.release': '挂断',
     'call.record.caller': '呼叫者',
     'call.record.team': '团队',
     'call.recoord.call.time': '拨打时间',
@@ -2709,7 +2712,7 @@ var zh_CN = {
     'apply.approve.total.leave.time': '请假时长',
     'apply.approve.total.days': '共{X}天',
     'common.start.end.time': '起止时间',
-    'apply.approve.word.message':'留言',
+    'apply.approve.word.message': '留言',
     'apply.will.select.transfer.approver': '请选择要转给的待审批人',
     'apply.will.approve.apply.item': '待审批人',
     'apply.no.relate.user': '无相关成员',

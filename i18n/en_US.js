@@ -936,6 +936,9 @@ var en_US = {
     'config.integration.config.get.error': 'Failed to get integrate config',//获取集成配置的信息出错了
     //配置end
     // 通话记录start
+    'call.record.call.in.to.click': 'There is a phone call,whether to',//有电话打入,请点击
+    'call.record.answer': 'answer',
+    'call.record.to.release': 'hang up',
     'call.record.caller': 'Caller', // 呼叫者
     'call.record.team': 'Team', // 团队
     'call.recoord.call.time': 'Call Time', // 拨打时间
@@ -2687,7 +2690,7 @@ var en_US = {
     'apply.approve.total.leave.time': 'Leave range',//请假时长
     'apply.approve.total.days': 'A total of {X} day',//共{X}天
     'common.start.end.time': 'start end time',//起止时间
-    'apply.approve.word.message':'leave a message',//留言
+    'apply.approve.word.message': 'leave a message',//留言
     'apply.will.select.transfer.approver': 'Please select the person to be approved to be transferred to',//请选择要转给的待审批人
     'apply.will.approve.apply.item': 'Pending person',//待审批人
     'apply.no.relate.user': 'No related members',//无相关成员
