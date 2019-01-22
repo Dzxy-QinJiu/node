@@ -64,7 +64,14 @@ const LAYOUT_CONSTANTS = {
 
 const UserDetailAddApp = createReactClass({
     displayName: 'UserDetailAddApp',
-
+    propTypes: {
+        isSingleAppEdit: PropTypes.bool,
+        showUserNumber: PropTypes.bool,
+        showIsTwoFactor: PropTypes.bool,
+        showMultiLogin: PropTypes.bool,
+        height: PropTypes.number,
+        initialUser: PropTypes.object,
+    },
     //mixin
     mixins: [
         FieldMixin,
@@ -583,8 +590,8 @@ const UserDetailAddApp = createReactClass({
     onAppPropertyChange(appsSetting) {
         let newAppsSetting = this.state.appsSetting;
         _.each(newAppsSetting, (value, appId) => {
-            value.roles = appsSetting[appId].roles;
-            value.permissions = appsSetting[appId].permissions;
+            value.roles = _.get(appsSetting[appId],'roles');
+            value.permissions = _.get(appsSetting[appId],'permissions');
         });
         UserDetailAddAppActions.saveAppsSetting(newAppsSetting);
     },

@@ -51,10 +51,12 @@ var wrapperCol = {span: 11};
 var CustomerSuggest = require('./customer_suggest/customer_suggest');
 const SELECT_CUSTOM_TIME_TYPE = 'custom';
 const USER_DETAIL_ADD_APP_CUSTOMER_SELECT_WRAP = 'user-detail-add-app-customer-suggest-wrap';
-
+import ShareObj from'../util/app-id-share-util';
 var UserDetailAddApp = createReactClass({
     displayName: 'UserDetailAddApp',
-
+    propTypes: {
+        initialUser: PropTypes.object
+    },
     getDefaultProps: function() {
         return {
             //初始用户
@@ -145,7 +147,10 @@ var UserDetailAddApp = createReactClass({
                     });
                     //添加应用名
                     var email_app_names = [];
-                    var appList = AppUserStore.getState().appList;
+                    var appList = AppUserStore.getState().appList || [];
+                    if (!_.get(appList, 'length') && _.get(ShareObj, 'share_app_list.length')) {
+                        appList = ShareObj.share_app_list;
+                    }
                     //批量遍历应用，添加应用名
                     _.each(batchSelectedApps , (app_id) => {
                         var targetApp = _.find(appList , (item) => app_id === item.app_id);
