@@ -87,14 +87,14 @@ AppUserDetailStore.prototype.getUserDetail = function(result) {
         this.initialUser = {};
     } else {
         this.getDetailErrorMsg = '';
-        this.initialUser = result.userDetail;
-        this.initialUser.apps = this.initialUser.apps.map(x => {
+        this.initialUser = _.get(result, 'userDetail', {});
+        this.initialUser.apps = _.map(this.initialUser.apps, x => {
             x.showDetail = false;
             return x;
         });
         //用户所属字段赋值
-        this.customer_id = result.userDetail.customer.customer_id || '';
-        this.customer_name = result.userDetail.customer.customer_name || '';
+        this.customer_id = _.get(result,'userDetail.customer.customer_id', '');
+        this.customer_name = _.get(result, 'userDetail.customer.customer_name', '');
     }
 };
 
