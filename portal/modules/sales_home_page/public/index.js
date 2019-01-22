@@ -148,9 +148,9 @@ class SalesHomePage extends React.Component {
         SalesHomeAction.getWebsiteConfig();
     };
 
-    // 获取组织id
+    // 获取我所在组织信息
     getOrganization = (callback) => {
-        commonDataUtil.getManagedOrganization().then((resData) => {
+        commonDataUtil.getMyOrganization().then((resData) => {
             this.state.organization || this.setState({
                 organization: resData
             });

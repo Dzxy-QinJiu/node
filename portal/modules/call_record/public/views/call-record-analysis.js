@@ -34,7 +34,7 @@ var hours = _.range(24);
 var days = [Intl.get('user.time.sunday', '周日'), Intl.get('user.time.monday', '周一'), Intl.get('user.time.tuesday', '周二'), Intl.get('user.time.wednesday', '周三'), Intl.get('user.time.thursday', '周四'), Intl.get('user.time.friday', '周五'), Intl.get('user.time.saturday', '周六')];
 import timeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import {getResultType, getErrorTipAndRetryFunction} from 'PUB_DIR/sources/utils/common-method-util';
-import {getManagedOrganization} from 'PUB_DIR/sources/utils/common-data-util';
+import {getMyOrganization} from 'PUB_DIR/sources/utils/common-data-util';
 import {ORGANIZATION_TYPE} from 'PUB_DIR/sources/utils/consts';
 //地图的formatter
 function mapFormatter(obj) {
@@ -129,10 +129,10 @@ class CallRecordAnalyis extends React.Component {
         this.setState(CallAnalysisStore.getState());
     };
 
-    // 获取组织id
+    // 获取我所在组织信息
     getOrganization = (callback) => {
-        getManagedOrganization().then((resData) => {
-            this.state.realm || this.setState({
+        getMyOrganization().then((resData) => {
+            this.state.organization || this.setState({
                 organization: resData
             });
             callback && callback();
