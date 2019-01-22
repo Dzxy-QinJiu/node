@@ -1,11 +1,9 @@
-var React = require('react');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
-const Validator = Validation.Validator;
+
 /**
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
-import { RightPanelClose, RightPanelReturn } from '../../../../../components/rightPanel';
 import { Form, Icon, Alert, Checkbox, Input, Button } from 'antd';
 import Spinner from '../../../../../components/spinner';
 import AlertTimer from '../../../../../components/alert-timer';
@@ -21,21 +19,16 @@ import AppUserUtil from '../../util/app-user-util';
 import UserDetailAddAppStore from '../../store/v2/user-detail-add-app-store';
 import OperationSteps from '../../../../../components/user_manage_components/operation-steps';
 import OperationStepsFooter from '../../../../../components/user_manage_components/operation-steps-footer';
-import OperationScrollBar from '../../../../../components/user_manage_components/operation-scrollbar';
-import SearchIconList from '../../../../../components/search-icon-list';
-
 import UserTypeRadioField from '../../../../../components/user_manage_components/user-type-radiofield';
 import UserTimeRangeField from '../../../../../components/user_manage_components/user-time-rangefield';
 import UserOverDraftField from '../../../../../components/user_manage_components/user-over-draftfield';
 import UserTwoFactorField from '../../../../../components/user_manage_components/user-two-factorfield';
 import UserMultiLoginField from '../../../../../components/user_manage_components/user-multilogin-radiofield';
 import insertStyle from '../../../../../components/insert-style';
-import UserData from '../../../../../public/sources/user-data';
 const GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 const DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 const CheckboxGroup = Checkbox.Group;
 import UserAppConfig from '../v3/AppPropertySetting';
-import AppRolePermission from '../v3/app-role-permission';
 import ApplyUserAppConfig from 'CMP_DIR/apply-user-app-config';
 import AppConfigForm from 'CMP_DIR/apply-user-app-config/app-config-form';
 
@@ -92,6 +85,15 @@ const UserDetailAddApp = createReactClass({
 
     onStateChange() {
         this.setState(UserDetailAddAppStore.getState());
+    },
+
+    propTypes: {
+        isSingleAppEdit: PropTypes.string,
+        showUserNumber: PropTypes.number,
+        showIsTwoFactor: PropTypes.string,
+        showMultiLogin: PropTypes.string,
+        height: PropTypes.number,
+        initialUser: PropTypes.object
     },
 
     componentDidMount() {
@@ -583,8 +585,8 @@ const UserDetailAddApp = createReactClass({
     onAppPropertyChange(appsSetting) {
         let newAppsSetting = this.state.appsSetting;
         _.each(newAppsSetting, (value, appId) => {
-            value.roles = appsSetting[appId].roles;
-            value.permissions = appsSetting[appId].permissions;
+            value.roles = _.get(appsSetting[appId], 'roles', []);
+            value.permissions = _.get(appsSetting[appId], 'permissions', []);
         });
         UserDetailAddAppActions.saveAppsSetting(newAppsSetting);
     },
