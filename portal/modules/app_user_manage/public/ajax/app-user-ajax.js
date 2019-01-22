@@ -285,8 +285,8 @@ exports.addApp = function(appList) {
         data: JSON.stringify(appList),
         timeout: 180 * 1000,
         success: function(result) {
-            if(_.isArray(result)) {
-                Deferred.resolve(result);
+            if(result) {
+                Deferred.resolve(appList);
             } else {
                 Deferred.reject(DEFAULT_ERROR_MSG);
             }

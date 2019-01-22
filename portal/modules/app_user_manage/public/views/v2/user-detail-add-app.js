@@ -57,7 +57,6 @@ const LAYOUT_CONSTANTS = {
 
 const UserDetailAddApp = createReactClass({
     displayName: 'UserDetailAddApp',
-
     //mixin
     mixins: [
         FieldMixin,

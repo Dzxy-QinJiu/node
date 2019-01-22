@@ -31,6 +31,7 @@ import StatusWrapper from 'CMP_DIR/status-wrapper';
 import {checkPhone} from 'PUB_DIR/sources/utils/validate-util';
 const FORMAT = oplateConsts.DATE_FORMAT;
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
+import ShareObj from'../util/app-id-share-util';
 class UserDetailBasic extends React.Component {
     static defaultProps = {
         userId: '1'
@@ -539,6 +540,9 @@ class UserDetailBasic extends React.Component {
     renderAddAppBtn = () => {
         //所有应用列表
         var allApps = AppUserStore.getState().appList || [];
+        if (!_.get(allApps, 'length') && _.get(ShareObj, 'share_app_list.length')) {
+            allApps = ShareObj.share_app_list;
+        }
         //已经添加的应用
         var existApps = this.state.initialUser.apps || [];
         //已经添加的应用id数组
