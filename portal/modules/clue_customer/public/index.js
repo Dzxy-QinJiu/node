@@ -50,7 +50,10 @@ import ClueFilterPanel from './views/clue-filter-panel';
 import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import ShearContent from 'CMP_DIR/shear-content';
+const AlertTimer = require('CMP_DIR/alert-timer');
 const DELAY_TIME = 3000;
+import AppUserManage from 'MOD_DIR/app_user_manage/public';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 68,
@@ -452,57 +455,57 @@ class ClueCustomer extends React.Component {
         this.setState({rightPanelIsShow: true});
         clueCustomerAction.setCurrentCustomer(item.id);
     };
-    handleContactLists = (contact)=>{
+    handleContactLists = (contact) => {
         var clipContact = false;
-        if (contact.length >1){
-            clipContact= true;
-            contact.splice(1,contact.length -1);
+        if (contact.length > 1){
+            clipContact = true;
+            contact.splice(1,contact.length - 1);
         }
         _.map(contact, (contactItem, idx) => {
             if (_.isArray(contactItem.phone) && contactItem.phone.length){
                 if (contactItem.phone.length > 1){
-                    contactItem.phone.splice(1, contactItem.phone.length-1);
-                    clipContact= true;
-                }else if (_.isArray(contactItem.email) &&  contactItem.email.length || _.isArray(contactItem.qq) &&  contactItem.qq.length || _.isArray(contactItem.weChat) &&  contactItem.weChat.length){
-                    clipContact= true;
+                    contactItem.phone.splice(1, contactItem.phone.length - 1);
+                    clipContact = true;
+                }else if (_.isArray(contactItem.email) && contactItem.email.length || _.isArray(contactItem.qq) && contactItem.qq.length || _.isArray(contactItem.weChat) && contactItem.weChat.length){
+                    clipContact = true;
 
-                };
-                contactItem.email =[];
-                contactItem.qq =[];
-                contactItem.weChat =[];
+                }
+                contactItem.email = [];
+                contactItem.qq = [];
+                contactItem.weChat = [];
 
-            };
+            }
             if (_.isArray(contactItem.email) && contactItem.email.length){
                 if (contactItem.email.length > 1){
-                    contactItem.email.splice(1, contactItem.email.length-1);
-                    clipContact= true;
-                }else if (_.isArray(contactItem.qq) &&  contactItem.qq.length || _.isArray(contactItem.weChat) && contactItem.weChat.length){
-                    clipContact= true;
+                    contactItem.email.splice(1, contactItem.email.length - 1);
+                    clipContact = true;
+                }else if (_.isArray(contactItem.qq) && contactItem.qq.length || _.isArray(contactItem.weChat) && contactItem.weChat.length){
+                    clipContact = true;
 
-                };
-                contactItem.qq =[];
-                contactItem.weChat =[];
-            };
+                }
+                contactItem.qq = [];
+                contactItem.weChat = [];
+            }
             if (_.isArray(contactItem.qq) && contactItem.qq.length){
-                if (contactItem.qq.length>1){
-                    contactItem.qq.splice(1, contactItem.qq.length-1);
-                    clipContact= true;
+                if (contactItem.qq.length > 1){
+                    contactItem.qq.splice(1, contactItem.qq.length - 1);
+                    clipContact = true;
                 }else if (_.isArray(contactItem.weChat) && contactItem.weChat.length){
-                    clipContact= true;
+                    clipContact = true;
 
-                };
-                contactItem.qq.splice(1, contactItem.qq.length-1);
-                contactItem.weChat =[];
-            };
+                }
+                contactItem.qq.splice(1, contactItem.qq.length - 1);
+                contactItem.weChat = [];
+            }
             if (_.isArray(contactItem.weChat) && contactItem.weChat.length){
-                if (contactItem.weChat.length>1){
-                    contactItem.weChat.splice(1, contactItem.weChat.length-1);
-                    clipContact= true;
+                if (contactItem.weChat.length > 1){
+                    contactItem.weChat.splice(1, contactItem.weChat.length - 1);
+                    clipContact = true;
                 }
 
-            };
+            }
         });
-        return {clipContact:clipContact,contact:contact};
+        return {clipContact: clipContact,contact: contact};
     };
     handleEditTrace = (updateItem) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.foot-text-content'), '点击添加/编辑跟进内容');
@@ -552,7 +555,7 @@ class ClueCustomer extends React.Component {
                     });
                 } else {
                     //如果是待跟进状态,需要在列表中删除，其他状态
-                    var clueItem = _.find(this.state.curClueLists, clueItem=> clueItem.id === item.id);
+                    var clueItem = _.find(this.state.curClueLists, clueItem => clueItem.id === item.id);
                     // var clueItem = this.state.salesClueItemDetail;
                     clueItem.status = SELECT_TYPE.HAS_TRACE;
                     var userId = userData.getUserData().user_id || '';
@@ -593,7 +596,7 @@ class ClueCustomer extends React.Component {
         });
     };
 
-    renderEditTraceContent = (salesClueItem) =>{
+    renderEditTraceContent = (salesClueItem) => {
         //点击增加按钮 补充跟进记录
         var hide = () => {
             this.setState({
@@ -614,21 +617,21 @@ class ClueCustomer extends React.Component {
                     </div>
                 ) : null}
                 <TextArea type='textarea' value={this.state.submitContent}
-                          placeholder={Intl.get('sales.home.fill.in.trace.content', '请输入跟进内容')}
-                          onChange={this.handleInputChange}/>
+                    placeholder={Intl.get('sales.home.fill.in.trace.content', '请输入跟进内容')}
+                    onChange={this.handleInputChange}/>
                 <div className="save-cancel-btn">
                     <Button type='primary' onClick={this.handleSubmitContent.bind(this, salesClueItem)}
-                            disabled={this.state.submitTraceLoading} data-tracename="保存跟进内容">
+                        disabled={this.state.submitTraceLoading} data-tracename="保存跟进内容">
                         {Intl.get('common.save', '保存')}
                         {this.state.submitTraceLoading ? <Icon type="loading"/> : null}
                     </Button>
                     <Button className='cancel-btn'
-                            onClick={this.handleCancelBtn}>{Intl.get('common.cancel', '取消')}</Button>
+                        onClick={this.handleCancelBtn}>{Intl.get('common.cancel', '取消')}</Button>
                 </div>
             </div>
         );
     };
-    renderShowTraceContent = (salesClueItem) =>{
+    renderShowTraceContent = (salesClueItem) => {
         let user = userData.getUserData();
         let member_id = user.user_id || '';
         var traceContent = _.get(salesClueItem, 'customer_traces[0].remark', '');//该线索的跟进内容
@@ -643,24 +646,29 @@ class ClueCustomer extends React.Component {
                 {/*有跟进记录*/}
                 {traceContent ?
                     <div className="record-trace-container">
-                        <span>{traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : ''}</span>
-                        <span>
-                                   <span className="trace-author">
-                                       <span className="trace-name">{tracePersonId === member_id ? Intl.get('sales.home.i.trace', '我') : tracePersonName} </span>{Intl.get('clue.add.trace.follow', '跟进')}:
-                        </span>
-                            {traceContent}
-                            {canEditTrace ? <i className="iconfont icon-edit-btn"
-                                               onClick={this.handleEditTrace.bind(this, salesClueItem)}
-                            ></i> : null}
-                    </span></div>
+                        <ShearContent>
+                            <span>
+                                <span>{traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : ''}</span>
+                                <span>
+                                    <span className="trace-author">
+                                        <span className="trace-name">{tracePersonId === member_id ? Intl.get('sales.home.i.trace', '我') : tracePersonName} </span>{Intl.get('clue.add.trace.follow', '跟进')}:
+                                    </span>
+                                    {traceContent}
+                                    {canEditTrace ? <i className="iconfont icon-edit-btn"
+                                        onClick={this.handleEditTrace.bind(this, salesClueItem)}
+                                    ></i> : null}
+                                </span>
+                            </span>
+                        </ShearContent>
+                    </div>
                     : hasPrivilege('CLUECUSTOMER_ADD_TRACE') ?
                         <span className='add-trace-content'
-                                onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</span>
+                            onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</span>
                         : null}
 
             </div>
 
-        )
+        );
     };
     showCustomerDetail = (customerId) => {
         this.setState({
@@ -712,7 +720,7 @@ class ClueCustomer extends React.Component {
                 });
             } else {
                 // var salesClueItemDetail = this.state.salesClueItemDetail;
-                var salesClueItemDetail = _.find(this.state.curClueLists, clueItem=> clueItem.id === item.id);
+                var salesClueItemDetail = _.find(this.state.curClueLists, clueItem => clueItem.id === item.id);
                 salesClueItemDetail.invalid_info = {
                     user_name: userData.getUserData().nick_name,
                     time: moment().valueOf()
@@ -748,7 +756,7 @@ class ClueCustomer extends React.Component {
             }
         });
     };
-    renderInavailabilityOrValidClue = (salesClueItem) =>{
+    renderInavailabilityOrValidClue = (salesClueItem) => {
         //是否有标记线索无效的权限
         var avalibilityPrivilege = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
         var isEditting = this.state.isInvalidClue === salesClueItem.id;
@@ -756,16 +764,16 @@ class ClueCustomer extends React.Component {
         return(
             <span className="valid-or-invalid-container">
                 {avalibilityPrivilege ? <span className="cancel-invalid" onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)}
-                                                data-tracename="取消判定线索无效"  disabled={isEditting}>
-                    {inValid? <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>: <span className="invalid-name">{Intl.get('sales.clue.is.enable', '无效')}</span>}
+                    data-tracename="取消判定线索无效" disabled={isEditting}>
+                    {inValid ? <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span> : <span className="invalid-name">{Intl.get('sales.clue.is.enable', '无效')}</span>}
                     {isEditting ? <Icon type="loading"/> : null}
-                </span> :null}
+                </span> : null}
             </span>
 
-        )
+        );
 
     };
-    renderAvailabilityClue = (salesClueItem)=>{
+    renderAvailabilityClue = (salesClueItem) => {
         //是有效线索
         let availability = salesClueItem.availability !== '1';
         //关联客户
@@ -786,7 +794,7 @@ class ClueCustomer extends React.Component {
 
                 }
             </div>
-        )
+        );
 
     };
     getClueTableColunms = () => {
@@ -801,19 +809,23 @@ class ClueCustomer extends React.Component {
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             {renderClueStatus(salesClueItem.status)}
                             <span className="clue-name" data-tracename="查看线索详情"
-                                  onClick={this.showClueDetailOut.bind(this, salesClueItem)}>{salesClueItem.name}</span>
+                                onClick={this.showClueDetailOut.bind(this, salesClueItem)}>{salesClueItem.name}</span>
                             <div className="clue-trace-content">
-                                <span>{moment(salesClueItem.source_time).format(oplateConsts.DATE_FORMAT)}-</span>
-                                <span className="clue-access-channel">{salesClueItem.access_channel || Intl.get('clue.unknown.access.channel','未知接入渠道')}{Intl.get('apply.approve.word.message','留言')}:</span>
-                                <span>{salesClueItem.source}</span>
+                                <ShearContent>
+                                    <span>
+                                        <span>{moment(salesClueItem.source_time).format(oplateConsts.DATE_FORMAT)}-</span>
+                                        <span className="clue-access-channel">{salesClueItem.access_channel || Intl.get('clue.unknown.access.channel','未知接入渠道')}:</span>
+                                        <span>{salesClueItem.source}</span>
+                                    </span>
+                                </ShearContent>
                             </div>
                         </div>
-                    )
+                    );
 
                 }
             },{
                 title: Intl.get('call.record.contacts', '联系人'),
-                dataIndex:'contact',
+                dataIndex: 'contact',
                 width: '20%',
                 render: (text, salesClueItem, index) => {
                     //联系人的相关信息
@@ -830,20 +842,20 @@ class ClueCustomer extends React.Component {
                                     callNumber={this.state.callNumber}
                                     errMsg={this.state.errMsg}
                                 />
-                                {handledContactObj.clipContact? <i className="iconfont icon-more" onClick={this.showClueDetailOut.bind(this, salesClueItem)}/> :null}
+                                {handledContactObj.clipContact ? <i className="iconfont icon-more" onClick={this.showClueDetailOut.bind(this, salesClueItem)}/> : null}
                             </div>
 
-                        )
+                        );
                     }else{
-                     return null;
+                        return null;
                     }
 
                 }
             },{
                 title: Intl.get('clue.handle.clue.person', '当前跟进人'),
-                dataIndex:'trace_person',
+                dataIndex: 'trace_person',
                 width: '10%',
-                render: (text, salesClueItem, index) =>{
+                render: (text, salesClueItem, index) => {
                     let user = userData.getUserData();
                     var handlePersonName = _.get(salesClueItem,'user_name','');//当前跟进人
                     //分配线索给销售的权限
@@ -870,52 +882,52 @@ class ClueCustomer extends React.Component {
                                 /> : null
                             }
                         </div>
-                    )
+                    );
 
                 }
             },{
                 title: Intl.get('call.record.follow.content', '跟进内容'),
-                dataIndex:'trace_content',
+                dataIndex: 'trace_content',
                 width: '20%',
-                render: (text, salesClueItem, index) =>{
+                render: (text, salesClueItem, index) => {
                     return(
                         <div className="clue-foot" id="clue-foot">
                             {_.get(this,'state.isEdittingItem.id') === salesClueItem.id ? this.renderEditTraceContent(salesClueItem) :
                                 this.renderShowTraceContent(salesClueItem)
                             }
                         </div>
-                    )
+                    );
                 }
             },{
                 title: Intl.get('clue.customer.associate.customer', '关联客户'),
-                dataIndex:'assocaite_customer',
-                className:'invalid-td-clue',
+                dataIndex: 'assocaite_customer',
+                className: 'invalid-td-clue',
                 width: '20%',
-                render: (text, salesClueItem, index) =>{
+                render: (text, salesClueItem, index) => {
                     //是有效线索
                     let availability = salesClueItem.availability !== '1';
                     //关联客户
                     var associatedCustomer = salesClueItem.customer_name;
                     return (
                         <div className="avalibity-or-invalid-container">
-                            {availability? this.renderAvailabilityClue(salesClueItem):this.renderInavailabilityOrValidClue(salesClueItem)}
+                            {availability ? this.renderAvailabilityClue(salesClueItem) : this.renderInavailabilityOrValidClue(salesClueItem)}
                         </div>
-                    )
+                    );
                 }
             }];
         return columns;
     };
-    setInvalidClassName= (record, index) =>{
-        return (record.availability === '1'? 'invalid-clue' : '')
+    setInvalidClassName= (record, index) => {
+        return (record.availability === '1' ? 'invalid-clue' : '');
     };
     renderClueCustomerLists = () => {
         var customerList = this.state.curClueLists;
         return (
             <AntcTable dataSource={customerList}
-                       pagination={false}
-                       columns={this.getClueTableColunms()}
-                       rowClassName={this.setInvalidClassName}
-                       ref="cluetable"
+                pagination={false}
+                columns={this.getClueTableColunms()}
+                rowClassName={this.setInvalidClassName}
+                ref="cluetable"
             />);
 
     };
