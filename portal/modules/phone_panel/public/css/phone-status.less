@@ -1,6 +1,7 @@
 @import "../../../../public/css/common-variables";
+
 @FINISHSTATUSBACKGROUND: #8DA8C5;
-@PHONENORMALCOLOR:#2196f3;
+@PHONENORMALCOLOR: #2196f3;
 //session过期后，提示重输密码的样式设置
 .overflow-break {
   white-space: normal;
@@ -111,10 +112,18 @@
       overflow: hidden;
       position: relative;
       //联系人相关信息
-      .contact-info-detail{
+      .contact-info-detail {
         overflow: hidden;
         padding: 8px;
         background-color: @PHONENORMALCOLOR;
+        .call-operation-button {
+          height: 18px;
+          padding: 0 8px;
+          float: right;
+          border: 1px solid #d9d9d9;
+          background-color: #b8c4ca;
+          color: white;
+        }
         //通话图标
         #iconfont-tip {
           display: inline-block;
@@ -150,16 +159,16 @@
           }
         }
       }
-      .contact-info-detail.finish-phone-call{
+      .contact-info-detail.finish-phone-call {
         background: @FINISHSTATUSBACKGROUND;
       }
       //跟进记录及相关操作
-      .trace-and-handle-btn{
+      .trace-and-handle-btn {
         .trace-content-container {
           clear: both;
           overflow: hidden;
           width: 100%;
-          .ant-select{
+          .ant-select {
             width: 100%;
           }
           .trace-content {
@@ -168,9 +177,9 @@
             line-height: 18px;
             font-size: 12px;
             &:extend(.overflow-break);
-            .trace-content-label{
+            .trace-content-label {
               margin-right: 8px;
-              color:#aaa;
+              color: #aaa;
             }
             .icon-update {
               position: absolute;
@@ -178,7 +187,7 @@
               cursor: pointer;
               margin-left: 5px;
             }
-            &:hover{
+            &:hover {
               .icon-update {
                 display: inline-block;
               }
@@ -216,24 +225,24 @@
               cursor: pointer;
               padding: 0 12px;
             }
-            .ant-btn{
-              margin-top:10px;
+            .ant-btn {
+              margin-top: 10px;
             }
           }
         }
-        .add-trace-and-plan{
+        .add-trace-and-plan {
           background-color: #EEF7FE;
           overflow: hidden;
-          .ant-btn.ant-btn-sm{
-            color:#92AAC8;
+          .ant-btn.ant-btn-sm {
+            color: #92AAC8;
           }
           //添加反馈，竞品信息部分按钮的样式
           .add-more-info-container {
             float: left;
-            margin:8px;
+            margin: 8px;
           }
-          .add-plan-info-container{
-            margin:8px;
+          .add-plan-info-container {
+            margin: 8px;
           }
         }
 
@@ -247,7 +256,7 @@
 
     }
     //
-    .phone-alert-inner-content{
+    .phone-alert-inner-content {
       background: #EEF7FE;
       padding: 10px;
     }
@@ -268,8 +277,8 @@
       }
     }
     //添加联系计划内容样式
-    .add-plan{
-      .schedule-form{
+    .add-plan {
+      .schedule-form {
         box-shadow: -4px 0 20px #ddd;
         background: #fff;
         border-radius: 4px;
@@ -282,7 +291,7 @@
       }
       .customer-detail {
         border-radius: 3px;
-        .customer-detail-content{
+        .customer-detail-content {
           overflow: hidden;
         }
         .show-customer-detail {

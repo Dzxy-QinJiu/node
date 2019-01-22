@@ -9,7 +9,7 @@ exports.getUserDataByAjax = function () {
             //语言环境的设置
             Oplate.lang = _.isObject(data) ? data.lang : 'zh_CN';
             deferred.resolve();
-        }).fail(function (data) {
+        }).error(function (data) {
             let errorMsg = '';
             if (_.isObject(data.responseJSON)) {
                 //语言环境的设置

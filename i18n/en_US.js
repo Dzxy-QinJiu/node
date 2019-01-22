@@ -916,6 +916,9 @@ var en_US = {
 
     //配置end
     // 通话记录start
+    'call.record.call.in.to.click': 'There is a phone call,whether to',//有电话打入,请点击
+    'call.record.answer': 'answer',
+    'call.record.to.release': 'hang up',
     'call.record.caller': 'Caller', // 呼叫者
     'call.record.team': 'Team', // 团队
     'call.recoord.call.time': 'Call Time', // 拨打时间
@@ -2659,7 +2662,7 @@ var en_US = {
     'apply.approve.upload.file.type': 'Upload {fileType}',//上传{fileType}
     'apply.approve.continue.file.type': 'Continue to upload {fileType}',//继续上传{fileType}
     'apply.approve.delete.this.file': 'Whether to delete this file',//是否删除此文件
-	'failed.distribute.sales.opportunity': 'Failed to distribute sales opportunity!',//分配销售机会失败！
+    'failed.distribute.sales.opportunity': 'Failed to distribute sales opportunity!',//分配销售机会失败！
     'common.customer.can.not.found.because.merged': '{count} of these customers were not queried because they were merged',//其中有{count}个客户因被合并而查询不到了
     'apply.approve.leave.am': 'am',//上午
     'apply.approve.leave.pm': 'pm',//下午

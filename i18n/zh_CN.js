@@ -920,6 +920,9 @@ var zh_CN = {
     'config.product.create_time': '创建时间',
     //配置end
     // 通话记录start
+    'call.record.call.in.to.click': '有电话打入,请点击',
+    'call.record.answer': '接听',
+    'call.record.to.release': '挂断',
     'call.record.caller': '呼叫者',
     'call.record.team': '团队',
     'call.recoord.call.time': '拨打时间',
@@ -2678,7 +2681,7 @@ var zh_CN = {
     'apply.approve.upload.file.type': '上传{fileType}',
     'apply.approve.continue.file.type': '继续上传{fileType}',
     'apply.approve.delete.this.file': '是否删除此文件',
-	'failed.distribute.sales.opportunity': '分配销售机会失败！',
+    'failed.distribute.sales.opportunity': '分配销售机会失败！',
     'common.customer.can.not.found.because.merged': '其中有{count}个客户因被合并而查询不到了',
     'apply.approve.leave.am': '上午',
     'apply.approve.leave.pm': '下午',

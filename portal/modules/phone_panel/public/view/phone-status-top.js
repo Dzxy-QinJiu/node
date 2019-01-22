@@ -10,7 +10,7 @@ import {Button, Tag, Select} from 'antd';
 const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
 import {PHONERINGSTATUS, commonPhoneDesArray} from '../consts';
-import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
+import {getCallClient, AcceptButton, ReleaseButton} from 'PUB_DIR/sources/utils/phone-util';
 
 var phoneAlertAction = require('../action/phone-alert-action');
 var phoneAlertStore = require('../store/phone-alert-store');
@@ -244,14 +244,18 @@ class phoneStatusTop extends React.Component {
             phoneNum: phoneNum,
             tip: ''
         };
+        let callClient = getCallClient();
         if (phonemsgObj.type === PHONERINGSTATUS.ALERT) {
             if (phonemsgObj.call_type === 'IN') {
-                desTipObj.tip = `${Intl.get('call.record.call.in.pick.phone', '有电话打入，请拿起话机')}`;
+                //如果是呼入，并且是需要展示接听按钮的情况，如：容联。需要点击接听才开始获取对方声音
+                desTipObj.tip = (<AcceptButton callClient={callClient}></AcceptButton>);
             } else {
-                desTipObj.tip = `${Intl.get('call.record.phone.alerting', '已振铃，等待对方接听')}`;
+                let tip = `${Intl.get('call.record.phone.alerting', '已振铃，等待对方接听')}`;
+                desTipObj.tip = (<ReleaseButton callClient={callClient} tip={tip}> </ReleaseButton>);
             }
         } else if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
-            desTipObj.tip = `${Intl.get('call.record.phone.answered', '正在通话中')}`;
+            let tip = `${Intl.get('call.record.phone.answered', '正在通话中')}`;
+            desTipObj.tip = (<ReleaseButton callClient={callClient} tip={tip}> </ReleaseButton>);
         } else if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
             desTipObj.tip = `${Intl.get('call.record.phone.unknown', '结束通话')}`;
         }
@@ -296,7 +300,6 @@ class phoneStatusTop extends React.Component {
                 <div className={phoneStatusContainer}>
                     <div id="iconfont-tip">
                         <i className={iconFontCls}></i>
-                        <span onClick={this.releaseCall.bind(this, phoneDes.phoneNum)}>挂断</span>
                     </div>
                     <div className="phone-status-tip">
                         <div className="contact-phone-title">
