@@ -71,7 +71,7 @@ class WeeklyReportDetail extends React.Component {
         return moment().year(year).isoWeek(weekIndex).startOf('isoWeek').valueOf();
     };
 
-    //获取某今年某周的结束日期
+    //获取某年某周的结束日期
     getEndDateOfWeek = (year, weekIndex) => {
         return moment().year(year).isoWeek(weekIndex).endOf('isoWeek').valueOf();
     };
