@@ -291,19 +291,6 @@ class SalesHomePage extends React.Component {
         return label;
     };
 
-    getCallBackColumnTitle = (label, key) => {
-        let sorter = this.state.callBackSorter;
-        let sortIcon = null;
-        if (sorter.field === key) {
-            if (sorter.order === 'descend') {
-                sortIcon = <span className='iconfont icon-xiajiantou phone-sort-icon'/>;
-            } else if (sorter.order === 'ascend') {
-                sortIcon = <span className='iconfont icon-jiantou-up phone-sort-icon'/>;
-            }
-        }
-        return <span>{label}{sortIcon}</span>;
-    };
-
     getPhoneListColumn = () => {
         let columns = [{
             title: this.getSalesColumnTitle(),
@@ -450,7 +437,7 @@ class SalesHomePage extends React.Component {
     getCallBackListColumn = () => {
         let columns = [
             {
-                title: this.getCallBackColumnTitle(Intl.get('common.callback.time', '回访时间'), 'call_date'),
+                title: Intl.get('common.callback.time', '回访时间'),
                 dataIndex: 'call_date',
                 width: 90,
                 className: 'has-sorter',
