@@ -23,6 +23,7 @@ class ButtonZones extends React.Component {
     componentWillUnmount() {
         $(window).off('resize', this.resizeFunc);
         this.cleanUpStyle();
+        topNavEmitter.removeListener(topNavEmitter.RELAYOUT, this.resizeFunc);
     }
     //清除样式
     cleanUpStyle = () => {

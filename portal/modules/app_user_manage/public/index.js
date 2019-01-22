@@ -61,7 +61,7 @@ class AppUserManage extends React.Component {
     state = {
         ...this.getStoreData(),
         customer_name: this.props.customer_name,//从客户页面跳转过来传过的客户名字
-        isGettingIntegrateType: false,//正在获取集成类型
+        isGettingIntegrateType: true,//正在获取集成类型
         getItegrateTypeError: false,//获取集成类型是否出错
         isShowAddProductView: false,//添加产品的配置视图
     };
@@ -521,8 +521,6 @@ class AppUserManage extends React.Component {
         AppUserAction.setInitialData();
     };
 
-    //获取初始状态
-    state = this.getStoreData();
     //渲染按钮区域
     renderTopNavOperation = () => {
         var currentView = AppUserUtil.getCurrentView();
@@ -685,10 +683,15 @@ class AppUserManage extends React.Component {
         const cls = classNames('app_user_manage_rightpanel white-space-nowrap right-panel', {
             'detail-v3-panel': this.state.rightPanelType === 'detail'
         });
+        //用户列表中，如果集成类型还未获取回来或获取出错或还未配置集成类型时，不展示头部导航和按钮区
+        let isHideTopNavBtn = AppUserUtil.getCurrentView() === 'user' && (
+            this.state.isGettingIntegrateType ||
+            this.state.getItegrateTypeError ||
+            this.state.isShowAddProductView);
         return (
             <div>
                 <div className="app_user_manage_page table-btn-fix" data-tracename="用户管理">
-                    { this.state.isGettingIntegrateType || this.state.getItegrateTypeError || this.state.isShowAddProductView ? (
+                    { isHideTopNavBtn ? (
                         <div className='app-user-nodata-topnav'><TopNav/></div>
                     ) : this.renderTopNavOperation()}
 
