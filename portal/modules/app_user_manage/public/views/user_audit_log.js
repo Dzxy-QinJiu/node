@@ -674,7 +674,7 @@ class LogView extends React.Component {
                          * */}
                         <div className="team-member-select">
                             {
-                                teamList && teamList.length && !userData.getUserData().isCommonSales ?
+                                teamList.length && !userData.getUserData().isCommonSales ?
                                     this.renderTeamMembersSelect() :
                                     null
                             }
