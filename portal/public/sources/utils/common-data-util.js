@@ -371,3 +371,28 @@ exports.getProductList = function(cb, isRefresh) {
         if (_.isFunction(cb)) cb(integrationProductList);
     }
 };
+
+//获取安全域id
+exports.getManagedRealm = function() {
+    return new Promise((resolve, reject) => {
+        const userProperty = 'realm_info';
+        let realmInfo = getUserData()[userProperty];
+        if (realmInfo) {
+            resolve(realmInfo);
+        } else {
+            $.ajax({
+                url: '/rest/get_managed_realm',
+                type: 'get',
+                dataType: 'json',
+                success: data => {
+                    //保存到userData中
+                    setUserData(userProperty, data);
+                    resolve(data);
+                },
+                error: xhr => {
+                    reject(xhr.responseJSON);
+                }
+            });
+        }
+    });
+};

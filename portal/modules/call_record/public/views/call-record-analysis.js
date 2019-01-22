@@ -34,6 +34,7 @@ var hours = _.range(24);
 var days = [Intl.get('user.time.sunday', '周日'), Intl.get('user.time.monday', '周一'), Intl.get('user.time.tuesday', '周二'), Intl.get('user.time.wednesday', '周三'), Intl.get('user.time.thursday', '周四'), Intl.get('user.time.friday', '周五'), Intl.get('user.time.saturday', '周六')];
 import timeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import {getResultType, getErrorTipAndRetryFunction} from 'PUB_DIR/sources/utils/common-method-util';
+import {getManagedRealm} from 'PUB_DIR/sources/utils/common-data-util';
 //地图的formatter
 function mapFormatter(obj) {
     let name = Intl.get('oplate_bd_analysis_realm_zone.2', '市区');
@@ -99,6 +100,9 @@ const TREND_TIME = 30 * 24 * 60 * 60 * 1000;
 
 const FIRSR_SELECT_DATA = [LITERAL_CONSTANT.TEAM, LITERAL_CONSTANT.MEMBER];
 
+const REALM = '36v8tudu9Z'; // 蚁坊
+
+
 class CallRecordAnalyis extends React.Component {
     constructor(props) {
         super(props);
@@ -116,13 +120,23 @@ class CallRecordAnalyis extends React.Component {
             firstSelectValue: FIRSR_SELECT_DATA[0], // 第一个选择框的值
             secondSelectValue: LITERAL_CONSTANT.ALL, // 第二个选择宽的值，默认是全部的状态
             switchStatus: false,//是否查看各团队通话趋势图
-            filter_phone: false,//是否过滤掉114，
-            effective_phone: true,//是否获取有效通话时长
+            filter_phone: false,//是否过滤掉114
+            realm: '', //安全域id
         };
     }
 
     onStoreChange = () => {
         this.setState(CallAnalysisStore.getState());
+    };
+
+    // 获取安全域id
+    getRealm = (callback) => {
+        getManagedRealm().then((resData) => {
+            this.state.realm || this.setState({
+                realm: resData
+            });
+            callback && callback();
+        });
     };
 
     // 获取销售团队和成员数据
@@ -294,7 +308,7 @@ class CallRecordAnalyis extends React.Component {
             end_time: this.state.end_time || moment().toDate().getTime(),
             deviceType: params && params.deviceType || this.state.callType,
             filter_phone: this.state.filter_phone,//是否过滤114
-            effective_phone: this.state.effective_phone, // 是否获取有效通话时长
+            effective_phone: this.state.realm.realm_id === REALM, // 是否获取有效通话时长
         };
         let pathParam = commonMethodUtil.getParamByPrivilege();
         if (this.state.teamList.list.length) { // 有团队时（普通销售时没有团队的）
@@ -342,7 +356,9 @@ class CallRecordAnalyis extends React.Component {
         if (!(this.state.switchStatus)) {
             this.getCallAnalysisTrendData(reqBody); // 所有团队总趋势图
         }
-        this.getCallInfoData(params); // 接通率
+        this.getRealm(() => {
+            this.getCallInfoData(params); // 接通率
+        });
         //获取单次通话时长TOP10的统计数据
         this.getCallDurTopTen(reqBody);
         this.getCallRate(reqBody); // 114占比
@@ -447,7 +463,7 @@ class CallRecordAnalyis extends React.Component {
      * @param isExport 是否是导出时调用的，导出时，时长都展示秒数
      */
     getPhoneListColumn = (isExport) => {
-        let col_width = 95, num_col_width = 80;
+        let col_width = 95, num_col_width = 80, col_lg_width = 120;
         let columns = [{
             title: this.getSalesColumnTitle(),
             width: col_width,
@@ -456,7 +472,7 @@ class CallRecordAnalyis extends React.Component {
             key: 'name'
         }, {
             title: Intl.get('sales.home.total.duration', '总时长'),
-            width: num_col_width,
+            width: col_width,
             dataIndex: 'totalTime',
             key: 'total_time',
             sorter: function(a, b) {
@@ -472,7 +488,7 @@ class CallRecordAnalyis extends React.Component {
             }
         }, {
             title: Intl.get('sales.home.total.connected', '总接通数'),
-            width: num_col_width,
+            width: col_width,
             dataIndex: 'calloutSuccess',
             key: 'callout_success',
             sorter: function(a, b) {
@@ -481,7 +497,7 @@ class CallRecordAnalyis extends React.Component {
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.average.duration', '日均时长'),
-            width: num_col_width,
+            width: col_width,
             dataIndex: 'averageTime',
             key: 'average_time',
             sorter: function(a, b) {
@@ -497,7 +513,7 @@ class CallRecordAnalyis extends React.Component {
             }
         }, {
             title: Intl.get('sales.home.average.connected', '日均接通数'),
-            width: col_width,
+            width: col_lg_width,
             dataIndex: 'averageAnswer',
             key: 'average_answer',
             sorter: function(a, b) {
@@ -506,7 +522,7 @@ class CallRecordAnalyis extends React.Component {
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.phone.callin', '呼入次数'),
-            width: num_col_width,
+            width: col_width,
             dataIndex: 'callinCount',
             key: 'callin_count',
             sorter: function(a, b) {
@@ -515,7 +531,7 @@ class CallRecordAnalyis extends React.Component {
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.phone.callin.success', '成功呼入'),
-            width: num_col_width,
+            width: col_width,
             dataIndex: 'callinSuccess',
             key: 'callin_success',
             sorter: function(a, b) {
@@ -524,7 +540,7 @@ class CallRecordAnalyis extends React.Component {
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.phone.callin.rate', '呼入接通率'),
-            width: col_width,
+            width: col_lg_width,
             dataIndex: 'callinRate',
             key: 'callin_rate',
             sorter: function(a, b) {
@@ -533,7 +549,7 @@ class CallRecordAnalyis extends React.Component {
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.phone.callout', '呼出次数'),
-            width: num_col_width,
+            width: col_width,
             dataIndex: 'calloutCount',
             key: 'callout_count',
             sorter: function(a, b) {
@@ -542,39 +558,44 @@ class CallRecordAnalyis extends React.Component {
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get('sales.home.phone.callout.rate', '呼出接通率'),
-            width: col_width,
+            width: col_lg_width,
             dataIndex: 'calloutRate',
             key: 'callout_rate',
             sorter: function(a, b) {
                 return a.calloutRate - b.calloutRate;
             },
             className: 'has-filter table-data-align-right'
-        }, {
-            title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
-            width: col_width,
-            dataIndex: 'effectiveCount',
-            key: 'effective_count',
-            sorter: function(a, b) {
-                return a.effectiveCount - b.effectiveCount;
-            },
-            className: 'has-filter table-data-align-right'
-        },{
-            title: Intl.get('sales.home.phone.effective.time', '有效通话时长'),
-            width: col_width,
-            dataIndex: 'effectiveTime',
-            key: 'effective_time',
-            sorter: function(a, b) {
-                return a.effectiveTime - b.effectiveTime;
-            },
-            className: 'has-filter table-data-align-right',
-            render: function(text, record, index){
-                return (
-                    <span>
-                        {TimeUtil.getFormatTime(text)}
-                    </span>
-                );
-            }
         }];
+
+        // 如果是蚁坊的用户，展示有效通话时长和有效接通数
+        if(this.state.realm.realm_id === REALM){
+            columns.push({
+                title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
+                width: col_lg_width,
+                dataIndex: 'effectiveCount',
+                key: 'effective_count',
+                sorter: function(a, b) {
+                    return a.effectiveCount - b.effectiveCount;
+                },
+                className: 'has-filter table-data-align-right'
+            },{
+                title: Intl.get('sales.home.phone.effective.time', '有效通话时长'),
+                width: col_lg_width,
+                dataIndex: 'effectiveTime',
+                key: 'effective_time',
+                sorter: function(a, b) {
+                    return a.effectiveTime - b.effectiveTime;
+                },
+                className: 'has-filter table-data-align-right',
+                render: function(text, record, index){
+                    return text === '-' ? text : (
+                        <span>
+                            {TimeUtil.getFormatTime(text)}
+                        </span>
+                    );
+                }
+            });
+        }
         //当前展示的是客套类型的通话记录时，展示计费时长
         if (this.state.callType === CALL_TYPE_OPTION.APP) {
             columns.push({
@@ -609,7 +630,7 @@ class CallRecordAnalyis extends React.Component {
                 }
             }, {
                 title: Intl.get('call.record.average.connected', '人均接通数'),
-                width: col_width,
+                width: col_lg_width,
                 align: 'right',
                 dataIndex: 'personAverageAnswer',
                 key: 'person_average_answer',
@@ -1046,6 +1067,7 @@ class CallRecordAnalyis extends React.Component {
             </div>
         );
     };
+
 
     // 通话率列表
     renderCallInfo = () => {
