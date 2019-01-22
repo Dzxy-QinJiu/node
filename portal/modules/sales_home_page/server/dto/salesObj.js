@@ -80,7 +80,9 @@ exports.toFrontSalesPhone = function(data) {
                     callinRate: salesObj.callin_rate,//呼入接通率
                     calloutCount: salesObj.total_callout,//呼出次数
                     calloutSuccess: salesObj.total_callout_success,//成功呼出
-                    calloutRate: salesObj.callout_rate//呼出接通率
+                    calloutRate: salesObj.callout_rate,//呼出接通率
+                    effectiveCount: salesObj.total_effective,//有效接通数
+                    effectiveTime: salesObj.total_effective_time,//有效通话时长
                 };
             });
         }

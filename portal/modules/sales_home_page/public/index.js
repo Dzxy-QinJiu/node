@@ -408,8 +408,8 @@ class SalesHomePage extends React.Component {
         // 如果是蚁坊的用户，展示有效通话时长和有效接通数
         if(this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG){
             columns.push({
-                title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.effective.connected', '有效接通数')),
-                width: this.getColumnMinWidth(col_width, 'calloutRate'),
+                title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
+                width: 90,
                 dataIndex: 'effectiveCount',
                 key: 'effective_count',
                 sorter: function(a, b) {
@@ -417,8 +417,8 @@ class SalesHomePage extends React.Component {
                 },
                 className: 'has-filter'
             }, {
-                title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.effective.time', '有效通话时长')),
-                width: this.getColumnMinWidth(100, 'calloutRate'),
+                title: Intl.get('sales.home.phone.effective.time', '有效通话时长'),
+                width: 100,
                 dataIndex: 'effectiveTime',
                 key: 'effective_time',
                 sorter: function(a, b) {
