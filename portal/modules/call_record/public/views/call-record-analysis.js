@@ -35,7 +35,7 @@ var days = [Intl.get('user.time.sunday', '周日'), Intl.get('user.time.monday',
 import timeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import {getResultType, getErrorTipAndRetryFunction} from 'PUB_DIR/sources/utils/common-method-util';
 import {getManagedRealm} from 'PUB_DIR/sources/utils/common-data-util';
-import {REALM} from 'PUB_DIR/sources/utils/consts';
+import {ORGANIZATION_TYPE} from 'PUB_DIR/sources/utils/consts';
 //地图的formatter
 function mapFormatter(obj) {
     let name = Intl.get('oplate_bd_analysis_realm_zone.2', '市区');
@@ -121,7 +121,7 @@ class CallRecordAnalyis extends React.Component {
             secondSelectValue: LITERAL_CONSTANT.ALL, // 第二个选择宽的值，默认是全部的状态
             switchStatus: false,//是否查看各团队通话趋势图
             filter_phone: false,//是否过滤掉114
-            realm: '', //组织id
+            organization: '', //组织id
         };
     }
 
@@ -130,10 +130,10 @@ class CallRecordAnalyis extends React.Component {
     };
 
     // 获取组织id
-    getRealm = (callback) => {
+    getOrganization = (callback) => {
         getManagedRealm().then((resData) => {
             this.state.realm || this.setState({
-                realm: resData
+                organization: resData
             });
             callback && callback();
         });
@@ -308,7 +308,7 @@ class CallRecordAnalyis extends React.Component {
             end_time: this.state.end_time || moment().toDate().getTime(),
             deviceType: params && params.deviceType || this.state.callType,
             filter_phone: this.state.filter_phone,//是否过滤114
-            effective_phone: this.state.realm.realm_id === REALM.EEFUNG, // 是否获取有效通话时长
+            effective_phone: this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG, // 是否获取有效通话时长
         };
         let pathParam = commonMethodUtil.getParamByPrivilege();
         if (this.state.teamList.list.length) { // 有团队时（普通销售时没有团队的）
@@ -356,7 +356,7 @@ class CallRecordAnalyis extends React.Component {
         if (!(this.state.switchStatus)) {
             this.getCallAnalysisTrendData(reqBody); // 所有团队总趋势图
         }
-        this.getRealm(() => {
+        this.getOrganization(() => {
             this.getCallInfoData(params); // 接通率
         });
         //获取单次通话时长TOP10的统计数据
@@ -568,7 +568,7 @@ class CallRecordAnalyis extends React.Component {
         }];
 
         // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        if(this.state.realm.realm_id === REALM.EEFUNG){
+        if(this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG){
             columns.push({
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 width: col_lg_width,
