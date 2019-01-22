@@ -30,9 +30,6 @@ import ContactCard from './user-basic/contact-card';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import {checkPhone} from 'PUB_DIR/sources/utils/validate-util';
 const FORMAT = oplateConsts.DATE_FORMAT;
-var Ajax = require('./v3/app-role-permission/ajax');
-var appAjaxTrans = require('MOD_DIR/common/public/ajax/app');
-import {CONSTANTS} from '../util/consts';
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 class UserDetailBasic extends React.Component {
     static defaultProps = {
