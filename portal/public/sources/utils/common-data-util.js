@@ -372,7 +372,7 @@ exports.getProductList = function(cb, isRefresh) {
     }
 };
 
-//获取组织信息
+//获取我所在的组织信息
 exports.getMyOrganization = function() {
     return new Promise((resolve, reject) => {
         const userProperty = 'organization_info';
