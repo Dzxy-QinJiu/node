@@ -372,13 +372,13 @@ exports.getProductList = function(cb, isRefresh) {
     }
 };
 
-//获取安全域id
-exports.getManagedRealm = function() {
+//获取组织信息
+exports.getManagedOrganization = function() {
     return new Promise((resolve, reject) => {
-        const userProperty = 'realm_info';
-        let realmInfo = getUserData()[userProperty];
-        if (realmInfo) {
-            resolve(realmInfo);
+        const userProperty = 'organization_info';
+        let organizationInfo = getUserData()[userProperty];
+        if (organizationInfo) {
+            resolve(organizationInfo);
         } else {
             $.ajax({
                 url: '/rest/get_managed_realm',

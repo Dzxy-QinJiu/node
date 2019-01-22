@@ -33,7 +33,7 @@ import history from 'PUB_DIR/sources/history';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
-import commonDataUtil, { getManagedRealm } from 'PUB_DIR/sources/utils/common-data-util';
+import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {ORGANIZATION_TYPE} from 'PUB_DIR/sources/utils/consts';
 const SORT_ICON_WIDTH = 16;
 //延时展示激活邮箱提示框的时间
@@ -150,7 +150,7 @@ class SalesHomePage extends React.Component {
 
     // 获取组织id
     getOrganization = (callback) => {
-        commonDataUtil.getManagedRealm().then((resData) => {
+        commonDataUtil.getManagedOrganization().then((resData) => {
             this.state.organization || this.setState({
                 organization: resData
             });
