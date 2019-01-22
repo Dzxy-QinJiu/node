@@ -309,7 +309,7 @@ class SalesHomePage extends React.Component {
             title: this.getSalesColumnTitle(),
             dataIndex: 'salesName',
             key: 'sales_Name',
-            width: 85
+            width: 80
         }, {
             title: Intl.get('sales.home.total.duration', '总时长'),
             csvTitle: Intl.get('sales.home.total.duration', '总时长'),
@@ -320,7 +320,7 @@ class SalesHomePage extends React.Component {
                 return a.totalTime - b.totalTime;
             },
             className: 'has-filter',
-            width: 85
+            width: 80
         }, {
             title: Intl.get('sales.home.total.connected', '总接通数'),
             csvTitle: Intl.get('sales.home.total.connected', '总接通数'),
@@ -330,7 +330,7 @@ class SalesHomePage extends React.Component {
                 return a.calloutSuccess - b.calloutSuccess;
             },
             className: 'has-filter',
-            width: 100
+            width: 90
         }, {
             title: Intl.get('sales.home.average.duration', '日均时长'),
             csvTitle: Intl.get('sales.home.average.duration', '日均时长'),
@@ -341,7 +341,7 @@ class SalesHomePage extends React.Component {
                 return a.averageTime - b.averageTime;
             },
             className: 'has-filter',
-            width: 100
+            width: 90
         }, {
             title: Intl.get('sales.home.average.connected', '日均接通数'),
             csvTitle: Intl.get('sales.home.average.connected', '日均接通数'),
@@ -351,7 +351,7 @@ class SalesHomePage extends React.Component {
                 return a.averageAnswer - b.averageAnswer;
             },
             className: 'has-filter',
-            width: 110
+            width: 105
         }, {
             title: Intl.get('sales.home.phone.callin', '呼入次数'),
             csvTitle: Intl.get('sales.home.phone.callin', '呼入次数'),
@@ -361,7 +361,7 @@ class SalesHomePage extends React.Component {
                 return a.callinCount - b.callinCount;
             },
             className: 'has-filter',
-            width: 100
+            width: 90
         }, {
             title: Intl.get('sales.home.phone.callin.success', '成功呼入'),
             csvTitle: Intl.get('sales.home.phone.callin.success', '成功呼入'),
@@ -371,7 +371,7 @@ class SalesHomePage extends React.Component {
                 return a.callinSuccess - b.callinSuccess;
             },
             className: 'has-filter',
-            width: 100
+            width: 90
         }, {
             title: Intl.get('sales.home.phone.callin.rate', '呼入接通率'),
             csvTitle: Intl.get('sales.home.phone.callin.rate', '呼入接通率'),
@@ -382,7 +382,7 @@ class SalesHomePage extends React.Component {
                 return a.callinRate - b.callinRate;
             },
             className: 'has-filter',
-            width: 110
+            width: 105
         }, {
             title: Intl.get('sales.home.phone.callout', '呼出次数'),
             csvTitle: Intl.get('sales.home.phone.callout', '呼出次数'),
@@ -392,7 +392,7 @@ class SalesHomePage extends React.Component {
                 return a.calloutCount - b.calloutCount;
             },
             className: 'has-filter',
-            width: 100
+            width: 90
         }, {
             title: Intl.get('sales.home.phone.callout.rate', '呼出接通率'),
             csvTitle: Intl.get('sales.home.phone.callout.rate', '呼出接通率'),
@@ -403,10 +403,10 @@ class SalesHomePage extends React.Component {
                 return a.calloutRate - b.calloutRate;
             },
             className: 'has-filter',
-            width: 110
+            width: 105
         }, {
             title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
-            width: 110,
+            width: 105,
             dataIndex: 'effectiveCount',
             key: 'effective_count',
             sorter: function(a, b) {
@@ -441,7 +441,7 @@ class SalesHomePage extends React.Component {
                     return a.billingTime - b.billingTime;
                 },
                 className: 'has-filter',
-                width: 100
+                width: 90
             });
         }
         return columns;
@@ -452,7 +452,7 @@ class SalesHomePage extends React.Component {
             {
                 title: this.getCallBackColumnTitle(Intl.get('common.callback.time', '回访时间'), 'call_date'),
                 dataIndex: 'call_date',
-                width: 100,
+                width: 90,
                 className: 'has-sorter',
                 sorter: function(a, b) {
                     return a.call_date - b.call_date;
@@ -469,17 +469,17 @@ class SalesHomePage extends React.Component {
             {
                 title: Intl.get('crm.41', '客户名'),
                 dataIndex: 'customer_name',
-                width: 100,
+                width: 90,
             },
             {
                 title: Intl.get('menu.trace', '跟进记录'),
                 dataIndex: 'remark',
-                width: 100,
+                width: 90,
             },
             {
                 title: Intl.get('common.callback.person', '回访人'),
                 dataIndex: 'nick_name',
-                width: 100,
+                width: 90,
             }
         ];
         return columns;
