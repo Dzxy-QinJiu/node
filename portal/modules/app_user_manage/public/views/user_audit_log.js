@@ -645,6 +645,7 @@ class LogView extends React.Component {
     }
     renderLogHeader = () => {
         var appOptions = this.getAppOptions();
+        let teamList = _.get(this.state,'teamList.list',[]); // 团队数据
         return (
             <div className="user_audit_log_container">
                 <ButtonZones>
@@ -673,7 +674,7 @@ class LogView extends React.Component {
                          * */}
                         <div className="team-member-select">
                             {
-                                this.state.teamList.list.length && !userData.getUserData().isCommonSales ?
+                                teamList && teamList.length && !userData.getUserData().isCommonSales ?
                                     this.renderTeamMembersSelect() :
                                     null
                             }
