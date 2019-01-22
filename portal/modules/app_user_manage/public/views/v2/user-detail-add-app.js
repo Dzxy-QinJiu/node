@@ -232,7 +232,6 @@ const UserDetailAddApp = createReactClass({
                 }
                 const appId = currentApp.app_id;
                 const originAppSetting = appPropSettingsMap[appId] || {};
-                console.log('this.props',this.props);
                 if (this.props.isSingleAppEdit) {
                     checkSingleProp('user_type');
                 }
