@@ -302,7 +302,7 @@ class ApplyViewDetail extends React.Component {
         }
         var showApplyInfo = [
             {
-                label: Intl.get('contract.77', '报告类型'),
+                label: Intl.get('common.type', '类型'),
                 text: reportType
             },
             {
@@ -726,10 +726,11 @@ class ApplyViewDetail extends React.Component {
 ApplyViewDetail.defaultProps = {
     detailItem: {},
     showNoData: false,
-
+    applyListType: ''
 };
 ApplyViewDetail.propTypes = {
-    detailItem: PropTypes.string,
+    detailItem: PropTypes.object,
+    applyListType: PropTypes.string,
     showNoData: PropTypes.boolean
 };
 module.exports = ApplyViewDetail;

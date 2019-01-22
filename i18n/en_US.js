@@ -2652,7 +2652,6 @@ var en_US = {
     'apply.approve.other.plan': 'Other files',//其他文件
     'apply.approve.report.send': 'Public opinion report application',//舆情报告申请
     'apply.approve.document.write': 'Document writing application',//文件撰写申请
-    'apply.approve.report.send.type': 'Report type',//报告类型
     'apply.approve.document.write.type': 'File type',//文件类型
     'apply.approve.report.select.type': 'Please select the type of public opinion report',//请选择舆情报告类型
     'apply.approve.document.select.type': 'Please select a file report type',//请选择文件报告类型
@@ -2662,7 +2661,7 @@ var en_US = {
     'apply.approve.no.condition.list': 'No eligible public opinion report',//暂无符合条件的舆情报告
     'apply.approve.no.document.write': 'No eligible documents for writing',//暂无符合条件的文件撰写
     'apply.approve.expect.submit.time': 'Expected submission time',//期望提交时间
-    'apply.approve.specific.report': 'special report of {customer}',//{customer}客户的专报
+    'apply.approve.specific.report': 'special report of {customer}',//{customer}客户的{reporttype}
     'apply.approve.import.file': 'upload files',//上传文件
     'apply.approve.confirm.apply': 'Confirm application',//确认申请
     'apply.approve.wait.confirm': 'To be confirmed finished by {confirmer}',//待{confirmer}确认任务完成
