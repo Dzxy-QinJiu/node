@@ -34,10 +34,11 @@ import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
+import {ORGANIZATION_TYPE} from 'PUB_DIR/sources/utils/consts';
+const SORT_ICON_WIDTH = 16;
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
-
 class SalesHomePage extends React.Component {
     constructor(props) {
         super(props);
@@ -65,7 +66,7 @@ class SalesHomePage extends React.Component {
             callBackSorter: {}, // 回访的排序对象
             appList: [], //应用数组
             selectedAppId: '', //选中的应用id
-            effective_phone: true, // 是否获取有效通话时长
+            organization: '',//组织id
         };
     }
 
@@ -147,6 +148,16 @@ class SalesHomePage extends React.Component {
         SalesHomeAction.getWebsiteConfig();
     };
 
+    // 获取我所在的组织信息
+    getOrganization = (callback) => {
+        commonDataUtil.getMyOrganization().then((resData) => {
+            this.state.organization || this.setState({
+                organization: resData
+            });
+            callback && callback();
+        });
+    };
+
     getListBlockHeight = () => {
         let listHeight = null;
 
@@ -217,9 +228,11 @@ class SalesHomePage extends React.Component {
         SalesHomeAction.getUserTotal(queryParams);
         //获取销售(团队)-电话列表
         SalesHomeAction.setListIsLoading(viewConstant.PHONE);
-        //电话统计取“全部”时，开始时间传0，结束时间传当前时间
-        let phoneParams = this.getPhoneParams();
-        SalesHomeAction.getSalesPhoneList(phoneParams);
+        this.getOrganization(() => {
+            //电话统计取“全部”时，开始时间传0，结束时间传当前时间
+            let phoneParams = this.getPhoneParams();
+            SalesHomeAction.getSalesPhoneList(phoneParams);
+        });
         SalesHomeAction.setListIsLoading(viewConstant.CALL_BACK);
         //切换团队数据的时候，不用发获取回访的请求
         if (!isSwitchTeam){
@@ -245,7 +258,7 @@ class SalesHomePage extends React.Component {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
             deviceType: this.state.callType || CALL_TYPE_OPTION.ALL,
-            effective_phone: this.state.effective_phone, // 是否获取有效通话时长
+            effective_phone: this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG, // 是否获取有效通话时长
         };
         if (this.state.currShowSalesman) {
             //查看当前选择销售的统计数据
@@ -391,32 +404,36 @@ class SalesHomePage extends React.Component {
             },
             className: 'has-filter',
             width: 105
-        }, {
-            title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
-            width: 105,
-            dataIndex: 'effectiveCount',
-            key: 'effective_count',
-            sorter: function(a, b) {
-                return a.effectiveCount - b.effectiveCount;
-            },
-            className: 'has-filter'
-        }, {
-            title: Intl.get('sales.home.phone.effective.time', '有效通话时长'),
-            width: 120,
-            dataIndex: 'effectiveTime',
-            key: 'effective_time',
-            sorter: function(a, b) {
-                return a.effectiveTime - b.effectiveTime;
-            },
-            className: 'has-filter',
-            render: function(text, record, index){
-                return (
-                    <span>
-                        {TimeUtil.getFormatTime(text)}
-                    </span>
-                );
-            }
         }];
+        // 如果是蚁坊的用户，展示有效通话时长和有效接通数
+        if(this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG){
+            columns.push({
+                title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.effective.connected', '有效接通数')),
+                width: this.getColumnMinWidth(col_width, 'calloutRate'),
+                dataIndex: 'effectiveCount',
+                key: 'effective_count',
+                sorter: function(a, b) {
+                    return a.effectiveCount - b.effectiveCount;
+                },
+                className: 'has-filter'
+            }, {
+                title: this.getPhoneColumnTitle(Intl.get('sales.home.phone.effective.time', '有效通话时长')),
+                width: this.getColumnMinWidth(100, 'calloutRate'),
+                dataIndex: 'effectiveTime',
+                key: 'effective_time',
+                sorter: function(a, b) {
+                    return a.effectiveTime - b.effectiveTime;
+                },
+                className: 'has-filter',
+                render: function(text, record, index){
+                    return text === '-' ? text : (
+                        <span>
+                            {TimeUtil.getFormatTime(text)}
+                        </span>
+                    );
+                }
+            });
+        }
         //当前展示的是客套类型的通话记录时，展示计费时长
         if (this.state.callType === CALL_TYPE_OPTION.APP) {
             columns.push({
