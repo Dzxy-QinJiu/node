@@ -645,20 +645,11 @@ class LogView extends React.Component {
     }
     renderLogHeader = () => {
         var appOptions = this.getAppOptions();
+        let teamList = _.get(this.state,'teamList.list',[]); // 团队数据
         return (
             <div className="user_audit_log_container">
                 <ButtonZones>
                     <div className="user_audit_log_header">
-                        {/**
-                         * 团队和成员筛选框
-                         * */}
-                        <div className="team-member-select">
-                            {
-                                this.state.teamList.list.length && !userData.getUserData().isCommonSales ?
-                                    this.renderTeamMembersSelect() :
-                                    null
-                            }
-                        </div>
                         <div className="user_audit_log_select_time btn-item" data-tracename="时间筛选">
                             <DatePicker
                                 disableDateAfterToday={true}
@@ -677,6 +668,16 @@ class LogView extends React.Component {
                                 <DatePicker.Option
                                     value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
                             </DatePicker>
+                        </div>
+                        {/**
+                         * 团队和成员筛选框
+                         * */}
+                        <div className="team-member-select">
+                            {
+                                teamList.length && !userData.getUserData().isCommonSales ?
+                                    this.renderTeamMembersSelect() :
+                                    null
+                            }
                         </div>
                         <div className="user_audit_log_select_app btn-item">
                             <SelectFullWidth
@@ -699,7 +700,9 @@ class LogView extends React.Component {
                             />
                         </div>
                         <div className="user_audit_log_all">
-                            <Button onClick={this.handleRefresh} className="btn-item">{Intl.get('common.refresh', '刷新')}</Button>
+                            <Button onClick={this.handleRefresh} className="btn-item" title="刷新">
+                                <i className="iconfont icon-shuaxin"></i>
+                            </Button>
                         </div>
                         <span className="refresh-btn customize-btn btn-item">
                             <i
