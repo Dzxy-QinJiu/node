@@ -192,6 +192,7 @@ class AddCustomerForm extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
+            if (this.state.customerNameExist || this.state.checkNameError) return;
             if (!err) {
                 for (var key in this.state.formData) {
                     if (!values[key]) {
