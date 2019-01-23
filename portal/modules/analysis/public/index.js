@@ -292,6 +292,7 @@ class CurtaoAnalysis extends React.Component {
 
                 const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
                 _.set(appIdCondition, 'value', defaultAppId);
+                this.adjustStartEndTime(conditions);
             };
         } else {
             if (page.adjustConditions) {
@@ -300,6 +301,7 @@ class CurtaoAnalysis extends React.Component {
                 adjustConditions = conditions => {
                     const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
                     _.set(appIdCondition, 'value', 'all');
+                    this.adjustStartEndTime(conditions);
                 };
             }
         }
@@ -311,6 +313,20 @@ class CurtaoAnalysis extends React.Component {
             isAppSelectorShow,
             adjustConditions
         });
+    }
+
+    //将请求条件中的开始结束时间设置为存储的开始结束时间
+    //用于从试用合格客户分析切换到其他页面时，修正请求时间为进入试用合格客户分析页面之前的请求时间
+    adjustStartEndTime(conditions) {
+        const startTime = this.topBar.state.startTime;
+        const endTime = this.topBar.state.endTime;
+        const startTimeCondition = _.find(conditions, condition => condition.name === 'starttime');
+        const endTimeCondition = _.find(conditions, condition => condition.name === 'endtime');
+
+        if (startTimeCondition && endTimeCondition) {
+            startTimeCondition.value = startTime;
+            endTimeCondition.value = endTime;
+        }
     }
 
     getConditions() {
@@ -387,6 +403,7 @@ class CurtaoAnalysis extends React.Component {
             <div className='curtao-analysis'>
                 <TopBar
                     currentPage={this.state.currentPage}
+                    ref={ref => this.topBar = ref}
                 />
                 <Row>
                     <Col span={3}>
