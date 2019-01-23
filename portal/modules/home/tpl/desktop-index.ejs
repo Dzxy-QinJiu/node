@@ -80,6 +80,12 @@
     _paq.push(['setUserId', '<%= username %>']);
     _paq.push(['setCustomDimension', 1, '<%= userid %>']);
     _paq.push(['setCustomDimension', 2, '<%= username %>']);
+    /*用户昵称*/
+    _paq.push(['setCustomVariable', '1', 'nickname', '<%= nickname %>', 'visit']);
+    /*用户所在单位*/
+    _paq.push(['setCustomVariable', '3', 'organization', '<%= organization %>', 'visit']);
+    /*用户角色或用户类型*/
+    _paq.push(['setCustomVariable', '5', 'role', '<%= role %>', 'visit']);
     _paq.push(['setDocumentTitle', '/']);
     _paq.push(['trackPageView']);
     _paq.push(['enableHeartBeatTimer', 30]);

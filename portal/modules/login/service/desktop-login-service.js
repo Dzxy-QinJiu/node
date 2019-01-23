@@ -51,7 +51,9 @@ var urls = {
     //解绑微信
     unbindWechatUrl: '/auth2/rs/self/social/unbind',
     //登录后判断是否绑定微信
-    checkLoginWechatIsBindUrl: '/auth2/rs/self/social?platform=wechat'
+    checkLoginWechatIsBindUrl: '/auth2/rs/self/social?platform=wechat',
+    //获取登录用户的组织信息
+    getOrganization: '/rest/base/v1/realm/managedrealm'
 };
 //验证码的高和宽
 var captcha = {
@@ -136,7 +138,8 @@ function getLoginResult(data) {
         nick_name: '',
         privileges: [],
         user_id: '',
-        user_name: ''
+        user_name: '',
+        role_infos: [],
     };
     if (data.token) {
         loginResult.auth.access_token = data.token.access_token || '';
@@ -159,6 +162,13 @@ function getLoginResult(data) {
                 if (permissions && permissions.length > 0) {
                     loginResult.privileges = permissions.map(function(permission) {
                         return permission.permission_define;
+                    });
+                }
+                //role_infos
+                let roleInfos = userClient.role_infos || [];
+                if (roleInfos && roleInfos.length) {
+                    loginResult.role_infos = userClient.role_infos.map(role => {
+                        return {role_id: role.role_id, role_name: role.role_name};
                     });
                 }
             }
@@ -581,4 +591,14 @@ exports.checkLoginWechatIsBind = function(req, res) {
                 realm: global.config.loginParams.realm
             }
         });
+};
+
+//获得登录用户所在组织
+exports.getOrganization = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: urls.getOrganization,
+            req: req,
+            res: res
+        }, null);
 };

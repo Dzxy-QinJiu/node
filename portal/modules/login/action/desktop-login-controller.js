@@ -162,13 +162,28 @@ function loginSuccess(req, res) {
         //设置sessionStore，如果是内存session时，需要从req中获取
         global.config.sessionStore = global.config.sessionStore || req.sessionStore;
         req.session.save(function() {
-            if (req.xhr) {
-                //session失效时，登录成功后的处理
-                res.status(200).json('success');
-            } else {
-                //登录界面，登录成功后的处理
-                res.redirect('/');
-            }
+            //登录成功后获取用户的组织信息，（主页的matomo数据参数设置中需要放入组织信息）
+            DesktopLoginService.getOrganization(req, res).on('success', data => {
+                let userData = _.get(req, 'session.user', {});
+                userData.organization = data || {};
+                req.session.save(() => {
+                    if (req.xhr) {
+                        //session失效时，登录成功后的处理
+                        res.status(200).json('success');
+                    } else {
+                        //登录界面，登录成功后的处理
+                        res.redirect('/');
+                    }
+                });
+            }).on('error', errorObj => {
+                if (req.xhr) {
+                    //session失效时，登录成功后的处理
+                    res.status(200).json('success');
+                } else {
+                    //登录界面，登录成功后的处理
+                    res.redirect('/');
+                }
+            });
         });
     };
 }
