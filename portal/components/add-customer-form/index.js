@@ -212,7 +212,7 @@ class AddCustomerForm extends React.Component {
                         return;
                     } else {
                         //验证电话通过后，再把电话的值放在values中
-                        // values.contacts0_phone = _.trim(phoneVal[PHONE_INPUT_ID].replace(/-/g, ''));
+                        values.contacts0_phone = _.trim(phoneVal[PHONE_INPUT_ID].replace(/-/g, ''));
                         this.addCustomer(values);
                     }
                 });
