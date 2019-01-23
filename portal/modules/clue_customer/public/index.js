@@ -26,10 +26,7 @@ import {removeSpacesAndEnter,getUnhandledClueCountParams} from 'PUB_DIR/sources/
 require('./css/index.less');
 import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount, AVALIBILITYSTATUS} from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
-import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import clueCustomerAjax from './ajax/clue-customer-ajax';
-var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
-import SalesClueItem from 'MOD_DIR/common_sales_home_page/public/view/sales-clue-item';
 import ContactItem from 'MOD_DIR/common_sales_home_page/public/view//contact-item';
 import ClueAnalysisPanel from './views/clue-analysis-panel';
 import SalesClueAddForm from './views/add-clues-form';
@@ -58,7 +55,8 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 68,
     BOTTOM_DISTANCE: 40,
-    FILTER_WIDTH: 300
+    FILTER_WIDTH: 300,
+    TABLE_TITLE_HEIGHT: 50
 };
 
 class ClueCustomer extends React.Component {
@@ -102,6 +100,8 @@ class ClueCustomer extends React.Component {
             this.getClueList();
         }
         this.getUserPhoneNumber();
+        this.changeTableHeight();
+        $(window).on('resize', e => this.changeTableHeight());
     }
     getUnhandledClue = () => {
         var data = getUnhandledClueCountParams();
@@ -110,6 +110,10 @@ class ClueCustomer extends React.Component {
         setTimeout(() => {
             this.getClueList(data);
         });
+    };
+    changeTableHeight = () => {
+        var tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE - LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT;
+        this.setState({ tableHeight});
     };
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps,'history.action') === 'PUSH'){
@@ -126,6 +130,7 @@ class ClueCustomer extends React.Component {
         //清空页面上的筛选条件
         clueFilterAction.setInitialData();
         clueCustomerAction.resetState();
+        $(window).off('resize', this.changeTableHeight);
     }
 
     //展示右侧面板
@@ -719,7 +724,6 @@ class ClueCustomer extends React.Component {
                     isInvalidClue: '',
                 });
             } else {
-                // var salesClueItemDetail = this.state.salesClueItemDetail;
                 var salesClueItemDetail = _.find(this.state.curClueLists, clueItem => clueItem.id === item.id);
                 salesClueItemDetail.invalid_info = {
                     user_name: userData.getUserData().nick_name,
@@ -927,12 +931,21 @@ class ClueCustomer extends React.Component {
     };
     renderClueCustomerLists = () => {
         var customerList = this.state.curClueLists;
+        const dropLoadConfig = {
+            listenScrollBottom: this.state.listenScrollBottom,
+            handleScrollBottom: this.handleScrollBarBottom,
+            showNoMoreDataTip: this.showNoMoreDataTip(),
+            noMoreDataText: Intl.get('common.no.more.clue', '没有更多线索了'),
+            loading: this.state.isLoading,
+        };
         return (
-            <AntcTable dataSource={customerList}
+            <AntcTable
+                dropLoad={dropLoadConfig}
+                dataSource={customerList}
                 pagination={false}
                 columns={this.getClueTableColunms()}
                 rowClassName={this.setInvalidClassName}
-                ref="cluetable"
+                scroll={{y: this.state.tableHeight }}
             />);
 
     };
@@ -1010,8 +1023,9 @@ class ClueCustomer extends React.Component {
                 if (feedbackObj && feedbackObj.errorMsg) {
                     message.error(feedbackObj.errorMsg || Intl.get('failed.to.distribute.cluecustomer', '分配线索客户失败'));
                 } else {
-                    //如果该账号是管理员角色，分配完毕后要把全局未处理的线索数减一
-                    if (Oplate && Oplate.unread && !user_id && userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
+                    //如果该账号是管理员角色，且该线索之前是待分配状态，分配完毕后要把全局未处理的线索数减一
+                    if (Oplate && Oplate.unread && !user_id &&
+                        userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) && item.status === SELECT_TYPE.WILL_DISTRIBUTE) {
                         Oplate.unread['unhandleClue'] -= 1;
                         if (timeoutFunc) {
                             clearTimeout(timeoutFunc);
@@ -1072,16 +1086,7 @@ class ClueCustomer extends React.Component {
                         style={{height: divHeight}}
                         id="area"
                     >
-                        <GeminiScrollbar
-                            handleScrollBottom={this.handleScrollBarBottom}
-                            listenScrollBottom={this.state.listenScrollBottom}
-                        >
-                            {this.renderClueCustomerLists()}
-                            <NoMoreDataTip
-                                show={this.showNoMoreDataTip}
-                                message={Intl.get('common.no.more.clue', '没有更多线索了')}
-                            />
-                        </GeminiScrollbar>
+                        {this.renderClueCustomerLists()}
                     </div>
                     {this.state.customersSize ?
                         <div className="clue-customer-total-tip">
@@ -1089,6 +1094,8 @@ class ClueCustomer extends React.Component {
                         </div> : null}
                 </div>
             );
+        }else{
+            return null;
         }
     };
 
