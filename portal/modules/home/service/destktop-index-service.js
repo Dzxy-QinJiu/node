@@ -51,7 +51,9 @@ exports.getUserInfo = function(req, res, userId) {
     let getUserBasicInfo = getDataPromise(req, res, userInfoRestApis.getUserInfo, {userId: userId}, queryObj);
     //获取登录用户的角色信息
     let getUserRole = getDataPromise(req, res, userInfoRestApis.getMemberRoles);
-    let promiseList = [getUserBasicInfo, getUserRole];
+    //获取登录用户的组织信息
+    let getUserOrgnization = getDataPromise(req, res, userInfoRestApis.getUserOrgnization);
+    let promiseList = [getUserBasicInfo, getUserRole, getUserOrgnization];
     let userPrivileges = getPrivileges(req);
     //是否有获取所有团队数据的权限
     let hasGetAllTeamPrivilege = userPrivileges.indexOf('GET_TEAM_LIST_ALL') !== -1;
@@ -64,13 +66,17 @@ exports.getUserInfo = function(req, res, userId) {
         //成功获取用户信息
         if (userInfoResult.successData) {
             let userData = userInfoResult.successData;
-            //角色
+            //角色[{id、name},...]
+            userData.role_info = userData.roles;
+            //角色描述的数组['realm_manager', 'sales', ...]
             userData.roles = _.get(resultList, '[1].successData', []);
+            //组织
+            userData.organization = _.get(resultList, '[2].successData', {});
             //是否是普通销售
             if (hasGetAllTeamPrivilege) {//管理员或运营人员，肯定不是普通销售
                 userData.isCommonSales = false;
             } else {//普通销售、销售主管、销售总监等，通过我所在的团队及下级团队来判断是否是普通销售
-                let teamTreeList = _.get(resultList, '[2].successData', []);
+                let teamTreeList = _.get(resultList, '[3].successData', []);
                 userData.isCommonSales = getIsCommonSalesByTeams(userData.user_id, teamTreeList);
             }
             emitter.emit('success', userData);
@@ -147,7 +153,8 @@ var userInfoRestApis = {
     getMemberRoles: '/rest/base/v1/user/member/roles',
     activeEmail: '/rest/base/v1/user/email/confirm',
     getUserLanguage: '/rest/base/v1/user/member/language/setting',
-    getMyTeamWithSubteams: '/rest/base/v1/group/teams/tree/self'
+    getMyTeamWithSubteams: '/rest/base/v1/group/teams/tree/self',
+    getUserOrgnization: '/rest/base/v1/realm/managedrealm'
 };
 
 exports.getPrivileges = getPrivileges;

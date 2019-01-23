@@ -24,6 +24,8 @@ var UserDto = {
                 'privileges': userData.privileges,
                 'email': userData.email ? userData.email : '',
                 'phone': userData.phone ? userData.phone : '',
+                'role_info': userData.role_info,
+                'organization': userData.organization
             };
             //获取客户端信息
             sessionData.clientInfo = {
@@ -53,6 +55,8 @@ var UserDto = {
             user.nick_name = sessionData.user ? sessionData.user.nickname : '';
             user.user_name = sessionData.user ? sessionData.user.username : '';
             user.privileges = sessionData.user ? sessionData.user.privileges : [];
+            user.role_info = sessionData.user ? sessionData.user.role_info : [];
+            user.organization = sessionData.user ? sessionData.user.organization : {};
             return user;
         } else {
             return null;
