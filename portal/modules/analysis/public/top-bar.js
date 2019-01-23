@@ -45,6 +45,8 @@ class TopBar extends React.Component {
             startTime: initialTime.start,
             //结束时间
             endTime: initialTime.end,
+            //时间区间，日、周、月、年等
+            range: initialTime.range,
             currentPage: this.props.currentPage
         };
     }
@@ -118,10 +120,10 @@ class TopBar extends React.Component {
         });
     };
 
-    onSelectDate = (startTime, endTime) => {
+    onSelectDate = (startTime, endTime, range) => {
         startTime = parseInt(startTime);
         endTime = parseInt(endTime);
-        this.setState({startTime, endTime});
+        this.setState({startTime, endTime, range});
         dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
     };
 
@@ -135,7 +137,7 @@ class TopBar extends React.Component {
     renderButtonZones = () => {
         //日期选择器选项
         let datePickerOption = {
-            range: initialTime.range,
+            range: this.state.range,
             startTime: this.state.startTime,
             endTime: this.state.endTime,
 
@@ -169,6 +171,7 @@ class TopBar extends React.Component {
         if (adjustDatePicker) {
             adjustDatePicker(datePickerOption, this.state.startTime, this.state.endTime);
         }
+
         return (
             <div className="analysis-filter-btn-item">
                 <Select
