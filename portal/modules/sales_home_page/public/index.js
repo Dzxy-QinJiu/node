@@ -468,6 +468,7 @@ class SalesHomePage extends React.Component {
                 title: Intl.get('common.callback.time', '回访时间'),
                 dataIndex: 'call_date',
                 width: 90,
+                align: 'left',
                 className: 'has-sorter',
                 sorter: function(a, b) {
                     return a.call_date - b.call_date;
