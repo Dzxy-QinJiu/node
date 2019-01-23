@@ -39,6 +39,16 @@ const SORT_ICON_WIDTH = 16;
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
+
+//三字符表头宽度
+const threeCharWidth = 80;
+//四字符表头宽度
+const fourCharWidth = 90;
+//五字符表头宽度
+const fiveCharWidth = 105;
+//六字符表头宽度
+const sixCharWidth = 120;
+
 class SalesHomePage extends React.Component {
     constructor(props) {
         super(props);
@@ -307,15 +317,6 @@ class SalesHomePage extends React.Component {
     };
 
     getPhoneListColumn = () => {
-        //三字符表头宽度
-        const threeCharWidth = 80;
-        //四字符表头宽度
-        const fourCharWidth = 90;
-        //五字符表头宽度
-        const fiveCharWidth = 105;
-        //六字符表头宽度
-        const sixCharWidth = 120;
-
         let columns = [{
             title: this.getSalesColumnTitle(),
             dataIndex: 'salesName',
@@ -456,7 +457,7 @@ class SalesHomePage extends React.Component {
                     return a.billingTime - b.billingTime;
                 },
                 className: 'has-filter',
-                width: 90
+                width: fourCharWidth
             });
         }
         return columns;
@@ -467,7 +468,7 @@ class SalesHomePage extends React.Component {
             {
                 title: Intl.get('common.callback.time', '回访时间'),
                 dataIndex: 'call_date',
-                width: 90,
+                width: fourCharWidth,
                 align: 'left',
                 className: 'has-sorter',
                 sorter: function(a, b) {
@@ -485,17 +486,17 @@ class SalesHomePage extends React.Component {
             {
                 title: Intl.get('crm.41', '客户名'),
                 dataIndex: 'customer_name',
-                width: 90,
+                width: fourCharWidth,
             },
             {
                 title: Intl.get('menu.trace', '跟进记录'),
                 dataIndex: 'remark',
-                width: 90,
+                width: fourCharWidth,
             },
             {
                 title: Intl.get('common.callback.person', '回访人'),
                 dataIndex: 'nick_name',
-                width: 90,
+                width: fourCharWidth,
             }
         ];
         return columns;
