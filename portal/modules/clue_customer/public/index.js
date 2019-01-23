@@ -642,22 +642,22 @@ class ClueCustomer extends React.Component {
         //是否有更改跟进记录的权限
         let canEditTrace = (member_id === _.get(salesClueItem, 'customer_traces[0].user_id', ''));
         return (
-            <div className="foot-text-content">
+            <div className="foot-text-content" key={salesClueItem.id}>
                 {/*有跟进记录*/}
                 {traceContent ?
                     <div className="record-trace-container">
                         <ShearContent>
+                            <span>{traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : ''}</span>
                             <span>
-                                <span>{traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : ''}</span>
-                                <span>
-                                    <span className="trace-author">
-                                        <span className="trace-name">{tracePersonId === member_id ? Intl.get('sales.home.i.trace', '我') : tracePersonName} </span>{Intl.get('clue.add.trace.follow', '跟进')}:
-                                    </span>
-                                    {traceContent}
-                                    {canEditTrace ? <i className="iconfont icon-edit-btn"
-                                        onClick={this.handleEditTrace.bind(this, salesClueItem)}
-                                    ></i> : null}
+                                <span className="trace-author">
+                                    <span className="trace-name">{tracePersonId === member_id ? Intl.get('sales.home.i.trace', '我') : tracePersonName} </span>
                                 </span>
+
+                                {Intl.get('clue.add.trace.follow', '跟进') + ':' + traceContent}
+
+                                {canEditTrace ? <i className="iconfont icon-edit-btn"
+                                    onClick={this.handleEditTrace.bind(this, salesClueItem)}
+                                ></i> : null}
                             </span>
                         </ShearContent>
                     </div>
@@ -805,20 +805,25 @@ class ClueCustomer extends React.Component {
                 width: '30%',
                 render: (text, salesClueItem, index) => {
                     return (
-                        <div className="clue-top-title">
+                        <div className="clue-top-title" >
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             {renderClueStatus(salesClueItem.status)}
                             <span className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>{salesClueItem.name}</span>
-                            <div className="clue-trace-content">
+                            <div className="clue-trace-content" key={salesClueItem.id + index}>
                                 <ShearContent>
                                     <span>
                                         <span>{moment(salesClueItem.source_time).format(oplateConsts.DATE_FORMAT)}-</span>
                                         <span className="clue-access-channel">{salesClueItem.access_channel || Intl.get('clue.unknown.access.channel','未知接入渠道')}:</span>
-                                        <span>{salesClueItem.source}</span>
+                                        <span>
+
+                                            {salesClueItem.source}
+
+                                        </span>
                                     </span>
                                 </ShearContent>
                             </div>
+
                         </div>
                     );
 
