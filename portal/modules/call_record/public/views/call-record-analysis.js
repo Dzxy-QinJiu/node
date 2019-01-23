@@ -136,6 +136,8 @@ class CallRecordAnalyis extends React.Component {
                 organization: resData
             });
             callback && callback();
+        }).catch(() => {
+            callback && callback();
         });
     };
 
@@ -308,7 +310,7 @@ class CallRecordAnalyis extends React.Component {
             end_time: this.state.end_time || moment().toDate().getTime(),
             deviceType: params && params.deviceType || this.state.callType,
             filter_phone: this.state.filter_phone,//是否过滤114
-            effective_phone: this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG, // 是否获取有效通话时长
+            effective_phone: _.get(this.state.organization,'realm_id') === ORGANIZATION_TYPE.EEFUNG, // 是否获取有效通话时长
         };
         let pathParam = commonMethodUtil.getParamByPrivilege();
         if (this.state.teamList.list.length) { // 有团队时（普通销售时没有团队的）
@@ -576,7 +578,7 @@ class CallRecordAnalyis extends React.Component {
         }];
 
         // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        if(this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG){
+        if(_.get(this.state.organization,'realm_id') === ORGANIZATION_TYPE.EEFUNG){
             columns.push({
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 width: col_lg_width,

@@ -1,3 +1,5 @@
+import { ORGANIZATION_TYPE } from 'PUB_DIR/sources/utils/consts';
+
 var React = require('react');
 require('./style.less');
 import {AntcAnalysis} from 'antc';
@@ -32,7 +34,7 @@ import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {storageUtil} from 'ant-utils';
 
 const STORED_TEAM_KEY = 'monthly_report_selected_team';
-import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
+import {getMyTeamTreeAndFlattenList,getMyOrganization} from 'PUB_DIR/sources/utils/common-data-util';
 
 class MonthlyReport extends React.Component {
     state = {
@@ -40,6 +42,8 @@ class MonthlyReport extends React.Component {
         memberList: [],
         selectedTeam: '',
         selectedMonth: moment(),
+        showCharts: false,
+        organization: '',//组织信息
     };
 
     componentDidMount() {
@@ -47,6 +51,11 @@ class MonthlyReport extends React.Component {
         $('.analysis_report_ico a').addClass('active');
         this.getTeamList();
         this.getMemberList();
+        this.getOrganization(() => {
+            this.setState({
+                showCharts: true
+            });
+        });
     }
 
     getTeamList = () => {
@@ -115,9 +124,22 @@ class MonthlyReport extends React.Component {
         return <span>{_.isNumber(text) && text.toFixed()}</span>;
     };
 
+    // 获取我所在的组织信息
+    getOrganization = (callback) => {
+        getMyOrganization().then((resData) => {
+            this.state.organization || this.setState({
+                organization: resData
+            });
+            callback && callback();
+        }).catch(() => {
+            callback && callback();
+        });
+    };
+
     //电话量统计表格列定义
     getPhoneStatisticsColumns = () => {
-        return [
+        const num_col_width = 90;
+        let columns = [
             {
                 title: Intl.get('common.ranking', '排名'),
                 dataIndex: 'rank',
@@ -133,7 +155,7 @@ class MonthlyReport extends React.Component {
                 dataIndex: 'assessment_index',
                 sorter: (a, b) => a.assessment_index - b.assessment_index,
                 render: this.numberRender,
-                width: 90,
+                width: 95,
             },
             {
                 title: `${Intl.get('sales.home.average.duration', '日均时长')}(${Intl.get('user.time.second', '秒')})`,
@@ -150,17 +172,17 @@ class MonthlyReport extends React.Component {
             {
                 title: `${Intl.get('sales.home.total.duration', '总时长')}(${Intl.get('user.time.second', '秒')})`,
                 dataIndex: 'total_time',
-                width: 90,
+                width: num_col_width,
             },
             {
                 title: Intl.get('sales.home.total.connected', '总接通数'),
                 dataIndex: 'total_callout_success',
-                width: 90,
+                width: num_col_width,
             },
             {
                 title: Intl.get('weekly.report.assessment.days', '考核天数',),
                 dataIndex: 'real_work_day',
-                width: 90,
+                width: num_col_width,
             },
             {
                 title: Intl.get('common.remark', '备注'),
@@ -192,11 +214,36 @@ class MonthlyReport extends React.Component {
                 },
             },
         ];
+
+        // 如果是蚁坊的用户，展示有效通话时长和有效接通数
+        if(this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG){
+            columns.splice(7, 0, {
+                title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
+                dataIndex: 'total_effective',
+                key: 'total_effective',
+                align: 'right',
+                width: num_col_width,
+                render: text => {
+                    return text || 0;
+                }
+            }, {
+                title: `${Intl.get('sales.home.phone.effective.time', '有效通话时长')}(${Intl.get('user.time.second', '秒')})`,
+                dataIndex: 'total_effective_time',
+                key: 'total_effective_time',
+                align: 'right',
+                width: 130,
+                render: text => {
+                    return text || 0;
+                }
+            });
+        }
+
+        return columns;
     };
 
     //客套app电话量统计表格列定义
     getAppStatisticsColumns = () => {
-        return [
+        let columns = [
             {
                 title: Intl.get('sales.home.sales', '销售'),
                 dataIndex: 'name',
@@ -225,6 +272,22 @@ class MonthlyReport extends React.Component {
                 width: '10%',
             },
         ];
+
+        // 如果是蚁坊的用户，展示有效通话时长和有效接通数
+        if(this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG){
+            columns.push({
+                title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
+                dataIndex: 'total_effective',
+                key: 'total_effective',
+                width: '10%',
+            }, {
+                title: `${Intl.get('sales.home.phone.effective.time', '有效通话时长')}(${Intl.get('user.time.second', '秒')})`,
+                dataIndex: 'total_effective_time',
+                key: 'total_effective_time',
+                width: '10%',
+            });
+        }
+        return columns;
     };
 
     //试用合格客户数统计表格列定义
@@ -255,16 +318,22 @@ class MonthlyReport extends React.Component {
     };
 
     getCharts = () => {
+
+        let conditions = [{
+            name: 'return_type',
+            value: 'user'
+        },{
+            name: 'effective_phone',
+            value: `${this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG}`
+        }];
+
         return [
             {
                 title: Intl.get('common.telephone.statistics', '电话量统计'),
                 height: 'auto',
                 layout: {sm: 24},
                 url: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
-                conditions: [{
-                    name: 'return_type',
-                    value: 'user'
-                }],
+                conditions,
                 argCallback: commanSalesCallback,
                 dataField: 'list',
                 processData: data => {
@@ -288,10 +357,7 @@ class MonthlyReport extends React.Component {
                 height: 'auto',
                 layout: {sm: 24},
                 url: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
-                conditions: [{
-                    name: 'return_type',
-                    value: 'user'
-                }, {
+                conditions: [...conditions, {
                     name: 'deviceType',
                     value: 'app'
                 }],
@@ -462,7 +528,7 @@ class MonthlyReport extends React.Component {
                                 </div>
                             ) : null}
 
-                            {selectedTeamId ? (
+                            {selectedTeamId && this.state.showCharts ? (
                                 <AntcAnalysis
                                     charts={this.getCharts()}
                                     conditions={this.getConditions(selectedTeamId)}
