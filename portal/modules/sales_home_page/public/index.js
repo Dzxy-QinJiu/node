@@ -155,6 +155,8 @@ class SalesHomePage extends React.Component {
                 organization: resData
             });
             callback && callback();
+        }).catch(() => {
+            callback && callback();
         });
     };
 
