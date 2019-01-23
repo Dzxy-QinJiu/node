@@ -260,7 +260,7 @@ class SalesHomePage extends React.Component {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
             deviceType: this.state.callType || CALL_TYPE_OPTION.ALL,
-            effective_phone: this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG, // 是否获取有效通话时长
+            effective_phone: _.get(this.state.organization,'realm_id') === ORGANIZATION_TYPE.EEFUNG, // 是否获取有效通话时长
         };
         if (this.state.currShowSalesman) {
             //查看当前选择销售的统计数据
@@ -408,7 +408,7 @@ class SalesHomePage extends React.Component {
             width: 105
         }];
         // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        if(this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG){
+        if(_.get(this.state.organization,'realm_id') === ORGANIZATION_TYPE.EEFUNG){
             columns.push({
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 width: 90,

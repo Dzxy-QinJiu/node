@@ -24,7 +24,6 @@ const PRIVILEGE_MAP = {
 import {formatRoundingData} from 'PUB_DIR/sources/utils/common-method-util';
 import {getMyOrganization} from 'PUB_DIR/sources/utils/common-data-util';
 import { ORGANIZATION_TYPE } from 'PUB_DIR/sources/utils/consts';
-import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 const isCommonSales = userData.getUserData().isCommonSales;
 
 class WeeklyReportDetail extends React.Component {
@@ -158,17 +157,21 @@ class WeeklyReportDetail extends React.Component {
     // 电话接通率的数据
     getPhoneListColumn = () => {
         var _this = this;
+        const col_width = 95,num_col_width = 90;
         let columns = [{
             title: Intl.get('user.salesman', '销售人员'),
             dataIndex: 'name',
+            width: num_col_width,
             align: 'left',
         }, {
             title: `${Intl.get('weekly.report.total.duration', '本周总时长')}(${Intl.get('user.time.second', '秒')})`,
             dataIndex: 'total_time',
+            width: 105,
             align: 'right',
         }, {
             title: `${Intl.get('sales.home.average.duration', '日均时长')}(${Intl.get('user.time.second', '秒')})`,
             dataIndex: 'average_time',
+            width: 100,
             align: 'right',
             render: text => {
                 return <span>{parseFloat(text).toFixed()}</span>;
@@ -176,14 +179,17 @@ class WeeklyReportDetail extends React.Component {
         }, {
             title: Intl.get('weekly.report.total.connected', '本周总接通数'),
             dataIndex: 'total_callout_success',
+            width: col_width,
             align: 'right',
         }, {
             title: Intl.get('sales.home.average.connected', '日均接通数'),
             dataIndex: 'average_num',
+            width: num_col_width,
             align: 'right',
         }, {
             title: Intl.get('weekly.report.assessment.days', '考核天数',),
             dataIndex: 'real_work_day',
+            width: num_col_width,
             align: 'right',
         }, {
             title: Intl.get('weekly.report.attendance.remarks', '出勤备注'),
@@ -215,26 +221,24 @@ class WeeklyReportDetail extends React.Component {
         },];
 
         // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        if(this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG){
+        if(_.get(this.state.organization,'realm_id') === ORGANIZATION_TYPE.EEFUNG){
             columns.splice(5, 0, {
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 dataIndex: 'total_effective',
                 key: 'total_effective',
+                width: num_col_width,
                 align: 'right',
                 render: function(text, record, index){
                     return !text ? 0 : text;
                 }
             }, {
-                title: Intl.get('sales.home.phone.effective.time', '有效通话时长'),
+                title: `${Intl.get('sales.home.phone.effective.time', '有效通话时长')}(${Intl.get('user.time.second', '秒')})`,
                 dataIndex: 'total_effective_time',
                 key: 'total_effective_time',
                 align: 'right',
+                width: 125,
                 render: function(text, record, index){
-                    return !text ? 0 : (
-                        <span>
-                            {TimeUtil.getFormatTime(text)}
-                        </span>
-                    );
+                    return !text ? 0 : text;
                 }
             });
         }
@@ -429,7 +433,7 @@ class WeeklyReportDetail extends React.Component {
         queryObj.deviceType = this.state.call_type;
         queryObj.return_type = 'user';
         // 是否获取有效通话时长
-        queryObj.effective_phone = this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG;
+        queryObj.effective_phone = _.get(this.state.organization,'realm_id') === ORGANIZATION_TYPE.EEFUNG;
 
         if (isCommonSales) {
             const userId = userData.getUserData().user_id;

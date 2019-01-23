@@ -138,6 +138,7 @@ class MonthlyReport extends React.Component {
 
     //电话量统计表格列定义
     getPhoneStatisticsColumns = () => {
+        const num_col_width = 90;
         let columns = [
             {
                 title: Intl.get('common.ranking', '排名'),
@@ -171,17 +172,17 @@ class MonthlyReport extends React.Component {
             {
                 title: `${Intl.get('sales.home.total.duration', '总时长')}(${Intl.get('user.time.second', '秒')})`,
                 dataIndex: 'total_time',
-                width: 90,
+                width: num_col_width,
             },
             {
                 title: Intl.get('sales.home.total.connected', '总接通数'),
                 dataIndex: 'total_callout_success',
-                width: 90,
+                width: num_col_width,
             },
             {
                 title: Intl.get('weekly.report.assessment.days', '考核天数',),
                 dataIndex: 'real_work_day',
-                width: 90,
+                width: num_col_width,
             },
             {
                 title: Intl.get('common.remark', '备注'),
@@ -221,6 +222,7 @@ class MonthlyReport extends React.Component {
                 dataIndex: 'total_effective',
                 key: 'total_effective',
                 align: 'right',
+                width: num_col_width,
                 render: text => {
                     return text || 0;
                 }
@@ -229,6 +231,7 @@ class MonthlyReport extends React.Component {
                 dataIndex: 'total_effective_time',
                 key: 'total_effective_time',
                 align: 'right',
+                width: 130,
                 render: text => {
                     return text || 0;
                 }
