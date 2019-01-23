@@ -17,7 +17,7 @@ exports.initPhone = function(user) {
         callClient.init().then(() => {
             console.log('可以打电话了!');
         }, (error) => {
-            console.error(error || '电话系统初始化失败了!');
+            console.log(error || '电话系统初始化失败了!');
         });
     });
 };
