@@ -186,6 +186,9 @@ exports.getCallRate = function(req, res, params, reqBody) {
         if (req.body && req.body.filter_invalid_phone) {
             return '?filter_invalid_phone=' + req.body.filter_invalid_phone;
         }
+        else if (req.body && req.body.filter_phone) {
+            return '?filter_phone=' + req.body.filter_phone;
+        }
         else {
             return '';
         }
