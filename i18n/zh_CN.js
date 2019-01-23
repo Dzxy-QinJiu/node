@@ -2712,7 +2712,6 @@ var zh_CN = {
     'apply.approve.total.leave.time': '请假时长',
     'apply.approve.total.days': '共{X}天',
     'common.start.end.time': '起止时间',
-    'apply.approve.word.message': '留言',
     'apply.will.select.transfer.approver': '请选择要转给的待审批人',
     'apply.will.approve.apply.item': '待审批人',
     'apply.no.relate.user': '无相关成员',
