@@ -24,7 +24,7 @@ var UserDto = {
                 'privileges': userData.privileges,
                 'email': userData.email ? userData.email : '',
                 'phone': userData.phone ? userData.phone : '',
-                'role_info': userData.role_info,
+                'role_infos': userData.role_infos,
                 'organization': userData.organization
             };
             //获取客户端信息
@@ -55,7 +55,7 @@ var UserDto = {
             user.nick_name = sessionData.user ? sessionData.user.nickname : '';
             user.user_name = sessionData.user ? sessionData.user.username : '';
             user.privileges = sessionData.user ? sessionData.user.privileges : [];
-            user.role_info = sessionData.user ? sessionData.user.role_info : [];
+            user.role_infos = sessionData.user ? sessionData.user.role_infos : [];
             user.organization = sessionData.user ? sessionData.user.organization : {};
             return user;
         } else {

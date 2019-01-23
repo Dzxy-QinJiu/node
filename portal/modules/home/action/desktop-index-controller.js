@@ -32,13 +32,13 @@ exports.home = function(req, res) {
     }
     let custom_service_lang = global.config.lang || 'zh_CN';
     custom_service_lang = custom_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
-    let roles = _.map(user.role_info, 'role_name') || [];
+    let roles = _.map(user.role_infos, 'role_name') || [];
     res.render('home/tpl/desktop-index', {
         isFormal: global.config.isFormal,
         userid: user.user_id,
         username: user.user_name,
         nickname: user.nick_name,
-        organization: _.get(user, 'organization.realm_name'),
+        organization: _.get(user, 'organization.realm_name', ''),
         role: roles.join(','),
         siteID: global.config.siteID,
         lang: global.config.lang || '',
@@ -97,10 +97,7 @@ exports.getUserData = function(req, res) {
                 user.roles = data.roles;
                 user.lang = lang;
                 user.isCommonSales = data.isCommonSales;//是否是普通销售
-                user.organization = data.organization;//组织信息
-                req.session.user.role_info = data.role_info;
                 req.session.user.nickname = data.nick_name;
-                req.session.user.organization = data.organization;
                 req.session.save(function() {
                     res.header('Content-Type', 'application/javascript');
                     res.send(callback + '(' + JSON.stringify(user) + ')');
