@@ -39,6 +39,16 @@ const SORT_ICON_WIDTH = 16;
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
+
+//三字符表头宽度
+const THERE_CHAR_WIDTH = 80;
+//四字符表头宽度
+const FOUR_CHAR_WIDTH = 90;
+//五字符表头宽度
+const FIVE_CHAR_WIDTH = 105;
+//六字符表头宽度
+const SIX_CHAR_WIDTH = 120;
+
 class SalesHomePage extends React.Component {
     constructor(props) {
         super(props);
@@ -311,7 +321,7 @@ class SalesHomePage extends React.Component {
             title: this.getSalesColumnTitle(),
             dataIndex: 'salesName',
             key: 'sales_Name',
-            width: 80
+            width: THERE_CHAR_WIDTH
         }, {
             title: Intl.get('sales.home.total.duration', '总时长'),
             csvTitle: Intl.get('sales.home.total.duration', '总时长'),
@@ -322,7 +332,7 @@ class SalesHomePage extends React.Component {
                 return a.totalTime - b.totalTime;
             },
             className: 'has-filter',
-            width: 80
+            width: THERE_CHAR_WIDTH
         }, {
             title: Intl.get('sales.home.total.connected', '总接通数'),
             csvTitle: Intl.get('sales.home.total.connected', '总接通数'),
@@ -332,7 +342,7 @@ class SalesHomePage extends React.Component {
                 return a.calloutSuccess - b.calloutSuccess;
             },
             className: 'has-filter',
-            width: 90
+            width: FOUR_CHAR_WIDTH
         }, {
             title: Intl.get('sales.home.average.duration', '日均时长'),
             csvTitle: Intl.get('sales.home.average.duration', '日均时长'),
@@ -343,7 +353,7 @@ class SalesHomePage extends React.Component {
                 return a.averageTime - b.averageTime;
             },
             className: 'has-filter',
-            width: 90
+            width: FOUR_CHAR_WIDTH
         }, {
             title: Intl.get('sales.home.average.connected', '日均接通数'),
             csvTitle: Intl.get('sales.home.average.connected', '日均接通数'),
@@ -353,7 +363,7 @@ class SalesHomePage extends React.Component {
                 return a.averageAnswer - b.averageAnswer;
             },
             className: 'has-filter',
-            width: 105
+            width: FIVE_CHAR_WIDTH
         }, {
             title: Intl.get('sales.home.phone.callin', '呼入次数'),
             csvTitle: Intl.get('sales.home.phone.callin', '呼入次数'),
@@ -363,7 +373,7 @@ class SalesHomePage extends React.Component {
                 return a.callinCount - b.callinCount;
             },
             className: 'has-filter',
-            width: 90
+            width: FOUR_CHAR_WIDTH
         }, {
             title: Intl.get('sales.home.phone.callin.success', '成功呼入'),
             csvTitle: Intl.get('sales.home.phone.callin.success', '成功呼入'),
@@ -373,7 +383,7 @@ class SalesHomePage extends React.Component {
                 return a.callinSuccess - b.callinSuccess;
             },
             className: 'has-filter',
-            width: 90
+            width: FOUR_CHAR_WIDTH
         }, {
             title: Intl.get('sales.home.phone.callin.rate', '呼入接通率'),
             csvTitle: Intl.get('sales.home.phone.callin.rate', '呼入接通率'),
@@ -384,7 +394,7 @@ class SalesHomePage extends React.Component {
                 return a.callinRate - b.callinRate;
             },
             className: 'has-filter',
-            width: 105
+            width: FIVE_CHAR_WIDTH
         }, {
             title: Intl.get('sales.home.phone.callout', '呼出次数'),
             csvTitle: Intl.get('sales.home.phone.callout', '呼出次数'),
@@ -394,7 +404,7 @@ class SalesHomePage extends React.Component {
                 return a.calloutCount - b.calloutCount;
             },
             className: 'has-filter',
-            width: 90
+            width: FOUR_CHAR_WIDTH
         }, {
             title: Intl.get('sales.home.phone.callout.rate', '呼出接通率'),
             csvTitle: Intl.get('sales.home.phone.callout.rate', '呼出接通率'),
@@ -405,13 +415,13 @@ class SalesHomePage extends React.Component {
                 return a.calloutRate - b.calloutRate;
             },
             className: 'has-filter',
-            width: 105
+            width: FIVE_CHAR_WIDTH
         }];
         // 如果是蚁坊的用户，展示有效通话时长和有效接通数
         if(_.get(this.state.organization,'realm_id') === ORGANIZATION_TYPE.EEFUNG){
             columns.push({
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
-                width: 90,
+                width: FIVE_CHAR_WIDTH,
                 dataIndex: 'effectiveCount',
                 key: 'effective_count',
                 sorter: function(a, b) {
@@ -420,7 +430,7 @@ class SalesHomePage extends React.Component {
                 className: 'has-filter'
             }, {
                 title: Intl.get('sales.home.phone.effective.time', '有效通话时长'),
-                width: 100,
+                width: SIX_CHAR_WIDTH,
                 dataIndex: 'effectiveTime',
                 key: 'effective_time',
                 sorter: function(a, b) {
@@ -447,7 +457,7 @@ class SalesHomePage extends React.Component {
                     return a.billingTime - b.billingTime;
                 },
                 className: 'has-filter',
-                width: 90
+                width: FOUR_CHAR_WIDTH
             });
         }
         return columns;
@@ -458,7 +468,8 @@ class SalesHomePage extends React.Component {
             {
                 title: Intl.get('common.callback.time', '回访时间'),
                 dataIndex: 'call_date',
-                width: 90,
+                width: FOUR_CHAR_WIDTH,
+                align: 'left',
                 className: 'has-sorter',
                 sorter: function(a, b) {
                     return a.call_date - b.call_date;
@@ -475,17 +486,17 @@ class SalesHomePage extends React.Component {
             {
                 title: Intl.get('crm.41', '客户名'),
                 dataIndex: 'customer_name',
-                width: 90,
+                width: FOUR_CHAR_WIDTH,
             },
             {
                 title: Intl.get('menu.trace', '跟进记录'),
                 dataIndex: 'remark',
-                width: 90,
+                width: FOUR_CHAR_WIDTH,
             },
             {
                 title: Intl.get('common.callback.person', '回访人'),
                 dataIndex: 'nick_name',
-                width: 90,
+                width: FOUR_CHAR_WIDTH,
             }
         ];
         return columns;
