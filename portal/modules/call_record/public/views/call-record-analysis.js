@@ -363,7 +363,7 @@ class CallRecordAnalyis extends React.Component {
         });
         //获取单次通话时长TOP10的统计数据
         this.getCallDurTopTen(reqBody);
-        this.getCallRate(reqBody); // 114占比
+        this.getCallRate({...reqBody, filter_phone: 'false'}); // 114占比
         this.getCallRate({...reqBody, filter_invalid_phone: 'false'}); //客服电话统计
         //获取通话时段（数量和时长）、总次数、总时长的统计数据
         this.getCallIntervalTotalData(reqBody);
