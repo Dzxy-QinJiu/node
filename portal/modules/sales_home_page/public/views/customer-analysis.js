@@ -698,24 +698,30 @@ class CustomerAnalysis extends React.Component {
         if (num === 0) {
             return <span>{num}</span>;
         } else {
-            const customerIds = record[idsField];
+            const customerIds = record[idsField] || [];
 
             if (!_.isArray(customerIds)) {
                 return <span>{num}</span>;
             } else {
-                const customerIdsStr = customerIds.join(',');
-                //由于合并或删除，已经不存在了的客户数
-                const diffNum = num - customerIds.length;
-                const argsObj = {
+                let argsObj = {
                     from: 'sales_home',
-                    customerIds: customerIdsStr,
                     num,
-                    diffNum,
-                    //缓存key，用于查寻有效客户活跃数详细列表
-                    cache_key: record.cache_key,
-                    //二级缓存key，用于查寻有效客户活跃数详细列表
-                    sub_cache_key: idsField === 'active_list'? record.active_cache_key : record.unactive_cache_key,
                 };
+
+                if (record[idsField]) {
+                    const customerIdsStr = customerIds.join(',');
+
+                    _.extend(argsObj, {
+                        customerIds: customerIdsStr,
+                    });
+                } else if (record.active_cache_key) {
+                    _.extend(argsObj, {
+                        //缓存key，用于查寻有效客户活跃数详细列表
+                        cache_key: record.cache_key,
+                        //二级缓存key，用于查寻有效客户活跃数详细列表
+                        sub_cache_key: idsField === 'active_list' ? record.active_cache_key : record.unactive_cache_key,
+                    });
+                }
 
                 return <span style={{cursor: 'pointer'}} onClick={this.handleCustomerNumClick.bind(this, argsObj)}>{num}</span>;
             }
@@ -769,18 +775,18 @@ class CustomerAnalysis extends React.Component {
             ],
             processData: data => {
                 //缓存key，用于查寻活跃数详细列表
-                const cacheKey = data.cache_key
-                let list = data.list
+                const cacheKey = data.cache_key;
+                let list = data.list;
 
                 if (cacheKey && list) {
                     //将缓存key加到每一条记录中，方便在点击事件中获取
                     _.each(list, item => {
-                        item.cache_key = cacheKey
-                    })
+                        item.cache_key = cacheKey;
+                    });
 
-                    return list
+                    return list;
                 } else {
-                    return []
+                    return [];
                 }
             },
             chartType: 'table',
