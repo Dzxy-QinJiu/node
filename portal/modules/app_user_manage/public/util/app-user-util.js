@@ -126,7 +126,9 @@ exports.USER_TYPE_TEXT_MAP = USER_TYPE_TEXT_MAP;
 //根据数据库中保存的值，获取用户类型的文本
 function getUserTypeText(user_type_value){
     var KEY = _.findKey(USER_TYPE_VALUE_MAP , (value) => value === user_type_value);
-    return KEY && USER_TYPE_TEXT_MAP[KEY] || '';
+    // KEY存在，是oplate用户的类型，KEY不存在时，是uem产产品自定义变量中上传的用户类型
+    let userType = KEY ? USER_TYPE_TEXT_MAP[KEY] : user_type_value;
+    return userType || '';
 }
 exports.getUserTypeText = getUserTypeText;
 

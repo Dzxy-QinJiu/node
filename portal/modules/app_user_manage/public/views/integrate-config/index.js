@@ -10,6 +10,7 @@ const FormItem = Form.Item;
 import Logo from 'CMP_DIR/Logo';
 import {Link} from 'react-router-dom';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import {getUemJSCode} from 'PUB_DIR/sources/utils/uem-js-code';
 const matomoSrc = require('./matomo.png');
 const oplateSrc = require('./oplate.png');
 class IntegrateConfigView extends React.Component {
@@ -19,8 +20,6 @@ class IntegrateConfigView extends React.Component {
             isAddingProduct: false,
             addErrorMsg: '',
             addProduct: null,//添加的产品
-            jsCode: '',
-            getJSCodeMsg: '',
             jsCopied: false,
             testResult: '',//测试结果success、error
         };
@@ -38,15 +37,7 @@ class IntegrateConfigView extends React.Component {
                 data: {name: _.trim(values.name)},
                 success: (result) => {
                     if (result) {
-                        this.setState({addProduct: result, addErrorMsg: ''});
-                        let integration_id = _.get(result, 'integration_id');
-                        if (integration_id) {
-                            this.getIntegrateJSCode(integration_id);
-                        } else {
-                            this.setState({
-                                isAddingProduct: false
-                            });
-                        }
+                        this.setState({addProduct: result, addErrorMsg: '', isAddingProduct: false});
                     } else {
                         this.setState({
                             isAddingProduct: false,
@@ -63,31 +54,6 @@ class IntegrateConfigView extends React.Component {
             });
         });
     };
-
-    getIntegrateJSCode(integration_id) {
-        $.ajax({
-            url: '/rest/product/uem/js',
-            type: 'get',
-            dataType: 'json',
-            data: {integration_id},
-            success: (jsCode) => {
-                this.setState({
-                    jsCode: jsCode.code,
-                    isAddingProduct: false,
-                    addErrorMsg: '',
-                    getJSCodeMsg: ''
-                });
-
-            },
-            error: (xhr) => {
-                this.setState({
-                    isAddingProduct: false,
-                    addErrorMsg: '',
-                    getJSCodeMsg: xhr.responseJSON || Intl.get('app.user.failed.get.apps', '获取失败')
-                });
-            }
-        });
-    }
 
     testUemProduct = () => {
         let integration_id = _.get(this.state, 'addProduct.integration_id');
@@ -144,24 +110,26 @@ class IntegrateConfigView extends React.Component {
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {colon: false};
         let integrateConfigUrl = '/background_management/integration';
+        let addProduct = this.state.addProduct;
+        let jsCode = _.get(addProduct, 'integration_id') ? getUemJSCode(addProduct.integration_id) : '';
         return (
             <div className="integrate-config-wrap">
                 <div className="access-step-tip">{Intl.get('user.access.steps.tip', '您还没有接入用户，请按照下面流程接入用户')}</div>
                 <div className="curtao-access-wrap">
-                    {_.get(this.state, 'addProduct.name') ? (
+                    {_.get(addProduct, 'name') ? (
                         <div className="integrate-js-code-wrap">
                             <div className="accesss-title">
                                 <Logo size="24px" fontColor='#333' jumpUrl="#"/>
                             </div>
                             <div className="access-step-tip margin-style curtao-product-name">
                                 <span className="js-code-label">{Intl.get('common.product.name', '产品名称')}：</span>
-                                <span>{this.state.addProduct.name} </span>
+                                <span>{addProduct.name} </span>
                             </div>
                             <div className="access-step-tip margin-style js-code-contianer">
                                 <span className="js-code-label">{Intl.get('common.trace.code', '跟踪代码')}： </span>
-                                {this.state.jsCode ? (
+                                {jsCode ? (
                                     <span>
-                                        <CopyToClipboard text={this.state.jsCode}
+                                        <CopyToClipboard text={jsCode}
                                             onCopy={this.copyJSCode}>
                                             <Button size='default' type="primary" className='copy-btn'>
                                                 {Intl.get('user.jscode.copy', '复制')}
@@ -174,9 +142,9 @@ class IntegrateConfigView extends React.Component {
                                     </span>) : (
                                     <span className="js-code-label">{Intl.get('clue.has.no.data', '暂无')}</span>)}
                             </div>
-                            {this.state.jsCode ? (
+                            {jsCode ? (
                                 <div className="access-step-tip margin-style js-code-contianer">
-                                    <pre id='matomo-js-code'>{this.state.jsCode}</pre>
+                                    <pre id='matomo-js-code'>{jsCode}</pre>
                                     <span className="js-code-user-tip">
                                         <span className="attention-flag"> * </span>
                                         {Intl.get('user.jscode.use.tip', '请将以上js代码添加到应用页面的header中，如已添加')}

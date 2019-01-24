@@ -72,14 +72,6 @@ module.exports = {
             'needLogin': true
         },
         'privileges': []
-    }, {
-        'method': 'get',
-        'path': '/rest/product/uem/js',
-        'handler': 'getUemJsCode',
-        'passport': {
-            'needLogin': true
-        },
-        'privileges': []
     }, {//获取oplate\matomo的产品列表
         'method': 'get',
         'path': '/rest/product_list/:integration_type',
