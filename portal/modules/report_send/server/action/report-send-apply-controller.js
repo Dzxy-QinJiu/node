@@ -16,7 +16,9 @@ exports.addReportSendApply = function(req, res) {
         let formData = {},newTmpPath = '';
         if (receiveFiles) {
             //可以是上传一个也可以是上传多个
-            _.forEach(receiveFiles,(fileItem) => {
+            var totalSize = 0;//总的文件大小
+            for (var i = 0; i < receiveFiles.length; i++){
+                var fileItem = receiveFiles[i];
                 let tmpPath = fileItem.path;
                 newTmpPath = tmpPath;
                 // 获取生成的文件名称
@@ -25,34 +27,61 @@ exports.addReportSendApply = function(req, res) {
                 var filename = fileItem.originalFilename;
                 newTmpPath = _.replace(newTmpPath, tempName, filename);
                 fs.renameSync(tmpPath, newTmpPath);
+                let backendIntl = new BackendIntl(req);
+                // 文件内容为空的处理
+                if (filename.indexOf(' ') >= 0) {
+                    res.status(500).json(backendIntl.get('apply.approve.upload.no.container.space', '文件名称中不要含有空格！'));
+                    break;
+                }
+                if (filename.indexOf('.exe') >= 0){
+                    res.status(500).json(backendIntl.get('apply.approve.upload.error.file.type','文件格式不正确！'));
+                    break;
+                }
+                //文件的大小
+                let file_size = fileItem.size;
+                if (file_size === 0) {
+                    res.status(500).json(backendIntl.get('apply.approve.upload.empty.file','不可上传空文件！'));
+                    break;
+                }
+                totalSize += file_size / 1024 / 1024;
+                if (totalSize > 50){
+                    res.status(500).json(backendIntl.get('apply.approve.upload.not.more.than50','文件大小不能超过50M!'));
+                    return;
+                }
                 // 文件不为空的处理
                 if (formData['files']){
                     formData['files'].push(fs.createReadStream(newTmpPath));
                 }else {
                     formData['files'] = [fs.createReadStream(newTmpPath)];
                 }
-            });
-        }
-        _.forEach(fields, (value, key) => {
-            formData[key] = _.get(value, '[0]');
-        });
-        try {
-            //调用上传请求服务
-            ReportSendApplyService.addReportSendApply(req, res, formData).on('success', function(data) {
-                res.status(200).json(data);
-            }).on('error', function(codeMessage) {
-                res.status(500).json(codeMessage && codeMessage.message);
-            });
-        } catch (e) {
-            if (newTmpPath){
-                //删除文件
+                //把文件删除
                 fs.unlinkSync(newTmpPath);
+                if (i === receiveFiles.length - 1){
+                    _.forEach(fields, (value, key) => {
+                        formData[key] = _.get(value, '[0]');
+                    });
+                    addReportSendApplyData(req, res, formData);
+                }
+
             }
-            console.log(JSON.stringify(e));
+        }else {
+            addReportSendApplyData(req, res, formData);
         }
     });
 
 };
+function addReportSendApplyData(req, res, formData) {
+    try {
+        //调用上传请求服务
+        ReportSendApplyService.addReportSendApply(req, res, formData).on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+    } catch (e) {
+        console.log(JSON.stringify(e));
+    }
+}
 
 exports.approveReportSendApplyPassOrReject = function(req, res) {
     ReportSendApplyService.approveReportSendApplyPassOrReject(req, res).on('success', function(data) {

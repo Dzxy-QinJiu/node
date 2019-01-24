@@ -193,7 +193,7 @@ class UploadAndDeleteFile extends React.Component {
                         {this.state.isUpLoading ?
                             <Icon type="loading" className="icon-loading"/> : null}</Button>
                 </Upload>
-                <p>{Intl.get('click.ctrl.upload.mutil.file','可同时上传多个文件，文件大小不要超过50M！')}</p>
+                <p>{Intl.get('click.ctrl.upload.mutil.file','可同时上传多个文件，只能上传图片文件，文本文件，视频文件，音频文件和压缩文件，文件大小不要超过50M！')}</p>
             </div>
         );
     };

@@ -2676,7 +2676,7 @@ var en_US = {
     'failed.get.reply.comment': 'Failed to get comment lists',//获取回复列表失败
     'apply.approve.upload.no.container.space': 'Please do not has space in your file name!',//文件名称中不要含有空格！
     'failed.delete.apply.load.approve': 'Failed to delete files',//删除文件失败！
-    'click.ctrl.upload.mutil.file': 'You can upload more than one file not larger than 50M at one time',//可同时上传多个文件，文件大小不要超过50M！
+    'click.ctrl.upload.mutil.file': 'You can upload multiple files at the same time, only upload image files, text files, video files, audio files and compressed files. The file size should not exceed 50M!',//可同时上传多个文件，只能上传图片文件，文本文件，视频文件，音频文件和压缩文件，文件大小不要超过50M！
     'apply.approve.customer.info': 'Customer Info',//客户资料
     'apply.approve.add.files': 'Added files',//补充文件
     'fail.apply.approve.result': 'Failed to approve',//审批失败
@@ -2695,5 +2695,9 @@ var en_US = {
     'apply.will.approve.apply.item': 'Pending person',//待审批人
     'apply.no.relate.user': 'No related members',//无相关成员
     'apply.approve.transfer.failed': 'Failed to transfer apply',//转出申请失败
+    'apply.approve.transfer.success': 'Transfer out the application successfully',//转出申请成功
+    'apply.approve.upload.empty.file': 'Do not upload empty files!',//不可上传空文件！
+    'apply.approve.upload.error.file.type': 'The file format is incorrect!',//文件格式不正确！
+    'apply.approve.upload.not.more.than50': 'The file size cannot exceed 50M!'//文件大小不能超过50M!
 };
 export default en_US;
