@@ -22,7 +22,7 @@ export function getContactCustomerIntervalChart(intervals) {
         name: '15天-1个月',
         min: 15,
         max: 30,
-        unit: 'month'
+        unit: 'day'
     }, {
         name: '3个月-半年',
         min: 1,
