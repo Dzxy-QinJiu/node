@@ -395,6 +395,8 @@ class SalesReport extends React.Component {
                 reportCharts.newCustomerLoginChart(this.state.currentMember.team_id, this.state.currentMember.member_id),
                 //合格客户统计
                 customerCharts.getCustomerNumChart('qualified'),
+                //联系客户频率统计
+                customerCharts.getContactCustomerIntervalChart(),
             );
         } else {
             charts.push(
@@ -406,6 +408,8 @@ class SalesReport extends React.Component {
                 reportCharts.getOrderStageChart(this.state.stageList),
                 //客户阶段
                 customerCharts.getCustomerStageChart(),
+                //联系客户频率统计
+                customerCharts.getContactCustomerIntervalChart(),
                 //客户流失率统计
                 customerCharts.getCustomerLoseRateChart(),
                 //客户活跃度统计
