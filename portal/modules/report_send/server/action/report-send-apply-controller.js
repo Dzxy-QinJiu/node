@@ -27,27 +27,11 @@ exports.addReportSendApply = function(req, res) {
                 var filename = fileItem.originalFilename;
                 newTmpPath = _.replace(newTmpPath, tempName, filename);
                 fs.renameSync(tmpPath, newTmpPath);
-                let backendIntl = new BackendIntl(req);
-                // 文件内容为空的处理
-                if (filename.indexOf(' ') >= 0) {
-                    res.status(500).json(backendIntl.get('apply.approve.upload.no.container.space', '文件名称中不要含有空格！'));
-                    break;
-                }
-                if (filename.indexOf('.exe') >= 0){
-                    res.status(500).json(backendIntl.get('apply.approve.upload.error.file.type','文件格式不正确！'));
-                    break;
-                }
                 //文件的大小
                 let file_size = fileItem.size;
-                if (file_size === 0) {
-                    res.status(500).json(backendIntl.get('apply.approve.upload.empty.file','不可上传空文件！'));
-                    break;
-                }
-                totalSize += file_size / 1024 / 1024;
-                if (totalSize > 50){
-                    res.status(500).json(backendIntl.get('apply.approve.upload.not.more.than50','文件大小不能超过50M!'));
-                    return;
-                }
+                totalSize += file_size;
+                //校验文件的格式
+                checkFilesTypeBeforeUpload(res, req,filename,file_size,totalSize);
                 // 文件不为空的处理
                 if (formData['files']){
                     formData['files'].push(fs.createReadStream(newTmpPath));
@@ -70,6 +54,31 @@ exports.addReportSendApply = function(req, res) {
     });
 
 };
+//上传文件的大小不能超过50M
+function canculateLimite(size) {
+    return size / 1024 / 1024 > 50;
+}
+function checkFilesTypeBeforeUpload(res,req,filename,fileSize,totalSize) {
+    let backendIntl = new BackendIntl(req);
+    // 文件内容为空的处理
+    if (filename.indexOf(' ') >= 0) {
+        res.status(500).json(backendIntl.get('apply.approve.upload.no.container.space', '文件名称中不要含有空格！'));
+        return;
+    }
+    if (filename.indexOf('.exe') >= 0){
+        res.status(500).json(backendIntl.get('apply.approve.upload.error.file.type','文件格式不正确！'));
+        return;
+    }
+    if (fileSize === 0) {
+        res.status(500).json(backendIntl.get('apply.approve.upload.empty.file','不可上传空文件！'));
+        return;
+    }
+
+    if (fileSize && canculateLimite(fileSize) || totalSize && canculateLimite(totalSize)){
+        res.status(500).json(backendIntl.get('apply.approve.upload.not.more.than50','文件大小不能超过50M!'));
+        return;
+    }
+}
 function addReportSendApplyData(req, res, formData) {
     try {
         //调用上传请求服务
@@ -117,15 +126,7 @@ exports.uploadReportSend = function(req, res) {
             } else {
                 // 文件内容为空的处理
                 let file_size = files['reportsend'][0].size;
-                if (filename.indexOf(' ') >= 0) {
-                    let backendIntl = new BackendIntl(req);
-                    res.status(500).json(backendIntl.get('apply.approve.upload.no.container.space', '文件名称中不要含有空格！'));
-                    return;
-                }
-                if (file_size === 0) {
-                    res.json(false);
-                    return;
-                }
+                checkFilesTypeBeforeUpload(res, req,filename,file_size);
                 var idArr = [];
                 _.forEach(fields, (item) => {
                     idArr = _.concat(idArr, item);
@@ -141,6 +142,8 @@ exports.uploadReportSend = function(req, res) {
                     res.status(500).json(err.message);
                 });
             }
+            //把文件删除
+            fs.unlinkSync(newTmpPath);
         });
 
 

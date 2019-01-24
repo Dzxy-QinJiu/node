@@ -65,16 +65,17 @@ class UploadAndDeleteFile extends React.Component {
         }
     };
     onRemove = (file,callback) => {
-        this.setState((state) => {
-            const index = state.fileList.indexOf(file);
-            const newFileList = state.fileList.slice();
+        var fileList = this.state.fileList;
+        const index = fileList.indexOf(file);
+        const newFileList = fileList.slice();
+        if (index > -1){
             newFileList.splice(index, 1);
-            return {
+            this.setState({
                 fileList: newFileList,
-            };
-        },() => {
-            _.isFunction(callback) && callback();
-        });
+            },() => {
+                _.isFunction(callback) && callback();
+            });
+        }
         this.props.fileRemove(file);
     };
     beforeUpload = (file) => {
