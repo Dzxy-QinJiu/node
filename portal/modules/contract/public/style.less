@@ -15,168 +15,7 @@
     .right-panel-modal .close-modal-btn {
         top: 0;
     } 
-    //新版合同面板
-    .contract-panel-v2 {
-        .step-button {
-            position: absolute;
-            bottom: 15px;
-            right: 0;
-            width: 100%;
-            background: #f5f5f5;
-        }
-        .finance-list {
-            background-color: white;
-            border: 1px solid #ccc; 
-            padding: 0 12px;
-            margin: 20px;
-            margin-bottom: 0;
-            font-size: 14px;
-            .ant-select {
-                top: 1px;
-            }          
-            li {
-                font-size: 14px;
-                line-height: 32px;
-                margin: 0 -12px;
-                padding: 0 12px;
-                &:hover {
-                    background: #EEF7FE;
-                }
-                .ant-form-item {
-                    margin-bottom: 0;
-                }
-                .btn-bar {
-                    float: right;
-                    i {
-                        cursor: pointer;
-                    }
-                }
-            }
-            .icon-update {
-                top: 0;
-                right: 55px;
-            }
-            .icon-delete {
-                position: absolute;
-                top: 0;
-                right: 20px;
-            }
-            .btn-save {
-                position: absolute;
-                top: 0;
-                right: 55px;
-            }
-            .btn-cancel {
-                position: absolute;
-                top: 0;
-                right: 20px;
-            }
-        }
-        .add-repayments, .add-payments {
-            padding-top: 5px;
-        }
-        .new-add-repayment-container {
-            background-color: white;
-            border: 1px solid #ccc;
-            padding: 12px;
-            margin: 20px;
-            margin-top: -1px;
-            font-size: 13px;
-            .ant-form-item {
-                width: 60px;
-                display: inline-block;
-                margin: 0 5px;
-            }
-            .ant-select-selection.ant-select-selection--single {
-                height: 24px;
-                line-height: 2;
-                font-size: 12px;
-                vertical-align: bottom;
-                top: 2px;
-                margin-right: 3px;
-                .ant-select-selection__rendered {
-                    line-height: 2;
-                }
-            }
-            button {
-                float: right;
-            }
-           
-        }
-        &.right-panel-modal .right-panel-modal-content form .ant-form-item {
-            margin-bottom: 10px;
-            padding-right: 0;
-            .ant-form-item-label label {
-                margin-top: 3px;
-            }
-        }
-        .product-table-container {
-            border: 1px solid #eee;
-            margin: 15px;
-            .product-table {
-                table {
-                    .invalid-td-input {
-                        input {
-                            border: 1px solid red;
-                        }
-                    }
-                }
-            }
-        }
-        .ant-steps {
-            width: 80%;
-            margin-left: 20px;
-            .ant-steps-item {
-                margin-right: -48px;
-                .ant-steps-title {
-                    font-size: 14px;
-                }
-            }
-            .ant-steps-head {
-                background: @bg-grey;
-            }
-            .ant-steps-title {
-                background: @bg-grey;
-            }
-        }
-        .add-form {
-            margin-top: 15px;
-            .step-button {
-                text-align: right;
-                padding-right: 20px;
-                button {
-                    margin-left: 16px;
-                }
-            }
-        }
-        .ant-form-item-label {
-            line-height: 23px;
-        }
-        .form-item-append-icon-container {
-            .ant-select,
-            input {
-                display: inline-block;
-                width: 93% !important;
-            }
-            .circle-button,
-            .ant-form-text {
-                display: inline-block;
-                margin-left: 7px;
-                padding-right: 0;
-            }
-        }
-        .ant-form-item-control {
-            input {
-                height: 24px;
-            }
-            .ant-form-explain {
-                margin-top: -2px;
-            }
-            .ant-calendar-picker {
-                width: 100%;
-            }
-        }
-    }
+
 
     .contract-list {
         padding: 16px;
@@ -870,7 +709,7 @@
             }
         }
         .detail-cost {
-            padding-left: 40px;
+            //padding-left: 40px;
             .icon-update {
                 top: 60px;
                 right: 55px;
@@ -887,15 +726,190 @@
             button {
                 margin: 0;
             }
+            .footer-btn {
+                text-align: right;
+                margin-top: 10px;
+            }
             .btn-primary-cancel {
                 margin-left: 15px;
+            }
+            .btn-primary-delete {
+                float: left;
+                margin-left: 3px;
             }
             .value-text {
                 display: inline-block;
             }
         }
         .right-panel-cost {
-            width: 500px;
+            //width: 500px;
+        }
+    }
+
+    //新版合同面板
+    .contract-panel-v2 {
+        .step-button {
+            position: absolute;
+            bottom: 15px;
+            right: 0;
+            width: 100%;
+            background: #f5f5f5;
+        }
+        .finance-list {
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 0 12px;
+            margin: 20px;
+            margin-bottom: 0;
+            font-size: 14px;
+            .ant-select {
+                top: 1px;
+            }
+            li {
+                font-size: 14px;
+                line-height: 32px;
+                margin: 0 -12px;
+                padding: 0 12px;
+                &:hover {
+                    background: #EEF7FE;
+                }
+                .ant-form-item {
+                    margin-bottom: 0;
+                }
+                .btn-bar {
+                    float: right;
+                    i {
+                        cursor: pointer;
+                    }
+                }
+            }
+            .icon-update {
+                top: 0;
+                right: 55px;
+            }
+            .icon-delete {
+                position: absolute;
+                top: 0;
+                right: 20px;
+            }
+            .btn-save {
+                position: absolute;
+                top: 0;
+                right: 55px;
+            }
+            .btn-cancel {
+                position: absolute;
+                top: 0;
+                right: 20px;
+            }
+        }
+        .add-repayments, .add-payments {
+            padding-top: 5px;
+        }
+        .new-add-repayment-container {
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 12px;
+            margin: 20px;
+            margin-top: -1px;
+            font-size: 13px;
+            .ant-form-item {
+                width: 60px;
+                display: inline-block;
+                margin: 0 5px;
+            }
+            .ant-select-selection.ant-select-selection--single {
+                height: 24px;
+                line-height: 2;
+                font-size: 12px;
+                vertical-align: bottom;
+                top: 2px;
+                margin-right: 3px;
+                .ant-select-selection__rendered {
+                    line-height: 2;
+                }
+            }
+            button {
+                float: right;
+            }
+
+        }
+        &.right-panel-modal .right-panel-modal-content form .ant-form-item {
+            margin-bottom: 10px;
+            padding-right: 0;
+            .ant-form-item-label label {
+                margin-top: 3px;
+            }
+        }
+        .product-table-container {
+            border: 1px solid #eee;
+            margin: 15px;
+            .product-table {
+                table {
+                    .invalid-td-input {
+                        input {
+                            border: 1px solid red;
+                        }
+                    }
+                }
+            }
+        }
+        .ant-steps {
+            width: 80%;
+            margin-left: 20px;
+            .ant-steps-item {
+                margin-right: -48px;
+                .ant-steps-title {
+                    font-size: 14px;
+                }
+            }
+            .ant-steps-head {
+                background: @bg-grey;
+            }
+            .ant-steps-title {
+                background: @bg-grey;
+            }
+        }
+        .add-form {
+            margin-top: 15px;
+            .step-button {
+                text-align: right;
+                padding-right: 20px;
+                button {
+                    margin-left: 16px;
+                }
+            }
+        }
+        .ant-form-item-label {
+            line-height: 23px;
+        }
+        .form-item-append-icon-container {
+            .ant-select,
+            input {
+                display: inline-block;
+                width: 93% !important;
+            }
+            .circle-button,
+            .ant-form-text {
+                display: inline-block;
+                margin-left: 7px;
+                padding-right: 0;
+            }
+        }
+        .ant-form-item-control {
+            input {
+                height: 24px;
+            }
+            .ant-form-explain {
+                margin-top: -2px;
+            }
+            .ant-calendar-picker {
+                width: 100%!important;
+            }
+            .ant-select-inline{
+                width: 50%!important;
+                vertical-align: middle;
+            }
         }
     }
 
@@ -909,7 +923,13 @@
             font-size: 14px;
             font-weight: normal;
         }
-    } // 合同模板样式
+    }
+    .right-panel-modal .close-modal-btn {
+        position: fixed;
+        top: 0;
+        right: 480px;
+    }
+    // 合同模板样式
     .import-contract-template-panel .right-pannel-default {
         width: 420px;
         transform: translateX(100%);

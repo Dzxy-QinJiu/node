@@ -1671,6 +1671,7 @@ var zh_CN = {
     'contract.189': '提成发放',
     'contract.190': '《销售合同模板》',
     'contract.191': '《采购合同模板》',
+    'contract.192': '是否删除此费用？',
     'contract.gross.profit.can.not.exceed.repayment': '毛利不能大于回款',
     'contract.loadMore': '加载更多',
     'contract.valueTypeConfig': '值字段设置',

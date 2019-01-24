@@ -170,6 +170,7 @@ class Contract extends React.Component {
     };
 
     getContractList = (reset, sorter, queryParams) => {
+        let stateObj = {};
         if (reset) {
             this.setState({
                 isListLoading: true,
@@ -179,7 +180,7 @@ class Contract extends React.Component {
         }
 
         if (sorter) {
-            this.state.sorter = sorter;
+            stateObj.sorter = sorter;
         } else {
             sorter = this.state.sorter;
         }
@@ -242,16 +243,16 @@ class Contract extends React.Component {
 
         ajax(arg).then(result => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.state.isListLoading = false;
-            this.state.isScrollTop = false;
+            stateObj.isListLoading = false;
+            stateObj.isScrollTop = false;
 
             if (result && result.code === 0) {
                 let list = _.isArray(result.list) ? result.list : [];
 
                 if (!reset) {
-                    this.state.contractList = this.state.contractList.concat(list);
+                    stateObj.contractList = this.state.contractList.concat(list);
                 } else {
-                    this.state.contractList = list;
+                    stateObj.contractList = list;
                 }
 
                 //在更新后的合同列表中查找当前打开的合同
@@ -259,39 +260,40 @@ class Contract extends React.Component {
 
                 if (updatedCurrentContract) {
                     //若找到，则更新
-                    this.state.currentContract = updatedCurrentContract;
+                    stateObj.currentContract = updatedCurrentContract;
                 } else {
                     //若未找到，但新列表有值，则将打开的合同设为列表中的第一项
                     //若新列表为空，则置空
-                    this.state.currentContract = this.state.contractList[0] || '';
+                    stateObj.currentContract = this.state.contractList[0] || '';
                 }
 
-                if (result.sum) this.state.sum = result.sum;
+                if (result.sum) stateObj.sum = result.sum;
 
-                this.state.contractCount = result.total || 0;
-                this.state.listenScrollBottom = this.state.contractCount > this.state.contractList.length;
+                stateObj.contractCount = result.total || 0;
+                stateObj.listenScrollBottom = this.state.contractCount > this.state.contractList.length;
                 //获取回款列表时用于下拉加载分页的id用回款id，否则用合同id
                 const id = this.state.type === VIEW_TYPE.REPAYMENT ? 'repayment_id' : 'id';
-                this.state.lastId = list.length ? _.last(list)[id] : '';
+                stateObj.lastId = list.length ? _.last(list)[id] : '';
             } else {
                 message.error(Intl.get('contract.111', '获取数据失败'));
             }
 
             //如果是从订单中点击查看合同过来的，自动打开右侧面板
             if (this.state.isFromOrder) {
-                this.state.isFromOrder = false;
-                this.state.shouldRightPanelShow = true;
+                stateObj.isFromOrder = false;
+                stateObj.shouldRightPanelShow = true;
             } else {
-                this.state.shouldRightPanelShow = false;
+                stateObj.shouldRightPanelShow = false;
             }
             //重置合同列表时，关闭右侧面板
-            if (reset) this.state.isRightPanelShow = false;
+            if (reset) stateObj.isRightPanelShow = false;
 
-            this.setState(this.state);
+            this.setState(stateObj);
         })
             .fail(err => {
-                this.state.isListLoading = false;
-                this.state.isScrollTop = false;
+                stateObj.isListLoading = false;
+                stateObj.isScrollTop = false;
+                this.setState(stateObj);
                 message.error((err && err.message) || Intl.get('contract.111', '获取数据失败'));
             });
     };
@@ -302,16 +304,18 @@ class Contract extends React.Component {
     //isUpdateList：是否更新列表中的对应项，默认为更新
     //newContract：更新后的合同
     refreshCurrentContract = (id, isUpdateList = true, newContract) => {
+        let newStateObj = {};
         //如果提供了更新后的合同，则直接使用，不用再发请求获取了
         if (newContract) {
             if (isUpdateList) {
                 let index = _.findIndex(this.state.contractList, item => item.id === id);
-                if (index > -1) this.state.contractList[index] = newContract;
+                newStateObj.contractList = this.state.contractList;
+                if (index > -1) newStateObj.contractList[index] = newContract;
             }
 
-            this.state.currentContract = newContract;
+            newStateObj.currentContract = newContract;
 
-            this.setState(this.state);
+            this.setState(newStateObj);
 
             return;
         }
@@ -343,11 +347,12 @@ class Contract extends React.Component {
 
                 if (isUpdateList) {
                     let index = _.findIndex(this.state.contractList, item => item.id === id);
-                    if (index > -1) this.state.contractList[index] = updatedContract;
+                    newStateObj.contractList = this.state.contractList;
+                    if (index > -1) newStateObj.contractList[index] = updatedContract;
                 }
 
-                this.state.currentContract = updatedContract;
-                this.setState(this.state);
+                newStateObj.currentContract = updatedContract;
+                this.setState(newStateObj);
             }
         });
     };
@@ -552,7 +557,7 @@ class Contract extends React.Component {
 
     getTypeList = () => {
         const route = _.find(routeList, route => route.handler === 'getContractTypeList');
-
+        const newStateObj = {};
         const arg = {
             url: route.path,
             type: route.method,
@@ -560,18 +565,19 @@ class Contract extends React.Component {
 
         ajax(arg).then(result => {
             if (result && _.isArray(result.result)) {
-                this.state.typeList = result.result;
-                this.setState(this.state);
+                newStateObj.typeList = result.result;
+                this.setState(newStateObj);
             }
         });
     };
 
     showRightPanel = (view, rowIndex) => {
+        const newStateObj = {};
         Trace.traceEvent('合同管理', '打开合同添加面板');
-        this.state.currentContract = !isNaN(rowIndex) ? this.state.contractList[rowIndex] : {};
-        this.state.isRightPanelShow = true;
-        this.state.rightPanelView = view || '';
-        this.setState(this.state);
+        newStateObj.currentContract = !isNaN(rowIndex) ? this.state.contractList[rowIndex] : {};
+        newStateObj.isRightPanelShow = true;
+        newStateObj.rightPanelView = view || '';
+        this.setState(newStateObj);
     };
 
     hideRightPanel = () => {
@@ -634,8 +640,9 @@ class Contract extends React.Component {
     };
 
     onDateChange = (startTime, endTime) => {
+        const newStateObj = {};
         if (!startTime && !endTime) {
-            this.state.rangeParams = [];
+            newStateObj.rangeParams = [];
         } else {
             const dateRangeParam = {
                 from: startTime,
@@ -643,10 +650,10 @@ class Contract extends React.Component {
                 name: this.state.dateType,
                 type: 'time',
             };
-            this.state.rangeParams = [dateRangeParam];
+            newStateObj.rangeParams = [dateRangeParam];
         }
 
-        this.setState(this.state, () => {
+        this.setState(newStateObj, () => {
             this.getContractList(true);
         });
     };
@@ -698,6 +705,15 @@ class Contract extends React.Component {
         }
 
         const isContractView = [VIEW_TYPE.SELL, VIEW_TYPE.BUY].indexOf(this.state.type) > -1;
+
+        let showModal = false;
+        const rightPaneModelTitle = _.get(this.state.currentContract,'id') ?
+            (this.state.type === VIEW_TYPE.COST ? `${Intl.get('common.update', '修改')}${Intl.get('contract.133', '费用')}` : this.state.currentContract.num) :
+            ((this.state.type === VIEW_TYPE.COST ?
+                Intl.get('contract.127', '添加费用') :
+                Intl.get('common.add', '添加') + this.state.contractType), showModal = true);
+
+        const rightPanelClass = classNames('contract-panel-v2',['right-panel-' + this.state.type], {'show-modal': showModal});
 
         return (
             <div className="contract-list" data-tracename="合同管理">
@@ -863,11 +879,11 @@ class Contract extends React.Component {
                     this.state.isRightPanelShow ?
                         <RightPanelModal
                             isShowModal={false}
-                            className={'contract-panel-v2 right-panel-' + this.state.type}
+                            className={rightPanelClass}
                             data-tracename="添加合同"
                             isShowCloseBtn={true}
                             onClosePanel={this.hideRightPanel}
-                            title={'添加' + this.state.contractType}
+                            title={rightPaneModelTitle}
                             content={this.state.isRightPanelShow ? (
                                 <ContractRightPanel
                                     view={this.state.rightPanelView}
@@ -885,6 +901,7 @@ class Contract extends React.Component {
                                     deleteContract={this.deleteContract}
                                     viewType={this.state.type}
                                     contractType={this.state.contractType}
+                                    hideRightPanel={this.hideRightPanel}
                                 />
                             ) : null}
                         /> : null
@@ -918,6 +935,10 @@ class Contract extends React.Component {
         );
     }
 }
+Contract.propTypes = {
+    history: PropTypes.object,
+    location: PropTypes.object,
+};
 
 module.exports = Contract;
 

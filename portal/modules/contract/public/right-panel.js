@@ -459,6 +459,7 @@ class ContractRightPanel extends React.Component {
             ]            
         };
         const isDetailType = ['detail', 'detailCost'].includes(this.props.view);
+
         return (
             <div id="contractRightPanel">
                 <Steps current={this.state.currentTabKey} size="small">
@@ -575,24 +576,25 @@ class ContractRightPanel extends React.Component {
 
                 {this.props.view === 'detailCost' ? (
                     <div className="add-form">
-                        <Tabs activeKey={this.state.currentTabKey}>
+                        {/*<Tabs activeKey={this.state.currentTabKey}>
                             <TabPane tab={_.isEmpty(this.props.contract) ? Intl.get('contract.127', '添加费用') : Intl.get('contract.129', '费用信息')} key="1">
-                                <DetailCost
-                                    ref="detailCost"
-                                    cost={this.props.contract}
-                                    teamList={this.props.teamList}
-                                    userList={this.props.userList}
-                                    getUserList={this.props.getUserList}
-                                    isGetUserSuccess={this.props.isGetUserSuccess}
-                                    showLoading={this.showLoading}
-                                    hideLoading={this.hideLoading}
-                                    addContract={this.props.addContract}
-                                    refreshCurrentContract={this.props.refreshCurrentContract}
-                                    deleteContract={this.props.deleteContract}
-                                    hideRightPanel={this.props.hideRightPanel}
-                                />
+
                             </TabPane>
-                        </Tabs>
+                        </Tabs>*/}
+                        <DetailCost
+                            ref="detailCost"
+                            cost={this.props.contract}
+                            teamList={this.props.teamList}
+                            userList={this.props.userList}
+                            getUserList={this.props.getUserList}
+                            isGetUserSuccess={this.props.isGetUserSuccess}
+                            showLoading={this.showLoading}
+                            hideLoading={this.hideLoading}
+                            addContract={this.props.addContract}
+                            refreshCurrentContract={this.props.refreshCurrentContract}
+                            deleteContract={this.props.deleteContract}
+                            hideRightPanel={this.props.hideRightPanel}
+                        />
                     </div>
                 ) : null}
 
@@ -689,5 +691,6 @@ ContractRightPanel.propTypes = {
     deleteContract: PropTypes.func,
     viewType: PropTypes.string,
     refreshCurrentContractNoAjax: PropTypes.func,
+    refreshCurrentContractRepayment: PropTypes.func,
 };
 module.exports = ContractRightPanel;

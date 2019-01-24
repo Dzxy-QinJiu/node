@@ -298,7 +298,16 @@ body.macintosh, body.macintosh pre{
     color:darken(@basiccolor, 20%);
   }
 }
-
+.btn-primary-delete {
+  @basiccolor: #ea7b72;
+  border-color: @basiccolor ;
+  background-color: transparent!important;
+  color: @basiccolor ;
+  &:hover,&:active,&:focus {
+    border-color: darken(@basiccolor, 20%)!important;
+    color: darken(@basiccolor, 20%)!important;
+  }
+}
 .custom-scrollbar::-webkit-scrollbar{
   width:6px;
 }
