@@ -403,7 +403,8 @@ const UserDetailAddApp = createReactClass({
 
     showAppSelector(isShow) {
         this.setState({
-            showAppSelector: isShow
+            showAppSelector: isShow,
+            selectedAppIds: []
         });
     },
 
@@ -452,7 +453,7 @@ const UserDetailAddApp = createReactClass({
                     </GeminiScrollbar>
                 </div>
                 <div className="btn-bar">
-                    <Button onClick={this.showAppSelector.bind(this, true)}>{Intl.get('common.cancel', '取消')}</Button>
+                    <Button onClick={this.showAppSelector.bind(this, false)}>{Intl.get('common.cancel', '取消')}</Button>
                     <Button onClick={this.handleFinishSelectApp} type="primary">{Intl.get('common.sure', '确定')}</Button>
                 </div>
             </div>
