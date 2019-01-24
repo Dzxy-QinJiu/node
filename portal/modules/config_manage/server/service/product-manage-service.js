@@ -149,15 +149,6 @@ exports.testUemProduct = function(req, res) {
     }, req.query);
 };
 
-// 获取js代码
-exports.getUemJsCode = function(req, res) {
-    return restUtil.authRest.get({
-        url: productRestApis.product + '/uem/js',
-        req: req,
-        res: res,
-    }, req.query);
-};
-
 // 获取oplate\matomo产品列表
 exports.getProductList = function(req, res) {
     let url = '';

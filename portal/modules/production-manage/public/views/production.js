@@ -23,6 +23,7 @@ let AlertTimer = require('../../../../components/alert-timer');
 let util = require('../utils/production-util');
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import {getUemJSCode} from 'PUB_DIR/sources/utils/uem-js-code';
 
 const LAYOUT_CONST = {
     HEADICON_H: 107,//头像的高度
@@ -52,17 +53,16 @@ class Production extends React.Component {
         }
     };
     initData = (props) => {
+        let uemSiteId = _.get(props, 'info.integration_type') === INTEGRATE_TYPES.UEM ? _.get(props, 'info.integration_id', '') : '';
         return {
             create_time: props.info.create_time ? moment(props.info.create_time).format(oplateConsts.DATE_FORMAT) : '',
             isGettingIntegrateType: false,//正在获取集成类型
             getItegrateTypeErrorMsg: '',//获取集成类型是否
             integrateType: _.get(props, 'info.integration_type') || props.integrateType,//集成类型
-            integrationId: '',//新加产品的集成id
+            uemSiteId: uemSiteId,//uem产品的集成id
             productType: '',//产品类型
             isAddingProduct: false, //正在添加产品
             addErrorMsg: '',//添加失败的错误提示
-            jsCode: '',//uem产品的jsCode
-            getJSCodeMsg: '',//获取jsCode的错误提示
             testResult: '',
             isTesting: false,
             jsCopied: false
@@ -72,9 +72,6 @@ class Production extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (this.props.info.id !== nextProps.info.id) {
             this.setState(this.initData(nextProps));
-            if (_.get(nextProps, 'info.integration_type') === INTEGRATE_TYPES.UEM && _.get(nextProps, 'info.integration_id')) {
-                this.getIntegrateJSCode(nextProps.info.integration_id);
-            }
         }
     }
 
@@ -88,12 +85,6 @@ class Production extends React.Component {
 
     componentDidMount() {
         ProductionFormStore.listen(this.onChange);
-        if (this.props.formType === util.CONST.EDIT) {//修改产品面板
-            let integrationType = _.get(this.props, 'info.integration_type');
-            if (integrationType === INTEGRATE_TYPES.UEM && _.get(this.props, 'info.integration_id')) {
-                this.getIntegrateJSCode(this.props.info.integration_id);
-            }
-        }
     }
 
 
@@ -182,10 +173,7 @@ class Production extends React.Component {
             success: (result) => {
                 if (result) {
                     let integration_id = _.get(result, 'integration_id');
-                    this.setState({addErrorMsg: '', isAddingProduct: false, integrationId: integration_id});
-                    if (integration_id) {
-                        this.getIntegrateJSCode(integration_id);
-                    }
+                    this.setState({addErrorMsg: '', isAddingProduct: false, uemSiteId: integration_id});
                     this.props.afterOperation(this.props.formType, result);
                 } else {
                     this.setState({
@@ -203,45 +191,20 @@ class Production extends React.Component {
         });
     }
 
-    getIntegrateJSCode(integration_id) {
-        $.ajax({
-            url: '/rest/product/uem/js',
-            type: 'get',
-            dataType: 'json',
-            data: {integration_id},
-            success: (jsCode) => {
-                this.setState({
-                    jsCode: jsCode.code,
-                    getJSCodeMsg: ''
-                });
-
-            },
-            error: (xhr) => {
-                this.setState({
-                    getJSCodeMsg: xhr.responseJSON || Intl.get('app.user.failed.get.apps', '获取失败')
-                });
-            }
-        });
-    }
-
     uploadImg = (src) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.head-image-container .update-logo-desr'), '上传产品logo');
         this.props.form.setFieldsValue({preview_image: src});
     };
 
-    //关闭
-    closePanel = () => {
-        this.props.closeRightPanel();
-    };
     //去掉保存后提示信息
     hideSaveTooltip = () => {
         this.props.afterOperation(this.props.formType, this.state.savedProduction);
         //将普通产品成功修改为uem产品时
         if (_.get(this.state, 'savedProduction.changeType') === INTEGRATE_TYPES.UEM && _.get(this.state, 'savedProduction.id')) {
-            //获取该产品的integration_id更新列表中的integration_id，并根据integration_id获取jsCode
+            //获取该产品的integration_id更新列表中的integration_id
             ProductionAction.getProductById(this.state.savedProduction.id, (data) => {
                 if (_.get(data, 'integration_id')) {
-                    this.getIntegrateJSCode(data.integration_id);
+                    this.setState({uemSiteId: data.integration_id});
                 }
             });
         } else {
@@ -249,7 +212,7 @@ class Production extends React.Component {
         }
     };
     testUemProduct = () => {
-        let integration_id = this.props.formType === util.CONST.ADD ? this.state.integrationId : _.get(this.props, 'info.integration_id');
+        let integration_id = this.state.uemSiteId;
         if (!integration_id) return;
         this.setState({isTesting: true});
         $.ajax({
@@ -454,13 +417,13 @@ class Production extends React.Component {
                                         <Checkbox>{Intl.get('config.product.js.collect.user', '使用JS脚本采集用户数据')}</Checkbox>
                                     )}
                                 </FormItem>) : null}
-                            {this.state.jsCode && values.useJS ? (
+                            {this.state.uemSiteId && values.useJS !== false ? (
                                 <FormItem
                                     className='jscode-form-item'
                                     label={Intl.get('common.trace.code', '跟踪代码')}
                                     {...formItemLayout}
                                 >
-                                    <CopyToClipboard text={this.state.jsCode}
+                                    <CopyToClipboard text={getUemJSCode(this.state.uemSiteId)}
                                         onCopy={this.copyJSCode}>
                                         <Button size='default' type="primary" className='copy-btn'>
                                             {Intl.get('user.jscode.copy', '复制')}
@@ -471,21 +434,22 @@ class Production extends React.Component {
                                             {Intl.get('user.copy.success.tip', '复制成功！')}
                                         </span>) : null}
                                 </FormItem>) : null}
-                            {this.state.jsCode && values.useJS ? (
-                                <FormItem>
-                                    <div className="access-step-tip margin-style js-code-contianer">
-                                        <pre id='matomo-js-code'>{this.state.jsCode}</pre>
-                                        <span className="js-code-user-tip">
-                                            <span className="attention-flag"> * </span>
-                                            {Intl.get('user.jscode.use.tip', '请将以上js代码添加到应用页面的header中，如已添加')}
-                                            <Button size='default' type="primary"
-                                                onClick={this.testUemProduct}>{Intl.get('user.jscode.test.btn', '点击测试')}</Button>
-                                            {this.renderTestResult()}
-                                        </span>
-                                    </div>
-                                </FormItem>) : null}
+                            {
+                                this.state.uemSiteId && values.useJS !== false ? (
+                                    <FormItem>
+                                        <div className="access-step-tip margin-style js-code-contianer">
+                                            <pre id='matomo-js-code'>{getUemJSCode(this.state.uemSiteId)}</pre>
+                                            <span className="js-code-user-tip">
+                                                <span className="attention-flag"> * </span>
+                                                {Intl.get('user.jscode.use.tip', '请将以上js代码添加到应用页面的header中，如已添加')}
+                                                <Button size='default' type="primary"
+                                                    onClick={this.testUemProduct}>{Intl.get('user.jscode.test.btn', '点击测试')}</Button>
+                                                {this.renderTestResult()}
+                                            </span>
+                                        </div>
+                                    </FormItem>) : null}
                             {//添加完uem产品，展示jscode时，不需要再展示保存按钮
-                                this.props.formType === util.CONST.ADD && this.state.integrationId ? null : (
+                                this.props.formType === util.CONST.ADD && this.state.uemSiteId ? null : (
                                     <FormItem>
                                         <SaveCancelButton
                                             loading={this.state.isSaving || this.state.isAddingProduct}

@@ -65,15 +65,6 @@ exports.testUemProduct = function(req,res) {
     });
 };
 
-// 获取js代码
-exports.getUemJsCode = function(req,res) {
-    productService.getUemJsCode(req, res).on('success', function(data) {
-        res.status(200).json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
-
 // 获取oplate\matomo产品列表
 exports.getProductList = function(req,res) {
     productService.getProductList(req, res).on('success', function(data) {
