@@ -40,12 +40,20 @@ export function getContactCustomerIntervalChart(intervals) {
         unit: 'year'
     }];
 
+    //将落在各时间区间里的客户数的默认值设为0
     _.each(intervals, interval => {
         interval.count = 0;
     });
 
+    //设置落在各时间区间里的客户数
     function setIntervalCount(unit, num) {
-        let interval = _.find(intervals, item => item.unit === unit && num >= item.min && num < item.max);
+        let interval = _.find(intervals, item => {
+            if (item.unit === unit && num >= item.min && num < item.max) {
+                return true;
+            } else {
+                return false;
+            }
+        });
 
         if (interval) {
             interval.count++;
@@ -66,18 +74,20 @@ export function getContactCustomerIntervalChart(intervals) {
 
             _.each(avgData, dataItem => {
                 const duration = moment.duration(dataItem);
-                const year = duration.years();
+                const yearCount = duration.years();
 
-                if (year) {
-                    setIntervalCount('year', year);
+                if (yearCount) {
+                    setIntervalCount('year', yearCount);
                 } else {
-                    const month = duration.months();
-                    if (month) {
-                        setIntervalCount('month', month);
+                    const monthCount = duration.months();
+
+                    if (monthCount) {
+                        setIntervalCount('month', monthCount);
                     } else {
-                        const day = duration.days();
-                        if (day) {
-                            setIntervalCount('day', day);
+                        const dayCount = duration.days();
+
+                        if (dayCount) {
+                            setIntervalCount('day', dayCount);
                         }
                     }
                 }
