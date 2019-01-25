@@ -3,6 +3,7 @@
  */
 
 import Store from '../../store';
+import { isSales } from '../../consts';
 
 export function getCustomerCoverageChart() {
     return {
@@ -35,7 +36,7 @@ export function getCustomerCoverageChart() {
             }
         },
         noShowCondition: {
-            tab: ['!', 'total'],
+            callback: () => isSales
         },
         chartType: 'table',
         option: {
