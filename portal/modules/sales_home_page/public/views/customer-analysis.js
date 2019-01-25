@@ -708,12 +708,14 @@ class CustomerAnalysis extends React.Component {
                     num,
                 };
 
+                //当前记录中有客户id列表时，用id列表查询客户详情（如试用合格客户统计中的上月、本月合格客户）
                 if (record[idsField]) {
                     const customerIdsStr = customerIds.join(',');
 
                     _.extend(argsObj, {
                         customerIds: customerIdsStr,
                     });
+                //当前记录里没有id列表，但有缓存key时，用缓存key查询客户详情（如有效客户统计中的有效客户数）
                 } else if (record.active_cache_key) {
                     _.extend(argsObj, {
                         //缓存key，用于查寻有效客户活跃数详细列表
