@@ -46,7 +46,7 @@ exports.addContact = function(req, res) {
         //qq: qq,
         //weChat: weChat,
         //email: email,
-        def_contancts: 'false'
+        def_contancts: req.body.def_contancts || 'false'
     };
     if (phone.length > 0) {
         contact.phone = phone;

@@ -125,6 +125,7 @@ class Contacts extends React.Component {
                     <ContactForm type="add" customer_id={this.state.curCustomer.id}
                         customer_name={this.state.curCustomer ? this.state.curCustomer.name : ''}
                         contactListLength={contactListLength}
+                        updateCustomerDefContact={this.props.updateCustomerDefContact}
                         refreshCustomerList={this.props.refreshCustomerList}/>) : (
                     <div className="contact-top-block crm-detail-top-total-block">
                         {this.state.contactListLoading ? null : (
