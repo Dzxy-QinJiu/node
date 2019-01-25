@@ -70,7 +70,7 @@ exports.getUserInfo = function(req, res, userId) {
             if (hasGetAllTeamPrivilege) {//管理员或运营人员，肯定不是普通销售
                 userData.isCommonSales = false;
             } else {//普通销售、销售主管、销售总监等，通过我所在的团队及下级团队来判断是否是普通销售
-                let teamTreeList = _.get(resultList, '[3].successData', []);
+                let teamTreeList = _.get(resultList, '[2].successData', []);
                 userData.isCommonSales = getIsCommonSalesByTeams(userData.user_id, teamTreeList);
             }
             emitter.emit('success', userData);
