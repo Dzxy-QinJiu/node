@@ -1,12 +1,13 @@
 /**
- * 各行业试用客户市场占有率
+ * 各行业试用客户覆盖率
  */
 
 import Store from '../../store';
+import { isSales } from '../../consts';
 
 export function getCustomerCoverageChart() {
     return {
-        title: Intl.get('oplate_customer_analysis.industryCustomerOverlay', '各行业试用客户市场占有率'),
+        title: Intl.get('oplate_customer_analysis.industryCustomerOverlay', '各行业试用客户覆盖率'),
         layout: {sm: 24},
         height: 'auto',
         url: '/rest/analysis/customer/v2/statistic/all/industry/stage/region/overlay',
@@ -27,10 +28,15 @@ export function getCustomerCoverageChart() {
                     query.customer_label = Intl.get('common.trial', '试用');
                     query.qualify_label = QUALIFY_LABEL_PASS;
                 }
+
+                if (query.team_ids) {
+                    query.team_id = arg.query.team_ids;
+                    delete query.team_ids;
+                }
             }
         },
         noShowCondition: {
-            tab: ['!', 'total'],
+            callback: () => isSales
         },
         chartType: 'table',
         option: {
