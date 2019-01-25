@@ -4,7 +4,7 @@
 
 import {AntcDatePicker} from 'antc';
 import ajax from 'ant-ajax';
-import {initialTime} from './consts';
+import {initialTime, isSales} from './consts';
 import {Select} from 'antd';
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
@@ -174,16 +174,18 @@ class TopBar extends React.Component {
 
         return (
             <div className="analysis-filter-btn-item">
-                <Select
-                    defaultValue="team"
-                    className='btn-item'
-                    onChange={this.onFilterTypeChange}
-                >
-                    <Option key="1" value="team">按团队</Option>
-                    <Option key="2" value="member">按销售</Option>
-                </Select>
+                {isSales ? null : (
+                    <Select
+                        defaultValue="team"
+                        className='btn-item'
+                        onChange={this.onFilterTypeChange}
+                    >
+                        <Option key="1" value="team">按团队</Option>
+                        <Option key="2" value="member">按销售</Option>
+                    </Select>
+                )}
 
-                {this.state.filterType === 'team' ? (
+                {this.state.filterType === 'team' && !isSales ? (
                     <Select
                         className='btn-item'
                         mode="multiple"
@@ -199,7 +201,7 @@ class TopBar extends React.Component {
                     </Select>
                 ) : null}
 
-                {this.state.filterType === 'member' ? (
+                {this.state.filterType === 'member' && !isSales ? (
                     <Select
                         className='btn-item'
                         mode="multiple"
