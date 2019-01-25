@@ -21,6 +21,11 @@ export function getCustomerStageChart(type = 'total') {
                 if (!arg.query.app_id) {
                     arg.query.app_id = 'all';
                 }
+
+                if (arg.query.team_ids) {
+                    arg.query.team_id = arg.query.team_ids;
+                    delete arg.query.team_ids;
+                }
             }
         },
         processData: processCustomerStageData,
