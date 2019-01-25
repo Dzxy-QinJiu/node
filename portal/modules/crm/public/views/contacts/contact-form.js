@@ -255,7 +255,7 @@ var ContactForm = createReactClass({
             //添加联系人时，需要将客户名传过去，后端接口中需要
             formData.customer_name = this.props.customer_name;
             if (this.props.contactListLength === 0) {//添加的第一个联系人设为默认联系人
-                formData.def_contacts = 'true';
+                formData.def_contancts = 'true';
             }
             Trace.traceEvent(ReactDOM.findDOMNode(this), '保存新建联系人的信息');
             ContactAction.submitAddContact(formData, (result) => {
