@@ -9,6 +9,7 @@ import {Form, Input, Select, DatePicker, Radio, Icon} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 const extend = require('extend');
@@ -17,7 +18,15 @@ import ajax from '../common/ajax';
 import routeList from '../common/route';
 
 const customerAjax = require('../../common/public/ajax/customer');
-import {CATEGORY, CONTRACT_STAGE, STAGE_AUDIT, CONTRACT_LABEL, LABEL_NEW_SIGNING, PURCHASE_TYPE} from '../consts';
+import {
+    CATEGORY,
+    CONTRACT_STAGE,
+    STAGE_AUDIT,
+    CONTRACT_LABEL,
+    LABEL_NEW_SIGNING,
+    PURCHASE_TYPE,
+    COST_TYPE
+} from '../consts';
 import rightPanelUtil from '../../../components/rightPanel';
 
 const RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
@@ -271,12 +280,22 @@ export default {
             <FormItem
                 {...formItemLayout}
                 label={Intl.get('contract.4', '甲方')}
+                validateStatus={this.getValidateStatus('buyer')}
+                help={this.getHelpMessage('buyer')}
             >
-                <Input
-                    name="buyer"
-                    value={this.state.formData.buyer}
-                    onChange={this.enterCustomer.bind(this, 'buyer')}
-                />
+                <Validator rules={[{
+                    required: true,
+                    message: Intl.get('crm.contract.party.name', '请输入甲方名称')
+                }, {
+                    pattern: regex.customerNameRegex,
+                    message: Intl.get('contract.193', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间')
+                }]}>
+                    <Input
+                        name="buyer"
+                        value={this.state.formData.buyer}
+                        onChange={this.enterCustomer.bind(this, 'buyer')}
+                    />
+                </Validator>
             </FormItem>
         );
     },
@@ -300,6 +319,10 @@ export default {
             return <Option key={user.user_id} value={user.user_id}>{user.nick_name}</Option>;
         });
 
+        const teamOptions = this.props.teamList.map(team => {
+            return <Option key={team.groupId} value={team.groupId}>{team.groupName}</Option>;
+        });
+
         const validateName = 'user_name';
 
         return (
@@ -311,6 +334,7 @@ export default {
             >
                 <Validator rules={[{required: true, message: Intl.get('contract.63', '请选择负责人')}]}>
                     <Select
+                        className='ant-select-inline'
                         name={validateName}
                         combobox
                         showSearch
@@ -324,7 +348,19 @@ export default {
                         {userOptions}
                     </Select>
                 </Validator>
-
+                <Select
+                    className='ant-select-inline'
+                    combobox
+                    showSearch
+                    optionFilterProp='children'
+                    placeholder={Intl.get('contract.67', '请选择部门')}
+                    value={this.state.formData.sales_team}
+                    onSearch={this.handleInputToState.bind(this, 'team')}
+                    onSelect={this.onTeamChoosen}
+                    notFoundContent={Intl.get('contract.68', '暂无部门')}
+                >
+                    {teamOptions}
+                </Select>
                 {this.props.isGetUserSuccess ? null : (
                     <div
                         className="no-user-list-tip">{Intl.get('contract.65', '获取负责人列表失败')}，{Intl.get('contract.66', '点击')}<a
@@ -364,6 +400,9 @@ export default {
         const userOptions = this.props.userList.map(user => {
             return <Option key={user.user_id} value={user.user_id}>{user.nick_name}</Option>;
         });
+        const teamOptions = this.props.teamList.map(team => {
+            return <Option key={team.groupId} value={team.groupId}>{team.groupName}</Option>;
+        });
 
         return (
             <FormItem
@@ -371,6 +410,7 @@ export default {
                 label={Intl.get('sales.commission.role.representative', '销售代表')}
             >
                 <Select
+                    className='ant-select-inline'
                     showSearch
                     optionFilterProp='children'
                     placeholder={Intl.get('choose.sales.representative', '请选择销售代表')}
@@ -379,6 +419,17 @@ export default {
                     notFoundContent={Intl.get('no.sales.representative', '暂无销售代表')}
                 >
                     {userOptions}
+                </Select>
+                <Select
+                    className='ant-select-inline'
+                    showSearch
+                    optionFilterProp='children'
+                    placeholder={Intl.get('member.select.group', '请选择团队')}
+                    value={this.state.formData.sales_rep_team_id}
+                    onSelect={this.onSalesRepTeamChoosen}
+                    notFoundContent={Intl.get('member.no.groups', '暂无团队')}
+                >
+                    {teamOptions}
                 </Select>
             </FormItem>
         );
@@ -454,8 +505,11 @@ export default {
         });
     },
     renderStageField: function() {
-        const stageOptions = CONTRACT_STAGE.map(stage => {
+        /*const stageOptions = CONTRACT_STAGE.map(stage => {
             return <Option key={stage} value={stage}>{stage}</Option>;
+        });*/
+        const stageOptions = CONTRACT_STAGE.map(stage => {
+            return <RadioButton key={stage} value={stage}>{stage}</RadioButton>;
         });
 
         if (!this.state.formData.stage) {
@@ -468,20 +522,30 @@ export default {
                 {...formItemLayout2}
                 label={Intl.get('contract.36', '合同阶段')}
             >
-                <Select
+                <RadioGroup
+                    size="small"
+                    value={this.state.formData.stage}
+                    onChange={this.handleFieldChange.bind(this,'stage')}
+                >
+                    {stageOptions}
+                </RadioGroup>
+                {/*<Select
                     placeholder={Intl.get('contract.70', '请选择合同阶段')}
                     value={this.state.formData.stage}
                     onChange={this.handleFieldChange.bind(this, 'stage')}
                     notFoundContent={Intl.get('contract.71', '暂无合同阶段')}
                 >
                     {stageOptions}
-                </Select>
+                </Select>*/}
             </FormItem>
         );
     },
     renderLabelField: function() {
-        const labelOptions = CONTRACT_LABEL.map(label => {
+        /*const labelOptions = CONTRACT_LABEL.map(label => {
             return <Option key={label.value} value={label.value}>{label.name}</Option>;
+        });*/
+        const labelOptions = CONTRACT_LABEL.map(label => {
+            return <RadioButton key={label.value} value={label.value}>{label.name}</RadioButton>;
         });
 
         if (!this.state.formData.label) {
@@ -494,14 +558,21 @@ export default {
                 {...formItemLayout2}
                 label={Intl.get('contract.164', '签约类型')}
             >
-                <Select
+                <RadioGroup
+                    size="small"
+                    value={this.state.formData.label}
+                    onChange={this.handleFieldChange.bind(this,'label')}
+                >
+                    {labelOptions}
+                </RadioGroup>
+                {/*<Select
                     placeholder={Intl.get('contract.70', '请选择签约类型')}
                     value={this.state.formData.label}
                     onChange={this.handleFieldChange.bind(this, 'label')}
                     notFoundContent={Intl.get('contract.71', '暂无签约类型')}
                 >
                     {labelOptions}
-                </Select>
+                </Select>*/}
             </FormItem>
         );
     },

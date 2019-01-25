@@ -41,6 +41,12 @@ const AddProduct = createReactClass({
         };
     },
 
+    propTypes: {
+        products: PropTypes.array,
+        appList: PropTypes.array,
+        updateScrollBar: PropTypes.func
+    },
+
     addProduct: function() {
         this.state.products.push({});
 
@@ -59,12 +65,13 @@ const AddProduct = createReactClass({
 
     onAppChoosen: function(index, value) {
         const appName = _.trim(value);
+        let products = _.cloneDeep(this.state.products);
         const selectedApp = _.find(this.props.appList, app => app.app_name === appName);
         const appId = selectedApp ? selectedApp.app_id : '';
 
-        this.state.products[index].id = appId;
-        this.state.products[index].name = appName;
-        this.setState(this.state);
+        products[index].id = appId;
+        products[index].name = appName;
+        this.setState({products});
     },
 
     onStartEndTimeChange: function(index, momentArr) {
@@ -79,9 +86,9 @@ const AddProduct = createReactClass({
 
     setField2: function(field, index, e) {
         let value = _.isObject(e) ? e.target.value : e;
-
-        this.state.products[index][field] = value;
-        this.setState(this.state);
+        let products = _.cloneDeep(this.state.products);
+        products[index][field] = value;
+        this.setState({products});
     },
 
     renderFormContent: function() {
@@ -244,12 +251,14 @@ const AddProduct = createReactClass({
         });
     },
     render: function() {
-        
+
+        let num_col_width = 75;
         const columns = [
             {
-                title: Intl.get('crm.contract.product.name', '产品名称'),
+                title: Intl.get('common.product', '产品'),
                 dataIndex: 'name',
                 key: 'name',
+                width: 110,
                 render: (text, record, index) => {
                     return <span className='app-info'>{this.renderAppIconName(text, record.id)}</span>;
                 },
@@ -261,13 +270,15 @@ const AddProduct = createReactClass({
                 dataIndex: 'version',
                 editable: true,
                 key: 'version',
+                width: 70,
                 validator: this.state.validator
             },
             {
-                title: Intl.get('common.app.count', '数量'),
+                title: `${Intl.get('common.app.count', '数量')}(${Intl.get('contract.22', '个')})`,
                 dataIndex: 'count',
                 editable: true,
                 key: 'count',
+                width: num_col_width,
                 render: (text) => {
                     return <span>{parseAmount(text.toFixed(2))}</span>;
                 },
@@ -277,13 +288,15 @@ const AddProduct = createReactClass({
                 title: Intl.get('contract.23', '总价') + '(' + Intl.get('contract.82', '元') + ')',
                 dataIndex: 'total_price',
                 key: 'total_price',
+                width: num_col_width,
                 editable: true,
                 validator: text => text
             },
             {
-                title: Intl.get('contract.141', '提成比例') + '(%)',
+                title: Intl.get('sales.commission', '提成') + '(%)',
                 dataIndex: 'commission_rate',
                 key: 'commission_rate',
+                width: num_col_width,
                 editable: true,
                 validator: text => text
             }
@@ -295,6 +308,7 @@ const AddProduct = createReactClass({
             <div className="add-products">               
                 <div className="product-forms product-table-container">
                     <ProductTable
+                        addBtnText={Intl.get('common.product', '产品')}
                         ref={ref => this.producTableRef = ref}
                         appendDOM={customizeBTN}
                         defaultValueMap={defaultValueMap}

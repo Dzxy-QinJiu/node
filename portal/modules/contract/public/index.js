@@ -709,12 +709,9 @@ class Contract extends React.Component {
         let showModal = false;
         const rightPaneModelTitle = _.get(this.state.currentContract,'id') ?
             (this.state.type === VIEW_TYPE.COST ? `${Intl.get('common.update', '修改')}${Intl.get('contract.133', '费用')}` : this.state.currentContract.num) :
-            ((this.state.type === VIEW_TYPE.COST ?
-                Intl.get('contract.127', '添加费用') :
-                Intl.get('common.add', '添加') + this.state.contractType), showModal = true);
+            (showModal = true, this.state.type === VIEW_TYPE.COST ? Intl.get('contract.127', '添加费用') : showModal = true,Intl.get('common.add', '添加') + this.state.contractType);
 
         const rightPanelClass = classNames('contract-panel-v2',['right-panel-' + this.state.type], {'show-modal': showModal});
-
         return (
             <div className="contract-list" data-tracename="合同管理">
                 <TopNav>

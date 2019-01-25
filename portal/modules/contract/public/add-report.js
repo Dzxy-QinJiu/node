@@ -31,6 +31,9 @@ const AddReport = createReactClass({
             validator: null
         };
     },
+    propTypes: {
+        updateScrollBar: PropTypes.func
+    },
 
     addReport: function() {
         this.state.reports.push({});
@@ -98,18 +101,21 @@ const AddReport = createReactClass({
         });
     },
     render: function() {
+        let num_col_width = 75;
         const columns = [
             {
                 title: Intl.get('contract.75', '服务类型'),
                 dataIndex: 'type',
-                key: 'type',               
+                key: 'type',
+                width: 180,
             },
             {
-                title: Intl.get('common.app.count', '数量'),
+                title: `${Intl.get('common.app.count', '数量')}(${Intl.get('contract.22', '个')})`,
                 dataIndex: 'num',
                 editable: true,
-                getIsEdit: value => !Number.isNaN(Number(value)),
+                // getIsEdit: value => !Number.isNaN(Number(value)),
                 key: 'num',
+                width: num_col_width,
                 validator: this.state.validator
             },
             {
@@ -117,13 +123,15 @@ const AddReport = createReactClass({
                 dataIndex: 'total_price',
                 key: 'total_price',
                 editable: true,
+                width: num_col_width,
                 validator: this.state.validator
             },
             {
-                title: Intl.get('contract.141', '提成比例') + '(%)',
+                title: Intl.get('sales.commission', '提成') + '(%)',
                 dataIndex: 'commission_rate',
                 key: 'commission_rate',
                 editable: true,
+                width: num_col_width,
                 validator: this.state.validator
             }
         ];       
@@ -144,94 +152,6 @@ const AddReport = createReactClass({
                         isSaveCancelBtnShow={false}
                         onChange={this.handleProductChange}
                     />
-                </div>
-            </div>
-        );
-        return (
-            <div className="add-products">
-                <div className="add-product">
-                    <Button
-                        className="btn-primary-sure"
-                        onClick={this.addReport}
-                    >
-                        <ReactIntl.FormattedMessage id="sales.team.add.sales.team" defaultMessage="添加" />
-                    </Button>
-                </div>
-                <div className="product-forms">
-                    <Validation ref="validation" onValidate={this.handleValidate}>
-                        {reports.map((report, index) => {
-                            return (
-                                <Form key={index}>
-                                    <FormItem
-                                        label={Intl.get('contract.75', '服务类型')}
-                                    >
-                                        <Select
-                                            placeholder={Intl.get('contract.76', '请选择类型')}
-                                            value={report.type}
-                                            onChange={this.setField2.bind(this, 'type', index)}
-                                        >
-                                            {serviceTypeOption}
-                                        </Select>
-                                    </FormItem>
-                                    {report.type === REPORT_SERVICE ? (
-                                        <FormItem
-                                            label={Intl.get('contract.77', '报告类型')}
-                                        >
-                                            <Select
-                                                placeholder={Intl.get('contract.76', '请选择类型')}
-                                                value={report.report_type}
-                                                onChange={this.setField2.bind(this, 'report_type', index)}
-                                            >
-                                                {reportTypeOption}
-                                            </Select>
-                                        </FormItem>
-                                    ) : null}
-                                    {report.type !== REPORT_SERVICE ? (
-                                        <FormItem 
-                                            label="数量（个）"
-                                            validateStatus={this.getValidateStatus('num' + index)}
-                                            help={this.getHelpMessage('num' + index)}
-                                        >
-                                            <Validator rules={[{pattern: /^\d+$/, message: Intl.get('contract.45', '请填写数字')}]}>
-                                                <Input
-                                                    name={'num' + index}
-                                                    value={report.num}
-                                                    onChange={this.setField2.bind(this, 'num', index)}
-                                                />
-                                            </Validator>
-                                        </FormItem>
-                                    ) : null}
-                                    <FormItem 
-                                        label="总价"
-                                        validateStatus={this.getValidateStatus('total_price' + index)}
-                                        help={this.getHelpMessage('total_price' + index)}
-                                    >
-                                        <Validator rules={[getNumberValidateRule()]}>
-                                            <Input
-                                                name={'total_price' + index}
-                                                value={report.total_price}
-                                                onChange={this.setField2.bind(this, 'total_price', index)}
-                                            />
-                                        </Validator>
-                                    </FormItem>
-                                    <FormItem 
-                                        label={Intl.get('contract.141', '提成比例')}
-                                        validateStatus={this.getValidateStatus('commission_rate' + index)}
-                                        help={this.getHelpMessage('commission_rate' + index)}
-                                    >
-                                        <Validator rules={[getNumberValidateRule()]}>
-                                            <Input
-                                                name={'commission_rate' + index}
-                                                value={(isNaN(report.commission_rate) ? '' : report.commission_rate).toString()}
-                                                onChange={this.setField2.bind(this, 'commission_rate', index)}
-                                            />
-                                        </Validator>
-                                &nbsp;%
-                                    </FormItem>
-                                </Form>
-                            );
-                        })}
-                    </Validation>
                 </div>
             </div>
         );

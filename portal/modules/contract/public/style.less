@@ -5,7 +5,7 @@
     height: 100%;
     .contract-divide-line {
         margin: 20px;
-        border: 1px solid #eee;
+        border-top: 1px solid #dad8d8;
     }
     .contract-dashboard {
         background: #eee;
@@ -748,6 +748,13 @@
 
     //新版合同面板
     .contract-panel-v2 {
+        .circle-button-minus {
+            float: right;
+            background-color: transparent;
+        }
+        .circle-button-minus:hover {
+            background-color: transparent;
+        }
         .step-button {
             position: absolute;
             bottom: 15px;
@@ -855,7 +862,7 @@
             }
         }
         .ant-steps {
-            width: 80%;
+            width: 90%;
             margin-left: 20px;
             .ant-steps-item {
                 margin-right: -48px;
@@ -870,6 +877,14 @@
                 background: @bg-grey;
             }
         }
+        .add-basic {
+            margin-top: 0px;
+            .ant-form-item {
+                label {
+                    margin-right: 0px;
+                }
+            }
+        }
         .add-form {
             margin-top: 15px;
             .step-button {
@@ -877,6 +892,24 @@
                 padding-right: 20px;
                 button {
                     margin-left: 16px;
+                }
+            }
+            .antc-table {
+                tbody {
+                    tr {
+                        td {
+                            overflow: hidden;
+                            white-space: nowrap;
+                            text-overflow: ellipsis;
+                        }
+                    }
+                }
+            }
+            .app-info{
+                .app-icon-name{
+                    .app-name{
+                        padding-left: 6px;
+                    }
                 }
             }
         }
@@ -910,6 +943,12 @@
                 width: 50%!important;
                 vertical-align: middle;
             }
+        }
+        .add-products {
+            width: auto;
+        }
+        .total-amount-price {
+            margin: 15px 0 0 15px;
         }
     }
 

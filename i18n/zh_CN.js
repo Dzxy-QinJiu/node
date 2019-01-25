@@ -1672,6 +1672,7 @@ var zh_CN = {
     'contract.190': '《销售合同模板》',
     'contract.191': '《采购合同模板》',
     'contract.192': '是否删除此费用？',
+    'contract.193': '甲方名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间',
     'contract.gross.profit.can.not.exceed.repayment': '毛利不能大于回款',
     'contract.loadMore': '加载更多',
     'contract.valueTypeConfig': '值字段设置',
@@ -1724,6 +1725,7 @@ var zh_CN = {
     'contract.edit.error': '修改合同失败',
     'contract.delete.error': '删除合同失败',
     'contract.add.error': '添加合同失败',
+    'contract.valid.term': '有限期限',
     // 销售提成start
     'sales.commission.sale.name': '销售名',
     'sales.commission.standard': '达标',
@@ -2717,5 +2719,6 @@ var zh_CN = {
     'apply.approve.transfer.failed': '转出申请失败',
     'apply.approve.transfer.success': '转出申请成功',
     'contract.form.customize': '添加自定义产品',
+    'contract.report.contract.total.ccount': '本次合同总金额为',
 };
 export default zh_CN;
