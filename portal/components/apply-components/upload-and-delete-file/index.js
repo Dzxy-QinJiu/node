@@ -24,6 +24,7 @@ class UploadAndDeleteFile extends React.Component {
                 delId: '',//删除申请的id
                 errorMsg: '',//删除失败后的提示
             },
+            totalFileSize: 0,//所有文件的大小
         };
     }
     componentWillReceiveProps(nextProps) {
@@ -70,7 +71,11 @@ class UploadAndDeleteFile extends React.Component {
         const newFileList = fileList.slice();
         if (index > -1){
             newFileList.splice(index, 1);
+            var totalFileSize = this.state.totalFileSize;
+            var fileSize = file.size;
+            totalFileSize -= fileSize;
             this.setState({
+                totalFileSize: totalFileSize,
                 fileList: newFileList,
             },() => {
                 _.isFunction(callback) && callback();
@@ -78,15 +83,50 @@ class UploadAndDeleteFile extends React.Component {
         }
         this.props.fileRemove(file);
     };
+    //上传文件的大小不能超过50M
+    canculateLimite = (size) => {
+        return size / 1024 / 1024 > 50;
+    };
+    checkFileType = (filename,fileSize,totalSize) => {
+        // 文件内容为空的处理
+        if (filename.indexOf(' ') >= 0) {
+            message.warning(Intl.get('apply.approve.upload.no.container.space', '文件名称中不要含有空格！'));
+            return false;
+        }
+        if (filename.indexOf('.exe') >= 0){
+            message.warning(Intl.get('apply.approve.upload.error.file.type','文件格式不正确！'));
+            return false;
+        }
+        if (fileSize === 0) {
+            message.warning(Intl.get('apply.approve.upload.empty.file','不可上传空文件！'));
+            return false;
+        }
+
+        if (fileSize && this.canculateLimite(fileSize) || totalSize && this.canculateLimite(totalSize)){
+            message.warning(Intl.get('apply.approve.upload.not.more.than50','文件大小不能超过50M!'));
+            return false;
+        }
+        return true;
+    };
     beforeUpload = (file) => {
-        setTimeout(() => {
-            this.setState(state => ({
-                fileList: [...state.fileList, file],
-            }),() => {
-                this.afterUpload();
-                this.props.beforeUpload(file);
-            });
-        },500);
+        //计算之前上传过的和现在要上传的这个文件的大小，不能超过50M
+        var fileName = file.name,fileSize = file.size;
+        var totalFileSize = this.state.totalFileSize;
+        totalFileSize += fileSize;
+        if (this.checkFileType(fileName,fileSize,totalFileSize)){
+            setTimeout(() => {
+                this.setState(state => ({
+                    totalFileSize: totalFileSize,
+                    fileList: [...state.fileList, file],
+                }),() => {
+                    this.afterUpload();
+                    this.props.beforeUpload(file);
+                });
+            },500);
+        }else{
+            setTimeout(() => {
+                this.afterUpload();},500);
+        }
         //如果props中有detailObj，不需要返回false，直接添加就可以
         return false;
     };
@@ -153,6 +193,7 @@ class UploadAndDeleteFile extends React.Component {
         });
     };
     renderUploadBtns = () => {
+        var _this = this;
         var props = {
             name: 'reportsend',
             multiple: true,
@@ -165,7 +206,14 @@ class UploadAndDeleteFile extends React.Component {
         var btnDesc = Intl.get('apply.approve.upload.file.type','上传{fileType}',{fileType: Intl.get('apply.approve.customer.info', '客户资料')});
         if(this.isDetailObjExist()){
             props.data = detailInfoObj.id;
-            props.beforeUpload = function() {
+            props.beforeUpload = function(file) {
+                var fileName = file.name,fileSize = file.size;
+                if (!_this.checkFileType(fileName,fileSize)){
+                    setTimeout(() => {
+                        _this.afterUpload();},500);
+                    return false;
+                }
+
             };
             var allUploadFiles = seperateFilesDiffType(fileList);
             //销售上传的文件
