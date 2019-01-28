@@ -423,8 +423,8 @@ exports.applyUser = function(data) {
         success: function(result) {
             Deferred.resolve(result);
         },
-        error: function() {
-            Deferred.reject( Intl.get('common.apply.failed', '申请失败'));
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON || Intl.get('common.apply.failed', '申请失败'));
         }
     });
     return Deferred.promise();

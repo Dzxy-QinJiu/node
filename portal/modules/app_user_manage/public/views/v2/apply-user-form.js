@@ -214,7 +214,7 @@ const ApplyUserForm = createReactClass({
                         this.handleCancel();
                     }
                     else {
-                        message.error(Intl.get('common.apply.failed', '申请失败'));
+                        message.error(result || Intl.get('common.apply.failed', '申请失败'));
                     }
                     if (_.isFunction(cb)) cb();
                 });
