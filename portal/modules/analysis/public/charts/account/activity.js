@@ -8,6 +8,21 @@ export function getActivityChart(type = 'total', title) {
     return {
         title: title || Intl.get('operation.report.activity', '活跃度'),
         url: '/rest/analysis/user/v1/:auth_type/:app_id/users/activation/:interval',
+        argCallback: arg => {
+            const query = arg.query;
+
+            if (query) {
+                if (query.member_id) {
+                    query.sales_id = query.member_id;
+                    delete query.member_id;
+                }
+
+                if (query.team_ids) {
+                    query.team_id = query.team_ids;
+                    delete query.team_ids;
+                }
+            }
+        },
         chartType: 'line',
         valueField: 'active',
         cardContainer: {
