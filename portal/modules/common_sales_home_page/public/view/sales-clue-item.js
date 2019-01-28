@@ -204,7 +204,6 @@ class SalesClueItem extends React.Component {
         this.setState({
             isAssocaiteItem: salesClueItem
         });
-        _.isFunction(this.props.showClueDetailOut) && this.props.showClueDetailOut(salesClueItem);
     };
     //标记线索无效或者有效
     handleClickInvalidBtn = (item) => {
@@ -296,13 +295,6 @@ class SalesClueItem extends React.Component {
         });
     };
     handleShowClueDetail = (item) => {
-        if (_.isFunction(this.props.showClueDetailOut)){
-            this.props.showClueDetailOut(item);
-            this.setState({
-                isAssocaiteItem: item
-            });
-            return;
-        }
         this.setState({
             isShowClueDetail: true,
             isAssocaiteItem: item
@@ -438,9 +430,9 @@ class SalesClueItem extends React.Component {
                 {avalibilityPrivilege ? (salesClueItem.availability === '1' ?
 
                     <Button className="cancel-invalid" onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)}
-                    data-tracename="取消判定线索无效">
-                    {Intl.get('clue.cancel.set.invalid', '改为有效')}
-                </Button> : <Button onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)} data-tracename="点击线索无效" disabled={this.state.isInvalidClue}>{Intl.get('sales.clue.is.enable', '无效')}{this.state.isInvalidClue ? <Icon type="loading"/> : null}</Button>) : null}
+                        data-tracename="取消判定线索无效">
+                        {Intl.get('clue.cancel.set.invalid', '改为有效')}
+                    </Button> : <Button onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)} data-tracename="点击线索无效" disabled={this.state.isInvalidClue}>{Intl.get('sales.clue.is.enable', '无效')}{this.state.isInvalidClue ? <Icon type="loading"/> : null}</Button>) : null}
             </div>
         </div>;
     }
@@ -509,7 +501,7 @@ class SalesClueItem extends React.Component {
                         />
                     </div>
                     : null}
-                {this.state.isAssocaiteItem && !this.props.showClueDetailOut ?
+                {this.state.isAssocaiteItem ?
                     <div className={associateCls}>
                         <ClueRightPanel
                             showFlag={true}
@@ -563,9 +555,6 @@ SalesClueItem.defaultProps = {
     clearSelectSales: function() {
 
     },
-    showClueDetailOut: function() {
-
-    },
     currentId: ''
 
 };
@@ -582,8 +571,7 @@ SalesClueItem.propTypes = {
     renderSalesBlock: PropTypes.func,
     handleSubmitAssignSales: PropTypes.func,
     clearSelectSales: PropTypes.func,
-    currentId: PropTypes.string,
-    showClueDetailOut: PropTypes.func,
+    currentId: PropTypes.string
 
 };
 export default SalesClueItem;

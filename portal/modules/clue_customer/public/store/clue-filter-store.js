@@ -37,7 +37,7 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.timeType = 'all';
     this.rangeParams = [{//时间范围参数
         from: clueStartTime,
-        to: moment().valueOf(),
+        to: moment().endOf('day').valueOf(),
         type: 'time',
         name: 'source_time'
     }];

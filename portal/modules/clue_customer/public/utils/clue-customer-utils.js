@@ -92,31 +92,6 @@ export const isOperation = function(){
 export const isSalesLeaderOrManager = function(){
     return !userData.getUserData().isCommonSales || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
 };
-
-export const checkOnlyContactPhone = function(rule, value, callback) {
-    ClueAction.checkOnlyCluePhone(value, data => {
-        if (_.isString(data)) {
-            //唯一性验证出错了
-            callback(Intl.get('crm.82', '电话唯一性验证出错了'));
-        } else {
-            if (_.isObject(data) && data.result === 'true') {
-                callback();
-            } else {
-                //已存在
-                callback(Intl.get('crm.83', '该电话已存在'));
-            }
-        }
-    });
-};
-
-//获取线索联系电话唯一性的验证规则
-export const getPhoneInputValidateRules = () => {
-    return [{
-        validator: (rule, value, callback) => {
-            checkOnlyContactPhone(rule, value, callback);
-        }
-    }];
-};
 //获取所选中线索状态的状态值
 export const getClueStatusValue = (filterClueStatus) => {
     var typeFilter = {};

@@ -75,7 +75,7 @@ class ClueCustomer extends React.Component {
         exportRange: 'filtered',
         isExportModalShow: false,//是否展示导出线索的模态框
         isEdittingItem: {},//正在编辑的那一条
-        // submitContent: this.getSubmitContent(propsItem),//要提交的跟进记录的内容
+        submitContent: '',//要提交的跟进记录的内容
         submitTraceErrMsg: '',//提交跟进记录出错的信息
         submitTraceLoading: false,//正在提交跟进记录
         showCustomerId: '',//正在展示客户详情的客户id
@@ -515,7 +515,8 @@ class ClueCustomer extends React.Component {
     handleEditTrace = (updateItem) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.foot-text-content'), '点击添加/编辑跟进内容');
         this.setState({
-            isEdittingItem: updateItem
+            isEdittingItem: updateItem,
+            submitContent: this.getSubmitContent(updateItem)
         });
     };
     handleInputChange = (e) => {
@@ -561,7 +562,6 @@ class ClueCustomer extends React.Component {
                 } else {
                     //如果是待跟进状态,需要在列表中删除，其他状态
                     var clueItem = _.find(this.state.curClueLists, clueItem => clueItem.id === item.id);
-                    // var clueItem = this.state.salesClueItemDetail;
                     clueItem.status = SELECT_TYPE.HAS_TRACE;
                     var userId = userData.getUserData().user_id || '';
                     var userName = userData.getUserData().nick_name;
@@ -584,7 +584,6 @@ class ClueCustomer extends React.Component {
                     this.setState({
                         submitTraceLoading: false,
                         submitTraceErrMsg: '',
-                        // salesClueItemDetail: clueItem,
                         isEdittingItem: {},
                     });
                     this.afterAddClueTrace(item.id);
@@ -657,14 +656,10 @@ class ClueCustomer extends React.Component {
                                 <span className="trace-author">
                                     <span className="trace-name">{tracePersonId === member_id ? Intl.get('sales.home.i.trace', '我') : tracePersonName} </span>
                                 </span>
-
                                 {Intl.get('clue.add.trace.follow', '跟进') + ':' + traceContent}
-
-                                {canEditTrace ? <i className="iconfont icon-edit-btn"
-                                    onClick={this.handleEditTrace.bind(this, salesClueItem)}
-                                ></i> : null}
                             </span>
                         </ShearContent>
+                        {canEditTrace ? <i className="iconfont icon-edit-btn" onClick={this.handleEditTrace.bind(this, salesClueItem)}></i> : null}
                     </div>
                     : hasPrivilege('CLUECUSTOMER_ADD_TRACE') ?
                         <span className='add-trace-content'
