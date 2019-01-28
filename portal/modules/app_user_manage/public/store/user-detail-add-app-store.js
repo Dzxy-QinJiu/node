@@ -210,6 +210,26 @@ UserDetailAddAppStore.prototype.submitAddApp = function(result) {
     }
 };
 
+//延期、开通状态申请（多应用）
+UserDetailAddAppStore.prototype.applyDelayMultiApp = function(result) {
+    var _this = this;
+    if(result.error) {
+        this.submitResult = 'error';
+        this.submitErrorMsg = result.errorMsg;
+    } else {
+        this.submitErrorMsg = '';
+        if(result.loading) {
+            this.submitResult = 'loading';
+        } else {
+            this.submitResult = 'success';
+            setTimeout(function() {
+                _this.resetState();
+                AppUserAction.closeRightPanel();
+            } , 500);
+        }
+    }
+};
+
 //隐藏提交提示
 UserDetailAddAppStore.prototype.hideSubmitTip = function() {
     this.submitErrorMsg = '';

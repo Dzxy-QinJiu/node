@@ -101,12 +101,12 @@ function UserDetailAddAppActions() {
         if(obj.subType) {
             field = obj.subType;
         }
-        if(field == 'grant_type' ||
-            field == 'grant_status' ||
-            field == 'grant_period' ||
-            field == 'grant_roles' ||
-            field == 'grant_delay' ||
-            field == 'sales_grant_status'
+        if(field === 'grant_type' ||
+            field === 'grant_status' ||
+            field === 'grant_period' ||
+            field === 'grant_roles' ||
+            field === 'grant_delay' ||
+            field === 'sales_grant_status'
         ){
             selectedAppId = obj.selectedAppId;
         }
@@ -218,5 +218,18 @@ function UserDetailAddAppActions() {
     };
 
 }
+
+this.applyDelayMultiApp = function(obj) {
+    this.dispatch({loading: true});
+    AppUserAjax.applyDelayMultiApp(obj).then((result) => {
+        if (result) {
+            this.dispatch({error: false, loading: false});
+        } else {
+            this.setState({error: true, loading: false, errorMsg: Intl.get('common.apply.failed', '申请失败')});
+        }
+    }).catch((errMsg) => {
+        this.setState({error: true, loading: false, errorMsg: errMsg || Intl.get('common.apply.failed', '申请失败')});
+    });
+};
 
 module.exports = alt.createActions(UserDetailAddAppActions);
