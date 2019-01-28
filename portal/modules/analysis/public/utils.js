@@ -162,3 +162,15 @@ export function argCallbackMemberIdToIds(arg) {
         }
     }
 }
+
+//查询参数回调函数: member_id 转 sales_id
+export function argCallbackMemberIdToSalesId(arg) {
+    const query = arg.query;
+
+    if (query) {
+        if (query.member_id) {
+            query.sales_id = query.member_id;
+            delete query.member_id;
+        }
+    }
+}
