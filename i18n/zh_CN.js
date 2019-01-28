@@ -1429,6 +1429,7 @@ var zh_CN = {
     'crm.contract.money': '金额(元)',
     'crm.contract.no.product.info': '暂无产品信息',
     'crm.contract.check.tips': '合同额与产品总额不相等，请核对',
+    'crm.contract.check.tips2': '与总价合计不符，请核对',
     'crm.contract.account.count': '账号数量',
     'crm.contract.enter.contract.money': '请输入合同额',
     'crm.contract.no.contract.money': '暂无合同额',

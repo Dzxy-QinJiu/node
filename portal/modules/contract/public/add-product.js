@@ -90,7 +90,9 @@ const AddProduct = createReactClass({
         products[index][field] = value;
         this.setState({products});
     },
-
+    getNumberValidate(text) {
+        return /^(\d|,)+(\.\d+)?$/.test(text);
+    },
     renderFormContent: function() {
         const appList = this.props.appList;
         const products = this.state.products;
@@ -213,10 +215,11 @@ const AddProduct = createReactClass({
             pristine: false,
             validator: text => text
         });
-        return cb(flag);
+        cb && cb(flag);
+        return flag;
     },
     handleProductChange(data) {
-        this.setState({ products: data });
+        this.setState({ products: data, pristine: true });
     },
     renderAppIconName(appName, appId) {
         let appList = this.props.appList;
@@ -279,10 +282,10 @@ const AddProduct = createReactClass({
                 editable: true,
                 key: 'count',
                 width: num_col_width,
-                render: (text) => {
+                /*render: (text) => {
                     return <span>{parseAmount(text.toFixed(2))}</span>;
-                },
-                validator: this.state.validator
+                },*/
+                validator: text => this.getNumberValidate(text)//this.state.validator
             },
             {
                 title: Intl.get('contract.23', '总价') + '(' + Intl.get('contract.82', '元') + ')',
@@ -290,7 +293,7 @@ const AddProduct = createReactClass({
                 key: 'total_price',
                 width: num_col_width,
                 editable: true,
-                validator: text => text
+                validator: text => this.getNumberValidate(text)//this.state.validator
             },
             {
                 title: Intl.get('sales.commission', '提成') + '(%)',
@@ -298,7 +301,7 @@ const AddProduct = createReactClass({
                 key: 'commission_rate',
                 width: num_col_width,
                 editable: true,
-                validator: text => text
+                validator: text => this.getNumberValidate(text)//this.state.validator
             }
         ];
         const customizeBTN = (

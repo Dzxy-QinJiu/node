@@ -1414,6 +1414,7 @@ var en_US = {
     'crm.contract.money': 'Amount (yuan)', // 金额(元)
     'crm.contract.no.product.info': 'No product information', // 暂无产品信息
     'crm.contract.check.tips': 'The contract amount is not equal to the total product amount. Please check it.', // 合同额与产品总额不相等，请核对
+    'crm.contract.check.tips2': 'Please check the difference with the total price', // 与总价合计不符，请核对
     'crm.contract.account.count': 'Number of accounts', // 账号数量
     'crm.contract.enter.contract.money': 'Please enter the contract amount', // 请输入合同额
     'crm.contract.no.contract.money': 'No contract amount', // 暂无合同额

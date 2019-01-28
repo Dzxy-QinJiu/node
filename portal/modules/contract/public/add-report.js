@@ -13,6 +13,7 @@ import ValidateMixin from '../../../mixins/ValidateMixin';
 import { REPORT_SERVICE, SERVICE_TYPE, REPORT_TYPE, LITE_SERVICE_TYPE } from '../consts';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import ProductTable from 'CMP_DIR/basic-edit-field-new/product-table';
+import { parseAmount } from 'LIB_DIR/func';
 const defaultValueMap = {
     num: 1,
     total_price: 1000, 
@@ -42,7 +43,9 @@ const AddReport = createReactClass({
             this.props.updateScrollBar();
         });
     },
-
+    getNumberValidate(text) {
+        return /^(\d|,)+(\.\d+)?$/.test(text);
+    },
     setField2: function(field, index, e) {
         let value = _.isObject(e) ? e.target.value : e;
         const currentItem = this.state.reports[index];
@@ -59,9 +62,9 @@ const AddReport = createReactClass({
         this.setState(this.state);
     },   
     validate(cb) {
-        const products = this.state.products;
+        const reports = this.state.reports;
         let flag = true;
-        products.forEach(x => {
+        reports.forEach(x => {
             //存在无数据的单元格，不通过验证
             ['num', 'commission_rate', 'total_price'].forEach(key => {
                 if (!x[key]) {
@@ -71,33 +74,34 @@ const AddReport = createReactClass({
             });
         });
         this.setState({
-            products,
+            reports,
             valid: flag,
             //点击下一步后展示错误提示
             pristine: false,
             validator: text => text
         });
-        return cb(flag);
+        cb && cb(flag);
+        return flag;
     }, 
-    handleProductChange(data) {
+    handleReportChange(data) {
         const list = data;
         let lastItem = null;
-        if (list.length > 0) {
+        /*if (list.length > 0) {
             lastItem = list[list.length - 1];
             if (REPORT_TYPE.includes(list[list.length - 1].name)) {
                 list[list.length - 1] = {
                     ...list[list.length - 1],
-                    num: '-',
+                    // num: '-',
+                    num: '',
                     report_type: list[list.length - 1].name
                 };
             }
-        }
-        console.log(list);
+        }*/
         this.setState((state, props) => {
             return { reports: list.map(x => ({
                 ...x,
                 type: x.name
-            })) };
+            })), pristine: true };
         });
     },
     render: function() {
@@ -116,7 +120,7 @@ const AddReport = createReactClass({
                 // getIsEdit: value => !Number.isNaN(Number(value)),
                 key: 'num',
                 width: num_col_width,
-                validator: this.state.validator
+                validator: text => this.getNumberValidate(text)//this.state.validator
             },
             {
                 title: Intl.get('contract.23', '总价') + '(' + Intl.get('contract.82', '元') + ')',
@@ -124,7 +128,7 @@ const AddReport = createReactClass({
                 key: 'total_price',
                 editable: true,
                 width: num_col_width,
-                validator: this.state.validator
+                validator: text => this.getNumberValidate(text)//this.state.validator
             },
             {
                 title: Intl.get('sales.commission', '提成') + '(%)',
@@ -132,7 +136,7 @@ const AddReport = createReactClass({
                 key: 'commission_rate',
                 editable: true,
                 width: num_col_width,
-                validator: this.state.validator
+                validator: text => this.getNumberValidate(text)//this.state.validator
             }
         ];       
         return (
@@ -150,8 +154,14 @@ const AddReport = createReactClass({
                         isEdit={true}
                         columns={columns}
                         isSaveCancelBtnShow={false}
-                        onChange={this.handleProductChange}
+                        onChange={this.handleReportChange}
                     />
+                    {
+                        !this.state.pristine && !this.state.valid ?
+                            <div className="alert-container">
+                                <Alert type="error" message="请填写表格内容" showIcon/>
+                            </div> : null
+                    }
                 </div>
             </div>
         );

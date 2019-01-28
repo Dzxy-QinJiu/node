@@ -23,6 +23,7 @@ import DetailBuyBasic from './detail-buy-basic';
 import DetailBuyPayment from './detail-buy-payment';
 import DetailCost from './detail-cost';
 import Trace from 'LIB_DIR/trace';
+import classnames from 'classnames';
 import calc from 'calculatorjs';
 import { parseAmount } from 'LIB_DIR/func';
 let stepMap = {
@@ -30,6 +31,7 @@ let stepMap = {
     '2': '产品信息',
     '3': '回款计划'
 };
+let reportValidated = false; // 添加服务合同时，若有添加产品，则需要先验证产品，在验证服务类型，默认为未添加产品
 
 class ContractRightPanel extends React.Component {
     state = {
@@ -187,7 +189,7 @@ class ContractRightPanel extends React.Component {
 
     // 下一步处理函数
     onNextStepBtnClick = () => {
-        let validation;
+        let validation, products, reports;
 
         if (this.state.currentView === 'sellForm') {
             if (this.state.currentTabKey === '1') {
@@ -197,6 +199,7 @@ class ContractRightPanel extends React.Component {
                     total_amount: parseAmount(contract_amount)
                 });
             } else {
+                products = this.refs.addProduct.state.products;
                 // 产品合同第二步
                 if ([PRODUCT].indexOf(this.state.currentCategory) > -1 && this.state.currentTabKey === '2') {
                     //构造validation对象，保持一致
@@ -206,6 +209,8 @@ class ContractRightPanel extends React.Component {
                 }
                 // 服务合同第二步
                 else if ([SERVICE].indexOf(this.state.currentCategory) > -1 && this.state.currentTabKey === '2') {
+                    reports = this.refs.addReport.state.reports;
+                    // 得判断产品是否填写
                     validation = {
                         validate: this.refs.addReport.validate
                     };
@@ -219,23 +224,41 @@ class ContractRightPanel extends React.Component {
             Trace.traceEvent(ReactDOM.findDOMNode(this), '添加合同>从\'' + stepMap[this.state.currentTabKey] + '\'进入下一步');
         }
 
-        //添加服务合同时，产品信息可不填
+        //添加服务合同时，产品信息可不填,如果产品填写了，得判断是否填写正确
         if (this.state.currentCategory === SERVICE && this.state.currentTabKey === '2') {
-            this.goNext();
-            return;
+            // 判断是否填写产品信息
+            if(!products.length && !reports.length) {
+                this.goNext();
+                return;
+            }else if(products.length > 0) {
+                let valid = this.refs.addProduct.validate();
+                if(!valid) return false;
+            }
         }
 
         validation.validate(valid => {
             if (!valid) {
-                return;
+                return false;
             } else {
                 if ([PRODUCT, SERVICE].indexOf(this.state.currentCategory) > -1 && this.state.currentTabKey === '2') {
-                    let totalProductsPrice = this.refs.addProduct.state.products.reduce(
+                    let totalProductsPrice = 0;
+                    products.map(
                         // calc方法需要传入字符串来计算，因此使用模版字符串
-                        (acc, cur) => cur.total_price ? calc(`${acc} + ${cur.total_price}`) : acc,
-                        0
+                        /*(acc, cur) => cur.total_price ? calc(`${acc} + ${cur.total_price}`) : acc,
+                        0*/
+                        (list) => totalProductsPrice += parseInt(list.count) * list.total_price
                     );
-                    if (this.refs.addBasic.state.formData.contract_amount !== totalProductsPrice.toString()) {
+                    if([SERVICE].indexOf(this.state.currentCategory) > -1) {
+                        let totalReportsPrice = 0;
+                        reports.length > 0 ? reports.map(
+                            /*(acc,cur) => cur.total_price ? calc(`${acc} + ${cur.total_price}`) : acc,
+                            0*/
+                            (list) => totalReportsPrice += parseInt(list.num) * list.total_price
+                        ) : '';
+                        totalProductsPrice += totalReportsPrice;
+                    }
+                    // 需求改为合同总额需大于等于（产品总价+服务总价）
+                    if (parseInt(this.refs.addBasic.state.formData.contract_amount) < totalProductsPrice) {
                         this.setState({ showDiffAmountWarning: true });
                     } else {
                         this.setState({ showDiffAmountWarning: false }, this.goNext());
@@ -394,18 +417,24 @@ class ContractRightPanel extends React.Component {
             </div>
         );
 
+        let totalAmountPrice = `${Intl.get('contract.report.contract.total.ccount', '本次合同总金额为')} ${this.state.total_amount} ${Intl.get('contract.155', '元')}`;
+        this.state.showDiffAmountWarning ? totalAmountPrice = `${totalAmountPrice},${Intl.get('crm.contract.check.tips2', '与总价合计不符，请核对')}` : '';
+        let totalAmountClass = classnames('total-amount-price',{
+            'total-amount-error': this.state.showDiffAmountWarning
+        });
+
         if ([PRODUCT].indexOf(this.state.currentCategory) > -1) {
             sellFormPanes['2'] = props => (
                 <div className={props.className}>
-                    <div className='total-amount-price'>{Intl.get('contract.report.contract.total.ccount', '本次合同总金额为')} {this.state.total_amount} {Intl.get('contract.155', '元')}</div>
+                    <div className={totalAmountClass}>{totalAmountPrice}</div>
                     <AddProduct
                         ref="addProduct"
                         appList={this.props.appList}
                         updateScrollBar={this.updateScrollBar}
                     />
-                    {this.state.showDiffAmountWarning ? <div className="alert-container">
+                    {/*{this.state.showDiffAmountWarning ? <div className="alert-container">
                         <Alert type="error" message={Intl.get('contract.different.amount.wanring', '合同额与产品总额不同提示信息')} showIcon />
-                    </div> : null}
+                    </div> : null}*/}
                 </div>
             );
         }
@@ -413,15 +442,15 @@ class ContractRightPanel extends React.Component {
         if (this.state.currentCategory === SERVICE) {
             sellFormPanes['2'] = props => (
                 <div className={props.className}>
-                    <div className='total-amount-price'>{Intl.get('contract.report.contract.total.ccount', '本次合同总金额为')} {this.state.total_amount} {Intl.get('contract.155', '元')}</div>
+                    <div className={totalAmountClass}>{totalAmountPrice}</div>
                     <AddProduct
                         ref="addProduct"
                         appList={this.props.appList}
                         updateScrollBar={this.updateScrollBar}
                     />
-                    {this.state.showDiffAmountWarning ? <div className="alert-container">
+                    {/*     {this.state.showDiffAmountWarning ? <div className="alert-container">
                         <Alert type="error" message={Intl.get('contract.different.amount.wanring', '合同额与产品总额不同提示信息')} showIcon />
-                    </div> : null}
+                    </div> : null}*/}
                     <AddReport
                         ref="addReport"
                         contract={this.props.contract}
