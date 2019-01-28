@@ -2,7 +2,7 @@
  * 有效账号数统计
  */
 
-import { ifNotSingleApp } from '../../utils';
+import { ifNotSingleApp, argCallbackMemberIdToIds } from '../../utils';
 
 export function getAccountValidChart() {
     return {
@@ -15,6 +15,8 @@ export function getAccountValidChart() {
         argCallback: args => {
             delete args.query.starttime;
             delete args.query.endtime;
+
+            argCallbackMemberIdToIds(args);
         },
         processData: data => {
             return [{
