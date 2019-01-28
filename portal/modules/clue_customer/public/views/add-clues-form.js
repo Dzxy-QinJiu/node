@@ -13,7 +13,7 @@ const FormItem = Form.Item;
 import ajax from '../../../crm/common/ajax';
 const routes = require('../../../crm/common/route');
 var clueCustomerAction = require('../action/clue-customer-action');
-import {checkClueName, getPhoneInputValidateRules, checkClueSourceIP} from '../utils/clue-customer-utils';
+import {checkClueName, checkClueSourceIP} from '../utils/clue-customer-utils';
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
 import {nameRegex} from 'PUB_DIR/sources/utils/validate-util';
@@ -54,8 +54,6 @@ class ClueAddForm extends React.Component {
             saveMsg: '',
             saveResult: '',
             newAddClue: {},//新增加的线索
-            clueNameExist: false,//线索名称是否存在
-            clueCustomerCheckErrMsg: ''//线索名称校验失败
         };
     }
 
@@ -167,10 +165,6 @@ class ClueAddForm extends React.Component {
             if (this.validateContactIsEmpty(values.contacts)) {
                 return;
             }
-            //是否有重复的线索
-            if(this.state.clueNameExist){
-                return;
-            }
             let submitObj = this.getSubmitObj(values);
             let addRoute = _.find(routes, (route) => route.handler === 'addSalesClue');
             this.setState({isSaving: true, saveMsg: '', saveResult: ''});
@@ -199,46 +193,6 @@ class ClueAddForm extends React.Component {
 
         });
     };
-    //验证客户名是否重复
-    checkOnlyClueCustomerName = () => {
-        let customerName = _.trim(this.props.form.getFieldValue('name'));
-        //满足验证条件后再进行唯一性验证
-        if (customerName && nameRegex.test(customerName)) {
-            clueCustomerAction.checkOnlyClueName(customerName, (data) => {
-                if (_.isString(data)) {
-                    //唯一性验证出错了
-                    this.setState({
-                        clueNameExist: false,
-                        clueCustomerCheckErrMsg: data
-                    });
-                } else {
-                    if (_.isObject(data) && data.result === 'true') {
-                        this.setState({
-                            clueNameExist: false,
-                            clueCustomerCheckErrMsg: ''
-                        });
-                    } else {
-                        //已存在
-                        this.setState({
-                            clueNameExist: true,
-                            clueCustomerCheckErrMsg: ''
-                        });
-                    }
-                }
-            });
-        }
-    };
-
-    renderCheckClueNameMsg() {
-        if (this.state.clueNameExist) {
-            return (<div className="clue-name-repeat">{Intl.get('clue.customer.check.repeat', '该线索名称已存在')}</div>);
-        } else if (this.state.clueCustomerCheckErrMsg) {
-            return (
-                <div className="clue-name-errmsg">{Intl.get('clue.customer.check.only.exist', '线索名称唯一性校验失败')}</div>);
-        } else {
-            return '';
-        }
-    }
 
     renderCheckContactMsg() {
         if (this.state.contactErrMsg) {
@@ -332,20 +286,15 @@ class ClueAddForm extends React.Component {
                                         name="name"
                                         id="name"
                                         placeholder={Intl.get('clue.suggest.input.customer.name', '建议输入客户名称')}
-                                        onBlur={() => {
-                                            this.checkOnlyClueCustomerName();
-                                        }}
                                     />
                                 )}
                             </FormItem>
-                            {this.renderCheckClueNameMsg()}
                             <FormItem
                                 className={clsContainer}
                                 label={Intl.get('crm.5', '联系方式')}
                                 {...formItemLayout}
                             >
-                                <DynamicAddDelContact form={this.props.form}
-                                    phoneOnlyOneRules={getPhoneInputValidateRules()}/>
+                                <DynamicAddDelContact form={this.props.form} />
                             </FormItem>
                             {this.renderCheckContactMsg()}
                             <FormItem
@@ -450,7 +399,7 @@ class ClueAddForm extends React.Component {
                                                 <AlertTimer time={saveResult === 'error' ? 3000 : 600}
                                                     message={this.state.saveMsg}
                                                     type={saveResult} showIcon
-                                                    onHide={this.hideSaveTooltip}/>
+                                                    onHide={saveResult === 'error' ? function(){} : this.hideSaveTooltip}/>
                                             ) : ''
                                         }
                                     </div>

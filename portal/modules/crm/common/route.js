@@ -6,7 +6,7 @@ const sysStageUrl = '/rest/customer/v2/salestage';
 const applyUserUrl = '/rest/base/v1/user/apply_users';
 const queryCustomerUrl = '/rest/customer/v2/customer/query';
 //添加销售线索
-const addSalesClueUrl = '/rest/clue/v1/add';
+const addSalesClueUrl = '/rest/clue/v2/add';
 
 module.exports = [{
     'method': 'post',

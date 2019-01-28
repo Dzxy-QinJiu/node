@@ -235,19 +235,19 @@ let routers = [
             showPrivileges: ['APP_USER_APPLY_LIST']
 
         }, {
-            id: 'BUSSINESS_APPLY_MANAGEMENT',
-            name: 'leave.apply.add.leave.apply',//出差申请
-            routePath: '/application/business_apply',
-            component: `${MODULE_PATH}business-apply/public`,
-            //有这个权限，才显示入口图标
-            showPrivileges: ['BUSINESS_TRIP_MANAGE']
-        }, {
             id: 'SALES_BUSSINESS_APPLY_MANAGEMENT',
             name: 'leave.apply.sales.oppotunity',//机会申请
             routePath: '/application/sales_opportunity',
             component: `${MODULE_PATH}sales_opportunity/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['MEMBER_BUSINESSOPPO_MANAGE']
+        }, {
+            id: 'BUSSINESS_APPLY_MANAGEMENT',
+            name: 'leave.apply.add.leave.apply',//出差申请
+            routePath: '/application/business_apply',
+            component: `${MODULE_PATH}business-apply/public`,
+            //有这个权限，才显示入口图标
+            showPrivileges: ['BUSINESS_TRIP_MANAGE']
         }, {
             id: 'LEAVE_APPLY_MANAGEMENT',
             name: 'leave.apply.leave.application',//请假申请

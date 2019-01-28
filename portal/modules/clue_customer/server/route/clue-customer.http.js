@@ -78,13 +78,6 @@ module.exports = {
                 needLogin: true
             },
         },{
-            method: 'get',
-            path: '/rest/sales_clue/only/check',
-            handler: 'checkOnlySalesClue',
-            passport: {
-                needLogin: true
-            },
-        },{
             method: 'put',
             path: '/rest/relate_clue_and_customer/:type',
             handler: 'relateClueAndCustomer',
