@@ -43,7 +43,7 @@ const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 //三字符表头宽度
 const THERE_CHAR_WIDTH = 80;
 //四字符表头宽度
-const FOUR_CHAR_WIDTH = 90;
+const FOUR_CHAR_WIDTH = 95;
 //五字符表头宽度
 const FIVE_CHAR_WIDTH = 105;
 //六字符表头宽度
@@ -175,7 +175,7 @@ class SalesHomePage extends React.Component {
 
         if (this.state.scrollbarEnabled) {
             listHeight = $(window).height() - layoutConstant.TOP_NAV_H - layoutConstant.TOTAL_H -
-                layoutConstant.SELECT_TYPE_H - layoutConstant.BOTTOM;
+                layoutConstant.BOTTOM;
         }
         return listHeight;
     };
