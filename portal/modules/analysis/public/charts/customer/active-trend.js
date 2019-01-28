@@ -37,7 +37,9 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
             tooltip: {
                 formatter: params => {
                     const param = params[0];
-                    const activeRate = (param.data.percent * 100).toFixed() + '%';
+                    //活跃率，接口有可能不返回，此时设默认值为0
+                    const percent = param.data.percent || 0;
+                    const activeRate = (percent * 100).toFixed() + '%';
 
                     return `
                         ${param.name}<br>
