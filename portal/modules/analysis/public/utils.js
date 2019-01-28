@@ -150,3 +150,15 @@ export function argCallbackTeamId(arg) {
         }
     }
 }
+
+//查询参数回调函数: member_id 转 member_ids
+export function argCallbackMemberIdToIds(arg) {
+    const query = arg.query;
+
+    if (query) {
+        if (query.member_id) {
+            query.member_ids = query.member_id;
+            delete query.member_id;
+        }
+    }
+}

@@ -2,11 +2,14 @@
  * 成交分析
  */
 
+import { argCallbackMemberIdToIds } from '../../utils';
+
 export function getCustomerDealChart() {
     return {
         title: '成交分析',
         chartType: 'table',
         url: '/rest/analysis/customer/v2/:data_type/last_contact/deal/statistics',
+        argCallback: argCallbackMemberIdToIds,
         option: {
             columns: [{
                 title: '联系客户数',
