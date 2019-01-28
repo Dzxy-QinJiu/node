@@ -175,7 +175,7 @@ class SalesHomePage extends React.Component {
 
         if (this.state.scrollbarEnabled) {
             listHeight = $(window).height() - layoutConstant.TOP_NAV_H - layoutConstant.TOTAL_H -
-                layoutConstant.SELECT_TYPE_H - layoutConstant.BOTTOM;
+                layoutConstant.BOTTOM;
         }
         return listHeight;
     };
