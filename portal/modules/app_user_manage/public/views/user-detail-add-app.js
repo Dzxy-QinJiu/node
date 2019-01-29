@@ -110,11 +110,6 @@ var UserDetailAddApp = createReactClass({
             if(_this.hasSalesChangePasswordBlock()) {
                 result.remark = _this.state.formData.remark.passwordRemark;
             }
-            //销售申请修改应用状态
-            if(_this.hasSalesApplyStatusBlock()) {
-                result.status = formData.user_status;
-                result.remark = formData.remark.statusRemark;
-            }
             //添加申请延期块
             if(_this.state.multipleSubType === 'grant_delay') {
                 //向data中添加delay字段
@@ -263,16 +258,14 @@ var UserDetailAddApp = createReactClass({
                 }
                 submit();
             });
-        } else if(this.hasDelayTimeBlock() || this.hasSalesApplyStatusBlock()){//批量延期或修改开通状态
-            if (isSales) {//销售
-                if (this.hasDelayTimeBlock()) {//延期申请
-                    this.delayApply();
-                } else {
-                    this.editStatusApply();
-                }
+        } else if (this.hasDelayTimeBlock()) {//批量延期
+            if (isSales) {//销售，延期申请
+                this.delayApply();
             } else {//管理员的批量处理
                 submit();
             }
+        } else if (this.hasSalesApplyStatusBlock()) {//销售，修改开通状态的申请
+            this.editStatusApply();
         } else {
             submit();
         }
@@ -1096,7 +1089,7 @@ var UserDetailAddApp = createReactClass({
         var divWidth = (language.lan() === 'zh') ? '80px' : '74px';
         let label = '';
         if (this.state.formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
-            label = Intl.get(' user.time.end', '到期时间');
+            label = Intl.get('user.time.end', '到期时间');
         } else {
             label = Intl.get('common.delay.time', '延期时间');
         }

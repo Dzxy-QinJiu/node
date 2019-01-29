@@ -233,14 +233,6 @@ exports.applyUser = function(req, res) {
     });
 };
 
-//申请用户延期
-exports.applyDelayUser = function(req, res) {
-    AppUserService.applyDelayUser(req, res, req.body).on('success', function(data) {
-        res.json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
 //批量用户延期
 exports.batchDelayUser = function(req, res) {
     AppUserService.batchDelayUser(req, res, req.body).on('success', function(data) {
@@ -271,15 +263,6 @@ exports.applyChangePassword = function(req, res) {
 //申请修改其他类型
 exports.applyChangeOther = function(req, res) {
     AppUserService.applyChangeOther(req, res, req.body).on('success', function(data) {
-        res.json(data);
-    }).on('error', function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
-
-//申请修改开通状态
-exports.applyChangeStatus = function(req, res) {
-    AppUserService.applyChangeStatus(req, res, req.body).on('success', function(data) {
         res.json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);

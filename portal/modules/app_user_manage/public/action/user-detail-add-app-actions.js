@@ -105,8 +105,7 @@ function UserDetailAddAppActions() {
             field === 'grant_status' ||
             field === 'grant_period' ||
             field === 'grant_roles' ||
-            field === 'grant_delay' ||
-            field === 'sales_grant_status'
+            field === 'grant_delay'
         ){
             selectedAppId = obj.selectedAppId;
         }
@@ -115,55 +114,44 @@ function UserDetailAddAppActions() {
         //提交给后台要求是json字符串
         obj.data.user_ids = JSON.stringify(obj.data.user_ids);
         if(field === 'grant_delay') {
-            var isSales = obj.isSales;
-            if (isSales) {
-                obj.data.application_ids = selectedAppId;
-                //销售提交申请延期
-                AppUserAjax.applyDelayTime(obj.data).then(function(newAppObj) {
-                    _this.dispatch({error: false, app: newAppObj});
-                }, function(errorMsg) {
-                    _this.dispatch({error: true, errorMsg: errorMsg});
-                });
-            } else {
-                var submitObj = {
-                    user_ids: obj.data.user_ids,
-                    over_draft: obj.data.over_draft,
-                    application_ids: selectedAppId
-                };
-                let timeObj = {};
-                if (obj.data.delay) {
-                    timeObj.delay = obj.data.delay;
-                    submitObj.delay = obj.data.delay;
-                } else if (obj.data.end_date) {
-                    timeObj.end_date = obj.data.end_date;
-                    submitObj.end_date = obj.data.end_date;
-                }
-                //管理员直接延期
-                AppUserAjax.delayTime(submitObj).then(function(taskId) {
-                    //保存提交参数，以便推送批量操作进度时使用更新界面
-                    var taskParams = AppUserUtil.formatTaskParams(timeObj , selectedAppId , obj.extra);
-                    //保存任务参数
-                    batchOperate.saveTaskParamByTaskId(taskId , taskParams , {
-                        //需要弹框
-                        showPop: true,
-                        //在用户页面处理
-                        urlPath: '/user/list'
-                    });
-                    //添加到任务列表，仅在当前页显示
-                    batchOperate.addTaskIdToList(taskId);
-                    //界面上立即显示一个初始化推送
-                    batchOperate.batchOperateListener({
-                        taskId: taskId,
-                        total: userCount,
-                        running: userCount,
-                        typeText: OperateTextMap.GRANT_DELAY
-                    });
-                    //返回成功
-                    _this.dispatch({error: false});
-                }, function(errorMsg) {
-                    _this.dispatch({error: true, errorMsg: errorMsg});
-                });
+            var submitObj = {
+                user_ids: obj.data.user_ids,
+                over_draft: obj.data.over_draft,
+                application_ids: selectedAppId
+            };
+            let timeObj = {};
+            if (obj.data.delay) {
+                timeObj.delay = obj.data.delay;
+                submitObj.delay = obj.data.delay;
+            } else if (obj.data.end_date) {
+                timeObj.end_date = obj.data.end_date;
+                submitObj.end_date = obj.data.end_date;
             }
+            //管理员直接延期
+            AppUserAjax.delayTime(submitObj).then(function(taskId) {
+                //保存提交参数，以便推送批量操作进度时使用更新界面
+                var taskParams = AppUserUtil.formatTaskParams(timeObj , selectedAppId , obj.extra);
+                //保存任务参数
+                batchOperate.saveTaskParamByTaskId(taskId , taskParams , {
+                    //需要弹框
+                    showPop: true,
+                    //在用户页面处理
+                    urlPath: '/user/list'
+                });
+                //添加到任务列表，仅在当前页显示
+                batchOperate.addTaskIdToList(taskId);
+                //界面上立即显示一个初始化推送
+                batchOperate.batchOperateListener({
+                    taskId: taskId,
+                    total: userCount,
+                    running: userCount,
+                    typeText: OperateTextMap.GRANT_DELAY
+                });
+                //返回成功
+                _this.dispatch({error: false});
+            }, function(errorMsg) {
+                _this.dispatch({error: true, errorMsg: errorMsg});
+            });
         }else if(field === 'sales_change_password') {
             var submitObj = {
                 user_ids: obj.data.user_ids,
@@ -172,19 +160,6 @@ function UserDetailAddAppActions() {
             };
             //调用修改密码
             AppUserAjax.applyChangePassword(submitObj).then(function(newAppObj) {
-                _this.dispatch({error: false, app: newAppObj});
-            }, function(errorMsg) {
-                _this.dispatch({error: true, errorMsg: errorMsg});
-            });
-        }else if(field === 'sales_grant_status') {
-            var submitObj = {
-                user_ids: obj.data.user_ids,
-                remark: obj.data.remark,
-                status: obj.data.status,
-                application_ids: selectedAppId
-            };
-            //调用申请修改开通状态
-            AppUserAjax.salesApplyStatus(submitObj).then(function(newAppObj) {
                 _this.dispatch({error: false, app: newAppObj});
             }, function(errorMsg) {
                 _this.dispatch({error: true, errorMsg: errorMsg});
@@ -216,20 +191,19 @@ function UserDetailAddAppActions() {
             });
         }
     };
-
+    //用户申请延期、开通状态（多应用）
+    this.applyDelayMultiApp = function(obj) {
+        this.dispatch({loading: true});
+        AppUserAjax.applyDelayMultiApp(obj).then((result) => {
+            if (result) {
+                this.dispatch({error: false, loading: false});
+            } else {
+                this.dispatch({error: true, loading: false, errorMsg: Intl.get('common.apply.failed', '申请失败')});
+            }
+        }).catch((errMsg) => {
+            this.dispatch({error: true, loading: false, errorMsg: errMsg || Intl.get('common.apply.failed', '申请失败')});
+        });
+    };
 }
-
-this.applyDelayMultiApp = function(obj) {
-    this.dispatch({loading: true});
-    AppUserAjax.applyDelayMultiApp(obj).then((result) => {
-        if (result) {
-            this.dispatch({error: false, loading: false});
-        } else {
-            this.setState({error: true, loading: false, errorMsg: Intl.get('common.apply.failed', '申请失败')});
-        }
-    }).catch((errMsg) => {
-        this.setState({error: true, loading: false, errorMsg: errMsg || Intl.get('common.apply.failed', '申请失败')});
-    });
-};
 
 module.exports = alt.createActions(UserDetailAddAppActions);

@@ -181,13 +181,6 @@ module.exports = {
         }
     },{
         'method': 'post',
-        'path': '/rest/user/apply_delay',
-        'handler': 'applyDelayUser',
-        'passport': {
-            'needLogin': true
-        }
-    },{
-        'method': 'post',
         'path': '/rest/user/batch_delay',
         'handler': 'batchDelayUser',
         'passport': {
@@ -215,13 +208,6 @@ module.exports = {
             'needLogin': true
         }
     },{
-        'method': 'post',
-        'path': '/rest/user/apply/status',
-        'handler': 'applyChangeStatus',
-        'passport': {
-            'needLogin': true
-        }
-    }, {
         'method': 'get',
         'path': '/rest/appuser/replylist/:apply_id',
         'handler': 'getReplyList',
