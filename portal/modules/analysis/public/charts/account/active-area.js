@@ -4,10 +4,14 @@
 
 import { ifNotSingleApp, argCallbackTeamId, argCallbackMemberIdToSalesId } from '../../utils';
 
-export function getActiveAreaChart() {
+export function getActiveAreaChart(type = 'all') {
     return {
         title: Intl.get('user.analysis.active.user.area.statistics', '活跃用户地域统计'),
         url: '/rest/analysis/user/v3/:auth_type/zone/province',
+        conditions: [{
+            name: 'analysis_type',
+            value: type
+        }],
         argCallback: arg => {
             argCallbackTeamId(arg);
             argCallbackMemberIdToSalesId(arg);
