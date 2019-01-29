@@ -2,6 +2,8 @@
  * 合同分析统计表
  */
 
+import { argCallbackTeamId } from '../../utils';
+
 export function getContractChart() {
     return {
         title: Intl.get('contract.168', '合同分析统计表') + '(' + Intl.get('contract.160', '单位') + ': ' + Intl.get('contract.155', '元') + ')',
@@ -14,6 +16,8 @@ export function getContractChart() {
             if (query) {
                 delete query.app_id;
             }
+
+            argCallbackTeamId(arg);
         },
         chartType: 'table',
         option: {

@@ -2,6 +2,8 @@
  * 年经常性收入情况
  */
 
+import { argCallbackTeamId } from '../../utils';
+
 export function getContractArrChart() {
     return {
         title: '年经常性收入情况',
@@ -17,12 +19,9 @@ export function getContractArrChart() {
 
             if (query) {
                 delete query.app_id;
-                
-                if (query.team_ids) {
-                    query.team_id = query.team_ids;
-                    delete query.team_ids;
-                }
             }
+
+            argCallbackTeamId(arg);
         },
     };
 }

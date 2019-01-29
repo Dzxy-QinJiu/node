@@ -2,6 +2,7 @@
  * 签单情况统计表
  */
 
+import { argCallbackTeamId } from '../../utils';
 import { num as antUtilNum } from 'ant-utils';
 const parseAmount = antUtilNum.parseAmount;
 const querystring = require('querystring');
@@ -19,6 +20,8 @@ export function getSingingChart() {
             if (query) {
                 delete query.app_id;
             }
+
+            argCallbackTeamId(arg);
         },
         chartType: 'table',
         processOption: processOption,
