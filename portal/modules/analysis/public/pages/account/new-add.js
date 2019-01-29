@@ -41,15 +41,15 @@ function getCharts() {
         //浏览器统计
         accountChart.getAccountBrowserChart('add'),
         //用户访问次数
-        accountChart.getLoginCountsChart(),
+        accountChart.getLoginCountsChart('add'),
         //活跃用户地域统计
-        accountChart.getActiveAreaChart(),
+        accountChart.getActiveAreaChart('add'),
         //用户访问天数
-        accountChart.getLoginDaysChart(),
+        accountChart.getLoginDaysChart('add'),
         //用户在线时间
-        accountChart.getLoginTimesChart(),
+        accountChart.getLoginTimesChart('add'),
         //平均在线时长
-        accountChart.getAverageOnlineTimeChart(),
+        accountChart.getAverageOnlineTimeChart('add'),
         //销售开通单应用账号登录统计
         accountChart.getSalesOpenAccountLoginChart(),
     ];
