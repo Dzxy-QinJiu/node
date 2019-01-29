@@ -27,7 +27,7 @@ function getCharts() {
         //状态统计
         accountChart.getAccountStatusChart('expired'),
         //单应用帐号活跃度趋势
-        accountChart.getActivityChart(),
+        accountChart.getActivityChart('expired'),
         //在线时长统计
         accountChart.getLoginLongChart(),
         //设备统计
