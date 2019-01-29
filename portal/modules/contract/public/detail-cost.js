@@ -21,6 +21,7 @@ const RightPanelCancel = rightPanelUtil.RightPanelCancel;
 const hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 import { DATE_FORMAT, OPERATE, COST_TYPE } from '../consts';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
+import DetailCostBasic from './detail-cost-basic';
 const formItemLayout = {
     labelCol: { span: 4 },
     wrapperCol: { span: 12 },
@@ -353,10 +354,52 @@ const DetailCost = createReactClass({
 
     render: function() {
         //编辑按钮是否显示
-        const isEditBtnShow = !this.state.isFormShow && hasPrivilege('OPLATE_SALES_COST_ADD');
+        const isEditBtnShow = hasPrivilege('OPLATE_SALES_COST_ADD');
         const detailOp = this.state.formData.id ? 'update' : 'add';
         return (
             <div className="detail-cost">
+                {
+                    detailOp === 'add' ? (
+                        <Form layout='horizontal' >
+                            <Validation ref="validation" onValidate={this.handleValidate}>
+                                {this.renderUserField()}
+                                {/*{this.renderTeamField()}*/}
+                                {this.renderDateField()}
+                                {this.renderTypeField()}
+                                {this.renderAmountField()}
+                                {this.state.isFormShow ? (
+                                    <Row>
+                                        <Col span="22" className='footer-btn'>
+                                            {/*{this.state.isAdd ? null : (
+                                                <Button type="danger" className="form-detele-btn btn-primary-delete" onClick={this.handleSubmit.bind(this, 'delete', this.props.cost.id)}><ReactIntl.FormattedMessage id="common.delete" defaultMessage="删除" /></Button>
+                                            )}*/}
+                                            <RightPanelSubmit onClick={this.handleSubmit.bind(this, detailOp)}><ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" /></RightPanelSubmit>
+                                            <RightPanelCancel onClick={this.hideForm}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></RightPanelCancel>
+                                        </Col>
+                                    </Row>
+                                ) : null}
+                            </Validation>
+                        </Form>
+                    ) : (
+                        <div className='detail-cost-wrapper'>
+                            <DetailCostBasic
+                                className='detail-cost-basic'
+                                enableEdit={isEditBtnShow}
+                                cost={this.props.cost}
+                                teamList={this.props.teamList}
+                                userList={this.props.userList}
+                                getUserList={this.props.getUserList}
+                                isGetUserSuccess={this.props.isGetUserSuccess}
+                                showLoading={this.props.showLoading}
+                                hideLoading={this.props.hideLoading}
+                                refreshCurrentContract={this.props.refreshCurrentContract}
+                                deleteContract={this.props.deleteContract}
+                                hideRightPanel={this.props.hideRightPanel}
+                            />
+                            <Button type="danger" className="form-detele-btn btn-primary-delete" onClick={this.handleSubmit.bind(this, 'delete', this.props.cost.id)}><ReactIntl.FormattedMessage id="common.delete" defaultMessage="删除" /></Button>
+                        </div>
+                    )
+                }
                 {/*{isEditBtnShow ? (
                     <div>
                         <RightPanelEdit 
@@ -367,27 +410,6 @@ const DetailCost = createReactClass({
                         />
                     </div>
                 ) : null}*/}
-
-                <Form layout='horizontal' >
-                    <Validation ref="validation" onValidate={this.handleValidate}>
-                        {this.renderUserField()}
-                        {/*{this.renderTeamField()}*/}
-                        {this.renderDateField()}
-                        {this.renderTypeField()}
-                        {this.renderAmountField()}
-                        {this.state.isFormShow ? (
-                            <Row>
-                                <Col span="22" className='footer-btn'>
-                                    {this.state.isAdd ? null : (
-                                        <Button type="danger" className="form-detele-btn btn-primary-delete" onClick={this.handleSubmit.bind(this, 'delete', this.props.cost.id)}><ReactIntl.FormattedMessage id="common.delete" defaultMessage="删除" /></Button>
-                                    )}
-                                    <RightPanelSubmit onClick={this.handleSubmit.bind(this, detailOp)}><ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" /></RightPanelSubmit>
-                                    <RightPanelCancel onClick={this.hideForm}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></RightPanelCancel>
-                                </Col>
-                            </Row>
-                        ) : null}
-                    </Validation>
-                </Form>
             </div>
         );
     },
