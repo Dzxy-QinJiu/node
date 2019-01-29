@@ -4,25 +4,27 @@ import { parseAmount } from 'LIB_DIR/func';
 var React = require('react');
 import {message, Select, Radio} from 'antd';
 let Option = Select.Option;
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
 import Trace from 'LIB_DIR/trace';
 require('../../user_manage/public/css/user-info.less');
 import DetailCard from 'CMP_DIR/detail-card';
-import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import ajax from '../common/ajax';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import { COST_TYPE } from '../consts';
+import { COST_TYPE, OPERATE } from '../consts';
 import { getNumberValidateRule } from 'PUB_DIR/sources/utils/validate-util';
+import routeList from 'MOD_DIR/contract/common/route';
 //展示的类型
 const DISPLAY_TYPES = {
-    EDIT: 'edit',//重新分配销售
-    EDIT_TEAM: 'edit_team',//分配团队
+    EDIT: 'edit',//编辑
     TEXT: 'text'//展示
 };
+const COST_TYPES = {
+    cost: '费用',
+    date: '日期',
+    type: '费用类型',
+};
+
 const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 354;
 
 class DetailCostCard extends React.Component {
@@ -49,7 +51,7 @@ class DetailCostCard extends React.Component {
     componentWillReceiveProps(nextProps) {
         let cost = _.isEmpty(nextProps.cost);
         if(!cost && _.get(nextProps.cost,'id') !== this.state.formData.id){
-            //切换客户时，重新设置state数据
+            //切换费用时，重新设置state数据
             this.setState(this.getInitStateData(nextProps));
         }
     }
@@ -57,121 +59,41 @@ class DetailCostCard extends React.Component {
     //保存编辑的销售
     saveEditUser = (saveObj, successFunc, errorFunc) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '保存销售人员的修改');
-        console.log(saveObj);
-        /*UserInfoAjax.updateUserTeam(saveObj).then((result) => {
-            if (result) {
-                if (_.isFunction(successFunc)) successFunc();
-                this.afterEditTeamSuccess(saveObj);
+        const selectedUser = _.find(this.props.userList, user => user.user_id === saveObj.sales_id);
+        saveObj.sales_name = selectedUser.nick_name;
+        saveObj.sales_team_id = selectedUser.group_id;
+        saveObj.sales_team = selectedUser.group_name;
+        this.editCost(saveObj,successFunc,errorFunc);
+    };
+
+    // 费用类型提交
+    saveEdithandle = (type,options) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), `保存对${COST_TYPES[type]}类型的修改`);
+        this.editCost(options[0],options[1],options[2]);
+    };
+
+    editCost(data,successFunc,errorFunc) {
+        const handler = 'updateCost';
+        const route = _.find(routeList, route => route.handler === handler);
+        const arg = {
+            url: route.path,
+            type: route.method,
+            data: data || {},
+        };
+
+
+        ajax(arg).then(result => {
+            if (result.code === 0) {
+                message.success(OPERATE['update'] + '费用信息成功');
+                if(_.isFunction(successFunc)) successFunc();
+                this.props.refreshCurrentContract(this.props.cost.id);
             } else {
+                message.error(result.msg || OPERATE[type] + '费用信息失败');
                 if (_.isFunction(errorFunc)) errorFunc();
             }
         }, (errorMsg) => {
             if (_.isFunction(errorFunc)) errorFunc(errorMsg);
-        });*/
-    };
-
-    // 保存时间
-    saveEditDate = (saveObj, successFunc, errorFunc) => {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '保存日期的修改');
-        console.log(saveObj);
-    };
-
-    // 保存费用
-    saveEditCost = (saveObj, successFunc, errorFunc) => {
-        console.log(saveObj);
-    };
-
-    // 修改费用类型显示
-    setEditable(type) {
-        if (type === DISPLAY_TYPES.TEXT) {
-            Trace.traceEvent(ReactDOM.findDOMNode(this), '取消对费用的修改');
-            this.setState({
-                displayType: type
-            });
-            /*  this.setState({
-                loading: false,
-                displayType: type,
-                userName: this.props.userName,
-                userId: this.props.userId,
-                salesTeam: this.props.salesTeam,
-                salesTeamId: this.props.salesTeamId,
-                salesTeamList: this.getSalesTeamList(this.props.userId, this.state.salesManList),
-                submitErrorMsg: '',
-                salesRole: ''
-            });*/
-        } else if (type === DISPLAY_TYPES.EDIT) {
-            Trace.traceEvent(ReactDOM.findDOMNode(this), '点击设置费用按钮');
-            this.setState({
-                displayType: type
-            });
-        }
-    }
-
-    // 费用类型变化
-    handleChangeType(e) {
-        let {formData} = this.state;
-        formData.type = e.target.value;
-        this.setState({
-            formData
         });
-    }
-
-    handleSubmitType(e) {
-        if (this.state.loading) return;
-        Trace.traceEvent(e, '保存对费用类型的修改');
-        this.setState({loading: true});
-
-    }
-
-    handleCancelType(e) {
-        Trace.traceEvent(e, '取消对费用类型的修改');
-        let {formData} = this.state;
-        formData.type = this.props.cost.type || COST_TYPE[0];
-        this.setState({
-            displayType: 'text',
-            formData,
-            submitErrorMsg: ''
-        });
-    }
-
-    renderTypeTitle() {
-        return (
-            <div className='cost-amout-type'>
-                <span className="basic-info-label">
-                    {Intl.get('contract.135', '费用类型')}:
-                </span>
-                {this.state.displayType === 'text' ?
-                    <span className="basic-info-text">
-                        {this.state.formData.type}
-                    </span> : null}
-                {this.props.enableEdit && this.state.displayType === 'text' ?
-                    <DetailEditBtn title={Intl.get('common.edit', '编辑')} onClick={this.setEditable.bind(this,DISPLAY_TYPES.EDIT)}/> : null}
-            </div>
-        );
-    }
-    // 费用类型
-    renderTypeContent() {
-        const typeOptions = COST_TYPE.map(type => {
-            return <RadioButton key={type} value={type}>{type}</RadioButton>;
-        });
-
-        if(this.state.displayType === DISPLAY_TYPES.TEXT) {
-            return null;
-        } else if(this.state.displayType === DISPLAY_TYPES.EDIT) {
-            return (
-                <div>
-                    {this.state.displayType === 'text' ? <span className="value-text">{this.state.formData.type}</span> :
-                        <RadioGroup
-                            value={this.state.formData.type}
-                            size='small'
-                            onChange={this.handleChangeType.bind(this)}
-                        >
-                            {typeOptions}
-                        </RadioGroup>
-                    }
-                </div>
-            );
-        }
     }
 
     renderContent() {
@@ -179,6 +101,9 @@ class DetailCostCard extends React.Component {
 
         const userOptions = this.props.userList.map(user => {
             return <Option key={user.user_id} value={user.user_id}>{user.nick_name + ' - ' + user.group_name}</Option>;
+        });
+        const typeOptions = COST_TYPE.map(type => {
+            return <Option key={type} value={type}>{type}</Option>;
         });
 
         return (
@@ -196,7 +121,7 @@ class DetailCostCard extends React.Component {
                         placeholder={Intl.get('crm.17', '请选择销售人员')}
                         validators={[{message: Intl.get('crm.17', '请选择销售人员')}]}
                         width={EDIT_FEILD_LESS_WIDTH}
-                        hasEditPrivilege={hasPrivilege('OPLATE_SALES_COST_ADD')}
+                        hasEditPrivilege={this.props.enableEdit}
                         saveEditSelect={this.saveEditUser}
                         noDataTip={Intl.get('crm.29', '暂无销售人员')}
                         addDataTip={Intl.get('crm.173', '设置销售')}
@@ -212,8 +137,25 @@ class DetailCostCard extends React.Component {
                         field="date"
                         format={oplateConsts.DATE_FORMAT}
                         value={cost.date ? moment(cost.date) : ''}
-                        saveEditDateInput={this.saveEditDate}
-                        hasEditPrivilege={true}
+                        saveEditDateInput={(...option) => this.saveEdithandle('date',option)}
+                        hasEditPrivilege={this.props.enableEdit}
+                    />
+                </div>
+                <div className="basic-info-item">
+                    <span className="basic-info-label">
+                        {Intl.get('contract.135', '费用类型')}:
+                    </span>
+                    <BasicEditSelectField
+                        id={cost.id}
+                        displayText={cost.type}
+                        value={cost.type}
+                        field="type"
+                        selectOptions={typeOptions}
+                        placeholder={Intl.get('contract.136', '请选择费用类型')}
+                        width={EDIT_FEILD_LESS_WIDTH}
+                        hasEditPrivilege={this.props.enableEdit}
+                        saveEditSelect={(...option) => this.saveEdithandle('type',option)}
+                        noDataTip={Intl.get('contract.137', '暂无费用类型')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -224,14 +166,14 @@ class DetailCostCard extends React.Component {
                         width={EDIT_FEILD_LESS_WIDTH}
                         id={cost.id}
                         field="cost"
-                        value={parseAmount(cost.cost)}
+                        value={cost.cost}
                         placeholder={Intl.get('contract.82', '元')}
                         validators={[{
                             required: true, message: Intl.get('contract.134', '请填写费用')},
                         getNumberValidateRule()
                         ]}
-                        hasEditPrivilege={true}
-                        saveEditInput={this.saveEditCost}
+                        hasEditPrivilege={this.props.enableEdit}
+                        saveEditInput={(...option) => this.saveEdithandle('cost',option)}
                     />
                 </div>
             </div>
@@ -244,14 +186,6 @@ class DetailCostCard extends React.Component {
                 <DetailCard
                     content={this.renderContent()}
                     className="member-detail-container"
-                />
-                <DetailCard title={this.renderTypeTitle()}
-                    content={this.renderTypeContent()}
-                    isEdit={this.state.displayType === 'edit'}
-                    loading={this.state.loading}
-                    saveErrorMsg={this.state.submitErrorMsg}
-                    handleSubmit={this.handleSubmitType.bind(this)}
-                    handleCancel={this.handleCancelType.bind(this)}
                 />
             </div>
         );
