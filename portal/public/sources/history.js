@@ -5,8 +5,8 @@
  */
 var createHistory = require('history').createBrowserHistory;
 var url = require('url');
+var pathname = window.location.pathname || '';
 var history = createHistory();
-var pathname = '';
 history.listen(function(location) {
     var parseObj = url.parse(window.location.href);
     if (pathname !== location.pathname) {
