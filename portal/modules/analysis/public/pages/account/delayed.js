@@ -19,9 +19,9 @@ function getCharts() {
         //团队分布统计
         accountChart.getDelayedAccountTeamChart(),
         //设备统计
-        accountChart.getAccountDeviceChart(),
+        accountChart.getAccountDeviceChart('delay'),
         //浏览器统计
-        accountChart.getAccountBrowserChart(),
+        accountChart.getAccountBrowserChart('delay'),
         //用户访问次数
         accountChart.getLoginCountsChart(),
         //活跃用户地域统计

@@ -37,9 +37,9 @@ function getCharts() {
         //帐号月留存统计
         accountChart.getRemainAccountChart('added', '帐号月留存'),
         //设备统计
-        accountChart.getAccountDeviceChart(),
+        accountChart.getAccountDeviceChart('add'),
         //浏览器统计
-        accountChart.getAccountBrowserChart(),
+        accountChart.getAccountBrowserChart('add'),
         //用户访问次数
         accountChart.getLoginCountsChart(),
         //活跃用户地域统计
