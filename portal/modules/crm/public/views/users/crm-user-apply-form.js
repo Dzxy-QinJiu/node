@@ -287,8 +287,8 @@ class CrmUserApplyForm extends React.Component {
             } else {
                 this.setState({ applyErrorMsg: Intl.get('user.apply.status.failed', '申请修改开通状态失败') });
             }
-        }).catch((err) => {
-            this.setState({ isApplying: false, applyErrorMsg: (err && err.message) || Intl.get('user.apply.status.failed', '申请修改开通状态失败')});
+        }).catch((errMsg) => {
+            this.setState({ isApplying: false, applyErrorMsg: errMsg || Intl.get('user.apply.status.failed', '申请修改开通状态失败')});
         });
     }
 
@@ -339,7 +339,7 @@ class CrmUserApplyForm extends React.Component {
                 this.setState({ applyErrorMsg: Intl.get('user.apply.password.failed', '申请其他类型的修改失败') });
             }
         }, (errorMsg) => {
-            this.setState({ isApplying: false, applyErrorMsg: errorMsg });
+            this.setState({ isApplying: false, applyErrorMsg: errorMsg || Intl.get('user.apply.password.failed', '申请其他类型的修改失败') });
         });
     }
 

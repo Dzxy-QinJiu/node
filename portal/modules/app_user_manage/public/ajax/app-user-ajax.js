@@ -376,23 +376,6 @@ exports.editApp = function(appInfo) {
     return Deferred.promise();
 };
 
-//申请延期
-exports.applyDelayTime = function(data) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/user/apply_delay',
-        type: 'post',
-        dataType: 'json',
-        data: data,
-        success: function(result) {
-            Deferred.resolve(result);
-        },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get('user.apply.delay.failed', '申请延期失败'));
-        }
-    });
-    return Deferred.promise();
-};
 //管理员直接延期
 exports.delayTime = function(data) {
     var Deferred = $.Deferred();
@@ -423,8 +406,8 @@ exports.applyUser = function(data) {
         success: function(result) {
             Deferred.resolve(result);
         },
-        error: function() {
-            Deferred.reject( Intl.get('common.apply.failed', '申请失败'));
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON || Intl.get('common.apply.failed', '申请失败'));
         }
     });
     return Deferred.promise();
@@ -483,30 +466,6 @@ exports.applyChangeOther = function(data) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/apply/other',
-        type: 'post',
-        dataType: 'json',
-        data: data,
-        success: function(result) {
-            //操作成功返回true
-            if(result === true) {
-                Deferred.resolve(result);
-            } else {
-                Deferred.reject(ERROR_MSG);
-            }
-        },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || ERROR_MSG);
-        }
-    });
-    return Deferred.promise();
-};
-
-//申请启用、停用
-exports.salesApplyStatus = function(data) {
-    const ERROR_MSG = Intl.get('user.apply.status.failed', '申请修改开通状态失败');
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/user/apply/status',
         type: 'post',
         dataType: 'json',
         data: data,

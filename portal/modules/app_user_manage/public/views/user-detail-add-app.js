@@ -41,6 +41,7 @@ var Alert = require('antd').Alert;
 var privilegeChecker = require('../../../../components/privilege/checker');
 var AutosizeTextarea = require('../../../../components/autosize-textarea');
 var language = require('../../../../public/language/getLanguage');
+import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
 
 var LAYOUT_CONSTANTS = $.extend({} , AppUserUtil.LAYOUT_CONSTANTS);//右侧面板常量
 LAYOUT_CONSTANTS.BOTTOM_DELTA = 82;
@@ -101,17 +102,13 @@ var UserDetailAddApp = createReactClass({
         //额外信息，批量操作推送过来之后，更新界面使用的数据
         var extra = {};
         var selectedAppId = '';
-        var isSales = privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES);
+        //只有销售批量申请权限时
+        var isSales = privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES) && !privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN);
         //真正提交逻辑
         function submit() {
             //申请修改密码
             if(_this.hasSalesChangePasswordBlock()) {
                 result.remark = _this.state.formData.remark.passwordRemark;
-            }
-            //销售申请修改应用状态
-            if(_this.hasSalesApplyStatusBlock()) {
-                result.status = formData.user_status;
-                result.remark = formData.remark.statusRemark;
             }
             //添加申请延期块
             if(_this.state.multipleSubType === 'grant_delay') {
@@ -124,45 +121,9 @@ var UserDetailAddApp = createReactClass({
                 }
 
                 //向data中添加备注
-                result.remark = _this.state.formData.remark.delayRemark;
+                result.remark = _.get(_this.state, 'formData.remark.delayRemark', '');
                 //到期是否停用
                 result.over_draft = formData.over_draft;
-                //销售的要构造发邮件数据
-                if(isSales){
-                    //申请审批的，需要传入用户名，客户，应用名，发邮件时候使用
-                    //向后端传递email_customer_names,email_app_names,email_user_names，发邮件使用
-                    var appUserList = AppUserStore.getState().appUserList;
-                    //选中的用户
-                    var selectedUsers = _.filter(appUserList , (obj) => {
-                        return userIds.indexOf(obj.user.user_id) >= 0;
-                    });
-                    //客户名 用户名
-                    var email_customer_names = [],
-                        email_user_names = [];
-                    _.each(selectedUsers , (obj) => {
-                        var customer_name = obj.customer.customer_name;
-                        email_customer_names.push(customer_name);
-                        var user_name = obj.user.user_name;
-                        email_user_names.push(user_name);
-                    });
-                    //添加应用名
-                    var email_app_names = [];
-                    var appList = AppUserStore.getState().appList || [];
-                    if (!_.get(appList, 'length') && _.get(ShareObj, 'share_app_list.length')) {
-                        appList = ShareObj.share_app_list;
-                    }
-                    //批量遍历应用，添加应用名
-                    _.each(batchSelectedApps , (app_id) => {
-                        var targetApp = _.find(appList , (item) => app_id === item.app_id);
-                        email_app_names.push(
-                            targetApp ? targetApp.app_name : ''
-                        );
-                    });
-                    //添加邮箱使用的字段
-                    result.email_customer_names = email_customer_names.join('、');
-                    result.email_app_names = email_app_names.join('、');
-                    result.email_user_names = email_user_names.join('、');
-                }
             }
             //添加应用块
             if(_this.hasApplyAppBlock()) {
@@ -291,15 +252,116 @@ var UserDetailAddApp = createReactClass({
         //修改密码要验证表单再提交
         if(this.hasChangePassword()) {
             var validation = this.refs.validation;
-            validation.validate(function(valid) {
+            validation.validate(valid => {
                 if (!valid) {
                     return;
                 }
                 submit();
             });
+        } else if (this.hasDelayTimeBlock()) {//批量延期
+            if (isSales) {//销售，延期申请
+                this.delayApply();
+            } else {//管理员的批量处理
+                submit();
+            }
+        } else if (this.hasSalesApplyStatusBlock()) {//销售，修改开通状态的申请
+            this.editStatusApply();
         } else {
             submit();
         }
+    },
+    //获取选择的用户及其应用相关的数据(多个应用)
+    getSelectedUserMultiAppData() {
+        let batchSelectedApps = this.state.formData.batchSelectedApps;
+        //选中的用户
+        let selectedUsers = this.props.initialUser;
+        //获取选择的用户及其应用相关的数据(多个应用)
+        let appArr = [];
+        _.each(selectedUsers, user => {
+            _.each(user.apps, app => {
+                if (_.indexOf(batchSelectedApps, app.app_id) !== -1) {
+                    appArr.push(({
+                        client_id: app.app_id,
+                        user_id: user.user.user_id,
+                        user_name: user.user.user_name,
+                        nickname: user.user.nick_name,
+                        client_name: app.app_name,
+                        end_date: app.end_time,
+                        begin_date: app.start_time,
+                    }));
+                }
+            });
+        });
+        return appArr;
+    },
+
+    //销售延期申请
+    delayApply() {
+        let formData = this.state.formData || {};
+        let submitObj = {
+            type: APPLY_TYPES.DELAY,
+            remark: _.get(formData, 'remark.delayRemark', '')
+        };
+        let delayObj = {
+            over_draft: Number(formData.over_draft),//到期是否停用
+        };
+        //向data中添加delay字段
+        if (formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
+            delayObj.end_date = formData.delayDeadlineTime;
+        } else {
+            let delayMillis = this.getDelayTimeMillis();
+            delayObj.delay = delayMillis;
+        }
+        //选中的用户
+        //获取选择的用户及其应用相关的数据(多个应用)
+        let appArr = _.map(this.getSelectedUserMultiAppData(), app => {
+            let delayDate = moment(app.end_date).valueOf();
+            if (delayObj.delay) {
+                //到期时间小于当前时间时，在当前时间基础上延期
+                if (delayDate < moment().valueOf()) {
+                    delayDate = moment().add(delayObj.delay, 'ms').valueOf();
+                } else {
+                    delayDate = moment(app.end_date).add(delayObj.delay, 'ms').valueOf();
+                }
+            } else {
+                delayDate = delayObj.end_date;
+            }
+            return {
+                ...delayObj,
+                ...app,
+                end_date: delayDate
+            };
+        });
+        submitObj.data = appArr;
+        UserDetailAddAppAction.applyDelayMultiApp({
+            usePromise: true,
+            data: submitObj
+        });
+    },
+    //销售修改开通状态的申请
+    editStatusApply(){
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '点击确定按钮(申请修改开通状态)');
+        let formData = this.state.formData || {};
+        const data = _.map(this.getSelectedUserMultiAppData(), x => {
+            delete x.end_date;
+            delete x.begin_date;
+            return {
+                ...x,
+                status: formData.user_status
+            };
+        });
+        const submitObj = {
+            type: APPLY_TYPES.DISABLE,
+            remark: this.state.formData.remark.statusRemark,
+            data
+        };
+
+        this.setState({ isApplying: true });
+        //调用申请修改开通状态
+        UserDetailAddAppAction.applyDelayMultiApp({
+            usePromise: true,
+            data: submitObj
+        });
     },
 
     cancel: function() {
@@ -1027,7 +1089,7 @@ var UserDetailAddApp = createReactClass({
         var divWidth = (language.lan() === 'zh') ? '80px' : '74px';
         let label = '';
         if (this.state.formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
-            label = Intl.get(' user.time.end', '到期时间');
+            label = Intl.get('user.time.end', '到期时间');
         } else {
             label = Intl.get('common.delay.time', '延期时间');
         }

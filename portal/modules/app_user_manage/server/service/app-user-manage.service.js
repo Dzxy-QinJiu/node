@@ -6,7 +6,6 @@
 'use strict';
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
-var customersDto = require('../dto/customers');
 var applyDto = require('../dto/apply');
 var replyDto = require('../dto/reply');
 var _ = require('lodash');
@@ -71,16 +70,12 @@ var AppUserRestApis = {
     applyUser: '/rest/base/v1/user/apply_grants',
     //获取客户对应的用户列表
     getCustomerUsers: '/rest/base/v1/user/customer/users',
-    //用户申请延期
-    applyDelayUser: '/rest/base/v1/user/grant/delay',
     //批量用户延期
     batchDelayUser: '/rest/base/v1/user/batch/grant/delay',
     //修改密码
     changePassword: '/rest/base/v1/user/apply/user_password',
     //用户申请修改其他类型
     applyChangeOther: '/rest/base/v1/user/apply/else',
-    //销售申请修改开通状态
-    applyChangeStatus: '/rest/base/v1/user/apply/grant_status',
     //审批用户延期
     approveDelayUser: '/rest/base/v1/user/approve_delay',
     //审批修改密码
@@ -806,15 +801,6 @@ exports.applyUser = function(req, res, requestObj) {
     }, requestObj);
 };
 
-//申请延期
-exports.applyDelayUser = function(req, res, requestObj) {
-    return restUtil.authRest.post({
-        url: AppUserRestApis.applyDelayUser,
-        req: req,
-        res: res
-    }, requestObj);
-};
-
 //批量用户延期
 exports.batchDelayUser = function(req, res, requestObj) {
     return restUtil.authRest.put({
@@ -837,15 +823,6 @@ exports.applyChangePassword = function(req, res, requestObj) {
 exports.applyChangeOther = function(req, res, requestObj) {
     return restUtil.authRest.post({
         url: AppUserRestApis.applyChangeOther,
-        req: req,
-        res: res
-    }, requestObj);
-};
-
-//销售申请修改开通状态
-exports.applyChangeStatus = function(req, res, requestObj) {
-    return restUtil.authRest.post({
-        url: AppUserRestApis.applyChangeStatus,
         req: req,
         res: res
     }, requestObj);

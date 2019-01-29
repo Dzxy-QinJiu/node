@@ -360,7 +360,7 @@ const ApplyUserForm = createReactClass({
                 this.handleCancel();
             }
             else {
-                message.error(Intl.get('common.apply.failed', '申请失败'));
+                message.error(result || Intl.get('common.apply.failed', '申请失败'));
             }
         });
     },
@@ -616,8 +616,12 @@ const ApplyUserForm = createReactClass({
     },
 
     handleChangeApps: function(appIds) {
-        let apps = _.map(appIds, appId => {
-            return _.find(this.props.appList, app => app.client_id === appId);
+        let apps = [];
+        _.each(appIds, appId => {
+            let selectApp = _.find(this.props.appList, app => app.client_id === appId);
+            if (selectApp) {
+                apps.push(selectApp);
+            }
         });
         //获取的应用默认配置列表
         let appDefaultConfigList = this.state.appDefaultConfigList || [];
