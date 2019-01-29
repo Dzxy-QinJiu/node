@@ -117,8 +117,8 @@ export function ifNotSingleApp(conditions) {
     }
 }
 
-//处理开始结束时间和成员id的参数回调函数
-export function argCallbackTimeMember(arg) {
+//查询参数回调函数: 不带下划线的开始结束时间转成带下划线的
+export function argCallbackTimeToUnderlineTime(arg) {
     let query = arg.query;
 
     if (query && query.starttime && query.endtime) {
@@ -127,6 +127,11 @@ export function argCallbackTimeMember(arg) {
         delete query.starttime;
         delete query.endtime;
     }
+}
+
+//处理开始结束时间和成员id的参数回调函数
+export function argCallbackTimeMember(arg) {
+    let query = arg.query;
 
     if (query.member_id) {
         if (query.member_id === 'all') {
@@ -137,6 +142,8 @@ export function argCallbackTimeMember(arg) {
 
         delete query.member_id;
     }
+
+    argCallbackTimeToUnderlineTime(arg);
 }
 
 //处理团队id的参数回调函数

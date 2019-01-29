@@ -2,6 +2,8 @@
  * 行业分布
  */
 
+import { argCallbackTeamId } from '../../utils';
+
 export function getContractIndustryChart() {
     return {
         title: '行业分布',
@@ -15,12 +17,9 @@ export function getContractIndustryChart() {
 
             if (query) {
                 delete query.app_id;
-                
-                if (query.team_ids) {
-                    query.team_id = query.team_ids;
-                    delete query.team_ids;
-                }
             }
+
+            argCallbackTeamId(arg);
         },
     };
 }

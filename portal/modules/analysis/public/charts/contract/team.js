@@ -3,6 +3,7 @@
  */
 
 import { isSales } from '../../consts';
+import { argCallbackTeamId } from '../../utils';
 
 export function getContractTeamChart() {
     return {
@@ -21,12 +22,9 @@ export function getContractTeamChart() {
 
             if (query) {
                 delete query.app_id;
-                
-                if (query.team_ids) {
-                    query.team_id = query.team_ids;
-                    delete query.team_ids;
-                }
             }
+
+            argCallbackTeamId(arg);
         },
     };
 }

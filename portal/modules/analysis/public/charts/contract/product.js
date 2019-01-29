@@ -2,6 +2,8 @@
  * 合同产品分布
  */
 
+import { argCallbackTeamId } from '../../utils';
+
 export function getContractProductChart() {
     return {
         title: '合同产品分布',
@@ -13,11 +15,9 @@ export function getContractProductChart() {
             if (query) {
                 delete query.app_id;
                 
-                if (query.team_ids) {
-                    query.team_id = query.team_ids;
-                    delete query.team_ids;
-                }
             }
+
+            argCallbackTeamId(arg);
         },
         option: {
             columns: [
