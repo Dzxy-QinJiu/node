@@ -96,8 +96,13 @@ class DealForm extends React.Component {
             //需要将预算去掉千分位逗号
             let budget = values.budget ? _.get(values, 'budget', '').replace(/,/g, '') : 0;
             let predictFinishTime = values.predict_finish_time ? moment(values.predict_finish_time).endOf('day').valueOf() : moment().valueOf();
+            let customer_id = _.get(this.state, 'formData.customer.id');
+            if (!customer_id) {
+                this.setState({saveErrorMsg: Intl.get('errorcode.74', '客户不存在')});
+                return;
+            }
             let submitData = {
-                customer_id: _.get(this.state, 'formData.customer.id'),
+                customer_id,
                 //需要将预算去掉千分位逗号
                 budget: budget,
                 apps: values.apps,
@@ -108,8 +113,7 @@ class DealForm extends React.Component {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.button-save'), '保存添加的订单');
             this.setState({
                 isSaving: true,
-                saveMsg: '',
-                saveResult: ''
+                saveErrorMsg: ''
             });
             $.ajax({
                 url: '/rest/deal',
@@ -130,8 +134,8 @@ class DealForm extends React.Component {
                         }
                     }
                 },
-                error: (errorMsg) => {
-                    this.setResultData(errorMsg || Intl.get('crm.154', '添加失败'), 'error');
+                error: (xhr) => {
+                    this.setResultData(xhr.responseJSON || Intl.get('crm.154', '添加失败'), 'error');
                 }
             });
         });
@@ -161,7 +165,8 @@ class DealForm extends React.Component {
         formData.customer.id = selectedCustomer.id;
         formData.customer.name = selectedCustomer.name;
         this.setState({
-            formData: formData
+            formData: formData,
+            saveErrorMsg: ''
         }, () => {
             this.props.form.validateFields(['customer'], {force: true});
         });
@@ -194,7 +199,6 @@ class DealForm extends React.Component {
             wrapperCol: {span: 19},
             colon: false
         };
-        let saveResult = this.state.saveResult;
         const disabledDate = function(current) {
             //不允许选择大于当前的时刻
             return current && current.valueOf() < moment().startOf('day');
