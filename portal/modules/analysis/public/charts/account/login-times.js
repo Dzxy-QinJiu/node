@@ -4,7 +4,7 @@
 
 import { getRangeReqData, ifNotSingleApp, argCallbackTeamId, argCallbackMemberIdToSalesId } from '../../utils';
 
-export function getLoginTimesChart() {
+export function getLoginTimesChart(type = 'all') {
     return {
         title: Intl.get('oplate.user.analysis.loginTimes', '用户在线时间'),
         url: '/rest/analysis/user/v3/:auth_type/online_time/distribution/num',
@@ -16,6 +16,9 @@ export function getLoginTimesChart() {
         conditions: [{
             value: getOnlineTimeReqData(),
             type: 'data',
+        }, {
+            name: 'analysis_type',
+            value: type
         }],
         chartType: 'wordcloud',
         unit: Intl.get('common.label.hours', '小时'),
