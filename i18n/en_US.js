@@ -1290,7 +1290,7 @@ var en_US = {
     'crm.customer.transfer': 'Transfer customer',//转出客户
     'crm.customer.transfer.failed': 'Transfer customer failure',//转出客户失败
     'crm.right.schedule': 'Contact schedule',//联系计划
-    'crm.customer.transfer.sales': 'Sales',//'销售代表',
+    'crm.customer.transfer.sales': 'Sales',//'销售经理',
     'crm.customer.transfer.manager': 'Manager',//'客户经理',
     'crm.sales.customerStage': 'customer stage statistic',//'客户阶段变更统计',
     'crm.sales.newTrailCustomer': 'new customer statistic',//'新开试用、签约客户数统计',

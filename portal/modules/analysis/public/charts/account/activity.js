@@ -2,12 +2,26 @@
  * 活跃度
  */
 
-import { ifNotSingleApp } from '../../utils';
+import { ifNotSingleApp, argCallbackTeamId, argCallbackMemberIdToSalesId } from '../../utils';
 
-export function getActivityChart(type = 'total', title) {
+export function getActivityChart(type, title) {
+    let url;
+
+    if (type === 'new_added') {
+        url = '/rest/analysis/user/v1/:auth_type/new_added/users/activation/:interval';
+    } else if (type === 'expired') {
+        url = '/rest/analysis/user/v1/:auth_type/expired/:app_id/users/activation/:interval';
+    } else {
+        url = '/rest/analysis/user/v1/:auth_type/:app_id/users/activation/:interval';
+    }
+
     return {
         title: title || Intl.get('operation.report.activity', '活跃度'),
-        url: '/rest/analysis/user/v1/:auth_type/:app_id/users/activation/:interval',
+        url,
+        argCallback: arg => {
+            argCallbackTeamId(arg);
+            argCallbackMemberIdToSalesId(arg);
+        },
         chartType: 'line',
         valueField: 'active',
         cardContainer: {

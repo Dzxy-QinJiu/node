@@ -2,16 +2,23 @@
  * 用户访问天数
  */
 
-import { getRangeReqData, ifNotSingleApp } from '../../utils';
+import { getRangeReqData, ifNotSingleApp, argCallbackTeamId, argCallbackMemberIdToSalesId } from '../../utils';
 
-export function getLoginDaysChart() {
+export function getLoginDaysChart(type = 'all') {
     return {
         title: Intl.get('oplate.user.analysis.loginDays', '用户访问天数'),
         url: '/rest/analysis/user/v3/:auth_type/login/day/distribution/num',
+        argCallback: arg => {
+            argCallbackTeamId(arg);
+            argCallbackMemberIdToSalesId(arg);
+        },
         reqType: 'post',
         conditions: [{
             value: getLoginDayNumReqData(),
             type: 'data',
+        }, {
+            name: 'analysis_type',
+            value: type
         }],
         chartType: 'wordcloud',
         unit: Intl.get('common.time.unit.day', '天'),

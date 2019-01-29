@@ -19,18 +19,18 @@ function getCharts() {
         //团队分布统计
         accountChart.getDelayedAccountTeamChart(),
         //设备统计
-        accountChart.getAccountDeviceChart(),
+        accountChart.getAccountDeviceChart('delay'),
         //浏览器统计
-        accountChart.getAccountBrowserChart(),
+        accountChart.getAccountBrowserChart('delay'),
         //用户访问次数
-        accountChart.getLoginCountsChart(),
+        accountChart.getLoginCountsChart('delay'),
         //活跃用户地域统计
-        accountChart.getActiveAreaChart(),
+        accountChart.getActiveAreaChart('delay'),
         //用户访问天数
-        accountChart.getLoginDaysChart(),
+        accountChart.getLoginDaysChart('delay'),
         //用户在线时间
-        accountChart.getLoginTimesChart(),
+        accountChart.getLoginTimesChart('delay'),
         //平均在线时长
-        accountChart.getAverageOnlineTimeChart(),
+        accountChart.getAverageOnlineTimeChart('delay'),
     ];
 }

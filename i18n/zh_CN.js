@@ -1304,7 +1304,7 @@ var zh_CN = {
     'crm.customer.transfer': '转出客户',
     'crm.customer.transfer.failed': '转出客户失败',
     'crm.right.schedule': '联系计划',
-    'crm.customer.transfer.sales': '销售代表',
+    'crm.customer.transfer.sales': '销售经理',
     'crm.customer.transfer.manager': '客户经理',
     'crm.sales.customerStage': '客户阶段变更统计',
     'crm.sales.newTrailCustomer': '新开客户数统计',

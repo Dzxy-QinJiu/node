@@ -27,22 +27,22 @@ function getCharts() {
         //状态统计
         accountChart.getAccountStatusChart('expired'),
         //单应用帐号活跃度趋势
-        accountChart.getActivityChart(),
+        accountChart.getActivityChart('expired'),
         //在线时长统计
-        accountChart.getLoginLongChart(),
+        accountChart.getLoginLongChart('expired'),
         //设备统计
-        accountChart.getAccountDeviceChart(),
+        accountChart.getAccountDeviceChart('expired'),
         //浏览器统计
-        accountChart.getAccountBrowserChart(),
+        accountChart.getAccountBrowserChart('expired'),
         //用户访问次数
-        accountChart.getLoginCountsChart(),
+        accountChart.getLoginCountsChart('expired'),
         //活跃用户地域统计
-        accountChart.getActiveAreaChart(),
+        accountChart.getActiveAreaChart('expired'),
         //用户访问天数
-        accountChart.getLoginDaysChart(),
+        accountChart.getLoginDaysChart('expired'),
         //用户在线时间
-        accountChart.getLoginTimesChart(),
+        accountChart.getLoginTimesChart('expired'),
         //平均在线时长
-        accountChart.getAverageOnlineTimeChart(),
+        accountChart.getAverageOnlineTimeChart('expired'),
     ];
 }

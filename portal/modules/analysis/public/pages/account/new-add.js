@@ -29,7 +29,7 @@ function getCharts() {
         //状态统计
         accountChart.getAccountStatusChart('added'),
         //单应用帐号活跃度趋势
-        accountChart.getActivityChart(),
+        accountChart.getActivityChart('new_added'),
         //帐号天留存统计
         accountChart.getRemainAccountChart('added', '帐号天留存'),
         //帐号周留存统计
@@ -37,19 +37,19 @@ function getCharts() {
         //帐号月留存统计
         accountChart.getRemainAccountChart('added', '帐号月留存'),
         //设备统计
-        accountChart.getAccountDeviceChart(),
+        accountChart.getAccountDeviceChart('add'),
         //浏览器统计
-        accountChart.getAccountBrowserChart(),
+        accountChart.getAccountBrowserChart('add'),
         //用户访问次数
-        accountChart.getLoginCountsChart(),
+        accountChart.getLoginCountsChart('add'),
         //活跃用户地域统计
-        accountChart.getActiveAreaChart(),
+        accountChart.getActiveAreaChart('add'),
         //用户访问天数
-        accountChart.getLoginDaysChart(),
+        accountChart.getLoginDaysChart('add'),
         //用户在线时间
-        accountChart.getLoginTimesChart(),
+        accountChart.getLoginTimesChart('add'),
         //平均在线时长
-        accountChart.getAverageOnlineTimeChart(),
+        accountChart.getAverageOnlineTimeChart('add'),
         //销售开通单应用账号登录统计
         accountChart.getSalesOpenAccountLoginChart(),
     ];

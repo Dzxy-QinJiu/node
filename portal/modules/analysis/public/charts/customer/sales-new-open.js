@@ -2,6 +2,8 @@
  * 销售新开客户数统计
  */
 
+import { argCallbackTeamId } from '../../utils';
+
 export function getSalesNewOpenChart() {
     return {
         title: Intl.get('oplate_customer_analysis.salesNewCustomerCount', '销售新开客户数统计'),
@@ -17,6 +19,8 @@ export function getSalesNewOpenChart() {
                 delete query.starttime;
                 delete query.endtime;
             }
+
+            argCallbackTeamId(arg);
         },
         chartType: 'table',
         option: {

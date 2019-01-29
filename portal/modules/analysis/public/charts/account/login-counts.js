@@ -2,16 +2,23 @@
  * 用户访问次数
  */
 
-import { getRangeReqData, ifNotSingleApp } from '../../utils';
+import { getRangeReqData, ifNotSingleApp, argCallbackTeamId, argCallbackMemberIdToSalesId } from '../../utils';
 
-export function getLoginCountsChart() {
+export function getLoginCountsChart(type = 'all') {
     return {
         title: Intl.get('oplate.user.analysis.loginCounts', '用户访问次数'),
         url: '/rest/analysis/user/v3/:auth_type/logins/distribution/num',
+        argCallback: arg => {
+            argCallbackTeamId(arg);
+            argCallbackMemberIdToSalesId(arg);
+        },
         reqType: 'post',
         conditions: [{
             value: getLoginNumReqData(),
             type: 'data',
+        }, {
+            name: 'analysis_type',
+            value: type
         }],
         chartType: 'wordcloud',
         unit: Intl.get('common.label.times', '次'),

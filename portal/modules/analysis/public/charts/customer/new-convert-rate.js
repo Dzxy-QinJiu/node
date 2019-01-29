@@ -2,6 +2,8 @@
  * 新开客户转化率统计
  */
 
+import { argCallbackTeamId } from '../../utils';
+
 export function getNewCustomerConvertRateChart() {
     return {
         title: '新开客户转化率统计',
@@ -11,6 +13,7 @@ export function getNewCustomerConvertRateChart() {
             valueField: 'showValue',
             minSize: '5%',
         },
+        argCallback: argCallbackTeamId,
         processData: data => {
             const customerStages = [
                 {
