@@ -16,6 +16,9 @@ import userData from '../user-data';
 import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {selectMenuList, APPLY_APPROVE_TYPES, DOCUMENT_TYPE, INTEGRATE_TYPES, REPORT_TYPE,APPLY_FINISH_STATUS} from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
+var timeoutFunc;//定时方法
+var timeout = 1000;//1秒后刷新未读数
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
     let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id === curTeamId);
@@ -600,4 +603,17 @@ exports.formatUsersmanList = function(usersManList) {
         });
     });
     return dataList;
+};
+
+exports.updateUnapprovedCount = function(type,emitterType,updateCount) {
+    if (Oplate && Oplate.unread) {
+        Oplate.unread[type] = updateCount;
+        if (timeoutFunc) {
+            clearTimeout(timeoutFunc);
+        }
+        timeoutFunc = setTimeout(function() {
+            //触发展示的组件待审批数的刷新
+            notificationEmitter.emit(notificationEmitter[emitterType]);
+        }, timeout);
+    }
 };

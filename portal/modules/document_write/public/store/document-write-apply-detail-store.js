@@ -122,10 +122,6 @@ DocumentWriteApplyDetailStore.prototype.setInitialData = function(obj) {
     this.setInitState();
     //指定详情条目
     this.selectedDetailItem = obj;
-    //设置底部类型
-    // this.setBottomDisplayType();
-    //是否是展开状态
-    // this.applyIsExpanded = false;
 };
 //获取审批详情
 DocumentWriteApplyDetailStore.prototype.getApplyDetailById = function(obj) {

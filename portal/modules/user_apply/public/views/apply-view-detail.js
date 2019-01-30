@@ -14,7 +14,6 @@ import Spinner from '../../../../components/spinner';
 import userData from '../../../../public/sources/user-data';
 import GeminiScrollbar from '../../../../components/react-gemini-scrollbar';
 import AppProperty from '../../../../components/user_manage_components/app-property-setting';
-import {Modal} from 'react-bootstrap';
 import {Alert, Tooltip, Form, Button, Input, InputNumber, Select, Icon, message, DatePicker, Row, Col} from 'antd';
 
 const Option = Select.Option;
@@ -35,18 +34,12 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {APPLY_TYPES, userTypeList, TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
-var UserApplyDetailAction = require('../action/apply-view-detail-actions');
+
 /*在审批界面显示用户的右侧面板结束*/
 //默认头像图片
 var DefaultHeadIconImage = require('../../../common/public/image/default-head-icon.png');
-//成功提示
-var AlertTimer = require('../../../../components/alert-timer');
-//用户信息
-var UserData = require('../../../../public/sources/user-data');
-
 // 应用的默认配置
 var UserTypeConfigForm = require('./user-type-config-form');
-var BootstrapButton = require('react-bootstrap').Button;
 import Trace from 'LIB_DIR/trace';
 
 var moment = require('moment');
@@ -2095,7 +2088,7 @@ const ApplyViewDetail = createReactClass({
         });
         this.getApplyDetail(this.props.detailItem);
         //设置这条审批不再展示通过和驳回的按钮
-        UserApplyDetailAction.hideApprovalBtns();
+        ApplyViewDetailActions.hideApprovalBtns();
     },
 
     //我再改改

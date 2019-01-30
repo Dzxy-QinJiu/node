@@ -23,7 +23,7 @@ exports.addNewCandidate = function(req, res) {
 
 exports.getMyUserApplyWorkList = function(req, res) {
     ApplyApproveService.getMyUserApplyWorkList(req, res).on('success', function(data) {
-        if (!data){
+        if (!data || !_.isArray(data.list)){
             data = {
                 list: [],
                 total: 0

@@ -37,6 +37,7 @@ function UserApplyActions() {
                         }
                     });
                     this.dispatch({error: false, loading: false, data: workList});
+                    _.isFunction(callback) && callback(workList.total);
                     return;
                 }
                 getDiffTypeApplyList(this,obj,workList.list);
@@ -73,7 +74,7 @@ function UserApplyActions() {
         });
     };
 }
-function getDiffTypeApplyList(that,queryObj,workListArr,callback) {
+function getDiffTypeApplyList(that,queryObj,workListArr) {
     UserAjax.getApplyList(queryObj).then((data) => {
         scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
         //需要对全部列表进行一下处理，知道哪些是可以审批的
@@ -94,7 +95,6 @@ function getDiffTypeApplyList(that,queryObj,workListArr,callback) {
             }
         });
         that.dispatch({error: false, loading: false, data: data});
-        _.isFunction(callback) && callback(data.total);
     },(errorMsg) => {
         that.dispatch({
             error: true,

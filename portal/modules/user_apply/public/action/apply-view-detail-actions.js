@@ -3,25 +3,8 @@ import UserAjax from '../../../common/public/ajax/user';
 import AppUserUtil from '../util/app-user-util';
 import UserData from '../../../../public/sources/user-data';
 import UserApplyAction from './user-apply-actions';
-var notificationEmitter = require('../../../../public/sources/utils/emitters').notificationEmitter;
-import {message} from 'antd';
-var timeoutFunc;//定时方法
-var timeout = 1000;//1秒后刷新未读数
 import { APPLY_MULTI_TYPE_VALUES } from 'PUB_DIR/sources/utils/consts';
-
-//更新申请的待审批数，通过、驳回、撤销后均减一
-function updateUnapprovedCount() {
-    if (Oplate && Oplate.unread) {
-        Oplate.unread.approve -= 1;
-        if (timeoutFunc) {
-            clearTimeout(timeoutFunc);
-        }
-        timeoutFunc = setTimeout(function() {
-            //触发展示的组件待审批数的刷新
-            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
-        }, timeout);
-    }
-}
+import {updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 class ApplyViewDetailActions {
     constructor() {
         this.generateActions(
@@ -146,7 +129,11 @@ class ApplyViewDetailActions {
                 approval: obj.approval || obj.approval_state, //多用户延期、禁用申请时传的是approval_state,其他申请审批时是approval
                 status: 'success'});
             //刷新用户审批未处理数
-            updateUnapprovedCount();
+            if (Oplate && Oplate.unread) {
+                var count = Oplate.unread.approve - 1;
+                updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
+            }
+
         }, (errorMsg) => {
             //更新选中的申请单类型
             AppUserUtil.emitter.emit('updateSelectedItem', {status: 'error'});
@@ -187,7 +174,10 @@ class ApplyViewDetailActions {
                 this.dispatch({loading: false, error: false});
                 AppUserUtil.emitter.emit('updateSelectedItem', {id: obj.apply_id, approval: '3', status: 'success'});
                 //刷新用户审批未处理数(左侧导航中待审批数)
-                updateUnapprovedCount();
+                if (Oplate && Oplate.unread) {
+                    var count = Oplate.unread.approve - 1;
+                    updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
+                }
             }else{
                 this.dispatch({loading: false, error: true, errorMsg: errTip});
                 AppUserUtil.emitter.emit('updateSelectedItem', {status: 'error'});

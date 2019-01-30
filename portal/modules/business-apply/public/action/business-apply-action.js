@@ -19,7 +19,7 @@ function BusinessApplyActions() {
         'setLastApplyId',
         'setShowUpdateTip'
     );
-    this.getAllApplyList = function(queryObj) {
+    this.getAllApplyList = function(queryObj,callback) {
         // 需要先获取待审批列表，成功后获取全部列表
         this.dispatch({loading: true, error: false});
         if (queryObj.status === 'ongoing' || !queryObj.status){
@@ -35,6 +35,7 @@ function BusinessApplyActions() {
                         }
                     });
                     this.dispatch({error: false, loading: false, data: workList});
+                    _.isFunction(callback) && callback(workList.total);
                     return;
                 }
                 getDiffTypeApplyList(this,queryObj,workList.list);
@@ -95,7 +96,8 @@ function getDiffTypeApplyList(that,queryObj,workListArr) {
                 item.showCancelBtn = true;
             }
         });
-        that.dispatch({error: false, loading: false, data: data});},(errorMsg) => {
+        that.dispatch({error: false, loading: false, data: data});
+    },(errorMsg) => {
         that.dispatch({
             error: true,
             loading: false,

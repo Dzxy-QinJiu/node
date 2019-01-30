@@ -19,22 +19,6 @@ var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavE
 const session = storageUtil.session;
 import {selectMenuList} from 'PUB_DIR/sources/utils/consts';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-var timeoutFunc;//定时方法
-var timeout = 1000;//1秒后刷新未读数
-//更新申请的待审批数
-function updateUnapprovedCount(count) {
-    if (Oplate && Oplate.unread) {
-        Oplate.unread.approve = count;
-        if (timeoutFunc) {
-            clearTimeout(timeoutFunc);
-        }
-        timeoutFunc = setTimeout(function() {
-            //触发展示的组件待审批数的刷新
-            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
-        }, timeout);
-    }
-}
-
 class ApplyTabContent extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -64,7 +48,7 @@ class ApplyTabContent extends React.Component {
             //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
             if (this.state.applyListType === 'false') {
                 //触发更新待审批数
-                updateUnapprovedCount(count);
+                commonMethodUtil.updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
                 // 解决通过或驳回操作失败（后台其实是成功）后的状态更新
                 if(this.state.dealApplyError === 'error'){
                     UserApplyActions.updateDealApplyError('success');
