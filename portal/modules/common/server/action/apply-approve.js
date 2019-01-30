@@ -27,7 +27,7 @@ exports.getMyUserApplyWorkList = function(req, res) {
         if (data && data.list && data.list.length) {
             var applyList = applyDto.toRestObject(data.list || []);
             result.list = applyList;
-            result.data = applyList.length;
+            result.total = applyList.length;
         }
         res.status(200).json(result);
     }).on('error', function(codeMessage) {
