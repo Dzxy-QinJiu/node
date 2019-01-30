@@ -245,6 +245,7 @@ var en_US = {
     'common.product': 'product',//产品
     'common.product.search.placeholder': 'Please enter the product name for search',//请输入产品名进行筛选
     'common.or': 'Or', // 或
+    'common.before': 'Before', // 前
 
     //公共部分--end
     'login.login': 'Login',//登录

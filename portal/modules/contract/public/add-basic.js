@@ -79,13 +79,15 @@ const AddBasic = createReactClass({
                             {...formItemLayout2}
                             label={Intl.get('common.belong.customer', '所属客户')}
                             className="form-item-append-icon-container"
+                            required
                         >
                             {this.renderBelongCustomerField()}
                         </FormItem>
                     )}
                     <FormItem
                         {...formItemLayout}
-                        label={Intl.get( 'contract.valid.term', '有限期限')}
+                        label={Intl.get( 'contract.valid.term', '有效期限')}
+                        required
                     >
                         <Row>
                             <Col span={11}>
@@ -152,10 +154,11 @@ const AddBasic = createReactClass({
                     <FormItem
                         {...formItemLayout2}
                         label={Intl.get('contract.32', '合同份数',)}
+                        required
                     >
                         <Select
                             placeholder="1--10"
-                            value={formData.copy_number}
+                            value={formData.copy_number || copyNumArray[0]}
                             onSelect={this.handleCopyNumberSelect}
                         >
                             {copyNumArray.map(copyNum => {
@@ -174,6 +177,7 @@ const AddBasic = createReactClass({
                         validateStatus={this.getValidateStatus('cost_price')}
                         help={this.getHelpMessage('cost_price')}
                         className="form-item-append-icon-container"
+                        required
                     >
                         <Validator rules={[getNumberValidateRule()]}>
                             <Input
@@ -187,6 +191,7 @@ const AddBasic = createReactClass({
                     <FormItem
                         {...formItemLayout2}
                         label={Intl.get('contract.165', '成本构成')}
+                        required
                     >
                         <CheckboxGroup
                             name="cost_structure"
@@ -201,6 +206,7 @@ const AddBasic = createReactClass({
                         validateStatus={this.getValidateStatus('gross_profit')}
                         help={this.getHelpMessage('gross_profit')}
                         className="form-item-append-icon-container"
+                        required
                     >
                         <Validator rules={[getNumberValidateRule()]}>
                             <Input
@@ -215,6 +221,7 @@ const AddBasic = createReactClass({
                     <FormItem
                         {...formItemLayout2}
                         label={Intl.get('contract.107', '开发票')}
+                        required
                     >
                         <RadioGroup
                             size='small'

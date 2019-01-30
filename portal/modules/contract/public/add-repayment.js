@@ -90,7 +90,7 @@ const AddRepayment = createReactClass({
 
     render: function() {
         //合同额
-        const contractAmount = _.get(this, 'props.parent.refs.addBasic.state.formData.contract_amount');
+        const contractAmount = _.get(this, 'props.rightPanel.refs.addBasic.state.formData.contract_amount');
         //已添加的回款总额
         let repaymentsAmount = 0;
         const repayments = this.state.repayments;
@@ -109,7 +109,7 @@ const AddRepayment = createReactClass({
                         <ul>
                             {this.state.repayments.map((repayment, index) => { return (
                                 <li key={index}>                                    
-                                    {moment(repayment.date).format(oplateConsts.DATE_FORMAT)}前 <i className='iconfont icon-huikuan'></i> {Intl.get('contract.94', '应收金额')}{this.parseAmount(repayment.amount)}{Intl.get('contract.155', '元')}
+                                    {moment(repayment.date).format(oplateConsts.DATE_FORMAT)}{Intl.get('common.before', '前')} <i className='iconfont icon-huikuan'></i> {Intl.get('contract.94', '应收金额')}{this.parseAmount(repayment.amount)}{Intl.get('contract.155', '元')}
                                     <span className="btn-bar"
                                         title={Intl.get('common.delete', '删除')}
                                         onClick={this.deleteRepayment.bind(this, index)}>
@@ -128,7 +128,7 @@ const AddRepayment = createReactClass({
                                 validateStatus={this.getValidateStatus('num')}
                                 help={this.getHelpMessage('num')}
                             >
-                                <Validator rules={[{required: true, message: Intl.get('contract.44', '不能为空')}, {pattern: /^\d+$/, message: Intl.get('contract.45', '请填写数字')}]}>
+                                <Validator rules={[{required: true, message: Intl.get('contract.44', '不能为空')}, getNumberValidateRule()]}>
                                     <Input
                                         name="num"
                                         value={this.state.formData.num}
@@ -144,7 +144,8 @@ const AddRepayment = createReactClass({
                                 <Option key="weeks" value="weeks"><ReactIntl.FormattedMessage id="common.time.unit.week" defaultMessage="周" /></Option>
                                 <Option key="months" value="months"><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月" /></Option>
                             </Select>
-                            内，应收回款
+                            {Intl.get('contract.80', '内')}，
+                            {Intl.get('contract.93', '应收回款')}
                             <FormItem
                                 validateStatus={this.getValidateStatus('amount')}
                                 help={this.getHelpMessage('amount')}

@@ -679,6 +679,11 @@ class Contract extends React.Component {
             this.showRightPanel(addBtnView);
         });
     };
+    handleDeleteDetailCost() {
+        console.log(this.refs.contractRightPanel.refs.detailCost.state);
+        let cost = this.refs.contractRightPanel.refs.detailCost.state.formData;
+        this.refs.contractRightPanel.refs.detailCost.handleSubmit('delete', cost.id);
+    }
     render() {
         //点击添加合同按钮时，默认打开哪个视图
         const addBtnView = this.state.type === VIEW_TYPE.SELL ? 'chooseType' : 'buyForm';
@@ -706,9 +711,19 @@ class Contract extends React.Component {
 
         const isContractView = [VIEW_TYPE.SELL, VIEW_TYPE.BUY].indexOf(this.state.type) > -1;
 
+        let categorys = [];
+        if(this.state.type === VIEW_TYPE.SELL){
+            categorys = CATEGORY.slice(0,CATEGORY.length - 1);
+        }else if(this.state.type === VIEW_TYPE.BUY){
+            categorys = [PRODUCT];
+        }
+
         let showModal = false;
         const rightPaneModelTitle = _.get(this.state.currentContract,'id') ?
-            (this.state.type === VIEW_TYPE.COST ? `${Intl.get('common.update', '修改')}${Intl.get('contract.133', '费用')}` : this.state.currentContract.num) :
+            (this.state.type === VIEW_TYPE.COST ? (<span className='detail-cost-title-container'>
+                <span className='detail-cost-title'>{`${Intl.get('common.update', '修改')}${Intl.get('contract.133', '费用')}`}</span>
+                <span className='detail-cost-delete' title={Intl.get('common.delete', '删除')} onClick={this.handleDeleteDetailCost.bind(this)}><i className='iconfont icon-delete'></i></span>
+            </span>) : this.state.currentContract.num) :
             (showModal = true, this.state.type === VIEW_TYPE.COST ? Intl.get('contract.127', '添加费用') : showModal = true,Intl.get('common.add', '添加') + this.state.contractType);
 
         const rightPanelClass = classNames('contract-panel-v2',['right-panel-' + this.state.type], {'show-modal': showModal});
@@ -765,20 +780,26 @@ class Contract extends React.Component {
                                     check="OPLATE_CONTRACT_ADD"
                                     className="btn-item"
                                 >
-                                    <Dropdown overlay={
-                                        <Menu onClick={this.handleChangeContractType.bind(this, addBtnView)}>
-                                            {
-                                                //此处使用value作为key，是为了在Menu的onCLick中获取点击的值
-                                                CATEGORY.map((x) => (
-                                                    <Menu.Item key={x}>{x}</Menu.Item>
-                                                ))
-                                            }
-                                        </Menu>
-                                    }>
-                                        <Button>
+                                    {this.state.type === VIEW_TYPE.SELL ? (
+                                        <Dropdown overlay={
+                                            <Menu onClick={this.handleChangeContractType.bind(this, addBtnView)}>
+                                                {
+                                                    //此处使用value作为key，是为了在Menu的onCLick中获取点击的值
+                                                    categorys.map((x) => (
+                                                        <Menu.Item key={x}>{x}</Menu.Item>
+                                                    ))
+                                                }
+                                            </Menu>
+                                        }>
+                                            <Button>
+                                                <ReactIntl.FormattedMessage id="contract.98" defaultMessage="添加合同" />
+                                            </Button>
+                                        </Dropdown>
+                                    ) : (
+                                        <Button onClick={this.handleChangeContractType.bind(this, addBtnView,{key: PURCHASE})}>
                                             <ReactIntl.FormattedMessage id="contract.98" defaultMessage="添加合同" />
                                         </Button>
-                                    </Dropdown>
+                                    )}
                                 </PrivilegeChecker>
                             ) : null}
 
@@ -883,6 +904,7 @@ class Contract extends React.Component {
                             title={rightPaneModelTitle}
                             content={this.state.isRightPanelShow ? (
                                 <ContractRightPanel
+                                    ref='contractRightPanel'
                                     view={this.state.rightPanelView}
                                     contract={this.state.currentContract}
                                     appList={this.state.appList}

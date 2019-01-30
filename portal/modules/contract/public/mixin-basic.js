@@ -81,15 +81,19 @@ export default {
     queryCustomer: function(index, keyword) {
         const fieldName = 'belong_customer' + index;
 
-        let state = this.state;
+        let stateObj = {
+            formData: this.state.formData,
+            belongCustomerIsChoosen: this.state.belongCustomerIsChoosen,
+        };
+
 
         //更新输入框内容
-        state.formData.customers[index].customer_name = keyword;
+        stateObj.formData.customers[index].customer_name = keyword;
 
         //将客户状态设为未选择
-        state.belongCustomerIsChoosen[index] = false;
+        stateObj.belongCustomerIsChoosen[index] = false;
 
-        this.setState(state);
+        this.setState(stateObj);
 
         if (queryCustomerTimeout) {
             clearTimeout(queryCustomerTimeout);
@@ -139,6 +143,7 @@ export default {
                 label={Intl.get('contract.24', '合同号')}
                 validateStatus={this.getValidateStatus('num')}
                 help={this.getHelpMessage('num')}
+                required
             >
                 <Validator trigger="onBlur" rules={rules}>
                     <Input
@@ -168,6 +173,7 @@ export default {
                 label={Intl.get('crm.41', '客户名')}
                 validateStatus={this.getValidateStatus('customer_name')}
                 help={this.getHelpMessage('customer_name')}
+                required
             >
                 <Validator rules={[{
                     required: true,
@@ -208,24 +214,32 @@ export default {
         scrollView.scrollTop(scrollHeight);
     },
     addBelongCustomer() {
-        let state = this.state;
+        let {formData,belongCustomerErrMsg,belongCustomerIsChoosen} = this.state;
 
-        state.formData.customers.push({});
-        state.belongCustomerErrMsg.push(''),
-        state.belongCustomerIsChoosen.push(false),
+        formData.customers.push({});
+        belongCustomerErrMsg.push('');
+        belongCustomerIsChoosen.push(false);
 
-        this.setState(state, () => {
-            this.scrollBottom();
+        this.setState({
+            formData,
+            belongCustomerErrMsg,
+            belongCustomerIsChoosen
+        }, () => {
+            // this.scrollBottom();
         });
     },
     deleteBelongCustomer(index) {
-        let state = this.state;
+        let {formData,belongCustomerErrMsg,belongCustomerIsChoosen} = this.state;
 
-        state.formData.customers.splice(index, 1);
-        state.belongCustomerErrMsg.splice(index, 1),
-        state.belongCustomerIsChoosen.splice(index, 1),
+        formData.customers.splice(index, 1);
+        belongCustomerErrMsg.splice(index, 1),
+        belongCustomerIsChoosen.splice(index, 1),
 
-        this.setState(state);
+        this.setState({
+            formData,
+            belongCustomerErrMsg,
+            belongCustomerIsChoosen
+        });
     },
     //渲染所属客户表单项
     renderBelongCustomerField: function(popupContainer = document.getElementById('contractRightPanel')) {
@@ -238,9 +252,10 @@ export default {
 
                     return (
                         <FormItem
-                            key={index}                           
+                            key={index}
                             validateStatus={this.getValidateStatus(fieldName)}
                             help={this.getHelpMessage(fieldName)}
+                            required
                         >
                             <Validator rules={this.getBelongCustomerValidateRules(index)}>
                                 <Select
@@ -282,6 +297,7 @@ export default {
                 label={Intl.get('contract.4', '甲方')}
                 validateStatus={this.getValidateStatus('buyer')}
                 help={this.getHelpMessage('buyer')}
+                required
             >
                 <Validator rules={[{
                     required: true,
@@ -316,14 +332,10 @@ export default {
     },
     renderUserField: function() {
         const userOptions = this.props.userList.map(user => {
-            return <Option key={user.user_id} value={user.user_id}>{user.nick_name}</Option>;
+            return <Option key={user.user_id} value={user.user_id}>{user.nick_name + ' - ' + user.group_name}</Option>;
         });
 
-        const teamOptions = this.props.teamList.map(team => {
-            return <Option key={team.groupId} value={team.groupId}>{team.groupName}</Option>;
-        });
-
-        const validateName = 'user_name';
+        const validateName = 'user_id';
 
         return (
             <FormItem
@@ -331,36 +343,22 @@ export default {
                 label={Intl.get('crm.6', '负责人')}
                 validateStatus={this.getValidateStatus(validateName)}
                 help={this.getHelpMessage(validateName)}
+                required
             >
                 <Validator rules={[{required: true, message: Intl.get('contract.63', '请选择负责人')}]}>
                     <Select
-                        className='ant-select-inline'
+                        // className='ant-select-inline'
                         name={validateName}
-                        combobox
                         showSearch
                         optionFilterProp='children'
                         placeholder={Intl.get('contract.63', '请选择负责人')}
-                        value={this.state.formData.user_name}
-                        onSearch={this.handleInputToState.bind(this, 'user')}
-                        onSelect={this.onUserChoosen}
+                        value={this.state.formData.user_id}
+                        onChange={this.onUserChoosen}
                         notFoundContent={Intl.get('contract.64', '暂无负责人')}
                     >
                         {userOptions}
                     </Select>
                 </Validator>
-                <Select
-                    className='ant-select-inline'
-                    combobox
-                    showSearch
-                    optionFilterProp='children'
-                    placeholder={Intl.get('contract.67', '请选择部门')}
-                    value={this.state.formData.sales_team}
-                    onSearch={this.handleInputToState.bind(this, 'team')}
-                    onSelect={this.onTeamChoosen}
-                    notFoundContent={Intl.get('contract.68', '暂无部门')}
-                >
-                    {teamOptions}
-                </Select>
                 {this.props.isGetUserSuccess ? null : (
                     <div
                         className="no-user-list-tip">{Intl.get('contract.65', '获取负责人列表失败')}，{Intl.get('contract.66', '点击')}<a
@@ -379,6 +377,7 @@ export default {
             <FormItem
                 {...formItemLayout}
                 label={Intl.get('crm.113', '部门')}
+                required
             >
                 <Select
                     combobox
@@ -398,10 +397,7 @@ export default {
     //渲染销售代表表单项
     renderSalesRepField: function() {
         const userOptions = this.props.userList.map(user => {
-            return <Option key={user.user_id} value={user.user_id}>{user.nick_name}</Option>;
-        });
-        const teamOptions = this.props.teamList.map(team => {
-            return <Option key={team.groupId} value={team.groupId}>{team.groupName}</Option>;
+            return <Option key={user.user_id} value={user.user_id}>{user.nick_name + '-' + user.group_name}</Option>;
         });
 
         return (
@@ -410,26 +406,14 @@ export default {
                 label={Intl.get('sales.commission.role.representative', '销售代表')}
             >
                 <Select
-                    className='ant-select-inline'
                     showSearch
                     optionFilterProp='children'
                     placeholder={Intl.get('choose.sales.representative', '请选择销售代表')}
                     value={this.state.formData.sales_rep_id}
-                    onSelect={this.onSalesRepChoosen}
+                    onChange={this.onSalesRepChoosen}
                     notFoundContent={Intl.get('no.sales.representative', '暂无销售代表')}
                 >
                     {userOptions}
-                </Select>
-                <Select
-                    className='ant-select-inline'
-                    showSearch
-                    optionFilterProp='children'
-                    placeholder={Intl.get('member.select.group', '请选择团队')}
-                    value={this.state.formData.sales_rep_team_id}
-                    onSelect={this.onSalesRepTeamChoosen}
-                    notFoundContent={Intl.get('member.no.groups', '暂无团队')}
-                >
-                    {teamOptions}
                 </Select>
             </FormItem>
         );
@@ -466,6 +450,7 @@ export default {
                 validateStatus={this.getValidateStatus('contract_amount')}
                 help={this.getHelpMessage('contract_amount')}
                 className="form-item-append-icon-container"
+                required
             >
                 <Validator rules={[{
                     required: true,
@@ -491,6 +476,7 @@ export default {
             <FormItem
                 {...formItemLayout}
                 label={Intl.get('contract.34', '签订时间')}
+                required
             >
                 <DatePicker
                     value={moment(this.state.formData.date)}
@@ -521,6 +507,7 @@ export default {
             <FormItem
                 {...formItemLayout2}
                 label={Intl.get('contract.36', '合同阶段')}
+                required
             >
                 <RadioGroup
                     size="small"
@@ -557,6 +544,7 @@ export default {
             <FormItem
                 {...formItemLayout2}
                 label={Intl.get('contract.164', '签约类型')}
+                required
             >
                 <RadioGroup
                     size="small"
@@ -585,6 +573,7 @@ export default {
             <FormItem
                 {...formItemLayout2}
                 label={Intl.get('contract.37', '合同类型')}
+                required
             >
                 <Select
                     placeholder={Intl.get('contract.72', '请选择合同类型')}
@@ -636,11 +625,15 @@ export default {
     },
     onUserChoosen: function(value) {
         const selectedUser = _.find(this.props.userList, user => user.user_id === value);
-        this.state.formData.user_id = value;
-        this.state.formData.user_name = selectedUser ? selectedUser.nick_name : '';
-        if (selectedUser && selectedUser.group_id) {
+        let { formData } = this.state;
+        formData.user_id = value;
+        formData.user_name = selectedUser ? selectedUser.nick_name : '';
+        formData.sales_team_id = selectedUser.group_id;
+        formData.sales_team = selectedUser.group_name;
+        this.setState({formData});
+        /*if (selectedUser && selectedUser.group_id) {
             this.onTeamChoosen(selectedUser.group_id);
-        }
+        }*/
     },
     onTeamChoosen: function(value) {
         const selectedTeam = _.find(this.props.teamList, team => team.groupId === value);
@@ -648,17 +641,22 @@ export default {
         this.state.formData.sales_team = selectedTeam.groupName;
         const formDataCopy = JSON.parse(JSON.stringify(this.state.formData));
         this.setState(this.state, () => {
-            this.handleValidate(this.state.status, formDataCopy);
+            // this.handleValidate(this.state.status, formDataCopy);
+            // this.onUserChoosen();
         });
     },
     //处理销售代表变更
     onSalesRepChoosen: function(value) {
         const selectedUser = _.find(this.props.userList, user => user.user_id === value);
-        this.state.formData.sales_rep_id = value;
-        this.state.formData.sales_rep = selectedUser ? selectedUser.nick_name : '';
-        if (selectedUser && selectedUser.group_id) {
+        let {formData} = this.state;
+        formData.sales_rep_id = value;
+        formData.sales_rep = selectedUser ? selectedUser.nick_name : '';
+        formData.sales_rep_team_id = selectedUser.group_id;
+        formData.sales_rep_team = selectedUser.group_name;
+        this.setState({formData});
+        /*if (selectedUser && selectedUser.group_id) {
             this.onSalesRepTeamChoosen(selectedUser.group_id);
-        }
+        }*/
     },
     //处理销售代表所属团队变更
     onSalesRepTeamChoosen: function(value) {
@@ -719,6 +717,7 @@ export default {
                 label={Intl.get('contract.purchase.contract.type', '分类')}
                 validateStatus={this.getValidateStatus('purchase_contract_type')}
                 help={this.getHelpMessage('purchase_contract_type')}
+                required
             >
                 <Validator rules={[{
                     required: true,

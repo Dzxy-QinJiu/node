@@ -21,14 +21,15 @@ const RightPanelCancel = rightPanelUtil.RightPanelCancel;
 const hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 import { DATE_FORMAT, OPERATE, COST_TYPE } from '../consts';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
+import DetailCostBasic from './detail-cost-basic';
 const formItemLayout = {
     labelCol: { span: 4 },
     wrapperCol: { span: 12 },
 };
 
 const formItemLayout2 = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 18 },
+    labelCol: { span: 5 },
+    wrapperCol: { span: 17 },
 };
 
 const DetailCost = createReactClass({
@@ -148,12 +149,14 @@ const DetailCost = createReactClass({
 
     renderUserField: function() {
         const userOptions = this.props.userList.map(user => {
-            return <Option key={user.user_id} value={user.user_id}>{user.nick_name}</Option>;
+            return <Option key={user.user_id} value={user.user_id}>{user.nick_name + ' - ' + user.group_name}</Option>;
         });
 
-        const teamOptions = this.props.teamList.map(team => {
+        /*const teamOptions = this.props.teamList.map(team => {
             return <Option key={team.groupId} value={team.groupId}>{team.groupName}</Option>;
-        });
+        });*/
+
+
 
         return (
             <FormItem 
@@ -161,11 +164,11 @@ const DetailCost = createReactClass({
                 label={Intl.get('user.salesman', '销售人员')}
                 validateStatus={this.getValidateStatus('sales_id')}
                 help={this.getHelpMessage('sales_id')}
+                required
             >
                 {this.state.isFormShow ? (
                     <Validator rules={[{required: true, message: Intl.get('crm.17', '请选择销售人员')}]}>
                         <Select
-                            className='ant-select-inline'
                             name="sales_id"
                             showSearch
                             optionFilterProp="children"
@@ -183,7 +186,7 @@ const DetailCost = createReactClass({
                     </span>
                 )}
 
-                {this.state.isFormShow ? (
+                {/*  {this.state.isFormShow ? (
                     <Select
                         className='ant-select-inline'
                         showSearch
@@ -199,7 +202,7 @@ const DetailCost = createReactClass({
                     <span className="value-text">
                         {this.props.cost.sales_team}
                     </span>
-                )}
+                )}*/}
 
                 {this.props.isGetUserSuccess ? null : (
                     <div className="no-user-list-tip"><ReactIntl.FormattedMessage id="user.get.sales.failed" defaultMessage="获取销售人员列表失败" />，<a href="javascript:void(0)" onClick={this.props.getUserList}><ReactIntl.FormattedMessage id="contract.138" defaultMessage="点击重新获取" /></a></div>
@@ -210,11 +213,13 @@ const DetailCost = createReactClass({
 
     onUserChoosen: function(value) {
         const selectedUser = _.find(this.props.userList, user => user.user_id === value);
-        let state = this.state;
-        state.formData.sales_id = value;
-        state.formData.sales_name = selectedUser.nick_name;
-        this.setState(state);
-        this.onTeamChoosen(selectedUser.group_id);
+        let {formData} = this.state;
+        formData.sales_id = value;
+        formData.sales_name = selectedUser.nick_name;
+        formData.sales_team_id = selectedUser.group_id;
+        formData.sales_team = selectedUser.group_name;
+        this.setState({formData});
+        // this.onTeamChoosen(selectedUser.group_id);
     },
 
     renderTeamField: function() {
@@ -268,6 +273,7 @@ const DetailCost = createReactClass({
                 label={Intl.get('contract.133', '费用')}
                 validateStatus={this.getValidateStatus('cost')}
                 help={this.getHelpMessage('cost')}
+                required
             >
                 {this.state.isFormShow ? (
                     <Validator rules={[{required: true, message: Intl.get('contract.134', '请填写费用')}, getNumberValidateRule()]}>
@@ -297,6 +303,7 @@ const DetailCost = createReactClass({
             <FormItem 
                 {...formItemLayout2}
                 label={Intl.get('common.login.time', '时间')}
+                required
             >
                 {this.state.isFormShow ? (
                     <DatePicker
@@ -324,6 +331,7 @@ const DetailCost = createReactClass({
             <FormItem 
                 {...formItemLayout2}
                 label={Intl.get('contract.135', '费用类型')}
+                required
             >
                 {/*<Select
                     placeholder={Intl.get('contract.136', '请选择费用类型')}
@@ -353,10 +361,49 @@ const DetailCost = createReactClass({
 
     render: function() {
         //编辑按钮是否显示
-        const isEditBtnShow = !this.state.isFormShow && hasPrivilege('OPLATE_SALES_COST_ADD');
+        const isEditBtnShow = hasPrivilege('OPLATE_SALES_COST_ADD');
         const detailOp = this.state.formData.id ? 'update' : 'add';
         return (
             <div className="detail-cost">
+                {
+                    detailOp === 'add' ? (
+                        <Form layout='horizontal' >
+                            <Validation ref="validation" onValidate={this.handleValidate}>
+                                {this.renderUserField()}
+                                {/*{this.renderTeamField()}*/}
+                                {this.renderDateField()}
+                                {this.renderTypeField()}
+                                {this.renderAmountField()}
+                                {this.state.isFormShow ? (
+                                    <Row>
+                                        <Col span="22" className='footer-btn'>
+                                            {/*{this.state.isAdd ? null : (
+                                                <Button type="danger" className="form-detele-btn btn-primary-delete" onClick={this.handleSubmit.bind(this, 'delete', this.props.cost.id)}><ReactIntl.FormattedMessage id="common.delete" defaultMessage="删除" /></Button>
+                                            )}*/}
+                                            <RightPanelSubmit onClick={this.handleSubmit.bind(this, detailOp)}><ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" /></RightPanelSubmit>
+                                            <RightPanelCancel onClick={this.hideForm}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></RightPanelCancel>
+                                        </Col>
+                                    </Row>
+                                ) : null}
+                            </Validation>
+                        </Form>
+                    ) : (
+                        <DetailCostBasic
+                            className='detail-cost-basic'
+                            enableEdit={isEditBtnShow}
+                            cost={this.props.cost}
+                            teamList={this.props.teamList}
+                            userList={this.props.userList}
+                            getUserList={this.props.getUserList}
+                            isGetUserSuccess={this.props.isGetUserSuccess}
+                            showLoading={this.props.showLoading}
+                            hideLoading={this.props.hideLoading}
+                            refreshCurrentContract={this.props.refreshCurrentContract}
+                            deleteContract={this.props.deleteContract}
+                            hideRightPanel={this.props.hideRightPanel}
+                        />
+                    )
+                }
                 {/*{isEditBtnShow ? (
                     <div>
                         <RightPanelEdit 
@@ -367,27 +414,6 @@ const DetailCost = createReactClass({
                         />
                     </div>
                 ) : null}*/}
-
-                <Form layout='horizontal' >
-                    <Validation ref="validation" onValidate={this.handleValidate}>
-                        {this.renderUserField()}
-                        {/*{this.renderTeamField()}*/}
-                        {this.renderDateField()}
-                        {this.renderTypeField()}
-                        {this.renderAmountField()}
-                        {this.state.isFormShow ? (
-                            <Row>
-                                <Col span="22" className='footer-btn'>
-                                    {this.state.isAdd ? null : (
-                                        <Button type="danger" className="form-detele-btn btn-primary-delete" onClick={this.handleSubmit.bind(this, 'delete', this.props.cost.id)}><ReactIntl.FormattedMessage id="common.delete" defaultMessage="删除" /></Button>
-                                    )}
-                                    <RightPanelSubmit onClick={this.handleSubmit.bind(this, detailOp)}><ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" /></RightPanelSubmit>
-                                    <RightPanelCancel onClick={this.hideForm}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></RightPanelCancel>
-                                </Col>
-                            </Row>
-                        ) : null}
-                    </Validation>
-                </Form>
             </div>
         );
     },

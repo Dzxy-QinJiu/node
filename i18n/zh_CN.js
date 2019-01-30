@@ -250,6 +250,7 @@ var zh_CN = {
     'common.product': '产品',
     'common.product.search.placeholder': '请输入产品名进行筛选',
     'common.or': '或',
+    'common.before': '前',
 
     //公共部分--end
     'login.login': '登录',
@@ -1726,7 +1727,7 @@ var zh_CN = {
     'contract.edit.error': '修改合同失败',
     'contract.delete.error': '删除合同失败',
     'contract.add.error': '添加合同失败',
-    'contract.valid.term': '有限期限',
+    'contract.valid.term': '有效期限',
     // 销售提成start
     'sales.commission.sale.name': '销售名',
     'sales.commission.standard': '达标',
