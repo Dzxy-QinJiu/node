@@ -524,7 +524,7 @@ class RecentLoginUsers extends React.Component {
         return (
             <div className="recent_login_header-wrap">
                 <ButtonZones>
-                    <div className="recent_login_header">
+                    <div className="btn-item-container">
                         <div className="inline-block recent-login-time-select btn-item">
                             <DatePicker
                                 disableDateAfterToday={true}

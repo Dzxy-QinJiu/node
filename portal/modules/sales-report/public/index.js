@@ -222,6 +222,7 @@ class SalesReport extends React.Component {
                         style={{width: 100}}
                         value={currentMember.user_id}
                         onChange={this.onMemberChange}
+                        className="btn-item"
                     >
                         {_.map(memberList, (memberItem, index) => {
                             return <Option key={index} value={memberItem.user_id}>{memberItem.nick_name}</Option>;
@@ -232,7 +233,9 @@ class SalesReport extends React.Component {
                 <AntcDatePicker
                     disableDateAfterToday={true}
                     range='week'
-                    onSelect={this.onDateChange}>
+                    onSelect={this.onDateChange}
+                    className="btn-item"
+                >
                     <AntcDatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</AntcDatePicker.Option>
                     <AntcDatePicker.Option
                         value="day">{Intl.get('common.time.unit.day', '天')}</AntcDatePicker.Option>

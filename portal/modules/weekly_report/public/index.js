@@ -92,7 +92,7 @@ class WeeklyReport extends React.Component {
         let teamList = _.get(this.state, 'teamList.list') || [];
         if (teamList.length > 1) {
             return (
-                <div className='report-team-select-container'>
+                <div className='btn-item report-team-select-container'>
                     <SelectFullWidth
                         value={this.state.selectedTeamId}
                         onChange={this.onTeamChange.bind(this)}
@@ -127,7 +127,7 @@ class WeeklyReport extends React.Component {
 
     renderWeekSelect = () => {
         return (
-            <div className='report-time-container'>
+            <div className='btn-item report-time-container'>
                 <NatureTimeSelect onChangeYear={this.onChangeYear}
                     onChangeWeek={this.onChangeWeek}
                     showTimeTypeSelect={false}
@@ -140,9 +140,9 @@ class WeeklyReport extends React.Component {
     //渲染操作按钮区
     renderTopNavOperation = () => {
         return (<ButtonZones>
-            <div className='weekly-report-operation-area'>
-                {this.renderWeekSelect()}
+            <div className='btn-item-container'>
                 {this.renderTeamSelect()}
+                {this.renderWeekSelect()}
             </div>
         </ButtonZones>
         );

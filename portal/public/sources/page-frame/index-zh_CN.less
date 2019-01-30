@@ -147,6 +147,7 @@ body.macintosh pre {
     margin-left: 0 !important;
     button,
     .ant-select-selection,
+    .ant-input-number,
     .range-datepicker {
         line-height: @btn-height !important;
         font-size: @btn-font-size;
@@ -158,6 +159,17 @@ body.macintosh pre {
             color: white;
         }
     }
+    .ant-input-number {
+        min-width: auto;
+        .ant-input-number-input {
+            color: @btn-font-color;
+        }
+    }
+    .ant-calendar-picker-input {
+        height: @btn-height;
+        color: @btn-font-color;
+        font-size: @btn-font-size;
+    }
     .ant-select-selection {
         .ant-select-selection__rendered {
             line-height: @btn-height;
@@ -166,6 +178,17 @@ body.macintosh pre {
             }
             .ant-select-selection-selected-value {
                 padding-top: 0;
+            }
+        }
+    }
+    .ant-select-selection--multiple {
+        ul {
+            .ant-select-selection__choice {
+                background: none;
+                height: 32px;
+                line-height: 32px;
+                margin-top: 0;
+                color: #8da8c5;
             }
         }
     }
