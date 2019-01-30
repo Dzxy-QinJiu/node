@@ -80,9 +80,13 @@ class TopBar extends React.Component {
         this.setState({filterType: type});
 
         if (type === 'team') {
-            teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, '');
+            const selectedTeam = this.state.selectedTeam;
+            const teamIdStr = _.isEqual(selectedTeam, ['all']) ? '' : selectedTeam.join(',');
+            teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamIdStr);
         } else {
-            teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, 'all');
+            const selectedMember = this.state.selectedMember;
+            const memberIdStr = _.isEqual(selectedMember, ['all']) ? '' : selectedMember.join(',');
+            teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, memberIdStr);
         }
     };
 
