@@ -23,7 +23,6 @@ import UserNameTextField from '../../../../components/user_manage_components/use
 import UserNameTextfieldUtil from '../../../../components/user_manage_components/user-name-textfield/util';
 
 const FormItem = Form.Item;
-import {Table} from 'react-bootstrap';
 import classNames from 'classnames';
 import {hasPrivilege, PrivilegeChecker} from '../../../../components/privilege/checker';
 /*在审批界面显示用户的右侧面板开始*/
@@ -36,7 +35,7 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {APPLY_TYPES, userTypeList, TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
-
+var UserApplyDetailAction = require('../action/apply-view-detail-actions');
 /*在审批界面显示用户的右侧面板结束*/
 //默认头像图片
 var DefaultHeadIconImage = require('../../../common/public/image/default-head-icon.png');
@@ -213,8 +212,6 @@ const ApplyViewDetail = createReactClass({
             if ((!this.state.applyResult.submitResult && !this.state.backApplyResult.submitResult) || nextProps.detailItem.id !== this.props.detailItem.id) {
                 this.getApplyDetail(nextProps.detailItem);
             }
-
-
         }
     },
 
@@ -1802,7 +1799,7 @@ const ApplyViewDetail = createReactClass({
                 viewApprovalResult={this.viewApprovalResult}
                 approveError={approveError}
                 applyResultErrorMsg={applyResultErrorMsg}
-                reSendApproval={typeObj.deleteFunction}
+                reSendApproval={this.continueSubmit}
                 cancelSendApproval={this.cancelSendApproval.bind(this, confirmType)}
                 container={this}
             />;
@@ -1815,10 +1812,7 @@ const ApplyViewDetail = createReactClass({
         var detailInfoObj = this.state.detailInfoObj.info;
         var showBackoutApply = detailInfoObj.presenter_id === userData.getUserData().user_id;
         //是否显示通过驳回
-        var isRealmAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ||
-            userData.hasRole(userData.ROLE_CONSTANS.REALM_OWNER) ||
-            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
-            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
+        var isRealmAdmin = detailInfoObj.showApproveBtn;
         //是否审批
         let isConsumed = !this.isUnApproved();
         return (
@@ -2100,6 +2094,8 @@ const ApplyViewDetail = createReactClass({
             showBackoutConfirmType: ''
         });
         this.getApplyDetail(this.props.detailItem);
+        //设置这条审批不再展示通过和驳回的按钮
+        UserApplyDetailAction.hideApprovalBtns();
     },
 
     //我再改改

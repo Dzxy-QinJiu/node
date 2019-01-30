@@ -24,15 +24,6 @@ LeaveApplyStore.prototype.setInitState = function() {
         errorMsg: ''
     };
     this.lastApplyId = '';
-    //由我审批的出差申请列表
-    this.workListApplyObj = {
-        // "" loading error
-        loadingResult: 'loading',
-        //获取的列表
-        list: [],
-        //错误信息
-        errorMsg: ''
-    };
     //由我发起的请假申请
     this.selfApplyList = {
         // "" loading error
@@ -63,24 +54,13 @@ LeaveApplyStore.prototype.getAllLeaveApplyList = function(obj) {
     if (obj.loading) {
         this.applyListObj.loadingResult = 'loading';
         this.applyListObj.errorMsg = '';
-        this.workListApplyObj.errorMsg = '';
     } else if (obj.error) {
         this.applyListObj.loadingResult = 'error';
-        //优先展示我的审批列表获取错误的信息
-        this.applyListObj.errorMsg = obj.worklistErrMsg || obj.errorMsg;
-        if (obj.worklistErrMsg){
-            this.workListApplyObj.loadingResult = 'error';
-            this.workListApplyObj.errorMsg = obj.worklistErrMsg;
-            this.workListApplyObj.list = [];
-        }
+        this.applyListObj.errorMsg = obj.errMsg;
         //获取由我审批的
         if (!this.lastApplyId) {
             this.clearData();
         }
-    } else if (_.isArray(_.get(obj,'workList.list'))) {
-        this.workListApplyObj.list = _.get(obj,'workList.list');
-        this.workListApplyObj.loadingResult = '';
-        this.workListApplyObj.errorMsg = '';
     } else {
         //由我审批的申请列表
         this.applyListObj.loadingResult = '';

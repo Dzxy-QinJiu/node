@@ -2694,5 +2694,6 @@ var en_US = {
     'apply.will.approve.apply.item': 'Pending person',//待审批人
     'apply.no.relate.user': 'No related members',//无相关成员
     'apply.approve.transfer.failed': 'Failed to transfer apply',//转出申请失败
+    'apply.approve.no.comment': 'There is no reply content!'//暂无回复内容！
 };
 export default en_US;

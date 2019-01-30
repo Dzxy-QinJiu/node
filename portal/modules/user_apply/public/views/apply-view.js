@@ -17,7 +17,8 @@ var NoMoreDataTip = require('../../../../components/no_more_data_tip');
 import {SearchInput} from 'antc';
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
 const session = storageUtil.session;
-
+import {selectMenuList} from 'PUB_DIR/sources/utils/consts';
+import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 //更新申请的待审批数
@@ -318,7 +319,7 @@ class ApplyTabContent extends React.Component {
             case 'all':
                 return Intl.get('user.apply.all', '全部申请');
             case 'false':
-                return Intl.get('user.apply.false', '待审批');
+                return Intl.get('leave.apply.my.worklist.apply', '待我审批');
             case 'pass':
                 return Intl.get('user.apply.pass', '已通过');
             case 'reject':
@@ -337,7 +338,7 @@ class ApplyTabContent extends React.Component {
         } else if (obj.key === 'pass') {
             selectType = Intl.get('user.apply.pass', '已通过');
         } else if (obj.key === 'false') {
-            selectType = Intl.get('user.apply.false', '待审批');
+            selectType = Intl.get('leave.apply.my.worklist.apply', '待我审批');
         } else if (obj.key === 'reject') {
             selectType = Intl.get('user.apply.reject', '已驳回');
         } else if (obj.key === 'cancel') {
@@ -399,13 +400,13 @@ class ApplyTabContent extends React.Component {
         } else {
             // 筛选菜单
             var menuList = (
-                UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? null : (
+                (
                     <Menu onClick={this.menuClick} className="apply-filter-menu-list">
                         <Menu.Item key="all">
                             <a href="javascript:void(0)">{Intl.get('user.apply.all', '全部申请')}</a>
                         </Menu.Item>
                         <Menu.Item key="false">
-                            <a href="javascript:void(0)">{Intl.get('user.apply.false', '待审批')}</a>
+                            <a href="javascript:void(0)">{Intl.get('leave.apply.my.worklist.apply', '待我审批')}</a>
                         </Menu.Item>
                         <Menu.Item key="pass">
                             <a href="javascript:void(0)">{Intl.get('user.apply.pass', '已通过')}</a>
@@ -419,6 +420,7 @@ class ApplyTabContent extends React.Component {
                     </Menu>
                 )
             );
+
             let unreadReplyList = this.state.unreadReplyList;
             let applyListType = this.state.applyListType;
             //是否展示有未读申请的提示，后端推送过来的未读回复列表中有数据，并且是在全部类型下可展示，其他待审批、已通过等类型下不展示
@@ -517,7 +519,7 @@ class ApplyTabContent extends React.Component {
         }
         var applyType = '';
         if (this.state.applyListType === 'false') {
-            applyType = Intl.get('user.apply.false', '待审批');
+            applyType = Intl.get('leave.apply.my.worklist.apply', '待我审批');
         } else if (this.state.applyListType === 'pass') {
             applyType = Intl.get('user.apply.pass', '已通过');
         } else if (this.state.applyListType === 'reject') {

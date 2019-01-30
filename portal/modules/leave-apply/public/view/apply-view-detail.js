@@ -31,8 +31,7 @@ const salesmanAjax = require('MOD_DIR/common/public/ajax/salesman');
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import AlertTimer from 'CMP_DIR/alert-timer';
-import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 class ApplyViewDetail extends React.Component {
@@ -229,7 +228,7 @@ class ApplyViewDetail extends React.Component {
             LeaveApplyDetailAction.setInitialData(detailItem);
             //如果申请的状态是已通过或者是已驳回的时候，就不用发请求获取回复列表，直接用详情中的回复列表
             //其他状态需要发请求请求回复列表
-            if (detailItem.status === 'pass' || detailItem.status === 'reject') {
+            if (APPLY_FINISH_STATUS.includes(detailItem.status)) {
                 LeaveApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
                 LeaveApplyDetailAction.getLeaveApplyDetailById({id: detailItem.id}, detailItem.status);
             } else if (detailItem.id) {
@@ -237,7 +236,7 @@ class ApplyViewDetail extends React.Component {
                 LeaveApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
                 //根据申请的id获取申请的状态
                 LeaveApplyDetailAction.getLeaveApplyStatusById({id: detailItem.id});
-                LeaveApplyDetailAction.getNextCandidate({id: detailItem.id});
+                LeaveApplyDetailAction.getNextCandidate({id: ''});
             }
         });
     }
@@ -246,7 +245,7 @@ class ApplyViewDetail extends React.Component {
     refreshReplyList = (e) => {
         Trace.traceEvent(e, '点击了重新获取');
         var detailItem = this.props.detailItem;
-        if (detailItem.status === 'pass' || detailItem.state === 'reject') {
+        if (APPLY_FINISH_STATUS.includes(detailItem.status)) {
             LeaveApplyDetailAction.setApplyComment(detailItem.approve_details);
         } else if (detailItem.id) {
             LeaveApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
@@ -427,7 +426,7 @@ class ApplyViewDetail extends React.Component {
     renderDetailBottom() {
         var detailInfoObj = this.state.detailInfoObj.info;
         //是否审批
-        let isConsumed = detailInfoObj.status === 'pass' || detailInfoObj.status === 'reject';
+        let isConsumed = APPLY_FINISH_STATUS.includes(detailInfoObj.status);
         var userName = _.last(_.get(detailInfoObj, 'approve_details')) ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name : '' : '';
         var approvalDes = getApplyResultDscr(detailInfoObj);
         var renderAssigenedContext = null;
@@ -630,10 +629,12 @@ class ApplyViewDetail extends React.Component {
 ApplyViewDetail.defaultProps = {
     detailItem: {},
     showNoData: false,
+    applyListType: ''
 
 };
 ApplyViewDetail.propTypes = {
     detailItem: PropTypes.string,
-    showNoData: PropTypes.boolean
+    showNoData: PropTypes.boolean,
+    applyListType: PropTypes.string,
 };
 module.exports = ApplyViewDetail;

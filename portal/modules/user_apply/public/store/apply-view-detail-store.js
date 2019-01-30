@@ -235,7 +235,14 @@ class ApplyViewDetailStore {
                     this.formData.end_date = info.apps[0].end_date;
                 }
             }
+            this.detailInfoObj.info.showApproveBtn = this.selectedDetailItem.showApproveBtn;
+            this.detailInfoObj.info.showCancelBtn = this.selectedDetailItem.showCancelBtn;
+
         }
+    }
+    hideApprovalBtns() {
+        this.selectedDetailItem.showApproveBtn = false;
+        this.selectedDetailItem.showCancelBtn = false;
     }
     saleBackoutApply(resultObj){
         if (resultObj.loading){

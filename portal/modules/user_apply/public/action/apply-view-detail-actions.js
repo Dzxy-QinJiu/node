@@ -79,6 +79,7 @@ class ApplyViewDetailActions {
             // 将延期时间设置为截止时间（具体到xx年xx月xx日）
             'setDelayDeadlineTime',
             'setBottomDisplayType',
+            'hideApprovalBtns',//审批完后不在显示审批按钮
         );
     }
 

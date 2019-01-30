@@ -6,6 +6,7 @@
 import {Input, Icon, Alert} from 'antd';
 require('./index.less');
 import {getApplyResultDscr,getReportSendApplyStatusTimeLineDesc} from 'PUB_DIR/sources/utils/common-method-util';
+import {APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 const UserData = require('PUB_DIR/sources/user-data');
 class ApplyDetailRemarks extends React.Component {
     constructor(props) {
@@ -64,7 +65,9 @@ class ApplyDetailRemarks extends React.Component {
                             </li>);
                     })}
                 </ul>);
-        } else {
+        } else if (this.getApplyFinishedStatus()){
+            return Intl.get('apply.approve.no.comment','暂无回复内容！');
+        }else {
             return null;
         }
     }
@@ -83,6 +86,10 @@ class ApplyDetailRemarks extends React.Component {
         }
         return null;
     }
+    getApplyFinishedStatus = () => {
+        let detailInfo = this.state.detailInfo;
+        return APPLY_FINISH_STATUS.includes(detailInfo.status);
+    };
 
     render(){
         let detailInfo = this.state.detailInfo;
@@ -95,7 +102,8 @@ class ApplyDetailRemarks extends React.Component {
                     <div className="reply-list-container apply-info-content">
                         {this.renderReplyList()}
                         {/*已经通过和驳回的申请，不能再添加回复了*/}
-                        {detailInfo.status === 'pass' || detailInfo.status === 'reject' ? null :
+                        {this.getApplyFinishedStatus() ?
+                            null :
                             <Input addonAfter={(
                                 <a onClick={this.props.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}
                             value={this.state.replyFormInfo.comment}

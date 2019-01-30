@@ -21,7 +21,7 @@ import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
 import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc, getFilterReplyList,handleDiffTypeApply,getReportSendApplyStatusTimeLineDesc,getDocumentReportTypeText,formatUsersmanList} from 'PUB_DIR/sources/utils/common-method-util';
-import {DOCUMENT_TYPE,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
+import {DOCUMENT_TYPE,TOP_NAV_HEIGHT,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
@@ -236,7 +236,7 @@ class ApplyViewDetail extends React.Component {
             DocumentWriteApplyDetailAction.setInitialData(detailItem);
             //如果申请的状态是已通过或者是已驳回的时候，就不用发请求获取回复列表，直接用详情中的回复列表
             //其他状态需要发请求请求回复列表
-            if (detailItem.status === 'pass' || detailItem.status === 'reject') {
+            if (APPLY_FINISH_STATUS.includes(detailItem.status)) {
                 DocumentWriteApplyDetailAction.getApplyCommentList({id: detailItem.id});
                 DocumentWriteApplyDetailAction.getApplyDetailById({id: detailItem.id}, detailItem.status);
             } else if (detailItem.id) {
@@ -253,7 +253,7 @@ class ApplyViewDetail extends React.Component {
     refreshReplyList = (e) => {
         Trace.traceEvent(e, '点击了重新获取');
         var detailItem = this.props.detailItem;
-        if (detailItem.status === 'pass' || detailItem.state === 'reject') {
+        if (APPLY_FINISH_STATUS.includes(detailItem.status)) {
             DocumentWriteApplyDetailAction.setApplyComment(detailItem.approve_details);
         } else if (detailItem.id) {
             DocumentWriteApplyDetailAction.getApplyCommentList({id: detailItem.id});
@@ -437,7 +437,7 @@ class ApplyViewDetail extends React.Component {
     renderDetailBottom() {
         var detailInfoObj = this.state.detailInfoObj.info;
         //是否审批
-        let isConsumed = detailInfoObj.status === 'pass' || detailInfoObj.status === 'reject';
+        let isConsumed = APPLY_FINISH_STATUS.includes(detailInfoObj.status);
         var userName = _.last(_.get(detailInfoObj, 'approve_details')) ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name : '' : '';
         var approvalDes = getApplyResultDscr(detailInfoObj);
         var renderAssigenedContext = null,passText = '',showApproveBtn = detailInfoObj.showApproveBtn;
@@ -720,10 +720,12 @@ class ApplyViewDetail extends React.Component {
 ApplyViewDetail.defaultProps = {
     detailItem: {},
     showNoData: false,
+    applyListType: ''
 
 };
 ApplyViewDetail.propTypes = {
     detailItem: PropTypes.string,
-    showNoData: PropTypes.boolean
+    showNoData: PropTypes.boolean,
+    applyListType: PropTypes.string,
 };
 module.exports = ApplyViewDetail;

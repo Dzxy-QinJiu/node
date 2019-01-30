@@ -14,7 +14,7 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import userData from '../user-data';
 import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import {selectMenuList, APPLY_APPROVE_TYPES, DOCUMENT_TYPE, INTEGRATE_TYPES, REPORT_TYPE} from './consts';
+import {selectMenuList, APPLY_APPROVE_TYPES, DOCUMENT_TYPE, INTEGRATE_TYPES, REPORT_TYPE,APPLY_FINISH_STATUS} from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -502,7 +502,7 @@ exports.getFilterReplyList = function(thisState) {
     //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据
     var applicantList = _.get(thisState, 'detailInfoObj.info');
     var replyList = [];
-    if ((['pass', 'reject', 'cancel'].includes(applicantList.status)) && _.isArray(_.get(thisState, 'detailInfoObj.info.approve_details'))){
+    if ((APPLY_FINISH_STATUS.includes(applicantList.status)) && _.isArray(_.get(thisState, 'detailInfoObj.info.approve_details'))){
         replyList = _.get(thisState, 'detailInfoObj.info.approve_details');
     }else{
         replyList = _.get(thisState,'replyListInfo.list');
@@ -583,7 +583,7 @@ exports.renderClueStatus = function(status) {
             break;
     }
     return statusDes;
-}
+};
 
 //是否是oplate用户，只有oplate的用户才可以进行添加、申请等操作
 exports.isOplateUser = function() {

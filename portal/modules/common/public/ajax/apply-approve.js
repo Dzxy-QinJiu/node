@@ -6,9 +6,13 @@
 var trans = $.ajaxTrans();
 trans.register('candidateList', {url: '/rest/get/apply/next/candidate', type: 'get'});
 trans.register('transferNextCandidate', {url: '/rest/add/apply/new/candidate', type: 'post'});
+trans.register('getMyUserApplyWorkList', {url: '/rest/get/userapply/worklist', type: 'get'});
 exports.getNextCandidate = function(reqParams) {
     return trans.getAjax('candidateList', reqParams);
 };
 exports.transferNextCandidate = function(reqParams) {
     return trans.getAjax('transferNextCandidate', reqParams);
+};
+exports.getMyUserApplyWorkList = function(reqParams) {
+    return trans.getAjax('getMyUserApplyWorkList', reqParams);
 };
