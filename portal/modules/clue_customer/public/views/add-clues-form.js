@@ -184,7 +184,12 @@ class ClueAddForm extends React.Component {
                     //线索客户添加成功后的回调
                     _.isFunction(this.props.afterAddSalesClue) && this.props.afterAddSalesClue();
                 } else {
-                    this.setResultData(Intl.get('crm.154', '添加失败'), 'error');
+                    var errTip = Intl.get('crm.154', '添加失败');
+                    if (_.isString(data.msg) && _.isArray(data.result) && data.result.length){
+                        var phone = _.get(data, 'result[0].phones',[]);
+                        errTip = Intl.get('clue.manage.has.exist.clue','线索名为{name}，联系电话为{phone}的线索已存在！',{name: _.get(data, 'result[0].name',''),phone: phone.join(',')});
+                    }
+                    this.setResultData(errTip, 'error');
                 }
             }, errorMsg => {
                 //添加失败
