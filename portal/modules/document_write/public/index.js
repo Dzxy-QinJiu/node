@@ -104,7 +104,13 @@ class DocumentWriteApplyManagement extends React.Component {
     //获取全部申请
     getAllApplyList = () => {
         var queryObj = this.getQueryParams();
-        DocumentWriteApplyAction.getAllApplyList(queryObj);
+        DocumentWriteApplyAction.getAllApplyList(queryObj,(count) => {
+            //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
+            if (this.state.applyListType === 'ongoing') {
+                //触发更新待审批数
+                commonMethodUtil.updateUnapprovedCount('unhandleDocumentWrite','SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
+            }
+        });
     };
 
     //获取自己发起的申请

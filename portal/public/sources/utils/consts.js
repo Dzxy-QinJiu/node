@@ -438,3 +438,4 @@ export const APPLY_TYPE_STATUS_CONST = {
 export const ORGANIZATION_TYPE = {
     EEFUNG: '36v8tudu9Z', // 蚁坊
 };
+export const APPLY_FINISH_STATUS = ['pass', 'reject', 'cancel'];

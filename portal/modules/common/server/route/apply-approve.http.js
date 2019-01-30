@@ -21,4 +21,11 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    },{
+        'method': 'get',
+        'path': '/rest/get/userapply/worklist',
+        'handler': 'getMyUserApplyWorkList',
+        'passport': {
+            'needLogin': true
+        }
     }]};

@@ -21,3 +21,12 @@ exports.addNewCandidate = function(req, res) {
             res: res
         }, req.body);
 };
+//待我审批的用户列表
+exports.getMyUserApplyWorkList = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: '/rest/base/v1/message/applylist/worklist',
+            req: req,
+            res: res
+        }, null);
+};

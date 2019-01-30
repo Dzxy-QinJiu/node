@@ -145,10 +145,7 @@ module.exports = {
         'handler': 'submitApply',
         'passport': {
             'needLogin': true
-        },
-        'privileges': [
-            'APP_USER_APPLY_APPROVAL'//审批用户审批
-        ]
+        }
     },
     {
         'method': 'post',

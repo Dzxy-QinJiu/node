@@ -10,7 +10,7 @@ var NotificationRestApis = {
     //获取客户提醒、申请消息未读数
     getUnreadCount: '/rest/base/v1/message/notice/unread',
     //获取申请的待审批数
-    getUnapprovedCount: '/rest/base/v1/message/applylist?page_size=0&approval_state=false',
+    getUnapprovedCount: '/rest/base/v1/message/applylist/worklist',
     //获取系统消息列表(未处理)
     getUnHandledSystemNotices: '/rest/base/v1/notice/customernotice/grouping',
     //获取系统消息列表(已处理)

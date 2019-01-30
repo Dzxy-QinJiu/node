@@ -1,5 +1,7 @@
 var UserAjax = require('../ajax/app-user-ajax');
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
+let userData = require('PUB_DIR/sources/user-data');
+import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 /**
  * 用户审批界面使用的action
  */
@@ -21,14 +23,35 @@ function UserApplyActions() {
     //获取申请列表
     this.getApplyList = function(obj, callback) {
         this.dispatch({loading: true, error: false});
-        var _this = this;
-        UserAjax.getApplyList(obj).then(function(data) {
-            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            _this.dispatch({loading: false, error: false, data: data});
-            (typeof callback === 'function') && callback(data.total);
-        }, function(errorMsg) {
-            _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
+        if (['all','false'].includes(obj.approval_state)){
+            ApplyApproveAjax.getMyUserApplyWorkList().sendRequest({}).success((workList) => {
+                //如果是待我审批的列表，不需要在发获取全部列表的请求了
+                if (obj.approval_state && obj.approval_state === 'false') {
+                    //需要对全部列表都加一个可以审批的属性
+                    workList.total = workList.list.length;
+                    _.forEach(workList.list, (workItem) => {
+                        workItem.showApproveBtn = true;
+                        //如果是我申请的，除了可以审批之外，我也可以撤回
+                        if (_.get(workItem, 'applicant.user_id') === userData.getUserData().user_id) {
+                            workItem.showCancelBtn = true;
+                        }
+                    });
+                    this.dispatch({error: false, loading: false, data: workList});
+                    _.isFunction(callback) && callback(workList.total);
+                    return;
+                }
+                getDiffTypeApplyList(this,obj,workList.list);
+            }).error(errMsg => {
+                this.dispatch({
+                    error: true,
+                    loading: false,
+                    errorMsg: errMsg || Intl.get('apply.failed.get.my.worklist.application', '获取由我审批的{type}申请失败', {type: Intl.get('crm.detail.user', '用户')})
+                });
+            }
+            );
+        }else{
+            getDiffTypeApplyList(this,obj);
+        }
     };
     //根据id获取申请
     this.getApplyById = function(applyId) {
@@ -50,6 +73,34 @@ function UserApplyActions() {
             cb(errorMsg);
         });
     };
+}
+function getDiffTypeApplyList(that,queryObj,workListArr) {
+    UserAjax.getApplyList(queryObj).then((data) => {
+        scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+        //需要对全部列表进行一下处理，知道哪些是可以审批的
+        if (_.isArray(workListArr) && workListArr.length){
+            _.forEach(workListArr,(item) => {
+                var targetObj = _.find(data.list,(dataItem) => {
+                    return item.id === dataItem.id;
+                });
+                if (targetObj){
+                    targetObj.showApproveBtn = true;
+                }
+            });
+        }
+        //给 自己申请的并且是未通过的审批加上可以撤销的标识
+        _.forEach(data.list,(item) => {
+            if (item.status === 'false' && _.get(item,'applicant.user_id') === userData.getUserData().user_id){
+                item.showCancelBtn = true;
+            }
+        });
+        that.dispatch({error: false, loading: false, data: data});
+    },(errorMsg) => {
+        that.dispatch({
+            error: true,
+            loading: false,
+            errorMsg: errorMsg || Intl.get('apply.failed.get.type.application', '获取全部{type}申请失败', {type: Intl.get('crm.detail.user', '用户')})
+        });});
 }
 
 module.exports = alt.createActions(UserApplyActions);

@@ -112,10 +112,6 @@ LeaveApplyDetailStore.prototype.setInitialData = function(obj) {
     this.setInitState();
     //指定详情条目
     this.selectedDetailItem = obj;
-    //设置底部类型
-    // this.setBottomDisplayType();
-    //是否是展开状态
-    // this.applyIsExpanded = false;
 };
 //获取审批详情
 LeaveApplyDetailStore.prototype.getLeaveApplyDetailById = function(obj) {
@@ -125,7 +121,6 @@ LeaveApplyDetailStore.prototype.getLeaveApplyDetailById = function(obj) {
         this.detailInfoObj.errorMsg = obj.errorMsg;
     } else {
         this.detailInfoObj.loadingResult = '';
-        //todo 是否展示通过和驳回的按钮
         this.detailInfoObj.info = obj.detail;
         if (obj.status){
             //审批通过或者驳回后立刻查询状态还没有立刻改变

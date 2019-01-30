@@ -114,7 +114,13 @@ class SalesOpportunityApplyManagement extends React.Component {
     //获取全部请假申请
     getAllSalesOpportunityApplyList = () => {
         var queryObj = this.getQueryParams();
-        SalesOpportunityApplyAction.getAllSalesOpportunityApplyList(queryObj);
+        SalesOpportunityApplyAction.getAllSalesOpportunityApplyList(queryObj,(count) => {
+            //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
+            if (this.state.applyListType === 'ongoing') {
+                //触发更新待审批数
+                commonMethodUtil.updateUnapprovedCount('unhandleBusinessOpportunities','SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
+            }
+        });
     };
 
     //获取自己发起的请假申请

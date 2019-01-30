@@ -2698,6 +2698,7 @@ var en_US = {
     'apply.approve.transfer.success': 'Transfer out the application successfully',//转出申请成功
     'apply.approve.upload.empty.file': 'Do not upload empty files!',//不可上传空文件！
     'apply.approve.upload.error.file.type': 'The file format is incorrect!',//文件格式不正确！
-    'apply.approve.upload.not.more.than50': 'The file size cannot exceed 50M!'//文件大小不能超过50M!
+    'apply.approve.upload.not.more.than50': 'The file size cannot exceed 50M!',//文件大小不能超过50M!
+    'apply.approve.no.comment': 'There is no reply content!'//暂无回复内容！
 };
 export default en_US;

@@ -17,23 +17,8 @@ var NoMoreDataTip = require('../../../../components/no_more_data_tip');
 import {SearchInput} from 'antc';
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
 const session = storageUtil.session;
-
-var timeoutFunc;//定时方法
-var timeout = 1000;//1秒后刷新未读数
-//更新申请的待审批数
-function updateUnapprovedCount(count) {
-    if (Oplate && Oplate.unread) {
-        Oplate.unread.approve = count;
-        if (timeoutFunc) {
-            clearTimeout(timeoutFunc);
-        }
-        timeoutFunc = setTimeout(function() {
-            //触发展示的组件待审批数的刷新
-            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
-        }, timeout);
-    }
-}
-
+import {selectMenuList} from 'PUB_DIR/sources/utils/consts';
+import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 class ApplyTabContent extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -63,7 +48,7 @@ class ApplyTabContent extends React.Component {
             //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
             if (this.state.applyListType === 'false') {
                 //触发更新待审批数
-                updateUnapprovedCount(count);
+                commonMethodUtil.updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
                 // 解决通过或驳回操作失败（后台其实是成功）后的状态更新
                 if(this.state.dealApplyError === 'error'){
                     UserApplyActions.updateDealApplyError('success');
@@ -318,7 +303,7 @@ class ApplyTabContent extends React.Component {
             case 'all':
                 return Intl.get('user.apply.all', '全部申请');
             case 'false':
-                return Intl.get('user.apply.false', '待审批');
+                return Intl.get('leave.apply.my.worklist.apply', '待我审批');
             case 'pass':
                 return Intl.get('user.apply.pass', '已通过');
             case 'reject':
@@ -337,7 +322,7 @@ class ApplyTabContent extends React.Component {
         } else if (obj.key === 'pass') {
             selectType = Intl.get('user.apply.pass', '已通过');
         } else if (obj.key === 'false') {
-            selectType = Intl.get('user.apply.false', '待审批');
+            selectType = Intl.get('leave.apply.my.worklist.apply', '待我审批');
         } else if (obj.key === 'reject') {
             selectType = Intl.get('user.apply.reject', '已驳回');
         } else if (obj.key === 'cancel') {
@@ -399,26 +384,25 @@ class ApplyTabContent extends React.Component {
         } else {
             // 筛选菜单
             var menuList = (
-                UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? null : (
-                    <Menu onClick={this.menuClick} className="apply-filter-menu-list">
-                        <Menu.Item key="all">
-                            <a href="javascript:void(0)">{Intl.get('user.apply.all', '全部申请')}</a>
-                        </Menu.Item>
-                        <Menu.Item key="false">
-                            <a href="javascript:void(0)">{Intl.get('user.apply.false', '待审批')}</a>
-                        </Menu.Item>
-                        <Menu.Item key="pass">
-                            <a href="javascript:void(0)">{Intl.get('user.apply.pass', '已通过')}</a>
-                        </Menu.Item>
-                        <Menu.Item key="reject">
-                            <a href="javascript:void(0)">{Intl.get('user.apply.reject', '已驳回')}</a>
-                        </Menu.Item>
-                        <Menu.Item key="cancel">
-                            <a href="javascript:void(0)">{Intl.get('user.apply.backout', '已撤销')}</a>
-                        </Menu.Item>
-                    </Menu>
-                )
+                <Menu onClick={this.menuClick} className="apply-filter-menu-list">
+                    <Menu.Item key="all">
+                        <a href="javascript:void(0)">{Intl.get('user.apply.all', '全部申请')}</a>
+                    </Menu.Item>
+                    <Menu.Item key="false">
+                        <a href="javascript:void(0)">{Intl.get('leave.apply.my.worklist.apply', '待我审批')}</a>
+                    </Menu.Item>
+                    <Menu.Item key="pass">
+                        <a href="javascript:void(0)">{Intl.get('user.apply.pass', '已通过')}</a>
+                    </Menu.Item>
+                    <Menu.Item key="reject">
+                        <a href="javascript:void(0)">{Intl.get('user.apply.reject', '已驳回')}</a>
+                    </Menu.Item>
+                    <Menu.Item key="cancel">
+                        <a href="javascript:void(0)">{Intl.get('user.apply.backout', '已撤销')}</a>
+                    </Menu.Item>
+                </Menu>
             );
+
             let unreadReplyList = this.state.unreadReplyList;
             let applyListType = this.state.applyListType;
             //是否展示有未读申请的提示，后端推送过来的未读回复列表中有数据，并且是在全部类型下可展示，其他待审批、已通过等类型下不展示
@@ -517,7 +501,7 @@ class ApplyTabContent extends React.Component {
         }
         var applyType = '';
         if (this.state.applyListType === 'false') {
-            applyType = Intl.get('user.apply.false', '待审批');
+            applyType = Intl.get('leave.apply.my.worklist.apply', '待我审批');
         } else if (this.state.applyListType === 'pass') {
             applyType = Intl.get('user.apply.pass', '已通过');
         } else if (this.state.applyListType === 'reject') {
