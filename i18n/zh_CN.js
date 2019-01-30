@@ -2716,6 +2716,7 @@ var zh_CN = {
     'apply.will.approve.apply.item': '待审批人',
     'apply.no.relate.user': '无相关成员',
     'apply.approve.transfer.failed': '转出申请失败',
-    'apply.approve.transfer.success': '转出申请成功'
+    'apply.approve.transfer.success': '转出申请成功',
+    'clue.manage.has.exist.clue': '线索名为{name}，联系电话为{phone}的线索已存在！'
 };
 export default zh_CN;
