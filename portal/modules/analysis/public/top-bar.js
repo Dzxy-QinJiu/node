@@ -177,7 +177,7 @@ class TopBar extends React.Component {
         }
 
         return (
-            <div className="analysis-filter-btn-item">
+            <div className="btn-item-container">
                 {isSales ? null : (
                     <Select
                         defaultValue="team"

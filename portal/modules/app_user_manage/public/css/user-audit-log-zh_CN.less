@@ -31,13 +31,8 @@
     float:left;
     height:@btn-height;
   }
-  .user_audit_log_header{
-    margin-top:@filter_area_margin_top;
-    right:@container_padding;
-    z-index:11;
+  .btn-item-container{
     .btn-item {
-      margin-top: 0;
-      margin-left: 0;
       &.customize-btn {
         width: @btn-height;
         height: @btn-height;
@@ -56,27 +51,6 @@
       .search-input-container{
         .search-input{
           height:@btn-height;
-        }
-      }
-    }
-    .team-member-select{
-      .team-member-select-options {
-        .ant-select-selection--multiple {
-          .ant-select-selection__rendered {
-            .ant-select-selection__choice {
-              background-color: #fff;
-              padding-top: 4px;
-              padding-left: 2px;
-              .ant-select-selection__choice__content {
-                color: @btn-font-color;
-                line-height: 23px;
-              }
-            }
-          }
-          ul li {
-            margin-top: 0;
-            height: 24px;
-          }
         }
       }
     }

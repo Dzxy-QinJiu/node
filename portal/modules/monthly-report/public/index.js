@@ -455,12 +455,13 @@ class MonthlyReport extends React.Component {
 
     renderFilter = (selectedTeamId) => {
         return (
-            <div className="monthly-report-filter">
+            <div className="btn-item-container">
                 {selectedTeamId && this.state.teamList.length ? (
                     <Select
                         defaultValue={selectedTeamId}
                         onChange={this.onTeamChange}
                         dropdownMatchSelectWidth={false}
+                        className="btn-item"
                     >
                         {_.map(this.state.teamList, (teamItem, index) => {
                             return <Option key={index} value={teamItem.group_id}>{teamItem.group_name}</Option>;
@@ -473,6 +474,7 @@ class MonthlyReport extends React.Component {
                     onChange={this.onDateChange}
                     allowClear={false}
                     disabledDate={current => current && current > moment()}
+                    className="btn-item"
                 />
             </div>
         );

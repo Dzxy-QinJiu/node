@@ -528,6 +528,7 @@ class AppUserManage extends React.Component {
         var topNavRightClass = classNames({
             'pull-right': true,
             'user_manage_filter_block': true,
+            'btn-item-container': true,
             'none': currentView !== 'user'
         });
         var topNavLeftClass = classNames({
