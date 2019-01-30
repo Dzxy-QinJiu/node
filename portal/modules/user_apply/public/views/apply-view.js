@@ -384,25 +384,23 @@ class ApplyTabContent extends React.Component {
         } else {
             // 筛选菜单
             var menuList = (
-                (
-                    <Menu onClick={this.menuClick} className="apply-filter-menu-list">
-                        <Menu.Item key="all">
-                            <a href="javascript:void(0)">{Intl.get('user.apply.all', '全部申请')}</a>
-                        </Menu.Item>
-                        <Menu.Item key="false">
-                            <a href="javascript:void(0)">{Intl.get('leave.apply.my.worklist.apply', '待我审批')}</a>
-                        </Menu.Item>
-                        <Menu.Item key="pass">
-                            <a href="javascript:void(0)">{Intl.get('user.apply.pass', '已通过')}</a>
-                        </Menu.Item>
-                        <Menu.Item key="reject">
-                            <a href="javascript:void(0)">{Intl.get('user.apply.reject', '已驳回')}</a>
-                        </Menu.Item>
-                        <Menu.Item key="cancel">
-                            <a href="javascript:void(0)">{Intl.get('user.apply.backout', '已撤销')}</a>
-                        </Menu.Item>
-                    </Menu>
-                )
+                <Menu onClick={this.menuClick} className="apply-filter-menu-list">
+                    <Menu.Item key="all">
+                        <a href="javascript:void(0)">{Intl.get('user.apply.all', '全部申请')}</a>
+                    </Menu.Item>
+                    <Menu.Item key="false">
+                        <a href="javascript:void(0)">{Intl.get('leave.apply.my.worklist.apply', '待我审批')}</a>
+                    </Menu.Item>
+                    <Menu.Item key="pass">
+                        <a href="javascript:void(0)">{Intl.get('user.apply.pass', '已通过')}</a>
+                    </Menu.Item>
+                    <Menu.Item key="reject">
+                        <a href="javascript:void(0)">{Intl.get('user.apply.reject', '已驳回')}</a>
+                    </Menu.Item>
+                    <Menu.Item key="cancel">
+                        <a href="javascript:void(0)">{Intl.get('user.apply.backout', '已撤销')}</a>
+                    </Menu.Item>
+                </Menu>
             );
 
             let unreadReplyList = this.state.unreadReplyList;

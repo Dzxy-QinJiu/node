@@ -23,17 +23,13 @@ exports.addNewCandidate = function(req, res) {
 
 exports.getMyUserApplyWorkList = function(req, res) {
     ApplyApproveService.getMyUserApplyWorkList(req, res).on('success', function(data) {
-        if (!data || !_.isArray(data.list)){
-            data = {
-                list: [],
-                total: 0
-            };
-        }
+        var result = {list: [],total: 0};
         if (data && data.list && data.list.length) {
             var applyList = applyDto.toRestObject(data.list || []);
-            data.list = applyList;
+            result.list = applyList;
+            result.data = applyList.length;
         }
-        res.status(200).json(data);
+        res.status(200).json(result);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
