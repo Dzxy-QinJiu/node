@@ -34,17 +34,12 @@ class UploadAndDeleteFile extends React.Component {
             });
         }
     }
-
-    componentDidMount() {
-
-    }
-    afterUpload = () => {
+    setUploadLoadingFalse = () => {
         this.setState({
             isUpLoading: false,
         });
     };
     handleChange = (info) => {
-        this.setState({isUpLoading: true});
         const response = info.file.response;
         if (info.file.status === 'done') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-reportsend'), '上传报告成功');
@@ -59,10 +54,10 @@ class UploadAndDeleteFile extends React.Component {
             } else {
                 message.error(Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')}));
             }
-            this.afterUpload();
+            this.setUploadLoadingFalse();
         } else if (info.file.status === 'error') {
             message.error(_.isString(response) ? response : Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')}));
-            this.afterUpload();
+            this.setUploadLoadingFalse();
         }
     };
     onRemove = (file,callback) => {
@@ -108,24 +103,22 @@ class UploadAndDeleteFile extends React.Component {
         }
         return true;
     };
-    beforeUpload = (file) => {
+    beforeUploadFiles = (file) => {
+        this.setState({isUpLoading: true});
         //计算之前上传过的和现在要上传的这个文件的大小，不能超过50M
         var fileName = file.name,fileSize = file.size;
         var totalFileSize = this.state.totalFileSize;
         totalFileSize += fileSize;
         if (this.checkFileType(fileName,fileSize,totalFileSize)){
-            setTimeout(() => {
-                this.setState(state => ({
-                    totalFileSize: totalFileSize,
-                    fileList: [...state.fileList, file],
-                }),() => {
-                    this.afterUpload();
-                    this.props.beforeUpload(file);
-                });
-            },500);
+            this.setState(state => ({
+                totalFileSize: totalFileSize,
+                fileList: [...state.fileList, file],
+            }),() => {
+                this.setUploadLoadingFalse();
+                this.props.beforeUpload(file);
+            });
         }else{
-            setTimeout(() => {
-                this.afterUpload();},500);
+            this.setUploadLoadingFalse();
         }
         //如果props中有detailObj，不需要返回false，直接添加就可以
         return false;
@@ -208,12 +201,11 @@ class UploadAndDeleteFile extends React.Component {
             props.data = detailInfoObj.id;
             props.beforeUpload = function(file) {
                 var fileName = file.name,fileSize = file.size;
+                _this.setState({isUpLoading: true});
                 if (!_this.checkFileType(fileName,fileSize)){
-                    setTimeout(() => {
-                        _this.afterUpload();},500);
+                    _this.setUploadLoadingFalse();
                     return false;
                 }
-
             };
             var allUploadFiles = seperateFilesDiffType(fileList);
             //销售上传的文件
@@ -229,7 +221,7 @@ class UploadAndDeleteFile extends React.Component {
             }
         }else{
             props.data = '';
-            props.beforeUpload = this.beforeUpload;
+            props.beforeUpload = this.beforeUploadFiles;
             if (_.isArray(fileList) && fileList.length){
                 btnDesc = Intl.get('apply.approve.continue.file.type','继续上传{fileType}',{fileType: Intl.get('apply.approve.customer.info', '客户资料')});
             }
