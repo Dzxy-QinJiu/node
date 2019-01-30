@@ -24,6 +24,7 @@ class UploadAndDeleteFile extends React.Component {
                 delId: '',//删除申请的id
                 errorMsg: '',//删除失败后的提示
             },
+            totalFileSize: 0,//所有文件的大小
         };
     }
     componentWillReceiveProps(nextProps) {
@@ -33,17 +34,12 @@ class UploadAndDeleteFile extends React.Component {
             });
         }
     }
-
-    componentDidMount() {
-
-    }
-    afterUpload = () => {
+    setUploadLoadingFalse = () => {
         this.setState({
             isUpLoading: false,
         });
     };
     handleChange = (info) => {
-        this.setState({isUpLoading: true});
         const response = info.file.response;
         if (info.file.status === 'done') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-reportsend'), '上传报告成功');
@@ -58,34 +54,72 @@ class UploadAndDeleteFile extends React.Component {
             } else {
                 message.error(Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')}));
             }
-            this.afterUpload();
+            this.setUploadLoadingFalse();
         } else if (info.file.status === 'error') {
             message.error(_.isString(response) ? response : Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')}));
-            this.afterUpload();
+            this.setUploadLoadingFalse();
         }
     };
     onRemove = (file,callback) => {
-        this.setState((state) => {
-            const index = state.fileList.indexOf(file);
-            const newFileList = state.fileList.slice();
+        var fileList = this.state.fileList;
+        const index = fileList.indexOf(file);
+        const newFileList = fileList.slice();
+        if (index > -1){
             newFileList.splice(index, 1);
-            return {
+            var totalFileSize = this.state.totalFileSize;
+            var fileSize = file.size;
+            totalFileSize -= fileSize;
+            this.setState({
+                totalFileSize: totalFileSize,
                 fileList: newFileList,
-            };
-        },() => {
-            _.isFunction(callback) && callback();
-        });
+            },() => {
+                _.isFunction(callback) && callback();
+            });
+        }
         this.props.fileRemove(file);
     };
-    beforeUpload = (file) => {
-        setTimeout(() => {
+    //上传文件的大小不能超过50M
+    canculateLimite = (size) => {
+        return size / 1024 / 1024 > 50;
+    };
+    checkFileType = (filename,fileSize,totalSize) => {
+        // 文件内容为空的处理
+        if (filename.indexOf(' ') >= 0) {
+            message.warning(Intl.get('apply.approve.upload.no.container.space', '文件名称中不要含有空格！'));
+            return false;
+        }
+        if (filename.indexOf('.exe') >= 0){
+            message.warning(Intl.get('apply.approve.upload.error.file.type','文件格式不正确！'));
+            return false;
+        }
+        if (fileSize === 0) {
+            message.warning(Intl.get('apply.approve.upload.empty.file','不可上传空文件！'));
+            return false;
+        }
+
+        if (fileSize && this.canculateLimite(fileSize) || totalSize && this.canculateLimite(totalSize)){
+            message.warning(Intl.get('apply.approve.upload.not.more.than50','文件大小不能超过50M!'));
+            return false;
+        }
+        return true;
+    };
+    beforeUploadFiles = (file) => {
+        this.setState({isUpLoading: true});
+        //计算之前上传过的和现在要上传的这个文件的大小，不能超过50M
+        var fileName = file.name,fileSize = file.size;
+        var totalFileSize = this.state.totalFileSize;
+        totalFileSize += fileSize;
+        if (this.checkFileType(fileName,fileSize,totalFileSize)){
             this.setState(state => ({
+                totalFileSize: totalFileSize,
                 fileList: [...state.fileList, file],
             }),() => {
-                this.afterUpload();
+                this.setUploadLoadingFalse();
                 this.props.beforeUpload(file);
             });
-        },500);
+        }else{
+            this.setUploadLoadingFalse();
+        }
         //如果props中有detailObj，不需要返回false，直接添加就可以
         return false;
     };
@@ -152,6 +186,7 @@ class UploadAndDeleteFile extends React.Component {
         });
     };
     renderUploadBtns = () => {
+        var _this = this;
         var props = {
             name: 'reportsend',
             multiple: true,
@@ -164,7 +199,13 @@ class UploadAndDeleteFile extends React.Component {
         var btnDesc = Intl.get('apply.approve.upload.file.type','上传{fileType}',{fileType: Intl.get('apply.approve.customer.info', '客户资料')});
         if(this.isDetailObjExist()){
             props.data = detailInfoObj.id;
-            props.beforeUpload = function() {
+            props.beforeUpload = function(file) {
+                var fileName = file.name,fileSize = file.size;
+                _this.setState({isUpLoading: true});
+                if (!_this.checkFileType(fileName,fileSize)){
+                    _this.setUploadLoadingFalse();
+                    return false;
+                }
             };
             var allUploadFiles = seperateFilesDiffType(fileList);
             //销售上传的文件
@@ -180,7 +221,7 @@ class UploadAndDeleteFile extends React.Component {
             }
         }else{
             props.data = '';
-            props.beforeUpload = this.beforeUpload;
+            props.beforeUpload = this.beforeUploadFiles;
             if (_.isArray(fileList) && fileList.length){
                 btnDesc = Intl.get('apply.approve.continue.file.type','继续上传{fileType}',{fileType: Intl.get('apply.approve.customer.info', '客户资料')});
             }
@@ -193,7 +234,7 @@ class UploadAndDeleteFile extends React.Component {
                         {this.state.isUpLoading ?
                             <Icon type="loading" className="icon-loading"/> : null}</Button>
                 </Upload>
-                <p>{Intl.get('click.ctrl.upload.mutil.file','可同时上传多个文件，文件大小不要超过50M！')}</p>
+                <p>{Intl.get('click.ctrl.upload.mutil.file','可同时上传多个文件，只能上传图片文件，文本文件，视频文件，音频文件和压缩文件，文件大小不要超过50M！')}</p>
             </div>
         );
     };

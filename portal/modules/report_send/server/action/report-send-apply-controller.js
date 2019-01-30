@@ -16,7 +16,9 @@ exports.addReportSendApply = function(req, res) {
         let formData = {},newTmpPath = '';
         if (receiveFiles) {
             //可以是上传一个也可以是上传多个
-            _.forEach(receiveFiles,(fileItem) => {
+            var totalSize = 0;//总的文件大小
+            for (var i = 0; i < receiveFiles.length; i++){
+                var fileItem = receiveFiles[i];
                 let tmpPath = fileItem.path;
                 newTmpPath = tmpPath;
                 // 获取生成的文件名称
@@ -31,28 +33,34 @@ exports.addReportSendApply = function(req, res) {
                 }else {
                     formData['files'] = [fs.createReadStream(newTmpPath)];
                 }
-            });
-        }
-        _.forEach(fields, (value, key) => {
-            formData[key] = _.get(value, '[0]');
-        });
-        try {
-            //调用上传请求服务
-            ReportSendApplyService.addReportSendApply(req, res, formData).on('success', function(data) {
-                res.status(200).json(data);
-            }).on('error', function(codeMessage) {
-                res.status(500).json(codeMessage && codeMessage.message);
-            });
-        } catch (e) {
-            if (newTmpPath){
-                //删除文件
+                if (i === receiveFiles.length - 1){
+                    _.forEach(fields, (value, key) => {
+                        formData[key] = _.get(value, '[0]');
+                    });
+                    addReportSendApplyData(req, res, formData);
+                }
+                //把文件删除
                 fs.unlinkSync(newTmpPath);
+
             }
-            console.log(JSON.stringify(e));
+        }else {
+            addReportSendApplyData(req, res, formData);
         }
     });
 
 };
+function addReportSendApplyData(req, res, formData) {
+    try {
+        //调用上传请求服务
+        ReportSendApplyService.addReportSendApply(req, res, formData).on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+    } catch (e) {
+        console.log(JSON.stringify(e));
+    }
+}
 
 exports.approveReportSendApplyPassOrReject = function(req, res) {
     ReportSendApplyService.approveReportSendApplyPassOrReject(req, res).on('success', function(data) {
@@ -86,17 +94,6 @@ exports.uploadReportSend = function(req, res) {
             if (err) {
                 res.json(false);
             } else {
-                // 文件内容为空的处理
-                let file_size = files['reportsend'][0].size;
-                if (filename.indexOf(' ') >= 0) {
-                    let backendIntl = new BackendIntl(req);
-                    res.status(500).json(backendIntl.get('apply.approve.upload.no.container.space', '文件名称中不要含有空格！'));
-                    return;
-                }
-                if (file_size === 0) {
-                    res.json(false);
-                    return;
-                }
                 var idArr = [];
                 _.forEach(fields, (item) => {
                     idArr = _.concat(idArr, item);
@@ -112,6 +109,8 @@ exports.uploadReportSend = function(req, res) {
                     res.status(500).json(err.message);
                 });
             }
+            //把文件删除
+            fs.unlinkSync(newTmpPath);
         });
 
 

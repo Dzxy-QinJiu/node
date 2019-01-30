@@ -2426,6 +2426,7 @@ var zh_CN = {
     'sales.frontpage.has.no.conneted': '您有电话未接听',
     'clue.manage.import.clue': '导入{type}',
     'clue.manage.failed.import.clue': '导入{type}失败，请重试!',
+    'clue.manage.has.exist.clue': '线索名为{name}，联系电话为{phone}的线索已存在！',
     'clue.customer.import.clue.suceess': '导入{type}成功',
     'clue.customer.import.clue.failed': '导入{type}失败',
     'clue.delete.duplicate.failed': '删除重复线索失败',
@@ -2698,7 +2699,7 @@ var zh_CN = {
     'failed.get.reply.comment': '获取回复列表失败',
     'apply.approve.upload.no.container.space': '文件名称中不要含有空格！',
     'failed.delete.apply.load.approve': '删除文件失败！',
-    'click.ctrl.upload.mutil.file': '可同时上传多个文件，文件大小不要超过50M！',
+    'click.ctrl.upload.mutil.file': '可同时上传多个文件，只能上传图片文件，文本文件，视频文件，音频文件和压缩文件，文件大小不要超过50M！',
     'apply.approve.customer.info': '客户资料',
     'apply.approve.add.files': '补充文件',
     'fail.apply.approve.result': '审批失败',
@@ -2717,6 +2718,8 @@ var zh_CN = {
     'apply.no.relate.user': '无相关成员',
     'apply.approve.transfer.failed': '转出申请失败',
     'apply.approve.transfer.success': '转出申请成功',
-    'clue.manage.has.exist.clue': '线索名为{name}，联系电话为{phone}的线索已存在！'
+    'apply.approve.upload.empty.file': '不可上传空文件！',
+    'apply.approve.upload.error.file.type': '文件格式不正确！',
+    'apply.approve.upload.not.more.than50': '文件大小不能超过50M!'
 };
 export default zh_CN;

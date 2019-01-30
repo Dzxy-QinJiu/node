@@ -97,7 +97,7 @@ class ApplyDetailRemarks extends React.Component {
                         {/*已经通过和驳回的申请，不能再添加回复了*/}
                         {detailInfo.status === 'pass' || detailInfo.status === 'reject' ? null :
                             <Input addonAfter={(
-                                <a onClick={this.props.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}
+                                <a data-tracename="点击回复按钮" onClick={this.props.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}
                             value={this.state.replyFormInfo.comment}
                             onChange={this.props.commentInputChange}
                             placeholder={Intl.get('user.apply.reply.no.content', '请填写回复内容')}/>}
