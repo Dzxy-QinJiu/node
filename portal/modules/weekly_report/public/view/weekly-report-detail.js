@@ -201,8 +201,12 @@ class WeeklyReportDetail extends React.Component {
                     return item.name === record.name;
                 });
                 var userId = _.get(userObj, 'id', '') || userData.getUserData().user_id;
-                const data = record.leave_info_list;
                 const selectedDate = moment().week(this.state.selectedItem.nWeek);
+                let data = null;
+
+                if (record.real_work_day === record.work_day) {
+                    data = [];
+                }
 
                 return (
                     <AntcAttendanceRemarks
