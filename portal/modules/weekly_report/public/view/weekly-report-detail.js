@@ -201,11 +201,13 @@ class WeeklyReportDetail extends React.Component {
                     return item.name === record.name;
                 });
                 var userId = _.get(userObj, 'id', '') || userData.getUserData().user_id;
+                const data = record.leave_info_list;
                 const selectedDate = moment().week(this.state.selectedItem.nWeek);
 
                 return (
                     <AntcAttendanceRemarks
                         readOnly={isCommonSales}
+                        data={data}
                         userId={userId}
                         selectedDate={selectedDate}
                         dateRangeType='week'
