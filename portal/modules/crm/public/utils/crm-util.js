@@ -62,6 +62,12 @@ exports.isTurnOutTag = function(tag){
 exports.isHasCallBackTag = function(tag) {
     return tag === Intl.get('common.has.callback', '已回访');
 };
+const unmodifiableTags = [Intl.get('crm.sales.clue', '线索'), Intl.get('crm.qualified.roll.out', '转出'), Intl.get('common.has.callback', '已回访')];
+//是否是不可修改的标签（线索、转出、已回访）
+exports.isUnmodifiableTag = function(tag) {
+    return _.indexOf(unmodifiableTags, tag) !== -1;
+};
+
 //获取客户标签背景色对应的类型
 exports.getCrmLabelCls = function(customer_label) {
     const LABEL_TYPES = {

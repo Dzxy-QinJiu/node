@@ -12,7 +12,7 @@ var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 var ContactUtil = require('MOD_DIR/crm/public/utils/contact-util');
 import {nameRegex} from 'PUB_DIR/sources/utils/validate-util';
 var crmUtil = require('MOD_DIR/crm/public/utils/crm-util');
-import {isClueTag, isTurnOutTag} from 'MOD_DIR/crm/public/utils/crm-util';
+import {isUnmodifiableTag} from 'MOD_DIR/crm/public/utils/crm-util';
 var FormItem = Form.Item;
 var Option = Select.Option;
 var batchChangeAction = require('MOD_DIR/crm/public/action/batch-change-actions');
@@ -96,9 +96,8 @@ class AddCustomerForm extends React.Component {
         //获取推荐的标签列表
         batchChangeAction.getRecommendTags(result => {
             let list = _.isArray(result) ? result : [];
-            list = _.filter(list, (item) => {
-                return item !== Intl.get('crm.sales.clue', '线索') && item !== Intl.get('crm.qualified.roll.out', '转出');
-            });
+            //过滤掉，线索、转出、已回访不可编辑的标签
+            list = _.filter(list, (item) => !isUnmodifiableTag(item));
             this.setState({isLoadingTagLists: false, tagList: list});
         });
     };
@@ -359,8 +358,8 @@ class AddCustomerForm extends React.Component {
         });
     };
     handleChangeSeletedTag = (tag, isAdd) => {
-        //不可以操作'线索'、'转出'标签
-        if (isClueTag(tag) || isTurnOutTag(tag)) {
+        //不可以操作'线索'、'转出'、‘已回访’标签
+        if (isUnmodifiableTag(tag)) {
             return;
         }
         var tagIndex = _.indexOf(this.state.formData.labels, tag);
@@ -384,8 +383,8 @@ class AddCustomerForm extends React.Component {
         if (e.keyCode !== 13) return;
         const tag = _.trim(e.target.value);
         if (!tag) return;
-        //”线索“、”转出“标签”不可以添加
-        if (isClueTag(tag) || isTurnOutTag(tag)) {
+        //”线索“、”转出“、“已回访”标签不可以添加
+        if (isUnmodifiableTag(tag)) {
             message.error(Intl.get('crm.sales.clue.add.disable', '不能手动添加\'{label}\'标签', {label: tag}));
             return;
         }

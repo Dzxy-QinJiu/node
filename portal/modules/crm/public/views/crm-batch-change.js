@@ -16,7 +16,7 @@ var Option = Select.Option;
 var userData = require('../../../../public/sources/user-data');
 var batchOperate = require('../../../../public/sources/push/batch');
 import Trace from 'LIB_DIR/trace';
-import {isClueTag, isTurnOutTag} from '../utils/crm-util';
+import {isUnmodifiableTag} from '../utils/crm-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import crmUtil from '../utils/crm-util';
@@ -215,8 +215,8 @@ var CrmBatchChange = createReactClass({
 
         const tag = _.trim(e.target.value);
         if (!tag) return;
-        //”线索“、”转出“标签，不可以添加
-        if (isClueTag(tag) || isTurnOutTag(tag)) {
+        //”线索“、”转出“、“已回访”标签，不可以添加
+        if (isUnmodifiableTag(tag)) {
             message.error(Intl.get('crm.sales.clue.add.disable', '不能手动添加\'{label}\'标签', {label: tag}));
             return;
         }
@@ -639,8 +639,8 @@ var CrmBatchChange = createReactClass({
         let selectedTagsArray = this.state.tags ? this.state.tags : [];
         let recommendTagsArray = _.isArray(this.state.recommendTags) ? this.state.recommendTags : [];
         let unionTagsArray = _.union(recommendTagsArray, selectedTagsArray);
-        //过滤掉“线索”、“转出”标签，“线索“、“转出”标签不可添加、修改、删除
-        unionTagsArray = _.filter(unionTagsArray, tag => tag !== Intl.get('crm.sales.clue', '线索') && tag !== Intl.get('crm.qualified.roll.out', '转出'));
+        //过滤掉“线索”、“转出”、“已回访”标签，“线索“、“转出”、“已回访”标签不可添加、修改、删除
+        unionTagsArray = _.filter(unionTagsArray, tag => !isUnmodifiableTag(tag));
         let tagsJsx = unionTagsArray.map((tag, index) => {
             let className = 'customer-tag';
             className += selectedTagsArray.indexOf(tag) > -1 ? ' tag-selected' : '';
