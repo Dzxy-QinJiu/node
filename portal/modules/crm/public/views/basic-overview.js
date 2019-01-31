@@ -4,7 +4,7 @@ import DetailCard from 'CMP_DIR/detail-card';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import TagCard from 'CMP_DIR/detail-card/tag-card';
 import SalesTeamCard from './basic_info/sales-team-card';
-import {isClueTag, isTurnOutTag, isHasCallBackTag} from '../utils/crm-util';
+import {isUnmodifiableTag} from '../utils/crm-util';
 var basicOverviewStore = require('../store/basic-overview-store');
 var basicOverviewAction = require('../action/basic-overview-actions');
 var SalesTeamStore = require('../../../sales_team/public/store/sales-team-store');
@@ -138,7 +138,7 @@ class BasicOverview extends React.Component {
         batchAjax.getRecommendTags().then(data => {
             if (_.isArray(data.result) && data.result.length) {
                 // 过滤掉线索、转出、已回访标签，保证selectedTagsArray中有”线索“、“转出”、“已回访”标签，则只展示，没有就不展示
-                let recommendTags = _.filter(data.result, tag => !isClueTag(tag) && !isTurnOutTag(tag) && !isHasCallBackTag(tag));
+                let recommendTags = _.filter(data.result, tag => !isUnmodifiableTag(tag));
                 this.setState({recommendTags: recommendTags});
             }
         });
@@ -262,7 +262,7 @@ class BasicOverview extends React.Component {
     //保存修改后的标签
     saveEditTags = (tags, successFunc, errorFunc) => {
         // 保存前先过滤掉线索、转出、已回访标签
-        tags = _.filter(tags, tag => !isClueTag(tag) && !isTurnOutTag(tag) && !isHasCallBackTag(tag));
+        tags = _.filter(tags, tag => !isUnmodifiableTag(tag));
         let submitData = {
             id: this.state.basicData.id,
             type: 'label',
@@ -516,7 +516,7 @@ class BasicOverview extends React.Component {
     render() {
         var basicData = this.state.basicData ? this.state.basicData : {};
         let tagArray = _.isArray(basicData.labels) ? basicData.labels : [];
-        //线索、转出标签不可操作的标签，在immutable_labels属性中,和普通标签一起展示，但不可操作
+        //线索、转出、已回访标签不可操作的标签，在immutable_labels属性中,和普通标签一起展示，但不可操作
         if (_.isArray(basicData.immutable_labels) && basicData.immutable_labels.length) {
             tagArray = basicData.immutable_labels.concat(tagArray);
         }

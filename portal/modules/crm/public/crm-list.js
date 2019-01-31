@@ -646,7 +646,7 @@ class Crm extends React.Component {
                 unexist.push('labels');
                 delete condition.labels;
             } else {
-                //线索、转出不可操作标签的筛选处理
+                //线索、转出、已回访不可操作标签的筛选处理
                 if (_.includes(condition.labels, SPECIAL_LABEL.CLUE) || _.includes(condition.labels, SPECIAL_LABEL.TURN_OUT) || _.includes(condition.labels, SPECIAL_LABEL.HAS_CALL_BACK)) {
                     condition.immutable_labels = [];
                     //线索标签
@@ -1404,7 +1404,7 @@ class Crm extends React.Component {
                 sorter: this.getSorter(),
                 render: function(text, record, index) {
                     var tagsArray = _.isArray(record.labels) ? record.labels : [];
-                    //线索、转出标签不可操作的标签，在immutable_labels属性中，和普通标签一起展示
+                    //线索、转出、已回访标签不可操作的标签，在immutable_labels属性中，和普通标签一起展示
                     if (_.isArray(record.immutable_labels) && record.immutable_labels.length) {
                         tagsArray = record.immutable_labels.concat(tagsArray);
                     }
