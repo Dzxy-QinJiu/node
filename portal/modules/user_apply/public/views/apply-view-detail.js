@@ -125,6 +125,8 @@ function getDelayDisplayTime(delay) {
 }
 
 const APPLY_LIST_WIDTH = 421;
+import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
+import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 const ApplyViewDetail = createReactClass({
     propTypes: {
         detailItem: PropTypes.object,
@@ -153,6 +155,7 @@ const ApplyViewDetail = createReactClass({
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
             showBackoutConfirmType: '',//操作的确认框类型
+            isOplateUser: false,
             ...ApplyViewDetailStore.getState()
         };
     },
@@ -183,6 +186,7 @@ const ApplyViewDetail = createReactClass({
         }
         emitter.on('user_detail_close_right_panel', this.closeRightPanel);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
+        this.getIntegrateConfig();
     },
 
     componentWillUnmount() {
@@ -501,9 +505,14 @@ const ApplyViewDetail = createReactClass({
     toggleApplyExpanded(flag, user_id) {
         ApplyViewDetailActions.toggleApplyExpanded({flag, user_id});
     },
-
+    getIntegrateConfig(){
+        commonDataUtil.getIntegrationConfig().then(resultObj => {
+            let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
+            this.setState({isOplateUser});
+        });
+    },
     renderDetailOperateBtn(user_id) {
-        if (!this.isUnApproved() || !hasPrivilege('APP_USER_APPLY_APPROVAL')) {
+        if (!this.isUnApproved() || !hasPrivilege('APP_USER_APPLY_APPROVAL') || !this.state.isOplateUser) {
             return null;
         }
         if (this.state.applyIsExpanded) {
@@ -915,6 +924,7 @@ const ApplyViewDetail = createReactClass({
     getTableColunms() {
         const appsSetting = this.appsSetting;
         const isExistUserApply = this.isExistUserApply();
+        const isOplateUser = this.state.isOplateUser;
         let columns = [
             {
                 title: Intl.get('common.app', '应用'),
@@ -922,7 +932,7 @@ const ApplyViewDetail = createReactClass({
                 className: 'apply-detail-th'
             }];
         //数量
-        if (!isExistUserApply) {
+        if (!isExistUserApply && isOplateUser) {
             columns.push({
                 title: Intl.get('common.app.count', '数量'),
                 dataIndex: 'number',
@@ -944,7 +954,7 @@ const ApplyViewDetail = createReactClass({
             });
         }
         columns.push({
-            title: Intl.get('user.apply.detail.table.time', '周期'),
+            title: isOplateUser ? Intl.get('user.apply.detail.table.time', '周期') : Intl.get('user.time.end', '到期时间'),
             dataIndex: 'start_time',
             className: 'apply-detail-th',
             render: (text, app, index) => {
@@ -953,7 +963,7 @@ const ApplyViewDetail = createReactClass({
                 const custom_setting = appsSetting[app.app_id];
                 return (
                     <span className="desp_time time-bar">
-                        {this.renderApplyTime(app, custom_setting)}
+                        {this.renderApplyTime(app, custom_setting,!isOplateUser)}
                     </span>);
             }
         });
@@ -974,39 +984,42 @@ const ApplyViewDetail = createReactClass({
         const appsSetting = this.appsSetting;
         let columns = this.getTableColunms();
         //角色、权限
-        columns.push({
-            title: Intl.get('user.apply.detail.table.role', '角色'),
-            dataIndex: 'roleNames',
-            className: 'apply-detail-th',
-            render: (text, app, index) => {
-                let rolesNames = app.rolesNames;
-                if (_.get(rolesNames, '[0]')) {
-                    return rolesNames.map((item) => {
-                        return (
-                            <div key={item}>{item}</div>
-                        );
-                    });
-                }
-            }
-        });
-        if (permissionNameIndex) {
+        //如果是uem的，就不需要展示角色和权限了
+        if (this.state.isOplateUser){
             columns.push({
-                title: Intl.get('common.app.auth', '权限'),
-                dataIndex: 'permissionsNames',
+                title: Intl.get('user.apply.detail.table.role', '角色'),
+                dataIndex: 'roleNames',
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
-                    const custom_setting = appsSetting[app.app_id];
-                    let permissionsNames = 'permissionsNames' in app ? app.permissionsNames : [];
-                    if (typeof permissionsNames === 'string') {
-                        permissionsNames = [app.permissionsNames];
+                    let rolesNames = app.rolesNames;
+                    if (_.get(rolesNames, '[0]')) {
+                        return rolesNames.map((item) => {
+                            return (
+                                <div key={item}>{item}</div>
+                            );
+                        });
                     }
-                    return permissionsNames.map((item) => {
-                        return (
-                            <div key={item}>{item}</div>
-                        );
-                    });
                 }
             });
+            if (permissionNameIndex) {
+                columns.push({
+                    title: Intl.get('common.app.auth', '权限'),
+                    dataIndex: 'permissionsNames',
+                    className: 'apply-detail-th',
+                    render: (text, app, index) => {
+                        const custom_setting = appsSetting[app.app_id];
+                        let permissionsNames = 'permissionsNames' in app ? app.permissionsNames : [];
+                        if (typeof permissionsNames === 'string') {
+                            permissionsNames = [app.permissionsNames];
+                        }
+                        return permissionsNames.map((item) => {
+                            return (
+                                <div key={item}>{item}</div>
+                            );
+                        });
+                    }
+                });
+            }
         }
         return (<AntcTable dataSource={detailInfo.apps}
             bordered={true}
@@ -1051,7 +1064,9 @@ const ApplyViewDetail = createReactClass({
                 <div className="apply_detail_operate clearfix">
                     {this.renderDetailOperateBtn()}
                 </div>
-                <AppProperty {...appComponentProps} />
+                <AppProperty {...appComponentProps}
+                    isOplateUser={this.state.isOplateUser}
+                />
             </div>
         );
     },

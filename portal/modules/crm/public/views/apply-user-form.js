@@ -4,7 +4,7 @@ const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 require('../css/apply-user-form.less');
 require('../../../../public/css/antd-vertical-tabs.css');
-import {Tooltip, Form, Input, Radio, Select, message} from 'antd';
+import {Tooltip, Form, Input, Radio, Select, message,DatePicker} from 'antd';
 const {TextArea} = Input;
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -25,10 +25,6 @@ import ApplyUserAppConfig from 'CMP_DIR/apply-user-app-config';
 import AppConfigForm from 'CMP_DIR/apply-user-app-config/app-config-form';
 const UserApplyAction = require('MOD_DIR/app_user_manage/public/action/user-apply-actions');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-//顶部tab标题的高度
-const LAY_CONSTS = {
-    TAB_TITLE_HEIGHT: 80
-};
 const CONFIG_TYPE = {
     UNIFIED_CONFIG: 'unified_config',//统一配置
     SEPARATE_CONFIG: 'separate_config'//分别配置
@@ -45,7 +41,8 @@ const ApplyUserForm = createReactClass({
         emailData: PropTypes.obj,
         cancelApply: PropTypes.func,
         appList: PropTypes.array,
-        userType: PropTypes.string
+        userType: PropTypes.string,
+        isOplateUser: PropTypes.boolean
     },
     getInitialState: function() {
         const formData = this.buildFormData(this.props, this.props.apps);
@@ -209,6 +206,14 @@ const ApplyUserForm = createReactClass({
         });
         this.setState({formData: formData});
     },
+    onInputTypeChange: function(e) {
+        let formData = this.state.formData;
+        formData.tag = e.target.value;
+        formData.products = formData.products.map(app => {
+            return this.getAppConfig(app, this.state.appDefaultConfigList, formData.tag, true);
+        });
+        this.setState({formData: formData});
+    },
 
     onNickNameChange: function(e) {
         let formData = this.state.formData;
@@ -261,6 +266,30 @@ const ApplyUserForm = createReactClass({
             appFormData.range = range;
             this.setState(this.state);
         }
+    },
+    // 设置不可选时间的范围
+    setDisabledDate(current) {
+        return current && current.valueOf() < Date.now();
+    },
+    // 将到期时间设置为截止时间（具体到xx年xx月xx日）
+    onChangeEndTime(app,value) {
+        let timestamp = value && value.valueOf() || '';
+        let appFormData = _.find(this.state.formData.products, item => item.client_id === app.client_id);
+        if (appFormData) {
+            appFormData.end_date = parseInt(timestamp);
+            this.setState(this.state);
+        }
+    },
+    renderUserEndTimeBlock: function(config, app) {
+        return (
+            <DatePicker placeholder={Intl.get('my.app.change.expire.time.placeholder', '请选择到期时间')}
+                onChange={this.onChangeEndTime.bind(this,app)}
+                disabledDate={this.setDisabledDate}
+                defaultValue={moment()}
+                allowClear={false}
+                showToday={false}
+            />
+        );
     },
 
     onOverDraftChange: function(app, e) {
@@ -320,6 +349,18 @@ const ApplyUserForm = createReactClass({
                     delete submitData.selectAppIds;//去掉用于验证的数据
                     submitData.order_id = 'apply_new_users';
                     submitData.sales_opportunity = 'apply_new_users';
+                    //如果是uem类型的，应用的信息只给后端传应用id，应用名和到期时间就可以
+                    if (!this.props.isOplateUser){
+                        var products = JSON.parse(submitData.products);
+                        if (_.isArray(products) && products.length){
+                            _.forEach(products,(item) => {
+                                delete item.number;
+                                delete item.begin_date;
+                                delete item.over_draft;
+                            });
+                            submitData.products = JSON.stringify(products);
+                        }
+                    }
                     this.applyUserFromOder(submitData);
                 } else {
                     delete submitData.selectAppIds;//去掉用于验证的数据
@@ -469,12 +510,15 @@ const ApplyUserForm = createReactClass({
             isCustomSetting: true,
             appId: 'applyUser'
         };
+        var isOplateUser = this.props.isOplateUser;
         return (<AppConfigForm appFormData={appFormData}
-            needApplyNum={this.state.applyFrom === 'order' || this.isApplyNewUsers()}
+            needApplyNum={(this.state.applyFrom === 'order' || this.isApplyNewUsers()) && isOplateUser}
             timePickerConfig={timePickerConfig}
-            renderUserTimeRangeBlock={this.renderUserTimeRangeBlock}
+            renderUserTimeRangeBlock={isOplateUser ? this.renderUserTimeRangeBlock : this.renderUserEndTimeBlock}
             onCountChange={this.onCountChange}
-            onOverDraftChange={this.onOverDraftChange}/>);
+            onOverDraftChange={this.onOverDraftChange}
+            needEndTimeOnly={!isOplateUser} hideExpiredSelect={!isOplateUser}
+        />);
     },
 
     //从订单中申请用户或申请新用户时，用户名和昵称输入框的渲染
@@ -561,7 +605,7 @@ const ApplyUserForm = createReactClass({
                                     {...formItemLayout}
                                     label={Intl.get('common.type', '类型')}
                                 >
-                                    <RadioGroup onChange={this.onUserTypeChange}
+                                    {this.props.isOplateUser ? <RadioGroup onChange={this.onUserTypeChange}
                                         value={formData.tag}>
                                         <Radio key="1" value={Intl.get('common.trial.user', '试用用户')}>
                                             {Intl.get('common.trial.user', '试用用户')}
@@ -569,7 +613,8 @@ const ApplyUserForm = createReactClass({
                                         <Radio key="0" value={Intl.get('common.trial.official', '正式用户')}>
                                             {Intl.get('user.signed.user', '签约用户')}
                                         </Radio>
-                                    </RadioGroup>
+                                    </RadioGroup> : <Input onChange={this.onInputTypeChange}/>}
+
                                 </FormItem>) : null}
                             <FormItem
                                 {...formItemLayout}

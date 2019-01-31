@@ -20,7 +20,6 @@ import CrmUserApplyForm from './crm-user-apply-form';
 import crmAjax from '../../ajax';
 import classNames from 'classnames';
 import ErrorDataTip from '../components/error-data-tip';
-import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
@@ -423,6 +422,7 @@ class CustomerUsers extends React.Component {
                 cancelApply={this.closeRightPanel.bind(this)}
                 emailData={emailData}
                 maxHeight={this.state.applyFormMaxHeight}
+                isOplateUser={this.state.isOplateUser}
             />
         );
     }
@@ -561,7 +561,7 @@ class CustomerUsers extends React.Component {
                     <span className="crm-detail-total-tip">
                         {Intl.get('crm.overview.apply.user.tip', '该客户还没有用户')}
                     </span>)}
-                {isApplyButtonShow && !this.props.isMerge && this.state.isOplateUser ? this.renderApplyBtns()
+                {isApplyButtonShow && !this.props.isMerge ? this.renderApplyBtns()
                     : null}
             </div>
             {this.state.applyType ?

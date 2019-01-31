@@ -41,11 +41,11 @@ function UserApplyActions() {
                     return;
                 }
                 getDiffTypeApplyList(this,obj,workList.list);
-            }).error(errMsg => {
+            }).error(xhr => {
                 this.dispatch({
                     error: true,
                     loading: false,
-                    errorMsg: errMsg || Intl.get('apply.failed.get.my.worklist.application', '获取由我审批的{type}申请失败', {type: Intl.get('crm.detail.user', '用户')})
+                    errorMsg: xhr.responseJSON || Intl.get('apply.failed.get.my.worklist.application', '获取由我审批的{type}申请失败', {type: Intl.get('crm.detail.user', '用户')})
                 });
             }
             );
