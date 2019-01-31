@@ -104,13 +104,11 @@ class MonthlyReport extends React.Component {
     };
 
     renderRemarks = (text, record, recordIndex) => {
-        const data = record.leave_info_list;
         const userId = record.user_id;
 
         return (
             <AntcAttendanceRemarks
                 readOnly={isCommonSales}
-                data={data}
                 userId={userId}
                 selectedDate={this.state.selectedMonth}
                 onChange={() => {
