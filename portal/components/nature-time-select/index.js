@@ -62,6 +62,15 @@ class TimeSelect extends React.Component {
     state = this.getWeekTimeRange(this.props.yearTime, this.props.weekTime);
 
     render() {
+        //选择的年
+        const yearNum = this.props.yearTime? parseInt(this.props.yearTime) : moment().year()
+        //选择的年的最后一周是当年的第几周
+        let lastWeekNum = moment().year(yearNum).endOf('year').isoWeeks()
+        //如果计算出来的值是1，说明最后一周跨年了，可以认为是选择的年的第53周
+        if (lastWeekNum === 1) {
+            lastWeekNum = 53
+        }
+
         return (
             <div className="nature-time-select-container">
                 {this.props.showTimeTypeSelect ? (<div className="time-type-div">
@@ -83,7 +92,7 @@ class TimeSelect extends React.Component {
                         </Select>
                     </div>) : this.props.timeType === 'week' ? (<div className="week-select-div">
                         <div className="week-time-label">{Intl.get('common.font.the', '第')}</div>
-                        <InputNumber min={1} max={52} value={this.props.weekTime} onChange={this.props.onChangeWeek}/>
+                        <InputNumber min={1} max={lastWeekNum} value={this.props.weekTime} onChange={this.props.onChangeWeek}/>
                         <div className="week-time-label week-time-content">
                             {Intl.get('common.weeks', '周')} ( {this.state.weekStartTime} {Intl.get('common.time.connector', '至')} {this.state.weekEndTime} )
                         </div>
