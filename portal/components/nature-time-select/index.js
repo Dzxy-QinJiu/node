@@ -83,7 +83,7 @@ class TimeSelect extends React.Component {
                         </Select>
                     </div>) : this.props.timeType === 'week' ? (<div className="week-select-div">
                         <div className="week-time-label">{Intl.get('common.font.the', '第')}</div>
-                        <InputNumber min={1} max={60} value={this.props.weekTime} onChange={this.props.onChangeWeek}/>
+                        <InputNumber min={1} max={52} value={this.props.weekTime} onChange={this.props.onChangeWeek}/>
                         <div className="week-time-label week-time-content">
                             {Intl.get('common.weeks', '周')} ( {this.state.weekStartTime} {Intl.get('common.time.connector', '至')} {this.state.weekEndTime} )
                         </div>
