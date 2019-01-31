@@ -104,8 +104,12 @@ class MonthlyReport extends React.Component {
     };
 
     renderRemarks = (text, record, recordIndex) => {
-        const data = record.leave_info_list;
         const userId = record.user_id;
+        let data = null;
+
+        if (record.real_work_day === record.work_day) {
+            data = [];
+        }
 
         return (
             <AntcAttendanceRemarks
