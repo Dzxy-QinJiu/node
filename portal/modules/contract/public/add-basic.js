@@ -64,6 +64,9 @@ const AddBasic = createReactClass({
         formData.gross_profit = parseFloat(calProfit).toFixed(2);
 
         if (!formData.need_invoice) formData.need_invoice = 'true';
+        if(!formData.copy_number) formData.copy_number = copyNumArray[0];
+        if(!formData.start_time) formData.start_time = moment().valueOf();
+        if(!formData.end_time) formData.end_time = moment().valueOf();
 
         return (
             <Form layout='horizontal' className="add-basic" data-tracename="添加合同>基本信息">
@@ -86,7 +89,7 @@ const AddBasic = createReactClass({
                     )}
                     <FormItem
                         {...formItemLayout}
-                        label={Intl.get( 'contract.valid.term', '有效期限')}
+                        label={Intl.get('contract.valid.term', '有效期限')}
                         required
                     >
                         <Row>
@@ -99,7 +102,7 @@ const AddBasic = createReactClass({
                                     <Validator rules={[this.validateStartAndEndTime('start_time')]}>
                                         <DatePicker
                                             name='start_time'
-                                            value={formData.start_time ? moment(formData.start_time) : moment()}
+                                            value={formData.start_time ? moment(formData.start_time) : moment(moment().valueOf())}
                                             onChange={this.setField.bind(this, 'start_time')}
                                         />
                                     </Validator>
@@ -115,7 +118,7 @@ const AddBasic = createReactClass({
                                     <Validator rules={[this.validateStartAndEndTime('end_time')]}>
                                         <DatePicker
                                             name='end_time'
-                                            value={formData.end_time ? moment(formData.end_time) : moment()}
+                                            value={formData.end_time ? moment(formData.end_time) : moment(moment().valueOf())}
                                             onChange={this.setField.bind(this, 'end_time')}
                                         />
                                     </Validator>
@@ -153,7 +156,7 @@ const AddBasic = createReactClass({
                     </FormItem>*/}
                     <FormItem
                         {...formItemLayout2}
-                        label={Intl.get('contract.32', '合同份数',)}
+                        label={Intl.get('contract.32', '合同份数')}
                         required
                     >
                         <Select

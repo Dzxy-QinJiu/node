@@ -17,7 +17,8 @@ import AddReport from './add-report';
 import AddRepayment from './add-repayment';
 import AddBuyBasic from './add-buy-basic';
 import AddBuyPayment from './add-buy-payment';
-import DetailBasic from './detail-basic';
+// import DetailBasic from './detail-basic';
+import DetailBasic from './views/detail-basic-new';
 import DetailInvoice from './detail-invoice';
 import DetailBuyBasic from './detail-buy-basic';
 import DetailBuyPayment from './detail-buy-payment';
@@ -31,8 +32,19 @@ let stepMap = {
     '2': '产品信息',
     '3': '回款计划'
 };
-let reportValidated = false; // 添加服务合同时，若有添加产品，则需要先验证产品，在验证服务类型，默认为未添加产品
-
+// 右侧面板固定高度常量
+const LAYOUT_CONSTANTS = {
+    TOP_DELTA: 69,
+    BOTTOM_DELTA: 26,
+    BASIC_TOP: 25,
+    USER_DETAIL: 45,
+    BTN_PADDING: 50,//确定取消按钮区域的高度
+    BOTTOM_PADDING: 60,
+    TITLE_PADDING: 30,
+    ERROR_PADDING: 70,
+    LOADING_PADDING: 100,
+    REMARK_PADDING: 24
+};
 class ContractRightPanel extends React.Component {
     state = {
         isLoading: false,
@@ -414,9 +426,26 @@ class ContractRightPanel extends React.Component {
         let endPaneKey = '3';
         if ([PROJECT, PURCHASE].indexOf(this.state.currentCategory) > -1) endPaneKey = '2';
         const isDetailType = ['detail', 'detailCost'].includes(this.props.view);
-        let sellFormPanes = {};
+        const {isLoading} = this.state;
+        //内容区高度
+        let contentHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA - LAYOUT_CONSTANTS.BASIC_TOP - LAYOUT_CONSTANTS.USER_DETAIL;
+        //用户详细信息高度
+        if (this.props.view === 'detail') {
+            contentHeight = contentHeight + LAYOUT_CONSTANTS.REMARK_PADDING - LAYOUT_CONSTANTS.TITLE_PADDING;
+        } else {
+            contentHeight += LAYOUT_CONSTANTS.USER_DETAIL;
+        }
+        //加载时增加padding
+        if (isLoading) {
+            contentHeight += LAYOUT_CONSTANTS.LOADING_PADDING;
+        }
+        //错误信息padding
+        // if (userInfo.errorMsg) {
+        //     contentHeight += LAYOUT_CONSTANTS.ERROR_PADDING;
+        // }
 
-        sellFormPanes['1'] = props => (
+        let contractFormPanes = {};
+        contractFormPanes['1'] = props => (
             <div className={props.className}>
                 {!props.isDetailType && props.currentView === 'sellForm' ?
                     <AddBasic
@@ -441,13 +470,14 @@ class ContractRightPanel extends React.Component {
         );
 
         let totalAmountPrice = `${Intl.get('contract.report.contract.total.ccount', '本次合同总金额为')} ${this.state.total_amount} ${Intl.get('contract.155', '元')}`;
-        this.state.showDiffAmountWarning ? totalAmountPrice = `${totalAmountPrice},${Intl.get('crm.contract.check.tips2', '与总价合计不符，请核对')}` : '';
+        // this.state.showDiffAmountWarning ? totalAmountPrice = `${totalAmountPrice},${Intl.get('crm.contract.check.tips2', '与总价合计不符，请核对')}` : '';
+        this.state.showDiffAmountWarning ? totalAmountPrice = Intl.get('contract.mount.check.tip', '总价合计不能大于合同总额{num}元，请核对',{num: this.state.total_amount}) : '';
         let totalAmountClass = classnames('total-amount-price',{
             'total-amount-error': this.state.showDiffAmountWarning
         });
 
         if ([PRODUCT].indexOf(this.state.currentCategory) > -1) {
-            sellFormPanes['2'] = props => (
+            contractFormPanes['2'] = props => (
                 <div className={props.className}>
                     <div className={totalAmountClass}>{totalAmountPrice}</div>
                     <AddProduct
@@ -463,7 +493,7 @@ class ContractRightPanel extends React.Component {
         }
 
         if (this.state.currentCategory === SERVICE) {
-            sellFormPanes['2'] = props => (
+            contractFormPanes['2'] = props => (
                 <div className={props.className}>
                     <div className={totalAmountClass}>{totalAmountPrice}</div>
                     <AddProduct
@@ -482,7 +512,7 @@ class ContractRightPanel extends React.Component {
                 </div>
             );          
         }
-        sellFormPanes[endPaneKey] = props => (
+        contractFormPanes[endPaneKey] = props => (
             <div className={props.className}>
                 {!props.isDetailType && props.currentView === 'sellForm' ?
                     <AddRepayment
@@ -499,9 +529,9 @@ class ContractRightPanel extends React.Component {
                 }
             </div>
         );
-        const tabContents = [];
-        _.each(sellFormPanes, (value, key) => {
-            tabContents.push(
+        const contractContents = [];
+        _.each(contractFormPanes, (value, key) => {
+            contractContents.push(
                 value({
                     className: this.state.currentTabKey !== key ? 'hide' : '',
                     isDetailType,
@@ -509,6 +539,81 @@ class ContractRightPanel extends React.Component {
                 })
             );
         });
+
+        const props = this.props;
+        const tabPaneList = [
+            <TabPane tab={Intl.get('user.user.basic', '基本信息')} key="1">
+                <div className="contract_detail">
+                    {props.contract.type === VIEW_TYPE.SELL ?
+                        <DetailBasic
+                            ref="detailBasic"
+                            height={contentHeight}
+                            contract={this.props.contract}
+                            teamList={this.state.teamList}
+                            userList={this.state.userList}
+                            getUserList={this.props.getUserList}
+                            isGetUserSuccess={this.props.isGetUserSuccess}
+                            handleSubmit={this.handleSubmit}
+                            showLoading={this.showLoading}
+                            hideLoading={this.hideLoading}
+                            refreshCurrentContract={this.props.refreshCurrentContract}
+                            refreshCurrentContractRepayment={this.props.refreshCurrentContractRepayment}
+                            viewType={this.props.viewType}
+                        /> :
+                        <DetailBuyBasic
+                            ref="detailBuyBasic"
+                            height={contentHeight}
+                            contract={this.props.contract}
+                            teamList={this.state.teamList}
+                            userList={this.state.userList}
+                            getUserList={this.props.getUserList}
+                            isGetUserSuccess={this.props.isGetUserSuccess}
+                            handleSubmit={this.handleSubmit}
+                        />}
+                </div>
+            </TabPane>
+        ];
+        // 项目合同和采购合同没有产品与服务信息,
+        if(this.props.contract.type === VIEW_TYPE.SELL) {
+            let isProductAndService = [PRODUCT, SERVICE].indexOf(this.props.contract.category) > -1;
+            let endTabKey = 3, tabList = [];
+            if(isProductAndService) {
+                endTabKey += 1;
+                tabList.push(
+                    <TabPane tab={Intl.get('contract.product.service.info', '产品与服务信息')} key="2">
+                        <div className="contract-repayment">
+                            产品与服务信息
+                        </div>
+                    </TabPane>
+                );
+            }
+            tabList = tabList.concat(
+                [
+                    <TabPane tab={`${Intl.get('contract.108', '回款')}${Intl.get('sales.stage.message', '信息')}`} key={endTabKey - 1}>
+                        <div className="contract-repayment">
+                            回款信息
+                        </div>
+                    </TabPane>,
+                    <TabPane tab={Intl.get('contract.40', '发票基本信息')} key={endTabKey}>
+                        <div className="contract-invoice">
+                            发票基本信息
+                        </div>
+                    </TabPane>
+                ]
+            );
+            tabPaneList.push(tabList);
+        }
+        // 采购合同
+        if(this.props.contract.type === VIEW_TYPE.BUY){
+            tabPaneList.push(
+                <TabPane tab={`${Intl.get('contract.91', '付款')}${Intl.get('sales.stage.message', '信息')}`} key="2">
+                    <div className="contract-repayment">
+                        付款信息
+                    </div>
+                </TabPane>
+            );
+        }
+
         const stepTitles = {
             [PRODUCT]: [
                 '基本信息',
@@ -521,7 +626,7 @@ class ContractRightPanel extends React.Component {
             ],
             [PURCHASE]: [
                 '基本信息',
-                '回款计划'
+                '付款计划'
             ],
             [SERVICE]: [
                 '基本信息',
@@ -530,7 +635,6 @@ class ContractRightPanel extends React.Component {
             ]            
         };
 
-
         return (
             <div id="contractRightPanel">
                 {!isDetailType ?
@@ -538,36 +642,12 @@ class ContractRightPanel extends React.Component {
                         {stepTitles[this.props.contractType].map(title => <Step key={title} title={title} />)}
                     </Steps> : null}
 
-                {/* {this.state.currentView === 'chooseType' ? (
-                    
-                    <Tabs defaultActiveKey="1" className="choose-type">
-                        <TabPane tab={Intl.get('contract.98', '添加合同')} key="1">
-                            选择类型：
-                            <ul>
-                                {CATEGORY.map((category, index) => {
-                                    //将采购合同排除
-                                    if (category === PURCHASE) return;
-
-                                    const className = category === this.state.currentCategory ? 'active' : '';
-                                    const view = category === PURCHASE ? 'buyForm' : 'sellForm';
-                                    return (<li className={className}
-                                        key={index}
-                                        onClick={this.changeToView.bind(this, view, category)}
-                                    >
-                                        {category}
-                                    </li>);
-                                })}
-                            </ul>
-                        </TabPane>
-                    </Tabs>
-                ) : null} */}
-
                 {/*添加其他合同（包括采购合同）*/}
                 {/*{!isDetailType && this.state.currentView === 'sellForm' ? (*/}
                 { !isDetailType ? (
-                    <div className="add-form" style={{ height: this.state.contentHeight }}>
+                    <div className="add-form" style={{ height: contentHeight }}>
                         <GeminiScrollBar ref="gemiScrollBar">
-                            {tabContents}
+                            {contractContents}
                         </GeminiScrollBar>
                         <div className="step-button">
                             {
@@ -596,68 +676,9 @@ class ContractRightPanel extends React.Component {
                     </div>
                 ) : null}
 
-                {/*添加采购合同*/}
-                {/*{!isDetailType && this.state.currentView === 'buyForm' ? (
-                    <div className="add-form">
-                        {
-                            this.state.currentTabKey === '1' ?
-                                <AddBuyBasic
-                                    ref="addBuyBasic"
-                                    contract={this.props.contract}
-                                    teamList={this.props.teamList}
-                                    userList={this.props.userList}
-                                    getUserList={this.props.getUserList}
-                                    isGetUserSuccess={this.props.isGetUserSuccess}
-                                    validateNumRepeat={true}
-                                />
-                                : null
-                        }
-                        {
-                            this.state.currentTabKey === '2' ?
-                                <GeminiScrollBar ref="gemiScrollBar">
-                                    <AddBuyPayment
-                                        ref="addBuyPayment"
-                                        rightPanel={this}
-                                        updateScrollBar={this.updateScrollBar}
-                                    />
-                                </GeminiScrollBar> : null
-                        }
-
-                        <div className="step-button">
-                            {
-                                this.state.currentTabKey !== '1' ?
-                                    <Button
-                                        onClick={this.goPrev}
-                                    >
-                                        <ReactIntl.FormattedMessage id="user.user.add.back" defaultMessage="上一步" />
-                                    </Button> : null
-                            }
-                            {this.state.currentTabKey !== '2' ? (
-                                <Button
-                                    onClick={this.onNextStepBtnClick}
-                                    type="primary"
-                                >
-                                    <ReactIntl.FormattedMessage id="user.user.add.next" defaultMessage="下一步" />
-                                </Button>
-                            ) : (
-                                <Button
-                                    onClick={this.handleSubmit}
-                                >
-                                    <ReactIntl.FormattedMessage id="user.user.add.finish" defaultMessage="完成" />
-                                </Button>
-                            )}
-                        </div>
-                    </div>
-                ) : null}*/}
-
                 {/*费用（添加和修改）*/}
                 {this.props.view === 'detailCost' ? (
                     <div className="add-form">
-                        {/*<Tabs activeKey={this.state.currentTabKey}>
-                            <TabPane tab={_.isEmpty(this.props.contract) ? Intl.get('contract.127', '添加费用') : Intl.get('contract.129', '费用信息')} key="1">
-
-                            </TabPane>
-                        </Tabs>*/}
                         <DetailCost
                             ref="detailCost"
                             cost={this.props.contract}
@@ -676,12 +697,11 @@ class ContractRightPanel extends React.Component {
                 ) : null}
 
                 {/*费用外的其他合同详情*/}
-                {this.props.view === 'detail' ? (
-                    <div className="detail">
+                {/*<div className="detail">
                         {this.props.contract.type === VIEW_TYPE.SELL ? (
                             // 销售,服务,回款合同的信息
-                            <Tabs activeKey={this.state.currentTabKey} onChange={this.changeCurrentTabKey}>
-                                <TabPane tab={Intl.get('contract.101', '合同信息')} key="1" style={{ height: this.state.contentHeight }}>
+                            <Tabs defaultActiveKey='1' activeKey={this.state.currentTabKey} onChange={this.changeCurrentTabKey}>
+                                <TabPane tab={Intl.get('contract.101', '合同信息')} key="1" style={{ height: contentHeight }}>
                                     <GeminiScrollBar ref="gemiScrollBar">
                                         <DetailBasic
                                             ref="detailBasic"
@@ -744,7 +764,11 @@ class ContractRightPanel extends React.Component {
                                 </TabPane>
                             </Tabs>
                         )}
-                    </div>
+                    </div>*/}
+                {this.props.view === 'detail' ? (
+                    <Tabs defaultActiveKey='1' activeKey={this.state.currentTabKey} onChange={this.changeCurrentTabKey}>
+                        {tabPaneList}
+                    </Tabs>
                 ) : null}
 
                 {this.state.isLoading ? (

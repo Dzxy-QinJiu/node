@@ -1,17 +1,16 @@
 /** Created by 2019-01-29 10:04 */
-import { parseAmount } from 'LIB_DIR/func';
-
 var React = require('react');
 import {message, Select, Radio} from 'antd';
 let Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
-require('../../user_manage/public/css/user-info.less');
+import 'MOD_DIR/user_manage/public/css/user-info.less';
 import DetailCard from 'CMP_DIR/detail-card';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import ajax from '../common/ajax';
 import { COST_TYPE, OPERATE } from '../consts';
+import oplateConsts from 'LIB_DIR/consts';
 import { getNumberValidateRule } from 'PUB_DIR/sources/utils/validate-util';
 import routeList from 'MOD_DIR/contract/common/route';
 //展示的类型
@@ -86,7 +85,11 @@ class DetailCostCard extends React.Component {
             if (result.code === 0) {
                 message.success(OPERATE['update'] + '费用信息成功');
                 if(_.isFunction(successFunc)) successFunc();
-                this.props.refreshCurrentContract(this.props.cost.id);
+                const hasResult = _.isObject(result.result) && !_.isEmpty(result.result);
+                if(hasResult){
+                    let contract = _.extend({},this.props.cost,result.result);
+                    this.props.refreshCurrentContract(this.props.cost.id,true,contract);
+                }
             } else {
                 message.error(result.msg || OPERATE[type] + '费用信息失败');
                 if (_.isFunction(errorFunc)) errorFunc();

@@ -1,6 +1,7 @@
 @import "../../../public/css/common-variables";
 @import "../../../components/antd-table-pagination/index.less";
 @bg-grey: #F5F5F5;
+@color-block: #333333;
 .moduleContent {
     height: 100%;
     .contract-divide-line {
@@ -230,8 +231,8 @@
                 padding: 5px 0;
             }
             .ant-tabs-ink-bar {
-                background-color: #4D96D1;
-                height: 3px;
+                //background-color: #4D96D1;
+                //height: 3px;
             }
         }
         form {
@@ -883,6 +884,9 @@
                 label {
                     margin-right: 0px;
                 }
+                .ant-checkbox-wrapper{
+                    line-height: 30px;
+                }
             }
         }
         .add-form {
@@ -965,7 +969,7 @@
               margin-right: 8px;
             }
             .basic-info-text{
-              color: #333333;
+              color: @color-block;
             }
           }
         }
@@ -1037,6 +1041,61 @@
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
+        }
+        .contract_detail{
+            padding: 0 20px;
+            form{
+                padding: 0;
+            }
+        }
+        .basic-info-item {
+            input {
+                height: auto;
+            }
+            .basic-info-label{
+                width: 65px;
+            }
+        }
+        .right-panel-modal-content{
+            .icon-edit-btn{
+                float: right;
+                font-size: 16px;
+                color: #8da8c5;
+                cursor: pointer;
+            }
+        }
+        .contract-tab-container{
+            padding-right: 15px;
+            .belong-customer-form {
+                .circle-button{
+                    position: absolute;
+                    top: 0px;
+                    right: -70px;
+                    margin: 0;
+                    z-index: 1;
+                    cursor: pointer;
+                }
+            }
+            .belong-customer-list {
+                .detail-item{
+                    margin-bottom: 10px;
+                    padding-bottom: 10px;
+                    border-bottom: 1px solid @bg-grey;
+                    &:last-child{
+                      border-bottom: none;
+                      margin-bottom: 0;
+                    }
+                    .detail-customer-name{
+                        font-size: 14px;
+                        color: @color-block;
+                    }
+                }
+            }
+            .belong-customer-form{
+               input{
+                 width: 240px!important;
+               }
+            }
         }
     }
 

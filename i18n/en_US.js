@@ -1702,6 +1702,9 @@ var en_US = {
     'contract.delete.error': 'Failed to delete contract',//删除合同失败
     'contract.add.error': 'Failed to add contract',//添加合同失败
     'contract.valid.term': 'Valid term',//有效期限
+    'contract.product.service.info': 'Product and service information', //产品与服务信息
+    'contract.enter.cost': 'Please enter cost',//请输入成本额
+    'contract.mount.check.tip': 'The total price cannot be greater than the total contract amount {num} yuan, please check', //总价合计不能大于合同总额{num}元，请核对
     //合同管理  end
     // 销售提成start
     'sales.commission.sale.name': 'Sale name', // 销售名

@@ -1728,6 +1728,9 @@ var zh_CN = {
     'contract.delete.error': '删除合同失败',
     'contract.add.error': '添加合同失败',
     'contract.valid.term': '有效期限',
+    'contract.product.service.info': '产品与服务信息',
+    'contract.enter.cost': '请输入成本额',
+    'contract.mount.check.tip': '总价合计不能大于合同总额{num}元，请核对',
     // 销售提成start
     'sales.commission.sale.name': '销售名',
     'sales.commission.standard': '达标',

@@ -48,7 +48,7 @@ let queryCustomerTimeout = null;
 
 export default {
     getInitialState: function() {
-        let formData = extend(true, {}, this.props.contract);
+        let formData = _.extend({}, this.props.contract);
         //所属客户是否是选择的，以数组的形式记录了各个所属客户在输入后是否经过了点击选择的过程
         let belongCustomerIsChoosen = [];
 
@@ -70,13 +70,14 @@ export default {
     //输入客户名
     enterCustomer: function(field, e) {
         const value = _.trim(e.target.value);
+        let {formData} = this.state;
 
-        this.state.formData[field] = value;
+        formData[field] = value;
         //复制到甲方
         if (field === 'customer_name') {
-            this.state.formData['buyer'] = value;
+            formData['buyer'] = value;
         }
-        this.setState(this.state);
+        this.setState({formData});
     },
     queryCustomer: function(index, keyword) {
         const fieldName = 'belong_customer' + index;
@@ -232,8 +233,8 @@ export default {
         let {formData,belongCustomerErrMsg,belongCustomerIsChoosen} = this.state;
 
         formData.customers.splice(index, 1);
-        belongCustomerErrMsg.splice(index, 1),
-        belongCustomerIsChoosen.splice(index, 1),
+        belongCustomerErrMsg.splice(index, 1);
+        belongCustomerIsChoosen.splice(index, 1);
 
         this.setState({
             formData,
@@ -446,7 +447,7 @@ export default {
         return (
             <FormItem
                 {...formItemLayout2}
-                label="合同额"
+                label={Intl.get('contract.25', '合同额')}
                 validateStatus={this.getValidateStatus('contract_amount')}
                 help={this.getHelpMessage('contract_amount')}
                 className="form-item-append-icon-container"
@@ -600,7 +601,7 @@ export default {
         );
     },
     onCustomerChoosen: function(index, value) {
-        let formData = this.state.formData;
+        let {formData,belongCustomerIsChoosen} = this.state;
 
         let belongCustomer = formData.customers[index];
         const selectedCustomer = _.find(this.state.customerList, customer => customer.customer_id === value);
@@ -615,12 +616,15 @@ export default {
         //暂存表单数据
         const formDataCopy = JSON.parse(JSON.stringify(formData));
 
-        this.state.belongCustomerIsChoosen[index] = true;
+        belongCustomerIsChoosen[index] = true;
 
-        this.setState(this.state, () => {
+        this.setState({
+            formData,
+            belongCustomerIsChoosen
+        }, () => {
             //用暂存的表单数据更新一下验证后的表单数据
             //以解决选中了客户时在输入框里显示的是客户id而非客户名的问题
-            //            this.handleValidate(this.state.status, formDataCopy);
+            this.handleValidate(this.state.status, formDataCopy);
         });
     },
     onUserChoosen: function(value) {
