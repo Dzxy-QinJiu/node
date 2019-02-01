@@ -2,13 +2,13 @@
  * 本月试用合格组成
  */
 
-import { argCallbackTimeMember } from '../../utils';
+import { argCallbackTimeMemberStatisticsType } from '../../utils';
 
 export function getCustomerTrialQualifiedComposeChart() {
     return {
         title: '本月试用合格组成',
         url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
-        argCallback: argCallbackTimeMember,
+        argCallback: argCallbackTimeMemberStatisticsType,
         chartType: 'bar',
         processOption: (option, chartProps) => {
             option.legend = {

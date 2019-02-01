@@ -5,6 +5,7 @@
 import { num as antUtilNum } from 'ant-utils';
 const formatAmount = antUtilNum.formatAmount;
 const querystring = require('querystring');
+import Store from './store';
 
 //获取导入的上下文中的文件内容
 //req 为导入的上下文
@@ -131,19 +132,25 @@ export function argCallbackTimeToUnderlineTime(arg) {
 
 //处理开始结束时间和成员id的参数回调函数
 export function argCallbackTimeMember(arg) {
-    let query = arg.query;
-
-    if (query.member_id) {
-        if (query.member_id === 'all') {
-            query.statistics_type = 'user';
-        } else {
-            query.member_ids = query.member_id;
-        }
-
-        delete query.member_id;
-    }
-
     argCallbackTimeToUnderlineTime(arg);
+    argCallbackMemberIdToIds(arg);
+}
+
+//查询参数回调函数: 调整开始结束时间、成员id及统计结果返回类型
+export function argCallbackTimeMemberStatisticsType(arg) {
+    argCallbackTimeMember(arg);
+    argCallbackStatisticsType(arg);
+}
+
+//查询参数回调函数: 根据当前是按团队还是成员筛选觉得是否添加 statistics_type 参数
+export function argCallbackStatisticsType(arg) {
+    const query = arg.query;
+
+    if (query) {
+        if (Store.teamMemberFilterType === 'member') {
+            query.statistics_type = 'user';
+        }
+    }
 }
 
 //处理团队id的参数回调函数
