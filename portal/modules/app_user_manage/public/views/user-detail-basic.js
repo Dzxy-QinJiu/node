@@ -693,7 +693,7 @@ class UserDetailBasic extends React.Component {
         var DetailBlock = !this.state.isLoading && !this.state.getDetailErrorMsg ? (
             <div className='user-detail-baisc-v3'>
                 <UserBasicCard
-                    hasEditPrivilege={hasEditPrivilege}
+                    hasEditPrivilege={hasEditPrivilege || hasPrivilege('CHANGE_USER_CUSTOMER')}
                     customer_id={this.state.customer_id}
                     customer_name={this.state.customer_name}
                     sales_id={_.get(initialUser, 'sales.sales_id','')}

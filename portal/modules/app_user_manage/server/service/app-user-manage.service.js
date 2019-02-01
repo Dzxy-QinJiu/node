@@ -355,9 +355,9 @@ exports.editAppUser = function(req, res, obj) {
     var isSalesEditCustomerBelong = false;
     //如果只修改客户的话，看看是否是销售，销售调用另一个接口
     if (obj && 'customer_id' in obj && obj.user_id && Object.keys(obj).length === 2) {
-        if (auth.hasRole(req, auth.ROLE_CONSTANTS.SALES) ||
-            auth.hasRole(req, auth.ROLE_CONSTANTS.SALES_LEADER) ||
-            auth.hasRole(req, auth.ROLE_CONSTANTS.SECRETARY)) {
+        let privilegesArray = _.get(req.session, 'user.privileges', []);
+        //没有修改用户的权限，有销售修改用户的所属客户的权限时，调用销售修改用户所属客户的接口
+        if (_.indexOf(privilegesArray,'APP_USER_EDIT') === -1 && _.indexOf(privilegesArray,'CHANGE_USER_CUSTOMER') !== -1) {
             isSalesEditCustomerBelong = true;
             requestUrl = AppUserRestApis.editAppUserCustomer;
         }
