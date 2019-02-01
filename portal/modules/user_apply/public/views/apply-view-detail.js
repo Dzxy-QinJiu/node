@@ -1101,7 +1101,8 @@ const ApplyViewDetail = createReactClass({
                     <div className="apply-info-label clearfix">
                         <span className="user-info-label">{Intl.get('common.type', '类型')}:</span>
                         <span className="user-info-text">
-                            {detailInfo.account_type === '1' ? Intl.get('common.official', '签约') : Intl.get('common.trial', '试用')}
+                            {this.state.isOplateUser ? <span>{detailInfo.account_type === '1' ? Intl.get('common.official', '签约') : Intl.get('common.trial', '试用')}</span> : <span>{detailInfo.tag}</span>}
+
                         </span>
                     </div>
                     <div className="col-12 apply_detail_apps">
