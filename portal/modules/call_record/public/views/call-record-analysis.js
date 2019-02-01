@@ -1171,11 +1171,6 @@ class CallRecordAnalyis extends React.Component {
                 x2: 30,
                 y2: 30
             },
-            xAxis: [
-                {
-                    data: _.map(dataList, 'name'),
-                }
-            ],
             yAxis: [
                 {
                     axisLabel: {
@@ -1264,7 +1259,7 @@ class CallRecordAnalyis extends React.Component {
         const barCharts = [{
             title: title,
             chartType: 'bar',
-            data: data,
+            data: dataList,
             layout: {
                 sm: 24,
             },
