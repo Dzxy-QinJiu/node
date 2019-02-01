@@ -127,6 +127,8 @@ class ApplyViewDetailStore {
         };
         //(多用户)延期申请审批时，当前要配置角色的用户id
         this.curShowConfigUserId = '';
+        //下一节点负责人的列表
+        this.candidateList = [];
     }
     //获取应用列表
     getApps(result) {
@@ -578,6 +580,13 @@ class ApplyViewDetailStore {
         });
     }
 
+    getNextCandidate(result) {
+        if (result.error) {
+            this.candidateList = [];
+        } else {
+            this.candidateList = result;
+        }
+    }
     //设置角色的模态框是显示还是隐藏
     setRolesNotSettingModalDialog({ show, appNames }) {
         this.rolesNotSettingModalDialog.show = show;

@@ -14,8 +14,8 @@ import Spinner from '../../../../components/spinner';
 import userData from '../../../../public/sources/user-data';
 import GeminiScrollbar from '../../../../components/react-gemini-scrollbar';
 import AppProperty from '../../../../components/user_manage_components/app-property-setting';
-import {Alert, Tooltip, Form, Button, Input, InputNumber, Select, Icon, message, DatePicker, Row, Col} from 'antd';
-
+import {Alert, Tooltip, Form, Button, Input, InputNumber, Select, Icon, message, DatePicker, Row, Col,Steps} from 'antd';
+const Step = Steps.Step;
 const Option = Select.Option;
 import FieldMixin from '../../../../components/antd-form-fieldmixin';
 import UserNameTextField from '../../../../components/user_manage_components/user-name-textfield/apply-input-index';
@@ -43,7 +43,8 @@ var UserTypeConfigForm = require('./user-type-config-form');
 import Trace from 'LIB_DIR/trace';
 
 var moment = require('moment');
-import {handleDiffTypeApply} from 'PUB_DIR/sources/utils/common-method-util';
+import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDesc} from 'PUB_DIR/sources/utils/common-method-util';
+import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 //表单默认配置
 var appConfig = {
     //默认没id，用id区分增加和修改类型，有id是修改，没id是增加
@@ -168,6 +169,7 @@ const ApplyViewDetail = createReactClass({
         setTimeout(() => {
             ApplyViewDetailActions.showDetailLoading(detailItem);
             ApplyViewDetailActions.getApplyDetail(detailItem.id, applyData);
+            ApplyViewDetailActions.getNextCandidate({id: detailItem.id});
             //获取回复列表
             if (hasPrivilege('GET_APPLY_COMMENTS')) {
                 ApplyViewDetailActions.getReplyList(detailItem.id);
@@ -177,11 +179,11 @@ const ApplyViewDetail = createReactClass({
 
     componentDidMount() {
         ApplyViewDetailStore.listen(this.onStoreChange);
-        if (this.props.detailItem.id) {
+        var applyId = this.props.detailItem.id;
+        if (applyId) {
             setTimeout(() => {
                 this.getApplyDetail(this.props.detailItem, this.props.applyData);
                 ApplyViewDetailActions.setBottomDisplayType();
-
             });
         }
         emitter.on('user_detail_close_right_panel', this.closeRightPanel);
@@ -377,6 +379,67 @@ const ApplyViewDetail = createReactClass({
             />
         </span>);
     },
+    //审批状态
+    renderApplyStatus: function() {
+        var showApplyInfo = [{
+            label: Intl.get('leave.apply.application.status', '审批状态'),
+            renderText: this.renderApplyApproveSteps,
+        }];
+        return (
+            <ApplyDetailInfo
+                iconClass='icon-apply-status'
+                textCls='show-time-line'
+                showApplyInfo={showApplyInfo}
+            />
+        );
+    },
+    renderApplyApproveSteps: function() {
+        var stepStatus = '';
+        var applicantList = _.get(this.state, 'detailInfoObj.info');
+        var replyList = getUserApplyFilterReplyList(this.state);
+        var applicateName = _.get(applicantList, 'presenter') || '';
+        var applicateTime = moment(_.get(applicantList, 'time')).format(oplateConsts.DATE_TIME_FORMAT);
+        var stepArr = [{
+            title: applicateName + Intl.get('user.apply.submit.list', '提交申请'),
+            description: applicateTime
+        }];
+        var currentLength = 0;
+        //过滤掉手动添加的回复
+        currentLength = replyList.length;
+        if (currentLength) {
+            _.forEach(replyList, (replyItem, index) => {
+                var descrpt = getApplyStatusTimeLineDesc(replyItem.approve_status);
+                if (['reject'].includes(replyItem.approve_status)){
+                    stepStatus = 'error';
+                    currentLength--;
+                }
+                stepArr.push({
+                    title: (replyItem.nick_name || userData.getUserData().nick_name || '') + descrpt,
+                    description: moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
+                });
+            });
+        }
+        //如果下一个节点是直接主管审核
+        if (['0'].includes(_.get(applicantList,'approval_state'))) {
+            var candidate = this.state.candidateList,candidateName = '';
+            if (_.isArray(candidate) && candidate.length === 1){
+                candidateName = _.get(candidate,'[0].nick_name');
+            }
+            stepArr.push({
+                title: Intl.get('apply.approve.worklist','待{applyer}审批',{'applyer': candidateName}),
+                description: ''
+            });
+        }
+        return (
+            <Steps current={currentLength + 1} status={stepStatus}>
+                {_.map(stepArr, (stepItem) => {
+                    return (
+                        <Step title={stepItem.title} description={stepItem.description}/>
+                    );
+                })}
+            </Steps>
+        );
+    },
 
     //渲染申请单详情
     renderApplyDetailInfo() {
@@ -439,6 +502,7 @@ const ApplyViewDetail = createReactClass({
                                 </div>
                                 {this.renderComment()}
                             </div>) : null}
+                            {this.renderApplyStatus()}
                             <div className="apply-detail-reply-list apply-detail-info">
                                 <div className="reply-icon-block">
                                     <span className="iconfont icon-apply-message-tip"/>

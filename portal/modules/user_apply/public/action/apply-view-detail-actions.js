@@ -5,6 +5,7 @@ import UserData from '../../../../public/sources/user-data';
 import UserApplyAction from './user-apply-actions';
 import { APPLY_MULTI_TYPE_VALUES } from 'PUB_DIR/sources/utils/consts';
 import {updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
+import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 class ApplyViewDetailActions {
     constructor() {
         this.generateActions(
@@ -188,6 +189,15 @@ class ApplyViewDetailActions {
             AppUserUtil.emitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch(errorMsg);
         });
+    }
+
+    //获取下一节点的负责人
+    getNextCandidate(queryObj) {
+        ApplyApproveAjax.getNextCandidate().sendRequest(queryObj).success((list) => {
+            if (_.isArray(list)) {
+                this.dispatch(list);
+            }
+        }).error(this.dispatch({error: true}));
     }
 
 }

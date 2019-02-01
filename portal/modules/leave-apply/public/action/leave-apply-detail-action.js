@@ -113,7 +113,7 @@ function ApplyViewDetailActions() {
             if (_.isArray(list)){
                 this.dispatch(list);
             }
-        }).error( this.dispatch({error: true}));
+        }).error(this.dispatch({error: true}));
     };
     //把申请转给另外一个人
     this.transferNextCandidate = function(queryObj,callback) {
