@@ -142,7 +142,7 @@ export function argCallbackTimeMemberStatisticsType(arg) {
     argCallbackStatisticsType(arg);
 }
 
-//查询参数回调函数: 根据当前是按团队还是成员筛选觉得是否添加 statistics_type 参数
+//查询参数回调函数: 根据当前是按团队还是成员筛选决定是否添加 statistics_type 参数
 export function argCallbackStatisticsType(arg) {
     const query = arg.query;
 
