@@ -115,7 +115,7 @@ class TopBar extends React.Component {
 
         if (_.last(memberId) === 'all' || _.isEmpty(memberId)) {
             selectedMember = ['all'];
-            memberIdStr = 'all';
+            memberIdStr = '';
         } else {
             selectedMember = _.filter(memberId, id => id !== 'all');
             memberIdStr = selectedMember.join(',');
