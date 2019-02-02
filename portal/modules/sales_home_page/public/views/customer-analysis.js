@@ -716,7 +716,7 @@ class CustomerAnalysis extends React.Component {
                         customerIds: customerIdsStr,
                     });
                 //当前记录里没有id列表，但有缓存key时，用缓存key查询客户详情（如有效客户统计中的活跃客户数）
-                } else if (record.active_cache_key) {
+                } else if (record.cache_key) {
                     _.extend(argsObj, {
                         //缓存key，用于查寻有效客户活跃数详细列表
                         cache_key: record.cache_key,
