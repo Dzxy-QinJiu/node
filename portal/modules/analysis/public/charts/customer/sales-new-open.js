@@ -2,25 +2,20 @@
  * 销售新开客户数统计
  */
 
-import { argCallbackTeamId } from '../../utils';
+import { argCallbackTimeToUnderlineTime } from '../../utils';
 
-export function getSalesNewOpenChart() {
+export function getSalesNewOpenChart(paramObj = {}) {
     return {
         title: Intl.get('oplate_customer_analysis.salesNewCustomerCount', '销售新开客户数统计'),
         layout: {sm: 24},
         height: 'auto',
         url: '/rest/analysis/customer/v2/statistic/:auth_type/customer/user/new',
         argCallback: (arg) => {
-            const query = arg.query;
+            argCallbackTimeToUnderlineTime(arg);
 
-            if (query && query.starttime && query.endtime) {
-                query.start_time = query.starttime;
-                query.end_time = query.endtime;
-                delete query.starttime;
-                delete query.endtime;
+            if (_.isFunction(paramObj.argCallback)) {
+                paramObj.argCallback(arg);
             }
-
-            argCallbackTeamId(arg);
         },
         chartType: 'table',
         option: {

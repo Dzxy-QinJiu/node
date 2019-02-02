@@ -5,11 +5,12 @@
 import { unknownDataMap, isSales } from '../../consts';
 import { handleChartClick } from '../../utils';
 
-export function getCustomerTeamChart(type = 'total', title) {
+export function getCustomerTeamChart(paramObj = {}) {
     return {
-        title: title || Intl.get('oplate_customer_analysis.4', '团队统计'),
-        url: `/rest/analysis/customer/v1/:auth_type/${type}/team`,
+        title: paramObj.title || Intl.get('oplate_customer_analysis.4', '团队统计'),
+        url: `/rest/analysis/customer/v1/:auth_type/${paramObj.type}/team`,
         chartType: 'bar',
+        argCallback: paramObj.argCallback,
         nameValueMap: unknownDataMap,
         chartClickRedirectCallback: handleChartClick.bind(this, 'team'),
         noShowCondition: {
