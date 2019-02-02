@@ -56,11 +56,11 @@ class AppConfigForm extends React.Component {
                 </div>) : null}
                 <FormItem
                     {...formItemLayout}
-                    label={Intl.get('user.open.cycle', '开通周期')}
+                    label={this.props.needEndTimeOnly ? Intl.get('user.time.end', '到期时间') : Intl.get('user.open.cycle', '开通周期')}
                 >
                     {this.props.renderUserTimeRangeBlock(timePickerConfig, appFormData)}
                 </FormItem>
-                <FormItem
+                {this.props.hideExpiredSelect ? null : <FormItem
                     {...formItemLayout}
                     label={Intl.get('user.expire.select', '到期可选')}
                 >
@@ -74,7 +74,7 @@ class AppConfigForm extends React.Component {
                             id="user.status.immutability"
                             defaultMessage="不变"/></Radio>
                     </RadioGroup>
-                </FormItem>
+                </FormItem>}
                 {this.props.needTwoFactorMultiLogin ? (
                     <FormItem
                         {...formItemLayout}
@@ -109,6 +109,8 @@ AppConfigForm.propTypes = {
     needTwoFactorMultiLogin: PropTypes.bool,//是否需要二步认证与多人登录的配置项
     onCheckTwoFactor: PropTypes.func,//二步认证修改事件
     onCheckMultiLogin: PropTypes.func,//多人登录修改事件
+    needEndTimeOnly: PropTypes.bool, //是否只传结束时间
+    hideExpiredSelect: PropTypes.bool, //是否展示到期可选
 };
 AppConfigForm.defaultProps = {
     appFormData: {
@@ -120,6 +122,8 @@ AppConfigForm.defaultProps = {
         is_two_factor: false,//是否是二步认证
     },//应用配置表单数据
     needUserType: false,//是否需要用户类型表单项
+    needEndTimeOnly: false, //是否只传结束时间
+    hideExpiredSelect: false, //是否展示到期可选
     onChangeUserType: function() {
     },//用户类型修改事件
     timePickerConfig: {},//开通周期的配置项

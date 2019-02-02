@@ -9,13 +9,14 @@ require('../css/apply-detail.less');
 import ApplyViewDetailStore from '../store/apply-view-detail-store';
 import {AntcTable} from 'antc';
 import ApplyViewDetailActions from '../action/apply-view-detail-actions';
+import UserApplyAction from '../action/user-apply-actions';
 import AppUserUtil from '../util/app-user-util';
 import Spinner from '../../../../components/spinner';
 import userData from '../../../../public/sources/user-data';
 import GeminiScrollbar from '../../../../components/react-gemini-scrollbar';
 import AppProperty from '../../../../components/user_manage_components/app-property-setting';
-import {Alert, Tooltip, Form, Button, Input, InputNumber, Select, Icon, message, DatePicker, Row, Col} from 'antd';
-
+import {Alert, Tooltip, Form, Button, Input, InputNumber, Select, Icon, message, DatePicker, Row, Col,Steps} from 'antd';
+const Step = Steps.Step;
 const Option = Select.Option;
 import FieldMixin from '../../../../components/antd-form-fieldmixin';
 import UserNameTextField from '../../../../components/user_manage_components/user-name-textfield/apply-input-index';
@@ -43,7 +44,10 @@ var UserTypeConfigForm = require('./user-type-config-form');
 import Trace from 'LIB_DIR/trace';
 
 var moment = require('moment');
-import {handleDiffTypeApply} from 'PUB_DIR/sources/utils/common-method-util';
+import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDesc,formatUsersmanList,updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
+import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
+import AntcDropdown from 'CMP_DIR/antc-dropdown';
+import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 //表单默认配置
 var appConfig = {
     //默认没id，用id区分增加和修改类型，有id是修改，没id是增加
@@ -125,12 +129,16 @@ function getDelayDisplayTime(delay) {
 }
 
 const APPLY_LIST_WIDTH = 421;
+import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
+import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 const ApplyViewDetail = createReactClass({
     propTypes: {
         detailItem: PropTypes.object,
         applyData: PropTypes.object,
         showNoData: PropTypes.bool,
         isUnreadDetail: PropTypes.bool,
+        applyListType: PropTypes.object,
     },
     displayName: 'ApplyViewDetail',
     mixins: [FieldMixin, UserNameTextField],
@@ -153,6 +161,8 @@ const ApplyViewDetail = createReactClass({
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
             showBackoutConfirmType: '',//操作的确认框类型
+            isOplateUser: false,
+            usersManList: [],//成员列表
             ...ApplyViewDetailStore.getState()
         };
     },
@@ -165,24 +175,33 @@ const ApplyViewDetail = createReactClass({
         setTimeout(() => {
             ApplyViewDetailActions.showDetailLoading(detailItem);
             ApplyViewDetailActions.getApplyDetail(detailItem.id, applyData);
+            ApplyViewDetailActions.getNextCandidate({id: detailItem.id});
             //获取回复列表
             if (hasPrivilege('GET_APPLY_COMMENTS')) {
                 ApplyViewDetailActions.getReplyList(detailItem.id);
             }
         });
     },
-
+    getAllUserList(){
+        getAllUserList(data => {
+            this.setState({
+                usersManList: data
+            });
+        });
+    },
     componentDidMount() {
         ApplyViewDetailStore.listen(this.onStoreChange);
-        if (this.props.detailItem.id) {
+        var applyId = this.props.detailItem.id;
+        if (applyId) {
             setTimeout(() => {
                 this.getApplyDetail(this.props.detailItem, this.props.applyData);
                 ApplyViewDetailActions.setBottomDisplayType();
-
             });
         }
         emitter.on('user_detail_close_right_panel', this.closeRightPanel);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
+        this.getIntegrateConfig();
+        this.getAllUserList();
     },
 
     componentWillUnmount() {
@@ -373,6 +392,67 @@ const ApplyViewDetail = createReactClass({
             />
         </span>);
     },
+    //审批状态
+    renderApplyStatus: function() {
+        var showApplyInfo = [{
+            label: Intl.get('leave.apply.application.status', '审批状态'),
+            renderText: this.renderApplyApproveSteps,
+        }];
+        return (
+            <ApplyDetailInfo
+                iconClass='icon-apply-status'
+                textCls='show-time-line'
+                showApplyInfo={showApplyInfo}
+            />
+        );
+    },
+    renderApplyApproveSteps: function() {
+        var stepStatus = '';
+        var applicantList = _.get(this.state, 'detailInfoObj.info');
+        var replyList = getUserApplyFilterReplyList(this.state);
+        var applicateName = _.get(applicantList, 'presenter') || '';
+        var applicateTime = moment(_.get(applicantList, 'time')).format(oplateConsts.DATE_TIME_FORMAT);
+        var stepArr = [{
+            title: applicateName + Intl.get('user.apply.submit.list', '提交申请'),
+            description: applicateTime
+        }];
+        var currentLength = 0;
+        //过滤掉手动添加的回复
+        currentLength = replyList.length;
+        if (currentLength) {
+            _.forEach(replyList, (replyItem, index) => {
+                var descrpt = getApplyStatusTimeLineDesc(replyItem.approve_status);
+                if (['reject'].includes(replyItem.approve_status)){
+                    stepStatus = 'error';
+                    currentLength--;
+                }
+                stepArr.push({
+                    title: (replyItem.nick_name || userData.getUserData().nick_name || '') + descrpt,
+                    description: moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
+                });
+            });
+        }
+        //如果下一个节点是直接主管审核
+        if (['0'].includes(_.get(applicantList,'approval_state'))) {
+            var candidate = this.state.candidateList,candidateName = '';
+            if (_.isArray(candidate) && candidate.length === 1){
+                candidateName = _.get(candidate,'[0].nick_name');
+            }
+            stepArr.push({
+                title: Intl.get('apply.approve.worklist','待{applyer}审批',{'applyer': candidateName}),
+                description: ''
+            });
+        }
+        return (
+            <Steps current={currentLength + 1} status={stepStatus}>
+                {_.map(stepArr, (stepItem) => {
+                    return (
+                        <Step title={stepItem.title} description={stepItem.description}/>
+                    );
+                })}
+            </Steps>
+        );
+    },
 
     //渲染申请单详情
     renderApplyDetailInfo() {
@@ -435,6 +515,7 @@ const ApplyViewDetail = createReactClass({
                                 </div>
                                 {this.renderComment()}
                             </div>) : null}
+                            {this.renderApplyStatus()}
                             <div className="apply-detail-reply-list apply-detail-info">
                                 <div className="reply-icon-block">
                                     <span className="iconfont icon-apply-message-tip"/>
@@ -501,9 +582,14 @@ const ApplyViewDetail = createReactClass({
     toggleApplyExpanded(flag, user_id) {
         ApplyViewDetailActions.toggleApplyExpanded({flag, user_id});
     },
-
+    getIntegrateConfig(){
+        commonDataUtil.getIntegrationConfig().then(resultObj => {
+            let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
+            this.setState({isOplateUser});
+        });
+    },
     renderDetailOperateBtn(user_id) {
-        if (!this.isUnApproved() || !hasPrivilege('APP_USER_APPLY_APPROVAL')) {
+        if (!this.isUnApproved() || !hasPrivilege('APP_USER_APPLY_APPROVAL') || !this.state.isOplateUser) {
             return null;
         }
         if (this.state.applyIsExpanded) {
@@ -915,6 +1001,7 @@ const ApplyViewDetail = createReactClass({
     getTableColunms() {
         const appsSetting = this.appsSetting;
         const isExistUserApply = this.isExistUserApply();
+        const isOplateUser = this.state.isOplateUser;
         let columns = [
             {
                 title: Intl.get('common.app', '应用'),
@@ -922,7 +1009,7 @@ const ApplyViewDetail = createReactClass({
                 className: 'apply-detail-th'
             }];
         //数量
-        if (!isExistUserApply) {
+        if (!isExistUserApply && isOplateUser) {
             columns.push({
                 title: Intl.get('common.app.count', '数量'),
                 dataIndex: 'number',
@@ -944,7 +1031,7 @@ const ApplyViewDetail = createReactClass({
             });
         }
         columns.push({
-            title: Intl.get('user.apply.detail.table.time', '周期'),
+            title: isOplateUser ? Intl.get('user.apply.detail.table.time', '周期') : Intl.get('user.time.end', '到期时间'),
             dataIndex: 'start_time',
             className: 'apply-detail-th',
             render: (text, app, index) => {
@@ -953,7 +1040,7 @@ const ApplyViewDetail = createReactClass({
                 const custom_setting = appsSetting[app.app_id];
                 return (
                     <span className="desp_time time-bar">
-                        {this.renderApplyTime(app, custom_setting)}
+                        {this.renderApplyTime(app, custom_setting,!isOplateUser)}
                     </span>);
             }
         });
@@ -974,39 +1061,42 @@ const ApplyViewDetail = createReactClass({
         const appsSetting = this.appsSetting;
         let columns = this.getTableColunms();
         //角色、权限
-        columns.push({
-            title: Intl.get('user.apply.detail.table.role', '角色'),
-            dataIndex: 'roleNames',
-            className: 'apply-detail-th',
-            render: (text, app, index) => {
-                let rolesNames = app.rolesNames;
-                if (_.get(rolesNames, '[0]')) {
-                    return rolesNames.map((item) => {
-                        return (
-                            <div key={item}>{item}</div>
-                        );
-                    });
-                }
-            }
-        });
-        if (permissionNameIndex) {
+        //如果是uem的，就不需要展示角色和权限了
+        if (this.state.isOplateUser){
             columns.push({
-                title: Intl.get('common.app.auth', '权限'),
-                dataIndex: 'permissionsNames',
+                title: Intl.get('user.apply.detail.table.role', '角色'),
+                dataIndex: 'roleNames',
                 className: 'apply-detail-th',
                 render: (text, app, index) => {
-                    const custom_setting = appsSetting[app.app_id];
-                    let permissionsNames = 'permissionsNames' in app ? app.permissionsNames : [];
-                    if (typeof permissionsNames === 'string') {
-                        permissionsNames = [app.permissionsNames];
+                    let rolesNames = app.rolesNames;
+                    if (_.get(rolesNames, '[0]')) {
+                        return rolesNames.map((item) => {
+                            return (
+                                <div key={item}>{item}</div>
+                            );
+                        });
                     }
-                    return permissionsNames.map((item) => {
-                        return (
-                            <div key={item}>{item}</div>
-                        );
-                    });
                 }
             });
+            if (permissionNameIndex) {
+                columns.push({
+                    title: Intl.get('common.app.auth', '权限'),
+                    dataIndex: 'permissionsNames',
+                    className: 'apply-detail-th',
+                    render: (text, app, index) => {
+                        const custom_setting = appsSetting[app.app_id];
+                        let permissionsNames = 'permissionsNames' in app ? app.permissionsNames : [];
+                        if (typeof permissionsNames === 'string') {
+                            permissionsNames = [app.permissionsNames];
+                        }
+                        return permissionsNames.map((item) => {
+                            return (
+                                <div key={item}>{item}</div>
+                            );
+                        });
+                    }
+                });
+            }
         }
         return (<AntcTable dataSource={detailInfo.apps}
             bordered={true}
@@ -1051,7 +1141,9 @@ const ApplyViewDetail = createReactClass({
                 <div className="apply_detail_operate clearfix">
                     {this.renderDetailOperateBtn()}
                 </div>
-                <AppProperty {...appComponentProps} />
+                <AppProperty {...appComponentProps}
+                    isOplateUser={this.state.isOplateUser}
+                />
             </div>
         );
     },
@@ -1086,7 +1178,8 @@ const ApplyViewDetail = createReactClass({
                     <div className="apply-info-label clearfix">
                         <span className="user-info-label">{Intl.get('common.type', '类型')}:</span>
                         <span className="user-info-text">
-                            {detailInfo.account_type === '1' ? Intl.get('common.official', '签约') : Intl.get('common.trial', '试用')}
+                            {this.state.isOplateUser ? <span>{detailInfo.account_type === '1' ? Intl.get('common.official', '签约') : Intl.get('common.trial', '试用')}</span> : <span>{detailInfo.tag}</span>}
+
                         </span>
                     </div>
                     <div className="col-12 apply_detail_apps">
@@ -1798,6 +1891,86 @@ const ApplyViewDetail = createReactClass({
             />;
         }
     },
+    renderTransferCandidateBlock(){
+        var usersManList = this.state.usersManList;
+        //需要选择销售总经理
+        var onChangeFunction = this.onSelectApplyNextCandidate;
+        var defaultValue = _.get(this.state, 'detailInfoObj.info.nextCandidateId', '');
+
+        //销售领导、域管理员,展示其所有（子）团队的成员列表
+        let dataList = formatUsersmanList(usersManList);
+        return (
+            <div className="op-pane change-salesman">
+                <AlwaysShowSelect
+                    placeholder={Intl.get('sales.team.search', '搜索')}
+                    value={defaultValue}
+                    onChange={onChangeFunction}
+                    notFoundContent={dataList.length ? Intl.get('common.no.member', '暂无成员') : Intl.get('apply.no.relate.user', '无相关成员')}
+                    dataList={dataList}
+                />
+            </div>
+        );
+    },
+    addNewApplyCandidate(transferCandidateId){
+        var submitObj = {
+            id: _.get(this, 'state.detailInfoObj.info.id', ''),
+            user_ids: [transferCandidateId]
+        };
+        var hasApprovePrivilege = _.get(this, 'state.detailInfoObj.info.showApproveBtn', false);
+        //如果操作转出的人是这条审批的待审批者，需要在这个操作人的待审批列表中删除这条申请
+        if (hasApprovePrivilege) {
+            submitObj.user_ids_delete = [userData.getUserData().user_id];
+        }
+        ApplyViewDetailActions.transferNextCandidate(submitObj, (flag) => {
+            //关闭下拉框
+            if (flag) {
+                if (_.isFunction(_.get(this, 'addNextCandidate.handleCancel'))) {
+                    this.addNextCandidate.handleCancel();
+                }
+                //转出成功后，如果左边选中的是待审批的列表，在待审批列表中把这条记录删掉
+                if (this.props.applyListType === 'false') {
+                    UserApplyAction.afterTransferApplySuccess(submitObj.id);
+                } else {
+                    message.success(Intl.get('apply.approve.transfer.success', '转出申请成功'));
+                }
+                if (hasApprovePrivilege && Oplate && Oplate.unread) {
+                    var count = Oplate.unread.approve - 1;
+                    updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
+                }
+            } else {
+                message.error(Intl.get('apply.approve.transfer.failed', '转出申请失败'));
+            }
+        });
+    },
+    onSelectApplyNextCandidate(updateUser){
+        ApplyViewDetailActions.setNextCandidateIds(updateUser);
+    },
+    clearNextCandidateIds(){
+        ApplyViewDetailActions.setNextCandidateIds('');
+    },
+    renderAddApplyNextCandidate(){
+        var addNextCandidateId = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
+        return (
+            <div className="pull-right">
+                <AntcDropdown
+                    ref={AssignSales => this.addNextCandidate = AssignSales}
+                    content={<Button
+                        data-tracename="点击转出申请按钮"
+                        className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('crm.qualified.roll.out', '转出')}</Button>}
+                    overlayTitle={Intl.get('apply.will.approve.apply.item','待审批人')}
+                    okTitle={Intl.get('common.confirm', '确认')}
+                    cancelTitle={Intl.get('common.cancel', '取消')}
+                    overlayContent={this.renderTransferCandidateBlock()}
+                    handleSubmit={this.addNewApplyCandidate.bind(this, addNextCandidateId)}//分配销售的时候直接分配，不需要再展示模态框
+                    unSelectDataTip={addNextCandidateId ? '' : Intl.get('apply.will.select.transfer.approver','请选择要转给的待审批人')}
+                    clearSelectData={this.clearNextCandidateIds}
+                    btnAtTop={false}
+                    isSaving={this.state.transferStatusInfo.result === 'loading'}
+                    isDisabled={!addNextCandidateId}
+                />
+            </div>
+        );
+    },
 
     //渲染详情底部区域
     renderDetailBottom() {
@@ -1847,6 +2020,8 @@ const ApplyViewDetail = createReactClass({
                                     onClick={this.clickApprovalFormBtn.bind(this, '2')}>
                                     {Intl.get('common.apply.reject', '驳回')}
                                 </Button>) : null}
+                            {/*如果是管理员或者是待我审批的申请，我都可以把申请进行转出*/}
+                            {(isRealmAdmin || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) && detailInfoObj.approval_state === '0' && false ? this.renderAddApplyNextCandidate() : null}
                         </div>)}
                     </Col>
                 </Row>

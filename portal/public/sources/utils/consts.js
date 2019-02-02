@@ -439,3 +439,8 @@ export const ORGANIZATION_TYPE = {
     EEFUNG: '36v8tudu9Z', // 蚁坊
 };
 export const APPLY_FINISH_STATUS = ['pass', 'reject', 'cancel'];
+export const APPLY_USER_STATUS = {
+    CANCELED_USER_APPLY: '3',//已撤销
+    PASSED_USER_APPLY: '1',//已通过
+    REJECTED_USER_APPLY: '2'//已驳回
+};

@@ -236,7 +236,7 @@ class ApplyViewDetail extends React.Component {
                 LeaveApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
                 //根据申请的id获取申请的状态
                 LeaveApplyDetailAction.getLeaveApplyStatusById({id: detailItem.id});
-                LeaveApplyDetailAction.getNextCandidate({id: ''});
+                LeaveApplyDetailAction.getNextCandidate({id: detailItem.id});
             }
         });
     }

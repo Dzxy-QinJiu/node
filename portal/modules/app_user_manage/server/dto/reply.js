@@ -17,8 +17,11 @@ exports.toRestObject = function(list) {
         result.push({
             user_id: item.user_id,
             user_name: item.nick_name,
+            nick_name: item.nick_name,
             message: item.comment,
-            date: dateText
+            date: dateText,
+            approve_status: item.approve_status,
+            comment_time: item.comment_time
         });
     });
     return result;

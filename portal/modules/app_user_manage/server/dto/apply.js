@@ -102,7 +102,7 @@ exports.toDetailRestObject = function(obj) {
 
         result.user_names = [detail.user_name || ''];
         //新增用户审批通过后增加id字段
-        if (detail.type === 'apply_user_trial' || detail.type === 'apply_user_official') {
+        if (detail.type === 'apply_user_trial' || detail.type === 'apply_user_official' || detail.type === 'apply_app') {
             var user_ids = [];
             try {
                 user_ids = JSON.parse(detail.user_ids);
@@ -147,6 +147,9 @@ exports.toDetailRestObject = function(obj) {
     result.apps = products;
     //账号类型
     result.account_type = detail.type === 'apply_user_official' || detail.type === 'apply_app_official' ? '1' : '0';
+    if (detail.type === 'apply_user' || detail.type === 'apply_app'){
+        result.tag = _.get(detail,'tag','');
+    }
     //销售团队名称
     result.sales_team_name = detail.sales_team_name || '';
     //申请时候的备注
