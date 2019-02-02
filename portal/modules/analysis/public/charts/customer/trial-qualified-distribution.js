@@ -2,7 +2,7 @@
  * 试用合格客户地域、行业分析
  */
 
-import { argCallbackTimeMemberStatisticsType } from '../../utils';
+import { argCallbackTimeMember } from '../../utils';
 
 export function getCustomerTrialQualifiedDistributionChart(title, field) {
     return {
@@ -18,7 +18,7 @@ export function getCustomerTrialQualifiedDistributionChart(title, field) {
             name: 'statistics_type',
             value: field
         }],
-        argCallback: argCallbackTimeMemberStatisticsType,
+        argCallback: argCallbackTimeMember,
         dataField: 'result',
         processOption: (option, chartProps) => {
             let dataSource = [];
