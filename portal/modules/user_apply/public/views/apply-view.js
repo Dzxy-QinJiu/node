@@ -561,6 +561,7 @@ class ApplyTabContent extends React.Component {
                         detailItem={this.state.selectedDetailItem}
                         isUnreadDetail={this.getIsUnreadDetail()}
                         showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
+                        applyListType={this.state.applyListType}
                     />
                 )}
 

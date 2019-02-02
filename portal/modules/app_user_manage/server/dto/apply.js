@@ -147,7 +147,7 @@ exports.toDetailRestObject = function(obj) {
     result.apps = products;
     //账号类型
     result.account_type = detail.type === 'apply_user_official' || detail.type === 'apply_app_official' ? '1' : '0';
-    if (detail.type === 'apply_user'){
+    if (detail.type === 'apply_user' || detail.type === 'apply_app'){
         result.tag = _.get(detail,'tag','');
     }
     //销售团队名称

@@ -613,7 +613,7 @@ const ApplyUserForm = createReactClass({
                                         <Radio key="0" value={Intl.get('common.trial.official', '正式用户')}>
                                             {Intl.get('user.signed.user', '签约用户')}
                                         </Radio>
-                                    </RadioGroup> : <Input onChange={this.onInputTypeChange}/>}
+                                    </RadioGroup> : <Input placeholder={Intl.get('crm.input.your.apply.user.type','请输入您申请的用户类型（例如：试用用户、签约用户等）')} onChange={this.onInputTypeChange}/>}
 
                                 </FormItem>) : null}
                             <FormItem

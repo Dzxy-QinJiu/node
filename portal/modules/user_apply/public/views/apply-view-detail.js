@@ -9,6 +9,7 @@ require('../css/apply-detail.less');
 import ApplyViewDetailStore from '../store/apply-view-detail-store';
 import {AntcTable} from 'antc';
 import ApplyViewDetailActions from '../action/apply-view-detail-actions';
+import UserApplyAction from '../action/user-apply-actions';
 import AppUserUtil from '../util/app-user-util';
 import Spinner from '../../../../components/spinner';
 import userData from '../../../../public/sources/user-data';
@@ -1927,12 +1928,11 @@ const ApplyViewDetail = createReactClass({
                     this.addNextCandidate.handleCancel();
                 }
                 //转出成功后，如果左边选中的是待审批的列表，在待审批列表中把这条记录删掉
-                //todo 待修改
-                // if (this.props.applyListType === 'ongoing') {
-                //     LeaveApplyActions.afterTransferApplySuccess(submitObj.id);
-                // } else {
-                //     message.success(Intl.get('apply.approve.transfer.success', '转出申请成功'));
-                // }
+                if (this.props.applyListType === 'false') {
+                    UserApplyAction.afterTransferApplySuccess(submitObj.id);
+                } else {
+                    message.success(Intl.get('apply.approve.transfer.success', '转出申请成功'));
+                }
                 if (hasApprovePrivilege && Oplate && Oplate.unread) {
                     var count = Oplate.unread.approve - 1;
                     updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);

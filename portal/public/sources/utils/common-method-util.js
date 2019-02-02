@@ -14,7 +14,7 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import userData from '../user-data';
 import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import {selectMenuList, APPLY_APPROVE_TYPES, DOCUMENT_TYPE, INTEGRATE_TYPES, REPORT_TYPE,APPLY_FINISH_STATUS} from './consts';
+import {selectMenuList, APPLY_APPROVE_TYPES, DOCUMENT_TYPE, INTEGRATE_TYPES, REPORT_TYPE,APPLY_FINISH_STATUS, APPLY_USER_STATUS} from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
@@ -490,17 +490,6 @@ exports.getApplyStatusTimeLineDesc = function(replyItemStatus) {
     }
     return description;
 };
-exports.getUserApplyStatusTimeLineDesc = function(replyItemStatus) {
-    var description = '';
-    if (replyItemStatus === '2'){
-        description = Intl.get('user.apply.detail.reject', '驳回申请');
-    }else if(replyItemStatus === '3'){
-        description = Intl.get('user.apply.detail.backout', '撤销申请');
-    }else if (replyItemStatus === '1'){
-        description = Intl.get('user.apply.detail.pass', '通过申请');
-    }
-    return description;
-};
 exports.getReportSendApplyStatusTimeLineDesc = function(replyItemStatus) {
     var description = '';
     if (replyItemStatus === 'reject'){
@@ -525,9 +514,6 @@ exports.getFilterReplyList = function(thisState) {
     replyList = _.sortBy( _.cloneDeep(replyList), [item => item.comment_time]);
     return replyList;
 };
-function handleApplyStatus() {
-
-}
 exports.getUserApplyFilterReplyList = function(thisState) {
     //用户审批里面不会有approve_detail这个字段，只能在comment里面过滤数据
     //用户审批会有两类数据，一类是改成工作流之前的数据，一类是改成工作流之后的数据
@@ -536,16 +522,16 @@ exports.getUserApplyFilterReplyList = function(thisState) {
     replyList = _.filter(replyList,(item) => {return item.approve_status;});
     //如果工作流的状态是已经结束并且在reply列表中每一条都没有approve_status 这就是改成工作流之前的数据
     //撤销某条申请
-    if (_.get(applicantList,'approval_state') === '3'){
+    if (_.get(applicantList,'approval_state') === APPLY_USER_STATUS.CANCELED_USER_APPLY){
         replyList.push({approve_status: 'cancel',nick_name: applicantList.approval_person,comment_time: applicantList.approval_time});
     }
-    if (['1','2'].includes(_.get(applicantList,'approval_state')) && !replyList.length){
+    if ([APPLY_USER_STATUS.PASSED_USER_APPLY,APPLY_USER_STATUS.REJECTED_USER_APPLY].includes(_.get(applicantList,'approval_state')) && !replyList.length){
         //通过某条申请
-        if (_.get(applicantList,'approval_state') === '1'){
+        if (_.get(applicantList,'approval_state') === APPLY_USER_STATUS.PASSED_USER_APPLY){
             replyList.push({approve_status: 'pass',nick_name: applicantList.approval_person,comment_time: applicantList.approval_time});
         }
         //驳回某条申请
-        if (_.get(applicantList,'approval_state') === '2'){
+        if (_.get(applicantList,'approval_state') === APPLY_USER_STATUS.REJECTED_USER_APPLY){
             replyList.push({approve_status: 'reject',nick_name: applicantList.approval_person,comment_time: applicantList.approval_time});
         }
     }
