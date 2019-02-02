@@ -9,6 +9,7 @@ import {DetailEditBtn} from '../../rightPanel';
 import SaveCancelButton from '../../detail-card/save-cancel-button';
 import {AntcAppSelector, AntcEditableTable} from 'antc';
 import { num as antUtilsNum } from 'ant-utils';
+import Trace from 'LIB_DIR/trace';
 const parseAmount = antUtilsNum.parseAmount;
 // 开通应用，默认的数量和金额
 const APP_DEFAULT_INFO = {
@@ -38,6 +39,8 @@ class ProductTable extends React.Component {
         onSave: function() {},
         //预设总金额，用于验证所有产品的金额之和是否正确
         totalAmount: 0,
+        //编辑按钮的提示文案
+        editBtnTip: Intl.get('common.update', '修改'),
         //默认值和对应key的map
         defaultValueMap: {
             count: APP_DEFAULT_INFO.COUNT,
@@ -55,7 +58,17 @@ class ProductTable extends React.Component {
         isEditBtnShow: PropTypes.bool,
         onChange: PropTypes.func,
         onSave: PropTypes.func,
+        onEditBtnSubmit: PropTypes.func,
         totalAmount: PropTypes.number,
+        editBtnTip: PropTypes.string,
+        defaultValueMap: PropTypes.object,
+        data: PropTypes.array,
+        appendDOM: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.element,
+        ]),
+        addBtnText: PropTypes.string,
+        handleCancel: PropTypes.func,
     };
 
     constructor(props) {
@@ -117,12 +130,14 @@ class ProductTable extends React.Component {
         });
     }
 
-    handleCancel = () => {
+    handleCancel = (e) => {
         this.setState({
             isEdit: false,
             data: this.props.dataSource,
             saveErrMsg: '',
         });
+        if(_.isFunction(this.props.handleCancel)) this.props.handleCancel();
+        Trace.traceEvent(e, '取消对产品的修改');
     }
 
     handleSubmit = () => {
@@ -220,6 +235,7 @@ class ProductTable extends React.Component {
             <div className={className}>
                 {this.state.isEdit || !this.props.isEditBtnShow ? null : (
                     <DetailEditBtn
+                        title={this.props.editBtnTip}
                         onClick={this.showEdit}
                     /> 
                 )}

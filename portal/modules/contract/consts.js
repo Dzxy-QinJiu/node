@@ -383,3 +383,9 @@ export const CONTRACT_STATIC_COLUMNS = [
         dataIndex: 'yearRate',
     }
 ];
+
+//权限常量
+export const PRIVILEGE_MAP = {
+    CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
+    CONTRACT_UPATE_PRIVILEGE: 'OPLATE_CONTRACT_UPDATE',//更新合同的权限
+};

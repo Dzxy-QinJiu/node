@@ -1,11 +1,10 @@
 /** Created by 2019-01-31 11:11 */
+
 var React = require('react');
-import { message, Select, Radio, Icon, Form } from 'antd';
+import { message, Select, Icon, Form } from 'antd';
 
 let Option = Select.Option;
 let FormItem = Form.Item;
-const Validation = require('rc-form-validation-for-react16');
-const Validator = Validation.Validator;
 import Trace from 'LIB_DIR/trace';
 import 'MOD_DIR/user_manage/public/css/user-info.less';
 import DetailCard from 'CMP_DIR/detail-card';
@@ -16,20 +15,15 @@ import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { AntcValidity } from 'antc';
-import ajax from '../../common/ajax';
+import ajax from 'MOD_DIR/contract/common/ajax';
 import customerAjax from 'MOD_DIR/common/public/ajax/customer';
-import { CONTRACT_STAGE, COST_STRUCTURE, COST_TYPE, OPERATE } from '../../consts';
+import { CONTRACT_STAGE, COST_STRUCTURE, COST_TYPE, OPERATE, VIEW_TYPE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
 import { regex } from 'ant-utils';
 import { getNumberValidateRule } from 'PUB_DIR/sources/utils/validate-util';
 import routeList from 'MOD_DIR/contract/common/route';
 import oplateConsts from 'LIB_DIR/consts';
 import { CategoryList, ContractLabel } from 'PUB_DIR/sources/utils/consts';
 
-const COST_TYPES = {
-    cost: '费用',
-    date: '日期',
-    type: '费用类型',
-};
 
 //展示的类型
 const DISPLAY_TYPES = {
@@ -51,7 +45,7 @@ class DetailBasic extends React.Component {
     };
 
     getInitStateData(props) {
-        let hasEditPrivilege = hasPrivilege('OPLATE_CONTRACT_UPDATE');
+        let hasEditPrivilege = hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPATE_PRIVILEGE);
         // let hasEditPrivilege = contract.stage === '待审' && hasPrivilege('OPLATE_CONTRACT_UPDATE');
         let formData = _.extend(true, {}, props.contract);
 
@@ -66,6 +60,7 @@ class DetailBasic extends React.Component {
         return {
             formData: _.cloneDeep(formData),
             customerList: [],
+            customers: [],
             loading: false,
             submitErrorMsg: '',
             hasEditPrivilege,
@@ -98,7 +93,7 @@ class DetailBasic extends React.Component {
             url: route.path,
             type: route.method,
             data: saveObj || {},
-            params: {type: 'sell'}
+            params: {type: VIEW_TYPE.SELL}
         };
         // 单项编辑时，这里得添加上客户信息字段
         if(!_.get(saveObj, 'customers')){
@@ -138,15 +133,14 @@ class DetailBasic extends React.Component {
         }
     }
 
-    handleCustomerSubmit() {
+    handleCustomerSubmit = () => {
         Trace.traceEvent(this, '点击所属客户保存按钮');
         let _this = this;
-        this.props.form.validateFields((err) => {
+        this.props.form.validateFields((err,value) => {
             if (err) return false;
-            console.log(this.state.formData.customers);
             let saveObj = {
                 id: this.state.formData.id,
-                customers: this.state.formData.customers
+                customers: this.state.customers
             };
             this.setState({loading: true});
             const successFunc = () => {
@@ -165,18 +159,18 @@ class DetailBasic extends React.Component {
             this.saveContractBasicInfo(saveObj,successFunc,errorFunc);
         });
 
-    }
+    };
 
-    handleCustomerCancel() {
+    handleCustomerCancel = () => {
         Trace.traceEvent(this, '点击所属客户保取消按钮');
         let formData = this.state.formData;
-        formData.customers = this.props.contract.customers;
+        formData.customers = _.clone(this.props.contract.customers);
         this.setState({
             displayType: DISPLAY_TYPES.TEXT,
             formData,
             submitErrorMsg: '',
         });
-    }
+    };
 
     // 处理有效期限
     handleSubmitEditValidityTime = (startTime, endTime, successCallback, errorCallback) => {
@@ -220,7 +214,6 @@ class DetailBasic extends React.Component {
         saveObj.gross_profit = parseFloat(calProfit).toFixed(2);
         const successCallback = () => {
             let contract = this.state.formData;
-            // contract.start_time = startTime;
             contract.gross_profit = parseFloat(calProfit).toFixed(2);
             this.setState({contract}, () => {
                 successFunc();
@@ -238,28 +231,30 @@ class DetailBasic extends React.Component {
     };
 
     deleteBelongCustomer(index) {
-        let {formData, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
+        let {formData, customers,belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
 
         formData.customers.splice(index, 1);
         belongCustomerErrMsg.splice(index, 1);
         belongCustomerIsChoosen.splice(index, 1);
-
+        customers = formData.customers;
         this.setState({
             formData,
+            customers,
             belongCustomerErrMsg,
             belongCustomerIsChoosen
         });
     }
 
     addBelongCustomer() {
-        let {formData, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
+        let {formData, customers, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
 
         formData.customers.push({});
         belongCustomerErrMsg.push('');
         belongCustomerIsChoosen.push(false);
-
+        customers = formData.customers;
         this.setState({
             formData,
+            customers,
             belongCustomerErrMsg,
             belongCustomerIsChoosen
         });
@@ -269,7 +264,7 @@ class DetailBasic extends React.Component {
         const fieldName = 'belong_customer' + index;
 
         let stateObj = {
-            formData: _.cloneDeep(this.state.formData),
+            formData: this.state.formData,
             belongCustomerIsChoosen: this.state.belongCustomerIsChoosen,
         };
 
@@ -299,7 +294,6 @@ class DetailBasic extends React.Component {
                 } else {
                     newState.belongCustomerErrMsg[index] = Intl.get('contract.177', '没有找到符合条件的客户，请更换关键词查询');
                 }
-
                 this.setState(newState, () => {
                     // this.refs.validation.forceValidate([fieldName]);
                     this.props.form.validateFields([fieldName]);
@@ -319,10 +313,10 @@ class DetailBasic extends React.Component {
     }
 
     onCustomerChoosen(index, value) {
-        let {formData, belongCustomerIsChoosen} = this.state;
+        let {formData, customers, belongCustomerIsChoosen} = this.state;
         const fieldName = 'belong_customer' + index;
 
-        let belongCustomer = _.clone(formData.customers[index]);
+        let belongCustomer = formData.customers[index];
         const selectedCustomer = _.find(this.state.customerList, customer => customer.customer_id === value);
 
         belongCustomer.customer_id = selectedCustomer.customer_id;
@@ -338,9 +332,10 @@ class DetailBasic extends React.Component {
         // const formDataCopy = JSON.parse(JSON.stringify(formData));
 
         belongCustomerIsChoosen[index] = true;
-
+        customers = formData.customers;
         this.setState({
             formData,
+            customers,
             belongCustomerIsChoosen
         }, () => {
             //用暂存的表单数据更新一下验证后的表单数据
@@ -441,7 +436,7 @@ class DetailBasic extends React.Component {
                         {Intl.get('contract.34', '签订时间')}:
                     </span>
                     <BasicEditDateField
-                        width={EDIT_FEILD_WIDTH}
+                        width={EDIT_FEILD_LESS_WIDTH}
                         id={contract.id}
                         field="date"
                         format={oplateConsts.DATE_FORMAT}
@@ -723,8 +718,8 @@ class DetailBasic extends React.Component {
                 isEdit={this.state.displayType !== DISPLAY_TYPES.TEXT}
                 loading={this.state.loading}
                 saveErrorMsg={this.state.submitErrorMsg}
-                handleSubmit={this.handleCustomerSubmit.bind(this)}
-                handleCancel={this.handleCustomerCancel.bind(this)}
+                handleSubmit={this.handleCustomerSubmit}
+                handleCancel={this.handleCustomerCancel}
                 className="member-detail-container"
             />
         );

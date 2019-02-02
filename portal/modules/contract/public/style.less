@@ -889,7 +889,7 @@
                 }
             }
         }
-        .add-form {
+        .add-form,.product-forms {
             margin-top: 15px;
             .step-button {
                 text-align: right;
@@ -981,6 +981,17 @@
         }
         .add-products {
             width: auto;
+            position: relative;
+            .icon-edit-btn{
+                position: absolute;
+                right: 20px;
+                top: -25px;
+            }
+            .product-table {
+                .antc-table{
+                    margin-right: 0;
+                }
+            }
         }
         .total-amount-price {
             margin: 15px 0 0 15px;
@@ -1095,6 +1106,15 @@
                input{
                  width: 240px!important;
                }
+            }
+        }
+        .contract-product{
+            .contract-product-title{
+                padding-left: 15px;
+                .product-title-text{
+                    font-size: 14px;
+                    color: @color-block;
+                }
             }
         }
     }

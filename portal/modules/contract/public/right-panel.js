@@ -1,3 +1,5 @@
+import ProductTable from 'MOD_DIR/contract/public/add-product';
+
 var React = require('react');
 import routeList from '../common/route';
 import ajax from '../common/ajax';
@@ -18,9 +20,9 @@ import AddRepayment from './add-repayment';
 import AddBuyBasic from './add-buy-basic';
 import AddBuyPayment from './add-buy-payment';
 // import DetailBasic from './detail-basic';
-import DetailBasic from './views/detail-basic-new';
+import DetailBasic from './views/new/detail-basic';
 import DetailInvoice from './detail-invoice';
-import DetailBuyBasic from './detail-buy-basic';
+import DetailBuyBasic from './views/new/detail-buy-basic';
 import DetailBuyPayment from './detail-buy-payment';
 import DetailCost from './detail-cost';
 import Trace from 'LIB_DIR/trace';
@@ -482,6 +484,7 @@ class ContractRightPanel extends React.Component {
                     <div className={totalAmountClass}>{totalAmountPrice}</div>
                     <AddProduct
                         ref="addProduct"
+                        isDetailType={props.isDetailType}
                         appList={this.props.appList}
                         updateScrollBar={this.updateScrollBar}
                     />
@@ -498,6 +501,7 @@ class ContractRightPanel extends React.Component {
                     <div className={totalAmountClass}>{totalAmountPrice}</div>
                     <AddProduct
                         ref="addProduct"
+                        isDetailType={props.isDetailType}
                         appList={this.props.appList}
                         updateScrollBar={this.updateScrollBar}
                     />
@@ -569,6 +573,10 @@ class ContractRightPanel extends React.Component {
                             getUserList={this.props.getUserList}
                             isGetUserSuccess={this.props.isGetUserSuccess}
                             handleSubmit={this.handleSubmit}
+                            showLoading={this.showLoading}
+                            hideLoading={this.hideLoading}
+                            refreshCurrentContract={this.props.refreshCurrentContract}
+                            refreshCurrentContractRepayment={this.props.refreshCurrentContractRepayment}
                         />}
                 </div>
             </TabPane>
@@ -581,8 +589,27 @@ class ContractRightPanel extends React.Component {
                 endTabKey += 1;
                 tabList.push(
                     <TabPane tab={Intl.get('contract.product.service.info', '产品与服务信息')} key="2">
-                        <div className="contract-repayment">
-                            产品与服务信息
+                        <div className="contract-product" style={{height: contentHeight}}>
+                            <GeminiScrollBar>
+                                <div className='contract-product-title'><span className='product-title-text'>合同额：{`${this.props.contract.contract_amount}${Intl.get('contract.155', '元')}`}</span></div>
+                                <AddProduct
+                                    ref="addProduct"
+                                    parent={this}
+                                    contract={this.props.contract}
+                                    products={this.props.contract.products}
+                                    isDetailType={isDetailType}
+                                    appList={this.props.appList}
+                                    updateScrollBar={this.updateScrollBar}
+                                />
+                                {[SERVICE].indexOf(this.props.contract.category) > -1 ? (
+                                    <AddReport
+                                        ref="addReport"
+                                        contract={this.props.contract}
+                                        reports={this.props.contract.reports}
+                                        updateScrollBar={this.updateScrollBar}
+                                    />
+                                ) : null}
+                            </GeminiScrollBar>
                         </div>
                     </TabPane>
                 );

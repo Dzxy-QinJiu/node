@@ -1643,7 +1643,7 @@ var zh_CN = {
     'contract.159': '{num}元',
     'contract.160': '单位',
     'contract.161': '已超合同额',
-    'contract.162': '新签约',
+    'contract.162': '新签',
     'contract.163': '续约',
     'contract.164': '签约类型',
     'contract.165': '成本构成',

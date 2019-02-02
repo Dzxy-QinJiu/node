@@ -24,8 +24,15 @@ const AddReport = createReactClass({
     mixins: [ValidateMixin],
 
     getInitialState: function() {
+        let reports;
+
+        if (_.isArray(this.props.reports) && this.props.reports.length) {
+            reports = JSON.parse(JSON.stringify(this.props.reports));
+        } else {
+            reports = [];
+        }
         return {
-            reports: [],
+            reports,
             formData: {},
             valid: false,
             pristine: true,
@@ -33,7 +40,8 @@ const AddReport = createReactClass({
         };
     },
     propTypes: {
-        updateScrollBar: PropTypes.func
+        updateScrollBar: PropTypes.func,
+        reports: PropTypes.array
     },
 
     addReport: function() {

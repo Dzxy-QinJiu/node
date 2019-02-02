@@ -1,3 +1,5 @@
+import calc from 'calculatorjs';
+
 var React = require('react');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
@@ -13,6 +15,8 @@ const RangePicker = DatePicker.RangePicker;
 import ValidateMixin from '../../../mixins/ValidateMixin';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import ProductTable from 'CMP_DIR/basic-edit-field-new/product-table';
+import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import { PRIVILEGE_MAP, VIEW_TYPE } from 'MOD_DIR/contract/consts';
 
 const defaultValueMap = {
     count: 1,
@@ -40,11 +44,31 @@ const AddProduct = createReactClass({
             validator: null
         };
     },
+    getDefaultProps: function(){
+        return{
+            totalAmout: 0
+        };
+    },
+
+    producTableRef: null,
 
     propTypes: {
         products: PropTypes.array,
         appList: PropTypes.array,
-        updateScrollBar: PropTypes.func
+        updateScrollBar: PropTypes.func,
+        isDetailType: PropTypes.bool.isRequired,
+        totalAmout: PropTypes.number,
+        contract: PropTypes.array
+    },
+
+    componentWillReceiveProps(nextProps) {
+        if(_.get(this.props,'contract') && this.props.contract.id !== nextProps.contract.id){
+            let newState = this.getInitialState();
+            newState.products = JSON.parse(JSON.stringify(nextProps.contract.products));
+            newState.isEdit = false;
+            this.producTableRef.state.isEdit = false;
+            this.setState(newState);
+        }
     },
 
     addProduct: function() {
@@ -253,6 +277,13 @@ const AddProduct = createReactClass({
             products
         });
     },
+    handleProductCancel() {
+        let products = _.clone(this.props.products);
+        this.setState({products});
+    },
+    handleProductSave(saveObj,successFunc,errorFunc) {
+        console.log(saveObj);
+    },
     render: function() {
 
         let num_col_width = 75;
@@ -307,6 +338,25 @@ const AddProduct = createReactClass({
         const customizeBTN = (
             <span onClick={this.handleAddCustomeizeApp}>{Intl.get('contract.form.customize', '添加自定义产品')}</span>
         );
+        // 如果是添加合同时，是可以编辑的（true），详情查看时，显示可编辑按钮，点编辑后，显示编辑状态且有保存取消按钮
+        let isEditBtnShow = this.props.isDetailType && hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPATE_PRIVILEGE);
+        let isEdit = !this.props.isDetailType ? true :
+            (isEditBtnShow && this.producTableRef ? this.producTableRef.state.isEdit : false);
+        let isSaveCancelBtnShow = this.props.isDetailType;
+
+        // 获取合同金额的大小
+        let totalAmout = 0;
+        if(isEditBtnShow) {
+            let reports = _.get(this,'props.parent.refs.addReport.state.reports') || _.get(this,'props.contract.reports') || [];
+            let totalReportsPrice = 0;
+            reports.length > 0 ? totalReportsPrice = _.reduce(reports,(sum, item) => {
+                const amount = +item.total_price;
+                return sum + amount;
+            }, 0) : '';
+            console.log(reports,totalReportsPrice);
+            totalAmout = this.props.contract.contract_amount - totalReportsPrice;
+        }
+
         return (
             <div className="add-products">               
                 <div className="product-forms product-table-container">
@@ -320,10 +370,15 @@ const AddProduct = createReactClass({
                             client_image: x.app_logo,
                             client_name: x.app_name
                         }))}
+                        totalAmount={totalAmout}
                         data={this.state.products}
-                        isEdit={true}
+                        dataSource={this.state.products}
+                        isEdit={isEdit}
+                        isEditBtnShow={isEditBtnShow}
+                        isSaveCancelBtnShow={isSaveCancelBtnShow}
                         columns={columns}
-                        isSaveCancelBtnShow={false}
+                        onSave={this.handleProductSave}
+                        handleCancel={this.handleProductCancel}
                         onChange={this.handleProductChange}
                     />
                     {
