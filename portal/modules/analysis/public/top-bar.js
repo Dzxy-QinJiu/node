@@ -6,6 +6,7 @@ import {AntcDatePicker} from 'antc';
 import ajax from 'ant-ajax';
 import {initialTime, isSales} from './consts';
 import {Select} from 'antd';
+import Store from './store';
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 
@@ -78,6 +79,7 @@ class TopBar extends React.Component {
 
     onFilterTypeChange = (type) => {
         this.setState({filterType: type});
+        Store.teamMemberFilterType = type;
 
         if (type === 'team') {
             const selectedTeam = this.state.selectedTeam;
@@ -113,7 +115,7 @@ class TopBar extends React.Component {
 
         if (_.last(memberId) === 'all' || _.isEmpty(memberId)) {
             selectedMember = ['all'];
-            memberIdStr = 'all';
+            memberIdStr = '';
         } else {
             selectedMember = _.filter(memberId, id => id !== 'all');
             memberIdStr = selectedMember.join(',');

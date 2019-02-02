@@ -11,5 +11,7 @@ export default {
     clueChannelList: [],
     //线索来源列表
     clueSourceList: [],
+    //团队、成员筛选器类型
+    teamMemberFilterType: 'team'
 };
 
