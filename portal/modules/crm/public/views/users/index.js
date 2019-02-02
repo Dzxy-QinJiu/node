@@ -487,7 +487,7 @@ class CustomerUsers extends React.Component {
             return <ErrorDataTip errorMsg={this.state.errorMsg} isRetry={true}
                 retryFunc={this.getCrmUserList.bind(this)}/>;
         }
-        let isShowCheckbox = isApplyButtonShow && !this.props.isMerge && this.state.isOplateUser;
+        let isShowCheckbox = isApplyButtonShow && !this.props.isMerge;
         let crmUserList = this.state.crmUserList;
         if (_.isArray(crmUserList) && crmUserList.length) {
             return (

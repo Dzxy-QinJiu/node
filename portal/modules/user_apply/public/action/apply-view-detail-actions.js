@@ -64,6 +64,7 @@ class ApplyViewDetailActions {
             'setDelayDeadlineTime',
             'setBottomDisplayType',
             'hideApprovalBtns',//审批完后不在显示审批按钮
+            'setNextCandidateIds',//设置下一节点的审批人
         );
     }
 
@@ -198,6 +199,27 @@ class ApplyViewDetailActions {
                 this.dispatch(list);
             }
         }).error(this.dispatch({error: true}));
+    }
+
+    transferNextCandidate(queryObj, callback) {
+        this.dispatch({loading: true, error: false});
+        ApplyApproveAjax.transferNextCandidate().sendRequest(queryObj).success((data) => {
+            if (data) {
+                this.dispatch({loading: false, error: false});
+                _.isFunction(callback) && callback(true);
+            } else {
+                this.dispatch({
+                    loading: false,
+                    error: true,
+                    errorMsg: Intl.get('apply.approve.transfer.failed', '转出申请失败')
+                });
+                _.isFunction(callback) && callback(false);
+            }
+        }).error(errMsg => {
+            this.dispatch({loading: false, error: true, errorMsg: errMsg});
+            _.isFunction(callback) && callback(false);
+        }
+        );
     }
 
 }

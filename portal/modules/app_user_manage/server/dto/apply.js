@@ -102,7 +102,7 @@ exports.toDetailRestObject = function(obj) {
 
         result.user_names = [detail.user_name || ''];
         //新增用户审批通过后增加id字段
-        if (detail.type === 'apply_user_trial' || detail.type === 'apply_user_official') {
+        if (detail.type === 'apply_user_trial' || detail.type === 'apply_user_official' || detail.type === 'apply_app') {
             var user_ids = [];
             try {
                 user_ids = JSON.parse(detail.user_ids);

@@ -129,6 +129,13 @@ class ApplyViewDetailStore {
         this.curShowConfigUserId = '';
         //下一节点负责人的列表
         this.candidateList = [];
+        //转出申请的状态列表
+        this.transferStatusInfo = {
+            //三种状态,loading,error,''
+            result: '',
+            //服务端错误信息
+            errorMsg: ''
+        };
     }
     //获取应用列表
     getApps(result) {
@@ -597,6 +604,24 @@ class ApplyViewDetailStore {
         this.rolesNotSettingModalDialog.continueSubmit = true;
         this.rolesNotSettingModalDialog.show = false;
         this.rolesNotSettingModalDialog.appNames = [];
+    }
+    setNextCandidateIds(candidateId){
+        this.detailInfoObj.info.nextCandidateId = candidateId;
+    }
+    transferNextCandidate(result){
+        if (result.loading) {
+            this.transferStatusInfo.result = 'loading';
+            this.transferStatusInfo.errorMsg = '';
+        } else if (result.error) {
+            this.transferStatusInfo.result = 'error';
+            this.transferStatusInfo.errorMsg = result.errorMsg;
+        } else {
+            this.transferStatusInfo.result = 'success';
+            this.transferStatusInfo.errorMsg = '';
+            //如果转出成功，要隐藏审批的按钮
+            this.selectedDetailItem.showApproveBtn = false;
+            this.detailInfoObj.info.showApproveBtn = false;
+        }
     }
 }
 

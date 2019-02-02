@@ -43,8 +43,10 @@ var UserTypeConfigForm = require('./user-type-config-form');
 import Trace from 'LIB_DIR/trace';
 
 var moment = require('moment');
-import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDesc} from 'PUB_DIR/sources/utils/common-method-util';
+import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDesc,formatUsersmanList,updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
+import AntcDropdown from 'CMP_DIR/antc-dropdown';
+import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 //表单默认配置
 var appConfig = {
     //默认没id，用id区分增加和修改类型，有id是修改，没id是增加
@@ -128,12 +130,14 @@ function getDelayDisplayTime(delay) {
 const APPLY_LIST_WIDTH = 421;
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 const ApplyViewDetail = createReactClass({
     propTypes: {
         detailItem: PropTypes.object,
         applyData: PropTypes.object,
         showNoData: PropTypes.bool,
         isUnreadDetail: PropTypes.bool,
+        applyListType: PropTypes.object,
     },
     displayName: 'ApplyViewDetail',
     mixins: [FieldMixin, UserNameTextField],
@@ -157,6 +161,7 @@ const ApplyViewDetail = createReactClass({
             customerOfCurUser: {},//当前展示用户所属客户的详情
             showBackoutConfirmType: '',//操作的确认框类型
             isOplateUser: false,
+            usersManList: [],//成员列表
             ...ApplyViewDetailStore.getState()
         };
     },
@@ -176,7 +181,13 @@ const ApplyViewDetail = createReactClass({
             }
         });
     },
-
+    getAllUserList(){
+        getAllUserList(data => {
+            this.setState({
+                usersManList: data
+            });
+        });
+    },
     componentDidMount() {
         ApplyViewDetailStore.listen(this.onStoreChange);
         var applyId = this.props.detailItem.id;
@@ -189,6 +200,7 @@ const ApplyViewDetail = createReactClass({
         emitter.on('user_detail_close_right_panel', this.closeRightPanel);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
         this.getIntegrateConfig();
+        this.getAllUserList();
     },
 
     componentWillUnmount() {
@@ -1878,6 +1890,87 @@ const ApplyViewDetail = createReactClass({
             />;
         }
     },
+    renderTransferCandidateBlock(){
+        var usersManList = this.state.usersManList;
+        //需要选择销售总经理
+        var onChangeFunction = this.onSelectApplyNextCandidate;
+        var defaultValue = _.get(this.state, 'detailInfoObj.info.nextCandidateId', '');
+
+        //销售领导、域管理员,展示其所有（子）团队的成员列表
+        let dataList = formatUsersmanList(usersManList);
+        return (
+            <div className="op-pane change-salesman">
+                <AlwaysShowSelect
+                    placeholder={Intl.get('sales.team.search', '搜索')}
+                    value={defaultValue}
+                    onChange={onChangeFunction}
+                    notFoundContent={dataList.length ? Intl.get('common.no.member', '暂无成员') : Intl.get('apply.no.relate.user', '无相关成员')}
+                    dataList={dataList}
+                />
+            </div>
+        );
+    },
+    addNewApplyCandidate(transferCandidateId){
+        var submitObj = {
+            id: _.get(this, 'state.detailInfoObj.info.id', ''),
+            user_ids: [transferCandidateId]
+        };
+        var hasApprovePrivilege = _.get(this, 'state.detailInfoObj.info.showApproveBtn', false);
+        //如果操作转出的人是这条审批的待审批者，需要在这个操作人的待审批列表中删除这条申请
+        if (hasApprovePrivilege) {
+            submitObj.user_ids_delete = [userData.getUserData().user_id];
+        }
+        ApplyViewDetailActions.transferNextCandidate(submitObj, (flag) => {
+            //关闭下拉框
+            if (flag) {
+                if (_.isFunction(_.get(this, 'addNextCandidate.handleCancel'))) {
+                    this.addNextCandidate.handleCancel();
+                }
+                //转出成功后，如果左边选中的是待审批的列表，在待审批列表中把这条记录删掉
+                //todo 待修改
+                // if (this.props.applyListType === 'ongoing') {
+                //     LeaveApplyActions.afterTransferApplySuccess(submitObj.id);
+                // } else {
+                //     message.success(Intl.get('apply.approve.transfer.success', '转出申请成功'));
+                // }
+                if (hasApprovePrivilege && Oplate && Oplate.unread) {
+                    var count = Oplate.unread.approve - 1;
+                    updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
+                }
+            } else {
+                message.error(Intl.get('apply.approve.transfer.failed', '转出申请失败'));
+            }
+        });
+    },
+    onSelectApplyNextCandidate(updateUser){
+        ApplyViewDetailActions.setNextCandidateIds(updateUser);
+    },
+    clearNextCandidateIds(){
+        ApplyViewDetailActions.setNextCandidateIds('');
+    },
+    renderAddApplyNextCandidate(){
+        var addNextCandidateId = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
+        return (
+            <div className="pull-right">
+                <AntcDropdown
+                    ref={AssignSales => this.addNextCandidate = AssignSales}
+                    content={<Button
+                        data-tracename="点击转出申请按钮"
+                        className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('crm.qualified.roll.out', '转出')}</Button>}
+                    overlayTitle={Intl.get('apply.will.approve.apply.item','待审批人')}
+                    okTitle={Intl.get('common.confirm', '确认')}
+                    cancelTitle={Intl.get('common.cancel', '取消')}
+                    overlayContent={this.renderTransferCandidateBlock()}
+                    handleSubmit={this.addNewApplyCandidate.bind(this, addNextCandidateId)}//分配销售的时候直接分配，不需要再展示模态框
+                    unSelectDataTip={addNextCandidateId ? '' : Intl.get('apply.will.select.transfer.approver','请选择要转给的待审批人')}
+                    clearSelectData={this.clearNextCandidateIds}
+                    btnAtTop={false}
+                    isSaving={this.state.transferStatusInfo.result === 'loading'}
+                    isDisabled={!addNextCandidateId}
+                />
+            </div>
+        );
+    },
 
     //渲染详情底部区域
     renderDetailBottom() {
@@ -1927,6 +2020,8 @@ const ApplyViewDetail = createReactClass({
                                     onClick={this.clickApprovalFormBtn.bind(this, '2')}>
                                     {Intl.get('common.apply.reject', '驳回')}
                                 </Button>) : null}
+                            {/*如果是管理员或者是待我审批的申请，我都可以把申请进行转出*/}
+                            {(isRealmAdmin || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) && detailInfoObj.approval_state === '0' && false ? this.renderAddApplyNextCandidate() : null}
                         </div>)}
                     </Col>
                 </Row>
