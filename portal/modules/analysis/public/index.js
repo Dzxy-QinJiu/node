@@ -373,14 +373,22 @@ class CurtaoAnalysis extends React.Component {
             event: teamTreeEmitter.SELECT_TEAM,
             callbackArgs: [{
                 name: 'team_ids',
-                exclusive: 'member_id'
+                exclusive: 'member_id',
+                related: {
+                    name: 'statistics_type',
+                    value: 'team'
+                }
             }],
         }, {
             emitter: teamTreeEmitter,
             event: teamTreeEmitter.SELECT_MEMBER,
             callbackArgs: [{
                 name: 'member_id',
-                exclusive: 'team_ids'
+                exclusive: 'team_ids',
+                related: {
+                    name: 'statistics_type',
+                    value: 'user'
+                }
             }],
         }, {
             emitter: dateSelectorEmitter,

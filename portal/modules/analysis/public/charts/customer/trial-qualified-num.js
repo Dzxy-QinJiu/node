@@ -2,13 +2,13 @@
  * 本月试用合格客户数统计
  */
 
-import { argCallbackTimeMemberStatisticsType } from '../../utils';
+import { argCallbackTimeMember } from '../../utils';
 
 export function getCustomerTrialQualifiedNumChart() {
     return {
         title: '本月试用合格客户数统计',
         url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
-        argCallback: argCallbackTimeMemberStatisticsType,
+        argCallback: argCallbackTimeMember,
         chartType: 'bar',
         processOption: (option, chartProps) => {
             option.legend = {

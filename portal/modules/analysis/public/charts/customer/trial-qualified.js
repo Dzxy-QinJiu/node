@@ -4,7 +4,7 @@
 
 import { analysisCustomerListEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { CUSTOMER_IDS_FIELD } from '../../consts';
-import { argCallbackTimeMemberStatisticsType } from '../../utils';
+import { argCallbackTimeMember } from '../../utils';
 
 export function getCustomerTrialQualifiedChart() {
     return {
@@ -13,7 +13,7 @@ export function getCustomerTrialQualifiedChart() {
         height: 'auto',
         layout: {sm: 24},
         url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
-        argCallback: argCallbackTimeMemberStatisticsType,
+        argCallback: argCallbackTimeMember,
         processOption: (option, chartProps) => {
             //接口数据
             const data = _.get(chartProps, 'data.list', []);
