@@ -2,14 +2,15 @@
  * 趋势统计
  */
 
-export function getCustomerTrendChart(type = 'total', title) {
+export function getCustomerTrendChart(paramObj = {}) {
     return {
-        title: title || Intl.get('oplate_customer_analysis.1', '趋势统计'),
-        url: `/rest/analysis/customer/v1/:auth_type/${type}/trend`,
+        title: paramObj.title || Intl.get('oplate_customer_analysis.1', '趋势统计'),
+        url: `/rest/analysis/customer/v1/:auth_type/${paramObj.type}/trend`,
         chartType: 'line',
         customOption: {
             multi: true,
         },
+        argCallback: paramObj.argCallback,
         processOption: option => {
             let allData = [];
 
