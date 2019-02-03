@@ -51,7 +51,7 @@ let BasicEditSelectField = createReactClass({
             //是否匹配选项
             filterOption: true,
             //字段
-            field: 'role',
+            field: '',
             //编辑区的宽度
             width: '100%',
             //无数据时的提示（没有修改权限时提示没有数据）
@@ -63,7 +63,7 @@ let BasicEditSelectField = createReactClass({
             //验证条件
             validators: [{}],
             //请填写
-            placeholder: Intl.get('member.select.role', '请选择角色'),
+            placeholder: '',
             //显示的值
             value: '',
             //展示内容（非编辑状态）
