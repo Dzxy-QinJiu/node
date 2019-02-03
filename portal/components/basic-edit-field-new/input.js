@@ -56,13 +56,13 @@ const BasicEditField = createReactClass({
             //类型 input、textarea或password、number
             type: 'input',
             //字段
-            field: 'email',
+            field: '',
             //是否有修改权限
             hasEditPrivilege: false,
             //验证条件
             validators: [{}],
             //请填写
-            placeholder: Intl.get('user.email.write.tip', '请填写邮箱'),
+            placeholder: '',
             //显示的值
             value: '',
             //input编辑区的宽度

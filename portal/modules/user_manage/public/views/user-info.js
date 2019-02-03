@@ -34,7 +34,7 @@ const TAB_KEYS = {
     BASIC_INFO_TAB: '1',//基本信息
     LOG_TAB: '2'//操作日志
 };
-const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 354;
+const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 352;
 class UserInfo extends React.Component {
     state = {
         userIsLoading: this.props.userIsLoading,
@@ -473,6 +473,7 @@ class UserInfo extends React.Component {
                             value={goal}
                             field="goal"
                             type="number"
+                            placeholder={Intl.get('member.sales.goal.add', '设置销售目标')}
                             afterTextTip={Intl.get('contract.82', '元')}
                             afterValTip={Intl.get('contract.82', '元')}
                             hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
