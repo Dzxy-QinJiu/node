@@ -22,7 +22,6 @@ import classNames from 'classnames';
 import ErrorDataTip from '../components/error-data-tip';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
-import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
@@ -62,7 +61,6 @@ class CustomerUsers extends React.Component {
             applyType: '',//申请用户的类型
             listenScrollBottom: true,//是否监听滚动
             appList: [],
-            isOplateUser: false,
             ... this.getLayoutHeight() //用户列表、申请用户面板的高度
         };
     }
@@ -72,7 +70,6 @@ class CustomerUsers extends React.Component {
         this.getCrmUserList();
         //获取应用列表
         this.getAppList();
-        this.getIntegrateConfig();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -83,13 +80,6 @@ class CustomerUsers extends React.Component {
                 this.getCrmUserList();
             });
         }
-    }
-    
-    getIntegrateConfig(){
-        commonDataUtil.getIntegrationConfig().then(resultObj => {
-            let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
-            this.setState({isOplateUser});
-        });
     }
 
     //获取客户开通的用户列表
@@ -422,7 +412,6 @@ class CustomerUsers extends React.Component {
                 cancelApply={this.closeRightPanel.bind(this)}
                 emailData={emailData}
                 maxHeight={this.state.applyFormMaxHeight}
-                isOplateUser={this.state.isOplateUser}
             />
         );
     }

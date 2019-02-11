@@ -25,6 +25,8 @@ import ApplyUserAppConfig from 'CMP_DIR/apply-user-app-config';
 import AppConfigForm from 'CMP_DIR/apply-user-app-config/app-config-form';
 const UserApplyAction = require('MOD_DIR/app_user_manage/public/action/user-apply-actions');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
+import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 const CONFIG_TYPE = {
     UNIFIED_CONFIG: 'unified_config',//统一配置
     SEPARATE_CONFIG: 'separate_config'//分别配置
@@ -42,11 +44,23 @@ const ApplyUserForm = createReactClass({
         cancelApply: PropTypes.func,
         appList: PropTypes.array,
         userType: PropTypes.string,
-        isOplateUser: PropTypes.boolean
+    },
+    getDefaultProps() {
+        return {
+            apps: [],
+            applyFrom: '',
+            users: [],
+            customerName: '',
+            emailData: {},
+            cancelApply: function() {
+
+            },
+            appList: [],
+            userType: '',
+        };
     },
     getInitialState: function() {
         const formData = this.buildFormData(this.props, this.props.apps);
-
         return {
             apps: $.extend(true, [], this.props.apps),
             formData: formData,
@@ -57,7 +71,14 @@ const ApplyUserForm = createReactClass({
             applyFrom: this.props.applyFrom || 'order',//从哪里打开的申请面板,客户订单、客户的用户列表中
             maxHeight: this.props.maxHeight,//form表单的最大高度限制
             formHeight: 215,//form表单初始高度
+            isOplateUser: true
         };
+    },
+    getIntegrateConfig(){
+        commonDataUtil.getIntegrationConfig().then(resultObj => {
+            let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
+            this.setState({isOplateUser});
+        });
     },
 
     componentWillReceiveProps: function(nextProps) {
@@ -133,6 +154,7 @@ const ApplyUserForm = createReactClass({
         if (this.props.applyFrom === 'order' || this.isApplyNewUsers()) {
             this.getCustomerContacts();
         }
+        this.getIntegrateConfig();
     },
 
     //获取客户联系人列表
@@ -350,7 +372,7 @@ const ApplyUserForm = createReactClass({
                     submitData.order_id = 'apply_new_users';
                     submitData.sales_opportunity = 'apply_new_users';
                     //如果是uem类型的，应用的信息只给后端传应用id，应用名和到期时间就可以
-                    if (!this.props.isOplateUser){
+                    if (!this.state.isOplateUser){
                         var products = JSON.parse(submitData.products);
                         if (_.isArray(products) && products.length){
                             _.forEach(products,(item) => {
@@ -510,7 +532,7 @@ const ApplyUserForm = createReactClass({
             isCustomSetting: true,
             appId: 'applyUser'
         };
-        var isOplateUser = this.props.isOplateUser;
+        var isOplateUser = this.state.isOplateUser;
         return (<AppConfigForm appFormData={appFormData}
             needApplyNum={(this.state.applyFrom === 'order' || this.isApplyNewUsers()) && isOplateUser}
             timePickerConfig={timePickerConfig}
@@ -605,7 +627,7 @@ const ApplyUserForm = createReactClass({
                                     {...formItemLayout}
                                     label={Intl.get('common.type', '类型')}
                                 >
-                                    {this.props.isOplateUser ? <RadioGroup onChange={this.onUserTypeChange}
+                                    {this.state.isOplateUser ? <RadioGroup onChange={this.onUserTypeChange}
                                         value={formData.tag}>
                                         <Radio key="1" value={Intl.get('common.trial.user', '试用用户')}>
                                             {Intl.get('common.trial.user', '试用用户')}
