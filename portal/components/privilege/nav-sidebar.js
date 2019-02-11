@@ -397,7 +397,7 @@ var NavSidebar = createReactClass({
                 {this.state.menus.map(function(obj) {
                     return (
                         <li key={obj.id}>
-                            <NavLink to={`/${obj.routePath}`} activeClassName="active">
+                            <NavLink to={`${obj.routePath}`} activeClassName="active">
                                 {obj.name}
                             </NavLink>
                         </li>
