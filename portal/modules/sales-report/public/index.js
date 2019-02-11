@@ -213,45 +213,46 @@ class SalesReport extends React.Component {
         const memberList = this.state.memberList;
         const currentMember = this.state.currentMember;
 
-        return (<ButtonZones>
-            <div className="filter">
-                {memberList.length ? (
-                    <Select
-                        showSearch
-                        optionFilterProp="children"
-                        style={{width: 100}}
-                        value={currentMember.user_id}
-                        onChange={this.onMemberChange}
+        return (
+            <ButtonZones>
+                <div className="btn-item-container">
+                    {memberList.length ? (
+                        <Select
+                            showSearch
+                            optionFilterProp="children"
+                            style={{width: 100}}
+                            value={currentMember.user_id}
+                            onChange={this.onMemberChange}
+                            className="btn-item"
+                        >
+                            {_.map(memberList, (memberItem, index) => {
+                                return <Option key={index} value={memberItem.user_id}>{memberItem.nick_name}</Option>;
+                            })}
+                        </Select>
+                    ) : null}
+
+                    <AntcDatePicker
+                        disableDateAfterToday={true}
+                        range='week'
+                        onSelect={this.onDateChange}
                         className="btn-item"
                     >
-                        {_.map(memberList, (memberItem, index) => {
-                            return <Option key={index} value={memberItem.user_id}>{memberItem.nick_name}</Option>;
-                        })}
-                    </Select>
-                ) : null}
-
-                <AntcDatePicker
-                    disableDateAfterToday={true}
-                    range='week'
-                    onSelect={this.onDateChange}
-                    className="btn-item"
-                >
-                    <AntcDatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</AntcDatePicker.Option>
-                    <AntcDatePicker.Option
-                        value="day">{Intl.get('common.time.unit.day', '天')}</AntcDatePicker.Option>
-                    <AntcDatePicker.Option
-                        value="week">{Intl.get('common.time.unit.week', '周')}</AntcDatePicker.Option>
-                    <AntcDatePicker.Option
-                        value="month">{Intl.get('common.time.unit.month', '月')}</AntcDatePicker.Option>
-                    <AntcDatePicker.Option
-                        value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</AntcDatePicker.Option>
-                    <AntcDatePicker.Option
-                        value="year">{Intl.get('common.time.unit.year', '年')}</AntcDatePicker.Option>
-                    <AntcDatePicker.Option
-                        value="custom">{Intl.get('user.time.custom', '自定义')}</AntcDatePicker.Option>
-                </AntcDatePicker>
-            </div>
-        </ButtonZones>
+                        <AntcDatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</AntcDatePicker.Option>
+                        <AntcDatePicker.Option
+                            value="day">{Intl.get('common.time.unit.day', '天')}</AntcDatePicker.Option>
+                        <AntcDatePicker.Option
+                            value="week">{Intl.get('common.time.unit.week', '周')}</AntcDatePicker.Option>
+                        <AntcDatePicker.Option
+                            value="month">{Intl.get('common.time.unit.month', '月')}</AntcDatePicker.Option>
+                        <AntcDatePicker.Option
+                            value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</AntcDatePicker.Option>
+                        <AntcDatePicker.Option
+                            value="year">{Intl.get('common.time.unit.year', '年')}</AntcDatePicker.Option>
+                        <AntcDatePicker.Option
+                            value="custom">{Intl.get('user.time.custom', '自定义')}</AntcDatePicker.Option>
+                    </AntcDatePicker>
+                </div>
+            </ButtonZones>
         );
     };
 
