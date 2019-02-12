@@ -203,7 +203,7 @@ class ApplyViewDetailActions {
 
     transferNextCandidate(queryObj, callback) {
         this.dispatch({loading: true, error: false});
-        ApplyApproveAjax.transferNextCandidate().sendRequest(queryObj).success((data) => {
+        ApplyApproveAjax.transferUserApplyNextCandidate().sendRequest(queryObj).success((data) => {
             if (data) {
                 this.dispatch({loading: false, error: false});
                 _.isFunction(callback) && callback(true);

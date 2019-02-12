@@ -20,6 +20,14 @@ exports.addNewCandidate = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+exports.addUserApplyNewCandidate = function(req, res) {
+    ApplyApproveService.addUserApplyNewCandidate(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 
 exports.getMyUserApplyWorkList = function(req, res) {
     ApplyApproveService.getMyUserApplyWorkList(req, res).on('success', function(data) {

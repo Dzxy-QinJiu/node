@@ -21,6 +21,14 @@ exports.addNewCandidate = function(req, res) {
             res: res
         }, req.body);
 };
+exports.addUserApplyNewCandidate = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: '/rest/base/v1/message/apply/taskcandidateusers',
+            req: req,
+            res: res
+        }, req.body);
+};
 //待我审批的用户列表
 exports.getMyUserApplyWorkList = function(req, res) {
     return restUtil.authRest.get(
