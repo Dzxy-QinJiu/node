@@ -2021,7 +2021,7 @@ const ApplyViewDetail = createReactClass({
                                     {Intl.get('common.apply.reject', '驳回')}
                                 </Button>) : null}
                             {/*如果是管理员或者是待我审批的申请，我都可以把申请进行转出*/}
-                            {(isRealmAdmin || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) && detailInfoObj.approval_state === '0' && false ? this.renderAddApplyNextCandidate() : null}
+                            {(isRealmAdmin || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) && detailInfoObj.approval_state === '0' ? this.renderAddApplyNextCandidate() : null}
                         </div>)}
                     </Col>
                 </Row>

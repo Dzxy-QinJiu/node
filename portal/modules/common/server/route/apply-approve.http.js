@@ -22,6 +22,14 @@ module.exports = {
             'needLogin': true
         }
     },{
+        'method': 'post',
+        'path': '/rest/add/userapply/new/candidate',
+        'handler': 'addUserApplyNewCandidate',
+        'passport': {
+            'needLogin': true
+        }
+    },
+    {
         'method': 'get',
         'path': '/rest/get/userapply/worklist',
         'handler': 'getMyUserApplyWorkList',
