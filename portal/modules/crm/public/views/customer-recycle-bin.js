@@ -35,6 +35,7 @@ class CustomerRecycleBin extends React.Component {
             errorMsg: '',//获取客户列表错误信息
             listenScrollBottom: true,//是否监听下拉加载
             isRecoveringId: '',//正在恢复的客户id
+            isDeletingId: '',//正在删除的客户id
             sorter: {//默认按操作时间排序
                 field: 'time',
                 order: 'descend'
@@ -152,7 +153,7 @@ class CustomerRecycleBin extends React.Component {
         this.setState({isRecoveringId: customerId});
         $.ajax({
             url: '/rest/crm/recovery/customer',
-            type: 'post',
+            type: 'put',
             dateType: 'json',
             data: recoveryCustomer,
             success: (data) => {
@@ -170,6 +171,32 @@ class CustomerRecycleBin extends React.Component {
             error: (xhr) => {
                 this.setState({isRecoveringId: ''});
                 message.error(xhr.responseJSON || Intl.get('crm.recovery.customer.failed', '恢复客户失败'));
+            }
+        });
+    }
+    //彻底删除客户
+    deleteCustomer = (customerId) => {
+        if (!customerId || this.state.isDeletingId) return;
+        this.setState({isDeletingId: customerId});
+        $.ajax({
+            url: `/rest/crm/customer_bak/${customerId}`,
+            type: 'delete',
+            dateType: 'json',
+            success: (data) => {
+                message.success(Intl.get('crm.138', '删除成功'));
+                //回收站中，去掉恢复成功的客户
+                let customerList = _.filter(this.state.customerList, item => item.id !== customerId);
+                let totalSize = this.state.totalSize;
+                totalSize--;
+                this.setState({
+                    isDeletingId: '',
+                    customerList: customerList || [],
+                    totalSize: totalSize > 0 ? totalSize : 0
+                });
+            },
+            error: (xhr) => {
+                this.setState({isDeletingId: ''});
+                message.error(xhr.responseJSON || Intl.get('crm.139', '删除失败'));
             }
         });
     }
@@ -242,29 +269,38 @@ class CustomerRecycleBin extends React.Component {
                 dataIndex: 'operator_name'
             }, {
                 title: Intl.get('common.operate', '操作'),
-                width: 50,
+                width: 70,
                 render: (text, record, index) => {
-                    if (record.id === this.state.isRecoveringId) {
+                    if (record.id === this.state.isRecoveringId || record.id === this.state.isDeletingId) {
                         return (<Icon type="loading" className='operate-icon'/>);
                     } else {
                         return (
-                            <Popconfirm
-                                placement="leftTop"
-                                title={Intl.get('crm.recovery.customer.confirm.tip', '确定要恢复客户 {name} 吗？', {name: _.get(record, 'name', '')})}
-                                onConfirm={this.recoveryCustomer.bind(this, _.get(record, 'id', ''))}>
-                                <span className="iconfont icon-recovery operate-icon" data-tracename="恢复客户"
-                                    title={Intl.get('crm.customer.recovery', '恢复')}/>
-                            </Popconfirm>);
+                            <span>
+                                {hasPrivilege('CRM_RECOVERY_CUSTOMER') ? (
+                                    <Popconfirm placement="leftTop"
+                                        title={Intl.get('crm.recovery.customer.confirm.tip', '确定要恢复客户 {name} 吗？', {name: _.get(record, 'name', '')})}
+                                        onConfirm={this.recoveryCustomer.bind(this, _.get(record, 'id', ''))}>
+                                        <span className="iconfont icon-recovery operate-icon"
+                                            data-tracename="恢复客户"
+                                            title={Intl.get('crm.customer.recovery', '恢复')}/>
+                                    </Popconfirm>) : null}
+                                {hasPrivilege('CRM_DELETE_CUSTOMER') ? (
+                                    <Popconfirm placement="leftTop"
+                                        title={Intl.get('crm.delete.customer.confirm.tip', '删除后不可恢复，确定要彻底删除客户 {name} 吗？', {name: _.get(record, 'name', '')})}
+                                        onConfirm={this.deleteCustomer.bind(this, _.get(record, 'id', ''))}>
+                                        <span className="iconfont icon-delete operate-icon"
+                                            data-tracename="彻底删除客户"
+                                            title={Intl.get('crm.delete.thoroughly', '彻底删除')}/>
+                                    </Popconfirm>) : null}
+                            </span>);
                     }
 
                 }
             }
         ];
-        if (!hasPrivilege('CRM_CUSTOMER_SCORE_RECORD')) {
-            columns = _.filter(columns, column => column.title !== Intl.get('user.login.score', '分数'));
-        }
-        //只对有添加客户权限的人开放恢复功能
-        if (!hasPrivilege('CUSTOMER_ADD')) {
+
+        //没有恢复、彻底删除的权限，就去掉操作列
+        if (!hasPrivilege('CRM_RECOVERY_CUSTOMER') && !hasPrivilege('CRM_DELETE_CUSTOMER')) {
             columns = _.filter(columns, column => column.title !== Intl.get('common.operate', '操作'));
         }
         return columns;

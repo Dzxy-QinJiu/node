@@ -18,7 +18,11 @@ var crmRestApis = {
     //获取所有的客户列表（包括：未分配给销售的客户）
     managerQuery: '/rest/customer/v3/customer/range/:type/:page_size/:page_num/:sort_field/:sort_order',
     //获取回收站中的客户列表
-    getRecycleBinCustomers: '/rest/customer/v3/customer/range/customer_bak/:type/:page_size',
+    getRecycleBinCustomers: '/rest/customer/v3/customer_bak/range/customer_bak/:type/:page_size',
+    //恢复回收站中的客户
+    recoveryCustomer: '/rest/customer/v3/customer_bak',
+    //删除回收站中的客户
+    deleteCustomerBak: '/rest/customer/v3/customer_bak/:customer_id',
     dynamic: '/rest/customer/v2/customerdynamic',
     upload: '/rest/customer/v3/customer/upload/preview',
     repeatCustomer: '/rest/customer/v2/customer/query/repeat',
@@ -96,6 +100,25 @@ exports.getRecycleBinCustomers = function(req, res) {
             req: req,
             res: res
         }, req.body);
+};
+
+//恢复回收站中的客户
+exports.recoveryCustomer = function(req, res) {
+    return restUtil.authRest.put(
+        {
+            url: crmRestApis.recoveryCustomer,
+            req: req,
+            res: res
+        }, req.body);
+};
+//删除回收站中的客户
+exports.deleteCustomerBak = function(req, res) {
+    return restUtil.authRest.del(
+        {
+            url: crmRestApis.deleteCustomerBak.replace(':customer_id', req.params.customer_id),
+            req: req,
+            res: res
+        });
 };
 
 //获取客户的历史分数

@@ -224,9 +224,18 @@ exports.mergeRepeatCustomer = function(req, res) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
-// 恢复回收站中的客户
+//恢复回收站中的客户
 exports.recoveryCustomer = function(req, res) {
-    crmService.addCustomer(req, res, req.body)
+    crmService.recoveryCustomer(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+};
+//删除回收站中的客户
+exports.deleteCustomerBak = function(req, res) {
+    crmService.deleteCustomerBak(req, res)
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(codeMessage) {

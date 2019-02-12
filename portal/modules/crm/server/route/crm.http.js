@@ -29,13 +29,22 @@ module.exports = {
             privileges: ['CRM_MANAGER_GET_CUSTOMER_BAK_OPERATOR_RECORD', 'CRM_USER_GET_CUSTOMER_BAK_OPERATOR_RECORD']
         },
         {//恢复客户
-            method: 'post',
+            method: 'put',
             path: '/rest/crm/recovery/customer',
             handler: 'recoveryCustomer',
             passport: {
                 needLogin: true
             },
-            privileges: ['CUSTOMER_ADD']
+            privileges: ['CRM_RECOVERY_CUSTOMER']
+        },
+        {//删除回收站中的客户
+            method: 'delete',
+            path: '/rest/crm/customer_bak/:customer_id',
+            handler: 'deleteCustomerBak',
+            passport: {
+                needLogin: true
+            },
+            privileges: ['CRM_DELETE_CUSTOMER']
         },
         {
             method: 'get',

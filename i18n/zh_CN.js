@@ -1257,6 +1257,8 @@ var zh_CN = {
     'crm.recovery.customer.success': '恢复客户成功',
     'crm.recovery.customer.failed': '恢复客户失败',
     'crm.recovery.customer.confirm.tip': '确定要恢复客户 {name} 吗？',
+    'crm.delete.customer.confirm.tip': '删除后不可恢复，确定要彻底删除客户 {name} 吗？',
+    'crm.delete.thoroughly': '彻底删除',
     'crm.over.day.no.phone': '超{day}天未打过电话',
     'crm.over.day.without.contact': '超{day}天未联系',
     'crm.over.day.no.connection': '近{day}天拨打未接通',
