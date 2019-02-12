@@ -148,9 +148,11 @@ class ProductTable extends React.Component {
             return sum + amount;
         }, 0);
 
-        if (totalAmount !== sumAmount) {
+        // 需求改为不大于合同总额
+        if (sumAmount > totalAmount) {
             this.setState({
-                saveErrMsg: Intl.get('crm.contract.check.tips', '合同额与产品总额不相等，请核对')
+                // saveErrMsg: Intl.get('crm.contract.check.tips', '合同额与产品总额不相等，请核对')
+                saveErrMsg: Intl.get('contract.mount.check.tip', '总价合计不能大于合同总额{num}元，请核对',{num: totalAmount})
             });
             return;
         }
@@ -167,10 +169,10 @@ class ProductTable extends React.Component {
             });
         };
 
-        const errorFunc = () => {
+        const errorFunc = (errorMsg) => {
             this.setState({
                 loading: false,
-                saveErrMsg: Intl.get('common.edit.failed', '修改失败'),
+                saveErrMsg: errorMsg || Intl.get('common.edit.failed', '修改失败')
             });
         };
 

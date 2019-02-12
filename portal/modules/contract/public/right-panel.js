@@ -19,8 +19,8 @@ import AddReport from './add-report';
 import AddRepayment from './add-repayment';
 import AddBuyBasic from './add-buy-basic';
 import AddBuyPayment from './add-buy-payment';
-// import DetailBasic from './detail-basic';
 import DetailBasic from './views/new/detail-basic';
+import DetailRepayment from './views/new/detail-repayment';
 import DetailInvoice from './detail-invoice';
 import DetailBuyBasic from './views/new/detail-buy-basic';
 import DetailBuyPayment from './detail-buy-payment';
@@ -510,7 +510,7 @@ class ContractRightPanel extends React.Component {
                     </div> : null}*/}
                     <AddReport
                         ref="addReport"
-                        contract={this.props.contract}
+                        isDetailType={props.isDetailType}
                         updateScrollBar={this.updateScrollBar}
                     />
                 </div>
@@ -600,13 +600,17 @@ class ContractRightPanel extends React.Component {
                                     isDetailType={isDetailType}
                                     appList={this.props.appList}
                                     updateScrollBar={this.updateScrollBar}
+                                    refreshCurrentContract={this.props.refreshCurrentContract}
                                 />
                                 {[SERVICE].indexOf(this.props.contract.category) > -1 ? (
                                     <AddReport
                                         ref="addReport"
+                                        parent={this}
                                         contract={this.props.contract}
                                         reports={this.props.contract.reports}
+                                        isDetailType={isDetailType}
                                         updateScrollBar={this.updateScrollBar}
+                                        refreshCurrentContract={this.props.refreshCurrentContract}
                                     />
                                 ) : null}
                             </GeminiScrollBar>
@@ -618,7 +622,12 @@ class ContractRightPanel extends React.Component {
                 [
                     <TabPane tab={`${Intl.get('contract.108', '回款')}${Intl.get('sales.stage.message', '信息')}`} key={endTabKey - 1}>
                         <div className="contract-repayment">
-                            回款信息
+                            <DetailRepayment
+                                height={contentHeight}
+                                contract={this.props.contract}
+                                updateScrollBar={this.updateScrollBar}
+                                refreshCurrentContract={this.props.refreshCurrentContract}
+                            />
                         </div>
                     </TabPane>,
                     <TabPane tab={Intl.get('contract.40', '发票基本信息')} key={endTabKey}>

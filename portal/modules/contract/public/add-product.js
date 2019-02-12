@@ -1,5 +1,3 @@
-import calc from 'calculatorjs';
-
 var React = require('react');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
@@ -8,7 +6,7 @@ const Validator = Validation.Validator;
  * 产品信息添加表单
  */
 
-import { Form, Input, Select, Button, Icon, Alert, DatePicker } from 'antd';
+import { Form, Input, Select, Button, Icon, Alert, DatePicker, message } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RangePicker = DatePicker.RangePicker;
@@ -17,6 +15,9 @@ import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import ProductTable from 'CMP_DIR/basic-edit-field-new/product-table';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { PRIVILEGE_MAP, VIEW_TYPE } from 'MOD_DIR/contract/consts';
+import Trace from 'LIB_DIR/trace';
+import routeList from 'MOD_DIR/contract/common/route';
+import ajax from 'MOD_DIR/contract/common/ajax';
 
 const defaultValueMap = {
     count: 1,
@@ -58,7 +59,8 @@ const AddProduct = createReactClass({
         updateScrollBar: PropTypes.func,
         isDetailType: PropTypes.bool.isRequired,
         totalAmout: PropTypes.number,
-        contract: PropTypes.array
+        contract: PropTypes.array,
+        refreshCurrentContract: PropTypes.func,
     },
 
     componentWillReceiveProps(nextProps) {
@@ -282,7 +284,40 @@ const AddProduct = createReactClass({
         this.setState({products});
     },
     handleProductSave(saveObj,successFunc,errorFunc) {
-        console.log(saveObj);
+        saveObj = {products: saveObj};
+        Trace.traceEvent(ReactDOM.findDOMNode(this),'修改产品信息');
+        let valid = this.validate();
+        if(!valid) {
+            errorFunc(Intl.get('contract.table.form.fill', '请填写表格内容'));
+            return false;
+        }
+        const handler = 'editContract';
+        const route = _.find(routeList, route => route.handler === handler);
+        // 单项编辑时，这里得添加上客户信息字段
+        if(!_.get(saveObj, 'customers')){
+            saveObj.customers = this.props.contract.customers;
+        }
+        const arg = {
+            url: route.path,
+            type: route.method,
+            data: saveObj || {},
+            params: {type: VIEW_TYPE.SELL}
+        };
+        ajax(arg).then(result => {
+            if (result.code === 0) {
+                message.success(Intl.get('user.edit.success', '修改成功'));
+                if (_.isFunction(successFunc)) successFunc();
+                const hasResult = _.isObject(result.result) && !_.isEmpty(result.result);
+                let contract = _.extend({},this.props.contract,result.result);
+                if (hasResult) {
+                    this.props.refreshCurrentContract(this.props.contract.id, true, contract);
+                }
+            } else {
+                if (_.isFunction(errorFunc)) errorFunc(Intl.get('common.edit.failed', '修改失败'));
+            }
+        }, (errorMsg) => {
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg || Intl.get('common.edit.failed', '修改失败'));
+        });
     },
     render: function() {
 
@@ -382,9 +417,9 @@ const AddProduct = createReactClass({
                         onChange={this.handleProductChange}
                     />
                     {
-                        !this.state.pristine && !this.state.valid ?
+                        !isEditBtnShow && !this.state.pristine && !this.state.valid ?
                             <div className="alert-container">
-                                <Alert type="error" message="请填写表格内容" showIcon/>
+                                <Alert type="error" message={Intl.get('contract.table.form.fill', '请填写表格内容')} showIcon/>
                             </div> : null
                     }
                     {/* {this.renderFormContent()} */}

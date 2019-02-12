@@ -979,18 +979,24 @@
                 margin-left: 15px;
             }
         }
-        .add-products {
+        .add-products, .add-reports {
             width: auto;
             position: relative;
             .icon-edit-btn{
                 position: absolute;
                 right: 20px;
-                top: -25px;
+                top: -35px;
             }
             .product-table {
                 .antc-table{
                     margin-right: 0;
                 }
+            }
+        }
+        .add-reports{
+            margin-top: 30px;
+            .icon-edit-btn{
+                top: -25px;
             }
         }
         .total-amount-price {
@@ -1115,6 +1121,39 @@
                     font-size: 14px;
                     color: @color-block;
                 }
+            }
+        }
+        .iconfont{
+            width: 24px;
+            overflow: hidden;
+            cursor: pointer;
+            text-align: center;
+        }
+        .contract-repayment-container{
+            margin: 0 20px;
+            .detail-card-container{
+                position: relative;
+            }
+            .iconfont.icon-add{
+                position: absolute;
+                top: 12px;
+                right: 10px;
+                margin-top: 0;
+            }
+            .repayment-label{
+              font-size: 14px;
+              color: @color-block;
+            }
+            .repayment-list{
+                .finance-list{
+                    margin: 0;
+                    li{
+                        color: @color-block;
+                    }
+                }
+            }
+            .add-repayment-form{
+                border: 1px solid #d3eafc;
             }
         }
     }
