@@ -26,10 +26,10 @@ export function getSalesRankingChart(role) {
 
     //维度
     let dimensions = [
-        '合同数排名',
-        '回款毛利排名',
-        '流失客户数排名',
-        '跟进客户数排名'
+        '合同数',
+        '回款毛利',
+        '流失客户数',
+        '跟进客户数'
     ];
 
     //如果是销售经理
@@ -48,11 +48,11 @@ export function getSalesRankingChart(role) {
         ];
 
         dimensions = [
-            '合格客户数排名',
-            '电话数排名',
-            '客户活跃率排名',
-            '提交机会排名',
-            '成交数排名'
+            '合格客户数',
+            '电话数',
+            '客户活跃率',
+            '提交机会',
+            '成交数'
         ];
     }
 
@@ -162,10 +162,9 @@ export function getSalesRankingChart(role) {
                     let content = ['<b style="font-size: 15px">' + params.name + '</b>'];
 
                     _.each(dimensions, (item, index) => {
-                        const rankText = item + ': ' + params.data.realValue[index];
-                        const countText = item.replace('排名', '') + ': ' + params.data.countArr[index];
+                        const countText = item + ': ' + params.data.countArr[index] + ', 排名: ' + params.data.realValue[index];
 
-                        content.push(rankText, countText);
+                        content.push(countText);
                     });
 
                     const contentHtml = content.join('<br>');
