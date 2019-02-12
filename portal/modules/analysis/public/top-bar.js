@@ -141,6 +141,7 @@ class TopBar extends React.Component {
     renderButtonZones = () => {
         //日期选择器选项
         let datePickerOption = {
+            className: 'btn-item',
             range: this.state.range,
             startTime: this.state.startTime,
             endTime: this.state.endTime,
@@ -223,7 +224,7 @@ class TopBar extends React.Component {
                 ) : null}
 
                 <AntcDatePicker
-                    className='btn-item'
+                    className={datePickerOption.className}
                     disableDateAfterToday={true}
                     range={datePickerOption.range}
                     start_time={datePickerOption.startTime}
