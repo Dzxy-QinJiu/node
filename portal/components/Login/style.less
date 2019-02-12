@@ -6,6 +6,9 @@
 
 @body-bg: #1d2b36;
 @font-color: #d8eaf4;
+//或、微信登录的颜色
+@text-color: #8ba7c2;
+@border-radius: 3px;
 
 .login-wrap {
   position: absolute;
@@ -134,7 +137,7 @@
   }
 
   .input-item input {
-    border-radius: 2px;
+    border-radius: @border-radius;
   }
 
   .input-area input {
@@ -153,7 +156,7 @@
     width: 100%;
     height: 40px;
     line-height: 40px;
-    border-radius: 5px;
+    border-radius: @border-radius;
     background-color: #4e96d1;
     color: #ffffff;
     border: none;
@@ -170,15 +173,15 @@
   // 横线
   .line {
     text-align: center;
-    margin-top: 10px;
-    color: #8ba7c2;
+    margin-top: 40px;
+    color: @text-color;
     position: relative;
 
     &:before, &:after {
       content: '';
       position: absolute;
       top: 50%;
-      background-color: #8ba7c2;
+      background-color: @text-color;
       width: 40%;
       height: 1px;
     }
@@ -194,19 +197,21 @@
 
   //微信登录
   .wechat-login {
-    margin-top: 10px;
+    margin-top: 40px;
     outline: none;
-    color: #ffffff;
+    color: @text-color;
     cursor: pointer;
     height: 40px;
     line-height: 40px;
-    border-radius: 5px;
+    border: 1px solid @text-color;
+    border-radius: @border-radius;
     text-align: center;
     transition: 0.3s;
-    background-color: #28af6a;
+    background-color: transparent;
 
     &:hover {
-      background-color: #0e924e;
+      color: #0e924e;
+      border: 1px solid #0e924e;
     }
 
     .wechat-icon-wrap {
@@ -215,7 +220,7 @@
       height: 24px;
       line-height: 24px;
       margin-right: 4px;
-      border-radius: 3px;
+      border-radius: @border-radius;
       text-align: center;
     }
   }
@@ -234,7 +239,7 @@
     float: right;
     width: 120px;
     height: 40px;
-    border-radius: 2px;
+    border-radius: @border-radius;
     cursor: pointer;
   }
 
