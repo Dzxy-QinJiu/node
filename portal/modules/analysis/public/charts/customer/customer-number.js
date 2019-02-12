@@ -1,12 +1,12 @@
 /**
- * 客户数统计
+ * 合格客户数统计
  */
 
 import { CUSTOMER_STAGE } from '../../consts';
 
 export function getCustomerNumChart(stage) {
     return {
-        title: '客户数统计',
+        title: '合格客户数统计',
         chartType: 'table',
         url: '/rest/analysis/customer/stage/label/:auth_type/summary',
         argCallback: arg => {
