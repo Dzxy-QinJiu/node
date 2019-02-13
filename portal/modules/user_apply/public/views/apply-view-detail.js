@@ -174,7 +174,12 @@ const ApplyViewDetail = createReactClass({
     getApplyDetail(detailItem, applyData) {
         setTimeout(() => {
             ApplyViewDetailActions.showDetailLoading(detailItem);
-            ApplyViewDetailActions.getApplyDetail(detailItem.id, applyData);
+            //1代表已通过，2代表已驳回，3 代表已撤销
+            var approval_state = '';
+            if (['1','2','3'].includes(_.get(detailItem,'approval_state'))){
+                approval_state = _.get(detailItem,'approval_state');
+            }
+            ApplyViewDetailActions.getApplyDetail(detailItem.id, applyData, approval_state);
             ApplyViewDetailActions.getNextCandidate({id: detailItem.id});
             //获取回复列表
             if (hasPrivilege('GET_APPLY_COMMENTS')) {
@@ -1765,6 +1770,10 @@ const ApplyViewDetail = createReactClass({
     // 隐藏撤销申请的模态框
     hideBackoutModal: function() {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-cancel'), '点击取消按钮');
+        ApplyViewDetailActions.setRolesNotSettingModalDialog({
+            show: false,
+            appNames: []
+        });
         this.setState({
             showBackoutConfirmType: ''
         });
@@ -1784,7 +1793,7 @@ const ApplyViewDetail = createReactClass({
     renderCancelApplyApprove() {
         var confirmType = this.state.showBackoutConfirmType, modalContent = '', deleteFunction = function() {
 
-            }, okText = '', modalShow = false, resultType = {};
+            }, okText = '',cancelText = '', modalShow = false, resultType = {};
         if (confirmType) {
             //不同类型的操作，展示的描述和后续操作也不一样
             if (confirmType === '1' || confirmType === '2') {
@@ -1794,6 +1803,13 @@ const ApplyViewDetail = createReactClass({
                 if (confirmType === '2') {
                     modalContent = Intl.get('apply.approve.modal.text.reject', '是否驳回此申请');
                     okText = Intl.get('common.apply.reject', '驳回');
+                }
+                //如果之前没有设置过角色，要加上设置角色的提示
+                if (_.get(this, 'state.rolesNotSettingModalDialog.show',false)){
+                    modalContent = this.state.rolesNotSettingModalDialog.appNames.join('、') + Intl.get('user.apply.detail.role.modal.content', '中，没有为用户分配角色，是否继续');
+                    okText = Intl.get('user.apply.detail.role.modal.continue', '继续');
+                    cancelText = Intl.get('user.apply.detail.role.modal.cancel', '我再改改');
+                    deleteFunction = this.continueSubmit;
                 }
                 resultType = this.state.applyResult;
             } else if (confirmType === '3') {
@@ -1811,6 +1827,7 @@ const ApplyViewDetail = createReactClass({
                     modalContent={modalContent}
                     delete={deleteFunction}
                     okText={okText}
+                    cancelText={cancelText}
                     delayClose={true}
                 />
             );
@@ -1853,43 +1870,31 @@ const ApplyViewDetail = createReactClass({
         });
     },
     renderApplyApproveStatus() {
-        //如果没有进行角色设置，显示角色设置的模态框
-        if (this.state.rolesNotSettingModalDialog.show) {
-            return (<ModalDialog
-                container={this}
-                modalShow={true}
-                modalContent={this.state.rolesNotSettingModalDialog.appNames.join('、') + Intl.get('user.apply.detail.role.modal.content', '中，没有为用户分配角色，是否继续')}
-                okText={Intl.get('user.apply.detail.role.modal.continue', '继续')}
-                cancelText={Intl.get('user.apply.detail.role.modal.cancel', '我再改改')}
-                delete={this.continueSubmit}
-                hideModalDialog={this.cancelShowRolesModal}
-            />);
+        var showLoading = false, approveSuccess = false, approveError = false, applyResultErrorMsg = '',
+            confirmType = this.state.showBackoutConfirmType, resultType = {};
+        if (confirmType === '3') {
+            resultType = this.state.backApplyResult;
+        } else if (confirmType === '1' || confirmType === '2') {
+            resultType = this.state.applyResult;
         } else {
-            var showLoading = false, approveSuccess = false, approveError = false, applyResultErrorMsg = '',
-                confirmType = this.state.showBackoutConfirmType, resultType = {};
-            if (confirmType === '3') {
-                resultType = this.state.backApplyResult;
-            } else if (confirmType === '1' || confirmType === '2') {
-                resultType = this.state.applyResult;
-            } else {
-                return;
-            }
-            showLoading = resultType.submitResult === 'loading';
-            approveSuccess = resultType.submitResult === 'success';
-            approveError = resultType.submitResult === 'error';
-            applyResultErrorMsg = resultType.errorMsg;
-            var typeObj = handleDiffTypeApply(this);
-            return <ApplyApproveStatus
-                showLoading={showLoading}
-                approveSuccess={approveSuccess}
-                viewApprovalResult={this.viewApprovalResult}
-                approveError={approveError}
-                applyResultErrorMsg={applyResultErrorMsg}
-                reSendApproval={this.continueSubmit}
-                cancelSendApproval={this.cancelSendApproval.bind(this, confirmType)}
-                container={this}
-            />;
+            return;
         }
+        showLoading = resultType.submitResult === 'loading';
+        approveSuccess = resultType.submitResult === 'success';
+        approveError = resultType.submitResult === 'error';
+        applyResultErrorMsg = resultType.errorMsg;
+        var typeObj = handleDiffTypeApply(this);
+        return <ApplyApproveStatus
+            showLoading={showLoading}
+            approveSuccess={approveSuccess}
+            viewApprovalResult={this.viewApprovalResult}
+            approveError={approveError}
+            applyResultErrorMsg={applyResultErrorMsg}
+            reSendApproval={this.continueSubmit}
+            cancelSendApproval={this.cancelSendApproval.bind(this, confirmType)}
+            container={this}
+        />;
+
     },
     renderTransferCandidateBlock(){
         var usersManList = this.state.usersManList;
@@ -2264,19 +2269,6 @@ const ApplyViewDetail = createReactClass({
         this.getApplyDetail(this.props.detailItem);
         //设置这条审批不再展示通过和驳回的按钮
         ApplyViewDetailActions.hideApprovalBtns();
-    },
-
-    //我再改改
-    cancelShowRolesModal(e) {
-        this.setState({
-            showBackoutConfirmType: ''
-        });
-        Trace.traceEvent(e, '点击了我再改改');
-        ApplyViewDetailActions.setRolesNotSettingModalDialog({
-            show: false,
-            appNames: []
-        });
-        return;
     },
 
     //继续提交
