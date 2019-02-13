@@ -133,6 +133,7 @@ export function isAdminOrOpStaff() {
     return hasRole(role.OPERATION_PERSON) || hasRole(role.REALM_ADMIN);
 }
 
+//是否选择的是全部团队或成员
 export function isSelectedAllTeamMember() {
     return Store.isSelectedAllTeamMember; 
 }
