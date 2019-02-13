@@ -1361,9 +1361,7 @@ const ApplyViewDetail = createReactClass({
     //渲染用户延期
     renderDetailDelayTime: function(detailInfo) {
         var isRealmAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ||
-            userData.hasRole(userData.ROLE_CONSTANS.REALM_OWNER) ||
-            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
-            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
+            userData.hasRole(userData.ROLE_CONSTANS.REALM_OWNER);
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
@@ -1384,9 +1382,7 @@ const ApplyViewDetail = createReactClass({
     //渲染用户延期
     renderMultiAppDetailDelayTime: function(detailInfo) {
         var isRealmAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ||
-            userData.hasRole(userData.ROLE_CONSTANS.REALM_OWNER) ||
-            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_ADMIN) ||
-            userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
+            userData.hasRole(userData.ROLE_CONSTANS.REALM_OWNER);
         //是否是待审批
         const isUnApproved = this.isUnApproved();
         //把apps数据根据user_id重组
