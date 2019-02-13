@@ -61,4 +61,23 @@ module.exports = {
         TOP_NAV: 64,
         PADDING_BOTTOM: 16
     },
+    //角色常量
+    ROLE_CONSTANS: {
+        //运营人员
+        OPERATION_PERSON: 'operations',
+        //销售
+        SALES: 'sales',
+        //舆情秘书
+        SECRETARY: 'salesmanager',
+        //销售负责人
+        SALES_LEADER: 'salesleader',
+        //组织管理员
+        REALM_ADMIN: 'realm_manager',
+        //组织所有者
+        REALM_OWNER: 'realm_owner',
+        //合同管理员
+        CONTRACT_ADMIN: 'contract_manager',
+        //财务
+        ACCOUNTANT: 'accountant'
+    }
 };
