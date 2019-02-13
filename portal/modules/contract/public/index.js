@@ -379,7 +379,7 @@ class Contract extends React.Component {
         });
     };
 
-    //在合同详情中修改完回款信息后，将修改后的数据同步到合同列表
+    //在合同详情中修改完已回款信息后，将修改后的数据同步到合同列表
     refreshCurrentContractRepayment = (opType, data) => {
         //当前合同
         let currentContract = this.state.currentContract;
@@ -455,6 +455,34 @@ class Contract extends React.Component {
         this.setState({
             currentContract,
             sum
+        });
+    };
+
+    //在合同详情中修改完回款计划信息后，将修改后的数据同步到合同列表
+    refreshCurrentContractRepaymentPlan = (opType, data) => {
+        //当前合同
+        let currentContract = this.state.currentContract;
+        //当前合同里的回款数组
+        let repayments = currentContract.repayments;
+
+        if (opType === 'add') {
+            //将新添加的回款加入合同信息的回款数组
+            repayments.unshift(data);
+        } else if (opType === 'delete') {
+            const repaymentId = data.id;
+            const index = _.findIndex(repayments, repayment => repayment.id === repaymentId);
+
+            //在合同信息的回款数组中删掉已删除的回款
+            repayments.splice(index, 1);
+        } else if (opType === 'update') {
+            const repaymentId = data.id;
+            const index = _.findIndex(repayments, repayment => repayment.id === repaymentId);
+            //更新合同信息的回款数组中对应的回款
+            repayments[index] = data;
+        }
+
+        this.setState({
+            currentContract
         });
     };
 
@@ -916,6 +944,7 @@ class Contract extends React.Component {
                                     refreshCurrentContract={this.refreshCurrentContract}
                                     refreshCurrentContractNoAjax={this.refreshCurrentContractNoAjax}
                                     refreshCurrentContractRepayment={this.refreshCurrentContractRepayment}
+                                    refreshCurrentContractRepaymentPlan={this.refreshCurrentContractRepaymentPlan}
                                     addContract={this.addContract}
                                     deleteContract={this.deleteContract}
                                     viewType={this.state.type}

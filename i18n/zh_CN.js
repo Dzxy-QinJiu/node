@@ -1676,6 +1676,8 @@ var zh_CN = {
     'contract.192': '是否删除此费用？',
     'contract.193': '甲方名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间',
     'contract.194': '回款进程',
+    'contract.195': '还未添加回款计划',
+    'contract.196': '还未添加回款进程',
     'contract.gross.profit.can.not.exceed.repayment': '毛利不能大于回款',
     'contract.loadMore': '加载更多',
     'contract.valueTypeConfig': '值字段设置',

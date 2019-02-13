@@ -626,7 +626,7 @@ class ContractRightPanel extends React.Component {
                                 height={contentHeight}
                                 contract={this.props.contract}
                                 updateScrollBar={this.updateScrollBar}
-                                refreshCurrentContract={this.props.refreshCurrentContract}
+                                refreshCurrentContractRepaymentPlan={this.props.refreshCurrentContractRepaymentPlan}
                             />
                         </div>
                     </TabPane>,
@@ -830,5 +830,6 @@ ContractRightPanel.propTypes = {
     viewType: PropTypes.string,
     refreshCurrentContractNoAjax: PropTypes.func,
     refreshCurrentContractRepayment: PropTypes.func,
+    refreshCurrentContractRepaymentPlan: PropTypes.func,
 };
 module.exports = ContractRightPanel;

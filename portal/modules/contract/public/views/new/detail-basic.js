@@ -97,7 +97,7 @@ class DetailBasic extends React.Component {
         };
         // 单项编辑时，这里得添加上客户信息字段
         if(!_.get(saveObj, 'customers')){
-            saveObj.customers = this.props.contract.customers;
+            // saveObj.customers = this.props.contract.customers;
         }
         // saveObj.customers = [{customer_name: contract.customer_name, customer_id: this.props.customerId}];
 

@@ -72,24 +72,20 @@ class DetailBasic extends React.Component {
 
     // 渲染已回款信息
     renderReypayInfo() {
-        const repayments = this.props.contract.repayments || [];
-        let repayLists = repayments.filter(item => item.type === 'repay');
         return (
             <RepaymentInfo
                 contract={this.props.contract}
-                repayLists={repayLists}
+                refreshCurrentContractRepayment={this.props.refreshCurrentContractRepayment}
             />
         );
     }
 
     // 渲染回款计划信息
     renderReypayPlan() {
-        const repayments = this.props.contract.repayments || [];
-        let repayPlanLists = _.filter(repayments,item => item.type === 'repay_plan');
         return (
             <RepaymentPlan
                 contract={this.props.contract}
-                repayPlanLists={repayPlanLists}
+                refreshCurrentContractRepaymentPlan={this.props.refreshCurrentContractRepaymentPlan}
             />
         );
     }
@@ -121,6 +117,7 @@ DetailBasic.propTypes = {
     hideLoading: PropTypes.func,
     refreshCurrentContract: PropTypes.func,
     refreshCurrentContractRepayment: PropTypes.func,
+    refreshCurrentContractRepaymentPlan: PropTypes.func,
     viewType: PropTypes.string,
 };
 module.exports = DetailBasic;

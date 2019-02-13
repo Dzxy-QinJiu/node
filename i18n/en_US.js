@@ -1650,6 +1650,8 @@ var en_US = {
     'contract.192': 'Whether to delete this charge？', //  是否删除此费用
     'contract.193': 'The party a name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', //  甲方名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
     'contract.194': 'Debt collection process',//回款进程
+    'contract.195': 'A collection plan has not been added',// 还未添加回款计划
+    'contract.196': 'The collection process has not been added',// 还未添加回款进程
     'contract.gross.profit.can.not.exceed.repayment': 'gross profit can not exceed repayment',//毛利不能大于回款
     'contract.loadMore': 'load more',//"加载更多",
     'contract.valueTypeConfig': 'value calculate type config',//"值字段设置",
