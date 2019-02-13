@@ -3,7 +3,6 @@
  */
 
 import Store from '../../store';
-
 import { argCallbackMemberIdToIds, argCallbackTimeToUnderlineTime } from '../../utils';
 import { isSales } from '../../consts';
 
