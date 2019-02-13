@@ -1189,7 +1189,6 @@ var zh_CN = {
     'crm.144': '立项报价阶段',
     'crm.145': '谈判阶段',
     'crm.146': '日期',
-    'crm.147': '订单号',
     'crm.148': '预算金额',
     'crm.149': '{num}万',
     'crm.150': '用户申请',
@@ -2722,6 +2721,7 @@ var zh_CN = {
     'apply.approve.upload.error.file.type': '文件格式不正确！',
     'apply.approve.upload.not.more.than50': '文件大小不能超过50M!',
     'apply.approve.no.comment': '暂无回复内容！',
-    'crm.input.your.apply.user.type': '请输入您申请的用户类型（例如：试用用户、签约用户等）'
+    'crm.input.your.apply.user.type': '请输入您申请的用户类型（例如：试用用户、签约用户等）',
+    'apply.view.transfer.candidate': '转审',
 };
 export default zh_CN;

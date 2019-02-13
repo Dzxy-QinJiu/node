@@ -491,10 +491,6 @@ const ApplyViewDetail = createReactClass({
                     <span className="apply-type-tip">
                         {this.props.detailItem.topic || Intl.get('user.apply.id', '账号申请')}
                     </span>
-                    {selectedDetailItem.order_id ? (
-                        <span className="order-id">
-                            {Intl.get('crm.147', '订单号')}：{selectedDetailItem.order_id}
-                        </span>) : null}
                 </div>
                 <div className="apply-detail-content" style={{height: applyDetailHeight}} ref="geminiWrap">
                     <PrivilegeChecker check='APP_USER_APPLY_APPROVAL'>
@@ -1956,7 +1952,7 @@ const ApplyViewDetail = createReactClass({
                     ref={AssignSales => this.addNextCandidate = AssignSales}
                     content={<Button
                         data-tracename="点击转出申请按钮"
-                        className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('crm.qualified.roll.out', '转出')}</Button>}
+                        className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('apply.view.transfer.candidate','转审')}</Button>}
                     overlayTitle={Intl.get('apply.will.approve.apply.item','待审批人')}
                     okTitle={Intl.get('common.confirm', '确认')}
                     cancelTitle={Intl.get('common.cancel', '取消')}
