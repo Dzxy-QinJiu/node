@@ -2138,26 +2138,29 @@ const ApplyViewDetail = createReactClass({
                 let changeMaxNumber = this.getChangeMaxUserNumber();
                 //选中的应用，添加到提交参数中
                 _.each(this.appsSetting, function(app_config, app_id) {
-                    //当前应用配置
-                    var appObj = {
-                        //应用id
-                        client_id: app_id,
-                        //角色
-                        roles: app_config.roles,
-                        //权限
-                        permissions: app_config.permissions,
-                        //到期停用
-                        over_draft: app_config.over_draft.value,
-                        //开始时间
-                        begin_date: app_config.time.start_time,
-                        //结束时间
-                        end_date: app_config.time.end_time,
-                    };
-                    //已有用户申请没法指定个数
-                    if (!isExistUserApply) {
-                        appObj.number = app_config.number.value;
+                    //app_id含有&&时，是多应用申请时的产品配置信息，不做处理，避免出现多种未知应用
+                    if (app_id.indexOf('&&') === -1) {
+                        //当前应用配置
+                        var appObj = {
+                            //应用id
+                            client_id: app_id,
+                            //角色
+                            roles: app_config.roles,
+                            //权限
+                            permissions: app_config.permissions,
+                            //到期停用
+                            over_draft: app_config.over_draft.value,
+                            //开始时间
+                            begin_date: app_config.time.start_time,
+                            //结束时间
+                            end_date: app_config.time.end_time,
+                        };
+                        //已有用户申请没法指定个数
+                        if (!isExistUserApply) {
+                            appObj.number = app_config.number.value;
+                        }
+                        products.push(appObj);
                     }
-                    products.push(appObj);
                 });
                 var appList = detailInfo.apps;
                 //如果是开通用户，需要先检查是否有角色设置，如果没有角色设置，给出一个警告
