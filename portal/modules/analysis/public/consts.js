@@ -2,8 +2,6 @@
  * 公共常量
  */
 
-const userData = require('PUB_DIR/sources/user-data');
-
 //初始时间
 export const initialTime = {
     range: 'week',
@@ -74,9 +72,6 @@ export const WEEKDAY = [
 
 //localstorage中存储选中的应用ID的键
 export const STORED_APP_ID_KEY = 'analysis_account_active_app_id';
-
-//是否是普通销售
-export const isSales = userData.getUserData().isCommonSales; 
 
 //历史最高客户id字段
 export const CUSTOMER_IDS_FIELD = 'highest_customer_ids';

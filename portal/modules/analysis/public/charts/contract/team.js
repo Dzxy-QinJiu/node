@@ -2,15 +2,14 @@
  * 团队分布
  */
 
-import { isSales } from '../../consts';
-import { argCallbackTeamId } from '../../utils';
+import { argCallbackTeamId, isSales } from '../../utils';
 
 export function getContractTeamChart() {
     return {
         title: '团队分布',
         chartType: 'bar',
         noShowCondition: {
-            callback: () => isSales
+            callback: () => isSales()
         },
         url: '/rest/analysis/contract/contract/:data_type/gross/profit/team',
         conditions: [{

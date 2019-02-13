@@ -3,8 +3,7 @@
  */
 
 import Store from '../../store';
-import { argCallbackMemberIdToIds, argCallbackTimeToUnderlineTime } from '../../utils';
-import { isSales } from '../../consts';
+import { argCallbackMemberIdToIds, argCallbackTimeToUnderlineTime, isSales } from '../../utils';
 
 export function getCustomerCoverageChart() {
     return {
@@ -27,7 +26,7 @@ export function getCustomerCoverageChart() {
             }
         },
         noShowCondition: {
-            callback: () => isSales
+            callback: () => isSales()
         },
         chartType: 'table',
         option: {

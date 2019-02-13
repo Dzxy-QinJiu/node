@@ -3,6 +3,8 @@
  */
 
 import { num as antUtilNum } from 'ant-utils';
+import Store from './store';
+const userData = require('PUB_DIR/sources/user-data');
 const formatAmount = antUtilNum.formatAmount;
 const querystring = require('querystring');
 
@@ -115,6 +117,12 @@ export function ifNotSingleApp(conditions) {
     } else {
         return false;
     }
+}
+
+//是否是要查看具体销售人员的数据
+//普通销售自己登录或管理人员选择某些销售都属于这种情况
+export function isSales() {
+    return userData.getUserData().isCommonSales || Store.teamMemberFilterType === 'member'; 
 }
 
 //查询参数回调函数: 不带下划线的开始结束时间转成带下划线的

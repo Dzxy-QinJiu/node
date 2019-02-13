@@ -2,14 +2,14 @@
  * 销售开通单应用账号登录统计
  */
 
-import { isSales } from '../../consts';
+import { isSales } from '../../utils';
 
 export function getSalesOpenAccountLoginChart() {
     return {
         title: Intl.get('user.analysis.account.login.statistics', '开通账号登录统计'),
         chartType: 'table',
         noShowCondition: {
-            callback: () => isSales
+            callback: () => isSales()
         },
         url: '/rest/analysis/user/v3/:data_type/login/detail',
         argCallback: (arg) => {
