@@ -3,6 +3,8 @@
  */
 
 import Store from '../../store';
+
+import { argCallbackMemberIdToIds, argCallbackTimeToUnderlineTime } from '../../utils';
 import { isSales } from '../../consts';
 
 export function getCustomerCoverageChart() {
@@ -12,26 +14,16 @@ export function getCustomerCoverageChart() {
         height: 'auto',
         url: '/rest/analysis/customer/v2/statistic/all/industry/stage/region/overlay',
         argCallback: (arg) => {
+            argCallbackMemberIdToIds(arg);
+            argCallbackTimeToUnderlineTime(arg);
+
             const query = arg.query;
 
             if (query) {
-                //starttime转成start_time，endtime转成end_time
-                if (query.starttime && query.endtime) {
-                    query.start_time = 0;
-                    query.end_time = query.endtime;
-                    delete query.starttime;
-                    delete query.endtime;
-                }
-
                 //"试用合格"标签需要特殊处理
                 if (query.customer_label === Intl.get('common.trial.qualified', '试用合格')) {
                     query.customer_label = Intl.get('common.trial', '试用');
                     query.qualify_label = QUALIFY_LABEL_PASS;
-                }
-
-                if (query.team_ids) {
-                    query.team_id = arg.query.team_ids;
-                    delete query.team_ids;
                 }
             }
         },
@@ -44,7 +36,7 @@ export function getCustomerCoverageChart() {
             bordered: true,
             columns: [
                 {
-                    title: Intl.get('user.sales.team', '销售团队'),
+                    title: Intl.get('common.definition', '名称'),
                     dataIndex: 'team_name',
                     render: (text, item, index) => {
                         return {
