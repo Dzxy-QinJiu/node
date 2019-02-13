@@ -617,7 +617,7 @@ class CustomerRecord extends React.Component {
                         {item.remark ?
                             <ShearContent>
                                 {item.remark}
-                            </ShearContent> : (item.showAdd ? null :
+                            </ShearContent> : this.props.isCustomerRecycleBin ? Intl.get('common.no.more.trace.record', '暂无跟进记录') : (item.showAdd ? null :
                                 <span className="add-detail-tip" onClick={this.addDetailContent.bind(this, item)}>
                                     {Intl.get('click.to.add.trace.detail', '请点击此处补充跟进内容')}
                                 </span>)}
@@ -851,7 +851,7 @@ class CustomerRecord extends React.Component {
                                 <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={'共{n}条'}
                                     values={{'n': this.state.total + ''}}/>)}
                         </span>
-                        {this.props.isMerge ? null : this.props.isOverViewPanel ? (
+                        {this.props.isMerge || this.props.isCustomerRecycleBin ? null : this.props.isOverViewPanel ? (
                             <span className="iconfont icon-add" onClick={this.toggleAddRecordPanel.bind(this)}
                                 title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>) : (
                             <Button className='crm-detail-add-btn'
@@ -900,6 +900,7 @@ CustomerRecord.propTypes = {
     getCallNumberError: PropTypes.string,
     changeActiveKey: PropTypes.func,
     isMerge: PropTypes.bool,
+    isCustomerRecycleBin: PropTypes.bool,
 };
 module.exports = CustomerRecord;
 

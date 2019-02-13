@@ -41,7 +41,7 @@ class Contacts extends React.Component {
     componentDidMount() {
         ContactStore.listen(this.onStoreChange);
         if (this.props.curCustomer) {
-            ContactAction.getContactList(this.props.curCustomer, this.props.isMerge);
+            ContactAction.getContactList(this.props.curCustomer, this.props.isMerge || this.props.isCustomerRecycleBin);
         }
         //获取该用户的座席号
         if (this.state.callNumber === '') {
@@ -57,7 +57,7 @@ class Contacts extends React.Component {
             });
             setTimeout(() => {
                 ContactAction.setInitData();
-                ContactAction.getContactList(nextProps.curCustomer, nextProps.isMerge);
+                ContactAction.getContactList(nextProps.curCustomer, nextProps.isMerge || nextProps.isCustomerRecycleBin);
             });
         }
     }
@@ -138,7 +138,7 @@ class Contacts extends React.Component {
                                     Intl.get('crm.no.contact.tip', '该客户还没有联系人')}
                             </span>
                         )}
-                        {this.props.isMerge ? null : (
+                        {this.props.isMerge || this.props.isCustomerRecycleBin ? null : (
                             <Button className='crm-detail-add-btn' onClick={this.showAddContactForm.bind(this)}>
                                 {Intl.get('crm.detail.contact.add', '添加联系人')}
                             </Button>
@@ -168,6 +168,7 @@ class Contacts extends React.Component {
                                         callNumber={this.state.callNumber}
                                         getCallNumberError={this.state.getCallNumberError}
                                         curCustomer={this.state.curCustomer}
+                                        isCustomerRecycleBin={this.props.isCustomerRecycleBin}
                                     />);
                             } else {
                                 return '';
@@ -188,6 +189,7 @@ Contacts.propTypes = {
     updateCustomerDefContact: PropTypes.func,
     setMergeCustomerDefaultContact: PropTypes.func,
     delMergeCustomerContact: PropTypes.func,
+    isCustomerRecycleBin: PropTypes.bool,
 };
 module.exports = Contacts;
 
