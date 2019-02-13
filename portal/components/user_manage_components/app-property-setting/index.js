@@ -525,7 +525,7 @@ const AppPropertySetting = createReactClass({
                     >
                         {
                             this.props.selectedApps.map((app) => {
-                                return <TabPane tab={this.renderTabToolTip(app.app_name)} key={app.app_id}>
+                                return <TabPane tab={this.renderTabToolTip(app.app_name)} key={this.getAppSettingKey(app.app_id, app.user_id)}>
                                     <GeminiScrollBar style={{height: height}} ref="gemini" className="app-property-content">
                                         {this.renderTabContent(app.app_id)}
                                     </GeminiScrollBar>
