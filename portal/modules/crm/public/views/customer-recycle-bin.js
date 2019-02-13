@@ -192,11 +192,11 @@ class CustomerRecycleBin extends React.Component {
             this.state.customerList.length >= PAGE_SIZE && !this.state.listenScrollBottom;
     }
     //恢复客户
-    recoveryCustomer = (customerId) => {
-        if (!customerId || this.state.isRecoveringId) return;
-        let recoveryCustomer = _.find(this.state.customerList, item => item.id === customerId);
+    recoveryCustomer = (id) => {
+        if (!id || this.state.isRecoveringId) return;
+        let recoveryCustomer = _.find(this.state.customerList, item => item.unique_id === id);
         if (!recoveryCustomer) return;
-        this.setState({isRecoveringId: customerId});
+        this.setState({isRecoveringId: id});
         $.ajax({
             url: '/rest/crm/recovery/customer',
             type: 'put',
@@ -205,7 +205,7 @@ class CustomerRecycleBin extends React.Component {
             success: (data) => {
                 message.success(Intl.get('crm.recovery.customer.success', '恢复客户成功'));
                 //回收站中，去掉恢复成功的客户
-                let customerList = _.filter(this.state.customerList, item => item.id !== customerId);
+                let customerList = _.filter(this.state.customerList, item => item.unique_id !== id);
                 let totalSize = this.state.totalSize;
                 totalSize--;
                 this.setState({
@@ -221,17 +221,17 @@ class CustomerRecycleBin extends React.Component {
         });
     }
     //彻底删除客户
-    deleteCustomer = (customerId) => {
-        if (!customerId || this.state.isDeletingId) return;
-        this.setState({isDeletingId: customerId});
+    deleteCustomer = (id) => {
+        if (!id || this.state.isDeletingId) return;
+        this.setState({isDeletingId: id});
         $.ajax({
-            url: `/rest/crm/customer_bak/${customerId}`,
+            url: `/rest/crm/customer_bak/${id}`,
             type: 'delete',
             dateType: 'json',
             success: (data) => {
                 message.success(Intl.get('crm.138', '删除成功'));
                 //回收站中，去掉恢复成功的客户
-                let customerList = _.filter(this.state.customerList, item => item.id !== customerId);
+                let customerList = _.filter(this.state.customerList, item => item.unique_id !== id);
                 let totalSize = this.state.totalSize;
                 totalSize--;
                 this.setState({
@@ -367,7 +367,8 @@ class CustomerRecycleBin extends React.Component {
             let phoneArray = _.get(item, 'contacts[0].phone', []);
             phoneArray = _.map(phoneArray, phone => addHyphenToPhoneNumber(phone));
             return {
-                id: item.id,
+                id: item.id,//客户的真实id
+                unique_id: item.unique_id,
                 name: item.name,
                 contact: _.get(item, 'contacts[0].name', ''),
                 contact_way: phoneArray,
