@@ -216,6 +216,7 @@ const ApplyViewDetail = createReactClass({
     componentWillReceiveProps(nextProps) {
         if (nextProps.detailItem.id && !_.isEqual(nextProps.detailItem, this.props.detailItem)) {
             this.appsSetting = {};
+            sendMessage && sendMessage('componentWillReceiveProps中清空appsSetting的数据' + _.get(nextProps, 'detailItem.message.type', ''));
             if (nextProps.detailItem.id !== _.get(this, 'props.detailItem.id')) {
                 this.setState({
                     showBackoutConfirmType: ''
@@ -604,7 +605,7 @@ const ApplyViewDetail = createReactClass({
         return (
             <Tooltip title={Intl.get('user.apply.detail.show.role.auth.title', '查看详细内容')}>
                 <div className="btn-icon-role-auth" onClick={this.toggleApplyExpanded.bind(this, true, user_id)}
-                    data-tracename="点击返回按钮">
+                    data-tracename="点击申请详情中的配置按钮">
                     <span className="iconfont icon-role-auth-config"></span>
                 </div>
             </Tooltip>
@@ -1155,6 +1156,7 @@ const ApplyViewDetail = createReactClass({
         _.each(appsSetting, (value, key) => {
             this.appsSetting[key] = value;
         });
+        sendMessage && sendMessage('appsSetting的数据设置============' + JSON.stringify(this.appsSetting));
     },
 
     //渲染用户申请
@@ -2237,6 +2239,7 @@ const ApplyViewDetail = createReactClass({
                     obj.nick_name = this.state.formData.nick_name;
                 }
             }
+            sendMessage && sendMessage('审批通过时，提交前的appsSetting数据' + detailInfo.type + '============' + JSON.stringify(this.appsSetting));
             ApplyViewDetailActions.submitApply(obj, detailInfo.type);
         };
         var validation = this.refs.validation;
