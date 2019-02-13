@@ -84,10 +84,14 @@ class TopBar extends React.Component {
         if (type === 'team') {
             const selectedTeam = this.state.selectedTeam;
             const teamIdStr = _.isEqual(selectedTeam, ['all']) ? '' : selectedTeam.join(',');
+            //根据是否选择的是全部团队更新Store中的记录是否选择的是全部团队或成员的标志
+            Store.isSelectedAllTeamMember = teamIdStr ? false : true; 
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamIdStr);
         } else {
             const selectedMember = this.state.selectedMember;
             const memberIdStr = _.isEqual(selectedMember, ['all']) ? '' : selectedMember.join(',');
+            //根据是否选择的是全部成员更新Store中的记录是否选择的是全部团队或成员的标志
+            Store.isSelectedAllTeamMember = memberIdStr ? false : true;
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, memberIdStr);
         }
     };
@@ -103,6 +107,9 @@ class TopBar extends React.Component {
             selectedTeam = _.filter(teamId, id => id !== 'all');
             teamIdStr = selectedTeam.join(',');
         }
+
+        //根据是否选择的是全部团队更新Store中的记录是否选择的是全部团队或成员的标志
+        Store.isSelectedAllTeamMember = teamIdStr ? false : true; 
 
         this.setState({selectedTeam}, () => {
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamIdStr);
@@ -120,6 +127,9 @@ class TopBar extends React.Component {
             selectedMember = _.filter(memberId, id => id !== 'all');
             memberIdStr = selectedMember.join(',');
         }
+
+        //根据是否选择的是全部成员更新Store中的记录是否选择的是全部团队或成员的标志
+        Store.isSelectedAllTeamMember = memberIdStr ? false : true;
 
         this.setState({selectedMember}, () => {
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, memberIdStr);

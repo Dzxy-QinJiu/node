@@ -125,6 +125,19 @@ export function isSales() {
     return userData.getUserData().isCommonSales || Store.teamMemberFilterType === 'member'; 
 }
 
+//是否是管理员或运营人员
+export function isAdminOrOpStaff() {
+    const role = userData.ROLE_CONSTANS;
+    const hasRole = userData.hasRole;
+
+    return hasRole(role.OPERATION_PERSON) || hasRole(role.REALM_ADMIN);
+}
+
+//是否选择的是全部团队或成员
+export function isSelectedAllTeamMember() {
+    return Store.isSelectedAllTeamMember; 
+}
+
 //查询参数回调函数: 不带下划线的开始结束时间转成带下划线的
 export function argCallbackTimeToUnderlineTime(arg) {
     let query = arg.query;
