@@ -14,6 +14,7 @@ import NoDataIntro from 'CMP_DIR/no-data-intro';
 import {SearchInput} from 'antc';
 import {message, Popconfirm, Icon} from 'antd';
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
+import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 const PRIVILEGES = {
     MANAGER_CUSTOMER_BAK_AUTH: 'CRM_MANAGER_GET_CUSTOMER_BAK_OPERATOR_RECORD'//管理员获取回收站中客户列表的权限
 };
@@ -49,7 +50,47 @@ class CustomerRecycleBin extends React.Component {
 
     componentDidMount() {
         this.getRecycleBinCustomers();
+        let _this = this;
+        //点击客户列表某一行时打开对应的详情
+        $('.customer-bak-table').delegate('td.has-filter', 'click', function(e) {
+            Trace.traceEvent($(ReactDOM.findDOMNode(_this)).find('.ant-table-tbody'), '打开回收站中的客户详情');
+            var $tr = $(this).closest('tr');
+            var id = $tr.find('.record-id').text();
+            _this.showRightPanel(id);
+        });
     }
+
+    showRightPanel = (id) => {
+        this.setState({
+            currentId: id
+        });
+        setTimeout(() => {
+            this.renderCustomerDetail();
+        });
+    };
+
+    colseRightPanel = () => {
+        this.setState({
+            currentId: ''
+        });
+        $('.customer-bak-table .ant-table-row').removeClass('current-row');
+    };
+    renderCustomerDetail = () => {
+        //触发打开带拨打电话状态的客户详情面板
+        if (this.state.currentId) {
+            let curCustomer = _.find(this.state.customerList, item => item.id === this.state.currentId);
+            if(curCustomer){
+                phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+                    customer_params: {
+                        currentId: this.state.currentId,
+                        curCustomer: curCustomer,
+                        hideRightPanel: this.colseRightPanel,
+                        isCustomerRecycleBin: true,//是否是客户回收站中打开的客户详情(禁止编辑、添加客户信息)
+                    }
+                });
+            }
+        }
+    };
 
     getAuthType() {
         let type = 'user';
@@ -113,6 +154,14 @@ class CustomerRecycleBin extends React.Component {
         } else {
             customerList = list;
         }
+        customerList = _.map(customerList, item => {
+            //将客户的id和unique_id交换（unique_id才是真实的客户id）
+            let changeIdObj = {
+                id: item.unique_id,//客户真实的id,客户详情中的数据需要用此id
+                unique_id: item.id, //用来下拉加载、删除、恢复的id
+            };
+            return {...item, ...changeIdObj};
+        });
         //是否监听下拉加载的处理
         let listenScrollBottom = false;
         if (_.get(customerList, 'length') < totalSize) {
@@ -134,9 +183,6 @@ class CustomerRecycleBin extends React.Component {
         if (_.isFunction(this.props.closeRecycleBin)) {
             this.props.closeRecycleBin();
         }
-        //重置获取数据页数，保证下次进来获取第一页数据时界面的刷新
-        // CustomerRepeatAction.resetPage();
-        // CustomerRepeatAction.setSelectedCustomer([]);
     };
     handleScrollBottom = () => {
         this.getRecycleBinCustomers();
@@ -215,7 +261,15 @@ class CustomerRecycleBin extends React.Component {
             {
                 title: Intl.get('crm.4', '客户名称'),
                 width: 200,
-                dataIndex: 'name'
+                dataIndex: 'name',
+                className: 'has-filter',
+                render: (text, record, index) => {
+                    return (
+                        <span>
+                            <span>{text}</span>
+                            <span className="hidden record-id">{record.id}</span>
+                        </span>);
+                }
             },
             {
                 title: Intl.get('call.record.contacts', '联系人'),
@@ -226,7 +280,7 @@ class CustomerRecycleBin extends React.Component {
                 title: Intl.get('crm.5', '联系方式'),
                 width: 130,
                 dataIndex: 'contact_way',
-                className: 'column-contact-way',
+                className: 'column-contact-way has-filter',
                 render: (text, record, index) => {
                     return _.map(record.contact_way, item => {
                         if (item) {
@@ -334,12 +388,12 @@ class CustomerRecycleBin extends React.Component {
 
     //处理选中行的样式
     handleRowClassName = (record, index) => {
-        // if ((record.id === this.props.currDeal.id) && this.props.isDetailPanelShow) {
-        //     return 'current-row';
-        // }
-        // else {
-        return '';
-        // }
+        if ((record.id === this.state.currentId)) {
+            return 'current-row';
+        }
+        else {
+            return '';
+        }
     };
 
     renderTableContent(tableHeight) {
@@ -440,7 +494,7 @@ class CustomerRecycleBin extends React.Component {
                         />
                     </div>
                 </TopNav>
-                <div className="customer-table-container" style={{height: tableHeight}} data-tracename="回收站客户列表">
+                <div className="customer-table-container customer-bak-table" style={{height: tableHeight}} data-tracename="回收站客户列表">
                     {this.renderTableContent(tableHeight)}
                 </div>
             </div>

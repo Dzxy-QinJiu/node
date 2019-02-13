@@ -32,7 +32,9 @@ import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 const PRIVILEGE_MAP = {
     USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS',//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
-    CRM_CUSTOMER_SCORE_RECORD: 'CRM_CUSTOMER_SCORE_RECORD'//获取分数趋势的权限
+    CRM_CUSTOMER_SCORE_RECORD: 'CRM_CUSTOMER_SCORE_RECORD',//获取分数趋势的权限
+    EDIT_TEAM_MANAGER: 'CRM_MANAGER_UPDATE_CUSTOMER_SALES_TEAM',//管理员修改所属团队的权限
+    EDIT_TEAM_USER: 'CRM_USER_UPDATE_CUSTOMER_SALES_TEAM'//销售修改所属团队的权限
 };
 
 class BasicOverview extends React.Component {
@@ -115,12 +117,16 @@ class BasicOverview extends React.Component {
         });
     }
     getIntegrateConfig(){
+        if(this.props.isCustomerRecycleBin) return;
+        //不是从回收站中打开的客户详情时，才获取
         commonDataUtil.getIntegrationConfig().then(resultObj => {
             let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
             this.setState({isOplateUser});
         });
     }
     getAppList = () => {
+        if(this.props.isCustomerRecycleBin) return;
+        //不是从回收站中打开的客户详情时，才获取
         commonDataUtil.getAppList(appList => {
             this.setState({appList: _.map(appList, app => {
                 return {
@@ -135,6 +141,8 @@ class BasicOverview extends React.Component {
 
     //获取推荐标签列表
     getRecommendTags = () => {
+        if(this.props.isCustomerRecycleBin) return;
+        //不是从回收站中打开的客户详情时，才获取
         batchAjax.getRecommendTags().then(data => {
             if (_.isArray(data.result) && data.result.length) {
                 // 过滤掉线索、转出、已回访标签，保证selectedTagsArray中有”线索“、“转出”、“已回访”标签，则只展示，没有就不展示
@@ -145,6 +153,8 @@ class BasicOverview extends React.Component {
     };
 
     getCompetitorList = () => {
+        if(this.props.isCustomerRecycleBin) return;
+        //不是从回收站中打开的客户详情时，才获取
         filterAjax.getCompetitorList().then((list) => {
             this.setState({competitorList: _.isArray(list) ? list : []});
         }, (errorMsg) => {
@@ -154,9 +164,10 @@ class BasicOverview extends React.Component {
 
     //获取客户开通的用户列表
     getCrmUserList = (curCustomer) => {
-        if (curCustomer && curCustomer.id) {
+        //不是从回收站中打开的客户详情时，才获取
+        if (!this.props.isCustomerRecycleBin && _.get(curCustomer,'id')) {
             //该客户开通的用户个数
-            let appUserLength = curCustomer && _.isArray(curCustomer.app_user_ids) ? curCustomer.app_user_ids.length : 0;
+            let appUserLength = _.get(curCustomer, 'app_user_ids.length', 0);
             if (appUserLength) {
                 basicOverviewAction.getCrmUserList({
                     customer_id: curCustomer.id,
@@ -176,7 +187,8 @@ class BasicOverview extends React.Component {
 
     //获取未完成的日程列表
     getNotCompletedScheduleList = (curCustomer) => {
-        if (curCustomer && curCustomer.id) {
+        //不是从回收站中打开的客户详情时，才获取
+        if (!this.props.isCustomerRecycleBin && _.get(curCustomer,'id')) {
             basicOverviewAction.getNotCompletedScheduleList({
                 customer_id: curCustomer.id,
                 page_size: 100,
@@ -452,6 +464,7 @@ class BasicOverview extends React.Component {
             changeActiveKey={this.props.changeActiveKey}
             callNumber={this.state.callNumber}
             getCallNumberError={this.state.getCallNumberError}
+            isCustomerRecycleBin={this.props.isCustomerRecycleBin}
         />;
     };
 
@@ -505,13 +518,17 @@ class BasicOverview extends React.Component {
     };
 
     renderUnComplateScheduleList = () => {
-        if (_.isArray(this.state.scheduleList) && this.state.scheduleList.length) {
+        if (!this.props.isCustomerRecycleBin && _.isArray(this.state.scheduleList) && this.state.scheduleList.length) {
             return (
                 <DetailCard title={Intl.get('clue.not.complete.schedule','今天的联系计划')}
                     content={this.renderScheduleItem()}/>);
         }
         return null;
     };
+    //是否有修改所属团的权限
+    hasEditTeamPrivilege() {
+        return hasPrivilege(PRIVILEGE_MAP.EDIT_TEAM_MANAGER) || hasPrivilege(PRIVILEGE_MAP.EDIT_TEAM_USER);
+    }
 
     render() {
         var basicData = this.state.basicData ? this.state.basicData : {};
@@ -524,13 +541,15 @@ class BasicOverview extends React.Component {
         return (
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
-                    {hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(basicData, 'app_user_ids[0]') ?
-                        this.renderExpireTip() : this.renderApplyUserBlock()}
+                    {!this.props.isCustomerRecycleBin ? (
+                        hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(basicData, 'app_user_ids[0]') ?
+                            this.renderExpireTip() : this.renderApplyUserBlock()) : null}
                     <SalesTeamCard
                         isMerge={this.props.isMerge}
                         updateMergeCustomer={this.props.updateMergeCustomer}
-                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_SALES')}
-                        enableTransfer={this.enableTransferCustomer()}
+                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_SALES') && !this.props.isCustomerRecycleBin}
+                        enableTransfer={this.enableTransferCustomer() && !this.props.isCustomerRecycleBin}
+                        enableEditTeam={this.hasEditTeamPrivilege() && !this.props.isCustomerRecycleBin}
                         customerId={basicData.id}
                         userName={basicData.user_name}
                         userId={basicData.user_id}
@@ -538,7 +557,7 @@ class BasicOverview extends React.Component {
                         salesTeamId={basicData.sales_team_id}
                         modifySuccess={this.editBasicSuccess}
                     />
-                    {hasPrivilege(PRIVILEGE_MAP.CRM_CUSTOMER_SCORE_RECORD) ? (
+                    {hasPrivilege(PRIVILEGE_MAP.CRM_CUSTOMER_SCORE_RECORD) && !this.props.isCustomerRecycleBin ? (
                         <CrmScoreCard customerScore={basicData.score} customerId={basicData.id}
                             customerUserSize={_.get(basicData, 'app_user_ids.length', 0)}/>) : null
                     }
@@ -547,7 +566,7 @@ class BasicOverview extends React.Component {
                         tags={basicData.competing_products}
                         recommendTags={this.state.competitorList}
                         data={basicData}
-                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL')}
+                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL') && !this.props.isCustomerRecycleBin}
                         noDataTip={_.get(basicData, 'competing_products[0]') ? '' : Intl.get('crm.no.competing', '暂无竞品')}
                         saveTags={this.saveEditCompetitors}
                     />
@@ -556,7 +575,7 @@ class BasicOverview extends React.Component {
                         data={basicData}
                         tags={tagArray}
                         recommendTags={this.state.recommendTags}
-                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL')}
+                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL') && !this.props.isCustomerRecycleBin}
                         noDataTip={tagArray.length ? '' : Intl.get('crm.detail.no.tag', '暂无标签')}
                         saveTags={this.saveEditTags}
                     />
@@ -581,7 +600,8 @@ BasicOverview.propTypes = {
     isRepeat: PropTypes.bool,
     editCustomerBasic: PropTypes.func,
     changeActiveKey: PropTypes.func,
-    refreshCustomerList: PropTypes.func
+    refreshCustomerList: PropTypes.func,
+    isCustomerRecycleBin: PropTypes.bool,
 };
 module.exports = BasicOverview;
 
