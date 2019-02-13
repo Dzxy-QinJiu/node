@@ -12,6 +12,8 @@ export default {
     //线索来源列表
     clueSourceList: [],
     //团队、成员筛选器类型
-    teamMemberFilterType: 'team'
+    teamMemberFilterType: 'team',
+    //是否选择的是全部团队或成员
+    isSelectedAllTeamMember: true
 };
 
