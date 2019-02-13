@@ -2,8 +2,7 @@
  * 用户留存统计
  */
 
-import { ifNotSingleApp } from '../../utils';
-import { isSales } from '../../consts';
+import { ifNotSingleApp, isSales } from '../../utils';
 
 export function getRemainAccountChart(type = 'total', title) {
     return {
@@ -87,7 +86,7 @@ export function getRemainAccountChart(type = 'total', title) {
         },
         noShowCondition: {
             callback: conditions => {
-                return isSales || ifNotSingleApp(conditions);
+                return isSales() || ifNotSingleApp(conditions);
             }
         },
     };

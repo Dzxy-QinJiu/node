@@ -2,8 +2,7 @@
  * 延期账号团队统计
  */
 
-import { isSales } from '../../consts';
-import { argCallbackTimeMember } from '../../utils';
+import { argCallbackTimeMember, isSales } from '../../utils';
 
 export function getDelayedAccountTeamChart() {
     return {
@@ -12,7 +11,7 @@ export function getDelayedAccountTeamChart() {
         url: '/rest/analysis/user/v3/:data_type/delayed/team',
         argCallback: argCallbackTimeMember,
         noShowCondition: {
-            callback: () => isSales
+            callback: () => isSales()
         },
     };
 }
