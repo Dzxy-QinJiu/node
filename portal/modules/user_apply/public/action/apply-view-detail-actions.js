@@ -78,14 +78,14 @@ class ApplyViewDetailActions {
     }
 
     //获取审批单详情
-    getApplyDetail(id, applyData) {        
+    getApplyDetail(id, applyData,approvalState) {
         //如果已获取了某个详情数据，针对从url中的申请id获取的详情数据
         if (applyData) {
             this.dispatch({loading: false, error: false, detail: applyData.detail});
         } else {
             this.dispatch({loading: true, error: false});
             AppUserAjax.getApplyDetail(id).then((detail, apps) => {
-                this.dispatch({loading: false, error: false, detail: detail});
+                this.dispatch({loading: false, error: false, detail: detail,approvalState: approvalState});
             }, (errorMsg) => {
                 this.dispatch({loading: false, error: true, errorMsg: errorMsg});
             });

@@ -201,6 +201,13 @@ class ApplyViewDetailStore {
                 app.app_name = app.client_name;
             });
             this.detailInfoObj.info = info;
+            if (obj.approvalState){
+                //审批通过或者驳回后立刻查询状态还没有立刻改变
+                this.detailInfoObj.info.approval_state
+                    = obj.approvalState;
+                this.selectedDetailItem.approval_state
+                    = obj.approvalState;
+            }
             this.detailInfoObj.errorMsg = '';
             this.createAppsSetting();
             //用户的处理
