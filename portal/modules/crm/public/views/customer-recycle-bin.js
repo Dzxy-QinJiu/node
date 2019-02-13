@@ -173,7 +173,7 @@ class CustomerRecycleBin extends React.Component {
             totalSize,
             customerList,
             listenScrollBottom,
-            lastId: _.get(customerList, `[${customerList.length - 1}].id`, '')
+            lastId: _.get(customerList, `[${customerList.length - 1}].unique_id`, '')
         });
     }
 
@@ -331,9 +331,9 @@ class CustomerRecycleBin extends React.Component {
                         return (
                             <span>
                                 {hasPrivilege('CRM_RECOVERY_CUSTOMER') ? (
-                                    <Popconfirm placement="leftTop"
+                                    <Popconfirm placement="leftTop" data-tracename="恢复客户"
                                         title={Intl.get('crm.recovery.customer.confirm.tip', '确定要恢复客户 {name} 吗？', {name: _.get(record, 'name', '')})}
-                                        onConfirm={this.recoveryCustomer.bind(this, _.get(record, 'id', ''))}>
+                                        onConfirm={this.recoveryCustomer.bind(this, _.get(record, 'unique_id', ''))}>
                                         <span className="iconfont icon-recovery operate-icon"
                                             data-tracename="恢复客户"
                                             title={Intl.get('crm.customer.recovery', '恢复')}/>
@@ -341,7 +341,7 @@ class CustomerRecycleBin extends React.Component {
                                 {hasPrivilege('CRM_DELETE_CUSTOMER') ? (
                                     <Popconfirm placement="leftTop"
                                         title={Intl.get('crm.delete.customer.confirm.tip', '删除后不可恢复，确定要彻底删除客户 {name} 吗？', {name: _.get(record, 'name', '')})}
-                                        onConfirm={this.deleteCustomer.bind(this, _.get(record, 'id', ''))}>
+                                        onConfirm={this.deleteCustomer.bind(this, _.get(record, 'unique_id', ''))}>
                                         <span className="iconfont icon-delete operate-icon"
                                             data-tracename="彻底删除客户"
                                             title={Intl.get('crm.delete.thoroughly', '彻底删除')}/>
@@ -479,7 +479,7 @@ class CustomerRecycleBin extends React.Component {
             }
         ];
         return (
-            <div className="customer-recycle-bin" data-tracename="客户回收站">
+            <div className="customer-recycle-bin" data-tracename="回收站客户列表">
                 <TopNav>
                     <div className="return-btn-container" onClick={this.returnCustomerList}>
                         <span className="iconfont icon-return-btn"/>
@@ -494,7 +494,7 @@ class CustomerRecycleBin extends React.Component {
                         />
                     </div>
                 </TopNav>
-                <div className="customer-table-container customer-bak-table" style={{height: tableHeight}} data-tracename="回收站客户列表">
+                <div className="customer-table-container customer-bak-table" style={{height: tableHeight}}>
                     {this.renderTableContent(tableHeight)}
                 </div>
             </div>
