@@ -1180,7 +1180,6 @@ var en_US = {
     'crm.144': 'Quotes', // 立项报价阶段
     'crm.145': 'Negotiation', // 谈判阶段
     'crm.146': 'Date', // 日期
-    'crm.147': 'Order', // 订单号
     'crm.148': 'Budget Amount', // 预算金额
     'crm.149': 'Million', // 万
     'crm.150': 'User apply', // 用户申请
@@ -2700,6 +2699,7 @@ var en_US = {
     'apply.approve.upload.error.file.type': 'The file format is incorrect!',//文件格式不正确！
     'apply.approve.upload.not.more.than50': 'The file size cannot exceed 50M!',//文件大小不能超过50M!
     'apply.approve.no.comment': 'There is no reply content!',//暂无回复内容！
-    'crm.input.your.apply.user.type': 'Please enter the type of user you are applying for (eg trial user, contracted user, etc.)'//请输入您申请的用户类型（例如：试用用户、签约用户等）
+    'crm.input.your.apply.user.type': 'Please enter the type of user you are applying for (eg trial user, contracted user, etc.)',//请输入您申请的用户类型（例如：试用用户、签约用户等）
+    'apply.view.transfer.candidate': 'Transfer approval',//转审
 };
 export default en_US;
