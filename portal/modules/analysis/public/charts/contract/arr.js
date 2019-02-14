@@ -2,7 +2,7 @@
  * 年经常性收入情况
  */
 
-import { argCallbackTeamId, isSelectedAllTeamMember, isAdminOrOpStaff } from '../../utils';
+import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, isSelectedAllTeamMember, isAdminOrOpStaff } from '../../utils';
 
 export function getContractArrChart() {
     return {
@@ -14,14 +14,9 @@ export function getContractArrChart() {
             },
         },
         url: '/rest/analysis/contract/contract/:data_type/income',
-        argCallback: (arg) => {
-            const query = arg.query;
-
-            if (query) {
-                delete query.app_id;
-            }
-
-            argCallbackTeamId(arg);
+        argCallback: arg => {
+            argCallbackUnderlineTimeToTime(arg);
+            argCallbackTeamIdsToTeamId(arg);
         },
         noShowCondition: {
             callback: () => {

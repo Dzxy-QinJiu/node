@@ -2,7 +2,7 @@
  * 合同产品分布
  */
 
-import { argCallbackTeamId } from '../../utils';
+import { argCallbackTeamIdsToTeamId } from '../../utils';
 
 export function getContractProductChart() {
     return {
@@ -17,7 +17,7 @@ export function getContractProductChart() {
                 
             }
 
-            argCallbackTeamId(arg);
+            argCallbackTeamIdsToTeamId(arg);
         },
         option: {
             columns: [

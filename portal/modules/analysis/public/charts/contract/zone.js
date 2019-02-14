@@ -2,7 +2,7 @@
  * 地域分布
  */
 
-import { argCallbackTeamId } from '../../utils';
+import { argCallbackTeamIdsToTeamId } from '../../utils';
 
 export function getContractZoneChart() {
     return {
@@ -21,7 +21,7 @@ export function getContractZoneChart() {
                 delete query.app_id;
             }
 
-            argCallbackTeamId(arg);
+            argCallbackTeamIdsToTeamId(arg);
         },
     };
 }

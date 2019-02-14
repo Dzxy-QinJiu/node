@@ -2,21 +2,14 @@
  * 成交/未成交活跃客户统计
  */
 
+import { argCallbackMemberIdsToMemberId } from '../../utils';
+
 export function getCustomerDealActiveChart(title = '', stages = []) {
     return {
         title,
         chartType: 'table',
         url: '/rest/analysis/customer/v2/:data_type/customer/active/statistics',
-        argCallback: (arg) => {
-            let query = arg.query;
-
-            if (query && query.starttime && query.endtime) {
-                query.start_time = query.starttime;
-                query.end_time = query.endtime;
-                delete query.starttime;
-                delete query.endtime;
-            }
-        },
+        argCallback: argCallbackMemberIdsToMemberId,
         cardContainer: {
             selectors: [{
                 options: [{

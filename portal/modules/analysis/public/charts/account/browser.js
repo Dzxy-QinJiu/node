@@ -2,7 +2,7 @@
  * 浏览器统计
  */
 
-import { ifNotSingleApp, argCallbackTeamId, argCallbackMemberIdToSalesId } from '../../utils';
+import { ifNotSingleApp, argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToSalesId } from '../../utils';
 
 export function getAccountBrowserChart(type = 'all') {
     return {
@@ -13,8 +13,9 @@ export function getAccountBrowserChart(type = 'all') {
             value: type
         }],
         argCallback: arg => {
-            argCallbackTeamId(arg);
-            argCallbackMemberIdToSalesId(arg);
+            argCallbackUnderlineTimeToTime(arg);
+            argCallbackTeamIdsToTeamId(arg);
+            argCallbackMemberIdsToSalesId(arg);
         },
         chartType: 'bar',
         noShowCondition: {

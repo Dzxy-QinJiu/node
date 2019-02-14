@@ -2,7 +2,7 @@
  * 团队分布
  */
 
-import { argCallbackTeamId, isSales } from '../../utils';
+import { argCallbackTeamIdsToTeamId, isSales } from '../../utils';
 
 export function getContractTeamChart() {
     return {
@@ -23,7 +23,7 @@ export function getContractTeamChart() {
                 delete query.app_id;
             }
 
-            argCallbackTeamId(arg);
+            argCallbackTeamIdsToTeamId(arg);
         },
     };
 }

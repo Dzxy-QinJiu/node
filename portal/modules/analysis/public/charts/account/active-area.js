@@ -2,7 +2,7 @@
  * 活跃用户地域统计
  */
 
-import { ifNotSingleApp, argCallbackTeamId, argCallbackMemberIdToSalesId } from '../../utils';
+import { ifNotSingleApp, argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToSalesId } from '../../utils';
 
 export function getActiveAreaChart(type = 'all') {
     return {
@@ -13,8 +13,9 @@ export function getActiveAreaChart(type = 'all') {
             value: type
         }],
         argCallback: arg => {
-            argCallbackTeamId(arg);
-            argCallbackMemberIdToSalesId(arg);
+            argCallbackUnderlineTimeToTime(arg);
+            argCallbackTeamIdsToTeamId(arg);
+            argCallbackMemberIdsToSalesId(arg);
         },
         chartType: 'map',
         height: 546,

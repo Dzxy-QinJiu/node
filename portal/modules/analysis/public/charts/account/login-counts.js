@@ -2,15 +2,16 @@
  * 用户访问次数
  */
 
-import { getRangeReqData, ifNotSingleApp, argCallbackTeamId, argCallbackMemberIdToSalesId } from '../../utils';
+import { getRangeReqData, ifNotSingleApp, argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToSalesId } from '../../utils';
 
 export function getLoginCountsChart(type = 'all') {
     return {
         title: Intl.get('oplate.user.analysis.loginCounts', '用户访问次数'),
         url: '/rest/analysis/user/v3/:auth_type/logins/distribution/num',
         argCallback: arg => {
-            argCallbackTeamId(arg);
-            argCallbackMemberIdToSalesId(arg);
+            argCallbackUnderlineTimeToTime(arg);
+            argCallbackTeamIdsToTeamId(arg);
+            argCallbackMemberIdsToSalesId(arg);
         },
         reqType: 'post',
         conditions: [{

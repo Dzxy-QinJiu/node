@@ -2,15 +2,16 @@
  * 平均在线时长
  */
 
-import { ifNotSingleApp, argCallbackTeamId, argCallbackMemberIdToSalesId } from '../../utils';
+import { ifNotSingleApp, argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToSalesId } from '../../utils';
 
 export function getAverageOnlineTimeChart(type = 'all') {
     return {
         title: Intl.get('oplate.user.analysis.averageLoginTimes', '平均在线时长'),
         url: '/rest/analysis/user/v3/:auth_type/app/avg/online_time/trend',
         argCallback: arg => {
-            argCallbackTeamId(arg);
-            argCallbackMemberIdToSalesId(arg);
+            argCallbackUnderlineTimeToTime(arg);
+            argCallbackTeamIdsToTeamId(arg);
+            argCallbackMemberIdsToSalesId(arg);
         },
         conditions: [{
             name: 'interval',

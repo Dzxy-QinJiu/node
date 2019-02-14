@@ -2,6 +2,8 @@
  * 成交周期分析
  */
 
+import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId } from '../../utils';
+
 export function getContractCycleChart() {
     return {
         title: '成交周期分析',
@@ -12,17 +14,9 @@ export function getContractCycleChart() {
             value: getCycleReqData(),
             type: 'data',
         }],
-        argCallback: (arg) => {
-            const query = arg.query;
-
-            if (query) {
-                delete query.app_id;
-                
-                if (query.team_ids) {
-                    query.team_id = query.team_ids;
-                    delete query.team_ids;
-                }
-            }
+        argCallback: arg => {
+            argCallbackUnderlineTimeToTime(arg);
+            argCallbackTeamIdsToTeamId(arg);
         },
         processData: data => {
             return _.map(data, dataItem => {
