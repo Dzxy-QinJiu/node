@@ -67,7 +67,7 @@ SalesTeamStore.prototype.getSalesGoals = function(reqObj) {
 //更新销售目标
 SalesTeamStore.prototype.updateSalesGoals = function(updateObj) {
     let salesGoals = updateObj.salesGoals;
-    if (updateObj.type == 'member') {
+    if (updateObj.type === 'member') {
         //个人销售目标
         this.salesGoals.users = salesGoals.users;
         //将第一个成员的销售目标作为个人销售目标放到外层，便于界面上的处理
@@ -77,7 +77,7 @@ SalesTeamStore.prototype.updateSalesGoals = function(updateObj) {
         } else {
             this.salesGoals.member_goal = '';
         }
-    } else if (updateObj.type == 'team') {
+    } else if (updateObj.type === 'team') {
         //团队销售目标
         this.salesGoals.id = salesGoals.id;
         this.salesGoals.goal = salesGoals.goal;
@@ -105,7 +105,7 @@ SalesTeamStore.prototype.setSearchContent = function(searchContent) {
  */
 SalesTeamStore.prototype.findGroupListByName = function(groupList, name, filterGroupArray) {
     groupList.forEach(group => {
-        if (group.title.indexOf(name) != -1) {
+        if (group.title.indexOf(name) !== -1) {
             filterGroupArray.push(group);
         } else if (_.isArray(group.children) && group.children.length > 0) {
             this.findGroupListByName(group.children, name, filterGroupArray);
@@ -201,7 +201,7 @@ SalesTeamStore.prototype.findGroupByIdAddTeam = function(treeGroupList, parentId
     //some:一旦找到符合条件的元素返回真值后，便中断list的遍历
     _.some(treeGroupList, group => {
         //找到要添加子团队的团队
-        if (group.key == parentId) {
+        if (group.key === parentId) {
             //有子团队时，直接push即可
             if (group.children && _.isArray(group.children)) {
                 group.children.push(newTeam);
@@ -239,7 +239,7 @@ SalesTeamStore.prototype.refreshTeamListAfterAdd = function(addTeam) {
 };
 //修改团队名称后更新列表中对应团队的名称
 SalesTeamStore.prototype.updateTeamNameAfterEdit = function(editTeam) {
-    let team = _.find(this.salesTeamList, team => team.group_id == editTeam.key);
+    let team = _.find(this.salesTeamList, team => team.group_id === editTeam.key);
     team.group_name = editTeam.title;
     //递归遍历树形团队列表，根据id找团队并修改名称
     this.findGroupByIdEditName(this.salesTeamListArray, editTeam);
@@ -253,7 +253,7 @@ SalesTeamStore.prototype.findGroupByIdEditName = function(treeGroupList, editTea
     //some:一旦找到符合条件的元素返回真值后，便中断list的遍历
     _.some(treeGroupList, group => {
         //找到要修改名称的团队
-        if (group.key == editTeam.key) {
+        if (group.key === editTeam.key) {
             group.title = editTeam.title;
             return true;//中断list的遍历
         } else if (_.isArray(group.children) && group.children.length > 0) {
@@ -321,23 +321,23 @@ SalesTeamStore.prototype.afterEditMember = function(data) {
         //当前展示组的信息
         var curTeamId = data.group_id;
         var curShowTeam = _.find(this.salesTeamList, function(team) {
-            if (team.group_id == curTeamId) {
+            if (team.group_id === curTeamId) {
                 return true;
             }
         });
         if (data.user_ids) {
             data.user_ids = JSON.parse(data.user_ids);
         }
-        if (data.type == 'owner') {//所有者的处理
+        if (data.type === 'owner') {//所有者的处理
             //删除所有者
             delete curShowTeam.owner_id;
-            if (data.operate == 'move_manager') {//将所有者设为管理员
+            if (data.operate === 'move_manager') {//将所有者设为管理员
                 if (_.isArray(curShowTeam.manager_ids) && curShowTeam.manager_ids.length) {
                     curShowTeam.manager_ids.push(data.owner_id);
                 } else {
                     curShowTeam.manager_ids = [data.owner_id];
                 }
-            } else if (data.operate == 'move_member') {//将所有者设为普通成员
+            } else if (data.operate === 'move_member') {//将所有者设为普通成员
                 if (_.isArray(curShowTeam.user_ids) && curShowTeam.user_ids.length) {
                     curShowTeam.user_ids.push(data.owner_id);
                 } else {
@@ -346,12 +346,12 @@ SalesTeamStore.prototype.afterEditMember = function(data) {
             } else {//删除所有者后，将团队的人数减一
                 this.delTeamMemberCount(curTeamId, [data.owner_id], 'owner');
             }
-        } else if (data.type == 'manager') {//管理员的处理
+        } else if (data.type === 'manager') {//管理员的处理
             //删除选中的管理员
             curShowTeam.manager_ids = _.difference(curShowTeam.manager_ids, data.user_ids);
-            if (data.operate == 'exchange_owner') {//将管理员设为所有者
+            if (data.operate === 'exchange_owner') {//将管理员设为所有者
                 curShowTeam.owner_id = data.user_ids[0];
-            } else if (data.operate == 'exchange') {//将管理员设为普通成员
+            } else if (data.operate === 'exchange') {//将管理员设为普通成员
                 if (_.isArray(curShowTeam.user_ids) && curShowTeam.user_ids.length) {
                     curShowTeam.user_ids = curShowTeam.user_ids.concat(data.user_ids);
                 } else {
@@ -360,12 +360,12 @@ SalesTeamStore.prototype.afterEditMember = function(data) {
             } else {//删除管理员后，将团队的人数统计减去删除的管理员的个数
                 this.delTeamMemberCount(curTeamId, data.user_ids, 'manager');
             }
-        } else if (data.type == 'user') {//普通成员的处理
+        } else if (data.type === 'user') {//普通成员的处理
             //删除选中的普通成员
             curShowTeam.user_ids = _.difference(curShowTeam.user_ids, data.user_ids);
-            if (data.operate == 'exchange_owner') {//将普通成员设为所有者
+            if (data.operate === 'exchange_owner') {//将普通成员设为所有者
                 curShowTeam.owner_id = data.user_ids[0];
-            } else if (data.operate == 'exchange') {//将普通成员设为管理员
+            } else if (data.operate === 'exchange') {//将普通成员设为管理员
                 if (_.isArray(curShowTeam.manager_ids) && curShowTeam.manager_ids.length) {
                     curShowTeam.manager_ids = curShowTeam.manager_ids.concat(data.user_ids);
                 } else {
@@ -390,17 +390,17 @@ SalesTeamStore.prototype.delTeamMemberCount = function(curTeamId, userIds, membe
     let delAvailableMemberCount = 0;
     _.each(userIds, userId => {
         let member = null;
-        if (memberType == 'owner') {//所有者
+        if (memberType === 'owner') {//所有者
             member = this.curShowTeamMemberObj.owner;
         } else {//manager、user
-            member = _.find(this.curShowTeamMemberObj[memberType + 's'], member => member.userId == userId);
+            member = _.find(this.curShowTeamMemberObj[memberType + 's'], member => member.userId === userId);
         }
-        if (member && member.status == 1) {
+        if (member && member.status === 1) {
             delAvailableMemberCount++;
         }
     });
     //删除后，将团队的人数统计删除对应个数
-    let curTeamMemberCountObj = _.find(this.teamMemberCountList, item => item.team_id == curTeamId);
+    let curTeamMemberCountObj = _.find(this.teamMemberCountList, item => item.team_id === curTeamId);
     if (curTeamMemberCountObj) {
         curTeamMemberCountObj.available[memberType] -= delAvailableMemberCount;
         curTeamMemberCountObj.total -= userIds.length;
@@ -414,7 +414,7 @@ SalesTeamStore.prototype.afterAddMember = function(data) {
         //当前展示组的信息
         var curTeamId = data.groupId;
         var curShowTeam = _.find(this.salesTeamList, function(team) {
-            if (team.group_id == curTeamId) {
+            if (team.group_id === curTeamId) {
                 return true;
             }
         });
@@ -448,13 +448,13 @@ SalesTeamStore.prototype.addTeamMemberCount = function(curTeamId, userIds) {
     //添加的启用状态成员个数
     let addAvailableUserCount = 0;
     _.each(userIds, userId => {
-        let user = _.find(this.addMemberList, member => member.userId == userId);
-        if (user && user.status == 1) {
+        let user = _.find(this.addMemberList, member => member.userId === userId);
+        if (user && user.status === 1) {
             addAvailableUserCount++;
         }
     });
     //添加成员后，将团队的人数统计加上新加的成员个数
-    let curTeamMemberCountObj = _.find(this.teamMemberCountList, item => item.team_id == curTeamId);
+    let curTeamMemberCountObj = _.find(this.teamMemberCountList, item => item.team_id === curTeamId);
     if (curTeamMemberCountObj) {
         curTeamMemberCountObj.available.user += addAvailableUserCount;
         curTeamMemberCountObj.total += addUserCount;
@@ -481,14 +481,14 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
             //当前展示组的信息
             var curTeamId = _this.curShowTeamMemberObj.groupId;
             var curShowTeam = _.find(_this.salesTeamList, function(team) {
-                if (team.group_id == curTeamId) {
+                if (team.group_id === curTeamId) {
                     return true;
                 }
             });
             //负责人
             if (curShowTeam.owner_id) {
                 this.curShowTeamMemberObj.owner = _.find(_this.salesTeamMemberList, function(member) {
-                    if (curShowTeam.owner_id == member.userId) {
+                    if (curShowTeam.owner_id === member.userId) {
                         return true;
                     }
                 });
@@ -498,7 +498,7 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
                 var managers = [];
                 curShowTeam.manager_ids.forEach(function(id) {
                     var manager = _.find(_this.salesTeamMemberList, function(member) {
-                        if (id == member.userId) {
+                        if (id === member.userId) {
                             return true;
                         }
                     });
@@ -513,7 +513,7 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
                 var users = [];
                 curShowTeam.user_ids.forEach(function(id) {
                     var user = _.find(_this.salesTeamMemberList, function(member) {
-                        if (id == member.userId) {
+                        if (id === member.userId) {
                             return true;
                         }
                     });
@@ -575,7 +575,7 @@ SalesTeamStore.prototype.cancelAddMember = function() {
 SalesTeamStore.prototype.setSelectSalesTeamGroup = function(selectSalesTeamGroupId) {
     this.curShowTeamMemberObj = {groupId: selectSalesTeamGroupId};
     var curSalesTeam = _.find(this.salesTeamList, function(team) {
-        if (team.group_id == selectSalesTeamGroupId) {
+        if (team.group_id === selectSalesTeamGroupId) {
             return true;
         }
     });
@@ -605,7 +605,7 @@ SalesTeamStore.prototype.hideAllOperationArea = function() {
 SalesTeamStore.prototype.saveDeleteGroup = function(result) {
     if (result.success) {
         //删除团队成功，过滤掉删除的团队
-        this.salesTeamList = _.filter(this.salesTeamList, team => team.group_id != result.groupId);
+        this.salesTeamList = _.filter(this.salesTeamList, team => team.group_id !== result.groupId);
         //刷新团队树
         this.salesTeamList.forEach(team => {
             delete team.select;
@@ -657,7 +657,7 @@ SalesTeamStore.prototype.cancelAddGroup = function(item) {
 SalesTeamStore.prototype.selectTree = function(groupId) {
     var parentGroup = '';
     this.salesTeamList.map(function(item, key) {
-        if (item.group_id == groupId) {
+        if (item.group_id === groupId) {
             item.select = true;
             if (!item.isLiSelect) {
                 //点击展开该团队下的子团队
@@ -680,7 +680,7 @@ SalesTeamStore.prototype.selectTree = function(groupId) {
 SalesTeamStore.prototype.toggleGroupTree = function(groupId) {
     var parentGroup = '';
     this.salesTeamList.map(function(item, key) {
-        if (item.group_id == groupId) {
+        if (item.group_id === groupId) {
             item.isLiSelect = !item.isLiSelect;
             if (item.parent_group) {
                 parentGroup = item.parent_group;
@@ -706,7 +706,7 @@ SalesTeamStore.prototype.setSearchSalesTeamTree = function() {
 SalesTeamStore.prototype.checkIsLiSelect = function(parentGroup) {
     var nowParentGroup = '';
     (this.salesTeamList).map(function(item, key) {
-        if (item.group_id == parentGroup) {
+        if (item.group_id === parentGroup) {
             item.isLiSelect = true;
             if (item.parent_group) {
                 nowParentGroup = item.parent_group;
@@ -726,11 +726,11 @@ SalesTeamStore.prototype.checkSelectTree = function() {
         isFirstLiSelect: true//是否是第一次展开销售团队
     };
     (this.salesTeamList).map(function(item, kry) {
-        if (item.select != undefined) {
+        if (item.select !== undefined) {
             //有展示过则不是第一次
             selectObj.isFirstSelect = false;
         }
-        if (item.isLiSelect != undefined) {
+        if (item.isLiSelect !== undefined) {
             //有展开过则不是第一次
             selectObj.isFirstLiSelect = false;
         }
@@ -742,24 +742,24 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(user) {
     var teamMemberObj = this.curShowTeamMemberObj;
     //修改用户的昵称
     if (user.nick_name) {
-        if (teamMemberObj.owner && teamMemberObj.owner.userId == user.user_id) {
+        if (teamMemberObj.owner && teamMemberObj.owner.userId === user.user_id) {
             teamMemberObj.owner.nickName = user.nick_name;
             return;
         }
         if (_.isArray(teamMemberObj.users)) {
-            var updateObj = _.find(teamMemberObj.users, userItem => userItem.userId == user.user_id);
+            var updateObj = _.find(teamMemberObj.users, userItem => userItem.userId === user.user_id);
             if (updateObj) {
                 updateObj.nickName = user.nick_name;
             }
         }
-    } else if (user.status || user.status == 0) {
+    } else if (user.status || user.status === 0) {
         //修改用户的状态
-        if (teamMemberObj.owner && teamMemberObj.owner.userId == user.id) {
+        if (teamMemberObj.owner && teamMemberObj.owner.userId === user.id) {
             teamMemberObj.owner.status = user.status;
             return;
         }
         if (_.isArray(teamMemberObj.users)) {
-            var updateObj = _.find(teamMemberObj.users, userItem => userItem.userId == user.id);
+            var updateObj = _.find(teamMemberObj.users, userItem => userItem.userId === user.id);
             if (updateObj) {
                 updateObj.status = user.status;
             }
@@ -767,14 +767,22 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(user) {
     }else if(user.team){
         //修改用户所在的团队
         if (user.team !== teamMemberObj.groupId){
-            if (teamMemberObj.owner && teamMemberObj.owner.userId == user.id) {
+            if (teamMemberObj.owner && teamMemberObj.owner.userId === user.id) {
                 teamMemberObj.owner = {};
                 return;
             }
             if (_.isArray(teamMemberObj.users)) {
-                teamMemberObj.users = _.filter(teamMemberObj.users, userItem => userItem.userId != user.id);
+                teamMemberObj.users = _.filter(teamMemberObj.users, userItem => userItem.userId !== user.id);
             }
         }
+        //将成员加入新团队中
+        let addInTeam = _.find(this.salesTeamList, item => item.group_id === user.team);
+        if (_.get(addInTeam, 'user_ids.length')) {
+            addInTeam.user_ids.push(user.id);
+        } else if (addInTeam) {
+            addInTeam.user_ids = [user.id];
+        }
+
     }
 };
 
@@ -813,7 +821,7 @@ SalesTeamStore.prototype.salesTeamTree = function(flag) {
         }
         for (var j = 0, len = this.salesTeamList.length; j < len; j++) {
             var item = this.salesTeamList[j];
-            if (item.group_id == salesTeamArray[0].key) {
+            if (item.group_id === salesTeamArray[0].key) {
                 item.select = salesTeamArray[0].select;
                 item.isLiSelect = salesTeamArray[0].isLiSelect;
                 break;
@@ -847,7 +855,7 @@ SalesTeamStore.prototype.salesTeamChildrenTree = function(salesTeamList, salesTe
         //遍历根团队
         for (var j = 0; j < salesTeamArray.length; j++) {
             //找到该子团队的父团队，将该团队设为父团队的children
-            if (salesTeam.parent_group == salesTeamArray[j].key) {
+            if (salesTeam.parent_group === salesTeamArray[j].key) {
                 salesTeamArray[j].children = salesTeamArray[j].children ? salesTeamArray[j].children : [];
                 //一级子团队
                 salesTeamArray[j].children.push({
