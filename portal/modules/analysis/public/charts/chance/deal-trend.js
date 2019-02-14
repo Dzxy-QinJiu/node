@@ -2,14 +2,11 @@
  * 成交率趋势统计
  */
 
-import { argCallbackTimeMember } from '../../utils';
-
 export function getChanceDealTrendChart() {
     return {
         title: '成交率趋势统计',
         chartType: 'line',
         url: '/rest/analysis/customer/v2/sales_opportunity/:data_type/apply/opportunity/rate/trend',
-        argCallback: argCallbackTimeMember,
         processData: data => {
             data = _.get(data, 'result.list');
 

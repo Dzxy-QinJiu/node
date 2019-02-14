@@ -2,8 +2,6 @@
  * 销售新开客户数统计
  */
 
-import { argCallbackTimeToUnderlineTime } from '../../utils';
-
 export function getSalesNewOpenChart(paramObj = {}) {
     return {
         title: Intl.get('oplate_customer_analysis.salesNewCustomerCount', '销售新开客户数统计'),
@@ -11,8 +9,6 @@ export function getSalesNewOpenChart(paramObj = {}) {
         height: 'auto',
         url: '/rest/analysis/customer/v2/statistic/:auth_type/customer/user/new',
         argCallback: (arg) => {
-            argCallbackTimeToUnderlineTime(arg);
-
             if (_.isFunction(paramObj.argCallback)) {
                 paramObj.argCallback(arg);
             }

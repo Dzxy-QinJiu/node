@@ -318,8 +318,8 @@ class CurtaoAnalysis extends React.Component {
     adjustStartEndTime(conditions) {
         const startTime = this.topBar.state.startTime;
         const endTime = this.topBar.state.endTime;
-        const startTimeCondition = _.find(conditions, condition => condition.name === 'starttime');
-        const endTimeCondition = _.find(conditions, condition => condition.name === 'endtime');
+        const startTimeCondition = _.find(conditions, condition => condition.name === 'start_time');
+        const endTimeCondition = _.find(conditions, condition => condition.name === 'end_time');
 
         if (startTimeCondition && endTimeCondition) {
             startTimeCondition.value = startTime;
@@ -332,18 +332,18 @@ class CurtaoAnalysis extends React.Component {
             name: 'team_ids',
             value: '',
         }, {
-            name: 'member_id',
+            name: 'member_ids',
             value: '',
         }, {
             name: 'app_id',
             value: 'all',
             type: 'query,params'
         }, {
-            name: 'starttime',
+            name: 'start_time',
             value: initialTime.start,
             type: 'query',
         }, {
-            name: 'endtime',
+            name: 'end_time',
             value: initialTime.end,
             type: 'query',
         }, {
@@ -373,7 +373,7 @@ class CurtaoAnalysis extends React.Component {
             event: teamTreeEmitter.SELECT_TEAM,
             callbackArgs: [{
                 name: 'team_ids',
-                exclusive: 'member_id',
+                exclusive: 'member_ids',
                 related: {
                     name: 'statistics_type',
                     value: 'team'
@@ -383,7 +383,7 @@ class CurtaoAnalysis extends React.Component {
             emitter: teamTreeEmitter,
             event: teamTreeEmitter.SELECT_MEMBER,
             callbackArgs: [{
-                name: 'member_id',
+                name: 'member_ids',
                 exclusive: 'team_ids',
                 related: {
                     name: 'statistics_type',
@@ -394,9 +394,9 @@ class CurtaoAnalysis extends React.Component {
             emitter: dateSelectorEmitter,
             event: dateSelectorEmitter.SELECT_DATE,
             callbackArgs: [{
-                name: 'starttime',
+                name: 'start_time',
             }, {
-                name: 'endtime',
+                name: 'end_time',
             }],
         }];
     }

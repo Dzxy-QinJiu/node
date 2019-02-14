@@ -2,15 +2,12 @@
  * 新机会统计
  */
 
-import { argCallbackTimeMember } from '../../utils';
-
 export function getNewChanceChart(chartType = 'table') {
     let chart = {
         title: '新机会统计',
         chartType,
         url: '/rest/analysis/customer/v2/sales_opportunity/:data_type/apply/opportunity/rate',
         ajaxInstanceFlag: 'sales_opportuniry_new',
-        argCallback: argCallbackTimeMember,
         dataField: 'result',
     };
 

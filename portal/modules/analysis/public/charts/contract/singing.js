@@ -14,15 +14,7 @@ export function getSingingChart() {
         layout: {sm: 24},
         height: 'auto',
         url: '/rest/analysis/contract/contract/team/amount',
-        argCallback: (arg) => {
-            const query = arg.query;
-
-            if (query) {
-                delete query.app_id;
-            }
-
-            argCallbackTeamIdsToTeamId(arg);
-        },
+        argCallback: argCallbackTeamIdsToTeamId,
         chartType: 'table',
         processOption: processOption,
     };

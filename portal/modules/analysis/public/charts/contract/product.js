@@ -9,16 +9,7 @@ export function getContractProductChart() {
         title: '合同产品分布',
         chartType: 'table',
         url: '/rest/analysis/contract/contract/:data_type/product',
-        argCallback: (arg) => {
-            const query = arg.query;
-
-            if (query) {
-                delete query.app_id;
-                
-            }
-
-            argCallbackTeamIdsToTeamId(arg);
-        },
+        argCallback: argCallbackTeamIdsToTeamId,
         option: {
             columns: [
                 {

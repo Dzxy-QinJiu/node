@@ -2,7 +2,7 @@
  * 账号来源分类统计
  */
 
-import { ifNotSingleApp, argCallbackMemberIdToIds } from '../../utils';
+import { ifNotSingleApp } from '../../utils';
 
 export function getAccountSourceChart(type = 'total', title = '') {
     return {
@@ -12,7 +12,6 @@ export function getAccountSourceChart(type = 'total', title = '') {
         noShowCondition: {
             callback: ifNotSingleApp
         },
-        argCallback: argCallbackMemberIdToIds,
         processData: data => {
             return [{
                 name: '线索转化',

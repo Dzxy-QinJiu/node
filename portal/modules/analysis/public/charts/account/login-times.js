@@ -2,15 +2,15 @@
  * 用户在线时间
  */
 
-import { getRangeReqData, ifNotSingleApp, argCallbackTeamId, argCallbackMemberIdToSalesId } from '../../utils';
+import { getRangeReqData, ifNotSingleApp, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToSalesId } from '../../utils';
 
 export function getLoginTimesChart(type = 'all') {
     return {
         title: Intl.get('oplate.user.analysis.loginTimes', '用户在线时间'),
         url: '/rest/analysis/user/v3/:auth_type/online_time/distribution/num',
         argCallback: arg => {
-            argCallbackTeamId(arg);
-            argCallbackMemberIdToSalesId(arg);
+            argCallbackTeamIdsToTeamId(arg);
+            argCallbackMemberIdsToSalesId(arg);
         },
         reqType: 'post',
         conditions: [{

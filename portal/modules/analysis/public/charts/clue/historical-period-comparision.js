@@ -2,14 +2,11 @@
  * 历史同期数量统计对比
  */
 
-import { argCallbackTimeMember } from '../../utils';
-
 export function getClueHistoricalPeriodComparisionChart() {
     return {
         title: '历史同期数量统计对比',
         chartType: 'bar',
         url: '/rest/analysis/customer/v2/clue/:data_type/historical/period/comparision',
-        argCallback: argCallbackTimeMember,
         processOption: (option, chartProps) => {
             const data = chartProps.data;
 

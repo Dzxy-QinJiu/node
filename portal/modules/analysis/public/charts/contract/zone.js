@@ -14,14 +14,6 @@ export function getContractZoneChart() {
             },
         },
         url: '/rest/analysis/contract/contract/:data_type/region',
-        argCallback: (arg) => {
-            const query = arg.query;
-
-            if (query) {
-                delete query.app_id;
-            }
-
-            argCallbackTeamIdsToTeamId(arg);
-        },
+        argCallback: argCallbackTeamIdsToTeamId,
     };
 }

@@ -16,14 +16,6 @@ export function getContractTeamChart() {
             name: 'contract_type',
             value: 'total'
         }],
-        argCallback: (arg) => {
-            const query = arg.query;
-
-            if (query) {
-                delete query.app_id;
-            }
-
-            argCallbackTeamIdsToTeamId(arg);
-        },
+        argCallback: argCallbackTeamIdsToTeamId
     };
 }

@@ -2,7 +2,7 @@
  * 回款同期对比
  */
 
-import { argCallbackTeamIdsToTeamId } from '../../utils';
+import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId } from '../../utils';
 
 export function getContractRepayCompareChart() {
     return {
@@ -17,7 +17,8 @@ export function getContractRepayCompareChart() {
             value: 'month'
         }],
         argCallback: args => {
-            argCallbackTeamIdsToTeamId(args),
+            argCallbackTeamIdsToTeamId(args);
+            argCallbackUnderlineTimeToTime(args);
 
             args.query.starttime = moment().startOf('year').valueOf();
             args.query.endtime = moment().endOf('year').valueOf();
