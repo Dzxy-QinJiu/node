@@ -74,16 +74,17 @@ class BasicOverview extends React.Component {
     getUserPhoneNumber = () => {
         commonDataUtil.getUserPhoneNumber(callNumberInfo => {
             if (callNumberInfo) {
+                //有坐席号时，获取未处理的电联的联系计划
                 if (callNumberInfo.callNumber) {
                     this.setState({
                         callNumber: callNumberInfo.callNumber,
                         getCallNumberError: ''
                     });
-                    //有坐席号，展示未处理的电联的联系计划
-                    setTimeout(() => {
-                        this.getNotCompletedScheduleList(this.props.curCustomer);
-                    });
-
+                    if (!this.props.disableEdit) {
+                        setTimeout(() => {
+                            this.getNotCompletedScheduleList(this.props.curCustomer);
+                        });
+                    }
                 } else if (callNumberInfo.errMsg) {
                     this.setState({
                         callNumber: '',
@@ -107,26 +108,24 @@ class BasicOverview extends React.Component {
             this.getUserPhoneNumber();
         }
         basicOverviewAction.getBasicData(this.props.curCustomer);
-        this.getRecommendTags();
-        this.getCompetitorList();
-        this.getIntegrateConfig();
-        setTimeout(() => {
+        if(!this.props.disableEdit){
+            this.getRecommendTags();
+            this.getCompetitorList();
+            this.getIntegrateConfig();
             if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
-                this.getCrmUserList(this.props.curCustomer);
+                setTimeout(() => {
+                    this.getCrmUserList(this.props.curCustomer);
+                });
             }
-        });
+        }
     }
     getIntegrateConfig(){
-        if(this.props.disableEdit) return;
-        //不是从回收站中打开的客户详情时，才获取
         commonDataUtil.getIntegrationConfig().then(resultObj => {
             let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
             this.setState({isOplateUser});
         });
     }
     getAppList = () => {
-        if(this.props.disableEdit) return;
-        //不是从回收站中打开的客户详情时，才获取
         commonDataUtil.getAppList(appList => {
             this.setState({appList: _.map(appList, app => {
                 return {
@@ -141,8 +140,6 @@ class BasicOverview extends React.Component {
 
     //获取推荐标签列表
     getRecommendTags = () => {
-        if(this.props.disableEdit) return;
-        //不是从回收站中打开的客户详情时，才获取
         batchAjax.getRecommendTags().then(data => {
             if (_.isArray(data.result) && data.result.length) {
                 // 过滤掉线索、转出、已回访标签，保证selectedTagsArray中有”线索“、“转出”、“已回访”标签，则只展示，没有就不展示
@@ -153,8 +150,6 @@ class BasicOverview extends React.Component {
     };
 
     getCompetitorList = () => {
-        if(this.props.disableEdit) return;
-        //不是从回收站中打开的客户详情时，才获取
         filterAjax.getCompetitorList().then((list) => {
             this.setState({competitorList: _.isArray(list) ? list : []});
         }, (errorMsg) => {
@@ -164,52 +159,48 @@ class BasicOverview extends React.Component {
 
     //获取客户开通的用户列表
     getCrmUserList = (curCustomer) => {
-        //不是从回收站中打开的客户详情时，才获取
-        if (!this.props.disableEdit && _.get(curCustomer,'id')) {
-            //该客户开通的用户个数
-            let appUserLength = _.get(curCustomer, 'app_user_ids.length', 0);
-            if (appUserLength) {
-                basicOverviewAction.getCrmUserList({
-                    customer_id: curCustomer.id,
-                    id: '',
-                    page_size: appUserLength
-                });
-            } else {
-                basicOverviewAction.setCrmUserList([]);
-                //销售及销售主管才有用户申请
-                if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
-                    //该客户没有用户时需要引导申请，申请用户时需要应用列表
-                    this.getAppList();
-                }
+        if(!_.get(curCustomer,'id')) return;
+        //该客户开通的用户个数
+        let appUserLength = _.get(curCustomer, 'app_user_ids.length', 0);
+        if (appUserLength) {
+            basicOverviewAction.getCrmUserList({
+                customer_id: curCustomer.id,
+                id: '',
+                page_size: appUserLength
+            });
+        } else {
+            basicOverviewAction.setCrmUserList([]);
+            //销售及销售主管才有用户申请
+            if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
+                //该客户没有用户时需要引导申请，申请用户时需要应用列表
+                this.getAppList();
             }
         }
     };
 
     //获取未完成的日程列表
     getNotCompletedScheduleList = (curCustomer) => {
-        //不是从回收站中打开的客户详情时，才获取
-        if (!this.props.disableEdit && _.get(curCustomer,'id')) {
-            basicOverviewAction.getNotCompletedScheduleList({
-                customer_id: curCustomer.id,
-                page_size: 100,
-                status: false,
-                type: 'calls',
-                sort_field: 'start_time',
-                order: 'ascend',
-                start_time: TimeStampUtil.getTodayTimeStamp().start_time,
-                end_time: TimeStampUtil.getTodayTimeStamp().end_time,
-            });
-        }
+        if(!_.get(curCustomer,'id')) return;
+        basicOverviewAction.getNotCompletedScheduleList({
+            customer_id: curCustomer.id,
+            page_size: 100,
+            status: false,
+            type: 'calls',
+            sort_field: 'start_time',
+            order: 'ascend',
+            start_time: TimeStampUtil.getTodayTimeStamp().start_time,
+            end_time: TimeStampUtil.getTodayTimeStamp().end_time,
+        });
     };
 
     componentWillReceiveProps(nextProps) {
         basicOverviewAction.getBasicData(nextProps.curCustomer);
-        if (nextProps.curCustomer && nextProps.curCustomer.id !== this.state.basicData.id) {
+        if (!this.props.disableEdit && _.get(nextProps, 'curCustomer.id') !== _.get(this.state, 'basicData.id')) {
             setTimeout(() => {
                 if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
                     this.getCrmUserList(nextProps.curCustomer);
                 }
-                if (this.state.callNumber) {
+                if (this.state.callNumber){
                     //有坐席号，需要展示未处理的电联的联系计划
                     this.getNotCompletedScheduleList(nextProps.curCustomer);
                 }
