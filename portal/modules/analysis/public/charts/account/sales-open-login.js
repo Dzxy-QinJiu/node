@@ -2,7 +2,7 @@
  * 销售开通单应用账号登录统计
  */
 
-import { isSales } from '../../utils';
+import { isSales, argCallbackUnderlineTimeToTime } from '../../utils';
 
 export function getSalesOpenAccountLoginChart() {
     return {
@@ -13,6 +13,8 @@ export function getSalesOpenAccountLoginChart() {
         },
         url: '/rest/analysis/user/v3/:data_type/login/detail',
         argCallback: (arg) => {
+            argCallbackUnderlineTimeToTime(arg);
+
             let query = arg.query;
 
             if (query) {
