@@ -21,7 +21,7 @@ import AddBuyBasic from './add-buy-basic';
 import AddBuyPayment from './add-buy-payment';
 import DetailBasic from './views/new/detail-basic';
 import DetailRepayment from './views/new/detail-repayment';
-import DetailInvoice from './detail-invoice';
+import DetailInvoice from './views/new/detail-invoice';
 import DetailBuyBasic from './views/new/detail-buy-basic';
 import DetailBuyPayment from './detail-buy-payment';
 import DetailCost from './detail-cost';
@@ -626,13 +626,19 @@ class ContractRightPanel extends React.Component {
                                 height={contentHeight}
                                 contract={this.props.contract}
                                 updateScrollBar={this.updateScrollBar}
+                                refreshCurrentContractRepayment={this.props.refreshCurrentContractRepayment}
                                 refreshCurrentContractRepaymentPlan={this.props.refreshCurrentContractRepaymentPlan}
                             />
                         </div>
                     </TabPane>,
                     <TabPane tab={Intl.get('contract.40', '发票基本信息')} key={endTabKey}>
                         <div className="contract-invoice">
-                            发票基本信息
+                            <DetailInvoice
+                                height={contentHeight}
+                                contract={this.props.contract}
+                                updateScrollBar={this.updateScrollBar}
+                                refreshCurrentContractNoAjax={this.props.refreshCurrentContractNoAjax}
+                            />
                         </div>
                     </TabPane>
                 ]

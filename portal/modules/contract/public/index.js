@@ -434,6 +434,11 @@ class Contract extends React.Component {
             //毛利变化值
             const diffGrossProfit = data.gross_profit - oldData.gross_profit;
 
+            // 如果修改了is_first，则需要更新其他信息的is_first为false
+            // if(['true', true].indexOf(data.is_first) > -1) {
+            //     _.map(repayments, repayment => repayment.is_first === 'true' ? repayment.is_first = 'false' : '' );
+            // }
+
             //更新合同信息的回款数组中对应的回款
             repayments[index] = data;
 

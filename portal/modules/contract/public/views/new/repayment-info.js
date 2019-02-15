@@ -2,13 +2,14 @@
 
 var React = require('react');
 import { message, Select, Icon, Form, Input, DatePicker, Checkbox } from 'antd';
+var FirstRepaymentSrc = require('../../image/first-repayment.png');
 
 let Option = Select.Option;
 let FormItem = Form.Item;
 import Trace from 'LIB_DIR/trace';
 import 'MOD_DIR/user_manage/public/css/user-info.less';
 import DetailCard from 'CMP_DIR/detail-card';
-import {AntcEditableTable} from 'antc';
+import EditableTable from '../components/editable-table';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import ajax from 'MOD_DIR/contract/common/ajax';
 import { CONTRACT_STAGE, COST_STRUCTURE, COST_TYPE, OPERATE, VIEW_TYPE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
@@ -29,6 +30,18 @@ const formItemLayout = {
     wrapperCol: {span: 18},
 };
 
+// 图片样式
+var imgStyle = {
+    width: '16px',
+    height: '16px',
+    marginLeft: '5px',
+    verticalAlign: 'middle'
+};
+const disabledDate = function(current) {
+    //不允许选择大于当前天的日期
+    return current && current.valueOf() > Date.now();
+};
+
 class RepaymentInfo extends React.Component {
     state = {
         ...this.getInitStateData(this.props),
@@ -37,12 +50,18 @@ class RepaymentInfo extends React.Component {
     getInitStateData(props) {
         let hasEditPrivilege = hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPDATE_REPAYMENT);
 
+        const contract = _.cloneDeep(props.contract);
+        let repayments = _.sortBy(_.cloneDeep(contract.repayments) || [], item => item.date).reverse();
+        let repayLists = _.filter(repayments,item => item.type === 'repay');
+
         return {
             formData: {},
             loading: false,
+            repayLists: this.getRepayList(contract),
             submitErrorMsg: '',
             hasEditPrivilege,
             displayType: DISPLAY_TYPES.TEXT,
+            isFirstAdd: false, // 是否添加了首笔回款列
         };
     }
 
@@ -52,13 +71,19 @@ class RepaymentInfo extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps.contract, 'id') && this.props.contract.id !== nextProps.contract.id) {
+            const contract = _.cloneDeep(nextProps.contract);
+
             this.setState({
                 displayType: DISPLAY_TYPES.TEXT,
-                // formData: JSON.parse(JSON.stringify(nextProps.contract)),
+                repayLists: this.getRepayList(contract),
             });
         }
     }
-
+    getRepayList(contract) {
+        let repayments = _.sortBy(_.cloneDeep(contract.repayments) || [], item => item.date).reverse();
+        let repayLists = _.filter(repayments,item => item.type === 'repay');
+        return repayLists;
+    }
     changeDisplayType(type) {
         if (type === DISPLAY_TYPES.TEXT) {
             Trace.traceEvent(ReactDOM.findDOMNode(this), '关闭添加已回款输入区');
@@ -72,21 +97,151 @@ class RepaymentInfo extends React.Component {
             });
         }
     }
-    handleSubmit = () => {
+    handleSubmit = (type, index, id) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '添加已回款内容');
+        let _this = this;
+        let saveObj;
+        if (type === 'delete') {
+            saveObj = [id];
+            const successFunc = (resultData) => {
+                _this.setState({
+                    repayLists: this.getRepayList(this.props.contract),
+                }, () => {
+                    // this.props.updateScrollBar();
+                });
+            };
+            this.editRepayment(type, saveObj,'', successFunc, (errormsg) => {
+                message.error(errormsg);
+            });
+        } else if(type === 'add') {
+            this.props.form.validateFields((err,value) => {
+                if (err) return false;
+
+                this.setState({loading: true});
+                const params = {contractId: this.props.contract.id, type: 'repay'};
+                let { formData } = this.state;
+                formData = JSON.parse(JSON.stringify(formData));
+
+                saveObj = {...formData,...value};
+                if(saveObj.date) {
+                    saveObj.date = saveObj.date.valueOf();
+                }
+
+                const successFunc = (resultData) => {
+                    let repayments = _.sortBy(_.cloneDeep(this.props.contract.repayments) || [], item => item.date).reverse();
+                    let repayLists = _.filter(repayments,item => item.type === 'repay');
+                    _this.setState({
+                        loading: false,
+                        formData: {},
+                        repayLists: this.getRepayList(this.props.contract),
+                        submitErrorMsg: '',
+                        displayType: DISPLAY_TYPES.TEXT,
+                        currentRepayment: {}
+                    }, () => {
+                        // this.props.updateScrollBar();
+                    });
+                };
+                const errorFunc = (errorMsg) => {
+                    _this.setState({
+                        loading: false,
+                        submitErrorMsg: errorMsg
+                    });
+                };
+                this.editRepayment(type, saveObj, params, successFunc, errorFunc);
+            });
+        }
     };
+    editRepayment(type, data, params, successFunc, errorFunc) {
+
+        const handler = type + 'Repayment';
+        const route = _.find(routeList, route => route.handler === handler);
+        let arg = {
+            url: route.path,
+            type: route.method,
+            data: data,
+        };
+        if (params) arg.params = params;
+        ajax(arg).then(result => {
+            if (result.code === 0) {
+                message.success(OPERATE[type] + Intl.get('contract.41', '成功'));
+                //返回数据
+                let resultData = result.result;
+
+                //删除的时候没有返回数据，需要根据id从当前回款列表中取
+                if (type === 'delete') {
+                    const repaymentId = data[0];
+                    resultData = _.find(this.props.contract.repayments, repayment => repayment.id === repaymentId);
+                }
+                // 更新后没有返回id，
+                if(type === 'update') {
+                    resultData = _.extend({},this.state.currentRepayment, resultData);
+                }
+                //刷新合同列表中的回款信息
+                this.props.refreshCurrentContractRepayment(type, resultData);
+
+                if (_.isFunction(successFunc)) successFunc(resultData);
+            } else {
+                if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE[type] + Intl.get('user.failed', '失败'));
+            }
+        }, errorMsg => {
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE[type] + Intl.get('user.failed', '失败'));
+        });
+    }
     handleCancel = () => {
         this.changeDisplayType(DISPLAY_TYPES.TEXT);
+    };
+    handleEditTableChange = (data) => {
+        this.setState({repayLists: data});
+    };
+    handleEditTableCancel = () => {
+        const contract = _.cloneDeep(this.props.contract);
+        this.setState({repayLists: this.getRepayList(contract), isFirstAdd: false});
+    };
+    handleColumnsChange = () => {
+        this.setState({
+            isFirstAdd: true
+        });
+    };
+    handleEditTableSave = (data, successFunc, errorFunc) => {
+        const params = {contractId: this.props.contract.id, type: 'repay'};
+        const successFuncs = () => {
+            _.isFunction(successFunc) && successFunc();
+            this.setState({
+                repayLists: this.getRepayList(this.props.contract)
+            });
+        };
+        if(data.date){
+            data.date = data.date.valueOf();
+        }
+
+        this.editRepayment('update', data, params, successFuncs, (errorMsg) => {
+            message.error(errorMsg);
+            _.isFunction(errorFunc) && errorFunc();
+        });
+        // this.handleSubmit('update','', );
+    };
+    handleDelete = (record,successFunc, errorFunc) => {
+        console.log(record);
+        let saveObj = [record.id];
+        const successFuncs = (resultData) => {
+
+            _.isFunction(successFunc) && successFunc();
+            this.setState({
+                repayLists: this.getRepayList(this.props.contract),
+            }, () => {
+                // this.props.updateScrollBar();
+            });
+        };
+        this.editRepayment('delete', saveObj,'', successFuncs, (errorMsg) => {
+            message.error(errorMsg);
+            _.isFunction(errorFunc) && errorFunc();
+        });
     };
 
     renderAddRepaymentPanel(repayLists) {
         let {getFieldDecorator} = this.props.form;
         let formData = this.state.formData;
-        const disabledDate = function(current) {
-            //不允许选择大于当前天的日期
-            return current && current.valueOf() > Date.now();
-        };
-        console.log(this.props.form.getFieldsValue());
+
         return (
             <Form layout='inline' className='add-repayment-form new-add-repayment-container'>
                 <FormItem
@@ -97,7 +252,6 @@ class RepaymentInfo extends React.Component {
                             initialValue: formData.date ? moment(formData.date) : moment(),
                         })(
                             <DatePicker
-                                value={formData.date ? moment(formData.date) : moment()}
                                 disabledDate={disabledDate}
                             />
                         )
@@ -161,53 +315,74 @@ class RepaymentInfo extends React.Component {
             </Form>
         );
     }
+
     renderRepaymentList(repayLists) {
         let num_col_width = 75;
         const columns = [
             {
                 title: `${Intl.get('contract.108', '回款')}${Intl.get('crm.146', '日期')}`,
                 dataIndex: 'date',
-                key: 'date',
-                width: 110,
+                editable: true,
+                inputType: 'date',
+                width: '30%',
+                align: 'left',
+                disabledDate,
                 render: (text, record, index) => {
-                    return <span>{moment(text).format(oplateConsts.DATE_FORMAT)}{<i className='iconfont icon-huikuan'></i>}</span>;
+                    return <span>{moment(text).format(oplateConsts.DATE_FORMAT)}{['true', true].indexOf(record.is_first) > -1 ? <img style={imgStyle} src={FirstRepaymentSrc}/> : null}</span>;
                 },
-                // validator: this.state.validator,
-                getIsEdit: text => !text
             },
             {
-                title: `${Intl.get('contract.28', '回款额')}${Intl.get('contract.155', '元')}`,
+                title: `${Intl.get('contract.28', '回款额')}(${Intl.get('contract.155', '元')})`,
                 dataIndex: 'amount',
                 editable: true,
-                key: 'amount',
-                // width: 70,
-                // validator: this.state.validator
+                width: this.state.isFirstAdd ? num_col_width : 'auto',
+                rules: [{
+                    required: true,
+                    message: Intl.get('contract.44', '不能为空')
+                }, getNumberValidateRule(), numberAddNoMoreThan.bind(this, this.props.contract.contract_amount, this.props.contract.total_amount, Intl.get('contract.161', '已超合同额'))]
             },
             {
                 title: `${Intl.get('contract.29', '回款毛利')}(${Intl.get('contract.155', '元')})`,
                 dataIndex: 'gross_profit',
                 editable: true,
-                key: 'gross_profit',
-                // width: num_col_width,
-                // validator: text => this.getNumberValidate(text)//this.state.validator
+                width: this.state.isFirstAdd ? num_col_width : 'auto',
+                handleChange: (e) => {
+                    console.log(e.target.value,this.repaymentTableRef.editableFormCellRef.getFieldValue('amount'));
+                },
+                rules: (text, record, index) => {
+                    let amount = !_.isEmpty(this.repaymentTableRef) && !_.isEmpty(this.repaymentTableRef.editableFormCellRef) ? this.repaymentTableRef.editableFormCellRef.getFieldValue('amount') : record.amount;
+
+                    return [{
+                        required: true,
+                        message: Intl.get('contract.44', '不能为空')
+                    }, getNumberValidateRule(), numberAddNoMoreThan.bind(this, record.amount, 0, Intl.get('contract.gross.profit.can.not.exceed.repayment', '毛利不能大于回款'))];
+                }
             }
         ];
+
         return (
-            <AntcEditableTable
-                ref={ref => this.producTableRef = ref}
-                isEdit={this.state.isEdit}
-                onChange={this.handleChange}
+            <EditableTable
+                ref={ref => this.repaymentTableRef = ref}
+                parent={this}
+                isEdit={this.state.hasEditPrivilege}
                 columns={columns}
+                defaultKey='id'
+                isFirstType
+                isFirstAdd={this.state.isFirstAdd}
                 dataSource={repayLists}
-                bordered={true}
+                onChange={this.handleEditTableChange}
+                onCancel={this.handleEditTableCancel}
+                onColumnsChange={this.handleColumnsChange}
+                onSave={this.handleEditTableSave}
+                onDelete={this.handleDelete}
             />
         );
     }
+
     // 渲染基础信息
     renderBasicInfo() {
         const contract = this.props.contract;
-        let repayments = _.sortBy(contract.repayments || [], item => item.date).reverse();
-        let repayLists = _.filter(repayments,item => item.type === 'repay');
+        const repayLists = this.state.repayLists;
         const noRepaymentData = !repayLists.length && !this.state.loading;
 
         const content = () => {

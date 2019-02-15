@@ -30,9 +30,7 @@ const formItemLayout = {
     wrapperCol: {span: 18},
 };
 
-let queryCustomerTimeout = null;
-
-class DetailBasic extends React.Component {
+class DetailRepayment extends React.Component {
     state = {
         ...this.getInitStateData(this.props),
     };
@@ -48,10 +46,6 @@ class DetailBasic extends React.Component {
             hasEditPrivilege,
             displayType: DISPLAY_TYPES.TEXT,
         };
-    }
-
-    componentDidMount() {
-
     }
 
     componentWillReceiveProps(nextProps) {
@@ -109,7 +103,7 @@ class DetailBasic extends React.Component {
     }
 }
 
-DetailBasic.propTypes = {
+DetailRepayment.propTypes = {
     height: PropTypes.string,
     contract: PropTypes.object,
     handleSubmit: PropTypes.func,
@@ -120,5 +114,5 @@ DetailBasic.propTypes = {
     refreshCurrentContractRepaymentPlan: PropTypes.func,
     viewType: PropTypes.string,
 };
-module.exports = DetailBasic;
+module.exports = DetailRepayment;
 

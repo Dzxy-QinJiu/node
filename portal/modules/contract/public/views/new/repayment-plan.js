@@ -92,25 +92,11 @@ class RepaymentPlan extends React.Component {
         let saveObj;
         if (type === 'delete') {
             saveObj = [id];
-            const successFunc = () => {
-                let stateObj = {};
-                const hasRepayment = _.isObject(this.state.currentRepayment) && !_.isEmpty(this.state.currentRepayment);
-                /* if(hasRepayment) {
-                    this.state.currentRepayment.id === id ? stateObj = {
-                        displayType: DISPLAY_TYPES.TEXT,
-                        submitErrorMsg: '',
-                        formData: this.getInitialFormData()
-                    } : '';
-                }
-                _this.setState(stateObj);*/
-            };
+            const successFunc = () => {};
             const errorFunc = (errorMsg) => {
-                // _this.setState({
-                //     loading: false,
-                //     submitErrorMsg: errorMsg
-                // });
+                message.error(errorMsg);
             };
-            this.editRepayment(type, saveObj,successFunc, errorFunc);
+            this.editRepayment(type, saveObj, successFunc, errorFunc);
         } else if(type === 'add'){
             this.props.form.validateFields((err,value) => {
                 if (err) return false;

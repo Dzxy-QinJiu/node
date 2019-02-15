@@ -1652,6 +1652,9 @@ var en_US = {
     'contract.194': 'Debt collection process',//回款进程
     'contract.195': 'A collection plan has not been added',// 还未添加回款计划
     'contract.196': 'The collection process has not been added',// 还未添加回款进程
+    'contract.197': 'invoice date',// 开票日期
+    'contract.198': 'The invoice amount',// 发票额
+    'contract.199': 'The history of make out an invoice',// 开票历史
     'contract.gross.profit.can.not.exceed.repayment': 'gross profit can not exceed repayment',//毛利不能大于回款
     'contract.loadMore': 'load more',//"加载更多",
     'contract.valueTypeConfig': 'value calculate type config',//"值字段设置",

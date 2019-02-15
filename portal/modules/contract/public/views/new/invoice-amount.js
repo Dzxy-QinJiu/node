@@ -1,0 +1,325 @@
+/** Created by 2019-01-31 11:11 */
+
+var React = require('react');
+import { message, Select, Icon, Form, Input, DatePicker, Checkbox } from 'antd';
+
+let Option = Select.Option;
+let FormItem = Form.Item;
+import Trace from 'LIB_DIR/trace';
+import 'MOD_DIR/user_manage/public/css/user-info.less';
+import DetailCard from 'CMP_DIR/detail-card';
+import EditableTable from '../components/editable-table';
+import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import ajax from 'MOD_DIR/contract/common/ajax';
+import { CONTRACT_STAGE, COST_STRUCTURE, COST_TYPE, OPERATE, VIEW_TYPE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
+import routeList from 'MOD_DIR/contract/common/route';
+import {parseAmount} from 'LIB_DIR/func';
+import { getNumberValidateRule } from 'PUB_DIR/sources/utils/validate-util';
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+
+//展示的类型
+const DISPLAY_TYPES = {
+    EDIT: 'edit',//添加所属客户
+    TEXT: 'text'//展示
+};
+
+const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 330;
+const formItemLayout = {
+    labelCol: {span: 5},
+    wrapperCol: {span: 18},
+};
+
+const disabledDate = function(current) {
+    //不允许选择大于当前天的日期
+    return current && current.valueOf() > Date.now();
+};
+
+class InvoiceAmount extends React.Component {
+    state = {
+        ...this.getInitStateData(this.props),
+    };
+
+    getInitStateData(props) {
+        let hasEditPrivilege = hasPrivilege(PRIVILEGE_MAP.CONTRACT_ADD_INVOICE_AMOUNT);
+
+        return {
+            formData: {},
+            loading: false,
+            invoiceLists: this.getInvoiceLists(this.props.contract),
+            submitErrorMsg: '',
+            hasEditPrivilege,
+            displayType: DISPLAY_TYPES.TEXT,
+        };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (_.get(nextProps.contract, 'id') && this.props.contract.id !== nextProps.contract.id) {
+
+            this.setState({
+                displayType: DISPLAY_TYPES.TEXT,
+                invoiceLists: this.getInvoiceLists(nextProps.contract),
+                // formData: JSON.parse(JSON.stringify(nextProps.contract)),
+            });
+        }
+    }
+    getInvoiceLists(contract) {
+        return _.sortBy(_.cloneDeep(contract.invoices) || [], item => item.date).reverse();
+    }
+    changeDisplayType(type) {
+        if (type === DISPLAY_TYPES.TEXT) {
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '关闭添加开发票额输入区');
+            this.setState({
+                displayType: type,
+                submitErrorMsg: '',
+            });
+        } else if (type === DISPLAY_TYPES.EDIT) {
+            this.setState({
+                displayType: type
+            });
+        }
+    }
+    handleSubmit = (type) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '添加发票额信息');
+        let _this = this;
+        let saveObj, params;
+        if(type === 'add') {
+            this.props.form.validateFields((err,value) => {
+                if (err) return false;
+
+                this.setState({loading: true});
+                let { formData } = this.state;
+                formData = JSON.parse(JSON.stringify(formData));
+
+                saveObj = {...formData,...value};
+                if(saveObj.date) {
+                    saveObj.date = saveObj.date.valueOf();
+                }
+                if(_.isEmpty(saveObj.contract_id)){
+                    saveObj.contract_id = this.props.contract.id;
+                }
+
+                const successFunc = (resultData) => {
+                    _this.setState({
+                        loading: false,
+                        formData: {},
+                        invoiceLists: this.getInvoiceLists(this.props.contract),
+                        submitErrorMsg: '',
+                        displayType: DISPLAY_TYPES.TEXT
+                    }, () => {
+                        // this.props.updateScrollBar();
+                    });
+                };
+                const errorFunc = (errorMsg) => {
+                    _this.setState({
+                        loading: false,
+                        submitErrorMsg: errorMsg
+                    });
+                };
+                this.editInvoice(type, saveObj, params, '', successFunc, errorFunc);
+            });
+        }
+    };
+    editInvoice(type, data, params, id, successFunc, errorFunc) {
+
+        const handler = type + 'InvoiceAmount';
+        const route = _.find(routeList, route => route.handler === handler);
+        let arg = {
+            url: route.path,
+            type: route.method,
+            data: data,
+        };
+        if (params) arg.params = params;
+
+        let targetName, changePropName, isInvoiceBasicInforOrInvoices = type;
+        targetName = Intl.get('contract.39', '发票额记录');
+        changePropName = 'invoices';
+
+        ajax(arg).then(result => {
+            if (result.code === 0) {
+                message.success(OPERATE[type] + targetName + '成功');
+                this.props.refreshCurrentContractNoAjax(changePropName, isInvoiceBasicInforOrInvoices, result.result, id);
+
+                if (_.isFunction(successFunc)) successFunc(result.result);
+            } else {
+                if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE[type] + targetName + Intl.get('user.failed', '失败'));
+            }
+        }, errorMsg => {
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE[type] + targetName + Intl.get('user.failed', '失败'));
+        });
+    }
+    handleCancel = () => {
+        this.changeDisplayType(DISPLAY_TYPES.TEXT);
+    };
+    handleEditTableCancel = () => {
+        const contract = _.cloneDeep(this.props.contract);
+        this.setState({invoiceLists: this.getInvoiceLists(contract)});
+    };
+    handleEditTableSave = (data, successFunc, errorFunc) => {
+        const successFuncs = () => {
+            _.isFunction(successFunc) && successFunc();
+            this.setState({
+                invoiceLists: this.getInvoiceLists(this.props.contract)
+            });
+        };
+        if(data.date){
+            data.date = data.date.valueOf();
+        }
+        this.editInvoice('update', data, '', data.id, successFuncs, (errorMsg) => {
+            message.error(errorMsg);
+            _.isFunction(errorFunc) && errorFunc();
+        });
+    };
+
+    handleDelete = (record,successFunc, errorFunc) => {
+        let params = { id: record.id };
+        const successFuncs = (resultData) => {
+            _.isFunction(successFunc) && successFunc();
+            this.setState({
+                invoiceLists: this.getInvoiceLists(this.props.contract),
+            }, () => {
+                // this.props.updateScrollBar();
+            });
+        };
+        this.editInvoice('delete', '', params, record.id, successFuncs, (errorMsg) => {
+            message.error(errorMsg);
+            _.isFunction(errorFunc) && errorFunc();
+        });
+    };
+
+    renderAddInvoicePanel(invoiceLists) {
+        let {getFieldDecorator} = this.props.form;
+        let formData = this.state.formData;
+
+        return (
+            <Form layout='inline' className='add-repayment-form new-add-repayment-container'>
+                <FormItem
+                    className='add-repayment-date'
+                >
+                    {
+                        getFieldDecorator('date', {
+                            initialValue: formData.date ? moment(formData.date) : moment(),
+                        })(
+                            <DatePicker
+                                disabledDate={disabledDate}
+                            />
+                        )
+                    }
+                </FormItem>
+                <ReactIntl.FormattedMessage id="contract.43" defaultMessage="开出"/>
+                <FormItem>
+                    {
+                        getFieldDecorator('amount', {
+                            initialValue: formData.amount,
+                            rules: [{
+                                required: true,
+                                message: Intl.get('contract.44', '不能为空')
+                            }, getNumberValidateRule()]
+                        })(
+                            <Input
+                                value={formData.amount}
+                            />
+                        )
+                    }
+                </FormItem>
+                <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元"/>,
+                <ReactIntl.FormattedMessage id="contract.46" defaultMessage="发票"/>
+                <SaveCancelButton
+                    loading={this.state.loading}
+                    saveErrorMsg={this.state.submitErrorMsg}
+                    handleSubmit={this.handleSubmit.bind(this,'add')}
+                    handleCancel={this.handleCancel}
+                />
+            </Form>
+        );
+    }
+
+    renderInvoiceList(invoiceLists) {
+        let num_col_width = 75;
+        const columns = [
+            {
+                title: Intl.get('contract.197', '开票日期'),
+                dataIndex: 'date',
+                editable: true,
+                inputType: 'date',
+                width: 'auto',
+                disabledDate,
+                render: (text, record, index) => {
+                    return <span>{moment(text).format(oplateConsts.DATE_FORMAT)}</span>;
+                },
+            },
+            {
+                title: `${Intl.get('contract.198', '发票额')}(${Intl.get('contract.155', '元')})`,
+                dataIndex: 'amount',
+                editable: true,
+                width: 'auto',
+                rules: [{
+                    required: true,
+                    message: Intl.get('contract.44', '不能为空')
+                }, getNumberValidateRule()]
+            }
+        ];
+
+        return (
+            <EditableTable
+                ref={ref => this.invoiceAmountTableRef = ref}
+                parent={this}
+                isEdit={this.state.hasEditPrivilege}
+                columns={columns}
+                defaultKey='id'
+                dataSource={invoiceLists}
+                onCancel={this.handleEditTableCancel}
+                onSave={this.handleEditTableSave}
+                onDelete={this.handleDelete}
+            />
+        );
+    }
+
+    // 渲染基础信息
+    renderBasicInfo() {
+        const invoiceLists = this.state.invoiceLists;
+        const noRepaymentData = !invoiceLists.length && !this.state.loading;
+
+        const content = () => {
+            return (
+                <div className="repayment-list">
+                    {this.state.displayType === DISPLAY_TYPES.EDIT ? this.renderAddInvoicePanel(invoiceLists) : this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
+                        <span className="iconfont icon-add" onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}
+                            title={Intl.get('common.edit', '编辑')}/>) : null}
+                    {this.renderInvoiceList(invoiceLists)}
+                </div>
+            );
+        };
+
+        let repayTitle = (
+            <div className="repayment-repay">
+                <span>{Intl.get('contract.199', '开票历史')}</span>
+            </div>
+        );
+
+        return (
+            <DetailCard
+                content={content()}
+                titleBottomBorderNone={noRepaymentData}
+                title={repayTitle}
+            />
+        );
+    }
+
+
+    render() {
+        return this.renderBasicInfo();
+    }
+}
+
+InvoiceAmount.propTypes = {
+    contract: PropTypes.object,
+    invoiceLists: PropTypes.array,
+    handleSubmit: PropTypes.func,
+    showLoading: PropTypes.func,
+    hideLoading: PropTypes.func,
+    refreshCurrentContract: PropTypes.func,
+    refreshCurrentContractNoAjax: PropTypes.func,
+    form: PropTypes.object
+};
+module.exports = Form.create()(InvoiceAmount);
+
