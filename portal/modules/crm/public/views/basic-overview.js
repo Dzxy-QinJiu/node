@@ -32,7 +32,9 @@ import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 const PRIVILEGE_MAP = {
     USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS',//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
-    CRM_CUSTOMER_SCORE_RECORD: 'CRM_CUSTOMER_SCORE_RECORD'//获取分数趋势的权限
+    CRM_CUSTOMER_SCORE_RECORD: 'CRM_CUSTOMER_SCORE_RECORD',//获取分数趋势的权限
+    EDIT_TEAM_MANAGER: 'CRM_MANAGER_UPDATE_CUSTOMER_SALES_TEAM',//管理员修改所属团队的权限
+    EDIT_TEAM_USER: 'CRM_USER_UPDATE_CUSTOMER_SALES_TEAM'//销售修改所属团队的权限
 };
 
 class BasicOverview extends React.Component {
@@ -72,16 +74,17 @@ class BasicOverview extends React.Component {
     getUserPhoneNumber = () => {
         commonDataUtil.getUserPhoneNumber(callNumberInfo => {
             if (callNumberInfo) {
+                //有坐席号时，获取未处理的电联的联系计划
                 if (callNumberInfo.callNumber) {
                     this.setState({
                         callNumber: callNumberInfo.callNumber,
                         getCallNumberError: ''
                     });
-                    //有坐席号，展示未处理的电联的联系计划
-                    setTimeout(() => {
-                        this.getNotCompletedScheduleList(this.props.curCustomer);
-                    });
-
+                    if (!this.props.disableEdit) {
+                        setTimeout(() => {
+                            this.getNotCompletedScheduleList(this.props.curCustomer);
+                        });
+                    }
                 } else if (callNumberInfo.errMsg) {
                     this.setState({
                         callNumber: '',
@@ -105,14 +108,16 @@ class BasicOverview extends React.Component {
             this.getUserPhoneNumber();
         }
         basicOverviewAction.getBasicData(this.props.curCustomer);
-        this.getRecommendTags();
-        this.getCompetitorList();
-        this.getIntegrateConfig();
-        setTimeout(() => {
+        if(!this.props.disableEdit){
+            this.getRecommendTags();
+            this.getCompetitorList();
+            this.getIntegrateConfig();
             if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
-                this.getCrmUserList(this.props.curCustomer);
+                setTimeout(() => {
+                    this.getCrmUserList(this.props.curCustomer);
+                });
             }
-        });
+        }
     }
     getIntegrateConfig(){
         commonDataUtil.getIntegrationConfig().then(resultObj => {
@@ -154,50 +159,48 @@ class BasicOverview extends React.Component {
 
     //获取客户开通的用户列表
     getCrmUserList = (curCustomer) => {
-        if (curCustomer && curCustomer.id) {
-            //该客户开通的用户个数
-            let appUserLength = curCustomer && _.isArray(curCustomer.app_user_ids) ? curCustomer.app_user_ids.length : 0;
-            if (appUserLength) {
-                basicOverviewAction.getCrmUserList({
-                    customer_id: curCustomer.id,
-                    id: '',
-                    page_size: appUserLength
-                });
-            } else {
-                basicOverviewAction.setCrmUserList([]);
-                //销售及销售主管才有用户申请
-                if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
-                    //该客户没有用户时需要引导申请，申请用户时需要应用列表
-                    this.getAppList();
-                }
+        if(!_.get(curCustomer,'id')) return;
+        //该客户开通的用户个数
+        let appUserLength = _.get(curCustomer, 'app_user_ids.length', 0);
+        if (appUserLength) {
+            basicOverviewAction.getCrmUserList({
+                customer_id: curCustomer.id,
+                id: '',
+                page_size: appUserLength
+            });
+        } else {
+            basicOverviewAction.setCrmUserList([]);
+            //销售及销售主管才有用户申请
+            if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
+                //该客户没有用户时需要引导申请，申请用户时需要应用列表
+                this.getAppList();
             }
         }
     };
 
     //获取未完成的日程列表
     getNotCompletedScheduleList = (curCustomer) => {
-        if (curCustomer && curCustomer.id) {
-            basicOverviewAction.getNotCompletedScheduleList({
-                customer_id: curCustomer.id,
-                page_size: 100,
-                status: false,
-                type: 'calls',
-                sort_field: 'start_time',
-                order: 'ascend',
-                start_time: TimeStampUtil.getTodayTimeStamp().start_time,
-                end_time: TimeStampUtil.getTodayTimeStamp().end_time,
-            });
-        }
+        if(!_.get(curCustomer,'id')) return;
+        basicOverviewAction.getNotCompletedScheduleList({
+            customer_id: curCustomer.id,
+            page_size: 100,
+            status: false,
+            type: 'calls',
+            sort_field: 'start_time',
+            order: 'ascend',
+            start_time: TimeStampUtil.getTodayTimeStamp().start_time,
+            end_time: TimeStampUtil.getTodayTimeStamp().end_time,
+        });
     };
 
     componentWillReceiveProps(nextProps) {
         basicOverviewAction.getBasicData(nextProps.curCustomer);
-        if (nextProps.curCustomer && nextProps.curCustomer.id !== this.state.basicData.id) {
+        if (!this.props.disableEdit && _.get(nextProps, 'curCustomer.id') !== _.get(this.state, 'basicData.id')) {
             setTimeout(() => {
                 if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
                     this.getCrmUserList(nextProps.curCustomer);
                 }
-                if (this.state.callNumber) {
+                if (this.state.callNumber){
                     //有坐席号，需要展示未处理的电联的联系计划
                     this.getNotCompletedScheduleList(nextProps.curCustomer);
                 }
@@ -452,6 +455,7 @@ class BasicOverview extends React.Component {
             changeActiveKey={this.props.changeActiveKey}
             callNumber={this.state.callNumber}
             getCallNumberError={this.state.getCallNumberError}
+            disableEdit={this.props.disableEdit}
         />;
     };
 
@@ -505,13 +509,17 @@ class BasicOverview extends React.Component {
     };
 
     renderUnComplateScheduleList = () => {
-        if (_.isArray(this.state.scheduleList) && this.state.scheduleList.length) {
+        if (!this.props.disableEdit && _.isArray(this.state.scheduleList) && this.state.scheduleList.length) {
             return (
                 <DetailCard title={Intl.get('clue.not.complete.schedule','今天的联系计划')}
                     content={this.renderScheduleItem()}/>);
         }
         return null;
     };
+    //是否有修改所属团的权限
+    hasEditTeamPrivilege() {
+        return hasPrivilege(PRIVILEGE_MAP.EDIT_TEAM_MANAGER) || hasPrivilege(PRIVILEGE_MAP.EDIT_TEAM_USER);
+    }
 
     render() {
         var basicData = this.state.basicData ? this.state.basicData : {};
@@ -524,13 +532,15 @@ class BasicOverview extends React.Component {
         return (
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
-                    {hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(basicData, 'app_user_ids[0]') ?
-                        this.renderExpireTip() : this.renderApplyUserBlock()}
+                    {!this.props.disableEdit ? (
+                        hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(basicData, 'app_user_ids[0]') ?
+                            this.renderExpireTip() : this.renderApplyUserBlock()) : null}
                     <SalesTeamCard
                         isMerge={this.props.isMerge}
                         updateMergeCustomer={this.props.updateMergeCustomer}
-                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_SALES')}
-                        enableTransfer={this.enableTransferCustomer()}
+                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_SALES') && !this.props.disableEdit}
+                        enableTransfer={this.enableTransferCustomer() && !this.props.disableEdit}
+                        enableEditTeam={this.hasEditTeamPrivilege() && !this.props.disableEdit}
                         customerId={basicData.id}
                         userName={basicData.user_name}
                         userId={basicData.user_id}
@@ -538,7 +548,7 @@ class BasicOverview extends React.Component {
                         salesTeamId={basicData.sales_team_id}
                         modifySuccess={this.editBasicSuccess}
                     />
-                    {hasPrivilege(PRIVILEGE_MAP.CRM_CUSTOMER_SCORE_RECORD) ? (
+                    {hasPrivilege(PRIVILEGE_MAP.CRM_CUSTOMER_SCORE_RECORD) && !this.props.disableEdit ? (
                         <CrmScoreCard customerScore={basicData.score} customerId={basicData.id}
                             customerUserSize={_.get(basicData, 'app_user_ids.length', 0)}/>) : null
                     }
@@ -547,7 +557,7 @@ class BasicOverview extends React.Component {
                         tags={basicData.competing_products}
                         recommendTags={this.state.competitorList}
                         data={basicData}
-                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL')}
+                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL') && !this.props.disableEdit}
                         noDataTip={_.get(basicData, 'competing_products[0]') ? '' : Intl.get('crm.no.competing', '暂无竞品')}
                         saveTags={this.saveEditCompetitors}
                     />
@@ -556,7 +566,7 @@ class BasicOverview extends React.Component {
                         data={basicData}
                         tags={tagArray}
                         recommendTags={this.state.recommendTags}
-                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL')}
+                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL') && !this.props.disableEdit}
                         noDataTip={tagArray.length ? '' : Intl.get('crm.detail.no.tag', '暂无标签')}
                         saveTags={this.saveEditTags}
                     />
@@ -581,7 +591,8 @@ BasicOverview.propTypes = {
     isRepeat: PropTypes.bool,
     editCustomerBasic: PropTypes.func,
     changeActiveKey: PropTypes.func,
-    refreshCustomerList: PropTypes.func
+    refreshCustomerList: PropTypes.func,
+    disableEdit: PropTypes.bool,
 };
 module.exports = BasicOverview;
 

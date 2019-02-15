@@ -46,6 +46,7 @@ class SalesTeamCard extends React.Component {
             isLoadingList: true,//正在获取下拉列表中的数据
             enableEdit: props.enableEdit,
             enableTransfer: props.enableTransfer,
+            enableEditTeam: props.enableEditTeam,
             isMerge: props.isMerge,
             customerId: props.customerId,
             userName: props.userName,
@@ -75,7 +76,7 @@ class SalesTeamCard extends React.Component {
             }
         }
         //有修改所属团队的权限时
-        if (this.hasEditTeamPrivilege()) {
+        if (this.state.enableEditTeam) {
             //获取我所在团队及下级团队列表
             getMyTeamTreeAndFlattenList(({teamTree, teamList}) => {
                 this.setState({mySubTeamList: teamList});
@@ -438,10 +439,6 @@ class SalesTeamCard extends React.Component {
             salesTeam: _.get(team, 'group_name', '')
         });
     };
-    //是否有修改所属团的权限
-    hasEditTeamPrivilege() {
-        return hasPrivilege(PRIVILEGES.EDIT_TEAM_MANAGER) || hasPrivilege(PRIVILEGES.EDIT_TEAM_USER);
-    }
 
     renderTitle = () => {
         return (
@@ -468,7 +465,7 @@ class SalesTeamCard extends React.Component {
                     <span className="sales-team-text">
                         {this.state.salesTeam}
                     </span>
-                    {this.hasEditTeamPrivilege() && !this.state.isMerge ? (
+                    {this.state.enableEditTeam && !this.state.isMerge ? (
                         <DetailEditBtn title={Intl.get('common.edit', '编辑')}
                             onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT_TEAM)}/>) : null}
                 </div>
@@ -618,6 +615,7 @@ class SalesTeamCard extends React.Component {
 SalesTeamCard.propTypes = {
     enableEdit: PropTypes.bool,
     enableTransfer: PropTypes.bool,
+    enableEditTeam: PropTypes.bool,
     isMerge: PropTypes.bool,
     customerId: PropTypes.string,
     userName: PropTypes.string,

@@ -2,22 +2,17 @@
  * 合同产品分布
  */
 
-import { argCallbackTeamId } from '../../utils';
+import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getContractProductChart() {
     return {
         title: '合同产品分布',
         chartType: 'table',
         url: '/rest/analysis/contract/contract/:data_type/product',
-        argCallback: (arg) => {
-            const query = arg.query;
-
-            if (query) {
-                delete query.app_id;
-                
-            }
-
-            argCallbackTeamId(arg);
+        argCallback: arg => {
+            argCallbackUnderlineTimeToTime(arg);
+            argCallbackTeamIdsToTeamId(arg);
+            argCallbackMemberIdsToMemberId(arg);
         },
         option: {
             columns: [

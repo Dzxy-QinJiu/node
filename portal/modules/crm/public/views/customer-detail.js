@@ -82,15 +82,17 @@ class CrmRightPanel extends React.Component {
         let condition = {id: id};
         crmAjax.queryCustomer({data: JSON.stringify(condition)}).then(resData => {
             if (resData && _.isArray(resData.result) && resData.result.length) {
-                this.state.curCustomer = resData.result[0];
-                this.state.getCusomerResultdMsg = '';
+                this.setState({
+                    getCusomerResultdMsg: '',
+                    curCustomer: resData.result[0],
+                });
             } else {
-                this.state.getCusomerResultdMsg = Intl.get('crm.detail.no.data', '该客户已被删除或转走');
+                this.setState({
+                    getCusomerResultdMsg: Intl.get('crm.detail.no.data', '该客户已被删除或转走'),
+                });
             }
-            this.setState(this.state);
         }, () => {
-            this.state.getCusomerResultdMsg = Intl.get('crm.detail.get.error', '获取客户详情失败');
-            this.setState(this.state);
+            this.setState({getCusomerResultdMsg: Intl.get('crm.detail.get.error', '获取客户详情失败')});
         });
     };
 
@@ -131,6 +133,7 @@ class CrmRightPanel extends React.Component {
                     handleFocusCustomer={this.props.handleFocusCustomer}
                     setTabsContainerHeight={this.setTabsContainerHeight}
                     showRightPanel={this.props.showRightPanel}
+                    disableEdit={this.props.disableEdit}
                 />
                 <div className="crm-right-panel-content" style={{height: this.state.tabsContainerHeight}}>
                     {this.state.curCustomer ? (
@@ -152,6 +155,7 @@ class CrmRightPanel extends React.Component {
                                         changeActiveKey={this.changeActiveKey}
                                         callNumber={this.props.callNumber}
                                         getCallNumberError={this.props.getCallNumberError}
+                                        disableEdit={this.props.disableEdit}
                                     />
                                 ) : null}
                             </TabPane>
@@ -166,6 +170,7 @@ class CrmRightPanel extends React.Component {
                                         curCustomer={this.state.curCustomer}
                                         callNumber={this.props.callNumber}
                                         getCallNumberError={this.props.getCallNumberError}
+                                        disableEdit={this.props.disableEdit}
                                     />
                                 ) : null}
                             </TabPane>
@@ -179,11 +184,12 @@ class CrmRightPanel extends React.Component {
                                         refreshCustomerList={this.props.refreshCustomerList}
                                         callNumber={this.props.callNumber}
                                         getCallNumberError={this.props.getCallNumberError}
+                                        disableEdit={this.props.disableEdit}
                                     />
                                 ) : null}
                             </TabPane>
-                            {
-                                hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) ? (
+                            {//用获取客户的用户列表的权限，并且不是从回收站中打开客户详情时，才展示用户列表
+                                hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && !this.props.disableEdit ? (
                                     <TabPane
                                         tab={Intl.get('crm.detail.user', '用户')}
                                         key={TAB_KEYS.USER_TAB}
@@ -196,6 +202,7 @@ class CrmRightPanel extends React.Component {
                                                 userViewShowCustomerUserListPanel={this.props.userViewShowCustomerUserListPanel}
                                                 showOpenAppForm={this.props.showOpenAppForm}
                                                 closeOpenAppPanel={this.props.returnInfoPanel}
+                                                disableEdit={this.props.disableEdit}
                                             />
                                         ) : null}
                                     </TabPane>
@@ -210,6 +217,7 @@ class CrmRightPanel extends React.Component {
                                         curCustomer={this.state.curCustomer}
                                         refreshCustomerList={this.props.refreshCustomerList}
                                         showApplyUserForm={this.showApplyUserForm}
+                                        disableEdit={this.props.disableEdit}
                                     />
                                 ) : null}
                             </TabPane>
@@ -222,6 +230,7 @@ class CrmRightPanel extends React.Component {
                                         {this.state.activeKey === TAB_KEYS.CONTRACT_TAB ? (
                                             <Contract
                                                 curCustomer={this.state.curCustomer}
+                                                disableEdit={this.props.disableEdit}
                                             />
                                         ) : null}
                                     </TabPane>
@@ -238,18 +247,20 @@ class CrmRightPanel extends React.Component {
                                     />
                                 ) : null}
                             </TabPane>
-                            <TabPane
-                                tab={Intl.get('crm.right.schedule', '联系计划')}
-                                key={TAB_KEYS.SCHEDULE_TAB}
-                            >
-                                {this.state.activeKey === TAB_KEYS.SCHEDULE_TAB ? (
-                                    <CrmSchedule
-                                        curCustomer={this.state.curCustomer}
-                                        callNumber={this.props.callNumber}
-                                        getCallNumberError={this.props.getCallNumberError}
-                                    />
-                                ) : null}
-                            </TabPane>
+                            {//从回收站中打开客户详情时，不展示联系计划
+                                this.props.disableEdit ? null : (
+                                    <TabPane
+                                        tab={Intl.get('crm.right.schedule', '联系计划')}
+                                        key={TAB_KEYS.SCHEDULE_TAB}
+                                    >
+                                        {this.state.activeKey === TAB_KEYS.SCHEDULE_TAB ? (
+                                            <CrmSchedule
+                                                curCustomer={this.state.curCustomer}
+                                                callNumber={this.props.callNumber}
+                                                getCallNumberError={this.props.getCallNumberError}
+                                            />
+                                        ) : null}
+                                    </TabPane>)}
                         </Tabs>
                     ) : null}
                 </div>
@@ -257,7 +268,25 @@ class CrmRightPanel extends React.Component {
         );
     }
 }
-
+CrmRightPanel.propTypes = {
+    curCustomer: PropTypes.object,
+    currentId: PropTypes.string,
+    showApplyUserForm: PropTypes.func,
+    hideRightPanel: PropTypes.func,
+    isRepeat: PropTypes.bool,
+    refreshCustomerList: PropTypes.array,
+    editCustomerBasic: PropTypes.func,
+    handleFocusCustomer: PropTypes.func,
+    showRightPanel: PropTypes.func,
+    disableEdit: PropTypes.bool,
+    callNumber: PropTypes.string,
+    getCallNumberError: PropTypes.string,
+    updateCustomerDefContact: PropTypes.func,
+    ShowCustomerUserListPanel: PropTypes.func,
+    userViewShowCustomerUserListPanel: PropTypes.func,
+    showOpenAppForm: PropTypes.func,
+    returnInfoPanel: PropTypes.func,
+};
 module.exports = CrmRightPanel;
 
 

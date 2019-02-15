@@ -2,15 +2,12 @@
  * 所有机会统计
  */
 
-import { argCallbackTimeMember } from '../../utils';
-
 export function getAllChanceChart(specifyColumns) {
     return {
         title: '所有机会统计',
         chartType: 'table',
         url: '/rest/analysis/customer/v2/sales_opportunity/:data_type/apply/opportunity/statistics',
         ajaxInstanceFlag: 'sales_opportuniry_all',
-        argCallback: argCallbackTimeMember,
         dataField: 'list',
         option: {
             columns: [

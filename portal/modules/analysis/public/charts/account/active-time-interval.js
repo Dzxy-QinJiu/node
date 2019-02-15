@@ -3,12 +3,16 @@
  */
 
 import { WEEKDAY } from '../../consts';
-import { ifNotSingleApp } from '../../utils';
+import { ifNotSingleApp, argCallbackUnderlineTimeToTime, argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getActiveTimeIntervalChart() {
     return {
         title: Intl.get('oplate.user.analysis.10', '活跃时间段'),
         url: '/rest/analysis/auditlog/v1/:app_id/operations/weekly',
+        argCallback: arg => {
+            argCallbackUnderlineTimeToTime(arg);
+            argCallbackMemberIdsToMemberId(arg);
+        },
         chartType: 'scatter',
         option: {
             tooltip: {

@@ -63,20 +63,24 @@ class ContractItem extends React.Component {
         Trace.traceEvent(event, '点击确认删除合同');
         this.setState({isLoading: true});
         ContractAjax.deletePendingContract(contract.id).then( (resData) => {
-            this.state.isLoading = false;
             if (resData && resData.code === 0) {
                 message.success(Intl.get('crm.138', '删除成功'));
-                this.state.errMsg = '';
-                this.state.isDeleteContractFlag = false;
+                this.setState({
+                    errMsg: '',
+                    isDeleteContractFlag: false,
+                    isLoading: false
+                });
                 ContractAction.deleteContact(contract);
             } else {
-                this.state.errMsg = Intl.get('crm.139', '删除失败');
+                this.setState({
+                    errMsg: Intl.get('crm.139', '删除失败'),
+                    isLoading: false
+                });
             }
-            this.setState(this.state);
         }, (errMsg) => {
             this.setState({
                 isLoading: false,
-                errMsg: errMsg || IIntl.get('crm.139', '删除失败')
+                errMsg: errMsg || Intl.get('crm.139', '删除失败')
             });
         });
     };
@@ -131,7 +135,7 @@ class ContractItem extends React.Component {
                                     {Intl.get('crm.contact.delete.confirm', '确认删除')}
                                 </Button>
                             </span>) : (
-                            hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) && contract.stage === '待审' ? (
+                            !this.props.disableEdit && hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) && contract.stage === '待审' ? (
                                 <span className='iconfont icon-delete' title={Intl.get('common.delete', '删除')}
                                     onClick={this.showDeleteContractConfirm}/>
                             ) : null
@@ -222,7 +226,7 @@ class ContractItem extends React.Component {
         });
         // 合同的签约类型
         const contractLabel = contract.label === 'new' ? Intl.get('crm.contract.new.sign', '新签') : Intl.get('contract.163', '续约');
-        let hasEditPrivilege = contract.stage === '待审' && hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) || false;
+        let hasEditPrivilege = !this.props.disableEdit && contract.stage === '待审' && hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) || false;
         let validityTime = Intl.get('crm.contract.validity.one.year', '有效期一年');
         return (
             <div className='contract-item'>
@@ -242,7 +246,7 @@ class ContractItem extends React.Component {
                     <span className='contract-label'>{Intl.get('crm.contract.validity.time', '有效期')}:</span>
                     <div className='contract-validity-edit-block'>
                         <AntcValidity
-                            mode={contract.stage === '待审' ? 'infoEdit' : 'info'}
+                            mode={contract.stage === '待审' && !this.props.disableEdit ? 'infoEdit' : 'info'}
                             className='validity-time'
                             startTime={contract.start_time}
                             endTime={contract.end_time}
@@ -398,6 +402,11 @@ class ContractItem extends React.Component {
         );
     }
 }
-
+ContractItem.propTypes = {
+    disableEdit: PropTypes.bool,
+    appList: PropTypes.array,
+    customerId: PropTypes.string,
+    contract: PropTypes.object,
+};
 module.exports = ContractItem;
 

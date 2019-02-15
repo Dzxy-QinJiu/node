@@ -2,7 +2,7 @@
  * 团队分布
  */
 
-import { argCallbackTeamId, isSales } from '../../utils';
+import { isSales, argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId } from '../../utils';
 
 export function getContractTeamChart() {
     return {
@@ -16,14 +16,9 @@ export function getContractTeamChart() {
             name: 'contract_type',
             value: 'total'
         }],
-        argCallback: (arg) => {
-            const query = arg.query;
-
-            if (query) {
-                delete query.app_id;
-            }
-
-            argCallbackTeamId(arg);
+        argCallback: arg => {
+            argCallbackUnderlineTimeToTime(arg);
+            argCallbackTeamIdsToTeamId(arg);
         },
     };
 }

@@ -1028,6 +1028,16 @@ class Crm extends React.Component {
                 >
                     {isWebMini ? <i className="iconfont icon-search-repeat" /> : <Button>{Intl.get('crm.1', '客户查重')}</Button>}
                 </PrivilegeChecker>
+                {hasPrivilege('CRM_MANAGER_GET_CUSTOMER_BAK_OPERATOR_RECORD')
+                || hasPrivilege('CRM_USER_GET_CUSTOMER_BAK_OPERATOR_RECORD') ? (
+                        <div className={btnClass + ' customer-recycle-btn btn-m-r-2'}
+                            title={isWebMini ? Intl.get('crm.customer.recycle.bin', '回收站') : ''}
+                            onClick={this.props.showCustomerRecycleBin}
+                        >
+                            {isWebMini ? <i className="iconfont icon-delete"/> :
+                                <Button>{Intl.get('crm.customer.recycle.bin', '回收站')}</Button>}
+                        </div>) : null
+                }
             </div>);
         }
     };
@@ -1760,6 +1770,7 @@ Crm.propTypes = {
     fromSalesHome: PropTypes.bool,
     showRepeatCustomer: PropTypes.func,
     params: PropTypes.object,
+    showCustomerRecycleBin: PropTypes.func
 };
 
 module.exports = Crm;

@@ -36,8 +36,8 @@ export function handleChartClick(name, value, conditions) {
 
     const query = {
         app_id: conditionObj.app_id,
-        login_begin_date: conditionObj.starttime,
-        login_end_date: conditionObj.endtime,
+        login_begin_date: conditionObj.start_time,
+        login_end_date: conditionObj.end_time,
         analysis_filter_value: value,
         analysis_filter_field: name,
         customerType: conditionObj.tab,
@@ -138,26 +138,20 @@ export function isSelectedAllTeamMember() {
     return Store.isSelectedAllTeamMember; 
 }
 
-//查询参数回调函数: 不带下划线的开始结束时间转成带下划线的
-export function argCallbackTimeToUnderlineTime(arg) {
+//查询参数回调函数: 带下划线的开始结束时间转成不带下划线的
+export function argCallbackUnderlineTimeToTime(arg) {
     let query = arg.query;
 
-    if (query && query.starttime && query.endtime) {
-        query.start_time = query.starttime;
-        query.end_time = query.endtime;
-        delete query.starttime;
-        delete query.endtime;
+    if (query) {
+        query.starttime = query.start_time;
+        query.endtime = query.end_time;
+        delete query.start_time;
+        delete query.end_time;
     }
 }
 
-//处理开始结束时间和成员id的参数回调函数
-export function argCallbackTimeMember(arg) {
-    argCallbackTimeToUnderlineTime(arg);
-    argCallbackMemberIdToIds(arg);
-}
-
-//处理团队id的参数回调函数
-export function argCallbackTeamId(arg) {
+//查询参数回调函数: team_ids 转 team_id
+export function argCallbackTeamIdsToTeamId(arg) {
     const query = arg.query;
 
     if (query) {
@@ -168,20 +162,20 @@ export function argCallbackTeamId(arg) {
     }
 }
 
-//查询参数回调函数: member_id 转 member_ids
-export function argCallbackMemberIdToIds(arg) {
+//查询参数回调函数: member_ids 转 member_id
+export function argCallbackMemberIdsToMemberId(arg) {
     const query = arg.query;
 
     if (query) {
-        if (query.member_id) {
-            query.member_ids = query.member_id;
-            delete query.member_id;
+        if (query.member_ids) {
+            query.member_id = query.member_ids;
+            delete query.member_ids;
         }
     }
 }
 
-//查询参数回调函数: member_id 转 sales_id
-export function argCallbackMemberIdToSalesId(arg) {
+//查询参数回调函数: member_ids 转 sales_id
+export function argCallbackMemberIdsToSalesId(arg) {
     const query = arg.query;
 
     if (query) {

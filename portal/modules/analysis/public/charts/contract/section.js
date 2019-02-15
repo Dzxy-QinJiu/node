@@ -2,7 +2,7 @@
  * 合同额分段统计
  */
 
-import { argCallbackTeamId } from '../../utils';
+import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getContractSectionChart() {
     return {
@@ -14,7 +14,11 @@ export function getContractSectionChart() {
             value: getSectionReqData(),
             type: 'data',
         }],
-        argCallback: argCallbackTeamId,
+        argCallback: arg => {
+            argCallbackUnderlineTimeToTime(arg);
+            argCallbackTeamIdsToTeamId(arg);
+            argCallbackMemberIdsToMemberId(arg);
+        },
         processData: data => {
             return _.map(data, dataItem => {
                 let name;

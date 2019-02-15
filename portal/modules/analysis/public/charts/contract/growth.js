@@ -2,7 +2,7 @@
  * 业绩同比增长情况
  */
 
-import { argCallbackTeamId } from '../../utils';
+import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getContractGrowthChart() {
     return {
@@ -16,11 +16,13 @@ export function getContractGrowthChart() {
             name: 'interval',
             value: 'year'
         }],
-        argCallback: args => {
-            argCallbackTeamId(args),
+        argCallback: arg => {
+            argCallbackUnderlineTimeToTime(arg);
+            argCallbackTeamIdsToTeamId(arg),
+            argCallbackMemberIdsToMemberId(arg);
 
-            args.query.starttime = moment().startOf('year').valueOf();
-            args.query.endtime = moment().endOf('year').valueOf();
+            arg.query.starttime = moment().startOf('year').valueOf();
+            arg.query.endtime = moment().endOf('year').valueOf();
         },
         processData: data => {
             return _.map(data, dataItem => {

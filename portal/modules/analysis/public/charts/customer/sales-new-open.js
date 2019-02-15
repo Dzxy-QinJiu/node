@@ -2,7 +2,7 @@
  * 销售新开客户数统计
  */
 
-import { argCallbackTimeToUnderlineTime } from '../../utils';
+import { argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getSalesNewOpenChart(paramObj = {}) {
     return {
@@ -10,13 +10,7 @@ export function getSalesNewOpenChart(paramObj = {}) {
         layout: {sm: 24},
         height: 'auto',
         url: '/rest/analysis/customer/v2/statistic/:auth_type/customer/user/new',
-        argCallback: (arg) => {
-            argCallbackTimeToUnderlineTime(arg);
-
-            if (_.isFunction(paramObj.argCallback)) {
-                paramObj.argCallback(arg);
-            }
-        },
+        argCallback: argCallbackMemberIdsToMemberId,
         chartType: 'table',
         option: {
             columns: [

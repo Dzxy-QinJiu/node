@@ -2,11 +2,12 @@
  * 签约客户行政级别市场占有率分析
  */
 
-export function getSignedCustomerAdministrativeLevelCoverageChart() {
+export function getSignedCustomerAdministrativeLevelCoverageChart(paramObj = {}) {
     return {
         title: '签约客户行政级别市场占有率分析',
         chartType: 'table',
         url: '/rest/analysis/customer/label/:data_type/share/level',
+        argCallback: paramObj.argCallback,
         processData: data => [data],
         option: {
             columns: [{

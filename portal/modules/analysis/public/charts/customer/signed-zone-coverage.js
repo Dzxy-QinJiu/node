@@ -2,11 +2,12 @@
  * 签约客户地域市场占有率分析
  */
 
-export function getSignedCustomerZoneCoverageChart() {
+export function getSignedCustomerZoneCoverageChart(paramObj = {}) {
     return {
         title: '签约客户地域市场占有率分析',
         chartType: 'table',
         url: '/rest/analysis/customer/label/:data_type/share/region',
+        argCallback: paramObj.argCallback,
         option: {
             columns: [{
                 title: '名称',

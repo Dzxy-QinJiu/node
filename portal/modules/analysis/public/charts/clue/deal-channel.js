@@ -2,6 +2,8 @@
  * 成交数渠道统计
  */
 
+import { argCallbackUnderlineTimeToTime, argCallbackMemberIdsToMemberId } from '../../utils';
+
 import { initialTime } from '../../consts';
 
 export function getClueDealChannelChart() {
@@ -9,6 +11,10 @@ export function getClueDealChannelChart() {
         title: '成交数渠道统计',
         chartType: 'pie',
         url: '/rest/clue/v1/statistical/access_channel/1000/1',
+        argCallback: arg => {
+            argCallbackUnderlineTimeToTime(arg);
+            argCallbackMemberIdsToMemberId(arg);
+        },
         reqType: 'post',
         dataField: 'result',
         conditions: [{

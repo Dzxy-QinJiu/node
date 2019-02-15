@@ -2,21 +2,16 @@
  * 客户流失率统计
  */
 
+import { argCallbackUnderlineTimeToTime, argCallbackMemberIdsToMemberId } from '../../utils';
+
 export function getCustomerLoseRateChart() {
     return {
         title: '客户流失率统计',
         chartType: 'table',
         url: '/rest/analysis/customer/label/:data_type/churn/team',
-        argCallback: args => {
-            if (args.query && args.query.start_time) {
-                args.query.starttime = args.query.start_time;
-                delete args.query.start_time;
-            }
-
-            if (args.query && args.query.end_time) {
-                args.query.endtime = args.query.end_time;
-                delete args.query.end_time;
-            }
+        argCallback: arg => {
+            argCallbackMemberIdsToMemberId(arg);
+            argCallbackUnderlineTimeToTime(arg);
         },
         option: {
             columns: [{

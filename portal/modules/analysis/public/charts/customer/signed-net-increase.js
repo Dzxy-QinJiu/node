@@ -2,11 +2,12 @@
  * 签约客户净增分析
  */
 
-export function getSignedCustomerNetIncreaseChart() {
+export function getSignedCustomerNetIncreaseChart(paramObj = {}) {
     return {
         title: '签约客户净增分析',
         chartType: 'table',
         url: '/rest/analysis/customer/label/:data_type/sign/customer',
+        argCallback: paramObj.argCallback,
         processData: data => [data],
         option: {
             columns: [{

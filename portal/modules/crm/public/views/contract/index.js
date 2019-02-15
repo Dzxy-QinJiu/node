@@ -87,7 +87,7 @@ class Contract extends React.Component {
                             defaultMessage={'共{n}条'}
                             values={{'n': contractListLength + ''}}/> : Intl.get('crm.no.contract.tip', '该客户还没有签订过合同'))
                     }
-                    {this.props.isMerge || this.state.isAddFormShow ? null : (
+                    {this.props.disableEdit || this.props.isMerge || this.state.isAddFormShow ? null : (
                         <Button className='crm-detail-add-btn'
                             onClick={this.showForm.bind(this, '')}>
                             {Intl.get('contract.98', '添加合同')}
@@ -114,6 +114,7 @@ class Contract extends React.Component {
                                             customerId={this.state.curCustomer.id}
                                             contract={contract}
                                             appList={this.state.appList}
+                                            disableEdit={this.props.disableEdit}
                                         />
                                     );
                                 } ) : (
@@ -129,6 +130,7 @@ class Contract extends React.Component {
 }
 Contract.propTypes = {
     curCustomer: PropTypes.object,
-    isMerge: PropTypes.bool
+    isMerge: PropTypes.bool,
+    disableEdit: PropTypes.bool,
 };
 module.exports = Contract;

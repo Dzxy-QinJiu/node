@@ -3,10 +3,16 @@ var util = require('./utils/contact-util');
 let CustomerRepeat = require('./views/customer-repeat');
 let CrmList = require('./crm-list');
 import Trace from 'LIB_DIR/trace';
-
+import CustomerRecycleBin from './views/customer-recycle-bin';
+//各视图类型常量
+const VIEW_TYPE = {
+    CUSTOMER: 'customer',//客户列表视图
+    REPEAT_CUSTOMER: 'repeat_customer',//重复客户视图
+    RECYCLE_BIN_CUSTOMER: 'recycle_bin_customer'//回收站视图
+};
 class CrmIndex extends React.Component {
     state = {
-        isRepeatCustomerShow: false//是否展示客户查重界面
+        customerViewType: VIEW_TYPE.CUSTOMER//客户展示的视图
     };
 
     componentDidMount() {
@@ -19,32 +25,50 @@ class CrmIndex extends React.Component {
 
     //展示重复客户界面的设置
     showRepeatCustomer = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.filter-block .customer-repeat-btn'),'点击客户查重按钮');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.filter-block .customer-repeat-btn'), '点击客户查重按钮');
         this.setState({
-            isRepeatCustomerShow: true
+            customerViewType: VIEW_TYPE.REPEAT_CUSTOMER
+        });
+    };
+    //展示客户回收站
+    showCustomerRecycleBin = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.filter-block .customer-recycle-btn'), '点击客户回收站');
+        this.setState({
+            customerViewType: VIEW_TYPE.RECYCLE_BIN_CUSTOMER
         });
     };
 
-    //关闭重复客户界面的设置
-    closeRepeatCustomer = () => {
+    //返回客户列表视图
+    returnCustomerView = () => {
         this.setState({
-            isRepeatCustomerShow: false
+            customerViewType: VIEW_TYPE.CUSTOMER
         });
     };
 
     render() {
-        if (this.state.isRepeatCustomerShow) {
-            return (
-                <div data-tracename="重复客户列表">
-                    <CustomerRepeat closeRepeatCustomer={this.closeRepeatCustomer}/>
-                </div> );
-        } else {
-            return (
-                <div data-tracename="客户管理">
-                    <CrmList {...this.props} showRepeatCustomer={this.showRepeatCustomer}/>
-                </div> );
+        let currView = null;
+        switch (this.state.customerViewType) {
+            case VIEW_TYPE.CUSTOMER:
+                currView = (
+                    <div data-tracename="客户管理">
+                        <CrmList {...this.props} showRepeatCustomer={this.showRepeatCustomer}
+                            showCustomerRecycleBin={this.showCustomerRecycleBin}/>
+                    </div>);
+                break;
+            case VIEW_TYPE.REPEAT_CUSTOMER:
+                currView = (
+                    <div data-tracename="重复客户列表">
+                        <CustomerRepeat closeRepeatCustomer={this.returnCustomerView}/>
+                    </div>);
+                break;
+            case VIEW_TYPE.RECYCLE_BIN_CUSTOMER:
+                currView = (
+                    <div data-tracename="客户回收站">
+                        <CustomerRecycleBin closeRecycleBin={this.returnCustomerView}/>
+                    </div>);
+                break;
         }
-
+        return currView;
     }
 }
 

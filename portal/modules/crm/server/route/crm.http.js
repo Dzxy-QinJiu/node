@@ -19,6 +19,33 @@ module.exports = {
                 'needLogin': true
             }
         },
+        {//获取客户回收站中的客户列表
+            method: 'post',
+            path: '/rest/crm/recycle_bin/customer/:type',
+            handler: 'getRecycleBinCustomers',
+            passport: {
+                needLogin: true
+            },
+            privileges: ['CRM_MANAGER_GET_CUSTOMER_BAK_OPERATOR_RECORD', 'CRM_USER_GET_CUSTOMER_BAK_OPERATOR_RECORD']
+        },
+        {//恢复客户
+            method: 'put',
+            path: '/rest/crm/recovery/customer',
+            handler: 'recoveryCustomer',
+            passport: {
+                needLogin: true
+            },
+            privileges: ['CRM_RECOVERY_CUSTOMER']
+        },
+        {//删除回收站中的客户
+            method: 'delete',
+            path: '/rest/crm/customer_bak/:customer_id',
+            handler: 'deleteCustomerBak',
+            passport: {
+                needLogin: true
+            },
+            privileges: ['CRM_DELETE_CUSTOMER']
+        },
         {
             method: 'get',
             path: '/rest/crm/customer_list',
