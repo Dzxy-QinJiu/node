@@ -136,7 +136,7 @@ class ContactItem extends React.Component {
                         <Button className="contact-delete-confirm delete-button-style" onClick={this.deleteContact}>
                             {Intl.get('crm.contact.delete.confirm', '确认删除')}
                         </Button>
-                    </span>) : this.props.isCustomerRecycleBin ? null : (
+                    </span>) : this.props.disableEdit ? null : (
                     <span className="contact-item-buttons">
                         <span className="iconfont icon-delete" title={Intl.get('common.delete', '删除')}
                             data-tracename="点击删除联系人按钮"
@@ -215,7 +215,7 @@ class ContactItem extends React.Component {
         let contact = this.props.contact.contact;
         let isExpanded = this.props.contact.isExpanded;
         const EDIT_FEILD_WIDTH = 350;
-        let hasEditPrivilege = hasPrivilege('CRM_EDIT_CONTACT') && !this.props.isCustomerRecycleBin;
+        let hasEditPrivilege = hasPrivilege('CRM_EDIT_CONTACT') && !this.props.disableEdit;
         return (
             <div className="contact-item-wrap">
                 {isExpanded ? (
@@ -381,7 +381,7 @@ ContactItem.propTypes = {
     updateCustomerDefContact: PropTypes.func,
     updateMergeCustomerContact: PropTypes.func,
     setMergeCustomerDefaultContact: PropTypes.func,
-    isCustomerRecycleBin: PropTypes.bool,
+    disableEdit: PropTypes.bool,
 };
 export default ContactItem;
 

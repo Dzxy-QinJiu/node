@@ -49,7 +49,7 @@ class OrderIndex extends React.Component {
     componentDidMount() {
         OrderStore.listen(this.onChange);
         OrderAction.getAppList();
-        this.getOrderList(this.props.curCustomer, this.props.isMerge || this.props.isCustomerRecycleBin);
+        this.getOrderList(this.props.curCustomer, this.props.isMerge || this.props.disableEdit);
         OrderAction.getSysStageList();
     }
 
@@ -74,7 +74,7 @@ class OrderIndex extends React.Component {
                 orderList: nextProps.curCustomer.sales_opportunities || []
             });
             setTimeout(() => {
-                this.getOrderList(nextProps.curCustomer, nextProps.isMerge || nextProps.isCustomerRecycleBin);
+                this.getOrderList(nextProps.curCustomer, nextProps.isMerge || nextProps.disableEdit);
             });
         }
     }
@@ -242,7 +242,7 @@ class OrderIndex extends React.Component {
                                 values={{'n': orderListLength + ''}}/>) :
                             Intl.get('crm.no.order.tip', '该客户还没有订单')}
                     </span>
-                    {this.props.isMerge || this.props.isCustomerRecycleBin ? null : (
+                    {this.props.isMerge || this.props.disableEdit ? null : (
                         <Button className='crm-detail-add-btn'
                             onClick={this.showForm.bind(this, '')}>
                             {Intl.get('crm.161', '添加订单')}
@@ -276,7 +276,7 @@ class OrderIndex extends React.Component {
                                     (<OrderItem key={i}
                                         appList={appList}
                                         isMerge={_this.props.isMerge}
-                                        isCustomerRecycleBin={_this.props.isCustomerRecycleBin}
+                                        disableEdit={_this.props.disableEdit}
                                         stageList={_this.state.stageList}
                                         showApplyUserForm={_this.props.showApplyUserForm}
                                         closeRightPanel={_this.props.closeRightPanel}
@@ -300,7 +300,7 @@ class OrderIndex extends React.Component {
 OrderIndex.propTypes = {
     curCustomer: PropTypes.object,
     isMerge: PropTypes.bool,
-    isCustomerRecycleBin: PropTypes.bool,
+    disableEdit: PropTypes.bool,
 };
 module.exports = OrderIndex;
 

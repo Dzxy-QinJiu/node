@@ -117,7 +117,7 @@ class BasicOverview extends React.Component {
         });
     }
     getIntegrateConfig(){
-        if(this.props.isCustomerRecycleBin) return;
+        if(this.props.disableEdit) return;
         //不是从回收站中打开的客户详情时，才获取
         commonDataUtil.getIntegrationConfig().then(resultObj => {
             let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
@@ -125,7 +125,7 @@ class BasicOverview extends React.Component {
         });
     }
     getAppList = () => {
-        if(this.props.isCustomerRecycleBin) return;
+        if(this.props.disableEdit) return;
         //不是从回收站中打开的客户详情时，才获取
         commonDataUtil.getAppList(appList => {
             this.setState({appList: _.map(appList, app => {
@@ -141,7 +141,7 @@ class BasicOverview extends React.Component {
 
     //获取推荐标签列表
     getRecommendTags = () => {
-        if(this.props.isCustomerRecycleBin) return;
+        if(this.props.disableEdit) return;
         //不是从回收站中打开的客户详情时，才获取
         batchAjax.getRecommendTags().then(data => {
             if (_.isArray(data.result) && data.result.length) {
@@ -153,7 +153,7 @@ class BasicOverview extends React.Component {
     };
 
     getCompetitorList = () => {
-        if(this.props.isCustomerRecycleBin) return;
+        if(this.props.disableEdit) return;
         //不是从回收站中打开的客户详情时，才获取
         filterAjax.getCompetitorList().then((list) => {
             this.setState({competitorList: _.isArray(list) ? list : []});
@@ -165,7 +165,7 @@ class BasicOverview extends React.Component {
     //获取客户开通的用户列表
     getCrmUserList = (curCustomer) => {
         //不是从回收站中打开的客户详情时，才获取
-        if (!this.props.isCustomerRecycleBin && _.get(curCustomer,'id')) {
+        if (!this.props.disableEdit && _.get(curCustomer,'id')) {
             //该客户开通的用户个数
             let appUserLength = _.get(curCustomer, 'app_user_ids.length', 0);
             if (appUserLength) {
@@ -188,7 +188,7 @@ class BasicOverview extends React.Component {
     //获取未完成的日程列表
     getNotCompletedScheduleList = (curCustomer) => {
         //不是从回收站中打开的客户详情时，才获取
-        if (!this.props.isCustomerRecycleBin && _.get(curCustomer,'id')) {
+        if (!this.props.disableEdit && _.get(curCustomer,'id')) {
             basicOverviewAction.getNotCompletedScheduleList({
                 customer_id: curCustomer.id,
                 page_size: 100,
@@ -464,7 +464,7 @@ class BasicOverview extends React.Component {
             changeActiveKey={this.props.changeActiveKey}
             callNumber={this.state.callNumber}
             getCallNumberError={this.state.getCallNumberError}
-            isCustomerRecycleBin={this.props.isCustomerRecycleBin}
+            disableEdit={this.props.disableEdit}
         />;
     };
 
@@ -518,7 +518,7 @@ class BasicOverview extends React.Component {
     };
 
     renderUnComplateScheduleList = () => {
-        if (!this.props.isCustomerRecycleBin && _.isArray(this.state.scheduleList) && this.state.scheduleList.length) {
+        if (!this.props.disableEdit && _.isArray(this.state.scheduleList) && this.state.scheduleList.length) {
             return (
                 <DetailCard title={Intl.get('clue.not.complete.schedule','今天的联系计划')}
                     content={this.renderScheduleItem()}/>);
@@ -541,15 +541,15 @@ class BasicOverview extends React.Component {
         return (
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
-                    {!this.props.isCustomerRecycleBin ? (
+                    {!this.props.disableEdit ? (
                         hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(basicData, 'app_user_ids[0]') ?
                             this.renderExpireTip() : this.renderApplyUserBlock()) : null}
                     <SalesTeamCard
                         isMerge={this.props.isMerge}
                         updateMergeCustomer={this.props.updateMergeCustomer}
-                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_SALES') && !this.props.isCustomerRecycleBin}
-                        enableTransfer={this.enableTransferCustomer() && !this.props.isCustomerRecycleBin}
-                        enableEditTeam={this.hasEditTeamPrivilege() && !this.props.isCustomerRecycleBin}
+                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_SALES') && !this.props.disableEdit}
+                        enableTransfer={this.enableTransferCustomer() && !this.props.disableEdit}
+                        enableEditTeam={this.hasEditTeamPrivilege() && !this.props.disableEdit}
                         customerId={basicData.id}
                         userName={basicData.user_name}
                         userId={basicData.user_id}
@@ -557,7 +557,7 @@ class BasicOverview extends React.Component {
                         salesTeamId={basicData.sales_team_id}
                         modifySuccess={this.editBasicSuccess}
                     />
-                    {hasPrivilege(PRIVILEGE_MAP.CRM_CUSTOMER_SCORE_RECORD) && !this.props.isCustomerRecycleBin ? (
+                    {hasPrivilege(PRIVILEGE_MAP.CRM_CUSTOMER_SCORE_RECORD) && !this.props.disableEdit ? (
                         <CrmScoreCard customerScore={basicData.score} customerId={basicData.id}
                             customerUserSize={_.get(basicData, 'app_user_ids.length', 0)}/>) : null
                     }
@@ -566,7 +566,7 @@ class BasicOverview extends React.Component {
                         tags={basicData.competing_products}
                         recommendTags={this.state.competitorList}
                         data={basicData}
-                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL') && !this.props.isCustomerRecycleBin}
+                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL') && !this.props.disableEdit}
                         noDataTip={_.get(basicData, 'competing_products[0]') ? '' : Intl.get('crm.no.competing', '暂无竞品')}
                         saveTags={this.saveEditCompetitors}
                     />
@@ -575,7 +575,7 @@ class BasicOverview extends React.Component {
                         data={basicData}
                         tags={tagArray}
                         recommendTags={this.state.recommendTags}
-                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL') && !this.props.isCustomerRecycleBin}
+                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL') && !this.props.disableEdit}
                         noDataTip={tagArray.length ? '' : Intl.get('crm.detail.no.tag', '暂无标签')}
                         saveTags={this.saveEditTags}
                     />
@@ -601,7 +601,7 @@ BasicOverview.propTypes = {
     editCustomerBasic: PropTypes.func,
     changeActiveKey: PropTypes.func,
     refreshCustomerList: PropTypes.func,
-    isCustomerRecycleBin: PropTypes.bool,
+    disableEdit: PropTypes.bool,
 };
 module.exports = BasicOverview;
 

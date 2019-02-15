@@ -296,7 +296,7 @@ class BasicData extends React.Component {
                             value={level}
                             field="administrative_level"
                             selectOptions={this.getAdministrativeLevelOptions()}
-                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_INDUSTRY') && !this.props.isCustomerRecycleBin}
+                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_INDUSTRY') && !this.props.disableEdit}
                             placeholder={Intl.get('crm.administrative.level.placeholder', '请选择行政级别')}
                             saveEditSelect={this.saveEditBasicInfo.bind(this, 'administrative_level')}
                             noDataTip={Intl.get('crm.basic.no.administrative', '暂无行政级别')}
@@ -315,7 +315,7 @@ class BasicData extends React.Component {
                             value={basicData.industry}
                             field="industry"
                             selectOptions={industryOptions}
-                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_INDUSTRY') && !this.props.isCustomerRecycleBin}
+                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_INDUSTRY') && !this.props.disableEdit}
                             placeholder={Intl.get('crm.22', '请选择行业')}
                             editBtnTip={Intl.get('crm.163', '设置行业')}
                             saveEditSelect={this.saveEditBasicInfo.bind(this, 'industry')}
@@ -337,7 +337,7 @@ class BasicData extends React.Component {
                             city_code={basicData.city_code}
                             county_code={basicData.county_code}
                             saveEditLocation={this.saveEditBasicInfo.bind(this, 'address')}
-                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_ADDRESS') && !this.props.isCustomerRecycleBin}
+                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_ADDRESS') && !this.props.disableEdit}
                             noDataTip={Intl.get('crm.basic.no.location', '暂无地域信息')}
                             addDataTip={Intl.get('crm.basic.add.location', '添加地域信息')}
                         />
@@ -353,7 +353,7 @@ class BasicData extends React.Component {
                             field="address"
                             type="input"
                             placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
-                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_ADDRESS') && !this.props.isCustomerRecycleBin}
+                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_ADDRESS') && !this.props.disableEdit}
                             saveEditInput={this.saveEditBasicInfo.bind(this, 'detail_address')}
                             noDataTip={Intl.get('crm.basic.no.address', '暂无详细地址')}
                             addDataTip={Intl.get('crm.basic.add.address', '添加详细地址')}
@@ -370,7 +370,7 @@ class BasicData extends React.Component {
                             value={basicData.remarks}
                             editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
                             placeholder={Intl.get('user.input.remark', '请输入备注')}
-                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_REMARK') && !this.props.isCustomerRecycleBin}
+                            hasEditPrivilege={hasPrivilege('CUSTOMER_UPDATE_REMARK') && !this.props.disableEdit}
                             saveEditInput={this.saveEditBasicInfo.bind(this, 'remarks')}
                             noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
                             addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
@@ -400,7 +400,7 @@ class BasicData extends React.Component {
         });
         let interestTitle = interestFlag ? Intl.get('crm.customer.uninterested', '取消关注') :
             Intl.get('crm.customer.interested', '添加关注');
-        if (this.props.isMerge || this.props.isCustomerRecycleBin) {
+        if (this.props.isMerge || this.props.disableEdit) {
             interestTitle = interestFlag ? Intl.get('crm.basic.concerned', '已关注') :
                 Intl.get('crm.basic.unconcerned', '未关注');
         }
@@ -420,11 +420,11 @@ class BasicData extends React.Component {
                         modifySuccess={this.editBasicSuccess}
                         setEditNameFlag={this.setEditNameFlag}
                         showRightPanel={this.props.showRightPanel}
-                        isCustomerRecycleBin={this.props.isCustomerRecycleBin}
+                        disableEdit={this.props.disableEdit}
                     /> ) : (
                     <div className="basic-info-title-block">
                         <div className="basic-info-name">
-                            {this.hasEditCutomerLabelPrivilege() && !this.props.isCustomerRecycleBin ? (
+                            {this.hasEditCutomerLabelPrivilege() && !this.props.disableEdit ? (
                                 <Dropdown overlay={this.getCustomerLabelMenus()} trigger={['click']}>
                                     <span title={Intl.get('crm.customer.label.edit.tip', '点击修改客户阶段')}>
                                         {customerLabel}
@@ -436,7 +436,7 @@ class BasicData extends React.Component {
                                         basicData.qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
                             }
                             <span className="basic-name-text">{basicData.name}</span>
-                            {hasPrivilege('CUSTOMER_UPDATE_NAME') && !this.props.isCustomerRecycleBin ? (
+                            {hasPrivilege('CUSTOMER_UPDATE_NAME') && !this.props.disableEdit ? (
                                 <DetailEditBtn title={Intl.get('common.edit', '编辑')}
                                     onClick={this.setEditNameFlag.bind(this, true)}/>) : null}
                         </div>
@@ -446,7 +446,7 @@ class BasicData extends React.Component {
                                 title={this.state.showDetailFlag ? Intl.get('crm.basic.detail.hide', '收起详情') :
                                     Intl.get('crm.basic.detail.show', '展开详情')}
                                 onClick={this.toggleBasicDetail}/>
-                            {this.props.isMerge || this.props.isCustomerRecycleBin ? (
+                            {this.props.isMerge || this.props.disableEdit ? (
                                 <span className={interestClass} title={interestTitle}/> ) : (
                                 <span className={interestClass}
                                     title={interestTitle}
@@ -468,7 +468,7 @@ BasicData.propTypes = {
     editCustomerBasic: PropTypes.func,
     setTabsContainerHeight: PropTypes.func,
     showRightPanel: PropTypes.func,
-    isCustomerRecycleBin: PropTypes.bool,
+    disableEdit: PropTypes.bool,
 };
 module.exports = BasicData;
 

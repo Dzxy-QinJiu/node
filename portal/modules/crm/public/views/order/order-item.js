@@ -357,7 +357,7 @@ class OrderItem extends React.Component {
         }
         const EDIT_FEILD_WIDTH = 350;
         //订单关闭或回收站中打开客户详情时，不可修改
-        let hasEditPrivilege = !(order.oppo_status || this.props.isCustomerRecycleBin);
+        let hasEditPrivilege = !(order.oppo_status || this.props.disableEdit);
         return (
             <div className="order-item modal-container">
                 {
@@ -520,7 +520,7 @@ class OrderItem extends React.Component {
         let currentStageIndex = _.findIndex(stageList, stage => stage.name === curStage);
         let stageStepList = _.map(stageList, (stage, index) => {
             const stageName = stage.name ? stage.name.split('阶段')[0] : '';
-            if (index === currentStageIndex || this.props.isCustomerRecycleBin) {
+            if (index === currentStageIndex || this.props.disableEdit) {
                 return {title: stageName};
             } else {
                 return {
@@ -553,7 +553,7 @@ class OrderItem extends React.Component {
                     </Popconfirm>) : (
                     <span className="order-stage-name">{Intl.get('crm.order.close.step', '关闭订单')}</span>)}
             </Dropdown>);
-        if(!this.props.isCustomerRecycleBin){
+        if(!this.props.disableEdit){
             stageStepList.push({title: closeOrderStep});
         }
         return (
@@ -562,7 +562,7 @@ class OrderItem extends React.Component {
     };
 
     onClickStep = (event) => {
-        if(this.props.isCustomerRecycleBin) return;
+        if(this.props.disableEdit) return;
         $(event.target).parents('.step-item').find('.order-stage-name').trigger('click');
     };
 
@@ -618,7 +618,7 @@ class OrderItem extends React.Component {
                                         onClick={this.handleModalOK.bind(this, order)}>
                                         {Intl.get('crm.contact.delete.confirm', '确认删除')}
                                     </Button>
-                                </span>) : this.props.isCustomerRecycleBin ? null : (
+                                </span>) : this.props.disableEdit ? null : (
                                 <span className="iconfont icon-delete" title={Intl.get('common.delete', '删除')}
                                     data-tracename="点击删除订单按钮" onClick={this.showDelModalDialog}/>)
                             }
@@ -645,7 +645,7 @@ class OrderItem extends React.Component {
         let createTime = order.time ? moment(order.time).format(oplateConsts.DATE_FORMAT) : '';
         return (
             <div className="order-bottom-wrap">
-                {!this.props.isMerge && !this.props.isCustomerRecycleBin
+                {!this.props.isMerge && !this.props.disableEdit
                 && applyBtnText && this.props.isApplyButtonShow &&
                 order.oppo_status !== ORDER_STATUS.LOSE ? (//合并、回收站和丢单后不展示申请用户按钮
                         <Button className="order-bottom-button"
@@ -698,7 +698,7 @@ OrderItem.propTypes = {
     appList: PropTypes.array,
     stageList: PropTypes.array,
     isApplyButtonShow: PropTypes.bool,
-    isCustomerRecycleBin: PropTypes.bool,
+    disableEdit: PropTypes.bool,
 };
 module.exports = OrderItem;
 

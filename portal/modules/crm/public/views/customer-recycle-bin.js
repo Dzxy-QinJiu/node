@@ -85,7 +85,7 @@ class CustomerRecycleBin extends React.Component {
                         currentId: this.state.currentId,
                         curCustomer: curCustomer,
                         hideRightPanel: this.colseRightPanel,
-                        isCustomerRecycleBin: true,//是否是客户回收站中打开的客户详情(禁止编辑、添加客户信息)
+                        disableEdit: true,//是否是客户回收站中打开的客户详情(禁止编辑、添加客户信息)
                     }
                 });
             }

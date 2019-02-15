@@ -135,7 +135,7 @@ class ContractItem extends React.Component {
                                     {Intl.get('crm.contact.delete.confirm', '确认删除')}
                                 </Button>
                             </span>) : (
-                            !this.props.isCustomerRecycleBin && hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) && contract.stage === '待审' ? (
+                            !this.props.disableEdit && hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) && contract.stage === '待审' ? (
                                 <span className='iconfont icon-delete' title={Intl.get('common.delete', '删除')}
                                     onClick={this.showDeleteContractConfirm}/>
                             ) : null
@@ -226,7 +226,7 @@ class ContractItem extends React.Component {
         });
         // 合同的签约类型
         const contractLabel = contract.label === 'new' ? Intl.get('crm.contract.new.sign', '新签') : Intl.get('contract.163', '续约');
-        let hasEditPrivilege = !this.props.isCustomerRecycleBin && contract.stage === '待审' && hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) || false;
+        let hasEditPrivilege = !this.props.disableEdit && contract.stage === '待审' && hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) || false;
         let validityTime = Intl.get('crm.contract.validity.one.year', '有效期一年');
         return (
             <div className='contract-item'>
@@ -246,7 +246,7 @@ class ContractItem extends React.Component {
                     <span className='contract-label'>{Intl.get('crm.contract.validity.time', '有效期')}:</span>
                     <div className='contract-validity-edit-block'>
                         <AntcValidity
-                            mode={contract.stage === '待审' ? 'infoEdit' : 'info'}
+                            mode={contract.stage === '待审' && !this.props.disableEdit ? 'infoEdit' : 'info'}
                             className='validity-time'
                             startTime={contract.start_time}
                             endTime={contract.end_time}
@@ -403,7 +403,7 @@ class ContractItem extends React.Component {
     }
 }
 ContractItem.propTypes = {
-    isCustomerRecycleBin: PropTypes.bool,
+    disableEdit: PropTypes.bool,
     appList: PropTypes.array,
     customerId: PropTypes.string,
     contract: PropTypes.object,
