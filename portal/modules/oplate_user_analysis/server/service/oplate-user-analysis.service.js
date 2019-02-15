@@ -6,6 +6,8 @@ var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var Promise = require('bluebird');
 var auth = require('../../../../lib/utils/auth');
+const ROLE_CONSTANTS = require('../../../../lib/consts').ROLE_CONSTANS;
+
 var _ = require('lodash');
 var EventEmitter = require('events').EventEmitter;
 //定义url
@@ -585,9 +587,9 @@ exports.getActiveNess = function(req, res, dataType, dataRange, queryParams) {
     delete queryParams.authType;
     var emitter = new EventEmitter();
     //如果是销售、舆情秘书、销售团队管理者(页面中画线画多条线)
-    if (auth.hasRole(req, auth.ROLE_CONSTANTS.SALES) ||
-        auth.hasRole(req, auth.ROLE_CONSTANTS.SECRETARY) ||
-        auth.hasRole(req, auth.ROLE_CONSTANTS.SALES_LEADER)
+    if (auth.hasRole(req, ROLE_CONSTANTS.SALES) ||
+        auth.hasRole(req, ROLE_CONSTANTS.SECRETARY) ||
+        auth.hasRole(req, ROLE_CONSTANTS.SALES_LEADER)
     ) {
         getMembers(req, res).then(function(memberResult) {
             var memberType = memberResult.type;

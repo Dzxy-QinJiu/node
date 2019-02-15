@@ -75,36 +75,7 @@ function getLang() {
     return global.config.lang;
 }
 
-//角色对应单词
-const ROLE_CONSTANTS = {
-    //应用管理员
-    APP_ADMIN: 'app_manager',
-    //应用所有者
-    APP_OWNER: 'app_owner',
-    //运营人员
-    OPERATION_PERSON: 'operations',
-    //销售
-    SALES: 'sales',
-    //舆情秘书
-    SECRETARY: 'salesmanager',
-    //销售负责人
-    SALES_LEADER: 'salesleader',
-    //域管理员
-    REALM_ADMIN: 'realm_manager',
-    //域所有者
-    REALM_OWNER: 'realm_owner',
-    //oplate域管理员
-    OPLATE_REALM_ADMIN: 'oplate_realm_manager',
-    //oplate域所有者
-    OPLATE_REALM_OWNER: 'oplate_realm_owner',
-    //合同管理员
-    CONTRACT_ADMIN: 'contract_manager',
-    //财务
-    ACCOUNTANT: 'accountant'
-};
-
 exports.hasRole = hasRole;
-exports.ROLE_CONSTANTS = ROLE_CONSTANTS;
 exports.getToken = getAccesstoken;
 exports.clean = clean;
 exports.saveUserInfo = saveUserInfo;
