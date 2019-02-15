@@ -2,16 +2,15 @@
  * 各阶段数量趋势
  */
 
+import { argCallbackUnderlineTimeToTime, argCallbackMemberIdsToMemberId } from '../../utils';
+
 export function getOrderTrendChart() {
     return {
         title: '各阶段数量趋势(假数据)',
         url: '/rest/analysis/contract_v2/statistics',
-        argCallback: (arg) => {
-            const query = arg.query;
-
-            if (query) {
-                delete query.app_id;
-            }
+        argCallback: arg => {
+            argCallbackUnderlineTimeToTime(arg);
+            argCallbackMemberIdsToMemberId(arg);
         },
         chartType: 'table',
         option: {

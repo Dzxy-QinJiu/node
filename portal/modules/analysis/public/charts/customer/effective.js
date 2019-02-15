@@ -2,22 +2,13 @@
  * 有效客户统计
  */
 
-import { numToPercent } from '../../utils';
+import { numToPercent, argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getCustomerEffectiveChart() {
     return {
         title: Intl.get('effective.customer.statistics', '有效客户统计'),
         url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
-        argCallback: (arg) => {
-            let query = arg.query;
-
-            if (query && query.starttime && query.endtime) {
-                query.start_time = query.starttime;
-                query.end_time = query.endtime;
-                delete query.starttime;
-                delete query.endtime;
-            }
-        },
+        argCallback: argCallbackMemberIdsToMemberId,
         conditions: [
             {
                 name: 'interval',

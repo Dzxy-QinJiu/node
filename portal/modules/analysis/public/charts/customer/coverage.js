@@ -3,7 +3,7 @@
  */
 
 import Store from '../../store';
-import { argCallbackMemberIdToIds, argCallbackTimeToUnderlineTime, isSales } from '../../utils';
+import { isSales } from '../../utils';
 
 export function getCustomerCoverageChart() {
     return {
@@ -11,10 +11,7 @@ export function getCustomerCoverageChart() {
         layout: {sm: 24},
         height: 'auto',
         url: '/rest/analysis/customer/v2/statistic/all/industry/stage/region/overlay',
-        argCallback: (arg) => {
-            argCallbackMemberIdToIds(arg);
-            argCallbackTimeToUnderlineTime(arg);
-
+        argCallback: arg => {
             const query = arg.query;
 
             if (query) {

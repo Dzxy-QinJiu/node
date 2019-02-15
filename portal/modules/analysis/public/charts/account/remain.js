@@ -2,12 +2,13 @@
  * 用户留存统计
  */
 
-import { ifNotSingleApp, isSales } from '../../utils';
+import { ifNotSingleApp, isSales, argCallbackUnderlineTimeToTime } from '../../utils';
 
 export function getRemainAccountChart(type = 'total', title) {
     return {
         title: title || Intl.get('oplate.user.analysis.9', '用户留存'),
         url: '/rest/analysis/user/v1/retention',
+        argCallback: argCallbackUnderlineTimeToTime,
         chartType: 'table',
         option: {
             columns: (() => {

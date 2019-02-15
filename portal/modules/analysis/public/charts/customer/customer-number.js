@@ -3,6 +3,7 @@
  */
 
 import { CUSTOMER_STAGE } from '../../consts';
+import { argCallbackUnderlineTimeToTime, argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getCustomerNumChart(stage) {
     return {
@@ -10,13 +11,11 @@ export function getCustomerNumChart(stage) {
         chartType: 'table',
         url: '/rest/analysis/customer/stage/label/:auth_type/summary',
         argCallback: arg => {
+            argCallbackMemberIdsToMemberId(arg);
+            argCallbackUnderlineTimeToTime(arg);
+
             if (arg.query) {
                 arg.query.starttime = 0;
-
-                if (arg.query.end_time) {
-                    arg.query.endtime = arg.query.end_time;
-                    delete arg.query.end_time;
-                }
 
                 if (!arg.query.app_id) {
                     arg.query.app_id = 'all';

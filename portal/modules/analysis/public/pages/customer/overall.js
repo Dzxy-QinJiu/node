@@ -2,7 +2,7 @@
  * 总体分析
  */
 
-import { argCallbackMemberIdToIds } from '../../utils';
+import { argCallbackUnderlineTimeToTime } from '../../utils';
 import customerChart from '../../charts/customer';
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
     ],
     charts: getCharts({
         type: 'total',
-        argCallback: argCallbackMemberIdToIds
+        argCallback: argCallbackUnderlineTimeToTime
     })
 };
 

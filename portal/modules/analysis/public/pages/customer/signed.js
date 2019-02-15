@@ -2,6 +2,8 @@
  * 签约客户分析
  */
 
+import { argCallbackUnderlineTimeToTime, argCallbackMemberIdsToMemberId } from '../../utils';
+
 import customerChart from '../../charts/customer';
 
 module.exports = {
@@ -11,48 +13,53 @@ module.exports = {
         'CUSTOMER_ANALYSIS_COMMON',
         'CUSTOMER_ANALYSIS_MANAGER',
     ],
-    charts: getCharts()
+    charts: getCharts({
+        argCallback: arg => {
+            argCallbackUnderlineTimeToTime(arg);
+            argCallbackMemberIdsToMemberId(arg);
+        },
+    })
 };
 
-function getCharts() {
+function getCharts(paramObj) {
     return [
         //签约客户总体趋势
-        customerChart.getSignedCustomerTotalTrendChart(),
+        customerChart.getSignedCustomerTotalTrendChart(paramObj),
         //签约客户净增分析
-        customerChart.getSignedCustomerNetIncreaseChart(),
+        customerChart.getSignedCustomerNetIncreaseChart(paramObj),
         //签约客户毛利分析
-        customerChart.getSignedCustomerGrossProfitChart(),
+        customerChart.getSignedCustomerGrossProfitChart(paramObj),
         //签约客户行政级别市场占有率分析
-        customerChart.getSignedCustomerAdministrativeLevelCoverageChart(),
+        customerChart.getSignedCustomerAdministrativeLevelCoverageChart(paramObj),
         //签约客户地域市场占有率分析
-        customerChart.getSignedCustomerZoneCoverageChart(),
+        customerChart.getSignedCustomerZoneCoverageChart(paramObj),
         //新签客户趋势
-        customerChart.getSignedCustomerNewTrendChart(),
+        customerChart.getSignedCustomerNewTrendChart(paramObj),
         //签约客户行业分布
-        customerChart.getSignedCustomerTotalIndustryChart(),
+        customerChart.getSignedCustomerTotalIndustryChart(paramObj),
         //签约客户团队分布
-        customerChart.getSignedCustomerTotalTeamChart(),
+        customerChart.getSignedCustomerTotalTeamChart(paramObj),
         //新签行业分布
-        customerChart.getSignedCustomerNewIndustryChart(),
+        customerChart.getSignedCustomerNewIndustryChart(paramObj),
         //新签团队分布
-        customerChart.getSignedCustomerNewTeamChart(),
+        customerChart.getSignedCustomerNewTeamChart(paramObj),
         //续签客户趋势
-        customerChart.getRenewalCustomerTrendChart(),
+        customerChart.getRenewalCustomerTrendChart(paramObj),
         //续签客户地域统计
-        customerChart.getRenewalCustomerZoneChart(),
+        customerChart.getRenewalCustomerZoneChart(paramObj),
         //续签客户毛利统计
-        customerChart.getRenewalCustomerGrossProfitChart(),
+        customerChart.getRenewalCustomerGrossProfitChart(paramObj),
         //流失客户趋势统计
-        customerChart.getLossCustomerTrendChart(),
+        customerChart.getLossCustomerTrendChart(paramObj),
         //流失现金趋势统计
-        customerChart.getLossCashTrendChart(),
+        customerChart.getLossCashTrendChart(paramObj),
         //流失客户地域统计
-        customerChart.getLossCustomerZoneChart(),
+        customerChart.getLossCustomerZoneChart(paramObj),
         //流失客户团队统计
-        customerChart.getLossCustomerTeamChart(),
+        customerChart.getLossCustomerTeamChart(paramObj),
         //流失客户总体情况分析
-        customerChart.getLossCustomerOverviewChart(),
+        customerChart.getLossCustomerOverviewChart(paramObj),
         //客户续签时间统计
-        customerChart.getRenewalCustomerTimeChart(),
+        customerChart.getRenewalCustomerTimeChart(paramObj),
     ];
 }

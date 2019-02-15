@@ -2,7 +2,7 @@
  * 活跃度
  */
 
-import { ifNotSingleApp, argCallbackTeamId, argCallbackMemberIdToSalesId } from '../../utils';
+import { ifNotSingleApp, argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToSalesId } from '../../utils';
 
 export function getActivityChart(type, title) {
     let url;
@@ -19,8 +19,9 @@ export function getActivityChart(type, title) {
         title: title || Intl.get('operation.report.activity', '活跃度'),
         url,
         argCallback: arg => {
-            argCallbackTeamId(arg);
-            argCallbackMemberIdToSalesId(arg);
+            argCallbackUnderlineTimeToTime(arg);
+            argCallbackTeamIdsToTeamId(arg);
+            argCallbackMemberIdsToSalesId(arg);
         },
         chartType: 'line',
         valueField: 'active',
