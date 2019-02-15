@@ -80,7 +80,7 @@ class BasicOverview extends React.Component {
                         callNumber: callNumberInfo.callNumber,
                         getCallNumberError: ''
                     });
-                    if (!this.props.disableEdit && _.get(this.props, 'curCustomer.id')) {
+                    if (!this.props.disableEdit) {
                         setTimeout(() => {
                             this.getNotCompletedScheduleList(this.props.curCustomer);
                         });
@@ -112,7 +112,7 @@ class BasicOverview extends React.Component {
             this.getRecommendTags();
             this.getCompetitorList();
             this.getIntegrateConfig();
-            if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(this.props,'curCustomer.id')){
+            if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
                 setTimeout(() => {
                     this.getCrmUserList(this.props.curCustomer);
                 });
@@ -159,6 +159,7 @@ class BasicOverview extends React.Component {
 
     //获取客户开通的用户列表
     getCrmUserList = (curCustomer) => {
+        if(!_.get(curCustomer,'id')) return;
         //该客户开通的用户个数
         let appUserLength = _.get(curCustomer, 'app_user_ids.length', 0);
         if (appUserLength) {
@@ -179,6 +180,7 @@ class BasicOverview extends React.Component {
 
     //获取未完成的日程列表
     getNotCompletedScheduleList = (curCustomer) => {
+        if(!_.get(curCustomer,'id')) return;
         basicOverviewAction.getNotCompletedScheduleList({
             customer_id: curCustomer.id,
             page_size: 100,
@@ -193,7 +195,7 @@ class BasicOverview extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         basicOverviewAction.getBasicData(nextProps.curCustomer);
-        if (!this.props.disableEdit && _.get(nextProps,'curCustomer.id') && nextProps.curCustomer.id !== this.state.basicData.id) {
+        if (!this.props.disableEdit && _.get(nextProps, 'curCustomer.id') !== _.get(this.state, 'basicData.id')) {
             setTimeout(() => {
                 if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
                     this.getCrmUserList(nextProps.curCustomer);
