@@ -80,7 +80,7 @@ exports.login = function(req, res, username, password, captchaCode) {
             //后端要求用form的post提交
             form: formData
         }, null, {
-            success: loginSuccess,
+            success: loginSuccess.bind(req),
             timeout: loginTimeout
         });
 };
@@ -96,7 +96,7 @@ exports.loginWithTicket = function(req, res, ticket) {
             ticket: ticket
         }
     }, null, {
-        success: loginSuccess,
+        success: loginSuccess.bind(req),
         timeout: loginTimeout
     });
 };
@@ -113,7 +113,7 @@ function loginTimeout(emitter, data) {
 /*
  登录成功处理
  */
-function loginSuccess(emitter, data) {
+function loginSuccess(emitter, data, req) {
     if (emitter) {
         //如果未返回数据
         if (!data) {
@@ -467,7 +467,7 @@ exports.wechatLoginByUnionId = function(req, res, unionId) {
                 platform: 'wechat'
             },
         }, null, {
-            success: loginSuccess,
+            success: loginSuccess.bind(req),
             timeout: loginTimeout
         });
 };
@@ -543,7 +543,7 @@ exports.registBindWechatLogin = function(req, res, formObj) {
             res: res,
             form: formData,
         }, null, {
-            success: loginSuccess,
+            success: loginSuccess.bind(req),
             timeout: loginTimeout
         });
 };
