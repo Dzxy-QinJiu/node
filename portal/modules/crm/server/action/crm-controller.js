@@ -71,6 +71,17 @@ exports.getCurCustomers = function(req, res) {
             res.json(err.message);
         });
 };
+
+//获取回收站中的客户列表
+exports.getRecycleBinCustomers = function(req, res) {
+    crmService.getRecycleBinCustomers(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err.message);
+        });
+};
+
 //获取客户的历史分数
 exports.getHistoryScoreList = function(req, res) {
     crmService.getHistoryScoreList(req, res, req.query)
@@ -207,6 +218,24 @@ exports.deleteRepeatCustomer = function(req, res) {
 exports.mergeRepeatCustomer = function(req, res) {
     let mergeObj = {customer: JSON.parse(req.body.customer), delete_customers: JSON.parse(req.body.delete_customers)};
     crmService.mergeRepeatCustomer(req, res, mergeObj)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+};
+//恢复回收站中的客户
+exports.recoveryCustomer = function(req, res) {
+    crmService.recoveryCustomer(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+};
+//删除回收站中的客户
+exports.deleteCustomerBak = function(req, res) {
+    crmService.deleteCustomerBak(req, res)
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(codeMessage) {

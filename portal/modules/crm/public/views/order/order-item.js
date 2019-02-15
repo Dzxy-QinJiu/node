@@ -356,6 +356,8 @@ class OrderItem extends React.Component {
             showGenerateContractBtn = true;
         }
         const EDIT_FEILD_WIDTH = 350;
+        //订单关闭或回收站中打开客户详情时，不可修改
+        let hasEditPrivilege = !(order.oppo_status || this.props.disableEdit);
         return (
             <div className="order-item modal-container">
                 {
@@ -411,7 +413,7 @@ class OrderItem extends React.Component {
                                             </div>
                                         );
                                     })}
-                                    {order.oppo_status ? null : <DetailEditBtn onClick={this.showAppPanel}/>}
+                                    {hasEditPrivilege ? <DetailEditBtn onClick={this.showAppPanel}/> : null}
                                 </div>
                             )}
                         </div>
@@ -425,7 +427,7 @@ class OrderItem extends React.Component {
                                 value={order.budget}
                                 afterValTip={Intl.get('contract.82', '元')}
                                 placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
-                                hasEditPrivilege={order.oppo_status ? false : true}
+                                hasEditPrivilege={hasEditPrivilege}
                                 validators={[{required: true, message: Intl.get('crm.order.budget.input', '请输入预算金额')}]}
                                 saveEditInput={this.saveOrderBasicInfo.bind(this, 'budget')}
                                 noDataTip={Intl.get('crm.order.no.budget', '暂无预算')}
@@ -440,7 +442,7 @@ class OrderItem extends React.Component {
                                 field="predict_finish_time"
                                 value={order.predict_finish_time}
                                 placeholder={Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}
-                                hasEditPrivilege={order.oppo_status ? false : true}
+                                hasEditPrivilege={hasEditPrivilege}
                                 saveEditDateInput={this.saveOrderBasicInfo.bind(this, 'predict_finish_time')}
                                 disabledDate={disabledBeforeToday}
                                 noDataTip={Intl.get('crm.order.no.expected.deal.time', '暂无预计成交时间')}
@@ -457,7 +459,7 @@ class OrderItem extends React.Component {
                                 value={order.remarks}
                                 editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
                                 placeholder={Intl.get('user.input.remark', '请输入备注')}
-                                hasEditPrivilege={order.oppo_status ? false : true}
+                                hasEditPrivilege={hasEditPrivilege}
                                 saveEditInput={this.saveOrderBasicInfo.bind(this, 'remarks')}
                                 noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
                                 addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
@@ -518,7 +520,7 @@ class OrderItem extends React.Component {
         let currentStageIndex = _.findIndex(stageList, stage => stage.name === curStage);
         let stageStepList = _.map(stageList, (stage, index) => {
             const stageName = stage.name ? stage.name.split('阶段')[0] : '';
-            if (index === currentStageIndex) {
+            if (index === currentStageIndex || this.props.disableEdit) {
                 return {title: stageName};
             } else {
                 return {
@@ -551,13 +553,16 @@ class OrderItem extends React.Component {
                     </Popconfirm>) : (
                     <span className="order-stage-name">{Intl.get('crm.order.close.step', '关闭订单')}</span>)}
             </Dropdown>);
-        stageStepList.push({title: closeOrderStep});
+        if(!this.props.disableEdit){
+            stageStepList.push({title: closeOrderStep});
+        }
         return (
             <StepsBar stepDataList={stageStepList} currentStepIndex={currentStageIndex}
                 onClickStep={this.onClickStep.bind(this)}/>);
     };
 
     onClickStep = (event) => {
+        if(this.props.disableEdit) return;
         $(event.target).parents('.step-item').find('.order-stage-name').trigger('click');
     };
 
@@ -613,7 +618,7 @@ class OrderItem extends React.Component {
                                         onClick={this.handleModalOK.bind(this, order)}>
                                         {Intl.get('crm.contact.delete.confirm', '确认删除')}
                                     </Button>
-                                </span>) : (
+                                </span>) : this.props.disableEdit ? null : (
                                 <span className="iconfont icon-delete" title={Intl.get('common.delete', '删除')}
                                     data-tracename="点击删除订单按钮" onClick={this.showDelModalDialog}/>)
                             }
@@ -640,13 +645,15 @@ class OrderItem extends React.Component {
         let createTime = order.time ? moment(order.time).format(oplateConsts.DATE_FORMAT) : '';
         return (
             <div className="order-bottom-wrap">
-                {applyBtnText && this.props.isApplyButtonShow && order.oppo_status !== ORDER_STATUS.LOSE ? (//丢单后不展示申请用户按钮
-                    <Button className="order-bottom-button"
-                        onClick={this.showApplyForm.bind(this, applyType, order, selectedAppList)}
-                    >
-                        {applyBtnText}
-                    </Button>
-                ) : null}
+                {!this.props.isMerge && !this.props.disableEdit
+                && applyBtnText && this.props.isApplyButtonShow &&
+                order.oppo_status !== ORDER_STATUS.LOSE ? (//合并、回收站和丢单后不展示申请用户按钮
+                        <Button className="order-bottom-button"
+                            onClick={this.showApplyForm.bind(this, applyType, order, selectedAppList)}
+                        >
+                            {applyBtnText}
+                        </Button>
+                    ) : null}
                 {this.state.isAlertShow ? (
                     <span className="add-app-tip"> * {Intl.get('crm.153', '请先添加应用')}</span>
                 ) : null}
@@ -690,7 +697,8 @@ OrderItem.propTypes = {
     updateMergeCustomerOrder: PropTypes.func,
     appList: PropTypes.array,
     stageList: PropTypes.array,
-    isApplyButtonShow: Promise.bool
+    isApplyButtonShow: PropTypes.bool,
+    disableEdit: PropTypes.bool,
 };
 module.exports = OrderItem;
 
