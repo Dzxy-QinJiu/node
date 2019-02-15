@@ -2,12 +2,12 @@
  * 流失客户总体情况分析
  */
 
-export function getLossCustomerOverviewChart() {
+export function getLossCustomerOverviewChart(paramObj = {}) {
     return {
         title: '流失客户总体情况分析',
         chartType: 'table',
         url: '/rest/analysis/customer/label/:data_type/churn/overview',
-        //        processData: data => [data],
+        argCallback: paramObj.argCallback,
         option: {
             columns: [{
                 title: '销售',

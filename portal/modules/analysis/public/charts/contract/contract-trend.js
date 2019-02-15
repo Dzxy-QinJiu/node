@@ -3,7 +3,7 @@
  */
 
 import { processAmountData } from '../../utils';
-import { argCallbackUnderlineTimeToTime } from '../../utils';
+import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getContractTrendChart() {
     return {
@@ -11,6 +11,8 @@ export function getContractTrendChart() {
         url: '/rest/analysis/contract/contract/count/trend',
         argCallback: (arg) => {
             argCallbackUnderlineTimeToTime(arg);
+            argCallbackTeamIdsToTeamId(arg);
+            argCallbackMemberIdsToMemberId(arg);
 
             const query = arg.query;
 

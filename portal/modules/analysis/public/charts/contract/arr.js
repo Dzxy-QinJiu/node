@@ -2,7 +2,7 @@
  * 年经常性收入情况
  */
 
-import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, isSelectedAllTeamMember, isAdminOrOpStaff } from '../../utils';
+import { isSelectedAllTeamMember, isAdminOrOpStaff, argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getContractArrChart() {
     return {
@@ -17,6 +17,7 @@ export function getContractArrChart() {
         argCallback: arg => {
             argCallbackUnderlineTimeToTime(arg);
             argCallbackTeamIdsToTeamId(arg);
+            argCallbackMemberIdsToMemberId(arg);
         },
         noShowCondition: {
             callback: () => {

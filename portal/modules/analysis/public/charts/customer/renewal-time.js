@@ -2,12 +2,13 @@
  * 客户续签时间统计
  */
 
-export function getRenewalCustomerTimeChart() {
+export function getRenewalCustomerTimeChart(paramObj = {}) {
     return {
         title: '客户续签时间统计',
         layout: {sm: 24},
         height: 'auto',
         url: '/rest/analysis/customer/label/:data_type/renewal/time',
+        argCallback: paramObj.argCallback,
         chartType: 'table',
         processData: data => {
             return _.map(data, item => {

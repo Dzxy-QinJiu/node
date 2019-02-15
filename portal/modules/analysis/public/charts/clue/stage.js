@@ -3,6 +3,7 @@
  */
 
 import { initialTime } from '../../consts';
+import { argCallbackUnderlineTimeToTime, argCallbackMemberIdsToMemberId } from '../../utils';
 import Store from '../../store';
 
 export function getStageChart() {
@@ -10,6 +11,10 @@ export function getStageChart() {
         title: Intl.get('clue.stage.statics', '线索阶段统计'),
         chartType: 'funnel',
         url: '/rest/clue/v1/:data_type/statistical/customer_label/1000/1',
+        argCallback: arg => {
+            argCallbackUnderlineTimeToTime(arg);
+            argCallbackMemberIdsToMemberId(arg);
+        },
         reqType: 'post',
         conditions: [{
             type: 'data',

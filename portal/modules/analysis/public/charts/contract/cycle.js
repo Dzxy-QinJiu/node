@@ -2,7 +2,7 @@
  * 成交周期分析
  */
 
-import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId } from '../../utils';
+import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getContractCycleChart() {
     return {
@@ -17,6 +17,7 @@ export function getContractCycleChart() {
         argCallback: arg => {
             argCallbackUnderlineTimeToTime(arg);
             argCallbackTeamIdsToTeamId(arg);
+            argCallbackMemberIdsToMemberId(arg);
         },
         processData: data => {
             return _.map(data, dataItem => {

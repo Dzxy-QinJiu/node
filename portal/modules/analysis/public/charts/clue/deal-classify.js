@@ -3,12 +3,18 @@
  */
 
 import { initialTime } from '../../consts';
+import { argCallbackUnderlineTimeToTime, argCallbackMemberIdsToMemberId } from '../../utils';
+
 
 export function getClueDealClassifyChart() {
     return {
         title: '成交数分类统计',
         chartType: 'pie',
         url: '/rest/clue/v1/statistical/clue_classify/1000/1',
+        argCallback: arg => {
+            argCallbackUnderlineTimeToTime(arg);
+            argCallbackMemberIdsToMemberId(arg);
+        },
         reqType: 'post',
         dataField: 'result',
         conditions: [{

@@ -2,10 +2,13 @@
  * 销售开通账号统计
  */
 
+import { argCallbackUnderlineTimeToTime } from '../../utils';
+
 export function getAccountSalesOpenAccountChart() {
     return {
         title: '销售开通账号统计',
         url: '/rest/customer/v2/customer/:data_type/app/user/count',
+        argCallback: argCallbackUnderlineTimeToTime,
         chartType: 'table',
         layout: {
             sm: 24,

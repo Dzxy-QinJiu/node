@@ -2,7 +2,7 @@
  * 合同分析统计表
  */
 
-import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId } from '../../utils';
+import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getContractChart() {
     return {
@@ -13,6 +13,7 @@ export function getContractChart() {
         argCallback: arg => {
             argCallbackUnderlineTimeToTime(arg);
             argCallbackTeamIdsToTeamId(arg);
+            argCallbackMemberIdsToMemberId(arg);
         },
         chartType: 'table',
         option: {

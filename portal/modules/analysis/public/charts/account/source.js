@@ -2,12 +2,13 @@
  * 账号来源分类统计
  */
 
-import { ifNotSingleApp } from '../../utils';
+import { ifNotSingleApp, argCallbackUnderlineTimeToTime } from '../../utils';
 
 export function getAccountSourceChart(type = 'total', title = '') {
     return {
         title,
         url: `/rest/analysis/user/v3/:data_type/${type}/source`,
+        argCallback: argCallbackUnderlineTimeToTime,
         chartType: 'pie',
         noShowCondition: {
             callback: ifNotSingleApp

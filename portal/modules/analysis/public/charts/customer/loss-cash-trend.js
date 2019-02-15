@@ -2,11 +2,12 @@
  * 流失现金趋势
  */
 
-export function getLossCashTrendChart() {
+export function getLossCashTrendChart(paramObj = {}) {
     return {
         title: '流失现金趋势',
         chartType: 'line',
         url: '/rest/analysis/customer/label/:data_type/churn/gross/trend',
+        argCallback: paramObj.argCallback,
         conditions: [{
             name: 'interval',
             value: 'month'
