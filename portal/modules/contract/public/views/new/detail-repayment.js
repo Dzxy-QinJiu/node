@@ -5,29 +5,19 @@ import { message, Select, Icon, Form } from 'antd';
 
 let Option = Select.Option;
 let FormItem = Form.Item;
-import Trace from 'LIB_DIR/trace';
 import 'MOD_DIR/user_manage/public/css/user-info.less';
-import DetailCard from 'CMP_DIR/detail-card';
-import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import RepaymentInfo from './repayment-info';
 import RepaymentPlan from './repayment-plan';
+import Spinner from 'CMP_DIR/spinner';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
-import ajax from 'MOD_DIR/contract/common/ajax';
 import { CONTRACT_STAGE, COST_STRUCTURE, COST_TYPE, OPERATE, VIEW_TYPE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
-import routeList from 'MOD_DIR/contract/common/route';
 
 
 //展示的类型
 const DISPLAY_TYPES = {
     EDIT: 'edit',//添加所属客户
     TEXT: 'text'//展示
-};
-
-const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 330;
-const formItemLayout = {
-    labelCol: {span: 0},
-    wrapperCol: {span: 18},
 };
 
 class DetailRepayment extends React.Component {
@@ -37,31 +27,59 @@ class DetailRepayment extends React.Component {
 
     getInitStateData(props) {
         let hasEditPrivilege = hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPDATE_REPAYMENT);
-        let formData = _.extend(true, {}, props.contract);
 
         return {
-            formData: _.cloneDeep(formData),
             loading: false,
             submitErrorMsg: '',
             hasEditPrivilege,
+            isRepaymentLoading: false,
             displayType: DISPLAY_TYPES.TEXT,
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (_.get(nextProps.contract, 'id') && this.props.contract.id !== nextProps.contract.id) {
-            this.setState({
-                formData: JSON.parse(JSON.stringify(nextProps.contract)),
-            });
-        }else {
-            this.setState({
-                formData: JSON.parse(JSON.stringify(nextProps.contract)),
-            });
+    componentDidMount() {
+        //在回款列表上打开详情时，由于列表项中不包含回款记录字段，所以要再用合同id获取一下合同详情
+        if (this.props.viewType === VIEW_TYPE.REPAYMENT && !this.props.contract.repayments) {
+            this.refreshContract();
         }
     }
 
-    saveContractBasicInfo = (saveObj, successFunc, errorFunc) => {
+    refreshContract() {
+        this.props.refreshCurrentContract(this.props.contract.id, false);
+        this.setState({isRepaymentLoading: true});
+    }
 
+    componentWillReceiveProps(nextProps) {
+        if (_.get(nextProps.contract, 'id') && this.props.contract.id !== nextProps.contract.id) {
+            let newState = this.getInitStateData(nextProps);
+
+            //在回款列表上打开详情时，由于列表项中不包含回款记录字段，所以要再用合同id获取一下合同详情
+            if (nextProps.viewType === VIEW_TYPE.REPAYMENT && !nextProps.contract.repayments) {
+                nextProps.refreshCurrentContract(nextProps.contract.id, false);
+                newState.isRepaymentLoading = true;
+            } else {
+                newState.isRepaymentLoading = false;
+            }
+
+            this.setState(newState);
+        }else {
+            if (nextProps.viewType === VIEW_TYPE.REPAYMENT && !nextProps.contract.repayments) {
+                nextProps.refreshCurrentContract(nextProps.contract.id, false);
+                this.setState({isRepaymentLoading: true});
+            } else {
+                this.setState({isRepaymentLoading: false});
+            }
+        }
+    }
+
+    updateScrollBar = () => {
+        const scrollBar = this.refs.gemiScrollBar;
+
+        if (!scrollBar) {
+            return;
+        }
+
+        scrollBar.update();
     };
 
     // 渲染已回款信息
@@ -69,6 +87,7 @@ class DetailRepayment extends React.Component {
         return (
             <RepaymentInfo
                 contract={this.props.contract}
+                updateScrollBar={this.updateScrollBar}
                 refreshCurrentContractRepayment={this.props.refreshCurrentContractRepayment}
             />
         );
@@ -79,6 +98,7 @@ class DetailRepayment extends React.Component {
         return (
             <RepaymentPlan
                 contract={this.props.contract}
+                updateScrollBar={this.updateScrollBar}
                 refreshCurrentContractRepaymentPlan={this.props.refreshCurrentContractRepaymentPlan}
             />
         );
@@ -86,17 +106,14 @@ class DetailRepayment extends React.Component {
 
 
     render() {
-        const DetailBlock = (
-            <div className='clearfix contract-repayment-container'>
-                {this.renderReypayPlan()}
-                {this.renderReypayInfo()}
-            </div>
-        );
-
         return (
             <div style={{height: this.props.height}}>
-                <GeminiScrollBar>
-                    {DetailBlock}
+                <GeminiScrollBar ref="gemiScrollBar">
+                    {this.state.isRepaymentLoading ? <Spinner /> :
+                        (<div className='clearfix contract-repayment-container'>
+                            {this.renderReypayPlan()}
+                            {this.renderReypayInfo()}
+                        </div>)}
                 </GeminiScrollBar>
             </div>
         );

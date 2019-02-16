@@ -65,9 +65,9 @@ class RepaymentInfo extends React.Component {
         };
     }
 
-    componentDidMount() {
-
-    }
+    static defaultProps = {
+        updateScrollBar: function() {}
+    };
 
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps.contract, 'id') && this.props.contract.id !== nextProps.contract.id) {
@@ -76,6 +76,7 @@ class RepaymentInfo extends React.Component {
             this.setState({
                 displayType: DISPLAY_TYPES.TEXT,
                 repayLists: this.getRepayList(contract),
+                isFirstAdd: false
             });
         }
     }
@@ -90,10 +91,14 @@ class RepaymentInfo extends React.Component {
             this.setState({
                 displayType: type,
                 submitErrorMsg: '',
+            }, () => {
+                this.props.updateScrollBar();
             });
         } else if (type === DISPLAY_TYPES.EDIT) {
             this.setState({
                 displayType: type
+            }, () => {
+                this.props.updateScrollBar();
             });
         }
     }
@@ -107,7 +112,7 @@ class RepaymentInfo extends React.Component {
                 _this.setState({
                     repayLists: this.getRepayList(this.props.contract),
                 }, () => {
-                    // this.props.updateScrollBar();
+                    this.props.updateScrollBar();
                 });
             };
             this.editRepayment(type, saveObj,'', successFunc, (errormsg) => {
@@ -138,7 +143,7 @@ class RepaymentInfo extends React.Component {
                         displayType: DISPLAY_TYPES.TEXT,
                         currentRepayment: {}
                     }, () => {
-                        // this.props.updateScrollBar();
+                        this.props.updateScrollBar();
                     });
                 };
                 const errorFunc = (errorMsg) => {
@@ -195,7 +200,9 @@ class RepaymentInfo extends React.Component {
     };
     handleEditTableCancel = () => {
         const contract = _.cloneDeep(this.props.contract);
-        this.setState({repayLists: this.getRepayList(contract), isFirstAdd: false});
+        this.setState({repayLists: this.getRepayList(contract), isFirstAdd: false},() => {
+            this.props.updateScrollBar();
+        });
     };
     handleColumnsChange = () => {
         this.setState({
@@ -218,7 +225,6 @@ class RepaymentInfo extends React.Component {
             message.error(errorMsg);
             _.isFunction(errorFunc) && errorFunc();
         });
-        // this.handleSubmit('update','', );
     };
     handleDelete = (record,successFunc, errorFunc) => {
         console.log(record);
@@ -229,7 +235,7 @@ class RepaymentInfo extends React.Component {
             this.setState({
                 repayLists: this.getRepayList(this.props.contract),
             }, () => {
-                // this.props.updateScrollBar();
+                this.props.updateScrollBar();
             });
         };
         this.editRepayment('delete', saveObj,'', successFuncs, (errorMsg) => {
@@ -243,7 +249,7 @@ class RepaymentInfo extends React.Component {
         let formData = this.state.formData;
 
         return (
-            <Form layout='inline' className='add-repayment-form new-add-repayment-container'>
+            <Form layout='inline' className='detailcard-form-container new-add-repayment-container'>
                 <FormItem
                     className='add-repayment-date'
                 >
@@ -324,9 +330,17 @@ class RepaymentInfo extends React.Component {
                 dataIndex: 'date',
                 editable: true,
                 inputType: 'date',
+                editor: 'DatePicker',
+                editorConfig: {
+                    initialValue: (value) => {
+                        return moment(value);
+                    }
+                },
+                editorProps: {
+                    disabledDate
+                },
                 width: '30%',
                 align: 'left',
-                disabledDate,
                 render: (text, record, index) => {
                     return <span>{moment(text).format(oplateConsts.DATE_FORMAT)}{['true', true].indexOf(record.is_first) > -1 ? <img style={imgStyle} src={FirstRepaymentSrc}/> : null}</span>;
                 },
@@ -336,27 +350,26 @@ class RepaymentInfo extends React.Component {
                 dataIndex: 'amount',
                 editable: true,
                 width: this.state.isFirstAdd ? num_col_width : 'auto',
-                rules: [{
-                    required: true,
-                    message: Intl.get('contract.44', '不能为空')
-                }, getNumberValidateRule(), numberAddNoMoreThan.bind(this, this.props.contract.contract_amount, this.props.contract.total_amount, Intl.get('contract.161', '已超合同额'))]
+                editorConfig: {
+                    rules: [{
+                        required: true,
+                        message: Intl.get('contract.44', '不能为空')
+                    }, getNumberValidateRule(), numberAddNoMoreThan.bind(this, this.props.contract.contract_amount, this.props.contract.total_amount, Intl.get('contract.161', '已超合同额'))]
+                }
             },
             {
                 title: `${Intl.get('contract.29', '回款毛利')}(${Intl.get('contract.155', '元')})`,
                 dataIndex: 'gross_profit',
                 editable: true,
                 width: this.state.isFirstAdd ? num_col_width : 'auto',
-                handleChange: (e) => {
-                    console.log(e.target.value,this.repaymentTableRef.editableFormCellRef.getFieldValue('amount'));
+                editorConfig: {
+                    rules: (text, record, index) => {
+                        return [{
+                            required: true,
+                            message: Intl.get('contract.44', '不能为空')
+                        }, getNumberValidateRule(), numberAddNoMoreThan.bind(this, record.amount, 0, Intl.get('contract.gross.profit.can.not.exceed.repayment', '毛利不能大于回款'))];
+                    }
                 },
-                rules: (text, record, index) => {
-                    let amount = !_.isEmpty(this.repaymentTableRef) && !_.isEmpty(this.repaymentTableRef.editableFormCellRef) ? this.repaymentTableRef.editableFormCellRef.getFieldValue('amount') : record.amount;
-
-                    return [{
-                        required: true,
-                        message: Intl.get('contract.44', '不能为空')
-                    }, getNumberValidateRule(), numberAddNoMoreThan.bind(this, record.amount, 0, Intl.get('contract.gross.profit.can.not.exceed.repayment', '毛利不能大于回款'))];
-                }
             }
         ];
 
@@ -425,6 +438,7 @@ RepaymentInfo.propTypes = {
     handleSubmit: PropTypes.func,
     showLoading: PropTypes.func,
     hideLoading: PropTypes.func,
+    updateScrollBar: PropTypes.func,
     refreshCurrentContract: PropTypes.func,
     refreshCurrentContractRepayment: PropTypes.func,
     form: PropTypes.object

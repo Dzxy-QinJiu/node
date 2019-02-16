@@ -49,6 +49,9 @@ class RepaymentPlan extends React.Component {
             currentRepayment: {},// 当前选中的回款计划
         };
     }
+    static defaultProps = {
+        updateScrollBar: function() {}
+    };
 
     getInitialFormData() {
         return {
@@ -57,15 +60,12 @@ class RepaymentPlan extends React.Component {
         };
     }
 
-    componentDidMount() {
-
-    }
-
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps.contract, 'id') && this.props.contract.id !== nextProps.contract.id) {
             this.setState({
                 displayType: DISPLAY_TYPES.TEXT,
                 formData: this.getInitialFormData(),
+                currentRepayment: {}
             });
         }
     }
@@ -78,11 +78,15 @@ class RepaymentPlan extends React.Component {
                 formData: this.getInitialFormData(),
                 submitErrorMsg: '',
                 currentRepayment: {}
+            }, () => {
+                this.props.updateScrollBar();
             });
         } else if (type === DISPLAY_TYPES.EDIT) {
             // Trace.traceEvent(ReactDOM.findDOMNode(this), '点击设置所属客户按钮');
             this.setState({
                 displayType: type
+            }, () => {
+                this.props.updateScrollBar();
             });
         }
     }
@@ -92,7 +96,9 @@ class RepaymentPlan extends React.Component {
         let saveObj;
         if (type === 'delete') {
             saveObj = [id];
-            const successFunc = () => {};
+            const successFunc = () => {
+                this.props.updateScrollBar();
+            };
             const errorFunc = (errorMsg) => {
                 message.error(errorMsg);
             };
@@ -123,7 +129,7 @@ class RepaymentPlan extends React.Component {
                         displayType: DISPLAY_TYPES.TEXT,
                         currentRepayment: {}
                     }, () => {
-                        // this.props.updateScrollBar();
+                        this.props.updateScrollBar();
                     });
                 };
                 const errorFunc = (errorMsg) => {
@@ -248,7 +254,7 @@ class RepaymentPlan extends React.Component {
         }
 
         return (
-            <Form layout='inline' className='add-repayment-form new-add-repayment-container'>
+            <Form layout='inline' className='detailcard-form-container new-add-repayment-container'>
                 <ReactIntl.FormattedMessage id="contract.78" defaultMessage="从签订日起" />
                 <FormItem>
                     {
@@ -377,6 +383,7 @@ RepaymentPlan.propTypes = {
     handleSubmit: PropTypes.func,
     showLoading: PropTypes.func,
     hideLoading: PropTypes.func,
+    updateScrollBar: PropTypes.func,
     refreshCurrentContract: PropTypes.func,
     refreshCurrentContractRepaymentPlan: PropTypes.func,
     form: PropTypes.object

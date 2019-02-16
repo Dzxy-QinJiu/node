@@ -9,6 +9,7 @@ import Trace from 'LIB_DIR/trace';
 import 'MOD_DIR/user_manage/public/css/user-info.less';
 import DetailCard from 'CMP_DIR/detail-card';
 import EditableTable from '../components/editable-table';
+import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import ajax from 'MOD_DIR/contract/common/ajax';
 import { CONTRACT_STAGE, COST_STRUCTURE, COST_TYPE, OPERATE, VIEW_TYPE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
@@ -23,70 +24,71 @@ const DISPLAY_TYPES = {
     TEXT: 'text'//展示
 };
 
-const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 330;
-const formItemLayout = {
-    labelCol: {span: 5},
-    wrapperCol: {span: 18},
-};
-
 const disabledDate = function(current) {
     //不允许选择大于当前天的日期
     return current && current.valueOf() > Date.now();
 };
 
-class InvoiceAmount extends React.Component {
+class DetailPayment extends React.Component {
     state = {
         ...this.getInitStateData(this.props),
     };
 
     getInitStateData(props) {
-        let hasEditPrivilege = hasPrivilege(PRIVILEGE_MAP.CONTRACT_ADD_INVOICE_AMOUNT);
+        let hasEditPrivilege = hasPrivilege(PRIVILEGE_MAP.CONTRACT_ADD_PAYMENT);
 
         return {
             loading: false,
-            invoiceLists: this.getInvoiceLists(this.props.contract),
+            paymentLists: this.getPaymentLists(this.props.contract),
             submitErrorMsg: '',
             hasEditPrivilege,
             displayType: DISPLAY_TYPES.TEXT,
         };
     }
 
-    static defaultProps = {
-        updateScrollBar: function() {}
-    };
-
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps.contract, 'id') && this.props.contract.id !== nextProps.contract.id) {
 
             this.setState({
                 displayType: DISPLAY_TYPES.TEXT,
-                invoiceLists: this.getInvoiceLists(nextProps.contract),
+                paymentLists: this.getPaymentLists(nextProps.contract),
             });
         }
     }
-    getInvoiceLists(contract) {
-        return _.sortBy(_.cloneDeep(contract.invoices) || [], item => item.date).reverse();
+
+    updateScrollBar = () => {
+        const scrollBar = this.refs.gemiScrollBar;
+
+        if (!scrollBar) {
+            return;
+        }
+
+        scrollBar.update();
+    };
+
+    getPaymentLists(contract) {
+        return _.sortBy(_.cloneDeep(contract.payments) || [], item => item.date).reverse();
     }
     changeDisplayType(type) {
         if (type === DISPLAY_TYPES.TEXT) {
-            Trace.traceEvent(ReactDOM.findDOMNode(this), '关闭添加开发票额输入区');
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '关闭添加付款输入区');
             this.setState({
                 displayType: type,
                 submitErrorMsg: '',
             }, () => {
-                this.props.updateScrollBar();
+                this.updateScrollBar();
             });
         } else if (type === DISPLAY_TYPES.EDIT) {
             this.setState({
                 displayType: type
             }, () => {
-                this.props.updateScrollBar();
+                this.updateScrollBar();
             });
         }
     }
     handleSubmit = (type) => {
         let _this = this;
-        let saveObj, params;
+        let saveObj;
         if(type === 'add') {
             this.props.form.validateFields((err,value) => {
                 if (err) return false;
@@ -94,21 +96,20 @@ class InvoiceAmount extends React.Component {
                 this.setState({loading: true});
 
                 saveObj = {...value};
+                const params = {contractId: this.props.contract.id};
+
                 if(saveObj.date) {
                     saveObj.date = saveObj.date.valueOf();
-                }
-                if(_.isNil(saveObj.contract_id)){
-                    saveObj.contract_id = this.props.contract.id;
                 }
 
                 const successFunc = (resultData) => {
                     _this.setState({
                         loading: false,
-                        invoiceLists: this.getInvoiceLists(this.props.contract),
+                        paymentLists: this.getPaymentLists(this.props.contract),
                         submitErrorMsg: '',
                         displayType: DISPLAY_TYPES.TEXT
                     }, () => {
-                        this.props.updateScrollBar();
+                        this.updateScrollBar();
                     });
                 };
                 const errorFunc = (errorMsg) => {
@@ -122,8 +123,7 @@ class InvoiceAmount extends React.Component {
         }
     };
     editInvoice(type, data, params, id, successFunc, errorFunc) {
-
-        const handler = type + 'InvoiceAmount';
+        const handler = type + 'Payment';
         const route = _.find(routeList, route => route.handler === handler);
         let arg = {
             url: route.path,
@@ -132,23 +132,20 @@ class InvoiceAmount extends React.Component {
         };
         if (params) arg.params = params;
 
-        let targetName, changePropName, isInvoiceBasicInforOrInvoices = type;
-        targetName = Intl.get('contract.39', '发票额记录');
-        changePropName = 'invoices';
 
-        Trace.traceEvent(ReactDOM.findDOMNode(this), OPERATE[type] + targetName);
+        Trace.traceEvent(ReactDOM.findDOMNode(this), OPERATE[type] + '付款信息');
 
         ajax(arg).then(result => {
             if (result.code === 0) {
-                message.success(OPERATE[type] + targetName + '成功');
-                this.props.refreshCurrentContractNoAjax(changePropName, isInvoiceBasicInforOrInvoices, result.result, id);
+                message.success(OPERATE[type] + '成功');
+                this.props.refreshCurrentContractNoAjax('payments', type, result.result, id);
 
                 if (_.isFunction(successFunc)) successFunc(result.result);
             } else {
-                if (_.isFunction(errorFunc)) errorFunc(OPERATE[type] + targetName + Intl.get('user.failed', '失败'));
+                if (_.isFunction(errorFunc)) errorFunc(OPERATE[type] + Intl.get('user.failed', '失败'));
             }
         }, errorMsg => {
-            if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE[type] + targetName + Intl.get('user.failed', '失败'));
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE[type] + Intl.get('user.failed', '失败'));
         });
     }
     handleCancel = () => {
@@ -156,23 +153,24 @@ class InvoiceAmount extends React.Component {
     };
     handleEditTableCancel = () => {
         const contract = _.cloneDeep(this.props.contract);
-        this.setState({invoiceLists: this.getInvoiceLists(contract)}, () => {
-            this.props.updateScrollBar();
+        this.setState({paymentLists: this.getPaymentLists(contract)}, () => {
+            this.updateScrollBar();
         });
     };
     handleEditTableSave = (data, successFunc, errorFunc) => {
+        const params = {contractId: this.props.contract.id};
         const successFuncs = () => {
             _.isFunction(successFunc) && successFunc();
             this.setState({
-                invoiceLists: this.getInvoiceLists(this.props.contract)
+                paymentLists: this.getPaymentLists(this.props.contract)
             }, () => {
-                this.props.updateScrollBar();
+                this.updateScrollBar();
             });
         };
         if(data.date){
             data.date = data.date.valueOf();
         }
-        this.editInvoice('update', data, '', data.id, successFuncs, (errorMsg) => {
+        this.editInvoice('update', data, params, data.id, successFuncs, (errorMsg) => {
             message.error(errorMsg);
             _.isFunction(errorFunc) && errorFunc();
         });
@@ -183,9 +181,9 @@ class InvoiceAmount extends React.Component {
         const successFuncs = (resultData) => {
             _.isFunction(successFunc) && successFunc();
             this.setState({
-                invoiceLists: this.getInvoiceLists(this.props.contract),
+                paymentLists: this.getPaymentLists(this.props.contract),
             }, () => {
-                this.props.updateScrollBar();
+                this.updateScrollBar();
             });
         };
         this.editInvoice('delete', '', params, record.id, successFuncs, (errorMsg) => {
@@ -194,7 +192,7 @@ class InvoiceAmount extends React.Component {
         });
     };
 
-    renderAddInvoicePanel(invoiceLists) {
+    renderAddPaymentPanel(paymentLists) {
         let {getFieldDecorator} = this.props.form;
 
         return (
@@ -212,7 +210,7 @@ class InvoiceAmount extends React.Component {
                         )
                     }
                 </FormItem>
-                <ReactIntl.FormattedMessage id="contract.43" defaultMessage="开出"/>
+                <ReactIntl.FormattedMessage id="contract.91" defaultMessage="付款"/>
                 <FormItem>
                     {
                         getFieldDecorator('amount', {
@@ -225,8 +223,7 @@ class InvoiceAmount extends React.Component {
                         )
                     }
                 </FormItem>
-                <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元"/>,
-                <ReactIntl.FormattedMessage id="contract.46" defaultMessage="发票"/>
+                <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元"/>
                 <SaveCancelButton
                     loading={this.state.loading}
                     saveErrorMsg={this.state.submitErrorMsg}
@@ -237,11 +234,11 @@ class InvoiceAmount extends React.Component {
         );
     }
 
-    renderInvoiceList(invoiceLists) {
+    renderPaymentList(paymentLists) {
         let num_col_width = 75;
         const columns = [
             {
-                title: Intl.get('contract.197', '开票日期'),
+                title: `${Intl.get('contract.91', '付款')}${Intl.get('crm.146', '日期')}`,
                 dataIndex: 'date',
                 editable: true,
                 editor: 'DatePicker',
@@ -259,7 +256,7 @@ class InvoiceAmount extends React.Component {
                 },
             },
             {
-                title: `${Intl.get('contract.198', '发票额')}(${Intl.get('contract.155', '元')})`,
+                title: `${Intl.get('contract.200', '付款额')}(${Intl.get('contract.155', '元')})`,
                 dataIndex: 'amount',
                 editable: true,
                 width: 'auto',
@@ -274,12 +271,12 @@ class InvoiceAmount extends React.Component {
 
         return (
             <EditableTable
-                ref={ref => this.invoiceAmountTableRef = ref}
+                ref={ref => this.paymentTableRef = ref}
                 parent={this}
                 isEdit={this.state.hasEditPrivilege}
                 columns={columns}
                 defaultKey='id'
-                dataSource={invoiceLists}
+                dataSource={paymentLists}
                 onCancel={this.handleEditTableCancel}
                 onSave={this.handleEditTableSave}
                 onDelete={this.handleDelete}
@@ -289,51 +286,54 @@ class InvoiceAmount extends React.Component {
 
     // 渲染基础信息
     renderBasicInfo() {
-        const invoiceLists = this.state.invoiceLists;
-        const noRepaymentData = !invoiceLists.length && !this.state.loading;
+        const paymentLists = this.state.paymentLists;
+        const noPaymentData = !paymentLists.length && !this.state.loading;
 
-        const content = () => {
-            return (
-                <div className="repayment-list">
-                    {this.state.displayType === DISPLAY_TYPES.EDIT ? this.renderAddInvoicePanel(invoiceLists) : this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
-                        <span className="iconfont icon-add" onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}
-                            title={Intl.get('common.edit', '编辑')}/>) : null}
-                    {this.renderInvoiceList(invoiceLists)}
-                </div>
-            );
-        };
+        const content = (
+            <div className="repayment-list">
+                {this.state.displayType === DISPLAY_TYPES.EDIT ? this.renderAddPaymentPanel(paymentLists) : this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
+                    <span className="iconfont icon-add" onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}
+                        title={Intl.get('common.edit', '编辑')}/>) : null}
+                {this.renderPaymentList(paymentLists)}
+            </div>
+        );
 
-        let repayTitle = (
+        let payTitle = (
             <div className="repayment-repay">
-                <span>{Intl.get('contract.199', '开票历史')}</span>
+                <span>{`${Intl.get('contract.91', '付款')}${Intl.get('sales.stage.message', '信息')}`}</span>
             </div>
         );
 
         return (
             <DetailCard
-                content={content()}
-                titleBottomBorderNone={noRepaymentData}
-                title={repayTitle}
+                content={content}
+                titleBottomBorderNone={noPaymentData}
+                title={payTitle}
             />
         );
     }
 
 
     render() {
-        return this.renderBasicInfo();
+        return (
+            <div className='clearfix contract-repayment-container' style={{height: this.props.height}}>
+                <GeminiScrollBar ref='geminiScrollBar'>
+                    {this.renderBasicInfo()}
+                </GeminiScrollBar>
+            </div>
+        );
     }
 }
 
-InvoiceAmount.propTypes = {
+DetailPayment.propTypes = {
+    height: PropTypes.string,
     contract: PropTypes.object,
-    invoiceLists: PropTypes.array,
     handleSubmit: PropTypes.func,
     showLoading: PropTypes.func,
     hideLoading: PropTypes.func,
-    updateScrollBar: PropTypes.fucn,
     refreshCurrentContract: PropTypes.func,
     refreshCurrentContractNoAjax: PropTypes.func,
     form: PropTypes.object
 };
-module.exports = Form.create()(InvoiceAmount);
+module.exports = Form.create()(DetailPayment);
 

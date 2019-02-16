@@ -1681,6 +1681,7 @@ var zh_CN = {
     'contract.197': '开票日期',
     'contract.198': '发票额',
     'contract.199': '开票历史',
+    'contract.200': '付款额',
     'contract.gross.profit.can.not.exceed.repayment': '毛利不能大于回款',
     'contract.loadMore': '加载更多',
     'contract.valueTypeConfig': '值字段设置',

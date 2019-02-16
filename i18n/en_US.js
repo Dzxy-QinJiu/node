@@ -1642,7 +1642,7 @@ var en_US = {
     'contract.184': 'cost amount', //"费用金额",
     'contract.185': 'type (transport in city)', //"类型（市内交通）",
     'contract.186': 'first got paid', //"首次回款",
-    'contract.187': 'payment amount', //"回款金额",
+    'contract.187': 'repayment amount', //"回款金额",
     'contract.188': 'analysis',//"分析",
     'contract.189': 'Commission payment', // 提成发放
     'contract.190': 'Sales contract template', // 《销售合同模板》
@@ -1653,8 +1653,9 @@ var en_US = {
     'contract.195': 'A collection plan has not been added',// 还未添加回款计划
     'contract.196': 'The collection process has not been added',// 还未添加回款进程
     'contract.197': 'invoice date',// 开票日期
-    'contract.198': 'The invoice amount',// 发票额
+    'contract.198': 'invoice amount',// 发票额
     'contract.199': 'The history of make out an invoice',// 开票历史
+    'contract.200': 'payment amount',// 付款额
     'contract.gross.profit.can.not.exceed.repayment': 'gross profit can not exceed repayment',//毛利不能大于回款
     'contract.loadMore': 'load more',//"加载更多",
     'contract.valueTypeConfig': 'value calculate type config',//"值字段设置",

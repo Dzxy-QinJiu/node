@@ -70,18 +70,22 @@ class DetailBasic extends React.Component {
         };
     }
 
-    componentDidMount() {
-
-    }
-
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps.contract, 'id') && this.props.contract.id !== nextProps.contract.id) {
+            let formData = JSON.parse(JSON.stringify(nextProps.contract));
+
+            //所属客户是否是选择的，以数组的形式记录了各个所属客户在输入后是否经过了点击选择的过程
+            /*let belongCustomerIsChoosen = [];
+            if (!formData.customers) {
+                formData.customers = [{}];
+            } else {
+                //编辑已有所属客户时，将选中状态都设为true
+                belongCustomerIsChoosen = _.map(formData.customers, customer => true);
+            }*/
+
             this.setState({
-                formData: JSON.parse(JSON.stringify(nextProps.contract)),
-            });
-        }else {
-            this.setState({
-                formData: JSON.parse(JSON.stringify(nextProps.contract)),
+                formData,
+                belongCustomerIsChoosen
             });
         }
     }
@@ -99,7 +103,6 @@ class DetailBasic extends React.Component {
         if(!_.get(saveObj, 'customers')){
             // saveObj.customers = this.props.contract.customers;
         }
-        // saveObj.customers = [{customer_name: contract.customer_name, customer_id: this.props.customerId}];
 
         ajax(arg).then(result => {
             if (result.code === 0) {
@@ -132,45 +135,6 @@ class DetailBasic extends React.Component {
             });
         }
     }
-
-    handleCustomerSubmit = () => {
-        Trace.traceEvent(this, '点击所属客户保存按钮');
-        let _this = this;
-        this.props.form.validateFields((err,value) => {
-            if (err) return false;
-            let saveObj = {
-                id: this.state.formData.id,
-                customers: this.state.customers
-            };
-            this.setState({loading: true});
-            const successFunc = () => {
-                _this.setState({
-                    loading: false,
-                    submitErrorMsg: '',
-                    displayType: DISPLAY_TYPES.TEXT
-                });
-            };
-            const errorFunc = (errorMsg) => {
-                _this.setState({
-                    loading: false,
-                    submitErrorMsg: errorMsg
-                });
-            };
-            this.saveContractBasicInfo(saveObj,successFunc,errorFunc);
-        });
-
-    };
-
-    handleCustomerCancel = () => {
-        Trace.traceEvent(this, '点击所属客户保取消按钮');
-        let formData = this.state.formData;
-        formData.customers = _.clone(this.props.contract.customers);
-        this.setState({
-            displayType: DISPLAY_TYPES.TEXT,
-            formData,
-            submitErrorMsg: '',
-        });
-    };
 
     // 处理有效期限
     handleSubmitEditValidityTime = (startTime, endTime, successCallback, errorCallback) => {
@@ -230,6 +194,44 @@ class DetailBasic extends React.Component {
         this.saveContractBasicInfo(saveObj, successFunc, errorCallback);
     };
 
+    // 所属客户处理事件
+    handleCustomerSubmit = () => {
+        Trace.traceEvent(this, '点击所属客户保存按钮');
+        let _this = this;
+        this.props.form.validateFields((err,value) => {
+            if (err) return false;
+            let saveObj = {
+                id: this.state.formData.id,
+                customers: this.state.customers
+            };
+            this.setState({loading: true});
+            const successFunc = () => {
+                _this.setState({
+                    loading: false,
+                    submitErrorMsg: '',
+                    displayType: DISPLAY_TYPES.TEXT
+                });
+            };
+            const errorFunc = (errorMsg) => {
+                _this.setState({
+                    loading: false,
+                    submitErrorMsg: errorMsg
+                });
+            };
+            this.saveContractBasicInfo(saveObj,successFunc,errorFunc);
+        });
+
+    };
+    handleCustomerCancel = () => {
+        Trace.traceEvent(this, '点击所属客户保取消按钮');
+        let formData = this.state.formData;
+        formData.customers = _.clone(this.props.contract.customers);
+        this.setState({
+            displayType: DISPLAY_TYPES.TEXT,
+            formData,
+            submitErrorMsg: '',
+        });
+    };
     deleteBelongCustomer(index) {
         let {formData, customers,belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
 
@@ -244,7 +246,6 @@ class DetailBasic extends React.Component {
             belongCustomerIsChoosen
         });
     }
-
     addBelongCustomer() {
         let {formData, customers, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
 
@@ -259,7 +260,6 @@ class DetailBasic extends React.Component {
             belongCustomerIsChoosen
         });
     }
-
     queryCustomer(index, keyword) {
         const fieldName = 'belong_customer' + index;
 
@@ -296,7 +296,7 @@ class DetailBasic extends React.Component {
                 }
                 this.setState(newState, () => {
                     // this.refs.validation.forceValidate([fieldName]);
-                    this.props.form.validateFields([fieldName]);
+                    this.props.form.validateFields([fieldName], {force: true});
                 });
             }).error(() => {
                 let newState = {
@@ -306,12 +306,11 @@ class DetailBasic extends React.Component {
                 newState.belongCustomerErrMsg[index] = Intl.get('errorcode.61', '获取客户列表失败');
 
                 this.setState(newState, () => {
-                    this.props.form.validateFields([fieldName]);
+                    this.props.form.validateFields([fieldName], {force: true});
                 });
             });
         }, 500);
     }
-
     onCustomerChoosen(index, value) {
         let {formData, customers, belongCustomerIsChoosen} = this.state;
         const fieldName = 'belong_customer' + index;
@@ -352,7 +351,6 @@ class DetailBasic extends React.Component {
             return <Option key={index} value={customer.customer_id}>{customer.customer_name}</Option>;
         });
     }
-
     //获取所属客户验证规则
     getBelongCustomerValidateRules(index) {
         return {

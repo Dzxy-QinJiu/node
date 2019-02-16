@@ -1,66 +1,55 @@
 /** Created by 2019-02-14 13:27 */
-import { Table, Input, Popconfirm, Form, InputNumber, DatePicker, Icon, Button, Checkbox,Switch } from 'antd';
+import { Table, Popconfirm, Form, Icon, Button } from 'antd';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 import Trace from 'LIB_DIR/trace';
-import { getNumberValidateRule, numberAddNoMoreThan } from 'PUB_DIR/sources/utils/validate-util';
 const FormItem = Form.Item;
-let formObj = {};
 
 class EditableCell extends React.Component {
     static propTypes = {
         form: PropTypes.object,
-        inputType: PropTypes.string,
+        editor: PropTypes.string,
+        editorConfig: PropTypes.object,
+        editorProps: PropTypes.object,
         editing: PropTypes.bool,
         dataIndex: PropTypes.string,
         record: PropTypes.object,
         disabledDate: PropTypes.func,
     };
 
-    getInput = (handleChange) => {
-        if (this.props.inputType === 'number') {
-            return <InputNumber onChange={handleChange}/>;
-        }else if(this.props.inputType === 'date') {
-            return <DatePicker onChange={handleChange} disabledDate={this.props.disabledDate}/>;
-        }else if(this.props.inputType === 'switch') {
-            /*return <Checkbox>
-                {/!*{Intl.get('contract.167', '首笔回款')}*!/}
-            </Checkbox>;*/
-            return <Switch onChange={handleChange} />;
-        }
-        return <Input onChange={handleChange} />;
+    static defaultProps = {
+        // 编辑时选用哪种编辑方式，默认是是input输入框
+        editor: 'Input',
+        // 编辑器在form中的getFieldDecorator的配置
+        editorConfig: {},
+        // 编辑器上的属性
+        editorProps: {}
+    };
+
+    getEditor = () => {
+        let editor = this.props.editor;
+        let editorProps = this.props.editorProps;
+        const Editor = require('antd')[editor];
+
+        return <Editor {...editorProps}/>;
     };
     render() {
         const {
             editing,
             dataIndex,
-            inputType,
+            editorConfig,
             record,
             form,
             ...restProps
         } = this.props;
 
-        formObj = form;
         const { getFieldDecorator } = form;
 
         if(editing){
-            let initialValue = inputType === dataIndex ? moment(record[dataIndex]) : (inputType === 'switch' ? ['true', true].indexOf(record[dataIndex]) > -1 : record[dataIndex]);
-            let config = {
-                rules: restProps.rules || [],
-                initialValue,
-            };
-            let handleChange = function() {};
-            if(inputType === 'switch') {
-                config.valuePropName = 'checked';
-            }
-            if(_.isFunction(restProps.getValueFromEvent)) {
-                config.getValueFromEvent = restProps.getValueFromEvent;
-            }
-            if(_.isFunction(restProps.handleChange)) {
-                handleChange = restProps.handleChange;
-            }
+            let {initialValue} = editorConfig;
+            editorConfig.initialValue = _.isNil(initialValue) ? record[dataIndex] : (_.isFunction(initialValue) ? initialValue(record[dataIndex]) : initialValue);
             return (
                 <FormItem style={{ margin: 0 }}>
-                    {getFieldDecorator(dataIndex, config)(this.getInput(handleChange))}
+                    {getFieldDecorator(dataIndex, editorConfig)(this.getEditor())}
                 </FormItem>
             );
         }else{
@@ -129,7 +118,7 @@ class EditableTable extends React.Component {
         let _this2 = this;
         _.each(columns, function(column) {
             let rawRender = column.render;
-            let rawRules = column.rules;
+            let rawRules = !_.isNil(column.editorConfig) ? column.editorConfig['rules'] : [];
             if (!column.width) {
                 column.width = 90;
             }
@@ -137,7 +126,7 @@ class EditableTable extends React.Component {
             if (column.editable) {
                 column.render = function(text, record, index) {
                     if(_.isFunction(rawRules)) {
-                        column.rules = rawRules(text, record, index);
+                        column.editorConfig.rules = rawRules(text, record, index);
                     }
                     if(_.isEqual(record[_this2.props.defaultKey], _this2.state.editingKey)) {
                         return _this2.renderColumns(text, record, index, column);
@@ -160,13 +149,13 @@ class EditableTable extends React.Component {
         return columns;
     }
     onValuesChange = (props, values) => {
-        formObj.resetFields();
+        this.editableFormCellRef.props.form.resetFields();
         let record = props.record;
         const newData = [...this.state.data];
         const index = newData.findIndex(item => record[this.props.defaultKey] === item[this.props.defaultKey]);
         /*if (index > -1) {
             const item = newData[index];
-            if(!_.isEmpty(props.inputType) && props.inputType === 'date') {
+            if(!_.isEmpty(props.editor) && props.editor === 'date') {
                 values.date = values.date.valueOf();
             }
             newData.splice(index, 1, {
@@ -181,7 +170,7 @@ class EditableTable extends React.Component {
     renderColumns(text, record, index, col) {
         return (
             <EditableFormCell
-                ref={ref => this.editableFormCellRef = ref}
+                wrappedComponentRef={ref => this.editableFormCellRef = ref}
                 {...col}
                 record={record}
                 onValuesChange={this.onValuesChange.bind(this)}
@@ -199,7 +188,7 @@ class EditableTable extends React.Component {
         });
     }
     save(key) {
-        formObj.validateFields((error, row) => {
+        this.editableFormCellRef.props.form.validateFields((error, row) => {
             if (error) {
                 return;
             }
@@ -256,7 +245,13 @@ class EditableTable extends React.Component {
             columns.push({
                 title: Intl.get('contract.167', '首笔回款'),
                 dataIndex: 'is_first',
-                inputType: 'switch',
+                editor: 'Switch',
+                editorConfig: {
+                    initialValue: (value) => {
+                        return ['true', true].indexOf(value) > -1;
+                    },
+                    valuePropName: 'checked',
+                },
                 editable: true,
                 width: 60,
                 render: (text, record, index) => {
