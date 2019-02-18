@@ -7,6 +7,10 @@ export function getClueHistoricalPeriodComparisionChart() {
         title: '历史同期数量统计对比',
         chartType: 'bar',
         url: '/rest/analysis/customer/v2/clue/:data_type/historical/period/comparision',
+        conditions: [{
+            name: 'interval',
+            value: 'month'
+        }],
         processOption: (option, chartProps) => {
             const data = chartProps.data;
 
