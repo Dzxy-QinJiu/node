@@ -5,6 +5,7 @@ import UserData from '../../../../../public/sources/user-data';
 import AppUserDetailStore from '../../store/app-user-detail-store';
 import DateSelectorUtils from '../../../../../components/date-selector/utils';
 import AppUserUtils from '../../util/app-user-util';
+var AppUserAjax = require('../../ajax/app-user-ajax');
 
 class UserDetailAddAppStore {
     constructor() {
@@ -143,21 +144,20 @@ class UserDetailAddAppStore {
                             appInfo.start_time = appInfo.begin_date;
                             appInfo.create_time = appInfo.begin_date;
                             appInfo.end_time = appInfo.end_date;
-                            delete appInfo.begin_date;
-                            delete appInfo.end_date;
                             appInfo.multilogin = +appInfo.mutilogin;
                             appInfo.is_two_factor = +appInfo.is_two_factor;
                             appInfo.status = +appInfo.status;
                             appInfo.is_disabled = false;
-                            // setTimeout( () =>{
-                            //     AppUserDetailAction.getBatchRoleInfo({
-                            //         data: {
-                            //             ids: appInfo.roles
-                            //         }
-                            //     },(roleInfo) => {
-                            //         appInfo.roleItems = appInfo.roles.map(roleId => roleInfo.find(x => x.role_id === roleId)).filter(x => x);
-                            //     });
-                            // } );
+                            appInfo.showDetail = false;
+                            delete appInfo.begin_date;
+                            delete appInfo.end_date;
+                            AppUserAjax.getBatchRoleInfo({
+                                data: {
+                                    ids: appInfo.roles
+                                }
+                            }).then((roleInfo) => {
+                                appInfo.roleItems = appInfo.roles.map(roleId => roleInfo.find(x => x.role_id === roleId)).filter(x => x);
+                            });
                         }
                     });
                 });
