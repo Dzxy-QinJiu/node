@@ -1697,15 +1697,15 @@ const ApplyViewDetail = createReactClass({
 
     //渲染详情内容区域
     renderDetailCenter(detailInfo) {
-        if (detailInfo.type === APPLY_TYPES.PWDCHANGE) {
+        if (detailInfo.type === APPLY_TYPES.APPLY_PWD_CHANGE) {
             return this.renderDetailChangePassword(detailInfo);
-        } else if (detailInfo.type === APPLY_TYPES.STHELSE) {
+        } else if (detailInfo.type === APPLY_TYPES.APPLY_STH_ELSE) {
             return this.renderDetailChangeOther(detailInfo);
         }
         //旧版申请展示
-        else if (detailInfo.type === APPLY_TYPES.GRANTDELAY) {
+        else if (detailInfo.type === APPLY_TYPES.APPLY_GRANT_DELAY) {
             return this.renderDetailDelayTime(detailInfo);
-        } else if (detailInfo.type === APPLY_TYPES.STATUSCHANGE) {
+        } else if (detailInfo.type === APPLY_TYPES.APPLY_GRANT_STATUS_CHANGE) {
             return this.renderDetailChangeStatus(detailInfo);
         }
         //新版申请展示
@@ -1719,7 +1719,7 @@ const ApplyViewDetail = createReactClass({
     },
     notShowRoleAndPrivilegeSettingBtn(detailInfo){
         //不展示配置按钮的情况
-        if ([APPLY_TYPES.PWDCHANGE,APPLY_TYPES.STHELSE,APPLY_TYPES.GRANTDELAY,APPLY_TYPES.STATUSCHANGE,APPLY_TYPES.DISABLE].includes(detailInfo.type)){
+        if ([APPLY_TYPES.APPLY_PWD_CHANGE,APPLY_TYPES.APPLY_STH_ELSE,APPLY_TYPES.APPLY_GRANT_DELAY,APPLY_TYPES.APPLY_GRANT_STATUS_CHANGE,APPLY_TYPES.DISABLE].includes(detailInfo.type)){
             return true;
         }else if([APPLY_TYPES.DELAY].includes(detailInfo.type)){
             //延期申请类型不加配置按钮的情况
