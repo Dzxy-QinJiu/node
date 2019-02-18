@@ -500,7 +500,7 @@ const ApplyViewDetail = createReactClass({
                 </div>
                 <div className="apply-detail-content" style={{height: applyDetailHeight}} ref="geminiWrap">
                     <PrivilegeChecker check='APP_USER_APPLY_APPROVAL'>
-                        {this.renderDetailForm(detailInfo)}
+                        {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo)}
                     </PrivilegeChecker>
                     {this.state.applyIsExpanded ? null : (
                         <GeminiScrollbar enabled={GeminiScrollbarEnabled} ref="gemini">
@@ -590,8 +590,11 @@ const ApplyViewDetail = createReactClass({
             this.setState({isOplateUser});
         });
     },
+    notShowIcon(){
+        return !this.isUnApproved() || !hasPrivilege('APP_USER_APPLY_APPROVAL') || !this.state.isOplateUser;
+    },
     renderDetailOperateBtn(user_id) {
-        if (!this.isUnApproved() || !hasPrivilege('APP_USER_APPLY_APPROVAL') || !this.state.isOplateUser) {
+        if (this.notShowIcon()) {
             return null;
         }
         if (this.state.applyIsExpanded) {
@@ -1380,6 +1383,10 @@ const ApplyViewDetail = createReactClass({
             </div>
         );
     },
+    //延期申请的类型不展示配置按钮的判断
+    showConfigOfDelayApply: function(detailInfo) {
+        return _.get(detailInfo, 'changedUserType');
+    },
     //新版申请展示
     //渲染用户延期
     renderMultiAppDetailDelayTime: function(detailInfo) {
@@ -1396,7 +1403,7 @@ const ApplyViewDetail = createReactClass({
             };
         });
         //修改后的用户类型，如果没有说明未修改用户类型，不用设置角色、权限
-        let changedUserType = _.get(detailInfo, 'changedUserType');
+        let changedUserType = this.showConfigOfDelayApply(detailInfo);
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
@@ -1690,15 +1697,15 @@ const ApplyViewDetail = createReactClass({
 
     //渲染详情内容区域
     renderDetailCenter(detailInfo) {
-        if (detailInfo.type === 'apply_pwd_change') {
+        if (detailInfo.type === APPLY_TYPES.PWDCHANGE) {
             return this.renderDetailChangePassword(detailInfo);
-        } else if (detailInfo.type === 'apply_sth_else') {
+        } else if (detailInfo.type === APPLY_TYPES.STHELSE) {
             return this.renderDetailChangeOther(detailInfo);
         }
         //旧版申请展示
-        else if (detailInfo.type === 'apply_grant_delay') {
+        else if (detailInfo.type === APPLY_TYPES.GRANTDELAY) {
             return this.renderDetailDelayTime(detailInfo);
-        } else if (detailInfo.type === 'apply_grant_status_change') {
+        } else if (detailInfo.type === APPLY_TYPES.STATUSCHANGE) {
             return this.renderDetailChangeStatus(detailInfo);
         }
         //新版申请展示
@@ -1708,6 +1715,17 @@ const ApplyViewDetail = createReactClass({
             return this.renderMultiAppDetailChangeStatus(detailInfo);
         } else {
             return this.renderApplyUser(detailInfo);
+        }
+    },
+    notShowRoleAndPrivilegeSettingBtn(detailInfo){
+        //不展示配置按钮的情况
+        if ([APPLY_TYPES.PWDCHANGE,APPLY_TYPES.STHELSE,APPLY_TYPES.GRANTDELAY,APPLY_TYPES.STATUSCHANGE,APPLY_TYPES.DISABLE].includes(detailInfo.type)){
+            return true;
+        }else if([APPLY_TYPES.DELAY].includes(detailInfo.type)){
+            //延期申请类型不加配置按钮的情况
+            return !this.showConfigOfDelayApply(detailInfo) || this.notShowIcon();
+        }else{
+            return this.notShowIcon();
         }
     },
 

@@ -341,7 +341,11 @@ export const APPLY_LIST_LAYOUT_CONSTANTS = {
 //多应用申请审批类型
 export const APPLY_TYPES = {
     DELAY: 'apply_grant_delay_multiapp',
-    DISABLE: 'apply_grant_status_change_multiapp'
+    DISABLE: 'apply_grant_status_change_multiapp',
+    PWDCHANGE: 'apply_pwd_change',
+    STHELSE: 'apply_sth_else',
+    GRANTDELAY: 'apply_grant_delay',
+    STATUSCHANGE: 'apply_grant_status_change'
 };
 
 //多应用申请审批类型
