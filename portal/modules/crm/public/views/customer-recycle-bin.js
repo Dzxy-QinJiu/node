@@ -196,12 +196,17 @@ class CustomerRecycleBin extends React.Component {
         if (!id || this.state.isRecoveringId) return;
         let recoveryCustomer = _.find(this.state.customerList, item => item.unique_id === id);
         if (!recoveryCustomer) return;
+        let changeIdObj = {
+            id: recoveryCustomer.unique_id,
+            unique_id: recoveryCustomer.id//真实的客户id，获取客户详情中的数据需要用，所以取客户列表时与unique_id交换了，此处提交前需要再换回来
+        };
+        let submitCustomer = {...recoveryCustomer, ...changeIdObj};
         this.setState({isRecoveringId: id});
         $.ajax({
             url: '/rest/crm/recovery/customer',
             type: 'put',
             dateType: 'json',
-            data: recoveryCustomer,
+            data: submitCustomer,
             success: (data) => {
                 message.success(Intl.get('crm.recovery.customer.success', '恢复客户成功'));
                 //回收站中，去掉恢复成功的客户
