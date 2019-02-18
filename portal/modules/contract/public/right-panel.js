@@ -309,6 +309,8 @@ class ContractRightPanel extends React.Component {
             contractData = _.extend({}, this.props.contract, this.refs.addBasic.state.formData);
             contractData.category = this.state.currentCategory;
 
+            contractData.cost_structure = contractData.cost_structure.join(',');
+
             const addProduct = this.refs.addProduct;
             if (addProduct && !_.isEmpty(addProduct.state.products[0])) {
                 contractData.products = addProduct.state.products;

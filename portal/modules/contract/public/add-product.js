@@ -250,14 +250,14 @@ const AddProduct = createReactClass({
     renderAppIconName(appName, appId) {
         let appList = this.props.appList;
         let matchAppObj = _.find(appList, (appItem) => {
-            return appItem.client_id === appId;
+            return appItem.app_id === appId;
         });
         return (
             <span className='app-icon-name'>
                 {appName ? (
-                    matchAppObj && matchAppObj.client_image ? (
+                    matchAppObj && matchAppObj.app_logo ? (
                         <span className='app-self'>
-                            <img src={matchAppObj.client_image} />
+                            <img src={matchAppObj.app_logo} />
                         </span>
                     ) : (
                         <span className='app-default'>

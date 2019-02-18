@@ -151,12 +151,6 @@ class DetailPayment extends React.Component {
     handleCancel = () => {
         this.changeDisplayType(DISPLAY_TYPES.TEXT);
     };
-    handleEditTableCancel = () => {
-        const contract = _.cloneDeep(this.props.contract);
-        this.setState({paymentLists: this.getPaymentLists(contract)}, () => {
-            this.updateScrollBar();
-        });
-    };
     handleEditTableSave = (data, successFunc, errorFunc) => {
         const params = {contractId: this.props.contract.id};
         const successFuncs = () => {
@@ -277,7 +271,6 @@ class DetailPayment extends React.Component {
                 columns={columns}
                 defaultKey='id'
                 dataSource={paymentLists}
-                onCancel={this.handleEditTableCancel}
                 onSave={this.handleEditTableSave}
                 onDelete={this.handleDelete}
             />

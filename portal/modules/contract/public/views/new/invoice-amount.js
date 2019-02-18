@@ -154,12 +154,6 @@ class InvoiceAmount extends React.Component {
     handleCancel = () => {
         this.changeDisplayType(DISPLAY_TYPES.TEXT);
     };
-    handleEditTableCancel = () => {
-        const contract = _.cloneDeep(this.props.contract);
-        this.setState({invoiceLists: this.getInvoiceLists(contract)}, () => {
-            this.props.updateScrollBar();
-        });
-    };
     handleEditTableSave = (data, successFunc, errorFunc) => {
         const successFuncs = () => {
             _.isFunction(successFunc) && successFunc();
@@ -280,7 +274,6 @@ class InvoiceAmount extends React.Component {
                 columns={columns}
                 defaultKey='id'
                 dataSource={invoiceLists}
-                onCancel={this.handleEditTableCancel}
                 onSave={this.handleEditTableSave}
                 onDelete={this.handleDelete}
             />
@@ -330,7 +323,7 @@ InvoiceAmount.propTypes = {
     handleSubmit: PropTypes.func,
     showLoading: PropTypes.func,
     hideLoading: PropTypes.func,
-    updateScrollBar: PropTypes.fucn,
+    updateScrollBar: PropTypes.func,
     refreshCurrentContract: PropTypes.func,
     refreshCurrentContractNoAjax: PropTypes.func,
     form: PropTypes.object

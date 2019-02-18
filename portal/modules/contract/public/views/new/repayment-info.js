@@ -198,15 +198,13 @@ class RepaymentInfo extends React.Component {
     handleEditTableChange = (data) => {
         this.setState({repayLists: data});
     };
-    handleEditTableCancel = () => {
-        const contract = _.cloneDeep(this.props.contract);
-        this.setState({repayLists: this.getRepayList(contract), isFirstAdd: false},() => {
-            this.props.updateScrollBar();
-        });
-    };
-    handleColumnsChange = () => {
+    handleColumnsChange = (type) => {
+        let isFirstAdd = false;
+        if(type === 'editing') {
+            isFirstAdd = true;
+        }
         this.setState({
-            isFirstAdd: true
+            isFirstAdd
         });
     };
     handleEditTableSave = (data, successFunc, errorFunc) => {
@@ -362,17 +360,49 @@ class RepaymentInfo extends React.Component {
                 dataIndex: 'gross_profit',
                 editable: true,
                 width: this.state.isFirstAdd ? num_col_width : 'auto',
+                dynamicRule: {
+                    index: 2,
+                    key: 'amount',
+                    fn: (parent) => {
+                        return {
+                            validator: (rule,value,callback) => {
+                                let dynamicRef = _.get(parent,'amounteditableFormCellRef');
+                                let dynamicValue = dynamicRef.props.form.getFieldValue('amount');
+                                console.log(dynamicValue);
+                                numberAddNoMoreThan(dynamicValue, 0, Intl.get('contract.gross.profit.can.not.exceed.repayment', '毛利不能大于回款'), rule, value, callback);
+                            }
+                        };
+                    },
+                },
                 editorConfig: {
                     rules: (text, record, index) => {
                         return [{
                             required: true,
                             message: Intl.get('contract.44', '不能为空')
-                        }, getNumberValidateRule(), numberAddNoMoreThan.bind(this, record.amount, 0, Intl.get('contract.gross.profit.can.not.exceed.repayment', '毛利不能大于回款'))];
+                        }, getNumberValidateRule()];
                     }
-                },
+                }
             }
         ];
 
+        if(this.state.isFirstAdd){
+            columns.push({
+                title: Intl.get('contract.167', '首笔回款'),
+                dataIndex: 'is_first',
+                editor: 'Switch',
+                editorConfig: {
+                    initialValue: (value) => {
+                        return ['true', true].indexOf(value) > -1;
+                    },
+                    valuePropName: 'checked',
+                },
+                editable: true,
+                width: 60,
+                render: (text, record, index) => {
+                    return text === 'true' ? Intl.get('user.yes', '是') : Intl.get('user.no', '否');
+                }
+            });
+        }
         return (
             <EditableTable
                 ref={ref => this.repaymentTableRef = ref}
@@ -380,11 +410,8 @@ class RepaymentInfo extends React.Component {
                 isEdit={this.state.hasEditPrivilege}
                 columns={columns}
                 defaultKey='id'
-                isFirstType
-                isFirstAdd={this.state.isFirstAdd}
                 dataSource={repayLists}
                 onChange={this.handleEditTableChange}
-                onCancel={this.handleEditTableCancel}
                 onColumnsChange={this.handleColumnsChange}
                 onSave={this.handleEditTableSave}
                 onDelete={this.handleDelete}
