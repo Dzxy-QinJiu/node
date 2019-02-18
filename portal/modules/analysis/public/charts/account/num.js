@@ -3,16 +3,13 @@
  */
 
 import { USER_TYPES, USER_TYPES_WITH_TITLE } from '../../consts';
-import { ifNotSingleApp, argCallbackUnderlineTimeToTime, argCallbackMemberIdsToMemberId } from '../../utils';
+import { ifNotSingleApp, argCallbackUnderlineTimeToTime } from '../../utils';
 
 export function getAccountNumChart(type = 'total', title) {
     return {
         title: title || '账号数统计',
         url: `/rest/analysis/user/v1/:auth_type/${type}/summary`,
-        argCallback: arg => {
-            argCallbackUnderlineTimeToTime(arg);
-            argCallbackMemberIdsToMemberId(arg);
-        },
+        argCallback: argCallbackUnderlineTimeToTime,
         chartType: 'bar',
         option: {
             legend: {

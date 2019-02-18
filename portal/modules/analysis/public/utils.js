@@ -179,9 +179,9 @@ export function argCallbackMemberIdsToSalesId(arg) {
     const query = arg.query;
 
     if (query) {
-        if (query.member_id) {
-            query.sales_id = query.member_id;
-            delete query.member_id;
+        if (query.member_ids) {
+            query.sales_id = query.member_ids;
+            delete query.member_ids;
         }
     }
 }
