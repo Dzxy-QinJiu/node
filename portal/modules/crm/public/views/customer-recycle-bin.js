@@ -28,7 +28,10 @@ const PAGE_SIZE = 20;
 class CustomerRecycleBin extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = this.getInitStateData();
+    }
+    getInitStateData(){
+        return {
             isLoading: false,//正在加载客户列表
             customerList: [],//回收站中的客户列表
             totalSize: 0,//回收站中，客户总数
@@ -47,7 +50,6 @@ class CustomerRecycleBin extends React.Component {
             }
         };
     }
-
     componentDidMount() {
         this.getRecycleBinCustomers();
         let _this = this;
@@ -59,7 +61,9 @@ class CustomerRecycleBin extends React.Component {
             _this.showRightPanel(id);
         });
     }
-
+    componentWillUnmount() {
+        this.setState(this.getInitStateData());
+    }
     showRightPanel = (id) => {
         this.setState({
             currentId: id
@@ -78,12 +82,16 @@ class CustomerRecycleBin extends React.Component {
     renderCustomerDetail = () => {
         //触发打开带拨打电话状态的客户详情面板
         if (this.state.currentId) {
-            let curCustomer = _.find(this.state.customerList, item => item.id === this.state.currentId);
+            let curCustomer = _.find(this.state.customerList, item => item.unique_id === this.state.currentId);
             if(curCustomer){
+                let customerInfo = {
+                    ...curCustomer,
+                    id: curCustomer.unique_id//客户真实的id, 获取客户详情中的数据时需要用此id
+                };
                 phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
                     customer_params: {
                         currentId: this.state.currentId,
-                        curCustomer: curCustomer,
+                        curCustomer: customerInfo,
                         hideRightPanel: this.colseRightPanel,
                         disableEdit: true,//是否是客户回收站中打开的客户详情(禁止编辑、添加客户信息)
                     }
@@ -154,14 +162,6 @@ class CustomerRecycleBin extends React.Component {
         } else {
             customerList = list;
         }
-        customerList = _.map(customerList, item => {
-            //将客户的id和unique_id交换（unique_id才是真实的客户id）
-            let changeIdObj = {
-                id: item.unique_id,//客户真实的id,客户详情中的数据需要用此id
-                unique_id: item.id, //用来下拉加载、删除、恢复的id
-            };
-            return {...item, ...changeIdObj};
-        });
         //是否监听下拉加载的处理
         let listenScrollBottom = false;
         if (_.get(customerList, 'length') < totalSize) {
@@ -173,7 +173,7 @@ class CustomerRecycleBin extends React.Component {
             totalSize,
             customerList,
             listenScrollBottom,
-            lastId: _.get(customerList, `[${customerList.length - 1}].unique_id`, '')
+            lastId: _.get(customerList, `[${customerList.length - 1}].id`, '')
         });
     }
 
@@ -194,23 +194,18 @@ class CustomerRecycleBin extends React.Component {
     //恢复客户
     recoveryCustomer = (id) => {
         if (!id || this.state.isRecoveringId) return;
-        let recoveryCustomer = _.find(this.state.customerList, item => item.unique_id === id);
+        let recoveryCustomer = _.find(this.state.customerList, item => item.id === id);
         if (!recoveryCustomer) return;
-        let changeIdObj = {
-            id: recoveryCustomer.unique_id,
-            unique_id: recoveryCustomer.id//真实的客户id，获取客户详情中的数据需要用，所以取客户列表时与unique_id交换了，此处提交前需要再换回来
-        };
-        let submitCustomer = {...recoveryCustomer, ...changeIdObj};
         this.setState({isRecoveringId: id});
         $.ajax({
             url: '/rest/crm/recovery/customer',
             type: 'put',
             dateType: 'json',
-            data: submitCustomer,
+            data: recoveryCustomer,
             success: (data) => {
                 message.success(Intl.get('crm.recovery.customer.success', '恢复客户成功'));
                 //回收站中，去掉恢复成功的客户
-                let customerList = _.filter(this.state.customerList, item => item.unique_id !== id);
+                let customerList = _.filter(this.state.customerList, item => item.id !== id);
                 let totalSize = this.state.totalSize;
                 totalSize--;
                 this.setState({
@@ -236,7 +231,7 @@ class CustomerRecycleBin extends React.Component {
             success: (data) => {
                 message.success(Intl.get('crm.138', '删除成功'));
                 //回收站中，去掉恢复成功的客户
-                let customerList = _.filter(this.state.customerList, item => item.unique_id !== id);
+                let customerList = _.filter(this.state.customerList, item => item.id !== id);
                 let totalSize = this.state.totalSize;
                 totalSize--;
                 this.setState({
@@ -272,7 +267,7 @@ class CustomerRecycleBin extends React.Component {
                     return (
                         <span>
                             <span>{text}</span>
-                            <span className="hidden record-id">{record.id}</span>
+                            <span className="hidden record-id">{record.unique_id}</span>
                         </span>);
                 }
             },
@@ -338,7 +333,7 @@ class CustomerRecycleBin extends React.Component {
                                 {hasPrivilege('CRM_RECOVERY_CUSTOMER') ? (
                                     <Popconfirm placement="leftTop" data-tracename="恢复客户"
                                         title={Intl.get('crm.recovery.customer.confirm.tip', '确定要恢复客户 {name} 吗？', {name: _.get(record, 'name', '')})}
-                                        onConfirm={this.recoveryCustomer.bind(this, _.get(record, 'unique_id', ''))}>
+                                        onConfirm={this.recoveryCustomer.bind(this, _.get(record, 'id', ''))}>
                                         <span className="iconfont icon-recovery operate-icon"
                                             data-tracename="恢复客户"
                                             title={Intl.get('crm.customer.recovery', '恢复')}/>
@@ -346,7 +341,7 @@ class CustomerRecycleBin extends React.Component {
                                 {hasPrivilege('CRM_DELETE_CUSTOMER') ? (
                                     <Popconfirm placement="leftTop"
                                         title={Intl.get('crm.delete.customer.confirm.tip', '删除后不可恢复，确定要彻底删除客户 {name} 吗？', {name: _.get(record, 'name', '')})}
-                                        onConfirm={this.deleteCustomer.bind(this, _.get(record, 'unique_id', ''))}>
+                                        onConfirm={this.deleteCustomer.bind(this, _.get(record, 'id', ''))}>
                                         <span className="iconfont icon-delete operate-icon"
                                             data-tracename="彻底删除客户"
                                             title={Intl.get('crm.delete.thoroughly', '彻底删除')}/>
@@ -372,8 +367,8 @@ class CustomerRecycleBin extends React.Component {
             let phoneArray = _.get(item, 'contacts[0].phone', []);
             phoneArray = _.map(phoneArray, phone => addHyphenToPhoneNumber(phone));
             return {
-                id: item.id,//客户的真实id
-                unique_id: item.unique_id,
+                id: item.id,
+                unique_id: item.unique_id,//客户的真实id,用户来获取客户详情中的数据
                 name: item.name,
                 contact: _.get(item, 'contacts[0].name', ''),
                 contact_way: phoneArray,
@@ -394,7 +389,7 @@ class CustomerRecycleBin extends React.Component {
 
     //处理选中行的样式
     handleRowClassName = (record, index) => {
-        if ((record.id === this.state.currentId)) {
+        if ((record.unique_id === this.state.currentId)) {
             return 'current-row';
         }
         else {

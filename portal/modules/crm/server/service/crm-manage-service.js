@@ -92,7 +92,7 @@ exports.getRecycleBinCustomers = function(req, res) {
     let url = crmRestApis.getRecycleBinCustomers.replace(':type', req.params.type || 'user')
         .replace(':page_size', req.params.page_size || 20);
     if (req.query.id) {
-        url = `${url}?id=${req.query.customer_id}`;
+        url = `${url}?id=${req.query.id}`;
     }
     return restUtil.authRest.post(
         {
