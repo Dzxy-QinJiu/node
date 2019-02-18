@@ -28,7 +28,10 @@ const PAGE_SIZE = 20;
 class CustomerRecycleBin extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = this.getInitStateData();
+    }
+    getInitStateData(){
+        return {
             isLoading: false,//正在加载客户列表
             customerList: [],//回收站中的客户列表
             totalSize: 0,//回收站中，客户总数
@@ -47,7 +50,6 @@ class CustomerRecycleBin extends React.Component {
             }
         };
     }
-
     componentDidMount() {
         this.getRecycleBinCustomers();
         let _this = this;
@@ -59,7 +61,9 @@ class CustomerRecycleBin extends React.Component {
             _this.showRightPanel(id);
         });
     }
-
+    componentWillUnmount() {
+        this.setState(this.getInitStateData());
+    }
     showRightPanel = (id) => {
         this.setState({
             currentId: id
