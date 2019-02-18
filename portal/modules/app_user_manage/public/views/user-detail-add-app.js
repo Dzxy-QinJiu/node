@@ -52,7 +52,6 @@ var wrapperCol = {span: 11};
 var CustomerSuggest = require('./customer_suggest/customer_suggest');
 const SELECT_CUSTOM_TIME_TYPE = 'custom';
 const USER_DETAIL_ADD_APP_CUSTOMER_SELECT_WRAP = 'user-detail-add-app-customer-suggest-wrap';
-import ShareObj from'../util/app-id-share-util';
 var UserDetailAddApp = createReactClass({
     displayName: 'UserDetailAddApp',
     propTypes: {

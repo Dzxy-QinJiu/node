@@ -131,6 +131,36 @@ class UserDetailAddAppStore {
                 this.submitResult = 'loading';
             } else {
                 this.submitResult = 'success';
+                //选中的应用列表
+                const selectedApps = this.selectedApps;
+
+                _.each(result.apps, (appInfo) => {
+                    _.find(this.selectedApps, (app) => {
+                        if (app.app_id === appInfo.client_id) {
+                            appInfo.app_id = app.app_id;
+                            appInfo.app_name = app.app_name;
+                            appInfo.app_logo = app.app_logo;
+                            appInfo.start_time = appInfo.begin_date;
+                            appInfo.create_time = appInfo.begin_date;
+                            appInfo.end_time = appInfo.end_date;
+                            delete appInfo.begin_date;
+                            delete appInfo.end_date;
+                            appInfo.multilogin = +appInfo.mutilogin;
+                            appInfo.is_two_factor = +appInfo.is_two_factor;
+                            appInfo.status = +appInfo.status;
+                            appInfo.is_disabled = false;
+                            // setTimeout( () =>{
+                            //     AppUserDetailAction.getBatchRoleInfo({
+                            //         data: {
+                            //             ids: appInfo.roles
+                            //         }
+                            //     },(roleInfo) => {
+                            //         appInfo.roleItems = appInfo.roles.map(roleId => roleInfo.find(x => x.role_id === roleId)).filter(x => x);
+                            //     });
+                            // } );
+                        }
+                    });
+                });
                 setTimeout(() => {
                     this.resetState();
                     AppUserPanelSwitchAction.resetState();
