@@ -756,6 +756,37 @@
         .circle-button-minus:hover {
             background-color: transparent;
         }
+        .belong-customer-form {
+            float: left;
+            width: 100%;
+            .belong-customer-item{
+                float: left;
+                width: calc(100% - 60px);
+                .ant-select{
+                    float: left;
+                }
+            }
+            .circle-button{
+                position: relative;
+                margin: 0;
+                z-index: 1;
+                cursor: pointer;
+            }
+            .circle-button-minus,.circle-button-plus{
+                float: left;
+            }
+        }
+        .belong-customer{
+            .belong-customer-form{
+                .belong-customer-item{
+                    margin-bottom: 10px;
+                    width: calc(100% - 90px);
+                }
+                .circle-button-plus{
+                    line-height: 30px;
+                }
+            }
+        }
         .step-button {
             position: absolute;
             bottom: 15px;
@@ -1002,6 +1033,17 @@
                 top: -25px;
             }
         }
+        .add-products {
+            .app-icon-name {
+                .app-self {
+                    img{
+                        width: 16px;
+                        height: 16px;
+                        vertical-align: top;
+                    }
+                }
+            }
+        }
         .total-amount-price {
             margin: 15px 0 0 15px;
             font-size: 14px;
@@ -1087,13 +1129,19 @@
         .contract-tab-container{
             padding-right: 15px;
             .belong-customer-form {
-                .circle-button{
+                /*.circle-button{
                     position: absolute;
                     top: 0px;
                     right: -70px;
                     margin: 0;
                     z-index: 1;
                     cursor: pointer;
+                }*/
+                .circle-button-minus{
+                    float: left;
+                }
+                .circle-button-plus{
+                    //float: right;
                 }
             }
             .belong-customer-list {

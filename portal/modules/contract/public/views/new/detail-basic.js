@@ -46,7 +46,6 @@ class DetailBasic extends React.Component {
 
     getInitStateData(props) {
         let hasEditPrivilege = hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPATE_PRIVILEGE);
-        // let hasEditPrivilege = contract.stage === '待审' && hasPrivilege('OPLATE_CONTRACT_UPDATE');
         let formData = _.extend(true, {}, props.contract);
 
         //所属客户是否是选择的，以数组的形式记录了各个所属客户在输入后是否经过了点击选择的过程
@@ -75,13 +74,13 @@ class DetailBasic extends React.Component {
             let formData = JSON.parse(JSON.stringify(nextProps.contract));
 
             //所属客户是否是选择的，以数组的形式记录了各个所属客户在输入后是否经过了点击选择的过程
-            /*let belongCustomerIsChoosen = [];
+            let belongCustomerIsChoosen = [];
             if (!formData.customers) {
                 formData.customers = [{}];
             } else {
                 //编辑已有所属客户时，将选中状态都设为true
                 belongCustomerIsChoosen = _.map(formData.customers, customer => true);
-            }*/
+            }
 
             this.setState({
                 formData,
@@ -99,17 +98,13 @@ class DetailBasic extends React.Component {
             data: saveObj || {},
             params: {type: VIEW_TYPE.SELL}
         };
-        // 单项编辑时，这里得添加上客户信息字段
-        if(!_.get(saveObj, 'customers')){
-            // saveObj.customers = this.props.contract.customers;
-        }
 
         ajax(arg).then(result => {
             if (result.code === 0) {
                 message.success(Intl.get('user.edit.success', '修改成功'));
                 if (_.isFunction(successFunc)) successFunc();
                 const hasResult = _.isObject(result.result) && !_.isEmpty(result.result);
-                let contract = _.extend({},this.props.contract,result.result);
+                let contract = _.extend({},this.props.contract, result.result);
                 if (hasResult) {
                     this.props.refreshCurrentContract(this.props.contract.id, true, contract);
                 }
@@ -246,7 +241,7 @@ class DetailBasic extends React.Component {
             belongCustomerIsChoosen
         });
     }
-    addBelongCustomer() {
+    addBelongCustomer = () => {
         let {formData, customers, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
 
         formData.customers.push({});
@@ -648,12 +643,21 @@ class DetailBasic extends React.Component {
                     <BasicEditSelectField
                         id={contract.id}
                         displayText={contract.cost_structure}
-                        value={contract.cost_structure}
+                        value={contract.cost_structure ? contract.cost_structure.split(',') : []}
                         field="cost_structure"
+                        multiple
                         selectOptions={costOptions}
                         width={EDIT_FEILD_LESS_WIDTH}
                         hasEditPrivilege={hasEditPrivilege}
-                        saveEditSelect={this.saveContractBasicInfo}
+                        validators={[{
+                            required: true,
+                            message: `${Intl.get('contract.choose', '请选择')}${Intl.get('contract.165', '成本构成')}`,
+                            type: 'array'
+                        }]}
+                        saveEditSelect={(saveObj, successFunc, errorFunc) => {
+                            saveObj.cost_structure = saveObj.cost_structure.join(',');
+                            this.saveContractBasicInfo(saveObj, successFunc, errorFunc);
+                        }}
                         noDataTip={Intl.get('clue.has.no.data', '暂无')}
                         addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.165', '成本构成')}`}
                     />
@@ -796,6 +800,7 @@ class DetailBasic extends React.Component {
 
     renderBelongCustomerField() {
         const customers = this.state.formData.customers || [{}];
+        let itemSize = _.get(customers, 'length');
         const popupContainer = document.getElementById('contractRightPanel');
         const {getFieldDecorator} = this.props.form;
 
@@ -803,11 +808,12 @@ class DetailBasic extends React.Component {
             <div className="belong-customer-form">
                 {customers.map((customer, index) => {
                     const fieldName = 'belong_customer' + index;
-
+                    {/*{...formItemLayout}*/}
                     return (
                         <FormItem
                             key={index}
-                            {...formItemLayout}
+                            className='belong-customer-item'
+
                         >
                             {getFieldDecorator(fieldName, {
                                 initialValue: customer.customer_name,
@@ -825,29 +831,28 @@ class DetailBasic extends React.Component {
                                     {this.getCustomerOptions()}
                                 </Select>
                             )}
-                            {index > 0 ? (
+                            {index === 0 && itemSize === 1 ? null : (
                                 <div className="circle-button circle-button-minus"
                                     title={Intl.get('common.delete', '删除')}
                                     onClick={this.deleteBelongCustomer.bind(this, index)}>
                                     <Icon type="minus"/>
                                 </div>
-                            ) : (
-                                <div className="circle-button circle-button-plus"
-                                    title={Intl.get('common.add', '添加')}
-                                    onClick={this.addBelongCustomer.bind(this, index)}>
-                                    <Icon type="plus"/>
-                                </div>
                             )}
                         </FormItem>
                     );
                 })}
+                <div className="circle-button circle-button-plus"
+                    title={Intl.get('common.add', '添加')}
+                    onClick={this.addBelongCustomer}>
+                    <Icon type="plus"/>
+                </div>
             </div>
         );
     }
 
     renderChangeCustomerSelect() {
         return (
-            <div className="belong-customer">
+            <div className="belong-customer clearfix">
                 {this.renderBelongCustomerField()}
             </div>
         );

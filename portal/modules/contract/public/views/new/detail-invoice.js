@@ -70,10 +70,14 @@ class DetailInvoice extends React.Component {
             this.setState({
                 displayType: type,
                 submitErrorMsg: '',
+            }, () => {
+                this.updateScrollBar();
             });
         } else if (type === DISPLAY_TYPES.EDIT) {
             this.setState({
                 displayType: type
+            }, () => {
+                this.updateScrollBar();
             });
         }
     }

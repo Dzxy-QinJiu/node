@@ -5,6 +5,11 @@ import Trace from 'LIB_DIR/trace';
 const FormItem = Form.Item;
 
 class EditableCell extends React.Component {
+
+    state = {
+        value: ''
+    };
+
     static propTypes = {
         form: PropTypes.object,
         editor: PropTypes.string,
@@ -13,7 +18,8 @@ class EditableCell extends React.Component {
         editing: PropTypes.bool,
         dataIndex: PropTypes.string,
         record: PropTypes.object,
-        disabledDate: PropTypes.func,
+        dynamicRule: PropTypes.object,
+        parent: PropTypes.object,
     };
 
     static defaultProps = {
@@ -21,8 +27,10 @@ class EditableCell extends React.Component {
         editor: 'Input',
         // 编辑器在form中的getFieldDecorator的配置
         editorConfig: {},
-        // 编辑器上的属性
-        editorProps: {}
+        // 编辑器上的相关属性
+        editorProps: {},
+        dynamicRule: {},
+        parent: {}
     };
 
     getEditor = () => {
@@ -32,6 +40,7 @@ class EditableCell extends React.Component {
 
         return <Editor {...editorProps}/>;
     };
+
     render() {
         const {
             editing,
@@ -47,6 +56,13 @@ class EditableCell extends React.Component {
         if(editing){
             let {initialValue} = editorConfig;
             editorConfig.initialValue = _.isNil(initialValue) ? record[dataIndex] : (_.isFunction(initialValue) ? initialValue(record[dataIndex]) : initialValue);
+            // 动态验证时
+            if(!_.isEmpty(restProps.dynamicRule) && restProps.dynamicRule.key) {
+                editorConfig.rules[restProps.dynamicRule.index] = ((parent) => {
+                    return restProps.dynamicRule.fn(parent);
+                })(restProps.parent);
+            }
+
             return (
                 <FormItem style={{ margin: 0 }}>
                     {getFieldDecorator(dataIndex, editorConfig)(this.getEditor())}
@@ -58,11 +74,7 @@ class EditableCell extends React.Component {
     }
 }
 
-const EditableFormCell = Form.create({
-    onValuesChange: (props, values) => {
-        // _.isFunction(props.onValuesChange) && props.onValuesChange(props, values);
-    }
-})(EditableCell);
+const EditableFormCell = Form.create()(EditableCell);
 
 class EditableTable extends React.Component {
     constructor(props) {
@@ -86,8 +98,6 @@ class EditableTable extends React.Component {
         parent: {},
         // 默认编辑时对比的key键
         defaultKey: 'id',
-        // 是否是首笔回款
-        isFirstType: false,
         //表格是否显示边框
         bordered: true,
         //表格是否处于编辑状态
@@ -106,7 +116,7 @@ class EditableTable extends React.Component {
         if(!_.isEqual(this.props.dataSource, nextProps.dataSource)) {
             newState.data = nextProps.dataSource;
         }
-        if (!_.isEmpty(this.state.currentContractId) && !_.isEqual(this.state.currentContractId, nextProps.parent.props.contract.id)) {
+        if (!_.isNil(this.state.currentContractId) && !_.isEqual(this.state.currentContractId, nextProps.parent.props.contract.id)) {
             newState.editingKey = '';
             newState.currentContractId = nextProps.parent.props.contract.id;
         }
@@ -170,7 +180,8 @@ class EditableTable extends React.Component {
     renderColumns(text, record, index, col) {
         return (
             <EditableFormCell
-                wrappedComponentRef={ref => this.editableFormCellRef = ref}
+                wrappedComponentRef={ref => {this[`${col.dataIndex}editableFormCellRef`] = ref; this.editableFormCellRef = ref;}}
+                parent={this}
                 {...col}
                 record={record}
                 onValuesChange={this.onValuesChange.bind(this)}
@@ -185,18 +196,25 @@ class EditableTable extends React.Component {
         Trace.traceEvent(e,'点击编辑某行单元格');
         this.setState({ editingKey: key},() => {
             this.props.onCancel();
+            _.isFunction(this.props.onColumnsChange) && this.props.onColumnsChange('editing');
         });
     }
-    save(key) {
+    save(defaultKey) {
         this.editableFormCellRef.props.form.validateFields((error, row) => {
             if (error) {
                 return;
             }
+            let saveObj = {};
+            for(let key of Object.keys(this)) {
+                if(/Ref$/.test(key)){
+                    saveObj = {...saveObj, ...this[key].props.form.getFieldsValue()};
+                }
+            }
             const newData = [...this.state.data];
-            const index = newData.findIndex(item => key === item[this.props.defaultKey]);
+            const index = newData.findIndex(item => defaultKey === item[this.props.defaultKey]);
             if (index > -1) {
-                const item = {...newData[index], ...row};
-                // newData.splice(index, 1, item);
+
+                const item = {...newData[index], ...saveObj, ...item};
                 this.setState({
                     loading: true
                 }, () => {
@@ -218,8 +236,9 @@ class EditableTable extends React.Component {
         });
     }
     cancel(key) {
-        this.setState({ editingKey: '' });
+        this.setState({ editingKey: '', data: this.props.dataSource });
         this.props.onCancel();
+        _.isFunction(this.props.onColumnsChange) && this.props.onColumnsChange('cancel');
         Trace.traceEvent(ReactDOM.findDOMNode(this), '取消对表格的修改');
     }
     handleDelete(record) {
@@ -240,28 +259,6 @@ class EditableTable extends React.Component {
     }
     render() {
         let columns = _.cloneDeep(this.props.columns);
-        // 是否添加首笔回款列
-        if(this.props.isFirstType && this.state.editingKey) {
-            columns.push({
-                title: Intl.get('contract.167', '首笔回款'),
-                dataIndex: 'is_first',
-                editor: 'Switch',
-                editorConfig: {
-                    initialValue: (value) => {
-                        return ['true', true].indexOf(value) > -1;
-                    },
-                    valuePropName: 'checked',
-                },
-                editable: true,
-                width: 60,
-                render: (text, record, index) => {
-                    return text === 'true' ? Intl.get('user.yes', '是') : Intl.get('user.no', '否');
-                }
-            });
-            if(!this.props.isFirstAdd){
-                _.isFunction(this.props.onColumnsChange) && this.props.onColumnsChange();
-            }
-        }
         // 是否添加操作列
         if(this.props.isEdit) {
             columns.push({
@@ -332,13 +329,12 @@ EditableTable.propTypes = {
     onSave: PropTypes.func,
     bordered: PropTypes.bool,
     isEdit: PropTypes.bool,
-    isFirstAdd: PropTypes.bool,
     defaultKey: PropTypes.string,
-    isFirstType: PropTypes.bool,
     onDelete: PropTypes.func,
     onChange: PropTypes.func,
     onCancel: PropTypes.func,
     onColumnsChange: PropTypes.func,
+    form: PropTypes.object
 };
 
-module.exports = EditableTable;
+module.exports = Form.create()(EditableTable);

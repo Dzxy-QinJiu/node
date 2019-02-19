@@ -194,14 +194,20 @@ const AddBasic = createReactClass({
                     <FormItem
                         {...formItemLayout2}
                         label={Intl.get('contract.165', '成本构成')}
+                        validateStatus={this.getValidateStatus('cost_structure')}
+                        help={this.getHelpMessage('cost_structure')}
                         required
                     >
-                        <CheckboxGroup
-                            name="cost_structure"
-                            options={COST_STRUCTURE}
-                            value={formData.cost_structure ? formData.cost_structure.split(',') : []}
-                            onChange={this.handleCostStructureChange}
-                        />
+                        <Validator rules={[{type: 'array' ,required: true, message: `${Intl.get('contract.choose', '请选择')}${Intl.get('contract.165', '成本构成')}`}]}>
+                            <CheckboxGroup
+                                name="cost_structure"
+                                options={COST_STRUCTURE}
+                                value={formData.cost_structure}
+                                // value={formData.cost_structure ? formData.cost_structure.split(',') : []}
+                                // onChange={this.handleCostStructureChange}
+                                onChange={this.setField.bind(this, 'cost_structure')}
+                            />
+                        </Validator>
                     </FormItem>
                     <FormItem
                         {...formItemLayout2}

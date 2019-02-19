@@ -245,14 +245,17 @@ export default {
     //渲染所属客户表单项
     renderBelongCustomerField: function(popupContainer = document.getElementById('contractRightPanel')) {
         const customers = this.state.formData.customers || [{}];
+        let itemSize = _.get(customers, 'length');
 
         return (
             <div className="belong-customer-form">
+
                 {customers.map((customer, index) => {
                     const fieldName = 'belong_customer' + index;
 
                     return (
                         <FormItem
+                            className='belong-customer-item'
                             key={index}
                             validateStatus={this.getValidateStatus(fieldName)}
                             help={this.getHelpMessage(fieldName)}
@@ -262,6 +265,7 @@ export default {
                                 <Select
                                     name={fieldName}
                                     combobox
+                                    className='belong-customer-item'
                                     filterOption={false}
                                     placeholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
                                     value={customer.customer_name}
@@ -272,22 +276,21 @@ export default {
                                     {this.getCustomerOptions()}
                                 </Select>
                             </Validator>
-                            {index > 0 ? (
+                            {index === 0 && itemSize === 1 ? null : (
                                 <div className="circle-button circle-button-minus"
                                     title={Intl.get('common.delete', '删除')}
                                     onClick={this.deleteBelongCustomer.bind(this, index)}>
                                     <Icon type="minus"/>
                                 </div>
-                            ) : (
-                                <div className="circle-button circle-button-plus"
-                                    title={Intl.get('common.add', '添加')}
-                                    onClick={this.addBelongCustomer.bind(this, index)}>
-                                    <Icon type="plus"/>
-                                </div>
                             )}
                         </FormItem>
                     );
                 })}
+                <div className="circle-button circle-button-plus"
+                    title={Intl.get('common.add', '添加')}
+                    onClick={this.addBelongCustomer}>
+                    <Icon type="plus"/>
+                </div>
             </div>
         );
     },
