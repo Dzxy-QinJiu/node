@@ -356,9 +356,7 @@ class UserForm extends React.Component {
                                     <Input name="name" id="name" type="text"
                                         placeholder={Intl.get('crm.90', '请输入姓名')}
                                         className={this.state.userNameExist || this.state.userNameError ? 'input-red-border' : ''}
-                                        onBlur={() => {
-                                            this.checkOnlyUserName();
-                                        }}
+                                        onBlur={this.checkOnlyUserName}
                                     />
                                 )}
                             </FormItem>
