@@ -2,7 +2,7 @@
  * 活跃客户趋势
  */
 
-import { numToPercent, argCallbackUnderlineTimeToTime, argCallbackMemberIdsToMemberId } from '../../utils';
+import { numToPercent, argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getCustomerActiveTrendChart(title = '', interval = 'day', isShowIntervalSelector) {
     let chart = {
@@ -16,6 +16,7 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
             },
         ],
         argCallback: arg => {
+            argCallbackTeamIdsToTeamId(arg);
             argCallbackMemberIdsToMemberId(arg);
             argCallbackUnderlineTimeToTime(arg);
 
