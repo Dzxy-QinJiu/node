@@ -23,7 +23,7 @@ const AddBuyBasic = createReactClass({
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     {this.renderNumField()}
                     {this.renderUserField()}
-                    {this.renderTeamField()}
+                    {/*{this.renderTeamField()}*/}
                     {this.renderPurchaseTypeField()}
                     {this.renderDateField()}
                     {this.renderAmountField()}

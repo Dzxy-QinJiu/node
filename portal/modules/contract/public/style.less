@@ -1,88 +1,23 @@
 @import "../../../public/css/common-variables";
 @import "../../../components/antd-table-pagination/index.less";
-.moduleContent{
+@bg-grey: #F5F5F5;
+@color-block: #333333;
+.moduleContent {
     height: 100%;
+    .contract-divide-line {
+        margin: 20px;
+        border-top: 1px solid #dad8d8;
+    }
     .contract-dashboard {
         background: #eee;
         margin: 0 16px 10px 20px;
         padding: 10px 0 0 15px;
     }
-}
-#app {
-    .splice-table {
-        .ant-spin-container {
-            .ant-table-empty {
-                margin: 0;
-            }
-            .ant-table-body {
-                height: auto;
-                border-bottom: none;
-            }
-            .ant-table-placeholder {
-                display: none;
-            }
-        }
-        @thead-height: 52px;
-        .hide-tbody {
-            height: @thead-height !important;
-            overflow: hidden;
-            th {
-                height: @thead-height;
-            }
-            .ant-table-tbody {
-                display: table-row-group !important;
-            }
-        }
-        .custom-thead {
-            &:extend(.hide-tbody);
-            &:extend(.handle-empty);
-            table {
-                overflow: hidden;
-            }
-        }
-        .custom-thead-filter {
-            &:extend(.hide-tbody);
-            &:extend(.handle-empty);
-        }
-        .custom-tfoot {
-            &:extend(.hide-tbody);
-            &:extend(.handle-empty);
-            border-top: 2px solid #eef0ef;
-            position: relative;
-            .ant-table-wrapper th {
-                height: 40px;
-            }
-            .info-title {
-                position: absolute;
-                font-size: 14px;
-                font-weight: bold;
-                top: 50%;
-                margin-top: -15px;
-                padding: 8px;
-            }
-        }
-        .custom-tbody {
-            background: #fff;
-            .ant-table-wrapper,
-            .ant-spin-nested-loading {
-                height: 100%;
-            }
-            table {
-                margin-top: -@thead-height;
-            }
-            .ant-table-header {
-                display: none;
-            }
-            .ant-table-thead {
-                th {
-                    height: @thead-height;
-                }
-                display: table-header-group !important;
-            }
-        }
+    .right-panel-modal .close-modal-btn {
+        top: 0;
     }
-}
-.moduleContent {
+
+
     .contract-list {
         padding: 16px;
         background: #fff;
@@ -95,7 +30,7 @@
             display: inline-block;
             .search-input-container {
                 display: inline-block;
-                margin-right:15px;
+                margin-right: 15px;
                 width: @edit_input_width;
                 .ant-select-search__field__placeholder {
                     font-size: 14px;
@@ -152,7 +87,6 @@
         .list-wrap {
             position: relative;
         }
-
         .table-wrap-outer {
             width: 100%;
             overflow-x: auto;
@@ -171,7 +105,7 @@
                 overflow-y: auto;
                 margin-right: -20px;
             }
-            .ant-spin-nested-loading > div > .ant-spin .ant-spin-dot {
+            .ant-spin-nested-loading>div>.ant-spin .ant-spin-dot {
                 display: none;
             }
         }
@@ -237,8 +171,8 @@
             width: 200px;
             max-height: 400px;
             overflow: auto;
-            border:1px solid #BFBFBF;
-            box-shadow:2px 2px 3px #aaaaaa;
+            border: 1px solid #BFBFBF;
+            box-shadow: 2px 2px 3px #aaaaaa;
             padding: 5px;
             border-radius: 4px;
             .ant-checkbox-group-item {
@@ -259,282 +193,361 @@
             z-index: 90;
             background: transparent;
         }
-
         .hide-custom-column-div {
             display: none;
         }
-
-        .right-pannel-default {
-            width: 700px;
-            transform: translateX(700px);
-            font-size: 14px;
-            .load8 {
-                position: absolute;
-                top: 100px;
-                left: 300px;
-                transform: scale(0.5, 0.5);
-                .loader8 {
-                    border-left-color: #394144;
+        .load8 {
+            position: absolute;
+            top: 100px;
+            left: 300px;
+            transform: scale(0.5, 0.5);
+            .loader8 {
+                border-left-color: #394144;
+            }
+        }
+        .ant-tabs-nav {
+            margin-left: 10px;
+        }
+        .icon-close {
+            position: absolute;
+            margin: 0;
+            top: 15px;
+            right: 15px;
+        }
+        .icon-update {
+            position: absolute;
+            margin: 0;
+            top: 15px;
+            right: 50px;
+            z-index: 1;
+        }
+        .icon-return {
+            z-index: 1;
+        }
+        .ant-tabs-bar {
+            margin: 0 20px 16px;
+            border-bottom-color: #D2DBE6;
+            .ant-tabs-tab {
+                padding: 5px 0;
+            }
+            .ant-tabs-ink-bar {
+                //background-color: #4D96D1;
+                //height: 3px;
+            }
+        }
+        form {
+            padding-left: 20px;
+            padding-bottom: 20px;
+            .ant-form-item {
+                width: auto;
+                color: inherit;
+                .ant-calendar-picker {
+                    width: @edit_input_width;
+                }
+                .ant-form-text {
+                    padding-left: 5px;
+                    padding-right: 0;
                 }
             }
-            .ant-tabs-nav {
-                margin-left: 10px;
+        }
+        .btn-primary-sure {
+            margin-left: 20px;
+            margin-right: 10px;
+        }
+        .circle-button-minus {
+            margin-right: 15px;
+            float: right;
+            background-color: #f05150;
+        }
+        .circle-button-minus:hover {
+            background-color: #c91211;
+        }
+        .choose-type {
+            .ant-tabs-tabpane {
+                padding: 10px 0 0 20px;
             }
-            .icon-close {
+            ul {
+                display: inline-block;
+            }
+            li {
+                display: inline-block;
+                width: 96px;
+                text-align: center;
+                background: #fff;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-left: 30px;
+                padding: 3px 0;
+            }
+            li.active {
+                background: #4d96d1;
+                color: #fff;
+            }
+        }
+        .step-button {
+            position: absolute;
+            bottom: 35px;
+            right: 20px;
+            button {
+                color: #71aad8;
+                background-color: transparent;
+                border-color: #71aad8;
+                margin-left: 15px;
+                font-size: 15px;
+                padding: 0 15px;
+            }
+        }
+        .belong-customer-form {
+            width: 285px;
+            position: relative;
+            input,
+            .ant-select,
+            .ant-form-explain {
+                width: 260px !important;
+            }
+            .circle-button {
                 position: absolute;
+                top: 3px;
+                right: -10px;
                 margin: 0;
-                top: 15px;
-                right: 15px;
-            }
-            .icon-update {
-                position: absolute;
-                margin: 0;
-                top: 15px;
-                right: 50px;
                 z-index: 1;
+                cursor: pointer;
             }
-            .icon-return {
-                z-index: 1;
+        }
+        .add-form {
+            .ant-tabs-tab {
+                pointer-events: none;
             }
-            .ant-tabs-bar {
-                margin: 0 20px 16px;
-                border-bottom-color: #D2DBE6;
-                .ant-tabs-tab {
-                    padding: 5px 0;
+            .different-amount-warning {
+                font-size: 12px;
+                margin-top: 3px;
+                text-align: center;
+                color: #f04134;
+            }
+        }
+        .add-basic {
+            margin-top: 30px;
+            .ant-form-item {
+                label {
+                    margin-right: 20px;
                 }
-                .ant-tabs-ink-bar {
-                  background-color: #4D96D1;
-                  height: 3px;
+            }
+            .ant-select {
+                width: @edit_input_width;
+            }
+            input,
+            .ant-select-selection--single {
+                height: @input_height;
+            }
+            .ant-form-explain {
+                float: none;
+            }
+        }
+        .add-products {
+            width: 660px;
+            margin: 0 auto;
+            .add-product {
+                overflow: hidden;
+                button {
+                    float: right;
+                    padding: 1px 20px;
+                    margin: 0 10px 15px 0;
                 }
             }
             form {
-                padding-left: 20px;
-                padding-bottom: 20px;
-                .ant-form-item {
-                    width: auto;
-                    color: inherit;
-                    .ant-calendar-picker{
-                        width: @edit_input_width;
-                    }
-                    .ant-form-text{
-                        padding-left: 5px;
-                        padding-right: 0;
-                    }
-                }
-            }
-            .btn-primary-sure {
-                margin-left: 20px;
-                margin-right: 10px;
-            }
-            .circle-button-minus {
-                margin-right: 15px;
-                float: right;
-                background-color: #f05150;
-            }
-            .circle-button-minus:hover {
-                background-color: #c91211;
-            }
-            .choose-type {
-                .ant-tabs-tabpane {
-                    padding: 10px 0 0 20px;
-                }
-                ul {
-                    display: inline-block;
-                }
-                li {
-                    display: inline-block;
-                    width: 96px;
-                    text-align: center;
-                    background: #fff;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    margin-left: 30px;
-                    padding: 3px 0;
-                }
-                li.active {
-                    background: #4d96d1;
-                    color: #fff;
-                }
-            }
-            .step-button {
-                position: absolute;
-                bottom: 35px;
-                right: 20px;
-                button {
-                    color: #71aad8;
-                    background-color: transparent;
-                    border-color: #71aad8;
-                    margin-left: 15px;
-                    font-size: 15px;
-                    padding: 0 15px;
-                }
-            }
-            .belong-customer-form {
-                width: 285px;
-                position: relative;
-                input, .ant-select, .ant-form-explain {
-                    width: 260px !important;
-                }
+                background: #dde6ed;
+                padding-left: 10px;
+                padding-bottom: 0;
                 .circle-button {
-                    position: absolute;
-                    top: 3px;
-                    right: -10px;
-                    margin: 0;
-                    z-index: 1;
-                    cursor: pointer;
+                    margin-top: 6px;
+                    margin-right: 8px;
                 }
-            }
-            .add-form {
-                .ant-tabs-tab {
-                    pointer-events: none;
-                }
-                .different-amount-warning {
-                    font-size: 12px;
-                    margin-top: 3px;
-                    text-align: center;
-                    color: #f04134;
-                }
-            }
-            .add-basic {
-                margin-top: 30px;
                 .ant-form-item {
                     label {
-                        margin-right: 20px;
+                        padding-right: 0;
                     }
-                }
-                .ant-select {
-                    width: @edit_input_width;
-                }
-                input, .ant-select-selection--single {
-                    height: @input_height;
-                }
-                .ant-form-explain{
-                  float: none;
+                    input {
+                        width: 80%;
+                    }
                 }
             }
-            .add-products {
-                width: 660px;
-                margin: 0 auto;
-                .add-product {
-                    overflow: hidden;
-                    button {
-                        float: right;
-                        padding: 1px 20px;
-                        margin: 0 10px 15px 0;
-                    }
+            form:first-child {
+                padding-top: 10px;
+                .circle-button {
+                    margin-top: 40px;
                 }
-                form {
-                    background: #dde6ed;
-                    padding-left: 10px;
-                    padding-bottom: 0;
-                    .circle-button {
-                        margin-top: 6px;
-                        margin-right: 8px;
-                    }
-                    .ant-form-item {
-                        label {
-                            padding-right: 0;
-                        }
+            }
+            form:last-child {
+                padding-bottom: 20px;
+            }
+            .ant-form-item {
+                display: inline-block;
+                vertical-align: middle;
+                width: 80px;
+                line-height: 35px;
+                .ant-select {
+                    width: 100%;
+                }
+                .ant-form-explain {
+                    position: absolute;
+                }
+            }
+            .app-name {
+                width: 100px;
+                margin-right: 17px;
+                .ant-select {
+                    margin-top: -3px;
+                }
+            }
+            .start-end-time {
+                .ant-calendar-picker {
+                    width: 175px;
+                    .ant-input {
+                        height: 30px;
                         input {
-                            width: 80%;
+                            width: 65px;
+                            height: 16px;
                         }
                     }
-                }
-                form:first-child {
-                    padding-top: 10px;
-                    .circle-button {
-                        margin-top: 40px;
+                    .ant-calendar-range-picker-separator {
+                        line-height: 26px;
                     }
                 }
-                form:last-child {
-                    padding-bottom: 20px;
+            }
+        }
+        .finances {
+            width: 630px;
+            margin: 0 auto;
+            .add-finance {
+                display: inline-block;
+                position: relative;
+                line-height: 30px;
+                >* {
+                    display: inline-block;
+                }
+                input,
+                .ant-select {
+                    margin: 0 5px;
+                    width: initial;
+                }
+                input {
+                    width: 100px;
+                    display: inline-block;
+                }
+                .ant-checkbox-wrapper {
+                    font-size: 14px;
+                    font-weight: normal;
+                    color: rgba(0, 0, 0, .65);
+                    margin-left: 8px;
                 }
                 .ant-form-item {
                     display: inline-block;
-                    vertical-align: middle;
-                    width: 80px;
-                    line-height: 35px;
-                    .ant-select {
-                        width: 100%;
-                    }
-                    .ant-form-explain {
-                        position: absolute;
-                    }
+                    vertical-align: top;
                 }
-                .app-name {
-                    width: 100px;
-                    margin-right: 17px;
-                    .ant-select {
-                        margin-top: -3px;
-                    }
+                .ant-form-explain {
+                    float: none;
+                    text-align: center;
                 }
-                .start-end-time {
-                    .ant-calendar-picker {
-                        width: 175px;
-                        .ant-input {
-                            height: 30px;
-                            input {
-                                width: 65px;
-                                height: 16px;
-                            }
-                        }
-                        .ant-calendar-range-picker-separator {
-                            line-height: 26px;
-                        }
-                    }
+                .ant-calendar-picker-input {
+                    margin-right: 5px;
+                }
+                .ant-checkbox-input {
+                    width: auto;
+                }
+                button {
+                    padding: 1px 20px;
+                }
+                .btn-primary-sure {
+                    color: #fff;
+                    background: #4d96d1;
                 }
             }
-            .finances {
-                width: 630px;
-                margin: 0 auto;
-                .add-finance {
-                    display: inline-block;
+            .finance-list {
+                padding: 5px 0;
+                background: #dde6ed;
+                ul {
+                    margin: 20px 0 20px 30px;
+                }
+                li {
                     position: relative;
-                    line-height: 30px;
-                    > * {
-                        display: inline-block;
-                    }
-                    input, .ant-select {
-                        margin: 0 5px;
-                        width: initial;
-                    }
-                    input {
-                        width: 100px;
-                        display: inline-block;
-                    }
-                    .ant-checkbox-wrapper {
-                        font-size: 14px;
-                        font-weight: normal;
-                        color: rgba(0,0,0,.65);
-                        margin-left: 8px;
-                    }
+                    list-style-type: disc;
+                    margin-bottom: 20px;
                     .ant-form-item {
-                        display: inline-block;
-                        vertical-align: top;
-                    }
-                    .ant-form-explain {
-                        float: none;
-                        text-align: center;
-                    }
-                    .ant-calendar-picker-input {
-                        margin-right: 5px;
-                    }
-                    .ant-checkbox-input {
-                        width: auto;
-                    }
-                    button {
-                        padding: 1px 20px;
-                    }
-                    .btn-primary-sure {
-                        color: #fff;
-                        background: #4d96d1;
+                        margin-bottom: 0;
                     }
                 }
-                .finance-list {
-                    padding: 5px 0;
-                    background: #dde6ed;
+                .icon-update {
+                    top: 0;
+                    right: 55px;
+                }
+                .icon-delete {
+                    position: absolute;
+                    top: 0;
+                    right: 20px;
+                }
+                .btn-save {
+                    position: absolute;
+                    top: 0;
+                    right: 55px;
+                }
+                .btn-cancel {
+                    position: absolute;
+                    top: 0;
+                    right: 20px;
+                }
+            }
+        }
+        .add-repayments {
+            .finances;
+        }
+        .add-payments {
+            .finances;
+        }
+        .detail-repayments {
+            .finances;
+        }
+        .detail-payments {
+            .finances;
+        }
+        .detail-invoice {
+            .invoice-info {
+                background: #dde6ed;
+                margin: 0 20px;
+                padding-bottom: 8px;
+                .info {
+                    margin: 0 5px;
+                    padding: 15px 20px;
+                    line-height: 30px;
+                    border-bottom: 1px #d1dade solid;
+                }
+                .info-blank {
+                    padding-left: 40px;
+                }
+                .extra {
+                    margin-top: 15px;
+                    .add-invoice {
+                        position: relative;
+                        margin-left: 43px;
+                        margin-bottom: 10px;
+                    }
+                    .render-form {
+                        .ant-form-item {
+                            display: inline-block;
+                        }
+                    }
+                    .has-error {
+                        position: relative;
+                        .ant-form-explain {
+                            position: absolute;
+                        }
+                    }
+                    .btn-add-invoice {
+                        position: absolute;
+                        top: 0;
+                        right: 20px;
+                    }
                     ul {
-                        margin: 20px 0 20px 30px;
+                        margin: 0 0 20px 40px;
                     }
                     li {
                         position: relative;
@@ -565,243 +578,671 @@
                     }
                 }
             }
-            .add-repayments {
-                .finances;
-            }
-            .add-payments {
-                .finances;
-            }
-            .detail-repayments {
-                .finances;
-            }
-            .detail-payments {
-                .finances;
-            }
-            .detail-invoice {
-                .invoice-info {
-                    background: #dde6ed;
-                    margin: 0 20px;
-                    padding-bottom: 8px;
-                    .info {
-                        margin: 0 5px;
-                        padding: 15px 20px;
-                        line-height: 30px;
-                        border-bottom: 1px #d1dade solid;
-                    }
-                    .info-blank {
-                        padding-left: 40px;
-                    }
-                    .extra {
-                        margin-top: 15px;
-                        .add-invoice {
-                            position: relative;
-                            margin-left: 43px;
-                            margin-bottom: 10px;
-                        }
-                        .render-form {
-                            .ant-form-item {
-                                display: inline-block;
-                            }
-                        }
-                        .has-error {
-                            position: relative;
-                            .ant-form-explain {
-                                position: absolute;
-                            }
-                        }
-                        .btn-add-invoice {
-                            position: absolute;
-                            top: 0;
-                            right: 20px;
-                        }
-                        ul {
-                            margin: 0 0 20px 40px;
-                        }
-                        li {
-                            position: relative;
-                            list-style-type: disc;
-                            margin-bottom: 20px;
-                            .ant-form-item {
-                                margin-bottom: 0;
-                            }
-                        }
-                        .icon-update {
-                            top: 0;
-                            right: 55px;
-                        }
-                        .icon-delete {
-                            position: absolute;
-                            top: 0;
-                            right: 20px;
-                        }
-                        .btn-save {
-                            position: absolute;
-                            top: 0;
-                            right: 55px;
-                        }
-                        .btn-cancel {
-                            position: absolute;
-                            top: 0;
-                            right: 20px;
-                        }
-                    }
+            form {
+                input {
+                    height: 28px;
                 }
-                form {
-                    input {
-                        height: 28px;
-                    }
+            }
+            .ant-form-horizontal {
+                .ant-form-item {
+                    margin-bottom: 0;
                 }
-                .ant-form-horizontal {
+                padding-left: 50px;
+                margin-bottom: 8px;
+            }
+            .op-buttons {
+                overflow: hidden;
+                margin-top: 20px;
+                margin-right: 197px;
+            }
+        }
+        .detail-basic {
+            margin-bottom: 20px;
+            line-height: 30px;
+            @content-margin: auto 20px;
+            .basic-info {
+                position: relative;
+                margin: @content-margin;
+                background: #dde6ed;
+                padding: 20px;
+                margin-bottom: 15px;
+                .edit-zone {
                     .ant-form-item {
-                        margin-bottom: 0;
+                        width: 55px;
+                        position: absolute;
+                        top: 0;
                     }
-                    padding-left: 50px;
-                    margin-bottom: 8px;
-                }
-                .op-buttons {
-                    overflow: hidden;
-                    margin-top: 20px;
-                    margin-right: 197px;
-                }
-            }
-            .detail-basic {
-                margin-bottom: 20px;
-                line-height: 30px;
-                @content-margin: auto 20px;
-                .basic-info {
-                    position: relative;
-                    margin: @content-margin;
-                    background: #dde6ed;
-                    padding: 20px;
-                    margin-bottom: 15px;
-                    .edit-zone {
-                        .ant-form-item {
-                            width: 55px;
-                            position: absolute;
-                            top: 0;
-                        }
-                        .ant-form-item:first-child {
-                            right: 100px;
-                        }
-                        .ant-form-item:nth-child(2) {
-                            right: 40px;
-                        }
-                        .ant-form-item-label {
-                            display: none;
-                        }
-                        .ant-form-item-control-wrapper, .ant-select {
-                            width: 100% !important;
-                        }
+                    .ant-form-item:first-child {
+                        right: 100px;
                     }
-                    .detail-item {
-                        margin-bottom: 5px;
-                        & > span:first-child {
-                            display: inline-block;
-                            margin-right: 4px;
-                        }
-                        & > span:last-child {
-                            margin-left: 4px;
-                        }
-                        textarea {
-                            display: inline-block;
-                            width: 463px;
-                            vertical-align: top;
-                        }
-                        .remarks {
-                            display: inline-block;
-                            width: 500px;
-                            vertical-align: top;
-                        }
+                    .ant-form-item:nth-child(2) {
+                        right: 40px;
                     }
-                    .half {
-                        width: 50%;
-                        float: left;
-                    }
-                    input, .ant-select {
-                        width: 153px;
-                        margin-right: 5px;
-                    }
-                    .belong-customer {
-                        button {
-                            display: inline-block;
-                            float: none;
-                            margin: 0 7px 0 0;
-                        }
-                    }
-                    .icon-update {
+                    .ant-form-item-label {
                         display: none;
                     }
-                }
-                .basic-info:hover {
-                    .icon-update {
-                        display: block;
+                    .ant-form-item-control-wrapper,
+                    .ant-select {
+                        width: 100% !important;
                     }
                 }
-                @separator: 1px #D1DADE solid;
-                .block-title {
-                    position: relative;;
-                    border-bottom: @separator;
-                    margin-bottom: 15px;
-                    padding-bottom: 5px;
-                    .icon-close,
-                    .icon-update {
-                        top: 0;
-                        right: 0;
+                .detail-item {
+                    margin-bottom: 5px;
+                    &>span:first-child {
+                        display: inline-block;
+                        margin-right: 4px;
+                    }
+                    &>span:last-child {
+                        margin-left: 4px;
+                    }
+                    textarea {
+                        display: inline-block;
+                        width: 463px;
+                        vertical-align: top;
+                    }
+                    .remarks {
+                        display: inline-block;
+                        width: 500px;
+                        vertical-align: top;
                     }
                 }
-                .block-bottom {
-                    border-top: @separator;
-                    margin-top: 15px;
-                    padding-top: 5px;
+                .half {
+                    width: 50%;
+                    float: left;
                 }
-                .belong-customer-list {
-                    .detail-item {
-                        border-bottom: @separator;
-                    }
-                    .detail-item:last-child {
-                        border-bottom: none;
-                    }
+                input,
+                .ant-select {
+                    width: 153px;
+                    margin-right: 5px;
                 }
-                .ant-form-explain {
-                    float: none;
-                }
-                .op-buttons {
-                    overflow: hidden;
-                    margin-top: 20px;
-                    margin-right: 10px;
+                .belong-customer {
                     button {
-                        float: right;
+                        display: inline-block;
+                        float: none;
+                        margin: 0 7px 0 0;
                     }
+                }
+                .icon-update {
+                    display: none;
                 }
             }
-            .detail-cost {
-                padding-left: 40px;
+            .basic-info:hover {
                 .icon-update {
-                    top: 60px;
-                    right: 55px;
+                    display: block;
                 }
-                .icon-delete {
-                    z-index: 1;
-                    position: absolute;
-                    top: 60px;
-                    right: 20px;
+            }
+            @separator: 1px #D1DADE solid;
+            .block-title {
+                position: relative;
+                ;
+                border-bottom: @separator;
+                margin-bottom: 15px;
+                padding-bottom: 5px;
+                .icon-close,
+                .icon-update {
+                    top: 0;
+                    right: 0;
                 }
-                .ant-form-item {
-                    line-height: 30px;
+            }
+            .block-bottom {
+                border-top: @separator;
+                margin-top: 15px;
+                padding-top: 5px;
+            }
+            .belong-customer-list {
+                .detail-item {
+                    border-bottom: @separator;
                 }
+                .detail-item:last-child {
+                    border-bottom: none;
+                }
+            }
+            .ant-form-explain {
+                float: none;
+            }
+            .op-buttons {
+                overflow: hidden;
+                margin-top: 20px;
+                margin-right: 10px;
                 button {
-                    margin: 0;
-                }
-                .btn-primary-cancel {
-                    margin-left: 15px;
-                }
-                .value-text {
-                    display: inline-block;
+                    float: right;
                 }
             }
         }
+        .detail-cost {
+            //padding-left: 40px;
+            .icon-update {
+                top: 60px;
+                right: 55px;
+            }
+            .icon-delete {
+                z-index: 1;
+                position: absolute;
+                top: 60px;
+                right: 20px;
+            }
+            .ant-form-item {
+                line-height: 30px;
+            }
+            button {
+                //margin: 0;
+            }
+            .footer-btn {
+                text-align: right;
+                margin-top: 10px;
+            }
+            .btn-primary-cancel {
+                margin-left: 15px;
+            }
+            .btn-primary-delete {
+                float: left;
+                margin-left: 3px;
+            }
+            .value-text {
+                display: inline-block;
+            }
+        }
         .right-panel-cost {
-            width: 500px;
+            //width: 500px;
+        }
+    }
+
+    //新版合同面板
+    .contract-panel-v2 {
+        .circle-button-minus {
+            float: right;
+            background-color: transparent;
+        }
+        .circle-button-minus:hover {
+            background-color: transparent;
+        }
+        .step-button {
+            position: absolute;
+            bottom: 15px;
+            right: 0;
+            width: 100%;
+            background: #f5f5f5;
+        }
+        .finance-list {
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 0 12px;
+            margin: 20px;
+            margin-bottom: 0;
+            font-size: 14px;
+            .ant-select {
+                top: 1px;
+            }
+            li {
+                font-size: 14px;
+                line-height: 32px;
+                margin: 0 -12px;
+                padding: 0 12px;
+                &:hover {
+                    background: #EEF7FE;
+                }
+                .ant-form-item {
+                    margin-bottom: 0;
+                }
+                .btn-bar {
+                    float: right;
+                    i {
+                        cursor: pointer;
+                    }
+                }
+            }
+            .icon-update {
+                top: 0;
+                right: 55px;
+            }
+            .icon-delete {
+                position: absolute;
+                top: 0;
+                right: 20px;
+            }
+            .btn-save {
+                position: absolute;
+                top: 0;
+                right: 55px;
+            }
+            .btn-cancel {
+                position: absolute;
+                top: 0;
+                right: 20px;
+            }
+        }
+        .add-repayments, .add-payments {
+            padding-top: 5px;
+        }
+        .new-add-repayment-container {
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 12px;
+            margin: 20px;
+            margin-top: -1px;
+            font-size: 13px;
+            .ant-form-item {
+                width: 60px;
+                display: inline-block;
+                margin: 0 5px;
+            }
+            .ant-select-selection.ant-select-selection--single {
+                height: 24px;
+                line-height: 2;
+                font-size: 12px;
+                vertical-align: bottom;
+                top: 2px;
+                margin-right: 3px;
+                .ant-select-selection__rendered {
+                    line-height: 2;
+                }
+            }
+            button {
+                float: right;
+            }
+
+        }
+        &.right-panel-modal .right-panel-modal-content form .ant-form-item {
+            margin-bottom: 10px;
+            padding-right: 0;
+            .ant-form-item-label label {
+                margin-top: 3px;
+            }
+        }
+        .product-table-container {
+            border: 1px solid #eee;
+            margin: 15px;
+            .product-table {
+                table {
+                    .invalid-td-input {
+                        input {
+                            border: 1px solid red;
+                        }
+                    }
+                }
+            }
+        }
+        .ant-steps {
+            width: 90%;
+            margin-left: 20px;
+            .ant-steps-item {
+                margin-right: -48px;
+                .ant-steps-title {
+                    font-size: 14px;
+                }
+            }
+            .ant-steps-head {
+                background: @bg-grey;
+            }
+            .ant-steps-title {
+                background: @bg-grey;
+            }
+        }
+        .add-basic {
+            margin-top: 0px;
+            .ant-form-item {
+                label {
+                    margin-right: 0px;
+                }
+                .ant-checkbox-wrapper{
+                    line-height: 30px;
+                }
+            }
+        }
+        .add-form,.product-forms {
+            margin-top: 15px;
+            .step-button {
+                text-align: right;
+                padding-right: 20px;
+                button {
+                    margin-left: 16px;
+                }
+            }
+            .antc-table {
+                tbody {
+                    tr {
+                        td {
+                            overflow: hidden;
+                            white-space: nowrap;
+                            text-overflow: ellipsis;
+                        }
+                    }
+                }
+            }
+            .app-info{
+                .app-icon-name{
+                    .app-name{
+                        padding-left: 6px;
+                    }
+                }
+            }
+        }
+        .ant-form-item-label {
+            line-height: 23px;
+        }
+        .form-item-append-icon-container {
+            .ant-select,
+            input {
+                display: inline-block;
+                width: 93% !important;
+            }
+            .circle-button,
+            .ant-form-text {
+                display: inline-block;
+                margin-left: 7px;
+                padding-right: 0;
+            }
+        }
+        .ant-form-item-control {
+            input {
+                height: 24px;
+            }
+            .ant-checkbox-input{
+                height: 14px;
+            }
+            .ant-form-explain {
+                margin-top: -2px;
+            }
+            .ant-calendar-picker {
+                width: 100%!important;
+            }
+            .ant-select-inline{
+                width: 50%!important;
+                vertical-align: middle;
+            }
+        }
+		.detail-cost-basic{
+            padding: 15px;
+            form{
+                padding: 0;
+            }
+            .detail-card-title{
+                border-bottom: none;
+                margin-bottom: 0;
+                padding-bottom: 0;
+            }
+            .icon-edit-btn{
+                float: right;
+                font-size: 16px;
+                color: #8da8c5;
+                cursor: pointer;
+            }
+          .cost-amout-type{
+            .basic-info-label{
+              margin-right: 8px;
+            }
+            .basic-info-text{
+              color: @color-block;
+            }
+          }
+        }
+        .detail-cost-wrapper{
+            .form-detele-btn {
+                margin-top: 10px;
+                margin-left: 15px;
+            }
+        }
+        .add-products, .add-reports {
+            width: auto;
+            position: relative;
+            .icon-edit-btn{
+                position: absolute;
+                right: 20px;
+                top: -35px;
+            }
+            .product-table {
+                .antc-table{
+                    margin-right: 0;
+                }
+            }
+        }
+        .add-reports{
+            margin-top: 30px;
+            .icon-edit-btn{
+                top: -25px;
+            }
+        }
+        .total-amount-price {
+            margin: 15px 0 0 15px;
+            font-size: 14px;
+        }
+        .total-amount-error {
+            color: red;
+        }
+        .add-repayments,.add-payments  {
+            width: auto;
+            .new-add-repayment-container {
+                padding: 15px;
+                width: 440px;
+                .ant-form-item{
+                    width: auto;
+                    margin-right: 0px;
+                }
+                .ant-form {
+                    padding: 0;
+                }
+            }
+            .finance-list {
+                padding: 0 12px;
+                margin-right: 21px;
+                background: #fff;
+                ul {
+                    margin: 10px 0px;
+                }
+                li {
+                    list-style: none;
+                    margin-bottom: 0;
+                }
+                .iconfont.icon-huikuan{
+                    color: #71ca62;
+                }
+            }
+            .add-finance {
+                input{
+                    width: 60px;
+                    margin: 0px;
+                }
+                .btn-primary-sure {
+                    margin: 0 8px;
+                    padding: 1px 12px;
+                }
+            }
+        }
+        .detail-cost-title-container {
+            .detail-cost-delete{
+                float: right;
+                cursor: pointer;
+                width: 24px;
+                text-align: center;
+            }
+        }
+        .ant-checkbox-wrapper{
+          max-width: 300px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+        .contract_detail{
+            padding: 0 20px;
+            form{
+                padding: 0;
+            }
+        }
+        .basic-info-item {
+            input {
+                height: auto;
+            }
+            .basic-info-label{
+                width: 65px;
+            }
+        }
+        .right-panel-modal-content{
+            .icon-edit-btn{
+                float: right;
+                font-size: 16px;
+                color: #8da8c5;
+                cursor: pointer;
+            }
+        }
+        .contract-tab-container{
+            padding-right: 15px;
+            .belong-customer-form {
+                .circle-button{
+                    position: absolute;
+                    top: 0px;
+                    right: -70px;
+                    margin: 0;
+                    z-index: 1;
+                    cursor: pointer;
+                }
+            }
+            .belong-customer-list {
+                .detail-item{
+                    margin-bottom: 10px;
+                    padding-bottom: 10px;
+                    border-bottom: 1px solid @bg-grey;
+                    &:last-child{
+                      border-bottom: none;
+                      margin-bottom: 0;
+                    }
+                    .detail-customer-name{
+                        font-size: 14px;
+                        color: @color-block;
+                    }
+                }
+            }
+            .belong-customer-form{
+               input{
+                 width: 240px!important;
+               }
+            }
+        }
+        .contract-product{
+            .contract-product-title{
+                padding-left: 15px;
+                .product-title-text{
+                    font-size: 14px;
+                    color: @color-block;
+                }
+            }
+        }
+        .iconfont{
+            width: 24px;
+            overflow: hidden;
+            cursor: pointer;
+            text-align: center;
+        }
+        .contract-repayment-container{
+            margin: 0 20px;
+            .detail-card-container{
+                position: relative;
+            }
+            .iconfont.icon-add{
+                position: absolute;
+                top: 12px;
+                right: 10px;
+                margin-top: 0;
+            }
+            .repayment-title{
+                display: inline-block;
+            }
+            .repayment-label{
+              font-size: 14px;
+              color: @color-block;
+            }
+            .repayment-list{
+                .finance-list{
+                    margin: 0;
+                    li{
+                        color: @color-block;
+                    }
+                }
+            }
+            .detailcard-form-container{
+                border: 1px solid #d3eafc;
+                padding: 15px;
+                border-radius: 5px;
+                margin: 0 0 5px 0;
+                line-height: 30px;
+                .ant-select{
+                    margin: 0 5px;
+                    width: initial;
+                }
+                .add-repayment-date{
+                    width: 110px;
+                }
+                .ant-checkbox-input{
+                    height: 14px;
+                }
+                .add-repayment-check{
+                    width: auto;
+                    height: 32px;
+                }
+            }
+            .finance-list {
+                .finance-list-item {
+                    .btn-bar{
+                        padding: 0 5px;
+                    }
+                    .btn-bar,.icon-edit-btn {
+                        display: none;
+                    }
+                    &:hover {
+                        .btn-bar,.icon-edit-btn {
+                            display: inline-block;
+                        }
+                    }
+                    &.item-actived {
+                        background: #d9ebfa;
+                        &:hover {
+                            .btn-bar,.icon-edit-btn {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+            .repayment-table-operation {
+                .btn-bar,.icon-edit-btn {
+                  float: none;
+                }
+                .btn-bar{
+                  cursor: pointer;
+                  padding: 5px;
+                  margin-left: 5px;
+                }
+            }
+            .btn-save,.btn-cancel {
+                width: 20px;
+                height: 20px;
+            }
+            .btn-save {
+                margin-right: 3px;
+            }
+        }
+        .editable-row  {
+            .ant-form-explain{
+                position: absolute;
+                font-size: 12px;
+                margin-top: -4px;
+            }
+        }
+        .ant-table td{
+            padding: 10px 8px;
+        }
+        .invoice-info-container{
+            .basic-info-item {
+                input {
+                    height: auto;
+                }
+                .basic-info-label{
+                    //width: 100px;
+                    width: auto;
+                }
+            }
+            .ant-form {
+                padding: 0;
+            }
         }
     }
 
@@ -811,12 +1252,16 @@
             font-size: 14px;
             padding: 30px 20px 20px 40px;
         }
-        .ant-radio + span {
+        .ant-radio+span {
             font-size: 14px;
             font-weight: normal;
         }
     }
-
+    .right-panel-modal .close-modal-btn {
+        position: fixed;
+        top: 0;
+        right: 480px;
+    }
     // 合同模板样式
     .import-contract-template-panel .right-pannel-default {
         width: 420px;
@@ -834,12 +1279,13 @@
             }
         }
         .import-file {
-            float:right;
+            float: right;
             margin-right: 20px;
             .ant-btn {
                 margin-bottom: 3px;
             }
-            .import-contract, .ant-btn .ant-btn-ghost {
+            .import-contract,
+            .ant-btn .ant-btn-ghost {
                 border: 1px solid #4d96d1;
                 border-radius: 5px;
                 padding: 4px 11px;
@@ -926,7 +1372,8 @@
     .ant-table {
         .ant-table-fixed-left {
             .ant-table-fixed {
-                th, td {
+                th,
+                td {
                     border-right: 1px dashed #edf1f2 !important;
                 }
             }
@@ -940,12 +1387,87 @@
 }
 
 .table-wrap .clearfix .ant-table tbody .current-row:hover,
-.table-wrap .ant-table tbody .current-row{
-  background:#DFEAF3 !important;
+.table-wrap .ant-table tbody .current-row {
+    background: #DFEAF3 !important;
 }
 
 #app .table-wrap-outer.fixed-table {
-    td:last-child, th:last-child {
+    td:last-child,
+    th:last-child {
         border-right: 1px dashed #edf1f2 !important;
+    }
+}
+#app {
+    .splice-table {
+        .ant-spin-container {
+            .ant-table-empty {
+                margin: 0;
+            }
+            .ant-table-body {
+                height: auto;
+                border-bottom: none;
+            }
+            .ant-table-placeholder {
+                display: none;
+            }
+        }
+        @thead-height: 52px;
+        .hide-tbody {
+            height: @thead-height  !important;
+            overflow: hidden;
+            th {
+                height: @thead-height;
+            }
+            .ant-table-tbody {
+                display: table-row-group !important;
+            }
+        }
+        .custom-thead {
+            &:extend(.hide-tbody);
+            &:extend(.handle-empty);
+            table {
+                overflow: hidden;
+            }
+        }
+        .custom-thead-filter {
+            &:extend(.hide-tbody);
+            &:extend(.handle-empty);
+        }
+        .custom-tfoot {
+            &:extend(.hide-tbody);
+            &:extend(.handle-empty);
+            border-top: 2px solid #eef0ef;
+            position: relative;
+            .ant-table-wrapper th {
+                height: 40px;
+            }
+            .info-title {
+                position: absolute;
+                font-size: 14px;
+                font-weight: bold;
+                top: 50%;
+                margin-top: -15px;
+                padding: 8px;
+            }
+        }
+        .custom-tbody {
+            background: #fff;
+            .ant-table-wrapper,
+            .ant-spin-nested-loading {
+                height: 100%;
+            }
+            table {
+                margin-top: -@thead-height;
+            }
+            .ant-table-header {
+                display: none;
+            }
+            .ant-table-thead {
+                th {
+                    height: @thead-height;
+                }
+                display: table-header-group !important;
+            }
+        }
     }
 }

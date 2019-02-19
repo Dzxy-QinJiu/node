@@ -6,21 +6,55 @@ const Validator = Validation.Validator;
  * 服务信息添加表单
  */
 
-import { Form, Input, Select, Button } from 'antd';
+import { Form, Input, Select, Button, Alert, message } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import ValidateMixin from '../../../mixins/ValidateMixin';
-import { REPORT_SERVICE, SERVICE_TYPE, REPORT_TYPE } from '../consts';
-import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
+import ProductTable from 'CMP_DIR/basic-edit-field-new/product-table';
+import { parseAmount } from 'LIB_DIR/func';
+import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import { PRIVILEGE_MAP, VIEW_TYPE, REPORT_TYPE, LITE_SERVICE_TYPE, REPORT_SERVICE, SERVICE_TYPE } from 'MOD_DIR/contract/consts';
+import Trace from 'LIB_DIR/trace';
+import routeList from 'MOD_DIR/contract/common/route';
+import ajax from 'MOD_DIR/contract/common/ajax';
+const defaultValueMap = {
+    num: 1,
+    total_price: 1000, 
+    commission_rate: 6
+};
 const AddReport = createReactClass({
     displayName: 'AddReport',
     mixins: [ValidateMixin],
 
     getInitialState: function() {
+        let reports;
+
+        if (_.isArray(this.props.reports) && this.props.reports.length) {
+            reports = JSON.parse(JSON.stringify(this.props.reports));
+            _.map(reports,(item) => {
+                if(!item.name) {
+                    item.id = item.type;
+                    item.name = item.type;
+                }
+            });
+        } else {
+            reports = [];
+        }
         return {
-            reports: [{}],
+            reports,
             formData: {},
+            valid: false,
+            pristine: true,
+            validator: null
         };
+    },
+    propTypes: {
+        updateScrollBar: PropTypes.func,
+        reports: PropTypes.array,
+        contract: PropTypes.object,
+        isDetailType: PropTypes.bool.isRequired,
+        parent: PropTypes.object,
+        refreshCurrentContract: PropTypes.func,
     },
 
     addReport: function() {
@@ -30,7 +64,9 @@ const AddReport = createReactClass({
             this.props.updateScrollBar();
         });
     },
-
+    getNumberValidate(text) {
+        return /^(\d|,)+(\.\d+)?$/.test(text);
+    },
     setField2: function(field, index, e) {
         let value = _.isObject(e) ? e.target.value : e;
         const currentItem = this.state.reports[index];
@@ -45,118 +81,178 @@ const AddReport = createReactClass({
         }
 
         this.setState(this.state);
-    },
-
-    render: function() {
+    },   
+    validate(cb) {
         const reports = this.state.reports;
-
-        const serviceTypeOption = SERVICE_TYPE.map(type => {
-            return (
-                <Option
-                    key={type}
-                    value={type}
-                >
-                    {type}
-                </Option>
-            );
+        let flag = true;
+        reports.forEach(x => {
+            //存在无数据的单元格，不通过验证
+            ['num', 'commission_rate', 'total_price'].forEach(key => {
+                if (!x[key]) {
+                    flag = false;
+                    return false;
+                }
+            });
         });
-
-        const reportTypeOption = REPORT_TYPE.map(type => {
-            return (
-                <Option
-                    key={type}
-                    value={type}
-                >
-                    {type}
-                </Option>
-            );
+        this.setState({
+            reports,
+            valid: flag,
+            //点击下一步后展示错误提示
+            pristine: false,
+            validator: text => text
         });
+        cb && cb(flag);
+        return flag;
+    },
+    handleReportChange(data) {
+        const list = data;
+        let lastItem = null;
+        /*if (list.length > 0) {
+            lastItem = list[list.length - 1];
+            if (REPORT_TYPE.includes(list[list.length - 1].name)) {
+                list[list.length - 1] = {
+                    ...list[list.length - 1],
+                    // num: '-',
+                    num: '',
+                    report_type: list[list.length - 1].name
+                };
+            }
+        }*/
+        this.setState((state, props) => {
+            return { reports: list.map(x => ({
+                ...x,
+                type: x.name
+            })), pristine: true };
+        });
+    },
+    handleReportSave(saveObj,successFunc,errorFunc) {
+        saveObj = {reports: saveObj};
+        Trace.traceEvent(ReactDOM.findDOMNode(this),'修改服务产品信息');
+        let valid = this.validate();
+        if(!valid) {
+            errorFunc(Intl.get('contract.table.form.fill', '请填写表格内容'));
+            return false;
+        }
+        const handler = 'editContract';
+        const route = _.find(routeList, route => route.handler === handler);
+        // 单项编辑时，这里得添加上客户信息字段
+        if(!_.get(saveObj, 'customers')){
+            saveObj.customers = this.props.contract.customers;
+        }
+        const arg = {
+            url: route.path,
+            type: route.method,
+            data: saveObj || {},
+            params: {type: VIEW_TYPE.SELL}
+        };
+        ajax(arg).then(result => {
+            if (result.code === 0) {
+                message.success(Intl.get('user.edit.success', '修改成功'));
+                if (_.isFunction(successFunc)) successFunc();
+                const hasResult = _.isObject(result.result) && !_.isEmpty(result.result);
+                let contract = _.extend({},this.props.contract,result.result);
+                if (hasResult) {
+                    this.props.refreshCurrentContract(this.props.contract.id, true, contract);
+                }
+            } else {
+                if (_.isFunction(errorFunc)) errorFunc(Intl.get('common.edit.failed', '修改失败'));
+            }
+        }, (errorMsg) => {
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg || Intl.get('common.edit.failed', '修改失败'));
+        });
+    },
+    handleReportCancel() {
+        let reports = JSON.parse(JSON.stringify(this.props.reports));
+        _.map(reports,(item) => {
+            if(!item.name) {
+                item.id = item.type;
+                item.name = item.type;
+            }
+        });
+        this.setState({reports});
+    },
+    render: function() {
+        let num_col_width = 75;
+        const columns = [
+            {
+                title: Intl.get('contract.75', '服务类型'),
+                dataIndex: 'type',
+                key: 'type',
+                width: 180,
+            },
+            {
+                title: `${Intl.get('common.app.count', '数量')}(${Intl.get('contract.22', '个')})`,
+                dataIndex: 'num',
+                editable: true,
+                // getIsEdit: value => !Number.isNaN(Number(value)),
+                key: 'num',
+                width: num_col_width,
+                validator: text => this.getNumberValidate(text)//this.state.validator
+            },
+            {
+                title: Intl.get('contract.23', '总价') + '(' + Intl.get('contract.82', '元') + ')',
+                dataIndex: 'total_price',
+                key: 'total_price',
+                editable: true,
+                width: num_col_width,
+                validator: text => this.getNumberValidate(text)//this.state.validator
+            },
+            {
+                title: Intl.get('sales.commission', '提成') + '(%)',
+                dataIndex: 'commission_rate',
+                key: 'commission_rate',
+                editable: true,
+                width: num_col_width,
+                validator: text => this.getNumberValidate(text)//this.state.validator
+            }
+        ];
 
+        // 如果是添加合同时，是可以编辑的（true），详情查看时，显示可编辑按钮，点编辑后，显示编辑状态且有保存取消按钮
+        let isEditBtnShow = this.props.isDetailType && hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPATE_PRIVILEGE);
+        let isEdit = !this.props.isDetailType ? true :
+            (isEditBtnShow && this.producTableRef ? this.producTableRef.state.isEdit : false);
+        let isSaveCancelBtnShow = this.props.isDetailType;
+
+        // 获取合同金额的大小
+        let totalAmout = 0;
+        if(isEditBtnShow) {
+            let products = _.get(this,'props.parent.refs.addProduct.state.products') || _.get(this,'props.contract.products') || [];
+            let totalProductsPrice = 0;
+            products.length > 0 ? totalProductsPrice = _.reduce(products,(sum, item) => {
+                const amount = +item.total_price;
+                return sum + amount;
+            }, 0) : '';
+            console.log(products,totalProductsPrice);
+            totalAmout = this.props.contract.contract_amount - totalProductsPrice;
+        }
         return (
-            <div className="add-products">
-                <div className="add-product">
-                    <Button
-                        className="btn-primary-sure"
-                        onClick={this.addReport}
-                    >
-                        <ReactIntl.FormattedMessage id="sales.team.add.sales.team" defaultMessage="添加" />
-                    </Button>
-                </div>
-                <div className="product-forms">
-                    <Validation ref="validation" onValidate={this.handleValidate}>
-                        {reports.map((report, index) => {
-                            return (
-                                <Form key={index}>
-                                    <FormItem 
-                                        label={Intl.get('contract.75', '服务类型')}
-                                    >
-                                        <Select
-                                            placeholder={Intl.get('contract.76', '请选择类型')}
-                                            value={report.type}
-                                            onChange={this.setField2.bind(this, 'type', index)}
-                                        >
-                                            {serviceTypeOption}
-                                        </Select>
-                                    </FormItem>
-                                    {report.type === REPORT_SERVICE ? (
-                                        <FormItem 
-                                            label={Intl.get('contract.77', '报告类型')}
-                                        >
-                                            <Select
-                                                placeholder={Intl.get('contract.76', '请选择类型')}
-                                                value={report.report_type}
-                                                onChange={this.setField2.bind(this, 'report_type', index)}
-                                            >
-                                                {reportTypeOption}
-                                            </Select>
-                                        </FormItem>
-                                    ) : null}
-                                    {report.type !== REPORT_SERVICE ? (
-                                        <FormItem 
-                                            label="数量（个）"
-                                            validateStatus={this.getValidateStatus('num' + index)}
-                                            help={this.getHelpMessage('num' + index)}
-                                        >
-                                            <Validator rules={[{pattern: /^\d+$/, message: Intl.get('contract.45', '请填写数字')}]}>
-                                                <Input
-                                                    name={'num' + index}
-                                                    value={report.num}
-                                                    onChange={this.setField2.bind(this, 'num', index)}
-                                                />
-                                            </Validator>
-                                        </FormItem>
-                                    ) : null}
-                                    <FormItem 
-                                        label="总价"
-                                        validateStatus={this.getValidateStatus('total_price' + index)}
-                                        help={this.getHelpMessage('total_price' + index)}
-                                    >
-                                        <Validator rules={[getNumberValidateRule()]}>
-                                            <Input
-                                                name={'total_price' + index}
-                                                value={report.total_price}
-                                                onChange={this.setField2.bind(this, 'total_price', index)}
-                                            />
-                                        </Validator>
-                                    </FormItem>
-                                    <FormItem 
-                                        label={Intl.get('contract.141', '提成比例')}
-                                        validateStatus={this.getValidateStatus('commission_rate' + index)}
-                                        help={this.getHelpMessage('commission_rate' + index)}
-                                    >
-                                        <Validator rules={[getNumberValidateRule()]}>
-                                            <Input
-                                                name={'commission_rate' + index}
-                                                value={(isNaN(report.commission_rate) ? '' : report.commission_rate).toString()}
-                                                onChange={this.setField2.bind(this, 'commission_rate', index)}
-                                            />
-                                        </Validator>
-                                &nbsp;%
-                                    </FormItem>
-                                </Form>
-                            );
-                        })}
-                    </Validation>
+            <div className="add-reports">
+                <div className="product-forms product-table-container">
+                    <ProductTable
+                        addBtnText={Intl.get('contract.75', '服务类型')}
+                        ref={ref => this.producTableRef = ref}                      
+                        defaultValueMap={defaultValueMap}
+                        appList={REPORT_TYPE.concat(LITE_SERVICE_TYPE).map(x => ({
+                            client_id: x,
+                            client_name: x
+                        }))}
+                        totalAmount={totalAmout}
+                        data={this.state.reports}
+                        dataSource={this.state.reports}
+                        isEdit={isEdit}
+                        isEditBtnShow={isEditBtnShow}
+                        isSaveCancelBtnShow={isSaveCancelBtnShow}
+                        columns={columns}
+                        onSave={this.handleReportSave}
+                        handleCancel={this.handleReportCancel}
+                        onChange={this.handleReportChange}
+                    />
+                    {
+                        !isEditBtnShow && !this.state.pristine && !this.state.valid ?
+                            <div className="alert-container">
+                                <Alert type="error" message={Intl.get('contract.table.form.fill', '请填写表格内容')} showIcon/>
+                            </div> : null
+                    }
                 </div>
             </div>
         );

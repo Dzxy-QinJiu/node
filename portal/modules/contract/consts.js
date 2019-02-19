@@ -81,6 +81,7 @@ export const REPORT_SERVICE = Intl.get('contract.18', '报告服务');
 export const DATA_SERVICE = Intl.get('contract.19', '数据服务');
 export const COLLECTION_SERVICE = Intl.get('contract.20', '采集服务');
 export const SERVICE_TYPE = [REPORT_SERVICE, DATA_SERVICE, COLLECTION_SERVICE];
+export const LITE_SERVICE_TYPE = [DATA_SERVICE, COLLECTION_SERVICE];
 
 //费用类型
 export const COST_TYPE = [Intl.get('contract.130', '交际费'), Intl.get('contract.131', '市内交通费'), Intl.get('contract.132', '售前技术支持费')];
@@ -382,3 +383,13 @@ export const CONTRACT_STATIC_COLUMNS = [
         dataIndex: 'yearRate',
     }
 ];
+
+//权限常量
+export const PRIVILEGE_MAP = {
+    CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
+    CONTRACT_UPATE_PRIVILEGE: 'OPLATE_CONTRACT_UPDATE',//更新合同的权限
+    CONTRACT_UPDATE_REPAYMENT: 'OPLATE_REPAYMENT_ADD',//更新回款的权限
+    CONTRACT_INVOICE: 'CONTRACT_INVOICE_DETAIL_ADD', // 添加和修改发票信息的权限
+    CONTRACT_ADD_INVOICE_AMOUNT: 'CONTRACT_ADD_INVOICE_AMOUNT', // 添加和修改发票额的权限
+    CONTRACT_ADD_PAYMENT: 'OPLATE_PAYMENT_ADD', // 添加和修改付款信息的权限
+};

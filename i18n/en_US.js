@@ -245,6 +245,7 @@ var en_US = {
     'common.product': 'product',//产品
     'common.product.search.placeholder': 'Please enter the product name for search',//请输入产品名进行筛选
     'common.or': 'Or', // 或
+    'common.before': 'Before', // 前
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -1424,6 +1425,7 @@ var en_US = {
     'crm.contract.money': 'Amount (yuan)', // 金额(元)
     'crm.contract.no.product.info': 'No product information', // 暂无产品信息
     'crm.contract.check.tips': 'The contract amount is not equal to the total product amount. Please check it.', // 合同额与产品总额不相等，请核对
+    'crm.contract.check.tips2': 'Please check the difference with the total price', // 与总价合计不符，请核对
     'crm.contract.account.count': 'Number of accounts', // 账号数量
     'crm.contract.enter.contract.money': 'Please enter the contract amount', // 请输入合同额
     'crm.contract.no.contract.money': 'No contract amount', // 暂无合同额
@@ -1650,11 +1652,20 @@ var en_US = {
     'contract.184': 'cost amount', //"费用金额",
     'contract.185': 'type (transport in city)', //"类型（市内交通）",
     'contract.186': 'first got paid', //"首次回款",
-    'contract.187': 'payment amount', //"回款金额",
+    'contract.187': 'repayment amount', //"回款金额",
     'contract.188': 'analysis',//"分析",
     'contract.189': 'Commission payment', // 提成发放
     'contract.190': 'Sales contract template', // 《销售合同模板》
     'contract.191': 'Purchase contract template', // 《采购合同模板》
+    'contract.192': 'Whether to delete this charge？', //  是否删除此费用
+    'contract.193': 'The party a name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', //  甲方名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
+    'contract.194': 'Debt collection process',//回款进程
+    'contract.195': 'A collection plan has not been added',// 还未添加回款计划
+    'contract.196': 'The collection process has not been added',// 还未添加回款进程
+    'contract.197': 'invoice date',// 开票日期
+    'contract.198': 'invoice amount',// 发票额
+    'contract.199': 'The history of make out an invoice',// 开票历史
+    'contract.200': 'payment amount',// 付款额
     'contract.gross.profit.can.not.exceed.repayment': 'gross profit can not exceed repayment',//毛利不能大于回款
     'contract.loadMore': 'load more',//"加载更多",
     'contract.valueTypeConfig': 'value calculate type config',//"值字段设置",
@@ -1707,6 +1718,10 @@ var en_US = {
     'contract.edit.error': 'Failed to edit contract',//修改合同失败
     'contract.delete.error': 'Failed to delete contract',//删除合同失败
     'contract.add.error': 'Failed to add contract',//添加合同失败
+    'contract.valid.term': 'Valid term',//有效期限
+    'contract.product.service.info': 'Product and service information', //产品与服务信息
+    'contract.enter.cost': 'Please enter cost',//请输入成本额
+    'contract.mount.check.tip': 'The total price cannot be greater than the total contract amount {num} yuan, please check', //总价合计不能大于合同总额{num}元，请核对
     //合同管理  end
     // 销售提成start
     'sales.commission.sale.name': 'Sale name', // 销售名
@@ -2698,6 +2713,7 @@ var en_US = {
     'apply.approve.total.leave.time': 'Leave range',//请假时长
     'apply.approve.total.days': 'A total of {X} day',//共{X}天
     'common.start.end.time': 'start end time',//起止时间
+    'apply.approve.word.message': 'leave a message',//留言
     'apply.will.select.transfer.approver': 'Please select the person to be approved to be transferred to',//请选择要转给的待审批人
     'apply.will.approve.apply.item': 'Pending person',//待审批人
     'apply.no.relate.user': 'No related members',//无相关成员
@@ -2709,5 +2725,8 @@ var en_US = {
     'apply.approve.no.comment': 'There is no reply content!',//暂无回复内容！
     'crm.input.your.apply.user.type': 'Please enter the type of user you are applying for (eg trial user, contracted user, etc.)',//请输入您申请的用户类型（例如：试用用户、签约用户等）
     'apply.view.transfer.candidate': 'Transfer approval',//转审
+    'contract.form.customize': 'Add customized product',//'添加自定义产品',
+    'contract.report.contract.total.ccount': 'The total amount of the contract is', //本次合同总金额为
+    'contract.table.form.fill': 'Please fill in the form',//请填写表格内容
 };
 export default en_US;
