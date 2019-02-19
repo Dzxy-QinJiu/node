@@ -11,7 +11,6 @@ var crypto = require('crypto');//用于密码md5
 var UserFormStore = require('../store/user-form-store');
 var UserFormAction = require('../action/user-form-actions');
 var AlertTimer = require('../../../../components/alert-timer');
-var classNames = require('classnames');
 import Trace from 'LIB_DIR/trace';
 import PhoneInput from 'CMP_DIR/phone-input';
 import {nameLengthRule, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
@@ -206,7 +205,7 @@ class UserForm extends React.Component {
 
     //验证所有者用户名的唯一性
     checkOnlyUserName = () => {
-        var userName = _.trim(this.props.form.getFieldValue('userName'));
+        var userName = _.trim(this.props.form.getFieldValue('name'));
         if (userName && (/^[A-Za-z0-9]\w+$/).test(userName)) {
             UserFormAction.checkOnlyUserName(userName);
         } else {
@@ -230,10 +229,10 @@ class UserForm extends React.Component {
 
     //邮箱唯一性验证的展示
     renderEmailMsg = () => {
-        if (this.state.emailExist || this.state.userNameExist) {
+        if (this.state.emailExist) {
             return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.email.is.used"
                 defaultMessage="邮箱已被使用！"/></div>);
-        } else if (this.state.emailError || this.state.userNameError) {
+        } else if (this.state.emailError) {
             return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.email.validate.error"
                 defaultMessage="邮箱校验失败！"/></div>);
         } else {
@@ -349,13 +348,19 @@ class UserForm extends React.Component {
                                 {...formItemLayout}
                             >
                                 {getFieldDecorator('name', {
-                                    rules: [nameLengthRule]
+                                    rules: [{
+                                        required: true,
+                                        message: nameLengthRule
+                                    }]
                                 })(
-                                    <Input name="name" id="nickName"
+                                    <Input name="name" id="name" type="text"
                                         placeholder={Intl.get('crm.90', '请输入姓名')}
+                                        className={this.state.userNameExist || this.state.userNameError ? 'input-red-border' : ''}
+                                        onBlur={this.checkOnlyUserName}
                                     />
                                 )}
                             </FormItem>
+                            {this.renderUserNameMsg()}
                             <FormItem
                                 label={Intl.get('common.email', '邮箱')}
                                 {...formItemLayout}

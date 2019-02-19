@@ -94,7 +94,7 @@ module.exports = {
         ]
     }, {
         'method': 'get',
-        'path': '/rest/user_name/:user_name',
+        'path': '/rest/nickname/:nickname',
         'handler': 'checkOnlyUserName',
         'passport': {
             'needLogin': true
