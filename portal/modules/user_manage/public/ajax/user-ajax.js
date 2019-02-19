@@ -152,16 +152,16 @@ exports.getRoleList = function(clientId) {
 };
 
 //验证用户名唯一性
-exports.checkOnlyUserName = function(userName) {
+exports.checkOnlyUserName = function(nickName) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/user_name/' + userName,
+        url: '/rest/nickname/' + nickName,
         dataType: 'json',
         type: 'get',
         success: function(result) {
             Deferred.resolve(result);
         }, error: function(errorInfo) {
-            Deferred.reject(errorInfo.responseJSON);
+            Deferred.reject(errorInfo.responseJSON || Intl.get('common.username.is.unique', '用户名唯一性校验出错！！'));
         }
     });
     return Deferred.promise();

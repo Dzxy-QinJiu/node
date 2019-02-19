@@ -305,6 +305,20 @@ class UserInfo extends React.Component {
         this.setState({userInfo, showSaveIconTip: false});
     };
 
+    // 保存修改的昵称（姓名）
+    saveEditNicknameInfo = (saveObj, successFunc, errorFunc) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '保存成员昵称的修改');
+        UserInfoAjax.checkOnlyUserName(saveObj.nick_name).then( (result) => {
+            if (result) {
+                if (_.isFunction(errorFunc)) errorFunc(Intl.get('common.is.existed', '用户名已存在！'));
+            }else {
+                if (_.isFunction(successFunc)) successFunc();
+            }
+        }, (errorMsg) => {
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+        } );
+    };
+
     //保存修改的成员信息
     saveEditMemberInfo = (type, saveObj, successFunc, errorFunc) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), `保存成员${type}的修改`);
@@ -646,11 +660,11 @@ class UserInfo extends React.Component {
                                 id={userInfo.id}
                                 value={userInfo.name}
                                 field="nick_name"
-                                type="input"
+                                type="text"
                                 validators={[nameLengthRule]}
                                 placeholder={Intl.get('crm.90', '请输入姓名')}
                                 hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
-                                saveEditInput={this.saveEditMemberInfo.bind(this, 'nick_name')}
+                                saveEditInput={this.saveEditNicknameInfo}
                                 noDataTip={Intl.get('user.nickname.add.tip', '添加昵称')}
                                 addDataTip={Intl.get('user.nickname.no.tip', '暂无昵称')}
                             />

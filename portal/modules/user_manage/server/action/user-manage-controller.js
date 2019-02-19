@@ -148,8 +148,14 @@ exports.getRoleList = function(req, res) {
 
 //用户名唯一性验证
 exports.checkOnlyUserName = function(req, res) {
-    userManageService.checkOnlyUserName(req, res, req.params.user_name).on('success', function(data) {
-        res.status(200).json(data);
+    userManageService.checkOnlyUserName(req, res, req.params.nickname).on('success', function(data) {
+        if (data && data.account_nickname) {
+            // 用户名已存在，返回true
+            res.status(200).json(true);
+        } else {
+            // 用户名不存在，返回false
+            res.status(200).json(false);
+        }
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
