@@ -23,7 +23,10 @@ function ApplyViewDetailActions() {
         'hideApprovalBtns',//审批完后不在显示审批按钮
         'hideCancelBtns',//审批完后不再显示撤销按钮
         'setDetailInfoObjAfterAdd',
-        'setNextCandidateIds'
+        'setNextCandidateIds',
+        'setNextCandidateName',//下一节点审批人的名字
+        'setNextCandidate',
+        'showOrHideApprovalBtns'
     );
 
     //获取审批单详情
@@ -75,12 +78,10 @@ function ApplyViewDetailActions() {
     };
 
     //通过或者驳回审批
-    this.approveApplyPassOrReject = function( obj) {
+    this.approveApplyPassOrReject = function(obj) {
         this.dispatch({loading: true, error: false});
         BusinessApplyAjax.approveApplyPassOrReject(obj).then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
-            //更新选中的申请单类型
-            LeaveApplyUtil.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
             if (Oplate && Oplate.unread) {
                 Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT] -= 1;
                 if (timeoutFunc) {
@@ -118,10 +119,11 @@ function ApplyViewDetailActions() {
         });
     };
     //获取下一节点的负责人
-    this.getNextCandidate = function(queryObj) {
+    this.getNextCandidate = function(queryObj,callback) {
         ApplyApproveAjax.getNextCandidate().sendRequest(queryObj).success((list) => {
             if (_.isArray(list)){
                 this.dispatch(list);
+                _.isFunction(callback) && callback(list);
             }
         }).error(
             this.dispatch({error: true})

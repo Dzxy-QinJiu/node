@@ -182,6 +182,16 @@ LeaveApplyDetailStore.prototype.hideCancelBtns = function() {
     this.selectedDetailItem.showCancelBtn = false;
     this.detailInfoObj.info.showCancelBtn = false;
 };
+LeaveApplyDetailStore.prototype.showOrHideApprovalBtns = function(flag){
+    this.selectedDetailItem.showApproveBtn = flag;
+    this.detailInfoObj.info.showApproveBtn = flag;
+};
+LeaveApplyDetailStore.prototype.setNextCandidate = function(candidateArr){
+    this.candidateList = candidateArr;
+};
+LeaveApplyDetailStore.prototype.setNextCandidateName = function(candidateName){
+    this.detailInfoObj.info.nextCandidateName = candidateName;
+};
 
 LeaveApplyDetailStore.prototype.hideReplyCommentEmptyError = function() {
     this.replyFormInfo.result = '';

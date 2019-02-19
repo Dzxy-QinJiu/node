@@ -28,7 +28,10 @@ function ApplyViewDetailActions() {
         'setApplyCandate',
         'setAssignedSales',
         'setSalesMan',
-        'setNextCandidateIds'
+        'setNextCandidateIds',
+        'setNextCandidateName',//下一节点审批人的名字
+        'setNextCandidate',
+        'showOrHideApprovalBtns'
     );
 
     //获取审批单详情
@@ -85,8 +88,6 @@ function ApplyViewDetailActions() {
         SalesOpportunityApplyAjax.approveSalesOpportunityApplyPassOrReject(obj).then((data) => {
             //返回的data是true才是审批成功的，false也是审批失败的
             if (data){
-                //更新选中的申请单类型
-                SalesOpportunityApplyUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
                 if (Oplate && Oplate.unread) {
                     Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES] -= 1;
                     if (timeoutFunc) {
@@ -133,10 +134,11 @@ function ApplyViewDetailActions() {
         });
     };
     //获取下一节点的负责人
-    this.getNextCandidate = function(queryObj) {
+    this.getNextCandidate = function(queryObj,callback) {
         ApplyApproveAjax.getNextCandidate().sendRequest(queryObj).success((list) => {
             if (_.isArray(list)){
                 this.dispatch(list);
+                _.isFunction(callback) && callback();
             }
         }).error(
             this.dispatch({error: true})

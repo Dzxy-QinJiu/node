@@ -198,7 +198,16 @@ ReportSendApplyDetailStore.prototype.hideCancelBtns = function() {
     this.selectedDetailItem.showCancelBtn = false;
     this.detailInfoObj.info.showCancelBtn = false;
 };
-
+ReportSendApplyDetailStore.prototype.showOrHideApprovalBtns = function(flag){
+    this.selectedDetailItem.showApproveBtn = flag;
+    this.detailInfoObj.info.showApproveBtn = flag;
+};
+ReportSendApplyDetailStore.prototype.setNextCandidate = function(candidateArr){
+    this.candidateList = candidateArr;
+};
+ReportSendApplyDetailStore.prototype.setNextCandidateName = function(candidateName){
+    this.detailInfoObj.info.nextCandidateName = candidateName;
+};
 ReportSendApplyDetailStore.prototype.hideReplyCommentEmptyError = function() {
     this.replyFormInfo.result = '';
     this.replyFormInfo.errorMsg = '';

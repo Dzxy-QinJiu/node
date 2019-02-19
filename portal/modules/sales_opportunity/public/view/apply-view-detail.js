@@ -31,7 +31,8 @@ import {
     getFilterReplyList,
     handleDiffTypeApply,
     formatSalesmanList,
-    formatUsersmanList
+    formatUsersmanList,
+    updateUnapprovedCount
 } from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
@@ -71,7 +72,7 @@ class ApplyViewDetail extends React.Component {
         if (_.get(this.props,'detailItem.afterAddReplySuccess')){
             setTimeout(() => {
                 SalesOpportunityApplyDetailAction.setDetailInfoObjAfterAdd(this.props.detailItem);
-                SalesOpportunityApplyDetailAction.getNextCandidate({id: _.get(this, 'props.detailItem.id','')});
+                this.getNextCandidate(_.get(this, 'props.detailItem.id',''));
             });
         }else if (this.props.detailItem.id) {
             this.getBusinessApplyDetailData(this.props.detailItem);
@@ -105,22 +106,27 @@ class ApplyViewDetail extends React.Component {
                     placeholder={Intl.get('sales.team.search', '搜索')}
                     value={defaultValue}
                     onChange={onChangeFunction}
+                    getSelectContent={this.setSelectContent}
                     notFoundContent={dataList.length ? Intl.get('common.no.member','暂无成员') : Intl.get('apply.no.relate.user','无相关成员')}
                     dataList={dataList}
                 />
             </div>
         );
     };
-    addNewApplyCandidate = (transferCandidateId) => {
+    addNewApplyCandidate = (transferCandidateId,addNextCandidateName) => {
         var submitObj = {
             id: _.get(this, 'state.detailInfoObj.info.id',''),
             user_ids: [transferCandidateId]
         };
         var hasApprovePrivilege = _.get(this,'state.detailInfoObj.info.showApproveBtn',false);
-        //如果操作转出的人是这条审批的待审批者，需要在这个操作人的待审批列表中删除这条申请
-        if (hasApprovePrivilege){
-            submitObj.user_ids_delete = [userData.getUserData().user_id];
-        }
+        var candidateList = _.filter(this.state.candidateList,item => item.user_id !== transferCandidateId);
+        var deleteUserIds = [];
+        _.forEach(candidateList,(item) => {
+            deleteUserIds.push(item.user_id);
+        });
+        //转出操作后，把之前的待审批人都去掉，这条申请只留转出的那个人审批
+        submitObj.user_ids_delete = deleteUserIds;
+        var memberId = userData.getUserData().user_id;
         SalesOpportunityApplyDetailAction.transferNextCandidate(submitObj,(flag) => {
             //关闭下拉框
             if (flag){
@@ -133,19 +139,20 @@ class ApplyViewDetail extends React.Component {
                 }else{
                     message.success(Intl.get('apply.approve.transfer.success','转出申请成功'));
                 }
-                if (hasApprovePrivilege){
-                    //上面待审批的数字也需要减一
-                    if (Oplate && Oplate.unread) {
-                        Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES] -= 1;
-                        if (timeoutFunc) {
-                            clearTimeout(timeoutFunc);
-                        }
-                        timeoutFunc = setTimeout(function() {
-                            //触发展示的组件待审批数的刷新
-                            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
-                        }, REFRESH_APPLY_RANGE);
-                    }
+                //上面待审批的数字也需要减一
+                if (hasApprovePrivilege && Oplate && Oplate.unread) {
+                    var count = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES] - 1;
+                    updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
+                    SalesOpportunityApplyDetailAction.showOrHideApprovalBtns(false);
                 }
+                //如果是转给了自己，展示出通过和驳回的按钮
+                if (memberId === transferCandidateId && !hasApprovePrivilege){
+                    //不需要再手动加一，因为后端会有推送，这里如果加一就会使数量多一个
+                    SalesOpportunityApplyDetailAction.showOrHideApprovalBtns(true);
+
+                }
+                //转审成功后，把下一节点的审批人改成转审之后的人
+                SalesOpportunityApplyDetailAction.setNextCandidate([{nick_name: addNextCandidateName,user_id: transferCandidateId}]);
             }else{
                 message.error(Intl.get('apply.approve.transfer.failed','转出申请失败'));
             }
@@ -153,9 +160,14 @@ class ApplyViewDetail extends React.Component {
     };
     clearNextCandidateIds = () => {
         SalesOpportunityApplyDetailAction.setNextCandidateIds('');
+        SalesOpportunityApplyDetailAction.setNextCandidateName('');
+    };
+    setSelectContent =(nextCandidateName) => {
+        SalesOpportunityApplyDetailAction.setNextCandidateName(nextCandidateName);
     };
     renderAddApplyNextCandidate = () => {
         var addNextCandidateId = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
+        var addNextCandidateName = _.get(this.state, 'detailInfoObj.info.nextCandidateName','');
         return (
             <div className="pull-right">
                 <AntcDropdown
@@ -167,7 +179,7 @@ class ApplyViewDetail extends React.Component {
                     okTitle={Intl.get('common.confirm', '确认')}
                     cancelTitle={Intl.get('common.cancel', '取消')}
                     overlayContent={this.renderTransferCandidateBlock()}
-                    handleSubmit={this.addNewApplyCandidate.bind(this, addNextCandidateId)}//分配销售的时候直接分配，不需要再展示模态框
+                    handleSubmit={this.addNewApplyCandidate.bind(this, addNextCandidateId,addNextCandidateName)}//分配销售的时候直接分配，不需要再展示模态框
                     unSelectDataTip={addNextCandidateId ? '' : Intl.get('apply.will.select.transfer.approver','请选择要转给的待审批人')}
                     clearSelectData={this.clearNextCandidateIds}
                     btnAtTop={false}
@@ -191,7 +203,7 @@ class ApplyViewDetail extends React.Component {
         if (_.get(nextProps,'detailItem.afterAddReplySuccess')){
             setTimeout(() => {
                 SalesOpportunityApplyDetailAction.setDetailInfoObjAfterAdd(nextProps.detailItem);
-                SalesOpportunityApplyDetailAction.getNextCandidate({id: _.get(nextProps, 'detailItem.id','')});
+                this.getNextCandidate(_.get(nextProps, 'detailItem.id',''));
             });
         }else if (thisPropsId && nextPropsId && nextPropsId !== thisPropsId) {
             this.getBusinessApplyDetailData(nextProps.detailItem);
@@ -216,6 +228,15 @@ class ApplyViewDetail extends React.Component {
             this.getBusinessApplyDetailData(this.props.detailItem);
         }
     };
+    getNextCandidate(applyId){
+        SalesOpportunityApplyDetailAction.getNextCandidate({id: applyId},(result) => {
+            var memberId = userData.getUserData().user_id;
+            var target = _.find(result,detailItem => detailItem.user_id === memberId);
+            if (target){
+                SalesOpportunityApplyDetailAction.showOrHideApprovalBtns(true);
+            }
+        });
+    }
 
     getBusinessApplyDetailData(detailItem) {
         setTimeout(() => {
@@ -230,7 +251,7 @@ class ApplyViewDetail extends React.Component {
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyCommentList({id: detailItem.id});
                 //根据申请的id获取申请的状态
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyStatusById({id: detailItem.id});
-                SalesOpportunityApplyDetailAction.getNextCandidate({id: detailItem.id});
+                this.getNextCandidate(detailItem.id);
             }
         });
     }

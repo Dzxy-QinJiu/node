@@ -49,6 +49,7 @@ class ApplyDetailBottom extends React.Component {
                         </span>
                     </Col>
                     <Col span={14}>
+                        {_.isFunction(this.props.addApplyNextCandidate) ? this.props.addApplyNextCandidate() : null}
                         {this.props.isConsumed ? (
                             <div className="pull-right">
                                 <span className="approval-info-label">
@@ -62,7 +63,6 @@ class ApplyDetailBottom extends React.Component {
                                 this.renderBottomText()
                                 : null
                         )}
-                        {_.isFunction(this.props.addApplyNextCandidate) ? this.props.addApplyNextCandidate() : null}
                     </Col>
                 </Row>
             </div>

@@ -26,7 +26,10 @@ function ApplyViewDetailActions() {
         'setDetailInfoObjAfterAdd',
         'setDetailInfo',
         'setUpdateFilesLists',
-        'setNextCandidateIds'
+        'setNextCandidateIds',
+        'setNextCandidateName',//下一节点审批人的名字
+        'setNextCandidate',
+        'showOrHideApprovalBtns'
     );
 
     //获取审批单详情

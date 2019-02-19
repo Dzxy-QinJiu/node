@@ -1904,22 +1904,27 @@ const ApplyViewDetail = createReactClass({
                     placeholder={Intl.get('sales.team.search', '搜索')}
                     value={defaultValue}
                     onChange={onChangeFunction}
+                    getSelectContent={this.setSelectContent}
                     notFoundContent={dataList.length ? Intl.get('common.no.member', '暂无成员') : Intl.get('apply.no.relate.user', '无相关成员')}
                     dataList={dataList}
                 />
             </div>
         );
     },
-    addNewApplyCandidate(transferCandidateId){
+    addNewApplyCandidate(transferCandidateId,addNextCandidateName){
         var submitObj = {
             id: _.get(this, 'state.detailInfoObj.info.id', ''),
             user_ids: [transferCandidateId]
         };
         var hasApprovePrivilege = _.get(this, 'state.detailInfoObj.info.showApproveBtn', false);
-        //如果操作转出的人是这条审批的待审批者，需要在这个操作人的待审批列表中删除这条申请
-        if (hasApprovePrivilege) {
-            submitObj.user_ids_delete = [userData.getUserData().user_id];
-        }
+        var candidateList = _.filter(this.state.candidateList,item => item.user_id !== transferCandidateId);
+        var deleteUserIds = [];
+        _.forEach(candidateList,(item) => {
+            deleteUserIds.push(item.user_id);
+        });
+        //转出操作后，把之前的待审批人都去掉，这条申请只留转出的那个人审批
+        submitObj.user_ids_delete = deleteUserIds;
+        var memberId = userData.getUserData().user_id;
         ApplyViewDetailActions.transferNextCandidate(submitObj, (flag) => {
             //关闭下拉框
             if (flag) {
@@ -1935,7 +1940,17 @@ const ApplyViewDetail = createReactClass({
                 if (hasApprovePrivilege && Oplate && Oplate.unread) {
                     var count = Oplate.unread.approve - 1;
                     updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
+                    ApplyViewDetailActions.showOrHideApprovalBtns(false);
                 }
+                //如果是转给了自己，需要把待审批数加一，同时展示出通过和驳回的按钮
+                if (memberId === transferCandidateId && !hasApprovePrivilege){
+                    var count = Oplate.unread.approve + 1;
+                    updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
+                    ApplyViewDetailActions.showOrHideApprovalBtns(true);
+
+                }
+                //转审成功后，把下一节点的审批人改成转审之后的人
+                ApplyViewDetailActions.setNextCandidate([{nick_name: addNextCandidateName,user_id: transferCandidateId}]);
             } else {
                 message.error(Intl.get('apply.approve.transfer.failed', '转出申请失败'));
             }
@@ -1944,11 +1959,16 @@ const ApplyViewDetail = createReactClass({
     onSelectApplyNextCandidate(updateUser){
         ApplyViewDetailActions.setNextCandidateIds(updateUser);
     },
+    setSelectContent(nextCandidateName){
+        ApplyViewDetailActions.setNextCandidateName(nextCandidateName);
+    },
     clearNextCandidateIds(){
         ApplyViewDetailActions.setNextCandidateIds('');
+        ApplyViewDetailActions.setNextCandidateName('');
     },
     renderAddApplyNextCandidate(){
         var addNextCandidateId = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
+        var addNextCandidateName = _.get(this.state, 'detailInfoObj.info.nextCandidateName','');
         return (
             <div className="pull-right">
                 <AntcDropdown
@@ -1960,7 +1980,7 @@ const ApplyViewDetail = createReactClass({
                     okTitle={Intl.get('common.confirm', '确认')}
                     cancelTitle={Intl.get('common.cancel', '取消')}
                     overlayContent={this.renderTransferCandidateBlock()}
-                    handleSubmit={this.addNewApplyCandidate.bind(this, addNextCandidateId)}//分配销售的时候直接分配，不需要再展示模态框
+                    handleSubmit={this.addNewApplyCandidate.bind(this, addNextCandidateId,addNextCandidateName)}//分配销售的时候直接分配，不需要再展示模态框
                     unSelectDataTip={addNextCandidateId ? '' : Intl.get('apply.will.select.transfer.approver','请选择要转给的待审批人')}
                     clearSelectData={this.clearNextCandidateIds}
                     btnAtTop={false}

@@ -65,6 +65,9 @@ class ApplyViewDetailActions {
             'setBottomDisplayType',
             'hideApprovalBtns',//审批完后不在显示审批按钮
             'setNextCandidateIds',//设置下一节点的审批人
+            'setNextCandidateName',//下一节点审批人的名字
+            'setNextCandidate',
+            'showOrHideApprovalBtns'
         );
     }
 
