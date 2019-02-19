@@ -7,7 +7,11 @@ import { ifNotSingleApp, isSales, argCallbackUnderlineTimeToTime } from '../../u
 export function getRemainAccountChart(type = 'total', title) {
     return {
         title: title || Intl.get('oplate.user.analysis.9', '用户留存'),
-        url: '/rest/analysis/user/v1/retention',
+        url: '/rest/analysis/user/v3/:data_type/retention/add_user',
+        conditions: [{
+            name: 'interval',
+            value: 'day'
+        }],
         argCallback: argCallbackUnderlineTimeToTime,
         chartType: 'table',
         option: {
