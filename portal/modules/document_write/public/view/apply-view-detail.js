@@ -105,10 +105,7 @@ class ApplyViewDetail extends React.Component {
         };
         var hasApprovePrivilege = _.get(this,'state.detailInfoObj.info.showApproveBtn',false);
         var candidateList = _.filter(this.state.candidateList,item => item.user_id !== transferCandidateId);
-        var deleteUserIds = [];
-        _.forEach(candidateList,(item) => {
-            deleteUserIds.push(item.user_id);
-        });
+        var deleteUserIds = _.map(candidateList,'user_id');
         //转出操作后，把之前的待审批人都去掉，这条申请只留转出的那个人审批
         submitObj.user_ids_delete = deleteUserIds;
         var memberId = userData.getUserData().user_id;
@@ -124,16 +121,15 @@ class ApplyViewDetail extends React.Component {
                 }else{
                     message.success(Intl.get('apply.approve.transfer.success','转出申请成功'));
                 }
-
-                //上面待审批的数字也需要减一
-                if (hasApprovePrivilege && Oplate && Oplate.unread) {
+                //将待我审批的申请转审后
+                if (hasApprovePrivilege){
+                    //待审批数字减一
                     var count = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE] - 1;
                     updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
+                    //隐藏通过、驳回按钮
                     DocumentWriteApplyDetailAction.showOrHideApprovalBtns(false);
-                }
-                //如果是转给了自己，需要把待审批数加一，同时展示出通过和驳回的按钮
-                if (memberId === transferCandidateId && !hasApprovePrivilege){
-                    //不需要再手动加一，因为后端会有推送，这里如果加一就会使数量多一个
+                }else if (memberId === transferCandidateId ){
+                    //将非待我审批的申请转给我审批后，展示出通过驳回按钮,不需要再手动加一，因为后端会有推送，这里如果加一就会使数量多一个
                     DocumentWriteApplyDetailAction.showOrHideApprovalBtns(true);
                 }
                 //转审成功后，把下一节点的审批人改成转审之后的人
