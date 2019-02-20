@@ -33,12 +33,12 @@ function getCharts(paramObj) {
         customerChart.getSignedCustomerAdministrativeLevelCoverageChart(paramObj),
         //签约客户地域市场占有率分析
         customerChart.getSignedCustomerZoneCoverageChart(paramObj),
-        //新签客户趋势
-        customerChart.getSignedCustomerNewTrendChart(paramObj),
         //签约客户行业分布
         customerChart.getSignedCustomerTotalIndustryChart(paramObj),
         //签约客户团队分布
         customerChart.getSignedCustomerTotalTeamChart(paramObj),
+        //新签客户趋势
+        customerChart.getSignedCustomerNewTrendChart(paramObj),
         //新签行业分布
         customerChart.getSignedCustomerNewIndustryChart(paramObj),
         //新签团队分布
