@@ -486,7 +486,13 @@ const AppPropertySetting = createReactClass({
     },
 
     currentTabChange(app_id) {
+        if(!app_id) return;
         var selectedApps = this.props.selectedApps;
+        //多用户的应用配置，应用配置项中的key组成：app_id&&user_id(多用户延期时)
+        if(this.props.isMultiUser){
+            //需要取出实际的app_id
+            app_id = _.get(app_id.split('&&'), '[0]');
+        }
         var targetApp = _.find(selectedApps , (app) => app.app_id === app_id);
         if(targetApp) {
             this.changeCurrentApp(targetApp);
