@@ -14,6 +14,13 @@ export function getContractChart() {
             argCallbackUnderlineTimeToTime(arg);
             argCallbackTeamIdsToTeamId(arg);
             argCallbackMemberIdsToMemberId(arg);
+
+            const appId = _.get(arg, 'query.app_id');
+
+            //接口不支持用app_id=all来表示全部应用，要查全部应用的话，需要通过不传app_id来实现
+            if (appId === 'all') {
+                delete arg.query.app_id;
+            }
         },
         chartType: 'table',
         option: {
