@@ -34,7 +34,8 @@ import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {storageUtil} from 'ant-utils';
 
 const STORED_TEAM_KEY = 'monthly_report_selected_team';
-import {getMyTeamTreeAndFlattenList,getMyOrganization} from 'PUB_DIR/sources/utils/common-data-util';
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
+import {getUserData} from 'PUB_DIR/sources/user-data';
 
 class MonthlyReport extends React.Component {
     state = {
@@ -42,8 +43,7 @@ class MonthlyReport extends React.Component {
         memberList: [],
         selectedTeam: '',
         selectedMonth: moment(),
-        showCharts: false,
-        organization: '',//组织信息
+        organization: getUserData() && getUserData().organization || '', //组织id
     };
 
     componentDidMount() {
@@ -51,11 +51,6 @@ class MonthlyReport extends React.Component {
         $('.analysis_report_ico a').addClass('active');
         this.getTeamList();
         this.getMemberList();
-        this.getOrganization(() => {
-            this.setState({
-                showCharts: true
-            });
-        });
     }
 
     getTeamList = () => {
@@ -126,18 +121,6 @@ class MonthlyReport extends React.Component {
 
     numberRender = text => {
         return <span>{_.isNumber(text) && text.toFixed()}</span>;
-    };
-
-    // 获取我所在的组织信息
-    getOrganization = (callback) => {
-        getMyOrganization().then((resData) => {
-            this.state.organization || this.setState({
-                organization: resData
-            });
-            callback && callback();
-        }).catch(() => {
-            callback && callback();
-        });
     };
 
     //电话量统计表格列定义
@@ -534,7 +517,7 @@ class MonthlyReport extends React.Component {
                                 </div>
                             ) : null}
 
-                            {selectedTeamId && this.state.showCharts ? (
+                            {selectedTeamId ? (
                                 <AntcAnalysis
                                     charts={this.getCharts()}
                                     conditions={this.getConditions(selectedTeamId)}
