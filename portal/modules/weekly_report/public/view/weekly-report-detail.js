@@ -22,7 +22,7 @@ const PRIVILEGE_MAP = {
     CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
 };
 import {formatRoundingData} from 'PUB_DIR/sources/utils/common-method-util';
-import {getMyOrganization} from 'PUB_DIR/sources/utils/common-data-util';
+import {getUserData} from 'PUB_DIR/sources/user-data';
 import { ORGANIZATION_TYPE } from 'PUB_DIR/sources/utils/consts';
 const isCommonSales = userData.getUserData().isCommonSales;
 
@@ -38,7 +38,7 @@ class WeeklyReportDetail extends React.Component {
         formType: 'add',//是添加请假信息还是修改请假信息
         isEdittingItem: {},//正在编辑的请假信息
         ...WeeklyReportDetailStore.getState(),
-        organization: '',//组织id
+        organization: getUserData() && getUserData().organization || '', //组织id
     };
 
     onStoreChange = () => {
@@ -82,9 +82,7 @@ class WeeklyReportDetail extends React.Component {
     getWeeklyReportData = () => {
         //不加延时会报错
         setTimeout(() => {
-            this.getOrganization(() => {
-                this.getCallInfoData();// 接通率
-            });
+            this.getCallInfoData();// 接通率
             if (hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE)) {
                 this.getContractData();//获取合同信息
                 this.getRepaymentData();//获取回款信息
@@ -357,18 +355,6 @@ class WeeklyReportDetail extends React.Component {
             align: 'right',
         },];
         return columns;
-    };
-
-    // 获取我所在的组织信息
-    getOrganization = (callback) => {
-        getMyOrganization().then((resData) => {
-            this.state.organization || this.setState({
-                organization: resData
-            });
-            callback && callback();
-        }).catch(() => {
-            callback && callback();
-        });
     };
 
     getCallInfoAuth = () => {
