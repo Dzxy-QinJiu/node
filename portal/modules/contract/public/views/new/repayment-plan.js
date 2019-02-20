@@ -1,7 +1,7 @@
 /** Created by 2019-01-31 11:11 */
 
 var React = require('react');
-import { message, Select, Icon, Form, Input, Button, Modal } from 'antd';
+import { message, Select, Icon, Form, Input, Spin, Button, Modal, Popconfirm } from 'antd';
 
 let Option = Select.Option;
 let FormItem = Form.Item;
@@ -47,6 +47,7 @@ class RepaymentPlan extends React.Component {
             hasEditPrivilege,
             displayType: DISPLAY_TYPES.TEXT,
             currentRepayment: {},// 当前选中的回款计划
+            repayPlanLoading: false,
         };
     }
     static defaultProps = {
@@ -97,12 +98,17 @@ class RepaymentPlan extends React.Component {
         if (type === 'delete') {
             saveObj = [id];
             const successFunc = () => {
-                this.props.updateScrollBar();
+                this.setState({
+                    repayPlanLoading: false
+                },() => {
+                    this.props.updateScrollBar();
+                });
             };
             const errorFunc = (errorMsg) => {
                 message.error(errorMsg);
+                this.setState({ repayPlanLoading: false });
             };
-            this.editRepayment(type, saveObj, successFunc, errorFunc);
+            this.editRepayment(type, saveObj,'', successFunc, errorFunc);
         } else if(type === 'add'){
             this.props.form.validateFields((err,value) => {
                 if (err) return false;
@@ -184,18 +190,15 @@ class RepaymentPlan extends React.Component {
     };
     handleDeleteRepayment = (repayment, e) => {
         Trace.traceEvent(e, '点击删除回款计划按钮');
-        confirm({
-            title: Intl.get('crm.contact.delete.confirm', '确认删除'),
-            onOk: () => {
-                Trace.traceEvent(e, '点击删除回款计划确认按钮');
-                this.handleSubmit('delete','',repayment.id);
-            },
-            onCancel() {},
+        // Trace.traceEvent(e, '点击删除回款计划确认按钮');
+        this.setState({
+            repayPlanLoading: true
+        }, () => {
+            this.handleSubmit('delete','',repayment.id);
         });
     };
     setEditable(repayment, e) {
         Trace.traceEvent(e, '点击编辑回款计划按钮');
-        console.log(repayment, e);
         let formData = this.state.formData;
         formData.repay_type = 'update';
         let timeInterval = moment(repayment.date).startOf('day').diff(moment(this.props.contract.date).startOf('day'), formData.unit);
@@ -309,28 +312,32 @@ class RepaymentPlan extends React.Component {
         if(repayPlanLists.length > 0) {
             return (
                 <div className="finance-list">
-                    <ul>
-                        {repayPlanLists.map((repayment, index) => {
-                            let timeInterval = moment(repayment.date).startOf('day').diff(moment(date).startOf('day'), 'days');
-                            let classname = classNames('finance-list-item',{
-                                'item-actived': !_.isEmpty(this.state.currentRepayment) && this.state.currentRepayment.id === repayment.id
-                            });
-                            return (
-                                <li key={index} className={classname}>
-                                    <ReactIntl.FormattedMessage id="contract.78" defaultMessage="从签订日起" />{timeInterval}{`${Intl.get('contract.79', '日')}${Intl.get('contract.80', '日')}`}
-                                    ({moment(repayment.date).format(oplateConsts.DATE_FORMAT)}{Intl.get('common.before', '前')}),{Intl.get('contract.93', '应收回款')}{parseAmount(repayment.amount)}{Intl.get('contract.155', '元')}
-                                    <span className="btn-bar"
-                                        onClick={this.handleDeleteRepayment.bind(this, repayment)}
-                                        title={Intl.get('common.delete', '删除')}>
-                                        <Icon type="close" theme="outlined" />
-                                    </span>
-                                    <DetailEditBtn title={Intl.get('common.edit', '编辑')} onClick={(e) => {
-                                        this.setEditable(repayment ,e);
-                                    }}/>
-                                </li>
-                            );
-                        })}
-                    </ul>
+                    <Spin spinning={this.state.repayPlanLoading}>
+                        <ul>
+                            {repayPlanLists.map((repayment, index) => {
+                                let timeInterval = moment(repayment.date).startOf('day').diff(moment(date).startOf('day'), 'days');
+                                let classname = classNames('finance-list-item',{
+                                    'item-actived': !_.isEmpty(this.state.currentRepayment) && this.state.currentRepayment.id === repayment.id
+                                });
+                                return (
+                                    <li key={index} className={classname}>
+                                        <ReactIntl.FormattedMessage id="contract.78" defaultMessage="从签订日起" />{timeInterval}{`${Intl.get('contract.79', '日')}${Intl.get('contract.80', '日')}`}
+                                        ({moment(repayment.date).format(oplateConsts.DATE_FORMAT)}{Intl.get('common.before', '前')}),{Intl.get('contract.93', '应收回款')}{parseAmount(repayment.amount)}{Intl.get('contract.155', '元')}
+                                        <Popconfirm title={`${Intl.get('crm.contact.delete.confirm', '确认删除')}?`} onConfirm={this.handleDeleteRepayment.bind(this, repayment)}>
+                                            <span className="btn-bar"
+                                                //onClick={this.handleDeleteRepayment.bind(this, repayment)}
+                                                title={Intl.get('common.delete', '删除')}>
+                                                <Icon type="close" theme="outlined" />
+                                            </span>
+                                        </Popconfirm>
+                                        <DetailEditBtn title={Intl.get('common.edit', '编辑')} onClick={(e) => {
+                                            this.setEditable(repayment ,e);
+                                        }}/>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </Spin>
                 </div>
             );
         } else {

@@ -245,7 +245,9 @@ const AddProduct = createReactClass({
         return flag;
     },
     handleProductChange(data) {
-        this.setState({ products: data, pristine: true });
+        this.setState({ products: data, pristine: true },() => {
+            this.props.updateScrollBar();
+        });
     },
     renderAppIconName(appName, appId) {
         let appList = this.props.appList;
@@ -281,7 +283,9 @@ const AddProduct = createReactClass({
     },
     handleProductCancel() {
         let products = _.clone(this.props.products);
-        this.setState({products});
+        this.setState({products},() => {
+            this.props.updateScrollBar();
+        });
     },
     handleProductSave(saveObj,successFunc,errorFunc) {
         saveObj = {products: saveObj};
@@ -370,6 +374,8 @@ const AddProduct = createReactClass({
                 validator: text => this.getNumberValidate(text)//this.state.validator
             }
         ];
+        const expandedRowRender = record => <p>{record.name}</p>;
+
         const customizeBTN = (
             <span onClick={this.handleAddCustomeizeApp}>{Intl.get('contract.form.customize', '添加自定义产品')}</span>
         );
@@ -388,17 +394,16 @@ const AddProduct = createReactClass({
                 const amount = +item.total_price;
                 return sum + amount;
             }, 0) : '';
-            console.log(reports,totalReportsPrice);
             totalAmout = this.props.contract.contract_amount - totalReportsPrice;
         }
 
         return (
-            <div className="add-products">               
+            <div className="add-products" data-tracename="产品页面">
                 <div className="product-forms product-table-container">
                     <ProductTable
                         addBtnText={Intl.get('common.product', '产品')}
                         ref={ref => this.producTableRef = ref}
-                        appendDOM={customizeBTN}
+                        //appendDOM={customizeBTN}
                         defaultValueMap={defaultValueMap}
                         appList={this.props.appList.map(x => ({
                             client_id: x.app_id,
@@ -411,6 +416,7 @@ const AddProduct = createReactClass({
                         isEdit={isEdit}
                         isEditBtnShow={isEditBtnShow}
                         isSaveCancelBtnShow={isSaveCancelBtnShow}
+                        expandedRowRender={expandedRowRender}
                         columns={columns}
                         onSave={this.handleProductSave}
                         handleCancel={this.handleProductCancel}

@@ -1013,37 +1013,6 @@
                 margin-left: 15px;
             }
         }
-        .add-products, .add-reports {
-            width: auto;
-            position: relative;
-            .icon-edit-btn{
-                position: absolute;
-                right: 20px;
-                top: -35px;
-            }
-            .product-table {
-                .antc-table{
-                    margin-right: 0;
-                }
-            }
-        }
-        .add-reports{
-            margin-top: 30px;
-            .icon-edit-btn{
-                top: -25px;
-            }
-        }
-        .add-products {
-            .app-icon-name {
-                .app-self {
-                    img{
-                        width: 16px;
-                        height: 16px;
-                        vertical-align: top;
-                    }
-                }
-            }
-        }
         .total-amount-price {
             margin: 15px 0 0 15px;
             font-size: 14px;
@@ -1103,6 +1072,7 @@
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
+          line-height: 32px;
         }
         .contract_detail{
             padding: 0 20px;
@@ -1174,12 +1144,12 @@
                 }
             }
         }
-        .iconfont{
+        /*.iconfont{
             width: 24px;
             overflow: hidden;
             cursor: pointer;
             text-align: center;
-        }
+        }*/
         .contract-repayment-container{
             margin: 0 20px;
             .detail-card-container{
@@ -1277,6 +1247,93 @@
         }
         .ant-table td{
             padding: 10px 8px;
+        }
+        .add-products, .add-reports {
+            width: auto;
+            position: relative;
+            .icon-edit-btn{
+                position: absolute;
+                right: 20px;
+                top: -35px;
+            }
+            .product-table {
+                .antc-table{
+                    margin-right: 0;
+                }
+            }
+        }
+        .add-reports{
+            margin-top: 30px;
+            .icon-edit-btn{
+                top: -25px;
+            }
+        }
+        .add-products {
+            .form-inline{
+                display: inline-block !important;
+                width: 50% !important;
+            }
+            .ant-form{
+                background: transparent;
+                padding: 0 !important;
+                .ant-form-item{
+                    width: auto;
+                    display: block;
+                    margin-bottom: 5px !important;
+                    .ant-form-explain{
+                        position: relative;
+                    }
+                }
+            }
+            .app-icon-name {
+                .app-self {
+                    img{
+                        width: 24px;
+                        height: 24px;
+                    }
+                }
+                .app-name{
+                    margin-left: 5px;
+                }
+            }
+            .product-forms{
+                margin: 0 15px 15px;
+                .product-detail-top-total-block{
+                    line-height: 24px;
+                    margin-top: 5px;
+                    .add-app-container{
+                        float: left;
+                        font-size: 14px;
+                    }
+                    .icon-edit-btn{
+                        //position: relative;
+                        top: -23px;
+                        //right: 0;
+                    }
+                }
+                .btn-bar{
+                    float: right;
+                    cursor: pointer;
+                    padding: 0 5px;
+                }
+                .validity-time{
+                    input{
+                        width: 140px;
+                        padding-bottom: 14px;
+                        height: 30px;
+                    }
+                    .ant-calendar-range-picker-separator{
+                        line-height: 30px;
+                    }
+                }
+                .add-app-container{
+                    background: white;
+                    padding-left: 7px;
+                    font-size: 14px;
+                    line-height: 32px;
+                    margin-top: 10px;
+                }
+            }
         }
         .invoice-info-container{
             .basic-info-item {

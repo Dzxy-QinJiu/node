@@ -14,7 +14,8 @@ const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
 import { PRODUCT, PROJECT, SERVICE, PURCHASE, CATEGORY, VIEW_TYPE } from '../consts';
 import AddBasic from './add-basic';
-import AddProduct from './add-product';
+// import AddProduct from './add-product';
+import AddProduct from './views/new/add-product';
 import AddReport from './add-report';
 import AddRepayment from './add-repayment';
 import AddBuyBasic from './add-buy-basic';
@@ -45,7 +46,8 @@ const LAYOUT_CONSTANTS = {
     TITLE_PADDING: 30,
     ERROR_PADDING: 70,
     LOADING_PADDING: 100,
-    REMARK_PADDING: 24
+    REMARK_PADDING: 24,
+    CONTRACT_AMOUNT: 35,
 };
 class ContractRightPanel extends React.Component {
     state = {
@@ -481,6 +483,7 @@ class ContractRightPanel extends React.Component {
         });
 
         if ([PRODUCT].indexOf(this.state.currentCategory) > -1) {
+            contentHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
             contractFormPanes['2'] = props => (
                 <div className={props.className}>
                     <div className={totalAmountClass}>{totalAmountPrice}</div>
@@ -489,6 +492,7 @@ class ContractRightPanel extends React.Component {
                         isDetailType={props.isDetailType}
                         appList={this.props.appList}
                         updateScrollBar={this.updateScrollBar}
+                        totalAmout={this.state.total_amount}
                     />
                     {/*{this.state.showDiffAmountWarning ? <div className="alert-container">
                         <Alert type="error" message={Intl.get('contract.different.amount.wanring', '合同额与产品总额不同提示信息')} showIcon />
@@ -498,6 +502,7 @@ class ContractRightPanel extends React.Component {
         }
 
         if (this.state.currentCategory === SERVICE) {
+            contentHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
             contractFormPanes['2'] = props => (
                 <div className={props.className}>
                     <div className={totalAmountClass}>{totalAmountPrice}</div>
@@ -506,6 +511,7 @@ class ContractRightPanel extends React.Component {
                         isDetailType={props.isDetailType}
                         appList={this.props.appList}
                         updateScrollBar={this.updateScrollBar}
+                        totalAmout={this.state.total_amount}
                     />
                     {/*     {this.state.showDiffAmountWarning ? <div className="alert-container">
                         <Alert type="error" message={Intl.get('contract.different.amount.wanring', '合同额与产品总额不同提示信息')} showIcon />
@@ -589,10 +595,11 @@ class ContractRightPanel extends React.Component {
             let endTabKey = 3, tabList = [];
             if(isProductAndService) {
                 endTabKey += 1;
+                // contentHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
                 tabList.push(
                     <TabPane tab={Intl.get('contract.product.service.info', '产品与服务信息')} key="2">
                         <div className="contract-product" style={{height: contentHeight}}>
-                            <GeminiScrollBar>
+                            <GeminiScrollBar ref='gemiScrollBar'>
                                 <div className='contract-product-title'><span className='product-title-text'>合同额：{`${this.props.contract.contract_amount}${Intl.get('contract.155', '元')}`}</span></div>
                                 <AddProduct
                                     ref="addProduct"

@@ -334,7 +334,6 @@ EditableTable.propTypes = {
     onChange: PropTypes.func,
     onCancel: PropTypes.func,
     onColumnsChange: PropTypes.func,
-    form: PropTypes.object
 };
 
-module.exports = Form.create()(EditableTable);
+module.exports = EditableTable;

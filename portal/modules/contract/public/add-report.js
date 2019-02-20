@@ -123,6 +123,8 @@ const AddReport = createReactClass({
                 ...x,
                 type: x.name
             })), pristine: true };
+        }, () => {
+            this.props.updateScrollBar();
         });
     },
     handleReportSave(saveObj,successFunc,errorFunc) {
@@ -169,7 +171,9 @@ const AddReport = createReactClass({
                 item.name = item.type;
             }
         });
-        this.setState({reports});
+        this.setState({reports}, () => {
+            this.props.updateScrollBar();
+        });
     },
     render: function() {
         let num_col_width = 75;
