@@ -1,6 +1,5 @@
 var userInfoAjax = require('../ajax/user-info-ajax');
 var userData = require('../../../../public/sources/user-data');
-import {getOrganization} from 'PUB_DIR/sources/utils/common-data-util';
 
 function UserInfoActions() {
     this.generateActions(

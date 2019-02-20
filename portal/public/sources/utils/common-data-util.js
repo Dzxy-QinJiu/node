@@ -377,35 +377,3 @@ exports.getProductList = function(cb, isRefresh) {
         if (_.isFunction(cb)) cb(integrationProductList);
     }
 };
-
-
-/**
- * 获取所在组织
- * @param cb
- * @returns {*}
- */
-exports.getOrganization = function(cb) {
-    var Deferred = $.Deferred();
-    let user = getUserData();
-    if (user.organization) {
-        Deferred.resolve(user.organization);
-        _.isFunction(cb) && cb(user.organization);
-    } else {
-        $.ajax({
-            url: '/rest/get_managed_realm',
-            dataType: 'json',
-            type: 'get',
-            success: function(organization) {
-                user.organization = organization;
-                Deferred.resolve(organization);
-                setUserData('organization', organization);
-                _.isFunction(cb) && cb(organization);
-            },
-            error: (errMsg) => {
-                Deferred.reject(errMsg);
-                _.isFunction(cb) && cb();
-            }
-        });
-    }
-    return Deferred.promise();
-};
