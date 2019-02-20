@@ -24,18 +24,19 @@ var minUserInfoContainerWidth = 1035;//个人资料界面可并排展示时的�
 var userLogHeight = 690;//如果界面宽度低于最小宽度时，登录日志高度默认值
 var minUserInfoHeight = 380;//如果并排展示时，登录日志展示区域最小高度
 var PrivilegeChecker = require('../../../components/privilege/checker');
-
-
-import {FormattedMessage, defineMessages, injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../components/react-intl-mixin';
+import {getUserData} from 'PUB_DIR/sources/user-data';
 
 var UserInfoPage = createReactClass({
     displayName: 'UserInfoPage',
     mixins: [reactIntlMixin],
 
     getInitialState: function() {
+        let organization = getUserData() && getUserData().organization;
         return {
             ...UserInfoStore.getState(),
+            // ketao版组织安全域的名称字段realm_name；发版的curtao，组织安全域的名称字段是name
+            managedRealm: _.get(organization,'realm_name') || _.get(organization, 'name', ''),
             userInfoContainerHeight: this.userInfoContainerHeightFnc()
         };
     },
@@ -49,10 +50,6 @@ var UserInfoPage = createReactClass({
         $(window).on('resize', this.resizeWindow);
         UserInfoStore.listen(this.onChange);
         UserInfoAction.getUserInfo();
-        if (hasPrivilege('GET_MANAGED_REALM') || hasPrivilege('GET_MEMBER_SELF_INFO')) {
-            UserInfoAction.getManagedRealm();
-        }
-
         UserInfoAction.getLogList({
             load_size: this.state.loadSize
         });
@@ -100,8 +97,6 @@ var UserInfoPage = createReactClass({
                         userInfoFormShow={this.state.userInfoFormShow}
                         userInfo={this.state.userInfo}
                         managedRealm={this.state.managedRealm}
-                        realmErrorMsg={this.state.realmErrorMsg}
-                        realmLoading={this.state.realmLoading}
                         userInfoErrorMsg={this.state.userInfoErrorMsg}
                         userInfoLoading={this.state.userInfoLoading}
                     />
