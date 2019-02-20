@@ -2,15 +2,12 @@
  * 销售新开客户数统计
  */
 
-import { argCallbackMemberIdsToMemberId } from '../../utils';
-
 export function getSalesNewOpenChart(paramObj = {}) {
     return {
         title: Intl.get('oplate_customer_analysis.salesNewCustomerCount', '销售新开客户数统计'),
         layout: {sm: 24},
         height: 'auto',
         url: '/rest/analysis/customer/v2/statistic/:auth_type/customer/user/new',
-        argCallback: argCallbackMemberIdsToMemberId,
         chartType: 'table',
         option: {
             columns: [
