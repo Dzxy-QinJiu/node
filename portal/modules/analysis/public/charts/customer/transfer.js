@@ -1,12 +1,12 @@
 /**
- * 转出客户统计
+ * 转出客户明细
  */
 
 import { initialTime } from '../../consts';
 
 export function getCustomerTransferChart() {
     return {
-        title: Intl.get('user.analysis.moveoutCustomer', '转出客户统计'),
+        title: '转出客户明细',
         url: '/rest/customer/v2/customer/transfer/record/1000/time/descend',
         reqType: 'post',
         conditions: [{
