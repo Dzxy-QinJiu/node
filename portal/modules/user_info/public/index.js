@@ -35,8 +35,7 @@ var UserInfoPage = createReactClass({
         let organization = getUserData() && getUserData().organization;
         return {
             ...UserInfoStore.getState(),
-            // ketao版组织安全域的名称字段realm_name；发版的curtao，组织安全域的名称字段是name
-            managedRealm: _.get(organization,'realm_name') || _.get(organization, 'name', ''),
+            managedRealm: _.get(organization,'realm_name', ''),
             userInfoContainerHeight: this.userInfoContainerHeightFnc()
         };
     },
