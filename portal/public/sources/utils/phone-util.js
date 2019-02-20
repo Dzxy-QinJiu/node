@@ -6,19 +6,18 @@
 
 let callcenter = require('callcenter-sdk-client');
 let CallcenterClient = callcenter.client;
-let CommonDataUtil = require('PUB_DIR/sources/utils/common-data-util');
 import {Button} from 'antd';
+import {getUserData} from '../user-data';
 
 let callClient;
 //初始化
 exports.initPhone = function(user) {
-    CommonDataUtil.getOrganization().then((org) => {
-        callClient = new CallcenterClient(org.realm_id, user.user_name);
-        callClient.init().then(() => {
-            console.log('可以打电话了!');
-        }, (error) => {
-            console.log(error || '电话系统初始化失败了!');
-        });
+    let org = getUserData() && getUserData().organization;
+    callClient = new CallcenterClient(org.realm_id, user.user_name);
+    callClient.init().then(() => {
+        console.log('可以打电话了!');
+    }, (error) => {
+        console.log(error || '电话系统初始化失败了!');
     });
 };
 //获取客户端

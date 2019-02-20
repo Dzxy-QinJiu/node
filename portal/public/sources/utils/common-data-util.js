@@ -409,28 +409,3 @@ exports.getOrganization = function(cb) {
     }
     return Deferred.promise();
 };
-
-//获取我所在的组织信息
-exports.getMyOrganization = function() {
-    return new Promise((resolve, reject) => {
-        const userProperty = 'organization_info';
-        let organizationInfo = getUserData()[userProperty];
-        if (organizationInfo) {
-            resolve(organizationInfo);
-        } else {
-            $.ajax({
-                url: '/rest/get_managed_realm',
-                type: 'get',
-                dataType: 'json',
-                success: data => {
-                    //保存到userData中
-                    setUserData(userProperty, data);
-                    resolve(data);
-                },
-                error: xhr => {
-                    reject(xhr.responseJSON);
-                }
-            });
-        }
-    });
-};
