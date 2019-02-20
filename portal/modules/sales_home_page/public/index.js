@@ -34,8 +34,8 @@ import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
+import {getUserData} from 'PUB_DIR/sources/user-data';
 import {ORGANIZATION_TYPE} from 'PUB_DIR/sources/utils/consts';
-const SORT_ICON_WIDTH = 16;
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
@@ -76,7 +76,7 @@ class SalesHomePage extends React.Component {
             callBackSorter: {}, // 回访的排序对象
             appList: [], //应用数组
             selectedAppId: '', //选中的应用id
-            organization: '',//组织id
+            organization: getUserData() && getUserData().organization || '', //组织id
         };
     }
 
@@ -158,18 +158,6 @@ class SalesHomePage extends React.Component {
         SalesHomeAction.getWebsiteConfig();
     };
 
-    // 获取我所在的组织信息
-    getOrganization = (callback) => {
-        commonDataUtil.getMyOrganization().then((resData) => {
-            this.state.organization || this.setState({
-                organization: resData
-            });
-            callback && callback();
-        }).catch(() => {
-            callback && callback();
-        });
-    };
-
     getListBlockHeight = () => {
         let listHeight = null;
 
@@ -240,11 +228,9 @@ class SalesHomePage extends React.Component {
         SalesHomeAction.getUserTotal(queryParams);
         //获取销售(团队)-电话列表
         SalesHomeAction.setListIsLoading(viewConstant.PHONE);
-        this.getOrganization(() => {
-            //电话统计取“全部”时，开始时间传0，结束时间传当前时间
-            let phoneParams = this.getPhoneParams();
-            SalesHomeAction.getSalesPhoneList(phoneParams);
-        });
+        //电话统计取“全部”时，开始时间传0，结束时间传当前时间
+        let phoneParams = this.getPhoneParams();
+        SalesHomeAction.getSalesPhoneList(phoneParams);
         SalesHomeAction.setListIsLoading(viewConstant.CALL_BACK);
         //切换团队数据的时候，不用发获取回访的请求
         if (!isSwitchTeam){
