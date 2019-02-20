@@ -219,19 +219,20 @@ class ProductList extends Component {
 
     handleDelete = (index) => {
         let data = this.state.data;
+        let id = data[index].id;
         let newData = _.map(data,(item, index) => {
             let value = this[`form${item.id}Ref`].props.form.getFieldsValue();
             return {...item, ...value};
         });
         newData.splice(index, 1);
-        delete this[`form${item.id}Ref`];
+        delete this[`form${id}Ref`];
 
         this.setState({
             data: newData
         },() => {
             newData.length === 1 && 0 !== index ? index = 0 : index -= 1;
             newData.length > 1 ? this[`form${newData[index].id}Ref`].props.form.validateFields() : '';
-            // if(_.isFunction(this.props.onChange)) this.props.onChange(newData);
+            if(_.isFunction(this.props.onChange)) this.props.onChange(newData);
         });
     };
     handleCancel = (e) => {

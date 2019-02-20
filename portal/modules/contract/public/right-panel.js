@@ -489,8 +489,10 @@ class ContractRightPanel extends React.Component {
                     <div className={totalAmountClass}>{totalAmountPrice}</div>
                     <AddProduct
                         ref="addProduct"
+                        parent={this}
                         isDetailType={props.isDetailType}
                         appList={this.props.appList}
+                        contract={this.props.contract}
                         updateScrollBar={this.updateScrollBar}
                         totalAmout={this.state.total_amount}
                     />
@@ -508,8 +510,10 @@ class ContractRightPanel extends React.Component {
                     <div className={totalAmountClass}>{totalAmountPrice}</div>
                     <AddProduct
                         ref="addProduct"
+                        parent={this}
                         isDetailType={props.isDetailType}
                         appList={this.props.appList}
+                        contract={this.props.contract}
                         updateScrollBar={this.updateScrollBar}
                         totalAmout={this.state.total_amount}
                     />

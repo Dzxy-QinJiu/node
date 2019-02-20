@@ -162,17 +162,19 @@ class AddProduct extends React.Component{
 
         // 获取合同金额的大小
         let totalAmout = 0;
-        if(isEditBtnShow) {
-            let reports = _.get(this,'props.parent.refs.addReport.state.reports') || _.get(this,'props.contract.reports') || [];
-            let totalReportsPrice = 0;
-            reports.length > 0 ? totalReportsPrice = _.reduce(reports,(sum, item) => {
-                const amount = +item.total_price;
-                return sum + amount;
-            }, 0) : '';
-            totalAmout = this.props.contract.contract_amount - totalReportsPrice;
+        /*if(isEditBtnShow) {
+
         }else{
             totalAmout = removeCommaFromNum(this.props.totalAmout);
-        }
+        }*/
+        let reports = _.get(this,'props.parent.refs.addReport.state.reports') || _.get(this,'props.contract.reports') || [];
+        let totalReportsPrice = 0;
+        reports.length > 0 ? totalReportsPrice = _.reduce(reports,(sum, item) => {
+            const amount = +item.total_price;
+            return sum + amount;
+        }, 0) : '';
+
+        totalAmout = _.get(this,'props.contract.contract_amount') || removeCommaFromNum(this.props.totalAmout) - totalReportsPrice;
 
         const formItems = [
             {
