@@ -247,6 +247,8 @@ class ApplyViewDetail extends React.Component {
             if (APPLY_FINISH_STATUS.includes(detailItem.status)) {
                 LeaveApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
                 LeaveApplyDetailAction.getLeaveApplyDetailById({id: detailItem.id}, detailItem.status);
+                //如果是在界面上改变审批的状态是已通过，最好也查一下下一节点的审批人
+                this.getNextCandidate(detailItem.id);
             } else if (detailItem.id) {
                 LeaveApplyDetailAction.getLeaveApplyDetailById({id: detailItem.id});
                 LeaveApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});

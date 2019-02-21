@@ -72,6 +72,8 @@ function ApplyViewDetailActions() {
         this.dispatch({loading: true, error: false});
         LeaveApplyAjax.approveLeaveApplyPassOrReject(obj).then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
+            //更新选中的申请单类型
+            LeaveApplyUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
             if (Oplate && Oplate.unread) {
                 Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE] -= 1;
                 if (timeoutFunc) {

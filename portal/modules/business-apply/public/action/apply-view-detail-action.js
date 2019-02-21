@@ -82,6 +82,8 @@ function ApplyViewDetailActions() {
         this.dispatch({loading: true, error: false});
         BusinessApplyAjax.approveApplyPassOrReject(obj).then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
+            //更新选中的申请单类型
+            LeaveApplyUtil.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
             if (Oplate && Oplate.unread) {
                 Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT] -= 1;
                 if (timeoutFunc) {

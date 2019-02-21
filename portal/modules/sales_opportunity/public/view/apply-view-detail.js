@@ -242,6 +242,7 @@ class ApplyViewDetail extends React.Component {
             if (APPLY_FINISH_STATUS.includes(detailItem.status)) {
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyCommentList({id: detailItem.id});
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyDetailById({id: detailItem.id},detailItem.status);
+                this.getNextCandidate(detailItem.id);
             } else if (detailItem.id) {
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyDetailById({id: detailItem.id});
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyCommentList({id: detailItem.id});
