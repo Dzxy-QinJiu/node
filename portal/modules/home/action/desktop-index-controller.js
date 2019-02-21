@@ -38,7 +38,7 @@ exports.home = function(req, res) {
         userid: user.user_id,
         username: user.user_name,
         nickname: user.nick_name,
-        organization: _.get(user, 'organization.realm_name', ''),
+        organization: _.get(user, 'organization.name', ''),
         role: roles.join(','),
         siteID: global.config.siteID,
         lang: global.config.lang || '',

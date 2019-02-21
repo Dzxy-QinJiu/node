@@ -655,6 +655,5 @@ exports.getOrganization = getOrganization;
 // 判断组织类型，若是eefung返回true，否则返回false
 exports.isOrganizationEefung = () => {
     let organization = getOrganization(); // 组织信息
-    console.log('organization:',organization);
     return _.get(organization,'id') === ORGANIZATION_TYPE.EEFUNG;
 };
