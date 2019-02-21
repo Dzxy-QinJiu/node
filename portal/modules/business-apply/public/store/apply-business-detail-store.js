@@ -152,6 +152,16 @@ ApplyViewDetailStore.prototype.hideCancelBtns = function() {
     this.selectedDetailItem.showCancelBtn = false;
     this.detailInfoObj.info.showCancelBtn = false;
 };
+ApplyViewDetailStore.prototype.showOrHideApprovalBtns = function(flag){
+    this.selectedDetailItem.showApproveBtn = flag;
+    this.detailInfoObj.info.showApproveBtn = flag;
+};
+ApplyViewDetailStore.prototype.setNextCandidate = function(candidateArr){
+    this.candidateList = candidateArr;
+};
+ApplyViewDetailStore.prototype.setNextCandidateName = function(candidateName){
+    this.detailInfoObj.info.nextCandidateName = candidateName;
+};
 ApplyViewDetailStore.prototype.getBusinessApplyCommentList = function(resultObj) {
     //回复列表
     var replyListInfo = this.replyListInfo;

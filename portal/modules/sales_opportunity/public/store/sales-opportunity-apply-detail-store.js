@@ -245,6 +245,16 @@ SalesOpportunityApplyDetailStore.prototype.hideApprovalBtns = function() {
     this.selectedDetailItem.showApproveBtn = false;
     this.selectedDetailItem.showCancelBtn = false;
 };
+SalesOpportunityApplyDetailStore.prototype.showOrHideApprovalBtns = function(flag){
+    this.selectedDetailItem.showApproveBtn = flag;
+    this.detailInfoObj.info.showApproveBtn = flag;
+};
+SalesOpportunityApplyDetailStore.prototype.setNextCandidate = function(candidateArr){
+    this.candidateList = candidateArr;
+};
+SalesOpportunityApplyDetailStore.prototype.setNextCandidateName = function(candidateName){
+    this.detailInfoObj.info.nextCandidateName = candidateName;
+};
 SalesOpportunityApplyDetailStore.prototype.hideCancelBtns = function() {
     this.selectedDetailItem.showCancelBtn = false;
     this.detailInfoObj.info.showCancelBtn = false;

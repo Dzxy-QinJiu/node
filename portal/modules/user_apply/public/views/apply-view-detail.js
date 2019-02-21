@@ -1922,22 +1922,24 @@ const ApplyViewDetail = createReactClass({
                     placeholder={Intl.get('sales.team.search', '搜索')}
                     value={defaultValue}
                     onChange={onChangeFunction}
+                    getSelectContent={this.setSelectContent}
                     notFoundContent={dataList.length ? Intl.get('common.no.member', '暂无成员') : Intl.get('apply.no.relate.user', '无相关成员')}
                     dataList={dataList}
                 />
             </div>
         );
     },
-    addNewApplyCandidate(transferCandidateId){
+    addNewApplyCandidate(transferCandidateId,addNextCandidateName){
         var submitObj = {
             id: _.get(this, 'state.detailInfoObj.info.id', ''),
             user_ids: [transferCandidateId]
         };
         var hasApprovePrivilege = _.get(this, 'state.detailInfoObj.info.showApproveBtn', false);
-        //如果操作转出的人是这条审批的待审批者，需要在这个操作人的待审批列表中删除这条申请
-        if (hasApprovePrivilege) {
-            submitObj.user_ids_delete = [userData.getUserData().user_id];
-        }
+        var candidateList = _.filter(this.state.candidateList,item => item.user_id !== transferCandidateId);
+        var deleteUserIds = _.map(candidateList,'user_id');
+        //转出操作后，把之前的待审批人都去掉，这条申请只留转出的那个人审批
+        submitObj.user_ids_delete = deleteUserIds;
+        var memberId = userData.getUserData().user_id;
         ApplyViewDetailActions.transferNextCandidate(submitObj, (flag) => {
             //关闭下拉框
             if (flag) {
@@ -1950,10 +1952,22 @@ const ApplyViewDetail = createReactClass({
                 } else {
                     message.success(Intl.get('apply.approve.transfer.success', '转出申请成功'));
                 }
-                if (hasApprovePrivilege && Oplate && Oplate.unread) {
+                //将待我审批的申请转审后
+                if (hasApprovePrivilege){
+                    //待审批数字减一
                     var count = Oplate.unread.approve - 1;
                     updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
+                    //隐藏通过、驳回按钮
+                    ApplyViewDetailActions.showOrHideApprovalBtns(false);
+                }else if (memberId === transferCandidateId ){
+                    var count = Oplate.unread.approve + 1;
+                    updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
+                    //将非待我审批的申请转给我审批后，展示出通过驳回按钮,不需要再手动加一，因为后端会有推送，这里如果加一就会使数量多一个
+                    ApplyViewDetailActions.showOrHideApprovalBtns(true);
                 }
+
+                //转审成功后，把下一节点的审批人改成转审之后的人
+                ApplyViewDetailActions.setNextCandidate([{nick_name: addNextCandidateName,user_id: transferCandidateId}]);
             } else {
                 message.error(Intl.get('apply.approve.transfer.failed', '转出申请失败'));
             }
@@ -1962,11 +1976,16 @@ const ApplyViewDetail = createReactClass({
     onSelectApplyNextCandidate(updateUser){
         ApplyViewDetailActions.setNextCandidateIds(updateUser);
     },
+    setSelectContent(nextCandidateName){
+        ApplyViewDetailActions.setNextCandidateName(nextCandidateName);
+    },
     clearNextCandidateIds(){
         ApplyViewDetailActions.setNextCandidateIds('');
+        ApplyViewDetailActions.setNextCandidateName('');
     },
     renderAddApplyNextCandidate(){
         var addNextCandidateId = _.get(this.state, 'detailInfoObj.info.nextCandidateId','');
+        var addNextCandidateName = _.get(this.state, 'detailInfoObj.info.nextCandidateName','');
         return (
             <div className="pull-right">
                 <AntcDropdown
@@ -1978,7 +1997,7 @@ const ApplyViewDetail = createReactClass({
                     okTitle={Intl.get('common.confirm', '确认')}
                     cancelTitle={Intl.get('common.cancel', '取消')}
                     overlayContent={this.renderTransferCandidateBlock()}
-                    handleSubmit={this.addNewApplyCandidate.bind(this, addNextCandidateId)}//分配销售的时候直接分配，不需要再展示模态框
+                    handleSubmit={this.addNewApplyCandidate.bind(this, addNextCandidateId,addNextCandidateName)}//分配销售的时候直接分配，不需要再展示模态框
                     unSelectDataTip={addNextCandidateId ? '' : Intl.get('apply.will.select.transfer.approver','请选择要转给的待审批人')}
                     clearSelectData={this.clearNextCandidateIds}
                     btnAtTop={false}

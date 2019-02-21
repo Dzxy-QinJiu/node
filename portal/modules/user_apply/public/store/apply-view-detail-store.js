@@ -260,6 +260,10 @@ class ApplyViewDetailStore {
         this.selectedDetailItem.showApproveBtn = false;
         this.selectedDetailItem.showCancelBtn = false;
     }
+    showOrHideApprovalBtns(flag){
+        this.selectedDetailItem.showApproveBtn = flag;
+        this.detailInfoObj.info.showApproveBtn = flag;
+    }
     saleBackoutApply(resultObj){
         if (resultObj.loading){
             this.backApplyResult.submitResult = 'loading';
@@ -602,6 +606,9 @@ class ApplyViewDetailStore {
             this.candidateList = result;
         }
     }
+    setNextCandidate(candidateArr){
+        this.candidateList = candidateArr;
+    }
     //设置角色的模态框是显示还是隐藏
     setRolesNotSettingModalDialog({ show, appNames }) {
         this.rolesNotSettingModalDialog.show = show;
@@ -615,6 +622,9 @@ class ApplyViewDetailStore {
     }
     setNextCandidateIds(candidateId){
         this.detailInfoObj.info.nextCandidateId = candidateId;
+    }
+    setNextCandidateName(candidateName){
+        this.detailInfoObj.info.nextCandidateName = candidateName;
     }
     transferNextCandidate(result){
         if (result.loading) {

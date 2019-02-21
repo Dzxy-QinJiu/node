@@ -193,6 +193,16 @@ DocumentWriteApplyDetailStore.prototype.hideCancelBtns = function() {
     this.selectedDetailItem.showCancelBtn = false;
     this.detailInfoObj.info.showCancelBtn = false;
 };
+DocumentWriteApplyDetailStore.prototype.showOrHideApprovalBtns = function(flag){
+    this.selectedDetailItem.showApproveBtn = flag;
+    this.detailInfoObj.info.showApproveBtn = flag;
+};
+DocumentWriteApplyDetailStore.prototype.setNextCandidate = function(candidateArr){
+    this.candidateList = candidateArr;
+};
+DocumentWriteApplyDetailStore.prototype.setNextCandidateName = function(candidateName){
+    this.detailInfoObj.info.nextCandidateName = candidateName;
+};
 
 DocumentWriteApplyDetailStore.prototype.hideReplyCommentEmptyError = function() {
     this.replyFormInfo.result = '';
