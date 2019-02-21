@@ -7,7 +7,7 @@ import {traversingTeamTree, getParamByPrivilege} from 'PUB_DIR/sources/utils/com
 import {message} from 'antd';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
-
+import {ORGANIZATION_TYPE} from './consts';
 const session = storageUtil.session;
 // 缓存在sessionStorage中的座席号的key
 const sessionCallNumberKey = 'callNumber';
@@ -376,4 +376,16 @@ exports.getProductList = function(cb, isRefresh) {
     } else {
         if (_.isFunction(cb)) cb(integrationProductList);
     }
+};
+
+// 判断组织类型，若是eefung返回true，否则返回false
+exports.isOrganizationEefung = () => {
+    let organization = getUserData() && getUserData().organization || ''; // 组织信息
+    return _.get(organization,'id') === ORGANIZATION_TYPE.EEFUNG;
+};
+
+// 获取组织名称
+exports.getOrganizationName = () => {
+    let organization = getUserData() && getUserData().organization || ''; // 组织信息
+    return _.get(organization,'name', '');
 };

@@ -33,8 +33,7 @@ var hours = _.range(24);
 var days = [Intl.get('user.time.sunday', '周日'), Intl.get('user.time.monday', '周一'), Intl.get('user.time.tuesday', '周二'), Intl.get('user.time.wednesday', '周三'), Intl.get('user.time.thursday', '周四'), Intl.get('user.time.friday', '周五'), Intl.get('user.time.saturday', '周六')];
 import timeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import {getResultType, getErrorTipAndRetryFunction} from 'PUB_DIR/sources/utils/common-method-util';
-import {ORGANIZATION_TYPE} from 'PUB_DIR/sources/utils/consts';
-import {getUserData} from 'PUB_DIR/sources/user-data';
+import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-data-util';
 //地图的formatter
 function mapFormatter(obj) {
     let name = Intl.get('oplate_bd_analysis_realm_zone.2', '市区');
@@ -119,8 +118,7 @@ class CallRecordAnalyis extends React.Component {
             firstSelectValue: FIRSR_SELECT_DATA[0], // 第一个选择框的值
             secondSelectValue: LITERAL_CONSTANT.ALL, // 第二个选择宽的值，默认是全部的状态
             switchStatus: false,//是否查看各团队通话趋势图
-            filter_phone: false,//是否过滤掉114
-            organization: getUserData() && getUserData().organization || '', //组织id
+            filter_phone: false//是否过滤掉114
         };
     }
 
@@ -297,7 +295,7 @@ class CallRecordAnalyis extends React.Component {
             end_time: this.state.end_time || moment().toDate().getTime(),
             deviceType: params && params.deviceType || this.state.callType,
             filter_phone: this.state.filter_phone,//是否过滤114
-            effective_phone: _.get(this.state.organization,'realm_id') === ORGANIZATION_TYPE.EEFUNG, // 是否获取有效通话时长
+            effective_phone: isOrganizationEefung() // 是否获取有效通话时长
         };
         let pathParam = commonMethodUtil.getParamByPrivilege();
         if (this.state.teamList.list.length) { // 有团队时（普通销售时没有团队的）
@@ -563,7 +561,7 @@ class CallRecordAnalyis extends React.Component {
         }];
 
         // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        if(_.get(this.state.organization,'realm_id') === ORGANIZATION_TYPE.EEFUNG){
+        if( isOrganizationEefung() ){
             columns.push({
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 width: col_lg_width,

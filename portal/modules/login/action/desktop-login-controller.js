@@ -164,11 +164,11 @@ function loginSuccess(req, res) {
         req.session.save(function() {
             //登录成功后获取用户的组织信息，（主页的matomo数据参数设置中需要放入组织信息）
             DesktopLoginService.getOrganization(req, res).on('success', data => {
-                // ketao版组织安全域名称字段是realm_name；发版的curtao，组织安全域名称字段是name
-                if (data && data.name) {
-                    data.realm_name = data.name;
-                    delete data.name;
-                }
+                // 组织信息中名称和id字段转为name和id字段，方便前端处理（若后端更改字段名时）
+                data.name = data && data.realm_name || '';
+                data.id = data && data.realm_id || '';
+                delete data.realm_name;
+                delete data.realm_id;
                 let userData = _.get(req, 'session.user', {});
                 userData.organization = data || {};
                 req.session.save(() => {

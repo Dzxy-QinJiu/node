@@ -25,17 +25,15 @@ var userLogHeight = 690;//如果界面宽度低于最小宽度时，登录日志
 var minUserInfoHeight = 380;//如果并排展示时，登录日志展示区域最小高度
 var PrivilegeChecker = require('../../../components/privilege/checker');
 import reactIntlMixin from '../../../components/react-intl-mixin';
-import {getUserData} from 'PUB_DIR/sources/user-data';
+import {getOrganizationName} from 'PUB_DIR/sources/utils/common-data-util';
 
 var UserInfoPage = createReactClass({
     displayName: 'UserInfoPage',
     mixins: [reactIntlMixin],
 
     getInitialState: function() {
-        let organization = getUserData() && getUserData().organization;
         return {
             ...UserInfoStore.getState(),
-            managedRealm: _.get(organization,'realm_name', ''),
             userInfoContainerHeight: this.userInfoContainerHeightFnc()
         };
     },
@@ -89,13 +87,14 @@ var UserInfoPage = createReactClass({
 
     render: function() {
         var height = this.state.userInfoContainerHeight;
+        let managedRealm = getOrganizationName();
         return (
             <div className="userInfoManage_userInfo_content" data-tracename="个人资料">
                 <div className="user-info-manage-container">
                     <UserInfo
                         userInfoFormShow={this.state.userInfoFormShow}
                         userInfo={this.state.userInfo}
-                        managedRealm={this.state.managedRealm}
+                        managedRealm={managedRealm}
                         userInfoErrorMsg={this.state.userInfoErrorMsg}
                         userInfoLoading={this.state.userInfoLoading}
                     />

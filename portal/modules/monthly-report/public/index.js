@@ -35,15 +35,14 @@ import {storageUtil} from 'ant-utils';
 
 const STORED_TEAM_KEY = 'monthly_report_selected_team';
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
-import {getUserData} from 'PUB_DIR/sources/user-data';
+import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-data-util';
 
 class MonthlyReport extends React.Component {
     state = {
         teamList: [],
         memberList: [],
         selectedTeam: '',
-        selectedMonth: moment(),
-        organization: getUserData() && getUserData().organization || '', //组织id
+        selectedMonth: moment()
     };
 
     componentDidMount() {
@@ -203,7 +202,7 @@ class MonthlyReport extends React.Component {
         ];
 
         // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        if(this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG){
+        if(isOrganizationEefung()){
             columns.splice(7, 0, {
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 dataIndex: 'total_effective',
@@ -261,7 +260,7 @@ class MonthlyReport extends React.Component {
         ];
 
         // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        if(this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG){
+        if(isOrganizationEefung()){
             columns.push({
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 dataIndex: 'total_effective',
@@ -311,7 +310,7 @@ class MonthlyReport extends React.Component {
             value: 'user'
         },{
             name: 'effective_phone',
-            value: `${this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG}`
+            value: `${isOrganizationEefung()}`
         }];
 
         return [
