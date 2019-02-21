@@ -362,6 +362,11 @@ let routers = [
             //有这个权限，才显示入口图标
             showPrivileges: ['USER_INFO_PWD']
         }]
+    },
+    {
+        id: 'NO_MATCH',
+        routePath: '*',
+        component: 'public/sources/404'
     }
 ];
 
