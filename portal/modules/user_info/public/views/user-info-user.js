@@ -157,30 +157,7 @@ class UserInfo extends React.Component{
             Trace.traceEvent(e, '重新订阅');
         }
     }
-    retryRealm() {
-        UserInfoAction.getManagedRealm();
-    }
-    renderRealm() {
 
-        if (this.props.realmLoading) {
-            return (<Icon type="loading"/>);
-        } else if (this.props.realmErrorMsg) {
-            var errMsg = <span>{this.props.realmErrorMsg}<a onClick={this.retryRealm.bind(this)}
-                style={{marginLeft: '20px', marginTop: '20px'}}>
-                <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
-            </a></span>;
-            return (
-                <Alert
-                    message={errMsg}
-                    type="error"
-                    showIcon
-                />
-            );
-
-        } else {
-            return (<span>{this.props.managedRealm}</span>);
-        }
-    }
     retryUserInfo() {
         UserInfoAction.getUserInfo();
     }
@@ -337,8 +314,8 @@ class UserInfo extends React.Component{
                     {hasPrivilege('GET_MANAGED_REALM') || hasPrivilege('GET_MEMBER_SELF_INFO') ? (
                         <div className="user-info-item">
                             <span>
-                                <ReactIntl.FormattedMessage id="common.company" defaultMessage="公司"/>：</span>
-                            {this.renderRealm()}
+                                <ReactIntl.FormattedMessage id="common.company" defaultMessage="公司"/>：{this.props.managedRealm}
+                            </span>
                         </div>
                     ) : null}
 
@@ -519,8 +496,6 @@ UserInfo.propTypes = {
     userInfo: PropTypes.object,
     userInfoFormShow: PropTypes.bool,
     form: PropTypes.object,
-    realmLoading: PropTypes.bool,
-    realmErrorMsg: PropTypes.string,
     managedRealm: PropTypes.string,
     userInfoErrorMsg: PropTypes.string,
     userInfoLoading: PropTypes.bool,

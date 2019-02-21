@@ -24,10 +24,8 @@ var minUserInfoContainerWidth = 1035;//个人资料界面可并排展示时的�
 var userLogHeight = 690;//如果界面宽度低于最小宽度时，登录日志高度默认值
 var minUserInfoHeight = 380;//如果并排展示时，登录日志展示区域最小高度
 var PrivilegeChecker = require('../../../components/privilege/checker');
-
-
-import {FormattedMessage, defineMessages, injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../components/react-intl-mixin';
+import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 
 var UserInfoPage = createReactClass({
     displayName: 'UserInfoPage',
@@ -49,10 +47,6 @@ var UserInfoPage = createReactClass({
         $(window).on('resize', this.resizeWindow);
         UserInfoStore.listen(this.onChange);
         UserInfoAction.getUserInfo();
-        if (hasPrivilege('GET_MANAGED_REALM') || hasPrivilege('GET_MEMBER_SELF_INFO')) {
-            UserInfoAction.getManagedRealm();
-        }
-
         UserInfoAction.getLogList({
             load_size: this.state.loadSize
         });
@@ -93,15 +87,14 @@ var UserInfoPage = createReactClass({
 
     render: function() {
         var height = this.state.userInfoContainerHeight;
+        let managedRealm = _.get(commonMethodUtil.getOrganization(), 'name', '');
         return (
             <div className="userInfoManage_userInfo_content" data-tracename="个人资料">
                 <div className="user-info-manage-container">
                     <UserInfo
                         userInfoFormShow={this.state.userInfoFormShow}
                         userInfo={this.state.userInfo}
-                        managedRealm={this.state.managedRealm}
-                        realmErrorMsg={this.state.realmErrorMsg}
-                        realmLoading={this.state.realmLoading}
+                        managedRealm={managedRealm}
                         userInfoErrorMsg={this.state.userInfoErrorMsg}
                         userInfoLoading={this.state.userInfoLoading}
                     />

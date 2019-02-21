@@ -19,6 +19,8 @@ var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import {ORGANIZATION_TYPE} from './consts';
+
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
     let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id === curTeamId);
@@ -641,4 +643,17 @@ exports.updateUnapprovedCount = function(type,emitterType,updateCount) {
             notificationEmitter.emit(notificationEmitter[emitterType]);
         }, timeout);
     }
+};
+
+// 获取组织信息
+function getOrganization() {
+    return _.get(userData.getUserData(),'organization', {}); // 组织信息
+}
+
+exports.getOrganization = getOrganization;
+
+// 判断组织类型，若是eefung返回true，否则返回false
+exports.isOrganizationEefung = () => {
+    let organization = getOrganization(); // 组织信息
+    return _.get(organization,'id') === ORGANIZATION_TYPE.EEFUNG;
 };

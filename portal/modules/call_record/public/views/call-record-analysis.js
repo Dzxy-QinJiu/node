@@ -21,7 +21,6 @@ import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import rightPanelUtil from 'CMP_DIR/rightPanel/index';
 const RightPanelClose = rightPanelUtil.RightPanelClose;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import Spinner from 'CMP_DIR/spinner';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import Trace from 'LIB_DIR/trace';
 import {AntcTable, AntcCardContainer} from 'antc';
@@ -33,9 +32,8 @@ import {AntcAnalysis} from 'antc';
 var hours = _.range(24);
 var days = [Intl.get('user.time.sunday', '周日'), Intl.get('user.time.monday', '周一'), Intl.get('user.time.tuesday', '周二'), Intl.get('user.time.wednesday', '周三'), Intl.get('user.time.thursday', '周四'), Intl.get('user.time.friday', '周五'), Intl.get('user.time.saturday', '周六')];
 import timeUtil from 'PUB_DIR/sources/utils/time-format-util';
-import {getResultType, getErrorTipAndRetryFunction} from 'PUB_DIR/sources/utils/common-method-util';
-import {getMyOrganization} from 'PUB_DIR/sources/utils/common-data-util';
-import {ORGANIZATION_TYPE} from 'PUB_DIR/sources/utils/consts';
+import {getResultType, getErrorTipAndRetryFunction,isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
+
 //地图的formatter
 function mapFormatter(obj) {
     let name = Intl.get('oplate_bd_analysis_realm_zone.2', '市区');
@@ -120,25 +118,12 @@ class CallRecordAnalyis extends React.Component {
             firstSelectValue: FIRSR_SELECT_DATA[0], // 第一个选择框的值
             secondSelectValue: LITERAL_CONSTANT.ALL, // 第二个选择宽的值，默认是全部的状态
             switchStatus: false,//是否查看各团队通话趋势图
-            filter_phone: false,//是否过滤掉114
-            organization: '', //组织id
+            filter_phone: false//是否过滤掉114
         };
     }
 
     onStoreChange = () => {
         this.setState(CallAnalysisStore.getState());
-    };
-
-    // 获取我所在组织信息
-    getOrganization = (callback) => {
-        getMyOrganization().then((resData) => {
-            this.state.organization || this.setState({
-                organization: resData
-            });
-            callback && callback();
-        }).catch(() => {
-            callback && callback();
-        });
     };
 
     // 获取销售团队和成员数据
@@ -310,7 +295,7 @@ class CallRecordAnalyis extends React.Component {
             end_time: this.state.end_time || moment().toDate().getTime(),
             deviceType: params && params.deviceType || this.state.callType,
             filter_phone: this.state.filter_phone,//是否过滤114
-            effective_phone: _.get(this.state.organization,'realm_id') === ORGANIZATION_TYPE.EEFUNG, // 是否获取有效通话时长
+            effective_phone: isOrganizationEefung() // 是否获取有效通话时长
         };
         let pathParam = commonMethodUtil.getParamByPrivilege();
         if (this.state.teamList.list.length) { // 有团队时（普通销售时没有团队的）
@@ -358,9 +343,7 @@ class CallRecordAnalyis extends React.Component {
         if (!(this.state.switchStatus)) {
             this.getCallAnalysisTrendData(reqBody); // 所有团队总趋势图
         }
-        this.getOrganization(() => {
-            this.getCallInfoData(params); // 接通率
-        });
+        this.getCallInfoData(params); // 接通率
         //获取单次通话时长TOP10的统计数据
         this.getCallDurTopTen(reqBody);
         this.getCallRate({...reqBody, filter_phone: 'false'}); // 114占比
@@ -578,7 +561,7 @@ class CallRecordAnalyis extends React.Component {
         }];
 
         // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        if(_.get(this.state.organization,'realm_id') === ORGANIZATION_TYPE.EEFUNG){
+        if( isOrganizationEefung() ){
             columns.push({
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 width: col_lg_width,
