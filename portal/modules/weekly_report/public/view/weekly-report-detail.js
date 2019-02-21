@@ -21,8 +21,8 @@ var userData = require('PUB_DIR/sources/user-data');
 const PRIVILEGE_MAP = {
     CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
 };
-import {formatRoundingData} from 'PUB_DIR/sources/utils/common-method-util';
-import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-data-util';
+import {formatRoundingData, isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
+
 const isCommonSales = userData.getUserData().isCommonSales;
 
 class WeeklyReportDetail extends React.Component {

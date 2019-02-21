@@ -32,8 +32,8 @@ import {AntcAnalysis} from 'antc';
 var hours = _.range(24);
 var days = [Intl.get('user.time.sunday', '周日'), Intl.get('user.time.monday', '周一'), Intl.get('user.time.tuesday', '周二'), Intl.get('user.time.wednesday', '周三'), Intl.get('user.time.thursday', '周四'), Intl.get('user.time.friday', '周五'), Intl.get('user.time.saturday', '周六')];
 import timeUtil from 'PUB_DIR/sources/utils/time-format-util';
-import {getResultType, getErrorTipAndRetryFunction} from 'PUB_DIR/sources/utils/common-method-util';
-import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-data-util';
+import {getResultType, getErrorTipAndRetryFunction,isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
+
 //地图的formatter
 function mapFormatter(obj) {
     let name = Intl.get('oplate_bd_analysis_realm_zone.2', '市区');

@@ -7,12 +7,12 @@
 let callcenter = require('callcenter-sdk-client');
 let CallcenterClient = callcenter.client;
 import {Button} from 'antd';
-import {getUserData} from '../user-data';
+import commonMethodUtil from './common-method-util';
 
 let callClient;
 //初始化
 exports.initPhone = function(user) {
-    let org = getUserData() && getUserData().organization || {};
+    let org = commonMethodUtil.getOrganization();
     callClient = new CallcenterClient(org.id, user.user_name);
     callClient.init().then(() => {
         console.log('可以打电话了!');

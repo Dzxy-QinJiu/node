@@ -34,7 +34,8 @@ import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
-import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-data-util';
+import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
+
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
