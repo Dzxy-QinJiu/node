@@ -10,8 +10,8 @@ function getRoutesFromConfig(routers) {
     //遍历所有react-router的路由，这些路由，都渲染index.html
     let list = [];
     _.each(routers, (route) => {
-        //只要有名称，也就是正常路由，都要处理。不正常路由是错误处理的路由，例如：*
-        if (route.name && route.routePath) {
+        //只要有routePath，也就是正常路由，都要处理。排除通配符路由（*），不然后边添加/login等路由都有问题。
+        if (route.routePath && route.id !== 'NO_MATCH') {
             list.push({
                 'method': 'get',
                 'path': route.routePath,
