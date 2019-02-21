@@ -4,13 +4,33 @@
 
 import { ifNotSingleApp, isSales, argCallbackUnderlineTimeToTime } from '../../utils';
 
-export function getRemainAccountChart(type = 'total', title) {
+export function getRemainAccountChart(paramObj = {}) {
+    const title = paramObj.title || Intl.get('oplate.user.analysis.9', '用户留存');
+    //统计区间
+    const interval = paramObj.interval || 'day';
+    //显示范围，比实际的范围小2，因为要去掉当前和次日(或周、月)
+    const range = paramObj.range || 5;
+
+    let currentIntervalTitle = Intl.get('oplate.user.analysis.23', '当天');
+    let nextIntervalTitle = Intl.get('oplate.user.analysis.24', '次日');
+    let getNIntervalTitle = count => Intl.get('oplate.user.analysis.25', '{count}天后', {count});
+
+    if (interval === 'week') {
+        currentIntervalTitle = '当周';
+        nextIntervalTitle = '次周';
+        getNIntervalTitle = count => count + '周后';
+    } else if (interval === 'month') {
+        currentIntervalTitle = '当月';
+        nextIntervalTitle = '次月';
+        getNIntervalTitle = count => count + '个月后';
+    }
+
     return {
-        title: title || Intl.get('oplate.user.analysis.9', '用户留存'),
+        title,
         url: '/rest/analysis/user/v3/:data_type/retention/add_user',
         conditions: [{
             name: 'interval',
-            value: 'day'
+            value: interval
         }],
         argCallback: argCallbackUnderlineTimeToTime,
         chartType: 'table',
@@ -20,32 +40,32 @@ export function getRemainAccountChart(type = 'total', title) {
                     {
                         title: Intl.get('common.login.time', '时间'),
                         dataIndex: 'timestamp',
-                        width: '10%',
+                        width: 90,
                         align: 'left',
                         render: text => {
-                            text = moment(text).format(oplateConsts.DATE_MONTH_DAY_FORMAT);
+                            text = moment(text).format(oplateConsts.DATE_FORMAT);
                             return <b>{text}</b>;
                         },
                     }, {
                         title: Intl.get('oplate.user.analysis.32', '新增数'),
                         dataIndex: 'count',
-                        width: '10%',
+                        width: 60,
                     }, {
-                        title: Intl.get('oplate.user.analysis.23', '当天'),
-                        dataIndex: 'day0',
-                        width: '10%',
+                        title: currentIntervalTitle,
+                        dataIndex: interval + '0',
+                        width: 60,
                         align: 'right',
                         render: text => {
                             text = isNaN(text) ? '0' : text;
                             return <span>{text}</span>;
                         },
                     }, {
-                        title: Intl.get('oplate.user.analysis.24', '次日'),
-                        dataIndex: 'day1',
-                        width: '10%',
+                        title: nextIntervalTitle,
+                        dataIndex: interval + '1',
+                        width: 60,
                         align: 'right',
                         render: (text, record) => {
-                            if (moment().diff(record.timestamp, 'day') < 1) {
+                            if (moment().diff(record.timestamp, interval) < 1) {
                                 text = '';
                             } else {
                                 text = isNaN(text) ? '0' : text;
@@ -55,16 +75,16 @@ export function getRemainAccountChart(type = 'total', title) {
                     },
                 ];
 
-                _.each(_.range(5), num => {
+                _.each(_.range(range), num => {
                     const index = num + 2;
 
                     columns.push({
-                        title: Intl.get('oplate.user.analysis.25', '{count}天后', {count: index}),
-                        dataIndex: 'day' + index,
-                        width: '10%',
+                        title: getNIntervalTitle(index),
+                        dataIndex: interval + index,
+                        width: 90,
                         align: 'right',
                         render: (text, record) => {
-                            if (moment().diff(record.timestamp, 'day') < index) {
+                            if (moment().diff(record.timestamp, interval) < index) {
                                 text = '';
                             } else {
                                 text = isNaN(text) ? '0' : text;
