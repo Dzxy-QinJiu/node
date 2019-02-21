@@ -13,7 +13,7 @@ let callClient;
 //初始化
 exports.initPhone = function(user) {
     let org = getUserData() && getUserData().organization || {};
-    callClient = new CallcenterClient(org.realm_id, user.user_name);
+    callClient = new CallcenterClient(org.id, user.user_name);
     callClient.init().then(() => {
         console.log('可以打电话了!');
     }, (error) => {
