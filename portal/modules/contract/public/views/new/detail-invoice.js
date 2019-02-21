@@ -16,6 +16,7 @@ import ajax from 'MOD_DIR/contract/common/ajax';
 import { CONTRACT_STAGE, COST_STRUCTURE, COST_TYPE, OPERATE, VIEW_TYPE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
 import routeList from 'MOD_DIR/contract/common/route';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+import { checkPhone, getNumberValidateRule } from 'PUB_DIR/sources/utils/validate-util';
 
 
 //展示的类型
@@ -205,7 +206,11 @@ class DetailInvoice extends React.Component {
                     label={Intl.get('common.phone', '电话')}
                 >
                     {
-                        getFieldDecorator('phone')(
+                        getFieldDecorator('phone',{
+                            rules: [{
+                                validator: checkPhone
+                            }]
+                        })(
                             <Input/>
                         )
                     }
@@ -342,6 +347,9 @@ class DetailInvoice extends React.Component {
                         id={invoice_detail.id}
                         field="phone"
                         value={invoice_detail.phone}
+                        validators={[{
+                            validator: checkPhone
+                        }]}
                         hasEditPrivilege={hasEditPrivilege}
                         placeholder={`${Intl.get('contract.input', '请输入')}${Intl.get('common.phone', '电话')}`}
                         saveEditInput={this.updateInoviceInfo}
@@ -474,7 +482,7 @@ class DetailInvoice extends React.Component {
         );
 
         return (
-            <div style={{height: this.props.height}}>
+            <div style={{height: this.props.height}} data-tracename="发票信息页面">
                 <GeminiScrollBar ref='geminiScrollBar'>
                     {DetailBlock}
                 </GeminiScrollBar>

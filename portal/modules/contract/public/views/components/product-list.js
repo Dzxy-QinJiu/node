@@ -391,7 +391,6 @@ class ProductList extends Component {
                 <div className="product-list-container clearfix">
                     {
                         productListLength ? (
-
                             this.state.data.map((product, index) => {
                                 return (
                                     <DetailCard

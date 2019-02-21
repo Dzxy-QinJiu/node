@@ -136,7 +136,7 @@ class DetailCostCard extends React.Component {
                         {Intl.get('crm.146', '日期')}:
                     </span>
                     <BasicEditDateField
-                        width={EDIT_FEILD_WIDTH}
+                        width={EDIT_FEILD_LESS_WIDTH}
                         id={cost.id}
                         field="date"
                         format={oplateConsts.DATE_FORMAT}

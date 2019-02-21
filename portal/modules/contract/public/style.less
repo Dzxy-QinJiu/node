@@ -1074,11 +1074,71 @@
           text-overflow: ellipsis;
           line-height: 32px;
         }
-        .contract_detail{
-            padding: 0 20px;
-            form{
-                padding: 0;
+        .contract_detail {
+          padding: 0 20px;
+
+          form {
+            padding: 0;
+          }
+
+          .basic-info-item {
+            .basic-info-label {
+              width: 65px;
+              margin-right: 6px;
             }
+
+            .basic-edit-field {
+              .basic-info-text {
+                margin-left: 0px;
+              }
+              form {
+                .ant-form-item {
+                  .ant-input,
+                  div.ant-select,
+                  .ant-calendar-picker {
+                    margin-left: 0;
+                  }
+                }
+              }
+            }
+            .antc-validity{
+              .ant-calendar-picker{
+                width: 330px;
+              }
+            }
+          }
+          .belong-customer-form {
+            float: left;
+            width: 100%;
+            .belong-customer-item{
+              float: left;
+              width: calc(100% - 25px);
+              .ant-select{
+                float: left;
+                width: 90%!important;
+              }
+            }
+            .circle-button{
+              position: relative;
+              margin: 0;
+              z-index: 1;
+              cursor: pointer;
+            }
+            .circle-button-minus,.circle-button-plus{
+              float: left;
+            }
+          }
+          .belong-customer{
+            .belong-customer-form{
+              .belong-customer-item{
+                margin-bottom: 10px;
+                width: calc(100% - 25px);
+              }
+              .circle-button-plus{
+                line-height: 30px;
+              }
+            }
+          }
         }
         .basic-info-item {
             input {
@@ -1144,12 +1204,12 @@
                 }
             }
         }
-        /*.iconfont{
-            width: 24px;
+        .iconfont{
+            //width: 24px;
             overflow: hidden;
             cursor: pointer;
             text-align: center;
-        }*/
+        }
         .contract-repayment-container{
             margin: 0 20px;
             .detail-card-container{
@@ -1336,6 +1396,7 @@
             }
         }
         .invoice-info-container{
+          margin-top: -20px;
             .basic-info-item {
                 input {
                     height: auto;

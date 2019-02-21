@@ -45,11 +45,7 @@ class DetailBuyBasic extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (_.get(nextProps.contract, 'id') && this.props.contract.id !== nextProps.contract.id) {
-            this.setState({
-                formData: JSON.parse(JSON.stringify(nextProps.contract)),
-            });
-        }else {
+        if (_.get(nextProps.contract, 'id') && this.props.contract.id !== nextProps.contract.id || !_.isEqual(this.props.contract,nextProps.contract)) {
             this.setState({
                 formData: JSON.parse(JSON.stringify(nextProps.contract)),
             });
@@ -122,6 +118,7 @@ class DetailBuyBasic extends React.Component {
                         validators={[{required: true, message: Intl.get('contract.57', '请填写合同号')}]}
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditInput={this.saveContractBasicInfo}
+                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.24', '合同号')}`}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -146,14 +143,15 @@ class DetailBuyBasic extends React.Component {
                     </span>
                     <BasicEditSelectField
                         id={contract.id}
-                        displayText={getPurchaseContractTypeName(contract.purchase_contract_type)}
-                        value={contract.purchase_contract_type.toString()}
+                        displayText={getPurchaseContractTypeName(contract.purchase_contract_type || '')}
+                        value={_.isNil(contract.purchase_contract_type) ? '' : contract.purchase_contract_type.toString()}
                         field="purchase_contract_type"
                         selectOptions={purchaseOptions}
                         width={EDIT_FEILD_LESS_WIDTH}
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditSelect={this.saveContractBasicInfo}
                         editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('contract.purchase.contract.type', '分类')}`}
+                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.purchase.contract.type', '分类')}`}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -176,6 +174,7 @@ class DetailBuyBasic extends React.Component {
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditInput={this.saveContractBasicInfo}
                         noDataTip={Intl.get('crm.contract.no.contract.money', '暂无合同额')}
+                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.25', '合同额')}`}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -191,6 +190,7 @@ class DetailBuyBasic extends React.Component {
                         saveEditDateInput={this.saveContractBasicInfo}
                         hasEditPrivilege={hasEditPrivilege}
                         editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('contract.34', '签订时间')}`}
+                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.34', '签订时间')}`}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -206,6 +206,7 @@ class DetailBuyBasic extends React.Component {
                         width={EDIT_FEILD_LESS_WIDTH}
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditSelect={this.saveContractBasicInfo}
+                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.36', '合同阶段')}`}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -256,7 +257,7 @@ class DetailBuyBasic extends React.Component {
         );
 
         return (
-            <div style={{height: this.props.height}}>
+            <div style={{height: this.props.height}} data-tracename="采购合同详情页面">
                 <GeminiScrollBar>
                     {DetailBlock}
                 </GeminiScrollBar>

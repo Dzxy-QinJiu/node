@@ -309,7 +309,7 @@ class DetailPayment extends React.Component {
 
     render() {
         return (
-            <div className='clearfix contract-repayment-container' style={{height: this.props.height}}>
+            <div className='clearfix contract-repayment-container' style={{height: this.props.height}} data-tracename="付款页面">
                 <GeminiScrollBar ref='geminiScrollBar'>
                     {this.renderBasicInfo()}
                 </GeminiScrollBar>

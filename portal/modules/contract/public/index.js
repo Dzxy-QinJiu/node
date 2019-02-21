@@ -756,7 +756,7 @@ class Contract extends React.Component {
             (this.state.type === VIEW_TYPE.COST ? (<span className='detail-cost-title-container'>
                 <span className='detail-cost-title'>{`${Intl.get('common.update', '修改')}${Intl.get('contract.133', '费用')}`}</span>
                 <span className='detail-cost-delete' title={Intl.get('common.delete', '删除')} onClick={this.handleDeleteDetailCost.bind(this)}><i className='iconfont icon-delete'></i></span>
-            </span>) : this.state.currentContract.num) :
+            </span>) : (this.state.currentContract.num || `${Intl.get('clue.has.no.data', '暂无')}${Intl.get('contract.24', '合同号')}`)) :
             (showModal = true, this.state.type === VIEW_TYPE.COST ? Intl.get('contract.127', '添加费用') : showModal = true,Intl.get('common.add', '添加') + this.state.contractType);
 
         const rightPanelClass = classNames('contract-panel-v2',['right-panel-' + this.state.type], {'show-modal': showModal});

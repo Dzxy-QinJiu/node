@@ -70,7 +70,7 @@ class DetailBasic extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (_.get(nextProps.contract, 'id') && this.props.contract.id !== nextProps.contract.id) {
+        if (_.get(nextProps.contract, 'id') && this.props.contract.id !== nextProps.contract.id || !_.isEqual(this.props.contract,nextProps.contract)) {
             let formData = JSON.parse(JSON.stringify(nextProps.contract));
 
             //所属客户是否是选择的，以数组的形式记录了各个所属客户在输入后是否经过了点击选择的过程
@@ -279,12 +279,16 @@ class DetailBasic extends React.Component {
             customerAjax.getCustomerSuggestListAjax().sendRequest({
                 q: keyword
             }).success(list => {
+                // 在这里去掉重复的客户
+                const customersIds = _.map(this.state.formData.customers, 'customer_id');
+                const customerList = _.filter(list, customer => customersIds.indexOf(customer.customer_id) === -1);
+
                 let newState = {
-                    customerList: list,
+                    customerList: customerList,
                     belongCustomerErrMsg: _.clone(this.state.belongCustomerErrMsg),
                 };
 
-                if (_.isArray(list) && list.length) {
+                if (_.isArray(customerList) && customerList.length) {
                     newState.belongCustomerErrMsg[index] = '';
                 } else {
                     newState.belongCustomerErrMsg[index] = Intl.get('contract.177', '没有找到符合条件的客户，请更换关键词查询');
@@ -401,6 +405,7 @@ class DetailBasic extends React.Component {
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditInput={this.saveContractBasicInfo}
                         editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('contract.4', '甲方')}`}
+                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.4', '甲方')}`}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -422,6 +427,7 @@ class DetailBasic extends React.Component {
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditInput={this.saveContractBasicInfo}
                         editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('crm.41', '客户名')}`}
+                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('crm.41', '客户名')}`}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -437,6 +443,7 @@ class DetailBasic extends React.Component {
                         saveEditDateInput={this.saveContractBasicInfo}
                         hasEditPrivilege={hasEditPrivilege}
                         editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('contract.34', '签订时间')}`}
+                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.34', '签订时间')}`}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -453,6 +460,7 @@ class DetailBasic extends React.Component {
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditSelect={this.saveContractBasicInfo}
                         editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('contract.37', '合同类型')}`}
+                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.37', '合同类型')}`}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -871,7 +879,7 @@ class DetailBasic extends React.Component {
         );
 
         return (
-            <div style={{height: this.props.height}}>
+            <div style={{height: this.props.height}} data-tracename="合同详情页面">
                 <GeminiScrollBar>
                     {DetailBlock}
                 </GeminiScrollBar>
