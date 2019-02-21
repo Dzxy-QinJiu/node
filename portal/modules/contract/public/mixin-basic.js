@@ -62,6 +62,7 @@ export default {
         return {
             formData,
             customerList: [],
+            queryCustomerList: [],
             belongCustomerErrMsg: [''],
             belongCustomerIsChoosen,
             buyerList: [],
@@ -104,12 +105,17 @@ export default {
             customerAjax.getCustomerSuggestListAjax().sendRequest({
                 q: keyword
             }).success(list => {
+                // 在这里去掉重复的客户
+                const customersIds = _.map(this.state.formData.customers, 'customer_id');
+                const customerList = _.filter(list, customer => customersIds.indexOf(customer.customer_id) === -1);
+
                 let newState = {
-                    customerList: list,
+                    customerList: customerList,
+                    queryCustomerList: list,
                     belongCustomerErrMsg: _.clone(this.state.belongCustomerErrMsg),
                 };
 
-                if (_.isArray(list) && list.length) {
+                if (_.isArray(customerList) && customerList.length) {
                     newState.belongCustomerErrMsg[index] = '';
                 } else {
                     newState.belongCustomerErrMsg[index] = Intl.get('contract.177', '没有找到符合条件的客户，请更换关键词查询');
@@ -215,7 +221,11 @@ export default {
         scrollView.scrollTop(scrollHeight);
     },
     addBelongCustomer() {
-        let {formData,belongCustomerErrMsg,belongCustomerIsChoosen} = this.state;
+        let {formData, queryCustomerList, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
+
+        // 在这里去掉重复的客户
+        const customersIds = _.map(formData.customers, 'customer_id');
+        const customerLists = _.filter(queryCustomerList, customer => customersIds.indexOf(customer.customer_id) === -1);
 
         formData.customers.push({});
         belongCustomerErrMsg.push('');
@@ -223,6 +233,7 @@ export default {
 
         this.setState({
             formData,
+            customerList: customerLists,
             belongCustomerErrMsg,
             belongCustomerIsChoosen
         }, () => {
@@ -230,14 +241,19 @@ export default {
         });
     },
     deleteBelongCustomer(index) {
-        let {formData,belongCustomerErrMsg,belongCustomerIsChoosen} = this.state;
+        let {formData, queryCustomerList, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
 
         formData.customers.splice(index, 1);
         belongCustomerErrMsg.splice(index, 1);
         belongCustomerIsChoosen.splice(index, 1);
 
+        // 在这里去掉重复的客户
+        const customersIds = _.map(formData.customers, 'customer_id');
+        const customerLists = _.filter(queryCustomerList, customer => customersIds.indexOf(customer.customer_id) === -1);
+
         this.setState({
             formData,
+            customerList: customerLists,
             belongCustomerErrMsg,
             belongCustomerIsChoosen
         });
@@ -604,7 +620,7 @@ export default {
         );
     },
     onCustomerChoosen: function(index, value) {
-        let {formData,belongCustomerIsChoosen} = this.state;
+        let {formData, queryCustomerList, belongCustomerIsChoosen} = this.state;
 
         let belongCustomer = formData.customers[index];
         const selectedCustomer = _.find(this.state.customerList, customer => customer.customer_id === value);
@@ -616,6 +632,10 @@ export default {
         belongCustomer.customer_sales_team_id = selectedCustomer.sales_team_id;
         belongCustomer.customer_sales_team_name = selectedCustomer.sales_team_name;
 
+        // 在这里去掉重复的客户
+        const customersIds = _.map(formData.customers, 'customer_id');
+        const customerLists = _.filter(queryCustomerList, customer => customersIds.indexOf(customer.customer_id) === -1);
+
         //暂存表单数据
         const formDataCopy = JSON.parse(JSON.stringify(formData));
 
@@ -623,6 +643,7 @@ export default {
 
         this.setState({
             formData,
+            customerList: customerLists,
             belongCustomerIsChoosen
         }, () => {
             //用暂存的表单数据更新一下验证后的表单数据

@@ -141,6 +141,8 @@ class ProductList extends Component {
         onChange: function() {},
         //保存事件，在点击保存按钮后会被触发，其回调参数为变化后的表格数据
         onSave: function() {},
+        // 获取剩余的合同总金额
+        getTotalAmount: function() {},
         //预设总金额，用于验证所有产品的金额之和是否正确
         totalAmount: 0,
         //编辑按钮的提示文案
@@ -161,6 +163,7 @@ class ProductList extends Component {
         isEditBtnShow: PropTypes.bool,
         onChange: PropTypes.func,
         onSave: PropTypes.func,
+        getTotalAmount: PropTypes.func,
         onEditBtnSubmit: PropTypes.func,
         totalAmount: PropTypes.number,
         editBtnTip: PropTypes.string,
@@ -230,9 +233,12 @@ class ProductList extends Component {
         this.setState({
             data: newData
         },() => {
-            newData.length === 1 && 0 !== index ? index = 0 : index -= 1;
-            newData.length > 1 ? this[`form${newData[index].id}Ref`].props.form.validateFields() : '';
-            if(_.isFunction(this.props.onChange)) this.props.onChange(newData);
+            let currentIndex = index;
+            // 当剩最后一个了，index需为0，
+            newData.length === 1 || 0 === currentIndex ? currentIndex = 0 : currentIndex -= 1;
+            if(_.isFunction(this.props.onChange)) this.props.onChange(newData, () => {
+                newData.length >= 1 ? this[`form${newData[currentIndex].id}Ref`].props.form.validateFields() : '';
+            });
         });
     };
     handleCancel = (e) => {
@@ -248,6 +254,7 @@ class ProductList extends Component {
         let validateArr = [];
         _.map(this.state.data, (item, index) => {
             let ref = this[`form${item.id}Ref`];
+            // ref.props.form.resetFields();
             ref.props.form.validateFields((err, value) => {
                 if(err) return false;
                 if(!_.get(item,'start_time')) {
@@ -260,7 +267,7 @@ class ProductList extends Component {
         if(validateArr.length !== this.state.data.length) {
             return false;
         }else{
-            const totalAmount = this.props.totalAmount;
+            const totalAmount = this.props.getTotalAmount();
 
             const sumAmount = _.reduce(validateArr, (sum, item) => {
                 const amount = +item.total_price;

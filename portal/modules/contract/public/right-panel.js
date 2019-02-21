@@ -37,16 +37,16 @@ let stepMap = {
 };
 // 右侧面板固定高度常量
 const LAYOUT_CONSTANTS = {
-    TOP_DELTA: 69,
-    BOTTOM_DELTA: 26,
+    TOP_DELTA: 70, // 顶部高度
+    BOTTOM_DELTA: 50, // 底部留高(详情)
     BASIC_TOP: 25,
-    USER_DETAIL: 45,
-    BTN_PADDING: 50,//确定取消按钮区域的高度
+    TAB_DETAIL: 52, // tab栏高度
+    STEP_DETAIL: 20, // 步骤条高度
+    BTN_PADDING: 45,//确定取消按钮区域的高度
     BOTTOM_PADDING: 60,
     TITLE_PADDING: 30,
     ERROR_PADDING: 70,
     LOADING_PADDING: 100,
-    REMARK_PADDING: 24,
     CONTRACT_AMOUNT: 35,
 };
 class ContractRightPanel extends React.Component {
@@ -209,7 +209,7 @@ class ContractRightPanel extends React.Component {
 
     // 下一步处理函数
     onNextStepBtnClick = () => {
-        let validation, products, reports;
+        let validation, products, reports, _this = this;
 
         if (this.state.currentView === 'sellForm') {
             if (this.state.currentTabKey === '1') {
@@ -260,13 +260,15 @@ class ContractRightPanel extends React.Component {
             if (!valid) {
                 return false;
             } else {
-                if ([PRODUCT, SERVICE].indexOf(this.state.currentCategory) > -1 && this.state.currentTabKey === '2') {
+                if ([PRODUCT, SERVICE].indexOf(_this.state.currentCategory) > -1 && _this.state.currentTabKey === '2') {
+                    products = _.isObject(valid) ? valid : _this.refs.addProduct.state.products;
                     let totalProductsPrice = products.reduce(
                         // calc方法需要传入字符串来计算，因此使用模版字符串
                         (acc, cur) => cur.total_price ? calc(`${acc} + ${cur.total_price}`) : acc,
                         0
                     );
-                    if([SERVICE].indexOf(this.state.currentCategory) > -1) {
+                    if([SERVICE].indexOf(_this.state.currentCategory) > -1) {
+                        reports = _this.refs.addReport.state.reports;
                         let totalReportsPrice = 0;
                         reports.length > 0 ? totalReportsPrice = reports.reduce(
                             (acc,cur) => cur.total_price ? calc(`${acc} + ${cur.total_price}`) : acc,
@@ -275,10 +277,10 @@ class ContractRightPanel extends React.Component {
                         totalProductsPrice += totalReportsPrice;
                     }
                     // 需求改为合同总额需大于等于（产品总价+服务总价）
-                    if (parseInt(this.refs.addBasic.state.formData.contract_amount) < totalProductsPrice) {
-                        this.setState({ showDiffAmountWarning: true });
+                    if (parseInt(_this.refs.addBasic.state.formData.contract_amount) < totalProductsPrice) {
+                        _this.setState({ showDiffAmountWarning: true });
                     } else {
-                        this.setState({ showDiffAmountWarning: false }, this.goNext());
+                        _this.setState({ showDiffAmountWarning: false }, _this.goNext());
                     }
                     return;
                 }
@@ -434,17 +436,19 @@ class ContractRightPanel extends React.Component {
         const isDetailType = ['detail', 'detailCost'].includes(this.props.view);
         const {isLoading} = this.state;
         //内容区高度
-        let contentHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA - LAYOUT_CONSTANTS.BASIC_TOP - LAYOUT_CONSTANTS.USER_DETAIL;
+        let contentHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA;
         //用户详细信息高度
         if (this.props.view === 'detail') {
-            contentHeight = contentHeight + LAYOUT_CONSTANTS.REMARK_PADDING - LAYOUT_CONSTANTS.TITLE_PADDING;
+            // contentHeight = contentHeight + LAYOUT_CONSTANTS.REMARK_PADDING - LAYOUT_CONSTANTS.TITLE_PADDING;
+            contentHeight = contentHeight - LAYOUT_CONSTANTS.TAB_DETAIL - LAYOUT_CONSTANTS.BOTTOM_DELTA;
         } else {
-            contentHeight += LAYOUT_CONSTANTS.USER_DETAIL;
+            contentHeight = contentHeight - LAYOUT_CONSTANTS.STEP_DETAIL - LAYOUT_CONSTANTS.BTN_PADDING - LAYOUT_CONSTANTS.BOTTOM_DELTA;
         }
         //加载时增加padding
         if (isLoading) {
             contentHeight += LAYOUT_CONSTANTS.LOADING_PADDING;
         }
+        console.log('windowHeihgt: ',$(window).height(),'height: ', contentHeight);
         //错误信息padding
         // if (userInfo.errorMsg) {
         //     contentHeight += LAYOUT_CONSTANTS.ERROR_PADDING;
@@ -482,11 +486,12 @@ class ContractRightPanel extends React.Component {
             'total-amount-error': this.state.showDiffAmountWarning
         });
 
-        if ([PRODUCT].indexOf(this.state.currentCategory) > -1) {
-            contentHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
+        if ([PRODUCT].indexOf(this.state.currentCategory) > -1 && !isDetailType) {
+            // contentHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
+            console.log('减去产品价格后height: ', contentHeight);
             contractFormPanes['2'] = props => (
                 <div className={props.className}>
-                    <div className={totalAmountClass}>{totalAmountPrice}</div>
+                    {/*<div className={totalAmountClass}>{totalAmountPrice}</div>*/}
                     <AddProduct
                         ref="addProduct"
                         parent={this}
@@ -503,11 +508,11 @@ class ContractRightPanel extends React.Component {
             );
         }
 
-        if (this.state.currentCategory === SERVICE) {
-            contentHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
+        if (this.state.currentCategory === SERVICE && !isDetailType) {
+            // contentHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
             contractFormPanes['2'] = props => (
                 <div className={props.className}>
-                    <div className={totalAmountClass}>{totalAmountPrice}</div>
+                    {/*<div className={totalAmountClass}>{totalAmountPrice}</div>*/}
                     <AddProduct
                         ref="addProduct"
                         parent={this}
@@ -599,12 +604,14 @@ class ContractRightPanel extends React.Component {
             let endTabKey = 3, tabList = [];
             if(isProductAndService) {
                 endTabKey += 1;
-                // contentHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
+                let currentContentHeight = contentHeight;
+                currentContentHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
+
                 tabList.push(
                     <TabPane tab={Intl.get('contract.product.service.info', '产品与服务信息')} key="2">
-                        <div className="contract-product" style={{height: contentHeight}}>
+                        <div className="contract-product" style={{height: currentContentHeight}}>
+                            <div className='contract-product-title'><span className='product-title-text'>合同额：{`${this.props.contract.contract_amount}${Intl.get('contract.155', '元')}`}</span></div>
                             <GeminiScrollBar ref='gemiScrollBar'>
-                                <div className='contract-product-title'><span className='product-title-text'>合同额：{`${this.props.contract.contract_amount}${Intl.get('contract.155', '元')}`}</span></div>
                                 <AddProduct
                                     ref="addProduct"
                                     parent={this}
@@ -695,6 +702,12 @@ class ContractRightPanel extends React.Component {
                 '回款计划'
             ]            
         };
+        let productServiceHeight = contentHeight;
+        if(!isDetailType && [PRODUCT,SERVICE].indexOf(this.state.currentCategory) > -1 && this.state.currentTabKey === '2') {
+            productServiceHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
+        }
+
+        console.log('height: ', productServiceHeight);
 
         return (
             <div id="contractRightPanel">
@@ -706,7 +719,11 @@ class ContractRightPanel extends React.Component {
                 {/*添加其他合同（包括采购合同）*/}
                 {/*{!isDetailType && this.state.currentView === 'sellForm' ? (*/}
                 { !isDetailType ? (
-                    <div className="add-form" style={{ height: contentHeight }}>
+                    <div className="add-form" style={{ height: productServiceHeight }}>
+                        {
+                            [PRODUCT,SERVICE].indexOf(this.state.currentCategory) > -1 && this.state.currentTabKey === '2' ?
+                                (<div className={totalAmountClass}>{totalAmountPrice}</div>) : null
+                        }
                         <GeminiScrollBar ref="gemiScrollBar">
                             {contractContents}
                         </GeminiScrollBar>

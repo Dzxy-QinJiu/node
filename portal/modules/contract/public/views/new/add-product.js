@@ -81,8 +81,9 @@ class AddProduct extends React.Component{
         });
     }
 
-    handleProductChange = (data) => {
+    handleProductChange = (data, cb) => {
         this.setState({ products: data, pristine: true },() => {
+            _.isFunction(cb) && cb();
             this.props.updateScrollBar();
         });
     };
@@ -150,23 +151,9 @@ class AddProduct extends React.Component{
         return flag;
     };
 
-    render() {
-
-        let num_col_width = 75;
-
-        // 如果是添加合同时，是可以编辑的（true），详情查看时，显示可编辑按钮，点编辑后，显示编辑状态且有保存取消按钮
-        let isEditBtnShow = this.props.isDetailType && hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPATE_PRIVILEGE);
-        let isEdit = !this.props.isDetailType ? true :
-            (isEditBtnShow && this.producTableRef ? this.producTableRef.state.isEdit : false);
-        let isSaveCancelBtnShow = this.props.isDetailType;
-
+    getTotalAmount = () => {
         // 获取合同金额的大小
-        let totalAmout = 0;
-        /*if(isEditBtnShow) {
-
-        }else{
-            totalAmout = removeCommaFromNum(this.props.totalAmout);
-        }*/
+        let totalAmout;
         let reports = _.get(this,'props.parent.refs.addReport.state.reports') || _.get(this,'props.contract.reports') || [];
         let totalReportsPrice = 0;
         reports.length > 0 ? totalReportsPrice = _.reduce(reports,(sum, item) => {
@@ -174,7 +161,21 @@ class AddProduct extends React.Component{
             return sum + amount;
         }, 0) : '';
 
-        totalAmout = _.get(this,'props.contract.contract_amount') || removeCommaFromNum(this.props.totalAmout) - totalReportsPrice;
+        totalAmout = (_.get(this,'props.contract.contract_amount') || removeCommaFromNum(this.props.totalAmout)) - totalReportsPrice;
+        return totalAmout >= 0 ? totalAmout : 0;
+    };
+
+    render() {
+
+        let num_col_width = 75, _this = this;
+
+        // 如果是添加合同时，是可以编辑的（true），详情查看时，显示可编辑按钮，点编辑后，显示编辑状态且有保存取消按钮
+        let isEditBtnShow = this.props.isDetailType && hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPATE_PRIVILEGE);
+        let isEdit = !this.props.isDetailType ? true :
+            (isEditBtnShow && this.producTableRef ? this.producTableRef.state.isEdit : false);
+        let isSaveCancelBtnShow = this.props.isDetailType;
+
+
 
         const formItems = [
             {
@@ -263,6 +264,7 @@ class AddProduct extends React.Component{
                     fn: (parent) => {
                         return {
                             validator: (rule,value,callback) => {
+                                let currentTotalAmout = _this.getTotalAmount();
                                 // 这里需要获取其他产品的价格
                                 let validateArr = [];
                                 _.map(this.state.products, (item, index) => {
@@ -274,12 +276,19 @@ class AddProduct extends React.Component{
                                     }
                                     validateArr.push({...item, ...formValue});
                                 });
+
                                 let sumAmount = _.reduce(validateArr, (sum, item) => {
                                     const amount = +item.total_price;
                                     return sum + amount;
                                 }, 0);
                                 sumAmount -= value;
-                                numberAddNoMoreThan(totalAmout, sumAmount, Intl.get('contract.161', '已超合同额'), rule, value, callback);
+
+                                if(currentTotalAmout >= sumAmount + parseFloat(value)) {
+                                    _this.setState({
+                                        products: _.cloneDeep(validateArr)
+                                    });
+                                }
+                                numberAddNoMoreThan(currentTotalAmout, sumAmount, Intl.get('contract.161', '已超合同额'), rule, value, callback);
                             }
                         };
                     },
@@ -329,7 +338,7 @@ class AddProduct extends React.Component{
                             client_image: x.app_logo,
                             client_name: x.app_name
                         }))}
-                        totalAmount={totalAmout}
+                        totalAmount={this.getTotalAmount()}
                         data={this.state.products}
                         dataSource={this.state.products}
                         isEdit={isEdit}
@@ -339,6 +348,7 @@ class AddProduct extends React.Component{
                         onSave={this.handleProductSave}
                         handleCancel={this.handleProductCancel}
                         onChange={this.handleProductChange}
+                        getTotalAmount={this.getTotalAmount}
                     />
                     {
                         !isEditBtnShow && !this.state.pristine && !this.state.valid ?

@@ -228,21 +228,31 @@ class DetailBasic extends React.Component {
         });
     };
     deleteBelongCustomer(index) {
-        let {formData, customers,belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
+        let {formData, customers, queryCustomerList, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
 
         formData.customers.splice(index, 1);
         belongCustomerErrMsg.splice(index, 1);
         belongCustomerIsChoosen.splice(index, 1);
         customers = formData.customers;
+        // 在这里去掉重复的客户
+        const customersIds = _.map(customers, 'customer_id');
+        const customerLists = _.filter(queryCustomerList, customer => customersIds.indexOf(customer.customer_id) === -1);
+
         this.setState({
             formData,
             customers,
+            customerList: customerLists,
             belongCustomerErrMsg,
             belongCustomerIsChoosen
         });
     }
     addBelongCustomer = () => {
-        let {formData, customers, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
+        let {formData, customers, queryCustomerList, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
+
+        // 在这里去掉重复的客户
+        const customersIds = _.map(customers, 'customer_id');
+        const customerLists = _.filter(queryCustomerList, customer => customersIds.indexOf(customer.customer_id) === -1);
+
 
         formData.customers.push({});
         belongCustomerErrMsg.push('');
@@ -251,6 +261,7 @@ class DetailBasic extends React.Component {
         this.setState({
             formData,
             customers,
+            customerList: customerLists,
             belongCustomerErrMsg,
             belongCustomerIsChoosen
         });
@@ -285,6 +296,7 @@ class DetailBasic extends React.Component {
 
                 let newState = {
                     customerList: customerList,
+                    queryCustomerList: list,
                     belongCustomerErrMsg: _.clone(this.state.belongCustomerErrMsg),
                 };
 
@@ -311,7 +323,7 @@ class DetailBasic extends React.Component {
         }, 500);
     }
     onCustomerChoosen(index, value) {
-        let {formData, customers, belongCustomerIsChoosen} = this.state;
+        let {formData, customers, queryCustomerList, belongCustomerIsChoosen} = this.state;
         const fieldName = 'belong_customer' + index;
 
         let belongCustomer = formData.customers[index];
@@ -326,6 +338,10 @@ class DetailBasic extends React.Component {
 
         formData.customers[index] = belongCustomer;
 
+        // 在这里去掉重复的客户
+        const customersIds = _.map(formData.customers, 'customer_id');
+        const customerLists = _.filter(queryCustomerList, customer => customersIds.indexOf(customer.customer_id) === -1);
+
         //暂存表单数据
         // const formDataCopy = JSON.parse(JSON.stringify(formData));
 
@@ -334,6 +350,7 @@ class DetailBasic extends React.Component {
         this.setState({
             formData,
             customers,
+            customerList: customerLists,
             belongCustomerIsChoosen
         }, () => {
             //用暂存的表单数据更新一下验证后的表单数据
