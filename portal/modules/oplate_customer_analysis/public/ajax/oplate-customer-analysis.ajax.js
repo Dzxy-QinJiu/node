@@ -109,9 +109,9 @@ exports.getStageChangeCustomers = function(paramObj) {
         url: route.path,
         type: route.method,
         params: {
-            type
+            data_type: type
         },
-        data: paramObj
+        query: paramObj
     });
 };
 

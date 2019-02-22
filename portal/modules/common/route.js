@@ -269,8 +269,8 @@ module.exports = [{
     }
 }, {
     //获取客户阶段变更数据
-    'method': 'post',
-    'path': '/rest/customer/v2/customer/:type/customer/label/count',
+    'method': 'get',
+    'path': '/rest/analysis/customer/v2/:data_type/customer/label/count',
     'handler': 'getStageChangeCustomers',
     'passport': {
         'needLogin': true

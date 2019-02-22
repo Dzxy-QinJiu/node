@@ -164,15 +164,10 @@ class CustomerAnalysis extends React.Component {
     //获取客户阶段变更数据
     getStageChangeCustomers = () => {
         let params = {
-            rang_params: [
-                {
-                    'from': this.state.startTime,
-                    'to': this.state.endTime,
-                    'name': 'time',
-                    'type': 'time'
-                }
-            ],
+            starttime: this.state.startTime,
+            endtime: this.state.endTime
         };
+
         OplateCustomerAnalysisAction.getStageChangeCustomers(params);
     };
 
