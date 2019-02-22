@@ -189,7 +189,7 @@ class DetailCostCard extends React.Component {
 
     render() {
         return (
-            <div className={this.props.className}>
+            <div className={this.props.className} data-tracename='费用基本信息'>
                 <DetailCard
                     content={this.renderContent()}
                     className="member-detail-container"

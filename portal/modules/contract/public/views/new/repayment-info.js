@@ -225,7 +225,6 @@ class RepaymentInfo extends React.Component {
         });
     };
     handleDelete = (record,successFunc, errorFunc) => {
-        console.log(record);
         let saveObj = [record.id];
         const successFuncs = (resultData) => {
 
@@ -368,7 +367,6 @@ class RepaymentInfo extends React.Component {
                             validator: (rule,value,callback) => {
                                 let dynamicRef = _.get(parent,'amounteditableFormCellRef');
                                 let dynamicValue = dynamicRef.props.form.getFieldValue('amount');
-                                console.log(dynamicValue);
                                 numberAddNoMoreThan(dynamicValue, 0, Intl.get('contract.gross.profit.can.not.exceed.repayment', '毛利不能大于回款'), rule, value, callback);
                             }
                         };
@@ -447,7 +445,7 @@ class RepaymentInfo extends React.Component {
         return (
             <DetailCard
                 content={content()}
-                titleBottomBorderNone={noRepaymentData}
+                // titleBottomBorderNone={noRepaymentData}
                 title={repayTitle}
             />
         );

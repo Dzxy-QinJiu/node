@@ -393,3 +393,25 @@ export const PRIVILEGE_MAP = {
     CONTRACT_ADD_INVOICE_AMOUNT: 'CONTRACT_ADD_INVOICE_AMOUNT', // 添加和修改发票额的权限
     CONTRACT_ADD_PAYMENT: 'OPLATE_PAYMENT_ADD', // 添加和修改付款信息的权限
 };
+
+// 添加合同时步骤条内容
+export const STEP_TITLES = {
+    [PRODUCT]: [
+        Intl.get('user.user.basic', '基本信息'),
+        Intl.get('contract.95', '产品信息'),
+        Intl.get('contract.97', '回款计划')
+    ],
+    [PROJECT]: [
+        Intl.get('user.user.basic', '基本信息'),
+        Intl.get('contract.97', '回款计划')
+    ],
+    [PURCHASE]: [
+        Intl.get('user.user.basic', '基本信息'),
+        Intl.get('contract.100', '付款计划')
+    ],
+    [SERVICE]: [
+        Intl.get('user.user.basic', '基本信息'),
+        Intl.get('contract.product.service.info', '产品与服务信息'),
+        Intl.get('contract.97', '回款计划')
+    ]
+};

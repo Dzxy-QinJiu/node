@@ -2,6 +2,7 @@
 @import "../../../components/antd-table-pagination/index.less";
 @bg-grey: #F5F5F5;
 @color-block: #333333;
+@icon-color: #8da8c5;
 .moduleContent {
     height: 100%;
     .contract-divide-line {
@@ -45,7 +46,6 @@
 
         .privilege-btns {
             float: right;
-            //margin-right: 75px;
             .btn {
                 padding: 0 0 0 16px;
                 display: inline-block;
@@ -235,10 +235,9 @@
             .ant-tabs-tab {
                 padding: 5px 0;
             }
-            .ant-tabs-ink-bar {
-                //background-color: #4D96D1;
-                //height: 3px;
-            }
+        }
+        .ant-tabs-bar {
+            margin-bottom: 10px;
         }
         form {
             padding-left: 20px;
@@ -715,7 +714,6 @@
             }
         }
         .detail-cost {
-            //padding-left: 40px;
             .icon-update {
                 top: 60px;
                 right: 55px;
@@ -728,9 +726,6 @@
             }
             .ant-form-item {
                 line-height: 30px;
-            }
-            button {
-                //margin: 0;
             }
             .footer-btn {
                 text-align: right;
@@ -746,9 +741,6 @@
             .value-text {
                 display: inline-block;
             }
-        }
-        .right-panel-cost {
-            //width: 500px;
         }
     }
 
@@ -1000,7 +992,7 @@
             .icon-edit-btn{
                 float: right;
                 font-size: 16px;
-                color: #8da8c5;
+                color: @icon-color;
                 cursor: pointer;
             }
           .cost-amout-type{
@@ -1157,26 +1149,15 @@
             .icon-edit-btn{
                 float: right;
                 font-size: 16px;
-                color: #8da8c5;
+                color: @icon-color;
                 cursor: pointer;
             }
         }
         .contract-tab-container{
             padding-right: 15px;
             .belong-customer-form {
-                /*.circle-button{
-                    position: absolute;
-                    top: 0px;
-                    right: -70px;
-                    margin: 0;
-                    z-index: 1;
-                    cursor: pointer;
-                }*/
                 .circle-button-minus{
                     float: left;
-                }
-                .circle-button-plus{
-                    //float: right;
                 }
             }
             .belong-customer-list {
@@ -1210,7 +1191,6 @@
             }
         }
         .iconfont{
-            //width: 24px;
             overflow: hidden;
             cursor: pointer;
             text-align: center;
@@ -1225,6 +1205,7 @@
                 top: 12px;
                 right: 10px;
                 margin-top: 0;
+                color: @icon-color;
             }
             .repayment-title{
                 display: inline-block;
@@ -1344,9 +1325,10 @@
                 .ant-form-item{
                     width: auto;
                     display: block;
-                    margin-bottom: 5px !important;
+                    margin-bottom: 0px !important;
                     .ant-form-explain{
                         position: relative;
+                        font-size: 12px;
                     }
                 }
             }
@@ -1371,19 +1353,27 @@
                         font-size: 14px;
                     }
                     .icon-edit-btn{
-                        //position: relative;
-                        top: -23px;
-                        //right: 0;
+                        //top: -23px;
+                        top: 0;
+                        position: relative;
+                    }
+                }
+                .product-list{
+                    .ant-form-item{
+                        input{
+                            width: 100%;
+                        }
                     }
                 }
                 .btn-bar{
                     float: right;
                     cursor: pointer;
                     padding: 0 5px;
+                    color: @icon-color;
                 }
                 .validity-time{
                     input{
-                        width: 140px;
+                        width: 45% !important;
                         padding-bottom: 14px;
                         height: 30px;
                     }
@@ -1391,12 +1381,20 @@
                         line-height: 30px;
                     }
                 }
-                .add-app-container{
+                .add-app-container {
                     background: white;
                     padding-left: 7px;
                     font-size: 14px;
                     line-height: 32px;
                     margin-top: 10px;
+                }
+                .ant-form-item {
+                    .ant-form-item-label {
+                        line-height: 28px;
+                    }
+                    .ant-form-item-control {
+                        font-size: 14px;
+                    }
                 }
             }
         }
@@ -1407,12 +1405,18 @@
                     height: auto;
                 }
                 .basic-info-label{
-                    //width: 100px;
                     width: auto;
                 }
             }
             .ant-form {
                 padding: 0;
+            }
+        }
+        .ant-table{
+            th , .ant-table-body {
+                border-bottom-width: 1px !important;
+                background: #f5f5f5;
+                color: #999 !important;
             }
         }
     }

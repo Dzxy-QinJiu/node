@@ -226,11 +226,10 @@ const AddReport = createReactClass({
                 const amount = +item.total_price;
                 return sum + amount;
             }, 0) : '';
-            console.log(products,totalProductsPrice);
             totalAmout = this.props.contract.contract_amount - totalProductsPrice;
         }
         return (
-            <div className="add-reports">
+            <div className="add-reports" data-tracename="添加编辑>服务产品信息">
                 <div className="product-forms product-table-container">
                     <ProductTable
                         addBtnText={Intl.get('contract.75', '服务类型')}

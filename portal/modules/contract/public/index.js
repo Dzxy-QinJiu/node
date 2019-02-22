@@ -713,7 +713,6 @@ class Contract extends React.Component {
         });
     };
     handleDeleteDetailCost() {
-        console.log(this.refs.contractRightPanel.refs.detailCost.state);
         let cost = this.refs.contractRightPanel.refs.detailCost.state.formData;
         this.refs.contractRightPanel.refs.detailCost.handleSubmit('delete', cost.id);
     }

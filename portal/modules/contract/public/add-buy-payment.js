@@ -100,7 +100,7 @@ const AddBuyPayment = createReactClass({
             }, 0);
         }
         return (
-            <div className="add-repayments">
+            <div className="add-repayments" data-tracename='添加合同>付款信息'>
                 {this.state.payments.length ? (
                     <div className="finance-list">
                         <ul>

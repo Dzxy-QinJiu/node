@@ -125,6 +125,7 @@ class AddProduct extends React.Component{
     };
 
     handleSubmitEditValidityTime = (startTime, endTime, product) => {
+        if(!startTime) return false;
         let {products} = this.state;
         let index = _.findIndex(products, item => {
             return item.id === product.id;
@@ -174,8 +175,6 @@ class AddProduct extends React.Component{
             (isEditBtnShow && this.producTableRef ? this.producTableRef.state.isEdit : false);
         let isSaveCancelBtnShow = this.props.isDetailType;
 
-
-
         const formItems = [
             {
                 title: Intl.get('common.start.end.time', '起止时间'),
@@ -192,7 +191,7 @@ class AddProduct extends React.Component{
                     };
                 },
                 formLayOut: {
-                    labelCol: { span: 5 },
+                    labelCol: { span: 6 },
                     wrapperCol: { span: 18 }
                 }
             },
@@ -202,7 +201,7 @@ class AddProduct extends React.Component{
                 editable: true,
                 display: 'inline',
                 formLayOut: {
-                    labelCol: { span: 10 },
+                    labelCol: { span: 12 },
                     wrapperCol: { span: 12 }
                 },
                 editorConfig: {
@@ -218,7 +217,7 @@ class AddProduct extends React.Component{
                 editable: true,
                 display: 'inline',
                 formLayOut: {
-                    labelCol: { span: 10 },
+                    labelCol: { span: 12 },
                     wrapperCol: { span: 12 }
                 },
                 editorConfig: {
@@ -236,7 +235,7 @@ class AddProduct extends React.Component{
                 editable: true,
                 display: 'inline',
                 formLayOut: {
-                    labelCol: { span: 10 },
+                    labelCol: { span: 12 },
                     wrapperCol: { span: 12 }
                 },
                 editorConfig: {
@@ -254,7 +253,7 @@ class AddProduct extends React.Component{
                 editable: true,
                 display: 'inline',
                 formLayOut: {
-                    labelCol: { span: 10 },
+                    labelCol: { span: 12 },
                     wrapperCol: { span: 12 }
                 },
                 dynamicRule: {
@@ -305,7 +304,7 @@ class AddProduct extends React.Component{
         ];
 
         return (
-            <div className="add-products" data-tracename="产品页面">
+            <div className="add-products" data-tracename="添加编辑>产品信息">
                 <div className="product-forms">
                     <ProductList
                         addBtnText={Intl.get('common.product', '产品')}

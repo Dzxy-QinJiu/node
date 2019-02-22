@@ -147,10 +147,8 @@ class DetailInvoice extends React.Component {
         this.changeDisplayType(DISPLAY_TYPES.TEXT);
     };
     updateInoviceInfo = (saveObj, successFunc, errorFunc) => {
-        console.log(saveObj);
         let invoice_detail = _.cloneDeep(this.props.contract.invoice_detail);
         invoice_detail = { ...invoice_detail,...saveObj };
-        console.log(invoice_detail);
         this.editInvoice('update',invoice_detail, successFunc, errorFunc);
     };
 

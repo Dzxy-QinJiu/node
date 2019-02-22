@@ -364,22 +364,18 @@ const DetailCost = createReactClass({
         const isEditBtnShow = hasPrivilege('OPLATE_SALES_COST_ADD');
         const detailOp = this.state.formData.id ? 'update' : 'add';
         return (
-            <div className="detail-cost">
+            <div className="detail-cost" data-tracename='添加费用页面'>
                 {
                     detailOp === 'add' ? (
                         <Form layout='horizontal' >
                             <Validation ref="validation" onValidate={this.handleValidate}>
                                 {this.renderUserField()}
-                                {/*{this.renderTeamField()}*/}
                                 {this.renderDateField()}
                                 {this.renderTypeField()}
                                 {this.renderAmountField()}
                                 {this.state.isFormShow ? (
                                     <Row>
                                         <Col span="22" className='footer-btn'>
-                                            {/*{this.state.isAdd ? null : (
-                                                <Button type="danger" className="form-detele-btn btn-primary-delete" onClick={this.handleSubmit.bind(this, 'delete', this.props.cost.id)}><ReactIntl.FormattedMessage id="common.delete" defaultMessage="删除" /></Button>
-                                            )}*/}
                                             <RightPanelSubmit onClick={this.handleSubmit.bind(this, detailOp)}><ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" /></RightPanelSubmit>
                                             <RightPanelCancel onClick={this.hideForm}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></RightPanelCancel>
                                         </Col>
@@ -404,16 +400,6 @@ const DetailCost = createReactClass({
                         />
                     )
                 }
-                {/*{isEditBtnShow ? (
-                    <div>
-                        <RightPanelEdit 
-                            onClick={this.showForm}
-                        />
-                        <RightPanelDelete 
-                            onClick={this.handleSubmit.bind(this, 'delete', this.props.cost.id)}
-                        />
-                    </div>
-                ) : null}*/}
             </div>
         );
     },

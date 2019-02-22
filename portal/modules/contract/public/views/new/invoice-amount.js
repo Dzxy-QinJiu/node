@@ -305,7 +305,7 @@ class InvoiceAmount extends React.Component {
         return (
             <DetailCard
                 content={content()}
-                titleBottomBorderNone={noRepaymentData}
+                // titleBottomBorderNone={noRepaymentData}
                 title={repayTitle}
             />
         );

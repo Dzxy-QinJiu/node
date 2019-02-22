@@ -66,7 +66,7 @@ class EditFormItem extends React.Component {
             if(editor !== 'AntcValidity') {
                 renderElement = product[props.dataIndex];
             }else{
-                renderElement = `${editorProps.startTime.format(oplateConsts.DATE_FORMAT)} ${Intl.get('common.time.connector', '至')} ${editorProps.endTime.format(oplateConsts.DATE_FORMAT)}`; //<Editor {...editorProps}/>;
+                renderElement = `${editorProps.startTime.format(oplateConsts.DATE_FORMAT)} ${Intl.get('common.time.connector', '至')} ${editorProps.endTime.format(oplateConsts.DATE_FORMAT)}`;
             }
         }
 
@@ -164,7 +164,6 @@ class ProductList extends Component {
         onChange: PropTypes.func,
         onSave: PropTypes.func,
         getTotalAmount: PropTypes.func,
-        onEditBtnSubmit: PropTypes.func,
         totalAmount: PropTypes.number,
         editBtnTip: PropTypes.string,
         defaultValueMap: PropTypes.object,
@@ -175,7 +174,6 @@ class ProductList extends Component {
         ]),
         addBtnText: PropTypes.string,
         handleCancel: PropTypes.func,
-        form: PropTypes.object,
     };
 
     constructor(props) {
@@ -254,7 +252,6 @@ class ProductList extends Component {
         let validateArr = [];
         _.map(this.state.data, (item, index) => {
             let ref = this[`form${item.id}Ref`];
-            // ref.props.form.resetFields();
             ref.props.form.validateFields((err, value) => {
                 if(err) return false;
                 if(!_.get(item,'account_start_time')) {
@@ -345,7 +342,7 @@ class ProductList extends Component {
                 ) : null}
             </div>
         );
-    }
+    };
 
     renderProductItem = (product, productIndex) => {
         const formItems = _.cloneDeep(this.props.formItems);
@@ -361,41 +358,34 @@ class ProductList extends Component {
             />
 
         );
-    }
+    };
 
     render() {
         let productListLength = this.state.data.length || 0;
         const appNames = _.map(this.state.data, 'name');
 
         const appList = _.filter(this.props.appList, app => appNames.indexOf(app.client_name) === -1);
+        const showNoDataTip = !(!!productListLength || this.state.isEdit || !this.props.isEditBtnShow);
+        const containerStyle = {
+            minHeight: showNoDataTip ? 125 : 0,
+            position: showNoDataTip ? 'relative' : 'inherit',
+        };
+
         return (
             <div className="product-list">
-                <div className="product-detail-top-total-block">
-                    <div>
-                        {
-                            this.state.isEdit || !this.props.isEditBtnShow ? null : (
+                <div className="product-detail-top-total-block clearfix">
+                    {
+                        this.state.isEdit || !this.props.isEditBtnShow ? null : (
+                            <div>
                                 <DetailEditBtn
                                     title={this.props.editBtnTip}
                                     onClick={this.showEdit}
-                                />)
-                        }
-                    </div>
+                                />
+                            </div>
+                        )
+                    }
                 </div>
-                {/*<Form className='clearfix'>
-                                {
-                                    this.state.data.map((product, index) => {
-                                        return (
-                                            <DetailCard
-                                                key={index}
-                                                title={this.renderProductTitle(product, index)}
-                                                content={this.renderProductItem(product, index)}
-                                            />
-                                        );
-                                    } )
-                                }
-                            </Form> ) : (
-                            <NoDataIconTip tipContent={Intl.get('deal.detail.no.products', '暂无产品')}/>*/}
-                <div className="product-list-container clearfix">
+                <div className="product-list-container clearfix" style={containerStyle}>
                     {
                         productListLength ? (
                             this.state.data.map((product, index) => {
@@ -407,7 +397,10 @@ class ProductList extends Component {
                                     />
                                 );
                             })
-                        ) : null
+                        ) : (
+                            this.state.isEdit || !this.props.isEditBtnShow ? null : (
+                                <NoDataIconTip tipContent={Intl.get('deal.detail.no.products', '暂无产品')}/>
+                            ))
                     }
                 </div>
                 {this.state.isEdit ? (
@@ -433,5 +426,4 @@ class ProductList extends Component {
     }
 }
 
-// export default Form.create()(ProductList);
 export default ProductList;
