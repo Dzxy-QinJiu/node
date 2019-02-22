@@ -202,6 +202,13 @@ class CustomerRecord extends React.Component {
         //跟进类型的过滤
         if (this.state.filterType && this.state.filterType !== 'all') {
             queryObj.type = this.state.filterType;
+        } else {//全部及概览页的跟进记录，都过滤掉舆情上报的跟进记录（可以通过筛选舆情上报的类型来查看此类的跟进）
+            let types = _.keys(CALL_TYPE_MAP);
+            // 过滤掉舆情上报的跟进记录
+            let typeArray = _.filter(types, type => type !== 'all' && type !== 'data_report');
+            if (_.get(typeArray, '[0]')) {
+                queryObj.type = typeArray.join(',');
+            }
         }
         //通话状态的过滤
         if (this.state.filterStatus && this.state.filterStatus !== 'ALL') {
@@ -210,12 +217,6 @@ class CustomerRecord extends React.Component {
         //概览页只获取最近五条的跟进记录
         if (this.props.isOverViewPanel) {
             queryObj.page_size = OVERVIEW_SHOW_COUNT;
-            let types = _.keys(CALL_TYPE_MAP);
-            // 过滤掉舆情上报的跟进记录
-            let typeArray = _.filter(types, type => type !== 'all' && type !== 'data_report');
-            if (_.isArray(typeArray) && typeArray.length) {
-                queryObj.type = typeArray.join(',');
-            }
         }
         CustomerRecordActions.getCustomerTraceList(queryObj, () => {
             if (_.isFunction(this.props.refreshSrollbar)) {
@@ -834,7 +835,12 @@ class CustomerRecord extends React.Component {
         }
 
     };
-
+    //是否展示通话状态的过滤框
+    isStatusFilterShow() {
+        //有跟进记录或有通话状态筛选条件（有数据时才展示状态筛选框，但通过状态筛选后无数据也需要展示），并且不是拜访、舆情报上和其他类型时，展示通话状态筛选框
+        return (_.get(this.state, 'customerRecord[0]') || this.state.filterStatus) &&
+            _.indexOf(['visit', 'data_report', 'other'], this.state.filterType) === -1;
+    }
     render() {
         //addTrace 顶部增加记录的teaxare框
         //下部时间线列表
@@ -859,7 +865,7 @@ class CustomerRecord extends React.Component {
                                 {Intl.get('sales.frontpage.add.customer', '添加跟进记录')}
                             </Button>)
                         }
-                        {_.get(this.state, 'customerRecord[0]') || this.state.filterStatus ? (
+                        {this.isStatusFilterShow() ? (
                             <Dropdown overlay={this.getStatusMenu()} trigger={['click']}>
                                 <a className="ant-dropdown-link trace-filter-item">
                                     {this.state.filterStatus ? CALL_STATUS_MAP[this.state.filterStatus] : Intl.get('call.record.call.state', '通话状态')}
