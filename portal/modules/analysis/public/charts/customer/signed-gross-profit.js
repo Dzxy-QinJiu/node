@@ -4,7 +4,7 @@
 
 export function getSignedCustomerGrossProfitChart(paramObj = {}) {
     return {
-        title: '签约客户毛利分析',
+        title: '签约客户毛利分析(单位: 元)',
         chartType: 'table',
         url: '/rest/analysis/customer/label/:data_type/sign/customer',
         argCallback: paramObj.argCallback,

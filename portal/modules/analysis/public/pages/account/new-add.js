@@ -31,11 +31,11 @@ function getCharts() {
         //单应用帐号活跃度趋势
         accountChart.getActivityChart('new_added'),
         //帐号天留存统计
-        accountChart.getRemainAccountChart('added', '帐号天留存'),
+        accountChart.getRemainAccountChart({interval: 'day', title: '帐号天留存'}),
         //帐号周留存统计
-        accountChart.getRemainAccountChart('added', '帐号周留存'),
+        accountChart.getRemainAccountChart({interval: 'week', title: '帐号周留存', range: 10}),
         //帐号月留存统计
-        accountChart.getRemainAccountChart('added', '帐号月留存'),
+        accountChart.getRemainAccountChart({interval: 'month', title: '帐号月留存', range: 10}),
         //设备统计
         accountChart.getAccountDeviceChart('add'),
         //浏览器统计

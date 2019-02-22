@@ -164,15 +164,10 @@ class CustomerAnalysis extends React.Component {
     //获取客户阶段变更数据
     getStageChangeCustomers = () => {
         let params = {
-            rang_params: [
-                {
-                    'from': this.state.startTime,
-                    'to': this.state.endTime,
-                    'name': 'time',
-                    'type': 'time'
-                }
-            ],
+            starttime: this.state.startTime,
+            endtime: this.state.endTime
         };
+
         OplateCustomerAnalysisAction.getStageChangeCustomers(params);
     };
 
@@ -255,32 +250,36 @@ class CustomerAnalysis extends React.Component {
 
     //获取转出客户统计数据
     getTransferCustomers = (isFirst = false, teamId = this.state.currentTeamId, memberId = this.state.currentMemberId) => {
-        let params = {
+        let paramObj = {
             isFirst,
-            sort_field: this.state.transferCustomers.sorter.field,
-            order: this.state.transferCustomers.sorter.order,
-            page_size: DEFAULT_TABLE_PAGESIZE,
-            query: {},
-            rang_params: [
-                {
-                    'from': this.state.startTime,
-                    'to': this.state.endTime,
-                    'name': 'time',
-                    'type': 'time'
-                }
-            ],
+            params: {
+                sort_field: this.state.transferCustomers.sorter.field,
+                order: this.state.transferCustomers.sorter.order,
+                page_size: DEFAULT_TABLE_PAGESIZE,
+            },
+            query: {
+                start_time: this.state.startTime,
+                end_time: this.state.endTime,
+            },
         };
 
-        if (teamId) params.query.sales_team_id = teamId;
-
-        if (memberId) params.query.old_member_id = memberId;
-
-        const lastId = this.state.transferCustomers.lastId;
-        if (lastId && !isFirst) {
-            params.lastId = lastId;
+        if (teamId) {
+            paramObj.query.team_ids = teamId;
+            paramObj.query.statistics_type = 'team';
         }
 
-        OplateCustomerAnalysisAction.getTransferCustomers(params);
+        if (memberId) {
+            paramObj.query.member_ids = memberId;
+            paramObj.query.statistics_type = 'user';
+        }
+
+        const lastId = this.state.transferCustomers.lastId;
+
+        if (lastId && !isFirst) {
+            paramObj.query.id = lastId;
+        }
+
+        OplateCustomerAnalysisAction.getTransferCustomers(paramObj);
     };
 
     getStartDateText = () => {

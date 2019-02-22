@@ -1,13 +1,12 @@
 /**
- * 近3个月新增合同周趋势图
+ * 近3个月新增合同数周趋势图
  */
 
-import { processAmountData } from '../../utils';
 import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getContractTrendChart() {
     return {
-        title: Intl.get('contract.147', '近3个月新增合同周趋势图') + '(' + Intl.get('contract.160', '单位') + ': ' + Intl.get('contract.139', '万') + ')',
+        title: Intl.get('contract.147', '近3个月新增合同周趋势图'),
         url: '/rest/analysis/contract/contract/count/trend',
         argCallback: (arg) => {
             argCallbackUnderlineTimeToTime(arg);
@@ -21,7 +20,6 @@ export function getContractTrendChart() {
                 query.endtime = moment().valueOf();
             }
         },
-        processData: processAmountData,
         chartType: 'line',
     };
 }

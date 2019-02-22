@@ -1,41 +1,13 @@
 /**
- * 转出客户统计
+ * 转出客户明细
  */
 
 import { initialTime } from '../../consts';
 
 export function getCustomerTransferChart() {
     return {
-        title: Intl.get('user.analysis.moveoutCustomer', '转出客户统计'),
-        url: '/rest/customer/v2/customer/transfer/record/1000/time/descend',
-        reqType: 'post',
-        conditions: [{
-            type: 'data',
-            value: 'time',
-            callback: (data, name, value) => {
-                _.set(data, 'rang_params[0].name', value);
-            }
-        }, {
-            type: 'data',
-            value: 'time',
-            callback: (data, name, value) => {
-                _.set(data, 'rang_params[0].type', value);
-            }
-        }, {
-            name: 'starttime',
-            value: initialTime.start,
-            type: 'data',
-            callback: (data, name, value) => {
-                _.set(data, 'rang_params[0].from', value);
-            }
-        }, {
-            name: 'endtime',
-            value: initialTime.end,
-            type: 'data',
-            callback: (data, name, value) => {
-                _.set(data, 'rang_params[0].to', value);
-            }
-        }],
+        title: '转出客户明细',
+        url: '/rest/analysis/customer/v2/all/transfer/record/1000/time/descend',
         dataField: 'result',
         chartType: 'table',
         layout: {

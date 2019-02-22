@@ -185,3 +185,12 @@ export function argCallbackMemberIdsToSalesId(arg) {
         }
     }
 }
+
+//数据出来函数：将 num 字段的值赋给 value 字段
+export function processDataNumToValue(data) {
+    _.each(data, item => {
+        item.value = item.num;
+    });
+
+    return data;
+}

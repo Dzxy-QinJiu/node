@@ -2,7 +2,7 @@
  * 行业分布
  */
 
-import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId } from '../../utils';
+import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId, processDataNumToValue } from '../../utils';
 
 export function getContractIndustryChart() {
     return {
@@ -17,5 +17,6 @@ export function getContractIndustryChart() {
             argCallbackTeamIdsToTeamId(arg);
             argCallbackMemberIdsToMemberId(arg);
         },
+        processData: processDataNumToValue
     };
 }
