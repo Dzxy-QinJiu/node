@@ -86,26 +86,12 @@ exports.getSalesStageList = function() {
 exports.getTransferCustomers = function(paramObj) {
     const handler = 'getTransferCustomers';
     const route = routes.find(x => x.handler === handler);
-    const { page_size, sort_field, order } = paramObj;
-    let queryObj = {};
-
-    if (paramObj.lastId) {
-        queryObj.id = paramObj.lastId;
-    }
 
     return ajax({
         url: route.path,
         type: route.method,
-        query: queryObj,
-        params: {
-            page_size,
-            sort_field,
-            order
-        },
-        data: {
-            query: paramObj.query,
-            rang_params: paramObj.rang_params,
-        }
+        query: paramObj.query,
+        params: paramObj.params
     });
 };
 
