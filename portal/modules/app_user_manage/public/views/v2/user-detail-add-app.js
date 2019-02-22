@@ -586,6 +586,7 @@ const UserDetailAddApp = createReactClass({
         let newAppsSetting = this.state.appsSetting;
         _.each(newAppsSetting, (value, appId) => {
             value.roles = _.get(appsSetting[appId], 'roles', []);
+            value.rolesInfo = _.get(appsSetting[appId], 'rolesInfo', []);
             value.permissions = _.get(appsSetting[appId], 'permissions', []);
         });
         UserDetailAddAppActions.saveAppsSetting(newAppsSetting);
@@ -690,6 +691,8 @@ const UserDetailAddApp = createReactClass({
             customAppSetting.client_id = app_id;
             //角色
             customAppSetting.roles = savedAppSetting.roles;
+            // 角色名称
+            customAppSetting.rolesInfo = savedAppSetting.rolesInfo;
             //权限
             customAppSetting.permissions = savedAppSetting.permissions;
             //开通状态

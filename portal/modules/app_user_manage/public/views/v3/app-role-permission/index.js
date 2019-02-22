@@ -302,7 +302,7 @@ class AppRolePermission extends React.Component {
             selectedPermissionList: state.selectedPermissionList,
             selectedRolesAlreadyContainedPermissionIds: state.selectedRolesAlreadyContainedPermissionIds
         });
-        this.props.onRolesPermissionSelect(state.selectedRolesList, state.selectedPermissionList);
+        this.props.onRolesPermissionSelect(state.selectedRolesList, state.selectedPermissionList, state.ajaxRolesList);
     };
 
     renderRoleView = () => {
