@@ -2731,5 +2731,6 @@ var zh_CN = {
     'apply.approve.no.comment': '暂无回复内容！',
     'crm.input.your.apply.user.type': '请输入您申请的用户类型（例如：试用用户、签约用户等）',
     'apply.view.transfer.candidate': '转审',
+    'clue.and.crm.upload.size': '文件大小不要超过10M!'
 };
 export default zh_CN;

@@ -2709,5 +2709,6 @@ var en_US = {
     'apply.approve.no.comment': 'There is no reply content!',//暂无回复内容！
     'crm.input.your.apply.user.type': 'Please enter the type of user you are applying for (eg trial user, contracted user, etc.)',//请输入您申请的用户类型（例如：试用用户、签约用户等）
     'apply.view.transfer.candidate': 'Transfer approval',//转审
+    'clue.and.crm.upload.size': 'The file size should not exceed 10M!'//文件大小不要超过10M!
 };
 export default en_US;
