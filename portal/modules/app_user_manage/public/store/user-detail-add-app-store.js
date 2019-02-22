@@ -109,6 +109,8 @@ UserDetailAddAppStore.prototype.resetState = function() {
         repassword: '',
         //角色
         roles: [],
+        // 角色名称
+        rolesName: [],
         //权限
         permissions: [],
         //要更改的客户对象
@@ -266,9 +268,10 @@ UserDetailAddAppStore.prototype.hideCustomerError = function() {
 };
 
 //角色权限发生变化
-UserDetailAddAppStore.prototype.rolesPermissionsChange = function({roles,permissions}) {
+UserDetailAddAppStore.prototype.rolesPermissionsChange = function({roles,permissions,rolesName}) {
     this.formData.roles = roles.slice();
     this.formData.permissions = permissions.slice();
+    this.formData.rolesName = permissions.slice();
 };
 
 //延期备注改变

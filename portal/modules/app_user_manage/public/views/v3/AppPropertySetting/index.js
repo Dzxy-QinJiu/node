@@ -53,7 +53,9 @@ const AppPropertySetting = createReactClass({
         //隐藏单个应用的表单界面
         hideSingleApp: PropTypes.bool,
         //显示多人登录
-        showMultiLogin: PropTypes.bool
+        showMultiLogin: PropTypes.bool,
+        appSelectRoleError: PropTypes.string,
+        height: PropTypes.number
     },
 
     getDefaultProps() {
@@ -192,9 +194,12 @@ const AppPropertySetting = createReactClass({
                     if (!originAppSetting.permissions) {
                         originAppSetting.permissions = [];
                     }
-                    //角色、权限，赋值，不会出现在全局设置里，直接设置
+                    //角色、角色名称、权限，赋值，不会出现在全局设置里，直接设置
                     if (appSettingConfig.roles && _.isArray(appSettingConfig.roles)) {
                         originAppSetting.roles = appSettingConfig.roles;
+                    }
+                    if (appSettingConfig.rolesName && _.isArray(appSettingConfig.rolesName)) {
+                        originAppSetting.rolesName = appSettingConfig.rolesName;
                     }
                     if (appSettingConfig.permissions && _.isArray(appSettingConfig.permissions)) {
                         originAppSetting.permissions = appSettingConfig.permissions;
@@ -320,10 +325,13 @@ const AppPropertySetting = createReactClass({
 
     },
 
-    onRolesPermissionSelect(app_id, roles, permissions) {
-        var state = this.state;       
+    onRolesPermissionSelect(app_id, roles, permissions, rolesList) {
+        var state = this.state;
         var app_info = state.appPropSettingsMap[app_id];
         app_info.roles = roles.slice();
+        if (rolesList && rolesList.length) {
+            app_info.rolesName = rolesList;
+        }
         app_info.permissions = permissions.slice();
         this.setState({
             appPropSettingsMap: state.appPropSettingsMap

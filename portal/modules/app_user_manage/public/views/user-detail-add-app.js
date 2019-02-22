@@ -1253,8 +1253,8 @@ var UserDetailAddApp = createReactClass({
         );
     },
 
-    rolesPermissionsChange: function(roles,permissions){
-        UserDetailAddAppAction.rolesPermissionsChange({roles,permissions});
+    rolesPermissionsChange: function(roles,permissions, rolesName){
+        UserDetailAddAppAction.rolesPermissionsChange({roles,permissions,rolesName});
     },
 
     render: function() {

@@ -132,8 +132,6 @@ class UserDetailAddAppStore {
                 this.submitResult = 'loading';
             } else {
                 this.submitResult = 'success';
-                //选中的应用列表
-                const selectedApps = this.selectedApps;
                 _.each(result.apps, (appInfo) => {
                     _.find(this.selectedApps, (app) => {
                         if (app.app_id === appInfo.client_id) {
@@ -147,16 +145,11 @@ class UserDetailAddAppStore {
                             appInfo.is_two_factor = +appInfo.is_two_factor;
                             appInfo.status = +appInfo.status;
                             appInfo.is_disabled = false;
+                            appInfo.roleItems = appInfo.roles.map(roleId => appInfo.rolesName.find(x => x.role_id === roleId)).filter(x => x);
                             delete appInfo.begin_date;
                             delete appInfo.end_date;
                             delete appInfo.client_id;
-                            AppUserAjax.getBatchRoleInfo({
-                                data: {
-                                    ids: appInfo.roles
-                                }
-                            }).then((roleInfo) => {
-                                appInfo.roleItems = appInfo.roles.map(roleId => roleInfo.find(x => x.role_id === roleId)).filter(x => x);
-                            });
+                            delete appInfo.rolesName;
                         }
                     });
                 });
