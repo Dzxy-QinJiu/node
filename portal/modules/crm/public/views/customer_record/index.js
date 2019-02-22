@@ -277,8 +277,9 @@ class CustomerRecord extends React.Component {
                 type: this.state.selectedtracetype,
                 remark: addcontent,
             };
-            CustomerRecordActions.addCustomerTrace(queryObj, () => {
-                _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(customerId);
+            CustomerRecordActions.addCustomerTrace(queryObj, (customer_trace) => {
+                //更新列表中的最后联系
+                _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(customer_trace);
                 this.toggleAddRecordPanel();
             });
             // $('.add-content-input').focus();
@@ -299,7 +300,12 @@ class CustomerRecord extends React.Component {
             }
             CustomerRecordActions.setUpdateId(item.id);
             CustomerRecordActions.updateCustomerTrace(queryObj, () => {
-                _.isFunction(this.props.refreshCustomerList) && this.props.refreshCustomerList(customerId);
+                //如果补充的是最后一条跟进记录（如果是电话类型的需要是打通的电话类型），更新列表中的最后联系
+                if(_.get(this.state, 'customerRecord[0].id') === item.id){
+                    //打通电话的才会更新最后联系
+                    if (item.billsec === 0) return;
+                    _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(item);
+                }
             });
         }
     };
@@ -902,7 +908,7 @@ CustomerRecord.propTypes = {
     callNumber: PropTypes.string,
     isOverViewPanel: PropTypes.bool,
     refreshSrollbar: PropTypes.func,
-    refreshCustomerList: PropTypes.func,
+    updateCustomerLastContact: PropTypes.func,
     getCallNumberError: PropTypes.string,
     changeActiveKey: PropTypes.func,
     isMerge: PropTypes.bool,

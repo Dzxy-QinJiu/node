@@ -34,7 +34,7 @@ function CustomerRecordAction() {
         this.dispatch({loading: true,error: false});
         customerRecordAjax.addCustomerTrace(queryObj).then((data) => {
             this.dispatch({loading: false,error: false,data: data});
-            _.isFunction(callback) && callback();
+            _.isFunction(callback) && callback(data.customer_trace);
         },(errorMsg) => {
             this.dispatch({loading: false,error: true,errorMsg: errorMsg});
         });

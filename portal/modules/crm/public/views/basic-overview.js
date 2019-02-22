@@ -456,6 +456,7 @@ class BasicOverview extends React.Component {
             callNumber={this.state.callNumber}
             getCallNumberError={this.state.getCallNumberError}
             disableEdit={this.props.disableEdit}
+            updateCustomerLastContact={this.props.updateCustomerLastContact}
         />;
     };
 
@@ -593,6 +594,7 @@ BasicOverview.propTypes = {
     changeActiveKey: PropTypes.func,
     refreshCustomerList: PropTypes.func,
     disableEdit: PropTypes.bool,
+    updateCustomerLastContact: PropTypes.func,
 };
 module.exports = BasicOverview;
 

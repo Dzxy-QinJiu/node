@@ -214,6 +214,22 @@ CrmStore.prototype.updateCustomerDefContact = function(contact) {
         }
     }
 };
+
+//添加跟进记录时，修改客户最新的跟进记录时，更新列表中的最后联系
+CrmStore.prototype.updateCustomerLastContact = function(traceObj) {
+    if (_.get(traceObj, 'customer_id')) {
+        let updateTraceCustomer = _.find(this.curCustomers, customer => customer.id === traceObj.customer_id);
+        if (updateTraceCustomer) {
+            updateTraceCustomer.last_contact_time = traceObj.time;
+            if (_.get(updateTraceCustomer, 'customer_trces[0]')) {
+                updateTraceCustomer.customer_traces[0].remark = traceObj.remark;
+            } else {
+                updateTraceCustomer.customer_traces = [{remark: traceObj.remark}];
+            }
+        }
+    }
+};
+
 //获取过滤条件中的销售阶段
 function getFilterStages() {
     if (filterStore && filterStore.getState().condition) {
