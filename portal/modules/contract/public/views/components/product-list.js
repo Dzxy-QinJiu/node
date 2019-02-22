@@ -257,9 +257,9 @@ class ProductList extends Component {
             // ref.props.form.resetFields();
             ref.props.form.validateFields((err, value) => {
                 if(err) return false;
-                if(!_.get(item,'start_time')) {
-                    item.start_time = moment().valueOf();
-                    item.end_time = moment().valueOf();
+                if(!_.get(item,'account_start_time')) {
+                    item.account_start_time = moment().valueOf();
+                    item.account_endt_time = moment().valueOf();
                 }
                 validateArr.push({...item, ...value});
             });

@@ -7,7 +7,6 @@ var React = require('react');
 import { Alert, message } from 'antd';
 import { getNumberValidateRule, numberAddNoMoreThan } from 'PUB_DIR/sources/utils/validate-util';
 import { removeCommaFromNum } from 'LIB_DIR/func';
-import ProductTable from 'CMP_DIR/basic-edit-field-new/product-table';
 import ProductList from '../components/product-list';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { PRIVILEGE_MAP, VIEW_TYPE } from 'MOD_DIR/contract/consts';
@@ -20,8 +19,8 @@ const defaultValueMap = {
     total_price: 1000,
     commission_rate: 6,
     version: '',
-    start_time: Date.now(),
-    end_time: Date.now()
+    account_start_time: Date.now(),
+    account_end_time: Date.now()
 };
 
 class AddProduct extends React.Component{
@@ -113,7 +112,7 @@ class AddProduct extends React.Component{
                 message.success(Intl.get('user.edit.success', '修改成功'));
                 if (_.isFunction(successFunc)) successFunc();
                 const hasResult = _.isObject(result.result) && !_.isEmpty(result.result);
-                let contract = _.extend({},this.props.contract,result.result);
+                let contract = _.extend({}, this.props.contract, result.result);
                 if (hasResult) {
                     this.props.refreshCurrentContract(this.props.contract.id, true, contract);
                 }
@@ -130,8 +129,8 @@ class AddProduct extends React.Component{
         let index = _.findIndex(products, item => {
             return item.id === product.id;
         });
-        products[index].start_time = startTime;
-        products[index].end_time = endTime;
+        products[index].account_start_time = startTime;
+        products[index].account_end_time = endTime;
         this.setState({
             products
         });
@@ -187,8 +186,8 @@ class AddProduct extends React.Component{
                     return {
                         mode: isEdit ? 'add' : 'info',
                         className: 'validity-time',
-                        startTime: isEdit ? record.start_time : moment(record.start_time) || '',
-                        endTime: isEdit ? record.end_time : moment(record.end_time) || '',
+                        startTime: isEdit ? record.account_start_time : moment(record.account_start_time) || '',
+                        endTime: isEdit ? record.account_end_time : moment(record.account_end_time) || '',
                         onChange: (startTime,endTime) => this.handleSubmitEditValidityTime(startTime, endTime, record)
                     };
                 },
@@ -270,9 +269,9 @@ class AddProduct extends React.Component{
                                 _.map(this.state.products, (item, index) => {
                                     let ref = parent[`form${item.id}Ref`];
                                     let formValue = ref.props.form.getFieldsValue();
-                                    if(!_.get(item,'start_time')) {
-                                        item.start_time = moment().valueOf();
-                                        item.end_time = moment().valueOf();
+                                    if(!_.get(item,'account_start_time')) {
+                                        item.account_start_time = moment().valueOf();
+                                        item.account_end_time = moment().valueOf();
                                     }
                                     validateArr.push({...item, ...formValue});
                                 });
@@ -308,27 +307,6 @@ class AddProduct extends React.Component{
         return (
             <div className="add-products" data-tracename="产品页面">
                 <div className="product-forms">
-                    {/*<ProductTable
-                        addBtnText={Intl.get('common.product', '产品')}
-                        ref={ref => this.producTableRef = ref}
-                        //appendDOM={customizeBTN}
-                        defaultValueMap={defaultValueMap}
-                        appList={this.props.appList.map(x => ({
-                            client_id: x.app_id,
-                            client_image: x.app_logo,
-                            client_name: x.app_name
-                        }))}
-                        totalAmount={totalAmout}
-                        data={this.state.products}
-                        dataSource={this.state.products}
-                        isEdit={isEdit}
-                        isEditBtnShow={isEditBtnShow}
-                        isSaveCancelBtnShow={isSaveCancelBtnShow}
-                        columns={columns}
-                        onSave={this.handleProductSave}
-                        handleCancel={this.handleProductCancel}
-                        onChange={this.handleProductChange}
-                    />*/}
                     <ProductList
                         addBtnText={Intl.get('common.product', '产品')}
                         ref={ref => this.producTableRef = ref}
