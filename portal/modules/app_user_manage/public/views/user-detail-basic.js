@@ -477,7 +477,6 @@ class UserDetailBasic extends React.Component {
             className += ' pull-left';
             despWidth = LAYOUTS.ITEM_WIDTH - LAYOUTS.MARGIN_LEFT - maxWidth - 5;
         }
-        let selectApp = this.props.selectApp;
         return (
             <ul className="app_list">
                 {this.state.initialUser.apps.map(app => {
