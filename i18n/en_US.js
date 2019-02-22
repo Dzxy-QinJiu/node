@@ -2684,7 +2684,7 @@ var en_US = {
     'failed.get.reply.comment': 'Failed to get comment lists',//获取回复列表失败
     'apply.approve.upload.no.container.space': 'Please do not has space in your file name!',//文件名称中不要含有空格！
     'failed.delete.apply.load.approve': 'Failed to delete files',//删除文件失败！
-    'click.ctrl.upload.mutil.file': 'You can upload multiple files at the same time, only upload image files, text files, video files, audio files and compressed files. The file size should not exceed 50M!',//可同时上传多个文件，只能上传图片文件，文本文件，视频文件，音频文件和压缩文件，文件大小不要超过50M！
+    'click.ctrl.upload.mutil.file': 'You can upload multiple files at the same time, only upload image files, text files, video files, audio files and compressed files. The file size should not exceed 10M!',//可同时上传多个文件，只能上传图片文件，文本文件，视频文件，音频文件和压缩文件，文件大小不要超过10M！
     'apply.approve.customer.info': 'Customer Info',//客户资料
     'apply.approve.add.files': 'Added files',//补充文件
     'fail.apply.approve.result': 'Failed to approve',//审批失败
@@ -2709,5 +2709,6 @@ var en_US = {
     'apply.approve.no.comment': 'There is no reply content!',//暂无回复内容！
     'crm.input.your.apply.user.type': 'Please enter the type of user you are applying for (eg trial user, contracted user, etc.)',//请输入您申请的用户类型（例如：试用用户、签约用户等）
     'apply.view.transfer.candidate': 'Transfer approval',//转审
+    'clue.and.crm.upload.size': 'The file size should not exceed 10M!'//文件大小不要超过10M!
 };
 export default en_US;
