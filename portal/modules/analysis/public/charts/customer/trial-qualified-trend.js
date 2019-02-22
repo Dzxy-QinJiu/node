@@ -18,20 +18,15 @@ export function getCustomerTrialQualifiedTrendChart() {
         argCallback: arg => {
             let query = arg.query;
 
-            if (query && query.starttime && query.endtime) {
-                query.start_time = moment(query.endtime).subtract(1, 'years').valueOf();
-                query.end_time = query.endtime;
-                delete query.starttime;
-                delete query.endtime;
+            if (query && query.start_time && query.end_time) {
+                query.start_time = moment(query.end_time).subtract(1, 'years').valueOf();
             }
 
-            if (query.member_id) {
-                query.member_ids = query.member_id;
-                delete query.member_id;
+            if (query.statistics_type) {
+                //老接口里用的是result_type来区分返回类型
+                query.result_type = query.statistics_type;
+                delete query.statistics_type;
             }
-
-
-            delete query.app_id;
         },
         processData: data => data.list,
         processOption: (option, props) => {
