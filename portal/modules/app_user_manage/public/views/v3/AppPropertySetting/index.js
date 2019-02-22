@@ -198,8 +198,8 @@ const AppPropertySetting = createReactClass({
                     if (appSettingConfig.roles && _.isArray(appSettingConfig.roles)) {
                         originAppSetting.roles = appSettingConfig.roles;
                     }
-                    if (appSettingConfig.rolesName && _.isArray(appSettingConfig.rolesName)) {
-                        originAppSetting.rolesName = appSettingConfig.rolesName;
+                    if (appSettingConfig.rolesInfo && _.isArray(appSettingConfig.rolesInfo)) {
+                        originAppSetting.rolesInfo = appSettingConfig.rolesInfo;
                     }
                     if (appSettingConfig.permissions && _.isArray(appSettingConfig.permissions)) {
                         originAppSetting.permissions = appSettingConfig.permissions;
@@ -325,12 +325,12 @@ const AppPropertySetting = createReactClass({
 
     },
 
-    onRolesPermissionSelect(app_id, roles, permissions, rolesList) {
+    onRolesPermissionSelect(app_id, roles, permissions, rolesInfo) {
         var state = this.state;
         var app_info = state.appPropSettingsMap[app_id];
         app_info.roles = roles.slice();
-        if (rolesList && rolesList.length) {
-            app_info.rolesName = rolesList;
+        if (_.isArray(rolesInfo) && rolesInfo.length) {
+            app_info.rolesInfo = _.clone(rolesInfo);
         }
         app_info.permissions = permissions.slice();
         this.setState({

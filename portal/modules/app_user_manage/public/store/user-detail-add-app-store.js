@@ -109,8 +109,8 @@ UserDetailAddAppStore.prototype.resetState = function() {
         repassword: '',
         //角色
         roles: [],
-        // 角色名称
-        rolesName: [],
+        // 角色相关的信息
+        rolesInfo: [],
         //权限
         permissions: [],
         //要更改的客户对象
@@ -268,10 +268,10 @@ UserDetailAddAppStore.prototype.hideCustomerError = function() {
 };
 
 //角色权限发生变化
-UserDetailAddAppStore.prototype.rolesPermissionsChange = function({roles,permissions,rolesName}) {
+UserDetailAddAppStore.prototype.rolesPermissionsChange = function({roles,permissions,rolesInfo}) {
     this.formData.roles = roles.slice();
     this.formData.permissions = permissions.slice();
-    this.formData.rolesName = permissions.slice();
+    this.formData.rolesInfo = _.clone(rolesInfo);
 };
 
 //延期备注改变

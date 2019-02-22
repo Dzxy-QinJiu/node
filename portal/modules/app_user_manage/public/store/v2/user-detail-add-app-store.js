@@ -132,24 +132,25 @@ class UserDetailAddAppStore {
                 this.submitResult = 'loading';
             } else {
                 this.submitResult = 'success';
+                // 添加应用时的信息的字段和要展示的应用信息字段是不一致，处理为能展示的信息
                 _.each(result.apps, (appInfo) => {
                     _.find(this.selectedApps, (app) => {
                         if (app.app_id === appInfo.client_id) {
                             appInfo.app_id = app.app_id;
-                            appInfo.app_name = app.app_name;
+                            appInfo.app_name = app.app_name; // 应用名称
                             appInfo.app_logo = app.app_logo;
-                            appInfo.start_time = appInfo.begin_date;
-                            appInfo.create_time = appInfo.begin_date;
-                            appInfo.end_time = appInfo.end_date;
-                            appInfo.multilogin = +appInfo.mutilogin;
-                            appInfo.is_two_factor = +appInfo.is_two_factor;
-                            appInfo.status = +appInfo.status;
-                            appInfo.is_disabled = false;
-                            appInfo.roleItems = appInfo.roles.map(roleId => appInfo.rolesName.find(x => x.role_id === roleId)).filter(x => x);
+                            appInfo.start_time = appInfo.begin_date; // 启用时间
+                            appInfo.create_time = appInfo.begin_date; // 开通时间
+                            appInfo.end_time = appInfo.end_date; // 到期时间
+                            appInfo.multilogin = +appInfo.mutilogin; // 多人登录
+                            appInfo.is_two_factor = +appInfo.is_two_factor; // 二步认证
+                            appInfo.status = +appInfo.status; // 状态
+                            appInfo.is_disabled = false; // 启用
+                            appInfo.roleItems = appInfo.roles.map(roleId => appInfo.rolesInfo.find(x => x.role_id === roleId )).filter(x => x);// 角色名称
                             delete appInfo.begin_date;
                             delete appInfo.end_date;
                             delete appInfo.client_id;
-                            delete appInfo.rolesName;
+                            delete appInfo.rolesInfo;
                         }
                     });
                 });
