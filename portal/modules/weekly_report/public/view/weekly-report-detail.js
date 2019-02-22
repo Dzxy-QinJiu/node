@@ -21,9 +21,8 @@ var userData = require('PUB_DIR/sources/user-data');
 const PRIVILEGE_MAP = {
     CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
 };
-import {formatRoundingData} from 'PUB_DIR/sources/utils/common-method-util';
-import {getMyOrganization} from 'PUB_DIR/sources/utils/common-data-util';
-import { ORGANIZATION_TYPE } from 'PUB_DIR/sources/utils/consts';
+import {formatRoundingData, isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
+
 const isCommonSales = userData.getUserData().isCommonSales;
 
 class WeeklyReportDetail extends React.Component {
@@ -37,8 +36,7 @@ class WeeklyReportDetail extends React.Component {
         isAddingLeaveUserId: '',//正在添加请假信息的销售
         formType: 'add',//是添加请假信息还是修改请假信息
         isEdittingItem: {},//正在编辑的请假信息
-        ...WeeklyReportDetailStore.getState(),
-        organization: '',//组织id
+        ...WeeklyReportDetailStore.getState()
     };
 
     onStoreChange = () => {
@@ -82,9 +80,7 @@ class WeeklyReportDetail extends React.Component {
     getWeeklyReportData = () => {
         //不加延时会报错
         setTimeout(() => {
-            this.getOrganization(() => {
-                this.getCallInfoData();// 接通率
-            });
+            this.getCallInfoData();// 接通率
             if (hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE)) {
                 this.getContractData();//获取合同信息
                 this.getRepaymentData();//获取回款信息
@@ -225,7 +221,7 @@ class WeeklyReportDetail extends React.Component {
         },];
 
         // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        if(_.get(this.state.organization,'realm_id') === ORGANIZATION_TYPE.EEFUNG){
+        if(isOrganizationEefung()){
             columns.splice(5, 0, {
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 dataIndex: 'total_effective',
@@ -359,18 +355,6 @@ class WeeklyReportDetail extends React.Component {
         return columns;
     };
 
-    // 获取我所在的组织信息
-    getOrganization = (callback) => {
-        getMyOrganization().then((resData) => {
-            this.state.organization || this.setState({
-                organization: resData
-            });
-            callback && callback();
-        }).catch(() => {
-            callback && callback();
-        });
-    };
-
     getCallInfoAuth = () => {
         let authType = 'user';//CUSTOMER_CALLRECORD_STATISTIC_USER
         if (hasPrivilege('CUSTOMER_CALLRECORD_STATISTIC_MANAGER')) {
@@ -437,7 +421,7 @@ class WeeklyReportDetail extends React.Component {
         queryObj.deviceType = this.state.call_type;
         queryObj.return_type = 'user';
         // 是否获取有效通话时长
-        queryObj.effective_phone = _.get(this.state.organization,'realm_id') === ORGANIZATION_TYPE.EEFUNG;
+        queryObj.effective_phone = isOrganizationEefung();
 
         if (isCommonSales) {
             const userId = userData.getUserData().user_id;

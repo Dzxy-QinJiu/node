@@ -1,6 +1,5 @@
 var userInfoAjax = require('../ajax/user-info-ajax');
 var userData = require('../../../../public/sources/user-data');
-import {getOrganization} from 'PUB_DIR/sources/utils/common-data-util';
 
 function UserInfoActions() {
     this.generateActions(
@@ -22,21 +21,6 @@ function UserInfoActions() {
                 error: true,
                 loading: false,
                 errorMsg: errorMsg || Intl.get('user.info.get.user.info.failed', '获取用户信息失败')
-            });
-        });
-    };
-
-    //获取所管理的安全域信息
-    this.getManagedRealm = function() {
-        var _this = this;
-        _this.dispatch({error: false, loading: true});
-        getOrganization().then(function(orgnization) {
-            _this.dispatch({error: false, loading: false, realmInfo: orgnization});
-        }, function(errorMsg) {
-            _this.dispatch({
-                error: true,
-                loading: false,
-                errorMsg: errorMsg || Intl.get('user.info.get.managed.realm.failed', '获取安全域信息失败')
             });
         });
     };

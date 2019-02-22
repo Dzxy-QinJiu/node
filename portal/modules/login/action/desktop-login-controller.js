@@ -164,8 +164,12 @@ function loginSuccess(req, res) {
         req.session.save(function() {
             //登录成功后获取用户的组织信息，（主页的matomo数据参数设置中需要放入组织信息）
             DesktopLoginService.getOrganization(req, res).on('success', data => {
+                // 组织信息中名称和id字段转为name和id字段，方便前端处理（若后端更改字段名时）
                 let userData = _.get(req, 'session.user', {});
-                userData.organization = data || {};
+                userData.organization = {
+                    id: _.get(data,'realm_id', ''),
+                    name: _.get(data, 'realm_name', '')
+                };
                 req.session.save(() => {
                     if (req.xhr) {
                         //session失效时，登录成功后的处理

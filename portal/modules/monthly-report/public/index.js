@@ -34,16 +34,14 @@ import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {storageUtil} from 'ant-utils';
 
 const STORED_TEAM_KEY = 'monthly_report_selected_team';
-import {getMyTeamTreeAndFlattenList,getMyOrganization} from 'PUB_DIR/sources/utils/common-data-util';
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 
 class MonthlyReport extends React.Component {
     state = {
         teamList: [],
         memberList: [],
         selectedTeam: '',
-        selectedMonth: moment(),
-        showCharts: false,
-        organization: '',//组织信息
+        selectedMonth: moment()
     };
 
     componentDidMount() {
@@ -51,11 +49,6 @@ class MonthlyReport extends React.Component {
         $('.analysis_report_ico a').addClass('active');
         this.getTeamList();
         this.getMemberList();
-        this.getOrganization(() => {
-            this.setState({
-                showCharts: true
-            });
-        });
     }
 
     getTeamList = () => {
@@ -126,18 +119,6 @@ class MonthlyReport extends React.Component {
 
     numberRender = text => {
         return <span>{_.isNumber(text) && text.toFixed()}</span>;
-    };
-
-    // 获取我所在的组织信息
-    getOrganization = (callback) => {
-        getMyOrganization().then((resData) => {
-            this.state.organization || this.setState({
-                organization: resData
-            });
-            callback && callback();
-        }).catch(() => {
-            callback && callback();
-        });
     };
 
     //电话量统计表格列定义
@@ -220,7 +201,7 @@ class MonthlyReport extends React.Component {
         ];
 
         // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        if(this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG){
+        if(commonMethodUtil.isOrganizationEefung()){
             columns.splice(7, 0, {
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 dataIndex: 'total_effective',
@@ -278,7 +259,7 @@ class MonthlyReport extends React.Component {
         ];
 
         // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        if(this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG){
+        if(commonMethodUtil.isOrganizationEefung()){
             columns.push({
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 dataIndex: 'total_effective',
@@ -328,7 +309,7 @@ class MonthlyReport extends React.Component {
             value: 'user'
         },{
             name: 'effective_phone',
-            value: `${this.state.organization.realm_id === ORGANIZATION_TYPE.EEFUNG}`
+            value: `${commonMethodUtil.isOrganizationEefung()}`
         }];
 
         return [
@@ -534,7 +515,7 @@ class MonthlyReport extends React.Component {
                                 </div>
                             ) : null}
 
-                            {selectedTeamId && this.state.showCharts ? (
+                            {selectedTeamId ? (
                                 <AntcAnalysis
                                     charts={this.getCharts()}
                                     conditions={this.getConditions(selectedTeamId)}

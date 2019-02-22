@@ -24,7 +24,10 @@ function ApplyViewDetailActions() {
         'hideApprovalBtns',//审批完后不在显示审批按钮
         'hideCancelBtns',//审批完后不再显示撤销按钮
         'setDetailInfoObjAfterAdd',
-        'setNextCandidateIds'
+        'setNextCandidateIds',
+        'setNextCandidateName',//下一节点审批人的名字
+        'setNextCandidate',
+        'showOrHideApprovalBtns'
     );
 
     //获取审批单详情
@@ -108,10 +111,11 @@ function ApplyViewDetailActions() {
         });
     };
     //获取下一节点的负责人
-    this.getNextCandidate = function(queryObj) {
+    this.getNextCandidate = function(queryObj,callback) {
         ApplyApproveAjax.getNextCandidate().sendRequest(queryObj).success((list) => {
             if (_.isArray(list)){
                 this.dispatch(list);
+                _.isFunction(callback) && callback(list);
             }
         }).error(this.dispatch({error: true}));
     };

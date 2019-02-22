@@ -347,7 +347,10 @@ const AddOrEditUser = createReactClass({
         const selectedApps = this.state.selectedApps;
         let noSelectRoleApps = AppUserUtil.handleNoSelectRole(products, selectedApps);
         if (noSelectRoleApps.length) {
-            AppUserFormActions.someAppsNoSelectRoleError(Intl.get('user.add.apps.role.select.tip', '{appName}未设置角色', {appName: noSelectRoleApps.join('、')}));
+            AppUserFormActions.someAppsNoSelectRoleError(
+                Intl.get('user.add.apps.role.select.tip', '{appName}未设置角色',
+                    {appName: noSelectRoleApps.length > 3 ? noSelectRoleApps.slice(0,3).join('、').concat('...') : noSelectRoleApps.join('、')})
+            );
             return;
         } else {
             AppUserFormActions.noSelectRoleError('');
