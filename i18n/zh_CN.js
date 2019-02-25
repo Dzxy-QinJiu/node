@@ -2743,7 +2743,7 @@ var zh_CN = {
     'apply.approve.transfer.success': '转出申请成功',
     'apply.approve.upload.empty.file': '不可上传空文件！',
     'apply.approve.upload.error.file.type': '文件格式不正确！',
-    'apply.approve.upload.not.more.than50': '文件大小不能超过50M!',
+    'apply.approve.upload.not.more.than50': '文件大小不能超过10M!',
     'apply.approve.no.comment': '暂无回复内容！',
     'crm.input.your.apply.user.type': '请输入您申请的用户类型（例如：试用用户、签约用户等）',
     'apply.view.transfer.candidate': '转审',

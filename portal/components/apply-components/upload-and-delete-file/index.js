@@ -98,14 +98,14 @@ class UploadAndDeleteFile extends React.Component {
         }
 
         if (fileSize && this.canculateLimite(fileSize) || totalSize && this.canculateLimite(totalSize)){
-            message.warning(Intl.get('apply.approve.upload.not.more.than50','文件大小不能超过50M!'));
+            message.warning(Intl.get('apply.approve.upload.not.more.than50','文件大小不能超过10M!'));
             return false;
         }
         return true;
     };
     beforeUploadFiles = (file) => {
         this.setState({isUpLoading: true});
-        //计算之前上传过的和现在要上传的这个文件的大小，不能超过50M
+        //计算之前上传过的和现在要上传的这个文件的大小，不能超过10M
         var fileName = file.name,fileSize = file.size;
         var totalFileSize = this.state.totalFileSize;
         totalFileSize += fileSize;
