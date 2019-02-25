@@ -21,7 +21,10 @@ const SET_TIME_OUT = {
 const LAYOUT = {
     INITIALWIDTH: 504,
     SMALLWIDTH: 24,
-    LARGEWIDTH: 75
+    LARGEWIDTH: 75,
+    TOP_DISTANCE: 150,
+    BOTTOM_DISTANCE: 90
+
 };
 function noop() {}
 import {isEqualArray} from 'LIB_DIR/func';
@@ -46,6 +49,11 @@ class ImportTemplate extends React.Component {
             isImporting: false//正在导入
         };
     }
+
+    componentDidMount = () => {
+        this.changeTableHeight();
+        $(window).on('resize', e => this.changeTableHeight());
+    };
     componentWillReceiveProps(nextProps) {
         if (nextProps.previewList && !isEqualArray(nextProps.previewList, this.state.previewList)) {
             this.setState({
@@ -53,6 +61,9 @@ class ImportTemplate extends React.Component {
             });
         }
     }
+    componentWillUnmount = () => {
+        $(window).off('resize', this.changeTableHeight);
+    };
 
     onItemListImport = (list) => {
         this.props.onItemListImport(list);
@@ -128,6 +139,10 @@ class ImportTemplate extends React.Component {
             </div>
         );
     };
+    changeTableHeight = () => {
+        var tableHeight = $(window).height() - LAYOUT.TOP_DISTANCE - LAYOUT.BOTTOM_DISTANCE;
+        this.setState({ tableHeight});
+    };
     renderSecondStepContent = () => {
         const repeatCustomer = _.find(this.state.previewList, item => (item.repeat));
         return (
@@ -136,12 +151,15 @@ class ImportTemplate extends React.Component {
                     className="import-warning">
                     <Alert type="warning" message={Intl.get('clue.repeat.delete', '存在和系统中重复的{type}名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入',{type: this.props.importType})} showIcon/>
                 </div> : null}
-                <AntcTable
-                    dataSource={this.state.previewList}
-                    columns={this.props.getItemPrevList()}
-                    rowKey={this.getRowKey}
-                    pagination={false}
-                />
+                <div className="deal-table-container" style={{height: this.state.tableHeight + 40}}>
+                    <AntcTable
+                        dataSource={this.state.previewList}
+                        columns={this.props.getItemPrevList()}
+                        rowKey={this.getRowKey}
+                        pagination={false}
+                        scroll={{y: this.state.tableHeight}}
+                    />
+                </div>
                 {this.renderImportFooter()}
             </div>
         );
