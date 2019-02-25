@@ -47,12 +47,12 @@ class ImportTemplate extends React.Component {
             current: 0,//进度条的步骤
             isLoading: false,//正在上传
             previewList: this.props.previewList,//预览列表
-            isImporting: false//正在导入
+            isImporting: false,//正在导入
+            tableHeight: this.calculateTableHeight()
         };
     }
 
     componentDidMount = () => {
-        this.changeTableHeight();
         $(window).on('resize', e => this.changeTableHeight());
     };
     componentWillReceiveProps(nextProps) {
@@ -140,9 +140,12 @@ class ImportTemplate extends React.Component {
             </div>
         );
     };
+    calculateTableHeight = () => {
+        return $(window).height() - LAYOUT.TOP_DISTANCE - LAYOUT.BOTTOM_DISTANCE;
+    }
     changeTableHeight = () => {
-        var tableHeight = $(window).height() - LAYOUT.TOP_DISTANCE - LAYOUT.BOTTOM_DISTANCE;
-        this.setState({ tableHeight});
+        var tableHeight = this.calculateTableHeight();
+        this.setState({tableHeight});
     };
     renderSecondStepContent = () => {
         const repeatCustomer = _.find(this.state.previewList, item => (item.repeat));
