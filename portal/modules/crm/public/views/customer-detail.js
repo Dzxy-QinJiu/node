@@ -156,6 +156,7 @@ class CrmRightPanel extends React.Component {
                                         callNumber={this.props.callNumber}
                                         getCallNumberError={this.props.getCallNumberError}
                                         disableEdit={this.props.disableEdit}
+                                        updateCustomerLastContact={this.props.updateCustomerLastContact}
                                     />
                                 ) : null}
                             </TabPane>
@@ -185,6 +186,7 @@ class CrmRightPanel extends React.Component {
                                         callNumber={this.props.callNumber}
                                         getCallNumberError={this.props.getCallNumberError}
                                         disableEdit={this.props.disableEdit}
+                                        updateCustomerLastContact={this.props.updateCustomerLastContact}
                                     />
                                 ) : null}
                             </TabPane>
@@ -286,6 +288,7 @@ CrmRightPanel.propTypes = {
     userViewShowCustomerUserListPanel: PropTypes.func,
     showOpenAppForm: PropTypes.func,
     returnInfoPanel: PropTypes.func,
+    updateCustomerLastContact: PropTypes.func,
 };
 module.exports = CrmRightPanel;
 

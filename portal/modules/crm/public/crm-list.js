@@ -530,6 +530,7 @@ class Crm extends React.Component {
                     curCustomer: this.state.curCustomer,
                     ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
                     updateCustomerDefContact: CrmAction.updateCustomerDefContact,
+                    updateCustomerLastContact: CrmAction.updateCustomerLastContact,
                     handleFocusCustomer: this.handleFocusCustomer,
                     showRightPanel: this.showRightPanel,
                     hideRightPanel: this.hideRightPanel,
