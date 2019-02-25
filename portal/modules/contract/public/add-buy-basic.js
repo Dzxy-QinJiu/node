@@ -19,11 +19,11 @@ const AddBuyBasic = createReactClass({
         const formData = this.state.formData;
 
         return (
-            <Form layout='horizontal' className="add-basic">
+            <Form layout='horizontal' className="add-basic" data-tracename='添加采购合同>基本信息'>
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     {this.renderNumField()}
                     {this.renderUserField()}
-                    {this.renderTeamField()}
+                    {/*{this.renderTeamField()}*/}
                     {this.renderPurchaseTypeField()}
                     {this.renderDateField()}
                     {this.renderAmountField()}

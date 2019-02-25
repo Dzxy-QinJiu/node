@@ -362,6 +362,8 @@ function getConfigJson(req) {
         '11059': {'httpCode': 500, 'message': backendIntl.get('errorcode.147', '二维码已失效')},
         /*添加合同*/
         '30001': {'httpCode': 500, 'message': backendIntl.get('contract.add.error', '添加合同失败')},
+        '30002': {'httpCode': 500, 'message': backendIntl.get('contract.edit.error', '修改合同失败')},
+        '30610': {'httpCode': 500, 'message': backendIntl.get('contract.add.error', '添加合同失败')},
         /*周报统计*/
         '90008': {'httpCode': 500, 'message': backendIntl.get('errorcode.148', '电话时长统计视图获取失败')},        
         /*其他*/

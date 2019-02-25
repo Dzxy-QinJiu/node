@@ -242,7 +242,6 @@ let BasicEditSelectField = createReactClass({
             }
         }
 
-
         var selectBlock = this.state.displayType === 'edit' ? (
             <div className="selectWrap" ref="selectWrap" key="select-wrap">
                 <Form layout='horizontal' autoComplete="off" style={{width: this.props.width || '100%'}}>
