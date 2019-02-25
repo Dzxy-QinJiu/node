@@ -1882,10 +1882,12 @@ const ApplyViewDetail = createReactClass({
         });
     },
     renderApplyApproveStatus() {
-        var showLoading = false, approveSuccess = false, approveError = false, applyResultErrorMsg = '',
+        var showLoading = false, approveSuccess = false, approveError = false, applyResultErrorMsg = '',approveSuccessTip = '',showAfterApproveTip = '',
             confirmType = this.state.showBackoutConfirmType, resultType = {};
         if (confirmType === '3') {
             resultType = this.state.backApplyResult;
+            approveSuccessTip = Intl.get('user.apply.detail.backout.success', '撤销成功');
+            showAfterApproveTip = Intl.get('apply.show.cancel.result','查看撤销结果');
         } else if (confirmType === '1' || confirmType === '2') {
             resultType = this.state.applyResult;
         } else {
@@ -1905,6 +1907,8 @@ const ApplyViewDetail = createReactClass({
             reSendApproval={this.continueSubmit}
             cancelSendApproval={this.cancelSendApproval.bind(this, confirmType)}
             container={this}
+            approveSuccessTip={approveSuccessTip}
+            showAfterApproveTip={showAfterApproveTip}
         />;
 
     },
