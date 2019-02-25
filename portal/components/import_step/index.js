@@ -23,7 +23,8 @@ const LAYOUT = {
     SMALLWIDTH: 24,
     LARGEWIDTH: 75,
     TOP_DISTANCE: 150,
-    BOTTOM_DISTANCE: 90
+    BOTTOM_DISTANCE: 90,
+    TABLE_TOP: 40
 
 };
 function noop() {}
@@ -151,7 +152,7 @@ class ImportTemplate extends React.Component {
                     className="import-warning">
                     <Alert type="warning" message={Intl.get('clue.repeat.delete', '存在和系统中重复的{type}名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入',{type: this.props.importType})} showIcon/>
                 </div> : null}
-                <div className="deal-table-container" style={{height: this.state.tableHeight + 40}}>
+                <div className="deal-table-container" style={{height: this.state.tableHeight + LAYOUT.TABLE_TOP}}>
                     <AntcTable
                         dataSource={this.state.previewList}
                         columns={this.props.getItemPrevList()}
