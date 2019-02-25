@@ -51,6 +51,8 @@ function getCharts(paramObj) {
         customerChart.getRenewalCustomerGrossProfitChart(paramObj),
         //流失客户趋势统计
         customerChart.getLossCustomerTrendChart(paramObj),
+        //现金流失率
+        customerChart.getCashLossRateChart(paramObj),
         //流失现金趋势统计
         customerChart.getLossCashTrendChart(paramObj),
         //流失客户地域统计
