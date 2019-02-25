@@ -178,6 +178,9 @@ class CustomerUsers extends React.Component {
 
     //（取消）选择用户时，（取消）选择用户下的所有应用
     onChangeUserCheckBox(userId, e) {
+        let applyType = this.state.applyType;
+        //如果正在进行某项申请时， 不可以再进行选择或取消选择用户的操作
+        if(applyType) return;
         let checked = e.target.checked;
         let userObj = _.find(this.state.crmUserList, (obj) => obj.user.user_id === userId);
         if (userObj) {
@@ -195,6 +198,9 @@ class CustomerUsers extends React.Component {
 
     //应用选择的处理
     onChangeAppCheckBox(userId, appId, e) {
+        let applyType = this.state.applyType;
+        //如果正在进行某项申请时， 不可以再进行选择或取消选择应用的操作
+        if(applyType) return;
         let checked = e.target.checked;
         let userObj = _.find(this.state.crmUserList, (obj) => obj.user.user_id === userId);
         if (userObj) {
@@ -244,7 +250,7 @@ class CustomerUsers extends React.Component {
             return appList.map((app, index) => {
                 if (isShowCheckbox) {
                     return (
-                        <Checkbox checked={app.checked} key={index}
+                        <Checkbox checked={app.checked} key={index} disabled={!!this.state.applyType}
                             onChange={this.onChangeAppCheckBox.bind(this, userId, app.app_id)}>
                             {this.renderUserAppItem(app)}
                         </Checkbox>);
@@ -487,7 +493,7 @@ class CustomerUsers extends React.Component {
                             <div className="crm-user-item" key={index}>
                                 <div className="crm-user-name">
                                     {isShowCheckbox ? (
-                                        <Checkbox checked={user.checked}
+                                        <Checkbox checked={user.checked} disabled={!!this.state.applyType}
                                             onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
                                             {user.user_name}({user.nick_name})
                                         </Checkbox>) :
@@ -499,7 +505,7 @@ class CustomerUsers extends React.Component {
                                     <div className="crm-user-apps">
                                         <div className="apps-top-title">
                                             {isShowCheckbox ? (
-                                                <Checkbox checked={user.checked}
+                                                <Checkbox checked={user.checked} disabled={!!this.state.applyType}
                                                     onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
                                                     {this.renderUserAppTitle()}
                                                 </Checkbox>
