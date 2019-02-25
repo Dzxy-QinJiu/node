@@ -575,9 +575,11 @@ class ApplyViewDetail extends React.Component {
         );
     }
     renderApplyApproveStatus(){
-        var showLoading = false,approveSuccess = false, approveError = false,applyResultErrorMsg = '',
+        var showLoading = false,approveSuccess = false, approveError = false,applyResultErrorMsg = '',approveSuccessTip = '',showAfterApproveTip = '',
             confirmType = this.state.showBackoutConfirmType,resultType = {};
         if (confirmType === 'cancel'){
+            approveSuccessTip = Intl.get('user.apply.detail.backout.success', '撤销成功');
+            showAfterApproveTip = Intl.get('apply.show.cancel.result','查看撤销结果');
             resultType = this.state.backApplyResult;
         }else if(confirmType === 'pass' || confirmType === 'reject') {
             resultType = this.state.applyResult;
@@ -598,6 +600,8 @@ class ApplyViewDetail extends React.Component {
             reSendApproval={typeObj.deleteFunction}
             cancelSendApproval={this.cancelSendApproval.bind(this, confirmType)}
             container={this}
+            approveSuccessTip={approveSuccessTip}
+            showAfterApproveTip={showAfterApproveTip}
         />;
     }
 
