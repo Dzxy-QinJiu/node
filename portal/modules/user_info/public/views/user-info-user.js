@@ -322,22 +322,20 @@ class UserInfo extends React.Component{
                     ) : null}
                     { !Oplate.hideSomeItem && <div className="user-info-item">
                         <span>{Intl.get('common.user.lang', '语言')}：</span>
-                        <span>{this.getLangDisplayText()}</span>
-                        {/* 修改语言，暂时不需要修改先注释掉，需要修改时，再放开即可*/}
-                        {/*<span className="user-lang-value">*/}
-                        {/*<BasicEditSelectField*/}
-                        {/*id={formData.id}*/}
-                        {/*displayText={this.getLangDisplayText()}*/}
-                        {/*value={this.state.lang}*/}
-                        {/*field="language"*/}
-                        {/*selectOptions={this.getLangOptions()}*/}
-                        {/*disabled={hasPrivilege('MEMBER_LANGUAGE_SETTING') ? false : true}*/}
-                        {/*onSelectChange={this.onSelectLang.bind(this)}*/}
-                        {/*cancelEditField={this.cancelEditLang.bind(this)}*/}
-                        {/*saveEditSelect={UserInfoAjax.setUserLanguage}*/}
-                        {/*modifySuccess={this.afterEditLangSuccess.bind(this)}*/}
-                        {/*/>*/}
-                        {/*</span>*/}
+                        <span className="user-lang-value">
+                            <BasicEditSelectField
+                                id={formData.id}
+                                displayText={this.getLangDisplayText()}
+                                value={this.state.lang}
+                                field="language"
+                                selectOptions={this.getLangOptions()}
+                                disabled={hasPrivilege('MEMBER_LANGUAGE_SETTING') ? false : true}
+                                onSelectChange={this.onSelectLang.bind(this)}
+                                cancelEditField={this.cancelEditLang.bind(this)}
+                                saveEditSelect={UserInfoAjax.setUserLanguage}
+                                modifySuccess={this.afterEditLangSuccess.bind(this)}
+                            />
+                        </span>
                     </div>}
                 </div>
             );
