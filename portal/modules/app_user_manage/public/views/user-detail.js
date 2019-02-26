@@ -400,7 +400,6 @@ class UserDetail extends React.Component {
                                                             ref={ref => this.passwordRef = ref}
                                                             displayType="edit"
                                                             user_id={_.get(userInfo, 'data.user_id')}
-                                                            value=''
                                                             field="password"
                                                             type="password"
                                                             hideButtonBlock={true}
