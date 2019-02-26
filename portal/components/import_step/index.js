@@ -150,7 +150,7 @@ class ImportTemplate extends React.Component {
             <div className="second-step-content">
                 {repeatCustomer ? <div
                     className="import-warning">
-                    <Alert type="warning" message={Intl.get('clue.repeat.delete', '存在和系统中重复的{type}名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入',{type: this.props.importType})} showIcon/>
+                    <Alert type="warning" message={Intl.get('clue.repeat.delete', '红色标示{type}名及联系方式已存在，请删除后再导入',{type: this.props.importType})} showIcon/>
                 </div> : null}
                 <div className="deal-table-container" style={{height: this.state.tableHeight + LAYOUT.TABLE_TOP}}>
                     <AntcTable
