@@ -178,9 +178,6 @@ class CustomerUsers extends React.Component {
 
     //（取消）选择用户时，（取消）选择用户下的所有应用
     onChangeUserCheckBox(userId, e) {
-        let applyType = this.state.applyType;
-        //如果正在进行某项申请时， 不可以再进行选择或取消选择用户的操作
-        if(applyType) return;
         let checked = e.target.checked;
         let userObj = _.find(this.state.crmUserList, (obj) => obj.user.user_id === userId);
         if (userObj) {
@@ -198,9 +195,6 @@ class CustomerUsers extends React.Component {
 
     //应用选择的处理
     onChangeAppCheckBox(userId, appId, e) {
-        let applyType = this.state.applyType;
-        //如果正在进行某项申请时， 不可以再进行选择或取消选择应用的操作
-        if(applyType) return;
         let checked = e.target.checked;
         let userObj = _.find(this.state.crmUserList, (obj) => obj.user.user_id === userId);
         if (userObj) {
