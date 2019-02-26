@@ -1309,18 +1309,9 @@ class ClueCustomer extends React.Component {
                 title: Intl.get('common.phone', '电话'),
                 render: function(text, record, index) {
                     if (_.isArray(record.contacts)) {
+                        var cls = record.repeat ? 'repeat-item-name' : '';
                         return (
-                            <span>{record.contacts[0] ? record.contacts[0].phone : null}</span>
-                        );
-                    }
-                }
-            },
-            {
-                title: Intl.get('common.email', '邮箱'),
-                render: function(text, record, index) {
-                    if (_.isArray(record.contacts)) {
-                        return (
-                            <span>{record.contacts[0] ? record.contacts[0].email : null}</span>
+                            <span className={cls}>{record.contacts[0] ? record.contacts[0].phone : null}</span>
                         );
                     }
                 }

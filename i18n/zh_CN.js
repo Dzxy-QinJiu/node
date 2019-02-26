@@ -2437,7 +2437,7 @@ var zh_CN = {
     'clue.customer.import.clue.suceess': '导入{type}成功',
     'clue.customer.import.clue.failed': '导入{type}失败',
     'clue.delete.duplicate.failed': '删除重复线索失败',
-    'clue.repeat.delete': '存在和系统中重复的{type}名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入',
+    'clue.repeat.delete': '红色标示{type}名及联系方式已存在，请删除后再导入',
     'clue.customer.belong.to.other.sales': '该电话属于客户{customer}，所属销售{sales}',
     'phone.alert.select.customer': '请选择要跟进的客户',
     'clue.analysis.consult.time': '咨询时间',
