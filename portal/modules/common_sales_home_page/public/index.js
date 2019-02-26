@@ -19,8 +19,6 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
-var userData = require('PUB_DIR/sources/user-data');
-import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import {getRelativeTime} from 'PUB_DIR/sources/utils/common-method-util';
 import Spinner from 'CMP_DIR/spinner';
 import SalesClueItem from './view/sales-clue-item';
@@ -42,7 +40,6 @@ class SalesHomePage extends React.Component {
     componentDidMount() {
         SalesHomeStore.listen(this.onChange);
         this.getSalesListData();
-        this.getUserPhoneNumber();
         //绑定window的resize，进行缩放处理
         $(window).on('resize', this.windowResize);
         //给点击查看客户详情的客户加样式
@@ -481,22 +478,6 @@ class SalesHomePage extends React.Component {
         );
     };
 
-    // 获取拨打电话的座机号
-    getUserPhoneNumber = () => {
-        let member_id = userData.getUserData().user_id;
-        crmAjax.getUserPhoneNumber(member_id).then((result) => {
-            if (result.phone_order) {
-                this.setState({
-                    callNumber: result.phone_order
-                });
-            }
-        }, (errMsg) => {
-            this.setState({
-                errMsg: errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
-            });
-        });
-    };
-
     //点击左侧不同客户类别的标题
     handleClickDiffCustomerType = (customerType) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.customer-item'), '打开' + customerType + '类型客户面板');
@@ -566,8 +547,6 @@ class SalesHomePage extends React.Component {
                                     isShowTopTitle={false}
                                     isShowScheduleTimerange={true}
                                     openCustomerDetail={this.openCustomerDetail}
-                                    callNumber={this.state.callNumber}
-                                    errMsg={this.state.errMsg}
                                 />
                             );
                         })
@@ -582,8 +561,6 @@ class SalesHomePage extends React.Component {
                                     scheduleType={ALL_LISTS_TYPE.SCHEDULE_TODAY}
                                     isShowScheduleTimerange={false}
                                     openCustomerDetail={this.openCustomerDetail}
-                                    callNumber={this.state.callNumber}
-                                    errMsg={this.state.errMsg}
                                 />
                             );
                         })
@@ -608,8 +585,6 @@ class SalesHomePage extends React.Component {
                                     isShowTopTitle={true}
                                     isShowScheduleTimerange={false}
                                     openCustomerDetail={this.openCustomerDetail}
-                                    callNumber={this.state.callNumber}
-                                    errMsg={this.state.errMsg}
                                 />
                             );
                         })}
@@ -633,8 +608,6 @@ class SalesHomePage extends React.Component {
                                     isShowTopTitle={false}
                                     isShowScheduleTimerange={false}
                                     openCustomerDetail={this.openCustomerDetail}
-                                    callNumber={this.state.callNumber}
-                                    errMsg={this.state.errMsg}
                                 />
                             );
                         })}
@@ -660,8 +633,6 @@ class SalesHomePage extends React.Component {
                         return (
                             <SalesClueItem
                                 salesClueItemDetail= {item}
-                                callNumber={this.state.callNumber}
-                                errMsg={this.state.errMsg}
                                 showFrontPageTip={true}
                                 afterRemarkClue={SalesHomeAction.afterRemarkClue}
                             />
@@ -691,8 +662,6 @@ class SalesHomePage extends React.Component {
                                             <WillExpireItem
                                                 expireItem={willExpiredCustomer}
                                                 openCustomerDetail={this.openCustomerDetail}
-                                                callNumber={this.state.callNumber}
-                                                errMsg={this.state.errMsg}
                                                 willExpiredTime={getRelativeTime(item.date)}
                                             />
                                         );
@@ -756,8 +725,6 @@ class SalesHomePage extends React.Component {
                             customerNoticeMessage={item}
                             openCustomerDetail={this.openCustomerDetail}
                             openUserDetail={this.openUserDetail}
-                            callNumber={this.state.callNumber}
-                            errMsg={this.state.errMsg}
                             afterHandleMessage={this.afterHandleMessage}
                             isRecentLoginCustomer={isRecentLoginCustomer}
                         />

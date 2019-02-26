@@ -861,8 +861,6 @@ class ClueDetailOverview extends React.Component {
                                                 saveEditData={this.saveEditBasicInfo.bind(this, {editItem: 'phone',id: contactItem.id})}
                                                 noDataTip={Intl.get('crm.contact.phone.none', '暂无电话')}
                                                 addDataTip={Intl.get('crm.contact.phone.add', '添加电话')}
-                                                callNumber={this.props.callNumber}
-                                                getCallNumberError={this.props.errMsg}
                                                 contactName={contactItem.name}
                                             />
                                             <DynamicAddDelField
@@ -987,8 +985,6 @@ ClueDetailOverview.defaultProps = {
     updateClueChannel: function() {},
     updateClueClassify: function() {},
     salesManList: [],
-    callNumber: '',
-    errMsg: ''
 };
 ClueDetailOverview.propTypes = {
     curClue: PropTypes.object,
@@ -1000,8 +996,6 @@ ClueDetailOverview.propTypes = {
     updateClueChannel: PropTypes.func,
     updateClueClassify: PropTypes.func,
     salesManList: PropTypes.object,
-    callNumber: PropTypes.string,
-    errMsg: PropTypes.string,
 };
 
 module.exports = ClueDetailOverview;

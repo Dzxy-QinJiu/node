@@ -153,8 +153,6 @@ class CrmRightPanel extends React.Component {
                                         refreshCustomerList={this.props.refreshCustomerList}
                                         editCustomerBasic={this.props.editCustomerBasic}
                                         changeActiveKey={this.changeActiveKey}
-                                        callNumber={this.props.callNumber}
-                                        getCallNumberError={this.props.getCallNumberError}
                                         disableEdit={this.props.disableEdit}
                                     />
                                 ) : null}
@@ -168,8 +166,6 @@ class CrmRightPanel extends React.Component {
                                         updateCustomerDefContact={this.props.updateCustomerDefContact}
                                         refreshCustomerList={this.props.refreshCustomerList}
                                         curCustomer={this.state.curCustomer}
-                                        callNumber={this.props.callNumber}
-                                        getCallNumberError={this.props.getCallNumberError}
                                         disableEdit={this.props.disableEdit}
                                     />
                                 ) : null}
@@ -182,8 +178,6 @@ class CrmRightPanel extends React.Component {
                                     <CustomerRecord
                                         curCustomer={this.state.curCustomer}
                                         refreshCustomerList={this.props.refreshCustomerList}
-                                        callNumber={this.props.callNumber}
-                                        getCallNumberError={this.props.getCallNumberError}
                                         disableEdit={this.props.disableEdit}
                                     />
                                 ) : null}
@@ -256,8 +250,6 @@ class CrmRightPanel extends React.Component {
                                         {this.state.activeKey === TAB_KEYS.SCHEDULE_TAB ? (
                                             <CrmSchedule
                                                 curCustomer={this.state.curCustomer}
-                                                callNumber={this.props.callNumber}
-                                                getCallNumberError={this.props.getCallNumberError}
                                             />
                                         ) : null}
                                     </TabPane>)}
@@ -279,8 +271,6 @@ CrmRightPanel.propTypes = {
     handleFocusCustomer: PropTypes.func,
     showRightPanel: PropTypes.func,
     disableEdit: PropTypes.bool,
-    callNumber: PropTypes.string,
-    getCallNumberError: PropTypes.string,
     updateCustomerDefContact: PropTypes.func,
     ShowCustomerUserListPanel: PropTypes.func,
     userViewShowCustomerUserListPanel: PropTypes.func,

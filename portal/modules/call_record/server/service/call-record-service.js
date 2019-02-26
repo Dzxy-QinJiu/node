@@ -6,7 +6,6 @@
 'use strict';
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
-import CallRecord from '../dto/callRecord';
 var _ = require('lodash');
 //获取全部和客户电话的列表（团队）
 const callRecordListUrl = '/rest/callrecord/v2/callrecord/query/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order';

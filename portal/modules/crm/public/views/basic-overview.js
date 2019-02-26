@@ -36,6 +36,7 @@ const PRIVILEGE_MAP = {
     EDIT_TEAM_MANAGER: 'CRM_MANAGER_UPDATE_CUSTOMER_SALES_TEAM',//管理员修改所属团队的权限
     EDIT_TEAM_USER: 'CRM_USER_UPDATE_CUSTOMER_SALES_TEAM'//销售修改所属团队的权限
 };
+import {showCallIconPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 
 class BasicOverview extends React.Component {
     constructor(props) {
@@ -47,8 +48,6 @@ class BasicOverview extends React.Component {
             salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
             showDetailFlag: false,//控制客户详情展示隐藏的标识
             recommendTags: [],//推荐标签
-            callNumber: props.callNumber || '', // 座机号
-            getCallNumberError: '',
             customerRecordLoading: customerRecordState.customerRecordLoading,
             customerRecord: customerRecordState.customerRecord,
             appList: [],
@@ -70,43 +69,9 @@ class BasicOverview extends React.Component {
         });
     };
 
-    // 获取拨打电话的座席号
-    getUserPhoneNumber = () => {
-        commonDataUtil.getUserPhoneNumber(callNumberInfo => {
-            if (callNumberInfo) {
-                //有坐席号时，获取未处理的电联的联系计划
-                if (callNumberInfo.callNumber) {
-                    this.setState({
-                        callNumber: callNumberInfo.callNumber,
-                        getCallNumberError: ''
-                    });
-                    if (!this.props.disableEdit) {
-                        setTimeout(() => {
-                            this.getNotCompletedScheduleList(this.props.curCustomer);
-                        });
-                    }
-                } else if (callNumberInfo.errMsg) {
-                    this.setState({
-                        callNumber: '',
-                        getCallNumberError: callNumberInfo.errMsg
-                    });
-                }
-            } else {
-                this.setState({
-                    callNumber: '',
-                    getCallNumberError: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
-                });
-            }
-        });
-    };
-
     componentDidMount() {
         basicOverviewStore.listen(this.onChange);
         CustomerRecordStore.listen(this.onRecordStoreChange);
-        //  获取拨打电话的座席号
-        if (this.state.callNumber === '') {
-            this.getUserPhoneNumber();
-        }
         basicOverviewAction.getBasicData(this.props.curCustomer);
         if(!this.props.disableEdit){
             this.getRecommendTags();
@@ -200,7 +165,7 @@ class BasicOverview extends React.Component {
                 if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
                     this.getCrmUserList(nextProps.curCustomer);
                 }
-                if (this.state.callNumber){
+                if (showCallIconPrivilege()){
                     //有坐席号，需要展示未处理的电联的联系计划
                     this.getNotCompletedScheduleList(nextProps.curCustomer);
                 }
@@ -453,8 +418,6 @@ class BasicOverview extends React.Component {
             refreshCustomerList={this.props.refreshCustomerList}
             refreshSrollbar={this.refreshSrollbar}
             changeActiveKey={this.props.changeActiveKey}
-            callNumber={this.state.callNumber}
-            getCallNumberError={this.state.getCallNumberError}
             disableEdit={this.props.disableEdit}
         />;
     };
@@ -501,8 +464,6 @@ class BasicOverview extends React.Component {
                     isMerge={this.props.isMerge}
                     toggleScheduleContact={this.toggleScheduleContact}
                     handleItemStatus={this.handleItemStatus}
-                    callNumber={this.state.callNumber}
-                    getCallNumberError={this.state.getCallNumberError}
                 />);
         });
 
@@ -584,7 +545,6 @@ class BasicOverview extends React.Component {
 }
 BasicOverview.propTypes = {
     curCustomer: PropTypes.object,
-    callNumber: PropTypes.string,
     ShowCustomerUserListPanel: PropTypes.func,
     isMerge: PropTypes.bool,
     updateMergeCustomer: PropTypes.func,

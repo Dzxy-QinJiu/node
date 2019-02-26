@@ -20,44 +20,14 @@ import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 class CrmSchedule extends React.Component {
     state = {
         customerId: this.props.curCustomer.id || '',
-        callNumber: this.props.callNumber || '', // 座机号
-        getCallNumberError: '',
         ...ScheduleStore.getState()
     };
 
     onStoreChange = () => {
         this.setState(ScheduleStore.getState());
     };
-
-    // 获取拨打电话的座席号
-    getUserPhoneNumber = () => {
-        CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
-            if (callNumberInfo) {
-                if (callNumberInfo.callNumber) {
-                    this.setState({
-                        callNumber: callNumberInfo.callNumber,
-                        getCallNumberError: ''
-                    });
-                } else if (callNumberInfo.errMsg) {
-                    this.setState({
-                        callNumber: '',
-                        getCallNumberError: callNumberInfo.errMsg
-                    });
-                }
-            } else {
-                this.setState({
-                    callNumber: '',
-                    getCallNumberError: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
-                });
-            }
-        });
-    };
-
     componentDidMount() {
         ScheduleStore.listen(this.onStoreChange);
-        if (this.state.callNumber === '') {
-            this.getUserPhoneNumber();
-        }
         //获取日程管理列表
         this.getScheduleList();
     }
@@ -206,8 +176,6 @@ class CrmSchedule extends React.Component {
                     toggleScheduleContact={this.toggleScheduleContact}
                     deleteSchedule={this.deleteSchedule}
                     handleItemStatus={this.handleItemStatus}
-                    callNumber={this.state.callNumber}
-                    getCallNumberError={this.state.getCallNumberError}
                 />);
         }
     };

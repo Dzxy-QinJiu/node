@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import {getUserData} from 'PUB_DIR/sources/user-data';
 import Trace from 'LIB_DIR/trace';
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
-
+import {showCallIconPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 
 class ScheduleItem extends React.Component {
@@ -131,7 +131,7 @@ class ScheduleItem extends React.Component {
                                         <Button size='small' onClick={this.handleClickCallOut.bind(this, obj.phone)}>
                                             {obj.name || ''}
                                             <span className='contact-phone'>{obj.phone}</span>
-                                            {this.props.callNumber ?
+                                            {showCallIconPrivilege() ?
                                                 <span className='iconfont icon-phone-call-out'
                                                     title={Intl.get('crm.click.call.phone', '点击拨打电话')}></span> : null}
                                         </Button>);
@@ -190,8 +190,6 @@ ScheduleItem.propTypes = {
     hideDelete: PropTypes.boolean,
     toggleScheduleContact: PropTypes.func,
     deleteSchedule: PropTypes.func,
-    handleItemStatus: PropTypes.func,
-    getCallNumberError: PropTypes.string,
-    callNumber: PropTypes.number
+    handleItemStatus: PropTypes.func
 };
 export default ScheduleItem;

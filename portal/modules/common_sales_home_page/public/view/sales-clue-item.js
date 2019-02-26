@@ -473,8 +473,6 @@ class SalesClueItem extends React.Component {
                         contacts={contacts}
                         customerData={salesClueItem}
                         showContactLabel={false}
-                        callNumber={this.props.callNumber}
-                        errMsg={this.props.errMsg}
                     /> : null}
                 </div>
                 <div className="clue-foot" id="clue-foot">
@@ -534,8 +532,6 @@ class SalesClueItem extends React.Component {
 
 SalesClueItem.defaultProps = {
     salesClueItemDetail: {},
-    callNumber: '',
-    errMsg: '',
     showFrontPageTip: false,
     afterAddClueTrace: function() {
 
@@ -560,8 +556,6 @@ SalesClueItem.defaultProps = {
 };
 SalesClueItem.propTypes = {
     salesClueItemDetail: PropTypes.object,
-    callNumber: PropTypes.string,
-    errMsg: PropTypes.string,
     showFrontPageTip: PropTypes.bool,
     afterAddClueTrace: PropTypes.func,
     unSelectDataTip: PropTypes.string,

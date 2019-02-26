@@ -301,8 +301,6 @@ class ContactItem extends React.Component {
                         saveEditData={this.saveContactInfo.bind(this, 'phone')}
                         noDataTip={Intl.get('crm.contact.phone.none', '暂无电话')}
                         addDataTip={Intl.get('crm.contact.phone.add', '添加电话')}
-                        callNumber={this.props.callNumber}
-                        getCallNumberError={this.props.getCallNumberError}
                         contactName={contact.name}
                     />
                 </div>
@@ -375,8 +373,6 @@ ContactItem.propTypes = {
     customerId: PropTypes.string,
     contact: PropTypes.object,
     isMerge: PropTypes.bool,
-    callNumber: PropTypes.string,
-    getCallNumberError: PropTypes.string,
     delMergeCustomerContact: PropTypes.func,
     updateCustomerDefContact: PropTypes.func,
     updateMergeCustomerContact: PropTypes.func,

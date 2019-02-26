@@ -20,9 +20,9 @@ const LAY_OUT = {
 };
 var curWeek = '';//今天所在的周
 var scheduleManagementEmitter = require('PUB_DIR/sources/utils/emitters').scheduleManagementEmitter;
-import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import Trace from 'LIB_DIR/trace';
 import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
+import {showCallIconPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {isEqualArray} from 'LIB_DIR/func';
 class DayAgendaScheduleLists extends React.Component {
     constructor(props) {
@@ -37,7 +37,6 @@ class DayAgendaScheduleLists extends React.Component {
     componentDidMount() {
         scheduleManagementEmitter.on(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_TRUE, this.setUpdateScrollBarTrue);
         scheduleManagementEmitter.on(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_FALSE, this.setUpdateScrollBarFalse);
-        this.getUserPhoneNumber();
         //鼠标移入的时候，加上背景颜色
         $('#content-block').on('mouseenter', '.list-item', (e) => {
             if ($('.list-item.hover-item').length){
@@ -108,27 +107,9 @@ class DayAgendaScheduleLists extends React.Component {
         );
     }
 
-    //获取用户的坐席号
-    getUserPhoneNumber() {
-        let member_id = userData.getUserData().user_id;
-        crmAjax.getUserPhoneNumber(member_id).then((result) => {
-            if (result.phone_order) {
-                this.setState({
-                    callNumber: result.phone_order
-                });
-            }
-        }, (errMsg) => {
-            this.setState({
-                errMsg: errMsg || Intl.get('crm.get.phone.failed', '获取座机号失败!')
-            });
-        });
-    }
-
     handleClickCallOut = (phoneNumber, contactName, item) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
         handleCallOutResult({
-            errorMsg: this.state.errMsg,//获取坐席号失败的错误提示
-            callNumber: this.state.callNumber,//坐席号
             contactName: contactName,//联系人姓名
             phoneNumber: phoneNumber,//拨打的电话
         });
@@ -151,9 +132,12 @@ class DayAgendaScheduleLists extends React.Component {
                                     return (
                                         <div className="phone-item">
                                             {phone}
-                                            <Button size="small" onClick={this.handleClickCallOut.bind(this, phone, contact.name,item)} data-tracename="拨打电话">
-                                                {Intl.get('schedule.call.out','拨打')}
-                                            </Button>
+                                            {showCallIconPrivilege() ?
+                                                <Button size="small" onClick={this.handleClickCallOut.bind(this, phone, contact.name,item)} data-tracename="拨打电话">
+                                                    {Intl.get('schedule.call.out','拨打')}
+                                                </Button>
+                                                : null}
+
                                         </div>
                                     );
                                 })}

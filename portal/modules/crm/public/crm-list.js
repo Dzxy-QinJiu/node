@@ -20,7 +20,6 @@ var CrmFilter = require('./views/crm-filter');
 var CrmFilterPanel = require('./views/crm-filter-panel');
 var CrmBatchChange = require('./views/crm-batch-change');
 var CrmRightMergePanel = require('./views/crm-right-merge-panel');
-var userData = require('../../../public/sources/user-data');
 let OrderAction = require('./action/order-actions');
 var batchPushEmitter = require('../../../public/sources/utils/emitters').batchPushEmitter;
 var AppUserManage = require('MOD_DIR/app_user_manage/public');
@@ -87,7 +86,7 @@ const DEFAULT_RANGE_PARAM = {
 };
 //查看是否可以继续添加客户
 let member_id = userData.getUserData().user_id;
-
+import {showCallIconPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 class Crm extends React.Component {
     getSelectedCustomer = (curCustomerList) => {
         let selectedCustomer = [];
@@ -165,30 +164,6 @@ class Crm extends React.Component {
         this.state.rangParams[0].to = value;
     };
 
-    // 获取拨打电话的座机号
-    getUserPhoneNumber = () => {
-        CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
-            if (callNumberInfo) {
-                if (callNumberInfo.callNumber) {
-                    this.setState({
-                        callNumber: callNumberInfo.callNumber,
-                        errMsg: ''
-                    });
-                } else if (callNumberInfo.errMsg) {
-                    this.setState({
-                        callNumber: '',
-                        errMsg: callNumberInfo.errMsg
-                    });
-                }
-            } else {
-                this.setState({
-                    callNumber: '',
-                    errMsg: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
-                });
-            }
-        });
-    };
-
     componentDidMount() {
         //批量更新所属销售
         batchPushEmitter.on(batchPushEmitter.CRM_BATCH_CHANGE_SALES, this.batchChangeSalesman);
@@ -208,7 +183,6 @@ class Crm extends React.Component {
         batchPushEmitter.on(batchPushEmitter.CRM_BATCH_CHANGE_TERRITORY, this.batchChangeTerritory);
         CrmStore.listen(this.onChange);
         OrderAction.getSysStageList();
-        this.getUserPhoneNumber();
         const query = queryString.parse(this.props.location.search);
         if (query.analysis_filter_field) {
             var filterField = query.analysis_filter_field;
@@ -532,9 +506,7 @@ class Crm extends React.Component {
                     updateCustomerDefContact: CrmAction.updateCustomerDefContact,
                     handleFocusCustomer: this.handleFocusCustomer,
                     showRightPanel: this.showRightPanel,
-                    hideRightPanel: this.hideRightPanel,
-                    callNumber: this.state.callNumber,
-                    getCallNumberError: this.state.errMsg
+                    hideRightPanel: this.hideRightPanel
                 }
             });
         }
@@ -1089,8 +1061,6 @@ class Crm extends React.Component {
     handleClickCallOut = (phoneNumber, record) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
         CallNumberUtil.handleCallOutResult({
-            errorMsg: this.state.errMsg,//获取坐席号失败的错误提示
-            callNumber: this.state.callNumber,//坐席号
             contactName: record.contact,//联系人姓名
             phoneNumber: phoneNumber,//拨打的电话
         });
@@ -1105,7 +1075,7 @@ class Crm extends React.Component {
                 return (
                     <div>
                         <span>{item}</span>
-                        {this.state.callNumber ? <i className="iconfont icon-call-out call-out"
+                        {showCallIconPrivilege() ? <i className="iconfont icon-call-out call-out"
                             title={Intl.get('crm.click.call.phone', '点击拨打电话')}
                             onClick={this.handleClickCallOut.bind(this, item, record)}></i> : null}
                     </div>
@@ -1298,8 +1268,6 @@ class Crm extends React.Component {
     };
 
     state = {
-        callNumber: '', // 座机号
-        errMsg: '', // 获取座机号失败的信息
         showFilterList: false,//是否展示筛选区域
         ...this.getStateData()
     };
