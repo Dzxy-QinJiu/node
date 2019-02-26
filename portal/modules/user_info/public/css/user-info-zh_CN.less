@@ -23,7 +23,7 @@
   }
   //个人资料展示区域样式
   .user-info-container-div {
-    height: 410px;
+    height: 470px;
     background-color: #fff;
     padding: 0px;
 
@@ -118,7 +118,7 @@
       //用户资料展示区域样式
       .user-info-div {
         border-bottom: 1px #edf0f0 solid;
-        padding-top: 20px;
+        padding: 12px 0;
 
         //用户资料 邮箱 电话 角色样式
         .user-info-item {
@@ -139,49 +139,49 @@
             color: @error_tips_color;
           }
         }
-        dl.user-info-item{
-          dt{
-            font-weight: normal;
-            width: auto!important;
-          }
-          dd{
-            margin-left: 40px;
-            .ant-select{
-              width:200px;
-            }
-            .icon-choose {
-              color: #4dbe50;
-              &:hover {
-                color: #2c792e;
-              }
-            }
-            .iconfont {
-              font-size: 14px;
-              width: 24px;
-              overflow: hidden;
-              cursor: pointer;
-              text-align: center;
-            }
-            .icon-close,.icon-choose  {
-              padding: 5px 5px 2px 5px;
-            }
-            .inline-block {
-              display: inline-block;
-              vertical-align: middle;
-            }
-            .icon-close {
-             color: #f43631;
-             &:hover{
-               color: #f43631;
-             }
-           }
-          }
-        }
+        // 修改语言的样式，暂时不需要修改，先注释掉，需要修改时，再放开即可
+        //.user-info-item{
+        //  .user-lang-value{
+        //    display: inline-block;
+        //    vertical-align: top;
+        //    width: 80%;
+        //    .ant-select{
+        //      width:200px;
+        //    }
+        //    .icon-choose {
+        //      color: #4dbe50;
+        //      &:hover {
+        //        color: #2c792e;
+        //      }
+        //    }
+        //    .iconfont {
+        //      font-size: 14px;
+        //      width: 24px;
+        //      overflow: hidden;
+        //      cursor: pointer;
+        //      text-align: center;
+        //    }
+        //    .icon-close,.icon-choose  {
+        //      padding: 5px 5px 2px 5px;
+        //    }
+        //    .inline-block {
+        //      display: inline-block;
+        //      vertical-align: middle;
+        //    }
+        //    .icon-close {
+        //     color: #f43631;
+        //     &:hover{
+        //       color: #f43631;
+        //     }
+        //   }
+        //  }
+        //}
       }
 
       //企业提示区域样式
       .user-tips-div {
-        height: 88px;
+        height: 50px;
+        padding-top: 10px;
 
         //电话区域样式
         .user-tips-title-div {

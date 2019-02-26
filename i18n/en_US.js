@@ -2257,7 +2257,7 @@ var en_US = {
     'call.record.customer.phone': 'This is an invalid phone',//这是一个客服电话。
     'call.record.report': 'Report',//上报
     'fail.report.phone.err.tip': 'Failed to add invalid phone!',//上报无效电话失败！
-    'user.info.no.email': 'The user has no email,{add-email}',//该用户没有邮箱，{add-email}
+    'user.info.no.email': 'You have not bound your mailbox yet,{add-email}',//您还没有绑定邮箱，{add-email}
     'user.info.add.email': 'add email',//添加邮箱
     'schedule.call.out': 'Call out',//拨打
     'weekly.report.total.duration': 'The total duration of this week',//本周总时长
@@ -2557,7 +2557,7 @@ var en_US = {
     'schedule.manage.has.no.expired.tasks': 'You have no expired tasks',//您没有超期未完成的任务
     'user.get.user.info.null': 'The information that gets the logged in user is empty',//获取不到登录用户的信息
     'user.info.binding.phone': 'Bind phone',//绑定手机号
-    'user.info.no.set.phone': 'The user has no phone number yet, {bindPhone}',//该用户还没有手机号，{bindPhone}
+    'user.info.no.set.phone': 'You have not bound your phone yet, {bindPhone}',//您还没有绑定手机号，{bindPhone}
     'apply.delay.endTime': 'End time',//'到期',
     'shear.expand': 'expand', //'展开'
     'crm.order.stage.manage': 'Order stage management',//订单阶段管理

@@ -239,7 +239,7 @@ class PhoneShowEditField extends React.Component {
                         <span className="no-data-tip">
                             <ReactIntl.FormattedMessage
                                 id='user.info.no.set.phone'
-                                defaultMessage={'该用户没有手机号，{bindPhone}'}
+                                defaultMessage={'您还没有绑定手机号，{bindPhone}'}
                                 values={{
                                     'bindPhone': (
                                         <a onClick={this.setEditable.bind(this)}>

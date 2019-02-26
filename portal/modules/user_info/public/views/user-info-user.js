@@ -258,7 +258,7 @@ class UserInfo extends React.Component{
                                 <span>
                                     <ReactIntl.FormattedMessage
                                         id="user.info.no.email"
-                                        defaultMessage={'该用户没有邮箱，{add-email}'}
+                                        defaultMessage={'您还没有绑定邮箱，{add-email}'}
                                         values={{
                                             'add-email': <a data-tracename="点击绑定邮箱" onClick={this.showUserInfoForm.bind(this)}>{Intl.get('user.info.binding.email','绑定邮箱')}</a>,}}/>
                                 </span>}
@@ -289,37 +289,6 @@ class UserInfo extends React.Component{
                         <PhoneShowEditField id={formData.id} phone={formData.phone}/>
                     </div>
                     <div className="user-info-item">
-                        <span>
-                            <ReactIntl.FormattedMessage id="common.role" defaultMessage="角色"/>
-                            ：</span>
-                        <span>{formData.rolesName}</span>
-                    </div>
-                    { !Oplate.hideSomeItem && <dl className="dl-horizontal user-info-item">
-                        <dt>{Intl.get('common.user.lang', '语言')}：</dt>
-                        <dd>
-                            <BasicEditSelectField
-                                id={formData.id}
-                                displayText={this.getLangDisplayText()}
-                                value={this.state.lang}
-                                field="language"
-                                selectOptions={this.getLangOptions()}
-                                disabled={hasPrivilege('MEMBER_LANGUAGE_SETTING') ? false : true}
-                                onSelectChange={this.onSelectLang.bind(this)}
-                                cancelEditField={this.cancelEditLang.bind(this)}
-                                saveEditSelect={UserInfoAjax.setUserLanguage}
-                                modifySuccess={this.afterEditLangSuccess.bind(this)}
-                            />
-                        </dd>
-                    </dl>}
-                    {hasPrivilege('GET_MANAGED_REALM') || hasPrivilege('GET_MEMBER_SELF_INFO') ? (
-                        <div className="user-info-item">
-                            <span>
-                                <ReactIntl.FormattedMessage id="common.company" defaultMessage="公司"/>：{this.props.managedRealm}
-                            </span>
-                        </div>
-                    ) : null}
-
-                    <div className="user-info-item">
                         <span>{Intl.get('crm.58', '微信')}：</span>
                         <span>
                             {this.state.isLoadingWechatBind ? (<Icon type="loading"/>) :
@@ -338,8 +307,38 @@ class UserInfo extends React.Component{
                                         </a>)}
                         </span>
                     </div>
-
-                    {}
+                    <div className="user-info-item">
+                        <span>
+                            <ReactIntl.FormattedMessage id="common.role" defaultMessage="角色"/>
+                            ：</span>
+                        <span>{formData.rolesName}</span>
+                    </div>
+                    {hasPrivilege('GET_MANAGED_REALM') || hasPrivilege('GET_MEMBER_SELF_INFO') ? (
+                        <div className="user-info-item">
+                            <span>
+                                <ReactIntl.FormattedMessage id="common.company" defaultMessage="公司"/>：{this.props.managedRealm}
+                            </span>
+                        </div>
+                    ) : null}
+                    { !Oplate.hideSomeItem && <div className="user-info-item">
+                        <span>{Intl.get('common.user.lang', '语言')}：</span>
+                        <span>{this.getLangDisplayText()}</span>
+                        {/* 修改语言，暂时不需要修改先注释掉，需要修改时，再放开即可*/}
+                        {/*<span className="user-lang-value">*/}
+                        {/*<BasicEditSelectField*/}
+                        {/*id={formData.id}*/}
+                        {/*displayText={this.getLangDisplayText()}*/}
+                        {/*value={this.state.lang}*/}
+                        {/*field="language"*/}
+                        {/*selectOptions={this.getLangOptions()}*/}
+                        {/*disabled={hasPrivilege('MEMBER_LANGUAGE_SETTING') ? false : true}*/}
+                        {/*onSelectChange={this.onSelectLang.bind(this)}*/}
+                        {/*cancelEditField={this.cancelEditLang.bind(this)}*/}
+                        {/*saveEditSelect={UserInfoAjax.setUserLanguage}*/}
+                        {/*modifySuccess={this.afterEditLangSuccess.bind(this)}*/}
+                        {/*/>*/}
+                        {/*</span>*/}
+                    </div>}
                 </div>
             );
         }
