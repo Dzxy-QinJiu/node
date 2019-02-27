@@ -1695,6 +1695,7 @@ class Crm extends React.Component {
                     closeTemplatePanel={this.closeCrmTemplatePanel}
                     onItemListImport={this.onCustomerImport}
                     doImportAjax={this.doImport}
+                    repeatAlertMessage={Intl.get('crm.repeat.delete','红色标识客户名或联系方式已存在，请删除后再导入')}
                 />
 
                 {this.state.mergePanelIsShow ? (<CrmRightMergePanel
