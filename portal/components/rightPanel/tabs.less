@@ -1,8 +1,10 @@
 //common tabs style
 .right-pannel-default {
   .ant-tabs-content {
+    //屏蔽标签页内容容器的鼠标事件，以实现鼠标事件穿透效果，从而使左侧列表中被遮挡的内容仍可点击
     pointer-events: none;
     .ant-tabs-tabpane-active {
+      //在当前显示的标签页中取消鼠标事件屏蔽，以使当前标签页中的内容能正常点击
       pointer-events: auto;
     }
   }
