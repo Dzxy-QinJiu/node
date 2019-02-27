@@ -11,7 +11,6 @@ const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 import UserTimeRangeField from '../../../../components/user_manage_components/user-time-rangefield';
 import ValidateMixin from '../../../../mixins/ValidateMixin';
-const history = require('../../../../public/sources/history');
 const OrderAction = require('../action/order-actions');
 import UserNameTextfieldUtil from 'CMP_DIR/user_manage_components/user-name-textfield/util';
 import {OVER_DRAFT_TYPES} from 'PUB_DIR/sources/utils/consts';
@@ -27,6 +26,7 @@ const UserApplyAction = require('MOD_DIR/app_user_manage/public/action/user-appl
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import { getApplyActiveEmailTip } from '../utils/crm-util';
 const CONFIG_TYPE = {
     UNIFIED_CONFIG: 'unified_config',//统一配置
     SEPARATE_CONFIG: 'separate_config'//分别配置
@@ -71,7 +71,8 @@ const ApplyUserForm = createReactClass({
             applyFrom: this.props.applyFrom || 'order',//从哪里打开的申请面板,客户订单、客户的用户列表中
             maxHeight: this.props.maxHeight,//form表单的最大高度限制
             formHeight: 215,//form表单初始高度
-            isOplateUser: true
+            isOplateUser: true,
+            applyErrorMsg: '',//申请失败的错误提示
         };
     },
     getIntegrateConfig(){
@@ -399,12 +400,17 @@ const ApplyUserForm = createReactClass({
         //添加申请邮件中用的用户名
         submitData.email_user_names = submitData.user_name;
         OrderAction.applyUser(submitData, {}, result => {
-            this.setState({isLoading: false});
             if (result === true) {
-                message.success(Intl.get('user.apply.success', '申请成功'));
+                this.setState({
+                    isLoading: false,
+                    applyErrorMsg: ''
+                });
                 this.handleCancel();
             } else {
-                message.error(result || Intl.get('common.apply.failed', '申请失败'));
+                this.setState({
+                    isLoading: false,
+                    applyErrorMsg: result || Intl.get('common.apply.failed', '申请失败'),
+                });
             }
         });
     },
@@ -419,11 +425,16 @@ const ApplyUserForm = createReactClass({
         UserApplyAction.applyUser(submitData, result => {
             this.setState({isLoading: false});
             if (result === true) {
-                message.success(Intl.get('user.apply.success', '申请成功'));
+                this.setState({
+                    isLoading: false,
+                    applyErrorMsg: ''
+                });
                 this.handleCancel();
-            }
-            else {
-                message.error(result || Intl.get('common.apply.failed', '申请失败'));
+            } else {
+                this.setState({
+                    isLoading: false,
+                    applyErrorMsg: result || Intl.get('common.apply.failed', '申请失败'),
+                });
             }
         });
     },
@@ -767,12 +778,13 @@ const ApplyUserForm = createReactClass({
             }
         }
         return (
-            <DetailCard title={title}
+            <DetailCard
+                title={title}
                 className="crm-apply-user-form-container"
                 content={this.renderApplyUserForm()}
                 isEdit={true}
                 loading={this.state.loading}
-                saveErrorMsg={this.state.submitErrorMsg}
+                saveErrorMsg={getApplyActiveEmailTip(this.state.applyErrorMsg)}
                 handleSubmit={this.handleSubmit.bind(this)}
                 handleCancel={this.handleCancel.bind(this)}
                 okBtnText={Intl.get('common.sure', '确定')}

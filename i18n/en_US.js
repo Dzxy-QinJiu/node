@@ -1416,6 +1416,7 @@ var en_US = {
     'crm.contact.email.none': 'No email',//暂无邮箱
     'crm.contact.email.add': 'Add email',//添加邮箱
     'crm.second.sales': 'Second Sales',//联合跟进人
+    'crm.apply.active.email.tip': 'Your mailbox is not activated. Please {activeEmail} first',//您的邮箱未激活，请先{aciveEmail}
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期

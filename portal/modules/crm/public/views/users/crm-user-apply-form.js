@@ -14,6 +14,7 @@ const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const SELECT_CUSTOM_TIME_TYPE = 'custom';
 import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
+import { getApplyActiveEmailTip } from '../../utils/crm-util';
 const UNCHANGED_TYPE = 'unchanged';//保持不变的用户类型
 class CrmUserApplyForm extends React.Component {
     constructor(props) {
@@ -508,11 +509,12 @@ class CrmUserApplyForm extends React.Component {
 
     render() {
         return (
-            <DetailCard className="crm-user-apply-form-container"
+            <DetailCard
+                className="crm-user-apply-form-container"
                 content={this.renderApplyForm()}
                 isEdit={true}
                 loading={this.state.isApplying}
-                saveErrorMsg={this.state.applyErrorMsg}
+                saveErrorMsg={getApplyActiveEmailTip(this.state.applyErrorMsg)}
                 handleSubmit={this.handleSubmit.bind(this)}
                 handleCancel={this.closeApplyPanel.bind(this)}
                 okBtnText={Intl.get('common.sure', '确定')}

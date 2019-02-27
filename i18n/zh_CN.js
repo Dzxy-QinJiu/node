@@ -1431,6 +1431,7 @@ var zh_CN = {
     'crm.contact.email.none': '暂无邮箱',
     'crm.contact.email.add': '添加邮箱',
     'crm.second.sales': '联合跟进人',
+    'crm.apply.active.email.tip': '您的邮箱未激活，请先{aciveEmail}',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
