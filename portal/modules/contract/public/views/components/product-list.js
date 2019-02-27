@@ -468,7 +468,7 @@ class ProductList extends Component {
     };
     // 展示时的产品选择确认事件
     handleSubmitAppList = () => {
-        this.handleVisibleChange();
+        // this.handleVisibleChange();
         if (!this.state.appSelected) {
             this.setState({
                 unSelectDataTip: Intl.get('leave.apply.select.product', '请选择产品')
@@ -507,7 +507,7 @@ class ProductList extends Component {
     handleVisibleChange = () => {
         let dropdownEl = $('.dropdown-container');
         let appBtnEl = $('.add-app-container');
-        setTimeout(() => {
+        /*setTimeout(() => {
             dropdownEl = $('.dropdown-container');
             if(appBtnEl && !dropdownEl.hasClass('.ant-dropdown-hidden')){
                 let appBtnOffeset = appBtnEl.offset();
@@ -520,7 +520,7 @@ class ProductList extends Component {
                     top: appBtnOffeset.top + appBtnEl.outerHeight() + 3
                 });
             }
-        },0);
+        },0);*/
     };
     // 获取选中的应用id
     onAppListChange = (applist) => {
@@ -528,7 +528,7 @@ class ProductList extends Component {
             appSelected: applist,
             unSelectDataTip: ''
         });
-        this.handleVisibleChange();
+        // this.handleVisibleChange();
     };
     // 清楚选择的数据
     clearSelectAppList = () => {
@@ -695,12 +695,12 @@ class ProductList extends Component {
                     {this.props.isEdit ?
                         <div>
                             {!isEditting ?
-                                <div className="add-app-container">
+                                <div className="add-app-container" id='app-container'>
                                     {
                                         this.props.isSaveCancelBtnShow ?
                                             <AntcDropdown
                                                 ref='appSelectorRef'
-                                                content={<span onClick={this.handleVisibleChange}>{this.props.addBtnText}</span>}
+                                                content={<span>{this.props.addBtnText}</span>}
                                                 overlayTitle={Intl.get('call.record.application.product', '应用产品')}
                                                 okTitle={Intl.get('common.confirm', '确认')}
                                                 cancelTitle={Intl.get('common.cancel', '取消')}
@@ -709,6 +709,7 @@ class ProductList extends Component {
                                                 unSelectDataTip={this.state.unSelectDataTip}
                                                 clearSelectData={this.clearSelectAppList}
                                                 btnAtTop={false}
+                                                placement='bottomRight'
                                             /> : <AntcAppSelector
                                                 ref='appSelectorRef'
                                                 appList={appList}
