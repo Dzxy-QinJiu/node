@@ -29,7 +29,8 @@ class ContactItem extends React.Component {
     };
 
     setDefaultContact = (contact) => {
-        if (contact.def_contancts === 'true') return;
+        //如果已经是默认联系人或者正在设置默认联系人
+        if (contact.def_contancts === 'true' || this.state.isLoading) return;
         if (this.props.isMerge) {
             this.props.setMergeCustomerDefaultContact(this.props.contact.contact.id);
         } else {
