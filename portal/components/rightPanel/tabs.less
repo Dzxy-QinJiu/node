@@ -1,5 +1,11 @@
 //common tabs style
 .right-pannel-default {
+  .ant-tabs-content {
+    pointer-events: none;
+    .ant-tabs-tabpane-active {
+      pointer-events: auto;
+    }
+  }
   .ant-tabs-nav .ant-tabs-tab-inner:hover {
     color: #4d96d1;
   }
