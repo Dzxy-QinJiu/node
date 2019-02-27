@@ -1441,6 +1441,7 @@ class ClueCustomer extends React.Component {
                         closeTemplatePanel={this.closeClueTemplatePanel}
                         doImportAjax={this.doImportAjax}
                         onItemListImport={this.onClueImport}
+                        repeatAlertMessage={Intl.get('clue.repeat.delete', '红色标示线索名及联系方式已存在，请删除后再导入')}
                     />
                     {this.state.rightPanelIsShow ?
                         <ClueRightPanel

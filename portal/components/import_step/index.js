@@ -153,7 +153,7 @@ class ImportTemplate extends React.Component {
             <div className="second-step-content">
                 {repeatCustomer ? <div
                     className="import-warning">
-                    <Alert type="warning" message={Intl.get('clue.repeat.delete', '红色标示{type}名及联系方式已存在，请删除后再导入',{type: this.props.importType})} showIcon/>
+                    <Alert type="warning" message={this.props.repeatAlertMessage} showIcon/>
                 </div> : null}
                 <div className="deal-table-container" style={{height: this.state.tableHeight + LAYOUT.TABLE_TOP}}>
                     <AntcTable
@@ -233,6 +233,7 @@ ImportTemplate.defaultProps = {
     closeTemplatePanel: noop,//关闭面板的回调
     onItemListImport: noop,//导入时的函数
     doImportAjax: noop,//确认导入时的函数
+    repeatAlertMessage: '',//有重复数据后的提示信息
 };
 ImportTemplate.propTypes = {
     uploadActionName: PropTypes.string,
@@ -245,5 +246,6 @@ ImportTemplate.propTypes = {
     onItemListImport: PropTypes.func,
     doImportAjax: PropTypes.func,
     getItemPrevList: PropTypes.func,
+    repeatAlertMessage: PropTypes.string,//有重复数据后的提示信息
 };
 export default ImportTemplate;
