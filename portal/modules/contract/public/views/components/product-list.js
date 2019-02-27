@@ -3,11 +3,14 @@
 import React, { Component } from 'react';
 import { Icon, Form, Alert, message, Popconfirm } from 'antd';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
+import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import Trace from 'LIB_DIR/trace';
-import { AntcAppSelector } from 'antc';
+import { AntcAppSelector,Antc } from 'antc';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import DetailCard from 'CMP_DIR/detail-card';
+import { getClueSalesList, getLocalSalesClickCount } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 
 const FormItem = Form.Item;
 
@@ -195,6 +198,7 @@ class ProductList extends Component {
             data: this.props.dataSource,
             isAddApp: false, // 是否添加产品
             currentEditKey: null, // 当前编辑的产品
+            unSelectDataTip: '', // 未选择选择应用时提示
             loading: false,
             saveErrMsg: '',
             saveStatus: this.props.dataSource.length > 0 ? _.map(this.props.dataSource, product => {
@@ -202,7 +206,8 @@ class ProductList extends Component {
                     loading: false,
                     saveErrMsg: '',
                 };
-            }) : []
+            }) : [],
+            appSelected: '', // 选择的产品应用
         };
     }
 
@@ -223,11 +228,12 @@ class ProductList extends Component {
                     };
                 }) : [],
                 currentEditKey,
-                isAddApp
+                isAddApp,
             });
         }
     }
 
+    // 产品应用选择触发事件
     handleAppSelect = selectedAppList => {
         let data = _.cloneDeep(this.state.data);
         let saveStatus = this.state.saveStatus;
@@ -266,7 +272,7 @@ class ProductList extends Component {
             }
         });
     };
-
+    // 点击编辑按钮或者取消时
     showEdit = (index, type = 'update') => {
         /*this.setState({
             isEdit: true
@@ -304,12 +310,13 @@ class ProductList extends Component {
             }
         });
     };
-
+    // 产品的删除
     handleDelete = (index, type) => {
         let data = _.cloneDeep(this.state.data);
         let saveStatus = this.state.saveStatus;
         let id = data[index].id;
         let _this = this;
+        // 如果是单项编辑时的删除
         if(type === 'delete') {
             saveStatus[index].loading = true;
             this.setState({saveStatus});
@@ -338,7 +345,7 @@ class ProductList extends Component {
             };
 
             this.props.onDelete(id, successFunc, errorFunc, type);
-        } else {
+        } else { // 添加的产品删除
             let newData = _.map(data,(item, index) => {
                 let value = this[`form${item.id}Ref`].props.form.getFieldsValue();
                 return {...item, ...value};
@@ -390,9 +397,10 @@ class ProductList extends Component {
                 });
             }
         });
-        if(validateArr.length !== this.state.data.length && type !== 'update') {
+        // 添加合同时，添加产品需要判断数组长度是否相等，如果是展示编辑产品需要判断是否为空
+        if(type === 'add' && validateArr.length !== this.state.data.length) {
             return false;
-        }else{
+        }else {
             /*const totalAmount = this.props.getTotalAmount();
 
             const sumAmount = _.reduce(validateArr, (sum, item) => {
@@ -414,6 +422,8 @@ class ProductList extends Component {
                 const data = _.cloneDeep(validateArr);
                 return data;
             }
+            if(!validateArr.length){ return false;}
+
             let saveStatus = this.state.saveStatus;
             saveStatus[productIndex].loading = true;
 
@@ -455,6 +465,77 @@ class ProductList extends Component {
     handleItemCancel = (product, index) => {
         let type = product.isAdd ? 'cancel' : 'update';
         this.showEdit(index, type);
+    };
+    // 展示时的产品选择确认事件
+    handleSubmitAppList = () => {
+        this.handleVisibleChange();
+        if (!this.state.appSelected) {
+            this.setState({
+                unSelectDataTip: Intl.get('leave.apply.select.product', '请选择产品')
+            });
+            return;
+        } else {
+            let data = _.cloneDeep(this.state.data);
+            let saveStatus = this.state.saveStatus;
+            let selectedApp = _.find(this.props.appList, app => {
+                return app.client_id === this.state.appSelected;
+            });
+
+
+            saveStatus.unshift({
+                loading: false,
+                saveErrMsg: '',
+            });
+            data.unshift({
+                id: selectedApp.client_id,
+                name: selectedApp.client_name,
+                isEditting: true,
+                isAdd: true,
+                ...this.props.defaultValueMap
+            });
+
+            this.setState({
+                data,
+                saveStatus,
+                isAddApp: true,
+                appSelected: ''
+            }, () => {
+                if (this.props.onChange) this.props.onChange(data);
+            });
+        }
+    };
+    handleVisibleChange = () => {
+        let dropdownEl = $('.dropdown-container');
+        let appBtnEl = $('.add-app-container');
+        setTimeout(() => {
+            dropdownEl = $('.dropdown-container');
+            if(appBtnEl && !dropdownEl.hasClass('.ant-dropdown-hidden')){
+                let appBtnOffeset = appBtnEl.offset();
+                let appBtnElWidth = appBtnEl.width();
+                let dropdownElWidth = dropdownEl.width();
+                let offsetX = dropdownElWidth - appBtnElWidth + 10;
+
+                dropdownEl.css({
+                    left: appBtnOffeset.left - offsetX,
+                    top: appBtnOffeset.top + appBtnEl.outerHeight() + 3
+                });
+            }
+        },0);
+    };
+    // 获取选中的应用id
+    onAppListChange = (applist) => {
+        this.setState({
+            appSelected: applist,
+            unSelectDataTip: ''
+        });
+        this.handleVisibleChange();
+    };
+    // 清楚选择的数据
+    clearSelectAppList = () => {
+        this.setState({
+            appSelected: '',
+            unSelectDataTip: ''
+        });
     };
 
     renderProductTitle = (product, index) => {
@@ -530,6 +611,30 @@ class ProductList extends Component {
         );
     };
 
+    renderAppListBlock = () => {
+        const appNames = _.map(this.state.data, 'name');
+        const appList = _.filter(this.props.appList, app => appNames.indexOf(app.client_name) === -1);
+        let dataList = [];
+        _.each(appList, item => {
+            dataList.push({
+                name: item.client_name,
+                value: item.client_id
+            });
+        });
+
+        return (
+            <div className="op-pane change-salesman">
+                <AlwaysShowSelect
+                    placeholder={Intl.get('sales.team.search', '搜索')}
+                    value={this.state.appSelected}
+                    onChange={this.onAppListChange}
+                    notFoundContent={dataList.length ? Intl.get('deal.detail.no.products', '暂无产品') : Intl.get('crm.contract.no.product.info', '暂无产品信息')}
+                    dataList={dataList}
+                />
+            </div>
+        );
+    };
+
     render() {
         let productListLength = this.state.data.length || 0;
         const appNames = _.map(this.state.data, 'name');
@@ -591,13 +696,28 @@ class ProductList extends Component {
                         <div>
                             {!isEditting ?
                                 <div className="add-app-container">
-                                    <AntcAppSelector
-                                        ref='appSelectorRef'
-                                        appList={appList}
-                                        onConfirm={this.handleAppSelect}
-                                        appendDOM={this.props.appendDOM}
-                                        addBtnText={this.props.addBtnText}
-                                    />
+                                    {
+                                        this.props.isSaveCancelBtnShow ?
+                                            <AntcDropdown
+                                                ref='appSelectorRef'
+                                                content={<span onClick={this.handleVisibleChange}>{this.props.addBtnText}</span>}
+                                                overlayTitle={Intl.get('call.record.application.product', '应用产品')}
+                                                okTitle={Intl.get('common.confirm', '确认')}
+                                                cancelTitle={Intl.get('common.cancel', '取消')}
+                                                overlayContent={this.renderAppListBlock()}
+                                                handleSubmit={this.handleSubmitAppList}
+                                                unSelectDataTip={this.state.unSelectDataTip}
+                                                clearSelectData={this.clearSelectAppList}
+                                                btnAtTop={false}
+                                            /> : <AntcAppSelector
+                                                ref='appSelectorRef'
+                                                appList={appList}
+                                                onConfirm={this.handleAppSelect}
+                                                appendDOM={this.props.appendDOM}
+                                                addBtnText={this.props.addBtnText}
+                                            />
+                                    }
+
                                 </div> : null
                             }
                         </div> : null}
