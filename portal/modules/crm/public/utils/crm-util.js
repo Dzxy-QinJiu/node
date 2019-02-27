@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import history from 'PUB_DIR/sources/history';
 var userData = require('../../../../public/sources/user-data');
 //将后端传来的字段拼接成句子
 const processForTrace = function(item) {
@@ -147,5 +148,27 @@ exports.CUSOTMER_SORT_MAP = {
     administrative_level: 'administrative_level',//行政等级
     score: 'score',//客户分数
     score_past: 'score_past'//客户昨天的分数
+};
+
+exports.getApplyActiveEmailTip = (applyErrorMsg) => {
+    if (applyErrorMsg === Intl.get('errorcode.12', '您的邮箱未激活，请先激活邮箱')) {
+        return (
+            <span className="apply-active-email-tip">
+                <ReactIntl.FormattedMessage
+                    id='crm.apply.active.email.tip'
+                    defaultMessage={'您的邮箱未激活，请先{aciveEmail}'}
+                    values={{
+                        'aciveEmail': (
+                            <a onClick={() => {
+                                //跳转到个人资料界面，设置邮箱或激活
+                                history.push('/user_info_manage/user_info');
+                            }}>
+                                {Intl.get('sales.frontpage.active.email', '激活邮箱')}
+                            </a>),
+                    }}
+                />
+            </span>);
+    }
+    return applyErrorMsg;
 };
 
