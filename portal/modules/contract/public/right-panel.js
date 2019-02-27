@@ -38,7 +38,7 @@ let stepMap = {
 // 右侧面板固定高度常量
 const LAYOUT_CONSTANTS = {
     TOP_DELTA: 70, // 顶部高度
-    BOTTOM_DELTA: 50, // 底部留高(详情)
+    BOTTOM_DELTA: 40, // 底部留高(详情)
     BASIC_TOP: 25,
     TAB_DETAIL: 52, // tab栏高度
     STEP_DETAIL: 20, // 步骤条高度
@@ -47,7 +47,7 @@ const LAYOUT_CONSTANTS = {
     TITLE_PADDING: 30,
     ERROR_PADDING: 70,
     LOADING_PADDING: 100,
-    CONTRACT_AMOUNT: 35,
+    CONTRACT_AMOUNT: 20,
 };
 class ContractRightPanel extends React.Component {
     state = {
@@ -310,19 +310,26 @@ class ContractRightPanel extends React.Component {
 
         if (currentView === 'sellForm') {
             type = VIEW_TYPE.SELL;
-            contractData = _.extend({}, this.props.contract, this.refs.addBasic.state.formData);
+            contractData = _.extend(this.props.contract, this.refs.addBasic.state.formData);
             contractData.category = this.state.currentCategory;
 
             contractData.cost_structure = contractData.cost_structure.join(',');
 
             const addProduct = this.refs.addProduct;
             if (addProduct && !_.isEmpty(addProduct.state.products[0])) {
-                contractData.products = addProduct.state.products;
+                // 这里要处理下产品数据
+                contractData.products = _.map(_.cloneDeep(addProduct.state.products), item => {
+                    if(item.isEditting){
+                        delete item.isEditting;
+                        delete item.isAdd;
+                    }
+                    return item;
+                });
             }
 
             const addReport = this.refs.addReport;
             if (addReport && !_.isEmpty(addReport.state.reports[0])) {
-                contractData.reports = addReport.state.reports.map(x => {
+                contractData.reports = _.cloneDeep(addReport.state.reports).map(x => {
                     if (x.report_type) {
                         delete x.type;
                         delete x.num;
@@ -448,94 +455,105 @@ class ContractRightPanel extends React.Component {
         if (isLoading) {
             contentHeight += LAYOUT_CONSTANTS.LOADING_PADDING;
         }
-        //错误信息padding
-        // if (userInfo.errorMsg) {
-        //     contentHeight += LAYOUT_CONSTANTS.ERROR_PADDING;
-        // }
 
         let contractFormPanes = {};
         contractFormPanes['1'] = props => (
-            <div className={props.className}>
-                {!props.isDetailType && props.currentView === 'sellForm' ?
-                    <AddBasic
-                        ref="addBasic"
-                        contract={this.props.contract}
-                        teamList={this.props.teamList}
-                        userList={this.props.userList}
-                        getUserList={this.props.getUserList}
-                        isGetUserSuccess={this.props.isGetUserSuccess}
-                        validateNumRepeat={true}
-                    /> : <AddBuyBasic
-                        ref="addBuyBasic"
-                        contract={this.props.contract}
-                        teamList={this.props.teamList}
-                        userList={this.props.userList}
-                        getUserList={this.props.getUserList}
-                        isGetUserSuccess={this.props.isGetUserSuccess}
-                        validateNumRepeat={true}
-                    />}
-
+            <div className={props.className} style={{height: contentHeight}}>
+                <GeminiScrollBar ref="gemiScrollBar">
+                    {!props.isDetailType && props.currentView === 'sellForm' ?
+                        <AddBasic
+                            ref="addBasic"
+                            contract={this.props.contract}
+                            teamList={this.props.teamList}
+                            userList={this.props.userList}
+                            getUserList={this.props.getUserList}
+                            isGetUserSuccess={this.props.isGetUserSuccess}
+                            validateNumRepeat={true}
+                        /> : <AddBuyBasic
+                            ref="addBuyBasic"
+                            contract={this.props.contract}
+                            teamList={this.props.teamList}
+                            userList={this.props.userList}
+                            getUserList={this.props.getUserList}
+                            isGetUserSuccess={this.props.isGetUserSuccess}
+                            validateNumRepeat={true}
+                        />}
+                </GeminiScrollBar>
             </div>
         );
 
         let totalAmountPrice = `${Intl.get('contract.report.contract.total.ccount', '本次合同总金额为')} ${this.state.total_amount} ${Intl.get('contract.155', '元')}`;
-        // this.state.showDiffAmountWarning ? totalAmountPrice = `${totalAmountPrice},${Intl.get('crm.contract.check.tips2', '与总价合计不符，请核对')}` : '';
         this.state.showDiffAmountWarning ? totalAmountPrice = Intl.get('contract.mount.check.tip', '总价合计不能大于合同总额{num}元，请核对',{num: this.state.total_amount}) : '';
         let totalAmountClass = classnames('total-amount-price',{
-            'total-amount-error': this.state.showDiffAmountWarning
+            'total-amount-error': this.state.showDiffAmountWarning,
+            'float-r': !isDetailType,
+            'float-l': isDetailType
         });
+        let productServiceHeight = contentHeight;
+        if(!isDetailType && [PRODUCT,SERVICE].indexOf(this.state.currentCategory) > -1 && this.state.currentTabKey === '2') {
+            productServiceHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
+        }
 
         if ([PRODUCT].indexOf(this.state.currentCategory) > -1 && !isDetailType) {
+
             contractFormPanes['2'] = props => (
-                <div className={props.className}>
-                    <AddProduct
-                        ref="addProduct"
-                        parent={this}
-                        isDetailType={props.isDetailType}
-                        appList={this.props.appList}
-                        contract={this.props.contract}
-                        updateScrollBar={this.updateScrollBar}
-                        totalAmout={this.state.total_amount}
-                    />
+                <div className={props.className} style={{height: productServiceHeight}}>
+                    <div className={totalAmountClass}>{totalAmountPrice}</div>
+                    <GeminiScrollBar ref='gemiScrollBar'>
+                        <AddProduct
+                            ref="addProduct"
+                            parent={this}
+                            isDetailType={props.isDetailType}
+                            appList={this.props.appList}
+                            contract={this.props.contract}
+                            updateScrollBar={this.updateScrollBar}
+                            totalAmout={this.state.total_amount}
+                        />
+                    </GeminiScrollBar>
                 </div>
             );
         }
 
         if (this.state.currentCategory === SERVICE && !isDetailType) {
             contractFormPanes['2'] = props => (
-                <div className={props.className}>
-                    <AddProduct
-                        ref="addProduct"
-                        parent={this}
-                        isDetailType={props.isDetailType}
-                        appList={this.props.appList}
-                        contract={this.props.contract}
-                        updateScrollBar={this.updateScrollBar}
-                        totalAmout={this.state.total_amount}
-                    />
-                    <AddReport
-                        ref="addReport"
-                        isDetailType={props.isDetailType}
-                        updateScrollBar={this.updateScrollBar}
-                    />
+                <div className={props.className} style={{height: productServiceHeight}}>
+                    <div className={totalAmountClass}>{totalAmountPrice}</div>
+                    <GeminiScrollBar ref='gemiScrollBar'>
+                        <AddReport
+                            ref="addReport"
+                            isDetailType={props.isDetailType}
+                            updateScrollBar={this.updateScrollBar}
+                        />
+                        <AddProduct
+                            ref="addProduct"
+                            parent={this}
+                            isDetailType={props.isDetailType}
+                            appList={this.props.appList}
+                            contract={this.props.contract}
+                            updateScrollBar={this.updateScrollBar}
+                            totalAmout={this.state.total_amount}
+                        />
+                    </GeminiScrollBar>
                 </div>
-            );          
+            );
         }
         contractFormPanes[endPaneKey] = props => (
             <div className={props.className}>
-                {!props.isDetailType && props.currentView === 'sellForm' ?
-                    <AddRepayment
-                        ref="addRepayment"
-                        parent={this}
-                        rightPanel={this}
-                        updateScrollBar={this.updateScrollBar}
-                    /> :
-                    <AddBuyPayment
-                        ref="addBuyPayment"
-                        rightPanel={this}
-                        updateScrollBar={this.updateScrollBar}
-                    />
-                }
+                <GeminiScrollBar ref='gemiScrollBar' style={{height: contentHeight}}>
+                    {!props.isDetailType && props.currentView === 'sellForm' ?
+                        <AddRepayment
+                            ref="addRepayment"
+                            parent={this}
+                            rightPanel={this}
+                            updateScrollBar={this.updateScrollBar}
+                        /> :
+                        <AddBuyPayment
+                            ref="addBuyPayment"
+                            rightPanel={this}
+                            updateScrollBar={this.updateScrollBar}
+                        />
+                    }
+                </GeminiScrollBar>
             </div>
         );
         const contractContents = [];
@@ -593,24 +611,13 @@ class ContractRightPanel extends React.Component {
             if(isProductAndService) {
                 endTabKey += 1;
                 let currentContentHeight = contentHeight;
-                currentContentHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
+                // currentContentHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
 
                 tabList.push(
                     <TabPane tab={Intl.get('contract.product.service.info', '产品与服务信息')} key="2">
                         <div className="contract-product" style={{height: currentContentHeight}}>
                             <div className='contract-product-title'><span className='product-title-text'>合同额：{`${this.props.contract.contract_amount}${Intl.get('contract.155', '元')}`}</span></div>
                             <GeminiScrollBar ref='gemiScrollBar'>
-                                <AddProduct
-                                    ref="addProduct"
-                                    parent={this}
-                                    contract={this.props.contract}
-                                    products={this.props.contract.products}
-                                    isDetailType={isDetailType}
-                                    appList={this.props.appList}
-                                    updateScrollBar={this.updateScrollBar}
-                                    refreshCurrentContract={this.props.refreshCurrentContract}
-                                />
-                                {[SERVICE].indexOf(this.props.contract.category) > -1 ? <hr className="contract-divide-line" /> : null}
                                 {[SERVICE].indexOf(this.props.contract.category) > -1 ? (
                                     <AddReport
                                         ref="addReport"
@@ -622,6 +629,17 @@ class ContractRightPanel extends React.Component {
                                         refreshCurrentContract={this.props.refreshCurrentContract}
                                     />
                                 ) : null}
+                                <AddProduct
+                                    ref="addProduct"
+                                    className={[SERVICE].indexOf(this.props.contract.category) > -1 ? 'has-report' : ''}
+                                    parent={this}
+                                    contract={this.props.contract}
+                                    products={this.props.contract.products}
+                                    isDetailType={isDetailType}
+                                    appList={this.props.appList}
+                                    updateScrollBar={this.updateScrollBar}
+                                    refreshCurrentContract={this.props.refreshCurrentContract}
+                                />
                             </GeminiScrollBar>
                         </div>
                     </TabPane>
@@ -671,11 +689,6 @@ class ContractRightPanel extends React.Component {
             );
         }
 
-        let productServiceHeight = contentHeight;
-        if(!isDetailType && [PRODUCT,SERVICE].indexOf(this.state.currentCategory) > -1 && this.state.currentTabKey === '2') {
-            productServiceHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
-        }
-
         return (
             <div id="contractRightPanel">
                 {!isDetailType ?
@@ -685,14 +698,9 @@ class ContractRightPanel extends React.Component {
 
                 {/*添加其他合同（包括采购合同）*/}
                 { !isDetailType ? (
-                    <div className="add-form" style={{ height: productServiceHeight }}>
-                        {
-                            [PRODUCT,SERVICE].indexOf(this.state.currentCategory) > -1 && this.state.currentTabKey === '2' ?
-                                (<div className={totalAmountClass}>{totalAmountPrice}</div>) : null
-                        }
-                        <GeminiScrollBar ref="gemiScrollBar">
-                            {contractContents}
-                        </GeminiScrollBar>
+                    //<div className="add-form" style={{ height: productServiceHeight }}>
+                    <div className="add-form">
+                        {contractContents}
                         <div className="step-button">
                             {
                                 this.state.currentTabKey !== '1' ?

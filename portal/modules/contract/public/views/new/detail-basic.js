@@ -71,7 +71,7 @@ class DetailBasic extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps.contract, 'id') && this.props.contract.id !== nextProps.contract.id || !_.isEqual(this.props.contract,nextProps.contract)) {
-            let formData = JSON.parse(JSON.stringify(nextProps.contract));
+            let formData = _.cloneDeep(nextProps.contract);
 
             //所属客户是否是选择的，以数组的形式记录了各个所属客户在输入后是否经过了点击选择的过程
             let belongCustomerIsChoosen = [];

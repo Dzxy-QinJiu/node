@@ -1,13 +1,16 @@
 /** Created by 2019-02-19 14:48 */
 /*产品的添加和编辑*/
 import React, { Component } from 'react';
-import { Icon, Form, Alert } from 'antd';
+import { Icon, Form, Alert, message, Popconfirm } from 'antd';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
+import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import Trace from 'LIB_DIR/trace';
-import { AntcAppSelector } from 'antc';
+import { AntcAppSelector,Antc } from 'antc';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import DetailCard from 'CMP_DIR/detail-card';
+import { getClueSalesList, getLocalSalesClickCount } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 
 const FormItem = Form.Item;
 
@@ -18,10 +21,6 @@ const APP_DEFAULT_INFO = {
 };
 
 class EditFormItem extends React.Component {
-
-    state = {
-        value: ''
-    };
 
     static propTypes = {
         form: PropTypes.object,
@@ -50,12 +49,14 @@ class EditFormItem extends React.Component {
             Editor = require('antd')[editor];
         }
 
-        if(_.isFunction(editorProps)) editorProps = editorProps(product,this.props.isEdit);
+        // if(_.isFunction(editorProps)) editorProps = editorProps(product,this.props.isEdit);
+        if(_.isFunction(editorProps)) editorProps = editorProps(product,product.isEditting);
 
         let renderElement;
         const { getFieldDecorator } = this.props.form;
 
-        if(this.props.isEdit && props.editable){
+        // if(this.props.isEdit && props.editable){
+        if(product.isEditting && props.editable){
             if(editor !== 'AntcValidity') {
                 renderElement = getFieldDecorator(props.dataIndex, props.editorConfig)(<Editor {...editorProps}/>);
             }else {
@@ -78,6 +79,7 @@ class EditFormItem extends React.Component {
             product,
             ...restProps
         } = this.props;
+
 
         return (
             <Form key={this.props.product.id} className='clearfix'>
@@ -103,7 +105,14 @@ class EditFormItem extends React.Component {
                     }
 
                     if(item.display === 'inline') {
-                        item.formLayOut.className = 'form-inline';
+                        // if(this.props.isEdit) {
+                        if(product.isEditting) {
+                            item.formLayOut.className = 'form-inline';
+                        } else {
+                            item.formLayOut = {
+                                labelCol: { span: 6 }
+                            };
+                        }
                     }
 
                     return (
@@ -137,10 +146,14 @@ class ProductList extends Component {
         isEdit: false,
         //编辑按钮是否显示
         isEditBtnShow: false,
+        // 合同id
+        contractId: '',
         //变更事件，在表格内容变化后会被触发，其回调参数为变化后的表格数据
         onChange: function() {},
         //保存事件，在点击保存按钮后会被触发，其回调参数为变化后的表格数据
         onSave: function() {},
+        // 删除事件,在单项编辑删除时
+        onDelete: function() {},
         // 获取剩余的合同总金额
         getTotalAmount: function() {},
         //预设总金额，用于验证所有产品的金额之和是否正确
@@ -161,8 +174,10 @@ class ProductList extends Component {
         isSaveCancelBtnShow: PropTypes.bool,
         isEdit: PropTypes.bool,
         isEditBtnShow: PropTypes.bool,
+        contractId: PropTypes.string,
         onChange: PropTypes.func,
         onSave: PropTypes.func,
+        onDelete: PropTypes.func,
         getTotalAmount: PropTypes.func,
         totalAmount: PropTypes.number,
         editBtnTip: PropTypes.string,
@@ -181,63 +196,175 @@ class ProductList extends Component {
         this.state = {
             isEdit: this.props.isEdit,
             data: this.props.dataSource,
+            isAddApp: false, // 是否添加产品
+            currentEditKey: null, // 当前编辑的产品
+            unSelectDataTip: '', // 未选择选择应用时提示
             loading: false,
             saveErrMsg: '',
+            saveStatus: this.props.dataSource.length > 0 ? _.map(this.props.dataSource, product => {
+                return {
+                    loading: false,
+                    saveErrMsg: '',
+                };
+            }) : [],
+            appSelected: '', // 选择的产品应用
         };
     }
 
     componentWillReceiveProps(nextProps) {
         if (!_.isEqual(this.props.dataSource, nextProps.dataSource)) {
+            let currentEditKey = this.state.currentEditKey;
+            let isAddApp = this.state.isAddApp;
+            if(!_.isEqual(this.props.contractId, nextProps.contractId)){
+                currentEditKey = null;
+                isAddApp = false;
+            }
             this.setState({
-                data: _.clone(nextProps.dataSource),
+                data: nextProps.dataSource,
+                saveStatus: nextProps.dataSource.length > 0 ? _.map(nextProps.dataSource, product => {
+                    return {
+                        loading: false,
+                        saveErrMsg: '',
+                    };
+                }) : [],
+                currentEditKey,
+                isAddApp,
             });
         }
     }
 
+    // 产品应用选择触发事件
     handleAppSelect = selectedAppList => {
         let data = _.cloneDeep(this.state.data);
+        let saveStatus = this.state.saveStatus;
+        let selectedAppListlength = _.get(selectedAppList,'length');
+
+        // 这里得判断是否是展示时的添加产品，是则每次只能添加一个产品
+        if(this.props.isSaveCancelBtnShow && selectedAppListlength > 1){
+            let selectedAppLists = _.clone(this.refs.appSelectorRef.props.appList);
+            setTimeout(() => {
+                message.warning(Intl.get('contract.product.choose.tip', '每次只能添加一个产品'));
+            }, 0);
+            this.refs.appSelectorRef.setState({
+                appList: selectedAppLists,
+                isPanelShow: true
+            });
+            return false;
+        }
 
         _.each(selectedAppList, app => {
-            data.push({
+            saveStatus.unshift({
+                loading: false,
+                saveErrMsg: '',
+            });
+            data.unshift({
                 id: app.client_id,
                 name: app.client_name,
+                isEditting: true,
+                isAdd: true,
                 ...this.props.defaultValueMap
             });
         });
 
-        this.setState({data}, () => {
+        this.setState({data, saveStatus, isAddApp: true}, () => {
             if (this.props.onChange) {
                 this.props.onChange(data);
             }
         });
     };
-
-    showEdit = () => {
-        this.setState({
+    // 点击编辑按钮或者取消时
+    showEdit = (index, type = 'update') => {
+        /*this.setState({
             isEdit: true
+        });*/
+        let data = _.cloneDeep(this.state.data);
+        let saveStatus = this.state.saveStatus;
+        data[index].isEditting = !data[index].isEditting;
+        let isAddApp = this.state.isAddApp;
+        let currentEditKey = this.state.currentEditKey;
+        currentEditKey = data[index].id;
+        // 判断是否是取消, 是则要删除这个数据
+        if(type === 'cancel') {
+            delete this[`form${data[index].id}Ref`];
+            data.splice(index,1);
+            saveStatus.splice(index, 1);
+            let addIndex = _.findIndex(data, item => {
+                return item.isAdd;
+            });
+            isAddApp = addIndex > -1;
+        }
+        if(!data[index].isEditting) {
+            currentEditKey = null;
+        }
+        this.setState({
+            data,
+            saveStatus,
+            isAddApp,
+            currentEditKey
+        },() => {
+            // 是更新取消时
+            if(type === 'update' && !data[index].isEditting) {
+                if(_.isFunction(this.props.handleCancel)) this.props.handleCancel(index, data[index].id);
+            } else {
+                if(_.isFunction(this.props.onChange)) this.props.onChange(data);
+            }
         });
     };
-
-    handleDelete = (index) => {
-        let data = this.state.data;
+    // 产品的删除
+    handleDelete = (index, type) => {
+        let data = _.cloneDeep(this.state.data);
+        let saveStatus = this.state.saveStatus;
         let id = data[index].id;
-        let newData = _.map(data,(item, index) => {
-            let value = this[`form${item.id}Ref`].props.form.getFieldsValue();
-            return {...item, ...value};
-        });
-        newData.splice(index, 1);
-        delete this[`form${id}Ref`];
+        let _this = this;
+        // 如果是单项编辑时的删除
+        if(type === 'delete') {
+            saveStatus[index].loading = true;
+            this.setState({saveStatus});
 
-        this.setState({
-            data: newData
-        },() => {
-            let currentIndex = index;
-            // 当剩最后一个了，index需为0，
-            newData.length === 1 || 0 === currentIndex ? currentIndex = 0 : currentIndex -= 1;
-            if(_.isFunction(this.props.onChange)) this.props.onChange(newData, () => {
-                newData.length >= 1 ? this[`form${newData[currentIndex].id}Ref`].props.form.validateFields() : '';
+            const successFunc = () => {
+                let data = _.cloneDeep(_this.state.data);
+                let deleteIndex = _.findIndex(data, item => {
+                    return item.id === id;
+                });
+                deleteIndex > -1 ? (data.splice(deleteIndex,1),saveStatus.splice(deleteIndex,1)) : '';
+                _this.setState({data,saveStatus,currentEditKey: null},() => {
+                    if(_.isFunction(_this.props.onChange)) _this.props.onChange(data);
+                });
+            };
+
+            const errorFunc = (errorMsg) => {
+                let data = _.cloneDeep(_this.state.data);
+                let deleteIndex = _.findIndex(data, item => {
+                    return item.id === id;
+                });
+                deleteIndex > -1 ? (saveStatus[deleteIndex].loading = false,saveStatus[deleteIndex].saveErrMsg = errorMsg || Intl.get('common.edit.failed', '修改失败')) : '';
+                _this.setState({
+                    saveStatus,
+                    currentEditKey: null
+                });
+            };
+
+            this.props.onDelete(id, successFunc, errorFunc, type);
+        } else { // 添加的产品删除
+            let newData = _.map(data,(item, index) => {
+                let value = this[`form${item.id}Ref`].props.form.getFieldsValue();
+                return {...item, ...value};
             });
-        });
+            newData.splice(index, 1);
+            saveStatus.splice(index, 1);
+            delete this[`form${id}Ref`];
+
+            this.setState({
+                data: newData
+            },() => {
+                let currentIndex = index;
+                // 当剩最后一个了，index需为0，
+                newData.length === 1 || 0 === currentIndex ? currentIndex = 0 : currentIndex -= 1;
+                if(_.isFunction(this.props.onChange)) this.props.onChange(newData, () => {
+                    newData.length >= 1 ? this[`form${newData[currentIndex].id}Ref`].props.form.validateFields() : '';
+                });
+            });
+        }
     };
     handleCancel = (e) => {
         this.setState({
@@ -248,23 +375,33 @@ class ProductList extends Component {
         if(_.isFunction(this.props.handleCancel)) this.props.handleCancel();
         Trace.traceEvent(e, '取消对产品的修改');
     };
-    handleSubmit = (type = 'update') => {
+    handleSubmit = (type = 'update', productIndex) => {
         let validateArr = [];
-        _.map(this.state.data, (item, index) => {
+        _.each(this.state.data, (item, index) => {
             let ref = this[`form${item.id}Ref`];
-            ref.props.form.validateFields((err, value) => {
-                if(err) return false;
-                if(!_.get(item,'account_start_time')) {
-                    item.account_start_time = moment().valueOf();
-                    item.account_endt_time = moment().valueOf();
-                }
-                validateArr.push({...item, ...value});
-            });
+            // 这里是单线编辑或者是添加产品时
+            if(type === 'add' || type === 'update' && item.isEditting) {
+                ref.props.form.validateFields((err, value) => {
+                    if(err) return false;
+                    if(!_.get(item,'account_start_time')) {
+                        item.account_start_time = moment().valueOf();
+                        item.account_endt_time = moment().valueOf();
+                    }
+                    let obj = {...item, ...value};
+                    if(type === 'update') {
+                        delete obj.isEditting;
+                        delete obj.isAdd;
+                    }
+
+                    validateArr.push(obj);
+                });
+            }
         });
-        if(validateArr.length !== this.state.data.length) {
+        // 添加合同时，添加产品需要判断数组长度是否相等，如果是展示编辑产品需要判断是否为空
+        if(type === 'add' && validateArr.length !== this.state.data.length) {
             return false;
-        }else{
-            const totalAmount = this.props.getTotalAmount();
+        }else {
+            /*const totalAmount = this.props.getTotalAmount();
 
             const sumAmount = _.reduce(validateArr, (sum, item) => {
                 const amount = +item.total_price;
@@ -279,34 +416,126 @@ class ProductList extends Component {
                     showErrMsg: type === 'add', // 只有添加时才显示
                 });
                 return false;
-            }
+            }*/
 
             if(type === 'add') {
                 const data = _.cloneDeep(validateArr);
                 return data;
             }
+            if(!validateArr.length){ return false;}
 
-            this.setState({loading: true});
+            let saveStatus = this.state.saveStatus;
+            saveStatus[productIndex].loading = true;
 
-            const data = _.cloneDeep(validateArr);
+            this.setState({saveStatus});
+
+            const data = _.map(_.cloneDeep(this.state.data),item => {
+                delete item.isEditting;
+                delete item.isAdd;
+                return item;
+            });
+            data[productIndex] = validateArr[0];
 
             const successFunc = () => {
+                saveStatus[productIndex].loading = false;
+                saveStatus[productIndex].saveErrMsg = '';
+                let newData = this.state.data;
+                newData[productIndex].isEditting = false;
+
                 this.setState({
-                    loading: false,
-                    saveErrMsg: '',
-                    isEdit: false,
+                    newData,
+                    saveStatus,
+                    isAddApp: false,
+                    currentEditKey: null
                 });
             };
 
             const errorFunc = (errorMsg) => {
+                saveStatus[productIndex].loading = false;
+                saveStatus[productIndex].saveErrMsg = errorMsg || Intl.get('common.edit.failed', '修改失败');
                 this.setState({
-                    loading: false,
-                    saveErrMsg: errorMsg || Intl.get('common.edit.failed', '修改失败')
+                    saveStatus
                 });
             };
 
             this.props.onSave(data, successFunc, errorFunc);
         }
+    };
+    // 单项编辑时的取消
+    handleItemCancel = (product, index) => {
+        let type = product.isAdd ? 'cancel' : 'update';
+        this.showEdit(index, type);
+    };
+    // 展示时的产品选择确认事件
+    handleSubmitAppList = () => {
+        // this.handleVisibleChange();
+        if (!this.state.appSelected) {
+            this.setState({
+                unSelectDataTip: Intl.get('leave.apply.select.product', '请选择产品')
+            });
+            return;
+        } else {
+            let data = _.cloneDeep(this.state.data);
+            let saveStatus = this.state.saveStatus;
+            let selectedApp = _.find(this.props.appList, app => {
+                return app.client_id === this.state.appSelected;
+            });
+
+
+            saveStatus.unshift({
+                loading: false,
+                saveErrMsg: '',
+            });
+            data.unshift({
+                id: selectedApp.client_id,
+                name: selectedApp.client_name,
+                isEditting: true,
+                isAdd: true,
+                ...this.props.defaultValueMap
+            });
+
+            this.setState({
+                data,
+                saveStatus,
+                isAddApp: true,
+                appSelected: ''
+            }, () => {
+                if (this.props.onChange) this.props.onChange(data);
+            });
+        }
+    };
+    handleVisibleChange = () => {
+        let dropdownEl = $('.dropdown-container');
+        let appBtnEl = $('.add-app-container');
+        /*setTimeout(() => {
+            dropdownEl = $('.dropdown-container');
+            if(appBtnEl && !dropdownEl.hasClass('.ant-dropdown-hidden')){
+                let appBtnOffeset = appBtnEl.offset();
+                let appBtnElWidth = appBtnEl.width();
+                let dropdownElWidth = dropdownEl.width();
+                let offsetX = dropdownElWidth - appBtnElWidth + 10;
+
+                dropdownEl.css({
+                    left: appBtnOffeset.left - offsetX,
+                    top: appBtnOffeset.top + appBtnEl.outerHeight() + 3
+                });
+            }
+        },0);*/
+    };
+    // 获取选中的应用id
+    onAppListChange = (applist) => {
+        this.setState({
+            appSelected: applist,
+            unSelectDataTip: ''
+        });
+        // this.handleVisibleChange();
+    };
+    // 清楚选择的数据
+    clearSelectAppList = () => {
+        this.setState({
+            appSelected: '',
+            unSelectDataTip: ''
+        });
     };
 
     renderProductTitle = (product, index) => {
@@ -332,14 +561,36 @@ class ProductList extends Component {
                     ) : null}
                     <span className='app-name' title={appName}>{appName}</span>
                 </span>
-                {this.state.isEdit ? (
+                {/*{this.state.isEdit ? (
                     <span
                         className="btn-bar"
                         onClick={this.handleDelete.bind(this, index)}
                         title={Intl.get('common.delete', '删除')}>
                         <Icon type="close" theme="outlined" />
                     </span>
-                ) : null}
+                ) : null}*/}
+                {product.isEditting ? (
+                    <span>
+                        {product.isAdd ? <span
+                            className="btn-bar"
+                            onClick={this.handleDelete.bind(this, index, 'add')}
+                            title={Intl.get('common.delete', '删除')}>
+                            <Icon type="close" theme="outlined" /></span> :
+                            <Popconfirm title={`${Intl.get('crm.contact.delete.confirm', '确认删除')}?`} onConfirm={this.handleDelete.bind(this, index, 'delete')}>
+                                <span
+                                    className="btn-bar"
+                                    title={Intl.get('common.delete', '删除')}>
+                                    <Icon type="close" theme="outlined" />
+                                </span>
+                            </Popconfirm>}
+                    </span>
+                ) : <span>
+                    {this.state.isAddApp || this.state.currentEditKey !== null ? null : <DetailEditBtn
+                        title={this.props.editBtnTip}
+                        onClick={this.showEdit.bind(this, index, 'update')}
+                    />}
+                </span>
+                }
             </div>
         );
     };
@@ -360,31 +611,61 @@ class ProductList extends Component {
         );
     };
 
+    renderAppListBlock = () => {
+        const appNames = _.map(this.state.data, 'name');
+        const appList = _.filter(this.props.appList, app => appNames.indexOf(app.client_name) === -1);
+        let dataList = [];
+        _.each(appList, item => {
+            dataList.push({
+                name: item.client_name,
+                value: item.client_id
+            });
+        });
+
+        return (
+            <div className="op-pane change-salesman">
+                <AlwaysShowSelect
+                    placeholder={Intl.get('sales.team.search', '搜索')}
+                    value={this.state.appSelected}
+                    onChange={this.onAppListChange}
+                    notFoundContent={dataList.length ? Intl.get('deal.detail.no.products', '暂无产品') : Intl.get('crm.contract.no.product.info', '暂无产品信息')}
+                    dataList={dataList}
+                />
+            </div>
+        );
+    };
+
     render() {
         let productListLength = this.state.data.length || 0;
         const appNames = _.map(this.state.data, 'name');
 
         const appList = _.filter(this.props.appList, app => appNames.indexOf(app.client_name) === -1);
-        const showNoDataTip = !(!!productListLength || this.state.isEdit || !this.props.isEditBtnShow);
+        // const showNoDataTip = !(!!productListLength || this.state.isEdit || !this.props.isEditBtnShow);
+        const showNoDataTip = !productListLength;
         const containerStyle = {
-            minHeight: showNoDataTip ? 125 : 0,
+            minHeight: showNoDataTip ? 200 : 0,
             position: showNoDataTip ? 'relative' : 'inherit',
         };
+        // 展示时，需要判断是否有产品在编辑中
+        let isEditting = false;
+        _.each(this.state.data, item => {
+            this.props.isSaveCancelBtnShow && item.isEditting ? isEditting = true : null;
+        });
 
         return (
             <div className="product-list">
-                <div className="product-detail-top-total-block clearfix">
-                    {
-                        this.state.isEdit || !this.props.isEditBtnShow ? null : (
-                            <div>
+                {/*<div className="product-detail-top-total-block clearfix">
+                    <div className=''>
+                        {
+                            this.state.isEdit || !this.props.isEditBtnShow ? null : (
                                 <DetailEditBtn
                                     title={this.props.editBtnTip}
                                     onClick={this.showEdit}
                                 />
-                            </div>
-                        )
-                    }
-                </div>
+                            )
+                        }
+                    </div>
+                </div>*/}
                 <div className="product-list-container clearfix" style={containerStyle}>
                     {
                         productListLength ? (
@@ -392,35 +673,63 @@ class ProductList extends Component {
                                 return (
                                     <DetailCard
                                         key={product.id}
+                                        isEdit={this.props.isEditBtnShow && product.isEditting}
                                         title={this.renderProductTitle(product, index)}
+                                        loading={this.state.saveStatus[index].loading}
+                                        saveErrorMsg={this.state.saveStatus[index].saveErrMsg}
                                         content={this.renderProductItem(product, index)}
+                                        handleSubmit={this.handleSubmit.bind(this, 'update', index)}
+                                        handleCancel={this.handleItemCancel.bind(this, product, index)}
                                     />
                                 );
                             })
                         ) : (
-                            this.state.isEdit || !this.props.isEditBtnShow ? null : (
-                                <NoDataIconTip tipContent={Intl.get('deal.detail.no.products', '暂无产品')}/>
-                            ))
+                            <NoDataIconTip tipContent={Intl.get('deal.detail.no.products', '暂无产品')}/>
+                            // this.state.isEdit || !this.props.isEditBtnShow ? null : (
+                            //     <NoDataIconTip tipContent={Intl.get('deal.detail.no.products', '暂无产品')}/>
+                            // )
+                        )
                     }
                 </div>
-                {this.state.isEdit ? (
-                    <div>
-                        <div className="add-app-container">
-                            <AntcAppSelector
-                                appList={appList}
-                                onConfirm={this.handleAppSelect}
-                                appendDOM={this.props.appendDOM}
-                                addBtnText={this.props.addBtnText}
-                            />
-                        </div>
-                        { this.props.isSaveCancelBtnShow ? (
-                            <SaveCancelButton
-                                handleSubmit={this.handleSubmit}
-                                handleCancel={this.handleCancel}
-                                loading={this.state.loading}
-                                saveErrorMsg={this.state.saveErrMsg}
-                            />) : null}
-                    </div>) : null}
+                <div>
+                    {this.props.isEdit ?
+                        <div>
+                            {!isEditting ?
+                                <div className="add-app-container" id='app-container'>
+                                    {
+                                        this.props.isSaveCancelBtnShow ?
+                                            <AntcDropdown
+                                                ref='appSelectorRef'
+                                                content={<span>{this.props.addBtnText}</span>}
+                                                overlayTitle={Intl.get('call.record.application.product', '应用产品')}
+                                                okTitle={Intl.get('common.confirm', '确认')}
+                                                cancelTitle={Intl.get('common.cancel', '取消')}
+                                                overlayContent={this.renderAppListBlock()}
+                                                handleSubmit={this.handleSubmitAppList}
+                                                unSelectDataTip={this.state.unSelectDataTip}
+                                                clearSelectData={this.clearSelectAppList}
+                                                btnAtTop={false}
+                                                placement='bottomRight'
+                                            /> : <AntcAppSelector
+                                                ref='appSelectorRef'
+                                                appList={appList}
+                                                onConfirm={this.handleAppSelect}
+                                                appendDOM={this.props.appendDOM}
+                                                addBtnText={this.props.addBtnText}
+                                            />
+                                    }
+
+                                </div> : null
+                            }
+                        </div> : null}
+                    {/*{this.state.isEdit && this.props.isSaveCancelBtnShow ? (
+                        <SaveCancelButton
+                            handleSubmit={this.handleSubmit}
+                            handleCancel={this.handleCancel}
+                            loading={this.state.loading}
+                            saveErrorMsg={this.state.saveErrMsg}
+                        />) : null}*/}
+                </div>
             </div>
         );
     }
