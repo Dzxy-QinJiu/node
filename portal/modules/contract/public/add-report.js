@@ -30,8 +30,8 @@ const AddReport = createReactClass({
         let reports;
 
         if (_.isArray(this.props.reports) && this.props.reports.length) {
-            reports = JSON.parse(JSON.stringify(this.props.reports));
-            _.map(reports,(item) => {
+            reports = _.cloneDeep(this.props.reports);
+            _.each(reports,(item) => {
                 if(!item.name) {
                     item.id = item.type;
                     item.name = item.type;
@@ -107,17 +107,6 @@ const AddReport = createReactClass({
     handleReportChange(data) {
         const list = data;
         let lastItem = null;
-        /*if (list.length > 0) {
-            lastItem = list[list.length - 1];
-            if (REPORT_TYPE.includes(list[list.length - 1].name)) {
-                list[list.length - 1] = {
-                    ...list[list.length - 1],
-                    // num: '-',
-                    num: '',
-                    report_type: list[list.length - 1].name
-                };
-            }
-        }*/
         this.setState((state, props) => {
             return { reports: list.map(x => ({
                 ...x,
@@ -164,8 +153,8 @@ const AddReport = createReactClass({
         });
     },
     handleReportCancel() {
-        let reports = JSON.parse(JSON.stringify(this.props.reports));
-        _.map(reports,(item) => {
+        let reports = _.cloneDeep(this.props.reports);
+        _.each(reports,(item) => {
             if(!item.name) {
                 item.id = item.type;
                 item.name = item.type;
@@ -231,9 +220,10 @@ const AddReport = createReactClass({
         return (
             <div className="add-reports" data-tracename="添加编辑>服务产品信息">
                 <div className="product-forms product-table-container">
+                    <div className='report-title'><i className='iconfont icon-fuwu'></i><span>{Intl.get('contract.96', '服务信息')}</span></div>
                     <ProductTable
-                        addBtnText={Intl.get('contract.75', '服务类型')}
-                        ref={ref => this.producTableRef = ref}                      
+                        addBtnText={Intl.get('contract.service.add', '添加服务')}
+                        ref={ref => this.producTableRef = ref}
                         defaultValueMap={defaultValueMap}
                         appList={REPORT_TYPE.concat(LITE_SERVICE_TYPE).map(x => ({
                             client_id: x,

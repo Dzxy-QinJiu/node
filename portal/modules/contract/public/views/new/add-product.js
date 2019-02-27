@@ -9,7 +9,7 @@ import { getNumberValidateRule, numberAddNoMoreThan } from 'PUB_DIR/sources/util
 import { removeCommaFromNum } from 'LIB_DIR/func';
 import ProductList from '../components/product-list';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
-import { PRIVILEGE_MAP, VIEW_TYPE } from 'MOD_DIR/contract/consts';
+import { OPERATE, PRIVILEGE_MAP, VIEW_TYPE } from 'MOD_DIR/contract/consts';
 import Trace from 'LIB_DIR/trace';
 import routeList from 'MOD_DIR/contract/common/route';
 import ajax from 'MOD_DIR/contract/common/ajax';
@@ -34,7 +34,7 @@ class AddProduct extends React.Component{
         let products;
 
         if (_.isArray(props.products) && props.products.length) {
-            products = JSON.parse(JSON.stringify(this.props.products));
+            products = _.cloneDeep(this.props.products);
         } else {
             products = [];
         }
@@ -47,12 +47,14 @@ class AddProduct extends React.Component{
     }
 
     static defaultProps = {
-        totalAmout: 0
+        totalAmout: 0,
+        className: ''
     };
 
     producTableRef = null;
 
     static propTypes = {
+        className: PropTypes.string,
         products: PropTypes.array,
         appList: PropTypes.array,
         updateScrollBar: PropTypes.func,
@@ -87,14 +89,29 @@ class AddProduct extends React.Component{
         });
     };
 
-    handleProductCancel = () => {
-        let products = _.clone(this.props.products);
-        this.setState({products},() => {
+    handleProductCancel = (index, id) => {
+        let products = _.cloneDeep(this.props.products);
+        let item = _.find(products,item => {
+            return item.id === id;
+        });
+        let mineProducts = _.cloneDeep(this.state.products);
+        mineProducts[index] = item;
+
+        this.setState({products: mineProducts},() => {
             this.props.updateScrollBar();
         });
     };
 
-    handleProductSave = (saveObj,successFunc,errorFunc) => {
+    handleProductDelete = (id, successFunc, errorFunc, type) => {
+        let products = _.cloneDeep(this.props.products);
+        let index = _.findIndex(products, item => {
+            return item.id === id;
+        });
+        products.splice(index, 1);
+        this.handleProductSave(products, successFunc, errorFunc, type);
+    };
+
+    handleProductSave = (saveObj,successFunc,errorFunc,type = 'update') => {
         saveObj = {products: saveObj};
         Trace.traceEvent(ReactDOM.findDOMNode(this),'修改产品信息');
 
@@ -109,24 +126,25 @@ class AddProduct extends React.Component{
         };
         ajax(arg).then(result => {
             if (result.code === 0) {
-                message.success(Intl.get('user.edit.success', '修改成功'));
+                // message.success(Intl.get('user.edit.success', '修改成功'));
+                message.success(OPERATE[type] + Intl.get('contract.41', '成功'));
                 if (_.isFunction(successFunc)) successFunc();
                 const hasResult = _.isObject(result.result) && !_.isEmpty(result.result);
-                let contract = _.extend({}, this.props.contract, result.result);
+                let contract = _.extend(this.props.contract, result.result);
                 if (hasResult) {
                     this.props.refreshCurrentContract(this.props.contract.id, true, contract);
                 }
             } else {
-                if (_.isFunction(errorFunc)) errorFunc(Intl.get('common.edit.failed', '修改失败'));
+                if (_.isFunction(errorFunc)) errorFunc(OPERATE[type] + Intl.get('user.failed', '失败'));
             }
         }, (errorMsg) => {
-            if (_.isFunction(errorFunc)) errorFunc(errorMsg || Intl.get('common.edit.failed', '修改失败'));
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE[type] + Intl.get('user.failed', '失败'));
         });
     };
 
     handleSubmitEditValidityTime = (startTime, endTime, product) => {
         if(!startTime) return false;
-        let {products} = this.state;
+        let products = _.cloneDeep(this.state.products);
         let index = _.findIndex(products, item => {
             return item.id === product.id;
         });
@@ -172,7 +190,7 @@ class AddProduct extends React.Component{
         // 如果是添加合同时，是可以编辑的（true），详情查看时，显示可编辑按钮，点编辑后，显示编辑状态且有保存取消按钮
         let isEditBtnShow = this.props.isDetailType && hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPATE_PRIVILEGE);
         let isEdit = !this.props.isDetailType ? true :
-            (isEditBtnShow && this.producTableRef ? this.producTableRef.state.isEdit : false);
+            isEditBtnShow; //(isEditBtnShow && this.producTableRef ? this.producTableRef.state.isEdit : false);
         let isSaveCancelBtnShow = this.props.isDetailType;
 
         const formItems = [
@@ -265,7 +283,7 @@ class AddProduct extends React.Component{
                                 let currentTotalAmout = _this.getTotalAmount();
                                 // 这里需要获取其他产品的价格
                                 let validateArr = [];
-                                _.map(this.state.products, (item, index) => {
+                                _.each(this.state.products, (item, index) => {
                                     let ref = parent[`form${item.id}Ref`];
                                     let formValue = ref.props.form.getFieldsValue();
                                     if(!_.get(item,'account_start_time')) {
@@ -304,10 +322,10 @@ class AddProduct extends React.Component{
         ];
 
         return (
-            <div className="add-products" data-tracename="添加编辑>产品信息">
+            <div className={`add-products ${this.props.className}`} data-tracename="添加编辑>产品信息">
                 <div className="product-forms">
                     <ProductList
-                        addBtnText={Intl.get('common.product', '产品')}
+                        addBtnText={Intl.get('config.product.add', '添加产品')}
                         ref={ref => this.producTableRef = ref}
                         defaultValueMap={defaultValueMap}
                         appList={this.props.appList.map(x => ({
@@ -316,6 +334,7 @@ class AddProduct extends React.Component{
                             client_name: x.app_name
                         }))}
                         totalAmount={this.getTotalAmount()}
+                        contractId={_.get(this.props,'contract') ? this.props.contract.id : ''}
                         data={this.state.products}
                         dataSource={this.state.products}
                         isEdit={isEdit}
@@ -323,6 +342,7 @@ class AddProduct extends React.Component{
                         isSaveCancelBtnShow={isSaveCancelBtnShow}
                         formItems={formItems}
                         onSave={this.handleProductSave}
+                        onDelete={this.handleProductDelete}
                         handleCancel={this.handleProductCancel}
                         onChange={this.handleProductChange}
                         getTotalAmount={this.getTotalAmount}

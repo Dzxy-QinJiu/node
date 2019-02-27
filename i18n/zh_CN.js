@@ -2750,6 +2750,8 @@ var zh_CN = {
     'contract.form.customize': '添加自定义产品',
     'contract.report.contract.total.ccount': '本次合同总金额为',
     'contract.table.form.fill': '请填写表格内容',
-    'clue.and.crm.upload.size': '文件大小不要超过10M!'
+    'contract.service.add': '添加服务',
+    'clue.and.crm.upload.size': '文件大小不要超过10M!',
+    'contract.product.choose.tip': '每次只能添加一个产品'
 };
 export default zh_CN;

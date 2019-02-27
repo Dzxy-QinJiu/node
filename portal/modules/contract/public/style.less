@@ -1011,7 +1011,8 @@
             }
         }
         .total-amount-price {
-            margin: 15px 0 0 15px;
+            //margin: 15px 0 0 15px;
+            margin: 0 15px 0px;
             font-size: 14px;
         }
         .total-amount-error {
@@ -1181,15 +1182,6 @@
                }
             }
         }
-        .contract-product{
-            .contract-product-title{
-                padding-left: 15px;
-                .product-title-text{
-                    font-size: 14px;
-                    color: @color-block;
-                }
-            }
-        }
         .iconfont{
             overflow: hidden;
             cursor: pointer;
@@ -1307,11 +1299,52 @@
                     margin-right: 0;
                 }
             }
+            .add-app-container {
+                margin-top: 10px;
+                background: white;
+                padding: 2px 6px;
+                position: fixed;
+                line-height: normal;
+                font-size: 12px;
+                top: 110px;
+                z-index: 999;
+                border-radius: 5px;
+                border: 1px solid #d9d9d9;
+                &:hover,&:focus {
+                    color: #108ee9;
+                    background-color: #fff;
+                    border-color: #108ee9;
+                }
+                .anticon-plus{
+                    display: none;
+                }
+            }
         }
         .add-reports{
-            margin-top: 30px;
+            //margin-top: 30px;
             .icon-edit-btn{
                 top: -25px;
+            }
+            .add-app-container{
+                margin-left: 69px;
+            }
+            .report-title{
+                background: #fff;
+                padding: 10px 0px 10px 10px;
+                .icon-fuwu{
+                    color: @icon-color;
+                }
+                > span{
+                  margin-left: 15px;
+                    font-size: 14px;
+                }
+            }
+            .product-table{
+                .ant-table{
+                    input{
+                        height: 24px;
+                    }
+                }
             }
         }
         .add-products {
@@ -1341,17 +1374,14 @@
                 }
                 .app-name{
                     margin-left: 5px;
+                    color: #000000a6;
                 }
             }
             .product-forms{
-                margin: 0 15px 15px;
+                margin: 0 15px 29px 15px;
                 .product-detail-top-total-block{
                     line-height: 24px;
                     margin-top: 5px;
-                    .add-app-container{
-                        float: left;
-                        font-size: 14px;
-                    }
                     .icon-edit-btn{
                         //top: -23px;
                         top: 0;
@@ -1381,19 +1411,21 @@
                         line-height: 30px;
                     }
                 }
-                .add-app-container {
-                    background: white;
-                    padding-left: 7px;
-                    font-size: 14px;
-                    line-height: 32px;
-                    margin-top: 10px;
-                }
                 .ant-form-item {
                     .ant-form-item-label {
-                        line-height: 28px;
+                        line-height: 20px;
                     }
                     .ant-form-item-control {
                         font-size: 14px;
+                        line-height: 25px;
+                    }
+                    &.form-inline{
+                        .ant-form-item-label{
+                            line-height: 28px;
+                        }
+                        .ant-form-item-control{
+                            line-height: 31.9999px;
+                        }
                     }
                 }
             }
@@ -1417,6 +1449,54 @@
                 border-bottom-width: 1px !important;
                 background: #f5f5f5;
                 color: #999 !important;
+            }
+        }
+        .contract-product{
+            .contract-product-title{
+                padding-left: 15px;
+                .product-title-text{
+                    font-size: 14px;
+                    color: @color-block;
+                }
+            }
+            .add-products, .add-reports{
+                .add-app-container{
+                    top: 122px;
+                    .app-selecotr-wrap{
+                        left: -290px;
+                    }
+                }
+            }
+            .add-products{
+                .add-app-container{
+                    right: 18px;
+                }
+                .icon-edit-btn{
+                    display: none;
+                    position: unset;
+
+                }
+                .detail-card-container{
+                    &:hover{
+                        .icon-edit-btn{
+                            display: block;
+                        }
+                    }
+                }
+                &.has-report{
+                    .add-app-container{
+                        right: 90px;
+                    }
+                }
+            }
+            .add-reports{
+                .add-app-container{
+                    right: 18px;
+                }
+                .icon-edit-btn{
+                    top: 10px;
+                    margin-right: 10px;
+                }
             }
         }
     }

@@ -2728,6 +2728,8 @@ var en_US = {
     'contract.form.customize': 'Add customized product',//'添加自定义产品',
     'contract.report.contract.total.ccount': 'The total amount of the contract is', //本次合同总金额为
     'contract.table.form.fill': 'Please fill in the form',//请填写表格内容
-    'clue.and.crm.upload.size': 'The file size should not exceed 10M!'//文件大小不要超过10M!
+    'clue.and.crm.upload.size': 'The file size should not exceed 10M!',//文件大小不要超过10M!
+    'contract.service.add': 'Add Service',//添加服务
+    'contract.product.choose.tip': 'You can only add one product at a time'//每次只能添加一个产品
 };
 export default en_US;

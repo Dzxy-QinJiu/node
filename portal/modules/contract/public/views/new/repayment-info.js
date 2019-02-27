@@ -186,7 +186,7 @@ class RepaymentInfo extends React.Component {
 
                 if (_.isFunction(successFunc)) successFunc(resultData);
             } else {
-                if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE[type] + Intl.get('user.failed', '失败'));
+                if (_.isFunction(errorFunc)) errorFunc(OPERATE[type] + Intl.get('user.failed', '失败'));
             }
         }, errorMsg => {
             if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE[type] + Intl.get('user.failed', '失败'));
