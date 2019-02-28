@@ -36,6 +36,8 @@ import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
 import userData from 'PUB_DIR/sources/user-data';
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
+import InviteMemberForm from './views/invite-member-form';
 
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
@@ -77,6 +79,8 @@ class SalesHomePage extends React.Component {
             callBackSorter: {}, // 回访的排序对象
             appList: [], //应用数组
             selectedAppId: '', //选中的应用id
+            isInivteMemberRightPanelShow: false, // 是否显示邀请成员的面板，默认为false
+            teamList: [] // 团队信息
         };
     }
 
@@ -100,6 +104,14 @@ class SalesHomePage extends React.Component {
             this.setState({appList: appList, selectedAppId: selectedAppId});
         });
     };
+    // 获取团队信息
+    getTeamList = () => {
+        commonDataUtil.getMyTeamTreeAndFlattenList( data => {
+            this.setState({
+                teamList: _.get(data, 'teamList', [])
+            });
+        } );
+    };
 
     componentDidMount() {
         SalesHomeStore.listen(this.onChange);
@@ -109,6 +121,10 @@ class SalesHomePage extends React.Component {
         SalesHomeAction.getSalesTeamList(type);
         // 获取应用列表
         this.getAppList();
+        // 销售主管获取团队信息（邀请成员时，销售主管需要团队信息，运营人员不需要）
+        if (userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER)) {
+            this.getTeamList();
+        }
         this.refreshSalesListData();
         this.resizeLayout();
         $(window).resize(() => this.resizeLayout());
@@ -825,11 +841,29 @@ class SalesHomePage extends React.Component {
         }
         return e.stopPropagation();
     };
-
-    handleInviteMember = (event) => {
+    // 显示邀请成员面板
+    ShowInviteMemberPanel = (event) => {
+        this.setState({
+            isInivteMemberRightPanelShow: true
+        });
         Trace.traceEvent(event, '点击邀请成员');
     };
-
+    // 隐藏邀请成员面板
+    hideInviteMemberPanel = () => {
+        this.setState({
+            isInivteMemberRightPanelShow: false
+        });
+        Trace.traceEvent(event, '关闭邀请成员界面');
+    };
+    // 渲染邀请成员面板
+    renderInviteMemberForm = () => {
+        return (
+            <InviteMemberForm
+                teamList={this.state.teamList}
+                closeRightPanel={this.hideInviteMemberPanel}
+            />
+        );
+    };
     //跳转到个人信息页面
     jumpToUserInfo = () => {
         history.push('/user_info_manage/user_info', {});
@@ -1018,7 +1052,7 @@ class SalesHomePage extends React.Component {
                         hasInivteMemberPrivilege ? (
                             <div className="invite-member" data-tracename="销售首页">
                                 <span className='iconfont icon-invite-member'
-                                    onClick={this.handleInviteMember}
+                                    onClick={this.ShowInviteMemberPanel}
                                     title={Intl.get('sales.home.invite.member', '邀请成员')}>
                                 </span>
                             </div>
@@ -1077,6 +1111,15 @@ class SalesHomePage extends React.Component {
                                 />
                             </div>
                         ) : null}
+                        {
+                            this.state.isInivteMemberRightPanelShow ? <RightPanelModal
+                                isShowModal={false}
+                                isShowCloseBtn={true}
+                                title={Intl.get('sales.home.invite.member', '邀请成员')}
+                                onClosePanel={this.hideInviteMemberPanel}
+                                content={this.renderInviteMemberForm()}
+                            /> : null
+                        }
                     </div>}
 
             </div>
