@@ -3,7 +3,7 @@ import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import teamAjaxTrans from 'MOD_DIR/common/public/ajax/team';
 import {storageUtil} from 'ant-utils';
-import {traversingTeamTree, getParamByPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import {traversingTeamTree, getParamByPrivilege,showCallIconPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {message} from 'antd';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
@@ -166,7 +166,7 @@ exports.handleCallOutResult = function(paramObj) {
             }
         );
         let callClient = getCallClient();
-        if (callClient && callClient.isInited()) {
+        if (showCallIconPrivilege()) {
             callClient.callout(phoneNumber).then((result) => {
                 message.success(Intl.get('crm.call.phone.success', '拨打成功'));
             }, (errMsg) => {

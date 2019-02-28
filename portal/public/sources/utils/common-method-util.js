@@ -662,9 +662,5 @@ exports.isOrganizationEefung = () => {
 exports.showCallIconPrivilege = () => {
     //是否展示拨打按钮
     let callClient = getCallClient();
-    var isShowCallTip = false;
-    if (callClient && callClient.isInited()) {
-        isShowCallTip = true;
-    }
-    return isShowCallTip;
+    return callClient && callClient.isInited();
 };
