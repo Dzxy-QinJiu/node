@@ -36,7 +36,6 @@ const PRIVILEGE_MAP = {
     EDIT_TEAM_MANAGER: 'CRM_MANAGER_UPDATE_CUSTOMER_SALES_TEAM',//管理员修改所属团队的权限
     EDIT_TEAM_USER: 'CRM_USER_UPDATE_CUSTOMER_SALES_TEAM'//销售修改所属团队的权限
 };
-import {showCallIconPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 
 class BasicOverview extends React.Component {
     constructor(props) {
@@ -165,10 +164,9 @@ class BasicOverview extends React.Component {
                 if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
                     this.getCrmUserList(nextProps.curCustomer);
                 }
-                if (showCallIconPrivilege()){
-                    //有坐席号，需要展示未处理的电联的联系计划
-                    this.getNotCompletedScheduleList(nextProps.curCustomer);
-                }
+                //有坐席号，需要展示未处理的电联的联系计划
+                this.getNotCompletedScheduleList(nextProps.curCustomer);
+
             });
         }
     }

@@ -2728,6 +2728,8 @@ var en_US = {
     'contract.form.customize': 'Add customized product',//'添加自定义产品',
     'contract.report.contract.total.ccount': 'The total amount of the contract is', //本次合同总金额为
     'contract.table.form.fill': 'Please fill in the form',//请填写表格内容
-    'clue.and.crm.upload.size': 'The file size should not exceed 10M!'//文件大小不要超过10M!
+    'clue.and.crm.upload.size': 'The file size should not exceed 10M!',//文件大小不要超过10M!
+    'manager.role.has.not.setting.phone.systerm': 'You have not yet opened a telephone system or have not set an agent number.',//您尚未开通尚未开通电话系统或未设置座席号!
+    'sales.role.has.not.setting.phone.systerm': 'You have not yet opened a telephone system or have not set an agent number. Please inform the administrator!'//您尚未开通尚未开通电话系统或未设置座席号，请通知管理员!
 };
 export default en_US;

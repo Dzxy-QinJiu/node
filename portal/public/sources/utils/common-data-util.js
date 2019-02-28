@@ -3,7 +3,7 @@ import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import teamAjaxTrans from 'MOD_DIR/common/public/ajax/team';
 import {storageUtil} from 'ant-utils';
-import {traversingTeamTree, getParamByPrivilege,showCallIconPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import {traversingTeamTree, getParamByPrivilege,hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {message} from 'antd';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
@@ -23,6 +23,7 @@ const AUTH_MAP = {
 };
 import {DIFF_TYPE_LOG_FILES, AM_AND_PM} from './consts';
 import {isEqualArray} from 'LIB_DIR/func';
+import userData from 'PUB_DIR/sources/user-data';
 //获取oplate中的应用
 exports.getAppList = function(cb) {
     if (_.get(appList, '[0]')) {
@@ -166,7 +167,7 @@ exports.handleCallOutResult = function(paramObj) {
             }
         );
         let callClient = getCallClient();
-        if (showCallIconPrivilege()) {
+        if (hasCalloutPrivilege()) {
             callClient.callout(phoneNumber).then((result) => {
                 message.success(Intl.get('crm.call.phone.success', '拨打成功'));
             }, (errMsg) => {
@@ -340,5 +341,18 @@ exports.getProductList = function(cb, isRefresh) {
         });
     } else {
         if (_.isFunction(cb)) cb(integrationProductList);
+    }
+};
+function isRealmManager() {
+    //是否是管理员
+    return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
+}
+//点击电话后不可拨打的提示
+exports.showDisabledCallTip = function() {
+    //是否是管理员
+    if (isRealmManager()){
+        return Intl.get('manager.role.has.not.setting.phone.systerm', '您尚未开通尚未开通电话系统或未设置座席号!');
+    }else{
+        return Intl.get('sales.role.has.not.setting.phone.systerm', '您尚未开通尚未开通电话系统或未设置座席号，请通知管理员!');
     }
 };

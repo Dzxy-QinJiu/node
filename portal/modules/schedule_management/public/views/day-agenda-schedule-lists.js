@@ -21,9 +21,8 @@ const LAY_OUT = {
 var curWeek = '';//今天所在的周
 var scheduleManagementEmitter = require('PUB_DIR/sources/utils/emitters').scheduleManagementEmitter;
 import Trace from 'LIB_DIR/trace';
-import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
-import {showCallIconPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {isEqualArray} from 'LIB_DIR/func';
+import PhoneCallout from 'CMP_DIR/phone-callout';
 class DayAgendaScheduleLists extends React.Component {
     constructor(props) {
         super(props);
@@ -106,14 +105,6 @@ class DayAgendaScheduleLists extends React.Component {
             </div>
         );
     }
-
-    handleClickCallOut = (phoneNumber, contactName, item) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
-        handleCallOutResult({
-            contactName: contactName,//联系人姓名
-            phoneNumber: phoneNumber,//拨打的电话
-        });
-    };
     //联系人和联系电话
     renderPopoverContent(item){
         return (
@@ -131,13 +122,10 @@ class DayAgendaScheduleLists extends React.Component {
                                 {_.map(contact.phone, (phone) => {
                                     return (
                                         <div className="phone-item">
-                                            {phone}
-                                            {showCallIconPrivilege() ?
-                                                <Button size="small" onClick={this.handleClickCallOut.bind(this, phone, contact.name,item)} data-tracename="拨打电话">
-                                                    {Intl.get('schedule.call.out','拨打')}
-                                                </Button>
-                                                : null}
-
+                                            <PhoneCallout
+                                                phoneNumber={phone}
+                                                record={contact.name}
+                                            />
                                         </div>
                                     );
                                 })}

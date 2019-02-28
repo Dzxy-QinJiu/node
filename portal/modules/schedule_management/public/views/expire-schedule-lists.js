@@ -20,12 +20,11 @@ var scheduleManagementEmitter = require('PUB_DIR/sources/utils/emitters').schedu
 let history = require('PUB_DIR/sources/history');
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import Trace from 'LIB_DIR/trace';
-import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
 const DELAY_RANGE = {
     ANIMATION: 1000,//动画结束的时间
 };
 const LAYOUT = {PADDING_TOP: 40};
-import {showCallIconPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import PhoneCallout from 'CMP_DIR/phone-callout';
 class ExpireScheduleLists extends React.Component {
     constructor(props) {
         super(props);
@@ -42,13 +41,6 @@ class ExpireScheduleLists extends React.Component {
 
     componentDidMount() {
         this.gr();
-    }
-    // 自动拨号
-    handleClickCallOut(phoneNumber) {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
-        handleCallOutResult({
-            phoneNumber: phoneNumber,//拨打的电话
-        });
     }
 
     gr(){
@@ -117,6 +109,8 @@ class ExpireScheduleLists extends React.Component {
     };
     //渲染超期日程列表
     renderExpiredScheduleList() {
+        var contentTip = '';
+        var titleTip = Intl.get('crm.click.call.phone', '点击拨打电话');
         return (
             <div>
                 {_.map(this.state.scheduleExpiredList, (item) => {
@@ -145,11 +139,9 @@ class ExpireScheduleLists extends React.Component {
                                 </span>
                             </p> : phoneNum ?
                                 <p className="item-customer-content">
-                                    {phoneNum}
-                                    {showCallIconPrivilege() ?
-                                        <i className="iconfont icon-call-out call-out"
-                                            title={Intl.get('crm.click.call.phone', '点击拨打电话')}
-                                            onClick={this.handleClickCallOut.bind(this, phoneNum)}></i> : null}
+                                    <PhoneCallout
+                                        phoneNumber={phoneNum}
+                                    />
                                     { Intl.get('schedule.expired.call.time.at','于') + moment(item.create_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + Intl.get('schedule.expired.call.in.phone.num','拨打过您的电话')}
                                 </p>
                                 : null}

@@ -853,8 +853,8 @@ class ClueDetailOverview extends React.Component {
                                                 field='phone'
                                                 value={contactItem.phone}
                                                 type='phone'
-                                                label={<div className="iconfont icon-phone-call-out contact-way-icon"
-                                                    title={Intl.get('common.phone', '电话')}/>}
+                                                label={<div className="contact-way-icon"
+                                                >{Intl.get('common.phone', '电话')}</div>}
                                                 hasEditPrivilege={hasPrivilegeEdit}
                                                 placeholder={Intl.get('crm.95', '请输入联系人电话')}
                                                 validateRules={this.getPhoneInputValidateRules(contactItem)}
@@ -868,7 +868,7 @@ class ClueDetailOverview extends React.Component {
                                                 field='qq'
                                                 value={contactItem.qq}
                                                 type='input'
-                                                label={<div className="iconfont icon-qq contact-way-icon" title="QQ"/>}
+                                                label={<div className="contact-way-icon">{'QQ'}</div>}
                                                 hasEditPrivilege={hasPrivilegeEdit}
                                                 placeholder={Intl.get('member.input.qq', '请输入QQ号')}
                                                 saveEditData={this.saveEditBasicInfo.bind(this, {editItem: 'qq',id: contactItem.id})}
@@ -882,8 +882,7 @@ class ClueDetailOverview extends React.Component {
                                                 field='weChat'
                                                 value={contactItem.weChat}
                                                 type='input'
-                                                label={<div className="iconfont icon-weChat contact-way-icon"
-                                                    title={Intl.get('crm.58', '微信')}/>}
+                                                label={<div className="contact-way-icon">{Intl.get('crm.58', '微信')}</div>}
                                                 hasEditPrivilege={hasPrivilegeEdit}
                                                 placeholder={Intl.get('member.input.wechat', '请输入微信号')}
                                                 saveEditData={this.saveEditBasicInfo.bind(this, {editItem: 'weChat',id: contactItem.id})}
@@ -897,8 +896,7 @@ class ClueDetailOverview extends React.Component {
                                                 field='email'
                                                 value={contactItem.email}
                                                 type='input'
-                                                label={<div className="iconfont icon-email contact-way-icon"
-                                                    title={Intl.get('common.email', '邮箱')}/>}
+                                                label={<div className="contact-way-icon">{Intl.get('common.email', '邮箱')}</div>}
                                                 hasEditPrivilege={hasPrivilegeEdit}
                                                 validateRules={[{
                                                     message: Intl.get('user.email.validate.tip','请输入正确格式的邮箱'),

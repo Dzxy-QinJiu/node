@@ -35,8 +35,7 @@ import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import {decodeHTML} from 'PUB_DIR/sources/utils/common-method-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import ShearContent from '../../../../../components/shear-content';
-import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
-import {showCallIconPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import PhoneCallout from 'CMP_DIR/phone-callout';
 
 var classNames = require('classnames');
 //用于布局的高度
@@ -547,17 +546,6 @@ class CustomerRecord extends React.Component {
         );
     };
 
-    // 自动拨号
-    handleClickCallOut = (phone) => {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '拨打电话');
-        let callClient = getCallClient();
-        callClient.callout(phone).then((result) => {
-            message.success(Intl.get('crm.call.phone.success', '拨打成功'));
-        }, (errMsg) => {
-            message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
-        });
-    };
-
     renderTimeLineItem = (item, hasSplitLine) => {
         var traceObj = crmUtil.processForTrace(item);
         //渲染时间线
@@ -571,11 +559,10 @@ class CustomerRecord extends React.Component {
                 <p className="item-detail-tip">
                     <span className="icon-container" title={title}><i className={iconClass}></i></span>
                     {traceDsc ? (<span className="trace-title-name" title={traceDsc}>{traceDsc}</span>) : null}
-                    {item.dst ? (<span className="trace-title-phone">{item.dst}</span>) : null}
-                    {(item.type === 'phone' || item.type === 'app') && showCallIconPrivilege() ?
-                        <i className="iconfont icon-call-out call-out"
-                            title={Intl.get('crm.click.call.phone', '点击拨打电话')}
-                            onClick={this.handleClickCallOut.bind(this, item.dst)}></i> : null}
+                    {(item.type === 'phone' || item.type === 'app') ?
+                        <PhoneCallout
+                            phoneNumber={item.dst}
+                        /> : null}
                 </p>
                 {item.type === 'data_report' ? this.renderReportContent(item) : (<div>
                     <div className="item-detail-content" id={item.id}>

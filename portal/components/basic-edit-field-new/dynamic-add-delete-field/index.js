@@ -12,7 +12,8 @@ import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import {Form, Input, Icon} from 'antd';
 const FormItem = Form.Item;
-import {showCallIconPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import {hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import PhoneCallout from 'CMP_DIR/phone-callout';
 class DynamicAddDelField extends React.Component {
     constructor(props) {
         super(props);
@@ -155,11 +156,10 @@ class DynamicAddDelField extends React.Component {
                 <div className="item-show-content">
                     {_.map(this.state.value, item => {
                         return ( <div className="item-content">
-                            <span className="item-text">{addHyphenToPhoneNumber(item)}</span>
-                            {this.props.type === 'phone' && showCallIconPrivilege() ? (
-                                <span className="phone-call-button" onClick={this.handleClickCallOut.bind(this, item)}>
-                                    {Intl.get('schedule.call.out', '拨打')}
-                                </span>) : null}
+                            {this.props.type === 'phone' ? <PhoneCallout phoneNumber={item} showPhoneNum={addHyphenToPhoneNumber(item)}/> : <span>
+                                <span className="item-text">{addHyphenToPhoneNumber(item)}</span>
+                            </span>}
+
                         </div>);
                     })}
                     {this.props.hasEditPrivilege ? (

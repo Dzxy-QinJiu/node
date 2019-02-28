@@ -2750,6 +2750,8 @@ var zh_CN = {
     'contract.form.customize': '添加自定义产品',
     'contract.report.contract.total.ccount': '本次合同总金额为',
     'contract.table.form.fill': '请填写表格内容',
-    'clue.and.crm.upload.size': '文件大小不要超过10M!'
+    'clue.and.crm.upload.size': '文件大小不要超过10M!',
+    'manager.role.has.not.setting.phone.systerm': '您尚未开通尚未开通电话系统或未设置座席号!',
+    'sales.role.has.not.setting.phone.systerm': '您尚未开通尚未开通电话系统或未设置座席号，请通知管理员!'
 };
 export default zh_CN;

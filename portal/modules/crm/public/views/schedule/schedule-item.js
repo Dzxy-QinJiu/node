@@ -10,8 +10,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import {getUserData} from 'PUB_DIR/sources/user-data';
 import Trace from 'LIB_DIR/trace';
-import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
-import {showCallIconPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import PhoneCallout from 'CMP_DIR/phone-callout';
 const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 
 class ScheduleItem extends React.Component {
@@ -87,23 +86,6 @@ class ScheduleItem extends React.Component {
         }
     }
 
-    // 自动拨号
-    handleClickCallOut(phone) {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.schedule-contact-phone-block'), '拨打电话');
-        if (this.props.getCallNumberError) {
-            message.error(this.props.getCallNumberError || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
-        } else {
-            let callClient = getCallClient();
-            if (callClient && callClient.isInited()) {
-                callClient.callout(phone).then((result) => {
-                    message.success(Intl.get('crm.call.phone.success', '拨打成功'));
-                }, (errMsg) => {
-                    message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
-                });
-            }
-        }
-    }
-
     render() {
         const user_id = getUserData().user_id;
         const item = this.props.item;
@@ -128,13 +110,13 @@ class ScheduleItem extends React.Component {
                             <div className='schedule-contact-phone-block'>
                                 {_.map(phoneArray, obj => {
                                     return (
-                                        <Button size='small' onClick={this.handleClickCallOut.bind(this, obj.phone)}>
-                                            {obj.name || ''}
-                                            <span className='contact-phone'>{obj.phone}</span>
-                                            {showCallIconPrivilege() ?
-                                                <span className='iconfont icon-phone-call-out'
-                                                    title={Intl.get('crm.click.call.phone', '点击拨打电话')}></span> : null}
-                                        </Button>);
+                                        <p className="name-and-phone-container" size='small'>
+                                            <span className="contact-name">{obj.name || ''}</span>
+                                            <PhoneCallout
+                                                phoneNumber={obj.phone}
+                                            />
+                                        </p>
+                                    );
                                 })}
                                 <span className='iconfont icon-close'
                                     title={Intl.get('common.app.status.close', '关闭')}

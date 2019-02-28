@@ -33,12 +33,12 @@ import crmUtil from './utils/crm-util';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 const extend = require('extend');
-import CallNumberUtil from 'PUB_DIR/sources/utils/common-data-util';
 import { FilterInput } from 'CMP_DIR/filter';
 var classNames = require('classnames');
 import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 import queryString from 'query-string';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
+import PhoneCallout from 'CMP_DIR/phone-callout';
 import CrmOverviewActions from './action/basic-overview-actions';
 var userData = require('PUB_DIR/sources/user-data');
 const userInfo = userData.getUserData();
@@ -86,7 +86,6 @@ const DEFAULT_RANGE_PARAM = {
 };
 //查看是否可以继续添加客户
 let member_id = userData.getUserData().user_id;
-import {showCallIconPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 class Crm extends React.Component {
     getSelectedCustomer = (curCustomerList) => {
         let selectedCustomer = [];
@@ -1057,15 +1056,6 @@ class Crm extends React.Component {
 
     };
 
-    // 自动拨号
-    handleClickCallOut = (phoneNumber, record) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
-        CallNumberUtil.handleCallOutResult({
-            contactName: record.contact,//联系人姓名
-            phoneNumber: phoneNumber,//拨打的电话
-        });
-    };
-
     // 联系方式的列表
     getContactList = (text, record, index) => {
         let phoneArray = text && text.split('\n') || [];
@@ -1074,10 +1064,10 @@ class Crm extends React.Component {
             if (item) {
                 return (
                     <div>
-                        <span>{item}</span>
-                        {showCallIconPrivilege() ? <i className="iconfont icon-call-out call-out"
-                            title={Intl.get('crm.click.call.phone', '点击拨打电话')}
-                            onClick={this.handleClickCallOut.bind(this, item, record)}></i> : null}
+                        <PhoneCallout
+                            phoneNumber={item}
+                            record={record}
+                        />
                     </div>
                 );
             }

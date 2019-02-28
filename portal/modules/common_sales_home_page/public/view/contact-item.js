@@ -9,8 +9,7 @@ import Trace from 'LIB_DIR/trace';
 import {isEqualArray} from 'LIB_DIR/func';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
-import {showCallIconPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import PhoneCallout from 'CMP_DIR/phone-callout';
 class ContactItem extends React.Component {
     constructor(props) {
         super(props);
@@ -33,25 +32,7 @@ class ContactItem extends React.Component {
         }
     }
 
-    // 自动拨号
-    handleClickCallOut(phoneNumber, contactName, customerId) {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
-        handleCallOutResult({
-            contactName: contactName,//联系人姓名
-            phoneNumber: phoneNumber,//拨打的电话
-        });
-    }
-
     renderContactsContent(contactDetail) {
-        var customerId = '';
-        if (this.props.itemType === 'schedule') {
-            customerId = this.state.customerData.customer_id;
-        } else if (_.isArray(this.state.contacts) && this.state.contacts.length) {
-            customerId = this.state.contacts[0].customer_id;
-        }
-        var clsname = classNames('contact-item',{
-            'inability': showCallIconPrivilege(),
-        });
         return (
             <div className="contact-content">
                 {this.props.showContactLabel ?
@@ -68,16 +49,10 @@ class ContactItem extends React.Component {
                                 <span className="phone-num-container">
                                     {_.map(contactItem.phone, (phoneItem, index) => {
                                         return (
-                                            <span className={clsname}
-                                                onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
-                                                data-tracename="拨打电话">
-
-                                                <i className="iconfont icon-phone-call-out"></i>
-                                                <span className="phone-num">
-                                                    {phoneItem}
-                                                </span>
-                                            </span>
-
+                                            <PhoneCallout
+                                                phoneNumber={phoneItem}
+                                                record={contactName}
+                                            />
                                         );
                                     })}
                                 </span> : null}
