@@ -168,9 +168,6 @@ class SalesHomePage extends React.Component {
     };
 
     componentWillUnmount() {
-        setTimeout(function() {
-            SalesHomeAction.setInitState();
-        });
         SalesHomeStore.unlisten(this.onChange);
     }
 
