@@ -137,9 +137,19 @@ class TopBar extends React.Component {
     };
 
     onSelectDate = (startTime, endTime, range) => {
-        startTime = parseInt(startTime);
-        endTime = parseInt(endTime);
+        //选择的不是全部时间时，将时间值转为整数
+        //选择全部时间时，开始时间为空，不用处理
+        if (startTime) {
+            startTime = parseInt(startTime);
+        }
+
+        //同上
+        if (endTime) {
+            endTime = parseInt(endTime);
+        }
+
         this.setState({startTime, endTime, range});
+
         dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
     };
 
