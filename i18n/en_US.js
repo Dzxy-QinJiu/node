@@ -1829,6 +1829,7 @@ var en_US = {
     'sales.home.call.top.ten': 'Single call duration', // 单次通话时长
     'sales.home.set.role': 'Click here to set up the sales role',//点此设置销售角色
     'sales.home.role.null': 'Not set roles',//未设置角色
+    'sales.home.invite.member': 'Invite Member', // 邀请成员
 
     //销售首页-新增用户分析
     'sales.user.analysis': 'User Analysis',//用户分析@

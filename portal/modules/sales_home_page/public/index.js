@@ -35,6 +35,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
+import userData from 'PUB_DIR/sources/user-data';
 
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
@@ -825,6 +826,10 @@ class SalesHomePage extends React.Component {
         return e.stopPropagation();
     };
 
+    handleInviteMember = (event) => {
+        Trace.traceEvent(event, '点击邀请成员');
+    };
+
     //跳转到个人信息页面
     jumpToUserInfo = () => {
         history.push('/user_info_manage/user_info', {});
@@ -983,6 +988,8 @@ class SalesHomePage extends React.Component {
         });
         var title = (this.state.isSaleTeamShow ? Intl.get('sales.homepage.hide.teamlist', '隐藏团队列表') :
             Intl.get('sales.homepage.show.teamlist', '展开团队列表'));
+        // 销售主管、运营人员有邀请成员的权限
+        let hasInivteMemberPrivilege = userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
         return (<RightContent>
             <div className="sales_home_content">
                 <TopNav>
@@ -1008,9 +1015,14 @@ class SalesHomePage extends React.Component {
                             </span>
                         </div>}
                     {
-                        //<div className="crm-home-add-btn">
-                        //    <span className="iconfont icon-add-btn"/>
-                        //</div>
+                        hasInivteMemberPrivilege ? (
+                            <div className="invite-member" data-tracename="销售首页">
+                                <span className='iconfont icon-invite-member'
+                                    onClick={this.handleInviteMember}
+                                    title={Intl.get('sales.home.invite.member', '邀请成员')}>
+                                </span>
+                            </div>
+                        ) : null
                     }
                 </TopNav>
                 {this.state.salesTeamListObj.resultType === 'loading' ?

@@ -1857,6 +1857,8 @@ var zh_CN = {
     'sales.home.call.top.ten': '单次通话时长',
     'sales.home.set.role': '点此设置销售角色',
     'sales.home.role.null': '未设置角色',
+    'sales.home.invite.member': '邀请成员',
+    
     //销售首页-新增用户分析
     'sales.user.analysis': '用户分析',
     'user.analysis.total': '用户统计',
