@@ -52,6 +52,7 @@ const SIX_CHAR_WIDTH = 120;
 class SalesHomePage extends React.Component {
     constructor(props) {
         super(props);
+        SalesHomeAction.setInitState();
         let stateData = SalesHomeStore.getState();
         var isSaleTeamShow = true;
         var flag = storageUtil.local.get(key, pageId);
@@ -167,6 +168,9 @@ class SalesHomePage extends React.Component {
     };
 
     componentWillUnmount() {
+        setTimeout(function() {
+            SalesHomeAction.setInitState();
+        });
         SalesHomeStore.unlisten(this.onChange);
     }
 
