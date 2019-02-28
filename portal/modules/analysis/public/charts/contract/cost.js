@@ -2,7 +2,7 @@
  * 团队或个人费用统计 
  */
 
-import { processAmountData, argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId } from '../../utils';
+import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getCostChart() {
     return {
@@ -14,6 +14,5 @@ export function getCostChart() {
             argCallbackMemberIdsToMemberId(arg);
         },
         chartType: 'bar',
-        processData: processAmountData,
     };
 }
