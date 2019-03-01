@@ -9,15 +9,13 @@ import Trace from 'LIB_DIR/trace';
 import {isEqualArray} from 'LIB_DIR/func';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
+import PhoneCallout from 'CMP_DIR/phone-callout';
 class ContactItem extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             contacts: this.props.contacts,//联系人信息
             customerData: this.props.customerData,//客户详情
-            callNumber: this.props.callNumber,//座机号
-            errMsg: this.props.errMsg//获取座机号失败的提示
         };
     }
 
@@ -32,34 +30,9 @@ class ContactItem extends React.Component {
                 customerData: nextProps.customerData
             });
         }
-        if (nextProps.callNumber !== this.state.callNumber) {
-            this.setState({
-                callNumber: nextProps.callNumber
-            });
-        }
-    }
-
-    // 自动拨号
-    handleClickCallOut(phoneNumber, contactName, customerId) {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
-        handleCallOutResult({
-            errorMsg: this.state.errMsg,//获取坐席号失败的错误提示
-            callNumber: this.state.callNumber,//坐席号
-            contactName: contactName,//联系人姓名
-            phoneNumber: phoneNumber,//拨打的电话
-        });
     }
 
     renderContactsContent(contactDetail) {
-        var customerId = '';
-        if (this.props.itemType === 'schedule') {
-            customerId = this.state.customerData.customer_id;
-        } else if (_.isArray(this.state.contacts) && this.state.contacts.length) {
-            customerId = this.state.contacts[0].customer_id;
-        }
-        var clsname = classNames('contact-item',{
-            'inability': !this.state.callNumber,
-        });
         return (
             <div className="contact-content">
                 {this.props.showContactLabel ?
@@ -76,16 +49,10 @@ class ContactItem extends React.Component {
                                 <span className="phone-num-container">
                                     {_.map(contactItem.phone, (phoneItem, index) => {
                                         return (
-                                            <span className={clsname}
-                                                onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
-                                                data-tracename="拨打电话">
-
-                                                <i className="iconfont icon-phone-call-out"></i>
-                                                <span className="phone-num">
-                                                    {phoneItem}
-                                                </span>
-                                            </span>
-
+                                            <PhoneCallout
+                                                phoneNumber={phoneItem}
+                                                contactName={contactName}
+                                            />
                                         );
                                     })}
                                 </span> : null}
@@ -148,16 +115,12 @@ ContactItem.defaultProps = {
     contacts: [],//联系人信息
     customerData: {},//客户信息
     itemType: '',
-    callNumber: '',//座机号
     showContactLabel: true,//是否展示联系人这几个字
-    errMsg: ''
 };
 ContactItem.propTypes = {
     contacts: PropTypes.object,//联系人信息
     customerData: PropTypes.object,//客户信息
     itemType: PropTypes.string,
-    callNumber: PropTypes.string,//座机号
     showContactLabel: PropTypes.bool,//是否展示联系人这几个字
-    errMsg: PropTypes.string
 };
 export default ContactItem;

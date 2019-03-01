@@ -1,12 +1,12 @@
 /**
- * 有效客户统计
+ * 有效客户活跃率统计
  */
 
 import { numToPercent, argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getCustomerEffectiveChart() {
     return {
-        title: Intl.get('effective.customer.statistics', '有效客户统计'),
+        title: '有效客户活跃率统计',
         url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
         argCallback: argCallbackMemberIdsToMemberId,
         conditions: [

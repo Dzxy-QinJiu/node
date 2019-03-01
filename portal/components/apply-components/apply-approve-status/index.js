@@ -38,10 +38,10 @@ class ApplyApproveStatus extends React.Component {
                     <div className="approval_result_wrap">
                         <div className="bgimg"></div>
                         <p>
-                            {Intl.get('user.apply.detail.submit.success', '审批成功')}
+                            {this.props.approveSuccessTip || Intl.get('user.apply.detail.submit.success', '审批成功')}
                         </p>
                         <Button type="ghost" onClick={this.props.viewApprovalResult}>
-                            {Intl.get('user.apply.detail.show.content', '查看审批结果')}
+                            {this.props.showAfterApproveTip || Intl.get('user.apply.detail.show.content', '查看审批结果')}
                         </Button>
                     </div>
                 </div>
@@ -72,6 +72,8 @@ ApplyApproveStatus.defaultProps = {
     showLoading: false,
     approveSuccess: false,
     approveError: false,
+    approveSuccessTip: '',
+    showAfterApproveTip: '',
     viewApprovalResult: function() {
 
     },
@@ -92,8 +94,9 @@ ApplyApproveStatus.propTypes = {
     reSendApproval: PropTypes.func,
     cancelSendApproval: PropTypes.func,
     applyResultErrorMsg: PropTypes.string,
-    container: PropTypes.object
-
+    container: PropTypes.object,
+    approveSuccessTip: PropTypes.string,
+    showAfterApproveTip: PropTypes.string,
 };
 
 export default ApplyApproveStatus;

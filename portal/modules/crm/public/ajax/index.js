@@ -188,7 +188,7 @@ exports.queryCustomer = function(params, pageSize, pageNum, sorter) {
         success: function(list) {
             //如果查询参数中包含cache_key，表明是查的有效客户活跃数详细列表，需要对返回结果处理一下，以便能和客户列表的处理匹配起来
             if (params.cache_key) {
-                list.result = list.list
+                list.result = list.list;
             }
 
             Deferred.resolve(list);
@@ -312,23 +312,6 @@ exports.callOut = function(reqData) {
         dataType: 'json',
         type: 'post',
         data: reqData,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(xhr) {
-            Deferred.reject(xhr.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-
-// 获取电话座机号
-exports.getUserPhoneNumber = function(member_id) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/call/phone/' + member_id,
-        dataType: 'json',
-        type: 'get',
         success: function(data) {
             Deferred.resolve(data);
         },

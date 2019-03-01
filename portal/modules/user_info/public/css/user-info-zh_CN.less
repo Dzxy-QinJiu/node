@@ -23,7 +23,7 @@
   }
   //个人资料展示区域样式
   .user-info-container-div {
-    height: 410px;
+    height: 470px;
     background-color: #fff;
     padding: 0px;
 
@@ -118,7 +118,7 @@
       //用户资料展示区域样式
       .user-info-div {
         border-bottom: 1px #edf0f0 solid;
-        padding-top: 20px;
+        padding: 12px 0;
 
         //用户资料 邮箱 电话 角色样式
         .user-info-item {
@@ -139,13 +139,12 @@
             color: @error_tips_color;
           }
         }
-        dl.user-info-item{
-          dt{
-            font-weight: normal;
-            width: auto!important;
-          }
-          dd{
-            margin-left: 40px;
+        // 修改语言的样式
+        .user-info-item{
+          .user-lang-value{
+            display: inline-block;
+            vertical-align: top;
+            width: 80%;
             .ant-select{
               width:200px;
             }
@@ -181,7 +180,8 @@
 
       //企业提示区域样式
       .user-tips-div {
-        height: 88px;
+        height: 50px;
+        padding-top: 10px;
 
         //电话区域样式
         .user-tips-title-div {

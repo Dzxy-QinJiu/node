@@ -3,6 +3,7 @@
  */
 
 import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId } from '../../utils';
+import { num as antUtilNum } from 'ant-utils';
 
 export function getContractSectionChart() {
     return {
@@ -44,6 +45,17 @@ export function getContractSectionChart() {
         customOption: {
             reverse: true,
         },
+        processOption: option => {
+            //柱子上显示的数值转为百分比
+            _.set(option, 'series[0].itemStyle.normal.label.formatter', params => {
+                return antUtilNum.decimalToPercent(params.value);
+            });
+
+            //横轴刻度值转为百分比
+            _.set(option, 'xAxis.axisLabel.formatter', value => {
+                return antUtilNum.decimalToPercent(value);
+            });
+        }
     };
 }
 

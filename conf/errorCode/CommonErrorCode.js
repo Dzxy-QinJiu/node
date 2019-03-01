@@ -50,7 +50,7 @@ function getConfigJson(req) {
         /*修改用户信息*/
         '10210': {'httpCode': 500, 'message': backendIntl.get('errorcode.25', '该手机号已被使用，请用其他手机号')},
         '10211': {'httpCode': 500, 'message': backendIntl.get('errorcode.26', '该邮箱已被使用，请使用其他邮箱')},
-        '10212': {'httpCode': 500, 'message': backendIntl.get('errorcode.28', '修改手机号失败')},
+        '10212': {'httpCode': 500, 'message': backendIntl.get('errorcode.28', '姓名已存在')},
         '10213': {'httpCode': 500, 'message': backendIntl.get('errorcode.29', '修改邮箱失败')},
         '10214': {'httpCode': 500, 'message': backendIntl.get('errorcode.30', '用户名已被使用')},
         '10215': {'httpCode': 500, 'message': backendIntl.get('errorcode.31', '授权应用失败')},
@@ -362,6 +362,8 @@ function getConfigJson(req) {
         '11059': {'httpCode': 500, 'message': backendIntl.get('errorcode.147', '二维码已失效')},
         /*添加合同*/
         '30001': {'httpCode': 500, 'message': backendIntl.get('contract.add.error', '添加合同失败')},
+        '30002': {'httpCode': 500, 'message': backendIntl.get('contract.edit.error', '修改合同失败')},
+        '30610': {'httpCode': 500, 'message': backendIntl.get('contract.add.error', '添加合同失败')},
         /*周报统计*/
         '90008': {'httpCode': 500, 'message': backendIntl.get('errorcode.148', '电话时长统计视图获取失败')},        
         /*其他*/

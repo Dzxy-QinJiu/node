@@ -20,12 +20,11 @@ var scheduleManagementEmitter = require('PUB_DIR/sources/utils/emitters').schedu
 let history = require('PUB_DIR/sources/history');
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import Trace from 'LIB_DIR/trace';
-import CallNumberUtil from 'PUB_DIR/sources/utils/common-data-util';
-import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
 const DELAY_RANGE = {
     ANIMATION: 1000,//动画结束的时间
 };
 const LAYOUT = {PADDING_TOP: 40};
+import PhoneCallout from 'CMP_DIR/phone-callout';
 class ExpireScheduleLists extends React.Component {
     constructor(props) {
         super(props);
@@ -35,7 +34,6 @@ class ExpireScheduleLists extends React.Component {
             expired_status: '',//过期日程的状态
             isEdittingItemId: '',//正在标记为完成的那一条日程
             updateScrollBar: false,
-            callNumber: this.props.callNumber || '', // 座机号
             ...scheduleManagementStore.getState()
         };
         this.onStoreChange = this.onStoreChange.bind(this);
@@ -43,41 +41,6 @@ class ExpireScheduleLists extends React.Component {
 
     componentDidMount() {
         this.gr();
-        if (this.state.callNumber === '') {
-            this.getUserPhoneNumber();
-        }
-    }
-    // 获取拨打电话的座席号
-    getUserPhoneNumber = () => {
-        CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
-            if (callNumberInfo) {
-                if (callNumberInfo.callNumber) {
-                    this.setState({
-                        callNumber: callNumberInfo.callNumber,
-                        getCallNumberError: ''
-                    });
-                } else if (callNumberInfo.errMsg) {
-                    this.setState({
-                        callNumber: '',
-                        getCallNumberError: callNumberInfo.errMsg
-                    });
-                }
-            } else {
-                this.setState({
-                    callNumber: '',
-                    getCallNumberError: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
-                });
-            }
-        });
-    };
-    // 自动拨号
-    handleClickCallOut(phoneNumber) {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
-        handleCallOutResult({
-            errorMsg: this.state.getCallNumberError,//获取坐席号失败的错误提示
-            callNumber: this.state.callNumber,//坐席号
-            phoneNumber: phoneNumber,//拨打的电话
-        });
     }
 
     gr(){
@@ -146,6 +109,8 @@ class ExpireScheduleLists extends React.Component {
     };
     //渲染超期日程列表
     renderExpiredScheduleList() {
+        var contentTip = '';
+        var titleTip = Intl.get('crm.click.call.phone', '点击拨打电话');
         return (
             <div>
                 {_.map(this.state.scheduleExpiredList, (item) => {
@@ -174,11 +139,9 @@ class ExpireScheduleLists extends React.Component {
                                 </span>
                             </p> : phoneNum ?
                                 <p className="item-customer-content">
-                                    {phoneNum}
-                                    {this.state.callNumber ?
-                                        <i className="iconfont icon-call-out call-out"
-                                            title={Intl.get('crm.click.call.phone', '点击拨打电话')}
-                                            onClick={this.handleClickCallOut.bind(this, phoneNum)}></i> : null}
+                                    <PhoneCallout
+                                        phoneNumber={phoneNum}
+                                    />
                                     { Intl.get('schedule.expired.call.time.at','于') + moment(item.create_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + Intl.get('schedule.expired.call.in.phone.num','拨打过您的电话')}
                                 </p>
                                 : null}
@@ -353,13 +316,11 @@ ExpireScheduleLists.defaultProps = {
 
     },
     showAddToDo: function(){},
-    callNumber: ''
 };
 
 ExpireScheduleLists.propTypes = {
     showCustomerDetail: PropTypes.func,
     showAddToDo: PropTypes.func,
-    callNumber: PropTypes.string
 };
 
 export default ExpireScheduleLists;

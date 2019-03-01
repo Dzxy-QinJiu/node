@@ -33,7 +33,6 @@ const TIMEOUTDELAY = {
     phoneRenderDelay: 2000
 };
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
-let callNumber = '', getCallNumErrMsg = '';//用户的坐席号
 //当前正在拨打的联系人信息，从点击事件emitter出来
 var contactNameObj = {};
 //socketIo对象
@@ -378,8 +377,6 @@ window.handleClickPhone = function(phoneObj) {
     var phoneNumber = phoneObj.phoneItem, contactName = phoneObj.contactName;
     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.noty-container .noty-content .phone-item .icon-phone-call-out'), '拨打电话');
     handleCallOutResult({
-        errorMsg: getCallNumErrMsg,//获取坐席号失败的错误提示
-        callNumber: callNumber,//坐席号
         contactName: contactName,//联系人姓名
         phoneNumber: phoneNumber//拨打的电话
     });
@@ -392,18 +389,6 @@ window.handleClickClueName = function(event,clueId) {
     //点击查看详情时要把对应的通知框关掉
     $(event.target).closest('li').remove();
 };
-
-// 获取拨打电话的座机号
-function getUserPhoneNumber() {
-    let member_id = userData.getUserData().user_id;
-    crmAjax.getUserPhoneNumber(member_id).then((result) => {
-        if (result.phone_order) {
-            callNumber = result.phone_order;
-        }
-    }, (errMsg) => {
-        getCallNumErrMsg = errMsg || Intl.get('crm.get.phone.failed', '获取座机号失败!');
-    });
-}
 function scheduleAlertListener(scheduleAlertMsg) {
     var phoneArr = [];
     if (_.isArray(scheduleAlertMsg.contacts)) {
@@ -426,8 +411,6 @@ function scheduleAlertListener(scheduleAlertMsg) {
         showDesktopNotification(title, tipContent, true);
     } else {//系统弹出通知
         var phoneHtml = '';
-        //获取用户的坐席号
-        getUserPhoneNumber();
         _.each(phoneArr, (phoneItem) => {
             var phoneObj = {
                 phoneItem: phoneItem.phone,

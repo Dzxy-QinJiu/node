@@ -245,6 +245,7 @@ var en_US = {
     'common.product': 'product',//产品
     'common.product.search.placeholder': 'Please enter the product name for search',//请输入产品名进行筛选
     'common.or': 'Or', // 或
+    'common.before': 'Before', // 前
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -1415,6 +1416,7 @@ var en_US = {
     'crm.contact.email.none': 'No email',//暂无邮箱
     'crm.contact.email.add': 'Add email',//添加邮箱
     'crm.second.sales': 'Second Sales',//联合跟进人
+    'crm.apply.active.email.tip': 'Your mailbox is not activated. Please {activeEmail} first',//您的邮箱未激活，请先{aciveEmail}
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
@@ -1424,6 +1426,7 @@ var en_US = {
     'crm.contract.money': 'Amount (yuan)', // 金额(元)
     'crm.contract.no.product.info': 'No product information', // 暂无产品信息
     'crm.contract.check.tips': 'The contract amount is not equal to the total product amount. Please check it.', // 合同额与产品总额不相等，请核对
+    'crm.contract.check.tips2': 'Please check the difference with the total price', // 与总价合计不符，请核对
     'crm.contract.account.count': 'Number of accounts', // 账号数量
     'crm.contract.enter.contract.money': 'Please enter the contract amount', // 请输入合同额
     'crm.contract.no.contract.money': 'No contract amount', // 暂无合同额
@@ -1650,11 +1653,20 @@ var en_US = {
     'contract.184': 'cost amount', //"费用金额",
     'contract.185': 'type (transport in city)', //"类型（市内交通）",
     'contract.186': 'first got paid', //"首次回款",
-    'contract.187': 'payment amount', //"回款金额",
+    'contract.187': 'repayment amount', //"回款金额",
     'contract.188': 'analysis',//"分析",
     'contract.189': 'Commission payment', // 提成发放
     'contract.190': 'Sales contract template', // 《销售合同模板》
     'contract.191': 'Purchase contract template', // 《采购合同模板》
+    'contract.192': 'Whether to delete this charge？', //  是否删除此费用
+    'contract.193': 'The party a name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', //  甲方名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
+    'contract.194': 'Debt collection process',//回款进程
+    'contract.195': 'A collection plan has not been added',// 还未添加回款计划
+    'contract.196': 'The collection process has not been added',// 还未添加回款进程
+    'contract.197': 'invoice date',// 开票日期
+    'contract.198': 'invoice amount',// 发票额
+    'contract.199': 'The history of make out an invoice',// 开票历史
+    'contract.200': 'payment amount',// 付款额
     'contract.gross.profit.can.not.exceed.repayment': 'gross profit can not exceed repayment',//毛利不能大于回款
     'contract.loadMore': 'load more',//"加载更多",
     'contract.valueTypeConfig': 'value calculate type config',//"值字段设置",
@@ -1707,6 +1719,10 @@ var en_US = {
     'contract.edit.error': 'Failed to edit contract',//修改合同失败
     'contract.delete.error': 'Failed to delete contract',//删除合同失败
     'contract.add.error': 'Failed to add contract',//添加合同失败
+    'contract.valid.term': 'Valid term',//有效期限
+    'contract.product.service.info': 'Product and service information', //产品与服务信息
+    'contract.enter.cost': 'Please enter cost',//请输入成本额
+    'contract.mount.check.tip': 'The total price cannot be greater than the total contract amount {num} yuan, please check', //总价合计不能大于合同总额{num}元，请核对
     //合同管理  end
     // 销售提成start
     'sales.commission.sale.name': 'Sale name', // 销售名
@@ -1932,7 +1948,7 @@ var en_US = {
     'errorcode.22': 'Not your customers, can not apply for a user',//不是您的客户，不能申请用户
     'errorcode.25': 'The phone number has been used, please use other phone number',//该手机号已被使用，请用其他手机号
     'errorcode.26': 'The email has been used,please use other email',//该邮箱已被使用，请使用其他邮箱
-    'errorcode.28': 'Failed to edit phone',//修改手机号失败
+    'errorcode.28': 'The name has been taken',//姓名已存在
     'errorcode.29': 'Failed to edit mailbox',//修改邮箱失败
     'errorcode.30': 'The username has been taken',//用户名已被使用
     'errorcode.31': 'Failed to warrant the application',//授权应用失败
@@ -2242,7 +2258,7 @@ var en_US = {
     'call.record.customer.phone': 'This is an invalid phone',//这是一个客服电话。
     'call.record.report': 'Report',//上报
     'fail.report.phone.err.tip': 'Failed to add invalid phone!',//上报无效电话失败！
-    'user.info.no.email': 'The user has no email,{add-email}',//该用户没有邮箱，{add-email}
+    'user.info.no.email': 'You have not bound your mailbox yet,{add-email}',//您还没有绑定邮箱，{add-email}
     'user.info.add.email': 'add email',//添加邮箱
     'schedule.call.out': 'Call out',//拨打
     'weekly.report.total.duration': 'The total duration of this week',//本周总时长
@@ -2417,7 +2433,8 @@ var en_US = {
     'clue.customer.import.clue.suceess': 'Import {type} successfully',//导入{type}成功
     'clue.customer.import.clue.failed': 'Failed to import {type}',//导入{type}失败
     'clue.delete.duplicate.failed': 'Failed to delete clue',//删除重复线索失败
-    'clue.repeat.delete': 'Some repeated {type} already in the system, which have been marked in red color, please delete these record fist, then import',//红色标示{type}名及联系方式已存在，请删除后再导入
+    'clue.repeat.delete': 'Some repeated clues already in the system, which have been marked in red color, please delete these record fist, then import',//红色标示线索名及联系方式已存在，请删除后再导入
+    'crm.repeat.delete': 'Some repeated customers already in the system, which have been marked in red color, please delete these record fist, then import',//红色标识客户名或联系方式已存在，请删除后再导入
     'clue.customer.belong.to.other.sales': 'This phone is registered to {customer} and belongs to {sales}',//该电话属于客户{customer}，所属销售{sales}
     'phone.alert.select.customer': 'Please select the customer to follow',//请选择要跟进的客户
     'clue.analysis.consult.time': 'Consult time',//咨询时间
@@ -2542,7 +2559,7 @@ var en_US = {
     'schedule.manage.has.no.expired.tasks': 'You have no expired tasks',//您没有超期未完成的任务
     'user.get.user.info.null': 'The information that gets the logged in user is empty',//获取不到登录用户的信息
     'user.info.binding.phone': 'Bind phone',//绑定手机号
-    'user.info.no.set.phone': 'The user has no phone number yet, {bindPhone}',//该用户还没有手机号，{bindPhone}
+    'user.info.no.set.phone': 'You have not bound your phone yet, {bindPhone}',//您还没有绑定手机号，{bindPhone}
     'apply.delay.endTime': 'End time',//'到期',
     'shear.expand': 'expand', //'展开'
     'crm.order.stage.manage': 'Order stage management',//订单阶段管理
@@ -2698,6 +2715,7 @@ var en_US = {
     'apply.approve.total.leave.time': 'Leave range',//请假时长
     'apply.approve.total.days': 'A total of {X} day',//共{X}天
     'common.start.end.time': 'start end time',//起止时间
+    'apply.approve.word.message': 'leave a message',//留言
     'apply.will.select.transfer.approver': 'Please select the person to be approved to be transferred to',//请选择要转给的待审批人
     'apply.will.approve.apply.item': 'Pending person',//待审批人
     'apply.no.relate.user': 'No related members',//无相关成员
@@ -2705,10 +2723,17 @@ var en_US = {
     'apply.approve.transfer.success': 'Transfer out the application successfully',//转出申请成功
     'apply.approve.upload.empty.file': 'Do not upload empty files!',//不可上传空文件！
     'apply.approve.upload.error.file.type': 'The file format is incorrect!',//文件格式不正确！
-    'apply.approve.upload.not.more.than50': 'The file size cannot exceed 50M!',//文件大小不能超过50M!
+    'apply.approve.upload.not.more.than50': 'The file size cannot exceed 10M!',//文件大小不能超过10M!
     'apply.approve.no.comment': 'There is no reply content!',//暂无回复内容！
     'crm.input.your.apply.user.type': 'Please enter the type of user you are applying for (eg trial user, contracted user, etc.)',//请输入您申请的用户类型（例如：试用用户、签约用户等）
     'apply.view.transfer.candidate': 'Transfer approval',//转审
-    'clue.and.crm.upload.size': 'The file size should not exceed 10M!'//文件大小不要超过10M!
+    'contract.form.customize': 'Add customized product',//'添加自定义产品',
+    'contract.report.contract.total.ccount': 'The total amount of the contract is', //本次合同总金额为
+    'contract.table.form.fill': 'Please fill in the form',//请填写表格内容
+    'clue.and.crm.upload.size': 'The file size should not exceed 10M!',//文件大小不要超过10M!
+    'contract.service.add': 'Add Service',//添加服务
+    'apply.show.cancel.result': 'View revocation results',//查看撤销结果
+    'manager.role.has.not.setting.phone.systerm': 'You have not yet opened a telephone system or have not set an agent number.',//您尚未开通电话系统或未设置座席号!
+    'sales.role.has.not.setting.phone.systerm': 'You have not yet opened a telephone system or have not set an agent number. Please inform the administrator!'//您尚未开通电话系统或未设置座席号，请通知管理员!
 };
 export default en_US;

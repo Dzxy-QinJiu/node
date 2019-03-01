@@ -10,14 +10,11 @@ export function getAccountNumChart(type = 'total', title) {
         title: title || '账号数统计',
         url: `/rest/analysis/user/v1/:auth_type/${type}/summary`,
         argCallback: argCallbackUnderlineTimeToTime,
-        chartType: 'bar',
+        chartType: 'line',
         option: {
             legend: {
                 data: USER_TYPES,
             },
-        },
-        customOption: {
-            stack: true,
         },
         csvOption: {
             rowNames: USER_TYPES_WITH_TITLE,
@@ -26,7 +23,6 @@ export function getAccountNumChart(type = 'total', title) {
             condition: {
                 callback: ifNotSingleApp
             },
-            chartType: 'line',
             option: {
                 legend: {
                     type: 'scroll',
@@ -34,7 +30,6 @@ export function getAccountNumChart(type = 'total', title) {
                 },
             },
             customOption: {
-                stack: false,
                 multi: true,
                 serieNameField: 'app_name',
                 serieNameValueMap: {

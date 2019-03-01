@@ -99,7 +99,6 @@ class ClueCustomer extends React.Component {
         }else{
             this.getClueList();
         }
-        this.getUserPhoneNumber();
         this.changeTableHeight();
         $(window).on('resize', e => this.changeTableHeight());
     }
@@ -194,22 +193,6 @@ class ClueCustomer extends React.Component {
         }, errorMsg => {
             // eslint-disable-next-line no-console
             console.log('获取线索分类出错了 ' + errorMsg);
-        });
-    };
-
-    //获取用户的坐席号
-    getUserPhoneNumber = () => {
-        let member_id = userData.getUserData().user_id;
-        crmAjax.getUserPhoneNumber(member_id).then((result) => {
-            if (result.phone_order) {
-                this.setState({
-                    callNumber: result.phone_order
-                });
-            }
-        }, (errMsg) => {
-            this.setState({
-                errMsg: errMsg || Intl.get('crm.get.phone.failed', '获取座机号失败!')
-            });
         });
     };
 
@@ -843,8 +826,6 @@ class ClueCustomer extends React.Component {
                                     contacts={handledContactObj.contact}
                                     customerData={salesClueItem}
                                     showContactLabel={false}
-                                    callNumber={this.state.callNumber}
-                                    errMsg={this.state.errMsg}
                                 />
                                 {handledContactObj.clipContact ? <i className="iconfont icon-more" onClick={this.showClueDetailOut.bind(this, salesClueItem)}/> : null}
                             </div>
@@ -1441,6 +1422,7 @@ class ClueCustomer extends React.Component {
                         closeTemplatePanel={this.closeClueTemplatePanel}
                         doImportAjax={this.doImportAjax}
                         onItemListImport={this.onClueImport}
+                        repeatAlertMessage={Intl.get('clue.repeat.delete', '红色标示线索名及联系方式已存在，请删除后再导入')}
                     />
                     {this.state.rightPanelIsShow ?
                         <ClueRightPanel
@@ -1448,8 +1430,6 @@ class ClueCustomer extends React.Component {
                             currentId={this.state.currentId}
                             curClue={this.state.curClue}
                             hideRightPanel={this.hideRightPanel}
-                            callNumber={this.state.callNumber}
-                            errMsg={this.state.errMsg}
                         /> : null}
 
                     {this.state.clueAnalysisPanelShow ? <RightPanel

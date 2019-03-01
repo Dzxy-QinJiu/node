@@ -2,7 +2,7 @@
  * 地域分布
  */
 
-import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId } from '../../utils';
+import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId, processDataNumToValue } from '../../utils';
 
 export function getContractZoneChart() {
     return {
@@ -19,5 +19,6 @@ export function getContractZoneChart() {
             argCallbackTeamIdsToTeamId(arg);
             argCallbackMemberIdsToMemberId(arg);
         },
+        processData: processDataNumToValue
     };
 }

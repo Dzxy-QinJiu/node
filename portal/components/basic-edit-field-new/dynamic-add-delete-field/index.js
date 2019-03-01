@@ -12,7 +12,8 @@ import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import {Form, Input, Icon} from 'antd';
 const FormItem = Form.Item;
-
+import {hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import PhoneCallout from 'CMP_DIR/phone-callout';
 class DynamicAddDelField extends React.Component {
     constructor(props) {
         super(props);
@@ -143,8 +144,6 @@ class DynamicAddDelField extends React.Component {
     handleClickCallOut = (phone) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '拨打电话');
         handleCallOutResult({
-            errorMsg: this.props.getCallNumberError,//获取坐席号失败的错误提示
-            callNumber: this.props.callNumber,//坐席号
             contactName: _.get(this.props, 'contactName') || '',//联系人姓名
             phoneNumber: phone,//拨打的电话
         });
@@ -157,11 +156,9 @@ class DynamicAddDelField extends React.Component {
                 <div className="item-show-content">
                     {_.map(this.state.value, item => {
                         return ( <div className="item-content">
-                            <span className="item-text">{addHyphenToPhoneNumber(item)}</span>
-                            {this.props.type === 'phone' && this.props.callNumber ? (
-                                <span className="phone-call-button" onClick={this.handleClickCallOut.bind(this, item)}>
-                                    {Intl.get('schedule.call.out', '拨打')}
-                                </span>) : null}
+                            {this.props.type === 'phone' ? <PhoneCallout phoneNumber={item} showPhoneNum={addHyphenToPhoneNumber(item)}/> :
+                                <span className="item-text">{item}</span>}
+
                         </div>);
                     })}
                     {this.props.hasEditPrivilege ? (
@@ -192,7 +189,7 @@ class DynamicAddDelField extends React.Component {
         if (this.state.displayType === 'text') {
             return (
                 <div className="item-show-container">
-                    <div className="item-show-label">
+                    <div className="item-show-label contact-way-icon">
                         {this.props.label}
                     </div>
                     {this.renderItemShowContent()}
@@ -245,8 +242,6 @@ DynamicAddDelField.propTypes = {
     form: PropTypes.object,
     delItemBtn: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
     addItemBtn: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
-    getCallNumberError: PropTypes.string,
-    callNumber: PropTypes.string,
     contactName: PropTypes.string,
     saveEditData: PropTypes.func
 
@@ -290,10 +285,6 @@ DynamicAddDelField.defaultProps = {
     //自定义的保存按钮
     addItemBtn: null,
     //以下是电话类型时，需要传的打电话所需数据
-    //获取坐席号失败的错误提示
-    getCallNumberError: '',
-    //坐席号
-    callNumber: '',
     //联系人姓名
     contactName: '',
 };

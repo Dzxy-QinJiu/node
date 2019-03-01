@@ -47,12 +47,12 @@ class ImportTemplate extends React.Component {
             current: 0,//进度条的步骤
             isLoading: false,//正在上传
             previewList: this.props.previewList,//预览列表
-            isImporting: false//正在导入
+            isImporting: false,//正在导入
+            tableHeight: this.calculateTableHeight()
         };
     }
 
     componentDidMount = () => {
-        this.changeTableHeight();
         $(window).on('resize', e => this.changeTableHeight());
     };
     componentWillReceiveProps(nextProps) {
@@ -140,9 +140,12 @@ class ImportTemplate extends React.Component {
             </div>
         );
     };
+    calculateTableHeight = () => {
+        return $(window).height() - LAYOUT.TOP_DISTANCE - LAYOUT.BOTTOM_DISTANCE;
+    }
     changeTableHeight = () => {
-        var tableHeight = $(window).height() - LAYOUT.TOP_DISTANCE - LAYOUT.BOTTOM_DISTANCE;
-        this.setState({ tableHeight});
+        var tableHeight = this.calculateTableHeight();
+        this.setState({tableHeight});
     };
     renderSecondStepContent = () => {
         const repeatCustomer = _.find(this.state.previewList, item => (item.repeat));
@@ -150,7 +153,7 @@ class ImportTemplate extends React.Component {
             <div className="second-step-content">
                 {repeatCustomer ? <div
                     className="import-warning">
-                    <Alert type="warning" message={Intl.get('clue.repeat.delete', '红色标示{type}名及联系方式已存在，请删除后再导入',{type: this.props.importType})} showIcon/>
+                    <Alert type="warning" message={this.props.repeatAlertMessage} showIcon/>
                 </div> : null}
                 <div className="deal-table-container" style={{height: this.state.tableHeight + LAYOUT.TABLE_TOP}}>
                     <AntcTable
@@ -230,6 +233,7 @@ ImportTemplate.defaultProps = {
     closeTemplatePanel: noop,//关闭面板的回调
     onItemListImport: noop,//导入时的函数
     doImportAjax: noop,//确认导入时的函数
+    repeatAlertMessage: '',//有重复数据后的提示信息
 };
 ImportTemplate.propTypes = {
     uploadActionName: PropTypes.string,
@@ -242,5 +246,6 @@ ImportTemplate.propTypes = {
     onItemListImport: PropTypes.func,
     doImportAjax: PropTypes.func,
     getItemPrevList: PropTypes.func,
+    repeatAlertMessage: PropTypes.string,//有重复数据后的提示信息
 };
 export default ImportTemplate;

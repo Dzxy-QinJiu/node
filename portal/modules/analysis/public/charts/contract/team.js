@@ -2,7 +2,7 @@
  * 团队分布
  */
 
-import { isSales, argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId } from '../../utils';
+import { isSales, argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, processDataNumToValue } from '../../utils';
 
 export function getContractTeamChart() {
     return {
@@ -20,5 +20,6 @@ export function getContractTeamChart() {
             argCallbackUnderlineTimeToTime(arg);
             argCallbackTeamIdsToTeamId(arg);
         },
+        processData: processDataNumToValue
     };
 }

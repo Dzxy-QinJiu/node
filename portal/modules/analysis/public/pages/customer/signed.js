@@ -33,12 +33,12 @@ function getCharts(paramObj) {
         customerChart.getSignedCustomerAdministrativeLevelCoverageChart(paramObj),
         //签约客户地域市场占有率分析
         customerChart.getSignedCustomerZoneCoverageChart(paramObj),
-        //新签客户趋势
-        customerChart.getSignedCustomerNewTrendChart(paramObj),
         //签约客户行业分布
         customerChart.getSignedCustomerTotalIndustryChart(paramObj),
         //签约客户团队分布
         customerChart.getSignedCustomerTotalTeamChart(paramObj),
+        //新签客户趋势
+        customerChart.getSignedCustomerNewTrendChart(paramObj),
         //新签行业分布
         customerChart.getSignedCustomerNewIndustryChart(paramObj),
         //新签团队分布
@@ -51,6 +51,8 @@ function getCharts(paramObj) {
         customerChart.getRenewalCustomerGrossProfitChart(paramObj),
         //流失客户趋势统计
         customerChart.getLossCustomerTrendChart(paramObj),
+        //现金流失率
+        customerChart.getCashLossRateChart(paramObj),
         //流失现金趋势统计
         customerChart.getLossCashTrendChart(paramObj),
         //流失客户地域统计

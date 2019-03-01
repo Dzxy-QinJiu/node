@@ -33,10 +33,9 @@ import TimeLine from 'CMP_DIR/time-line-new';
 import ErrorDataTip from '../components/error-data-tip';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import {decodeHTML} from 'PUB_DIR/sources/utils/common-method-util';
-import CallNumberUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import ShearContent from '../../../../../components/shear-content';
-import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
+import PhoneCallout from 'CMP_DIR/phone-callout';
 
 var classNames = require('classnames');
 //用于布局的高度
@@ -87,8 +86,6 @@ class CustomerRecord extends React.Component {
         filterType: '',//跟进类型的过滤
         filterStatus: '',//通话状态的过滤
         appList: [],//应用列表，用来展示舆情上报的应用名称
-        callNumber: this.props.callNumber || '', // 座机号
-        getCallNumberError: '',
         addRecordNullTip: '',//添加跟进记录内容为空的提示
         editRecordNullTip: '', //编辑跟进内容为空的提示
         ...CustomerRecordStore.getState()
@@ -99,36 +96,8 @@ class CustomerRecord extends React.Component {
         this.setState(state);
     };
 
-    // 获取拨打电话的座席号
-    getUserPhoneNumber = () => {
-        CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
-            if (callNumberInfo) {
-                if (callNumberInfo.callNumber) {
-                    this.setState({
-                        callNumber: callNumberInfo.callNumber,
-                        getCallNumberError: ''
-                    });
-                } else if (callNumberInfo.errMsg) {
-                    this.setState({
-                        callNumber: '',
-                        getCallNumberError: callNumberInfo.errMsg
-                    });
-                }
-            } else {
-                this.setState({
-                    callNumber: '',
-                    getCallNumberError: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
-                });
-            }
-        });
-    };
-
     componentDidMount() {
         CustomerRecordStore.listen(this.onStoreChange);
-        //  获取拨打电话的座席号
-        if (this.state.callNumber === '') {
-            this.getUserPhoneNumber();
-        }
         //获取所有联系人的联系电话，通过电话和客户id获取跟进记录
         var customer_id = this.props.curCustomer.customer_id || this.props.curCustomer.id;
         if(!customer_id) return;
@@ -583,23 +552,6 @@ class CustomerRecord extends React.Component {
         );
     };
 
-    // 自动拨号
-    handleClickCallOut = (phone) => {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '拨打电话');
-        if (this.props.getCallNumberError) {
-            message.error(this.props.getCallNumberError || Intl.get('crm.get.phone.failed', '获取座机号失败!'));
-        } else {
-            let callClient = getCallClient();
-            if (callClient && callClient.isInited()) {
-                callClient.callout(phone).then((result) => {
-                    message.success(Intl.get('crm.call.phone.success', '拨打成功'));
-                }, (errMsg) => {
-                    message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
-                });
-            }
-        }
-    };
-
     renderTimeLineItem = (item, hasSplitLine) => {
         var traceObj = crmUtil.processForTrace(item);
         //渲染时间线
@@ -613,11 +565,10 @@ class CustomerRecord extends React.Component {
                 <p className="item-detail-tip">
                     <span className="icon-container" title={title}><i className={iconClass}></i></span>
                     {traceDsc ? (<span className="trace-title-name" title={traceDsc}>{traceDsc}</span>) : null}
-                    {item.dst ? (<span className="trace-title-phone">{item.dst}</span>) : null}
-                    {(item.type === 'phone' || item.type === 'app') && this.state.callNumber ?
-                        <i className="iconfont icon-call-out call-out"
-                            title={Intl.get('crm.click.call.phone', '点击拨打电话')}
-                            onClick={this.handleClickCallOut.bind(this, item.dst)}></i> : null}
+                    {(item.type === 'phone' || item.type === 'app') ?
+                        <PhoneCallout
+                            phoneNumber={item.dst}
+                        /> : null}
                 </p>
                 {item.type === 'data_report' ? this.renderReportContent(item) : (<div>
                     <div className="item-detail-content" id={item.id}>
@@ -905,11 +856,9 @@ class CustomerRecord extends React.Component {
 
 CustomerRecord.propTypes = {
     curCustomer: PropTypes.object,
-    callNumber: PropTypes.string,
     isOverViewPanel: PropTypes.bool,
     refreshSrollbar: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
-    getCallNumberError: PropTypes.string,
     changeActiveKey: PropTypes.func,
     isMerge: PropTypes.bool,
     disableEdit: PropTypes.bool,

@@ -261,16 +261,16 @@ module.exports = [{
     }
 }, {
     //获取迁出客户数据
-    'method': 'post',
-    'path': '/rest/customer/v2/customer/transfer/record/:page_size/:sort_field/:order',
+    'method': 'get',
+    'path': '/rest/analysis/customer/v2/all/transfer/record/:page_size/:sort_field/:order',
     'handler': 'getTransferCustomers',
     'passport': {
         'needLogin': true
     }
 }, {
     //获取客户阶段变更数据
-    'method': 'post',
-    'path': '/rest/customer/v2/customer/:type/customer/label/count',
+    'method': 'get',
+    'path': '/rest/analysis/customer/v2/:data_type/customer/label/count',
     'handler': 'getStageChangeCustomers',
     'passport': {
         'needLogin': true

@@ -376,7 +376,7 @@ class UserDetail extends React.Component {
                     <StatusWrapper
                     >
                         {
-                            !userInfo.errorMsg ? <div className="basic-info-contianer" data-trace="客户基本信息">
+                            !userInfo.errorMsg ? <div className="basic-info-contianer" data-trace="用户基本信息">
                                 <div className="basic-info-title-block clearfix">
                                     <div className="basic-info-name">
                                         <span className="basic-name-text" title={_.get(userInfo, 'data.user_name')}>{_.get(userInfo, 'data.user_name')}</span>

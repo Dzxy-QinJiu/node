@@ -2,10 +2,8 @@
  * 辅助函数
  */
 
-import { num as antUtilNum } from 'ant-utils';
 import Store from './store';
 const userData = require('PUB_DIR/sources/user-data');
-const formatAmount = antUtilNum.formatAmount;
 const querystring = require('querystring');
 
 //获取导入的上下文中的文件内容
@@ -98,15 +96,6 @@ export function processClueStatisticsData(isAvalibility, originData) {
     return data;
 }
 
-//将新增合同毛利统计数据中的值转成以万为单位的
-export function processAmountData(data) {
-    return _.map(data, item => {
-        item.name = moment(item.timestamp).format(oplateConsts.DATE_FORMAT);
-        item.value = formatAmount(item.value);
-        return item;
-    });
-}
-
 //是否选中的不是单个应用
 export function ifNotSingleApp(conditions) {
     const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
@@ -184,4 +173,13 @@ export function argCallbackMemberIdsToSalesId(arg) {
             delete query.member_ids;
         }
     }
+}
+
+//数据出来函数：将 num 字段的值赋给 value 字段
+export function processDataNumToValue(data) {
+    _.each(data, item => {
+        item.value = item.num;
+    });
+
+    return data;
 }

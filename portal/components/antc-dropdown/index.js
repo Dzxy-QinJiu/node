@@ -97,7 +97,7 @@ class AntcDropdown extends React.Component {
 
         return (
             <Dropdown overlay={menu} visible={this.state.menuVisible}
-                placement="bottomLeft" trigger={['click']}
+                placement={this.props.placement} trigger={['click']}
                 onVisibleChange={this.handleVisibleChange.bind(this)}
                 overlayClassName={this.props.overlayClassName}
             >
@@ -116,6 +116,7 @@ AntcDropdown.defaultProps = {
     cancelTitle: Intl.get('common.cancel', '取消'),//叉号对应的title提示(string)
     unSelectDataTip: '',//未选择数据保存时的提示信息
     isSaving: false,//是否正在保存数据（boolean）
+    placement: 'bottomLeft', // 弹出位置
     handleSubmit: function() {
     },//保存时的处理
     clearSelectData: function() {
@@ -138,6 +139,7 @@ AntcDropdown.propTypes = {
     btnAtTop: PropTypes.bool,
     stopContentHide: PropTypes.bool,
     isDisabled: false,
-    overlayClassName: PropTypes.string
+    overlayClassName: PropTypes.string,
+    placement: PropTypes.string
 };
 export default AntcDropdown;

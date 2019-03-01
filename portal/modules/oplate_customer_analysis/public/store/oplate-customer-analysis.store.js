@@ -301,6 +301,8 @@ OplateCustomerAnalysisStore.prototype.getTransferCustomers = resultHandler('tran
 
 //获取客户阶段变更数据
 OplateCustomerAnalysisStore.prototype.getStageChangeCustomers = resultHandler('customerStage', function({ loading, errorMsg, data }) {
+    data = data.result;
+
     if (data && data.length) {
         this.customerStage.data = data.map(x => {
             x.date = x.date ? moment(x.date).format(oplateConsts.DATE_FORMAT) : '';
