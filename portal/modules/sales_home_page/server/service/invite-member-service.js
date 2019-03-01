@@ -8,7 +8,7 @@ const restUtil = require('ant-auth-request').restUtil(restLogger);
 
 var inviteRestApis = {
     // 邀请成员接口
-    inviteMember: '/rest/open/resource/member/register',
+    inviteMember: '/rest/base/v1/workflow/member_invite',
     //邀请成员属性（用户名、邮箱、电话）唯一性验证的url
     checkOnlyInviteMember: '/rest/open/resource/invite/check',
 };
