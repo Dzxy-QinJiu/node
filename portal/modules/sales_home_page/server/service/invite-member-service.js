@@ -1,9 +1,6 @@
 /**
  * Created by hzl on 2019/2/28.
  */
-/**
- * Created by hzl on 2019/2/27.
- */
 
 'use strict';
 const restLogger = require('../../../../lib/utils/logger').getLogger('rest');
@@ -30,7 +27,6 @@ exports.inviteMember = (req, res) => {
 
 //用户名唯一性验证
 exports.checkOnlyUserName = (req, res) => {
-    console.log('###############################',req.query);
     return restUtil.authRest.get(
         {
             url: inviteRestApis.checkOnlyInviteMember,

@@ -3,7 +3,7 @@
  */
 
 module.exports = {
-    module: 'invite/server/action/invite-controller',
+    module: 'sales_home_page/server/action/invite-member-controller',
     routes: [{
         'method': 'post',
         'path': '/rest/invite/member',
