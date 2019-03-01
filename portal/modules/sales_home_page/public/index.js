@@ -313,6 +313,13 @@ class SalesHomePage extends React.Component {
             sorter: function(a, b) {
                 return a.totalTime - b.totalTime;
             },
+            render: function(text, record, index){
+                return text === '-' ? text : (
+                    <span>
+                        {TimeUtil.getFormatTime(text)}
+                    </span>
+                );
+            },
             className: 'has-filter',
             width: THERE_CHAR_WIDTH
         }, {
@@ -333,6 +340,13 @@ class SalesHomePage extends React.Component {
             key: 'average_time',
             sorter: function(a, b) {
                 return a.averageTime - b.averageTime;
+            },
+            render: function(text, record, index){
+                return text === '-' ? text : (
+                    <span>
+                        {TimeUtil.getFormatTime(text)}
+                    </span>
+                );
             },
             className: 'has-filter',
             width: FOUR_CHAR_WIDTH
