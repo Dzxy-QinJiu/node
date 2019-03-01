@@ -27,7 +27,6 @@ import Trace from 'LIB_DIR/trace';
 
 class Contacts extends React.Component {
     state = {
-        callNumber: this.props.callNumber || '', // 座机号
         getCallNumberError: '', // 获取座机号失败的信息
         curCustomer: this.props.curCustomer,//当前查看详情的客户
         windowHeight: $(window).height(),
@@ -42,10 +41,6 @@ class Contacts extends React.Component {
         ContactStore.listen(this.onStoreChange);
         if (this.props.curCustomer) {
             ContactAction.getContactList(this.props.curCustomer, this.props.isMerge || this.props.disableEdit);
-        }
-        //获取该用户的座席号
-        if (this.state.callNumber === '') {
-            this.getUserPhoneNumber();
         }
         $(window).on('resize', this.onStoreChange);
     }
@@ -74,30 +69,6 @@ class Contacts extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.crm-right-panel-addbtn .anticon-plus'), '添加联系人');
         ContactAction.showAddContactForm();
         GeminiScrollbar.scrollTo(this.refs.scrollList, 0);
-    };
-
-    // 获取拨打电话的座席号
-    getUserPhoneNumber = () => {
-        CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
-            if (callNumberInfo) {
-                if (callNumberInfo.callNumber) {
-                    this.setState({
-                        callNumber: callNumberInfo.callNumber,
-                        getCallNumberError: ''
-                    });
-                } else if (callNumberInfo.errMsg) {
-                    this.setState({
-                        callNumber: '',
-                        getCallNumberError: callNumberInfo.errMsg
-                    });
-                }
-            } else {
-                this.setState({
-                    callNumber: '',
-                    getCallNumberError: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
-                });
-            }
-        });
     };
 
     render() {
@@ -165,8 +136,6 @@ class Contacts extends React.Component {
                                         updateMergeCustomerContact={this.props.updateMergeCustomerContact}
                                         updateCustomerDefContact={this.props.updateCustomerDefContact}
                                         refreshCustomerList={this.props.refreshCustomerList}
-                                        callNumber={this.state.callNumber}
-                                        getCallNumberError={this.state.getCallNumberError}
                                         curCustomer={this.state.curCustomer}
                                         disableEdit={this.props.disableEdit}
                                     />);
@@ -181,7 +150,6 @@ class Contacts extends React.Component {
     }
 }
 Contacts.propTypes = {
-    callNumber: PropTypes.string,
     curCustomer: PropTypes.object,
     isMerge: PropTypes.bool,
     refreshCustomerList: PropTypes.array,

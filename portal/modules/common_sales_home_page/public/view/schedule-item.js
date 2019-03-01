@@ -92,8 +92,6 @@ class ScheduleItem extends React.Component {
                         contacts={contacts}
                         customerData={schedule}
                         itemType="schedule"
-                        callNumber={this.props.callNumber}
-                        errMsg={this.props.errMsg}
                     /> : null}
                 </div>
             </div>

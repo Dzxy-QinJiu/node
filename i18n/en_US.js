@@ -2732,6 +2732,8 @@ var en_US = {
     'contract.table.form.fill': 'Please fill in the form',//请填写表格内容
     'clue.and.crm.upload.size': 'The file size should not exceed 10M!',//文件大小不要超过10M!
     'contract.service.add': 'Add Service',//添加服务
-    'apply.show.cancel.result': 'View revocation results'//查看撤销结果
+    'apply.show.cancel.result': 'View revocation results',//查看撤销结果
+    'manager.role.has.not.setting.phone.systerm': 'You have not yet opened a telephone system or have not set an agent number.',//您尚未开通电话系统或未设置座席号!
+    'sales.role.has.not.setting.phone.systerm': 'You have not yet opened a telephone system or have not set an agent number. Please inform the administrator!'//您尚未开通电话系统或未设置座席号，请通知管理员!
 };
 export default en_US;

@@ -270,14 +270,6 @@ module.exports = {
                 'needLogin': true
             }
         },
-        { // 获取电话座机号
-            'method': 'get',
-            'path': '/rest/call/phone/:user_id',
-            'handler': 'getUserPhoneNumber',
-            'passport': {
-                'needLogin': true
-            }
-        },
         {
             method: 'get',
             path: '/rest/crm/limit',

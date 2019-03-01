@@ -20,6 +20,7 @@ var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import {ORGANIZATION_TYPE} from './consts';
+import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -656,4 +657,10 @@ exports.getOrganization = getOrganization;
 exports.isOrganizationEefung = () => {
     let organization = getOrganization(); // 组织信息
     return _.get(organization,'id') === ORGANIZATION_TYPE.EEFUNG;
+};
+//是否可以展示拨打电话的按钮
+exports.hasCalloutPrivilege = () => {
+    //是否展示拨打按钮
+    let callClient = getCallClient();
+    return callClient && callClient.isInited();
 };
