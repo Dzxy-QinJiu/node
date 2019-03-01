@@ -1948,7 +1948,7 @@ var en_US = {
     'errorcode.22': 'Not your customers, can not apply for a user',//不是您的客户，不能申请用户
     'errorcode.25': 'The phone number has been used, please use other phone number',//该手机号已被使用，请用其他手机号
     'errorcode.26': 'The email has been used,please use other email',//该邮箱已被使用，请使用其他邮箱
-    'errorcode.28': 'Failed to edit phone',//修改手机号失败
+    'errorcode.28': 'The name has been taken',//姓名已存在
     'errorcode.29': 'Failed to edit mailbox',//修改邮箱失败
     'errorcode.30': 'The username has been taken',//用户名已被使用
     'errorcode.31': 'Failed to warrant the application',//授权应用失败
