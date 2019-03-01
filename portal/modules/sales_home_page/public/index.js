@@ -308,10 +308,17 @@ class SalesHomePage extends React.Component {
             title: Intl.get('sales.home.total.duration', '总时长'),
             csvTitle: Intl.get('sales.home.total.duration', '总时长'),
             align: 'right',
-            dataIndex: 'totalTimeDescr',
+            dataIndex: 'totalTime',
             key: 'total_time',
             sorter: function(a, b) {
                 return a.totalTime - b.totalTime;
+            },
+            render: function(text, record, index){
+                return text === '-' ? text : (
+                    <span>
+                        {TimeUtil.getFormatTime(text)}
+                    </span>
+                );
             },
             className: 'has-filter',
             width: THERE_CHAR_WIDTH
@@ -329,10 +336,17 @@ class SalesHomePage extends React.Component {
             title: Intl.get('sales.home.average.duration', '日均时长'),
             csvTitle: Intl.get('sales.home.average.duration', '日均时长'),
             align: 'right',
-            dataIndex: 'averageTimeDescr',
+            dataIndex: 'averageTime',
             key: 'average_time',
             sorter: function(a, b) {
                 return a.averageTime - b.averageTime;
+            },
+            render: function(text, record, index){
+                return text === '-' ? text : (
+                    <span>
+                        {TimeUtil.getFormatTime(text)}
+                    </span>
+                );
             },
             className: 'has-filter',
             width: FOUR_CHAR_WIDTH
