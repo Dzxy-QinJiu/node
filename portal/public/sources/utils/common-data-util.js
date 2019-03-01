@@ -351,7 +351,7 @@ function isRealmManager() {
 exports.showDisabledCallTip = function() {
     //是否是管理员
     if (isRealmManager()){
-        return Intl.get('manager.role.has.not.setting.phone.systerm', '您尚未开通尚未开通电话系统或未设置座席号!');
+        return Intl.get('manager.role.has.not.setting.phone.systerm', '您尚未开通电话系统或未设置座席号!');
     }else{
         return Intl.get('sales.role.has.not.setting.phone.systerm', '您尚未开通电话系统或未设置座席号，请通知管理员!');
     }
