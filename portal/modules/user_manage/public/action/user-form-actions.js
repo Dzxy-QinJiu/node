@@ -16,12 +16,16 @@ function UserFormActions() {
         'editUser',
         //清空保存后的提示信息
         'resetSaveResult',
+        // 昵称（对应的是姓名）唯一性验证
+        'checkOnlyNickName',
         //用户名唯一性的验证
         'checkOnlyUserName',
         //邮箱唯一性的验证
         'checkOnlyEmail',
         //电话唯一性的验证
         'checkOnlyPhone',
+        // 重置昵称（对应的是姓名）验证的标志
+        'resetNickNameFlags',
         //重置用户验证的标志
         'resetUserNameFlags',
         //重置邮箱验证的标志
@@ -102,10 +106,10 @@ function UserFormActions() {
         this.dispatch();
     };
 
-    //用户名唯一性的验证
-    this.checkOnlyUserName = function(userName) {
+    //昵称（对应的是姓名）唯一性的验证
+    this.checkOnlyNickName = function(nickName) {
         var _this = this;
-        userAjax.checkOnlyUserName(userName).then(function(result) {
+        userAjax.checkOnlyNickName(nickName).then(function(result) {
             _this.dispatch(result);
         }, function(errorMsg) {
             _this.dispatch(errorMsg);
@@ -118,6 +122,14 @@ function UserFormActions() {
             _.isFunction(callback) && callback(result);
         }, function(errorMsg) {
             _.isFunction(callback) && callback(errorMsg || Intl.get('common.phone.is.unique', '电话唯一性校验出错！'));
+        });
+    };
+    //用户名唯一性的验证
+    this.checkOnlyUserName = function(userName) {
+        userAjax.checkOnlyUserName(userName).then( (result) => {
+            this.dispatch(result);
+        }, (errorMsg) => {
+            this.dispatch(errorMsg);
         });
     };
 

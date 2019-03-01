@@ -95,6 +95,16 @@ module.exports = {
     }, {
         'method': 'get',
         'path': '/rest/nickname/:nickname',
+        'handler': 'checkOnlyNickName',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': [
+            'USER_MANAGE_LIST_USERS'
+        ]
+    }, {
+        'method': 'get',
+        'path': '/rest/user_name/:username',
         'handler': 'checkOnlyUserName',
         'passport': {
             'needLogin': true
