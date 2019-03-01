@@ -1976,7 +1976,7 @@ var zh_CN = {
     'errorcode.22': '不是您的客户，不能申请用户',
     'errorcode.25': '该手机号已被使用，请用其他手机号',
     'errorcode.26': '该邮箱已被使用，请使用其他邮箱',
-    'errorcode.28': '修改手机号失败',
+    'errorcode.28': '姓名已存在',
     'errorcode.29': '修改邮箱失败',
     'errorcode.30': '用户名已被使用',
     'errorcode.31': '授权应用失败',
