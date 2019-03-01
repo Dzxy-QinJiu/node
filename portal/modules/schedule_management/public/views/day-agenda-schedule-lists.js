@@ -124,7 +124,7 @@ class DayAgendaScheduleLists extends React.Component {
                                         <div className="phone-item">
                                             <PhoneCallout
                                                 phoneNumber={phone}
-                                                record={contact.name}
+                                                contactName={contact.name}
                                             />
                                         </div>
                                     );

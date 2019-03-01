@@ -156,9 +156,8 @@ class DynamicAddDelField extends React.Component {
                 <div className="item-show-content">
                     {_.map(this.state.value, item => {
                         return ( <div className="item-content">
-                            {this.props.type === 'phone' ? <PhoneCallout phoneNumber={item} showPhoneNum={addHyphenToPhoneNumber(item)}/> : <span>
-                                <span className="item-text">{addHyphenToPhoneNumber(item)}</span>
-                            </span>}
+                            {this.props.type === 'phone' ? <PhoneCallout phoneNumber={item} showPhoneNum={addHyphenToPhoneNumber(item)}/> :
+                                <span className="item-text">{item}</span>}
 
                         </div>);
                     })}
@@ -190,7 +189,7 @@ class DynamicAddDelField extends React.Component {
         if (this.state.displayType === 'text') {
             return (
                 <div className="item-show-container">
-                    <div className="item-show-label">
+                    <div className="item-show-label contact-way-icon">
                         {this.props.label}
                     </div>
                     {this.renderItemShowContent()}

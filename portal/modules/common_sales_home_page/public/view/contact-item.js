@@ -51,7 +51,7 @@ class ContactItem extends React.Component {
                                         return (
                                             <PhoneCallout
                                                 phoneNumber={phoneItem}
-                                                record={contactName}
+                                                contactName={contactName}
                                             />
                                         );
                                     })}

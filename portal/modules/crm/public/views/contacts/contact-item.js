@@ -293,7 +293,7 @@ class ContactItem extends React.Component {
                         field='phone'
                         value={contact.phone}
                         type='phone'
-                        label={<div className="contact-way-icon">{Intl.get('common.phone', '电话')}</div>}
+                        label={Intl.get('common.phone', '电话')}
                         hasEditPrivilege={hasEditPrivilege}
                         placeholder={Intl.get('crm.95', '请输入联系人电话')}
                         validateRules={this.getPhoneInputValidateRules()}
@@ -311,7 +311,7 @@ class ContactItem extends React.Component {
                                 field='qq'
                                 value={contact.qq}
                                 type='input'
-                                label={<div className="contact-way-icon">{'QQ'}</div>}
+                                label={'QQ'}
                                 hasEditPrivilege={hasEditPrivilege}
                                 placeholder={Intl.get('member.input.qq', '请输入QQ号')}
                                 saveEditData={this.saveContactInfo.bind(this, 'qq')}
@@ -325,7 +325,7 @@ class ContactItem extends React.Component {
                                 field='weChat'
                                 value={contact.weChat}
                                 type='input'
-                                label={<div className="contact-way-icon">{Intl.get('crm.58', '微信')}</div>}
+                                label={Intl.get('crm.58', '微信')}
                                 hasEditPrivilege={hasEditPrivilege}
                                 placeholder={Intl.get('member.input.wechat', '请输入微信号')}
                                 saveEditData={this.saveContactInfo.bind(this, 'weChat')}
@@ -339,7 +339,7 @@ class ContactItem extends React.Component {
                                 field='email'
                                 value={contact.email}
                                 type='input'
-                                label={<div className="contact-way-icon">{Intl.get('common.email', '邮箱')}</div>}
+                                label={Intl.get('common.email', '邮箱')}
                                 validateRules={[{
                                     message: Intl.get('user.email.validate.tip','请输入正确格式的邮箱'),
                                     pattern: emailRegex

@@ -13,10 +13,10 @@ class PhoneCallout extends React.Component {
 
     }
     // 自动拨号
-    handleClickCallOut = (phoneNumber, record) => {
+    handleClickCallOut = (phoneNumber, contactName) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-active-call_record-ico'), '拨打电话');
         handleCallOutResult({
-            contactName: record.contact,//联系人姓名
+            contactName: contactName,//联系人姓名
             phoneNumber: phoneNumber,//拨打的电话
         });
     };
@@ -24,11 +24,10 @@ class PhoneCallout extends React.Component {
         var contentTip = showDisabledCallTip();
         var titleTip = Intl.get('crm.click.call.phone', '点击拨打电话');
         if (hasCalloutPrivilege()){
-            var phoneNumber = this.props.showPhoneNum || this.props.phoneNumber;
-            var record = this.props.record;
-            return <i className="iconfont icon-active-call_record-ico able"
+            var contactName = this.props.contactName;
+            return <i className="iconfont icon-active-call_record-ico able-call"
                 title={titleTip}
-                onClick={this.handleClickCallOut.bind(this, phoneNumber, record)}></i>;
+                onClick={this.handleClickCallOut.bind(this, this.props.phoneNumber, contactName)}></i>;
         }else{
             return <Popover placement="right" content={contentTip} trigger="click">
                 <i className="iconfont icon-active-call_record-ico"
@@ -38,8 +37,8 @@ class PhoneCallout extends React.Component {
     };
     render() {
         return(
-            <span className="phone-callout-container" id="phone-callout-container">
-                <span>{this.props.phoneNumber}</span>
+            <span className="phone-callout-container" >
+                <span>{this.props.showPhoneNum || this.props.phoneNumber}</span>
                 {this.renderPhoneIcon()}
             </span>
         );
@@ -48,11 +47,11 @@ class PhoneCallout extends React.Component {
 PhoneCallout.defaultProps = {
     showPhoneNum: '',
     phoneNumber: '',
-    record: {}
+    contactName: ''
 };
 PhoneCallout.propTypes = {
     showPhoneNum: PropTypes.string,
     phoneNumber: PropTypes.string,
-    record: PropTypes.object
+    contactName: PropTypes.string
 };
 export default PhoneCallout;
