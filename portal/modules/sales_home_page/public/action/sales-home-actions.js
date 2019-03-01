@@ -212,14 +212,26 @@ function SalesHomeActions() {
     };
     //设置邮箱激活不再提醒
     this.setWebsiteConfig = function(queryObj,callback) {
-        this.dispatch({loading: true, error: false});
+        var queryKey = _.get(_.keys(queryObj),[0]);
+        var isActiveEmail = queryKey === 'setting_notice_ignore';
+        var isClientSet = queryKey === 'setting_client_notice_ignore';
+        if (isActiveEmail){
+            this.dispatch({emailLoading: true, error: false});
+        }else if (isClientSet){
+            this.dispatch({clientLoading: true, error: false});
+        }
         salesHomeAjax.setWebsiteConfig(queryObj).then((resData) => {
             if (callback && _.isFunction(callback)){
                 callback();
             }
         },(errorMsg) => {
             if (callback && _.isFunction(callback)){
-                callback(errorMsg || Intl.get('failed.set.no.email.tip','设置不再提示邮箱激活提醒失败'));
+                var errTip = errorMsg;
+                if (!errTip){
+                    errTip = isActiveEmail ? Intl.get('failed.set.no.email.tip','设置不再提示邮箱激活提醒失败') : '';
+                    errTip = isClientSet ? Intl.get('failed.set.no.client.tip', '设置不再提示设置坐席号提醒失败') : '';
+                }
+                callback(errTip);
             }
         }
         );

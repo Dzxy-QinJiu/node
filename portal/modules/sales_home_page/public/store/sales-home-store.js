@@ -60,6 +60,7 @@ SalesHomeStore.prototype.setInitState = function() {
     this.isLoadingExpireUserList = false;
     this.expireUserLists = {};//获取不同应用，在不同时间段之内即将过期的试用用户（一天，一周，一个月）和签约用户（半年）列表
     this.setWebConfigStatus = '';//设置个人配置的状态
+    this.setWebConfigClientStatus = '';//设置个人配置的坐席号状态
     this.salesCallStatus = {};//各销售对应的状态
     // 获取通话总次数TOP10的数据
     this.callTotalCountObj = {
@@ -649,8 +650,11 @@ SalesHomeStore.prototype.getShowActiveEmailObj = function(result) {
 };
 //设置个人信息配置
 SalesHomeStore.prototype.setWebsiteConfig = function(userInfo) {
-    if (userInfo.loading) {
+    if (userInfo.emailLoading) {
         this.setWebConfigStatus = 'loading';
+    }
+    if (userInfo.clientLoading) {
+        this.setWebConfigClientStatus = 'loading';
     }
 };
 // 获取回访列表

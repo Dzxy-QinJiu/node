@@ -3,7 +3,7 @@ const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
 var getDataAuthType = require('CMP_DIR/privilege/checker').getDataAuthType;
-import {Select, message, Alert} from 'antd';
+import {Select, message, Alert, Button} from 'antd';
 import {AntcTable, AntcAnalysis, AntcCardContainer} from 'antc';
 import Trace from 'LIB_DIR/trace';
 const Option = Select.Option;
@@ -13,7 +13,6 @@ var SalesHomeAction = require('./action/sales-home-actions');
 var TopNav = require('../../../components/top-nav');
 import { AntcDatePicker as DatePicker } from 'antc';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import ActiveEmailTip from './views/active-email-tip';
 var StatisticTotal = require('./views/statistic-total');
 var CrmRightList = require('./views/crm-right-list');
 import WillExpiredUsers from './views/will-expire-user-list';
@@ -34,11 +33,13 @@ import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
-import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
-
+import {isOrganizationEefung, hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import AlertTip from 'CMP_DIR/alert-tip';
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
+var websiteConfig = require('../../../lib/utils/websiteConfig');
+var setWebsiteConfig = websiteConfig.setWebsiteConfig;
 
 //三字符表头宽度
 const THERE_CHAR_WIDTH = 80;
@@ -69,6 +70,8 @@ class SalesHomePage extends React.Component {
             callType: CALL_TYPE_OPTION.ALL, // 通话类型
             isAnimateShow: false,//是否动态由上到下推出 激活邮箱提示框
             isAnimateHide: false,//是否动态隐藏 提示框
+            isClientAnimateShow: false,//是否动态由上到下推出 设置坐席号提示框
+            isClientAnimateHide: false,//是否动态隐藏 提示框
             isSaleTeamShow: isSaleTeamShow,//右侧销售团队列表是否展示
             notfirstLogin: false,//不是第一次登录，避免初次加载出现滑动的效果
             updateScrollBar: false,//更新滚动条外
@@ -123,7 +126,8 @@ class SalesHomePage extends React.Component {
         //外层父组件加载完成后，再由上到下推出激活邮箱提示框
         setTimeout(() => {
             this.setState({
-                isAnimateShow: true
+                isAnimateShow: true,
+                isClientAnimateShow: true
             });
         }, DELAY_TIME);
     }
@@ -775,6 +779,7 @@ class SalesHomePage extends React.Component {
 
     //点击 邮箱激活提示 中的不再提示，隐藏提示框
     hideActiveEmailTip = () => {
+        //这里是全量设置，必须把之前未改动的地方也加上去
         SalesHomeAction.setWebsiteConfig({'setting_notice_ignore': 'yes'}, (errMsg) => {
             if (errMsg) {
                 //设置错误后的提示
@@ -785,6 +790,18 @@ class SalesHomePage extends React.Component {
                     isAnimateHide: true
                 });
             }
+        });
+    };
+    hideSetClientTip = () => {
+        let personnelObj = {};
+        personnelObj[oplateConsts.STORE_PERSONNAL_SETTING.SETTING_CLIENT_NOTICE_IGNORE] = 'yes';
+        setWebsiteConfig(personnelObj,() => {
+            this.setState({
+                isClientAnimateHide: true
+            });
+        },(errMsg) => {
+            //设置错误后的提示
+            message.error(errMsg);
         });
     };
 
@@ -965,6 +982,40 @@ class SalesHomePage extends React.Component {
             },
         }];
     };
+    //获取激活邮箱的提示
+    getEmailAlertTipMessage = () => {
+        if(this.getIsShowAddEmail()){
+            return (
+                <span>
+                    {Intl.get('sales.add.email.info','请到{userinfo}页面添加邮箱，否则将会无法接收用户申请的邮件。',{
+                        'userinfo': <span className="jump-to-userinfo" onClick={this.jumpToUserInfo}>
+                            {Intl.get('user.info.user.info','个人资料')}
+                        </span>
+                    })}
+                </span>
+            );
+        }else{
+            return(
+                <span>
+                    <span>
+                        {Intl.get('sales.frontpage.active.info','请激活邮箱，以免影响收取审批邮件！')}
+                    </span>
+                    <Button type="primary" size="small" onClick={this.activeUserEmail}>{Intl.get('sales.frontpage.active.email','激活邮箱')}</Button>
+                </span>
+            );
+        }
+    };
+    //获取添加坐席号的提示
+    getClientAlertTipMessage = () => {
+        return (
+            <span>
+                {commonDataUtil.showDisabledCallTip()}
+            </span>
+        );
+    };
+    getIsShowAddEmail = () => {
+        return _.get(this.state,'emailShowObj.isShowAddEmail');
+    };
 
     //渲染客户关系首页
     render() {
@@ -1021,15 +1072,27 @@ class SalesHomePage extends React.Component {
                         <div className={crmDataZone}>
                             {/*是否展示邮箱激活或者添加邮箱的提示提示*/}
                             {this.state.emailShowObj.isShowActiveEmail || this.state.emailShowObj.isShowAddEmail ?
-                                <ActiveEmailTip
-                                    isAnimateShow={this.state.isAnimateShow}
-                                    isAnimateHide={this.state.isAnimateHide}
-                                    handleClickNoTip={this.hideActiveEmailTip}
-                                    activeUserEmail={this.activeUserEmail}
-                                    setWebConfigStatus={this.state.setWebConfigStatus}
-                                    jumpToUserInfo={this.jumpToUserInfo}
-                                    addEmail={this.state.emailShowObj.isShowAddEmail}
+                                <div className="email-active-wrap">
+                                    <AlertTip
+                                        alertTipMessage={this.getEmailAlertTipMessage()}
+                                        showNoTipMore={!this.getIsShowAddEmail()}
+                                        isAnimateShow={this.state.isAnimateShow}
+                                        isAnimateHide={this.state.isAnimateHide}
+                                        handleClickNoTip={this.hideActiveEmailTip}
+                                        setWebConfigStatus={this.state.setWebConfigStatus}
+                                    />
+                                </div>
+                                : null}
+                            {/*是否展示设置坐席号的提示*/}
+                            {_.get(this.state,'emailShowObj.isShowSetClient') && !hasCalloutPrivilege() ?
+                                <AlertTip
+                                    alertTipMessage={this.getClientAlertTipMessage()}
+                                    isAnimateShow={this.state.isClientAnimateShow}
+                                    isAnimateHide={this.state.isClientAnimateHide}
+                                    handleClickNoTip={this.hideSetClientTip}
+                                    setWebConfigStatus={this.state.setWebConfigClientStatus}
                                 /> : null}
+
                             <StatisticTotal
                                 customerTotalObj={this.state.customerTotalObj}
                                 userTotalObj={this.state.userTotalObj}

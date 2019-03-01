@@ -158,9 +158,16 @@ function getWebsiteConfig(req, res, responseObj) {
             }, null, {
                 success: function(eventEmitter, data) {
                     //有数据,并且设置了不提醒
-                    if (data && data.setting_notice_ignore === 'yes'){
+                    if (data){
+                        if (!(_.get(data, 'setting_notice_ignore') === 'yes')){
+                            responseObj.isShowActiveEmail = true;
+                        }
+                        if (!(_.get(data, 'personnel_setting.setting_client_notice_ignore') === 'yes')){
+                            responseObj.isShowSetClient = true;
+                        }
                         resolve(responseObj);
                     }else{
+                        responseObj.isShowSetClient = true;
                         responseObj.isShowActiveEmail = true;
                         resolve(responseObj);
                     }
@@ -179,7 +186,8 @@ exports.getShowActiveEmailObj = function(req, res) {
     getUserInfoEmail(req, res).then((data) => {
         var responseObj = {
             isShowActiveEmail: false,//是否展示激活邮箱的提示
-            isShowAddEmail: false//是否展示添加邮箱的提示，不能仅用是否有email字段进行判断，原因是如果数据获取慢的时候，也会在页面上展示出添加邮箱的提示
+            isShowAddEmail: false,//是否展示添加邮箱的提示，不能仅用是否有email字段进行判断，原因是如果数据获取慢的时候，也会在页面上展示出添加邮箱的提示
+            isShowSetClient: false,//是否展示设置坐席号的提示
         };
         //有邮箱
         if (data.email) {

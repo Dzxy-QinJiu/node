@@ -2234,6 +2234,7 @@ var zh_CN = {
     'failed.get.crm.list': '获取客户列表失败',
     'sale.homepage.no.tip.more': '不再提示',
     'failed.set.no.email.tip': '设置不再提示邮箱激活提醒失败',
+    'failed.set.no.client.tip': '设置不再提示设置坐席号提醒失败',
     'ketao.frontpage.illegal.location.login': '异地登录',
     'ketao.frontpage.illeagl.login': '停用客户登录',
     'ketao.frontpage.focus.customer.login': '关注客户登录',

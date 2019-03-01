@@ -19,22 +19,39 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
-import {getRelativeTime} from 'PUB_DIR/sources/utils/common-method-util';
+import {getRelativeTime, hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import Spinner from 'CMP_DIR/spinner';
 import SalesClueItem from './view/sales-clue-item';
 const LAYOUT_CONSTS = {
     PADDDING_TOP_AND_BOTTOM: 97,
 };
-
+var websiteConfig = require('../../../lib/utils/websiteConfig');
+var setWebsiteConfig = websiteConfig.setWebsiteConfig;
+const getLocalWebsiteConfig = websiteConfig.getLocalWebsiteConfig;
+import AlertTip from 'CMP_DIR/alert-tip';
+import {message} from 'antd';
+const DELAY_TIME = 2000;
 class SalesHomePage extends React.Component {
-    state = {
-        showCustomerPanel: ALL_LISTS_TYPE.SCHEDULE_TODAY,//默认激活的面板
-        isShowRepeatCustomer: false,//是否展示重复客户
-        curShowCustomerId: '',//展示客户详情的客户id
-        curShowUserId: '',//展示用户详情的用户id
-        isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
-        customerOfCurUser: {},//当前展示用户所属客户的详情
-        ...SalesHomeStore.getState()
+    constructor(props) {
+        super(props);
+        this.state = {
+            showCustomerPanel: ALL_LISTS_TYPE.SCHEDULE_TODAY,//默认激活的面板
+            isShowRepeatCustomer: false,//是否展示重复客户
+            curShowCustomerId: '',//展示客户详情的客户id
+            curShowUserId: '',//展示用户详情的用户id
+            isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
+            customerOfCurUser: {},//当前展示用户所属客户的详情
+            isClientAnimateShow: false,//是否动态由上到下推出 设置坐席号提示框
+            isClientAnimateHide: false,//是否动态隐藏 提示框
+            isShowSetClient: this.getShowSetClientPrivilege(),//是否展示没设置坐席号的提示
+            ...SalesHomeStore.getState()
+        };
+    }
+    //展示设置坐席号的提示
+    getShowSetClientPrivilege = () => {
+        var websiteConfig = getLocalWebsiteConfig();
+        return !(_.get(websiteConfig, 'personnel_setting.setting_client_notice_ignore') === 'yes') && !hasCalloutPrivilege();
     };
 
     componentDidMount() {
@@ -48,6 +65,13 @@ class SalesHomePage extends React.Component {
             $('.selected-customer-detail-item').removeClass('selected-customer-detail-item');
             $(this).closest('.customer-detail-item').addClass('selected-customer-detail-item');
         });
+        //外层父组件加载完成后，再由上到下推出激活邮箱提示框
+        setTimeout(() => {
+            this.setState({
+                isClientAnimateShow: true
+            });
+        }, DELAY_TIME);
+
     }
 
     //缩放延时，避免页面卡顿
@@ -819,6 +843,36 @@ class SalesHomePage extends React.Component {
         }
         return total;
     };
+    //获取添加坐席号的提示
+    getClientAlertTipMessage = () => {
+        return (
+            <span>
+                {commonDataUtil.showDisabledCallTip()}
+            </span>
+        );
+    };
+    hideSetClientTip = () => {
+        let personnelObj = {};
+        personnelObj[oplateConsts.STORE_PERSONNAL_SETTING.SETTING_CLIENT_NOTICE_IGNORE] = 'yes';
+        setWebsiteConfig(personnelObj,() => {
+            this.setState({
+                isClientAnimateHide: true
+            });
+        },(errMsg) => {
+            //设置错误后的提示
+            message.error(errMsg);
+        });
+    };
+    renderSetClientTip(){
+        return (
+            <AlertTip
+                isAnimateShow={this.state.isClientAnimateShow}
+                isAnimateHide={this.state.isClientAnimateHide}
+                alertTipMessage={this.getClientAlertTipMessage()}
+                handleClickNoTip={this.hideSetClientTip}
+            />
+        );
+    }
 
     render() {
         var phoneData = this.state.phoneTotalObj.data;
@@ -888,6 +942,7 @@ class SalesHomePage extends React.Component {
                         </ul>
                     </div>
                     <div className="main-content-container" style={{height: rightContentHeight}}>
+                        {this.state.isShowSetClient ? this.renderSetClientTip() : null}
                         <div className="customer-list-left" data-tracename="客户分类">
                             {this.renderDiffCustomerPanel()}
                         </div>

@@ -2195,7 +2195,8 @@ var en_US = {
     'sales.homepage.will.expire.user': 'Will Expired Account',//即将到期用户
     'failed.get.crm.list': 'Failed to get the customer list',//获取客户列表失败
     'sale.homepage.no.tip.more': 'Never show',//不再提示
-    'failed.set.no.email.tip': 'Failed to setting not to show this tip ever',//设置不再提示邮箱激活提醒失败
+    'failed.set.no.email.tip': 'Failed to set not to show this tip ever',//设置不再提示邮箱激活提醒失败
+    'failed.set.no.client.tip': 'Failed to set no longer prompt to set the seat number reminder',//设置不再提示设置坐席号提醒失败
     'ketao.frontpage.illegal.location.login': 'Login offsite',//异地登录
     'ketao.frontpage.illeagl.login': 'Disabled customers login',//停用客户登录
     'ketao.frontpage.focus.customer.login': 'Focused customer login',//关注客户登录
