@@ -2754,6 +2754,7 @@ var zh_CN = {
     'contract.table.form.fill': '请填写表格内容',
     'contract.service.add': '添加服务',
     'clue.and.crm.upload.size': '文件大小不要超过10M!',
-    'apply.show.cancel.result': '查看撤销结果'
+    'apply.show.cancel.result': '查看撤销结果',
+    'contract.repeyment.first': '首笔',
 };
 export default zh_CN;

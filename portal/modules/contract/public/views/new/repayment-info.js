@@ -1,7 +1,7 @@
 /** Created by 2019-01-31 11:11 */
 
 var React = require('react');
-import { message, Select, Icon, Form, Input, DatePicker, Checkbox } from 'antd';
+import { message, Select, Icon, Form, Input, DatePicker, Checkbox, Alert } from 'antd';
 var FirstRepaymentSrc = require('../../image/first-repayment.png');
 
 let Option = Select.Option;
@@ -9,7 +9,7 @@ let FormItem = Form.Item;
 import Trace from 'LIB_DIR/trace';
 import 'MOD_DIR/user_manage/public/css/user-info.less';
 import DetailCard from 'CMP_DIR/detail-card';
-import EditableTable from '../components/editable-table';
+import EditableTable from '../components/editable-table/';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import ajax from 'MOD_DIR/contract/common/ajax';
 import { CONTRACT_STAGE, COST_STRUCTURE, COST_TYPE, OPERATE, VIEW_TYPE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
@@ -62,6 +62,7 @@ class RepaymentInfo extends React.Component {
             hasEditPrivilege,
             displayType: DISPLAY_TYPES.TEXT,
             isFirstAdd: false, // 是否添加了首笔回款列
+            saveErrMsg: ''
         };
     }
 
@@ -81,8 +82,22 @@ class RepaymentInfo extends React.Component {
         }
     }
     getRepayList(contract) {
-        let repayments = _.sortBy(_.cloneDeep(contract.repayments) || [], item => item.date).reverse();
-        let repayLists = _.filter(repayments,item => item.type === 'repay');
+        let repayments = _.sortBy(_.cloneDeep(_.get(contract,'repayments',[])), item => item.date).reverse();
+        return _.filter(repayments,item => item.type === 'repay');
+    }
+    // 获取更新后的列表
+    getUpdateList() {
+        let propRepayLists = this.getRepayList(this.props.contract);
+        let repayLists;
+        // 需要判断列表中是否有添加项
+        // 有：合并并更新
+        // 没有: 直接覆盖
+        let addItem = _.filter(_.get(this.state,'repayLists',[]), item => !_.isNil(item.isAdd));
+        if(addItem) {
+            repayLists = [...addItem,...propRepayLists];
+        }else {
+            repayLists = propRepayLists;
+        }
         return repayLists;
     }
     changeDisplayType(type) {
@@ -200,37 +215,65 @@ class RepaymentInfo extends React.Component {
     };
     handleColumnsChange = (type) => {
         let isFirstAdd = false;
+        let displayType = this.state.displayType;
         if(type === 'editing') {
+            isFirstAdd = true;
+        }else if(type === 'addCancel') {
+            // 添加项的取消修改
+            displayType = DISPLAY_TYPES.TEXT;
+        }else if(type === 'addAndEditCancel') {
+            // 这里是因为已有项取消时有添加项存在，所以这里需要将isFirstAdd置为true
             isFirstAdd = true;
         }
         this.setState({
-            isFirstAdd
+            isFirstAdd,
+            displayType,
+            saveErrMsg: ''
         });
     };
     handleEditTableSave = (data, successFunc, errorFunc) => {
         const params = {contractId: this.props.contract.id, type: 'repay'};
-        const successFuncs = () => {
-            _.isFunction(successFunc) && successFunc();
-            this.setState({
-                repayLists: this.getRepayList(this.props.contract)
-            });
-        };
+        let successFuncs, type = 'update';
+        // 处理时间
         if(data.date){
             data.date = data.date.valueOf();
         }
 
-        this.editRepayment('update', data, params, successFuncs, (errorMsg) => {
-            message.error(errorMsg);
+        // 如果是添加
+        if(_.get(data,'isAdd',false)) {
+            type = 'add';
+            // 需要删除isAdd和id属性
+            delete data.isAdd;
+            delete data.id;
+
+            successFuncs = () => {
+                _.isFunction(successFunc) && successFunc();
+                this.setState({
+                    repayLists: this.getRepayList(this.props.contract),
+                    isFirstAdd: false,
+                    displayType: DISPLAY_TYPES.TEXT
+                });
+            };
+        }else { // 编辑更新
+            successFuncs = () => {
+                _.isFunction(successFunc) && successFunc();
+
+                this.setState({
+                    repayLists: this.getUpdateList()
+                });
+            };
+        }
+        this.editRepayment(type, data, params, successFuncs, (errorMsg) => {
+            this.setState({saveErrMsg: errorMsg});
             _.isFunction(errorFunc) && errorFunc();
         });
     };
     handleDelete = (record,successFunc, errorFunc) => {
         let saveObj = [record.id];
-        const successFuncs = (resultData) => {
-
+        const successFuncs = () => {
             _.isFunction(successFunc) && successFunc();
             this.setState({
-                repayLists: this.getRepayList(this.props.contract),
+                repayLists: this.getUpdateList()
             }, () => {
                 this.props.updateScrollBar();
             });
@@ -238,6 +281,27 @@ class RepaymentInfo extends React.Component {
         this.editRepayment('delete', saveObj,'', successFuncs, (errorMsg) => {
             message.error(errorMsg);
             _.isFunction(errorFunc) && errorFunc();
+        });
+    };
+    // 点击添加按钮
+    addList = () => {
+        let repayLists = _.cloneDeep(this.state.repayLists);
+        repayLists.unshift({
+            id: '',
+            date: moment(),
+            amount: '',
+            gross_profit: '',
+            is_first: 'false',
+            isAdd: true, // 是否是添加
+        });
+        this.setState({
+            repayLists,
+            isFirstAdd: true,
+            displayType: DISPLAY_TYPES.EDIT
+        },() => {
+            this.repaymentTableRef.setState({
+                editingKey: ''
+            });
         });
     };
 
@@ -320,7 +384,7 @@ class RepaymentInfo extends React.Component {
     }
 
     renderRepaymentList(repayLists) {
-        let num_col_width = 75;
+        let num_col_width = 80;
         const columns = [
             {
                 title: `${Intl.get('contract.108', '回款')}${Intl.get('crm.146', '日期')}`,
@@ -336,7 +400,7 @@ class RepaymentInfo extends React.Component {
                 editorProps: {
                     disabledDate
                 },
-                width: '30%',
+                width: this.state.isFirstAdd ? '25%' : '30%',
                 align: 'left',
                 render: (text, record, index) => {
                     return <span>{moment(text).format(oplateConsts.DATE_FORMAT)}{['true', true].indexOf(record.is_first) > -1 ? <img style={imgStyle} src={FirstRepaymentSrc}/> : null}</span>;
@@ -358,7 +422,7 @@ class RepaymentInfo extends React.Component {
                 title: `${Intl.get('contract.29', '回款毛利')}(${Intl.get('contract.155', '元')})`,
                 dataIndex: 'gross_profit',
                 editable: true,
-                width: this.state.isFirstAdd ? num_col_width : 'auto',
+                width: this.state.isFirstAdd ? 95 : 'auto',
                 dynamicRule: {
                     index: 2,
                     key: 'amount',
@@ -384,8 +448,8 @@ class RepaymentInfo extends React.Component {
         ];
 
         if(this.state.isFirstAdd){
-            columns.push({
-                title: Intl.get('contract.167', '首笔回款'),
+            columns.splice(1, 0, {
+                title: Intl.get('contract.repeyment.first', '首笔'),
                 dataIndex: 'is_first',
                 editor: 'Switch',
                 editorConfig: {
@@ -395,12 +459,13 @@ class RepaymentInfo extends React.Component {
                     valuePropName: 'checked',
                 },
                 editable: true,
-                width: 60,
+                width: 45,
                 render: (text, record, index) => {
                     return text === 'true' ? Intl.get('user.yes', '是') : Intl.get('user.no', '否');
                 }
             });
         }
+
         return (
             <EditableTable
                 ref={ref => this.repaymentTableRef = ref}
@@ -426,10 +491,15 @@ class RepaymentInfo extends React.Component {
         const content = () => {
             return (
                 <div className="repayment-list">
-                    {this.state.displayType === DISPLAY_TYPES.EDIT ? this.renderAddRepaymentPanel(repayLists) : this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
-                        <span className="iconfont icon-add" onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}
-                            title={Intl.get('common.edit', '编辑')}/>) : null}
+                    {/*{this.state.displayType === DISPLAY_TYPES.EDIT ? this.renderAddRepaymentPanel(repayLists) :
+                        this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
+                            <span className="iconfont icon-add" onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}
+                                title={Intl.get('common.edit', '编辑')}/>) : null}*/}
+                    {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
+                        <span className="iconfont icon-add" onClick={this.addList}
+                            title={Intl.get('common.add', '添加')}/>) : null}
                     {this.renderRepaymentList(repayLists)}
+                    {this.state.saveErrMsg ? <Alert type="error" message={this.state.saveErrMsg} showIcon /> : null}
                 </div>
             );
         };

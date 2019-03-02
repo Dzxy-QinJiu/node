@@ -90,11 +90,10 @@ class AddProduct extends React.Component{
     };
 
     handleProductCancel = (index, id) => {
-        let products = _.cloneDeep(this.props.products);
-        let item = _.find(products,item => {
+        let item = _.find(_.cloneDeep(this.props.products), item => {
             return item.id === id;
         });
-        let mineProducts = _.cloneDeep(this.state.products);
+        let mineProducts = this.state.products;
         mineProducts[index] = item;
 
         this.setState({products: mineProducts},() => {
@@ -103,11 +102,9 @@ class AddProduct extends React.Component{
     };
 
     handleProductDelete = (id, successFunc, errorFunc, type) => {
-        let products = _.cloneDeep(this.props.products);
-        let index = _.findIndex(products, item => {
-            return item.id === id;
+        let products = _.filter(this.props.products, item => {
+            return item.id !== id;
         });
-        products.splice(index, 1);
         this.handleProductSave(products, successFunc, errorFunc, type);
     };
 
@@ -126,7 +123,6 @@ class AddProduct extends React.Component{
         };
         ajax(arg).then(result => {
             if (result.code === 0) {
-                // message.success(Intl.get('user.edit.success', '修改成功'));
                 message.success(OPERATE[type] + Intl.get('contract.41', '成功'));
                 if (_.isFunction(successFunc)) successFunc();
                 const hasResult = _.isObject(result.result) && !_.isEmpty(result.result);
@@ -334,7 +330,7 @@ class AddProduct extends React.Component{
                             client_name: x.app_name
                         }))}
                         totalAmount={this.getTotalAmount()}
-                        contractId={_.get(this.props,'contract') ? this.props.contract.id : ''}
+                        contractId={_.get(this.props,'contract','')}
                         data={this.state.products}
                         dataSource={this.state.products}
                         isEdit={isEdit}

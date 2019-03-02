@@ -7,130 +7,15 @@ import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import Trace from 'LIB_DIR/trace';
 import { AntcAppSelector,Antc } from 'antc';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
-import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import DetailCard from 'CMP_DIR/detail-card';
-import { getClueSalesList, getLocalSalesClickCount } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
-
-const FormItem = Form.Item;
+import EditFormCell from './editform-cell';
 
 // 开通应用，默认的数量和金额
 const APP_DEFAULT_INFO = {
     COUNT: 1,
     PRICE: 1000
 };
-
-class EditFormItem extends React.Component {
-
-    static propTypes = {
-        form: PropTypes.object,
-        parent: PropTypes.object,
-        formItems: PropTypes.object,
-        product: PropTypes.object,
-        isEdit: PropTypes.bool,
-        productIndex: PropTypes.number
-    };
-
-    static defaultProps = {
-        parent: {},
-        formItems: [],
-        product: {},
-        isEdit: false,
-        productIndex: 0
-    };
-
-    getEditor = (props, product) => {
-        let editor = props.editor;
-        let editorProps = props.editorProps;
-        let Editor;
-        if(editor === 'AntcValidity'){
-            Editor = require('antc')[editor];
-        }else if(editor){
-            Editor = require('antd')[editor];
-        }
-
-        // if(_.isFunction(editorProps)) editorProps = editorProps(product,this.props.isEdit);
-        if(_.isFunction(editorProps)) editorProps = editorProps(product,product.isEditting);
-
-        let renderElement;
-        const { getFieldDecorator } = this.props.form;
-
-        // if(this.props.isEdit && props.editable){
-        if(product.isEditting && props.editable){
-            if(editor !== 'AntcValidity') {
-                renderElement = getFieldDecorator(props.dataIndex, props.editorConfig)(<Editor {...editorProps}/>);
-            }else {
-                editorProps.mode = 'add';
-                renderElement = <Editor key={product.id} {...editorProps}/>;
-            }
-        } else {
-            if(editor !== 'AntcValidity') {
-                renderElement = product[props.dataIndex];
-            }else{
-                renderElement = `${editorProps.startTime.format(oplateConsts.DATE_FORMAT)} ${Intl.get('common.time.connector', '至')} ${editorProps.endTime.format(oplateConsts.DATE_FORMAT)}`;
-            }
-        }
-
-        return renderElement;
-    };
-
-    render() {
-        const {
-            product,
-            ...restProps
-        } = this.props;
-
-
-        return (
-            <Form key={this.props.product.id} className='clearfix'>
-                {restProps.formItems.map((item,index) => {
-                    item.editorConfig = item.editorConfig || {};
-                    item.editorProps = item.editorProps || {};
-                    item.editor = item.editor || 'Input';
-
-                    if(item.editor !== 'AntcValidity'){
-                        let {initialValue,rules} = item.editorConfig;
-                        item.editorConfig.initialValue = _.isNil(initialValue) ? product[item.dataIndex] : (_.isFunction(initialValue) ? initialValue(product[item.dataIndex]) : initialValue);
-                        _.isNil(item.formLayOut) ? item.formLayOut = {} : '';
-                        let rawRules = !_.isNil(rules) ? rules : [];
-                        if(_.isFunction(rawRules)) {
-                            item.editorConfig.rules = rawRules(product[item.dataIndex], product, index);
-                            // 动态验证时
-                            if(!_.isEmpty(item.dynamicRule) && item.dynamicRule.key) {
-                                item.editorConfig.rules[item.dynamicRule.index] = ((parent) => {
-                                    return item.dynamicRule.fn(parent);
-                                })(restProps.parent);
-                            }
-                        }
-                    }
-
-                    if(item.display === 'inline') {
-                        // if(this.props.isEdit) {
-                        if(product.isEditting) {
-                            item.formLayOut.className = 'form-inline';
-                        } else {
-                            item.formLayOut = {
-                                labelCol: { span: 6 }
-                            };
-                        }
-                    }
-
-                    return (
-                        <FormItem
-                            key={index}
-                            label={item.title}
-                            {...item.formLayOut}
-                        >
-                            {this.getEditor(item, product)}
-                        </FormItem>
-                    );
-                })}
-            </Form>
-        );
-    }
-}
-
-const EditFormCell = Form.create()(EditFormItem);
 
 class ProductList extends Component {
 
@@ -267,7 +152,7 @@ class ProductList extends Component {
         let currentEditKey = this.state.currentEditKey;
         currentEditKey = data[index].id;
         // 判断是否是添加的产品取消, 是则要删除这个数据
-        if(type === 'cancel') {
+        if(type === 'add') {
             delete this[`form${data[index].id}Ref`];
             data.splice(index,1);
             saveStatus.splice(index, 1);
@@ -446,7 +331,7 @@ class ProductList extends Component {
     };
     // 单项编辑时的取消
     handleItemCancel = (product, index) => {
-        let type = product.isAdd ? 'cancel' : 'update';
+        let type = product.isAdd ? 'add' : 'update';
         this.showEdit(index, type);
     };
     // 展示时的产品选择确认事件

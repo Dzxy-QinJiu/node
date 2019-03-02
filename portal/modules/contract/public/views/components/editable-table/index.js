@@ -1,82 +1,11 @@
 /** Created by 2019-02-14 13:27 */
-import { Table, Popconfirm, Form, Icon, Button } from 'antd';
+import React, { Component } from 'react';
+import { Table, Popconfirm, Icon, Button } from 'antd';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 import Trace from 'LIB_DIR/trace';
-const FormItem = Form.Item;
+import {EditableFormCell} from './editable-cell';
 
-class EditableCell extends React.Component {
-
-    state = {
-        value: ''
-    };
-
-    static propTypes = {
-        form: PropTypes.object,
-        editor: PropTypes.string,
-        editorConfig: PropTypes.object,
-        editorProps: PropTypes.object,
-        editing: PropTypes.bool,
-        dataIndex: PropTypes.string,
-        record: PropTypes.object,
-        dynamicRule: PropTypes.object,
-        parent: PropTypes.object,
-    };
-
-    static defaultProps = {
-        // 编辑时选用哪种编辑方式，默认是是input输入框
-        editor: 'Input',
-        // 编辑器在form中的getFieldDecorator的配置
-        editorConfig: {},
-        // 编辑器上的相关属性
-        editorProps: {},
-        dynamicRule: {},
-        parent: {}
-    };
-
-    getEditor = () => {
-        let editor = this.props.editor;
-        let editorProps = this.props.editorProps;
-        const Editor = require('antd')[editor];
-
-        return <Editor {...editorProps}/>;
-    };
-
-    render() {
-        const {
-            editing,
-            dataIndex,
-            editorConfig,
-            record,
-            form,
-            ...restProps
-        } = this.props;
-
-        const { getFieldDecorator } = form;
-
-        if(editing){
-            let {initialValue} = editorConfig;
-            editorConfig.initialValue = _.isNil(initialValue) ? record[dataIndex] : (_.isFunction(initialValue) ? initialValue(record[dataIndex]) : initialValue);
-            // 动态验证时
-            if(!_.isEmpty(restProps.dynamicRule) && restProps.dynamicRule.key) {
-                editorConfig.rules[restProps.dynamicRule.index] = ((parent) => {
-                    return restProps.dynamicRule.fn(parent);
-                })(restProps.parent);
-            }
-
-            return (
-                <FormItem style={{ margin: 0 }}>
-                    {getFieldDecorator(dataIndex, editorConfig)(this.getEditor())}
-                </FormItem>
-            );
-        }else{
-            return null;
-        }
-    }
-}
-
-const EditableFormCell = Form.create()(EditableCell);
-
-class EditableTable extends React.Component {
+class EditableTable extends Component {
     constructor(props) {
         super(props);
 
@@ -86,9 +15,7 @@ class EditableTable extends React.Component {
             currentContractId: props.parent.props.contract.id,
             loading: false
         };
-        // this.cacheData = props.dataSource.map(item => ({ ...item }));
     }
-    editableFormCellRef = {};
 
     static defaultProps = {
         //表格列定义
@@ -100,7 +27,7 @@ class EditableTable extends React.Component {
         defaultKey: 'id',
         //表格是否显示边框
         bordered: true,
-        //表格是否处于编辑状态
+        //表格是否有编辑权限
         isEdit: false,
         //保存事件，在点击保存按钮后会被触发，其回调参数为变化后的表格数据
         onSave: function() {},
@@ -108,7 +35,15 @@ class EditableTable extends React.Component {
         //变更事件，在表格内容变化后会被触发，其回调参数为变化后的表格数据
         onChange: function() {},
         // 取消事件
-        onCancel: function() {}
+        onCancel: function() {},
+        /*
+         * 表格修改的取消操作事件，其回调参数为
+         * editing: 正在编辑中
+         * addCancel: 添加项的取消修改
+         * addAndEditCancel： 有添加项的编辑项取消修改
+         * cancel: 编辑项取消修改
+         */
+        onColumnsChange: function() {}
     };
 
     componentWillReceiveProps(nextProps) {
@@ -122,7 +57,7 @@ class EditableTable extends React.Component {
         }
         this.setState(newState);
     }
-
+    // 重新过滤列表头
     getColumns(columnsArg) {
         let columns = _.cloneDeep(columnsArg);
         let _this2 = this;
@@ -158,37 +93,18 @@ class EditableTable extends React.Component {
         });
         return columns;
     }
-    onValuesChange = (props, values) => {
-        this.editableFormCellRef.props.form.resetFields();
-        let record = props.record;
-        const newData = [...this.state.data];
-        const index = newData.findIndex(item => record[this.props.defaultKey] === item[this.props.defaultKey]);
-        /*if (index > -1) {
-            const item = newData[index];
-            if(!_.isEmpty(props.editor) && props.editor === 'date') {
-                values.date = values.date.valueOf();
-            }
-            newData.splice(index, 1, {
-                ...item,
-                ...values,
-            });
-            this.setState({ data: newData },() => {
-                // this.props.onChange(newData);
-            });
-        }*/
-    };
     renderColumns(text, record, index, col) {
         return (
             <EditableFormCell
-                wrappedComponentRef={ref => {this[`${col.dataIndex}editableFormCellRef`] = ref; this.editableFormCellRef = ref;}}
+                wrappedComponentRef={ref => this[`${col.dataIndex}editableFormCellRef`] = ref}
                 parent={this}
                 {...col}
                 record={record}
-                onValuesChange={this.onValuesChange.bind(this)}
                 editing={ this.isEditing(record) }
             />
         );
     }
+    // 是否是可编辑
     isEditing = (record) => {
         return record[this.props.defaultKey] === this.state.editingKey;
     };
@@ -200,21 +116,24 @@ class EditableTable extends React.Component {
         });
     }
     save(defaultKey) {
-        this.editableFormCellRef.props.form.validateFields((error, row) => {
-            if (error) {
-                return;
-            }
-            let saveObj = {};
-            for(let key of Object.keys(this)) {
-                if(/Ref$/.test(key)){
-                    saveObj = {...saveObj, ...this[key].props.form.getFieldsValue()};
-                }
-            }
-            const newData = [...this.state.data];
-            const index = newData.findIndex(item => defaultKey === item[this.props.defaultKey]);
-            if (index > -1) {
-
-                const item = {...newData[index], ...saveObj, ...item};
+        let validateObj = {};
+        let validateLength;
+        // 这里将所有列都验证一遍
+        _.each(this.props.columns, col => {
+            let ref = this[`${col.dataIndex}editableFormCellRef`];
+            ref.props.form.validateFields((err, value) => {
+                if(err) return false;
+                validateObj = {...validateObj, ...value};
+            });
+        });
+        validateLength = Object.keys(validateObj).length;
+        // 通过验证的列与所有的列长度是否一致
+        if(validateLength !== this.props.columns.length) {
+            return false;
+        }else {
+            const newData = _.find(this.state.data, item => defaultKey === item[this.props.defaultKey]);
+            if (newData) {
+                const item = {...newData, ...validateObj};
                 this.setState({
                     loading: true
                 }, () => {
@@ -233,14 +152,30 @@ class EditableTable extends React.Component {
                     this.props.onSave(item, successFunc, errorFunc);
                 });
             }
-        });
+        }
     }
-    cancel(key) {
+    // 取消按钮事件
+    cancel(key, isAdd) {
+        // 这里判断是添加项取消，还是编辑项取消
+        // 是：添加项取消，需要删除添加项，
+        // 否：编辑项不变
+        let index = _.findIndex(this.props.dataSource, item => item[this.props.defaultKey] === key);
+        let hasAddItem = _.find(this.state.data,['isAdd', true]);
+        let type;
+        if(isAdd) {
+            this.props.dataSource.splice(index, 1);
+            type = 'addCancel';
+        }else {
+            // 有添加项时，编辑项的取消需要通知父组件
+            type = hasAddItem ? 'addAndEditCancel' : 'cancel';
+        }
+
         this.setState({ editingKey: '', data: this.props.dataSource });
         this.props.onCancel();
-        _.isFunction(this.props.onColumnsChange) && this.props.onColumnsChange('cancel');
+        _.isFunction(this.props.onColumnsChange) && this.props.onColumnsChange(type);
         Trace.traceEvent(ReactDOM.findDOMNode(this), '取消对表格的修改');
     }
+    // 删除某一项
     handleDelete(record) {
         Trace.traceEvent(ReactDOM.findDOMNode(this),'点击删除某行单元格');
         this.setState({loading: true}, () => {
@@ -259,7 +194,7 @@ class EditableTable extends React.Component {
     }
     render() {
         let columns = _.cloneDeep(this.props.columns);
-        // 是否添加操作列
+        // 是否有编辑权限，添加操作列
         if(this.props.isEdit) {
             columns.push({
                 title: Intl.get('common.operate', '操作'),
@@ -271,6 +206,7 @@ class EditableTable extends React.Component {
                     const editable = this.isEditing(record);
                     return (
                         <div>
+                            {/*是否可编辑*/}
                             {editable ? (
                                 <span>
                                     <Button
@@ -285,7 +221,7 @@ class EditableTable extends React.Component {
                                         shape="circle"
                                         className="btn-cancel"
                                         title={Intl.get('common.cancel', '取消')}
-                                        onClick={() => this.cancel(record[this.props.defaultKey])}
+                                        onClick={() => this.cancel(record[this.props.defaultKey], record.isAdd)}
                                     >
                                         <Icon type="cross"/>
                                     </Button>
@@ -295,13 +231,15 @@ class EditableTable extends React.Component {
                                     <DetailEditBtn title={Intl.get('common.edit', '编辑')} onClick={(e) => {
                                         this.edit(e, record[this.props.defaultKey]);
                                     }}/>
-                                    <Popconfirm title={`${Intl.get('crm.contact.delete.confirm', '确认删除')}?`} onConfirm={this.handleDelete.bind(this, record)}>
-                                        <span
-                                            className="btn-bar"
-                                            title={Intl.get('common.delete', '删除')}>
-                                            <Icon type="close" theme="outlined" />
-                                        </span>
-                                    </Popconfirm>
+                                    {/*如果是添加，删除直接删除；如果是已有项删除，请求接口*/}
+                                    {record.isAdd ? null :
+                                        <Popconfirm title={`${Intl.get('crm.contact.delete.confirm', '确认删除')}?`} onConfirm={this.handleDelete.bind(this, record)}>
+                                            <span
+                                                className="btn-bar"
+                                                title={Intl.get('common.delete', '删除')}>
+                                                <Icon type="close" theme="outlined" />
+                                            </span>
+                                        </Popconfirm>}
                                 </span>
                             )}
                         </div>

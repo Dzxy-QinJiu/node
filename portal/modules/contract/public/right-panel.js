@@ -611,10 +611,11 @@ class ContractRightPanel extends React.Component {
             if(isProductAndService) {
                 endTabKey += 1;
                 let currentContentHeight = contentHeight;
+                let tabTitle = [SERVICE].indexOf(this.props.contract.category) > -1 ? Intl.get('contract.product.service.info', '产品与服务信息') : Intl.get('contract.95', '产品信息');
                 // currentContentHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
 
                 tabList.push(
-                    <TabPane tab={Intl.get('contract.product.service.info', '产品与服务信息')} key="2">
+                    <TabPane tab={tabTitle} key="2">
                         <div className="contract-product" style={{height: currentContentHeight}}>
                             <div className='contract-product-title'><span className='product-title-text'>合同额：{`${this.props.contract.contract_amount}${Intl.get('contract.155', '元')}`}</span></div>
                             <GeminiScrollBar ref='gemiScrollBar'>
