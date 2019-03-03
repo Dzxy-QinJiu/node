@@ -43,7 +43,7 @@ class EditableTable extends Component {
          * addAndEditCancel： 有添加项的编辑项取消修改
          * cancel: 编辑项取消修改
          */
-        onColumnsChange: function() {}
+        onColumnsChange: function() {},
     };
 
     componentWillReceiveProps(nextProps) {
@@ -134,6 +134,9 @@ class EditableTable extends Component {
             const newData = _.find(this.state.data, item => defaultKey === item[this.props.defaultKey]);
             if (newData) {
                 const item = {...newData, ...validateObj};
+                // 有验证事件时，不满足条件，
+                if(_.isFunction(this.props.onValidate) && !this.props.onValidate(item)) return false;
+
                 this.setState({
                     loading: true
                 }, () => {
@@ -272,6 +275,7 @@ EditableTable.propTypes = {
     onChange: PropTypes.func,
     onCancel: PropTypes.func,
     onColumnsChange: PropTypes.func,
+    onValidate: PropTypes.func, // 验证事件，点击保存按钮后，需要验证的操作，
 };
 
 module.exports = EditableTable;

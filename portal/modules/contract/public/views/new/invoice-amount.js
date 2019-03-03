@@ -11,23 +11,10 @@ import DetailCard from 'CMP_DIR/detail-card';
 import EditableTable from '../components/editable-table/';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import ajax from 'MOD_DIR/contract/common/ajax';
-import { CONTRACT_STAGE, COST_STRUCTURE, COST_TYPE, OPERATE, VIEW_TYPE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
+import { DISPLAY_TYPES, OPERATE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
 import routeList from 'MOD_DIR/contract/common/route';
-import {parseAmount} from 'LIB_DIR/func';
 import { getNumberValidateRule } from 'PUB_DIR/sources/utils/validate-util';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-
-//展示的类型
-const DISPLAY_TYPES = {
-    EDIT: 'edit',//添加所属客户
-    TEXT: 'text'//展示
-};
-
-const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 330;
-const formItemLayout = {
-    labelCol: {span: 5},
-    wrapperCol: {span: 18},
-};
 
 const disabledDate = function(current) {
     //不允许选择大于当前天的日期
@@ -156,7 +143,7 @@ class InvoiceAmount extends React.Component {
 
         ajax(arg).then(result => {
             if (result.code === 0) {
-                message.success(OPERATE[type] + targetName + '成功');
+                message.success(OPERATE[type] + targetName + Intl.get('contract.41', '成功'));
                 this.props.refreshCurrentContractNoAjax(changePropName, isInvoiceBasicInforOrInvoices, result.result, id);
 
                 if (_.isFunction(successFunc)) successFunc(result.result);

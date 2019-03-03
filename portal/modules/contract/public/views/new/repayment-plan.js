@@ -10,19 +10,10 @@ import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import ajax from 'MOD_DIR/contract/common/ajax';
-import { OPERATE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
+import { OPERATE, PRIVILEGE_MAP, DISPLAY_TYPES} from 'MOD_DIR/contract/consts';
 import routeList from 'MOD_DIR/contract/common/route';
 import {parseAmount} from 'LIB_DIR/func';
 import RepeymentPlanForm from '../components/repeyment-plan-form';
-
-//展示的类型
-const DISPLAY_TYPES = {
-    EDIT: 'edit',//添加所属客户
-    TEXT: 'text',//展示
-    UPDATE: 'update', // 更新
-    ADD: 'add',// 添加
-    DELETE: 'delete',// 删除
-};
 
 class RepaymentPlan extends React.Component {
     state = {

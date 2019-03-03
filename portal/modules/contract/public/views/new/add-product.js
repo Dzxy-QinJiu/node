@@ -1,4 +1,5 @@
 /** Created by 2019-02-19 14:05 */
+
 var React = require('react');
 /**
  * 产品信息添加表单
@@ -9,7 +10,7 @@ import { getNumberValidateRule, numberAddNoMoreThan } from 'PUB_DIR/sources/util
 import { removeCommaFromNum } from 'LIB_DIR/func';
 import ProductList from '../components/product-list';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
-import { OPERATE, PRIVILEGE_MAP, VIEW_TYPE } from 'MOD_DIR/contract/consts';
+import { DISPLAY_TYPES, OPERATE, PRIVILEGE_MAP, VIEW_TYPE } from 'MOD_DIR/contract/consts';
 import Trace from 'LIB_DIR/trace';
 import routeList from 'MOD_DIR/contract/common/route';
 import ajax from 'MOD_DIR/contract/common/ajax';
@@ -110,8 +111,9 @@ class AddProduct extends React.Component{
 
     handleProductSave = (saveObj,successFunc,errorFunc,type = 'update') => {
         saveObj = {products: saveObj};
-        Trace.traceEvent(ReactDOM.findDOMNode(this),'修改产品信息');
 
+        console.log(saveObj);
+        Trace.traceEvent(ReactDOM.findDOMNode(this),'修改产品信息');
         const handler = 'editContract';
         const route = _.find(routeList, route => route.handler === handler);
 
@@ -167,16 +169,36 @@ class AddProduct extends React.Component{
 
     getTotalAmount = () => {
         // 获取合同金额的大小
-        let totalAmout;
-        let reports = _.get(this,'props.parent.refs.addReport.state.reports') || _.get(this,'props.contract.reports') || [];
+        let totalAmout, reports;
+        if(this.props.isDetailType) {
+            reports = _.get(this,'props.contract.reports') || [];
+        }else {
+            reports = _.get(this,'props.parent.refs.addReport.state.reports') || [];
+        }
         let totalReportsPrice = 0;
         reports.length > 0 ? totalReportsPrice = _.reduce(reports,(sum, item) => {
             const amount = +item.total_price;
             return sum + amount;
         }, 0) : '';
 
-        totalAmout = (_.get(this,'props.contract.contract_amount') || removeCommaFromNum(this.props.totalAmout)) - totalReportsPrice;
-        return totalAmout >= 0 ? totalAmout : 0;
+        totalAmout = (_.get(this,'props.contract.contract_amount') || removeCommaFromNum(this.props.totalAmout)) - totalReportsPrice || 0;
+        return totalAmout;
+    };
+    // 验证毛利与总额大小
+    validateAmount = (validateArr,rule,value,callback) => {
+        let currentTotalAmout = this.getTotalAmount();
+        let sumAmount = _.reduce(validateArr, (sum, item) => {
+            const amount = +item.total_price;
+            return sum + amount;
+        }, 0);
+        sumAmount -= value;
+
+        if(currentTotalAmout >= sumAmount + parseFloat(value)) {
+            this.setState({
+                products: _.cloneDeep(validateArr)
+            });
+        }
+        numberAddNoMoreThan(currentTotalAmout, sumAmount, Intl.get('contract.161', '已超合同额'), rule, value, callback);
     };
 
     render() {
@@ -188,6 +210,10 @@ class AddProduct extends React.Component{
         let isEdit = !this.props.isDetailType ? true :
             isEditBtnShow; //(isEditBtnShow && this.producTableRef ? this.producTableRef.state.isEdit : false);
         let isSaveCancelBtnShow = this.props.isDetailType;
+
+        const appIds = _.map(this.state.products, 'id');
+
+        const appList = _.filter(this.props.appList, app => appIds.indexOf(app.app_id) === -1);
 
         const formItems = [
             {
@@ -276,7 +302,6 @@ class AddProduct extends React.Component{
                     fn: (parent) => {
                         return {
                             validator: (rule,value,callback) => {
-                                let currentTotalAmout = _this.getTotalAmount();
                                 // 这里需要获取其他产品的价格
                                 let validateArr = [];
                                 _.each(this.state.products, (item, index) => {
@@ -288,19 +313,7 @@ class AddProduct extends React.Component{
                                     }
                                     validateArr.push({...item, ...formValue});
                                 });
-
-                                let sumAmount = _.reduce(validateArr, (sum, item) => {
-                                    const amount = +item.total_price;
-                                    return sum + amount;
-                                }, 0);
-                                sumAmount -= value;
-
-                                if(currentTotalAmout >= sumAmount + parseFloat(value)) {
-                                    _this.setState({
-                                        products: _.cloneDeep(validateArr)
-                                    });
-                                }
-                                numberAddNoMoreThan(currentTotalAmout, sumAmount, Intl.get('contract.161', '已超合同额'), rule, value, callback);
+                                this.validateAmount(validateArr,rule,value,callback);
                             }
                         };
                     },
@@ -314,14 +327,40 @@ class AddProduct extends React.Component{
                     }
                 }
             },
+        ];
 
+        const ortherItems = [
+            {
+                title: Intl.get('common.product.name', '产品名称'),
+                dataIndex: 'app_name',
+                editable: true,
+                index: 0,
+                formLayOut: {
+                    labelCol: { span: 6 },
+                    wrapperCol: { span: 18 }
+                },
+                editor: 'Select',
+                editorChildrenType: 'Option',
+                editorChildren: (Children) => {
+                    return _.map(appList, item => {
+                        return <Children value={item.app_id} key={item.app_id}>{item.app_name}</Children>;
+                    });
+                },
+                editorConfig: {
+                    rules: [{
+                        required: true,
+                        message: Intl.get('contract.44', '不能为空')
+                    }]
+                }
+            },
         ];
 
         return (
             <div className={`add-products ${this.props.className}`} data-tracename="添加编辑>产品信息">
-                <div className="product-forms">
+                <div className="product-forms clearfix">
                     <ProductList
                         addBtnText={Intl.get('config.product.add', '添加产品')}
+                        title={Intl.get('contract.95', '产品信息')}
                         ref={ref => this.producTableRef = ref}
                         defaultValueMap={defaultValueMap}
                         appList={this.props.appList.map(x => ({
@@ -337,6 +376,7 @@ class AddProduct extends React.Component{
                         isEditBtnShow={isEditBtnShow}
                         isSaveCancelBtnShow={isSaveCancelBtnShow}
                         formItems={formItems}
+                        ortherItems={ortherItems}
                         onSave={this.handleProductSave}
                         onDelete={this.handleProductDelete}
                         handleCancel={this.handleProductCancel}

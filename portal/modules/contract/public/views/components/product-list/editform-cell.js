@@ -10,7 +10,7 @@ class EditFormItem extends React.Component {
         formItems: PropTypes.object,
         product: PropTypes.object,
         isEdit: PropTypes.bool,
-        productIndex: PropTypes.number
+        productIndex: PropTypes.number,
     };
 
     static defaultProps = {
@@ -40,7 +40,13 @@ class EditFormItem extends React.Component {
         // if(this.props.isEdit && props.editable){
         if(product.isEditting && props.editable){
             if(editor !== 'AntcValidity') {
-                renderElement = getFieldDecorator(props.dataIndex, props.editorConfig)(<Editor {...editorProps}/>);
+                // 编辑器有无子组件
+                if(!_.isFunction(props.editorChildren)){
+                    renderElement = getFieldDecorator(props.dataIndex, props.editorConfig)(<Editor {...editorProps}/>);
+                }else {
+                    let editorChildren = props.editorChildren(Editor[props.editorChildrenType]);
+                    renderElement = getFieldDecorator(props.dataIndex, props.editorConfig)(<Editor {...editorProps}>{editorChildren}</Editor>);
+                }
             }else {
                 editorProps.mode = 'add';
                 renderElement = <Editor key={product.id} {...editorProps}/>;
@@ -55,6 +61,27 @@ class EditFormItem extends React.Component {
 
         return renderElement;
     };
+    // 获取动态验证
+    getDynamic(item) {
+        let product = this.props.product, parent = this.props.parent;
+        // 不为起止时间选择器时
+        if(item.editor !== 'AntcValidity'){
+            let {initialValue,rules} = item.editorConfig;
+            item.editorConfig.initialValue = _.isNil(initialValue) ? product[item.dataIndex] : (_.isFunction(initialValue) ? initialValue(product[item.dataIndex]) : initialValue);
+            _.isNil(item.formLayOut) ? item.formLayOut = {} : '';
+            let rawRules = !_.isNil(rules) ? rules : [];
+            // 如果是一个函数，调用并返回值
+            if(_.isFunction(rawRules)) {
+                item.editorConfig.rules = rawRules(product[item.dataIndex], product, this.props.productIndex);
+                // 动态验证时
+                if(!_.isEmpty(item.dynamicRule) && item.dynamicRule.key) {
+                    item.editorConfig.rules[item.dynamicRule.index] = ((parent) => {
+                        return item.dynamicRule.fn(parent);
+                    })(parent);
+                }
+            }
+        }
+    }
 
     render() {
         const {
@@ -70,22 +97,10 @@ class EditFormItem extends React.Component {
                     item.editorProps = item.editorProps || {};
                     item.editor = item.editor || 'Input';
 
-                    if(item.editor !== 'AntcValidity'){
-                        let {initialValue,rules} = item.editorConfig;
-                        item.editorConfig.initialValue = _.isNil(initialValue) ? product[item.dataIndex] : (_.isFunction(initialValue) ? initialValue(product[item.dataIndex]) : initialValue);
-                        _.isNil(item.formLayOut) ? item.formLayOut = {} : '';
-                        let rawRules = !_.isNil(rules) ? rules : [];
-                        if(_.isFunction(rawRules)) {
-                            item.editorConfig.rules = rawRules(product[item.dataIndex], product, index);
-                            // 动态验证时
-                            if(!_.isEmpty(item.dynamicRule) && item.dynamicRule.key) {
-                                item.editorConfig.rules[item.dynamicRule.index] = ((parent) => {
-                                    return item.dynamicRule.fn(parent);
-                                })(restProps.parent);
-                            }
-                        }
-                    }
+                    // 是否有动态验证方法
+                    this.getDynamic(item);
 
+                    // 是否一行显示
                     if(item.display === 'inline') {
                         // if(this.props.isEdit) {
                         if(product.isEditting) {
@@ -96,7 +111,10 @@ class EditFormItem extends React.Component {
                             };
                         }
                     }
-
+                    // 如果为起止时间选择器
+                    if(item.editor === 'AntcValidity') {
+                        item.formLayOut.style = {marginTop: 10};
+                    }
                     return (
                         <FormItem
                             key={index}

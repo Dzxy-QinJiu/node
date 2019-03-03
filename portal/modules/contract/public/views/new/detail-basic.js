@@ -17,19 +17,12 @@ import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { AntcValidity } from 'antc';
 import ajax from 'MOD_DIR/contract/common/ajax';
 import customerAjax from 'MOD_DIR/common/public/ajax/customer';
-import { CONTRACT_STAGE, COST_STRUCTURE, COST_TYPE, OPERATE, VIEW_TYPE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
+import { CONTRACT_STAGE, COST_STRUCTURE, COST_TYPE, OPERATE, VIEW_TYPE, PRIVILEGE_MAP, DISPLAY_TYPES} from 'MOD_DIR/contract/consts';
 import { regex } from 'ant-utils';
 import { getNumberValidateRule } from 'PUB_DIR/sources/utils/validate-util';
 import routeList from 'MOD_DIR/contract/common/route';
 import oplateConsts from 'LIB_DIR/consts';
 import { CategoryList, ContractLabel } from 'PUB_DIR/sources/utils/consts';
-
-
-//展示的类型
-const DISPLAY_TYPES = {
-    EDIT: 'edit',//添加所属客户
-    TEXT: 'text'//展示
-};
 
 const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 330;
 const formItemLayout = {

@@ -1195,13 +1195,6 @@
             .detail-card-container{
                 position: relative;
             }
-            .iconfont.icon-add{
-                position: absolute;
-                top: 12px;
-                right: 10px;
-                margin-top: 0;
-                color: @icon-color;
-            }
             .repayment-title{
                 display: inline-block;
             }
@@ -1263,7 +1256,8 @@
                         }
                     }
                     .btn-save, .btn-cancel {
-                        position: unset;
+                        position: relative;
+                        right: 0;
                     }
                 }
             }
@@ -1414,6 +1408,9 @@
                             width: 100%;
                         }
                     }
+                   .product-list-item{
+                      border: 1px solid #d3eafc;
+                   }
                 }
                 .btn-bar{
                     float: right;
@@ -1491,16 +1488,27 @@
                 .add-app-container{
                     right: 18px;
                 }
-                .icon-edit-btn{
-                    display: none;
-                    position: unset;
-
+                .product-title{
+                  .ant-spin-nested-loading{
+                    float: right;
+                  }
                 }
+
+                .btn-box{
+                    float: right;
+                    display: none;
+                    .icon-edit-btn{
+                        position: unset;
+                        margin-left: 10px;
+                    }
+                }
+
                 .detail-card-container{
-                    &:hover{
-                        .icon-edit-btn{
-                            display: block;
-                        }
+                    position: relative;
+                }
+                .product-list-item:hover{
+                    .btn-box{
+                        display: block;
                     }
                 }
                 .ant-dropdown-trigger{
@@ -1513,10 +1521,33 @@
                     right: 90px;
                 }
                 .icon-edit-btn{
-                    top: 10px;
-                    margin-right: 10px;
+                    /*top: 10px;
+                    margin-right: 10px;*/
+                    position: unset;
+                    margin: 0;
+                }
+                .product-table-container{
+                    border: none;
+                }
+                .contract-repayment-container{
+                     position: relative;
+                     margin: 0;
+                }
+                .detail-report-container{
+                    .ant-select{
+                       width: 100%;
+                    }
                 }
             }
+        }
+        .contract-repayment,.contract-product,.contract-invoice{
+          .iconfont.icon-add {
+            position: absolute;
+            top: 12px;
+            right: 10px;
+            margin-top: 0;
+            color: @icon-color;
+          }
         }
     }
 

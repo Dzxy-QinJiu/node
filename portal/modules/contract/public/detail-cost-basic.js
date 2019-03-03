@@ -9,22 +9,18 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import ajax from '../common/ajax';
-import { COST_TYPE, OPERATE } from '../consts';
+import { COST_TYPE, OPERATE ,DISPLAY_TYPES} from '../consts';
 import oplateConsts from 'LIB_DIR/consts';
 import { getNumberValidateRule } from 'PUB_DIR/sources/utils/validate-util';
 import routeList from 'MOD_DIR/contract/common/route';
-//展示的类型
-const DISPLAY_TYPES = {
-    EDIT: 'edit',//编辑
-    TEXT: 'text'//展示
-};
+
 const COST_TYPES = {
-    cost: '费用',
-    date: '日期',
-    type: '费用类型',
+    cost: Intl.get('contract.133', '费用'),
+    date: Intl.get('crm.146', '日期'),
+    type: Intl.get('contract.135', '费用类型'),
 };
 
-const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 354;
+const EDIT_FEILD_LESS_WIDTH = 354;
 
 class DetailCostCard extends React.Component {
     state = {
@@ -83,7 +79,7 @@ class DetailCostCard extends React.Component {
 
         ajax(arg).then(result => {
             if (result.code === 0) {
-                message.success(OPERATE['update'] + '费用信息成功');
+                message.success(OPERATE['update'] + Intl.get('contract.129', '费用信息') + Intl.get('contract.41', '成功'));
                 if(_.isFunction(successFunc)) successFunc();
                 const hasResult = _.isObject(result.result) && !_.isEmpty(result.result);
                 if(hasResult){
@@ -91,7 +87,7 @@ class DetailCostCard extends React.Component {
                     this.props.refreshCurrentContract(this.props.cost.id,true,contract);
                 }
             } else {
-                message.error(result.msg || OPERATE[type] + '费用信息失败');
+                message.error(result.msg || OPERATE[type] + Intl.get('contract.129', '费用信息') + Intl.get('user.failed', '失败'));
                 if (_.isFunction(errorFunc)) errorFunc();
             }
         }, (errorMsg) => {

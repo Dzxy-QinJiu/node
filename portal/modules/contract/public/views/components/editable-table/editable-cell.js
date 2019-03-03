@@ -9,10 +9,18 @@ class EditableCell extends React.Component {
     };
 
     static propTypes = {
+        editable: PropTypes.bool,
         form: PropTypes.object,
         editor: PropTypes.string,
         editorConfig: PropTypes.object,
         editorProps: PropTypes.object,
+        /*editorChildren: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.arrayOf(PropTypes.element)
+        ]),*/
+        editorChildren: PropTypes.func,
+        editorChildrenType: PropTypes.string,
+        getIsEdit: PropTypes.func,
         editing: PropTypes.bool,
         dataIndex: PropTypes.string,
         record: PropTypes.object,
@@ -21,12 +29,18 @@ class EditableCell extends React.Component {
     };
 
     static defaultProps = {
+        // 是否可以编辑
+        editable: false,
         // 编辑时选用哪种编辑方式，默认是是input输入框，只能是antd的组件
         editor: 'Input',
         // 编辑器在form中的getFieldDecorator的配置
         editorConfig: {},
         // 编辑器上的相关属性
         editorProps: {},
+        // 编辑器的子组件函数, 返回子组件
+        editorChildren: null,
+        // 编辑器子组件的类型
+        editorChildrenType: '',
         dynamicRule: {},
         parent: {}
     };
@@ -34,9 +48,32 @@ class EditableCell extends React.Component {
     getEditor = () => {
         let editor = this.props.editor;
         let editorProps = this.props.editorProps;
-        const Editor = require('antd')[editor];
+        let editorConfig = this.props.editorConfig;
+        let Editor, renderElement;
+        let isEdit = true, record = this.props.record;
+        const { getFieldDecorator } = this.props.form;
+        if(_.isFunction(this.props.getIsEdit)) {
+            isEdit = this.props.getIsEdit(record[this.props.dataIndex]);
+        }
 
-        return <Editor {...editorProps}/>;
+        // 判断是否可以编辑
+        if(this.props.editable && isEdit) {
+            Editor = require('antd')[editor];
+            // 编辑器有无子组件
+            if(!_.isFunction(this.props.editorChildren)){
+                renderElement = getFieldDecorator(this.props.dataIndex, editorConfig)(<Editor {...editorProps}/>);
+            }else {
+                let editorChildren = this.props.editorChildren(Editor[this.props.editorChildrenType]);
+                renderElement = getFieldDecorator(this.props.dataIndex, editorConfig)(
+                    <Editor {...editorProps}>
+                        {editorChildren}
+                    </Editor>
+                );
+            }
+        }else {
+            renderElement = record[this.props.dataIndex];
+        }
+        return renderElement;
     };
     // 是否需要动态验证
     hasDynamicRule(restProps, editorConfig) {
@@ -60,8 +97,6 @@ class EditableCell extends React.Component {
             ...restProps
         } = this.props;
 
-        const { getFieldDecorator } = form;
-
         if(editing){
             let {initialValue} = editorConfig;
             editorConfig.initialValue = _.isNil(initialValue) ? record[dataIndex] : (_.isFunction(initialValue) ? initialValue(record[dataIndex]) : initialValue);
@@ -70,7 +105,7 @@ class EditableCell extends React.Component {
 
             return (
                 <FormItem style={{ margin: 0 }}>
-                    {getFieldDecorator(dataIndex, editorConfig)(this.getEditor())}
+                    {this.getEditor()}
                 </FormItem>
             );
         }else{

@@ -13,23 +13,10 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import ajax from 'MOD_DIR/contract/common/ajax';
-import { CONTRACT_STAGE, COST_STRUCTURE, COST_TYPE, OPERATE, VIEW_TYPE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
+import { DISPLAY_TYPES, OPERATE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
 import routeList from 'MOD_DIR/contract/common/route';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-import { checkPhone, getNumberValidateRule } from 'PUB_DIR/sources/utils/validate-util';
-
-
-//展示的类型
-const DISPLAY_TYPES = {
-    EDIT: 'edit',//添加所属客户
-    TEXT: 'text'//展示
-};
-
-const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 280;
-const formItemLayout = {
-    labelCol: {span: 7},
-    wrapperCol: {span: 16},
-};
+import { checkPhone } from 'PUB_DIR/sources/utils/validate-util';
 
 class DetailInvoice extends React.Component {
     state = {

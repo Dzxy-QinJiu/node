@@ -26,6 +26,22 @@ export const OPERATE = {
     delete: Intl.get('common.delete', '删除'),
 };
 
+// 操作后信息
+export const OPERATE_INFO = {
+    add: {
+        success: Intl.get('user.user.add.success', '添加成功'),
+        faild: Intl.get('crm.154', '添加失败')
+    },
+    update: {
+        success: Intl.get('user.edit.success', '修改成功'),
+        faild: Intl.get('common.edit.failed', '修改失败')
+    },
+    delete: {
+        success: Intl.get('crm.138', '删除成功'),
+        faild: Intl.get('crm.139', '删除失败')
+    },
+};
+
 //合同类型
 export const PRODUCT = Intl.get('contract.6', '产品合同');
 export const PROJECT = Intl.get('contract.7', '项目合同');
@@ -414,4 +430,13 @@ export const STEP_TITLES = {
         Intl.get('contract.product.service.info', '产品与服务信息'),
         Intl.get('contract.97', '回款计划')
     ]
+};
+
+//展示的类型
+export const DISPLAY_TYPES = {
+    EDIT: 'edit',//添加所属客户
+    TEXT: 'text',//展示
+    UPDATE: 'update', // 更新
+    ADD: 'add',// 添加
+    DELETE: 'delete',// 删除
 };
