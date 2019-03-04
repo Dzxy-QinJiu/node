@@ -219,12 +219,17 @@ class UserForm extends React.Component {
     //昵称（对应的是姓名）唯一性验证的展示
     renderNickNameMsg = () => {
         if (this.state.nickNameExist) {
-            return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.is.existed"
-                defaultMessage="用户名已存在！"/></div>);
+            return (
+                <div className="phone-email-check">
+                    {Intl.get('common.nickname.is.existed', '姓名已存在！')}
+                </div>
+            );
         } else if (this.state.nickNameError) {
-            return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.username.is.unique"
-                defaultMessage="用户名唯一性校验出错！"/>
-            </div>);
+            return (
+                <div className="phone-email-check">
+                    {Intl.get('common.nickname.is.unique', '姓名唯一性校验出错！')}
+                </div>
+            );
         } else {
             return '';
         }

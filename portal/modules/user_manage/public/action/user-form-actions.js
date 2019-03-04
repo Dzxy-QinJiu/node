@@ -112,7 +112,7 @@ function UserFormActions() {
         userAjax.checkOnlyNickName(nickName).then(function(result) {
             _this.dispatch(result);
         }, function(errorMsg) {
-            _this.dispatch(errorMsg);
+            _this.dispatch(errorMsg || Intl.get('common.nickname.is.unique', '姓名唯一性校验出错！'));
         });
     };
 
@@ -129,7 +129,7 @@ function UserFormActions() {
         userAjax.checkOnlyUserName(userName).then( (result) => {
             this.dispatch(result);
         }, (errorMsg) => {
-            this.dispatch(errorMsg);
+            this.dispatch(errorMsg || Intl.get('common.username.is.unique', '用户名唯一性校验出错！'));
         });
     };
 

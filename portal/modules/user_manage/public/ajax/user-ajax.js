@@ -161,7 +161,7 @@ exports.checkOnlyNickName = function(nickName) {
         success: function(result) {
             Deferred.resolve(result);
         }, error: function(errorInfo) {
-            Deferred.reject(errorInfo.responseJSON || Intl.get('common.username.is.unique', '用户名唯一性校验出错！！'));
+            Deferred.reject(errorInfo.responseJSON);
         }
     });
     return Deferred.promise();
