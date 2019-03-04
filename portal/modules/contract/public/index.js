@@ -270,7 +270,7 @@ class Contract extends React.Component {
                 if (result.sum) stateObj.sum = result.sum;
 
                 stateObj.contractCount = result.total || 0;
-                stateObj.listenScrollBottom = this.state.contractCount > this.state.contractList.length;
+                stateObj.listenScrollBottom = stateObj.contractCount > stateObj.contractList.length;
                 //获取回款列表时用于下拉加载分页的id用回款id，否则用合同id
                 const id = this.state.type === VIEW_TYPE.REPAYMENT ? 'repayment_id' : 'id';
                 stateObj.lastId = list.length ? _.last(list)[id] : '';
