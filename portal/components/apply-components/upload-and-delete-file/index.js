@@ -9,6 +9,7 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import Trace from 'LIB_DIR/trace';
 import {isEqualArray} from 'LIB_DIR/func';
+import {REGFILESTYPERULES,REGFILESSIZERULESRULES} from 'PUB_DIR/sources/utils/consts';
 import {seperateFilesDiffType, hasApprovedReportAndDocumentApply} from 'PUB_DIR/sources/utils/common-data-util';
 const UPLOADER_TYPES = {
     SALES: '',
@@ -82,24 +83,39 @@ class UploadAndDeleteFile extends React.Component {
     canculateLimite = (size) => {
         return size / 1024 / 1024 > 10;
     };
+    checkFileSizeLimit = (fileSize) => {
+        _.forEach(REGFILESSIZERULESRULES,(item) => {
+            if (!_.isUndefined(item.minValue)){
+                if (fileSize === item.minValue) {
+                    message.warning(item.messageTips);
+                    return false;
+                }
+            }
+            if (_.isUndefined(item.minValue) && item.maxValue){
+                if (fileSize > item.maxValue) {
+                    message.warning(item.messageTips);
+                    return false;
+                }
+            }
+        });
+    };
+    checkFileNameRule = (filename) => {
+        var nameQualified = true;
+        _.forEach(REGFILESTYPERULES,(item) => {
+            if (filename.indexOf(item.value) >= 0){
+                message.warning(item.messageTips);
+                nameQualified = false;
+            }
+        });
+        return nameQualified;
+    };
     checkFileType = (filename,fileSize,totalSize) => {
-        // 文件内容为空的处理
-        if (filename.indexOf(' ') >= 0) {
-            message.warning(Intl.get('apply.approve.upload.no.container.space', '文件名称中不要含有空格！'));
+        if (!this.checkFileNameRule(filename)){
             return false;
         }
-        if (filename.indexOf('.exe') >= 0){
-            message.warning(Intl.get('apply.approve.upload.error.file.type','文件格式不正确！'));
-            return false;
-        }
-        if (fileSize === 0) {
-            message.warning(Intl.get('apply.approve.upload.empty.file','不可上传空文件！'));
-            return false;
-        }
-
-        if (fileSize && this.canculateLimite(fileSize) || totalSize && this.canculateLimite(totalSize)){
-            message.warning(Intl.get('apply.approve.upload.not.more.than50','文件大小不能超过10M!'));
-            return false;
+        this.checkFileSizeLimit(fileSize || 0);
+        if (totalSize){
+            this.checkFileSizeLimit(totalSize);
         }
         return true;
     };

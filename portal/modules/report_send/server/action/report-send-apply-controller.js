@@ -16,7 +16,6 @@ exports.addReportSendApply = function(req, res) {
         let formData = {},newTmpPath = '';
         if (receiveFiles) {
             //可以是上传一个也可以是上传多个
-            var totalSize = 0;//总的文件大小
             for (var i = 0; i < receiveFiles.length; i++){
                 var fileItem = receiveFiles[i];
                 let tmpPath = fileItem.path;

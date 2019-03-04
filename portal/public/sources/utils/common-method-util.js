@@ -664,3 +664,7 @@ exports.hasCalloutPrivilege = () => {
     let callClient = getCallClient();
     return callClient && callClient.isInited();
 };
+//文件大小的校验规则
+exports.REGFILESSIZERULES = () => {
+
+};
