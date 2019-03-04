@@ -143,6 +143,8 @@ var zh_CN = {
     'user.detail.errorTip.getPermissionTimeout': '获取权限组信息失败',
     'common.app': '应用',
     'common.sure': '确定',
+    'common.nickname.is.existed': '姓名已存在！',
+    'common.nickname.is.unique': '姓名唯一性校验出错！',
     'common.is.existed': '用户名已存在！',
     'common.username.is.unique': '用户名唯一性校验出错！',
     'common.phone.is.existed': '电话已存在！',
@@ -1858,6 +1860,10 @@ var zh_CN = {
     'sales.home.set.role': '点此设置销售角色',
     'sales.home.role.null': '未设置角色',
     'sales.home.invite.member': '邀请成员',
+    'sales.home.invite.btn': '邀请',
+    'sales.home.invite.continue.btn': '继续邀请',
+    'sales.home.invite.member.success': '邀请申请发送成功',
+    'sales.home.invite.member.failed': '邀请成员失败！',
     
     //销售首页-新增用户分析
     'sales.user.analysis': '用户分析',

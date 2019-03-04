@@ -6,6 +6,7 @@ import inviteMemberAjax from '../ajax/invite-member-ajax';
 class InviteMemberAction {
     constructor() {
         this.generateActions(
+            'resetNameFlags', // 重置姓名验证的标志
             'resetUserNameFlags', // 重置用户验证的标志
             'resetEmailFlags' // 重置邮箱验证的标志
         );
@@ -21,9 +22,18 @@ class InviteMemberAction {
         } );
     }
 
+    // 姓名唯一性的验证
+    checkOnlyName(name) {
+        inviteMemberAjax.checkOnlyName(name).then( (result) => {
+            this.dispatch(result);
+        }, (errorMsg) => {
+            this.dispatch(errorMsg);
+        } );
+    }
+    
     // 用户名唯一性的验证
-    checkOnlyUserName(queryObj) {
-        inviteMemberAjax.checkOnlyUserName(queryObj).then( (result) => {
+    checkOnlyUserName(username) {
+        inviteMemberAjax.checkOnlyUserName(username).then( (result) => {
             this.dispatch(result);
         }, (errorMsg) => {
             this.dispatch(errorMsg);
@@ -31,9 +41,12 @@ class InviteMemberAction {
     }
 
     // 邮箱唯一性的验证
-    checkOnlyEmail(queryObj) {
-        inviteMemberAjax.checkOnlyEmail(queryObj).then( (result) => {
+    checkOnlyEmail(email) {
+        inviteMemberAjax.checkOnlyEmail(email).then( (result) => {
             this.dispatch(result);
+            if (!result) {
+                this.actions.checkOnlyUserName(email);
+            }
         }, (errorMsg) => {
             this.dispatch(errorMsg);
         } );

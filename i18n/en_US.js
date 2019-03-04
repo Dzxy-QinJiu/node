@@ -138,6 +138,8 @@ var en_US = {
     'common.add.app': 'Add Applications',//添加应用
     'common.app': 'Application',//应用
     'common.sure': 'Confirm',//确定
+    'common.nickname.is.existed': 'The name is already exists!', // 姓名已存在！
+    'common.nickname.is.unique': 'The name already exists', // 姓名唯一性校验出错！
     'common.is.existed': 'The username is already exists!',//用户名已存在！
     'common.username.is.unique': 'The username already exists',//用户名唯一性校验出错！
     'common.phone.is.existed': 'The phone number already exists',//电话已存在！
@@ -1830,6 +1832,9 @@ var en_US = {
     'sales.home.set.role': 'Click here to set up the sales role',//点此设置销售角色
     'sales.home.role.null': 'Not set roles',//未设置角色
     'sales.home.invite.member': 'Invite Member', // 邀请成员
+    'sales.home.invite.btn': 'Invite', // 邀请
+    'sales.home.invite.continue.btn': 'Continue', // 继续邀请
+    'sales.home.invite.member.failed': 'Failed to invite member', // 邀请成员失败！
 
     //销售首页-新增用户分析
     'sales.user.analysis': 'User Analysis',//用户分析@

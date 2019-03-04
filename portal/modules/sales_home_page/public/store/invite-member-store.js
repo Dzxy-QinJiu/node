@@ -5,15 +5,39 @@ import InviteMemberAction from '../action/invite-member-actions';
 
 class InviteMemberStore {
     constructor() {
-        this.userNameExist = false;//用户名是否已存在
-        this.userNameError = false;//用户名唯一性验证出错
-        this.emailExist = false;//邮箱是否已存在
-        this.emailError = false;//邮件唯一性验证出错
+        this.loading = false; // 邀请成功的loading
+        this.inviteMemberMsg = ''; // 邀请失败的提示信息
+        this.inviteResult = ''; // 邀请成员是否成功
+        this.nameExist = false;// 姓名是否已存在
+        this.nameError = false;// 姓名唯一性验证出错
+        this.userNameExist = false;// 用户名是否已存在
+        this.userNameError = false;// 用户名唯一性验证出错
+        this.emailExist = false;// 邮箱是否已存在
+        this.emailError = false;// 邮件唯一性验证出错
+
         this.bindActions(InviteMemberAction);
     }
     // 邀请成员
     inviteMember(result) {
-        console.log('inviteMember:',result);
+        this.loading = result.loading;
+        if (result.error) {
+            this.inviteMemberMsg = result.errorMsg;
+            this.inviteResult = 'error';
+        } else {
+            this.inviteMemberMsg = '';
+            this.inviteResult = 'success';
+        }
+    }
+   
+    //姓名唯一性的验证
+    checkOnlyName(result) {
+        if (_.isString(result)) {
+            //验证出错！
+            this.nameError = true;
+        } else {
+            //该昵称存不存在！
+            this.nameExist = result;
+        }
     }
     // 用户名唯一性的验证
     checkOnlyUserName(result) {
@@ -21,7 +45,7 @@ class InviteMemberStore {
             //验证出错！
             this.userNameError = true;
         } else {
-            //不存在该用户名！
+            //该用户名存不存在！
             this.userNameExist = result;
         }
     }
@@ -35,6 +59,12 @@ class InviteMemberStore {
             this.emailExist = result;
         }
     }
+    // 重置姓名验证的标志
+    resetNameFlags() {
+        this.nameExist = false;
+        this.nameError = false;
+    }
+
     // 重置用户验证的标志
     resetUserNameFlags() {
         this.userNameExist = false;
