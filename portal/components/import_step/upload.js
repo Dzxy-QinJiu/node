@@ -7,6 +7,7 @@ var React = require('react');
  */
 import {Upload, Icon, message, Button} from 'antd';
 import Trace from 'LIB_DIR/trace';
+import {REGFILESSIZERULESRULES} from 'PUB_DIR/sources/utils/consts';
 class UploadBtn extends React.Component {
     constructor(props) {
         super(props);
@@ -24,7 +25,6 @@ class UploadBtn extends React.Component {
     }
 
     handleChange = (info) => {
-        this.setState({isLoading: true});
         if (info.file.status === 'done') {
             const response = info.file.response;
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-clue'), '上传表格');
@@ -36,14 +36,68 @@ class UploadBtn extends React.Component {
             this.props.afterUpload();
         }
     };
+    checkFileSizeLimit = (fileSize) => {
+        var sizeQualified = true;
+        _.forEach(REGFILESSIZERULESRULES,(item) => {
+            if (!_.isUndefined(item.minValue)){
+                if (fileSize === item.minValue) {
+                    message.warning(item.messageTips);
+                    sizeQualified = false;
+                    return false;
+                }
+            }
+            if (_.isUndefined(item.minValue) && item.maxValue){
+                if (fileSize > item.maxValue) {
+                    message.warning(item.messageTips);
+                    sizeQualified = false;
+                    return false;
+                }
+            }
+        });
+        return sizeQualified;
+    };
+    checkFileNameRule = (filename) => {
+        var nameQualified = true, regRules = this.props.regRules;
+        if (regRules.length){
+            _.forEach(regRules,(item) => {
+                if (filename.indexOf(item.value) < 0){
+                    message.warning(item.messageTips);
+                    nameQualified = false;
+                    return false;
+                }
+            });
+        }
+        return nameQualified;
+    };
+    checkFileType = (filename,fileSize) => {
+        if (!this.checkFileNameRule(filename)){
+            return false;
+        }
+        if (!this.checkFileSizeLimit(fileSize || 0)){
+            return false;
+        }
+        return true;
+    };
+    beforeUploadFiles = (file) => {
+        var fileName = file.name,fileSize = file.size;
+        if (this.checkFileType(fileName,fileSize)){
+            this.setState({isLoading: true});
+            return true;
+        }else{
+            return false;
+        }
+
+    };
 
     render() {
         var props = {
             name: this.props.uploadActionName,
             action: this.props.uploadHref,
             showUploadList: false,
-            onChange: this.handleChange
+            onChange: this.handleChange,
+            beforeUpload: this.beforeUploadFiles
         };
+
         return (
             <Upload {...props} className="import-clue" data-tracename="上传表格">
                 <Button type='primary'>{this.props.uploadTip}{this.state.isLoading ?
@@ -63,7 +117,9 @@ UploadBtn.defaultProps = {
     importType: '',
     uploadActionName: '',
     uploadHref: '',
-    uploadTip: Intl.get('clue.import.csv', '上传表格')
+    uploadTip: Intl.get('clue.import.csv', '上传表格'),
+    regRules: []
+
 };
 UploadBtn.propTypes = {
     isLoading: PropTypes.bool,
@@ -73,6 +129,7 @@ UploadBtn.propTypes = {
     uploadActionName: PropTypes.string,
     uploadHref: PropTypes.string,
     uploadTip: PropTypes.string,
+    regRules: PropTypes.object,
 };
 
 export default UploadBtn;

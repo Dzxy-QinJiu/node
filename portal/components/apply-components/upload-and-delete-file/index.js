@@ -79,25 +79,25 @@ class UploadAndDeleteFile extends React.Component {
         }
         this.props.fileRemove(file);
     };
-    //上传文件的大小不能超过10M
-    canculateLimite = (size) => {
-        return size / 1024 / 1024 > 10;
-    };
     checkFileSizeLimit = (fileSize) => {
+        var sizeQualified = true;
         _.forEach(REGFILESSIZERULESRULES,(item) => {
             if (!_.isUndefined(item.minValue)){
                 if (fileSize === item.minValue) {
                     message.warning(item.messageTips);
+                    sizeQualified = false;
                     return false;
                 }
             }
             if (_.isUndefined(item.minValue) && item.maxValue){
                 if (fileSize > item.maxValue) {
                     message.warning(item.messageTips);
+                    sizeQualified = false;
                     return false;
                 }
             }
         });
+        return sizeQualified;
     };
     checkFileNameRule = (filename) => {
         var nameQualified = true;
@@ -105,6 +105,7 @@ class UploadAndDeleteFile extends React.Component {
             if (filename.indexOf(item.value) >= 0){
                 message.warning(item.messageTips);
                 nameQualified = false;
+                return false;
             }
         });
         return nameQualified;
@@ -113,9 +114,11 @@ class UploadAndDeleteFile extends React.Component {
         if (!this.checkFileNameRule(filename)){
             return false;
         }
-        this.checkFileSizeLimit(fileSize || 0);
-        if (totalSize){
-            this.checkFileSizeLimit(totalSize);
+        if (!this.checkFileSizeLimit(fileSize || 0)){
+            return false;
+        }
+        if (totalSize && !this.checkFileSizeLimit(totalSize)){
+            return false;
         }
         return true;
     };

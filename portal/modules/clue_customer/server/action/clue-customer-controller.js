@@ -118,12 +118,6 @@ exports.uploadClues = function(req, res) {
     form.parse(req, function(err, fields, files) {
         // 获取上传文件的临时路径
         let tmpPath = files['clues'][0].path;
-        // 文件内容为空的处理
-        let file_size = files['clues'][0].size;
-        if(file_size === 0 || file_size / 1024 / 1024 > 10) {
-            res.json(false);
-            return;
-        }
         // 文件不为空的处理
         let formData = {
             attachments: [fs.createReadStream(tmpPath)]

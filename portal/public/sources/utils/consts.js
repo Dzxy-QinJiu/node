@@ -458,3 +458,11 @@ export const REGFILESSIZERULESRULES = [
     {minValue: 0, messageTips: Intl.get('apply.approve.upload.empty.file','不可上传空文件！')},
     {maxValue: 10 * 1024 * 1024, messageTips: Intl.get('apply.approve.upload.not.more.than50','文件大小不能超过10M!')},
 ];
+
+export const REGCLUEFILESTYPERULES = [
+    {value: '.xls',messageTips: Intl.get('clue.import.file.type','只能导入{type}格式的文件！',{type: 'xls'})},
+];
+
+export const REGCRMFILESTYPERULES = [
+    {value: '.csv',messageTips: Intl.get('clue.import.file.type','只能导入{type}格式的文件！',{type: 'csv'})},
+];

@@ -2734,6 +2734,7 @@ var en_US = {
     'contract.service.add': 'Add Service',//添加服务
     'apply.show.cancel.result': 'View revocation results',//查看撤销结果
     'manager.role.has.not.setting.phone.systerm': 'You have not yet opened a telephone system or have not set an agent number.',//您尚未开通电话系统或未设置座席号!
-    'sales.role.has.not.setting.phone.systerm': 'You have not yet opened a telephone system or have not set an agent number. Please inform the administrator!'//您尚未开通电话系统或未设置座席号，请通知管理员!
+    'sales.role.has.not.setting.phone.systerm': 'You have not yet opened a telephone system or have not set an agent number. Please inform the administrator!',//您尚未开通电话系统或未设置座席号，请通知管理员!
+    'clue.import.file.type': 'Only files in {type} format can be imported!'//只能导入{type}格式的文件！
 };
 export default en_US;

@@ -47,6 +47,7 @@ import {OTHER_FILTER_ITEMS, DAY_TIME} from 'PUB_DIR/sources/utils/consts';
 import ShearContent from 'CMP_DIR/shear-content';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
+import {REGCRMFILESTYPERULES} from 'PUB_DIR/sources/utils/consts';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
     tried: '试用阶段',
@@ -1654,6 +1655,7 @@ class Crm extends React.Component {
                     onItemListImport={this.onCustomerImport}
                     doImportAjax={this.doImport}
                     repeatAlertMessage={Intl.get('crm.repeat.delete','红色标识客户名或联系方式已存在，请删除后再导入')}
+                    regRules={REGCRMFILESTYPERULES}
                 />
 
                 {this.state.mergePanelIsShow ? (<CrmRightMergePanel

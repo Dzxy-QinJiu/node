@@ -2756,6 +2756,7 @@ var zh_CN = {
     'clue.and.crm.upload.size': '文件大小不要超过10M!',
     'apply.show.cancel.result': '查看撤销结果',
     'manager.role.has.not.setting.phone.systerm': '您尚未开通电话系统或未设置座席号!',
-    'sales.role.has.not.setting.phone.systerm': '您尚未开通电话系统或未设置座席号，请通知管理员!'
+    'sales.role.has.not.setting.phone.systerm': '您尚未开通电话系统或未设置座席号，请通知管理员!',
+    'clue.import.file.type': '只能导入{type}格式的文件！'
 };
 export default zh_CN;
