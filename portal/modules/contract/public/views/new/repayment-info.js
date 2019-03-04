@@ -38,14 +38,10 @@ class RepaymentInfo extends React.Component {
     getInitStateData(props) {
         let hasEditPrivilege = hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPDATE_REPAYMENT);
 
-        const contract = _.cloneDeep(props.contract);
-        let repayments = _.sortBy(_.cloneDeep(contract.repayments) || [], item => item.date).reverse();
-        let repayLists = _.filter(repayments,item => item.type === 'repay');
-
         return {
             formData: {},
             loading: false,
-            repayLists: this.getRepayList(contract),
+            repayLists: this.getRepayList(props.contract),
             submitErrorMsg: '',
             hasEditPrivilege,
             displayType: DISPLAY_TYPES.TEXT,
@@ -109,7 +105,7 @@ class RepaymentInfo extends React.Component {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '添加已回款内容');
         let _this = this;
         let saveObj;
-        if (type === 'delete') {
+        if (type === DISPLAY_TYPES.DELETE) {
             saveObj = [id];
             const successFunc = (resultData) => {
                 _this.setState({
@@ -121,7 +117,7 @@ class RepaymentInfo extends React.Component {
             this.editRepayment(type, saveObj,'', successFunc, (errormsg) => {
                 message.error(errormsg);
             });
-        } else if(type === 'add') {
+        } else if(type === DISPLAY_TYPES.ADD) {
             this.props.form.validateFields((err,value) => {
                 if (err) return false;
 
@@ -221,7 +217,7 @@ class RepaymentInfo extends React.Component {
     };
     handleEditTableSave = (data, successFunc, errorFunc) => {
         const params = {contractId: this.props.contract.id, type: 'repay'};
-        let successFuncs, type = 'update';
+        let successFuncs, type = DISPLAY_TYPES.UPDATE;
         // 处理时间
         if(data.date){
             data.date = data.date.valueOf();
@@ -229,7 +225,7 @@ class RepaymentInfo extends React.Component {
 
         // 如果是添加
         if(_.get(data,'isAdd',false)) {
-            type = 'add';
+            type = DISPLAY_TYPES.ADD;
             // 需要删除isAdd和id属性
             delete data.isAdd;
             delete data.id;
@@ -266,7 +262,7 @@ class RepaymentInfo extends React.Component {
                 this.props.updateScrollBar();
             });
         };
-        this.editRepayment('delete', saveObj,'', successFuncs, (errorMsg) => {
+        this.editRepayment(DISPLAY_TYPES.DELETE, saveObj,'', successFuncs, (errorMsg) => {
             message.error(errorMsg);
             _.isFunction(errorFunc) && errorFunc();
         });
@@ -375,7 +371,7 @@ class RepaymentInfo extends React.Component {
         let num_col_width = 80;
         const columns = [
             {
-                title: `${Intl.get('contract.108', '回款')}${Intl.get('crm.146', '日期')}`,
+                title: Intl.get('contract.237', '回款日期'),
                 dataIndex: 'date',
                 editable: true,
                 inputType: 'date',
@@ -479,10 +475,6 @@ class RepaymentInfo extends React.Component {
         const content = () => {
             return (
                 <div className="repayment-list">
-                    {/*{this.state.displayType === DISPLAY_TYPES.EDIT ? this.renderAddRepaymentPanel(repayLists) :
-                        this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
-                            <span className="iconfont icon-add" onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}
-                                title={Intl.get('common.edit', '编辑')}/>) : null}*/}
                     {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
                         <span className="iconfont icon-add" onClick={this.addList}
                             title={Intl.get('common.add', '添加')}/>) : null}
@@ -503,7 +495,6 @@ class RepaymentInfo extends React.Component {
         return (
             <DetailCard
                 content={content()}
-                // titleBottomBorderNone={noRepaymentData}
                 title={repayTitle}
             />
         );

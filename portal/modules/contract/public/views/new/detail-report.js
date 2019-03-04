@@ -88,7 +88,7 @@ class DetailReport extends React.Component {
     // 是否大于合同总额
     isGtAmount(reports) {
         // 获取产品总价
-        let products = _.get(this,'props.contract.products') || [];
+        let products = _.get(this,'props.contract.products',[]);
         let totalProductsPrice = 0;
         products.length > 0 ? totalProductsPrice = _.reduce(products,(sum, item) => {
             const amount = +item.total_price;
@@ -106,7 +106,7 @@ class DetailReport extends React.Component {
         return sumAmount > totalAmount;
     }
     editReportsInfo(type, saveObj,successFunc,errorFunc) {
-        saveObj = {reports: saveObj};
+        saveObj = {reports: saveObj, id: this.props.contract.id};
         Trace.traceEvent(ReactDOM.findDOMNode(this),'修改服务产品信息');
         const handler = 'editContract';
         const route = _.find(routeList, route => route.handler === handler);

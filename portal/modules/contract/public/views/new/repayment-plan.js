@@ -10,7 +10,7 @@ import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import ajax from 'MOD_DIR/contract/common/ajax';
-import { OPERATE, PRIVILEGE_MAP, DISPLAY_TYPES} from 'MOD_DIR/contract/consts';
+import { OPERATE, PRIVILEGE_MAP, DISPLAY_TYPES, OPERATE_INFO } from 'MOD_DIR/contract/consts';
 import routeList from 'MOD_DIR/contract/common/route';
 import {parseAmount} from 'LIB_DIR/func';
 import RepeymentPlanForm from '../components/repeyment-plan-form';
@@ -165,17 +165,15 @@ class RepaymentPlan extends React.Component {
 
         ajax(arg).then(result => {
             if (result.code === 0) {
-                message.success(OPERATE[type] + Intl.get('contract.41', '成功'));
+                message.success(OPERATE_INFO[type].success);
                 //返回数据
                 let resultData = result.result;
 
                 //删除的时候没有返回数据，需要根据id从当前回款列表中取
-                if (type === 'delete') {
+                if (type === DISPLAY_TYPES.DELETE) {
                     const repaymentId = data[0];
                     resultData = _.find(this.props.contract.repayments, repayment => repayment.id === repaymentId);
-                }
-                // 更新后没有返回id，
-                if(type === 'update') {
+                } else if(type === DISPLAY_TYPES.UPDATE) { // 更新后没有返回id，
                     let currentRepayment = _.cloneDeep(this.state.currentRepayment);
                     delete currentRepayment.isEditting;
                     resultData = _.extend(currentRepayment, resultData);
@@ -185,10 +183,10 @@ class RepaymentPlan extends React.Component {
 
                 if (_.isFunction(successFunc)) successFunc();
             } else {
-                if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE[type] + Intl.get('user.failed', '失败'));
+                if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE_INFO[type].faild);
             }
         }, errorMsg => {
-            if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE[type] + Intl.get('user.failed', '失败'));
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE_INFO[type].faild);
         });
     }
     handleCancel = () => {
@@ -199,7 +197,7 @@ class RepaymentPlan extends React.Component {
         this.setState({
             repayPlanLoading: true
         }, () => {
-            this.handleSubmit('delete', repayment.id);
+            this.handleSubmit(DISPLAY_TYPES.DELETE, repayment.id);
         });
     };
     // 修改某项编辑状态
@@ -244,7 +242,7 @@ class RepaymentPlan extends React.Component {
     save(repayment) {
         this.repeymentPlanRef.getValidatedValue((err,value) => {
             if(err) return false;
-            this.handleSubmit('add','', value);
+            this.handleSubmit(DISPLAY_TYPES.ADD,'', value);
         });
         Trace.traceEvent(ReactDOM.findDOMNode(this), '保存对汇款计划列表的修改');
     }
@@ -320,8 +318,13 @@ class RepaymentPlan extends React.Component {
             let timeInterval = moment(repayment.date).startOf('day').diff(moment(date).startOf('day'), 'days');
             return (
                 <span>
-                    <ReactIntl.FormattedMessage id="contract.78" defaultMessage="从签订日起" />{timeInterval}{`${Intl.get('contract.79', '日')}${Intl.get('contract.80', '内')}`}
-                    ({moment(repayment.date).format(oplateConsts.DATE_FORMAT)}{Intl.get('common.before', '前')}),{Intl.get('contract.93', '应收回款')}{parseAmount(repayment.amount)}{Intl.get('contract.155', '元')}
+                    {/*{Intl.get('contract.78','从签订日起')}{timeInterval}{`${Intl.get('contract.79', '日')}${Intl.get('contract.80', '内')}`}
+                    ({moment(repayment.date).format(oplateConsts.DATE_FORMAT)}{Intl.get('common.before', '前')}),{Intl.get('contract.93', '应收回款')}{parseAmount(repayment.amount)}{Intl.get('contract.155', '元')}*/}
+                    {Intl.get('contract.238', '从签订日起{time}日内({date})前,应收回款{amount}元',{
+                        time: timeInterval,
+                        date: moment(repayment.date).format(oplateConsts.DATE_FORMAT),
+                        amount: parseAmount(repayment.amount)
+                    })}
                 </span>
             );
         }
@@ -336,6 +339,7 @@ class RepaymentPlan extends React.Component {
 
         if (repayments.length) {
             repaymentsAmount = _.reduce(repayments, (memo, item) => {
+                // 过滤掉单个添加的，和当前项
                 const num = item.isAdd || repayment.id === item.id ? 0 : parseFloat(item.amount);
                 return memo + num;
             }, 0);
@@ -386,9 +390,6 @@ class RepaymentPlan extends React.Component {
         const content = () => {
             return (
                 <div className="repayment-list">
-                    {/*{this.state.displayType === DISPLAY_TYPES.EDIT ? this.renderAddRepaymentPanel(repayPlanLists) : this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
-                        <span className="iconfont icon-add" onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}
-                            title={Intl.get('common.edit', '编辑')}/>) : null}*/}
                     {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
                         <span className="iconfont icon-add" onClick={this.addList}
                             title={Intl.get('common.edit', '编辑')}/>) : null}

@@ -2734,5 +2734,51 @@ var en_US = {
     'contract.service.add': 'Add Service',//添加服务
     'apply.show.cancel.result': 'View revocation results',//查看撤销结果
     'contract.repeyment.first': 'First',//首笔
+    'contract.cost.modify': 'Modification cost',// 修改费用
+    'contract.no.contract.num': 'No contract number at present',// 暂无合同号
+    'contract.repeyment.info': 'Collection of information',// 回款信息
+    'contract.peyment.info': 'Payment information',// 付款信息
+    'contract.set.partyA': 'Set the party a',//设置甲方
+    'contract.modify.partyA': 'Modify the party a',// 修改甲方
+    'contract.201': 'Change the customer name',// 修改客户名
+    'contract.202': 'Modify the signing time',//修改签订时间
+    'contract.203': 'Set signing time',// 设置签订时间
+    'contract.204': 'Modification of contract type',//修改合同类型
+    'contract.205': 'Set contract type',//设置合同类型
+    'contract.206': 'Set person in charge',//设置负责人
+    'contract.207': 'Responsible person for modification',// 修改负责人
+    'contract.208': 'Setting cost',//设置成本额
+    'contract.209': 'Please select the cost structure',//请选择成本构成
+    'contract.210': 'Setup cost structure',//设置成本构成
+    'contract.211': 'Set the contract number',//设置合同号
+    'contract.212': 'Modify the classification',// 修改分类
+    'contract.213': 'Set up the classification',//设置分类
+    'contract.214': 'Set contract amount',//设置合同额
+    'contract.215': 'Set up the contract stage',//设置合同阶段
+    'contract.216': 'Set the full name of the company',//设置公司全称
+    'contract.217': 'Modify the full name of the company',//修改公司全称
+    'contract.218': 'Please enter your bank account',//请输入银行账号
+    'contract.219': 'Set up bank account',//设置银行账号
+    'contract.220': 'Modify bank account',//修改银行账号
+    'contract.221': 'Please enter the opening bank',//请输入开户行
+    'contract.222': 'Set up the opening bank',//设置开户行
+    'contract.223': 'Modify the opening bank',//修改开户行
+    'contract.224': 'Please enter the address',//请输入地址
+    'contract.225': 'Set the address',//设置地址
+    'contract.226': 'Modify the address',//修改地址
+    'contract.227': 'Set up the phone',//设置电话
+    'contract.228': 'Please enter your mailing address',//请输入邮寄地址
+    'contract.229': 'Set up mailing address',//设置邮寄地址
+    'contract.230': 'Please enter the business license number',//请输入营业执照号码
+    'contract.231': 'Set up the business license number',//设置营业执照号码
+    'contract.232': 'Please enter the organization code',//请输入组织机构代码
+    'contract.233': 'Set up the organization code',//设置组织机构代码
+    'contract.234': 'Please enter the taxpayer identification number',//请输入纳税人识别号
+    'contract.235': 'Set up the taxpayer identification number',//设置纳税人识别号
+    'contract.236': 'Date of payment',//付款日期
+    'contract.237': 'Collection date',//回款日期
+    'contract.238': 'Within {time} days from the date of signing ({date}), the receivable shall be {amount} yuan',//从签订日起{time}日内({date})前,应收回款{amount}元
+    'contract.239': 'Modification date',//修改日期
+    'contract.240': 'Modify cost type',//修改费用类型
 };
 export default en_US;

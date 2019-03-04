@@ -1,4 +1,58 @@
-/** Created by 2019-02-14 13:27 */
+/** Created by 2019-02-14 13:27
+ * 一个可编辑和展示的Table扩展组件
+ * columns=[{
+                title?: Intl.get('common.start.end.time', '起止时间'), // 选填，label名称
+                dataIndex: 'name', // 必填，输入控件唯一标志
+                editable?: true,  // 选填，是否可编辑
+                editor?: 'Select', // 编辑器的类型，必须是antd或者antc上的组件，选填，默认为Input
+                editorChildrenType?: 'Option', // 选填，编辑器的子组件类型
+                editorChildren？: (Children) => { // 选填，Children为编辑器的子组件，
+                    return _.map(appList, item => {
+                        return <Children value={item.app_id} key={item.app_id}>{item.app_name}</Children>;
+                    });
+                },
+                editorConfig?: { 选填, Form表单getFieldDecorator的配置项
+                    rules: (text,record,index) => { // rules规则，[Function|Object],可以是函数或者对象
+                        return [{
+                            required: true,
+                            message: Intl.get('contract.44', '不能为空')
+                        }, getNumberValidateRule()];
+                    }
+                },
+                editorProps?: (record, isEdit) => { // 选填，编辑器上的属性，[Function|Object],可以是函数或者对象
+                    return {
+                        onChange: (e) => {}
+                    };
+                },
+                dynamicRule?: { // 选填， 动态验证函数
+                    index: 2, // 插入到rules规则数组里的索引
+                    key: 'amount', // 需要联动验证的另一控件的标志(dataIndex)
+                    fn: (parent) => { // 参数[parent],使用此组件的父组件的上下文，返回一个validator验证函数
+                        return {
+                            validator: (rule,value,callback) => {
+                                // 这里需要获取其他产品的价格
+                                let validateArr = [];
+                                _.each(this.state.products, (item, index) => {
+                                    let ref = parent[`form${item.id}Ref`];
+                                    let formValue = ref.props.form.getFieldsValue();
+                                    if(!_.get(item,'account_start_time')) {
+                                        item.account_start_time = moment().valueOf();
+                                        item.account_end_time = moment().valueOf();
+                                    }
+                                    validateArr.push({...item, ...formValue});
+                                });
+                                this.validateAmount(validateArr,rule,value,callback);
+                            }
+                        };
+                    },
+                },
+                width?: '30%', // 选填
+                render?: (text, record, index) => { 选填，table
+                    return <span>{moment(text).format(oplateConsts.DATE_FORMAT)}</span>;
+                },
+                getIsEdit: text => !text // 在添加时，可以编辑此项，但是编辑项修改时，就不能编辑此项了，
+            },];
+ * */
 import React, { Component } from 'react';
 import { Table, Popconfirm, Icon, Button } from 'antd';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';

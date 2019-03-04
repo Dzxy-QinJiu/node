@@ -1,5 +1,3 @@
-import ProductTable from 'MOD_DIR/contract/public/add-product';
-
 var React = require('react');
 import routeList from '../common/route';
 import ajax from '../common/ajax';
@@ -12,9 +10,18 @@ import Spinner from '../../../components/spinner';
 import { Tabs, message, Button, Steps, Alert } from 'antd';
 const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
-import { PRODUCT, PROJECT, SERVICE, PURCHASE, CATEGORY, VIEW_TYPE, STEP_TITLES } from '../consts';
+import {
+    PRODUCT,
+    PROJECT,
+    SERVICE,
+    PURCHASE,
+    CATEGORY,
+    VIEW_TYPE,
+    STEP_TITLES,
+    OPERATE_INFO,
+    DISPLAY_TYPES
+} from '../consts';
 import AddBasic from './add-basic';
-// import AddProduct from './add-product';
 import AddProduct from './views/new/add-product';
 import AddReport from './add-report';
 import AddRepayment from './add-repayment';
@@ -379,11 +386,9 @@ class ContractRightPanel extends React.Component {
 
         const reqData = contractData;
         const params = { type: type };
-        let operateType = 'add';
-        let operateName = Intl.get('sales.team.add.sales.team', '添加');
+        let operateType = DISPLAY_TYPES.ADD;
         if (reqData.id) {
-            operateType = 'edit';
-            operateName = Intl.get('common.update', '修改');
+            operateType = DISPLAY_TYPES.EDIT;
         }
         const route = _.find(routeList, route => route.handler === operateType + 'Contract');
         const arg = {
@@ -397,7 +402,7 @@ class ContractRightPanel extends React.Component {
             this.hideLoading();
 
             if (result && result.code === 0) {
-                message.success(operateName + '成功');
+                message.success(OPERATE_INFO[operateType].success);
 
                 if (['sellForm', 'buyForm'].indexOf(currentView) > -1) {
                     this.props.hideRightPanel();
@@ -405,7 +410,7 @@ class ContractRightPanel extends React.Component {
 
                 const hasResult = _.isObject(result.result) && !_.isEmpty(result.result);
 
-                if (operateType === 'add') {
+                if (operateType === DISPLAY_TYPES.ADD) {
                     if (hasResult) {
                         this.props.addContract(result.result);
                     }
@@ -421,7 +426,7 @@ class ContractRightPanel extends React.Component {
 
                 if (_.isFunction(cb)) cb();
             } else {
-                message.error(operateName + '失败');
+                message.error(OPERATE_INFO[operateType].faild);
             }
         }, (errMsg) => {
             this.hideLoading();
@@ -446,7 +451,6 @@ class ContractRightPanel extends React.Component {
         let contentHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA;
         //用户详细信息高度
         if (this.props.view === 'detail') {
-            // contentHeight = contentHeight + LAYOUT_CONSTANTS.REMARK_PADDING - LAYOUT_CONSTANTS.TITLE_PADDING;
             contentHeight = contentHeight - LAYOUT_CONSTANTS.TAB_DETAIL - LAYOUT_CONSTANTS.BOTTOM_DELTA;
         } else {
             contentHeight = contentHeight - LAYOUT_CONSTANTS.STEP_DETAIL - LAYOUT_CONSTANTS.BTN_PADDING - LAYOUT_CONSTANTS.BOTTOM_DELTA;
@@ -612,7 +616,6 @@ class ContractRightPanel extends React.Component {
                 endTabKey += 1;
                 let currentContentHeight = contentHeight;
                 let tabTitle = [SERVICE].indexOf(this.props.contract.category) > -1 ? Intl.get('contract.product.service.info', '产品与服务信息') : Intl.get('contract.95', '产品信息');
-                // currentContentHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
 
                 tabList.push(
                     <TabPane tab={tabTitle} key="2">
@@ -648,7 +651,7 @@ class ContractRightPanel extends React.Component {
             }
             tabList = tabList.concat(
                 [
-                    <TabPane tab={`${Intl.get('contract.108', '回款')}${Intl.get('sales.stage.message', '信息')}`} key={endTabKey - 1}>
+                    <TabPane tab={Intl.get('contract.repeyment.info', '回款信息')} key={endTabKey - 1}>
                         <div className="contract-repayment">
                             <DetailRepayment
                                 height={contentHeight}
@@ -678,7 +681,7 @@ class ContractRightPanel extends React.Component {
         // 采购合同
         if(this.props.contract.type === VIEW_TYPE.BUY){
             tabPaneList.push(
-                <TabPane tab={`${Intl.get('contract.91', '付款')}${Intl.get('sales.stage.message', '信息')}`} key="2">
+                <TabPane tab={Intl.get( 'contract.peyment.info', '付款信息')} key="2">
                     <div className="contract-repayment">
                         <DetailBuyPayment
                             height={contentHeight}
@@ -699,7 +702,6 @@ class ContractRightPanel extends React.Component {
 
                 {/*添加其他合同（包括采购合同）*/}
                 { !isDetailType ? (
-                    //<div className="add-form" style={{ height: productServiceHeight }}>
                     <div className="add-form">
                         {contractContents}
                         <div className="step-button">

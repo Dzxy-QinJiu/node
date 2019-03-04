@@ -11,7 +11,7 @@ import DetailCard from 'CMP_DIR/detail-card';
 import EditableTable from '../components/editable-table/';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import ajax from 'MOD_DIR/contract/common/ajax';
-import { DISPLAY_TYPES, OPERATE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
+import { DISPLAY_TYPES, OPERATE, OPERATE_INFO, PRIVILEGE_MAP } from 'MOD_DIR/contract/consts';
 import routeList from 'MOD_DIR/contract/common/route';
 import { getNumberValidateRule } from 'PUB_DIR/sources/utils/validate-util';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
@@ -31,7 +31,7 @@ class InvoiceAmount extends React.Component {
 
         return {
             loading: false,
-            invoiceLists: this.getInvoiceLists(this.props.contract),
+            invoiceLists: this.getInvoiceLists(props.contract),
             submitErrorMsg: '',
             hasEditPrivilege,
             displayType: DISPLAY_TYPES.TEXT,
@@ -143,22 +143,22 @@ class InvoiceAmount extends React.Component {
 
         ajax(arg).then(result => {
             if (result.code === 0) {
-                message.success(OPERATE[type] + targetName + Intl.get('contract.41', '成功'));
+                message.success(OPERATE_INFO[type].success);
                 this.props.refreshCurrentContractNoAjax(changePropName, isInvoiceBasicInforOrInvoices, result.result, id);
 
                 if (_.isFunction(successFunc)) successFunc(result.result);
             } else {
-                if (_.isFunction(errorFunc)) errorFunc(OPERATE[type] + targetName + Intl.get('user.failed', '失败'));
+                if (_.isFunction(errorFunc)) errorFunc(OPERATE_INFO[type].faild);
             }
         }, errorMsg => {
-            if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE[type] + targetName + Intl.get('user.failed', '失败'));
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE_INFO[type].faild);
         });
     }
     handleCancel = () => {
         this.changeDisplayType(DISPLAY_TYPES.TEXT);
     };
     handleEditTableSave = (data, successFunc, errorFunc) => {
-        let successFuncs, type = 'update';
+        let successFuncs, type = DISPLAY_TYPES.UPDATE;
 
         // 处理时间
         if(data.date){
@@ -170,7 +170,7 @@ class InvoiceAmount extends React.Component {
         }
         // 如果是添加
         if(_.get(data,'isAdd',false)) {
-            type = 'add';
+            type = DISPLAY_TYPES.ADD;
             // 需要删除isAdd和id属性
             delete data.isAdd;
             delete data.id;
@@ -208,7 +208,7 @@ class InvoiceAmount extends React.Component {
                 this.props.updateScrollBar();
             });
         };
-        this.editInvoice('delete', '', params, record.id, successFuncs, (errorMsg) => {
+        this.editInvoice(DISPLAY_TYPES.DELETE, '', params, record.id, successFuncs, (errorMsg) => {
             message.error(errorMsg);
             _.isFunction(errorFunc) && errorFunc();
         });
@@ -345,9 +345,6 @@ class InvoiceAmount extends React.Component {
         const content = () => {
             return (
                 <div className="repayment-list">
-                    {/* {this.state.displayType === DISPLAY_TYPES.EDIT ? this.renderAddInvoicePanel(invoiceLists) : this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
-                        <span className="iconfont icon-add" onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}
-                            title={Intl.get('common.edit', '编辑')}/>) : null}*/}
                     {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
                         <span className="iconfont icon-add" onClick={this.addList}
                             title={Intl.get('common.add', '添加')}/>) : null}
@@ -366,7 +363,6 @@ class InvoiceAmount extends React.Component {
         return (
             <DetailCard
                 content={content()}
-                // titleBottomBorderNone={noRepaymentData}
                 title={repayTitle}
             />
         );

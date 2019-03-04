@@ -1,4 +1,15 @@
-/** Created by 2019-02-28 11:34 */
+/**
+ * Created by 2019-02-28 13:46
+ * 一个可编辑和展示的Form表单组件
+ * 合同查看详情时回款信息里有应用
+ * 用法：     <EditableFormCell
+                 wrappedComponentRef={ref => this[`${col.dataIndex}editableFormCellRef`] = ref}
+                 parent={this}
+                 {...col}
+                 record={record}
+                 editing={ this.isEditing(record) }
+             />
+ */
 import { Form } from 'antd';
 const FormItem = Form.Item;
 
@@ -14,10 +25,6 @@ class EditableCell extends React.Component {
         editor: PropTypes.string,
         editorConfig: PropTypes.object,
         editorProps: PropTypes.object,
-        /*editorChildren: PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.arrayOf(PropTypes.element)
-        ]),*/
         editorChildren: PropTypes.func,
         editorChildrenType: PropTypes.string,
         getIsEdit: PropTypes.func,
@@ -44,7 +51,7 @@ class EditableCell extends React.Component {
         dynamicRule: {},
         parent: {}
     };
-
+    // 获取输入控件
     getEditor = () => {
         let editor = this.props.editor;
         let editorProps = this.props.editorProps;

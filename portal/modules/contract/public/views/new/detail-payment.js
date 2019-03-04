@@ -1,5 +1,7 @@
 /** Created by 2019-01-31 11:11 */
-
+/**
+ * 已付款信息展示及编辑页面
+ */
 var React = require('react');
 import { message, Select, Icon, Form, Input, DatePicker, Checkbox } from 'antd';
 
@@ -12,7 +14,7 @@ import EditableTable from '../components/editable-table/';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import ajax from 'MOD_DIR/contract/common/ajax';
-import { DISPLAY_TYPES, OPERATE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
+import { DISPLAY_TYPES, OPERATE, OPERATE_INFO, PRIVILEGE_MAP } from 'MOD_DIR/contract/consts';
 import routeList from 'MOD_DIR/contract/common/route';
 import { getNumberValidateRule } from 'PUB_DIR/sources/utils/validate-util';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
@@ -82,7 +84,7 @@ class DetailPayment extends React.Component {
     handleSubmit = (type) => {
         let _this = this;
         let saveObj;
-        if(type === 'add') {
+        if(type === DISPLAY_TYPES.ADD) {
             this.props.form.validateFields((err,value) => {
                 if (err) return false;
 
@@ -130,15 +132,15 @@ class DetailPayment extends React.Component {
 
         ajax(arg).then(result => {
             if (result.code === 0) {
-                message.success(OPERATE[type] + '成功');
+                message.success(OPERATE_INFO[type].success);
                 this.props.refreshCurrentContractNoAjax('payments', type, result.result, id);
 
                 if (_.isFunction(successFunc)) successFunc(result.result);
             } else {
-                if (_.isFunction(errorFunc)) errorFunc(OPERATE[type] + Intl.get('user.failed', '失败'));
+                if (_.isFunction(errorFunc)) errorFunc(OPERATE_INFO[type].faild);
             }
         }, errorMsg => {
-            if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE[type] + Intl.get('user.failed', '失败'));
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE_INFO[type].faild);
         });
     }
     handleCancel = () => {
@@ -157,7 +159,7 @@ class DetailPayment extends React.Component {
         if(data.date){
             data.date = data.date.valueOf();
         }
-        this.editInvoice('update', data, params, data.id, successFuncs, (errorMsg) => {
+        this.editInvoice(DISPLAY_TYPES.UPDATE, data, params, data.id, successFuncs, (errorMsg) => {
             message.error(errorMsg);
             _.isFunction(errorFunc) && errorFunc();
         });
@@ -173,7 +175,7 @@ class DetailPayment extends React.Component {
                 this.updateScrollBar();
             });
         };
-        this.editInvoice('delete', '', params, record.id, successFuncs, (errorMsg) => {
+        this.editInvoice(DISPLAY_TYPES.DELETE, '', params, record.id, successFuncs, (errorMsg) => {
             message.error(errorMsg);
             _.isFunction(errorFunc) && errorFunc();
         });
@@ -214,7 +216,7 @@ class DetailPayment extends React.Component {
                 <SaveCancelButton
                     loading={this.state.loading}
                     saveErrorMsg={this.state.submitErrorMsg}
-                    handleSubmit={this.handleSubmit.bind(this,'add')}
+                    handleSubmit={this.handleSubmit.bind(this,DISPLAY_TYPES.ADD)}
                     handleCancel={this.handleCancel}
                 />
             </Form>
@@ -225,7 +227,7 @@ class DetailPayment extends React.Component {
         let num_col_width = 75;
         const columns = [
             {
-                title: `${Intl.get('contract.91', '付款')}${Intl.get('crm.146', '日期')}`,
+                title: Intl.get( 'contract.236', '付款日期'),
                 dataIndex: 'date',
                 editable: true,
                 editor: 'DatePicker',
@@ -286,7 +288,7 @@ class DetailPayment extends React.Component {
 
         let payTitle = (
             <div className="repayment-repay">
-                <span>{`${Intl.get('contract.91', '付款')}${Intl.get('sales.stage.message', '信息')}`}</span>
+                <span>{Intl.get('contract.peyment.info', '付款信息')}</span>
             </div>
         );
 

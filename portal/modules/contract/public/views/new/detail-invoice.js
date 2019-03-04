@@ -1,5 +1,7 @@
 /** Created by 2019-01-31 11:11 */
-
+/**
+ * 发票信息添加、展示及编辑页面
+ */
 var React = require('react');
 import { message, Select, Icon, Form, DatePicker, Input } from 'antd';
 
@@ -13,7 +15,7 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import ajax from 'MOD_DIR/contract/common/ajax';
-import { DISPLAY_TYPES, OPERATE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
+import { DISPLAY_TYPES, OPERATE, OPERATE_INFO, PRIVILEGE_MAP } from 'MOD_DIR/contract/consts';
 import routeList from 'MOD_DIR/contract/common/route';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import { checkPhone } from 'PUB_DIR/sources/utils/validate-util';
@@ -72,7 +74,7 @@ class DetailInvoice extends React.Component {
     handleSubmit(type) {
         let _this = this;
         let saveObj;
-        if(type === 'add') {
+        if(type === DISPLAY_TYPES.ADD) {
             this.props.form.validateFields((err,value) => {
                 if (err) return false;
 
@@ -119,15 +121,15 @@ class DetailInvoice extends React.Component {
 
         ajax(arg).then(result => {
             if (result.code === 0) {
-                message.success(OPERATE[type] + targetName + '成功');
+                message.success(OPERATE_INFO[type].success);
                 this.props.refreshCurrentContractNoAjax(changePropName, isInvoiceBasicInforOrInvoices, result.result, '');
 
                 if (_.isFunction(successFunc)) successFunc(result.result);
             } else {
-                if (_.isFunction(errorFunc)) errorFunc(OPERATE[type] + targetName + Intl.get('user.failed', '失败'));
+                if (_.isFunction(errorFunc)) errorFunc(OPERATE_INFO[type].faild);
             }
         }, errorMsg => {
-            if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE[type] + targetName + Intl.get('user.failed', '失败'));
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE_INFO[type].faild);
         });
     }
     handleCancel = () => {
@@ -136,7 +138,7 @@ class DetailInvoice extends React.Component {
     updateInoviceInfo = (saveObj, successFunc, errorFunc) => {
         let invoice_detail = _.cloneDeep(this.props.contract.invoice_detail);
         invoice_detail = { ...invoice_detail,...saveObj };
-        this.editInvoice('update',invoice_detail, successFunc, errorFunc);
+        this.editInvoice(DISPLAY_TYPES.UPDATE, invoice_detail, successFunc, errorFunc);
     };
 
     renderAddInvoicePanel = () => {
@@ -271,8 +273,8 @@ class DetailInvoice extends React.Component {
                         validators={[{required: true, message: Intl.get('contract.48', '请填写公司全称')}]}
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditInput={this.updateInoviceInfo}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.47', '公司全称')}`}
-                        editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('contract.47', '公司全称')}`}
+                        addDataTip={Intl.get( 'contract.216', '设置公司全称')}
+                        editBtnTip={Intl.get('contract.217', '修改公司全称')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -285,10 +287,10 @@ class DetailInvoice extends React.Component {
                         field="account_number"
                         value={invoice_detail.account_number}
                         hasEditPrivilege={hasEditPrivilege}
-                        placeholder={`${Intl.get('contract.input', '请输入')}${Intl.get('contract.49', '银行帐号')}`}
+                        placeholder={Intl.get('contract.218', '请输入银行账号')}
                         saveEditInput={this.updateInoviceInfo}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.49', '银行帐号')}`}
-                        editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('contract.49', '银行帐号')}`}
+                        addDataTip={Intl.get('contract.219', '设置银行账号')}
+                        editBtnTip={Intl.get('contract.220', '修改银行账号')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -301,10 +303,10 @@ class DetailInvoice extends React.Component {
                         field="opening_bank"
                         value={invoice_detail.opening_bank}
                         hasEditPrivilege={hasEditPrivilege}
-                        placeholder={`${Intl.get('contract.input', '请输入')}${Intl.get('contract.50', '开户行')}`}
+                        placeholder={Intl.get('contract.221', '请输入开户行')}
                         saveEditInput={this.updateInoviceInfo}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.50', '开户行')}`}
-                        editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('contract.50', '开户行')}`}
+                        addDataTip={Intl.get('contract.222', '设置开户行')}
+                        editBtnTip={Intl.get('contract.223', '修改开户行')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -316,11 +318,11 @@ class DetailInvoice extends React.Component {
                         id={invoice_detail.id}
                         field="address"
                         value={invoice_detail.address}
-                        placeholder={`${Intl.get('contract.input', '请输入')}${Intl.get('common.address', '地址')}`}
+                        placeholder={Intl.get('contract.224', '请输入地址')}
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditInput={this.updateInoviceInfo}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('common.address', '地址')}`}
-                        editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('contract.50', '开户行')}`}
+                        addDataTip={Intl.get('contract.225', '设置地址')}
+                        editBtnTip={Intl.get('contract.226', '修改地址')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -336,9 +338,9 @@ class DetailInvoice extends React.Component {
                             validator: checkPhone
                         }]}
                         hasEditPrivilege={hasEditPrivilege}
-                        placeholder={`${Intl.get('contract.input', '请输入')}${Intl.get('common.phone', '电话')}`}
+                        placeholder={Intl.get('user.info.input.phone', '请输入电话')}
                         saveEditInput={this.updateInoviceInfo}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('common.phone', '电话')}`}
+                        addDataTip={Intl.get('contract.227', '设置电话')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -351,9 +353,9 @@ class DetailInvoice extends React.Component {
                         field="email_address"
                         value={invoice_detail.email_address}
                         hasEditPrivilege={hasEditPrivilege}
-                        placeholder={`${Intl.get('contract.input', '请输入')}${Intl.get('contract.51', '邮寄地址')}`}
+                        placeholder={Intl.get('contract.228', '请输入邮寄地址')}
                         saveEditInput={this.updateInoviceInfo}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.51', '邮寄地址')}`}
+                        addDataTip={Intl.get('contract.229', '设置邮寄地址')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -366,9 +368,9 @@ class DetailInvoice extends React.Component {
                         field="business_license_id"
                         value={invoice_detail.business_license_id}
                         hasEditPrivilege={hasEditPrivilege}
-                        placeholder={`${Intl.get('contract.input', '请输入')}${Intl.get('contract.52', '营业执照号码')}`}
+                        placeholder={Intl.get('contract.230', '请输入营业执照号码')}
                         saveEditInput={this.updateInoviceInfo}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.52', '营业执照号码')}`}
+                        addDataTip={Intl.get('contract.231', '设置营业执照号码')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -381,9 +383,9 @@ class DetailInvoice extends React.Component {
                         field="organization_id"
                         value={invoice_detail.organization_id}
                         hasEditPrivilege={hasEditPrivilege}
-                        placeholder={`${Intl.get('contract.input', '请输入')}${Intl.get('contract.53', '组织机构代码')}`}
+                        placeholder={Intl.get('contract.232', '请输入组织机构代码')}
                         saveEditInput={this.updateInoviceInfo}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.53', '组织机构代码')}`}
+                        addDataTip={Intl.get('contract.233', '设置组织机构代码')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -396,9 +398,9 @@ class DetailInvoice extends React.Component {
                         field="taxpayer_id"
                         value={invoice_detail.taxpayer_id}
                         hasEditPrivilege={hasEditPrivilege}
-                        placeholder={`${Intl.get('contract.input', '请输入')}${Intl.get('contract.54', '纳税人识别号')}`}
+                        placeholder={Intl.get('contract.234', '请输入纳税人识别号')}
                         saveEditInput={this.updateInoviceInfo}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.54', '纳税人识别号')}`}
+                        addDataTip={Intl.get('contract.235', '设置纳税人识别号')}
                     />
                 </div>
             </div>
@@ -419,7 +421,7 @@ class DetailInvoice extends React.Component {
         //编辑按钮是否显示, 发票信息为空+展示信息时+编辑权限
         const isEditBtnShow = _.isEmpty(invoiceDetail.id) && this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege;
 
-        const detailOp = invoiceDetail.id ? 'update' : 'add';
+        const detailOp = invoiceDetail.id ? DISPLAY_TYPES.UPDATE : DISPLAY_TYPES.ADD;
         const noInoviceDetail = _.isEmpty(invoiceDetail.id);
 
         const content = () => {

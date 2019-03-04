@@ -434,8 +434,8 @@ export const STEP_TITLES = {
 
 //展示的类型
 export const DISPLAY_TYPES = {
-    EDIT: 'edit',//添加所属客户
-    TEXT: 'text',//展示
+    EDIT: 'edit',// 编辑
+    TEXT: 'text',// 展示
     UPDATE: 'update', // 更新
     ADD: 'add',// 添加
     DELETE: 'delete',// 删除

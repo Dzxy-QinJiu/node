@@ -1341,7 +1341,7 @@
                 top: -25px;
             }
             .add-app-container{
-                margin-left: 69px;
+                margin-left: 80px;
             }
             .report-title{
                 background: #fff;
@@ -1506,9 +1506,15 @@
                 .detail-card-container{
                     position: relative;
                 }
-                .product-list-item:hover{
-                    .btn-box{
-                        display: block;
+                .product-list-item{
+                    &:hover{
+                        .btn-box{
+                            display: block;
+                        }
+                    }
+                    .card-content-edit-status{
+                        border: none;
+                        padding: 5px 0 0;
                     }
                 }
                 .ant-dropdown-trigger{

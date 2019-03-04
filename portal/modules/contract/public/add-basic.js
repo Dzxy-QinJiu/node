@@ -69,14 +69,13 @@ const AddBasic = createReactClass({
         if(!formData.end_time) formData.end_time = moment().valueOf();
 
         return (
-            <Form layout='horizontal' className="add-basic" data-tracename="添加合同>基本信息">
+            <Form layout='horizontal' className="add-basic" data-tracename="基本信息">
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     {this.renderNumField()}
                     {this.renderDateField()}
                     {this.renderCustomerField()}
                     {this.renderBuyerField()}
                     {this.renderUserField()}
-                    {/*{this.renderTeamField()}*/}
                     {this.props.isEdit ? null : (
                         <FormItem
                             {...formItemLayout2}
@@ -95,7 +94,6 @@ const AddBasic = createReactClass({
                         <Row>
                             <Col span={11}>
                                 <FormItem
-                                    // label={Intl.get('contract.35', '起始时间')}
                                     validateStatus={this.getValidateStatus('start_time')}
                                     help={this.getHelpMessage('start_time')}
                                 >
@@ -111,7 +109,6 @@ const AddBasic = createReactClass({
                             <Col span={2} style={{textAlign: 'center'}}>{Intl.get('common.time.connector', '至')}</Col>
                             <Col span={11}>
                                 <FormItem
-                                    // label={Intl.get('contract.105', '结束时间')}
                                     validateStatus={this.getValidateStatus('end_time')}
                                     help={this.getHelpMessage('end_time')}
                                 >
@@ -126,34 +123,6 @@ const AddBasic = createReactClass({
                             </Col>
                         </Row>
                     </FormItem>
-                    {/* <FormItem
-                        {...formItemLayout}
-                        label={Intl.get('contract.35', '起始时间')}
-                        validateStatus={this.getValidateStatus('start_time')}
-                        help={this.getHelpMessage('start_time')}
-                    >
-                        <Validator rules={[this.validateStartAndEndTime('start_time')]}>
-                            <DatePicker
-                                name='start_time'
-                                value={formData.start_time ? moment(formData.start_time) : ''}
-                                onChange={this.setField.bind(this, 'start_time')}
-                            />
-                        </Validator>
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label={Intl.get('contract.105', '结束时间')}
-                        validateStatus={this.getValidateStatus('end_time')}
-                        help={this.getHelpMessage('end_time')}
-                    >
-                        <Validator rules={[this.validateStartAndEndTime('end_time')]}>
-                            <DatePicker
-                                name='end_time'
-                                value={formData.end_time ? moment(formData.end_time) : ''}
-                                onChange={this.setField.bind(this, 'end_time')}
-                            />
-                        </Validator>
-                    </FormItem>*/}
                     <FormItem
                         {...formItemLayout2}
                         label={Intl.get('contract.32', '合同份数')}
@@ -203,8 +172,6 @@ const AddBasic = createReactClass({
                                 name="cost_structure"
                                 options={COST_STRUCTURE}
                                 value={formData.cost_structure}
-                                // value={formData.cost_structure ? formData.cost_structure.split(',') : []}
-                                // onChange={this.handleCostStructureChange}
                                 onChange={this.setField.bind(this, 'cost_structure')}
                             />
                         </Validator>
@@ -237,8 +204,8 @@ const AddBasic = createReactClass({
                             value={formData.need_invoice}
                             onChange={this.setField.bind(this, 'need_invoice')}
                         >
-                            <RadioButton key="1" value="true"><ReactIntl.FormattedMessage id="user.yes" defaultMessage="是" /></RadioButton>
-                            <RadioButton key="2" value="false"><ReactIntl.FormattedMessage id="user.no" defaultMessage="否" /></RadioButton>
+                            <RadioButton key="1" value="true">{Intl.get('user.ye','是')}</RadioButton>
+                            <RadioButton key="2" value="false">{Intl.get('user.no','否')}</RadioButton>
                         </RadioGroup>
                     </FormItem>
                     {this.renderStageField()}
@@ -246,7 +213,6 @@ const AddBasic = createReactClass({
                     {formData.category ? this.renderCategoryField() : null}
                     <hr className="contract-divide-line" />
                     {this.renderSalesRepField()}
-                    {/*{this.renderSalesRepTeamField()}*/}
                     {this.renderRemarksField()}
 
                 </Validation>

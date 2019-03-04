@@ -25,6 +25,16 @@ class RepeymentPlanForm extends React.Component{
             unit: 'days',
         };
     }
+    // 获取日期
+    getDynamicDate(num, value) {
+        if (!isNaN(num)) {
+            const signDate = this.props.signDate;
+            const count = parseInt(num);
+            return moment(signDate).add(count, value).valueOf();
+        }else {
+            return '';
+        }
+    }
     // 日期类型变化事件
     onUnitChange(value) {
         const {formData} = this.state;
@@ -32,26 +42,16 @@ class RepeymentPlanForm extends React.Component{
 
         const num = formData.num;
 
-        if (!isNaN(num)) {
-            const signDate = this.props.signDate;
-            const count = parseInt(num);
-            formData.date = moment(signDate).add(count, value).valueOf();
-        }
-
+        formData.date = this.getDynamicDate(num, value);
         this.setState({formData});
     }
-    // 时间处理函数
+    // 日期处理函数，根据数字动态的计算输入的日期与签订时间的间隔
     onNumChange(e) {
         const num = e.target.value;
         const {formData} = this.state;
         formData.num = num;
 
-        if (!isNaN(num)) {
-            const count = parseInt(num);
-            const signDate = this.props.signDate;
-            formData.date = moment(signDate).add(count, formData.unit).valueOf();
-        }
-
+        formData.date = this.getDynamicDate(num, formData.unit);
         this.setState({formData});
     }
     // 验证
@@ -74,7 +74,7 @@ class RepeymentPlanForm extends React.Component{
         let {getFieldDecorator} = this.props.form;
         return (
             <Form layout='inline' className='repayment-edit-form detailcard-form-container new-add-repayment-container'>
-                <ReactIntl.FormattedMessage id="contract.78" defaultMessage="从签订日起" />
+                {Intl.get('contract.78','从签订日起')}
                 <FormItem>
                     {
                         getFieldDecorator('num', {
@@ -91,9 +91,9 @@ class RepeymentPlanForm extends React.Component{
                     value={this.state.formData.unit}
                     onChange={this.onUnitChange.bind(this)}
                 >
-                    <Option key="days" value="days"><ReactIntl.FormattedMessage id="contract.79" defaultMessage="日" /></Option>
-                    <Option key="weeks" value="weeks"><ReactIntl.FormattedMessage id="common.time.unit.week" defaultMessage="周" /></Option>
-                    <Option key="months" value="months"><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月" /></Option>
+                    <Option key="days" value="days">{Intl.get('contract.79','日')}</Option>
+                    <Option key="weeks" value="weeks">{Intl.get('common.time.unit.week','周')}</Option>
+                    <Option key="months" value="months">{Intl.get('common.time.unit.month','月')}</Option>
                 </Select>
                 {Intl.get('contract.80', '内')}，
                 {Intl.get('contract.93', '应收回款')}
@@ -107,7 +107,7 @@ class RepeymentPlanForm extends React.Component{
                         )
                     }
                 </FormItem>
-                <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
+                {Intl.get('contract.155','元"')}
             </Form>
         );
     }

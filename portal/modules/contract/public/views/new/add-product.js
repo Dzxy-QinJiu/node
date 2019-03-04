@@ -10,7 +10,7 @@ import { getNumberValidateRule, numberAddNoMoreThan } from 'PUB_DIR/sources/util
 import { removeCommaFromNum } from 'LIB_DIR/func';
 import ProductList from '../components/product-list';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
-import { DISPLAY_TYPES, OPERATE, PRIVILEGE_MAP, VIEW_TYPE } from 'MOD_DIR/contract/consts';
+import { DISPLAY_TYPES, OPERATE_INFO, PRIVILEGE_MAP, VIEW_TYPE } from 'MOD_DIR/contract/consts';
 import Trace from 'LIB_DIR/trace';
 import routeList from 'MOD_DIR/contract/common/route';
 import ajax from 'MOD_DIR/contract/common/ajax';
@@ -109,10 +109,9 @@ class AddProduct extends React.Component{
         this.handleProductSave(products, successFunc, errorFunc, type);
     };
 
-    handleProductSave = (saveObj,successFunc,errorFunc,type = 'update') => {
-        saveObj = {products: saveObj};
+    handleProductSave = (saveObj,successFunc,errorFunc,type = DISPLAY_TYPES.UPDATE) => {
+        saveObj = {products: saveObj, id: this.props.contract.id};
 
-        console.log(saveObj);
         Trace.traceEvent(ReactDOM.findDOMNode(this),'修改产品信息');
         const handler = 'editContract';
         const route = _.find(routeList, route => route.handler === handler);
@@ -125,7 +124,7 @@ class AddProduct extends React.Component{
         };
         ajax(arg).then(result => {
             if (result.code === 0) {
-                message.success(OPERATE[type] + Intl.get('contract.41', '成功'));
+                message.success(OPERATE_INFO[type].success);
                 if (_.isFunction(successFunc)) successFunc();
                 const hasResult = _.isObject(result.result) && !_.isEmpty(result.result);
                 let contract = _.extend(this.props.contract, result.result);
@@ -133,10 +132,10 @@ class AddProduct extends React.Component{
                     this.props.refreshCurrentContract(this.props.contract.id, true, contract);
                 }
             } else {
-                if (_.isFunction(errorFunc)) errorFunc(OPERATE[type] + Intl.get('user.failed', '失败'));
+                if (_.isFunction(errorFunc)) errorFunc(OPERATE_INFO[type].faild);
             }
         }, (errorMsg) => {
-            if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE[type] + Intl.get('user.failed', '失败'));
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg || OPERATE_INFO[type].faild);
         });
     };
 
@@ -154,7 +153,7 @@ class AddProduct extends React.Component{
     };
 
     validate = (cb) => {
-        let flag = this.producTableRef.handleSubmit('add');
+        let flag = this.producTableRef.handleSubmit(DISPLAY_TYPES.ADD);
         if(flag) {
             this.setState({
                 products: flag
@@ -171,9 +170,9 @@ class AddProduct extends React.Component{
         // 获取合同金额的大小
         let totalAmout, reports;
         if(this.props.isDetailType) {
-            reports = _.get(this,'props.contract.reports') || [];
+            reports = _.get(this,'props.contract.reports',[]);
         }else {
-            reports = _.get(this,'props.parent.refs.addReport.state.reports') || [];
+            reports = _.get(this,'props.parent.refs.addReport.state.reports',[]);
         }
         let totalReportsPrice = 0;
         reports.length > 0 ? totalReportsPrice = _.reduce(reports,(sum, item) => {
@@ -356,7 +355,7 @@ class AddProduct extends React.Component{
         ];
 
         return (
-            <div className={`add-products ${this.props.className}`} data-tracename="添加编辑>产品信息">
+            <div className={`add-products ${this.props.className}`} data-tracename="添加编辑产品信息">
                 <div className="product-forms clearfix">
                     <ProductList
                         addBtnText={Intl.get('config.product.add', '添加产品')}

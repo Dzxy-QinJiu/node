@@ -29,21 +29,8 @@ const AddReport = createReactClass({
     mixins: [ValidateMixin],
 
     getInitialState: function() {
-        let reports;
-
-        if (_.isArray(this.props.reports) && this.props.reports.length) {
-            reports = _.cloneDeep(this.props.reports);
-            _.each(reports,(item) => {
-                if(!item.name) {
-                    item.id = item.type;
-                    item.name = item.type;
-                }
-            });
-        } else {
-            reports = [];
-        }
         return {
-            reports,
+            reports: [],
             formData: {},
             valid: false,
             pristine: true,
@@ -61,8 +48,7 @@ const AddReport = createReactClass({
     },
     componentWillReceiveProps(nextProps) {
         if(_.get(this.props,'contract') && this.props.contract.id !== nextProps.contract.id){
-            let newState = this.getInitialState(nextProps);
-            newState.reports = _.cloneDeep(nextProps.contract.reports);
+            let newState = this.getInitialState();
             this.setState(newState);
         }
     },
@@ -126,7 +112,7 @@ const AddReport = createReactClass({
         });
     },
     handleReportSave(saveObj,successFunc,errorFunc) {
-        saveObj = {reports: saveObj};
+        saveObj = {reports: saveObj, id: this.props.contract.id};
         Trace.traceEvent(ReactDOM.findDOMNode(this),'修改服务产品信息');
         let valid = this.validate();
         if(!valid) {
@@ -224,7 +210,7 @@ const AddReport = createReactClass({
             totalAmout = this.props.contract.contract_amount - totalProductsPrice;
         }
         return (
-            <div className="add-reports" data-tracename="添加编辑>服务产品信息">
+            <div className="add-reports" data-tracename="添加编辑服务信息">
                 <div className="product-forms clearfix product-table-container">
                     {!this.props.isDetailType ? (
                         <div>

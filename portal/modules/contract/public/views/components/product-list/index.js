@@ -1,7 +1,7 @@
 /** Created by 2019-02-19 14:48 */
 /*产品的添加和编辑*/
 import React, { Component } from 'react';
-import { Icon, Form, Alert, message, Popconfirm, Spin} from 'antd';
+import { Icon, Popconfirm, Spin} from 'antd';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import Trace from 'LIB_DIR/trace';
@@ -149,7 +149,7 @@ class ProductList extends Component {
         });
     };
     // 点击编辑按钮或者取消时
-    showEdit = (index, type = 'update') => {
+    showEdit = (index, type = DISPLAY_TYPES.UPDATE) => {
         let data = _.cloneDeep(this.state.data);
         let saveStatus = this.state.saveStatus;
         data[index].isEditting = !data[index].isEditting;
@@ -157,7 +157,7 @@ class ProductList extends Component {
         let currentEditKey = this.state.currentEditKey;
         currentEditKey = data[index].id;
         // 判断是否是添加的产品取消, 是则要删除这个数据
-        if(type === 'add') {
+        if(type === DISPLAY_TYPES.ADD) {
             delete this[`form${data[index].id}Ref`];
             data.splice(index,1);
             saveStatus.splice(index, 1);
@@ -176,7 +176,7 @@ class ProductList extends Component {
             currentEditKey
         },() => {
             // 是单项编辑取消时
-            if(type === 'update' && !data[index].isEditting) {
+            if(type === DISPLAY_TYPES.EDIT && !data[index].isEditting) {
                 if(_.isFunction(this.props.handleCancel)) this.props.handleCancel(index, data[index].id);
             } else {
                 if(_.isFunction(this.props.onChange)) this.props.onChange(data);
@@ -190,7 +190,7 @@ class ProductList extends Component {
         let id = data[index].id;
         let _this = this;
         // 如果是单项编辑时的删除
-        if(type === 'delete') {
+        if(type === DISPLAY_TYPES.DELETE) {
             saveStatus[index].loading = true;
             this.setState({saveStatus});
 
@@ -247,12 +247,12 @@ class ProductList extends Component {
         if(_.isFunction(this.props.handleCancel)) this.props.handleCancel();
         Trace.traceEvent(e, '取消对产品的修改');
     };
-    handleSubmit = (type = 'update', productIndex) => {
+    handleSubmit = (type = DISPLAY_TYPES.UPDATE, productIndex) => {
         let validateArr = [];
         _.each(this.state.data, (item, index) => {
             let ref = this[`form${item.id}Ref`];
             // 这里是单线编辑或者是添加产品时
-            if(type === 'add' || type === 'update' && item.isEditting) {
+            if(type === DISPLAY_TYPES.ADD || type === DISPLAY_TYPES.UPDATE && item.isEditting) {
                 ref.props.form.validateFields((err, value) => {
                     if(err) return false;
                     if(!_.get(item,'account_start_time')) {
@@ -260,7 +260,7 @@ class ProductList extends Component {
                         item.account_endt_time = moment().valueOf();
                     }
                     let obj = {...item, ...value};
-                    if(type === 'update') {
+                    if(type === DISPLAY_TYPES.UPDATE) {
                         delete obj.isEditting;
                         delete obj.isAdd;
                         // 如果是添加的产品时
@@ -279,27 +279,11 @@ class ProductList extends Component {
             }
         });
         // 添加合同时，添加产品需要判断数组长度是否相等，如果是展示编辑产品需要判断是否为空
-        if(type === 'add' && validateArr.length !== this.state.data.length) {
+        if(type === DISPLAY_TYPES.ADD && validateArr.length !== this.state.data.length) {
             return false;
         }else {
-            /*const totalAmount = this.props.getTotalAmount();
 
-            const sumAmount = _.reduce(validateArr, (sum, item) => {
-                const amount = +item.total_price;
-                return sum + amount;
-            }, 0);
-
-            // 需求改为不大于合同总额
-            if (sumAmount > totalAmount) {
-                this.setState({
-                    // saveErrMsg: Intl.get('crm.contract.check.tips', '合同额与产品总额不相等，请核对')
-                    saveErrMsg: Intl.get('contract.mount.check.tip', '总价合计不能大于合同总额{num}元，请核对',{num: totalAmount}),
-                    showErrMsg: type === 'add', // 只有添加时才显示
-                });
-                return false;
-            }*/
-
-            if(type === 'add') {
+            if(type === DISPLAY_TYPES.ADD) {
                 const data = _.cloneDeep(validateArr);
                 return data;
             }
@@ -344,7 +328,7 @@ class ProductList extends Component {
     };
     // 单项编辑时的取消
     handleItemCancel = (product, index) => {
-        let type = product.isAdd ? 'add' : 'update';
+        let type = product.isAdd ? DISPLAY_TYPES.ADD : DISPLAY_TYPES.UPDATE;
         this.showEdit(index, type);
     };
     // 展示时的产品选择确认事件
@@ -451,7 +435,7 @@ class ProductList extends Component {
                 </span>
                 {/*
                   *  是否正在编辑中
-                  *  是：则显示删除按钮，这时判断是添加的产品（直接删除）还是已有的产品（请求接口删除）
+                  *  是：则显示删除按钮，这时判断是添加的产品（直接删除）
                   *  否：显示可编辑按钮
                   */}
                 {product.isEditting ? (
@@ -459,7 +443,7 @@ class ProductList extends Component {
                     product.isAdd ?
                         <span
                             className="btn-bar"
-                            onClick={this.handleDelete.bind(this, index, 'add')}
+                            onClick={this.handleDelete.bind(this, index, DISPLAY_TYPES.ADD)}
                             title={Intl.get('common.delete', '删除')}>
                             <Icon type="close" theme="outlined" />
                         </span> : null
@@ -468,9 +452,9 @@ class ProductList extends Component {
                         <span className='btn-box'>
                             <DetailEditBtn
                                 title={this.props.editBtnTip}
-                                onClick={this.showEdit.bind(this, index, 'update')}
+                                onClick={this.showEdit.bind(this, index, DISPLAY_TYPES.UPDATE)}
                             />
-                            <Popconfirm title={`${Intl.get('crm.contact.delete.confirm', '确认删除')}?`} onConfirm={this.handleDelete.bind(this, index, 'delete')}>
+                            <Popconfirm title={`${Intl.get('crm.contact.delete.confirm', '确认删除')}?`} onConfirm={this.handleDelete.bind(this, index, DISPLAY_TYPES.DELETE)}>
                                 <span title={Intl.get('common.delete', '删除')}><i className='iconfont icon-delete'></i></span>
                             </Popconfirm>
                         </span>

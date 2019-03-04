@@ -105,20 +105,6 @@ const AddBuyPayment = createReactClass({
                     <div className="finance-list">
                         <ul>
                             {this.state.payments.map((payment, index) => {
-                                {/* <li key={index}>
-                                        <div className="circle-button circle-button-minus"
-                                            title={Intl.get('common.delete', '删除')}
-                                            onClick={this.deletePayment.bind(this, index)}>
-                                            <Icon type="minus" />
-                                        </div>
-                                        {Intl.get('contract.83', '至')}
-                                        {moment(payment.date).format(oplateConsts.DATE_FORMAT)}
-                                        <ReactIntl.FormattedMessage
-                                            id="contract.84"
-                                            defaultMessage={'应付金额{num}元'}
-                                            values={{ 'num': payment.amount }}
-                                        />
-                                    </li>*/}
                                 return (
                                     <li key={index}>
                                         {Intl.get('contract.83', '至')}{moment(payment.date).format(oplateConsts.DATE_FORMAT)} <i className='iconfont icon-huikuan'></i> {Intl.get('contract.84', '应付金额{num}元',{num: this.parseAmount(payment.amount)})}

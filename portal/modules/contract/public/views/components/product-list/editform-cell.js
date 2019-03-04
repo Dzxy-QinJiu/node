@@ -1,4 +1,68 @@
-/** Created by 2019-02-28 13:46 */
+/**
+ * Created by 2019-02-28 13:46
+ * 一个可编辑，和展示的Form表单组件
+ * 合同查看详情时产品信息里有应用
+ * 用法 formItems=[{
+                title?: Intl.get('common.start.end.time', '起止时间'), // 选填，label名称
+                dataIndex: 'name', // 必填，输入控件唯一标志
+                editable?: true,  // 选填，是否可编辑
+                editor?: 'Select', // 编辑器的类型，必须是antd或者antc上的组件，选填，默认为Input
+                editorChildrenType?: 'Option', // 选填，编辑器的子组件类型
+                editorChildren？: (Children) => { // 选填，Children为编辑器的子组件，
+                    return _.map(appList, item => {
+                        return <Children value={item.app_id} key={item.app_id}>{item.app_name}</Children>;
+                    });
+                },
+                display?: 'inline', // 是否一行显示，可不填
+                editorConfig?: { 选填, Form表单getFieldDecorator的配置项
+                    rules: (text,record,index) => { // rules规则，[Function|Object],可以是函数或者对象
+                        return [{
+                            required: true,
+                            message: Intl.get('contract.44', '不能为空')
+                        }, getNumberValidateRule()];
+                    }
+                },
+                editorProps?: (record, isEdit) => { // 选填，编辑器上的属性，[Function|Object],可以是函数或者对象
+                    return {
+                        onChange: (e) => {}
+                    };
+                },
+                formLayOut: { // 必填，文本和输入控件占据的位置
+                    labelCol: { span: 6 },
+                    wrapperCol: { span: 18 }
+                },
+                dynamicRule?: { // 选填， 动态验证函数
+                    index: 2, // 插入到rules规则数组里的索引
+                    key: 'amount', // 需要联动验证的另一控件的标志(dataIndex)
+                    fn: (parent) => { // 参数[parent],使用此组件的父组件的上下文，返回一个validator验证函数
+                        return {
+                            validator: (rule,value,callback) => {
+                                // 这里需要获取其他产品的价格
+                                let validateArr = [];
+                                _.each(this.state.products, (item, index) => {
+                                    let ref = parent[`form${item.id}Ref`];
+                                    let formValue = ref.props.form.getFieldsValue();
+                                    if(!_.get(item,'account_start_time')) {
+                                        item.account_start_time = moment().valueOf();
+                                        item.account_end_time = moment().valueOf();
+                                    }
+                                    validateArr.push({...item, ...formValue});
+                                });
+                                this.validateAmount(validateArr,rule,value,callback);
+                            }
+                        };
+                    },
+                },
+            },];
+        <EditFormCell
+            wrappedComponentRef={ref => this[`form${product.id}Ref`] = ref}
+            parent={this}
+            formItems={formItems}
+            product={product}
+            isEdit={this.state.isEdit}
+            productIndex={productIndex}
+         />
+ */
 import { Form } from 'antd';
 const FormItem = Form.Item;
 
@@ -10,7 +74,7 @@ class EditFormItem extends React.Component {
         formItems: PropTypes.object,
         product: PropTypes.object,
         isEdit: PropTypes.bool,
-        productIndex: PropTypes.number,
+        productIndex: PropTypes.number
     };
 
     static defaultProps = {
@@ -20,24 +84,23 @@ class EditFormItem extends React.Component {
         isEdit: false,
         productIndex: 0
     };
-
+    // 获取输入控件
     getEditor = (props, product) => {
         let editor = props.editor;
         let editorProps = props.editorProps;
         let Editor;
+
         if(editor === 'AntcValidity'){
             Editor = require('antc')[editor];
         }else if(editor){
             Editor = require('antd')[editor];
         }
 
-        // if(_.isFunction(editorProps)) editorProps = editorProps(product,this.props.isEdit);
         if(_.isFunction(editorProps)) editorProps = editorProps(product,product.isEditting);
 
         let renderElement;
         const { getFieldDecorator } = this.props.form;
-
-        // if(this.props.isEdit && props.editable){
+        // 是否可编辑
         if(product.isEditting && props.editable){
             if(editor !== 'AntcValidity') {
                 // 编辑器有无子组件
@@ -91,7 +154,7 @@ class EditFormItem extends React.Component {
 
 
         return (
-            <Form key={this.props.product.id} className='clearfix'>
+            <Form key={product.id} className='clearfix'>
                 {restProps.formItems.map((item,index) => {
                     item.editorConfig = item.editorConfig || {};
                     item.editorProps = item.editorProps || {};
@@ -102,7 +165,6 @@ class EditFormItem extends React.Component {
 
                     // 是否一行显示
                     if(item.display === 'inline') {
-                        // if(this.props.isEdit) {
                         if(product.isEditting) {
                             item.formLayOut.className = 'form-inline';
                         } else {
@@ -111,9 +173,9 @@ class EditFormItem extends React.Component {
                             };
                         }
                     }
-                    // 如果为起止时间选择器
-                    if(item.editor === 'AntcValidity') {
-                        item.formLayOut.style = {marginTop: 10};
+                    // 如果为起止时间选择器,并且是单个添加时
+                    if(item.editor === 'AntcValidity' && !_.isNil(product.singleAdd)) {
+                        item.formLayOut.style = {marginTop: 5};
                     }
                     return (
                         <FormItem
