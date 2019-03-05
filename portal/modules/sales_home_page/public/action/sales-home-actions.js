@@ -19,6 +19,9 @@ function SalesHomeActions() {
         'setInitState',//设置初始化数据
         'updateSalesTeamMembersObj',//修改团队成员列表中的信息（销售角色）
         'resetCallBackRecord', // 重置回访记录列表状态
+        'showInviteMemberPanel', // 显示邀请成员面板
+        'closeInviteMemberPanel', // 关闭邀请成员面板
+        'returnContinueInvitePanel', // 返回到继续邀请成员面板
     );
 
     //获取当前登录销售的角色（销售/经理/总监）

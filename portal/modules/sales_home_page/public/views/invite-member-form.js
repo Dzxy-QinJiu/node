@@ -121,16 +121,15 @@ class InviteMemberForm extends React.Component{
                         groupId: _.trim(_.get(reqData, 'team'))
                     };
                 }
-                InviteMemberAction.inviteMember(reqData, () => {
-
-                });
+                InviteMemberAction.inviteMember(reqData);
             }
         });
     };
+    
     hideSaveTooltip = () => {
         if (this.state.inviteResult === 'success') {
             //返回继续邀请界面
-            //this.props.showContinueInviteButton();
+            this.props.returnContinueInvitePanel();
         }
     };
     // 邀请成员
@@ -238,7 +237,7 @@ class InviteMemberForm extends React.Component{
                                             message={Intl.get('sales.home.invite.member.success', '邀请申请发送成功')}
                                             type= 'success'
                                             showIcon
-                                            onHide={this.hideSaveTooltip}
+                                            onHide={this.hideSaveTooltip()}
                                         />
                                     ) : ''
                                 }
@@ -262,6 +261,7 @@ InviteMemberForm.propTypes = {
     form: PropTypes.form,
     teamList: PropTypes.array,
     closeRightPanel: PropTypes.func,
+    returnContinueInvitePanel: PropTypes.func,
 };
 
 module.exports = Form.create()(InviteMemberForm);
