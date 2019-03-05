@@ -68,17 +68,18 @@ export const APPLY_APPROVE_TYPES = {
     BUSINESSOPPORTUNITIES: 'businessopportunities',//向后端传参数的销售机会类型
     PERSONAL_LEAVE: 'personal_leave',//后端传到前端请假的类型
     LEAVE: 'leave',//向后端传参数的请假类型
+    MEMBER_INVITE: 'member_invite', // 向后端传参数成员申请类型
     UNHANDLECUSTOMERVISIT: 'unhandleCustomerVisit',//未处理的出差申请数量
     UNHANDLEBUSINESSOPPORTUNITIES: 'unhandleBusinessOpportunities',//未处理的销售机会申请数量
     UNHANDLEPERSONALLEAVE: 'unhandlePersonalLeave',//未处理的请假申请数量
     UNHANDLEREPORTSEND: 'unhandleReportSend',//未处理的请假申请数量
     UNHANDLEDOCUMENTWRITE: 'unhandleDocumentWrite',//未处理的请假申请数量
+    UNHANDLEMEMBERINIVTE: 'unhandleMemberInivte', // 未处理的成员申请数量
     UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
     REPORT: 'report',//舆情报送的类型
     DOCUMENT: 'document',//文件撰写的类型
     OPINIONREPORT: 'opinionreport',//舆情报送的类型
     DOCUMENTWRITING: 'documentwriting'//文件撰写的类型
-
 };
 
 //系统消息对应的几种类型

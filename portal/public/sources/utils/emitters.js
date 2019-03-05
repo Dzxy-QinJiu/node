@@ -45,6 +45,7 @@ exports.notificationEmitter.APPLY_UPDATED = 'applyUpdated';
 exports.notificationEmitter.APPLY_UPDATED_CUSTOMER_VISIT = 'applyUpdatedCustomerVisit';
 exports.notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY = 'applyUpdatedSalesOpportunity';
 exports.notificationEmitter.APPLY_UPDATED_LEAVE = 'applyUpdatedLeave';
+exports.notificationEmitter.APPLY_UPDATED_MEMBER_INVITE = 'applyUpdatedMemberInvite';
 exports.notificationEmitter.APPLY_UPDATED_REPORT_SEND = 'applyUpdatedReportSend';
 exports.notificationEmitter.APPLY_UPDATED_DOCUMENT_WRITE = 'applyUpdatedDocumentWrite';
 
