@@ -2808,5 +2808,8 @@ var zh_CN = {
     'contract.238': '从签订日起{time}日内({date})前,应收回款{amount}元',
     'contract.239': '修改日期',
     'contract.240': '修改费用类型',
+    'apply.list.my.approved': '我审批过',
+    'apply.approve.sales.opportunity': '销售机会',
+    'apply.has.approved.by.me': '获取我审批过的{type}申请失败',
 };
 export default zh_CN;

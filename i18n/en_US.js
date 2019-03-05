@@ -2575,7 +2575,6 @@ var en_US = {
     'failed.get.all.sales.oppotunity': 'Failed to get all sales oppotunities',//获取全部销售机会申请失败
     'failed.get.all.leave.list': 'Failed to get all leave applies',//获取全部请假申请失败
     'failed.get.self.leave.apply': 'Failed to get my business trip applies',//获取我的出差申请失败
-    'failed.get.worklist.bussiness.apply': 'Failed to get bussiness trip applies to be approved by me',//获取由我审批的出差申请失败
     'failed.get.worklist.sales.oppotunity.apply': 'Failed to get sales oppotunities to be approved by me',//获取由我审批的销售机会申请失败
     'failed.get.worklist.leave.apply': 'Failed to get leave applies to be approved by me',//获取由我审批的请假申请失败
     'add.leave.apply': 'Add apply',//添加申请
@@ -2699,7 +2698,7 @@ var en_US = {
     'apply.approve.wait.upload': 'Waiting for {uploader} to upload',//待{uploader}上传
     'apply.approve.confirm.finish': 'Confirmation completed',//确认完成
     'apply.failed.get.type.application': 'Failed to get all {type} applies',//获取全部{type}申请失败
-    'apply.failed.get.my.worklist.application': 'Failed to get applies to be approved by me',//获取由我审批的{type}申请失败
+    'apply.failed.get.my.worklist.application': 'Failed to get applies to be approved by me',//获取待我审批的{type}申请失败
     'apply.approver.confirm.task.done': 'Confirm the task done',//确认任务完成
     'failed.get.reply.comment': 'Failed to get comment lists',//获取回复列表失败
     'apply.approve.upload.no.container.space': 'Please do not has space in your file name!',//文件名称中不要含有空格！
@@ -2785,5 +2784,8 @@ var en_US = {
     'contract.238': 'Within {time} days from the date of signing ({date}), the receivable shall be {amount} yuan',//从签订日起{time}日内({date})前,应收回款{amount}元
     'contract.239': 'Modification date',//修改日期
     'contract.240': 'Modify cost type',//修改费用类型
+    'apply.list.my.approved': 'Apply approved by me',//我审批过
+    'apply.approve.sales.opportunity': 'Sales opportunity',//销售机会
+    'apply.has.approved.by.me': 'Failed to get {type} application approved by me',//获取我审批过的{type}申请失败
 };
 export default en_US;

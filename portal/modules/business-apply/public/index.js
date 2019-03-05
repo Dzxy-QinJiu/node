@@ -156,18 +156,7 @@ class BusinessApplyManagement extends React.Component {
 
 
     getApplyListType = () => {
-        switch (this.state.applyListType) {
-            case 'all':
-                return Intl.get('user.apply.all', '全部申请');
-            case 'ongoing':
-                return Intl.get('leave.apply.my.worklist.apply', '待我审批');
-            case 'pass':
-                return Intl.get('user.apply.pass', '已通过');
-            case 'reject':
-                return Intl.get('user.apply.reject', '已驳回');
-            case 'cancel':
-                return Intl.get('user.apply.backout', '已撤销');
-        }
+        return commonMethodUtil.getApplyListTypeDes(this.state.applyListType);
     };
     menuClick = (obj) => {
         let selectType = '';

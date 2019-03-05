@@ -14,26 +14,33 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
-    },{
+    }, {
         'method': 'post',
         'path': '/rest/add/apply/new/candidate',
         'handler': 'addNewCandidate',
         'passport': {
             'needLogin': true
         }
-    },{
+    }, {
         'method': 'post',
         'path': '/rest/add/userapply/new/candidate',
         'handler': 'addUserApplyNewCandidate',
         'passport': {
             'needLogin': true
         }
-    },
-    {
+    }, {
         'method': 'get',
         'path': '/rest/get/userapply/worklist',
         'handler': 'getMyUserApplyWorkList',
         'passport': {
             'needLogin': true
         }
-    }]};
+    }, {
+        'method': 'get',
+        'path': '/rest/get/myapproved/apply/list',
+        'handler': 'getApplyListApprovedByMe',
+        'passport': {
+            'needLogin': true
+        }
+    }]
+};
