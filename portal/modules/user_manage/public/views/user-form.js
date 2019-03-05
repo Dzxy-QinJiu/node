@@ -76,6 +76,7 @@ class UserForm extends React.Component {
 
     //关闭面板前清空验证的处理
     resetValidatFlags = () => {
+        UserFormAction.resetNickNameFlags();
         UserFormAction.resetUserNameFlags();
         UserFormAction.resetEmailFlags();
     };
@@ -90,7 +91,9 @@ class UserForm extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (err) return;
-            if (this.state.userNameExist || this.state.emailExist || this.state.userNameError || this.state.emailError) {
+            let validateFlag = this.state.userNameExist || this.state.emailExist || this.state.nickNameExist ||
+                this.state.userNameError || this.state.emailError || this.state.nickNameError;
+            if (validateFlag) {
                 err = true;
             }
             if (err) {
@@ -203,25 +206,30 @@ class UserForm extends React.Component {
         }
     };
 
-    //验证所有者用户名的唯一性
-    checkOnlyUserName = () => {
+    //验证昵称（对应的是姓名）的唯一性
+    checkOnlyNickName = () => {
         var userName = _.trim(this.props.form.getFieldValue('name'));
         if (userName && (/^[A-Za-z0-9]\w+$/).test(userName)) {
-            UserFormAction.checkOnlyUserName(userName);
+            UserFormAction.checkOnlyNickName(userName);
         } else {
-            UserFormAction.resetUserNameFlags();
+            UserFormAction.resetNickNameFlags();
         }
     };
 
-    //用户名唯一性验证的展示
-    renderUserNameMsg = () => {
-        if (this.state.userNameExist) {
-            return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.is.existed"
-                defaultMessage="用户名已存在！"/></div>);
-        } else if (this.state.userNameError) {
-            return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.username.is.unique"
-                defaultMessage="用户名唯一性校验出错！"/>
-            </div>);
+    //昵称（对应的是姓名）唯一性验证的展示
+    renderNickNameMsg = () => {
+        if (this.state.nickNameExist) {
+            return (
+                <div className="phone-email-check">
+                    {Intl.get('common.nickname.is.existed', '姓名已存在！')}
+                </div>
+            );
+        } else if (this.state.nickNameError) {
+            return (
+                <div className="phone-email-check">
+                    {Intl.get('common.nickname.is.unique', '姓名唯一性校验出错！')}
+                </div>
+            );
         } else {
             return '';
         }
@@ -229,10 +237,10 @@ class UserForm extends React.Component {
 
     //邮箱唯一性验证的展示
     renderEmailMsg = () => {
-        if (this.state.emailExist) {
+        if (this.state.emailExist || this.state.userNameExist) {
             return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.email.is.used"
                 defaultMessage="邮箱已被使用！"/></div>);
-        } else if (this.state.emailError) {
+        } else if (this.state.emailError || this.state.userNameError) {
             return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.email.validate.error"
                 defaultMessage="邮箱校验失败！"/></div>);
         } else {
@@ -355,12 +363,12 @@ class UserForm extends React.Component {
                                 })(
                                     <Input name="name" id="name" type="text"
                                         placeholder={Intl.get('crm.90', '请输入姓名')}
-                                        className={this.state.userNameExist || this.state.userNameError ? 'input-red-border' : ''}
-                                        onBlur={this.checkOnlyUserName}
+                                        className={this.state.nickNameExist || this.state.nickNameError ? 'input-red-border' : ''}
+                                        onBlur={this.checkOnlyNickName}
                                     />
                                 )}
                             </FormItem>
-                            {this.renderUserNameMsg()}
+                            {this.renderNickNameMsg()}
                             <FormItem
                                 label={Intl.get('common.email', '邮箱')}
                                 {...formItemLayout}

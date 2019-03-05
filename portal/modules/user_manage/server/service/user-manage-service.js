@@ -26,14 +26,14 @@ var userRestApis = {
     getUserLog: '/rest/analysis/auditlog/v1/all',
     //获取角色列表
     getRoleList: '/rest/base/v1/application/role',
-    // 成员的姓名唯一性校验的url
-    checkOnlyUserName: '/rest/base/v1/user/nickname/:nickname',
+    // 成员的姓名（昵称）唯一性校验的url
+    checkOnlyNickName: '/rest/base/v1/user/nickname/:nickname',
     //成员属性唯一性验证的url
-    checkOnlyUser: 'rest/base/v1/user/unique_info',
+    checkOnlyUser: '/rest/base/v1/user/member/:key/:value/unique',
     //修改成员的所属团队
-    updateUserTeam: 'rest/base/v1/group/user',
+    updateUserTeam: '/rest/base/v1/group/user',
     //修改成员角色
-    updateUserRoles: 'rest/base/v1/user/member/roles',
+    updateUserRoles: '/rest/base/v1/user/member/roles',
     //查询及添加个人销售目标
     getAndSetSalesGoals: '/rest/contract/v2/goal/users'
 };
@@ -209,11 +209,21 @@ exports.getRoleList = function(req, res, clientId) {
     );
 };
 
-//用户名唯一性验证
-exports.checkOnlyUserName = function(req, res, nickName) {
+//昵称（对应的是姓名）唯一性验证
+exports.checkOnlyNickName = function(req, res, nickName) {
     return restUtil.authRest.get(
         {
-            url: userRestApis.checkOnlyUserName.replace(':nickname', nickName),
+            url: userRestApis.checkOnlyNickName.replace(':nickname', nickName),
+            req: req,
+            res: res
+        }, null);
+};
+
+//用户名唯一性验证
+exports.checkOnlyUserName = function(req, res, username) {
+    return restUtil.authRest.get(
+        {
+            url: userRestApis.checkOnlyUser.replace(':key', 'username').replace(':value', username),
             req: req,
             res: res
         }, null);
@@ -223,7 +233,7 @@ exports.checkOnlyUserName = function(req, res, nickName) {
 exports.checkOnlyPhone = function(req, res, phone) {
     return restUtil.authRest.get(
         {
-            url: userRestApis.checkOnlyUser + '/phone,' + phone,
+            url: userRestApis.checkOnlyUser.replace(':key', 'phone').replace(':value', phone),
             req: req,
             res: res
         }, null);
@@ -233,7 +243,7 @@ exports.checkOnlyPhone = function(req, res, phone) {
 exports.checkOnlyEmail = function(req, res, email) {
     return restUtil.authRest.get(
         {
-            url: userRestApis.checkOnlyUser + '/email,' + email,
+            url: userRestApis.checkOnlyUser.replace(':key', 'email').replace(':value', email),
             req: req,
             res: res
         }, null);
