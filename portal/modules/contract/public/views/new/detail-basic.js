@@ -1,5 +1,7 @@
 /** Created by 2019-01-31 11:11 */
-
+/**
+ * 销售合同基本信息展示及编辑页面
+ */
 var React = require('react');
 import { message, Select, Icon, Form } from 'antd';
 
@@ -17,19 +19,12 @@ import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { AntcValidity } from 'antc';
 import ajax from 'MOD_DIR/contract/common/ajax';
 import customerAjax from 'MOD_DIR/common/public/ajax/customer';
-import { CONTRACT_STAGE, COST_STRUCTURE, COST_TYPE, OPERATE, VIEW_TYPE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
+import { CONTRACT_STAGE, COST_STRUCTURE, COST_TYPE, OPERATE, VIEW_TYPE, PRIVILEGE_MAP, DISPLAY_TYPES} from 'MOD_DIR/contract/consts';
 import { regex } from 'ant-utils';
 import { getNumberValidateRule } from 'PUB_DIR/sources/utils/validate-util';
 import routeList from 'MOD_DIR/contract/common/route';
 import oplateConsts from 'LIB_DIR/consts';
 import { CategoryList, ContractLabel } from 'PUB_DIR/sources/utils/consts';
-
-
-//展示的类型
-const DISPLAY_TYPES = {
-    EDIT: 'edit',//添加所属客户
-    TEXT: 'text'//展示
-};
 
 const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 330;
 const formItemLayout = {
@@ -46,7 +41,7 @@ class DetailBasic extends React.Component {
 
     getInitStateData(props) {
         let hasEditPrivilege = hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPATE_PRIVILEGE);
-        let formData = _.extend(true, {}, props.contract);
+        let formData = props.contract;
 
         //所属客户是否是选择的，以数组的形式记录了各个所属客户在输入后是否经过了点击选择的过程
         let belongCustomerIsChoosen = [];
@@ -161,34 +156,34 @@ class DetailBasic extends React.Component {
     handleSubmitEditMount = (saveObj, successFunc, errorCallback) => {
         let formData = this.state.formData, calProfit = 0;
         //成本额默认为0
-        if (isNaN(formData.cost_price)) formData.cost_price = 0;
+        formData.cost_price = _.get(formData,'cost_price',0);
 
         //根据合同额和成本额计算毛利
-        if (_.get(saveObj, 'contract_amount')) { // 合同额
+        if (_.get(saveObj, 'contract_amount',0)) { // 合同额
             calProfit = saveObj.contract_amount - formData.cost_price;
-        } else if (_.get(saveObj, 'cost_price')) { // 成本
+        } else if (_.get(saveObj, 'cost_price',0)) { // 成本
             calProfit = formData.contract_amount - saveObj.cost_price;
         }
         if (isNaN(calProfit) || calProfit < 0) calProfit = '0';
-        saveObj.gross_profit = parseFloat(calProfit).toFixed(2);
-        const successCallback = () => {
-            let contract = this.state.formData;
-            contract.gross_profit = parseFloat(calProfit).toFixed(2);
-            this.setState({contract}, () => {
-                successFunc();
-            });
-        };
-        this.saveContractBasicInfo(saveObj, successCallback, errorCallback);
+        saveObj.gross_profit = parseFloat(calProfit);
+
+        this.saveContractBasicInfo(saveObj, successFunc, errorCallback);
     };
     handleSubmitEditSales = (saveObj, successFunc, errorCallback) => {
         const selectedUser = _.find(this.props.userList, item => item.user_id === saveObj.sales_rep_id);
-        saveObj.sales_rep = selectedUser ? selectedUser.nick_name : '';
+        saveObj.sales_rep = _.get(selectedUser,'nick_name','');
         saveObj.sales_rep_team_id = selectedUser.group_id;
         saveObj.sales_rep_team = selectedUser.group_name;
 
         this.saveContractBasicInfo(saveObj, successFunc, errorCallback);
     };
-
+    // 过滤重复客户
+    getCustomerList() {
+        let {customers, queryCustomerList} = this.state;
+        // 在这里去掉重复的客户
+        const customersIds = _.map(customers, 'customer_id');
+        return _.filter(queryCustomerList, customer => _.indexOf(customersIds, customer.customer_id) === -1);
+    }
     // 所属客户处理事件
     handleCustomerSubmit = () => {
         Trace.traceEvent(this, '点击所属客户保存按钮');
@@ -220,7 +215,7 @@ class DetailBasic extends React.Component {
     handleCustomerCancel = () => {
         Trace.traceEvent(this, '点击所属客户保取消按钮');
         let formData = this.state.formData;
-        formData.customers = _.clone(this.props.contract.customers);
+        formData.customers = _.cloneDeep(this.props.contract.customers);
         this.setState({
             displayType: DISPLAY_TYPES.TEXT,
             formData,
@@ -228,15 +223,14 @@ class DetailBasic extends React.Component {
         });
     };
     deleteBelongCustomer(index) {
-        let {formData, customers, queryCustomerList, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
+        let {formData, customers, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
 
         formData.customers.splice(index, 1);
         belongCustomerErrMsg.splice(index, 1);
         belongCustomerIsChoosen.splice(index, 1);
         customers = formData.customers;
         // 在这里去掉重复的客户
-        const customersIds = _.map(customers, 'customer_id');
-        const customerLists = _.filter(queryCustomerList, customer => customersIds.indexOf(customer.customer_id) === -1);
+        const customerLists = this.getCustomerList();
 
         this.setState({
             formData,
@@ -247,12 +241,10 @@ class DetailBasic extends React.Component {
         });
     }
     addBelongCustomer = () => {
-        let {formData, customers, queryCustomerList, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
+        let {formData, customers, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
 
         // 在这里去掉重复的客户
-        const customersIds = _.map(customers, 'customer_id');
-        const customerLists = _.filter(queryCustomerList, customer => customersIds.indexOf(customer.customer_id) === -1);
-
+        const customerLists = this.getCustomerList();
 
         formData.customers.push({});
         belongCustomerErrMsg.push('');
@@ -265,7 +257,7 @@ class DetailBasic extends React.Component {
             belongCustomerErrMsg,
             belongCustomerIsChoosen
         });
-    }
+    };
     queryCustomer(index, keyword) {
         const fieldName = 'belong_customer' + index;
 
@@ -291,8 +283,7 @@ class DetailBasic extends React.Component {
                 q: keyword
             }).success(list => {
                 // 在这里去掉重复的客户
-                const customersIds = _.map(this.state.formData.customers, 'customer_id');
-                const customerList = _.filter(list, customer => customersIds.indexOf(customer.customer_id) === -1);
+                const customerList = this.getCustomerList();
 
                 let newState = {
                     customerList: customerList,
@@ -306,7 +297,6 @@ class DetailBasic extends React.Component {
                     newState.belongCustomerErrMsg[index] = Intl.get('contract.177', '没有找到符合条件的客户，请更换关键词查询');
                 }
                 this.setState(newState, () => {
-                    // this.refs.validation.forceValidate([fieldName]);
                     this.props.form.validateFields([fieldName], {force: true});
                 });
             }).error(() => {
@@ -323,7 +313,7 @@ class DetailBasic extends React.Component {
         }, 500);
     }
     onCustomerChoosen(index, value) {
-        let {formData, customers, queryCustomerList, belongCustomerIsChoosen} = this.state;
+        let {formData, customers, belongCustomerIsChoosen} = this.state;
         const fieldName = 'belong_customer' + index;
 
         let belongCustomer = formData.customers[index];
@@ -339,9 +329,7 @@ class DetailBasic extends React.Component {
         formData.customers[index] = belongCustomer;
 
         // 在这里去掉重复的客户
-        const customersIds = _.map(formData.customers, 'customer_id');
-        const customerLists = _.filter(queryCustomerList, customer => customersIds.indexOf(customer.customer_id) === -1);
-
+        const customerLists = this.getCustomerList();
         //暂存表单数据
         // const formDataCopy = JSON.parse(JSON.stringify(formData));
 
@@ -358,7 +346,6 @@ class DetailBasic extends React.Component {
             this.props.form.setFieldsValue({
                 [fieldName]: belongCustomer.customer_name
             });
-            //this.handleValidate(this.state.status, formDataCopy);
         });
     }
 
@@ -405,6 +392,22 @@ class DetailBasic extends React.Component {
             <div>
                 <div className="basic-info-item">
                     <span className="basic-info-label">
+                        {Intl.get('contract.24', '合同号')}:
+                    </span>
+                    <BasicEditInputField
+                        width={EDIT_FEILD_LESS_WIDTH}
+                        id={contract.id}
+                        field="num"
+                        value={contract.num}
+                        placeholder={Intl.get('contract.57', '请填写合同号')}
+                        validators={[{required: true, message: Intl.get('contract.57', '请填写合同号')}]}
+                        hasEditPrivilege={hasEditPrivilege}
+                        saveEditInput={this.saveContractBasicInfo}
+                        addDataTip={Intl.get('contract.211', '设置合同号')}
+                    />
+                </div>
+                <div className="basic-info-item">
+                    <span className="basic-info-label">
                         {Intl.get('contract.4', '甲方')}:
                     </span>
                     <BasicEditInputField
@@ -421,8 +424,8 @@ class DetailBasic extends React.Component {
                         }]}
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditInput={this.saveContractBasicInfo}
-                        editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('contract.4', '甲方')}`}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.4', '甲方')}`}
+                        editBtnTip={Intl.get('contract.modify.partyA', '修改甲方')}
+                        addDataTip={Intl.get('contract.set.partyA', '设置甲方')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -443,8 +446,8 @@ class DetailBasic extends React.Component {
                         }]}
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditInput={this.saveContractBasicInfo}
-                        editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('crm.41', '客户名')}`}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('crm.41', '客户名')}`}
+                        editBtnTip={Intl.get('contract.201', '修改客户名')}
+                        addDataTip={Intl.get('crm.170', '设置客户名')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -459,8 +462,8 @@ class DetailBasic extends React.Component {
                         value={contract.date}
                         saveEditDateInput={this.saveContractBasicInfo}
                         hasEditPrivilege={hasEditPrivilege}
-                        editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('contract.34', '签订时间')}`}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.34', '签订时间')}`}
+                        editBtnTip={Intl.get('contract.202', '修改签订时间')}
+                        addDataTip={Intl.get('contract.203', '设置签订时间')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -476,8 +479,8 @@ class DetailBasic extends React.Component {
                         width={EDIT_FEILD_LESS_WIDTH}
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditSelect={this.saveContractBasicInfo}
-                        editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('contract.37', '合同类型')}`}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.37', '合同类型')}`}
+                        editBtnTip={Intl.get( 'contract.204', '修改合同类型')}
+                        addDataTip={Intl.get('contract.205', '设置合同类型')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -548,8 +551,8 @@ class DetailBasic extends React.Component {
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditSelect={this.handleSubmitEditUser}
                         noDataTip={Intl.get('contract.64', '暂无负责人')}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('crm.6', '负责人')}`}
-                        editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('crm.6', '负责人')}`}
+                        addDataTip={Intl.get( 'contract.206', '设置负责人')}
+                        editBtnTip={Intl.get('contract.207', '修改负责人')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -609,7 +612,7 @@ class DetailBasic extends React.Component {
                     <BasicEditInputField
                         width={EDIT_FEILD_LESS_WIDTH}
                         id={contract.id}
-                        displayText={contract.contract_amount || 0}
+                        displayText={_.get(contract,'contract_amount',0)}
                         field="contract_amount"
                         type='number'
                         validators={[{
@@ -640,7 +643,7 @@ class DetailBasic extends React.Component {
                         afterValTip={Intl.get('contract.82', '元')}
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditInput={this.handleSubmitEditMount}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.26', '成本额')}`}
+                        addDataTip={Intl.get('contract.208', '设置成本额')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -651,7 +654,7 @@ class DetailBasic extends React.Component {
                         width={EDIT_FEILD_LESS_WIDTH}
                         id={contract.id}
                         field="gross_profit"
-                        displayText={contract.gross_profit || 0}
+                        displayText={_.get(contract,'gross_profit',0)}
                         type='number'
                         validators={[getNumberValidateRule()]}
                         placeholder={Intl.get('crm.contract.enter.gross', '请输入毛利')}
@@ -676,7 +679,7 @@ class DetailBasic extends React.Component {
                         hasEditPrivilege={hasEditPrivilege}
                         validators={[{
                             required: true,
-                            message: `${Intl.get('contract.choose', '请选择')}${Intl.get('contract.165', '成本构成')}`,
+                            message: Intl.get('contract.209', '请选择成本构成'),
                             type: 'array'
                         }]}
                         saveEditSelect={(saveObj, successFunc, errorFunc) => {
@@ -684,7 +687,7 @@ class DetailBasic extends React.Component {
                             this.saveContractBasicInfo(saveObj, successFunc, errorFunc);
                         }}
                         noDataTip={Intl.get('clue.has.no.data', '暂无')}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.165', '成本构成')}`}
+                        addDataTip={Intl.get('contract.210', '设置成本构成')}
                     />
                 </div>
             </div>);
@@ -848,7 +851,6 @@ class DetailBasic extends React.Component {
                                     combobox
                                     filterOption={false}
                                     placeholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
-                                    // value={customer.customer_name}
                                     onSearch={this.queryCustomer.bind(this, index)}
                                     onSelect={this.onCustomerChoosen.bind(this, index)}
                                     getPopupContainer={() => popupContainer}
