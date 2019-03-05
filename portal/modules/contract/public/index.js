@@ -360,20 +360,22 @@ class Contract extends React.Component {
     // 前端更新操作后的数据（不请求后端接口获取最新数据）
     refreshCurrentContractNoAjax = (propName, type, data = {}, id) => {
         let currentContract = this.state.currentContract;
+        let contractPropName = _.get(currentContract,propName,[]);
         switch (type) {
             case 'add':
-                currentContract[propName].unshift(data);
+                contractPropName.unshift(data);
                 break;
             case 'update':
-                currentContract[propName][_.findIndex(currentContract[propName], item => item.id === id)] = data;
+                contractPropName[_.findIndex(currentContract[propName], item => item.id === id)] = data;
                 break;
             case 'delete':
-                currentContract[propName] = _.filter(currentContract[propName], item => item.id !== id);
+                contractPropName = _.filter(currentContract[propName], item => item.id !== id);
                 break;
             case 'addOrUpdateInvoiceBasic':
-                currentContract[propName] = data;
+                contractPropName = data;
                 break;
         }
+        currentContract[propName] = contractPropName;
         this.setState({
             currentContract
         });
