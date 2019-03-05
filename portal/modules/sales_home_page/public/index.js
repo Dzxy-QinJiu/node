@@ -49,7 +49,6 @@ const FOUR_CHAR_WIDTH = 95;
 const FIVE_CHAR_WIDTH = 105;
 //六字符表头宽度
 const SIX_CHAR_WIDTH = 120;
-
 class SalesHomePage extends React.Component {
     constructor(props) {
         super(props);
@@ -79,6 +78,7 @@ class SalesHomePage extends React.Component {
             callBackSorter: {}, // 回访的排序对象
             appList: [], //应用数组
             selectedAppId: '', //选中的应用id
+            setWebConfigClientStatus: false//设置不再展示提示添加坐席号的提示
         };
     }
 
@@ -121,8 +121,8 @@ class SalesHomePage extends React.Component {
             }
             scrollTimeout = setTimeout(() => $('.statistic-data-analysis .thumb').hide(), 300);
         });
-        //获取是否能展示邮箱激活提示
-        SalesHomeAction.getShowActiveEmailObj();
+        //获取是否能展示邮箱激活提示或者设置坐席号提示
+        SalesHomeAction.getShowActiveEmailOrClientConfig();
         //外层父组件加载完成后，再由上到下推出激活邮箱提示框
         setTimeout(() => {
             this.setState({
@@ -795,12 +795,19 @@ class SalesHomePage extends React.Component {
     hideSetClientTip = () => {
         let personnelObj = {};
         personnelObj[oplateConsts.STORE_PERSONNAL_SETTING.SETTING_CLIENT_NOTICE_IGNORE] = 'yes';
+        this.setState({
+            setWebConfigClientStatus: true
+        });
         setWebsiteConfig(personnelObj,() => {
             this.setState({
-                isClientAnimateHide: true
+                isClientAnimateHide: true,
+                setWebConfigClientStatus: false
             });
         },(errMsg) => {
             //设置错误后的提示
+            this.setState({
+                setWebConfigClientStatus: false
+            });
             message.error(errMsg);
         });
     };
@@ -1084,7 +1091,7 @@ class SalesHomePage extends React.Component {
                                 </div>
                                 : null}
                             {/*是否展示设置坐席号的提示*/}
-                            {_.get(this.state,'emailShowObj.isShowSetClient') && !hasCalloutPrivilege() ?
+                            {_.get(this.state,'emailShowObj.isShowSetClient') ?
                                 <AlertTip
                                     alertTipMessage={this.getClientAlertTipMessage()}
                                     isAnimateShow={this.state.isClientAnimateShow}

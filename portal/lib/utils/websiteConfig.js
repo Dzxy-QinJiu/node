@@ -40,7 +40,7 @@ var websiteConfig = {
         });
     },
     //获取网站个性化配置
-    getWebsiteConfig: function(callback) {
+    getWebsiteConfig: function(callback,totalData) {
         const route = _.find(routeList, route => route.handler === 'getWebsiteConfig');
         const arg = {
             url: route.path,
@@ -52,14 +52,19 @@ var websiteConfig = {
             }else if (result && !result.personnel_setting){
                 storageUtil.local.set('websiteConfig', JSON.stringify({}));
             }
-            //存储是否点击了某个模块
-            if (result && result.module_record){
-                if (_.isFunction(callback)){
-                    callback(result.module_record);
-                }
-            }else if (result && !result.module_record){
-                if (_.isFunction(callback)){
-                    callback([]);
+            //是否需要全部的数据
+            if (totalData){
+                callback(result);
+            }else{
+                //存储是否点击了某个模块
+                if (result && result.module_record){
+                    if (_.isFunction(callback)){
+                        callback(result.module_record);
+                    }
+                }else if (result && !result.module_record){
+                    if (_.isFunction(callback)){
+                        callback([]);
+                    }
                 }
             }
         });

@@ -221,6 +221,19 @@ SalesHomeStore.prototype.setInitState = function() {
     this.status = STATUS.UNHANDLED;//未处理，handled:已处理
     this.selectedCustomerPanel = ALL_LISTS_TYPE.SCHEDULE_TODAY;//选中客户所在的模块
     this.listenScrollBottom = true;//是否监听滚动
+    this.emailShowObj = {
+        isShowActiveEmail: false, //是否展示邮箱激活提示
+        isShowAddEmail: false, //是否展示添加邮箱的提示, 不能仅用是否有email字段进行判断，原因是如果数据获取慢的时候，也会在页面上展示出添加邮箱的提示
+        isShowSetClient: false//是否展示设置电话系统的提示
+
+    };
+    this.setWebConfigStatus = '';//设置个人配置的状态
+};
+//设置个人信息配置
+SalesHomeStore.prototype.setWebsiteConfig = function(userInfo) {
+    if (userInfo.emailLoading) {
+        this.setWebConfigStatus = 'loading';
+    }
 };
 //获取今日通话数量和时长
 SalesHomeStore.prototype.getPhoneTotal = function(result) {
@@ -244,6 +257,12 @@ SalesHomeStore.prototype.getPhoneTotal = function(result) {
             'totalTime': totalTime,
             'totalCount': totalCount
         };
+    }
+};
+//是否展示邮箱激活的提示
+SalesHomeStore.prototype.getShowActiveEmailOrClientConfig = function(result) {
+    if (_.isObject(result)){
+        this.emailShowObj = result;
     }
 };
 //获取客户统计总数

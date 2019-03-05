@@ -18,6 +18,21 @@ exports.getPhoneTotal = function(reqData, type) {
     });
     return Deferred.promise();
 };
+exports.activeUserEmail = function() {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/user_email/active',
+        dataType: 'json',
+        type: 'post',
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
 //获取客户统计总数
 var customerTotalAjax;
 exports.getCustomerTotal = function(reqData) {

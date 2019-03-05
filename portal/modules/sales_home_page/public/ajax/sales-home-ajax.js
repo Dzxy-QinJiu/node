@@ -253,24 +253,6 @@ exports.getUserInfo = function(userId) {
     ;
     return Deferred.promise();
 };
-//获取是否展示邮箱激活提示
-exports.getShowActiveEmailObj = function(userId) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/show/activeemail/flag/' + userId,
-        dataType: 'json',
-        type: 'get',
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-
-
 exports.activeUserEmail = function() {
     var Deferred = $.Deferred();
     $.ajax({

@@ -21,6 +21,8 @@ var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import {ORGANIZATION_TYPE} from './consts';
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
+var websiteConfig = require('../../../lib/utils/websiteConfig');
+var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -658,9 +660,35 @@ exports.isOrganizationEefung = () => {
     let organization = getOrganization(); // 组织信息
     return _.get(organization,'id') === ORGANIZATION_TYPE.EEFUNG;
 };
-//是否可以展示拨打电话的按钮
-exports.hasCalloutPrivilege = () => {
+//是否已经配置了坐席号
+function hasCalloutPrivilege() {
     //是否展示拨打按钮
     let callClient = getCallClient();
     return callClient && callClient.isInited();
+}
+exports.hasCalloutPrivilege = hasCalloutPrivilege;
+exports.afterGetWebConfig = (data,that) => {
+    var responseObj = {
+        isShowActiveEmail: !data.email_enable,//是否展示激活邮箱的提示
+        isShowAddEmail: !data.email,//是否展示添加邮箱的提示，不能仅用是否有email字段进行判断，原因是如果数据获取慢的时候，也会在页面上展示出添加邮箱的提示
+        isShowSetClient: !hasCalloutPrivilege(),//是否展示设置坐席号的提示
+    };
+    //如果邮箱未激活或者未设置坐席号，再发请求看是否设置过不再展示
+    if (responseObj.isShowActiveEmail || responseObj.isShowSetClient){
+        getWebsiteConfig((configData) => {
+            if (configData){
+                if (responseObj.isShowActiveEmail && _.get(configData, 'setting_notice_ignore') === 'yes'){
+
+                    responseObj.isShowActiveEmail = false;
+                }
+                if (responseObj.isShowSetClient && _.get(configData, 'personnel_setting.setting_client_notice_ignore') === 'yes'){
+                    responseObj.isShowSetClient = false;
+                }
+            }else{
+                responseObj.isShowActiveEmail = true;
+                responseObj.isShowSetClient = true;
+            }
+            that.dispatch(responseObj);
+        },true);
+    }
 };

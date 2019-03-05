@@ -78,7 +78,8 @@ SalesHomeStore.prototype.setInitState = function() {
     this.teamMemberCountList = [];
     this.emailShowObj = {
         isShowActiveEmail: false, //是否展示邮箱激活提示
-        isShowAddEmail: false//是否展示添加邮箱的提示, 不能仅用是否有email字段进行判断，原因是如果数据获取慢的时候，也会在页面上展示出添加邮箱的提示
+        isShowAddEmail: false,//是否展示添加邮箱的提示, 不能仅用是否有email字段进行判断，原因是如果数据获取慢的时候，也会在页面上展示出添加邮箱的提示
+        isShowSetClient: false//是否展示设置电话系统的提示
     };
 };
 // 重置回访记录列表状态
@@ -643,7 +644,7 @@ SalesHomeStore.prototype.getExpireUser = function(data) {
     }
 };
 //是否展示邮箱激活的提示
-SalesHomeStore.prototype.getShowActiveEmailObj = function(result) {
+SalesHomeStore.prototype.getShowActiveEmailOrClientConfig = function(result) {
     if (_.isObject(result)){
         this.emailShowObj = result;
     }
@@ -652,9 +653,6 @@ SalesHomeStore.prototype.getShowActiveEmailObj = function(result) {
 SalesHomeStore.prototype.setWebsiteConfig = function(userInfo) {
     if (userInfo.emailLoading) {
         this.setWebConfigStatus = 'loading';
-    }
-    if (userInfo.clientLoading) {
-        this.setWebConfigClientStatus = 'loading';
     }
 };
 // 获取回访列表
