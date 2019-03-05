@@ -39,7 +39,7 @@ class StatisticTotal extends React.Component {
         return (<div className="statistic-total-content">
             <span className="crm-add-data add-data-style">
                 <span className="total-data-desc">{Intl.get('sales.home.new.add', '新增')}&nbsp;</span>
-                <span className='num' onClick={this.showListPanel}>{customerData.added || 0}</span>
+                <span className='num' onClick={this.showListPanel.bind(this, 'customer')}>{customerData.added || 0}</span>
             </span>
             <span className="crm-total-data total-data-style">
                 <ReactIntl.FormattedMessage
@@ -62,7 +62,7 @@ class StatisticTotal extends React.Component {
         return (<div className="statistic-total-content">
             <span className="user-add-data add-data-style">
                 <span className="total-data-desc">{Intl.get('sales.home.new.add', '新增')}&nbsp;</span>
-                <span className='num'>{userData.added || 0}</span>
+                <span className='num' onClick={this.showListPanel.bind(this, 'user')}>{userData.added || 0}</span>
             </span>
             <span className="user-total-data total-data-style">
                 <ReactIntl.FormattedMessage
@@ -148,8 +148,8 @@ class StatisticTotal extends React.Component {
         SalesHomeAction.setActiveView(view);
     };
 
-    showListPanel() {
-        listPanelEmitter.emit(listPanelEmitter.SHOW, {listType: 'customer'});
+    showListPanel(listType) {
+        listPanelEmitter.emit(listPanelEmitter.SHOW, {listType});
     }
 
     render() {

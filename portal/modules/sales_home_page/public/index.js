@@ -33,6 +33,7 @@ import history from 'PUB_DIR/sources/history';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import CustomerListPanel from 'MOD_DIR/crm/public/customer-list-panel';
+import UserListPanel from 'MOD_DIR/app_user_manage/public/user-list-panel';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
@@ -1080,6 +1081,7 @@ class SalesHomePage extends React.Component {
 
             </div>
             <CustomerListPanel/>
+            <UserListPanel location='home'/>
         </RightContent>);
     }
 }
