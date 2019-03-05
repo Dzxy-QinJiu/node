@@ -20,7 +20,7 @@ import routeList from 'MOD_DIR/contract/common/route';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import { checkPhone } from 'PUB_DIR/sources/utils/validate-util';
 
-const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 330;
+const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 280;
 const formItemLayout = {
     labelCol: {span: 7},
     wrapperCol: {span: 16},
