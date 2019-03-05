@@ -8,8 +8,8 @@ import ajax from '../common/ajax';
 import appAjaxTrans from '../../common/public/ajax/app';
 import teamAjaxTrans from '../../common/public/ajax/team';
 import routeList from '../common/route';
-import TopNav from '../../../components/top-nav';
-const Checker = require('../../../components/privilege/checker');
+import TopNav from 'CMP_DIR//top-nav';
+const Checker = require('CMP_DIR//privilege/checker');
 const PrivilegeChecker = Checker.PrivilegeChecker;
 const hasPrivilege = Checker.hasPrivilege;
 import Filter from './filter';
@@ -18,7 +18,7 @@ import ContractRightPanel from './right-panel';
 import ImportContractTemplate from './import_contract_template';
 const scrollBarEmitter = require('../../../public/sources/utils/emitters').scrollBarEmitter;
 import { AntcDatePicker as DatePicker } from 'antc';
-import rightPanelUtil from '../../../components/rightPanel';
+import rightPanelUtil from 'CMP_DIR/rightPanel';
 import Trace from 'LIB_DIR/trace';
 const RightPanel = rightPanelUtil.RightPanel;
 const salesmanAjax = require('../../common/public/ajax/salesman');
@@ -360,20 +360,22 @@ class Contract extends React.Component {
     // 前端更新操作后的数据（不请求后端接口获取最新数据）
     refreshCurrentContractNoAjax = (propName, type, data = {}, id) => {
         let currentContract = this.state.currentContract;
+        let contractPropName = _.get(currentContract,propName,[]);
         switch (type) {
             case 'add':
-                currentContract[propName].unshift(data);
+                contractPropName.unshift(data);
                 break;
             case 'update':
-                currentContract[propName][_.findIndex(currentContract[propName], item => item.id === id)] = data;
+                contractPropName[_.findIndex(currentContract[propName], item => item.id === id)] = data;
                 break;
             case 'delete':
-                currentContract[propName] = _.filter(currentContract[propName], item => item.id !== id);
+                contractPropName = _.filter(currentContract[propName], item => item.id !== id);
                 break;
             case 'addOrUpdateInvoiceBasic':
-                currentContract[propName] = data;
+                contractPropName = data;
                 break;
         }
+        currentContract[propName] = contractPropName;
         this.setState({
             currentContract
         });
@@ -753,16 +755,15 @@ class Contract extends React.Component {
         let showModal = false;
         const rightPaneModelTitle = _.get(this.state.currentContract,'id') ?
             (this.state.type === VIEW_TYPE.COST ? (<span className='detail-cost-title-container'>
-                <span className='detail-cost-title'>{`${Intl.get('common.update', '修改')}${Intl.get('contract.133', '费用')}`}</span>
+                <span className='detail-cost-title'>{Intl.get('contract.cost.modify', '修改费用')}</span>
                 <span className='detail-cost-delete' title={Intl.get('common.delete', '删除')} onClick={this.handleDeleteDetailCost.bind(this)}><i className='iconfont icon-delete'></i></span>
-            </span>) : (this.state.currentContract.num || `${Intl.get('clue.has.no.data', '暂无')}${Intl.get('contract.24', '合同号')}`)) :
-            (showModal = true, this.state.type === VIEW_TYPE.COST ? Intl.get('contract.127', '添加费用') : showModal = true,Intl.get('common.add', '添加') + this.state.contractType);
+            </span>) : (this.state.currentContract.num || Intl.get('contract.no.contract.num', '暂无合同号'))) :
+            (showModal = true, this.state.type === VIEW_TYPE.COST ? Intl.get('contract.127', '添加费用') : Intl.get('common.add', '添加') + this.state.contractType);
 
         const rightPanelClass = classNames('contract-panel-v2',['right-panel-' + this.state.type], {'show-modal': showModal});
         return (
             <div className="contract-list" data-tracename="合同管理">
-                <TopNav>
-                    <TopNav.MenuList />
+                <div className='button-zones'>
                     <span className="btn-item-container float-r">
                         <div className="privilege-btns">
                             {isContractView || this.state.type === VIEW_TYPE.REPAYMENT ? (
@@ -808,7 +809,7 @@ class Contract extends React.Component {
                             ) : null}
 
                             {isContractView ? (
-                                <PrivilegeChecker                                    
+                                <PrivilegeChecker
                                     check="OPLATE_CONTRACT_ADD"
                                     className="btn-item"
                                 >
@@ -846,9 +847,9 @@ class Contract extends React.Component {
                                     </Button>
                                 </PrivilegeChecker>
                             ) : null}
-                        </div>                        
+                        </div>
                     </span>
-                </TopNav>
+                </div>
                 <div className="top-wrap">
 
                     <div className="pull-left" style={this.state.type === VIEW_TYPE.REPAYMENT ? { marginRight: 40 } : {}}>

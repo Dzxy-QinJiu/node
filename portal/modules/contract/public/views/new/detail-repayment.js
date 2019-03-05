@@ -1,4 +1,7 @@
 /** Created by 2019-01-31 11:11 */
+/**
+ * 已回款信息展示及编辑页面
+ */
 
 var React = require('react');
 import { message, Select, Icon, Form } from 'antd';
@@ -11,14 +14,7 @@ import RepaymentInfo from './repayment-info';
 import RepaymentPlan from './repayment-plan';
 import Spinner from 'CMP_DIR/spinner';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
-import { CONTRACT_STAGE, COST_STRUCTURE, COST_TYPE, OPERATE, VIEW_TYPE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
-
-
-//展示的类型
-const DISPLAY_TYPES = {
-    EDIT: 'edit',//添加所属客户
-    TEXT: 'text'//展示
-};
+import { DISPLAY_TYPES, VIEW_TYPE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
 
 class DetailRepayment extends React.Component {
     state = {

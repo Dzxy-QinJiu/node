@@ -13,13 +13,13 @@ const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 import ValidateMixin from '../../../mixins/ValidateMixin';
-import rightPanelUtil from '../../../components/rightPanel';
+import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanelEdit = rightPanelUtil.RightPanelEdit;
 const RightPanelDelete = rightPanelUtil.RightPanelDelete;
 const RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
 const RightPanelCancel = rightPanelUtil.RightPanelCancel;
-const hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import { DATE_FORMAT, OPERATE, COST_TYPE } from '../consts';
+const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
+import { DATE_FORMAT, OPERATE, COST_TYPE, DISPLAY_TYPES, OPERATE_INFO } from '../consts';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import DetailCostBasic from './detail-cost-basic';
 const formItemLayout = {
@@ -37,8 +37,8 @@ const DetailCost = createReactClass({
     mixins: [ValidateMixin],
 
     getInitialState: function() {
-        const isAdd = _.isEmpty(this.props.cost);
-        const formData = _.clone({...this.props.cost,type: isAdd ? COST_TYPE[0] : this.props.cost.type || COST_TYPE[0]});
+        const isAdd = _.isEmpty(_.get(this.props,'cost', {}));
+        const formData = _.clone({...this.props.cost,type: _.get(this.props,'cost.type', COST_TYPE[0])});
         return {
             formData,
             isFormShow: true,
@@ -57,14 +57,11 @@ const DetailCost = createReactClass({
         getUserList: PropTypes.func,
         isGetUserSuccess: PropTypes.bool,
         teamList: PropTypes.array,
-
     },
 
     componentWillReceiveProps: function(nextProps) {
-        //this.clearState();
-        let cost = _.isEmpty(nextProps.cost);
-        if(!cost && _.get(nextProps.cost,'id') !== this.state.formData.id){
-            const formData = _.clone({...nextProps.cost,type: nextProps.cost.type ? nextProps.cost.type : COST_TYPE[0]});
+        if(!_.get(nextProps,'cost','') && _.get(nextProps.cost,'id') !== this.state.formData.id || !_.isEqual(this.props.cost, nextProps.cost)){
+            const formData = _.clone({...nextProps.cost,type: _.get(nextProps,'cost.type', COST_TYPE[0])});
             this.setState({
                 formData,
                 isAdd: false,
@@ -87,7 +84,7 @@ const DetailCost = createReactClass({
     handleSubmit: function(type, id) {
         let data, params;
 
-        if (type === 'delete') {
+        if (type === DISPLAY_TYPES.DELETE) {
             Modal.confirm({
                 title: Intl.get('contract.192', '是否删除此费用？'),
                 onOk: () => {
@@ -95,12 +92,14 @@ const DetailCost = createReactClass({
                     this.editCost(type, data, params);
                 }
             });
-        } else if (type === 'add' || type === 'update') {
+        } else if (type === DISPLAY_TYPES.ADD || type === DISPLAY_TYPES.UPDATE) {
             data = this.state.formData;
+
+            data.cost = parseFloat(_.get(data,'cost',0));
 
             this.refs.validation.validate(valid => {
                 if (!valid) {
-                    return;
+                    return false;
                 } else {
                     this.editCost(type, data, params);
                 }
@@ -125,24 +124,18 @@ const DetailCost = createReactClass({
             this.props.hideLoading();
 
             if (result.code === 0) {
-                message.success(OPERATE[type] + '费用信息成功');
+                message.success(OPERATE_INFO[type].success);
 
-                if (type === 'add') {
+                if (type === DISPLAY_TYPES.ADD) {
                     this.props.addContract(result.result);
-                    this.props.hideRightPanel();
-                }
-
-                if (type === 'update') {
+                }else if (type === DISPLAY_TYPES.UPDATE) {
                     this.props.refreshCurrentContract(this.props.cost.id);
-                    this.props.hideRightPanel();
-                }
-
-                if (type === 'delete') {
+                }else if (type === DISPLAY_TYPES.DELETE) {
                     this.props.deleteContract(this.props.cost.id);
-                    this.props.hideRightPanel();
                 }
+                this.props.hideRightPanel();
             } else {
-                message.error(result.msg || OPERATE[type] + '费用信息失败');
+                message.error(result.msg || OPERATE_INFO[type].faild);
             }
         });
     },
@@ -151,12 +144,6 @@ const DetailCost = createReactClass({
         const userOptions = this.props.userList.map(user => {
             return <Option key={user.user_id} value={user.user_id}>{user.nick_name + ' - ' + user.group_name}</Option>;
         });
-
-        /*const teamOptions = this.props.teamList.map(team => {
-            return <Option key={team.groupId} value={team.groupId}>{team.groupName}</Option>;
-        });*/
-
-
 
         return (
             <FormItem 
@@ -186,24 +173,6 @@ const DetailCost = createReactClass({
                     </span>
                 )}
 
-                {/*  {this.state.isFormShow ? (
-                    <Select
-                        className='ant-select-inline'
-                        showSearch
-                        optionFilterProp="children"
-                        placeholder={Intl.get('crm.31', '请选择销售团队')}
-                        value={this.state.formData.sales_team_id}
-                        onSelect={this.onTeamChoosen}
-                        notFoundContent={Intl.get('sale.home.no.team', '暂无销售团队')}
-                    >
-                        {teamOptions}
-                    </Select>
-                ) : (
-                    <span className="value-text">
-                        {this.props.cost.sales_team}
-                    </span>
-                )}*/}
-
                 {this.props.isGetUserSuccess ? null : (
                     <div className="no-user-list-tip"><ReactIntl.FormattedMessage id="user.get.sales.failed" defaultMessage="获取销售人员列表失败" />，<a href="javascript:void(0)" onClick={this.props.getUserList}><ReactIntl.FormattedMessage id="contract.138" defaultMessage="点击重新获取" /></a></div>
                 )}
@@ -219,7 +188,6 @@ const DetailCost = createReactClass({
         formData.sales_team_id = selectedUser.group_id;
         formData.sales_team = selectedUser.group_name;
         this.setState({formData});
-        // this.onTeamChoosen(selectedUser.group_id);
     },
 
     renderTeamField: function() {
@@ -320,9 +288,6 @@ const DetailCost = createReactClass({
     },
 
     renderTypeField: function() {
-        /*const typeOptions = COST_TYPE.map(type => {
-            return <Option key={type} value={type}>{type}</Option>;
-        });*/
         const typeOptions = COST_TYPE.map(type => {
             return <RadioButton key={type} value={type}>{type}</RadioButton>;
         });
@@ -333,15 +298,6 @@ const DetailCost = createReactClass({
                 label={Intl.get('contract.135', '费用类型')}
                 required
             >
-                {/*<Select
-                    placeholder={Intl.get('contract.136', '请选择费用类型')}
-                    value={this.state.formData.type}
-                    onChange={this.setField.bind(this, 'type')}
-                    notFoundContent={Intl.get('contract.137', '暂无费用类型')}
-                >
-                    {typeOptions}
-                </Select>*/}
-
                 {this.state.isFormShow ? (
                     <RadioGroup
                         value={this.state.formData.type}
@@ -362,11 +318,11 @@ const DetailCost = createReactClass({
     render: function() {
         //编辑按钮是否显示
         const isEditBtnShow = hasPrivilege('OPLATE_SALES_COST_ADD');
-        const detailOp = this.state.formData.id ? 'update' : 'add';
+        const detailOp = this.state.formData.id ? DISPLAY_TYPES.UPDATE : DISPLAY_TYPES.ADD;
         return (
             <div className="detail-cost" data-tracename='添加费用页面'>
                 {
-                    detailOp === 'add' ? (
+                    detailOp === DISPLAY_TYPES.ADD ? (
                         <Form layout='horizontal' >
                             <Validation ref="validation" onValidate={this.handleValidate}>
                                 {this.renderUserField()}
