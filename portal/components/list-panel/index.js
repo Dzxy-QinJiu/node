@@ -71,7 +71,7 @@ class ListPanel extends React.Component {
                         />
                     </TopNav>
                     <div className="panel-content">
-                        {this.props.children} 
+                        {this.state.isShow ? this.props.children : null}
                     </div>
                 </RightPanel>
             </div>
