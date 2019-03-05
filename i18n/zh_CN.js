@@ -2758,6 +2758,6 @@ var zh_CN = {
     'sales.role.has.not.setting.phone.systerm': '您尚未开通电话系统或未设置座席号，请通知管理员!',
     'apply.list.my.approved': '我审批过',
     'apply.approve.sales.opportunity': '销售机会',
-    'apply.has.approved.by.me': '获取由我审批的{type}申请失败'
+    'apply.has.approved.by.me': '获取我审批过的{type}申请失败'
 };
 export default zh_CN;

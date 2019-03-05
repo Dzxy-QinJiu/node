@@ -67,7 +67,7 @@ function getApplyListApprovedByMe(that,queryObj) {
         that.dispatch({
             error: true,
             loading: false,
-            errorMsg: xhr.responseJSON || Intl.get('apply.has.approved.by.me', '获取由我审批的{type}申请失败', {type: Intl.get('apply.approve.sales.opportunity', '销售机会')})
+            errorMsg: xhr.responseJSON || Intl.get('apply.has.approved.by.me', '获取我审批过的{type}申请失败', {type: Intl.get('apply.approve.sales.opportunity', '销售机会')})
         });
     }
     );
