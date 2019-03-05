@@ -552,7 +552,7 @@ class ProductList extends Component {
         const appList = _.filter(this.props.appList, app => _.indexOf(appNames, app.client_name) === -1);
         const showNoDataTip = !productListLength;
         const containerStyle = {
-            minHeight: showNoDataTip ? 200 : 0,
+            minHeight: showNoDataTip ? 150 : 0,
             position: showNoDataTip ? 'relative' : 'inherit',
         };
         // 展示时，需要判断是否有产品在编辑中

@@ -309,7 +309,6 @@ class ContractRightPanel extends React.Component {
     //refreshWithResult：是否用提交返回的结果来更新当前合同
     handleSubmit = (cb, refreshWithResult) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), stepMap[this.state.currentTabKey] + '添加合同>点击完成按钮');
-        this.showLoading();
 
         const currentView = this.state.currentView;
         let type;
@@ -321,7 +320,8 @@ class ContractRightPanel extends React.Component {
             contractData.category = this.state.currentCategory; // 合同类型
 
             // 成本构成
-            contractData.cost_structure = _.get(contractData,'cost_structure',[]).join(',');
+            contractData.cost_structure = _.get(contractData,'cost_structure',[]);
+            contractData.cost_structure = _.isArray(contractData.cost_structure) ? contractData.cost_structure.join(',') : contractData.cost_structure;
             // 合同额，毛利，成本额处理
             contractData.contract_amount = parseFloat(contractData.contract_amount);
             contractData.cost_price = parseFloat(contractData.cost_price);
@@ -350,26 +350,75 @@ class ContractRightPanel extends React.Component {
                 });
             }
 
-            if (this.refs.addRepayment) contractData.repayments = this.refs.addRepayment.state.repayments.map(x => {
-                if(x.num){
-                    delete x.num;
-                    delete x.unit;
+            // 处理回款信息
+            if (this.refs.addRepayment) {
+                let addRepaymentRef = this.refs.addRepayment;
+                let validation = addRepaymentRef.refs.validation;
+                let repayments = _.get(addRepaymentRef.state,'repayments',[]);
+                let formData = _.clone(addRepaymentRef.state.formData);
+                // 判断formData中是否有值,有值验证，没值通过
+                let amount = _.get(formData,'amount');
+                let date = _.get(formData,'date');
+                if(amount && date) {
+                    let flag = true;
+                    validation.validate(valid => {
+                        if (!valid) {
+                            flag = false;
+                            return false;
+                        } else {
+                            delete formData.unit;
+                            repayments.push(formData);
+                        }
+                    });
+                    // 验证不通过，不往下执行
+                    if(!flag) return false;
                 }
-                return x;
-            });
+                contractData.repayments = repayments.map(x => {
+                    if(x.num){
+                        delete x.num;
+                        delete x.unit;
+                    }
+                    return x;
+                });
+            }
+
         } else if (currentView === 'buyForm') {
             type = VIEW_TYPE.BUY;
             contractData = _.extend({}, this.props.contract, this.refs.addBuyBasic.state.formData);
             contractData.category = this.state.currentCategory;
             contractData.contract_amount = parseFloat(contractData.contract_amount);
-
-            if (this.refs.addBuyPayment) contractData.payments = this.refs.addBuyPayment.state.payments.map(x => {
-                if(x.num){
-                    delete x.num;
-                    delete x.unit;
+            // 处理付款信息
+            if (this.refs.addBuyPayment) {
+                let addBuyPaymentRef = this.refs.addBuyPayment;
+                let validation = addBuyPaymentRef.refs.validation;
+                let payments = _.get(addBuyPaymentRef.state,'payments',[]);
+                let formData = _.clone(addBuyPaymentRef.state.formData);
+                // 判断formData中是否有值,有值验证，没值通过
+                let amount = _.get(formData,'amount');
+                let date = _.get(formData,'date');
+                if(amount && date) {
+                    let flag = true;
+                    validation.validate(valid => {
+                        if (!valid) {
+                            flag = false;
+                            return false;
+                        } else {
+                            delete formData.unit;
+                            payments.push(formData);
+                            return true;
+                        }
+                    });
+                    // 验证不通过，不往下执行
+                    if(!flag) return false;
                 }
-                return x;
-            });
+                contractData.payments = payments.map(x => {
+                    if(x.num){
+                        delete x.num;
+                        delete x.unit;
+                    }
+                    return x;
+                });
+            }
         } else {
             type = this.props.contract.type;
             if (type === VIEW_TYPE.SELL) {
@@ -378,6 +427,7 @@ class ContractRightPanel extends React.Component {
                 contractData = _.extend({}, this.props.contract, this.refs.detailBuyBasic.state.formData);
             }
         }
+        this.showLoading();
 
         if (contractData.start_time) {
             //在用Validation组件验证开始时间是否小于结束时间时，该组件会用一个缓存的值覆盖通过赋值方法setField赋到state上的最新的值
