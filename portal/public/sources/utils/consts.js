@@ -441,6 +441,7 @@ export const APPLY_TYPE_STATUS_CONST = {
 //组织类型
 export const ORGANIZATION_TYPE = {
     EEFUNG: '36v8tudu9Z', // 蚁坊
+    CIVIW: '36duh3ok3i'//识微
 };
 export const APPLY_FINISH_STATUS = ['pass', 'reject', 'cancel'];
 export const APPLY_USER_STATUS = {
