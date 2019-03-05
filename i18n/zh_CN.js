@@ -2578,7 +2578,6 @@ var zh_CN = {
     'failed.get.all.sales.oppotunity': '获取全部销售机会申请失败',
     'failed.get.all.leave.list': '获取全部请假申请失败',
     'failed.get.self.leave.apply': '获取我的出差申请失败',
-    'failed.get.worklist.bussiness.apply': '获取由我审批的出差申请失败',
     'failed.get.worklist.sales.oppotunity.apply': '获取由我审批的销售机会申请失败',
     'failed.get.worklist.leave.apply': '获取由我审批的请假申请失败',
     'add.leave.apply': '添加申请',
@@ -2718,7 +2717,7 @@ var zh_CN = {
     'apply.approve.wait.upload': '待{uploader}上传',
     'apply.approve.confirm.finish': '确认完成',
     'apply.failed.get.type.application': '获取全部{type}申请失败',
-    'apply.failed.get.my.worklist.application': '获取由我审批的{type}申请失败',
+    'apply.failed.get.my.worklist.application': '获取待我审批的{type}申请失败',
     'apply.approver.confirm.task.done': '确认任务完成',
     'failed.get.reply.comment': '获取回复列表失败',
     'apply.approve.upload.no.container.space': '文件名称中不要含有空格！',
@@ -2756,6 +2755,9 @@ var zh_CN = {
     'clue.and.crm.upload.size': '文件大小不要超过10M!',
     'apply.show.cancel.result': '查看撤销结果',
     'manager.role.has.not.setting.phone.systerm': '您尚未开通电话系统或未设置座席号!',
-    'sales.role.has.not.setting.phone.systerm': '您尚未开通电话系统或未设置座席号，请通知管理员!'
+    'sales.role.has.not.setting.phone.systerm': '您尚未开通电话系统或未设置座席号，请通知管理员!',
+    'apply.list.my.approved': '我审批过',
+    'apply.approve.sales.opportunity': '销售机会',
+    'apply.has.approved.by.me': '获取由我审批的{type}申请失败'
 };
 export default zh_CN;

@@ -47,7 +47,7 @@ function ReportSendApplyActions() {
                 this.dispatch({
                     error: true,
                     loading: false,
-                    errMsg: errorMsg || Intl.get('apply.failed.get.my.worklist.application', '获取由我审批的{type}申请失败', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')})
+                    errMsg: errorMsg || Intl.get('apply.failed.get.my.worklist.application', '获取待我审批的{type}申请失败', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')})
                 });
             });
         }else{

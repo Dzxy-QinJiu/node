@@ -436,7 +436,8 @@ export const APPLY_TYPE_STATUS_CONST = {
     PASS: 'pass',
     CANCEL: 'cancel',
     REJECT: 'reject',
-    ALL: 'all'
+    ALL: 'all',
+    MYAPPROVED: 'myApproved'
 };
 //组织类型
 export const ORGANIZATION_TYPE = {

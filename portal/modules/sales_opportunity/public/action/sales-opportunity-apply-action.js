@@ -8,6 +8,8 @@ import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import {APPLY_TYPE_STATUS_CONST} from 'PUB_DIR/sources/utils/consts';
+import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 function SalesOpportunityApplyActions() {
     this.generateActions(
         'setInitState',
@@ -23,10 +25,14 @@ function SalesOpportunityApplyActions() {
     this.getAllSalesOpportunityApplyList = function(queryObj,callback) {
         //需要先获取待审批列表，成功后获取全部列表
         this.dispatch({loading: true, error: false});
-        if (queryObj.status === 'ongoing' || !queryObj.status){
+        //如果选中的是我审批过的
+        if (queryObj.status === APPLY_TYPE_STATUS_CONST.MYAPPROVED){
+            delete queryObj.status;
+            getApplyListApprovedByMe(this,queryObj);
+        }else if (queryObj.status === APPLY_TYPE_STATUS_CONST.ONGOING || !queryObj.status){
             SalesOpportunityApplyAjax.getWorklistSalesOpportunityApplyList({type: APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES}).then((workList) => {
                 //如果是待我审批的列表，不需要在发获取全部列表的请求了
-                if (queryObj.status && queryObj.status === 'ongoing'){
+                if (queryObj.status && queryObj.status === APPLY_TYPE_STATUS_CONST.ONGOING){
                     //需要对全部列表都加一个可以审批的属性
                     _.forEach(workList.list,(workItem) => {
                         workItem.showApproveBtn = true;
@@ -45,13 +51,26 @@ function SalesOpportunityApplyActions() {
                 this.dispatch({
                     error: true,
                     loading: false,
-                    errMsg: errorMsg || Intl.get('failed.get.worklist.leave.apply', '获取由我审批的销售机会申请失败')
+                    errMsg: errorMsg || Intl.get('apply.failed.get.my.worklist.application', '获取待我审批的{type}申请失败', {type: Intl.get('apply.approve.sales.opportunity', '销售机会')})
                 });
             });
         }else{
             getDiffTypeApplyList(this,queryObj);
         }
     };
+}
+//获取我审批过的列表
+function getApplyListApprovedByMe(that,queryObj) {
+    ApplyApproveAjax.getApplyListApprovedByMe().sendRequest(queryObj).success((data) => {
+        that.dispatch({error: false, loading: false, data: data});
+    }).error(xhr => {
+        that.dispatch({
+            error: true,
+            loading: false,
+            errorMsg: xhr.responseJSON || Intl.get('apply.has.approved.by.me', '获取由我审批的{type}申请失败', {type: Intl.get('apply.approve.sales.opportunity', '销售机会')})
+        });
+    }
+    );
 }
 function getDiffTypeApplyList(that,queryObj,workListArr) {
     SalesOpportunityApplyAjax.getAllSalesOpportunityApplyList(queryObj).then((data) => {
