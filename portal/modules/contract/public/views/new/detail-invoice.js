@@ -22,8 +22,8 @@ import { checkPhone } from 'PUB_DIR/sources/utils/validate-util';
 
 const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 330;
 const formItemLayout = {
-    labelCol: {span: 0},
-    wrapperCol: {span: 18},
+    labelCol: {span: 7},
+    wrapperCol: {span: 16},
 };
 
 class DetailInvoice extends React.Component {

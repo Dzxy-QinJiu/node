@@ -392,6 +392,22 @@ class DetailBasic extends React.Component {
             <div>
                 <div className="basic-info-item">
                     <span className="basic-info-label">
+                        {Intl.get('contract.24', '合同号')}:
+                    </span>
+                    <BasicEditInputField
+                        width={EDIT_FEILD_LESS_WIDTH}
+                        id={contract.id}
+                        field="num"
+                        value={contract.num}
+                        placeholder={Intl.get('contract.57', '请填写合同号')}
+                        validators={[{required: true, message: Intl.get('contract.57', '请填写合同号')}]}
+                        hasEditPrivilege={hasEditPrivilege}
+                        saveEditInput={this.saveContractBasicInfo}
+                        addDataTip={Intl.get('contract.211', '设置合同号')}
+                    />
+                </div>
+                <div className="basic-info-item">
+                    <span className="basic-info-label">
                         {Intl.get('contract.4', '甲方')}:
                     </span>
                     <BasicEditInputField
