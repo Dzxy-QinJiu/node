@@ -171,7 +171,7 @@ class EditableTable extends Component {
         Trace.traceEvent(e,'点击编辑某行单元格');
         this.setState({ editingKey: key},() => {
             this.props.onCancel();
-            _.isFunction(this.props.onColumnsChange) && this.props.onColumnsChange('editing');
+            _.isFunction(this.props.onColumnsChange) && this.props.onColumnsChange('editing', key);
         });
     }
     save(defaultKey) {
@@ -234,7 +234,7 @@ class EditableTable extends Component {
 
         this.setState({ editingKey: '', data: this.props.dataSource });
         this.props.onCancel();
-        _.isFunction(this.props.onColumnsChange) && this.props.onColumnsChange(type);
+        _.isFunction(this.props.onColumnsChange) && this.props.onColumnsChange(type, key);
         Trace.traceEvent(ReactDOM.findDOMNode(this), '取消对表格的修改');
     }
     // 删除某一项

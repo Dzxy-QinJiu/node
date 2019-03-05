@@ -16,7 +16,7 @@ import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import ajax from 'MOD_DIR/contract/common/ajax';
 import { DISPLAY_TYPES, OPERATE, OPERATE_INFO, PRIVILEGE_MAP } from 'MOD_DIR/contract/consts';
 import routeList from 'MOD_DIR/contract/common/route';
-import { getNumberValidateRule } from 'PUB_DIR/sources/utils/validate-util';
+import { getNumberValidateRule, numberAddNoMoreThan } from 'PUB_DIR/sources/utils/validate-util';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 
 const disabledDate = function(current) {
@@ -38,7 +38,8 @@ class DetailPayment extends React.Component {
             submitErrorMsg: '',
             hasEditPrivilege,
             displayType: DISPLAY_TYPES.TEXT,
-            saveErrMsg: ''
+            saveErrMsg: '',
+            currentKey: '', // 当前编辑项
         };
     }
 
@@ -48,6 +49,7 @@ class DetailPayment extends React.Component {
             this.setState({
                 displayType: DISPLAY_TYPES.TEXT,
                 paymentLists: this.getPaymentLists(nextProps.contract),
+                currentKey: ''
             });
         }
     }
@@ -166,7 +168,7 @@ class DetailPayment extends React.Component {
     handleEditTableSave = (data, successFunc, errorFunc) => {
         const params = {contractId: this.props.contract.id};
         let successFuncs, type = DISPLAY_TYPES.UPDATE;
-        if(data.date){ 
+        if(data.date){
             data.date = data.date.valueOf();
         }
         // 如果是添加
@@ -180,7 +182,8 @@ class DetailPayment extends React.Component {
                 _.isFunction(successFunc) && successFunc();
                 this.setState({
                     paymentLists: this.getPaymentLists(this.props.contract),
-                    displayType: DISPLAY_TYPES.TEXT
+                    displayType: DISPLAY_TYPES.TEXT,
+                    currentKey: ''
                 }, () => {
                     this.updateScrollBar();
                 });
@@ -189,7 +192,8 @@ class DetailPayment extends React.Component {
             successFuncs = () => {
                 _.isFunction(successFunc) && successFunc();
                 this.setState({
-                    paymentLists: this.getUpdateList()
+                    paymentLists: this.getUpdateList(),
+                    currentKey: ''
                 });
             };
         }
@@ -205,6 +209,7 @@ class DetailPayment extends React.Component {
             _.isFunction(successFunc) && successFunc();
             this.setState({
                 paymentLists: this.getUpdateList(),
+                currentKey: ''
             }, () => {
                 this.updateScrollBar();
             });
@@ -215,7 +220,7 @@ class DetailPayment extends React.Component {
         });
     };
 
-    handleColumnsChange = (type) => {
+    handleColumnsChange = (type, key) => {
         let displayType = this.state.displayType;
         if(type === 'addCancel') {
             // 添加项的取消修改
@@ -223,7 +228,8 @@ class DetailPayment extends React.Component {
         }
         this.setState({
             displayType,
-            saveErrMsg: ''
+            saveErrMsg: '',
+            currentKey: key
         });
     };
 
@@ -238,7 +244,8 @@ class DetailPayment extends React.Component {
         });
         this.setState({
             paymentLists,
-            displayType: DISPLAY_TYPES.EDIT
+            displayType: DISPLAY_TYPES.EDIT,
+            currentKey: ''
         });
     };
 
@@ -285,6 +292,16 @@ class DetailPayment extends React.Component {
     }
 
     renderPaymentList(paymentLists) {
+        //已付款总额
+        let paymentsAmount = 0;
+
+        if (paymentLists.length) {
+            paymentsAmount = _.reduce(paymentLists, (memo, item) => {
+                // 过滤掉单个添加的，和当前项
+                const num = item.isAdd || this.state.currentKey === item.id ? 0 : parseFloat(item.amount);
+                return memo + num;
+            }, 0);
+        }
         let num_col_width = 75;
         const columns = [
             {
@@ -314,7 +331,7 @@ class DetailPayment extends React.Component {
                     rules: [{
                         required: true,
                         message: Intl.get('contract.44', '不能为空')
-                    }, getNumberValidateRule()]
+                    }, getNumberValidateRule(), numberAddNoMoreThan.bind(this, this.props.contract.contract_amount, paymentsAmount, Intl.get('contract.161', '已超合同额'))]
                 }
             }
         ];
@@ -338,13 +355,22 @@ class DetailPayment extends React.Component {
     renderBasicInfo() {
         const paymentLists = this.state.paymentLists;
         const noPaymentData = !paymentLists.length && !this.state.loading;
+        const contract_amount = _.get(this.props.contract,'contract_amount',0);
+        //已添加的付款总额
+        let paymentsAmount = 0;
+
+        if (paymentLists.length) {
+            paymentsAmount = _.reduce(paymentLists, (memo, item) => {
+                // 过滤掉单个添加的
+                const num = item.isAdd ? 0 : parseFloat(item.amount);
+                return memo + num;
+            }, 0);
+        }
 
         const content = (
             <div className="repayment-list">
-                {/*{this.state.displayType === DISPLAY_TYPES.EDIT ? this.renderAddPaymentPanel(paymentLists) : this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
-                    <span className="iconfont icon-add" onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}
-                        title={Intl.get('common.edit', '编辑')}/>) : null}*/}
-                {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
+                {/*是展示状态，且有权限编辑，且合同总额大于已付款总额*/}
+                {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege && contract_amount > paymentsAmount ? (
                     <span className="iconfont icon-add" onClick={this.addList}
                         title={Intl.get('common.add', '添加')}/>) : null}
                 {this.renderPaymentList(paymentLists)}

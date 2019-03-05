@@ -38,6 +38,7 @@ class RepaymentInfo extends React.Component {
     getInitStateData(props) {
         let hasEditPrivilege = hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPDATE_REPAYMENT);
 
+
         return {
             formData: {},
             loading: false,
@@ -46,7 +47,8 @@ class RepaymentInfo extends React.Component {
             hasEditPrivilege,
             displayType: DISPLAY_TYPES.TEXT,
             isFirstAdd: false, // 是否添加了首笔回款列
-            saveErrMsg: ''
+            saveErrMsg: '',
+            currentKey: '', //当前编辑项
         };
     }
 
@@ -61,7 +63,8 @@ class RepaymentInfo extends React.Component {
             this.setState({
                 displayType: DISPLAY_TYPES.TEXT,
                 repayLists: this.getRepayList(contract),
-                isFirstAdd: false
+                isFirstAdd: false,
+                currentKey: ''
             });
         }
     }
@@ -195,7 +198,7 @@ class RepaymentInfo extends React.Component {
     handleEditTableChange = (data) => {
         this.setState({repayLists: data});
     };
-    handleColumnsChange = (type) => {
+    handleColumnsChange = (type, key) => {
         let isFirstAdd = false;
         let displayType = this.state.displayType;
         if(type === 'editing') {
@@ -210,7 +213,8 @@ class RepaymentInfo extends React.Component {
         this.setState({
             isFirstAdd,
             displayType,
-            saveErrMsg: ''
+            saveErrMsg: '',
+            currentKey: key
         });
     };
     handleEditTableSave = (data, successFunc, errorFunc) => {
@@ -233,7 +237,8 @@ class RepaymentInfo extends React.Component {
                 this.setState({
                     repayLists: this.getRepayList(this.props.contract),
                     isFirstAdd: false,
-                    displayType: DISPLAY_TYPES.TEXT
+                    displayType: DISPLAY_TYPES.TEXT,
+                    currentKey: ''
                 });
             };
         }else { // 编辑更新
@@ -241,7 +246,8 @@ class RepaymentInfo extends React.Component {
                 _.isFunction(successFunc) && successFunc();
 
                 this.setState({
-                    repayLists: this.getUpdateList()
+                    repayLists: this.getUpdateList(),
+                    currentKey: ''
                 });
             };
         }
@@ -255,7 +261,8 @@ class RepaymentInfo extends React.Component {
         const successFuncs = () => {
             _.isFunction(successFunc) && successFunc();
             this.setState({
-                repayLists: this.getUpdateList()
+                repayLists: this.getUpdateList(),
+                currentKey: ''
             }, () => {
                 this.props.updateScrollBar();
             });
@@ -279,6 +286,7 @@ class RepaymentInfo extends React.Component {
         this.setState({
             repayLists,
             isFirstAdd: true,
+            currentKey: '',
             displayType: DISPLAY_TYPES.EDIT
         },() => {
             this.repaymentTableRef.setState({
@@ -365,7 +373,18 @@ class RepaymentInfo extends React.Component {
         );
     }
 
-    renderRepaymentList(repayLists) {
+    renderRepaymentList(repayLists, total_plan_amount) {
+        //已回款总额
+        let repaymentsAmount = 0;
+
+        if (repayLists.length) {
+            repaymentsAmount = _.reduce(repayLists, (memo, item) => {
+                // 过滤掉单个添加的，和当前项
+                const num = item.isAdd || this.state.currentKey === item.id ? 0 : parseFloat(item.amount);
+                return memo + num;
+            }, 0);
+        }
+
         let num_col_width = 80;
         const columns = [
             {
@@ -397,7 +416,7 @@ class RepaymentInfo extends React.Component {
                     rules: [{
                         required: true,
                         message: Intl.get('contract.44', '不能为空')
-                    }, getNumberValidateRule(), numberAddNoMoreThan.bind(this, this.props.contract.contract_amount, this.props.contract.total_amount, Intl.get('contract.161', '已超合同额'))]
+                    }, getNumberValidateRule(), numberAddNoMoreThan.bind(this, this.props.contract.contract_amount, repaymentsAmount, Intl.get('contract.161', '已超合同额'))]
                 }
             },
             {
@@ -469,14 +488,18 @@ class RepaymentInfo extends React.Component {
         const contract = this.props.contract;
         const repayLists = this.state.repayLists;
         const noRepaymentData = !repayLists.length && !this.state.loading;
+        const contract_amount = _.get(this.props.contract,'contract_amount',0);
+        const total_amount = _.get(this.props.contract,'total_amount',0);
+        const total_plan_amount = contract_amount - total_amount;
 
         const content = () => {
             return (
                 <div className="repayment-list">
-                    {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
+                    {/*是展示状态，且有权限编辑，且尾款不等于0*/}
+                    {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege && total_plan_amount > 0 ? (
                         <span className="iconfont icon-add" onClick={this.addList}
                             title={Intl.get('common.add', '添加')}/>) : null}
-                    {this.renderRepaymentList(repayLists)}
+                    {this.renderRepaymentList(repayLists, total_plan_amount)}
                     {this.state.saveErrMsg ? <Alert type="error" message={this.state.saveErrMsg} showIcon /> : null}
                 </div>
             );
@@ -485,8 +508,8 @@ class RepaymentInfo extends React.Component {
         let repayTitle = (
             <div className="repayment-repay">
                 <span>{Intl.get('contract.194', '回款进程')}: </span>
-                <span className='repayment-label'>{Intl.get('contract.179', '已回款')}: {parseAmount(contract.total_amount)}{Intl.get('contract.82', '元')}/ </span>
-                <span className='repayment-label'>{Intl.get('contract.180', '尾款')}: {parseAmount(contract.total_plan_amount)}{Intl.get('contract.82', '元')}</span>
+                <span className='repayment-label'>{Intl.get('contract.179', '已回款')}: {parseAmount(contract_amount)}{Intl.get('contract.82', '元')}/ </span>
+                <span className='repayment-label'>{Intl.get('contract.180', '尾款')}: {parseAmount(total_plan_amount)}{Intl.get('contract.82', '元')}</span>
             </div>
         );
 

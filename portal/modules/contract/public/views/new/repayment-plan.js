@@ -270,6 +270,22 @@ class RepaymentPlan extends React.Component {
         });
         Trace.traceEvent(ReactDOM.findDOMNode(this), '取消对汇款计划列表的修改');
     }
+    getAmount(repayment) {
+        let repayments = this.state.repayPlanLists;
+        //合同额
+        const contractAmount = _.get(this, 'props.contract.contract_amount',0);
+        //已添加的回款总额
+        let repaymentsAmount = 0;
+
+        if (repayments.length) {
+            repaymentsAmount = _.reduce(repayments, (memo, item) => {
+                // 过滤掉单个添加的，和当前项
+                const num = item.isAdd || repayment.id === item.id ? 0 : parseFloat(item.amount);
+                return memo + num;
+            }, 0);
+        }
+        return { contractAmount, repaymentsAmount };
+    }
     // 渲染编辑操作按钮
     renderBtnBlock(repayment) {
         /*是否可编辑*/
@@ -331,25 +347,14 @@ class RepaymentPlan extends React.Component {
     }
     // 渲染添加和编辑时的form表单
     renderAddRepaymentPanel(repayment) {
-        let repayments = this.state.repayPlanLists;
-        //合同额
-        const contractAmount = _.get(this, 'props.contract.contract_amount',0);
-        //已添加的回款总额
-        let repaymentsAmount = 0;
+        const amount = this.getAmount(repayment);
 
-        if (repayments.length) {
-            repaymentsAmount = _.reduce(repayments, (memo, item) => {
-                // 过滤掉单个添加的，和当前项
-                const num = item.isAdd || repayment.id === item.id ? 0 : parseFloat(item.amount);
-                return memo + num;
-            }, 0);
-        }
         return (
             <RepeymentPlanForm
                 wrappedComponentRef={ref => this.repeymentPlanRef = ref}
                 signDate={this.props.contract.date}
-                contractAmount={contractAmount}
-                repaymentsAmount={repaymentsAmount}
+                contractAmount={amount.contractAmount}
+                repaymentsAmount={amount.repaymentsAmount}
                 formData={this.state.formData}
             />
         );
@@ -386,11 +391,24 @@ class RepaymentPlan extends React.Component {
     renderBasicInfo() {
         let repayPlanLists = this.state.repayPlanLists;
         const noRepaymentData = !repayPlanLists.length && !this.state.loading;
+        const contract_amount = _.get(this.props.contract,'contract_amount',0);
+        //已添加的回款总额
+        let repaymentsAmount = 0;
+
+        if (repayPlanLists.length) {
+            repaymentsAmount = _.reduce(repayPlanLists, (memo, item) => {
+                // 过滤掉单个添加的
+                const num = item.isAdd ? 0 : parseFloat(item.amount);
+                return memo + num;
+            }, 0);
+        }
+
 
         const content = () => {
             return (
                 <div className="repayment-list">
-                    {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
+                    {/*是展示状态，且有权限编辑，且合同总额大于已回款总额*/}
+                    {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege && contract_amount > repaymentsAmount ? (
                         <span className="iconfont icon-add" onClick={this.addList}
                             title={Intl.get('common.edit', '编辑')}/>) : null}
                     {this.renderRepaymentList()}
