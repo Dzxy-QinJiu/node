@@ -21,7 +21,7 @@ var userData = require('PUB_DIR/sources/user-data');
 const PRIVILEGE_MAP = {
     CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
 };
-import {formatRoundingData, isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
+import {formatRoundingData, isOrganizationEefung, isOrganizationCiviw} from 'PUB_DIR/sources/utils/common-method-util';
 
 const isCommonSales = userData.getUserData().isCommonSales;
 
@@ -221,7 +221,7 @@ class WeeklyReportDetail extends React.Component {
         },];
 
         // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        if(isOrganizationEefung()){
+        if(isOrganizationEefung() || isOrganizationCiviw()){
             columns.splice(5, 0, {
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 dataIndex: 'total_effective',
@@ -421,7 +421,7 @@ class WeeklyReportDetail extends React.Component {
         queryObj.deviceType = this.state.call_type;
         queryObj.return_type = 'user';
         // 是否获取有效通话时长
-        queryObj.effective_phone = isOrganizationEefung();
+        queryObj.effective_phone = isOrganizationEefung() || isOrganizationCiviw();
 
         if (isCommonSales) {
             const userId = userData.getUserData().user_id;
