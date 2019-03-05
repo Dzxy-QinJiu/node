@@ -149,7 +149,7 @@ class StatisticTotal extends React.Component {
     };
 
     showListPanel() {
-        listPanelEmitter.emit(listPanelEmitter.SHOW);
+        listPanelEmitter.emit(listPanelEmitter.SHOW, {listType: 'customer'});
     }
 
     render() {

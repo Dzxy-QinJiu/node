@@ -14,10 +14,14 @@ const RightPanelClose = rightPanelUtil.RightPanelClose;
 
 class ListPanel extends React.Component {
     static defaultProps = {
+        //列表类型
+        listType: '',
+        //子组件
         children: null
     };
 
     static propTypes = {
+        listType: PropTypes.string,
         children: PropTypes.oneOfType([PropTypes.object, PropTypes.element])
     };
 
@@ -40,10 +44,12 @@ class ListPanel extends React.Component {
         listPanelEmitter.removeListener(listPanelEmitter.SHOW, this.show);
     }
 
-    show = () => {
-        this.setState({
-            isShow: true
-        });
+    show = paramObj => {
+        if (this.props.listType === paramObj.listType) {
+            this.setState({
+                isShow: true
+            });
+        }
     }
 
     hide = () => {
