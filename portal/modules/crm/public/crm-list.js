@@ -44,6 +44,7 @@ var userData = require('PUB_DIR/sources/user-data');
 const userInfo = userData.getUserData();
 const COMMON_OTHER_ITEM = 'otherSelectedItem';
 import {OTHER_FILTER_ITEMS, DAY_TIME} from 'PUB_DIR/sources/utils/consts';
+import {getStartTime, getEndTime} from 'PUB_DIR/sources/utils/time-format-util';
 import ShearContent from 'CMP_DIR/shear-content';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
@@ -746,6 +747,14 @@ class Crm extends React.Component {
                 exist.push('sales_team_id');
                 unexist.push('member_id');
                 break;
+            case OTHER_FILTER_ITEMS.THIS_WEEK_CONTACTED://本周联系过的客户
+                this.state.rangParams[0] = {
+                    from: getStartTime('week'),
+                    to: getEndTime('week'),
+                    name: 'last_contact_time',
+                    type: 'time'
+                };
+                break;
         }
         //近30天拨打未接通的客户筛选
         if(condition.otherSelectedItem === OTHER_FILTER_ITEMS.THIRTY_NO_CONNECTION) {
@@ -795,8 +804,9 @@ class Crm extends React.Component {
                 name: 'last_customer_trace_time',
                 type: 'time'
             };
-        } else if (condition.otherSelectedItem !== OTHER_FILTER_ITEMS.MULTI_ORDER) {
-            //既不是超xx天未联系的客户、也不是xx天的活跃、还不是多个订单客户的过滤时，传默认的设置
+        } else if (condition.otherSelectedItem !== OTHER_FILTER_ITEMS.MULTI_ORDER
+            && condition.otherSelectedItem !== OTHER_FILTER_ITEMS.THIS_WEEK_CONTACTED) {
+            //既不是超xx天未联系的客户、也不是xx天的活跃、不是多个订单客户、也不是本周未联系考核的过滤时，传默认的设置
             this.state.rangParams[0] = DEFAULT_RANGE_PARAM;
         }
         if (interval) {
