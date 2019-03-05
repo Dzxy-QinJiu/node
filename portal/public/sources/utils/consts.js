@@ -285,7 +285,8 @@ export const OTHER_FILTER_ITEMS = {
     AVAILABILITY: 'availability',//有效客户
     SEVEN_LOGIN: 'seven_login',//一周内登录
     MONTH_LOGIN: 'month_login',//一个月内登录
-    TEAM_CUSTOMER: 'team_customer'//团队客户
+    TEAM_CUSTOMER: 'team_customer',//团队客户
+    THIS_WEEK_CONTACTED: 'this_week_contacted'//本周联系过的客户
 };
 
 export const DAY_TIME = {
