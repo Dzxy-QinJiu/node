@@ -15,10 +15,6 @@ const FormItem = Form.Item;
 
 class EditableCell extends React.Component {
 
-    state = {
-        value: ''
-    };
-
     static propTypes = {
         editable: PropTypes.bool,
         form: PropTypes.object,
@@ -48,7 +44,9 @@ class EditableCell extends React.Component {
         editorChildren: null,
         // 编辑器子组件的类型
         editorChildrenType: '',
+        // 动态验证函数
         dynamicRule: {},
+        // 父组件的上下文
         parent: {}
     };
     // 获取输入控件
@@ -70,6 +68,7 @@ class EditableCell extends React.Component {
             if(!_.isFunction(this.props.editorChildren)){
                 renderElement = getFieldDecorator(this.props.dataIndex, editorConfig)(<Editor {...editorProps}/>);
             }else {
+                // 调用并返回子组件
                 let editorChildren = this.props.editorChildren(Editor[this.props.editorChildrenType]);
                 renderElement = getFieldDecorator(this.props.dataIndex, editorConfig)(
                     <Editor {...editorProps}>
@@ -85,7 +84,7 @@ class EditableCell extends React.Component {
     // 是否需要动态验证
     hasDynamicRule(restProps, editorConfig) {
         // 动态验证属性不为空时 并且动态验证的key不为空时
-        if(!_.isEmpty(restProps.dynamicRule) && restProps.dynamicRule.key) {
+        if(_.get(restProps,'dynamicRule') && _.get(restProps,'dynamicRule.key')) {
             // 根据提供的索引插入到验证规则数组
             editorConfig.rules[restProps.dynamicRule.index] = ((parent) => {
                 // parent父组件的上下文
@@ -104,20 +103,16 @@ class EditableCell extends React.Component {
             ...restProps
         } = this.props;
 
-        if(editing){
-            let {initialValue} = editorConfig;
-            editorConfig.initialValue = _.isNil(initialValue) ? record[dataIndex] : (_.isFunction(initialValue) ? initialValue(record[dataIndex]) : initialValue);
-            // 动态验证时
-            this.hasDynamicRule(restProps, editorConfig);
+        let {initialValue} = editorConfig;
+        editorConfig.initialValue = _.isNil(initialValue) ? record[dataIndex] : (_.isFunction(initialValue) ? initialValue(record[dataIndex]) : initialValue);
+        // 动态验证时
+        this.hasDynamicRule(restProps, editorConfig);
 
-            return (
-                <FormItem style={{ margin: 0 }}>
-                    {this.getEditor()}
-                </FormItem>
-            );
-        }else{
-            return null;
-        }
+        return (
+            <FormItem style={{ margin: 0 }}>
+                {this.getEditor()}
+            </FormItem>
+        );
     }
 }
 

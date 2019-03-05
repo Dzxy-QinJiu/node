@@ -148,15 +148,20 @@ class EditableTable extends Component {
         return columns;
     }
     renderColumns(text, record, index, col) {
-        return (
-            <EditableFormCell
-                wrappedComponentRef={ref => this[`${col.dataIndex}editableFormCellRef`] = ref}
-                parent={this}
-                {...col}
-                record={record}
-                editing={ this.isEditing(record) }
-            />
-        );
+        if(this.isEditing(record)){
+            return (
+                <EditableFormCell
+                    wrappedComponentRef={ref => this[`${col.dataIndex}editableFormCellRef`] = ref}
+                    parent={this}
+                    {...col}
+                    record={record}
+                    editing={this.isEditing(record)}
+                />
+            );
+        }else {
+            return text;
+        }
+
     }
     // 是否是可编辑
     isEditing = (record) => {

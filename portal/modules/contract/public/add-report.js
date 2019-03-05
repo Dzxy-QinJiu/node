@@ -47,7 +47,7 @@ const AddReport = createReactClass({
         refreshCurrentContract: PropTypes.func,
     },
     componentWillReceiveProps(nextProps) {
-        if(_.get(this.props,'contract') && this.props.contract.id !== nextProps.contract.id){
+        if(_.get(this.props,'contract') && !_.isEqual(this.props.contract.id, nextProps.contract.id)){
             let newState = this.getInitialState();
             this.setState(newState);
         }

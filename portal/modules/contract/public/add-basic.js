@@ -160,22 +160,23 @@ const AddBasic = createReactClass({
                         </Validator>
                         <span className="ant-form-text">{Intl.get('contract.155', '元')}</span>
                     </FormItem>
-                    <FormItem
-                        {...formItemLayout2}
-                        label={Intl.get('contract.165', '成本构成')}
-                        validateStatus={this.getValidateStatus('cost_structure')}
-                        help={this.getHelpMessage('cost_structure')}
-                        required
-                    >
-                        <Validator rules={[{type: 'array' ,required: true, message: `${Intl.get('contract.choose', '请选择')}${Intl.get('contract.165', '成本构成')}`}]}>
-                            <CheckboxGroup
-                                name="cost_structure"
-                                options={COST_STRUCTURE}
-                                value={formData.cost_structure}
-                                onChange={this.setField.bind(this, 'cost_structure')}
-                            />
-                        </Validator>
-                    </FormItem>
+                    {formData.cost_price > 0 ?
+                        <FormItem
+                            {...formItemLayout2}
+                            label={Intl.get('contract.165', '成本构成')}
+                            validateStatus={this.getValidateStatus('cost_structure')}
+                            help={this.getHelpMessage('cost_structure')}
+                        >
+                            <Validator rules={[{type: 'array' ,required: true, message: `${Intl.get('contract.choose', '请选择')}${Intl.get('contract.165', '成本构成')}`}]}>
+                                <CheckboxGroup
+                                    name="cost_structure"
+                                    options={COST_STRUCTURE}
+                                    value={formData.cost_structure}
+                                    onChange={this.setField.bind(this, 'cost_structure')}
+                                />
+                            </Validator>
+                        </FormItem> : null
+                    }
                     <FormItem
                         {...formItemLayout2}
                         label={Intl.get('contract.154', '合同毛利')}
@@ -204,7 +205,7 @@ const AddBasic = createReactClass({
                             value={formData.need_invoice}
                             onChange={this.setField.bind(this, 'need_invoice')}
                         >
-                            <RadioButton key="1" value="true">{Intl.get('user.ye','是')}</RadioButton>
+                            <RadioButton key="1" value="true">{Intl.get('user.yes','是')}</RadioButton>
                             <RadioButton key="2" value="false">{Intl.get('user.no','否')}</RadioButton>
                         </RadioGroup>
                     </FormItem>

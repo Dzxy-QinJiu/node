@@ -56,9 +56,14 @@ class RepeymentPlanForm extends React.Component{
     }
     // 验证
     getValidatedValue(cb) {
+        // flag: 验证未通过状态
         let flag = true, saveObj = {};
         this.props.form.validateFields((err,value) => {
-            if(err) { flag = true; _.isFunction(cb) && cb(flag); return false; }
+            if(err) {
+                flag = true; // 验证未通过
+                _.isFunction(cb) && cb(flag);
+                return false;
+            }
             flag = false;
             let { formData } = this.state;
             formData = _.cloneDeep(formData);

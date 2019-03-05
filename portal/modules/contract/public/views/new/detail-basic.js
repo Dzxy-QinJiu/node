@@ -41,7 +41,7 @@ class DetailBasic extends React.Component {
 
     getInitStateData(props) {
         let hasEditPrivilege = hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPATE_PRIVILEGE);
-        let formData = _.extend(true, {}, props.contract);
+        let formData = props.contract;
 
         //所属客户是否是选择的，以数组的形式记录了各个所属客户在输入后是否经过了点击选择的过程
         let belongCustomerIsChoosen = [];
@@ -156,34 +156,34 @@ class DetailBasic extends React.Component {
     handleSubmitEditMount = (saveObj, successFunc, errorCallback) => {
         let formData = this.state.formData, calProfit = 0;
         //成本额默认为0
-        if (isNaN(formData.cost_price)) formData.cost_price = 0;
+        formData.cost_price = _.get(formData,'cost_price',0);
 
         //根据合同额和成本额计算毛利
-        if (_.get(saveObj, 'contract_amount')) { // 合同额
+        if (_.get(saveObj, 'contract_amount',0)) { // 合同额
             calProfit = saveObj.contract_amount - formData.cost_price;
-        } else if (_.get(saveObj, 'cost_price')) { // 成本
+        } else if (_.get(saveObj, 'cost_price',0)) { // 成本
             calProfit = formData.contract_amount - saveObj.cost_price;
         }
         if (isNaN(calProfit) || calProfit < 0) calProfit = '0';
-        saveObj.gross_profit = parseFloat(calProfit).toFixed(2);
-        const successCallback = () => {
-            let contract = this.state.formData;
-            contract.gross_profit = parseFloat(calProfit).toFixed(2);
-            this.setState({contract}, () => {
-                successFunc();
-            });
-        };
-        this.saveContractBasicInfo(saveObj, successCallback, errorCallback);
+        saveObj.gross_profit = parseFloat(calProfit);
+
+        this.saveContractBasicInfo(saveObj, successFunc, errorCallback);
     };
     handleSubmitEditSales = (saveObj, successFunc, errorCallback) => {
         const selectedUser = _.find(this.props.userList, item => item.user_id === saveObj.sales_rep_id);
-        saveObj.sales_rep = selectedUser ? selectedUser.nick_name : '';
+        saveObj.sales_rep = _.get(selectedUser,'nick_name','');
         saveObj.sales_rep_team_id = selectedUser.group_id;
         saveObj.sales_rep_team = selectedUser.group_name;
 
         this.saveContractBasicInfo(saveObj, successFunc, errorCallback);
     };
-
+    // 过滤重复客户
+    getCustomerList() {
+        let {customers, queryCustomerList} = this.state;
+        // 在这里去掉重复的客户
+        const customersIds = _.map(customers, 'customer_id');
+        return _.filter(queryCustomerList, customer => _.indexOf(customersIds, customer.customer_id) === -1);
+    }
     // 所属客户处理事件
     handleCustomerSubmit = () => {
         Trace.traceEvent(this, '点击所属客户保存按钮');
@@ -215,7 +215,7 @@ class DetailBasic extends React.Component {
     handleCustomerCancel = () => {
         Trace.traceEvent(this, '点击所属客户保取消按钮');
         let formData = this.state.formData;
-        formData.customers = _.clone(this.props.contract.customers);
+        formData.customers = _.cloneDeep(this.props.contract.customers);
         this.setState({
             displayType: DISPLAY_TYPES.TEXT,
             formData,
@@ -223,15 +223,14 @@ class DetailBasic extends React.Component {
         });
     };
     deleteBelongCustomer(index) {
-        let {formData, customers, queryCustomerList, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
+        let {formData, customers, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
 
         formData.customers.splice(index, 1);
         belongCustomerErrMsg.splice(index, 1);
         belongCustomerIsChoosen.splice(index, 1);
         customers = formData.customers;
         // 在这里去掉重复的客户
-        const customersIds = _.map(customers, 'customer_id');
-        const customerLists = _.filter(queryCustomerList, customer => customersIds.indexOf(customer.customer_id) === -1);
+        const customerLists = this.getCustomerList();
 
         this.setState({
             formData,
@@ -242,12 +241,10 @@ class DetailBasic extends React.Component {
         });
     }
     addBelongCustomer = () => {
-        let {formData, customers, queryCustomerList, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
+        let {formData, customers, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
 
         // 在这里去掉重复的客户
-        const customersIds = _.map(customers, 'customer_id');
-        const customerLists = _.filter(queryCustomerList, customer => customersIds.indexOf(customer.customer_id) === -1);
-
+        const customerLists = this.getCustomerList();
 
         formData.customers.push({});
         belongCustomerErrMsg.push('');
@@ -260,7 +257,7 @@ class DetailBasic extends React.Component {
             belongCustomerErrMsg,
             belongCustomerIsChoosen
         });
-    }
+    };
     queryCustomer(index, keyword) {
         const fieldName = 'belong_customer' + index;
 
@@ -286,8 +283,7 @@ class DetailBasic extends React.Component {
                 q: keyword
             }).success(list => {
                 // 在这里去掉重复的客户
-                const customersIds = _.map(this.state.formData.customers, 'customer_id');
-                const customerList = _.filter(list, customer => customersIds.indexOf(customer.customer_id) === -1);
+                const customerList = this.getCustomerList();
 
                 let newState = {
                     customerList: customerList,
@@ -301,7 +297,6 @@ class DetailBasic extends React.Component {
                     newState.belongCustomerErrMsg[index] = Intl.get('contract.177', '没有找到符合条件的客户，请更换关键词查询');
                 }
                 this.setState(newState, () => {
-                    // this.refs.validation.forceValidate([fieldName]);
                     this.props.form.validateFields([fieldName], {force: true});
                 });
             }).error(() => {
@@ -318,7 +313,7 @@ class DetailBasic extends React.Component {
         }, 500);
     }
     onCustomerChoosen(index, value) {
-        let {formData, customers, queryCustomerList, belongCustomerIsChoosen} = this.state;
+        let {formData, customers, belongCustomerIsChoosen} = this.state;
         const fieldName = 'belong_customer' + index;
 
         let belongCustomer = formData.customers[index];
@@ -334,9 +329,7 @@ class DetailBasic extends React.Component {
         formData.customers[index] = belongCustomer;
 
         // 在这里去掉重复的客户
-        const customersIds = _.map(formData.customers, 'customer_id');
-        const customerLists = _.filter(queryCustomerList, customer => customersIds.indexOf(customer.customer_id) === -1);
-
+        const customerLists = this.getCustomerList();
         //暂存表单数据
         // const formDataCopy = JSON.parse(JSON.stringify(formData));
 
@@ -353,7 +346,6 @@ class DetailBasic extends React.Component {
             this.props.form.setFieldsValue({
                 [fieldName]: belongCustomer.customer_name
             });
-            //this.handleValidate(this.state.status, formDataCopy);
         });
     }
 
@@ -604,7 +596,7 @@ class DetailBasic extends React.Component {
                     <BasicEditInputField
                         width={EDIT_FEILD_LESS_WIDTH}
                         id={contract.id}
-                        displayText={contract.contract_amount || 0}
+                        displayText={_.get(contract,'contract_amount',0)}
                         field="contract_amount"
                         type='number'
                         validators={[{
@@ -646,7 +638,7 @@ class DetailBasic extends React.Component {
                         width={EDIT_FEILD_LESS_WIDTH}
                         id={contract.id}
                         field="gross_profit"
-                        displayText={contract.gross_profit || 0}
+                        displayText={_.get(contract,'gross_profit',0)}
                         type='number'
                         validators={[getNumberValidateRule()]}
                         placeholder={Intl.get('crm.contract.enter.gross', '请输入毛利')}

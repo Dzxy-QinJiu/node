@@ -48,7 +48,7 @@ let queryCustomerTimeout = null;
 
 export default {
     getInitialState: function() {
-        let formData = _.extend(true,{}, this.props.contract);
+        let formData = _.extend(this.props.contract);
         //所属客户是否是选择的，以数组的形式记录了各个所属客户在输入后是否经过了点击选择的过程
         let belongCustomerIsChoosen = [];
 
@@ -60,7 +60,7 @@ export default {
         }
 
         return {
-            formData,
+            formData: _.cloneDeep(formData),
             customerList: [],
             queryCustomerList: [],
             belongCustomerErrMsg: [''],

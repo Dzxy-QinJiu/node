@@ -546,10 +546,10 @@ class ProductList extends Component {
     }
 
     render() {
-        let productListLength = this.state.data.length || 0;
+        let productListLength = _.get(this,'state.data.length',0);
         const appNames = _.map(this.state.data, 'name');
 
-        const appList = _.filter(this.props.appList, app => appNames.indexOf(app.client_name) === -1);
+        const appList = _.filter(this.props.appList, app => _.indexOf(appNames, app.client_name) === -1);
         const showNoDataTip = !productListLength;
         const containerStyle = {
             minHeight: showNoDataTip ? 200 : 0,

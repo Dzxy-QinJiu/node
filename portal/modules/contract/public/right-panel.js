@@ -284,7 +284,7 @@ class ContractRightPanel extends React.Component {
                         totalProductsPrice += totalReportsPrice;
                     }
                     // 需求改为合同总额需大于等于（产品总价+服务总价）
-                    if (parseInt(_this.refs.addBasic.state.formData.contract_amount) < totalProductsPrice) {
+                    if (parseFloat(_this.refs.addBasic.state.formData.contract_amount) < totalProductsPrice) {
                         _this.setState({ showDiffAmountWarning: true });
                     } else {
                         _this.setState({ showDiffAmountWarning: false }, _this.goNext());
@@ -318,9 +318,14 @@ class ContractRightPanel extends React.Component {
         if (currentView === 'sellForm') {
             type = VIEW_TYPE.SELL;
             contractData = _.extend(this.props.contract, this.refs.addBasic.state.formData);
-            contractData.category = this.state.currentCategory;
+            contractData.category = this.state.currentCategory; // 合同类型
 
-            contractData.cost_structure = contractData.cost_structure.join(',');
+            // 成本构成
+            contractData.cost_structure = _.get(contractData,'cost_structure',[]).join(',');
+            // 合同额，毛利，成本额处理
+            contractData.contract_amount = parseFloat(contractData.contract_amount);
+            contractData.cost_price = parseFloat(contractData.cost_price);
+            contractData.gross_profit = parseFloat(contractData.gross_profit);
 
             const addProduct = this.refs.addProduct;
             if (addProduct && !_.isEmpty(addProduct.state.products[0])) {
@@ -356,6 +361,8 @@ class ContractRightPanel extends React.Component {
             type = VIEW_TYPE.BUY;
             contractData = _.extend({}, this.props.contract, this.refs.addBuyBasic.state.formData);
             contractData.category = this.state.currentCategory;
+            contractData.contract_amount = parseFloat(contractData.contract_amount);
+
             if (this.refs.addBuyPayment) contractData.payments = this.refs.addBuyPayment.state.payments.map(x => {
                 if(x.num){
                     delete x.num;

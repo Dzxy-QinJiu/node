@@ -4,7 +4,7 @@ import { message, Alert } from 'antd';
 
 import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
-import EditableTable from '../components/editable-table/';
+import EditableTable from '../components/editable-table';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import ajax from 'MOD_DIR/contract/common/ajax';
 import {
@@ -77,7 +77,7 @@ class DetailReport extends React.Component {
         // 需要判断列表中是否有添加项
         // 有：合并并更新
         // 没有: 直接覆盖
-        let addItem = _.filter(_.get(this.state,'reports',[]), item => !_.isNil(item.isAdd));
+        let addItem = _.filter(_.get(this.state,'reports',[]), item => !item.isAdd);
         if(addItem) {
             Lists = [...addItem,...propLists];
         }else {

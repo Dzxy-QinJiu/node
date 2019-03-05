@@ -9,7 +9,7 @@ let FormItem = Form.Item;
 import Trace from 'LIB_DIR/trace';
 import 'MOD_DIR/user_manage/public/css/user-info.less';
 import DetailCard from 'CMP_DIR/detail-card';
-import EditableTable from '../components/editable-table/';
+import EditableTable from '../components/editable-table';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import ajax from 'MOD_DIR/contract/common/ajax';
 import { DISPLAY_TYPES, OPERATE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
@@ -76,7 +76,7 @@ class RepaymentInfo extends React.Component {
         // 需要判断列表中是否有添加项
         // 有：合并并更新
         // 没有: 直接覆盖
-        let addItem = _.filter(_.get(this.state,'repayLists',[]), item => !_.isNil(item.isAdd));
+        let addItem = _.filter(_.get(this.state,'repayLists',[]), item => !item.isAdd);
         if(addItem) {
             repayLists = [...addItem,...propRepayLists];
         }else {

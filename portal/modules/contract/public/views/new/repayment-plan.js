@@ -254,7 +254,7 @@ class RepaymentPlan extends React.Component {
         let displayType = this.state.displayType;
         let isAdd = !_.isNil(repayment.isAdd);
         if(isAdd) {
-            repayPlanLists = _.filter(repayPlanLists, item => _.isNil(item.isAdd));
+            repayPlanLists = _.filter(repayPlanLists, item => !item.isAdd);
             displayType = DISPLAY_TYPES.TEXT;
         }else {
             repayPlanLists = _.map(repayPlanLists, item => {

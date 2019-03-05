@@ -37,8 +37,8 @@ const DetailCost = createReactClass({
     mixins: [ValidateMixin],
 
     getInitialState: function() {
-        const isAdd = _.isEmpty(this.props.cost);
-        const formData = _.clone({...this.props.cost,type: isAdd ? COST_TYPE[0] : this.props.cost.type || COST_TYPE[0]});
+        const isAdd = _.isEmpty(_.get(this.props,'cost', {}));
+        const formData = _.clone({...this.props.cost,type: _.get(this.props,'cost.type', COST_TYPE[0])});
         return {
             formData,
             isFormShow: true,
@@ -94,6 +94,8 @@ const DetailCost = createReactClass({
             });
         } else if (type === DISPLAY_TYPES.ADD || type === DISPLAY_TYPES.UPDATE) {
             data = this.state.formData;
+
+            data.cost = parseFloat(_.get(data,'cost',0));
 
             this.refs.validation.validate(valid => {
                 if (!valid) {

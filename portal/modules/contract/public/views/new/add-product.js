@@ -68,7 +68,7 @@ class AddProduct extends React.Component{
     componentWillReceiveProps(nextProps) {
         if(_.get(this.props,'contract') && this.props.contract.id !== nextProps.contract.id){
             let newState = this.getInitialState(nextProps);
-            newState.products = JSON.parse(JSON.stringify(nextProps.contract.products));
+            newState.products = _.cloneDeep(nextProps.contract.products);
             newState.isEdit = false;
             this.producTableRef.state.isEdit = false;
             this.setState(newState);
@@ -212,7 +212,7 @@ class AddProduct extends React.Component{
 
         const appIds = _.map(this.state.products, 'id');
 
-        const appList = _.filter(this.props.appList, app => appIds.indexOf(app.app_id) === -1);
+        const appList = _.filter(this.props.appList, app => _.indexOf(appIds, app.app_id) === -1);
 
         const formItems = [
             {

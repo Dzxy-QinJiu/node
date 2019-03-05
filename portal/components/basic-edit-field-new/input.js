@@ -127,7 +127,7 @@ const BasicEditField = createReactClass({
     },
 
     componentWillReceiveProps: function(nextProps) {
-        if (nextProps.id !== this.props.id) {
+        if (nextProps.id !== this.props.id || !_.isEqual(this.props.value, nextProps.value)) {
             var type = nextProps.type, value = nextProps.value;
             if (type === 'password') {
                 value = secretPassword;

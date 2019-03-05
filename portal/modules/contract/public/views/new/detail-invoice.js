@@ -20,6 +20,12 @@ import routeList from 'MOD_DIR/contract/common/route';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import { checkPhone } from 'PUB_DIR/sources/utils/validate-util';
 
+const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 330;
+const formItemLayout = {
+    labelCol: {span: 0},
+    wrapperCol: {span: 18},
+};
+
 class DetailInvoice extends React.Component {
     state = {
         ...this.getInitStateData(this.props),

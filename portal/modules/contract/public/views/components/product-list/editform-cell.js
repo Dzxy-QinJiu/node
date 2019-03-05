@@ -89,13 +89,13 @@ class EditFormItem extends React.Component {
         let editor = props.editor;
         let editorProps = props.editorProps;
         let Editor;
-
+        // 是否为起止日期选择组件
         if(editor === 'AntcValidity'){
             Editor = require('antc')[editor];
         }else if(editor){
             Editor = require('antd')[editor];
         }
-
+        // 编辑器属性是否为函数，是，则调用其并返回值
         if(_.isFunction(editorProps)) editorProps = editorProps(product,product.isEditting);
 
         let renderElement;
