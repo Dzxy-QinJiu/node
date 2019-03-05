@@ -63,7 +63,7 @@ class ListPanel extends React.Component {
             <div className='list-panel'>
                 <RightPanel
                     showFlag={this.state.isShow}
-                    className='panel-content'
+                    className='panel-wrap'
                 >
                     <TopNav>
                         <RightPanelClose
@@ -72,7 +72,9 @@ class ListPanel extends React.Component {
                         />
                     </TopNav>
 
-                    {this.state.isShow ? this.props.children : null}
+                    <div className='panel-content'>
+                        {this.state.isShow ? this.props.children : null}
+                    </div>
                 </RightPanel>
             </div>
         );
