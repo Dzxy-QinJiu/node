@@ -32,6 +32,7 @@ var key = 'hamburger-button-flag';//用于记录展开或者关闭销售团队�
 import history from 'PUB_DIR/sources/history';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+import ListPanel from 'CMP_DIR/list-panel';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
@@ -977,7 +978,6 @@ class SalesHomePage extends React.Component {
         }];
     };
 
-    //渲染客户关系首页
     render() {
         var crmSaleList = classNames('sale-list-zone', {
             'saleteam-list-show': this.state.isSaleTeamShow && this.state.notfirstLogin,
@@ -1079,6 +1079,7 @@ class SalesHomePage extends React.Component {
                     </div>}
 
             </div>
+            <ListPanel/>
         </RightContent>);
     }
 }
