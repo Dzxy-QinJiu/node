@@ -62,7 +62,7 @@ class InvoiceAmount extends React.Component {
         // 需要判断列表中是否有添加项
         // 有：合并并更新
         // 没有: 直接覆盖
-        let addItem = _.filter(_.get(this.state,'invoiceLists',[]), item => !item.isAdd);
+        let addItem = _.filter(_.get(this.state,'invoiceLists',[]), item => item.isAdd);
         if(addItem) {
             Lists = [...addItem,...propLists];
         }else {
@@ -90,7 +90,7 @@ class InvoiceAmount extends React.Component {
     handleSubmit = (type) => {
         let _this = this;
         let saveObj, params;
-        if(type === 'add') {
+        if(type === DISPLAY_TYPES.ADD) {
             this.props.form.validateFields((err,value) => {
                 if (err) return false;
 
@@ -209,7 +209,7 @@ class InvoiceAmount extends React.Component {
             });
         };
         this.editInvoice(DISPLAY_TYPES.DELETE, '', params, record.id, successFuncs, (errorMsg) => {
-            message.error(errorMsg);
+            this.setState({ saveErrMsg: errorMsg });
             _.isFunction(errorFunc) && errorFunc();
         });
     };

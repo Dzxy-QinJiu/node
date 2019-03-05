@@ -76,7 +76,7 @@ class RepaymentInfo extends React.Component {
         // 需要判断列表中是否有添加项
         // 有：合并并更新
         // 没有: 直接覆盖
-        let addItem = _.filter(_.get(this.state,'repayLists',[]), item => !item.isAdd);
+        let addItem = _.filter(_.get(this.state,'repayLists',[]), item => item.isAdd);
         if(addItem) {
             repayLists = [...addItem,...propRepayLists];
         }else {
@@ -175,9 +175,7 @@ class RepaymentInfo extends React.Component {
                 if (type === 'delete') {
                     const repaymentId = data[0];
                     resultData = _.find(this.props.contract.repayments, repayment => repayment.id === repaymentId);
-                }
-                // 更新后没有返回id，
-                if(type === 'update') {
+                }else if(type === 'update') { // 更新后没有返回id
                     resultData = _.extend({},this.state.currentRepayment, resultData);
                 }
                 //刷新合同列表中的回款信息

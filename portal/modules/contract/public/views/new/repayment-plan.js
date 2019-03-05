@@ -66,7 +66,7 @@ class RepaymentPlan extends React.Component {
         // 需要判断列表中是否有添加项
         // 有：合并并更新
         // 没有: 直接覆盖
-        let addItem = _.filter(_.get(this.state,'repayPlanLists',[]), item => !_.isNil(item.isAdd));
+        let addItem = _.filter(_.get(this.state,'repayPlanLists',[]), item => item.isAdd);
         if(addItem) {
             Lists = [...addItem,...propLists];
         }else {
