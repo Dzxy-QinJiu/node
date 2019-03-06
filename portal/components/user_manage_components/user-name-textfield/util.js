@@ -14,7 +14,7 @@ const language = require('../../../public/language/getLanguage');
 
 let userInfo = [];
 let userExistTimeout = null;
-let checkUserExistIntervalTime = 2000;//检查用户是否存在的间隔时间
+let checkUserExistIntervalTime = 500;//检查用户是否存在的间隔时间
 
 function checkUserExistAjax(obj) {
     return Ajax.checkUserName(obj);
@@ -87,12 +87,12 @@ exports.checkUserExist = function(rule, obj, callback, number, username_block) {
                 }
             }
         }, () => {
-            callback();
+            callback(Intl.get('common.username.is.unique', '用户名唯一性校验出错！'));
         });
     }, checkUserExistIntervalTime);
 };
 
-exports.validatorMessageTips = function(value, callback) {
+exports.validatorMessageTips = function(value, callback, checkUserExist) {
     let userNameRegex = /^[0-9a-zA-Z_@.-]{1,50}$/;
     if (language.lan() === 'es') {
         // 西班牙语中用户名的验证规则（Ññ Áá Éé Óó Úú Íí）
@@ -111,8 +111,12 @@ exports.validatorMessageTips = function(value, callback) {
         return;
     }
     if (value) {
-        callback();
-        return;
+        if (_.isFunction(checkUserExist)) {
+            checkUserExist();
+        } else {
+            callback();
+            return;
+        }
     }
 };
 

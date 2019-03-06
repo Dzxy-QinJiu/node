@@ -13,13 +13,14 @@ const UserNameTextFieldMixin = {
     checkUserExist(rule,value,callback) {
         var trimValue = _.trim(value);
         // 校验的信息提示
-        UserNameTextFieldUtil.validatorMessageTips(trimValue,callback);
-        var customer_id = ApplyViewDetailStore.getState().detailInfoObj.info.customer_id;
-        var obj = {
-            user_name: trimValue,
-            customer_id: customer_id
-        };
-        UserNameTextFieldUtil.checkUserExist(rule,obj,callback, number, this.refs.username_block);
+        UserNameTextFieldUtil.validatorMessageTips(trimValue,callback, () => {
+            var customer_id = ApplyViewDetailStore.getState().detailInfoObj.info.customer_id;
+            var obj = {
+                user_name: trimValue,
+                customer_id: customer_id
+            };
+            UserNameTextFieldUtil.checkUserExist(rule,obj,callback, number, this.refs.username_block);
+        });
     },
     renderUserNameTextField(config) {
         number = config.number;
