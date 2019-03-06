@@ -850,8 +850,11 @@ class Crm extends React.Component {
             params = this.handleSortParams(params);
         }
 
+        //如果是通过列表面板打开的
+        if (this.props.listPanelParamObj) {
+            params = this.props.listPanelParamObj;
         //如果是从首页跳转过来的
-        if (this.props.fromSalesHome) {
+        } else if (this.props.fromSalesHome) {
             const locationState = this.props.location.state;
 
             params = {};
