@@ -29,7 +29,8 @@ class ListPanel extends React.Component {
         super(props);
 
         this.state = {
-            isShow: false
+            isShow: false,
+            paramObj: null
         };
     }
 
@@ -46,8 +47,12 @@ class ListPanel extends React.Component {
 
     show = paramObj => {
         if (this.props.listType === paramObj.listType) {
+
+            delete paramObj.listType;
+
             this.setState({
-                isShow: true
+                isShow: true,
+                paramObj
             });
         }
     }
@@ -59,6 +64,15 @@ class ListPanel extends React.Component {
     }
 
     render() {
+        let childrenWithProps = null;
+        const { children } = this.props;
+
+        if (children) {
+            childrenWithProps = React.cloneElement(children, {
+                listPanelParamObj: this.state.paramObj
+            });
+        }
+
         return (
             <div className='list-panel'>
                 <RightPanel
@@ -73,7 +87,7 @@ class ListPanel extends React.Component {
                     </TopNav>
 
                     <div className='panel-content'>
-                        {this.state.isShow ? this.props.children : null}
+                        {this.state.isShow ? childrenWithProps : null}
                     </div>
                 </RightPanel>
             </div>

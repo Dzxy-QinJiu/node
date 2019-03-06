@@ -6,6 +6,7 @@ var React = require('react');
 let Icon = require('antd').Icon;
 let classNames = require('classnames');
 let SalesHomeAction = require('../action/sales-home-actions');
+var SalesHomeStore = require('../store/sales-home-store');
 let viewConstant = require('../util/constant').VIEW_CONSTANT;//视图常量
 let TimeUtil = require('../../../../public/sources/utils/time-format-util');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
@@ -149,7 +150,21 @@ class StatisticTotal extends React.Component {
     };
 
     showListPanel(listType) {
-        listPanelEmitter.emit(listPanelEmitter.SHOW, {listType});
+        const storeData = SalesHomeStore.getState();
+        const startTime = storeData.start_time;
+        const endTime = storeData.end_time;
+        const paramObj = {
+            listType,
+            rangParams: JSON.stringify([{
+                from: startTime,
+                to: endTime,
+                name: 'start_time',
+                type: 'time'
+            }]),
+            data: JSON.stringify({}),
+        };
+
+        listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
     }
 
     render() {
