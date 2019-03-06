@@ -149,7 +149,18 @@ class StatisticTotal extends React.Component {
         SalesHomeAction.setActiveView(view);
     };
 
-    showListPanel(listType) {
+    //显示客户或用户列表面板
+    showListPanel(listType, e) {
+        let typeName = '';
+
+        if (listType === 'customer') {
+            typeName = '客户';
+        } else if (listType === 'user') {
+            typeName = '用户';
+        }
+
+        Trace.traceEvent(e, '点击新增' + typeName + '数查看详细列表');
+
         const storeData = SalesHomeStore.getState();
         const startTime = storeData.start_time;
         const endTime = storeData.end_time;
