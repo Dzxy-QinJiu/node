@@ -9,16 +9,15 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import Trace from 'LIB_DIR/trace';
 import {isEqualArray} from 'LIB_DIR/func';
-import {REGFILESTYPERULES,REGFILESSIZERULESRULES} from 'PUB_DIR/sources/utils/consts';
+import {REG_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 import {seperateFilesDiffType, hasApprovedReportAndDocumentApply} from 'PUB_DIR/sources/utils/common-data-util';
-const UPLOADER_TYPES = {
-    SALES: '',
-};
+import {checkFileSizeLimit, checkFileNameForbidRule} from 'PUB_DIR/sources/utils/common-method-util';
 class UploadAndDeleteFile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             isUpLoading: false,
+            warningMsg: '',
             fileList: this.props.fileList,
             deleteResult: {
                 result: '',
@@ -80,35 +79,22 @@ class UploadAndDeleteFile extends React.Component {
         this.props.fileRemove(file);
     };
     checkFileSizeLimit = (fileSize) => {
-        var sizeQualified = true;
-        _.forEach(REGFILESSIZERULESRULES,(item) => {
-            if (!_.isUndefined(item.minValue)){
-                if (fileSize === item.minValue) {
-                    message.warning(item.messageTips);
-                    sizeQualified = false;
-                    return false;
-                }
-            }
-            if (_.isUndefined(item.minValue) && item.maxValue){
-                if (fileSize > item.maxValue) {
-                    message.warning(item.messageTips);
-                    sizeQualified = false;
-                    return false;
-                }
-            }
-        });
-        return sizeQualified;
+        var checkObj = checkFileSizeLimit(fileSize);
+        if (checkObj.warningMsg){
+            this.setState({
+                warningMsg: checkObj.warningMsg
+            });
+        }
+        return checkObj.sizeQualified;
     };
     checkFileNameRule = (filename) => {
-        var nameQualified = true;
-        _.forEach(REGFILESTYPERULES,(item) => {
-            if (filename.indexOf(item.value) >= 0){
-                message.warning(item.messageTips);
-                nameQualified = false;
-                return false;
-            }
-        });
-        return nameQualified;
+        var checkObj = checkFileNameForbidRule(filename, REG_FILES_TYPE_RULES);
+        if (checkObj.warningMsg){
+            this.setState({
+                warningMsg: checkObj.warningMsg
+            });
+        }
+        return checkObj.nameQualified;
     };
     checkFileType = (filename,fileSize,totalSize) => {
         if (!this.checkFileNameRule(filename)){
@@ -375,6 +361,11 @@ class UploadAndDeleteFile extends React.Component {
                 deleteResult: deleteResult
             });
         };
+        var hideWarning = () => {
+            this.setState({
+                warningMsg: ''
+            });
+        };
         var detailInfoObj = this.props.detailInfoObj;
 
         return (
@@ -389,6 +380,11 @@ class UploadAndDeleteFile extends React.Component {
                         showIcon
                         onHide={hide}
                     /> : null}
+                {this.state.warningMsg ? <AlertTimer time={4000}
+                    message={this.state.warningMsg}
+                    type="error"
+                    showIcon
+                    onHide={hideWarning}/> : null}
             </div>
         );
     }

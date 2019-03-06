@@ -14,7 +14,7 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import userData from '../user-data';
 import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import {selectMenuList, APPLY_APPROVE_TYPES, DOCUMENT_TYPE, INTEGRATE_TYPES, REPORT_TYPE,APPLY_FINISH_STATUS, APPLY_USER_STATUS} from './consts';
+import {selectMenuList, APPLY_APPROVE_TYPES, DOCUMENT_TYPE, INTEGRATE_TYPES, REPORT_TYPE,APPLY_FINISH_STATUS, APPLY_USER_STATUS, REG_FILES_SIZE_RULES} from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
@@ -663,4 +663,50 @@ exports.hasCalloutPrivilege = () => {
     //是否展示拨打按钮
     let callClient = getCallClient();
     return callClient && callClient.isInited();
+};
+exports.checkFileSizeLimit = (fileSize) => {
+    var sizeQualified = true, warningMsg = '';
+    _.forEach(REG_FILES_SIZE_RULES,(item) => {
+        if (!_.isUndefined(item.minValue)){
+            if (fileSize === item.minValue) {
+                warningMsg = item.messageTips;
+                sizeQualified = false;
+                return false;
+            }
+        }
+        if (_.isUndefined(item.minValue) && item.maxValue){
+            if (fileSize > item.maxValue) {
+                warningMsg = item.messageTips;
+                sizeQualified = false;
+                return false;
+            }
+        }
+    });
+    return {sizeQualified: sizeQualified,warningMsg: warningMsg};
+};
+exports.checkFileNameForbidRule = (filename, regnamerules) => {
+    var nameQualified = true, warningMsg = '';
+    if (_.isArray(regnamerules)){
+        _.forEach(regnamerules,(item) => {
+            if (filename.indexOf(item.value) >= 0){
+                warningMsg = item.messageTips;
+                nameQualified = false;
+                return false;
+            }
+        });
+    }
+    return {nameQualified: nameQualified,warningMsg: warningMsg};
+};
+exports.checkFileNameAllowRule = (filename, regnamerules) => {
+    var nameQualified = true, warningMsg = '';
+    if (_.isArray(regnamerules)){
+        _.forEach(regnamerules,(item) => {
+            if (filename.indexOf(item.value) < 0){
+                warningMsg = item.messageTips;
+                nameQualified = false;
+                return false;
+            }
+        });
+    }
+    return {nameQualified: nameQualified,warningMsg: warningMsg};
 };
