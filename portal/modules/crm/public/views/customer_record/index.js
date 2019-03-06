@@ -10,7 +10,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 } else if (language.lan() === 'zh') {
     require('../../css/customer-trace-zh_CN.less');
 }
-import {Icon, message, Radio, Input, Menu, Dropdown, Button, Form} from 'antd';
+import {Icon, message, Radio, Input, Menu, Dropdown, Button, Form, Tooltip} from 'antd';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -435,6 +435,8 @@ class CustomerRecord extends React.Component {
 
     //点击播放录音
     handleAudioPlay = (item) => {
+        //未上传录音文件时，不播放
+        if (item.is_record_upload !== '1') return;
         //如果是点击切换不同的录音，找到上次点击播放的那一条记录，把他的playSelected属性去掉
         var oldItemId = '';
         var oldSelected = _.find(this.state.customerRecord, function(record) {
@@ -556,9 +558,12 @@ class CustomerRecord extends React.Component {
         var traceObj = crmUtil.processForTrace(item);
         //渲染时间线
         var iconClass = traceObj.iconClass, title = traceObj.title, traceDsc = traceObj.traceDsc;
+        //是否上传了录音文件
+        let is_record_upload = item.is_record_upload === '1';
         //playSelected表示当前正在播放的那条录音，图标显示红色
         var cls = classNames('iconfont', 'icon-play', {
-            'icon-selected': item.playSelected
+            'icon-selected': item.playSelected,
+            'icon-play-disable': !is_record_upload
         });
         return (
             <div className={classNames('trace-item-content', {'day-split-line': hasSplitLine})}>
@@ -587,15 +592,17 @@ class CustomerRecord extends React.Component {
                                 {Intl.get('call.record.state.no.answer', '未接听')}
                             </span>
                         ) : /* 电话已接通并且有recording这个字段展示播放图标*/
-                            item.recording ? (<span className="audio-container">
-                                <span className={cls} onClick={this.handleAudioPlay.bind(this, item)}
-                                    title={Intl.get('call.record.play', '播放录音')}
-                                    data-tracename="点击播放录音按钮">
-                                    <span className="call-time-descr">
-                                        {TimeUtil.getFormatMinuteTime(item.billsec)}
+                            item.recording ? (
+                                <Tooltip placement='top' title={is_record_upload ? Intl.get('call.record.play', '播放录音') : Intl.get('crm.record.unupload.phone', '未上传通话录音，无法播放')}>
+                                    <span className="audio-container">
+                                        <span className={cls} onClick={this.handleAudioPlay.bind(this, item)}
+                                            data-tracename="点击播放录音按钮">
+                                            <span className="call-time-descr">
+                                                {TimeUtil.getFormatMinuteTime(item.billsec)}
+                                            </span>
+                                        </span>
                                     </span>
-                                </span>
-                            </span>) : null
+                                </Tooltip>) : null
                         }
                         <span className="sale-name">{item.nick_name}</span>
                         <span className="trace-record-time">
