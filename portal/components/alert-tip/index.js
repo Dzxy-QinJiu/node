@@ -35,10 +35,11 @@ class AlertTip extends React.Component {
     }
     render(){
         //外层父组件加载完成后再由上到下推出提示框
-        var cls = classNames('active-email-tip-container',{
+        var cls = classNames(`active-email-tip-container ${this.props.clsNames}`,{
             'animate-show': this.state.isAnimateShow,
             'animate-hide': this.state.isAnimateHide
         });
+
         var warningText = (
             <div>
                 {this.props.alertTipMessage}
@@ -63,6 +64,7 @@ AlertTip.defaultProps = {
     setWebConfigStatus: '',
     showNoTipMore: true,
     handleClickNoTip: noop,
+    clsNames: ''
 };
 
 AlertTip.propTypes = {
@@ -71,6 +73,7 @@ AlertTip.propTypes = {
     isAnimateHide: PropTypes.bool,
     setWebConfigStatus: PropTypes.string,
     showNoTipMore: PropTypes.bool,
-    handleClickNoTip: PropTypes.func
+    handleClickNoTip: PropTypes.func,
+    clsNames: PropTypes.string,
 };
 export default AlertTip;

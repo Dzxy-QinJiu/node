@@ -797,19 +797,21 @@ class SalesHomePage extends React.Component {
         personnelObj[oplateConsts.STORE_PERSONNAL_SETTING.SETTING_CLIENT_NOTICE_IGNORE] = 'yes';
         this.setState({
             setWebConfigClientStatus: true
-        });
-        setWebsiteConfig(personnelObj,() => {
-            this.setState({
-                isClientAnimateHide: true,
-                setWebConfigClientStatus: false
+        },() => {
+            setWebsiteConfig(personnelObj,() => {
+                this.setState({
+                    isClientAnimateHide: true,
+                    setWebConfigClientStatus: false
+                });
+            },(errMsg) => {
+                //设置错误后的提示
+                this.setState({
+                    setWebConfigClientStatus: false
+                });
+                message.error(errMsg);
             });
-        },(errMsg) => {
-            //设置错误后的提示
-            this.setState({
-                setWebConfigClientStatus: false
-            });
-            message.error(errMsg);
         });
+
     };
 
     //点击 激活邮箱 按钮
@@ -1079,16 +1081,15 @@ class SalesHomePage extends React.Component {
                         <div className={crmDataZone}>
                             {/*是否展示邮箱激活或者添加邮箱的提示提示*/}
                             {this.state.emailShowObj.isShowActiveEmail || this.state.emailShowObj.isShowAddEmail ?
-                                <div className="email-active-wrap">
-                                    <AlertTip
-                                        alertTipMessage={this.getEmailAlertTipMessage()}
-                                        showNoTipMore={!this.getIsShowAddEmail()}
-                                        isAnimateShow={this.state.isAnimateShow}
-                                        isAnimateHide={this.state.isAnimateHide}
-                                        handleClickNoTip={this.hideActiveEmailTip}
-                                        setWebConfigStatus={this.state.setWebConfigStatus}
-                                    />
-                                </div>
+                                <AlertTip
+                                    clsNames='email-active-wrap'
+                                    alertTipMessage={this.getEmailAlertTipMessage()}
+                                    showNoTipMore={!this.getIsShowAddEmail()}
+                                    isAnimateShow={this.state.isAnimateShow}
+                                    isAnimateHide={this.state.isAnimateHide}
+                                    handleClickNoTip={this.hideActiveEmailTip}
+                                    setWebConfigStatus={this.state.setWebConfigStatus}
+                                />
                                 : null}
                             {/*是否展示设置坐席号的提示*/}
                             {_.get(this.state,'emailShowObj.isShowSetClient') ?

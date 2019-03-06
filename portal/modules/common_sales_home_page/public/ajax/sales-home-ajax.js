@@ -336,3 +336,22 @@ exports.getClueCustomerList = function(constObj, unexist_fields) {
     });
     return Deferred.promise();
 };
+//对网站进行个性化设置
+var setWebSiteConfigAjax;
+exports.setWebsiteConfig = function(queryObj) {
+    var Deferred = $.Deferred();
+    setWebSiteConfigAjax && setWebSiteConfigAjax.abort();
+    setWebSiteConfigAjax = $.ajax({
+        url: '/rest/setWebsiteConfig',
+        dataType: 'json',
+        type: 'post',
+        data: queryObj,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

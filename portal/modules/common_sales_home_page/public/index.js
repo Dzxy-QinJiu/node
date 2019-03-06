@@ -63,7 +63,8 @@ class SalesHomePage extends React.Component {
         //外层父组件加载完成后，再由上到下推出激活邮箱提示框
         setTimeout(() => {
             this.setState({
-                isClientAnimateShow: true
+                isClientAnimateShow: true,
+                isAnimateShow: true
             });
         }, DELAY_TIME);
 
@@ -991,16 +992,16 @@ class SalesHomePage extends React.Component {
                     <div className="main-content-container" style={{height: rightContentHeight}}>
                         {/*是否展示邮箱激活或者添加邮箱的提示提示*/}
                         {this.state.emailShowObj.isShowActiveEmail || this.state.emailShowObj.isShowAddEmail ?
-                            <div className="email-active-wrap">
-                                <AlertTip
-                                    alertTipMessage={this.getEmailAlertTipMessage()}
-                                    showNoTipMore={!this.getIsShowAddEmail()}
-                                    isAnimateShow={this.state.isAnimateShow}
-                                    isAnimateHide={this.state.isAnimateHide}
-                                    handleClickNoTip={this.hideActiveEmailTip}
-                                    setWebConfigStatus={this.state.setWebConfigStatus}
-                                />
-                            </div>
+                            <AlertTip
+                                clsNames='email-active-wrap'
+                                alertTipMessage={this.getEmailAlertTipMessage()}
+                                showNoTipMore={!this.getIsShowAddEmail()}
+                                isAnimateShow={this.state.isAnimateShow}
+                                isAnimateHide={this.state.isAnimateHide}
+                                handleClickNoTip={this.hideActiveEmailTip}
+                                setWebConfigStatus={this.state.setWebConfigStatus}
+                            />
+
                             : null}
                         {/*是否展示设置坐席号的提示*/}
                         {_.get(this.state,'emailShowObj.isShowSetClient') ?
