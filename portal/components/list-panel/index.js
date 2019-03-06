@@ -29,7 +29,9 @@ class ListPanel extends React.Component {
         super(props);
 
         this.state = {
+            //是否显示
             isShow: false,
+            //参数对象
             paramObj: null
         };
     }
@@ -38,14 +40,12 @@ class ListPanel extends React.Component {
         listPanelEmitter.on(listPanelEmitter.SHOW, this.show);
     }
 
-    componentWillReceiveProps(nextProps) {
-    }
-
     componentWillUnmount() {
         listPanelEmitter.removeListener(listPanelEmitter.SHOW, this.show);
     }
 
     show = paramObj => {
+        //组件属性里的列表类型和事件参数里的列表类型相匹配时才显示面板
         if (this.props.listType === paramObj.listType) {
 
             delete paramObj.listType;
@@ -68,6 +68,8 @@ class ListPanel extends React.Component {
         const { children } = this.props;
 
         if (children) {
+            //为子组件添加属性
+            //以实现通过属性控制子组件的展示
             childrenWithProps = React.cloneElement(children, {
                 listPanelParamObj: this.state.paramObj
             });
