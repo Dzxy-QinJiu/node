@@ -25,7 +25,9 @@ function MemberApplyDetailActions() {
         'setNextCandidateIds',
         'setNextCandidateName',//下一节点审批人的名字
         'setNextCandidate',
-        'showOrHideApprovalBtns'
+        'showOrHideApprovalBtns',
+        'checkAutoGeneration', // 检查是否自动生成密码
+        'handleInputPassword' // 处理手动输入密码
     );
 
     //获取审批单详情

@@ -1,12 +1,13 @@
 /**
  * Created by hzl on 2019/3/5.
  */
-var MemberApplyDetailStore = require('../store/member-apply-detail-store');
-var MemberApplyDetailAction = require('../action/member-apply-detail-action');
-var MemberApplyActions = require('../action/member-apply-action');
+import MemberApplyDetailStore from '../store/member-apply-detail-store';
+import MemberApplyDetailAction from '../action/member-apply-detail-action';
+import MemberApplyActions from '../action/member-apply-action';
 import Trace from 'LIB_DIR/trace';
-import {Button, Steps,message} from 'antd';
+import {Form, Input, Button, Steps,message, Checkbox} from 'antd';
 const Step = Steps.Step;
+const FormItem = Form.Item;
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from 'CMP_DIR/rightPanel';
@@ -27,6 +28,7 @@ import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
+import {nameLengthRule, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
 
 class ApplyViewDetail extends React.Component {
     constructor(props) {
@@ -272,18 +274,145 @@ class ApplyViewDetail extends React.Component {
         var detailItem = this.props.detailItem;
         MemberApplyDetailAction.getMemberApplyStatusById({id: detailItem.id});
     };
+    // 渲染申请成员的姓名
+    renderNameContent = (nickname) => {
+        const {getFieldDecorator} = this.props.form;
+        const formItemLayout = {
+            colon: false,
+            labelCol: {span: 8},
+            wrapperCol: {span: 16}
+        };
+        return (
+            <Form layout='horizontal' className='form' autoComplete='off'>
+                <div className='invite-member-name'>
+                    <FormItem
+                        label={Intl.get('common.name', '姓名')}
+                        {...formItemLayout}
+                    >
+                        {getFieldDecorator('nickname', {
+                            initialValue: nickname,
+                            rules: [{
+                                required: true,
+                                message: nameLengthRule
+                            }]
+                        })(
+                            <Input
+                                name='nickname'
+                                id='nickname'
+                                type='text'
+                                placeholder={Intl.get('crm.90', '请输入姓名')}
+                                className={this.state.userNameExist || this.state.userNameError ? 'input-red-border' : ''}
+                            />
+                        )}
+                    </FormItem>
+                </div>
+            </Form>
+        );
+    };
+    // 渲染申请成员的邮箱
+    renderEmailContent = (email) => {
+        const {getFieldDecorator} = this.props.form;
+        const formItemLayout = {
+            colon: false,
+            labelCol: {span: 8},
+            wrapperCol: {span: 16}
+        };
+        return (
+            <Form layout='horizontal' className='form' autoComplete='off'>
+                <div className='invite-member-email'>
+                    <FormItem
+                        label={Intl.get('common.email', '邮箱')}
+                        {...formItemLayout}
+                    >
+                        {getFieldDecorator('email', {
+                            initialValue: email,
+                            rules: [{
+                                required: true,
+                                type: 'email',
+                                message: Intl.get('common.correct.email', '请输入正确的邮箱')
+                            }]
+                        })(
+                            <Input
+                                name='email'
+                                id='email'
+                                type='text'
+                                placeholder={Intl.get('member.email.extra.tip', '邮箱会作为登录时的用户名使用')}
+                                className={this.state.emailExist || this.state.emailError ? 'input-red-border' : ''}
+                            />
+                        )}
+                    </FormItem>
+                </div>
+            </Form>
+        );
+    };
+    // 检查是否自动生成密码
+    checkAutoGeneration = (event) => {
+        let checked = event.target.checked;
+        console.log('checked:',checked);
+        MemberApplyDetailAction.checkAutoGeneration(checked);
+    };
+    // 处理手动输入密码
+    handleInputPassword = (event) => {
+        let value = _.trim(event.target.value);
+        if (value) {
+            MemberApplyDetailAction.handleInputPassword(value);
+        }
+    };
 
+    // 渲染自动生成密码项
+    renderAutoGenerationPsd = () => {
+        return (
+            <div className='auto-generation-password'>
+                <Checkbox
+                    checked={this.state.autoGenerationPsd}
+                    onChange={this.checkAutoGeneration}
+                />
+                <span>自动生成密码</span>
+            </div>
+        );
+    };
+    // 渲染手动输入密码框
+    renderInputPassword = () => {
+        return (
+            <div className='input-password'>
+                <Input
+                    placeholder='请输入密码'
+                    type='password'
+                    value={this.state.password}
+                    onChange={this.handleInputPassword}
+                />
+            </div>
+        );
+    };
+
+    // 渲染申请成员的密码
+    renderPasswordContent = () => {
+        return (
+            <div className="invite-member-password">
+                {this.renderAutoGenerationPsd()}
+                {
+                    this.state.autoGenerationPsd ? null : this.renderInputPassword()
+                }
+            </div>
+        );
+    };
     renderDetailApplyBlock(detailInfo) {
         var detail = detailInfo.detail || {};
+        // 审批人，才可以修改姓名和邮箱，其他只展示姓名和邮箱
+        var isApprovePrivilege = _.get(detailInfo, 'showApproveBtn', false);
+        var nickname = _.get(detail, 'nickname', '');
+        var email = _.get(detail, 'email', '');
+        var teamId = _.get(detail, 'team.group_id', '');
         var showApplyInfo = [
-            {
-                label: Intl.get('common.name', '姓名'),
-                text: _.get(detail, 'nickname', '')
+            { label: isApprovePrivilege ? '' : Intl.get('common.name', '姓名'),
+                text: isApprovePrivilege ? this.renderNameContent(nickname) : nickname
             },{
-                label: Intl.get('common.email', '邮箱'),
-                text: _.get(detail, 'email', '')
+                label: isApprovePrivilege ? '' : Intl.get('common.email', '邮箱'),
+                text: isApprovePrivilege ? this.renderEmailContent(email) : email
             }, {
-                label: Intl.get('common.belong.team', '所属团队'),
+                text: isApprovePrivilege ? this.renderPasswordContent() : ''
+            },{
+                label: teamId ? Intl.get('common.belong.team', '所属团队') : '',
                 text: _.get(detail, 'team.group_name', '')
             }, {
                 label: Intl.get('common.role', '角色'),
@@ -291,7 +420,7 @@ class ApplyViewDetail extends React.Component {
             }];
         return (
             <ApplyDetailInfo
-                iconClass='icon-leave-apply'
+                iconClass='icon-invite-member'
                 showApplyInfo={showApplyInfo}
             />
         );
@@ -433,7 +562,31 @@ class ApplyViewDetail extends React.Component {
     };
     passOrRejectApplyApprove = (confirmType) => {
         var detailInfoObj = this.state.detailInfoObj.info;
-        MemberApplyDetailAction.approveMemberApplyPassOrReject({id: detailInfoObj.id, agree: confirmType});
+        // 提交的数据
+        var submitData = {
+            id: detailInfoObj.id,
+            agree: confirmType,
+            memberinvite_approve_param: {}
+        };
+        let changeMemberInfo = {};
+        this.props.form.validateFields( (err, values) => {
+            let nickname = _.get(values, 'nickname'); // 修改后的姓名
+            let email = _.get(values, 'email'); // 修改后的邮箱
+            if (nickname) {
+                changeMemberInfo.nickname = _.trim(nickname); // 姓名信息
+            }
+            if (email) {
+                changeMemberInfo.email = _.trim(email);// 邮箱信息
+            }
+        } );
+        if (this.state.password) {
+            changeMemberInfo.password = this.state.password; // 手动输入的密码
+        }
+        // 判断是否修改了姓名、邮箱、密码，若是修改了，需要把修改的数据传到后端
+        if ( Object.keys(changeMemberInfo).length) {
+            submitData.memberinvite_approve_param = changeMemberInfo;
+        }
+        MemberApplyDetailAction.approveMemberApplyPassOrReject(submitData);
     };
     renderCancelApplyApprove = () => {
         var confirmType = this.state.showBackoutConfirmType;
@@ -462,7 +615,6 @@ class ApplyViewDetail extends React.Component {
     //渲染申请单详情
     renderApplyDetailInfo() {
         var detailInfo = this.state.detailInfoObj.info;
-        console.log('detailInfo:',detailInfo);
         //如果没有详情数据，不渲染
         if (this.state.detailInfoObj.loadingResult || _.isEmpty(this.state.detailInfoObj)) {
             return;
@@ -552,12 +704,15 @@ class ApplyViewDetail extends React.Component {
 ApplyViewDetail.defaultProps = {
     detailItem: {},
     showNoData: false,
-    applyListType: ''
+    applyListType: '',
+    form: {}
 
 };
 ApplyViewDetail.propTypes = {
     detailItem: PropTypes.string,
     showNoData: PropTypes.boolean,
     applyListType: PropTypes.string,
+    form: PropTypes.form,
 };
-module.exports = ApplyViewDetail;
+
+export default Form.create()(ApplyViewDetail);

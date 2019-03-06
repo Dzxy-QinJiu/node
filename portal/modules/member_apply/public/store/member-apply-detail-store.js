@@ -67,6 +67,8 @@ MemberApplyDetailStore.prototype.setInitState = function() {
         //服务端错误信息
         errorMsg: ''
     };
+    this.autoGenerationPsd = true; // 是否自动生成密码，默认true
+    this.password = '';// 手动输入申请成员的密码，默认是空
 };
 MemberApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
@@ -282,7 +284,14 @@ MemberApplyDetailStore.prototype.transferNextCandidate = function(result) {
         this.detailInfoObj.info.showApproveBtn = false;
     }
 };
-
+// 检查是否自动生成密码
+MemberApplyDetailStore.prototype.checkAutoGeneration = function(check) {
+    this.autoGenerationPsd = check;
+};
+// 处理手动输入密码
+MemberApplyDetailStore.prototype.handleInputPassword = function(value) {
+    this.password = value;
+};
 
 
 module.exports = alt.createStore(MemberApplyDetailStore, 'MemberApplyDetailStore');
