@@ -456,13 +456,14 @@ const ApplyUserForm = createReactClass({
         let number = this.getApplyUserCount();
         let trimValue = _.trim(value);
         // 校验的信息提示
-        UserNameTextfieldUtil.validatorMessageTips(trimValue, callback);
-        if (!trimValue) return;
-        let obj = {
-            customer_id: customer_id,
-            user_name: trimValue
-        };
-        UserNameTextfieldUtil.checkUserExist(rule, obj, callback, number, this.refs.username_block);
+        UserNameTextfieldUtil.validatorMessageTips(trimValue, callback, () => {
+            if (!trimValue) return;
+            let obj = {
+                customer_id: customer_id,
+                user_name: trimValue
+            };
+            UserNameTextfieldUtil.checkUserExist(rule, obj, callback, number, this.refs.username_block);
+        });
     },
 
     selectEmail: function(value, field) {
