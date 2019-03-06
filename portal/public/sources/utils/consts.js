@@ -451,3 +451,21 @@ export const APPLY_USER_STATUS = {
     PASSED_USER_APPLY: '1',//已通过
     REJECTED_USER_APPLY: '2'//已驳回
 };
+//文件类型校验规则
+export const REG_FILES_TYPE_RULES = [
+    {value: ' ',messageTips: Intl.get('apply.approve.upload.no.container.space', '文件名称中不要含有空格！')},
+    {value: '.exe',messageTips: Intl.get('apply.approve.upload.error.file.type','文件格式不正确！')},
+];
+//两个值一个是文件的最小值一个是文件的最大值
+export const REG_FILES_SIZE_RULES = [
+    {minValue: 0, messageTips: Intl.get('apply.approve.upload.empty.file','不可上传空文件！')},
+    {maxValue: 10 * 1024 * 1024, messageTips: Intl.get('apply.approve.upload.not.more.than50','文件大小不能超过10M!')},
+];
+
+export const REG_CLUE_FILES_TYPE_RULES = [
+    {value: '.xls',messageTips: Intl.get('clue.import.file.type','只能导入{type}格式的文件！',{type: 'xls'})},
+];
+
+export const REG_CRM_FILES_TYPE_RULES = [
+    {value: '.csv',messageTips: Intl.get('clue.import.file.type','只能导入{type}格式的文件！',{type: 'csv'})},
+];
