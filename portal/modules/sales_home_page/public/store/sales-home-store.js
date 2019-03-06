@@ -84,11 +84,8 @@ SalesHomeStore.prototype.setInitState = function() {
 };
 // 显示邀请成员面板
 SalesHomeStore.prototype.showInviteMemberPanel = function() {
-    console.log('store');
     this.isContinueInvitePanel = false;
     this.isInivteMemberRightPanelShow = true;
-    console.log('st:',this.isContinueInvitePanel);
-    console.log('st   isInivteMemberRightPanelShow:',this.isInivteMemberRightPanelShow);
 };
 // 关闭邀请成员面板
 SalesHomeStore.prototype.closeInviteMemberPanel = function() {
@@ -100,8 +97,6 @@ SalesHomeStore.prototype.closeInviteMemberPanel = function() {
 SalesHomeStore.prototype.returnContinueInvitePanel = function() {
     this.isInivteMemberRightPanelShow = false;
     this.isContinueInvitePanel = true;
-    console.log('store isInivteMemberRightPanelShow', this.isInivteMemberRightPanelShow);
-    console.log('store isContinueInvitePanel', this.isContinueInvitePanel);
 }; 
 // 重置回访记录列表状态
 SalesHomeStore.prototype.resetCallBackRecord = function() {

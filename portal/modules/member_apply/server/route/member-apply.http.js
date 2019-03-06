@@ -54,6 +54,20 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+        },{
+            method: 'get',
+            path: '/rest/member_apply/name/check/:name',
+            handler: 'checkOnlyName',
+            passport: {
+                'needLogin': true
+            },
+        }, {
+            method: 'get',
+            path: '/rest/member_apply/email/check/:email',
+            handler: 'checkOnlyEmail',
+            passport: {
+                'needLogin': true
+            },
         }
     ]
 };

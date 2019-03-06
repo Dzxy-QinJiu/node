@@ -67,6 +67,10 @@ MemberApplyDetailStore.prototype.setInitState = function() {
         //服务端错误信息
         errorMsg: ''
     };
+    this.nameExist = false;// 姓名是否已存在
+    this.nameError = false;// 姓名唯一性验证出错
+    this.emailExist = false;// 邮箱是否已存在
+    this.emailError = false;// 邮件唯一性验证出错
     this.autoGenerationPsd = true; // 是否自动生成密码，默认true
     this.password = '';// 手动输入申请成员的密码，默认是空
 };
@@ -284,6 +288,27 @@ MemberApplyDetailStore.prototype.transferNextCandidate = function(result) {
         this.detailInfoObj.info.showApproveBtn = false;
     }
 };
+//姓名唯一性的验证
+MemberApplyDetailStore.prototype.checkOnlyName = function(result) {
+    if (_.isString(result)) {
+        //验证出错！
+        this.nameError = true;
+    } else {
+        //该昵称存不存在！
+        this.nameExist = result;
+    }
+};
+//邮箱唯一性的验证
+MemberApplyDetailStore.prototype.checkOnlyEmail = function(result) {
+    if (_.isString(result)) {
+        //验证出错！
+        this.emailError = true;
+    } else {
+        //该邮箱存不存在！
+        this.emailExist = result;
+    }
+};
+
 // 检查是否自动生成密码
 MemberApplyDetailStore.prototype.checkAutoGeneration = function(check) {
     this.autoGenerationPsd = check;

@@ -36,7 +36,6 @@ import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
 import userData from 'PUB_DIR/sources/user-data';
-import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import InviteMemberForm from './views/invite-member-form';
 import ContinueInvitePanel from './views/continue-invite-panel';
 
@@ -843,7 +842,6 @@ class SalesHomePage extends React.Component {
     };
     // 显示邀请成员面板
     showInviteMemberPanel = (event) => {
-        console.log('#################');
         SalesHomeAction.showInviteMemberPanel();
         Trace.traceEvent(event, '点击邀请成员');
     };
@@ -851,17 +849,6 @@ class SalesHomePage extends React.Component {
     closeInviteMemberPanel = () => {
         SalesHomeAction.closeInviteMemberPanel();
         Trace.traceEvent(event, '关闭邀请成员界面');
-    };
-    // 渲染邀请成员面板
-    renderInviteMemberForm = () => {
-        console.log('returnContinueInvitePanel:');
-        return (
-            <InviteMemberForm
-                teamList={this.state.teamList}
-                closeRightPanel={this.closeInviteMemberPanel}
-                returnContinueInvitePanel={this.returnContinueInvitePanel}
-            />
-        );
     };
     // 邀请成员成功后，邀请成员面板返回到继续邀请面板
     returnContinueInvitePanel = () => {
@@ -1023,7 +1010,7 @@ class SalesHomePage extends React.Component {
         var hamburgerCls = classNames('iconfont', 'icon-hamburger', {
             'is-active': this.state.isSaleTeamShow,
         });
-        console.log('this.state.isContinueInvitePanel:',this.state.isContinueInvitePanel);
+        
         var title = (this.state.isSaleTeamShow ? Intl.get('sales.homepage.hide.teamlist', '隐藏团队列表') :
             Intl.get('sales.homepage.show.teamlist', '展开团队列表'));
         // 销售主管、运营人员有邀请成员的权限
@@ -1118,20 +1105,19 @@ class SalesHomePage extends React.Component {
                         {
                             this.state.isContinueInvitePanel ? (
                                 <ContinueInvitePanel
-                                    isContinueInvitePanel = {this.state.isContinueInvitePanel}
                                     closeRightPanel={this.closeInviteMemberPanel}
+                                    isContinueInvitePanel={this.state.isContinueInvitePanel}
                                     showInviteMemberPanel={this.showInviteMemberPanel}
+                                    isInivteMemberRightPanelShow={this.state.isInivteMemberRightPanelShow}
                                 />
                             ) : null
                         }
                         {
-                            this.state.isInivteMemberRightPanelShow ? 
-                                <RightPanelModal
-                                    isShowModal={false}
-                                    isShowCloseBtn={true}
-                                    title={Intl.get('sales.home.invite.member', '邀请成员')}
-                                    onClosePanel={this.closeInviteMemberPanel}
-                                    content={this.renderInviteMemberForm()}
+                            this.state.isInivteMemberRightPanelShow ?
+                                <InviteMemberForm
+                                    teamList={this.state.teamList}
+                                    closeRightPanel={this.closeInviteMemberPanel}
+                                    returnContinueInvitePanel={this.returnContinueInvitePanel}
                                 /> : null
                         }
                     </div>}

@@ -19,6 +19,8 @@ var restApis = {
     getApplyDetailById: '/rest/base/v1/workflow/detail',
     //获取批注和添加批注
     getOrAddApplyComments: '/rest/base/v1/workflow/comments',
+    // 修改申请成员信息（姓名、邮箱）唯一性验证
+    checkOnlyInviteMember: '/rest/base/v1/user/member/:key/:value/unique'
 };
 exports.restUrls = restApis;
 //获取所有的成员申请
@@ -81,6 +83,27 @@ exports.getMemberApplyStatusById = function(req, res) {
     return restUtil.authRest.get(
         {
             url: restApis.getApplyStatusById,
+            req: req,
+            res: res
+        }, req.query);
+};
+//姓名唯一性验证
+exports.checkOnlyName = (req, res) => {
+    let name = req.params.name;
+    return restUtil.authRest.get(
+        {
+            url: restApis.checkOnlyInviteMember.replace(':key', 'nickname').replace(':value', name),
+            req: req,
+            res: res
+        }, null);
+};
+
+//邮箱唯一性验证
+exports.checkOnlyEmail = (req, res) => {
+    let email = req.params.email;
+    return restUtil.authRest.get(
+        {
+            url: restApis.checkOnlyInviteMember.replace(':key', 'email').replace(':value', email),
             req: req,
             res: res
         }, req.query);

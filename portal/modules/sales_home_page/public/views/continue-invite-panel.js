@@ -10,21 +10,18 @@ import RightPanelModal from 'CMP_DIR/right-panel-modal';
 class ContinueInvitePanel extends React.Component {
     showInviteMemberPane = () => {
         this.props.showInviteMemberPanel();
-        console.log('showInviteMemberPane');
     };
     renderContinueInviteContent() {
-        if (this.props.isContinueInvitePanel) {
-            return (
-                <div className="continue-btn-invite-member" onClick={this.showInviteMemberPane}>
-                    <Button
-                        className='invite-button'
-                        type='primary'
-                    >
-                        {Intl.get('sales.home.invite.continue.btn', '继续邀请')}
-                    </Button>
-                </div>
-            );
-        }
+        return (
+            <div className="continue-btn-invite-member" onClick={this.showInviteMemberPane}>
+                <Button
+                    className='invite-button'
+                    type='primary'
+                >
+                    {Intl.get('sales.home.invite.continue.btn', '继续邀请')}
+                </Button>
+            </div>
+        );
     }
 
     render() {
@@ -41,7 +38,6 @@ class ContinueInvitePanel extends React.Component {
     }
 }
 ContinueInvitePanel.propTypes = {
-    isContinueInvitePanel: PropTypes.bool,
     closeRightPanel: PropTypes.func,
     showInviteMemberPanel: PropTypes.func,
 };

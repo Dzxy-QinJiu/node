@@ -5,11 +5,14 @@ require('../css/invite-member.less');
 import { Form, Input, Select, Button, Icon } from 'antd';
 const Option = Select.Option;
 const FormItem = Form.Item;
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import InviteMemberStore from '../store/invite-member-store';
 import InviteMemberAction from '../action/invite-member-actions';
 import {nameLengthRule, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
 import userData from 'PUB_DIR/sources/user-data';
 import AlertTimer from 'CMP_DIR/alert-timer';
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+
 
 class InviteMemberForm extends React.Component{
     constructor(props) {
@@ -39,12 +42,12 @@ class InviteMemberForm extends React.Component{
 
     //姓名唯一性验证的展示
     renderNameMsg = () => {
-        if (this.state.userNameExist) {
+        if (this.state.nameExist) {
             return (
                 <div className='invite-member-check'>
                     {Intl.get('common.nickname.is.existed', '姓名已存在！')}
                 </div>);
-        } else if (this.state.userNameError) {
+        } else if (this.state.nameError) {
             return (
                 <div className='invite-member-check'>
                     {Intl.get('common.nickname.is.unique', '姓名唯一性校验出错！')}
@@ -125,6 +128,11 @@ class InviteMemberForm extends React.Component{
             }
         });
     };
+
+    handleCancel = (event) => {
+        event.preventDefault();
+        this.props.closeRightPanel();
+    };
     
     hideSaveTooltip = () => {
         if (this.state.inviteResult === 'success') {
@@ -196,7 +204,7 @@ class InviteMemberForm extends React.Component{
                                     label={Intl.get('common.belong.team', '所属团队')}
                                     {...formItemLayout}
                                 >
-                                    {getFieldDecorator('team', { initialValue: _.get(userData.getUserData(),'team_name', '')})(
+                                    {getFieldDecorator('team', { initialValue: _.get(userData.getUserData(),'team_id', '')})(
                                         <Select
                                             name='team'
                                             id='team'
@@ -213,20 +221,11 @@ class InviteMemberForm extends React.Component{
                             ) : null
                         }
                         <FormItem>
-                            <div className='invite-member-button'>
-                                {this.state.loading ? (
-                                    <Icon type='loading' className='loading'/>) : this.state.inviteMemberMsg ? (
-                                    <span className='invite-tips'>{this.state.inviteMemberMsg}</span>
-                                ) : null}
-                                <Button
-                                    className='invite-button'
-                                    type='primary'
-                                    onClick={this.handleSubmit}
-                                    disabled={this.state.loading}
-                                >
-                                    {Intl.get('sales.home.invite.btn', '邀请')}
-                                </Button>
-                            </div>
+                            <SaveCancelButton
+                                handleSubmit={this.handleSubmit.bind(this)}
+                                handleCancel={this.handleCancel.bind(this)}
+                                okBtnText={Intl.get('sales.home.invite.btn', '邀请')}
+                            />
                         </FormItem>
                         <FormItem>
                             <div className='indicator'>
@@ -250,9 +249,14 @@ class InviteMemberForm extends React.Component{
     }
     render() {
         return (
-            <div className='invite-member-panel'>
-                {this.renderInviteMember()}
-            </div>
+            <RightPanelModal
+                className='invite-member-panel'
+                isShowModal={false}
+                isShowCloseBtn={true}
+                title={Intl.get('sales.home.invite.member', '邀请成员')}
+                onClosePanel={this.props.closeRightPanel}
+                content={this.renderInviteMember()}
+            />
         );
     }
 }

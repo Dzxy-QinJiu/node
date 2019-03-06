@@ -79,3 +79,32 @@ exports.getMemberApplyStatusById = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+//姓名唯一性验证
+exports.checkOnlyName = (req, res) => {
+    MemberApplyService.checkOnlyName(req, res).on('success', (data) => {
+        if (data && data.nickname) {
+            // 姓名已存在，返回true
+            res.status(200).json(true);
+        } else {
+            // 姓名不存在，返回false
+            res.status(200).json(false);
+        }
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+ 
+//邮箱唯一性验证
+exports.checkOnlyEmail = (req, res) => {
+    MemberApplyService.checkOnlyEmail(req, res).on('success', (data) => {
+        if (data && data.email) {
+            // 邮箱已存在，返回true
+            res.status(200).json(true);
+        } else {
+            // 邮箱不存在，返回false
+            res.status(200).json(false);
+        }
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

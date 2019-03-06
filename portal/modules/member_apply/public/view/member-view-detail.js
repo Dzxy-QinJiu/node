@@ -274,6 +274,30 @@ class ApplyViewDetail extends React.Component {
         var detailItem = this.props.detailItem;
         MemberApplyDetailAction.getMemberApplyStatusById({id: detailItem.id});
     };
+    //验证姓名唯一性
+    checkOnlyName = () => {
+        let nickname = _.trim(this.props.form.getFieldValue('nickname'));
+        if (nickname && (/^[A-Za-z0-9]\w+$/).test(nickname)) {
+            MemberApplyDetailAction.checkOnlyName(nickname);
+        }
+    };
+
+    //姓名唯一性验证的展示
+    renderNameMsg = () => {
+        if (this.state.nameExist) {
+            return (
+                <div className='invite-member-check'>
+                    {Intl.get('common.nickname.is.existed', '姓名已存在！')}
+                </div>);
+        } else if (this.state.nameError) {
+            return (
+                <div className='invite-member-check'>
+                    {Intl.get('common.nickname.is.unique', '姓名唯一性校验出错！')}
+                </div>);
+        } else {
+            return '';
+        }
+    }
     // 渲染申请成员的姓名
     renderNameContent = (nickname) => {
         const {getFieldDecorator} = this.props.form;
@@ -301,13 +325,40 @@ class ApplyViewDetail extends React.Component {
                                 id='nickname'
                                 type='text'
                                 placeholder={Intl.get('crm.90', '请输入姓名')}
-                                className={this.state.userNameExist || this.state.userNameError ? 'input-red-border' : ''}
+                                className={this.state.nameExist || this.state.nameError ? 'input-red-border' : ''}
+                                onBlur={this.checkOnlyName}
                             />
                         )}
                     </FormItem>
+                    {this.renderNameMsg()}
                 </div>
             </Form>
         );
+    };
+    //邮箱唯一性验证
+    checkOnlyEmail = () => {
+        let email = _.trim(this.props.form.getFieldValue('email'));
+        if (email && emailRegex.test(email)) {
+            //所有者的邮箱唯一性验证
+            MemberApplyDetailAction.checkOnlyEmail(email);
+        }
+    };
+
+    //邮箱唯一性验证的展示
+    renderEmailMsg = () => {
+        if (this.state.emailExist) {
+            return (
+                <div className='invite-member-check'>
+                    {Intl.get('common.email.is.used', '邮箱已被使用！')}
+                </div>);
+        } else if (this.state.emailError) {
+            return (
+                <div className='invite-member-check'>
+                    {Intl.get('common.email.validate.error', '邮箱校验失败！')}
+                </div>);
+        } else {
+            return '';
+        }
     };
     // 渲染申请成员的邮箱
     renderEmailContent = (email) => {
@@ -338,9 +389,11 @@ class ApplyViewDetail extends React.Component {
                                 type='text'
                                 placeholder={Intl.get('member.email.extra.tip', '邮箱会作为登录时的用户名使用')}
                                 className={this.state.emailExist || this.state.emailError ? 'input-red-border' : ''}
+                                onBlur={this.checkOnlyEmail}
                             />
                         )}
                     </FormItem>
+                    {this.renderEmailMsg()}
                 </div>
             </Form>
         );

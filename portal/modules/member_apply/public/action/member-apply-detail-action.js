@@ -136,6 +136,23 @@ function MemberApplyDetailActions() {
         }
         );
     };
+    // 姓名唯一性的验证
+    this.checkOnlyName = function(name){
+        MemberApplyAjax.checkOnlyName(name).then( (result) => {
+            this.dispatch(result);
+        }, (errorMsg) => {
+            this.dispatch(errorMsg);
+        } );
+    };
+
+    // 邮箱唯一性的验证
+    this.checkOnlyEmail = function(email) {
+        MemberApplyAjax.checkOnlyEmail(email).then( (result) => {
+            this.dispatch(result);
+        }, (errorMsg) => {
+            this.dispatch(errorMsg);
+        } );
+    };
 
 }
 module.exports = alt.createActions(MemberApplyDetailActions);
