@@ -2,6 +2,7 @@ import routeList from '../../modules/common/route';
 import ajax from '../../modules/common/ajax';
 import CONSTS from 'LIB_DIR/consts';
 import { storageUtil } from 'ant-utils';
+var webconfigAjax = require('../../modules/common/public/ajax/web-site-config');
 
 //设置网站个性化配置
 var websiteConfig = {
@@ -41,12 +42,7 @@ var websiteConfig = {
     },
     //获取网站个性化配置
     getWebsiteConfig: function(callback,totalData) {
-        const route = _.find(routeList, route => route.handler === 'getWebsiteConfig');
-        const arg = {
-            url: route.path,
-            type: route.method
-        };
-        ajax(arg).then(result => {
+        webconfigAjax.getWebsiteConfig().then(result => {
             if (result && result.personnel_setting) {
                 storageUtil.local.set('websiteConfig', JSON.stringify(result.personnel_setting));
             }else if (result && !result.personnel_setting){
@@ -62,6 +58,10 @@ var websiteConfig = {
                         callback(result.module_record);
                     }
                 }else if (result && !result.module_record){
+                    if (_.isFunction(callback)){
+                        callback([]);
+                    }
+                }else{
                     if (_.isFunction(callback)){
                         callback([]);
                     }
