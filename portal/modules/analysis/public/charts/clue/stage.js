@@ -3,7 +3,7 @@
  */
 
 import { initialTime } from '../../consts';
-import { argCallbackUnderlineTimeToTime, argCallbackMemberIdsToMemberId } from '../../utils';
+import { argCallbackMemberIdsToMemberId } from '../../utils';
 import Store from '../../store';
 
 export function getStageChart() {
@@ -12,37 +12,17 @@ export function getStageChart() {
         chartType: 'funnel',
         url: '/rest/clue/v1/:data_type/statistical/customer_label/1000/1',
         argCallback: arg => {
-            argCallbackUnderlineTimeToTime(arg);
             argCallbackMemberIdsToMemberId(arg);
+
+            _.set(arg, 'data.rang_params[0]', {
+                name: 'source_time',
+                type: 'time',
+                from: _.get(arg, 'query.start_time'),
+                to: _.get(arg, 'query.end_time')
+            });
         },
         reqType: 'post',
         conditions: [{
-            type: 'data',
-            value: 'source_time',
-            callback: (data, name, value) => {
-                _.set(data, 'rang_params[0].name', value);
-            }
-        }, {
-            type: 'data',
-            value: 'time',
-            callback: (data, name, value) => {
-                _.set(data, 'rang_params[0].type', value);
-            }
-        }, {
-            name: 'starttime',
-            value: initialTime.start,
-            type: 'data',
-            callback: (data, name, value) => {
-                _.set(data, 'rang_params[0].from', value);
-            }
-        }, {
-            name: 'endtime',
-            value: initialTime.end,
-            type: 'data',
-            callback: (data, name, value) => {
-                _.set(data, 'rang_params[0].to', value);
-            }
-        }, {
             name: 'access_channel',
             value: '',
             type: 'data',
@@ -58,10 +38,16 @@ export function getStageChart() {
             }
         }],
         dataField: 'result',
-        processData: processClueStaticsStageData,
+        processData: data => {
+            return _.map(data, item => {
+                return {
+                    name: _.keys(item)[0],
+                    value: _.values(item)[0]
+                };
+            });
+        },
         noExportCsv: true,
         customOption: {
-            valueField: 'showValue',
             minSize: '5%',
         },
         cardContainer: {
