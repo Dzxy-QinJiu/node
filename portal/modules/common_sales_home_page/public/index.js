@@ -42,6 +42,8 @@ class SalesHomePage extends React.Component {
             curShowUserId: '',//展示用户详情的用户id
             isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
+            isAnimateShow: false,//是否动态由上到下推出 激活邮箱提示框
+            isAnimateHide: false,//是否动态隐藏 提示框
             isClientAnimateShow: false,//是否动态由上到下推出 设置坐席号提示框
             isClientAnimateHide: false,//是否动态隐藏 提示框
             ...SalesHomeStore.getState()
