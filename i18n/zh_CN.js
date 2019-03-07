@@ -2811,5 +2811,7 @@ var zh_CN = {
     'apply.list.my.approved': '我审批过',
     'apply.approve.sales.opportunity': '销售机会',
     'apply.has.approved.by.me': '获取我审批过的{type}申请失败',
+    'apply.setting.password.auto': '自动生成密码',
+    'apply.not.setting.password': '未给用户手动设置密码，是否继续'
 };
 export default zh_CN;

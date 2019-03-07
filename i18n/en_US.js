@@ -2787,5 +2787,7 @@ var en_US = {
     'apply.list.my.approved': 'Apply approved by me',//我审批过
     'apply.approve.sales.opportunity': 'Sales opportunity',//销售机会
     'apply.has.approved.by.me': 'Failed to get {type} application approved by me',//获取我审批过的{type}申请失败
+    'apply.setting.password.auto': 'Generate passwords automatically ',//自动生成密码
+    'apply.not.setting.password': 'Not manually set password for the user, whether to continue or not'//未给用户手动设置密码，是否继续
 };
 export default en_US;

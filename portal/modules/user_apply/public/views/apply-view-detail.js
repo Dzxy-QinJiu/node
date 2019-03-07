@@ -35,7 +35,7 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {APPLY_TYPES, userTypeList, TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
-
+import PasswordSetting from 'CMP_DIR/password-setting';
 /*在审批界面显示用户的右侧面板结束*/
 //默认头像图片
 var DefaultHeadIconImage = require('../../../common/public/image/default-head-icon.png');
@@ -163,6 +163,8 @@ const ApplyViewDetail = createReactClass({
             showBackoutConfirmType: '',//操作的确认框类型
             isOplateUser: false,
             usersManList: [],//成员列表
+            checkStatus: true, //自动生成密码框是否选中
+            passwordValue: '',//试用或者签约用户申请的明文密码
             ...ApplyViewDetailStore.getState()
         };
     },
@@ -692,6 +694,16 @@ const ApplyViewDetail = createReactClass({
                 )}
         </div>);
     },
+    onCheckboxChange: function(checkStatus) {
+        this.setState({
+            checkStatus: checkStatus
+        });
+    },
+    onInputPasswordChange: function(value) {
+        this.setState({
+            passwordValue: value
+        });
+    },
 
     //渲染用户名
     renderApplyDetailUserNames(detailInfo) {
@@ -731,6 +743,11 @@ const ApplyViewDetail = createReactClass({
                             <span
                                 className="user-info-text edit-name-wrap">{this.renderUserNameBlock(detailInfo)}</span>
                         </div>);
+                    let passwordSetting = this.hasApprovalPrivilege() ? (<PasswordSetting
+                        onCheckboxChange={this.onCheckboxChange}
+                        onInputPasswordChange={this.onInputPasswordChange}
+                        checkStatus={this.state.checkStatus}
+                    />) : null;
                     let nickNameEle = (
                         <div className="apply-info-label">
                             <div className="user-info-label edit-name-label">
@@ -739,7 +756,7 @@ const ApplyViewDetail = createReactClass({
                             <span
                                 className="user-info-text edit-name-wrap">{this.renderNickNameBlock(detailInfo)}</span>
                         </div>);
-                    return [userNameEle, nickNameEle];
+                    return [userNameEle, passwordSetting ,nickNameEle];
                 } else {
                     return (
                         <div className="apply-info-label">
@@ -1816,6 +1833,12 @@ const ApplyViewDetail = createReactClass({
                     modalContent = Intl.get('apply.approve.modal.text.reject', '是否驳回此申请');
                     okText = Intl.get('common.apply.reject', '驳回');
                 }
+                //如果之前没有设置过密码，加上设置密码的提示
+                if (this.hasApprovalPrivilege() && !_.get(this, 'state.passwordValue','')){
+                    modalContent = Intl.get('apply.not.setting.password', '未给用户手动设置密码，是否继续');
+                    okText = Intl.get('user.apply.detail.role.modal.continue', '继续');
+                    cancelText = Intl.get('user.apply.detail.role.modal.cancel', '我再改改');
+                }
                 //如果之前没有设置过角色，要加上设置角色的提示
                 if (_.get(this, 'state.rolesNotSettingModalDialog.show',false)){
                     modalContent = this.state.rolesNotSettingModalDialog.appNames.join('、') + Intl.get('user.apply.detail.role.modal.content', '中，没有为用户分配角色，是否继续');
@@ -2259,6 +2282,10 @@ const ApplyViewDetail = createReactClass({
                     //从邮件转到界面的链接地址
                     notice_url: getApplyDetailUrl(this.state.detailInfoObj.info),
                 };
+                //如果手动设置了密码
+                if (!this.state.checkStatus && this.state.passwordValue){
+                    obj.passwordObvious = this.state.passwordValue;
+                }
                 // 延期时间(需要修改到期时间的字段)
                 if (detailInfo.type === 'apply_grant_delay') {
                     if (this.state.formData.delayTimeUnit === SELECT_CUSTOM_TIME_TYPE) {
