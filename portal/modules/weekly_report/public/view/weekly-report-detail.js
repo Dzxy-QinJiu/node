@@ -17,6 +17,7 @@ var classNames = require('classnames');
 import {LEALVE_OPTION} from '../utils/weekly-report-utils';
 var WeekReportUtil = require('../utils/weekly-report-utils');
 var userData = require('PUB_DIR/sources/user-data');
+import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 //权限常量
 const PRIVILEGE_MAP = {
     CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
@@ -36,7 +37,8 @@ class WeeklyReportDetail extends React.Component {
         isAddingLeaveUserId: '',//正在添加请假信息的销售
         formType: 'add',//是添加请假信息还是修改请假信息
         isEdittingItem: {},//正在编辑的请假信息
-        ...WeeklyReportDetailStore.getState()
+        ...WeeklyReportDetailStore.getState(),
+        isShowEffectiveTimeAndCount: false, // 是否展示有效通话时长和有效接通数
     };
 
     onStoreChange = () => {
@@ -46,6 +48,7 @@ class WeeklyReportDetail extends React.Component {
     componentDidMount() {
         WeeklyReportDetailStore.listen(this.onStoreChange);
         this.getWeeklyReportData(); // 获取电话统计、、、 数据
+        this.getCallSystenConfig();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -66,6 +69,14 @@ class WeeklyReportDetail extends React.Component {
         });
         WeeklyReportDetailStore.unlisten(this.onStoreChange);
     }
+
+    // 获取组织电话系统配置
+    getCallSystenConfig = () => {
+        commonDataUtil.getCallSystemConfig().then(config => {
+            let isShowEffectiveTimeAndCount = _.get(config,'filter_114',false) || _.get(config,'filter_customerservice_number',false);
+            this.setState({ isShowEffectiveTimeAndCount });
+        });
+    };
 
     //获取某年某周的开始日期
     getBeginDateOfWeek = (year, weekIndex) => {
@@ -220,8 +231,8 @@ class WeeklyReportDetail extends React.Component {
             }
         },];
 
-        // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        if(isOrganizationEefung() || isOrganizationCiviw()){
+        // 展示有效通话时长和有效接通数
+        if(this.state.isShowEffectiveTimeAndCount){
             columns.splice(5, 0, {
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 dataIndex: 'total_effective',

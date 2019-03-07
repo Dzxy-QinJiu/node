@@ -78,6 +78,7 @@ class SalesHomePage extends React.Component {
             callBackSorter: {}, // 回访的排序对象
             appList: [], //应用数组
             selectedAppId: '', //选中的应用id
+            isShowEffectiveTimeAndCount: false, // 是否展示有效通话时长和有效接通数
         };
     }
 
@@ -102,6 +103,14 @@ class SalesHomePage extends React.Component {
         });
     };
 
+    // 获取组织电话系统配置
+    getCallSystenConfig = () => {
+        commonDataUtil.getCallSystemConfig().then(config => {
+            let isShowEffectiveTimeAndCount = _.get(config,'filter_114',false) || _.get(config,'filter_customerservice_number',false);
+            this.setState({ isShowEffectiveTimeAndCount });
+        });
+    };
+
     componentDidMount() {
         SalesHomeStore.listen(this.onChange);
         let type = this.getDataType();
@@ -110,6 +119,7 @@ class SalesHomePage extends React.Component {
         SalesHomeAction.getSalesTeamList(type);
         // 获取应用列表
         this.getAppList();
+        this.getCallSystenConfig();
         this.refreshSalesListData();
         this.resizeLayout();
         $(window).resize(() => this.resizeLayout());
@@ -415,8 +425,8 @@ class SalesHomePage extends React.Component {
             className: 'has-filter',
             width: FIVE_CHAR_WIDTH
         }];
-        // 如果是蚁坊、识微的用户，展示有效通话时长和有效接通数
-        if(isOrganizationEefung() || isOrganizationCiviw()){
+        // 展示有效通话时长和有效接通数
+        if(this.state.isShowEffectiveTimeAndCount){
             columns.push({
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 width: FIVE_CHAR_WIDTH,
