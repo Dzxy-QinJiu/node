@@ -497,6 +497,7 @@ const ApplyViewDetail = createReactClass({
                     <span className="apply-type-tip">
                         {this.props.detailItem.topic || Intl.get('user.apply.id', '账号申请')}
                     </span>
+                    {this.renderDetailBottom()}
                 </div>
                 <div className="apply-detail-content" style={{height: applyDetailHeight}} ref="geminiWrap">
                     <PrivilegeChecker check='APP_USER_APPLY_APPROVAL'>
@@ -540,7 +541,6 @@ const ApplyViewDetail = createReactClass({
                         </GeminiScrollbar>
                     )}
                 </div>
-                {this.renderDetailBottom()}
             </div>
         );
     },
@@ -2022,28 +2022,10 @@ const ApplyViewDetail = createReactClass({
         //是否审批
         let isConsumed = !this.isUnApproved();
         return (
-            <div className="approval_block">
+            <div className="approval_block pull-right">
                 <Row className="approval_person clearfix">
-                    <Col span={10}>
-                        <span className="approval-info-label">
-                            {this.getNoSecondTimeStr(selectedDetailItem.time)}
-                        </span>
-                        <span className="approval-info-label">
-                            {selectedDetailItem.presenter || ''}
-                            {Intl.get('crm.109', '申请')}
-                        </span>
-                    </Col>
-                    <Col span={14}>
-                        {isConsumed ? (
-                            <div className="pull-right">
-                                <span className="approval-info-label">
-                                    {this.getNoSecondTimeStr(selectedDetailItem.approval_time)}
-                                </span>
-                                <span className="approval-info-label">
-                                    {detailInfoObj.approval_person || ''}
-                                    {this.getApplyResultDscr(detailInfoObj)}
-                                </span>
-                            </div>) : (<div className="pull-right">
+                    <Col>
+                        {isConsumed ? null : (<div className="pull-right">
                             {hasPrivilege('APPLY_CANCEL') && showBackoutApply ?
                                 <Button type="primary" className="btn-primary-sure" size="small"
                                     onClick={this.clickApprovalFormBtn.bind(this, '3')}>
