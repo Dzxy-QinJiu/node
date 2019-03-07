@@ -35,9 +35,10 @@ class InviteMemberForm extends React.Component{
         let nickname = _.trim(this.props.form.getFieldValue('nickname'));
         if (nickname && (/^[A-Za-z0-9]\w+$/).test(nickname)) {
             InviteMemberAction.checkOnlyName(nickname);
-        } else {
-            InviteMemberAction.resetNameFlags();
         }
+    };
+    resetNameFlags = () => {
+        InviteMemberAction.resetNameFlags();
     };
 
     //姓名唯一性验证的展示
@@ -62,12 +63,12 @@ class InviteMemberForm extends React.Component{
         if (email && emailRegex.test(email)) {
             //所有者的邮箱唯一性验证
             InviteMemberAction.checkOnlyEmail(email);
-        } else {
-            InviteMemberAction.resetEmailFlags();
-            InviteMemberAction.resetUserNameFlags();
         }
     };
-
+    resetEmailFlags = () => {
+        InviteMemberAction.resetEmailFlags();
+        InviteMemberAction.resetUserNameFlags();
+    };
     //邮箱唯一性验证的展示
     renderEmailMsg = () => {
         if (this.state.emailExist || this.state.userNameExist) {
@@ -171,6 +172,7 @@ class InviteMemberForm extends React.Component{
                                     placeholder={Intl.get('crm.90', '请输入姓名')}
                                     className={this.state.userNameExist || this.state.userNameError ? 'input-red-border' : ''}
                                     onBlur={this.checkOnlyName}
+                                    onFocus={this.resetNameFlags}
                                 />
                             )}
                         </FormItem>
@@ -193,6 +195,7 @@ class InviteMemberForm extends React.Component{
                                     placeholder={Intl.get('member.email.extra.tip', '邮箱会作为登录时的用户名使用')}
                                     className={this.state.emailExist || this.state.emailError ? 'input-red-border' : ''}
                                     onBlur={this.checkOnlyEmail}
+                                    onFocus={this.resetEmailFlags}
                                 />
                             )}
 
