@@ -165,6 +165,7 @@ const ApplyViewDetail = createReactClass({
             usersManList: [],//成员列表
             checkStatus: true, //自动生成密码框是否选中
             passwordValue: '',//试用或者签约用户申请的明文密码
+            showWariningTip: false,//是否展示密码的提示信息
             ...ApplyViewDetailStore.getState()
         };
     },
@@ -696,12 +697,14 @@ const ApplyViewDetail = createReactClass({
     },
     onCheckboxChange: function(checkStatus) {
         this.setState({
-            checkStatus: checkStatus
+            checkStatus: checkStatus,
+            showWariningTip: false
         });
     },
     onInputPasswordChange: function(value) {
         this.setState({
-            passwordValue: value
+            passwordValue: value,
+            showWariningTip: !value
         });
     },
 
@@ -747,6 +750,8 @@ const ApplyViewDetail = createReactClass({
                         onCheckboxChange={this.onCheckboxChange}
                         onInputPasswordChange={this.onInputPasswordChange}
                         checkStatus={this.state.checkStatus}
+                        showWariningTip={this.state.showWariningTip}
+                        warningText= {Intl.get('apply.not.setting.password', 'Please input password!')}
                     />) : null;
                     let nickNameEle = (
                         <div className="apply-info-label">
@@ -1833,12 +1838,6 @@ const ApplyViewDetail = createReactClass({
                     modalContent = Intl.get('apply.approve.modal.text.reject', '是否驳回此申请');
                     okText = Intl.get('common.apply.reject', '驳回');
                 }
-                //如果之前没有设置过密码，加上设置密码的提示
-                if (this.hasApprovalPrivilege() && !_.get(this, 'state.passwordValue','')){
-                    modalContent = Intl.get('apply.not.setting.password', '未给用户手动设置密码，是否继续');
-                    okText = Intl.get('user.apply.detail.role.modal.continue', '继续');
-                    cancelText = Intl.get('user.apply.detail.role.modal.cancel', '我再改改');
-                }
                 //如果之前没有设置过角色，要加上设置角色的提示
                 if (_.get(this, 'state.rolesNotSettingModalDialog.show',false)){
                     modalContent = this.state.rolesNotSettingModalDialog.appNames.join('、') + Intl.get('user.apply.detail.role.modal.content', '中，没有为用户分配角色，是否继续');
@@ -1897,7 +1896,18 @@ const ApplyViewDetail = createReactClass({
         } else if (approval === '3') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击撤销申请按钮');
         }
+        //之前取消选中了自动设置密码且没输入密码，点击通过按钮应该没有反应
+        if (this.settingPasswordManuWithNoValue() && approval === '1'){
+            this.setState({
+                showWariningTip: true
+            });
+            return;
+        }
         this.showConfirmModal(approval);
+    },
+    //如果之前取消选中了自动设置密码且没输入密码，点击通过按钮应该没有反应
+    settingPasswordManuWithNoValue: function() {
+        return this.hasApprovalPrivilege() && !_.get(this, 'state.checkStatus',true) && !_.get(this, 'state.passwordValue','');
     },
     showConfirmModal(approval) {
         this.setState({

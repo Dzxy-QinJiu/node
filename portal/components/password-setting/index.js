@@ -52,15 +52,17 @@ class PasswordSetting extends React.Component {
     render() {
         var checkStatus = this.state.checkStatus;
         var isPasswordType = this.getIntputPasswordType();
-        var iconCls = classNames('iconfont',{'icon-password-visible': !isPasswordType, 'icon-password-hide': isPasswordType});
+        var iconCls = classNames('iconfont',{'icon-password-visible': isPasswordType, 'icon-password-hide': !isPasswordType});
         var containerCls = classNames('password-setting',{'has-input': !checkStatus});
+        var showWarning = this.props.showWariningTip;
         return (
             <div className={containerCls}>
                 <Checkbox checked={checkStatus} onChange={this.onCheckChange}>{Intl.get('apply.setting.password.auto', '自动生成密码')}</Checkbox>
                 {!checkStatus ?
                     <span className="input-container">
-                        <Input type={this.state.inputType} onChange={this.onInputPasswordChange}/>
+                        <Input className={showWarning ? 'has-warning' : ''} type={this.state.inputType} onChange={this.onInputPasswordChange}/>
                         <i className={iconCls} onClick={this.handlePasswordVisible}></i>
+                        {showWarning ? <span className="warning-text">{this.props.warningText}</span> : null}
                     </span>
                     : null}
             </div>
@@ -75,12 +77,16 @@ PasswordSetting.defaultProps = {
     onInputPasswordChange: function() {
 
     },
-    checkStatus: true
+    checkStatus: true,
+    showWariningTip: false,
+    warningText: ''
 
 };
 PasswordSetting.propTypes = {
     onCheckboxChange: PropTypes.func,
     onInputPasswordChange: PropTypes.func,
-    checkStatus: PropTypes.bool
+    checkStatus: PropTypes.bool,
+    showWariningTip: PropTypes.bool,
+    warningText: PropTypes.string
 };
 export default PasswordSetting;
