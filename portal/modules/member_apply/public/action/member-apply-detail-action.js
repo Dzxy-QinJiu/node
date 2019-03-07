@@ -26,6 +26,8 @@ function MemberApplyDetailActions() {
         'setNextCandidateName',//下一节点审批人的名字
         'setNextCandidate',
         'showOrHideApprovalBtns',
+        'resetNameFlags', // 重置姓名验证的标志
+        'resetEmailFlags', // 重置邮箱验证的标志
         'checkAutoGeneration', // 检查是否自动生成密码
         'handleInputPassword' // 处理手动输入密码
     );

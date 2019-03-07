@@ -297,7 +297,11 @@ class ApplyViewDetail extends React.Component {
         } else {
             return '';
         }
-    }
+    };
+    // 鼠标移入输入框后，姓名提示信息置空
+    resetNameFlags = () => {
+        MemberApplyDetailAction.resetNameFlags();
+    };
     // 渲染申请成员的姓名
     renderNameContent = (nickname) => {
         const {getFieldDecorator} = this.props.form;
@@ -326,6 +330,7 @@ class ApplyViewDetail extends React.Component {
                                 placeholder={Intl.get('crm.90', '请输入姓名')}
                                 className={this.state.nameExist || this.state.nameError ? 'input-red-border' : ''}
                                 onBlur={this.checkOnlyName}
+                                onFocus={this.resetNameFlags}
                             />
                         )}
                     </FormItem>
@@ -341,6 +346,10 @@ class ApplyViewDetail extends React.Component {
             //所有者的邮箱唯一性验证
             MemberApplyDetailAction.checkOnlyEmail(email);
         }
+    };
+    // 鼠标移入输入框后，邮箱提示信息置空
+    resetEmailFlags = () => {
+        MemberApplyDetailAction.resetEmailFlags();
     };
 
     //邮箱唯一性验证的展示
@@ -388,6 +397,7 @@ class ApplyViewDetail extends React.Component {
                                 placeholder={Intl.get('member.email.extra.tip', '邮箱会作为登录时的用户名使用')}
                                 className={this.state.emailExist || this.state.emailError ? 'input-red-border' : ''}
                                 onBlur={this.checkOnlyEmail}
+                                onFocus={this.resetEmailFlags}
                             />
                         )}
                     </FormItem>
@@ -549,6 +559,8 @@ class ApplyViewDetail extends React.Component {
         if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || detailInfoObj.showApproveBtn) && detailInfoObj.status === 'ongoing'){
             addApplyNextCandidate = this.renderAddApplyNextCandidate;
         }
+        // 校验姓名、邮箱出错时，通过按钮禁用
+        let validateFlag = this.state.emailExist || this.state.emailError || this.state.nameExist || this.state.nameError;
         return (
             <ApplyDetailBottom
                 create_time={detailInfoObj.create_time}
@@ -561,6 +573,7 @@ class ApplyViewDetail extends React.Component {
                 submitApprovalForm={this.submitApprovalForm}
                 renderAssigenedContext={renderAssigenedContext}
                 addApplyNextCandidate={addApplyNextCandidate}
+                disabled={validateFlag}
             />);
     }
     renderApplyApproveSteps =() => {

@@ -309,6 +309,18 @@ MemberApplyDetailStore.prototype.checkOnlyEmail = function(result) {
     }
 };
 
+// 重置姓名验证的标志
+MemberApplyDetailStore.prototype.resetNameFlags = function() {
+    this.nameExist = false;
+    this.nameError = false;
+};
+
+// 重置邮箱验证的标志
+MemberApplyDetailStore.prototype.resetEmailFlags = function() {
+    this.emailExist = false;
+    this.emailError = false;
+};
+
 // 检查是否自动生成密码
 MemberApplyDetailStore.prototype.checkAutoGeneration = function(check) {
     this.autoGenerationPsd = check;
