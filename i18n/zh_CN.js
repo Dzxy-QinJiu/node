@@ -1435,7 +1435,7 @@ var zh_CN = {
     'crm.second.sales': '联合跟进人',
     'crm.apply.active.email.tip': '您的邮箱未激活，请先{aciveEmail}',
     'crm.this.week.contact': '本周联系过的客户',
-
+    'crm.record.unupload.phone': '未上传通话录音，无法播放',
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
     'crm.contract.validity.one.year': '有效期一年',

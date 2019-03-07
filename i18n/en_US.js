@@ -1420,6 +1420,7 @@ var en_US = {
     'crm.second.sales': 'Second Sales',//联合跟进人
     'crm.apply.active.email.tip': 'Your mailbox is not activated. Please {activeEmail} first',//您的邮箱未激活，请先{aciveEmail}
     'crm.this.week.contact': 'Customers contacted this week',//本周联系过的客户
+    'crm.record.unupload.phone': 'Unuploaded voice recordings, unable to play',//未上传通话录音，无法播放
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
