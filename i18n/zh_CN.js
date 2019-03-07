@@ -2811,6 +2811,8 @@ var zh_CN = {
     'apply.list.my.approved': '我审批过',
     'apply.approve.sales.opportunity': '销售机会',
     'apply.has.approved.by.me': '获取我审批过的{type}申请失败',
+    'apply.setting.password.auto': '自动生成密码',
+    'apply.not.setting.password': '请手动输入密码！',
     'clue.import.file.type': '只能导入{type}格式的文件！',
 };
 export default zh_CN;

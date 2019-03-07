@@ -35,7 +35,7 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {APPLY_TYPES, userTypeList, TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
-
+import PasswordSetting from 'CMP_DIR/password-setting';
 /*在审批界面显示用户的右侧面板结束*/
 //默认头像图片
 var DefaultHeadIconImage = require('../../../common/public/image/default-head-icon.png');
@@ -163,6 +163,9 @@ const ApplyViewDetail = createReactClass({
             showBackoutConfirmType: '',//操作的确认框类型
             isOplateUser: false,
             usersManList: [],//成员列表
+            checkStatus: true, //自动生成密码框是否选中
+            passwordValue: '',//试用或者签约用户申请的明文密码
+            showWariningTip: false,//是否展示密码的提示信息
             ...ApplyViewDetailStore.getState()
         };
     },
@@ -692,6 +695,18 @@ const ApplyViewDetail = createReactClass({
                 )}
         </div>);
     },
+    onCheckboxChange: function(checkStatus) {
+        this.setState({
+            checkStatus: checkStatus,
+            showWariningTip: false
+        });
+    },
+    onInputPasswordChange: function(value) {
+        this.setState({
+            passwordValue: value,
+            showWariningTip: !value
+        });
+    },
 
     //渲染用户名
     renderApplyDetailUserNames(detailInfo) {
@@ -731,6 +746,13 @@ const ApplyViewDetail = createReactClass({
                             <span
                                 className="user-info-text edit-name-wrap">{this.renderUserNameBlock(detailInfo)}</span>
                         </div>);
+                    let passwordSetting = this.hasApprovalPrivilege() ? (<PasswordSetting
+                        onCheckboxChange={this.onCheckboxChange}
+                        onInputPasswordChange={this.onInputPasswordChange}
+                        checkStatus={this.state.checkStatus}
+                        showWariningTip={this.state.showWariningTip}
+                        warningText= {Intl.get('apply.not.setting.password', 'Please input password!')}
+                    />) : null;
                     let nickNameEle = (
                         <div className="apply-info-label">
                             <div className="user-info-label edit-name-label">
@@ -739,7 +761,7 @@ const ApplyViewDetail = createReactClass({
                             <span
                                 className="user-info-text edit-name-wrap">{this.renderNickNameBlock(detailInfo)}</span>
                         </div>);
-                    return [userNameEle, nickNameEle];
+                    return [userNameEle, passwordSetting ,nickNameEle];
                 } else {
                     return (
                         <div className="apply-info-label">
@@ -1874,7 +1896,18 @@ const ApplyViewDetail = createReactClass({
         } else if (approval === '3') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击撤销申请按钮');
         }
+        //之前取消选中了自动设置密码且没输入密码，点击通过按钮应该没有反应
+        if (this.settingPasswordManuWithNoValue() && approval === '1'){
+            this.setState({
+                showWariningTip: true
+            });
+            return;
+        }
         this.showConfirmModal(approval);
+    },
+    //如果之前取消选中了自动设置密码且没输入密码，点击通过按钮应该没有反应
+    settingPasswordManuWithNoValue: function() {
+        return this.hasApprovalPrivilege() && !_.get(this, 'state.checkStatus',true) && !_.get(this, 'state.passwordValue','');
     },
     showConfirmModal(approval) {
         this.setState({
@@ -2241,6 +2274,10 @@ const ApplyViewDetail = createReactClass({
                     //从邮件转到界面的链接地址
                     notice_url: getApplyDetailUrl(this.state.detailInfoObj.info),
                 };
+                //如果手动设置了密码
+                if (!this.state.checkStatus && this.state.passwordValue){
+                    obj.passwordObvious = this.state.passwordValue;
+                }
                 // 延期时间(需要修改到期时间的字段)
                 if (detailInfo.type === 'apply_grant_delay') {
                     if (this.state.formData.delayTimeUnit === SELECT_CUSTOM_TIME_TYPE) {

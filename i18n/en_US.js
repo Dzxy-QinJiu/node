@@ -2788,6 +2788,9 @@ var en_US = {
     'apply.list.my.approved': 'Apply approved by me',//我审批过
     'apply.approve.sales.opportunity': 'Sales opportunity',//销售机会
     'apply.has.approved.by.me': 'Failed to get {type} application approved by me',//获取我审批过的{type}申请失败
+
+    'apply.setting.password.auto': 'Generate passwords automatically ',//自动生成密码
+    'apply.not.setting.password': 'Please input password!',//请手动输入密码！
     'clue.import.file.type': 'Only files in {type} format can be imported!',//只能导入{type}格式的文件！
 };
 export default en_US;
