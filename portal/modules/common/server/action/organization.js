@@ -22,3 +22,14 @@ exports.changeOrganization = function(req,res) {
         res.status(500).json(codeMessage && codeMessage.message || '修改用户所属组织失败');
     });
 };
+
+/**
+ * 获取组织电话系统配置
+ */
+exports.getCallSystemConfig = function(req,res) {
+    organizationService.getCallSystemConfig(req,res).on('success' , function(data) {
+        res.json(data);
+    }).on('error' , function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message || '获取组织电话系统配置失败');
+    });
+};

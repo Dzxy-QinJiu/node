@@ -357,3 +357,27 @@ exports.showDisabledCallTip = function() {
     }
 };
 
+//获取组织电话系统配置
+exports.getCallSystemConfig = function() {
+    return new Promise((resolve, reject) => {
+        const userProperty = 'callsystem_config';
+        let callsystemConfig = getUserData()[userProperty];
+        if (callsystemConfig) {
+            resolve(callsystemConfig);
+        } else {
+            $.ajax({
+                url: '/rest/global/callsystem/config',
+                type: 'get',
+                dataType: 'json',
+                success: data => {
+                    //保存到userData中
+                    setUserData(userProperty, data);
+                    resolve(data);
+                },
+                error: xhr => {
+                    reject(xhr.responseJSON);
+                }
+            });
+        }
+    });
+};

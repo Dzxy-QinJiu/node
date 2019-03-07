@@ -34,14 +34,15 @@ import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {storageUtil} from 'ant-utils';
 
 const STORED_TEAM_KEY = 'monthly_report_selected_team';
-import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
+import {getMyTeamTreeAndFlattenList,getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
 
 class MonthlyReport extends React.Component {
     state = {
         teamList: [],
         memberList: [],
         selectedTeam: '',
-        selectedMonth: moment()
+        selectedMonth: moment(),
+        isShowEffectiveTimeAndCount: false, // 是否展示有效通话时长和有效接通数
     };
 
     componentDidMount() {
@@ -49,7 +50,16 @@ class MonthlyReport extends React.Component {
         $('.analysis_report_ico a').addClass('active');
         this.getTeamList();
         this.getMemberList();
+        this.getCallSystemConfig();
     }
+
+    // 获取组织电话系统配置
+    getCallSystemConfig = () => {
+        getCallSystemConfig().then(config => {
+            let isShowEffectiveTimeAndCount = _.get(config,'filter_114',false) || _.get(config,'filter_customerservice_number',false);
+            this.setState({ isShowEffectiveTimeAndCount });
+        });
+    };
 
     getTeamList = () => {
         const reqData = commonMethodUtil.getParamByPrivilege();
@@ -200,8 +210,8 @@ class MonthlyReport extends React.Component {
             },
         ];
 
-        // 如果是蚁坊、识微的用户，展示有效通话时长和有效接通数
-        if(commonMethodUtil.isOrganizationEefung() || commonMethodUtil.isOrganizationCiviw()){
+        // 展示有效通话时长和有效接通数
+        if(this.state.isShowEffectiveTimeAndCount){
             columns.splice(7, 0, {
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 dataIndex: 'total_effective',

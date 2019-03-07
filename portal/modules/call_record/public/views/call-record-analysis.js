@@ -33,7 +33,7 @@ var hours = _.range(24);
 var days = [Intl.get('user.time.sunday', '周日'), Intl.get('user.time.monday', '周一'), Intl.get('user.time.tuesday', '周二'), Intl.get('user.time.wednesday', '周三'), Intl.get('user.time.thursday', '周四'), Intl.get('user.time.friday', '周五'), Intl.get('user.time.saturday', '周六')];
 import timeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import {getResultType, getErrorTipAndRetryFunction,isOrganizationEefung, isOrganizationCiviw} from 'PUB_DIR/sources/utils/common-method-util';
-
+import {getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
 //地图的formatter
 function mapFormatter(obj) {
     let name = Intl.get('oplate_bd_analysis_realm_zone.2', '市区');
@@ -118,7 +118,8 @@ class CallRecordAnalyis extends React.Component {
             firstSelectValue: FIRSR_SELECT_DATA[0], // 第一个选择框的值
             secondSelectValue: LITERAL_CONSTANT.ALL, // 第二个选择宽的值，默认是全部的状态
             switchStatus: false,//是否查看各团队通话趋势图
-            filter_phone: false//是否过滤掉114
+            filter_phone: false,//是否过滤掉114,
+            isShowEffectiveTimeAndCount: false, // 是否展示有效通话时长和有效接通数
         };
     }
 
@@ -143,6 +144,7 @@ class CallRecordAnalyis extends React.Component {
         this.getSalesStageList(); // 获取订单阶段
         this.getTeamMemberData(); //获取销售团队和成员数据
         this.refreshCallAnalysisData(); // 获取趋势图、接通率、TOP10和114占比的数据
+        this.getCallSystemConfig(); // 获取组织电话系统配置
         $(window).resize(() => {
             this.setState({
                 trendWidth: $('.call-analysis-content').width() - LAYOUT_WIDTH.RESIZE_WIDTH
@@ -151,6 +153,14 @@ class CallRecordAnalyis extends React.Component {
         TableUtil.zoomInSortArea(this.refs.phoneList);
         TableUtil.alignTheadTbody(this.refs.phoneList);
     }
+
+    // 获取组织电话系统配置
+    getCallSystemConfig = () => {
+        getCallSystemConfig().then(config => {
+            let isShowEffectiveTimeAndCount = _.get(config,'filter_114',false) || _.get(config,'filter_customerservice_number',false);
+            this.setState({ isShowEffectiveTimeAndCount });
+        });
+    };
 
     // 获取团队或是成员的id
     getTeamOrMemberId = (list, selectValue) => {
@@ -295,7 +305,6 @@ class CallRecordAnalyis extends React.Component {
             end_time: this.state.end_time || moment().toDate().getTime(),
             deviceType: params && params.deviceType || this.state.callType,
             filter_phone: this.state.filter_phone,//是否过滤114
-            effective_phone: isOrganizationEefung() || isOrganizationCiviw() // 是否获取有效通话时长
         };
         let pathParam = commonMethodUtil.getParamByPrivilege();
         if (this.state.teamList.list.length) { // 有团队时（普通销售时没有团队的）
@@ -560,8 +569,8 @@ class CallRecordAnalyis extends React.Component {
             className: 'has-filter table-data-align-right'
         }];
 
-        // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        if( isOrganizationEefung() || isOrganizationCiviw() ){
+        // 展示有效通话时长和有效接通数
+        if( this.state.isShowEffectiveTimeAndCount ){
             columns.push({
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 width: col_lg_width,
