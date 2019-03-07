@@ -275,7 +275,7 @@ let routers = [
             routePath: '/application/member_apply',
             component: `${MODULE_PATH}member_apply/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
+            showPrivileges: ['MEMBER_INVITE_MANAGE']
         }]
     },
     {

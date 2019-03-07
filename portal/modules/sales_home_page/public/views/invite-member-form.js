@@ -241,7 +241,6 @@ class InviteMemberForm extends React.Component{
                                             message={Intl.get('sales.home.invite.member.success', '邀请申请发送成功')}
                                             type= 'success'
                                             showIcon
-                                            onHide={this.hideSaveTooltip()}
                                         />
                                     ) : null
                                 }
