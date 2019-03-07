@@ -4,7 +4,7 @@ var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitte
 var salesClueAjax = require('MOD_DIR/clue_customer/public/ajax/clue-customer-ajax');
 var userData = require('../../../../public/sources/user-data');
 import UserAjax from '../../../common/public/ajax/user';
-import {afterGetWebConfig} from 'PUB_DIR/sources/utils/common-method-util';
+import {afterGetExtendUserInfo} from 'PUB_DIR/sources/utils/common-method-util';
 function SalesHomeActions() {
     this.generateActions(
         'setInitState',//设置初始化数据
@@ -157,7 +157,7 @@ function SalesHomeActions() {
         UserAjax.getUserByIdAjax().resolvePath({
             user_id: user_id
         }).sendRequest().success((data) => {
-            afterGetWebConfig(data, this);
+            afterGetExtendUserInfo(data, this);
         });
     };
     //邮箱激活

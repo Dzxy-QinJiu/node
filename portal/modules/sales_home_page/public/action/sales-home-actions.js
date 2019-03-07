@@ -5,7 +5,7 @@ let scrollBarEmitter = require('../../../../public/sources/utils/emitters').scro
 var _ = require('lodash');
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
 import UserAjax from '../../../common/public/ajax/user';
-import {afterGetWebConfig} from 'PUB_DIR/sources/utils/common-method-util';
+import {afterGetExtendUserInfo} from 'PUB_DIR/sources/utils/common-method-util';
 
 function SalesHomeActions() {
     this.generateActions(
@@ -196,7 +196,7 @@ function SalesHomeActions() {
         UserAjax.getUserByIdAjax().resolvePath({
             user_id: user_id
         }).sendRequest().success((data) => {
-            afterGetWebConfig(data, this);
+            afterGetExtendUserInfo(data, this);
         });
     };
     //邮箱激活
