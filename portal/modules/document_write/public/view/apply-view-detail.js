@@ -647,6 +647,7 @@ class ApplyViewDetail extends React.Component {
                     <span className="apply-type-tip">
                         {getApplyTopicText(detailInfo)}
                     </span>
+                    {this.renderDetailBottom()}
                 </div>
                 <div className="apply-detail-content" style={{height: applyDetailHeight}} ref="geminiWrap">
                     <GeminiScrollbar ref="gemini">
@@ -664,7 +665,6 @@ class ApplyViewDetail extends React.Component {
                         {this.renderUploadAndDownload(detailInfo)}
                     </GeminiScrollbar>
                 </div>
-                {this.renderDetailBottom()}
                 {this.renderCancelApplyApprove()}
             </div>
         );
