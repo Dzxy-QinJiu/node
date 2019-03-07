@@ -1,0 +1,52 @@
+@import "../../public/css/common-variables.less";
+//顶部提示激活邮箱区域
+.active-email-tip-container {
+  margin-top: 10px;
+  height: 0;
+  overflow: hidden;
+  .ant-alert-warning {
+    background-color: #fff;
+    border: 1px solid transparent;
+    .ant-alert-icon {
+      color: @reply-message-tip-color;
+    }
+  }
+  .no-tip {
+    float: right;
+    color: #9AB2CC;
+    cursor: pointer;
+    width: 110px;
+    i.anticon-loading {
+      margin-left: 12px;
+    }
+    .iconfont.icon-close{
+      font-size: 14px;
+      margin-right:10px;
+    }
+  }
+  .jump-to-userinfo {
+    color: #9AB2CC;
+    cursor: pointer;
+    width: 140px;
+  }
+}
+//顶部提示激活邮箱区域
+.active-email-tip-container.email-active-wrap{
+  .ant-alert-warning {
+    background-color: #fef0ef;
+    border: 1px solid #fcdbd9;
+    .ant-alert-icon {
+      color: #f04134;
+    }
+  }
+}
+.active-email-tip-container.animate-show {
+  animation: animate-show 1s 1;
+  height: 40px;
+  margin: 10px 5px;
+}
+.active-email-tip-container.animate-hide {
+  animation: animate-hide 1s 1;
+  height: 0;
+  margin:0;
+}

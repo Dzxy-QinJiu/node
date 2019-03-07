@@ -161,7 +161,7 @@ var NavSidebar = createReactClass({
         //要加引导的元素
         var $introElement = '', introModalLayout = {};
         if (isHamburgerShow === 'none') {
-            $introElement = $('li.' + schedule_menu.routePath + '_ico a i');
+            $introElement = $('li.' + schedule_menu.routePath + '_icon_container a');
             introModalLayout = commonIntroModalLayout;
         } else if (isHamburgerShow === 'block') {
             $introElement = $('#hamburger');

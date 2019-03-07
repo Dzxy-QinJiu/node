@@ -22,7 +22,6 @@ import ApplyViewDetail from './view/apply-view-detail';
 var SalesOpportunityApplyUtils = require('./utils/sales-oppotunity-utils');
 let userData = require('../../../public/sources/user-data');
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 class SalesOpportunityApplyManagement extends React.Component {
     state = {
