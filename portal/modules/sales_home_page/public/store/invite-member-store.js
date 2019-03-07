@@ -19,16 +19,19 @@ class InviteMemberStore {
     }
     // 邀请成员
     inviteMember(result) {
-        this.loading = result.loading;
-        if (result.error) {
-            this.inviteMemberMsg = result.errorMsg;
-            this.inviteResult = 'error';
+        if (result.loading) {
+            this.loading = result.loading;
         } else {
-            this.inviteMemberMsg = '';
-            this.inviteResult = 'success';
+            this.loading = false;
+            if (result.error) {
+                this.inviteMemberMsg = result.errorMsg;
+                this.inviteResult = 'error';
+            } else {
+                this.inviteMemberMsg = '';
+                this.inviteResult = 'success';
+            }
         }
     }
-   
     //姓名唯一性的验证
     checkOnlyName(result) {
         if (_.isString(result)) {
