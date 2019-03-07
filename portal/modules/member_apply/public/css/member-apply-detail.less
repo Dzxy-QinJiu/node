@@ -1,5 +1,5 @@
 @import "../../../../public/css/common-variables";
-.leave_manage_apply_detail_wrap {
+.member-apply-detail-wrap {
   color: #5d5d5d;
   position: relative;
   padding-right: 0;
@@ -21,10 +21,35 @@
   }
   .apply-detail-content {
     padding: 0 20px;
+    .apply-info-content {
+      .invite-member-password {
+        padding-left: 65px;
+        .auto-generation-password, .input-password {
+          display: inline-block;
+        }
+        .input-password {
+          padding-left: 20px;
+        }
+      }
+    }
   }
   .ant-form-horizontal {
     dt {
       padding-top: 10px !important;
+    }
+    .invite-member-name, .invite-member-email {
+      width: 400px;
+      .ant-form-item {
+        margin-bottom: 0;
+        .ant-form-item-label {
+          text-align: left;
+          label {
+            font-size: 14px;
+            font-weight: 400;
+            color: #9f9fa1;
+          }
+        }
+      }
     }
   }
   .btn-primary-sure {

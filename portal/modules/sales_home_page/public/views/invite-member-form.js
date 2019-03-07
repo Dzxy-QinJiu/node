@@ -222,6 +222,8 @@ class InviteMemberForm extends React.Component{
                         }
                         <FormItem>
                             <SaveCancelButton
+                                loading={this.state.loading}
+                                saveErrorMsg={this.state.inviteResult === 'error' ? this.state.inviteMemberMsg : ''}
                                 handleSubmit={this.handleSubmit.bind(this)}
                                 handleCancel={this.handleCancel.bind(this)}
                                 okBtnText={Intl.get('sales.home.invite.btn', '邀请')}
@@ -238,7 +240,7 @@ class InviteMemberForm extends React.Component{
                                             showIcon
                                             onHide={this.hideSaveTooltip()}
                                         />
-                                    ) : ''
+                                    ) : null
                                 }
                             </div>
                         </FormItem>

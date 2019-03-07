@@ -1013,8 +1013,8 @@ class SalesHomePage extends React.Component {
         
         var title = (this.state.isSaleTeamShow ? Intl.get('sales.homepage.hide.teamlist', '隐藏团队列表') :
             Intl.get('sales.homepage.show.teamlist', '展开团队列表'));
-        // 销售主管、运营人员有邀请成员的权限
-        let hasInivteMemberPrivilege = hasPrivilege('MEMBER_INVITE_APPLY') || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+        // 销售领导、运营人员有邀请成员的权限
+        let hasInivteMemberPrivilege = hasPrivilege('MEMBER_INVITE_APPLY') && (userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON));
         return (<RightContent>
             <div className="sales_home_content">
                 <TopNav>

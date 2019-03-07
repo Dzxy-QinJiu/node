@@ -302,8 +302,7 @@ class ApplyViewDetail extends React.Component {
     renderNameContent = (nickname) => {
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
-            colon: false,
-            labelCol: {span: 8},
+            labelCol: {span: 4},
             wrapperCol: {span: 16}
         };
         return (
@@ -364,8 +363,7 @@ class ApplyViewDetail extends React.Component {
     renderEmailContent = (email) => {
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
-            colon: false,
-            labelCol: {span: 8},
+            labelCol: {span: 4},
             wrapperCol: {span: 16}
         };
         return (
@@ -401,7 +399,6 @@ class ApplyViewDetail extends React.Component {
     // 检查是否自动生成密码
     checkAutoGeneration = (event) => {
         let checked = event.target.checked;
-        console.log('checked:',checked);
         MemberApplyDetailAction.checkAutoGeneration(checked);
     };
     // 处理手动输入密码
@@ -739,7 +736,7 @@ class ApplyViewDetail extends React.Component {
         }
         var divHeight = $(window).height() - TOP_NAV_HEIGHT;
         return (
-            <div className='col-md-8 leave_manage_apply_detail_wrap' style={{'height': divHeight}} data-tracename="成员审批详情界面">
+            <div className='col-md-8 member-apply-detail-wrap' style={{'height': divHeight}} data-tracename="成员审批详情界面">
                 <ApplyDetailStatus
                     showLoading={this.state.detailInfoObj.loadingResult === 'loading'}
                     showErrTip={this.state.detailInfoObj.loadingResult === 'error'}

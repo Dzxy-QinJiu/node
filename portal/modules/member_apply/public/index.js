@@ -188,7 +188,7 @@ class MemberApply extends React.Component {
             );
             var noDataMsg = (
                 <span>
-                    {Intl.get('leave.apply.no.leave.apply','暂无符合条件的成员申请')}
+                    {Intl.get('member.apply.no.member.apply','暂无符合条件的成员申请')}
                     <span>,</span>
                     <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
                         {Intl.get('common.get.again', '重新获取')}
@@ -230,9 +230,9 @@ class MemberApply extends React.Component {
             applyDetail = {detail: _.get(this.state, 'applyListObj.list[0]'), apps: this.state.allApps};
         }
         return (
-            <div className="sales-opportunity-apply-container">
-                <div className="leave-apply-list-detail-wrap">
-                    <div className="col-md-4 leave-apply-list" data-tracename="成员申请列表">
+            <div className="member-apply-container">
+                <div className="member-apply-list-detail-wrap">
+                    <div className="col-md-4 member-apply-list" data-tracename="成员申请列表">
                         <ApplyDropdownAndAddBtn
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
