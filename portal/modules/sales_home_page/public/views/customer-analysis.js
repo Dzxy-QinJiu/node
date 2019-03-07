@@ -2,8 +2,8 @@
  * 客户分析
  * Created by wangliping on 2016/11/24.
  */
-import PropTypes from 'prop-types'; 
 import { AntcAnalysis } from 'antc';
+import customerCharts from 'MOD_DIR/analysis/public/charts/customer';
 let history = require('PUB_DIR/sources/history');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 var getDataAuthType = require('../../../../components/privilege/checker').getDataAuthType;
@@ -1121,6 +1121,10 @@ class CustomerAnalysis extends React.Component {
 
         const trialQualifiedChart = this.getTrialQualifiedChart();
         charts.unshift(trialQualifiedChart);
+
+        //最近联系的客户
+        const recentContactCustomerChart = customerCharts.getRecentContactCustomerChart();
+        charts.push(recentContactCustomerChart);
 
         return charts;
     };
