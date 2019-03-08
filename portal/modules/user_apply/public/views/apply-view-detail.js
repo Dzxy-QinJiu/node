@@ -751,7 +751,7 @@ const ApplyViewDetail = createReactClass({
                         onInputPasswordChange={this.onInputPasswordChange}
                         checkStatus={this.state.checkStatus}
                         showWariningTip={this.state.showWariningTip}
-                        warningText= {Intl.get('apply.not.setting.password', 'Please input password!')}
+                        warningText= {Intl.get('apply.not.setting.password', '请手动输入密码！')}
                     />) : null;
                     let nickNameEle = (
                         <div className="apply-info-label">
@@ -1896,7 +1896,7 @@ const ApplyViewDetail = createReactClass({
         } else if (approval === '3') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击撤销申请按钮');
         }
-        //之前取消选中了自动设置密码且没输入密码，点击通过按钮应该没有反应
+        //选择了手动设置密码时，未输入密码，不能通过
         if (this.settingPasswordManuWithNoValue() && approval === '1'){
             this.setState({
                 showWariningTip: true
@@ -1905,7 +1905,7 @@ const ApplyViewDetail = createReactClass({
         }
         this.showConfirmModal(approval);
     },
-    //如果之前取消选中了自动设置密码且没输入密码，点击通过按钮应该没有反应
+    //选择了手动设置密码时，未输入密码，不能通过
     settingPasswordManuWithNoValue: function() {
         return this.hasApprovalPrivilege() && !_.get(this, 'state.checkStatus',true) && !_.get(this, 'state.passwordValue','');
     },

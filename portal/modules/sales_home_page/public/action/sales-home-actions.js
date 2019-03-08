@@ -224,7 +224,7 @@ function SalesHomeActions() {
             }
         },(errorMsg) => {
             if (callback && _.isFunction(callback)){
-                callback(errorMsg || Intl.get('failed.set.no.email.tip','设置不再提示邮箱激活提醒失败'));
+                callback(errorMsg || Intl.get('failed.set.no.tip','设置失败'));
             }
         }
         );
