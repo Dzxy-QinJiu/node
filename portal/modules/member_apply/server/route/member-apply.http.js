@@ -21,7 +21,7 @@ module.exports = {
             },
         }, {
             method: 'get',
-            path: '/rest/apply_approve/detail/byId',
+            path: '/rest/apply_approve/detail/by/id',
             handler: 'getMemberApplyDetailById',
             passport: {
                 needLogin: true

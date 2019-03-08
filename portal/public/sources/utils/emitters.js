@@ -166,3 +166,7 @@ export { resizeEmitter };
 const analysisCustomerListEmitter = new EventEmitter();
 analysisCustomerListEmitter.SHOW_CUSTOMER_LIST = 'show_customer_list';
 export { analysisCustomerListEmitter };
+
+// 申请成员相关事件
+const memberApplyEmitter = new EventEmitter();
+export { memberApplyEmitter };

@@ -2765,6 +2765,8 @@ var zh_CN = {
     'apply.show.cancel.result': '查看撤销结果',
 
     // 成员申请
-    'member.application': '成员申请'
+    'member.application': '成员申请',
+    'member.apply.failed.get.worklist': '获取由我审批的成员申请失败',
+    'member.apply.failed.get.all.apply': '获取全部成员申请失败'
 };
 export default zh_CN;

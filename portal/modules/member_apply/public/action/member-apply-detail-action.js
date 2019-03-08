@@ -2,12 +2,12 @@
  * Created by hzl on 2019/3/5.
  */
 var MemberApplyAjax = require('../ajax/member-apply-ajax');
-var MemberApplyUtils = require('../utils/member-apply-utils');
+import { memberApplyEmitter } from 'PUB_DIR/sources/utils/emitters';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
+import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 import {getApplyDetailById,getApplyStatusById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 function MemberApplyDetailActions() {
     this.generateActions(
@@ -75,7 +75,7 @@ function MemberApplyDetailActions() {
         MemberApplyAjax.approveMemberApplyPassOrReject(obj).then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
             //更新选中的申请单类型
-            MemberApplyUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
+            memberApplyEmitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
             if (Oplate && Oplate.unread) {
                 Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEMEMBERINIVTE] -= 1;
                 if (timeoutFunc) {
@@ -88,7 +88,7 @@ function MemberApplyDetailActions() {
             }
         }, (errorMsg) => {
             //更新选中的申请单类型
-            MemberApplyUtils.emitter.emit('updateSelectedItem', {status: 'error'});
+            memberApplyEmitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
@@ -100,16 +100,16 @@ function MemberApplyDetailActions() {
             _.isFunction(callback) && callback();
             if (data) {
                 this.dispatch({loading: false, error: false});
-                MemberApplyUtils.emitter.emit('updateSelectedItem', {id: obj.id, cancel: true, status: 'success'});
+                memberApplyEmitter.emit('updateSelectedItem', {id: obj.id, cancel: true, status: 'success'});
             }else {
                 this.dispatch({loading: false, error: true, errorMsg: errTip});
-                MemberApplyUtils.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
+                memberApplyEmitter.emit('updateSelectedItem', {status: 'error',cancel: false});
             }
         }, (errorMsg) => {
             _.isFunction(callback) && callback();
             var errMsg = errorMsg || errTip;
             this.dispatch({loading: false, error: true, errorMsg: errMsg});
-            MemberApplyUtils.emitter.emit('updateSelectedItem', {status: 'error',cancel: false});
+            memberApplyEmitter.emit('updateSelectedItem', {status: 'error',cancel: false});
         });
     };
     //获取下一节点的负责人

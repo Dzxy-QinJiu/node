@@ -15,7 +15,7 @@ import ApplyListItem from 'CMP_DIR/apply-components/apply-list-item';
 var Spinner = require('CMP_DIR/spinner');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import ApplyViewDetail from './view/member-view-detail';
-var MemberApplyUtils = require('./utils/member-apply-utils');
+import { memberApplyEmitter } from 'PUB_DIR/sources/utils/emitters';
 let userData = require('../../../public/sources/user-data');
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 
@@ -39,7 +39,7 @@ class MemberApply extends React.Component {
             //不区分角色，都获取全部的申请列表
             this.getAllMemberApplyList();
         }
-        MemberApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
+        memberApplyEmitter.on('updateSelectedItem', this.updateSelectedItem);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, this.pushDataListener);
     }
 
@@ -124,7 +124,7 @@ class MemberApply extends React.Component {
     componentWillUnmount() {
         MemberApplyStore.unlisten(this.onStoreChange);
         MemberApplyAction.setInitState();
-        MemberApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
+        memberApplyEmitter.removeListener('updateSelectedItem', this.updateSelectedItem);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, this.pushDataListener);
     }
     //下拉加载

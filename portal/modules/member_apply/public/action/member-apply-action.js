@@ -20,31 +20,32 @@ function MemberApplyActions() {
         'setShowUpdateTip'
     );
     this.getAllMemberApplyList = function(queryObj,callback) {
-        //需要先获取待审批列表，成功后获取全部列表
+        //需要先获取待审批列表，成功后获取全部列表 queryObj.status === 'ongoing'表示待我审批
         this.dispatch({loading: true, error: false});
-        //如果是全部申请，要先取一下待我审批的列表
+        //如果是全部申请(!queryObj.status)，要先取一下待我审批的列表
         if (queryObj.status === 'ongoing' || !queryObj.status){
             getWorklistApplyList({type: APPLY_APPROVE_TYPES.MEMBER_INVITE}).then((workList) => {
                 //如果是待我审批的列表，不需要在发获取全部列表的请求了
-                if (queryObj.status && queryObj.status === 'ongoing'){
+                if (queryObj.status){
+                    let hasCancelPrivilege = userData.getUserData().user_id && hasPrivilege('GET_MY_WORKFLOW_LIST');
                     //需要对全部列表都加一个可以审批的属性
                     _.forEach(workList.list,(workItem) => {
                         workItem.showApproveBtn = true;
                         //如果是我申请的，除了可以审批之外，我也可以撤回
-                        if (_.get(workItem,'applicant.user_id') === userData.getUserData().user_id && hasPrivilege('GET_MY_WORKFLOW_LIST')){
+                        if (_.get(workItem,'applicant.user_id') === hasCancelPrivilege){
                             workItem.showCancelBtn = true;
                         }
                     });
                     this.dispatch({error: false, loading: false, data: workList});
                     _.isFunction(callback) && callback(workList.total);
-                    return;
+                } else {
+                    getDiffTypeApplyList(this,queryObj,workList.list);
                 }
-                getDiffTypeApplyList(this,queryObj,workList.list);
             }, (errorMsg) => {
                 this.dispatch({
                     error: true,
                     loading: false,
-                    errMsg: errorMsg || Intl.get('failed.get.worklist.leave.apply', '获取由我审批的请假申请失败')
+                    errMsg: errorMsg || Intl.get('member.apply.failed.get.worklist', '获取由我审批的成员申请失败')
                 });
             });
         }else{
@@ -78,7 +79,7 @@ function getDiffTypeApplyList(that,queryObj,workListArr) {
         that.dispatch({
             error: true,
             loading: false,
-            errMsg: errorMsg || Intl.get('failed.get.all.leave.list','获取全部请假申请失败')
+            errMsg: errorMsg || Intl.get('member.apply.failed.get.all.apply','获取全部成员申请失败')
         });});
 }
 module.exports = alt.createActions(MemberApplyActions);
