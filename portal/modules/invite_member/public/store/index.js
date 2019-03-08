@@ -1,7 +1,8 @@
 /**
- * Created by hzl on 2019/2/28.
+ * Created by hzl on 2019/3/8.
  */
-import InviteMemberAction from '../action/invite-member-actions';
+
+import InviteMemberAction from '../action/index';
 
 class InviteMemberStore {
     constructor() {
@@ -15,7 +16,7 @@ class InviteMemberStore {
         this.emailExist = false;// 邮箱是否已存在
         this.emailError = false;// 邮件唯一性验证出错
         // 是否显示继续邀请成员的面板，默认false,邀请成功后3s后才显示继续邀请面板
-        this.isShowContinueInvitePanel = false; 
+        this.isShowContinueInvitePanel = false;
 
         this.bindActions(InviteMemberAction);
     }
@@ -88,4 +89,3 @@ class InviteMemberStore {
 }
 
 export default alt.createStore(InviteMemberStore, 'InviteMemberStore');
-

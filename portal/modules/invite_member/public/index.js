@@ -1,18 +1,17 @@
 /**
- * Created by hzl on 2019/2/28.
+ * Created by hzl on 2019/3/8.
  */
-require('../css/invite-member.less');
-import { Form, Input, Select, Button, Icon } from 'antd';
+require('../css/index.less');
+import { Form, Input, Select } from 'antd';
 const Option = Select.Option;
 const FormItem = Form.Item;
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
-import InviteMemberStore from '../store/invite-member-store';
-import InviteMemberAction from '../action/invite-member-actions';
+import InviteMemberStore from './store/index';
+import InviteMemberAction from './action/index';
 import {nameLengthRule, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
 import userData from 'PUB_DIR/sources/user-data';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-
 
 class InviteMemberForm extends React.Component{
     constructor(props) {
@@ -254,7 +253,7 @@ class InviteMemberForm extends React.Component{
                             <div className='indicator'>
                                 {this.state.inviteResult === 'success' ?
                                     (
-                                        <AlertTimer 
+                                        <AlertTimer
                                             time={3000}
                                             message={Intl.get('sales.home.invite.member.success', '邀请申请发送成功')}
                                             type= 'success'

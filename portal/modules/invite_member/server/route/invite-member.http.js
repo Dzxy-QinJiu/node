@@ -1,9 +1,13 @@
 /**
+ * Created by hzl on 2019/3/8.
+ */
+
+/**
  * Created by hzl on 2019/2/28.
  */
 
 module.exports = {
-    module: 'sales_home_page/server/action/invite-member-controller',
+    module: 'invite_member/server/action/invite-member-controller',
     routes: [{
         'method': 'post',
         'path': '/rest/invite/member',

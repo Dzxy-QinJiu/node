@@ -1,7 +1,8 @@
 /**
- * Created by hzl on 2019/2/28.
+ * Created by hzl on 2019/3/8.
  */
-import inviteMemberAjax from '../ajax/invite-member-ajax';
+
+import inviteMemberAjax from '../ajax/index';
 
 class InviteMemberAction {
     constructor() {
@@ -31,7 +32,7 @@ class InviteMemberAction {
             this.dispatch(errorMsg);
         } );
     }
-    
+
     // 用户名唯一性的验证
     checkOnlyUserName(username) {
         inviteMemberAjax.checkOnlyUserName(username).then( (result) => {
