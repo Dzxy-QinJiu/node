@@ -387,7 +387,7 @@ class DetailPayment extends React.Component {
         return (
             <DetailCard
                 content={content}
-                titleBottomBorderNone={noPaymentData}
+                // titleBottomBorderNone={noPaymentData}
                 title={payTitle}
             />
         );

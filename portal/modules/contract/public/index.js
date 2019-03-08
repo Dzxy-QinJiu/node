@@ -1,5 +1,6 @@
 var React = require('react');
-import './style.less';
+import './css/index.less';
+import './css/contract-panel-v2.less';
 import classNames from 'classnames';
 import { message, Button, Icon, Modal, Radio, Select, Menu, Dropdown } from 'antd';
 const Option = Select.Option;
