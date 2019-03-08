@@ -8,7 +8,8 @@ class InviteMemberAction {
         this.generateActions(
             'resetNameFlags', // 重置姓名验证的标志
             'resetUserNameFlags', // 重置用户验证的标志
-            'resetEmailFlags' // 重置邮箱验证的标志
+            'resetEmailFlags', // 重置邮箱验证的标志
+            'showInviteMemberPanel' // 显示邀请成员面板
         );
     }
 

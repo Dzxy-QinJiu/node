@@ -79,25 +79,8 @@ SalesHomeStore.prototype.setInitState = function() {
         isShowActiveEmail: false, //是否展示邮箱激活提示
         isShowAddEmail: false//是否展示添加邮箱的提示, 不能仅用是否有email字段进行判断，原因是如果数据获取慢的时候，也会在页面上展示出添加邮箱的提示
     };
-    this.isInivteMemberRightPanelShow = false; // 是否显示邀请成员的面板，默认为false
-    this.isContinueInvitePanel = false; // 是否显示继续邀请成员的面板，默认false
-};
-// 显示邀请成员面板
-SalesHomeStore.prototype.showInviteMemberPanel = function() {
-    this.isContinueInvitePanel = false;
-    this.isInivteMemberRightPanelShow = true;
-};
-// 关闭邀请成员面板
-SalesHomeStore.prototype.closeInviteMemberPanel = function() {
-    this.isInivteMemberRightPanelShow = false;
-    this.isContinueInvitePanel = false;
 };
 
-// 返回到继续邀请成员面板
-SalesHomeStore.prototype.returnContinueInvitePanel = function() {
-    this.isInivteMemberRightPanelShow = false;
-    this.isContinueInvitePanel = true;
-}; 
 // 重置回访记录列表状态
 SalesHomeStore.prototype.resetCallBackRecord = function() {
     this.callBackRecord = {

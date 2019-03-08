@@ -129,17 +129,35 @@ class InviteMemberForm extends React.Component{
             }
         });
     };
-
-    handleCancel = (event) => {
+    // 点击取消按钮，关闭右侧面板
+    closeRightPanel = (event) => {
         event.preventDefault();
+        InviteMemberAction.showInviteMemberPanel(false);
         this.props.closeRightPanel();
     };
-    
+    // 邀请成功3s后，返回到继续邀请面板
     hideSaveTooltip = () => {
         if (this.state.inviteResult === 'success') {
-            //返回继续邀请界面
-            this.props.returnContinueInvitePanel();
+            setTimeout( () => {
+                InviteMemberAction.showInviteMemberPanel(true);
+            },0 );
+
         }
+    };
+    // 点击继续邀请按钮时，显示邀请成员面板
+    closeContinueShowInvitePanel = () => {
+        InviteMemberAction.showInviteMemberPanel(false);
+    };
+    renderContinueInviteMember = () => {
+        return (
+            <div className='continue-btn-invite-member'>
+                <SaveCancelButton
+                    handleSubmit={this.closeContinueShowInvitePanel.bind(this)}
+                    handleCancel={this.closeRightPanel.bind(this)}
+                    okBtnText={Intl.get('sales.home.invite.continue.btn', '继续邀请')}
+                />
+            </div>
+        );
     };
     // 邀请成员
     renderInviteMember(){
@@ -228,7 +246,7 @@ class InviteMemberForm extends React.Component{
                                 loading={this.state.loading}
                                 saveErrorMsg={this.state.inviteResult === 'error' ? this.state.inviteMemberMsg : ''}
                                 handleSubmit={this.handleSubmit.bind(this)}
-                                handleCancel={this.handleCancel.bind(this)}
+                                handleCancel={this.closeRightPanel.bind(this)}
                                 okBtnText={Intl.get('sales.home.invite.btn', '邀请')}
                             />
                         </FormItem>
@@ -241,6 +259,7 @@ class InviteMemberForm extends React.Component{
                                             message={Intl.get('sales.home.invite.member.success', '邀请申请发送成功')}
                                             type= 'success'
                                             showIcon
+                                            onHide={this.hideSaveTooltip()}
                                         />
                                     ) : null
                                 }
@@ -259,7 +278,7 @@ class InviteMemberForm extends React.Component{
                 isShowCloseBtn={true}
                 title={Intl.get('sales.home.invite.member', '邀请成员')}
                 onClosePanel={this.props.closeRightPanel}
-                content={this.renderInviteMember()}
+                content={ this.state.isShowContinueInvitePanel ? this.renderContinueInviteMember() : this.renderInviteMember()}
             />
         );
     }
@@ -269,7 +288,6 @@ InviteMemberForm.propTypes = {
     form: PropTypes.form,
     teamList: PropTypes.array,
     closeRightPanel: PropTypes.func,
-    returnContinueInvitePanel: PropTypes.func,
 };
 
 module.exports = Form.create()(InviteMemberForm);

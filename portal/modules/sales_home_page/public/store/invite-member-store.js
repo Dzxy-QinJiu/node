@@ -14,6 +14,8 @@ class InviteMemberStore {
         this.userNameError = false;// 用户名唯一性验证出错
         this.emailExist = false;// 邮箱是否已存在
         this.emailError = false;// 邮件唯一性验证出错
+        // 是否显示继续邀请成员的面板，默认false,邀请成功后3s后才显示继续邀请面板
+        this.isShowContinueInvitePanel = false; 
 
         this.bindActions(InviteMemberAction);
     }
@@ -77,6 +79,11 @@ class InviteMemberStore {
     resetEmailFlags() {
         this.emailExist = false;
         this.emailError = false;
+    }
+    // 显示邀请成员面板
+    showInviteMemberPanel(flag) {
+        this.inviteResult = '';
+        this.isShowContinueInvitePanel = flag;
     }
 }
 
