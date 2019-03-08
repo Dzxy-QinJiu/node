@@ -154,10 +154,10 @@ class ProductList extends Component {
         let saveStatus = this.state.saveStatus;
         data[index].isEditting = !data[index].isEditting;
         let isAddApp = this.state.isAddApp;
-        let currentEditKey = data[index].id;
-        // 取消后需要清空当前选中的编辑项
-        if(!data[index].isEditting) {
-            currentEditKey = null;
+        let currentEditKey = null;
+        // 当前是否处于编辑状态
+        if(data[index].isEditting) {
+            currentEditKey = data[index].id;
         }
         // 判断是否是添加的产品取消, 是则要删除这个数据
         if(type === DISPLAY_TYPES.ADD) {
@@ -426,17 +426,19 @@ class ProductList extends Component {
             <div className='product-title'>
                 <span className='app-icon-name'>
                     {appName ? (
-                        matchAppObj && matchAppObj.client_image ? (
-                            <span className='app-self'>
-                                <img src={matchAppObj.client_image} />
-                            </span>
-                        ) : (
-                            <span className='app-default'>
-                                <i className='iconfont icon-app-default'></i>
-                            </span>
-                        )
+                        <span>
+                            {matchAppObj && matchAppObj.client_image ? (
+                                <span className='app-self'>
+                                    <img src={matchAppObj.client_image} />
+                                </span>
+                            ) : (
+                                <span className='app-default'>
+                                    <i className='iconfont icon-app-default'></i>
+                                </span>
+                            )}
+                            <span className='app-name' title={appName}>{appName}</span>
+                        </span>
                     ) : null}
-                    <span className='app-name' title={appName}>{appName}</span>
                 </span>
                 {/*
                   *  是否正在编辑中
@@ -450,7 +452,7 @@ class ProductList extends Component {
                             className="btn-bar"
                             onClick={this.handleDelete.bind(this, index, DISPLAY_TYPES.ADD)}
                             title={Intl.get('common.delete', '删除')}>
-                            <Icon type="close" theme="outlined" />
+                            <Icon type="close" theme="outlined"/>
                         </span> : null
                 ) : this.state.isAddApp || this.state.currentEditKey !== null ? null :
                     <Spin spinning={this.state.saveStatus[index].loading} className='float-r'>
@@ -459,8 +461,10 @@ class ProductList extends Component {
                                 title={this.props.editBtnTip}
                                 onClick={this.showEdit.bind(this, index, DISPLAY_TYPES.UPDATE)}
                             />
-                            <Popconfirm title={`${Intl.get('crm.contact.delete.confirm', '确认删除')}?`} onConfirm={this.handleDelete.bind(this, index, DISPLAY_TYPES.DELETE)}>
-                                <span title={Intl.get('common.delete', '删除')}><i className='iconfont icon-delete'></i></span>
+                            <Popconfirm title={`${Intl.get('crm.contact.delete.confirm', '确认删除')}?`}
+                                onConfirm={this.handleDelete.bind(this, index, DISPLAY_TYPES.DELETE)}>
+                                <span title={Intl.get('common.delete', '删除')}><i
+                                    className='iconfont icon-delete'></i></span>
                             </Popconfirm>
                         </span>
                     </Spin>
