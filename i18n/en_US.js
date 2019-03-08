@@ -1419,6 +1419,7 @@ var en_US = {
     'crm.contact.email.add': 'Add email',//添加邮箱
     'crm.second.sales': 'Second Sales',//联合跟进人
     'crm.apply.active.email.tip': 'Your mailbox is not activated. Please {activeEmail} first',//您的邮箱未激活，请先{aciveEmail}
+    'crm.this.week.contact': 'Customers contacted this week',//本周联系过的客户
     'crm.record.unupload.phone': 'Unuploaded voice recordings, unable to play',//未上传通话录音，无法播放
 
     // 客户详情中，合同项
@@ -2199,7 +2200,7 @@ var en_US = {
     'sales.homepage.will.expire.user': 'Will Expired Account',//即将到期用户
     'failed.get.crm.list': 'Failed to get the customer list',//获取客户列表失败
     'sale.homepage.no.tip.more': 'Never show',//不再提示
-    'failed.set.no.email.tip': 'Failed to setting not to show this tip ever',//设置不再提示邮箱激活提醒失败
+    'failed.set.no.tip': 'Failed to set not to show this tip ever',//设置失败
     'ketao.frontpage.illegal.location.login': 'Login offsite',//异地登录
     'ketao.frontpage.illeagl.login': 'Disabled customers login',//停用客户登录
     'ketao.frontpage.focus.customer.login': 'Focused customer login',//关注客户登录
@@ -2575,7 +2576,6 @@ var en_US = {
     'failed.get.all.sales.oppotunity': 'Failed to get all sales oppotunities',//获取全部销售机会申请失败
     'failed.get.all.leave.list': 'Failed to get all leave applies',//获取全部请假申请失败
     'failed.get.self.leave.apply': 'Failed to get my business trip applies',//获取我的出差申请失败
-    'failed.get.worklist.bussiness.apply': 'Failed to get bussiness trip applies to be approved by me',//获取由我审批的出差申请失败
     'failed.get.worklist.sales.oppotunity.apply': 'Failed to get sales oppotunities to be approved by me',//获取由我审批的销售机会申请失败
     'failed.get.worklist.leave.apply': 'Failed to get leave applies to be approved by me',//获取由我审批的请假申请失败
     'add.leave.apply': 'Add apply',//添加申请
@@ -2699,7 +2699,7 @@ var en_US = {
     'apply.approve.wait.upload': 'Waiting for {uploader} to upload',//待{uploader}上传
     'apply.approve.confirm.finish': 'Confirmation completed',//确认完成
     'apply.failed.get.type.application': 'Failed to get all {type} applies',//获取全部{type}申请失败
-    'apply.failed.get.my.worklist.application': 'Failed to get applies to be approved by me',//获取由我审批的{type}申请失败
+    'apply.failed.get.my.worklist.application': 'Failed to get applies to be approved by me',//获取待我审批的{type}申请失败
     'apply.approver.confirm.task.done': 'Confirm the task done',//确认任务完成
     'failed.get.reply.comment': 'Failed to get comment lists',//获取回复列表失败
     'apply.approve.upload.no.container.space': 'Please do not has space in your file name!',//文件名称中不要含有空格！
@@ -2785,5 +2785,13 @@ var en_US = {
     'contract.238': 'Within {time} days from the date of signing ({date}), the receivable shall be {amount} yuan',//从签订日起{time}日内({date})前,应收回款{amount}元
     'contract.239': 'Modification date',//修改日期
     'contract.240': 'Modify cost type',//修改费用类型
+    'apply.list.my.approved': 'Apply approved by me',//我审批过
+    'apply.approve.sales.opportunity': 'Sales opportunity',//销售机会
+    'apply.has.approved.by.me': 'Failed to get {type} application approved by me',//获取我审批过的{type}申请失败
+
+    'apply.setting.password.auto': 'Generate passwords automatically ',//自动生成密码
+    'apply.not.setting.password': 'Please input password!',//请手动输入密码！
+    'clue.import.file.type': 'Only files in {type} format can be imported!',//只能导入{type}格式的文件！
+    'common.callsystem.get.faild': 'Failed to get the organization phone system configuration',// 获取组织电话系统配置失败
 };
 export default en_US;

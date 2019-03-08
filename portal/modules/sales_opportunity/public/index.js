@@ -22,7 +22,6 @@ import ApplyViewDetail from './view/apply-view-detail';
 var SalesOpportunityApplyUtils = require('./utils/sales-oppotunity-utils');
 let userData = require('../../../public/sources/user-data');
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 class SalesOpportunityApplyManagement extends React.Component {
     state = {
@@ -103,7 +102,7 @@ class SalesOpportunityApplyManagement extends React.Component {
             type: 'business_opportunities'
         };
         //如果是选择的全部类型，不需要传status这个参数
-        if (this.state.applyListType !== 'all') {
+        if (this.state.applyListType !== APPLY_TYPE_STATUS_CONST.ALL) {
             params.status = this.state.applyListType;
         }
         //去除查询条件中值为空的项
@@ -111,24 +110,24 @@ class SalesOpportunityApplyManagement extends React.Component {
         return params;
     }
 
-    //获取全部请假申请
+    //获取销售机会申请
     getAllSalesOpportunityApplyList = () => {
         var queryObj = this.getQueryParams();
         SalesOpportunityApplyAction.getAllSalesOpportunityApplyList(queryObj,(count) => {
             //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
-            if (this.state.applyListType === 'ongoing') {
+            if (this.state.applyListType === APPLY_TYPE_STATUS_CONST.ONGOING) {
                 //触发更新待审批数
                 commonMethodUtil.updateUnapprovedCount('unhandleBusinessOpportunities','SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
             }
         });
     };
 
-    //获取自己发起的请假申请
+    //获取自己发起的销售机会申请
     getSelfSalesOpportunityApplyList() {
         SalesOpportunityApplyAction.getSelfApplyList();
     }
 
-    //获取由自己审批的请假申请
+    //获取由自己审批的销售机会申请
     getWorklistSalesOpportunityApplyList() {
         SalesOpportunityApplyAction.getWorklistSalesOpportunityApplyList();
     }
@@ -166,18 +165,7 @@ class SalesOpportunityApplyManagement extends React.Component {
     };
 
     getApplyListType = () => {
-        switch (this.state.applyListType) {
-            case 'all':
-                return Intl.get('user.apply.all', '全部申请');
-            case 'ongoing':
-                return Intl.get('leave.apply.my.worklist.apply', '待我审批');
-            case 'pass':
-                return Intl.get('user.apply.pass', '已通过');
-            case 'reject':
-                return Intl.get('user.apply.reject', '已驳回');
-            case 'cancel':
-                return Intl.get('user.apply.backout', '已撤销');
-        }
+        return commonMethodUtil.getApplyListTypeDes(this.state.applyListType);
     };
     menuClick = (obj) => {
         let selectType = '';
@@ -254,6 +242,10 @@ class SalesOpportunityApplyManagement extends React.Component {
         if (!noShowApplyDetail) {
             applyDetail = {detail: _.get(this.state, 'applyListObj.list[0]'), apps: this.state.allApps};
         }
+        var salesOpportunityMenuList = _.cloneDeep(selectMenuList);
+        salesOpportunityMenuList.push({
+            key: APPLY_TYPE_STATUS_CONST.MYAPPROVED, value: Intl.get('apply.list.my.approved', '我审批过'),
+        });
         return (
             <div className="sales-opportunity-apply-container">
                 <div className="leave-apply-list-detail-wrap">
@@ -264,7 +256,7 @@ class SalesOpportunityApplyManagement extends React.Component {
                             addPrivilege='MEMBER_BUSINESSOPPO_APPLY'
                             showAddApplyPanel={this.showAddApplyPanel}
                             addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
-                            menuList={selectMenuList}
+                            menuList={salesOpportunityMenuList}
                             refreshPage={this.refreshPage}
                             showUpdateTip={this.state.showUpdateTip}
                             showRefreshIcon = {applyListType === APPLY_TYPE_STATUS_CONST.ALL || applyListType === APPLY_TYPE_STATUS_CONST.ONGOING}

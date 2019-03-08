@@ -777,7 +777,7 @@ class ClueDetailOverview extends React.Component {
                             <div className="clue-info-label">
                                 {Intl.get('crm.96', '地域')}：
                             </div>
-                            <div className="clue-info-detail">
+                            <div className="clue-info-detail area-item">
                                 {curClue.province}
                                 {curClue.city}
                             </div>
@@ -829,7 +829,7 @@ class ClueDetailOverview extends React.Component {
                     </div>
                     <div className="clue-info-item">
                         <div className="clue-info-label">
-                            {Intl.get('crm.5', '联系方式')}
+                            {Intl.get('crm.5', '联系方式')}：
                         </div>
                         <div className="clue-info-detail clue-contact-container">
                             {_.map(curClue.contacts, (contactItem) => {

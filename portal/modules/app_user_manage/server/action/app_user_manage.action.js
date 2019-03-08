@@ -170,6 +170,9 @@ exports.submitApply = function(req, res) {
         var bytes = CryptoJS.AES.decrypt(password, 'apply_change_password');
         password = bytes.toString(CryptoJS.enc.Utf8);
     }
+    if (req.body.passwordObvious){
+        password = req.body.passwordObvious;
+    }
     //申请类型
     var type = req.body.type || '';
 

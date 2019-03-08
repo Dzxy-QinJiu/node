@@ -18,5 +18,14 @@ module.exports = {
             'needLogin': true
         },
         'privileges': []
+    },{
+        //获取组织电话系统配置
+        'method': 'get',
+        'path': '/rest/global/callsystem/config',
+        'handler': 'getCallSystemConfig',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': ['CALLSYSTEM_CONFIG_MANAGE','ORGANIZATION_BASE_PERMISSION']
     }]
 };

@@ -60,6 +60,7 @@ SalesHomeStore.prototype.setInitState = function() {
     this.isLoadingExpireUserList = false;
     this.expireUserLists = {};//获取不同应用，在不同时间段之内即将过期的试用用户（一天，一周，一个月）和签约用户（半年）列表
     this.setWebConfigStatus = '';//设置个人配置的状态
+    this.setWebConfigClientStatus = '';//设置个人配置的坐席号状态
     this.salesCallStatus = {};//各销售对应的状态
     // 获取通话总次数TOP10的数据
     this.callTotalCountObj = {
@@ -77,7 +78,8 @@ SalesHomeStore.prototype.setInitState = function() {
     this.teamMemberCountList = [];
     this.emailShowObj = {
         isShowActiveEmail: false, //是否展示邮箱激活提示
-        isShowAddEmail: false//是否展示添加邮箱的提示, 不能仅用是否有email字段进行判断，原因是如果数据获取慢的时候，也会在页面上展示出添加邮箱的提示
+        isShowAddEmail: false,//是否展示添加邮箱的提示, 不能仅用是否有email字段进行判断，原因是如果数据获取慢的时候，也会在页面上展示出添加邮箱的提示
+        isShowSetClient: false//是否展示设置电话系统的提示
     };
 };
 // 重置回访记录列表状态
@@ -640,14 +642,14 @@ SalesHomeStore.prototype.getExpireUser = function(data) {
     }
 };
 //是否展示邮箱激活的提示
-SalesHomeStore.prototype.getShowActiveEmailObj = function(result) {
+SalesHomeStore.prototype.getShowActiveEmailOrClientConfig = function(result) {
     if (_.isObject(result)){
         this.emailShowObj = result;
     }
 };
 //设置个人信息配置
 SalesHomeStore.prototype.setWebsiteConfig = function(userInfo) {
-    if (userInfo.loading) {
+    if (userInfo.emailLoading) {
         this.setWebConfigStatus = 'loading';
     }
 };

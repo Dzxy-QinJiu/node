@@ -38,3 +38,12 @@ exports.getMyUserApplyWorkList = function(req, res) {
             res: res
         }, null);
 };
+//我审批过的申请列表
+exports.getApplyListApprovedByMe = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: '/rest/base/v1/workflow/applylist/self/approved',
+            req: req,
+            res: res
+        }, req.query);
+};

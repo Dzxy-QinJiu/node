@@ -12,7 +12,8 @@
     white-space: normal;
     word-wrap: break-word;
     word-break: break-all;
-  }
+    float: left;
+  };
   .no-data-descr{
     color: #ccc;
     a{
@@ -55,14 +56,30 @@
     margin-bottom: 10px;
   }
 }
-.edit-container.hover-show-edit{
-  .icon-edit-btn{
+
+//编辑状态
+.edit-container {
+  overflow: hidden;
+  position: relative;
+  .basic-info-text {
+    float: left;
+    width: 90%;
+  }
+  .icon-edit-btn {
+    float: left;
+    width: 10%;
+    position: absolute;
+    bottom: 0;
+  }
+}
+
+.edit-container.hover-show-edit {
+  overflow: hidden;
+  position: relative;
+  .icon-edit-btn {
     display: none;
   }
-  &:hover{
+  &:hover {
     background: #E8F5FE;
-    .icon-edit-btn{
-      display: inline-block;
-    }
   }
 }

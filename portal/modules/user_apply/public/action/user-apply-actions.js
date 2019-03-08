@@ -46,7 +46,7 @@ function UserApplyActions() {
                 this.dispatch({
                     error: true,
                     loading: false,
-                    errorMsg: xhr.responseJSON || Intl.get('apply.failed.get.my.worklist.application', '获取由我审批的{type}申请失败', {type: Intl.get('crm.detail.user', '用户')})
+                    errorMsg: xhr.responseJSON || Intl.get('apply.failed.get.my.worklist.application', '获取待我审批的{type}申请失败', {type: Intl.get('crm.detail.user', '用户')})
                 });
             }
             );

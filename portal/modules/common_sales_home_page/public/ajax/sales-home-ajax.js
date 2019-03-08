@@ -18,6 +18,21 @@ exports.getPhoneTotal = function(reqData, type) {
     });
     return Deferred.promise();
 };
+exports.activeUserEmail = function() {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/user_email/active',
+        dataType: 'json',
+        type: 'post',
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
 //获取客户统计总数
 var customerTotalAjax;
 exports.getCustomerTotal = function(reqData) {
@@ -314,6 +329,25 @@ exports.getClueCustomerList = function(constObj, unexist_fields) {
         data: data,
         success: function(list) {
             Deferred.resolve(list);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//对网站进行个性化设置
+var setWebSiteConfigAjax;
+exports.setWebsiteConfig = function(queryObj) {
+    var Deferred = $.Deferred();
+    setWebSiteConfigAjax && setWebSiteConfigAjax.abort();
+    setWebSiteConfigAjax = $.ajax({
+        url: '/rest/setWebsiteConfig',
+        dataType: 'json',
+        type: 'post',
+        data: queryObj,
+        success: function(data) {
+            Deferred.resolve(data);
         },
         error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);

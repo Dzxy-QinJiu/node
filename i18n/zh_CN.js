@@ -1434,8 +1434,8 @@ var zh_CN = {
     'crm.contact.email.add': '添加邮箱',
     'crm.second.sales': '联合跟进人',
     'crm.apply.active.email.tip': '您的邮箱未激活，请先{aciveEmail}',
+    'crm.this.week.contact': '本周联系过的客户',
     'crm.record.unupload.phone': '未上传通话录音，无法播放',
-
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
     'crm.contract.validity.one.year': '有效期一年',
@@ -2238,7 +2238,7 @@ var zh_CN = {
     'sales.homepage.will.expire.user': '即将到期用户',
     'failed.get.crm.list': '获取客户列表失败',
     'sale.homepage.no.tip.more': '不再提示',
-    'failed.set.no.email.tip': '设置不再提示邮箱激活提醒失败',
+    'failed.set.no.tip': '设置失败',
     'ketao.frontpage.illegal.location.login': '异地登录',
     'ketao.frontpage.illeagl.login': '停用客户登录',
     'ketao.frontpage.focus.customer.login': '关注客户登录',
@@ -2808,5 +2808,12 @@ var zh_CN = {
     'contract.238': '从签订日起{time}日内({date})前,应收回款{amount}元',
     'contract.239': '修改日期',
     'contract.240': '修改费用类型',
+    'apply.list.my.approved': '我审批过',
+    'apply.approve.sales.opportunity': '销售机会',
+    'apply.has.approved.by.me': '获取我审批过的{type}申请失败',
+    'apply.setting.password.auto': '自动生成密码',
+    'apply.not.setting.password': '请手动输入密码！',
+    'clue.import.file.type': '只能导入{type}格式的文件！',
+    'common.callsystem.get.faild': '获取组织电话系统配置失败',
 };
 export default zh_CN;

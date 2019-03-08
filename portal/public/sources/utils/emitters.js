@@ -165,3 +165,8 @@ export { resizeEmitter };
 const analysisCustomerListEmitter = new EventEmitter();
 analysisCustomerListEmitter.SHOW_CUSTOMER_LIST = 'show_customer_list';
 export { analysisCustomerListEmitter };
+
+// 列表面板事件
+const listPanelEmitter = new EventEmitter();
+listPanelEmitter.SHOW = 'show_list_panel';
+export { listPanelEmitter };

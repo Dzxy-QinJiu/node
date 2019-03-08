@@ -734,7 +734,10 @@ exports.submitApply = function(req, res, requestObj) {
     } else {
         delete requestObj.delay;
         delete requestObj.end_date;
-        delete requestObj.password;
+        //如果是申请新用户（试用、签约）的审批，不用删除密码
+        if (![CONSTANTS.APPLY_USER_OFFICIAL,CONSTANTS.APPLY_USER_TRIAL].includes(requestObj.type)){
+            delete requestObj.password;
+        }
         if (requestObj.user_name) {
             applyUrl = AppUserRestApis.submitNewApply;
         } else {

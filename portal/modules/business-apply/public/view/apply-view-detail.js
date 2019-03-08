@@ -20,20 +20,15 @@ import ApplyDetailCustomer from 'CMP_DIR/apply-components/apply-detail-customer'
 import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
-import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_LIST_LAYOUT_CONSTANTS,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 import {getApplyTopicText,getApplyResultDscr,getApplyStatusTimeLineDesc,getFilterReplyList,handleDiffTypeApply,formatUsersmanList,updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import {handleTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-const salesmanAjax = require('MOD_DIR/common/public/ajax/salesman');
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import AlertTimer from 'CMP_DIR/alert-timer';
-import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE, APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
-var timeoutFunc;//定时方法
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import {APPLY_APPROVE_TYPES, APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -551,6 +546,7 @@ class ApplyViewDetail extends React.Component {
                     <span className="apply-type-tip">
                         {getApplyTopicText(detailInfo)}
                     </span>
+                    {this.renderDetailBottom()}
                 </div>
                 <div className="apply-detail-content" style={{height: applyDetailHeight}} ref="geminiWrap">
                     <GeminiScrollbar ref="gemini">
@@ -569,7 +565,6 @@ class ApplyViewDetail extends React.Component {
                     </GeminiScrollbar>
 
                 </div>
-                {this.renderDetailBottom()}
                 {this.renderCancelApplyApprove()}
             </div>
         );

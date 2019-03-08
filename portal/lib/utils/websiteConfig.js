@@ -2,6 +2,7 @@ import routeList from '../../modules/common/route';
 import ajax from '../../modules/common/ajax';
 import CONSTS from 'LIB_DIR/consts';
 import { storageUtil } from 'ant-utils';
+var webconfigAjax = require('../../modules/common/public/ajax/web-site-config');
 
 //设置网站个性化配置
 var websiteConfig = {
@@ -40,26 +41,30 @@ var websiteConfig = {
         });
     },
     //获取网站个性化配置
-    getWebsiteConfig: function(callback) {
-        const route = _.find(routeList, route => route.handler === 'getWebsiteConfig');
-        const arg = {
-            url: route.path,
-            type: route.method
-        };
-        ajax(arg).then(result => {
+    getWebsiteConfig: function(callback,totalData) {
+        webconfigAjax.getWebsiteConfig().then(result => {
             if (result && result.personnel_setting) {
                 storageUtil.local.set('websiteConfig', JSON.stringify(result.personnel_setting));
             }else if (result && !result.personnel_setting){
                 storageUtil.local.set('websiteConfig', JSON.stringify({}));
             }
-            //存储是否点击了某个模块
-            if (result && result.module_record){
-                if (_.isFunction(callback)){
-                    callback(result.module_record);
-                }
-            }else if (result && !result.module_record){
-                if (_.isFunction(callback)){
-                    callback([]);
+            //是否需要全部的数据
+            if (totalData){
+                callback(result);
+            }else{
+                //存储是否点击了某个模块
+                if (result && result.module_record){
+                    if (_.isFunction(callback)){
+                        callback(result.module_record);
+                    }
+                }else if (result && !result.module_record){
+                    if (_.isFunction(callback)){
+                        callback([]);
+                    }
+                }else{
+                    if (_.isFunction(callback)){
+                        callback([]);
+                    }
                 }
             }
         });

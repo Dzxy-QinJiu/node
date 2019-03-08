@@ -135,7 +135,7 @@ class AppUserManage extends React.Component {
             var app_id = this.props.location.state && this.props.location.state.app_id;
             var _this = this;
             //有客户名时，直接按照客户名查询，应用选中全部
-            if (this.props.history.action === 'PUSH') {
+            if (_.get(this.props.history, 'action') === 'PUSH') {
                 //查询团队列表
                 AppUserAction.getTeamLists();
                 //针对不同情况，查询用户列表

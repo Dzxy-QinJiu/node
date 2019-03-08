@@ -2,6 +2,9 @@ var salesHomeAjax = require('../ajax/sales-home-ajax');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 var salesClueAjax = require('MOD_DIR/clue_customer/public/ajax/clue-customer-ajax');
+var userData = require('../../../../public/sources/user-data');
+import UserAjax from '../../../common/public/ajax/user';
+import {afterGetExtendUserInfo} from 'PUB_DIR/sources/utils/common-method-util';
 function SalesHomeActions() {
     this.generateActions(
         'setInitState',//设置初始化数据
@@ -145,6 +148,48 @@ function SalesHomeActions() {
                 errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索客户列表失败')
             });
         });
+    };
+
+    //获取是否展示邮件激活提示
+    this.getShowActiveEmailOrClientConfig = function() {
+        //先获取个人资料
+        var user_id = userData.getUserData().user_id;
+        UserAjax.getUserByIdAjax().resolvePath({
+            user_id: user_id
+        }).sendRequest().success((data) => {
+            afterGetExtendUserInfo(data, this);
+        });
+    };
+    //邮箱激活
+    this.activeUserEmail = function(callback) {
+        salesHomeAjax.activeUserEmail().then(function(data) {
+            if (callback) {
+                if (data) {
+                    callback({error: false, data: data});
+                } else {
+                    callback({error: true, errorMsg: Intl.get('user.info.active.user.email.failed','激活失败')});
+                }
+            }
+        }, function(errorMsg) {
+            if (callback) {
+                callback({error: true, errorMsg: errorMsg || Intl.get('user.info.active.user.email.failed','激活失败')});
+            }
+        });
+    };
+    //设置邮箱激活不再提醒
+    this.setWebsiteConfig = function(queryObj,callback) {
+        this.dispatch({emailLoading: true, error: false});
+        salesHomeAjax.setWebsiteConfig(queryObj).then((resData) => {
+            if (callback && _.isFunction(callback)){
+                callback();
+            }
+        },(errorMsg) => {
+            if (callback && _.isFunction(callback)){
+                callback(errorMsg || Intl.get('failed.set.no.tip','设置失败'));
+            }
+        }
+        );
+
     };
 }
 

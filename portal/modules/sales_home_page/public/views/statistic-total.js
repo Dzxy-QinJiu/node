@@ -6,11 +6,21 @@ var React = require('react');
 let Icon = require('antd').Icon;
 let classNames = require('classnames');
 let SalesHomeAction = require('../action/sales-home-actions');
+var SalesHomeStore = require('../store/sales-home-store');
 let viewConstant = require('../util/constant').VIEW_CONSTANT;//视图常量
 let TimeUtil = require('../../../../public/sources/utils/time-format-util');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import {listPanelEmitter} from 'PUB_DIR/sources/utils/emitters';
 
 class StatisticTotal extends React.Component {
+    static propTypes = {
+        customerTotalObj: PropTypes.object,
+        userTotalObj: PropTypes.object,
+        phoneTotalObj: PropTypes.object,
+        callBackRecord: PropTypes.object,
+        activeView: PropTypes.string,
+    };
+
     //渲染等待效果、暂无数据的提示
     renderTooltip = (totalObj) => {
         if (totalObj.resultType === 'loading') {
@@ -28,7 +38,7 @@ class StatisticTotal extends React.Component {
             return this.renderTooltip(customerTotalObj);
         }
         return (<div className="statistic-total-content">
-            <span className="crm-add-data add-data-style">
+            <span className="crm-add-data add-data-style" onClick={this.showListPanel.bind(this, 'customer')}>
                 <span className="total-data-desc">{Intl.get('sales.home.new.add', '新增')}&nbsp;</span>
                 <span className='num'>{customerData.added || 0}</span>
             </span>
@@ -138,6 +148,35 @@ class StatisticTotal extends React.Component {
         }
         SalesHomeAction.setActiveView(view);
     };
+
+    //显示客户或用户列表面板
+    showListPanel(listType, e) {
+        let typeName = '';
+
+        if (listType === 'customer') {
+            typeName = '客户';
+        } else if (listType === 'user') {
+            typeName = '用户';
+        }
+
+        Trace.traceEvent(e, '点击新增' + typeName + '数查看详细列表');
+
+        const storeData = SalesHomeStore.getState();
+        const startTime = storeData.start_time;
+        const endTime = storeData.end_time;
+        const paramObj = {
+            listType,
+            rangParams: JSON.stringify([{
+                from: startTime,
+                to: endTime,
+                name: 'start_time',
+                type: 'time'
+            }]),
+            data: JSON.stringify({}),
+        };
+
+        listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
+    }
 
     render() {
         //响应式样式 col-xs-12 col-sm-6 col-md-6 col-lg-3（四个框时的样式）

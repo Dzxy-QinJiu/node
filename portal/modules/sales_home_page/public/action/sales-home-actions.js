@@ -4,6 +4,8 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 let scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 var _ = require('lodash');
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
+import UserAjax from '../../../common/public/ajax/user';
+import {afterGetExtendUserInfo} from 'PUB_DIR/sources/utils/common-method-util';
 
 function SalesHomeActions() {
     this.generateActions(
@@ -188,10 +190,13 @@ function SalesHomeActions() {
         );
     };
     //获取是否展示邮件激活提示
-    this.getShowActiveEmailObj = function() {
+    this.getShowActiveEmailOrClientConfig = function() {
+        //先获取个人资料
         var user_id = userData.getUserData().user_id;
-        salesHomeAjax.getShowActiveEmailObj(user_id).then((obj) => {
-            this.dispatch(obj);
+        UserAjax.getUserByIdAjax().resolvePath({
+            user_id: user_id
+        }).sendRequest().success((data) => {
+            afterGetExtendUserInfo(data, this);
         });
     };
     //邮箱激活
@@ -212,18 +217,17 @@ function SalesHomeActions() {
     };
     //设置邮箱激活不再提醒
     this.setWebsiteConfig = function(queryObj,callback) {
-        this.dispatch({loading: true, error: false});
+        this.dispatch({emailLoading: true, error: false});
         salesHomeAjax.setWebsiteConfig(queryObj).then((resData) => {
             if (callback && _.isFunction(callback)){
                 callback();
             }
         },(errorMsg) => {
             if (callback && _.isFunction(callback)){
-                callback(errorMsg || Intl.get('failed.set.no.email.tip','设置不再提示邮箱激活提醒失败'));
+                callback(errorMsg || Intl.get('failed.set.no.tip','设置失败'));
             }
         }
         );
-
     };
     // 获取回访列表
     this.getCallBackList = function(params, filterObj) {

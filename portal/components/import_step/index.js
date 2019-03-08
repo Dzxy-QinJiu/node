@@ -100,6 +100,7 @@ class ImportTemplate extends React.Component {
                     onItemListImport={this.onItemListImport}
                     uploadActionName={this.props.uploadActionName}
                     importType={this.props.importType}
+                    regRules={this.props.regRules}
                 />
                 <div className="down-load-template">
                     <a data-tracename="点击下载模板" href={this.props.templateHref}>
@@ -234,6 +235,7 @@ ImportTemplate.defaultProps = {
     onItemListImport: noop,//导入时的函数
     doImportAjax: noop,//确认导入时的函数
     repeatAlertMessage: '',//有重复数据后的提示信息
+    regRules: [],//文件类型的校验规则
 };
 ImportTemplate.propTypes = {
     uploadActionName: PropTypes.string,
@@ -247,5 +249,6 @@ ImportTemplate.propTypes = {
     doImportAjax: PropTypes.func,
     getItemPrevList: PropTypes.func,
     repeatAlertMessage: PropTypes.string,//有重复数据后的提示信息
+    regRules: PropTypes.object,
 };
 export default ImportTemplate;

@@ -356,3 +356,28 @@ exports.showDisabledCallTip = function() {
         return Intl.get('sales.role.has.not.setting.phone.systerm', '您尚未开通电话系统或未设置座席号，请通知管理员!');
     }
 };
+
+//获取组织电话系统配置
+exports.getCallSystemConfig = function() {
+    return new Promise((resolve, reject) => {
+        const userProperty = 'callsystem_config';
+        let callsystemConfig = getUserData()[userProperty];
+        if (callsystemConfig) {
+            resolve(callsystemConfig);
+        } else {
+            $.ajax({
+                url: '/rest/global/callsystem/config',
+                type: 'get',
+                dataType: 'json',
+                success: data => {
+                    //保存到userData中
+                    setUserData(userProperty, data);
+                    resolve(data);
+                },
+                error: xhr => {
+                    reject(xhr.responseJSON);
+                }
+            });
+        }
+    });
+};

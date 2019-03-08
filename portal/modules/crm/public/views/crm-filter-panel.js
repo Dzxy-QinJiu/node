@@ -67,6 +67,9 @@ const otherFilterArray = [{
 }, {
     name: Intl.get('crm.filter.team.customer', '团队客户'),
     value: 'team_customer'
+},{
+    name: Intl.get('crm.this.week.contact', '本周联系过的客户'),
+    value: 'this_week_contacted'
 }];
 //只有管理员可以过滤未分配的客户
 if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
