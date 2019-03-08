@@ -4,6 +4,7 @@
 
 import { storageUtil } from 'ant-utils';
 import Store from './store';
+import {DEFERRED_ACCOUNT_ANALYSIS_TITLE} from './consts';
 import { Select} from 'antd';
 const Option = Select.Option;
 const emitters = require('PUB_DIR/sources/utils/emitters');
@@ -62,7 +63,7 @@ class AppSelector extends React.Component {
     render() {
         let appList = _.cloneDeep(Store.appList);
 
-        if (this.props.currentPage.title === '延期帐号分析') {
+        if (this.props.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE) {
             appList.splice(0, 1);
         }
 

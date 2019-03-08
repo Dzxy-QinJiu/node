@@ -10,7 +10,7 @@ import TopBar from './top-bar';
 import HistoricHighDetail from './historic-high-detail';
 import AppSelector from './app-selector';
 import {getContextContent} from './utils';
-import {initialTime, STORED_APP_ID_KEY, CUSTOMER_IDS_FIELD} from './consts';
+import {initialTime, STORED_APP_ID_KEY, CUSTOMER_IDS_FIELD, DEFERRED_ACCOUNT_ANALYSIS_TITLE} from './consts';
 import {AntcAnalysis} from 'antc';
 import {Row, Col, Collapse} from 'antd';
 
@@ -288,11 +288,11 @@ class CurtaoAnalysis extends React.Component {
             adjustConditions = conditions => {
                 let defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY);
                 if (defaultAppId) {
-                    if (page.title === '延期帐号分析' && defaultAppId === 'all') {
+                    if (page.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE && defaultAppId === 'all') {
                         defaultAppId = [_.get(Store.appList, '[1].app_id')];
                     }
                 } else {
-                    if (page.title === '延期帐号分析') {
+                    if (page.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE) {
                         defaultAppId = _.get(Store.appList, '[1].app_id');
                     } else {
                         defaultAppId = 'all';
@@ -420,11 +420,11 @@ class CurtaoAnalysis extends React.Component {
         if (storedAppId) {
             defaultAppId = storedAppId.split(',');
 
-            if (this.state.currentPage.title === '延期帐号分析' && storedAppId === 'all') {
+            if (this.state.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE && storedAppId === 'all') {
                 defaultAppId = [_.get(Store.appList, '[1].app_id')];
             }
         } else {
-            if (this.state.currentPage.title === '延期帐号分析') {
+            if (this.state.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE) {
                 defaultAppId = [_.get(Store.appList, '[1].app_id')];
             } else {
                 defaultAppId = ['all'];
