@@ -64,6 +64,7 @@ class AppSelector extends React.Component {
         let appList = _.cloneDeep(Store.appList);
 
         if (this.props.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE) {
+            //去掉全部应用项
             appList.splice(0, 1);
         }
 
