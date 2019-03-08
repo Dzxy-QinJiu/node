@@ -689,66 +689,66 @@ exports.afterGetExtendUserInfo = (data,that) => {
             that.dispatch(responseObj);
         },true);
     }
-    exports.getApplyListTypeDes = (applyListType) => {
-        switch (applyListType) {
-            case 'all':
-                return Intl.get('user.apply.all', '全部申请');
-            case 'ongoing':
-                return Intl.get('leave.apply.my.worklist.apply', '待我审批');
-            case 'pass':
-                return Intl.get('user.apply.pass', '已通过');
-            case 'reject':
-                return Intl.get('user.apply.reject', '已驳回');
-            case 'cancel':
-                return Intl.get('user.apply.backout', '已撤销');
-            case 'myApproved':
-                return Intl.get('apply.list.my.approved', '我审批过');
-        }
-    };
-    exports.checkFileSizeLimit = (fileSize) => {
-        var sizeQualified = true, warningMsg = '';
-        _.forEach(REG_FILES_SIZE_RULES,(item) => {
-            if (!_.isUndefined(item.minValue)){
-                if (fileSize === item.minValue) {
-                    warningMsg = item.messageTips;
-                    sizeQualified = false;
-                    return false;
-                }
+};
+exports.getApplyListTypeDes = (applyListType) => {
+    switch (applyListType) {
+        case 'all':
+            return Intl.get('user.apply.all', '全部申请');
+        case 'ongoing':
+            return Intl.get('leave.apply.my.worklist.apply', '待我审批');
+        case 'pass':
+            return Intl.get('user.apply.pass', '已通过');
+        case 'reject':
+            return Intl.get('user.apply.reject', '已驳回');
+        case 'cancel':
+            return Intl.get('user.apply.backout', '已撤销');
+        case 'myApproved':
+            return Intl.get('apply.list.my.approved', '我审批过');
+    }
+};
+exports.checkFileSizeLimit = (fileSize) => {
+    var sizeQualified = true, warningMsg = '';
+    _.forEach(REG_FILES_SIZE_RULES,(item) => {
+        if (!_.isUndefined(item.minValue)){
+            if (fileSize === item.minValue) {
+                warningMsg = item.messageTips;
+                sizeQualified = false;
+                return false;
             }
-            if (_.isUndefined(item.minValue) && item.maxValue){
-                if (fileSize > item.maxValue) {
-                    warningMsg = item.messageTips;
-                    sizeQualified = false;
-                    return false;
-                }
+        }
+        if (_.isUndefined(item.minValue) && item.maxValue){
+            if (fileSize > item.maxValue) {
+                warningMsg = item.messageTips;
+                sizeQualified = false;
+                return false;
+            }
+        }
+    });
+    return {sizeQualified: sizeQualified,warningMsg: warningMsg};
+};
+exports.checkFileNameForbidRule = (filename, regnamerules) => {
+    var nameQualified = true, warningMsg = '';
+    if (_.isArray(regnamerules)){
+        _.forEach(regnamerules,(item) => {
+            if (filename.indexOf(item.value) >= 0){
+                warningMsg = item.messageTips;
+                nameQualified = false;
+                return false;
             }
         });
-        return {sizeQualified: sizeQualified,warningMsg: warningMsg};
-    };
-    exports.checkFileNameForbidRule = (filename, regnamerules) => {
-        var nameQualified = true, warningMsg = '';
-        if (_.isArray(regnamerules)){
-            _.forEach(regnamerules,(item) => {
-                if (filename.indexOf(item.value) >= 0){
-                    warningMsg = item.messageTips;
-                    nameQualified = false;
-                    return false;
-                }
-            });
-        }
-        return {nameQualified: nameQualified,warningMsg: warningMsg};
-    };
-    exports.checkFileNameAllowRule = (filename, regnamerules) => {
-        var nameQualified = true, warningMsg = '';
-        if (_.isArray(regnamerules)){
-            _.forEach(regnamerules,(item) => {
-                if (filename.indexOf(item.value) < 0){
-                    warningMsg = item.messageTips;
-                    nameQualified = false;
-                    return false;
-                }
-            });
-        }
-        return {nameQualified: nameQualified,warningMsg: warningMsg};
-    };
+    }
+    return {nameQualified: nameQualified,warningMsg: warningMsg};
+};
+exports.checkFileNameAllowRule = (filename, regnamerules) => {
+    var nameQualified = true, warningMsg = '';
+    if (_.isArray(regnamerules)){
+        _.forEach(regnamerules,(item) => {
+            if (filename.indexOf(item.value) < 0){
+                warningMsg = item.messageTips;
+                nameQualified = false;
+                return false;
+            }
+        });
+    }
+    return {nameQualified: nameQualified,warningMsg: warningMsg};
 };
