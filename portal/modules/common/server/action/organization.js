@@ -1,4 +1,5 @@
 var organizationService = require('../service/organization');
+let BackendIntl = require('../../../../../portal/lib/utils/backend_intl');
 /**
  * 获取组织列表
  */
@@ -27,9 +28,10 @@ exports.changeOrganization = function(req,res) {
  * 获取组织电话系统配置
  */
 exports.getCallSystemConfig = function(req,res) {
+    let backendIntl = new BackendIntl(req);
     organizationService.getCallSystemConfig(req,res).on('success' , function(data) {
         res.json(data);
     }).on('error' , function(codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message || '获取组织电话系统配置失败');
+        res.status(500).json(codeMessage && codeMessage.message || backendIntl.get('common.callsystem.get.faild', '获取组织电话系统配置失败'));
     });
 };

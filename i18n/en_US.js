@@ -2792,5 +2792,6 @@ var en_US = {
     'apply.setting.password.auto': 'Generate passwords automatically ',//自动生成密码
     'apply.not.setting.password': 'Please input password!',//请手动输入密码！
     'clue.import.file.type': 'Only files in {type} format can be imported!',//只能导入{type}格式的文件！
+    'common.callsystem.get.faild': 'Failed to get the organization phone system configuration',// 获取组织电话系统配置失败
 };
 export default en_US;

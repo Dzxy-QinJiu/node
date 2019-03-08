@@ -22,7 +22,7 @@ import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 const PRIVILEGE_MAP = {
     CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
 };
-import {formatRoundingData, isOrganizationEefung, isOrganizationCiviw} from 'PUB_DIR/sources/utils/common-method-util';
+import {formatRoundingData} from 'PUB_DIR/sources/utils/common-method-util';
 
 const isCommonSales = userData.getUserData().isCommonSales;
 
@@ -431,8 +431,6 @@ class WeeklyReportDetail extends React.Component {
         var queryObj = _.clone(this.getCallInfoParams());
         queryObj.deviceType = this.state.call_type;
         queryObj.return_type = 'user';
-        // 是否获取有效通话时长
-        queryObj.effective_phone = isOrganizationEefung() || isOrganizationCiviw();
 
         if (isCommonSales) {
             const userId = userData.getUserData().user_id;

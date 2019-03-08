@@ -2814,5 +2814,6 @@ var zh_CN = {
     'apply.setting.password.auto': '自动生成密码',
     'apply.not.setting.password': '请手动输入密码！',
     'clue.import.file.type': '只能导入{type}格式的文件！',
+    'common.callsystem.get.faild': '获取组织电话系统配置失败',
 };
 export default zh_CN;
