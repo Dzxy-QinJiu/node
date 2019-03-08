@@ -116,8 +116,8 @@ UserFormStore.prototype.checkOnlyEmail = function(result) {
 
 // 重置昵称（对应的是姓名）验证的标志
 UserFormStore.prototype.resetNickNameFlags = function() {
-    this.userNameExist = false;
-    this.userNameError = false;
+    this.nickNameError = false;
+    this.nickNameExist = false;
 };
 
 //重置用户验证的标志
