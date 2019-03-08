@@ -30,6 +30,13 @@ module.exports = [
         'passport': {
             'needLogin': true
         }
+    },{
+        'method': 'post',
+        'path': contractUrl + '/upload',
+        'handler': 'uploadContract',
+        'passport': {
+            'needLogin': true
+        }
     }, {
         'method': 'get',
         'path': contractUrl + '/upload/confirm/:flag',

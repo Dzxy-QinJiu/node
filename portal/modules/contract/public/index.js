@@ -8,14 +8,12 @@ import ajax from '../common/ajax';
 import appAjaxTrans from '../../common/public/ajax/app';
 import teamAjaxTrans from '../../common/public/ajax/team';
 import routeList from '../common/route';
-import TopNav from 'CMP_DIR//top-nav';
 const Checker = require('CMP_DIR//privilege/checker');
 const PrivilegeChecker = Checker.PrivilegeChecker;
 const hasPrivilege = Checker.hasPrivilege;
 import Filter from './filter';
 import List from './list';
 import ContractRightPanel from './right-panel';
-import ImportContractTemplate from './import_contract_template';
 const scrollBarEmitter = require('../../../public/sources/utils/emitters').scrollBarEmitter;
 import { AntcDatePicker as DatePicker } from 'antc';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
@@ -23,10 +21,21 @@ import Trace from 'LIB_DIR/trace';
 const RightPanel = rightPanelUtil.RightPanel;
 const salesmanAjax = require('../../common/public/ajax/salesman');
 const querystring = require('querystring');
-import { VIEW_TYPE, PRODUCT, PROJECT, SERVICE, PURCHASE, CATEGORY } from '../consts';
+import {
+    VIEW_TYPE,
+    PRODUCT,
+    PROJECT,
+    SERVICE,
+    PURCHASE,
+    CATEGORY,
+    SELLS_CONTRACT_COLUMNS,
+    BUY_CONTRACT_COLUMNS
+} from '../consts';
 //正则
 import { pathParamRegex } from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
+import ImportContractTemplateNew from 'CMP_DIR/import_step';
+import { REG_CLUE_FILES_TYPE_RULES } from 'PUB_DIR/sources/utils/consts';
 
 //根据路由地址获取页面类型  sell buy repayment
 const getTypeByPath = () => {
@@ -78,6 +87,7 @@ class Contract extends React.Component {
             exportRange: 'filtered',
             contractTemplateRightPanelShow: false,
             contractType: PURCHASE,
+            previewList: [],//预览列表
         };
     }
 
@@ -672,6 +682,7 @@ class Contract extends React.Component {
         this.setState({
             contractTemplateRightPanelShow: false
         });
+        this.confirmImport(false);
     };
 
     onDateChange = (startTime, endTime) => {
@@ -706,6 +717,58 @@ class Contract extends React.Component {
             this.getContractList(true);
         });
     };
+
+    onContractImport = (list) => {
+        this.setState({
+            previewList: list
+        });
+    };
+
+    doImportAjax = (successCallback,errCallback) => {
+        this.confirmImport(true, successCallback, errCallback,() => {
+            //刷新合同列表
+            this.getContractList();
+        });
+    };
+
+    confirmImport = (flag, successCallback, errCallback, cb) => {
+        const route = _.find(routeList, route => route.handler === 'uploadContractConfirm');
+
+        const params = {
+            flag: flag,
+        };
+
+        const arg = {
+            url: route.path,
+            type: route.method,
+            params: params
+        };
+
+        ajax(arg).then(result => {
+            if (_.isFunction(cb)) cb();
+            _.isFunction(successCallback) && successCallback();
+        }, (errorMsg) => {
+            _.isFunction(errCallback) && errCallback(errorMsg);
+        });
+    };
+
+    getContractPrevList = () => {
+        let previewColumns = [];
+        let type = this.state.type;
+        switch (type) {
+            case VIEW_TYPE.SELL:
+                //销售合同表格列
+                previewColumns = _.extend([], SELLS_CONTRACT_COLUMNS);
+                break;
+            case VIEW_TYPE.BUY:
+                //采购合同表格列
+                previewColumns = _.extend([], BUY_CONTRACT_COLUMNS);
+                break;
+        }
+
+        return previewColumns;
+    };
+
     handleChangeContractType = (addBtnView, {key}) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '添加合同>选择\'' + key + '\'类型');
         this.setState({
@@ -714,10 +777,12 @@ class Contract extends React.Component {
             this.showRightPanel(addBtnView);
         });
     };
+
     handleDeleteDetailCost() {
         let cost = this.refs.contractRightPanel.refs.detailCost.state.formData;
         this.refs.contractRightPanel.refs.detailCost.handleSubmit('delete', cost.id);
     }
+
     render() {
         //点击添加合同按钮时，默认打开哪个视图
         const addBtnView = this.state.type === VIEW_TYPE.SELL ? 'chooseType' : 'buyForm';
@@ -761,6 +826,9 @@ class Contract extends React.Component {
             (showModal = true, this.state.type === VIEW_TYPE.COST ? Intl.get('contract.127', '添加费用') : Intl.get('common.add', '添加') + this.state.contractType);
 
         const rightPanelClass = classNames('contract-panel-v2',['right-panel-' + this.state.type], {'show-modal': showModal});
+        // 下载合同模板地址(销售和采购)
+        const templateHref = this.state.type === VIEW_TYPE.SELL ? '/rest/sale_contract/download_template' : '/rest/purchase_contract/download_template';
+
         return (
             <div className="contract-list" data-tracename="合同管理">
                 <div className='button-zones'>
@@ -902,10 +970,18 @@ class Contract extends React.Component {
                     </div>
                 </div>
 
-                <ImportContractTemplate
+                <ImportContractTemplateNew
+                    uploadActionName='contracts'
+                    importType={Intl.get('contract.125', '合同')}
+                    templateHref={templateHref}
+                    uploadHref={'/rest/contract/v2/contract/upload/preview'}
+                    previewList={this.state.previewList}
                     showFlag={this.state.contractTemplateRightPanelShow}
-                    closeContractTemplatePanel={this.closeContractTemplatePanel}
-                    getContractList={this.getContractList.bind(this, true)}
+                    getItemPrevList={this.getContractPrevList}
+                    closeTemplatePanel={this.closeContractTemplatePanel}
+                    onItemListImport={this.onContractImport}
+                    doImportAjax={this.doImportAjax}
+                    regRules={REG_CLUE_FILES_TYPE_RULES}
                 />
 
                 <List
