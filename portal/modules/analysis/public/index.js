@@ -286,7 +286,18 @@ class CurtaoAnalysis extends React.Component {
         if (group.title === '账号分析') {
             isAppSelectorShow = true;
             adjustConditions = conditions => {
-                const defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY) || 'all';
+                let defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY);
+                if (defaultAppId) {
+                    if (page.title === '延期帐号分析' && defaultAppId === 'all') {
+                        defaultAppId = [_.get(Store.appList, '[1].app_id')];
+                    }
+                } else {
+                    if (page.title === '延期帐号分析') {
+                        defaultAppId = _.get(Store.appList, '[1].app_id');
+                    } else {
+                        defaultAppId = 'all';
+                    }
+                }
 
                 const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
                 _.set(appIdCondition, 'value', defaultAppId);
@@ -403,7 +414,22 @@ class CurtaoAnalysis extends React.Component {
 
     render() {
         const storedAppId = storageUtil.local.get(STORED_APP_ID_KEY);
-        const defaultAppId = storedAppId ? storedAppId.split(',') : ['all'];
+
+        let defaultAppId;
+
+        if (storedAppId) {
+            defaultAppId = storedAppId.split(',');
+
+            if (this.state.currentPage.title === '延期帐号分析' && storedAppId === 'all') {
+                defaultAppId = [_.get(Store.appList, '[1].app_id')];
+            }
+        } else {
+            if (this.state.currentPage.title === '延期帐号分析') {
+                defaultAppId = [_.get(Store.appList, '[1].app_id')];
+            } else {
+                defaultAppId = ['all'];
+            }
+        }
 
         return (
             <div className='curtao-analysis'>
@@ -418,7 +444,11 @@ class CurtaoAnalysis extends React.Component {
                     <Col span={21}>
                         {this.state.isAppSelectorShow ? (
                             <div className="page-top-bar">
-                                <AppSelector storedAppIdKey={STORED_APP_ID_KEY} defaultValue={defaultAppId}/>
+                                <AppSelector
+                                    storedAppIdKey={STORED_APP_ID_KEY}
+                                    defaultValue={defaultAppId}
+                                    currentPage={this.state.currentPage}
+                                />
                             </div>
                         ) : null}
                         {this.renderContent()}

@@ -15,11 +15,14 @@ class AppSelector extends React.Component {
         storedAppIdKey: '',
         //外部条件默认值
         defaultValue: ['all'],
+        //当前页
+        currentPage: {}
     };
 
     static propTypes = {
         storedAppIdKey: PropTypes.string,
         defaultValue: PropTypes.string,
+        currentPage: PropTypes.object,
     };
 
     constructor(props) {
@@ -28,6 +31,14 @@ class AppSelector extends React.Component {
         this.state = {
             selectedApp: this.props.defaultValue,
         };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.defaultValue !== this.props.defaultValue) {
+            this.setState({
+                selectedApp: nextProps.defaultValue,
+            });
+        }
     }
 
     onAppChange = (appId) => {
@@ -49,6 +60,12 @@ class AppSelector extends React.Component {
     };
 
     render() {
+        let appList = _.cloneDeep(Store.appList);
+
+        if (this.props.currentPage.title === '延期帐号分析') {
+            appList.splice(0, 1);
+        }
+
         return (
             <div className='app-selector'>
                 <Select
@@ -57,7 +74,7 @@ class AppSelector extends React.Component {
                     onChange={this.onAppChange}
                     dropdownMatchSelectWidth={false}
                 >
-                    {_.map(Store.appList, (item, index) => {
+                    {_.map(appList, (item, index) => {
                         return <Option key={index} value={item.app_id}>{item.app_name}</Option>;
                     })}
                 </Select>
