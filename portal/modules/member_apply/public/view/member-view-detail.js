@@ -427,7 +427,7 @@ class ApplyViewDetail extends React.Component {
                     checked={this.state.autoGenerationPsd}
                     onChange={this.checkAutoGeneration}
                 />
-                <span>自动生成密码</span>
+                <span>{Intl.get('member.apply.detail.auto.generation.password', '自动生成密码')}</span>
             </div>
         );
     };
@@ -436,7 +436,7 @@ class ApplyViewDetail extends React.Component {
         return (
             <div className='input-password'>
                 <Input
-                    placeholder='请输入密码'
+                    placeholder={Intl.get('common.input.password', '请输入密码')}
                     type='password'
                     value={this.state.password}
                     onChange={this.handleInputPassword}
