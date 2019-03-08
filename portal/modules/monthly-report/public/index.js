@@ -268,8 +268,8 @@ class MonthlyReport extends React.Component {
             },
         ];
 
-        // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        if(commonMethodUtil.isOrganizationEefung() || commonMethodUtil.isOrganizationCiviw()){
+        // 展示有效通话时长和有效接通数
+        if(this.state.isShowEffectiveTimeAndCount){
             columns.push({
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 dataIndex: 'total_effective',
@@ -317,9 +317,6 @@ class MonthlyReport extends React.Component {
         let conditions = [{
             name: 'return_type',
             value: 'user'
-        },{
-            name: 'effective_phone',
-            value: `${commonMethodUtil.isOrganizationEefung() || commonMethodUtil.isOrganizationCiviw()}`
         }];
 
         return [

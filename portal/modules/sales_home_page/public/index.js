@@ -36,7 +36,6 @@ import CustomerListPanel from 'MOD_DIR/crm/public/customer-list-panel';
 import UserListPanel from 'MOD_DIR/app_user_manage/public/user-list-panel';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
-import {isOrganizationEefung, isOrganizationCiviw} from 'PUB_DIR/sources/utils/common-method-util';
 
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
@@ -264,7 +263,6 @@ class SalesHomePage extends React.Component {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
             deviceType: this.state.callType || CALL_TYPE_OPTION.ALL,
-            effective_phone: isOrganizationEefung() || isOrganizationCiviw(), // 是否获取有效通话时长
         };
         if (this.state.currShowSalesman) {
             //查看当前选择销售的统计数据
