@@ -154,8 +154,11 @@ class ProductList extends Component {
         let saveStatus = this.state.saveStatus;
         data[index].isEditting = !data[index].isEditting;
         let isAddApp = this.state.isAddApp;
-        let currentEditKey = this.state.currentEditKey;
-        currentEditKey = data[index].id;
+        let currentEditKey = data[index].id;
+        // 取消后需要清空当前选中的编辑项
+        if(!data[index].isEditting) {
+            currentEditKey = null;
+        }
         // 判断是否是添加的产品取消, 是则要删除这个数据
         if(type === DISPLAY_TYPES.ADD) {
             delete this[`form${data[index].id}Ref`];
@@ -164,10 +167,6 @@ class ProductList extends Component {
             isAddApp = _.findIndex(data, item => {
                 return item.isAdd;
             }) > -1;
-        }
-        // 取消后需要清空当前选中的编辑项
-        if(!data[index].isEditting) {
-            currentEditKey = null;
         }
         this.setState({
             data,
@@ -187,6 +186,7 @@ class ProductList extends Component {
     handleDelete = (index, type) => {
         let data = _.cloneDeep(this.state.data);
         let saveStatus = this.state.saveStatus;
+        let isAddApp = this.state.isAddApp;
         let id = data[index].id;
         let _this = this;
         // 如果是单项编辑时的删除
@@ -226,8 +226,13 @@ class ProductList extends Component {
             saveStatus.splice(index, 1);
             delete this[`form${id}Ref`];
 
+            isAddApp = _.findIndex(newData, item => {
+                return item.isAdd;
+            }) > -1;
+
             this.setState({
-                data: newData
+                data: newData,
+                isAddApp
             },() => {
                 let currentIndex = index;
                 // 当剩最后一个了，index需为0，
