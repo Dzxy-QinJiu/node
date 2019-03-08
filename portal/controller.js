@@ -72,10 +72,10 @@ var initController = function(app) {
     });
 
     //处理通用rest请求
-    app.all('/rest/*', require('./lib/middlewares/rest'));
+    app.all('/rest/*', passportChecker({needLogin: true}), require('./lib/middlewares/rest'));
 
     //处理强制使用的通用rest请求
-    app.all('/force_use_common_rest/rest/*', require('./lib/middlewares/rest'));
+    app.all('/force_use_common_rest/rest/*', passportChecker({needLogin: true}), require('./lib/middlewares/rest'));
 
     // 处理所有前面未拦截的请求处理
     // 1. 未登录：重定向到登录页
