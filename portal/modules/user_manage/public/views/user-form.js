@@ -199,21 +199,22 @@ class UserForm extends React.Component {
         if (email && email !== this.props.user.email.value && emailRegex.test(email)) {
             //所有者的邮箱唯一性验证
             UserFormAction.checkOnlyEmail(email);
-
-        } else {
-            UserFormAction.resetEmailFlags();
-            UserFormAction.resetUserNameFlags();
         }
     };
 
+    resetEmailFlags = () => {
+        UserFormAction.resetEmailFlags();
+        UserFormAction.resetUserNameFlags();
+    };
     //验证昵称（对应的是姓名）的唯一性
     checkOnlyNickName = () => {
         var userName = _.trim(this.props.form.getFieldValue('name'));
         if (userName && (/^[A-Za-z0-9]\w+$/).test(userName)) {
             UserFormAction.checkOnlyNickName(userName);
-        } else {
-            UserFormAction.resetNickNameFlags();
         }
+    };
+    resetNickNameFlags = () => {
+        UserFormAction.resetNickNameFlags();
     };
 
     //昵称（对应的是姓名）唯一性验证的展示
@@ -365,6 +366,7 @@ class UserForm extends React.Component {
                                         placeholder={Intl.get('crm.90', '请输入姓名')}
                                         className={this.state.nickNameExist || this.state.nickNameError ? 'input-red-border' : ''}
                                         onBlur={this.checkOnlyNickName}
+                                        onFocus={this.resetNickNameFlags}
                                     />
                                 )}
                             </FormItem>
@@ -386,9 +388,9 @@ class UserForm extends React.Component {
                                         onBlur={(e) => {
                                             this.checkOnlyEmail(e);
                                         }}
+                                        onFocus={this.resetEmailFlags}
                                     />
                                 )}
-
                             </FormItem>
                             {this.renderEmailMsg()}
                             <FormItem
