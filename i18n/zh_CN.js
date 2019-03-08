@@ -2812,5 +2812,6 @@ var zh_CN = {
     'apply.approve.sales.opportunity': '销售机会',
     'apply.has.approved.by.me': '获取我审批过的{type}申请失败',
     'clue.import.file.type': '只能导入{type}格式的文件！',
+    'common.callsystem.get.faild': '获取组织电话系统配置失败',
 };
 export default zh_CN;

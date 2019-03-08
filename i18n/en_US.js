@@ -2789,5 +2789,6 @@ var en_US = {
     'apply.approve.sales.opportunity': 'Sales opportunity',//销售机会
     'apply.has.approved.by.me': 'Failed to get {type} application approved by me',//获取我审批过的{type}申请失败
     'clue.import.file.type': 'Only files in {type} format can be imported!',//只能导入{type}格式的文件！
+    'common.callsystem.get.faild': 'Failed to get the organization phone system configuration',// 获取组织电话系统配置失败
 };
 export default en_US;
