@@ -1,7 +1,7 @@
 /**
  * Created by hzl on 2019/3/8.
  */
-require('../css/index.less');
+require('./css/index.less');
 import { Form, Input, Select } from 'antd';
 const Option = Select.Option;
 const FormItem = Form.Item;
