@@ -35,7 +35,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
-import InviteMember from 'MOD_DIR/invite_member/public/index';
+import InviteMember from 'MOD_DIR/invite_member/public';
 
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
