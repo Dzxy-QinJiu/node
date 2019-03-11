@@ -48,6 +48,11 @@ class Contract extends React.Component {
         if (orderGenerateContractId && action === 'PUSH') {
             isFromOrder = true;
         }
+        let dateType = 'date';
+        // 是否是合同回款页面
+        if(getTypeByPath() === VIEW_TYPE.REPAYMENT) {
+            dateType = 'repayment_date';
+        }
 
         this.state = {
             contractList: [],
@@ -57,7 +62,7 @@ class Contract extends React.Component {
             typeList: [],
             rangeParams: [],
             type: getTypeByPath(),
-            dateType: 'date',
+            dateType,
             sum: '',
             contractCount: 0,
             currentContract: {},
