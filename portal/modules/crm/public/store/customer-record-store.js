@@ -135,8 +135,15 @@ CustomerRecordStore.prototype.setContent = function(content) {
 CustomerRecordStore.prototype.setDetailContent = function(content) {
     this.addCustomerErrMsg = '';
     this.addCustomerSuccMsg = '';
+    //取消编辑时
+    if (_.get(content, 'cancelEdit')) {
+        this.isEdit = false;
+        delete content.cancelEdit;
+    } else {
+        this.isEdit = true;
+    }
     this.detailContent = content;
-    this.isEdit = true;
+
 };
 CustomerRecordStore.prototype.setUpdateId = function(id) {
     this.updateId = id;
