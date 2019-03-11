@@ -508,7 +508,7 @@ class RepaymentInfo extends React.Component {
         let repayTitle = (
             <div className="repayment-repay">
                 <span>{Intl.get('contract.194', '回款进程')}: </span>
-                <span className='repayment-label'>{Intl.get('contract.179', '已回款')}: {parseAmount(contract_amount)}{Intl.get('contract.82', '元')}/ </span>
+                <span className='repayment-label'>{Intl.get('contract.179', '已回款')}: {parseAmount(total_amount)}{Intl.get('contract.82', '元')}/ </span>
                 <span className='repayment-label'>{Intl.get('contract.180', '尾款')}: {parseAmount(total_plan_amount)}{Intl.get('contract.82', '元')}</span>
             </div>
         );
