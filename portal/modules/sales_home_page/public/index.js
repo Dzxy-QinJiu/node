@@ -825,6 +825,7 @@ class SalesHomePage extends React.Component {
         }
         return e.stopPropagation();
     };
+
     //跳转到个人信息页面
     jumpToUserInfo = () => {
         history.push('/user_info_manage/user_info', {});
