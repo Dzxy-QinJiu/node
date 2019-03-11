@@ -6,10 +6,9 @@
   .circle-button-minus {
     float: right;
     background-color: transparent;
-  }
-
-  .circle-button-minus:hover {
-    background-color: transparent;
+    &:hover {
+      background-color: transparent;
+    }
   }
 
   .right-panel-modal-content{
@@ -117,7 +116,7 @@
 
   .new-add-repayment-container {
     background-color: white;
-    border: 1px solid #ccc;
+    border: 1px solid @disable_call_phone_icon;
     padding: 12px;
     margin: 20px;
     margin-top: -1px;
@@ -289,45 +288,6 @@
     }
   }
 
-  // 费用详情样式
-  .detail-cost-basic {
-    padding: 0 15px;
-
-    form {
-      padding: 0;
-    }
-
-    .detail-card-title {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-
-    .icon-edit-btn {
-      float: right;
-      font-size: @form_font_size16;
-      color: @CLICK-BLUE;
-      cursor: pointer;
-    }
-
-    .cost-amout-type {
-      .basic-info-label {
-        margin-right: 8px;
-      }
-
-      .basic-info-text {
-        color: @title-color;
-      }
-    }
-  }
-
-  .detail-cost-wrapper {
-    .form-detele-btn {
-      margin-top: 10px;
-      margin-left: 15px;
-    }
-  }
-
   .total-amount-price {
     margin: 0 15px 0px;
     font-size: @form_font_size14;
@@ -346,8 +306,7 @@
       width: 440px;
 
       .ant-form-item {
-        //width: auto;
-        margin-right: 0px;
+        margin-right: 0;
       }
 
       .ant-form {
@@ -539,7 +498,8 @@
     text-align: center;
   }
 
-  .contract-repayment-container {
+  // 滚动条下的内容包裹区
+  .contract-view-content {
     margin: 0 20px;
 
     .detail-card-container {
@@ -624,29 +584,13 @@
         .btn-save, .btn-cancel {
           position: relative;
           right: 0;
+          width: 20px;
+          height: 20px;
+        }
+        .btn-save{
+          margin-right: 3px;
         }
       }
-    }
-
-    .repayment-table-operation {
-      .btn-bar, .icon-edit-btn {
-        float: none;
-      }
-
-      .btn-bar {
-        cursor: pointer;
-        padding: 5px;
-        margin-left: 5px;
-      }
-    }
-
-    .btn-save, .btn-cancel {
-      width: 20px;
-      height: 20px;
-    }
-
-    .btn-save {
-      margin-right: 3px;
     }
 
     .new-add-repayment-container {
@@ -681,12 +625,6 @@
     width: auto;
     position: relative;
 
-    .icon-edit-btn {
-      position: absolute;
-      right: 20px;
-      top: -35px;
-    }
-
     .product-table {
       .antc-table {
         margin-right: 0;
@@ -713,145 +651,6 @@
 
       .anticon-plus {
         display: none;
-      }
-    }
-  }
-
-  .add-reports {
-    .icon-edit-btn {
-      top: -25px;
-    }
-
-    .add-app-container {
-      margin-left: 80px;
-    }
-
-    .report-title {
-      background: #fff;
-      padding: 10px 0px 10px 10px;
-
-      .icon-fuwu {
-        color: @CLICK-BLUE;
-      }
-
-      > span {
-        margin-left: 15px;
-        font-size: @form_font_size14;
-      }
-    }
-
-    .product-table {
-      .ant-table {
-        input {
-          height: 24px;
-        }
-      }
-    }
-  }
-
-  .add-products {
-    .form-inline {
-      display: inline-block !important;
-      width: 50% !important;
-    }
-
-    .ant-form {
-      background: transparent;
-      padding: 0 !important;
-
-      .ant-form-item {
-        width: auto;
-        display: block;
-        margin-bottom: 0px !important;
-
-        .ant-form-explain {
-          position: relative;
-          font-size: 12px;
-        }
-      }
-    }
-
-    .app-icon-name {
-      .app-self {
-        img {
-          width: 24px;
-          height: 24px;
-        }
-      }
-
-      .app-name {
-        margin-left: 5px;
-        color: #000000a6;
-      }
-    }
-
-    .product-forms {
-      margin: 0 15px 29px 15px;
-
-      .product-detail-top-total-block {
-        line-height: 24px;
-        margin-top: 5px;
-
-        .icon-edit-btn {
-          top: 0;
-          position: relative;
-        }
-      }
-
-      .product-list {
-        .ant-form-item {
-          input {
-            width: 100%;
-          }
-        }
-
-        .product-list-item {
-          border: 1px solid #d3eafc;
-        }
-      }
-
-      .btn-bar {
-        float: right;
-        cursor: pointer;
-        padding: 0 5px;
-        color: @CLICK-BLUE;
-      }
-
-      .validity-time {
-        input {
-          width: 45% !important;
-          padding-bottom: 14px;
-          height: 30px;
-        }
-
-        .ant-calendar-range-picker-separator {
-          line-height: @line_height30;
-        }
-      }
-
-      .ant-form-item {
-        .ant-form-item-label {
-          line-height: 18px;
-        }
-
-        .ant-form-item-control {
-          font-size: @form_font_size14;
-          line-height: 20px;
-        }
-
-        &.form-inline {
-          .ant-form-item-label {
-            line-height: 28px;
-          }
-
-          .ant-form-item-control {
-            line-height: 31.9999px;
-          }
-        }
-      }
-
-      .no-data-icon-tip-container {
-        height: 100px;
       }
     }
   }
@@ -902,89 +701,14 @@
         }
       }
     }
-
-    // 添加产品
-    .add-products {
-      .add-app-container {
-        right: 18px;
-      }
-
-      .product-title {
-        .ant-spin-nested-loading {
-          float: right;
-        }
-      }
-
-      .btn-box {
-        float: right;
-        display: none;
-
-        .icon-edit-btn {
-          position: unset;
-          margin-left: 10px;
-        }
-      }
-
-      .detail-card-container {
-        position: relative;
-      }
-
-      .product-list-item {
-        &:hover {
-          .btn-box {
-            display: block;
-          }
-        }
-
-        .card-content-edit-status {
-          border: none;
-          padding: 5px 0 0;
-        }
-      }
-
-      .ant-dropdown-trigger {
-        cursor: pointer;
-        color: #9fb5cd;
-      }
-    }
-
-    // 添加服务
-    .add-reports {
-      .add-app-container {
-        right: 90px;
-      }
-
-      .icon-edit-btn {
-        position: unset;
-        margin: 0;
-      }
-
-      .product-table-container {
-        border: none;
-      }
-
-      .contract-repayment-container {
-        position: relative;
-        margin: 0;
-      }
-
-      .detail-report-container {
-        .ant-select {
-          width: 100%;
-        }
-      }
-    }
   }
 
-  // 回款信息，产品信息，发票信息
-  .contract-repayment, .contract-product, .contract-invoice {
-    .iconfont.icon-add {
+  .iconfont.detail-edit-add {
       position: absolute;
       top: 12px;
       right: 10px;
       margin-top: 0;
       color: @CLICK-BLUE;
-    }
   }
 
   .member-detail-container {

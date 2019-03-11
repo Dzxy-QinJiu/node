@@ -6,6 +6,7 @@ var React = require('react');
  */
 
 import { Alert, message } from 'antd';
+import '../../css/add-products.less';
 import { getNumberValidateRule, numberAddNoMoreThan } from 'PUB_DIR/sources/utils/validate-util';
 import { removeCommaFromNum } from 'LIB_DIR/func';
 import ProductList from '../components/product-list';

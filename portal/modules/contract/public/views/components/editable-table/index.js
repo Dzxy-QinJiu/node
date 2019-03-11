@@ -58,6 +58,7 @@ import { Table, Popconfirm, Icon, Button } from 'antd';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 import Trace from 'LIB_DIR/trace';
 import {EditableFormCell} from './editable-cell';
+import './index.less';
 
 class EditableTable extends Component {
     constructor(props) {
@@ -261,7 +262,7 @@ class EditableTable extends Component {
             columns.push({
                 title: Intl.get('common.operate', '操作'),
                 dataIndex: 'operation',
-                className: 'repayment-table-operation',
+                className: 'edit-table-operation',
                 width: 65,
                 align: 'center',
                 render: (text, record, index) => {
@@ -313,6 +314,7 @@ class EditableTable extends Component {
         columns = this.getColumns(columns);
 
         return <Table
+            className='edit-table-container'
             bordered
             dataSource={this.state.data}
             columns={columns}

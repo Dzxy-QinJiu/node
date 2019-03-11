@@ -9,6 +9,7 @@ const Validator = Validation.Validator;
 import { Form, Input, Select, Button, Alert, message } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
+import './css/add-reports.less';
 import ValidateMixin from '../../../mixins/ValidateMixin';
 import DetailCard from 'CMP_DIR/detail-card';
 import ProductTable from 'CMP_DIR/basic-edit-field-new/product-table';

@@ -3,6 +3,7 @@
 var React = require('react');
 import {message, Select, Radio} from 'antd';
 let Option = Select.Option;
+import './css/detail-cost.less';
 import Trace from 'LIB_DIR/trace';
 import 'MOD_DIR/user_manage/public/css/user-info.less';
 import DetailCard from 'CMP_DIR/detail-card';

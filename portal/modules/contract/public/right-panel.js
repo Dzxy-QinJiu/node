@@ -319,9 +319,12 @@ class ContractRightPanel extends React.Component {
             contractData = _.extend(this.props.contract, this.refs.addBasic.state.formData);
             contractData.category = this.state.currentCategory; // 合同类型
 
-            // 成本构成
-            contractData.cost_structure = _.get(contractData,'cost_structure',[]);
-            contractData.cost_structure = _.isArray(contractData.cost_structure) ? contractData.cost_structure.join(',') : contractData.cost_structure;
+            // 成本构成,有成本额时
+            if(+contractData.cost_price) {
+                contractData.cost_structure = _.get(contractData,'cost_structure',[]);
+                contractData.cost_structure = _.isArray(contractData.cost_structure) ? contractData.cost_structure.join(',') : contractData.cost_structure;
+            }
+
             // 合同额，毛利，成本额处理
             contractData.contract_amount = parseFloat(contractData.contract_amount);
             contractData.cost_price = parseFloat(contractData.cost_price);
