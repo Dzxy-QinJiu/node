@@ -3,6 +3,7 @@
  */
 require('./css/index.less');
 import userData from 'PUB_DIR/sources/user-data';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import InviteMemberForm from './view/invite-member-form';
 
@@ -51,23 +52,31 @@ class InviteMember extends React.Component{
     };
 
     render() {
-        return (
-            <div className="invite-member">
-                <div className="btn-item-container">
-                    <span className='btn-item iconfont icon-invite-member'
-                        onClick={this.showInviteMemberPanel}
-                        title={Intl.get('sales.home.invite.member', '邀请成员')}>
-                    </span>
+        // 销售领导、运营人员有邀请成员的权限
+        let hasInivteMemberPrivilege = hasPrivilege('MEMBER_INVITE_APPLY') &&
+            (userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON));
+        if (hasInivteMemberPrivilege) {
+            return (
+                <div className="invite-member">
+                    <div className="btn-item-container">
+                        <span className='btn-item iconfont icon-invite-member'
+                            onClick={this.showInviteMemberPanel}
+                            title={Intl.get('sales.home.invite.member', '邀请成员')}>
+                        </span>
+                    </div>
+                    {
+                        this.state.isInivteMemberRightPanelShow ?
+                            <InviteMemberForm
+                                teamList={this.state.teamList}
+                                closeRightPanel={this.closeRightPanel}
+                            /> : null
+                    }
                 </div>
-                {
-                    this.state.isInivteMemberRightPanelShow ?
-                        <InviteMemberForm
-                            teamList={this.state.teamList}
-                            closeRightPanel={this.closeRightPanel}
-                        /> : null
-                }
-            </div>
-        );
+            );
+        } else {
+            return null;
+        }
+
     }
 }
 

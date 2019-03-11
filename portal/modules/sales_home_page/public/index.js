@@ -3,7 +3,7 @@ const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
 var getDataAuthType = require('CMP_DIR/privilege/checker').getDataAuthType;
-import {Select, message, Alert, Button } from 'antd';
+import {Select, message, Alert} from 'antd';
 import {AntcTable, AntcAnalysis, AntcCardContainer} from 'antc';
 import Trace from 'LIB_DIR/trace';
 const Option = Select.Option;
@@ -35,7 +35,6 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
-import userData from 'PUB_DIR/sources/user-data';
 import InviteMember from 'MOD_DIR/invite_member/public/index';
 
 //延时展示激活邮箱提示框的时间
@@ -826,7 +825,6 @@ class SalesHomePage extends React.Component {
         }
         return e.stopPropagation();
     };
-    
     //跳转到个人信息页面
     jumpToUserInfo = () => {
         history.push('/user_info_manage/user_info', {});
@@ -986,10 +984,8 @@ class SalesHomePage extends React.Component {
         
         var title = (this.state.isSaleTeamShow ? Intl.get('sales.homepage.hide.teamlist', '隐藏团队列表') :
             Intl.get('sales.homepage.show.teamlist', '展开团队列表'));
-        // 销售领导、运营人员有邀请成员的权限
-        let hasInivteMemberPrivilege = hasPrivilege('MEMBER_INVITE_APPLY') && (userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON));
         return (<RightContent>
-            <div className="sales_home_content">
+            <div className="sales_home_content" data-tracename="销售首页">
                 <TopNav>
                     <div className="date-range-wrap btn-item">
                         <DatePicker
@@ -1008,17 +1004,11 @@ class SalesHomePage extends React.Component {
                         </DatePicker>
                     </div>
                     {(this.state.currShowType === showTypeConstant.SALESMAN && !this.state.currShowSalesman) ? null :
-                        <div className="crm-home-teamlist-show-flag" data-tracename="销售首页">
+                        <div className="crm-home-teamlist-show-flag">
                             <span className={hamburgerCls} onClick={this.handleCrmTeamListShow} title={title}>
                             </span>
                         </div>}
-                    {
-                        hasInivteMemberPrivilege ? (
-                            <div data-tracename="销售首页">
-                                <InviteMember />
-                            </div>
-                        ) : null
-                    }
+                    <InviteMember />
                 </TopNav>
                 {this.state.salesTeamListObj.resultType === 'loading' ?
                     <div className="spinner-container">
