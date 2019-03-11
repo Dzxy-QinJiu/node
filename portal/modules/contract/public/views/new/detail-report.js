@@ -323,7 +323,7 @@ class DetailReport extends React.Component {
             return (
                 <div>
                     {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
-                        <span className="iconfont icon-add" onClick={this.addList}
+                        <span className="iconfont icon-add detail-edit-add" onClick={this.addList}
                             title={Intl.get('common.add', '添加')}/>) : null}
                     {this.renderReportList(reports)}
                     {this.state.saveErrMsg ? <Alert type="error" message={this.state.saveErrMsg} showIcon /> : null}
@@ -339,7 +339,7 @@ class DetailReport extends React.Component {
 
         return (
             <DetailCard
-                className='detail-report-container contract-repayment-container'
+                className='detail-report-container contract-view-content'
                 content={content()}
                 title={reportTitle}
             />

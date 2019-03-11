@@ -434,7 +434,7 @@ class DetailInvoice extends React.Component {
             return (
                 <div className="repayment-list">
                     {this.state.displayType === DISPLAY_TYPES.EDIT ? this.renderAddInvoicePanel() : isEditBtnShow ? (
-                        <span className="iconfont icon-add" onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}
+                        <span className="iconfont icon-add detail-edit-add" onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}
                             title={Intl.get('common.edit', '编辑')}/>) : null}
                     {!noInoviceDetail ? this.renderInvoiceInfo() : null}
                 </div>
@@ -468,7 +468,7 @@ class DetailInvoice extends React.Component {
 
     render() {
         const DetailBlock = (
-            <div className='clearfix contract-repayment-container'>
+            <div className='clearfix contract-view-content'>
                 {this.renderInvoice()}
                 {this.renderInvoiceAmount()}
             </div>

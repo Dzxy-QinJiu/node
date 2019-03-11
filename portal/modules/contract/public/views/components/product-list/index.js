@@ -1,6 +1,7 @@
 /** Created by 2019-02-19 14:48 */
 /*产品的添加和编辑*/
 import React, { Component } from 'react';
+import './index.less';
 import { Icon, Popconfirm, Spin} from 'antd';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
@@ -573,7 +574,7 @@ class ProductList extends Component {
         return (
             <DetailCard
                 title={this.props.title}
-                content={(<div className="product-list">
+                content={(<div className="product-list-wrapper">
                     <div className="product-list-container clearfix" style={containerStyle}>
                         {
                             productListLength ? (

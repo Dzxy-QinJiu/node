@@ -1,0 +1,96 @@
+/** Created by 2019-03-11 11:34 */
+@import "../../../../../../public/css/common-variables";
+.product-list-wrapper {
+  .ant-form-item {
+    input {
+      width: 100%;
+    }
+  }
+
+  .product-list-item {
+    border: 1px solid #d3eafc;
+    &:hover{
+      .btn-box{
+        display: block;
+      }
+    }
+
+    .card-content-edit-status {
+      border: none;
+      padding: 5px 0 0;
+    }
+  }
+
+  .form-inline {
+    display: inline-block !important;
+    width: 50% !important;
+  }
+
+  .product-title{
+    .ant-spin-nested-loading{
+      float: right;
+    }
+    .btn-box{
+      display: none;
+      .icon-edit-btn{
+        margin-left: 10px;
+        float: right;
+        font-size: 16px;
+        color: @CLICK-BLUE;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .btn-bar {
+    float: right;
+    cursor: pointer;
+    padding: 0 5px;
+    color: @CLICK-BLUE;
+  }
+
+  .validity-time {
+    input {
+      width: 45% !important;
+      padding-bottom: 14px;
+      height: 30px;
+    }
+
+    .ant-calendar-range-picker-separator {
+      line-height: @line_height30;
+    }
+  }
+
+  .ant-form-item {
+    .ant-form-item-label {
+      line-height: 18px;
+    }
+
+    .ant-form-item-control {
+      font-size: @form_font_size14;
+      line-height: 20px;
+    }
+
+    &.form-inline {
+      .ant-form-item-label {
+        line-height: 28px;
+      }
+
+      .ant-form-item-control {
+        line-height: 31.9999px;
+      }
+    }
+  }
+
+  .no-data-icon-tip-container {
+    height: 100px;
+  }
+
+  .iconfont.icon-add{
+    position: absolute;
+    top: 12px;
+    right: 10px;
+    margin-top: 0;
+    color: @CLICK-BLUE;
+  }
+}

@@ -497,7 +497,7 @@ class RepaymentInfo extends React.Component {
                 <div className="repayment-list">
                     {/*是展示状态，且有权限编辑，且尾款不等于0*/}
                     {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege && total_plan_amount > 0 ? (
-                        <span className="iconfont icon-add" onClick={this.addList}
+                        <span className="iconfont icon-add detail-edit-add" onClick={this.addList}
                             title={Intl.get('common.add', '添加')}/>) : null}
                     {this.renderRepaymentList(repayLists, total_plan_amount)}
                     {this.state.saveErrMsg ? <Alert type="error" message={this.state.saveErrMsg} showIcon /> : null}

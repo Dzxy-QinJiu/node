@@ -106,7 +106,7 @@ class DetailRepayment extends React.Component {
             <div style={{height: this.props.height}} data-tracename="回款页面">
                 <GeminiScrollBar ref="gemiScrollBar">
                     {this.state.isRepaymentLoading ? <Spinner /> :
-                        (<div className='clearfix contract-repayment-container'>
+                        (<div className='clearfix contract-view-content'>
                             {this.renderReypayPlan()}
                             {this.renderReypayInfo()}
                         </div>)}
