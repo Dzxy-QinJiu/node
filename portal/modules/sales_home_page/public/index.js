@@ -35,7 +35,6 @@ import CustomerListPanel from 'MOD_DIR/crm/public/customer-list-panel';
 import UserListPanel from 'MOD_DIR/app_user_manage/public/user-list-panel';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
-import {isOrganizationEefung, hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import AlertTip from 'CMP_DIR/alert-tip';
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
