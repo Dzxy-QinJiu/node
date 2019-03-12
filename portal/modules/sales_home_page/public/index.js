@@ -1053,6 +1053,34 @@ class SalesHomePage extends React.Component {
     getIsShowAddEmail = () => {
         return _.get(this.state,'emailShowObj.isShowAddEmail');
     };
+    //是否展示邮箱激活或者添加邮箱的提示提示
+    renderActiveOrEditAlert = () => {
+        return (
+            <AlertTip
+                clsNames='email-active-wrap'
+                alertTipMessage={this.getEmailAlertTipMessage()}
+                showNoTipMore={!this.getIsShowAddEmail()}
+                isAnimateShow={this.state.isAnimateShow}
+                isAnimateHide={this.state.isAnimateHide}
+                handleClickNoTip={this.hideActiveEmailTip}
+                setWebConfigStatus={this.state.setWebConfigStatus}
+            />
+        );
+    };
+    // 是否展示设置坐席号的提示
+    renderClientAlert = () => {
+        if (_.get(this.state,'emailShowObj.isShowSetClient')){
+            return <AlertTip
+                alertTipMessage={this.getClientAlertTipMessage()}
+                isAnimateShow={this.state.isClientAnimateShow}
+                isAnimateHide={this.state.isClientAnimateHide}
+                handleClickNoTip={this.hideSetClientTip}
+                setWebConfigStatus={this.state.setWebConfigClientStatus}
+            />;
+        }else{
+            return null;
+        }
+    };
 
     render() {
         var crmSaleList = classNames('sale-list-zone', {
@@ -1071,6 +1099,7 @@ class SalesHomePage extends React.Component {
         
         var title = (this.state.isSaleTeamShow ? Intl.get('sales.homepage.hide.teamlist', '隐藏团队列表') :
             Intl.get('sales.homepage.show.teamlist', '展开团队列表'));
+        var showAddOrActiveEmailPrivilege = this.state.emailShowObj.isShowActiveEmail || this.state.emailShowObj.isShowAddEmail;
         return (<RightContent>
             <div className="sales_home_content" data-tracename="销售首页">
                 <TopNav>
@@ -1103,28 +1132,7 @@ class SalesHomePage extends React.Component {
                     </div>
                     : <div className="crm-home-container">
                         <div className={crmDataZone}>
-                            {/*是否展示邮箱激活或者添加邮箱的提示提示*/}
-                            {this.state.emailShowObj.isShowActiveEmail || this.state.emailShowObj.isShowAddEmail ?
-                                <AlertTip
-                                    clsNames='email-active-wrap'
-                                    alertTipMessage={this.getEmailAlertTipMessage()}
-                                    showNoTipMore={!this.getIsShowAddEmail()}
-                                    isAnimateShow={this.state.isAnimateShow}
-                                    isAnimateHide={this.state.isAnimateHide}
-                                    handleClickNoTip={this.hideActiveEmailTip}
-                                    setWebConfigStatus={this.state.setWebConfigStatus}
-                                />
-                                : null}
-                            {/*是否展示设置坐席号的提示*/}
-                            {_.get(this.state,'emailShowObj.isShowSetClient') ?
-                                <AlertTip
-                                    alertTipMessage={this.getClientAlertTipMessage()}
-                                    isAnimateShow={this.state.isClientAnimateShow}
-                                    isAnimateHide={this.state.isClientAnimateHide}
-                                    handleClickNoTip={this.hideSetClientTip}
-                                    setWebConfigStatus={this.state.setWebConfigClientStatus}
-                                /> : null}
-
+                            {showAddOrActiveEmailPrivilege ? this.renderActiveOrEditAlert() : this.renderClientAlert()}
                             <StatisticTotal
                                 customerTotalObj={this.state.customerTotalObj}
                                 userTotalObj={this.state.userTotalObj}

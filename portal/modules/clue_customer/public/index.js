@@ -820,14 +820,16 @@ class ClueCustomer extends React.Component {
                     if (_.isArray(contacts) && contacts.length){
                         //处理联系方式，处理成只有一种联系方式
                         var handledContactObj = this.handleContactLists(_.cloneDeep(contacts));
+                        var hasMoreIconPrivilege = handledContactObj.clipContact;
                         return (
                             <div className="contact-container">
                                 <ContactItem
                                     contacts={handledContactObj.contact}
                                     customerData={salesClueItem}
                                     showContactLabel={false}
+                                    hasMoreIcon={hasMoreIconPrivilege}
                                 />
-                                {handledContactObj.clipContact ? <i className="iconfont icon-more" onClick={this.showClueDetailOut.bind(this, salesClueItem)}/> : null}
+                                {hasMoreIconPrivilege ? <i className="iconfont icon-more" onClick={this.showClueDetailOut.bind(this, salesClueItem)}/> : null}
                             </div>
 
                         );
