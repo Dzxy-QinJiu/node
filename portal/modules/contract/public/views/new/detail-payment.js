@@ -8,6 +8,7 @@ import { message, Select, Icon, Form, Input, DatePicker, Checkbox, Alert } from 
 let Option = Select.Option;
 let FormItem = Form.Item;
 import Trace from 'LIB_DIR/trace';
+import '../../css/common-contract-amount.less';
 import 'MOD_DIR/user_manage/public/css/user-info.less';
 import DetailCard from 'CMP_DIR/detail-card';
 import EditableTable from '../components/editable-table';
@@ -253,7 +254,7 @@ class DetailPayment extends React.Component {
         let {getFieldDecorator} = this.props.form;
 
         return (
-            <Form layout='inline' className='detailcard-form-container new-add-repayment-container'>
+            <Form layout='inline' className='detailcard-form-container new-add-form-container'>
                 <FormItem
                     className='add-repayment-date'
                 >
@@ -371,7 +372,7 @@ class DetailPayment extends React.Component {
             <div className="repayment-list">
                 {/*是展示状态，且有权限编辑，且合同总额大于已付款总额*/}
                 {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege && contract_amount > paymentsAmount ? (
-                    <span className="iconfont icon-add" onClick={this.addList}
+                    <span className="iconfont icon-add detail-edit-add" onClick={this.addList}
                         title={Intl.get('common.add', '添加')}/>) : null}
                 {this.renderPaymentList(paymentLists)}
                 {this.state.saveErrMsg ? <Alert type="error" message={this.state.saveErrMsg} showIcon /> : null}
@@ -387,7 +388,7 @@ class DetailPayment extends React.Component {
         return (
             <DetailCard
                 content={content}
-                titleBottomBorderNone={noPaymentData}
+                // titleBottomBorderNone={noPaymentData}
                 title={payTitle}
             />
         );
@@ -396,7 +397,7 @@ class DetailPayment extends React.Component {
 
     render() {
         return (
-            <div className='clearfix contract-repayment-container' style={{height: this.props.height}} data-tracename="付款页面">
+            <div className='clearfix contract-view-content' style={{height: this.props.height}} data-tracename="付款页面">
                 <GeminiScrollBar ref='geminiScrollBar'>
                     {this.renderBasicInfo()}
                 </GeminiScrollBar>

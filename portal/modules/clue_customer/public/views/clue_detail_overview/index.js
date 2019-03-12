@@ -384,6 +384,7 @@ class ClueDetailOverview extends React.Component {
                 isAssociateClue={true}
                 phoneNum={phoneNum}
                 addOne={this.addOneCustomer}
+                isShowMadal={false}
             />
         );
     };

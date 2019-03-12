@@ -1,0 +1,71 @@
+/** Created by 2019-03-11 14:03 */
+@import "../../../../public/css/common-variables";
+.contract-panel-v2{
+  .add-reports {
+    .add-app-container {
+      margin-left: 80px;
+    }
+
+    .report-title {
+      background: @apply-detail-bg-color;
+      padding: 10px 0px 10px 10px;
+
+      .icon-fuwu {
+        color: @CLICK-BLUE;
+      }
+
+      > span {
+        margin-left: 15px;
+        font-size: @form_font_size14;
+      }
+    }
+
+    .product-table {
+      .ant-table {
+        input {
+          height: 24px;
+        }
+      }
+    }
+  }
+
+  .product-table-container {
+    border: 1px solid #eee;
+    margin: 15px;
+
+    .product-table {
+      table {
+        .invalid-td-input {
+          input {
+            border: 1px solid red;
+          }
+        }
+      }
+    }
+  }
+
+  // 产品与服务信息
+  .contract-product{
+    // 添加服务
+    .add-reports {
+      .add-app-container {
+        right: 90px;
+      }
+
+      .product-table-container {
+        border: none;
+      }
+
+      .contract-view-content {
+        position: relative;
+        margin: 0;
+      }
+
+      .detail-report-container {
+        .ant-select {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

@@ -10,31 +10,33 @@ class ApplyDetailBottom extends React.Component {
         super(props);
         this.state = {};
     }
-
+    renderPassOrAssignedContext = () => {
+        var assigenedContext = _.isFunction(this.props.renderAssigenedContext) ? this.props.renderAssigenedContext() : null;
+        return (
+            <div className="pass-and-reject-wrap">
+                {assigenedContext ? assigenedContext : <Button type="primary" className="btn-primary-sure" size="small"
+                    onClick={this.props.submitApprovalForm.bind(this, 'pass')}>
+                    {this.props.passText}
+                </Button>}
+                <Button type="primary" className="btn-primary-sure" size="small"
+                    onClick={this.props.submitApprovalForm.bind(this, 'reject')}>
+                    {this.props.rejectText}
+                </Button>
+            </div>
+        );
+    };
     renderBottomText = () => {
         var assigenedContext = _.isFunction(this.props.renderAssigenedContext) ? this.props.renderAssigenedContext() : null;
-        if (assigenedContext) {
-            return assigenedContext;
-        } else {
-            return <div className="pull-right">
-                {this.props.showCancelBtn ?
-                    <Button type="primary" className="btn-primary-sure" size="small"
-                        onClick={this.props.submitApprovalForm.bind(this, 'cancel')}>
-                        {Intl.get('user.apply.detail.backout', '撤销申请')}
-                    </Button> : null}
-                {this.props.showApproveBtn ? <div className="pass-and-reject-wrap">
-                    <Button type="primary" className="btn-primary-sure" size="small"
-                        onClick={this.props.submitApprovalForm.bind(this, 'pass')}>
-                        {this.props.passText}
-                    </Button>
-                    <Button type="primary" className="btn-primary-sure" size="small"
-                        onClick={this.props.submitApprovalForm.bind(this, 'reject')}>
-                        {this.props.rejectText}
-                    </Button>
-                </div> : null}
-            </div>;
-        }
-    };
+        var showPassOrAssignedContext = this.props.showApproveBtn || assigenedContext;
+        return <div className="pull-right">
+            {this.props.showCancelBtn ?
+                <Button type="primary" className="btn-primary-sure" size="small"
+                    onClick={this.props.submitApprovalForm.bind(this, 'cancel')}>
+                    {Intl.get('user.apply.detail.backout', '撤销申请')}
+                </Button> : null}
+            {showPassOrAssignedContext ? this.renderPassOrAssignedContext() : null}
+        </div>;
+    }
 
     render() {
         return (

@@ -409,7 +409,7 @@ class RepaymentPlan extends React.Component {
                 <div className="repayment-list">
                     {/*是展示状态，且有权限编辑，且合同总额大于已回款总额*/}
                     {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege && contract_amount > repaymentsAmount ? (
-                        <span className="iconfont icon-add" onClick={this.addList}
+                        <span className="iconfont icon-add detail-edit-add" onClick={this.addList}
                             title={Intl.get('common.edit', '编辑')}/>) : null}
                     {this.renderRepaymentList()}
                     {this.state.submitErrorMsg ? <Alert type='error' message={this.state.submitErrorMsg} showIcon/> : null}

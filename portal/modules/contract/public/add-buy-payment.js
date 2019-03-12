@@ -9,6 +9,7 @@ const Validator = Validation.Validator;
 import { Form, Input, Select, Button, Icon } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
+import './css/common-contract-amount.less';
 import ValidateMixin from '../../../mixins/ValidateMixin';
 import {getNumberValidateRule,numberAddNoMoreThan} from 'PUB_DIR/sources/utils/validate-util';
 
@@ -120,7 +121,7 @@ const AddBuyPayment = createReactClass({
                     </div>
                 ) : null}
 
-                <div className="add-finance new-add-repayment-container">
+                <div className="add-finance new-add-form-container">
                     <Form layout='horizontal'>
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <ReactIntl.FormattedMessage id="contract.78" defaultMessage="从签订日起" />

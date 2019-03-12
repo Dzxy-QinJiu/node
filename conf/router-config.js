@@ -269,6 +269,13 @@ let routers = [
             component: `${MODULE_PATH}document_write/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
+        }, {
+            id: 'MEMBER_APPLY',
+            name: 'member.application',// 成员申请
+            routePath: '/application/member_apply',
+            component: `${MODULE_PATH}member_apply/public`,
+            //有这个权限，才显示入口图标
+            showPrivileges: ['MEMBER_INVITE_MANAGE']
         }]
     },
     {

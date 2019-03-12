@@ -490,25 +490,22 @@ class ApplyViewDetail extends React.Component {
     renderAssigenedContext = () => {
         var assignedSalesUsersIds = _.get(this.state, 'detailInfoObj.info.user_ids','');
         return (
-            <div className="pull-right">
-                <AntcDropdown
-                    ref={AssignSales => this.assignSales = AssignSales}
-                    content={<Button
-                        data-tracename="点击分配销售按钮"
-                        className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('clue.customer.distribute', '分配')}</Button>}
-                    overlayTitle={Intl.get('user.salesman', '销售人员')}
-                    okTitle={Intl.get('common.confirm', '确认')}
-                    cancelTitle={Intl.get('common.cancel', '取消')}
-                    overlayContent={this.renderSalesBlock(ASSIGN_TYPE.COMMON_SALES)}
-                    handleSubmit={this.passOrRejectApplyApprove.bind(this, 'pass')}//分配销售的时候直接分配，不需要再展示模态框
-                    unSelectDataTip={assignedSalesUsersIds ? '' : Intl.get('leave.apply.select.assigned.sales','请选择要分配的销售')}
-                    clearSelectData={this.clearSelectSales}
-                    btnAtTop={false}
-                    isSaving={this.state.applyResult.submitResult === 'loading'}
-                    isDisabled={!assignedSalesUsersIds}
-                />
-            </div>
-
+            <AntcDropdown
+                ref={AssignSales => this.assignSales = AssignSales}
+                content={<Button
+                    data-tracename="点击分配销售按钮"
+                    className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('clue.customer.distribute', '分配')}</Button>}
+                overlayTitle={Intl.get('user.salesman', '销售人员')}
+                okTitle={Intl.get('common.confirm', '确认')}
+                cancelTitle={Intl.get('common.cancel', '取消')}
+                overlayContent={this.renderSalesBlock(ASSIGN_TYPE.COMMON_SALES)}
+                handleSubmit={this.passOrRejectApplyApprove.bind(this, 'pass')}//分配销售的时候直接分配，不需要再展示模态框
+                unSelectDataTip={assignedSalesUsersIds ? '' : Intl.get('leave.apply.select.assigned.sales','请选择要分配的销售')}
+                clearSelectData={this.clearSelectSales}
+                btnAtTop={false}
+                isSaving={this.state.applyResult.submitResult === 'loading'}
+                isDisabled={!assignedSalesUsersIds}
+            />
         );
 
     };
@@ -516,28 +513,24 @@ class ApplyViewDetail extends React.Component {
     renderCandidatedContext = () => {
         var assignedCandidateUserIds = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
         return (
-            <div className="pull-right">
-                <AntcDropdown
-                    ref={AssignSales => this.assignSales = AssignSales}
-                    content={<Button
-                        data-tracename="点击分配销售总经理按钮"
-                        className='assign-candidate-btn btn-primary-sure' size="small" type="primary">{Intl.get('user.apply.detail.button.pass', '通过')}</Button>}
-                    overlayTitle={Intl.get('user.salesman', '销售人员')}
-                    okTitle={Intl.get('common.confirm', '确认')}
-                    cancelTitle={Intl.get('common.cancel', '取消')}
-                    overlayContent={this.renderSalesBlock(ASSIGN_TYPE.NEXT_CANDIDATED)}
-                    handleSubmit={this.passOrRejectApplyApprove.bind(this, 'pass')}//直接分配，不需要展示模态框
-                    unSelectDataTip={assignedCandidateUserIds ? '' : Intl.get('sales.opportunity.assign.department.owner','请选择要分配的部门主管')}
-                    clearSelectData={this.clearSelectCandidate}
-                    btnAtTop={false}
-                    isSaving={this.state.applyResult.submitResult === 'loading'}
-                    isDisabled={!assignedCandidateUserIds}
-                />
-                <Button type="primary" className="btn-primary-sure" size="small"
-                    onClick={this.submitApprovalForm.bind(this, 'reject')}>
-                    {Intl.get('common.apply.reject', '驳回')}
-                </Button>
-            </div>
+            <AntcDropdown
+                ref={AssignSales => this.assignSales = AssignSales}
+                content={<Button
+                    data-tracename="点击分配销售总经理按钮"
+                    className='assign-candidate-btn btn-primary-sure' size="small"
+                    type="primary">{Intl.get('user.apply.detail.button.pass', '通过')}</Button>}
+                overlayTitle={Intl.get('user.salesman', '销售人员')}
+                okTitle={Intl.get('common.confirm', '确认')}
+                cancelTitle={Intl.get('common.cancel', '取消')}
+                overlayContent={this.renderSalesBlock(ASSIGN_TYPE.NEXT_CANDIDATED)}
+                handleSubmit={this.passOrRejectApplyApprove.bind(this, 'pass')}//直接分配，不需要展示模态框
+                unSelectDataTip={assignedCandidateUserIds ? '' : Intl.get('sales.opportunity.assign.department.owner', '请选择要分配的部门主管')}
+                clearSelectData={this.clearSelectCandidate}
+                btnAtTop={false}
+                isSaving={this.state.applyResult.submitResult === 'loading'}
+                isDisabled={!assignedCandidateUserIds}
+            />
+
         );
 
     };

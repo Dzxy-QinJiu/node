@@ -1421,7 +1421,7 @@ var en_US = {
     'crm.apply.active.email.tip': 'Your mailbox is not activated. Please {activeEmail} first',//您的邮箱未激活，请先{aciveEmail}
     'crm.this.week.contact': 'Customers contacted this week',//本周联系过的客户
     'crm.record.unupload.phone': 'Unuploaded voice recordings, unable to play',//未上传通话录音，无法播放
-
+    'crm.record.edit.record.tip': 'Click to modify the record',//点击修改跟进记录
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
     'crm.contract.validity.one.year': 'Valid for one year', // 有效期一年
@@ -1833,6 +1833,10 @@ var en_US = {
     'sales.home.call.top.ten': 'Single call duration', // 单次通话时长
     'sales.home.set.role': 'Click here to set up the sales role',//点此设置销售角色
     'sales.home.role.null': 'Not set roles',//未设置角色
+    'sales.home.invite.member': 'Invite Member', // 邀请成员
+    'sales.home.invite.btn': 'Invite', // 邀请
+    'sales.home.invite.continue.btn': 'Continue', // 继续邀请
+    'sales.home.invite.member.failed': 'Failed to invite member', // 邀请成员失败！
 
     //销售首页-新增用户分析
     'sales.user.analysis': 'User Analysis',//用户分析@
@@ -2148,7 +2152,7 @@ var en_US = {
     'retry.token.status': 'status:403, token expired',//status:403,Token过期
     'retry.input.captcha': 'Enter the captcha',//请输入验证码
     'seconds.after.tip': 'after {logoutTime} seconds',//{logoutTime}秒后
-    'customer.confirm.trace': 'Are you sure to add these trace content?',//是否添加此跟进内容？
+    'customer.confirm.trace': 'Are you sure to save these trace content?',//确定要保存此跟进内容？
     'user.login.abnormal': 'Abnormal login',//异常登录
     'user.retry.login': 'Login after disabling. The user\'s {appName} account has been disabled and still trying to login.',//停用后登录。该用户的{appName}账号已经停用，仍尝试登录。
     'user.exception.login': 'Login exception. The user\'s {client_name} account is not logged in the usual location.',//登录地异常。该用户的{client_name}账号，不在常用登录地登录。
@@ -2207,7 +2211,7 @@ var en_US = {
     'ketao.frontpage.interested.customer': 'Focus customer',//关注客户
     'sales.homepage.hide.teamlist': 'Hide team lists',//隐藏团队列表
     'sales.homepage.show.teamlist': 'Show team lists',//展开团队列表
-    'crm.save.customertrace.first': 'Please save or cancel the edited customer trace record first',//请先保存或取消保存已编辑的跟进记录内容
+    'crm.save.customertrace.first': 'Please save or cancel the editing customer trace record first',//请先保存或取消正在编辑的跟进记录内容
     'sales.add.email.info': 'Please add the E-mail address on the {userinfo} page, otherwise you will be unable to receive the application email from users',//请到{userinfo}页面添加邮箱，否则将会无法接收用户申请的邮件。
     'crm.sales.add.clue': 'Add clue',//添加线索
     'clue.customer.will.distribution': 'To be assigned',//待分配
@@ -2736,6 +2740,12 @@ var en_US = {
     'clue.and.crm.upload.size': 'The file size should not exceed 10M!',//文件大小不要超过10M!
     'contract.service.add': 'Add Service',//添加服务
     'apply.show.cancel.result': 'View revocation results',//查看撤销结果
+
+    // 成员申请
+    'member.application': 'Member Application', // 成员申请
+    'member.apply.failed.get.worklist': 'Failed to get member applies to be approved by me',// 获取由我审批的成员申请失败
+    'member.apply.failed.get.all.apply': 'Failed to get all member applies', // 获取全部成员申请失败
+    'member.apply.detail.auto.generation.password': 'auto generation password', // 自动生成密码
     'manager.role.has.not.setting.phone.systerm': 'You have not yet opened a telephone system or have not set an agent number.',//您尚未开通电话系统或未设置座席号!
     'sales.role.has.not.setting.phone.systerm': 'You have not yet opened a telephone system or have not set an agent number. Please inform the administrator!',//您尚未开通电话系统或未设置座席号，请通知管理员!
     'contract.repeyment.first': 'First',//首笔

@@ -172,10 +172,6 @@ ReportSendApplyDetailStore.prototype.getApplyCommentList = function(resultObj) {
         //正常情况
         replyListInfo.result = '';
         replyListInfo.list = resultObj.list;
-        //按回复时间进行排序
-        replyListInfo.list = _.sortBy(replyListInfo.list, (item) => {
-            return -item.comment_time;
-        });
         replyListInfo.errorMsg = '';
     }
 };

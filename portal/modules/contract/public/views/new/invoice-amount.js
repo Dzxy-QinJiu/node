@@ -248,7 +248,7 @@ class InvoiceAmount extends React.Component {
         let {getFieldDecorator} = this.props.form;
 
         return (
-            <Form layout='inline' className='detailcard-form-container new-add-repayment-container'>
+            <Form layout='inline' className='detailcard-form-container new-add-form-container'>
                 <FormItem
                     className='add-repayment-date'
                 >
@@ -346,7 +346,7 @@ class InvoiceAmount extends React.Component {
             return (
                 <div className="repayment-list">
                     {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
-                        <span className="iconfont icon-add" onClick={this.addList}
+                        <span className="iconfont icon-add detail-edit-add" onClick={this.addList}
                             title={Intl.get('common.add', '添加')}/>) : null}
                     {this.renderInvoiceList(invoiceLists)}
                     {this.state.saveErrMsg ? <Alert type="error" message={this.state.saveErrMsg} showIcon /> : null}

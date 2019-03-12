@@ -1436,6 +1436,7 @@ var zh_CN = {
     'crm.apply.active.email.tip': '您的邮箱未激活，请先{aciveEmail}',
     'crm.this.week.contact': '本周联系过的客户',
     'crm.record.unupload.phone': '未上传通话录音，无法播放',
+    'crm.record.edit.record.tip': '点击修改跟进记录',
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
     'crm.contract.validity.one.year': '有效期一年',
@@ -1861,6 +1862,12 @@ var zh_CN = {
     'sales.home.call.top.ten': '单次通话时长',
     'sales.home.set.role': '点此设置销售角色',
     'sales.home.role.null': '未设置角色',
+    'sales.home.invite.member': '邀请成员',
+    'sales.home.invite.btn': '邀请',
+    'sales.home.invite.continue.btn': '继续邀请',
+    'sales.home.invite.member.success': '邀请申请发送成功',
+    'sales.home.invite.member.failed': '邀请成员失败！',
+    
     //销售首页-新增用户分析
     'sales.user.analysis': '用户分析',
     'user.analysis.total': '用户统计',
@@ -2119,7 +2126,7 @@ var zh_CN = {
     'customer.input.customer.trace.content': '请填写跟进内容，保存后不可修改',
     'customer.add.customer.trace.detail': '请补充跟进记录详情',
     'customer.total.record': '共{num}条跟进记录',
-    'customer.confirm.trace': '是否添加此跟进内容？',
+    'customer.confirm.trace': '确定要保存此跟进内容？',
     'common.visit': '拜访',
     'common.phone.system': '电话系统',
     'common.ketao.app': '客套APP',
@@ -2248,7 +2255,7 @@ var zh_CN = {
     'clue.customer.has.follow': '已跟进',
     'sales.homepage.hide.teamlist': '隐藏团队列表',
     'sales.homepage.show.teamlist': '展开团队列表',
-    'crm.save.customertrace.first': '请先保存或取消保存已编辑的跟进记录内容',
+    'crm.save.customertrace.first': '请先保存或取消正在编辑的跟进记录',
     'sales.add.email.info': '请到{userinfo}页面添加邮箱，否则将会无法接收用户申请的邮件。',
     'cluecustomer.create.time': '创建于{startTime}',
     'cluecustomer.trace.person': '跟进人',
@@ -2759,6 +2766,12 @@ var zh_CN = {
     'contract.service.add': '添加服务',
     'clue.and.crm.upload.size': '文件大小不要超过10M!',
     'apply.show.cancel.result': '查看撤销结果',
+
+    // 成员申请
+    'member.application': '成员申请',
+    'member.apply.failed.get.worklist': '获取由我审批的成员申请失败',
+    'member.apply.failed.get.all.apply': '获取全部成员申请失败',
+    'member.apply.detail.auto.generation.password': '自动生成密码',
     'manager.role.has.not.setting.phone.systerm': '您尚未开通电话系统或未设置座席号!',
     'sales.role.has.not.setting.phone.systerm': '您尚未开通电话系统或未设置座席号，请通知管理员!',
     'contract.repeyment.first': '首笔',

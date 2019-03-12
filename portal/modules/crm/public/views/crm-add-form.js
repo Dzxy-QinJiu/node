@@ -72,12 +72,25 @@ var CRMAddForm = createReactClass({
             phoneNum: this.props.phoneNum,//外部传入的电话值
         };
     },
+    getDefaultProps() {
+        return {
+            showRightPanel: function() {
+            },
+            hideAddForm: function() {
+            },
+            phoneNum: '',
+            isAssociateClue: false,
+            formData: {},
+            isShowMadal: true,
+        };
+    },
     propTypes: {
         showRightPanel: PropTypes.func,
         hideAddForm: PropTypes.func,
         phoneNum: PropTypes.string,
         isAssociateClue: PropTypes.bool,
-        formData: PropTypes.object
+        formData: PropTypes.object,
+        isShowMadal: PropTypes.bool,
     },
 
     componentDidMount: function() {
@@ -599,7 +612,7 @@ var CRMAddForm = createReactClass({
         return (
             <RightPanelModal
                 className="crm-add-container"
-                isShowMadal={true}
+                isShowMadal={this.props.isShowMadal}
                 isShowCloseBtn={true}
                 onClosePanel={this.closeAddPanel}
                 title= {Intl.get('crm.3', '添加客户')}

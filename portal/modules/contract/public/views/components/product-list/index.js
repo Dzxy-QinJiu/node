@@ -1,9 +1,11 @@
 /** Created by 2019-02-19 14:48 */
 /*产品的添加和编辑*/
 import React, { Component } from 'react';
+import './index.less';
 import { Icon, Popconfirm, Spin} from 'antd';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
+import DefaultUserLogoTitle from 'CMP_DIR/default-user-logo-title';
 import Trace from 'LIB_DIR/trace';
 import { AntcAppSelector,Antc } from 'antc';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
@@ -427,7 +429,7 @@ class ProductList extends Component {
                 <span className='app-icon-name'>
                     {appName ? (
                         <span>
-                            {matchAppObj && matchAppObj.client_image ? (
+                            {/*{matchAppObj && matchAppObj.client_image ? (
                                 <span className='app-self'>
                                     <img src={matchAppObj.client_image} />
                                 </span>
@@ -435,7 +437,13 @@ class ProductList extends Component {
                                 <span className='app-default'>
                                     <i className='iconfont icon-app-default'></i>
                                 </span>
-                            )}
+                            )}*/}
+                            <DefaultUserLogoTitle
+                                nickName={appName}
+                                userLogo={_.get(matchAppObj,'client_image','')}
+                                className='app-default'
+                                defaultImgClass="application-img"
+                            />
                             <span className='app-name' title={appName}>{appName}</span>
                         </span>
                     ) : null}
@@ -573,7 +581,7 @@ class ProductList extends Component {
         return (
             <DetailCard
                 title={this.props.title}
-                content={(<div className="product-list">
+                content={(<div className="product-list-wrapper">
                     <div className="product-list-container clearfix" style={containerStyle}>
                         {
                             productListLength ? (

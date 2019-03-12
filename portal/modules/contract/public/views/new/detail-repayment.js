@@ -8,6 +8,7 @@ import { message, Select, Icon, Form } from 'antd';
 
 let Option = Select.Option;
 let FormItem = Form.Item;
+import '../../css/common-contract-amount.less';
 import 'MOD_DIR/user_manage/public/css/user-info.less';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import RepaymentInfo from './repayment-info';
@@ -106,7 +107,7 @@ class DetailRepayment extends React.Component {
             <div style={{height: this.props.height}} data-tracename="回款页面">
                 <GeminiScrollBar ref="gemiScrollBar">
                     {this.state.isRepaymentLoading ? <Spinner /> :
-                        (<div className='clearfix contract-repayment-container'>
+                        (<div className='clearfix contract-view-content'>
                             {this.renderReypayPlan()}
                             {this.renderReypayInfo()}
                         </div>)}

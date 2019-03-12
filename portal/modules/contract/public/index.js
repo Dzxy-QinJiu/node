@@ -1,5 +1,6 @@
 var React = require('react');
-import './style.less';
+import './css/index.less';
+import './css/contract-panel-v2.less';
 import classNames from 'classnames';
 import { message, Button, Icon, Modal, Radio, Select, Menu, Dropdown } from 'antd';
 const Option = Select.Option;
@@ -48,6 +49,11 @@ class Contract extends React.Component {
         if (orderGenerateContractId && action === 'PUSH') {
             isFromOrder = true;
         }
+        let dateType = 'date';
+        // 是否是合同回款页面
+        if(getTypeByPath() === VIEW_TYPE.REPAYMENT) {
+            dateType = 'repayment_date';
+        }
 
         this.state = {
             contractList: [],
@@ -57,7 +63,7 @@ class Contract extends React.Component {
             typeList: [],
             rangeParams: [],
             type: getTypeByPath(),
-            dateType: 'date',
+            dateType,
             sum: '',
             contractCount: 0,
             currentContract: {},

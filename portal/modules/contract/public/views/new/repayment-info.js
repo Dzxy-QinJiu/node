@@ -202,13 +202,13 @@ class RepaymentInfo extends React.Component {
         let isFirstAdd = false;
         let displayType = this.state.displayType;
         if(type === 'editing') {
-            isFirstAdd = true;
+            isFirstAdd = this.isShowFirstColumn(key);
         }else if(type === 'addCancel') {
             // 添加项的取消修改
             displayType = DISPLAY_TYPES.TEXT;
         }else if(type === 'addAndEditCancel') {
             // 这里是因为已有项取消时有添加项存在，所以这里需要将isFirstAdd置为true
-            isFirstAdd = true;
+            isFirstAdd = this.isShowFirstColumn('');//true;
         }
         this.setState({
             isFirstAdd,
@@ -285,7 +285,7 @@ class RepaymentInfo extends React.Component {
         });
         this.setState({
             repayLists,
-            isFirstAdd: true,
+            isFirstAdd: this.isShowFirstColumn(''),
             currentKey: '',
             displayType: DISPLAY_TYPES.EDIT
         },() => {
@@ -295,12 +295,30 @@ class RepaymentInfo extends React.Component {
         });
     };
 
+    // 是否显示首笔添加列
+    isShowFirstColumn(key) {
+        /** 数据源是否有添加首笔的项
+         *  是： 是当前项 ？ 显示 ：不显示；
+         *  否： 显示
+         * */
+        let isShowFirstAdd;
+        let hasIsFirstItem = _.find(this.state.repayLists, item => {
+            return !_.isNil(item.is_first) && 'true' === item.is_first;
+        });
+        if(hasIsFirstItem) {
+            isShowFirstAdd = hasIsFirstItem.id === key;
+        }else {
+            isShowFirstAdd = true;
+        }
+        return isShowFirstAdd;
+    }
+
     renderAddRepaymentPanel(repayLists) {
         let {getFieldDecorator} = this.props.form;
         let formData = this.state.formData;
 
         return (
-            <Form layout='inline' className='detailcard-form-container new-add-repayment-container'>
+            <Form layout='inline' className='detailcard-form-container new-add-form-container'>
                 <FormItem
                     className='add-repayment-date'
                 >
@@ -448,6 +466,7 @@ class RepaymentInfo extends React.Component {
             }
         ];
 
+
         if(this.state.isFirstAdd){
             columns.splice(1, 0, {
                 title: Intl.get('contract.repeyment.first', '首笔'),
@@ -497,7 +516,7 @@ class RepaymentInfo extends React.Component {
                 <div className="repayment-list">
                     {/*是展示状态，且有权限编辑，且尾款不等于0*/}
                     {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege && total_plan_amount > 0 ? (
-                        <span className="iconfont icon-add" onClick={this.addList}
+                        <span className="iconfont icon-add detail-edit-add" onClick={this.addList}
                             title={Intl.get('common.add', '添加')}/>) : null}
                     {this.renderRepaymentList(repayLists, total_plan_amount)}
                     {this.state.saveErrMsg ? <Alert type="error" message={this.state.saveErrMsg} showIcon /> : null}
@@ -508,7 +527,7 @@ class RepaymentInfo extends React.Component {
         let repayTitle = (
             <div className="repayment-repay">
                 <span>{Intl.get('contract.194', '回款进程')}: </span>
-                <span className='repayment-label'>{Intl.get('contract.179', '已回款')}: {parseAmount(contract_amount)}{Intl.get('contract.82', '元')}/ </span>
+                <span className='repayment-label'>{Intl.get('contract.179', '已回款')}: {parseAmount(total_amount)}{Intl.get('contract.82', '元')}/ </span>
                 <span className='repayment-label'>{Intl.get('contract.180', '尾款')}: {parseAmount(total_plan_amount)}{Intl.get('contract.82', '元')}</span>
             </div>
         );

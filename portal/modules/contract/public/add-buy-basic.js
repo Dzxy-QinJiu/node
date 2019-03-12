@@ -9,6 +9,7 @@ const Validator = Validation.Validator;
 import { Form } from 'antd';
 import ValidateMixin from '../../../mixins/ValidateMixin';
 import BasicMixin from './mixin-basic';
+import './css/add-basic.less';
 import { VIEW_TYPE } from '../consts';
 
 const AddBuyBasic = createReactClass({

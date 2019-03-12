@@ -795,8 +795,8 @@ class ClueCustomer extends React.Component {
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
                                 <ShearContent>
                                     <span>
-                                        <span>{moment(salesClueItem.source_time).format(oplateConsts.DATE_FORMAT)}-</span>
-                                        <span className="clue-access-channel">{salesClueItem.access_channel || Intl.get('clue.unknown.access.channel','未知接入渠道')}:</span>
+                                        <span>{moment(salesClueItem.source_time).format(oplateConsts.DATE_FORMAT)}</span>
+                                        <span className="clue-access-channel">{salesClueItem.access_channel ? '-' + salesClueItem.access_channel + ':' : ''}</span>
                                         <span>
 
                                             {salesClueItem.source}
