@@ -248,7 +248,7 @@ class InvoiceAmount extends React.Component {
         let {getFieldDecorator} = this.props.form;
 
         return (
-            <Form layout='inline' className='detailcard-form-container new-add-repayment-container'>
+            <Form layout='inline' className='detailcard-form-container new-add-form-container'>
                 <FormItem
                     className='add-repayment-date'
                 >

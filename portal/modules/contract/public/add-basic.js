@@ -12,6 +12,7 @@ const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const CheckboxGroup = Checkbox.Group;
+import './css/add-basic.less';
 import ValidateMixin from '../../../mixins/ValidateMixin';
 import BasicMixin from './mixin-basic';
 import { COST_STRUCTURE } from '../consts';

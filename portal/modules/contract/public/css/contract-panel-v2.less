@@ -110,11 +110,7 @@
     }
   }
 
-  .add-repayments, .add-payments {
-    padding-top: 5px;
-  }
-
-  .new-add-repayment-container {
+  .new-add-form-container {
     background-color: white;
     border: 1px solid @disable_call_phone_icon;
     padding: 12px;
@@ -162,21 +158,6 @@
     }
   }
 
-  .product-table-container {
-    border: 1px solid #eee;
-    margin: 15px;
-
-    .product-table {
-      table {
-        .invalid-td-input {
-          input {
-            border: 1px solid red;
-          }
-        }
-      }
-    }
-  }
-
   // 步骤条样式
   .ant-steps {
     width: 90%;
@@ -196,20 +177,6 @@
 
     .ant-steps-title {
       background: @bg-grey;
-    }
-  }
-
-  .add-basic {
-    margin-top: 0px;
-
-    .ant-form-item {
-      label {
-        margin-right: 0px;
-      }
-
-      .ant-checkbox-wrapper {
-        line-height: @line_height30;
-      }
     }
   }
 
@@ -295,55 +262,6 @@
 
   .total-amount-error {
     color: @error_tips_color;
-  }
-
-  // 回款，付款样式
-  .add-repayments, .add-payments {
-    width: auto;
-
-    .new-add-repayment-container {
-      padding: 15px;
-      width: 440px;
-
-      .ant-form-item {
-        margin-right: 0;
-      }
-
-      .ant-form {
-        padding: 0;
-      }
-    }
-
-    .finance-list {
-      padding: 0 12px;
-      margin: 0px 20px;
-      background: @apply-detail-bg-color;
-
-      ul {
-        margin: 10px 0px;
-      }
-
-      li {
-        list-style: none;
-        margin-bottom: 0;
-      }
-
-      .iconfont.icon-huikuan {
-        color: #71ca62;
-      }
-    }
-
-    .add-finance {
-      input {
-        width: 60px;
-        margin: 0px;
-      }
-
-      .btn-primary-sure {
-        margin: 0 8px;
-        padding: 1px 12px;
-      }
-    }
   }
 
   .detail-cost-title-container {
@@ -506,15 +424,6 @@
       position: relative;
     }
 
-    .repayment-title {
-      display: inline-block;
-    }
-
-    .repayment-label {
-      font-size: @form_font_size14;
-      color: @title-color;
-    }
-
     .repayment-list {
       .finance-list {
         margin: 0;
@@ -555,45 +464,7 @@
       }
     }
 
-    .finance-list {
-      .finance-list-item {
-        .btn-bar {
-          padding: 0 5px;
-        }
-
-        .btn-bar, .icon-edit-btn {
-          display: none;
-        }
-
-        &:hover {
-          .btn-bar, .icon-edit-btn {
-            display: inline-block;
-          }
-        }
-
-        &.item-actived {
-          background: #d9ebfa;
-
-          &:hover {
-            .btn-bar, .icon-edit-btn {
-              display: none;
-            }
-          }
-        }
-
-        .btn-save, .btn-cancel {
-          position: relative;
-          right: 0;
-          width: 20px;
-          height: 20px;
-        }
-        .btn-save{
-          margin-right: 3px;
-        }
-      }
-    }
-
-    .new-add-repayment-container {
+    .new-add-form-container {
       padding: 0;
       margin: 0;
       background: transparent;
@@ -719,4 +590,3 @@
     }
   }
 }
-

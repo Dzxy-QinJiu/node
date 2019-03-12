@@ -78,7 +78,7 @@ class RepeymentPlanForm extends React.Component{
     render() {
         let {getFieldDecorator} = this.props.form;
         return (
-            <Form layout='inline' className='repayment-edit-form detailcard-form-container new-add-repayment-container'>
+            <Form layout='inline' className='repayment-edit-form detailcard-form-container new-add-form-container'>
                 {Intl.get('contract.78','从签订日起')}
                 <FormItem>
                     {
