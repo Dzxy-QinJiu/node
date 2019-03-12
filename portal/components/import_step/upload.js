@@ -30,11 +30,13 @@ class UploadBtn extends React.Component {
         if (info.file.status === 'done') {
             const response = info.file.response;
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.import-clue'), '上传表格');
-            if (_.isArray(response) && response.length || _.isObject(response) && response.code === 0) {
-                let result = _.isArray(response) ? response : response.result;
-                this.props.onItemListImport(result);
+            if (_.isArray(response) && response.length) {
+                this.props.onItemListImport(response);
             } else {
-                message.error(Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!',{type: this.props.importType}));
+                this.setState({
+                    isLoading: false,
+                    warningMsg: Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!',{type: this.props.importType})
+                });
             }
             this.props.afterUpload();
         }else if(info.file.status === 'error') {

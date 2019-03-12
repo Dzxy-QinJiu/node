@@ -34,7 +34,7 @@ import {
 //正则
 import { pathParamRegex } from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
-import ImportContractTemplateNew from 'CMP_DIR/import_step';
+import ImportContractTemplate from 'CMP_DIR/import_step';
 import { REG_CLUE_FILES_TYPE_RULES } from 'PUB_DIR/sources/utils/consts';
 
 //根据路由地址获取页面类型  sell buy repayment
@@ -970,7 +970,7 @@ class Contract extends React.Component {
                     </div>
                 </div>
 
-                <ImportContractTemplateNew
+                <ImportContractTemplate
                     uploadActionName='contracts'
                     importType={Intl.get('contract.125', '合同')}
                     templateHref={templateHref}
