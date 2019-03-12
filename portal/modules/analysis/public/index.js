@@ -413,11 +413,12 @@ class CurtaoAnalysis extends React.Component {
     }
 
     render() {
-        //是否不显示全部应用选项
-        let noAllApp = false;
+        let appList = _.cloneDeep(Store.appList);
 
+        //延期用户分析页不让选全部应用
         if (this.state.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE) {
-            noAllApp = true;
+            //去掉全部应用项
+            appList.splice(0, 1);
         }
 
         const storedAppId = storageUtil.local.get(STORED_APP_ID_KEY);
@@ -454,7 +455,7 @@ class CurtaoAnalysis extends React.Component {
                                 <AppSelector
                                     storedAppIdKey={STORED_APP_ID_KEY}
                                     defaultValue={defaultAppId}
-                                    noAllApp={noAllApp}
+                                    appList={appList}
                                 />
                             </div>
                         ) : null}

@@ -3,7 +3,6 @@
  */
 
 import { storageUtil } from 'ant-utils';
-import Store from './store';
 import { Select} from 'antd';
 const Option = Select.Option;
 const emitters = require('PUB_DIR/sources/utils/emitters');
@@ -15,14 +14,14 @@ class AppSelector extends React.Component {
         storedAppIdKey: '',
         //外部条件默认值
         defaultValue: ['all'],
-        //不显示全部应用选项
-        noAllApp: false
+        //应用列表
+        appList: []
     };
 
     static propTypes = {
         storedAppIdKey: PropTypes.string,
         defaultValue: PropTypes.string,
-        noAllApp: PropTypes.bool,
+        appList: PropTypes.array,
     };
 
     constructor(props) {
@@ -47,13 +46,7 @@ class AppSelector extends React.Component {
          
         //如果清空了所有选中项
         if (_.isEmpty(appId)) {
-            let firstItemIndex = 0;
-
-            if (this.props.noAllApp) {
-                firstItemIndex = 1;
-            }
-
-            const firstAppId = Store.appList[firstItemIndex].app_id;
+            const firstAppId = this.props.appList[0].app_id;
             //默认选中第一个应用
             selectedApp = [firstAppId];
             appIdStr = firstAppId;
@@ -73,12 +66,7 @@ class AppSelector extends React.Component {
     };
 
     render() {
-        let appList = _.cloneDeep(Store.appList);
-
-        if (this.props.noAllApp) {
-            //去掉全部应用项
-            appList.splice(0, 1);
-        }
+        const appList = this.props.appList;
 
         return (
             <div className='app-selector'>
