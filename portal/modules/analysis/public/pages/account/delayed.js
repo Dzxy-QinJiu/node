@@ -2,10 +2,11 @@
  * 延期帐号分析
  */
 
+import {DEFERRED_ACCOUNT_ANALYSIS_TITLE} from '../../consts';
 import accountChart from '../../charts/account';
 
 module.exports = {
-    title: '延期帐号分析',
+    title: DEFERRED_ACCOUNT_ANALYSIS_TITLE,
     menuIndex: 5,
     privileges: [
         'USER_ANALYSIS_COMMON',

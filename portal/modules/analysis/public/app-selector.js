@@ -3,7 +3,6 @@
  */
 
 import { storageUtil } from 'ant-utils';
-import Store from './store';
 import { Select} from 'antd';
 const Option = Select.Option;
 const emitters = require('PUB_DIR/sources/utils/emitters');
@@ -15,11 +14,14 @@ class AppSelector extends React.Component {
         storedAppIdKey: '',
         //外部条件默认值
         defaultValue: ['all'],
+        //应用列表
+        appList: []
     };
 
     static propTypes = {
         storedAppIdKey: PropTypes.string,
         defaultValue: PropTypes.string,
+        appList: PropTypes.array,
     };
 
     constructor(props) {
@@ -30,11 +32,26 @@ class AppSelector extends React.Component {
         };
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.defaultValue !== this.props.defaultValue) {
+            this.setState({
+                selectedApp: nextProps.defaultValue,
+            });
+        }
+    }
+
     onAppChange = (appId) => {
         let selectedApp; 
         let appIdStr;
          
-        if (_.last(appId) === 'all' || _.isEmpty(appId)) {
+        //如果清空了所有选中项
+        if (_.isEmpty(appId)) {
+            const firstAppId = this.props.appList[0].app_id;
+            //默认选中第一个应用
+            selectedApp = [firstAppId];
+            appIdStr = firstAppId;
+        //如果选择了全部应用
+        } else if (_.last(appId) === 'all') {
             selectedApp = ['all'];
             appIdStr = 'all';
         } else {
@@ -49,6 +66,8 @@ class AppSelector extends React.Component {
     };
 
     render() {
+        const appList = this.props.appList;
+
         return (
             <div className='app-selector'>
                 <Select
@@ -57,7 +76,7 @@ class AppSelector extends React.Component {
                     onChange={this.onAppChange}
                     dropdownMatchSelectWidth={false}
                 >
-                    {_.map(Store.appList, (item, index) => {
+                    {_.map(appList, (item, index) => {
                         return <Option key={index} value={item.app_id}>{item.app_name}</Option>;
                     })}
                 </Select>
