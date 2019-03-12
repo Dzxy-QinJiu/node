@@ -300,7 +300,7 @@ class RepaymentInfo extends React.Component {
         let formData = this.state.formData;
 
         return (
-            <Form layout='inline' className='detailcard-form-container new-add-repayment-container'>
+            <Form layout='inline' className='detailcard-form-container new-add-form-container'>
                 <FormItem
                     className='add-repayment-date'
                 >

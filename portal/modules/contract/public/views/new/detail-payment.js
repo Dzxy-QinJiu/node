@@ -8,6 +8,7 @@ import { message, Select, Icon, Form, Input, DatePicker, Checkbox, Alert } from 
 let Option = Select.Option;
 let FormItem = Form.Item;
 import Trace from 'LIB_DIR/trace';
+import '../../css/common-contract-amount.less';
 import 'MOD_DIR/user_manage/public/css/user-info.less';
 import DetailCard from 'CMP_DIR/detail-card';
 import EditableTable from '../components/editable-table';
@@ -253,7 +254,7 @@ class DetailPayment extends React.Component {
         let {getFieldDecorator} = this.props.form;
 
         return (
-            <Form layout='inline' className='detailcard-form-container new-add-repayment-container'>
+            <Form layout='inline' className='detailcard-form-container new-add-form-container'>
                 <FormItem
                     className='add-repayment-date'
                 >
