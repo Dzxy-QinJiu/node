@@ -2187,36 +2187,42 @@ const ApplyViewDetail = createReactClass({
                 var selectedDetailItem = this.props.detailItem;
                 //要提交的应用配置
                 var products = [];
+                //是否是uem的用户
+                var isUem = !this.state.isOplateUser;
                 //是否是已有用户申请
                 var isExistUserApply = this.isExistUserApply();
                 let applyMaxNumber = this.getApplyMaxUserNumber();
                 let changeMaxNumber = this.getChangeMaxUserNumber();
                 //选中的应用，添加到提交参数中
-                _.each(this.appsSetting, function(app_config, app_id) {
-                    //app_id含有&&时，是多应用申请时的产品配置信息，不做处理，避免出现多种未知应用
-                    if (app_id.indexOf('&&') === -1) {
-                        //当前应用配置
-                        var appObj = {
-                            //应用id
-                            client_id: app_id,
-                            //角色
-                            roles: app_config.roles,
-                            //权限
-                            permissions: app_config.permissions,
-                            //到期停用
-                            over_draft: app_config.over_draft.value,
-                            //开始时间
-                            begin_date: app_config.time.start_time,
-                            //结束时间
-                            end_date: app_config.time.end_time,
-                        };
-                        //已有用户申请没法指定个数
-                        if (!isExistUserApply) {
-                            appObj.number = app_config.number.value;
+                if (isUem){
+                    products = _.get(this,'state.detailInfoObj.info.apps');
+                }else{
+                    _.each(this.appsSetting, function(app_config, app_id) {
+                        //app_id含有&&时，是多应用申请时的产品配置信息，不做处理，避免出现多种未知应用
+                        if (app_id.indexOf('&&') === -1) {
+                            //当前应用配置
+                            var appObj = {
+                                //应用id
+                                client_id: app_id,
+                                //角色
+                                roles: app_config.roles,
+                                //权限
+                                permissions: app_config.permissions,
+                                //到期停用
+                                over_draft: app_config.over_draft.value,
+                                //开始时间
+                                begin_date: app_config.time.start_time,
+                                //结束时间
+                                end_date: app_config.time.end_time,
+                            };
+                            //已有用户申请没法指定个数
+                            if (!isExistUserApply) {
+                                appObj.number = app_config.number.value;
+                            }
+                            products.push(appObj);
                         }
-                        products.push(appObj);
-                    }
-                });
+                    });
+                }
                 var appList = detailInfo.apps;
                 //如果是开通用户，需要先检查是否有角色设置，如果没有角色设置，给出一个警告
                 //如果已经有这个警告了，就是继续提交的逻辑，就跳过此判断
@@ -2225,7 +2231,7 @@ const ApplyViewDetail = createReactClass({
                     (detailInfo.type === CONSTANTS.APPLY_USER_OFFICIAL ||
                         detailInfo.type === CONSTANTS.APPLY_USER_TRIAL ||
                         detailInfo.type === CONSTANTS.EXIST_APPLY_FORMAL ||
-                        detailInfo.type === CONSTANTS.EXIST_APPLY_TRIAL)
+                        detailInfo.type === CONSTANTS.EXIST_APPLY_TRIAL) && !isUem
                 ) {
                     //遍历每个应用，找到没有设置角色的应用
                     var rolesNotSetAppNames = _.chain(products).filter((obj) => {
