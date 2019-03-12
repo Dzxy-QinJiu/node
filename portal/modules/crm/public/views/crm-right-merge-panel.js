@@ -571,7 +571,7 @@ class CrmRightMergePanel extends React.Component {
                                 >
                                     {this.state.activeKey === '3' ? (
                                         <CustomerRecord
-                                            isMerge={true}
+                                            disableEdit={true}
                                             curCustomer={this.state.selectedCustomer}
                                             refreshCustomerList={this.props.refreshCustomerList}
                                         />
