@@ -126,7 +126,7 @@ class SigningStatistics extends React.Component {
             team_name: teamName,
         };
 
-        let targetUrl = '/contract/list';
+        let targetUrl = '/contract/sell';
         targetUrl += '?' + querystring.stringify(paramObj);
 
         window.open(targetUrl);
