@@ -413,6 +413,13 @@ class CurtaoAnalysis extends React.Component {
     }
 
     render() {
+        //是否不显示全部应用选项
+        let noAllApp = false;
+
+        if (this.state.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE) {
+            noAllApp = true;
+        }
+
         const storedAppId = storageUtil.local.get(STORED_APP_ID_KEY);
 
         let defaultAppId;
@@ -447,7 +454,7 @@ class CurtaoAnalysis extends React.Component {
                                 <AppSelector
                                     storedAppIdKey={STORED_APP_ID_KEY}
                                     defaultValue={defaultAppId}
-                                    currentPage={this.state.currentPage}
+                                    noAllApp={noAllApp}
                                 />
                             </div>
                         ) : null}

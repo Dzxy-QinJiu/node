@@ -4,7 +4,6 @@
 
 import { storageUtil } from 'ant-utils';
 import Store from './store';
-import {DEFERRED_ACCOUNT_ANALYSIS_TITLE} from './consts';
 import { Select} from 'antd';
 const Option = Select.Option;
 const emitters = require('PUB_DIR/sources/utils/emitters');
@@ -16,14 +15,14 @@ class AppSelector extends React.Component {
         storedAppIdKey: '',
         //外部条件默认值
         defaultValue: ['all'],
-        //当前页
-        currentPage: {}
+        //不显示全部应用选项
+        noAllApp: false
     };
 
     static propTypes = {
         storedAppIdKey: PropTypes.string,
         defaultValue: PropTypes.string,
-        currentPage: PropTypes.object,
+        noAllApp: PropTypes.bool,
     };
 
     constructor(props) {
@@ -46,7 +45,20 @@ class AppSelector extends React.Component {
         let selectedApp; 
         let appIdStr;
          
-        if (_.last(appId) === 'all' || _.isEmpty(appId)) {
+        //如果清空了所有选中项
+        if (_.isEmpty(appId)) {
+            let firstItemIndex = 0;
+
+            if (this.props.noAllApp) {
+                firstItemIndex = 1;
+            }
+
+            const firstAppId = Store.appList[firstItemIndex].app_id;
+            //默认选中第一个应用
+            selectedApp = [firstAppId];
+            appIdStr = firstAppId;
+        //如果选择了全部应用
+        } else if (_.last(appId) === 'all') {
             selectedApp = ['all'];
             appIdStr = 'all';
         } else {
@@ -63,7 +75,7 @@ class AppSelector extends React.Component {
     render() {
         let appList = _.cloneDeep(Store.appList);
 
-        if (this.props.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE) {
+        if (this.props.noAllApp) {
             //去掉全部应用项
             appList.splice(0, 1);
         }
