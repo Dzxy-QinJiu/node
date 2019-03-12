@@ -15,8 +15,17 @@
   .pass-and-reject-wrap{
     display: inline;
   }
-  .btn-primary-sure {
+  button.ant-btn-sm{
     margin-left: 10px;
+    @basiccolor:#4d96d1;
+    @hovercolor:#478ebf;
+    border-color:@basiccolor;
+    background-color:@basiccolor;
+    color:#fff;
+    &:hover{
+      border-color:@hovercolor;
+      background-color:@hovercolor;
+    }
   }
   .approval_person {
     line-height: 22px;

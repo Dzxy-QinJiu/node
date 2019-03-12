@@ -444,7 +444,7 @@ class ApplyViewDetail extends React.Component {
             DocumentWriteApplyDetailAction.cancelSendApproval();
         };
         return (
-            <Button type='primary' className='pull-right' onClick={this.confirmFinishApply} disabled={isLoading}>
+            <Button type='primary' size="small" onClick={this.confirmFinishApply} disabled={isLoading}>
                 {Intl.get('apply.approve.confirm.finish','确认完成')}
                 {isLoading ? <Icon type="loading"/> : resultErrMsg ? <AlertTimer time={3000} message={resultErrMsg} type="error" onHide={onHide} showIcon/> : null}
             </Button>

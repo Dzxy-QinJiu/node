@@ -447,7 +447,6 @@ class ApplyViewDetail extends React.Component {
         let isConsumed = APPLY_FINISH_STATUS.includes(detailInfoObj.status);
         var userName = _.last(_.get(detailInfoObj, 'approve_details')) ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name ? _.last(_.get(detailInfoObj, 'approve_details')).nick_name : '' : '';
         var approvalDes = getApplyResultDscr(detailInfoObj);
-        var renderAssigenedContext = null;
         var addApplyNextCandidate = null;
         //如果是管理员或者是待我审批的申请，我都可以把申请进行转出
         if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || detailInfoObj.showApproveBtn) && detailInfoObj.status === 'ongoing'){
@@ -463,7 +462,6 @@ class ApplyViewDetail extends React.Component {
                 showApproveBtn={detailInfoObj.showApproveBtn}
                 showCancelBtn={detailInfoObj.showCancelBtn}
                 submitApprovalForm={this.submitApprovalForm}
-                renderAssigenedContext={renderAssigenedContext}
                 addApplyNextCandidate={addApplyNextCandidate}
             />);
     }
