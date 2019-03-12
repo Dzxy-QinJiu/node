@@ -33,23 +33,27 @@ exports.addReportSendApply = function(req, res) {
                     formData['files'] = [fs.createReadStream(newTmpPath)];
                 }
                 if (i === receiveFiles.length - 1){
-                    _.forEach(fields, (value, key) => {
-                        formData[key] = _.get(value, '[0]');
-                    });
-                    addReportSendApplyData(req, res, formData);
+                    addReportSendApplyData(req, res, fields, formData);
                 }
                 //把文件删除
                 fs.unlinkSync(newTmpPath);
 
             }
         }else {
-            addReportSendApplyData(req, res, formData);
+            addReportSendApplyData(req, res, fields, formData);
         }
     });
 
 };
-function addReportSendApplyData(req, res, formData) {
+function getFieldValues(fields,formData) {
+    _.forEach(fields, (value, key) => {
+        formData[key] = _.get(value, '[0]');
+    });
+}
+function addReportSendApplyData(req, res, fields, formData) {
     try {
+        //获取不同字段上的参数值
+        getFieldValues(fields,formData);
         //调用上传请求服务
         ReportSendApplyService.addReportSendApply(req, res, formData).on('success', function(data) {
             res.status(200).json(data);

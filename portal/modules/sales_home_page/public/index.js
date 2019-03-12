@@ -36,7 +36,6 @@ import UserListPanel from 'MOD_DIR/app_user_manage/public/user-list-panel';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import InviteMember from 'MOD_DIR/invite_member/public';
-import {isOrganizationEefung, hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import AlertTip from 'CMP_DIR/alert-tip';
 
 //延时展示激活邮箱提示框的时间

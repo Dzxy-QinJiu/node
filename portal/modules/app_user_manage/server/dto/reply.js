@@ -24,5 +24,5 @@ exports.toRestObject = function(list) {
             comment_time: item.comment_time
         });
     });
-    return result;
+    return _.sortBy( _.cloneDeep(result), [item => item.comment_time]);
 };
