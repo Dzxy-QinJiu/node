@@ -25,7 +25,8 @@ export function getActiveTimeIntervalChart() {
         },
         xAxisLabels: _.range(24),
         yAxisLabels: WEEKDAY,
-        generateCsvData: function(data) {
+        processCsvData: function(chart) {
+            const data = chart.data;
             let csvData = [];
             let thead = [Intl.get('common.login.time', '时间')];
             _.each(_.range(24), hour => {
