@@ -18,7 +18,8 @@ import BasicOverview from './basic-overview';
 import CustomerUsers from './users';
 import {isEqualArray} from 'LIB_DIR/func';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-
+import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
+const RightPanel = rightPanelUtil.RightPanel;
 const TAB_KEYS = {
     OVERVIEW_TAB: '1',//概览页
     CONTACT_TAB: '2',//联系人
@@ -42,7 +43,8 @@ class CrmRightPanel extends React.Component {
         curOrder: {},
         curCustomer: this.props.curCustomer,
         tabsContainerHeight: 'auto',
-        getCusomerResultdMsg: ''//获取客户详情后的失败或无数据的提示
+        getCusomerResultdMsg: '',//获取客户详情后的失败或无数据的提示
+        showDetailUserId: ''//展示用户详情的userId
     };
 
     componentWillMount() {
@@ -119,11 +121,18 @@ class CrmRightPanel extends React.Component {
             activeKey: key
         });
     };
+    closeUserDetail = () => {
+        this.setState({
+            showDetailUserId: ''
+        });
+    };
+    showUserDetail = (userId) => {
+        this.setState({
+            showDetailUserId: userId
+        });
+    };
 
-    render() {
-        if (this.state.getCusomerResultdMsg) {//未获取到详情及获取出错时的提示
-            return (<div className="no-data-tip">{this.state.getCusomerResultdMsg}</div>);
-        }
+    renderCustomerDetail(){
         return (
             <div className="customer-detail-content">
                 <BasicInfo isRepeat={this.props.isRepeat}
@@ -155,6 +164,7 @@ class CrmRightPanel extends React.Component {
                                         changeActiveKey={this.changeActiveKey}
                                         disableEdit={this.props.disableEdit}
                                         updateCustomerLastContact={this.props.updateCustomerLastContact}
+                                        showUserDetail={this.showUserDetail}
                                     />
                                 ) : null}
                             </TabPane>
@@ -199,6 +209,7 @@ class CrmRightPanel extends React.Component {
                                                 showOpenAppForm={this.props.showOpenAppForm}
                                                 closeOpenAppPanel={this.props.returnInfoPanel}
                                                 disableEdit={this.props.disableEdit}
+                                                showUserDetail={this.showUserDetail}
                                             />
                                         ) : null}
                                     </TabPane>
@@ -260,6 +271,24 @@ class CrmRightPanel extends React.Component {
                 </div>
             </div>
         );
+    }
+    render() {
+        if (this.state.getCusomerResultdMsg) {//未获取到详情及获取出错时的提示
+            return (<div className="no-data-tip">{this.state.getCusomerResultdMsg}</div>);
+        }
+        //客户详情中打开用户详情时
+        if(this.state.showDetailUserId) {
+            return (
+                <RightPanel
+                    className="apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"
+                    showFlag={this.state.showDetailUserId}
+                >
+                    <UserDetail userId={this.state.showDetailUserId}
+                        closeRightPanel={this.closeUserDetail}/>
+                </RightPanel>);
+        } else {//客户详情
+            return this.renderCustomerDetail();
+        }
     }
 }
 CrmRightPanel.propTypes = {

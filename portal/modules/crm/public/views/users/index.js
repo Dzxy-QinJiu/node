@@ -469,7 +469,7 @@ class CustomerUsers extends React.Component {
         );
     }
     showUserDetail(userId){
-        crmAction.setShowDetailUserId(userId);
+        this.props.showUserDetail(userId);
     }
     renderCrmUserList(isApplyButtonShow) {
         if (this.state.isLoading) {
@@ -486,18 +486,24 @@ class CustomerUsers extends React.Component {
                 <ul className="crm-user-list">
                     {crmUserList.map((userObj, index) => {
                         let user = _.isObject(userObj) ? userObj.user : {};
+                        let userNameText = `${_.get(user, 'user_name', '')}(${_.get(user, 'nick_name', '')})`;
                         return (
                             <div className="crm-user-item" key={index}>
                                 <div className="crm-user-name">
                                     {isShowCheckbox ? (
                                         <Checkbox checked={user.checked} disabled={!!this.state.applyType}
                                             onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
-                                            <span onClick={this.showUserDetail.bind(this, user.user_id)}>
-                                                {user.user_name}({user.nick_name})
+                                            <span className={classNames('user-name-text', {'can-click-open-detail': !this.props.isMerge})}
+                                                title={userNameText}
+                                                onClick={this.showUserDetail.bind(this, user.user_id)}>
+                                                {userNameText}
                                             </span>
                                         </Checkbox>) :
-                                        <span className="no-checkbox-text" onClick={this.showUserDetail.bind(this, user.user_id)}>
-                                            {user.user_name}({user.nick_name})
+                                        <span
+                                            className={classNames('user-name-text', {'can-click-open-detail': !this.props.isMerge})}
+                                            title={userNameText}
+                                            onClick={this.showUserDetail.bind(this, user.user_id)}>
+                                            {userNameText}
                                         </span>
                                     }
                                 </div>
@@ -593,6 +599,7 @@ CustomerUsers.propTypes = {
     isMerge: PropTypes.bool,
     curCustomer: PropTypes.object,
     closeOpenAppPanel: PropTypes.func,
-    ShowCustomerUserListPanel: PropTypes.func
+    ShowCustomerUserListPanel: PropTypes.func,
+    showUserDetail: PropTypes.func
 };
 export default CustomerUsers;
