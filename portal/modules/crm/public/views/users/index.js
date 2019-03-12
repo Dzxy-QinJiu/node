@@ -22,6 +22,7 @@ import classNames from 'classnames';
 import ErrorDataTip from '../components/error-data-tip';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
+import crmAction from '../../action/crm-actions';
 
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
@@ -467,7 +468,9 @@ class CustomerUsers extends React.Component {
             </span>
         );
     }
-
+    showUserDetail(userId){
+        crmAction.setShowDetailUserId(userId);
+    }
     renderCrmUserList(isApplyButtonShow) {
         if (this.state.isLoading) {
             return <Spinner />;
@@ -489,9 +492,13 @@ class CustomerUsers extends React.Component {
                                     {isShowCheckbox ? (
                                         <Checkbox checked={user.checked} disabled={!!this.state.applyType}
                                             onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
-                                            {user.user_name}({user.nick_name})
+                                            <span onClick={this.showUserDetail.bind(this, user.user_id)}>
+                                                {user.user_name}({user.nick_name})
+                                            </span>
                                         </Checkbox>) :
-                                        <span className="no-checkbox-text">{user.user_name}({user.nick_name})</span>
+                                        <span className="no-checkbox-text" onClick={this.showUserDetail.bind(this, user.user_id)}>
+                                            {user.user_name}({user.nick_name})
+                                        </span>
                                     }
                                 </div>
                                 <div
