@@ -170,3 +170,7 @@ export { analysisCustomerListEmitter };
 // 申请成员相关事件
 const memberApplyEmitter = new EventEmitter();
 export { memberApplyEmitter };
+// 列表面板事件
+const listPanelEmitter = new EventEmitter();
+listPanelEmitter.SHOW = 'show_list_panel';
+export { listPanelEmitter };

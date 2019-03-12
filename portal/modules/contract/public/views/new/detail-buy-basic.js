@@ -1,5 +1,7 @@
 /** Created by 2019-01-31 11:11 */
-
+/**
+ * 采购合同基本信息展示及编辑页面
+ */
 var React = require('react');
 import { message, Select, Radio, Icon, Form } from 'antd';
 
@@ -29,8 +31,7 @@ class DetailBuyBasic extends React.Component {
 
     getInitStateData(props) {
         let hasEditPrivilege = hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPATE_PRIVILEGE);
-        // let hasEditPrivilege = contract.stage === '待审' && hasPrivilege('OPLATE_CONTRACT_UPDATE');
-        let formData = _.extend(true, {}, props.contract);
+        let formData = props.contract;
 
         return {
             formData: _.cloneDeep(formData),
@@ -118,7 +119,7 @@ class DetailBuyBasic extends React.Component {
                         validators={[{required: true, message: Intl.get('contract.57', '请填写合同号')}]}
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditInput={this.saveContractBasicInfo}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.24', '合同号')}`}
+                        addDataTip={Intl.get('contract.211', '设置合同号')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -134,7 +135,7 @@ class DetailBuyBasic extends React.Component {
                         width={EDIT_FEILD_LESS_WIDTH}
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditSelect={this.handleSubmitEditUser}
-                        editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('crm.6', '负责人')}`}
+                        editBtnTip={Intl.get('contract.207', '修改负责人')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -143,15 +144,15 @@ class DetailBuyBasic extends React.Component {
                     </span>
                     <BasicEditSelectField
                         id={contract.id}
-                        displayText={getPurchaseContractTypeName(contract.purchase_contract_type || '')}
+                        displayText={getPurchaseContractTypeName(_.get(contract,'purchase_contract_type',''))}
                         value={_.isNil(contract.purchase_contract_type) ? '' : contract.purchase_contract_type.toString()}
                         field="purchase_contract_type"
                         selectOptions={purchaseOptions}
                         width={EDIT_FEILD_LESS_WIDTH}
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditSelect={this.saveContractBasicInfo}
-                        editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('contract.purchase.contract.type', '分类')}`}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.purchase.contract.type', '分类')}`}
+                        editBtnTip={Intl.get('contract.212', '修改分类')}
+                        addDataTip={Intl.get('contract.213', '设置分类')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -161,7 +162,7 @@ class DetailBuyBasic extends React.Component {
                     <BasicEditInputField
                         width={EDIT_FEILD_LESS_WIDTH}
                         id={contract.id}
-                        displayText={contract.contract_amount || 0}
+                        displayText={_.get(contract,'contract_amount',0)}
                         field="contract_amount"
                         type='number'
                         validators={[{
@@ -174,7 +175,7 @@ class DetailBuyBasic extends React.Component {
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditInput={this.saveContractBasicInfo}
                         noDataTip={Intl.get('crm.contract.no.contract.money', '暂无合同额')}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.25', '合同额')}`}
+                        addDataTip={Intl.get('contract.214', '设置合同额')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -189,8 +190,8 @@ class DetailBuyBasic extends React.Component {
                         value={contract.date}
                         saveEditDateInput={this.saveContractBasicInfo}
                         hasEditPrivilege={hasEditPrivilege}
-                        editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('contract.34', '签订时间')}`}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.34', '签订时间')}`}
+                        editBtnTip={Intl.get('contract.202', '修改签订时间')}
+                        addDataTip={Intl.get('contract.203', '设置签订时间')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -206,7 +207,7 @@ class DetailBuyBasic extends React.Component {
                         width={EDIT_FEILD_LESS_WIDTH}
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditSelect={this.saveContractBasicInfo}
-                        addDataTip={`${Intl.get('menu.shortName.config', '设置')}${Intl.get('contract.36', '合同阶段')}`}
+                        addDataTip={Intl.get('contract.215', '设置合同阶段')}
                     />
                 </div>
                 <div className="basic-info-item">

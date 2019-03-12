@@ -144,8 +144,7 @@ class CustomerNoticeMessage extends React.Component {
                     </div>}
                 </div>
                 {_.isArray(customerMessage.contacts) && customerMessage.contacts.length ?
-                    <ContactItem contacts={customerMessage.contacts} callNumber={this.props.callNumber}
-                        errMsg={this.props.errMsg}/> : null}
+                    <ContactItem contacts={customerMessage.contacts} /> : null}
             </div>
         );
     }

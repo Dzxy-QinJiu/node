@@ -39,27 +39,11 @@ class ApplyDetailBottom extends React.Component {
 
     render() {
         return (
-            <div className="approval_block">
+            <div className="approval_block pull-right">
                 <Row className="approval_person clearfix">
-                    <Col span={10}>
-                        <span className="approval-info-label">
-                            {this.props.create_time ? moment(this.props.create_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) : ''}
-                        </span>
-                        <span className="approval-info-label">
-                            {this.props.applicantText}
-                        </span>
-                    </Col>
-                    <Col span={14}>
+                    <Col>
                         {_.isFunction(this.props.addApplyNextCandidate) ? this.props.addApplyNextCandidate() : null}
-                        {this.props.isConsumed ? (
-                            <div className="pull-right">
-                                <span className="approval-info-label">
-                                    {this.props.update_time ? moment(this.props.update_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) : ''}
-                                </span>
-                                <span className="approval-info-label">
-                                    {this.props.approvalText}
-                                </span>
-                            </div>) : (
+                        {this.props.isConsumed ? null : (
                             this.props.showApproveBtn || this.props.showCancelBtn ?
                                 this.renderBottomText()
                                 : null

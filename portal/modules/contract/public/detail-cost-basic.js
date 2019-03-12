@@ -1,7 +1,9 @@
 /** Created by 2019-01-29 10:04 */
+
 var React = require('react');
 import {message, Select, Radio} from 'antd';
 let Option = Select.Option;
+import './css/detail-cost.less';
 import Trace from 'LIB_DIR/trace';
 import 'MOD_DIR/user_manage/public/css/user-info.less';
 import DetailCard from 'CMP_DIR/detail-card';
@@ -9,22 +11,18 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import ajax from '../common/ajax';
-import { COST_TYPE, OPERATE } from '../consts';
+import { COST_TYPE, OPERATE, DISPLAY_TYPES, OPERATE_INFO } from '../consts';
 import oplateConsts from 'LIB_DIR/consts';
 import { getNumberValidateRule } from 'PUB_DIR/sources/utils/validate-util';
 import routeList from 'MOD_DIR/contract/common/route';
-//展示的类型
-const DISPLAY_TYPES = {
-    EDIT: 'edit',//编辑
-    TEXT: 'text'//展示
-};
+
 const COST_TYPES = {
-    cost: '费用',
-    date: '日期',
-    type: '费用类型',
+    cost: Intl.get('contract.133', '费用'),
+    date: Intl.get('crm.146', '日期'),
+    type: Intl.get('contract.135', '费用类型'),
 };
 
-const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 354;
+const EDIT_FEILD_LESS_WIDTH = 354;
 
 class DetailCostCard extends React.Component {
     state = {
@@ -32,7 +30,7 @@ class DetailCostCard extends React.Component {
     };
 
     getInitStateData(props){
-        const formData = _.clone({...props.cost,type: props.cost.type || COST_TYPE[0]});
+        const formData = _.clone({...props.cost,type: _.get(props,'cost.type',COST_TYPE[0])});
         return {
             formData,
             displayType: DISPLAY_TYPES.TEXT,
@@ -49,7 +47,7 @@ class DetailCostCard extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         let cost = _.isEmpty(nextProps.cost);
-        if(!cost && _.get(nextProps.cost,'id') !== this.state.formData.id){
+        if(!cost && _.get(nextProps.cost,'id') !== this.state.formData.id || !_.isEqual(this.props.cost, nextProps.cost)){
             //切换费用时，重新设置state数据
             this.setState(this.getInitStateData(nextProps));
         }
@@ -79,11 +77,12 @@ class DetailCostCard extends React.Component {
             type: route.method,
             data: data || {},
         };
+        let type = DISPLAY_TYPES.UPDATE;
 
 
         ajax(arg).then(result => {
             if (result.code === 0) {
-                message.success(OPERATE['update'] + '费用信息成功');
+                message.success(OPERATE_INFO[type].success);
                 if(_.isFunction(successFunc)) successFunc();
                 const hasResult = _.isObject(result.result) && !_.isEmpty(result.result);
                 if(hasResult){
@@ -91,7 +90,7 @@ class DetailCostCard extends React.Component {
                     this.props.refreshCurrentContract(this.props.cost.id,true,contract);
                 }
             } else {
-                message.error(result.msg || OPERATE[type] + '费用信息失败');
+                message.error(result.msg || OPERATE_INFO[type].faild);
                 if (_.isFunction(errorFunc)) errorFunc();
             }
         }, (errorMsg) => {
@@ -143,7 +142,7 @@ class DetailCostCard extends React.Component {
                         value={cost.date ? moment(cost.date) : ''}
                         saveEditDateInput={(...option) => this.saveEdithandle('date',option)}
                         hasEditPrivilege={this.props.enableEdit}
-                        editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('crm.146', '日期')}`}
+                        editBtnTip={Intl.get('contract.239', '修改日期')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -161,7 +160,7 @@ class DetailCostCard extends React.Component {
                         hasEditPrivilege={this.props.enableEdit}
                         saveEditSelect={(...option) => this.saveEdithandle('type',option)}
                         noDataTip={Intl.get('contract.137', '暂无费用类型')}
-                        editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('contract.135', '费用类型')}`}
+                        editBtnTip={Intl.get('contract.240', '修改费用类型')}
                     />
                 </div>
                 <div className="basic-info-item">
@@ -180,7 +179,7 @@ class DetailCostCard extends React.Component {
                         ]}
                         hasEditPrivilege={this.props.enableEdit}
                         saveEditInput={(...option) => this.saveEdithandle('cost',option)}
-                        editBtnTip={`${Intl.get('common.update', '修改')}${Intl.get('contract.133', '费用')}`}
+                        editBtnTip={Intl.get('contract.cost.modify', '修改费用')}
                     />
                 </div>
             </div>

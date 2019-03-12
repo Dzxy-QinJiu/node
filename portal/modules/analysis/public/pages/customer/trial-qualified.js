@@ -51,12 +51,13 @@ function adjustConditions(conditions) {
 
 //调整日期选择器
 function adjustDatePicker(option, startTime, endTime) {
+    const endMoment = endTime ? moment(endTime) : moment();
     //时间区间设为月
     option.range = 'month';
     //结束时间设为当前结束时间所在月的第一天
-    option.startTime = moment(endTime).startOf('month').valueOf();
+    option.startTime = endMoment.startOf('month').valueOf();
     //结束时间设为当前结束时间所在月的最后一天
-    option.endTime = moment(endTime).endOf('month').valueOf();
+    option.endTime = endMoment.endOf('month').valueOf();
     //日期选择器只能选择月，所以无需提供时间区间选项
     option.periodOptions = [];
 }

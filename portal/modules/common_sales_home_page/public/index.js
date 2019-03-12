@@ -19,30 +19,40 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
-var userData = require('PUB_DIR/sources/user-data');
-import crmAjax from 'MOD_DIR/crm/public/ajax/index';
-import {getRelativeTime} from 'PUB_DIR/sources/utils/common-method-util';
+import {getRelativeTime, hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import Spinner from 'CMP_DIR/spinner';
 import SalesClueItem from './view/sales-clue-item';
 const LAYOUT_CONSTS = {
     PADDDING_TOP_AND_BOTTOM: 97,
 };
-
+var websiteConfig = require('../../../lib/utils/websiteConfig');
+var setWebsiteConfig = websiteConfig.setWebsiteConfig;
+const getLocalWebsiteConfig = websiteConfig.getLocalWebsiteConfig;
+import AlertTip from 'CMP_DIR/alert-tip';
+import {message, Button} from 'antd';
+const DELAY_TIME = 2000;
 class SalesHomePage extends React.Component {
-    state = {
-        showCustomerPanel: ALL_LISTS_TYPE.SCHEDULE_TODAY,//默认激活的面板
-        isShowRepeatCustomer: false,//是否展示重复客户
-        curShowCustomerId: '',//展示客户详情的客户id
-        curShowUserId: '',//展示用户详情的用户id
-        isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
-        customerOfCurUser: {},//当前展示用户所属客户的详情
-        ...SalesHomeStore.getState()
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            showCustomerPanel: ALL_LISTS_TYPE.SCHEDULE_TODAY,//默认激活的面板
+            isShowRepeatCustomer: false,//是否展示重复客户
+            curShowCustomerId: '',//展示客户详情的客户id
+            curShowUserId: '',//展示用户详情的用户id
+            isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
+            customerOfCurUser: {},//当前展示用户所属客户的详情
+            isAnimateShow: false,//是否动态由上到下推出 激活邮箱提示框
+            isAnimateHide: false,//是否动态隐藏 提示框
+            isClientAnimateShow: false,//是否动态由上到下推出 设置坐席号提示框
+            isClientAnimateHide: false,//是否动态隐藏 提示框
+            ...SalesHomeStore.getState()
+        };
+    }
 
     componentDidMount() {
         SalesHomeStore.listen(this.onChange);
         this.getSalesListData();
-        this.getUserPhoneNumber();
         //绑定window的resize，进行缩放处理
         $(window).on('resize', this.windowResize);
         //给点击查看客户详情的客户加样式
@@ -51,6 +61,15 @@ class SalesHomePage extends React.Component {
             $('.selected-customer-detail-item').removeClass('selected-customer-detail-item');
             $(this).closest('.customer-detail-item').addClass('selected-customer-detail-item');
         });
+        SalesHomeAction.getShowActiveEmailOrClientConfig();
+        //外层父组件加载完成后，再由上到下推出激活邮箱提示框
+        setTimeout(() => {
+            this.setState({
+                isClientAnimateShow: true,
+                isAnimateShow: true
+            });
+        }, DELAY_TIME);
+
     }
 
     //缩放延时，避免页面卡顿
@@ -481,22 +500,6 @@ class SalesHomePage extends React.Component {
         );
     };
 
-    // 获取拨打电话的座机号
-    getUserPhoneNumber = () => {
-        let member_id = userData.getUserData().user_id;
-        crmAjax.getUserPhoneNumber(member_id).then((result) => {
-            if (result.phone_order) {
-                this.setState({
-                    callNumber: result.phone_order
-                });
-            }
-        }, (errMsg) => {
-            this.setState({
-                errMsg: errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
-            });
-        });
-    };
-
     //点击左侧不同客户类别的标题
     handleClickDiffCustomerType = (customerType) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.customer-item'), '打开' + customerType + '类型客户面板');
@@ -566,8 +569,6 @@ class SalesHomePage extends React.Component {
                                     isShowTopTitle={false}
                                     isShowScheduleTimerange={true}
                                     openCustomerDetail={this.openCustomerDetail}
-                                    callNumber={this.state.callNumber}
-                                    errMsg={this.state.errMsg}
                                 />
                             );
                         })
@@ -582,8 +583,6 @@ class SalesHomePage extends React.Component {
                                     scheduleType={ALL_LISTS_TYPE.SCHEDULE_TODAY}
                                     isShowScheduleTimerange={false}
                                     openCustomerDetail={this.openCustomerDetail}
-                                    callNumber={this.state.callNumber}
-                                    errMsg={this.state.errMsg}
                                 />
                             );
                         })
@@ -608,8 +607,6 @@ class SalesHomePage extends React.Component {
                                     isShowTopTitle={true}
                                     isShowScheduleTimerange={false}
                                     openCustomerDetail={this.openCustomerDetail}
-                                    callNumber={this.state.callNumber}
-                                    errMsg={this.state.errMsg}
                                 />
                             );
                         })}
@@ -633,8 +630,6 @@ class SalesHomePage extends React.Component {
                                     isShowTopTitle={false}
                                     isShowScheduleTimerange={false}
                                     openCustomerDetail={this.openCustomerDetail}
-                                    callNumber={this.state.callNumber}
-                                    errMsg={this.state.errMsg}
                                 />
                             );
                         })}
@@ -660,8 +655,6 @@ class SalesHomePage extends React.Component {
                         return (
                             <SalesClueItem
                                 salesClueItemDetail= {item}
-                                callNumber={this.state.callNumber}
-                                errMsg={this.state.errMsg}
                                 showFrontPageTip={true}
                                 afterRemarkClue={SalesHomeAction.afterRemarkClue}
                             />
@@ -691,8 +684,6 @@ class SalesHomePage extends React.Component {
                                             <WillExpireItem
                                                 expireItem={willExpiredCustomer}
                                                 openCustomerDetail={this.openCustomerDetail}
-                                                callNumber={this.state.callNumber}
-                                                errMsg={this.state.errMsg}
                                                 willExpiredTime={getRelativeTime(item.date)}
                                             />
                                         );
@@ -756,8 +747,6 @@ class SalesHomePage extends React.Component {
                             customerNoticeMessage={item}
                             openCustomerDetail={this.openCustomerDetail}
                             openUserDetail={this.openUserDetail}
-                            callNumber={this.state.callNumber}
-                            errMsg={this.state.errMsg}
                             afterHandleMessage={this.afterHandleMessage}
                             isRecentLoginCustomer={isRecentLoginCustomer}
                         />
@@ -852,7 +841,93 @@ class SalesHomePage extends React.Component {
         }
         return total;
     };
-
+    //获取添加坐席号的提示
+    getClientAlertTipMessage = () => {
+        return (
+            <span>
+                {commonDataUtil.showDisabledCallTip()}
+            </span>
+        );
+    };
+    hideSetClientTip = () => {
+        let personnelObj = {};
+        personnelObj[oplateConsts.STORE_PERSONNAL_SETTING.SETTING_CLIENT_NOTICE_IGNORE] = 'yes';
+        this.setState({
+            setWebConfigClientStatus: true
+        });
+        setWebsiteConfig(personnelObj,() => {
+            this.setState({
+                isClientAnimateHide: true,
+                setWebConfigClientStatus: false
+            });
+        },(errMsg) => {
+            //设置错误后的提示
+            this.setState({
+                setWebConfigClientStatus: false
+            });
+            message.error(errMsg);
+        });
+    };
+    //点击 邮箱激活提示 中的不再提示，隐藏提示框
+    hideActiveEmailTip = () => {
+        //这里是全量设置，必须把之前未改动的地方也加上去
+        SalesHomeAction.setWebsiteConfig({'setting_notice_ignore': 'yes'}, (errMsg) => {
+            if (errMsg) {
+                //设置错误后的提示
+                message.error(errMsg);
+            } else {
+                //设置成功后，隐藏提示框
+                this.setState({
+                    isAnimateHide: true
+                });
+            }
+        });
+    };
+    getIsShowAddEmail = () => {
+        return _.get(this.state,'emailShowObj.isShowAddEmail');
+    };
+    //点击 激活邮箱 按钮
+    activeUserEmail = () => {
+        if (!this.state.emailShowObj.email) {
+            return;
+        }
+        SalesHomeAction.activeUserEmail((resultObj) => {
+            if (resultObj.error) {
+                message.error(resultObj.errorMsg);
+            } else {
+                message.success(
+                    Intl.get('user.info.active.email', '激活邮件已发送至{email}', {'email': this.state.emailShowObj.email})
+                );
+            }
+        });
+    };
+    //获取激活邮箱的提示
+    getEmailAlertTipMessage = () => {
+        if(this.getIsShowAddEmail()){
+            return (
+                <span>
+                    <ReactIntl.FormattedMessage
+                        id="sales.add.email.info"
+                        defaultMessage={'请到{userinfo}页面添加邮箱，否则将会无法接收用户申请的邮件。'}
+                        values={{
+                            'userinfo': <span className="jump-to-userinfo" onClick={this.jumpToUserInfo}>
+                                {Intl.get('user.info.user.info','个人资料')}
+                            </span>
+                        }}
+                    />
+                </span>
+            );
+        }else{
+            return(
+                <span>
+                    <span>
+                        {Intl.get('sales.frontpage.active.info','请激活邮箱，以免影响收取审批邮件！')}
+                    </span>
+                    <Button type="primary" size="small" onClick={this.activeUserEmail}>{Intl.get('sales.frontpage.active.email','激活邮箱')}</Button>
+                </span>
+            );
+        }
+    };
     render() {
         var phoneData = this.state.phoneTotalObj.data;
         const rightContentHeight = $(window).height() - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM;
@@ -921,6 +996,28 @@ class SalesHomePage extends React.Component {
                         </ul>
                     </div>
                     <div className="main-content-container" style={{height: rightContentHeight}}>
+                        {/*是否展示邮箱激活或者添加邮箱的提示提示*/}
+                        {this.state.emailShowObj.isShowActiveEmail || this.state.emailShowObj.isShowAddEmail ?
+                            <AlertTip
+                                clsNames='email-active-wrap'
+                                alertTipMessage={this.getEmailAlertTipMessage()}
+                                showNoTipMore={!this.getIsShowAddEmail()}
+                                isAnimateShow={this.state.isAnimateShow}
+                                isAnimateHide={this.state.isAnimateHide}
+                                handleClickNoTip={this.hideActiveEmailTip}
+                                setWebConfigStatus={this.state.setWebConfigStatus}
+                            />
+
+                            : null}
+                        {/*是否展示设置坐席号的提示*/}
+                        {_.get(this.state,'emailShowObj.isShowSetClient') ?
+                            <AlertTip
+                                isAnimateShow={this.state.isClientAnimateShow}
+                                isAnimateHide={this.state.isClientAnimateHide}
+                                alertTipMessage={this.getClientAlertTipMessage()}
+                                handleClickNoTip={this.hideSetClientTip}
+                                setWebConfigStatus={this.state.setWebConfigClientStatus}
+                            /> : null}
                         <div className="customer-list-left" data-tracename="客户分类">
                             {this.renderDiffCustomerPanel()}
                         </div>

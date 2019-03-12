@@ -151,8 +151,8 @@ exports.getRoleList = function(clientId) {
     return Deferred.promise();
 };
 
-//验证用户名唯一性
-exports.checkOnlyUserName = function(nickName) {
+//验证昵称（对应的是姓名）唯一性
+exports.checkOnlyNickName = function(nickName) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/nickname/' + nickName,
@@ -161,11 +161,28 @@ exports.checkOnlyUserName = function(nickName) {
         success: function(result) {
             Deferred.resolve(result);
         }, error: function(errorInfo) {
-            Deferred.reject(errorInfo.responseJSON || Intl.get('common.username.is.unique', '用户名唯一性校验出错！！'));
+            Deferred.reject(errorInfo.responseJSON);
         }
     });
     return Deferred.promise();
 };
+
+//验证用户名唯一性
+exports.checkOnlyUserName = function(username) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/user_name/' + username,
+        dataType: 'json',
+        type: 'get',
+        success: function(result) {
+            Deferred.resolve(result);
+        }, error: function(errorInfo) {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
 
 //验证电话唯一性
 exports.checkOnlyPhone = function(phone) {

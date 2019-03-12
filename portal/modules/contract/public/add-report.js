@@ -9,8 +9,11 @@ const Validator = Validation.Validator;
 import { Form, Input, Select, Button, Alert, message } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
+import './css/add-reports.less';
 import ValidateMixin from '../../../mixins/ValidateMixin';
+import DetailCard from 'CMP_DIR/detail-card';
 import ProductTable from 'CMP_DIR/basic-edit-field-new/product-table';
+import DetailReport from './views/new/detail-report';
 import { parseAmount } from 'LIB_DIR/func';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { PRIVILEGE_MAP, VIEW_TYPE, REPORT_TYPE, LITE_SERVICE_TYPE, REPORT_SERVICE, SERVICE_TYPE } from 'MOD_DIR/contract/consts';
@@ -27,27 +30,15 @@ const AddReport = createReactClass({
     mixins: [ValidateMixin],
 
     getInitialState: function() {
-        let reports;
-
-        if (_.isArray(this.props.reports) && this.props.reports.length) {
-            reports = _.cloneDeep(this.props.reports);
-            _.each(reports,(item) => {
-                if(!item.name) {
-                    item.id = item.type;
-                    item.name = item.type;
-                }
-            });
-        } else {
-            reports = [];
-        }
         return {
-            reports,
+            reports: [],
             formData: {},
             valid: false,
             pristine: true,
             validator: null
         };
     },
+
     propTypes: {
         updateScrollBar: PropTypes.func,
         reports: PropTypes.array,
@@ -56,7 +47,12 @@ const AddReport = createReactClass({
         parent: PropTypes.object,
         refreshCurrentContract: PropTypes.func,
     },
-
+    componentWillReceiveProps(nextProps) {
+        if(_.get(this.props,'contract') && !_.isEqual(this.props.contract.id, nextProps.contract.id)){
+            let newState = this.getInitialState();
+            this.setState(newState);
+        }
+    },
     addReport: function() {
         this.state.reports.push({});
 
@@ -117,7 +113,7 @@ const AddReport = createReactClass({
         });
     },
     handleReportSave(saveObj,successFunc,errorFunc) {
-        saveObj = {reports: saveObj};
+        saveObj = {reports: saveObj, id: this.props.contract.id};
         Trace.traceEvent(ReactDOM.findDOMNode(this),'修改服务产品信息');
         let valid = this.validate();
         if(!valid) {
@@ -126,10 +122,7 @@ const AddReport = createReactClass({
         }
         const handler = 'editContract';
         const route = _.find(routeList, route => route.handler === handler);
-        // 单项编辑时，这里得添加上客户信息字段
-        if(!_.get(saveObj, 'customers')){
-            saveObj.customers = this.props.contract.customers;
-        }
+
         const arg = {
             url: route.path,
             type: route.method,
@@ -141,7 +134,7 @@ const AddReport = createReactClass({
                 message.success(Intl.get('user.edit.success', '修改成功'));
                 if (_.isFunction(successFunc)) successFunc();
                 const hasResult = _.isObject(result.result) && !_.isEmpty(result.result);
-                let contract = _.extend({},this.props.contract,result.result);
+                let contract = _.extend(this.props.contract,result.result);
                 if (hasResult) {
                     this.props.refreshCurrentContract(this.props.contract.id, true, contract);
                 }
@@ -218,34 +211,47 @@ const AddReport = createReactClass({
             totalAmout = this.props.contract.contract_amount - totalProductsPrice;
         }
         return (
-            <div className="add-reports" data-tracename="添加编辑>服务产品信息">
-                <div className="product-forms product-table-container">
-                    <div className='report-title'><i className='iconfont icon-fuwu'></i><span>{Intl.get('contract.96', '服务信息')}</span></div>
-                    <ProductTable
-                        addBtnText={Intl.get('contract.service.add', '添加服务')}
-                        ref={ref => this.producTableRef = ref}
-                        defaultValueMap={defaultValueMap}
-                        appList={REPORT_TYPE.concat(LITE_SERVICE_TYPE).map(x => ({
-                            client_id: x,
-                            client_name: x
-                        }))}
-                        totalAmount={totalAmout}
-                        data={this.state.reports}
-                        dataSource={this.state.reports}
-                        isEdit={isEdit}
-                        isEditBtnShow={isEditBtnShow}
-                        isSaveCancelBtnShow={isSaveCancelBtnShow}
-                        columns={columns}
-                        onSave={this.handleReportSave}
-                        handleCancel={this.handleReportCancel}
-                        onChange={this.handleReportChange}
-                    />
-                    {
-                        !isEditBtnShow && !this.state.pristine && !this.state.valid ?
-                            <div className="alert-container">
-                                <Alert type="error" message={Intl.get('contract.table.form.fill', '请填写表格内容')} showIcon/>
-                            </div> : null
-                    }
+            <div className="add-reports" data-tracename="添加编辑服务信息">
+                <div className="product-forms clearfix product-table-container">
+                    {!this.props.isDetailType ? (
+                        <div>
+                            <div className='report-title'><i className='iconfont icon-fuwu'></i><span>{Intl.get('contract.96', '服务信息')}</span>
+                            </div>
+                            <ProductTable
+                                addBtnText={Intl.get('contract.service.add', '添加服务')}
+                                ref={ref => this.producTableRef = ref}
+                                defaultValueMap={defaultValueMap}
+                                appList={REPORT_TYPE.concat(LITE_SERVICE_TYPE).map(x => ({
+                                    client_id: x,
+                                    client_name: x
+                                }))}
+                                totalAmount={totalAmout}
+                                data={this.state.reports}
+                                dataSource={this.state.reports}
+                                isEdit={true}
+                                isEditBtnShow={isEditBtnShow}
+                                isSaveCancelBtnShow={isSaveCancelBtnShow}
+                                columns={columns}
+                                onSave={this.handleReportSave}
+                                handleCancel={this.handleReportCancel}
+                                onChange={this.handleReportChange}
+                            />
+                            {
+                                !isEditBtnShow && !this.state.pristine && !this.state.valid ?
+                                    <div className="alert-container">
+                                        <Alert type="error"
+                                            message={Intl.get('contract.table.form.fill', '请填写表格内容')}
+                                            showIcon/>
+                                    </div> : null
+                            }
+                        </div>
+                    ) : (
+                        <DetailReport
+                            contract={this.props.contract}
+                            updateScrollBar={this.props.updateScrollBar}
+                            refreshCurrentContract={this.props.refreshCurrentContract}
+                        />
+                    )}
                 </div>
             </div>
         );

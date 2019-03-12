@@ -1419,6 +1419,8 @@ var en_US = {
     'crm.contact.email.add': 'Add email',//添加邮箱
     'crm.second.sales': 'Second Sales',//联合跟进人
     'crm.apply.active.email.tip': 'Your mailbox is not activated. Please {activeEmail} first',//您的邮箱未激活，请先{aciveEmail}
+    'crm.this.week.contact': 'Customers contacted this week',//本周联系过的客户
+    'crm.record.unupload.phone': 'Unuploaded voice recordings, unable to play',//未上传通话录音，无法播放
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
@@ -1954,7 +1956,7 @@ var en_US = {
     'errorcode.22': 'Not your customers, can not apply for a user',//不是您的客户，不能申请用户
     'errorcode.25': 'The phone number has been used, please use other phone number',//该手机号已被使用，请用其他手机号
     'errorcode.26': 'The email has been used,please use other email',//该邮箱已被使用，请使用其他邮箱
-    'errorcode.28': 'Failed to edit phone',//修改手机号失败
+    'errorcode.28': 'The name has been taken',//姓名已存在
     'errorcode.29': 'Failed to edit mailbox',//修改邮箱失败
     'errorcode.30': 'The username has been taken',//用户名已被使用
     'errorcode.31': 'Failed to warrant the application',//授权应用失败
@@ -2202,7 +2204,7 @@ var en_US = {
     'sales.homepage.will.expire.user': 'Will Expired Account',//即将到期用户
     'failed.get.crm.list': 'Failed to get the customer list',//获取客户列表失败
     'sale.homepage.no.tip.more': 'Never show',//不再提示
-    'failed.set.no.email.tip': 'Failed to setting not to show this tip ever',//设置不再提示邮箱激活提醒失败
+    'failed.set.no.tip': 'Failed to set not to show this tip ever',//设置失败
     'ketao.frontpage.illegal.location.login': 'Login offsite',//异地登录
     'ketao.frontpage.illeagl.login': 'Disabled customers login',//停用客户登录
     'ketao.frontpage.focus.customer.login': 'Focused customer login',//关注客户登录
@@ -2578,7 +2580,6 @@ var en_US = {
     'failed.get.all.sales.oppotunity': 'Failed to get all sales oppotunities',//获取全部销售机会申请失败
     'failed.get.all.leave.list': 'Failed to get all leave applies',//获取全部请假申请失败
     'failed.get.self.leave.apply': 'Failed to get my business trip applies',//获取我的出差申请失败
-    'failed.get.worklist.bussiness.apply': 'Failed to get bussiness trip applies to be approved by me',//获取由我审批的出差申请失败
     'failed.get.worklist.sales.oppotunity.apply': 'Failed to get sales oppotunities to be approved by me',//获取由我审批的销售机会申请失败
     'failed.get.worklist.leave.apply': 'Failed to get leave applies to be approved by me',//获取由我审批的请假申请失败
     'add.leave.apply': 'Add apply',//添加申请
@@ -2702,7 +2703,7 @@ var en_US = {
     'apply.approve.wait.upload': 'Waiting for {uploader} to upload',//待{uploader}上传
     'apply.approve.confirm.finish': 'Confirmation completed',//确认完成
     'apply.failed.get.type.application': 'Failed to get all {type} applies',//获取全部{type}申请失败
-    'apply.failed.get.my.worklist.application': 'Failed to get applies to be approved by me',//获取由我审批的{type}申请失败
+    'apply.failed.get.my.worklist.application': 'Failed to get applies to be approved by me',//获取待我审批的{type}申请失败
     'apply.approver.confirm.task.done': 'Confirm the task done',//确认任务完成
     'failed.get.reply.comment': 'Failed to get comment lists',//获取回复列表失败
     'apply.approve.upload.no.container.space': 'Please do not has space in your file name!',//文件名称中不要含有空格！
@@ -2744,6 +2745,63 @@ var en_US = {
     'member.application': 'Member Application', // 成员申请
     'member.apply.failed.get.worklist': 'Failed to get member applies to be approved by me',// 获取由我审批的成员申请失败
     'member.apply.failed.get.all.apply': 'Failed to get all member applies', // 获取全部成员申请失败
-    'member.apply.detail.auto.generation.password': 'auto generation password' // 自动生成密码
+    'member.apply.detail.auto.generation.password': 'auto generation password', // 自动生成密码
+    'manager.role.has.not.setting.phone.systerm': 'You have not yet opened a telephone system or have not set an agent number.',//您尚未开通电话系统或未设置座席号!
+    'sales.role.has.not.setting.phone.systerm': 'You have not yet opened a telephone system or have not set an agent number. Please inform the administrator!',//您尚未开通电话系统或未设置座席号，请通知管理员!
+    'contract.repeyment.first': 'First',//首笔
+    'contract.cost.modify': 'Modification cost',// 修改费用
+    'contract.no.contract.num': 'No contract number at present',// 暂无合同号
+    'contract.repeyment.info': 'Collection of information',// 回款信息
+    'contract.peyment.info': 'Payment information',// 付款信息
+    'contract.set.partyA': 'Set the party a',//设置甲方
+    'contract.modify.partyA': 'Modify the party a',// 修改甲方
+    'contract.201': 'Change the customer name',// 修改客户名
+    'contract.202': 'Modify the signing time',//修改签订时间
+    'contract.203': 'Set signing time',// 设置签订时间
+    'contract.204': 'Modification of contract type',//修改合同类型
+    'contract.205': 'Set contract type',//设置合同类型
+    'contract.206': 'Set person in charge',//设置负责人
+    'contract.207': 'Responsible person for modification',// 修改负责人
+    'contract.208': 'Setting cost',//设置成本额
+    'contract.209': 'Please select the cost structure',//请选择成本构成
+    'contract.210': 'Setup cost structure',//设置成本构成
+    'contract.211': 'Set the contract number',//设置合同号
+    'contract.212': 'Modify the classification',// 修改分类
+    'contract.213': 'Set up the classification',//设置分类
+    'contract.214': 'Set contract amount',//设置合同额
+    'contract.215': 'Set up the contract stage',//设置合同阶段
+    'contract.216': 'Set the full name of the company',//设置公司全称
+    'contract.217': 'Modify the full name of the company',//修改公司全称
+    'contract.218': 'Please enter your bank account',//请输入银行账号
+    'contract.219': 'Set up bank account',//设置银行账号
+    'contract.220': 'Modify bank account',//修改银行账号
+    'contract.221': 'Please enter the opening bank',//请输入开户行
+    'contract.222': 'Set up the opening bank',//设置开户行
+    'contract.223': 'Modify the opening bank',//修改开户行
+    'contract.224': 'Please enter the address',//请输入地址
+    'contract.225': 'Set the address',//设置地址
+    'contract.226': 'Modify the address',//修改地址
+    'contract.227': 'Set up the phone',//设置电话
+    'contract.228': 'Please enter your mailing address',//请输入邮寄地址
+    'contract.229': 'Set up mailing address',//设置邮寄地址
+    'contract.230': 'Please enter the business license number',//请输入营业执照号码
+    'contract.231': 'Set up the business license number',//设置营业执照号码
+    'contract.232': 'Please enter the organization code',//请输入组织机构代码
+    'contract.233': 'Set up the organization code',//设置组织机构代码
+    'contract.234': 'Please enter the taxpayer identification number',//请输入纳税人识别号
+    'contract.235': 'Set up the taxpayer identification number',//设置纳税人识别号
+    'contract.236': 'Date of payment',//付款日期
+    'contract.237': 'Collection date',//回款日期
+    'contract.238': 'Within {time} days from the date of signing ({date}), the receivable shall be {amount} yuan',//从签订日起{time}日内({date})前,应收回款{amount}元
+    'contract.239': 'Modification date',//修改日期
+    'contract.240': 'Modify cost type',//修改费用类型
+    'apply.list.my.approved': 'Apply approved by me',//我审批过
+    'apply.approve.sales.opportunity': 'Sales opportunity',//销售机会
+    'apply.has.approved.by.me': 'Failed to get {type} application approved by me',//获取我审批过的{type}申请失败
+
+    'apply.setting.password.auto': 'Generate passwords automatically ',//自动生成密码
+    'apply.not.setting.password': 'Please input password!',//请手动输入密码！
+    'clue.import.file.type': 'Only files in {type} format can be imported!',//只能导入{type}格式的文件！
+    'common.callsystem.get.faild': 'Failed to get the organization phone system configuration',// 获取组织电话系统配置失败
 };
 export default en_US;

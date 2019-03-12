@@ -85,16 +85,22 @@
     .schedule-contact-phone-block {
       position: relative;
       &:extend(.break_line);
-      button {
+      .name-and-phone-container{
+        display: inline-block;
+        color: #8ba9c3;
         margin-right: 4px;
         margin-bottom: 8px;
+        border: 1px solid #0e77ca;
+        padding: 2px 7px;
+        font-size: 12px;
+        border-radius: 4px;
+        line-height: 1.15;
+        font-weight: 500;
+        text-align: center;
+        cursor: pointer;
       }
-      .contact-phone, .icon-phone-call-out {
-        margin-left: 4px;
-      }
-      .icon-phone-call-out {
-        font-size: 14px;
-        padding-right: 0;
+      .contact-name {
+        margin-right: 4px;
       }
       .icon-close {
         position: absolute;

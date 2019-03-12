@@ -3,7 +3,7 @@ const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
 var getDataAuthType = require('CMP_DIR/privilege/checker').getDataAuthType;
-import {Select, message, Alert} from 'antd';
+import {Select, message, Alert, Button} from 'antd';
 import {AntcTable, AntcAnalysis, AntcCardContainer} from 'antc';
 import Trace from 'LIB_DIR/trace';
 const Option = Select.Option;
@@ -13,7 +13,6 @@ var SalesHomeAction = require('./action/sales-home-actions');
 var TopNav = require('../../../components/top-nav');
 import { AntcDatePicker as DatePicker } from 'antc';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import ActiveEmailTip from './views/active-email-tip';
 var StatisticTotal = require('./views/statistic-total');
 var CrmRightList = require('./views/crm-right-list');
 import WillExpiredUsers from './views/will-expire-user-list';
@@ -32,14 +31,19 @@ var key = 'hamburger-button-flag';//用于记录展开或者关闭销售团队�
 import history from 'PUB_DIR/sources/history';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+import CustomerListPanel from 'MOD_DIR/crm/public/customer-list-panel';
+import UserListPanel from 'MOD_DIR/app_user_manage/public/user-list-panel';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
-import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
 import InviteMember from 'MOD_DIR/invite_member/public';
+import {isOrganizationEefung, hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import AlertTip from 'CMP_DIR/alert-tip';
 
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
+var websiteConfig = require('../../../lib/utils/websiteConfig');
+var setWebsiteConfig = websiteConfig.setWebsiteConfig;
 
 //三字符表头宽度
 const THERE_CHAR_WIDTH = 80;
@@ -49,7 +53,6 @@ const FOUR_CHAR_WIDTH = 95;
 const FIVE_CHAR_WIDTH = 105;
 //六字符表头宽度
 const SIX_CHAR_WIDTH = 120;
-
 class SalesHomePage extends React.Component {
     constructor(props) {
         super(props);
@@ -70,6 +73,8 @@ class SalesHomePage extends React.Component {
             callType: CALL_TYPE_OPTION.ALL, // 通话类型
             isAnimateShow: false,//是否动态由上到下推出 激活邮箱提示框
             isAnimateHide: false,//是否动态隐藏 提示框
+            isClientAnimateShow: false,//是否动态由上到下推出 设置坐席号提示框
+            isClientAnimateHide: false,//是否动态隐藏 提示框
             isSaleTeamShow: isSaleTeamShow,//右侧销售团队列表是否展示
             notfirstLogin: false,//不是第一次登录，避免初次加载出现滑动的效果
             updateScrollBar: false,//更新滚动条外
@@ -77,6 +82,8 @@ class SalesHomePage extends React.Component {
             callBackSorter: {}, // 回访的排序对象
             appList: [], //应用数组
             selectedAppId: '', //选中的应用id
+            isShowEffectiveTimeAndCount: false, // 是否展示有效通话时长和有效接通数
+            setWebConfigClientStatus: false//设置不再展示提示添加坐席号的提示
         };
     }
 
@@ -101,6 +108,14 @@ class SalesHomePage extends React.Component {
         });
     };
 
+    // 获取组织电话系统配置
+    getCallSystenConfig = () => {
+        commonDataUtil.getCallSystemConfig().then(config => {
+            let isShowEffectiveTimeAndCount = _.get(config,'filter_114',false) || _.get(config,'filter_customerservice_number',false);
+            this.setState({ isShowEffectiveTimeAndCount });
+        });
+    };
+
     componentDidMount() {
         SalesHomeStore.listen(this.onChange);
         let type = this.getDataType();
@@ -109,6 +124,7 @@ class SalesHomePage extends React.Component {
         SalesHomeAction.getSalesTeamList(type);
         // 获取应用列表
         this.getAppList();
+        this.getCallSystenConfig();
         this.refreshSalesListData();
         this.resizeLayout();
         $(window).resize(() => this.resizeLayout());
@@ -119,12 +135,13 @@ class SalesHomePage extends React.Component {
             }
             scrollTimeout = setTimeout(() => $('.statistic-data-analysis .thumb').hide(), 300);
         });
-        //获取是否能展示邮箱激活提示
-        SalesHomeAction.getShowActiveEmailObj();
+        //获取是否能展示邮箱激活提示或者设置坐席号提示
+        SalesHomeAction.getShowActiveEmailOrClientConfig();
         //外层父组件加载完成后，再由上到下推出激活邮箱提示框
         setTimeout(() => {
             this.setState({
-                isAnimateShow: true
+                isAnimateShow: true,
+                isClientAnimateShow: true
             });
         }, DELAY_TIME);
     }
@@ -169,9 +186,6 @@ class SalesHomePage extends React.Component {
     };
 
     componentWillUnmount() {
-        setTimeout(function() {
-            SalesHomeAction.setInitState();
-        });
         SalesHomeStore.unlisten(this.onChange);
     }
 
@@ -256,7 +270,6 @@ class SalesHomePage extends React.Component {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
             deviceType: this.state.callType || CALL_TYPE_OPTION.ALL,
-            effective_phone: isOrganizationEefung(), // 是否获取有效通话时长
         };
         if (this.state.currShowSalesman) {
             //查看当前选择销售的统计数据
@@ -312,10 +325,17 @@ class SalesHomePage extends React.Component {
             title: Intl.get('sales.home.total.duration', '总时长'),
             csvTitle: Intl.get('sales.home.total.duration', '总时长'),
             align: 'right',
-            dataIndex: 'totalTimeDescr',
+            dataIndex: 'totalTime',
             key: 'total_time',
             sorter: function(a, b) {
                 return a.totalTime - b.totalTime;
+            },
+            render: function(text, record, index){
+                return text === '-' ? text : (
+                    <span>
+                        {TimeUtil.getFormatTime(text)}
+                    </span>
+                );
             },
             className: 'has-filter',
             width: THERE_CHAR_WIDTH
@@ -333,10 +353,17 @@ class SalesHomePage extends React.Component {
             title: Intl.get('sales.home.average.duration', '日均时长'),
             csvTitle: Intl.get('sales.home.average.duration', '日均时长'),
             align: 'right',
-            dataIndex: 'averageTimeDescr',
+            dataIndex: 'averageTime',
             key: 'average_time',
             sorter: function(a, b) {
                 return a.averageTime - b.averageTime;
+            },
+            render: function(text, record, index){
+                return text === '-' ? text : (
+                    <span>
+                        {TimeUtil.getFormatTime(text)}
+                    </span>
+                );
             },
             className: 'has-filter',
             width: FOUR_CHAR_WIDTH
@@ -403,8 +430,8 @@ class SalesHomePage extends React.Component {
             className: 'has-filter',
             width: FIVE_CHAR_WIDTH
         }];
-        // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        if(isOrganizationEefung()){
+        // 展示有效通话时长和有效接通数
+        if(this.state.isShowEffectiveTimeAndCount){
             columns.push({
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 width: FIVE_CHAR_WIDTH,
@@ -776,6 +803,7 @@ class SalesHomePage extends React.Component {
 
     //点击 邮箱激活提示 中的不再提示，隐藏提示框
     hideActiveEmailTip = () => {
+        //这里是全量设置，必须把之前未改动的地方也加上去
         SalesHomeAction.setWebsiteConfig({'setting_notice_ignore': 'yes'}, (errMsg) => {
             if (errMsg) {
                 //设置错误后的提示
@@ -787,6 +815,27 @@ class SalesHomePage extends React.Component {
                 });
             }
         });
+    };
+    hideSetClientTip = () => {
+        let personnelObj = {};
+        personnelObj[oplateConsts.STORE_PERSONNAL_SETTING.SETTING_CLIENT_NOTICE_IGNORE] = 'yes';
+        this.setState({
+            setWebConfigClientStatus: true
+        },() => {
+            setWebsiteConfig(personnelObj,() => {
+                this.setState({
+                    isClientAnimateHide: true,
+                    setWebConfigClientStatus: false
+                });
+            },(errMsg) => {
+                //设置错误后的提示
+                this.setState({
+                    setWebConfigClientStatus: false
+                });
+                message.error(errMsg);
+            });
+        });
+
     };
 
     //点击 激活邮箱 按钮
@@ -966,8 +1015,45 @@ class SalesHomePage extends React.Component {
             },
         }];
     };
+    //获取激活邮箱的提示
+    getEmailAlertTipMessage = () => {
+        if(this.getIsShowAddEmail()){
+            return (
+                <span>
+                    <ReactIntl.FormattedMessage
+                        id="sales.add.email.info"
+                        defaultMessage={'请到{userinfo}页面添加邮箱，否则将会无法接收用户申请的邮件。'}
+                        values={{
+                            'userinfo': <span className="jump-to-userinfo" onClick={this.jumpToUserInfo}>
+                                {Intl.get('user.info.user.info','个人资料')}
+                            </span>
+                        }}
+                    />
+                </span>
+            );
+        }else{
+            return(
+                <span>
+                    <span>
+                        {Intl.get('sales.frontpage.active.info','请激活邮箱，以免影响收取审批邮件！')}
+                    </span>
+                    <Button type="primary" size="small" onClick={this.activeUserEmail}>{Intl.get('sales.frontpage.active.email','激活邮箱')}</Button>
+                </span>
+            );
+        }
+    };
+    //获取添加坐席号的提示
+    getClientAlertTipMessage = () => {
+        return (
+            <span>
+                {commonDataUtil.showDisabledCallTip()}
+            </span>
+        );
+    };
+    getIsShowAddEmail = () => {
+        return _.get(this.state,'emailShowObj.isShowAddEmail');
+    };
 
-    //渲染客户关系首页
     render() {
         var crmSaleList = classNames('sale-list-zone', {
             'saleteam-list-show': this.state.isSaleTeamShow && this.state.notfirstLogin,
@@ -1019,15 +1105,26 @@ class SalesHomePage extends React.Component {
                         <div className={crmDataZone}>
                             {/*是否展示邮箱激活或者添加邮箱的提示提示*/}
                             {this.state.emailShowObj.isShowActiveEmail || this.state.emailShowObj.isShowAddEmail ?
-                                <ActiveEmailTip
+                                <AlertTip
+                                    clsNames='email-active-wrap'
+                                    alertTipMessage={this.getEmailAlertTipMessage()}
+                                    showNoTipMore={!this.getIsShowAddEmail()}
                                     isAnimateShow={this.state.isAnimateShow}
                                     isAnimateHide={this.state.isAnimateHide}
                                     handleClickNoTip={this.hideActiveEmailTip}
-                                    activeUserEmail={this.activeUserEmail}
                                     setWebConfigStatus={this.state.setWebConfigStatus}
-                                    jumpToUserInfo={this.jumpToUserInfo}
-                                    addEmail={this.state.emailShowObj.isShowAddEmail}
+                                />
+                                : null}
+                            {/*是否展示设置坐席号的提示*/}
+                            {_.get(this.state,'emailShowObj.isShowSetClient') ?
+                                <AlertTip
+                                    alertTipMessage={this.getClientAlertTipMessage()}
+                                    isAnimateShow={this.state.isClientAnimateShow}
+                                    isAnimateHide={this.state.isClientAnimateHide}
+                                    handleClickNoTip={this.hideSetClientTip}
+                                    setWebConfigStatus={this.state.setWebConfigClientStatus}
                                 /> : null}
+
                             <StatisticTotal
                                 customerTotalObj={this.state.customerTotalObj}
                                 userTotalObj={this.state.userTotalObj}
@@ -1066,6 +1163,8 @@ class SalesHomePage extends React.Component {
                     </div>}
 
             </div>
+            <CustomerListPanel/>
+            <UserListPanel location='home'/>
         </RightContent>);
     }
 }

@@ -14,12 +14,15 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import userData from '../user-data';
 import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import {selectMenuList, APPLY_APPROVE_TYPES, DOCUMENT_TYPE, INTEGRATE_TYPES, REPORT_TYPE,APPLY_FINISH_STATUS, APPLY_USER_STATUS} from './consts';
+import {selectMenuList, APPLY_APPROVE_TYPES, DOCUMENT_TYPE, INTEGRATE_TYPES, REPORT_TYPE,APPLY_FINISH_STATUS, APPLY_USER_STATUS, REG_FILES_SIZE_RULES} from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import {ORGANIZATION_TYPE} from './consts';
+import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
+var websiteConfig = require('../../../lib/utils/websiteConfig');
+var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -658,4 +661,96 @@ exports.getOrganization = getOrganization;
 exports.isOrganizationEefung = () => {
     let organization = getOrganization(); // 组织信息
     return _.get(organization,'id') === ORGANIZATION_TYPE.EEFUNG;
+};
+//是否已经配置了坐席号
+function hasCalloutPrivilege() {
+    //是否展示拨打按钮
+    let callClient = getCallClient();
+    return callClient && callClient.isInited();
+}
+exports.hasCalloutPrivilege = hasCalloutPrivilege;
+exports.afterGetExtendUserInfo = (data,that) => {
+    var responseObj = {
+        isShowActiveEmail: !data.email_enable,//是否展示激活邮箱的提示
+        isShowAddEmail: !data.email,//是否展示添加邮箱的提示，不能仅用是否有email字段进行判断，原因是如果数据获取慢的时候，也会在页面上展示出添加邮箱的提示
+        isShowSetClient: !hasCalloutPrivilege(),//是否展示设置坐席号的提示
+        email: data.email
+    };
+    //如果邮箱未激活或者未设置坐席号，再发请求看是否设置过不再展示
+    if (responseObj.isShowActiveEmail || responseObj.isShowSetClient){
+        getWebsiteConfig((configData) => {
+            if (configData){
+                if (responseObj.isShowActiveEmail && _.get(configData, 'setting_notice_ignore') === 'yes'){
+
+                    responseObj.isShowActiveEmail = false;
+                }
+                if (responseObj.isShowSetClient && _.get(configData, 'personnel_setting.setting_client_notice_ignore') === 'yes'){
+                    responseObj.isShowSetClient = false;
+                }
+            }
+            that.dispatch(responseObj);
+        },true);
+    }
+};
+exports.getApplyListTypeDes = (applyListType) => {
+    switch (applyListType) {
+        case 'all':
+            return Intl.get('user.apply.all', '全部申请');
+        case 'ongoing':
+            return Intl.get('leave.apply.my.worklist.apply', '待我审批');
+        case 'pass':
+            return Intl.get('user.apply.pass', '已通过');
+        case 'reject':
+            return Intl.get('user.apply.reject', '已驳回');
+        case 'cancel':
+            return Intl.get('user.apply.backout', '已撤销');
+        case 'myApproved':
+            return Intl.get('apply.list.my.approved', '我审批过');
+    }
+};
+exports.checkFileSizeLimit = (fileSize) => {
+    var sizeQualified = true, warningMsg = '';
+    _.forEach(REG_FILES_SIZE_RULES,(item) => {
+        if (!_.isUndefined(item.minValue)){
+            if (fileSize === item.minValue) {
+                warningMsg = item.messageTips;
+                sizeQualified = false;
+                return false;
+            }
+        }
+        if (_.isUndefined(item.minValue) && item.maxValue){
+            if (fileSize > item.maxValue) {
+                warningMsg = item.messageTips;
+                sizeQualified = false;
+                return false;
+            }
+        }
+    });
+    return {sizeQualified: sizeQualified,warningMsg: warningMsg};
+};
+exports.checkFileNameForbidRule = (filename, regnamerules) => {
+    var nameQualified = true, warningMsg = '';
+    if (_.isArray(regnamerules)){
+        _.forEach(regnamerules,(item) => {
+            if (filename.indexOf(item.value) >= 0){
+                warningMsg = item.messageTips;
+                nameQualified = false;
+                return false;
+            }
+        });
+    }
+    return {nameQualified: nameQualified,warningMsg: warningMsg};
+};
+exports.checkFileNameAllowRule = (filename, regnamerules) => {
+    var nameQualified = true, warningMsg = '';
+    if (_.isArray(regnamerules)){
+        _.forEach(regnamerules,(item) => {
+            if (filename.indexOf(item.value) < 0){
+                warningMsg = item.messageTips;
+                nameQualified = false;
+                return false;
+            }
+        });
+    }
+    return {nameQualified: nameQualified,warningMsg: warningMsg};
 };

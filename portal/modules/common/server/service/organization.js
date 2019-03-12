@@ -3,7 +3,9 @@
  */
 var urls = {
     getOrganizationList: '/rest/base/v1/usergroup/list',
-    changeOrganization: '/rest/base/v1/usergroup/user/:user_id/:group_id'
+    changeOrganization: '/rest/base/v1/usergroup/user/:user_id/:group_id',
+    // 获取组织电话系统配置
+    getCallSystemConfig: '/rest//base/v1/realm/callsystemconfig'
 };
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
@@ -33,6 +35,14 @@ exports.getOrganizationList = function(req,res,status) {
 exports.changeOrganization = function(req,res,user_id,group_id) {
     return restUtil.authRest.put({
         url: urls.changeOrganization.replace(':user_id',user_id).replace(':group_id',group_id),
+        req: req,
+        res: res
+    });
+};
+
+exports.getCallSystemConfig = function(req,res) {
+    return restUtil.authRest.get({
+        url: urls.getCallSystemConfig,
         req: req,
         res: res
     });

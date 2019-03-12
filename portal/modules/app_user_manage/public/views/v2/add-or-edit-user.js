@@ -34,7 +34,6 @@ import {Form, Icon, Input, Alert} from 'antd';
 const FormItem = Form.Item;
 import FieldMixin from '../../../../../components/antd-form-fieldmixin';
 import OperationScrollBar from '../../../../../components/user_manage_components/operation-scrollbar';
-import UserNameTextField from '../../../../../components/user_manage_components/user-name-textfield';
 import UserCountNumberField from '../../../../../components/user_manage_components/user-count-numberfield';
 import UserTypeRadioField from '../../../../../components/user_manage_components/user-type-radiofield';
 import UserTimeRangeField from '../../../../../components/user_manage_components/user-time-rangefield';
@@ -68,7 +67,6 @@ const AddOrEditUser = createReactClass({
     displayName: 'AddOrEditUser',
 
     mixins: [FieldMixin,
-        UserNameTextField,
         UserCountNumberField,
         UserTypeRadioField,
         UserTimeRangeField,

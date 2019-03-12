@@ -25,6 +25,9 @@ export function getContractRepayCompareChart() {
             arg.query.endtime = moment().endOf('year').valueOf();
         },
         processData: data => data,
+        customOption: {
+            multi: true
+        },
         processOption: (option, chartProps) => {
             //设置纵轴左边距，以便能完整显示金额数值
             option.grid.left = 80;

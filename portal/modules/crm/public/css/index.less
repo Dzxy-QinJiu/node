@@ -34,7 +34,7 @@
         display: none;
     }
     .top-nav-border-fix {
-        height: @top-nav-height;
+        height: @top_nav_height;
         border-bottom: 1px solid @bd-grey;
         .top-btn-wrapper {
             position: absolute;
@@ -134,6 +134,7 @@
     .filter-block {
         display: inline-block;
         position: initial;
+        height: 63px;
         .block {
             display: inline-block;
             vertical-align: middle;
@@ -208,7 +209,7 @@
             position: absolute;
             transition: all 0.5s;
             &.filter-close {
-                left: 0 - @filter-width;
+                left: 0 - @filter-width - 22;
             }
         }
         .content-container {
@@ -328,10 +329,6 @@
         &.content-full {
             padding-left: 0;
         }
-    }
-    .call-out {
-        cursor: pointer;
-        font-size: 16px;
     }
     .ant-pagination {
         margin: 10px 0;

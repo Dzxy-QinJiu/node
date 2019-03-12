@@ -20,7 +20,6 @@ var CrmFilter = require('./views/crm-filter');
 var CrmFilterPanel = require('./views/crm-filter-panel');
 var CrmBatchChange = require('./views/crm-batch-change');
 var CrmRightMergePanel = require('./views/crm-right-merge-panel');
-var userData = require('../../../public/sources/user-data');
 let OrderAction = require('./action/order-actions');
 var batchPushEmitter = require('../../../public/sources/utils/emitters').batchPushEmitter;
 var AppUserManage = require('MOD_DIR/app_user_manage/public');
@@ -34,20 +33,22 @@ import crmUtil from './utils/crm-util';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 const extend = require('extend');
-import CallNumberUtil from 'PUB_DIR/sources/utils/common-data-util';
 import { FilterInput } from 'CMP_DIR/filter';
 var classNames = require('classnames');
 import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 import queryString from 'query-string';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
+import PhoneCallout from 'CMP_DIR/phone-callout';
 import CrmOverviewActions from './action/basic-overview-actions';
 var userData = require('PUB_DIR/sources/user-data');
 const userInfo = userData.getUserData();
 const COMMON_OTHER_ITEM = 'otherSelectedItem';
 import {OTHER_FILTER_ITEMS, DAY_TIME} from 'PUB_DIR/sources/utils/consts';
+import {getStartTime, getEndTime} from 'PUB_DIR/sources/utils/time-format-util';
 import ShearContent from 'CMP_DIR/shear-content';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
+import {REG_CRM_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
     tried: '试用阶段',
@@ -87,7 +88,6 @@ const DEFAULT_RANGE_PARAM = {
 };
 //查看是否可以继续添加客户
 let member_id = userData.getUserData().user_id;
-
 class Crm extends React.Component {
     getSelectedCustomer = (curCustomerList) => {
         let selectedCustomer = [];
@@ -165,30 +165,6 @@ class Crm extends React.Component {
         this.state.rangParams[0].to = value;
     };
 
-    // 获取拨打电话的座机号
-    getUserPhoneNumber = () => {
-        CallNumberUtil.getUserPhoneNumber(callNumberInfo => {
-            if (callNumberInfo) {
-                if (callNumberInfo.callNumber) {
-                    this.setState({
-                        callNumber: callNumberInfo.callNumber,
-                        errMsg: ''
-                    });
-                } else if (callNumberInfo.errMsg) {
-                    this.setState({
-                        callNumber: '',
-                        errMsg: callNumberInfo.errMsg
-                    });
-                }
-            } else {
-                this.setState({
-                    callNumber: '',
-                    errMsg: Intl.get('crm.get.phone.failed', ' 获取座机号失败!')
-                });
-            }
-        });
-    };
-
     componentDidMount() {
         //批量更新所属销售
         batchPushEmitter.on(batchPushEmitter.CRM_BATCH_CHANGE_SALES, this.batchChangeSalesman);
@@ -208,7 +184,6 @@ class Crm extends React.Component {
         batchPushEmitter.on(batchPushEmitter.CRM_BATCH_CHANGE_TERRITORY, this.batchChangeTerritory);
         CrmStore.listen(this.onChange);
         OrderAction.getSysStageList();
-        this.getUserPhoneNumber();
         const query = queryString.parse(this.props.location.search);
         if (query.analysis_filter_field) {
             var filterField = query.analysis_filter_field;
@@ -533,9 +508,7 @@ class Crm extends React.Component {
                     updateCustomerLastContact: CrmAction.updateCustomerLastContact,
                     handleFocusCustomer: this.handleFocusCustomer,
                     showRightPanel: this.showRightPanel,
-                    hideRightPanel: this.hideRightPanel,
-                    callNumber: this.state.callNumber,
-                    getCallNumberError: this.state.errMsg
+                    hideRightPanel: this.hideRightPanel
                 }
             });
         }
@@ -775,6 +748,14 @@ class Crm extends React.Component {
                 exist.push('sales_team_id');
                 unexist.push('member_id');
                 break;
+            case OTHER_FILTER_ITEMS.THIS_WEEK_CONTACTED://本周联系过的客户
+                this.state.rangParams[0] = {
+                    from: getStartTime('week'),
+                    to: getEndTime('week'),
+                    name: 'last_contact_time',
+                    type: 'time'
+                };
+                break;
         }
         //近30天拨打未接通的客户筛选
         if(condition.otherSelectedItem === OTHER_FILTER_ITEMS.THIRTY_NO_CONNECTION) {
@@ -824,8 +805,9 @@ class Crm extends React.Component {
                 name: 'last_customer_trace_time',
                 type: 'time'
             };
-        } else if (condition.otherSelectedItem !== OTHER_FILTER_ITEMS.MULTI_ORDER) {
-            //既不是超xx天未联系的客户、也不是xx天的活跃、还不是多个订单客户的过滤时，传默认的设置
+        } else if (condition.otherSelectedItem !== OTHER_FILTER_ITEMS.MULTI_ORDER
+            && condition.otherSelectedItem !== OTHER_FILTER_ITEMS.THIS_WEEK_CONTACTED) {
+            //既不是超xx天未联系的客户、也不是xx天的活跃、不是多个订单客户、也不是本周未联系考核的过滤时，传默认的设置
             this.state.rangParams[0] = DEFAULT_RANGE_PARAM;
         }
         if (interval) {
@@ -868,8 +850,11 @@ class Crm extends React.Component {
             params = this.handleSortParams(params);
         }
 
+        //如果是通过列表面板打开的
+        if (this.props.listPanelParamObj) {
+            params = this.props.listPanelParamObj;
         //如果是从首页跳转过来的
-        if (this.props.fromSalesHome) {
+        } else if (this.props.fromSalesHome) {
             const locationState = this.props.location.state;
 
             params = {};
@@ -1086,17 +1071,6 @@ class Crm extends React.Component {
 
     };
 
-    // 自动拨号
-    handleClickCallOut = (phoneNumber, record) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.column-contact-way'), '拨打电话');
-        CallNumberUtil.handleCallOutResult({
-            errorMsg: this.state.errMsg,//获取坐席号失败的错误提示
-            callNumber: this.state.callNumber,//坐席号
-            contactName: record.contact,//联系人姓名
-            phoneNumber: phoneNumber,//拨打的电话
-        });
-    };
-
     // 联系方式的列表
     getContactList = (text, record, index) => {
         let phoneArray = text && text.split('\n') || [];
@@ -1105,10 +1079,10 @@ class Crm extends React.Component {
             if (item) {
                 return (
                     <div>
-                        <span>{item}</span>
-                        {this.state.callNumber ? <i className="iconfont icon-call-out call-out"
-                            title={Intl.get('crm.click.call.phone', '点击拨打电话')}
-                            onClick={this.handleClickCallOut.bind(this, item, record)}></i> : null}
+                        <PhoneCallout
+                            phoneNumber={item}
+                            contactName={record.contact}
+                        />
                     </div>
                 );
             }
@@ -1299,8 +1273,6 @@ class Crm extends React.Component {
     };
 
     state = {
-        callNumber: '', // 座机号
-        errMsg: '', // 获取座机号失败的信息
         showFilterList: false,//是否展示筛选区域
         ...this.getStateData()
     };
@@ -1696,6 +1668,7 @@ class Crm extends React.Component {
                     onItemListImport={this.onCustomerImport}
                     doImportAjax={this.doImport}
                     repeatAlertMessage={Intl.get('crm.repeat.delete','红色标识客户名或联系方式已存在，请删除后再导入')}
+                    regRules={REG_CRM_FILES_TYPE_RULES}
                 />
 
                 {this.state.mergePanelIsShow ? (<CrmRightMergePanel

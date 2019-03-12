@@ -1,7 +1,7 @@
 /** Created by 2019-01-31 11:11 */
 
 var React = require('react');
-import { message, Select, Icon, Form, Input, DatePicker, Checkbox } from 'antd';
+import { message, Select, Icon, Form, Input, DatePicker, Checkbox, Alert } from 'antd';
 var FirstRepaymentSrc = require('../../image/first-repayment.png');
 
 let Option = Select.Option;
@@ -12,23 +12,11 @@ import DetailCard from 'CMP_DIR/detail-card';
 import EditableTable from '../components/editable-table';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import ajax from 'MOD_DIR/contract/common/ajax';
-import { CONTRACT_STAGE, COST_STRUCTURE, COST_TYPE, OPERATE, VIEW_TYPE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
+import { DISPLAY_TYPES, OPERATE, PRIVILEGE_MAP} from 'MOD_DIR/contract/consts';
 import routeList from 'MOD_DIR/contract/common/route';
 import {parseAmount} from 'LIB_DIR/func';
 import { getNumberValidateRule, numberAddNoMoreThan } from 'PUB_DIR/sources/utils/validate-util';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-
-//展示的类型
-const DISPLAY_TYPES = {
-    EDIT: 'edit',//添加所属客户
-    TEXT: 'text'//展示
-};
-
-const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 330;
-const formItemLayout = {
-    labelCol: {span: 5},
-    wrapperCol: {span: 18},
-};
 
 // 图片样式
 var imgStyle = {
@@ -50,18 +38,17 @@ class RepaymentInfo extends React.Component {
     getInitStateData(props) {
         let hasEditPrivilege = hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPDATE_REPAYMENT);
 
-        const contract = _.cloneDeep(props.contract);
-        let repayments = _.sortBy(_.cloneDeep(contract.repayments) || [], item => item.date).reverse();
-        let repayLists = _.filter(repayments,item => item.type === 'repay');
 
         return {
             formData: {},
             loading: false,
-            repayLists: this.getRepayList(contract),
+            repayLists: this.getRepayList(props.contract),
             submitErrorMsg: '',
             hasEditPrivilege,
             displayType: DISPLAY_TYPES.TEXT,
             isFirstAdd: false, // 是否添加了首笔回款列
+            saveErrMsg: '',
+            currentKey: '', //当前编辑项
         };
     }
 
@@ -76,13 +63,28 @@ class RepaymentInfo extends React.Component {
             this.setState({
                 displayType: DISPLAY_TYPES.TEXT,
                 repayLists: this.getRepayList(contract),
-                isFirstAdd: false
+                isFirstAdd: false,
+                currentKey: ''
             });
         }
     }
     getRepayList(contract) {
-        let repayments = _.sortBy(_.cloneDeep(contract.repayments) || [], item => item.date).reverse();
-        let repayLists = _.filter(repayments,item => item.type === 'repay');
+        let repayments = _.sortBy(_.cloneDeep(_.get(contract,'repayments',[])), item => item.date).reverse();
+        return _.filter(repayments,item => item.type === 'repay');
+    }
+    // 获取更新后的列表
+    getUpdateList() {
+        let propRepayLists = this.getRepayList(this.props.contract);
+        let repayLists;
+        // 需要判断列表中是否有添加项
+        // 有：合并并更新
+        // 没有: 直接覆盖
+        let addItem = _.filter(_.get(this.state,'repayLists',[]), item => item.isAdd);
+        if(addItem) {
+            repayLists = [...addItem,...propRepayLists];
+        }else {
+            repayLists = propRepayLists;
+        }
         return repayLists;
     }
     changeDisplayType(type) {
@@ -106,7 +108,7 @@ class RepaymentInfo extends React.Component {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '添加已回款内容');
         let _this = this;
         let saveObj;
-        if (type === 'delete') {
+        if (type === DISPLAY_TYPES.DELETE) {
             saveObj = [id];
             const successFunc = (resultData) => {
                 _this.setState({
@@ -118,7 +120,7 @@ class RepaymentInfo extends React.Component {
             this.editRepayment(type, saveObj,'', successFunc, (errormsg) => {
                 message.error(errormsg);
             });
-        } else if(type === 'add') {
+        } else if(type === DISPLAY_TYPES.ADD) {
             this.props.form.validateFields((err,value) => {
                 if (err) return false;
 
@@ -176,9 +178,7 @@ class RepaymentInfo extends React.Component {
                 if (type === 'delete') {
                     const repaymentId = data[0];
                     resultData = _.find(this.props.contract.repayments, repayment => repayment.id === repaymentId);
-                }
-                // 更新后没有返回id，
-                if(type === 'update') {
+                }else if(type === 'update') { // 更新后没有返回id
                     resultData = _.extend({},this.state.currentRepayment, resultData);
                 }
                 //刷新合同列表中的回款信息
@@ -198,46 +198,100 @@ class RepaymentInfo extends React.Component {
     handleEditTableChange = (data) => {
         this.setState({repayLists: data});
     };
-    handleColumnsChange = (type) => {
+    handleColumnsChange = (type, key) => {
         let isFirstAdd = false;
+        let displayType = this.state.displayType;
         if(type === 'editing') {
+            isFirstAdd = true;
+        }else if(type === 'addCancel') {
+            // 添加项的取消修改
+            displayType = DISPLAY_TYPES.TEXT;
+        }else if(type === 'addAndEditCancel') {
+            // 这里是因为已有项取消时有添加项存在，所以这里需要将isFirstAdd置为true
             isFirstAdd = true;
         }
         this.setState({
-            isFirstAdd
+            isFirstAdd,
+            displayType,
+            saveErrMsg: '',
+            currentKey: key
         });
     };
     handleEditTableSave = (data, successFunc, errorFunc) => {
         const params = {contractId: this.props.contract.id, type: 'repay'};
-        const successFuncs = () => {
-            _.isFunction(successFunc) && successFunc();
-            this.setState({
-                repayLists: this.getRepayList(this.props.contract)
-            });
-        };
+        let successFuncs, type = DISPLAY_TYPES.UPDATE;
+        // 处理时间
         if(data.date){
             data.date = data.date.valueOf();
         }
 
-        this.editRepayment('update', data, params, successFuncs, (errorMsg) => {
-            message.error(errorMsg);
+        // 如果是添加
+        if(_.get(data,'isAdd',false)) {
+            type = DISPLAY_TYPES.ADD;
+            // 需要删除isAdd和id属性
+            delete data.isAdd;
+            delete data.id;
+
+            successFuncs = () => {
+                _.isFunction(successFunc) && successFunc();
+                this.setState({
+                    repayLists: this.getRepayList(this.props.contract),
+                    isFirstAdd: false,
+                    displayType: DISPLAY_TYPES.TEXT,
+                    currentKey: ''
+                });
+            };
+        }else { // 编辑更新
+            successFuncs = () => {
+                _.isFunction(successFunc) && successFunc();
+
+                this.setState({
+                    repayLists: this.getUpdateList(),
+                    currentKey: ''
+                });
+            };
+        }
+        this.editRepayment(type, data, params, successFuncs, (errorMsg) => {
+            this.setState({saveErrMsg: errorMsg});
             _.isFunction(errorFunc) && errorFunc();
         });
     };
     handleDelete = (record,successFunc, errorFunc) => {
         let saveObj = [record.id];
-        const successFuncs = (resultData) => {
-
+        const successFuncs = () => {
             _.isFunction(successFunc) && successFunc();
             this.setState({
-                repayLists: this.getRepayList(this.props.contract),
+                repayLists: this.getUpdateList(),
+                currentKey: ''
             }, () => {
                 this.props.updateScrollBar();
             });
         };
-        this.editRepayment('delete', saveObj,'', successFuncs, (errorMsg) => {
+        this.editRepayment(DISPLAY_TYPES.DELETE, saveObj,'', successFuncs, (errorMsg) => {
             message.error(errorMsg);
             _.isFunction(errorFunc) && errorFunc();
+        });
+    };
+    // 点击添加按钮
+    addList = () => {
+        let repayLists = _.cloneDeep(this.state.repayLists);
+        repayLists.unshift({
+            id: '',
+            date: moment(),
+            amount: '',
+            gross_profit: '',
+            is_first: 'false',
+            isAdd: true, // 是否是添加
+        });
+        this.setState({
+            repayLists,
+            isFirstAdd: true,
+            currentKey: '',
+            displayType: DISPLAY_TYPES.EDIT
+        },() => {
+            this.repaymentTableRef.setState({
+                editingKey: ''
+            });
         });
     };
 
@@ -319,11 +373,22 @@ class RepaymentInfo extends React.Component {
         );
     }
 
-    renderRepaymentList(repayLists) {
-        let num_col_width = 75;
+    renderRepaymentList(repayLists, total_plan_amount) {
+        //已回款总额
+        let repaymentsAmount = 0;
+
+        if (repayLists.length) {
+            repaymentsAmount = _.reduce(repayLists, (memo, item) => {
+                // 过滤掉单个添加的，和当前项
+                const num = item.isAdd || this.state.currentKey === item.id ? 0 : parseFloat(item.amount);
+                return memo + num;
+            }, 0);
+        }
+
+        let num_col_width = 80;
         const columns = [
             {
-                title: `${Intl.get('contract.108', '回款')}${Intl.get('crm.146', '日期')}`,
+                title: Intl.get('contract.237', '回款日期'),
                 dataIndex: 'date',
                 editable: true,
                 inputType: 'date',
@@ -336,7 +401,7 @@ class RepaymentInfo extends React.Component {
                 editorProps: {
                     disabledDate
                 },
-                width: '30%',
+                width: this.state.isFirstAdd ? '25%' : '30%',
                 align: 'left',
                 render: (text, record, index) => {
                     return <span>{moment(text).format(oplateConsts.DATE_FORMAT)}{['true', true].indexOf(record.is_first) > -1 ? <img style={imgStyle} src={FirstRepaymentSrc}/> : null}</span>;
@@ -351,14 +416,14 @@ class RepaymentInfo extends React.Component {
                     rules: [{
                         required: true,
                         message: Intl.get('contract.44', '不能为空')
-                    }, getNumberValidateRule(), numberAddNoMoreThan.bind(this, this.props.contract.contract_amount, this.props.contract.total_amount, Intl.get('contract.161', '已超合同额'))]
+                    }, getNumberValidateRule(), numberAddNoMoreThan.bind(this, this.props.contract.contract_amount, repaymentsAmount, Intl.get('contract.161', '已超合同额'))]
                 }
             },
             {
                 title: `${Intl.get('contract.29', '回款毛利')}(${Intl.get('contract.155', '元')})`,
                 dataIndex: 'gross_profit',
                 editable: true,
-                width: this.state.isFirstAdd ? num_col_width : 'auto',
+                width: this.state.isFirstAdd ? 95 : 'auto',
                 dynamicRule: {
                     index: 2,
                     key: 'amount',
@@ -384,8 +449,8 @@ class RepaymentInfo extends React.Component {
         ];
 
         if(this.state.isFirstAdd){
-            columns.push({
-                title: Intl.get('contract.167', '首笔回款'),
+            columns.splice(1, 0, {
+                title: Intl.get('contract.repeyment.first', '首笔'),
                 dataIndex: 'is_first',
                 editor: 'Switch',
                 editorConfig: {
@@ -395,12 +460,13 @@ class RepaymentInfo extends React.Component {
                     valuePropName: 'checked',
                 },
                 editable: true,
-                width: 60,
+                width: 45,
                 render: (text, record, index) => {
                     return text === 'true' ? Intl.get('user.yes', '是') : Intl.get('user.no', '否');
                 }
             });
         }
+
         return (
             <EditableTable
                 ref={ref => this.repaymentTableRef = ref}
@@ -422,14 +488,19 @@ class RepaymentInfo extends React.Component {
         const contract = this.props.contract;
         const repayLists = this.state.repayLists;
         const noRepaymentData = !repayLists.length && !this.state.loading;
+        const contract_amount = _.get(this.props.contract,'contract_amount',0);
+        const total_amount = _.get(this.props.contract,'total_amount',0);
+        const total_plan_amount = contract_amount - total_amount;
 
         const content = () => {
             return (
                 <div className="repayment-list">
-                    {this.state.displayType === DISPLAY_TYPES.EDIT ? this.renderAddRepaymentPanel(repayLists) : this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
-                        <span className="iconfont icon-add" onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}
-                            title={Intl.get('common.edit', '编辑')}/>) : null}
-                    {this.renderRepaymentList(repayLists)}
+                    {/*是展示状态，且有权限编辑，且尾款不等于0*/}
+                    {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege && total_plan_amount > 0 ? (
+                        <span className="iconfont icon-add detail-edit-add" onClick={this.addList}
+                            title={Intl.get('common.add', '添加')}/>) : null}
+                    {this.renderRepaymentList(repayLists, total_plan_amount)}
+                    {this.state.saveErrMsg ? <Alert type="error" message={this.state.saveErrMsg} showIcon /> : null}
                 </div>
             );
         };
@@ -437,15 +508,14 @@ class RepaymentInfo extends React.Component {
         let repayTitle = (
             <div className="repayment-repay">
                 <span>{Intl.get('contract.194', '回款进程')}: </span>
-                <span className='repayment-label'>{Intl.get('contract.179', '已回款')}: {parseAmount(contract.total_amount)}{Intl.get('contract.82', '元')}/ </span>
-                <span className='repayment-label'>{Intl.get('contract.180', '尾款')}: {parseAmount(contract.total_plan_amount)}{Intl.get('contract.82', '元')}</span>
+                <span className='repayment-label'>{Intl.get('contract.179', '已回款')}: {parseAmount(total_amount)}{Intl.get('contract.82', '元')}/ </span>
+                <span className='repayment-label'>{Intl.get('contract.180', '尾款')}: {parseAmount(total_plan_amount)}{Intl.get('contract.82', '元')}</span>
             </div>
         );
 
         return (
             <DetailCard
                 content={content()}
-                // titleBottomBorderNone={noRepaymentData}
                 title={repayTitle}
             />
         );

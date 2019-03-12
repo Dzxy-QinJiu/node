@@ -11,6 +11,8 @@ function UserFormStore() {
     this.saveResult = '';
     //保存后的提示信息
     this.saveMsg = '';
+    this.nickNameExist = false; // 昵称是否已存在
+    this.nickNameError = false; // 昵称唯一性验证出错
     this.userNameExist = false;//用户名是否已存在
     this.emailExist = false;//邮箱是否已存在
     this.userNameError = false;//用户名唯一性验证出错
@@ -80,6 +82,16 @@ UserFormStore.prototype.resetSaveResult = function() {
     this.saveResult = '';
 };
 
+// 昵称（对应的是姓名）唯一性的验证
+UserFormStore.prototype.checkOnlyNickName = function(result) {
+    if (_.isString(result)) {
+        //验证出错！
+        this.nickNameError = true;
+    } else {
+        this.nickNameExist = result;
+    }
+};
+
 //用户名唯一性的验证
 UserFormStore.prototype.checkOnlyUserName = function(result) {
     if (_.isString(result)) {
@@ -89,7 +101,6 @@ UserFormStore.prototype.checkOnlyUserName = function(result) {
         //不存在该用户名！
         this.userNameExist = result;
     }
-
 };
 
 //邮箱唯一性的验证
@@ -101,6 +112,12 @@ UserFormStore.prototype.checkOnlyEmail = function(result) {
         //该邮箱存不存在！
         this.emailExist = result;
     }
+};
+
+// 重置昵称（对应的是姓名）验证的标志
+UserFormStore.prototype.resetNickNameFlags = function() {
+    this.nickNameError = false;
+    this.nickNameExist = false;
 };
 
 //重置用户验证的标志

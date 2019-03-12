@@ -14,12 +14,10 @@ const FORMLAYOUT = {
     PADDINGTOTAL: 70,
 };
 var user = require('PUB_DIR/sources/user-data').getUserData();
-import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import Trace from 'LIB_DIR/trace';
 import UploadAndDeleteFile from 'CMP_DIR/apply-components/upload-and-delete-file';
 

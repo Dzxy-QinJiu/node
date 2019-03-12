@@ -1,0 +1,19 @@
+@import "../../public/css/common-variables";
+.phone-callout-container{
+  .icon-active-call_record-ico{
+    cursor: pointer;
+    font-size: 14px;
+    padding-right: 0;
+    color:@disable_call_phone_icon;
+    margin-left: 10px;
+    &:hover{
+      color:@disable_call_phone_icon;
+    }
+  }
+  .icon-active-call_record-ico.able-call{
+    color:@able_call_phone_icon;
+    &:hover{
+      color:@has-follow-color
+    }
+  }
+}

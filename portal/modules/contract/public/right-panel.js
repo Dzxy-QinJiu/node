@@ -1,5 +1,3 @@
-import ProductTable from 'MOD_DIR/contract/public/add-product';
-
 var React = require('react');
 import routeList from '../common/route';
 import ajax from '../common/ajax';
@@ -12,9 +10,18 @@ import Spinner from '../../../components/spinner';
 import { Tabs, message, Button, Steps, Alert } from 'antd';
 const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
-import { PRODUCT, PROJECT, SERVICE, PURCHASE, CATEGORY, VIEW_TYPE, STEP_TITLES } from '../consts';
+import {
+    PRODUCT,
+    PROJECT,
+    SERVICE,
+    PURCHASE,
+    CATEGORY,
+    VIEW_TYPE,
+    STEP_TITLES,
+    OPERATE_INFO,
+    DISPLAY_TYPES
+} from '../consts';
 import AddBasic from './add-basic';
-// import AddProduct from './add-product';
 import AddProduct from './views/new/add-product';
 import AddReport from './add-report';
 import AddRepayment from './add-repayment';
@@ -277,7 +284,7 @@ class ContractRightPanel extends React.Component {
                         totalProductsPrice += totalReportsPrice;
                     }
                     // 需求改为合同总额需大于等于（产品总价+服务总价）
-                    if (parseInt(_this.refs.addBasic.state.formData.contract_amount) < totalProductsPrice) {
+                    if (parseFloat(_this.refs.addBasic.state.formData.contract_amount) < totalProductsPrice) {
                         _this.setState({ showDiffAmountWarning: true });
                     } else {
                         _this.setState({ showDiffAmountWarning: false }, _this.goNext());
@@ -302,7 +309,6 @@ class ContractRightPanel extends React.Component {
     //refreshWithResult：是否用提交返回的结果来更新当前合同
     handleSubmit = (cb, refreshWithResult) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), stepMap[this.state.currentTabKey] + '添加合同>点击完成按钮');
-        this.showLoading();
 
         const currentView = this.state.currentView;
         let type;
@@ -311,9 +317,18 @@ class ContractRightPanel extends React.Component {
         if (currentView === 'sellForm') {
             type = VIEW_TYPE.SELL;
             contractData = _.extend(this.props.contract, this.refs.addBasic.state.formData);
-            contractData.category = this.state.currentCategory;
+            contractData.category = this.state.currentCategory; // 合同类型
 
-            contractData.cost_structure = contractData.cost_structure.join(',');
+            // 成本构成,有成本额时
+            if(+contractData.cost_price) {
+                contractData.cost_structure = _.get(contractData,'cost_structure',[]);
+                contractData.cost_structure = _.isArray(contractData.cost_structure) ? contractData.cost_structure.join(',') : contractData.cost_structure;
+            }
+
+            // 合同额，毛利，成本额处理
+            contractData.contract_amount = parseFloat(contractData.contract_amount);
+            contractData.cost_price = parseFloat(contractData.cost_price);
+            contractData.gross_profit = parseFloat(contractData.gross_profit);
 
             const addProduct = this.refs.addProduct;
             if (addProduct && !_.isEmpty(addProduct.state.products[0])) {
@@ -338,24 +353,75 @@ class ContractRightPanel extends React.Component {
                 });
             }
 
-            if (this.refs.addRepayment) contractData.repayments = this.refs.addRepayment.state.repayments.map(x => {
-                if(x.num){
-                    delete x.num;
-                    delete x.unit;
+            // 处理回款信息
+            if (this.refs.addRepayment) {
+                let addRepaymentRef = this.refs.addRepayment;
+                let validation = addRepaymentRef.refs.validation;
+                let repayments = _.get(addRepaymentRef.state,'repayments',[]);
+                let formData = _.clone(addRepaymentRef.state.formData);
+                // 判断formData中是否有值,有值验证，没值通过
+                let amount = _.get(formData,'amount');
+                let date = _.get(formData,'date');
+                if(amount && date) {
+                    let flag = true;
+                    validation.validate(valid => {
+                        if (!valid) {
+                            flag = false;
+                            return false;
+                        } else {
+                            delete formData.unit;
+                            repayments.push(formData);
+                        }
+                    });
+                    // 验证不通过，不往下执行
+                    if(!flag) return false;
                 }
-                return x;
-            });
+                contractData.repayments = repayments.map(x => {
+                    if(x.num){
+                        delete x.num;
+                        delete x.unit;
+                    }
+                    return x;
+                });
+            }
+
         } else if (currentView === 'buyForm') {
             type = VIEW_TYPE.BUY;
             contractData = _.extend({}, this.props.contract, this.refs.addBuyBasic.state.formData);
             contractData.category = this.state.currentCategory;
-            if (this.refs.addBuyPayment) contractData.payments = this.refs.addBuyPayment.state.payments.map(x => {
-                if(x.num){
-                    delete x.num;
-                    delete x.unit;
+            contractData.contract_amount = parseFloat(contractData.contract_amount);
+            // 处理付款信息
+            if (this.refs.addBuyPayment) {
+                let addBuyPaymentRef = this.refs.addBuyPayment;
+                let validation = addBuyPaymentRef.refs.validation;
+                let payments = _.get(addBuyPaymentRef.state,'payments',[]);
+                let formData = _.clone(addBuyPaymentRef.state.formData);
+                // 判断formData中是否有值,有值验证，没值通过
+                let amount = _.get(formData,'amount');
+                let date = _.get(formData,'date');
+                if(amount && date) {
+                    let flag = true;
+                    validation.validate(valid => {
+                        if (!valid) {
+                            flag = false;
+                            return false;
+                        } else {
+                            delete formData.unit;
+                            payments.push(formData);
+                            return true;
+                        }
+                    });
+                    // 验证不通过，不往下执行
+                    if(!flag) return false;
                 }
-                return x;
-            });
+                contractData.payments = payments.map(x => {
+                    if(x.num){
+                        delete x.num;
+                        delete x.unit;
+                    }
+                    return x;
+                });
+            }
         } else {
             type = this.props.contract.type;
             if (type === VIEW_TYPE.SELL) {
@@ -364,6 +430,7 @@ class ContractRightPanel extends React.Component {
                 contractData = _.extend({}, this.props.contract, this.refs.detailBuyBasic.state.formData);
             }
         }
+        this.showLoading();
 
         if (contractData.start_time) {
             //在用Validation组件验证开始时间是否小于结束时间时，该组件会用一个缓存的值覆盖通过赋值方法setField赋到state上的最新的值
@@ -379,11 +446,9 @@ class ContractRightPanel extends React.Component {
 
         const reqData = contractData;
         const params = { type: type };
-        let operateType = 'add';
-        let operateName = Intl.get('sales.team.add.sales.team', '添加');
+        let operateType = DISPLAY_TYPES.ADD;
         if (reqData.id) {
-            operateType = 'edit';
-            operateName = Intl.get('common.update', '修改');
+            operateType = DISPLAY_TYPES.EDIT;
         }
         const route = _.find(routeList, route => route.handler === operateType + 'Contract');
         const arg = {
@@ -397,7 +462,7 @@ class ContractRightPanel extends React.Component {
             this.hideLoading();
 
             if (result && result.code === 0) {
-                message.success(operateName + '成功');
+                message.success(OPERATE_INFO[operateType].success);
 
                 if (['sellForm', 'buyForm'].indexOf(currentView) > -1) {
                     this.props.hideRightPanel();
@@ -405,7 +470,7 @@ class ContractRightPanel extends React.Component {
 
                 const hasResult = _.isObject(result.result) && !_.isEmpty(result.result);
 
-                if (operateType === 'add') {
+                if (operateType === DISPLAY_TYPES.ADD) {
                     if (hasResult) {
                         this.props.addContract(result.result);
                     }
@@ -421,7 +486,7 @@ class ContractRightPanel extends React.Component {
 
                 if (_.isFunction(cb)) cb();
             } else {
-                message.error(operateName + '失败');
+                message.error(OPERATE_INFO[operateType].faild);
             }
         }, (errMsg) => {
             this.hideLoading();
@@ -446,7 +511,6 @@ class ContractRightPanel extends React.Component {
         let contentHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA;
         //用户详细信息高度
         if (this.props.view === 'detail') {
-            // contentHeight = contentHeight + LAYOUT_CONSTANTS.REMARK_PADDING - LAYOUT_CONSTANTS.TITLE_PADDING;
             contentHeight = contentHeight - LAYOUT_CONSTANTS.TAB_DETAIL - LAYOUT_CONSTANTS.BOTTOM_DELTA;
         } else {
             contentHeight = contentHeight - LAYOUT_CONSTANTS.STEP_DETAIL - LAYOUT_CONSTANTS.BTN_PADDING - LAYOUT_CONSTANTS.BOTTOM_DELTA;
@@ -611,10 +675,10 @@ class ContractRightPanel extends React.Component {
             if(isProductAndService) {
                 endTabKey += 1;
                 let currentContentHeight = contentHeight;
-                // currentContentHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
+                let tabTitle = [SERVICE].indexOf(this.props.contract.category) > -1 ? Intl.get('contract.product.service.info', '产品与服务信息') : Intl.get('contract.95', '产品信息');
 
                 tabList.push(
-                    <TabPane tab={Intl.get('contract.product.service.info', '产品与服务信息')} key="2">
+                    <TabPane tab={tabTitle} key="2">
                         <div className="contract-product" style={{height: currentContentHeight}}>
                             <div className='contract-product-title'><span className='product-title-text'>合同额：{`${this.props.contract.contract_amount}${Intl.get('contract.155', '元')}`}</span></div>
                             <GeminiScrollBar ref='gemiScrollBar'>
@@ -647,7 +711,7 @@ class ContractRightPanel extends React.Component {
             }
             tabList = tabList.concat(
                 [
-                    <TabPane tab={`${Intl.get('contract.108', '回款')}${Intl.get('sales.stage.message', '信息')}`} key={endTabKey - 1}>
+                    <TabPane tab={Intl.get('contract.repeyment.info', '回款信息')} key={endTabKey - 1}>
                         <div className="contract-repayment">
                             <DetailRepayment
                                 height={contentHeight}
@@ -677,7 +741,7 @@ class ContractRightPanel extends React.Component {
         // 采购合同
         if(this.props.contract.type === VIEW_TYPE.BUY){
             tabPaneList.push(
-                <TabPane tab={`${Intl.get('contract.91', '付款')}${Intl.get('sales.stage.message', '信息')}`} key="2">
+                <TabPane tab={Intl.get( 'contract.peyment.info', '付款信息')} key="2">
                     <div className="contract-repayment">
                         <DetailBuyPayment
                             height={contentHeight}
@@ -698,7 +762,6 @@ class ContractRightPanel extends React.Component {
 
                 {/*添加其他合同（包括采购合同）*/}
                 { !isDetailType ? (
-                    //<div className="add-form" style={{ height: productServiceHeight }}>
                     <div className="add-form">
                         {contractContents}
                         <div className="step-button">

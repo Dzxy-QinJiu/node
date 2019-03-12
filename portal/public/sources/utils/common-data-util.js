@@ -3,14 +3,12 @@ import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import teamAjaxTrans from 'MOD_DIR/common/public/ajax/team';
 import {storageUtil} from 'ant-utils';
-import {traversingTeamTree, getParamByPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import {traversingTeamTree, getParamByPrivilege,hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {message} from 'antd';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 
 const session = storageUtil.session;
-// 缓存在sessionStorage中的座席号的key
-const sessionCallNumberKey = 'callNumber';
 let appList = [];
 //oplate中的应用+客套中的产品列表
 let allProductList = [];
@@ -25,35 +23,7 @@ const AUTH_MAP = {
 };
 import {DIFF_TYPE_LOG_FILES, AM_AND_PM} from './consts';
 import {isEqualArray} from 'LIB_DIR/func';
-// 获取拨打电话的座席号
-exports.getUserPhoneNumber = function(cb) {
-    var Deferred = $.Deferred();
-    let user_id = getUserData().user_id;
-    let callNumberObj = {};
-    let storageObj = JSON.parse(session.get(sessionCallNumberKey));
-    let callNumber = storageObj && storageObj[user_id] ? storageObj[user_id] : '';
-    if (callNumber) {
-        callNumberObj.callNumber = callNumber;
-        Deferred.resolve(callNumberObj);
-        cb(callNumberObj);
-    } else {
-        crmAjax.getUserPhoneNumber(user_id).then((result) => {
-            if (result.phone_order) {
-                let storageCallNumberObj = {};
-                storageCallNumberObj[user_id] = result.phone_order;
-                session.set(sessionCallNumberKey, JSON.stringify(storageCallNumberObj));
-                callNumberObj.callNumber = result.phone_order;
-            }
-            Deferred.resolve(callNumberObj);
-            cb(callNumberObj);
-        }, (errMsg) => {
-            callNumberObj.errMsg = errMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!');
-            Deferred.reject(errMsg);
-            cb(callNumberObj);
-        });
-    }
-    return Deferred.promise();
-};
+import userData from 'PUB_DIR/sources/user-data';
 //获取oplate中的应用
 exports.getAppList = function(cb) {
     if (_.get(appList, '[0]')) {
@@ -179,7 +149,6 @@ exports.getMyTeamTreeAndFlattenList = function(cb, flag) {
 /* 拨号是否成功的处理
  * paramObj:{
  * errorMsg:获取座机号时的错误提示，
- * callNumber: 座席号，
  * contactName: 电话联系人名称，
  * phoneNumber: 拨打的电话号码，
  * customerId: 客户的id
@@ -189,27 +158,24 @@ exports.handleCallOutResult = function(paramObj) {
     if (!paramObj) {
         return;
     }
-    if (paramObj.errorMsg) {
-        message.error(paramObj.errorMsg || Intl.get('crm.get.phone.failed', ' 获取座机号失败!'));
-    } else {
-        let phoneNumber = paramObj.phoneNumber ? paramObj.phoneNumber.replace('-', '') : '';
-        if (phoneNumber) {
-            phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
-                {
-                    contact: paramObj.contactName,
-                    phone: phoneNumber
-                }
-            );
-            let callClient = getCallClient();
-            if (callClient && callClient.isInited()) {
-                callClient.callout(phoneNumber).then((result) => {
-                    message.success(Intl.get('crm.call.phone.success', '拨打成功'));
-                }, (errMsg) => {
-                    message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
-                });
+    let phoneNumber = paramObj.phoneNumber ? paramObj.phoneNumber.replace('-', '') : '';
+    if (phoneNumber) {
+        phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
+            {
+                contact: paramObj.contactName,
+                phone: phoneNumber
             }
+        );
+        let callClient = getCallClient();
+        if (hasCalloutPrivilege()) {
+            callClient.callout(phoneNumber).then((result) => {
+                message.success(Intl.get('crm.call.phone.success', '拨打成功'));
+            }, (errMsg) => {
+                message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
+            });
         }
     }
+
 };
 
 //获取订单阶段列表
@@ -376,4 +342,42 @@ exports.getProductList = function(cb, isRefresh) {
     } else {
         if (_.isFunction(cb)) cb(integrationProductList);
     }
+};
+function isRealmManager() {
+    //是否是管理员
+    return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
+}
+//点击电话后不可拨打的提示
+exports.showDisabledCallTip = function() {
+    //是否是管理员
+    if (isRealmManager()){
+        return Intl.get('manager.role.has.not.setting.phone.systerm', '您尚未开通电话系统或未设置座席号!');
+    }else{
+        return Intl.get('sales.role.has.not.setting.phone.systerm', '您尚未开通电话系统或未设置座席号，请通知管理员!');
+    }
+};
+
+//获取组织电话系统配置
+exports.getCallSystemConfig = function() {
+    return new Promise((resolve, reject) => {
+        const userProperty = 'callsystem_config';
+        let callsystemConfig = getUserData()[userProperty];
+        if (callsystemConfig) {
+            resolve(callsystemConfig);
+        } else {
+            $.ajax({
+                url: '/rest/global/callsystem/config',
+                type: 'get',
+                dataType: 'json',
+                success: data => {
+                    //保存到userData中
+                    setUserData(userProperty, data);
+                    resolve(data);
+                },
+                error: xhr => {
+                    reject(xhr.responseJSON);
+                }
+            });
+        }
+    });
 };

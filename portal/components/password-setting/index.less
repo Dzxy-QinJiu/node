@@ -1,0 +1,41 @@
+@import "../../public/css/common-variables";
+.password-setting {
+  margin-top: 4px;
+  color: #313330;
+  display: inline-block;
+  .ant-checkbox-wrapper{
+    font-size: 14px;
+    font-weight: normal;
+  }
+  .input-container{
+    float: left;
+    position: relative;
+    width: 260px;
+    .iconfont{
+      position: absolute;
+      cursor: pointer;
+      color: rgba(0,0,0,3.65);
+      font-size: 20px;
+      right: 15px;
+      top:0;
+    }
+    .warning-text{
+      color:@error_tips_color
+    }
+    .ant-input{
+        width: 240px;
+      }
+
+
+    .ant-input.has-warning{
+      border: 1px solid @error_tips_color;
+    }
+  }
+}
+.password-setting.has-input{
+  min-height: 30px;
+  line-height: 30px;
+  .ant-checkbox-wrapper{
+    float: left;
+  }
+}

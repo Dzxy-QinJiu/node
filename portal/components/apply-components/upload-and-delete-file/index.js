@@ -9,15 +9,15 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import Trace from 'LIB_DIR/trace';
 import {isEqualArray} from 'LIB_DIR/func';
+import {REG_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 import {seperateFilesDiffType, hasApprovedReportAndDocumentApply} from 'PUB_DIR/sources/utils/common-data-util';
-const UPLOADER_TYPES = {
-    SALES: '',
-};
+import {checkFileSizeLimit, checkFileNameForbidRule} from 'PUB_DIR/sources/utils/common-method-util';
 class UploadAndDeleteFile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             isUpLoading: false,
+            warningMsg: '',
             fileList: this.props.fileList,
             deleteResult: {
                 result: '',
@@ -78,27 +78,32 @@ class UploadAndDeleteFile extends React.Component {
         }
         this.props.fileRemove(file);
     };
-    //上传文件的大小不能超过10M
-    canculateLimite = (size) => {
-        return size / 1024 / 1024 > 10;
+    checkFileSizeLimit = (fileSize) => {
+        var checkObj = checkFileSizeLimit(fileSize);
+        if (checkObj.warningMsg){
+            this.setState({
+                warningMsg: checkObj.warningMsg
+            });
+        }
+        return checkObj.sizeQualified;
+    };
+    checkFileNameRule = (filename) => {
+        var checkObj = checkFileNameForbidRule(filename, REG_FILES_TYPE_RULES);
+        if (checkObj.warningMsg){
+            this.setState({
+                warningMsg: checkObj.warningMsg
+            });
+        }
+        return checkObj.nameQualified;
     };
     checkFileType = (filename,fileSize,totalSize) => {
-        // 文件内容为空的处理
-        if (filename.indexOf(' ') >= 0) {
-            message.warning(Intl.get('apply.approve.upload.no.container.space', '文件名称中不要含有空格！'));
+        if (!this.checkFileNameRule(filename)){
             return false;
         }
-        if (filename.indexOf('.exe') >= 0){
-            message.warning(Intl.get('apply.approve.upload.error.file.type','文件格式不正确！'));
+        if (!this.checkFileSizeLimit(fileSize || 0)){
             return false;
         }
-        if (fileSize === 0) {
-            message.warning(Intl.get('apply.approve.upload.empty.file','不可上传空文件！'));
-            return false;
-        }
-
-        if (fileSize && this.canculateLimite(fileSize) || totalSize && this.canculateLimite(totalSize)){
-            message.warning(Intl.get('apply.approve.upload.not.more.than50','文件大小不能超过10M!'));
+        if (totalSize && !this.checkFileSizeLimit(totalSize)){
             return false;
         }
         return true;
@@ -356,6 +361,11 @@ class UploadAndDeleteFile extends React.Component {
                 deleteResult: deleteResult
             });
         };
+        var hideWarning = () => {
+            this.setState({
+                warningMsg: ''
+            });
+        };
         var detailInfoObj = this.props.detailInfoObj;
 
         return (
@@ -370,6 +380,11 @@ class UploadAndDeleteFile extends React.Component {
                         showIcon
                         onHide={hide}
                     /> : null}
+                {this.state.warningMsg ? <AlertTimer time={4000}
+                    message={this.state.warningMsg}
+                    type="error"
+                    showIcon
+                    onHide={hideWarning}/> : null}
             </div>
         );
     }

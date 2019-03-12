@@ -294,16 +294,13 @@ class ContactItem extends React.Component {
                         field='phone'
                         value={contact.phone}
                         type='phone'
-                        label={<div className="iconfont icon-phone-call-out contact-way-icon"
-                            title={Intl.get('common.phone', '电话')}/>}
+                        label={Intl.get('common.phone', '电话')}
                         hasEditPrivilege={hasEditPrivilege}
                         placeholder={Intl.get('crm.95', '请输入联系人电话')}
                         validateRules={this.getPhoneInputValidateRules()}
                         saveEditData={this.saveContactInfo.bind(this, 'phone')}
                         noDataTip={Intl.get('crm.contact.phone.none', '暂无电话')}
                         addDataTip={Intl.get('crm.contact.phone.add', '添加电话')}
-                        callNumber={this.props.callNumber}
-                        getCallNumberError={this.props.getCallNumberError}
                         contactName={contact.name}
                     />
                 </div>
@@ -315,7 +312,7 @@ class ContactItem extends React.Component {
                                 field='qq'
                                 value={contact.qq}
                                 type='input'
-                                label={<div className="iconfont icon-qq contact-way-icon" title="QQ"/>}
+                                label={'QQ'}
                                 hasEditPrivilege={hasEditPrivilege}
                                 placeholder={Intl.get('member.input.qq', '请输入QQ号')}
                                 saveEditData={this.saveContactInfo.bind(this, 'qq')}
@@ -329,8 +326,7 @@ class ContactItem extends React.Component {
                                 field='weChat'
                                 value={contact.weChat}
                                 type='input'
-                                label={<div className="iconfont icon-weChat contact-way-icon"
-                                    title={Intl.get('crm.58', '微信')}/>}
+                                label={Intl.get('crm.58', '微信')}
                                 hasEditPrivilege={hasEditPrivilege}
                                 placeholder={Intl.get('member.input.wechat', '请输入微信号')}
                                 saveEditData={this.saveContactInfo.bind(this, 'weChat')}
@@ -344,8 +340,7 @@ class ContactItem extends React.Component {
                                 field='email'
                                 value={contact.email}
                                 type='input'
-                                label={<div className="iconfont icon-email contact-way-icon"
-                                    title={Intl.get('common.email', '邮箱')}/>}
+                                label={Intl.get('common.email', '邮箱')}
                                 validateRules={[{
                                     message: Intl.get('user.email.validate.tip','请输入正确格式的邮箱'),
                                     pattern: emailRegex
@@ -376,8 +371,6 @@ ContactItem.propTypes = {
     customerId: PropTypes.string,
     contact: PropTypes.object,
     isMerge: PropTypes.bool,
-    callNumber: PropTypes.string,
-    getCallNumberError: PropTypes.string,
     delMergeCustomerContact: PropTypes.func,
     updateCustomerDefContact: PropTypes.func,
     updateMergeCustomerContact: PropTypes.func,
