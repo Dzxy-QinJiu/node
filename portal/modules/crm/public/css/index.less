@@ -220,6 +220,19 @@
             .no-data-intro, .no-data{
                 padding-top:260px;
             }
+            .phone-out-container{
+                width: 100%;
+                .phone-callout-container{
+                    width: 100%;
+                    display: inline-block;
+                    .iconfont.icon-active-call_record-ico{
+                        float: right;
+                    }
+                }
+                &:not(:first-child){
+                    margin-top:10px;
+                }
+            }
         }
         margin: @top_nav_height+2 @container_padding auto @container_padding;
         .ant-table-placeholder {

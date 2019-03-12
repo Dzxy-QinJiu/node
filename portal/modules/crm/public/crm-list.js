@@ -1078,7 +1078,7 @@ class Crm extends React.Component {
         var phoneList = phoneArray.map((item) => {
             if (item) {
                 return (
-                    <div>
+                    <div className="phone-out-container">
                         <PhoneCallout
                             phoneNumber={item}
                             contactName={record.contact}
