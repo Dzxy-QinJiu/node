@@ -33,9 +33,18 @@ class UploadBtn extends React.Component {
             if (_.isArray(response) && response.length) {
                 this.props.onItemListImport(response);
             } else {
-                message.error(Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!',{type: this.props.importType}));
+                this.setState({
+                    isLoading: false,
+                    warningMsg: Intl.get('clue.manage.failed.import.clue', '导入{type}失败，请重试!',{type: this.props.importType})
+                });
             }
             this.props.afterUpload();
+        }else if(info.file.status === 'error') {
+            const response = info.file.response;
+            this.setState({
+                isLoading: false,
+                warningMsg: response
+            });
         }
     };
     checkFileSizeLimit = (fileSize) => {
