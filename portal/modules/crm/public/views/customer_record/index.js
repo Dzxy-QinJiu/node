@@ -373,7 +373,7 @@ class CustomerRecord extends React.Component {
 
     addDetailContent = (item,e) => {
         e.stopPropagation();
-        if (this.props.disableEdit || this.props.isMerge) return;
+        if (this.props.disableEdit) return;
         if (this.state.isEdit || this.state.addRecordPanelShow) {
             message.error(Intl.get('crm.save.customertrace.first', '请先保存或取消正在编辑的跟进记录内容'));
             return;
@@ -548,6 +548,25 @@ class CustomerRecord extends React.Component {
         );
     };
 
+    //渲染补充跟进记录的提示
+    renderSupplementTip(item) {
+        return this.props.disableEdit ? null : (
+            <span className="add-detail-tip" onClick={this.addDetailContent.bind(this, item)}>
+                {Intl.get('click.to.add.trace.detail', '请点击此处补充跟进内容')}
+            </span>);
+    }
+
+    //渲染跟进记录的展示内容
+    renderRecordShowContent = (item) => {
+        //是否是编辑跟进记录，有跟进内容并且能编辑(没有跟进内容时是补充跟进记录)
+        let isEditRecord = item.remark && !this.props.disableEdit;
+        return (
+            <div className="record-content-show" onClick={this.addDetailContent.bind(this, item)}
+                title={isEditRecord ? Intl.get('crm.record.edit.record.tip', '点击修改跟进记录') : ''}>
+                {item.remark ? (<ShearContent>{item.remark}</ShearContent>) : this.renderSupplementTip(item)}
+            </div>);
+    };
+
     renderTimeLineItem = (item, hasSplitLine) => {
         var traceObj = crmUtil.processForTrace(item);
         //渲染时间线
@@ -571,17 +590,7 @@ class CustomerRecord extends React.Component {
                 </p>
                 {item.type === 'data_report' ? this.renderReportContent(item) : (<div>
                     <div className="item-detail-content" id={item.id}>
-                        {item.showAdd ? this.renderAddDetail(item) : (
-                            <div className="record-content-show" onClick={this.addDetailContent.bind(this, item)}
-                                title={item.remark && !this.props.disableEdit && !this.props.isMerge ? Intl.get('crm.record.edit.record.tip', '点击修改跟进记录') : ''}>
-                                {item.remark ?
-                                    <ShearContent>
-                                        {item.remark}
-                                    </ShearContent> : (this.props.disableEdit || this.props.isMerge ? null :
-                                        <span className="add-detail-tip" onClick={this.addDetailContent.bind(this, item)}>
-                                            {Intl.get('click.to.add.trace.detail', '请点击此处补充跟进内容')}
-                                        </span>)}
-                            </div>)}
+                        {item.showAdd ? this.renderAddDetail(item) : this.renderRecordShowContent(item)}
                     </div>
                     <div className="item-bottom-content">
                         {item.billsec === 0 ? (/*未接听*/
@@ -802,6 +811,20 @@ class CustomerRecord extends React.Component {
         return (_.get(this.state, 'customerRecord[0]') || this.state.filterStatus) &&
             _.indexOf(['visit', 'data_report', 'other'], this.state.filterType) === -1;
     }
+    //渲染添加跟进记录的按钮
+    renderAddRecordButton(){
+        //概览页添加跟进记录的按钮
+        if (this.props.isOverViewPanel) {
+            return (
+                <span className="iconfont icon-add" onClick={this.toggleAddRecordPanel.bind(this)}
+                    title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>);
+        } else {//跟进记录页，添加跟进记录的按钮
+            return (<Button className='crm-detail-add-btn'
+                onClick={this.toggleAddRecordPanel.bind(this, '')} data-tracename="添加跟进记录">
+                {Intl.get('sales.frontpage.add.customer', '添加跟进记录')}
+            </Button>);
+        }
+    }
     render() {
         //addTrace 顶部增加记录的teaxare框
         //下部时间线列表
@@ -809,6 +832,8 @@ class CustomerRecord extends React.Component {
         var closedModalTip = _.trim(_.get(this.state, 'detailContent.value')) ? '取消补充跟进内容' : '取消添加跟进内容';
         //是否是在跟进记录下没有数据
         let isRecordTabNoData = !_.get(this.state, 'customerRecord[0]') && !this.state.customerRecordLoading && !this.props.isOverViewPanel;
+        //能否添加跟进记录， 可编辑并且没有正在编辑的跟进记录时，可添加
+        let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit;
         return (
             <div className="customer-container" data-tracename="跟进记录页面" id="customer-container">
                 {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : (
@@ -818,14 +843,7 @@ class CustomerRecord extends React.Component {
                                 <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={'共{n}条'}
                                     values={{'n': this.state.total + ''}}/>)}
                         </span>
-                        {this.props.isMerge || this.props.disableEdit || this.state.isEdit ? null : this.props.isOverViewPanel ? (
-                            <span className="iconfont icon-add" onClick={this.toggleAddRecordPanel.bind(this)}
-                                title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>) : (
-                            <Button className='crm-detail-add-btn'
-                                onClick={this.toggleAddRecordPanel.bind(this, '')} data-tracename="添加跟进记录">
-                                {Intl.get('sales.frontpage.add.customer', '添加跟进记录')}
-                            </Button>)
-                        }
+                        {hasAddRecordPrivilege ? this.renderAddRecordButton() : null}
                         {this.isStatusFilterShow() ? (
                             <Dropdown overlay={this.getStatusMenu()} trigger={['click']}>
                                 <a className="ant-dropdown-link trace-filter-item">
@@ -864,7 +882,6 @@ CustomerRecord.propTypes = {
     refreshSrollbar: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
     changeActiveKey: PropTypes.func,
-    isMerge: PropTypes.bool,
     disableEdit: PropTypes.bool,
 };
 module.exports = CustomerRecord;

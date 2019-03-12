@@ -411,12 +411,11 @@ class BasicOverview extends React.Component {
     renderCustomerRcord = () => {
         return <CustomerRecord
             isOverViewPanel={true}
-            isMerge={this.props.isMerge}
             curCustomer={this.state.basicData}
             refreshCustomerList={this.props.refreshCustomerList}
             refreshSrollbar={this.refreshSrollbar}
             changeActiveKey={this.props.changeActiveKey}
-            disableEdit={this.props.disableEdit}
+            disableEdit={this.props.disableEdit || this.props.isMerge}
             updateCustomerLastContact={this.props.updateCustomerLastContact}
         />;
     };
