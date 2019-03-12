@@ -20,7 +20,32 @@ export function getSingingChart() {
             argCallbackMemberIdsToMemberId(arg);
         },
         chartType: 'table',
-        processOption: processOption,
+        processChart: processChart,
+        processCsvData: chart => {
+            let rows = [], row1 = [], row2 = [];
+            const columns = chart.option.columns;
+            const dataSource = chart.option.dataSource;
+
+            columns.forEach((column, index) => {
+                if (index === 0) {
+                    row1.push(column.title);
+                } else {
+                    row1 = row1.concat(['', column.title, '']);
+                }
+
+                row2 = row2.concat( _.map(column.children, 'title') );
+            });
+
+            rows.push(row1, row2);
+            
+            dataSource.forEach(rowObj => {
+                delete rowObj.timestamp;
+                delete rowObj.teamNames;
+                rows.push( _.values(rowObj) );
+            });
+
+            return rows;
+        }
     };
 }
 
@@ -53,8 +78,9 @@ function processData(data) {
     return processedData;
 }
 
-//处理表格选项
-function processOption(option, props) {
+//处理图表
+function processChart(props) {
+    let option = props.option = {};
     const data = props.data;
 
     if (!data.length) {

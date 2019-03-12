@@ -202,14 +202,15 @@ export function getSalesRankingChart(role) {
                 };
             });
         },
-        generateCsvData: data => {
+        processCsvData: chart => {
+            const data = chart.data;
             let csvData = [];
             let header = [];
             let body = [];
 
             _.each(data, dataItem => {
                 _.each(dataItem.realValue, (valueItem, index) => {
-                    const colName = dataItem.name.replace('排名', '') + dimensions[index];
+                    const colName = dimensions[index] + dataItem.name;
 
                     header.push(colName);
                     body.push(valueItem);

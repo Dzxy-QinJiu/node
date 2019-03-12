@@ -197,7 +197,8 @@ class UserAnlyis extends React.Component {
                     '': Intl.get('oplate.user.analysis.22', '综合'),
                 },
             },
-            generateCsvData: function(data) {
+            processCsvData: function(chart) {
+                const data = chart.data;
                 let csvData = [];
                 let thead = [Intl.get('common.app.name', '应用名称')];
                 let subData = data[0] && data[0].data;

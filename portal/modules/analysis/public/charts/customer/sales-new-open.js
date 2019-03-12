@@ -50,37 +50,35 @@ export function getSalesNewOpenChart(paramObj = {}) {
                 }
             ],
         },
-        customOption: {
-            dataProcessor: (data) => {
-                let list = [];
-                if (data.list && data.list.length > 0) {
-                    data.list.forEach(teamItem => {
-                        teamItem.team_result.forEach((sale, index) => {
-                            sale.team_name = teamItem.team_name;
-                            if (list.find(item => item.team_name === teamItem.team_name)) {
-                                sale.rowSpan = 0;
-                            } else {
-                                sale.rowSpan = teamItem.team_result.length;
-                            }
-                            list.push(sale);
-                            //在每个团队最后一个销售的数据后加上合计
-                            if (index === teamItem.team_result.length - 1) {
-                                list.push($.extend({}, teamItem.team_total, {
-                                    user_name: Intl.get('sales.home.total.compute', '总计')
-                                }));
-                            }
-                        });
+        processData: (data) => {
+            let list = [];
+            if (data.list && data.list.length > 0) {
+                data.list.forEach(teamItem => {
+                    teamItem.team_result.forEach((sale, index) => {
+                        sale.team_name = teamItem.team_name;
+                        if (list.find(item => item.team_name === teamItem.team_name)) {
+                            sale.rowSpan = 0;
+                        } else {
+                            sale.rowSpan = teamItem.team_result.length;
+                        }
+                        list.push(sale);
+                        //在每个团队最后一个销售的数据后加上合计
+                        if (index === teamItem.team_result.length - 1) {
+                            list.push($.extend({}, teamItem.team_total, {
+                                user_name: Intl.get('sales.home.total.compute', '总计')
+                            }));
+                        }
                     });
-                    //在数据最后添加总的合计
-                    if (data.total) {
-                        list.push($.extend({}, data.total, {
-                            team_name: Intl.get('sales.home.total.compute', '总计')
-                        }));
-                    }
+                });
+                //在数据最后添加总的合计
+                if (data.total) {
+                    list.push($.extend({}, data.total, {
+                        team_name: Intl.get('sales.home.total.compute', '总计')
+                    }));
                 }
+            }
 
-                return list;
-            },
+            return list;
         },
         cardContainer: {
             selectors: [{
