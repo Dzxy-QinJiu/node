@@ -35,7 +35,24 @@ export function getRecentContactCustomerChart() {
                 query.end_time = moment().endOf('week').valueOf();
             }
 
-            if (query.member_ids) {
+            //返回值类型，默认按团队返回
+            query.statistics_type = 'team';
+
+            //团队Id
+            const teamIds = query.team_ids;
+            //子团队Id数组
+            const childTeamIds = query.child_team_ids;
+            //当前选择的团队是否有子团队，默认有
+            let teamHasChild = true;
+
+            //如果子团队Id数组里只有一项，并且该项的值和当前选择的团队的值相同，则认为当前选择的团队没有子团队
+            if (childTeamIds.length === 1 && childTeamIds[0] === teamIds) {
+                teamHasChild = false;
+            }
+
+            //如果是按成员筛选，或当前选择的团队没有子团队
+            if (query.member_ids || !teamHasChild) {
+                //则按成员返回
                 query.statistics_type = 'user';
             }
         },
