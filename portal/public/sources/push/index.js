@@ -122,6 +122,10 @@ function applyApproveUnhandledListener(data) {
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_LEAVE, data);
                 break;
+            case APPLY_APPROVE_TYPES.MEMBER_INVITE:
+                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEMBERINIVTE, true);
+                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, data);
+                break;
 
         }
     }
@@ -941,5 +945,22 @@ function updateGlobalUnreadStorage(unreadObj) {
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
         }, timeout);
     }
+}
+
+//获取待我审批的成员申请
+function getUnapproveMemberApply() {
+    var queryObj = {type: APPLY_APPROVE_TYPES.MEMBER_INVITE};
+    $.ajax({
+        url: '/rest/get/worklist/apply_approve/list',
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
+        success: function(data) {
+            setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,data);
+        },
+        error: function(errorMsg) {
+
+        }
+    });
 }
 module.exports.startSocketIo = startSocketIo;

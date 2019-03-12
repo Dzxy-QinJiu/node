@@ -424,6 +424,8 @@ exports.getApplyTopicText = function(obj) {
         return Intl.get('apply.approve.specific.report','{customer}客户的{reporttype}',{customer: _.get(obj,'detail.customer.name'),reporttype: getDocumentReportTypeDes(REPORT_TYPE,_.get(obj,'detail.report_type'))});
     }else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1){
         return getDocumentReportTypeText(DOCUMENT_TYPE,_.get(obj,'detail.document_type'));
+    } else if (obj.topic === APPLY_APPROVE_TYPES.MEMBER_INVITE) {
+        return Intl.get('member.application', '成员申请');
     }
 };
 function getDocumentReportTypeText(AllTypeList,specificType) {

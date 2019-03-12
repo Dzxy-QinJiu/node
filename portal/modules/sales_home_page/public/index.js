@@ -35,8 +35,10 @@ import CustomerListPanel from 'MOD_DIR/crm/public/customer-list-panel';
 import UserListPanel from 'MOD_DIR/app_user_manage/public/user-list-panel';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
+import InviteMember from 'MOD_DIR/invite_member/public';
 import {isOrganizationEefung, hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import AlertTip from 'CMP_DIR/alert-tip';
+
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
@@ -1066,10 +1068,11 @@ class SalesHomePage extends React.Component {
         var hamburgerCls = classNames('iconfont', 'icon-hamburger', {
             'is-active': this.state.isSaleTeamShow,
         });
+        
         var title = (this.state.isSaleTeamShow ? Intl.get('sales.homepage.hide.teamlist', '隐藏团队列表') :
             Intl.get('sales.homepage.show.teamlist', '展开团队列表'));
         return (<RightContent>
-            <div className="sales_home_content">
+            <div className="sales_home_content" data-tracename="销售首页">
                 <TopNav>
                     <div className="date-range-wrap btn-item">
                         <DatePicker
@@ -1088,15 +1091,11 @@ class SalesHomePage extends React.Component {
                         </DatePicker>
                     </div>
                     {(this.state.currShowType === showTypeConstant.SALESMAN && !this.state.currShowSalesman) ? null :
-                        <div className="crm-home-teamlist-show-flag" data-tracename="销售首页">
+                        <div className="crm-home-teamlist-show-flag">
                             <span className={hamburgerCls} onClick={this.handleCrmTeamListShow} title={title}>
                             </span>
                         </div>}
-                    {
-                        //<div className="crm-home-add-btn">
-                        //    <span className="iconfont icon-add-btn"/>
-                        //</div>
-                    }
+                    <InviteMember />
                 </TopNav>
                 {this.state.salesTeamListObj.resultType === 'loading' ?
                     <div className="spinner-container">

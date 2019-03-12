@@ -1861,6 +1861,12 @@ var zh_CN = {
     'sales.home.call.top.ten': '单次通话时长',
     'sales.home.set.role': '点此设置销售角色',
     'sales.home.role.null': '未设置角色',
+    'sales.home.invite.member': '邀请成员',
+    'sales.home.invite.btn': '邀请',
+    'sales.home.invite.continue.btn': '继续邀请',
+    'sales.home.invite.member.success': '邀请申请发送成功',
+    'sales.home.invite.member.failed': '邀请成员失败！',
+    
     //销售首页-新增用户分析
     'sales.user.analysis': '用户分析',
     'user.analysis.total': '用户统计',
@@ -2759,6 +2765,12 @@ var zh_CN = {
     'contract.service.add': '添加服务',
     'clue.and.crm.upload.size': '文件大小不要超过10M!',
     'apply.show.cancel.result': '查看撤销结果',
+
+    // 成员申请
+    'member.application': '成员申请',
+    'member.apply.failed.get.worklist': '获取由我审批的成员申请失败',
+    'member.apply.failed.get.all.apply': '获取全部成员申请失败',
+    'member.apply.detail.auto.generation.password': '自动生成密码',
     'manager.role.has.not.setting.phone.systerm': '您尚未开通电话系统或未设置座席号!',
     'sales.role.has.not.setting.phone.systerm': '您尚未开通电话系统或未设置座席号，请通知管理员!',
     'contract.repeyment.first': '首笔',

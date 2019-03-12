@@ -24,6 +24,7 @@ class ApplyDetailBottom extends React.Component {
                     </Button> : null}
                 {this.props.showApproveBtn ? <div className="pass-and-reject-wrap">
                     <Button type="primary" className="btn-primary-sure" size="small"
+                        disabled={this.props.disabled}
                         onClick={this.props.submitApprovalForm.bind(this, 'pass')}>
                         {this.props.passText}
                     </Button>
@@ -61,6 +62,7 @@ ApplyDetailBottom.defaultProps = {
     approvalText: '',
     showApproveBtn: false,
     showCancelBtn: false,
+    disabled: false,
     submitApprovalForm: function() {
 
     },
@@ -86,6 +88,7 @@ ApplyDetailBottom.propTypes = {
     showCancelBtn: PropTypes.boolean,
     rejectText: PropTypes.string,
     passText: PropTypes.string,
+    disabled: PropTypes.boolean,
 };
 
 export default ApplyDetailBottom;

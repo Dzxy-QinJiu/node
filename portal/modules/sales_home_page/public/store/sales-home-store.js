@@ -82,6 +82,7 @@ SalesHomeStore.prototype.setInitState = function() {
         isShowSetClient: false//是否展示设置电话系统的提示
     };
 };
+
 // 重置回访记录列表状态
 SalesHomeStore.prototype.resetCallBackRecord = function() {
     this.callBackRecord = {

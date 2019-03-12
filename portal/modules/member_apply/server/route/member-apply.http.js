@@ -1,66 +1,72 @@
 /**
- * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
- * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
- * Created by zhangshujuan on 2018/9/10.
+ * Created by hzl on 2019/3/5.
  */
+
 module.exports = {
-    module: 'leave-apply/server/action/leave-apply-controller',
+    module: 'member_apply/server/action/member-apply-controller',
     routes: [
         {
             method: 'get',
             path: '/rest/get/all/apply_approve/list',
-            handler: 'getAllLeaveApplyList',
+            handler: 'getAllMemberApplyList',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'get',
             path: '/rest/get/worklist/apply_approve/list',
-            handler: 'getWorklistLeaveApplyList',
-            passport: {
-                needLogin: true
-            },
-        }, {
-            method: 'post',
-            path: '/rest/add/leave_apply/list',
-            handler: 'addLeaveApply',
+            handler: 'getWorklistMemberApplyList',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'get',
             path: '/rest/apply_approve/detail/by/id',
-            handler: 'getLeaveApplyDetailById',
+            handler: 'getMemberApplyDetailById',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'get',
             path: '/rest/get/apply_approve/comment/list',
-            handler: 'getLeaveApplyComments',
+            handler: 'getMemberApplyComments',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'post',
             path: '/rest/add/apply_approve/comment',
-            handler: 'addLeaveApplyComments',
+            handler: 'addMemberApplyComments',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'post',
-            path: '/rest/leave_apply/submitApply',
-            handler: 'approveLeaveApplyPassOrReject',
+            path: '/rest/member_apply/submitApply',
+            handler: 'approveMemberApplyPassOrReject',
             passport: {
                 needLogin: true
             },
         }, {
             method: 'get',
             path: '/rest/get/leave_apply/status/byId',
-            handler: 'getLeaveApplyStatusById',
+            handler: 'getMemberApplyStatusById',
             passport: {
                 needLogin: true
+            },
+        },{
+            method: 'get',
+            path: '/rest/member_apply/name/check/:name',
+            handler: 'checkOnlyName',
+            passport: {
+                'needLogin': true
+            },
+        }, {
+            method: 'get',
+            path: '/rest/member_apply/email/check/:email',
+            handler: 'checkOnlyEmail',
+            passport: {
+                'needLogin': true
             },
         }
     ]

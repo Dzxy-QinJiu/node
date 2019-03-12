@@ -47,7 +47,7 @@ exports.getApplyDetailById = function(queryObj) {
     var Deferred = $.Deferred();
     getApplyDetailByIdAjax && getApplyDetailByIdAjax.abort();
     getApplyDetailByIdAjax = $.ajax({
-        url: '/rest/apply_approve/detail/byId',
+        url: '/rest/apply_approve/detail/by/id',
         type: 'get',
         data: queryObj,
         success: function(data) {

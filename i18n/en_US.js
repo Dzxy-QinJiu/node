@@ -1833,6 +1833,10 @@ var en_US = {
     'sales.home.call.top.ten': 'Single call duration', // 单次通话时长
     'sales.home.set.role': 'Click here to set up the sales role',//点此设置销售角色
     'sales.home.role.null': 'Not set roles',//未设置角色
+    'sales.home.invite.member': 'Invite Member', // 邀请成员
+    'sales.home.invite.btn': 'Invite', // 邀请
+    'sales.home.invite.continue.btn': 'Continue', // 继续邀请
+    'sales.home.invite.member.failed': 'Failed to invite member', // 邀请成员失败！
 
     //销售首页-新增用户分析
     'sales.user.analysis': 'User Analysis',//用户分析@
@@ -2736,6 +2740,12 @@ var en_US = {
     'clue.and.crm.upload.size': 'The file size should not exceed 10M!',//文件大小不要超过10M!
     'contract.service.add': 'Add Service',//添加服务
     'apply.show.cancel.result': 'View revocation results',//查看撤销结果
+
+    // 成员申请
+    'member.application': 'Member Application', // 成员申请
+    'member.apply.failed.get.worklist': 'Failed to get member applies to be approved by me',// 获取由我审批的成员申请失败
+    'member.apply.failed.get.all.apply': 'Failed to get all member applies', // 获取全部成员申请失败
+    'member.apply.detail.auto.generation.password': 'auto generation password', // 自动生成密码
     'manager.role.has.not.setting.phone.systerm': 'You have not yet opened a telephone system or have not set an agent number.',//您尚未开通电话系统或未设置座席号!
     'sales.role.has.not.setting.phone.systerm': 'You have not yet opened a telephone system or have not set an agent number. Please inform the administrator!',//您尚未开通电话系统或未设置座席号，请通知管理员!
     'contract.repeyment.first': 'First',//首笔
