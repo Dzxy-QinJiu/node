@@ -202,13 +202,13 @@ class RepaymentInfo extends React.Component {
         let isFirstAdd = false;
         let displayType = this.state.displayType;
         if(type === 'editing') {
-            isFirstAdd = true;
+            isFirstAdd = this.isShowFirstColumn(key);
         }else if(type === 'addCancel') {
             // 添加项的取消修改
             displayType = DISPLAY_TYPES.TEXT;
         }else if(type === 'addAndEditCancel') {
             // 这里是因为已有项取消时有添加项存在，所以这里需要将isFirstAdd置为true
-            isFirstAdd = true;
+            isFirstAdd = this.isShowFirstColumn('');//true;
         }
         this.setState({
             isFirstAdd,
@@ -285,7 +285,7 @@ class RepaymentInfo extends React.Component {
         });
         this.setState({
             repayLists,
-            isFirstAdd: true,
+            isFirstAdd: this.isShowFirstColumn(''),
             currentKey: '',
             displayType: DISPLAY_TYPES.EDIT
         },() => {
@@ -294,6 +294,24 @@ class RepaymentInfo extends React.Component {
             });
         });
     };
+
+    // 是否显示首笔添加列
+    isShowFirstColumn(key) {
+        /** 数据源是否有添加首笔的项
+         *  是： 是当前项 ？ 显示 ：不显示；
+         *  否： 显示
+         * */
+        let isShowFirstAdd;
+        let hasIsFirstItem = _.find(this.state.repayLists, item => {
+            return !_.isNil(item.is_first) && 'true' === item.is_first;
+        });
+        if(hasIsFirstItem) {
+            isShowFirstAdd = hasIsFirstItem.id === key;
+        }else {
+            isShowFirstAdd = true;
+        }
+        return isShowFirstAdd;
+    }
 
     renderAddRepaymentPanel(repayLists) {
         let {getFieldDecorator} = this.props.form;
@@ -447,6 +465,7 @@ class RepaymentInfo extends React.Component {
                 }
             }
         ];
+
 
         if(this.state.isFirstAdd){
             columns.splice(1, 0, {
