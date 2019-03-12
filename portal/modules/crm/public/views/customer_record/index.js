@@ -371,9 +371,11 @@ class CustomerRecord extends React.Component {
         );
     };
 
-    addDetailContent = (item,e) => {
+    editDetailContent = (item,e) => {
         e.stopPropagation();
+        //不能编辑时
         if (this.props.disableEdit) return;
+        //如果有一个在编辑，或正在添加跟进时，再点击修改时
         if (this.state.isEdit || this.state.addRecordPanelShow) {
             message.error(Intl.get('crm.save.customertrace.first', '请先保存或取消正在编辑的跟进记录内容'));
             return;
@@ -551,7 +553,7 @@ class CustomerRecord extends React.Component {
     //渲染补充跟进记录的提示
     renderSupplementTip(item) {
         return this.props.disableEdit ? null : (
-            <span className="add-detail-tip" onClick={this.addDetailContent.bind(this, item)}>
+            <span className="add-detail-tip">
                 {Intl.get('click.to.add.trace.detail', '请点击此处补充跟进内容')}
             </span>);
     }
@@ -561,7 +563,7 @@ class CustomerRecord extends React.Component {
         //是否是编辑跟进记录，有跟进内容并且能编辑(没有跟进内容时是补充跟进记录)
         let isEditRecord = item.remark && !this.props.disableEdit;
         return (
-            <div className="record-content-show" onClick={this.addDetailContent.bind(this, item)}
+            <div className="record-content-show" onClick={this.editDetailContent.bind(this, item)}
                 title={isEditRecord ? Intl.get('crm.record.edit.record.tip', '点击修改跟进记录') : ''}>
                 {item.remark ? (<ShearContent>{item.remark}</ShearContent>) : this.renderSupplementTip(item)}
             </div>);
