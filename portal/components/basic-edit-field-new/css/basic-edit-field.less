@@ -12,7 +12,6 @@
     white-space: normal;
     word-wrap: break-word;
     word-break: break-all;
-    float: left;
   };
   .no-data-descr{
     color: #ccc;
@@ -47,6 +46,38 @@
     margin-bottom: 0 !important;
   }
 }
+//内容有多行的时候
+.basic-edit-field.has-more-row{
+  .basic-info-text {
+    float: left;
+  }
+  //编辑状态
+  .edit-container {
+    overflow: hidden;
+    position: relative;
+    .basic-info-text {
+      float: left;
+      width: 90%;
+
+    }
+    .icon-edit-btn {
+      float: left;
+      width: 10%;
+      position: absolute;
+      bottom: 0;
+    }
+  }
+  .edit-container.hover-show-edit {
+    overflow: hidden;
+    position: relative;
+    .icon-edit-btn {
+      display: none;
+    }
+    &:hover {
+      background: #E8F5FE;
+    }
+  }
+}
 
 //地域编辑框的处理
 .location-edit-field {
@@ -56,31 +87,14 @@
     margin-bottom: 10px;
   }
 }
-
-//编辑状态
-.edit-container {
-  overflow: hidden;
-  position: relative;
-  .basic-info-text {
-    float: left;
-    width: 90%;
-
-  }
-  .icon-edit-btn {
-    float: left;
-    width: 10%;
-    position: absolute;
-    bottom: 0;
-  }
-}
-
 .edit-container.hover-show-edit {
-  overflow: hidden;
-  position: relative;
   .icon-edit-btn {
     display: none;
   }
   &:hover {
     background: #E8F5FE;
+    .icon-edit-btn{
+      display: inline-block;
+    }
   }
 }

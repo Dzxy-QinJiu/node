@@ -636,6 +636,7 @@ class ClueDetailOverview extends React.Component {
                             noDataTip={Intl.get('clue.no.trace.content', '暂无跟进')}
                             addDataTip={Intl.get('clue.add.trace.content', '添加跟进内容')}
                             placeholder={Intl.get('sales.home.fill.in.trace.content', '请输入跟进内容')}
+                            hasMoreRow={true}
                         />
                     </div>
                 </div>
@@ -846,6 +847,7 @@ class ClueDetailOverview extends React.Component {
                                                 noDataTip={Intl.get('common.unknown', '未知')}
                                                 addDataTip={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
                                                 placeholder={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
+                                                hasMoreRow={true}
                                             />
                                         </div>
                                         <div className="contact-item-content">

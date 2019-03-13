@@ -29,6 +29,8 @@ const restApis = {
     updateCluecustomerDetail: clueBaseUrl + '/update/:type/:updateItem',
     //将线索和客户进行关联
     RelateClueAndCustomer: clueBaseUrl + '/:type/customer_clue_relation',
+    //线索名、电话唯一性验证
+    checkOnlySalesClue: clueBaseUrl + '/repeat/search',
     //导入线索
     upload: clueBaseUrl + '/upload/preview',
     //确认导入线索预览
@@ -78,6 +80,15 @@ exports.getClueSource = function(req, res) {
             req: req,
             res: res
         }, null);
+};
+//线索名、电话唯一性验证
+exports.checkOnlySalesClue = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.checkOnlySalesClue,
+            req: req,
+            res: res
+        }, req.query);
 };
 //获取线索渠道
 exports.getClueChannel = function(req, res) {

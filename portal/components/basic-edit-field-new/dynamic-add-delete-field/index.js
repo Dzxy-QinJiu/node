@@ -98,8 +98,8 @@ class DynamicAddDelField extends React.Component {
 
     renderItemContent = (key, index) => {
         const formItemLayout = {
-            labelCol: {span: 3},
-            wrapperCol: {span: 21},
+            labelCol: {span: 4},
+            wrapperCol: {span: 20},
             colon: false
         };
         const {getFieldDecorator, getFieldValue} = this.props.form;
@@ -119,8 +119,8 @@ class DynamicAddDelField extends React.Component {
                     placeholder={Intl.get('clue.add.phone.num', '电话号码')}
                     validateRules={validateRules}
                     id={fieldKey}
-                    labelCol={{span: 3}}
-                    wrapperCol={{span: 21}}
+                    labelCol={{span: 4}}
+                    wrapperCol={{span: 20}}
                     colon={false}
                     form={this.props.form}
                     label={index === 0 ? this.props.label : ' '}
@@ -190,7 +190,7 @@ class DynamicAddDelField extends React.Component {
             return (
                 <div className="item-show-container">
                     <div className="item-show-label contact-way-icon">
-                        {this.props.label}
+                        {this.props.label}:
                     </div>
                     {this.renderItemShowContent()}
                 </div>);
@@ -243,7 +243,7 @@ DynamicAddDelField.propTypes = {
     delItemBtn: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
     addItemBtn: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
     contactName: PropTypes.string,
-    saveEditData: PropTypes.func
+    saveEditData: PropTypes.func,
 
 };
 DynamicAddDelField.defaultProps = {

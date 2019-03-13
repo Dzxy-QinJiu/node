@@ -54,6 +54,30 @@ function ClueCustomerActions() {
             console.log(errorMsg);
         });
     };
+    //线索名称唯一性校验
+    this.checkOnlyClueName = function(clueName, callback, customerId) {
+        let queryObj = {name: clueName};
+        if(customerId){
+            queryObj.customer_id = customerId;
+        }
+        clueCustomerAjax.checkOnlyCustomer(queryObj).then(function(data) {
+            _.isFunction(callback) && callback(data);
+        }, function(errorMsg) {
+            _.isFunction(callback) && callback(errorMsg || Intl.get('clue.customer.check.only.exist', '线索名称唯一性校验失败'));
+        });
+    };
+    //校验线索电话的唯一性
+    this.checkOnlyCluePhone = function(phone, callback, customerId) {
+        let queryObj = {phone: phone};
+        if(customerId){
+            queryObj.customer_id = customerId;
+        }
+        clueCustomerAjax.checkOnlyCustomer(queryObj).then(function(data) {
+            _.isFunction(callback) && callback(data);
+        }, function(errorMsg) {
+            _.isFunction(callback) && callback(errorMsg || Intl.get('clue.check.only.clue.phone','线索电话唯一性校验失败'));
+        });
+    };
     //添加或更新跟进内容
     this.addCluecustomerTrace = function(submitObj,callback) {
         this.dispatch({error: false, loading: true});

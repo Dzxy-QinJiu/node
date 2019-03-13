@@ -33,6 +33,13 @@ module.exports = {
             privileges: [
                 'CLUECUSTOMER_CLUE_SOURCE_GET'
             ]
+        },{
+            method: 'get',
+            path: '/rest/sales_clue/only/check',
+            handler: 'checkOnlySalesClue',
+            passport: {
+                needLogin: true
+            },
         },
         {
             method: 'get',
