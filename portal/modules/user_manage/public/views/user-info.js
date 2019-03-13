@@ -310,7 +310,7 @@ class UserInfo extends React.Component {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '保存成员昵称的修改');
         UserInfoAjax.checkOnlyNickName(saveObj.nick_name).then( (result) => {
             if (result) {
-                if (_.isFunction(errorFunc)) errorFunc(Intl.get('common.nickname.is.existed', '姓名已存在！'));
+                if (_.isFunction(errorFunc)) errorFunc(Intl.get('common.name.is.existed', '姓名已存在！'));
             }else {
                 if (_.isFunction(successFunc)) successFunc();
             }
