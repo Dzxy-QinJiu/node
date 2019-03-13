@@ -160,17 +160,9 @@ class SigningStatistics extends React.Component {
     }
 
     render() {
-        const wrapStyle = { position: 'relative' };
-        const exportBtnStyle = {
-            position: 'absolute',
-            top: -30,
-            right: 10,
-            cursor: 'pointer',
-            color: '#4d96d1',
-        };
-
         return (
-            <div style={wrapStyle}>
+            <div>
+                <span className='signing-statistics-export-btn' onClick={this.exportFile.bind(this)} style={{visibility: 'hidden'}}>{Intl.get('common.export', '导出')}</span>
                 <AntcTable
                     columns={this.state.columns}
                     dataSource={this.state.data}

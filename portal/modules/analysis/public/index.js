@@ -10,7 +10,7 @@ import TopBar from './top-bar';
 import HistoricHighDetail from './historic-high-detail';
 import AppSelector from './app-selector';
 import {getContextContent} from './utils';
-import {initialTime, STORED_APP_ID_KEY, CUSTOMER_IDS_FIELD} from './consts';
+import {initialTime, STORED_APP_ID_KEY, CUSTOMER_IDS_FIELD, DEFERRED_ACCOUNT_ANALYSIS_TITLE} from './consts';
 import {AntcAnalysis} from 'antc';
 import {Row, Col, Collapse} from 'antd';
 
@@ -286,7 +286,18 @@ class CurtaoAnalysis extends React.Component {
         if (group.title === '账号分析') {
             isAppSelectorShow = true;
             adjustConditions = conditions => {
-                const defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY) || 'all';
+                let defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY);
+                if (defaultAppId) {
+                    if (page.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE && defaultAppId === 'all') {
+                        defaultAppId = [_.get(Store.appList, '[1].app_id')];
+                    }
+                } else {
+                    if (page.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE) {
+                        defaultAppId = _.get(Store.appList, '[1].app_id');
+                    } else {
+                        defaultAppId = 'all';
+                    }
+                }
 
                 const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
                 _.set(appIdCondition, 'value', defaultAppId);
@@ -402,8 +413,31 @@ class CurtaoAnalysis extends React.Component {
     }
 
     render() {
+        let appList = _.cloneDeep(Store.appList);
+
+        //延期用户分析页不让选全部应用
+        if (this.state.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE) {
+            //去掉全部应用项
+            appList.splice(0, 1);
+        }
+
         const storedAppId = storageUtil.local.get(STORED_APP_ID_KEY);
-        const defaultAppId = storedAppId ? storedAppId.split(',') : ['all'];
+
+        let defaultAppId;
+
+        if (storedAppId) {
+            defaultAppId = storedAppId.split(',');
+
+            if (this.state.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE && storedAppId === 'all') {
+                defaultAppId = [_.get(Store.appList, '[1].app_id')];
+            }
+        } else {
+            if (this.state.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE) {
+                defaultAppId = [_.get(Store.appList, '[1].app_id')];
+            } else {
+                defaultAppId = ['all'];
+            }
+        }
 
         return (
             <div className='curtao-analysis'>
@@ -418,7 +452,11 @@ class CurtaoAnalysis extends React.Component {
                     <Col span={21}>
                         {this.state.isAppSelectorShow ? (
                             <div className="page-top-bar">
-                                <AppSelector storedAppIdKey={STORED_APP_ID_KEY} defaultValue={defaultAppId}/>
+                                <AppSelector
+                                    storedAppIdKey={STORED_APP_ID_KEY}
+                                    defaultValue={defaultAppId}
+                                    appList={appList}
+                                />
                             </div>
                         ) : null}
                         {this.renderContent()}

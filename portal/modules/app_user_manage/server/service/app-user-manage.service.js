@@ -17,6 +17,7 @@ var EventEmitter = require('events').EventEmitter;
 var CONSTANTS = {
     APPLY_USER_OFFICIAL: 'apply_user_official', //申请正式用户
     APPLY_USER_TRIAL: 'apply_user_trial', //申请试用用户
+    APPLY_USER: 'apply_user',//uem类型的账号申请新用户
     EXIST_APPLY_TRIAL: 'apply_app_trial', //已有用户开通试用
     EXIST_APPLY_FORMAL: 'apply_app_official', //已有用户开通正式
     APPLY_GRANT_DELAY: 'apply_grant_delay',// 延期
@@ -735,7 +736,7 @@ exports.submitApply = function(req, res, requestObj) {
         delete requestObj.delay;
         delete requestObj.end_date;
         //如果是申请新用户（试用、签约）的审批，不用删除密码
-        if (![CONSTANTS.APPLY_USER_OFFICIAL,CONSTANTS.APPLY_USER_TRIAL].includes(requestObj.type)){
+        if (![CONSTANTS.APPLY_USER_OFFICIAL,CONSTANTS.APPLY_USER_TRIAL,CONSTANTS.APPLY_USER].includes(requestObj.type)){
             delete requestObj.password;
         }
         if (requestObj.user_name) {

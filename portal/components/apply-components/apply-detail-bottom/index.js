@@ -10,8 +10,7 @@ class ApplyDetailBottom extends React.Component {
         super(props);
         this.state = {};
     }
-
-    renderBottomText = () => {
+    renderPassOrAssignedContext = () => {
         var assigenedContext = _.isFunction(this.props.renderAssigenedContext) ? this.props.renderAssigenedContext() : null;
         return <div className="pull-right">
             {this.props.showCancelBtn ?
@@ -25,12 +24,23 @@ class ApplyDetailBottom extends React.Component {
                     onClick={this.props.submitApprovalForm.bind(this, 'pass')}>
                     {this.props.passText}
                 </Button>}
-
                 <Button type="primary" className="btn-primary-sure" size="small"
                     onClick={this.props.submitApprovalForm.bind(this, 'reject')}>
                     {this.props.rejectText}
                 </Button>
-            </div> : null}
+            </div>
+        );
+    };
+    renderBottomText = () => {
+        var assigenedContext = _.isFunction(this.props.renderAssigenedContext) ? this.props.renderAssigenedContext() : null;
+        var showPassOrAssignedContext = this.props.showApproveBtn || assigenedContext;
+        return <div className="pull-right">
+            {this.props.showCancelBtn ?
+                <Button type="primary" className="btn-primary-sure" size="small"
+                    onClick={this.props.submitApprovalForm.bind(this, 'cancel')}>
+                    {Intl.get('user.apply.detail.backout', '撤销申请')}
+                </Button> : null}
+            {showPassOrAssignedContext ? this.renderPassOrAssignedContext() : null}
         </div>;
     }
 
