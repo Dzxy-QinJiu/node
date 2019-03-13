@@ -38,10 +38,10 @@ exports.checkOnlyName = (name) => {
 };
 
 //验证邮箱唯一性
-exports.checkOnlyEmail = (phone) => {
+exports.checkOnlyEmail = (email) => {
     let Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/member_apply/email/check/' + phone,
+        url: '/rest/member_apply/email/check/' + email,
         dataType: 'json',
         type: 'get',
         success: (result) => {

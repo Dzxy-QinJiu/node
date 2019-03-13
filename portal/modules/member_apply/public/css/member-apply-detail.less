@@ -24,11 +24,13 @@
     .apply-info-content {
       .invite-member-password {
         padding-left: 65px;
-        .auto-generation-password, .input-password {
-          display: inline-block;
-        }
-        .input-password {
-          padding-left: 20px;
+        .password-setting {
+            .input-container {
+              width: 225px;
+              .ant-input {
+                width: 210px;
+              }
+            }
         }
       }
     }
@@ -38,7 +40,7 @@
       padding-top: 10px !important;
     }
     .invite-member-name, .invite-member-email {
-      width: 410px;
+      width: 500px;
       .ant-form-item {
         margin-bottom: 0;
         .ant-form-item-label {
@@ -67,9 +69,6 @@
         cursor: text;
       }
     }
-  }
-  .btn-primary-sure {
-    margin-right: 10px;
   }
   .approval-confirm-tip{
     p {

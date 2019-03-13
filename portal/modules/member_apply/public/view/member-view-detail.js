@@ -28,7 +28,8 @@ import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {nameLengthRule, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {nameLengthRule, nameRegex, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
+import PasswordSetting from 'CMP_DIR/password-setting';
 
 class ApplyViewDetail extends React.Component {
     constructor(props) {
@@ -277,7 +278,10 @@ class ApplyViewDetail extends React.Component {
     //验证姓名唯一性
     checkOnlyName = () => {
         let nickname = _.trim(this.props.form.getFieldValue('nickname'));
-        if (nickname && (/^[A-Za-z0-9]\w+$/).test(nickname)) {
+        if (this.props.form.getFieldError('nickname')) {
+            MemberApplyDetailAction.getCheckNameErrorFlag(true);
+        } else if (nickname && nameRegex.test(nickname)) {
+            MemberApplyDetailAction.getCheckNameErrorFlag(false);
             MemberApplyDetailAction.checkOnlyName(nickname);
         }
     };
@@ -306,7 +310,7 @@ class ApplyViewDetail extends React.Component {
     renderNameContent = (nickname) => {
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
-            labelCol: {span: 4},
+            labelCol: {span: 3},
             wrapperCol: {span: 16}
         };
         return (
@@ -342,10 +346,14 @@ class ApplyViewDetail extends React.Component {
     //邮箱唯一性验证
     checkOnlyEmail = () => {
         let email = _.trim(this.props.form.getFieldValue('email'));
-        if (email && emailRegex.test(email)) {
+        if (this.props.form.getFieldError('email')) {
+            MemberApplyDetailAction.getCheckNameErrorFlag(true);
+        } else if (email && emailRegex.test(email)) {
+            MemberApplyDetailAction.getCheckNameErrorFlag(false);
             //所有者的邮箱唯一性验证
             MemberApplyDetailAction.checkOnlyEmail(email);
         }
+
     };
     // 鼠标移入输入框后，邮箱提示信息置空
     resetEmailFlags = () => {
@@ -372,7 +380,7 @@ class ApplyViewDetail extends React.Component {
     renderEmailContent = (email) => {
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
-            labelCol: {span: 4},
+            labelCol: {span: 3},
             wrapperCol: {span: 16}
         };
         return (
@@ -407,15 +415,14 @@ class ApplyViewDetail extends React.Component {
         );
     };
     // 检查是否自动生成密码
-    checkAutoGeneration = (event) => {
-        let checked = event.target.checked;
+    checkAutoGeneration = (checked) => {
         MemberApplyDetailAction.checkAutoGeneration(checked);
     };
     // 处理手动输入密码
-    handleInputPassword = (event) => {
-        let value = _.trim(event.target.value);
-        if (value) {
-            MemberApplyDetailAction.handleInputPassword(value);
+    handleInputPassword = (value) => {
+        let passWord = _.trim(value);
+        if (passWord) {
+            MemberApplyDetailAction.handleInputPassword(passWord);
         }
     };
 
@@ -449,10 +456,11 @@ class ApplyViewDetail extends React.Component {
     renderPasswordContent = () => {
         return (
             <div className="invite-member-password">
-                {this.renderAutoGenerationPsd()}
-                {
-                    this.state.autoGenerationPsd ? null : this.renderInputPassword()
-                }
+                <PasswordSetting
+                    onCheckboxChange={this.checkAutoGeneration}
+                    onInputPasswordChange={this.handleInputPassword}
+                    checkStatus={this.state.autoGenerationPsd}
+                />
             </div>
         );
     };
@@ -560,7 +568,9 @@ class ApplyViewDetail extends React.Component {
             addApplyNextCandidate = this.renderAddApplyNextCandidate;
         }
         // 校验姓名、邮箱出错时，通过按钮禁用
-        let validateFlag = this.state.emailExist || this.state.emailError || this.state.nameExist || this.state.nameError;
+        let validateFlag = this.state.emailExist || this.state.emailError || 
+            this.state.nameExist || this.state.nameError ||
+            this.state.checkNameError || this.state.checkEmailError;
         return (
             <ApplyDetailBottom
                 create_time={detailInfoObj.create_time}
@@ -690,6 +700,7 @@ class ApplyViewDetail extends React.Component {
                     <span className="apply-type-tip">
                         {getApplyTopicText(detailInfo)}
                     </span>
+                    {this.renderDetailBottom()}
                 </div>
                 <div className="apply-detail-content" style={{height: applyDetailHeight}} ref="geminiWrap">
                     <GeminiScrollbar ref="gemini">
@@ -706,7 +717,6 @@ class ApplyViewDetail extends React.Component {
                     </GeminiScrollbar>
 
                 </div>
-                {this.renderDetailBottom()}
                 {this.renderCancelApplyApprove()}
             </div>
         );

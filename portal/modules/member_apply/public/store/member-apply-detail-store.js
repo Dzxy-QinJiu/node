@@ -69,6 +69,8 @@ MemberApplyDetailStore.prototype.setInitState = function() {
     };
     this.nameExist = false;// 姓名是否已存在
     this.nameError = false;// 姓名唯一性验证出错
+    this.checkNameError = false; // 校验姓名出错，默认false
+    this.checkEmailError = false; // 校验邮箱出错，默认false
     this.emailExist = false;// 邮箱是否已存在
     this.emailError = false;// 邮件唯一性验证出错
     this.autoGenerationPsd = true; // 是否自动生成密码，默认true
@@ -298,6 +300,9 @@ MemberApplyDetailStore.prototype.checkOnlyName = function(result) {
         this.nameExist = result;
     }
 };
+MemberApplyDetailStore.prototype.getCheckNameErrorFlag = function(flag) {
+    this.checkNameError = flag;
+};
 //邮箱唯一性的验证
 MemberApplyDetailStore.prototype.checkOnlyEmail = function(result) {
     if (_.isString(result)) {
@@ -307,6 +312,9 @@ MemberApplyDetailStore.prototype.checkOnlyEmail = function(result) {
         //该邮箱存不存在！
         this.emailExist = result;
     }
+};
+MemberApplyDetailStore.prototype.getCheckEmailErrorFlag = function(flag) {
+    this.checkEmailError = flag;
 };
 
 // 重置姓名验证的标志

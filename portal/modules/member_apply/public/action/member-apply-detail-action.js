@@ -29,7 +29,9 @@ function MemberApplyDetailActions() {
         'resetNameFlags', // 重置姓名验证的标志
         'resetEmailFlags', // 重置邮箱验证的标志
         'checkAutoGeneration', // 检查是否自动生成密码
-        'handleInputPassword' // 处理手动输入密码
+        'handleInputPassword', // 处理手动输入密码
+        'getCheckNameErrorFlag', // 校验姓名出错
+        'getCheckEmailErrorFlag', // 获取校验邮箱出错
     );
 
     //获取审批单详情
