@@ -198,7 +198,7 @@ class ClueRightPanel extends React.Component {
         var queryObj = {phone: phoneArr.join(','),name: _.get(saveObj,'name'),customer_id: _.get(curClue,'id')};
         checkOnlyContactName(queryObj, (result) => {
             if (_.isString(result)){
-                errorFunc();
+                errorFunc(result);
             }else{
                 this.updateClueCustomerName(type, saveObj, successFunc, errorFunc);
             }
