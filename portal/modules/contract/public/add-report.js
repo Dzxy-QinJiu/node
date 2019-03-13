@@ -43,7 +43,7 @@ const AddReport = createReactClass({
         updateScrollBar: PropTypes.func,
         reports: PropTypes.array,
         contract: PropTypes.object,
-        isDetailType: PropTypes.bool.isRequired,
+        isDetailShow: PropTypes.bool.isRequired,
         parent: PropTypes.object,
         refreshCurrentContract: PropTypes.func,
     },
@@ -194,10 +194,10 @@ const AddReport = createReactClass({
         ];
 
         // 如果是添加合同时，是可以编辑的（true），详情查看时，显示可编辑按钮，点编辑后，显示编辑状态且有保存取消按钮
-        let isEditBtnShow = this.props.isDetailType && hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPATE_PRIVILEGE);
-        let isEdit = !this.props.isDetailType ? true :
+        let isEditBtnShow = this.props.isDetailShow && hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPATE_PRIVILEGE);
+        let isEdit = !this.props.isDetailShow ? true :
             (isEditBtnShow && this.producTableRef ? this.producTableRef.state.isEdit : false);
-        let isSaveCancelBtnShow = this.props.isDetailType;
+        let isSaveCancelBtnShow = this.props.isDetailShow;
 
         // 获取合同金额的大小
         let totalAmout = 0;
@@ -213,7 +213,7 @@ const AddReport = createReactClass({
         return (
             <div className="add-reports" data-tracename="添加编辑服务信息">
                 <div className="product-forms clearfix product-table-container">
-                    {!this.props.isDetailType ? (
+                    {!this.props.isDetailShow ? (
                         <div>
                             <div className='report-title'><i className='iconfont icon-fuwu'></i><span>{Intl.get('contract.96', '服务信息')}</span>
                             </div>
