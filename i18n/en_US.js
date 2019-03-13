@@ -1417,6 +1417,17 @@ var en_US = {
     'crm.contact.wechat.add': 'Add weChat',//添加微信
     'crm.contact.email.none': 'No email',//暂无邮箱
     'crm.contact.email.add': 'Add email',//添加邮箱
+    'crm.contact.sex.male': 'Male',//男
+    'crm.contact.sex.female': 'Female',//女
+    'crm.contact.sex': 'Sex',//性别
+    'crm.contact.birthday': 'Birthday',//生日
+    'crm.contact.hobby': 'Hobby',//爱好
+    'crm.contact.hobby.placeholder': 'Please enter interests and hobbies of contacts',//请输入联系人的兴趣爱好
+    'crm.contact.sex.placeholder': 'Please select sex',//请选择性别
+    'crm.contact.sex.set': 'set sex',//设置性别
+    'crm.contact.sex.none': 'No sex set',//未设置性别
+    'crm.contact.hobby.add': 'Add hobby',//添加爱好
+    'crm.contact.hobby.none': 'No hobby add',//未添加爱好
     'crm.second.sales': 'Second Sales',//联合跟进人
     'crm.apply.active.email.tip': 'Your mailbox is not activated. Please {activeEmail} first',//您的邮箱未激活，请先{aciveEmail}
     'crm.this.week.contact': 'Customers contacted this week',//本周联系过的客户

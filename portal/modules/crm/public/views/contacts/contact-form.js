@@ -3,7 +3,7 @@ const PropTypes = require('prop-types');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
-import {Col, Form, Input, Icon, Radio} from 'antd';
+import {Col, Form, Input, Icon, Radio, DatePicker} from 'antd';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 var ContactUtil = require('../../utils/contact-util');
@@ -12,7 +12,7 @@ import PhoneInput from 'CMP_DIR/phone-input';
 import Trace from 'LIB_DIR/trace';
 import {isEqualArray} from 'LIB_DIR/func';
 import CrmAction from '../../action/crm-actions';
-import {validateRequiredOne} from 'PUB_DIR/sources/utils/common-method-util';
+import {validateRequiredOne, disabledAfterToday} from 'PUB_DIR/sources/utils/common-method-util';
 
 import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
@@ -69,6 +69,10 @@ var ContactForm = createReactClass({
             name: contact.name,
             position: contact.position,
             role: contact.role,
+            sex: contact.sex,
+            birthday: contact.birthday,
+            hobby: contact.hobby,
+            remark: contact.remark,
             //phone: contact.phone,
             //mphone: contact.phone,
             //qq: contact.qq,
@@ -243,11 +247,19 @@ var ContactForm = createReactClass({
             this.setState({showNeedPhone: true});
             return;
         }
-        formData.phone = this.props.isMerge ? phoneArray : JSON.stringify(phoneArray);
-        formData.qq = this.props.isMerge ? qqArray : JSON.stringify(qqArray);
-        formData.weChat = this.props.isMerge ? weChatArray : JSON.stringify(weChatArray);
-        formData.email = this.props.isMerge ? emailArray : JSON.stringify(emailArray);
-
+        formData.phone = phoneArray;
+        if(_.get(qqArray,'[0]')){
+            formData.qq = qqArray;
+        }
+        if(_.get(weChatArray,'[0]')){
+            formData.weChat = weChatArray;
+        }
+        if(_.get(emailArray,'[0]')){
+            formData.email = emailArray;
+        }
+        if(formData.birthday){
+            formData.birthday = formData.birthday.valueOf();
+        }
         if (this.props.type === 'add') {
             //显示loading状态
             this.setState({isLoading: true});
@@ -546,11 +558,60 @@ var ContactForm = createReactClass({
                         wrapperCol={{span: 22}}
                     >
                         <RadioGroup onChange={this.setField.bind(this, 'role')}
-                            value={formData.role ? formData.role : Intl.get('crm.115', '经办人')}>
+                            value={_.get(formData, 'role', Intl.get('crm.115', '经办人'))}>
                             {ContactUtil.roleArray.map(function(role, index) {
                                 return (<Radio value={role} key={index}>{role}</Radio>);
                             })}
                         </RadioGroup>
+                    </FormItem>
+                    <FormItem
+                        className="contact-sex-item"
+                        colon={false}
+                        label={Intl.get('crm.contact.sex', '性别')}
+                        labelCol={{span: 2}}
+                        wrapperCol={{span: 22}}
+                    >
+                        <Radio.Group onChange={this.setField.bind(this, 'sex')}
+                            value={_.get(formData, 'sex', '')}>
+                            {_.map(ContactUtil.sexArray, (sex, index) => {
+                                return (<Radio key={index} value={sex}>{sex}</Radio>);
+                            })}
+                        </Radio.Group>
+                    </FormItem>
+                    <FormItem
+                        className="contact-birthday-item"
+                        colon={false}
+                        label={Intl.get('crm.contact.birthday', '生日')}
+                        labelCol={{span: 2}}
+                        wrapperCol={{span: 22}}
+                    >
+                        <DatePicker onChange={this.setField.bind(this, 'birthday')}
+                            showToday={false} disabledDate={disabledAfterToday}
+                            value={formData.birthday ? moment(formData.birthday, 'YYYY-MM-DD') : null}/>
+                    </FormItem>
+                    <FormItem
+                        className="contact-hobby-item"
+                        colon={false}
+                        label={Intl.get('crm.contact.hobby', '爱好')}
+                        labelCol={{span: 2}}
+                        wrapperCol={{span: 22}}
+                    >
+                        <Input value={_.get(formData, 'hobby', '')}
+                            onChange={this.setField.bind(this, 'hobby')}
+                            placeholder={Intl.get('crm.contact.hobby.placeholder', '请输入联系人的兴趣爱好')}/>
+                    </FormItem>
+                    <FormItem
+                        className="contact-remark-item"
+                        colon={false}
+                        label={Intl.get('common.remark', '备注')}
+                        labelCol={{span: 2}}
+                        wrapperCol={{span: 22}}
+                    >
+                        <Input.TextArea autosize={{ minRows: 2, maxRows: 6 }}
+                            value={_.get(formData, 'remark', '')}
+                            onChange={this.setField.bind(this, 'remark')}
+                            placeholder={Intl.get('user.input.remark', '请输入备注')}
+                        />
                     </FormItem>
                     {//电话
                         _.isArray(contactWayAddObj.phone) && contactWayAddObj.phone.length ? contactWayAddObj.phone.map((phone, index) => {
