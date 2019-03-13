@@ -31,7 +31,7 @@ exports.checkOnlyName = (name) => {
         success: (result) => {
             Deferred.resolve(result);
         }, error: (errorInfo) => {
-            Deferred.reject(errorInfo.responseJSON || Intl.get('common.nickname.is.unique', '姓名唯一性校验出错！'));
+            Deferred.reject(errorInfo.responseJSON || Intl.get('common.name.is.unique', '姓名唯一性校验出错！'));
         }
     });
     return Deferred.promise();

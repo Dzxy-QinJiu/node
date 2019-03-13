@@ -30,6 +30,10 @@ import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 import {nameLengthRule, nameRegex, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
 import PasswordSetting from 'CMP_DIR/password-setting';
+const formItemLayout = {
+    labelCol: {span: 3},
+    wrapperCol: {span: 16}
+};
 
 class ApplyViewDetail extends React.Component {
     constructor(props) {
@@ -291,12 +295,12 @@ class ApplyViewDetail extends React.Component {
         if (this.state.nameExist) {
             return (
                 <div className='invite-member-check'>
-                    {Intl.get('common.nickname.is.existed', '姓名已存在！')}
+                    {Intl.get('common.name.is.existed', '姓名已存在！')}
                 </div>);
         } else if (this.state.nameError) {
             return (
                 <div className='invite-member-check'>
-                    {Intl.get('common.nickname.is.unique', '姓名唯一性校验出错！')}
+                    {Intl.get('common.name.is.unique', '姓名唯一性校验出错！')}
                 </div>);
         } else {
             return '';
@@ -309,10 +313,6 @@ class ApplyViewDetail extends React.Component {
     // 渲染申请成员的姓名
     renderNameContent = (nickname) => {
         const {getFieldDecorator} = this.props.form;
-        const formItemLayout = {
-            labelCol: {span: 3},
-            wrapperCol: {span: 16}
-        };
         return (
             <Form layout='horizontal' className='form' autoComplete='off'>
                 <div className='invite-member-name'>
@@ -379,10 +379,6 @@ class ApplyViewDetail extends React.Component {
     // 渲染申请成员的邮箱
     renderEmailContent = (email) => {
         const {getFieldDecorator} = this.props.form;
-        const formItemLayout = {
-            labelCol: {span: 3},
-            wrapperCol: {span: 16}
-        };
         return (
             <Form layout='horizontal' className='form' autoComplete='off'>
                 <div className='invite-member-email'>

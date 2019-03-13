@@ -44,12 +44,12 @@ class InviteMemberForm extends React.Component{
         if (this.state.nameExist) {
             return (
                 <div className='invite-member-check'>
-                    {Intl.get('common.nickname.is.existed', '姓名已存在！')}
+                    {Intl.get('common.name.is.existed', '姓名已存在！')}
                 </div>);
         } else if (this.state.nameError) {
             return (
                 <div className='invite-member-check'>
-                    {Intl.get('common.nickname.is.unique', '姓名唯一性校验出错！')}
+                    {Intl.get('common.name.is.unique', '姓名唯一性校验出错！')}
                 </div>);
         } else {
             return '';
