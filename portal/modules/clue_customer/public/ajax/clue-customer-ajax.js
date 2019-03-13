@@ -195,6 +195,12 @@ exports.updateCluecustomerDetail = function(submitObj, isMarkingAvalibility) {
         updateObj.contacts = [{'id': submitObj.contact_id}];
         delete submitObj.contact_id;
         delete submitObj.user_id;
+        var clueName = '';
+        if (submitObj.clueName){
+            clueName = submitObj.clueName;
+            delete submitObj.clueName;
+        }
+
         for (var key in submitObj){
             //要更新的字段
             data.updateItem = key;
@@ -203,15 +209,29 @@ exports.updateCluecustomerDetail = function(submitObj, isMarkingAvalibility) {
                 updateObj.contacts[0]['name'] = submitObj[key];
             }else{
                 //过滤掉值为空
-                submitObj[key] = submitObj[key].filter(item => item);
-                updateObj.contacts[0][key] = submitObj[key];
+                if (_.isArray(submitObj[key])){
+                    submitObj[key] = submitObj[key].filter(item => item);
+                    updateObj.contacts[0][key] = submitObj[key];
+                }
             }
         }
+        if (clueName){
+            updateObj.name = clueName;
+        }
+
     }else{
         //修改除联系人之外的信息,如线索来源，接入渠道 user_id是修改销售的时候组件内部的属性
         updateObj.id = submitObj.id || submitObj.user_id;
         delete submitObj.id;
         delete submitObj.user_id;
+        var clueContact = [];
+        if (submitObj.clueContact){
+            clueContact = submitObj.clueContact;
+            delete submitObj.clueContact;
+        }
+        if (_.get(clueContact,'[0]')){
+            updateObj.contact = _.get(clueContact,'[0]');
+        }
         for(var key in submitObj){
             data.updateItem = key;
             updateObj[key] = submitObj[key];

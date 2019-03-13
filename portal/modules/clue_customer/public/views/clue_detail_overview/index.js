@@ -195,10 +195,8 @@ class ClueDetailOverview extends React.Component {
             saveObj.user_id = saveObj.id;
             delete saveObj.id;
         }
+        saveObj.clueName = _.get(this, 'state.curClue.name');
         Trace.traceEvent(ReactDOM.findDOMNode(this), `保存线索${item}的修改`);
-        if (item === 'phone'){
-            saveObj.name = _.get(this, 'state.curClue.name');
-        }
         clueCustomerAjax.updateCluecustomerDetail(saveObj).then((result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
@@ -676,28 +674,6 @@ class ClueDetailOverview extends React.Component {
             </div>
         );
     };
-    //获取联系人电话验证规则
-    getPhoneInputValidateRules(contactItem) {
-        var curClue = this.state.curClue;
-        return [{
-            validator: (rule, value, callback) => {
-                value = _.trim(value);
-                if (value) {
-                    let phone = value.replace('-', '');
-                    let phoneArray = contactItem && _.isArray(contactItem.phone) ? contactItem.phone : [];
-                    //该联系人原电话列表中不存在该电话
-                    if (phoneArray.indexOf(phone) !== -1) {
-                        //该联系人员电话列表中已存在该电话
-                        // 该联系人原本的电话未做修改时（删除原本的，再添加上时）
-                        callback();
-                    }
-                } else {
-                    callback();
-                }
-            }
-        }];
-    }
-
     renderClueBasicDetailInfo = () => {
         var curClue = this.state.curClue;
         //是否有权限修改线索详情
@@ -861,7 +837,6 @@ class ClueDetailOverview extends React.Component {
                                                 label={Intl.get('common.phone', '电话')}
                                                 hasEditPrivilege={hasPrivilegeEdit}
                                                 placeholder={Intl.get('crm.95', '请输入联系人电话')}
-                                                validateRules={this.getPhoneInputValidateRules(contactItem)}
                                                 saveEditData={this.saveEditBasicInfo.bind(this, {editItem: 'phone',id: contactItem.id})}
                                                 noDataTip={Intl.get('crm.contact.phone.none', '暂无电话')}
                                                 addDataTip={Intl.get('crm.contact.phone.add', '添加电话')}
