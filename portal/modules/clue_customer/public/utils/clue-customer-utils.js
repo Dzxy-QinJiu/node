@@ -147,20 +147,5 @@ export const SetLocalSalesClickCount = function(sale_id) {
     }
     local.set(SESSION_STORAGE_CLUE_SALES_SELECTED,JSON.stringify(clueSalesIdList));
 };
-export const checkOnlyContactPhone = function(rule, queryObj, callback) {
-    ClueAction.checkOnlyCluePhone(queryObj, data => {
-        if (_.isString(data)) {
-            //唯一性验证出错了
-            callback(Intl.get('crm.82', '电话唯一性验证出错了'));
-        } else {
-            if (_.isObject(data) && data.result === 'true') {
-                callback();
-            } else {
-                //已存在
-                callback(_.get(data,'msg') || Intl.get('crm.83', '该电话已存在'));
-            }
-        }
-    });
-};
 
 
