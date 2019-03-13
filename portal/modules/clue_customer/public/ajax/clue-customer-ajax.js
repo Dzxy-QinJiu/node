@@ -61,23 +61,6 @@ exports.getClueSource = function() {
     });
     return Deferred.promise();
 };
-//联系人电话唯一性的验证
-exports.checkOnlyCustomer = function(queryObj) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/sales_clue/only/check',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
 //获取线索渠道列表
 exports.getClueChannel = function() {
     var Deferred = $.Deferred();

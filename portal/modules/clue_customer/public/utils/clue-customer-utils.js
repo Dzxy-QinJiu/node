@@ -162,27 +162,5 @@ export const checkOnlyContactPhone = function(rule, queryObj, callback) {
         }
     });
 };
-export const checkOnlyContactName = function(queryObj, callback) {
-    ClueAction.checkOnlyClueName(queryObj, data => {
-        if (_.isString(data)) {
-            //唯一性验证出错了
-            callback(Intl.get('clue.customer.check.only.exist', '线索名称唯一性校验失败'));
-        } else {
-            if (_.isObject(data) && data.result === 'true') {
-                callback();
-            } else {
-                //已存在
-                callback(_.get(data,'msg') || Intl.get('clue.customer.check.repeat', '该线索名称已存在'));
-            }
-        }
-    });
-};
 
-//获取线索联系电话唯一性的验证规则
-export const getPhoneInputValidateRules = () => {
-    return [{
-        validator: (rule, value, callback) => {
-            checkOnlyContactPhone(rule, value, callback);
-        }
-    }];
-};
+

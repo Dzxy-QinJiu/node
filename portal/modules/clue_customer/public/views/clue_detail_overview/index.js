@@ -26,7 +26,7 @@ const RELATEAUTHS = {
     'RELATEALL': 'CRM_MANAGER_CUSTOMER_CLUE_ID',//管理员通过线索id查询客户的权限
     'RELATESELF': 'CRM_USER_CUSTOMER_CLUE_ID'//普通销售通过线索id查询客户的权限
 };
-import {SELECT_TYPE, AVALIBILITYSTATUS,getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,checkOnlyContactPhone} from '../../utils/clue-customer-utils';
+import {SELECT_TYPE, AVALIBILITYSTATUS,getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount} from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 var timeoutFunc;//定时方法
@@ -196,6 +196,9 @@ class ClueDetailOverview extends React.Component {
             delete saveObj.id;
         }
         Trace.traceEvent(ReactDOM.findDOMNode(this), `保存线索${item}的修改`);
+        if (item === 'phone'){
+            saveObj.name = _.get(this, 'state.curClue.name');
+        }
         clueCustomerAjax.updateCluecustomerDetail(saveObj).then((result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
@@ -683,11 +686,8 @@ class ClueDetailOverview extends React.Component {
                     let phone = value.replace('-', '');
                     let phoneArray = contactItem && _.isArray(contactItem.phone) ? contactItem.phone : [];
                     //该联系人原电话列表中不存在该电话
-                    if (phoneArray.indexOf(phone) === -1) {
-                        //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
-                        var queryObj = {phone: phone,name: _.get(curClue,'name'),customer_id: _.get(curClue,'id')};
-                        checkOnlyContactPhone(rule, queryObj, callback);
-                    } else {//该联系人员电话列表中已存在该电话
+                    if (phoneArray.indexOf(phone) !== -1) {
+                        //该联系人员电话列表中已存在该电话
                         // 该联系人原本的电话未做修改时（删除原本的，再添加上时）
                         callback();
                     }

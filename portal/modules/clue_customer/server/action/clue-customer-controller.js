@@ -60,15 +60,6 @@ exports.getClueChannel = function(req, res) {
             res.status(500).json(err && err.message);
         });
 };
-//线索名、电话唯一性验证
-exports.checkOnlySalesClue = function(req, res) {
-    clueCustomerService.checkOnlySalesClue(req, res)
-        .on('success', function(data) {
-            res.status(200).json(data);
-        }).on('error', function(err) {
-            res.status(500).json(err && err.message);
-        });
-};
 //获取线索分类
 exports.getClueClassify = function(req, res) {
     clueCustomerService.getClueClassify(req, res)
