@@ -31,18 +31,6 @@ function ClueCustomerActions() {
         'setLastClueId',//用于设置下拉加载的最后一个线索的id
         'setSortField'
     );
-    //联系人电话唯一性的验证
-    this.checkOnlyContactPhone = function(phone, callback) {
-        clueCustomerAjax.checkOnlyCustomer({phone: phone}).then(function(data) {
-            if (callback) {
-                callback(data);
-            }
-        }, function(errorMsg) {
-            if (callback) {
-                callback(errorMsg || Intl.get('crm.194', '联系人电话唯一性验证失败'));
-            }
-        });
-    };
     //获取销售列表
     this.getSalesManList = function(cb) {
         //客户所属销售（团队）下拉列表的数据获取

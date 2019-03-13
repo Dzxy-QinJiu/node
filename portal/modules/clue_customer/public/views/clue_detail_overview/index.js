@@ -26,7 +26,7 @@ const RELATEAUTHS = {
     'RELATEALL': 'CRM_MANAGER_CUSTOMER_CLUE_ID',//管理员通过线索id查询客户的权限
     'RELATESELF': 'CRM_USER_CUSTOMER_CLUE_ID'//普通销售通过线索id查询客户的权限
 };
-import {SELECT_TYPE, AVALIBILITYSTATUS,getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,checkOnlyContactPhone} from '../../utils/clue-customer-utils';
+import {SELECT_TYPE, AVALIBILITYSTATUS,getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount} from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 var timeoutFunc;//定时方法
@@ -195,6 +195,7 @@ class ClueDetailOverview extends React.Component {
             saveObj.user_id = saveObj.id;
             delete saveObj.id;
         }
+        saveObj.clueName = _.get(this, 'state.curClue.name');
         Trace.traceEvent(ReactDOM.findDOMNode(this), `保存线索${item}的修改`);
         clueCustomerAjax.updateCluecustomerDetail(saveObj).then((result) => {
             if (result) {
@@ -636,6 +637,7 @@ class ClueDetailOverview extends React.Component {
                             noDataTip={Intl.get('clue.no.trace.content', '暂无跟进')}
                             addDataTip={Intl.get('clue.add.trace.content', '添加跟进内容')}
                             placeholder={Intl.get('sales.home.fill.in.trace.content', '请输入跟进内容')}
+                            hasMoreRow={true}
                         />
                     </div>
                 </div>
@@ -672,29 +674,6 @@ class ClueDetailOverview extends React.Component {
             </div>
         );
     };
-    //获取联系人电话验证规则
-    getPhoneInputValidateRules(contactItem) {
-        return [{
-            validator: (rule, value, callback) => {
-                value = _.trim(value);
-                if (value) {
-                    let phone = value.replace('-', '');
-                    let phoneArray = contactItem && _.isArray(contactItem.phone) ? contactItem.phone : [];
-                    //该联系人原电话列表中不存在该电话
-                    if (phoneArray.indexOf(phone) === -1) {
-                        //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
-                        checkOnlyContactPhone(rule, phone, callback);
-                    } else {//该联系人员电话列表中已存在该电话
-                        // 该联系人原本的电话未做修改时（删除原本的，再添加上时）
-                        callback();
-                    }
-                } else {
-                    callback();
-                }
-            }
-        }];
-    }
-
     renderClueBasicDetailInfo = () => {
         var curClue = this.state.curClue;
         //是否有权限修改线索详情
@@ -846,6 +825,7 @@ class ClueDetailOverview extends React.Component {
                                                 noDataTip={Intl.get('common.unknown', '未知')}
                                                 addDataTip={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
                                                 placeholder={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
+                                                hasMoreRow={true}
                                             />
                                         </div>
                                         <div className="contact-item-content">
@@ -857,7 +837,6 @@ class ClueDetailOverview extends React.Component {
                                                 label={Intl.get('common.phone', '电话')}
                                                 hasEditPrivilege={hasPrivilegeEdit}
                                                 placeholder={Intl.get('crm.95', '请输入联系人电话')}
-                                                validateRules={this.getPhoneInputValidateRules(contactItem)}
                                                 saveEditData={this.saveEditBasicInfo.bind(this, {editItem: 'phone',id: contactItem.id})}
                                                 noDataTip={Intl.get('crm.contact.phone.none', '暂无电话')}
                                                 addDataTip={Intl.get('crm.contact.phone.add', '添加电话')}

@@ -147,3 +147,5 @@ export const SetLocalSalesClickCount = function(sale_id) {
     }
     local.set(SESSION_STORAGE_CLUE_SALES_SELECTED,JSON.stringify(clueSalesIdList));
 };
+
+

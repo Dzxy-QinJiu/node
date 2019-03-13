@@ -4,7 +4,7 @@ var React = require('react');
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/7/26.
  */
-import {RightPanel, RightPanelSubmit, RightPanelCancel, RightPanelClose} from 'CMP_DIR/rightPanel';
+import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import BasicData from './right_panel_top';
 import {Form, Input, Select, DatePicker, Button, Icon} from 'antd';
@@ -16,7 +16,6 @@ var clueCustomerAction = require('../action/clue-customer-action');
 import {checkClueName, checkClueSourceIP} from '../utils/clue-customer-utils';
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
-import {nameRegex} from 'PUB_DIR/sources/utils/validate-util';
 var uuid = require('uuid/v4');
 import AlertTimer from 'CMP_DIR/alert-timer';
 require('../css/add-clues-info.less');

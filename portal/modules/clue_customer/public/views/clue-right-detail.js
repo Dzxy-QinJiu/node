@@ -184,6 +184,9 @@ class ClueRightPanel extends React.Component {
     //保存修改的基本信息
     saveEditBasicInfo = (type, saveObj, successFunc, errorFunc) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.clue-basic-info-container'), `保存线索${type}的修改`);
+        if (type === 'name'){
+            saveObj.clueContact = _.get(this,'state.curClue.contacts');
+        }
         clueCustomerAjax.updateCluecustomerDetail(saveObj).then((result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
