@@ -31,7 +31,7 @@ class ProductList extends Component {
         //数据
         dataSource: [],
         //是否处于详情展示下
-        isDetailType: false,
+        isDetailShow: false,
         //表格是否处于编辑状态
         isEdit: false,
         //编辑按钮是否显示
@@ -63,7 +63,7 @@ class ProductList extends Component {
         formItems: PropTypes.array,
         ortherItems: PropTypes.array,
         dataSource: PropTypes.array,
-        isDetailType: PropTypes.bool,
+        isDetailShow: PropTypes.bool,
         isEdit: PropTypes.bool,
         isEditBtnShow: PropTypes.bool,
         contractId: PropTypes.string,
@@ -535,24 +535,10 @@ class ProductList extends Component {
     // 渲染添加单个产品的按钮
     renderSingleAddBtn() {
         // 展示时，需要判断是否有产品在编辑中
-        let isEditting = false;
-        _.each(this.state.data, item => {
-            item.isEditting ? isEditting = true : null;
+        let hasEditingItem = _.find(this.state.data, item => {
+            return item.isEditting;
         });
-        if(!isEditting){
-            {/*<AntcDropdown
-                    ref='appSelectorRef'
-                    content={<span>{this.props.addBtnText}</span>}
-                    overlayTitle={Intl.get('call.record.application.product', '应用产品')}
-                    okTitle={Intl.get('common.confirm', '确认')}
-                    cancelTitle={Intl.get('common.cancel', '取消')}
-                    overlayContent={this.renderAppListBlock()}
-                    handleSubmit={this.handleSubmitAppList}
-                    unSelectDataTip={this.state.unSelectDataTip}
-                    clearSelectData={this.clearSelectAppList}
-                    btnAtTop={false}
-                    placement='bottomRight'
-                />*/}
+        if(!hasEditingItem){
             return (<span
                 className="iconfont icon-add"
                 onClick={this.addList.bind(this)}
@@ -566,7 +552,7 @@ class ProductList extends Component {
         // 单个产品添加的按钮显示条件： 可编辑，且属于详情展示情况下，且当前没有正在编辑的产品
 
         if(this.props.isEdit){ // 可编辑
-            if(this.props.isDetailType) { // 详情展示，显示单个产品添加的按钮
+            if(this.props.isDetailShow) { // 详情展示，显示单个产品添加的按钮
                 return this.renderSingleAddBtn();
             }else {
                 // 显示添加多个产品的按钮

@@ -373,7 +373,7 @@ class AddProduct extends React.Component{
                         dataSource={this.state.products}
                         isEdit={isEdit}
                         isEditBtnShow={isEditBtnShow}
-                        isDetailType={this.props.isDetailType}
+                        isDetailShow={this.props.isDetailType}
                         formItems={formItems}
                         ortherItems={ortherItems}
                         onSave={this.handleProductSave}
