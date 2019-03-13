@@ -7,11 +7,12 @@ let Option = Select.Option;
 let FormItem = Form.Item;
 import Trace from 'LIB_DIR/trace';
 import 'MOD_DIR/user_manage/public/css/user-info.less';
+var AlertTimer = require('CMP_DIR/alert-timer');
 import DetailCard from 'CMP_DIR/detail-card';
 import EditableTable from '../components/editable-table';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import ajax from 'MOD_DIR/contract/common/ajax';
-import { DISPLAY_TYPES, OPERATE, OPERATE_INFO, PRIVILEGE_MAP } from 'MOD_DIR/contract/consts';
+import { DISPLAY_TYPES, OPERATE, OPERATE_INFO, PRIVILEGE_MAP, VIEW_TYPE } from 'MOD_DIR/contract/consts';
 import routeList from 'MOD_DIR/contract/common/route';
 import { getNumberValidateRule } from 'PUB_DIR/sources/utils/validate-util';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
@@ -128,12 +129,20 @@ class InvoiceAmount extends React.Component {
 
         const handler = type + 'InvoiceAmount';
         const route = _.find(routeList, route => route.handler === handler);
+
+        let url = route.path;
+        url = url + '?type=' + VIEW_TYPE.SELL;
+        if(type === DISPLAY_TYPES.DELETE) {
+            url += '&contract_id=' + this.props.contract.id;
+        }
+
         let arg = {
-            url: route.path,
+            url: url,
             type: route.method,
             data: data,
         };
         if (params) arg.params = params;
+
 
         let targetName, changePropName, isInvoiceBasicInforOrInvoices = type;
         targetName = Intl.get('contract.39', '发票额记录');
@@ -159,7 +168,6 @@ class InvoiceAmount extends React.Component {
     };
     handleEditTableSave = (data, successFunc, errorFunc) => {
         let successFuncs, type = DISPLAY_TYPES.UPDATE;
-
         // 处理时间
         if(data.date){
             data.date = data.date.valueOf();
@@ -349,7 +357,11 @@ class InvoiceAmount extends React.Component {
                         <span className="iconfont icon-add detail-edit-add" onClick={this.addList}
                             title={Intl.get('common.add', '添加')}/>) : null}
                     {this.renderInvoiceList(invoiceLists)}
-                    {this.state.saveErrMsg ? <Alert type="error" message={this.state.saveErrMsg} showIcon /> : null}
+                    {this.state.saveErrMsg ? <AlertTimer time={4000} type="error" message={this.state.saveErrMsg} showIcon onHide={() => {
+                        this.setState({
+                            saveErrMsg: ''
+                        });
+                    }} /> : null}
                 </div>
             );
         };

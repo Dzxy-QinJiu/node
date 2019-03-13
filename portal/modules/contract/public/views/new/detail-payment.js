@@ -10,6 +10,7 @@ let FormItem = Form.Item;
 import Trace from 'LIB_DIR/trace';
 import '../../css/common-contract-amount.less';
 import 'MOD_DIR/user_manage/public/css/user-info.less';
+var AlertTimer = require('CMP_DIR/alert-timer');
 import DetailCard from 'CMP_DIR/detail-card';
 import EditableTable from '../components/editable-table';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
@@ -368,16 +369,21 @@ class DetailPayment extends React.Component {
             }, 0);
         }
 
-        const content = (
-            <div className="repayment-list">
-                {/*是展示状态，且有权限编辑，且合同总额大于已付款总额*/}
-                {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege && contract_amount > paymentsAmount ? (
+        const content = () => {
+            //能否添加付款信息，是展示状态，且有权限编辑，且合同总额大于已付款总额
+            const hasAddPrivilege = this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege && contract_amount > paymentsAmount;
+            return <div className="repayment-list">
+                {hasAddPrivilege ? (
                     <span className="iconfont icon-add detail-edit-add" onClick={this.addList}
                         title={Intl.get('common.add', '添加')}/>) : null}
                 {this.renderPaymentList(paymentLists)}
-                {this.state.saveErrMsg ? <Alert type="error" message={this.state.saveErrMsg} showIcon /> : null}
-            </div>
-        );
+                {this.state.saveErrMsg ? <AlertTimer time={4000} type="error" message={this.state.saveErrMsg} showIcon onHide={() => {
+                    this.setState({
+                        saveErrMsg: ''
+                    });
+                }} /> : null}
+            </div>;
+        };
 
         let payTitle = (
             <div className="repayment-repay">
@@ -387,8 +393,7 @@ class DetailPayment extends React.Component {
 
         return (
             <DetailCard
-                content={content}
-                // titleBottomBorderNone={noPaymentData}
+                content={content()}
                 title={payTitle}
             />
         );

@@ -209,7 +209,6 @@ class AddProduct extends React.Component{
         let isEditBtnShow = this.props.isDetailType && hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPATE_PRIVILEGE);
         let isEdit = !this.props.isDetailType ? true :
             isEditBtnShow; //(isEditBtnShow && this.producTableRef ? this.producTableRef.state.isEdit : false);
-        let isSaveCancelBtnShow = this.props.isDetailType;
 
         const appIds = _.map(this.state.products, 'id');
 
@@ -374,7 +373,7 @@ class AddProduct extends React.Component{
                         dataSource={this.state.products}
                         isEdit={isEdit}
                         isEditBtnShow={isEditBtnShow}
-                        isSaveCancelBtnShow={isSaveCancelBtnShow}
+                        isDetailType={this.props.isDetailType}
                         formItems={formItems}
                         ortherItems={ortherItems}
                         onSave={this.handleProductSave}

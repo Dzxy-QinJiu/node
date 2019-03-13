@@ -255,6 +255,23 @@ class EditableTable extends Component {
             this.props.onDelete(record, successFunc, errorFunc);
         });
     }
+    renderEditBtn(record) {
+        return (<span>
+            <DetailEditBtn title={Intl.get('common.edit', '编辑')} onClick={(e) => {
+                this.edit(e, record[this.props.defaultKey]);
+            }}/>
+            {/*如果是添加，没有删除按钮*/}
+            {record.isAdd ? null :
+                <Popconfirm title={`${Intl.get('crm.contact.delete.confirm', '确认删除')}?`}
+                    onConfirm={this.handleDelete.bind(this, record)}>
+                    <span
+                        className="btn-bar"
+                        title={Intl.get('common.delete', '删除')}>
+                        <Icon type="close" theme="outlined" />
+                    </span>
+                </Popconfirm>}
+        </span>);
+    }
     render() {
         let columns = _.cloneDeep(this.props.columns);
         // 是否有编辑权限，添加操作列
@@ -289,22 +306,7 @@ class EditableTable extends Component {
                                         <Icon type="cross"/>
                                     </Button>
                                 </span>
-                            ) : (
-                                <span>
-                                    <DetailEditBtn title={Intl.get('common.edit', '编辑')} onClick={(e) => {
-                                        this.edit(e, record[this.props.defaultKey]);
-                                    }}/>
-                                    {/*如果是添加，删除直接删除；如果是已有项删除，请求接口*/}
-                                    {record.isAdd ? null :
-                                        <Popconfirm title={`${Intl.get('crm.contact.delete.confirm', '确认删除')}?`} onConfirm={this.handleDelete.bind(this, record)}>
-                                            <span
-                                                className="btn-bar"
-                                                title={Intl.get('common.delete', '删除')}>
-                                                <Icon type="close" theme="outlined" />
-                                            </span>
-                                        </Popconfirm>}
-                                </span>
-                            )}
+                            ) : this.renderEditBtn(record)}
                         </div>
                     );
                 }

@@ -3,6 +3,7 @@ var React = require('react');
 import { message, Alert } from 'antd';
 
 import Trace from 'LIB_DIR/trace';
+var AlertTimer = require('CMP_DIR/alert-timer');
 import DetailCard from 'CMP_DIR/detail-card';
 import EditableTable from '../components/editable-table';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
@@ -320,13 +321,19 @@ class DetailReport extends React.Component {
         const reports = this.state.reports;
 
         const content = () => {
+            // 能否添加服务，可编辑且是展示状态下
+            const hasAddPrivilege = this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege;
             return (
                 <div>
-                    {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege ? (
+                    {hasAddPrivilege ? (
                         <span className="iconfont icon-add detail-edit-add" onClick={this.addList}
                             title={Intl.get('common.add', '添加')}/>) : null}
                     {this.renderReportList(reports)}
-                    {this.state.saveErrMsg ? <Alert type="error" message={this.state.saveErrMsg} showIcon /> : null}
+                    {this.state.saveErrMsg ? <AlertTimer time={4000} type="error" message={this.state.saveErrMsg} showIcon onHide={() => {
+                        this.setState({
+                            saveErrMsg: ''
+                        });
+                    }} /> : null}
                 </div>
             );
         };

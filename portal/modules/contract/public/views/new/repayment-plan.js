@@ -6,6 +6,7 @@ import { message, Icon, Spin, Button, Popconfirm, Alert } from 'antd';
 import Trace from 'LIB_DIR/trace';
 import classNames from 'classnames';
 import 'MOD_DIR/user_manage/public/css/user-info.less';
+var AlertTimer = require('CMP_DIR/alert-timer');
 import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
@@ -334,8 +335,6 @@ class RepaymentPlan extends React.Component {
             let timeInterval = moment(repayment.date).startOf('day').diff(moment(date).startOf('day'), 'days');
             return (
                 <span>
-                    {/*{Intl.get('contract.78','从签订日起')}{timeInterval}{`${Intl.get('contract.79', '日')}${Intl.get('contract.80', '内')}`}
-                    ({moment(repayment.date).format(oplateConsts.DATE_FORMAT)}{Intl.get('common.before', '前')}),{Intl.get('contract.93', '应收回款')}{parseAmount(repayment.amount)}{Intl.get('contract.155', '元')}*/}
                     {Intl.get('contract.238', '从签订日起{time}日内({date})前,应收回款{amount}元',{
                         time: timeInterval,
                         date: moment(repayment.date).format(oplateConsts.DATE_FORMAT),
@@ -368,9 +367,7 @@ class RepaymentPlan extends React.Component {
                     <Spin spinning={this.state.repayPlanLoading}>
                         <ul>
                             {repayPlanLists.map((repayment, index) => {
-                                let classname = classNames('finance-list-item',{
-                                    //'item-actived': _.isEqual(this.state.currentRepayment.id, repayment.id)
-                                });
+                                let classname = classNames('finance-list-item');
                                 return (
                                     <li key={index} className={classname}>
                                         {this.renderPlanInfo(repayment)}
@@ -405,14 +402,19 @@ class RepaymentPlan extends React.Component {
 
 
         const content = () => {
+            //能否添加回款计划，是展示状态，且有权限编辑，且合同总额大于已回款总额
+            const hasAddPrivilege = this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege && contract_amount > repaymentsAmount;
             return (
                 <div className="repayment-list">
-                    {/*是展示状态，且有权限编辑，且合同总额大于已回款总额*/}
-                    {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege && contract_amount > repaymentsAmount ? (
+                    {hasAddPrivilege ? (
                         <span className="iconfont icon-add detail-edit-add" onClick={this.addList}
                             title={Intl.get('common.edit', '编辑')}/>) : null}
                     {this.renderRepaymentList()}
-                    {this.state.submitErrorMsg ? <Alert type='error' message={this.state.submitErrorMsg} showIcon/> : null}
+                    {this.state.submitErrorMsg ? <AlertTimer time={4000} type="error" message={this.state.submitErrorMsg} showIcon onHide={() => {
+                        this.setState({
+                            submitErrorMsg: ''
+                        });
+                    }} /> : null}
                 </div>
             );
         };
