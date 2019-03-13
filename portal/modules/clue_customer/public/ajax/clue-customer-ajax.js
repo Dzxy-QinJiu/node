@@ -230,7 +230,7 @@ exports.updateCluecustomerDetail = function(submitObj, isMarkingAvalibility) {
             delete submitObj.clueContact;
         }
         if (_.get(clueContact,'[0]')){
-            updateObj.contact = _.get(clueContact,'[0]');
+            updateObj.contacts = clueContact;
         }
         for(var key in submitObj){
             data.updateItem = key;
