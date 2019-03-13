@@ -28,7 +28,6 @@ import { crmEmitter } from 'OPLATE_EMITTER';
 import routeList from 'MOD_DIR/common/route';
 import ajax from 'MOD_DIR/common/ajax';
 import Trace from 'LIB_DIR/trace';
-import crmAjax from './ajax/index';
 import crmUtil from './utils/crm-util';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
@@ -47,7 +46,6 @@ import {OTHER_FILTER_ITEMS, DAY_TIME} from 'PUB_DIR/sources/utils/consts';
 import {getStartTime, getEndTime} from 'PUB_DIR/sources/utils/time-format-util';
 import ShearContent from 'CMP_DIR/shear-content';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
-import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import {REG_CRM_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -124,7 +122,6 @@ class Crm extends React.Component {
             currentId: crmStoreData.currentId,
             curCustomer: crmStoreData.curCustomer,
             clueId: crmStoreData.clueId,//展示线索详情的id
-            showDetailUserId: crmStoreData.showDetailUserId,//展示用户详情的userId
             keyword: $('.search-input').val() || '',
             isAddFlag: _this.state && _this.state.isAddFlag || false,
             batchChangeShow: _this.state && _this.state.batchChangeShow || false,
@@ -1344,9 +1341,6 @@ class Crm extends React.Component {
                 <span>{Intl.get('call.record.contacts', '联系人')}</span>
             </span>);
     }
-    closeUserDetail(){
-        CrmAction.setShowDetailUserId('');
-    }
     render() {
         var _this = this;
         //只有有批量变更和合并客户的权限时，才展示选择框的处理
@@ -1698,14 +1692,6 @@ class Crm extends React.Component {
                         /> : null
                     }
                 </RightPanel>
-                {this.state.showDetailUserId ?
-                    <RightPanel
-                        className="apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"
-                        showFlag={this.state.showDetailUserId}
-                    >
-                        <UserDetail userId={this.state.showDetailUserId}
-                            closeRightPanel={this.closeUserDetail}/>
-                    </RightPanel> : null}
                 <BootstrapModal
                     show={this.state.showDeleteConfirm}
                     onHide={this.hideDeleteModal}

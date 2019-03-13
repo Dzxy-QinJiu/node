@@ -121,6 +121,21 @@
         label {
           font-weight: bold;
         }
+        .user-name-text {
+          display: inline-block;
+          width: 95%;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          word-wrap: normal;
+          vertical-align: text-bottom;
+        }
+        .can-click-open-detail{
+          cursor: pointer;
+          &:hover{
+            color: #2196f3;
+          }
+        }
       }
       //应用列表
       .no-checkbox-apps-container.crm-user-apps-container{
