@@ -283,9 +283,9 @@ class ApplyViewDetail extends React.Component {
     checkOnlyName = () => {
         let nickname = _.trim(this.props.form.getFieldValue('nickname'));
         if (this.props.form.getFieldError('nickname')) {
-            MemberApplyDetailAction.getCheckNameErrorFlag(true);
+            MemberApplyDetailAction.setCheckNameErrorFlag(true);
         } else if (nickname && nameRegex.test(nickname)) {
-            MemberApplyDetailAction.getCheckNameErrorFlag(false);
+            MemberApplyDetailAction.setCheckNameErrorFlag(false);
             MemberApplyDetailAction.checkOnlyName(nickname);
         }
     };
@@ -347,9 +347,9 @@ class ApplyViewDetail extends React.Component {
     checkOnlyEmail = () => {
         let email = _.trim(this.props.form.getFieldValue('email'));
         if (this.props.form.getFieldError('email')) {
-            MemberApplyDetailAction.getCheckNameErrorFlag(true);
+            MemberApplyDetailAction.setCheckEmailErrorFlag(true);
         } else if (email && emailRegex.test(email)) {
-            MemberApplyDetailAction.getCheckNameErrorFlag(false);
+            MemberApplyDetailAction.setCheckEmailErrorFlag(false);
             //所有者的邮箱唯一性验证
             MemberApplyDetailAction.checkOnlyEmail(email);
         }

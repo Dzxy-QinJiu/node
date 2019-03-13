@@ -300,7 +300,7 @@ MemberApplyDetailStore.prototype.checkOnlyName = function(result) {
         this.nameExist = result;
     }
 };
-MemberApplyDetailStore.prototype.getCheckNameErrorFlag = function(flag) {
+MemberApplyDetailStore.prototype.setCheckNameErrorFlag = function(flag) {
     this.checkNameError = flag;
 };
 //邮箱唯一性的验证
@@ -313,7 +313,7 @@ MemberApplyDetailStore.prototype.checkOnlyEmail = function(result) {
         this.emailExist = result;
     }
 };
-MemberApplyDetailStore.prototype.getCheckEmailErrorFlag = function(flag) {
+MemberApplyDetailStore.prototype.setCheckEmailErrorFlag = function(flag) {
     this.checkEmailError = flag;
 };
 
