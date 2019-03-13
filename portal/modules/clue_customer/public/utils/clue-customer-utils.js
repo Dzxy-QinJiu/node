@@ -147,8 +147,8 @@ export const SetLocalSalesClickCount = function(sale_id) {
     }
     local.set(SESSION_STORAGE_CLUE_SALES_SELECTED,JSON.stringify(clueSalesIdList));
 };
-export const checkOnlyContactPhone = function(rule, value, callback) {
-    ClueAction.checkOnlyCluePhone(value, data => {
+export const checkOnlyContactPhone = function(rule, queryObj, callback) {
+    ClueAction.checkOnlyCluePhone(queryObj, data => {
         if (_.isString(data)) {
             //唯一性验证出错了
             callback(Intl.get('crm.82', '电话唯一性验证出错了'));
@@ -157,7 +157,22 @@ export const checkOnlyContactPhone = function(rule, value, callback) {
                 callback();
             } else {
                 //已存在
-                callback(Intl.get('crm.83', '该电话已存在'));
+                callback(_.get(data,'msg') || Intl.get('crm.83', '该电话已存在'));
+            }
+        }
+    });
+};
+export const checkOnlyContactName = function(queryObj, callback) {
+    ClueAction.checkOnlyClueName(queryObj, data => {
+        if (_.isString(data)) {
+            //唯一性验证出错了
+            callback(Intl.get('clue.customer.check.only.exist', '线索名称唯一性校验失败'));
+        } else {
+            if (_.isObject(data) && data.result === 'true') {
+                callback();
+            } else {
+                //已存在
+                callback(_.get(data,'msg') || Intl.get('clue.customer.check.repeat', '该线索名称已存在'));
             }
         }
     });

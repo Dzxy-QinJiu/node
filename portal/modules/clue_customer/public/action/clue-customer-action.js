@@ -32,8 +32,8 @@ function ClueCustomerActions() {
         'setSortField'
     );
     //联系人电话唯一性的验证
-    this.checkOnlyContactPhone = function(phone, callback) {
-        clueCustomerAjax.checkOnlyCustomer({phone: phone}).then(function(data) {
+    this.checkOnlyContactPhone = function(queryObj, callback) {
+        clueCustomerAjax.checkOnlyCustomer(queryObj).then(function(data) {
             if (callback) {
                 callback(data);
             }
@@ -55,11 +55,7 @@ function ClueCustomerActions() {
         });
     };
     //线索名称唯一性校验
-    this.checkOnlyClueName = function(clueName, callback, customerId) {
-        let queryObj = {name: clueName};
-        if(customerId){
-            queryObj.customer_id = customerId;
-        }
+    this.checkOnlyClueName = function(queryObj, callback) {
         clueCustomerAjax.checkOnlyCustomer(queryObj).then(function(data) {
             _.isFunction(callback) && callback(data);
         }, function(errorMsg) {
@@ -67,11 +63,7 @@ function ClueCustomerActions() {
         });
     };
     //校验线索电话的唯一性
-    this.checkOnlyCluePhone = function(phone, callback, customerId) {
-        let queryObj = {phone: phone};
-        if(customerId){
-            queryObj.customer_id = customerId;
-        }
+    this.checkOnlyCluePhone = function(queryObj, callback) {
         clueCustomerAjax.checkOnlyCustomer(queryObj).then(function(data) {
             _.isFunction(callback) && callback(data);
         }, function(errorMsg) {

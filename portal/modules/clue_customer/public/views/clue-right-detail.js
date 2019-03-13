@@ -33,6 +33,7 @@ import clueCustomerAjax from '../ajax/clue-customer-ajax';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 var clueCustomerAction = require('../action/clue-customer-action');
+import {checkOnlyContactName} from '../utils/clue-customer-utils';
 
 class ClueRightPanel extends React.Component {
     constructor(props) {
@@ -184,6 +185,27 @@ class ClueRightPanel extends React.Component {
     //保存修改的基本信息
     saveEditBasicInfo = (type, saveObj, successFunc, errorFunc) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.clue-basic-info-container'), `保存线索${type}的修改`);
+        var curClue = this.state.curClue;
+        var phoneArr = [],contactsArr = curClue.contacts;
+        if (_.isArray(contactsArr) && contactsArr.length){
+            _.forEach(contactsArr,(contactItem) => {
+                var phone = contactItem.phone;
+                if (_.isArray(phone) && phone.length){
+                    phoneArr = _.concat(phoneArr,phone);
+                }
+            });
+        }
+        var queryObj = {phone: phoneArr.join(','),name: _.get(saveObj,'name'),customer_id: _.get(curClue,'id')};
+        checkOnlyContactName(queryObj, (result) => {
+            if (_.isString(result)){
+                errorFunc();
+            }else{
+                this.updateClueCustomerName(type, saveObj, successFunc, errorFunc);
+            }
+
+        });
+    };
+    updateClueCustomerName = (type, saveObj, successFunc, errorFunc) => {
         clueCustomerAjax.updateCluecustomerDetail(saveObj).then((result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
