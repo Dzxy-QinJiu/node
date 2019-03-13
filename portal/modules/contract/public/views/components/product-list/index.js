@@ -90,7 +90,7 @@ class ProductList extends Component {
             isEdit: this.props.isEdit,
             data: this.props.dataSource,
             isAddApp: false, // 是否添加产品
-            currentEditKey: null, // 当前编辑的产品
+            currentEditKey: null, // 当前编辑的产品,没有时，必须置为null
             unSelectDataTip: '', // 未选择选择应用时提示
             loading: false,
             saveErrMsg: '',
@@ -438,7 +438,7 @@ class ProductList extends Component {
             );
         }else {
             // 什么情况下显示，没有正在编辑的项,比如添加产品和编辑产品的情况都没有
-            const isShowEditAndDelBtn = !this.state.isAddApp && this.state.currentEditKey === null;
+            const isShowEditAndDelBtn = !this.state.isAddApp && _.isNil(this.state.currentEditKey);
             return (
                 isShowEditAndDelBtn ? <Spin spinning={this.state.saveStatus[index].loading} className='float-r'>
                     <span className='btn-box'>
