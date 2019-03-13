@@ -60,7 +60,7 @@ class AddProduct extends React.Component{
         products: PropTypes.array,
         appList: PropTypes.array,
         updateScrollBar: PropTypes.func,
-        isDetailType: PropTypes.bool.isRequired,
+        isDetailShow: PropTypes.bool.isRequired,
         totalAmout: PropTypes.number,
         contract: PropTypes.array,
         refreshCurrentContract: PropTypes.func,
@@ -170,7 +170,7 @@ class AddProduct extends React.Component{
     getTotalAmount = () => {
         // 获取合同金额的大小
         let totalAmout, reports;
-        if(this.props.isDetailType) {
+        if(this.props.isDetailShow) {
             reports = _.get(this,'props.contract.reports',[]);
         }else {
             reports = _.get(this,'props.parent.refs.addReport.state.reports',[]);
@@ -206,8 +206,8 @@ class AddProduct extends React.Component{
         let num_col_width = 75, _this = this;
 
         // 如果是添加合同时，是可以编辑的（true），详情查看时，显示可编辑按钮，点编辑后，显示编辑状态且有保存取消按钮
-        let isEditBtnShow = this.props.isDetailType && hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPATE_PRIVILEGE);
-        let isEdit = !this.props.isDetailType ? true :
+        let isEditBtnShow = this.props.isDetailShow && hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPATE_PRIVILEGE);
+        let isEdit = !this.props.isDetailShow ? true :
             isEditBtnShow; //(isEditBtnShow && this.producTableRef ? this.producTableRef.state.isEdit : false);
 
         const appIds = _.map(this.state.products, 'id');
@@ -373,7 +373,7 @@ class AddProduct extends React.Component{
                         dataSource={this.state.products}
                         isEdit={isEdit}
                         isEditBtnShow={isEditBtnShow}
-                        isDetailShow={this.props.isDetailType}
+                        isDetailShow={this.props.isDetailShow}
                         formItems={formItems}
                         ortherItems={ortherItems}
                         onSave={this.handleProductSave}
