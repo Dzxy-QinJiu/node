@@ -50,6 +50,8 @@ export function getRecentContactCustomerChart() {
                 teamHasChild = false;
             }
 
+            delete query.child_team_ids;
+
             //如果是按成员筛选，或当前选择的团队没有子团队
             if (query.member_ids || !teamHasChild) {
                 //则按成员返回
@@ -64,7 +66,7 @@ export function getRecentContactCustomerChart() {
             _.each(list, item => {
                 total += item.customer_ids_num;
                 processedData.push({
-                    name: item.team_name,
+                    name: item.team_name || item.nick_name,
                     value: item.customer_ids_num,
                     cache_key: item.cache_key
                 });
