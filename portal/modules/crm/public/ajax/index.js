@@ -198,7 +198,7 @@ exports.queryCustomer = function(params, pageSize, pageNum, sorter) {
             params.page_num = pageNum;
         } else if (params.page_num.type === 'params') {
             url = url.replace(':page_num', pageNum);
-            params.page_num = pageNum;
+            delete params.page_num;
         }
     }
 
