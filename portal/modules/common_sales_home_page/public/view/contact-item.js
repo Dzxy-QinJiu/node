@@ -102,9 +102,10 @@ class ContactItem extends React.Component {
 
     render() {
         var contactDetail = this.state.contacts;
+        var cls = classNames('recent-contacter-detail',{'has-more-icon': this.props.hasMoreIcon});
         return (
             _.isArray(contactDetail) && contactDetail.length ?
-                <div className="recent-contacter-detail">
+                <div className={cls}>
                     {this.renderContactsContent(contactDetail)}
                 </div> : null
         );
@@ -116,11 +117,13 @@ ContactItem.defaultProps = {
     customerData: {},//客户信息
     itemType: '',
     showContactLabel: true,//是否展示联系人这几个字
+    hasMoreIcon: false
 };
 ContactItem.propTypes = {
     contacts: PropTypes.object,//联系人信息
     customerData: PropTypes.object,//客户信息
     itemType: PropTypes.string,
     showContactLabel: PropTypes.bool,//是否展示联系人这几个字
+    hasMoreIcon: PropTypes.bool,
 };
 export default ContactItem;

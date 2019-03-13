@@ -19,7 +19,7 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
-import {getRelativeTime, hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import {getRelativeTime} from 'PUB_DIR/sources/utils/common-method-util';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import Spinner from 'CMP_DIR/spinner';
 import SalesClueItem from './view/sales-clue-item';
@@ -28,7 +28,6 @@ const LAYOUT_CONSTS = {
 };
 var websiteConfig = require('../../../lib/utils/websiteConfig');
 var setWebsiteConfig = websiteConfig.setWebsiteConfig;
-const getLocalWebsiteConfig = websiteConfig.getLocalWebsiteConfig;
 import AlertTip from 'CMP_DIR/alert-tip';
 import {message, Button} from 'antd';
 const DELAY_TIME = 2000;
@@ -928,6 +927,33 @@ class SalesHomePage extends React.Component {
             );
         }
     };
+    renderCalloutAlert = () => {
+        {/*是否展示设置坐席号的提示*/}
+        if (_.get(this.state,'emailShowObj.isShowSetClient')){
+            return <AlertTip
+                isAnimateShow={this.state.isClientAnimateShow}
+                isAnimateHide={this.state.isClientAnimateHide}
+                alertTipMessage={this.getClientAlertTipMessage()}
+                handleClickNoTip={this.hideSetClientTip}
+                setWebConfigStatus={this.state.setWebConfigClientStatus}
+            />;
+        }else{
+            return null;
+        }
+    };
+    renderAddOrActiveEmailAlert = () => {
+        return (
+            <AlertTip
+                clsNames='email-active-wrap'
+                alertTipMessage={this.getEmailAlertTipMessage()}
+                showNoTipMore={!this.getIsShowAddEmail()}
+                isAnimateShow={this.state.isAnimateShow}
+                isAnimateHide={this.state.isAnimateHide}
+                handleClickNoTip={this.hideActiveEmailTip}
+                setWebConfigStatus={this.state.setWebConfigStatus}
+            />
+        );
+    };
     render() {
         var phoneData = this.state.phoneTotalObj.data;
         const rightContentHeight = $(window).height() - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM;
@@ -935,6 +961,7 @@ class SalesHomePage extends React.Component {
             'has-repeat-customer': this.state.showCustomerPanel === ALL_LISTS_TYPE.REPEAT_CUSTOMER
         });
         let customerOfCurUser = this.state.customerOfCurUser;
+        var addOrActiveEmailPrivelege = this.state.emailShowObj.isShowActiveEmail || this.state.emailShowObj.isShowAddEmail;
         return (
             <RightContent>
                 <div className="sales_home_content" data-tracename="销售首页">
@@ -997,27 +1024,7 @@ class SalesHomePage extends React.Component {
                     </div>
                     <div className="main-content-container" style={{height: rightContentHeight}}>
                         {/*是否展示邮箱激活或者添加邮箱的提示提示*/}
-                        {this.state.emailShowObj.isShowActiveEmail || this.state.emailShowObj.isShowAddEmail ?
-                            <AlertTip
-                                clsNames='email-active-wrap'
-                                alertTipMessage={this.getEmailAlertTipMessage()}
-                                showNoTipMore={!this.getIsShowAddEmail()}
-                                isAnimateShow={this.state.isAnimateShow}
-                                isAnimateHide={this.state.isAnimateHide}
-                                handleClickNoTip={this.hideActiveEmailTip}
-                                setWebConfigStatus={this.state.setWebConfigStatus}
-                            />
-
-                            : null}
-                        {/*是否展示设置坐席号的提示*/}
-                        {_.get(this.state,'emailShowObj.isShowSetClient') ?
-                            <AlertTip
-                                isAnimateShow={this.state.isClientAnimateShow}
-                                isAnimateHide={this.state.isClientAnimateHide}
-                                alertTipMessage={this.getClientAlertTipMessage()}
-                                handleClickNoTip={this.hideSetClientTip}
-                                setWebConfigStatus={this.state.setWebConfigClientStatus}
-                            /> : null}
+                        {addOrActiveEmailPrivelege ? this.renderAddOrActiveEmailAlert() : this.renderCalloutAlert()}
                         <div className="customer-list-left" data-tracename="客户分类">
                             {this.renderDiffCustomerPanel()}
                         </div>
