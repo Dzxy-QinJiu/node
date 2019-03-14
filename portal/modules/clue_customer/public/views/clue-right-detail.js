@@ -33,6 +33,7 @@ import clueCustomerAjax from '../ajax/clue-customer-ajax';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 var clueCustomerAction = require('../action/clue-customer-action');
+import {handleSubmitClueItemData} from '../utils/clue-customer-utils';
 
 class ClueRightPanel extends React.Component {
     constructor(props) {
@@ -184,7 +185,12 @@ class ClueRightPanel extends React.Component {
     //保存修改的基本信息
     saveEditBasicInfo = (type, saveObj, successFunc, errorFunc) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.clue-basic-info-container'), `保存线索${type}的修改`);
-        clueCustomerAjax.updateCluecustomerDetail(saveObj).then((result) => {
+        if (type === 'name'){
+            saveObj.clueContact = _.get(this,'state.curClue.contacts');
+        }
+        var data = _.cloneDeep(saveObj);
+        data = handleSubmitClueItemData(data);
+        clueCustomerAjax.updateClueItemDetail(data).then((result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
                 clueCustomerAction.afterEditCustomerDetail(saveObj);

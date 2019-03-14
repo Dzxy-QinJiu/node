@@ -2072,6 +2072,7 @@ var en_US = {
     'errorcode.147': 'The qr code has expired',//二维码已失效
     'errorcode.148': 'The call duration statistics view fails to be obtained',//电话时长统计视图获取失败
     'errorcode.149': 'The role has been allocated to sales',//该角色已经分配给销售
+    'errorcode.150': 'Failed to update the clue',//修改线索信息失败
     'errorcoe.different.realm': 'Different realms',//安全域不一致
     'errorcode.invalid.wechat': 'Invalid Wechat Account',//无效的微信账号
     'user.input.phone': 'Please enter your phone',//请输入手机号

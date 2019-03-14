@@ -1,5 +1,6 @@
 //客户名格式验证
 import {nameRegex, ipRegex} from 'PUB_DIR/sources/utils/validate-util';
+const hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 import ClueAction from '../action/clue-customer-action';
 var userData = require('PUB_DIR/sources/user-data');
 import { storageUtil } from 'ant-utils';
@@ -147,3 +148,72 @@ export const SetLocalSalesClickCount = function(sale_id) {
     }
     local.set(SESSION_STORAGE_CLUE_SALES_SELECTED,JSON.stringify(clueSalesIdList));
 };
+export const handleSubmitContactData = function(submitObj){
+    var data = {},updateObj = {};
+    updateObj.id = submitObj.id;
+    //联系人的id
+    updateObj.contacts = [{'id': submitObj.contact_id}];
+    delete submitObj.contact_id;
+    var clueName = '';
+    if (submitObj.clueName){
+        clueName = submitObj.clueName;
+        delete submitObj.clueName;
+    }
+    for (var key in submitObj){
+        //要更新的字段
+        data.updateItem = key;
+        if (key === 'contact_name'){
+            //联系人的名字
+            updateObj.contacts[0]['name'] = submitObj[key];
+        }else{
+            //过滤掉值为空
+            if (_.isArray(submitObj[key])){
+                submitObj[key] = submitObj[key].filter(item => item);
+                updateObj.contacts[0][key] = submitObj[key];
+            }
+        }
+    }
+    if (clueName){
+        updateObj.name = clueName;
+    }
+    data.updateObj = JSON.stringify(updateObj);
+    data.type = handlePrivilegeType();
+    return data;
+};
+export const handlePrivilegeType = function(isMarkingAvalibility) {
+    var type = 'user';
+    if (isMarkingAvalibility){
+        if (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER')){
+            type = 'manager';
+        }
+    }else{
+        if (hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER')){
+            type = 'manager';
+        }
+    }
+    return type;
+};
+export const handleSubmitClueItemData = function(submitObj,isMarkingAvalibility){
+    var data = {}, updateObj = {}, isMarkingAvalibility = false;
+    updateObj.id = submitObj.id || submitObj.user_id;
+    delete submitObj.id;
+    delete submitObj.user_id;
+    isMarkingAvalibility = _.has(submitObj, 'availability');
+    var clueContact = [];
+    if (submitObj.clueContact) {
+        clueContact = submitObj.clueContact;
+        delete submitObj.clueContact;
+    }
+    if (_.get(clueContact, '[0]')) {
+        updateObj.contacts = clueContact;
+    }
+    for (var key in submitObj) {
+        data.updateItem = key;
+        updateObj[key] = submitObj[key];
+    }
+    data.updateObj = JSON.stringify(updateObj);
+    data.type = handlePrivilegeType(isMarkingAvalibility);
+    return data;
+};
+
+

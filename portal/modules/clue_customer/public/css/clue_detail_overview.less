@@ -48,13 +48,17 @@
     }
     .contact-item{
       overflow: hidden;
-      margin-left:6px;
       margin-bottom:10px;
-       .contact-name{
-         margin-right:10px;
-       }
+      .contact-item-content{
+        overflow: hidden;
+        padding-left: 12px;
+        label.ant-form-item-required:before{
+          display: none;
+        }
+      }
        .contact-way{
          display: block;
+
          &>.iconfont{
            float: left;
            margin:0 5px;
