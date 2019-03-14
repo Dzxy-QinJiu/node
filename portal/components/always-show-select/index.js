@@ -43,10 +43,7 @@ class AlwaysShowSelect extends React.Component {
         if(selectTimeout){
             clearTimeout(selectTimeout);
         }
-        //延时处理清空搜索内容，设置选中的值（以防搜索选择后，立马修改，会错选搜索前的选项）
-        selectTimeout = setTimeout(() => {
-            this.setState({value: data.value || '', isSearch: false, searchVal: ''});
-        });
+        this.setState({value: data.value || '', isSearch: false});
     };
     //输入内容进行搜索时
     onSearch = (e) => {
@@ -58,7 +55,7 @@ class AlwaysShowSelect extends React.Component {
     };
     //输入框获取焦点时
     inputFocus = () => {
-        this.setState({isSearch: true, value: ''});
+        this.setState({isSearch: true, value: '', searchVal: ''});
     };
     //获取选择下拉选项
     getSelectOptions = (dataList) => {
@@ -84,12 +81,7 @@ class AlwaysShowSelect extends React.Component {
                         {dataDsp}
                     </Radio>
                 </li>);
-                //如果是选中项，往前展示
-                if (data.value === this.state.value) {
-                    options.unshift(selectOption);
-                } else {
-                    options.push(selectOption);
-                }
+                options.push(selectOption);
             });
             if (this.props.hasClearOption) {//有清空选择的选项
                 let className = classNames('select-item', {'item-active': !this.state.value});
