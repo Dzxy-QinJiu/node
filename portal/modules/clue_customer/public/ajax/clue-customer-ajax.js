@@ -181,80 +181,31 @@ exports.distributeCluecustomerToSale = function(submitObj) {
     });
     return Deferred.promise();
 };
-//更新线索客户的基本信息
-var updateCluecustomerDetailAjax;
-exports.updateCluecustomerDetail = function(submitObj, isMarkingAvalibility) {
-    var data = {},updateObj = {};
-    //如果是修改联系人的相关信息时，不但要传客户的id还要传联系人的id
-    //更新联系人的相关字段时
-    //isMarkingAvalibility  true标记线索无效 false 或者不传值：线索基础信息的更改
-    if (submitObj.contact_id){
-        //客户的id
-        updateObj.id = submitObj.user_id;
-        //联系人的id
-        updateObj.contacts = [{'id': submitObj.contact_id}];
-        delete submitObj.contact_id;
-        delete submitObj.user_id;
-        var clueName = '';
-        if (submitObj.clueName){
-            clueName = submitObj.clueName;
-            delete submitObj.clueName;
-        }
-
-        for (var key in submitObj){
-            //要更新的字段
-            data.updateItem = key;
-            if (key === 'contact_name'){
-                //联系人的名字
-                updateObj.contacts[0]['name'] = submitObj[key];
-            }else{
-                //过滤掉值为空
-                if (_.isArray(submitObj[key])){
-                    submitObj[key] = submitObj[key].filter(item => item);
-                    updateObj.contacts[0][key] = submitObj[key];
-                }
-            }
-        }
-        if (clueName){
-            updateObj.name = clueName;
-        }
-
-    }else{
-        //修改除联系人之外的信息,如线索来源，接入渠道 user_id是修改销售的时候组件内部的属性
-        updateObj.id = submitObj.id || submitObj.user_id;
-        delete submitObj.id;
-        delete submitObj.user_id;
-        var clueContact = [];
-        if (submitObj.clueContact){
-            clueContact = submitObj.clueContact;
-            delete submitObj.clueContact;
-        }
-        if (_.get(clueContact,'[0]')){
-            updateObj.contacts = clueContact;
-        }
-        for(var key in submitObj){
-            data.updateItem = key;
-            updateObj[key] = submitObj[key];
-        }
-    }
-    data.updateObj = JSON.stringify(updateObj);
-    //是否
-
-    var type = 'user';
-    if (isMarkingAvalibility){
-        if (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER')){
-            type = 'manager';
-        }
-    }else{
-        if (hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER')){
-            type = 'manager';
-        }
-    }
-
-    data.type = type;
+var updateClueContactDetailAjax;
+//修改线索联系人相关信息
+exports.updateClueContactDetail = function(data) {
     var Deferred = $.Deferred();
-    updateCluecustomerDetailAjax && updateCluecustomerDetailAjax.abort();
-    updateCluecustomerDetailAjax = $.ajax({
+    updateClueContactDetailAjax && updateClueContactDetailAjax.abort();
+    updateClueContactDetailAjax = $.ajax({
+        url: '/rest/cluecustomer/v2/update/detailitem',
+        dataType: 'json',
+        type: 'put',
+        data: data,
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+var updateClueItemDetailAjax;
+//修改线索的基本信息
+exports.updateClueItemDetail = function(data) {
+    var Deferred = $.Deferred();
+    updateClueItemDetailAjax && updateClueItemDetailAjax.abort();
+    updateClueItemDetailAjax = $.ajax({
         url: '/rest/cluecustomer/v2/update/detailitem',
         dataType: 'json',
         type: 'put',

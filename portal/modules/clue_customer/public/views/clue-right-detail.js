@@ -33,6 +33,7 @@ import clueCustomerAjax from '../ajax/clue-customer-ajax';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 var clueCustomerAction = require('../action/clue-customer-action');
+import {handleSubmitClueItemData} from '../utils/clue-customer-utils';
 
 class ClueRightPanel extends React.Component {
     constructor(props) {
@@ -187,7 +188,9 @@ class ClueRightPanel extends React.Component {
         if (type === 'name'){
             saveObj.clueContact = _.get(this,'state.curClue.contacts');
         }
-        clueCustomerAjax.updateCluecustomerDetail(saveObj).then((result) => {
+        var data = _.cloneDeep(saveObj);
+        data = handleSubmitClueItemData(data);
+        clueCustomerAjax.updateClueItemDetail(data).then((result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
                 clueCustomerAction.afterEditCustomerDetail(saveObj);
