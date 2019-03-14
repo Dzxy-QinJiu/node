@@ -517,7 +517,8 @@ var NavSidebar = createReactClass({
                         {_this.getUserInfoBlock()}
                     </div>
                 </div>
-                {this.state.isShowIntroModal && hasPrivilege('MEMBER_SCHEDULE_MANAGE') ? <ModalIntro
+                {/*暂时将引导的功能都去掉*/}
+                {this.state.isShowIntroModal && hasPrivilege('MEMBER_SCHEDULE_MANAGE') && false ? <ModalIntro
                     introModalLayout={this.state.introModalLayout}
                     $introElement={this.state.$introElement}
                     handleOnclickHole={this.handleOnclickHole}
