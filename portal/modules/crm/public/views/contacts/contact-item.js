@@ -350,7 +350,7 @@ class ContactItem extends React.Component {
                                 id={contact.id}
                                 type="textarea"
                                 field="remark"
-                                value={contact.position}
+                                value={contact.remark}
                                 placeholder={Intl.get('user.input.remark', '请输入备注')}
                                 hasEditPrivilege={hasEditPrivilege}
                                 saveEditInput={this.saveContactInfo.bind(this, 'remark')}

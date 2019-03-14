@@ -68,7 +68,7 @@ var ContactForm = createReactClass({
             customer_id: contact.customer_id,
             name: contact.name,
             position: contact.position,
-            role: contact.role,
+            role: contact.role || Intl.get('crm.115', '经办人'),
             sex: contact.sex,
             birthday: contact.birthday,
             hobby: contact.hobby,
