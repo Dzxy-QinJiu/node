@@ -240,7 +240,7 @@ class ReportSendApplyManagement extends React.Component {
                         <ApplyDropdownAndAddBtn
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
-                            addPrivilege='MEMBER_OPINION_APPLY'
+                            addPrivilege='MEMBER_REPORT_APPLY'
                             showAddApplyPanel={this.showAddApplyPanel}
                             addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
                             menuList={selectMenuList}
