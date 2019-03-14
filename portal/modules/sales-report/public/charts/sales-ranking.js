@@ -109,11 +109,21 @@ export function getSalesRankingChart(role) {
             function setRankingValue(data, field, rankingObj, total) {
                 if (_.has(data, field)) {
                     //画图用的值要用参与排名的总人数减去其排名，以使其在图上的位置与其排名成反比，即排名越小的在图上的位置越靠外
-                    rankingObj.value.push(total - data[field]);
+                    let showValue = total - data[field];
                     //真实值，用于在tooltip上显示
-                    rankingObj.realValue.push(data[field]);
+                    let realValue = data[field];
                     //具体数值，如客户数、成交数等
-                    rankingObj.countArr.push(data.value);
+                    const count = data.value;
+
+                    //如果数值为0，但排名为1，说明大家都是0，此时将排名置为0
+                    if (count === 0 && realValue === 1) {
+                        realValue = 0;
+                        showValue = 0;
+                    }
+
+                    rankingObj.value.push(showValue);
+                    rankingObj.realValue.push(realValue);
+                    rankingObj.countArr.push(count);
                 } else {
                     rankingObj.value.push(0);
                     rankingObj.realValue.push(0);
