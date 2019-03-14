@@ -849,7 +849,7 @@ class Crm extends React.Component {
 
         //如果是通过列表面板打开的
         if (this.props.listPanelParamObj) {
-            params = this.props.listPanelParamObj;
+            params = _.cloneDeep(this.props.listPanelParamObj);
         //如果是从首页跳转过来的
         } else if (this.props.fromSalesHome) {
             const locationState = this.props.location.state;
@@ -858,8 +858,16 @@ class Crm extends React.Component {
 
             //如果locationState中包含cache_key，表明是查的有效客户活跃数详细列表，需要在查询参数中增加cache_key和sub_cache_key
             if (locationState.cache_key) {
+                params.url = '/rest/analysis/customer/v2/customer/active_rate/detail/:page_size/:page_num';
+                params.type = 'get';
                 params.cache_key = locationState.cache_key;
                 params.sub_cache_key = locationState.sub_cache_key;
+                params.page_size = {
+                    type: 'params'
+                };
+                params.page_num = {
+                    type: 'params'
+                };
             } else {
                 params.data = JSON.stringify({id: locationState.customerIds});
             }

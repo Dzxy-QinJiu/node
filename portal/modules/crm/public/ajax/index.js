@@ -174,10 +174,32 @@ exports.queryCustomer = function(params, pageSize, pageNum, sorter) {
     let url = '/rest/customer/range/' + pageSize + '/' + pageNum + '/' + sorter.field + '/' + sorter.order;
     let type = 'post';
 
-    //如果查询参数中包含cache_key，表明是查的有效客户活跃数详细列表，需要设置为对应的url和请求类型
-    if (params.cache_key) {
-        url = `/rest/analysis/customer/v2/customer/active_rate/detail/${pageSize}/${pageNum}`;
-        type = 'get';
+    if (params.url) {
+        url = params.url;
+        delete params.url;
+    }
+
+    if (params.type) {
+        type = params.type;
+        delete params.type;
+    }
+
+    if (params.page_size) {
+        if (params.page_size.type === 'query') {
+            params.page_size = pageSize;
+        } else if (params.page_size.type === 'params') {
+            url = url.replace(':page_size', pageSize);
+            delete params.page_size;
+        }
+    }
+
+    if (params.page_num) {
+        if (params.page_num.type === 'query') {
+            params.page_num = pageNum;
+        } else if (params.page_num.type === 'params') {
+            url = url.replace(':page_num', pageNum);
+            delete params.page_num;
+        }
     }
 
     queryCustomerAjax = $.ajax({
@@ -186,8 +208,8 @@ exports.queryCustomer = function(params, pageSize, pageNum, sorter) {
         dataType: 'json',
         data: params,
         success: function(list) {
-            //如果查询参数中包含cache_key，表明是查的有效客户活跃数详细列表，需要对返回结果处理一下，以便能和客户列表的处理匹配起来
-            if (params.cache_key) {
+            //如果数据是放在list字段中的，需要统一到result字段，以与store中的对应
+            if (list.list && !list.result) {
                 list.result = list.list;
             }
 

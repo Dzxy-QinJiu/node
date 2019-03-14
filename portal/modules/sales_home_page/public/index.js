@@ -912,6 +912,8 @@ class SalesHomePage extends React.Component {
                 callbackArgs: [{
                     name: 'team_ids',
                     exclusive: 'member_id'
+                }, {
+                    name: 'child_team_ids',
                 }],
             },
             {
@@ -943,6 +945,10 @@ class SalesHomePage extends React.Component {
             {
                 name: 'team_ids',
                 value: '',
+            },
+            {
+                name: 'child_team_ids',
+                value: [],
             },
             {
                 name: 'member_id',
