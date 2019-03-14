@@ -5,6 +5,7 @@
  */
 var clueCustomerAjax = require('../ajax/clue-customer-ajax');
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
+import {handleSubmitClueItemData} from '../utils/clue-customer-utils';
 function ClueCustomerActions() {
     this.generateActions(
         'resetState',
@@ -66,7 +67,8 @@ function ClueCustomerActions() {
     };
     //标记线索是否有效
     this.updateCluecustomerDetail = function(submitObj,callback) {
-        clueCustomerAjax.updateCluecustomerDetail(submitObj, true).then((result) => {
+        var data = handleSubmitClueItemData(_.cloneDeep(submitObj));
+        clueCustomerAjax.updateClueItemDetail(data).then((result) => {
             _.isFunction(callback) && callback();
         },(errorMsg) => {
             _.isFunction(callback) && callback(errorMsg || Intl.get('common.edit.failed', '修改失败'));

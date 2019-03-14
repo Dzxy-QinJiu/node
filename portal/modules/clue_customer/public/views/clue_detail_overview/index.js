@@ -26,7 +26,7 @@ const RELATEAUTHS = {
     'RELATEALL': 'CRM_MANAGER_CUSTOMER_CLUE_ID',//管理员通过线索id查询客户的权限
     'RELATESELF': 'CRM_USER_CUSTOMER_CLUE_ID'//普通销售通过线索id查询客户的权限
 };
-import {SELECT_TYPE, AVALIBILITYSTATUS,getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount} from '../../utils/clue-customer-utils';
+import {SELECT_TYPE, AVALIBILITYSTATUS,getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,handleSubmitClueItemData,handleSubmitContactData} from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 var timeoutFunc;//定时方法
@@ -183,25 +183,49 @@ class ClueDetailOverview extends React.Component {
         });
     };
 
+
     //保存修改的基本信息
     saveEditBasicInfo = (type, saveObj, successFunc, errorFunc) => {
-        var contacts = _.get(this, 'state.curClue.contacts',[]);
         var item = type,contact_id = '';
-        if (_.isObject(type) ){
-            //修改联系人的名称
+        if (_.isObject(type)){
+            //修改联系人的相关属性
             item = type.editItem;
             contact_id = type.id;
             saveObj.contact_id = contact_id;
-            saveObj.user_id = saveObj.id;
-            delete saveObj.id;
+            if (item === 'phone'){
+                saveObj.clueName = _.get(this, 'state.curClue.name');
+            }
+            this.changeClueContactInfo(saveObj, successFunc, errorFunc, contact_id);
+
+        }else{
+            //修改线索的基本信息
+            this.changeClueItemInfo(saveObj, successFunc, errorFunc);
+
         }
-        saveObj.clueName = _.get(this, 'state.curClue.name');
         Trace.traceEvent(ReactDOM.findDOMNode(this), `保存线索${item}的修改`);
-        clueCustomerAjax.updateCluecustomerDetail(saveObj).then((result) => {
+    };
+    //修改联系人的相关信息
+    changeClueContactInfo = (saveObj, successFunc, errorFunc, contact_id) => {
+        var data = handleSubmitContactData(_.cloneDeep(saveObj));
+        clueCustomerAjax.updateClueContactDetail(data).then((result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
                 //修改联系人的时候，需要把联系人的下标加上
                 this.changeClueFieldSuccess(saveObj, contact_id);
+            } else {
+                if (_.isFunction(errorFunc)) errorFunc();
+            }
+        }, (errorMsg) => {
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+        });
+    };
+    //修改线索的相关信息
+    changeClueItemInfo = (saveObj, successFunc, errorFunc) => {
+        var data = handleSubmitClueItemData(_.cloneDeep(saveObj));
+        clueCustomerAjax.updateClueItemDetail(data).then((result) => {
+            if (result) {
+                if (_.isFunction(successFunc)) successFunc();
+                this.changeClueFieldSuccess(saveObj);
             } else {
                 if (_.isFunction(errorFunc)) errorFunc();
             }
