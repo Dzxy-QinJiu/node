@@ -14,7 +14,7 @@ const _ = require('lodash');
 exports.getContactList = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: contactUrl + _.get(req.body,'query.id', ''),
+            url: contactUrl + '/' + _.get(req.body, 'query.id', ''),
             req: req,
             res: res
         }, null);
