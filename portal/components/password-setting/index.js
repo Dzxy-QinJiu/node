@@ -15,7 +15,8 @@ class PasswordSetting extends React.Component {
         super(props);
         this.state = {
             checkStatus: this.props.checkStatus,
-            inputType: INPUT_TYPE.PASSWORD
+            inputType: INPUT_TYPE.PASSWORD,
+            readonly: false
         };
     }
     componentWillReceiveProps(nextProps) {
@@ -48,6 +49,16 @@ class PasswordSetting extends React.Component {
         var password = _.trim(e.target.value);
         this.props.onInputPasswordChange(password);
     };
+    removeAttribute = () => {
+        this.setState({
+            readonly: false
+        });
+    };
+    setAttribute = () => {
+        this.setState({
+            readonly: true
+        });
+    };
 
     render() {
         var checkStatus = this.state.checkStatus;
@@ -60,7 +71,7 @@ class PasswordSetting extends React.Component {
                 <Checkbox checked={checkStatus} onChange={this.onCheckChange}>{Intl.get('apply.setting.password.auto', '自动生成密码')}</Checkbox>
                 {!checkStatus ?
                     <span className="input-container">
-                        <Input className={showWarning ? 'has-warning' : ''} type={this.state.inputType} onChange={this.onInputPasswordChange}/>
+                        <Input className={showWarning ? 'has-warning' : ''} type={this.state.inputType} onChange={this.onInputPasswordChange} autocomplete="new-password" readOnly={this.state.readonly} onFocus={this.removeAttribute} onBlur={this.setAttribute} />
                         <i className={iconCls} onClick={this.handlePasswordVisible}></i>
                         {showWarning ? <span className="warning-text">{this.props.warningText}</span> : null}
                     </span>
