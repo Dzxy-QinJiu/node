@@ -425,6 +425,7 @@ class ApplyTabContent extends React.Component {
                     <div className="apply-search-wrap btn-item">
                         <SearchInput
                             type="input"
+                            autocomplete="off"
                             className="form-control"
                             searchPlaceHolder={Intl.get('user.apply.search.placeholder', '申请人/客户名/用户名')}
                             searchEvent={this.changeSearchInputValue}
