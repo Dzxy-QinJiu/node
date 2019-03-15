@@ -9,7 +9,7 @@ import { initialTime } from '../../consts';
 export function getClueDealChannelChart() {
     return {
         title: '成交数渠道统计',
-        chartType: 'pie',
+        chartType: 'bar_pie',
         url: '/rest/clue/v1/statistical/access_channel/1000/1',
         argCallback: arg => {
             argCallbackUnderlineTimeToTime(arg);
