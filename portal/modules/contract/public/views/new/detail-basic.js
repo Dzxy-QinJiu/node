@@ -16,6 +16,7 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import CustomerBelong from '../components/customer-belong';
 import { AntcValidity } from 'antc';
 import ajax from 'MOD_DIR/contract/common/ajax';
 import customerAjax from 'MOD_DIR/common/public/ajax/customer';
@@ -42,44 +43,21 @@ class DetailBasic extends React.Component {
     getInitStateData(props) {
         let hasEditPrivilege = hasPrivilege(PRIVILEGE_MAP.CONTRACT_UPATE_PRIVILEGE);
         let formData = props.contract;
-
-        //所属客户是否是选择的，以数组的形式记录了各个所属客户在输入后是否经过了点击选择的过程
-        let belongCustomerIsChoosen = [];
-        if (!formData.customers) {
-            formData.customers = [{}];
-        } else {
-            //编辑已有所属客户时，将选中状态都设为true
-            belongCustomerIsChoosen = _.map(formData.customers, customer => true);
-        }
         return {
             formData: _.cloneDeep(formData),
-            customerList: [],
-            customers: [],
             loading: false,
             submitErrorMsg: '',
             hasEditPrivilege,
             displayType: DISPLAY_TYPES.TEXT,
-            belongCustomerErrMsg: [''],
-            belongCustomerIsChoosen
         };
     }
 
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps.contract, 'id') && this.props.contract.id !== nextProps.contract.id || !_.isEqual(this.props.contract,nextProps.contract)) {
             let formData = _.cloneDeep(nextProps.contract);
-
-            //所属客户是否是选择的，以数组的形式记录了各个所属客户在输入后是否经过了点击选择的过程
-            let belongCustomerIsChoosen = [];
-            if (!formData.customers) {
-                formData.customers = [{}];
-            } else {
-                //编辑已有所属客户时，将选中状态都设为true
-                belongCustomerIsChoosen = _.map(formData.customers, customer => true);
-            }
-
             this.setState({
                 formData,
-                belongCustomerIsChoosen
+                displayType: DISPLAY_TYPES.TEXT,
             });
         }
     }
@@ -177,22 +155,14 @@ class DetailBasic extends React.Component {
 
         this.saveContractBasicInfo(saveObj, successFunc, errorCallback);
     };
-    // 过滤重复客户
-    getCustomerList() {
-        let {customers, queryCustomerList} = this.state;
-        // 在这里去掉重复的客户
-        const customersIds = _.map(customers, 'customer_id');
-        return _.filter(queryCustomerList, customer => _.indexOf(customersIds, customer.customer_id) === -1);
-    }
     // 所属客户处理事件
     handleCustomerSubmit = () => {
         Trace.traceEvent(this, '点击所属客户保存按钮');
         let _this = this;
-        this.props.form.validateFields((err,value) => {
-            if (err) return false;
+        this.CustomerBelongRef.validate((result) => {
             let saveObj = {
                 id: this.state.formData.id,
-                customers: this.state.customers
+                customers: result
             };
             this.setState({loading: true});
             const successFunc = () => {
@@ -210,7 +180,6 @@ class DetailBasic extends React.Component {
             };
             this.saveContractBasicInfo(saveObj,successFunc,errorFunc);
         });
-
     };
     handleCustomerCancel = () => {
         Trace.traceEvent(this, '点击所属客户保取消按钮');
@@ -222,154 +191,6 @@ class DetailBasic extends React.Component {
             submitErrorMsg: '',
         });
     };
-    deleteBelongCustomer(index) {
-        let {formData, customers, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
-
-        formData.customers.splice(index, 1);
-        belongCustomerErrMsg.splice(index, 1);
-        belongCustomerIsChoosen.splice(index, 1);
-        customers = formData.customers;
-        // 在这里去掉重复的客户
-        const customerLists = this.getCustomerList();
-
-        this.setState({
-            formData,
-            customers,
-            customerList: customerLists,
-            belongCustomerErrMsg,
-            belongCustomerIsChoosen
-        });
-    }
-    addBelongCustomer = () => {
-        let {formData, customers, belongCustomerErrMsg, belongCustomerIsChoosen} = this.state;
-
-        // 在这里去掉重复的客户
-        const customerLists = this.getCustomerList();
-
-        formData.customers.push({});
-        belongCustomerErrMsg.push('');
-        belongCustomerIsChoosen.push(false);
-        customers = formData.customers;
-        this.setState({
-            formData,
-            customers,
-            customerList: customerLists,
-            belongCustomerErrMsg,
-            belongCustomerIsChoosen
-        });
-    };
-    queryCustomer(index, keyword) {
-        const fieldName = 'belong_customer' + index;
-
-        let stateObj = {
-            formData: this.state.formData,
-            belongCustomerIsChoosen: this.state.belongCustomerIsChoosen,
-        };
-
-        //更新输入框内容
-        stateObj.formData.customers[index].customer_name = keyword;
-
-        //将客户状态设为未选择
-        stateObj.belongCustomerIsChoosen[index] = false;
-
-        this.setState(stateObj);
-
-        if (queryCustomerTimeout) {
-            clearTimeout(queryCustomerTimeout);
-        }
-
-        queryCustomerTimeout = setTimeout(() => {
-            customerAjax.getCustomerSuggestListAjax().sendRequest({
-                q: keyword
-            }).success(list => {
-                // 在这里去掉重复的客户
-                const customerList = this.getCustomerList();
-
-                let newState = {
-                    customerList: customerList,
-                    queryCustomerList: list,
-                    belongCustomerErrMsg: _.clone(this.state.belongCustomerErrMsg),
-                };
-
-                if (_.isArray(customerList) && customerList.length) {
-                    newState.belongCustomerErrMsg[index] = '';
-                } else {
-                    newState.belongCustomerErrMsg[index] = Intl.get('contract.177', '没有找到符合条件的客户，请更换关键词查询');
-                }
-                this.setState(newState, () => {
-                    this.props.form.validateFields([fieldName], {force: true});
-                });
-            }).error(() => {
-                let newState = {
-                    belongCustomerErrMsg: _.clone(this.state.belongCustomerErrMsg),
-                };
-
-                newState.belongCustomerErrMsg[index] = Intl.get('errorcode.61', '获取客户列表失败');
-
-                this.setState(newState, () => {
-                    this.props.form.validateFields([fieldName], {force: true});
-                });
-            });
-        }, 500);
-    }
-    onCustomerChoosen(index, value) {
-        let {formData, customers, belongCustomerIsChoosen} = this.state;
-        const fieldName = 'belong_customer' + index;
-
-        let belongCustomer = formData.customers[index];
-        const selectedCustomer = _.find(this.state.customerList, customer => customer.customer_id === value);
-
-        belongCustomer.customer_id = selectedCustomer.customer_id;
-        belongCustomer.customer_name = selectedCustomer.customer_name;
-        belongCustomer.customer_sales_id = selectedCustomer.sales_id;
-        belongCustomer.customer_sales_name = selectedCustomer.sales_name;
-        belongCustomer.customer_sales_team_id = selectedCustomer.sales_team_id;
-        belongCustomer.customer_sales_team_name = selectedCustomer.sales_team_name;
-
-        formData.customers[index] = belongCustomer;
-
-        // 在这里去掉重复的客户
-        const customerLists = this.getCustomerList();
-        //暂存表单数据
-        // const formDataCopy = JSON.parse(JSON.stringify(formData));
-
-        belongCustomerIsChoosen[index] = true;
-        customers = formData.customers;
-        this.setState({
-            formData,
-            customers,
-            customerList: customerLists,
-            belongCustomerIsChoosen
-        }, () => {
-            //用暂存的表单数据更新一下验证后的表单数据
-            //以解决选中了客户时在输入框里显示的是客户id而非客户名的问题
-            this.props.form.setFieldsValue({
-                [fieldName]: belongCustomer.customer_name
-            });
-        });
-    }
-
-    getCustomerOptions() {
-        return this.state.customerList.map((customer, index) => {
-            return <Option key={index} value={customer.customer_id}>{customer.customer_name}</Option>;
-        });
-    }
-    //获取所属客户验证规则
-    getBelongCustomerValidateRules(index) {
-        return {
-            validator: (rule, value, callback) => {
-                if (this.state.belongCustomerErrMsg[index]) {
-                    callback(this.state.belongCustomerErrMsg[index]);
-                } else {
-                    if (this.state.belongCustomerIsChoosen[index]) {
-                        callback();
-                    } else {
-                        callback(Intl.get('contract.176', '请选择所属客户'));
-                    }
-                }
-            }
-        };
-    }
 
     // 渲染基础信息
     renderBasicInfo() {
@@ -826,62 +647,12 @@ class DetailBasic extends React.Component {
         );
     }
 
-    renderBelongCustomerField() {
-        const customers = this.state.formData.customers || [{}];
-        let itemSize = _.get(customers, 'length');
-        const popupContainer = document.getElementById('contractRightPanel');
-        const {getFieldDecorator} = this.props.form;
-
-        return (
-            <div className="belong-customer-form">
-                {customers.map((customer, index) => {
-                    const fieldName = 'belong_customer' + index;
-                    {/*{...formItemLayout}*/}
-                    return (
-                        <FormItem
-                            key={index}
-                            className='belong-customer-item'
-
-                        >
-                            {getFieldDecorator(fieldName, {
-                                initialValue: customer.customer_name,
-                                rules: [this.getBelongCustomerValidateRules(index)],
-                            })(
-                                <Select
-                                    combobox
-                                    filterOption={false}
-                                    placeholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
-                                    onSearch={this.queryCustomer.bind(this, index)}
-                                    onSelect={this.onCustomerChoosen.bind(this, index)}
-                                    getPopupContainer={() => popupContainer}
-                                >
-                                    {this.getCustomerOptions()}
-                                </Select>
-                            )}
-                            {index === 0 && itemSize === 1 ? null : (
-                                <div className="circle-button circle-button-minus"
-                                    title={Intl.get('common.delete', '删除')}
-                                    onClick={this.deleteBelongCustomer.bind(this, index)}>
-                                    <Icon type="minus"/>
-                                </div>
-                            )}
-                        </FormItem>
-                    );
-                })}
-                <div className="circle-button circle-button-plus"
-                    title={Intl.get('common.add', '添加')}
-                    onClick={this.addBelongCustomer}>
-                    <Icon type="plus"/>
-                </div>
-            </div>
-        );
-    }
-
     renderChangeCustomerSelect() {
         return (
-            <div className="belong-customer clearfix">
-                {this.renderBelongCustomerField()}
-            </div>
+            <CustomerBelong
+                wrappedComponentRef={ref => this.CustomerBelongRef = ref}
+                customers={this.state.formData.customers}
+            />
         );
     }
 

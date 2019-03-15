@@ -30,8 +30,8 @@ class ProductList extends Component {
         ortherItems: [],
         //数据
         dataSource: [],
-        //是否显示保存取消按钮
-        isSaveCancelBtnShow: true,
+        //是否处于详情展示下
+        isDetailShow: false,
         //表格是否处于编辑状态
         isEdit: false,
         //编辑按钮是否显示
@@ -63,7 +63,7 @@ class ProductList extends Component {
         formItems: PropTypes.array,
         ortherItems: PropTypes.array,
         dataSource: PropTypes.array,
-        isSaveCancelBtnShow: PropTypes.bool,
+        isDetailShow: PropTypes.bool,
         isEdit: PropTypes.bool,
         isEditBtnShow: PropTypes.bool,
         contractId: PropTypes.string,
@@ -90,7 +90,7 @@ class ProductList extends Component {
             isEdit: this.props.isEdit,
             data: this.props.dataSource,
             isAddApp: false, // 是否添加产品
-            currentEditKey: null, // 当前编辑的产品
+            currentEditKey: null, // 当前编辑的产品,没有时，必须置为null
             unSelectDataTip: '', // 未选择选择应用时提示
             loading: false,
             saveErrMsg: '',
@@ -417,6 +417,47 @@ class ProductList extends Component {
         });
     }
 
+    // 渲染编辑按钮
+    renderEditBtnBlock(product, index) {
+        /*
+         *  是否正在编辑中
+         *  是：这时判断是添加的产品，是则显示X按钮，否不显示
+         *  否：显示可编辑按钮
+         */
+        if(product.isEditting){
+            // 添加的产品有X按钮,已有项不显示
+            const hasAddField = product.isAdd;
+            return (
+                hasAddField ?
+                    <span
+                        className="btn-bar"
+                        onClick={this.handleDelete.bind(this, index, DISPLAY_TYPES.ADD)}
+                        title={Intl.get('common.delete', '删除')}>
+                        <Icon type="close" theme="outlined"/>
+                    </span> : null
+            );
+        }else {
+            // 什么情况下显示，没有正在编辑的项,比如添加产品和编辑产品的情况都没有
+            const isShowEditAndDelBtn = !this.state.isAddApp && _.isNil(this.state.currentEditKey);
+            return (
+                isShowEditAndDelBtn ? <Spin spinning={this.state.saveStatus[index].loading} className='float-r'>
+                    <span className='btn-box'>
+                        <DetailEditBtn
+                            title={this.props.editBtnTip}
+                            onClick={this.showEdit.bind(this, index, DISPLAY_TYPES.UPDATE)}
+                        />
+                        <Popconfirm title={`${Intl.get('crm.contact.delete.confirm', '确认删除')}?`}
+                            onConfirm={this.handleDelete.bind(this, index, DISPLAY_TYPES.DELETE)}>
+                            <span title={Intl.get('common.delete', '删除')}>
+                                <i className='iconfont icon-delete' />
+                            </span>
+                        </Popconfirm>
+                    </span>
+                </Spin> : null
+            );
+        }
+    }
+
     renderProductTitle = (product, index) => {
         let appName = product.name;
         let appId = product.id;
@@ -429,15 +470,6 @@ class ProductList extends Component {
                 <span className='app-icon-name'>
                     {appName ? (
                         <span>
-                            {/*{matchAppObj && matchAppObj.client_image ? (
-                                <span className='app-self'>
-                                    <img src={matchAppObj.client_image} />
-                                </span>
-                            ) : (
-                                <span className='app-default'>
-                                    <i className='iconfont icon-app-default'></i>
-                                </span>
-                            )}*/}
                             <DefaultUserLogoTitle
                                 nickName={appName}
                                 userLogo={_.get(matchAppObj,'client_image','')}
@@ -448,35 +480,7 @@ class ProductList extends Component {
                         </span>
                     ) : null}
                 </span>
-                {/*
-                  *  是否正在编辑中
-                  *  是：则显示删除按钮，这时判断是添加的产品（直接删除）
-                  *  否：显示可编辑按钮
-                  */}
-                {product.isEditting ? (
-                    // 添加的产品有删除按钮
-                    product.isAdd ?
-                        <span
-                            className="btn-bar"
-                            onClick={this.handleDelete.bind(this, index, DISPLAY_TYPES.ADD)}
-                            title={Intl.get('common.delete', '删除')}>
-                            <Icon type="close" theme="outlined"/>
-                        </span> : null
-                ) : this.state.isAddApp || this.state.currentEditKey !== null ? null :
-                    <Spin spinning={this.state.saveStatus[index].loading} className='float-r'>
-                        <span className='btn-box'>
-                            <DetailEditBtn
-                                title={this.props.editBtnTip}
-                                onClick={this.showEdit.bind(this, index, DISPLAY_TYPES.UPDATE)}
-                            />
-                            <Popconfirm title={`${Intl.get('crm.contact.delete.confirm', '确认删除')}?`}
-                                onConfirm={this.handleDelete.bind(this, index, DISPLAY_TYPES.DELETE)}>
-                                <span title={Intl.get('common.delete', '删除')}><i
-                                    className='iconfont icon-delete'></i></span>
-                            </Popconfirm>
-                        </span>
-                    </Spin>
-                }
+                {this.renderEditBtnBlock(product, index)}
             </div>
         );
     };
@@ -487,7 +491,7 @@ class ProductList extends Component {
             const ortherItems = _.cloneDeep(this.props.ortherItems);
             if(!_.isNil(product.singleAdd)) {
                 _.each(ortherItems, item => {
-                    formItems.splice(item.index, 0, item);
+                    formItems.splice(_.get(item,'index', 0), 0, item);
                 });
             }
         }
@@ -528,25 +532,30 @@ class ProductList extends Component {
             </div>
         );
     };
+    // 渲染添加单个产品的按钮
+    renderSingleAddBtn() {
+        // 展示时，需要判断是否有产品在编辑中
+        let hasEditingItem = _.find(this.state.data, item => {
+            return item.isEditting;
+        });
+        if(!hasEditingItem){
+            return (<span
+                className="iconfont icon-add"
+                onClick={this.addList.bind(this)}
+                title={Intl.get('common.add', '添加')}/>
+            );
+        }else { return null; }
+    }
+    // 渲染添加产品的按钮
+    renderBtnBlock(appList) {
+        // 多个产品添加的按钮显示条件：可编辑，且属于添加情况下
+        // 单个产品添加的按钮显示条件： 可编辑，且属于详情展示情况下，且当前没有正在编辑的产品
 
-    renderBtnBlock(appList, isEditting) {
-        if(this.props.isEdit && !isEditting){
-            if(this.props.isSaveCancelBtnShow) {
-                {/*<AntcDropdown
-                    ref='appSelectorRef'
-                    content={<span>{this.props.addBtnText}</span>}
-                    overlayTitle={Intl.get('call.record.application.product', '应用产品')}
-                    okTitle={Intl.get('common.confirm', '确认')}
-                    cancelTitle={Intl.get('common.cancel', '取消')}
-                    overlayContent={this.renderAppListBlock()}
-                    handleSubmit={this.handleSubmitAppList}
-                    unSelectDataTip={this.state.unSelectDataTip}
-                    clearSelectData={this.clearSelectAppList}
-                    btnAtTop={false}
-                    placement='bottomRight'
-                />*/}
-                return <span className="iconfont icon-add" onClick={this.addList.bind(this)} title={Intl.get('common.add', '添加')}/>;
+        if(this.props.isEdit){ // 可编辑
+            if(this.props.isDetailShow) { // 详情展示，显示单个产品添加的按钮
+                return this.renderSingleAddBtn();
             }else {
+                // 显示添加多个产品的按钮
                 return (<div className="add-app-container">
                     <AntcAppSelector
                         ref='appSelectorRef'
@@ -572,11 +581,6 @@ class ProductList extends Component {
             minHeight: showNoDataTip ? 150 : 0,
             position: showNoDataTip ? 'relative' : 'inherit',
         };
-        // 展示时，需要判断是否有产品在编辑中
-        let isEditting = false;
-        _.each(this.state.data, item => {
-            this.props.isSaveCancelBtnShow && item.isEditting ? isEditting = true : null;
-        });
 
         return (
             <DetailCard
@@ -603,7 +607,7 @@ class ProductList extends Component {
                             ) : <NoDataIconTip tipContent={Intl.get('deal.detail.no.products', '暂无产品')}/>
                         }
                     </div>
-                    {this.renderBtnBlock(appList, isEditting)}
+                    {this.renderBtnBlock(appList)}
                 </div>)}
             />
         );

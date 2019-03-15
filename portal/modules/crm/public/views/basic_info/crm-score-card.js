@@ -141,7 +141,7 @@ class CrmScoreCard extends React.Component {
     }
 
     showUserDetail(userId) {
-        crmAction.setShowDetailUserId(userId);
+        this.props.showUserDetail(userId);
     }
 
     renderScoreDetail() {
@@ -232,5 +232,6 @@ CrmScoreCard.propTypes = {
     customerScore: PropTypes.number,
     customerId: PropTypes.string,
     customerUserSize: PropTypes.number,
+    showUserDetail: PropTypes.func,
 };
 export default CrmScoreCard;

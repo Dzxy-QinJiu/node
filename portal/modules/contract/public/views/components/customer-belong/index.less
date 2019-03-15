@@ -1,0 +1,41 @@
+/** Created by 2019-03-12 15:43 */
+@import "../../../../../../public/css/common-variables";
+.belong-customer-form {
+  width: 100%;
+
+  .belong-customer-item {
+    float: left;
+    width: calc(100% - 25px);
+
+    .ant-select, .ant-form-explain {
+      float: left;
+      width: 90% !important;
+    }
+  }
+
+  .circle-button {
+    position: relative;
+    margin: 0;
+    z-index: 1;
+    cursor: pointer;
+    top: 3px;
+    right: -10px;
+  }
+
+  .circle-button-minus, .circle-button-plus {
+    float: left;
+  }
+}
+
+.belong-customer {
+  .belong-customer-form {
+    .belong-customer-item {
+      margin-bottom: 10px;
+      width: calc(100% - 25px);
+    }
+
+    .circle-button-plus {
+      line-height: @line_height30;
+    }
+  }
+}

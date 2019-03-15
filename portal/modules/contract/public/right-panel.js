@@ -95,8 +95,8 @@ class ContractRightPanel extends React.Component {
         const wrapper = $('.add-form');
         let stepOffsetHeight = 0;
         // 判断是否是添加合同，不包括费用和合同详情
-        const isDetailType = ['detail', 'detailCost'].includes(this.props.view);
-        !isDetailType && this.state.currentView === 'sellForm' ? stepOffsetHeight = $('.ant-steps').offset().top : stepOffsetHeight = 80;
+        const isDetailShow = ['detail', 'detailCost'].includes(this.props.view);
+        !isDetailShow && this.state.currentView === 'sellForm' ? stepOffsetHeight = $('.ant-steps').offset().top : stepOffsetHeight = 80;
         //新高度 = 窗口高度 - 容器距窗口顶部的距离 - 底部留空
         const contentHeight = $(window).height() - stepOffsetHeight - 80;
         wrapper.height(contentHeight);
@@ -505,7 +505,7 @@ class ContractRightPanel extends React.Component {
     render() {
         let endPaneKey = '3';
         if ([PROJECT, PURCHASE].indexOf(this.state.currentCategory) > -1) endPaneKey = '2';
-        const isDetailType = ['detail', 'detailCost'].includes(this.props.view);
+        const isDetailShow = ['detail', 'detailCost'].includes(this.props.view);
         const {isLoading} = this.state;
         //内容区高度
         let contentHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA;
@@ -524,7 +524,7 @@ class ContractRightPanel extends React.Component {
         contractFormPanes['1'] = props => (
             <div className={props.className} style={{height: contentHeight}}>
                 <GeminiScrollBar ref="gemiScrollBar">
-                    {!props.isDetailType && props.currentView === 'sellForm' ?
+                    {!props.isDetailShow && props.currentView === 'sellForm' ?
                         <AddBasic
                             ref="addBasic"
                             contract={this.props.contract}
@@ -550,15 +550,15 @@ class ContractRightPanel extends React.Component {
         this.state.showDiffAmountWarning ? totalAmountPrice = Intl.get('contract.mount.check.tip', '总价合计不能大于合同总额{num}元，请核对',{num: this.state.total_amount}) : '';
         let totalAmountClass = classnames('total-amount-price',{
             'total-amount-error': this.state.showDiffAmountWarning,
-            'float-r': !isDetailType,
-            'float-l': isDetailType
+            'float-r': !isDetailShow,
+            'float-l': isDetailShow
         });
         let productServiceHeight = contentHeight;
-        if(!isDetailType && [PRODUCT,SERVICE].indexOf(this.state.currentCategory) > -1 && this.state.currentTabKey === '2') {
+        if(!isDetailShow && [PRODUCT,SERVICE].indexOf(this.state.currentCategory) > -1 && this.state.currentTabKey === '2') {
             productServiceHeight -= LAYOUT_CONSTANTS.CONTRACT_AMOUNT;
         }
 
-        if ([PRODUCT].indexOf(this.state.currentCategory) > -1 && !isDetailType) {
+        if ([PRODUCT].indexOf(this.state.currentCategory) > -1 && !isDetailShow) {
 
             contractFormPanes['2'] = props => (
                 <div className={props.className} style={{height: productServiceHeight}}>
@@ -567,7 +567,7 @@ class ContractRightPanel extends React.Component {
                         <AddProduct
                             ref="addProduct"
                             parent={this}
-                            isDetailType={props.isDetailType}
+                            isDetailShow={props.isDetailShow}
                             appList={this.props.appList}
                             contract={this.props.contract}
                             updateScrollBar={this.updateScrollBar}
@@ -578,20 +578,20 @@ class ContractRightPanel extends React.Component {
             );
         }
 
-        if (this.state.currentCategory === SERVICE && !isDetailType) {
+        if (this.state.currentCategory === SERVICE && !isDetailShow) {
             contractFormPanes['2'] = props => (
                 <div className={props.className} style={{height: productServiceHeight}}>
                     <div className={totalAmountClass}>{totalAmountPrice}</div>
                     <GeminiScrollBar ref='gemiScrollBar'>
                         <AddReport
                             ref="addReport"
-                            isDetailType={props.isDetailType}
+                            isDetailShow={props.isDetailShow}
                             updateScrollBar={this.updateScrollBar}
                         />
                         <AddProduct
                             ref="addProduct"
                             parent={this}
-                            isDetailType={props.isDetailType}
+                            isDetailShow={props.isDetailShow}
                             appList={this.props.appList}
                             contract={this.props.contract}
                             updateScrollBar={this.updateScrollBar}
@@ -604,7 +604,7 @@ class ContractRightPanel extends React.Component {
         contractFormPanes[endPaneKey] = props => (
             <div className={props.className}>
                 <GeminiScrollBar ref='gemiScrollBar' style={{height: contentHeight}}>
-                    {!props.isDetailType && props.currentView === 'sellForm' ?
+                    {!props.isDetailShow && props.currentView === 'sellForm' ?
                         <AddRepayment
                             ref="addRepayment"
                             parent={this}
@@ -625,7 +625,7 @@ class ContractRightPanel extends React.Component {
             contractContents.push(
                 value({
                     className: this.state.currentTabKey !== key ? 'hide' : '',
-                    isDetailType,
+                    isDetailShow,
                     currentView: this.state.currentView
                 })
             );
@@ -688,7 +688,7 @@ class ContractRightPanel extends React.Component {
                                         parent={this}
                                         contract={this.props.contract}
                                         reports={this.props.contract.reports}
-                                        isDetailType={isDetailType}
+                                        isDetailShow={isDetailShow}
                                         updateScrollBar={this.updateScrollBar}
                                         refreshCurrentContract={this.props.refreshCurrentContract}
                                     />
@@ -699,7 +699,7 @@ class ContractRightPanel extends React.Component {
                                     parent={this}
                                     contract={this.props.contract}
                                     products={this.props.contract.products}
-                                    isDetailType={isDetailType}
+                                    isDetailShow={isDetailShow}
                                     appList={this.props.appList}
                                     updateScrollBar={this.updateScrollBar}
                                     refreshCurrentContract={this.props.refreshCurrentContract}
@@ -755,13 +755,13 @@ class ContractRightPanel extends React.Component {
 
         return (
             <div id="contractRightPanel">
-                {!isDetailType ?
+                {!isDetailShow ?
                     <Steps current={this.state.currentTabKey} size="small">
                         {STEP_TITLES[this.props.contractType].map(title => <Step key={title} title={title} />)}
                     </Steps> : null}
 
                 {/*添加其他合同（包括采购合同）*/}
-                { !isDetailType ? (
+                { !isDetailShow ? (
                     <div className="add-form">
                         {contractContents}
                         <div className="step-button">

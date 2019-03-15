@@ -22,6 +22,7 @@ import classNames from 'classnames';
 import ErrorDataTip from '../components/error-data-tip';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
+import crmAction from '../../action/crm-actions';
 
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
@@ -467,7 +468,9 @@ class CustomerUsers extends React.Component {
             </span>
         );
     }
-
+    showUserDetail(userId){
+        this.props.showUserDetail(userId);
+    }
     renderCrmUserList(isApplyButtonShow) {
         if (this.state.isLoading) {
             return <Spinner />;
@@ -483,15 +486,25 @@ class CustomerUsers extends React.Component {
                 <ul className="crm-user-list">
                     {crmUserList.map((userObj, index) => {
                         let user = _.isObject(userObj) ? userObj.user : {};
+                        let userNameText = `${_.get(user, 'user_name', '')}(${_.get(user, 'nick_name', '')})`;
                         return (
                             <div className="crm-user-item" key={index}>
                                 <div className="crm-user-name">
                                     {isShowCheckbox ? (
                                         <Checkbox checked={user.checked} disabled={!!this.state.applyType}
                                             onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
-                                            {user.user_name}({user.nick_name})
+                                            <span className={classNames('user-name-text', {'can-click-open-detail': !this.props.isMerge})}
+                                                title={userNameText}
+                                                onClick={this.showUserDetail.bind(this, user.user_id)}>
+                                                {userNameText}
+                                            </span>
                                         </Checkbox>) :
-                                        <span className="no-checkbox-text">{user.user_name}({user.nick_name})</span>
+                                        <span
+                                            className={classNames('user-name-text', {'can-click-open-detail': !this.props.isMerge})}
+                                            title={userNameText}
+                                            onClick={this.showUserDetail.bind(this, user.user_id)}>
+                                            {userNameText}
+                                        </span>
                                     }
                                 </div>
                                 <div
@@ -586,6 +599,7 @@ CustomerUsers.propTypes = {
     isMerge: PropTypes.bool,
     curCustomer: PropTypes.object,
     closeOpenAppPanel: PropTypes.func,
-    ShowCustomerUserListPanel: PropTypes.func
+    ShowCustomerUserListPanel: PropTypes.func,
+    showUserDetail: PropTypes.func
 };
 export default CustomerUsers;

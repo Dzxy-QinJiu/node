@@ -660,13 +660,13 @@ class CallRecordAnalyis extends React.Component {
                     onSelect={this.handleSelect}
                 >
                     <Option value={CALL_TYPE_OPTION.ALL}>
-                        <span>{Intl.get('user.online.all.type', '全部类型')}</span>
+                        {Intl.get('user.online.all.type', '全部类型')}
                     </Option>
                     <Option value={CALL_TYPE_OPTION.PHONE}>
-                        <span>{Intl.get('call.record.call.center', '呼叫中心')}</span>
+                        {Intl.get('call.record.call.center', '呼叫中心')}
                     </Option>
                     <Option value={CALL_TYPE_OPTION.APP}>
-                        <span>{Intl.get('common.ketao.app', '客套APP')}</span>
+                        {Intl.get('common.ketao.app', '客套APP')}
                     </Option>
                 </SelectFullWidth>
             </div>

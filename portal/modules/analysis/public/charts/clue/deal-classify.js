@@ -9,7 +9,7 @@ import { argCallbackUnderlineTimeToTime, argCallbackMemberIdsToMemberId } from '
 export function getClueDealClassifyChart() {
     return {
         title: '成交数分类统计',
-        chartType: 'pie',
+        chartType: 'bar_pie',
         url: '/rest/clue/v1/statistical/clue_classify/1000/1',
         argCallback: arg => {
             argCallbackUnderlineTimeToTime(arg);

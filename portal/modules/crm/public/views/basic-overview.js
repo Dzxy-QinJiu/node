@@ -509,6 +509,7 @@ class BasicOverview extends React.Component {
                     />
                     {hasPrivilege(PRIVILEGE_MAP.CRM_CUSTOMER_SCORE_RECORD) && !this.props.disableEdit ? (
                         <CrmScoreCard customerScore={basicData.score} customerId={basicData.id}
+                            showUserDetail={this.props.showUserDetail}
                             customerUserSize={_.get(basicData, 'app_user_ids.length', 0)}/>) : null
                     }
                     <TagCard title={`${Intl.get('crm.competing.products', '竞品')}:`}
@@ -552,6 +553,7 @@ BasicOverview.propTypes = {
     refreshCustomerList: PropTypes.func,
     disableEdit: PropTypes.bool,
     updateCustomerLastContact: PropTypes.func,
+    showUserDetail: PropTypes.func,
 };
 module.exports = BasicOverview;
 

@@ -8,6 +8,7 @@ let Option = Select.Option;
 let FormItem = Form.Item;
 import Trace from 'LIB_DIR/trace';
 import 'MOD_DIR/user_manage/public/css/user-info.less';
+var AlertTimer = require('CMP_DIR/alert-timer');
 import DetailCard from 'CMP_DIR/detail-card';
 import EditableTable from '../components/editable-table';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
@@ -374,7 +375,6 @@ class RepaymentInfo extends React.Component {
                             initialValue: ['true', true].indexOf(formData.is_first) > -1,
                         })(
                             <Checkbox
-                                // checked={['true', true].indexOf(formData.is_first) > -1}
                             >
                                 {Intl.get('contract.167', '首笔回款')}
                             </Checkbox>
@@ -512,14 +512,19 @@ class RepaymentInfo extends React.Component {
         const total_plan_amount = contract_amount - total_amount;
 
         const content = () => {
+            //能否添加回款进程，是展示状态，且有权限编辑，且尾款不等于0
+            const hasAddPrivilege = this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege && total_plan_amount > 0;
             return (
                 <div className="repayment-list">
-                    {/*是展示状态，且有权限编辑，且尾款不等于0*/}
-                    {this.state.displayType === DISPLAY_TYPES.TEXT && this.state.hasEditPrivilege && total_plan_amount > 0 ? (
+                    { hasAddPrivilege ? (
                         <span className="iconfont icon-add detail-edit-add" onClick={this.addList}
                             title={Intl.get('common.add', '添加')}/>) : null}
                     {this.renderRepaymentList(repayLists, total_plan_amount)}
-                    {this.state.saveErrMsg ? <Alert type="error" message={this.state.saveErrMsg} showIcon /> : null}
+                    {this.state.saveErrMsg ? <AlertTimer time={4000} type="error" message={this.state.saveErrMsg} showIcon onHide={() => {
+                        this.setState({
+                            saveErrMsg: ''
+                        });
+                    }} /> : null}
                 </div>
             );
         };

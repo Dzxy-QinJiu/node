@@ -36,7 +36,7 @@ exports.getMyUserApplyWorkList = function(req, res) {
             url: '/rest/base/v1/message/applylist/worklist',
             req: req,
             res: res
-        }, null);
+        }, req.query);
 };
 //我审批过的申请列表
 exports.getApplyListApprovedByMe = function(req, res) {

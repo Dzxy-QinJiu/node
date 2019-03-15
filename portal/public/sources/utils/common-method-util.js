@@ -270,6 +270,12 @@ exports.disabledBeforeToday = function(current) {
     return current && current < moment().subtract(1, 'days').endOf('day');
 };
 
+
+//不能选今天之后的时间
+exports.disabledAfterToday = function(current) {
+    return current && current > moment().endOf('day');
+};
+
 /**
  * 递归获取要传到后端的所有团队id的数组
  * @param teamTotalArr 跟据所选的id取得的包含下级团队的团队详情列表

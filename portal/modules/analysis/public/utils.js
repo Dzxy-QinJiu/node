@@ -139,6 +139,18 @@ export function argCallbackUnderlineTimeToTime(arg) {
     }
 }
 
+//查询参数回调函数: 不带下划线的开始结束时间转成带下划线的
+export function argCallbackTimeToUnderlineTime(arg) {
+    let query = arg.query;
+
+    if (query) {
+        query.start_time = query.starttime;
+        query.end_time = query.endtime;
+        delete query.starttime;
+        delete query.endtime;
+    }
+}
+
 //查询参数回调函数: team_ids 转 team_id
 export function argCallbackTeamIdsToTeamId(arg) {
     const query = arg.query;
@@ -159,6 +171,18 @@ export function argCallbackMemberIdsToMemberId(arg) {
         if (query.member_ids) {
             query.member_id = query.member_ids;
             delete query.member_ids;
+        }
+    }
+}
+
+//查询参数回调函数: member_id 转 member_ids
+export function argCallbackMemberIdToMemberIds(arg) {
+    const query = arg.query;
+
+    if (query) {
+        if (query.member_id) {
+            query.member_ids = query.member_id;
+            delete query.member_id;
         }
     }
 }

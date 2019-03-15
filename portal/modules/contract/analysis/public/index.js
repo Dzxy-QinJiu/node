@@ -320,7 +320,8 @@ class ContractAnalysis extends React.Component {
                             />
                         </Col>
                     </Row>
-                    {this.filterPanelRef && this.state.showIntro && !haveSeenIntro ? <ModalIntro
+                    {/*暂时将引导的功能去掉*/}
+                    {this.filterPanelRef && this.state.showIntro && !haveSeenIntro && false ? <ModalIntro
                         introModalLayout={commonIntroModalLayout}
                         $introElement={$(ReactDOM.findDOMNode(this.filterPanelRef)).find('.all-field-container')}
                         handleOnclickHole={this.handleHideIntro.bind(this)}

@@ -25,7 +25,7 @@ function UserApplyActions() {
     this.getApplyList = function(obj, callback) {
         this.dispatch({loading: true, error: false});
         if (['all','false'].includes(obj.approval_state)){
-            ApplyApproveAjax.getMyUserApplyWorkList().sendRequest({}).success((workList) => {
+            ApplyApproveAjax.getMyUserApplyWorkList().sendRequest({keyword: obj.keyword}).success((workList) => {
                 //如果是待我审批的列表，不需要在发获取全部列表的请求了
                 if (obj.approval_state && obj.approval_state === 'false') {
                     //需要对全部列表都加一个可以审批的属性

@@ -57,8 +57,6 @@ CrmStore.prototype.setInitialState = function() {
     };
     //关注客户是否置顶的标识
     this.isConcernCustomerTop = getConcernCustomerTopFlag();
-    //展示用户详情的userId
-    this.showDetailUserId = '';
 };
 
 //获取当前用户是否设置了关注客户置顶
@@ -571,9 +569,7 @@ CrmStore.prototype.setPageNum = function(pageNum) {
 CrmStore.prototype.showClueDetail = function(clueId) {
     this.clueId = clueId;
 };
-CrmStore.prototype.setShowDetailUserId = function(userId) {
-    this.showDetailUserId = userId;
-};
+
 CrmStore.prototype.setCurCustomers = function(curCustomers) {
     this.curCustomers = curCustomers;
 };

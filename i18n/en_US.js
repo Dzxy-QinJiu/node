@@ -138,8 +138,8 @@ var en_US = {
     'common.add.app': 'Add Applications',//添加应用
     'common.app': 'Application',//应用
     'common.sure': 'Confirm',//确定
-    'common.nickname.is.existed': 'The name is already exists!', // 姓名已存在！
-    'common.nickname.is.unique': 'The name already exists', // 姓名唯一性校验出错！
+    'common.name.is.existed': 'The name is already exists!', // 姓名已存在！
+    'common.name.is.unique': 'The name already exists', // 姓名唯一性校验出错！
     'common.is.existed': 'The username is already exists!',//用户名已存在！
     'common.username.is.unique': 'The username already exists',//用户名唯一性校验出错！
     'common.phone.is.existed': 'The phone number already exists',//电话已存在！
@@ -1417,6 +1417,17 @@ var en_US = {
     'crm.contact.wechat.add': 'Add weChat',//添加微信
     'crm.contact.email.none': 'No email',//暂无邮箱
     'crm.contact.email.add': 'Add email',//添加邮箱
+    'crm.contact.sex.male': 'Male',//男
+    'crm.contact.sex.female': 'Female',//女
+    'crm.contact.sex': 'Sex',//性别
+    'crm.contact.birthday': 'Birthday',//生日
+    'crm.contact.hobby': 'Hobby',//爱好
+    'crm.contact.hobby.placeholder': 'Please enter interests and hobbies of contacts',//请输入联系人的兴趣爱好
+    'crm.contact.sex.placeholder': 'Please select sex',//请选择性别
+    'crm.contact.sex.set': 'set sex',//设置性别
+    'crm.contact.sex.none': 'No sex set',//未设置性别
+    'crm.contact.hobby.add': 'Add hobby',//添加爱好
+    'crm.contact.hobby.none': 'No hobby add',//未添加爱好
     'crm.second.sales': 'Second Sales',//联合跟进人
     'crm.apply.active.email.tip': 'Your mailbox is not activated. Please {activeEmail} first',//您的邮箱未激活，请先{aciveEmail}
     'crm.this.week.contact': 'Customers contacted this week',//本周联系过的客户
@@ -2804,5 +2815,6 @@ var en_US = {
     'apply.not.setting.password': 'Please input password!',//请手动输入密码！
     'clue.import.file.type': 'Only files in {type} format can be imported!',//只能导入{type}格式的文件！
     'common.callsystem.get.faild': 'Failed to get the organization phone system configuration',// 获取组织电话系统配置失败
+    'contract.invocie.delete.faild': 'Failed to delete invoice amount',// 删除发票额失败
 };
 export default en_US;

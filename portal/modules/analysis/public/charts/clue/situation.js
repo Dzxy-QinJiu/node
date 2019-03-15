@@ -7,7 +7,7 @@ import { processClueStatisticsData } from '../../utils';
 export function getClueSituationChart(paramObj = {}) {
     return {
         title: paramObj.title,
-        chartType: 'pie',
+        chartType: 'bar_pie',
         url: `/rest/analysis/customer/v2/clue/:data_type/statistical/field/${paramObj.field}`,
         dataField: 'result',
         processData: processClueStatisticsData.bind(this, false),
@@ -18,6 +18,10 @@ export function getClueSituationChart(paramObj = {}) {
                 x: 'left',
                 pageIconSize: 10,
             }
+        },
+        customOption: {
+            proportion: 0.6,
+            pieLabelLength: 8
         },
         noExportCsv: true,
     };

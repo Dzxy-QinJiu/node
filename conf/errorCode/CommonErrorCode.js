@@ -365,6 +365,7 @@ function getConfigJson(req) {
         '30001': {'httpCode': 500, 'message': backendIntl.get('contract.add.error', '添加合同失败')},
         '30002': {'httpCode': 500, 'message': backendIntl.get('contract.edit.error', '修改合同失败')},
         '30610': {'httpCode': 500, 'message': backendIntl.get('contract.add.error', '添加合同失败')},
+        '30008': {'httpCode': 500, 'message': backendIntl.get('contract.invocie.delete.faild', '删除发票额失败')},
         /*周报统计*/
         '90008': {'httpCode': 500, 'message': backendIntl.get('errorcode.148', '电话时长统计视图获取失败')},        
         /*其他*/

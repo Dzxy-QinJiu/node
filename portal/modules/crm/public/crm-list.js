@@ -28,7 +28,6 @@ import { crmEmitter } from 'OPLATE_EMITTER';
 import routeList from 'MOD_DIR/common/route';
 import ajax from 'MOD_DIR/common/ajax';
 import Trace from 'LIB_DIR/trace';
-import crmAjax from './ajax/index';
 import crmUtil from './utils/crm-util';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
@@ -47,7 +46,6 @@ import {OTHER_FILTER_ITEMS, DAY_TIME} from 'PUB_DIR/sources/utils/consts';
 import {getStartTime, getEndTime} from 'PUB_DIR/sources/utils/time-format-util';
 import ShearContent from 'CMP_DIR/shear-content';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
-import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import {REG_CRM_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -124,7 +122,6 @@ class Crm extends React.Component {
             currentId: crmStoreData.currentId,
             curCustomer: crmStoreData.curCustomer,
             clueId: crmStoreData.clueId,//展示线索详情的id
-            showDetailUserId: crmStoreData.showDetailUserId,//展示用户详情的userId
             keyword: $('.search-input').val() || '',
             isAddFlag: _this.state && _this.state.isAddFlag || false,
             batchChangeShow: _this.state && _this.state.batchChangeShow || false,
@@ -852,7 +849,7 @@ class Crm extends React.Component {
 
         //如果是通过列表面板打开的
         if (this.props.listPanelParamObj) {
-            params = this.props.listPanelParamObj;
+            params = _.cloneDeep(this.props.listPanelParamObj);
         //如果是从首页跳转过来的
         } else if (this.props.fromSalesHome) {
             const locationState = this.props.location.state;
@@ -861,8 +858,16 @@ class Crm extends React.Component {
 
             //如果locationState中包含cache_key，表明是查的有效客户活跃数详细列表，需要在查询参数中增加cache_key和sub_cache_key
             if (locationState.cache_key) {
+                params.url = '/rest/analysis/customer/v2/customer/active_rate/detail/:page_size/:page_num';
+                params.type = 'get';
                 params.cache_key = locationState.cache_key;
                 params.sub_cache_key = locationState.sub_cache_key;
+                params.page_size = {
+                    type: 'params'
+                };
+                params.page_num = {
+                    type: 'params'
+                };
             } else {
                 params.data = JSON.stringify({id: locationState.customerIds});
             }
@@ -1078,7 +1083,7 @@ class Crm extends React.Component {
         var phoneList = phoneArray.map((item) => {
             if (item) {
                 return (
-                    <div>
+                    <div className="phone-out-container">
                         <PhoneCallout
                             phoneNumber={item}
                             contactName={record.contact}
@@ -1343,9 +1348,6 @@ class Crm extends React.Component {
                     onClick={this.handleFocusCustomerTop.bind(this)}/>
                 <span>{Intl.get('call.record.contacts', '联系人')}</span>
             </span>);
-    }
-    closeUserDetail(){
-        CrmAction.setShowDetailUserId('');
     }
     render() {
         var _this = this;
@@ -1698,14 +1700,6 @@ class Crm extends React.Component {
                         /> : null
                     }
                 </RightPanel>
-                {this.state.showDetailUserId ?
-                    <RightPanel
-                        className="apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"
-                        showFlag={this.state.showDetailUserId}
-                    >
-                        <UserDetail userId={this.state.showDetailUserId}
-                            closeRightPanel={this.closeUserDetail}/>
-                    </RightPanel> : null}
                 <BootstrapModal
                     show={this.state.showDeleteConfirm}
                     onHide={this.hideDeleteModal}
