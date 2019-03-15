@@ -48,7 +48,11 @@ export default function(arg) {
 
                     //当textStatus为parsererror时，意味着错误信息的内容不是json格式的，一般是返回了html内容，此时不返回该错误信息，而是返回默认出错信息，否则返回具体错误信息
                     if (textStatus !== 'parsererror') {
-                        errMsg = jqXHR.responseJSON || jqXHR.responseText;
+                        if(jqXHR.responseJSON || jqXHR.responseJSON === ''){
+                            errMsg = jqXHR.responseJSON;
+                        } else {
+                            errMsg = jqXHR.responseText;
+                        }
                     }
 
                     reject(errMsg);
@@ -67,7 +71,11 @@ export default function(arg) {
 
             //当textStatus为parsererror时，意味着错误信息的内容不是json格式的，一般是返回了html内容，此时不返回该错误信息，而是返回默认出错信息，否则返回具体错误信息
             if (textStatus !== 'parsererror') {
-                errMsg = jqXHR.responseJSON || jqXHR.responseText;
+                if(jqXHR.responseJSON || jqXHR.responseJSON === ''){
+                    errMsg = jqXHR.responseJSON;
+                } else {
+                    errMsg = jqXHR.responseText;
+                }
             }
 
             Deferred.reject(errMsg);

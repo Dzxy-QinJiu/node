@@ -18,6 +18,7 @@ require('./index.less');
 import {Input, Radio} from 'antd';
 const RadioGroup = Radio.Group;
 import classNames from 'classnames';
+let selectTimeout = null;
 class AlwaysShowSelect extends React.Component {
     constructor(props) {
         super(props);
@@ -36,10 +37,13 @@ class AlwaysShowSelect extends React.Component {
 
     //选择某一项时
     onSelectChange = (data) => {
-        this.setState({value: data.value || '', isSearch: false, searchVal: ''});
         this.props.onChange(data.value);
         //把选中项的名称也传出去
         this.props.getSelectContent(data.name);
+        if(selectTimeout){
+            clearTimeout(selectTimeout);
+        }
+        this.setState({value: data.value || '', isSearch: false});
     };
     //输入内容进行搜索时
     onSearch = (e) => {
@@ -51,12 +55,13 @@ class AlwaysShowSelect extends React.Component {
     };
     //输入框获取焦点时
     inputFocus = () => {
-        this.setState({isSearch: true, value: ''});
+        this.setState({isSearch: true, value: '', searchVal: ''});
     };
     //获取选择下拉选项
     getSelectOptions = (dataList) => {
         if (dataList.length) {
-            let options = dataList.map((data, index) => {
+            let options = [];
+            _.each(dataList, (data, index) => {
                 let className = classNames('select-item', {'item-active': data.value === this.state.value});
                 var splitArr = data.name.split('-');
                 var dataDsp = data.name;
@@ -70,12 +75,13 @@ class AlwaysShowSelect extends React.Component {
                             </span> : null}
                     </span>;
                 }
-                return (<li className={className} key={index}
+                let selectOption = (<li className={className} key={index}
                     onClick={this.onSelectChange.bind(this, data)}>
                     <Radio value={data.value}>
                         {dataDsp}
                     </Radio>
                 </li>);
+                options.push(selectOption);
             });
             if (this.props.hasClearOption) {//有清空选择的选项
                 let className = classNames('select-item', {'item-active': !this.state.value});

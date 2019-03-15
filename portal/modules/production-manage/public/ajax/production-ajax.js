@@ -11,7 +11,7 @@ exports.getProductions = function(query) {
         },
         error: function(xhr, textStatus) {
             if ('abort' !== textStatus) {
-                Deferred.reject(xhr.responseJSON || xhr.responseText);
+                Deferred.reject(xhr.responseJSON);
             }
         }
     });
