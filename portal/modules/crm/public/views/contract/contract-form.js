@@ -181,7 +181,7 @@ class Contract extends React.Component {
                         </FormItem>
                         <FormItem {...formItemLayout} label={Intl.get('contract.34', '签订时间')}>
                             <DatePicker
-                                value={moment(formData.date)}
+                                value={formData.date ? moment(formData.date) : ''}
                                 onChange={this.handleSignContractDate}
                             />
                         </FormItem>
@@ -242,13 +242,16 @@ class Contract extends React.Component {
         this.setState({ isLoading: true });
         ContractAjax.addContract({ type: 'sell' }, reqData).then((resData) => {
             if (resData && resData.code === 0) {
-                this.state.errMsg = '';
-                this.state.isLoading = false;
+                this.setState({
+                    errMsg: '',
+                    isLoading: false
+                });
                 ContractAction.refreshContractList(resData.result);
             } else {
-                this.state.errMsg = Intl.get('crm.154', '添加失败');
+                this.setState({
+                    errMsg: Intl.get('crm.154', '添加失败'),
+                });
             }
-            this.setState(this.state);
         }, (errMsg) => {
             this.setState({
                 isLoading: false,
@@ -315,6 +318,10 @@ class Contract extends React.Component {
     }
 }
 
-const ContractForm = Form.create()(Contract);
-
-module.exports = ContractForm;
+Contract.propTypes = {
+    curCustomer: PropTypes.object,
+    customerId: PropTypes.string,
+    form: PropTypes.object,
+    appList: PropTypes.array,
+};
+module.exports = Form.create()(Contract);
