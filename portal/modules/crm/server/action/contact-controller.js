@@ -1,9 +1,12 @@
 var contactService = require('../service/contact-service');
-
+const _ = require('lodash');
 exports.getContactList = function(req, res) {
-    contactService.getContactList(req, res, req.body)
+    contactService.getContactList(req, res)
         .on('success', function(data) {
-            res.status(200).json(data);
+            res.status(200).json({
+                result: _.get(data, '[0]') ? data : [],
+                total: _.get(data, 'length', 0)
+            });
         }).on('error', function(err) {
             res.status(500).json(err && err.message);
         });

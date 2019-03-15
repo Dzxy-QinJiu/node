@@ -8,15 +8,16 @@ var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var EventEmitter = require('events').EventEmitter;
 const contactUrl = '/rest/customer/v3/contacts';
+const _ = require('lodash');
 
 //获取联系人列表
-exports.getContactList = function(req, res, reqBody) {
-    return restUtil.authRest.post(
+exports.getContactList = function(req, res) {
+    return restUtil.authRest.get(
         {
-            url: contactUrl + '/query/' + req.params.type + '/50/1',
+            url: contactUrl + _.get(req.body,'query.id', ''),
             req: req,
             res: res
-        }, reqBody);
+        }, null);
 };
 
 //设置默认联系人
