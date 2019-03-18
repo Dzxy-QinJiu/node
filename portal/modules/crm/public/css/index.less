@@ -231,9 +231,6 @@
                 .phone-callout-container{
                     width: 100%;
                     display: inline-block;
-                    .iconfont.icon-active-call_record-ico{
-                        float: right;
-                    }
                 }
                 &:not(:first-child){
                     margin-top:10px;
@@ -282,6 +279,16 @@
     .content-block {
         tbody {
             cursor: pointer;
+            tr{
+                .icon-active-call_record-ico,.icon-active-call_record-ico.able-call{
+                  visibility:hidden;
+                }
+                &:hover{
+                    .icon-active-call_record-ico,  .icon-active-call_record-ico.able-call{
+                        visibility: visible;
+                    }
+                }
+            }
         }
     }
     .total {
