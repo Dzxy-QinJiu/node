@@ -1,8 +1,7 @@
 const PropTypes = require('prop-types');
 var React = require('react');
 require('./index.less');
-const img_src = require('../../modules/common/public/image/user-info-logo.jpg');
-import {Input,Icon,Checkbox,Alert} from 'antd';
+import {Checkbox,Alert,Button } from 'antd';
 
 import immutable from 'immutable';
 import classNames from 'classnames';
@@ -20,6 +19,7 @@ class SearchIconList extends React.Component {
             totalList: totalList,
             selectedList: props.selectedList,
             onlyShowSelected: false,
+            showAppFixedLength: true
         };
     }
     getSearchResult(args) {
@@ -123,6 +123,11 @@ class SearchIconList extends React.Component {
         const totalList = this.getSearchResult({keyword});
         this.setState({totalList,keyword});
     }
+    handleShowAllApp = () => {
+        this.setState({
+            showAppFixedLength: false
+        });
+    };
     render() {
         const id_field = this.props.id_field;
         const name_field = this.props.name_field;
@@ -155,7 +160,7 @@ class SearchIconList extends React.Component {
                         ) : null
                     }
                     {
-                        this.state.totalList.map((item) => {
+                        this.state.totalList.map((item, index) => {
                             const obj = item.entity;
                             const id = obj[id_field];
                             const name = obj[name_field];
@@ -168,13 +173,33 @@ class SearchIconList extends React.Component {
                                 'selected': item.selected,
                                 'icon-hide': hide
                             });
-
-                            return (
-                                <div className={cls} onClick={this.toggleSelectedItem.bind(this,obj)} key={id}>
-                                    <div>{name}</div>
-                                </div>
-                            );
+                            if (this.state.showAppFixedLength ) {
+                                if (index < 20) {
+                                    return (
+                                        <div className={cls} onClick={this.toggleSelectedItem.bind(this,obj)} key={id}>
+                                            <div>{name}</div>
+                                        </div>
+                                    );
+                                } else {
+                                    return null;
+                                }
+                            } else {
+                                return (
+                                    <div className={cls} onClick={this.toggleSelectedItem.bind(this,obj)} key={id}>
+                                        <div>{name}</div>
+                                    </div>
+                                );
+                            }
                         })
+                    }
+                    {
+                        this.state.totalList.length > 20 && this.state.showAppFixedLength ? (
+                            <div>
+                                <Button type='primary' onClick={this.handleShowAllApp}>
+                                    {Intl.get('crm.basic.more','更多')}
+                                </Button>
+                            </div>
+                        ) : null
                     }
                 </div>
             </div>
@@ -192,7 +217,8 @@ SearchIconList.defaultProps = {
     search_fields: ['app_name'],
     notFoundContent: Intl.get('user.no.related.app','暂无符合条件的应用'),
     onItemsChange: noop,
-    searchPlaceholder: ''//搜索框的提示内容
+    searchPlaceholder: '',//搜索框的提示内容
+    showAppFixedLength: true // 当应用数大于20时，只显示前20个应用，点击后，显示全部应用
 };
 
 SearchIconList.propTypes = {
@@ -203,7 +229,8 @@ SearchIconList.propTypes = {
     search_fields: PropTypes.array,
     onItemsChange: PropTypes.func,
     notFoundContent: PropTypes.string,
-    searchPlaceholder: PropTypes.string
+    searchPlaceholder: PropTypes.string,
+    showAppFixedLength: PropTypes.bool
 };
 
 export default SearchIconList;
