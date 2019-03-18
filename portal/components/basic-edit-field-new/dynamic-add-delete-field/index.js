@@ -104,7 +104,7 @@ class DynamicAddDelField extends React.Component {
         };
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const fieldKey = `${this.props.field}[${key}]`;
-        let initValue = this.state.value[key];
+        let initValue = _.get(this.state, `value[${key}]`, '');
         if (this.props.type === 'phone') {
             let validateRules = this.props.validateRules || [];
             if (index === 0) {//电话必填的验证
@@ -115,7 +115,7 @@ class DynamicAddDelField extends React.Component {
             }
             return (
                 <PhoneInput
-                    initialValue={initValue || ''}
+                    initialValue={initValue}
                     placeholder={Intl.get('clue.add.phone.num', '电话号码')}
                     validateRules={validateRules}
                     id={fieldKey}
