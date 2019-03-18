@@ -29,5 +29,25 @@ export function getCustomerTrendChart(paramObj = {}) {
                 _.set(option, 'yAxis[0].min', minValue);
             }
         },
+        processCsvData: chart => {
+            const data = chart.data;
+            let csvData = [];
+
+            const firstDataItem = _.first(data);
+
+            if (firstDataItem) {
+                const thead = _.map(firstDataItem.data, 'name');
+
+                csvData.push(thead);
+
+                _.each(data, item => {
+                    let tr = _.map(item.data, 'value');
+
+                    csvData.push(tr);
+                });
+            }
+
+            return csvData;
+        }
     };
 }
