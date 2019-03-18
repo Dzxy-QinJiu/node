@@ -43,6 +43,8 @@ export function getCustomerStageChart(paramObj = {}) {
             minSize: '5%',
         },
         csvOption: {
+            //导出的csv数据的取值从showValue字段中取而非从默认的value中取
+            //因为为了显示效果需要，value有可能已不是真实的数据值，showValue才是
             valueField: 'showValue',
         },
     };
