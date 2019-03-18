@@ -17,7 +17,9 @@ import {validateRequiredOne, disabledAfterToday} from 'PUB_DIR/sources/utils/com
 import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 var uuid = require('uuid/v4');
-
+//滚动条
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+const CONTACT_ITEMS_HEIGHHT = 300;
 function cx(classNames) {
     if (typeof classNames === 'object') {
         return Object.keys(classNames).filter(function(className) {
@@ -505,135 +507,137 @@ var ContactForm = createReactClass({
         this.phoneInputRefs = [];
         let contactWayAddObj = contact.contactWayAddObj || {};
         return (
-            <Form layout='horizontal' className="crm-contact-form" autocomplete="off" data-trace="联系人表单">
-                <Validation ref="validation" onValidate={this.handleValidate}>
-                    <FormItem
-                        colon={false}
-                        label={Intl.get('common.name', '姓名')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
-                    >
-                        <Col span={12} className="form-col-padding">
-                            <FormItem validateStatus={this.renderValidateStyle('name')}
-                                help={status.name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.name.errors && status.name.errors.join(','))}>
-                                <Validator rules={[{
-                                    max: 50,
-                                    message: Intl.get('crm.contact.name.length', '请输入最多50个字符')
-                                }]}>
-                                    <Input name="name" value={formData.name}
+            <Form layout='horizontal' style={{height: CONTACT_ITEMS_HEIGHHT}} className="crm-contact-form" autocomplete="off" data-trace="联系人表单">
+                <GeminiScrollbar className="srollbar-out-card-style">
+                    <Validation ref="validation" onValidate={this.handleValidate}>
+                        <FormItem
+                            colon={false}
+                            label={Intl.get('common.name', '姓名')}
+                            labelCol={{span: 2}}
+                            wrapperCol={{span: 22}}
+                        >
+                            <Col span={12} className="form-col-padding">
+                                <FormItem validateStatus={this.renderValidateStyle('name')}
+                                    help={status.name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.name.errors && status.name.errors.join(','))}>
+                                    <Validator rules={[{
+                                        max: 50,
+                                        message: Intl.get('crm.contact.name.length', '请输入最多50个字符')
+                                    }]}>
+                                        <Input name="name" value={formData.name}
+                                            autocomplete="off"
+                                            placeholder={Intl.get('crm.contact.name.length', '请输入最多50个字符')}
+                                            onBlur={this.validateContactNameDepartment.bind(this)}
+                                            onChange={this.setField.bind(this, 'name')}
+                                        />
+                                    </Validator>
+                                </FormItem>
+                            </Col>
+                            <Col span={6} className="form-col-padding">
+                                <FormItem>
+                                    <Input name="department" value={formData.department}
                                         autocomplete="off"
-                                        placeholder={Intl.get('crm.contact.name.length', '请输入最多50个字符')}
+                                        placeholder={Intl.get('crm.contact.deparment.input', '请输入部门')}
                                         onBlur={this.validateContactNameDepartment.bind(this)}
-                                        onChange={this.setField.bind(this, 'name')}
+                                        onChange={this.setField.bind(this, 'department')}
                                     />
-                                </Validator>
-                            </FormItem>
-                        </Col>
-                        <Col span={6} className="form-col-padding">
-                            <FormItem>
-                                <Input name="department" value={formData.department}
-                                    autocomplete="off"
-                                    placeholder={Intl.get('crm.contact.deparment.input', '请输入部门')}
-                                    onBlur={this.validateContactNameDepartment.bind(this)}
-                                    onChange={this.setField.bind(this, 'department')}
-                                />
-                            </FormItem>
-                        </Col>
-                        <Col span={6}>
-                            <FormItem>
-                                <Input name="position" value={formData.position}
-                                    autocomplete="off"
-                                    placeholder={Intl.get('crm.114', '请输入职位')}
-                                    onChange={this.setField.bind(this, 'position')}
-                                />
-                            </FormItem>
-                        </Col>
-                    </FormItem>
-                    {this.renderValidNameDepartmentTip()}
-                    <FormItem
-                        className="contact-role-item"
-                        colon={false}
-                        label={Intl.get('user.apply.detail.table.role', '角色')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
-                    >
-                        <RadioGroup onChange={this.setField.bind(this, 'role')}
-                            value={_.get(formData, 'role', Intl.get('crm.115', '经办人'))}>
-                            {ContactUtil.roleArray.map(function(role, index) {
-                                return (<Radio value={role} key={index}>{role}</Radio>);
-                            })}
-                        </RadioGroup>
-                    </FormItem>
-                    <FormItem
-                        className="contact-sex-item"
-                        colon={false}
-                        label={Intl.get('crm.contact.sex', '性别')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
-                    >
-                        <Radio.Group onChange={this.setField.bind(this, 'sex')}
-                            value={_.get(formData, 'sex', '')}>
-                            {_.map(ContactUtil.sexArray, (sex, index) => {
-                                return (<Radio key={index} value={sex}>{sex}</Radio>);
-                            })}
-                        </Radio.Group>
-                    </FormItem>
-                    <FormItem
-                        className="contact-birthday-item"
-                        colon={false}
-                        label={Intl.get('crm.contact.birthday', '生日')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
-                    >
-                        <DatePicker onChange={this.setField.bind(this, 'birthday')}
-                            showToday={false} disabledDate={disabledAfterToday}
-                            value={formData.birthday ? moment(formData.birthday, 'YYYY-MM-DD') : null}/>
-                    </FormItem>
-                    <FormItem
-                        className="contact-hobby-item"
-                        colon={false}
-                        label={Intl.get('crm.contact.hobby', '爱好')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
-                    >
-                        <Input value={_.get(formData, 'hobby', '')}
-                            onChange={this.setField.bind(this, 'hobby')}
-                            placeholder={Intl.get('crm.contact.hobby.placeholder', '请输入联系人的兴趣爱好')}/>
-                    </FormItem>
-                    <FormItem
-                        className="contact-remark-item"
-                        colon={false}
-                        label={Intl.get('common.remark', '备注')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
-                    >
-                        <Input.TextArea autosize={{ minRows: 2, maxRows: 6 }}
-                            value={_.get(formData, 'remark', '')}
-                            onChange={this.setField.bind(this, 'remark')}
-                            placeholder={Intl.get('user.input.remark', '请输入备注')}
-                        />
-                    </FormItem>
-                    {//电话
-                        _.isArray(contactWayAddObj.phone) && contactWayAddObj.phone.length ? contactWayAddObj.phone.map((phone, index) => {
-                            return this.renderPhoneInput(index, contactWayAddObj.phone.length, formData, status);
-                        }) : [this.renderPhoneInput(0, 1, formData, status)]
-                    }
-                    {//qq
-                        _.isArray(contactWayAddObj.qq) && contactWayAddObj.qq.length ? contactWayAddObj.qq.map((qq, index) => {
-                            return this.renderContactWayInput('QQ', 'qq', index, contactWayAddObj.qq.length, formData, status);
-                        }) : [this.renderContactWayInput('QQ', 'qq', 0, 1, formData, status)]
-                    }
-                    {//微信
-                        _.isArray(contactWayAddObj.weChat) && contactWayAddObj.weChat.length ? contactWayAddObj.weChat.map((weChat, index) => {
-                            return this.renderContactWayInput(Intl.get('crm.58', '微信'), 'weChat', index, contactWayAddObj.weChat.length, formData, status);
-                        }) : [this.renderContactWayInput(Intl.get('crm.58', '微信'), 'weChat', 0, 1, formData, status)]
-                    }
-                    {//邮箱
-                        _.isArray(contactWayAddObj.email) && contactWayAddObj.email.length ? contactWayAddObj.email.map((email, index) => {
-                            return this.renderContactWayInput(Intl.get('common.email', '邮箱'), 'email', index, contactWayAddObj.email.length, formData, status);
-                        }) : [this.renderContactWayInput(Intl.get('common.email', '邮箱'), 'email', 0, 1, formData, status)]
-                    }
-                </Validation>
+                                </FormItem>
+                            </Col>
+                            <Col span={6}>
+                                <FormItem>
+                                    <Input name="position" value={formData.position}
+                                        autocomplete="off"
+                                        placeholder={Intl.get('crm.114', '请输入职位')}
+                                        onChange={this.setField.bind(this, 'position')}
+                                    />
+                                </FormItem>
+                            </Col>
+                        </FormItem>
+                        {this.renderValidNameDepartmentTip()}
+                        <FormItem
+                            className="contact-role-item"
+                            colon={false}
+                            label={Intl.get('user.apply.detail.table.role', '角色')}
+                            labelCol={{span: 2}}
+                            wrapperCol={{span: 22}}
+                        >
+                            <RadioGroup onChange={this.setField.bind(this, 'role')}
+                                value={_.get(formData, 'role', Intl.get('crm.115', '经办人'))}>
+                                {ContactUtil.roleArray.map(function(role, index) {
+                                    return (<Radio value={role} key={index}>{role}</Radio>);
+                                })}
+                            </RadioGroup>
+                        </FormItem>
+                        <FormItem
+                            className="contact-sex-item"
+                            colon={false}
+                            label={Intl.get('crm.contact.sex', '性别')}
+                            labelCol={{span: 2}}
+                            wrapperCol={{span: 22}}
+                        >
+                            <Radio.Group onChange={this.setField.bind(this, 'sex')}
+                                value={_.get(formData, 'sex', '')}>
+                                {_.map(ContactUtil.sexArray, (sex, index) => {
+                                    return (<Radio key={index} value={sex}>{sex}</Radio>);
+                                })}
+                            </Radio.Group>
+                        </FormItem>
+                        <FormItem
+                            className="contact-birthday-item"
+                            colon={false}
+                            label={Intl.get('crm.contact.birthday', '生日')}
+                            labelCol={{span: 2}}
+                            wrapperCol={{span: 22}}
+                        >
+                            <DatePicker onChange={this.setField.bind(this, 'birthday')}
+                                showToday={false} disabledDate={disabledAfterToday}
+                                value={formData.birthday ? moment(formData.birthday, 'YYYY-MM-DD') : null}/>
+                        </FormItem>
+                        <FormItem
+                            className="contact-hobby-item"
+                            colon={false}
+                            label={Intl.get('crm.contact.hobby', '爱好')}
+                            labelCol={{span: 2}}
+                            wrapperCol={{span: 22}}
+                        >
+                            <Input value={_.get(formData, 'hobby', '')}
+                                onChange={this.setField.bind(this, 'hobby')}
+                                placeholder={Intl.get('crm.contact.hobby.placeholder', '请输入联系人的兴趣爱好')}/>
+                        </FormItem>
+                        <FormItem
+                            className="contact-remark-item"
+                            colon={false}
+                            label={Intl.get('common.remark', '备注')}
+                            labelCol={{span: 2}}
+                            wrapperCol={{span: 22}}
+                        >
+                            <Input.TextArea autosize={{ minRows: 2, maxRows: 6 }}
+                                value={_.get(formData, 'remark', '')}
+                                onChange={this.setField.bind(this, 'remark')}
+                                placeholder={Intl.get('user.input.remark', '请输入备注')}
+                            />
+                        </FormItem>
+                        {//电话
+                            _.isArray(contactWayAddObj.phone) && contactWayAddObj.phone.length ? contactWayAddObj.phone.map((phone, index) => {
+                                return this.renderPhoneInput(index, contactWayAddObj.phone.length, formData, status);
+                            }) : [this.renderPhoneInput(0, 1, formData, status)]
+                        }
+                        {//qq
+                            _.isArray(contactWayAddObj.qq) && contactWayAddObj.qq.length ? contactWayAddObj.qq.map((qq, index) => {
+                                return this.renderContactWayInput('QQ', 'qq', index, contactWayAddObj.qq.length, formData, status);
+                            }) : [this.renderContactWayInput('QQ', 'qq', 0, 1, formData, status)]
+                        }
+                        {//微信
+                            _.isArray(contactWayAddObj.weChat) && contactWayAddObj.weChat.length ? contactWayAddObj.weChat.map((weChat, index) => {
+                                return this.renderContactWayInput(Intl.get('crm.58', '微信'), 'weChat', index, contactWayAddObj.weChat.length, formData, status);
+                            }) : [this.renderContactWayInput(Intl.get('crm.58', '微信'), 'weChat', 0, 1, formData, status)]
+                        }
+                        {//邮箱
+                            _.isArray(contactWayAddObj.email) && contactWayAddObj.email.length ? contactWayAddObj.email.map((email, index) => {
+                                return this.renderContactWayInput(Intl.get('common.email', '邮箱'), 'email', index, contactWayAddObj.email.length, formData, status);
+                            }) : [this.renderContactWayInput(Intl.get('common.email', '邮箱'), 'email', 0, 1, formData, status)]
+                        }
+                    </Validation>
+                </GeminiScrollbar>
             </Form>
         );
     },
