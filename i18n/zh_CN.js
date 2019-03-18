@@ -2785,6 +2785,7 @@ var zh_CN = {
     'member.application': '成员申请',
     'member.apply.failed.get.worklist': '获取由我审批的成员申请失败',
     'member.apply.failed.get.all.apply': '获取全部成员申请失败',
+    'member.apply.no.member.apply': '暂无符合条件的成员申请',
     'member.apply.detail.auto.generation.password': '自动生成密码',
     'manager.role.has.not.setting.phone.systerm': '您尚未开通电话系统或未设置座席号!',
     'sales.role.has.not.setting.phone.systerm': '您尚未开通电话系统或未设置座席号，请通知管理员!',
