@@ -271,10 +271,12 @@ class CrmRightList extends React.Component {
                     message.success(Intl.get('user.info.setting.succeess', '设置成功！'));
                     //更新store中对应成员的销售角色
                     SalesHomeAction.updateSalesTeamMembersObj(this.state.salesTeamMembersObj);
+                } else {
+                    message.error(Intl.get('failed.set.no.tip', '设置失败'));
                 }
             },
             error: (errorInfo) => {
-                message.error(errorInfo.responseJSON);
+                message.error(errorInfo.responseJSON || Intl.get('failed.set.no.tip', '设置失败'));
                 //还原成员销售角色
                 this.setState({salesTeamMembersObj: $.extend(true, {}, this.props.salesTeamMembersObj)});
             }
@@ -294,10 +296,12 @@ class CrmRightList extends React.Component {
                     message.success(Intl.get('user.info.setting.succeess', '设置成功！'));
                     //更新store中对应成员的销售角色
                     SalesHomeAction.updateSalesTeamMembersObj(this.state.salesTeamMembersObj);
+                } else {
+                    message.error(Intl.get('failed.set.no.tip', '设置失败'));
                 }
             },
             error: (errorInfo) => {
-                message.error(errorInfo.responseJSON);
+                message.error(errorInfo.responseJSON || Intl.get('failed.set.no.tip', '设置失败'));
                 //还原成员销售角色
                 this.setState({salesTeamMembersObj: $.extend(true, {}, this.props.salesTeamMembersObj)});
             }
@@ -307,11 +311,17 @@ class CrmRightList extends React.Component {
     //获取销售角色的菜单
     getSalesRoleMenus = (sales) => {
         let salesRoleList = this.state.salesRoleList;
-        return (<Menu selectedKeys={[sales.teamRoleId]} onClick={this.changeAllSalesRole.bind(this, sales)}>
-            {_.isArray(salesRoleList) && salesRoleList.length ? _.map(salesRoleList, role => {
-                return (<Menu.Item key={role.id}>{role.name} </Menu.Item>);
-            }) : null}
-        </Menu>);
+        return (
+            <Menu
+                selectedKeys={[sales.teamRoleId]}
+                onClick={this.changeAllSalesRole.bind(this, sales)}
+            >
+                {_.isArray(salesRoleList) && salesRoleList.length ? _.map(salesRoleList, role => {
+                    return (<Menu.Item key={role.id}>{role.name} </Menu.Item>);
+                }) : null}
+            </Menu>
+
+        );
     };
 
     //获取销售团队的成员列表
