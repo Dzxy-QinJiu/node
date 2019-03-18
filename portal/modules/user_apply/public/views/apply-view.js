@@ -334,7 +334,7 @@ class ApplyTabContent extends React.Component {
     };
 
     changeSearchInputValue = (value) => {
-        value = value ? value : '';
+        value = _.trim(value) || '';
         if (_.trim(value) !== _.trim(this.state.searchKeyword)) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.pull-right'), '根据申请人/客户名/用户名搜索');
             UserApplyActions.changeSearchInputValue(value);
