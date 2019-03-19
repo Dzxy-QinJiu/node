@@ -191,7 +191,7 @@ class UserLoginAnalysis extends React.Component {
                         <li>
                             <span>{Intl.get('user.login.latest.activity.score', '最新活跃度')}:</span>
                             <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_activity_score') || 0)}
-                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.activity', '最近30天的活跃天数/30。该分项在总分钟占比30%')}>
+                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.activity', '最近30天的活跃天数/30。该分项在总分中占比30%')}>
                                     <Icon type="question-circle-o" />
                                 </Tooltip>
                             </span>
@@ -199,7 +199,7 @@ class UserLoginAnalysis extends React.Component {
                         <li>
                             <span>{Intl.get('user.login.latest.immersion.score', '最新沉浸度')}:</span>
                             <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_immersion_score') || 0)}
-                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.deep', '最近30天的在线分钟数/(30*24*60)。该分项在总分钟占比30%')}>
+                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.deep', '最近30天的在线分钟数/(30*24*60)。该分项在总分中占比30%')}>
                                     <Icon type="question-circle-o" />
                                 </Tooltip>
                             </span>
@@ -207,7 +207,7 @@ class UserLoginAnalysis extends React.Component {
                         <li>
                             <span>{Intl.get('user.login.freshness.score', '新鲜度')}:</span>
                             <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'freshness_score') || 0)}
-                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.fresh', '距离最近的登录时间。该分项在总分钟占比20%')}>
+                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.fresh', '距离最近的登录时间。该分项在总分中占比20%')}>
                                     <Icon type="question-circle-o" />
                                 </Tooltip>
                             </span>
@@ -215,7 +215,7 @@ class UserLoginAnalysis extends React.Component {
                         <li>
                             <span>{Intl.get('user.login.history.activity.score', '历史活跃度')}:</span>
                             <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_activity_score') || 0)}
-                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.historyActivity', '总活跃天数/开通的总天数。该分项在总分钟占比10%')}>
+                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.historyActivity', '总活跃天数/开通的总天数。该分项在总分中占比10%')}>
                                     <Icon type="question-circle-o" />
                                 </Tooltip>
                             </span>
@@ -223,7 +223,7 @@ class UserLoginAnalysis extends React.Component {
                         <li>
                             <span>{Intl.get('user.login.history.immersion.score', '历史沉浸度')}:</span>
                             <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_immersion_score') || 0)}
-                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.historyFresh', '总在线分钟数/开通总分钟数。该分项在总分钟占比10%')}>
+                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.historyFresh', '总在线分钟数/开通总分钟数。该分项在总分中占比10%')}>
                                     <Icon type="question-circle-o" />
                                 </Tooltip>
                             </span>
