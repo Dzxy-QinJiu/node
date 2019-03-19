@@ -2,6 +2,8 @@
  * 转出客户数趋势
  */
 
+import { argCallbackTimeToUnderlineTime, argCallbackMemberIdToMemberIds } from '../../utils';
+
 export function getCustomerTransferTrendChart() {
     return {
         title: '转出客户数趋势',
@@ -13,22 +15,12 @@ export function getCustomerTransferTrendChart() {
             value: 'month',
         }],
         argCallback: arg => {
-            let query = arg.query;
+            argCallbackTimeToUnderlineTime(arg);
+            argCallbackMemberIdToMemberIds(arg);
 
-            if (query && query.starttime && query.endtime) {
-                query.start_time = query.starttime;
-                query.end_time = query.endtime;
-                delete query.starttime;
-                delete query.endtime;
+            if (_.get(arg, 'query.app_id')) {
+                delete arg.query.app_id;
             }
-
-            if (query.member_id) {
-                query.member_ids = query.member_id;
-                delete query.member_id;
-            }
-
-
-            delete query.app_id;
         },
         dataField: 'list',
         processOption: (option, props) => {
@@ -59,6 +51,27 @@ export function getCustomerTransferTrendChart() {
                 data: legendData
             };
             option.series = series;
+        },
+        processCsvData: chart => {
+            let csvData = [];
+
+            const firstItem = _.first(chart.data);
+
+            if (firstItem) {
+                let thead = [''];
+                const dateCols = _.map(firstItem.interval_list, 'date_str');
+                thead = thead.concat(dateCols);
+                csvData.push(thead);
+
+                _.each(chart.data, item => {
+                    let tr = [item.name];
+                    const valueCols = _.map(firstItem.interval_list, 'number');
+                    tr = tr.concat(valueCols);
+                    csvData.push(tr);
+                });
+            }
+
+            return csvData;
         }
     };
 }
