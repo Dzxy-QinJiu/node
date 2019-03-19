@@ -2570,11 +2570,11 @@ var en_US = {
     'clue.export.clue.list': 'Export clue',//导出线索
     'clue.list.clue.availibility': 'Invalid clue',//无效线索
     'common.memeber.all': 'All members', //'全部成员',
-    'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分钟占比30%',
-    'user.detail.analysis.tip.deep': 'Online minutes in recent 30 days, this takes 30% in total score', //'最近30天的在线分钟数/(30*24*60)。该分项在总分钟占比30%',
-    'user.detail.analysis.tip.fresh': 'Last login time, this takes 20% in total score', //'距离最近的登录时间。该分项在总分钟占比20%',
-    'user.detail.analysis.tip.historyActivity': 'Total active day number, this takes 10% in total score', //'总活跃天数/开通的总天数。该分项在总分钟占比10%',
-    'user.detail.analysis.tip.historyFresh': 'Total online minutes, this takes 10% in total score', //'总在线分钟数/开通总分钟数。该分项在总分钟占比10%',
+    'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
+    'user.detail.analysis.tip.deep': 'Online minutes in recent 30 days, this takes 30% in total score', //'最近30天的在线分钟数/(30*24*60)。该分项在总分中占比30%',
+    'user.detail.analysis.tip.fresh': 'Last login time, this takes 20% in total score', //'距离最近的登录时间。该分项在总分中占比20%',
+    'user.detail.analysis.tip.historyActivity': 'Total active day number, this takes 10% in total score', //'总活跃天数/开通的总天数。该分项在总分中占比10%',
+    'user.detail.analysis.tip.historyFresh': 'Total online minutes, this takes 10% in total score', //'总在线分钟数/开通总分钟数。该分项在总分中占比10%',
     'user.info.binding.email': 'Bind mailbox',//绑定邮箱
     'schedule.manage.has.no.expired.tasks': 'You have no expired tasks',//您没有超期未完成的任务
     'user.get.user.info.null': 'The information that gets the logged in user is empty',//获取不到登录用户的信息
