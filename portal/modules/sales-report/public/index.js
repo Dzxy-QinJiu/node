@@ -235,6 +235,7 @@ class SalesReport extends React.Component {
                         disableDateAfterToday={true}
                         range='week'
                         onSelect={this.onDateChange}
+                        selectedTimeFormat='int'
                         className="btn-item"
                     >
                         <AntcDatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</AntcDatePicker.Option>
