@@ -5,8 +5,10 @@
 
 'use strict';
 var crmService = require('../service/crm-manage-service');
-var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var _ = require('lodash');
+const multiparty = require('multiparty');
+const fs = require('fs');
+
 
 function templateFile(res, example, filename) {
     var example = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(example)]);
@@ -351,14 +353,31 @@ exports.queryCustomer = function(req, res) {
 };
 // 处理上传文件
 exports.uploadCustomers = function(req, res) {
-    //调用上传请求服务
-    crmService.uploadCustomers(req, res)
-        .on('success', function(data) {
-            res.json(data.result);
-        })
-        .on('error', function(err) {
-            res.json(err.message);
-        });
+    var form = new multiparty.Form();
+    //开始处理上传请求
+    form.parse(req, function(err, fields, files) {
+        // 获取上传文件的临时路径
+        let tmpPath = files['customers'][0].path;
+        // 文件内容为空的处理
+        let file_size = files['customers'][0].size;
+        if(file_size === 0 || file_size / 1024 / 1024 > 10) {
+            res.json(false);
+            return;
+        }
+        // 文件不为空的处理
+        let formData = {
+            attachments: [fs.createReadStream(tmpPath)]
+        };
+        //调用上传请求服务
+        crmService.uploadCustomers(req, res, formData)
+            .on('success', function(data) {
+                res.json(data.result);
+            })
+            .on('error', function(err) {
+                res.json(err && err.message);
+            });
+    });
+
 };
 
 // 处理导入客户模板文件
@@ -382,6 +401,7 @@ exports.callOut = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
 //标识能否继续添加客户
 exports.getCustomerLimit = function(req, res) {
     crmService.getCustomerLimit(req, res).on('success', function(data) {

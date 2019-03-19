@@ -450,12 +450,12 @@ exports.getDynamicList = function(req, res, customer_id) {
             res: res
         }, null);
 };
-exports.uploadCustomers = function(req, res) {
+exports.uploadCustomers = function(req, res, formData) {
     return restUtil.authRest.post({
         url: crmRestApis.upload,
         req: req,
         res: res,
-        'pipe-upload-file': true,
+        formData: formData,
         timeout: uploadTimeOut
     }, null);
 };
@@ -479,6 +479,7 @@ exports.callOut = function(req, res, queryObj) {
             res: res
         }, queryObj);
 };
+
 //获取是否能继续添加客户
 exports.getCustomerLimit = function(req, res) {
     return restUtil.authRest.get(
