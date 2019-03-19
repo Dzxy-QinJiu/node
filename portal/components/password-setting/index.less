@@ -7,16 +7,33 @@
     font-size: 14px;
     font-weight: normal;
   }
-  .input-container{
-    float: left;
+  .check-container{
+    overflow: hidden;
+    height: 20px;
+    line-height: 20px;
+    .check-box-label{
+      float: left;
+    }
+    label{
+     margin-bottom: 0;
+    }
+  }
+  .input-container, .check-container{
+    display: block;
     position: relative;
-    width: 260px;
+    width: 300px;
+    margin-top: 4px;
+    font-size: 14px;
+    color: #9f9fa1;
+    .pwd-label{
+      padding-right: 6px;
+    }
     .iconfont{
       position: absolute;
       cursor: pointer;
       color: rgba(0,0,0,3.65);
       font-size: 20px;
-      right: 15px;
+      right: 25px;
       top:0;
     }
     .warning-text{
@@ -35,7 +52,4 @@
 .password-setting.has-input{
   min-height: 30px;
   line-height: 30px;
-  .ant-checkbox-wrapper{
-    float: left;
-  }
 }

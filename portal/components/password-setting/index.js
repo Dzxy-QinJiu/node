@@ -64,17 +64,22 @@ class PasswordSetting extends React.Component {
         var checkStatus = this.state.checkStatus;
         var isPasswordType = this.getIntputPasswordType();
         var iconCls = classNames('iconfont',{'icon-password-visible': isPasswordType, 'icon-password-hide': !isPasswordType});
+        var title = isPasswordType ? Intl.get('apply.detail.show.password', '显示密码') : Intl.get('apply.detail.hide.password', '隐藏密码');
         var containerCls = classNames('password-setting',{'has-input': !checkStatus});
         var showWarning = this.props.showWariningTip;
         return (
             <div className={containerCls}>
-                <Checkbox checked={checkStatus} onChange={this.onCheckChange}>{Intl.get('apply.setting.password.auto', '自动生成密码')}</Checkbox>
+                <div className="check-container">
+                    <span className="check-box-label"></span>
+                    {Intl.get('apply.setting.password.auto', '自动生成密码')}: <Checkbox checked={checkStatus} onChange={this.onCheckChange}></Checkbox>
+                </div>
                 {!checkStatus ?
-                    <span className="input-container">
+                    <div className="input-container">
+                        <span className="pwd-label">{Intl.get('common.password', '密码')}:</span>
                         <Input className={showWarning ? 'has-warning' : ''} type={this.state.inputType} onChange={this.onInputPasswordChange} autocomplete="new-password" readOnly={this.state.readonly} onFocus={this.removeAttribute} onBlur={this.setAttribute} />
-                        <i className={iconCls} onClick={this.handlePasswordVisible}></i>
+                        <i title={title} className={iconCls} onClick={this.handlePasswordVisible}></i>
                         {showWarning ? <span className="warning-text">{this.props.warningText}</span> : null}
-                    </span>
+                    </div>
                     : null}
             </div>
         );

@@ -2844,5 +2844,7 @@ var zh_CN = {
     'clue.import.file.type': '只能导入{type}格式的文件！',
     'common.callsystem.get.faild': '获取组织电话系统配置失败',
     'contract.invocie.delete.faild': '删除发票额失败',
+    'apply.detail.show.password': '显示密码',
+    'apply.detail.hide.password': '隐藏密码'
 };
 export default zh_CN;

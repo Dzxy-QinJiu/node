@@ -746,10 +746,13 @@ const ApplyViewDetail = createReactClass({
                             <span
                                 className="user-info-text edit-name-wrap">{this.renderUserNameBlock(detailInfo)}</span>
                         </div>);
-                    let passwordSetting = this.hasApprovalPrivilege() ? (<PasswordSetting
+                    var checkStatus = this.state.isOplateUser ? true : false;
+                    var detailInfoObj = this.state.detailInfoObj.info;
+                    var isRealmAdmin = detailInfoObj.showApproveBtn;
+                    let passwordSetting = this.hasApprovalPrivilege() && this.isUnApproved() && isRealmAdmin ? (<PasswordSetting
                         onCheckboxChange={this.onCheckboxChange}
                         onInputPasswordChange={this.onInputPasswordChange}
-                        checkStatus={this.state.checkStatus}
+                        checkStatus={checkStatus}
                         showWariningTip={this.state.showWariningTip}
                         warningText= {Intl.get('apply.not.setting.password', '请手动输入密码！')}
                     />) : null;
