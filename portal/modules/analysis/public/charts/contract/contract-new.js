@@ -2,7 +2,7 @@
  * 团队或个人统计
  */
 
-import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, processDataNumToValue } from '../../utils';
+import { argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId, processDataNumToValue } from '../../utils';
 
 export function getContractNewChart() {
     return {
@@ -12,6 +12,7 @@ export function getContractNewChart() {
         argCallback: arg => {
             argCallbackUnderlineTimeToTime(arg);
             argCallbackTeamIdsToTeamId(arg);
+            argCallbackMemberIdsToMemberId(arg);
         },
         processData: processDataNumToValue
     };
