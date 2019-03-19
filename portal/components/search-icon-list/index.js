@@ -128,10 +128,18 @@ class SearchIconList extends React.Component {
             showAppFixedLength: false
         });
     };
+    renderAppItem = (cls, obj, id, name) => {
+        return (
+            <div className={cls} onClick={this.toggleSelectedItem.bind(this,obj)} key={id}>
+                <div>{name}</div>
+            </div>
+        );
+    };
     render() {
         const id_field = this.props.id_field;
         const name_field = this.props.name_field;
         const onlyShowSelected = this.state.onlyShowSelected;
+        const totalList = _.filter(this.state.totalList, item => item.searched);
         return (
             <div className="search-icon-list">
                 <div className="search-icon-list-header clearfix">
@@ -160,7 +168,7 @@ class SearchIconList extends React.Component {
                         ) : null
                     }
                     {
-                        this.state.totalList.map((item, index) => {
+                        totalList.length && totalList.map((item, index) => {
                             const obj = item.entity;
                             const id = obj[id_field];
                             const name = obj[name_field];
@@ -175,25 +183,15 @@ class SearchIconList extends React.Component {
                             });
                             if (this.state.showAppFixedLength ) {
                                 if (index < 20) {
-                                    return (
-                                        <div className={cls} onClick={this.toggleSelectedItem.bind(this,obj)} key={id}>
-                                            <div>{name}</div>
-                                        </div>
-                                    );
-                                } else {
-                                    return null;
+                                    return this.renderAppItem(cls, obj, id, name);
                                 }
                             } else {
-                                return (
-                                    <div className={cls} onClick={this.toggleSelectedItem.bind(this,obj)} key={id}>
-                                        <div>{name}</div>
-                                    </div>
-                                );
+                                return this.renderAppItem(cls, obj, id, name);
                             }
                         })
                     }
                     {
-                        this.state.totalList.length > 20 && this.state.showAppFixedLength ? (
+                        totalList.length > 20 && this.state.showAppFixedLength ? (
                             <div>
                                 <Button type='primary' onClick={this.handleShowAllApp}>
                                     {Intl.get('crm.basic.more','更多')}
