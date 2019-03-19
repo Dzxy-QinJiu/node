@@ -314,7 +314,7 @@ exports.exportData = function(req, res) {
 
                     traceAddTime = traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : '';
                     var tracePersonName = _.get(value, '[0].nick_name', '');//跟进人的名字
-                    value = tracePersonName + Intl.get('schedule.expired.call.time.at', '于') + traceAddTime + Intl.get('clue.add.trace.content', '添加跟进内容') + ':' + _.get(value,'[0].remark');
+                    value = _.get(value,'[0].remark') + '(' + tracePersonName + Intl.get('schedule.expired.call.time.at', '于') + traceAddTime + Intl.get('common.add', '添加') + ')';
                 }
                 if (column.dataIndex === 'user_name' && item.sales_team){
                     value += `—${item.sales_team}`;
