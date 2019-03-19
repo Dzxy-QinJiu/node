@@ -379,6 +379,15 @@ exports.getCompanyByName = function(req, res) {
         res.status(500).json(errorObj && errorObj.message);
     });
 };
+//获取组织信息
+exports.getOrganization = function(req, res) {
+    DesktopLoginService.getOrganization(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(errorObj) {
+        res.status(500).json(errorObj && errorObj.message);
+    });
+};
+
 //获取短信验证码
 exports.getVertificationCode = function(req, res) {
     DesktopLoginService.getVertificationCode(req, res).on('success', function(data) {
