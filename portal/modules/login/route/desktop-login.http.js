@@ -165,5 +165,12 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    },{//获取组织的信息
+        'method': 'get',
+        'path': '/organization/info',
+        'handler': 'getOrganization',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };
