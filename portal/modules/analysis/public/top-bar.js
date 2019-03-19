@@ -251,6 +251,7 @@ class TopBar extends React.Component {
                     range={datePickerOption.range}
                     start_time={datePickerOption.startTime}
                     end_time={datePickerOption.endTime}
+                    selectedTimeFormat='int'
                     onSelect={this.onSelectDate}>
                     {datePickerOption.periodOptions.map((option, index) => (
                         <AntcDatePicker.Option value={option.value}
