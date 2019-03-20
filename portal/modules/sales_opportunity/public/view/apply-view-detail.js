@@ -32,7 +32,8 @@ import {
     handleDiffTypeApply,
     formatSalesmanList,
     formatUsersmanList,
-    updateUnapprovedCount
+    updateUnapprovedCount,
+    isLeaderOfCandidate
 } from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
@@ -585,8 +586,14 @@ class ApplyViewDetail extends React.Component {
             }
         }
         var addApplyNextCandidate = null;
-        //如果是管理员或者是待我审批的申请，我都可以把申请进行转出
-        if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || detailInfoObj.showApproveBtn) && detailInfoObj.status === 'ongoing'){
+        //如果是管理员或者我是待审批人或者我是待审批人的上级领导，我都可以把申请进行转出
+        var isLeader = false,candidateList = this.state.candidateList;
+        if (candidateList.length){
+            isLeaderOfCandidate(candidateList,(result) => {
+                isLeader = result;
+            });
+        }
+        if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || detailInfoObj.showApproveBtn || isLeader) && detailInfoObj.status === 'ongoing'){
             addApplyNextCandidate = this.renderAddApplyNextCandidate;
         }
         return (

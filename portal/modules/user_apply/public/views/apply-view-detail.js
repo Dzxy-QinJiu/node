@@ -44,7 +44,7 @@ var UserTypeConfigForm = require('./user-type-config-form');
 import Trace from 'LIB_DIR/trace';
 
 var moment = require('moment');
-import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDesc,formatUsersmanList,updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
+import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDesc,formatUsersmanList,updateUnapprovedCount,isLeaderOfCandidate} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
@@ -2054,6 +2054,12 @@ const ApplyViewDetail = createReactClass({
         var isRealmAdmin = detailInfoObj.showApproveBtn;
         //是否审批
         let isConsumed = !this.isUnApproved();
+        var isLeader = false,candidateList = this.state.candidateList;
+        if (candidateList.length){
+            isLeaderOfCandidate(candidateList,(result) => {
+                isLeader = result;
+            });
+        }
         return (
             <div className="approval_block pull-right">
                 <Row className="approval_person clearfix">
@@ -2075,8 +2081,8 @@ const ApplyViewDetail = createReactClass({
                                     onClick={this.clickApprovalFormBtn.bind(this, '2')}>
                                     {Intl.get('common.apply.reject', '驳回')}
                                 </Button>) : null}
-                            {/*如果是管理员或者是待我审批的申请，我都可以把申请进行转出*/}
-                            {(isRealmAdmin || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) && detailInfoObj.approval_state === '0' ? this.renderAddApplyNextCandidate() : null}
+                            {/*如果是管理员或者我是待审批人或者我是待审批人的上级领导，我都可以把申请进行转出*/}
+                            {(isRealmAdmin || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isLeader) && detailInfoObj.approval_state === '0' ? this.renderAddApplyNextCandidate() : null}
                         </div>)}
                     </Col>
                 </Row>

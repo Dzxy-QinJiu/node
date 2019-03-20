@@ -23,6 +23,7 @@ import {ORGANIZATION_TYPE} from './consts';
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 var websiteConfig = require('../../../lib/utils/websiteConfig');
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
+import {getMyTeamTreeAndFlattenList} from './common-data-util';
 
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -250,9 +251,9 @@ function traversingTeamTree(treeList, list, flag) {
             var childObj = {group_id: team.group_id, group_name: team.group_name};
             if (flag){
                 childObj.parent_group = team.parent_group;
-                childObj.user_ids = team.user_ids;
+                childObj.user_ids = team.user_ids || [];
                 childObj.owner_id = team.owner_id;
-                childObj.manager_ids = team.manager_ids;
+                childObj.manager_ids = team.manager_ids || [];
             }
             list.push(childObj);
             if (team.child_groups) {
@@ -759,4 +760,25 @@ exports.checkFileNameAllowRule = (filename, regnamerules) => {
         });
     }
     return {nameQualified: nameQualified,warningMsg: warningMsg};
+};
+exports.isLeaderOfCandidate = function(candidateList,callback) {
+    getMyTeamTreeAndFlattenList(data => {
+        //获取我团队及我下属团队的成员id
+        var subUserArr = [];
+        if(_.isArray(data.teamList)){
+            _.forEach(data.teamList,(item) => {
+                subUserArr = _.concat(subUserArr, item.owner_id, item.manager_ids,item.user_ids);
+            });
+        }
+        subUserArr = _.uniq(subUserArr);
+        //看待审批人是否在subUserArr中
+        var isCandidateLeader = false;
+        _.forEach(candidateList,(item) => {
+            if (subUserArr.includes(item.user_id)){
+                isCandidateLeader = true;
+            }
+        });
+        _.isFunction(callback) && callback(isCandidateLeader);
+    },true);
+
 };
