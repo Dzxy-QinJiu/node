@@ -9,7 +9,7 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import Trace from 'LIB_DIR/trace';
 import {isEqualArray} from 'LIB_DIR/func';
-import {REG_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
+import {FILES_TYPE_FORBIDDEN_RULES, FILES_TYPE_ALLOW_RULES} from 'PUB_DIR/sources/utils/consts';
 import {seperateFilesDiffType, hasApprovedReportAndDocumentApply} from 'PUB_DIR/sources/utils/common-data-util';
 import {checkFileSizeLimit, checkFileNameForbidRule} from 'PUB_DIR/sources/utils/common-method-util';
 class UploadAndDeleteFile extends React.Component {
@@ -24,9 +24,16 @@ class UploadAndDeleteFile extends React.Component {
                 delId: '',//删除申请的id
                 errorMsg: '',//删除失败后的提示
             },
-            totalFileSize: 0,//所有文件的大小
+            totalFileSize: this.calculateExistFileSize(),//所有文件的大小
         };
     }
+    calculateExistFileSize = () => {
+        var fileSize = 0;
+        _.forEach(this.props.fileList,(item) => {
+            fileSize += item.file_size;
+        });
+        return fileSize;
+    };
     componentWillReceiveProps(nextProps) {
         if (nextProps.fileList && !isEqualArray(nextProps.fileList, this.state.fileList)) {
             this.setState({
@@ -39,6 +46,16 @@ class UploadAndDeleteFile extends React.Component {
             isUpLoading: false,
         });
     };
+    updateCalculateFilesSize = () => {
+        var fileSize = this.state.totalFileSize;
+        _.forEach(this.state.fileList,(item) => {
+            fileSize += item.file_size;
+        });
+        this.setState({
+            totalFileSize: fileSize
+        });
+    };
+
     handleChange = (info) => {
         const response = info.file.response;
         if (info.file.status === 'done') {
@@ -47,8 +64,9 @@ class UploadAndDeleteFile extends React.Component {
                 var fileList = this.state.fileList;
                 //上传成功
                 this.setState({
-                    fileList: fileList.concat(response)
+                    fileList: fileList.concat(response),
                 },() => {
+                    this.updateCalculateFilesSize();
                     _.isFunction(this.props.setUpdateFiles) && this.props.setUpdateFiles(this.state.fileList);
                 });
             } else {
@@ -88,7 +106,7 @@ class UploadAndDeleteFile extends React.Component {
         return checkObj.sizeQualified;
     };
     checkFileNameRule = (filename) => {
-        var checkObj = checkFileNameForbidRule(filename, REG_FILES_TYPE_RULES);
+        var checkObj = checkFileNameForbidRule(filename, FILES_TYPE_FORBIDDEN_RULES, FILES_TYPE_ALLOW_RULES);
         if (checkObj.warningMsg){
             this.setState({
                 warningMsg: checkObj.warningMsg
@@ -207,7 +225,7 @@ class UploadAndDeleteFile extends React.Component {
             props.beforeUpload = function(file) {
                 var fileName = file.name,fileSize = file.size;
                 _this.setState({isUpLoading: true});
-                if (!_this.checkFileType(fileName,fileSize)){
+                if (!_this.checkFileType(fileName,fileSize + _this.state.totalFileSize)){
                     _this.setUploadLoadingFalse();
                     return false;
                 }
@@ -239,7 +257,7 @@ class UploadAndDeleteFile extends React.Component {
                         {this.state.isUpLoading ?
                             <Icon type="loading" className="icon-loading"/> : null}</Button>
                 </Upload>
-                <p>{Intl.get('click.ctrl.upload.mutil.file','可同时上传多个文件，只能上传图片文件，文本文件，视频文件，音频文件和压缩文件，文件大小不要超过10M！')}</p>
+                <p>{Intl.get('click.ctrl.upload.mutil.file','可同时上传多个文件，只能上传图片文件，文本文件和压缩文件，文件大小不要超过10M！')}</p>
             </div>
         );
     };
@@ -418,6 +436,6 @@ UploadAndDeleteFile.propTypes = {
     fileList: PropTypes.object,
     salesUploadAndDeletePrivilege: PropTypes.boolean,
     approverUploadAndDeletePrivilege: PropTypes.boolean,
-    selectType: PropTypes.object,
+    selectType: PropTypes.object
 };
 export default UploadAndDeleteFile;

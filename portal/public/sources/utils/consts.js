@@ -452,10 +452,13 @@ export const APPLY_USER_STATUS = {
     PASSED_USER_APPLY: '1',//已通过
     REJECTED_USER_APPLY: '2'//已驳回
 };
-//文件类型校验规则
-export const REG_FILES_TYPE_RULES = [
-    {value: ' ',messageTips: Intl.get('apply.approve.upload.no.container.space', '文件名称中不要含有空格！')},
-    {value: '.exe',messageTips: Intl.get('apply.approve.upload.error.file.type','文件格式不正确！')},
+//文件禁止上传的规则
+export const FILES_TYPE_FORBIDDEN_RULES = [
+    {value: ' ',messageTips: Intl.get('apply.approve.upload.no.container.space', '文件名称中不要含有空格！')}
+];
+//文件允许的上传规则
+export const FILES_TYPE_ALLOW_RULES = [
+    {valueArr: ['docx','doc','ppt','pptx','pdf','png','bmp','jpg','xls','csv','txt','rar','zip'],messageTips: Intl.get('apply.approve.upload.error.file.type','文件格式不正确！')},
 ];
 //两个值一个是文件的最小值一个是文件的最大值
 export const REG_FILES_SIZE_RULES = [
