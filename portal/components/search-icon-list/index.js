@@ -20,7 +20,7 @@ class SearchIconList extends React.Component {
             totalList: totalList,
             selectedList: props.selectedList,
             onlyShowSelected: false,
-            isShowMoreButton: true
+            isShowAllApps: false
         };
     }
     getSearchResult(args) {
@@ -124,9 +124,9 @@ class SearchIconList extends React.Component {
         const totalList = this.getSearchResult({keyword});
         this.setState({totalList,keyword});
     }
-    noShowMoreButton= () => {
+    handleShowAllApps= () => {
         this.setState({
-            isShowMoreButton: false
+            isShowAllApps: true
         });
     };
     renderAppItem = (cls, obj, id, name) => {
@@ -143,8 +143,8 @@ class SearchIconList extends React.Component {
         const totalList = _.filter(this.state.totalList, item => item.searched);
         const length = _.get(totalList, 'length', 0);
         let mapAppList = totalList || [];
-        // 当应用产品产数大于20个且显示更多按钮时，取前20个应用产品
-        if (length > fixedLength && this.state.isShowMoreButton) {
+        // 当应用产品产数大于20个且不全部显示时，取前20个应用产品
+        if (length > fixedLength && !this.state.isShowAllApps) {
             mapAppList = totalList.slice(0, fixedLength);
         }
         return (
@@ -175,7 +175,7 @@ class SearchIconList extends React.Component {
                         ) : null
                     }
                     {
-                        mapAppList.map((item) => {
+                        _.map(mapAppList, (item) => {
                             const obj = item.entity;
                             const id = obj[id_field];
                             const name = obj[name_field];
@@ -192,9 +192,9 @@ class SearchIconList extends React.Component {
                         })
                     }
                     {
-                        length > fixedLength && this.state.isShowMoreButton ? (
+                        length > fixedLength && !this.state.isShowAllApps ? (
                             <div>
-                                <Button type='primary' onClick={this.noShowMoreButton}>
+                                <Button type='primary' onClick={this.handleShowAllApps}>
                                     {Intl.get('crm.basic.more','更多')}
                                 </Button>
                             </div>
@@ -217,7 +217,7 @@ SearchIconList.defaultProps = {
     notFoundContent: Intl.get('user.no.related.app','暂无符合条件的应用'),
     onItemsChange: noop,
     searchPlaceholder: '',//搜索框的提示内容
-    isShowMoreButton: true // 是否显示更多的按钮，默认显示
+    isShowAllApps: false // 是否显示全部的应用，默认不显示
 };
 
 SearchIconList.propTypes = {
@@ -229,7 +229,7 @@ SearchIconList.propTypes = {
     onItemsChange: PropTypes.func,
     notFoundContent: PropTypes.string,
     searchPlaceholder: PropTypes.string,
-    isShowMoreButton: PropTypes.bool
+    isShowAllApps: PropTypes.bool
 };
 
 export default SearchIconList;
