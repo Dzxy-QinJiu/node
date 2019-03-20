@@ -699,13 +699,22 @@ const ApplyViewDetail = createReactClass({
         this.setState({
             checkStatus: checkStatus,
             showWariningTip: false
+        },() => {
+            if (checkStatus){
+                this.onInputPasswordChange('');
+            }
         });
     },
     onInputPasswordChange: function(value) {
+        var showWariningTip = !value;
+        if (!value && this.state.checkStatus){
+            showWariningTip = false;
+        }
         this.setState({
             passwordValue: value,
-            showWariningTip: !value
+            showWariningTip: showWariningTip
         });
+
     },
 
     //渲染用户名
@@ -747,9 +756,9 @@ const ApplyViewDetail = createReactClass({
                                 className="user-info-text edit-name-wrap">{this.renderUserNameBlock(detailInfo)}</span>
                         </div>);
                     var checkStatus = this.state.isOplateUser ? true : false;
-                    var detailInfoObj = this.state.detailInfoObj.info;
-                    var isRealmAdmin = detailInfoObj.showApproveBtn;
-                    let passwordSetting = this.hasApprovalPrivilege() && this.isUnApproved() && isRealmAdmin ? (<PasswordSetting
+                    var detailInfoObj = _.get(this, 'state.detailInfoObj.info');
+                    //有修改权限 && 是待审批状态的申请 && 能展示通过驳回按钮
+                    let passwordSetting = this.hasApprovalPrivilege() && this.isUnApproved() && detailInfoObj.showApproveBtn ? (<PasswordSetting
                         onCheckboxChange={this.onCheckboxChange}
                         onInputPasswordChange={this.onInputPasswordChange}
                         checkStatus={checkStatus}
