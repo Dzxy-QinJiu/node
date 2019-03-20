@@ -124,7 +124,7 @@ class SearchIconList extends React.Component {
         const totalList = this.getSearchResult({keyword});
         this.setState({totalList,keyword});
     }
-    handleShowAllApp = () => {
+    noShowMoreButton= () => {
         this.setState({
             isShowMoreButton: false
         });
@@ -194,7 +194,7 @@ class SearchIconList extends React.Component {
                     {
                         length > fixedLength && this.state.isShowMoreButton ? (
                             <div>
-                                <Button type='primary' onClick={this.handleShowAllApp}>
+                                <Button type='primary' onClick={this.noShowMoreButton}>
                                     {Intl.get('crm.basic.more','更多')}
                                 </Button>
                             </div>
