@@ -6,6 +6,7 @@ import {Checkbox,Alert,Button } from 'antd';
 import immutable from 'immutable';
 import classNames from 'classnames';
 import {SearchInput} from 'antc';
+const fixedLength = 20;
 
 class SearchIconList extends React.Component {
     constructor(props) {
@@ -140,6 +141,18 @@ class SearchIconList extends React.Component {
         const name_field = this.props.name_field;
         const onlyShowSelected = this.state.onlyShowSelected;
         const totalList = _.filter(this.state.totalList, item => item.searched);
+        const length = totalList.length;
+        let mapAppList = [];
+        if (length && length < fixedLength) {
+            mapAppList = totalList;
+        } else {
+            if (this.state.showAppFixedLength) {
+                mapAppList = totalList.slice(0, fixedLength);
+            } else {
+                mapAppList = totalList;
+            }
+        }
+
         return (
             <div className="search-icon-list">
                 <div className="search-icon-list-header clearfix">
@@ -168,7 +181,7 @@ class SearchIconList extends React.Component {
                         ) : null
                     }
                     {
-                        totalList.length && totalList.map((item, index) => {
+                        mapAppList.map((item) => {
                             const obj = item.entity;
                             const id = obj[id_field];
                             const name = obj[name_field];
@@ -181,17 +194,11 @@ class SearchIconList extends React.Component {
                                 'selected': item.selected,
                                 'icon-hide': hide
                             });
-                            if (this.state.showAppFixedLength ) {
-                                if (index < 20) {
-                                    return this.renderAppItem(cls, obj, id, name);
-                                }
-                            } else {
-                                return this.renderAppItem(cls, obj, id, name);
-                            }
+                            return this.renderAppItem(cls, obj, id, name);
                         })
                     }
                     {
-                        totalList.length > 20 && this.state.showAppFixedLength ? (
+                        totalList.length > fixedLength && this.state.showAppFixedLength ? (
                             <div>
                                 <Button type='primary' onClick={this.handleShowAllApp}>
                                     {Intl.get('crm.basic.more','更多')}
