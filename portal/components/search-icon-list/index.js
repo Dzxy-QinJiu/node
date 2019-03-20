@@ -124,9 +124,9 @@ class SearchIconList extends React.Component {
         const totalList = this.getSearchResult({keyword});
         this.setState({totalList,keyword});
     }
-    handleShowAllApps= () => {
+    handleShowAllApps= (flag) => {
         this.setState({
-            isShowAllApps: true
+            isShowAllApps: flag
         });
     };
     renderAppItem = (cls, obj, id, name) => {
@@ -192,12 +192,20 @@ class SearchIconList extends React.Component {
                         })
                     }
                     {
-                        length > fixedLength && !this.state.isShowAllApps ? (
-                            <div>
-                                <Button type='primary' onClick={this.handleShowAllApps}>
-                                    {Intl.get('crm.basic.more','更多')}
-                                </Button>
-                            </div>
+                        length > fixedLength ? (
+                            this.state.isShowAllApps ? (
+                                <div>
+                                    <Button type='primary' onClick={this.handleShowAllApps.bind(this, false)}>
+                                        {Intl.get('crm.contact.way.hide','收起')}
+                                    </Button>
+                                </div>
+                            ) : (
+                                <div>
+                                    <Button type='primary' onClick={this.handleShowAllApps.bind(this, true)}>
+                                        {Intl.get('crm.basic.more','更多')}
+                                    </Button>
+                                </div>
+                            )
                         ) : null
                     }
                 </div>
