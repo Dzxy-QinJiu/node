@@ -451,13 +451,12 @@ class ApplyViewDetail extends React.Component {
     // 渲染申请成员的密码
     renderPasswordContent = () => {
         return (
-            <div className="invite-member-password">
-                <PasswordSetting
-                    onCheckboxChange={this.checkAutoGeneration}
-                    onInputPasswordChange={this.handleInputPassword}
-                    checkStatus={this.state.autoGenerationPsd}
-                />
-            </div>
+            <PasswordSetting
+                onCheckboxChange={this.checkAutoGeneration}
+                onInputPasswordChange={this.handleInputPassword}
+                checkStatus={this.state.autoGenerationPsd}
+            />
+
         );
     };
     renderDetailApplyBlock(detailInfo) {

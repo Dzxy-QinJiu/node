@@ -4,7 +4,8 @@
  * Created by zhangshujuan on 2019/3/6.
  */
 require('./index.less');
-import {Checkbox, Input} from 'antd';
+import {Checkbox, Input, Radio } from 'antd';
+const RadioGroup = Radio.Group;
 import classNames from 'classnames';
 const INPUT_TYPE = {
     PASSWORD: 'password',
@@ -26,15 +27,12 @@ class PasswordSetting extends React.Component {
             });
         }
     }
-    onCheckChange = (e) => {
-        var checkStatus = e.target.checked;
+    onRadioChange = (e) => {
+        var checkStatus = e.target.value;
         this.setState({
             checkStatus: checkStatus,
         },() => {
             this.props.onCheckboxChange(checkStatus);
-            if (checkStatus){
-                this.props.onInputPasswordChange('');
-            }
         });
     };
     getIntputPasswordType = () => {
@@ -64,18 +62,27 @@ class PasswordSetting extends React.Component {
         var checkStatus = this.state.checkStatus;
         var isPasswordType = this.getIntputPasswordType();
         var iconCls = classNames('iconfont',{'icon-password-visible': isPasswordType, 'icon-password-hide': !isPasswordType});
+        var title = isPasswordType ? Intl.get('apply.detail.show.password', '显示密码') : Intl.get('apply.detail.hide.password', '隐藏密码');
         var containerCls = classNames('password-setting',{'has-input': !checkStatus});
         var showWarning = this.props.showWariningTip;
         return (
             <div className={containerCls}>
-                <Checkbox checked={checkStatus} onChange={this.onCheckChange}>{Intl.get('apply.setting.password.auto', '自动生成密码')}</Checkbox>
-                {!checkStatus ?
-                    <span className="input-container">
-                        <Input className={showWarning ? 'has-warning' : ''} type={this.state.inputType} onChange={this.onInputPasswordChange} autocomplete="new-password" readOnly={this.state.readonly} onFocus={this.removeAttribute} onBlur={this.setAttribute} />
-                        <i className={iconCls} onClick={this.handlePasswordVisible}></i>
-                        {showWarning ? <span className="warning-text">{this.props.warningText}</span> : null}
-                    </span>
-                    : null}
+                <div className="label-container">{Intl.get('common.password', '密码')}:</div>
+                <div className="check-container">
+                    <RadioGroup onChange={this.onRadioChange} value={checkStatus}>
+                        <Radio value={true}>{Intl.get('apply.setting.password.auto', '自动生成')}</Radio>
+                        <Radio value={false}>{Intl.get('user.time.custom', '自定义')}</Radio>
+                    </RadioGroup>
+                    {!checkStatus ?
+                        <div className="input-msg-container">
+                            <div className="input-container">
+                                <Input placeholder={Intl.get('common.input.password', '请输入密码')} className={showWarning ? 'has-warning' : ''} type={this.state.inputType} onChange={this.onInputPasswordChange} autocomplete="new-password" readOnly={this.state.readonly} onFocus={this.removeAttribute} onBlur={this.setAttribute} />
+                                <i title={title} className={iconCls} onClick={this.handlePasswordVisible}></i>
+                            </div>
+                            {showWarning ? <span className="warning-text">{this.props.warningText}</span> : null}
+                        </div>
+                        : null}
+                </div>
             </div>
         );
     }
@@ -84,13 +91,13 @@ class PasswordSetting extends React.Component {
 PasswordSetting.defaultProps = {
     onCheckboxChange: function(){
 
-    },
+    },//切换选中的按钮后的回调
     onInputPasswordChange: function() {
 
-    },
-    checkStatus: true,
-    showWariningTip: false,
-    warningText: ''
+    },//输入密码后的回调
+    checkStatus: true,//一开始按钮的选中值
+    showWariningTip: false,//没写密码但是选中自定义按钮后的提示
+    warningText: ''//提示输入密码的文本
 
 };
 PasswordSetting.propTypes = {

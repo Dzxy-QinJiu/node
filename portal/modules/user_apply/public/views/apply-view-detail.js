@@ -699,13 +699,22 @@ const ApplyViewDetail = createReactClass({
         this.setState({
             checkStatus: checkStatus,
             showWariningTip: false
+        },() => {
+            if (checkStatus){
+                this.onInputPasswordChange('');
+            }
         });
     },
     onInputPasswordChange: function(value) {
+        var showWariningTip = !value;
+        if (!value && this.state.checkStatus){
+            showWariningTip = false;
+        }
         this.setState({
             passwordValue: value,
-            showWariningTip: !value
+            showWariningTip: showWariningTip
         });
+
     },
 
     //渲染用户名
@@ -746,10 +755,11 @@ const ApplyViewDetail = createReactClass({
                             <span
                                 className="user-info-text edit-name-wrap">{this.renderUserNameBlock(detailInfo)}</span>
                         </div>);
-                    let passwordSetting = this.hasApprovalPrivilege() ? (<PasswordSetting
+                    //有修改权限 && 是待审批状态的申请 && 能展示通过驳回按钮
+                    let passwordSetting = this.hasApprovalPrivilege() && this.isUnApproved() && _.get(this, 'state.detailInfoObj.info.showApproveBtn') ? (<PasswordSetting
                         onCheckboxChange={this.onCheckboxChange}
                         onInputPasswordChange={this.onInputPasswordChange}
-                        checkStatus={this.state.checkStatus}
+                        checkStatus={this.state.isOplateUser}
                         showWariningTip={this.state.showWariningTip}
                         warningText= {Intl.get('apply.not.setting.password', '请手动输入密码！')}
                     />) : null;
