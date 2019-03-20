@@ -2,6 +2,8 @@
  * 本月试用合格组成
  */
 
+import { processFallsChartCsvData } from '../../utils';
+
 export function getCustomerTrialQualifiedComposeChart() {
     return {
         title: '本月试用合格组成',
@@ -117,5 +119,6 @@ export function getCustomerTrialQualifiedComposeChart() {
                 serieThisMonth,
             ];
         },
+        processCsvData: processFallsChartCsvData
     };
 }

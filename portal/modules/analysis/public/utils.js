@@ -193,3 +193,29 @@ export function processDataNumToValue(data) {
 
     return data;
 }
+
+//瀑布图csv数据处理函数
+export function processFallsChartCsvData(chart, option) {
+    let csvData = [];
+    //用横坐标标签做表头
+    const thead = _.get(option, 'xAxis[0].data');
+
+    csvData.push(thead);
+
+    let tr = [];
+
+    _.each(option.series, serie => {
+        //只取有名称的系列
+        //无名称的系列为隐藏系列，其值只起遮挡作用，无需导出
+        if (serie.name) {
+            //过滤出数值
+            const numberArr = _.filter(serie.data, item => _.isNumber(item));
+            //追加到数值行中
+            tr = tr.concat(numberArr);
+        }
+    });
+
+    csvData.push(tr);
+
+    return csvData;
+}
