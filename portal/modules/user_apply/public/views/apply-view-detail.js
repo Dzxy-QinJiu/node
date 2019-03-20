@@ -755,13 +755,11 @@ const ApplyViewDetail = createReactClass({
                             <span
                                 className="user-info-text edit-name-wrap">{this.renderUserNameBlock(detailInfo)}</span>
                         </div>);
-                    var checkStatus = this.state.isOplateUser ? true : false;
-                    var detailInfoObj = _.get(this, 'state.detailInfoObj.info');
                     //有修改权限 && 是待审批状态的申请 && 能展示通过驳回按钮
-                    let passwordSetting = this.hasApprovalPrivilege() && this.isUnApproved() && detailInfoObj.showApproveBtn ? (<PasswordSetting
+                    let passwordSetting = this.hasApprovalPrivilege() && this.isUnApproved() && _.get(this, 'state.detailInfoObj.info.showApproveBtn') ? (<PasswordSetting
                         onCheckboxChange={this.onCheckboxChange}
                         onInputPasswordChange={this.onInputPasswordChange}
-                        checkStatus={checkStatus}
+                        checkStatus={this.state.isOplateUser}
                         showWariningTip={this.state.showWariningTip}
                         warningText= {Intl.get('apply.not.setting.password', '请手动输入密码！')}
                     />) : null;
