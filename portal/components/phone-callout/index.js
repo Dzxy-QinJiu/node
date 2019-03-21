@@ -9,6 +9,12 @@ import {showDisabledCallTip, handleCallOutResult}from 'PUB_DIR/sources/utils/com
 require('./index.less');
 import Trace from 'LIB_DIR/trace';
 class PhoneCallout extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            visible: false
+        };
+    }
     componentDidMount() {
 
     }
@@ -20,20 +26,32 @@ class PhoneCallout extends React.Component {
             phoneNumber: phoneNumber,//拨打的电话
         });
     };
+    handleVisibleChange = (phoneNumber, contactName,visible) => {
+        if (visible && hasCalloutPrivilege()){
+            this.setState({
+                visible: false
+            });
+            this.handleClickCallOut(phoneNumber, contactName);
+        }else{
+            this.setState({
+                visible: visible
+            });
+        }
+
+    };
     renderPhoneIcon = () => {
         var contentTip = showDisabledCallTip();
         var titleTip = Intl.get('crm.click.call.phone', '点击拨打电话');
-        if (hasCalloutPrivilege()){
-            var contactName = this.props.contactName;
-            return <i className="iconfont icon-active-call_record-ico able-call"
-                title={titleTip}
-                onClick={this.handleClickCallOut.bind(this, this.props.phoneNumber, contactName)}></i>;
-        }else{
-            return <Popover placement="right" content={contentTip} trigger="click">
+        var contactName = this.props.contactName;
+        var visible = this.state.visible;
+        var iconCls = visible;
+        return (
+            <Popover placement="right" content={contentTip} trigger="click" visible={visible}
+                onVisibleChange={this.handleVisibleChange.bind(this,this.props.phoneNumber,contactName)}>
                 <i className="iconfont icon-active-call_record-ico"
                     title={titleTip}></i>
-            </Popover>;
-        }
+            </Popover>
+        );
     };
     render() {
         return(
