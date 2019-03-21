@@ -638,17 +638,26 @@ const ApplyUserForm = createReactClass({
                                 <FormItem
                                     {...formItemLayout}
                                     label={Intl.get('common.type', '类型')}
+                                    validateStatus={this.getValidateStatus('tag')}
+                                    help={this.getHelpMessage('tag')}
+                                    required
                                 >
-                                    {this.state.isOplateUser ? <RadioGroup onChange={this.onUserTypeChange}
-                                        value={formData.tag}>
-                                        <Radio key="1" value={Intl.get('common.trial.user', '试用用户')}>
-                                            {Intl.get('common.trial.user', '试用用户')}
-                                        </Radio>
-                                        <Radio key="0" value={Intl.get('common.trial.official', '正式用户')}>
-                                            {Intl.get('user.signed.user', '签约用户')}
-                                        </Radio>
-                                    </RadioGroup> : <Input placeholder={Intl.get('crm.input.your.apply.user.type','请输入您申请的用户类型（例如：试用用户、签约用户等）')} onChange={this.onInputTypeChange}/>}
-
+                                    <Validator rules={[{
+                                        required: true,
+                                        message: this.state.isOplateUser ?
+                                            Intl.get('crm.apply.user.type.select.placeholder', '请选择用户类型') :
+                                            Intl.get('crm.apply.user.type.placeholder', '请输入用户类型'),
+                                    }]}>
+                                        {this.state.isOplateUser ? <RadioGroup onChange={this.onUserTypeChange}
+                                            name="tag" value={formData.tag}>
+                                            <Radio key="1" value={Intl.get('common.trial.user', '试用用户')}>
+                                                {Intl.get('common.trial.user', '试用用户')}
+                                            </Radio>
+                                            <Radio key="0" value={Intl.get('common.trial.official', '正式用户')}>
+                                                {Intl.get('user.signed.user', '签约用户')}
+                                            </Radio>
+                                        </RadioGroup> : <Input placeholder={Intl.get('crm.input.your.apply.user.type','请输入您申请的用户类型（例如：试用用户、签约用户等）')} name="tag" defaultValue='' onChange={this.onInputTypeChange}/>}
+                                    </Validator>
                                 </FormItem>) : null}
                             <FormItem
                                 {...formItemLayout}
