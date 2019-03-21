@@ -9,7 +9,7 @@ var BatchChangeStore = require('../store/batch-change-store');
 var crmStore = require('../store/crm-store');
 var BatchChangeActions = require('../action/batch-change-actions');
 import {AntcAreaSelection} from 'antc';
-import {Input, Select, message, Radio, Button} from 'antd';
+import {Input, Select, message, Radio, Button, Icon, Menu, Dropdown} from 'antd';
 import ValidateMixin from '../../../../mixins/ValidateMixin';
 const RadioGroup = Radio.Group;
 var Option = Select.Option;
@@ -52,6 +52,7 @@ var CrmBatchChange = createReactClass({
         return {
             ...BatchChangeStore.getState(),
             stopContentHide: false,//content内容中有select下拉框时，
+            isVisibleChangeMenu: false, // 是否显示变更菜单名称，默认false不显示
         };
     },
 
@@ -486,6 +487,9 @@ var CrmBatchChange = createReactClass({
     handleSubmit: function(e) {
         Trace.traceEvent(e, '点击变更按钮');
         var currentTab = this.state.currentTab;
+        this.setState({
+            isVisibleChangeMenu: false
+        });
         switch (currentTab) {
             case BATCH_OPERATE_TYPE.CHANGE_SALES:
                 this.doTransfer(BATCH_OPERATE_TYPE.USER, Intl.get('crm.18', '变更销售人员'));
@@ -690,85 +694,132 @@ var CrmBatchChange = createReactClass({
         BatchChangeActions.administrativeLevelChange(level);
     },
 
+    handleMenuClick(e) {
+        this.setCurrentTab(e.key);
+    },
+
+    getBatchChangeMenus() {
+        const changeBtns = {
+            tag: (<span>{Intl.get('common.tag', '标签')}</span>),
+            industry: (<span>{Intl.get('common.industry', '行业')}</span>),
+            address: (<span>{Intl.get('crm.96', '地域')}</span>),
+            sales: (<span>{Intl.get('sales.home.sales', '销售')}</span>),
+            administrativeLevel: (<span>{Intl.get('crm.administrative.level', '行政级别')}</span>)
+        };
+        return(
+            <Menu onClick={this.handleMenuClick} selectedKeys={this.state.currentTab}>
+                <Menu.Item key={BATCH_OPERATE_TYPE.CHANGE_TAG}>
+                    <AntcDropdown
+                        ref="changeTag"
+                        content={changeBtns.tag}
+                        overlayTitle={Intl.get('common.tag', '标签')}
+                        isSaving={this.state.isLoading}
+                        overlayContent={this.renderTagChangeBlock()}
+                        handleSubmit={this.handleSubmit}
+                        okTitle={Intl.get('crm.32', '变更')}
+                        cancelTitle={Intl.get('common.cancel', '取消')}
+                        unSelectDataTip={this.state.unSelectDataTip}
+                        clearSelectData={this.clearSelectTags}
+                    />
+                </Menu.Item>
+                <Menu.Item key={BATCH_OPERATE_TYPE.CHANGE_INDUSTRY}>
+                    <AntcDropdown
+                        ref="changeIndustry"
+                        content={changeBtns.industry}
+                        overlayTitle={Intl.get('common.industry', '行业')}
+                        isSaving={this.state.isLoading}
+                        overlayContent={this.renderIndustryBlock()}
+                        handleSubmit={this.handleSubmit}
+                        okTitle={Intl.get('crm.32', '变更')}
+                        cancelTitle={Intl.get('common.cancel', '取消')}
+                        unSelectDataTip={this.state.unSelectDataTip}
+                        clearSelectData={this.clearSelectIndustry}
+                    />
+                </Menu.Item>
+                <Menu.Item key={BATCH_OPERATE_TYPE.CHANGE_TERRITORY}>
+                    <AntcDropdown
+                        ref="changeAddress"
+                        content={changeBtns.address}
+                        overlayTitle={Intl.get('common.address', '地址')}
+                        isSaving={this.state.isLoading}
+                        overlayContent={this.renderAddressBlock()}
+                        handleSubmit={this.handleSubmit}
+                        okTitle={Intl.get('crm.32', '变更')}
+                        cancelTitle={Intl.get('common.cancel', '取消')}
+                        unSelectDataTip={this.state.unSelectDataTip}
+                        clearSelectData={this.clearSelectLocation}
+                    />
+                </Menu.Item>
+                <Menu.Item key={BATCH_OPERATE_TYPE.CHANGE_SALES}>
+                    <AntcDropdown
+                        ref="changeSales"
+                        content={changeBtns.sales}
+                        overlayTitle={Intl.get('user.salesman', '销售人员')}
+                        isSaving={this.state.isLoading}
+                        overlayContent={this.renderSalesBlock()}
+                        handleSubmit={this.handleSubmit}
+                        okTitle={Intl.get('crm.32', '变更')}
+                        cancelTitle={Intl.get('common.cancel', '取消')}
+                        unSelectDataTip={this.state.unSelectDataTip}
+                        clearSelectData={this.clearSelectSales}
+                    />
+                </Menu.Item>
+                <Menu.Item key={BATCH_OPERATE_TYPE.CHANGE_ADMINISTRATIVE_LEVEL}>
+                    <AntcDropdown
+                        ref="changeAdministrativeLevel"
+                        content={changeBtns.administrativeLevel}
+                        overlayTitle={Intl.get('crm.administrative.level.change', '变更行政级别')}
+                        isSaving={this.state.isLoading}
+                        overlayContent={this.renderAdministrativeLevelBlock()}
+                        handleSubmit={this.handleSubmit}
+                        okTitle={Intl.get('crm.32', '变更')}
+                        cancelTitle={Intl.get('common.cancel', '取消')}
+                        unSelectDataTip={this.state.unSelectDataTip}
+                        clearSelectData={this.administrativeLevelChange.bind(this, '')}
+                    />
+                </Menu.Item>
+            </Menu>
+        );
+    },
+
+    handleVisibleChange(flag) {
+        let visibleFlag = this.refs.changeTag && this.refs.changeTag.state.menuVisible ||
+                this.refs.changeIndustry && this.refs.changeIndustry.state.menuVisible ||
+                this.refs.changeAddress && this.refs.changeAddress.state.menuVisible ||
+                this.refs.changeSales && this.refs.changeSales.state.menuVisible ||
+                this.refs.changeAdministrativeLevel && this.refs.changeAdministrativeLevel.state.menuVisible;
+
+        if (visibleFlag) {
+            return;
+        }
+        this.setState({
+            isVisibleChangeMenu: flag
+        });
+    },
+
+    // 渲染变更菜单
+    renderBatchChange() {
+        return (
+            <Dropdown
+                visible={this.state.isVisibleChangeMenu}
+                overlay={this.getBatchChangeMenus()}
+                onVisibleChange={this.handleVisibleChange.bind(this)}
+            >
+                <Button type='primary'>{Intl.get('crm.32', '变更')}<Icon type="down" /></Button>
+            </Dropdown>
+        );
+    },
+
     render: function() {
         const changeBtns = {
-            tag: (<Button
-                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_TAG)}>{Intl.get('crm.19', '变更标签')}</Button>),
-            industry: (<Button
-                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_INDUSTRY)}>{Intl.get('crm.20', '变更行业')}</Button>),
-            administrativeLevel: (<Button
-                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_ADMINISTRATIVE_LEVEL)}>{Intl.get('crm.administrative.level.change', '变更行政级别')}</Button>),
-            address: (<Button
-                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_TERRITORY)}>{Intl.get('crm.21', '变更地域')}</Button>),
-            sales: (<Button
-                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_SALES)}>{Intl.get('crm.18', '变更销售人员')}</Button>),
             transfer: (<Button
                 onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER)}>{Intl.get('crm.qualified.roll.out', '转出')}</Button>),
             schedule: (<Button
                 onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS)}>{Intl.get('crm.214', '添加联系计划')}</Button>)
         };
         return (
-            <div className="crm-batch-change-container">
-                <AntcDropdown
-                    ref="changeTag"
-                    content={changeBtns.tag}
-                    overlayTitle={Intl.get('common.tag', '标签')}
-                    isSaving={this.state.isLoading}
-                    overlayContent={this.renderTagChangeBlock()}
-                    handleSubmit={this.handleSubmit}
-                    okTitle={Intl.get('crm.32', '变更')}
-                    cancelTitle={Intl.get('common.cancel', '取消')}
-                    unSelectDataTip={this.state.unSelectDataTip}
-                    clearSelectData={this.clearSelectTags}
-                />
-                <AntcDropdown
-                    ref="changeIndustry"
-                    content={changeBtns.industry}
-                    overlayTitle={Intl.get('common.industry', '行业')}
-                    isSaving={this.state.isLoading}
-                    overlayContent={this.renderIndustryBlock()}
-                    handleSubmit={this.handleSubmit}
-                    okTitle={Intl.get('crm.32', '变更')}
-                    cancelTitle={Intl.get('common.cancel', '取消')}
-                    unSelectDataTip={this.state.unSelectDataTip}
-                    clearSelectData={this.clearSelectIndustry}
-                />
-                <AntcDropdown
-                    ref="changeAdministrativeLevel"
-                    content={changeBtns.administrativeLevel}
-                    overlayTitle={Intl.get('crm.administrative.level.change', '变更行政级别')}
-                    isSaving={this.state.isLoading}
-                    overlayContent={this.renderAdministrativeLevelBlock()}
-                    handleSubmit={this.handleSubmit}
-                    okTitle={Intl.get('crm.32', '变更')}
-                    cancelTitle={Intl.get('common.cancel', '取消')}
-                    unSelectDataTip={this.state.unSelectDataTip}
-                    clearSelectData={this.administrativeLevelChange.bind(this, '')}
-                />
-                <AntcDropdown
-                    ref="changeAddress"
-                    content={changeBtns.address}
-                    overlayTitle={Intl.get('common.address', '地址')}
-                    isSaving={this.state.isLoading}
-                    overlayContent={this.renderAddressBlock()}
-                    handleSubmit={this.handleSubmit}
-                    okTitle={Intl.get('crm.32', '变更')}
-                    cancelTitle={Intl.get('common.cancel', '取消')}
-                    unSelectDataTip={this.state.unSelectDataTip}
-                    clearSelectData={this.clearSelectLocation}
-                />
-                <AntcDropdown
-                    ref="changeSales"
-                    content={changeBtns.sales}
-                    overlayTitle={Intl.get('user.salesman', '销售人员')}
-                    isSaving={this.state.isLoading}
-                    overlayContent={this.renderSalesBlock()}
-                    handleSubmit={this.handleSubmit}
-                    okTitle={Intl.get('crm.32', '变更')}
-                    cancelTitle={Intl.get('common.cancel', '取消')}
-                    unSelectDataTip={this.state.unSelectDataTip}
-                    clearSelectData={this.clearSelectSales}
-                />
+            <div className="crm-batch-change-container" >
+                {this.renderBatchChange()}
                 { //普通销售不可做转出操作
                     !userData.getUserData().isCommonSales ? (<AntcDropdown
                         ref="transferCustomer"
@@ -800,5 +851,3 @@ var CrmBatchChange = createReactClass({
     },
 });
 module.exports = CrmBatchChange;
-
-
