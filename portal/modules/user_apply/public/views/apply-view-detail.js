@@ -2055,7 +2055,7 @@ const ApplyViewDetail = createReactClass({
         //是否审批
         let isConsumed = !this.isUnApproved();
         var isLeader = false,candidateList = this.state.candidateList;
-        if (candidateList.length){
+        if (candidateList && candidateList.length){
             isLeaderOfCandidate(candidateList,(result) => {
                 isLeader = result;
             });

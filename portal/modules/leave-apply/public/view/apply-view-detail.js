@@ -450,7 +450,7 @@ class ApplyViewDetail extends React.Component {
         var addApplyNextCandidate = null;
         //如果是管理员或者我是待审批人或者我是待审批人的上级领导，我都可以把申请进行转出
         var isLeader = false,candidateList = this.state.candidateList;
-        if (candidateList.length){
+        if (candidateList && candidateList.length){
             isLeaderOfCandidate(candidateList,(result) => {
                 isLeader = result;
             });
