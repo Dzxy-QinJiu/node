@@ -11,7 +11,7 @@ import Trace from 'LIB_DIR/trace';
 import {isEqualArray} from 'LIB_DIR/func';
 import {FILES_TYPE_FORBIDDEN_RULES, FILES_TYPE_ALLOW_RULES} from 'PUB_DIR/sources/utils/consts';
 import {seperateFilesDiffType, hasApprovedReportAndDocumentApply} from 'PUB_DIR/sources/utils/common-data-util';
-import {checkFileSizeLimit, checkFileNameForbidRule} from 'PUB_DIR/sources/utils/common-method-util';
+import {checkFileSizeLimit, checkFileNameForbidRule, checkFileNameAllowRule} from 'PUB_DIR/sources/utils/common-method-util';
 class UploadAndDeleteFile extends React.Component {
     constructor(props) {
         super(props);
@@ -106,13 +106,19 @@ class UploadAndDeleteFile extends React.Component {
         return checkObj.sizeQualified;
     };
     checkFileNameRule = (filename) => {
-        var checkObj = checkFileNameForbidRule(filename, FILES_TYPE_FORBIDDEN_RULES, FILES_TYPE_ALLOW_RULES);
-        if (checkObj.warningMsg){
+        var checkForbidObj = checkFileNameForbidRule(filename, FILES_TYPE_FORBIDDEN_RULES);
+        var checkAllowObj = checkFileNameAllowRule(filename, FILES_TYPE_ALLOW_RULES);
+        var warningMsg = checkForbidObj.warningMsg || checkAllowObj.warningMsg;
+        var nameQualified = true;
+        if (!checkForbidObj.nameQualified || !checkAllowObj.nameQualified){
+            nameQualified = false;
+        }
+        if (warningMsg){
             this.setState({
-                warningMsg: checkObj.warningMsg
+                warningMsg: warningMsg
             });
         }
-        return checkObj.nameQualified;
+        return nameQualified;
     };
     checkFileType = (filename,fileSize,totalSize) => {
         if (!this.checkFileNameRule(filename)){

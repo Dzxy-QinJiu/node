@@ -734,23 +734,11 @@ exports.checkFileSizeLimit = (fileSize) => {
     });
     return {sizeQualified: sizeQualified,warningMsg: warningMsg};
 };
-exports.checkFileNameForbidRule = (filename, fobiddenRules, allowRules) => {
+exports.checkFileNameForbidRule = (filename,regnamerules) => {
     var nameQualified = true, warningMsg = '';
-    //禁止的规则
-    if (_.isArray(fobiddenRules) && _.isString(filename)){
-        _.forEach(fobiddenRules,(item) => {
+    if (_.isArray(regnamerules) && _.isString(filename)){
+        _.forEach(regnamerules,(item) => {
             if (filename.indexOf(item.value) >= 0){
-                warningMsg = item.messageTips;
-                nameQualified = false;
-                return false;
-            }
-        });
-    }
-    //允许的规则
-    if (_.isArray(allowRules) && _.isString(filename)){
-        _.forEach(allowRules,(item) => {
-            var fileType = _.last(filename.split('.'));
-            if(_.isArray(item.valueArr) && !item.valueArr.includes(fileType)){
                 warningMsg = item.messageTips;
                 nameQualified = false;
                 return false;
@@ -761,14 +749,17 @@ exports.checkFileNameForbidRule = (filename, fobiddenRules, allowRules) => {
 };
 exports.checkFileNameAllowRule = (filename, regnamerules) => {
     var nameQualified = true, warningMsg = '';
-    if (_.isArray(regnamerules)){
+    //允许的规则
+    if (_.isArray(regnamerules) && _.isString(filename)){
         _.forEach(regnamerules,(item) => {
-            if (filename.indexOf(item.value) < 0){
+            var fileType = _.last(filename.split('.'));
+            if(_.isArray(item.valueArr) && !item.valueArr.includes(fileType)){
                 warningMsg = item.messageTips;
                 nameQualified = false;
                 return false;
             }
         });
     }
+
     return {nameQualified: nameQualified,warningMsg: warningMsg};
 };
