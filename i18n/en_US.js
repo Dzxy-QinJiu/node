@@ -2812,10 +2812,12 @@ var en_US = {
     'apply.approve.sales.opportunity': 'Sales opportunity',//销售机会
     'apply.has.approved.by.me': 'Failed to get {type} application approved by me',//获取我审批过的{type}申请失败
 
-    'apply.setting.password.auto': 'Generate passwords automatically ',//自动生成密码
+    'apply.setting.password.auto': 'Generate automatically ',//自动生成
     'apply.not.setting.password': 'Please input password!',//请手动输入密码！
     'clue.import.file.type': 'Only files in {type} format can be imported!',//只能导入{type}格式的文件！
     'common.callsystem.get.faild': 'Failed to get the organization phone system configuration',// 获取组织电话系统配置失败
     'contract.invocie.delete.faild': 'Failed to delete invoice amount',// 删除发票额失败
+    'apply.detail.show.password': 'Show password',//显示密码
+    'apply.detail.hide.password': 'Hide password'//隐藏密码
 };
 export default en_US;

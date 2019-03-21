@@ -2839,10 +2839,12 @@ var zh_CN = {
     'apply.list.my.approved': '我审批过',
     'apply.approve.sales.opportunity': '销售机会',
     'apply.has.approved.by.me': '获取我审批过的{type}申请失败',
-    'apply.setting.password.auto': '自动生成密码',
+    'apply.setting.password.auto': '自动生成',
     'apply.not.setting.password': '请手动输入密码！',
     'clue.import.file.type': '只能导入{type}格式的文件！',
     'common.callsystem.get.faild': '获取组织电话系统配置失败',
     'contract.invocie.delete.faild': '删除发票额失败',
+    'apply.detail.show.password': '显示密码',
+    'apply.detail.hide.password': '隐藏密码'
 };
 export default zh_CN;

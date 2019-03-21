@@ -1,41 +1,40 @@
 @import "../../public/css/common-variables";
 .password-setting {
-  margin-top: 4px;
-  color: #313330;
-  display: inline-block;
-  .ant-checkbox-wrapper{
-    font-size: 14px;
-    font-weight: normal;
+  font-size: 14px;
+  color: #9f9fa1;
+  height: 31px;
+  line-height: 31px;
+  .label-container,.check-container,.input-container,.input-msg-container{
+    display: inline-block;
   }
-  .input-container{
-    float: left;
-    position: relative;
-    width: 260px;
-    .iconfont{
-      position: absolute;
-      cursor: pointer;
-      color: rgba(0,0,0,3.65);
-      font-size: 20px;
-      right: 15px;
-      top:0;
+  .check-container{
+    margin-left: 4px;
+  }
+
+  .input-msg-container{
+    .input-container{
+      position: relative;
+      .iconfont{
+        position: absolute;
+        cursor: pointer;
+        color: rgba(0,0,0,3.65);
+        font-size: 20px;
+        right: 10px;
+        top:0;
+      }
+      .ant-input{
+        width: 240px;
+      }
+      .ant-input.has-warning{
+        border: 1px solid @error_tips_color;
+        &:focus{
+          box-shadow:none;
+        }
+      }
     }
     .warning-text{
       color:@error_tips_color
     }
-    .ant-input{
-        width: 240px;
-      }
-
-
-    .ant-input.has-warning{
-      border: 1px solid @error_tips_color;
-    }
   }
-}
-.password-setting.has-input{
-  min-height: 30px;
-  line-height: 30px;
-  .ant-checkbox-wrapper{
-    float: left;
-  }
+
 }
