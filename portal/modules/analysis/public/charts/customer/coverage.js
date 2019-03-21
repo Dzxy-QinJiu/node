@@ -4,6 +4,7 @@
 
 import Store from '../../store';
 import { isSales } from '../../utils';
+import { num as antUtilNum } from 'ant-utils';
 
 export function getCustomerCoverageChart() {
     return {
@@ -58,11 +59,10 @@ export function getCustomerCoverageChart() {
                     align: 'right',
                     width: 50
                 }, {
-                    title: Intl.get('oplate_customer_analysis.overlay', '市场占有率'),
+                    title: Intl.get('oplate_customer_analysis.overlay', '覆盖率'),
                     dataIndex: 'city_dredge_scale',
                     align: 'right',
                     width: 70,
-                    render: text => `${Number(text * 100).toFixed(2)}%`
                 }, {
                     title: Intl.get('oplate_customer_analysis.countryCount', '区县总数'),
                     dataIndex: 'district_count',
@@ -74,11 +74,10 @@ export function getCustomerCoverageChart() {
                     align: 'right',
                     width: 50,
                 }, {
-                    title: Intl.get('oplate_customer_analysis.overlay', '市场占有率'),
+                    title: Intl.get('oplate_customer_analysis.overlay', '覆盖率'),
                     dataIndex: 'district_dredge_scale',
                     align: 'right',
                     width: 70,
-                    render: text => `${Number(text * 100).toFixed(2)}%`
                 },
             ],
         },
@@ -93,6 +92,10 @@ export function getCustomerCoverageChart() {
                 });
                 tempData.forEach(teamItem => {
                     teamItem.team_result.forEach(sale => {
+                        //地市覆盖率转百分比
+                        sale.city_dredge_scale = antUtilNum.decimalToPercent(sale.city_dredge_scale);
+                        //区县覆盖率转百分比
+                        sale.district_dredge_scale = antUtilNum.decimalToPercent(sale.district_dredge_scale);
                         sale.team_name = teamItem.team_name;
                         //list中已有当前数据的团队名，不展示对应单元格(rowSpan==0)
                         if (list.find(item => item.team_name === teamItem.team_name)) {
