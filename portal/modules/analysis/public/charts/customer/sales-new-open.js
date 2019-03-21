@@ -28,6 +28,7 @@ export function getSalesNewOpenChart(paramObj = {}) {
                 {
                     title: Intl.get('user.salesman', '销售人员'),
                     dataIndex: 'user_name',
+                    isSetCsvValueBlank: true,
                     width: 80
                 },
                 {
