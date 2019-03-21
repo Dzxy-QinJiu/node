@@ -2,7 +2,9 @@
  * 总体分析
  */
 
-import contractChart from '../../charts/contract';
+import { contractChart } from 'ant-chart-collection';
+import { isSales, isSelectedAllTeamMember, isAdminOrOpStaff } from '../../utils';
+
 
 module.exports = {
     title: '总体分析',
@@ -26,9 +28,20 @@ function getCharts() {
         //地域分布
         contractChart.getContractZoneChart(),
         //团队分布及完成率
-        contractChart.getContractTeamChart(),
+        contractChart.getContractTeamChart({
+            noShowCondition: {
+                callback: () => isSales()
+            }
+        }),
         //年经常性收入情况
-        contractChart.getContractArrChart(),
+        contractChart.getContractArrChart({
+            noShowCondition: {
+                callback: () => {
+                    //在当前登录用户不是管理员或运营人员或当前选择的不是全部团队或销售时，不显示此图
+                    return !isAdminOrOpStaff() || !isSelectedAllTeamMember();
+                }
+            }
+        }),
         //签单情况统计表
         contractChart.getSingingChart(),
     ];
