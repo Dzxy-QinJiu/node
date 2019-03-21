@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "ant-auth-request": "^1.0.13",
+    "ant-chart-collection": "^1.0.0",
     "ant-utils": "1.0.10",
     "app-root-path": "1.0.0",
     "babel": "6.23.0",
@@ -64,8 +65,8 @@
     "hazelcast-client": "0.6.1",
     "influxdb-nodejs": "^2.8.0",
     "intl": "1.2.5",
-    "intl-messageformat": "2.2.0",
     "intl-locales-supported": "1.0.0",
+    "intl-messageformat": "2.2.0",
     "lodash": "4.17.10",
     "log4js": "0.6.29",
     "log4js-config": "0.1.1",
