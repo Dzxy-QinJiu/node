@@ -3,73 +3,17 @@
  */
 
 import { initialTime } from '../../consts';
-import { argCallbackUnderlineTimeToTime, argCallbackMemberIdsToMemberId } from '../../utils';
-
 
 export function getClueDealClassifyChart() {
     return {
         title: '成交数分类统计',
         chartType: 'bar_pie',
-        url: '/rest/clue/v1/statistical/clue_classify/1000/1',
-        argCallback: arg => {
-            argCallbackUnderlineTimeToTime(arg);
-            argCallbackMemberIdsToMemberId(arg);
-        },
-        reqType: 'post',
-        dataField: 'result',
+        url: '/rest/analysis/customer/v2/clue/:data_type/statistical/field/clue_classify',
         conditions: [{
-            type: 'data',
+            name: 'customer_label',
             value: '签约',
-            callback: (data, name, value) => {
-                if (value) {
-                    _.set(data, 'query.customer_label', value);
-                }
-            }
-        }, {
-            type: 'data',
-            value: 'source_time',
-            callback: (data, name, value) => {
-                _.set(data, 'rang_params[0].name', value);
-            }
-        }, {
-            type: 'data',
-            value: 'time',
-            callback: (data, name, value) => {
-                _.set(data, 'rang_params[0].type', value);
-            }
-        }, {
-            name: 'starttime',
-            value: initialTime.start,
-            type: 'data',
-            callback: (data, name, value) => {
-                _.set(data, 'rang_params[0].from', value);
-            }
-        }, {
-            name: 'endtime',
-            value: initialTime.end,
-            type: 'data',
-            callback: (data, name, value) => {
-                _.set(data, 'rang_params[0].to', value);
-            }
-        }, {
-            name: 'team_ids',
-            value: '',
-            type: 'data',
-            callback: (data, name, value) => {
-                if (value) {
-                    _.set(data, 'query.sales_team_id', value);
-                }
-            }
-        }, {
-            name: 'member_id',
-            value: '',
-            type: 'data',
-            callback: (data, name, value) => {
-                if (value) {
-                    _.set(data, 'query.member_id', value);
-                }
-            }
         }],
+        dataField: 'result',
         processData: data => {
             return _.map(data, dataItem => {
                 let processedItem = {};
