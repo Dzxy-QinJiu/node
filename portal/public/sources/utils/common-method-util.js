@@ -734,9 +734,9 @@ exports.checkFileSizeLimit = (fileSize) => {
     });
     return {sizeQualified: sizeQualified,warningMsg: warningMsg};
 };
-exports.checkFileNameForbidRule = (filename, regnamerules) => {
+exports.checkFileNameForbidRule = (filename,regnamerules) => {
     var nameQualified = true, warningMsg = '';
-    if (_.isArray(regnamerules)){
+    if (_.isArray(regnamerules) && _.isString(filename)){
         _.forEach(regnamerules,(item) => {
             if (filename.indexOf(item.value) >= 0){
                 warningMsg = item.messageTips;
@@ -749,14 +749,17 @@ exports.checkFileNameForbidRule = (filename, regnamerules) => {
 };
 exports.checkFileNameAllowRule = (filename, regnamerules) => {
     var nameQualified = true, warningMsg = '';
-    if (_.isArray(regnamerules)){
+    //允许的规则
+    if (_.isArray(regnamerules) && _.isString(filename)){
         _.forEach(regnamerules,(item) => {
-            if (filename.indexOf(item.value) < 0){
+            var fileType = _.last(filename.split('.'));
+            if(_.isArray(item.valueArr) && !item.valueArr.includes(fileType)){
                 warningMsg = item.messageTips;
                 nameQualified = false;
                 return false;
             }
         });
     }
+
     return {nameQualified: nameQualified,warningMsg: warningMsg};
 };
