@@ -166,6 +166,7 @@ const ApplyViewDetail = createReactClass({
             checkStatus: true, //自动生成密码框是否选中
             passwordValue: '',//试用或者签约用户申请的明文密码
             showWariningTip: false,//是否展示密码的提示信息
+            isLeader: false, //当前账号是否是待审批人的上级领导
             ...ApplyViewDetailStore.getState()
         };
     },
@@ -2054,10 +2055,12 @@ const ApplyViewDetail = createReactClass({
         var isRealmAdmin = detailInfoObj.showApproveBtn;
         //是否审批
         let isConsumed = !this.isUnApproved();
-        var isLeader = false,candidateList = this.state.candidateList;
+        var candidateList = this.state.candidateList;
         if (candidateList && candidateList.length){
             isLeaderOfCandidate(candidateList,(result) => {
-                isLeader = result;
+                this.setState({
+                    isLeader: result
+                });
             });
         }
         return (
@@ -2082,7 +2085,7 @@ const ApplyViewDetail = createReactClass({
                                     {Intl.get('common.apply.reject', '驳回')}
                                 </Button>) : null}
                             {/*如果是管理员或者我是待审批人或者我是待审批人的上级领导，我都可以把申请进行转出*/}
-                            {(isRealmAdmin || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isLeader) && detailInfoObj.approval_state === '0' ? this.renderAddApplyNextCandidate() : null}
+                            {(isRealmAdmin || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || this.state.isLeader) && detailInfoObj.approval_state === '0' ? this.renderAddApplyNextCandidate() : null}
                         </div>)}
                     </Col>
                 </Row>

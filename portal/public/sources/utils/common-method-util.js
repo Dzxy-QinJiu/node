@@ -788,45 +788,59 @@ exports.checkFileNameAllowRule = (filename, regnamerules) => {
     }
     return {nameQualified: nameQualified, warningMsg: warningMsg};
 };
+//获取团队里所有成员列表
+function getTeamUsers(teamList) {
+    var subUserArr = [];
+    if (_.isArray(teamList)) {
+        _.forEach(teamList, (item) => {
+            subUserArr = _.concat(subUserArr, item.owner_id, item.manager_ids, item.user_ids);
+        });
+    }
+    subUserArr = _.uniq(subUserArr);
+    return subUserArr;
+}
+//查看待审批人列表中的人是否在团队的成员列表中
+function findIfCandidateInUserLists(candidateList,userArr,userId) {
+    var isCandidateLeader = false;
+    //看待审批人是否在subUserArr中
+    if (userId){
+        _.find(candidateList, (item) => {
+            if (userArr.includes(item.user_id) && userId === item.owner_id) {
+                isCandidateLeader = true;
+                return true;
+            }
+        });
+    }else{
+        _.find(candidateList, (item) => {
+            if (userArr.includes(item.user_id)) {
+                isCandidateLeader = true;
+                return true;
+            }
+        });
+    }
+    return isCandidateLeader;
+}
+
+//查询当前账号是否是待审批人的领导
 exports.isLeaderOfCandidate = function(candidateList, callback) {
     var user_id = userData.getUserData().user_id;
     getMyTeamTreeAndFlattenList(data => {
         var teamList = data.teamList, isCandidateLeader = false;
         if (_.isArray(teamList) && teamList.length) {
             if (teamList.length === 1) {
-                //如果我及我的下级团队只有一个团队，那么就判断待审批人是否在该团队里，并且登录进去的账号是该团队的管理员，就可以展示转审
-                _.find(candidateList, (item) => {
-                    var userArr = [];
-                    userArr = _.concat(userArr, item.owner_id, item.manager_ids, item.user_ids);
-                    if (userArr.includes(item.user_id) && user_id === item.owner_id) {
-                        isCandidateLeader = true;
-                        return true;
-                    }
-                });
+                //如果我及我的下级团队只有一个团队，
+                //判断待审批人在该团队成员列表中，并且登录的账号是该团队的管理员
+                isCandidateLeader = findIfCandidateInUserLists(candidateList,getTeamUsers(teamList),user_id);
             } else {
-                //如果我及我的下级团队大于一个团队，先把该账号所在的团队过滤掉，再看待审批人是否在剩下团队的列表中，
+                //如果我及我的下级团队大于一个团队，先把登录的账号所在的团队过滤掉
+                //判断待审批人是否在剩下团队的成员列表中
                 teamList = _.filter(teamList, (teamItem) => {
                     var userArr = [];
                     userArr = _.concat(userArr, teamItem.owner_id, teamItem.manager_ids, teamItem.user_ids);
                     return !userArr.includes(user_id);
                 });
-                //获取我团队及我下属团队的成员id
-                var subUserArr = [];
-                if (_.isArray(teamList)) {
-                    _.forEach(teamList, (item) => {
-                        subUserArr = _.concat(subUserArr, item.owner_id, item.manager_ids, item.user_ids);
-                    });
-                }
-                subUserArr = _.uniq(subUserArr);
-                //看待审批人是否在subUserArr中
-                _.find(candidateList, (item) => {
-                    if (subUserArr.includes(item.user_id)) {
-                        isCandidateLeader = true;
-                        return true;
-                    }
-                });
+                isCandidateLeader = findIfCandidateInUserLists(candidateList,getTeamUsers(teamList));
             }
-            
         }
         _.isFunction(callback) && callback(isCandidateLeader);
     }, true);

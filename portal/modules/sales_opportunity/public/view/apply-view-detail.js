@@ -60,6 +60,7 @@ class ApplyViewDetail extends React.Component {
             salesManList: [],//销售列表
             usersManList: [],//成员列表
             showBackoutConfirmType: '',//操作的确认框类型
+            isLeader: false, //当前账号是否是待审批人的上级领导
             ...SalesOpportunityApplyDetailStore.getState()
         };
     }
@@ -587,13 +588,15 @@ class ApplyViewDetail extends React.Component {
         }
         var addApplyNextCandidate = null;
         //如果是管理员或者我是待审批人或者我是待审批人的上级领导，我都可以把申请进行转出
-        var isLeader = false,candidateList = this.state.candidateList;
+        var candidateList = this.state.candidateList;
         if (candidateList && candidateList.length){
             isLeaderOfCandidate(candidateList,(result) => {
-                isLeader = result;
+                this.setState({
+                    isLeader: result
+                });
             });
         }
-        if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || detailInfoObj.showApproveBtn || isLeader) && detailInfoObj.status === 'ongoing'){
+        if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || detailInfoObj.showApproveBtn || this.state.isLeader) && detailInfoObj.status === 'ongoing'){
             addApplyNextCandidate = this.renderAddApplyNextCandidate;
         }
         return (

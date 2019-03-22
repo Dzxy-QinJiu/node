@@ -45,6 +45,7 @@ class ApplyViewDetail extends React.Component {
             showBackoutConfirmType: '',//操作的确认框类型
             clickConfirmBtn: false,//为了防止点击确认按钮后，立刻打开查看详情，详情属性中没有approver_ids这个数组,所以在点击确认申请后加上这样的标识
             usersManList: [],//成员列表
+            isLeader: false, //当前账号是否是待审批人的上级领导
             ...DocumentWriteApplyDetailStore.getState()
         };
     }
@@ -480,13 +481,15 @@ class ApplyViewDetail extends React.Component {
         }
         var addApplyNextCandidate = null;
         //如果是管理员或者我是待审批人或者我是待审批人的上级领导，我都可以把申请进行转出
-        var isLeader = false,candidateList = this.state.candidateList;
+        var candidateList = this.state.candidateList;
         if (candidateList && candidateList.length){
             isLeaderOfCandidate(candidateList,(result) => {
-                isLeader = result;
+                this.setState({
+                    isLeader: result
+                });
             });
         }
-        if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || detailInfoObj.showApproveBtn || isLeader) && detailInfoObj.status === 'ongoing'){
+        if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || detailInfoObj.showApproveBtn || this.state.isLeader) && detailInfoObj.status === 'ongoing'){
             addApplyNextCandidate = this.renderAddApplyNextCandidate;
         }
         return (
