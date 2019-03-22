@@ -5,6 +5,7 @@
  */
 var DocumentWriteApplyDetailAction = require('../action/document-write-apply-detail-action');
 var DocumentWriteApplyAction = require('../action/document-write-apply-action');
+import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function DocumentWriteApplyDetailStore() {
     //初始化state数据
     this.setInitState();
@@ -67,6 +68,7 @@ DocumentWriteApplyDetailStore.prototype.setInitState = function() {
         //服务端错误信息
         errorMsg: ''
     };
+    this.isLeader = false; //当前账号是否是待审批人的上级领导
 };
 DocumentWriteApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
@@ -195,6 +197,7 @@ DocumentWriteApplyDetailStore.prototype.showOrHideApprovalBtns = function(flag){
 };
 DocumentWriteApplyDetailStore.prototype.setNextCandidate = function(candidateArr){
     this.candidateList = candidateArr;
+    this.isLeader = checkIfLeader(candidateArr);
 };
 DocumentWriteApplyDetailStore.prototype.setNextCandidateName = function(candidateName){
     this.detailInfoObj.info.nextCandidateName = candidateName;
@@ -272,6 +275,7 @@ DocumentWriteApplyDetailStore.prototype.getNextCandidate = function(result) {
         this.candidateList = [];
     }else{
         this.candidateList = result;
+        this.isLeader = checkIfLeader(result);
     }
 };
 DocumentWriteApplyDetailStore.prototype.setUpdateFilesLists = function(updateLists) {

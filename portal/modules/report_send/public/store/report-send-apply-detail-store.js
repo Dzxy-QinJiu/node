@@ -5,6 +5,7 @@
  */
 var ReportSendApplyDetailAction = require('../action/report-send-apply-detail-action');
 var ReportSendApplyAction = require('../action/report-send-apply-action');
+import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function ReportSendApplyDetailStore() {
     //初始化state数据
     this.setInitState();
@@ -72,6 +73,7 @@ ReportSendApplyDetailStore.prototype.setInitState = function() {
         //服务端错误信息
         errorMsg: ''
     };
+    this.isLeader = false; //当前账号是否是待审批人的上级领导
 };
 ReportSendApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
@@ -200,6 +202,7 @@ ReportSendApplyDetailStore.prototype.showOrHideApprovalBtns = function(flag){
 };
 ReportSendApplyDetailStore.prototype.setNextCandidate = function(candidateArr){
     this.candidateList = candidateArr;
+    this.isLeader = checkIfLeader(candidateArr);
 };
 ReportSendApplyDetailStore.prototype.setNextCandidateName = function(candidateName){
     this.detailInfoObj.info.nextCandidateName = candidateName;
@@ -276,6 +279,7 @@ ReportSendApplyDetailStore.prototype.getNextCandidate = function(result) {
         this.candidateList = [];
     }else{
         this.candidateList = result;
+        this.isLeader = checkIfLeader(result);
     }
 };
 ReportSendApplyDetailStore.prototype.setUpdateFilesLists = function(updateLists) {

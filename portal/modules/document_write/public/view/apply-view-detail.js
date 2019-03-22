@@ -479,8 +479,7 @@ class ApplyViewDetail extends React.Component {
             }
         }
         var addApplyNextCandidate = null;
-        //如果是管理员或者是待我审批的申请，我都可以把申请进行转出
-        if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || detailInfoObj.showApproveBtn) && detailInfoObj.status === 'ongoing'){
+        if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || detailInfoObj.showApproveBtn || this.state.isLeader) && detailInfoObj.status === 'ongoing'){
             addApplyNextCandidate = this.renderAddApplyNextCandidate;
         }
         return (

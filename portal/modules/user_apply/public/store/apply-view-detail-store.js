@@ -2,7 +2,7 @@ import ApplyViewDetailActions from '../action/apply-view-detail-actions';
 import { altAsyncUtil } from 'ant-utils';
 const { resultHandler } = altAsyncUtil;
 import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
-
+import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 class ApplyViewDetailStore {
     constructor() {
         this.resetState();
@@ -136,6 +136,7 @@ class ApplyViewDetailStore {
             //服务端错误信息
             errorMsg: ''
         };
+        this.isLeader = false; //当前账号是否是待审批人的上级领导
     }
     //获取应用列表
     getApps(result) {
@@ -604,10 +605,12 @@ class ApplyViewDetailStore {
             this.candidateList = [];
         } else {
             this.candidateList = result;
+            this.isLeader = checkIfLeader(result);
         }
     }
     setNextCandidate(candidateArr){
         this.candidateList = candidateArr;
+        this.isLeader = checkIfLeader(candidateArr);
     }
     //设置角色的模态框是显示还是隐藏
     setRolesNotSettingModalDialog({ show, appNames }) {
