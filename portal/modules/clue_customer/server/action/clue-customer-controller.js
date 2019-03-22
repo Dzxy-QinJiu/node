@@ -259,6 +259,9 @@ const CLUE_LIST_COLUMNS = [
     },{
         title: Intl.get('clue.list.clue.availibility','无效线索'),
         dataIndex: 'availability'
+    },{
+        title: Intl.get('call.record.follow.content', '跟进内容'),
+        dataIndex: 'customer_traces'
     }
 ];
 
@@ -307,7 +310,11 @@ exports.exportData = function(req, res) {
                     value = contactDes;
                 }
                 if (column.dataIndex === 'customer_traces' && _.isArray(value)){
-                    value = _.get(value,'[0].remark');
+                    var traceAddTime = _.get(value, '[0].add_time');//跟进时间
+
+                    traceAddTime = traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : '';
+                    var tracePersonName = _.get(value, '[0].nick_name', '');//跟进人的名字
+                    value = _.get(value,'[0].remark') + '(' + tracePersonName + Intl.get('schedule.expired.call.time.at', '于') + traceAddTime + Intl.get('common.add', '添加') + ')';
                 }
                 if (column.dataIndex === 'user_name' && item.sales_team){
                     value += `—${item.sales_team}`;

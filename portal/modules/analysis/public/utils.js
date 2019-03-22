@@ -129,73 +129,59 @@ export function isSelectedAllTeamMember() {
 
 //查询参数回调函数: 带下划线的开始结束时间转成不带下划线的
 export function argCallbackUnderlineTimeToTime(arg) {
-    let query = arg.query;
+    if (_.get(arg, 'query.start_time')) {
+        _.set(arg, 'query.starttime', arg.query.start_time);
+        delete arg.query.start_time;
+    }
 
-    if (query) {
-        query.starttime = query.start_time;
-        query.endtime = query.end_time;
-        delete query.start_time;
-        delete query.end_time;
+    if (_.get(arg, 'query.end_time')) {
+        _.set(arg, 'query.endtime', arg.query.end_time);
+        delete arg.query.end_time;
     }
 }
 
 //查询参数回调函数: 不带下划线的开始结束时间转成带下划线的
 export function argCallbackTimeToUnderlineTime(arg) {
-    let query = arg.query;
+    if (_.get(arg, 'query.starttime')) {
+        _.set(arg, 'query.start_time', arg.query.starttime);
+        delete arg.query.starttime;
+    }
 
-    if (query) {
-        query.start_time = query.starttime;
-        query.end_time = query.endtime;
-        delete query.starttime;
-        delete query.endtime;
+    if (_.get(arg, 'query.endtime')) {
+        _.set(arg, 'query.end_time', arg.query.endtime);
+        delete arg.query.endtime;
     }
 }
 
 //查询参数回调函数: team_ids 转 team_id
 export function argCallbackTeamIdsToTeamId(arg) {
-    const query = arg.query;
-
-    if (query) {
-        if (query.team_ids) {
-            query.team_id = query.team_ids;
-            delete query.team_ids;
-        }
+    if (_.get(arg, 'query.team_ids')) {
+        _.set(arg, 'query.team_id', arg.query.team_ids);
+        delete arg.query.team_ids;
     }
 }
 
 //查询参数回调函数: member_ids 转 member_id
 export function argCallbackMemberIdsToMemberId(arg) {
-    const query = arg.query;
-
-    if (query) {
-        if (query.member_ids) {
-            query.member_id = query.member_ids;
-            delete query.member_ids;
-        }
+    if (_.get(arg, 'query.member_ids')) {
+        _.set(arg, 'query.member_id', arg.query.member_ids);
+        delete arg.query.member_ids;
     }
 }
 
 //查询参数回调函数: member_id 转 member_ids
 export function argCallbackMemberIdToMemberIds(arg) {
-    const query = arg.query;
-
-    if (query) {
-        if (query.member_id) {
-            query.member_ids = query.member_id;
-            delete query.member_id;
-        }
+    if (_.get(arg, 'query.member_id')) {
+        _.set(arg, 'query.member_ids', arg.query.member_id);
+        delete arg.query.member_id;
     }
 }
 
 //查询参数回调函数: member_ids 转 sales_id
 export function argCallbackMemberIdsToSalesId(arg) {
-    const query = arg.query;
-
-    if (query) {
-        if (query.member_ids) {
-            query.sales_id = query.member_ids;
-            delete query.member_ids;
-        }
+    if (_.get(arg, 'query.member_ids')) {
+        _.set(arg, 'query.sales_id', arg.query.member_ids);
+        delete arg.query.member_ids;
     }
 }
 
@@ -206,4 +192,30 @@ export function processDataNumToValue(data) {
     });
 
     return data;
+}
+
+//瀑布图csv数据处理函数
+export function processFallsChartCsvData(chart, option) {
+    let csvData = [];
+    //用横坐标标签做表头
+    const thead = _.get(option, 'xAxis[0].data');
+
+    csvData.push(thead);
+
+    let tr = [];
+
+    _.each(option.series, serie => {
+        //只取有名称的系列
+        //无名称的系列为隐藏系列，其值只起遮挡作用，无需导出
+        if (serie.name) {
+            //过滤出数值
+            const numberArr = _.filter(serie.data, item => _.isNumber(item));
+            //追加到数值行中
+            tr = tr.concat(numberArr);
+        }
+    });
+
+    csvData.push(tr);
+
+    return csvData;
 }

@@ -2,7 +2,7 @@
  * 新增合同分析
  */
 
-import contractChart from '../../charts/contract';
+import { contractChart } from 'ant-chart-collection';
 
 module.exports = {
     title: '新增合同分析',

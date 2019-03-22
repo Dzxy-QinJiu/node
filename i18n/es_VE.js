@@ -1183,7 +1183,6 @@ var en_VE = {
     'customer.call.duration': 'Llame {num} segundos',//通话{num}秒
     'customer.contact.somebody': 'Contacto',//联系
     'customer.no.connect': 'No está en',//未接通
-    // todo 请填写跟进内容，保存后不可修改
     'customer.input.customer.trace.content': 'Por favor, rellene los clientes de seguimiento contenido grabado',//请填写客户跟进记录内容
     'customer.add.customer.trace.detail': 'Por favor, añada al Cliente Acompañamiento de detalles del registro',//请补充客户跟进记录详情
     'customer.contact.phone': 'Teléfono',//联系电话

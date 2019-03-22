@@ -2123,8 +2123,8 @@ var en_US = {
     'companay.hotline': 'Service Hotline:400-677-0986',//服务热线: 400-677-0986
     'company.qq': 'QQ:{qq}',//企业QQ: 4006770986
     'login.fail.login': 'Login service is temporarily unavailable. Please try again later',//登录服务暂时不可用，请稍后重试
-    'customer.input.customer.trace.content': 'Please fill in the customer follow-up record, and you cannot edit them!',//请填写跟进内容，保存后不可修改
-    'customer.add.customer.trace.detail': 'Please add details of customer follow-up record, and you cannot edit them!',//请补充客户跟进记录详情,保存后不可修改
+    'customer.input.customer.trace.content': 'Please fill in the customer follow-up record',//请填写跟进内容
+    'customer.add.customer.trace.detail': 'Please add details of customer follow-up record',//请补充客户跟进记录详情
     'customer.contact.phone': 'contact number',//联系电话
     'user.setting.roles': 'Set the role',//设置角色
     //补充
@@ -2406,7 +2406,7 @@ var en_US = {
     'contract.129': 'Cost information',//费用信息
     'crm.214': 'Add contact plan',//添加联系计划
     'customer.trace.content': 'Customer follow up records can not be empty',//客户跟进记录内容不能为空
-    'add.customer.trace.detail': 'Please fill in follow-up record, and cannot be modified after saving!',//请补充跟进记录详情，保存后不可修改
+    'add.customer.trace.detail': 'Please fill in follow-up record',//请补充跟进记录详情
     'click.to.add.trace.detail': 'Please click here to supplement the follow-up content',//请点击此处补充跟进内容
     'common.visit': 'Visit',//拜访
     'common.others': 'Other',//其他
@@ -2572,11 +2572,11 @@ var en_US = {
     'clue.export.clue.list': 'Export clue',//导出线索
     'clue.list.clue.availibility': 'Invalid clue',//无效线索
     'common.memeber.all': 'All members', //'全部成员',
-    'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分钟占比30%',
-    'user.detail.analysis.tip.deep': 'Online minutes in recent 30 days, this takes 30% in total score', //'最近30天的在线分钟数/(30*24*60)。该分项在总分钟占比30%',
-    'user.detail.analysis.tip.fresh': 'Last login time, this takes 20% in total score', //'距离最近的登录时间。该分项在总分钟占比20%',
-    'user.detail.analysis.tip.historyActivity': 'Total active day number, this takes 10% in total score', //'总活跃天数/开通的总天数。该分项在总分钟占比10%',
-    'user.detail.analysis.tip.historyFresh': 'Total online minutes, this takes 10% in total score', //'总在线分钟数/开通总分钟数。该分项在总分钟占比10%',
+    'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
+    'user.detail.analysis.tip.deep': 'Online minutes in recent 30 days, this takes 30% in total score', //'最近30天的在线分钟数/(30*24*60)。该分项在总分中占比30%',
+    'user.detail.analysis.tip.fresh': 'Last login time, this takes 20% in total score', //'距离最近的登录时间。该分项在总分中占比20%',
+    'user.detail.analysis.tip.historyActivity': 'Total active day number, this takes 10% in total score', //'总活跃天数/开通的总天数。该分项在总分中占比10%',
+    'user.detail.analysis.tip.historyFresh': 'Total online minutes, this takes 10% in total score', //'总在线分钟数/开通总分钟数。该分项在总分中占比10%',
     'user.info.binding.email': 'Bind mailbox',//绑定邮箱
     'schedule.manage.has.no.expired.tasks': 'You have no expired tasks',//您没有超期未完成的任务
     'user.get.user.info.null': 'The information that gets the logged in user is empty',//获取不到登录用户的信息
@@ -2722,7 +2722,7 @@ var en_US = {
     'failed.get.reply.comment': 'Failed to get comment lists',//获取回复列表失败
     'apply.approve.upload.no.container.space': 'Please do not has space in your file name!',//文件名称中不要含有空格！
     'failed.delete.apply.load.approve': 'Failed to delete files',//删除文件失败！
-    'click.ctrl.upload.mutil.file': 'You can upload multiple files at the same time, only upload image files, text files, video files, audio files and compressed files. The file size should not exceed 10M!',//可同时上传多个文件，只能上传图片文件，文本文件，视频文件，音频文件和压缩文件，文件大小不要超过10M！
+    'click.ctrl.upload.mutil.file': 'You can upload multiple files at the same time, only upload image files, text files and compressed files. The file size should not exceed 10M!',//可同时上传多个文件，只能上传图片文件，文本文件和压缩文件，文件大小不要超过10M！
     'apply.approve.customer.info': 'Customer Info',//客户资料
     'apply.approve.add.files': 'Added files',//补充文件
     'fail.apply.approve.result': 'Failed to approve',//审批失败

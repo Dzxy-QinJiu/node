@@ -1,12 +1,12 @@
 const PropTypes = require('prop-types');
 var React = require('react');
 require('./index.less');
-const img_src = require('../../modules/common/public/image/user-info-logo.jpg');
-import {Input,Icon,Checkbox,Alert} from 'antd';
+import {Checkbox,Alert,Button } from 'antd';
 
 import immutable from 'immutable';
 import classNames from 'classnames';
 import {SearchInput} from 'antc';
+const fixedLength = 20;
 
 class SearchIconList extends React.Component {
     constructor(props) {
@@ -20,6 +20,7 @@ class SearchIconList extends React.Component {
             totalList: totalList,
             selectedList: props.selectedList,
             onlyShowSelected: false,
+            isShowAllApps: false
         };
     }
     getSearchResult(args) {
@@ -123,10 +124,29 @@ class SearchIconList extends React.Component {
         const totalList = this.getSearchResult({keyword});
         this.setState({totalList,keyword});
     }
+    handleShowAllApps= (flag) => {
+        this.setState({
+            isShowAllApps: flag
+        });
+    };
+    renderAppItem = (cls, obj, id, name) => {
+        return (
+            <div className={cls} onClick={this.toggleSelectedItem.bind(this,obj)} key={id}>
+                <div>{name}</div>
+            </div>
+        );
+    };
     render() {
         const id_field = this.props.id_field;
         const name_field = this.props.name_field;
         const onlyShowSelected = this.state.onlyShowSelected;
+        const totalList = _.filter(this.state.totalList, item => item.searched);
+        const length = _.get(totalList, 'length', 0);
+        let mapAppList = totalList || [];
+        // 当应用产品产数大于20个且不全部显示时，取前20个应用产品
+        if (length > fixedLength && !this.state.isShowAllApps) {
+            mapAppList = totalList.slice(0, fixedLength);
+        }
         return (
             <div className="search-icon-list">
                 <div className="search-icon-list-header clearfix">
@@ -155,7 +175,7 @@ class SearchIconList extends React.Component {
                         ) : null
                     }
                     {
-                        this.state.totalList.map((item) => {
+                        _.map(mapAppList, (item) => {
                             const obj = item.entity;
                             const id = obj[id_field];
                             const name = obj[name_field];
@@ -168,13 +188,25 @@ class SearchIconList extends React.Component {
                                 'selected': item.selected,
                                 'icon-hide': hide
                             });
-
-                            return (
-                                <div className={cls} onClick={this.toggleSelectedItem.bind(this,obj)} key={id}>
-                                    <div>{name}</div>
-                                </div>
-                            );
+                            return this.renderAppItem(cls, obj, id, name);
                         })
+                    }
+                    {
+                        length > fixedLength ? (
+                            this.state.isShowAllApps ? (
+                                <div>
+                                    <Button type='primary' onClick={this.handleShowAllApps.bind(this, false)}>
+                                        {Intl.get('crm.contact.way.hide','收起')}
+                                    </Button>
+                                </div>
+                            ) : (
+                                <div>
+                                    <Button type='primary' onClick={this.handleShowAllApps.bind(this, true)}>
+                                        {Intl.get('crm.basic.more','更多')}
+                                    </Button>
+                                </div>
+                            )
+                        ) : null
                     }
                 </div>
             </div>
@@ -192,7 +224,8 @@ SearchIconList.defaultProps = {
     search_fields: ['app_name'],
     notFoundContent: Intl.get('user.no.related.app','暂无符合条件的应用'),
     onItemsChange: noop,
-    searchPlaceholder: ''//搜索框的提示内容
+    searchPlaceholder: '',//搜索框的提示内容
+    isShowAllApps: false // 是否显示全部的应用，默认不显示
 };
 
 SearchIconList.propTypes = {
@@ -203,7 +236,8 @@ SearchIconList.propTypes = {
     search_fields: PropTypes.array,
     onItemsChange: PropTypes.func,
     notFoundContent: PropTypes.string,
-    searchPlaceholder: PropTypes.string
+    searchPlaceholder: PropTypes.string,
+    isShowAllApps: PropTypes.bool
 };
 
 export default SearchIconList;

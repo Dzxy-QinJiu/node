@@ -2,7 +2,7 @@
  * 回款分析
  */
 
-import contractChart from '../../charts/contract';
+import { contractChart } from 'ant-chart-collection';
 
 module.exports = {
     title: '回款分析',

@@ -62,6 +62,28 @@ export function getNewCustomerConvertRateChart(paramObj = {}) {
             });
 
             return processedData;
+        },
+        processCsvData: (chart, option) => {
+            let csvData = [];
+            let thead = ['阶段', '数量', '转化率'];
+
+            csvData.push(thead);
+
+            const data = _.get(option, 'series[0].data');
+
+            _.each(data, item => {
+                const stageCountArr = item.showValue.split('\n\n');
+
+                //阶段
+                const stage = stageCountArr[0];
+                //数量
+                const count = stageCountArr[1];
+                const tr = [stage, count, item.name];
+
+                csvData.push(tr);
+            });
+
+            return csvData;
         }
     };
 }

@@ -8,7 +8,6 @@ if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/third-party-app-config.less');
     require('../css/user-detail-v3.less');
 }
-import DetailCard from 'CMP_DIR/detail-card';
 var Tabs = require('antd').Tabs;
 var TabPane = Tabs.TabPane;
 var RightPanelClose = require('../../../../components/rightPanel').RightPanelClose;
@@ -58,7 +57,8 @@ class UserDetail extends React.Component {
         ...AppUserPanelSwitchStore.getState()
     };
     componentWillReceiveProps(nextProps) {
-        if (nextProps.userId !== this.props.userId) {
+        // 若当前tab页是异常登录，切换用户时，若此用户没有异常登录项，则返回到基本资料
+        if (!nextProps.isShownExceptionTab && this.state.activeKey === '5') {
             this.setState({
                 activeKey: '1'
             });

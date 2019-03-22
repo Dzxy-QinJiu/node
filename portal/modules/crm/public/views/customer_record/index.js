@@ -356,7 +356,7 @@ class CustomerRecord extends React.Component {
                     validateStatus={_.get(this.state, 'inputContent.validateStatus')}
                     help={_.get(this.state, 'inputContent.errorMsg')}
                 >
-                    <TextArea placeholder={Intl.get('customer.input.customer.trace.content', '请填写跟进内容，保存后不可修改')}
+                    <TextArea placeholder={Intl.get('customer.input.customer.trace.content', '请填写跟进内容')}
                         value={_.get(this.state, 'inputContent.value') || ''}
                         onChange={this.handleInputChange.bind(this)}
                         autosize={AUTO_SIZE_MAP}

@@ -1112,7 +1112,9 @@ class SalesHomePage extends React.Component {
                         <DatePicker
                             disableDateAfterToday={true}
                             range={this.state.timeType}
-                            onSelect={this.onSelectDate}>
+                            onSelect={this.onSelectDate}
+                            selectedTimeFormat='int'
+                        >
                             <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
                             <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
                             <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
