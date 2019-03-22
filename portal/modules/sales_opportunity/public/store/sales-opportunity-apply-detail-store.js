@@ -5,6 +5,7 @@
  */
 var SalesOpportunityApplyDetailAction = require('../action/sales-opportunity-apply-detail-action');
 var SalesOpportunityApplyAction = require('../action/sales-opportunity-apply-action');
+import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function SalesOpportunityApplyDetailStore() {
     //初始化state数据
     this.setInitState();
@@ -67,6 +68,7 @@ SalesOpportunityApplyDetailStore.prototype.setInitState = function() {
         //服务端错误信息
         errorMsg: ''
     };
+    this.isLeader = false; //当前账号是否是待审批人的上级领导
 };
 SalesOpportunityApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
@@ -247,6 +249,7 @@ SalesOpportunityApplyDetailStore.prototype.showOrHideApprovalBtns = function(fla
 };
 SalesOpportunityApplyDetailStore.prototype.setNextCandidate = function(candidateArr){
     this.candidateList = candidateArr;
+    this.isLeader = checkIfLeader(candidateArr);
 };
 SalesOpportunityApplyDetailStore.prototype.setNextCandidateName = function(candidateName){
     this.detailInfoObj.info.nextCandidateName = candidateName;
@@ -266,6 +269,7 @@ SalesOpportunityApplyDetailStore.prototype.getNextCandidate = function(result) {
         this.candidateList = [];
     }else{
         this.candidateList = result;
+        this.isLeader = checkIfLeader(result);
     }
 };
 SalesOpportunityApplyDetailStore.prototype.setNextCandidateIds = function(candidateId) {

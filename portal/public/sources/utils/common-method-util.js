@@ -822,7 +822,7 @@ function findIfCandidateInUserLists(candidateList,userArr,userId) {
 }
 
 //查询当前账号是否是待审批人的领导
-exports.isLeaderOfCandidate = function(candidateList, callback) {
+const isLeaderOfCandidate = function(candidateList, callback) {
     var user_id = userData.getUserData().user_id;
     getMyTeamTreeAndFlattenList(data => {
         var teamList = data.teamList, isCandidateLeader = false;
@@ -844,5 +844,16 @@ exports.isLeaderOfCandidate = function(candidateList, callback) {
         }
         _.isFunction(callback) && callback(isCandidateLeader);
     }, true);
-
+};
+exports.isLeaderOfCandidate = isLeaderOfCandidate;
+//查看当前账号是否是待审批人的领导
+//如果是管理员或者我是待审批人或者我是待审批人的上级领导，我都可以把申请进行转出
+exports.checkIfLeader = function(result){
+    var isLeader = false;
+    if (result && result.length){
+        isLeaderOfCandidate(result,(isLeaderFlag) => {
+            isLeader = isLeaderFlag;
+        });
+    }
+    return isLeader;
 };

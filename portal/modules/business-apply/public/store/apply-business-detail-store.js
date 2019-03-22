@@ -5,6 +5,7 @@
  */
 var ApplyViewDetailAction = require('../action/apply-view-detail-action');
 var BusinessApplyAction = require('../action/business-apply-action');
+import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailStore() {
     //初始化state数据
     this.setInitState();
@@ -67,6 +68,7 @@ ApplyViewDetailStore.prototype.setInitState = function() {
         submitResult: '',
         errorMsg: ''
     };
+    this.isLeader = false; //当前账号是否是待审批人的上级领导
 };
 //设置某条申请的回复列表
 ApplyViewDetailStore.prototype.setApplyComment = function(list) {
@@ -158,6 +160,7 @@ ApplyViewDetailStore.prototype.showOrHideApprovalBtns = function(flag){
 };
 ApplyViewDetailStore.prototype.setNextCandidate = function(candidateArr){
     this.candidateList = candidateArr;
+    this.isLeader = checkIfLeader(candidateArr);
 };
 ApplyViewDetailStore.prototype.setNextCandidateName = function(candidateName){
     this.detailInfoObj.info.nextCandidateName = candidateName;
@@ -255,6 +258,7 @@ ApplyViewDetailStore.prototype.getNextCandidate = function(result) {
         this.candidateList = [];
     }else{
         this.candidateList = result;
+        this.isLeader = checkIfLeader(result);
     }
 };
 ApplyViewDetailStore.prototype.setNextCandidateIds = function(candidateId) {

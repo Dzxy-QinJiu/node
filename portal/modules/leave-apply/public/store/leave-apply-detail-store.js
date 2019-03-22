@@ -5,6 +5,7 @@
  */
 var LeaveApplyDetailAction = require('../action/leave-apply-detail-action');
 var LeaveApplyAction = require('../action/leave-apply-action');
+import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function LeaveApplyDetailStore() {
     //初始化state数据
     this.setInitState();
@@ -67,6 +68,7 @@ LeaveApplyDetailStore.prototype.setInitState = function() {
         //服务端错误信息
         errorMsg: ''
     };
+    this.isLeader = false; //当前账号是否是待审批人的上级领导
 };
 LeaveApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
@@ -184,6 +186,7 @@ LeaveApplyDetailStore.prototype.showOrHideApprovalBtns = function(flag){
 };
 LeaveApplyDetailStore.prototype.setNextCandidate = function(candidateArr){
     this.candidateList = candidateArr;
+    this.isLeader = checkIfLeader(candidateArr);
 };
 LeaveApplyDetailStore.prototype.setNextCandidateName = function(candidateName){
     this.detailInfoObj.info.nextCandidateName = candidateName;
@@ -261,6 +264,7 @@ LeaveApplyDetailStore.prototype.getNextCandidate = function(result) {
         this.candidateList = [];
     }else{
         this.candidateList = result;
+        this.isLeader = checkIfLeader(result);
     }
 };
 LeaveApplyDetailStore.prototype.setNextCandidateIds = function(candidateId) {

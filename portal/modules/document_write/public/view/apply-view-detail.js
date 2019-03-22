@@ -20,7 +20,7 @@ import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
 import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc, getFilterReplyList,handleDiffTypeApply,getReportSendApplyStatusTimeLineDesc,getDocumentReportTypeText,formatUsersmanList,updateUnapprovedCount,isLeaderOfCandidate} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc, getFilterReplyList,handleDiffTypeApply,getReportSendApplyStatusTimeLineDesc,getDocumentReportTypeText,formatUsersmanList,updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import {DOCUMENT_TYPE,TOP_NAV_HEIGHT,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
@@ -45,7 +45,6 @@ class ApplyViewDetail extends React.Component {
             showBackoutConfirmType: '',//操作的确认框类型
             clickConfirmBtn: false,//为了防止点击确认按钮后，立刻打开查看详情，详情属性中没有approver_ids这个数组,所以在点击确认申请后加上这样的标识
             usersManList: [],//成员列表
-            isLeader: false, //当前账号是否是待审批人的上级领导
             ...DocumentWriteApplyDetailStore.getState()
         };
     }
@@ -480,15 +479,6 @@ class ApplyViewDetail extends React.Component {
             }
         }
         var addApplyNextCandidate = null;
-        //如果是管理员或者我是待审批人或者我是待审批人的上级领导，我都可以把申请进行转出
-        var candidateList = this.state.candidateList;
-        if (candidateList && candidateList.length){
-            isLeaderOfCandidate(candidateList,(result) => {
-                this.setState({
-                    isLeader: result
-                });
-            });
-        }
         if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || detailInfoObj.showApproveBtn || this.state.isLeader) && detailInfoObj.status === 'ongoing'){
             addApplyNextCandidate = this.renderAddApplyNextCandidate;
         }

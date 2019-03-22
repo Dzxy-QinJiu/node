@@ -44,7 +44,7 @@ var UserTypeConfigForm = require('./user-type-config-form');
 import Trace from 'LIB_DIR/trace';
 
 var moment = require('moment');
-import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDesc,formatUsersmanList,updateUnapprovedCount,isLeaderOfCandidate} from 'PUB_DIR/sources/utils/common-method-util';
+import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDesc,formatUsersmanList,updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
@@ -166,7 +166,6 @@ const ApplyViewDetail = createReactClass({
             checkStatus: true, //自动生成密码框是否选中
             passwordValue: '',//试用或者签约用户申请的明文密码
             showWariningTip: false,//是否展示密码的提示信息
-            isLeader: false, //当前账号是否是待审批人的上级领导
             ...ApplyViewDetailStore.getState()
         };
     },
@@ -2055,14 +2054,6 @@ const ApplyViewDetail = createReactClass({
         var isRealmAdmin = detailInfoObj.showApproveBtn;
         //是否审批
         let isConsumed = !this.isUnApproved();
-        var candidateList = this.state.candidateList;
-        if (candidateList && candidateList.length){
-            isLeaderOfCandidate(candidateList,(result) => {
-                this.setState({
-                    isLeader: result
-                });
-            });
-        }
         return (
             <div className="approval_block pull-right">
                 <Row className="approval_person clearfix">
