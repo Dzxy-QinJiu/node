@@ -809,12 +809,9 @@ const isLeaderOfCandidate = function(candidateList, callback) {
             if (teamList.length === 1) {
                 //如果我及我的下级团队只有一个团队，
                 //判断待审批人在该团队成员列表中，并且登录的账号是该团队的管理员
-                _.some(candidateList, (item) => {
-                    var userArr = getTeamUsers(teamList);
-                    if (userArr.includes(item.user_id) && user_id === item.owner_id) {
-                        isCandidateLeader = true;
-                        return true;
-                    }
+                var userArr = getTeamUsers(teamList);
+                isCandidateLeader = _.some(candidateList, (item) => {
+                    return userArr.includes(item.user_id) && user_id === item.owner_id;
                 });
             } else {
                 //如果我及我的下级团队大于一个团队，先把登录的账号所在的团队过滤掉,这样是为了防止有A,B两个同级的不同团队的销售主管，当A的下属有待审批的申请的时候，B是不应该有转审功能的
@@ -824,12 +821,9 @@ const isLeaderOfCandidate = function(candidateList, callback) {
                     return !userArr.includes(user_id);
                 });
                 //判断待审批人是否在剩下团队的成员列表中
-                _.some(candidateList, (item) => {
-                    var userArr = getTeamUsers(teamList);
-                    if (userArr.includes(item.user_id)) {
-                        isCandidateLeader = true;
-                        return true;
-                    }
+                var userArr = getTeamUsers(teamList);
+                isCandidateLeader = _.some(candidateList, (item) => {
+                    return userArr.includes(item.user_id);
                 });
             }
         }
