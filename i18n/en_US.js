@@ -2123,8 +2123,8 @@ var en_US = {
     'companay.hotline': 'Service Hotline:400-677-0986',//服务热线: 400-677-0986
     'company.qq': 'QQ:{qq}',//企业QQ: 4006770986
     'login.fail.login': 'Login service is temporarily unavailable. Please try again later',//登录服务暂时不可用，请稍后重试
-    'customer.input.customer.trace.content': 'Please fill in the customer follow-up record, and you cannot edit them!',//请填写跟进内容，保存后不可修改
-    'customer.add.customer.trace.detail': 'Please add details of customer follow-up record, and you cannot edit them!',//请补充客户跟进记录详情,保存后不可修改
+    'customer.input.customer.trace.content': 'Please fill in the customer follow-up record',//请填写跟进内容
+    'customer.add.customer.trace.detail': 'Please add details of customer follow-up record',//请补充客户跟进记录详情
     'customer.contact.phone': 'contact number',//联系电话
     'user.setting.roles': 'Set the role',//设置角色
     //补充
@@ -2406,7 +2406,7 @@ var en_US = {
     'contract.129': 'Cost information',//费用信息
     'crm.214': 'Add contact plan',//添加联系计划
     'customer.trace.content': 'Customer follow up records can not be empty',//客户跟进记录内容不能为空
-    'add.customer.trace.detail': 'Please fill in follow-up record, and cannot be modified after saving!',//请补充跟进记录详情，保存后不可修改
+    'add.customer.trace.detail': 'Please fill in follow-up record',//请补充跟进记录详情
     'click.to.add.trace.detail': 'Please click here to supplement the follow-up content',//请点击此处补充跟进内容
     'common.visit': 'Visit',//拜访
     'common.others': 'Other',//其他

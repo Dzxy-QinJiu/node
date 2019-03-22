@@ -2139,7 +2139,7 @@ var zh_CN = {
     'customer.fail.get.customer.trace': '获取客户跟踪记录列表失败',
     'customer.fail.add.customer.trace': '增加客户跟踪记录列表失败',
     'customer.trace.content': '客户跟进记录内容不能为空',
-    'customer.input.customer.trace.content': '请填写跟进内容，保存后不可修改',
+    'customer.input.customer.trace.content': '请填写跟进内容',
     'customer.add.customer.trace.detail': '请补充跟进记录详情',
     'customer.total.record': '共{num}条跟进记录',
     'customer.confirm.trace': '确定要保存此跟进内容？',
@@ -2171,7 +2171,7 @@ var zh_CN = {
     //跟踪记录
     'fail.get.customer.trace': '获取客户跟踪记录列表失败',
     'fail.add.customer.trace': '增加客户跟踪记录列表失败',
-    'add.customer.trace.detail': '请补充跟进记录详情，保存后不可修改',
+    'add.customer.trace.detail': '请补充跟进记录详情',
     'click.to.add.trace.detail': '请点击此处补充跟进内容',
     'contact.phone': '联系电话',
     'customer.visit': '拜访',
