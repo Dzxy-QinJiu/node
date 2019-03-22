@@ -14,7 +14,16 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import userData from '../user-data';
 import {SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import {selectMenuList, APPLY_APPROVE_TYPES, DOCUMENT_TYPE, INTEGRATE_TYPES, REPORT_TYPE,APPLY_FINISH_STATUS, APPLY_USER_STATUS, REG_FILES_SIZE_RULES} from './consts';
+import {
+    selectMenuList,
+    APPLY_APPROVE_TYPES,
+    DOCUMENT_TYPE,
+    INTEGRATE_TYPES,
+    REPORT_TYPE,
+    APPLY_FINISH_STATUS,
+    APPLY_USER_STATUS,
+    REG_FILES_SIZE_RULES
+} from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
@@ -23,7 +32,7 @@ import {ORGANIZATION_TYPE} from './consts';
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 var websiteConfig = require('../../../lib/utils/websiteConfig');
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
-
+import {getMyTeamTreeAndFlattenList} from './common-data-util';
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
     let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id === curTeamId);
@@ -248,11 +257,11 @@ function traversingTeamTree(treeList, list, flag) {
     if (_.isArray(treeList) && treeList.length) {
         _.each(treeList, team => {
             var childObj = {group_id: team.group_id, group_name: team.group_name};
-            if (flag){
+            if (flag) {
                 childObj.parent_group = team.parent_group;
-                childObj.user_ids = team.user_ids;
+                childObj.user_ids = team.user_ids || [];
                 childObj.owner_id = team.owner_id;
-                childObj.manager_ids = team.manager_ids;
+                childObj.manager_ids = team.manager_ids || [];
             }
             list.push(childObj);
             if (team.child_groups) {
@@ -408,7 +417,7 @@ exports.getApplyStateText = function(obj) {
         return Intl.get('user.apply.reject', '已驳回');
     } else if (obj.status === 'cancel') {
         return Intl.get('user.apply.backout', '已撤销');
-    }else {
+    } else {
         return Intl.get('user.apply.false', '待审批');
     }
 };
@@ -423,18 +432,21 @@ exports.getApplyTopicText = function(obj) {
     if (obj.topic === APPLY_APPROVE_TYPES.CUSTOMER_VISIT) {
         return Intl.get('leave.apply.add.leave.apply', '出差申请');
     } else if (obj.topic === APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES) {
-        return _.get(obj,'detail.customer.name');
+        return _.get(obj, 'detail.customer.name');
     } else if (obj.topic === APPLY_APPROVE_TYPES.PERSONAL_LEAVE) {
         return Intl.get('leave.apply.leave.application', '请假申请');
-    } else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1){
-        return Intl.get('apply.approve.specific.report','{customer}客户的{reporttype}',{customer: _.get(obj,'detail.customer.name'),reporttype: getDocumentReportTypeDes(REPORT_TYPE,_.get(obj,'detail.report_type'))});
-    }else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1){
-        return getDocumentReportTypeText(DOCUMENT_TYPE,_.get(obj,'detail.document_type'));
+    } else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1) {
+        return Intl.get('apply.approve.specific.report', '{customer}客户的{reporttype}', {
+            customer: _.get(obj, 'detail.customer.name'),
+            reporttype: getDocumentReportTypeDes(REPORT_TYPE, _.get(obj, 'detail.report_type'))
+        });
+    } else if (obj.workflow_type.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1) {
+        return getDocumentReportTypeText(DOCUMENT_TYPE, _.get(obj, 'detail.document_type'));
     } else if (obj.topic === APPLY_APPROVE_TYPES.MEMBER_INVITE) {
         return Intl.get('member.application', '成员申请');
     }
 };
-function getDocumentReportTypeText(AllTypeList,specificType) {
+function getDocumentReportTypeText(AllTypeList, specificType) {
     var targetObj = _.find(AllTypeList, (item) => {
         return item.value === specificType;
     });
@@ -444,14 +456,14 @@ function getDocumentReportTypeText(AllTypeList,specificType) {
     }
     return type;
 }
-function getDocumentReportTypeDes(AllTypeList,specificType) {
+function getDocumentReportTypeDes(AllTypeList, specificType) {
     var targetObj = _.find(AllTypeList, (item) => {
         return item.value === specificType;
     });
     var type = '';
     if (targetObj) {
         type = targetObj.name;
-        if (type === Intl.get('crm.186', '其他')){
+        if (type === Intl.get('crm.186', '其他')) {
             type = Intl.get('common.report', '报告');
         }
 
@@ -487,30 +499,30 @@ exports.getApplyStatusDscr = function(applyStatus) {
             applyType = Intl.get('leave.apply.approve.rejected', '被驳回');
             break;
         case 'cancel':
-            applyType = Intl.get('user.apply.be.canceled','被撤销');
+            applyType = Intl.get('user.apply.be.canceled', '被撤销');
             break;
     }
     return applyType;
 };
 exports.getApplyStatusTimeLineDesc = function(replyItemStatus) {
     var description = '';
-    if (replyItemStatus === 'reject'){
+    if (replyItemStatus === 'reject') {
         description = Intl.get('user.apply.detail.reject', '驳回申请');
-    }else if(replyItemStatus === 'cancel'){
+    } else if (replyItemStatus === 'cancel') {
         description = Intl.get('user.apply.detail.backout', '撤销申请');
-    }else if (replyItemStatus === 'pass'){
+    } else if (replyItemStatus === 'pass') {
         description = Intl.get('user.apply.detail.pass', '通过申请');
     }
     return description;
 };
 exports.getReportSendApplyStatusTimeLineDesc = function(replyItemStatus) {
     var description = '';
-    if (replyItemStatus === 'reject'){
+    if (replyItemStatus === 'reject') {
         description = Intl.get('user.apply.detail.reject', '驳回申请');
-    }else if(replyItemStatus === 'cancel'){
+    } else if (replyItemStatus === 'cancel') {
         description = Intl.get('user.apply.detail.backout', '撤销申请');
-    }else if (replyItemStatus === 'pass'){
-        description = Intl.get('apply.approve.confirm.apply','确认申请');
+    } else if (replyItemStatus === 'pass') {
+        description = Intl.get('apply.approve.confirm.apply', '确认申请');
     }
     return description;
 };
@@ -518,37 +530,53 @@ exports.getFilterReplyList = function(thisState) {
     //已经结束的用approve_detail里的列表 没有结束的，用comment里面取数据
     var applicantList = _.get(thisState, 'detailInfoObj.info');
     var replyList = [];
-    if ((APPLY_FINISH_STATUS.includes(applicantList.status)) && _.isArray(_.get(thisState, 'detailInfoObj.info.approve_details'))){
+    if ((APPLY_FINISH_STATUS.includes(applicantList.status)) && _.isArray(_.get(thisState, 'detailInfoObj.info.approve_details'))) {
         replyList = _.get(thisState, 'detailInfoObj.info.approve_details');
-    }else{
-        replyList = _.get(thisState,'replyListInfo.list');
+    } else {
+        replyList = _.get(thisState, 'replyListInfo.list');
     }
-    replyList = _.filter(replyList,(item) => {return !item.comment;});
-    replyList = _.sortBy( _.cloneDeep(replyList), [item => item.comment_time]);
+    replyList = _.filter(replyList, (item) => {
+        return !item.comment;
+    });
+    replyList = _.sortBy(_.cloneDeep(replyList), [item => item.comment_time]);
     return replyList;
 };
 exports.getUserApplyFilterReplyList = function(thisState) {
     //用户审批里面不会有approve_detail这个字段，只能在comment里面过滤数据
     //用户审批会有两类数据，一类是改成工作流之前的数据，一类是改成工作流之后的数据
     var applicantList = _.get(thisState, 'detailInfoObj.info');
-    var replyList = _.get(thisState,'replyListInfo.list',[]);
-    replyList = _.filter(replyList,(item) => {return item.approve_status;});
+    var replyList = _.get(thisState, 'replyListInfo.list', []);
+    replyList = _.filter(replyList, (item) => {
+        return item.approve_status;
+    });
     //如果工作流的状态是已经结束并且在reply列表中每一条都没有approve_status 这就是改成工作流之前的数据
     //撤销某条申请
-    if (_.get(applicantList,'approval_state') === APPLY_USER_STATUS.CANCELED_USER_APPLY){
-        replyList.push({approve_status: 'cancel',nick_name: applicantList.approval_person,comment_time: applicantList.approval_time});
+    if (_.get(applicantList, 'approval_state') === APPLY_USER_STATUS.CANCELED_USER_APPLY) {
+        replyList.push({
+            approve_status: 'cancel',
+            nick_name: applicantList.approval_person,
+            comment_time: applicantList.approval_time
+        });
     }
-    if ([APPLY_USER_STATUS.PASSED_USER_APPLY,APPLY_USER_STATUS.REJECTED_USER_APPLY].includes(_.get(applicantList,'approval_state')) && !replyList.length){
+    if ([APPLY_USER_STATUS.PASSED_USER_APPLY, APPLY_USER_STATUS.REJECTED_USER_APPLY].includes(_.get(applicantList, 'approval_state')) && !replyList.length) {
         //通过某条申请
-        if (_.get(applicantList,'approval_state') === APPLY_USER_STATUS.PASSED_USER_APPLY){
-            replyList.push({approve_status: 'pass',nick_name: applicantList.approval_person,comment_time: applicantList.approval_time});
+        if (_.get(applicantList, 'approval_state') === APPLY_USER_STATUS.PASSED_USER_APPLY) {
+            replyList.push({
+                approve_status: 'pass',
+                nick_name: applicantList.approval_person,
+                comment_time: applicantList.approval_time
+            });
         }
         //驳回某条申请
-        if (_.get(applicantList,'approval_state') === APPLY_USER_STATUS.REJECTED_USER_APPLY){
-            replyList.push({approve_status: 'reject',nick_name: applicantList.approval_person,comment_time: applicantList.approval_time});
+        if (_.get(applicantList, 'approval_state') === APPLY_USER_STATUS.REJECTED_USER_APPLY) {
+            replyList.push({
+                approve_status: 'reject',
+                nick_name: applicantList.approval_person,
+                comment_time: applicantList.approval_time
+            });
         }
     }
-    replyList = _.sortBy( _.cloneDeep(replyList), [item => item.comment_time]);
+    replyList = _.sortBy(_.cloneDeep(replyList), [item => item.comment_time]);
     return replyList;
 };
 
@@ -643,7 +671,7 @@ exports.formatUsersmanList = function(usersManList) {
     return dataList;
 };
 
-exports.updateUnapprovedCount = function(type,emitterType,updateCount) {
+exports.updateUnapprovedCount = function(type, emitterType, updateCount) {
     if (Oplate && Oplate.unread) {
         Oplate.unread[type] = updateCount;
         if (timeoutFunc) {
@@ -658,7 +686,7 @@ exports.updateUnapprovedCount = function(type,emitterType,updateCount) {
 
 // 获取组织信息
 function getOrganization() {
-    return _.get(userData.getUserData(),'organization', {}); // 组织信息
+    return _.get(userData.getUserData(), 'organization', {}); // 组织信息
 }
 
 exports.getOrganization = getOrganization;
@@ -666,7 +694,7 @@ exports.getOrganization = getOrganization;
 // 判断组织类型，若是eefung返回true，否则返回false
 exports.isOrganizationEefung = () => {
     let organization = getOrganization(); // 组织信息
-    return _.get(organization,'id') === ORGANIZATION_TYPE.EEFUNG;
+    return _.get(organization, 'id') === ORGANIZATION_TYPE.EEFUNG;
 };
 //是否已经配置了坐席号
 function hasCalloutPrivilege() {
@@ -675,7 +703,7 @@ function hasCalloutPrivilege() {
     return callClient && callClient.isInited();
 }
 exports.hasCalloutPrivilege = hasCalloutPrivilege;
-exports.afterGetExtendUserInfo = (data,that) => {
+exports.afterGetExtendUserInfo = (data, that) => {
     var responseObj = {
         isShowActiveEmail: !data.email_enable,//是否展示激活邮箱的提示
         isShowAddEmail: !data.email,//是否展示添加邮箱的提示，不能仅用是否有email字段进行判断，原因是如果数据获取慢的时候，也会在页面上展示出添加邮箱的提示
@@ -683,19 +711,19 @@ exports.afterGetExtendUserInfo = (data,that) => {
         email: data.email
     };
     //如果邮箱未激活或者未设置坐席号，再发请求看是否设置过不再展示
-    if (responseObj.isShowActiveEmail || responseObj.isShowSetClient){
+    if (responseObj.isShowActiveEmail || responseObj.isShowSetClient) {
         getWebsiteConfig((configData) => {
-            if (configData){
-                if (responseObj.isShowActiveEmail && _.get(configData, 'setting_notice_ignore') === 'yes'){
+            if (configData) {
+                if (responseObj.isShowActiveEmail && _.get(configData, 'setting_notice_ignore') === 'yes') {
 
                     responseObj.isShowActiveEmail = false;
                 }
-                if (responseObj.isShowSetClient && _.get(configData, 'personnel_setting.setting_client_notice_ignore') === 'yes'){
+                if (responseObj.isShowSetClient && _.get(configData, 'personnel_setting.setting_client_notice_ignore') === 'yes') {
                     responseObj.isShowSetClient = false;
                 }
             }
             that.dispatch(responseObj);
-        },true);
+        }, true);
     }
 };
 exports.getApplyListTypeDes = (applyListType) => {
@@ -716,15 +744,15 @@ exports.getApplyListTypeDes = (applyListType) => {
 };
 exports.checkFileSizeLimit = (fileSize) => {
     var sizeQualified = true, warningMsg = '';
-    _.forEach(REG_FILES_SIZE_RULES,(item) => {
-        if (!_.isUndefined(item.minValue)){
+    _.forEach(REG_FILES_SIZE_RULES, (item) => {
+        if (!_.isUndefined(item.minValue)) {
             if (fileSize === item.minValue) {
                 warningMsg = item.messageTips;
                 sizeQualified = false;
                 return false;
             }
         }
-        if (_.isUndefined(item.minValue) && item.maxValue){
+        if (_.isUndefined(item.minValue) && item.maxValue) {
             if (fileSize > item.maxValue) {
                 warningMsg = item.messageTips;
                 sizeQualified = false;
@@ -732,7 +760,7 @@ exports.checkFileSizeLimit = (fileSize) => {
             }
         }
     });
-    return {sizeQualified: sizeQualified,warningMsg: warningMsg};
+    return {sizeQualified: sizeQualified, warningMsg: warningMsg};
 };
 exports.checkFileNameForbidRule = (filename,regnamerules) => {
     var nameQualified = true, warningMsg = '';
@@ -762,4 +790,58 @@ exports.checkFileNameAllowRule = (filename, regnamerules) => {
     }
 
     return {nameQualified: nameQualified,warningMsg: warningMsg};
+};
+//获取团队里所有成员列表
+function getTeamUsers(teamList) {
+    var subUserArr = [];
+    if (_.isArray(teamList)) {
+        _.forEach(teamList, (item) => {
+            subUserArr = _.concat(subUserArr, item.owner_id, item.manager_ids, item.user_ids);
+        });
+    }
+    subUserArr = _.uniq(subUserArr);
+    return subUserArr;
+}
+
+//查询当前账号是否是待审批人的领导
+const isLeaderOfCandidate = function(candidateList, callback) {
+    var user_id = userData.getUserData().user_id;
+    getMyTeamTreeAndFlattenList(data => {
+        var teamList = data.teamList, isCandidateLeader = false;
+        if (_.isArray(teamList) && teamList.length) {
+            if (teamList.length === 1) {
+                //如果我及我的下级团队只有一个团队，
+                //判断待审批人在该团队成员列表中，并且登录的账号是该团队的管理员
+                var userArr = getTeamUsers(teamList);
+                isCandidateLeader = _.some(candidateList, (item) => {
+                    return userArr.includes(item.user_id) && user_id === item.owner_id;
+                });
+            } else {
+                //如果我及我的下级团队大于一个团队，先把登录的账号所在的团队过滤掉,这样是为了防止有A,B两个同级的不同团队的销售主管，当A的下属有待审批的申请的时候，B是不应该有转审功能的
+                teamList = _.filter(teamList, (teamItem) => {
+                    var userArr = [];
+                    userArr = _.concat(userArr, teamItem.owner_id, teamItem.manager_ids, teamItem.user_ids);
+                    return !userArr.includes(user_id);
+                });
+                //判断待审批人是否在剩下团队的成员列表中
+                var userArr = getTeamUsers(teamList);
+                isCandidateLeader = _.some(candidateList, (item) => {
+                    return userArr.includes(item.user_id);
+                });
+            }
+        }
+        _.isFunction(callback) && callback(isCandidateLeader);
+    }, true);
+};
+exports.isLeaderOfCandidate = isLeaderOfCandidate;
+//查看当前账号是否是待审批人的领导
+//如果是管理员或者我是待审批人或者我是待审批人的上级领导，我都可以把申请进行转出
+exports.checkIfLeader = function(result){
+    var isLeader = false;
+    if (result && result.length){
+        isLeaderOfCandidate(result,(isLeaderFlag) => {
+            isLeader = isLeaderFlag;
+        });
+    }
+    return isLeader;
 };
