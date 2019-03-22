@@ -78,7 +78,12 @@ const ApplyUserForm = createReactClass({
     getIntegrateConfig(){
         commonDataUtil.getIntegrationConfig().then(resultObj => {
             let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
-            this.setState({isOplateUser});
+            let formData = this.state.formData;
+            //从客户详情中申请用户时，用户类型默认值的设置（只有oplate用户申请时，需要默认值为试用用户）
+            if (this.props.applyFrom !== 'order') {
+                formData.tag = isOplateUser ? Intl.get('common.trial.user', '试用用户') : '';
+            }
+            this.setState({isOplateUser,formData});
         });
     },
 
@@ -114,7 +119,8 @@ const ApplyUserForm = createReactClass({
             const users = _.map(props.users, 'user');
             formData = {
                 customer_id: props.customerId,
-                tag: Intl.get('common.trial.user', '试用用户'),
+                //从客户详情中申请用户时，只有oplate用户申请时，需要默认值为试用用户（uem不需要设置）
+                tag: _.get(this.state, 'isOplateUser') ? Intl.get('common.trial.user', '试用用户') : '',
                 remark: '',
                 selectAppIds: []//用来验证是否选择应用的属性
             };
@@ -656,7 +662,8 @@ const ApplyUserForm = createReactClass({
                                             <Radio key="0" value={Intl.get('common.trial.official', '正式用户')}>
                                                 {Intl.get('user.signed.user', '签约用户')}
                                             </Radio>
-                                        </RadioGroup> : <Input placeholder={Intl.get('crm.input.your.apply.user.type','请输入您申请的用户类型（例如：试用用户、签约用户等）')} name="tag" defaultValue='' onChange={this.onInputTypeChange}/>}
+                                        </RadioGroup> : <Input placeholder={Intl.get('crm.input.your.apply.user.type','请输入您申请的用户类型（例如：试用用户、签约用户等）')}
+                                            name="tag" value={_.get(formData, 'tag','')} onChange={this.onInputTypeChange}/>}
                                     </Validator>
                                 </FormItem>) : null}
                             <FormItem
