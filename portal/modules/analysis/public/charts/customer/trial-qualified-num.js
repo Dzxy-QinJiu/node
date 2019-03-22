@@ -2,6 +2,8 @@
  * 本月试用合格客户数统计
  */
 
+import { processFallsChartCsvData } from '../../utils';
+
 export function getCustomerTrialQualifiedNumChart() {
     return {
         title: '本月试用合格客户数统计',
@@ -92,5 +94,6 @@ export function getCustomerTrialQualifiedNumChart() {
                 serieHistory
             ];
         },
+        processCsvData: processFallsChartCsvData
     };
 }
