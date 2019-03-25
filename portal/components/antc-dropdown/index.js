@@ -51,7 +51,9 @@ class AntcDropdown extends React.Component {
         this.setState({menuVisible: false});
         // 关面板后，清空选择的数据
         this.props.clearSelectData();
-        this.props.showDropDownContent();
+        if (this.props.isShowDropDownContent) {
+            this.props.showDropDownContent();
+        }
     }
 
     render() {
