@@ -106,27 +106,18 @@ class WeeklyReportDetail extends React.Component {
         let columns = [{
             title: Intl.get('crm.6', '负责人'),
             dataIndex: 'nickName',
-            align: 'left',
-            width: '260px'
         }, {
             title: Intl.get('weekly.report.project', '项目'),
             dataIndex: 'customerName',
-            align: 'left',
         }, {
             title: Intl.get('weekly.report.assign.time', '签约时间'),
             dataIndex: 'date',
-            align: 'right',
-            width: '260px'
         }, {
             title: Intl.get('weekly.report.contract.account', '合同金额'),
             dataIndex: 'amount',
-            align: 'right',
-            width: '260px'
         }, {
             title: Intl.get('contract.109', '毛利'),
             dataIndex: 'grossProfit',
-            align: 'right',
-            width: '260px'
         }];
         return columns;
     };
@@ -136,27 +127,18 @@ class WeeklyReportDetail extends React.Component {
         let columns = [{
             title: Intl.get('crm.6', '负责人'),
             dataIndex: 'nickName',
-            align: 'left',
-            width: '260px'
         }, {
             title: Intl.get('weekly.report.project', '项目'),
             dataIndex: 'customerName',
-            align: 'left',
         }, {
             title: Intl.get('contract.122', '回款时间'),
             dataIndex: 'date',
-            align: 'right',
-            width: '260px'
         }, {
             title: Intl.get('weekly.report.repayment.account', '回款金额'),
             dataIndex: 'amount',
-            align: 'right',
-            width: '260px'
         }, {
             title: Intl.get('contract.109', '毛利'),
             dataIndex: 'grossProfit',
-            align: 'right',
-            width: '260px'
         }];
         return columns;
     };
