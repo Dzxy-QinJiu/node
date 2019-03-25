@@ -1,6 +1,6 @@
 var React = require('react');
 require('./css/index.less');
-import { Tag, Modal, message, Button, Icon } from 'antd';
+import { Tag, message, Button, Icon } from 'antd';
 import { AntcTable } from 'antc';
 var RightContent = require('../../../components/privilege/right-content');
 var FilterBlock = require('../../../components/filter-block');
@@ -146,20 +146,18 @@ class Crm extends React.Component {
     };
 
     setRange = (obj) => {
+        let rangParams = this.state.rangParams[0];
         if (obj.startTime) {
-            this.state.rangParams[0].from = obj.startTime;
+            rangParams.from = obj.startTime;
         }
         if (obj.endTime) {
-            this.state.rangParams[0].to = obj.endTime;
+            rangParams.to = obj.endTime;
         }
-    };
-
-    setStartRange = (value) => {
-        this.state.rangParams[0].from = value;
     };
 
     setEndRange = (value) => {
-        this.state.rangParams[0].to = value;
+        let rangParams = this.state.rangParams[0];
+        rangParams.to = value;
     };
 
     componentDidMount() {
@@ -293,7 +291,9 @@ class Crm extends React.Component {
             //舆情秘书看到的团队成员列表
             if (filterField === 'team_member') {
                 FilterAction.setInputCondition({ user_name: filterValue });
-                this.state.crmFilterValue = filterValue;
+                this.setState({
+                    crmFilterValue: filterValue
+                });
             }
             this.search();
         }
@@ -449,16 +449,18 @@ class Crm extends React.Component {
 
     confirmDelete = (cusId, cusName) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.cus-op'), '删除客户');
-        this.state.currentId = cusId;
-        this.state.deleteCusName = cusName;
-        this.state.showDeleteConfirm = true;
-        this.setState(this.state);
+        this.setState({
+            currentId: cusId,
+            deleteCusName: cusName,
+            showDeleteConfirm: true
+        });
     };
 
     hideDeleteModal = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-cancel'), '关闭删除客户的确认模态框');
-        this.state.showDeleteConfirm = false;
-        this.setState(this.state);
+        this.setState({
+            showDeleteConfirm: false
+        });
     };
 
     deleteCustomer = () => {
@@ -470,14 +472,12 @@ class Crm extends React.Component {
     };
 
     refreshCustomerList = (customerId) => {
-        this.state.selectedCustomer = [];
+        this.setState({
+            selectedCustomer: []
+        });
         setTimeout(() => {
             CrmAction.refreshCustomerList(customerId);
         }, 1000);
-    };
-
-    editOne = (index, name) => {
-        this.state.rightPanelIShow = true;
     };
 
     showRightPanel = (id) => {
@@ -512,27 +512,31 @@ class Crm extends React.Component {
     };
 
     hideRightPanel = () => {
-        this.state.rightPanelIsShow = false;
         rightPanelShow = false;
-        this.setState(this.state);
+        this.setState({
+            rightPanelIsShow: false
+        });
         $('.ant-table-row').removeClass('current-row');
     };
 
     addOne = (customer) => {
-        this.state.isAddFlag = false;
-        this.state.isScrollTop = true;
-        this.setState(this.state);
+        this.setState({
+            isAddFlag: false,
+            isScrollTop: true
+        });
     };
 
     showAddForm = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.handle-btn-container'), '点击添加客户按钮');
-        this.state.isAddFlag = true;
-        this.setState(this.state);
+        this.setState({
+            isAddFlag: true
+        });
     };
 
     hideAddForm = () => {
-        this.state.isAddFlag = false;
-        this.setState(this.state);
+        this.setState({
+            isAddFlag: false
+        });
     };
 
     processCondition = (filterStoreCondition, reset) => {
@@ -540,11 +544,14 @@ class Crm extends React.Component {
         //去除查询条件中值为空的项
         commonMethodUtil.removeEmptyItem(condition);
         //保存当前查询条件，批量变更的时候会用到
-        this.state.condition = condition;
-
+        this.setState({
+            condition: condition
+        });
         //当重置标志为true时，重新从第一页加载，并重置客户列表
         if (reset) {
-            this.state.pageNum = 1;
+            this.setState({
+                pageNum: 1
+            });
             //清除客户的选择
             this.clearSelectedCustomer();
             //将分页器默认选中为第一页
@@ -683,6 +690,7 @@ class Crm extends React.Component {
         let dayTimeLogin = '';
         //近xxx天未写跟进记录的时间
         let dayTimeNoTrace = '';
+        let rangParams = this.state.rangParams[0];
         switch (condition.otherSelectedItem) {
             case OTHER_FILTER_ITEMS.THIRTY_NO_CALL://超30天未打过电话的客户
                 dayTime = DAY_TIME.THIRTY_DAY;
@@ -732,7 +740,7 @@ class Crm extends React.Component {
                 condition.interest_member_ids = [crmUtil.getMyUserId()];
                 break;
             case OTHER_FILTER_ITEMS.MULTI_ORDER://多个订单的客户
-                this.state.rangParams[0] = {
+                rangParams = {
                     from: 2,
                     name: 'sales_opportunity_count',
                     type: 'long',
@@ -746,7 +754,7 @@ class Crm extends React.Component {
                 unexist.push('member_id');
                 break;
             case OTHER_FILTER_ITEMS.THIS_WEEK_CONTACTED://本周联系过的客户
-                this.state.rangParams[0] = {
+                rangParams = {
                     from: getStartTime('week'),
                     to: getEndTime('week'),
                     name: 'last_contact_time',
@@ -758,14 +766,16 @@ class Crm extends React.Component {
         if(condition.otherSelectedItem === OTHER_FILTER_ITEMS.THIRTY_NO_CONNECTION) {
             let currentTime = moment().valueOf();
             //最后拨打电话的时间在近30天内，
-            this.state.rangParams[0] = {
+            let rangParams = this.state.rangParams[0];
+            rangParams = {
                 from: currentTime - DAY_TIME.THIRTY_DAY,
                 to: currentTime,
                 name: 'last_phone_time',
                 type: 'time'
             };
             //最后联系时间在30天之前
-            this.state.rangParams[1] = {
+            let beforeThirtyParams = this.state.rangParams[1];
+            beforeThirtyParams = {
                 to: currentTime - DAY_TIME.THIRTY_DAY,
                 name: 'last_contact_time',
                 type: 'time'
@@ -775,13 +785,15 @@ class Crm extends React.Component {
         else if (dayTime) {
             //超30天未打过电话的客户
             if(condition.otherSelectedItem === OTHER_FILTER_ITEMS.THIRTY_NO_CALL) {
-                this.state.rangParams[0] = {
+                let rangParams = this.state.rangParams[0];
+                rangParams = {
                     to: moment().valueOf() - dayTime,
                     name: 'last_phone_time',
                     type: 'time'
                 };
             } else {//超xx天未联系的客户过滤需传的参数
-                this.state.rangParams[0] = {
+                let rangParams = this.state.rangParams[0];
+                rangParams = {
                     to: moment().valueOf() - dayTime,
                     // from: moment().valueOf(),
                     name: 'last_contact_time',
@@ -791,13 +803,15 @@ class Crm extends React.Component {
         }
         //xx天活跃客户过滤需传的参数
         else if (dayTimeLogin) {
-            this.state.rangParams[0] = {
+            let rangParams = this.state.rangParams[0];
+            rangParams = {
                 from: moment().valueOf() - dayTimeLogin,
                 name: 'last_login_time',
                 type: 'time'
             };
         } else if (dayTimeNoTrace){//超xxx天未写跟进记录的客户过滤参数
-            this.state.rangParams[0] = {
+            let rangParams = this.state.rangParams[0];
+            rangParams = {
                 to: moment().valueOf() - dayTimeNoTrace,
                 name: 'last_customer_trace_time',
                 type: 'time'
@@ -805,10 +819,12 @@ class Crm extends React.Component {
         } else if (condition.otherSelectedItem !== OTHER_FILTER_ITEMS.MULTI_ORDER
             && condition.otherSelectedItem !== OTHER_FILTER_ITEMS.THIS_WEEK_CONTACTED) {
             //既不是超xx天未联系的客户、也不是xx天的活跃、不是多个订单客户、也不是本周未联系考核的过滤时，传默认的设置
-            this.state.rangParams[0] = DEFAULT_RANGE_PARAM;
+            let rangParams = this.state.rangParams[0];
+            rangParams = DEFAULT_RANGE_PARAM;
         }
         if (interval) {
-            this.state.rangParams[0].interval = interval;
+            let rangParams = this.state.rangParams[0];
+            rangParams.interval = interval;
         }
         if (unexist.length > 0) {
             condition.unexist_fields = unexist;
@@ -880,9 +896,10 @@ class Crm extends React.Component {
 
     //清除客户的选择
     clearSelectedCustomer = () => {
-        this.state.selectedCustomer = [];
-        this.state.selectAllMatched = false;
-        this.setState(this.state);
+        this.setState({
+            selectedCustomer: [],
+            selectAllMatched: false
+        });
     };
 
     onTableChange = (pagination, filters, sorter) => {
@@ -891,17 +908,18 @@ class Crm extends React.Component {
         });
         let sorterChanged = false;
         let filterChanged = this.state.filterChanged;
+        let stateSorter = this.state.sorter;
 
-        if (!_.isEmpty(sorter) && (sorter.field !== this.state.sorter.field || sorter.order !== this.state.sorter.order)) {
+        if (!_.isEmpty(sorter) && (sorter.field !== stateSorter.field || sorter.order !== stateSorter.order)) {
             sorterChanged = true;
         }
 
         if (!filterChanged && !sorterChanged) return;
 
-        if (filterChanged) this.state.filterChanged = false;
+        if (filterChanged) filterChanged = false;
 
         if (sorterChanged) {
-            this.state.sorter = sorter;
+            stateSorter = sorter;
         }
         this.setState(this.state, () => {
             this.search(true);
@@ -932,15 +950,17 @@ class Crm extends React.Component {
     };
 
     selectAllSearchResult = () => {
-        this.state.selectAllMatched = true;
-        this.state.selectedCustomer = this.state.curPageCustomers.slice();
-        this.setState(this.state);
+        this.setState({
+            selectAllMatched: true,
+            selectedCustomer: this.state.curPageCustomers.slice()
+        });
     };
 
     clearSelectAllSearchResult = () => {
-        this.state.selectedCustomer = [];
-        this.state.selectAllMatched = false;
-        this.setState(this.state, () => {
+        this.setState({
+            selectedCustomer: [],
+            selectAllMatched: false
+        }, () => {
             $('th.ant-table-selection-column input').click();
         });
     };
@@ -975,13 +995,6 @@ class Crm extends React.Component {
         if (this.state.selectedCustomer.length) {
             //选择客户后，展示合并和批量变更的按钮
             return (<div className="top-btn-wrapper">
-                <PrivilegeChecker
-                    check="CUSTOMER_MERGE_CUSTOMER"
-                    className='block crm-merge-btn'
-                    onClick={this.showMergePanel}
-                >
-                    <Button type="primary">{Intl.get('crm.0', '合并客户')}</Button>
-                </PrivilegeChecker>
                 <PrivilegeChecker check="CUSTOMER_BATCH_OPERATE" className="batch-btn-wrapper">
                     <CrmBatchChange isWebMini={isWebMini}
                         currentId={this.state.currentId}
@@ -992,6 +1005,13 @@ class Crm extends React.Component {
                         matchedNum={this.state.customersSize}
                         condition={this.state.condition}
                     />
+                </PrivilegeChecker>
+                <PrivilegeChecker
+                    check="CUSTOMER_MERGE_CUSTOMER"
+                    className='block crm-merge-btn'
+                    onClick={this.showMergePanel}
+                >
+                    <Button>{Intl.get('crm.0', '合并客户')}</Button>
                 </PrivilegeChecker>
             </div>);
         } else {
@@ -1121,7 +1141,6 @@ class Crm extends React.Component {
             let selectedCustomer = this.state.selectedCustomer;
             //不是全选时，清空翻页前选择的客户
             if (_.isArray(selectedCustomer) && selectedCustomer.length && !this.state.selectAllMatched) {
-                this.state.selectedCustomer = [];
                 this.setState({ selectedCustomer: [] });
             }
             //设置要跳转到的页码数值
@@ -1733,13 +1752,15 @@ Crm.defaultProps = {
 
     },
     params: {},
+    listPanelParamObj: {}
 };
 Crm.propTypes = {
     location: PropTypes.object,
     fromSalesHome: PropTypes.bool,
     showRepeatCustomer: PropTypes.func,
     params: PropTypes.object,
-    showCustomerRecycleBin: PropTypes.func
+    showCustomerRecycleBin: PropTypes.func,
+    listPanelParamObj: PropTypes.object,
 };
 
 module.exports = Crm;
