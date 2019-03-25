@@ -105,7 +105,7 @@ class PhoneAddToCustomerForm extends React.Component {
                 let contact = {
                     customer_id: _.get(this.state, 'selectedCustomer.id'),
                     name: values.contact,
-                    phone: JSON.stringify([values.phone]),
+                    phone: [values.phone],
                     customer_name: _.get(this.state, 'selectedCustomer.name')
                 };
                 this.addContact(contact);
