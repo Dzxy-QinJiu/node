@@ -420,6 +420,15 @@ class WeeklyReportDetail extends React.Component {
             start_time: this.getBeginDateOfWeek(this.state.selectedItem.nYear, this.state.selectedItem.nWeek),
             end_time: this.getEndDateOfWeek(this.state.selectedItem.nYear, this.state.selectedItem.nWeek),
         };
+
+        const currentTime = moment().valueOf();
+
+        //如果选定的结束时间大于当前时间，则将结束时间置为当前时间
+        //以防止出现本周还未过的天也被统计到考核天数里的问题
+        if (queryParams.end_time > currentTime) {
+            queryParams.end_time = currentTime;
+        }
+
         if (this.state.selectedItem.teamId){
             queryParams.team_ids = this.state.selectedItem.teamId;
         }
