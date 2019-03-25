@@ -74,7 +74,7 @@ class MemberApply extends React.Component {
             order: this.state.order,
             page_size: this.state.page_size,
             id: this.state.lastApplyId, //用于下拉加载的id
-            type: 'member_invite'
+            type: APPLY_APPROVE_TYPES.MEMBER_INVITE
         };
         //如果是选择的全部类型，不需要传status这个参数
         if (this.state.applyListType !== 'all') {
