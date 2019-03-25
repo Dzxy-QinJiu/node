@@ -37,6 +37,14 @@ const BATCH_OPERATE_TYPE = {
     CHANGE_ADMINISTRATIVE_LEVEL: 'changeAdministrativeLevel',//变更行政级别
     ADD_SCHEDULE_LISTS: 'addScheduleLists',
 };
+const BATCH_MENU_TYPE = [
+    {key: 'changeTag', value: Intl.get('common.tag', '标签')},
+    {key: 'changeIndustry', value: Intl.get('common.industry', '行业')},
+    {key: 'changeTerritory', value: Intl.get('crm.96', '地域')},
+    {key: 'changeSales', value: Intl.get('sales.home.sales', '销售')},
+    {key: 'changeAdministrativeLevel', value: Intl.get('crm.administrative.level', '行政级别')}
+];
+
 var CrmScheduleForm = require('./schedule/form');
 
 var CrmBatchChange = createReactClass({
@@ -702,21 +710,9 @@ var CrmBatchChange = createReactClass({
     getBatchChangeMenus() {
         return(
             <Menu onClick={this.handleMenuClick} defaultSelectedKeys={[BATCH_OPERATE_TYPE.CHANGE_TAG]}>
-                <Menu.Item key={BATCH_OPERATE_TYPE.CHANGE_TAG}>
-                    {Intl.get('common.tag', '标签')}
-                </Menu.Item>
-                <Menu.Item key={BATCH_OPERATE_TYPE.CHANGE_INDUSTRY}>
-                    {Intl.get('common.industry', '行业')}
-                </Menu.Item>
-                <Menu.Item key={BATCH_OPERATE_TYPE.CHANGE_TERRITORY}>
-                    {Intl.get('crm.96', '地域')}
-                </Menu.Item>
-                <Menu.Item key={BATCH_OPERATE_TYPE.CHANGE_SALES}>
-                    {Intl.get('sales.home.sales', '销售')}
-                </Menu.Item>
-                <Menu.Item key={BATCH_OPERATE_TYPE.CHANGE_ADMINISTRATIVE_LEVEL}>
-                    {Intl.get('crm.administrative.level', '行政级别')}
-                </Menu.Item>
+                {_.map(BATCH_MENU_TYPE, item => {
+                    return (<Menu.Item key={item.key}>{item.value}</Menu.Item>);
+                })}
             </Menu>
         );
     },
@@ -791,7 +787,7 @@ var CrmBatchChange = createReactClass({
                         <AntcDropdown
                             ref="changeAddress"
                             content={changeBtns.btn}
-                            overlayTitle={Intl.get('common.address', '地址')}
+                            overlayTitle={Intl.get('crm.96', '地域')}
                             isSaving={this.state.isLoading}
                             overlayContent={this.renderAddressBlock()}
                             handleSubmit={this.handleSubmit}
@@ -827,7 +823,7 @@ var CrmBatchChange = createReactClass({
                         <AntcDropdown
                             ref="changeAdministrativeLevel"
                             content={changeBtns.btn}
-                            overlayTitle={Intl.get('crm.administrative.level.change', '变更行政级别')}
+                            overlayTitle={Intl.get('crm.administrative.level', '行政级别')}
                             isSaving={this.state.isLoading}
                             overlayContent={this.renderAdministrativeLevelBlock()}
                             handleSubmit={this.handleSubmit}

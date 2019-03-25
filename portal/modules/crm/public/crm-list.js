@@ -766,7 +766,6 @@ class Crm extends React.Component {
         if(condition.otherSelectedItem === OTHER_FILTER_ITEMS.THIRTY_NO_CONNECTION) {
             let currentTime = moment().valueOf();
             //最后拨打电话的时间在近30天内，
-            let rangParams = this.state.rangParams[0];
             rangParams = {
                 from: currentTime - DAY_TIME.THIRTY_DAY,
                 to: currentTime,
@@ -785,14 +784,12 @@ class Crm extends React.Component {
         else if (dayTime) {
             //超30天未打过电话的客户
             if(condition.otherSelectedItem === OTHER_FILTER_ITEMS.THIRTY_NO_CALL) {
-                let rangParams = this.state.rangParams[0];
                 rangParams = {
                     to: moment().valueOf() - dayTime,
                     name: 'last_phone_time',
                     type: 'time'
                 };
             } else {//超xx天未联系的客户过滤需传的参数
-                let rangParams = this.state.rangParams[0];
                 rangParams = {
                     to: moment().valueOf() - dayTime,
                     // from: moment().valueOf(),
@@ -803,14 +800,12 @@ class Crm extends React.Component {
         }
         //xx天活跃客户过滤需传的参数
         else if (dayTimeLogin) {
-            let rangParams = this.state.rangParams[0];
             rangParams = {
                 from: moment().valueOf() - dayTimeLogin,
                 name: 'last_login_time',
                 type: 'time'
             };
         } else if (dayTimeNoTrace){//超xxx天未写跟进记录的客户过滤参数
-            let rangParams = this.state.rangParams[0];
             rangParams = {
                 to: moment().valueOf() - dayTimeNoTrace,
                 name: 'last_customer_trace_time',
@@ -823,7 +818,6 @@ class Crm extends React.Component {
             rangParams = DEFAULT_RANGE_PARAM;
         }
         if (interval) {
-            let rangParams = this.state.rangParams[0];
             rangParams.interval = interval;
         }
         if (unexist.length > 0) {
@@ -1752,7 +1746,7 @@ Crm.defaultProps = {
 
     },
     params: {},
-    listPanelParamObj: {}
+
 };
 Crm.propTypes = {
     location: PropTypes.object,
