@@ -614,7 +614,7 @@ class AppUserManage extends React.Component {
                             appLists={this.state.detailUser.apps}
                             isShownExceptionTab={this.state.detailUser.isShownExceptionTab}
                             selectedAppId={this.state.selectedAppId}
-
+                            userInfo={_.get(this.state.detailUser, 'user', {})}
                         />
                     );
                     break;
