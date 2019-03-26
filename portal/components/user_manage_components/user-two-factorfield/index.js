@@ -33,14 +33,16 @@ const UserTwoFactorField = {
         }
 
         const onChange = !config.isCustomSetting ? (e) => {
-            const value = e.target && (e.target.value || e.target.checked ? '1' : '0');
+            const value = e.target.type === 'radio' && e.target.value ||
+                            e.target.type === 'checkbox' && e.target.checked ? '1' : '0';
             const formData = this.state.formData;
             formData.is_two_factor = value;
             this.setState({
                 formData
             });
         } : (event) => {
-            const value = event.target && (event.target.value || event.target.checked ? '1' : '0');
+            const value = event.target.type === 'radio' && event.target.value ||
+                            event.target.type === 'checkbox' && event.target.checked ? '1' : '0';
             const appPropSettingsMap = this.state.appPropSettingsMap;
             const formData = appPropSettingsMap[config.appId] || {};
             formData.is_two_factor.value = value;
