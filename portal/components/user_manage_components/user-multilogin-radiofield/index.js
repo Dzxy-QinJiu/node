@@ -38,7 +38,7 @@ const UserTypeRadioField = {
         }
 
         const callback = config.isCustomSetting ? (event) => {
-            const value = event.target.value;
+            const value = event.target && (event.target.value || event.target.checked ? CHECKED.TRUE : CHECKED.FALSE);
             const appPropSettingsMap = this.state.appPropSettingsMap;
             const formData = appPropSettingsMap[config.appId] || {};
             formData.multilogin.value = value;
@@ -50,7 +50,7 @@ const UserTypeRadioField = {
                 this.hideMultiLoginError();
             }
         } : (event) => {
-            const value = event.target.value;
+            const value = event.target && (event.target.value || event.target.checked ? CHECKED.TRUE : CHECKED.FALSE);
             const formData = this.state.formData;
             formData.multilogin = value;
             this.setState({formData});

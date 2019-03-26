@@ -32,8 +32,15 @@ const UserTwoFactorField = {
             currentValue = appPropSettingsMap[config.appId].is_two_factor.value;
         }
 
-        const onChange = !config.isCustomSetting ? this.setField.bind(this , 'is_two_factor') : (event) => {
-            const value = event.target.value;
+        const onChange = !config.isCustomSetting ? (e) => {
+            const value = e.target && (e.target.value || e.target.checked ? '1' : '0');
+            const formData = this.state.formData;
+            formData.is_two_factor = value;
+            this.setState({
+                formData
+            });
+        } : (event) => {
+            const value = event.target && (event.target.value || event.target.checked ? '1' : '0');
             const appPropSettingsMap = this.state.appPropSettingsMap;
             const formData = appPropSettingsMap[config.appId] || {};
             formData.is_two_factor.value = value;
