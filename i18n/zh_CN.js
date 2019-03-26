@@ -2632,7 +2632,7 @@ var zh_CN = {
     'leave.apply.for.leave.time': '出差时间',
     'leave.apply.for.application': '人员',
     'leave.apply.application.status': '审批状态',
-    'leave.apply.fill.leave.reason': '请填写出差事由',
+    'leave.apply.fill.leave.reason': '请填写预期目标',
     'leave.apply.no.filter.leave.list': '暂无符合查询条件的出差申请',
     'leave.apply.detail.wait': '待',
     'leave.apply.sales.oppotunity': '机会申请',
@@ -2847,6 +2847,7 @@ var zh_CN = {
     'common.callsystem.get.faild': '获取组织电话系统配置失败',
     'contract.invocie.delete.faild': '删除发票额失败',
     'apply.detail.show.password': '显示密码',
-    'apply.detail.hide.password': '隐藏密码'
+    'apply.detail.hide.password': '隐藏密码',
+    'bussiness.trip.time.range': '拜访时间',
 };
 export default zh_CN;

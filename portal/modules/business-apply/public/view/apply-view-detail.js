@@ -338,6 +338,17 @@ class ApplyViewDetail extends React.Component {
                         </a>
                     );
                 }
+            },{
+                title: Intl.get('bussiness.trip.time.range', '拜访时间'),
+                className: 'apply-customer-name',
+                render: function(text, record, index) {
+                    return (
+                        <span>
+                            {record.visit_start_time ? moment(record.visit_start_time).format(oplateConsts.DATE_TIME_FORMAT) : ''} {record.visit_end_time ? '-' + moment(record.visit_end_time).format(oplateConsts.DATE_TIME_FORMAT) : ''}
+                        </span>
+                    );
+                }
+
             }, {
                 title: Intl.get('common.remark', '备注'),
                 dataIndex: 'remarks',

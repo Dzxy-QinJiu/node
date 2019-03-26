@@ -8,10 +8,6 @@
     margin-bottom: 10px;
     .customer-name-item{
       margin-bottom: 13px;
-      .customer_search_wrap{
-        float: left;
-        width: 90%;
-      }
       //.ant-form-item-control-wrapper{
       //  width: 90%;
       //}
@@ -23,10 +19,13 @@
       }
     }
 
-    i.iconfont{
+    i.iconfont.icon-delete{
       margin-right:10px;
       color:#999;
+      position: absolute;
+      top:0;
     }
+
     .contact-way-buttons{
       float: left;
       color:#8EABC6;
@@ -42,12 +41,26 @@
       }
     }
   }
-  .add-contact{
-    float: left;
-    text-align: left;
+  .contact-wrap:last-child{
+    margin-bottom: 0;
+  }
+  .add-customer{
+    background: #fff;
+    text-align: right;
     color:#8EAAC5;
     cursor: pointer;
-    margin-left: 40px;
+    padding-right: 40px;
     font-size: 14px;
+    padding-bottom: 10px;
+  }
+  .form-item-label.visit-end-time{
+    .ant-form-item-control-wrapper{
+      overflow: hidden;
+      .ant-calendar-picker{
+        float: left;
+        width: 50%!important;
+      }
+    }
+    //float: left;
   }
 }

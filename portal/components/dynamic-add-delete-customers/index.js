@@ -12,34 +12,41 @@ var React = require('react');
  */
 require('./index.less');
 import PropTypes from 'prop-types';
-import {emailRegex, qqRegex} from 'PUB_DIR/sources/utils/validate-util';
-import PhoneInput from 'CMP_DIR/phone-input';
 import classNames from 'classnames';
-import {Form, Input, Icon} from 'antd';
+import {Form, Input,DatePicker} from 'antd';
 const FormItem = Form.Item;
-const CONTACT_WAY_PLACEHOLDER = {
-    'phone': Intl.get('clue.add.phone.num', '电话号码'),
-    'email': Intl.get('clue.add.email.addr', '邮箱地址'),
-    'qq': Intl.get('clue.add.qq.num', 'QQ号码'),
-    'weChat': Intl.get('clue.add.wechat.num', '微信号码')
-};
-// 联系方式的label
-const CONTACT_WAY_LABEL = {
-    phone: Intl.get('common.phone', '电话'),
-    qq: 'QQ',
-    email: Intl.get('common.email', '邮箱'),
-    weChat: Intl.get('crm.58', '微信')
-};
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 import {AntcAreaSelection} from 'antc';
 
 class DynamicAddDelCustomers extends React.Component {
     constructor(props) {
         super(props);
+        var timeRange = this.getInitialTimeRange();
         this.state = {
-            customers: [{key: 0}]
+            customers: [{key: 0, visit_start_time: timeRange.startTime,visit_end_time: timeRange.endTime}]
         };
     }
+    getInitialTimeRange = () => {
+        var startTime = this.props.initial_visit_start_time || moment().valueOf();
+        var endTime = this.props.initial_visit_end_time || moment().valueOf();
+        return {
+            startTime: startTime,
+            endTime: endTime
+        };
+    };
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.initial_visit_start_time && nextProps.initial_visit_start_time !== this.props.initial_visit_start_time){
+            _.forEach(this.state.customers, (customerItem) => {
+                customerItem.visit_start_time = nextProps.initial_visit_start_time;
+            });
+        }
+        if (nextProps.initial_visit_end_time && nextProps.initial_visit_end_time !== this.props.initial_visit_end_time){
+            _.forEach(this.state.customers, (customerItem) => {
+                customerItem.visit_end_time = nextProps.initial_visit_end_time;
+            });
+        }
+    }
+
     // 删除客户
     handleDelCustomer = (key, index, size) => {
         if (index === 0 && size === 1) return;
@@ -65,7 +72,8 @@ class DynamicAddDelCustomers extends React.Component {
         customer_keys.push(addCustomerKey);
         form.setFieldsValue({'customer_keys': customer_keys});
         let customers = this.state.customers;
-        customers.push({key: addCustomerKey});
+        let timeRange = this.getInitialTimeRange();
+        customers.push({key: addCustomerKey,visit_start_time: timeRange.startTime,visit_end_time: timeRange.endTime});
         this.setState({customers});
         this.props.handleCustomersChange(customers);
     };
@@ -148,6 +156,41 @@ class DynamicAddDelCustomers extends React.Component {
         this.setState({customers});
         this.props.handleCustomersChange(customers);
     };
+    onVisitBeginTimeChange = (key, startValue) => {
+        let customers = this.state.customers;
+        _.each(customers, (item, index) => {
+            if (item.key === key) {
+                item.visit_start_time = startValue ? startValue.valueOf() : '';
+                return false;
+            }
+        });
+        this.setState({customers});
+        this.props.handleCustomersChange(customers);
+    };
+    onVisitEndTimeChange = (key, endValue) => {
+        let customers = this.state.customers;
+        _.each(customers, (item, index) => {
+            if (item.key === key) {
+                item.visit_end_time = endValue ? endValue.valueOf() : '';
+                return false;
+            }
+        });
+        this.setState({customers});
+        this.props.handleCustomersChange(customers);
+    };
+    disabledStartDate = (key,startValue) => {
+        if (!startValue) {
+            return false;
+        }
+        return startValue.valueOf() < moment(this.props.initial_visit_start_time).startOf('day').valueOf() || startValue.valueOf() > moment(this.props.initial_visit_end_time).endOf('day').valueOf();
+    };
+    disabledEndDate = (key,endValue) => {
+
+        if (!endValue) {
+            return false;
+        }
+        return (endValue.valueOf() < moment(this.props.initial_visit_start_time).startOf('day').valueOf() || endValue.valueOf() > moment(this.props.initial_visit_end_time).endOf('day').valueOf());
+    };
 
     renderDiffCustomers(key, index, customer_keys) {
         var _this = this;
@@ -163,7 +206,7 @@ class DynamicAddDelCustomers extends React.Component {
             },
             wrapperCol: {
                 xs: {span: 24},
-                sm: {span: 18},
+                sm: {span: 17},
             },
         };
         let customers = this.state.customers;
@@ -197,29 +240,65 @@ class DynamicAddDelCustomers extends React.Component {
                     )}
                     <i className={delContactCls} onClick={this.handleDelCustomer.bind(this, key, index, size)}/>
                 </FormItem>
-                <AntcAreaSelection labelCol="5" wrapperCol="18" width="100%"
-                    colon={false}
-                    label={Intl.get('crm.96', '地域')}
-                    placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
-                    provName={curCustomer.province}
-                    cityName={curCustomer.city}
-                    countyName={curCustomer.county}
-                    updateLocation={this.updateLocation.bind(this, key)}
-                    areaTabsContainerId={curCustomer.key}
-                />
                 <FormItem
-                    className="form-item-label"
-                    label={Intl.get('common.address', '地址')}
+                    className="form-item-label visit-end-time"
+                    label={Intl.get('bussiness.trip.time.range', '拜访时间')}
                     {...formItemLayout}
                 >
-                    {getFieldDecorator(`customers[${key}].address`,{initialValue: curCustomer.address })(
-                        <Input
-                            placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
-                            onChange={this.setSelectedAddr.bind(this, key)}
-                            value={curCustomer.address}
+                    {getFieldDecorator(`customers[${key}].visit_start_time`,{
+                        initialValue: moment(curCustomer.visit_start_time) })(
+                        <DatePicker
+                            disabledDate={this.disabledStartDate.bind(this, key)}
+                            showTime
+                            format="YYYY-MM-DD HH:mm:ss"
+                            value={curCustomer.visit_start_time ? moment(curCustomer.visit_start_time) : moment()}
+                            placeholder={Intl.get('leave.apply.fill.in.start.time','请填写开始时间')}
+                            onChange={this.onVisitBeginTimeChange.bind(this, key)}
+                            // onOpenChange={this.handleStartOpenChange}
+                        />
+
+                    )}
+                    {getFieldDecorator(`customers[${key}].visit_end_time`,{
+                        initialValue: moment(curCustomer.visit_end_time) })(
+                        <DatePicker
+                            disabledDate={this.disabledEndDate.bind(this,key)}
+                            showTime
+                            format="YYYY-MM-DD HH:mm:ss"
+                            value={curCustomer.visit_end_time ? moment(curCustomer.visit_end_time) : moment()}
+                            placeholder={Intl.get('leave.apply.fill.in.end.time', '请填写结束时间')}
+                            onChange={this.onVisitEndTimeChange.bind(this, key)}
+                            // open={endOpen}
+                            // onOpenChange={this.handleEndOpenChange}
                         />
                     )}
                 </FormItem>
+                {_.get(this, 'state.customers.length') === 1 ?
+                    <div>
+                        <AntcAreaSelection labelCol="5" wrapperCol="17" width="100%"
+                            colon={false}
+                            label={Intl.get('crm.96', '地域')}
+                            placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
+                            provName={curCustomer.province}
+                            cityName={curCustomer.city}
+                            countyName={curCustomer.county}
+                            updateLocation={this.updateLocation.bind(this, key)}
+                            areaTabsContainerId={curCustomer.key}
+                        />
+                        <FormItem
+                            className="form-item-label"
+                            label={Intl.get('common.address', '地址')}
+                            {...formItemLayout}
+                        >
+                            {getFieldDecorator(`customers[${key}].address`,{initialValue: curCustomer.address })(
+                                <Input
+                                    placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
+                                    onChange={this.setSelectedAddr.bind(this, key)}
+                                    value={curCustomer.address}
+                                />
+                            )}
+                        </FormItem>
+                    </div>
+                    : null}
                 <FormItem
                     className="form-item-label"
                     label={Intl.get('common.remark', '备注')}
@@ -228,7 +307,7 @@ class DynamicAddDelCustomers extends React.Component {
                     {getFieldDecorator(`customers[${key}].remarks`)(
                         <Input
                             type="textarea" rows="3"
-                            placeholder={Intl.get('leave.apply.fill.leave.reason', '请填写出差事由')}
+                            placeholder={Intl.get('leave.apply.fill.leave.reason', '请填写预期目标')}
                             onChange={this.setSelectedremarks.bind(this, key)}
                             value={curCustomer.remarks}
                         />
@@ -247,10 +326,12 @@ class DynamicAddDelCustomers extends React.Component {
         const customer_keys = getFieldValue('customer_keys');
         return (
             <div className="contact-way-container">
-                {_.map(customer_keys, (key, index) => {
-                    return this.renderDiffCustomers(key, index, customer_keys);
-                })}
-                <div className="add-contact"
+                <div className="customer-warp">
+                    {_.map(customer_keys, (key, index) => {
+                        return this.renderDiffCustomers(key, index, customer_keys);
+                    })}
+                </div>
+                <div className="add-customer"
                     onClick={this.handleAddCustomer}>{Intl.get('crm.3', '添加客户')}</div>
             </div>);
     }
@@ -259,7 +340,8 @@ DynamicAddDelCustomers.propTypes = {
     form: PropTypes.object,
     addAssignedCustomer: PropTypes.func,
     handleCustomersChange: PropTypes.func,
-    
+    initial_visit_start_time: PropTypes.string,
+    initial_visit_end_time: PropTypes.string,
 };
 DynamicAddDelCustomers.defaultProps = {
     form: {},
@@ -268,7 +350,10 @@ DynamicAddDelCustomers.defaultProps = {
     },
     handleCustomersChange: function() {
         
-    }
+    },
+    initial_visit_start_time: '',
+    initial_visit_end_time: '',
+
 };
 export default Form.create()(DynamicAddDelCustomers);
 

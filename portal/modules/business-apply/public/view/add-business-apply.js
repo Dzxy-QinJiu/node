@@ -13,7 +13,6 @@ const FormItem = Form.Item;
 const FORMLAYOUT = {
     PADDINGTOTAL: 70,
 };
-import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 import DynamicAddDelCustomers from 'CMP_DIR/dynamic-add-delete-customers';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 var user = require('../../../../public/sources/user-data').getUserData();
@@ -23,7 +22,6 @@ import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-ut
 import {calculateTotalTimeRange, calculateRangeType} from 'PUB_DIR/sources/utils/common-data-util';
 var BusinessApplyAction = require('../action/business-apply-action');
 import AlertTimer from 'CMP_DIR/alert-timer';
-import {AntcAreaSelection} from 'antc';
 import Trace from 'LIB_DIR/trace';
 import {DELAY_TIME_RANGE,LEAVE_TIME_RANGE,AM_AND_PM} from 'PUB_DIR/sources/utils/consts';
 class AddBusinessApply extends React.Component {
@@ -51,17 +49,17 @@ class AddBusinessApply extends React.Component {
                 ]
             },
         };
-    };
+    }
 
     componentDidMount() {
         var newSetting = calculateRangeType();
         var formData = this.state.formData;
         for (var key in newSetting){
             formData[key] = newSetting[key];
-        };
+        }
         this.setState({
-            formData:formData
-        },()=>{
+            formData: formData
+        },() => {
             this.calculateTotalLeaveRange();
         });
         this.addLabelRequiredCls();
@@ -181,6 +179,17 @@ class AddBusinessApply extends React.Component {
                     hasNoExistCustomer = true;
                     return;
                 }
+                //如果客户数量大于一个，要把所有客户的地址相关的字段都去掉
+                if (_.get(formData,'customers.length') > 1){
+                    delete customerItem.province;
+                    delete customerItem.city;
+                    delete customerItem.county;
+                    delete customerItem.address;
+                }
+                if (!customerItem.visit_start_time || !customerItem.visit_end_time){
+                    delete customerItem.visit_start_time;
+                    delete customerItem.visit_end_time;
+                }
             });
             if (hasNoExistCustomer){
                 return;
@@ -278,7 +287,27 @@ class AddBusinessApply extends React.Component {
         let formData = this.state.formData;
         formData.customers = customers;
         this.setState({formData});
-    }
+    };
+    calculateVisitRange = () => {
+        var formData = this.state.formData;
+        var begin_type = formData.begin_type,end_type = formData.end_type,initial_visit_start_time = '',initial_visit_end_time = '',one_hour = oplateConsts.ONE_HOUR_TIME_RANGE;
+        //如果开始类型是上午，就取上午的8点，如果是下午，就取13:00点
+        if (begin_type === AM_AND_PM.AM){
+            initial_visit_start_time = moment(formData.begin_time).startOf('day').valueOf() + 8 * one_hour;
+        }else if (begin_type === AM_AND_PM.PM){
+            initial_visit_start_time = moment(formData.begin_time).startOf('day').valueOf() + 13 * one_hour;
+        }
+        //如果结束类型是上午，就取上午12点，如果是下午就取18:00点
+        if (end_type === AM_AND_PM.AM){
+            initial_visit_end_time = moment(formData.end_time).startOf('day').valueOf() + 12 * one_hour;
+        }else if (end_type === AM_AND_PM.PM){
+            initial_visit_end_time = moment(formData.end_time).startOf('day').valueOf() + 18 * one_hour;
+        }
+        return {
+            initial_visit_start_time: initial_visit_start_time,
+            initial_visit_end_time: initial_visit_end_time
+        };
+    };
 
     render() {
         var _this = this;
@@ -300,6 +329,7 @@ class AddBusinessApply extends React.Component {
             //不允许选择大于当前天的日期
             return current && current.valueOf() < moment().startOf('day');
         };
+        var visitRange = this.calculateVisitRange();
         return (
             <RightPanel showFlag={true} data-tracename="添加出差申请" className="add-leave-apply-container">
                 <span className="iconfont icon-close add—leave-apply-close-btn" onClick={this.hideBusinessApplyAddForm}
@@ -408,6 +438,9 @@ class AddBusinessApply extends React.Component {
                                         addAssignedCustomer={this.addAssignedCustomer}
                                         form={this.props.form}
                                         handleCustomersChange={this.handleCustomersChange}
+                                        initial_visit_start_time={visitRange.initial_visit_start_time}
+                                        initial_visit_end_time={visitRange.initial_visit_end_time}
+
                                     />
                                     <div className="submit-button-container">
                                         <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
