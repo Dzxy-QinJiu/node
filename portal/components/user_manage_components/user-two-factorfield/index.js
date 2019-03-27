@@ -32,16 +32,23 @@ const UserTwoFactorField = {
             currentValue = appPropSettingsMap[config.appId].is_two_factor.value;
         }
 
+        function selectValue(event) {
+            let value = event.target.type === 'radio' && event.target.value;
+            if (event.target.type === 'checkbox') {
+                value = event.target.checked ? '1' : '0';
+            }
+            return value;
+        }
+
         const onChange = !config.isCustomSetting ? (e) => {
-            const target = e && e.target;
-            const value = target.checked ? '1' : '0';            
+            let value = selectValue(e);
             const formData = this.state.formData;
-            formData.is_two_factor = value;            
+            formData.is_two_factor = value;
             this.setState({
                 formData
             });
         } : (event) => {
-            const value = event.target.checked ? '1' : '0';
+            let value = selectValue(event);
             const appPropSettingsMap = this.state.appPropSettingsMap;
             const formData = appPropSettingsMap[config.appId] || {};
             formData.is_two_factor.value = value;

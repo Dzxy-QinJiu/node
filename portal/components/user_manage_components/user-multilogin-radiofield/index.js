@@ -37,12 +37,20 @@ const UserTypeRadioField = {
             return null;
         }
 
+        function selectValue(event) {
+            let value = event.target.type === 'radio' && event.target.value;
+            if (event.target.type === 'checkbox') {
+                value = event.target.checked ? '1' : '0';
+            }
+            return value;
+        }
+
         const callback = config.isCustomSetting ? (event) => {
-            const value = event.target.checked ? CHECKED.TRUE : CHECKED.FALSE;
+            let value = selectValue(event);
             const appPropSettingsMap = this.state.appPropSettingsMap;
             const formData = appPropSettingsMap[config.appId] || {};
             formData.multilogin.value = value;
-            if(value !== config.globalUserType) {
+            if(value !== config.globalMultiLogin) {
                 formData.multilogin.setted = true;
             }
             this.setState({appPropSettingsMap});
@@ -50,7 +58,7 @@ const UserTypeRadioField = {
                 this.hideMultiLoginError();
             }
         } : (event) => {
-            const value = event.target.checked ? CHECKED.TRUE : CHECKED.FALSE;
+            let value = selectValue(event);
             const formData = this.state.formData;
             formData.multilogin = value;
             this.setState({formData});
