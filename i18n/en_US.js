@@ -2086,6 +2086,8 @@ var en_US = {
     'errorcode.148': 'The call duration statistics view fails to be obtained',//电话时长统计视图获取失败
     'errorcode.149': 'The role has been allocated to sales',//该角色已经分配给销售
     'errorcode.150': 'Failed to update the clue',//修改线索信息失败
+    'errorcode.151': 'Failed to get sales new open accounts and new open accounts',//获取销售新开客户数和新开帐号数失败
+    'errorcode.152': 'There are repeat clues!',//线索重复
     'errorcoe.different.realm': 'Different realms',//安全域不一致
     'errorcode.invalid.wechat': 'Invalid Wechat Account',//无效的微信账号
     'user.input.phone': 'Please enter your phone',//请输入手机号
