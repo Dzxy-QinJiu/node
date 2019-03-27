@@ -163,6 +163,7 @@ function getConfigJson(req) {
         '90023': {'httpCode': 500, 'message': backendIntl.get('errorcode.139', '被分配的用户ID不能为空')},
         '90024': {'httpCode': 500, 'message': backendIntl.get('errorcode.142', '线索客户不存在')},
         '90010': {'httpCode': 500, 'message': backendIntl.get('errorcode.150', '修改线索信息失败')},
+        '90031': {'httpCode': 500, 'message': backendIntl.get('errorcode.152', '线索重复')},
 
 
         /*************************** 角色权限 *****************************/
