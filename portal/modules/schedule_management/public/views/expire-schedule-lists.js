@@ -48,7 +48,7 @@ class ExpireScheduleLists extends React.Component {
         //获取超时未完成的日程
         this.setState({
             expired_start_time: new Date().getTime() - 2 * 365 * oplateConsts.ONE_DAY_TIME_RANGE,//开始时间传一个两年前的今天
-            expired_end_time: TimeStampUtil.getTodayTimeStamp().start_time,//今日早上的零点作为结束时间
+            expired_end_time: moment().valueOf(),//当前登录的时间为截止时间
             expired_status: false,//选择日程的状态
         }, () => {
             this.getExpiredScheduleList();
@@ -291,10 +291,6 @@ class ExpireScheduleLists extends React.Component {
                         {Intl.get('schedule.expired.list', '超时未完成')}
                     </div>
                     <div className="expire-list-content">
-                        <div className={cls}>
-                            {(this.state.isLoadingScheduleExpired && !this.state.lastScheduleExpiredId) ?
-                                <Spinner /> : null}
-                        </div>
                         {/*渲染超时未完成日程列表*/}
                         {this.renderExpireListContent()}
                     </div>
