@@ -35,13 +35,8 @@ class TopBar extends React.Component {
                 group_id: 'all',
             }],
             selectedTeam: ['all'],
-            memberList: [{
-                user_info: {
-                    nick_name: '全部销售',
-                    user_id: 'all',
-                }
-            }],
-            selectedMember: ['all'],
+            memberList: [],
+            selectedMember: [],
             //开始时间
             startTime: initialTime.start,
             //结束时间
@@ -71,9 +66,16 @@ class TopBar extends React.Component {
         ajax.send({
             url: '/rest/base/v1/group/childgroupusers?filter_manager=true',
         }).then(result => {
-            this.setState({
-                memberList: this.state.memberList.concat(result),
-            });
+            let newState = {
+                memberList: result
+            };
+
+            if (_.isEmpty(this.state.selectedMember)) {
+                const firstMemberId = _.get(_.first(result), 'user_info.user_id');
+                newState.selectedMember = [firstMemberId];
+            }
+
+            this.setState(newState);
         });
     };
 
@@ -88,10 +90,9 @@ class TopBar extends React.Component {
             Store.isSelectedAllTeamMember = teamIdStr ? false : true; 
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamIdStr);
         } else {
+            Store.isSelectedAllTeamMember = false;
             const selectedMember = this.state.selectedMember;
-            const memberIdStr = _.isEqual(selectedMember, ['all']) ? '' : selectedMember.join(',');
-            //根据是否选择的是全部成员更新Store中的记录是否选择的是全部团队或成员的标志
-            Store.isSelectedAllTeamMember = memberIdStr ? false : true;
+            const memberIdStr = selectedMember.join(',');
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, memberIdStr);
         }
     };
@@ -117,21 +118,11 @@ class TopBar extends React.Component {
     };
 
     onMemberChange = (memberId) => {
-        let selectedMember;
         let memberIdStr;
 
-        if (_.last(memberId) === 'all' || _.isEmpty(memberId)) {
-            selectedMember = ['all'];
-            memberIdStr = '';
-        } else {
-            selectedMember = _.filter(memberId, id => id !== 'all');
-            memberIdStr = selectedMember.join(',');
-        }
+        memberIdStr = memberId.join(',');
 
-        //根据是否选择的是全部成员更新Store中的记录是否选择的是全部团队或成员的标志
-        Store.isSelectedAllTeamMember = memberIdStr ? false : true;
-
-        this.setState({selectedMember}, () => {
+        this.setState({selectedMember: memberId}, () => {
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, memberIdStr);
         });
     };
