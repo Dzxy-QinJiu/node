@@ -463,7 +463,7 @@ class CustomerAnalysis extends React.Component {
                 let query = arg.query;
 
                 if (query) {
-                    if (query.starttime && query.endtime) {
+                    if (_.has(query, 'starttime') && _.has(query, 'endtime')) {
                         query.start_time = query.starttime;
                         query.end_time = query.endtime;
                         delete query.starttime;
@@ -756,7 +756,7 @@ class CustomerAnalysis extends React.Component {
             argCallback: (arg) => {
                 let query = arg.query;
 
-                if (query && query.starttime && query.endtime) {
+                if (_.has(query, 'starttime') && _.has(query, 'endtime')) {
                     query.start_time = query.starttime;
                     query.end_time = query.endtime;
                     delete query.starttime;
@@ -829,7 +829,7 @@ class CustomerAnalysis extends React.Component {
             argCallback: (arg) => {
                 let query = arg.query;
 
-                if (query && query.starttime && query.endtime) {
+                if (_.has(query, 'starttime') && _.has(query, 'endtime')) {
                     query.start_time = moment().subtract(1, 'months').valueOf();
                     query.end_time = moment().valueOf();
                     delete query.starttime;
