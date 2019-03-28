@@ -47,7 +47,7 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
 
                     return `
                         ${param.name}<br>
-                        活跃度：${param.value}<br>
+                        活跃数：${param.value}<br>
                         活跃率：${activeRate}
                         `;
                 }
