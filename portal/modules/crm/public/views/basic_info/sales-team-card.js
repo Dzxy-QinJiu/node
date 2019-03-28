@@ -14,7 +14,6 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 //展示的类型
 const DISPLAY_TYPES = {
-    TRANSFER: 'transfer',//转出销售
     EDIT: 'edit',//重新分配销售
     EDIT_TEAM: 'edit_team',//分配团队
     TEXT: 'text'//展示
@@ -45,8 +44,8 @@ class SalesTeamCard extends React.Component {
             displayType: DISPLAY_TYPES.TEXT,
             isLoadingList: true,//正在获取下拉列表中的数据
             enableEdit: props.enableEdit,
-            enableTransfer: props.enableTransfer,
             enableEditTeam: props.enableEditTeam,
+            enableEidtSecondSales: props.enableEidtSecondSales,
             isMerge: props.isMerge,
             customerId: props.customerId,
             userName: props.userName,
@@ -65,8 +64,8 @@ class SalesTeamCard extends React.Component {
     }
 
     componentDidMount() {
-        //有修改所属销售或转出客户的权限时
-        if (this.state.enableEdit || this.state.enableTransfer) {
+        //有修改所属销售的权限时
+        if (this.state.enableEdit) {
             //获取团队和对应的成员列表（管理员：所有，销售：所在团队及其下级团队和对应的成员列表）
             if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
                 // 管理员角色（可以将客户分给除销售外的其他人）
@@ -100,12 +99,6 @@ class SalesTeamCard extends React.Component {
             }
             //获取销售及联合跟进人
             this.getSalesByCustomerId(nextProps.customerId);
-        }
-        //由于是否能转出客户的标识需要通过接口获取团队数据后来判断重现赋值，所以如果变了需要重新赋值
-        if (this.state.enableTransfer !== nextProps.enableTransfer) {
-            this.setState({
-                enableTransfer: nextProps.enableTransfer
-            });
         }
     }
 
@@ -341,21 +334,6 @@ class SalesTeamCard extends React.Component {
                     submitErrorMsg: errorMsg || Intl.get('crm.172', '修改客户所属销售失败')
                 });
             });
-        } else if (this.state.displayType === DISPLAY_TYPES.TRANSFER) {
-            Trace.traceEvent(ReactDOM.findDOMNode(this), '确认转出客户');
-            submitData.member_role = this.state.salesRole;
-            CrmBasicAjax.transferCustomer(submitData).then(result => {
-                if (result) {
-                    this.backToDisplay();
-                    //更新列表中的销售人员
-                    this.props.modifySuccess(submitData);
-                }
-            }, errorMsg => {
-                this.setState({
-                    loading: false,
-                    submitErrorMsg: errorMsg || Intl.get('crm.customer.transfer.failed', '转出客户失败')
-                });
-            });
         }
     };
     //只提交修改的团队时（分配客户给团队）
@@ -407,14 +385,14 @@ class SalesTeamCard extends React.Component {
         if (this.state.displayType === DISPLAY_TYPES.EDIT_TEAM) {
             this.onlySubmitEditTeam();
         } else {
-            //将客户转出、分配给某个销售时
+            //将客户分配给某个销售时
             if (this.state.userId === this.props.userId) {
                 //没做修改时，直接回到展示状态
                 this.backToDisplay();
                 return;
             }
-            //在转出或者变更销售之前，先检查是否会超过该销售所拥有客户的数量
-            if (this.state.displayType === DISPLAY_TYPES.EDIT || this.state.displayType === DISPLAY_TYPES.TRANSFER) {
+            //在变更销售之前，先检查是否会超过该销售所拥有客户的数量
+            if (this.state.displayType === DISPLAY_TYPES.EDIT) {
                 this.setState({loading: true});
                 CrmAction.getCustomerLimit({member_id: this.state.userId, num: 1}, (result) => {
                     //result>0 ，不可转入或变更客户
@@ -449,7 +427,7 @@ class SalesTeamCard extends React.Component {
                         {this.state.userName}
                         {/*{this.state.salesTeam ? ` - ${this.state.salesTeam}` : ''}*/}
                     </span>
-                    {this.state.enableEdit || this.state.enableTransfer ? (
+                    {this.state.enableEdit ? (
                         <DetailEditBtn title={Intl.get('common.edit', '编辑')}
                             onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}/>) : null}
                 </div>
@@ -548,20 +526,9 @@ class SalesTeamCard extends React.Component {
         }
     };
 
-    transferSales = () => {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '转出客户');
-        this.setState({displayType: DISPLAY_TYPES.TRANSFER});
-    };
     //编辑销售及团队时的按钮渲染
     renderEditButtons() {
-        //点转出后，渲染确认转出按钮
-        if (this.state.displayType === DISPLAY_TYPES.TRANSFER) {
-            return (
-                <Button className="button-transfer-confirm" type="primary"
-                    onClick={this.handleSubmit.bind(this)}>
-                    {Intl.get('crm.sales.transfer.confirm', '确认转出')}
-                </Button>);
-        } else if (this.state.displayType === DISPLAY_TYPES.EDIT_TEAM) {
+        if (this.state.displayType === DISPLAY_TYPES.EDIT_TEAM) {
             //将客户分配团队时，渲染分配按钮
             return (
                 <Button className="button-edit-team" type="primary"
@@ -569,14 +536,9 @@ class SalesTeamCard extends React.Component {
                     {Intl.get('clue.customer.distribute', '分配')}
                 </Button>
             );
-        } else {//转出、重新分配按钮的渲染
+        } else {//重新分配按钮的渲染
             return (
                 <span>
-                    {this.state.enableTransfer && !this.state.isMerge ? (
-                        <Button className="button-transfer" type="primary"
-                            onClick={this.transferSales.bind(this)}>
-                            {Intl.get('crm.qualified.roll.out', '转出')}
-                        </Button>) : null}
                     {this.state.enableEdit ? (
                         <Button className="button-redistribution" type="primary"
                             onClick={this.handleSubmit.bind(this)}>
@@ -588,11 +550,9 @@ class SalesTeamCard extends React.Component {
     }
 
     renderHandleSaveBtns = () => {
-        let isTransfer = this.state.displayType === DISPLAY_TYPES.TRANSFER;
-        let isEditTeam = this.state.displayType === DISPLAY_TYPES.EDIT_TEAM;
         return (<div className="button-container">
             <Button className="button-cancel"
-                onClick={this.changeDisplayType.bind(this, isTransfer ? DISPLAY_TYPES.EDIT : DISPLAY_TYPES.TEXT)}>
+                onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.TEXT)}>
                 {Intl.get('common.cancel', '取消')}
             </Button>
             {this.renderEditButtons()}
@@ -614,7 +574,6 @@ class SalesTeamCard extends React.Component {
 }
 SalesTeamCard.propTypes = {
     enableEdit: PropTypes.bool,
-    enableTransfer: PropTypes.bool,
     enableEditTeam: PropTypes.bool,
     isMerge: PropTypes.bool,
     customerId: PropTypes.string,

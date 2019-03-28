@@ -25,7 +25,6 @@ var CrmAction = require('../action/crm-actions');
 const BATCH_OPERATE_TYPE = {
     CHANGE_SALES: 'changeSales',//变更销售人员
     USER: 'user',//变更销售人员url中传的type
-    TRANSFER_CUSTOMER: 'transfer_customer',//转出客户和url中传的type
     CHANGE_TAG: 'changeTag',//更新标签
     CHANGE_LABEL: 'change_label',//更新标签url中传的type
     ADD_TAG: 'addTag',//添加标签
@@ -127,9 +126,9 @@ var CrmBatchChange = createReactClass({
     },
 
     /**
-     * 变更销售/转出客户
-     * @param transferType: user/transfer_customer
-     * @param title: 变更销售/转出客户
+     * 变更销售
+     * @param transferType: user
+     * @param title: 变更销售
      */
     doTransfer: function(transferType, title) {
         if (!this.state.sales_man) {
@@ -138,9 +137,9 @@ var CrmBatchChange = createReactClass({
             return;
         }
         BatchChangeActions.setLoadingState(true);
-        //如果是批量变更或者转出所属销售的，需要先看一下该销售已经拥有的客户数量再加上这些是否已经达到上限
+        //如果是批量变更所属销售的，需要先看一下该销售已经拥有的客户数量再加上这些是否已经达到上限
         var member_id = this.state.sales_man.split('&&')[0];
-        if (transferType === BATCH_OPERATE_TYPE.USER || transferType === BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER){
+        if (transferType === BATCH_OPERATE_TYPE.USER){
             //如果是选中全部的客户，要用全部客户的数量
             var selectedCustomerNum = this.props.selectedCustomer.length;
             if (this.props.selectAllMatched) {
@@ -149,7 +148,7 @@ var CrmBatchChange = createReactClass({
             CrmAction.getCustomerLimit({member_id: member_id, num: selectedCustomerNum}, (result) => {
                 if (_.isNumber(result) && result > 0){
                     //超过销售拥有客户的上限
-                    var warningTip = transferType === BATCH_OPERATE_TYPE.USER ? Intl.get('crm.change.over.limit', '变更销售后会超过该销售拥有客户的上限，请减少{num}个客户后再变更销售',{num: result}) : Intl.get('crm.transfer.over.limit', '转出客户后会超过该销售拥有客户的上限，请减少{num}个客户后再转出',{num: result});
+                    var warningTip = Intl.get('crm.change.over.limit', '变更销售后会超过该销售拥有客户的上限，请减少{num}个客户后再变更销售',{num: result});
                     message.warn(warningTip);
                     BatchChangeActions.setLoadingState(false);
                 }else{
@@ -204,13 +203,8 @@ var CrmBatchChange = createReactClass({
                     running: totalSelectedSize,
                     typeText: title
                 });
-                if (transferType === BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER) {
-                    //隐藏转出客户面板
-                    this.refs.transferCustomer.handleCancel();
-                } else {
-                    //隐藏批量变更销售面板
-                    this.refs.changeSales.handleCancel();
-                }
+                //隐藏批量变更销售面板
+                this.refs.changeSales.handleCancel();
             } else {
                 var errorMsg = result.msg;
                 message.error(errorMsg);
@@ -500,9 +494,6 @@ var CrmBatchChange = createReactClass({
             case BATCH_OPERATE_TYPE.CHANGE_SALES:
                 this.doTransfer(BATCH_OPERATE_TYPE.USER, Intl.get('crm.18', '变更销售人员'));
                 break;
-            case BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER:
-                this.doTransfer(BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER, Intl.get('crm.customer.transfer', '转出客户'));
-                break;
             case BATCH_OPERATE_TYPE.CHANGE_TAG:
                 this.doChangeTag(BATCH_OPERATE_TYPE.CHANGE_LABEL, Intl.get('crm.206', '更新标签'));
                 break;
@@ -721,7 +712,7 @@ var CrmBatchChange = createReactClass({
     renderBatchChange() {
         return (
             <Dropdown overlay={this.getBatchChangeMenus()}>
-                <Button type='primary'>{Intl.get('crm.32', '变更')}<Icon type="down" /></Button>
+                <Button type='primary' className='btn-item'>{Intl.get('crm.32', '变更')}<Icon type="down" /></Button>
             </Dropdown>
         );
     },
@@ -733,10 +724,8 @@ var CrmBatchChange = createReactClass({
     },
     render: function() {
         const changeBtns = {
-            btn: (<Button type='primary'>{Intl.get('crm.32', '变更')}<Icon type="down" /></Button>),
-            transfer: (<Button
-                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER)}>{Intl.get('crm.qualified.roll.out', '转出')}</Button>),
-            schedule: (<Button
+            btn: (<Button type='primary' className='btn-item'>{Intl.get('crm.32', '变更')}<Icon type="down" /></Button>),
+            schedule: (<Button className='btn-item'
                 onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS)}>{Intl.get('crm.214', '添加联系计划')}</Button>)
         };
         let isShowDropDownContent = !this.state.isShowBatchMenu;
@@ -835,20 +824,6 @@ var CrmBatchChange = createReactClass({
                             isShowDropDownContent={isShowDropDownContent}
                         />
                     ) : null
-                }
-                { //普通销售不可做转出操作
-                    !userData.getUserData().isCommonSales ? (<AntcDropdown
-                        ref="transferCustomer"
-                        content={changeBtns.transfer}
-                        overlayTitle={Intl.get('user.salesman', '销售人员')}
-                        isSaving={this.state.isLoading}
-                        overlayContent={this.renderSalesBlock()}
-                        handleSubmit={this.handleSubmit}
-                        okTitle={Intl.get('crm.qualified.roll.out', '转出')}
-                        cancelTitle={Intl.get('common.cancel', '取消')}
-                        unSelectDataTip={this.state.unSelectDataTip}
-                        clearSelectData={this.clearSelectSales}
-                    />) : null
                 }
                 <AntcDropdown
                     ref="addSchedule"

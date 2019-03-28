@@ -34,7 +34,8 @@ const PRIVILEGE_MAP = {
     USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS',//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
     CRM_CUSTOMER_SCORE_RECORD: 'CRM_CUSTOMER_SCORE_RECORD',//获取分数趋势的权限
     EDIT_TEAM_MANAGER: 'CRM_MANAGER_UPDATE_CUSTOMER_SALES_TEAM',//管理员修改所属团队的权限
-    EDIT_TEAM_USER: 'CRM_USER_UPDATE_CUSTOMER_SALES_TEAM'//销售修改所属团队的权限
+    EDIT_TEAM_USER: 'CRM_USER_UPDATE_CUSTOMER_SALES_TEAM',//销售修改所属团队的权限
+    EDIT_ASSERT_CUSTOMER_SALES: 'CRM_ASSERT_CUSTOMER_SALES',//修改客户联合跟进人的权限
 };
 
 class BasicOverview extends React.Component {
@@ -288,20 +289,6 @@ class BasicOverview extends React.Component {
         }
     };
 
-    //是否有转出客户的权限
-    enableTransferCustomer = () => {
-        let isCommonSales = userData.getUserData().isCommonSales;
-        let enable = false;
-        //管理员有转出的权限
-        if (hasPrivilege('CRM_MANAGER_TRANSFER')) {
-            enable = true;
-        } else if (hasPrivilege('CRM_USER_TRANSFER') && !isCommonSales) {
-            //销售主管有转出的权限
-            enable = true;
-        }
-        return enable;
-    };
-
     //控制客户详情展示隐藏的方法
     toggleBasicDetail = () => {
         this.setState({
@@ -498,8 +485,8 @@ class BasicOverview extends React.Component {
                         isMerge={this.props.isMerge}
                         updateMergeCustomer={this.props.updateMergeCustomer}
                         enableEdit={hasPrivilege('CUSTOMER_UPDATE_SALES') && !this.props.disableEdit}
-                        enableTransfer={this.enableTransferCustomer() && !this.props.disableEdit}
                         enableEditTeam={this.hasEditTeamPrivilege() && !this.props.disableEdit}
+                        enableEidtSecondSales={hasPrivilege(PRIVILEGE_MAP.EDIT_ASSERT_CUSTOMER_SALES) && !this.props.disableEdit}
                         customerId={basicData.id}
                         userName={basicData.user_name}
                         userId={basicData.user_id}

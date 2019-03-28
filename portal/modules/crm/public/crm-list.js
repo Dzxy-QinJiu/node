@@ -988,7 +988,7 @@ class Crm extends React.Component {
                 </PrivilegeChecker>
                 <PrivilegeChecker
                     check="CUSTOMER_MERGE_CUSTOMER"
-                    className='block crm-merge-btn'
+                    className='block crm-merge-btn btn-item'
                     onClick={this.showMergePanel}
                 >
                     <Button>{Intl.get('crm.0', '合并客户')}</Button>
