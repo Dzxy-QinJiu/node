@@ -912,6 +912,7 @@ var zh_CN = {
     'config.customer.stage.reload': '重新获取客户阶段',
     'config.no.product': '暂无产品，请添加！',
     'config.product.manage': '产品管理',
+    'config.apply.manage': '申请审批管理',
     'config.product.reload': '重新获取产品',
     'config.product.add': '添加产品',
     'config.product.modify': '修改产品',
@@ -2847,6 +2848,11 @@ var zh_CN = {
     'common.callsystem.get.faild': '获取组织电话系统配置失败',
     'contract.invocie.delete.faild': '删除发票额失败',
     'apply.detail.show.password': '显示密码',
-    'apply.detail.hide.password': '隐藏密码'
+    'apply.detail.hide.password': '隐藏密码',
+    'apply.add.apply.type': '添加申请类型',
+    'apply.add.form.content': '表单内容',
+    'apply.add.form.regex': '审批规则',
+    'apply.approve.manage.add.from.right': '请从右边添加表单内容',
+    'apply.approve.manage.no.content': '暂无表单内容'
 };
 export default zh_CN;

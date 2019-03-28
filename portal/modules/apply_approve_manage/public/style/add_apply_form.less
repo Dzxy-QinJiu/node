@@ -1,0 +1,66 @@
+.add-apply-form-container {
+  background: #fff;
+  height: 100%;
+  box-shadow:0px 0px 4px 0px rgba(0, 0, 0, 0.24);
+  position: relative;
+  //添加申请审批的标题
+  .add-apply-form-title {
+    overflow: hidden;
+    padding: 20px;
+    .show-and-edit-approve-type {
+      color: #333;
+      font-size: 16px;
+      background: #E4F2FE;
+      display: inline-block;
+      font-weight: 500;
+      .iconfont.icon-update {
+        color: #2196F3;
+      }
+    }
+    .iconfont.icon-close {
+      color: #999;
+      font-size: 12px;
+      cursor: pointer;
+    }
+  }
+  //添加申请审批的内容
+  .add-apply-form-content {
+    position: absolute;
+    top:64px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    .ant-tabs {
+      .ant-tabs-bar{
+        background: #F5F5F5;
+        .ant-tabs-nav-container{
+          padding-left: 20px;
+        }
+      }
+      .ant-tabs-content{
+        padding-left: 20px;
+        .apply-form-content-wrap{
+          .apply-form-content-container{
+            margin-right: 310px;
+            background: red;
+            height: 100%;
+            .apply-form-content{
+             margin-right: 24px;
+              .no-data-intro{
+                margin: 200px 0 0 47px;
+              }
+            };
+          }
+
+          .apply-form-rules{
+            background: yellow;
+            float: right;
+            width: 310px;
+            height: 100%;
+            border-left: 1px solid #F5F5F5;
+          }
+        }
+      }
+    }
+  }
+}
