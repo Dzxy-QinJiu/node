@@ -28,14 +28,15 @@ class AddBusinessApply extends React.Component {
     constructor(props) {
         super(props);
         var timeRange = getStartEndTimeOfDiffRange(DEFAULTTIMETYPE, true);
+        var newSetting = calculateRangeType();
         this.state = {
             hideCustomerRequiredTip: false,
             search_customer_name: '',
             formData: {
-                begin_time: DateSelectorUtils.getMilliseconds(timeRange.start_time),//出差开始时间
-                begin_type: '',//请假开始的类型
-                end_time: DateSelectorUtils.getMilliseconds(timeRange.end_time, true),//出差结束时间
-                end_type: '',//请假结束的类型
+                begin_time: newSetting.begin_time || DateSelectorUtils.getMilliseconds(timeRange.start_time),//出差开始时间
+                begin_type: newSetting.begin_type || '',//出差开始的类型
+                end_time: newSetting.end_time || DateSelectorUtils.getMilliseconds(timeRange.end_time, true),//出差结束时间
+                end_type: newSetting.end_type || '',//出差结束的类型
                 reason: '',
                 customers: [{
                     id: '',
@@ -52,16 +53,7 @@ class AddBusinessApply extends React.Component {
     }
 
     componentDidMount() {
-        var newSetting = calculateRangeType();
-        var formData = this.state.formData;
-        for (var key in newSetting){
-            formData[key] = newSetting[key];
-        }
-        this.setState({
-            formData: formData
-        },() => {
-            this.calculateTotalLeaveRange();
-        });
+        this.calculateTotalLeaveRange();
         this.addLabelRequiredCls();
     }
 
@@ -172,23 +164,27 @@ class AddBusinessApply extends React.Component {
             _.forEach(formData.customers, (customerItem, index) => {
                 delete customerItem.key;
                 delete customerItem.hideCustomerRequiredTip;
+                //传入每个客户的拜访时间
+                if (customerItem.visit_start_time && customerItem.visit_start_type && customerItem.visit_end_time && customerItem.visit_end_type){
+                    delete customerItem.end_type_select;
+                    delete customerItem.start_type_select;
+                    customerItem.visit_time = {
+                        start: moment(customerItem.visit_start_time).format(oplateConsts.DATE_FORMAT) + `_${customerItem.visit_start_type}`,
+                        end: moment(customerItem.visit_end_time).format(oplateConsts.DATE_FORMAT) + `_${customerItem.visit_end_type}`
+                    };
+                    delete customerItem.visit_start_time;
+                    delete customerItem.visit_start_type;
+                    delete customerItem.visit_end_time;
+                    delete customerItem.visit_end_type;
+                }else{
+                    customerItem.visit_time = _.get(formData,'apply_time[0]');
+                }
                 if (customerItem['remarks']) {
                     formData.reason += customerItem['remarks'];
                 }
                 if(!customerItem.id){
                     hasNoExistCustomer = true;
                     return;
-                }
-                //如果客户数量大于一个，要把所有客户的地址相关的字段都去掉
-                if (_.get(formData,'customers.length') > 1){
-                    delete customerItem.province;
-                    delete customerItem.city;
-                    delete customerItem.county;
-                    delete customerItem.address;
-                }
-                if (!customerItem.visit_start_time || !customerItem.visit_end_time){
-                    delete customerItem.visit_start_time;
-                    delete customerItem.visit_end_time;
                 }
             });
             if (hasNoExistCustomer){
@@ -329,7 +325,7 @@ class AddBusinessApply extends React.Component {
             //不允许选择大于当前天的日期
             return current && current.valueOf() < moment().startOf('day');
         };
-        var visitRange = this.calculateVisitRange();
+        var customer = this.state.customer;
         return (
             <RightPanel showFlag={true} data-tracename="添加出差申请" className="add-leave-apply-container">
                 <span className="iconfont icon-close add—leave-apply-close-btn" onClick={this.hideBusinessApplyAddForm}
@@ -413,7 +409,7 @@ class AddBusinessApply extends React.Component {
                                     {formData.total_range ?
                                         <FormItem
                                             className="form-item-label add-apply-time"
-                                            label={Intl.get('apply.approve.total.leave.time','请假时长')}
+                                            label={Intl.get('business.leave.time.range', '出差时长')}
                                             {...formItemLayout}
                                         >
                                             {getFieldDecorator('total_range')(
@@ -423,24 +419,14 @@ class AddBusinessApply extends React.Component {
                                             )}
                                         </FormItem>
                                         : null}
-                                    <FormItem
-                                        className="form-item-label"
-                                        label={Intl.get('leave.apply.add.leave.person', '出差人员')}
-                                        {...formItemLayout}
-                                    >
-                                        {getFieldDecorator('leave_person', {
-                                            initialValue: user.nick_name
-                                        })(
-                                            <Input disabled/>
-                                        )}
-                                    </FormItem>
                                     <DynamicAddDelCustomers
                                         addAssignedCustomer={this.addAssignedCustomer}
                                         form={this.props.form}
                                         handleCustomersChange={this.handleCustomersChange}
-                                        initial_visit_start_time={visitRange.initial_visit_start_time}
-                                        initial_visit_end_time={visitRange.initial_visit_end_time}
-
+                                        initial_visit_start_time={formData.begin_time}
+                                        initial_visit_start_type={formData.begin_type}
+                                        initial_visit_end_time={formData.end_time}
+                                        initial_visit_end_type={formData.end_type}
                                     />
                                     <div className="submit-button-container">
                                         <Button type="primary" className="submit-btn" onClick={this.handleSubmit}

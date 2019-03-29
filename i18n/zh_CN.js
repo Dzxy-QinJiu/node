@@ -2849,5 +2849,6 @@ var zh_CN = {
     'apply.detail.show.password': '显示密码',
     'apply.detail.hide.password': '隐藏密码',
     'bussiness.trip.time.range': '拜访时间',
+    'business.leave.time.range': '出差时长'
 };
 export default zh_CN;
