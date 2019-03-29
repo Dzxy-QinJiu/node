@@ -82,6 +82,8 @@ var crmRestApis = {
     addCustomerByClue: '/rest/customer/v2/customer/clue_create_customer',
     //获取客户所属销售及联合跟进人
     getSalesByCustomerId: '/rest/customer/v3/customer/customer/users/:customer_id',
+    //修改客户的联合跟进人
+    editSecondSales: '/rest/customer/v3/customer/customer/assert/user'
 };
 exports.urls = crmRestApis;
 
@@ -516,4 +518,14 @@ exports.getSalesByCustomerId = function(req, res) {
             req: req,
             res: res
         });
+};
+
+//修改客户的联合跟进人
+exports.editSecondSales = function(req, res) {
+    return restUtil.authRest.put(
+        {
+            url: crmRestApis.editSecondSales,
+            req: req,
+            res: res,
+        }, req.body);
 };
