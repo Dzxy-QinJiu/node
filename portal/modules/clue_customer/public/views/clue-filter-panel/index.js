@@ -22,6 +22,7 @@ const otherFilterArray = [{
     value: 'customer_id'
 }
 ];
+import userData from 'PUB_DIR/sources/user-data';
 class ClueFilterPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -39,6 +40,8 @@ class ClueFilterPanel extends React.Component {
     componentDidMount = () => {
         clueFilterStore.listen(this.onStoreChange);
         this.getClueProvinceList();
+        //销售名称列表
+        FilterAction.getOwnerNameList();
     };
     componentWillReceiveProps = (nextProps) => {
         this.setState({
@@ -109,7 +112,8 @@ class ClueFilterPanel extends React.Component {
                         FilterAction.setExistedFiled();
                         FilterAction.setUnexistedFiled('customer_id');
                     }
-
+                }else if (item.groupId === 'user_name'){
+                    FilterAction.setFilterClueUsername( _.get(item,'data'));
                 }
             }
         });
@@ -245,6 +249,20 @@ class ClueFilterPanel extends React.Component {
                     value: x
                 }))
             }];
+        //非普通销售才有销售角色和团队
+        if (!userData.getUserData().isCommonSales) {
+            advancedData.unshift(
+                {
+                    groupName: Intl.get('sales.home.sales', '销售'),
+                    groupId: 'user_name',
+                    singleSelect: true,
+                    data: _.map(this.state.ownerNameList, x => ({
+                        name: x,
+                        value: x
+                    }))
+                }
+            );
+        }
 
         return (
             <div data-tracename="筛选">
