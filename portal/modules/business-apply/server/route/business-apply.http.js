@@ -76,6 +76,13 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+        }, {
+            method: 'put',
+            path: '/rest/update/customer/visit/range',
+            handler: 'updateVisitCustomerTime',
+            passport: {
+                needLogin: true
+            },
         }
     ]
 };
