@@ -284,6 +284,12 @@ class ClueCustomer extends React.Component {
         var rangeParams = _.get(data, 'rangeParams') || JSON.stringify(clueFilterStore.getState().rangeParams);
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
+        var filterStoreData = clueFilterStore.getState();
+        //按销售进行筛选
+        var filterClueUsers = filterStoreData.filterClueUsers;
+        if (_.isArray(filterClueUsers) && filterClueUsers.length) {
+            typeFilter.user_name = filterClueUsers.join(',');
+        }
         var existFilelds = clueFilterStore.getState().exist_fields;
         //如果是筛选的重复线索，把排序字段改成repeat_id
         if (_.indexOf(existFilelds, 'repeat_id') > -1){
@@ -304,7 +310,7 @@ class ClueCustomer extends React.Component {
             typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter)
         };
 
-        var filterStoreData = clueFilterStore.getState();
+
         //选中的线索来源
         var filterClueSource = filterStoreData.filterClueSource;
         if (_.isArray(filterClueSource) && filterClueSource.length){
@@ -337,6 +343,7 @@ class ClueCustomer extends React.Component {
         if(_.isArray(unExistFileds) && unExistFileds.length){
             queryObj.unexist_fields = JSON.stringify(unExistFileds);
         }
+
         //取全部线索列表
         clueCustomerAction.getClueFulltext(queryObj);
     };
@@ -932,8 +939,7 @@ class ClueCustomer extends React.Component {
         clueCustomerAction.setSalesMan({'salesMan': ''});
         clueCustomerAction.setSalesManName({'salesManNames': ''});
     };
-
-    renderSalesBlock = () => {
+    getSalesDataList = () => {
         let dataList = [];
         var clueSalesIdList = getClueSalesList();
         //销售领导、域管理员,展示其所有（子）团队的成员列表
@@ -954,6 +960,10 @@ class ClueCustomer extends React.Component {
                 });
             }
         });
+        return dataList;
+    };
+    renderSalesBlock = () => {
+        var dataList = this.getSalesDataList();
         //按点击的次数进行排序
         dataList = _.sortBy(dataList,(item) => {return -item.clickCount;});
         return (
@@ -1390,6 +1400,7 @@ class ClueCustomer extends React.Component {
                                 clueSourceArray={this.state.clueSourceArray}
                                 accessChannelArray={this.state.accessChannelArray}
                                 clueClassifyArray={this.state.clueClassifyArray}
+                                salesManList={this.getSalesDataList()}
                                 getClueList={this.getClueList}
                                 style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: this.state.tableHeight}}
                             />
