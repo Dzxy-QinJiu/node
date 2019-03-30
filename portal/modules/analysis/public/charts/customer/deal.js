@@ -3,6 +3,7 @@
  */
 
 import { argCallbackUnderlineTimeToTime } from '../../utils';
+import { num as antUtilNum } from 'ant-utils';
 
 export function getCustomerDealChart() {
     return {
@@ -27,8 +28,19 @@ export function getCustomerDealChart() {
                 title: '成交率',
                 dataIndex: 'deal_rate',
                 width: '25%',
+                align: 'right'
             }]
         },
-        processData: data => [data.result],
+        processData: data => {
+            const result = _.get(data, 'result');
+
+            if (result) {
+                result.deal_rate = antUtilNum.decimalToPercent(result.deal_rate);
+
+                return [result];
+            } else {
+                return [];
+            }
+        }
     };
 }

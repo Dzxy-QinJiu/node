@@ -51,6 +51,9 @@ class AntcDropdown extends React.Component {
         this.setState({menuVisible: false});
         // 关面板后，清空选择的数据
         this.props.clearSelectData();
+        if (this.props.isShowDropDownContent) {
+            this.props.showDropDownContent();
+        }
     }
 
     render() {
@@ -96,7 +99,7 @@ class AntcDropdown extends React.Component {
         );
 
         return (
-            <Dropdown overlay={menu} visible={this.state.menuVisible}
+            <Dropdown overlay={menu} visible={this.props.isShowDropDownContent || this.state.menuVisible}
                 placement={this.props.placement} trigger={['click']}
                 onVisibleChange={this.handleVisibleChange.bind(this)}
                 overlayClassName={this.props.overlayClassName}
@@ -123,7 +126,11 @@ AntcDropdown.defaultProps = {
     },//关面板后，清空选择数据的处理
     btnAtTop: true,//是否在顶部展示确定按钮
     stopContentHide: false,//避免选中选项后会关闭content内容区域
-    isDisabled: false//未选选项时按钮是禁用状态
+    isDisabled: false, //未选选项时按钮是禁用状态
+    isShowDropDownContent: false, // 是否显示dropdown中的内容
+    showDropDownContent: function() { // 保存、取消时，dropdown不显示的处理
+
+    }
 };
 AntcDropdown.propTypes = {
     showMenu: PropTypes.bool,
@@ -140,6 +147,8 @@ AntcDropdown.propTypes = {
     stopContentHide: PropTypes.bool,
     isDisabled: false,
     overlayClassName: PropTypes.string,
-    placement: PropTypes.string
+    placement: PropTypes.string,
+    isShowDropDownContent: PropTypes.bool,
+    showDropDownContent: PropTypes.func
 };
 export default AntcDropdown;

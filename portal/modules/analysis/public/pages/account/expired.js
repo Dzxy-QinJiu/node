@@ -36,13 +36,13 @@ function getCharts() {
         accountChart.getAccountBrowserChart('expired'),
         //用户访问次数
         accountChart.getLoginCountsChart('expired'),
-        //活跃用户地域统计
-        accountChart.getActiveAreaChart('expired'),
         //用户访问天数
         accountChart.getLoginDaysChart('expired'),
         //用户在线时间
         accountChart.getLoginTimesChart('expired'),
         //平均在线时长
         accountChart.getAverageOnlineTimeChart('expired'),
+        //活跃用户地域统计
+        accountChart.getActiveAreaChart('expired'),
     ];
 }

@@ -12,7 +12,7 @@ export function getCustomerTransferChart() {
             sm: 24,
         },
         height: 'auto',
-        url: '/rest/analysis/customer/v2/all/transfer/record/1000/time/descend',
+        url: '/rest/analysis/customer/v2/:data_type/transfer/record/1000/time/descend',
         dataField: 'result',
         processData: data => {
             _.each(data, item => {

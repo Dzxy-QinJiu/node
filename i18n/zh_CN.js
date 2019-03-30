@@ -2119,6 +2119,8 @@ var zh_CN = {
     'errorcode.148': '电话时长统计视图获取失败',
     'errorcode.149': '该角色已经分配给销售',
     'errorcode.150': '修改线索信息失败',
+    'errorcode.151': '获取销售新开客户数和新开帐号数失败',
+    'errorcode.152': '线索重复',
     'errorcoe.different.realm': '安全域不一致',
     'errorcode.invalid.wechat': '无效的微信账号',
 

@@ -316,6 +316,14 @@ module.exports = {
                 needLogin: true
             },
             privileges: ['CRM_GET_CUSTOMER_TRACE_USER']
+        },{//修改客户的联合跟进人
+            method: 'put',
+            path: '/rest/crm/second_sales',
+            handler: 'editSecondSales',
+            passport: {
+                needLogin: true
+            },
+            privileges: ['CRM_ASSERT_CUSTOMER_SALES']
         }
     ]
 };

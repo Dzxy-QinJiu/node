@@ -99,7 +99,7 @@ class SalesOpportunityApplyManagement extends React.Component {
             order: this.state.order,
             page_size: this.state.page_size,
             id: this.state.lastApplyId, //用于下拉加载的id
-            type: 'business_opportunities'
+            type: APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES
         };
         //如果是选择的全部类型，不需要传status这个参数
         if (this.state.applyListType !== APPLY_TYPE_STATUS_CONST.ALL) {
@@ -117,7 +117,7 @@ class SalesOpportunityApplyManagement extends React.Component {
             //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
             if (this.state.applyListType === APPLY_TYPE_STATUS_CONST.ONGOING) {
                 //触发更新待审批数
-                commonMethodUtil.updateUnapprovedCount('unhandleBusinessOpportunities','SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
+                commonMethodUtil.updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
             }
         });
     };

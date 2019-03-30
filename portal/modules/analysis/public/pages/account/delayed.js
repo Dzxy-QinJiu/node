@@ -25,13 +25,13 @@ function getCharts() {
         accountChart.getAccountBrowserChart('delay'),
         //用户访问次数
         accountChart.getLoginCountsChart('delay'),
-        //活跃用户地域统计
-        accountChart.getActiveAreaChart('delay'),
         //用户访问天数
         accountChart.getLoginDaysChart('delay'),
         //用户在线时间
         accountChart.getLoginTimesChart('delay'),
         //平均在线时长
         accountChart.getAverageOnlineTimeChart('delay'),
+        //活跃用户地域统计
+        accountChart.getActiveAreaChart('delay'),
     ];
 }

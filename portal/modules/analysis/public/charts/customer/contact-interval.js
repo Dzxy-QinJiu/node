@@ -105,6 +105,17 @@ export function getContactCustomerIntervalChart(intervals) {
 
             option.xAxis[0].data = xAxisData;
             option.series[0].data = seriesData;
+        },
+        processCsvData: (chart, option) => {
+            let csvData = [];
+
+            const thead = _.get(option, 'xAxis[0].data');
+            const tbody = _.get(option, 'series[0].data');
+
+            csvData.push(thead);
+            csvData.push(tbody);
+
+            return csvData;
         }
     };
 }

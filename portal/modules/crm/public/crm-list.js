@@ -850,7 +850,7 @@ class Crm extends React.Component {
         //如果是通过列表面板打开的
         if (this.props.listPanelParamObj) {
             params = _.cloneDeep(this.props.listPanelParamObj);
-        //如果是从首页跳转过来的
+            //如果是从首页跳转过来的
         } else if (this.props.fromSalesHome) {
             const locationState = this.props.location.state;
 
@@ -975,13 +975,6 @@ class Crm extends React.Component {
         if (this.state.selectedCustomer.length) {
             //选择客户后，展示合并和批量变更的按钮
             return (<div className="top-btn-wrapper">
-                <PrivilegeChecker
-                    check="CUSTOMER_MERGE_CUSTOMER"
-                    className='block crm-merge-btn'
-                    onClick={this.showMergePanel}
-                >
-                    <Button type="primary">{Intl.get('crm.0', '合并客户')}</Button>
-                </PrivilegeChecker>
                 <PrivilegeChecker check="CUSTOMER_BATCH_OPERATE" className="batch-btn-wrapper">
                     <CrmBatchChange isWebMini={isWebMini}
                         currentId={this.state.currentId}
@@ -992,6 +985,13 @@ class Crm extends React.Component {
                         matchedNum={this.state.customersSize}
                         condition={this.state.condition}
                     />
+                </PrivilegeChecker>
+                <PrivilegeChecker
+                    check="CUSTOMER_MERGE_CUSTOMER"
+                    className='block crm-merge-btn btn-item'
+                    onClick={this.showMergePanel}
+                >
+                    <Button>{Intl.get('crm.0', '合并客户')}</Button>
                 </PrivilegeChecker>
             </div>);
         } else {
@@ -1477,7 +1477,7 @@ class Crm extends React.Component {
                             <div className="last-contact-time">{time}</div>
                             <span title={last_contact} className="comments-fix">
                                 <ShearContent>
-                                    {last_contact}    
+                                    {last_contact}
                                 </ShearContent>
                             </span>
                         </span>

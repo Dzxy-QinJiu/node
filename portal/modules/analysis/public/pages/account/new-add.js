@@ -42,8 +42,6 @@ function getCharts() {
         accountChart.getAccountBrowserChart('add'),
         //用户访问次数
         accountChart.getLoginCountsChart('add'),
-        //活跃用户地域统计
-        accountChart.getActiveAreaChart('add'),
         //用户访问天数
         accountChart.getLoginDaysChart('add'),
         //用户在线时间
@@ -52,5 +50,7 @@ function getCharts() {
         accountChart.getAverageOnlineTimeChart('add'),
         //销售开通单应用账号登录统计
         accountChart.getSalesOpenAccountLoginChart(),
+        //活跃用户地域统计
+        accountChart.getActiveAreaChart('add'),
     ];
 }
