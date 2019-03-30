@@ -7,7 +7,7 @@ var applyBusinessDetailStore = require('../store/apply-business-detail-store');
 var ApplyViewDetailActions = require('../action/apply-view-detail-action');
 var BusinessApplyActions = require('../action/business-apply-action');
 import Trace from 'LIB_DIR/trace';
-import {Alert, Icon, Input, Row, Col, Button,Steps,message} from 'antd';
+import {Alert, Icon, Input, Row, Col, Button,Steps,message,DatePicker,Select} from 'antd';
 const Step = Steps.Step;
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -27,7 +27,8 @@ let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import {APPLY_APPROVE_TYPES, APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_APPROVE_TYPES, APPLY_FINISH_STATUS, LEAVE_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
+import {disabledDate, calculateSelectType} from 'PUB_DIR/sources/utils/common-method-util';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -36,6 +37,7 @@ class ApplyViewDetail extends React.Component {
             customerOfCurUser: {},//当前展示用户所属客户的详情
             showBackoutConfirmType: '',//操作的确认框类型
             usersManList: [],//成员列表
+            customerUpdateId: '',//修改拜访时间的客户
             ...applyBusinessDetailStore.getState()
         };
     }
@@ -174,7 +176,8 @@ class ApplyViewDetail extends React.Component {
         }else if (thisPropsId && nextPropsId && nextPropsId !== thisPropsId) {
             this.getBusinessApplyDetailData(nextProps.detailItem);
             this.setState({
-                showBackoutConfirmType: ''
+                showBackoutConfirmType: '',
+                customerUpdateId: ''
             });
         }
     }
@@ -280,12 +283,12 @@ class ApplyViewDetail extends React.Component {
     renderDetailApplyBlock(detailInfo) {
         var detail = detailInfo.detail || {};
         var applicant = detailInfo.applicant || {};
-        var customers = _.get(detail, 'customers[0]', {});
+        var customers = _.get(detail, 'customers', []);
         //展示客户的地址，只展示到县区就可以，不用展示到街道
         var customersAdds = [];
         _.forEach(detail.customers, (item) => {
             if (!_.isEmpty(item)){
-                customersAdds.push('' + _.get(customers,'province','') + _.get(customers,'city','') + _.get(customers,'county',''));
+                customersAdds.push('' + _.get(item,'province','') + _.get(item,'city','') + _.get(item,'county',''));
 
             }
         });
@@ -317,6 +320,175 @@ class ApplyViewDetail extends React.Component {
             />
         );
     }
+    handleEditVisit = (customerId) => {
+        this.setState({
+            customerUpdateId: customerId
+        });
+    };
+    transferAmAndPm = (type) => {
+        return type === Intl.get('apply.approve.leave.am', '上午') ? 'AM' : 'PM';
+    };
+    onBeginTimeCustomerChange = (value) => {
+        var updateCustomerId = this.state.customerUpdateId;
+        var updateCustomers = _.find(_.get(this, 'state.detailInfoObj.info.detail.customers',[]),item => item.id === updateCustomerId);
+        if (updateCustomers){
+            var start = _.get(updateCustomers,'visit_time.start');
+            var updateStart = moment(value).format(oplateConsts.DATE_FORMAT) + '_' + start.split('_')[1];
+            updateCustomers.visit_time.start = updateStart;
+        }
+        this.setState({
+            detailInfoObj: this.state.detailInfoObj
+        });
+    };
+    onEndTimeCustomerChange = (value) => {
+        var updateCustomerId = this.state.customerUpdateId;
+        var updateCustomers = _.find(_.get(this, 'state.detailInfoObj.info.detail.customers',[]),item => item.id === updateCustomerId);
+        if (updateCustomers){
+            var end = _.get(updateCustomers,'visit_time.end');
+            var updateEnd = moment(value).format(oplateConsts.DATE_FORMAT) + '_' + end.split('_')[1];
+            updateCustomers.visit_time.end = updateEnd;
+        }
+        this.setState({
+            detailInfoObj: this.state.detailInfoObj
+        });
+    };
+    handleChangeEndType = (value) => {
+        var updateCustomerId = this.state.customerUpdateId;
+        var updateCustomers = _.find(_.get(this, 'state.detailInfoObj.info.detail.customers',[]),item => item.id === updateCustomerId);
+        if (updateCustomers){
+            var end = _.get(updateCustomers,'visit_time.end');
+            var updateEnd = end.split('_')[0] + '_' + value;
+            updateCustomers.visit_time.end = updateEnd;
+        }
+        this.setState({
+            detailInfoObj: this.state.detailInfoObj
+        });
+    };
+    handleChangeStartType = (value) => {
+        var updateCustomerId = this.state.customerUpdateId;
+        var updateCustomers = _.find(_.get(this, 'state.detailInfoObj.info.detail.customers',[]),item => item.id === updateCustomerId);
+        if (updateCustomers){
+            var start = _.get(updateCustomers,'visit_time.start');
+            var updateStart = start.split('_')[0] + '_' + value;
+            updateCustomers.visit_time.start = updateStart;
+        }
+        this.setState({
+            detailInfoObj: this.state.detailInfoObj
+        });
+    };
+
+    renderEditVisitRange = (record) => {
+        var visitObj = record.visit_time;
+        var visit_start_time = '',visit_start_type = '',visit_end_time = '',visit_end_type = '';
+        if (visitObj){
+            var rangeObj = this.calculateStartAndEndRange(visitObj);
+            visit_start_time = rangeObj.visit_start_time;
+            visit_start_type = rangeObj.visit_start_type;
+            visit_end_time = rangeObj.visit_end_time;
+            visit_end_type = rangeObj.visit_end_type;
+        }
+        var applyTime = _.get(this,'state.detailInfoObj.info.detail.apply_time[0]');
+        var applyObj = this.calculateStartAndEndRange(applyTime);
+        var start = _.get(applyTime, 'start'),end = _.get(applyTime, 'end');
+        var initialStartTime = moment(_.get(start.split('_'),'[0]')).valueOf();
+        var initialEndTime = moment(_.get(end.split('_'),'[0]')).valueOf();
+        var initialRangeObj = {initial_visit_start_time: applyObj.visit_start_time,
+            initial_visit_start_type: this.transferAmAndPm(applyObj.visit_start_type),
+            initial_visit_end_time: applyObj.visit_end_time,
+            initial_visit_end_type: this.transferAmAndPm(applyObj.visit_end_type)};
+        var start_type_select = calculateSelectType(visit_start_time, initialRangeObj);
+        var end_type_select = calculateSelectType(visit_end_time, initialRangeObj);
+        var defaultStartValue = this.transferAmAndPm(visit_start_type);
+        var defaultEndValue = this.transferAmAndPm(visit_end_type);
+        return (
+            <div>
+                <DatePicker
+                    onChange={this.onBeginTimeCustomerChange}
+                    value={visit_start_time ? moment(visit_start_time) : moment()}
+                    disabledDate={disabledDate.bind(this, initialStartTime, initialEndTime)}
+                />
+                <Select
+                    onChange={this.handleChangeStartType}
+                    defaultValue={defaultStartValue}
+                >
+                    {_.isArray(start_type_select) && start_type_select.length ?
+                        start_type_select.map((item, idx) => {
+
+                            return (<Option key={idx} value={item.value}>{item.name}</Option>);
+                        }) : null
+                    }
+                </Select>
+                <DatePicker
+                    onChange={this.onEndTimeCustomerChange}
+                    value={visit_end_time ? moment(visit_end_time) : moment()}
+                    disabledDate={disabledDate.bind(this, initialStartTime, initialEndTime)}
+                />
+                <Select
+                    onChange={this.handleChangeEndType}
+                    defaultValue={defaultEndValue}
+                >
+                    {_.isArray(end_type_select) && end_type_select.length ?
+                        end_type_select.map((item, idx) => {
+                            return (<Option key={idx} value={item.value}>{item.name}</Option>);
+                        }) : null
+                    }
+                </Select>
+                <span>
+                    {this.state.isEditting ? <Icon type="loading"/> : <span>
+                        <span className="iconfont icon-choose" onClick={this.saveChangeCustomerVisistRange.bind(this, record)}></span>
+                        <span className="iconfont icon-close" onClick={this.cancelChangeCustomerVisitRange}></span>
+                    </span>}
+
+                </span>
+            </div>
+        );
+    };
+    saveChangeCustomerVisistRange = () => {
+        var applyObj = _.get(this, 'state.detailInfoObj.info', {});
+        var submitObj = {
+            applyId: _.get(applyObj, 'id'),
+            customers: _.get(applyObj, 'detail.customers')
+        };
+        this.setState({isEditting: true});
+        $.ajax({
+            url: '/rest/update/customer/visit/range',
+            type: 'put',
+            dataType: 'json',
+            data: submitObj,
+            success: (result) => {
+                this.setState({
+                    isEditting: false,
+                    customerUpdateId: ''
+                });
+            },
+            error: (xhr) => {
+                this.setState({
+                    isEditting: false,
+                });
+                message.error(xhr.responseJSON || Intl.get('common.edit.failed', '修改失败'));
+            }
+        });
+
+    };
+    cancelChangeCustomerVisitRange = () => {
+        this.setState({
+            customerUpdateId: ''
+        });
+    };
+    calculateStartAndEndRange = (visit_time) => {
+        var start = _.get(visit_time, 'start');
+        var end = _.get(visit_time, 'end');
+        var startObj = _.find(LEAVE_TIME_RANGE,item => item.value === _.get(start.split('_'),'[1]')
+        );
+        var endObj = _.find(LEAVE_TIME_RANGE,item => item.value === _.get(end.split('_'),'[1]')
+        );
+        return {
+            visit_start_time: _.get(start.split('_'),'[0]'),
+            visit_start_type: _.get(startObj,'name'),
+            visit_end_time: _.get(end.split('_'),'[0]'),
+            visit_end_type: _.get(endObj,'name'),
+        };
+    };
 
     renderBusinessCustomerDetail(detailInfo) {
         var detail = detailInfo.detail || {};
@@ -338,6 +510,32 @@ class ApplyViewDetail extends React.Component {
                         </a>
                     );
                 }
+            },{
+                title: Intl.get('bussiness.trip.time.range', '拜访时间'),
+                className: 'apply-customer-visit-range',
+                render: function(text, record, index) {
+                    var visit_start_time = '',visit_start_type = '',visit_end_time = '',visit_end_type = '';
+                    if (record.visit_time){
+                        var rangeObj = _this.calculateStartAndEndRange(record.visit_time);
+                        visit_start_time = rangeObj.visit_start_time;
+                        visit_start_type = rangeObj.visit_start_type;
+                        visit_end_time = rangeObj.visit_end_time;
+                        visit_end_type = rangeObj.visit_end_type;
+                    }
+                    return (
+                        <span>
+                            {record.visit_time ?
+                                <span>
+                                    {_this.state.customerUpdateId === record.id ? _this.renderEditVisitRange(record) : <span>
+                                        {visit_start_time}{visit_start_type}{Intl.get('common.time.connector', '至')}{visit_end_time}{visit_end_type}
+                                        <i className="iconfont icon-update" onClick={_this.handleEditVisit.bind(_this, record.id)}></i>
+                                    </span>}
+
+                                </span> : null}
+                        </span>
+                    );
+                }
+
             }, {
                 title: Intl.get('common.remark', '备注'),
                 dataIndex: 'remarks',

@@ -21,6 +21,8 @@ module.exports = {
     DATE_MONTH_DAY_HOUR_MIN_FORMAT: 'MM-DD HH:mm',
     //一天的时间的毫秒数
     ONE_DAY_TIME_RANGE: 24 * 60 * 60 * 1000,
+    //一小时的毫秒数
+    ONE_HOUR_TIME_RANGE: 60 * 60 * 1000,
     //组织列表中的类型判断
     CATEGORY_TYPE: {
         ORGANIZATION: '0',//组织
