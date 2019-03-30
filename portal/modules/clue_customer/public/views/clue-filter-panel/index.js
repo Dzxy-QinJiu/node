@@ -30,6 +30,7 @@ class ClueFilterPanel extends React.Component {
             clueSourceArray: this.props.clueSourceArray,
             accessChannelArray: this.props.accessChannelArray,
             clueClassifyArray: this.props.clueClassifyArray,
+            salesManList: this.props.salesManList,
             ...clueFilterStore.getState(),
         };
     }
@@ -40,14 +41,14 @@ class ClueFilterPanel extends React.Component {
     componentDidMount = () => {
         clueFilterStore.listen(this.onStoreChange);
         this.getClueProvinceList();
-        //销售名称列表
-        FilterAction.getOwnerNameList();
     };
     componentWillReceiveProps = (nextProps) => {
         this.setState({
             clueSourceArray: nextProps.clueSourceArray,
             accessChannelArray: nextProps.accessChannelArray,
             clueClassifyArray: nextProps.clueClassifyArray,
+            salesManList: nextProps.salesManList,
+
         });
     };
     componentWillUnmount = () => {
@@ -182,6 +183,10 @@ class ClueFilterPanel extends React.Component {
         const accessChannelArray = this.state.accessChannelArray;
         //线索分类
         const clueClassifyArray = this.state.clueClassifyArray;
+        //团队及下级团队的销售
+        const salesManList = _.map(this.state.salesManList, item => {
+            return _.get(item.name.split('-'),'[0]');
+        });
         var filterClueStatus = this.state.filterClueStatus;
         filterClueStatus = _.filter(filterClueStatus, item => {
             return item.value;
@@ -255,8 +260,8 @@ class ClueFilterPanel extends React.Component {
                 {
                     groupName: Intl.get('sales.home.sales', '销售'),
                     groupId: 'user_name',
-                    singleSelect: true,
-                    data: _.map(this.state.ownerNameList, x => ({
+
+                    data: _.map(salesManList, x => ({
                         name: x,
                         value: x
                     }))
@@ -283,6 +288,7 @@ ClueFilterPanel.defaultProps = {
     clueSourceArray: [],
     accessChannelArray: [],
     clueClassifyArray: [],
+    salesManList: [],
     getClueList: function() {
 
     },
@@ -292,6 +298,7 @@ ClueFilterPanel.propTypes = {
     clueSourceArray: PropTypes.object,
     accessChannelArray: PropTypes.object,
     clueClassifyArray: PropTypes.object,
+    salesManList: PropTypes.object,
     getClueList: PropTypes.func,
     style: PropTypes.object,
 };

@@ -55,13 +55,8 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.exist_fields = [];
     //筛选不存在的字段
     this.unexist_fields = [];
-    //负责人的筛选列表
-    this.ownerNameList = [];
     //按销售进行筛选
     this.filterClueUsers = [];
-};
-ClueFilterStore.prototype.getOwnerNameList = function(list) {
-    this.ownerNameList = _.get(list, '[0]') ? list : [];
 };
 //获取线索来源
 ClueFilterStore.prototype.setCondition = function(list) {

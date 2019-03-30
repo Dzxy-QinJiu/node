@@ -939,8 +939,7 @@ class ClueCustomer extends React.Component {
         clueCustomerAction.setSalesMan({'salesMan': ''});
         clueCustomerAction.setSalesManName({'salesManNames': ''});
     };
-
-    renderSalesBlock = () => {
+    getSalesDataList = () => {
         let dataList = [];
         var clueSalesIdList = getClueSalesList();
         //销售领导、域管理员,展示其所有（子）团队的成员列表
@@ -961,6 +960,10 @@ class ClueCustomer extends React.Component {
                 });
             }
         });
+        return dataList;
+    };
+    renderSalesBlock = () => {
+        var dataList = this.getSalesDataList();
         //按点击的次数进行排序
         dataList = _.sortBy(dataList,(item) => {return -item.clickCount;});
         return (
@@ -1397,6 +1400,7 @@ class ClueCustomer extends React.Component {
                                 clueSourceArray={this.state.clueSourceArray}
                                 accessChannelArray={this.state.accessChannelArray}
                                 clueClassifyArray={this.state.clueClassifyArray}
+                                salesManList={this.getSalesDataList()}
                                 getClueList={this.getClueList}
                                 style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: this.state.tableHeight}}
                             />
