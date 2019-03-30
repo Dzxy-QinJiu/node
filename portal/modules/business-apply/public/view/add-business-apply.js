@@ -150,38 +150,38 @@ class AddBusinessApply extends React.Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             var formData = _.cloneDeep(this.state.formData);
+            var submitObj = {
+                customers: []
+            };
             if (err) return;
-            formData.apply_time = [{
+            submitObj.apply_time = [{
                 start: moment(values.begin_time).format(oplateConsts.DATE_FORMAT) + `_${formData.begin_type}`,
                 end: moment(values.end_time).format(oplateConsts.DATE_FORMAT) + `_${formData.end_type}`
             }];
-            delete formData.total_range;
-            delete formData.begin_time;
-            delete formData.end_time;
-            delete formData.begin_type;
-            delete formData.end_type;
             var hasNoExistCustomer = false;
             _.forEach(formData.customers, (customerItem, index) => {
-                delete customerItem.key;
-                delete customerItem.hideCustomerRequiredTip;
+                var submitCustomerItem = {
+                    name: customerItem.name || '',
+                    id: customerItem.id || '',
+                    province: customerItem.province || '',
+                    city: customerItem.city || '',
+                    county: customerItem.county || '',
+                    address: customerItem.address || '',
+                    remarks: customerItem.remarks || '',
+                };
                 //传入每个客户的拜访时间
                 if (customerItem.visit_start_time && customerItem.visit_start_type && customerItem.visit_end_time && customerItem.visit_end_type){
-                    delete customerItem.end_type_select;
-                    delete customerItem.start_type_select;
-                    customerItem.visit_time = {
+                    submitCustomerItem.visit_time = {
                         start: moment(customerItem.visit_start_time).format(oplateConsts.DATE_FORMAT) + `_${customerItem.visit_start_type}`,
                         end: moment(customerItem.visit_end_time).format(oplateConsts.DATE_FORMAT) + `_${customerItem.visit_end_type}`
                     };
-                    delete customerItem.visit_start_time;
-                    delete customerItem.visit_start_type;
-                    delete customerItem.visit_end_time;
-                    delete customerItem.visit_end_type;
                 }else{
-                    customerItem.visit_time = _.get(formData,'apply_time[0]');
+                    submitCustomerItem.visit_time = _.get(submitObj,'apply_time[0]');
                 }
                 if (customerItem['remarks']) {
-                    formData.reason += customerItem['remarks'];
+                    submitObj.reason += customerItem['remarks'];
                 }
+                submitObj.customers.push(submitCustomerItem);
                 if(!customerItem.id){
                     hasNoExistCustomer = true;
                     return;
@@ -200,7 +200,7 @@ class AddBusinessApply extends React.Component {
                 url: '/rest/add/apply/list',
                 dataType: 'json',
                 type: 'post',
-                data: formData,
+                data: submitObj,
                 success: (data) => {
                     if (data){
                         //添加成功
@@ -283,26 +283,6 @@ class AddBusinessApply extends React.Component {
         let formData = this.state.formData;
         formData.customers = customers;
         this.setState({formData});
-    };
-    calculateVisitRange = () => {
-        var formData = this.state.formData;
-        var begin_type = formData.begin_type,end_type = formData.end_type,initial_visit_start_time = '',initial_visit_end_time = '',one_hour = oplateConsts.ONE_HOUR_TIME_RANGE;
-        //如果开始类型是上午，就取上午的8点，如果是下午，就取13:00点
-        if (begin_type === AM_AND_PM.AM){
-            initial_visit_start_time = moment(formData.begin_time).startOf('day').valueOf() + 8 * one_hour;
-        }else if (begin_type === AM_AND_PM.PM){
-            initial_visit_start_time = moment(formData.begin_time).startOf('day').valueOf() + 13 * one_hour;
-        }
-        //如果结束类型是上午，就取上午12点，如果是下午就取18:00点
-        if (end_type === AM_AND_PM.AM){
-            initial_visit_end_time = moment(formData.end_time).startOf('day').valueOf() + 12 * one_hour;
-        }else if (end_type === AM_AND_PM.PM){
-            initial_visit_end_time = moment(formData.end_time).startOf('day').valueOf() + 18 * one_hour;
-        }
-        return {
-            initial_visit_start_time: initial_visit_start_time,
-            initial_visit_end_time: initial_visit_end_time
-        };
     };
 
     render() {
