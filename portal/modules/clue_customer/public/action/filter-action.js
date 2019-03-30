@@ -15,7 +15,8 @@ function FilterAction() {
         'setFilterClueAvailbility',
         'setFilterClueProvince',
         'setExistedFiled',
-        'setUnexistedFiled'
+        'setUnexistedFiled',
+        'setFilterClueUsername'
     );
 }
 module.exports = alt.createActions(FilterAction);

@@ -55,6 +55,8 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.exist_fields = [];
     //筛选不存在的字段
     this.unexist_fields = [];
+    //按销售进行筛选
+    this.filterClueUsers = [];
 };
 //获取线索来源
 ClueFilterStore.prototype.setCondition = function(list) {
@@ -113,6 +115,15 @@ ClueFilterStore.prototype.setFilterClueClassify = function(updateClassify) {
         selectedClassify.push(item.value);
     });
     this.filterClueClassify = selectedClassify;
+};
+ClueFilterStore.prototype.setFilterClueUsername = function(updateUsers) {
+    var filterClueUsers = [];
+    _.forEach(updateUsers, (item) => {
+        if (item.selected){
+            filterClueUsers.push(item.value);
+        }
+    });
+    this.filterClueUsers = filterClueUsers;
 };
 ClueFilterStore.prototype.setFilterClueAvailbility = function() {
     //点击线索无效，把线索状态选为全部
