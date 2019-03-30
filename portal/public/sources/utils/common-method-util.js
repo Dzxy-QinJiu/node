@@ -28,7 +28,7 @@ var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-import {ORGANIZATION_TYPE} from './consts';
+import {ORGANIZATION_TYPE,LEAVE_TIME_RANGE, AM_AND_PM} from './consts';
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 var websiteConfig = require('../../../lib/utils/websiteConfig');
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
@@ -844,4 +844,24 @@ exports.checkIfLeader = function(result){
         });
     }
     return isLeader;
+};
+//时间选择组件禁用的范围
+exports.disabledDate = function(startTime, endTime, value){
+    if (!value) {
+        return false;
+    }
+    return value.valueOf() < moment(startTime).startOf('day').valueOf() || value.valueOf() > moment(endTime).endOf('day').valueOf();
+};
+exports.calculateSelectType = function(selectTime, rangeObj){
+    var selectTypeArr = LEAVE_TIME_RANGE;
+    //如果和开始的时间是同一天并且开始的类型是PM
+    if (moment(selectTime).isSame(rangeObj.initial_visit_start_time, 'day') && rangeObj.initial_visit_start_type === AM_AND_PM.PM){
+        selectTypeArr = LEAVE_TIME_RANGE.slice(1,2);
+    }
+    //如果和结束的时间是同一天并且结束的类型是AM
+    if (moment(selectTime).isSame(rangeObj.initial_visit_end_time, 'day') && rangeObj.initial_visit_end_type === AM_AND_PM.AM){
+        selectTypeArr = LEAVE_TIME_RANGE.slice(0,1);
+    }
+    return selectTypeArr;
+
 };

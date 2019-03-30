@@ -2609,7 +2609,7 @@ var en_US = {
     'leave.apply.for.leave.time': 'Business trip time',//出差时间
     'leave.apply.for.application': 'Personnel',//人员
     'leave.apply.application.status': 'Approval status',//审批状态
-    'leave.apply.fill.leave.reason': 'Please fill in the business trip reason',//请填写出差事由
+    'leave.apply.fill.leave.reason': 'Please fill in the business trip expection',//请填写预期目标
     'leave.apply.no.filter.leave.list': 'There are no business travel applications that meet the search criteria.',//暂无符合查询条件的出差申请
     'leave.apply.detail.wait': 'Wait',//待
     'leave.apply.sales.oppotunity': 'Opportunity apply',//机会申请
@@ -2822,6 +2822,8 @@ var en_US = {
     'common.callsystem.get.faild': 'Failed to get the organization phone system configuration',// 获取组织电话系统配置失败
     'contract.invocie.delete.faild': 'Failed to delete invoice amount',// 删除发票额失败
     'apply.detail.show.password': 'Show password',//显示密码
-    'apply.detail.hide.password': 'Hide password'//隐藏密码
+    'apply.detail.hide.password': 'Hide password',//隐藏密码
+    'bussiness.trip.time.range': 'Visit time',//拜访时间
+    'business.leave.time.range': 'Bussiness range'//出差时长
 };
 export default en_US;
