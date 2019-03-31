@@ -50,6 +50,14 @@ class UserDetailBasic extends React.Component {
         AppUserDetailStore.listen(this.onStateChange);
         if (!this.props.userId) return;
         AppUserDetailAction.getUserDetail(this.props.userId);
+        if (!this.props.isGetUserInfo && this.props.getBasicInfo) {
+            const userInfo = {
+                data: null,
+                loading: true,
+                errorMsg: ''
+            };
+            this.props.getBasicInfo(userInfo);
+        }
         if(this.getRolesListPrivilege()){
             this.getBatchRoleInfo();
         }
@@ -130,6 +138,18 @@ class UserDetailBasic extends React.Component {
                 AppUserDetailAction.dismiss();
                 AppUserDetailAction.getUserDetail(newUserId);
             }, 0);
+        }
+        const statusChanged = prevState.isLoading !== this.state.isLoading;
+        if ( !this.props.isGetUserInfo && this.props.getBasicInfo && statusChanged) {
+            const userInfo = {
+                data: this.state.initialUser.user,
+                loading: this.state.isLoading,
+                errorMsg: this.state.getDetailErrorMsg
+            };
+            this.props.getBasicInfo(userInfo);
+            if(this.getRolesListPrivilege()){
+                this.getBatchRoleInfo();
+            }
         }
     }
 
@@ -775,7 +795,9 @@ class UserDetailBasic extends React.Component {
 }
 UserDetailBasic.propTypes = {
     userId: PropTypes.string,
+    getBasicInfo: PropTypes.func,
     selectApp: PropTypes.object,
-    height: PropTypes.number
+    height: PropTypes.number,
+    isGetUserInfo: PropTypes.bool
 };
 module.exports = UserDetailBasic;
