@@ -2090,6 +2090,7 @@ var en_US = {
     'errorcode.152': 'There are repeat clues!',//线索重复
     'errorcoe.different.realm': 'Different realms',//安全域不一致
     'errorcode.invalid.wechat': 'Invalid Wechat Account',//无效的微信账号
+    'errorcode.get.call.statistics.failed': '获取通话记录统计失败',
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
     'user.user.info': 'information',//开通信息
