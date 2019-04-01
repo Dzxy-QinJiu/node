@@ -80,7 +80,7 @@ class TimeSelect extends React.Component {
         //选择的年
         const yearNum = this.props.yearTime ? parseInt(this.props.yearTime) : moment().year();
         //选择的年的最后一周是当年的第几周
-        let lastWeekNum = moment().year(yearNum).endOf('year').isoWeeks();
+        let lastWeekNum = moment().year(yearNum).endOf('year').isoWeek();
         //如果计算出来的值是1，说明最后一周跨年了，可以认为是选择的年的第53周
         if (lastWeekNum === 1) {
             lastWeekNum = 53;
@@ -89,7 +89,7 @@ class TimeSelect extends React.Component {
         if (!this.props.canSelectFutureWeek) {
             const thisYear = moment().year();
             if (thisYear === yearNum) {
-                const thisWeek = moment().week();
+                const thisWeek = moment().isoWeek();
                 lastWeekNum = thisWeek;
             }
         }
