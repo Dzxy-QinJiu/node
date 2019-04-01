@@ -8,7 +8,6 @@ require('./index.less');
 import PhoneInput from 'CMP_DIR/phone-input';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import {Form, Input, Icon} from 'antd';
 const FormItem = Form.Item;
@@ -140,23 +139,13 @@ class DynamicAddDelField extends React.Component {
             );
         }
     };
-    // 自动拨号
-    handleClickCallOut = (phone) => {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '拨打电话');
-        handleCallOutResult({
-            contactName: _.get(this.props, 'contactName') || '',//联系人姓名
-            phoneNumber: phone,//拨打的电话
-        });
-    };
-
-
     renderItemShowContent() {
         if (_.get(this, 'state.value[0]')) {
             return (
                 <div className="item-show-content">
                     {_.map(this.state.value, item => {
                         return ( <div className="item-content">
-                            {this.props.type === 'phone' ? <PhoneCallout phoneNumber={item} showPhoneNum={addHyphenToPhoneNumber(item)}/> :
+                            {this.props.type === 'phone' ? <PhoneCallout phoneNumber={item} showPhoneNum={addHyphenToPhoneNumber(item)} showPhoneIcon={true}/> :
                                 <span className="item-text">{item}</span>}
 
                         </div>);
