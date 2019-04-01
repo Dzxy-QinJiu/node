@@ -345,39 +345,6 @@ class ApplyViewDetail extends React.Component {
             />
         );
     }
-    renderBusinessCustomerDetail(detailInfo) {
-        var detail = detailInfo.detail || {};
-        var customersArr = _.get(detailInfo, 'detail.customers');
-        var _this = this;
-        var columns = [
-            {
-                title: Intl.get('call.record.customer', '客户'),
-                dataIndex: 'name',
-                className: 'apply-customer-name',
-                render: function(text, record, index) {
-                    return (
-                        <a href="javascript:void(0)"
-                            onClick={_this.showCustomerDetail.bind(this, record.id)}
-                            data-tracename="查看客户详情"
-                            title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
-                        >
-                            {text}
-                        </a>
-                    );
-                }
-            }, {
-                title: Intl.get('common.remark', '备注'),
-                dataIndex: 'remarks',
-                className: 'apply-remarks'
-            }];
-        return (
-            <ApplyDetailCustomer
-                columns={columns}
-                data={customersArr}
-            />
-        );
-    }
-
 
     //添加一条回复
     addReply = (e) => {
@@ -559,8 +526,6 @@ class ApplyViewDetail extends React.Component {
                 <div className="apply-detail-content" style={{height: applyDetailHeight}} ref="geminiWrap">
                     <GeminiScrollbar ref="gemini">
                         {this.renderDetailApplyBlock(detailInfo)}
-                        {/*渲染客户详情*/}
-                        {_.isArray(_.get(detailInfo, 'detail.customers')) ? this.renderBusinessCustomerDetail(detailInfo) : null}
                         {this.renderApplyStatus()}
                         <ApplyDetailRemarks
                             detailInfo={detailInfo}
