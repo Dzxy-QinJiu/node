@@ -153,8 +153,9 @@ exports.getMyTeamTreeAndFlattenList = function(cb, flag) {
  * phoneNumber: 拨打的电话号码，
  * customerId: 客户的id
  * }
+ * callback 拨打完电话后的回调
  */
-exports.handleCallOutResult = function(paramObj) {
+exports.handleCallOutResult = function(paramObj, callback) {
     if (!paramObj) {
         return;
     }
@@ -170,7 +171,9 @@ exports.handleCallOutResult = function(paramObj) {
         if (hasCalloutPrivilege()) {
             callClient.callout(phoneNumber).then((result) => {
                 message.success(Intl.get('crm.call.phone.success', '拨打成功'));
+                _.isFunction(callback) && callback();
             }, (errMsg) => {
+                _.isFunction(callback) && callback();
                 message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
             });
         }

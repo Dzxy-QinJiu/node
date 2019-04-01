@@ -22,6 +22,7 @@ const otherFilterArray = [{
     value: 'customer_id'
 }
 ];
+import userData from 'PUB_DIR/sources/user-data';
 class ClueFilterPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -29,6 +30,7 @@ class ClueFilterPanel extends React.Component {
             clueSourceArray: this.props.clueSourceArray,
             accessChannelArray: this.props.accessChannelArray,
             clueClassifyArray: this.props.clueClassifyArray,
+            salesManList: this.props.salesManList,
             ...clueFilterStore.getState(),
         };
     }
@@ -45,6 +47,8 @@ class ClueFilterPanel extends React.Component {
             clueSourceArray: nextProps.clueSourceArray,
             accessChannelArray: nextProps.accessChannelArray,
             clueClassifyArray: nextProps.clueClassifyArray,
+            salesManList: nextProps.salesManList,
+
         });
     };
     componentWillUnmount = () => {
@@ -109,7 +113,8 @@ class ClueFilterPanel extends React.Component {
                         FilterAction.setExistedFiled();
                         FilterAction.setUnexistedFiled('customer_id');
                     }
-
+                }else if (item.groupId === 'user_name'){
+                    FilterAction.setFilterClueUsername( _.get(item,'data'));
                 }
             }
         });
@@ -178,6 +183,10 @@ class ClueFilterPanel extends React.Component {
         const accessChannelArray = this.state.accessChannelArray;
         //线索分类
         const clueClassifyArray = this.state.clueClassifyArray;
+        //团队及下级团队的销售
+        const salesManList = _.map(this.state.salesManList, item => {
+            return _.get(item.name.split('-'),'[0]');
+        });
         var filterClueStatus = this.state.filterClueStatus;
         filterClueStatus = _.filter(filterClueStatus, item => {
             return item.value;
@@ -245,6 +254,20 @@ class ClueFilterPanel extends React.Component {
                     value: x
                 }))
             }];
+        //非普通销售才有销售角色和团队
+        if (!userData.getUserData().isCommonSales) {
+            advancedData.unshift(
+                {
+                    groupName: Intl.get('sales.home.sales', '销售'),
+                    groupId: 'user_name',
+
+                    data: _.map(salesManList, x => ({
+                        name: x,
+                        value: x
+                    }))
+                }
+            );
+        }
 
         return (
             <div data-tracename="筛选">
@@ -265,6 +288,7 @@ ClueFilterPanel.defaultProps = {
     clueSourceArray: [],
     accessChannelArray: [],
     clueClassifyArray: [],
+    salesManList: [],
     getClueList: function() {
 
     },
@@ -274,6 +298,7 @@ ClueFilterPanel.propTypes = {
     clueSourceArray: PropTypes.object,
     accessChannelArray: PropTypes.object,
     clueClassifyArray: PropTypes.object,
+    salesManList: PropTypes.object,
     getClueList: PropTypes.func,
     style: PropTypes.object,
 };

@@ -436,3 +436,12 @@ exports.getSalesByCustomerId = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+//修改客户的联合跟进人
+exports.editSecondSales = function(req, res) {
+    crmService.editSecondSales(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

@@ -243,7 +243,7 @@ exports.getClueFulltext = function(req, res) {
         url += `&id=${reqBody.lastClueId}`;
     }
     var bodyObj = {
-        query: {status: typeFilter.status}
+        query: {status: typeFilter.status,user_name: typeFilter.user_name},
     };
     if (reqBody.userId){
         bodyObj.query.userId = reqBody.userId;

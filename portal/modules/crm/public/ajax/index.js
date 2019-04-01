@@ -23,6 +23,27 @@ exports.addCustomer = function(newCus) {
     });
     return Deferred.promise();
 };
+
+//联合跟进人的修改
+let editSecondSalesAjax = null;
+exports.editSecondSales = function(submitObj) {
+    var Deferred = $.Deferred();
+    editSecondSalesAjax && editSecondSalesAjax.abort();
+    editSecondSalesAjax = $.ajax({
+        url: '/rest/crm/second_sales',
+        dataType: 'json',
+        type: 'put',
+        data: submitObj,
+        success: function(result) {
+            Deferred.resolve(result);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
 //通过线索添加客户
 let addCustomerByClueAjax = null;
 exports.addCustomerByClue = function(newCus) {

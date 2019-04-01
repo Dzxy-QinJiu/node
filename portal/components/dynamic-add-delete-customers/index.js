@@ -58,17 +58,27 @@ class DynamicAddDelCustomers extends React.Component {
                 customerItem.visit_start_type = nextProps.initial_visit_start_type;
                 customerItem.start_type_select = this.calculateSelectType(customerItem.visit_start_time, nextProps);
                 customerItem.end_type_select = this.calculateSelectType(customerItem.visit_end_time, nextProps);
+                //如果在结束类型的下拉框选择中找不到结束时候选中的类型，需要收到改成下拉选择中的类型
+                if (!_.find(customerItem.end_type_select,item => item.value === customerItem.visit_end_type)){
+                    customerItem.visit_end_type = _.get(customerItem.end_type_select,'[0].value');
+                    this.setFieldCustomers(_.cloneDeep(customers));
+                }
             });
         }
         if (nextProps.initial_visit_end_type && nextProps.initial_visit_end_type !== this.props.initial_visit_end_type){
             _.forEach(customers, (customerItem) => {
                 customerItem.visit_end_type = nextProps.initial_visit_end_type;
                 customerItem.start_type_select = this.calculateSelectType(customerItem.visit_start_time, nextProps);
+                //如果在开始类型的下拉框选择中找不到开始时候选中的类型，需要收到改成下拉选择中的类型
+                if (!_.find(customerItem.start_type_select,item => item.value === customerItem.visit_start_type)){
+                    customerItem.visit_start_type = _.get(customerItem.start_type_select,'[0].value');
+                    this.setFieldCustomers(_.cloneDeep(customers));
+                }
                 customerItem.end_type_select = this.calculateSelectType(customerItem.visit_end_time, nextProps);
+
             });
         }
-        //对于之前已经修改了的，重置一下客户的拜访时间，为了防止之前选过的时间不在修改的出差时间范围内
-        // this.setFieldCustomers(_.cloneDeep(customers));
+
     }
 
     // 删除客户
