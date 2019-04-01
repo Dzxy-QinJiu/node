@@ -6,13 +6,15 @@
 import {Popover} from 'antd';
 import {hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {showDisabledCallTip, handleCallOutResult}from 'PUB_DIR/sources/utils/common-data-util';
+var classNames = require('classnames');
 require('./index.less');
 import Trace from 'LIB_DIR/trace';
 class PhoneCallout extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            visible: false
+            visible: false,
+            ableClickPhoneIcon: true//是否可以点击电话的icon
         };
     }
     componentDidMount() {
@@ -24,12 +26,20 @@ class PhoneCallout extends React.Component {
         handleCallOutResult({
             contactName: contactName,//联系人姓名
             phoneNumber: phoneNumber,//拨打的电话
+        },() => {
+            this.setState({
+                ableClickPhoneIcon: true
+            });
         });
     };
     handleVisibleChange = (phoneNumber, contactName,visible) => {
         if (visible && hasCalloutPrivilege()){
+            if (!this.state.ableClickPhoneIcon){
+                return;
+            }
             this.setState({
-                visible: false
+                visible: false,
+                ableClickPhoneIcon: false
             });
             this.handleClickCallOut(phoneNumber, contactName);
         }else{
@@ -44,11 +54,13 @@ class PhoneCallout extends React.Component {
         var titleTip = Intl.get('crm.click.call.phone', '点击拨打电话');
         var contactName = this.props.contactName;
         var visible = this.state.visible;
-        var iconCls = visible;
+        var iconCls = classNames('iconfont icon-active-call_record-ico',{
+            'default-show': this.props.showPhoneIcon
+        });
         return (
             <Popover placement="right" content={contentTip} trigger="click" visible={visible}
                 onVisibleChange={this.handleVisibleChange.bind(this,this.props.phoneNumber,contactName)}>
-                <i className="iconfont icon-active-call_record-ico"
+                <i className={iconCls}
                     title={titleTip}></i>
             </Popover>
         );
@@ -65,11 +77,13 @@ class PhoneCallout extends React.Component {
 PhoneCallout.defaultProps = {
     showPhoneNum: '',
     phoneNumber: '',
-    contactName: ''
+    contactName: '',
+    showPhoneIcon: false
 };
 PhoneCallout.propTypes = {
     showPhoneNum: PropTypes.string,
     phoneNumber: PropTypes.string,
-    contactName: PropTypes.string
+    contactName: PropTypes.string,
+    showPhoneIcon: PropTypes.bool
 };
 export default PhoneCallout;
