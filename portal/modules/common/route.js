@@ -262,7 +262,7 @@ module.exports = [{
 }, {
     //获取迁出客户数据
     'method': 'get',
-    'path': '/rest/analysis/customer/v2/all/transfer/record/:page_size/:sort_field/:order',
+    'path': '/rest/analysis/customer/v2/:data_type/transfer/record/:page_size/:sort_field/:order',
     'handler': 'getTransferCustomers',
     'passport': {
         'needLogin': true
