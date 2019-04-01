@@ -118,11 +118,20 @@ class TopBar extends React.Component {
     };
 
     onMemberChange = (memberId) => {
+        let selectedMember;
         let memberIdStr;
 
-        memberIdStr = memberId.join(',');
+        //清空所有选中的销售时，默认选中第一个
+        if (_.isEmpty(memberId)) {
+            const firstMemberId = _.get(_.first(this.state.memberList), 'user_info.user_id');
+            selectedMember = [firstMemberId];
+            memberIdStr = firstMemberId;
+        } else {
+            selectedMember = memberId;
+            memberIdStr = memberId.join(',');
+        }
 
-        this.setState({selectedMember: memberId}, () => {
+        this.setState({selectedMember}, () => {
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, memberIdStr);
         });
     };
