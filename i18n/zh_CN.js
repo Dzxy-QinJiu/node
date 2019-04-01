@@ -2123,6 +2123,7 @@ var zh_CN = {
     'errorcode.152': '线索重复',
     'errorcoe.different.realm': '安全域不一致',
     'errorcode.invalid.wechat': '无效的微信账号',
+    'errorcode.get.call.statistics.failed': '获取通话记录统计失败',
 
     //遗漏部分
     'user.input.phone': '请输入手机号',

@@ -156,7 +156,7 @@ function getConfigJson(req) {
         '90003': {'httpCode': 500, 'message': backendIntl.get('errorcode.145', '座机繁忙')}, // 分机振铃或者通话中
         '90004': {'httpCode': 500, 'message': backendIntl.get('errorcode.145', '座机繁忙')}, // 分机等待拨号
         '90005': {'httpCode': 500, 'message': backendIntl.get('errorcode.146', '分机离线')},
-        '90006': {'httpCode': 500, 'message': backendIntl.get('errorcode.145', '座机繁忙')}, // 分机听催挂音时的状态
+        '90006': {'httpCode': 500, 'message': backendIntl.get('errorcode.get.call.statistics.failed', '获取通话记录统计失败')},
         '90009': {'httpCode': 500, 'message': backendIntl.get('failed.to.get.clue.customer.list', '获取线索客户列表失败')},
         '90021': {'httpCode': 500, 'message': backendIntl.get('errorcode.140', '没有权限执行分配线索客户的操作')},
         '90022': {'httpCode': 500, 'message': backendIntl.get('errorcode.141', '该成员不属于您管理')},
