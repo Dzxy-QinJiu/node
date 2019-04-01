@@ -12,6 +12,7 @@ class TimeSelect extends React.Component {
     static defaultProps = {
         showTimeTypeSelect: false,//是否展示年、月、周的类型选择
         hideYearSelect: false,//是否展示年选择框
+        canSelectFutureWeek: true,//是否可以选择将来的周
         timeType: 'week',//时间类型的选择（年：year，月：month，周：week）
         yearTime: '',//xxxx年
         monthTime: '',//xx月
@@ -20,6 +21,20 @@ class TimeSelect extends React.Component {
         onChangeYear: noop,//年的选择处理方法
         onChangeMonth: noop,//月的选择处理方法
         onChangeWeek: noop//周的选择处理方法
+    };
+
+    static propTypes = {
+        showTimeTypeSelect: PropTypes.bool,
+        hideYearSelect: PropTypes.bool,
+        canSelectFutureWeek: PropTypes.bool,
+        timeType: PropTypes.string,
+        yearTime: PropTypes.string,
+        monthTime: PropTypes.string,
+        weekTime: PropTypes.string,
+        onChangeTimeType: PropTypes.func,
+        onChangeYear: PropTypes.func,
+        onChangeMonth: PropTypes.func,
+        onChangeWeek: PropTypes.func
     };
 
     componentWillReceiveProps(nextProps) {
@@ -63,12 +78,20 @@ class TimeSelect extends React.Component {
 
     render() {
         //选择的年
-        const yearNum = this.props.yearTime? parseInt(this.props.yearTime) : moment().year()
+        const yearNum = this.props.yearTime ? parseInt(this.props.yearTime) : moment().year();
         //选择的年的最后一周是当年的第几周
-        let lastWeekNum = moment().year(yearNum).endOf('year').isoWeeks()
+        let lastWeekNum = moment().year(yearNum).endOf('year').isoWeeks();
         //如果计算出来的值是1，说明最后一周跨年了，可以认为是选择的年的第53周
         if (lastWeekNum === 1) {
-            lastWeekNum = 53
+            lastWeekNum = 53;
+        }
+
+        if (!this.props.canSelectFutureWeek) {
+            const thisYear = moment().year();
+            if (thisYear === yearNum) {
+                const thisWeek = moment().week();
+                lastWeekNum = thisWeek;
+            }
         }
 
         return (
