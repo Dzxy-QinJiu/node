@@ -256,6 +256,7 @@ class CustomerAnalysis extends React.Component {
                 sort_field: this.state.transferCustomers.sorter.field,
                 order: this.state.transferCustomers.sorter.order,
                 page_size: DEFAULT_TABLE_PAGESIZE,
+                data_type: this.getDataType()
             },
             query: {
                 start_time: this.state.startTime,
