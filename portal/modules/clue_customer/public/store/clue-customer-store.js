@@ -247,7 +247,9 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
                 this.curClue.contact = newCustomerDetail[key];
             } else if (contact_id){
                 var target = _.find(this.curClue.contacts,item => item.id === contact_id);
-                target[key] = newCustomerDetail[key];
+                if (target && key !== 'id'){
+                    target[key] = newCustomerDetail[key];
+                }
             }
         }
     }

@@ -27,7 +27,7 @@ let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import {APPLY_APPROVE_TYPES, APPLY_FINISH_STATUS, LEAVE_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_APPROVE_TYPES, APPLY_FINISH_STATUS,LEAVE_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 import {disabledDate, calculateSelectType} from 'PUB_DIR/sources/utils/common-method-util';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
@@ -37,7 +37,7 @@ class ApplyViewDetail extends React.Component {
             customerOfCurUser: {},//当前展示用户所属客户的详情
             showBackoutConfirmType: '',//操作的确认框类型
             usersManList: [],//成员列表
-            customerUpdateId: '',//修改拜访时间的客户
+            customerUpdate: {id: '',index: ''},//修改拜访时间的客户
             ...applyBusinessDetailStore.getState()
         };
     }
@@ -177,7 +177,7 @@ class ApplyViewDetail extends React.Component {
             this.getBusinessApplyDetailData(nextProps.detailItem);
             this.setState({
                 showBackoutConfirmType: '',
-                customerUpdateId: ''
+                customerUpdate: {id: '',index: ''}
             });
         }
     }
@@ -320,41 +320,56 @@ class ApplyViewDetail extends React.Component {
             />
         );
     }
-    handleEditVisit = (customerId) => {
+    handleEditVisit = (customerId,index) => {
         this.setState({
-            customerUpdateId: customerId
+            customerUpdate: {id: customerId,index: index},
+            beforeEditDetailInfoObj: _.cloneDeep(this.state.detailInfoObj)
         });
     };
     transferAmAndPm = (type) => {
+        if (!type){
+            return '';
+        }
         return type === Intl.get('apply.approve.leave.am', '上午') ? 'AM' : 'PM';
     };
     onBeginTimeCustomerChange = (value) => {
-        var updateCustomerId = this.state.customerUpdateId;
-        var updateCustomers = _.find(_.get(this, 'state.detailInfoObj.info.detail.customers',[]),item => item.id === updateCustomerId);
+        var updateCustomers = this.getEditCustomers();
         if (updateCustomers){
-            var start = _.get(updateCustomers,'visit_time.start');
-            var updateStart = moment(value).format(oplateConsts.DATE_FORMAT) + '_' + start.split('_')[1];
-            updateCustomers.visit_time.start = updateStart;
+            if (value){
+                var start = _.get(updateCustomers,'visit_time.start');
+                var updateStart = moment(value).format(oplateConsts.DATE_FORMAT) + '_' + start.split('_')[1];
+                updateCustomers.visit_time.start = updateStart;
+            }else{
+                updateCustomers.visit_time.start = '';
+            }
         }
         this.setState({
             detailInfoObj: this.state.detailInfoObj
         });
     };
+    getEditCustomers = () => {
+        var updateCustomerId = _.get(this,'state.customerUpdate.id');
+        var updateCustomerIndex = _.get(this,'state.customerUpdate.index');
+        var updateCustomers = _.find(_.get(this, 'state.detailInfoObj.info.detail.customers',[]),(item,index) => {return item.id === updateCustomerId && index === updateCustomerIndex;});
+        return updateCustomers;
+    };
     onEndTimeCustomerChange = (value) => {
-        var updateCustomerId = this.state.customerUpdateId;
-        var updateCustomers = _.find(_.get(this, 'state.detailInfoObj.info.detail.customers',[]),item => item.id === updateCustomerId);
+        var updateCustomers = this.getEditCustomers();
         if (updateCustomers){
-            var end = _.get(updateCustomers,'visit_time.end');
-            var updateEnd = moment(value).format(oplateConsts.DATE_FORMAT) + '_' + end.split('_')[1];
-            updateCustomers.visit_time.end = updateEnd;
+            if (value){
+                var end = _.get(updateCustomers,'visit_time.end');
+                var updateEnd = moment(value).format(oplateConsts.DATE_FORMAT) + '_' + end.split('_')[1];
+                updateCustomers.visit_time.end = updateEnd;
+            }else{
+                updateCustomers.visit_time.end = '';
+            }
         }
         this.setState({
             detailInfoObj: this.state.detailInfoObj
         });
     };
     handleChangeEndType = (value) => {
-        var updateCustomerId = this.state.customerUpdateId;
-        var updateCustomers = _.find(_.get(this, 'state.detailInfoObj.info.detail.customers',[]),item => item.id === updateCustomerId);
+        var updateCustomers = this.getEditCustomers();
         if (updateCustomers){
             var end = _.get(updateCustomers,'visit_time.end');
             var updateEnd = end.split('_')[0] + '_' + value;
@@ -365,8 +380,7 @@ class ApplyViewDetail extends React.Component {
         });
     };
     handleChangeStartType = (value) => {
-        var updateCustomerId = this.state.customerUpdateId;
-        var updateCustomers = _.find(_.get(this, 'state.detailInfoObj.info.detail.customers',[]),item => item.id === updateCustomerId);
+        var updateCustomers = this.getEditCustomers();
         if (updateCustomers){
             var start = _.get(updateCustomers,'visit_time.start');
             var updateStart = start.split('_')[0] + '_' + value;
@@ -398,18 +412,18 @@ class ApplyViewDetail extends React.Component {
             initial_visit_end_type: this.transferAmAndPm(applyObj.visit_end_type)};
         var start_type_select = calculateSelectType(visit_start_time, initialRangeObj);
         var end_type_select = calculateSelectType(visit_end_time, initialRangeObj);
-        var defaultStartValue = this.transferAmAndPm(visit_start_type);
-        var defaultEndValue = this.transferAmAndPm(visit_end_type);
+        var startValue = this.transferAmAndPm(visit_start_type);
+        var endValue = this.transferAmAndPm(visit_end_type);
         return (
             <div>
                 <DatePicker
                     onChange={this.onBeginTimeCustomerChange}
-                    value={visit_start_time ? moment(visit_start_time) : moment()}
+                    value={visit_start_time ? moment(visit_start_time) : ''}
                     disabledDate={disabledDate.bind(this, initialStartTime, initialEndTime)}
                 />
                 <Select
                     onChange={this.handleChangeStartType}
-                    defaultValue={defaultStartValue}
+                    value={startValue}
                 >
                     {_.isArray(start_type_select) && start_type_select.length ?
                         start_type_select.map((item, idx) => {
@@ -420,12 +434,12 @@ class ApplyViewDetail extends React.Component {
                 </Select>
                 <DatePicker
                     onChange={this.onEndTimeCustomerChange}
-                    value={visit_end_time ? moment(visit_end_time) : moment()}
+                    value={visit_end_time ? moment(visit_end_time) : ''}
                     disabledDate={disabledDate.bind(this, initialStartTime, initialEndTime)}
                 />
                 <Select
                     onChange={this.handleChangeEndType}
-                    defaultValue={defaultEndValue}
+                    value={endValue}
                 >
                     {_.isArray(end_type_select) && end_type_select.length ?
                         end_type_select.map((item, idx) => {
@@ -449,6 +463,11 @@ class ApplyViewDetail extends React.Component {
             applyId: _.get(applyObj, 'id'),
             customers: _.get(applyObj, 'detail.customers')
         };
+        _.forEach(submitObj.customers,(item) => {
+            if(!_.get(item, 'visit_time.start') || !_.get(item, 'visit_time.end')){
+                delete item.visit_time;
+            }
+        });
         this.setState({isEditting: true});
         $.ajax({
             url: '/rest/update/customer/visit/range',
@@ -458,7 +477,7 @@ class ApplyViewDetail extends React.Component {
             success: (result) => {
                 this.setState({
                     isEditting: false,
-                    customerUpdateId: ''
+                    customerUpdate: {id: '',index: ''}
                 });
             },
             error: (xhr) => {
@@ -472,7 +491,9 @@ class ApplyViewDetail extends React.Component {
     };
     cancelChangeCustomerVisitRange = () => {
         this.setState({
-            customerUpdateId: ''
+            customerUpdate: {id: '',index: ''},
+            detailInfoObj: this.state.beforeEditDetailInfoObj,
+            beforeEditDetailInfoObj: {},
         });
     };
     calculateStartAndEndRange = (visit_time) => {
@@ -484,10 +505,26 @@ class ApplyViewDetail extends React.Component {
         );
         return {
             visit_start_time: _.get(start.split('_'),'[0]'),
-            visit_start_type: _.get(startObj,'name'),
+            visit_start_type: _.get(startObj,'name',''),
             visit_end_time: _.get(end.split('_'),'[0]'),
-            visit_end_type: _.get(endObj,'name'),
+            visit_end_type: _.get(endObj,'name',''),
         };
+    };
+    renderShowVisitRange = (record,index) => {
+        var visit_start_time = '', visit_start_type = '', visit_end_time = '', visit_end_type = '';
+        if (record.visit_time) {
+            var rangeObj = this.calculateStartAndEndRange(record.visit_time);
+            visit_start_time = rangeObj.visit_start_time;
+            visit_start_type = rangeObj.visit_start_type;
+            visit_end_time = rangeObj.visit_end_time;
+            visit_end_type = rangeObj.visit_end_type;
+        }
+        var editPriviliege = userData.getUserData().user_id === _.get(this, 'state.detailInfoObj.info.applicant.user_id');
+        return (
+            <span>{visit_start_time}{visit_start_type}{Intl.get('common.time.connector', '至')}{visit_end_time}{visit_end_type}
+                {editPriviliege ? <i className="iconfont icon-update" onClick={this.handleEditVisit.bind(this, record.id, index)}></i> : null}
+            </span>
+        );
     };
 
     renderBusinessCustomerDetail(detailInfo) {
@@ -498,7 +535,7 @@ class ApplyViewDetail extends React.Component {
             {
                 title: Intl.get('call.record.customer', '客户'),
                 dataIndex: 'name',
-                className: 'apply-customer-name',
+                className: 'apply-customer-name apply-detail-th',
                 render: function(text, record, index) {
                     return (
                         <a href="javascript:void(0)"
@@ -512,24 +549,15 @@ class ApplyViewDetail extends React.Component {
                 }
             },{
                 title: Intl.get('bussiness.trip.time.range', '拜访时间'),
-                className: 'apply-customer-visit-range',
+                className: 'apply-customer-visit-range apply-detail-th',
                 render: function(text, record, index) {
-                    var visit_start_time = '',visit_start_type = '',visit_end_time = '',visit_end_type = '';
-                    if (record.visit_time){
-                        var rangeObj = _this.calculateStartAndEndRange(record.visit_time);
-                        visit_start_time = rangeObj.visit_start_time;
-                        visit_start_type = rangeObj.visit_start_type;
-                        visit_end_time = rangeObj.visit_end_time;
-                        visit_end_type = rangeObj.visit_end_type;
-                    }
+
+                    var isEditCustomer = _.get(_this, 'state.customerUpdate.id') === record.id && _.get(_this, 'state.customerUpdate.index') === index;
                     return (
                         <span>
                             {record.visit_time ?
                                 <span>
-                                    {_this.state.customerUpdateId === record.id ? _this.renderEditVisitRange(record) : <span>
-                                        {visit_start_time}{visit_start_type}{Intl.get('common.time.connector', '至')}{visit_end_time}{visit_end_type}
-                                        <i className="iconfont icon-update" onClick={_this.handleEditVisit.bind(_this, record.id)}></i>
-                                    </span>}
+                                    {isEditCustomer ? _this.renderEditVisitRange(record) : _this.renderShowVisitRange(record,index)}
 
                                 </span> : null}
                         </span>
@@ -539,12 +567,13 @@ class ApplyViewDetail extends React.Component {
             }, {
                 title: Intl.get('common.remark', '备注'),
                 dataIndex: 'remarks',
-                className: 'apply-remarks'
+                className: 'apply-remarks apply-detail-th'
             }];
         return (
             <ApplyDetailCustomer
+                bordered={true}
                 columns={columns}
-                data={customersArr}
+                dataSource={customersArr}
             />
         );
     }

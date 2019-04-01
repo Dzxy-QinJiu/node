@@ -22,13 +22,13 @@ import {
     REPORT_TYPE,
     APPLY_FINISH_STATUS,
     APPLY_USER_STATUS,
-    REG_FILES_SIZE_RULES
+    REG_FILES_SIZE_RULES,
+    ORGANIZATION_TYPE,LEAVE_TIME_RANGE, AM_AND_PM
 } from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-import {ORGANIZATION_TYPE,LEAVE_TIME_RANGE, AM_AND_PM} from './consts';
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 var websiteConfig = require('../../../lib/utils/websiteConfig');
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
@@ -861,6 +861,9 @@ exports.calculateSelectType = function(selectTime, rangeObj){
     //如果和结束的时间是同一天并且结束的类型是AM
     if (moment(selectTime).isSame(rangeObj.initial_visit_end_time, 'day') && rangeObj.initial_visit_end_type === AM_AND_PM.AM){
         selectTypeArr = LEAVE_TIME_RANGE.slice(0,1);
+    }
+    if (!selectTime){
+        selectTypeArr = selectTypeArr.push({name: '', value: ''});
     }
     return selectTypeArr;
 
