@@ -19,7 +19,8 @@ ClueCustomerStore.prototype.resetState = function() {
     this.salesManList = [];//销售列表
     this.listenScrollBottom = true;//是否监测下拉加载
     this.curClueLists = [];//查询到的线索列表
-    this.pageSize = 20; //一页可显示的客户的个数
+    //todo 改成10 ，测试
+    this.pageSize = 10; //一页可显示的客户的个数
     this.isLoading = true;//加载线索客户列表数据中。。。
     this.clueCustomerErrMsg = '';//获取线索客户列表失败
     this.customersSize = 0;//线索客户列表的数量
@@ -38,6 +39,8 @@ ClueCustomerStore.prototype.resetState = function() {
     this.unSelectDataTip = '';//未选择数据就保存的提示信息
     this.distributeLoading = false;//线索客户正在分配给某个销售
     this.distributeErrMsg = '';//线索客户分配失败
+    this.distributeBatchLoading = false;
+    this.distributeBatchErrMsg = '';
     this.keyword = '';//线索全文搜索的关键字
 };
 ClueCustomerStore.prototype.setClueInitialData = function() {
@@ -174,6 +177,19 @@ ClueCustomerStore.prototype.distributeCluecustomerToSale = function(result) {
         this.distributeErrMsg = '';
     }
 };
+ClueCustomerStore.prototype.distributeCluecustomerToSaleBatch = function(result) {
+    if (result.loading) {
+        this.distributeBatchLoading = true;
+        this.distributeBatchErrMsg = '';
+    } else if (result.error) {
+        this.distributeBatchLoading = false;
+        this.distributeBatchErrMsg = result.errorMsg;
+    } else {
+        this.distributeBatchLoading = false;
+        this.distributeBatchErrMsg = '';
+    }
+};
+
 //查看某个线索的详情，关闭某个线索时，需要把这两个字段置空
 ClueCustomerStore.prototype.setCurrentCustomer = function(id) {
     if (id){
@@ -259,9 +275,13 @@ ClueCustomerStore.prototype.afterAddClueTrace = function(updateId) {
 };
 //分配销售之后
 ClueCustomerStore.prototype.afterAssignSales = function(updateItemId) {
-    //如果是待分配状态，分配完之后要在列表中删除一个
-    this.curClueLists = _.filter(this.curClueLists, clue => updateItemId !== clue.id);
-    this.customersSize--;
+    //这个updateItemId可能是一个id，也可能是多个id
+    var clueIds = updateItemId.split(',');
+    _.forEach(clueIds,(clueItemId) => {
+        //如果是待分配状态，分配完之后要在列表中删除一个
+        this.curClueLists = _.filter(this.curClueLists, clue => clueItemId !== clue.id);
+        this.customersSize--;
+    });
 };
 ClueCustomerStore.prototype.getSalesManList = function(list) {
     list = _.isArray(list) ? list : [];

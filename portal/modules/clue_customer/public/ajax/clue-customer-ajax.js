@@ -181,6 +181,30 @@ exports.distributeCluecustomerToSale = function(submitObj) {
     });
     return Deferred.promise();
 };
+
+var distributeCluecustomerToSaleBatchAjax;
+exports.distributeCluecustomerToSaleBatch = function(submitObj) {
+    var Deferred = $.Deferred();
+    var type = 'user';
+    if (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER')){
+        type = 'manager';
+    }
+    distributeCluecustomerToSaleBatchAjax && distributeCluecustomerToSaleBatchAjax.abort();
+    distributeCluecustomerToSaleBatchAjax = $.ajax({
+        url: '/rest/cluecustomer/change/sales/batch/' + type,
+        dataType: 'json',
+        type: 'post',
+        data: submitObj,
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
 var updateClueContactDetailAjax;
 //修改线索联系人相关信息
 exports.updateClueContactDetail = function(data) {

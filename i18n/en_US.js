@@ -2825,6 +2825,8 @@ var en_US = {
     'apply.detail.show.password': 'Show password',//显示密码
     'apply.detail.hide.password': 'Hide password',//隐藏密码
     'bussiness.trip.time.range': 'Visit time',//拜访时间
-    'business.leave.time.range': 'Bussiness range'//出差时长
+    'business.leave.time.range': 'Bussiness range',//出差时长
+    'clue.batch.select.clues': 'Has selected {num} clues',//已选择{num}个线索
+    'clue.batch.assign.sales': 'Assign in batch'//批量分配
 };
 export default en_US;
