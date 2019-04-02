@@ -283,6 +283,8 @@ const ApplyUserForm = createReactClass({
             } else {
                 appFormData.onlyOneUserTip = false;
             }
+            //修改申请用户个数后，需要重新验证用户名是否存在
+            this.refs.validation.forceValidate(['user_name']);
         }
         this.setState(this.state);
     },
