@@ -2396,12 +2396,12 @@ const ApplyViewDetail = createReactClass({
             isShowCustomerUserListPanel: true,
             customerOfCurUser: data.customerObj
         });
-
     },
 
     closeCustomerUserListPanel() {
         this.setState({
-            isShowCustomerUserListPanel: false
+            isShowCustomerUserListPanel: false,
+            customerOfCurUser: {}
         });
     },
 

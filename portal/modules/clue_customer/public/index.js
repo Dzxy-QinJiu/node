@@ -687,7 +687,8 @@ class ClueCustomer extends React.Component {
     };
     closeCustomerUserListPanel = () => {
         this.setState({
-            isShowCustomerUserListPanel: false
+            isShowCustomerUserListPanel: false,
+            customerOfCurUser: {}
         });
     };
     //标记线索无效或者有效
@@ -1443,6 +1444,7 @@ class ClueCustomer extends React.Component {
                             showFlag={this.state.rightPanelIsShow}
                             currentId={this.state.currentId}
                             curClue={this.state.curClue}
+                            ShowCustomerUserListPanel = {this.ShowCustomerUserListPanel}
                             hideRightPanel={this.hideRightPanel}
                         /> : null}
 

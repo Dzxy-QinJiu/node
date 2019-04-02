@@ -271,23 +271,15 @@ class ApplyViewDetail extends React.Component {
 
 
     //显示客户详情
-    showCustomerDetail(customerId) {
+    showCustomerDetail = (customerId) => {
         //触发打开带拨打电话状态的客户详情面板
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
             customer_params: {
                 currentId: customerId,
-                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
-                hideRightPanel: this.closeRightPanel
+                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel
             }
         });
     }
-
-    closeRightPanel = () => {
-        this.setState({
-            isShowCustomerUserListPanel: false,
-            customerOfCurUser: {}
-        });
-    };
 
     ShowCustomerUserListPanel = (data) => {
         this.setState({
@@ -296,6 +288,12 @@ class ApplyViewDetail extends React.Component {
         });
     };
 
+    closeCustomerUserListPanel = () => {
+        this.setState({
+            isShowCustomerUserListPanel: false,
+            customerOfCurUser: {}
+        });
+    };
 
     renderDetailApplyBlock(detailInfo) {
         var _this = this;
@@ -800,6 +798,7 @@ class ApplyViewDetail extends React.Component {
         if (this.props.showNoData) {
             return null;
         }
+        let customerOfCurUser = this.state.customerOfCurUser || {};
         var divHeight = $(window).height() - TOP_NAV_HEIGHT;
         return (
             <div className='col-md-8 sales_opportunity_apply_detail_wrap' style={{'height': divHeight}} data-tracename="销售机会审批详情界面">

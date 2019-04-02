@@ -436,7 +436,8 @@ class CustomerSuggest extends React.Component {
 
     closeCustomerUserListPanel = () => {
         this.setState({
-            isShowCustomerUserListPanel: false
+            isShowCustomerUserListPanel: false,
+            customerOfCurUser: {}
         });
     };
 
@@ -515,6 +516,7 @@ class CustomerSuggest extends React.Component {
                 </div>
             </div>
         ) : null;
+        let customerOfCurUser = this.state.customerOfCurUser || {};
         return (
             <div className={displayCls} data-tracename="搜索客户">
                 {textBlock}

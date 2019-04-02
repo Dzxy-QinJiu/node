@@ -19,6 +19,7 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 let PrivilegeChecker = Privilege.PrivilegeChecker;
 import Trace from 'LIB_DIR/trace';
 import ShearContent from '../../../../components/shear-content';
+import AppUserManage from 'MOD_DIR/app_user_manage/public';
 
 let CONSTANTS = {
     PADDING_TOP: 84,
@@ -264,14 +265,15 @@ class CustomerRepeat extends React.Component {
     ShowCustomerUserListPanel = (data) => {
         this.setState({
             isShowCustomerUserListPanel: true,
-            CustomerInfoOfCurrUser: data.customerObj
+            customerOfCurUser: data.customerObj
         });
 
     };
 
     closeCustomerUserListPanel = () => {
         this.setState({
-            isShowCustomerUserListPanel: false
+            isShowCustomerUserListPanel: false,
+            customerOfCurUser: {}
         });
     };
 
@@ -397,7 +399,7 @@ class CustomerRepeat extends React.Component {
     state = {
         crmListHeight: this.getCrmListHeight(),
         isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
-        CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
+        customerOfCurUser: {},//当前展示用户所属客户的详情
         ...CustomerRepeatStore.getState()};
 
     render() {
@@ -435,6 +437,22 @@ class CustomerRepeat extends React.Component {
                 hideMergePanel={this.hideMergePanel}
                 refreshCustomerList={this.refreshRepeatCustomerList}
             />) : null}
+            {/*该客户下的用户列表*/}
+            {
+                this.state.isShowCustomerUserListPanel ?
+                    <RightPanel
+                        className="customer-user-list-panel"
+                        showFlag={this.state.isShowCustomerUserListPanel}
+                    >
+                        {this.state.isShowCustomerUserListPanel ?
+                            <AppUserManage
+                                customer_id={this.state.customerOfCurUser.id}
+                                hideCustomerUserList={this.closeCustomerUserListPanel}
+                                customer_name={this.state.customerOfCurUser.name}
+                            /> : null
+                        }
+                    </RightPanel> : null
+            }
         </div>);
     }
 }
