@@ -10,6 +10,7 @@ import {Row, Col, Select} from 'antd';
 import reportCharts from './charts';
 import chanceCharts from 'MOD_DIR/analysis/public/charts/chance';
 import customerCharts from 'MOD_DIR/analysis/public/charts/customer';
+import orderCharts from 'MOD_DIR/analysis/public/charts/order';
 import workflowChart from 'MOD_DIR/analysis/public/charts/workflow';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import ReportLeftMenu from 'CMP_DIR/report-left-menu';
@@ -410,7 +411,9 @@ class SalesReport extends React.Component {
                 //销售行为统计
                 reportCharts.salesBehaviorChart,
                 //订单阶段
-                reportCharts.getOrderStageChart(this.state.stageList),
+                orderCharts.getOrderStageChart({
+                    stageList: this.state.stageList
+                }),
                 //客户阶段
                 customerCharts.getCustomerStageChart(),
                 //联系客户频率统计
