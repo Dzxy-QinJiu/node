@@ -10,7 +10,9 @@ import UserList from './';
 function UserListPanel(props) { 
     return (
         <ListPanel listType='user'>
-            <UserList {...props}/>
+            <div style={{paddingTop: 64}}>
+                <UserList {...props}/>
+            </div>
         </ListPanel>
     );
 }

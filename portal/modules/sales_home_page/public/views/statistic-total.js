@@ -61,7 +61,7 @@ class StatisticTotal extends React.Component {
             return this.renderTooltip(userTotalObj);
         }
         return (<div className="statistic-total-content">
-            <span className="user-add-data add-data-style">
+            <span className="user-add-data add-data-style" onClick={this.showListPanel.bind(this, 'user')}>
                 <span className="total-data-desc">{Intl.get('sales.home.new.add', '新增')}&nbsp;</span>
                 <span className='num'>{userData.added || 0}</span>
             </span>
@@ -164,16 +164,25 @@ class StatisticTotal extends React.Component {
         const storeData = SalesHomeStore.getState();
         const startTime = storeData.start_time;
         const endTime = storeData.end_time;
-        const paramObj = {
-            listType,
-            rangParams: JSON.stringify([{
-                from: startTime,
-                to: endTime,
-                name: 'start_time',
-                type: 'time'
-            }]),
-            data: JSON.stringify({}),
-        };
+
+        let paramObj = {listType};
+
+        if (listType === 'customer') {
+            _.extend(paramObj, {
+                rangParams: JSON.stringify([{
+                    from: startTime,
+                    to: endTime,
+                    name: 'start_time',
+                    type: 'time'
+                }]),
+                data: JSON.stringify({}),
+            });
+        } else if (listType === 'user') {
+            _.extend(paramObj, {
+                create_begin: startTime,
+                create_end: endTime
+            });
+        }
 
         listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
     }
