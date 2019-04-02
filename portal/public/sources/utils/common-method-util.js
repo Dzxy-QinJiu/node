@@ -854,17 +854,17 @@ exports.disabledDate = function(startTime, endTime, value){
 };
 exports.calculateSelectType = function(selectTime, rangeObj){
     var selectTypeArr = LEAVE_TIME_RANGE;
-    //如果和开始的时间是同一天并且开始的类型是PM
-    if (moment(selectTime).isSame(rangeObj.initial_visit_start_time, 'day') && rangeObj.initial_visit_start_type === AM_AND_PM.PM){
-        selectTypeArr = LEAVE_TIME_RANGE.slice(1,2);
-    }
-    //如果和结束的时间是同一天并且结束的类型是AM
-    if (moment(selectTime).isSame(rangeObj.initial_visit_end_time, 'day') && rangeObj.initial_visit_end_type === AM_AND_PM.AM){
-        selectTypeArr = LEAVE_TIME_RANGE.slice(0,1);
-    }
     if (!selectTime){
         selectTypeArr = selectTypeArr.push({name: '', value: ''});
+    }else{
+        //如果和开始的时间是同一天并且开始的类型是PM
+        if (moment(selectTime).isSame(rangeObj.initial_visit_start_time, 'day') && rangeObj.initial_visit_start_type === AM_AND_PM.PM){
+            selectTypeArr = LEAVE_TIME_RANGE.slice(1,2);
+        }
+        //如果和结束的时间是同一天并且结束的类型是AM
+        if (moment(selectTime).isSame(rangeObj.initial_visit_end_time, 'day') && rangeObj.initial_visit_end_type === AM_AND_PM.AM){
+            selectTypeArr = LEAVE_TIME_RANGE.slice(0,1);
+        }
     }
     return selectTypeArr;
-
 };
