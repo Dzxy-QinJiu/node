@@ -26,8 +26,6 @@ var userRestApis = {
     getUserLog: '/rest/analysis/auditlog/v1/all',
     //获取角色列表
     getRoleList: '/rest/base/v1/application/role',
-    // 成员的姓名（昵称）唯一性校验的url
-    checkOnlyNickName: '/rest/base/v1/user/nickname/:nickname',
     //成员属性唯一性验证的url
     checkOnlyUser: '/rest/base/v1/user/member/:key/:value/unique',
     //修改成员的所属团队
@@ -213,7 +211,7 @@ exports.getRoleList = function(req, res, clientId) {
 exports.checkOnlyNickName = function(req, res, nickName) {
     return restUtil.authRest.get(
         {
-            url: userRestApis.checkOnlyNickName.replace(':nickname', nickName),
+            url: userRestApis.checkOnlyUser.replace(':key', 'nickname').replace(':value', nickName),
             req: req,
             res: res
         }, null);
