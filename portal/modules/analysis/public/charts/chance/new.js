@@ -48,6 +48,29 @@ export function getNewChanceChart(chartType = 'table') {
         };
     }
 
+    chart.processOption = option => {
+        //不可见系列，用于在侧面显示转化率
+        let invisibleSerie = option.series[0];
+        //通过透明度设置实现不可见系列的隐藏效果
+        invisibleSerie.itemStyle.normal.opacity = 0;
+        //可见系列，用于渲染实际的漏斗图
+        let visibleSerie = option.series[1];
+        //漏斗层数
+        const layerNum = invisibleSerie.data.length;
+        //不可见系列相对于可见系列的纵向偏移距离百分比数值
+        const offsetV = 100 / layerNum / 2;
+        //通过设置负的的上边距，将不可见系列顶部向上提升，以使转化率显示到两个层级之间
+        invisibleSerie.top = -offsetV + '%';
+        //底部需要同时提升，以实现整体提升的效果
+        invisibleSerie.bottom = offsetV + '%';
+        //设置不可见系列的右边距
+        invisibleSerie.right = '25%';
+        //设置可见系列的右边距，可见系列的右边距比不可见系列的右边距要大一些，是为了留出显示转化率的空间
+        visibleSerie.right = '40%';
+        //设置可见系列的地边距
+        visibleSerie.bottom = 0;
+    };
+
     return chart;
 
     //处理漏斗图数据
