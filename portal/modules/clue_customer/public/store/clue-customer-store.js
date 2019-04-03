@@ -19,8 +19,7 @@ ClueCustomerStore.prototype.resetState = function() {
     this.salesManList = [];//销售列表
     this.listenScrollBottom = true;//是否监测下拉加载
     this.curClueLists = [];//查询到的线索列表
-    //todo 改成10 ，测试
-    this.pageSize = 10; //一页可显示的客户的个数
+    this.pageSize = 20; //一页可显示的客户的个数
     this.isLoading = true;//加载线索客户列表数据中。。。
     this.clueCustomerErrMsg = '';//获取线索客户列表失败
     this.customersSize = 0;//线索客户列表的数量
@@ -277,11 +276,9 @@ ClueCustomerStore.prototype.afterAddClueTrace = function(updateId) {
 ClueCustomerStore.prototype.afterAssignSales = function(updateItemId) {
     //这个updateItemId可能是一个id，也可能是多个id
     var clueIds = updateItemId.split(',');
-    _.forEach(clueIds,(clueItemId) => {
-        //如果是待分配状态，分配完之后要在列表中删除一个
-        this.curClueLists = _.filter(this.curClueLists, clue => clueItemId !== clue.id);
-        this.customersSize--;
-    });
+    //如果是待分配状态，分配完之后要在列表中删除一个
+    this.curClueLists = _.filter(this.curClueLists, clue => _.indexOf(clueIds, clue.id) === -1);
+    this.customersSize = _.get(this,'curClueLists.length',0);
 };
 ClueCustomerStore.prototype.getSalesManList = function(list) {
     list = _.isArray(list) ? list : [];

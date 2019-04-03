@@ -82,11 +82,7 @@ class ClueCustomer extends React.Component {
         isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
         customerOfCurUser: {},//当前展示用户所属客户的详情
         selectedClues: [],//获取批量操作选中的线索
-        // selectAllMatched: false, //是否是选中所有线索
         ...clueCustomerStore.getState()
-    };
-    getSelectedClues = () => {
-
     };
     componentDidMount() {
         clueCustomerStore.listen(this.onStoreChange);
@@ -1092,6 +1088,10 @@ class ClueCustomer extends React.Component {
                     if (target){
                         this.updateItem(target,submitObj,isWillDistribute);
                     }
+                });
+                //设置选中的线索列表为空
+                this.setState({
+                    selectedClues: []
                 });
             }
             if (isWillDistribute) {
