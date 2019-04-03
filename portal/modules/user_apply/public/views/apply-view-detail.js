@@ -191,7 +191,7 @@ const ApplyViewDetail = createReactClass({
         });
     },
     getAllUserList(){
-        getAllUserList(data => {
+        getAllUserList().then(data => {
             this.setState({
                 usersManList: data
             });

@@ -4,12 +4,11 @@ let Option = Select.Option;
 let userData = require('../../../../../public/sources/user-data');
 let CrmBasicAjax = require('../../ajax/index');
 import batchChangeAjax from '../../ajax/batch-change-ajax';
-import batchChangeAction from '../../action/batch-change-actions';
 import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import CrmAction from '../../action/crm-actions';
-import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
+import {getMyTeamTreeAndFlattenList, getAllSalesUserList, getSalesmanList} from 'PUB_DIR/sources/utils/common-data-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 //展示的类型
@@ -36,7 +35,7 @@ class SalesTeamCard extends React.Component {
     state = {
         ...this.getInitStateData(this.props),
         salesManList: [],//销售及对应团队列表
-        allUserList: [],//所有的成员列表
+        allUserList: [],//所有的成员列表（包括销售在内）
         mySubTeamList: [],//我所在团队及下级团队列表
     };
 
@@ -73,7 +72,7 @@ class SalesTeamCard extends React.Component {
         let isManager = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
         //管理员修改客户的所属销售时
         if (this.state.enableEdit && isManager) {
-            // 获取所有的成员列表（可以将客户分给除销售外的其他人）
+            // 获取所有的成员和带团队的销售组合的列表（可以将客户分给除销售外的其他人）
             this.getAllUserList();
         }
         //销售修改客户的所属销售或有修改联合跟进人的权限时
@@ -126,9 +125,9 @@ class SalesTeamCard extends React.Component {
 
     //管理员获取所有成员列表
     getAllUserList = () => {
-        batchChangeAction.getALLUserList({}, (result) => {
-            if (_.isArray(result) && result.length) {
-                this.setState({allUserList: result, salesTeamList: []});
+        getAllSalesUserList((allUserList) => {
+            if (_.get(allUserList,'length')) {
+                this.setState({allUserList, salesTeamList: []});
             } else {
                 this.setState({
                     allUserList: []
@@ -139,7 +138,7 @@ class SalesTeamCard extends React.Component {
 
     //获取客户所属销售及其团队下拉列表
     getSalesManList = () => {
-        batchChangeAjax.getSalesManList().then(list => {
+        getSalesmanList().then(list => {
             if (_.isArray(list) && list.length) {
                 //过滤掉停用的成员
                 list = _.filter(list, sales => sales && sales.user_info && sales.user_info.status === 1);
@@ -253,8 +252,14 @@ class SalesTeamCard extends React.Component {
             }
 
         }
-        //销售昵称和所属团队的团队名称
-        let salesman = _.find(this.state.salesManList, item => item.user_info && item.user_info.user_id === params.userId);
+        //修改联合跟进人或销售修改客户所属销售时,只需要展示带团队的销售
+        let userlist = this.state.salesManList;
+        //管理员修改客户所属销售时，需要展示带团队的销售和不带团队的其他角色成员
+        if (this.state.displayType === DISPLAY_TYPES.EDIT && userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
+            userlist = this.state.allUserList;
+        }
+        let salesman = _.find(userlist, item => item.user_info && item.user_info.user_id === params.userId);
+        //销售昵称和所属团队的团队名称的获取
         if (salesman) {
             params.userName = salesman.user_info ? salesman.user_info.nick_name : '';
             if (_.isArray(salesman.user_groups) && salesman.user_groups.length) {
@@ -582,12 +587,10 @@ class SalesTeamCard extends React.Component {
         if (this.state.displayType === DISPLAY_TYPES.EDIT_SECOND_SALES) {
             let secondTeamId = this.state.secondTeamId ? `&&${this.state.secondTeamId}` : '';
             selectValue = _.get(this.state, 'secondUserId', '') + secondTeamId;
-        } else if (this.state.displayType === DISPLAY_TYPES.EDIT && !userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
-            // 销售修改客户的所属销售时
+        } else if (this.state.displayType === DISPLAY_TYPES.EDIT) {
+            // 修改客户的所属销售时
             let salesTeamId = this.state.salesTeamId ? `&&${this.state.salesTeamId}` : '';
             selectValue = _.get(this.state, 'userId', '') + salesTeamId;
-        } else {//管理员修改客户所属销售时
-            selectValue = `${this.state.userId}`;
         }
         return (
             <div className="sales-team-edit-block" id="sales-team-edit-block">
