@@ -65,7 +65,7 @@ export function getNewChanceChart(chartType = 'table') {
         //减2是为了让百分比标签的中间和层次分隔线对齐
         const offsetV = (100 / layerNum / 2) - 2;
 
-        //通过设置负的的上边距，将不可见系列顶部向上提升，以使转化率显示到两个层级之间
+        //通过设置负的的顶边距，将不可见系列顶部向上提升，以使转化率显示到两个层级之间
         invisibleSerie.top = -offsetV + '%';
         //底部需要同时提升，以实现整体提升的效果
         invisibleSerie.bottom = offsetV + '%';
@@ -75,7 +75,7 @@ export function getNewChanceChart(chartType = 'table') {
         //设置可见系列的右边距，可见系列的右边距比不可见系列的右边距要大一些，是为了留出显示转化率的空间
         visibleSerie.right = '40%';
 
-        //设置可见系列的底边距
+        //将可见系列的底边距设置为0，以覆盖默认底边距，使可见系列的底部能与不可见系列的底部错开，这样最下面的一个百分比才能正确定位
         visibleSerie.bottom = 0;
     };
 
