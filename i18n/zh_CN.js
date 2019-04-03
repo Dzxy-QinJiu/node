@@ -2852,6 +2852,11 @@ var zh_CN = {
     'apply.detail.show.password': '显示密码',
     'apply.detail.hide.password': '隐藏密码',
     'bussiness.trip.time.range': '拜访时间',
-    'business.leave.time.range': '出差时长'
+    'business.leave.time.range': '出差时长',
+    'apply.add.apply.type': '添加申请类型',
+    'apply.add.form.content': '表单内容',
+    'apply.add.form.regex': '审批规则',
+    'apply.approve.manage.add.from.right': '请从右边添加表单内容',
+    'apply.approve.manage.no.content': '暂无表单内容'
 };
 export default zh_CN;
