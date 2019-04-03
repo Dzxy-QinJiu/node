@@ -17,12 +17,15 @@ class ListPanel extends React.Component {
         //列表类型
         listType: '',
         //子组件
-        children: null
+        children: null,
+        //内容容器样式
+        style: {}
     };
 
     static propTypes = {
         listType: PropTypes.string,
-        children: PropTypes.oneOfType([PropTypes.object, PropTypes.element])
+        children: PropTypes.oneOfType([PropTypes.object, PropTypes.element]),
+        style: PropTypes.object
     };
 
     constructor(props) {
@@ -88,7 +91,7 @@ class ListPanel extends React.Component {
                         />
                     </TopNav>
 
-                    <div className='panel-content'>
+                    <div className='panel-content' style={this.props.style}>
                         {this.state.isShow ? childrenWithProps : null}
                     </div>
                 </RightPanel>
