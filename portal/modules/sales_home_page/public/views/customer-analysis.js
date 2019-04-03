@@ -4,6 +4,7 @@
  */
 import { AntcAnalysis } from 'antc';
 import customerCharts from 'MOD_DIR/analysis/public/charts/customer';
+import orderCharts from 'MOD_DIR/analysis/public/charts/order';
 let history = require('PUB_DIR/sources/history');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 var getDataAuthType = require('../../../../components/privilege/checker').getDataAuthType;
@@ -909,12 +910,12 @@ class CustomerAnalysis extends React.Component {
                 valueField: 'showValue',
                 minSize: '5%',
             },
-        }, {
-            title: Intl.get('oplate_customer_analysis.11', '订单阶段统计'),
-            url: '/rest/analysis/customer/v2/:auth_type/total/stage',
-            chartType: 'horizontalStage',
-            processData: this.processOrderStageData,
-        }, {
+        },
+        //订单阶段统计
+        orderCharts.getOrderStageChart({
+            stageList: this.state.salesStageList
+        }),
+        {
             title: Intl.get('user.analysis.location.add', '地域-新增'),
             chartType: 'bar',
             customOption: {
