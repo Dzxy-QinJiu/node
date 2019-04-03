@@ -8,7 +8,11 @@ import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import CrmAction from '../../action/crm-actions';
-import {getMyTeamTreeAndFlattenList, getAllSalesUserList, getSalesmanList} from 'PUB_DIR/sources/utils/common-data-util';
+import {
+    getMyTeamTreeAndFlattenList,
+    getAllSalesUserList,
+    getSalesmanList
+} from 'PUB_DIR/sources/utils/common-data-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 //展示的类型
@@ -53,6 +57,10 @@ class SalesTeamCard extends React.Component {
             userId: props.userId,
             salesTeam: props.salesTeam,
             salesTeamId: props.salesTeamId,
+            userIdBak: props.userId,//判断是否修改时、取消修改时的备份（直接用props的数据判断，修改后再改回来时会有问题）
+            userNameBak: props.userName,
+            salesTeamIdBak: props.salesTeamId,
+            salesTeamBak: props.salesTeam,
             salesTeamList: [],
             loading: false,
             submitErrorMsg: '',
@@ -126,7 +134,7 @@ class SalesTeamCard extends React.Component {
     //管理员获取所有成员列表
     getAllUserList = () => {
         getAllSalesUserList((allUserList) => {
-            if (_.get(allUserList,'length')) {
+            if (_.get(allUserList, 'length')) {
                 this.setState({allUserList, salesTeamList: []});
             } else {
                 this.setState({
@@ -311,10 +319,10 @@ class SalesTeamCard extends React.Component {
             this.setState({
                 loading: false,
                 displayType: type,
-                userName: this.props.userName,
-                userId: this.props.userId,
-                salesTeam: this.props.salesTeam,
-                salesTeamId: this.props.salesTeamId,
+                userName: this.state.userNameBak,
+                userId: this.state.userIdBak,
+                salesTeam: this.state.salesTeamBak,
+                salesTeamId: this.state.salesTeamIdBak,
                 secondUserId: this.state.secondUserIdBak,
                 secondTeamId: this.state.secondTeamIdBak,
                 secondUserName: this.state.secondUserNameBak,
@@ -365,8 +373,12 @@ class SalesTeamCard extends React.Component {
                     this.backToDisplay();
                     //更新列表中的销售人员
                     this.props.modifySuccess(submitData);
-                    //变更销售后，清空联合跟进人
+                    //变更销售后，更新所属销售的备份数据，清空联合跟进人
                     this.setState({
+                        userIdBak: submitData.user_id,
+                        userNameBak: submitData.user_name,
+                        salesTeamIdBak: submitData.sales_team_id,
+                        salesTeamBak: submitData.sales_team,
                         secondUserId: '',//联合跟进人
                         secondUserName: '',
                         secondTeamId: '',//联合跟进人所在团队
@@ -387,6 +399,11 @@ class SalesTeamCard extends React.Component {
     };
 
     saveSecondSales() {
+        //联合跟进人未作修改时
+        if (this.state.secondUserId === this.state.secondUserIdBak) {
+            this.backToDisplay();
+            return;
+        }
         let submitData = {
             id: this.state.customerId,
         };
@@ -471,7 +488,7 @@ class SalesTeamCard extends React.Component {
             this.onlySubmitEditTeam();
         } else {
             //将客户分配给某个销售时
-            if (this.state.userId === this.props.userId) {
+            if (this.state.userId === this.state.userIdBak) {
                 //没做修改时，直接回到展示状态
                 this.backToDisplay();
                 return;
