@@ -341,3 +341,12 @@ exports.exportData = function(req, res) {
         res.send(csv);
     }
 };
+//批量修改线索的所属销售
+exports.changeClueSalesBatch = function(req, res) {
+    clueCustomerService.changeClueSalesBatch(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};

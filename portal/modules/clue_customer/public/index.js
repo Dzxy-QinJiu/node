@@ -81,9 +81,9 @@ class ClueCustomer extends React.Component {
         showCustomerId: '',//正在展示客户详情的客户id
         isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
         customerOfCurUser: {},//当前展示用户所属客户的详情
+        selectedClues: [],//获取批量操作选中的线索
         ...clueCustomerStore.getState()
     };
-
     componentDidMount() {
         clueCustomerStore.listen(this.onStoreChange);
         //获取线索来源
@@ -911,6 +911,31 @@ class ClueCustomer extends React.Component {
     setInvalidClassName= (record, index) => {
         return (record.availability === '1' ? 'invalid-clue' : '');
     };
+    getRowSelection = () => {
+        //只有有批量变更和合并客户的权限时，才展示选择框的处理
+        let showSelectionFlag = hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER');
+        if (showSelectionFlag){
+            let rowSelection = {
+                type: 'checkbox',
+                selectedRowKeys: _.map(this.state.selectedClues, 'id'),
+                onSelect: (record, selected, selectedRows) => {
+                    this.setState({
+                        selectedClues: selectedRows
+                    });
+                    Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中某个线索');
+                },
+                //对客户列表当前页进行全选或取消全选操作时触发
+                onSelectAll: (selected, selectedRows, changeRows) => {
+                    this.setState({selectedClues: selectedRows });
+                    Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中全部线索');
+                }
+            };
+            return rowSelection;
+
+        }else{
+            return null;
+        }
+    };
     renderClueCustomerLists = () => {
         var customerList = this.state.curClueLists;
         const dropLoadConfig = {
@@ -920,8 +945,14 @@ class ClueCustomer extends React.Component {
             noMoreDataText: Intl.get('common.no.more.clue', '没有更多线索了'),
             loading: this.state.isLoading,
         };
+        var rowSelection = this.getRowSelection();
+        function rowKey(record, index) {
+            return record.id;
+        }
         return (
             <AntcTable
+                rowSelection={rowSelection}
+                rowKey={rowKey}
                 dropLoad={dropLoadConfig}
                 dataSource={customerList}
                 pagination={false}
@@ -976,12 +1007,10 @@ class ClueCustomer extends React.Component {
             </div>
         );
     };
-
-    handleSubmitAssignSales = (item) => {
-        var user_id = _.get(item, 'user_id');
+    //批量修改或者单个修改线索的跟进人，发请求前的处理
+    handleBeforeSumitChangeSales = (itemId) => {
         if (!this.state.salesMan) {
             clueCustomerAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
-            return;
         } else {
             let sale_id = '', team_id = '', sale_name = '', team_name = '';
             //销售id和所属团队的id 中间是用&&连接的  格式为销售id&&所属团队的id
@@ -994,52 +1023,103 @@ class ClueCustomer extends React.Component {
             let nameArray = this.state.salesManNames.split('-');
             if (_.isArray(nameArray) && nameArray.length) {
                 sale_name = nameArray[0];//销售的名字
-                team_name = nameArray[1].substr(0, nameArray[1].length - 1);//团队的名字
+                team_name = _.trim(nameArray[1]);//团队的名字
             }
-            var submitObj = {
-                'customer_id': item.id,
+            return {
+                'customer_id': itemId,
                 'sale_id': sale_id,
                 'sale_name': sale_name,
                 'team_id': team_id,
                 'team_name': team_name,
             };
-            clueCustomerAction.distributeCluecustomerToSale(submitObj, (feedbackObj) => {
-                SetLocalSalesClickCount(sale_id);
-                if (feedbackObj && feedbackObj.errorMsg) {
-                    message.error(feedbackObj.errorMsg || Intl.get('failed.to.distribute.cluecustomer', '分配线索客户失败'));
-                } else {
-                    //如果该账号是管理员角色，且该线索之前是待分配状态，分配完毕后要把全局未处理的线索数减一
-                    if (Oplate && Oplate.unread && !user_id &&
-                        userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) && item.status === SELECT_TYPE.WILL_DISTRIBUTE) {
-                        Oplate.unread['unhandleClue'] -= 1;
-                        if (timeoutFunc) {
-                            clearTimeout(timeoutFunc);
-                        }
-                        timeoutFunc = setTimeout(function() {
-                            //触发展示的组件待审批数的刷新
-                            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
-                        }, timeout);
-                    }
-
-                    if (this['changesale' + item.id]) {
-                        //隐藏批量变更销售面板
-                        this['changesale' + item.id].handleCancel();
-                    }
-                    var clueCustomerTypeFilter = getClueStatusValue(clueFilterStore.getState().filterClueStatus);
-                    //如果是待分配状态，分配完之后要在列表中删除一个,在待跟进列表中增加一个
-                    if (clueCustomerTypeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE) {
-                        clueCustomerAction.afterAssignSales(item.id);
-                    } else {
-                        item.user_name = sale_name;
-                        item.user_id = sale_id;
-                        item.sales_team = team_name;
-                        item.sales_team_id = team_id;
-                        item.status = SELECT_TYPE.WILL_TRACE;
-                        this.setState({
-                            curClueLists: this.state.curClueLists
-                        });
-                    }
+        }
+    };
+    updateItem = (item, submitObj,isWillDistribute) => {
+        let sale_id = _.get(submitObj,'sale_id',''), team_id = _.get(submitObj,'team_id',''), sale_name = _.get(submitObj,'sale_name',''), team_name = _.get(submitObj,'team_name','');
+        SetLocalSalesClickCount(sale_id);
+        //member_id是跟进销售的id
+        //如果该账号是管理员角色，且该线索之前是待分配状态，分配完毕后要把全局未处理的线索数减一
+        if (Oplate && Oplate.unread &&
+            userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) && item.status === SELECT_TYPE.WILL_DISTRIBUTE && !_.get(item, 'member_id')) {
+            Oplate.unread['unhandleClue'] -= 1;
+            if (timeoutFunc) {
+                clearTimeout(timeoutFunc);
+            }
+            timeoutFunc = setTimeout(function() {
+                //触发展示的组件待审批数的刷新
+                notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
+            }, timeout);
+        }
+        if (!isWillDistribute){
+            item.user_name = sale_name;
+            item.user_id = sale_id;
+            item.sales_team = team_name;
+            item.sales_team_id = team_id;
+            item.status = SELECT_TYPE.WILL_TRACE;
+        }
+    };
+    //单个及批量修改跟进人完成后的处理
+    afterHandleAssignSalesBatch = (feedbackObj,submitObj,item) => {
+        let clue_id = _.get(submitObj,'customer_id','');//线索的id，可能是一个，也可能是多个
+        if (feedbackObj && feedbackObj.errorMsg) {
+            message.error(feedbackObj.errorMsg || Intl.get('failed.to.distribute.cluecustomer', '分配线索客户失败'));
+        } else {
+            var clueCustomerTypeFilter = getClueStatusValue(clueFilterStore.getState().filterClueStatus);
+            //如果是待分配状态，分配完之后要在列表中删除一个,在待跟进列表中增加一个
+            var isWillDistribute = clueCustomerTypeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE;
+            if (item){
+                this.updateItem(item,submitObj,isWillDistribute);
+                if (this['changesale' + clue_id]) {
+                    //隐藏批量变更销售面板
+                    this['changesale' + clue_id].handleCancel();
                 }
+            }else{
+                if (this.refs.changesales) {
+                    //隐藏批量变更销售面板
+                    this.refs.changesales.handleCancel();
+                }
+                //如果是批量操作的，找出批量操作的线索，然后修改状态
+                var clueArr = clue_id.split(',');
+                _.forEach(clueArr, (clueId) => {
+                    var target = _.find(this.state.curClueLists,item => item.id === clueId);
+                    if (target){
+                        this.updateItem(target,submitObj,isWillDistribute);
+                    }
+                });
+                //设置选中的线索列表为空
+                this.setState({
+                    selectedClues: []
+                });
+            }
+            if (isWillDistribute) {
+                clueCustomerAction.afterAssignSales(clue_id);
+            }
+            this.setState({
+                curClueLists: this.state.curClueLists
+            });
+
+        }
+    };
+    //批量修改跟进人
+    handleSubmitAssignSalesBatch = () => {
+        var customerIds = _.map(this.state.selectedClues, item => item.id);
+        var submitObj = this.handleBeforeSumitChangeSales(customerIds.join(','));
+        if (_.isEmpty(submitObj)){
+            return;
+        }else{
+            clueCustomerAction.distributeCluecustomerToSaleBatch(_.cloneDeep(submitObj), (feedbackObj) => {
+                this.afterHandleAssignSalesBatch(feedbackObj,submitObj);
+            });
+        }
+    };
+    //修改跟进人
+    handleSubmitAssignSales = (item) => {
+        var submitObj = this.handleBeforeSumitChangeSales(item.id);
+        if (_.isEmpty(submitObj)){
+            return;
+        }else{
+            clueCustomerAction.distributeCluecustomerToSale(_.cloneDeep(submitObj), (feedbackObj) => {
+                this.afterHandleAssignSalesBatch(feedbackObj,submitObj,item);
             });
         }
     };
@@ -1349,6 +1429,53 @@ class ClueCustomer extends React.Component {
         ];
         return previewColumns;
     };
+    renderSelectClueTips = () => {
+        return (
+            <span>{Intl.get('clue.batch.select.clues', '已选择{num}个线索', {num: _.get(this, 'state.selectedClues.length')})}
+            </span>);
+
+    };
+    renderBatchChangeClues = () => {
+        return (
+            <div className="pull-right">
+                <div className="pull-right">
+                    <AntcDropdown
+                        ref='changesales'
+                        content={<Button type="primary"
+                            data-tracename="点击分配线索客户按钮"
+                            className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>}
+                        overlayTitle={Intl.get('user.salesman', '销售人员')}
+                        okTitle={Intl.get('common.confirm', '确认')}
+                        cancelTitle={Intl.get('common.cancel', '取消')}
+                        isSaving={this.state.distributeBatchLoading}
+                        overlayContent={this.renderSalesBlock()}
+                        handleSubmit={this.handleSubmitAssignSalesBatch}
+                        unSelectDataTip={this.state.unSelectDataTip}
+                        clearSelectData={this.clearSelectSales}
+                        btnAtTop={false}
+                    />
+                </div>
+            </div>
+        );
+    };
+    //是否有选中的线索
+    hasSelectedClues = () => {
+        return _.get(this, 'state.selectedClues.length');
+    };
+    renderNotSelectClueBtns = () => {
+        return (
+            <div className="pull-right add-anlysis-handle-btns">
+                {/*是否有查看线索分析的权限
+                 CRM_CLUE_STATISTICAL 查看线索概览的权限
+                 CRM_CLUE_TREND_STATISTIC_ALL CRM_CLUE_TREND_STATISTIC_SELF 查看线索趋势分析的权限
+                 */}
+                {hasPrivilege('CRM_CLUE_STATISTICAL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_ALL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_SELF') ? this.renderClueAnalysisBtn() : null}
+                {this.renderExportClue()}
+                {this.renderHandleBtn()}
+                {this.renderImportClue()}
+            </div>
+        );
+    };
     render() {
         var cls = classNames('right-panel-modal',
             {'show-modal': this.state.clueAddFormShow
@@ -1361,6 +1488,7 @@ class ClueCustomer extends React.Component {
         const contentClassName = classNames('content-container',{
             'content-full': !this.state.showFilterList
         });
+        var hasSelectedClue = this.hasSelectedClues();
         return (
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索列表">
@@ -1373,21 +1501,17 @@ class ClueCustomer extends React.Component {
                                         toggleList={this.toggleList.bind(this)}
                                     />
                                 </div>
-                                <SearchInput
+                                {hasSelectedClue ? (
+                                    <div className="clue-list-selected-tip">
+                                        <span className="iconfont icon-sys-notice" />
+                                        {this.renderSelectClueTips()}
+                                    </div>
+                                ) : <SearchInput
                                     searchEvent={this.searchFullTextEvent}
                                     searchPlaceHolder ={Intl.get('clue.search.full.text','全文搜索')}
-                                />
+                                />}
                             </div>
-                            <div className="pull-right add-anlysis-handle-btns">
-                                {/*是否有查看线索分析的权限
-                                 CRM_CLUE_STATISTICAL 查看线索概览的权限
-                                 CRM_CLUE_TREND_STATISTIC_ALL CRM_CLUE_TREND_STATISTIC_SELF 查看线索趋势分析的权限
-                                */}
-                                {hasPrivilege('CRM_CLUE_STATISTICAL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_ALL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_SELF') ? this.renderClueAnalysisBtn() : null}
-                                {this.renderExportClue()}
-                                {this.renderHandleBtn()}
-                                {this.renderImportClue()}
-                            </div>
+                            {hasSelectedClue ? this.renderBatchChangeClues() : this.renderNotSelectClueBtns()}
                         </div>
                     </TopNav>
                     <div className="clue-content-container">

@@ -49,6 +49,8 @@ const restApis = {
     getClueDetailById: clueBaseUrl + '/query/clue/:clueId',
     //删除某个线索
     deleteClueById: clueBaseUrl + '/delete',
+    //批量修改线索的跟进人
+    changeClueSalesBatch: clueBaseUrl + '/distribute/:type/batch',
 };
 //查询客户
 exports.getClueCustomerList = function(req, res) {
@@ -78,6 +80,15 @@ exports.getClueSource = function(req, res) {
             req: req,
             res: res
         }, null);
+};
+
+exports.changeClueSalesBatch = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.changeClueSalesBatch.replace(':type',req.params.type),
+            req: req,
+            res: res
+        }, req.body);
 };
 //获取线索渠道
 exports.getClueChannel = function(req, res) {

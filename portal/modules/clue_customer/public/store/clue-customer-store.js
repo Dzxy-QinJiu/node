@@ -38,6 +38,8 @@ ClueCustomerStore.prototype.resetState = function() {
     this.unSelectDataTip = '';//未选择数据就保存的提示信息
     this.distributeLoading = false;//线索客户正在分配给某个销售
     this.distributeErrMsg = '';//线索客户分配失败
+    this.distributeBatchLoading = false;
+    this.distributeBatchErrMsg = '';
     this.keyword = '';//线索全文搜索的关键字
 };
 ClueCustomerStore.prototype.setClueInitialData = function() {
@@ -174,6 +176,19 @@ ClueCustomerStore.prototype.distributeCluecustomerToSale = function(result) {
         this.distributeErrMsg = '';
     }
 };
+ClueCustomerStore.prototype.distributeCluecustomerToSaleBatch = function(result) {
+    if (result.loading) {
+        this.distributeBatchLoading = true;
+        this.distributeBatchErrMsg = '';
+    } else if (result.error) {
+        this.distributeBatchLoading = false;
+        this.distributeBatchErrMsg = result.errorMsg;
+    } else {
+        this.distributeBatchLoading = false;
+        this.distributeBatchErrMsg = '';
+    }
+};
+
 //查看某个线索的详情，关闭某个线索时，需要把这两个字段置空
 ClueCustomerStore.prototype.setCurrentCustomer = function(id) {
     if (id){
@@ -261,9 +276,11 @@ ClueCustomerStore.prototype.afterAddClueTrace = function(updateId) {
 };
 //分配销售之后
 ClueCustomerStore.prototype.afterAssignSales = function(updateItemId) {
+    //这个updateItemId可能是一个id，也可能是多个id
+    var clueIds = updateItemId.split(',');
     //如果是待分配状态，分配完之后要在列表中删除一个
-    this.curClueLists = _.filter(this.curClueLists, clue => updateItemId !== clue.id);
-    this.customersSize--;
+    this.curClueLists = _.filter(this.curClueLists, clue => _.indexOf(clueIds, clue.id) === -1);
+    this.customersSize = _.get(this,'curClueLists.length',0);
 };
 ClueCustomerStore.prototype.getSalesManList = function(list) {
     list = _.isArray(list) ? list : [];

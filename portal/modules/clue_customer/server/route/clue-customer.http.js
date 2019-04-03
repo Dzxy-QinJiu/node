@@ -171,6 +171,13 @@ module.exports = {
             passport: {
                 'needLogin': true
             }
+        },{
+            method: 'post',
+            path: '/rest/cluecustomer/change/sales/batch/:type',
+            handler: 'changeClueSalesBatch',
+            passport: {
+                needLogin: true
+            },
         }
     ]
 };
