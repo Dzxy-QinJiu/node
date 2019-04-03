@@ -233,7 +233,6 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
     if (newCustomerDetail.contact_id){
         delete newCustomerDetail.contact_id;
     }
-
     for (var key in newCustomerDetail) {
         if (_.indexOf(customerProperty, key) > -1) {
             //修改客户的相关属性
@@ -247,7 +246,10 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
                 this.curClue.contact = newCustomerDetail[key];
             } else if (contact_id){
                 var target = _.find(this.curClue.contacts,item => item.id === contact_id);
-                target[key] = newCustomerDetail[key];
+                //因为newCustomerDetail中有个属性id是表示的线索的id，所以在遍历属性的时候不要修改这个id，这样会把联系人的id改成线索的id
+                if (target && key !== 'id'){
+                    target[key] = newCustomerDetail[key];
+                }
             }
         }
     }

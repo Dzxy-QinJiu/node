@@ -1050,7 +1050,7 @@ const ApplyViewDetail = createReactClass({
             columns.push({
                 title: Intl.get('common.app.count', '数量'),
                 dataIndex: 'number',
-                className: 'apply-detail-th number-align-right',
+                className: 'apply-detail-th',
                 render: (text, app, index) => {
                     //获取开通个数
                     const custom_setting = appsSetting[app.app_id];

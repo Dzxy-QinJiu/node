@@ -805,14 +805,11 @@ class ClueCustomer extends React.Component {
                                         <span>{moment(salesClueItem.source_time).format(oplateConsts.DATE_FORMAT)}</span>
                                         <span className="clue-access-channel">{salesClueItem.access_channel ? '-' + salesClueItem.access_channel + ':' : ''}</span>
                                         <span>
-
                                             {salesClueItem.source}
-
                                         </span>
                                     </span>
                                 </ShearContent>
                             </div>
-
                         </div>
                     );
 
