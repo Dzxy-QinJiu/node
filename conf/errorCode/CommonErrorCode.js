@@ -60,8 +60,9 @@ function getConfigJson(req) {
         /****************** 认证授权 auth2  *****************/
 
         '11000': {'httpCode': 500, 'message': backendIntl.get('errorcode.35', '很抱歉，服务器出现了异常状况')},
-        //获取是否绑定微信时报的错
-        '11001': {'httpCode': 500, 'message': backendIntl.get('errorcoe.different.realm', '安全域不一致')},
+        //auth2报的非法请求
+        '11001': {'httpCode': 500, 'message': backendIntl.get('errorcode.131', '非法请求')},
+
         '11011': {'httpCode': 500, 'message': backendIntl.get('errorcode.37', 'Token不存在')},
         '11012': {'httpCode': 500, 'message': backendIntl.get('errorcode.38', 'Token过期')},
         '11041': {'httpCode': 500, 'message': backendIntl.get('errorcode.39', '用户名或密码错误')},
@@ -78,11 +79,15 @@ function getConfigJson(req) {
         '11413': {'httpCode': 500, 'message': backendIntl.get('errorcode.39', '用户名或密码错误')},
         //用户密码错误
         '11440': {'httpCode': 500, 'message': backendIntl.get('errorcode.39', '用户名或密码错误')},
+        //获取是否绑定微信时报的错
+        '11462': {'httpCode': 500, 'message': backendIntl.get('errorcoe.different.realm', '安全域不一致')},
         //在其他应用已退出
         '11473': {'httpCode': 500, 'message': backendIntl.get('errorcode.36', '在其他应用已退出')},
         '11476': {'httpCode': 500, 'message': backendIntl.get('errorcode.42', '你的账号已被停用，请联系管理员')},
         //绑定微信时报的错
         '11520': {'httpCode': 500, 'message': backendIntl.get('errorcode.invalid.wechat', '无效的微信账号')},
+        '11521': {'httpCode': 500, 'message': backendIntl.get('errorcoe.bound.wechat', '该账号已绑定到其他微信')},
+        '11522': {'httpCode': 500, 'message': backendIntl.get('errorcoe.wechat.bound.other', '您的微信已绑定到其他账号')},
 
         /****************** 安全域  ***************** */
 

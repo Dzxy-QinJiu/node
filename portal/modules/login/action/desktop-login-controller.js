@@ -598,13 +598,13 @@ exports.registerLoginWechat = function(req, res) {
             .on('error', function(errorObj) {
                 //用于记录微信注册新账号的错误，已便展示到注册新账号tab下
                 req.session.isWechatRegisterError = true;
-                wechatBindRegisterLoginError(req, res)(errorObj);
+                wechatBindRegisterLoginError(req, res)(errorObj, true);
             });
     } else {
         //用于记录微信注册新账号的错误，已便展示到注册新账号tab下
         req.session.isWechatRegisterError = true;
         let backendIntl = new BackendIntl(req);
-        wechatBindRegisterLoginError(req, res)({message: backendIntl.get('register.error.tip', '注册失败')});
+        wechatBindRegisterLoginError(req, res)({message: backendIntl.get('register.error.tip', '注册失败')}, true);
         restLogger.error('web微信注册登录未取到union_id');
     }
 };
@@ -741,18 +741,20 @@ function wechatLoginSuccess(req, res) {
 
 //web微信绑定(注册)登录失败的处理
 function wechatBindRegisterLoginError(req, res) {
-    return function(data) {
+    return function(data, isRegister) {
         restLogger.info('微信号注册登录失败：' + JSON.stringify(data));
         let backendIntl = new BackendIntl(req);
+        let defaultErrorMsg = isRegister ? backendIntl.get('login.wechat.register.login.error', '微信号注册登录失败') :
+            backendIntl.get('login.wechat.bind.error', '微信绑定失败');
         if (data && data.message) {
             req.session.loginErrorMsg = data.message;
         } else {
-            req.session.loginErrorMsg = backendIntl.get('login.wechat.register.login.error', '微信号注册登录失败');
+            req.session.loginErrorMsg = defaultErrorMsg;
         }
         req.session.save(function() {
             if (req.xhr) {
                 //session失效时，登录失败后的处理
-                res.status(500).json(data && data.message || backendIntl.get('login.wechat.register.login.error', '微信号注册登录失败'));
+                res.status(500).json(data && data.message || defaultErrorMsg);
             } else {
                 //绑定（注册）登录界面，登录失败的处理
                 let lang = req.session && req.session.lang || 'zh_CN';
