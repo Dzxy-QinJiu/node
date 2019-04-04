@@ -1264,6 +1264,7 @@ var zh_CN = {
     'crm.delete.customer.confirm.tip': '删除后不可恢复，确定要彻底删除客户 {name} 吗？',
     'crm.delete.thoroughly': '彻底删除',
     'crm.over.day.no.phone': '超{day}天未打过电话',
+    'crm.never.contact.customer': '从未联系客户',
     'crm.over.day.without.contact': '超{day}天未联系',
     'crm.over.day.no.connection': '近{day}天拨打未接通',
     'crm.recent.week.active': '近一周的活跃客户',

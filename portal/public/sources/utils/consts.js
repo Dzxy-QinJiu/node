@@ -269,6 +269,7 @@ export const FILTER_RANGE_OPTIONS = [
 
 //其他类型筛选中的选项
 export const OTHER_FILTER_ITEMS = {
+    NEVER_CONTACT: 'never_contact',
     THIRTY_UNCONTACT: 'thirty_uncontact',
     FIFTEEN_UNCONTACT: 'fifteen_uncontact',
     SEVEN_UNCONTACT: 'seven_uncontact',

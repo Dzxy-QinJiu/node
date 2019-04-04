@@ -1253,6 +1253,7 @@ var en_US = {
     'crm.recovery.customer.confirm.tip': 'Are you sure you want to restore customer {name}?',//确定要恢复客户 {name} 吗？
     'crm.delete.customer.confirm.tip': 'After deletion, it can not be restored. Are you sure you want to delete customer {name} completely?',//删除后不可恢复，确定要彻底删除客户 {name} 吗？
     'crm.delete.thoroughly': 'Delete thoroughly',//彻底删除
+    'crm.never.contact.customer': 'Never contacted', // 从未联系客户
     'crm.over.day.no.phone': 'Did not call over {day} days',//超{day}天未打过电话
     'crm.over.day.without.contact': 'Over {day} days without contact',//超{day}天未联系
     'crm.over.day.no.connection': 'No connection in the past {day} days',//近{day}天拨打未接通
