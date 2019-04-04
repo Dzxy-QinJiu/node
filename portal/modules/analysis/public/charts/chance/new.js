@@ -77,6 +77,80 @@ export function getNewChanceChart(chartType = 'table') {
 
         //将可见系列的底边距设置为0，以覆盖默认底边距，使可见系列的底部能与不可见系列的底部错开，这样最下面的一个百分比才能正确定位
         visibleSerie.bottom = 0;
+
+        const dealRate = _.last(visibleSerie.data).dealRate;
+
+        option.series.push(
+            {
+                type: 'funnel',
+                markLine: {
+                    symbol: 'none',
+                    lineStyle: {
+                        color: '#999',
+                    },
+                    data: [
+                        [
+                            {
+                                x: '60%',
+                                y: 10
+                            },
+                            {
+                                x: '95%',
+                                y: 10
+                            }
+                        ],
+                        [
+                            {
+                                x: '30%',
+                                y: '100%'
+                            },
+                            {
+                                x: '95%',
+                                y: '100%'
+                            }
+                        ],
+                    ]
+                }
+            },
+            {
+                type: 'funnel',
+                markLine: {
+                    symbol: ['none', 'arrow'],
+                    lineStyle: {
+                        color: '#999',
+                    },
+                    label: {
+                        formatter: params => {
+                            if (params.dataIndex === 0) {
+                                return '\n成交率: ' + dealRate;
+                            }
+                        }
+                    },
+                    data: [
+                        [
+                            {
+                                x: '90%',
+                                y: 10
+                            },
+                            {
+                                x: '90%',
+                                y: '40%'
+                            }
+                        ],
+                        [
+                            {
+                                x: '90%',
+                                y: '100%'
+                            },
+                            {
+                                x: '90%',
+                                y: '60%'
+                            }
+                        ]
+                    ]
+                }
+            }
+        );
     };
 
     return chart;
@@ -104,24 +178,21 @@ export function getNewChanceChart(chartType = 'table') {
         stages.forEach(stage => {
             let stageValue = data[stage.tagValue];
 
-            if (stageValue) {
+            if (_.isNumber(stageValue)) {
                 //保留原始值，用于在图表上显示
                 const showValue = stage.tagName + '\n\n' + stageValue;
 
                 //转化率
                 let convertRate = '';
-                let convertTitle = '';
 
                 if (stage.tagValue === 'pass') {
                     convertRate = data['pass_rate'];
-                    convertTitle = '通过率';
                 } else if (stage.tagValue === 'deal') {
                     convertRate = data['deal_rate'];
-                    convertTitle = '成交率';
                 }
 
-                if (convertRate) {
-                    convertRate = convertTitle + ': ' + (convertRate * 100).toFixed(2) + '%';
+                if (_.isNumber(convertRate)) {
+                    convertRate = (convertRate * 100).toFixed(2) + '%';
                 }
 
                 processedData.push({
@@ -131,6 +202,11 @@ export function getNewChanceChart(chartType = 'table') {
                 });
             }
         });
+
+        //成交率
+        let dealRate = ((data.deal / data.total) * 100).toFixed(2) + '%';
+
+        _.last(processedData).dealRate = dealRate;
 
         return processedData;
     }
