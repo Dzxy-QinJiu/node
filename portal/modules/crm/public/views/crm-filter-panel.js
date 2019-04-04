@@ -13,64 +13,69 @@ import { FILTER_RANGE, STAGE_OPTIONS, DAY_TIME, UNKNOWN, COMMON_OTHER_ITEM } fro
 let filterLevelArray = [{ id: '', level: Intl.get('common.all', '全部') }].concat(administrativeLevels);
 
 
-const otherFilterArray = [{
-    name: Intl.get('common.all', '全部'),
-    value: ''
-}, {
-    name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 30 }),
-    value: 'thirty_uncontact'
-}, {
-    name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 15 }),
-    value: 'fifteen_uncontact'
-}, {
-    name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 7 }),
-    value: 'seven_uncontact'
-}, {
-    name: Intl.get('crm.over.day.no.connection', '近{day}天拨打未接通', { day: 30 }),
-    value: 'thirty_no_connection'
-}, {
-    name: Intl.get('crm.over.day.no.phone', '超{day}天未打过电话', { day: 30 }),
-    value: 'thirty_no_call'
-}, {
-    name: Intl.get('crm.no.contact.way', '无联系方式客户'),
-    value: 'no_contact_way'
-}, {
-    name: Intl.get('crm.call.no.remark', '最后联系但未写跟进记录'),
-    value: 'last_call_no_record'
-}, {
-    name: Intl.get('crm.call.no.remark.over', '超{day}天未写跟进记录', {day: 30}),
-    value: 'thirty_no_last_trace'
-}, {
-    name: Intl.get('crm.call.no.remark.over', '超{day}天未写跟进记录', {day: 15}),
-    value: 'fifteen_no_last_trace'
-}, {
-    name: Intl.get('crm.call.no.remark.over', '超{day}天未写跟进记录', {day: 7}),
-    value: 'seven_no_last_trace'
-}, {
-    name: Intl.get('crm.concerned.customer', '被关注的客户'),
-    value: 'interest_member_ids'
-}, {
-    name: Intl.get('crm.my.concerned.customer', '我关注的客户'),
-    value: 'my_interest'
-}, {
-    name: Intl.get('crm.order.more.customer', '多个订单的客户'),
-    value: 'multi_order'
-}, {
-    name: Intl.get('crm.available.customer', '有效客户'),
-    value: 'availability'
-}, {
-    name: Intl.get('crm.recent.week.active', '近一周的活跃客户'),
-    value: 'seven_login'
-}, {
-    name: Intl.get('crm.recent.month.active', '近一个月的活跃客户'),
-    value: 'month_login'
-}, {
-    name: Intl.get('crm.filter.team.customer', '团队客户'),
-    value: 'team_customer'
-},{
-    name: Intl.get('crm.this.week.contact', '本周联系过的客户'),
-    value: 'this_week_contacted'
-}];
+const otherFilterArray = [
+    {
+        name: Intl.get('common.all', '全部'),
+        value: ''
+    }, {
+        name: Intl.get('crm.never.contact.customer', '从未联系客户'),
+        value: 'never_contact'
+    },{
+        name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 30 }),
+        value: 'thirty_uncontact'
+    }, {
+        name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 15 }),
+        value: 'fifteen_uncontact'
+    }, {
+        name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 7 }),
+        value: 'seven_uncontact'
+    }, {
+        name: Intl.get('crm.over.day.no.connection', '近{day}天拨打未接通', { day: 30 }),
+        value: 'thirty_no_connection'
+    }, {
+        name: Intl.get('crm.over.day.no.phone', '超{day}天未打过电话', { day: 30 }),
+        value: 'thirty_no_call'
+    }, {
+        name: Intl.get('crm.no.contact.way', '无联系方式客户'),
+        value: 'no_contact_way'
+    }, {
+        name: Intl.get('crm.call.no.remark', '最后联系但未写跟进记录'),
+        value: 'last_call_no_record'
+    }, {
+        name: Intl.get('crm.call.no.remark.over', '超{day}天未写跟进记录', {day: 30}),
+        value: 'thirty_no_last_trace'
+    }, {
+        name: Intl.get('crm.call.no.remark.over', '超{day}天未写跟进记录', {day: 15}),
+        value: 'fifteen_no_last_trace'
+    }, {
+        name: Intl.get('crm.call.no.remark.over', '超{day}天未写跟进记录', {day: 7}),
+        value: 'seven_no_last_trace'
+    }, {
+        name: Intl.get('crm.concerned.customer', '被关注的客户'),
+        value: 'interest_member_ids'
+    }, {
+        name: Intl.get('crm.my.concerned.customer', '我关注的客户'),
+        value: 'my_interest'
+    }, {
+        name: Intl.get('crm.order.more.customer', '多个订单的客户'),
+        value: 'multi_order'
+    }, {
+        name: Intl.get('crm.available.customer', '有效客户'),
+        value: 'availability'
+    }, {
+        name: Intl.get('crm.recent.week.active', '近一周的活跃客户'),
+        value: 'seven_login'
+    }, {
+        name: Intl.get('crm.recent.month.active', '近一个月的活跃客户'),
+        value: 'month_login'
+    }, {
+        name: Intl.get('crm.filter.team.customer', '团队客户'),
+        value: 'team_customer'
+    },{
+        name: Intl.get('crm.this.week.contact', '本周联系过的客户'),
+        value: 'this_week_contacted'
+    }
+];
 //只有管理员可以过滤未分配的客户
 if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
     otherFilterArray.push({
@@ -327,43 +332,46 @@ class CrmFilterPanel extends React.Component {
         setTimeout(() => this.props.search());
         switch (item) {
             case otherFilterArray[1].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '超30天未联系的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '从未联系客户筛选');
                 break;
             case otherFilterArray[2].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '超15天未联系的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '超30天未联系的筛选');
                 break;
             case otherFilterArray[3].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '超7天未联系的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '超15天未联系的筛选');
                 break;
             case otherFilterArray[4].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '无联系方式的客户的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '超7天未联系的筛选');
                 break;
             case otherFilterArray[5].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '最后联系但未写更近记录客户的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '无联系方式的客户的筛选');
                 break;
             case otherFilterArray[6].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '超30天未写跟进记录客户的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '最后联系但未写更近记录客户的筛选');
                 break;
             case otherFilterArray[7].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '被关注客户的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '超30天未写跟进记录客户的筛选');
                 break;
             case otherFilterArray[8].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '我关注客户的筛选');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '被关注客户的筛选');
                 break;
             case otherFilterArray[9].value:
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '我关注客户的筛选');
+                break;
+            case otherFilterArray[10].value:
                 Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '多个订单客户的筛选');
                 break;
-            case otherFilterArray[12].value:
+            case otherFilterArray[13].value:
                 Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '近一周的活跃客户的筛选');
                 break;
-            case otherFilterArray[13].value:
+            case otherFilterArray[14].value:
                 Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '近一个月的活跃客户的筛选');
                 break;
         }
-        if (otherFilterArray[10] && item === otherFilterArray[10].value) {
+        if (otherFilterArray[11] && item === otherFilterArray[10].value) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '未分配客户的筛选');
         }
-        if (otherFilterArray[11] && item === otherFilterArray[11].value) {
+        if (otherFilterArray[12] && item === otherFilterArray[11].value) {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '有效客户');
         }
     };

@@ -684,6 +684,9 @@ class Crm extends React.Component {
         //近xxx天未写跟进记录的时间
         let dayTimeNoTrace = '';
         switch (condition.otherSelectedItem) {
+            case OTHER_FILTER_ITEMS.NEVER_CONTACT: // 从未联系客户
+                condition.contact_times = 0;
+                break;
             case OTHER_FILTER_ITEMS.THIRTY_NO_CALL://超30天未打过电话的客户
                 dayTime = DAY_TIME.THIRTY_DAY;
                 break;
@@ -1109,7 +1112,8 @@ class Crm extends React.Component {
 
     closeCustomerUserListPanel = () => {
         this.setState({
-            isShowCustomerUserListPanel: false
+            isShowCustomerUserListPanel: false,
+            customerOfCurUser: {}
         });
     };
 

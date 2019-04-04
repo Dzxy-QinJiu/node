@@ -72,7 +72,7 @@ class Dynamic extends React.Component {
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
             customer_params: {
                 currentId: customerId,
-                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                ShowCustomerUserListPanel: this.props.ShowCustomerUserListPanel,
                 hideRightPanel: this.closeRightPanel
             }
         });
@@ -81,19 +81,6 @@ class Dynamic extends React.Component {
     closeRightPanel = () => {
         this.setState({
             showCustomerId: ''
-        });
-    };
-
-    ShowCustomerUserListPanel = (data) => {
-        this.setState({
-            isShowCustomerUserListPanel: true,
-            customerOfCurUser: data.customerObj
-        });
-    };
-
-    closeCustomerUserListPanel = () => {
-        this.setState({
-            isShowCustomerUserListPanel: false
         });
     };
 
@@ -109,13 +96,6 @@ class Dynamic extends React.Component {
                 <dt>{moment(item.date).format(oplateConsts.TIME_FORMAT)}</dt>
             </dl>
         );
-    };
-
-    //关闭已有客户的右侧面板
-    hideRightPanel = () => {
-        this.setState({
-            showCustomerId: ''
-        });
     };
 
     render() {
@@ -138,19 +118,6 @@ class Dynamic extends React.Component {
                             />
                         </div>) : <NoDataIconTip tipContent={Intl.get('crm.dynamic.no.data', '暂无动态')}/>}
                 </GeminiScrollbar>
-                {/*该客户下的用户列表*/}
-                {this.state.isShowCustomerUserListPanel ? <RightPanel
-                    className="customer-user-list-panel"
-                    showFlag={this.state.isShowCustomerUserListPanel}
-                >
-                    { this.state.isShowCustomerUserListPanel ?
-                        <AppUserManage
-                            customer_id={customerOfCurUser.id}
-                            hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={customerOfCurUser.name}
-                        /> : null
-                    }
-                </RightPanel> : null}
             </div>
         );
     }
@@ -158,6 +125,7 @@ class Dynamic extends React.Component {
 Dynamic.propTypes = {
     divHeight: PropTypes.number,
     currentId: PropTypes.string,
+    ShowCustomerUserListPanel: PropTypes.func
 };
 module.exports = Dynamic;
 

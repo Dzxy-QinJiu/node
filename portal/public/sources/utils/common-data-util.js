@@ -1,7 +1,7 @@
 import {getUserData, setUserData} from '../user-data';
-import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import teamAjaxTrans from 'MOD_DIR/common/public/ajax/team';
+import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
 import {storageUtil} from 'ant-utils';
 import {traversingTeamTree, getParamByPrivilege,hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {message} from 'antd';
@@ -16,6 +16,8 @@ let allProductList = [];
 let integrationProductList = [];
 let dealStageList = [];
 let allUserList = [];
+// 销售列表
+let salesmanList = [];
 //缓存在sessionStorage中的我能查看的团队
 const MY_TEAM_TREE_KEY = 'my_team_tree';
 const AUTH_MAP = {
@@ -73,28 +75,85 @@ exports.getAllProductList = function(cb) {
     }
 };
 //获取所有的成员列表
-exports.getAllUserList = function(cb) {
-    if (_.get(allUserList, '[0]')) {
-        if (_.isFunction(cb)) cb(allUserList);
-    } else {
-        $.ajax({
-            url: '/rest/user',
-            type: 'get',
-            dataType: 'json',
-            data: {},
-            success: result => {
-                if (_.isArray(result.data)){
-                    allUserList = _.filter(result.data, sales => sales && sales.status === 1);
-                    if (_.isFunction(cb)) cb(allUserList);
+const getAllUserList = function() {
+    return new Promise((resolve, reject) => {
+        if (_.get(allUserList, '[0]')) {
+            resolve(allUserList);
+        } else {
+            $.ajax({
+                url: '/rest/user',
+                type: 'get',
+                dataType: 'json',
+                data: {},
+                success: result => {
+                    if (_.isArray(result.data)) {
+                        allUserList = _.filter(result.data, sales => sales && sales.status === 1);
+                        resolve(allUserList);
+                    }
+                },
+                error: xhr => {
+                    allUserList = [];
+                    resolve(allUserList);
                 }
-            },
-            error: xhr => {
-                allUserList = [];
-                if (_.isFunction(cb)) cb(allUserList);
-            }
-        });
-    }
+            });
+        }
+    });
 };
+exports.getAllUserList = getAllUserList;
+
+// 获取销售列表
+const getSalesmanList = function() {
+    return new Promise((resolve, reject) => {
+        if (_.get(salesmanList, '[0]')) {
+            resolve(salesmanList);
+        } else {
+            salesmanAjax.getSalesmanListAjax().addQueryParam({with_ketao_member: true}).sendRequest()
+                .success(result => {
+                    if (_.isArray(result)) {
+                        salesmanList = result;
+                        resolve(result);
+                    }
+                })
+                .error(() => {
+                    salesmanList = [];
+                    resolve(salesmanList);
+                })
+                .timeout(() => {
+                    salesmanList = [];
+                    resolve(salesmanList);
+                });
+        }
+    });
+};
+exports.getSalesmanList = getSalesmanList;
+
+// 返回所有成员列表和销售列表的组合数据
+exports.getAllSalesUserList = function(cb) {
+    Promise.all([getAllUserList(), getSalesmanList()]).then(result => {
+        if (_.isFunction(cb)) {
+            let userList = _.get(result, '[0]', []), salesManList = _.get(result, '[1]', []);
+            _.each(userList, user => {
+                let isExist = _.some(salesManList, item => _.get(item, 'user_info.user_id') === user.userId);
+                //将销售列表里没有的成员，加到列表中
+                if (!isExist) {
+                    salesManList.push({
+                        user_info: {
+                            user_id: _.get(user, 'userId', ''),
+                            nick_name: _.get(user, 'nickName', ''),
+                        },
+                        user_groups: [{
+                            group_name: '',
+                            group_id: ''
+                        }]
+                    });
+                }
+            });
+            cb(salesManList);
+        }
+    });
+
+};
+
 //获取我能看的团队树
 exports.getMyTeamTreeList = function(cb) {
     let teamTreeList = getUserData().my_team_tree || [];
@@ -153,8 +212,9 @@ exports.getMyTeamTreeAndFlattenList = function(cb, flag) {
  * phoneNumber: 拨打的电话号码，
  * customerId: 客户的id
  * }
+ * callback 拨打完电话后的回调
  */
-exports.handleCallOutResult = function(paramObj) {
+exports.handleCallOutResult = function(paramObj, callback) {
     if (!paramObj) {
         return;
     }
@@ -170,7 +230,9 @@ exports.handleCallOutResult = function(paramObj) {
         if (hasCalloutPrivilege()) {
             callClient.callout(phoneNumber).then((result) => {
                 message.success(Intl.get('crm.call.phone.success', '拨打成功'));
+                _.isFunction(callback) && callback();
             }, (errMsg) => {
+                _.isFunction(callback) && callback();
                 message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
             });
         }

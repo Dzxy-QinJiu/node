@@ -516,7 +516,8 @@ class SystemNotification extends React.Component {
 
     closeCustomerUserListPanel = () => {
         this.setState({
-            isShowCustomerUserListPanel: false
+            isShowCustomerUserListPanel: false,
+            customerOfCurUser: {}
         });
     };
 

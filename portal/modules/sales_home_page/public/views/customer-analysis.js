@@ -4,6 +4,7 @@
  */
 import { AntcAnalysis } from 'antc';
 import customerCharts from 'MOD_DIR/analysis/public/charts/customer';
+import orderCharts from 'MOD_DIR/analysis/public/charts/order';
 let history = require('PUB_DIR/sources/history');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 var getDataAuthType = require('../../../../components/privilege/checker').getDataAuthType;
@@ -62,6 +63,8 @@ class CustomerAnalysis extends React.Component {
             startTime: this.props.startTime,
             endTime: this.props.endTime,
             originSalesTeamTree: this.props.originSalesTeamTree,
+            isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
+            customerOfCurUser: {},//当前展示用户所属客户的详情
         };
     };
 
@@ -256,6 +259,7 @@ class CustomerAnalysis extends React.Component {
                 sort_field: this.state.transferCustomers.sorter.field,
                 order: this.state.transferCustomers.sorter.order,
                 page_size: DEFAULT_TABLE_PAGESIZE,
+                data_type: this.getDataType()
             },
             query: {
                 start_time: this.state.startTime,
@@ -365,13 +369,14 @@ class CustomerAnalysis extends React.Component {
     ShowCustomerUserListPanel = (data) => {
         this.setState({
             isShowCustomerUserListPanel: true,
-            CustomerInfoOfCurrUser: data.customerObj
+            customerOfCurUser: data.customerObj
         });
     };
 
     closeCustomerUserListPanel = () => {
         this.setState({
-            isShowCustomerUserListPanel: false
+            isShowCustomerUserListPanel: false,
+            customerOfCurUser: {}
         });
     };
 
@@ -908,12 +913,12 @@ class CustomerAnalysis extends React.Component {
                 valueField: 'showValue',
                 minSize: '5%',
             },
-        }, {
-            title: Intl.get('oplate_customer_analysis.11', '订单阶段统计'),
-            url: '/rest/analysis/customer/v2/:auth_type/total/stage',
-            chartType: 'horizontalStage',
-            processData: this.processOrderStageData,
-        }, {
+        },
+        //订单阶段统计
+        orderCharts.getOrderStageChart({
+            stageList: this.state.salesStageList
+        }),
+        {
             title: Intl.get('user.analysis.location.add', '地域-新增'),
             chartType: 'bar',
             customOption: {
@@ -1151,6 +1156,7 @@ class CustomerAnalysis extends React.Component {
     };
 
     render() {
+        let customerOfCurUser = this.state.customerOfCurUser || {};
         return (
             <div className="oplate_customer_analysis">
                 <div ref="chart_list">
@@ -1165,6 +1171,7 @@ class CustomerAnalysis extends React.Component {
                             params={this.state.selectedCustomerStage}
                             result={this.state.stageChangedCustomerList}
                             onClose={this.toggleCusStageMetic}
+                            ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
                             handleScrollBottom={this.getStageChangeCustomerList.bind(this)}
                             showNoMoreData={!this.state.stageChangedCustomerList.loading &&
                                 !this.state.stageChangedCustomerList.listenScrollBottom &&
@@ -1187,6 +1194,21 @@ class CustomerAnalysis extends React.Component {
                             </div> : null
                     }
                 </RightPanel>
+                {/*该客户下的用户列表*/}
+                {this.state.isShowCustomerUserListPanel ? (
+                    <RightPanel
+                        className="customer-user-list-panel"
+                        showFlag={this.state.isShowCustomerUserListPanel}
+                    >
+                        {this.state.isShowCustomerUserListPanel ?
+                            <AppUserManage
+                                customer_id={customerOfCurUser.id}
+                                hideCustomerUserList={this.closeCustomerUserListPanel}
+                                customer_name={customerOfCurUser.name}
+                            /> : null
+                        }
+                    </RightPanel>
+                ) : null}
             </div>
         );
     }

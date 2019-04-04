@@ -81,7 +81,7 @@ class ApplyViewDetail extends React.Component {
         this.getAllUserList();
     }
     getAllUserList = () => {
-        getAllUserList(data => {
+        getAllUserList().then(data => {
             this.setState({
                 usersManList: data
             });
@@ -271,23 +271,15 @@ class ApplyViewDetail extends React.Component {
 
 
     //显示客户详情
-    showCustomerDetail(customerId) {
+    showCustomerDetail = (customerId) => {
         //触发打开带拨打电话状态的客户详情面板
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
             customer_params: {
                 currentId: customerId,
-                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
-                hideRightPanel: this.closeRightPanel
+                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel
             }
         });
     }
-
-    closeRightPanel = () => {
-        this.setState({
-            isShowCustomerUserListPanel: false,
-            customerOfCurUser: {}
-        });
-    };
 
     ShowCustomerUserListPanel = (data) => {
         this.setState({
@@ -296,6 +288,12 @@ class ApplyViewDetail extends React.Component {
         });
     };
 
+    closeCustomerUserListPanel = () => {
+        this.setState({
+            isShowCustomerUserListPanel: false,
+            customerOfCurUser: {}
+        });
+    };
 
     renderDetailApplyBlock(detailInfo) {
         var _this = this;
@@ -352,39 +350,6 @@ class ApplyViewDetail extends React.Component {
             />
         );
     };
-
-    renderBusinessCustomerDetail(detailInfo) {
-        var detail = detailInfo.detail || {};
-        var customersArr = _.get(detailInfo, 'detail.customers');
-        var _this = this;
-        var columns = [
-            {
-                title: Intl.get('call.record.customer', '客户'),
-                dataIndex: 'name',
-                className: 'apply-customer-name',
-                render: function(text, record, index) {
-                    return (
-                        <a href="javascript:void(0)"
-                            onClick={_this.showCustomerDetail.bind(this, record.id)}
-                            data-tracename="查看客户详情"
-                            title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
-                        >
-                            {text}
-                        </a>
-                    );
-                }
-            }, {
-                title: Intl.get('common.remark', '备注'),
-                dataIndex: 'remarks',
-                className: 'apply-remarks'
-            }];
-        return (
-            <ApplyDetailCustomer
-                columns={columns}
-                data={customersArr}
-            />
-        );
-    }
     //添加一条回复
     addReply = (e) => {
         Trace.traceEvent(e, '点击回复按钮');
@@ -777,8 +742,6 @@ class ApplyViewDetail extends React.Component {
                 <div className="apply-detail-content" style={{height: applyDetailHeight}} ref="geminiWrap">
                     <GeminiScrollbar ref="gemini">
                         {this.renderDetailApplyBlock(detailInfo)}
-                        {/*渲染客户详情*/}
-                        {_.isArray(_.get(detailInfo, 'detail.customers')) ? this.renderBusinessCustomerDetail(detailInfo) : null}
                         {this.renderApplyStatus()}
                         <ApplyDetailRemarks
                             detailInfo={detailInfo}
@@ -800,6 +763,7 @@ class ApplyViewDetail extends React.Component {
         if (this.props.showNoData) {
             return null;
         }
+        let customerOfCurUser = this.state.customerOfCurUser || {};
         var divHeight = $(window).height() - TOP_NAV_HEIGHT;
         return (
             <div className='col-md-8 sales_opportunity_apply_detail_wrap' style={{'height': divHeight}} data-tracename="销售机会审批详情界面">

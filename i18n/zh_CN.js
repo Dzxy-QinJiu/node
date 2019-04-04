@@ -688,6 +688,8 @@ var zh_CN = {
     'member.sales.goal.add': '设置销售目标',
     'member.sales.goal.no.data': '未设置销售目标',
     'member.log.no.data': '暂无操作日志',
+    'member.add.member.phone.verify': '手机号唯一性验证出错了',
+    'member.add.member.phone.exist': '该手机号已存在',
 
     //后台管理-成员end
     //组织管理start
@@ -1262,6 +1264,7 @@ var zh_CN = {
     'crm.delete.customer.confirm.tip': '删除后不可恢复，确定要彻底删除客户 {name} 吗？',
     'crm.delete.thoroughly': '彻底删除',
     'crm.over.day.no.phone': '超{day}天未打过电话',
+    'crm.never.contact.customer': '从未联系客户',
     'crm.over.day.without.contact': '超{day}天未联系',
     'crm.over.day.no.connection': '近{day}天拨打未接通',
     'crm.recent.week.active': '近一周的活跃客户',
@@ -2123,6 +2126,9 @@ var zh_CN = {
     'errorcode.152': '线索重复',
     'errorcoe.different.realm': '安全域不一致',
     'errorcode.invalid.wechat': '无效的微信账号',
+    'errorcode.get.call.statistics.failed': '获取通话记录统计失败',
+    'errorcoe.bound.wechat': '该账号已绑定到其他微信',
+    'errorcoe.wechat.bound.other': '您的微信已绑定到其他账号',
 
     //遗漏部分
     'user.input.phone': '请输入手机号',
@@ -2851,6 +2857,8 @@ var zh_CN = {
     'apply.detail.show.password': '显示密码',
     'apply.detail.hide.password': '隐藏密码',
     'bussiness.trip.time.range': '拜访时间',
-    'business.leave.time.range': '出差时长'
+    'business.leave.time.range': '出差时长',
+    'clue.batch.select.clues': '已选择{num}个线索',
+    'clue.batch.assign.sales': '批量分配'
 };
 export default zh_CN;

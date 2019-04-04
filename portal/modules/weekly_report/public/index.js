@@ -131,6 +131,7 @@ class WeeklyReport extends React.Component {
                 <NatureTimeSelect onChangeYear={this.onChangeYear}
                     onChangeWeek={this.onChangeWeek}
                     showTimeTypeSelect={false}
+                    canSelectFutureWeek={false}
                     timeType='week'
                     yearTime={this.state.nYear + Intl.get('common.time.unit.year', '年')}
                     weekTime={this.state.nWeek}/>

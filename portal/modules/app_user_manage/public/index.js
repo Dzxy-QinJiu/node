@@ -191,8 +191,14 @@ class AppUserManage extends React.Component {
                     }
                 } else {
                     // 点击刷新按钮时
-                    //查询所有用户
-                    AppUserAction.getAppUserList();
+                    if (this.props.listPanelParamObj) {
+                        //在列表面板中打开时，根据面板条件查询
+                        AppUserAction.getAppUserList(this.props.listPanelParamObj);
+                    } else {
+                        //查询所有用户
+                        AppUserAction.getAppUserList();
+                    }
+
                     //查询团队列表
                     AppUserAction.getTeamLists();
                 }
@@ -717,6 +723,7 @@ class AppUserManage extends React.Component {
 AppUserManage.propTypes = {
     customer_name: PropTypes.string,
     location: PropTypes.obj,
+    listPanelParamObj: PropTypes.obj,
     history: PropTypes.obj,
     customer_id: PropTypes.string,
     user_size: PropTypes.number,

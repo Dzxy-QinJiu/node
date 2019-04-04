@@ -38,6 +38,8 @@ ClueCustomerStore.prototype.resetState = function() {
     this.unSelectDataTip = '';//未选择数据就保存的提示信息
     this.distributeLoading = false;//线索客户正在分配给某个销售
     this.distributeErrMsg = '';//线索客户分配失败
+    this.distributeBatchLoading = false;
+    this.distributeBatchErrMsg = '';
     this.keyword = '';//线索全文搜索的关键字
 };
 ClueCustomerStore.prototype.setClueInitialData = function() {
@@ -174,6 +176,19 @@ ClueCustomerStore.prototype.distributeCluecustomerToSale = function(result) {
         this.distributeErrMsg = '';
     }
 };
+ClueCustomerStore.prototype.distributeCluecustomerToSaleBatch = function(result) {
+    if (result.loading) {
+        this.distributeBatchLoading = true;
+        this.distributeBatchErrMsg = '';
+    } else if (result.error) {
+        this.distributeBatchLoading = false;
+        this.distributeBatchErrMsg = result.errorMsg;
+    } else {
+        this.distributeBatchLoading = false;
+        this.distributeBatchErrMsg = '';
+    }
+};
+
 //查看某个线索的详情，关闭某个线索时，需要把这两个字段置空
 ClueCustomerStore.prototype.setCurrentCustomer = function(id) {
     if (id){
@@ -233,7 +248,6 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
     if (newCustomerDetail.contact_id){
         delete newCustomerDetail.contact_id;
     }
-
     for (var key in newCustomerDetail) {
         if (_.indexOf(customerProperty, key) > -1) {
             //修改客户的相关属性
@@ -247,7 +261,10 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
                 this.curClue.contact = newCustomerDetail[key];
             } else if (contact_id){
                 var target = _.find(this.curClue.contacts,item => item.id === contact_id);
-                target[key] = newCustomerDetail[key];
+                //因为newCustomerDetail中有个属性id是表示的线索的id，所以在遍历属性的时候不要修改这个id，这样会把联系人的id改成线索的id
+                if (target && key !== 'id'){
+                    target[key] = newCustomerDetail[key];
+                }
             }
         }
     }
@@ -259,9 +276,11 @@ ClueCustomerStore.prototype.afterAddClueTrace = function(updateId) {
 };
 //分配销售之后
 ClueCustomerStore.prototype.afterAssignSales = function(updateItemId) {
+    //这个updateItemId可能是一个id，也可能是多个id
+    var clueIds = updateItemId.split(',');
     //如果是待分配状态，分配完之后要在列表中删除一个
-    this.curClueLists = _.filter(this.curClueLists, clue => updateItemId !== clue.id);
-    this.customersSize--;
+    this.curClueLists = _.filter(this.curClueLists, clue => _.indexOf(clueIds, clue.id) === -1);
+    this.customersSize = _.get(this,'curClueLists.length',0);
 };
 ClueCustomerStore.prototype.getSalesManList = function(list) {
     list = _.isArray(list) ? list : [];

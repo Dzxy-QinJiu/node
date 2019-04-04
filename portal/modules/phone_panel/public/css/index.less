@@ -12,6 +12,7 @@
   width: @right_panel_width !important;
   transform: translate(@right_panel_width, 0);
   background-color: transparent !important;
+  overflow: inherit;
   .right-panel-content {
     height: 100%;
     width: @right_panel_content_width !important;
@@ -216,6 +217,11 @@
   -webkit-transform: translateX(100%);
   background-color: #fff;
   display: block;
+  .button-zones{
+    position: inherit;
+    left: 0;
+    padding-left: 20px;
+  }
   .no-more-data-tip .ant-alert{
     width: 100%;
     top:0;

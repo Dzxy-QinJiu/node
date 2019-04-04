@@ -687,6 +687,8 @@ var en_US = {
     'member.sales.goal.add': 'Set sales goal',//设置销售目标
     'member.sales.goal.no.data': 'Sales goal not set',//未设置销售目标
     'member.log.no.data': 'No operation log',//暂无操作日志
+    'member.add.member.phone.verify': 'The number of phone is already taken', // 手机号唯一性验证出错了
+    'member.add.member.phone.exist': 'The number of phone was existed', // 该手机号已存在
     //后台管理-成员end
     //组织管理start
     'organization.no.organization.tip': 'No organization,please add one first',//暂无组织，请先添加
@@ -1251,6 +1253,7 @@ var en_US = {
     'crm.recovery.customer.confirm.tip': 'Are you sure you want to restore customer {name}?',//确定要恢复客户 {name} 吗？
     'crm.delete.customer.confirm.tip': 'After deletion, it can not be restored. Are you sure you want to delete customer {name} completely?',//删除后不可恢复，确定要彻底删除客户 {name} 吗？
     'crm.delete.thoroughly': 'Delete thoroughly',//彻底删除
+    'crm.never.contact.customer': 'Never contacted', // 从未联系客户
     'crm.over.day.no.phone': 'Did not call over {day} days',//超{day}天未打过电话
     'crm.over.day.without.contact': 'Over {day} days without contact',//超{day}天未联系
     'crm.over.day.no.connection': 'No connection in the past {day} days',//近{day}天拨打未接通
@@ -2090,6 +2093,10 @@ var en_US = {
     'errorcode.152': 'There are repeat clues!',//线索重复
     'errorcoe.different.realm': 'Different realms',//安全域不一致
     'errorcode.invalid.wechat': 'Invalid Wechat Account',//无效的微信账号
+    'errorcode.get.call.statistics.failed': 'Get call statistics failed', //获取通话记录统计失败
+    'errorcoe.bound.wechat': 'The account has been bound to other Wechat',//该账号已绑定到其他微信
+    'errorcoe.wechat.bound.other': 'Your Wechat has been bound to other accounts',//您的微信已绑定到其他账号
+
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
     'user.user.info': 'information',//开通信息
@@ -2824,6 +2831,8 @@ var en_US = {
     'apply.detail.show.password': 'Show password',//显示密码
     'apply.detail.hide.password': 'Hide password',//隐藏密码
     'bussiness.trip.time.range': 'Visit time',//拜访时间
-    'business.leave.time.range': 'Bussiness range'//出差时长
+    'business.leave.time.range': 'Bussiness range',//出差时长
+    'clue.batch.select.clues': 'Has selected {num} clues',//已选择{num}个线索
+    'clue.batch.assign.sales': 'Assign in batch'//批量分配
 };
 export default en_US;

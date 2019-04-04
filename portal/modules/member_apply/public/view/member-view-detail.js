@@ -62,7 +62,7 @@ class ApplyViewDetail extends React.Component {
         this.getAllUserList();
     }
     getAllUserList = () => {
-        getAllUserList(data => {
+        getAllUserList().then(data => {
             this.setState({
                 usersManList: data
             });

@@ -18,7 +18,9 @@ module.exports = {
 function getCharts() {
     return [
         //阶段统计
-        orderChart.getOrderStageChart(),
+        orderChart.getOrderStageChart({
+            layout: {sm: 24},
+        }),
         //订单成交率趋势
         orderChart.getOrderTurnoverRateTrendChart(),
     ];
