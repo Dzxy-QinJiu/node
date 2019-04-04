@@ -131,13 +131,13 @@ class UserForm extends React.Component {
                     UserFormAction.checkOnlyPhone(value, data => {
                         if (_.isString(data)) {
                             //唯一性验证出错了
-                            callback(Intl.get('crm.82', '电话唯一性验证出错了'));
+                            callback(Intl.get('member.add.member.phone.verify', '手机号唯一性验证出错了'));
                         } else {
                             if (data === false) {
                                 callback();
                             } else {
                                 //已存在
-                                callback(Intl.get('crm.83', '该电话已存在'));
+                                callback(Intl.get('member.add.member.phone.exist', '该手机号已存在'));
                             }
                         }
                     });
@@ -427,14 +427,15 @@ class UserForm extends React.Component {
                                 }
                             </FormItem>
                             <PhoneInput
-                                placeholder={Intl.get('crm.95', '请输入联系人电话')}
+                                placeholder={Intl.get('user.input.phone', '请输入手机号')}
                                 validateRules={this.getPhoneInputValidateRules()}
                                 initialValue={values.phone}
                                 id="phone"
                                 labelCol={{span: formItemLayout.labelCol.span}}
                                 wrapperCol={{span: formItemLayout.wrapperCol.span}}
                                 form={this.props.form}
-
+                                label={Intl.get('user.phone', '手机号')}
+                                colon="false"
                             />
                             {/** v8环境下，不显示所属团队 */}
                             {this.props.formType === 'add' ? (!Oplate.hideSomeItem && <FormItem

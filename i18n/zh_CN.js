@@ -688,6 +688,8 @@ var zh_CN = {
     'member.sales.goal.add': '设置销售目标',
     'member.sales.goal.no.data': '未设置销售目标',
     'member.log.no.data': '暂无操作日志',
+    'member.add.member.phone.verify': '手机号唯一性验证出错了',
+    'member.add.member.phone.exist': '该手机号已存在',
 
     //后台管理-成员end
     //组织管理start
