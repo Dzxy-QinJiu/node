@@ -13,9 +13,15 @@ export function getCustomerTrialQualifiedDistributionChart(title, field) {
             name: 'customer_label',
             value: '试用',
         }, {
-            name: 'statistics_type',
+            name: 'distribution_statistics_type',
             value: field
         }],
+        argCallback: arg => {
+            //该接口定义的 statistics_type 参数和用于区分是按团队还是成员返回的公共参数重名了，导致在切换团队或成员后其值会被公共参数值覆盖
+            //所以需要在参数处理回调函数这里处理一下，将被覆盖的值还原
+            arg.query.statistics_type = arg.query.distribution_statistics_type;
+            delete arg.query.distribution_statistics_type;
+        },
         dataField: 'result',
         processOption: (option, chartProps) => {
             let dataSource = [];
