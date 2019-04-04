@@ -71,9 +71,9 @@ export function getNewChanceChart(chartType = 'table') {
         invisibleSerie.bottom = offsetV + '%';
 
         //设置不可见系列的右边距
-        invisibleSerie.right = '25%';
+        invisibleSerie.right = '10%';
         //设置可见系列的右边距，可见系列的右边距比不可见系列的右边距要大一些，是为了留出显示转化率的空间
-        visibleSerie.right = '40%';
+        visibleSerie.right = '30%';
 
         //将可见系列的底边距设置为0，以覆盖默认底边距，使可见系列的底部能与不可见系列的底部错开，这样最下面的一个百分比才能正确定位
         visibleSerie.bottom = 0;
@@ -94,7 +94,7 @@ export function getNewChanceChart(chartType = 'table') {
                     data: [
                         [
                             {
-                                x: '60%',
+                                x: '70%',
                                 y: 10
                             },
                             {
@@ -104,7 +104,7 @@ export function getNewChanceChart(chartType = 'table') {
                         ],
                         [
                             {
-                                x: '30%',
+                                x: '35%',
                                 y: '100%'
                             },
                             {
@@ -119,7 +119,7 @@ export function getNewChanceChart(chartType = 'table') {
             {
                 type: 'funnel',
                 markLine: {
-                    symbol: ['none', 'arrow'],
+                    symbol: ['none', 'none'],
                     lineStyle: {
                         color: '#999',
                     },
