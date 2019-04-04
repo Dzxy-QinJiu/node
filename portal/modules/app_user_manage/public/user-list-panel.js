@@ -9,7 +9,7 @@ import UserList from './';
 
 function UserListPanel(props) { 
     return (
-        <ListPanel listType='user'>
+        <ListPanel listType='user' style={{paddingTop: 64}}>
             <UserList {...props}/>
         </ListPanel>
     );
