@@ -6,6 +6,9 @@
 require('./style/index.less');
 var classNames = require('classnames');
 import AddApplyForm from './view/add_apply_form';
+import AddAndShowApplyList from './view/add_and_show_apply_list';
+import ButtonZones from 'CMP_DIR/top-nav/button-zones';
+import {Button} from 'antd';
 const APPLYAPPROVE_LAYOUT = {
     TOPANDBOTTOM: 64
 };
@@ -13,58 +16,54 @@ class ApplyApproveManage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showApplyTypeList: true
+            showAddForm: false,
+            showApplyTypeList: [{'applyType': '默认申请审批','approveRoles': ['销售'],'approveCheck': false,id: '111111111111'},{'applyType': '请假申请审批','approveRoles': ['销售222'],'approveCheck': true,id: '222222222222222222'}],//申请审批的列表
         };
     }
-
     onStoreChange = () => {
 
     };
-    showApplyForm = () => {
+    updateShowApplyList = (showApplyTypeList) => {
         this.setState({
-            showApplyTypeList: false
+            showApplyTypeList: showApplyTypeList || this.state.showApplyTypeList,
+            showAddForm: false
         });
     };
-    renderAddApplyBtn = () => {
+
+    renderApplyTypeList = () => {
         return (
-            <div className="apply-add-show-card add-card">
-                <div className="add-card-tip" onClick={this.showApplyForm}>
-                    + {Intl.get('apply.add.apply.type', '添加申请类型')}
-                </div>
-            </div>
-        );
-    };
-    closeAddApplyPanel = () => {
-        this.setState({
-            showApplyTypeList: true
-        });
-    };
-    renderAddApplyForm = () => {
-        return (
-            <AddApplyForm
-                applyApproveType="一个自定义申请"
-                applyTypeData= ""
-                closeAddPanel ={this.closeAddApplyPanel}
+            <AddAndShowApplyList
+                showApplyList = {this.state.showApplyTypeList}
+                showAddForm = {this.state.showAddForm}
+                updateShowApplyList = {this.updateShowApplyList}
             />
         );
     };
-    renderApplyTypeList = () => {
-        var hasExistedApplyList = this.state.existedApplyList;
+    handleClickAddForm = () => {
+        this.setState({
+            showAddForm: true
+        });
+    };
+    renderTopBottom = () => {
         return (
-            <div className="apply-list">
-                {this.renderAddApplyBtn()}
-                {/*渲染已经有的申请审批的类型*/}
-            </div>
+            <ButtonZones>
+                <div className="btn-item-container">
+                    <Button className='btn-item'
+                        onClick={this.handleClickAddForm}>{Intl.get('apply.add.apply.type', '添加申请类型')}</Button>
+                </div>
+            </ButtonZones>
         );
     };
     render = () => {
-        var showApplyList = this.state.showApplyTypeList;
-        var cls = classNames('apply-approve-container',{'show-apply-list': showApplyList});
         var height = $(window).height() - APPLYAPPROVE_LAYOUT.TOPANDBOTTOM;
         return (
-            <div className={cls} style={{height: height}}>
-                {showApplyList ? this.renderApplyTypeList() : this.renderAddApplyForm()}
+            <div className="apply-approve-manage">
+                {this.renderTopBottom()}
+                <div className='apply-approve-container' style={{height: height}}>
+                    {this.renderApplyTypeList()}
+                </div>
             </div>
+
         );
     }
 }

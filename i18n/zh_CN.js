@@ -2857,6 +2857,9 @@ var zh_CN = {
     'apply.add.form.content': '表单内容',
     'apply.add.form.regex': '审批规则',
     'apply.approve.manage.add.from.right': '请从右边添加表单内容',
-    'apply.approve.manage.no.content': '暂无表单内容'
+    'apply.approve.manage.no.content': '暂无表单内容',
+    'config.apply.manage': '申请审批管理',
+    'apply.approve.qualified.user': '可申用户',
+    'apply.approve.name.apply': '申请类型名称'
 };
 export default zh_CN;
