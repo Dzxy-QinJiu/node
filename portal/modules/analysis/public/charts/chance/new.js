@@ -78,9 +78,12 @@ export function getNewChanceChart(chartType = 'table') {
         //将可见系列的底边距设置为0，以覆盖默认底边距，使可见系列的底部能与不可见系列的底部错开，这样最下面的一个百分比才能正确定位
         visibleSerie.bottom = 0;
 
+        //成交率
         const dealRate = _.last(visibleSerie.data).dealRate;
 
+        //添加两个辅助系列，以引出4条线来显示成交率
         option.series.push(
+            //第一个系列用于显示上下边线
             {
                 type: 'funnel',
                 markLine: {
@@ -112,6 +115,7 @@ export function getNewChanceChart(chartType = 'table') {
                     ]
                 }
             },
+            //第二个系列用于显示上下边线之间的两条竖线及成交率
             {
                 type: 'funnel',
                 markLine: {
@@ -206,6 +210,7 @@ export function getNewChanceChart(chartType = 'table') {
         //成交率
         let dealRate = ((data.deal / data.total) * 100).toFixed(2) + '%';
 
+        //将成交率存入最后一个数据项
         _.last(processedData).dealRate = dealRate;
 
         return processedData;
