@@ -277,9 +277,11 @@ class UserAbnormalLogin extends React.Component {
         //应用的下拉框
         var appLists = this.state.appLists;
         let list = [];
-        list = _.get(appLists, 'length') && _.map(appLists, (item) => {
-            return (<Option value={item['app_id']} key={item['app_id']} >{item['app_name']}</Option>);
-        });
+        if (_.get(appLists, 'length')) {
+            list = _.map(appLists, (item) => {
+                return (<Option value={item['app_id']} key={item['app_id']} >{item['app_name']}</Option>);
+            });
+        }
         list.unshift(<Option value="" key="all" title={Intl.get('user.app.all', '全部应用')}><ReactIntl.FormattedMessage id="user.app.all" defaultMessage="全部应用" /></Option>);
         if (this.state.abnormalLoginLoading && !this.state.abnormalLoginList.length) {
             //加载中的情况
