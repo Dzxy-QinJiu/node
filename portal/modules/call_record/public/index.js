@@ -69,17 +69,19 @@ class CallRecordList extends React.Component {
 
     closeCustomerUserListPanel = () => {
         this.setState({
-            isShowCustomerUserListPanel: false
+            isShowCustomerUserListPanel: false,
+            customerOfCurUser: {},
         });
     };
 
     render() {
-        let customerOfCurUser = this.state.customerOfCurUser;
+        let customerOfCurUser = this.state.customerOfCurUser || {};
         return (
             <div>
                 <div className='call-record-wrap table-btn-fix' data-tracename="通话记录界面">
                     <div ref="wrap">
-                        <CallRecord showRightPanel={this.state.showRightPanel}/>
+                        <CallRecord showRightPanel={this.state.showRightPanel}
+                            ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}/>
                     </div>
                 </div>
                 {/*该客户下的用户列表*/}

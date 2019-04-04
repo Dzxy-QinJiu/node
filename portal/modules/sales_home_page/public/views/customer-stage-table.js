@@ -5,10 +5,7 @@ import { Alert } from 'antd';
 import Spinner from 'CMP_DIR/spinner';
 import PropTypes from 'prop-types';
 import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
-import rightPanelUtil from 'CMP_DIR/rightPanel';
-var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
-const RightPanel = rightPanelUtil.RightPanel;
-var AppUserManage = require('MOD_DIR/app_user_manage/public');
+
 //计算距离所需布局距离
 const LAYOUT = {
     TOP: 150//顶部留白
@@ -21,8 +18,6 @@ class CustomerStageTable extends React.Component {
             showRightPanel: false,
             selectedCustomerId: '',
             selectedCustomerIndex: '',
-            isShowCustomerUserListPanel: false,
-            customerOfCurUser: {},
             tableHeight: 0,
         };
     }
@@ -45,14 +40,6 @@ class CustomerStageTable extends React.Component {
     hideRightPanel = () => {
         this.setState({
             showRightPanel: false
-        });
-    }
-
-    //客户详情面板相关方法
-    ShowCustomerUserListPanel(data) {
-        this.setState({
-            isShowCustomerUserListPanel: true,
-            customerOfCurUser: data.customerObj
         });
     }
 
@@ -82,7 +69,7 @@ class CustomerStageTable extends React.Component {
             phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
                 customer_params: {
                     currentId: item.customer_id,
-                    ShowCustomerUserListPanel: this.ShowCustomerUserListPanel.bind(this),
+                    ShowCustomerUserListPanel: this.props.ShowCustomerUserListPanel,
                     hideRightPanel: this.hideRightPanel
                 }
             });
@@ -164,17 +151,6 @@ class CustomerStageTable extends React.Component {
                             scroll={{ y: this.state.tableHeight }}
                         />
                     </div>
-                    <RightPanel
-                        className="customer-user-list-panel"
-                    >
-                        {this.state.isShowCustomerUserListPanel ?
-                            <AppUserManage
-                                customer_id={customerOfCurUser.id}
-                                hideCustomerUserList={this.props.onClose}
-                                customer_name={customerOfCurUser.name}
-                            /> : null
-                        }
-                    </RightPanel>
                 </div>
             );
         };
@@ -197,7 +173,8 @@ CustomerStageTable.propTypes = {
     params: PropTypes.object,
     result: PropTypes.object,
     showNoMoreData: PropTypes.boolean,
-    onClose: PropTypes.func
+    onClose: PropTypes.func,
+    ShowCustomerUserListPanel: PropTypes.func
 };
 
 export default CustomerStageTable;

@@ -533,7 +533,7 @@ class CustomerUsers extends React.Component {
 
     //展示按客户搜索到的用户列表
     triggerUserList(userNum) {
-        if (this.props.isMerge || !userNum) return;
+        if (this.props.isMerge || !userNum || this.props.userViewShowCustomerUserListPanel) return;
         if (_.isFunction(this.props.ShowCustomerUserListPanel)) {
             this.props.ShowCustomerUserListPanel({customerObj: this.state.curCustomer || {}});
         }
@@ -549,7 +549,8 @@ class CustomerUsers extends React.Component {
         if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
             isApplyButtonShow = true;
         }
-        let userNumClass = classNames('user-total-tip', {'user-total-active': !this.props.isMerge && userNum});
+        //合并客户、用户列表下、用户不存在时，总数不可以点击
+        let userNumClass = classNames('user-total-tip', {'user-total-active': !this.props.isMerge && userNum && !this.props.userViewShowCustomerUserListPanel});
         return (<div className="crm-user-list-container" data-tracename="用户页面">
             <div className="user-number">
                 {this.state.isLoading ? null : userNum ? (
@@ -600,6 +601,8 @@ CustomerUsers.propTypes = {
     curCustomer: PropTypes.object,
     closeOpenAppPanel: PropTypes.func,
     ShowCustomerUserListPanel: PropTypes.func,
-    showUserDetail: PropTypes.func
+    showUserDetail: PropTypes.func,
+    //用列表下查看客户详情时传true,此时不用添加点击用户数打开用户列表的事件
+    userViewShowCustomerUserListPanel: PropTypes.bool
 };
 export default CustomerUsers;

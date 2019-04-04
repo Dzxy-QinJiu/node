@@ -116,8 +116,6 @@ class CallRecord extends React.Component {
             showRightPanel: false,
             seletedRecordId: '',//当前点击的记录id
             showTextEdit: {}, //展示跟进记录的编辑框
-            isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
-            CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
             invalidPhoneLists: [],//无效电话列表
             getInvalidPhoneErrMsg: '',//获取无效电话失败后的信息
             playingItemPhone: '',//正在听的录音所属的电话号码
@@ -482,7 +480,7 @@ class CallRecord extends React.Component {
             customer_params: {
                 currentId: id,
                 hideRightPanel: this.hideRightPanel,
-                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel
+                ShowCustomerUserListPanel: this.props.ShowCustomerUserListPanel
             }
         });
     };
@@ -880,20 +878,6 @@ class CallRecord extends React.Component {
         });
         //隐藏播放窗口
         $('.audio-play-container').animate({ height: '0' }).css('border', '0');
-    };
-
-    ShowCustomerUserListPanel = (data) => {
-        this.setState({
-            isShowCustomerUserListPanel: true,
-            CustomerInfoOfCurrUser: data.customerObj
-        });
-
-    };
-
-    closeCustomerUserListPanel = () => {
-        this.setState({
-            isShowCustomerUserListPanel: false
-        });
     };
 
     //上报客服电话

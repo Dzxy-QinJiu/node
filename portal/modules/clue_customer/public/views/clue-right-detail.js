@@ -311,6 +311,7 @@ class ClueRightPanel extends React.Component {
                                         <ClueDynamic
                                             currentId={curClue.id}
                                             divHeight={divHeight}
+                                            ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
                                         />
                                     ) : null}
                                 </TabPane>
@@ -349,6 +350,6 @@ ClueRightPanel.propTypes = {
     showFlag: PropTypes.bool,
     currentId: PropTypes.string,
     className: PropTypes.string,
-
+    ShowCustomerUserListPanel: PropTypes.func
 };
 export default ClueRightPanel;
