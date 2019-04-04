@@ -134,12 +134,12 @@ class SalesTeamCard extends React.Component {
     //管理员获取所有成员列表
     getAllUserList = () => {
         getAllSalesUserList((allUserList) => {
-            if (_.get(allUserList, 'length')) {
-                this.setState({allUserList, salesTeamList: []});
-            } else {
+            if (_.isEmpty(allUserList)) {
                 this.setState({
                     allUserList: []
                 });
+            } else {
+                this.setState({allUserList, salesTeamList: []});
             }
         });
     };
