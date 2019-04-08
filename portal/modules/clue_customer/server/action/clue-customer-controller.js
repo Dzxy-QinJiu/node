@@ -6,30 +6,32 @@
 'use strict';
 var clueCustomerService = require('../service/clue-customer-service');
 var path = require('path');
-import Intl from '../../../../public/intl/intl';
+let BackendIntl = require('../../../../lib/utils/backend_intl');
 const _ = require('lodash');
 const moment = require('moment');
 const multiparty = require('multiparty');
 const fs = require('fs');
 
 const DATE_FORMAT = oplateConsts.DATE_FORMAT;
-const CLUE_DIFF_TYPE = [
-    {
-        name: Intl.get('common.all', '全部'),
-        value: '',
-    },
-    {
-        name: Intl.get('clue.customer.will.distribution', '待分配'),
-        value: '0',
-    },
-    {
-        name: Intl.get('sales.home.will.trace', '待跟进'),
-        value: '1',
-    },
-    {
-        name: Intl.get('clue.customer.has.follow', '已跟进'),
-        value: '2',
-    }];
+function getClueDiffType(backendIntl) {
+    return [
+        {
+            name: backendIntl.get('common.all', '全部'),
+            value: '',
+        },
+        {
+            name: backendIntl.get('clue.customer.will.distribution', '待分配'),
+            value: '0',
+        },
+        {
+            name: backendIntl.get('sales.home.will.trace', '待跟进'),
+            value: '1',
+        },
+        {
+            name: backendIntl.get('clue.customer.has.follow', '已跟进'),
+            value: '2',
+        }];
+}
 const contactWays = ['phone','qq','email','weChat'];
 //获取线索客户列表
 exports.getClueCustomerList = function(req, res) {
@@ -216,64 +218,67 @@ exports.getClueDetailById = function(req, res) {
             res.status(500).json(err && err.message);
         });
 };
-
-const CLUE_LIST_COLUMNS = [
-    {
-        title: Intl.get('clue.customer.clue.name', '线索名称'),
-        dataIndex: 'name',
-    }, {
-        title: Intl.get('clue.filter.clue.status', '线索状态'),
-        dataIndex: 'status'
-    },
-    {
-        title: Intl.get('clue.analysis.consult.time', '咨询时间'),
-        dataIndex: 'source_time',
-    },
-    {
-        title: Intl.get('crm.sales.clue.source', '线索来源'),
-        dataIndex: 'clue_source',
-    },{
-        title: Intl.get('clue.customer.source.ip', '来源IP'),
-        dataIndex: 'source_ip',
-    },{
-        title: Intl.get('crm.96', '地域'),
-        dataIndex: 'province',
-    },{
-        title: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
-        dataIndex: 'access_channel',
-    },{
-        title: Intl.get('clue.customer.classify', '线索分类'),
-        dataIndex: 'clue_classify'
-    },{
-        title: Intl.get('crm.sales.clue.descr', '线索描述'),
-        dataIndex: 'source',
-    },{
-        title: Intl.get('crm.5', '联系方式'),
-        dataIndex: 'contacts',
-    },{
-        title: Intl.get('clue.customer.associate.customer', '关联客户'),
-        dataIndex: 'customer_name'
-    },{
-        title: Intl.get('clue.handle.clue.person', '当前跟进人'),
-        dataIndex: 'user_name'
-    },{
-        title: Intl.get('clue.list.clue.availibility','无效线索'),
-        dataIndex: 'availability'
-    },{
-        title: Intl.get('call.record.follow.content', '跟进内容'),
-        dataIndex: 'customer_traces'
-    }
-];
+function getClueListColumns(backendIntl) {
+    return [
+        {
+            title: backendIntl.get('clue.customer.clue.name', '线索名称'),
+            dataIndex: 'name',
+        }, {
+            title: backendIntl.get('clue.filter.clue.status', '线索状态'),
+            dataIndex: 'status'
+        },
+        {
+            title: backendIntl.get('clue.analysis.consult.time', '咨询时间'),
+            dataIndex: 'source_time',
+        },
+        {
+            title: backendIntl.get('crm.sales.clue.source', '线索来源'),
+            dataIndex: 'clue_source',
+        },{
+            title: backendIntl.get('clue.customer.source.ip', '来源IP'),
+            dataIndex: 'source_ip',
+        },{
+            title: backendIntl.get('crm.96', '地域'),
+            dataIndex: 'province',
+        },{
+            title: backendIntl.get('crm.sales.clue.access.channel', '接入渠道'),
+            dataIndex: 'access_channel',
+        },{
+            title: backendIntl.get('clue.customer.classify', '线索分类'),
+            dataIndex: 'clue_classify'
+        },{
+            title: backendIntl.get('crm.sales.clue.descr', '线索描述'),
+            dataIndex: 'source',
+        },{
+            title: backendIntl.get('crm.5', '联系方式'),
+            dataIndex: 'contacts',
+        },{
+            title: backendIntl.get('clue.customer.associate.customer', '关联客户'),
+            dataIndex: 'customer_name'
+        },{
+            title: backendIntl.get('clue.handle.clue.person', '当前跟进人'),
+            dataIndex: 'user_name'
+        },{
+            title: backendIntl.get('clue.list.clue.availibility','无效线索'),
+            dataIndex: 'availability'
+        },{
+            title: backendIntl.get('call.record.follow.content', '跟进内容'),
+            dataIndex: 'customer_traces'
+        }
+    ];
+}
 
 //导出数据
 exports.exportData = function(req, res) {
     clueCustomerService.getClueFulltext(req, res).on('success', result => {
-        doExport(result);
+        let backendIntl = new BackendIntl(req);
+        doExport(result, backendIntl);
     }).on('error', codeMessage => {
         res.status(500).json(codeMessage);
     });
     //执行导出
-    function doExport(data) {
+    function doExport(data, backendIntl) {
+        const CLUE_LIST_COLUMNS = getClueListColumns(backendIntl);
         const columnTitles = _.map(CLUE_LIST_COLUMNS, 'title');
         const list = _.isArray(data.result) ? data.result : [];
         const rows = list.map(item => {
@@ -286,6 +291,7 @@ exports.exportData = function(req, res) {
                     }
                 }
                 if (column.dataIndex === 'status'){
+                    const CLUE_DIFF_TYPE = getClueDiffType(backendIntl);
                     var targetObj = _.find(CLUE_DIFF_TYPE,(item) => {
                         return value === item.value;
                     });
@@ -314,13 +320,13 @@ exports.exportData = function(req, res) {
 
                     traceAddTime = traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : '';
                     var tracePersonName = _.get(value, '[0].nick_name', '');//跟进人的名字
-                    value = _.get(value,'[0].remark') + '(' + tracePersonName + Intl.get('schedule.expired.call.time.at', '于') + traceAddTime + Intl.get('common.add', '添加') + ')';
+                    value = _.get(value,'[0].remark') + '(' + tracePersonName + backendIntl.get('schedule.expired.call.time.at', '于') + traceAddTime + backendIntl.get('common.add', '添加') + ')';
                 }
                 if (column.dataIndex === 'user_name' && item.sales_team){
                     value += `—${item.sales_team}`;
                 }
                 if (column.dataIndex === 'availability'){
-                    value = value === '1' ? Intl.get('user.yes', '是') : Intl.get('user.no', '否');
+                    value = value === '1' ? backendIntl.get('user.yes', '是') : backendIntl.get('user.no', '否');
                 }
                 //处理特殊字符
                 value = value.replace(/,/g, '，');
@@ -336,7 +342,7 @@ exports.exportData = function(req, res) {
         let csv = csvArr.join('\n');
         //防止中文乱码
         csv = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(csv)]);
-        res.setHeader('Content-disposition', 'attachement; filename=xiansuo.csv');
+        res.setHeader('Content-disposition', `attachement; filename=${encodeURI(backendIntl.get('crm.sales.clue', '线索'))}.csv`);
         res.setHeader('Content-Type', 'application/csv');
         res.send(csv);
     }
