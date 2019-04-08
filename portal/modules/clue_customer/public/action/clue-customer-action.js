@@ -66,12 +66,11 @@ function ClueCustomerActions() {
         });
     };
     //批量分配线索
-    //标记线索是否有效
     this.distributeCluecustomerToSaleBatch = function(submitObj,callback) {
         this.dispatch({error: false, loading: true});
         clueCustomerAjax.distributeCluecustomerToSaleBatch(submitObj).then((result) => {
             this.dispatch({error: false, loading: false});
-            _.isFunction(callback) && callback();
+            _.isFunction(callback) && callback({taskId: _.get(result,'batch_label')});
         },(errorMsg) => {
             this.dispatch({error: true, loading: false});
             _.isFunction(callback) && callback({errorMsg: errorMsg || Intl.get('failed.distribute.cluecustomer.to.sales','把线索客户分配给对应的销售失败')});
