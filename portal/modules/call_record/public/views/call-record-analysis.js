@@ -1566,7 +1566,7 @@ class CallRecordAnalyis extends React.Component {
 
     // 团队和成员筛选框
     renderTeamMembersSelect = () => {
-        let teamList = this.state.teamList.list; // 团队数据
+        let teamList = _.uniqBy(this.state.teamList.list, 'name'); // 团队数据，去重是为了避免从团队切换到成员时，成员下拉列表里出现团队的问题
         let memberList = this.state.memberList.list; // 成员数据
 
         // 第一个选择框渲染的数据
