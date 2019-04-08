@@ -287,9 +287,8 @@ class ApplyViewDetail extends React.Component {
         var customersAdds = [];
         _.forEach(detail.customers, (item) => {
             if (!_.isEmpty(item)){
-                var showAddr = _.get(item,'province','') + _.get(item,'city','') + _.get(item,'county','') + _.get(item, 'address','');
+                var showAddr = _.get(item,'province','') + _.get(item,'city','');
                 customersAdds.push(showAddr);
-
             }
         });
         //去掉数组中的重复元素

@@ -2731,7 +2731,10 @@ var en_US = {
     'failed.get.reply.comment': 'Failed to get comment lists',//获取回复列表失败
     'apply.approve.upload.no.container.space': 'Please do not has space in your file name!',//文件名称中不要含有空格！
     'failed.delete.apply.load.approve': 'Failed to delete files',//删除文件失败！
-    'click.ctrl.upload.mutil.file': 'You can upload multiple files at the same time, only upload image files, text files and compressed files. The file size should not exceed 10M!',//可同时上传多个文件，只能上传图片文件，文本文件和压缩文件，文件大小不要超过10M！
+    'click.ctrl.upload.mutil.file': 'You can upload multiple files at the same time, only upload {office}, {image}, text files and {compact}. The file size should not exceed 10M!',//可同时上传多个文件，只能上传{office}，{image}，文本文件和{compact}，文件大小不要超过10M！
+    'leave.apply.office.document': 'Office document',//办公文件
+    'leave.apply.image.document': 'Image document',//图片文件
+    'leave.apply.compact.document': 'Compact document',//压缩文件
     'apply.approve.customer.info': 'Customer Info',//客户资料
     'apply.approve.add.files': 'Added files',//补充文件
     'fail.apply.approve.result': 'Failed to approve',//审批失败
