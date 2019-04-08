@@ -64,10 +64,12 @@ export function getCustomerTransferTrendChart() {
                 csvData.push(thead);
 
                 _.each(chart.data, item => {
-                    let tr = [item.name];
-                    const valueCols = _.map(firstItem.interval_list, 'number');
-                    tr = tr.concat(valueCols);
-                    csvData.push(tr);
+                    if (item.name) {
+                        let tr = [item.name];
+                        const valueCols = _.map(firstItem.interval_list, 'number');
+                        tr = tr.concat(valueCols);
+                        csvData.push(tr);
+                    }
                 });
             }
 
