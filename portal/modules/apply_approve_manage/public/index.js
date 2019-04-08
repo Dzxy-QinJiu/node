@@ -9,9 +9,7 @@ import AddApplyForm from './view/add_apply_form';
 import AddAndShowApplyList from './view/add_and_show_apply_list';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {Button} from 'antd';
-const APPLYAPPROVE_LAYOUT = {
-    TOPANDBOTTOM: 64
-};
+import {calculateHeight } from './utils/apply-approve-utils';
 class ApplyApproveManage extends React.Component {
     constructor(props) {
         super(props);
@@ -55,11 +53,10 @@ class ApplyApproveManage extends React.Component {
         );
     };
     render = () => {
-        var height = $(window).height() - APPLYAPPROVE_LAYOUT.TOPANDBOTTOM;
         return (
             <div className="apply-approve-manage">
                 {this.renderTopBottom()}
-                <div className='apply-approve-container' style={{height: height}}>
+                <div className='apply-approve-container' style={{height: calculateHeight()}}>
                     {this.renderApplyTypeList()}
                 </div>
             </div>

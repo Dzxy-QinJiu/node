@@ -8,6 +8,8 @@ import {AntcTable} from 'antc';
 import {Switch, Input, Button, Dropdown, Menu} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import AddApplyForm from './add_apply_form';
+var classNames = require('classnames');
+import {calculateHeight, APPLYAPPROVE_LAYOUT } from '../utils/apply-approve-utils';
 class AddAndShowApplyList extends React.Component {
     constructor(props) {
         super(props);
@@ -52,10 +54,15 @@ class AddAndShowApplyList extends React.Component {
             }
         });
     };
-    showApplyDetailPanel = () => {
-        this.setState({
-            showApplyDetailForm: true
-        });
+    showApplyDetailPanel = (applyId) => {
+        var target = this.getTargetApply(applyId);
+        if (target){
+            this.setState({
+                showApplyDetailForm: true,
+                applyTypeData: target
+            });
+        }
+
     };
     onStoreChange = () => {
 
@@ -169,8 +176,8 @@ class AddAndShowApplyList extends React.Component {
 
     renderDeletingBtns = (record) => {
         return (
-            <span className="-delete-btn-container">
-                <Button onClick={this.handleConfirmDeleteApply.bind(this, record)}>{Intl.get('crm.contact.delete.confirm', '确认删除')}</Button>
+            <span className="delete-btn-container">
+                <Button className='confirm-del' onClick={this.handleConfirmDeleteApply.bind(this, record)}>{Intl.get('crm.contact.delete.confirm', '确认删除')}</Button>
                 <Button onClick={this.handleCancelDeleteApply.bind(this, record)}>{Intl.get('config.manage.realm.canceltext', '取消')}</Button>
             </span>
         );
@@ -178,8 +185,7 @@ class AddAndShowApplyList extends React.Component {
     renderApplyDetail = () => {
         return (
             <AddApplyForm
-                applyApproveType="一个自定义申请"
-                applyTypeData= ""
+                applyTypeData= {this.state.applyTypeData}
                 closeAddPanel ={this.closeAddApplyPanel}
             />
         );
@@ -205,8 +211,9 @@ class AddAndShowApplyList extends React.Component {
                             },
                         };
                     } else {
+                        var cls = classNames('apply-type',{'approve-status': !record.approveCheck});
                         return (
-                            <span>
+                            <span className={cls}>
                                 <span>{text}</span>
                                 <span className="hidden record-id">{record.id}</span>
                             </span>
@@ -224,14 +231,14 @@ class AddAndShowApplyList extends React.Component {
                             props: {'colSpan': 0},
                         };
                     } else {
-                        return (<span>{text}</span>);
+                        return (<span className="approve-role">{text}</span>);
                     }
 
                 }
             }, {
                 title: Intl.get('common.operate', '操作'),
                 width: '240px',
-                className: 'has-filter',
+                className: '',
                 render: (text, record, index) => {
                     if (record.showAddForm) {
                         return {
@@ -249,7 +256,7 @@ class AddAndShowApplyList extends React.Component {
             },
         ];
         return (
-            <div className="apply-list-container">
+            <div className="apply-list-container" style={{height: calculateHeight() - APPLYAPPROVE_LAYOUT.PADDINGHEIGHT * 2}}>
                 {this.state.showApplyDetailForm ? this.renderApplyDetail() : <AntcTable
                     columns={columns}
                     dataSource={this.state.showApplyList}

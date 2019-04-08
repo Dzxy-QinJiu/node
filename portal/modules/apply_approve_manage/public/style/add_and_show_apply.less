@@ -1,21 +1,70 @@
-.apply-list-container{
-  .add-form{
-    input{
+.apply-list-container {
+  .add-form {
+    input {
       display: inline-block;
       width: 300px;
     }
-    button{
+    button {
       margin-left: 10px;
     }
   }
-  .operate-wrap{
-    .iconfont.icon-suspension-points{
-      cursor: pointer;
-      font-weight: bolder;
-      font-size: 20px;
-      position: relative;
-      top: 3px;
-      margin-left: 4px;
+  .ant-table-body {
+    .ant-table-thead {
+      th.has-filter {
+        font-size: 14px;
+        color: #999;
+        font-weight: normal;
+      }
+
+    }
+    .ant-table-tbody {
+      .apply-type {
+        color: #333;
+        font-size: 16px;
+      }
+      .apply-type.approve-status {
+        color: #999;
+      }
+      .approve-role {
+        color: #999;
+        font-size: 14px;
+      }
+
     }
   }
+
+  tr {
+    .operate-wrap {
+      //visibility: hidden;
+      display: inline-block;
+      //height: 30px;
+      .ant-switch {
+        //visibility: hidden;
+      }
+      .delete-btn-container{
+        .confirm-del{
+          background: #EB5E57;
+          color: #fff;
+          margin-right: 8px;
+        }
+      }
+    }
+    //&:hover {
+      .operate-wrap {
+        visibility: visible;
+        .iconfont.icon-suspension-points {
+          cursor: pointer;
+          font-weight: bolder;
+          font-size: 20px;
+          position: relative;
+          top: 3px;
+          margin-left: 4px;
+        }
+        .ant-switch {
+          visibility: visible;
+        }
+      }
+    //}
+  }
+
 }
