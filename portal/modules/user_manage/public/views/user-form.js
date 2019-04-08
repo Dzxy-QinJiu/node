@@ -435,7 +435,7 @@ class UserForm extends React.Component {
                                 wrapperCol={{span: formItemLayout.wrapperCol.span}}
                                 form={this.props.form}
                                 label={Intl.get('user.phone', '手机号')}
-                                colon="false"
+                                colon={false}
                             />
                             {/** v8环境下，不显示所属团队 */}
                             {this.props.formType === 'add' ? (!Oplate.hideSomeItem && <FormItem
