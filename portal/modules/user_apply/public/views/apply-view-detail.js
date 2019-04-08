@@ -163,7 +163,7 @@ const ApplyViewDetail = createReactClass({
             showBackoutConfirmType: '',//操作的确认框类型
             isOplateUser: false,
             usersManList: [],//成员列表
-            checkStatus: true, //自动生成密码框是否选中
+            checkStatus: true, //自动生成密码radio是否选中
             passwordValue: '',//试用或者签约用户申请的明文密码
             showWariningTip: false,//是否展示密码的提示信息
             ...ApplyViewDetailStore.getState()
@@ -590,7 +590,7 @@ const ApplyViewDetail = createReactClass({
     getIntegrateConfig(){
         commonDataUtil.getIntegrationConfig().then(resultObj => {
             let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
-            this.setState({isOplateUser});
+            this.setState({isOplateUser: isOplateUser,checkStatus: isOplateUser});
         });
     },
     notShowIcon(){
