@@ -43,6 +43,8 @@ class ApplyDetailRemarks extends React.Component {
             return (<Alert message={message} type="error" showIcon={true}/> );
         }
         let replyList = replyListInfo.list;
+        //按回复时间进行排序
+        replyList = _.sortBy(replyList, item => item.comment_time);
         if (_.isArray(replyList) && replyList.length) {
             return (
                 <ul>
