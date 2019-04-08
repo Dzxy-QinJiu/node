@@ -30,12 +30,16 @@ class PhoneInput extends React.Component {
                 callback();
                 return;
             }
+            
+            let regexFlag = commonPhoneRegex.test(value) ||
+                            autoLineAreaPhoneRegex.test(value) ||
+                            hotlinePhoneRegex.test(value) ||
+                            phone1010Regex.test(value);
+            if (this.props.label === Intl.get('user.phone', '手机号')) {
+                regexFlag = commonPhoneRegex.test(value);
+            }
 
-            if (commonPhoneRegex.test(value) ||
-                autoLineAreaPhoneRegex.test(value) ||
-                hotlinePhoneRegex.test(value) ||
-                phone1010Regex.test(value)
-            ) {
+            if (regexFlag) {
                 callback();
             } else {
                 //延迟1秒钟后再显示错误信息，以防止一输入就报错
