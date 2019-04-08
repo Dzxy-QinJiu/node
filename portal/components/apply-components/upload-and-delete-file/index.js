@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/12/24.
  */
 require('./index.less');
-import {Button, Icon, message,Upload,Popconfirm} from 'antd';
+import {Button, Icon, message,Upload,Popconfirm, Tooltip} from 'antd';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import Trace from 'LIB_DIR/trace';
@@ -263,7 +263,26 @@ class UploadAndDeleteFile extends React.Component {
                         {this.state.isUpLoading ?
                             <Icon type="loading" className="icon-loading"/> : null}</Button>
                 </Upload>
-                <p>{Intl.get('click.ctrl.upload.mutil.file','可同时上传多个文件，只能上传图片文件，文本文件和压缩文件，文件大小不要超过10M！')}</p>
+                <p>
+                    <ReactIntl.FormattedMessage
+                        id='click.ctrl.upload.mutil.file'
+                        defaultMessage={'可同时上传多个文件，只能上传{office}，{image}，文本文件和{compact}，文件大小不要超过10M！'}
+                        values={{
+                            'office': (
+                                <Tooltip title="'docx','doc','ppt','pptx','pdf','xls','csv'">
+                                    <span>{Intl.get('leave.apply.office.document', '办公文件')}</span>
+                                </Tooltip>),
+                            'image': (
+                                <Tooltip title="'png','bmp','jpg'">
+                                    <span>{Intl.get('leave.apply.image.document', '图片文件')}</span>
+                                </Tooltip>),
+                            'compact': (
+                                <Tooltip title="'rar','zip'">
+                                    <span>{Intl.get('leave.apply.compact.document', '压缩文件')}</span>
+                                </Tooltip>),
+                        }}
+                    />
+                </p>
             </div>
         );
     };

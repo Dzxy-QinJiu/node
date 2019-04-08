@@ -2758,7 +2758,10 @@ var zh_CN = {
     'failed.get.reply.comment': '获取回复列表失败',
     'apply.approve.upload.no.container.space': '文件名称中不要含有空格！',
     'failed.delete.apply.load.approve': '删除文件失败！',
-    'click.ctrl.upload.mutil.file': '可同时上传多个文件，只能上传图片文件，文本文件和压缩文件，文件大小不要超过10M！',
+    'click.ctrl.upload.mutil.file': '可同时上传多个文件，只能上传{office}，{image}，文本文件和{compact}，文件大小不要超过10M！',
+    'leave.apply.office.document': '办公文件',
+    'leave.apply.image.document': '图片文件',
+    'leave.apply.compact.document': '压缩文件',
     'apply.approve.customer.info': '客户资料',
     'apply.approve.add.files': '补充文件',
     'fail.apply.approve.result': '审批失败',
@@ -2859,6 +2862,6 @@ var zh_CN = {
     'bussiness.trip.time.range': '拜访时间',
     'business.leave.time.range': '出差时长',
     'clue.batch.select.clues': '已选择{num}个线索',
-    'clue.batch.assign.sales': '批量分配'
+    'clue.batch.assign.sales': '批量分配',
 };
 export default zh_CN;
