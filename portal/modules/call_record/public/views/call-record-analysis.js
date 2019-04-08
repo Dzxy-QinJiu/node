@@ -203,7 +203,7 @@ class CallRecordAnalyis extends React.Component {
         }
         if (params) {
             if (params.deviceType && params.deviceType !== 'all') {
-                reqBody.deviceType = params && params.deviceType || this.state.callType;
+                reqBody.type = params && params.deviceType || this.state.callType;
             }
         }
         return reqBody;
