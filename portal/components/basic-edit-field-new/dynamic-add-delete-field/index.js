@@ -11,8 +11,8 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import {Form, Input, Icon} from 'antd';
 const FormItem = Form.Item;
-import {hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import PhoneCallout from 'CMP_DIR/phone-callout';
+import Trace from 'LIB_DIR/trace';
 class DynamicAddDelField extends React.Component {
     constructor(props) {
         super(props);

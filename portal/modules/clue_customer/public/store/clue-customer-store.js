@@ -263,7 +263,11 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
                 var target = _.find(this.curClue.contacts,item => item.id === contact_id);
                 //因为newCustomerDetail中有个属性id是表示的线索的id，所以在遍历属性的时候不要修改这个id，这样会把联系人的id改成线索的id
                 if (target && key !== 'id'){
-                    target[key] = newCustomerDetail[key];
+                    var submitValue = newCustomerDetail[key];
+                    if (_.isArray(submitValue)){
+                        submitValue = _.filter(submitValue, item => item);
+                    }
+                    target[key] = submitValue;
                 }
             }
         }
