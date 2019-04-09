@@ -21,6 +21,12 @@ export function getCustomerTransferTrendChart() {
             if (_.get(arg, 'query.app_id')) {
                 delete arg.query.app_id;
             }
+
+            if (_.get(arg, 'query.statistics_type')) {
+                //这个接口的返回类型参数名为 result_type
+                arg.query.result_type = arg.query.statistics_type;
+                delete arg.query.statistics_type;
+            }
         },
         dataField: 'list',
         processOption: (option, props) => {
