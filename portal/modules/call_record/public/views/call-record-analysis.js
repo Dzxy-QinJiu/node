@@ -206,9 +206,10 @@ class CallRecordAnalyis extends React.Component {
         return reqBody;
     };
 
+    // 通话数量和通话时长的时间参数，统计近一个月的数据
     getTrendParams() {
-        // 通话数量和通话时长的时间参数，统计近一个月(今天往前推30天)的统计
         return {
+            //开始时间为当前选择的结束时间往前推一个月
             start_time: moment(this.state.end_time).subtract(1, 'month').valueOf(),
             end_time: this.state.end_time
         };
