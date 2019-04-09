@@ -159,11 +159,6 @@ class CallRecordAnalyis extends React.Component {
         });
     };
 
-    // 获取团队或是成员的id
-    getTeamOrMemberId = (list, selectValue) => {
-        return _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).map('id').value();
-    };
-
     // 获取团队或成员的参数
     getTeamMemberParam = (hasReturnType) => {
         let teamList = this.state.teamList.list; // 团队数据
@@ -172,8 +167,7 @@ class CallRecordAnalyis extends React.Component {
         let params = {};
         if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && this.state.teamList.list.length > 1) { // 团队时
             if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体团队时
-                let secondSelectTeamId = this.getTeamOrMemberId(teamList, secondSelectValue);
-                params.sales_team_id = secondSelectTeamId.join(',');
+                params.sales_team_id = secondSelectValue.join(',');
             }
         } else { // 成员时
             if (this.state.secondSelectValue === LITERAL_CONSTANT.ALL) { // 全部时
@@ -185,8 +179,7 @@ class CallRecordAnalyis extends React.Component {
                     params.user_id = userIdArray.join(',');
                 }
             } else if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体成员时
-                let secondSelectMemberId = this.getTeamOrMemberId(memberList, secondSelectValue);
-                params.user_id = secondSelectMemberId.join(','); // 成员
+                params.user_id = secondSelectValue.join(','); // 成员
             }
         }
         return params;
@@ -266,8 +259,7 @@ class CallRecordAnalyis extends React.Component {
         let params = {};
         if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && this.state.teamList.list.length > 1) { // 团队时
             if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体团队时
-                let secondSelectTeamId = this.getTeamOrMemberId(teamList, secondSelectValue);
-                params.sales_team_id = secondSelectTeamId.join(',');
+                params.sales_team_id = secondSelectValue.join(',');
             } else {
                 params.sales_team_id = _.map(teamList, 'id').join(',');
             }
@@ -1581,11 +1573,11 @@ class CallRecordAnalyis extends React.Component {
         } else if (teamList.length > 1) { // 展示团队和成员
             if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
                 secondOptions = teamList.map((item, index) => {
-                    return <Option value={item.name} key={index}>{item.name}</Option>;
+                    return <Option value={item.id} key={index}>{item.name}</Option>;
                 });
             } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
                 secondOptions = memberList.map((item, index) => {
-                    return <Option value={item.name} key={index}>{item.name}</Option>;
+                    return <Option value={item.id} key={index}>{item.name}</Option>;
                 });
             }
         }
