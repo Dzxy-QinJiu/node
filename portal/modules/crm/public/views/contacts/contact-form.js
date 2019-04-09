@@ -71,7 +71,7 @@ var ContactForm = createReactClass({
             name: contact.name,
             position: contact.position,
             role: contact.role || Intl.get('crm.115', '经办人'),
-            sex: contact.sex,
+            sex: contact.sex || Intl.get('crm.contact.sex.male', '男'),
             birthday: contact.birthday,
             hobby: contact.hobby,
             remark: contact.remark,
@@ -567,6 +567,26 @@ var ContactForm = createReactClass({
                                 })}
                             </RadioGroup>
                         </FormItem>
+                        {//电话
+                            _.isArray(contactWayAddObj.phone) && contactWayAddObj.phone.length ? contactWayAddObj.phone.map((phone, index) => {
+                                return this.renderPhoneInput(index, contactWayAddObj.phone.length, formData, status);
+                            }) : [this.renderPhoneInput(0, 1, formData, status)]
+                        }
+                        {//qq
+                            _.isArray(contactWayAddObj.qq) && contactWayAddObj.qq.length ? contactWayAddObj.qq.map((qq, index) => {
+                                return this.renderContactWayInput('QQ', 'qq', index, contactWayAddObj.qq.length, formData, status);
+                            }) : [this.renderContactWayInput('QQ', 'qq', 0, 1, formData, status)]
+                        }
+                        {//微信
+                            _.isArray(contactWayAddObj.weChat) && contactWayAddObj.weChat.length ? contactWayAddObj.weChat.map((weChat, index) => {
+                                return this.renderContactWayInput(Intl.get('crm.58', '微信'), 'weChat', index, contactWayAddObj.weChat.length, formData, status);
+                            }) : [this.renderContactWayInput(Intl.get('crm.58', '微信'), 'weChat', 0, 1, formData, status)]
+                        }
+                        {//邮箱
+                            _.isArray(contactWayAddObj.email) && contactWayAddObj.email.length ? contactWayAddObj.email.map((email, index) => {
+                                return this.renderContactWayInput(Intl.get('common.email', '邮箱'), 'email', index, contactWayAddObj.email.length, formData, status);
+                            }) : [this.renderContactWayInput(Intl.get('common.email', '邮箱'), 'email', 0, 1, formData, status)]
+                        }
                         <FormItem
                             className="contact-sex-item"
                             colon={false}
@@ -610,32 +630,12 @@ var ContactForm = createReactClass({
                             labelCol={{span: 2}}
                             wrapperCol={{span: 22}}
                         >
-                            <Input.TextArea autosize={{ minRows: 2, maxRows: 6 }}
+                            <Input.TextArea autosize={{minRows: 2, maxRows: 6}}
                                 value={_.get(formData, 'remark', '')}
                                 onChange={this.setField.bind(this, 'remark')}
                                 placeholder={Intl.get('user.input.remark', '请输入备注')}
                             />
                         </FormItem>
-                        {//电话
-                            _.isArray(contactWayAddObj.phone) && contactWayAddObj.phone.length ? contactWayAddObj.phone.map((phone, index) => {
-                                return this.renderPhoneInput(index, contactWayAddObj.phone.length, formData, status);
-                            }) : [this.renderPhoneInput(0, 1, formData, status)]
-                        }
-                        {//qq
-                            _.isArray(contactWayAddObj.qq) && contactWayAddObj.qq.length ? contactWayAddObj.qq.map((qq, index) => {
-                                return this.renderContactWayInput('QQ', 'qq', index, contactWayAddObj.qq.length, formData, status);
-                            }) : [this.renderContactWayInput('QQ', 'qq', 0, 1, formData, status)]
-                        }
-                        {//微信
-                            _.isArray(contactWayAddObj.weChat) && contactWayAddObj.weChat.length ? contactWayAddObj.weChat.map((weChat, index) => {
-                                return this.renderContactWayInput(Intl.get('crm.58', '微信'), 'weChat', index, contactWayAddObj.weChat.length, formData, status);
-                            }) : [this.renderContactWayInput(Intl.get('crm.58', '微信'), 'weChat', 0, 1, formData, status)]
-                        }
-                        {//邮箱
-                            _.isArray(contactWayAddObj.email) && contactWayAddObj.email.length ? contactWayAddObj.email.map((email, index) => {
-                                return this.renderContactWayInput(Intl.get('common.email', '邮箱'), 'email', index, contactWayAddObj.email.length, formData, status);
-                            }) : [this.renderContactWayInput(Intl.get('common.email', '邮箱'), 'email', 0, 1, formData, status)]
-                        }
                     </Validation>
                 </GeminiScrollbar>
             </Form>
