@@ -158,61 +158,6 @@ let routers = [
         showPrivileges: ['GET_MY_CALL_RECORD', 'GET_ALL_CALL_RECORD']// 获取我的电话统计记录
     },
     {
-        id: 'CONTRACT',
-        name: 'contract.125',//合同
-        routePath: '/contract',
-        shortName: 'contract.125',//合同
-        subMenu: [{
-            id: 'CONTRACT_DASHBOARD',
-            name: 'contract.175',//合同概览
-            routePath: '/contract/dashboard',
-            component: `${MODULE_PATH}contract/dashboard`,
-            showPrivileges: ['OPLATE_SALES_COST_QUERY']
-        }, {
-            id: 'CONTRACT_SALES_LIST',
-            name: 'contract.112',//销售合同
-            routePath: '/contract/sell',
-            component: `${MODULE_PATH}contract/public`,
-            showPrivileges: ['OPLATE_CONTRACT_UPLOAD']
-        }, {
-            id: 'CONTRACT_BUY_LIST',
-            name: 'contract.9',//采购合同
-            routePath: '/contract/buy',
-            component: `${MODULE_PATH}contract/public`,
-            showPrivileges: ['OPLATE_CONTRACT_QUERY']
-        }, {
-            id: 'CONTRACT_REPAYMENT_LIST',
-            name: 'contract.102',//合同回款
-            routePath: '/contract/repayment',
-            component: `${MODULE_PATH}contract/public`,
-            showPrivileges: ['OPLATE_REPAYMENT_ADD']
-        }, {
-            id: 'CONTRACT_COST_LIST',
-            name: 'contract.133',//费用
-            routePath: '/contract/cost',
-            component: `${MODULE_PATH}contract/public`,
-            showPrivileges: ['OPLATE_PAYMENT_ADD']
-        }, {
-            id: 'CONTRACT_ANALYSIS',
-            name: 'contract.188',//分析
-            routePath: '/contract/analysis',
-            component: `${MODULE_PATH}contract/analysis/public`,
-            showPrivileges: ['OPLATE_CONTRACT_ANALYSIS']
-        }, {
-            id: 'CONTRACT_SALES_COMMISSION',
-            name: 'contract.181',//提成计算
-            routePath: '/contract/sales_commission',
-            component: `${MODULE_PATH}sales_commission/public`,
-            showPrivileges: ['OPLATE_CONTRACT_SALERS_COMMISSION']
-        }, {
-            id: 'CONTRACT_COMMISSION_PAYMENT',
-            name: 'contract.189',//提成发放
-            routePath: '/contract/commission_payment',
-            component: `${MODULE_PATH}commission_payment/public`,
-            showPrivileges: ['OPLATE_CONTRACT_SALERS_COMMISSION_RECORD']
-        }]
-    },
-    {
         id: 'SCHEDULE_MANAGEMENT',
         name: 'menu.shortName.schedule',//日程
         routePath: '/schedule_management',
