@@ -30,7 +30,8 @@ function ClueCustomerActions() {
         'afterAssignSales',//分配销售之后
         'setKeyWord',//设置关键字
         'setLastClueId',//用于设置下拉加载的最后一个线索的id
-        'setSortField'
+        'setSortField',
+        'updateClueCustomers'//更新线索列表
     );
     //获取销售列表
     this.getSalesManList = function(cb) {
@@ -70,7 +71,7 @@ function ClueCustomerActions() {
         this.dispatch({error: false, loading: true});
         clueCustomerAjax.distributeCluecustomerToSaleBatch(submitObj).then((result) => {
             this.dispatch({error: false, loading: false});
-            _.isFunction(callback) && callback({taskId: _.get(result,'batch_label')});
+            _.isFunction(callback) && callback({taskId: _.get(result,'batch_label','')});
         },(errorMsg) => {
             this.dispatch({error: true, loading: false});
             _.isFunction(callback) && callback({errorMsg: errorMsg || Intl.get('failed.distribute.cluecustomer.to.sales','把线索客户分配给对应的销售失败')});
