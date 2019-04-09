@@ -2863,6 +2863,7 @@ var zh_CN = {
     'business.leave.time.range': '出差时长',
     'clue.batch.select.clues': '已选择{num}个线索',
     'clue.batch.assign.sales': '批量分配',
-    'clue.export.trace.msg': '{traceman}于{tracetime}添加'
+    'clue.export.trace.msg': '{traceman}于{tracetime}添加',
+    'clue.batch.change.trace.man': '变更跟进人',
 };
 export default zh_CN;

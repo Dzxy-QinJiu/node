@@ -301,5 +301,10 @@ ClueCustomerStore.prototype.deleteClueById = function(data) {
     this.curClueLists = _.filter(this.curClueLists, clue => clueId !== clue.id);
     this.customersSize--;
 };
+//更新线索列表
+ClueCustomerStore.prototype.updateClueCustomers = function(data) {
+    this.curClueLists = data;
+    this.customersSize = _.get(this,'curClueLists.length');
+};
 
 module.exports = alt.createStore(ClueCustomerStore, 'ClueCustomerStore');

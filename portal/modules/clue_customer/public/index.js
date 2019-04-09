@@ -41,6 +41,7 @@ var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import {pathParamRegex} from 'PUB_DIR/sources/utils/validate-util';
+var batchOperate = require('PUB_DIR/sources/push/batch');
 import {FilterInput} from 'CMP_DIR/filter';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import ClueFilterPanel from './views/clue-filter-panel';
@@ -51,6 +52,7 @@ import ShearContent from 'CMP_DIR/shear-content';
 const AlertTimer = require('CMP_DIR/alert-timer');
 const DELAY_TIME = 3000;
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
+var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 68,
@@ -101,6 +103,7 @@ class ClueCustomer extends React.Component {
         }
         this.changeTableHeight();
         $(window).on('resize', e => this.changeTableHeight());
+        batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
     }
     getUnhandledClue = () => {
         var data = getUnhandledClueCountParams();
@@ -123,6 +126,40 @@ class ClueCustomer extends React.Component {
             }
         }
     }
+    batchChangeTraceMan = (taskInfo, taskParams) => {
+        //如果参数不合法，不进行更新
+        if (!_.isObject(taskInfo) || !_.isObject(taskParams)) {
+            return;
+        }
+        //解析tasks
+        var {
+            tasks
+        } = taskInfo;
+        //如果tasks为空，不进行更新
+        if (!_.isArray(tasks) || !tasks.length) {
+            return;
+        }
+        //检查taskDefine
+        tasks = _.filter(tasks, (task) => typeof task.taskDefine === 'string');
+        //如果没有要更新的数据
+        if (!tasks.length) {
+            return;
+        }
+        var curClueLists = this.state.curClueLists;
+        var clueArr = _.map(tasks, 'taskDefine');
+        //遍历每一个客户
+        _.each(clueArr, (clueId) => {
+            //如果当前客户是需要更新的客户，才更新
+            var target = _.find(curClueLists,item => item.id === clueId);
+            if (target) {
+                this.updateItem(target, taskParams, taskParams.isWillDistribute);
+            }
+        });
+        clueCustomerAction.updateClueCustomers(curClueLists);
+        this.setState({
+            selectedClues: []
+        });
+    };
     componentWillUnmount() {
         clueCustomerStore.unlisten(this.onStoreChange);
         this.hideRightPanel();
@@ -130,6 +167,7 @@ class ClueCustomer extends React.Component {
         clueFilterAction.setInitialData();
         clueCustomerAction.resetState();
         $(window).off('resize', this.changeTableHeight);
+        batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
     }
 
     //展示右侧面板
@@ -1069,28 +1107,39 @@ class ClueCustomer extends React.Component {
             //如果是待分配状态，分配完之后要在列表中删除一个,在待跟进列表中增加一个
             var isWillDistribute = clueCustomerTypeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE;
             if (item){
+                //有item的是单个修改跟进人
                 this.updateItem(item,submitObj,isWillDistribute);
                 if (this['changesale' + clue_id]) {
                     //隐藏批量变更销售面板
                     this['changesale' + clue_id].handleCancel();
                 }
             }else{
+                //这个是批量修改联系人
                 if (this.refs.changesales) {
                     //隐藏批量变更销售面板
                     this.refs.changesales.handleCancel();
                 }
-                //如果是批量操作的，找出批量操作的线索，然后修改状态
-                var clueArr = clue_id.split(',');
-                _.forEach(clueArr, (clueId) => {
-                    var target = _.find(this.state.curClueLists,item => item.id === clueId);
-                    if (target){
-                        this.updateItem(target,submitObj,isWillDistribute);
-                    }
-                });
-                //设置选中的线索列表为空
-                this.setState({
-                    selectedClues: []
-                });
+                var taskId = _.get(feedbackObj, 'taskId','');
+                if (taskId){
+                    //向任务列表id中添加taskId
+                    batchOperate.addTaskIdToList(taskId);
+                    //存储批量操作参数，后续更新时使用
+                    var batchParams = _.cloneDeep(submitObj);
+                    batchParams.isWillDistribute = isWillDistribute;
+                    batchOperate.saveTaskParamByTaskId(taskId, batchParams, {
+                        showPop: true,
+                        urlPath: '/clue_customer'
+                    });
+                    //立即在界面上显示推送通知
+                    //界面上立即显示一个初始化推送
+                    var totalSelectedSize = _.get(this,'state.selectedClues.length',0);
+                    batchOperate.batchOperateListener({
+                        taskId: taskId,
+                        total: totalSelectedSize,
+                        running: totalSelectedSize,
+                        typeText: Intl.get('clue.batch.change.trace.man', '变更跟进人')
+                    });
+                }
             }
             if (isWillDistribute) {
                 clueCustomerAction.afterAssignSales(clue_id);
