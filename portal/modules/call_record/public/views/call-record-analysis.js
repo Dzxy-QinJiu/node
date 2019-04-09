@@ -94,9 +94,6 @@ const TOOLTIPDESCRIPTION = {
     COUNT: Intl.get('sales.home.call.cout', '通话数量')
 };
 
-// 趋势图，统计的是近一个月的通话时长和通话数量
-const TREND_TIME = 30 * 24 * 60 * 60 * 1000;
-
 const FIRSR_SELECT_DATA = [LITERAL_CONSTANT.TEAM, LITERAL_CONSTANT.MEMBER];
 
 
@@ -203,20 +200,25 @@ class CallRecordAnalyis extends React.Component {
         }
         if (params) {
             if (params.deviceType && params.deviceType !== 'all') {
-                reqBody.deviceType = params && params.deviceType || this.state.callType;
+                reqBody.type = params && params.deviceType || this.state.callType;
             }
         }
         return reqBody;
     };
 
+    // 通话数量和通话时长的时间参数，统计近一个月的数据
+    getTrendParams() {
+        return {
+            //开始时间为当前选择的结束时间往前推一个月
+            start_time: moment(this.state.end_time).subtract(1, 'month').valueOf(),
+            end_time: this.state.end_time
+        };
+    }
+
     // 通话分析的趋势图
     getCallAnalysisTrendData = (reqBody) => {
-        var nowTime = new Date().getTime();
-        // 通话数量和通话时长的时间参数，统计近一个月(今天往前推30天)的统计
-        let trendParams = {
-            start_time: (nowTime - TREND_TIME),
-            end_time: nowTime
-        };
+        const trendParams = this.getTrendParams();
+
         // 获取通话数量和通话时长的趋势图数据
         CallAnalysisAction.getCallCountAndDur(trendParams, reqBody);
     };
@@ -288,12 +290,8 @@ class CallRecordAnalyis extends React.Component {
 
     //分别获取每个团队的趋势图
     getCallAnalysisTrendDataSeparately = (reqBody) => {
-        var nowTime = new Date().getTime();
-        // 通话数量和通话时长的时间参数，统计近一个月(今天往前推30天)的统计
-        let trendParams = {
-            start_time: (nowTime - TREND_TIME),
-            end_time: nowTime
-        };
+        const trendParams = this.getTrendParams();
+
         // 获取通话数量和通话时长的趋势图数据
         CallAnalysisAction.getCallCountAndDurSeparately(trendParams, reqBody);
     };
@@ -1668,6 +1666,7 @@ class CallRecordAnalyis extends React.Component {
                             <DatePicker
                                 disableDateAfterToday={true}
                                 range="day"
+                                selectedTimeFormat="int"
                                 onSelect={this.onSelectDate}>
                                 <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
                                 <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
