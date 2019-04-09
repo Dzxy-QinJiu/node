@@ -2833,6 +2833,7 @@ var en_US = {
     'bussiness.trip.time.range': 'Visit time',//拜访时间
     'business.leave.time.range': 'Bussiness range',//出差时长
     'clue.batch.select.clues': 'Has selected {num} clues',//已选择{num}个线索
-    'clue.batch.assign.sales': 'Assign in batch'//批量分配
+    'clue.batch.assign.sales': 'Assign in batch',//批量分配
+    'clue.export.trace.msg': '{traceman} added in {tracetime}'//{traceman}于{tracetime}添加
 };
 export default en_US;

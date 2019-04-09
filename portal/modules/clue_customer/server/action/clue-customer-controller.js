@@ -320,7 +320,7 @@ exports.exportData = function(req, res) {
 
                     traceAddTime = traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : '';
                     var tracePersonName = _.get(value, '[0].nick_name', '');//跟进人的名字
-                    value = _.get(value,'[0].remark') + '(' + tracePersonName + backendIntl.get('schedule.expired.call.time.at', '于') + traceAddTime + backendIntl.get('common.add', '添加') + ')';
+                    value = _.get(value,'[0].remark') + '(' + backendIntl.get('clue.export.trace.msg', '{traceman}于{tracetime}添加',{'traceman': tracePersonName, 'tracetime': traceAddTime}) + ')';
                 }
                 if (column.dataIndex === 'user_name' && item.sales_team){
                     value += `—${item.sales_team}`;
