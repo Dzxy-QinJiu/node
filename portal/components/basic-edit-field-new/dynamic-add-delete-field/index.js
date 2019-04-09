@@ -48,13 +48,13 @@ class DynamicAddDelField extends React.Component {
             let saveObj = {
                 id: this.props.id
             };
-            saveObj[this.props.field] = values[this.props.field];
+            saveObj[this.props.field] = _.filter(values[this.props.field], item => item);
             this.setState({loading: true});
             this.props.saveEditData(saveObj, () => {
                 this.setState({
                     loading: false,
                     submitErrorMsg: '',
-                    value: values[this.props.field],
+                    value: saveObj[this.props.field],
                     displayType: 'text'
                 });
             }, errorMsg => {
