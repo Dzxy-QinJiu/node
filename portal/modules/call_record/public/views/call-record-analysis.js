@@ -712,7 +712,7 @@ class CallRecordAnalyis extends React.Component {
                                     // 通话数量
                                     this.renderCallChart(this.state.callList.count, this.countTooltip) :
                                     // 通话时长
-                                    this.renderCallChart(this.state.callList.count, this.durationTooltip)
+                                    this.renderCallChart(this.state.callList.duration, this.durationTooltip)
                             }
                         </div>)}
                 </div>
