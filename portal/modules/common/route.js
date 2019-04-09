@@ -122,7 +122,7 @@ module.exports = [{
     method: 'get',
     path: contractV2AnalysisUrl,
     handler: 'getContractStaticAnalysisData',
-    module: 'contract/server/special-case-handler',
+    module: 'common/server/special-case-handler',
     passport: {
         'needLogin': true
     }
