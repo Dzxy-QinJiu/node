@@ -2,16 +2,6 @@
  * 销售排名
  */
 
-//销售人数
-const NUM_OF_SALES = {
-    //所在团队
-    team: 30,
-    //上级团队
-    superior: 80,
-    //所有
-    all: 200
-};
-
 export function getSalesRankingChart(role) {
     let url = [
         //合同数排名
@@ -79,7 +69,8 @@ export function getSalesRankingChart(role) {
                 delete arg.query.end_time;
             }
         },
-        processData: data => {
+        processChart: chart => {
+            const data = chart.data;
             let processedData = [];
 
             //获取排名对象
@@ -131,7 +122,16 @@ export function getSalesRankingChart(role) {
                 }
             }
 
-            _.each(data, (dataItem, index) => {
+            //包含各层团队人数的数据
+            const dataWithLevelNum = _.get(data, '[0].list[0].sales_list[0]') || _.get(data, '[0][0]');
+            //一级团队人数
+            const firstLevelNum = dataWithLevelNum.first_level_num;
+            //二级团队人数
+            const secondLevelNum = dataWithLevelNum.second_level_num;
+            //三级团队人数
+            const thirdLevelNum = dataWithLevelNum.third_level_num;
+
+            _.each(chart.data, (dataItem, index) => {
                 let rankingData; 
 
                 if (_.isArray(dataItem)) {
@@ -148,22 +148,21 @@ export function getSalesRankingChart(role) {
                 }
 
                 //设置团队内排名
-                setRankingValue(rankingData, 'order', intraTeamRanking, NUM_OF_SALES.team);
+                setRankingValue(rankingData, 'order', intraTeamRanking, thirdLevelNum);
                 //设置上级团队内排名
-                setRankingValue(rankingData, 'superior_order', intraSuperiorTeamRanking, NUM_OF_SALES.superior);
+                setRankingValue(rankingData, 'superior_order', intraSuperiorTeamRanking, secondLevelNum);
                 //设置销售部内排名
-                setRankingValue(rankingData, 'sales_order', intraSalesDepartmentRanking, NUM_OF_SALES.all);
+                setRankingValue(rankingData, 'sales_order', intraSalesDepartmentRanking, firstLevelNum);
             });
 
             if (isDataValid) {
                 processedData.push(intraTeamRanking, intraSuperiorTeamRanking, intraSalesDepartmentRanking);
             }
 
-            return processedData;
-        },
-        processOption: (option, chartProps) => {
+            let option = chart.option = {};
+
             option.legend = {
-                data: _.map(chartProps.data, 'name')
+                data: _.map(processedData, 'name')
             };
 
             option.tooltip = {
@@ -194,12 +193,12 @@ export function getSalesRankingChart(role) {
             }
 
             option.radar = [
-                getIndicator(NUM_OF_SALES.team, '15%'),
-                getIndicator(NUM_OF_SALES.superior, '50%'),
-                getIndicator(NUM_OF_SALES.all, '85%')
+                getIndicator(thirdLevelNum, '15%'),
+                getIndicator(secondLevelNum, '50%'),
+                getIndicator(firstLevelNum, '85%')
             ];
 
-            option.series = _.map(chartProps.data, (dataItem, index) => {
+            option.series = _.map(processedData, (dataItem, index) => {
                 return {
                     type: 'radar',
                     radarIndex: index,
