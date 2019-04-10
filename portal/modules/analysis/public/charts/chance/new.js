@@ -18,6 +18,7 @@ export function getNewChanceChart(chartType = 'table') {
         };
 
         chart.processData = processDataFunnel;
+        chart.processCsvData = processCsvDataFunnel;
     } else if (chartType === 'table') {
         chart.processData = data => {
             const result = _.get(data, 'result');
@@ -167,6 +168,8 @@ export function getNewChanceChart(chartType = 'table') {
 
     //处理漏斗图数据
     function processDataFunnel(data) {
+        if (!data) return [];
+
         const stages = [
             {
                 tagName: '提交数',
@@ -209,6 +212,7 @@ export function getNewChanceChart(chartType = 'table') {
                     name: convertRate,
                     value: stageValue,
                     showValue,
+                    csvName: stage.tagName
                 });
             }
         });
@@ -226,5 +230,21 @@ export function getNewChanceChart(chartType = 'table') {
         _.last(processedData).dealRate = dealRate;
 
         return processedData;
+    }
+
+    //处理漏斗图导出数据
+    function processCsvDataFunnel(chart, option) {
+        let csvData = [];
+        const data = chart.data;
+
+        let thead = _.map(data, 'csvName');
+        thead.push('提交通过率', '通过成交率', '提交成交率');
+        csvData.push(thead);
+
+        let tbody = _.map(data, 'value');
+        tbody.push(data[1].name, data[2].name, data[2].dealRate);
+        csvData.push(tbody);
+
+        return csvData;
     }
 }
