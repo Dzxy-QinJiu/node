@@ -159,7 +159,7 @@ export function getSalesRankingChart(role) {
             //三级团队人数
             const thirdLevelNum = dataWithLevelNum.third_level_num;
 
-            _.each(chart.data, (dataItem, index) => {
+            _.each(data, (dataItem, index) => {
                 let rankingData; 
 
                 if (_.isArray(dataItem)) {
