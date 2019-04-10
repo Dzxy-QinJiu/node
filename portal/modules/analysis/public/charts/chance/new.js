@@ -81,16 +81,21 @@ export function getNewChanceChart(chartType = 'table') {
         //成交率
         const dealRate = _.last(visibleSerie.data).dealRate;
 
+        //标线公共配置
+        const markLineCommonOption = {
+            silent: true,
+            symbol: 'none',
+            lineStyle: {
+                color: '#999',
+            }
+        };
+
         //添加两个辅助系列，以引出4条线来显示成交率
         option.series.push(
             //第一个系列用于显示上下边线
             {
                 type: 'funnel',
-                markLine: {
-                    symbol: 'none',
-                    lineStyle: {
-                        color: '#999',
-                    },
+                markLine: _.extend({}, markLineCommonOption, {
                     data: [
                         [
                             {
@@ -113,16 +118,12 @@ export function getNewChanceChart(chartType = 'table') {
                             }
                         ],
                     ]
-                }
+                })
             },
             //第二个系列用于显示上下边线之间的两条竖线及成交率
             {
                 type: 'funnel',
-                markLine: {
-                    symbol: ['none', 'none'],
-                    lineStyle: {
-                        color: '#999',
-                    },
+                markLine: _.extend({}, markLineCommonOption, {
                     label: {
                         formatter: params => {
                             if (params.dataIndex === 0) {
@@ -152,7 +153,7 @@ export function getNewChanceChart(chartType = 'table') {
                             }
                         ]
                     ]
-                }
+                })
             }
         );
     };
