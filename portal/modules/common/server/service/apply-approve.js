@@ -47,3 +47,12 @@ exports.getApplyListApprovedByMe = function(req, res) {
             res: res
         }, req.query);
 };
+//查询某个审批现在的节点位置
+exports.getApplyTaskNode = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: '/rest/base/v1/workflow/task',
+            req: req,
+            res: res
+        }, req.query);
+};
