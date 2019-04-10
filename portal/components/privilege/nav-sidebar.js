@@ -21,6 +21,8 @@ import ModalIntro from '../modal-intro';
 import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
+import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
+
 
 const session = storageUtil.session;
 //需要加引导的模块
@@ -207,7 +209,7 @@ var NavSidebar = createReactClass({
     },
 
     getHasUnreadReply: function() {
-        const APPLY_UNREAD_REPLY = 'apply_unread_reply';
+        const APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.APPLY_UNREAD_REPLY;
         let userId = userData.getUserData().user_id;
         //获取sessionStore中已存的未读回复列表
         let applyUnreadReply = session.get(APPLY_UNREAD_REPLY);

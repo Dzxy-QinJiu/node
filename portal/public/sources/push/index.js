@@ -14,7 +14,7 @@ var socketEmitter = require('../../../public/sources/utils/emitters').socketEmit
 var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsgEmitter;
 let ajaxGlobal = require('../jquery.ajax.global');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES} from '../utils/consts';
+import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES, DIFF_APPLY_TYPE_UNREAD_REPLY} from '../utils/consts';
 import logoSrc from './notification.png';
 import userData from '../user-data';
 import Trace from 'LIB_DIR/trace';
@@ -679,7 +679,7 @@ function unreadListener(type) {
 }
 //申请审批未读回复的监听
 function applyUnreadReplyListener(unreadReply) {
-    const APPLY_UNREAD_REPLY = 'apply_unread_reply';
+    const APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.APPLY_UNREAD_REPLY;
     //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
     let unreadReplyList = session.get(APPLY_UNREAD_REPLY);
     if(unreadReplyList){
@@ -891,7 +891,7 @@ function getUnapproveDocumentWritingApply() {
 
 //存储获取的未读回复列表
 function saveUnreadReplyList(applyUnreadReplyList) {
-    const APPLY_UNREAD_REPLY = 'apply_unread_reply';
+    const APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.APPLY_UNREAD_REPLY;
     //根据申请的id去重
     let unreadReplyList = _.uniqBy(applyUnreadReplyList, 'apply_id');
     //将未读回复列表存入sessionStorage（session失效时会自动清空数据）
@@ -911,6 +911,7 @@ function getUnreadReplyList(callback) {
             id: ''
         },
         success: data => {
+            // data.list = [];
             //将获取的未读回复列表存到session中
             saveUnreadReplyList(_.get(data, 'list', []));
             if (typeof callback === 'function') {

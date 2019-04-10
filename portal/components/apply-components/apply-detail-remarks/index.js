@@ -92,6 +92,19 @@ class ApplyDetailRemarks extends React.Component {
         let detailInfo = this.state.detailInfo;
         return APPLY_FINISH_STATUS.includes(detailInfo.status);
     };
+    //渲染刷新回复列表的提示
+    renderRefreshReplyTip = () => {
+        return (<span className="refresh-reply-data-tip">
+            <ReactIntl.FormattedMessage
+                id="user.apply.refresh.reply.tip"
+                defaultMessage={'有新回复，点此{refreshTip}'}
+                values={{
+                    'refreshTip': <a
+                        onClick={this.props.refreshReplyList}>{Intl.get('common.refresh', '刷新')}</a>
+                }}
+            />
+        </span>);
+    };
 
     render(){
         let detailInfo = this.state.detailInfo;
@@ -102,6 +115,7 @@ class ApplyDetailRemarks extends React.Component {
                 </div>
                 <div className="reply-info-block apply-info-block">
                     <div className="reply-list-container apply-info-content">
+                        {this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}
                         {this.renderReplyList()}
                         {/*已经通过和驳回的申请，不能再添加回复了*/}
                         {this.getApplyFinishedStatus() ?
@@ -132,6 +146,7 @@ ApplyDetailRemarks.defaultProps = {
 
     },
     isReportOrDocument: false,
+    isUnreadDetail: false
 };
 ApplyDetailRemarks.propTypes = {
     detailInfo: PropTypes.object,
@@ -141,6 +156,7 @@ ApplyDetailRemarks.propTypes = {
     addReply: PropTypes.func,
     commentInputChange: PropTypes.func,
     isReportOrDocument: PropTypes.boolean,
+    isUnreadDetail: PropTypes.boolean,
 };
 
 export default ApplyDetailRemarks;

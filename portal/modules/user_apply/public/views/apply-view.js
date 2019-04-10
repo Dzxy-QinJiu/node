@@ -17,8 +17,8 @@ var NoMoreDataTip = require('../../../../components/no_more_data_tip');
 import {SearchInput} from 'antc';
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
 const session = storageUtil.session;
-import {selectMenuList} from 'PUB_DIR/sources/utils/consts';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
 class ApplyTabContent extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -94,7 +94,7 @@ class ApplyTabContent extends React.Component {
 
     //从sessionStorage中获取该用户未读的回复列表
     getUnreadReplyList = () => {
-        const APPLY_UNREAD_REPLY = 'apply_unread_reply';
+        const APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.APPLY_UNREAD_REPLY;
         let unreadReplyList = session.get(APPLY_UNREAD_REPLY);
         if (unreadReplyList) {
             this.refreshUnreadReplyList(JSON.parse(unreadReplyList) || []);

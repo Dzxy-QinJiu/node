@@ -7,6 +7,7 @@ import {Button, Menu, Dropdown} from 'antd';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 require('./index.less');
 var classNames = require('classnames');
+import {getUnreadReplyTitle} from 'PUB_DIR/sources/utils/common-method-util';
 class ApplyDropdownAndAddBtn extends React.Component {
     constructor(props) {
         super(props);
@@ -28,6 +29,18 @@ class ApplyDropdownAndAddBtn extends React.Component {
     componentWillUnmount = () => {
 
     };
+    renderApplyMessage = () => {
+        var showUnreadTip = this.props.showUnreadTip;
+        var isCheckUnreadApplyList = this.props.isCheckUnreadApplyList;
+        return (
+            <div className={classNames('check-uread-reply-bg', {
+                'active': isCheckUnreadApplyList
+            })}><span onClick={this.props.toggleUnreadApplyList.bind(this, showUnreadTip)}
+                    className={classNames('iconfont icon-apply-message-tip', {'has-unread-reply': showUnreadTip})}
+                    title={getUnreadReplyTitle(isCheckUnreadApplyList, showUnreadTip)}/>
+            </div>
+        );
+    };
     render(){
         // 筛选菜单
         var menuList = (
@@ -42,7 +55,7 @@ class ApplyDropdownAndAddBtn extends React.Component {
             </Menu>
         );
         return (
-            <div className="searchbar clearfix">
+            <div className="apply-searchbar clearfix">
                 <div className="apply-type-filter btn-item" id="apply-type-container">
                     {
                         <Dropdown overlay={menuList} placement="bottomLeft"
@@ -59,9 +72,11 @@ class ApplyDropdownAndAddBtn extends React.Component {
                     >{this.props.addApplyMessage}</Button>
                     : null}
                 <div className="pull-right search-btns">
+                    {this.props.showApplyMessageIcon ? this.renderApplyMessage() : null}
                     {this.props.showRefreshIcon ? <span onClick={this.props.refreshPage}
                         className={classNames('iconfont pull-right icon-refresh', {'has-new-apply': this.props.showUpdateTip})}
                         title={this.props.showUpdateTip ? Intl.get('user.apply.new.refresh.tip', '有新申请，点此刷新') : Intl.get('user.apply.no.new.refresh.tip', '无新申请')}/> : null}
+
 
                 </div>
             </div>
@@ -85,7 +100,16 @@ ApplyDropdownAndAddBtn.defaultProps = {
     },
     showUpdateTip: false,
     addApplyMessage: '',
-    showRefreshIcon: false
+    showRefreshIcon: false,
+
+
+
+    showApplyMessageIcon: false, //是否展示回复消息按钮
+    toggleUnreadApplyList: function() {
+
+    },
+    showUnreadTip: false,
+    isCheckUnreadApplyList: false
 };
 ApplyDropdownAndAddBtn.propTypes = {
     menuClick: PropTypes.func,
@@ -97,7 +121,10 @@ ApplyDropdownAndAddBtn.propTypes = {
     showRefreshIcon: PropTypes.boolean,
     refreshPage: PropTypes.func,
     showUpdateTip: PropTypes.boolean,
-
+    showApplyMessageIcon: PropTypes.boolean,
+    toggleUnreadApplyList: PropTypes.func,
+    showUnreadTip: PropTypes.boolean,
+    isCheckUnreadApplyList: PropTypes.boolean,
 };
 
 export default ApplyDropdownAndAddBtn;

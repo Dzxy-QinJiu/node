@@ -118,15 +118,6 @@ module.exports = [{
         'MEMBER_WEBSITE_CONFIG'
     ]
 }, {
-    // 合同统计
-    method: 'get',
-    path: contractV2AnalysisUrl,
-    handler: 'getContractStaticAnalysisData',
-    module: 'contract/server/special-case-handler',
-    passport: {
-        'needLogin': true
-    }
-}, {
     'method': 'get',//获取设备类型统计manager
     'path': userAnalysisV3Url + '/manager/device',
     'handler': 'getDeviceTypeBymanager',

@@ -35,12 +35,17 @@ function ApplyViewDetailActions() {
     );
 
     //获取审批单详情
-    this.getSalesOpportunityApplyDetailById = function(queryObj, status) {
-        SalesOpportunityApplyAjax.getSalesOpportunityApplyDetailById(queryObj, status).then((detail) => {
-            this.dispatch({loading: false, error: false, detail: detail, status: status});
-        }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
+    this.getSalesOpportunityApplyDetailById = function(queryObj, status, applyData) {
+        if (applyData){
+            this.dispatch({loading: false, error: false, detail: applyData.detail, status: status});
+        }else{
+            SalesOpportunityApplyAjax.getSalesOpportunityApplyDetailById(queryObj, status).then((detail) => {
+                this.dispatch({loading: false, error: false, detail: detail, status: status});
+            }, (errorMsg) => {
+                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            });
+        }
+
     };
     //根据申请的id获取审批的状态
     this.getSalesOpportunityApplyStatusById = function(queryObj) {
