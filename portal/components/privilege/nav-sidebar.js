@@ -184,7 +184,12 @@ var NavSidebar = createReactClass({
         userInfoEmitter.on(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         //未读回复列表变化后触发
         notificationEmitter.on(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
+        //其他类型的未读回复列表变化后触发
+        notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
+        //获取用户审批的未读回复列表
         this.getHasUnreadReply();
+        //获取其他类型的用户审批的未读回复列表
+        this.getHasDiffApplyUnreadReply();
         //响应式设计 logo和菜单占据的实际高度
         responsiveLayout.logoAndMenusHeight = $('.logo-and-menus').outerHeight(true);
         //计算 通知、二维码、个人信息 占据的实际高度
@@ -207,7 +212,17 @@ var NavSidebar = createReactClass({
             history.push('/clue_customer', {clickUnhandleNum: true});
         });
     },
-
+    getHasDiffApplyUnreadReply: function() {
+        const DIFF_APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.DIFF_APPLY_UNREAD_REPLY;
+        let userId = userData.getUserData().user_id;
+        //获取sessionStore中已存的未读回复列表
+        let applyUnreadReply = session.get(DIFF_APPLY_UNREAD_REPLY);
+        if (applyUnreadReply) {
+            let applyUnreadReplyObj = JSON.parse(applyUnreadReply);
+            let applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];
+            this.refreshHasUnreadReply(applyUnreadReplyList);
+        }
+    },
     getHasUnreadReply: function() {
         const APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.APPLY_UNREAD_REPLY;
         let userId = userData.getUserData().user_id;
@@ -280,6 +295,7 @@ var NavSidebar = createReactClass({
     componentWillUnmount: function() {
         userInfoEmitter.removeListener(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
+        notificationEmitter.removeListener(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
         $(window).off('resize', this.calculateHeight);
     },
 

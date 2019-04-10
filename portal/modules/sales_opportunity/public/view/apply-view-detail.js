@@ -79,6 +79,7 @@ class ApplyViewDetail extends React.Component {
         }
         this.getSalesManList();
         this.getAllUserList();
+
     }
     getAllUserList = () => {
         getAllUserList().then(data => {

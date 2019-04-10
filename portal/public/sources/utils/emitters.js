@@ -57,6 +57,8 @@ exports.notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT = 'showUnhandledAp
 exports.notificationEmitter.SHOW_CLUE_DETAIL = 'showClueDetail';
 //申请审批未读回复
 exports.notificationEmitter.APPLY_UNREAD_REPLY = 'applyUnreadReply';
+//其他申请审批未读回复
+exports.notificationEmitter.DIFF_APPLY_UNREAD_REPLY = 'diffApplyUnreadReply';
 //刷新系统消息的emitter
 exports.notificationEmitter.SYSTEM_NOTICE_UPDATED = 'systemNoticeUpdated';
 //用户批量推送的emitter

@@ -652,7 +652,10 @@ function getMessageCount(callback) {
     }
     //获取未读回复列表
     if(hasPrivilege('GET_MEMBER_APPLY_LIST')){
+        //获取用户审批未读数
         getUnreadReplyList(callback);
+        //获取其他类型申请审批未读数，根据type对类型进行区分
+        getDiffApplyUnreadReply(callback);
     }
 }
 
@@ -679,21 +682,41 @@ function unreadListener(type) {
 }
 //申请审批未读回复的监听
 function applyUnreadReplyListener(unreadReply) {
-    const APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.APPLY_UNREAD_REPLY;
-    //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
-    let unreadReplyList = session.get(APPLY_UNREAD_REPLY);
-    if(unreadReplyList){
-        unreadReplyList = JSON.parse(unreadReplyList);
-        //已有回复列表，将新得回复加入回复列表中
-        if (_.get(unreadReplyList, '[0]')) {
-            unreadReplyList.push(unreadReply);
-            //根据申请id去重
-            unreadReplyList = _.uniqBy(unreadReplyList,'apply_id');
-        } else {//还没有回复列表时，将新回复组成回复列表
-            unreadReplyList = [unreadReply];
+    //用户申请审批和其他类型的审批审批都走这个listner，用户审批的类型的type是没有值，其他类型的都是有type值的是吧
+    if (!unreadReply.type){
+        const APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.APPLY_UNREAD_REPLY;
+        //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
+        let unreadReplyList = session.get(APPLY_UNREAD_REPLY);
+        if(unreadReplyList){
+            unreadReplyList = JSON.parse(unreadReplyList);
+            //已有回复列表，将新得回复加入回复列表中
+            if (_.get(unreadReplyList, '[0]')) {
+                unreadReplyList.push(unreadReply);
+                //根据申请id去重
+                unreadReplyList = _.uniqBy(unreadReplyList,'apply_id');
+            } else {//还没有回复列表时，将新回复组成回复列表
+                unreadReplyList = [unreadReply];
+            }
+            session.set(APPLY_UNREAD_REPLY, JSON.stringify(unreadReplyList));
+            notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, unreadReplyList);
         }
-        session.set(APPLY_UNREAD_REPLY, JSON.stringify(unreadReplyList));
-        notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, unreadReplyList);
+    }else{
+        const DIFF_APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.DIFF_APPLY_UNREAD_REPLY;
+        //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
+        let unreadReplyList = session.get(DIFF_APPLY_UNREAD_REPLY);
+        if(unreadReplyList){
+            unreadReplyList = JSON.parse(unreadReplyList);
+            //已有回复列表，将新得回复加入回复列表中
+            if (_.get(unreadReplyList, '[0]')) {
+                unreadReplyList.push(unreadReply);
+                //根据申请id去重
+                unreadReplyList = _.uniqBy(unreadReplyList,'apply_id');
+            } else {//还没有回复列表时，将新回复组成回复列表
+                unreadReplyList = [unreadReply];
+            }
+            session.set(DIFF_APPLY_UNREAD_REPLY, JSON.stringify(unreadReplyList));
+            notificationEmitter.emit(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, unreadReplyList);
+        }
     }
 }
 // 判断是否已启用桌面通知
@@ -898,7 +921,16 @@ function saveUnreadReplyList(applyUnreadReplyList) {
     session.set(APPLY_UNREAD_REPLY, JSON.stringify(unreadReplyList));
     notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, unreadReplyList);
 }
-//获取未读回复列表
+//存储其他类型申请审批的未读回复列表
+function saveDiffApplyUnreadReplyList(data) {
+    const DIFF_APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.DIFF_APPLY_UNREAD_REPLY;
+    //根据申请的id去重
+    let unreadReplyList = _.uniqBy(data, 'apply_id');
+    //将未读回复列表存入sessionStorage（session失效时会自动清空数据）
+    session.set(DIFF_APPLY_UNREAD_REPLY, JSON.stringify(unreadReplyList));
+    notificationEmitter.emit(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, unreadReplyList);
+}
+//获取用户审批未读回复列表
 function getUnreadReplyList(callback) {
     $.ajax({
         url: '/rest/appuser/unread_reply',
@@ -911,7 +943,6 @@ function getUnreadReplyList(callback) {
             id: ''
         },
         success: data => {
-            // data.list = [];
             //将获取的未读回复列表存到session中
             saveUnreadReplyList(_.get(data, 'list', []));
             if (typeof callback === 'function') {
@@ -924,6 +955,38 @@ function getUnreadReplyList(callback) {
             }
         }
     });
+}
+//todo 获取其他类型审批未读回复列表
+function getDiffApplyUnreadReply(callback){
+    // $.ajax({
+    //     url: '/rest/appuser/unread_reply',
+    //     type: 'get',
+    //     dataType: 'json',
+    //     data: {
+    //         sort_field: 'create_time',//按回复时间倒序排
+    //         order: 'descend',
+    //         page_size: 1000,//需要获取全部的未读回复列表，预估不会超过1000条
+    //         id: ''
+    //     },
+    //     success: data => {
+    //         // data.list = [];
+    //         //将获取的未读回复列表存到session中
+    //         saveUnreadReplyList(_.get(data, 'list', []));
+    //         if (typeof callback === 'function') {
+    //             callback('unread_reply');
+    //         }
+    //     },
+    //     error: () => {
+    //         if (typeof callback === 'function') {
+    //             callback('unread_reply');
+    //         }
+    //     }
+    // });
+    //将获取的未读回复列表存到session中
+    saveDiffApplyUnreadReplyList([]);
+    if (typeof callback === 'function') {
+        callback('unread_reply');
+    }
 }
 //更新全局变量里存储的未读数，以便在业务逻辑里使用
 function updateGlobalUnreadStorage(unreadObj) {

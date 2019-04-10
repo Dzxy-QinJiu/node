@@ -58,6 +58,7 @@ class SalesOpportunityApplyManagement extends React.Component {
         });
         SalesOpportunityApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY, this.pushDataListener);
+        notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     }
     refreshPage = (e) => {
         if (!this.state.showUpdateTip) return;
@@ -258,8 +259,8 @@ class SalesOpportunityApplyManagement extends React.Component {
     };
     //从sessionStorage中获取该用户未读的回复列表
     getUnreadReplyList = () => {
-        const APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.APPLY_UNREAD_REPLY;
-        let unreadReplyList = session.get(APPLY_UNREAD_REPLY);
+        const DIFF_APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.DIFF_APPLY_UNREAD_REPLY;
+        let unreadReplyList = session.get(DIFF_APPLY_UNREAD_REPLY);
         if (unreadReplyList) {
             this.refreshUnreadReplyList(JSON.parse(unreadReplyList) || []);
         }
@@ -267,6 +268,7 @@ class SalesOpportunityApplyManagement extends React.Component {
 
     //刷新未读回复的列表
     refreshUnreadReplyList = (unreadReplyList) => {
+        //todo 在这里需要把类型进行区分
         SalesOpportunityApplyAction.refreshUnreadReplyList(unreadReplyList);
     };
     //当前展示的详情是否是有未读回复的详情
