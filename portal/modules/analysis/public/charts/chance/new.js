@@ -209,7 +209,13 @@ export function getNewChanceChart(chartType = 'table') {
         });
 
         //成交率
-        let dealRate = ((data.deal / data.total) * 100).toFixed(2) + '%';
+        let dealRate;
+
+        if (data.total === 0) {
+            dealRate = '0%';
+        } else {
+            dealRate = ((data.deal / data.total) * 100).toFixed(2) + '%';
+        }
 
         //将成交率存入最后一个数据项
         _.last(processedData).dealRate = dealRate;
