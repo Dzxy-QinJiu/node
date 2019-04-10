@@ -14,7 +14,7 @@ export function getNewChanceChart(chartType = 'table') {
     if (chartType === 'funnel') {
         chart.customOption = {
             valueField: 'showValue',
-            minSize: '5%',
+            minSize: 1,
         };
 
         chart.processData = processDataFunnel;
