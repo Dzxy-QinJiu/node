@@ -83,13 +83,18 @@ export function getNewChanceChart(chartType = 'table') {
 
         //标线公共配置
         const markLineCommonOption = {
+            //鼠标移上时不加粗
             silent: true,
+            //不用动画显示画线效果
+            animation: false,
+            //线的两端不显示图标
             symbol: 'none',
             lineStyle: {
                 color: '#999',
             }
         };
 
+        option.animition = false;
         //添加两个辅助系列，以引出4条线来显示成交率
         option.series.push(
             //第一个系列用于显示上下边线
