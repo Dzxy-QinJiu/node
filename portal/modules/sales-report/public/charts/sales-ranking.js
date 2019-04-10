@@ -123,7 +123,35 @@ export function getSalesRankingChart(role) {
             }
 
             //包含各层团队人数的数据
-            const dataWithLevelNum = _.get(data, '[0].list[0].sales_list[0]') || _.get(data, '[0][0]');
+            let dataWithLevelNum = {
+                //一级团队人数，默认200
+                first_level_num: 200,
+                //二级团队人数，默认80
+                second_level_num: 80,
+                //三级团队人数，默认30
+                third_level_num: 30
+            };
+
+            //销售经理第一个维度的排名数据
+            const salesManagerFirstRankingData = _.get(data, '[0].list[0].sales_list[0]');
+
+            //如果存在销售经理第一个维度的排名数据
+            //因为约定团队人数由第一个维度的排名数据返回
+            //所以此时包含团队人数的数据即为销售经理第一个维度的排名数据
+            if (salesManagerFirstRankingData) {
+                dataWithLevelNum = salesManagerFirstRankingData;
+            } else {
+                //客户经理第一个维度的排名数据
+                const customerManagerFirstRankingData = _.get(data, '[0][0]');
+
+                //如果存在客户经理第一个维度的排名数据
+                //因为约定团队人数由第一个维度的排名数据返回
+                //所以此时包含团队人数的数据即为客户经理第一个维度的排名数据
+                if (customerManagerFirstRankingData) {
+                    dataWithLevelNum = customerManagerFirstRankingData;
+                }
+            }
+
             //一级团队人数
             const firstLevelNum = dataWithLevelNum.first_level_num;
             //二级团队人数
