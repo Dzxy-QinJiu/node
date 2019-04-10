@@ -203,6 +203,14 @@ class ApplyViewDetailActions {
             }
         }).error(this.dispatch({error: true}));
     }
+    //获取该审批所在节点
+    getApplyTaskNode(queryObj){
+        ApplyApproveAjax.getApplyTaskNode().sendRequest(queryObj).success((list) => {
+            if (_.isArray(list)) {
+                this.dispatch(list);
+            }
+        }).error(this.dispatch({error: true}));
+    }
 
     transferNextCandidate(queryObj, callback) {
         this.dispatch({loading: true, error: false});

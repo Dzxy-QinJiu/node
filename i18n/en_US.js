@@ -2837,6 +2837,7 @@ var en_US = {
     'business.leave.time.range': 'Bussiness range',//出差时长
     'clue.batch.select.clues': 'Has selected {num} clues',//已选择{num}个线索
     'clue.batch.assign.sales': 'Assign in batch',//批量分配
-    'clue.export.trace.msg': '{traceman} added in {tracetime}'//{traceman}于{tracetime}添加
+    'clue.export.trace.msg': '{traceman} added in {tracetime}',//{traceman}于{tracetime}添加
+    'clue.batch.change.trace.man': 'Change follower',//变更跟进人
 };
 export default en_US;

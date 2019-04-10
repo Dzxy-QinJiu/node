@@ -23,7 +23,8 @@ import {
     APPLY_FINISH_STATUS,
     APPLY_USER_STATUS,
     REG_FILES_SIZE_RULES,
-    ORGANIZATION_TYPE,LEAVE_TIME_RANGE, AM_AND_PM
+    ORGANIZATION_TYPE,LEAVE_TIME_RANGE, AM_AND_PM,
+    FINAL_TASK
 } from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
@@ -867,4 +868,11 @@ exports.calculateSelectType = function(selectTime, rangeObj){
         }
     }
     return selectTypeArr;
+};
+//判断某个审批是否位于最后一个节点
+exports.isFinalTask = function(applyNode) {
+    if (_.isArray(applyNode) && applyNode.length) {
+        //现在主要是看用户申请的审批是否位于最后一个节点，这种类型的节点只会有一个，但是如果有并行的节点，applyNode就会有两个，现在认为有一个节点是final_task ，这条审批就是位于最后一个节点
+        return _.some(applyNode, item => item.description === FINAL_TASK);
+    }
 };
