@@ -8,6 +8,10 @@ export function getAllChanceChart(specifyColumns) {
         chartType: 'table',
         url: '/rest/analysis/customer/v2/sales_opportunity/:data_type/apply/opportunity/statistics',
         ajaxInstanceFlag: 'sales_opportuniry_all',
+        argCallback: arg => {
+            //因为要统计所有机会，所以将开始时间设为0，以统计截止到选择的结束时间的所有数据
+            _.set(arg, 'query.start_time', 0);
+        },
         dataField: 'list',
         option: {
             columns: [
