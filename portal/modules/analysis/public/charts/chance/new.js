@@ -238,7 +238,7 @@ export function getNewChanceChart(chartType = 'table') {
         const data = chart.data;
 
         let thead = _.map(data, 'csvName');
-        thead.push('提交通过率', '通过成交率', '提交成交率');
+        thead.push('通过率', '成交率', '总成交率(提交-成交)');
         csvData.push(thead);
 
         let tbody = _.map(data, 'value');
