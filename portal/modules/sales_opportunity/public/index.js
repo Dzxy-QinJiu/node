@@ -50,7 +50,6 @@ class SalesOpportunityApplyManagement extends React.Component {
             //不区分角色，都获取全部的申请列表
             this.getAllSalesOpportunityApplyList();
         }
-        this.getUnreadReplyList();
         getMyTeamTreeList(data => {
             this.setState({
                 teamTreeList: data.teamTreeList
@@ -58,6 +57,7 @@ class SalesOpportunityApplyManagement extends React.Component {
         });
         SalesOpportunityApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY, this.pushDataListener);
+        this.getUnreadReplyList();
         notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     }
     refreshPage = (e) => {
@@ -144,6 +144,7 @@ class SalesOpportunityApplyManagement extends React.Component {
         SalesOpportunityApplyAction.setInitState();
         SalesOpportunityApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY, this.pushDataListener);
+        notificationEmitter.removeListener(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     }
 
     showAddApplyPanel = () => {

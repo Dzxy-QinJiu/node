@@ -355,10 +355,10 @@ phoneStatusTop.propTypes = {
     phonemsgObj: PropTypes.object,
     addTraceItemId: PropTypes.string,
     detailCustomerId: PropTypes.string,
-    isAddingMoreProdctInfo: PropTypes.boolean,
+    isAddingMoreProdctInfo: PropTypes.bool,
     contactNameObj: PropTypes.object,
     handleAddProductFeedback: PropTypes.func,
-    isAddingPlanInfo: PropTypes.boolean,
-    handleAddPlan: PropTypes.boolean,
+    isAddingPlanInfo: PropTypes.bool,
+    handleAddPlan: PropTypes.bool,
 };
 export default phoneStatusTop;

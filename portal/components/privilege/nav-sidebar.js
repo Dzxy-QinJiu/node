@@ -128,6 +128,7 @@ var NavSidebar = createReactClass({
             introModalLayout: {},//模态框上蚂蚁及提示的展示样式
             tipMessage: '',//提示内容
             hasUnreadReply: false,//是否有未读的回复
+            hasDiffApplyUnreadReply: false,//除用户申请外其他申请是否有未读回复
             hideNavIcon: false,//是否隐藏图标（小屏幕只展示文字）
         };
     },
@@ -185,7 +186,7 @@ var NavSidebar = createReactClass({
         //未读回复列表变化后触发
         notificationEmitter.on(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
         //其他类型的未读回复列表变化后触发
-        notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
+        notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshDiffApplyHasUnreadReply);
         //获取用户审批的未读回复列表
         this.getHasUnreadReply();
         //获取其他类型的用户审批的未读回复列表
@@ -220,7 +221,7 @@ var NavSidebar = createReactClass({
         if (applyUnreadReply) {
             let applyUnreadReplyObj = JSON.parse(applyUnreadReply);
             let applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];
-            this.refreshHasUnreadReply(applyUnreadReplyList);
+            this.refreshDiffApplyHasUnreadReply(applyUnreadReplyList);
         }
     },
     getHasUnreadReply: function() {
@@ -242,7 +243,13 @@ var NavSidebar = createReactClass({
             this.setState({hasUnreadReply: false});
         }
     },
-
+    refreshDiffApplyHasUnreadReply: function(unreadReplyList) {
+        if (_.isArray(unreadReplyList) && unreadReplyList.length) {
+            this.setState({hasDiffApplyUnreadReply: true});
+        } else {
+            this.setState({hasDiffApplyUnreadReply: false});
+        }
+    },
     //本次要加的引导是否没有被点击过
     isIntroModlueNeverClicked: function(WebsiteConfigModuleRecord) {
         return (_.indexOf(WebsiteConfigModuleRecord, schedule_menu.name) < 0);
@@ -295,7 +302,7 @@ var NavSidebar = createReactClass({
     componentWillUnmount: function() {
         userInfoEmitter.removeListener(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
-        notificationEmitter.removeListener(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
+        notificationEmitter.removeListener(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshDiffApplyHasUnreadReply);
         $(window).off('resize', this.calculateHeight);
     },
 
@@ -452,7 +459,7 @@ var NavSidebar = createReactClass({
     renderUnreadReplyTip(category) {
         //是申请审批，有未读回复数并且，所有申请待审批数都为0
         let unreadReplyTipShowFlag = category === 'application' &&//申请审批
-            this.state.hasUnreadReply &&//有未读回复
+            (this.state.hasUnreadReply || this.state.hasDiffApplyUnreadReply) &&//有用户审批或者其他类型审批的未读回复
             this.state.messages.approve === 0 &&//用户申请待审批数
             this.state.messages.unhandleCustomerVisit === 0 && //出差申请待我审批数
             this.state.messages.unhandleBusinessOpportunities === 0 &&//销售机会申请待我审批数

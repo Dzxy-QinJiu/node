@@ -459,8 +459,8 @@ UploadAndDeleteFile.propTypes = {
     beforeUpload: PropTypes.func,
     fileRemove: PropTypes.func,
     fileList: PropTypes.object,
-    salesUploadAndDeletePrivilege: PropTypes.boolean,
-    approverUploadAndDeletePrivilege: PropTypes.boolean,
+    salesUploadAndDeletePrivilege: PropTypes.bool,
+    approverUploadAndDeletePrivilege: PropTypes.bool,
     selectType: PropTypes.object
 };
 export default UploadAndDeleteFile;

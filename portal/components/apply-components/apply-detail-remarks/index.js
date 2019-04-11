@@ -155,8 +155,8 @@ ApplyDetailRemarks.propTypes = {
     refreshReplyList: PropTypes.func,
     addReply: PropTypes.func,
     commentInputChange: PropTypes.func,
-    isReportOrDocument: PropTypes.boolean,
-    isUnreadDetail: PropTypes.boolean,
+    isReportOrDocument: PropTypes.bool,
+    isUnreadDetail: PropTypes.bool,
 };
 
 export default ApplyDetailRemarks;

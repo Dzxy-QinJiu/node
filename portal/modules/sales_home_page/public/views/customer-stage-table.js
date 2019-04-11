@@ -172,7 +172,7 @@ CustomerStageTable.propTypes = {
     handleScrollBottom: PropTypes.func,
     params: PropTypes.object,
     result: PropTypes.object,
-    showNoMoreData: PropTypes.boolean,
+    showNoMoreData: PropTypes.bool,
     onClose: PropTypes.func,
     ShowCustomerUserListPanel: PropTypes.func
 };

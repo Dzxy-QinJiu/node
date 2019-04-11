@@ -8,7 +8,7 @@ var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notification
 import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
 var SalesOpportunityApplyAction = require('../action/sales-opportunity-apply-action');
-import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
+import {DIFF_APPLY_TYPE_UNREAD_REPLY, APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 function SalesOpportunityApplyStore() {
     //初始化state数据
     this.setInitState();
@@ -42,6 +42,8 @@ SalesOpportunityApplyStore.prototype.setInitState = function() {
     this.applyListType = 'ongoing';
     //是否显示更新数据提示
     this.showUpdateTip = false;
+    //有未读回复的列表
+    this.unreadReplyList = [];
     //是否查看未读回复的申请列表
     this.isCheckUnreadApplyList = false;
     this.clearData();
@@ -113,7 +115,7 @@ SalesOpportunityApplyStore.prototype.clearUnreadReply = function(applyId) {
         if (applyId) {
             applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.apply_id !== applyId);
         }
-        this.unreadReplyList = applyUnreadReplyList;
+        this.unreadReplyList = _.filter(applyUnreadReplyList, reply => reply.type === APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES);
         session.set(DIFF_APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyList));
         //加延时是为了，避免循环dispatch报错：Cannot dispatch in the middle of a dispatch
         setTimeout(() => {

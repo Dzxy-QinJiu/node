@@ -118,13 +118,13 @@ ApplyDropdownAndAddBtn.propTypes = {
     addPrivilege: PropTypes.string,
     showAddApplyPanel: PropTypes.func,
     addApplyMessage: PropTypes.string,
-    showRefreshIcon: PropTypes.boolean,
+    showRefreshIcon: PropTypes.bool,
     refreshPage: PropTypes.func,
-    showUpdateTip: PropTypes.boolean,
-    showApplyMessageIcon: PropTypes.boolean,
+    showUpdateTip: PropTypes.bool,
+    showApplyMessageIcon: PropTypes.bool,
     toggleUnreadApplyList: PropTypes.func,
-    showUnreadTip: PropTypes.boolean,
-    isCheckUnreadApplyList: PropTypes.boolean,
+    showUnreadTip: PropTypes.bool,
+    isCheckUnreadApplyList: PropTypes.bool,
 };
 
 export default ApplyDropdownAndAddBtn;

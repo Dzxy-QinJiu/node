@@ -808,9 +808,9 @@ ApplyViewDetail.defaultProps = {
 };
 ApplyViewDetail.propTypes = {
     detailItem: PropTypes.string,
-    showNoData: PropTypes.boolean,
+    showNoData: PropTypes.bool,
     applyListType: PropTypes.string,
-    isUnreadDetail: PropTypes.boolean,
+    isUnreadDetail: PropTypes.bool,
     applyData: PropTypes.object,
 };
 module.exports = ApplyViewDetail;

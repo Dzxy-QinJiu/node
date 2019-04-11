@@ -22,6 +22,10 @@ import ApplyViewDetail from './view/apply-view-detail';
 var ReportSendApplyUtils = require('./utils/report-send-utils');
 let userData = require('../../../public/sources/user-data');
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+var NoData = require('CMP_DIR/analysis-nodata');
+import {storageUtil} from 'ant-utils';
+const session = storageUtil.session;
+import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
 
 class ReportSendApplyManagement extends React.Component {
     state = {
@@ -46,6 +50,8 @@ class ReportSendApplyManagement extends React.Component {
         }
         ReportSendApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_REPORT_SEND, this.pushDataListener);
+        this.getUnreadReplyList();
+        notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     }
     refreshPage = (e) => {
         if (!this.state.showUpdateTip) return;
@@ -91,7 +97,8 @@ class ReportSendApplyManagement extends React.Component {
             order: this.state.order,
             page_size: this.state.page_size,
             id: this.state.lastApplyId, //用于下拉加载的id
-            type: APPLY_APPROVE_TYPES.REPORT
+            type: APPLY_APPROVE_TYPES.REPORT,
+            isUnreadApply: this.state.isCheckUnreadApplyList,
         };
         //如果是选择的全部类型，不需要传status这个参数
         if (this.state.applyListType !== 'all') {
@@ -129,6 +136,7 @@ class ReportSendApplyManagement extends React.Component {
         ReportSendApplyAction.setInitState();
         ReportSendApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_REPORT_SEND, this.pushDataListener);
+        notificationEmitter.removeListener(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     }
 
     showAddApplyPanel = () => {
@@ -221,8 +229,64 @@ class ReportSendApplyManagement extends React.Component {
         }
         return null;
     };
+    //(取消)展示有未读回复的申请列表
+    toggleUnreadApplyList = (showUnreadTip) => {
+        //没有未读回复，并且没有在查看未读回复列表下时，点击按钮不做处理
+        if (!showUnreadTip && !this.state.isCheckUnreadApplyList) return;
+        ReportSendApplyAction.setIsCheckUnreadApplyList(!this.state.isCheckUnreadApplyList);
+        ReportSendApplyAction.setLastApplyId('');
+        setTimeout(() => {
+            if (this.state.isCheckUnreadApplyList) {
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '查看有未读回复的申请');
+            } else {
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '取消有未读回复申请的查看');
+            }
+            this.getAllSalesOpportunityApplyList();
+        });
+    };
+    getUnreadTip = () => {
+        let unreadReplyList = this.state.unreadReplyList;
+        let applyListType = this.state.applyListType;
+        //是否展示有未读申请的提示，后端推送过来的未读回复列表中有数据，并且是在全部类型下可展示，其他待审批、已通过等类型下不展示
+        return _.isArray(unreadReplyList) && unreadReplyList.length > 0 && applyListType === 'all' && !this.state.searchKeyword;
+    };
+    //从sessionStorage中获取该用户未读的回复列表
+    getUnreadReplyList = () => {
+        const DIFF_APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.DIFF_APPLY_UNREAD_REPLY;
+        let unreadReplyList = session.get(DIFF_APPLY_UNREAD_REPLY);
+        if (unreadReplyList) {
+            this.refreshUnreadReplyList(JSON.parse(unreadReplyList) || []);
+        }
+    };
 
+    //刷新未读回复的列表
+    refreshUnreadReplyList = (unreadReplyList) => {
+        var unreadList = _.filter(unreadReplyList, item => item.type === APPLY_APPROVE_TYPES.OPINION_REPORT);
+        ReportSendApplyAction.refreshUnreadReplyList(unreadList);
+    };
+    //当前展示的详情是否是有未读回复的详情
+    getIsUnreadDetail = () => {
+        let selectApplyId = this.state.selectedDetailItem ? this.state.selectedDetailItem.id : '';
+        if (selectApplyId) {
+            return _.some(this.state.unreadReplyList, unreadReply => unreadReply.apply_id === selectApplyId);
+        } else {
+            return false;
+        }
+    };
     render() {
+        //根本就没有用户审批的时候，显示没数据的提示
+        if (this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.applyListType === 'all' && this.state.searchKeyword === '') {
+            let noDataTip = this.state.isCheckUnreadApplyList ? (<ReactIntl.FormattedMessage
+                id="user.apply.unread.reply.null"
+                defaultMessage={'已无未读回复的申请，{return}'}
+                values={{'return': <a onClick={this.toggleUnreadApplyList}>{Intl.get('crm.52', '返回')}</a>}}
+            />) : Intl.get('user.apply.no.apply', '还没有用户审批诶...');
+            return (
+                <div className="app_user_manage_apply_wrap">
+                    <NoData msg={noDataTip}/>
+                </div>
+            );
+        }
         var addPanelWrap = classNames({'show-add-modal': this.state.showAddApplyPanel});
         var applyListHeight = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
         var applyListType = this.state.applyListType;
@@ -247,6 +311,10 @@ class ReportSendApplyManagement extends React.Component {
                             refreshPage={this.refreshPage}
                             showUpdateTip={this.state.showUpdateTip}
                             showRefreshIcon = {applyListType === APPLY_TYPE_STATUS_CONST.ALL || applyListType === APPLY_TYPE_STATUS_CONST.ONGOING}
+                            showApplyMessageIcon = {applyListType === APPLY_TYPE_STATUS_CONST.ALL}
+                            isCheckUnreadApplyList = {this.state.isCheckUnreadApplyList}
+                            toggleUnreadApplyList= {this.toggleUnreadApplyList}
+                            showUnreadTip= {this.getUnreadTip()}
                         />
                         {this.renderApplyListError()}
                         {this.state.applyListObj.loadingResult === 'loading' && !this.state.lastApplyId ? (
@@ -260,6 +328,9 @@ class ReportSendApplyManagement extends React.Component {
                                     <ul className="list-unstyled leave_manage_apply_list">
                                         {
                                             _.map(this.state.applyListObj.list,(obj, index) => {
+                                                let unreadReplyList = this.state.unreadReplyList;
+                                                //是否有未读回复
+                                                let hasUnreadReply = _.find(unreadReplyList, unreadReply => unreadReply.apply_id === obj.id);
                                                 return (
                                                     <ApplyListItem
                                                         key={index}
@@ -269,6 +340,7 @@ class ReportSendApplyManagement extends React.Component {
                                                         processedStatus='ongoing'
                                                         selectedDetailItem={this.state.selectedDetailItem}
                                                         selectedDetailItemIdx={this.state.selectedDetailItemIdx}
+                                                        hasUnreadReply={hasUnreadReply}
                                                     />
                                                 );
                                             })
@@ -296,6 +368,8 @@ class ReportSendApplyManagement extends React.Component {
                             detailItem={this.state.selectedDetailItem}
                             showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
                             applyListType={this.state.applyListType}
+                            applyData={this.state.applyId ? applyDetail : null}
+                            isUnreadDetail={this.getIsUnreadDetail()}
                         />
                     )}
                 </div>
