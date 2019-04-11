@@ -956,37 +956,31 @@ function getUnreadReplyList(callback) {
         }
     });
 }
-//todo 获取其他类型审批未读回复列表
+//获取工作流审批未读回复列表
 function getDiffApplyUnreadReply(callback){
-    // $.ajax({
-    //     url: '/rest/appuser/unread_reply',
-    //     type: 'get',
-    //     dataType: 'json',
-    //     data: {
-    //         sort_field: 'create_time',//按回复时间倒序排
-    //         order: 'descend',
-    //         page_size: 1000,//需要获取全部的未读回复列表，预估不会超过1000条
-    //         id: ''
-    //     },
-    //     success: data => {
-    //         // data.list = [];
-    //         //将获取的未读回复列表存到session中
-    //         saveUnreadReplyList(_.get(data, 'list', []));
-    //         if (typeof callback === 'function') {
-    //             callback('unread_reply');
-    //         }
-    //     },
-    //     error: () => {
-    //         if (typeof callback === 'function') {
-    //             callback('unread_reply');
-    //         }
-    //     }
-    // });
-    //将获取的未读回复列表存到session中
-    saveDiffApplyUnreadReplyList([]);
-    if (typeof callback === 'function') {
-        callback('unread_reply');
-    }
+    $.ajax({
+        url: '/rest/workflow/unread_reply',
+        type: 'get',
+        dataType: 'json',
+        data: {
+            sort_field: 'create_time',//按回复时间倒序排
+            order: 'descend',
+            page_size: 1000,//需要获取全部的未读回复列表，预估不会超过1000条
+            id: ''
+        },
+        success: data => {
+            //将获取的未读回复列表存到session中
+            saveDiffApplyUnreadReplyList(_.get(data, 'list', []));
+            if (typeof callback === 'function') {
+                callback('unread_reply');
+            }
+        },
+        error: () => {
+            if (typeof callback === 'function') {
+                callback('unread_reply');
+            }
+        }
+    });
 }
 //更新全局变量里存储的未读数，以便在业务逻辑里使用
 function updateGlobalUnreadStorage(unreadObj) {

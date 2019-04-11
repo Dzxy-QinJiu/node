@@ -12,6 +12,7 @@ var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 import {getApplyStatusById,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+import applyApproveAction from './sales-opportunity-apply-action';
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -61,6 +62,8 @@ function ApplyViewDetailActions() {
     this.getSalesOpportunityApplyCommentList = function(queryObj) {
         this.dispatch({loading: true, error: false});
         SalesOpportunityApplyAjax.getSalesOpportunityApplyCommentList(queryObj).then((list) => {
+            //清除未读回复列表中已读的回复
+            applyApproveAction.clearUnreadReply(queryObj.id);
             this.dispatch({loading: false, error: false, list: list});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('failed.get.reply.comment', '获取回复列表失败')});

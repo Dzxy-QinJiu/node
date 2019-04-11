@@ -136,6 +136,14 @@ exports.getUnreadReplyList = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+//获取工作流的未读回复列表
+exports.getWorkFlowUnreadReplyList = function(req, res) {
+    AppUserService.getWorkFlowUnreadReplyList(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
 
 //获取申请详情
 exports.getApplyDetail = function(req, res, next) {

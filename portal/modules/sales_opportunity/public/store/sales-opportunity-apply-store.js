@@ -104,9 +104,9 @@ SalesOpportunityApplyStore.prototype.getAllSalesOpportunityApplyList = function(
  * @param applyId：有值时只清除applyId对应的申请，不传时，清除当前登录用户所有的未读回复申请列表
  */
 SalesOpportunityApplyStore.prototype.clearUnreadReply = function(applyId) {
-    const APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.DIFF_APPLY_UNREAD_REPLY;
+    const DIFF_APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.DIFF_APPLY_UNREAD_REPLY;
     //获取sessionStorage中该用户的未读回复列表
-    let unreadReplyList = session.get(APPLY_UNREAD_REPLY);
+    let unreadReplyList = session.get(DIFF_APPLY_UNREAD_REPLY);
     if (unreadReplyList) {
         let applyUnreadReplyList = JSON.parse(unreadReplyList) || [];
         //清除某条申请
@@ -114,7 +114,7 @@ SalesOpportunityApplyStore.prototype.clearUnreadReply = function(applyId) {
             applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.apply_id !== applyId);
         }
         this.unreadReplyList = applyUnreadReplyList;
-        session.set(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyList));
+        session.set(DIFF_APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyList));
         //加延时是为了，避免循环dispatch报错：Cannot dispatch in the middle of a dispatch
         setTimeout(() => {
             notificationEmitter.emit(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, applyUnreadReplyList);

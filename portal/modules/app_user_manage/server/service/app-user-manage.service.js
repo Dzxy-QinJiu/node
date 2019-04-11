@@ -61,6 +61,8 @@ var AppUserRestApis = {
     getUnreadApplyList: '/rest/base/v1/message/applylist/comment/unread',
     //获取未读回复列表(用户来标识未读回复的申请)
     getUnreadReplyList: '/rest/base/v1/message/applycomment/unread/notices',
+    //获取工作流未读回复列表
+    getWorkFlowUnreadReplyList: 'rest/base/v1/workflow/comments/notice/unread',
     //获取申请单详情
     getApplyDetail: '/rest/base/v1/message/apply/:apply_id',
     //审批申请单（新创建用户）
@@ -348,6 +350,24 @@ exports.getUnreadReplyList = function(req, res) {
         }
     });
 };
+//获取工作流未读回复列表
+exports.getWorkFlowUnreadReplyList = function(req, res) {
+    return restUtil.authRest.get({
+        url: AppUserRestApis.getWorkFlowUnreadReplyList,
+        req: req,
+        res: res
+    }, req.query, {
+        success: (eventEmitter, data) => {
+            //处理数据
+            let replyList = _.get(data, 'list[0]') ? data.list : [];
+            data.list = _.map(replyList, reply => {
+                return applyDto.unreadWorkFlowReplyToFrontend(reply);
+            });
+            eventEmitter.emit('success', data);
+        }
+    });
+};
+
 //修改用户字段
 exports.editAppUser = function(req, res, obj) {
     //调用接口

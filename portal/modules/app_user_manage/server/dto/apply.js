@@ -29,6 +29,16 @@ exports.unreadReplyToFrontend = function(unreadReply) {
         apply_id: unreadReply.apply_id//有未读回复的申请id
     };
 };
+//工作流未读回复数据
+exports.unreadWorkFlowReplyToFrontend = function(unreadReply) {
+    return {
+        member_id: unreadReply.member_id,//谁的未读回复
+        create_time: unreadReply.create_time,//回复时间
+        id: unreadReply.id,//回复的id
+        apply_id: unreadReply.apply_id,//有未读回复的申请id
+        type: unreadReply.type,//申请的类型
+    };
+};
 
 //将approvalState转换成数字
 function transferApprovalStateToNumber(approval_state) {

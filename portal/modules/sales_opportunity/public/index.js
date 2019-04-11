@@ -268,8 +268,8 @@ class SalesOpportunityApplyManagement extends React.Component {
 
     //刷新未读回复的列表
     refreshUnreadReplyList = (unreadReplyList) => {
-        //todo 在这里需要把类型进行区分
-        SalesOpportunityApplyAction.refreshUnreadReplyList(unreadReplyList);
+        var unreadList = _.filter(unreadReplyList, item => item.type === APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES);
+        SalesOpportunityApplyAction.refreshUnreadReplyList(unreadList);
     };
     //当前展示的详情是否是有未读回复的详情
     getIsUnreadDetail = () => {
