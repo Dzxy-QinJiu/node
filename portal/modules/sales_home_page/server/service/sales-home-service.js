@@ -13,7 +13,7 @@ var restApis = {
     //获取销售-客户列表
     getSalesCustomer: '/rest/base/v1/view/customer',
     //获取销售-电话列表
-    getSalesPhone: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
+    getSalesPhone: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
     //获取销售-用户列表
     getSalesUser: '/rest/base/v1/view/user',
     //获取销售-合同列表
@@ -57,10 +57,10 @@ exports.getSalesCustomer = function(req, res, timeRange) {
 };
 
 //获取销售-电话列表
-exports.getSalesPhone = function(req, res, reqData, type) {
+exports.getSalesPhone = function(req, res, reqData) {
     return restUtil.authRest.get(
         {
-            url: restApis.getSalesPhone.replace(':type', type),
+            url: restApis.getSalesPhone,
             req: req,
             res: res
         }, reqData, {

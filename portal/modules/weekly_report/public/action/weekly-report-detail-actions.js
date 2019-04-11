@@ -4,10 +4,10 @@ function weeklyReportDetailActions() {
         'setInitState',//设置初始数据
     );
     // 获取电话的接通情况
-    this.getCallInfo = function(reqData, type) {
+    this.getCallInfo = function(reqData) {
         this.dispatch({loading: true, error: false});
-        weeklyReportAjax.getCallInfo(reqData, type).then((resData) => {
-            this.dispatch({loading: false, error: false, resData: resData.list});
+        weeklyReportAjax.getCallInfo(reqData).then((resData) => {
+            this.dispatch({loading: false, error: false, resData: resData.result});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errMsg: errorMsg});
         }

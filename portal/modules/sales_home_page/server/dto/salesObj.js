@@ -67,8 +67,8 @@ exports.toFrontSalesPhone = function(data) {
     if (data && _.isObject(data)) {
         salesPhone.salesRole = data.type;
         salesPhone.salesPhoneList = [];
-        if (_.isArray(data.list) && data.list.length > 0) {
-            salesPhone.salesPhoneList = data.list.map(function(salesObj) {
+        if (_.isArray(data.result) && data.result.length > 0) {
+            salesPhone.salesPhoneList = data.result.map(function(salesObj) {
                 return {
                     salesName: salesObj.name,//销售名称
                     totalTime: salesObj.total_time,//总时长
