@@ -15,12 +15,13 @@ import Trace from 'LIB_DIR/trace';
 var classNames = require('classnames');
 import {calculateHeight, APPLYAPPROVE_LAYOUT} from '../utils/apply-approve-utils';
 import InputEdit from './input-components/input-edit';
+import InputShow from './input-components/show-input';
 class AddApplyForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             activeKey: TAB_KEYS.FORM_CONTENT,//当前选中的TAB
-            applyTypeData: this.props.applyTypeData,//编辑某个审批的类型
+            applyTypeData: _.cloneDeep(this.props.applyTypeData),//编辑某个审批的类型
             addApplyRules: [
                 {
                     'rulename': Intl.get('apply.rule.text', '文字输入'),
@@ -81,13 +82,43 @@ class AddApplyForm extends React.Component {
                     return (
                         <InputEdit
                             formItem={formItem}
+                            handleCancel = {this.handleCancelInput}
+                            handleSubmit = {this.handleSubmitInput}
                         />
                     );
                 } else {
-
+                    return (
+                        <InputShow
+                            formItem={formItem}
+                        />
+                    );
                 }
             }
         });
+    };
+    getTargetFormItem = (formKey) => {
+        var formContent = _.get(this, 'state.applyTypeData.formContent');
+        return _.find(formContent, item => item.key === formKey);
+    };
+    handleCancelInput = (formItem) => {
+        var target = this.getTargetFormItem(formItem.key);
+        target.isEditting = false;
+        this.setState({
+            applyTypeData: this.state.applyTypeData
+        });
+    };
+    handleSubmitInput = (submitData, successFunc, errorFunc) => {
+        var target = this.getTargetFormItem(submitData.key);
+        delete submitData.key;
+        _.mapKeys(submitData, (value, key) => {
+            target[key] = value;
+        });
+        successFunc();
+        target.isEditting = false;
+        this.setState({
+            applyTypeData: this.state.applyTypeData
+        });
+
     };
     renderNodataContent = () => {
         //添加某个流程的时候

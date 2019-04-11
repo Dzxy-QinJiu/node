@@ -5,7 +5,6 @@
  */
 require('./style/index.less');
 var classNames = require('classnames');
-import AddApplyForm from './view/add_apply_form';
 import AddAndShowApplyList from './view/add_and_show_apply_list';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {Button} from 'antd';
