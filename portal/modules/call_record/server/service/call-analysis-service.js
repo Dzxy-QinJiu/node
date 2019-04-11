@@ -19,7 +19,7 @@ const restApis = {
     //  获取通话数量和通话时长趋势图统计(销售个人)
     getSingleUserCallCountAndDur: '/rest/callrecord/v2/callrecord/histogram/user/:start_time/:end_time/:interval',
     // 获取电话的接通情况
-    getCallInfo: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
+    getCallInfo: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
     // 114占比(团队)
     getTeamCallRate: '/rest/callrecord/v2/callrecord/term/:start_time/:end_time',
     // 114占比（个人）
@@ -88,10 +88,10 @@ exports.getCallCountAndDurSeperately = function(req, res, params, reqBody) {
         });
 };
 
-function batchGetCallInfo(req, res, params, reqData) {
+function batchGetCallInfo(req, res, reqData) {
     return new Promise((resolve, reject) => {
         return restUtil.authRest.get({
-            url: restApis.getCallInfo.replace(':type', params.type),
+            url: restApis.getCallInfo,
             req: req,
             res: res
         }, reqData, {
@@ -125,14 +125,14 @@ function getActiveSalesInTeams(req, res) {
 }
 
 // 获取电话的接通情况
-exports.getCallInfo = function(req, res, params, reqData) {
+exports.getCallInfo = function(req, res, reqData) {
     var emitter = new EventEmitter();
     let memberArray = reqData.member_ids ? reqData.member_ids.split(',') : [];
     let memberArrayLength = memberArray.length;
     if (reqData.member_ids && memberArrayLength > 80) {
         let promiseList = [];
         let paramsObj = {
-            deviceType: reqData.deviceType,
+            device_type: reqData.device_type,
             start_time: reqData.start_time,
             end_time: reqData.end_time
         };
@@ -140,7 +140,7 @@ exports.getCallInfo = function(req, res, params, reqData) {
         let queryCount = Math.ceil(memberArrayLength / queryNumber);
         for (let i = 0; i < queryCount; i++) {
             paramsObj.member_ids = memberArray.slice(i * queryNumber, _.min([(i + 1) * queryNumber, memberArrayLength])).join(',');
-            promiseList.push(batchGetCallInfo(req, res, params, paramsObj));
+            promiseList.push(batchGetCallInfo(req, res, paramsObj));
         }
         Promise.all(promiseList).then((result) => {
             let allData = [];
@@ -154,7 +154,7 @@ exports.getCallInfo = function(req, res, params, reqData) {
             emitter.emit('error', err);
         });
     } else {
-        let promiseList = [batchGetCallInfo(req, res, params, reqData), getActiveSalesInTeams(req, res)];
+        let promiseList = [batchGetCallInfo(req, res, reqData), getActiveSalesInTeams(req, res)];
         Promise.all(promiseList).then((dataList) => {
             var result = dataList[0] ? dataList[0] : [];
             //所有团队列表

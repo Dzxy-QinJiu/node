@@ -328,7 +328,7 @@ class SalesHomePage extends React.Component {
         let phoneParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
-            deviceType: this.state.callType || CALL_TYPE_OPTION.ALL
+            device_type: this.state.callType || CALL_TYPE_OPTION.ALL
         };
         return phoneParams;
     };

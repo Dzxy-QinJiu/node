@@ -7,14 +7,15 @@ import { LEAVE_TYPES } from '../consts';
 export const callVolumeChart = {
     title: Intl.get('common.telephone.statistics', '电话量统计'),
     chartType: 'table',
-    url: '/rest/callrecord/v2/callrecord/query/:auth_type/call_record/view',
+    url: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
     argCallback: arg => {
         if (arg.query.member_id) {
             arg.query.member_ids = arg.query.member_id;
+            arg.query.statistics_type = 'user';
             delete arg.query.member_id;
         }
     },
-    dataField: 'list',
+    dataField: 'result',
     option: {
         columns: [{
             title: Intl.get('common.assessment.index', '考核指标'),

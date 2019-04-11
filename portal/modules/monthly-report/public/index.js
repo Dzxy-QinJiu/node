@@ -25,7 +25,7 @@ const commanSalesCallback = function(arg) {
     if (isCommonSales) {
         const userId = userData.getUserData().user_id;
         //只查询他自己的数据
-        arg.query.member_id = userId;
+        arg.query.member_ids = userId;
         delete arg.query.team_ids;
     }
 };
@@ -315,7 +315,7 @@ class MonthlyReport extends React.Component {
     getCharts = () => {
 
         let conditions = [{
-            name: 'return_type',
+            name: 'statistics_type',
             value: 'user'
         }];
 
@@ -324,10 +324,10 @@ class MonthlyReport extends React.Component {
                 title: Intl.get('common.telephone.statistics', '电话量统计'),
                 height: 'auto',
                 layout: {sm: 24},
-                url: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
+                url: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
                 conditions,
                 argCallback: commanSalesCallback,
-                dataField: 'list',
+                dataField: 'result',
                 processData: data => {
                     data = _.orderBy(data, 'assessment_index', 'desc');
 
@@ -348,13 +348,13 @@ class MonthlyReport extends React.Component {
                 title: Intl.get('common.ketao.app.telephone.statistics', '客套APP电话量统计'),
                 height: 'auto',
                 layout: {sm: 24},
-                url: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
+                url: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
                 conditions: [...conditions, {
-                    name: 'deviceType',
+                    name: 'device_type',
                     value: 'app'
                 }],
                 argCallback: commanSalesCallback,
-                dataField: 'list',
+                dataField: 'result',
                 chartType: 'table',
                 option: {
                     columns: this.getAppStatisticsColumns(),

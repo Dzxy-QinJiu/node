@@ -25,11 +25,11 @@ exports.getSaleMemberList = function(reqData) {
 };
 // 获取电话的接通情况
 var getCallInfoAjax = null;
-exports.getCallInfo = function(reqData, type) {
+exports.getCallInfo = function(reqData) {
     var Deferred = $.Deferred();
     getCallInfoAjax && getCallInfoAjax.abort();
     getCallInfoAjax = $.ajax({
-        url: '/rest/weekly_report/call/info/' + type,
+        url: '/rest/weekly_report/call/info',
         dataType: 'json',
         type: 'post',
         data: reqData,

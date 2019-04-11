@@ -1,11 +1,11 @@
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 //获取今日电话统计数据
 var getPhoneTotalAjax;
-exports.getPhoneTotal = function(reqData, type) {
+exports.getPhoneTotal = function(reqData) {
     getPhoneTotalAjax && getPhoneTotalAjax.abort();
     var Deferred = $.Deferred();
     getPhoneTotalAjax = $.ajax({
-        url: '/rest/commonsales/phone/' + type,
+        url: '/rest/commonsales/phone',
         dataType: 'json',
         type: 'get',
         data: reqData,

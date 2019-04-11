@@ -24,7 +24,7 @@ module.exports = {
         'privileges': ['CRM_USER_PHONE_STATUS']
     }, {
         'method': 'get',
-        'path': '/rest/sales/phone/:type',
+        'path': '/rest/sales/phone',
         'handler': 'getSalesPhone',
         'passport': {
             'needLogin': true
