@@ -11,7 +11,7 @@ export function getCustomerCoverageChart() {
         title: Intl.get('oplate_customer_analysis.industryCustomerOverlay', '各行业试用客户覆盖率'),
         layout: {sm: 24},
         height: 'auto',
-        url: '/rest/analysis/customer/v2/statistic/:auth_type/industry/stage/region/overlay',
+        url: '/rest/analysis/customer/v2/statistic/:data_type/industry/stage/region/overlay',
         argCallback: arg => {
             const query = arg.query;
 
