@@ -420,17 +420,15 @@ class WeeklyReportDetail extends React.Component {
     // 通话的接通率
     getCallInfoData = () => {
         var queryObj = _.clone(this.getCallInfoParams());
-        queryObj.deviceType = this.state.call_type;
-        queryObj.return_type = 'user';
+        queryObj.device_type = this.state.call_type;
+        queryObj.statistics_type = 'user';
 
         if (isCommonSales) {
             const userId = userData.getUserData().user_id;
-            queryObj.member_id = userId;
+            queryObj.member_ids = userId;
             delete queryObj.team_ids;
         }
-
-        let type = this.getCallInfoAuth();
-        WeeklyReportDetailAction.getCallInfo(queryObj, type);
+        WeeklyReportDetailAction.getCallInfo(queryObj);
     };
 
     //获取合同情况

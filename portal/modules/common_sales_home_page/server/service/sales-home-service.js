@@ -10,7 +10,7 @@ var Promise = require('bluebird');
 var EventEmitter = require('events').EventEmitter;
 var restApis = {
     //获取销售-电话列表
-    getSalesPhone: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
+    getSalesPhone: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
     queryContactCustomer: '/rest/customer/v3/customer/range',//查询客户
     //过期或者即将到期的客户
     getExpiredCustomers: '/rest/analysis/customer/v2/statistic/:type/expire/customer',
@@ -38,10 +38,10 @@ exports.getSalesClueList = function(req, res) {
 };
 
 //获取销售-电话列表
-exports.getSalesPhone = function(req, res, reqData, type) {
+exports.getSalesPhone = function(req, res, reqData) {
     return restUtil.authRest.get(
         {
-            url: restApis.getSalesPhone.replace(':type', type),
+            url: restApis.getSalesPhone,
             req: req,
             res: res
         }, reqData, {

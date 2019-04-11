@@ -146,12 +146,8 @@ function SalesHomeActions() {
     //获取销售-电话列表
     this.getSalesPhoneList = function(reqData) {
         var _this = this;
-        let type = 'user';
-        if (hasPrivilege('CALL_RECORD_VIEW_MANAGER')) {
-            type = 'manager';
-        }
         _this.dispatch({loading: true, error: false});
-        salesHomeAjax.getSalesPhoneList(reqData, type).then(function(resData) {
+        salesHomeAjax.getSalesPhoneList(reqData).then(function(resData) {
             _this.dispatch({loading: false, error: false, resData: resData});
         }, function(errorMsg) {
             _this.dispatch({loading: false, error: true, errorMsg: errorMsg});

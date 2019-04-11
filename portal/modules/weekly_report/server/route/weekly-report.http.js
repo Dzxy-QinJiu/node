@@ -14,7 +14,7 @@ module.exports = {
         }
     }, { // 获取电话的接通情况
         'method': 'post',
-        'path': '/rest/weekly_report/call/info/:type',
+        'path': '/rest/weekly_report/call/info',
         'handler': 'getCallInfo',
         'passport': {
             'needLogin': true

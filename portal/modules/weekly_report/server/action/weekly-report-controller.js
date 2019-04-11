@@ -13,7 +13,7 @@ exports.getSaleMemberList = function(req, res) {
 };
 // 获取电话的接通情况
 exports.getCallInfo = function(req, res) {
-    weeklyReportService.getCallInfo(req, res, req.params, req.body).on('success', function(data) {
+    weeklyReportService.getCallInfo(req, res, req.body).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);

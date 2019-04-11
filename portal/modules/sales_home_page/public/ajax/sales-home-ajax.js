@@ -164,10 +164,10 @@ exports.getSalesCustomerList = function(timeRange) {
     return Deferred.promise();
 };
 //获取销售-电话列表
-exports.getSalesPhoneList = function(reqData, type) {
+exports.getSalesPhoneList = function(reqData) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/sales/phone/' + type,
+        url: '/rest/sales/phone',
         dataType: 'json',
         type: 'get',
         data: reqData,

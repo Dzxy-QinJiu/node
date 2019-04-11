@@ -268,11 +268,12 @@ class SalesHomePage extends React.Component {
         let phoneParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
-            deviceType: this.state.callType || CALL_TYPE_OPTION.ALL,
+            device_type: this.state.callType || CALL_TYPE_OPTION.ALL,
         };
         if (this.state.currShowSalesman) {
             //查看当前选择销售的统计数据
             phoneParams.member_ids = this.state.currShowSalesman.userId;
+            phoneParams.statistics_type = 'user';
         } else if (this.state.currShowSalesTeam) {
             //查看当前选择销售团队内所有成员的统计数据
             phoneParams.team_ids = this.state.currShowSalesTeam.group_id;

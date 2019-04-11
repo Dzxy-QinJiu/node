@@ -13,12 +13,8 @@ function SalesHomeActions() {
         'afterRemarkClue'//标记日程无效后的处理
     );
     this.getPhoneTotal = function(reqData) {
-        let type = 'manager';
-        if (hasPrivilege('CALL_RECORD_VIEW_USER')) {
-            type = 'user';
-        }
         this.dispatch({loading: true, error: false});
-        salesHomeAjax.getPhoneTotal(reqData, type).then((resData) => {
+        salesHomeAjax.getPhoneTotal(reqData).then((resData) => {
             this.dispatch({loading: false, error: false, resData: resData});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errMsg: errorMsg});

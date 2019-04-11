@@ -7,7 +7,7 @@ const restApis = {
     // 获取成员信息
     getSaleMemberList: '/rest/base/v1/group/team/members/:type',
     // 获取电话的接通情况
-    getCallInfo: '/rest/callrecord/v2/callrecord/query/:type/call_record/view',
+    getCallInfo: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
     //合同报表统计
     getContractInfo: '/rest/analysis/contract/report/contract/:type',
     //合同回款统计
@@ -31,10 +31,10 @@ exports.getSaleMemberList = function(req, res, params) {
         });
 };
 // 获取电话的接通情况
-exports.getCallInfo = function(req, res, params, reqData) {
+exports.getCallInfo = function(req, res, reqData) {
     return restUtil.authRest.get(
         {
-            url: restApis.getCallInfo.replace(':type', params.type),
+            url: restApis.getCallInfo,
             req: req,
             res: res
         }, reqData);

@@ -293,7 +293,7 @@ class CallRecordAnalyis extends React.Component {
         let queryParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
-            deviceType: params && params.deviceType || this.state.callType,
+            device_type: params && params.deviceType || this.state.callType,
             filter_phone: this.state.filter_phone,//是否过滤114
         };
         let pathParam = commonMethodUtil.getParamByPrivilege();
@@ -304,13 +304,13 @@ class CallRecordAnalyis extends React.Component {
                     queryParams.team_ids = teamMemberParam.sales_team_id;
                 } else if (teamMemberParam.user_id) {
                     queryParams.member_ids = teamMemberParam.user_id;
+                    queryParams.statistics_type = 'user';
                 } else if (teamMemberParam.return_type) {
-                    queryParams.return_type = teamMemberParam.return_type;
+                    queryParams.statistics_type = teamMemberParam.return_type;
                 }
             }
         }
-        let type = this.getCallInfoAuth();
-        CallAnalysisAction.getCallInfo(pathParam, queryParams, type);
+        CallAnalysisAction.getCallInfo(pathParam, queryParams);
     };
 
     // TOP10

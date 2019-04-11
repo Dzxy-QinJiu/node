@@ -40,7 +40,7 @@ exports.getCallCountAndDurSeperately = function(req, res) {
 };
 // 获取电话的接通情况
 exports.getCallInfo = function(req, res) {
-    callAnalysisService.getCallInfo(req, res, req.params, req.body).on('success', function(data) {
+    callAnalysisService.getCallInfo(req, res, req.body).on('success', function(data) {
         callRateData = data;
         res.status(200).json(data);
     }).on('error', function(codeMessage) {

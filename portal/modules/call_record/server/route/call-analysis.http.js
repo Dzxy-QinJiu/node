@@ -30,7 +30,7 @@ module.exports = {
         },
         { // 获取电话的接通情况
             'method': 'post',
-            'path': '/rest/call/info/:type',
+            'path': '/rest/call/info',
             'handler': 'getCallInfo',
             'passport': {
                 'needLogin': true
