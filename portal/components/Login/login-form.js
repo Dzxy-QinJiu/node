@@ -240,7 +240,8 @@ class LoginForm extends React.Component {
     };
     returnLoginPage = (e) => {
         e.stopPropagation();
-        window.location.href = '/login';
+        //如果直接跳到/login的话，微信绑定失败但登录成功的情况下，会跳到登录后的首页问题，所以此处用/logout
+        window.location.href = '/logout';
     };
     render() {
         const loginButtonClassName = classnames('login-button', {'not-allowed': this.state.loginButtonDisabled});

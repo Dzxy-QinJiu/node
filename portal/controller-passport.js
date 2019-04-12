@@ -10,7 +10,7 @@ var accessLogger = logger.getLogger('access');
 var checkLogin = function(passport) {
     return function(req, res, next) {
         // 登入登出的一种特殊检测
-        if (/^\/login/i.test(req.url)) {
+        if (req.url === '/login') {
             if (req.session.user) {
                 if (req.xhr) {
                     accessLogger.debug('user: ' + req.session.user.username + ' ajax重新登录时，session还存在');
@@ -22,7 +22,7 @@ var checkLogin = function(passport) {
                 }
             }
             return next();
-        } else if (/^\/logout/i.test(req.url)) {
+        } else if (req.url === '/logout') {
             if (!req.session.user) {
                 return res.redirect('/login');
             }

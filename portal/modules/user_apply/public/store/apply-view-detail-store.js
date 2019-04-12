@@ -339,7 +339,6 @@ class ApplyViewDetailStore {
                 this.appsSetting[app_id] = appConfigObj;
             }
         });
-        sendMessage && sendMessage('store中appsSetting的数据设置' + apply_type + '============' + JSON.stringify(this.appsSetting));
     }
     //显示右侧详情加载中
     showDetailLoading(obj) {

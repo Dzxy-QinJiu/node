@@ -61,7 +61,7 @@ function getConfigJson(req) {
 
         '11000': {'httpCode': 500, 'message': backendIntl.get('errorcode.35', '很抱歉，服务器出现了异常状况')},
         //auth2报的非法请求
-        '11001': {'httpCode': 500, 'message': backendIntl.get('errorcode.131', '非法请求')},
+        '11001': {'httpCode': 500, 'message': ERROR_TIP.ILLEGAL_REQUEST},
 
         '11011': {'httpCode': 500, 'message': backendIntl.get('errorcode.37', 'Token不存在')},
         '11012': {'httpCode': 500, 'message': backendIntl.get('errorcode.38', 'Token过期')},
