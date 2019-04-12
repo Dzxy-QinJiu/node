@@ -324,6 +324,8 @@ function getConfigJson(req) {
         '17223': {'httpCode': 500, 'message': backendIntl.get('errorcode.118', '获取数据失败')},
         //用户角色无分析客户数据权限
         '17299': {'httpCode': 500, 'message': backendIntl.get('errorcode.68', '没有权限')},
+        //获取最近联系客户统计失败
+        '17334': {'httpCode': 500, 'message': backendIntl.get('errorcode.17334', '获取最近联系客户统计失败')},
         /**日志**/
         //获取相关审计日志过程中发生内部错误
         '17400': {'httpCode': 500, 'message': backendIntl.get('errorcode.122', '网络请求异常')},

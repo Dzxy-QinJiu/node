@@ -2129,6 +2129,7 @@ var zh_CN = {
     'errorcode.get.call.statistics.failed': '获取通话记录统计失败',
     'errorcoe.bound.wechat': '该账号已绑定到其他微信',
     'errorcoe.wechat.bound.other': '您的微信已绑定到其他账号',
+    'errorcoe.17334': '获取最近联系客户统计失败',
 
     //遗漏部分
     'user.input.phone': '请输入手机号',
