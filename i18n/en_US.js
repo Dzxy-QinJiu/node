@@ -2096,6 +2096,7 @@ var en_US = {
     'errorcode.get.call.statistics.failed': 'Get call statistics failed', //获取通话记录统计失败
     'errorcoe.bound.wechat': 'The account has been bound to other Wechat',//该账号已绑定到其他微信
     'errorcoe.wechat.bound.other': 'Your Wechat has been bound to other accounts',//您的微信已绑定到其他账号
+    'errorcoe.17334': 'Get recent contact customer statistics failed',//获取最近联系客户统计失败
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
