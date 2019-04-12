@@ -2891,5 +2891,8 @@ var zh_CN = {
     'apply.rule.limit.int': '仅限整数',
     'apply.components.name': '组件名称',
     'apply.components.tip.msg': '提示说明',
+    'apply.components.required.item': '必填',
+    'apply.components.write.title': '请填写标题！',
+    'apply.components.length.character': '标题长度不能超过6个字符'
 };
 export default zh_CN;

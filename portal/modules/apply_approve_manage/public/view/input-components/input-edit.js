@@ -6,6 +6,7 @@
 import {Input,Checkbox } from 'antd';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 require('./index.less');
+import classNames from 'classnames';
 class InputEdit extends React.Component {
     constructor(props) {
         super(props);
@@ -14,7 +15,8 @@ class InputEdit extends React.Component {
             titleInput: _.get(formItem,'title',''),//标题
             addtionDescInput: _.get(formItem,'additionRules',''),//提示说明
             loading: false,//正在保存
-            submitErrorMsg: ''
+            submitErrorMsg: '',
+            titleRequiredMsg: '',
         };
     }
     onStoreChange = () => {
@@ -22,6 +24,12 @@ class InputEdit extends React.Component {
     };
     handleChangeTopic = (e) => {
         var value = e.target.value;
+        if (value){
+            var errTip = value.length > 6 ? Intl.get('apply.components.length.character', '标题长度不能超过6个字符') : '';
+            this.setState({
+                submitErrorMsg: errTip
+            });
+        }
         this.setState({
             titleInput: value
         });
@@ -34,6 +42,13 @@ class InputEdit extends React.Component {
     };
     handleSubmit = () => {
         if (this.state.loading){
+            return;
+        }
+        //如果必填项没有写，不允许提交
+        if (!this.state.titleInput){
+            this.setState({
+                titleRequiredMsg: Intl.get('apply.components.write.title', '请填写标题！')
+            });
             return;
         }
         this.setState({
@@ -59,7 +74,10 @@ class InputEdit extends React.Component {
     };
 
     render = () => {
-        var formItem = this.props.formItem;
+        var formItem = this.props.formItem, hasErrTip = this.state.titleRequiredMsg;
+        var cls = classNames('',{
+            'err-tip': hasErrTip
+        });
         return (
             <div className="edit-container">
                 <div className="component-row">
@@ -69,21 +87,27 @@ class InputEdit extends React.Component {
                         {_.get(formItem,'rulename')}
                     </span>
                 </div>
-                <div className="component-row">
+                <div className="component-row required">
                     <span className="label-components">{Intl.get('crm.alert.topic', '标题')}</span>
                     <span className="text-components">
-                        <Input defaultValue={this.state.titleInput} onChange={this.handleChangeTopic}/>
+                        <Input className={cls} defaultValue={this.state.titleInput} onChange={this.handleChangeTopic}/>
+                        {hasErrTip ? <span className="require-err-tip">
+                            {hasErrTip}
+                        </span> : null}
                     </span>
                 </div>
                 <div className="component-row">
                     <span className="label-components">{Intl.get('apply.components.tip.msg', '提示说明')}</span>
-                    <span className="text-components">
-                        <Input defaultValue={this.state.addtionDescInput} onChange={this.handleChangeTip}/>
+                    <span className='text-components'>
+                        <Input className={cls} defaultValue={this.state.addtionDescInput} onChange={this.handleChangeTip}/>
                     </span>
                 </div>
                 <div className="component-row">
                     <span className="label-components">{Intl.get('crm.186', '其他')}</span>
-                    <span className="text-components"><Checkbox/></span>
+                    <span className="text-components">
+                        <Checkbox/>
+                        {Intl.get('apply.components.required.item', '必填')}
+                    </span>
                 </div>
                 <SaveCancelButton loading={this.state.loading}
                     saveErrorMsg={this.state.submitErrorMsg}
