@@ -48,7 +48,6 @@ export function getChanceDealTrendChart() {
         cardContainer: {
             selectors: [{
                 options: [
-                    {name: Intl.get('common.time.unit.day', '天'), value: 'day'},
                     {name: Intl.get('common.time.unit.week', '周'), value: 'week'},
                     {name: Intl.get('common.time.unit.month', '月'), value: 'month'},
                     {name: Intl.get('common.time.unit.quarter', '季度'), value: 'quarter'},
