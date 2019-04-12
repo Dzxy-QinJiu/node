@@ -2096,6 +2096,7 @@ var en_US = {
     'errorcode.get.call.statistics.failed': 'Get call statistics failed', //获取通话记录统计失败
     'errorcoe.bound.wechat': 'The account has been bound to other Wechat',//该账号已绑定到其他微信
     'errorcoe.wechat.bound.other': 'Your Wechat has been bound to other accounts',//您的微信已绑定到其他账号
+    'errorcoe.17334': 'Get recent contact customer statistics failed',//获取最近联系客户统计失败
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
@@ -2731,7 +2732,10 @@ var en_US = {
     'failed.get.reply.comment': 'Failed to get comment lists',//获取回复列表失败
     'apply.approve.upload.no.container.space': 'Please do not has space in your file name!',//文件名称中不要含有空格！
     'failed.delete.apply.load.approve': 'Failed to delete files',//删除文件失败！
-    'click.ctrl.upload.mutil.file': 'You can upload multiple files at the same time, only upload image files, text files and compressed files. The file size should not exceed 10M!',//可同时上传多个文件，只能上传图片文件，文本文件和压缩文件，文件大小不要超过10M！
+    'click.ctrl.upload.mutil.file': 'You can upload multiple files at the same time, only upload {office}, {image}, text files and {compact}. The file size should not exceed 10M!',//可同时上传多个文件，只能上传{office}，{image}，文本文件和{compact}，文件大小不要超过10M！
+    'leave.apply.office.document': 'Office document',//办公文件
+    'leave.apply.image.document': 'Image document',//图片文件
+    'leave.apply.compact.document': 'Compact document',//压缩文件
     'apply.approve.customer.info': 'Customer Info',//客户资料
     'apply.approve.add.files': 'Added files',//补充文件
     'fail.apply.approve.result': 'Failed to approve',//审批失败
@@ -2833,6 +2837,8 @@ var en_US = {
     'bussiness.trip.time.range': 'Visit time',//拜访时间
     'business.leave.time.range': 'Bussiness range',//出差时长
     'clue.batch.select.clues': 'Has selected {num} clues',//已选择{num}个线索
-    'clue.batch.assign.sales': 'Assign in batch'//批量分配
+    'clue.batch.assign.sales': 'Assign in batch',//批量分配
+    'clue.export.trace.msg': '{traceman} added in {tracetime}',//{traceman}于{tracetime}添加
+    'clue.batch.change.trace.man': 'Change follower',//变更跟进人
 };
 export default en_US;

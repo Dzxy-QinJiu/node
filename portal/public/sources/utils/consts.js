@@ -459,7 +459,7 @@ export const FILES_TYPE_FORBIDDEN_RULES = [
 ];
 //文件允许的上传规则
 export const FILES_TYPE_ALLOW_RULES = [
-    {valueArr: ['docx','doc','ppt','pptx','pdf','png','bmp','jpg','xls','csv','txt','rar','zip'],messageTips: Intl.get('apply.approve.upload.error.file.type','文件格式不正确！')},
+    {valueArr: ['docx','doc','ppt','pptx','pdf','xls','csv','png','bmp','jpg','txt','rar','zip'],messageTips: Intl.get('apply.approve.upload.error.file.type','文件格式不正确！')},
 ];
 //两个值一个是文件的最小值一个是文件的最大值
 export const REG_FILES_SIZE_RULES = [
@@ -474,3 +474,4 @@ export const REG_CLUE_FILES_TYPE_RULES = [
 export const REG_CRM_FILES_TYPE_RULES = [
     {valueArr: ['csv'],messageTips: Intl.get('clue.import.file.type','只能导入{type}格式的文件！',{type: 'csv'})},
 ];
+export const FINAL_TASK = 'final_task';

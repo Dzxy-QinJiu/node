@@ -14,10 +14,11 @@ export function getNewChanceChart(chartType = 'table') {
     if (chartType === 'funnel') {
         chart.customOption = {
             valueField: 'showValue',
-            minSize: '5%',
+            minSize: 1,
         };
 
         chart.processData = processDataFunnel;
+        chart.processCsvData = processCsvDataFunnel;
     } else if (chartType === 'table') {
         chart.processData = data => {
             const result = _.get(data, 'result');
@@ -81,16 +82,26 @@ export function getNewChanceChart(chartType = 'table') {
         //成交率
         const dealRate = _.last(visibleSerie.data).dealRate;
 
+        //标线公共配置
+        const markLineCommonOption = {
+            //鼠标移上时不加粗
+            silent: true,
+            //不用动画显示画线效果
+            animation: false,
+            //线的两端不显示图标
+            symbol: 'none',
+            lineStyle: {
+                color: '#999',
+            }
+        };
+
+        option.animition = false;
         //添加两个辅助系列，以引出4条线来显示成交率
         option.series.push(
             //第一个系列用于显示上下边线
             {
                 type: 'funnel',
-                markLine: {
-                    symbol: 'none',
-                    lineStyle: {
-                        color: '#999',
-                    },
+                markLine: _.extend({}, markLineCommonOption, {
                     data: [
                         [
                             {
@@ -113,16 +124,12 @@ export function getNewChanceChart(chartType = 'table') {
                             }
                         ],
                     ]
-                }
+                })
             },
             //第二个系列用于显示上下边线之间的两条竖线及成交率
             {
                 type: 'funnel',
-                markLine: {
-                    symbol: ['none', 'none'],
-                    lineStyle: {
-                        color: '#999',
-                    },
+                markLine: _.extend({}, markLineCommonOption, {
                     label: {
                         formatter: params => {
                             if (params.dataIndex === 0) {
@@ -152,7 +159,7 @@ export function getNewChanceChart(chartType = 'table') {
                             }
                         ]
                     ]
-                }
+                })
             }
         );
     };
@@ -161,6 +168,8 @@ export function getNewChanceChart(chartType = 'table') {
 
     //处理漏斗图数据
     function processDataFunnel(data) {
+        if (!data) return [];
+
         const stages = [
             {
                 tagName: '提交数',
@@ -203,16 +212,39 @@ export function getNewChanceChart(chartType = 'table') {
                     name: convertRate,
                     value: stageValue,
                     showValue,
+                    csvName: stage.tagName
                 });
             }
         });
 
         //成交率
-        let dealRate = ((data.deal / data.total) * 100).toFixed(2) + '%';
+        let dealRate;
+
+        if (data.total === 0) {
+            dealRate = '0%';
+        } else {
+            dealRate = ((data.deal / data.total) * 100).toFixed(2) + '%';
+        }
 
         //将成交率存入最后一个数据项
         _.last(processedData).dealRate = dealRate;
 
         return processedData;
+    }
+
+    //处理漏斗图导出数据
+    function processCsvDataFunnel(chart, option) {
+        let csvData = [];
+        const data = chart.data;
+
+        let thead = _.map(data, 'csvName');
+        thead.push('通过率', '成交率', '总成交率(提交-成交)');
+        csvData.push(thead);
+
+        let tbody = _.map(data, 'value');
+        tbody.push(data[1].name, data[2].name, data[2].dealRate);
+        csvData.push(tbody);
+
+        return csvData;
     }
 }

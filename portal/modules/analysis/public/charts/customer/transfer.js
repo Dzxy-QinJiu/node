@@ -33,6 +33,7 @@ export function getCustomerTransferChart() {
                     dataIndex: 'customer_name',
                     sorter: true,
                     width: 300,
+                    isSetCsvValueBlank: true
                 }, {
                     title: Intl.get('crm.customer.transfer.sales', '销售代表'),
                     dataIndex: 'old_member_nick_name',

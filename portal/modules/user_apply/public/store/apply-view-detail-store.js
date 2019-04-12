@@ -137,6 +137,8 @@ class ApplyViewDetailStore {
             errorMsg: ''
         };
         this.isLeader = false; //当前账号是否是待审批人的上级领导
+        //该审批的所在的节点
+        this.applyNode = [];
     }
     //获取应用列表
     getApps(result) {
@@ -337,7 +339,6 @@ class ApplyViewDetailStore {
                 this.appsSetting[app_id] = appConfigObj;
             }
         });
-        sendMessage && sendMessage('store中appsSetting的数据设置' + apply_type + '============' + JSON.stringify(this.appsSetting));
     }
     //显示右侧详情加载中
     showDetailLoading(obj) {
@@ -606,6 +607,13 @@ class ApplyViewDetailStore {
         } else {
             this.candidateList = result;
             this.isLeader = checkIfLeader(result);
+        }
+    }
+    getApplyTaskNode(result){
+        if (result.error) {
+            this.applyNode = [];
+        } else {
+            this.applyNode = result;
         }
     }
     setNextCandidate(candidateArr){

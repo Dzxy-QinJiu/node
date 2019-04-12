@@ -61,7 +61,7 @@ function getConfigJson(req) {
 
         '11000': {'httpCode': 500, 'message': backendIntl.get('errorcode.35', '很抱歉，服务器出现了异常状况')},
         //auth2报的非法请求
-        '11001': {'httpCode': 500, 'message': backendIntl.get('errorcode.131', '非法请求')},
+        '11001': {'httpCode': 500, 'message': ERROR_TIP.ILLEGAL_REQUEST},
 
         '11011': {'httpCode': 500, 'message': backendIntl.get('errorcode.37', 'Token不存在')},
         '11012': {'httpCode': 500, 'message': backendIntl.get('errorcode.38', 'Token过期')},
@@ -324,6 +324,8 @@ function getConfigJson(req) {
         '17223': {'httpCode': 500, 'message': backendIntl.get('errorcode.118', '获取数据失败')},
         //用户角色无分析客户数据权限
         '17299': {'httpCode': 500, 'message': backendIntl.get('errorcode.68', '没有权限')},
+        //获取最近联系客户统计失败
+        '17334': {'httpCode': 500, 'message': backendIntl.get('errorcode.17334', '获取最近联系客户统计失败')},
         /**日志**/
         //获取相关审计日志过程中发生内部错误
         '17400': {'httpCode': 500, 'message': backendIntl.get('errorcode.122', '网络请求异常')},

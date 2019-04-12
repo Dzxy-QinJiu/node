@@ -9,6 +9,7 @@ trans.register('transferNextCandidate', {url: '/rest/add/apply/new/candidate', t
 trans.register('transferUserApplyNextCandidate', {url: '/rest/add/userapply/new/candidate', type: 'post'});
 trans.register('getMyUserApplyWorkList', {url: '/rest/get/userapply/worklist', type: 'get'});
 trans.register('getApplyListApprovedByMe', {url: '/rest/get/myapproved/apply/list', type: 'get'});
+trans.register('getApplyTaskNode', {url: '/rest/get/apply/node', type: 'get'});
 exports.getNextCandidate = function(reqParams) {
     return trans.getAjax('candidateList', reqParams);
 };
@@ -24,4 +25,7 @@ exports.getMyUserApplyWorkList = function(reqParams) {
 };
 exports.getApplyListApprovedByMe = function(reqParams) {
     return trans.getAjax('getApplyListApprovedByMe', reqParams);
+};
+exports.getApplyTaskNode = function(reqParams) {
+    return trans.getAjax('getApplyTaskNode', reqParams);
 };

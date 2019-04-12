@@ -294,70 +294,6 @@ class ContactItem extends React.Component {
                                 addDataTip={Intl.get('user.setting.roles', '设置角色')}
                             />
                         </div>
-                        <div className="contact-item-content">
-                            <span className="contact-label">{Intl.get('crm.contact.sex', '性别')}:</span>
-                            <BasicEditSelectField
-                                width={EDIT_FEILD_WIDTH}
-                                id={contact.id}
-                                field="sex"
-                                displayText={contact.sex}
-                                value={contact.sex}
-                                placeholder={Intl.get('crm.contact.sex.placeholder', '请选择性别')}
-                                hasEditPrivilege={hasEditPrivilege}
-                                selectOptions={this.getSexSelectOptions()}
-                                validators={[{
-                                    required: true,
-                                    message: Intl.get('crm.contact.sex.placeholder', '请选择性别'),
-                                }]}
-                                saveEditSelect={this.saveContactInfo.bind(this, 'sex')}
-                                noDataTip={Intl.get('crm.contact.sex.none', '未设置性别')}
-                                addDataTip={Intl.get('crm.contact.sex.set', '设置性别')}
-                            />
-                        </div>
-                        <div className="contact-item-content">
-                            <span className="contact-label">{Intl.get('crm.contact.birthday', '生日')}:</span>
-                            <BasicEditDateField
-                                width={EDIT_FEILD_WIDTH}
-                                id={contact.id}
-                                field="birthday"
-                                value={contact.birthday}
-                                hasEditPrivilege={hasEditPrivilege}
-                                saveEditDateInput={this.saveContactInfo.bind(this, 'birthday')}
-                                disabledDate={disabledAfterToday}
-                                noDataTip={Intl.get('crm.contact.birthday.none', '未设置生日')}
-                                addDataTip={Intl.get('crm.contact.birthday.set', '设置生日')}
-                            />
-                        </div>
-                        <div className="contact-item-content">
-                            <span className="contact-label">{Intl.get('crm.contact.hobby', '爱好')}:</span>
-                            <BasicEditInputField
-                                width={EDIT_FEILD_WIDTH}
-                                id={contact.id}
-                                type="input"
-                                field="hobby"
-                                value={contact.hobby}
-                                placeholder={Intl.get('crm.contact.hobby.placeholder', '请输入联系人的兴趣爱好')}
-                                hasEditPrivilege={hasEditPrivilege}
-                                saveEditInput={this.saveContactInfo.bind(this, 'hobby')}
-                                noDataTip={Intl.get('crm.contact.hobby.none', '未添加爱好')}
-                                addDataTip={Intl.get('crm.contact.hobby.add', '添加爱好')}
-                            />
-                        </div>
-                        <div className="contact-item-content">
-                            <span className="contact-label">{Intl.get('common.remark', '备注')}:</span>
-                            <BasicEditInputField
-                                width={EDIT_FEILD_WIDTH}
-                                id={contact.id}
-                                type="textarea"
-                                field="remark"
-                                value={contact.remark}
-                                placeholder={Intl.get('user.input.remark', '请输入备注')}
-                                hasEditPrivilege={hasEditPrivilege}
-                                saveEditInput={this.saveContactInfo.bind(this, 'remark')}
-                                noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
-                                addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
-                            />
-                        </div>
                     </div>) : null}
                 <div className="contact-item-content">
                     <DynamicAddDelField
@@ -421,6 +357,70 @@ class ContactItem extends React.Component {
                                 saveEditData={this.saveContactInfo.bind(this, 'email')}
                                 noDataTip={Intl.get('crm.contact.email.none', '暂无邮箱')}
                                 addDataTip={Intl.get('crm.contact.email.add', '添加邮箱')}
+                            />
+                        </div>
+                        <div className="contact-item-content">
+                            <span className="contact-label">{Intl.get('crm.contact.sex', '性别')}:</span>
+                            <BasicEditSelectField
+                                width={EDIT_FEILD_WIDTH}
+                                id={contact.id}
+                                field="sex"
+                                displayText={contact.sex}
+                                value={contact.sex}
+                                placeholder={Intl.get('crm.contact.sex.placeholder', '请选择性别')}
+                                hasEditPrivilege={hasEditPrivilege}
+                                selectOptions={this.getSexSelectOptions()}
+                                validators={[{
+                                    required: true,
+                                    message: Intl.get('crm.contact.sex.placeholder', '请选择性别'),
+                                }]}
+                                saveEditSelect={this.saveContactInfo.bind(this, 'sex')}
+                                noDataTip={Intl.get('crm.contact.sex.none', '未设置性别')}
+                                addDataTip={Intl.get('crm.contact.sex.set', '设置性别')}
+                            />
+                        </div>
+                        <div className="contact-item-content">
+                            <span className="contact-label">{Intl.get('crm.contact.birthday', '生日')}:</span>
+                            <BasicEditDateField
+                                width={EDIT_FEILD_WIDTH}
+                                id={contact.id}
+                                field="birthday"
+                                value={contact.birthday}
+                                hasEditPrivilege={hasEditPrivilege}
+                                saveEditDateInput={this.saveContactInfo.bind(this, 'birthday')}
+                                disabledDate={disabledAfterToday}
+                                noDataTip={Intl.get('crm.contact.birthday.none', '未设置生日')}
+                                addDataTip={Intl.get('crm.contact.birthday.set', '设置生日')}
+                            />
+                        </div>
+                        <div className="contact-item-content">
+                            <span className="contact-label">{Intl.get('crm.contact.hobby', '爱好')}:</span>
+                            <BasicEditInputField
+                                width={EDIT_FEILD_WIDTH}
+                                id={contact.id}
+                                type="input"
+                                field="hobby"
+                                value={contact.hobby}
+                                placeholder={Intl.get('crm.contact.hobby.placeholder', '请输入联系人的兴趣爱好')}
+                                hasEditPrivilege={hasEditPrivilege}
+                                saveEditInput={this.saveContactInfo.bind(this, 'hobby')}
+                                noDataTip={Intl.get('crm.contact.hobby.none', '未添加爱好')}
+                                addDataTip={Intl.get('crm.contact.hobby.add', '添加爱好')}
+                            />
+                        </div>
+                        <div className="contact-item-content">
+                            <span className="contact-label">{Intl.get('common.remark', '备注')}:</span>
+                            <BasicEditInputField
+                                width={EDIT_FEILD_WIDTH}
+                                id={contact.id}
+                                type="textarea"
+                                field="remark"
+                                value={contact.remark}
+                                placeholder={Intl.get('user.input.remark', '请输入备注')}
+                                hasEditPrivilege={hasEditPrivilege}
+                                saveEditInput={this.saveContactInfo.bind(this, 'remark')}
+                                noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
+                                addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
                             />
                         </div>
                     </div>

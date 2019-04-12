@@ -323,7 +323,7 @@ class SalesReport extends React.Component {
             charts.push(
                 reportCharts.getSalesRankingChart('salesManager')
             );
-        } else {
+        } else if (roleName === SALES_ROLE.customer_manager) {
             charts.push(
                 reportCharts.getSalesRankingChart('customerManager')
             );
@@ -358,7 +358,7 @@ class SalesReport extends React.Component {
                 //所有销售机会统计
                 chanceCharts.getAllChanceChart(['total', 'deal', 'deal_rate'])
             );
-        } else {
+        } else if (roleName === SALES_ROLE.customer_manager) {
             charts.push(
                 reportCharts.contractChart,
                 reportCharts.repaymentChart,
@@ -404,7 +404,7 @@ class SalesReport extends React.Component {
                 //联系客户频率统计
                 customerCharts.getContactCustomerIntervalChart(),
             );
-        } else {
+        } else if (roleName === SALES_ROLE.customer_manager) {
             charts.push(
                 //客户数统计
                 customerCharts.getCustomerNumChart(),

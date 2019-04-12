@@ -11,8 +11,8 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import {Form, Input, Icon} from 'antd';
 const FormItem = Form.Item;
-import {hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import PhoneCallout from 'CMP_DIR/phone-callout';
+import Trace from 'LIB_DIR/trace';
 class DynamicAddDelField extends React.Component {
     constructor(props) {
         super(props);
@@ -48,13 +48,13 @@ class DynamicAddDelField extends React.Component {
             let saveObj = {
                 id: this.props.id
             };
-            saveObj[this.props.field] = values[this.props.field];
+            saveObj[this.props.field] = _.filter(values[this.props.field], item => item);
             this.setState({loading: true});
             this.props.saveEditData(saveObj, () => {
                 this.setState({
                     loading: false,
                     submitErrorMsg: '',
-                    value: values[this.props.field],
+                    value: saveObj[this.props.field],
                     displayType: 'text'
                 });
             }, errorMsg => {

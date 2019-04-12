@@ -44,7 +44,7 @@ var UserTypeConfigForm = require('./user-type-config-form');
 import Trace from 'LIB_DIR/trace';
 
 var moment = require('moment');
-import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDesc,formatUsersmanList,updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
+import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDesc,formatUsersmanList,updateUnapprovedCount, isFinalTask} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
@@ -184,6 +184,8 @@ const ApplyViewDetail = createReactClass({
             }
             ApplyViewDetailActions.getApplyDetail(detailItem.id, applyData, approval_state);
             ApplyViewDetailActions.getNextCandidate({id: detailItem.id});
+            //获取该审批所在节点的位置
+            ApplyViewDetailActions.getApplyTaskNode({id: detailItem.id});
             //获取回复列表
             if (hasPrivilege('GET_APPLY_COMMENTS')) {
                 ApplyViewDetailActions.getReplyList(detailItem.id);
@@ -224,7 +226,6 @@ const ApplyViewDetail = createReactClass({
     componentWillReceiveProps(nextProps) {
         if (nextProps.detailItem.id && !_.isEqual(nextProps.detailItem, this.props.detailItem)) {
             this.appsSetting = {};
-            sendMessage && sendMessage('componentWillReceiveProps中清空appsSetting的数据' + _.get(nextProps, 'detailItem.message.type', ''));
             if (nextProps.detailItem.id !== _.get(this, 'props.detailItem.id')) {
                 this.setState({
                     showBackoutConfirmType: ''
@@ -716,7 +717,15 @@ const ApplyViewDetail = createReactClass({
         });
 
     },
-
+    //展示手动设置密码的权限
+    showPassWordPrivilege: function() {
+        //有修改权限 && 是待审批状态的申请 && 能展示通过驳回按钮 && 该审批位于最后一个节点
+        return this.hasApprovalPrivilege() && this.isUnApproved() && _.get(this, 'state.detailInfoObj.info.showApproveBtn') && isFinalTask(this.state.applyNode);
+    },
+    //选择了手动设置密码时，未输入密码，不能通过
+    settingPasswordManuWithNoValue: function() {
+        return !_.get(this, 'state.checkStatus',true) && !_.get(this, 'state.passwordValue','');
+    },
     //渲染用户名
     renderApplyDetailUserNames(detailInfo) {
         //已有用戶
@@ -755,8 +764,7 @@ const ApplyViewDetail = createReactClass({
                             <span
                                 className="user-info-text edit-name-wrap">{this.renderUserNameBlock(detailInfo)}</span>
                         </div>);
-                    //有修改权限 && 是待审批状态的申请 && 能展示通过驳回按钮
-                    let passwordSetting = this.hasApprovalPrivilege() && this.isUnApproved() && _.get(this, 'state.detailInfoObj.info.showApproveBtn') ? (<PasswordSetting
+                    let passwordSetting = this.showPassWordPrivilege() ? (<PasswordSetting
                         onCheckboxChange={this.onCheckboxChange}
                         onInputPasswordChange={this.onInputPasswordChange}
                         checkStatus={this.state.isOplateUser}
@@ -1192,7 +1200,6 @@ const ApplyViewDetail = createReactClass({
         _.each(appsSetting, (value, key) => {
             this.appsSetting[key] = value;
         });
-        sendMessage && sendMessage('appsSetting的数据设置============' + JSON.stringify(this.appsSetting));
     },
 
     //渲染用户申请
@@ -1907,7 +1914,7 @@ const ApplyViewDetail = createReactClass({
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击撤销申请按钮');
         }
         //选择了手动设置密码时，未输入密码，不能通过
-        if (this.settingPasswordManuWithNoValue() && approval === '1'){
+        if (this.showPassWordPrivilege() && this.settingPasswordManuWithNoValue() && approval === '1'){
             this.setState({
                 showWariningTip: true
             });
@@ -1915,10 +1922,7 @@ const ApplyViewDetail = createReactClass({
         }
         this.showConfirmModal(approval);
     },
-    //选择了手动设置密码时，未输入密码，不能通过
-    settingPasswordManuWithNoValue: function() {
-        return this.hasApprovalPrivilege() && !_.get(this, 'state.checkStatus',true) && !_.get(this, 'state.passwordValue','');
-    },
+
     showConfirmModal(approval) {
         this.setState({
             showBackoutConfirmType: approval
@@ -2312,7 +2316,6 @@ const ApplyViewDetail = createReactClass({
                     obj.nick_name = this.state.formData.nick_name;
                 }
             }
-            sendMessage && sendMessage('审批通过时，提交前的appsSetting数据' + detailInfo.type + '============' + JSON.stringify(this.appsSetting));
             ApplyViewDetailActions.submitApply(obj, detailInfo.type);
         };
         var validation = this.refs.validation;

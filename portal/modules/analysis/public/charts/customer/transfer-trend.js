@@ -21,6 +21,12 @@ export function getCustomerTransferTrendChart() {
             if (_.get(arg, 'query.app_id')) {
                 delete arg.query.app_id;
             }
+
+            if (_.get(arg, 'query.statistics_type')) {
+                //这个接口的返回类型参数名为 result_type
+                arg.query.result_type = arg.query.statistics_type;
+                delete arg.query.statistics_type;
+            }
         },
         dataField: 'list',
         processOption: (option, props) => {
@@ -64,10 +70,12 @@ export function getCustomerTransferTrendChart() {
                 csvData.push(thead);
 
                 _.each(chart.data, item => {
-                    let tr = [item.name];
-                    const valueCols = _.map(firstItem.interval_list, 'number');
-                    tr = tr.concat(valueCols);
-                    csvData.push(tr);
+                    if (item.name) {
+                        let tr = [item.name];
+                        const valueCols = _.map(firstItem.interval_list, 'number');
+                        tr = tr.concat(valueCols);
+                        csvData.push(tr);
+                    }
                 });
             }
 

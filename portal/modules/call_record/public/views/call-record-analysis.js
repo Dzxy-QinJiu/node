@@ -94,9 +94,6 @@ const TOOLTIPDESCRIPTION = {
     COUNT: Intl.get('sales.home.call.cout', '通话数量')
 };
 
-// 趋势图，统计的是近一个月的通话时长和通话数量
-const TREND_TIME = 30 * 24 * 60 * 60 * 1000;
-
 const FIRSR_SELECT_DATA = [LITERAL_CONSTANT.TEAM, LITERAL_CONSTANT.MEMBER];
 
 
@@ -162,11 +159,6 @@ class CallRecordAnalyis extends React.Component {
         });
     };
 
-    // 获取团队或是成员的id
-    getTeamOrMemberId = (list, selectValue) => {
-        return _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).map('id').value();
-    };
-
     // 获取团队或成员的参数
     getTeamMemberParam = (hasReturnType) => {
         let teamList = this.state.teamList.list; // 团队数据
@@ -175,8 +167,7 @@ class CallRecordAnalyis extends React.Component {
         let params = {};
         if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && this.state.teamList.list.length > 1) { // 团队时
             if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体团队时
-                let secondSelectTeamId = this.getTeamOrMemberId(teamList, secondSelectValue);
-                params.sales_team_id = secondSelectTeamId.join(',');
+                params.sales_team_id = secondSelectValue.join(',');
             }
         } else { // 成员时
             if (this.state.secondSelectValue === LITERAL_CONSTANT.ALL) { // 全部时
@@ -188,8 +179,7 @@ class CallRecordAnalyis extends React.Component {
                     params.user_id = userIdArray.join(',');
                 }
             } else if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体成员时
-                let secondSelectMemberId = this.getTeamOrMemberId(memberList, secondSelectValue);
-                params.user_id = secondSelectMemberId.join(','); // 成员
+                params.user_id = secondSelectValue.join(','); // 成员
             }
         }
         return params;
@@ -203,20 +193,25 @@ class CallRecordAnalyis extends React.Component {
         }
         if (params) {
             if (params.deviceType && params.deviceType !== 'all') {
-                reqBody.deviceType = params && params.deviceType || this.state.callType;
+                reqBody.type = params && params.deviceType || this.state.callType;
             }
         }
         return reqBody;
     };
 
+    // 通话数量和通话时长的时间参数，统计近一个月的数据
+    getTrendParams() {
+        return {
+            //开始时间为当前选择的结束时间往前推一个月
+            start_time: moment(this.state.end_time).subtract(1, 'month').valueOf(),
+            end_time: this.state.end_time
+        };
+    }
+
     // 通话分析的趋势图
     getCallAnalysisTrendData = (reqBody) => {
-        var nowTime = new Date().getTime();
-        // 通话数量和通话时长的时间参数，统计近一个月(今天往前推30天)的统计
-        let trendParams = {
-            start_time: (nowTime - TREND_TIME),
-            end_time: nowTime
-        };
+        const trendParams = this.getTrendParams();
+
         // 获取通话数量和通话时长的趋势图数据
         CallAnalysisAction.getCallCountAndDur(trendParams, reqBody);
     };
@@ -264,8 +259,7 @@ class CallRecordAnalyis extends React.Component {
         let params = {};
         if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && this.state.teamList.list.length > 1) { // 团队时
             if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体团队时
-                let secondSelectTeamId = this.getTeamOrMemberId(teamList, secondSelectValue);
-                params.sales_team_id = secondSelectTeamId.join(',');
+                params.sales_team_id = secondSelectValue.join(',');
             } else {
                 params.sales_team_id = _.map(teamList, 'id').join(',');
             }
@@ -288,12 +282,8 @@ class CallRecordAnalyis extends React.Component {
 
     //分别获取每个团队的趋势图
     getCallAnalysisTrendDataSeparately = (reqBody) => {
-        var nowTime = new Date().getTime();
-        // 通话数量和通话时长的时间参数，统计近一个月(今天往前推30天)的统计
-        let trendParams = {
-            start_time: (nowTime - TREND_TIME),
-            end_time: nowTime
-        };
+        const trendParams = this.getTrendParams();
+
         // 获取通话数量和通话时长的趋势图数据
         CallAnalysisAction.getCallCountAndDurSeparately(trendParams, reqBody);
     };
@@ -722,7 +712,7 @@ class CallRecordAnalyis extends React.Component {
                                     // 通话数量
                                     this.renderCallChart(this.state.callList.count, this.countTooltip) :
                                     // 通话时长
-                                    this.renderCallChart(this.state.callList.count, this.durationTooltip)
+                                    this.renderCallChart(this.state.callList.duration, this.durationTooltip)
                             }
                         </div>)}
                 </div>
@@ -1583,11 +1573,11 @@ class CallRecordAnalyis extends React.Component {
         } else if (teamList.length > 1) { // 展示团队和成员
             if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
                 secondOptions = teamList.map((item, index) => {
-                    return <Option value={item.name} key={index}>{item.name}</Option>;
+                    return <Option value={item.id} key={index}>{item.name}</Option>;
                 });
             } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
                 secondOptions = memberList.map((item, index) => {
-                    return <Option value={item.name} key={index}>{item.name}</Option>;
+                    return <Option value={item.id} key={index}>{item.name}</Option>;
                 });
             }
         }
@@ -1668,6 +1658,7 @@ class CallRecordAnalyis extends React.Component {
                             <DatePicker
                                 disableDateAfterToday={true}
                                 range="day"
+                                selectedTimeFormat="int"
                                 onSelect={this.onSelectDate}>
                                 <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
                                 <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>

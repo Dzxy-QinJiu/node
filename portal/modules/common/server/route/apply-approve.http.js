@@ -42,5 +42,12 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    }, {
+        'method': 'get',
+        'path': '/rest/get/apply/node',
+        'handler': 'getApplyTaskNode',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };
