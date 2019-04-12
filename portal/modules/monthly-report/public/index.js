@@ -448,7 +448,7 @@ class MonthlyReport extends React.Component {
     renderFilter = (selectedTeamId) => {
         return (
             <div className="btn-item-container">
-                {selectedTeamId && this.state.teamList.length ? (
+                {selectedTeamId && this.state.teamList.length > 1 ? (
                     <Select
                         defaultValue={selectedTeamId}
                         onChange={this.onTeamChange}
