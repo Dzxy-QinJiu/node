@@ -97,7 +97,7 @@ class DocumentWriteApplyManagement extends React.Component {
             page_size: this.state.page_size,
             id: this.state.lastApplyId, //用于下拉加载的id
             type: APPLY_APPROVE_TYPES.DOCUMENT,
-            isUnreadApply: this.state.isCheckUnreadApplyList,
+            comment_unread: this.state.isCheckUnreadApplyList,
         };
         //如果是选择的全部类型，不需要传status这个参数
         if (this.state.applyListType !== 'all') {
@@ -240,7 +240,7 @@ class DocumentWriteApplyManagement extends React.Component {
             } else {
                 Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '取消有未读回复申请的查看');
             }
-            this.getAllSalesOpportunityApplyList();
+            this.getAllApplyList();
         });
     };
     getUnreadTip = () => {

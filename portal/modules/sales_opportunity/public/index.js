@@ -106,7 +106,7 @@ class SalesOpportunityApplyManagement extends React.Component {
             page_size: this.state.page_size,
             id: this.state.lastApplyId, //用于下拉加载的id
             type: APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES,
-            isUnreadApply: this.state.isCheckUnreadApplyList,
+            comment_unread: this.state.isCheckUnreadApplyList,
         };
         //如果是选择的全部类型，不需要传status这个参数
         if (this.state.applyListType !== APPLY_TYPE_STATUS_CONST.ALL) {
