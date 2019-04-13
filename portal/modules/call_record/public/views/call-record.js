@@ -61,7 +61,8 @@ const CALL_STATUS_OPTION = {
 // 通话类型的常量
 const CALL_TYPE_OPTION = {
     ALL: '',
-    PHONE: 'phone',
+    PHONE: 'phone',//呼叫中心 - effung的电话系统（讯时+usterisk）
+    CURTAO_PHONE: 'curtao_phone',//呼叫中心 - 容联的电话系统（curtao默认通话系统）
     APP: 'app',
     CALL_BACK: 'call_back',
 };
@@ -228,7 +229,7 @@ class CallRecord extends React.Component {
 
     onSelectFilterObj = (filterKey, value) => {
         this.state.filterObj[filterKey] = value;
-        if (value === CALL_TYPE_OPTION.PHONE) {
+        if (value === `${CALL_TYPE_OPTION.PHONE},${CALL_TYPE_OPTION.CURTAO_PHONE}`) {
             this.state.callType = <i className="iconfont icon-call-back" title={Intl.get('call.record.call.center', '呼叫中心')}></i>;
         } else if (value === CALL_TYPE_OPTION.APP) {
             this.state.callType = <i className="iconfont icon-ketao-app" title={Intl.get('common.ketao.app', '客套APP')}></i>;
@@ -305,7 +306,7 @@ class CallRecord extends React.Component {
                         <i className="iconfont  icon-all"></i>
                         <span>{Intl.get('user.online.all.type', '全部类型')}</span>
                     </Option>
-                    <Option value={CALL_TYPE_OPTION.PHONE}>
+                    <Option value={`${CALL_TYPE_OPTION.PHONE},${CALL_TYPE_OPTION.CURTAO_PHONE}`}>
                         <i className="iconfont  icon-call-back"></i>
                         <span>{Intl.get('call.record.call.center', '呼叫中心')}</span>
                     </Option>
@@ -594,9 +595,9 @@ class CallRecord extends React.Component {
                         'icon-phone-call-out': !column.call_type
                     });
                     let returnContent;
-                    if (type === 'phone') {
+                    if (type === CALL_TYPE_OPTION.PHONE || type === CALL_TYPE_OPTION.CURTAO_PHONE) {
                         returnContent = <i className={cls} title={Intl.get('call.record.call.center', '呼叫中心')}></i>;
-                    } else if (type === 'call_back') {
+                    } else if (type === CALL_TYPE_OPTION.CALL_BACK) {
                         returnContent = <i className='iconfont icon-callback' title={Intl.get('common.callback', '回访')}></i>;
                     } else {
                         returnContent = <i className="iconfont icon-ketao-app" title={Intl.get('common.ketao.app', '客套APP')}></i>;

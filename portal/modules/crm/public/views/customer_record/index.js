@@ -36,8 +36,8 @@ import {decodeHTML} from 'PUB_DIR/sources/utils/common-method-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import ShearContent from '../../../../../components/shear-content';
 import PhoneCallout from 'CMP_DIR/phone-callout';
-
 var classNames = require('classnames');
+
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
     TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
@@ -59,13 +59,14 @@ const CALL_STATUS_MAP = {
 // 通话类型
 const CALL_TYPE_MAP = {
     'all': Intl.get('common.all', '全部'),
-    'phone': Intl.get('common.phone.system', '电话系统'),
+    'phone,curtao_phone': Intl.get('common.phone.system', '电话系统'),
     'app': Intl.get('customer.ketao.app', '客套app'),
     'visit': Intl.get('customer.visit', '拜访'),
     'call_back': Intl.get('common.callback', '回访'),
     'data_report': Intl.get('crm.trace.delivery.report', '舆情报送'),
     'other': Intl.get('customer.other', '其他')
 };
+const CALL_RECORD_TYPE = crmUtil.CALL_RECORD_TYPE;
 //跟进记录为空时的提示
 const TRACE_NULL_TIP = Intl.get('customer.trace.content', '客户跟进记录内容不能为空');
 
@@ -585,7 +586,7 @@ class CustomerRecord extends React.Component {
                 <p className="item-detail-tip">
                     <span className="icon-container" title={title}><i className={iconClass}></i></span>
                     {traceDsc ? (<span className="trace-title-name" title={traceDsc}>{traceDsc}</span>) : null}
-                    {(item.type === 'phone' || item.type === 'app') ?
+                    {(item.type === CALL_RECORD_TYPE.PHONE || item.type === CALL_RECORD_TYPE.CURTAO_PHONE || item.type === CALL_RECORD_TYPE.APP) ?
                         <PhoneCallout
                             phoneNumber={item.dst}
                         /> : null}
