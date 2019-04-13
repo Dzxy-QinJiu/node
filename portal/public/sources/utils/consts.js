@@ -220,7 +220,7 @@ export const ALL_CUSTOMER_LISTS_TYPE = [
 export const STATUS = {UNHANDLED: 'unhandled', HANDLED: 'handled'};
 export const CALL_TYPE_OPTION = {
     ALL: 'all',
-    PHONE: 'phone',
+    PHONE: 'phone,curtao_phone',
     APP: 'app'
 };
 
