@@ -551,13 +551,13 @@ class SalesHomePage extends React.Component {
 
     // 选择通话类型的值
     selectCallTypeValue = (value) => {
-        this.setState({
-            callType: value
-        });
-
-        this.getChangeCallTypeData();
         //发送点击事件
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.call-type-select'), '电话统计>选择' + value + '类型');
+        this.setState({
+            callType: value
+        }, () => {
+            this.getChangeCallTypeData();
+        });
     };
 
     // 通话类型的筛选框
