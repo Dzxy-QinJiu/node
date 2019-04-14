@@ -251,10 +251,7 @@ class UserDetail extends React.Component {
     };
 
     render() {
-        let { userInfo } = this.props;
-        if (!userInfo) {
-            userInfo = this.state.userInfo.data;
-        }
+        let { userInfo } = this.state;
         let loading = this.state.userInfo.loading;
         let errorMsg = this.state.userInfo.errorMsg;
         //内容区高度        
@@ -314,7 +311,6 @@ class UserDetail extends React.Component {
                         selectApp={selectApp}
                         ref={ref => this.userDetailRef = ref}
                         getBasicInfo={this.getBasicInfo}
-                        isGetUserInfo={_.get(this.props, 'userInfo', false)}
                     />
                 </div> : null}
             </TabPane>
@@ -393,14 +389,14 @@ class UserDetail extends React.Component {
                                 <div className="basic-info-contianer" data-trace="用户基本信息">
                                     <div className="basic-info-title-block clearfix">
                                         <div className="basic-info-name">
-                                            <span className="basic-name-text" title={_.get(userInfo, 'user_name')}>{_.get(userInfo, 'user_name')}</span>
+                                            <span className="basic-name-text" title={_.get(userInfo, 'data.user_name')}>{_.get(userInfo, 'data.user_name')}</span>
                                         </div>
                                         <div className="basic-info-btns">
                                             {
                                                 !loading && hasEditPrivilege ? <span className="iconfont icon-edit-pw" title={Intl.get('common.edit.password', '修改密码')} onClick={() => { this.showEditPw(true); }} /> : null
                                             }
                                             {
-                                                !loading ? this.renderUserStatus(userInfo, true) : null
+                                                !loading ? this.renderUserStatus(userInfo.data, true) : null
                                             }
                                         </div>
                                     </div>
@@ -413,7 +409,7 @@ class UserDetail extends React.Component {
                                                             <UserDetailEditField
                                                                 ref={ref => this.passwordRef = ref}
                                                                 displayType="edit"
-                                                                user_id={_.get(userInfo, 'user_id')}
+                                                                user_id={_.get(userInfo, 'data.user_id')}
                                                                 field="password"
                                                                 type="password"
                                                                 hideButtonBlock={true}
@@ -428,7 +424,7 @@ class UserDetail extends React.Component {
                                                             <UserDetailEditField
                                                                 hideButtonBlock={true}
                                                                 ref={ref => this.confirmPasswordRef = ref}
-                                                                user_id={_.get(userInfo, 'user_id')}
+                                                                user_id={_.get(userInfo, 'data.user_id')}
                                                                 displayType="edit"
                                                                 field="password"
                                                                 type="password"
@@ -448,8 +444,8 @@ class UserDetail extends React.Component {
                                                                 <span className="basic-info-label">{Intl.get('common.nickname', '昵称')}:</span>
                                                                 <BasicEditInputField
                                                                     width={EDIT_FEILD_WIDTH}
-                                                                    id={_.get(userInfo, 'user_id')}
-                                                                    value={_.get(userInfo, 'nick_name')}
+                                                                    id={_.get(userInfo, 'data.user_id')}
+                                                                    value={_.get(userInfo, 'data.nick_name')}
                                                                     type="text"
                                                                     field="nick_name"
                                                                     editBtnTip={Intl.get('user.nickname.set.tip', '设置昵称')}
@@ -464,8 +460,8 @@ class UserDetail extends React.Component {
                                                                 <span className="basic-info-label">{Intl.get('common.remark', '备注')}:</span>
                                                                 <BasicEditInputField
                                                                     width={EDIT_FEILD_WIDTH}
-                                                                    id={_.get(userInfo, 'user_id')}
-                                                                    value={_.get(userInfo, 'description')}
+                                                                    id={_.get(userInfo, 'data.user_id')}
+                                                                    value={_.get(userInfo, 'data.description')}
                                                                     type="textarea"
                                                                     field="description"
                                                                     textCut={true}
@@ -504,7 +500,6 @@ UserDetail.propTypes = {
     selectedAppId: PropTypes.string,
     appLists: PropTypes.array,
     userId: PropTypes.string,
-    isShownExceptionTab: PropTypes.bool,
-    userInfo: PropTypes.object
+    isShownExceptionTab: PropTypes.bool
 };
 module.exports = UserDetail;

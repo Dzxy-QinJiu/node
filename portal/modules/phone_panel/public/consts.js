@@ -8,7 +8,8 @@ export const PHONERINGSTATUS = {
     ALERT: 'ALERT',
     //对方已应答
     ANSWERED: 'ANSWERED',
-    phone: 'phone',//通话结束后，后端推送过来的最后一个状态（销售、管理员打电话）
+    phone: 'phone',//eefung的电话系统通话结束后，后端推送过来的最后一个状态（销售、管理员打电话）
+    curtao_phone: 'curtao_phone',//容联电话系统，通话结束后，后端推送过来的最后一个状态（销售、管理员打电话）
     call_back: 'call_back'//通话结束后，运营人员的回访电话，后端推送过来的最后一个状态
 };
 export const commonPhoneDesArray = [
