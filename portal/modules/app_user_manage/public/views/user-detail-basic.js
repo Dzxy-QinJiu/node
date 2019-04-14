@@ -50,7 +50,7 @@ class UserDetailBasic extends React.Component {
         AppUserDetailStore.listen(this.onStateChange);
         if (!this.props.userId) return;
         AppUserDetailAction.getUserDetail(this.props.userId);
-        if (!this.props.isGetUserInfo && this.props.getBasicInfo) {
+        if (this.props.getBasicInfo) {
             const userInfo = {
                 data: null,
                 loading: true,
@@ -140,7 +140,7 @@ class UserDetailBasic extends React.Component {
             }, 0);
         }
         const statusChanged = prevState.isLoading !== this.state.isLoading;
-        if ( !this.props.isGetUserInfo && this.props.getBasicInfo && statusChanged) {
+        if (this.props.getBasicInfo && statusChanged) {
             const userInfo = {
                 data: this.state.initialUser.user,
                 loading: this.state.isLoading,
@@ -798,6 +798,5 @@ UserDetailBasic.propTypes = {
     getBasicInfo: PropTypes.func,
     selectApp: PropTypes.object,
     height: PropTypes.number,
-    isGetUserInfo: PropTypes.bool
 };
 module.exports = UserDetailBasic;

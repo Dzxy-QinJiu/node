@@ -191,7 +191,7 @@ class PhonePanel extends React.Component {
                 isAddToCustomerFlag: false,
             });
             //在最后阶段，将数据清除掉
-            if (this.state.phonemsgObj && (this.state.phonemsgObj.type === PHONERINGSTATUS.phone || this.state.phonemsgObj.type === PHONERINGSTATUS.call_back)) {
+            if (this.state.phonemsgObj && (this.state.phonemsgObj.type === PHONERINGSTATUS.phone || this.state.phonemsgObj.type === PHONERINGSTATUS.curtao_phone || this.state.phonemsgObj.type === PHONERINGSTATUS.call_back)) {
                 //恢复初始数据
                 phoneAlertAction.setInitialState();
                 //清空联系人名称的信息
@@ -353,7 +353,7 @@ class PhonePanel extends React.Component {
                 } else {
                     let height = $('body').height() - DIVLAYOUT.CUSTOMER_COUNT_TIP_H;//去掉有几个客户的提示的高度
                     //通话结束后，需要减去带跟进记录输入框的通话状态高度
-                    if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
+                    if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.curtao_phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
                         height -= DIVLAYOUT.PHONE_STATUS_INPUT_H;
                     } else {
                         height -= DIVLAYOUT.PHONE_STATUS_TIP_H;

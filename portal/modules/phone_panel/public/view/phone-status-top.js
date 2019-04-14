@@ -234,7 +234,7 @@ class phoneStatusTop extends React.Component {
         var phoneNum = this.props.contactNameObj && this.props.contactNameObj.contact ? this.props.contactNameObj.contact + '-' : '';
         if (phonemsgObj.call_type === 'IN') {
             phoneNum += phonemsgObj.extId;
-            if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
+            if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.curtao_phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
                 phoneNum += phonemsgObj.dst;
             }
         } else {
@@ -256,7 +256,7 @@ class phoneStatusTop extends React.Component {
         } else if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
             let tip = `${Intl.get('call.record.phone.answered', '正在通话中')}`;
             desTipObj.tip = (<ReleaseButton callClient={callClient} tip={tip}> </ReleaseButton>);
-        } else if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
+        } else if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.curtao_phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
             desTipObj.tip = `${Intl.get('call.record.phone.unknown', '结束通话')}`;
         }
         return desTipObj;
@@ -289,7 +289,7 @@ class phoneStatusTop extends React.Component {
             }
         } else if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
             iconFontCls += ' icon-phone-answering';
-        } else if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
+        } else if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.curtao_phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
             iconFontCls += ' icon-phone-bye';
             phoneStatusContainer += ' finish-phone-call';
         }
@@ -313,7 +313,7 @@ class phoneStatusTop extends React.Component {
                 <div className="trace-and-handle-btn">
                     <div className="trace-content-container">
                         { //通话结束后，并且该电话有对应的客户可以添加跟进记录时，展示添加跟进记录界面
-                            (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.call_back) && this.getSaveTraceCustomerId() ? this.renderTraceItem(phonemsgObj) : null
+                            (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.curtao_phone || phonemsgObj.type === PHONERINGSTATUS.call_back) && this.getSaveTraceCustomerId() ? this.renderTraceItem(phonemsgObj) : null
                         }
                     </div>
                     {this.state.showAddFeedbackOrAddPlan && (!this.state.isAddingMoreProdctInfo && !this.state.isAddingPlanInfo) ?
