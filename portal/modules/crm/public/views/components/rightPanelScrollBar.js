@@ -62,8 +62,8 @@ RightPanelScrollBar.defaultProps = {
 };
 RightPanelScrollBar.propTypes = {
     handleScrollBottom: PropTypes.func,
-    isMerge: PropTypes.boolean,
-    listenScrollBottom: PropTypes.boolean,
+    isMerge: PropTypes.bool,
+    listenScrollBottom: PropTypes.bool,
     children: PropTypes.element,
     totalHeight: PropTypes.number
 };

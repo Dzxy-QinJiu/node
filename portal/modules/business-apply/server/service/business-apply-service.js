@@ -7,7 +7,7 @@ var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var restApis = {
     //查询所有的出差申请
-    allBussinessTrip: '/rest/base/v1/workflow/businesstrip/applylist',
+    allBussinessTrip: '/rest/base/v1/workflow/applylist',
     //查询当前账号发起的出差申请
     selfBussinessTrip: '/rest/base/v1/workflow/businesstrip/applylist/self',
     //查询由当前账号审批的出差申请

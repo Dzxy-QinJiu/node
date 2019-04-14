@@ -86,17 +86,17 @@ ApplyDetailBottom.defaultProps = {
 ApplyDetailBottom.propTypes = {
     create_time: PropTypes.string,
     applicantText: PropTypes.string,
-    isConsumed: PropTypes.boolean,
+    isConsumed: PropTypes.bool,
     update_time: PropTypes.string,
     approvalText: PropTypes.string,
-    showApproveBtn: PropTypes.boolean,
+    showApproveBtn: PropTypes.bool,
     submitApprovalForm: PropTypes.func,
     renderAssigenedContext: PropTypes.func,
     addApplyNextCandidate: PropTypes.func,
-    showCancelBtn: PropTypes.boolean,
+    showCancelBtn: PropTypes.bool,
     rejectText: PropTypes.string,
     passText: PropTypes.string,
-    disabled: PropTypes.boolean
+    disabled: PropTypes.bool
 };
 
 export default ApplyDetailBottom;

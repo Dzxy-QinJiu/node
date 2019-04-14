@@ -778,7 +778,7 @@ ApplyViewDetail.defaultProps = {
 };
 ApplyViewDetail.propTypes = {
     detailItem: PropTypes.string,
-    showNoData: PropTypes.boolean,
+    showNoData: PropTypes.bool,
     applyListType: PropTypes.string,
     form: PropTypes.form,
 };

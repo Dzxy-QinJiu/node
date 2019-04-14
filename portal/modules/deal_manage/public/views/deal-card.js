@@ -92,9 +92,9 @@ class DealCard extends React.Component {
 }
 
 DealCard.propTypes = {
-    index: PropTypes.boolean,
+    index: PropTypes.bool,
     deal: PropTypes.object,
-    isDetailShow: PropTypes.boolean,
+    isDetailShow: PropTypes.bool,
     showDetailPanel: PropTypes.func,
     removeDeal: PropTypes.func,
     showCustomerDetail: PropTypes.func

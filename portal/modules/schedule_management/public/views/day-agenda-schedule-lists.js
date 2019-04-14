@@ -264,7 +264,7 @@ DayAgendaScheduleLists.defaultProps = {
 };
 DayAgendaScheduleLists.propTypes = {
     curCustomerId: PropTypes.string,
-    updateScrollBar: PropTypes.boolean,
+    updateScrollBar: PropTypes.bool,
     scheduleList: PropTypes.array,
     handleScheduleItemStatus: PropTypes.func,
     showCustomerDetail: PropTypes.func

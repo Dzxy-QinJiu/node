@@ -3,7 +3,12 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/10.
  */
+
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import {storageUtil} from 'ant-utils';
+const session = storageUtil.session;
 var SalesOpportunityApplyAction = require('../action/sales-opportunity-apply-action');
+import {DIFF_APPLY_TYPE_UNREAD_REPLY, APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 function SalesOpportunityApplyStore() {
     //初始化state数据
     this.setInitState();
@@ -37,7 +42,15 @@ SalesOpportunityApplyStore.prototype.setInitState = function() {
     this.applyListType = 'ongoing';
     //是否显示更新数据提示
     this.showUpdateTip = false;
+    //有未读回复的列表
+    this.unreadReplyList = [];
+    //是否查看未读回复的申请列表
+    this.isCheckUnreadApplyList = false;
     this.clearData();
+};
+//设置是否查看未读回复的申请列表
+SalesOpportunityApplyStore.prototype.setIsCheckUnreadApplyList = function(flag) {
+    this.isCheckUnreadApplyList = flag;
 };
 //是否显示更新数据提示,flag:true/false
 SalesOpportunityApplyStore.prototype.setShowUpdateTip = function(flag) {
@@ -79,10 +92,40 @@ SalesOpportunityApplyStore.prototype.getAllSalesOpportunityApplyList = function(
             this.listenScrollBottom = this.applyListObj.list.length < this.totalSize;
         } else if (!this.lastApplyId) {//获取第一页就没有数据时
             this.clearData();
+            //获取的未读回复列表为空时，清除sessionStore中存的未读回复的申请
+            if (this.isCheckUnreadApplyList) {
+                this.clearUnreadReply();
+            }
         } else {//下拉加载取得数据为空时需要取消下拉加载得处理（以防后端得total数据与真实获取得数据列表不一致时，一直触发下拉加载取数据得死循环问题）
             this.listenScrollBottom = false;
         }
     }
+};
+/**
+ * 清除未读回复申请列表中已读的回复
+ * @param applyId：有值时只清除applyId对应的申请，不传时，清除当前登录用户所有的未读回复申请列表
+ */
+SalesOpportunityApplyStore.prototype.clearUnreadReply = function(applyId) {
+    const DIFF_APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.DIFF_APPLY_UNREAD_REPLY;
+    //获取sessionStorage中该用户的未读回复列表
+    let unreadReplyList = session.get(DIFF_APPLY_UNREAD_REPLY);
+    if (unreadReplyList) {
+        let applyUnreadReplyList = JSON.parse(unreadReplyList) || [];
+        //清除某条申请
+        if (applyId) {
+            applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.apply_id !== applyId);
+        }
+        this.unreadReplyList = _.filter(applyUnreadReplyList, reply => reply.type === APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES);
+        session.set(DIFF_APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyList));
+        //加延时是为了，避免循环dispatch报错：Cannot dispatch in the middle of a dispatch
+        setTimeout(() => {
+            notificationEmitter.emit(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, applyUnreadReplyList);
+        });
+    }
+};
+//刷新未读回复列表;
+SalesOpportunityApplyStore.prototype.refreshUnreadReplyList = function(unreadReplyList) {
+    this.unreadReplyList = _.isArray(unreadReplyList) ? unreadReplyList : [];
 };
 SalesOpportunityApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {
     this.selectedDetailItem = obj;
@@ -92,7 +135,7 @@ SalesOpportunityApplyStore.prototype.changeApplyListType = function(type) {
     this.applyListType = type;
     this.lastApplyId = '';
     this.showUpdateTip = false;
-    // this.isCheckUnreadApplyList = false;
+    this.isCheckUnreadApplyList = false;
 };
 SalesOpportunityApplyStore.prototype.setLastApplyId = function(applyId) {
     this.lastApplyId = applyId;

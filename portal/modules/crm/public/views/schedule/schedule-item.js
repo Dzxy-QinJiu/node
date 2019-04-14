@@ -167,9 +167,9 @@ ScheduleItem.defaultProps = {
 };
 ScheduleItem.propTypes = {
     item: PropTypes.object,
-    hasSplitLine: PropTypes.boolean,
-    isMerge: PropTypes.boolean,
-    hideDelete: PropTypes.boolean,
+    hasSplitLine: PropTypes.bool,
+    isMerge: PropTypes.bool,
+    hideDelete: PropTypes.bool,
     toggleScheduleContact: PropTypes.func,
     deleteSchedule: PropTypes.func,
     handleItemStatus: PropTypes.func
