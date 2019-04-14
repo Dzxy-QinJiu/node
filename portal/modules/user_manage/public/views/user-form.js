@@ -12,8 +12,7 @@ var UserFormStore = require('../store/user-form-store');
 var UserFormAction = require('../action/user-form-actions');
 var AlertTimer = require('../../../../components/alert-timer');
 import Trace from 'LIB_DIR/trace';
-import PhoneInput from 'CMP_DIR/phone-input';
-import {nameLengthRule, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {nameLengthRule, emailRegex, commonPhoneRegex} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 
@@ -122,30 +121,36 @@ class UserForm extends React.Component {
         });
     };
 
-    //电话唯一性的验证
-    getPhoneInputValidateRules = () => {
-        return [{
-            validator: (rule, value, callback) => {
-                value = _.trim(value);
-                if (value) {
-                    UserFormAction.checkOnlyPhone(value, data => {
-                        if (_.isString(data)) {
-                            //唯一性验证出错了
-                            callback(Intl.get('member.add.member.phone.verify', '手机号唯一性验证出错了'));
-                        } else {
-                            if (data === false) {
-                                callback();
-                            } else {
-                                //已存在
-                                callback(Intl.get('member.add.member.phone.exist', '该手机号已存在'));
-                            }
-                        }
-                    });
-                } else {
-                    callback();
-                }
+    //手机号唯一性的验证
+    getValidator = () => {
+        return (rule, value, callback) => {
+            let phoneNumber = _.trim(value);
+            //空值不做校验
+            if (!phoneNumber) {
+                callback();
+                return;
             }
-        }];
+            if (commonPhoneRegex.test(phoneNumber)) {
+                UserFormAction.checkOnlyPhone(phoneNumber, data => {
+                    if (_.isString(data)) {
+                        //唯一性验证出错了
+                        callback(Intl.get('member.add.member.phone.verify', '手机号唯一性验证出错了'));
+                    } else {
+                        if (data === false) {
+                            callback();
+                        } else {
+                            //已存在
+                            callback(Intl.get('member.add.member.phone.exist', '该手机号已存在'));
+                        }
+                    }
+                });
+            } else {
+                //延迟1秒钟后再显示错误信息，以防止一输入就报错
+                setTimeout(() => {
+                    callback(Intl.get('register.phon.validat.tip', '请输入正确的手机号, 格式如:13877775555'));
+                }, 1000);
+            }
+        };
     };
 
     uploadImg = (src) => {
@@ -426,17 +431,24 @@ class UserForm extends React.Component {
                                     </div>)
                                 }
                             </FormItem>
-                            <PhoneInput
-                                placeholder={Intl.get('user.input.phone', '请输入手机号')}
-                                validateRules={this.getPhoneInputValidateRules()}
-                                initialValue={values.phone}
-                                id="phone"
-                                labelCol={{span: formItemLayout.labelCol.span}}
-                                wrapperCol={{span: formItemLayout.wrapperCol.span}}
-                                form={this.props.form}
+                            <FormItem
                                 label={Intl.get('user.phone', '手机号')}
                                 colon={false}
-                            />
+                                {...formItemLayout}
+                            >
+                                {getFieldDecorator('phone', {
+                                    rules: [{
+                                        type: 'phone',
+                                        validator: this.getValidator()
+                                    }]
+                                })(
+                                    <Input name="phone" id="phone" type="text"
+                                        initialValue={values.phone}
+                                        placeholder={Intl.get('user.input.phone', '请输入手机号')}
+                                    />
+                                )}
+                            </FormItem>
+
                             {/** v8环境下，不显示所属团队 */}
                             {this.props.formType === 'add' ? (!Oplate.hideSomeItem && <FormItem
                                 label={Intl.get('common.belong.team', '所属团队')}
