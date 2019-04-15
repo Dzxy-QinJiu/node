@@ -18,12 +18,11 @@ export function getNewChanceChart(chartType = 'table') {
         };
 
         chart.processData = processDataFunnel;
+        chart.processOption = processOptionFunnel;
         chart.processCsvData = processCsvDataFunnel;
     } else if (chartType === 'table') {
         chart.processData = data => {
-            const result = _.get(data, 'result');
-
-            return result ? [data.result] : [];
+            return data ? [data] : [];
         };
 
         chart.option = {
@@ -49,7 +48,76 @@ export function getNewChanceChart(chartType = 'table') {
         };
     }
 
-    chart.processOption = option => {
+    return chart;
+
+    //处理漏斗图数据
+    function processDataFunnel(data) {
+        if (!data) return [];
+
+        const stages = [
+            {
+                tagName: '提交数',
+                tagValue: 'total',
+            },
+            {
+                tagName: '通过数',
+                tagValue: 'pass',
+            },
+            {
+                tagName: '成交数',
+                tagValue: 'deal',
+            }
+        ];
+
+        let processedData = [];
+        let prevStageValue;
+
+        stages.forEach(stage => {
+            let stageValue = data[stage.tagValue];
+
+            if (_.isNumber(stageValue)) {
+                //保留原始值，用于在图表上显示
+                const showValue = stage.tagName + '\n\n' + stageValue;
+
+                //转化率
+                let convertRate = '';
+
+                if (stage.tagValue === 'pass') {
+                    convertRate = data['pass_rate'];
+                } else if (stage.tagValue === 'deal') {
+                    convertRate = data['deal_rate'];
+                }
+
+                if (_.isNumber(convertRate)) {
+                    convertRate = (convertRate * 100).toFixed(2) + '%';
+                }
+
+                processedData.push({
+                    name: convertRate,
+                    value: stageValue,
+                    showValue,
+                    csvName: stage.tagName
+                });
+            }
+        });
+
+        //成交率
+        let dealRate;
+
+        if (data.total === 0) {
+            dealRate = '0%';
+        } else {
+            dealRate = ((data.deal / data.total) * 100).toFixed(2) + '%';
+        }
+
+        //将成交率存入最后一个数据项
+        _.last(processedData).dealRate = dealRate;
+
+        return processedData;
+    }
+
+    //处理漏斗图选项
+    function processOptionFunnel(option) {
         //不可见系列，用于在侧面显示转化率
         let invisibleSerie = option.series[0];
         //通过透明度设置实现不可见系列的隐藏效果
@@ -162,74 +230,6 @@ export function getNewChanceChart(chartType = 'table') {
                 })
             }
         );
-    };
-
-    return chart;
-
-    //处理漏斗图数据
-    function processDataFunnel(data) {
-        if (!data) return [];
-
-        const stages = [
-            {
-                tagName: '提交数',
-                tagValue: 'total',
-            },
-            {
-                tagName: '通过数',
-                tagValue: 'pass',
-            },
-            {
-                tagName: '成交数',
-                tagValue: 'deal',
-            }
-        ];
-
-        let processedData = [];
-        let prevStageValue;
-
-        stages.forEach(stage => {
-            let stageValue = data[stage.tagValue];
-
-            if (_.isNumber(stageValue)) {
-                //保留原始值，用于在图表上显示
-                const showValue = stage.tagName + '\n\n' + stageValue;
-
-                //转化率
-                let convertRate = '';
-
-                if (stage.tagValue === 'pass') {
-                    convertRate = data['pass_rate'];
-                } else if (stage.tagValue === 'deal') {
-                    convertRate = data['deal_rate'];
-                }
-
-                if (_.isNumber(convertRate)) {
-                    convertRate = (convertRate * 100).toFixed(2) + '%';
-                }
-
-                processedData.push({
-                    name: convertRate,
-                    value: stageValue,
-                    showValue,
-                    csvName: stage.tagName
-                });
-            }
-        });
-
-        //成交率
-        let dealRate;
-
-        if (data.total === 0) {
-            dealRate = '0%';
-        } else {
-            dealRate = ((data.deal / data.total) * 100).toFixed(2) + '%';
-        }
-
-        //将成交率存入最后一个数据项
-        _.last(processedData).dealRate = dealRate;
-
-        return processedData;
     }
 
     //处理漏斗图导出数据
