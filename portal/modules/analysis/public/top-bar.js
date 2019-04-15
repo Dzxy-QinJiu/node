@@ -4,7 +4,7 @@
 
 import {AntcDatePicker} from 'antc';
 import ajax from 'ant-ajax';
-import {initialTime, isSales} from './consts';
+import {initialTime} from './consts';
 import Store from './store';
 import {Select} from 'antd';
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
@@ -14,6 +14,7 @@ const Option = Select.Option;
 const emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = emitters.dateSelectorEmitter;
 const teamTreeEmitter = emitters.teamTreeEmitter;
+const isCommonSales = require('PUB_DIR/sources/user-data').getUserData().isCommonSales;
 
 class TopBar extends React.Component {
     static defaultProps = {
@@ -201,7 +202,7 @@ class TopBar extends React.Component {
 
         return (
             <div className="btn-item-container">
-                {isSales ? null : (
+                {isCommonSales ? null : (
                     <Select
                         defaultValue="team"
                         className='btn-item'
@@ -212,7 +213,7 @@ class TopBar extends React.Component {
                     </Select>
                 )}
 
-                {this.state.filterType === 'team' && !isSales ? (
+                {this.state.filterType === 'team' && !isCommonSales ? (
                     <Select
                         className='btn-item'
                         mode="multiple"
@@ -228,7 +229,7 @@ class TopBar extends React.Component {
                     </Select>
                 ) : null}
 
-                {this.state.filterType === 'member' && !isSales ? (
+                {this.state.filterType === 'member' && !isCommonSales ? (
                     <Select
                         className='btn-item'
                         mode="multiple"
