@@ -6,6 +6,9 @@ import Store from '../../store';
 import { isSales } from '../../utils';
 import { num as antUtilNum } from 'ant-utils';
 
+//客户合格标签  1：当前合格  2：历史合格
+const QUALIFY_LABEL_PASS = 1;
+
 export function getCustomerCoverageChart() {
     return {
         title: Intl.get('oplate_customer_analysis.industryCustomerOverlay', '各行业试用客户覆盖率'),
