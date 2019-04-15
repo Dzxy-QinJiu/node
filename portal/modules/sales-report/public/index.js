@@ -398,7 +398,7 @@ class SalesReport extends React.Component {
                 //客户活跃度统计
                 customerCharts.getCustomerActiveTrendChart('客户活跃度统计', 'day', true),
                 //新开客户登录
-                reportCharts.newCustomerLoginChart(this.state.currentMember.team_id, this.state.currentMember.member_id),
+                reportCharts.newCustomerLoginChart(this.state.currentMember.team_id, this.state.currentMember.user_id),
                 //合格客户统计
                 customerCharts.getCustomerNumChart('qualified'),
                 //联系客户频率统计
