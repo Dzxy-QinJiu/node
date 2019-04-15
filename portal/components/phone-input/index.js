@@ -40,11 +40,7 @@ class PhoneInput extends React.Component {
             } else {
                 //延迟1秒钟后再显示错误信息，以防止一输入就报错
                 setTimeout(() => {
-                    if (this.props.label === Intl.get('user.phone', '手机号')) {
-                        callback(Intl.get('register.phon.validat.tip', '请输入正确的手机号, 格式如:13877775555'));
-                    } else {
-                        callback(Intl.get('crm.196', '请输入正确的电话号码，格式例如：13877775555，010-77775555 或 400-777-5555'));
-                    }
+                    callback(Intl.get('crm.196', '请输入正确的电话号码，格式例如：13877775555，010-77775555 或 400-777-5555'));
                 }, 1000);
             }
         };
