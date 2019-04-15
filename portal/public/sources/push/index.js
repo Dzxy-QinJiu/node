@@ -342,6 +342,10 @@ function phoneEventListener(phonemsgObj) {
     const PHONE_STATUS = ['ALERT', 'ANSWERED', 'phone', 'curtao_phone', 'call_back'];
     //过滤掉其他状态 只展示alert answered  phone状态的数据
     if (hasPrivilege('CRM_LIST_CUSTOMERS') && PHONE_STATUS.indexOf(phonemsgObj.type) !== -1) {
+        if (['phone', 'curtao_phone', 'call_back'].indexOf(phonemsgObj.type) !== -1) {
+            //通话结束后，可以继续拨打电话了
+            Oplate.isCalling = false;
+        }
         if (!phonemsgObj.customers) {
             phonemsgObj.customers = [];
         }

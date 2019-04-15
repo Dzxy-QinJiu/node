@@ -8,8 +8,16 @@ let callcenter = require('callcenter-sdk-client');
 let CallcenterClient = callcenter.client;
 import {Button} from 'antd';
 import commonMethodUtil from './common-method-util';
-
 let callClient;
+//电话系统类型
+const PHONE_TYPES = {
+    RONGLIAN: 'ronglian',//容联
+    HUAWEI: 'huaiwei_callback',//华为
+    EEFUNG: 'eefung_phone',//蚁坊
+    ASTERISK: 'asterisk'
+};
+exports.PHONE_TYPES = PHONE_TYPES;
+
 //初始化
 exports.initPhone = function(user) {
     let org = commonMethodUtil.getOrganization();
@@ -20,6 +28,15 @@ exports.initPhone = function(user) {
         console.log(error || '电话系统初始化失败了!');
     });
 };
+
+//是否是容联的电话系统
+exports.isRongLianPhoneSystem = function() {
+    if (callClient) {
+        return callClient.getPhoneType() === PHONE_TYPES.RONGLIAN;
+    }
+    return false;
+};
+
 //获取客户端
 exports.getCallClient = function() {
     return callClient;
