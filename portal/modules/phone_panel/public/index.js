@@ -27,6 +27,8 @@ import PhoneStatusTop from './view/phone-status-top';
 import PhoneAddToCustomerForm from 'CMP_DIR/phone-add-to-customer-form';
 var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsgEmitter;
 import {PHONERINGSTATUS} from './consts';
+import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
+
 const DIVLAYOUT = {
     CUSTOMER_COUNT_TIP_H: 26,//对应几个客户提示的高度
     PHONE_STATUS_TIP_H: 50,//只展示通话状态时的高度
@@ -703,7 +705,17 @@ class PhonePanel extends React.Component {
     isOnlyOpenCustomerDetail(paramObj) {
         return paramObj.customer_params && !paramObj.call_params;
     }
-
+    //是否隐藏关闭按钮
+    isHideCloseBtn(){
+        let phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
+        //拨打电话时，已振铃，等待对方接听
+        let isCallOutAlert = phonemsgObj.type === PHONERINGSTATUS.ALERT && phonemsgObj.call_type !== 'IN';
+        //通话中
+        let isAnswered = phonemsgObj.type === PHONERINGSTATUS.ANSWERED;
+        let callClient = getCallClient();
+        //容联的电话系统，正在拨打电话(振铃、通话中)时，不可以关闭（关了就无法挂断了）
+        return callClient && callClient.needShowAnswerView() && ( isCallOutAlert || isAnswered);
+    }
     render() {
         let paramObj = this.state.paramObj;
         let className = classNames('right-panel-content', {'crm-right-panel-content-slide': this.state.applyUserShowFlag});
@@ -718,9 +730,10 @@ class PhonePanel extends React.Component {
             <RightPanel showFlag={this.props.showFlag}
                 className={rightPanelClassName}
                 data-tracename={paramObj.call_params ? '电话弹屏' : '客户详情'}>
-                <span className="iconfont icon-close" onClick={(e) => {
-                    this.hidePhonePanel(e);
-                }}/>
+                {this.isHideCloseBtn() ? <span className="close-placeholder"/> : (
+                    <span className="iconfont icon-close" onClick={(e) => {
+                        this.hidePhonePanel(e);
+                    }}/>)}
                 <div className={className}>
                     {paramObj.call_params ? this.renderPhoneStatus() : null}
                     {/*{只打开客户详情或从当前展示的客户详情中打电话时}*/}
