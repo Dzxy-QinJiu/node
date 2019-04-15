@@ -82,6 +82,8 @@ var CONSTANTS = {
     EXIST_APPLY_TRIAL: 'apply_app_trial',
     //已有用户开通正式
     EXIST_APPLY_FORMAL: 'apply_app_official',
+    //uem用户申请
+    APPLY_USER: 'apply_user',
     // 待审批的状态
     APPLY_STATUS: 0,
     // 详单的高度（当底部有批注内容时）
@@ -708,6 +710,7 @@ const ApplyViewDetail = createReactClass({
     },
     onInputPasswordChange: function(value) {
         var showWariningTip = !value;
+        //自动生成密码时，不输入密码也不需要提示
         if (!value && this.state.checkStatus){
             showWariningTip = false;
         }
@@ -724,7 +727,11 @@ const ApplyViewDetail = createReactClass({
     },
     //选择了手动设置密码时，未输入密码，不能通过
     settingPasswordManuWithNoValue: function() {
-        return !_.get(this, 'state.checkStatus',true) && !_.get(this, 'state.passwordValue','');
+        //用户申请的类型[uem用户申请、签约新用户申请、试用新用户申请]
+        let applyUserTypes = [CONSTANTS.APPLY_USER, CONSTANTS.APPLY_USER_OFFICIAL, CONSTANTS.APPLY_USER_TRIAL];
+        //用户申请，不是自动生成密码（即：手动设置密码）时，并且没有输入密码
+        return applyUserTypes.indexOf(_.get(this.state, 'detailInfoObj.info.type')) !== -1
+            && !_.get(this, 'state.checkStatus', true) && !_.get(this, 'state.passwordValue', '');
     },
     //渲染用户名
     renderApplyDetailUserNames(detailInfo) {
@@ -1913,7 +1920,7 @@ const ApplyViewDetail = createReactClass({
         } else if (approval === '3') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击撤销申请按钮');
         }
-        //选择了手动设置密码时，未输入密码，不能通过
+        //用户申请时，选择了手动设置密码时，未输入密码，不能通过
         if (this.showPassWordPrivilege() && this.settingPasswordManuWithNoValue() && approval === '1'){
             this.setState({
                 showWariningTip: true
