@@ -52,6 +52,30 @@ export function getClueHistoricalPeriodComparisionChart() {
             });
 
             option.xAxis[0].data = _.map(option.series[0].data, item => item.name);
+        },
+        processCsvData: (chart, option) => {
+            console.log(option);
+            const firstSerieData = _.get(option, 'series[0].data');
+
+            if (_.isEmpty(firstSerieData)) {
+                return;
+            }
+
+            let csvData = [];
+
+            let thead = [''].concat(_.map(firstSerieData, 'name'));
+
+            csvData.push(thead);
+
+            _.each(option.series, (serie, index) => {
+                let tr = [serie.name];
+
+                tr = tr.concat(_.map(serie.data, 'value'));
+
+                csvData.push(tr);
+            });
+
+            return csvData;
         }
     };
 }
