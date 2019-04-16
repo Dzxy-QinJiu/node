@@ -708,13 +708,16 @@ class PhonePanel extends React.Component {
     //是否隐藏关闭按钮
     isHideCloseBtn(){
         let phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
-        //拨打电话时，已振铃，等待对方接听
-        let isCallOutAlert = phonemsgObj.type === PHONERINGSTATUS.ALERT && phonemsgObj.call_type !== 'IN';
-        //通话中
-        let isAnswered = phonemsgObj.type === PHONERINGSTATUS.ANSWERED;
-        let callClient = getCallClient();
-        //容联的电话系统，正在拨打电话(振铃、通话中)时，不可以关闭（关了就无法挂断了）
-        return callClient && callClient.needShowAnswerView() && ( isCallOutAlert || isAnswered);
+        if(phonemsgObj){
+            //拨打电话时，已振铃，等待对方接听
+            let isCallOutAlert = phonemsgObj.type === PHONERINGSTATUS.ALERT && phonemsgObj.call_type !== 'IN';
+            //通话中
+            let isAnswered = phonemsgObj.type === PHONERINGSTATUS.ANSWERED;
+            let callClient = getCallClient();
+            //容联的电话系统，正在拨打电话(振铃、通话中)时，不可以关闭（关了就无法挂断了）
+            return callClient && callClient.needShowAnswerView() && ( isCallOutAlert || isAnswered);
+        }
+        return false;
     }
     render() {
         let paramObj = this.state.paramObj;
