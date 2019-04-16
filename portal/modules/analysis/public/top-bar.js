@@ -215,7 +215,7 @@ class TopBar extends React.Component {
 
                 {this.state.filterType === 'team' && !isCommonSales ? (
                     <Select
-                        className='btn-item'
+                        className='btn-item select-team-member-list'
                         mode="multiple"
                         showSearch
                         optionFilterProp="children"
@@ -231,7 +231,7 @@ class TopBar extends React.Component {
 
                 {this.state.filterType === 'member' && !isCommonSales ? (
                     <Select
-                        className='btn-item'
+                        className='btn-item select-team-member-list'
                         mode="multiple"
                         showSearch
                         optionFilterProp="children"
