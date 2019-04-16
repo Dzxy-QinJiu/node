@@ -951,8 +951,8 @@ class ClueCustomer extends React.Component {
         return (record.availability === '1' ? 'invalid-clue' : '');
     };
     getRowSelection = () => {
-        //只有有批量变更和合并客户的权限时，才展示选择框的处理
-        let showSelectionFlag = hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER');
+        //只有有批量变更权限并且不是普通销售的时候，才展示选择框的处理
+        let showSelectionFlag = (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales;
         if (showSelectionFlag){
             let rowSelection = {
                 type: 'checkbox',
