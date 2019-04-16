@@ -12,7 +12,16 @@ const CALL_RECORD_TYPE = {
     OTHER: 'other'//其他
 };
 exports.CALL_RECORD_TYPE = CALL_RECORD_TYPE;
-
+exports.TAB_KEYS = {
+    OVERVIEW_TAB: '1',//概览页
+    CONTACT_TAB: '2',//联系人
+    TRACE_TAB: '3',//跟进记录
+    USER_TAB: '4',//用户
+    ORDER_TAB: '5',//订单
+    CONTRACT_TAB: '6', // 合同
+    DYNAMIC_TAB: '7',//动态
+    SCHEDULE_TAB: '8'//日程
+};
 //将后端传来的字段拼接成句子
 const processForTrace = function(item) {
     var traceObj = {

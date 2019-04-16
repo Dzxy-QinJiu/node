@@ -22,7 +22,6 @@ import classNames from 'classnames';
 import ErrorDataTip from '../components/error-data-tip';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
-import crmAction from '../../action/crm-actions';
 
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
@@ -406,7 +405,7 @@ class CustomerUsers extends React.Component {
             <ApplyUserForm
                 applyFrom="crmUserList"
                 apps={[]}
-                appList={this.state.appList}
+                appList={this.state.appList.slice(0,1)}
                 users={checkedUsers}
                 customerName={this.props.curCustomer.name}
                 customerId={this.props.curCustomer.id}

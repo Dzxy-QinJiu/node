@@ -2759,7 +2759,7 @@ var en_US = {
     'apply.approve.upload.error.file.type': 'The file format is incorrect!',//文件格式不正确！
     'apply.approve.upload.not.more.than50': 'The file size cannot exceed 10M!',//文件大小不能超过10M!
     'apply.approve.no.comment': 'There is no reply content!',//暂无回复内容！
-    'crm.input.your.apply.user.type': 'Please enter the type of user you are applying for (eg trial user, contracted user, etc.)',//请输入您申请的用户类型（例如：试用用户、签约用户等）
+    'crm.input.your.apply.user.type': 'Please enter or select the type of user you are applying for',//请输入或选择您申请的用户类型
     'apply.view.transfer.candidate': 'Transfer approval',//转审
     'contract.form.customize': 'Add customized product',//'添加自定义产品',
     'contract.report.contract.total.ccount': 'The total amount of the contract is', //本次合同总金额为
@@ -2840,5 +2840,7 @@ var en_US = {
     'clue.batch.assign.sales': 'Assign in batch',//批量分配
     'clue.export.trace.msg': '{traceman} added in {tracetime}',//{traceman}于{tracetime}添加
     'clue.batch.change.trace.man': 'Change follower',//变更跟进人
+    'crm.user.use.default.contact': 'User default contact to apply',//使用默认联系人申请
+    'crm.click.set.def.contact': 'Please set default contact first'//请先设置默认联系人
 };
 export default en_US;
