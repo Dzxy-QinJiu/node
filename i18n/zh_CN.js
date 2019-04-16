@@ -2786,7 +2786,7 @@ var zh_CN = {
     'apply.approve.upload.error.file.type': '文件格式不正确！',
     'apply.approve.upload.not.more.than50': '文件大小不能超过10M!',
     'apply.approve.no.comment': '暂无回复内容！',
-    'crm.input.your.apply.user.type': '请输入您申请的用户类型（例如：试用用户、签约用户等）',
+    'crm.input.your.apply.user.type': '请输入或选择您申请的用户类型',
     'apply.view.transfer.candidate': '转审',
     'contract.form.customize': '添加自定义产品',
     'contract.report.contract.total.ccount': '本次合同总金额为',
@@ -2866,5 +2866,7 @@ var zh_CN = {
     'clue.batch.assign.sales': '批量分配',
     'clue.export.trace.msg': '{traceman}于{tracetime}添加',
     'clue.batch.change.trace.man': '变更跟进人',
+    'crm.user.use.default.contact': '使用默认联系人申请',
+    'crm.click.set.def.contact': '请先设置默认联系人'
 };
 export default zh_CN;

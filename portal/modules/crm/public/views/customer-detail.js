@@ -12,24 +12,15 @@ import Contract from './contract';
 var CustomerRecord = require('./customer_record');
 var crmAjax = require('../ajax');
 import Trace from 'LIB_DIR/trace';
-import {tabNameList} from '../utils/crm-util';
+import {tabNameList, TAB_KEYS} from '../utils/crm-util';
 import BasicInfo from './basic_info';
 import BasicOverview from './basic-overview';
 import CustomerUsers from './users';
 import {isEqualArray} from 'LIB_DIR/func';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
+import contactUtil from '../utils/contact-util';
 const RightPanel = rightPanelUtil.RightPanel;
-const TAB_KEYS = {
-    OVERVIEW_TAB: '1',//概览页
-    CONTACT_TAB: '2',//联系人
-    TRACE_TAB: '3',//跟进记录
-    USER_TAB: '4',//用户
-    ORDER_TAB: '5',//订单
-    CONTRACT_TAB: '6', // 合同
-    DYNAMIC_TAB: '7',//动态
-    SCHEDULE_TAB: '8'//日程
-};
 //权限常量
 const PRIVILEGE_MAP = {
     CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
@@ -57,6 +48,7 @@ class CrmRightPanel extends React.Component {
 
     componentDidMount() {
         this.setTabsContainerHeight();
+        contactUtil.emitter.on('changeActiveTab', this.changeActiveTab);
         $(window).resize(e => {
             e.stopPropagation();
             this.setTabsContainerHeight();
@@ -71,6 +63,14 @@ class CrmRightPanel extends React.Component {
         }
         this.setTabsContainerHeight();
     }
+    componentWillUnmount() {
+        contactUtil.emitter.removeListener('changeActiveTab', this.changeActiveTab);
+    }
+    changeActiveTab = (activeTab) => {
+        this.setState({
+            activeKey: activeTab
+        });
+    };
 
     setTabsContainerHeight = () => {
         let tabsContainerHeight = $('body').height() - $('.basic-info-contianer').outerHeight(true);
