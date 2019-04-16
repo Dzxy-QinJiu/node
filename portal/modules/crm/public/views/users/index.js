@@ -405,7 +405,7 @@ class CustomerUsers extends React.Component {
             <ApplyUserForm
                 applyFrom="crmUserList"
                 apps={[]}
-                appList={this.state.appList.slice(0,1)}
+                appList={this.state.appList}
                 users={checkedUsers}
                 customerName={this.props.curCustomer.name}
                 customerId={this.props.curCustomer.id}
