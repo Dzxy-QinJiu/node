@@ -54,7 +54,6 @@ export function getClueHistoricalPeriodComparisionChart() {
             option.xAxis[0].data = _.map(option.series[0].data, item => item.name);
         },
         processCsvData: (chart, option) => {
-            console.log(option);
             const firstSerieData = _.get(option, 'series[0].data');
 
             if (_.isEmpty(firstSerieData)) {
