@@ -85,7 +85,7 @@ class UploadAndDeleteFile extends React.Component {
         if (index > -1){
             newFileList.splice(index, 1);
             var totalFileSize = this.state.totalFileSize;
-            var fileSize = file.size;
+            var fileSize = file.file_size;
             totalFileSize -= fileSize;
             this.setState({
                 totalFileSize: totalFileSize,
