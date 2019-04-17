@@ -628,13 +628,12 @@ const ApplyUserForm = createReactClass({
         this.setState({
             defContactChecked: checked
         },() => {
-            let hasDefault = this.hasDefaultContact();
-            var userName = '',nickName = '';
             //如果是uem申请，并且已经选中了checkbox。
-            if (!isOplateUser && checked && hasDefault){
+            if (!isOplateUser && checked){
                 let customerContacts = this.state.customerContacts;
                 let targetObj = _.find(customerContacts,contact => contact.def_contancts === 'true');
                 if (targetObj){
+                    var userName = '',nickName = '';
                     if (_.isArray(targetObj.email) && _.get(targetObj,'email.length')){
                         userName = _.get(targetObj,'email[0]');
                     }else if (_.isArray(targetObj.phone) && _.get(targetObj,'phone.length')){
@@ -643,10 +642,10 @@ const ApplyUserForm = createReactClass({
                         userName = _.get(targetObj,'qq[0]');
                     }
                     nickName = _.get(targetObj,'name');
+                    this.setFormDataUserName(userName);
+                    this.setNickName(nickName);
                 }
             }
-            this.setFormDataUserName(userName);
-            this.setNickName(nickName);
         });
 
     },

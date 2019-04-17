@@ -48,7 +48,7 @@ class CrmRightPanel extends React.Component {
 
     componentDidMount() {
         this.setTabsContainerHeight();
-        contactUtil.emitter.on('changeActiveTab', this.changeActiveTab);
+        contactUtil.emitter.on('changeActiveTab', this.changeActiveKey);
         $(window).resize(e => {
             e.stopPropagation();
             this.setTabsContainerHeight();
@@ -64,13 +64,9 @@ class CrmRightPanel extends React.Component {
         this.setTabsContainerHeight();
     }
     componentWillUnmount() {
-        contactUtil.emitter.removeListener('changeActiveTab', this.changeActiveTab);
+        contactUtil.emitter.removeListener('changeActiveTab', this.changeActiveKey);
     }
-    changeActiveTab = (activeTab) => {
-        this.setState({
-            activeKey: activeTab
-        });
-    };
+
 
     setTabsContainerHeight = () => {
         let tabsContainerHeight = $('body').height() - $('.basic-info-contianer').outerHeight(true);
@@ -113,7 +109,6 @@ class CrmRightPanel extends React.Component {
             activeKey: TAB_KEYS.OVERVIEW_TAB
         });
     };
-
     //切换tab时的处理
     changeActiveKey = (key) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + tabNameList[key]);
