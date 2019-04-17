@@ -85,7 +85,7 @@ exports.getAudioRecordUrl = function(itemLocal, itemRecord, phoneType) {
     }
     local = local ? local + '/' : '';
     //如果是录音类型是app类型的
-    if (phoneType === 'app') {
+    if (phoneType === 'app' || phoneType === 'curtao_phone') {
         return '/record/app/' + itemRecord + audioType;
     } else {
         return '/record/' + local + itemRecord + audioType;

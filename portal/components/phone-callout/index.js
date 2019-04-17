@@ -6,6 +6,7 @@
 import {Popover} from 'antd';
 import {hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {showDisabledCallTip, handleCallOutResult}from 'PUB_DIR/sources/utils/common-data-util';
+import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 var classNames = require('classnames');
 require('./index.less');
 import Trace from 'LIB_DIR/trace';
@@ -50,6 +51,10 @@ class PhoneCallout extends React.Component {
 
     };
     renderPhoneIcon = () => {
+        //容联电话系统，如果正在打电话，不展示拨打电话的按钮
+        if (isRongLianPhoneSystem() && Oplate.isCalling) {
+            return null;
+        }
         var contentTip = showDisabledCallTip();
         var titleTip = Intl.get('crm.click.call.phone', '点击拨打电话');
         var contactName = this.props.contactName;

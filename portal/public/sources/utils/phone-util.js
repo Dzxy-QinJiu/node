@@ -8,8 +8,8 @@ let callcenter = require('callcenter-sdk-client');
 let CallcenterClient = callcenter.client;
 import {Button} from 'antd';
 import commonMethodUtil from './common-method-util';
-
 let callClient;
+
 //初始化
 exports.initPhone = function(user) {
     let org = commonMethodUtil.getOrganization();
@@ -20,10 +20,20 @@ exports.initPhone = function(user) {
         console.log(error || '电话系统初始化失败了!');
     });
 };
+
+//是否是容联的电话系统
+exports.isRongLianPhoneSystem = function() {
+    if (callClient) {
+        return callClient.needShowAnswerView();
+    }
+    return false;
+};
+
 //获取客户端
 exports.getCallClient = function() {
     return callClient;
 };
+
 //卸载电话系统
 exports.unload = function(func) {
     callClient && callClient.onbeforeunload(func);

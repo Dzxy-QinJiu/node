@@ -6,7 +6,7 @@ import {storageUtil} from 'ant-utils';
 import {traversingTeamTree, getParamByPrivilege,hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {message} from 'antd';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
-import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
+import {getCallClient, isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 
 const session = storageUtil.session;
 let appList = [];
@@ -215,7 +215,7 @@ exports.getMyTeamTreeAndFlattenList = function(cb, flag) {
  * callback 拨打完电话后的回调
  */
 exports.handleCallOutResult = function(paramObj, callback) {
-    if (!paramObj) {
+    if (!paramObj || Oplate.isCalling) {
         return;
     }
     let phoneNumber = paramObj.phoneNumber ? paramObj.phoneNumber.replace('-', '') : '';
@@ -228,10 +228,18 @@ exports.handleCallOutResult = function(paramObj, callback) {
         );
         let callClient = getCallClient();
         if (hasCalloutPrivilege()) {
+            //开始打电话
+            Oplate.isCalling = true;
             callClient.callout(phoneNumber).then((result) => {
+                //不是容联的电话系统不能同时打俩电话（结束推送事件可能会很慢），所以此时就可以设成false，容联的电话系统可以同时打俩电话，所以需推送过来结束事件后才可以继续打电话
+                if (!isRongLianPhoneSystem()) {
+                    Oplate.isCalling = false;
+                }
                 message.success(Intl.get('crm.call.phone.success', '拨打成功'));
                 _.isFunction(callback) && callback();
             }, (errMsg) => {
+                //拨打失败后，将正在拨打电话的标识设为false，可以继续拨打电话
+                Oplate.isCalling = false;
                 _.isFunction(callback) && callback();
                 message.error(errMsg || Intl.get('crm.call.phone.failed', '拨打失败'));
             });
