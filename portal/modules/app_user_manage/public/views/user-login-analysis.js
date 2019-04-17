@@ -82,7 +82,7 @@ class UserLoginAnalysis extends React.Component {
     // 获取用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录次数统计）
     getUserAnalysisData = (queryParams) => {
         let queryObj = this.getQueryParams(queryParams);
-        let lastLoginParams = this.getUserLastLoginParams();
+        let lastLoginParams = this.getUserLastLoginParams(queryParams);
         let reqData = this.getUserLoginScoreParams(queryParams);
         let type = this.getUserLoginType();
         UserLoginAnalysisAction.getUserLoginInfo(queryObj);
@@ -440,21 +440,30 @@ class UserLoginAnalysis extends React.Component {
     };
     // 渲染时间选择框
     renderTimeSelect = (app) => {
-        const starttime = _.get(this.state.appUserDataMap, [app.app_id, 'starttime']) || new Date(moment().subtract(12, 'months')).getTime();
-
+        let starttime = _.get(this.state.appUserDataMap, [app.app_id, 'starttime']) || new Date(moment().subtract(12, 'months')).getTime();
+        let yearStartTime = _.get(DATE_SELECT, '[0].value');
+        // 防止时间框出现数值的情况
+        if (starttime - yearStartTime < 10 * 60 * 1000 && starttime - yearStartTime > -10 * 60 * 1000) {
+            starttime = yearStartTime;
+        }
         let list = _.map(DATE_SELECT, item =>
             <Option value={item.value} key={item.value} title={item.name}>{item.name}</Option>);
+        let loginTitle = _.find(DATE_SELECT, item => item.value === starttime);
 
         return (
-            <div>
+            <div className="last-login-select">
                 <Select
-                    style={{ width: 120 }}
+                    style={{ width: 100 }}
                     value={starttime}
                     onChange={this.handleSelectDate.bind(this, app)}
                 >
                     {list}
                 </Select>
-
+                <div className="last-login-title">
+                    {Intl.get('user.login.last.title', '{title}的活跃统计',
+                        {title: _.get(loginTitle, 'name', Intl.get('user.login.last.year', '近一年'))})
+                    }:
+                </div>
             </div>
         );
     };
@@ -492,30 +501,25 @@ class UserLoginAnalysis extends React.Component {
                 </div>
             );
         }
-        if (count || duration || activeDays) {
-            return (
-                <div className="last-login-info">
-                    <span>{Intl.get('user.login.times', '登录次数')}:
-                        <span className="login-stress">{count || 0 }</span>
-                    </span>
-                    <span>，{Intl.get('user.login.days', '活跃天数')}:
-                        <span className="login-stress">{activeDays || 0}</span>
-                    </span>
-                    <span>，{Intl.get('user.login.duration', '在线时长')}:
-                        <span className="login-stress">{timeObj.timeDescr || 0 }</span>
-                    </span>
-                </div>
-            );
-        } else {
-            return null;
-        }
+        return (
+            <div className="last-login-info">
+                <span>{Intl.get('user.login.times', '登录次数')}:
+                    <span className="login-stress">{count || 0 }</span>
+                </span>
+                <span>，{Intl.get('user.login.days', '活跃天数')}:
+                    <span className="login-stress">{activeDays || 0}</span>
+                </span>
+                <span>，{Intl.get('user.login.duration', '在线时长')}:
+                    <span className="login-stress">{timeObj.timeDescr || 0 }</span>
+                </span>
+            </div>
+        );
     };
 
     // 登录用户活跃统计信息（登录时长，登录次数，活跃天数，热力图）
     renderUserLoginActiveInfo = (app) => {
         return (
             <div>
-                {this.renderTimeSelect(app)}
                 {this.renderLastLoginInfo(app)}
                 {this.renderLoginChart(app)}
             </div>
@@ -536,6 +540,7 @@ class UserLoginAnalysis extends React.Component {
                     _.map(this.state.userOwnAppArray, (app, index) => {
                         const userInfo = this.state.appUserDataMap[app.app_id] || {};
                         const loading = userInfo.loading;
+                        const isLoading = userInfo.isLoading;
                         return (
                             <DetailCard
                                 key={index}
@@ -571,7 +576,15 @@ class UserLoginAnalysis extends React.Component {
                                                     </div> : <div>
                                                         {this.renderUserLoginScore(app)}
                                                         {this.renderUserLoginInfo(app)}
-                                                        {this.renderUserLoginActiveInfo(app)}
+                                                        <div className="last-login-active-statistics">
+                                                            {this.renderTimeSelect(app)}
+                                                            <StatusWrapper
+                                                                loading={isLoading}
+                                                                size='medium'
+                                                            >
+                                                                {this.renderUserLoginActiveInfo(app)}
+                                                            </StatusWrapper>
+                                                        </div>
                                                     </div>)
                                                 }
                                             </div>

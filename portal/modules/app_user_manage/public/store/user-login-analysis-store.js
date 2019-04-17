@@ -120,7 +120,7 @@ UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
         loading: false
     };
     const item = this.appUserDataMap[appid];
-    item.loading = result.loading;
+    item.isLoading = result.loading;
     item.loginChartInfo = {
         errorMsg: ''
     };
@@ -212,7 +212,7 @@ UserLoginAnalysisStore.prototype.getLoginUserActiveStatistics = function(result)
         loading: false
     };
     const item = this.appUserDataMap[appid];
-    item.loading = result.loading;
+    item.isLoading = result.loading;
     item.activeInfo = {
         errorMsg: ''
     };
@@ -235,15 +235,5 @@ UserLoginAnalysisStore.prototype.getLoginUserActiveStatistics = function(result)
         }
     }
 };
-
-UserLoginAnalysisStore.prototype.setSelectTime = function(obj) {
-    const appid = _.get(obj, 'app.app_id');
-    this.appUserDataMap[appid] = this.appUserDataMap[appid] || {
-        loading: false
-    };
-    const item = this.appUserDataMap[appid];
-    item.selectTime = obj.value;
-};
-
 //使用alt导出store
 module.exports = alt.createStore(UserLoginAnalysisStore , 'UserLoginAnalysisStore');
