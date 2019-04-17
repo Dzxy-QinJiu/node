@@ -15,13 +15,13 @@ import Spinner from '../../../../components/spinner';
 import userData from '../../../../public/sources/user-data';
 import GeminiScrollbar from '../../../../components/react-gemini-scrollbar';
 import AppProperty from '../../../../components/user_manage_components/app-property-setting';
-import {Alert, Tooltip, Form, Button, Input, InputNumber, Select, Icon, message, DatePicker, Row, Col,Steps} from 'antd';
+import {Alert, Tooltip, Form, Button, Input, InputNumber, Select, Icon, message, DatePicker, Row, Col,Steps, Tag} from 'antd';
 const Step = Steps.Step;
 const Option = Select.Option;
 import FieldMixin from '../../../../components/antd-form-fieldmixin';
 import UserNameTextField from '../../../../components/user_manage_components/user-name-textfield/apply-input-index';
 import UserNameTextfieldUtil from '../../../../components/user_manage_components/user-name-textfield/util';
-
+import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 const FormItem = Form.Item;
 import classNames from 'classnames';
 import {hasPrivilege, PrivilegeChecker} from '../../../../components/privilege/checker';
@@ -552,6 +552,14 @@ const ApplyViewDetail = createReactClass({
     },
 
     renderDetailCustomerBlock: function(detailInfo) {
+        var tagsArray = [];
+        if (_.isArray(detailInfo.immutable_labels) && detailInfo.immutable_labels.length) {
+            tagsArray = detailInfo.immutable_labels;
+        }
+        var tags = tagsArray.map((tag, index) => {
+            return (<Tag key={index}>{tag}</Tag>);
+        });
+
         return (
             <div className="apply-detail-customer apply-detail-info">
                 <div className="customer-icon-block">
@@ -566,6 +574,16 @@ const ApplyViewDetail = createReactClass({
                                 title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
                             >
                                 {detailInfo.customer_name}
+                                {detailInfo.customer_label ? (
+                                    <Tag
+                                        className={crmUtil.getCrmLabelCls(detailInfo.customer_label)}>
+                                        {detailInfo.customer_label}</Tag>) : null
+                                }
+                                {tags.length ?
+                                    <span className="customer-list-tags">
+                                        {tags}
+                                    </span>
+                                    : null}
                                 <span className="iconfont icon-arrow-right"/>
                             </a>
                         </div>
