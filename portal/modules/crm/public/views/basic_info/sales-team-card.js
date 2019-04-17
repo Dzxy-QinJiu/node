@@ -373,20 +373,12 @@ class SalesTeamCard extends React.Component {
                     this.backToDisplay();
                     //更新列表中的销售人员
                     this.props.modifySuccess(submitData);
-                    //变更销售后，更新所属销售的备份数据，清空联合跟进人
+                    //变更销售后，更新所属销售的备份数据
                     this.setState({
                         userIdBak: submitData.user_id,
                         userNameBak: submitData.user_name,
                         salesTeamIdBak: submitData.sales_team_id,
-                        salesTeamBak: submitData.sales_team,
-                        secondUserId: '',//联合跟进人
-                        secondUserName: '',
-                        secondTeamId: '',//联合跟进人所在团队
-                        secondTeamName: '',
-                        secondUserIdBak: '',//备份联合跟进人（修改取消时用）
-                        secondUserNameBak: '',
-                        secondTeamIdBak: '',//备份联合跟进人所在团队（修改取消时用）
-                        secondTeamNameBak: '',
+                        salesTeamBak: submitData.sales_team
                     });
                 }
             }, errorMsg => {
@@ -407,7 +399,7 @@ class SalesTeamCard extends React.Component {
         let submitData = {
             id: this.state.customerId,
         };
-        //修改或添加联合跟进人时
+        //修改或添加联合跟进人时(删除时，不传new_user_id等信息)
         if (this.state.secondUserId) {
             //新分配的联合跟进人及其团队
             submitData.new_user_id = this.state.secondUserId;
@@ -415,7 +407,7 @@ class SalesTeamCard extends React.Component {
             submitData.new_sales_team = this.state.secondTeamName;
             submitData.new_sales_team_id = this.state.secondTeamId;
         }
-        //修改时要传入被替换的联合跟进人
+        //修改或删除时要传入被替换或删除的联合跟进人（添加时，不传old_user_id等信息）
         if (this.state.secondUserIdBak) {
             submitData.old_sales_team_id = this.state.secondTeamIdBak;
             submitData.old_user_id = this.state.secondUserIdBak;
@@ -604,6 +596,8 @@ class SalesTeamCard extends React.Component {
         if (this.state.displayType === DISPLAY_TYPES.EDIT_SECOND_SALES) {
             let secondTeamId = this.state.secondTeamId ? `&&${this.state.secondTeamId}` : '';
             selectValue = _.get(this.state, 'secondUserId', '') + secondTeamId;
+            //联合跟进人可以清空的选项
+            salesmanOptions.unshift(<Option value='' key=''>&nbsp;</Option>);
         } else if (this.state.displayType === DISPLAY_TYPES.EDIT) {
             // 修改客户的所属销售时
             let salesTeamId = this.state.salesTeamId ? `&&${this.state.salesTeamId}` : '';
