@@ -3,6 +3,15 @@
   padding-top: 10px;
   .select-team-member-list .ant-select-selection__rendered {
     max-width: 800px;
+    @media screen and (max-width: 1400px) {
+      max-width: 550px;
+    }
+    @media screen and (max-width: 1200px) {
+      max-width: 350px;
+    }
+    @media screen and (max-width: 1000px) {
+      max-width: 200px;
+    }
     overflow-y: auto;
     height: 32px;
     overflow-x: hidden;
