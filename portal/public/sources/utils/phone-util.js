@@ -34,13 +34,6 @@ exports.getCallClient = function() {
     return callClient;
 };
 
-//挂断电话
-exports.releaseCall = function() {
-    if (callClient) {
-        callClient.releaseCall(callClient);
-    }
-};
-
 //卸载电话系统
 exports.unload = function(func) {
     callClient && callClient.onbeforeunload(func);
