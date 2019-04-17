@@ -590,6 +590,9 @@ var en_US = {
     'user.login.freshness.score': 'Freshness score', // 新鲜度分数
     'user.login.history.activity.score': 'Historical activity score', // 历史活跃度分数
     'user.login.history.immersion.score': 'Historical immersion score', // 历史沉浸度分数
+    'user.login.last.year': 'The latest a year', // 近一年
+    'user.login.last.month': 'The latest a month', // 近一月
+    'user.login.last.week': 'The latest a week', // 近一周
 
     //第三方应用
     'third.party.app': 'Open Application Platform',//开放应用平台',

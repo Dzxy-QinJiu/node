@@ -31,7 +31,15 @@ UserLoginAnalysisStore.prototype.loginInfoInitialState = function() {
     this.loginScore = {
         data: {},
         errorMsg: '', //错误信息
-    };   
+    };
+    // 获取登录用户活跃统计信息（登录时长，登录次数，活跃天数）
+    this.activeInfo = {
+        duration: '' , // 登录时长
+        count: '', // 登录次数
+        activeDays: '', // 活跃天数
+        errorMsg: '' //错误信息
+    };
+    
     //存放不同应用下数据
     this.appUserDataMap = {};
 };
@@ -116,6 +124,7 @@ UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
     item.loginChartInfo = {
         errorMsg: ''
     };
+    item.starttime = _.get(result,'paramsObj.starttime');
     if(result.loading){
         item.loginChartInfo.errorMsg = '';
     } else {
@@ -194,6 +203,46 @@ UserLoginAnalysisStore.prototype.getLoginUserScore = function(result) {
             item.loginScore.data = result.data;
         }
     }
+};
+
+// 获取登录用户活跃统计信息（登录时长，登录次数，活跃天数）
+UserLoginAnalysisStore.prototype.getLoginUserActiveStatistics = function(result){
+    const appid = result.paramsObj.appid;
+    this.appUserDataMap[appid] = this.appUserDataMap[appid] || {
+        loading: false
+    };
+    const item = this.appUserDataMap[appid];
+    item.loading = result.loading;
+    item.activeInfo = {
+        errorMsg: ''
+    };
+    if (result.loading) {
+        item.activeInfo.errorMsg = '';
+    } else {
+        if (result.error) {
+            item.activeInfo.errorMsg = result.errorMsg;
+        } else {
+            let resData = _.get(result, 'data', []);
+            if (_.get(resData, 'length', 0)) {
+                let loginActiveInfo = _.extend({},resData[0], resData[1], resData[2]);
+                // 在线时长
+                item.activeInfo.duration = _.get(loginActiveInfo, 'duration.login_long', 0);
+                // 登录次数
+                item.activeInfo.count = _.get(loginActiveInfo, 'count.logins', 0);
+                // 活跃天数
+                item.activeInfo.activeDays = _.get(loginActiveInfo, 'activeDays[0].days', 0);
+            }
+        }
+    }
+};
+
+UserLoginAnalysisStore.prototype.setSelectTime = function(obj) {
+    const appid = _.get(obj, 'app.app_id');
+    this.appUserDataMap[appid] = this.appUserDataMap[appid] || {
+        loading: false
+    };
+    const item = this.appUserDataMap[appid];
+    item.selectTime = obj.value;
 };
 
 //使用alt导出store

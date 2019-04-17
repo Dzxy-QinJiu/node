@@ -173,3 +173,28 @@ exports.getSaleMemberList = function(reqData) {
     });
     return Deferred.promise();
 };
+
+// 获取登录用户活跃统计信息（登录时长，登录次数，活跃天数）
+let LoginUserActiveStatisticsAjax = null;
+exports.getLoginUserActiveStatistics = (queryobj, type) => {
+    let loginInfoObj = _.clone(queryobj);
+    let user_id = loginInfoObj.user_id;
+    delete loginInfoObj.user_id;
+    let Deferred = $.Deferred();
+    LoginUserActiveStatisticsAjax && LoginUserActiveStatisticsAjax.abort();
+    LoginUserActiveStatisticsAjax = $.ajax({
+        url: '/rest/login/user/active/statistics/' + user_id + '/' + type,
+        type: 'get',
+        dataType: 'json',
+        data: loginInfoObj,
+        success: (data) => {
+            Deferred.resolve(data);
+        },
+        error: (xhr,status) => {
+            if(status !== 'abort') {
+                Deferred.reject(xhr.responseJSON || '获取登录用户活跃统计信息失败！');
+            }
+        }
+    });
+    return Deferred.promise();
+};

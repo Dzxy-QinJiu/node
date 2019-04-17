@@ -1,6 +1,4 @@
 require('../css/user-login-analysis.less');
-var Spinner = require('../../../../components/spinner');
-var SelectFullWidth = require('../../../../components/select-fullwidth');
 var UserLoginAnalysisAction = require('../action/user-login-analysis-action');
 var UserLoginAnalysisStore = require('../store/user-login-analysis-store');
 import TimeUtil from '../../../../public/sources/utils/time-format-util';
@@ -11,9 +9,10 @@ import StatusWrapper from 'CMP_DIR/status-wrapper';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 import { AntcChart } from 'antc';
-import { Progress, Tooltip, Icon, Alert } from 'antd';
+import { Progress, Tooltip, Icon, Alert, Select } from 'antd';
+const Option = Select.Option;
 import PropTypes from 'prop-types';
-
+import {DATE_SELECT} from 'PUB_DIR/sources/utils/consts';
 //日历热力图颜色
 const CALENDER_COLOR = {
     BORDER: '#A2A2A2',
@@ -83,14 +82,13 @@ class UserLoginAnalysis extends React.Component {
     // 获取用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录次数统计）
     getUserAnalysisData = (queryParams) => {
         let queryObj = this.getQueryParams(queryParams);
-        const chartParams = {
-            ...queryObj,
-            starttime: new Date(moment().subtract(11, 'months').startOf('month')).getTime()
-        };
+        let lastLoginParams = this.getUserLastLoginParams();
         let reqData = this.getUserLoginScoreParams(queryParams);
         let type = this.getUserLoginType();
         UserLoginAnalysisAction.getUserLoginInfo(queryObj);
-        UserLoginAnalysisAction.getUserLoginChartInfo(chartParams);
+        // 获取登录用户活跃统计信息（登录时长，登录次数，活跃天数）
+        UserLoginAnalysisAction.getLoginUserActiveStatistics(lastLoginParams, type);
+        UserLoginAnalysisAction.getUserLoginChartInfo(lastLoginParams);
         UserLoginAnalysisAction.getLoginUserScore(reqData, type);
     };
 
@@ -138,6 +136,17 @@ class UserLoginAnalysis extends React.Component {
             account_id: queryObj.user_id
         };
     };
+
+    // 统计最近登录用户信息的参数
+    getUserLastLoginParams = (queryParams) => {
+        let app_id = queryParams && queryParams.appid || this.state.selectedLogAppId;
+        return {
+            user_id: this.props.userId,
+            appid: app_id,
+            starttime: queryParams && queryParams.starttime || new Date(moment().subtract(12, 'months')).getTime(),
+            endtime: new Date().getTime()
+        };
+    }
 
     // 获取登录用户的类型
     getUserLoginType = () => {
@@ -284,7 +293,7 @@ class UserLoginAnalysis extends React.Component {
         let queryObj = this.getQueryParams();
         UserLoginAnalysisAction.getUserLoginChartInfo(queryObj);
     };
-
+    
     renderLoginChart = (app) => {
         const loginChartInfo = _.get(this.state.appUserDataMap, [app.app_id, 'loginChartInfo']);
         if (!loginChartInfo) {
@@ -316,14 +325,14 @@ class UserLoginAnalysis extends React.Component {
                             radioValue={radioValue}
                             dateRange={this.state.selectValueMap[app.app_id] || 'LoginFrequency'}
                             onDateRangeChange={this.handleSelectRadio.bind(this, app)}
-                            title={Intl.get('user.detail.loginAnalysis.title', '近一年的活跃统计')}
+                            title=''
                         >
                             <div className="duration-chart">
                                 {
                                     this.state.selectValueMap[app.app_id] === 'loginDuration' ?
-                                    // 时长
+                                        // 时长
                                         this.renderChart(loginChartInfo.loginDuration, this.durationTooltip) :
-                                    // 次数
+                                        // 次数
                                         this.renderChart(loginChartInfo.loginCount, this.chartFrequencyTooltip)
                                 }
                             </div>
@@ -422,6 +431,96 @@ class UserLoginAnalysis extends React.Component {
             showDetailMap
         });
     };
+    handleSelectDate = (app, value) => {
+        let queryObj = this.getUserLastLoginParams({appid: app.app_id, starttime: value});
+        let type = this.getUserLoginType();
+        // 获取登录用户活跃统计信息（登录时长，登录次数，活跃天数）
+        UserLoginAnalysisAction.getLoginUserActiveStatistics(queryObj, type);
+        UserLoginAnalysisAction.getUserLoginChartInfo(queryObj);
+    };
+    // 渲染时间选择框
+    renderTimeSelect = (app) => {
+        const starttime = _.get(this.state.appUserDataMap, [app.app_id, 'starttime']) || new Date(moment().subtract(12, 'months')).getTime();
+
+        let list = _.map(DATE_SELECT, item =>
+            <Option value={item.value} key={item.value} title={item.name}>{item.name}</Option>);
+
+        return (
+            <div>
+                <Select
+                    style={{ width: 120 }}
+                    value={starttime}
+                    onChange={this.handleSelectDate.bind(this, app)}
+                >
+                    {list}
+                </Select>
+
+            </div>
+        );
+    };
+
+    // 重新获取用户最近的登录信息（登录时长、登录次数、活跃天数)
+    retryGetLastLoginInfo = () => {
+        let queryObj = this.getUserLastLoginParams();
+        let type = this.getUserLoginType();
+        UserLoginAnalysisAction.getLoginUserActiveStatistics(queryObj, type);
+    };
+
+
+    // 渲染用户最近的登录信息（登录时长、登录次数、活跃天数）
+    renderLastLoginInfo = (app) => {
+        const activeInfo = _.get(this.state.appUserDataMap, [app.app_id, 'activeInfo']);
+        if (!activeInfo) {
+            return null;
+        }
+        const count = _.get(activeInfo, 'count', 0);
+        const duration = _.get(activeInfo, 'duration', 0);
+        const activeDays = _.get(activeInfo, 'activeDays', 0);
+        let timeObj = {};
+        if (duration) {
+            timeObj = TimeUtil.secondsToHourMinuteSecond(Math.floor(duration / 1000));
+        }
+        if (_.get(activeInfo, 'errorMsg')) {
+            return (
+                <div className="login-info">
+                    <div className="alert-tip">
+                        {activeInfo.errorMsg}，
+                        <a href="javascript:void(0)" onClick={this.retryGetLastLoginInfo}>
+                            {Intl.get('common.retry', '重试')}
+                        </a>
+                    </div>
+                </div>
+            );
+        }
+        if (count || duration || activeDays) {
+            return (
+                <div className="last-login-info">
+                    <span>{Intl.get('user.login.times', '登录次数')}:
+                        <span className="login-stress">{count || 0 }</span>
+                    </span>
+                    <span>，{Intl.get('user.login.days', '活跃天数')}:
+                        <span className="login-stress">{activeDays || 0}</span>
+                    </span>
+                    <span>，{Intl.get('user.login.duration', '在线时长')}:
+                        <span className="login-stress">{timeObj.timeDescr || 0 }</span>
+                    </span>
+                </div>
+            );
+        } else {
+            return null;
+        }
+    };
+
+    // 登录用户活跃统计信息（登录时长，登录次数，活跃天数，热力图）
+    renderUserLoginActiveInfo = (app) => {
+        return (
+            <div>
+                {this.renderTimeSelect(app)}
+                {this.renderLastLoginInfo(app)}
+                {this.renderLoginChart(app)}
+            </div>
+        );
+    };
 
     state = {
         selectValue: 'LoginFrequency',
@@ -472,7 +571,7 @@ class UserLoginAnalysis extends React.Component {
                                                     </div> : <div>
                                                         {this.renderUserLoginScore(app)}
                                                         {this.renderUserLoginInfo(app)}
-                                                        {this.renderLoginChart(app)}
+                                                        {this.renderUserLoginActiveInfo(app)}
                                                     </div>)
                                                 }
                                             </div>
