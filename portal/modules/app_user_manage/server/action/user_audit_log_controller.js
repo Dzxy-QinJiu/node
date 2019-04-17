@@ -52,3 +52,14 @@ exports.getLoginUserScore = (req, res) => {
     });
 };
 
+// 获取登录用户活跃统计信息（登录时长，登录次数，活跃天数）
+exports.getLoginUserActiveStatistics = (req, res) => {
+    let reqParams = req.query;
+    reqParams.user_id = req.params.user_id;
+    userAuditLog.getLoginUserActiveStatistics(req, res, reqParams).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
