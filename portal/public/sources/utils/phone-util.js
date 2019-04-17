@@ -9,14 +9,6 @@ let CallcenterClient = callcenter.client;
 import {Button} from 'antd';
 import commonMethodUtil from './common-method-util';
 let callClient;
-//电话系统类型
-const PHONE_TYPES = {
-    RONGLIAN: 'ronglian',//容联
-    HUAWEI: 'huaiwei_callback',//华为
-    EEFUNG: 'eefung_phone',//蚁坊
-    ASTERISK: 'asterisk'
-};
-exports.PHONE_TYPES = PHONE_TYPES;
 
 //初始化
 exports.initPhone = function(user) {
@@ -32,7 +24,7 @@ exports.initPhone = function(user) {
 //是否是容联的电话系统
 exports.isRongLianPhoneSystem = function() {
     if (callClient) {
-        return callClient.getPhoneType() === PHONE_TYPES.RONGLIAN;
+        return callClient.needShowAnswerView();
     }
     return false;
 };
@@ -41,6 +33,14 @@ exports.isRongLianPhoneSystem = function() {
 exports.getCallClient = function() {
     return callClient;
 };
+
+//挂断电话
+exports.releaseCall = function() {
+    if (callClient) {
+        callClient.releaseCall(callClient);
+    }
+};
+
 //卸载电话系统
 exports.unload = function(func) {
     callClient && callClient.onbeforeunload(func);

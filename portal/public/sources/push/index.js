@@ -337,12 +337,20 @@ function setInitialPhoneObj() {
 /*
  * 监听拨打电话消息的推送*/
 function phoneEventListener(phonemsgObj) {
+    //后端推送过来的通话类型
+    const CALL_TYPES = {
+        ALERT: 'ALERT',//对方振铃中
+        ANSWERED: 'ANSWERED',//通话中
+        phone: 'phone',//通话结束（eefung电话系统）
+        curtao_phone: 'curtao_phone',//通话结束（容联电话系统）
+        call_back: 'call_back'//通话结束（运营拨打的回访电话的）
+    };
     // sendMessage && sendMessage(JSON.stringify(phonemsgObj));
     //为了避免busy事件在两个不同的通话中错乱的问题，过滤掉推送过来的busy状态
-    const PHONE_STATUS = ['ALERT', 'ANSWERED', 'phone', 'curtao_phone', 'call_back'];
-    //过滤掉其他状态 只展示alert answered  phone状态的数据
+    const PHONE_STATUS = [CALL_TYPES.ALERT, CALL_TYPES.ANSWERED, CALL_TYPES.phone, CALL_TYPES.curtao_phone, CALL_TYPES.call_back];
+    //过滤掉其他状态 只展示ALERT、ANSWERED、 phone、curtao_phone、call_back状态的数据
     if (hasPrivilege('CRM_LIST_CUSTOMERS') && PHONE_STATUS.indexOf(phonemsgObj.type) !== -1) {
-        if (['phone', 'curtao_phone', 'call_back'].indexOf(phonemsgObj.type) !== -1) {
+        if ([CALL_TYPES.phone, CALL_TYPES.curtao_phone, CALL_TYPES.call_back].indexOf(phonemsgObj.type) !== -1) {
             //通话结束后，可以继续拨打电话了
             Oplate.isCalling = false;
         }
