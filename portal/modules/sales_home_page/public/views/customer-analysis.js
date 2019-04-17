@@ -3,6 +3,7 @@
  * Created by wangliping on 2016/11/24.
  */
 import { AntcAnalysis } from 'antc';
+import { contractChart } from 'ant-chart-collection';
 import customerCharts from 'MOD_DIR/analysis/public/charts/customer';
 import orderCharts from 'MOD_DIR/analysis/public/charts/order';
 let history = require('PUB_DIR/sources/history');
@@ -1126,6 +1127,9 @@ class CustomerAnalysis extends React.Component {
 
         const trialQualifiedChart = this.getTrialQualifiedChart();
         charts.unshift(trialQualifiedChart);
+
+        const contractExpireRemindChart = contractChart.getContractExpireRemindChart();
+        charts.unshift(contractExpireRemindChart);
 
         //最近联系的客户
         const recentContactCustomerChart = customerCharts.getRecentContactCustomerChart();
