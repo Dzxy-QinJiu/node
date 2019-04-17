@@ -335,8 +335,11 @@ const ApplyViewDetail = createReactClass({
     //重新获取回复列表
     refreshReplyList(e) {
         Trace.traceEvent(e, '点击了重新获取');
-        if (this.props.detailItem.id) {
-            ApplyViewDetailActions.getReplyList(this.props.detailItem.id);
+        var applyId = _.get(this, 'props.detailItem.id');
+        if (applyId) {
+            ApplyViewDetailActions.getReplyList(applyId);
+            //获取该审批所在节点的位置
+            ApplyViewDetailActions.getNextCandidate({id: applyId});
         }
     },
 
@@ -444,10 +447,10 @@ const ApplyViewDetail = createReactClass({
                 });
             });
         }
+        var candidate = this.state.candidateList,candidateName = '';
         //如果下一个节点是直接主管审核
-        if (['0'].includes(_.get(applicantList,'approval_state'))) {
-            var candidate = this.state.candidateList,candidateName = '';
-            if (_.isArray(candidate) && candidate.length === 1){
+        if (_.get(candidate,'[0]')) {
+            if (candidate.length === 1){
                 candidateName = _.get(candidate,'[0].nick_name');
             }
             stepArr.push({
