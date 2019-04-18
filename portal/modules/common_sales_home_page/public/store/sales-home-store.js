@@ -28,7 +28,7 @@ SalesHomeStore.prototype.setInitState = function() {
         loading: true,
         errMsg: '',
         total: 0,
-        data: []
+        data: {}
     };
     //新增客户统计
     this.customerTotalObj = {
@@ -544,7 +544,7 @@ SalesHomeStore.prototype.getContractExpireRemind = function(result) {
     } else {
         this.contractExpireRemind.loading = false;
         this.contractExpireRemind.errMsg = '';
-        this.contractExpireRemind.data = result.resData.expired_contracts;
+        this.contractExpireRemind.data = result.resData;
         this.contractExpireRemind.total = result.resData.total;
     }
 };

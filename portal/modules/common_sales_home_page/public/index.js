@@ -3,7 +3,8 @@ var RightContent = require('CMP_DIR/privilege/right-content');
 require('./css/index.less');
 var SalesHomeStore = require('./store/sales-home-store');
 var SalesHomeAction = require('./action/sales-home-actions');
-import {AntcTable} from 'antc';
+import {AntcAnalysis} from 'antc';
+import {contractChart} from 'ant-chart-collection';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 let TimeUtil = require('PUB_DIR/sources/utils/time-format-util');
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
@@ -501,26 +502,26 @@ class SalesHomePage extends React.Component {
 
     //到期合同提醒
     renderContractExpireRemind() {
-        const columns = [
-            {
-                title: '客户',
-                dataIndex: 'customer_name',
-                width: '10%',
-            }, {
-                title: '合同额',
-                dataIndex: 'contract_amount',
-                width: '10%',
-            }, {
-                title: '到期时间',
-                dataIndex: 'end_time',
-                width: '10%',
-            }
-        ];
+        //近三个月到期合同统计
+        let chart = contractChart.getContractExpireRemindChart();
+        chart.data = this.state.contractExpireRemind.data;
+        chart.resultType = '';
+        chart.layout = {sm: 24};
+        chart.height = 'auto';
+
+        const columns = _.get(chart, 'option.columns');
+        const userNameColumnIndex = _.findIndex(columns, column => column.dataIndex === 'user_name');
+
+        if (userNameColumnIndex !== -1) {
+            columns.splice(userNameColumnIndex, 1);
+        }
+
+        const charts = [chart];
 
         return (
-            <AntcTable
-                columns={columns}
-                dataSource={this.state.contractExpireRemind.data}
+            <AntcAnalysis
+                charts={charts}
+                isUseScrollBar={true}
             />
         );
     }
