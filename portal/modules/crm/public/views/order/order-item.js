@@ -12,7 +12,6 @@ import ajax from '../../../common/ajax';
 
 const hasPrivilege = require('../../../../../components/privilege/checker').hasPrivilege;
 import Trace from 'LIB_DIR/trace';
-import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import DetailCard from 'CMP_DIR/detail-card';
@@ -20,7 +19,6 @@ import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import classNames from 'classnames';
 import ApplyUserForm from '../apply-user-form';
-import {disabledBeforeToday} from 'PUB_DIR/sources/utils/common-method-util';
 import StepsBar from 'CMP_DIR/steps-bar';
 //订单状态
 const ORDER_STATUS = {
@@ -444,7 +442,6 @@ class OrderItem extends React.Component {
                                 placeholder={Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}
                                 hasEditPrivilege={hasEditPrivilege}
                                 saveEditDateInput={this.saveOrderBasicInfo.bind(this, 'predict_finish_time')}
-                                disabledDate={disabledBeforeToday}
                                 noDataTip={Intl.get('crm.order.no.expected.deal.time', '暂无预计成交时间')}
                                 addDataTip={Intl.get('crm.order.add.expected.deal.time', '添加预计成交时间')}
                             />

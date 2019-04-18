@@ -5,7 +5,6 @@ const OrderAction = require('../../action/order-actions');
 import SearchIconList from '../../../../../components/search-icon-list';
 import Trace from 'LIB_DIR/trace';
 import DetailCard from 'CMP_DIR/detail-card';
-import {disabledBeforeToday} from 'PUB_DIR/sources/utils/common-method-util';
 class OrderForm extends React.Component {
     constructor(props){
         super(props);
@@ -114,9 +113,7 @@ class OrderForm extends React.Component {
                         {getFieldDecorator('predict_finish_time', {
                             rules: [{required: true, message: Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}]
                         })(
-                            <DatePicker
-                                disabledDate={disabledBeforeToday}
-                                allowClear={false}/>
+                            <DatePicker allowClear={false}/>
                         )}
                     </FormItem>
                     <FormItem
