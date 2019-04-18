@@ -192,7 +192,7 @@ exports.getLoginUserActiveStatistics = (queryobj, type) => {
         },
         error: (xhr,status) => {
             if(status !== 'abort') {
-                Deferred.reject(xhr.responseJSON || '获取登录用户活跃统计信息失败！');
+                Deferred.reject(xhr.responseJSON || Intl.get('user.login.last.failed', '获取用户最近登录统计信息失败'));
             }
         }
     });

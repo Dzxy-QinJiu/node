@@ -138,7 +138,7 @@ function UserLoginAnalysisAction() {
                 this.dispatch({paramsObj: loginParam, loading: false, error: true, errorMsg: errorMsg});
             });
         } else {
-            this.dispatch({paramsObj: loginParam, loading: false, error: true, errorMsg: Intl.get('user.log.login.fail', '获取登录信息失败！')});
+            this.dispatch({paramsObj: loginParam, loading: false, error: true, errorMsg: Intl.get('user.login.last.failed', '获取用户最近登录统计信息失败')});
         }
     };
 }

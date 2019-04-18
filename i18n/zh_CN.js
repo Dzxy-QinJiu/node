@@ -596,6 +596,7 @@ var zh_CN = {
     'user.login.last.month': '近一月',
     'user.login.last.week': '近一周',
     'user.login.last.title': '{title}的活跃统计',
+    'user.login.last.failed': '获取用户最近登录统计信息失败',
     
     // 第三方应用配置
     'third.party.app': '开放应用平台',
