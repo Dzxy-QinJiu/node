@@ -267,6 +267,7 @@ class ApplyViewDetail extends React.Component {
             LeaveApplyDetailAction.setApplyComment(detailItem.approve_details);
         } else if (detailItem.id) {
             LeaveApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
+            this.getNextCandidate(detailItem.id);
         }
     };
     //重新获取申请的状态
@@ -456,10 +457,10 @@ class ApplyViewDetail extends React.Component {
                 });
             });
         }
+        var candidate = this.state.candidateList,candidateName = '';
         //如果下一个节点是直接主管审核
-        if (applicantList.status === 'ongoing') {
-            var candidate = this.state.candidateList,candidateName = '';
-            if (_.isArray(candidate) && candidate.length === 1){
+        if (_.get(candidate,'[0]')) {
+            if (candidate.length === 1){
                 candidateName = _.get(candidate,'[0].nick_name');
             }
             stepArr.push({
