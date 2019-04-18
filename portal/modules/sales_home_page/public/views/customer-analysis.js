@@ -1128,6 +1128,7 @@ class CustomerAnalysis extends React.Component {
         const trialQualifiedChart = this.getTrialQualifiedChart();
         charts.unshift(trialQualifiedChart);
 
+        //近三个月到期合同统计
         const contractExpireRemindChart = contractChart.getContractExpireRemindChart();
         charts.unshift(contractExpireRemindChart);
 
