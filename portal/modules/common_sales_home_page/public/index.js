@@ -506,8 +506,6 @@ class SalesHomePage extends React.Component {
         let chart = contractChart.getContractExpireRemindChart();
         chart.data = this.state.contractExpireRemind.data;
         chart.resultType = '';
-        chart.layout = {sm: 24};
-        chart.height = 'auto';
 
         const columns = _.get(chart, 'option.columns');
         const userNameColumnIndex = _.findIndex(columns, column => column.dataIndex === 'user_name');

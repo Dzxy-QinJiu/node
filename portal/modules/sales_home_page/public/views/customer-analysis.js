@@ -1128,8 +1128,12 @@ class CustomerAnalysis extends React.Component {
         const trialQualifiedChart = this.getTrialQualifiedChart();
         charts.unshift(trialQualifiedChart);
 
+        const today = moment();
+        const startTime = today.valueOf();
+        const endTime = today.add(3, 'months').valueOf();
+
         //近三个月到期合同统计
-        const contractExpireRemindChart = contractChart.getContractExpireRemindChart();
+        const contractExpireRemindChart = contractChart.getContractExpireRemindChart({startTime, endTime});
         charts.unshift(contractExpireRemindChart);
 
         //最近联系的客户
