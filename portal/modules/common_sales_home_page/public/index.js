@@ -500,10 +500,11 @@ class SalesHomePage extends React.Component {
         return rightPanel;
     };
 
-    //到期合同提醒
+    //渲染近三个月到期合同统计
     renderContractExpireRemind() {
-        //近三个月到期合同统计
-        let chart = contractChart.getContractExpireRemindChart();
+        let chart = contractChart.getContractExpireRemindChart({
+            title: '近三个月到期合同'
+        });
         chart.data = this.state.contractExpireRemind.data;
         chart.resultType = '';
 

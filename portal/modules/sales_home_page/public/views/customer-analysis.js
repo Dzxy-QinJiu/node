@@ -1132,8 +1132,12 @@ class CustomerAnalysis extends React.Component {
         const startTime = today.valueOf();
         const endTime = today.add(3, 'months').valueOf();
 
-        //近三个月到期合同统计
-        const contractExpireRemindChart = contractChart.getContractExpireRemindChart({startTime, endTime});
+        //近三个月到期合同
+        const contractExpireRemindChart = contractChart.getContractExpireRemindChart({
+            startTime,
+            endTime,
+            title: '近三个月到期合同'
+        });
         charts.unshift(contractExpireRemindChart);
 
         //最近联系的客户
