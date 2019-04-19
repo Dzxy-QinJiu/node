@@ -163,15 +163,16 @@ class DynamicAddDelContacts extends React.Component {
         const delContactCls = classNames('iconfont icon-delete', {
             'disabled': index === 0 && size === 1
         });
+        const validateContactName = this.props.validateContactName;
         return (
             <div className="contact-wrap" key={`contacts[${contactKey}]`}>
                 <FormItem className="contact-name-item">
                     {getFieldDecorator(`contacts[${contactKey}].name`, {
                         initialValue: item.name,
-                        rules: [{
+                        rules: [_.isEmpty(validateContactName) ? {
                             required: true,
                             message: Intl.get('crm.90', '请输入姓名')
-                        },{validator: this.props.validateContactName.bind(this, contactKey),}]
+                        } : validateContactName]
                     })(
                         <Input className='contact-name' placeholder={Intl.get('call.record.contacts', '联系人')}/>
                     )}
@@ -338,14 +339,12 @@ DynamicAddDelContacts.propTypes = {
     form: PropTypes.object,
     phoneOnlyOneRules: PropTypes.array,
     contacts: PropTypes.array,//编辑时，传入的已有联系人列表
-    validateContactName: PropTypes.func
+    validateContactName: PropTypes.object
 };
 DynamicAddDelContacts.defaultProps = {
     form: {},
     phoneOnlyOneRules: [],//电话唯一性的验证
-    validateContactName: function() {
-
-    }
+    validateContactName: {}
 };
 export default DynamicAddDelContacts;
 

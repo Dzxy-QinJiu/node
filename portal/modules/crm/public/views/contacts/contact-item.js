@@ -242,6 +242,7 @@ class ContactItem extends React.Component {
                                 saveEditInput={this.saveContactInfo.bind(this, 'name')}
                                 noDataTip={Intl.get('crm.contact.name.none', '未添加姓名')}
                                 addDataTip={Intl.get('crm.contact.name.add', '添加姓名')}
+                                validators={[ContactUtil.contactNameRule()]}
                             />
                         </div>
                         <div className="contact-item-content">

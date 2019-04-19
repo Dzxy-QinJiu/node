@@ -851,7 +851,7 @@ class ClueDetailOverview extends React.Component {
                                                 addDataTip={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
                                                 placeholder={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
                                                 hasMoreRow={true}
-                                                validators={clueNameContactRule}
+                                                validators={[clueNameContactRule]}
                                             />
                                         </div>
                                         <div className="contact-item-content">

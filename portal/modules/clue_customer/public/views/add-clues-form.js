@@ -20,6 +20,7 @@ var uuid = require('uuid/v4');
 import AlertTimer from 'CMP_DIR/alert-timer';
 require('../css/add-clues-info.less');
 import DynamicAddDelContact from 'CMP_DIR/dynamic-add-del-contacts';
+import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
 const DIFCONTACTWAY = {
     PHONE: 'phone',
     EMAIL: 'email',
@@ -221,14 +222,6 @@ class ClueAddForm extends React.Component {
         }, 1000);
 
     };
-    validateContactName = (key, rule, value, callback) => {
-        var length = _.get(value, 'length',0);
-        if (length > 10){
-            callback(Intl.get('clue.contact.name.within.ten.character', '联系人名称不能超过10个字符'));
-        }else{
-            callback();
-        }
-    };
     render() {
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const formItemLayout = {
@@ -307,7 +300,7 @@ class ClueAddForm extends React.Component {
                                 {...formItemLayout}
                             >
                                 <DynamicAddDelContact
-                                    validateContactName={this.validateContactName}
+                                    validateContactName={clueNameContactRule}
                                     form={this.props.form} />
                             </FormItem>
                             {this.renderCheckContactMsg()}

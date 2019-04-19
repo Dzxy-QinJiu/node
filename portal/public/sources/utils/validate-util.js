@@ -7,12 +7,16 @@ export const nameLengthRule = {
     max: 50,
     message: Intl.get('common.input.character.prompt', '最少1个字符,最多50个字符')
 };
+//客户名验证的正则表达式
+export const nameRegex = regex.customerNameRegex;
 //线索联系人的校验规则
-export const clueNameContactRule = [{required: true,message: Intl.get('crm.90', '请输入姓名')},{
+export const clueNameContactRule = {
+    required: true,
     min: 1,
     max: 10,
-    message: Intl.get('clue.contact.name.within.ten.character', '联系人名称不能超过10个字符')
-}];
+    pattern: nameRegex,
+    message: Intl.get('clue.contact.name.within.ten.character', '联系人名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间')
+};
 // 数字验证规则
 exports.getNumberValidateRule = function() {
     return {pattern: /^(\d|,)+(\.\d+)?$/, message: Intl.get('contract.45', '请填写数字')};
@@ -23,8 +27,7 @@ export const isPhone = function(value) {
 };
 
 
-//客户名验证的正则表达式
-export const nameRegex = regex.customerNameRegex;
+
 //邮箱正则表达式
 export const emailRegex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 //是否是邮箱
