@@ -223,7 +223,7 @@ UserLoginAnalysisStore.prototype.getLoginUserActiveStatistics = function(result)
             item.activeInfo.errorMsg = result.errorMsg;
         } else {
             let resData = _.get(result, 'data', []);
-            if (_.get(resData, 'length', 0)) {
+            if (_.get(resData, 'length')) {
                 let loginActiveInfo = _.extend({},resData[0], resData[1], resData[2]);
                 // 在线时长
                 item.activeInfo.duration = _.get(loginActiveInfo, 'duration.login_long', 0);

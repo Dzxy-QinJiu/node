@@ -143,7 +143,7 @@ class UserLoginAnalysis extends React.Component {
         return {
             user_id: this.props.userId,
             appid: app_id,
-            starttime: queryParams && queryParams.starttime || new Date(moment().subtract(12, 'months')).getTime(),
+            starttime: queryParams && queryParams.starttime || moment().subtract(1, 'year').valueOf(),
             endtime: new Date().getTime()
         };
     }
@@ -440,7 +440,7 @@ class UserLoginAnalysis extends React.Component {
     };
     // 渲染时间选择框
     renderTimeSelect = (app) => {
-        let starttime = _.get(this.state.appUserDataMap, [app.app_id, 'starttime']) || new Date(moment().subtract(12, 'months')).getTime();
+        let starttime = _.get(this.state.appUserDataMap, [app.app_id, 'starttime']) || moment().subtract(1, 'year').valueOf();
         let yearStartTime = _.get(DATE_SELECT, '[0].value');
         // 防止时间框出现数值的情况
         if (starttime - yearStartTime < 10 * 60 * 1000 && starttime - yearStartTime > -10 * 60 * 1000) {
