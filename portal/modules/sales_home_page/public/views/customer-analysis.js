@@ -1136,7 +1136,7 @@ class CustomerAnalysis extends React.Component {
         const contractExpireRemindChart = contractChart.getContractExpireRemindChart({
             startTime,
             endTime,
-            title: '近三个月到期合同'
+            title: Intl.get('contract.expire.in.next.three.months', '近三个月到期合同')
         });
         charts.unshift(contractExpireRemindChart);
 

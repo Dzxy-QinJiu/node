@@ -428,7 +428,7 @@ class SalesHomePage extends React.Component {
                 })}
                 <li className={contractExpireRemindClassName} onClick={this.handleClickDiffCustomerType.bind(this, 'contractExpireRemind')}>
                     <div>
-                        <span>近三个月到期合同</span>
+                        <span>{Intl.get('contract.expire.in.next.three.months', '近三个月到期合同')}</span>
                         <span className="data-total">{this.state.contractExpireRemind.total.toString()}</span>
                     </div>
                 </li>
@@ -503,7 +503,7 @@ class SalesHomePage extends React.Component {
     //渲染近三个月到期合同统计
     renderContractExpireRemind() {
         let chart = contractChart.getContractExpireRemindChart({
-            title: '近三个月到期合同'
+            title: Intl.get('contract.expire.in.next.three.months', '近三个月到期合同')
         });
         chart.data = this.state.contractExpireRemind.data;
         chart.resultType = '';
