@@ -288,6 +288,19 @@ class LogView extends React.Component {
         var _this = this;
         var columns = [
             {
+                title: Intl.get('common.login.time', '时间'),
+                dataIndex: 'timestamp',
+                className: 'has-filter click-show-user-detail',
+                sorter: true,
+                width: '150px',
+                key: 'timestamp',
+                render: function(timestamp, rowData, idx) {
+                    return (<span>
+                        {moment(timestamp).format(oplateConsts.DATE_TIME_FORMAT)}
+                    </span>);
+                }
+            },
+            {
                 title: Intl.get('common.username', '用户名'),
                 dataIndex: 'user_name',
                 className: 'has-filter click-show-user-detail',
@@ -314,6 +327,23 @@ class LogView extends React.Component {
                 sorter: true,
                 width: '130px',
                 key: 'nick_name'
+            },
+            {
+                title: Intl.get('common.belong.customer', '所属客户'),
+                dataIndex: 'customer_name',
+                key: 'customer_name',
+                className: 'has-filter owner-customer-wrap',
+                width: '160px',
+                render: function($1, rowData, idx) {
+                    var customer_name = _.get(rowData,'customer_name','');
+                    var customer_id = _.get(rowData,'customer_id','');
+                    return (
+                        <div title={customer_name} className="owner-customer"
+                            onClick={_this.showCustomerDetail.bind(this, customer_id)}
+                            data-tracename="点击所属客户列">{customer_name}
+                        </div>
+                    );
+                }
             },
             {
                 title: Intl.get('common.type', '类型'),
@@ -344,23 +374,6 @@ class LogView extends React.Component {
                     return (<span title={operate}>
                         {operate === 'null' ? '' : operate}
                     </span>);
-                }
-            },
-            {
-                title: Intl.get('common.belong.customer', '所属客户'),
-                dataIndex: 'customer_name',
-                key: 'customer_name',
-                className: 'has-filter owner-customer-wrap',
-                width: '160px',
-                render: function($1, rowData, idx) {
-                    var customer_name = _.get(rowData,'customer_name','');
-                    var customer_id = _.get(rowData,'customer_id','');
-                    return (
-                        <div title={customer_name} className="owner-customer"
-                            onClick={_this.showCustomerDetail.bind(this, customer_id)}
-                            data-tracename="点击所属客户列">{customer_name}
-                        </div>
-                    );
                 }
             },
             {
@@ -445,34 +458,6 @@ class LogView extends React.Component {
                 sorter: true,
                 width: '120px',
                 key: 'os'
-            },
-            {
-                title: Intl.get('common.login.time', '时间'),
-                dataIndex: 'timestamp',
-                className: 'has-filter click-show-user-detail',
-                sorter: true,
-                width: '150px',
-                key: 'timestamp',
-                render: function(timestamp, rowData, idx) {
-                    return (<span>
-                        {moment(timestamp).format(oplateConsts.DATE_TIME_FORMAT)}
-                    </span>);
-                }
-            },
-            {
-                title: Intl.get('user.log.type', '类别'),
-                dataIndex: 'type',
-                className: 'has-filter click-show-user-detail',
-                sorter: true,
-                width: '100px',
-                key: 'type'
-            },
-            {
-                title: Intl.get('authority.auth.api', '服务地址'),
-                dataIndex: 'remote_addr',
-                className: 'has-filter click-show-user-detail',
-                width: '120px',
-                key: 'remote_addr'
             }
         ];
         return columns;
