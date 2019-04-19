@@ -33,7 +33,6 @@ var setWebsiteConfig = websiteConfig.setWebsiteConfig;
 import AlertTip from 'CMP_DIR/alert-tip';
 import {message, Button} from 'antd';
 const DELAY_TIME = 2000;
-const userData = require('PUB_DIR/sources/user-data');
 
 class SalesHomePage extends React.Component {
     constructor(props) {
@@ -77,8 +76,6 @@ class SalesHomePage extends React.Component {
         SalesHomeAction.getContractExpireRemind({
             starttime: today.valueOf(),
             endtime: today.add(3, 'months').valueOf()
-            ,
-            member_id: userData.getUserData().user_id
         });
     }
 
