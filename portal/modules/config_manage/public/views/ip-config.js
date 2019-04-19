@@ -40,18 +40,29 @@ class IpConfig extends React.Component {
     // 提交保存按钮
     handleSubmit = (event) => {
         Trace.traceEvent(event,'点击添加IP按钮');
-        var _this = this;
+        event.preventDefault();
+        var addIpItem = $.trim(this.refs.addIpItem.value);
+        if (!addIpItem) {
+            this.setState({
+                addIpErrMsg: CHECKIPMSG,
+            });
+            return;
+        }
         this.setState({
             isLoading: true
         });
-        event.preventDefault();
         $('#addIpConfigSaveBtn').attr('disabled', 'disabled');
-        var addIpItem = _.trim(this.refs.addIpItem.value);
         IpConfigAjax.addIpConfigItem(addIpItem).then((result) => {
             this.setState({
                 isLoading: false
             });
-            this.getIpConfigList();
+            if (_.isObject(result) && result.id) {
+                IpConfigAction.addIp(result);
+            } else {
+                this.setState({
+                    addIpErrMsg: Intl.get('config.manage.add.ip.failed', '添加配置IP失败！')
+                });
+            }
             this.refs.addIpItem.value = '';
             $('#addIpConfigSaveBtn').removeAttr('disabled');
         }, (errMsg) => {
@@ -82,7 +93,13 @@ class IpConfig extends React.Component {
             deleteIpId: id
         });
         IpConfigAjax.deleteIpConfigItem(id).then((result) => {
-            this.getIpConfigList();
+            if (result) {
+                IpConfigAction.deleteIp(id);
+            } else {
+                this.setState({
+                    deleteErrMsg: Intl.get('config.manage.del.ip.failed', '删除配置IP失败！')
+                });
+            }
         },(errMsg) => {
             this.setState({
                 deleteErrMsg: errMsg,
@@ -139,9 +156,9 @@ class IpConfig extends React.Component {
         return(
             <div>
                 <ul className="mb-taglist">
-                    {ipList.map((item, key) => {
+                    {ipList.map((item, index) => {
                         return (
-                            <li className="mb-tag" ref={key} key={key}>
+                            <li className="mb-tag" ref={index} key={index}>
                                 <div className="mb-tag-content">
                                     <span className="mb-tag-text">{item.ip}</span>&nbsp;&nbsp;
                                     <span className="glyphicon glyphicon-remove mb-tag-remove"

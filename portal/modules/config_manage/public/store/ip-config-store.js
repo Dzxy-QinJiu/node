@@ -34,7 +34,14 @@ class IpConfigStore{
     filterIp(result) {
         this.getFilterIpStatus = result;
     }
-    
+
+    addIp(addIpObj) {
+        this.IpConfigList.unshift(addIpObj);
+    }
+
+    deleteIp(id) {
+        this.IpConfigList = _.filter( this.IpConfigList, item => item.id !== id );
+    }
 }
 
 //使用alt导出store
