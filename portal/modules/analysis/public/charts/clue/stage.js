@@ -20,27 +20,27 @@ export function getStageChart() {
             const stages = [
                 {
                     enName: 'total',
-                    cnName: '全部'
+                    cnName: Intl.get('common.all', '全部')
                 },
                 {
                     enName: 'vailid',
-                    cnName: '有效'
+                    cnName: Intl.get('clue.analysis.ability', '有效')
                 },
                 {
                     enName: 'information',
-                    cnName: '信息'
+                    cnName: Intl.get('sales.stage.message', '信息')
                 },
                 {
                     enName: 'intention',
-                    cnName: '意向'
+                    cnName: Intl.get('sales.stage.intention', '意向')
                 },
                 {
                     enName: 'trial',
-                    cnName: '试用'
+                    cnName: Intl.get('common.trial', '试用')
                 },
                 {
                     enName: 'sign',
-                    cnName: '签约'
+                    cnName: Intl.get('common.official', '签约')
                 }
             ];
 
