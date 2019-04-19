@@ -481,3 +481,10 @@ export const DIFF_APPLY_TYPE_UNREAD_REPLY = {
     APPLY_UNREAD_REPLY: 'apply_unread_reply',
     DIFF_APPLY_UNREAD_REPLY: 'diff_apply_unread_reply'
 };
+
+// 用户分析中，时间选择类型
+export const DATE_SELECT = [
+    {name: Intl.get('user.login.last.year', '近一年'), value: moment().subtract(1, 'year').valueOf()},
+    {name: Intl.get('user.login.last.month', '近一月'), value: moment().subtract(1, 'months').valueOf() },
+    {name: Intl.get('user.login.last.week', '近一周'), value: moment().subtract(1, 'weeks').valueOf()}
+];
