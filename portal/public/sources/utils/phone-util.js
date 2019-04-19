@@ -8,7 +8,8 @@ let callcenter = require('callcenter-sdk-client');
 let CallcenterClient = callcenter.client;
 import {Button} from 'antd';
 import commonMethodUtil from './common-method-util';
-import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
+import {phoneEmitter} from './emitters';
+// import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 let callClient;
 
 //初始化
@@ -17,6 +18,7 @@ exports.initPhone = function(user) {
     callClient = new CallcenterClient(org.id, user.user_name);
     callClient.init().then(() => {
         console.log('可以打电话了!');
+        phoneEmitter.emit(phoneEmitter.CALL_CLIENT_INITED);
     }, (error) => {
         console.log(error || '电话系统初始化失败了!');
     });
@@ -61,7 +63,7 @@ exports.AcceptButton = ({callClient}) => {
 exports.ReleaseButton = ({callClient, tip, phoneNumber}) => {
     if (callClient.needShowAnswerView()) {
         return <span>{tip},{Intl.get('common.yesno', '是否')}
-            <DialUpKeyboard phoneNumber={phoneNumber}/>
+            {/*<DialUpKeyboard phoneNumber={phoneNumber}/>*/}
             <Button className='call-operation-button'
                 onClick={callClient.releaseCall.bind(callClient)}>{Intl.get('call.record.to.release', '挂断')}</Button>
         </span>;

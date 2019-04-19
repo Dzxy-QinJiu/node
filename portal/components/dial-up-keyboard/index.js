@@ -4,18 +4,18 @@
  * Created by wangliping on 2019/4/15.
  */
 require('./index.less');
-import {Button, Popover, Input, Icon} from 'antd';
-import {handleCallOutResult}from 'PUB_DIR/sources/utils/common-data-util';
-import {releaseCall} from 'PUB_DIR/sources/utils/phone-util';
-//拨号键对应的数组
-const phoneNumArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'];
+import {Popover} from 'antd';
+import classNames from 'classnames';
+import PhoneNumberBoard from './phone-number-board';
+
 class DialUpKeyboard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            //外部传入的电话号码
             phoneNumber: props.phoneNumber,
-            extensionNumber: '',
-
+            //是否展示拨号键盘
+            keyboardVisible: false,
         };
     }
 
@@ -25,68 +25,45 @@ class DialUpKeyboard extends React.Component {
         }
     }
 
-    onButtonClick = (num) => {
-        num = this.state.extensionNumber + num;
+    handleVisibleChange = (visible) => {
         this.setState({
-            extensionNumber: num
+            keyboardVisible: visible,
+            inputNumber: visible ? this.state.inputNumber : ''//关闭时清空输入的电话
         });
     }
-    //每次只删除最后一个字符
-    delPhoneLastNum = () => {
-        this.extensionNumberInput.focus();
-        let extensionNumber = this.state.extensionNumber;
-        if (extensionNumber) {
-            extensionNumber = extensionNumber.slice(0, extensionNumber.length - 1);
-            this.setState({extensionNumber});
-        }
-    }
-    //拨打分机号
-    dialExtensionNumber = () => {
-        let phoneNumber = `${this.state.phoneNumber}-${this.state.extensionNumber}`;
-        if (phoneNumber) {
-            // releaseCall();
-            // setTimeout():
-            //加上分机号继续拨打
-            handleCallOutResult({
-                phoneNumber: phoneNumber,//拨打的电话
-            });
-        }
-    }
 
-    renderDialUpKeyboard() {
-        const suffix = this.state.extensionNumber ? <Icon type="close-circle" onClick={this.delPhoneLastNum}/> : null;
-        return (
-            <div className="dial-up-keyboard-wrap">
-                <Input allowClear
-                    suffix={suffix}
-                    ref={node => this.extensionNumberInput = node}
-                    value={this.state.extensionNumber}
-                    placeholder={Intl.get('user.info.input.phone', '请输入电话')}
-                />
-                <div className="number-key-container">
-                    {_.map(phoneNumArray, item => {
-                        return (<Button size='small' className='phone-num-btn'
-                            onClick={this.onButtonClick.bind(this, item)}>{item}</Button>);
-                    })}
-                </div>
-                <Button type='primary' className='call-btn' onClick={this.dialExtensionNumber}>
-                    <i className="iconfont icon-active-call_record-ico"/></Button>
-            </div>);
+    renderPhoneNumberBoard() {
+        if(this.state.keyboardVisible){
+            return (<PhoneNumberBoard phoneNumber={this.state.phoneNumber}/>);
+        }
+        return null;
     }
 
     render() {
+        let btnClass = classNames('dial-up-keyboard-btn', {
+            'keyboard-expanded': this.state.keyboardVisible
+        });
         return (
             <Popover
-                content={this.renderDialUpKeyboard()}
+                visible={this.state.keyboardVisible}
+                content={this.renderPhoneNumberBoard()}
                 trigger="click"
+                placement={this.props.placement || 'bottom'}
+                onVisibleChange={this.handleVisibleChange}
             >
-                <Button className='dial-up-keyboard-btn'
-                    size='small'>{Intl.get('phone.dial.up.keyboard.btn', '拨号键盘')}</Button>
+                <div className={btnClass} title={Intl.get('phone.dial.up.keyboard.btn', '拨号键盘')}>
+                    <i className='iconfont icon-dial-up-keybord' style={{fontSize: this.props.btnSize || 16}}/>
+                </div>
             </Popover>);
     }
 }
 
 DialUpKeyboard.propTypes = {
+    //外部传入的电话号码
     phoneNumber: PropTypes.string,
+    //拨号键盘的显示位置 ：top、right、bottom、left等，不传默认为bottom
+    placement: PropTypes.string,
+    //拨号图标大小,不传默认16
+    btnSize: PropTypes.number,
 };
 export default DialUpKeyboard;

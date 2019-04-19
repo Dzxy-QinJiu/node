@@ -2505,6 +2505,7 @@ var zh_CN = {
     'phone.status.other.hang.out': '对方挂断',
     'phone.status.contact.later': '联系人现在不在，之后再联系',
     'phone.dial.up.keyboard.btn': '拨号键盘',
+    'phone.call.error.tip': '电话号码错误！',
     'clue.customer.analysis.trend': '趋势',
     'clue.stage.statics': '线索阶段统计',
     'clue.analysis.access.channel': '渠道',

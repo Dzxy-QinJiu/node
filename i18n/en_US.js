@@ -2481,6 +2481,7 @@ var en_US = {
     'phone.status.other.hang.out': 'The other hangs up',//对方挂断
     'phone.status.contact.later': 'The contact is not here now, please contact later',//联系人现在不在，之后再联系
     'phone.dial.up.keyboard.btn': 'Dial-up keyboard',//拨号键盘
+    'phone.call.error.tip': 'The phone number is wrong!',//电话号码错误！
     'clue.customer.analysis.trend': 'Trend',//趋势
     'clue.stage.statics': 'Clue stage statistics',//线索阶段统计
     'clue.analysis.access.channel': 'channel',//渠道
