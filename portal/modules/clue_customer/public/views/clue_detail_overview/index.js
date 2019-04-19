@@ -33,6 +33,7 @@ var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-field';
+import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -850,6 +851,7 @@ class ClueDetailOverview extends React.Component {
                                                 addDataTip={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
                                                 placeholder={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
                                                 hasMoreRow={true}
+                                                validators={clueNameContactRule}
                                             />
                                         </div>
                                         <div className="contact-item-content">

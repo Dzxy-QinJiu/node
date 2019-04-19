@@ -2867,6 +2867,7 @@ var zh_CN = {
     'clue.export.trace.msg': '{traceman}于{tracetime}添加',
     'clue.batch.change.trace.man': '变更跟进人',
     'crm.user.use.default.contact': '使用默认联系人申请',
-    'crm.click.set.def.contact': '请先设置默认联系人'
+    'crm.click.set.def.contact': '请先设置默认联系人',
+    'clue.contact.name.within.ten.character': '联系人名称不能超过10个字符'
 };
 export default zh_CN;

@@ -171,7 +171,7 @@ class DynamicAddDelContacts extends React.Component {
                         rules: [{
                             required: true,
                             message: Intl.get('crm.90', '请输入姓名')
-                        }]
+                        },{validator: this.props.validateContactName.bind(this, contactKey),}]
                     })(
                         <Input className='contact-name' placeholder={Intl.get('call.record.contacts', '联系人')}/>
                     )}
@@ -337,11 +337,15 @@ class DynamicAddDelContacts extends React.Component {
 DynamicAddDelContacts.propTypes = {
     form: PropTypes.object,
     phoneOnlyOneRules: PropTypes.array,
-    contacts: PropTypes.array//编辑时，传入的已有联系人列表
+    contacts: PropTypes.array,//编辑时，传入的已有联系人列表
+    validateContactName: PropTypes.func
 };
 DynamicAddDelContacts.defaultProps = {
     form: {},
     phoneOnlyOneRules: [],//电话唯一性的验证
+    validateContactName: function() {
+
+    }
 };
 export default DynamicAddDelContacts;
 

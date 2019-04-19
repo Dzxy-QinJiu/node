@@ -7,6 +7,12 @@ export const nameLengthRule = {
     max: 50,
     message: Intl.get('common.input.character.prompt', '最少1个字符,最多50个字符')
 };
+//线索联系人的校验规则
+export const clueNameContactRule = [{required: true,message: Intl.get('crm.90', '请输入姓名')},{
+    min: 1,
+    max: 10,
+    message: Intl.get('clue.contact.name.within.ten.character', '联系人名称不能超过10个字符')
+}];
 // 数字验证规则
 exports.getNumberValidateRule = function() {
     return {pattern: /^(\d|,)+(\.\d+)?$/, message: Intl.get('contract.45', '请填写数字')};

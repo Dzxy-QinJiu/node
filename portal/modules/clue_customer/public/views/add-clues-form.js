@@ -221,6 +221,14 @@ class ClueAddForm extends React.Component {
         }, 1000);
 
     };
+    validateContactName = (key, rule, value, callback) => {
+        var length = _.get(value, 'length',0);
+        if (length > 10){
+            callback(Intl.get('clue.contact.name.within.ten.character', '联系人名称不能超过10个字符'));
+        }else{
+            callback();
+        }
+    };
     render() {
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const formItemLayout = {
@@ -298,7 +306,9 @@ class ClueAddForm extends React.Component {
                                 label={Intl.get('crm.5', '联系方式')}
                                 {...formItemLayout}
                             >
-                                <DynamicAddDelContact form={this.props.form} />
+                                <DynamicAddDelContact
+                                    validateContactName={this.validateContactName}
+                                    form={this.props.form} />
                             </FormItem>
                             {this.renderCheckContactMsg()}
                             <FormItem
