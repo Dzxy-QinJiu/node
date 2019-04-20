@@ -71,7 +71,8 @@ exports.unreadReplyToFrontend = function(unreadReply) {
         member_id: unreadReply.member_id,//谁的未读回复
         create_time: unreadReply.create_time,//回复时间
         id: unreadReply.id,//回复的id
-        apply_id: unreadReply.apply_id//有未读回复的申请id
+        apply_id: unreadReply.apply_id,//有未读回复的申请id
+        type: unreadReply.type || '',//未读回复的类型
     };
 };
 //线索数量变化后的数据

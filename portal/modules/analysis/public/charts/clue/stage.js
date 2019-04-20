@@ -8,7 +8,7 @@ export function getStageChart() {
     return {
         title: Intl.get('clue.stage.statics', '线索阶段统计'),
         chartType: 'funnel',
-        url: '/rest/analysis/customer/v2/clue/:data_type/statistical/field/customer_label',
+        url: '/rest/analysis/customer/v2/clue/:data_type/realtime/stage',
         conditions: [{
             name: 'access_channel',
             value: '',
@@ -16,12 +16,38 @@ export function getStageChart() {
             name: 'clue_source',
             value: '',
         }],
-        dataField: 'result',
         processData: data => {
-            return _.map(data, item => {
+            const stages = [
+                {
+                    enName: 'total',
+                    cnName: Intl.get('common.all', '全部')
+                },
+                {
+                    enName: 'vailid',
+                    cnName: Intl.get('clue.analysis.ability', '有效')
+                },
+                {
+                    enName: 'information',
+                    cnName: Intl.get('sales.stage.message', '信息')
+                },
+                {
+                    enName: 'intention',
+                    cnName: Intl.get('sales.stage.intention', '意向')
+                },
+                {
+                    enName: 'trial',
+                    cnName: Intl.get('common.trial', '试用')
+                },
+                {
+                    enName: 'sign',
+                    cnName: Intl.get('common.official', '签约')
+                }
+            ];
+
+            return _.map(stages, stage => {
                 return {
-                    name: _.keys(item)[0],
-                    value: _.values(item)[0]
+                    name: stage.cnName,
+                    value: data[stage.enName] || 0
                 };
             });
         },

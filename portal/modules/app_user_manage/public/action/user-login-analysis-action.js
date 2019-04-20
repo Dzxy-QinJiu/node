@@ -63,9 +63,12 @@ function UserLoginAnalysisAction() {
 
             // 用户登录信息（时长、次数、首次和最后一次登录时间）
             this.actions.getUserLoginInfo(loginParam);
-
+            let lastLoginParam = {...loginParam, starttime: _.get(searchObj, 'starttime') || moment().subtract(1, 'year').valueOf()};
             // 用户登录统计图中登录时长、登录频次
-            this.actions.getUserLoginChartInfo(loginParam);
+            this.actions.getUserLoginChartInfo(lastLoginParam);
+            
+            // 获取登录用户活跃统计信息（登录时长，登录次数，活跃天数）
+            this.actions.getLoginUserActiveStatistics(lastLoginParam, type);
 
             this.dispatch(
                 {
@@ -122,6 +125,19 @@ function UserLoginAnalysisAction() {
             });
         } else {
             this.dispatch({paramsObj: loginParam, loading: false, error: true, errorMsg: Intl.get('user.log.login.fail', '获取登录信息失败！')});
+        }
+    };
+    // 获取登录用户活跃统计信息（登录时长，登录次数，活跃天数）
+    this.getLoginUserActiveStatistics = function(loginParam, type){
+        if (loginParam && loginParam.appid) {
+            this.dispatch({paramsObj: loginParam, loading: true, error: false});
+            userAuditLogAjax.getLoginUserActiveStatistics(loginParam, type).then( (data) => {
+                this.dispatch({paramsObj: loginParam, loading: false, error: false, data: data});
+            },(errorMsg) => {
+                this.dispatch({paramsObj: loginParam, loading: false, error: true, errorMsg: errorMsg});
+            });
+        } else {
+            this.dispatch({paramsObj: loginParam, loading: false, error: true, errorMsg: Intl.get('user.login.last.failed', '获取用户最近登录统计信息失败')});
         }
     };
 }

@@ -81,7 +81,8 @@ export function getCustomerTrialQualifiedDistributionChart(title, field) {
                 }
             }, {
                 title: field === 'province' ? '区域' : '行业',
-                dataIndex: 'sta_type'
+                dataIndex: 'sta_type',
+                isSetCsvValueBlank: true
             }, {
                 title: '已开通试用客户数',
                 dataIndex: 'open_trial'

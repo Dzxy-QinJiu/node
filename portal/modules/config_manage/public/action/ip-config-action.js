@@ -7,9 +7,11 @@ import { message } from 'antd';
 function IpConfigActions(){
     this.generateActions(
         'getIpConfigList', // 获取IP配置列表
-        'getFilterIp' // 获取配置过滤内网信息
+        'getFilterIp', // 获取配置过滤内网信息
+        'addIp', // 添加ip
+        'deleteIp' // 删除ip
     );
-    
+
     // 获取IP配置列表
     this.getIpConfigList = function(searchObj){
         var _this = this;

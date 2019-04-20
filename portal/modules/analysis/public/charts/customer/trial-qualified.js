@@ -12,9 +12,10 @@ export function getCustomerTrialQualifiedChart() {
         height: 'auto',
         layout: {sm: 24},
         url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
+        dataField: 'list',
         processOption: (option, chartProps) => {
             //接口数据
-            const data = _.get(chartProps, 'data.list', []);
+            const data = _.get(chartProps, 'data', []);
             //接口数据第一项
             const firstItem = data[0];
 

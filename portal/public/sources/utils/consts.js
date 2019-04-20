@@ -79,7 +79,9 @@ export const APPLY_APPROVE_TYPES = {
     REPORT: 'report',//向后端传获取全部申请舆情报送的类型及后端返回的类型
     DOCUMENT: 'document',//文件撰写的类型
     OPINIONREPORT: 'opinionreport',//向后端传获取待我审批的舆情报送的类型
-    DOCUMENTWRITING: 'documentwriting'//向后端传的文件撰写的类型
+    DOCUMENTWRITING: 'documentwriting',//向后端传的文件撰写的类型
+    DOCUMENT_WRITING: 'document_writing',//前端未读回复中文件撰写类型
+    OPINION_REPORT: 'opinion_report',
 };
 
 //系统消息对应的几种类型
@@ -459,7 +461,7 @@ export const FILES_TYPE_FORBIDDEN_RULES = [
 ];
 //文件允许的上传规则
 export const FILES_TYPE_ALLOW_RULES = [
-    {valueArr: ['docx','doc','ppt','pptx','pdf','xls','csv','png','bmp','jpg','txt','rar','zip'],messageTips: Intl.get('apply.approve.upload.error.file.type','文件格式不正确！')},
+    {valueArr: ['docx','doc','ppt','pptx','pdf','xls','xlsx','csv','png','bmp','jpg','txt','rar','zip'],messageTips: Intl.get('apply.approve.upload.error.file.type','文件格式不正确！')},
 ];
 //两个值一个是文件的最小值一个是文件的最大值
 export const REG_FILES_SIZE_RULES = [
@@ -475,3 +477,14 @@ export const REG_CRM_FILES_TYPE_RULES = [
     {valueArr: ['csv'],messageTips: Intl.get('clue.import.file.type','只能导入{type}格式的文件！',{type: 'csv'})},
 ];
 export const FINAL_TASK = 'final_task';
+export const DIFF_APPLY_TYPE_UNREAD_REPLY = {
+    APPLY_UNREAD_REPLY: 'apply_unread_reply',
+    DIFF_APPLY_UNREAD_REPLY: 'diff_apply_unread_reply'
+};
+
+// 用户分析中，时间选择类型
+export const DATE_SELECT = [
+    {name: Intl.get('user.login.last.year', '近一年'), value: moment().subtract(1, 'year').valueOf()},
+    {name: Intl.get('user.login.last.month', '近一月'), value: moment().subtract(1, 'months').valueOf() },
+    {name: Intl.get('user.login.last.week', '近一周'), value: moment().subtract(1, 'weeks').valueOf()}
+];

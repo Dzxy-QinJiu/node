@@ -75,10 +75,11 @@ class ApplyViewDetail extends React.Component {
                 this.getNextCandidate(_.get(this, 'props.detailItem.id',''));
             });
         }else if (this.props.detailItem.id) {
-            this.getBusinessApplyDetailData(this.props.detailItem);
+            this.getBusinessApplyDetailData(this.props.detailItem, this.props.applyData);
         }
         this.getSalesManList();
         this.getAllUserList();
+
     }
     getAllUserList = () => {
         getAllUserList().then(data => {
@@ -234,14 +235,14 @@ class ApplyViewDetail extends React.Component {
         });
     }
 
-    getBusinessApplyDetailData(detailItem) {
+    getBusinessApplyDetailData(detailItem, applyData) {
         setTimeout(() => {
             SalesOpportunityApplyDetailAction.setInitialData(detailItem);
             //如果申请的状态是已通过或者是已驳回的时候，就不用发请求获取回复列表，直接用详情中的回复列表
             //其他状态需要发请求请求回复列表
             if (APPLY_FINISH_STATUS.includes(detailItem.status)) {
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyCommentList({id: detailItem.id});
-                SalesOpportunityApplyDetailAction.getSalesOpportunityApplyDetailById({id: detailItem.id},detailItem.status);
+                SalesOpportunityApplyDetailAction.getSalesOpportunityApplyDetailById({id: detailItem.id}, detailItem.status, applyData);
                 this.getNextCandidate(detailItem.id);
             } else if (detailItem.id) {
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyDetailById({id: detailItem.id});
@@ -751,6 +752,7 @@ class ApplyViewDetail extends React.Component {
                             refreshReplyList={this.refreshReplyList}
                             addReply={this.addReply}
                             commentInputChange={this.commentInputChange}
+                            isUnreadDetail={this.props.isUnreadDetail}
                         />
                     </GeminiScrollbar>
                 </div>
@@ -800,12 +802,16 @@ class ApplyViewDetail extends React.Component {
 ApplyViewDetail.defaultProps = {
     detailItem: {},
     showNoData: false,
-    applyListType: ''
+    applyListType: '',
+    isUnreadDetail: false,
+    applyData: {},
 
 };
 ApplyViewDetail.propTypes = {
     detailItem: PropTypes.string,
-    showNoData: PropTypes.boolean,
+    showNoData: PropTypes.bool,
     applyListType: PropTypes.string,
+    isUnreadDetail: PropTypes.bool,
+    applyData: PropTypes.object,
 };
 module.exports = ApplyViewDetail;

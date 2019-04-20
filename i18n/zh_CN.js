@@ -592,7 +592,12 @@ var zh_CN = {
     'user.login.freshness.score': '新鲜度',
     'user.login.history.activity.score': '历史活跃度',
     'user.login.history.immersion.score': '历史沉浸度',
-
+    'user.login.last.year': '近一年',
+    'user.login.last.month': '近一月',
+    'user.login.last.week': '近一周',
+    'user.login.last.title': '{title}的活跃统计',
+    'user.login.last.failed': '获取用户最近登录统计信息失败',
+    
     // 第三方应用配置
     'third.party.app': '开放应用平台',
     'third.party.app.add': '添加开放平台应用',
@@ -2786,7 +2791,7 @@ var zh_CN = {
     'apply.approve.upload.error.file.type': '文件格式不正确！',
     'apply.approve.upload.not.more.than50': '文件大小不能超过10M!',
     'apply.approve.no.comment': '暂无回复内容！',
-    'crm.input.your.apply.user.type': '请输入您申请的用户类型（例如：试用用户、签约用户等）',
+    'crm.input.your.apply.user.type': '请输入或选择您申请的用户类型',
     'apply.view.transfer.candidate': '转审',
     'contract.form.customize': '添加自定义产品',
     'contract.report.contract.total.ccount': '本次合同总金额为',
@@ -2866,5 +2871,8 @@ var zh_CN = {
     'clue.batch.assign.sales': '批量分配',
     'clue.export.trace.msg': '{traceman}于{tracetime}添加',
     'clue.batch.change.trace.man': '变更跟进人',
+    'crm.user.use.default.contact': '使用默认联系人申请',
+    'crm.click.set.def.contact': '请先设置默认联系人',
+    'clue.contact.name.within.ten.character': '联系人名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间'
 };
 export default zh_CN;

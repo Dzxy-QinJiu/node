@@ -1,3 +1,4 @@
+var EventEmitter = require('events');
 //客户联系人的角色
 exports.roleArray = [Intl.get('crm.115', '经办人'), Intl.get('crm.184', '决策人'), Intl.get('crm.185', '关键人'), Intl.get('crm.186', '其他')];
 exports.sexArray = [Intl.get('crm.contact.sex.male', '男'), Intl.get('crm.contact.sex.female', '女')];
@@ -84,4 +85,7 @@ exports.unsetDefaultContacts = function(list) {
         item.contact.def_contancts = 'false';
     });
 };
+
+//暴露一个emitter，做自定义事件
+exports.emitter = new EventEmitter();
 

@@ -590,7 +590,11 @@ var en_US = {
     'user.login.freshness.score': 'Freshness score', // 新鲜度分数
     'user.login.history.activity.score': 'Historical activity score', // 历史活跃度分数
     'user.login.history.immersion.score': 'Historical immersion score', // 历史沉浸度分数
-
+    'user.login.last.year': 'The latest a year', // 近一年
+    'user.login.last.month': 'The latest a month', // 近一月
+    'user.login.last.week': 'The latest a week', // 近一周
+    'user.login.last.title': 'Statistic of login times in a {title}', // {title}的活跃统计
+    'user.login.last.failed': 'Failed to get user recent login statistic', // 获取用户最近登录统计信息失败
     //第三方应用
     'third.party.app': 'Open Application Platform',//开放应用平台',
     'third.party.app.add': 'Add application of the open plateform',//添加应用
@@ -2759,7 +2763,7 @@ var en_US = {
     'apply.approve.upload.error.file.type': 'The file format is incorrect!',//文件格式不正确！
     'apply.approve.upload.not.more.than50': 'The file size cannot exceed 10M!',//文件大小不能超过10M!
     'apply.approve.no.comment': 'There is no reply content!',//暂无回复内容！
-    'crm.input.your.apply.user.type': 'Please enter the type of user you are applying for (eg trial user, contracted user, etc.)',//请输入您申请的用户类型（例如：试用用户、签约用户等）
+    'crm.input.your.apply.user.type': 'Please enter or select the type of user you are applying for',//请输入或选择您申请的用户类型
     'apply.view.transfer.candidate': 'Transfer approval',//转审
     'contract.form.customize': 'Add customized product',//'添加自定义产品',
     'contract.report.contract.total.ccount': 'The total amount of the contract is', //本次合同总金额为
@@ -2840,5 +2844,8 @@ var en_US = {
     'clue.batch.assign.sales': 'Assign in batch',//批量分配
     'clue.export.trace.msg': '{traceman} added in {tracetime}',//{traceman}于{tracetime}添加
     'clue.batch.change.trace.man': 'Change follower',//变更跟进人
+    'crm.user.use.default.contact': 'User default contact to apply',//使用默认联系人申请
+    'crm.click.set.def.contact': 'Please set default contact first',//请先设置默认联系人
+    'clue.contact.name.within.ten.character': 'The contact name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English brackets, and the length is between 1 and 50 (including 50).'//客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
 };
 export default en_US;

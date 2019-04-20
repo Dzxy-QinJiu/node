@@ -12,7 +12,13 @@ export const newCustomerLoginChart = (teamId, memberId) => {
             value: teamId,
         }],
         processData: data => {
-            const teamData = _.get(data, 'list[0].team_result');
+            //团队列表
+            const teamList = _.get(data, 'list');
+            //当前销售所在的团队
+            const theTeam = _.find(teamList, item => item.team_id === teamId);
+            //当前销售所在团队的数据
+            const teamData = _.get(theTeam, 'team_result');
+            //当前销售的数据
             const memberData = _.find(teamData, item => item.user_id === memberId);
 
             if (memberData) {

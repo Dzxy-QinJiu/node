@@ -1,9 +1,8 @@
 var UserApplyActions = require('../action/user-apply-actions');
 var notificationEmitter = require('../../../../public/sources/utils/emitters').notificationEmitter;
-import userData from 'PUB_DIR/sources/user-data';
 import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
-
+import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
 //用户审批界面使用的store
 function UserApplyStore() {
     //初始化state数据
@@ -65,7 +64,7 @@ UserApplyStore.prototype.refreshUnreadReplyList = function(unreadReplyList) {
  * @param applyId：有值时只清除applyId对应的申请，不传时，清除当前登录用户所有的未读回复申请列表
  */
 UserApplyStore.prototype.clearUnreadReply = function(applyId) {
-    const APPLY_UNREAD_REPLY = 'apply_unread_reply';
+    const APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.APPLY_UNREAD_REPLY;
     //获取sessionStorage中该用户的未读回复列表
     let unreadReplyList = session.get(APPLY_UNREAD_REPLY);
     if (unreadReplyList) {

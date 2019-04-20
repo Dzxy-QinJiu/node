@@ -48,6 +48,12 @@ module.exports = {
             'needLogin': true
         },
         'privileges': []
-    }
-    ]
+    }, { // 获取登录用户活跃统计信息（登录时长，登录次数，活跃天数）
+        'method': 'get',
+        'path': '/rest/login/user/active/statistics/:user_id/:type',
+        'handler': 'getLoginUserActiveStatistics',
+        'passport': {
+            'needLogin': true
+        }
+    }]
 };

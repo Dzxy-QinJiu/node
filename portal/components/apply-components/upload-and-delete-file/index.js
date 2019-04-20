@@ -85,7 +85,7 @@ class UploadAndDeleteFile extends React.Component {
         if (index > -1){
             newFileList.splice(index, 1);
             var totalFileSize = this.state.totalFileSize;
-            var fileSize = file.size;
+            var fileSize = file.file_size;
             totalFileSize -= fileSize;
             this.setState({
                 totalFileSize: totalFileSize,
@@ -269,7 +269,7 @@ class UploadAndDeleteFile extends React.Component {
                         defaultMessage={'可同时上传多个文件，只能上传{office}，{image}，文本文件和{compact}，文件大小不要超过10M！'}
                         values={{
                             'office': (
-                                <Tooltip title="'docx','doc','ppt','pptx','pdf','xls','csv'">
+                                <Tooltip title="'docx','doc','ppt','pptx','pdf','xls','xlsx',csv'">
                                     <span>{Intl.get('leave.apply.office.document', '办公文件')}</span>
                                 </Tooltip>),
                             'image': (
@@ -459,8 +459,8 @@ UploadAndDeleteFile.propTypes = {
     beforeUpload: PropTypes.func,
     fileRemove: PropTypes.func,
     fileList: PropTypes.object,
-    salesUploadAndDeletePrivilege: PropTypes.boolean,
-    approverUploadAndDeletePrivilege: PropTypes.boolean,
+    salesUploadAndDeletePrivilege: PropTypes.bool,
+    approverUploadAndDeletePrivilege: PropTypes.bool,
     selectType: PropTypes.object
 };
 export default UploadAndDeleteFile;

@@ -39,9 +39,9 @@ ApplyDetailStatus.defaultProps = {
     }
 };
 ApplyDetailStatus.propTypes = {
-    showNoData: PropTypes.boolean,
-    showLoading: PropTypes.boolean,
-    showErrTip: PropTypes.boolean,
+    showNoData: PropTypes.bool,
+    showLoading: PropTypes.bool,
+    showErrTip: PropTypes.bool,
     errorMsg: PropTypes.string,
     retryFetchDetail: PropTypes.func,
 };

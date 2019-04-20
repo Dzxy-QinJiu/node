@@ -214,13 +214,22 @@
         //联系人面板
         .contact-container{
           position: relative;
+          .contact-name{
+            display: inline-block;
+            max-width: 140px;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+            position: relative;
+            top:6px;
+          }
           .iconfont.icon-more{
             position: absolute;
             color:#ddd;
             font-size: 25px;
             cursor: pointer;
             right: 0;
-            top: 0;
+            top: 3px;
           }
         }
         //当前跟进人

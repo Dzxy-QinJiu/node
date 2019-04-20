@@ -869,6 +869,16 @@ exports.calculateSelectType = function(selectTime, rangeObj){
     }
     return selectTypeArr;
 };
+exports.getUnreadReplyTitle = function(isCheckUnreadApplyList, showUnreadTip){
+    let unreadReplyTitle = Intl.get('user.apply.no.unread.reply', '无未读回复');
+    if (isCheckUnreadApplyList) {//在查看未读回复列表下的提示
+        unreadReplyTitle = Intl.get('user.apply.show.all.check', '查看全部申请');
+    } else if (showUnreadTip) {
+        unreadReplyTitle = Intl.get('user.apply.unread.reply', '有未读回复');
+    }
+    return unreadReplyTitle;
+};
+
 //判断某个审批是否位于最后一个节点
 exports.isFinalTask = function(applyNode) {
     if (_.isArray(applyNode) && applyNode.length) {

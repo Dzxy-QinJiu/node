@@ -4,6 +4,10 @@
  * Created by zhangshujuan on 2018/9/10.
  */
 var BusinessApplyAction = require('../action/business-apply-action');
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import {storageUtil} from 'ant-utils';
+const session = storageUtil.session;
+import {DIFF_APPLY_TYPE_UNREAD_REPLY, APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 function BusinessApplyStore() {
     //初始化state数据
     this.setInitState();
@@ -38,8 +42,43 @@ BusinessApplyStore.prototype.setInitState = function() {
     this.listenScrollBottom = false;
     //是否显示更新数据提示
     this.showUpdateTip = false;
+    //是否查看未读回复的申请列表
+    this.isCheckUnreadApplyList = false;
+    //有未读回复的列表
+    this.unreadReplyList = [];
     this.clearData();
 };
+//设置是否查看未读回复的申请列表
+BusinessApplyStore.prototype.setIsCheckUnreadApplyList = function(flag) {
+    this.isCheckUnreadApplyList = flag;
+};
+/**
+ * 清除未读回复申请列表中已读的回复
+ * @param applyId：有值时只清除applyId对应的申请，不传时，清除当前登录用户所有的未读回复申请列表
+ */
+BusinessApplyStore.prototype.clearUnreadReply = function(applyId) {
+    const DIFF_APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.DIFF_APPLY_UNREAD_REPLY;
+    //获取sessionStorage中该用户的未读回复列表
+    let unreadReplyList = session.get(DIFF_APPLY_UNREAD_REPLY);
+    if (unreadReplyList) {
+        let applyUnreadReplyList = JSON.parse(unreadReplyList) || [];
+        //清除某条申请
+        if (applyId) {
+            applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.apply_id !== applyId);
+        }
+        this.unreadReplyList = _.filter(applyUnreadReplyList, reply => reply.type === APPLY_APPROVE_TYPES.CUSTOMER_VISIT);
+        session.set(DIFF_APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyList));
+        //加延时是为了，避免循环dispatch报错：Cannot dispatch in the middle of a dispatch
+        setTimeout(() => {
+            notificationEmitter.emit(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, applyUnreadReplyList);
+        });
+    }
+};
+//刷新未读回复列表;
+BusinessApplyStore.prototype.refreshUnreadReplyList = function(unreadReplyList) {
+    this.unreadReplyList = _.isArray(unreadReplyList) ? unreadReplyList : [];
+};
+
 //是否显示更新数据提示,flag:true/false
 BusinessApplyStore.prototype.setShowUpdateTip = function(flag) {
     this.showUpdateTip = flag;
@@ -61,6 +100,10 @@ BusinessApplyStore.prototype.getAllApplyList = function(obj) {
         //获取由我审批的
         if (!this.lastApplyId) {
             this.clearData();
+            //获取的未读回复列表为空时，清除sessionStore中存的未读回复的申请
+            if (this.isCheckUnreadApplyList) {
+                this.clearUnreadReply();
+            }
         }
     }else {
         //由我审批的申请列表
@@ -93,6 +136,7 @@ BusinessApplyStore.prototype.changeApplyListType = function(type) {
     this.applyListType = type;
     this.lastApplyId = '';
     this.showUpdateTip = false;
+    this.isCheckUnreadApplyList = false;
 };
 BusinessApplyStore.prototype.setLastApplyId = function(applyId) {
     this.lastApplyId = applyId;

@@ -199,10 +199,6 @@ class DealForm extends React.Component {
             wrapperCol: {span: 19},
             colon: false
         };
-        const disabledDate = function(current) {
-            //不允许选择大于当前的时刻
-            return current && current.valueOf() < moment().startOf('day');
-        };
         let formHeight = $('body').height() - ADD_TITLE_HEIGHT;
         return (
             <div className="deal-form-wrap" style={{height: formHeight}}>
@@ -316,10 +312,7 @@ class DealForm extends React.Component {
                             {getFieldDecorator('predict_finish_time', {
                                 initialValue: moment()
                             })(
-                                <DatePicker
-                                    disabledDate={disabledDate}
-                                    style={{width: '100%'}}
-                                />
+                                <DatePicker style={{width: '100%'}}/>
                             )}
                         </FormItem>
                         <FormItem

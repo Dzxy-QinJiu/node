@@ -41,6 +41,8 @@ class ApplyListItem extends React.Component {
                 <dl>
                     <dt>
                         <span>{getApplyTopicText(obj)}</span>
+                        {this.props.hasUnreadReply ? <span className="iconfont icon-apply-message-tip"
+                            title={Intl.get('user.apply.unread.reply', '有未读回复')}/> : null}
                         <em className={btnClass}>{getApplyStateText(obj)}</em>
                     </dt>
                     <dd className="clearfix" title={_.get(obj, 'detail.customer_name')}>
@@ -67,6 +69,7 @@ ApplyListItem.defaultProps = {
 
     },
     processedStatus: '',
+    hasUnreadReply: false
 };
 ApplyListItem.propTypes = {
     selectedDetailItem: PropTypes.object,
@@ -75,7 +78,7 @@ ApplyListItem.propTypes = {
     selectedDetailItemIdx: PropTypes.string,
     clickShowDetail: PropTypes.func,
     processedStatus: PropTypes.string,
-
+    hasUnreadReply: PropTypes.bool
 };
 
 export default ApplyListItem;

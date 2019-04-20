@@ -61,7 +61,7 @@ class ApplyViewDetail extends React.Component {
                 this.getNextCandidate(_.get(this, 'props.detailItem.id',''));
             });
         }else if (this.props.detailItem.id) {
-            this.getBusinessApplyDetailData(this.props.detailItem);
+            this.getBusinessApplyDetailData(this.props.detailItem, this.props.applyData);
         }
         this.getAllUserList();
     }
@@ -239,14 +239,14 @@ class ApplyViewDetail extends React.Component {
         }
     };
 
-    getBusinessApplyDetailData(detailItem) {
+    getBusinessApplyDetailData(detailItem, applyData) {
         setTimeout(() => {
             DocumentWriteApplyDetailAction.setInitialData(detailItem);
             //如果申请的状态是已通过或者是已驳回的时候，就不用发请求获取回复列表，直接用详情中的回复列表
             //其他状态需要发请求请求回复列表
             if (APPLY_FINISH_STATUS.includes(detailItem.status)) {
                 DocumentWriteApplyDetailAction.getApplyCommentList({id: detailItem.id});
-                DocumentWriteApplyDetailAction.getApplyDetailById({id: detailItem.id}, detailItem.status);
+                DocumentWriteApplyDetailAction.getApplyDetailById({id: detailItem.id}, detailItem.status, applyData);
             } else if (detailItem.id) {
                 DocumentWriteApplyDetailAction.getApplyDetailById({id: detailItem.id});
                 DocumentWriteApplyDetailAction.getApplyCommentList({id: detailItem.id});
@@ -660,6 +660,7 @@ class ApplyViewDetail extends React.Component {
                             addReply={this.addReply}
                             commentInputChange={this.commentInputChange}
                             isReportOrDocument={true}
+                            isUnreadDetail={this.props.isUnreadDetail}
                         />
                         {this.renderUploadAndDownload(detailInfo)}
                     </GeminiScrollbar>
@@ -741,12 +742,16 @@ class ApplyViewDetail extends React.Component {
 ApplyViewDetail.defaultProps = {
     detailItem: {},
     showNoData: false,
-    applyListType: ''
+    applyListType: '',
+    isUnreadDetail: false,
+    applyData: {},
 
 };
 ApplyViewDetail.propTypes = {
     detailItem: PropTypes.string,
-    showNoData: PropTypes.boolean,
+    showNoData: PropTypes.bool,
     applyListType: PropTypes.string,
+    isUnreadDetail: PropTypes.bool,
+    applyData: PropTypes.object,
 };
 module.exports = ApplyViewDetail;

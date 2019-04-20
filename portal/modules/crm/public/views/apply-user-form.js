@@ -4,7 +4,7 @@ const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 require('../css/apply-user-form.less');
 require('../../../../public/css/antd-vertical-tabs.css');
-import {Tooltip, Form, Input, Radio, Select, message,DatePicker} from 'antd';
+import {Tooltip, Form, Input, Radio, Select, message,DatePicker,Checkbox} from 'antd';
 const {TextArea} = Input;
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -16,7 +16,6 @@ import UserNameTextfieldUtil from 'CMP_DIR/user_manage_components/user-name-text
 import {OVER_DRAFT_TYPES} from 'PUB_DIR/sources/utils/consts';
 import commonAppAjax from 'MOD_DIR/common/public/ajax/app';
 import contactAjax from '../ajax/contact-ajax';
-
 import DetailCard from 'CMP_DIR/detail-card';
 import DateSelectorPicker from 'CMP_DIR/date-selector/utils';
 import SquareLogoTag from 'CMP_DIR/square-logo-tag';
@@ -26,7 +25,8 @@ const UserApplyAction = require('MOD_DIR/app_user_manage/public/action/user-appl
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
-import { getApplyActiveEmailTip } from '../utils/crm-util';
+import { getApplyActiveEmailTip ,TAB_KEYS} from '../utils/crm-util';
+import contactUtil from '../utils/contact-util';
 const CONFIG_TYPE = {
     UNIFIED_CONFIG: 'unified_config',//统一配置
     SEPARATE_CONFIG: 'separate_config'//分别配置
@@ -60,9 +60,9 @@ const ApplyUserForm = createReactClass({
         };
     },
     getInitialState: function() {
-        const formData = this.buildFormData(this.props, this.props.apps);
+        const formData = this.buildFormData(this.props, this.getInitialApps(this.props));
         return {
-            apps: $.extend(true, [], this.props.apps),
+            apps: this.getInitialApps(this.props,true),
             formData: formData,
             appDefaultConfigList: [],//应用默认配置列表
             isLoading: false,
@@ -73,7 +73,21 @@ const ApplyUserForm = createReactClass({
             formHeight: 215,//form表单初始高度
             isOplateUser: true,
             applyErrorMsg: '',//申请失败的错误提示
+            defContactChecked: false//是否选中使用默认联系人进行申请
         };
+    },
+    getInitialApps: function(props,flag) {
+        var apps = flag ? $.extend(true, [], props.apps) : props.apps;
+        if (_.get(apps, '[0]')){
+            return apps;
+        }else{
+            if (_.get(props, 'appList.length') === 1){
+                apps.push(_.get(props, 'appList[0]'));
+                return apps;
+            }else{
+                return apps;
+            }
+        }
     },
     getIntegrateConfig(){
         commonDataUtil.getIntegrationConfig().then(resultObj => {
@@ -88,14 +102,14 @@ const ApplyUserForm = createReactClass({
     },
 
     componentWillReceiveProps: function(nextProps) {
-        let formData = this.buildFormData(nextProps, nextProps.apps);
+        let formData = this.buildFormData(nextProps, this.getInitialApps(nextProps));
         let oldAppIds = _.map(this.state.apps, 'client_id');
         let newAppIds = _.map(nextProps.apps, 'client_id');
         //获取newAppIds中，不存在于oldAppIds中的应用id
         let diffAppIds = _.difference(newAppIds, oldAppIds);
         //获取新增的应用的默认配置
         this.getAppsDefaultConfig(diffAppIds);
-        this.setState({apps: $.extend(true, [], nextProps.apps), maxHeight: nextProps.maxHeight, formData});
+        this.setState({apps: this.getInitialApps(nextProps, true), maxHeight: nextProps.maxHeight, formData});
     },
 
     buildFormData: function(props, apps) {
@@ -235,18 +249,24 @@ const ApplyUserForm = createReactClass({
         });
         this.setState({formData: formData});
     },
-    onInputTypeChange: function(e) {
-        let formData = this.state.formData;
-        formData.tag = e.target.value;
-        formData.products = formData.products.map(app => {
-            return this.getAppConfig(app, this.state.appDefaultConfigList, formData.tag, true);
-        });
-        this.setState({formData: formData});
+    onSelectTypeChange: function(value) {
+        value = _.trim(value);
+        if (value){
+            let formData = this.state.formData;
+            formData.tag = value;
+            formData.products = formData.products.map(app => {
+                return this.getAppConfig(app, this.state.appDefaultConfigList, formData.tag, true);
+            });
+            this.setState({formData: formData});
+        }
     },
 
     onNickNameChange: function(e) {
+        this.setNickName(_.trim(e.target.value));
+    },
+    setNickName: function(nickName) {
         let formData = this.state.formData;
-        formData.nick_name = _.trim(e.target.value);
+        formData.nick_name = _.trim(nickName);
         this.setState({formData});
     },
 
@@ -257,7 +277,10 @@ const ApplyUserForm = createReactClass({
     },
 
     onUserNameChange: function(e) {
-        let userName = _.trim(e.target.value);
+        this.setFormDataUserName(_.trim(e.target.value));
+    },
+    setFormDataUserName: function(userName) {
+        var userName = _.trim(userName);
         let formData = this.state.formData;
         formData.user_name = userName;
         let isEmail = userName && userName.indexOf('@') !== -1;
@@ -600,6 +623,69 @@ const ApplyUserForm = createReactClass({
                 </FormItem>
             </div>);
     },
+    handleDefContactChange: function(e) {
+        var checked = e.target.checked,isOplateUser = this.state.isOplateUser;
+        this.setState({
+            defContactChecked: checked
+        },() => {
+            //如果是uem申请，并且已经选中了checkbox。
+            if (!isOplateUser && checked){
+                let customerContacts = this.state.customerContacts;
+                let targetObj = _.find(customerContacts,contact => contact.def_contancts === 'true');
+                if (targetObj){
+                    var userName = '',nickName = '';
+                    if (_.isArray(targetObj.email) && _.get(targetObj,'email.length')){
+                        userName = _.get(targetObj,'email[0]');
+                    }else if (_.isArray(targetObj.phone) && _.get(targetObj,'phone.length')){
+                        userName = _.get(targetObj,'phone[0]');
+                    }else if (_.isArray(targetObj.qq) && _.get(targetObj,'qq.length')){
+                        userName = _.get(targetObj,'qq[0]');
+                    }
+                    nickName = _.get(targetObj,'name');
+                    this.setFormDataUserName(userName);
+                    this.setNickName(nickName);
+                }
+            }
+        });
+
+    },
+    hasDefaultContact: function() {
+        let customerContacts = this.state.customerContacts;
+        return _.some(customerContacts, contact => contact.def_contancts === 'true');
+    },
+    handleActiveContact: function() {
+        contactUtil.emitter.emit('changeActiveTab', TAB_KEYS.CONTACT_TAB);
+    },
+    renderCheckDefaultContact: function() {
+        let hasDefault = this.hasDefaultContact();
+        let isChecked = this.state.defContactChecked;
+        return (
+            <div className="check-contact-container">
+                <Checkbox checked={isChecked} onChange={this.handleDefContactChange}>
+                    {Intl.get('crm.user.use.default.contact', '使用默认联系人申请')}
+                </Checkbox>
+                {!hasDefault && isChecked ? <a onClick={this.handleActiveContact}>{Intl.get('crm.click.set.def.contact', '请先设置默认联系人')}</a> : null}
+            </div>
+        );
+    },
+    renderUemUserType: function() {
+        var UserTypeList = [Intl.get('common.trial.user', '试用用户'), Intl.get('user.signed.user', '签约用户')];
+        var formData = this.state.formData;
+        return (
+            <Select combobox
+                name="tag"
+                placeholder={Intl.get('crm.input.your.apply.user.type', '请输入或选择您申请的用户类型')}
+                filterOption={false}
+                onChange={this.onSelectTypeChange}
+                value={_.get(formData, 'tag', '')}
+                dropdownMatchSelectWidth={false}
+            >
+                {UserTypeList.map((userType, i) => {
+                    return (<Option key={i} value={userType}>{userType}</Option>);
+                })}
+            </Select>
+        );
+    },
 
     /**
      * 申请表单的渲染
@@ -626,10 +712,12 @@ const ApplyUserForm = createReactClass({
             wrapperCol: {span: 20},
         };
         let selectAppIds = _.map(this.state.apps, 'client_id');
+        var isOplateUser = this.state.isOplateUser;
         return (
             <div style={{maxHeight: this.state.maxHeight, height: this.state.formHeight}}>
                 <GeminiScrollbar className="srollbar-out-card-style">
                     <Form layout='horizontal' className="apply-user-form" id="crm-apply-user-form">
+                        {isOplateUser ? null : this.renderCheckDefaultContact()}
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             {this.state.applyFrom === 'order' || this.isApplyNewUsers() ?
                                 this.renderUserNamesInputs(formData, formItemLayout) : (
@@ -652,11 +740,11 @@ const ApplyUserForm = createReactClass({
                                 >
                                     <Validator rules={[{
                                         required: true,
-                                        message: this.state.isOplateUser ?
+                                        message: isOplateUser ?
                                             Intl.get('crm.apply.user.type.select.placeholder', '请选择用户类型') :
                                             Intl.get('crm.apply.user.type.placeholder', '请输入用户类型'),
                                     }]}>
-                                        {this.state.isOplateUser ? <RadioGroup onChange={this.onUserTypeChange}
+                                        {isOplateUser ? <RadioGroup onChange={this.onUserTypeChange}
                                             name="tag" value={formData.tag}>
                                             <Radio key="1" value={Intl.get('common.trial.user', '试用用户')}>
                                                 {Intl.get('common.trial.user', '试用用户')}
@@ -664,8 +752,7 @@ const ApplyUserForm = createReactClass({
                                             <Radio key="0" value={Intl.get('common.trial.official', '正式用户')}>
                                                 {Intl.get('user.signed.user', '签约用户')}
                                             </Radio>
-                                        </RadioGroup> : <Input placeholder={Intl.get('crm.input.your.apply.user.type','请输入您申请的用户类型（例如：试用用户、签约用户等）')}
-                                            name="tag" value={_.get(formData, 'tag','')} onChange={this.onInputTypeChange}/>}
+                                        </RadioGroup> : this.renderUemUserType()}
                                     </Validator>
                                 </FormItem>) : null}
                             <FormItem

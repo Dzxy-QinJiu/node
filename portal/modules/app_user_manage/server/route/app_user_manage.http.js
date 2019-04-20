@@ -14,7 +14,7 @@ module.exports = {
         'privileges': [
             'APP_USER_LIST'
         ]
-    },{
+    }, {
         'method': 'get',
         'path': '/rest/recent/login/users',
         'handler': 'getRecentLoginUsers',
@@ -130,6 +130,14 @@ module.exports = {
     },
     {
         'method': 'get',
+        'path': '/rest/workflow/unread_reply',
+        'handler': 'getWorkFlowUnreadReplyList',
+        'passport': {
+            'needLogin': true
+        },
+    },
+    {
+        'method': 'get',
         'path': '/rest/appuser/apply/:apply_id',
         'handler': 'getApplyDetail',
         'passport': {
@@ -176,42 +184,42 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
-    },{
+    }, {
         'method': 'post',
         'path': '/rest/user/batch_delay',
         'handler': 'batchDelayUser',
         'passport': {
             'needLogin': true
         }
-    },{
+    }, {
         'method': 'put',
         'path': '/rest/user/appdetail',
         'handler': 'editAppDetail',
         'passport': {
             'needLogin': true
         }
-    },{
+    }, {
         'method': 'post',
         'path': '/rest/user/apply/password',
         'handler': 'applyChangePassword',
         'passport': {
             'needLogin': true
         }
-    },{
+    }, {
         'method': 'post',
         'path': '/rest/user/apply/other',
         'handler': 'applyChangeOther',
         'passport': {
             'needLogin': true
         }
-    },{
+    }, {
         'method': 'get',
         'path': '/rest/appuser/replylist/:apply_id',
         'handler': 'getReplyList',
         'passport': {
             'needLogin': true
         }
-    },{
+    }, {
         'method': 'post',
         'path': '/rest/appuser/add_reply',
         'handler': 'addReply',
