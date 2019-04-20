@@ -131,6 +131,10 @@ exports.transferCustomer = function(customer) {
 };
 //获取重复的客户列表
 exports.getRepeatCustomerList = function(queryParams) {
+    queryParams.type = 'user';
+    if (hasPrivilege(AUTHS.GETALL)) {
+        queryParams.type = 'manager';
+    }
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/crm/repeat_customer',
