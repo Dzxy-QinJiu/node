@@ -251,11 +251,11 @@ class phoneStatusTop extends React.Component {
                 desTipObj.tip = (<AcceptButton callClient={callClient}></AcceptButton>);
             } else {
                 let tip = `${Intl.get('call.record.phone.alerting', '已振铃，等待对方接听')}`;
-                desTipObj.tip = (<ReleaseButton callClient={callClient} tip={tip}> </ReleaseButton>);
+                desTipObj.tip = (<ReleaseButton callClient={callClient} tip={tip} phoneNumber={phoneNum}> </ReleaseButton>);
             }
         } else if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
             let tip = `${Intl.get('call.record.phone.answered', '正在通话中')}`;
-            desTipObj.tip = (<ReleaseButton callClient={callClient} tip={tip}> </ReleaseButton>);
+            desTipObj.tip = (<ReleaseButton callClient={callClient} tip={tip} phoneNumber={phoneNum}> </ReleaseButton>);
         } else if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.curtao_phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
             desTipObj.tip = `${Intl.get('call.record.phone.unknown', '结束通话')}`;
         }
