@@ -6,13 +6,7 @@
 require('./phone-number-board.less');
 import {Button, Popover, Input, Icon, message} from 'antd';
 import {handleCallOutResult}from 'PUB_DIR/sources/utils/common-data-util';
-import {releaseCall} from 'PUB_DIR/sources/utils/phone-util';
-import {
-    commonPhoneRegex,
-    hotlinePhoneRegex,
-    autoLineAreaPhoneRegex,
-    phone1010Regex
-} from 'PUB_DIR/sources/utils/validate-util';
+import {isTelephone} from 'PUB_DIR/sources/utils/validate-util';
 //拨号键对应的数组
 const phoneNumArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'];
 class PhoneNumberBoard extends React.Component {
@@ -66,11 +60,7 @@ class PhoneNumberBoard extends React.Component {
     dialPhoneNumber = () => {
         let phoneNumber = this.state.inputNumber;
         if (phoneNumber && !Oplate.isCalling) {
-            if (commonPhoneRegex.test(phoneNumber) ||
-                autoLineAreaPhoneRegex.test(phoneNumber) ||
-                hotlinePhoneRegex.test(phoneNumber) ||
-                phone1010Regex.test(phoneNumber)
-            ) {
+            if (isTelephone(phoneNumber)) {
                 handleCallOutResult({
                     phoneNumber: phoneNumber,//拨打的电话
                 });

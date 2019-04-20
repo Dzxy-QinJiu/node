@@ -16,7 +16,6 @@ export const isPhone = function(value) {
     return /^1[3-9]\d{9}$/.test(value);
 };
 
-
 //客户名验证的正则表达式
 export const nameRegex = regex.customerNameRegex;
 //邮箱正则表达式
@@ -85,5 +84,12 @@ export const numberAddNoMoreThan = function(max, base, msg, rule, value, callbac
             callback();
         }
     }
+};
+//是否是电话号码（包括手机号）的验证方法
+export const isTelephone = function(phoneNumber) {
+    return commonPhoneRegex.test(phoneNumber) ||
+        autoLineAreaPhoneRegex.test(phoneNumber) ||
+        hotlinePhoneRegex.test(phoneNumber) ||
+        phone1010Regex.test(phoneNumber);
 };
 
