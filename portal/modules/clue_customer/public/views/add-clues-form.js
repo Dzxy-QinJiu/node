@@ -13,14 +13,13 @@ const FormItem = Form.Item;
 import ajax from '../../../crm/common/ajax';
 const routes = require('../../../crm/common/route');
 var clueCustomerAction = require('../action/clue-customer-action');
-import {checkClueName, checkClueSourceIP} from '../utils/clue-customer-utils';
+import {checkClueName, checkClueSourceIP,contactNameRule} from '../utils/clue-customer-utils';
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
 var uuid = require('uuid/v4');
 import AlertTimer from 'CMP_DIR/alert-timer';
 require('../css/add-clues-info.less');
 import DynamicAddDelContact from 'CMP_DIR/dynamic-add-del-contacts';
-import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
 const DIFCONTACTWAY = {
     PHONE: 'phone',
     EMAIL: 'email',
@@ -300,7 +299,7 @@ class ClueAddForm extends React.Component {
                                 {...formItemLayout}
                             >
                                 <DynamicAddDelContact
-                                    validateContactName={clueNameContactRule}
+                                    validateContactName={contactNameRule()}
                                     form={this.props.form} />
                             </FormItem>
                             {this.renderCheckContactMsg()}

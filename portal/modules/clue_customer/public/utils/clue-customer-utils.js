@@ -5,6 +5,7 @@ import ClueAction from '../action/clue-customer-action';
 var userData = require('PUB_DIR/sources/user-data');
 import { storageUtil } from 'ant-utils';
 const local = storageUtil.local;
+import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
 export const SESSION_STORAGE_CLUE_SALES_SELECTED = 'clue_assign_selected_sales';
 export const checkClueName = function(rule, value, callback) {
     value = _.trim(value);
@@ -215,5 +216,8 @@ export const handleSubmitClueItemData = function(submitObj,isMarkingAvalibility)
     data.type = handlePrivilegeType(isMarkingAvalibility);
     return data;
 };
-
+export const contactNameRule = function() {
+    return [clueNameContactRule,{required: true,
+        message: Intl.get('crm.90', '请输入姓名')}];
+};
 

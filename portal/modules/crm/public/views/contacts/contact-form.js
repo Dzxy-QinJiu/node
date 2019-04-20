@@ -16,6 +16,7 @@ import {validateRequiredOne, disabledAfterToday} from 'PUB_DIR/sources/utils/com
 
 import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
+import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
 var uuid = require('uuid/v4');
 //滚动条
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -519,7 +520,7 @@ var ContactForm = createReactClass({
                             <Col span={12} className="form-col-padding">
                                 <FormItem validateStatus={this.renderValidateStyle('name')}
                                     help={status.name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.name.errors && status.name.errors.join(','))}>
-                                    <Validator rules={[ContactUtil.contactNameRule()]}>
+                                    <Validator rules={[clueNameContactRule]}>
                                         <Input name="name" value={formData.name}
                                             autocomplete="off"
                                             placeholder={Intl.get('crm.contact.name.length', '请输入最多50个字符')}

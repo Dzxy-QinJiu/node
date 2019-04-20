@@ -11,9 +11,6 @@ export const nameLengthRule = {
 export const nameRegex = regex.customerNameRegex;
 //线索联系人的校验规则
 export const clueNameContactRule = {
-    required: true,
-    min: 1,
-    max: 10,
     pattern: nameRegex,
     message: Intl.get('clue.contact.name.within.ten.character', '联系人名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间')
 };
