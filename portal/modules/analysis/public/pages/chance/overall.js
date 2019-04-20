@@ -21,5 +21,7 @@ function getCharts() {
         chanceChart.getAllChanceChart(),
         //成交率趋势统计
         chanceChart.getChanceDealTrendChart(),
+        //销售机会成交明细
+        chanceChart.getChanceDealDetailChart(),
     ];
 }
