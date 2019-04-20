@@ -269,7 +269,7 @@ class UploadAndDeleteFile extends React.Component {
                         defaultMessage={'可同时上传多个文件，只能上传{office}，{image}，文本文件和{compact}，文件大小不要超过10M！'}
                         values={{
                             'office': (
-                                <Tooltip title="'docx','doc','ppt','pptx','pdf','xls','csv'">
+                                <Tooltip title="'docx','doc','ppt','pptx','pdf','xls','xlsx',csv'">
                                     <span>{Intl.get('leave.apply.office.document', '办公文件')}</span>
                                 </Tooltip>),
                             'image': (

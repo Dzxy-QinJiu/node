@@ -2845,6 +2845,7 @@ var en_US = {
     'clue.export.trace.msg': '{traceman} added in {tracetime}',//{traceman}于{tracetime}添加
     'clue.batch.change.trace.man': 'Change follower',//变更跟进人
     'crm.user.use.default.contact': 'User default contact to apply',//使用默认联系人申请
-    'crm.click.set.def.contact': 'Please set default contact first'//请先设置默认联系人
+    'crm.click.set.def.contact': 'Please set default contact first',//请先设置默认联系人
+    'clue.contact.name.within.ten.character': 'The contact name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English brackets, and the length is between 1 and 50 (including 50).'//客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
 };
 export default en_US;

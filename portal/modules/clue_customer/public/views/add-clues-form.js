@@ -13,7 +13,7 @@ const FormItem = Form.Item;
 import ajax from '../../../crm/common/ajax';
 const routes = require('../../../crm/common/route');
 var clueCustomerAction = require('../action/clue-customer-action');
-import {checkClueName, checkClueSourceIP} from '../utils/clue-customer-utils';
+import {checkClueName, checkClueSourceIP,contactNameRule} from '../utils/clue-customer-utils';
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
 var uuid = require('uuid/v4');
@@ -298,7 +298,9 @@ class ClueAddForm extends React.Component {
                                 label={Intl.get('crm.5', '联系方式')}
                                 {...formItemLayout}
                             >
-                                <DynamicAddDelContact form={this.props.form} />
+                                <DynamicAddDelContact
+                                    validateContactName={contactNameRule()}
+                                    form={this.props.form} />
                             </FormItem>
                             {this.renderCheckContactMsg()}
                             <FormItem

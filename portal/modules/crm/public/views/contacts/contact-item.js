@@ -15,7 +15,7 @@ import contactAjax from '../../ajax/contact-ajax';
 const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 import {emailRegex} from 'PUB_DIR/sources/utils/validate-util';
 import {disabledAfterToday} from 'PUB_DIR/sources/utils/common-method-util';
-
+import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
 class ContactItem extends React.Component {
     static defaultProps = {
         contact: ContactUtil.getEmptyViewContactObject()
@@ -242,6 +242,7 @@ class ContactItem extends React.Component {
                                 saveEditInput={this.saveContactInfo.bind(this, 'name')}
                                 noDataTip={Intl.get('crm.contact.name.none', '未添加姓名')}
                                 addDataTip={Intl.get('crm.contact.name.add', '添加姓名')}
+                                validators={[clueNameContactRule]}
                             />
                         </div>
                         <div className="contact-item-content">
