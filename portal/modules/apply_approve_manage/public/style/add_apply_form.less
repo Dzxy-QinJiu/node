@@ -1,0 +1,103 @@
+.add-apply-form-container {
+  background: #fff;
+  height: 100%;
+  //position: relative;
+  box-shadow:0px 0px 4px 0px rgba(0, 0, 0, 0.24);
+  //添加申请审批的标题
+  .add-apply-form-title {
+    overflow: hidden;
+    padding: 20px;
+    .show-and-edit-approve-type {
+      color: #333;
+      font-size: 16px;
+      background: #E4F2FE;
+      display: inline-block;
+      font-weight: 500;
+      .iconfont.icon-update {
+        color: #2196F3;
+      }
+    }
+    .iconfont.icon-close {
+      color: #999;
+      font-size: 12px;
+      cursor: pointer;
+    }
+  }
+  //添加申请审批的内容
+  .add-apply-form-content {
+    //position: absolute;
+    //top:64px;
+    //bottom: 0;
+    //left: 0;
+    //right: 0;
+    .ant-tabs {
+      .ant-tabs-bar{
+        background: #F5F5F5;
+        margin-bottom:0;
+        .ant-tabs-nav-container{
+          padding-left: 20px;
+        }
+      }
+      .ant-tabs-content{
+        padding-left: 20px;
+        background: #fff;
+
+        .apply-form-content-wrap{
+          overflow: hidden;
+          .apply-form-content-container{
+            margin: 8px 310px 0 0;
+            height: 100%;
+
+            .apply-form-content{
+             margin-right: 24px;
+              .no-data-intro{
+                margin: 200px 0 0 47px;
+              }
+            };
+            .has-form-item.apply-form-content{
+              background: #F5F5F5;
+            }
+          }
+
+          .apply-form-rules{
+            float: right;
+            width: 310px;
+            height: 100%;
+            border-left: 1px solid #F5F5F5;
+            padding: 20px 24px 0 24px;
+            .rule-content-wrap{
+              .rule-content-container{
+                display: block;
+                width: 262px;
+                height: 32px;
+                line-height: 32px;
+                border:1px solid #ccc;
+                margin-bottom: 8px;
+                font-size: 14px;
+                cursor: pointer;
+                border-radius: 4px;
+                .iconfont{
+                  margin:0 5px 0 10px;
+                  color:#8DA8C5
+                }
+                .addition-cls{
+                  color:#999;
+                };
+                .rule-cls{
+                  color:#333;
+                }
+
+                &:hover{
+                  border-color:#2196F3;
+                    .rule-cls, .iconfont{
+                      color:#2196F3;
+                    }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+.edit-container {
+  width: 480px;
+  margin: 0 auto;
+  padding: 14px 0 16px 0;
+  font-size: 14px;
+  .component-row {
+    height: 30px;
+    line-height: 30px;
+    .label-components {
+      display: inline-block;
+      color: #999;
+      width: 92px;
+      text-align: right;
+      padding-right: 10px;
+    }
+    .text-components {
+      display: inline-block;
+      color: #333;
+      .ant-input {
+        width: 372px;
+        height: 24px;
+      }
+      .iconfont {
+        font-size: 14px;
+        color: #8DA8C5;
+        margin-right: 5px;
+      }
+      .ant-checkbox-wrapper {
+        margin-right: 6px;
+      }
+    }
+    .ant-input.err-tip{
+
+    }
+  }
+  .component-row.required {
+    height: auto;
+    .label-components {
+      float: left;
+      &:before {
+        display: inline-block;
+        margin-right: 4px;
+        content: "*";
+        line-height: 1;
+        font-size: 12px;
+        color: #f04134;
+      }
+    }
+    .ant-input.err-tip{
+      border: 1px solid #f04134;
+    }
+    .require-err-tip {
+      color: #f04134;
+      display: block;
+    }
+  }
+  .button-container {
+    margin-right: 16px;
+  }
+}
