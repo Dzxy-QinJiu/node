@@ -237,7 +237,8 @@ exports.getCustomerById = function(req, res, customerId) {
 };
 //获取重复的客户列表
 exports.getRepeatCustomerList = function(req, res, queryParams) {
-    let url = crmRestApis.repeatCustomer.replace(':type', queryParams.type).replace(':page_size', queryParams.page_size);
+    let url = crmRestApis.repeatCustomer.replace(':type', queryParams.type || 'user').replace(':page_size', queryParams.page_size || 20);
+    //cursor=true向后翻页的标识
     url += '?cursor=true';
     if (queryParams.id) {
         url += '&id=' + queryParams.id;
