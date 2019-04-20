@@ -25,7 +25,7 @@ var crmRestApis = {
     deleteCustomerBak: '/rest/customer/v3/customer_bak/:customer_id',
     dynamic: '/rest/customer/v2/customerdynamic',
     upload: '/rest/customer/v3/customer/upload/preview',
-    repeatCustomer: '/rest/customer/v2/customer/query/repeat',
+    repeatCustomer: '/rest/customer/v3/customer/range/:type/:page_size/repeat_id/descend',
     getRepeatCustomerById: '/rest/customer/v2/customer/:customerId',
     delRepeatCustomer: '/rest/customer/v2/customer/delete',
     getCustomerById: '/rest/customer/v2/customer/query/1/name/descend',
@@ -237,14 +237,13 @@ exports.getCustomerById = function(req, res, customerId) {
 };
 //获取重复的客户列表
 exports.getRepeatCustomerList = function(req, res, queryParams) {
-    let url = crmRestApis.repeatCustomer;
-    if (queryParams && queryParams.page_size) {
-        url += '?page_size=' + queryParams.page_size;
-        if (queryParams.id) {
-            url += '&id=' + queryParams.id;
-        }
+    let url = crmRestApis.repeatCustomer.replace(':type', queryParams.type).replace(':page_size', queryParams.pageSize);
+    if (queryParams.id) {
+        url += '?id=' + queryParams.id;
     }
     let filterObj = queryParams.filterObj ? JSON.parse(queryParams.filterObj) : {};
+    //用于查询重复客户的标识
+    filterObj.repeat = true;
     return restUtil.authRest.post(
         {
             url: url,
