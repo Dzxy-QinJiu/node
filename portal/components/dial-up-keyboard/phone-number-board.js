@@ -50,7 +50,7 @@ class PhoneNumberBoard extends React.Component {
 
     onNumberInputChange = (e) => {
         const {value} = e.target;
-        const reg = /^(\d)+(\.\d+)?$/;
+        const reg = /^\d*$/;
         if ((!_.isNaN(value) && reg.test(value)) || value === '') {
             this.setState({inputNumber: value});
         }
