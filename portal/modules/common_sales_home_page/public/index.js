@@ -31,6 +31,7 @@ var setWebsiteConfig = websiteConfig.setWebsiteConfig;
 import AlertTip from 'CMP_DIR/alert-tip';
 import {message, Button} from 'antd';
 const DELAY_TIME = 2000;
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 class SalesHomePage extends React.Component {
     constructor(props) {
         super(props);
@@ -60,7 +61,6 @@ class SalesHomePage extends React.Component {
             $('.selected-customer-detail-item').removeClass('selected-customer-detail-item');
             $(this).closest('.customer-detail-item').addClass('selected-customer-detail-item');
         });
-        SalesHomeAction.getShowActiveEmailOrClientConfig();
         //外层父组件加载完成后，再由上到下推出激活邮箱提示框
         setTimeout(() => {
             this.setState({
@@ -68,7 +68,7 @@ class SalesHomePage extends React.Component {
                 isAnimateShow: true
             });
         }, DELAY_TIME);
-
+        this.getPhoneInitialed();
     }
 
     //缩放延时，避免页面卡顿
@@ -82,12 +82,32 @@ class SalesHomePage extends React.Component {
             this.setState(SalesHomeStore.getState());
         });
     };
+    getPhoneInitialed = () => {
+        var initialedPhone = oplateConsts.FINISH_INITIALED_PHONE;
+        if (_.isBoolean(initialedPhone)){
+            this.finishedInitialPhone(initialedPhone);
+        }else{
+            this.setState({
+                addListener: true
+            });
+            notificationEmitter.on(notificationEmitter.PHONE_INITIALIZE, this.finishedInitialPhone);
+        }
+    };
 
     componentWillUnmount() {
         $(window).off('resize', this.windowResize);
         SalesHomeStore.unlisten(this.onChange);
+        if (this.state.addListener){
+            this.setState({
+                addListener: false
+            });
+            notificationEmitter.removeListener(notificationEmitter.PHONE_INITIALIZE, this.finishedInitialPhone);
+        }
     }
-
+    finishedInitialPhone = (isFinishedPhone) => {
+        //获取是否能展示邮箱激活提示或者设置坐席号提示
+        SalesHomeAction.getShowActiveEmailOrClientConfig(isFinishedPhone);
+    };
     onChange = () => {
         this.setState(SalesHomeStore.getState());
     };

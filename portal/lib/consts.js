@@ -82,5 +82,6 @@ module.exports = {
         CONTRACT_ADMIN: 'contract_manager',
         //财务
         ACCOUNTANT: 'accountant'
-    }
+    },
+    FINISH_INITIALED_PHONE: ''
 };

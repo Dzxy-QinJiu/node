@@ -9,14 +9,25 @@ let CallcenterClient = callcenter.client;
 import {Button} from 'antd';
 import commonMethodUtil from './common-method-util';
 let callClient;
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 
 //初始化
 exports.initPhone = function(user) {
     let org = commonMethodUtil.getOrganization();
     callClient = new CallcenterClient(org.id, user.user_name);
     callClient.init().then(() => {
+        notificationEmitter.emit(notificationEmitter.PHONE_INITIALIZE, false);
+        oplateConsts.FINISH_INITIALED_PHONE = false;
         console.log('可以打电话了!');
     }, (error) => {
+        //未绑定坐席号和获取坐席号失败都会走到error里面，只能根据error的内容进行判断
+        if (error === Intl.get('sales.home.never.bind.client', '未绑定座席号!')){
+            oplateConsts.FINISH_INITIALED_PHONE = true;
+            notificationEmitter.emit(notificationEmitter.PHONE_INITIALIZE, true);
+        }else{
+            oplateConsts.FINISH_INITIALED_PHONE = false;
+            notificationEmitter.emit(notificationEmitter.PHONE_INITIALIZE, false);
+        }
         console.log(error || '电话系统初始化失败了!');
     });
 };
