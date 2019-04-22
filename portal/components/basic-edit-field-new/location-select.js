@@ -148,11 +148,11 @@ class LocationSelectField extends React.Component {
             if (location.length) {
                 return (
                     <div className="basic-location-field basic-edit-field">
-                        <span className="inline-block basic-info-text">{location.join('/')}</span>
                         {this.props.hasEditPrivilege ? (
                             <DetailEditBtn title={this.props.editBtnTip}
                                 onClick={this.changeDisplayType.bind(this, 'edit')}/>) : null
                         }
+                        <span className="inline-block basic-info-text">{location.join('/')}</span>
                     </div>);
             } else {
                 return (

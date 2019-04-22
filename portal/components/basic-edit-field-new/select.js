@@ -223,13 +223,13 @@ let BasicEditSelectField = createReactClass({
             if (this.state.displayText) {
                 textBlock = (
                     <div className={cls}>
-                        <span className="inline-block basic-info-text">
-                            {this.state.displayText}
-                        </span>
                         {this.props.hasEditPrivilege ? (
                             <DetailEditBtn title={this.props.editBtnTip}
                                 onClick={this.setEditable.bind(this)}/>) : null
                         }
+                        <span className="inline-block basic-info-text">
+                            {this.state.displayText}
+                        </span>
                     </div>);
             } else {
                 textBlock = (
