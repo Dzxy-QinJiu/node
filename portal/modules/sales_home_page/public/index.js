@@ -83,7 +83,8 @@ class SalesHomePage extends React.Component {
             appList: [], //应用数组
             selectedAppId: '', //选中的应用id
             isShowEffectiveTimeAndCount: false, // 是否展示有效通话时长和有效接通数
-            setWebConfigClientStatus: false//设置不再展示提示添加坐席号的提示
+            setWebConfigClientStatus: false,//设置不再展示提示添加坐席号的提示
+            addListener: false, //是否监听了坐席号配置完成的方法
         };
     }
 

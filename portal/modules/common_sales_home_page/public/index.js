@@ -46,6 +46,7 @@ class SalesHomePage extends React.Component {
             isAnimateHide: false,//是否动态隐藏 提示框
             isClientAnimateShow: false,//是否动态由上到下推出 设置坐席号提示框
             isClientAnimateHide: false,//是否动态隐藏 提示框
+            addListener: false, //是否监听了坐席号配置完成的方法
             ...SalesHomeStore.getState()
         };
     }
