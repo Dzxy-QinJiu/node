@@ -22,9 +22,11 @@ function SalesStageActions() {
 
     //获取销售阶段列表
     this.getSalesStageList = function() {
-        var _this = this;
-        salesStageAjax.getSalesStageList().then(function(salesStageList) {
-            _this.dispatch(salesStageList.result);
+        this.dispatch({loading: true, error: false});
+        salesStageAjax.getSalesStageList().then( (salesStageList) => {
+            this.dispatch({loading: false, error: false, list: _.get(salesStageList, 'result')});
+        },(errorMsg) => {
+            this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });
     };
 
