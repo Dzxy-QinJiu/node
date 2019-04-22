@@ -1,5 +1,6 @@
 import ajaxPro from './../../../common/ajaxUtil';
-
+import {AUTHS} from 'MOD_DIR/crm/public/utils/crm-util';
+const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 /**
  * 获取用户审批列表
  */
@@ -29,10 +30,14 @@ exports.getApplyList = function(obj) {
  */
 var applyDetailAjax;
 exports.getApplyDetail = function(id) {
+    var type = 'user';
+    if (hasPrivilege(AUTHS.GETALL)) {
+        type = 'manager';
+    }
     var Deferred = $.Deferred();
     applyDetailAjax && applyDetailAjax.abort();
     applyDetailAjax = $.ajax({
-        url: '/rest/appuser/apply/' + id,
+        url: '/rest/appuser/apply/' + id + '/' + type,
         dataType: 'json',
         type: 'get',
         success: function(data) {
