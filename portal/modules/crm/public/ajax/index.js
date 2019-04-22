@@ -1,9 +1,5 @@
 const hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
-const AUTHS = {
-    'GETALL': 'CUSTOMER_ALL',
-    'UPDATE_ALL': 'CUSTOMER_MANAGER_UPDATE_ALL',
-    'TRANSFER_MANAGER': 'CRM_MANAGER_TRANSFER'
-};
+import {AUTHS} from '../utils/crm-util';
 //添加客户
 let addCustomerAjax = null;
 exports.addCustomer = function(newCus) {
