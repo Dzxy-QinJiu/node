@@ -593,7 +593,7 @@ var en_US = {
     'user.login.last.year': 'The latest a year', // 近一年
     'user.login.last.month': 'The latest a month', // 近一月
     'user.login.last.week': 'The latest a week', // 近一周
-    'user.login.last.title': 'Statistic of login times in a {title}', // {title}的活跃统计
+    'user.login.last.title': 'Active statistics of {title}', // {title}的活跃统计
     'user.login.last.failed': 'Failed to get user recent login statistic', // 获取用户最近登录统计信息失败
     //第三方应用
     'third.party.app': 'Open Application Platform',//开放应用平台',
