@@ -465,7 +465,7 @@ class UserLoginAnalysis extends React.Component {
                                 {list}
                             </Select>
                         }}
-                    /><span>:</span>
+                    />:
                 </div>
             </div>
         );
