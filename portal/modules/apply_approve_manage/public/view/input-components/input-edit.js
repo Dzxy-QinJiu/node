@@ -12,8 +12,9 @@ class InputEdit extends React.Component {
         super(props);
         var formItem = _.cloneDeep(this.props.formItem);
         this.state = {
-            titleInput: _.get(formItem,'title',''),//标题
-            addtionDescInput: _.get(formItem,'additionRules',''),//提示说明
+            title: _.get(formItem,'title',''),//标题
+            placeholder: _.get(formItem,'placeholder','') || _.get(formItem,'defaultPlaceholder',''),//提示说明
+            isRequired: false, //是否必填
             loading: false,//正在保存
             submitErrorMsg: '',
             titleRequiredMsg: '',
@@ -31,21 +32,21 @@ class InputEdit extends React.Component {
             });
         }
         this.setState({
-            titleInput: value
+            title: value
         });
     };
     handleChangeTip = (e) => {
         var value = e.target.value;
         this.setState({
-            addtionDescInput: value
+            placeholder: value
         });
     };
     handleSubmit = () => {
-        if (this.state.loading){
+        if (this.state.loading || this.state.submitErrorMsg){
             return;
         }
         //如果必填项没有写，不允许提交
-        if (!this.state.titleInput){
+        if (!this.state.title){
             this.setState({
                 titleRequiredMsg: Intl.get('apply.components.write.title', '请填写标题！')
             });
@@ -56,8 +57,9 @@ class InputEdit extends React.Component {
         },() => {
             var submitData = {
                 key: _.get(this,'props.formItem.key'),
-                additionRules: this.state.addtionDescInput,
-                titleLabel: this.state.titleInput
+                placeholder: this.state.placeholder,
+                title: this.state.title,
+                isRequired: this.state.isRequired
             };
             this.props.handleSubmit(submitData,() => {
             },(errorMsg) => {
@@ -71,6 +73,11 @@ class InputEdit extends React.Component {
     handleCancel = () => {
         var formItem = this.props.formItem;
         this.props.handleCancel(formItem);
+    };
+    onCheckboxChange = (e) => {
+        this.setState({
+            isRequired: e.target.checked
+        });
     };
 
     render = () => {
@@ -90,7 +97,7 @@ class InputEdit extends React.Component {
                 <div className="component-row required">
                     <span className="label-components">{Intl.get('crm.alert.topic', '标题')}</span>
                     <span className="text-components">
-                        <Input className={cls} defaultValue={this.state.titleInput} onChange={this.handleChangeTopic}/>
+                        <Input className={cls} defaultValue={this.state.title} onChange={this.handleChangeTopic}/>
                         {hasErrTip ? <span className="require-err-tip">
                             {hasErrTip}
                         </span> : null}
@@ -99,13 +106,13 @@ class InputEdit extends React.Component {
                 <div className="component-row">
                     <span className="label-components">{Intl.get('apply.components.tip.msg', '提示说明')}</span>
                     <span className='text-components'>
-                        <Input className={cls} defaultValue={this.state.addtionDescInput} onChange={this.handleChangeTip}/>
+                        <Input className={cls} defaultValue={this.state.placeholder} onChange={this.handleChangeTip}/>
                     </span>
                 </div>
                 <div className="component-row">
                     <span className="label-components">{Intl.get('crm.186', '其他')}</span>
                     <span className="text-components">
-                        <Checkbox/>
+                        <Checkbox onChange={this.onCheckboxChange}/>
                         {Intl.get('apply.components.required.item', '必填')}
                     </span>
                 </div>

@@ -58,3 +58,41 @@
     margin-right: 16px;
   }
 }
+//展示组件
+.show-container{
+  background: #fff;
+  padding:16px 219px 16px 227px;
+  margin:0 auto;
+  &:hover{
+    box-shadow:0px 0px 16px 0px rgba(0, 0, 0, 0.24);
+  }
+  .title-label{
+    color: #333333;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  .icon-container{
+    .iconfont{
+      font-size: 14px;
+      color:#8DA8C5;
+      cursor: pointer;
+      margin-left: 14px;
+    }
+    .btns-container{
+        .confirm-btn{
+          margin-right: 8px;
+          background-color: #EB5E57;
+          color: #fff;
+        }
+    }
+  }
+
+  .title-label.required:before{
+    display: inline-block;
+    margin-right: 4px;
+    content: "*";
+    line-height: 1;
+    font-size: 12px;
+    color: #f04134;
+  }
+}

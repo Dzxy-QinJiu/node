@@ -13,7 +13,7 @@ const TAB_KEYS = {
 };
 import Trace from 'LIB_DIR/trace';
 var classNames = require('classnames');
-import {calculateHeight, APPLYAPPROVE_LAYOUT} from '../utils/apply-approve-utils';
+import {calculateHeight, APPLYAPPROVE_LAYOUT,ALL_COMPONENTS, ALL_COMPONENTS_TYPE} from '../utils/apply-approve-utils';
 import InputEdit from './input-components/input-edit';
 import InputShow from './input-components/show-input';
 class AddApplyForm extends React.Component {
@@ -26,23 +26,25 @@ class AddApplyForm extends React.Component {
                 {
                     'rulename': Intl.get('apply.rule.text', '文字输入'),
                     'iconfontCls': 'icon-fuwu',
-                    'additionRules': Intl.get('apply.rule.within.32', '32个字符以内'),
-                    'componentsType': 'Input'
+                    'defaultPlaceholder': Intl.get('apply.rule.within.32', '32个字符以内'),
+                    'componentType': ALL_COMPONENTS.INPUT
                 },
                 {
                     'rulename': Intl.get('apply.rule.textare', '多行文字输入'),
                     'iconfontCls': 'icon-fuwu',
-                    'additionRules': Intl.get('apply.rule.over.32', '32个字符以上')
+                    'defaultPlaceholder': Intl.get('apply.rule.over.32', '32个字符以上'),
+                    'componentType': ALL_COMPONENTS.INPUT,
+                    'type': ALL_COMPONENTS_TYPE.TEXTAREA
                 },
                 {
                     'rulename': Intl.get('apply.rule.number', '数字输入'),
                     'iconfontCls': 'icon-fuwu',
-                    'additionRules': Intl.get('apply.rule.limit.int', '仅限整数')
+                    'defaultPlaceholder': Intl.get('apply.rule.limit.int', '仅限整数')
                 },
                 {
                     'rulename': Intl.get('apply.rule.count', '金额输入'),
                     'iconfontCls': 'icon-fuwu',
-                    'additionRules': Intl.get('apply.rule.allow.point', '允许小数点')
+                    'defaultPlaceholder': Intl.get('apply.rule.allow.point', '允许小数点')
                 },
                 {'rulename': Intl.get('apply.rule.hour', '时长输入'), 'iconfontCls': 'icon-fuwu'},
                 {'rulename': Intl.get('apply.rule.radio', '单选'), 'iconfontCls': 'icon-fuwu'},
@@ -76,13 +78,13 @@ class AddApplyForm extends React.Component {
     renderFormComponents = () => {
         var applyTypeData = this.state.applyTypeData;
         return _.map(applyTypeData.formContent, (formItem) => {
-            if (formItem.componentsType === 'Input') {
+            if (formItem.componentType === 'Input') {
                 //如果是编辑状态
                 if (formItem.isEditting) {
                     return (
                         <InputEdit
                             formItem={formItem}
-                            handleCancel = {this.handleCancelInput}
+                            handleCancel = {this.removeTargetFormItem}
                             handleSubmit = {this.handleSubmitInput}
                         />
                     );
@@ -90,6 +92,8 @@ class AddApplyForm extends React.Component {
                     return (
                         <InputShow
                             formItem={formItem}
+                            handleRemoveItem = {this.removeTargetFormItem}
+                            handleEditItem={this.handleEditItem}
                         />
                     );
                 }
@@ -100,9 +104,19 @@ class AddApplyForm extends React.Component {
         var formContent = _.get(this, 'state.applyTypeData.formContent');
         return _.find(formContent, item => item.key === formKey);
     };
-    handleCancelInput = (formItem) => {
+    //删除某个item
+    removeTargetFormItem = (formItem) => {
+        var formKey = formItem.key;
+        var formContent = _.get(this, 'state.applyTypeData.formContent');
+        var applyTypeData = this.state.applyTypeData;
+        applyTypeData.formContent = _.filter(formContent, item => item.key !== formKey);
+        this.setState({
+            applyTypeData: this.state.applyTypeData
+        });
+    };
+    handleEditItem = (formItem) => {
         var target = this.getTargetFormItem(formItem.key);
-        target.isEditting = false;
+        target.isEditting = true;
         this.setState({
             applyTypeData: this.state.applyTypeData
         });
@@ -141,8 +155,8 @@ class AddApplyForm extends React.Component {
     };
     handleAddComponents = (ruleItem) => {
         var applyTypeData = this.state.applyTypeData;
-        var componentsType = ruleItem.componentsType;
-        if (componentsType === 'Input') {
+        var componentType = ruleItem.componentType;
+        if (componentType === 'Input') {
             var formContent = _.get(applyTypeData, 'formContent', []);
             formContent.push({...ruleItem, 'key': formContent.length, 'isEditting': true});
             applyTypeData.formContent = formContent;
@@ -162,8 +176,8 @@ class AddApplyForm extends React.Component {
                             onClick={this.handleAddComponents.bind(this, ruleItem)}>
                             <i className={cls}></i>
                             <span className="rule-cls">{ruleItem.rulename}</span>
-                            {ruleItem.additionRules ?
-                                <span className="addition-cls">({ruleItem.additionRules})</span> : null}
+                            {ruleItem.defaultPlaceholder ?
+                                <span className="addition-cls">({ruleItem.defaultPlaceholder})</span> : null}
                         </span>
                     );
                 })}
