@@ -505,9 +505,12 @@ class SalesHomePage extends React.Component {
         chart.data = this.state.contractExpireRemind.data;
         chart.resultType = '';
 
+        //表格列
         const columns = _.get(chart, 'option.columns');
+        //负责人列索引
         const userNameColumnIndex = _.findIndex(columns, column => column.dataIndex === 'user_name');
 
+        //对于普通销售来说，因为显示的是他自己的数据，所以不需要显示负责人列
         if (userNameColumnIndex !== -1) {
             columns.splice(userNameColumnIndex, 1);
         }
