@@ -33,6 +33,8 @@ var setWebsiteConfig = websiteConfig.setWebsiteConfig;
 import AlertTip from 'CMP_DIR/alert-tip';
 import {message, Button} from 'antd';
 const DELAY_TIME = 2000;
+//即将到期合同合同统计
+const EXPIRING_CONTRACT_STATISTICS = 'expiring_contract_statistics';
 
 class SalesHomePage extends React.Component {
     constructor(props) {
@@ -395,7 +397,7 @@ class SalesHomePage extends React.Component {
     //渲染左侧列表
     renderDiffCustomerPanel = () => {
         const contractExpireRemindClassName = classNames('customer-item', {
-            'selected-customer-item': this.state.showCustomerPanel === 'contractExpireRemind'
+            'selected-customer-item': this.state.showCustomerPanel === EXPIRING_CONTRACT_STATISTICS
         });
 
         return (
@@ -423,7 +425,7 @@ class SalesHomePage extends React.Component {
                         </li>
                     );
                 })}
-                <li className={contractExpireRemindClassName} onClick={this.handleClickDiffCustomerType.bind(this, 'contractExpireRemind')}>
+                <li className={contractExpireRemindClassName} onClick={this.handleClickDiffCustomerType.bind(this, EXPIRING_CONTRACT_STATISTICS)}>
                     <div>
                         <span>{Intl.get('contract.expire.in.next.three.months', '近三个月到期合同')}</span>
                         <span className="data-total">{this.state.contractExpireRemind.total.toString()}</span>
@@ -490,7 +492,7 @@ class SalesHomePage extends React.Component {
             case ALL_LISTS_TYPE.SALES_CLUE:
                 rightPanel = this.renderSalesClue();
                 break;
-            case 'contractExpireRemind':
+            case EXPIRING_CONTRACT_STATISTICS:
                 rightPanel = this.renderContractExpireRemind();
                 break;
         }
