@@ -296,12 +296,12 @@ const BasicEditField = createReactClass({
                 }
                 textBlock = (
                     <div className={cls}>
-                        <span className="inline-block basic-info-text">
-                            {textContent}{this.props.afterTextTip || ''}
-                        </span>
                         {this.props.hasEditPrivilege ? (
                             <DetailEditBtn title={this.props.editBtnTip}
                                 onClick={this.setEditable.bind(this)}/>) : null}
+                        <span className="inline-block basic-info-text">
+                            {textContent}{this.props.afterTextTip || ''}
+                        </span>
                     </div>);
             } else {
                 textBlock = (

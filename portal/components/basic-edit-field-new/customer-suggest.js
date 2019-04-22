@@ -457,17 +457,17 @@ class CustomerSuggest extends React.Component {
             if (this.state.displayText) {
                 textBlock = (
                     <div className={cls}>
-                        <span className="inline-block basic-info-text customer-name" data-tracename="查看客户详情" onClick={this.showCustomerDetail.bind(this, customerId)}>
-                            {this.props.customerLable ? <Tag className={crmUtil.getCrmLabelCls(this.props.customerLable)}>{this.props.customerLable}</Tag> : null}
-                            {this.state.displayText}
-                            <span className="arrow-right">&gt;</span>
-                        </span>
                         {this.props.hasEditPrivilege ? (
                             <DetailEditBtn title={this.props.editBtnTip}
                                 onClick={this.setEditable.bind(this)}
                                 data-tracaname="点击编辑客户按钮"
                             />) : null
                         }
+                        <span className="inline-block basic-info-text customer-name" data-tracename="查看客户详情" onClick={this.showCustomerDetail.bind(this, customerId)}>
+                            {this.props.customerLable ? <Tag className={crmUtil.getCrmLabelCls(this.props.customerLable)}>{this.props.customerLable}</Tag> : null}
+                            {this.state.displayText}
+                            <span className="arrow-right">&gt;</span>
+                        </span>
                     </div>);
             } else {
                 textBlock = (
