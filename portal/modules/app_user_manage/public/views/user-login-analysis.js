@@ -452,17 +452,20 @@ class UserLoginAnalysis extends React.Component {
 
         return (
             <div className="last-login-select">
-                <Select
-                    style={{ width: 100 }}
-                    value={starttime}
-                    onChange={this.handleSelectDate.bind(this, app)}
-                >
-                    {list}
-                </Select>
                 <div className="last-login-title">
-                    {Intl.get('user.login.last.title', '{title}的活跃统计',
-                        {title: _.get(loginTitle, 'name', Intl.get('user.login.last.year', '近一年'))})
-                    }:
+                    <ReactIntl.FormattedMessage
+                        id="user.login.last.title"
+                        defaultMessage={'{title} 的活跃统计'}
+                        values={{
+                            'title': <Select
+                                style={{ width: 100 }}
+                                value={starttime}
+                                onChange={this.handleSelectDate.bind(this, app)}
+                            >
+                                {list}
+                            </Select>
+                        }}
+                    /><span>:</span>
                 </div>
             </div>
         );
