@@ -17,8 +17,8 @@ module.exports = {
 
 function getCharts() {
     return [
-        //完成情况统计
-        //        contractChart.getContractPerformanceChart(),
+        //合同到期提醒
+        contractChart.getContractExpireRemindChart(),
         //合同分析统计表
         contractChart.getContractChart(),
         //合同产品分布

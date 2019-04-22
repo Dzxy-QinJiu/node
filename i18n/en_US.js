@@ -2829,6 +2829,8 @@ var en_US = {
     'contract.238': 'Within {time} days from the date of signing ({date}), the receivable shall be {amount} yuan',//从签订日起{time}日内({date})前,应收回款{amount}元
     'contract.239': 'Modification date',//修改日期
     'contract.240': 'Modify cost type',//修改费用类型
+    'contract.expire.statistics': 'Expire contract statistics',//到期合同统计
+    'contract.expire.in.next.three.months': 'The contract expires in the next three months',//近三个月到期合同
     'apply.list.my.approved': 'Apply approved by me',//我审批过
     'apply.approve.sales.opportunity': 'Sales opportunity',//销售机会
     'apply.has.approved.by.me': 'Failed to get {type} application approved by me',//获取我审批过的{type}申请失败

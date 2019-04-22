@@ -355,3 +355,23 @@ exports.setWebsiteConfig = function(queryObj) {
     });
     return Deferred.promise();
 };
+
+//获取将要到期的合同
+var getContractExpireRemind;
+exports.getContractExpireRemind = function(reqData) {
+    getContractExpireRemind && getContractExpireRemind.abort();
+    var Deferred = $.Deferred();
+    getContractExpireRemind = $.ajax({
+        url: '/rest/analysis/contract/contract/total/count/expired',
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
