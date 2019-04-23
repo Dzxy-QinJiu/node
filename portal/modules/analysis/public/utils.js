@@ -219,3 +219,83 @@ export function processFallsChartCsvData(chart, option) {
 
     return csvData;
 }
+
+//获取带转化率的漏斗图的数据处理函数
+export function getFunnelWithConversionRateProcessDataFunc(stageList, separator = ': ', prefixRule = 'STAGE_NAME', suffixRule = '_rate') {
+    return function(data) {
+        let processedData = [];
+
+        _.each(stageList, stage => {
+            let value = data[stage.key] || 0;
+
+            //用于在图表上显示的值
+            const showValue = stage.name + separator + value;
+
+            //转化率
+            let convertRate = '';
+            let prefix;
+            let suffix;
+
+            if (prefixRule === 'STAGE_NAME') {
+                prefix = stage.key; 
+            } else {
+                prefix = prefixRule;
+            }
+
+            if (suffixRule === 'STAGE_NAME') {
+                suffix = '_' + stage.key; 
+            } else {
+                suffix = suffixRule;
+            }
+
+            if (prefix !== null && suffix !== null) {
+                _.each(data, (value, key) => {
+                    let prefixMatched, suffixMatched;
+
+                    if (key.startsWith(prefix)) {
+                        prefixMatched = true;
+                    }
+
+                    if (key.endsWith(suffix)) {
+                        suffixMatched = true;
+                    }
+
+                    if (prefixMatched && suffixMatched) {
+                        convertRate = value;
+                        return false;
+                    }
+                });
+            }
+
+            if (_.isNumber(convertRate)) {
+                convertRate = (convertRate * 100).toFixed(2) + '%';
+            }
+
+            processedData.push({
+                name: convertRate,
+                value,
+                showValue,
+                csvName: stage.name
+            });
+        });
+
+        //总转化率
+        let totalConvertRate;
+
+        const firstStageKey = _.first(stageList).key;
+        const firstStageValue = data[firstStageKey];
+        const lastStageKey = _.last(stageList).key;
+        const lastStageValue = data[lastStageKey];
+
+        if (firstStageValue === 0) {
+            totalConvertRate = '0%';
+        } else {
+            totalConvertRate = ((lastStageValue / firstStageValue) * 100).toFixed(2) + '%';
+        }
+
+        //将成交率存入最后一个数据项
+        _.last(processedData).totalConvertRate = totalConvertRate;
+
+        return processedData;
+    };
+}
