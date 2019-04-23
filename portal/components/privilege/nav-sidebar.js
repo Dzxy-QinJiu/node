@@ -137,6 +137,7 @@ var NavSidebar = createReactClass({
     propTypes: {
         toggleNotificationPanel: PropTypes.func,
         closeNotificationPanel: PropTypes.func,
+        isShowNotificationPanel: PropTypes.bool
     },
 
     changeUserInfoLogo: function(userLogoInfo) {
@@ -328,11 +329,17 @@ var NavSidebar = createReactClass({
         if (!notification) {
             return null;
         }
+        let noticeCls = classNames('iconfont icon-tongzhi',{
+            'acitve': this.props.isShowNotificationPanel,
+        });
+        let aCls = classNames({
+            'acitve': this.props.isShowNotificationPanel,
+        });
         return (
             <div className="notification" onClick={this.toggleNotificationPanel}>
                 {
-                    this.state.hideNavIcon ? <a>{notification.shortName}</a> :
-                        <i className="iconfont icon-tongzhi" title={notification.name}></i>
+                    this.state.hideNavIcon ? <a className={aCls}>{notification.shortName}</a> :
+                        <i className={noticeCls} title={notification.name}></i>
                 }
             </div>
         );
@@ -367,13 +374,21 @@ var NavSidebar = createReactClass({
             'sidebar-backend-config': true,
             'text-nav-li': this.state.hideNavIcon
         });
+        let backendConfigCls = classNames('iconfont icon-role-auth-config',{
+            'deactivation': this.props.isShowNotificationPanel,
+        });
+        let backendConfigSpanCls = classNames({
+            'deactivation': this.props.isShowNotificationPanel,
+        });
         return (
             <div className={wrapperCls}>
                 <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
                     overlayClassName="nav-sidebar-backend-config">
                     <NavLink to={backendConfigMenu.routePath} activeClassName="active">
-                        {this.state.hideNavIcon ? backendConfigMenu.shortName :
-                            <i className="iconfont icon-role-auth-config" title={backendConfigMenu.name}/>}
+                        {this.state.hideNavIcon ? <span className={backendConfigSpanCls}>
+                            {backendConfigMenu.shortName}
+                        </span> :
+                            <i className={backendConfigCls} title={backendConfigMenu.name}/>}
                     </NavLink>
                 </Popover>
             </div>
@@ -497,7 +512,8 @@ var NavSidebar = createReactClass({
                 'iconfont': !this.state.hideNavIcon,
                 [`icon-${category}-ico`]: !this.state.hideNavIcon && currentPageCategory !== category,
                 [`icon-active-${category}-ico`]: addActive,
-                'active': addActive
+                'active': addActive,
+                'deactivation': this.props.isShowNotificationPanel
             });
             //菜单项类
             let routeCls = classNames({
@@ -517,7 +533,7 @@ var NavSidebar = createReactClass({
             );
         });
     },
-    
+
     render: function() {
         var _this = this;
         return (
