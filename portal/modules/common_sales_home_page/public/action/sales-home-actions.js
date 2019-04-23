@@ -187,6 +187,16 @@ function SalesHomeActions() {
         );
 
     };
+
+    //获取将要到期的合同
+    this.getContractExpireRemind = function(reqData) {
+        this.dispatch({loading: true, error: false});
+        salesHomeAjax.getContractExpireRemind(reqData).then((resData) => {
+            this.dispatch({loading: false, error: false, resData: resData});
+        }, (errorMsg) => {
+            this.dispatch({loading: false, error: true, errMsg: errorMsg});
+        });
+    };
 }
 
 module.exports = alt.createActions(SalesHomeActions);

@@ -1596,15 +1596,17 @@ class CallRecordAnalyis extends React.Component {
                         {firstOptions}
                     </SelectFullWidth>
                 ) : null }
-                <SelectFullWidth
-                    multiple
-                    value={this.state.secondSelectValue}
-                    onChange={this.onSecondSelectChange}
-                    className="team-member-select-options btn-item"
-                    onSelect={this.handleSelectTeamOrMember}
-                >
-                    {secondOptions}
-                </SelectFullWidth>
+                { memberList.length > 1 ? (
+                    <SelectFullWidth
+                        multiple
+                        value={this.state.secondSelectValue}
+                        onChange={this.onSecondSelectChange}
+                        className="team-member-select-options btn-item"
+                        onSelect={this.handleSelectTeamOrMember}
+                    >
+                        {secondOptions}
+                    </SelectFullWidth>
+                ) : null }
             </div>
         );
     };

@@ -3,6 +3,8 @@ var RightContent = require('CMP_DIR/privilege/right-content');
 require('./css/index.less');
 var SalesHomeStore = require('./store/sales-home-store');
 var SalesHomeAction = require('./action/sales-home-actions');
+import {AntcAnalysis} from 'antc';
+import {contractChart} from 'ant-chart-collection';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 let TimeUtil = require('PUB_DIR/sources/utils/time-format-util');
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
@@ -31,6 +33,9 @@ var setWebsiteConfig = websiteConfig.setWebsiteConfig;
 import AlertTip from 'CMP_DIR/alert-tip';
 import {message, Button} from 'antd';
 const DELAY_TIME = 2000;
+//即将到期合同合同统计
+const EXPIRING_CONTRACT_STATISTICS = 'expiring_contract_statistics';
+
 class SalesHomePage extends React.Component {
     constructor(props) {
         super(props);
@@ -69,6 +74,11 @@ class SalesHomePage extends React.Component {
             });
         }, DELAY_TIME);
 
+        const today = moment();
+        SalesHomeAction.getContractExpireRemind({
+            starttime: today.valueOf(),
+            endtime: today.add(3, 'months').valueOf()
+        });
     }
 
     //缩放延时，避免页面卡顿
@@ -386,6 +396,10 @@ class SalesHomePage extends React.Component {
 
     //渲染左侧列表
     renderDiffCustomerPanel = () => {
+        const contractExpireRemindClassName = classNames('customer-item', {
+            'selected-customer-item': this.state.showCustomerPanel === EXPIRING_CONTRACT_STATISTICS
+        });
+
         return (
             <ul>
                 {_.map(ALL_CUSTOMER_LISTS_TYPE, (item) => {
@@ -411,6 +425,12 @@ class SalesHomePage extends React.Component {
                         </li>
                     );
                 })}
+                <li className={contractExpireRemindClassName} onClick={this.handleClickDiffCustomerType.bind(this, EXPIRING_CONTRACT_STATISTICS)}>
+                    <div>
+                        <span>{Intl.get('contract.expire.in.next.three.months', '近三个月到期合同')}</span>
+                        <span className="data-total">{this.state.contractExpireRemind.total.toString()}</span>
+                    </div>
+                </li>
             </ul>
         );
     };
@@ -471,9 +491,41 @@ class SalesHomePage extends React.Component {
                 break;
             case ALL_LISTS_TYPE.SALES_CLUE:
                 rightPanel = this.renderSalesClue();
+                break;
+            case EXPIRING_CONTRACT_STATISTICS:
+                rightPanel = this.renderContractExpireRemind();
+                break;
         }
         return rightPanel;
     };
+
+    //渲染近三个月到期合同统计
+    renderContractExpireRemind() {
+        let chart = contractChart.getContractExpireRemindChart({
+            title: Intl.get('contract.expire.in.next.three.months', '近三个月到期合同')
+        });
+        chart.data = this.state.contractExpireRemind.data;
+        chart.resultType = '';
+
+        //表格列
+        const columns = _.get(chart, 'option.columns');
+        //负责人列索引
+        const userNameColumnIndex = _.findIndex(columns, column => column.dataIndex === 'user_name');
+
+        //对于普通销售来说，因为显示的是他自己的数据，所以不需要显示负责人列
+        if (userNameColumnIndex !== -1) {
+            columns.splice(userNameColumnIndex, 1);
+        }
+
+        const charts = [chart];
+
+        return (
+            <AntcAnalysis
+                charts={charts}
+                isUseScrollBar={true}
+            />
+        );
+    }
 
     //新分配的客户
     renderNewDistributeCustomer = () => {

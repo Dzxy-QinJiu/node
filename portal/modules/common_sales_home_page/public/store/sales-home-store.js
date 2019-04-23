@@ -23,6 +23,13 @@ SalesHomeStore.prototype.setInitState = function() {
         errMsg: '',
         data: {}
     };
+    //到期合同提醒数据
+    this.contractExpireRemind = {
+        loading: true,
+        errMsg: '',
+        total: 0,
+        data: {}
+    };
     //新增客户统计
     this.customerTotalObj = {
         loading: true,
@@ -526,4 +533,20 @@ SalesHomeStore.prototype.afterRemarkClue = function(updateItem) {
     });
     this.salesClueObj.data.total--;
 };
+
+SalesHomeStore.prototype.getContractExpireRemind = function(result) {
+    if (result.loading) {
+        this.contractExpireRemind.loading = true;
+        this.contractExpireRemind.errMsg = '';
+    } else if (result.error) {
+        this.contractExpireRemind.loading = false;
+        this.contractExpireRemind.errMsg = result.errorMsg;
+    } else {
+        this.contractExpireRemind.loading = false;
+        this.contractExpireRemind.errMsg = '';
+        this.contractExpireRemind.data = result.resData;
+        this.contractExpireRemind.total = result.resData.total;
+    }
+};
+
 module.exports = alt.createStore(SalesHomeStore, 'SalesHomeStore');

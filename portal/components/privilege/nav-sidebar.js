@@ -8,8 +8,6 @@ var Popover = require('antd').Popover;
 var classNames = require('classnames');
 var React = require('react');
 var createReactClass = require('create-react-class');
-var userInfoEmitter = require('../../public/sources/utils/emitters').userInfoEmitter;
-var notificationEmitter = require('../../public/sources/utils/emitters').notificationEmitter;
 var _ = require('lodash');
 var UnreadMixin = require('./mixins/unread');
 var websiteConfig = require('../../lib/utils/websiteConfig');
@@ -22,6 +20,9 @@ import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
 import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
+import {hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import {phoneEmitter, notificationEmitter, userInfoEmitter} from 'PUB_DIR/sources/utils/emitters';
+import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 
 
 const session = storageUtil.session;
@@ -130,11 +131,13 @@ var NavSidebar = createReactClass({
             hasUnreadReply: false,//是否有未读的回复
             hasDiffApplyUnreadReply: false,//除用户申请外其他申请是否有未读回复
             hideNavIcon: false,//是否隐藏图标（小屏幕只展示文字）
+            isShowDialUpKeyboard: false,//是否展示拨号键盘的标识
         };
     },
     propTypes: {
         toggleNotificationPanel: PropTypes.func,
         closeNotificationPanel: PropTypes.func,
+        isShowNotificationPanel: PropTypes.bool
     },
 
     changeUserInfoLogo: function(userLogoInfo) {
@@ -185,6 +188,7 @@ var NavSidebar = createReactClass({
         userInfoEmitter.on(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         //未读回复列表变化后触发
         notificationEmitter.on(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
+        phoneEmitter.on(phoneEmitter.CALL_CLIENT_INITED,this.triggerDialUpKeyboardShow);
         //其他类型的未读回复列表变化后触发
         notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshDiffApplyHasUnreadReply);
         //获取用户审批的未读回复列表
@@ -212,6 +216,13 @@ var NavSidebar = createReactClass({
             //点击到线索未处理的数字上，进行跳转
             history.push('/clue_customer', {clickUnhandleNum: true});
         });
+    },
+    //呼叫中心的电话系统初始化完成后，触发拨号键盘是否展示的判断
+    triggerDialUpKeyboardShow: function() {
+        //电话系统初始化完成后，判断是否有打电话的权限（是否配坐席号，配置了才可以打电话）
+        if (hasCalloutPrivilege) {
+            this.setState({isShowDialUpKeyboard: true});
+        }
     },
     getHasDiffApplyUnreadReply: function() {
         const DIFF_APPLY_UNREAD_REPLY = DIFF_APPLY_TYPE_UNREAD_REPLY.DIFF_APPLY_UNREAD_REPLY;
@@ -303,6 +314,7 @@ var NavSidebar = createReactClass({
         userInfoEmitter.removeListener(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
         notificationEmitter.removeListener(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshDiffApplyHasUnreadReply);
+        phoneEmitter.removeListener(phoneEmitter.CALL_CLIENT_INITED, this.triggerDialUpKeyboardShow);
         $(window).off('resize', this.calculateHeight);
     },
 
@@ -317,11 +329,17 @@ var NavSidebar = createReactClass({
         if (!notification) {
             return null;
         }
+        let noticeCls = classNames('iconfont icon-tongzhi',{
+            'acitve': this.props.isShowNotificationPanel,
+        });
+        let aCls = classNames({
+            'acitve': this.props.isShowNotificationPanel,
+        });
         return (
             <div className="notification" onClick={this.toggleNotificationPanel}>
                 {
-                    this.state.hideNavIcon ? <a>{notification.shortName}</a> :
-                        <i className="iconfont icon-tongzhi" title={notification.name}></i>
+                    this.state.hideNavIcon ? <a className={aCls}>{notification.shortName}</a> :
+                        <i className={noticeCls} title={notification.name}></i>
                 }
             </div>
         );
@@ -356,13 +374,21 @@ var NavSidebar = createReactClass({
             'sidebar-backend-config': true,
             'text-nav-li': this.state.hideNavIcon
         });
+        let backendConfigCls = classNames('iconfont icon-role-auth-config',{
+            'deactivation': this.props.isShowNotificationPanel,
+        });
+        let backendConfigSpanCls = classNames({
+            'deactivation': this.props.isShowNotificationPanel,
+        });
         return (
             <div className={wrapperCls}>
                 <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
                     overlayClassName="nav-sidebar-backend-config">
                     <NavLink to={backendConfigMenu.routePath} activeClassName="active">
-                        {this.state.hideNavIcon ? backendConfigMenu.shortName :
-                            <i className="iconfont icon-role-auth-config" title={backendConfigMenu.name}/>}
+                        {this.state.hideNavIcon ? <span className={backendConfigSpanCls}>
+                            {backendConfigMenu.shortName}
+                        </span> :
+                            <i className={backendConfigCls} title={backendConfigMenu.name}/>}
                     </NavLink>
                 </Popover>
             </div>
@@ -402,12 +428,15 @@ var NavSidebar = createReactClass({
                     placement="rightBottom"
                     overlayClassName="nav-sidebar-userinfo">
                     <div className="avatar_container">
-                        <Avatar className="avatar"
+                        <Avatar
+                            className="avatar"
                             size="51px"
                             src={this.state.userInfoLogo}
                             userName={this.state.userInfo.user_name}
                             nickName={this.state.userInfo.nick_name}
-                            round="true" link="true" url="/user_info_manage"/>
+                            round="true" link="true" url="/user_info_manage"
+                            isActiveFlag={this.props.isShowNotificationPanel}
+                        />
                     </div>
                 </Popover>
             </div>
@@ -486,7 +515,8 @@ var NavSidebar = createReactClass({
                 'iconfont': !this.state.hideNavIcon,
                 [`icon-${category}-ico`]: !this.state.hideNavIcon && currentPageCategory !== category,
                 [`icon-active-${category}-ico`]: addActive,
-                'active': addActive
+                'active': addActive,
+                'deactivation': this.props.isShowNotificationPanel
             });
             //菜单项类
             let routeCls = classNames({
@@ -506,6 +536,7 @@ var NavSidebar = createReactClass({
             );
         });
     },
+
     render: function() {
         var _this = this;
         return (
@@ -537,6 +568,7 @@ var NavSidebar = createReactClass({
                     <div className="sidebar-user" ref={(element) => {
                         this.userInfo = element;
                     }}>
+                        {this.state.isShowDialUpKeyboard ? (<DialUpKeyboard btnSize={24} placement="right"/>) : null}
                         {_this.getNotificationBlock()}
                         {_this.renderBackendConfigBlock()}
                         {_this.getUserInfoBlock()}

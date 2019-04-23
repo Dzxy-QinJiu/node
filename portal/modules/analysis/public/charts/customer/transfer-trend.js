@@ -72,7 +72,7 @@ export function getCustomerTransferTrendChart() {
                 _.each(chart.data, item => {
                     if (item.name) {
                         let tr = [item.name];
-                        const valueCols = _.map(firstItem.interval_list, 'number');
+                        const valueCols = _.map(item.interval_list, 'number');
                         tr = tr.concat(valueCols);
                         csvData.push(tr);
                     }

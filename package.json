@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "ant-auth-request": "1.0.16",
-    "ant-chart-collection": "1.0.5",
+    "ant-chart-collection": "1.0.7",
     "ant-utils": "1.0.11",
     "app-root-path": "1.0.0",
     "babel": "6.23.0",

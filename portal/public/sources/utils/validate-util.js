@@ -24,7 +24,6 @@ export const isPhone = function(value) {
 };
 
 
-
 //邮箱正则表达式
 export const emailRegex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 //是否是邮箱
@@ -91,5 +90,12 @@ export const numberAddNoMoreThan = function(max, base, msg, rule, value, callbac
             callback();
         }
     }
+};
+//是否是电话号码（包括手机号）的验证方法
+export const isTelephone = function(phoneNumber) {
+    return commonPhoneRegex.test(phoneNumber) ||
+        autoLineAreaPhoneRegex.test(phoneNumber) ||
+        hotlinePhoneRegex.test(phoneNumber) ||
+        phone1010Regex.test(phoneNumber);
 };
 

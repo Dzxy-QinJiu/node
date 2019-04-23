@@ -173,8 +173,11 @@ class PageFrame extends React.Component {
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-xs-2">
-                        <LeftMenu toggleNotificationPanel={this.toggleNotificationPanel}
-                            closeNotificationPanel={this.closeNotificationPanel}/>
+                        <LeftMenu
+                            toggleNotificationPanel={this.toggleNotificationPanel}
+                            closeNotificationPanel={this.closeNotificationPanel}
+                            isShowNotificationPanel={this.state.isShowNotificationPanel}
+                        />
                     </div>
                     <div className="col-xs-10">
                         {renderRoutes(this.props.route.routes)}

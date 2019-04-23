@@ -15,6 +15,7 @@ import SalesStageForm from './views/sales-stage-form';
 import Trace from 'LIB_DIR/trace';
 import {message} from 'antd';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
+import NoDataIntro from 'CMP_DIR/no-data-intro';
 
 function getStateFromStore(_this) {
     return {
@@ -172,9 +173,24 @@ class SalesStagePage extends React.Component {
         var _this = this;
         var width = this.state.salesStageWidth;
         var salesStageList = this.state.salesStageList;
+        let length = _.get(salesStageList, 'length');
+        let noDataTips = this.state.getSalesStageListErrMsg;
+        if (!this.state.loading && length === 0) {
+            noDataTips = Intl.get('crm.order.stage.nodata.tips', '暂无订单阶段，请先添加');
+        }
         return (
             <div className="sales-stage-manage-container" data-tracename="订单阶段管理">
                 {this.renderTopNavOperation()}
+                {
+                    this.state.loading ? (
+                        <Spinner/>
+                    ) : null
+                }
+                {
+                    noDataTips ? (
+                        <NoDataIntro noDataTip={noDataTips}/>
+                    ) : null
+                }
                 {this.state.salesStageFormShow ? (
                     <SalesStageForm
                         salesStage={this.state.currentSalesStage}

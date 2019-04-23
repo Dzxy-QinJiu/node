@@ -1,15 +1,24 @@
 /**
- * 销售机会成交明细
+ * 销售机会明细
  */
 
-export function getChanceDealDetailChart() {
+export function getChanceDetailChart() {
     return {
-        title: '销售机会成交明细',
+        title: '销售机会明细',
         chartType: 'table',
-        url: '/rest/analysis/customer/v2/sales_opportunity/:data_type/apply/deal/detail',
+        url: '/rest/analysis/customer/v2/sales_opportunity/:data_type/apply/opportunity/stage',
+        conditions: [{
+            name: 'page_size',
+            value: 9999
+        }],
         dataField: 'list',
         processData: data => {
             let processedData = [];
+
+            //添加是否签单信息
+            _.each(data, item => {
+                item.is_signed = item.apply_opp_stage === 'win' ? Intl.get('user.yes', '是') : Intl.get('user.no', '否');
+            });
 
             let groupedData = _.groupBy(data, 'apply_team_name');
 
@@ -51,6 +60,10 @@ export function getChanceDealDetailChart() {
                 }, {
                     title: '客户经理',
                     dataIndex: 'nick_name',
+                    width: '10%',
+                }, {
+                    title: '是否签单',
+                    dataIndex: 'is_signed',
                     width: '10%',
                 }
             ],
