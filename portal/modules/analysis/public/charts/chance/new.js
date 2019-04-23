@@ -16,9 +16,7 @@ export function getNewChanceChart(chartType = 'table') {
     if (chartType === 'funnel') {
         chart.customOption = {
             valueField: 'showValue',
-            minSize: 1,
             showConvertRate: true,
-            totalConvertRateTitle: '转化率'
         };
 
         chart.processData = getFunnelWithConvertRateProcessDataFunc([

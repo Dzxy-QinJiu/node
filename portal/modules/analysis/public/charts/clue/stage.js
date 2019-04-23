@@ -46,10 +46,8 @@ export function getStageChart() {
         ], ': ', '', 'STAGE_NAME'),
         noExportCsv: true,
         customOption: {
-            minSize: 1,
             valueField: 'showValue',
             showConvertRate: true,
-            totalConvertRateTitle: '转化率'
         },
         cardContainer: {
             selectors: [{
