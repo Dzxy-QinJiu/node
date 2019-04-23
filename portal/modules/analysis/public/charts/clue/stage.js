@@ -2,7 +2,7 @@
  * 线索阶段统计
  */
 
-import { getFunnelWithConversionRateProcessDataFunc } from '../../utils';
+import { getFunnelWithConvertRateProcessDataFunc } from '../../utils';
 
 import Store from '../../store';
 
@@ -18,7 +18,7 @@ export function getStageChart() {
             name: 'clue_source',
             value: '',
         }],
-        processData: getFunnelWithConversionRateProcessDataFunc([
+        processData: getFunnelWithConvertRateProcessDataFunc([
             {
                 key: 'total',
                 name: Intl.get('common.all', '全部')

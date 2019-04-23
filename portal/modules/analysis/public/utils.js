@@ -221,7 +221,7 @@ export function processFallsChartCsvData(chart, option) {
 }
 
 //获取带转化率的漏斗图的数据处理函数
-export function getFunnelWithConversionRateProcessDataFunc(stageList, separator = ': ', prefixRule = 'STAGE_NAME', suffixRule = '_rate') {
+export function getFunnelWithConvertRateProcessDataFunc(stageList, separator = ': ', prefixRule = 'STAGE_NAME', suffixRule = '_rate') {
     return function(data) {
         let processedData = [];
 

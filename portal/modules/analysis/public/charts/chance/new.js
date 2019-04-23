@@ -2,7 +2,7 @@
  * 新机会统计
  */
 
-import { getFunnelWithConversionRateProcessDataFunc } from '../../utils';
+import { getFunnelWithConvertRateProcessDataFunc } from '../../utils';
 
 export function getNewChanceChart(chartType = 'table') {
     let chart = {
@@ -21,7 +21,7 @@ export function getNewChanceChart(chartType = 'table') {
             totalConvertRateTitle: '转化率'
         };
 
-        chart.processData = getFunnelWithConversionRateProcessDataFunc([
+        chart.processData = getFunnelWithConvertRateProcessDataFunc([
             {
                 name: '提交数',
                 key: 'total',
