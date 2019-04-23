@@ -70,7 +70,7 @@ class SalesStageForm extends React.Component {
         return (rule, value, callback) => {
             let orderValue = _.trim(value);
             if (orderValue) {
-                let existOrderStageList = _.get(SalesStageStore.getState(), 'salesStageList', []);
+                let existOrderStageList = this.state.salesStageList;
                 let length = _.get(existOrderStageList, 'length');
                 if (length) {
                     let isExist = _.find(existOrderStageList, item => item.name === orderValue);

@@ -36,11 +36,8 @@ SalesStageStore.prototype.getSalesStageList = function(resData) {
             this.salesStageList = _.get(resData, 'list', []);
         }
     }
-
     this.isSavingSalesStage = false;
-    this.currentSalesStageList = $.map(this.salesStageList, function(obj) {
-        return $.extend(true, {}, obj);//返回对象的深拷贝
-    });
+    this.currentSalesStageList = _.cloneDeep(this.salesStageList); //返回对象的深拷贝
 };
 
 //添加销售阶段
@@ -52,9 +49,7 @@ SalesStageStore.prototype.addSalesStage = function(salesStageCreated) {
         $.each(salesStageCreated.value, function(i, salesStage) {
             _this.salesStageList.push(salesStage);
         });
-        _this.currentSalesStageList = $.map(_this.salesStageList, function(obj) {
-            return $.extend(true, {}, obj);//返回对象的深拷贝
-        });
+        _this.currentSalesStageList = _.cloneDeep(this.salesStageList); //返回对象的深拷贝
         this.saveStageErrMsg = '';
         this.salesStageFormShow = false;
     }else{
@@ -98,9 +93,7 @@ SalesStageStore.prototype.deleteSalesStage = function(salesStage) {
         this.isSavingSalesStageHome = true;
     }else if(!salesStage.error) {
         this.salesStageList = _.filter(this.salesStageList,item => item.id !== salesStage.value.id);
-        this.currentSalesStageList = $.map(this.salesStageList, function(obj) {
-            return $.extend(true, {}, obj);//返回对象的深拷贝
-        });
+        this.currentSalesStageList = _.cloneDeep(this.salesStageList); //返回对象的深拷贝
         this.isSavingSalesStageHome = false;
         this.deleteStageErrMsg = '';
         this.salesStageFormShow = false;
