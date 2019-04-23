@@ -2606,6 +2606,9 @@ var en_US = {
     'crm.order.stage.name': 'Stage name',//阶段名称
     'crm.order.stage.name.placeholder': 'Please fill in stage name',//请输入阶段名称
     'crm.order.stage.destrip.palceholder': 'Please fill in stage description',//请输入阶段的描述信息
+    'crm.order.stage.nodata.tips': 'No order stage, please add first', // 暂无订单阶段，请先添加
+    'crm.order.stage.name.verify': 'The stage name is existed', // 该阶段名称已存在
+
     'failed.get.all.leave.apply': 'Failed to get all business trip lists',//获取全部出差申请失败
     'failed.get.all.sales.oppotunity': 'Failed to get all sales oppotunities',//获取全部销售机会申请失败
     'failed.get.all.leave.list': 'Failed to get all leave applies',//获取全部请假申请失败
