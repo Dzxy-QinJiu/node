@@ -197,4 +197,9 @@ exports.getApplyActiveEmailTip = (applyErrorMsg) => {
     }
     return applyErrorMsg;
 };
+exports.AUTHS = {
+    'GETALL': 'CUSTOMER_ALL',
+    'UPDATE_ALL': 'CUSTOMER_MANAGER_UPDATE_ALL',
+    'TRANSFER_MANAGER': 'CRM_MANAGER_TRANSFER'
+};
 

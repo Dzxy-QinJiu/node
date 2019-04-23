@@ -138,7 +138,7 @@ module.exports = {
     },
     {
         'method': 'get',
-        'path': '/rest/appuser/apply/:apply_id',
+        'path': '/rest/appuser/apply/:apply_id/:type',
         'handler': 'getApplyDetail',
         'passport': {
             'needLogin': true

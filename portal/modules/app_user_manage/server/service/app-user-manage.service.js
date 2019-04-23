@@ -126,7 +126,7 @@ var AppUserRestApis = {
     // 获取安全域信息列表
     getRealmList: '/rest/base/v1/realm/list',
     // 根据客户的id查询客户最后联系时间
-    getQueryCustomerById: '/rest/customer/v2/customer/query/10/id/ascend',
+    getQueryCustomerById: '/rest/customer/v3/customer/range/:type/10/1/start_time/descend',
 };
 
 exports.urls = AppUserRestApis;
@@ -685,11 +685,11 @@ function getAppsUserRolesType(req, res, applyBasicDetail, emitter) {
 }
 //跟据客户的id获取客户详情
 function getQueryCustomerById(req, res, id) {
-    var queryObj = {id: id};
+    var queryObj = {'query': {'id': id}};
     return new Promise((resolve, reject) => {
         return restUtil.authRest.post(
             {
-                url: AppUserRestApis.getQueryCustomerById,
+                url: AppUserRestApis.getQueryCustomerById.replace(':type', req.params.type),
                 req: req,
                 res: res
             }, queryObj, {
