@@ -173,7 +173,11 @@ class SalesStagePage extends React.Component {
         var _this = this;
         var width = this.state.salesStageWidth;
         var salesStageList = this.state.salesStageList;
-        const getSalesStageListErrMsg = this.state.getSalesStageListErrMsg;
+        let length = _.get(salesStageList, 'length');
+        let noDataTips = this.state.getSalesStageListErrMsg;
+        if (!this.state.loading && length === 0) {
+            noDataTips = Intl.get('crm.order.stage.nodata.tips', '暂无订单阶段，请先添加');
+        }
         return (
             <div className="sales-stage-manage-container" data-tracename="订单阶段管理">
                 {this.renderTopNavOperation()}
@@ -183,8 +187,8 @@ class SalesStagePage extends React.Component {
                     ) : null
                 }
                 {
-                    getSalesStageListErrMsg ? (
-                        <NoDataIntro noDataTip={getSalesStageListErrMsg}/>
+                    noDataTips ? (
+                        <NoDataIntro noDataTip={noDataTips}/>
                     ) : null
                 }
                 {this.state.salesStageFormShow ? (

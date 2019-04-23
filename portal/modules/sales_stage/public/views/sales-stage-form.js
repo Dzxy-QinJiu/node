@@ -65,6 +65,29 @@ class SalesStageForm extends React.Component {
             this.props.submitSalesStageForm(submitObj);
         });
     }
+    // 订单阶段唯一性校验
+    getValidator = () => {
+        return (rule, value, callback) => {
+            let orderValue = _.trim(value);
+            if (orderValue) {
+                let existOrderStageList = _.get(SalesStageStore.getState(), 'salesStageList', []);
+                let length = _.get(existOrderStageList, 'length');
+                if (length) {
+                    let isExist = _.find(existOrderStageList, item => item.name === orderValue);
+                    if (isExist) {
+                        callback(Intl.get('crm.order.stage.name.verify', '该阶段名称已存在'));
+                    } else {
+                        callback();
+                    }
+                } else {
+                    callback();
+                }
+
+            } else {
+                callback(Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称'));
+            }
+        };
+    };
 
     renderFormContent() {
         var formData = this.state.formData;
@@ -84,7 +107,7 @@ class SalesStageForm extends React.Component {
                         initialValue: formData.name,
                         rules: [{
                             required: true,
-                            message: Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称')
+                            validator: this.getValidator()
                         }, nameLengthRule]
                     })(
                         <Input placeholder={Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称')}/>

@@ -2640,6 +2640,9 @@ var zh_CN = {
     'crm.order.stage.name': '阶段名称',
     'crm.order.stage.name.placeholder': '请输入阶段名称',
     'crm.order.stage.destrip.palceholder': '请输入阶段的描述信息',
+    'crm.order.stage.nodata.tips': '暂无订单阶段，请先添加',
+    'crm.order.stage.name.verify': '该阶段名称已存在',
+    
     'leave.apply.add.leave.person': '出差人员',
     'leave.apply.add.leave.destination': '目的地',
     'leave.apply.add.leave.reason': '出差事由',
