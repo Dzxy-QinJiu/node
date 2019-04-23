@@ -20,7 +20,7 @@ class Avatar extends React.Component {
                     (<Aimg url={this.props.url} round={this.props.round} src={this.props.src}
                         size={this.props.size}
                         userName={this.props.userName} nickName={this.props.nickName}
-                        showName={this.props.showName} name={this.props.name}/>) :
+                        showName={this.props.showName} name={this.props.name} isActiveFlag={this.props.isActiveFlag}/>) :
                     (<a style={aStyle}><Img src={this.props.src} size={this.props.size} round={this.props.round}/>
                         {this.props.showName ? <Name name={this.props.name}/> : ''}</a>)
                 }
@@ -36,7 +36,7 @@ class Aimg extends React.Component {
             <NavLink to={this.props.url} activeClassName="active">
                 <Img alt={this.props.name} src={this.props.src} round={this.props.round}
                     userName={this.props.userName} nickName={this.props.nickName}
-                    size={this.props.size}
+                    size={this.props.size} isActiveFlag={this.props.isActiveFlag}
                 />
                 {this.props.showName ? <Name name={this.props.name}/> : ''}
             </NavLink>
@@ -52,8 +52,11 @@ class Img extends React.Component {
             height: '100%',
             fontSize: '24px',
             lineHeight: this.props.size || '45px',
-            borderRadius: this.props.round ? '50%' : 0
+            borderRadius: this.props.round ? '50%' : 0,
         };
+        if (this.props.isActiveFlag) {
+            imgStyle.borderColor = '#ffffff';
+        }
         return (
             <DefaultUserLogoTitle
                 userName={this.props.userName}
@@ -77,6 +80,48 @@ class Name extends React.Component {
         );
     }
 }
+
+Aimg.propTypes = {
+    isActiveFlag: PropTypes.bool,
+    size: PropTypes.string,
+    className: PropTypes.string,
+    link: PropTypes.string,
+    url: PropTypes.string,
+    round: PropTypes.string,
+    src: PropTypes.string,
+    userName: PropTypes.string,
+    nickName: PropTypes.string,
+    showName: PropTypes.string,
+    name: PropTypes.string
+};
+
+Img.propTypes = {
+    isActiveFlag: PropTypes.bool,
+    size: PropTypes.string,
+    round: PropTypes.string,
+    src: PropTypes.string,
+    userName: PropTypes.string,
+    nickName: PropTypes.string,
+    name: PropTypes.string
+};
+
+Name.propTypes = {
+    name: PropTypes.string
+};
+
+Avatar.propTypes = {
+    isActiveFlag: PropTypes.bool,
+    size: PropTypes.string,
+    className: PropTypes.string,
+    link: PropTypes.string,
+    url: PropTypes.string,
+    round: PropTypes.string,
+    src: PropTypes.string,
+    userName: PropTypes.string,
+    nickName: PropTypes.string,
+    showName: PropTypes.string,
+    name: PropTypes.string
+};
 
 module.exports = Avatar;
 

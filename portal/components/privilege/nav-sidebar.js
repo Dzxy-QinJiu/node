@@ -428,12 +428,15 @@ var NavSidebar = createReactClass({
                     placement="rightBottom"
                     overlayClassName="nav-sidebar-userinfo">
                     <div className="avatar_container">
-                        <Avatar className="avatar"
+                        <Avatar
+                            className="avatar"
                             size="51px"
                             src={this.state.userInfoLogo}
                             userName={this.state.userInfo.user_name}
                             nickName={this.state.userInfo.nick_name}
-                            round="true" link="true" url="/user_info_manage"/>
+                            round="true" link="true" url="/user_info_manage"
+                            isActiveFlag={this.props.isShowNotificationPanel}
+                        />
                     </div>
                 </Popover>
             </div>
