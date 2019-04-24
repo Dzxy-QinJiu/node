@@ -329,6 +329,8 @@ var zh_CN = {
     'user.title': '用户管理',
     'user.exist.user': '已有用户',
     'user.user.add': '添加用户',
+    'user.import.user': '导入用户',
+    'user.import.user.toplimit': '每次导入上限为1000条用户',
     'user.user.add.success': '添加成功',
     'user.user.basic': '基本信息',
     'user.user.app.select': '选择应用',

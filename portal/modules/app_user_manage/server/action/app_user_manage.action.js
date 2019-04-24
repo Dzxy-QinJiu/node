@@ -352,3 +352,20 @@ exports.getRealmList = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+function templateFile(res, example, filename) {
+    let content = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(example)]);
+    res.setHeader('Content-disposition', 'attachement; filename=' + filename);
+    res.setHeader('Content-Type', 'application/csv');
+    res.write(content);
+    res.end();
+}
+
+// 导入用户模板文件
+exports.getUserTemplate = (req, res) => {
+    let example = '用户名,昵称,手机号,邮箱,所属客户,所属销售,类型,开通时间,到期时间,备注\n' +
+        '18057331777,浙江优选,13877775555,306417211@qq.com,浙江优选网络科技有限公司,张三,试用,20190410,20190425,销售部\n' +
+        '583850111,青藏铁路公安局,13877776666,lisi@163.com,青海省青藏铁路公安局,李四,签约,20190424,20200424,客户部\n';
+    let filename = 'import_user_template.csv';
+    templateFile(res, example, filename);
+};

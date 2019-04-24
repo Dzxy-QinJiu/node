@@ -45,6 +45,8 @@ import Spinner from 'CMP_DIR/spinner';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import IntegrateConfigView from './views/integrate-config/index';
 import TopNav from 'CMP_DIR/top-nav';
+import ImportUserTemplate from 'CMP_DIR/import_step';
+import {REG_CRM_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 
 /*用户管理界面外层容器*/
 class AppUserManage extends React.Component {
@@ -64,6 +66,7 @@ class AppUserManage extends React.Component {
         isGettingIntegrateType: true,//正在获取集成类型
         getItegrateTypeError: false,//获取集成类型是否出错
         isShowAddProductView: false,//添加产品的配置视图
+        isShowImportUserPanel: false // 是否显示导入用户模板， 默认false
     };
     onStoreChange = () => {
         this.setState(this.getStoreData());
@@ -527,6 +530,21 @@ class AppUserManage extends React.Component {
         AppUserAction.setInitialData();
     };
 
+    // 导入用户面板
+    showImportUserRightPanel = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-item'), '点击导入按钮');
+        this.setState({
+            isShowImportUserPanel: true
+        });
+    };
+    
+    // 关闭导入用户面板
+    closeImportUserRightPanel = () => {
+        this.setState({
+            isShowImportUserPanel: false
+        });
+    };
+    
     //渲染按钮区域
     renderTopNavOperation = () => {
         var currentView = AppUserUtil.getCurrentView();
@@ -605,6 +623,18 @@ class AppUserManage extends React.Component {
                             {this.getApplyUserBtnMini()}
                             {this.getBatchOperateBtnMini()}
                         </span>) : null}
+                { // uem 可以导入用户
+                    isOplateUser() ? null : (
+                        <span>
+                            <PrivilegeChecker
+                                onClick={this.showImportUserRightPanel}
+                                check={this.addUserBtnCheckun}
+                                className="inline-block  btn-item">
+                                <Button>{Intl.get('user.import.user', '导入用户')}</Button>
+                            </PrivilegeChecker>
+                        </span>
+                    )
+                }
             </div>
         </ButtonZones>);
     };
@@ -694,6 +724,8 @@ class AppUserManage extends React.Component {
             this.state.isGettingIntegrateType ||
             this.state.getItegrateTypeError ||
             this.state.isShowAddProductView);
+        
+        const columns = [];
         return (
             <div>
                 <div className="app_user_manage_page table-btn-fix" data-tracename="用户管理">
@@ -714,6 +746,19 @@ class AppUserManage extends React.Component {
                         rightPanelView
                     }
                 </RightPanel>
+                <ImportUserTemplate
+                    uploadActionName='users'
+                    importType={Intl.get('sales.home.user', '用户')}
+                    templateHref='/rest/import/user/download_template'
+                    uploadHref='/rest/crm/customers'
+                    previewList={[]}
+                    showFlag={this.state.isShowImportUserPanel}
+                    getItemPrevList={columns}
+                    closeTemplatePanel={this.closeImportUserRightPanel}
+                    doImportAjax={this.doImport}
+                    regRules={REG_CRM_FILES_TYPE_RULES}
+                    importFileTips={Intl.get('user.import.user.toplimit', '每次导入上限为1000条用户')}
+                />
             </div>
         );
     }

@@ -261,5 +261,12 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
-    }]
+    }, { // 导入用户模板文件
+        'method': 'get',
+        'path': '/rest/import/user/download_template',
+        'handler': 'getUserTemplate',
+        'passport': {
+            'needLogin': true
+        }
+    },]
 };

@@ -101,6 +101,7 @@ class ImportTemplate extends React.Component {
                     uploadActionName={this.props.uploadActionName}
                     importType={this.props.importType}
                     regRules={this.props.regRules}
+                    importFileTips={this.props.importFileTips}
                 />
                 <div className="down-load-template">
                     <a data-tracename="点击下载模板" href={this.props.templateHref}>
@@ -235,7 +236,8 @@ ImportTemplate.defaultProps = {
     onItemListImport: noop,//导入时的函数
     doImportAjax: noop,//确认导入时的函数
     repeatAlertMessage: '',//有重复数据后的提示信息
-    regRules: [],//文件类型的校验规则
+    regRules: [],//文件类型的校验规则,
+    importFileTips: Intl.get('clue.and.crm.upload.size','文件大小不要超过10M!') // 导入文件的提示信息
 };
 ImportTemplate.propTypes = {
     uploadActionName: PropTypes.string,
@@ -250,5 +252,6 @@ ImportTemplate.propTypes = {
     getItemPrevList: PropTypes.func,
     repeatAlertMessage: PropTypes.string,//有重复数据后的提示信息
     regRules: PropTypes.object,
+    importFileTips: PropTypes.string,
 };
 export default ImportTemplate;
