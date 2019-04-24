@@ -31,7 +31,7 @@ export function getNewChanceChart(chartType = 'table') {
             {
                 name: '成交数',
                 key: 'deal',
-            }], '\n\n');
+            }]);
 
         chart.processCsvData = processCsvDataFunnel;
     } else if (chartType === 'table') {

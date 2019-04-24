@@ -43,7 +43,7 @@ export function getStageChart() {
                 key: 'sign',
                 name: Intl.get('common.official', '签约')
             }
-        ], ': ', '', 'STAGE_NAME'),
+        ], '', 'STAGE_NAME'),
         noExportCsv: true,
         customOption: {
             valueField: 'showValue',
