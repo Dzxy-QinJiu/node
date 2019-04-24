@@ -279,9 +279,9 @@ export function processFallsChartCsvData(chart, option) {
 //]
 //需要这个参数是因为返回值里只有阶段标识，没有中文名，而图表上需要显示中文名，所以需要通过一个映射表将标识对应的中文名查出来
 //
-//prefixRule 前缀规则，用于构造转化率字段的匹配规则，若为'STAGE_NAME'，表示要用stageList中的当前被遍历的阶段标识替换，若为其他字符串，则用字符串本身
+//prefixRule 前缀规则，用于构造转化率字段的前缀匹配规则，若为'STAGE_NAME'，表示要用stageList中的当前被遍历的阶段标识替换，若为其他字符串，则用字符串本身
 //
-//suffixRule 后缀规则，用于构造转化率字段的匹配规则，若为'STAGE_NAME'，表示要用下划线加stageList中的当前被遍历的阶段标识替换，若为其他字符串，则用字符串本身
+//suffixRule 后缀规则，用于构造转化率字段的后缀匹配规则，若为'STAGE_NAME'，表示要用下划线加stageList中的当前被遍历的阶段标识替换，若为其他字符串，则用字符串本身
 //
 //需要前后缀规则参数是因为返回值里的转化率字段命名规则不统一，有的用 阶段标识+固定后缀 如：deal_rate，有的用 前一阶段+后一阶段，如：pass_deal
 //通过设置前后缀规则参数，就能构造出转化率字段标识，从而匹配出对应阶段转化率的值
@@ -311,7 +311,7 @@ export function getFunnelWithConvertRateProcessDataFunc(stageList, prefixRule = 
                 //则将前缀设为当前阶段标识
                 prefix = stage.key; 
             } else {
-                //否则将前缀设为前缀标识本身的值
+                //否则将前缀设为前缀规则本身的值
                 prefix = prefixRule;
             }
 
@@ -320,13 +320,13 @@ export function getFunnelWithConvertRateProcessDataFunc(stageList, prefixRule = 
                 //则将后缀设为下划线加上当前阶段标识
                 suffix = '_' + stage.key; 
             } else {
-                //否则将后缀设为后缀标识本身的值
+                //否则将后缀设为后缀规则本身的值
                 suffix = suffixRule;
             }
 
             //如果前后缀均不为null，表示需要取相邻两个阶段间的转化率
             if (prefix !== null && suffix !== null) {
-                //遍历返回数据对象
+                //遍历返回的数据对象
                 _.each(data, (value, key) => {
                     //前缀是否匹配
                     let prefixMatched;
