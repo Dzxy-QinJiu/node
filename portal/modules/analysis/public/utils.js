@@ -221,11 +221,79 @@ export function processFallsChartCsvData(chart, option) {
 }
 
 //获取带转化率的漏斗图的数据处理函数
+//
+//可以将原始返回数据，如：
+//{
+//    deal: 0,
+//    deal_rate: 0,
+//    pass: 5,
+//    pass_rate: 0.8333,
+//    total: 6
+//}
+//或
+//{
+//    deal: 0,
+//    pass_deal: 0,
+//    pass: 5,
+//    total_pass: 0.8333,
+//    total: 6
+//}
+//转化成图表渲染及导出需要的数据格式：
+//[
+//    {
+//        name: '',
+//        value: 6,
+//        showValue: '提交数: 6',
+//        csvName: '提交数'
+//    },
+//    {
+//        name: '83.33%',
+//        value: 5,
+//        showValue: '通过数: 5',
+//        csvName: '通过数'
+//    },
+//    {
+//        name: '0.00%',
+//        value: 0,
+//        showValue: '成交数: 0',
+//        csvName: '成交数',
+//        totalConvertRate: '0.00%'
+//    }
+//]
+//
+//参数说明：
+//stageList 阶段列表，提供阶段标识到其中文名的映射，如：
+//[
+//    {
+//        name: '提交数',
+//        key: 'total',
+//    },
+//    {
+//        name: '通过数',
+//        key: 'pass',
+//    },
+//    {
+//        name: '成交数',
+//        key: 'deal',
+//    }
+//]
+//需要这个参数是因为返回值里只有阶段标识，没有中文名，而图表上需要显示中文名，所以需要通过一个映射表将标识对应的中文名查出来
+//
+//prefixRule 前缀规则，用于构造转化率字段的匹配规则，若为'STAGE_NAME'，表示要用stageList中的当前被遍历的阶段标识替换，若为其他字符串，则用字符串本身
+//
+//suffixRule 后缀规则，用于构造转化率字段的匹配规则，若为'STAGE_NAME'，表示要用下划线加stageList中的当前被遍历的阶段标识替换，若为其他字符串，则用字符串本身
+//
+//需要前后缀规则参数是因为返回值里的转化率字段命名规则不统一，有的用 阶段标识+固定后缀 如：deal_rate，有的用 前一阶段+后一阶段，如：pass_deal
+//通过设置前后缀规则参数，就能构造出转化率字段标识，从而匹配出对应阶段转化率的值
+//
 export function getFunnelWithConvertRateProcessDataFunc(stageList, prefixRule = 'STAGE_NAME', suffixRule = '_rate') {
     return function(data) {
+        //最终数据
         let processedData = [];
 
+        //遍历阶段映射列表
         _.each(stageList, stage => {
+            //从返回数据中取出对应阶段的值
             let value = data[stage.key] || 0;
 
             //用于在图表上显示的值
@@ -233,44 +301,67 @@ export function getFunnelWithConvertRateProcessDataFunc(stageList, prefixRule = 
 
             //转化率
             let convertRate = '';
+            //转化率字段前缀
             let prefix;
+            //转化率字段后缀
             let suffix;
 
+            //如果前缀规则为从当前阶段映射中取阶段标识
             if (prefixRule === 'STAGE_NAME') {
+                //则将前缀设为当前阶段标识
                 prefix = stage.key; 
             } else {
+                //否则将前缀设为前缀标识本身的值
                 prefix = prefixRule;
             }
 
+            //如果后缀规则为从当前阶段映射中取阶段标识
             if (suffixRule === 'STAGE_NAME') {
+                //则将后缀设为下划线加上当前阶段标识
                 suffix = '_' + stage.key; 
             } else {
+                //否则将后缀设为后缀标识本身的值
                 suffix = suffixRule;
             }
 
+            //如果前后缀均不为null，表示需要取相邻两个阶段间的转化率
             if (prefix !== null && suffix !== null) {
+                //遍历返回数据对象
                 _.each(data, (value, key) => {
-                    let prefixMatched, suffixMatched;
+                    //前缀是否匹配
+                    let prefixMatched;
+                    //后缀是否匹配
+                    let suffixMatched;
 
+                    //如果返回数据对象中当前被遍历的项的键值是以设置的前缀开头的
                     if (key.startsWith(prefix)) {
+                        //则前缀匹配成功
                         prefixMatched = true;
                     }
 
+                    //如果返回数据对象中当前被遍历的项的键值是以设置的后缀结尾的
                     if (key.endsWith(suffix)) {
+                        //则后缀匹配成功
                         suffixMatched = true;
                     }
 
+                    //如果前后缀都匹配成功，说明该项数据即为当前阶段对应的转化率
                     if (prefixMatched && suffixMatched) {
+                        //将转化率设为当前遍历项的值
                         convertRate = value;
+                        //找到了对应的转化率后，就可以退出循环了
                         return false;
                     }
                 });
             }
 
+            //如果转化率是数字
             if (_.isNumber(convertRate)) {
+                //转为百分比
                 convertRate = (convertRate * 100).toFixed(2) + '%';
             }
 
+            //用处理后得到的值构造最终数据项并加入最终数据数组
             processedData.push({
                 name: convertRate,
                 value,
@@ -282,20 +373,27 @@ export function getFunnelWithConvertRateProcessDataFunc(stageList, prefixRule = 
         //总转化率
         let totalConvertRate;
 
+        //获取第一个阶段的键
         const firstStageKey = _.first(stageList).key;
+        //通过第一个阶段的键获取第一个阶段的值
         const firstStageValue = data[firstStageKey];
+        //获取最后一个阶段的键
         const lastStageKey = _.last(stageList).key;
+        //通过最后一个阶段的键获取最后一个阶段的值
         const lastStageValue = data[lastStageKey];
 
+        //如果第一个阶段值为0，则直接将总转化率设为'0%'，以防止其作为被除数时会得出错误的结果
         if (firstStageValue === 0) {
             totalConvertRate = '0%';
         } else {
+            //否则用最后一个阶段的值除以第一个阶段值来得到总转化率
             totalConvertRate = ((lastStageValue / firstStageValue) * 100).toFixed(2) + '%';
         }
 
         //将成交率存入最后一个数据项
         _.last(processedData).totalConvertRate = totalConvertRate;
 
+        //返回最终数据
         return processedData;
     };
 }
