@@ -199,6 +199,9 @@ class AddApplyForm extends React.Component {
             </div>
         );
     };
+    renderApplyRegex = () => {
+
+    };
     renderAddApplyContent = () => {
         return (
             <div className="add-apply-form-content">
@@ -211,7 +214,7 @@ class AddApplyForm extends React.Component {
                     </TabPane>
                     <TabPane tab={Intl.get('apply.add.form.regex', '审批规则')}
                         key={TAB_KEYS.APPLY_RULE}>
-                        222222
+                        {this.renderApplyRegex()}
                     </TabPane>
                 </Tabs>
             </div>

@@ -14,7 +14,8 @@ class ApplyApproveManage extends React.Component {
         super(props);
         this.state = {
             showAddForm: false,
-            showApplyTypeList: [{'applyType': '默认申请审批','approveRoles': ['销售'],'approveCheck': false,id: '111111111111'},{'applyType': '请假申请审批','approveRoles': ['销售222'],'approveCheck': true,id: '222222222222222222'}],//申请审批的列表
+            showApplyTypeList: [
+                {'applyType': '默认申请审批','approveRoles': ['销售'],'approveCheck': false,id: '111111111111'}, {'applyType': '请假申请审批','approveRoles': ['销售222'],'approveCheck': true,id: '222222222222222222',applyRules: []}],//申请审批的列表
         };
     }
     onStoreChange = () => {
