@@ -45,7 +45,7 @@ import Spinner from 'CMP_DIR/spinner';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import IntegrateConfigView from './views/integrate-config/index';
 import TopNav from 'CMP_DIR/top-nav';
-import ImportUserTemplate from 'CMP_DIR/import_step';
+import ImportUser from 'CMP_DIR/import';
 import {REG_CRM_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 
 /*用户管理界面外层容器*/
@@ -544,7 +544,9 @@ class AppUserManage extends React.Component {
             isShowImportUserPanel: false
         });
     };
-    
+    getItemPrevList = (columns) => {
+        return columns;
+    };
     //渲染按钮区域
     renderTopNavOperation = () => {
         var currentView = AppUserUtil.getCurrentView();
@@ -724,8 +726,7 @@ class AppUserManage extends React.Component {
             this.state.isGettingIntegrateType ||
             this.state.getItegrateTypeError ||
             this.state.isShowAddProductView);
-        
-        const columns = [];
+        const columns = [{a: 1, b: 2}];
         return (
             <div>
                 <div className="app_user_manage_page table-btn-fix" data-tracename="用户管理">
@@ -746,14 +747,15 @@ class AppUserManage extends React.Component {
                         rightPanelView
                     }
                 </RightPanel>
-                <ImportUserTemplate
+                <ImportUser
                     uploadActionName='users'
                     importType={Intl.get('sales.home.user', '用户')}
                     templateHref='/rest/import/user/download_template'
                     uploadHref='/rest/crm/customers'
+                    appList={this.state.appList}
                     previewList={[]}
                     showFlag={this.state.isShowImportUserPanel}
-                    getItemPrevList={columns}
+                    getItemPrevList={this.getItemPrevList.bind(this, columns)}
                     closeTemplatePanel={this.closeImportUserRightPanel}
                     doImportAjax={this.doImport}
                     regRules={REG_CRM_FILES_TYPE_RULES}

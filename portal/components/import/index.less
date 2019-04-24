@@ -1,0 +1,137 @@
+@import "../../public/css/common-variables";
+.import-step-container{
+  .import-clue-template-panel.right-pannel-default {
+    transform: translateX(100%);
+    font-size: 14px;
+    background-color: transparent!important;
+    .iconfont.icon-close.clue-import-btn{
+      color: #fff;
+      background-color: #8ea9c4;
+      border-radius: 0 !important;
+      width: 24px;
+      height: 24px;
+      float: left;
+      font-size: 14px;
+    }
+    //导入线索面板
+    .clue-import-detail-wrap{
+      float: left;
+      height: 100%;
+      background-color: #f5f5f5 !important;
+      position: relative;
+      //线索标题
+      .clue-top-title{
+        background: #fff;
+        padding: 20px 12px 20px 20px;
+        font-weight: bold;
+      }
+      .import-title-top{
+        padding: 20px 60px 10px 20px;
+        .ant-steps {
+          width:400px;
+          .ant-steps-item {
+            .ant-steps-head{
+              background-color:#f5f5f5;
+            }
+            .ant-steps-title{
+              background-color:#f5f5f5 ;
+            }
+          }
+        }
+
+      }
+      .import-detail-container{
+        height: 100%;
+        margin:0 20px;
+
+        .first-step-content {
+          height: 100%;
+          background: #fff;
+          padding: 20px;
+        }
+
+        .second-step-content{
+          height: 100%;
+          background: #fff;
+          padding:100px;
+          text-align: center;
+          .down-load-template{
+            margin-top:10px;
+          }
+
+        }
+        .third-step-content{
+          .import-warning{
+            background: #fff;
+            .ant-alert.ant-alert-warning{
+              border: 1px solid #fff;
+              background-color: #fff;
+              position: relative;
+              top: 0;
+              left: 0;
+              .ant-alert-icon{
+                color:@error_tips_color;
+              }
+              .ant-alert-message{
+                font-size: 13px;
+                color:@error_tips_color;
+              }
+            }
+
+          }
+          .ant-table-body{
+            background: #fff;
+            tr td{
+              white-space: normal;
+              .repeat-item-name{
+                color:@error_tips_color;
+              }
+            }
+          }
+          .prev-foot{
+            text-align: right;
+            margin-top:10px;
+            .ant-btn{
+              margin-left:10px;
+            }
+            .ant-btn[disabled]{
+              color: #fff;
+              background-color: #CBE4F8;
+              border-color: #CBE4F8;
+            }
+            .is-importing{
+              position: absolute;
+              top: 150px;
+              left: 700px;
+              .load8 {
+                transform: scale(0.8, 0.8);
+              }
+            }
+          }
+        }
+      }
+    }
+
+  }
+}
+.import-step-container.show-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 12;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+//导入线索成功后的提示
+.ant-message{
+  top:400px;
+  .ant-message-notice-content{
+    background: rgba(0, 0, 0, 0.5);
+    color:#fff;
+  }
+}
+.file-tip{
+  margin-top:10px;
+}
