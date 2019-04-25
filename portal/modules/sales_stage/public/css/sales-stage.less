@@ -157,8 +157,17 @@
               color: #fff;
               font-size: 16px;
               border-radius: 100px;
+            }
+            .up-arrow {
+              background-image: url("../image/up.png");
               &:hover {
-                background-color: #4d96d1;
+                background-image: url("../image/up_hover.png");
+              }
+            }
+            .down-arrow {
+              background-image: url("../image/down.png");
+              &:hover {
+                background-image: url("../image/down_hover.png");
               }
             }
           }
@@ -190,7 +199,7 @@
             display: none;
           }
           .order-arrow {
-            .icon-arrow-down {
+            .down-arrow {
               display: none;
             }
           }
@@ -198,7 +207,7 @@
 
         &:first-child {
           .order-arrow {
-            .icon-arrow-up {
+            .up-arrow {
               visibility: hidden;
             }
           }
