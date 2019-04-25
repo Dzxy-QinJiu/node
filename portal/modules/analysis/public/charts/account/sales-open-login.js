@@ -18,7 +18,7 @@ export function getSalesOpenAccountLoginChart() {
             let query = arg.query;
 
             if (query) {
-                if (query.starttime && query.endtime) {
+                if (_.has(query, 'starttime') && _.has(query, 'endtime')) {
                     query.grant_create_begin_date = query.starttime;
                     query.grant_create_end_date = query.endtime;
                 }
