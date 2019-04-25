@@ -21,6 +21,7 @@ const teamTreeEmitter = Emitters.teamTreeEmitter;
 const TOP_TEAM_ID = 'sales-team-list-parent-group-id';
 var delayConstant = constantUtil.DELAY.TIMERANG;
 const CALLING_STATUS = 'busy';//正在打电话的状态（busy繁忙，idle空闲，空值-还未配置座机号）
+import MemberApply from './member-apply';
 
 class CrmRightList extends React.Component {
     state = {
@@ -506,10 +507,19 @@ class CrmRightList extends React.Component {
         SalesHomeAction.setActiveView(view);
     };
 
+    renderPendingApproveMemberContent = () => {
+        return (
+            <MemberApply/>
+        );
+    };
+
     render() {
         let resultType = this.props.salesTeamListObj.resultType, errorMsg = this.props.salesTeamListObj.errorMsg;
         return (
             <div className="crm-sales-team-zone" data-tracename="销售（团队）列表">
+                <div className="member-apply-container">
+                    {this.renderPendingApproveMemberContent()}
+                </div>
                 <div className="crm-sales-team-container">
                     {resultType ? (this.renderTooltip(resultType, errorMsg)) : this.renderListContent()}
                 </div>
@@ -530,6 +540,7 @@ CrmRightList.propTypes = {
     currShowType: PropTypes.string,
     refreshDataByChangeSales: PropTypes.func,
     getSalesListHeight: PropTypes.func,
+    pendingApproveMemberObj: PropTypes.object,
 };
 module.exports = CrmRightList;
 

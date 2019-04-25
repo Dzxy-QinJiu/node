@@ -6,6 +6,8 @@ var _ = require('lodash');
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
 import UserAjax from '../../../common/public/ajax/user';
 import {afterGetExtendUserInfo} from 'PUB_DIR/sources/utils/common-method-util';
+import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {getWorklistApplyList} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 
 function SalesHomeActions() {
     this.generateActions(
@@ -236,6 +238,28 @@ function SalesHomeActions() {
             errorMsg => {
                 this.dispatch({loading: false, error: true, errorMsg: errorMsg});
             });
+    };
+
+    // 获取待我审批的邀请成员列表
+    this.getPendingApproveMemberApplyList = function() {
+        getWorklistApplyList({type: APPLY_APPROVE_TYPES.MEMBER_INVITE}).then((workList) => {
+            this.dispatch({error: false, data: workList});
+        }, (errorMsg) => {
+            this.dispatch({
+                error: true,
+                errMsg: errorMsg || Intl.get('member.apply.failed.get.worklist', '获取由我审批的成员申请失败')
+            });
+        });
+    };
+
+    //通过或者驳回审批
+    this.approveMemberApplyPassOrReject = function( obj) {
+        this.dispatch({loading: true, error: false});
+        salesHomeAjax.approveMemberApplyPassOrReject(obj).then((data) => {
+            this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
+        }, (errorMsg) => {
+            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+        });
     };
 }
 

@@ -87,3 +87,11 @@ exports.getCallBack = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+// 批准或驳回审批
+exports.approveMemberApplyPassOrReject = (req, res) => {
+    salesHomeService.approveMemberApplyPassOrReject(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

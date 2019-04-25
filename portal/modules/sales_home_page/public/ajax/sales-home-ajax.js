@@ -325,3 +325,23 @@ exports.getCallBackList = function(paramsObj, filterObj) {
     });
     return Deferred.promise();
 };
+
+//通过或者驳回申请
+let approveMemberApplyPassOrRejectAjax = null;
+exports.approveMemberApplyPassOrReject = function(obj) {
+    var Deferred = $.Deferred();
+    approveMemberApplyPassOrRejectAjax && approveMemberApplyPassOrRejectAjax.abort();
+    approveMemberApplyPassOrRejectAjax = $.ajax({
+        url: '/rest/member_apply/apply',
+        dataType: 'json',
+        type: 'post',
+        data: obj,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
