@@ -717,12 +717,6 @@ class CallRecordAnalyis extends React.Component {
                             }
                         </div>)}
                 </div>
-                <div className="duration-count-radio clearfix">
-                    <RadioGroup onChange={this.handleSelectRadio} value={this.state.selectRadioValue}>
-                        <Radio value="count">{Intl.get('sales.home.call.cout', '通话数量')}</Radio>
-                        <Radio value="duration">{Intl.get('call.record.call.duration', '通话时长')}</Radio>
-                    </RadioGroup>
-                </div>
             </div>
         );
     };
@@ -946,6 +940,11 @@ class CallRecordAnalyis extends React.Component {
             resultType: getResultType(isLoading, isError),
             errMsgRender: () => {
                 return getErrorTipAndRetryFunction(isError);
+            },
+            cardContainer: {
+                props: {
+                    subTitle: this.renderCallTrendChartSwitch()
+                }
             }
         }];
 
@@ -1429,6 +1428,29 @@ class CallRecordAnalyis extends React.Component {
             this.getCallInfoData();
         });
     };
+
+    //渲染通话趋势图上的切换项
+    renderCallTrendChartSwitch = () => {
+        return (
+            <div className="trend-chart-title">
+                <div className="call-interval-radio clearfix btn-item">
+                    <RadioGroup onChange={this.handleSelectRadio} value={this.state.selectRadioValue}>
+                        <Radio value="count">{Intl.get('sales.home.call.cout', '通话数量')}</Radio>
+                        <Radio value="duration">{Intl.get('call.record.call.duration', '通话时长')}</Radio>
+                    </RadioGroup>
+                </div>
+
+                {this.state.firstSelectValue === LITERAL_CONSTANT.TEAM ?
+                    <div className="each-team-trend">
+                        {Intl.get('call.record.all.teams.trend', '查看各团队通话趋势图')}：
+                        <Switch checked={this.state.switchStatus} onChange={this.handleSwitchChange}
+                            checkedChildren={Intl.get('user.yes', '是')}
+                            unCheckedChildren={Intl.get('user.no', '否')}/>
+                    </div> : null}
+            </div>
+        );
+    };
+
     renderCallAnalysisView = () => {
         const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height();
         return (<div className="call-table-container" ref="phoneList">
@@ -1436,15 +1458,6 @@ class CallRecordAnalyis extends React.Component {
              *  通话数量和通话时长的趋势图
              * */}
             <div className="duration-count-chart col-xs-12">
-                <div className="trend-chart-title">
-                    {this.state.firstSelectValue === LITERAL_CONSTANT.TEAM ?
-                        <div className="each-team-trend">
-                            {Intl.get('call.record.all.teams.trend', '查看各团队通话趋势图')}：
-                            <Switch checked={this.state.switchStatus} onChange={this.handleSwitchChange}
-                                checkedChildren={Intl.get('user.yes', '是')}
-                                unCheckedChildren={Intl.get('user.no', '否')}/>
-                        </div> : null}
-                </div>
                 {this.renderCallTrendChart()}
             </div>
             <div style={{height: tableHeight}} className="table-list-containers">
