@@ -245,7 +245,7 @@ exports.getRepeatCustomerList = function(req, res, queryParams) {
     }
     let filterObj = queryParams.filterObj ? JSON.parse(queryParams.filterObj) : {};
     //用于查询重复客户的标识
-    filterObj.repeat = true;
+    filterObj.repeat = 'true';
     return restUtil.authRest.post(
         {
             url: url,
