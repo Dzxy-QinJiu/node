@@ -129,12 +129,12 @@ export function isSelectedAllTeamMember() {
 
 //查询参数回调函数: 带下划线的开始结束时间转成不带下划线的
 export function argCallbackUnderlineTimeToTime(arg) {
-    if (_.get(arg, 'query.start_time')) {
+    if (_.has(arg, 'query.start_time')) {
         _.set(arg, 'query.starttime', arg.query.start_time);
         delete arg.query.start_time;
     }
 
-    if (_.get(arg, 'query.end_time')) {
+    if (_.has(arg, 'query.end_time')) {
         _.set(arg, 'query.endtime', arg.query.end_time);
         delete arg.query.end_time;
     }
@@ -142,12 +142,12 @@ export function argCallbackUnderlineTimeToTime(arg) {
 
 //查询参数回调函数: 不带下划线的开始结束时间转成带下划线的
 export function argCallbackTimeToUnderlineTime(arg) {
-    if (_.get(arg, 'query.starttime')) {
+    if (_.has(arg, 'query.starttime')) {
         _.set(arg, 'query.start_time', arg.query.starttime);
         delete arg.query.starttime;
     }
 
-    if (_.get(arg, 'query.endtime')) {
+    if (_.has(arg, 'query.endtime')) {
         _.set(arg, 'query.end_time', arg.query.endtime);
         delete arg.query.endtime;
     }
