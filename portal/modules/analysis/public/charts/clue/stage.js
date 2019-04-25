@@ -2,6 +2,8 @@
  * 线索阶段统计
  */
 
+import { getFunnelWithConvertRateProcessDataFunc } from '../../utils';
+
 import Store from '../../store';
 
 export function getStageChart() {
@@ -16,44 +18,36 @@ export function getStageChart() {
             name: 'clue_source',
             value: '',
         }],
-        processData: data => {
-            const stages = [
-                {
-                    enName: 'total',
-                    cnName: Intl.get('common.all', '全部')
-                },
-                {
-                    enName: 'vailid',
-                    cnName: Intl.get('clue.analysis.ability', '有效')
-                },
-                {
-                    enName: 'information',
-                    cnName: Intl.get('sales.stage.message', '信息')
-                },
-                {
-                    enName: 'intention',
-                    cnName: Intl.get('sales.stage.intention', '意向')
-                },
-                {
-                    enName: 'trial',
-                    cnName: Intl.get('common.trial', '试用')
-                },
-                {
-                    enName: 'sign',
-                    cnName: Intl.get('common.official', '签约')
-                }
-            ];
-
-            return _.map(stages, stage => {
-                return {
-                    name: stage.cnName,
-                    value: data[stage.enName] || 0
-                };
-            });
-        },
+        processData: getFunnelWithConvertRateProcessDataFunc([
+            {
+                key: 'total',
+                name: Intl.get('common.all', '全部')
+            },
+            {
+                key: 'vailid',
+                name: Intl.get('clue.analysis.ability', '有效')
+            },
+            {
+                key: 'information',
+                name: Intl.get('sales.stage.message', '信息')
+            },
+            {
+                key: 'intention',
+                name: Intl.get('sales.stage.intention', '意向')
+            },
+            {
+                key: 'trial',
+                name: Intl.get('common.trial', '试用')
+            },
+            {
+                key: 'sign',
+                name: Intl.get('common.official', '签约')
+            }
+        ], '', 'STAGE_NAME'),
         noExportCsv: true,
         customOption: {
-            minSize: '5%',
+            valueField: 'showValue',
+            showConvertRate: true,
         },
         cardContainer: {
             selectors: [{

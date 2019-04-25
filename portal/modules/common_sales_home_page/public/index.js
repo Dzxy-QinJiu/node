@@ -35,7 +35,6 @@ import {message, Button} from 'antd';
 const DELAY_TIME = 2000;
 //即将到期合同合同统计
 const EXPIRING_CONTRACT_STATISTICS = 'expiring_contract_statistics';
-
 class SalesHomePage extends React.Component {
     constructor(props) {
         super(props);
@@ -158,7 +157,7 @@ class SalesHomePage extends React.Component {
         let phoneParams = this.getPhoneParams();
         SalesHomeAction.getPhoneTotal(phoneParams);
         //获取今日联系的客户
-        SalesHomeAction.getTodayContactCustomer(this.state.rangParams, this.state.page_size, this.state.sorter);
+        SalesHomeAction.getTodayContactCustomer(this.getTodayCrmRangParams(), this.state.page_size, this.state.sorter);
         //获取今日的日程列表
         this.getScheduleListToday();
         //获取今日过期的日程列表
@@ -176,7 +175,7 @@ class SalesHomePage extends React.Component {
         //获取呼入未接的电话
         this.getMissCallTypeList();
         //获取十天内即将到期的试用用户
-        var todayTimeRange = TimeStampUtil.getTodayTimeStamp();
+        var todayTimeRange = this.getTodayStartAndEndTime();
         SalesHomeAction.getExpireCustomer({
             tags: Intl.get('common.trial.user', '试用用户'),
             start_time: todayTimeRange.start_time,
@@ -225,7 +224,7 @@ class SalesHomePage extends React.Component {
             page_size: this.state.page_size,
             start_time: new Date().getTime() - 2 * 365 * oplateConsts.ONE_DAY_TIME_RANGE,//开始时间传一个两年前的今天,
             //把今天0点作为判断是否过期的时间点
-            end_time: TimeStampUtil.getTodayTimeStamp().start_time,//今日早上的零点作为结束时间
+            end_time: this.getTodayStartAndEndTime().start_time,//今日早上的零点作为结束时间
             status: false,//日程的状态，未完成的日程
             type: 'missed_call'
         };
@@ -239,7 +238,7 @@ class SalesHomePage extends React.Component {
     getRecentLoginCustomers = () => {
         //获取最近登录的客户
         //默认获取近7天登录的客户
-        SalesHomeAction.getRecentLoginCustomers({}, this.state.rangParamsLogin, this.state.page_size, _.get(this.state,'recentLoginCustomerObj.curPage', 1), this.state.sorterLogin);
+        SalesHomeAction.getRecentLoginCustomers({}, this.getTodayCrmLoginRangParams(), this.state.page_size, _.get(this.state,'recentLoginCustomerObj.curPage', 1), this.state.sorterLogin);
     };
 
     //重复客户列表
@@ -258,14 +257,41 @@ class SalesHomePage extends React.Component {
         //获取新分配的客户
         SalesHomeAction.getNewDistributeCustomer({allot_no_contact: '0'}, this.state.rangParamsDistribute, this.state.page_size, _.get(this.state, 'newDistributeCustomer.curPage', 1), this.state.sorterDistribute);
     };
+    getTodayStartAndEndTime = () => {
+        return {
+            start_time: TimeStampUtil.getTodayTimeStamp().start_time,
+            end_time: TimeStampUtil.getTodayTimeStamp().end_time
+        };
+    };
+    getTodayCrmRangParams = () => {
+        var todayTimeObj = this.getTodayStartAndEndTime();
+        return [{//默认展示今天的数据
+            from: todayTimeObj.start_time,
+            to: todayTimeObj.end_time,
+            type: 'time',
+            name: 'last_contact_time'
+        }];
+    };
+    //最近7天登录的客户
+    getTodayCrmLoginRangParams = () => {
+        var todayTimeObj = this.getTodayStartAndEndTime();
+        return [{//默认展示今天的数据
+            from: todayTimeObj.start_time - 7 * oplateConsts.ONE_DAY_TIME_RANGE,
+            to: todayTimeObj.end_time,
+            type: 'time',
+            name: 'last_login_time'
+        }];
+
+    };
 
     //获取今日的日程列表
     getScheduleListToday = () => {
+        var todayTimeObj = this.getTodayStartAndEndTime();
         var constObj = {
             page_size: 1000,//今天的日程要对取到的数据进行处理，所以不用下拉加载的方式
             status: false,//获取未处理的日程
-            start_time: this.state.start_time,
-            end_time: this.state.end_time,
+            start_time: todayTimeObj.start_time,
+            end_time: todayTimeObj.end_time,
         };
         SalesHomeAction.getScheduleList(constObj, 'today');
     };
@@ -315,7 +341,7 @@ class SalesHomePage extends React.Component {
             page_size: this.state.page_size,
             start_time: new Date().getTime() - 2 * 365 * oplateConsts.ONE_DAY_TIME_RANGE,//开始时间传一个两年前的今天,
             //把今天0点作为判断是否过期的时间点
-            end_time: TimeStampUtil.getTodayTimeStamp().start_time,//今日早上的零点作为结束时间
+            end_time: this.getTodayStartAndEndTime().start_time,//今日早上的零点作为结束时间
             status: false//日程的状态，未完成的日程
         };
         if (lastId) {
@@ -326,18 +352,20 @@ class SalesHomePage extends React.Component {
 
     //获取查询参数
     getQueryParams = () => {
+        var todayTimeObj = this.getTodayStartAndEndTime();
         let queryParams = {
             urltype: 'v2',
-            starttime: this.state.start_time,
-            endtime: this.state.end_time
+            starttime: todayTimeObj.start_time,
+            endtime: todayTimeObj.end_time
         };
         return queryParams;
     };
 
     getPhoneParams = () => {
+        var todayTimeObj = this.getTodayStartAndEndTime();
         let phoneParams = {
-            start_time: this.state.start_time || 0,
-            end_time: this.state.end_time || moment().toDate().getTime(),
+            start_time: todayTimeObj.start_time || 0,
+            end_time: todayTimeObj.end_time || moment().toDate().getTime(),
             device_type: this.state.callType || CALL_TYPE_OPTION.ALL
         };
         return phoneParams;
