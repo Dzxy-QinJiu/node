@@ -172,19 +172,6 @@ SalesHomeStore.prototype.setInitState = function() {
             total: ''
         }
     };
-    this.rangParams = [{//默认展示今天的数据
-        from: TimeStampUtil.getTodayTimeStamp().start_time,
-        to: TimeStampUtil.getTodayTimeStamp().end_time,
-        type: 'time',
-        name: 'last_contact_time'
-    }];
-    //最近7天登录的客户
-    this.rangParamsLogin = [{//默认展示今天的数据
-        from: TimeStampUtil.getTodayTimeStamp().start_time - 7 * oplateConsts.ONE_DAY_TIME_RANGE,
-        to: TimeStampUtil.getTodayTimeStamp().end_time,
-        type: 'time',
-        name: 'last_login_time'
-    }];
     //新分配未联系的客户
     this.rangParamsDistribute = [{
         from: 0,
@@ -221,10 +208,6 @@ SalesHomeStore.prototype.setInitState = function() {
     //availability 查询有效线索  有效 '0' 无效线索 '1'
     //status 线索的类型 待分配 '0 ' 已分配 '1' 已跟进 '2'
     this.salesClueTypeFilter = {status: '1,2',availability: '0'};
-    //开始时间
-    this.start_time = TimeStampUtil.getTodayTimeStamp().start_time;
-    //结束时间
-    this.end_time = TimeStampUtil.getTodayTimeStamp().end_time;
     this.status = STATUS.UNHANDLED;//未处理，handled:已处理
     this.selectedCustomerPanel = ALL_LISTS_TYPE.SCHEDULE_TODAY;//选中客户所在的模块
     this.listenScrollBottom = true;//是否监听滚动
