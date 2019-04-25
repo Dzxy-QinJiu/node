@@ -2,7 +2,7 @@
  * 新机会统计
  */
 
-import { getFunnelWithConvertRateProcessDataFunc } from '../../utils';
+import { getFunnelWithConvertRateProcessDataFunc, funnelWithConvertRateProcessCsvData } from '../../utils';
 
 export function getNewChanceChart(chartType = 'table') {
     let chart = {
@@ -33,7 +33,7 @@ export function getNewChanceChart(chartType = 'table') {
                 key: 'deal',
             }]);
 
-        chart.processCsvData = processCsvDataFunnel;
+        chart.processCsvData = funnelWithConvertRateProcessCsvData;
     } else if (chartType === 'table') {
         chart.processData = data => {
             return data ? [data] : [];
@@ -63,20 +63,4 @@ export function getNewChanceChart(chartType = 'table') {
     }
 
     return chart;
-
-    //处理漏斗图导出数据
-    function processCsvDataFunnel(chart, option) {
-        let csvData = [];
-        const data = chart.data;
-
-        let thead = _.map(data, 'csvName');
-        thead.push('通过率', '成交率', '总成交率(提交-成交)');
-        csvData.push(thead);
-
-        let tbody = _.map(data, 'value');
-        tbody.push(data[1].name, data[2].name, data[2].dealRate);
-        csvData.push(tbody);
-
-        return csvData;
-    }
 }

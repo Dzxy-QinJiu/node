@@ -397,3 +397,53 @@ export function getFunnelWithConvertRateProcessDataFunc(stageList, prefixRule = 
         return processedData;
     };
 }
+
+//带转化率的漏斗图的导出数据处理函数
+export function funnelWithConvertRateProcessCsvData(chart, option) {
+    let csvData = [];
+    let thead = [];
+    let tbody = [];
+
+    //转化率相关表头列名数组
+    let convertRateNames = [];
+    //转化率相关值数组
+    let convertRateValues = [];
+
+    const data = chart.data;
+
+    _.each(data, (item, index) => {
+        thead.push(item.csvName);
+        tbody.push(item.value);
+
+        //item.name里存的是从上一阶段到当前阶段的转化率
+        //如果该转化率存在
+        if (item.name) {
+            //取上一阶段的导出列名
+            const prevColCsvName = data[index - 1].csvName;
+            //构造从上一阶段到当前阶段的转化率列名
+            const rateColName = prevColCsvName + '到' + item.csvName + '转化率';
+            //将该列名存入转化率相关表头列名数组
+            convertRateNames.push(rateColName);
+            //将转化率值存入转化率相关值数组
+            convertRateValues.push(item.name);
+        }
+
+        //如果当前阶段是数据的最后一项，也即最后一个阶段
+        if (index === data.length - 1) {
+            //将转化率相关表头列名数组并入表头数组
+            thead = thead.concat(convertRateNames);
+            //将转化率相关值数组并入表体数组
+            tbody = tbody.concat(convertRateValues);
+        }
+
+        //如果当前项中包含总转化率
+        if (item.totalConvertRate) {
+            thead.push('总转化率');
+            tbody.push(item.totalConvertRate);
+        }
+    });
+
+    csvData.push(thead, tbody);
+
+    return csvData;
+}
