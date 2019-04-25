@@ -2909,6 +2909,18 @@ var zh_CN = {
     'apply.components.tip.msg': '提示说明',
     'apply.components.required.item': '必填',
     'apply.components.write.title': '请填写标题！',
-    'apply.components.length.character': '标题长度不能超过6个字符'
+    'apply.components.length.character': '标题长度不能超过6个字符',
+    'apply.default.apply.workflow': '默认审批流程',
+    'apply.default.cc.email': '默认抄送人',
+    'apply.condition.work.flow': '条件审批流程',
+    'apply.info.cc.email': '抄送通知',
+    'apply.info.cancel.privilege': '撤销权限',
+    'apply.workflow.merge.same.approver': '合并相同审批人（通过后，后面自动通过）',
+    'apply.workflow.cancel.approve': '通过后允许撤销（审批通过后，经审批人同意，可撤销申请）',
+    'apply.cc.when,submit': '提交申请时抄送',
+    'apply.cc.when.approve.apply': '审批通过后抄送',
+    'apply.cc.when.submit.and.approve': '提交申请和审批通过后都抄送',
+    'apply.add.condition.workflow': '添加条件审批流程'
+
 };
 export default zh_CN;

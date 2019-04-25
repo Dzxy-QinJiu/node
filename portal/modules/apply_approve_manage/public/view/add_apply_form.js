@@ -16,6 +16,7 @@ var classNames = require('classnames');
 import {calculateHeight, APPLYAPPROVE_LAYOUT,ALL_COMPONENTS, ALL_COMPONENTS_TYPE} from '../utils/apply-approve-utils';
 import InputEdit from './input-components/input-edit';
 import InputShow from './input-components/show-input';
+import ApplyRules from './reg-rules/view';
 class AddApplyForm extends React.Component {
     constructor(props) {
         super(props);
@@ -192,15 +193,18 @@ class AddApplyForm extends React.Component {
                     {this.renderAddFormRules()}
                 </div>
                 <div className="apply-form-content-container">
-
                     {this.renderAddFormContent()}
-
                 </div>
             </div>
         );
     };
     renderApplyRegex = () => {
-
+        var applyTypeData = _.get(this, 'state.applyTypeData');
+        return (
+            <ApplyRules
+                applyTypeData = {applyTypeData}
+            />
+        );
     };
     renderAddApplyContent = () => {
         return (
