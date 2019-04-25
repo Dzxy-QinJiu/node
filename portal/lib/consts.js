@@ -83,5 +83,6 @@ module.exports = {
         //财务
         ACCOUNTANT: 'accountant'
     },
-    FINISH_INITIALED_PHONE: ''
+    //是否展示提示设置坐席号的提醒
+    SHOW_SET_PHONE_TIP: ''
 };

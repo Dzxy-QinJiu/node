@@ -146,9 +146,9 @@ class SalesHomePage extends React.Component {
         this.getPhoneInitialed();
     }
     getPhoneInitialed = () => {
-        var initialedPhone = oplateConsts.FINISH_INITIALED_PHONE;
-        if (_.isBoolean(initialedPhone)){
-            this.finishedInitialPhone(initialedPhone);
+        var showSetPhoneTip = oplateConsts.SHOW_SET_PHONE_TIP;
+        if (_.isBoolean(showSetPhoneTip)){
+            this.finishedInitialPhone(showSetPhoneTip);
         }else{
             this.setState({
                 addListener: true
@@ -205,9 +205,9 @@ class SalesHomePage extends React.Component {
             notificationEmitter.removeListener(notificationEmitter.PHONE_INITIALIZE, this.finishedInitialPhone);
         }
     }
-    finishedInitialPhone = (isFinishedPhone) => {
+    finishedInitialPhone = (showSetPhoneTip) => {
         //获取是否能展示邮箱激活提示或者设置坐席号提示
-        SalesHomeAction.getShowActiveEmailOrClientConfig(isFinishedPhone);
+        SalesHomeAction.getShowActiveEmailOrClientConfig(showSetPhoneTip);
     };
 
     //获取查询参数
