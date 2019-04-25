@@ -33,9 +33,9 @@ function SalesStageActions() {
     //添加销售阶段
     this.addSalesStage = function(salesStage, callback) {
         this.dispatch({loading: true, error: false});
-        salesStageAjax.addSalesStage(salesStage).then( (salesStageCreated) => {
+        salesStageAjax.addSalesStage(salesStage).then( (resData) => {
             _.isFunction(callback) && callback();
-            this.dispatch({loading: false, error: false, value: salesStageCreated.result});
+            this.dispatch({loading: false, error: false, resData: resData});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
