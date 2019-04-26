@@ -18,21 +18,12 @@ export function getSalesBehaviorChart() {
             value: false
         }],
         processData: data => {
-            let processedData = [];
-
             //添加未填写跟进记录客户数
             _.each(data, item => {
                 item.customer_no_remark_num = item.customer_num - item.customer_remark_num;
             });
 
-            let groupedData = _.groupBy(data, 'sales_team');
-
-            _.each(groupedData, rows => {
-                _.first(rows).rowSpan = rows.length;
-                processedData = processedData.concat(rows);
-            });
-
-            return processedData;
+            return data;
         },
         option: {
             columns: [
@@ -40,16 +31,6 @@ export function getSalesBehaviorChart() {
                     title: '团队',
                     dataIndex: 'sales_team',
                     isSetCsvValueBlank: true,
-                    render: (value, row) => {
-                        let obj = {
-                            children: value,
-                            props: {
-                                rowSpan: row.rowSpan || 0
-                            }
-                        };
-
-                        return obj;
-                    },
                     width: 60
                 },
                 {
