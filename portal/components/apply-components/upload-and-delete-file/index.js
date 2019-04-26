@@ -24,20 +24,21 @@ class UploadAndDeleteFile extends React.Component {
                 delId: '',//删除申请的id
                 errorMsg: '',//删除失败后的提示
             },
-            totalFileSize: this.calculateExistFileSize(),//所有文件的大小
+            totalFileSize: this.calculateExistFileSize(this.props),//所有文件的大小
         };
     }
-    calculateExistFileSize = () => {
+    calculateExistFileSize = (Props) => {
         var fileSize = 0;
-        _.forEach(this.props.fileList,(item) => {
+        _.forEach(Props.fileList,(item) => {
             fileSize += item.file_size;
         });
         return fileSize;
     };
     componentWillReceiveProps(nextProps) {
-        if (nextProps.fileList && !isEqualArray(nextProps.fileList, this.state.fileList)) {
+        if (nextProps.fileList && !isEqualArray(nextProps.fileList, this.state.fileList) || JSON.stringify(this.props.detailInfoObj) !== JSON.stringify(nextProps.detailInfoObj)) {
             this.setState({
-                fileList: nextProps.fileList
+                fileList: nextProps.fileList,
+                totalFileSize: this.calculateExistFileSize(nextProps)
             });
         }
     }
@@ -46,9 +47,9 @@ class UploadAndDeleteFile extends React.Component {
             isUpLoading: false,
         });
     };
-    updateCalculateFilesSize = () => {
+    updateCalculateFilesSize = (response) => {
         var fileSize = this.state.totalFileSize;
-        _.forEach(this.state.fileList,(item) => {
+        _.forEach(response,(item) => {
             fileSize += item.file_size;
         });
         this.setState({
@@ -66,7 +67,7 @@ class UploadAndDeleteFile extends React.Component {
                 this.setState({
                     fileList: fileList.concat(response),
                 },() => {
-                    this.updateCalculateFilesSize();
+                    this.updateCalculateFilesSize(response);
                     _.isFunction(this.props.setUpdateFiles) && this.props.setUpdateFiles(this.state.fileList);
                 });
             } else {
@@ -226,12 +227,17 @@ class UploadAndDeleteFile extends React.Component {
         var fileList = this.state.fileList;
         var detailInfoObj = this.props.detailInfoObj;
         var btnDesc = Intl.get('apply.approve.upload.file.type','上传{fileType}',{fileType: Intl.get('apply.approve.customer.info', '客户资料')});
+        //管理员可以上传和删除的权限
+        var approverUploadAndDeletePrivilege = this.props.approverUploadAndDeletePrivilege;
         if(this.isDetailObjExist()){
             props.data = detailInfoObj.id;
             props.beforeUpload = function(file) {
                 var fileName = file.name,fileSize = file.size;
                 _this.setState({isUpLoading: true});
-                if (!_this.checkFileType(fileName,fileSize + _this.state.totalFileSize)){
+                //如果是销售继续上传，需要计算文件的大小，如果是管理员上传，不需要计算文件的大小
+                if (approverUploadAndDeletePrivilege){
+                    return true;
+                }else if (!_this.checkFileType(fileName,fileSize + _this.state.totalFileSize)){
                     _this.setUploadLoadingFalse();
                     return false;
                 }
@@ -266,7 +272,7 @@ class UploadAndDeleteFile extends React.Component {
                 <p>
                     <ReactIntl.FormattedMessage
                         id='click.ctrl.upload.mutil.file'
-                        defaultMessage={'可同时上传多个文件，只能上传{office}，{image}，文本文件和{compact}，文件大小不要超过10M！'}
+                        defaultMessage={'只能上传{office}，{image}，文本文件和{compact}，{filetypes}不要超过10M！'}
                         values={{
                             'office': (
                                 <Tooltip title="'docx','doc','ppt','pptx','pdf','xls','xlsx',csv'">
@@ -280,6 +286,7 @@ class UploadAndDeleteFile extends React.Component {
                                 <Tooltip title="'rar','zip'">
                                     <span>{Intl.get('leave.apply.compact.document', '压缩文件')}</span>
                                 </Tooltip>),
+                            'filetypes': approverUploadAndDeletePrivilege ? Intl.get('upload.files.each.file.size','每次上传大小') : Intl.get('upload.files.total.file.size','文件总大小'),
                         }}
                     />
                 </p>
@@ -448,7 +455,7 @@ UploadAndDeleteFile.defaultProps = {
     fileList: [],
     salesUploadAndDeletePrivilege: false,
     approverUploadAndDeletePrivilege: false,
-    selectType: []
+    selectType: [],
 
 };
 UploadAndDeleteFile.propTypes = {
@@ -461,6 +468,6 @@ UploadAndDeleteFile.propTypes = {
     fileList: PropTypes.object,
     salesUploadAndDeletePrivilege: PropTypes.bool,
     approverUploadAndDeletePrivilege: PropTypes.bool,
-    selectType: PropTypes.object
+    selectType: PropTypes.object,
 };
 export default UploadAndDeleteFile;
