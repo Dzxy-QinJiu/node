@@ -23,8 +23,8 @@ class Logo extends React.Component {
         };
         // 文本样式
         var textStyle = {
-            lineHeight: this.props.size ? this.props.size : '40px',
-            fontSize: '14px',
+            lineHeight: this.props.size || '40px',
+            fontSize: this.props.fontSize || '14px',
             color: this.props.fontColor || '#ffffff'
         };
         return (
@@ -38,6 +38,7 @@ class Logo extends React.Component {
 Logo.propTypes = {
     jumpUrl: PropTypes.string,
     size: PropTypes.string,
+    fontSize: PropTypes.string,
     fontColor: PropTypes.string,
     logoSrc: PropTypes.string,
     logoText: PropTypes.sting,

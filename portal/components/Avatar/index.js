@@ -21,7 +21,7 @@ class Avatar extends React.Component {
                         size={this.props.size}
                         userName={this.props.userName} nickName={this.props.nickName}
                         showName={this.props.showName} name={this.props.name} isActiveFlag={this.props.isActiveFlag}/>) :
-                    (<a style={aStyle}><Img src={this.props.src} size={this.props.size} round={this.props.round}/>
+                    (<a style={aStyle}><Img {...this.props}/>
                         {this.props.showName ? <Name name={this.props.name}/> : ''}</a>)
                 }
             </div>
@@ -50,7 +50,7 @@ class Img extends React.Component {
         var imgStyle = {
             width: '100%',
             height: '100%',
-            fontSize: '24px',
+            fontSize: this.props.fontSize || '24px',
             lineHeight: this.props.size || '45px',
             borderRadius: this.props.round ? '50%' : 0,
         };
@@ -102,7 +102,8 @@ Img.propTypes = {
     src: PropTypes.string,
     userName: PropTypes.string,
     nickName: PropTypes.string,
-    name: PropTypes.string
+    name: PropTypes.string,
+    fontSize: PropTypes.string
 };
 
 Name.propTypes = {
@@ -120,7 +121,8 @@ Avatar.propTypes = {
     userName: PropTypes.string,
     nickName: PropTypes.string,
     showName: PropTypes.string,
-    name: PropTypes.string
+    name: PropTypes.string,
+    fontSize: PropTypes.string
 };
 
 module.exports = Avatar;
