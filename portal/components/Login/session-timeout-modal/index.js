@@ -4,10 +4,8 @@
  * Created by wangliping on 2019/4/10.
  */
 import './index.less';
-// var React = require('react');
 var crypto = require('crypto');
 const PropTypes = require('prop-types');
-// const classnames = require('classnames');
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from '../../../lib/websso';
 import {Form, Input, Button, Icon} from 'antd';
 import Avatar from '../../Avatar/index.js';
@@ -16,15 +14,12 @@ const Logo = require('../../Logo/index');
 const FormItem = Form.Item;
 import userData from 'PUB_DIR/sources/user-data';
 
-//常量定义
-// const CAPTCHA = '/captcha';
 //错误信息提示
 const ERROR_MSGS = {
     NO_SERVICE: Intl.get('login.error.retry', '登录服务暂时不可用，请稍后重试'),
     ERROR_CAPTCHA: 'error-captcha'//刷新验证码失败
 };
 const base64_prefix = 'data:image/png;base64,';
-// import {storageUtil} from 'ant-utils';
 
 class SessionTimeoutModal extends React.Component {
     constructor(props) {
@@ -189,6 +184,11 @@ class SessionTimeoutModal extends React.Component {
         //跳转到登录页，用其他账号进行登录
         window.location.href = '/login';
     }
+    //验证码\密码输入框中按enter键时，登录的处理
+    onInputEnter = (event) => {
+        if (event.keyCode !== 13) return;
+        this.submitFormData();
+    }
 
     render() {
         let userInfo = userData.getUserData();
@@ -214,13 +214,14 @@ class SessionTimeoutModal extends React.Component {
                     <div className="retry-login-tip">
                         {Intl.get('retry.no.login.for.longtime', '您已长时间没有进行操作，为了您的帐号安全，请重新登录')}
                     </div>
-                    <Form>
+                    <Form autoComplete="off">
                         <FormItem>
                             {getFieldDecorator('password', {
                                 rules: [{required: true, message: Intl.get('common.input.password', '请输入密码')}]
                             })(
                                 <Input type='password' placeholder={Intl.get('common.password', '密码')}
-                                    autocomplete="new-password"/>
+                                    onKeyUp={this.onInputEnter}
+                                    autoComplete="new-password"/>
                             )}
                         </FormItem>
                         {this.state.captchaCode ? (
@@ -230,6 +231,7 @@ class SessionTimeoutModal extends React.Component {
                                 })(
                                     <Input placeholder={Intl.get('common.captcha', '验证码')} type="text"
                                         className='captcha-input'
+                                        onKeyUp={this.onInputEnter}
                                         autoComplete="off" maxLength="4"/>
                                 )}
                                 <img src={captchaCode} width="120"
