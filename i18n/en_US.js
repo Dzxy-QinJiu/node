@@ -2857,5 +2857,12 @@ var en_US = {
     'crm.user.use.default.contact': 'User default contact to apply',//使用默认联系人申请
     'crm.click.set.def.contact': 'Please set default contact first',//请先设置默认联系人
     'clue.contact.name.within.ten.character': 'The contact name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English brackets, and the length is between 1 and 50 (including 50).',//客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
+    'common.number.of.unremarked.customer': 'Number of unremarked customer',//填写跟进记录客户数
+    'common.number.of.remarked.customer': 'Number of remarked customer',//未填写跟进记录客户数
+    'common.number.of.trial.qualified.customer': 'Number of trial qualified customer',//试用合格客户数
+    'common.number.of.travel.day': 'Number of travel day',//出差天数
+    'common.number.of.customers.visited': 'Number of customers visited',//拜访客户数
+    'common.daily.duration.of.calls': 'Daily duration of calls',//日均电话时长
+    'common.daily.number.of.calls': 'Daily number of calls',//日均电话数
 };
 export default en_US;
