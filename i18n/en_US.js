@@ -2167,9 +2167,10 @@ var en_US = {
     'common.phone.order.is.unique': 'Failed to check this seat number!',//座席号唯一性校验出错！
     'member.get.phone.order.failed': 'Failed to get seat number of this member!',//获取成员的座席号失败!
     'member.get.add.phone.order.failed': 'Failed to add this seat number',//添加座席号失败！
-    'retry.no.login.for.longtime': 'You have not operated for a long time, for the security of your account,',//您已长时间没有进行操作，为了您的帐号安全
+    'retry.no.login.for.longtime': 'You have not operated for a long time, for the security of your account, please log in again',//您已长时间没有进行操作，为了帐号安全，请重新登录
     'retry.input.login.password.again': 'Please enter your password again',//请重新输入密码:
     'retry.input.login.password': 'Please enter your password',//请输入登录密码
+    'retry.login.with.other': 'Login with other accounts',//登录其他账号
     'retry.submit.again': 'submit',//提交
     'retry.is.submitting': 'submitting',//提交中...
     'retry.failed.get.code': 'Failed to get the verification code',//获取验证码错误

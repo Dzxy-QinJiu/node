@@ -14,6 +14,10 @@ import {Modal} from 'antd';
     //socket的emitter
     var socketEmitter = require('./utils/emitters').socketEmitter;
     let userData = require('./user-data');
+    const SessionTimeoutModal = require('../../components/Login/session-timeout-modal/index');
+    const Translate = require('../intl/i18nTemplate');
+    var history = require('./history');
+    const Router = require('react-router-dom').Router;
     const BASE64_PREFIX = 'data:image/png;base64,';
     const NO_SERVICE_ERROR = Intl.get('login.error.retry', '登录服务暂时不可用，请稍后重试');
     module.exports.handleSessionExpired = handel401Ajax;
@@ -24,31 +28,33 @@ import {Modal} from 'antd';
         //让socket断开连接
         socketEmitter.emit(socketEmitter.DISCONNECT);
         //session过期提示的添加
-        var $modal = $('body >#session-invalid-modal');
+        var $modal = $('body >#session-timeout-modal');
         if ($modal && $modal.length > 0) {
             return;
         } else {
-            let inputPasswordModal = `<div id="session-invalid-modal">
-                                       <div class="session-invalid-modal-block"></div>
-                                       <div class="session-invalid-modal-content">
-                                           <span class="modal-icon iconfont icon-warn-icon"/>
-                                           <span class="modal-title">
-                                           ${Intl.get('retry.no.login.for.longtime', '您已长时间没有进行操作，为了您的帐号安全，')}
-                                           </span>
-                                           <div class="modal-title second-line-title">
-                                           ${Intl.get('retry.input.login.password.again', '请重新输入密码:')}
-                                           </div>
-                                           <input type="password" hidden/>
-                                           <input type="password" placeholder="${Intl.get('retry.input.login.password', '请输入登录密码')}" class="modal-password-input" autoComplete="off"/>
-                                           <div class="input-item captcha_wrap clearfix" hidden>
-                                               <input placeholder="${Intl.get('retry.input.captcha', '请输入验证码')}" type="text" autoComplete="off" class="captcha_input" maxLength="4"/>
-                                               <img class="captcha_image" src="" width="120" height="40" title="${Intl.get('login.dim.exchange', '看不清？点击换一张')}"/>
-                                           </div>
-                                           <div class="modal-submit-error"></div>
-                                           <div class="modal-submit-btn">${Intl.get('retry.submit.again', '提交')}</div>
-                                       </div>
-                                     </div>`;
-            $('body').append(inputPasswordModal);
+            // let inputPasswordModal = `<div id="session-invalid-modal">
+            //                            <div class="session-invalid-modal-block"></div>
+            //                            <div class="session-invalid-modal-content">
+            //                                <span class="modal-icon iconfont icon-warn-icon"/>
+            //                                <span class="modal-title">
+            //                                ${Intl.get('retry.no.login.for.longtime', '您已长时间没有进行操作，为了您的帐号安全，')}
+            //                                </span>
+            //                                <div class="modal-title second-line-title">
+            //                                ${Intl.get('retry.input.login.password.again', '请重新输入密码:')}
+            //                                </div>
+            //                                <input type="password" hidden/>
+            //                                <input type="password" placeholder="${Intl.get('retry.input.login.password', '请输入登录密码')}" class="modal-password-input" autoComplete="off"/>
+            //                                <div class="input-item captcha_wrap clearfix" hidden>
+            //                                    <input placeholder="${Intl.get('retry.input.captcha', '请输入验证码')}" type="text" autoComplete="off" class="captcha_input" maxLength="4"/>
+            //                                    <img class="captcha_image" src="" width="120" height="40" title="${Intl.get('login.dim.exchange', '看不清？点击换一张')}"/>
+            //                                </div>
+            //                                <div class="modal-submit-error"></div>
+            //                                <div class="modal-submit-btn">${Intl.get('retry.submit.again', '提交')}</div>
+            //                            </div>
+            //                          </div>`;
+            $('body').append('<div id="session-timeout-modal"></div>');
+
+            ReactDOM.render(<Translate Template={<Router history={history}><SessionTimeoutModal/></Router>}/>, $('#session-timeout-modal')[0]);
             //事件添加
             addSessionInvalidPanelEvent();
         }
