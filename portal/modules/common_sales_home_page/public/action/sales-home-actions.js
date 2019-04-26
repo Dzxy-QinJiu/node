@@ -147,13 +147,13 @@ function SalesHomeActions() {
     };
 
     //获取是否展示邮件激活提示
-    this.getShowActiveEmailOrClientConfig = function() {
+    this.getShowActiveEmailOrClientConfig = function(isShowPhoneSet) {
         //先获取个人资料
         var user_id = userData.getUserData().user_id;
         UserAjax.getUserByIdAjax().resolvePath({
             user_id: user_id
         }).sendRequest().success((data) => {
-            afterGetExtendUserInfo(data, this);
+            afterGetExtendUserInfo(data, this, isShowPhoneSet);
         });
     };
     //邮箱激活

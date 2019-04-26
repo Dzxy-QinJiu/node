@@ -23,6 +23,5 @@ export function getClueSituationChart(paramObj = {}) {
             proportion: 0.6,
             pieLabelLength: 8
         },
-        noExportCsv: true,
     };
 }

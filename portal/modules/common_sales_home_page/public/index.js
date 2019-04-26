@@ -33,6 +33,7 @@ var setWebsiteConfig = websiteConfig.setWebsiteConfig;
 import AlertTip from 'CMP_DIR/alert-tip';
 import {message, Button} from 'antd';
 const DELAY_TIME = 2000;
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 //即将到期合同合同统计
 const EXPIRING_CONTRACT_STATISTICS = 'expiring_contract_statistics';
 class SalesHomePage extends React.Component {
@@ -49,6 +50,7 @@ class SalesHomePage extends React.Component {
             isAnimateHide: false,//是否动态隐藏 提示框
             isClientAnimateShow: false,//是否动态由上到下推出 设置坐席号提示框
             isClientAnimateHide: false,//是否动态隐藏 提示框
+            addListener: false, //是否监听了坐席号配置完成的方法
             ...SalesHomeStore.getState()
         };
     }
@@ -64,7 +66,6 @@ class SalesHomePage extends React.Component {
             $('.selected-customer-detail-item').removeClass('selected-customer-detail-item');
             $(this).closest('.customer-detail-item').addClass('selected-customer-detail-item');
         });
-        SalesHomeAction.getShowActiveEmailOrClientConfig();
         //外层父组件加载完成后，再由上到下推出激活邮箱提示框
         setTimeout(() => {
             this.setState({
@@ -72,7 +73,7 @@ class SalesHomePage extends React.Component {
                 isAnimateShow: true
             });
         }, DELAY_TIME);
-
+        this.getPhoneInitialed();
         const today = moment();
         SalesHomeAction.getContractExpireRemind({
             starttime: today.valueOf(),
@@ -91,12 +92,32 @@ class SalesHomePage extends React.Component {
             this.setState(SalesHomeStore.getState());
         });
     };
+    getPhoneInitialed = () => {
+        var showSetPhoneTip = oplateConsts.SHOW_SET_PHONE_TIP;
+        if (_.isBoolean(showSetPhoneTip)){
+            this.finishedInitialPhone(showSetPhoneTip);
+        }else{
+            this.setState({
+                addListener: true
+            });
+            notificationEmitter.on(notificationEmitter.PHONE_INITIALIZE, this.finishedInitialPhone);
+        }
+    };
 
     componentWillUnmount() {
         $(window).off('resize', this.windowResize);
         SalesHomeStore.unlisten(this.onChange);
+        if (this.state.addListener){
+            this.setState({
+                addListener: false
+            });
+            notificationEmitter.removeListener(notificationEmitter.PHONE_INITIALIZE, this.finishedInitialPhone);
+        }
     }
-
+    finishedInitialPhone = (showSetPhoneTip) => {
+        //获取是否能展示邮箱激活提示或者设置坐席号提示
+        SalesHomeAction.getShowActiveEmailOrClientConfig(showSetPhoneTip);
+    };
     onChange = () => {
         this.setState(SalesHomeStore.getState());
     };
@@ -208,7 +229,7 @@ class SalesHomePage extends React.Component {
     getSalesClueLists = (lastId) => {
         var constObj = {
             salesClueTypeFilter: this.state.salesClueTypeFilter,
-            rangParamsSalesClue: this.state.rangParamsSalesClue,
+            rangParamsSalesClue: this.getCrmSalesClue(),
             page_size: this.state.page_size,
             sorterSalesClue: this.state.sorterSalesClue,
         };
@@ -250,12 +271,29 @@ class SalesHomePage extends React.Component {
         //获取重复客户列表
         SalesHomeAction.getRepeatCustomerList(queryObj);
     };
-
+    //新分配未联系的客户
+    getCrmDistributeRangParams = () => {
+        return [{
+            from: 0,
+            to: moment().valueOf(),
+            type: 'time',
+            name: 'allot_time'
+        }];
+    };
+    //获取销售线索
+    getCrmSalesClue = () => {
+        return [{//时间范围参数
+            from: 0,
+            to: moment().valueOf(),
+            type: 'time',
+            name: 'source_time'
+        }];
+    };
     //获取新分配但未联系的客户
     getNewDistributeCustomer = () => {
         //客户被分配后是否已联系 allot_no_contact  未联系 : "0" ，已联系 :"1"
         //获取新分配的客户
-        SalesHomeAction.getNewDistributeCustomer({allot_no_contact: '0'}, this.state.rangParamsDistribute, this.state.page_size, _.get(this.state, 'newDistributeCustomer.curPage', 1), this.state.sorterDistribute);
+        SalesHomeAction.getNewDistributeCustomer({allot_no_contact: '0'}, this.getCrmDistributeRangParams(), this.state.page_size, _.get(this.state, 'newDistributeCustomer.curPage', 1), this.state.sorterDistribute);
     };
     getTodayStartAndEndTime = () => {
         return {

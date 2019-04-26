@@ -20,6 +20,5 @@ export function getAvailabilityChart() {
                 pageIconSize: 10,
             }
         },
-        noExportCsv: true,
     };
 }

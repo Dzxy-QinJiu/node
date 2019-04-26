@@ -2560,7 +2560,7 @@ var en_US = {
     'clue.click.show.clue.detail': 'Click to show clue details',//点击查看线索详情
     'user.get.suggest.name.error': 'Failed to get suggest username',//获取建议用户名失败
     'clue.import.csv': 'Upload form',//上传表格
-    'clue.download.clue.csv': 'Download the import {type} form',//下载导入{type}表格
+    'clue.download.clue.csv': 'Download the import {type} template',//下载{type}模板
     'clue.has.not.distribute': 'The clue has not been assigned yet',//该线索还没有分配
     'clue.not.complete.schedule': 'The schedule of today',//今天的联系计划
     'menu.shortName.call': 'call', //'通话',
@@ -2741,7 +2741,9 @@ var en_US = {
     'failed.get.reply.comment': 'Failed to get comment lists',//获取回复列表失败
     'apply.approve.upload.no.container.space': 'Please do not has space in your file name!',//文件名称中不要含有空格！
     'failed.delete.apply.load.approve': 'Failed to delete files',//删除文件失败！
-    'click.ctrl.upload.mutil.file': 'You can upload multiple files at the same time, only upload {office}, {image}, text files and {compact}. The file size should not exceed 10M!',//可同时上传多个文件，只能上传{office}，{image}，文本文件和{compact}，文件大小不要超过10M！
+    'click.ctrl.upload.mutil.file': 'You can upload multiple files at the same time, only upload {office}, {image}, text files and {compact}. {filetypes} should not exceed 10M!',//可同时上传多个文件，只能上传{office}，{image}，文本文件和{compact}，{filetypes}不要超过10M！
+    'upload.files.total.file.size': 'The size of total files',//文件总大小
+    'upload.files.each.file.size': 'The size of each file',//每次上传大小
     'leave.apply.office.document': 'Office document',//办公文件
     'leave.apply.image.document': 'Image document',//图片文件
     'leave.apply.compact.document': 'Compact document',//压缩文件
@@ -2853,6 +2855,6 @@ var en_US = {
     'clue.batch.change.trace.man': 'Change follower',//变更跟进人
     'crm.user.use.default.contact': 'User default contact to apply',//使用默认联系人申请
     'crm.click.set.def.contact': 'Please set default contact first',//请先设置默认联系人
-    'clue.contact.name.within.ten.character': 'The contact name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English brackets, and the length is between 1 and 50 (including 50).'//客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
+    'clue.contact.name.within.ten.character': 'The contact name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English brackets, and the length is between 1 and 50 (including 50).',//客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
 };
 export default en_US;

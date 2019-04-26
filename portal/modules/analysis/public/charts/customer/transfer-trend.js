@@ -29,6 +29,10 @@ export function getCustomerTransferTrendChart() {
             }
         },
         dataField: 'list',
+        processData: data => {
+            //过滤掉没有名字的数据
+            return _.filter(data, item => item.name);
+        },
         processOption: (option, props) => {
             const data = props.data;
             const firstDataItem = _.first(data);

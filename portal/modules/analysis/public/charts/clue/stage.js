@@ -2,7 +2,7 @@
  * 线索阶段统计
  */
 
-import { getFunnelWithConvertRateProcessDataFunc } from '../../utils';
+import { getFunnelWithConvertRateProcessDataFunc, funnelWithConvertRateProcessCsvData } from '../../utils';
 
 import Store from '../../store';
 
@@ -44,7 +44,7 @@ export function getStageChart() {
                 name: Intl.get('common.official', '签约')
             }
         ], '', 'STAGE_NAME'),
-        noExportCsv: true,
+        processCsvData: funnelWithConvertRateProcessCsvData,
         customOption: {
             valueField: 'showValue',
             showConvertRate: true,

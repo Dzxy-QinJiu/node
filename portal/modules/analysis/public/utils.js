@@ -129,12 +129,12 @@ export function isSelectedAllTeamMember() {
 
 //查询参数回调函数: 带下划线的开始结束时间转成不带下划线的
 export function argCallbackUnderlineTimeToTime(arg) {
-    if (_.get(arg, 'query.start_time')) {
+    if (_.has(arg, 'query.start_time')) {
         _.set(arg, 'query.starttime', arg.query.start_time);
         delete arg.query.start_time;
     }
 
-    if (_.get(arg, 'query.end_time')) {
+    if (_.has(arg, 'query.end_time')) {
         _.set(arg, 'query.endtime', arg.query.end_time);
         delete arg.query.end_time;
     }
@@ -142,12 +142,12 @@ export function argCallbackUnderlineTimeToTime(arg) {
 
 //查询参数回调函数: 不带下划线的开始结束时间转成带下划线的
 export function argCallbackTimeToUnderlineTime(arg) {
-    if (_.get(arg, 'query.starttime')) {
+    if (_.has(arg, 'query.starttime')) {
         _.set(arg, 'query.start_time', arg.query.starttime);
         delete arg.query.starttime;
     }
 
-    if (_.get(arg, 'query.endtime')) {
+    if (_.has(arg, 'query.endtime')) {
         _.set(arg, 'query.end_time', arg.query.endtime);
         delete arg.query.endtime;
     }
@@ -396,4 +396,54 @@ export function getFunnelWithConvertRateProcessDataFunc(stageList, prefixRule = 
         //返回最终数据
         return processedData;
     };
+}
+
+//带转化率的漏斗图的导出数据处理函数
+export function funnelWithConvertRateProcessCsvData(chart, option) {
+    let csvData = [];
+    let thead = [];
+    let tbody = [];
+
+    //转化率相关表头列名数组
+    let convertRateNames = [];
+    //转化率相关值数组
+    let convertRateValues = [];
+
+    const data = chart.data;
+
+    _.each(data, (item, index) => {
+        thead.push(item.csvName);
+        tbody.push(item.value);
+
+        //item.name里存的是从上一阶段到当前阶段的转化率
+        //如果该转化率存在
+        if (item.name) {
+            //取上一阶段的导出列名
+            const prevColCsvName = data[index - 1].csvName;
+            //构造从上一阶段到当前阶段的转化率列名
+            const rateColName = prevColCsvName + '到' + item.csvName + '转化率';
+            //将该列名存入转化率相关表头列名数组
+            convertRateNames.push(rateColName);
+            //将转化率值存入转化率相关值数组
+            convertRateValues.push(item.name);
+        }
+
+        //如果当前阶段是数据的最后一项，也即最后一个阶段
+        if (index === data.length - 1) {
+            //将转化率相关表头列名数组并入表头数组
+            thead = thead.concat(convertRateNames);
+            //将转化率相关值数组并入表体数组
+            tbody = tbody.concat(convertRateValues);
+        }
+
+        //如果当前项中包含总转化率
+        if (item.totalConvertRate) {
+            thead.push('总转化率');
+            tbody.push(item.totalConvertRate);
+        }
+    });
+
+    csvData.push(thead, tbody);
+
+    return csvData;
 }
