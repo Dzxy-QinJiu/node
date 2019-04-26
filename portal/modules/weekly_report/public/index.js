@@ -115,7 +115,6 @@ class WeeklyReport extends React.Component {
         const startTime = week.startOf('isoWeek').valueOf();
         const endTime = week.endOf('isoWeek').valueOf();
 
-        console.log( startTime, endTime );
         return { startTime, endTime };
     }
 
