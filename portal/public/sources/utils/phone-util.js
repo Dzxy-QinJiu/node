@@ -11,15 +11,26 @@ import commonMethodUtil from './common-method-util';
 import {phoneEmitter} from './emitters';
 // import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 let callClient;
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 
 //初始化
 exports.initPhone = function(user) {
     let org = commonMethodUtil.getOrganization();
     callClient = new CallcenterClient(org.id, user.user_name);
     callClient.init().then(() => {
+        notificationEmitter.emit(notificationEmitter.PHONE_INITIALIZE, false);
+        oplateConsts.SHOW_SET_PHONE_TIP = false;
         console.log('可以打电话了!');
         phoneEmitter.emit(phoneEmitter.CALL_CLIENT_INITED);
     }, (error) => {
+        //未绑定坐席号和获取坐席号失败都会走到error里面，只能根据error的内容进行判断
+        if (error === Intl.get('sales.home.never.bind.client', '未绑定座席号!')){
+            oplateConsts.SHOW_SET_PHONE_TIP = true;
+            notificationEmitter.emit(notificationEmitter.PHONE_INITIALIZE, true);
+        }else{
+            oplateConsts.SHOW_SET_PHONE_TIP = false;
+            notificationEmitter.emit(notificationEmitter.PHONE_INITIALIZE, false);
+        }
         console.log(error || '电话系统初始化失败了!');
     });
 };

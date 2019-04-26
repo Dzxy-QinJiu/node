@@ -82,5 +82,7 @@ module.exports = {
         CONTRACT_ADMIN: 'contract_manager',
         //财务
         ACCOUNTANT: 'accountant'
-    }
+    },
+    //是否展示提示设置坐席号的提醒
+    SHOW_SET_PHONE_TIP: ''
 };

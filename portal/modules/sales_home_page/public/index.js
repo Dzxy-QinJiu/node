@@ -52,6 +52,7 @@ const FOUR_CHAR_WIDTH = 95;
 const FIVE_CHAR_WIDTH = 105;
 //六字符表头宽度
 const SIX_CHAR_WIDTH = 120;
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 class SalesHomePage extends React.Component {
     constructor(props) {
         super(props);
@@ -82,7 +83,8 @@ class SalesHomePage extends React.Component {
             appList: [], //应用数组
             selectedAppId: '', //选中的应用id
             isShowEffectiveTimeAndCount: false, // 是否展示有效通话时长和有效接通数
-            setWebConfigClientStatus: false//设置不再展示提示添加坐席号的提示
+            setWebConfigClientStatus: false,//设置不再展示提示添加坐席号的提示
+            addListener: false, //是否监听了坐席号配置完成的方法
         };
     }
 
@@ -134,8 +136,6 @@ class SalesHomePage extends React.Component {
             }
             scrollTimeout = setTimeout(() => $('.statistic-data-analysis .thumb').hide(), 300);
         });
-        //获取是否能展示邮箱激活提示或者设置坐席号提示
-        SalesHomeAction.getShowActiveEmailOrClientConfig();
         //外层父组件加载完成后，再由上到下推出激活邮箱提示框
         setTimeout(() => {
             this.setState({
@@ -143,7 +143,19 @@ class SalesHomePage extends React.Component {
                 isClientAnimateShow: true
             });
         }, DELAY_TIME);
+        this.getPhoneInitialed();
     }
+    getPhoneInitialed = () => {
+        var showSetPhoneTip = oplateConsts.SHOW_SET_PHONE_TIP;
+        if (_.isBoolean(showSetPhoneTip)){
+            this.finishedInitialPhone(showSetPhoneTip);
+        }else{
+            this.setState({
+                addListener: true
+            });
+            notificationEmitter.on(notificationEmitter.PHONE_INITIALIZE, this.finishedInitialPhone);
+        }
+    };
 
     resizeLayout = () => {
         let scrollbarEnabled;
@@ -186,7 +198,17 @@ class SalesHomePage extends React.Component {
 
     componentWillUnmount() {
         SalesHomeStore.unlisten(this.onChange);
+        if (this.state.addListener){
+            this.setState({
+                addListener: false
+            });
+            notificationEmitter.removeListener(notificationEmitter.PHONE_INITIALIZE, this.finishedInitialPhone);
+        }
     }
+    finishedInitialPhone = (showSetPhoneTip) => {
+        //获取是否能展示邮箱激活提示或者设置坐席号提示
+        SalesHomeAction.getShowActiveEmailOrClientConfig(showSetPhoneTip);
+    };
 
     //获取查询参数
     getQueryParams = () => {
