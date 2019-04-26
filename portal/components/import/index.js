@@ -50,10 +50,8 @@ class ImportTemplate extends React.Component {
             previewList: this.props.previewList,//预览列表
             isImporting: false,//正在导入
             tableHeight: this.calculateTableHeight(),
-            appList: this.props.appList, // 应用列表
             selectedAppId: '', // 选择的应用，默认为空
         };
-        console.log('this.state#########this.state', this.state);
     }
 
     componentDidMount = () => {
@@ -103,7 +101,6 @@ class ImportTemplate extends React.Component {
     };
 
     renderFirstStepContent = () => {
-        console.log(this.state.appList);
         let appOptions = _.map(this.props.appList, item => <Option key={item.app_id} value={item.app_id} title={item.app_name}>{item.app_name}</Option>);
         return (
             <div className="first-step-content">
@@ -126,7 +123,7 @@ class ImportTemplate extends React.Component {
                 <Upload
                     isLoading={this.state.isLoading}
                     afterUpload={this.afterUpload}
-                    uploadHref={this.props.uploadHref}
+                    uploadHref={this.props.uploadHref + this.state.selectedAppId}
                     onItemListImport={this.onItemListImport}
                     uploadActionName={this.props.uploadActionName}
                     importType={this.props.importType}
@@ -135,7 +132,7 @@ class ImportTemplate extends React.Component {
                 />
                 <div className="down-load-template">
                     <a data-tracename="点击下载模板" href={this.props.templateHref}>
-                        {Intl.get('clue.download.clue.csv', '下载导入{type}表格',{type: this.props.importType})}
+                        {Intl.get('common.download.template.filename', '下载{type}模板',{type: this.props.importType})}
                     </a>
                 </div>
             </div>

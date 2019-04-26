@@ -268,5 +268,12 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
-    },]
+    }, { // 上传用户
+        'method': 'post',
+        'path': '/rest/user/upload/:app_id',
+        'handler': 'uploadUser',
+        'passport': {
+            'needLogin': true
+        }
+    }]
 };

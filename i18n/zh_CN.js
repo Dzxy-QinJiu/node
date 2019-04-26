@@ -253,6 +253,7 @@ var zh_CN = {
     'common.product.search.placeholder': '请输入产品名进行筛选',
     'common.or': '或',
     'common.before': '前',
+    'common.download.template.filename': '下载{type}模板',
 
     //公共部分--end
     'login.login': '登录',

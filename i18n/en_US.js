@@ -248,6 +248,7 @@ var en_US = {
     'common.product.search.placeholder': 'Please enter the product name for search',//请输入产品名进行筛选
     'common.or': 'Or', // 或
     'common.before': 'Before', // 前
+    'common.download.template.filename': 'Download {type} Template', // 下载{type}模板
 
     //公共部分--end
     'login.login': 'Login',//登录

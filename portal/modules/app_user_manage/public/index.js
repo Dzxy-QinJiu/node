@@ -66,7 +66,8 @@ class AppUserManage extends React.Component {
         isGettingIntegrateType: true,//正在获取集成类型
         getItegrateTypeError: false,//获取集成类型是否出错
         isShowAddProductView: false,//添加产品的配置视图
-        isShowImportUserPanel: false // 是否显示导入用户模板， 默认false
+        isShowImportUserPanel: false, // 是否显示导入用户模板， 默认false
+        previewList: [] //预览列表
     };
     onStoreChange = () => {
         this.setState(this.getStoreData());
@@ -541,11 +542,55 @@ class AppUserManage extends React.Component {
     // 关闭导入用户面板
     closeImportUserRightPanel = () => {
         this.setState({
-            isShowImportUserPanel: false
+            isShowImportUserPanel: false,
+            previewList: []
         });
     };
-    getItemPrevList = (columns) => {
-        return columns;
+
+    onUserImport = (list) => {
+        this.setState({
+            previewList: list,
+        });
+    };
+
+    getUserPrevList = () => {
+        return [{
+            title: Intl.get('common.username', '用户名'),
+            dataIndex: 'userName',
+            width: '10%'
+        }, {
+            title: Intl.get('common.nickname', '昵称'),
+            dataIndex: 'nickname',
+            width: '10%'
+        }, {
+            title: Intl.get('user.phone', '手机号'),
+            dataIndex: 'phone',
+            width: '10%'
+        }, {
+            title: Intl.get('common.email', '邮箱'),
+            dataIndex: 'email',
+            width: '10%'
+        }, {
+            title: Intl.get('common.belong.customer', '所属客户'),
+            dataIndex: 'customerName',
+            width: '20%'
+        }, {
+            title: Intl.get('common.type', '类型'),
+            dataIndex: 'userType',
+            width: '10%'
+        }, {
+            title: Intl.get('user.time.start', '开通时间'),
+            dataIndex: 'beginTime',
+            width: '10%'
+        }, {
+            title: Intl.get('user.time.end', '到期时间'),
+            dataIndex: 'endTime',
+            width: '10%'
+        }, {
+            title: Intl.get('common.remark', '备注'),
+            dataIndex: 'remark',
+            width: '10%'
+        }];
     };
     //渲染按钮区域
     renderTopNavOperation = () => {
@@ -751,12 +796,13 @@ class AppUserManage extends React.Component {
                     uploadActionName='users'
                     importType={Intl.get('sales.home.user', '用户')}
                     templateHref='/rest/import/user/download_template'
-                    uploadHref='/rest/crm/customers'
+                    uploadHref='/rest/user/upload/'
                     appList={this.state.appList}
-                    previewList={[]}
+                    previewList={this.state.previewList}
                     showFlag={this.state.isShowImportUserPanel}
-                    getItemPrevList={this.getItemPrevList.bind(this, columns)}
+                    getItemPrevList={this.getUserPrevList}
                     closeTemplatePanel={this.closeImportUserRightPanel}
+                    onItemListImport={this.onUserImport}
                     doImportAjax={this.doImport}
                     regRules={REG_CRM_FILES_TYPE_RULES}
                     importFileTips={Intl.get('user.import.user.toplimit', '每次导入上限为1000条用户')}
