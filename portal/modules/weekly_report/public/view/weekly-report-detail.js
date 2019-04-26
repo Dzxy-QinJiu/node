@@ -3,15 +3,15 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/2/7.
  */
-const PropTypes = require('prop-types');
-var React = require('react');
+
 import WeeklyReportDetailAction from '../action/weekly-report-detail-actions';
 import WeeklyReportDetailStore from '../store/weekly-report-detail-store';
 import Spinner from 'CMP_DIR/spinner';
-import {AntcTable, AntcCardContainer} from 'antc';
+import {AntcTable, AntcCardContainer, AntcAttendanceRemarks, AntcAnalysis} from 'antc';
 import {Alert, Button, Popconfirm, message} from 'antd';
+import {dateSelectorEmitter, teamTreeEmitter} from 'PUB_DIR/sources/utils/emitters';
+import customerCharts from 'MOD_DIR/analysis/public/charts/customer';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import {AntcAttendanceRemarks} from 'antc';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 var classNames = require('classnames');
 import {LEALVE_OPTION} from '../utils/weekly-report-utils';
@@ -538,6 +538,62 @@ class WeeklyReportDetail extends React.Component {
         return height;
     };
 
+    getConditions() {
+        const params = this.getQueryParams();
+
+        return [
+            {
+                name: 'start_time',
+                value: params.start_time,
+            },
+            {
+                name: 'end_time',
+                value: params.end_time,
+            },
+            {
+                name: 'team_ids',
+                value: params.team_id,
+            },
+        ];
+    }
+
+    getEmitters = () => {
+        return [
+            {
+                emitter: dateSelectorEmitter,
+                event: dateSelectorEmitter.SELECT_DATE,
+                callbackArgs: [{
+                    name: 'start_time',
+                }, {
+                    name: 'end_time',
+                }],
+            },
+            {
+                emitter: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_TEAM,
+                callbackArgs: [{
+                    name: 'team_ids',
+                }],
+            },
+        ];
+    };
+
+    renderSalesBehavior() {
+        const charts = [
+            customerCharts.getSalesBehaviorChart()
+        ];
+
+        return (
+            <AntcAnalysis
+                charts={charts}
+                conditions={this.getConditions()}
+                emitterConfigList={this.getEmitters()}
+                isGetDataOnMount={true}
+                style={{padding: 0}}
+            />
+        );
+    }
+
     render() {
         var divHeight = this.getReportDetailDivHeight();
         return (
@@ -547,6 +603,7 @@ class WeeklyReportDetail extends React.Component {
                 </h4>
                 <div className="tables-wrap" style={{height: divHeight}}>
                     <GeminiScrollbar>
+                        {this.state.selectedItem.teamId ? this.renderSalesBehavior() : null}
                         <div className="call-info-wrap">
                             <AntcCardContainer title={Intl.get('weekly.report.call.statics', '电话统计')}>
                                 {this.renderDiffTypeTable('callInfo')}
