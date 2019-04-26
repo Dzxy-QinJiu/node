@@ -3,7 +3,8 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/2/5.
  */
-var React = require('react');
+
+import {dateSelectorEmitter, teamTreeEmitter} from 'PUB_DIR/sources/utils/emitters';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import WeeklyReportAction from './action/weekly-report-actions';
 import WeeklyReportStore from './store/weekly-report-store';
@@ -86,6 +87,7 @@ class WeeklyReport extends React.Component {
     onTeamChange = (teamId, e) => {
         Trace.traceEvent(e, '选择团队');
         WeeklyReportAction.setSelectedTeamId(teamId);
+        teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamId);
     };
 
     renderTeamSelect = () => {
@@ -107,6 +109,16 @@ class WeeklyReport extends React.Component {
         }
     };
 
+    //获取选中周的开始结束时间
+    getStartEndTime(yearNum, weekNum) {
+        const week = moment().year(yearNum).isoWeek(weekNum);
+        const startTime = week.startOf('isoWeek').valueOf();
+        const endTime = week.endOf('isoWeek').valueOf();
+
+        console.log( startTime, endTime );
+        return { startTime, endTime };
+    }
+
     //年的选择
     onChangeYear = (year, e) => {
         if (this.state.yearTime === year) {
@@ -114,6 +126,11 @@ class WeeklyReport extends React.Component {
         }
         Trace.traceEvent(e, `时间范围-选择第${year}年`);
         WeeklyReportAction.setSelectedYear(year);
+
+        const startTime = this.getStartEndTime(year, this.state.nWeek).startTime;
+        const endTime = this.getStartEndTime(year, this.state.nWeek).endTime;
+
+        dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
     };
 
     //周的选择
@@ -123,6 +140,11 @@ class WeeklyReport extends React.Component {
         }
         Trace.traceEvent(e, `时间范围-选择第${week}周`);
         WeeklyReportAction.setSelectedWeek(week);
+
+        const startTime = this.getStartEndTime(this.state.nYear, week).startTime;
+        const endTime = this.getStartEndTime(this.state.nYear, week).endTime;
+
+        dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
     };
 
     renderWeekSelect = () => {
