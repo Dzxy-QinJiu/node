@@ -104,7 +104,7 @@ class ImportTemplate extends React.Component {
                 />
                 <div className="down-load-template">
                     <a data-tracename="点击下载模板" href={this.props.templateHref}>
-                        {Intl.get('clue.download.clue.csv', '下载导入{type}表格',{type: this.props.importType})}
+                        {Intl.get('clue.download.clue.csv', '下载{type}模板',{type: this.props.importType})}
                     </a>
                 </div>
             </div>

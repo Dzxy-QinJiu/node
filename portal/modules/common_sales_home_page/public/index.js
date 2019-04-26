@@ -208,7 +208,7 @@ class SalesHomePage extends React.Component {
     getSalesClueLists = (lastId) => {
         var constObj = {
             salesClueTypeFilter: this.state.salesClueTypeFilter,
-            rangParamsSalesClue: this.state.rangParamsSalesClue,
+            rangParamsSalesClue: this.getCrmSalesClue(),
             page_size: this.state.page_size,
             sorterSalesClue: this.state.sorterSalesClue,
         };
@@ -250,12 +250,29 @@ class SalesHomePage extends React.Component {
         //获取重复客户列表
         SalesHomeAction.getRepeatCustomerList(queryObj);
     };
-
+    //新分配未联系的客户
+    getCrmDistributeRangParams = () => {
+        return [{
+            from: 0,
+            to: moment().valueOf(),
+            type: 'time',
+            name: 'allot_time'
+        }];
+    };
+    //获取销售线索
+    getCrmSalesClue = () => {
+        return [{//时间范围参数
+            from: 0,
+            to: moment().valueOf(),
+            type: 'time',
+            name: 'source_time'
+        }];
+    };
     //获取新分配但未联系的客户
     getNewDistributeCustomer = () => {
         //客户被分配后是否已联系 allot_no_contact  未联系 : "0" ，已联系 :"1"
         //获取新分配的客户
-        SalesHomeAction.getNewDistributeCustomer({allot_no_contact: '0'}, this.state.rangParamsDistribute, this.state.page_size, _.get(this.state, 'newDistributeCustomer.curPage', 1), this.state.sorterDistribute);
+        SalesHomeAction.getNewDistributeCustomer({allot_no_contact: '0'}, this.getCrmDistributeRangParams(), this.state.page_size, _.get(this.state, 'newDistributeCustomer.curPage', 1), this.state.sorterDistribute);
     };
     getTodayStartAndEndTime = () => {
         return {

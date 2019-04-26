@@ -172,20 +172,6 @@ SalesHomeStore.prototype.setInitState = function() {
             total: ''
         }
     };
-    //新分配未联系的客户
-    this.rangParamsDistribute = [{
-        from: 0,
-        to: moment().valueOf(),
-        type: 'time',
-        name: 'allot_time'
-    }];
-    //销售线索
-    this.rangParamsSalesClue = [{//时间范围参数
-        from: 0,
-        to: moment().valueOf(),
-        type: 'time',
-        name: 'source_time'
-    }];
     //最近登录的客户
     this.sorterLogin = {
         field: 'last_login_time',//排序字段
@@ -434,13 +420,13 @@ function getExpireCustomerData(stateData, resultData) {
 //获取即将到期的客户
 SalesHomeStore.prototype.getExpireCustomer = function(result) {
     if (result.type === ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER) {
-        //获取即将到期的签约用户
+        //获取即将到期的签约客户
         getExpireCustomerData(this.willExpiredAssignCustomer, result);
     } else if (result.type === ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER) {
-        //获取即将到期的试用用户
+        //获取即将到期的试用客户
         getExpireCustomerData(this.willExpiredTryCustomer, result);
     } else if (result.type === ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER) {
-        //获取过期十天已经过期的试用用户
+        //获取过期十天已经过期的试用客户
         getExpireCustomerData(this.hasExpiredTryCustomer, result);
         //将数据进行颠倒，昨天的数据要排在最上面
         this.hasExpiredTryCustomer.data.list.reverse();
