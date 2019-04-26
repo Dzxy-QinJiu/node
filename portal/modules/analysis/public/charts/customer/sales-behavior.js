@@ -28,59 +28,59 @@ export function getSalesBehaviorChart() {
         option: {
             columns: [
                 {
-                    title: '团队',
+                    title: Intl.get('user.user.team', '团队'),
                     dataIndex: 'sales_team',
                     isSetCsvValueBlank: true,
                     width: 60
                 },
                 {
-                    title: '销售人员',
+                    title: Intl.get('user.salesman', '销售人员'),
                     dataIndex: 'nick_name',
                     isSetCsvValueBlank: true,
                     width: 60
                 },
                 {
-                    title: '客户数',
+                    title: Intl.get('contract.169', '客户数'),
                     dataIndex: 'customer_num',
                     width: 60
                 },
                 {
-                    title: '填写跟进客户数',
+                    title: Intl.get('common.number.of.unremarked.customer', '填写跟进记录客户数'),
                     dataIndex: 'customer_remark_num',
-                    width: 80
+                    width: 110
                 },
                 {
-                    title: '未填写跟进客户数',
+                    title: Intl.get('common.number.of.remarked.customer', '未填写跟进记录客户数'),
                     dataIndex: 'customer_no_remark_num',
-                    width: 90
+                    width: 110
                 },
                 {
-                    title: '新开客户数',
+                    title: Intl.get('oplate_customer_analysis.newCustomerCount', '新开客户数'),
                     dataIndex: 'customer_new_num',
                     width: 80
                 },
                 {
-                    title: '试用合格客户数',
+                    title: Intl.get('common.number.of.trial.qualified.customer', '试用合格客户数'),
                     dataIndex: 'customer_qualify_num',
                     width: 80
                 },
                 {
-                    title: '出差天数',
+                    title: Intl.get('common.number.of.travel.day', '出差天数'),
                     dataIndex: 'business_days',
                     width: 80
                 },
                 {
-                    title: '拜访客户数',
+                    title: Intl.get('common.number.of.customers.visited', '拜访客户数'),
                     dataIndex: 'customer_visit_num',
                     width: 80
                 },
                 {
-                    title: '日均电话时长',
+                    title: Intl.get('common.daily.duration.of.calls', '日均电话时长'),
                     dataIndex: 'average_billsec',
                     width: 80
                 },
                 {
-                    title: '日均电话数',
+                    title: Intl.get('common.daily.number.of.calls', '日均电话数'),
                     dataIndex: 'average_total',
                     width: 80
                 }
