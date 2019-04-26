@@ -227,17 +227,19 @@ class UploadAndDeleteFile extends React.Component {
         var fileList = this.state.fileList;
         var detailInfoObj = this.props.detailInfoObj;
         var btnDesc = Intl.get('apply.approve.upload.file.type','上传{fileType}',{fileType: Intl.get('apply.approve.customer.info', '客户资料')});
-        //管理员可以上传和删除的权限
-        var approverUploadAndDeletePrivilege = this.props.approverUploadAndDeletePrivilege;
+        //销售可以上传和删除的权限
+        var salesUploadAndDeletePrivilege = this.props.salesUploadAndDeletePrivilege;
         if(this.isDetailObjExist()){
             props.data = detailInfoObj.id;
             props.beforeUpload = function(file) {
                 var fileName = file.name,fileSize = file.size;
                 _this.setState({isUpLoading: true});
-                //如果是销售继续上传，需要计算文件的大小，如果是管理员上传，不需要计算文件的大小
-                if (approverUploadAndDeletePrivilege){
-                    return true;
-                }else if (!_this.checkFileType(fileName,fileSize + _this.state.totalFileSize)){
+                //如果是销售继续上传，需要计算文件的总大小，如果是支持部人员上传，不需要计算文件的总大小，只是需要单次的大小不能超过10M
+                var Size = fileSize;
+                if (salesUploadAndDeletePrivilege) {
+                    Size = fileSize + _this.state.totalFileSize;
+                }
+                if (!_this.checkFileType(fileName, Size)) {
                     _this.setUploadLoadingFalse();
                     return false;
                 }
@@ -286,7 +288,7 @@ class UploadAndDeleteFile extends React.Component {
                                 <Tooltip title="'rar','zip'">
                                     <span>{Intl.get('leave.apply.compact.document', '压缩文件')}</span>
                                 </Tooltip>),
-                            'filetypes': approverUploadAndDeletePrivilege ? Intl.get('upload.files.each.file.size','每次上传大小') : Intl.get('upload.files.total.file.size','文件总大小'),
+                            'filetypes': salesUploadAndDeletePrivilege ? Intl.get('upload.files.total.file.size','文件总大小') : Intl.get('upload.files.each.file.size','每次上传大小') ,
                         }}
                     />
                 </p>
