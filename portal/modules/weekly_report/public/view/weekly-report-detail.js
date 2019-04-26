@@ -602,7 +602,7 @@ class WeeklyReportDetail extends React.Component {
                 </h4>
                 <div className="tables-wrap" style={{height: divHeight}}>
                     <GeminiScrollbar>
-                        {this.renderSalesBehavior()}
+                        {this.state.selectedItem.teamId ? this.renderSalesBehavior() : null}
                         <div className="call-info-wrap">
                             <AntcCardContainer title={Intl.get('weekly.report.call.statics', '电话统计')}>
                                 {this.renderDiffTypeTable('callInfo')}

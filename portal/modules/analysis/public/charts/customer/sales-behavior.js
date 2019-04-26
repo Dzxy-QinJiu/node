@@ -7,6 +7,7 @@ export function getSalesBehaviorChart() {
         title: '销售行为统计',
         chartType: 'table',
         layout: {sm: 24},
+        height: 'auto',
         url: '/rest/analysis/callrecord/v1/sales_comprehensive/statistics',
         dataField: 'list',
         conditions: [{
