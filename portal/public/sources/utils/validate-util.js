@@ -99,3 +99,5 @@ export const isTelephone = function(phoneNumber) {
         phone1010Regex.test(phoneNumber);
 };
 
+// 判断系统是否为苹果系统
+export const isMacOs = (/macintosh|mac os x/i).test(navigator.userAgent);

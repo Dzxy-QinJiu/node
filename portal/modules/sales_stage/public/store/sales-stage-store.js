@@ -41,19 +41,19 @@ SalesStageStore.prototype.getSalesStageList = function(resData) {
 };
 
 //添加销售阶段
-SalesStageStore.prototype.addSalesStage = function(salesStageCreated) {
-    var _this = this;
-    if(salesStageCreated.loading){
+SalesStageStore.prototype.addSalesStage = function(result) {
+    if(result.loading){
         this.isSavingSalesStage = true;
-    } else if (!salesStageCreated.error) {
-        $.each(salesStageCreated.value, function(i, salesStage) {
-            _this.salesStageList.push(salesStage);
-        });
-        _this.currentSalesStageList = _.cloneDeep(this.salesStageList); //返回对象的深拷贝
+    } else if (!result.error) {
+        let resData = _.get(result, 'resData');
+        if (resData.code === 0) {
+            this.salesStageList = _.get(resData, 'result');
+        }
+        this.currentSalesStageList = _.cloneDeep(this.salesStageList); //返回对象的深拷贝
         this.saveStageErrMsg = '';
         this.salesStageFormShow = false;
     }else{
-        this.saveStageErrMsg = salesStageCreated.errorMsg;
+        this.saveStageErrMsg = result.errorMsg;
         this.isSavingSalesStage = false;
     }
 };
@@ -93,6 +93,9 @@ SalesStageStore.prototype.deleteSalesStage = function(salesStage) {
         this.isSavingSalesStageHome = true;
     }else if(!salesStage.error) {
         this.salesStageList = _.filter(this.salesStageList,item => item.id !== salesStage.value.id);
+        _.each(this.salesStageList, (item, index) => {
+            item.index = index + 1;
+        });
         this.currentSalesStageList = _.cloneDeep(this.salesStageList); //返回对象的深拷贝
         this.isSavingSalesStageHome = false;
         this.deleteStageErrMsg = '';

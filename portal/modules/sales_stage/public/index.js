@@ -69,7 +69,14 @@ class SalesStagePage extends React.Component {
                 message.success(Intl.get('crm.218', '修改成功！'));
             });
         } else {
-            SalesStageAction.addSalesStage(salesStage, () => {
+            let length = _.get(this.state.salesStageList, 'length');
+            // 更改订单阶段的顺序，从1开始，依次增加
+            _.each(this.state.salesStageList, (item, index) => {
+                item.index = index + 1;
+            });
+            let currentSalesStageList = _.cloneDeep(this.state.salesStageList);
+            currentSalesStageList.push({...salesStage, index: length + 1});
+            SalesStageAction.addSalesStage(currentSalesStageList, () => {
                 SalesStageAction.hideSalesStageeForm();
                 message.success(Intl.get('crm.216', '添加成功！'));
             });

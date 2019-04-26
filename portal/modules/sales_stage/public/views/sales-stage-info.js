@@ -8,6 +8,8 @@ var ModalDialog = require('../../../../components/ModalDialog');
 import Trace from 'LIB_DIR/trace';
 function noop() {
 }
+import classNames from 'classnames';
+import {isMacOs} from 'PUB_DIR/sources/utils/validate-util';
 
 class SalesStageInfo extends React.Component {
     static defaultProps = {
@@ -17,7 +19,7 @@ class SalesStageInfo extends React.Component {
     };
 
     deleteSalesStage = (salesStage) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-dialog .modal-footer'),'确定删除某销售阶段');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-dialog .modal-footer'), '确定删除某销售阶段');
         this.props.deleteSalesStage(salesStage);
     };
 
@@ -26,7 +28,7 @@ class SalesStageInfo extends React.Component {
     };
 
     hideSalesStageModalDialog = (salesStage) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-dialog .modal-footer'),'关闭删除销售阶段模态框');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-dialog .modal-footer'), '关闭删除销售阶段模态框');
         this.props.hideSalesStageModalDialog(salesStage);
     };
 
@@ -46,9 +48,19 @@ class SalesStageInfo extends React.Component {
         var _this = this;
         var salesStage = this.props.salesStage;
         var width = this.props.width;
-        var modalContent = Intl.get('sales.stage.delete.sales.stage','确定删除这个销售阶段麽') + '?';
+        var modalContent = Intl.get('sales.stage.delete.sales.stage', '确定删除这个销售阶段麽') + '?';
+        // 判断用户登录的系统是否为Mac系统，若是Mac系统，使用Mac系统的图片（图片是普通的2倍清晰度），否则使用普通的图片
+        let upArrowCls = classNames('sales-stage-btn-class',{
+            'up-arrow': !isMacOs,
+            'mac-os-up-arrow': isMacOs
+        });
+        let downArrowCls = classNames('sales-stage-btn-class',{
+            'down-arrow': !isMacOs,
+            'mac-os-down-arrow': isMacOs
+        });
         return (
-            <div className="sales-stage-timeline-item-content modal-container" style={{width: width}} data-tracename="销售阶段列表">
+            <div className="sales-stage-timeline-item-content modal-container" style={{width: width}}
+                data-tracename="销售阶段列表">
                 <div className="sales-stage-content" style={{width: width - 100}}>
                     <div className="sales-stage-content-name">{salesStage.name}</div>
                     <div
@@ -57,13 +69,13 @@ class SalesStageInfo extends React.Component {
                 {
                     this.props.salesStageEditOrder ?
                         (<div className="sales-stage-btn-div order-arrow">
-                            <Button className="sales-stage-btn-class icon-arrow-up iconfont"
+                            <Button className={upArrowCls}
                                 onClick={_this.salesStageOrderUp.bind(this, salesStage)}
                                 data-tracename="上移销售阶段"
                             >
                             </Button>
                             <Button
-                                className="sales-stage-btn-class icon-arrow-down iconfont"
+                                className={downArrowCls}
                                 onClick={_this.salesStageOrderDown.bind(this, salesStage)}
                                 data-tracename="下移销售阶段"
                             >
@@ -98,5 +110,17 @@ class SalesStageInfo extends React.Component {
         );
     }
 }
+
+SalesStageInfo.propTypes = {
+    deleteSalesStage: PropTypes.func,
+    showSalesStageForm: PropTypes.func,
+    hideSalesStageModalDialog: PropTypes.func,
+    showSalesStageModalDialog: PropTypes.func,
+    salesStageOrderUp: PropTypes.func,
+    salesStageOrderDown: PropTypes.func,
+    width: PropTypes.number,
+    salesStage: PropTypes.object,
+    salesStageEditOrder: PropTypes.bool
+};
 
 module.exports = SalesStageInfo;
