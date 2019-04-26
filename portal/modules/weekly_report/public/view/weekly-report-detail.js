@@ -588,6 +588,7 @@ class WeeklyReportDetail extends React.Component {
                 conditions={this.getConditions()}
                 emitterConfigList={this.getEmitters()}
                 isGetDataOnMount={true}
+                style={{padding: 0}}
             />
         );
     }
