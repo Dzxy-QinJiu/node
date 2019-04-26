@@ -245,13 +245,13 @@ exports.getRepeatCustomerList = function(req, res, queryParams) {
     }
     let filterObj = queryParams.filterObj ? JSON.parse(queryParams.filterObj) : {};
     //用于查询重复客户的标识
-    filterObj.repeat = 'true';
+    filterObj.repeat = true;
     return restUtil.authRest.post(
         {
             url: url,
             req: req,
             res: res
-        }, filterObj);
+        }, {query: filterObj});
 };
 
 //通过重复客户的客户id获取重复客户
