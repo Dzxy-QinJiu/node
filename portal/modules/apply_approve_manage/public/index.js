@@ -15,7 +15,7 @@ class ApplyApproveManage extends React.Component {
         this.state = {
             showAddForm: false,
             showApplyTypeList: [
-                {'applyType': '默认申请审批','approveRoles': ['销售'],'approveCheck': false,id: '111111111111'}, {'applyType': '请假申请审批','approveRoles': ['销售222'],'approveCheck': true,id: '222222222222222222',applyRules: [{
+                {'applyType': '默认申请审批','approveRoles': ['销售'],'approveCheck': false,id: '111111111111'}, {'applyType': '出差申请审批','approveRoles': ['销售222'],'approveCheck': true,id: '222222222222222222',applyRules: [{
                     defaultFlow: [
                         {
                             name: 'UserTask_1_1',
@@ -30,7 +30,7 @@ class ApplyApproveManage extends React.Component {
                             type: 'UserTask',
                             previous: 'UserTask_1_1',
                             next: 'UserTask_1_3',
-                            showName: '部门经理审批',
+                            showName: '部门经理',
                             candidateApprover: 'teamowner',
                         },{
                             name: 'UserTask_1_3',
@@ -38,7 +38,7 @@ class ApplyApproveManage extends React.Component {
                             type: 'UserTask',
                             next: 'EndTask_1',
                             previous: 'UserTask_1_2',
-                            showName: '总经理审批',
+                            showName: '总经理',
                             candidateApprover: 'manager',
                             description: 'final_task'
                         }, {

@@ -17,6 +17,7 @@ import {Checkbox,Radio } from 'antd';
 const RadioGroup = Radio.Group;
 import assign from 'lodash/assign';
 import CamundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
+// import CamundaModdleDescriptor from './camunda.json';
 class Regrules extends React.Component {
     constructor(props) {
         super(props);
@@ -152,7 +153,6 @@ class Regrules extends React.Component {
                             },60 * 1000);
 
                         }
-                        console.log();
                         //如果上一节点是个网关
                         if (this.isGatewayNode(elem)) {
                             let bpmnFactory = this.state.bpmnFactory;
@@ -171,7 +171,6 @@ class Regrules extends React.Component {
     //获取设置待审批角色的节点
     getSetCandidateNode() {
         var elementRegistry = this.state.elementRegistry;
-        console.log(elementRegistry);
         let nodes = elementRegistry.filter((element, gix) => {
             if (element.type) {
                 return true;
@@ -209,16 +208,18 @@ class Regrules extends React.Component {
     };
     renderDefaultWorkFlow = () => {
         var defaultRules = this.getDefaultFlow();
+        //把默认流程的中待审批人所在的节点过滤出来
+        var candidateRules = _.filter(defaultRules,(item) => item.candidateApprover);
         return (
             <div>
-                {_.map(defaultRules,(item) => {
+                {_.map(candidateRules,(item,index) => {
                     return (
                         <div className="item-node">
                             <div className="icon-container">
                                 <i className="iconfont icon-active-user-ico"></i>
                             </div>
-
                             <span className="show-name"> {item.showName}</span>
+                            {index !== candidateRules.length - 1 ? <span className="connet-bar"></span> : <i className="iconfont "></i>}
                         </div>
                     );
                 })}
