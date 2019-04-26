@@ -2210,9 +2210,10 @@ var zh_CN = {
     'member.get.phone.order.failed': '获取成员的座席号失败!',
     'member.get.add.phone.order.failed': '添加成员成功，添加座席号失败！',
     //重新登录
-    'retry.no.login.for.longtime': '您已长时间没有进行操作，为了您的帐号安全',
+    'retry.no.login.for.longtime': '您已长时间没有进行操作，为了帐号安全，请重新登录',
     'retry.input.login.password.again': '请重新输入密码:',
     'retry.input.login.password': '请输入登录密码',
+    'retry.login.with.other': '登录其他账号',
     'retry.submit.again': '提交',
     'retry.is.submitting': '提交中...',
     'retry.failed.get.code': '获取验证码错误',
