@@ -1,0 +1,83 @@
+@body-bg: #1d2b36;
+@gray-font-color: #78838e;
+#session-timeout-modal {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: @body-bg;
+  z-index: 100000;
+  .logo {
+    margin-top: 20px;
+    margin-left: 20px
+  }
+  .session-timeout-content {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    .text-align-center {
+      text-align: center;
+    }
+    .user-info-name, .login-width-other {
+      height: 20px;
+      line-height: 20px;
+      color: @gray-font-color;
+    }
+    .user-info-name{
+      margin-top: 8px;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+    .retry-login-tip {
+      line-height: 30px;
+      height: 30px;
+      color: #ffffff;
+    }
+    button, .ant-input {
+      width: 100%;
+      height: 40px;
+      line-height: 40px;
+      border: none;
+      font-size: 16px;
+      padding: 0 15px;
+      outline: none;
+      border-radius: 3px;
+    }
+    .ant-input {
+      color: #333;
+    }
+    .ant-form-item {
+      margin-bottom: 10px;
+    }
+    .captcha-input{
+      width: calc(100% - 130px)
+    }
+    .captcha-wrap{
+      float: right;
+      width: 120px;
+      height: 40px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    .login-error-tip{
+      height: 20px;
+      line-height: 20px;
+      margin-top: 4px;
+      margin-bottom: 4px;
+      font-size: 14px;
+      color: #ee5b44;
+    }
+    .login-width-other {
+      font-size: 12px;
+      cursor: pointer;
+      &:hover {
+        color: #ffffff;
+      }
+    }
+  }
+}

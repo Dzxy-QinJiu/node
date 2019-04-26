@@ -265,7 +265,7 @@ class LoginForm extends React.Component {
                             <input placeholder={hasWindow ? Intl.get('common.password', '密码') : null}
                                 type="password" tabIndex="2"
                                 ref="password_input"
-                                onChange={this.passwordChange} value={this.state.password} autoComplete="off"/>
+                                onChange={this.passwordChange} value={this.state.password} autoComplete="new-password"/>
                         </div>
 
 
