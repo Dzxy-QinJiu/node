@@ -75,9 +75,9 @@ export function getSalesBehaviorChart() {
                     width: 80
                 },
                 {
-                    title: Intl.get('common.daily.duration.of.calls', '日均电话时长'),
+                    title: Intl.get('common.daily.duration.of.calls', '日均电话时长') + '(' + Intl.get('user.time.second', '秒') + ')',
                     dataIndex: 'average_billsec',
-                    width: 80
+                    width: 90
                 },
                 {
                     title: Intl.get('common.daily.number.of.calls', '日均电话数'),
