@@ -2920,7 +2920,12 @@ var zh_CN = {
     'apply.cc.when,submit': '提交申请时抄送',
     'apply.cc.when.approve.apply': '审批通过后抄送',
     'apply.cc.when.submit.and.approve': '提交申请和审批通过后都抄送',
-    'apply.add.condition.workflow': '添加条件审批流程'
-
+    'apply.add.condition.workflow': '添加条件审批流程',
+    'apply.add.apply.approver': '添加审批人',
+    'apply.add.approver.higher.level': '上级',
+    'apply.add.approver.setting.role': '指定角色',
+    'apply.add.approver.setting.user': '指定用户',
+    'apply.add.approver.applicant.setting': '申请人指定',
+    'apply.add.approver.applicant.self': '申请人自己'
 };
 export default zh_CN;

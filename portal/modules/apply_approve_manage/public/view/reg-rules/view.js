@@ -23,7 +23,8 @@ class Regrules extends React.Component {
         super(props);
         var applyTypeData = _.cloneDeep(this.props.applyTypeData);
         this.state = {
-            applyTypeData: applyTypeData
+            applyTypeData: applyTypeData,
+            showAddNodePanel: false
         };
     }
     onStoreChange = () => {
@@ -206,6 +207,11 @@ class Regrules extends React.Component {
         var applyRules = _.get(this, 'state.applyTypeData.applyRules');
         return _.get(_.find(applyRules, item => item.defaultFlow),'defaultFlow');
     };
+    addApplyNode = () => {
+        this.setState({
+            showAddNodePanel: false
+        });
+    };
     renderDefaultWorkFlow = () => {
         var defaultRules = this.getDefaultFlow();
         //把默认流程的中待审批人所在的节点过滤出来
@@ -213,16 +219,23 @@ class Regrules extends React.Component {
         return (
             <div>
                 {_.map(candidateRules,(item,index) => {
+                    var showDeleteIcon = index === _.get(candidateRules,'length') - 1 && index !== 0;
                     return (
                         <div className="item-node">
                             <div className="icon-container">
                                 <i className="iconfont icon-active-user-ico"></i>
                             </div>
                             <span className="show-name"> {item.showName}</span>
-                            {index !== candidateRules.length - 1 ? <span className="connet-bar"></span> : <i className="iconfont "></i>}
+                            {showDeleteIcon ? <i className="iconfont icon-close"></i> : null}
+                            <span className="connet-bar"></span>
                         </div>
                     );
                 })}
+                <div className="item-node">
+                    <div className="icon-container  add-node" onClick={this.addApplyNode}>
+                        <i className="iconfont icon-add"></i>
+                    </div>
+                </div>
             </div>
         );
     };

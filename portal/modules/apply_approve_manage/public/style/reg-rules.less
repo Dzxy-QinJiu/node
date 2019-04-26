@@ -21,6 +21,9 @@
         overflow: hidden;
         .item-node{
           float: left;
+          width: 50px;
+          margin-right: 21px;
+          position: relative;
           .icon-container{
             display: block;
             width:40px;
@@ -34,17 +37,34 @@
               color:#fff;
             }
           }
+          .icon-container.add-node{
+            background: #fff;
+            border: 1px solid #ccc;
+            .iconfont.icon-add{
+              color: #8DA8C5;
+              font-size: 17px;
+              cursor: pointer;
+            }
+          }
           .show-name{
              display: block;
              font-size: 12px;
              color: #333;
-            .connet-bar{
-              position: relative;
-              display: inline-block;
-              width: 40px;
-              top:-46px;
-              border-bottom: 4px solid red;
-            }
+          }
+          .iconfont.icon-close{
+             cursor: pointer;
+             position: absolute;
+            right: 6px;
+            top:0;
+            font-size: 12px;
+          }
+          .connet-bar{
+            position: relative;
+            display: inline-block;
+            width: 30px;
+            top:-48px;
+            border-bottom: 2px solid #B8D3EA;
+            left:41px;
           }
         }
       }
