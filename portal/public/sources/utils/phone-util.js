@@ -12,7 +12,7 @@ import {phoneEmitter} from './emitters';
 // import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 let callClient;
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-
+import {PHONE_NOT_SETTING_TIP} from './consts';
 //初始化
 exports.initPhone = function(user) {
     let org = commonMethodUtil.getOrganization();
@@ -24,7 +24,7 @@ exports.initPhone = function(user) {
         phoneEmitter.emit(phoneEmitter.CALL_CLIENT_INITED);
     }, (error) => {
         //未绑定坐席号和获取坐席号失败都会走到error里面，只能根据error的内容进行判断
-        if (error === Intl.get('sales.home.never.bind.client', '未绑定座席号!')){
+        if (error === PHONE_NOT_SETTING_TIP){
             oplateConsts.SHOW_SET_PHONE_TIP = true;
             notificationEmitter.emit(notificationEmitter.PHONE_INITIALIZE, true);
         }else{

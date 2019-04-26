@@ -488,3 +488,5 @@ export const DATE_SELECT = [
     {name: Intl.get('user.login.last.month', '近一月'), value: moment().subtract(1, 'months').valueOf() },
     {name: Intl.get('user.login.last.week', '近一周'), value: moment().subtract(1, 'weeks').valueOf()}
 ];
+//为配置坐席号的错误提示
+export const PHONE_NOT_SETTING_TIP = '未绑定座席号!';
