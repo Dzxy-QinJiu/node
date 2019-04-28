@@ -268,10 +268,17 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
-    }, { // 上传用户
+    }, { // 预览上传用户
         'method': 'post',
         'path': '/rest/user/upload/:app_id',
         'handler': 'uploadUser',
+        'passport': {
+            'needLogin': true
+        }
+    }, { // 确认上传用户
+        'method': 'post',
+        'path': '/rest/confirm/user/upload/:app_id',
+        'handler': 'confirmUploadUser',
         'passport': {
             'needLogin': true
         }

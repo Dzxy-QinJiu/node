@@ -67,7 +67,8 @@ class AppUserManage extends React.Component {
         getItegrateTypeError: false,//获取集成类型是否出错
         isShowAddProductView: false,//添加产品的配置视图
         isShowImportUserPanel: false, // 是否显示导入用户模板， 默认false
-        previewList: [] //预览列表
+        previewList: [], //预览列表
+        uploadUserAppId: '', // 上传用户选择的应用id
     };
     onStoreChange = () => {
         this.setState(this.getStoreData());
@@ -543,13 +544,35 @@ class AppUserManage extends React.Component {
     closeImportUserRightPanel = () => {
         this.setState({
             isShowImportUserPanel: false,
-            previewList: []
+            previewList: [],
+            uploadUserAppId: ''
         });
     };
 
     onUserImport = (list) => {
         this.setState({
             previewList: list,
+        });
+    };
+
+    getSelectAppId = (app_id) => {
+        this.setState({
+            uploadUserAppId: app_id
+        });
+    };
+
+    doImportAjax = (successCallback,errCallback) => {
+        $.ajax({
+            url: '/rest/confirm/user/upload/' + this.state.uploadUserAppId,
+            dataType: 'json',
+            type: 'post',
+            data: {list: this.state.previewList},
+            success: (data) => {
+                _.isFunction(successCallback) && successCallback();
+            },
+            error: (errorMsg) => {
+                _.isFunction(errCallback) && errCallback(errorMsg);
+            }
         });
     };
 
@@ -581,11 +604,21 @@ class AppUserManage extends React.Component {
         }, {
             title: Intl.get('user.time.start', '开通时间'),
             dataIndex: 'beginTime',
-            width: '10%'
+            width: '10%',
+            render: (beginTime, rowData, idx) => {
+                return (
+                    <span>{moment(new Date(beginTime)).format(oplateConsts.DATE_FORMAT)}</span>
+                );
+            }
         }, {
             title: Intl.get('user.time.end', '到期时间'),
             dataIndex: 'endTime',
-            width: '10%'
+            width: '10%',
+            render: (endTime, rowData, idx) => {
+                return (
+                    <span>{moment(new Date(endTime)).format(oplateConsts.DATE_FORMAT)}</span>
+                );
+            }
         }, {
             title: Intl.get('common.remark', '备注'),
             dataIndex: 'remark',
@@ -675,7 +708,7 @@ class AppUserManage extends React.Component {
                         <span>
                             <PrivilegeChecker
                                 onClick={this.showImportUserRightPanel}
-                                check={this.addUserBtnCheckun}
+                                check='USER_IMPORT_MANAGE'
                                 className="inline-block  btn-item">
                                 <Button>{Intl.get('user.import.user', '导入用户')}</Button>
                             </PrivilegeChecker>
@@ -801,11 +834,12 @@ class AppUserManage extends React.Component {
                     previewList={this.state.previewList}
                     showFlag={this.state.isShowImportUserPanel}
                     getItemPrevList={this.getUserPrevList}
+                    getSelectAppId={this.getSelectAppId}
                     closeTemplatePanel={this.closeImportUserRightPanel}
                     onItemListImport={this.onUserImport}
-                    doImportAjax={this.doImport}
+                    doImportAjax={this.doImportAjax}
                     regRules={REG_CRM_FILES_TYPE_RULES}
-                    importFileTips={Intl.get('user.import.user.toplimit', '每次导入上限为1000条用户')}
+                    importFileTips={Intl.get('user.import.user.toplimit', '每次导入上限为300条用户')}
                 />
             </div>
         );

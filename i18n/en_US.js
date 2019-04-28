@@ -324,7 +324,8 @@ var en_US = {
     'user.exist.user': 'Existing Users',//已有用户
     'user.user.add': 'Add Users',//添加用户
     'user.import.user': 'Import Users', // 导入用户
-    'user.import.user.toplimit': 'Up to 1000 users per import', // 每次导入上限为1000条用户
+    'user.import.user.toplimit': 'Up to 300 users per import', // 每次导入上限为300条用户
+    'user.import.user.template': 'user_template', // 用户模板
     'user.user.add.success': 'Add successfully',//添加成功
     'user.user.basic': 'Basic information',//基本信息
     'user.user.app.select': 'Select applications',//选择应用

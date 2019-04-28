@@ -98,6 +98,7 @@ class ImportTemplate extends React.Component {
             selectedAppId: app_id,
             current: 1
         });
+        this.props.getSelectAppId(app_id);
     };
 
     renderFirstStepContent = () => {
@@ -265,6 +266,7 @@ ImportTemplate.defaultProps = {
     closeTemplatePanel: noop,//关闭面板的回调
     onItemListImport: noop,//导入时的函数
     doImportAjax: noop,//确认导入时的函数
+    getSelectAppId: noop, // 获取选择的应用id
     repeatAlertMessage: '',//有重复数据后的提示信息
     regRules: [],//文件类型的校验规则,
     importFileTips: Intl.get('clue.and.crm.upload.size','文件大小不要超过10M!'), // 导入文件的提示信息
@@ -284,7 +286,8 @@ ImportTemplate.propTypes = {
     repeatAlertMessage: PropTypes.string,//有重复数据后的提示信息
     regRules: PropTypes.object,
     importFileTips: PropTypes.string,
-    appList: PropTypes.Array // 应用列表
+    appList: PropTypes.Array, // 应用列表
+    getSelectAppId: PropTypes.func,
 };
 export default ImportTemplate;
 

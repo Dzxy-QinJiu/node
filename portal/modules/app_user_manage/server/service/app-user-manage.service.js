@@ -131,7 +131,9 @@ var AppUserRestApis = {
     // 根据客户的id查询客户最后联系时间
     getQueryCustomerById: '/rest/customer/v3/customer/range/:type/10/1/start_time/descend',
     // 上传用户的预览接口
-    uploadUser: '/rest/base/v1/user/import/preview'
+    uploadUser: '/rest/base/v1/user/import/preview',
+    // 确认上传用户
+    confirmUploadUser: 'rest/base/v1/user/import'
 };
 
 exports.urls = AppUserRestApis;
@@ -967,4 +969,15 @@ exports.uploadUser = function(req, res, formData) {
         formData: formData,
         timeout: uploadTimeOut
     }, null);
+};
+
+//确认上传用户
+exports.confirmUploadUser = function(req, res) {
+    let obj = _.get(req.body, 'list', []);
+    return restUtil.authRest.post(
+        {
+            url: AppUserRestApis.confirmUploadUser + '?app_id=' + req.params.app_id,
+            req: req,
+            res: res
+        }, obj);
 };
