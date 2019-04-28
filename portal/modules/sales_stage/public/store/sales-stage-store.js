@@ -82,6 +82,7 @@ SalesStageStore.prototype.editSalesStage = function(salesStageModified) {
 SalesStageStore.prototype.saveSalesStageOrder = function(salesStageModified) {
     if (typeof salesStageModified !== 'string') {
         this.salesStageList = salesStageModified;
+        this.currentSalesStageList = _.cloneDeep(this.salesStageList); //返回对象的深拷贝
     }
     this.salesStageEditOrder = false;
     this.isSavingSalesStage = false;
