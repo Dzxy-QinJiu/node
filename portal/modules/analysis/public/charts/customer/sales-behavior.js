@@ -18,12 +18,29 @@ export function getSalesBehaviorChart() {
             value: false
         }],
         processData: data => {
+            let processedData = [];
+
             //添加未填写跟进记录客户数
             _.each(data, item => {
                 item.customer_no_remark_num = item.customer_num - item.customer_remark_num;
             });
 
-            return data;
+            //按团队名前两个字分组，将同大区的排到一块儿
+            let firsetLevelGroupedData = _.groupBy(data, item => item.sales_team.substr(0,2));
+
+            _.each(firsetLevelGroupedData, item => {
+                //在大区内按团队名长度排序，把大区名排在前面
+                item.sort((a, b) => a.sales_team.length - b.sales_team.length);
+
+                //在大区内按团队名分组，将同团队的排到一块儿
+                const secondLevelGroupedData = _.groupBy(item, 'sales_team');
+
+                _.each(secondLevelGroupedData, rows => {
+                    processedData = processedData.concat(rows);
+                });
+            });
+
+            return processedData;
         },
         option: {
             columns: [
