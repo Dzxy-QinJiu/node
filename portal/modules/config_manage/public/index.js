@@ -8,7 +8,6 @@ import TeleConfig from './views/tele-config';
 import Trace from 'LIB_DIR/trace';
 import CompetingProductManage from './views/competing-product';
 import CustomerStageManage from './views/customer-stage';
-import ProductManage from './views/product-manage';
 import SalesRoleManage from './views/sales-role-manage';
 import IntegratedClueManage from './views/integrated-clue';
 var PrivilegeChecker = require('CMP_DIR/privilege/checker').PrivilegeChecker;
@@ -20,7 +19,6 @@ const auths = {
     TELECONFIG: 'CUSTOMER_INVALID_PHONE_GET',// 获取客服电话权限
     COMPETING_PRODUCT: 'CRM_COMPETING_PRODUCT',//竞品管理权限
     CRM_CUSTOMER_CONF_LABEL: 'CRM_CUSTOMER_CONF_LABEL',//客户阶段管理权限
-    PRODUCTS_MANAGE: 'PRODUCTS_MANAGE',//产品管理
     TEAM_ROLE_MANAGE: 'TEAM_ROLE_MANAGE',//销售角色管理权限
     STRATEGY: 'GET_CONFIG_PWD_STRATEGY',// 获取安全域密码策略
     INTEGRATION_MANAGE: 'DATA_INTEGRATION_MANAGE'//获取线索集成列表权限
@@ -294,9 +292,6 @@ class ConfigManage extends React.Component {
                         </PrivilegeChecker>
                         <PrivilegeChecker check={auths.CRM_CUSTOMER_CONF_LABEL}>
                             <CustomerStageManage/>
-                        </PrivilegeChecker>
-                        <PrivilegeChecker check={auths.PRODUCTS_MANAGE}>
-                            <ProductManage/>
                         </PrivilegeChecker>
                         <PrivilegeChecker check={auths.TEAM_ROLE_MANAGE}>
                             <SalesRoleManage/>
