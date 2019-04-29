@@ -67,6 +67,7 @@ class AppSelector extends React.Component {
 
     render() {
         const appList = this.props.appList;
+
         return (
             <div className='app-selector'>
                 {_.isEmpty(appList) ? null : (
