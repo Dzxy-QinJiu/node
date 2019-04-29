@@ -580,7 +580,9 @@ class WeeklyReportDetail extends React.Component {
 
     renderSalesBehavior() {
         const charts = [
-            customerCharts.getSalesBehaviorChart()
+            customerCharts.getSalesBehaviorChart({
+                teamList: this.props.teamList
+            })
         ];
 
         return (
@@ -641,11 +643,13 @@ WeeklyReportDetail.defaultProps = {
     selectedItem: {},
     selectedTeamName: '',
     memberList: {},
+    teamList: {},
 };
 WeeklyReportDetail.propTypes = {
     selectedItem: PropTypes.object,
     selectedTeamName: PropTypes.string,
     memberList: PropTypes.object,
+    teamList: PropTypes.object,
 };
 
 export default WeeklyReportDetail;

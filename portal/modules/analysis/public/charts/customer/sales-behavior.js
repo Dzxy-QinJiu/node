@@ -2,7 +2,7 @@
  * 销售行为统计
  */
 
-export function getSalesBehaviorChart() {
+export function getSalesBehaviorChart(paramObj = {}) {
     return {
         title: '销售行为统计',
         chartType: 'table',
@@ -25,20 +25,19 @@ export function getSalesBehaviorChart() {
                 item.customer_no_remark_num = item.customer_num - item.customer_remark_num;
             });
 
-            //按团队名前两个字分组，将同大区的排到一块儿
-            let firsetLevelGroupedData = _.groupBy(data, item => item.sales_team.substr(0,2));
+            //团队列表
+            const teamList = paramObj.teamList;
 
-            _.each(firsetLevelGroupedData, item => {
-                //在大区内按团队名长度排序，把大区名排在前面
-                item.sort((a, b) => a.sales_team.length - b.sales_team.length);
-
-                //在大区内按团队名分组，将同团队的排到一块儿
-                const secondLevelGroupedData = _.groupBy(item, 'sales_team');
-
-                _.each(secondLevelGroupedData, rows => {
-                    processedData = processedData.concat(rows);
+            if (teamList) {
+                //按团队列表中的团队顺序对数据进行重新排序
+                _.each(teamList, team => {
+                    _.each(data, item => {
+                        if (item.sales_team_id === team.group_id) {
+                            processedData.push(item);
+                        }
+                    });
                 });
-            });
+            }
 
             return processedData;
         },

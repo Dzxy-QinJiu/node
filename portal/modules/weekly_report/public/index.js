@@ -203,6 +203,7 @@ class WeeklyReport extends React.Component {
                                         selectedItem={{teamId: this.state.selectedTeamId, nYear: this.state.nYear, nWeek: this.state.nWeek}}
                                         selectedTeamName={this.state.selectedTeamName}
                                         memberList={this.state.memberList}
+                                        teamList={this.state.teamList.list}
                                     />
                                 </div>
                             </div>
