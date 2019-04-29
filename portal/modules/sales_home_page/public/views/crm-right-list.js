@@ -508,19 +508,20 @@ class CrmRightList extends React.Component {
     };
 
     renderPendingApproveMemberContent = () => {
+        let pendingInfo = _.get(this.props.pendingApproveMemberObj, 'list[0]');
         return (
-            <MemberApply/>
+            <MemberApply pendingInfo={pendingInfo}/>
         );
     };
 
     render() {
         let resultType = this.props.salesTeamListObj.resultType, errorMsg = this.props.salesTeamListObj.errorMsg;
         return (
-            <div className="crm-sales-team-zone" data-tracename="销售（团队）列表">
+            <div className="crm-sales-team-zone">
                 <div className="member-apply-container">
                     {this.renderPendingApproveMemberContent()}
                 </div>
-                <div className="crm-sales-team-container">
+                <div className="crm-sales-team-container" data-tracename="销售（团队）列表">
                     {resultType ? (this.renderTooltip(resultType, errorMsg)) : this.renderListContent()}
                 </div>
             </div>
