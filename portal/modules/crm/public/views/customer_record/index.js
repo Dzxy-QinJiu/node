@@ -45,7 +45,7 @@ const LAYOUT_CONSTANTS = {
     ADD_TRACE_HEIGHHT: 155,//添加跟进记录面板的高度
     PHONE_STATUS_HEIGHT: 30,//通话状态筛选框的高度
     STATISTIC_TYPE_HEIGHT: 50,//类型统计高度
-    OVER_VIEW_TITLE_HEIGHT: 15//概览页”最新跟进“的高度
+    OVER_VIEW_LOADING_HEIGHT: 30//概览页”最新跟进“加载效果的高度
 };
 //textarea自适应高度
 const AUTO_SIZE_MAP = {minRows: 2, maxRows: 6};
@@ -736,7 +736,8 @@ class CustomerRecord extends React.Component {
         if (this.state.customerRecordLoading && this.state.curPage === 1) {
             //加载中的情况
             return (
-                <div className="customer-trace-loading" style={{'height': this.getRecordListShowHeight()}}>
+                <div className="customer-trace-loading"
+                    style={{'height': this.props.isOverViewPanel ? LAYOUT_CONSTANTS.OVER_VIEW_LOADING_HEIGHT : this.getRecordListShowHeight()}}>
                     <Spinner/>
                 </div>
             );

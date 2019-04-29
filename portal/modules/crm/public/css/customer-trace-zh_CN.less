@@ -13,6 +13,7 @@
 @border_color: #dee5ea;
 @statistic_label_hover_color: #4a8ec4;
 .customer-container {
+  padding-right: 0 !important;
   .top-hander-wrap{
     .range-datepicker{
       float: left;
@@ -27,11 +28,14 @@
       }
     }
   }
-  //添加跟进记录面板
-  .add-customer-trace {
+  //添加
+  > .add-customer-trace{
     float: left;
-    width: 100%;
     margin-top: 10px;
+  }
+  //添加、补充跟进记录面板
+  .add-customer-trace {
+    width: 100%;
     padding: 12px;
     border-radius: 4px;
     background-color: #ffffff;
