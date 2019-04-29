@@ -4,13 +4,23 @@
  * Created by zhangshujuan on 2017/5/11.
  */
 //获取客户跟踪记录列表
-exports.getCustomerTraceRecordList = function(queryObj) {
+exports.getCustomerTraceRecordList = function(queryObj, bodyData) {
     var Deferred = $.Deferred();
+    let url = '/rest/customer/get_customer_trace_list';
+    let isFirst = true;
+    _.each(queryObj, (value, key) => {
+        if (isFirst) {
+            url += `?${key}=${value}`;
+            isFirst = false;
+        } else {
+            url += `&${key}=${value}`;
+        }
+    });
     $.ajax({
-        url: '/rest/customer/get_customer_trace_list',
+        url: url,
         dataType: 'json',
         type: 'post',
-        data: queryObj,
+        data: bodyData,
         success: function(data) {
             Deferred.resolve(data);
         },
@@ -20,6 +30,25 @@ exports.getCustomerTraceRecordList = function(queryObj) {
     });
     return Deferred.promise();
 };
+
+//获取跟进记录的分类统计
+exports.getCustomerTraceStatistic = function(queryParams) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/customer/trace/statistic',
+        dataType: 'json',
+        type: 'get',
+        data: queryParams,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON || Intl.get('customer.fail.get.customer.trace', '获取客户跟踪记录列表失败'));
+        }
+    });
+    return Deferred.promise();
+};
+
 //增加客户跟踪记录
 exports.addCustomerTrace = function(queryObj) {
     var Deferred = $.Deferred();

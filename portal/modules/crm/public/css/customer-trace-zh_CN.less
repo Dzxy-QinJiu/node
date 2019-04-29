@@ -10,27 +10,38 @@
 @hover_color: #2196f3;
 @report_delivery_color: #f7a33f;
 @error_color: #f04134;
+@border_color: #dee5ea;
+@statistic_label_hover_color: #4a8ec4;
 .customer-container {
-  .trace-top-block {
-    .trace-filter-item {
-      float: right;
-      margin-right: 14px;
-      line-height: 24px;
-      font-weight: bold;
-      color: @btn_color;
-      &:hover {
-        color: @hover_color;
+  padding-right: 0 !important;
+  .top-hander-wrap{
+    .range-datepicker{
+      float: left;
+      border-radius: 4px;
+      border-color: #DEDFE2;
+      color: #8da8c5;
+      .border_wrap{
+        height: 24px;
+        .date_text_wrap{
+          padding: 6px 8px;
+        }
       }
-      i {
-        padding-left: 2px;
+      .datepicker_wrap {
+        color: #757B79;
       }
     }
   }
-  //添加跟进记录面板
+  //添加
+  > .add-customer-trace{
+    float: left;
+    margin-top: 10px;
+  }
+  //添加、补充跟进记录面板
   .add-customer-trace {
-    background-color: #ffffff;
+    width: 100%;
     padding: 12px;
     border-radius: 4px;
+    background-color: #ffffff;
     .ant-form-item {
       width: 100%;
       margin-bottom: 4px;
@@ -66,12 +77,81 @@
     width: 100%;
     margin-top: 12px;
     border-radius: 4px;
+    background-color: #fff;
+    //分类统计
+    .statistic-container{
+      float: left;
+      margin-bottom: 6px;
+      width: 100%;
+      .statistic-item{
+        float: left;
+        width: 20%;
+        padding: 4px;
+        border-right: 1px solid @border_color;
+        border-bottom: 1px solid @border_color;
+        text-align: center;
+        cursor: pointer;
+        &:hover{
+          .statistic-label{
+            color: @statistic_label_hover_color;
+          }
+          .statistic-value{
+            color: @hover_color;
+          }
+        }
+        .statistic-label{
+          float: left;
+          width: 100%;
+          line-height: 20px;
+          font-size: 14px;
+          color: @font_color;
+        }
+        .statistic-value{
+          float: left;
+          width: 100%;
+          line-height: 20px;
+          font-size: 16px;
+          color: @title_color;
+        }
+      }
+      .statistic-item:last-child {
+        border-right: none !important;
+      }
+      .statistic-item.active{
+        border-bottom: 1px solid @hover_color;
+        .statistic-label{
+          color: @statistic_label_hover_color;
+        }
+        .statistic-value{
+          color: @hover_color;
+        }
+      }
+    }
+    //通话类行筛选
+    .trace-filter-item {
+      float: right;
+      margin-right: 14px;
+      line-height: 24px;
+      font-weight: bold;
+      color: @btn_color;
+      &:hover {
+        color: @hover_color;
+      }
+      i {
+        padding-left: 2px;
+      }
+    }
     .show-customer-trace {
+      float: left;
+      width: 100%;
       .time-line-item{
         background-color: #fff;
       }
     }
     .customer-trace-loading {
+      position: relative;
+      float: left;
+      width: 100%;
       .load8 {
         transform: scale(0.5, 0.5);
       }

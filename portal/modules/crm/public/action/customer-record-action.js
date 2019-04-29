@@ -17,11 +17,13 @@ function CustomerRecordAction() {
         'updateItem',
         'changeAddButtonType',
         'setContent',
-        'setLoading'
+        'setLoading',
+        'changeTimeRange',
+        'setFilterType'
     );
     //获取客户跟踪列表
-    this.getCustomerTraceList = function(queryObj,callback) {
-        customerRecordAjax.getCustomerTraceRecordList(queryObj).then((data) => {
+    this.getCustomerTraceList = function(queryObj, bodyData, callback) {
+        customerRecordAjax.getCustomerTraceRecordList(queryObj, bodyData).then((data) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({loading: false,error: false,data: data});
             if(_.isFunction(callback)) callback();
@@ -29,6 +31,15 @@ function CustomerRecordAction() {
             this.dispatch({loading: false,error: true,errorMsg: errorMsg});
         });
     };
+    //获取跟进记录的分类统计
+    this.getCustomerTraceStatistic = function(queryParams) {
+        customerRecordAjax.getCustomerTraceStatistic(queryParams).then((data) => {
+            this.dispatch({loading: false,error: false,data: data});
+        },(errorMsg) => {
+            this.dispatch({loading: false,error: true,errorMsg: errorMsg});
+        });
+    };
+
     //增加客户跟踪记录
     this.addCustomerTrace = function(queryObj, callback) {
         this.dispatch({loading: true,error: false});

@@ -5,9 +5,12 @@
  */
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
+const _ = require('lodash');
 var restApis = {
     //获取客户跟踪记录
     getCustomerTraceList: '/rest/callrecord/v2/callrecord/query/trace/customer',
+    //获取跟进记录的分类统计
+    getCustomerTraceStatistic: '/rest/analysis/callrecord/v1/callrecord/trace/type/count',
     // 添加客户跟踪记录
     addCustomerTraceList: '/rest/callrecord/v2/callrecord/trace',
     // 更新客户跟踪记录
@@ -18,25 +21,34 @@ var restApis = {
 exports.restUrls = restApis;
 // 获取客户跟踪记录列表
 exports.getCustomerTraceList = function(req, res) {
-    let data = req.body;
     let url = restApis.getCustomerTraceList;
-    if (data.id && data.page_size) {
-        url += `?id=${data.id}&page_size=${data.page_size}`;
-    } else if (data.id) {
-        url += `?id=${data.id}`;
-    } else if (data.page_size) {
-        url += `?page_size=${data.page_size}`;
-    }
-    delete data.id;
-    delete data.page_size;
+    let isFirst = true;
+    _.each(req.query, (value, key) => {
+        if (isFirst) {
+            url += `?${key}=${value}`;
+            isFirst = false;
+        } else {
+            url += `&${key}=${value}`;
+        }
+    });
     return restUtil.authRest.post(
         {
             url: url,
             req: req,
             res: res
-        },
-        data);
+        }, req.body);
 };
+
+//获取跟进记录的分类统计
+exports.getCustomerTraceStatistic = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getCustomerTraceStatistic,
+            req: req,
+            res: res
+        }, req.query);
+};
+
 // 添加客户跟踪记录
 exports.addCustomerTraceList = function(req, res, obj) {
     var data = req.body;

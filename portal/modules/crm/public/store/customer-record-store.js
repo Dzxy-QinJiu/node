@@ -4,10 +4,22 @@
  * Created by zhangshujuan on 2017/5/11.
  */
 var CustomerRecordActions = require('../action/customer-record-action');
+import {CALL_RECORD_TYPE} from './../utils/crm-util';
 
 function CustomerRecordStore() {
     //初始化state数据
     this.resetState();
+    //跟进记录统计时间
+    this.start_time = 0;
+    this.end_time = 0;
+    this.customerTraceStatisticObj = {
+        phone: 0,//电话次数(eefung+容联+客套app)
+        // app: 0,//客套APP
+        call_back: 0,//回访次数
+        visit: 0,//拜访
+        data_report: 0,//舆情上报次数
+        other: 0, //其他跟进
+    };//跟进记录分类统计数据
     this.bindActions(CustomerRecordActions);
 }
 CustomerRecordStore.prototype.resetState = function() {
@@ -37,33 +49,55 @@ CustomerRecordStore.prototype.resetState = function() {
     this.saveButtonType = '';//点击增加跟进记录的保存还是补充跟进记录的保存
     this.edittingItem = [];//当前正在编辑添加详情的那条跟进记录
     this.lastPhoneTraceItemId = '';//最后一条电话类型的跟进记录
+    this.filterType = 'all';
 };
 //恢复默认状态
 CustomerRecordStore.prototype.dismiss = function() {
     this.resetState();
 };
+CustomerRecordStore.prototype.changeTimeRange = function(timeRange) {
+    this.start_time = timeRange.start_time;
+    this.end_time = timeRange.end_time;
+};
+CustomerRecordStore.prototype.getCustomerTraceStatistic = function(result) {
+    if (!result.loading && !result.error) {
+        let statisticData = result.data || {};
+        // 电话次数(eefung+客套)
+        this.customerTraceStatisticObj[CALL_RECORD_TYPE.PHONE] = _.get(statisticData, `${CALL_RECORD_TYPE.PHONE}`, 0) +
+            _.get(statisticData, `${CALL_RECORD_TYPE.CURTAO_PHONE}`, 0) +
+            _.get(statisticData, `${CALL_RECORD_TYPE.APP}`, 0);
+        _.each(this.customerTraceStatisticObj, (value, key) => {
+            //不是电话类型时的次数
+            if (key !== CALL_RECORD_TYPE.PHONE && key !== CALL_RECORD_TYPE.CURTAO_PHONE && key !== CALL_RECORD_TYPE.APP) {
+                this.customerTraceStatisticObj[key] = statisticData[key] || 0;
+            }
+        });
+    }
+};
 CustomerRecordStore.prototype.getCustomerTraceList = function(result) {
     this.addCustomerErrMsg = '';
     this.addCustomerSuccMsg = '';
-    if (!result.loading){
+    if (!result.loading) {
         this.customerRecordLoading = false;
-        if (result.error){
+        if (result.error) {
             this.customerRecordErrMsg = result.errorMsg;
             this.customerRecord = [];
         } else {
             this.customerRecordErrMsg = '';
             this.curPage++;
             var customerRecord = _.isArray(result.data.result) ? result.data.result : [];
-            customerRecord.forEach(function(item){
+            customerRecord.forEach(function(item) {
                 item.showAdd = false;
             });
             this.customerRecord = this.customerRecord.concat(customerRecord);
-            //过滤出所有电话类型的通话记录
-            var phoneTypeRecords = _.filter(this.customerRecord,(item) => {
-                return item.type === 'phone';
+            //过滤出所有电话类型的通话记录(eefung、容联、客套APP)
+            var phoneTypeRecords = _.filter(this.customerRecord, (item) => {
+                return item.type === CALL_RECORD_TYPE.PHONE ||
+                    item.type === CALL_RECORD_TYPE.CURTAO_PHONE ||
+                    item.type === CALL_RECORD_TYPE.APP;
             });
             //找出最后一条电话跟进记录的id
-            if (phoneTypeRecords.length){
+            if (phoneTypeRecords.length) {
                 this.lastPhoneTraceItemId = _.first(phoneTypeRecords).id;
             }
             this.total = result.data.total;
@@ -84,7 +118,15 @@ CustomerRecordStore.prototype.addCustomerTrace = function(result) {
         this.addCustomerErrMsg = '';
         this.addCustomerSuccMsg = result.data.msg;
         result.data.customer_trace.showAdd = false;
-        this.customerRecord.unshift(result.data.customer_trace);
+        let type = _.get(result, 'data.customer_trace.type');
+        //添加其他或拜访跟进时，对应类型的统计数加一
+        if(type){
+            this.customerTraceStatisticObj[type] += 1;
+        }
+        //全部类型下或添加类型筛选下，将新添加的跟进加入到当前展示类型的跟进列表中
+        if (this.filterType === 'all' || this.filterType === type) {
+            this.customerRecord.unshift(result.data.customer_trace);
+        }
         this.total += 1;
         this.inputContent = {value: ''};
         this.selectedtracetype = 'other';
@@ -113,7 +155,7 @@ CustomerRecordStore.prototype.updateCustomerTrace = function(result) {
         this.addDetailSuccMsg = result.data.msg;
         this.isEdit = false;
         var customerRecord = this.customerRecord;
-        customerRecord.forEach( item => {
+        customerRecord.forEach(item => {
             if (item.id === this.updateId) {
                 item.remark = this.detailContent.value;
                 item.showAdd = false;
@@ -121,6 +163,9 @@ CustomerRecordStore.prototype.updateCustomerTrace = function(result) {
         });
         this.customerRecord = customerRecord;
     }
+};
+CustomerRecordStore.prototype.setFilterType = function(type) {
+    this.filterType = type;
 };
 CustomerRecordStore.prototype.setType = function(type) {
     this.addCustomerErrMsg = '';

@@ -14,6 +14,15 @@ exports.getCustomerTraceList = function(req, res) {
             res.status(500).json(err.message);
         });
 };
+//获取跟进记录的分类统计
+exports.getCustomerTraceStatistic = function(req, res) {
+    customerTraceService.getCustomerTraceStatistic(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+};
 /*
 * 添加客户跟踪记录*/
 exports.addCustomerTraceList = function(req, res) {
