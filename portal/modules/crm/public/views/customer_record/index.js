@@ -44,6 +44,7 @@ const LAYOUT_CONSTANTS = {
     MARGIN_BOTTOM: 8, //跟进记录页的下边距
     ADD_TRACE_HEIGHHT: 155,//添加跟进记录面板的高度
     PHONE_STATUS_HEIGHT: 30,//通话状态筛选框的高度
+    TIME_ADD_BTN_HEIGHT: 30,//时间选择框和跟进记录的高度
     STATISTIC_TYPE_HEIGHT: 50,//类型统计高度
     OVER_VIEW_LOADING_HEIGHT: 30//概览页”最新跟进“加载效果的高度
 };
@@ -717,7 +718,8 @@ class CustomerRecord extends React.Component {
     };
 
     getRecordListShowHeight = () => {
-        var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.STATISTIC_TYPE_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
+        var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT -
+            LAYOUT_CONSTANTS.TIME_ADD_BTN_HEIGHT - LAYOUT_CONSTANTS.STATISTIC_TYPE_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
         let basicInfoHeight = parseInt($('.basic-info-contianer').outerHeight(true));
         //减头部的客户基本信息高度
         divHeight -= basicInfoHeight;
@@ -727,6 +729,10 @@ class CustomerRecord extends React.Component {
         //减添加跟进记录面版的高度
         if (this.state.addRecordPanelShow) {
             divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
+        }
+        //减通话状态的高度
+        if (_.indexOf([CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CALL_BACK, 'all'], this.state.filterType) !== -1) {
+            divHeight -= LAYOUT_CONSTANTS.PHONE_STATUS_HEIGHT;
         }
         return divHeight;
     };
