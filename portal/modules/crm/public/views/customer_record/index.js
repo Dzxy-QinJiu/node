@@ -891,6 +891,8 @@ class CustomerRecord extends React.Component {
     };
 
     onTraceTypeChange = (type) => {
+        //切换类型后，将通话状态的筛选清空
+        this.setState({filterStatus: ''});
         CustomerRecordActions.dismiss();
         CustomerRecordActions.setFilterType(type === this.state.filterType ? 'all' : type);
         CustomerRecordActions.setLoading();
