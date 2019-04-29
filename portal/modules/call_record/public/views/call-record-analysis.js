@@ -1535,15 +1535,15 @@ class CallRecordAnalyis extends React.Component {
             <div style={{height: tableHeight}} className="table-list-containers">
                 <GeminiScrollBar>
                     <div className="analysis-wrapper">
+                        <div className="call-info col-xs-12">
+                            {this.renderCallInfo()}
+                        </div>
                         <AntcAnalysis
                             charts={[customerCharts.getCallIndustryChart()]}
                             conditions={this.getConditions()}
                             emitterConfigList={this.getEmitters()}
                             isGetDataOnMount={true}
                         />
-                        <div className="call-info col-xs-12">
-                            {this.renderCallInfo()}
-                        </div>
                         <div className="call-range col-xs-12">
                             {/*根据电话的排序的通话次数TOP10*/}
                             {this.renderCallTopTen(this.state.callTotalCountObj, {
