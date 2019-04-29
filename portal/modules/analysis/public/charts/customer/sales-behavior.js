@@ -2,7 +2,7 @@
  * 销售行为统计
  */
 
-export function getSalesBehaviorChart() {
+export function getSalesBehaviorChart(paramObj = {}) {
     return {
         title: '销售行为统计',
         chartType: 'table',
@@ -18,12 +18,28 @@ export function getSalesBehaviorChart() {
             value: false
         }],
         processData: data => {
+            let processedData = [];
+
             //添加未填写跟进记录客户数
             _.each(data, item => {
                 item.customer_no_remark_num = item.customer_num - item.customer_remark_num;
             });
 
-            return data;
+            //团队列表
+            const teamList = paramObj.teamList;
+
+            if (teamList) {
+                //按团队列表中的团队顺序对数据进行重新排序
+                _.each(teamList, team => {
+                    _.each(data, item => {
+                        if (item.sales_team_id === team.group_id) {
+                            processedData.push(item);
+                        }
+                    });
+                });
+            }
+
+            return processedData;
         },
         option: {
             columns: [

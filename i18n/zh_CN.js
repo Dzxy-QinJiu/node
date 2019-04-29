@@ -1479,6 +1479,7 @@ var zh_CN = {
     'crm.contract.party.name': '请输入甲方名称',
     'crm.customer.label.edit.tip': '点击修改客户阶段',
     'crm.filter.team.customer': '团队客户',
+    'crm.trace.statistic.unit': '{count}次',
     // 客户管理end
 
     // 客户分析start

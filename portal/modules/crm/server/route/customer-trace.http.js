@@ -14,6 +14,13 @@ module.exports = {
                 needLogin: true
             },
         },{
+            method: 'get',
+            path: '/rest/customer/trace/statistic',
+            handler: 'getCustomerTraceStatistic',
+            passport: {
+                needLogin: true
+            },
+        },{
             method: 'post',
             path: '/rest/customer/add_customer_trace_list',
             handler: 'addCustomerTraceList',

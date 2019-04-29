@@ -10,8 +10,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 } else if (language.lan() === 'zh') {
     require('../../css/customer-trace-zh_CN.less');
 }
-import {Icon, message, Radio, Input, Menu, Dropdown, Button, Form, Tooltip} from 'antd';
-
+import {Icon, message, Radio, Input, Menu, Dropdown, Button, Form, Tooltip, Col, Row} from 'antd';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const {TextArea} = Input;
@@ -37,14 +36,17 @@ import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import ShearContent from '../../../../../components/shear-content';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 var classNames = require('classnames');
+import {AntcDatePicker as DatePicker} from 'antc';
 
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
     TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
     MARGIN_BOTTOM: 8, //跟进记录页的下边距
     ADD_TRACE_HEIGHHT: 155,//添加跟进记录面板的高度
-    TOP_TOTAL_HEIGHT: 30,//共xxx条的高度
-    OVER_VIEW_TITLE_HEIGHT: 15//概览页”最新跟进“的高度
+    PHONE_STATUS_HEIGHT: 30,//通话状态筛选框的高度
+    TIME_ADD_BTN_HEIGHT: 30,//时间选择框和跟进记录的高度
+    STATISTIC_TYPE_HEIGHT: 50,//类型统计高度
+    OVER_VIEW_LOADING_HEIGHT: 30//概览页”最新跟进“加载效果的高度
 };
 //textarea自适应高度
 const AUTO_SIZE_MAP = {minRows: 2, maxRows: 6};
@@ -60,12 +62,13 @@ const CALL_STATUS_MAP = {
 const CALL_TYPE_MAP = {
     'all': Intl.get('common.all', '全部'),
     'phone,curtao_phone': Intl.get('common.phone.system', '电话系统'),
-    'app': Intl.get('customer.ketao.app', '客套app'),
+    'app': Intl.get('menu.download.app', '客套APP'),
     'visit': Intl.get('customer.visit', '拜访'),
     'call_back': Intl.get('common.callback', '回访'),
     'data_report': Intl.get('crm.trace.delivery.report', '舆情报送'),
     'other': Intl.get('customer.other', '其他')
 };
+
 const CALL_RECORD_TYPE = crmUtil.CALL_RECORD_TYPE;
 //跟进记录为空时的提示
 const TRACE_NULL_TIP = Intl.get('customer.trace.content', '客户跟进记录内容不能为空');
@@ -101,9 +104,11 @@ class CustomerRecord extends React.Component {
         CustomerRecordStore.listen(this.onStoreChange);
         //获取所有联系人的联系电话，通过电话和客户id获取跟进记录
         var customer_id = this.props.curCustomer.customer_id || this.props.curCustomer.id;
-        if(!customer_id) return;
+        if (!customer_id) return;
         setTimeout(() => {//此处不加setTimeout，下面获取联系电话方法中调用action中setLoading方法时会报Dispatch错误
             this.getContactPhoneNum(customer_id, () => {
+                //获取跟进记录的分类统计
+                this.getCustomerTraceStatistic();
                 //获取客户跟踪记录列表
                 this.getCustomerTraceList();
             });
@@ -121,6 +126,21 @@ class CustomerRecord extends React.Component {
             });
         });
         this.getAppList();
+    }
+
+    //获取跟进记录的分类统计
+    getCustomerTraceStatistic() {
+        let queryParams = {
+            customer_id: this.state.customerId || '',
+            customer_phone: this.state.phoneNumArray.join(','),
+        };
+        if (this.state.start_time) {
+            queryParams.start_time = this.state.start_time;
+        }
+        if (this.state.end_time) {
+            queryParams.end_time = this.state.end_time;
+        }
+        CustomerRecordActions.getCustomerTraceStatistic(queryParams);
     }
 
     getAppList = () => {
@@ -160,35 +180,46 @@ class CustomerRecord extends React.Component {
     getCustomerTraceList = (lastId) => {
         let phoneNum = this.state.phoneNumArray.join(',');
         let queryObj = {
-            customer_id: this.state.customerId || '',
             page_size: 10
         };
-        if (phoneNum) {
-            queryObj.dst = phoneNum;
+        if (this.state.start_time) {
+            queryObj.start_time = this.state.start_time;
+        }
+        if (this.state.end_time) {
+            queryObj.end_time = this.state.end_time;
         }
         if (lastId) {
             queryObj.id = lastId;
-        }
-        //跟进类型的过滤
-        if (this.state.filterType && this.state.filterType !== 'all') {
-            queryObj.type = this.state.filterType;
-        } else {//全部及概览页的跟进记录，都过滤掉舆情上报的跟进记录（可以通过筛选舆情上报的类型来查看此类的跟进）
-            let types = _.keys(CALL_TYPE_MAP);
-            // 过滤掉舆情上报的跟进记录
-            let typeArray = _.filter(types, type => type !== 'all' && type !== 'data_report');
-            if (_.get(typeArray, '[0]')) {
-                queryObj.type = typeArray.join(',');
-            }
-        }
-        //通话状态的过滤
-        if (this.state.filterStatus && this.state.filterStatus !== 'ALL') {
-            queryObj.disposition = this.state.filterStatus;
         }
         //概览页只获取最近五条的跟进记录
         if (this.props.isOverViewPanel) {
             queryObj.page_size = OVERVIEW_SHOW_COUNT;
         }
-        CustomerRecordActions.getCustomerTraceList(queryObj, () => {
+        let bodyData = {
+            customer_id: this.state.customerId || '',
+        };
+        if (phoneNum) {
+            bodyData.dst = phoneNum;
+        }
+        //跟进类型的过滤
+        if (this.state.filterType === CALL_RECORD_TYPE.PHONE) {
+            //电话类型：eefung电话+容联电话+客套APP电话
+            bodyData.type = `${CALL_RECORD_TYPE.PHONE},${CALL_RECORD_TYPE.CURTAO_PHONE},${CALL_RECORD_TYPE.APP}`;
+        } else if (this.state.filterType && this.state.filterType !== 'all') {
+            bodyData.type = this.state.filterType;
+        } else {//全部及概览页的跟进记录，都过滤掉舆情上报的跟进记录（可以通过筛选舆情上报的类型来查看此类的跟进）
+            let types = _.keys(CALL_TYPE_MAP);
+            // 过滤掉舆情上报的跟进记录
+            let typeArray = _.filter(types, type => type !== 'all' && type !== 'data_report');
+            if (_.get(typeArray, '[0]')) {
+                bodyData.type = typeArray.join(',');
+            }
+        }
+        //通话状态的过滤
+        if (this.state.filterStatus && this.state.filterStatus !== 'ALL') {
+            bodyData.disposition = this.state.filterStatus;
+        }
+        CustomerRecordActions.getCustomerTraceList(queryObj, bodyData, () => {
             if (_.isFunction(this.props.refreshSrollbar)) {
                 setTimeout(() => {
                     this.props.refreshSrollbar();
@@ -212,6 +243,8 @@ class CustomerRecord extends React.Component {
                 this.getContactPhoneNum(nextCustomerId, () => {
                     //获取客户跟踪记录列表
                     this.getCustomerTraceList();
+                    //获取分类统计
+                    this.getCustomerTraceStatistic();
                 });
             });
         }
@@ -271,7 +304,7 @@ class CustomerRecord extends React.Component {
             CustomerRecordActions.setUpdateId(item.id);
             CustomerRecordActions.updateCustomerTrace(queryObj, () => {
                 //如果补充的是最后一条跟进记录（如果是电话类型的需要是打通的电话类型），更新列表中的最后联系
-                if(_.get(this.state, 'customerRecord[0].id') === item.id){
+                if (_.get(this.state, 'customerRecord[0].id') === item.id) {
                     //打通电话的才会更新最后联系
                     if (item.billsec === 0) return;
                     _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(item);
@@ -372,7 +405,7 @@ class CustomerRecord extends React.Component {
         );
     };
 
-    editDetailContent = (item,e) => {
+    editDetailContent = (item, e) => {
         e.stopPropagation();
         //不能编辑时
         if (this.props.disableEdit) return;
@@ -602,7 +635,8 @@ class CustomerRecord extends React.Component {
                             </span>
                         ) : /* 电话已接通并且有recording这个字段展示播放图标*/
                             item.recording ? (
-                                <Tooltip placement='top' title={is_record_upload ? Intl.get('call.record.play', '播放录音') : Intl.get('crm.record.unupload.phone', '未上传通话录音，无法播放')}>
+                                <Tooltip placement='top'
+                                    title={is_record_upload ? Intl.get('call.record.play', '播放录音') : Intl.get('crm.record.unupload.phone', '未上传通话录音，无法播放')}>
                                     <span className="audio-container">
                                         <span className={cls} onClick={this.handleAudioPlay.bind(this, item)}
                                             data-tracename="点击播放录音按钮">
@@ -684,7 +718,8 @@ class CustomerRecord extends React.Component {
     };
 
     getRecordListShowHeight = () => {
-        var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
+        var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT -
+            LAYOUT_CONSTANTS.TIME_ADD_BTN_HEIGHT - LAYOUT_CONSTANTS.STATISTIC_TYPE_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
         let basicInfoHeight = parseInt($('.basic-info-contianer').outerHeight(true));
         //减头部的客户基本信息高度
         divHeight -= basicInfoHeight;
@@ -694,8 +729,10 @@ class CustomerRecord extends React.Component {
         //减添加跟进记录面版的高度
         if (this.state.addRecordPanelShow) {
             divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
-        } else {//减共xxx条的高度
-            divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
+        }
+        //减通话状态的高度
+        if (_.indexOf([CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CALL_BACK, 'all'], this.state.filterType) !== -1) {
+            divHeight -= LAYOUT_CONSTANTS.PHONE_STATUS_HEIGHT;
         }
         return divHeight;
     };
@@ -705,7 +742,8 @@ class CustomerRecord extends React.Component {
         if (this.state.customerRecordLoading && this.state.curPage === 1) {
             //加载中的情况
             return (
-                <div className="customer-trace-loading">
+                <div className="customer-trace-loading"
+                    style={{'height': this.props.isOverViewPanel ? LAYOUT_CONSTANTS.OVER_VIEW_LOADING_HEIGHT : this.getRecordListShowHeight()}}>
                     <Spinner/>
                 </div>
             );
@@ -810,12 +848,13 @@ class CustomerRecord extends React.Component {
     };
     //是否展示通话状态的过滤框
     isStatusFilterShow() {
-        //有跟进记录或有通话状态筛选条件（有数据时才展示状态筛选框，但通过状态筛选后无数据也需要展示），并且不是拜访、舆情报上和其他类型时，展示通话状态筛选框
-        return (_.get(this.state, 'customerRecord[0]') || this.state.filterStatus) &&
+        //不是概览页，有跟进记录或有通话状态筛选条件（有数据时才展示状态筛选框，但通过状态筛选后无数据也需要展示），并且不是拜访、舆情报上和其他类型时，展示通话状态筛选框
+        return !this.props.isOverViewPanel && (_.get(this.state, 'customerRecord[0]') || this.state.filterStatus) &&
             _.indexOf(['visit', 'data_report', 'other'], this.state.filterType) === -1;
     }
+
     //渲染添加跟进记录的按钮
-    renderAddRecordButton(){
+    renderAddRecordButton() {
         //概览页添加跟进记录的按钮
         if (this.props.isOverViewPanel) {
             return (
@@ -828,42 +867,102 @@ class CustomerRecord extends React.Component {
             </Button>);
         }
     }
+
+    //跟进类型的描述
+    getTraceTypeDescr(type) {
+        switch (type) {
+            case CALL_RECORD_TYPE.PHONE:
+                return Intl.get('common.phone', '电话');
+            // case CALL_RECORD_TYPE.APP:
+            //     return Intl.get('menu.download.app', '客套APP');
+            case CALL_RECORD_TYPE.VISIT:
+                return Intl.get('customer.visit', '拜访');
+            case CALL_RECORD_TYPE.CALL_BACK:
+                return Intl.get('common.callback', '回访');
+            case CALL_RECORD_TYPE.DATA_REPORT:
+                return Intl.get('crm.trace.delivery.report', '舆情报送');
+            case CALL_RECORD_TYPE.OTHER:
+                return Intl.get('customer.other', '其他');
+        }
+    }
+
+    onSelectDate = (start_time, end_time) => {
+        CustomerRecordActions.dismiss();
+        CustomerRecordActions.changeTimeRange({start_time, end_time});
+        CustomerRecordActions.setLoading();
+        setTimeout(() => {
+            this.getCustomerTraceStatistic();
+            this.getCustomerTraceList();
+        });
+    };
+
+    onTraceTypeChange = (type) => {
+        //切换类型后，将通话状态的筛选清空
+        this.setState({filterStatus: ''});
+        CustomerRecordActions.dismiss();
+        CustomerRecordActions.setFilterType(type === this.state.filterType ? 'all' : type);
+        CustomerRecordActions.setLoading();
+        setTimeout(() => {
+            this.getCustomerTraceList();
+        });
+
+    }
+
+    //渲染跟进统计
+    renderStatisticTabs() {
+        return (
+            <div className="statistic-container">
+                {_.map(this.state.customerTraceStatisticObj, (value, key) => {
+                    let itemCls = classNames('statistic-item', {'active': key === this.state.filterType});
+                    return (
+                        <div className={itemCls} onClick={this.onTraceTypeChange.bind(this, key)}>
+                            <div className="statistic-label">{this.getTraceTypeDescr(key)}</div>
+                            <div className="statistic-value">
+                                {Intl.get('crm.trace.statistic.unit', '{count}次', {count: value})}
+                            </div>
+                        </div>);
+                })}
+            </div>);
+    }
+
+    renderDatePicker() {
+        return (
+            <DatePicker
+                disableDateAfterToday={true}
+                range="all"
+                onSelect={this.onSelectDate}>
+                <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
+                <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
+                <DatePicker.Option value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
+                <DatePicker.Option
+                    value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
+            </DatePicker>
+        );
+    }
+
     render() {
         //addTrace 顶部增加记录的teaxare框
         //下部时间线列表
         var modalContent = Intl.get('customer.confirm.trace', '确定要保存此跟进内容？');
         var closedModalTip = _.trim(_.get(this.state, 'detailContent.value')) ? '取消补充跟进内容' : '取消添加跟进内容';
-        //是否是在跟进记录下没有数据
-        let isRecordTabNoData = !_.get(this.state, 'customerRecord[0]') && !this.state.customerRecordLoading && !this.props.isOverViewPanel;
         //能否添加跟进记录， 可编辑并且没有正在编辑的跟进记录时，可添加
         let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit;
         return (
             <div className="customer-container" data-tracename="跟进记录页面" id="customer-container">
-                {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : (
-                    <div className="trace-top-block crm-detail-top-total-block">
-                        <span className="total-tip crm-detail-total-tip">
-                            {isRecordTabNoData ? Intl.get('crm.no.trace.record', '还没有跟进过该客户') : (
-                                <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={'共{n}条'}
-                                    values={{'n': this.state.total + ''}}/>)}
-                        </span>
-                        {hasAddRecordPrivilege ? this.renderAddRecordButton() : null}
-                        {this.isStatusFilterShow() ? (
-                            <Dropdown overlay={this.getStatusMenu()} trigger={['click']}>
-                                <a className="ant-dropdown-link trace-filter-item">
-                                    {this.state.filterStatus ? CALL_STATUS_MAP[this.state.filterStatus] : Intl.get('call.record.call.state', '通话状态')}
-                                    <Icon type="down"/>
-                                </a>
-                            </Dropdown>) : null}
-                        {_.get(this.state, 'customerRecord[0]') || this.state.filterType ? (
-                            <Dropdown overlay={this.getTypeMenu()} trigger={['click']}>
-                                <a className="ant-dropdown-link trace-filter-item">
-                                    {this.state.filterType ? CALL_TYPE_MAP[this.state.filterType] : Intl.get('sales.frontpage.trace.type', '跟进类型')}
-                                    <Icon type="down"/>
-                                </a>
-                            </Dropdown>) : null}
-                    </div>)
-                }
+                <div className="top-hander-wrap">
+                    {this.props.isOverViewPanel ? null : this.renderDatePicker()}
+                    {hasAddRecordPrivilege ? this.renderAddRecordButton() : null}
+                </div>
+                {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : null}
                 <div className="show-container" id="show-container">
+                    {this.props.isOverViewPanel ? null : this.renderStatisticTabs()}
+                    {this.isStatusFilterShow() ? (
+                        <Dropdown overlay={this.getStatusMenu()} trigger={['click']}>
+                            <a className="ant-dropdown-link trace-filter-item">
+                                {this.state.filterStatus ? CALL_STATUS_MAP[this.state.filterStatus] : Intl.get('call.record.call.state', '通话状态')}
+                                <Icon type="down"/>
+                            </a>
+                        </Dropdown>) : null}
                     {this.renderCustomerRecordLists()}
                     {this.renderTraceRecordBottom()}
                 </div>

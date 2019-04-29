@@ -34,6 +34,8 @@ var days = [Intl.get('user.time.sunday', '周日'), Intl.get('user.time.monday',
 import timeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import {getResultType, getErrorTipAndRetryFunction,isOrganizationEefung, isOrganizationCiviw} from 'PUB_DIR/sources/utils/common-method-util';
 import {getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
+import {dateSelectorEmitter, teamTreeEmitter, callDeviceTypeEmitter} from 'PUB_DIR/sources/utils/emitters';
+import customerCharts from 'MOD_DIR/analysis/public/charts/customer';
 //地图的formatter
 function mapFormatter(obj) {
     let name = Intl.get('oplate_bd_analysis_realm_zone.2', '市区');
@@ -675,6 +677,8 @@ class CallRecordAnalyis extends React.Component {
                 this.refreshCallAnalysisData({deviceType: this.state.callType});
             }
         });
+
+        callDeviceTypeEmitter.emit(callDeviceTypeEmitter.CHANGE_CALL_DEVICE_TYPE, value);
     };
 
     // 切换通话时长和数据，展示的趋势图
@@ -1451,6 +1455,74 @@ class CallRecordAnalyis extends React.Component {
         );
     };
 
+    getConditions() {
+        return [
+            {
+                name: 'start_time',
+                value: this.state.start_time,
+            },
+            {
+                name: 'end_time',
+                value: this.state.end_time,
+            },
+            {
+                name: 'team_ids',
+                value: '',
+            },
+            {
+                name: 'member_ids',
+                value: '',
+            },
+            {
+                name: 'device_type',
+                value: 'all',
+            },
+        ];
+    }
+
+    getEmitters = () => {
+        return [
+            {
+                emitter: dateSelectorEmitter,
+                event: dateSelectorEmitter.SELECT_DATE,
+                callbackArgs: [{
+                    name: 'start_time',
+                }, {
+                    name: 'end_time',
+                }],
+            },
+            {
+                emitter: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_TEAM,
+                callbackArgs: [{
+                    name: 'team_ids',
+                    exclusive: 'member_ids',
+                    related: {
+                        name: 'statistics_type',
+                        value: 'team'
+                    }
+                }],
+            }, {
+                emitter: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_MEMBER,
+                callbackArgs: [{
+                    name: 'member_ids',
+                    exclusive: 'team_ids',
+                    related: {
+                        name: 'statistics_type',
+                        value: 'user'
+                    }
+                }],
+            }, {
+                emitter: callDeviceTypeEmitter,
+                event: callDeviceTypeEmitter.CHANGE_CALL_DEVICE_TYPE,
+                callbackArgs: [{
+                    name: 'device_type'
+                }],
+            }
+        ];
+    };
+
     renderCallAnalysisView = () => {
         const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height();
         return (<div className="call-table-container" ref="phoneList">
@@ -1466,6 +1538,12 @@ class CallRecordAnalyis extends React.Component {
                         <div className="call-info col-xs-12">
                             {this.renderCallInfo()}
                         </div>
+                        <AntcAnalysis
+                            charts={[customerCharts.getCallIndustryChart()]}
+                            conditions={this.getConditions()}
+                            emitterConfigList={this.getEmitters()}
+                            isGetDataOnMount={true}
+                        />
                         <div className="call-range col-xs-12">
                             {/*根据电话的排序的通话次数TOP10*/}
                             {this.renderCallTopTen(this.state.callTotalCountObj, {
@@ -1545,6 +1623,8 @@ class CallRecordAnalyis extends React.Component {
         setTimeout(() => {
             this.refreshCallAnalysisData();
         });
+
+        dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
     };
 
     handleFirstSelect = () => {
@@ -1633,8 +1713,10 @@ class CallRecordAnalyis extends React.Component {
             if (value === LITERAL_CONSTANT.MEMBER) {
                 let userIdArray = _.map(this.state.memberList.list, 'id');
                 this.refreshCallAnalysisData({user_id: userIdArray.join(',')});
+                teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, '');
             } else {
                 this.refreshCallAnalysisData();
+                teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, '');
             }
         });
     };
@@ -1647,6 +1729,19 @@ class CallRecordAnalyis extends React.Component {
         } else if (value[0] !== LITERAL_CONSTANT.ALL && _.indexOf(value, LITERAL_CONSTANT.ALL) !== -1 || value.length === 0) {
             value = LITERAL_CONSTANT.ALL; // 选择全部时，其他选项应该不显示
         }
+
+        let valueStr = '';
+
+        if (_.isArray(value)) {
+            valueStr = value.join(',');
+        }
+
+        if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
+            teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, valueStr);
+        } else {
+            teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, valueStr);
+        }
+
         this.setState({
             secondSelectValue: value,
         }, () => {
