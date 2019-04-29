@@ -67,19 +67,20 @@ class AppSelector extends React.Component {
 
     render() {
         const appList = this.props.appList;
-
         return (
             <div className='app-selector'>
-                <Select
-                    mode="multiple"
-                    value={this.state.selectedApp}
-                    onChange={this.onAppChange}
-                    dropdownMatchSelectWidth={false}
-                >
-                    {_.map(appList, (item, index) => {
-                        return <Option key={index} value={item.app_id}>{item.app_name}</Option>;
-                    })}
-                </Select>
+                {_.isEmpty(appList) ? null : (
+                    <Select
+                        mode="multiple"
+                        value={this.state.selectedApp}
+                        onChange={this.onAppChange}
+                        dropdownMatchSelectWidth={false}
+                    >
+                        {_.map(appList, (item, index) => {
+                            return <Option key={index} value={item.app_id}>{item.app_name}</Option>;
+                        })}
+                    </Select>
+                )}
             </div>
         );
     }
