@@ -66,10 +66,9 @@ CustomerRecordStore.prototype.getCustomerTraceStatistic = function(result) {
         this.customerTraceStatisticObj[CALL_RECORD_TYPE.PHONE] = _.get(statisticData, `${CALL_RECORD_TYPE.PHONE}`, 0) +
             _.get(statisticData, `${CALL_RECORD_TYPE.CURTAO_PHONE}`, 0) +
             _.get(statisticData, `${CALL_RECORD_TYPE.APP}`, 0);
-        let typeKeys = _.keys(this.customerTraceStatisticObj);
-        _.each(statisticData, (value, key) => {
-            //过滤掉后端数据中传过来的不能识别的类型（旧数据中有default类型），并且不是电话类型时的次数
-            if (_.indexOf(typeKeys, key) !== -1 && key !== CALL_RECORD_TYPE.PHONE && key !== CALL_RECORD_TYPE.CURTAO_PHONE && key !== CALL_RECORD_TYPE.APP) {
+        _.each(this.customerTraceStatisticObj, (value, key) => {
+            //不是电话类型时的次数
+            if (key !== CALL_RECORD_TYPE.PHONE && key !== CALL_RECORD_TYPE.CURTAO_PHONE && key !== CALL_RECORD_TYPE.APP) {
                 this.customerTraceStatisticObj[key] = statisticData[key] || 0;
             }
         });
