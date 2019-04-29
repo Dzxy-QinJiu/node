@@ -185,3 +185,8 @@ export { listPanelEmitter };
 const phoneEmitter = new EventEmitter();
 phoneEmitter.CALL_CLIENT_INITED = 'call_client_inited';
 export { phoneEmitter };
+
+//通话设备选择的相关事件
+const callDeviceTypeEmitter = new EventEmitter();
+callDeviceTypeEmitter.CHANGE_CALL_DEVICE_TYPE = 'change_call_device_type';
+export { callDeviceTypeEmitter };
