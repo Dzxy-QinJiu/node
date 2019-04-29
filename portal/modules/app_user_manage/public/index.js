@@ -69,6 +69,8 @@ class AppUserManage extends React.Component {
         isShowImportUserPanel: false, // 是否显示导入用户模板， 默认false
         previewList: [], //预览列表
         uploadUserAppId: '', // 上传用户选择的应用id
+        isImportUserDataSuccess: false, // 导入用户数据是否成功，默认false
+        importUserFlag: false
     };
     onStoreChange = () => {
         this.setState(this.getStoreData());
@@ -542,10 +544,15 @@ class AppUserManage extends React.Component {
     
     // 关闭导入用户面板
     closeImportUserRightPanel = () => {
+        let importUserFlag = false;
+        if (this.state.isImportUserDataSuccess) {
+            importUserFlag = true;
+        }
         this.setState({
             isShowImportUserPanel: false,
             previewList: [],
-            uploadUserAppId: ''
+            uploadUserAppId: '',
+            importUserFlag: importUserFlag
         });
     };
 
@@ -566,55 +573,130 @@ class AppUserManage extends React.Component {
             url: '/rest/confirm/user/upload/' + this.state.uploadUserAppId,
             dataType: 'json',
             type: 'post',
+            async: false,
             data: {list: this.state.previewList},
             success: (data) => {
+                if (data) {
+                    this.setState({
+                        isImportUserDataSuccess: true
+                    });
+                }
                 _.isFunction(successCallback) && successCallback();
             },
             error: (errorMsg) => {
+                this.setState({
+                    isImportUserDataSuccess: false
+                });
                 _.isFunction(errCallback) && errCallback(errorMsg);
             }
         });
     };
+    // 处理导入用户错误信息
+    handleImportUserInfo = (errors, errorType) => {
+        let isError = _.find(errors, item => item.field === errorType);
+        let cls = isError && errorType !== 'customer_name' ? 'repeat-item-name' : '';
+        if (isError && errorType === 'customer_name') {
+            cls = 'item-tips';
+        }
+        let tipsMessage = '';
+        if (isError) {
+            if (errorType === 'user_name') {
+                tipsMessage = isError.detail === 'data exist' ? 
+                    Intl.get('common.is.existed', '用户名已存在') : Intl.get('user.import.username.no.match.rule', '用户名不符合规则');
+            } else if (errorType === 'phone') {
+                tipsMessage = isError.detail === 'data illegal' ? Intl.get('user.import.phone.no.match.rule', '手机号不符合规则') : '';
+            }else if (errorType === 'email') {
+                tipsMessage = isError.detail === 'data exist' ?
+                    Intl.get('common.email.is.existed', '邮箱已存在') : Intl.get('user.import.email.no.match.rule', '邮箱不符合规则');
+            } else if (errorType === 'customer_name') {
+                tipsMessage = isError.detail === 'data unexist' ?
+                    Intl.get('user.import.customer.no.match', '系统未找不到对应的客户，可以继续导入，导入后需要自行设置客户。') : '';
+            }
+        }
+        return {cls: cls, tipsMessage: tipsMessage};
+    };
+    // 删除不合法的信息
+    deleteImportUser = (index) => {
+        let previewList = this.state.previewList;
+        previewList.splice(index, 1);
+        this.setState({
+            previewList: previewList
+        });
+    };
+
+    // 获取导入数据的错误信息
+    getImportUserErrorData = () => {
+        let errorsInfo = _.find(this.state.previewList, item => item.errors);
+        return _.get(errorsInfo, 'errors');
+    };
 
     getUserPrevList = () => {
-        return [{
+        let previewList = [{
             title: Intl.get('common.username', '用户名'),
-            dataIndex: 'userName',
-            width: '10%'
+            dataIndex: 'user_name',
+            width: '10%',
+            render: (username, rowData, idx) => {
+                let errors = _.get(rowData, 'errors', []); // 错误信息
+                let userObj = _.get(errors, 'length') ? this.handleImportUserInfo(errors, 'user_name') : '';
+                return (
+                    <span className={userObj.cls} title={userObj.tipsMessage}>{username}</span>
+                );
+            }
         }, {
             title: Intl.get('common.nickname', '昵称'),
             dataIndex: 'nickname',
-            width: '10%'
+            width: '10%',
         }, {
             title: Intl.get('user.phone', '手机号'),
             dataIndex: 'phone',
-            width: '10%'
+            width: '10%',
+            render: (phone, rowData, idx) => {
+                let errors = _.get(rowData, 'errors', []); // 错误信息
+                let phoneObj = _.get(errors, 'length') ? this.handleImportUserInfo(errors, 'phone') : '';
+                return (
+                    <span className={phoneObj.cls} title={phoneObj.tipsMessage}>{phone}</span>
+                );
+            }
         }, {
             title: Intl.get('common.email', '邮箱'),
             dataIndex: 'email',
-            width: '10%'
+            width: '10%',
+            render: (email, rowData, idx) => {
+                let errors = _.get(rowData, 'errors', []); // 错误信息
+                let emailObj = _.get(errors, 'length') ? this.handleImportUserInfo(errors, 'email') : '';
+                return (
+                    <span className={emailObj.cls} title={emailObj.tipsMessage}>{email}</span>
+                );
+            }
         }, {
             title: Intl.get('common.belong.customer', '所属客户'),
-            dataIndex: 'customerName',
-            width: '20%'
+            dataIndex: 'customer_name',
+            width: '20%',
+            render: (customerName, rowData, idx) => {
+                let errors = _.get(rowData, 'errors', []); // 错误信息
+                let customerNameObj = _.get(errors, 'length') ? this.handleImportUserInfo(errors, 'customer_name') : '';
+                return (
+                    <span className={customerNameObj.cls} title={customerNameObj.tipsMessage}>{customerName}</span>
+                );
+            }
         }, {
             title: Intl.get('common.type', '类型'),
-            dataIndex: 'userType',
+            dataIndex: 'user_type',
             width: '10%'
         }, {
             title: Intl.get('user.time.start', '开通时间'),
-            dataIndex: 'beginTime',
+            dataIndex: 'begin_time',
             width: '10%',
-            render: (beginTime, rowData, idx) => {
+            render: (beginTime) => {
                 return (
                     <span>{moment(new Date(beginTime)).format(oplateConsts.DATE_FORMAT)}</span>
                 );
             }
         }, {
             title: Intl.get('user.time.end', '到期时间'),
-            dataIndex: 'endTime',
+            dataIndex: 'end_time',
             width: '10%',
-            render: (endTime, rowData, idx) => {
+            render: (endTime) => {
                 return (
                     <span>{moment(new Date(endTime)).format(oplateConsts.DATE_FORMAT)}</span>
                 );
@@ -624,6 +706,31 @@ class AppUserManage extends React.Component {
             dataIndex: 'remark',
             width: '10%'
         }];
+        let errors = this.getImportUserErrorData();
+        let isShowOperateColumn = _.find(errors, item => item.field !== 'customer_name');
+        if (isShowOperateColumn) {
+            previewList.push(
+                {
+                    title: Intl.get('common.operate', '操作'),
+                    width: '60px',
+                    render: (text, rowData, idx) => {
+                        //是否在导入预览列表上可以删除
+                        const isDeleteBtnShow = isShowOperateColumn;
+                        return (
+                            <span className="cus-op">
+                                {isDeleteBtnShow ? (
+                                    <i className="order-btn-class iconfont icon-delete "
+                                        onClick={this.deleteImportUser.bind(this, idx)}
+                                        data-tracename="删除导入的用户数据"
+                                        title={Intl.get('common.delete', '删除')}/>
+                                ) : null}
+                            </span>
+                        );
+                    }
+                }
+            );
+        }
+        return previewList;
     };
     //渲染按钮区域
     renderTopNavOperation = () => {
@@ -778,7 +885,10 @@ class AppUserManage extends React.Component {
                 } else if (this.state.isShowAddProductView) {
                     showView = (<IntegrateConfigView/>);
                 } else {
-                    showView = (<UserView customer_id={this.state.customer_id}/>);
+                    showView = (<UserView 
+                        customer_id={this.state.customer_id}
+                        importUserFlag={this.state.importUserFlag}
+                    />);
                 }
                 break;
             case 'log':
@@ -804,7 +914,6 @@ class AppUserManage extends React.Component {
             this.state.isGettingIntegrateType ||
             this.state.getItegrateTypeError ||
             this.state.isShowAddProductView);
-        const columns = [{a: 1, b: 2}];
         return (
             <div>
                 <div className="app_user_manage_page table-btn-fix" data-tracename="用户管理">

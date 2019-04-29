@@ -156,7 +156,23 @@ class ImportTemplate extends React.Component {
         });
     };
     renderImportFooter = () => {
-        const disabledImportBtn = _.find(this.state.previewList, item => (item.repeat)) || _.isEmpty(this.state.previewList);
+        let errors = this.getImportUserErrorData();
+        let length = _.get(errors, 'length');
+        let noMatchCustomer = _.find(errors, item => item.field === 'customer_name');
+        let disabledImportBtn = false;
+        if (length) {
+            if (length > 1) {
+                disabledImportBtn = true;
+            } else{
+                if (noMatchCustomer) {
+                    disabledImportBtn = false;
+                } else {
+                    disabledImportBtn = true;
+                }
+            }
+        } else if (!_.get(this.state.previewList, 'length')) {
+            disabledImportBtn = true;
+        }
         return (
             <div className="prev-foot">
                 {this.state.isImporting ? <div className="is-importing">
@@ -177,15 +193,72 @@ class ImportTemplate extends React.Component {
         var tableHeight = this.calculateTableHeight();
         this.setState({tableHeight});
     };
+    // 获取导入数据的错误信息
+    getImportUserErrorData = () => {
+        let errorsInfo = _.find(this.state.previewList, item => item.errors);
+        return _.get(errorsInfo, 'errors');
+    };
+
     renderThirdStepContent = () => {
-        const repeatCustomer = _.find(this.state.previewList, item => (item.repeat));
+        let errors = this.getImportUserErrorData();
+        let length = _.get(errors, 'length');
+        let tipsMessage = [];
+        let noMatchCustomer = _.find(errors, item => item.field === 'customer_name');
+        if (length) {
+            if (length > 1) {
+                tipsMessage.push(Intl.get('user.import.red.tips', '红色标示数据不符合规则或是已存在，请修改数据后重新导入，或删除不符合规则的数据后直接导入。'));
+                if (noMatchCustomer) {
+                    tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找不到对应的客户，可以继续导入，导入后需要自行设置客户。'));
+                }
+            } else if (length === 1) {
+                if (noMatchCustomer) {
+                    tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找不到对应的客户，可以继续导入，导入后需要自行设置客户。'));
+                } else {
+                    tipsMessage.push(Intl.get('user.import.red.tips', '红色标示数据不符合规则或是已存在，请修改数据后重新导入，或删除不符合规则的数据后直接导入。'));
+                }
+            }
+        }
+        let height = this.state.tableHeight + LAYOUT.TABLE_TOP;
+        if (length) {
+            if (length > 2) {
+                height -= 200;
+            } else if (length === 1) {
+                if (!noMatchCustomer) {
+                    height -= 140;
+                }
+            }
+        }
         return (
             <div className="third-step-content">
-                {repeatCustomer ? <div
-                    className="import-warning">
-                    <Alert type="warning" message={this.props.repeatAlertMessage} showIcon/>
+                {length ? <div className="import-warning">
+                    {
+                        length > 1 ? (
+                            <div>
+                                <Alert type="error" message={'1.' + _.get(tipsMessage, [0])}/>
+                                <div className="warning-rule-decription">
+                                    <div>{Intl.get('user.import.username.rule', '用户名规则：长度为1到50的字母、数字、横线、下划线')}</div>
+                                    <div>{Intl.get('user.import.phone.rule', '手机规则：13、14、16、17、18、19开头的11位手机号')}</div>
+                                    <div>{Intl.get('user.import.email.rule', '邮箱规则：数字、字母、下划线 + @ + 数字、英文 + . +英文')}</div>
+                                </div>
+                                <Alert type="warning" message={'2.' + _.get(tipsMessage, [1])}/>
+                            </div>
+                        ) : (
+                            noMatchCustomer ? (
+                                <Alert type="warning" message={'1.' + _.get(tipsMessage, [0])}/>
+                            ) : (
+                                <div>
+                                    <Alert type="error" message={'1.' + _.get(tipsMessage, [0])}/>
+                                    <div className="warning-rule-decription">
+                                        <div>{Intl.get('user.import.username.rule', '用户名规则：长度为1到50的字母、数字、横线、下划线')}</div>
+                                        <div>{Intl.get('user.import.phone.rule', '手机规则：13、14、16、17、18、19开头的11位手机号')}</div>
+                                        <div>{Intl.get('user.import.email.rule', '邮箱规则：数字、字母、下划线 + @ + 数字、英文 + . +英文')}</div>
+                                    </div>
+                                </div>
+                            )
+                        )
+                    }
                 </div> : null}
-                <div className="deal-table-container" style={{height: this.state.tableHeight + LAYOUT.TABLE_TOP}}>
+                <div className="deal-table-container" style={{height: height}}>
                     <AntcTable
                         dataSource={this.state.previewList}
                         columns={this.props.getItemPrevList()}
@@ -229,13 +302,13 @@ class ImportTemplate extends React.Component {
         });
         return (
             <div className={cls}>
-                <RightPanel className="import-clue-template-panel white-space-nowrap"
+                <RightPanel className="import-template-panel white-space-nowrap"
                     showFlag={this.props.showFlag} data-tracename="导入模板"
                     style={{width: width}}
                 >
                     <span className="iconfont icon-close clue-import-btn" onClick={this.handleCancel}
                         data-tracename="点击关闭导入面板"></span>
-                    <div className="clue-import-detail-wrap" style={{width: width - LAYOUT.SMALLWIDTH}}>
+                    <div className="import-detail-wrap" style={{width: width - LAYOUT.SMALLWIDTH}}>
                         <div className="clue-top-title">
                             {Intl.get('clue.manage.import.clue', '导入{type}',{type: this.props.importType})}
                         </div>
