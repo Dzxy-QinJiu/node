@@ -6,7 +6,7 @@ export function getSalesBehaviorChart(paramObj = {}) {
     return {
         title: Intl.get('common.sales.behavior.statistics', '销售行为统计'),
         chartType: 'table',
-        url: '/rest/analysis/customer/v2/customertrace/:data_type/sale/trace/statistics',
+        url: '/rest/analysis/callrecord/v1/customertrace/:data_type/sale/trace/statistics',
         argCallback: arg => {
             if (arg.query.member_id) {
                 arg.query.member_ids = arg.query.member_id;
