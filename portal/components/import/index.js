@@ -200,7 +200,12 @@ class ImportTemplate extends React.Component {
     };
 
     renderThirdStepContent = () => {
-        let errors = this.getImportUserErrorData();
+        let errors = [];
+        _.each(this.state.previewList, (item) => {
+            if (item.errors) {
+                errors = _.concat(errors, item.errors);
+            }
+        });
         let length = _.get(errors, 'length');
         let tipsMessage = [];
         let noMatchCustomer = _.find(errors, item => item.field === 'customer_name');
