@@ -205,6 +205,14 @@ exports.queryCustomer = function(params, pageSize, pageNum, sorter) {
         delete params.type;
     }
 
+    //客户列表面板数据处理函数
+    let customerListPanelProcessData;
+
+    if (params.customerListPanelProcessData) {
+        customerListPanelProcessData = params.customerListPanelProcessData;
+        delete params.customerListPanelProcessData;
+    }
+
     if (params.page_size) {
         if (params.page_size.type === 'query') {
             params.page_size = pageSize;
@@ -232,6 +240,11 @@ exports.queryCustomer = function(params, pageSize, pageNum, sorter) {
             //如果数据是放在list字段中的，需要统一到result字段，以与store中的对应
             if (list.list && !list.result) {
                 list.result = list.list;
+            }
+
+            //如果存在客户列表面板数据处理函数，则用该函数处理数据
+            if (customerListPanelProcessData) {
+                customerListPanelProcessData(list);
             }
 
             Deferred.resolve(list);

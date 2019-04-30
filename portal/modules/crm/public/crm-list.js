@@ -1538,6 +1538,15 @@ class Crm extends React.Component {
         if (!userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
             columns = _.filter(columns, column => column.title !== Intl.get('common.operate', '操作'));
         }
+
+        //在客户列表面板中展示时，显示自定义列
+        if (this.props.customerListPanelColumns) {
+            //原来的列定义中只保留客户名列，以便能点击客户名打开客户详情
+            columns = _.filter(columns, column => column.dataIndex === 'name');
+            //其余列都替换为客户列表面板属性中定义的列
+            columns = columns.concat(this.props.customerListPanelColumns);
+        }
+
         const tableScrollX = hasSecretaryAuth ? 1000 : 1080;
         //初始加载，客户列表数据还没有取到时，不显示表格
         const shouldTableShow = (this.state.isLoading && !this.state.curPageCustomers.length) ? false : true;

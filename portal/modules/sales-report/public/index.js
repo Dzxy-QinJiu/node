@@ -401,7 +401,16 @@ class SalesReport extends React.Component {
             type: 'get',
             start_time: this.state.startTime,
             end_time: this.state.endTime,
-            member_id: this.state.currentMember.user_id
+            member_id: this.state.currentMember.user_id,
+            customerListPanelProcessData: data => {
+                const result = data.result;
+
+                //因为客户列表会对start_time字段做格式化，在客户拜访记录列表里，这个字段的意义和在客户列表里的不一样，不需要做格式化
+                //所以我们给它起个别名，通过别名调用，这样就可以绕过格式化处理了
+                _.each(result, item => {
+                    item.start_time_alias = item.start_time;
+                });
+            }
         };
 
         listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
@@ -511,7 +520,25 @@ class SalesReport extends React.Component {
                         </Col>
                     </Row>
                 </div>
-                <CustomerListPanel/>
+                <CustomerListPanel
+                    customerListPanelColumns={[
+                        {
+                            title: '开始时间',
+                            dataIndex: 'start_time_alias',
+                            width: '10%'
+                        },
+                        {
+                            title: '结束时间',
+                            dataIndex: 'end_time',
+                            width: '10%'
+                        },
+                        {
+                            title: '拜访记录',
+                            dataIndex: 'remark',
+                            width: '50%'
+                        }
+                    ]}
+                />
             </div>
         );
     }
