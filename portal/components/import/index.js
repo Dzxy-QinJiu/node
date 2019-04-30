@@ -21,8 +21,9 @@ const LAYOUT = {
     LARGEWIDTH: 75,
     TOP_DISTANCE: 150,
     BOTTOM_DISTANCE: 90,
-    TABLE_TOP: 40
-
+    TABLE_TOP: 40,
+    ERROR_TIPS_MESSAGE_WIDTH: 110, // 错误信息宽度
+    WARN_TIPS_MESSAGE_WIDTH: 110, // 警告信息宽度
 };
 function noop() {}
 import {isEqualArray} from 'LIB_DIR/func';
@@ -209,27 +210,23 @@ class ImportTemplate extends React.Component {
         let length = _.get(errors, 'length');
         let tipsMessage = [];
         let noMatchCustomer = _.find(errors, item => item.field === 'customer_name');
+        let height = this.state.tableHeight + LAYOUT.TABLE_TOP;
+        let tableHeight = this.state.tableHeight;
         if (length) {
             if (length > 1) {
                 tipsMessage.push(Intl.get('user.import.red.tips', '红色标示数据不符合规则或是已存在，请修改数据后重新导入，或删除不符合规则的数据后直接导入。'));
                 if (noMatchCustomer) {
                     tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找不到对应的客户，可以继续导入，导入后需要自行设置客户。'));
                 }
+                height -= (LAYOUT.ERROR_TIPS_MESSAGE_WIDTH + LAYOUT.WARN_TIPS_MESSAGE_WIDTH);
+                tableHeight -= (LAYOUT.ERROR_TIPS_MESSAGE_WIDTH + LAYOUT.WARN_TIPS_MESSAGE_WIDTH);
             } else if (length === 1) {
                 if (noMatchCustomer) {
                     tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找不到对应的客户，可以继续导入，导入后需要自行设置客户。'));
                 } else {
                     tipsMessage.push(Intl.get('user.import.red.tips', '红色标示数据不符合规则或是已存在，请修改数据后重新导入，或删除不符合规则的数据后直接导入。'));
-                }
-            }
-        }
-        let height = this.state.tableHeight + LAYOUT.TABLE_TOP;
-        if (length) {
-            if (length > 2) {
-                height -= 200;
-            } else if (length === 1) {
-                if (!noMatchCustomer) {
-                    height -= 140;
+                    height -= LAYOUT.ERROR_TIPS_MESSAGE_WIDTH;
+                    tableHeight -= LAYOUT.ERROR_TIPS_MESSAGE_WIDTH;
                 }
             }
         }
@@ -269,7 +266,7 @@ class ImportTemplate extends React.Component {
                         columns={this.props.getItemPrevList()}
                         rowKey={this.getRowKey}
                         pagination={false}
-                        scroll={{y: this.state.tableHeight}}
+                        scroll={{y: tableHeight}}
                     />
                 </div>
                 {this.renderImportFooter()}

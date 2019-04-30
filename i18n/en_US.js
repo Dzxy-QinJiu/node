@@ -331,9 +331,9 @@ var en_US = {
     'user.import.email.no.match.rule': 'Email does not match the rule', // 邮箱不符合规则
     'user.import.customer.no.match': 'The system has not found the corresponding customer, you can continue to import, you need to set the customer after import.', // 系统未找不到对应的客户，可以继续导入，导入后需要自行设置客户。
     'user.import.red.tips': 'The red flag data does not match the rule or exists. Please modify the data and re-import it, or delete the data that does not match the rule and import it directly.', // 红色标示数据不符合规则或是已存在，请修改数据后重新导入，或删除不符合规则的数据后直接导入。
-    'user.import.username.rule': 'Username rule: letters, numbers, horizontal lines, underscores from 1 to 50 in length', // 用户名规则：长度为1到50的字母、数字、横线、下划线
-    'user.import.phone.rule': 'Phone number rules: 11 mobile phone numbers at the beginning of 13, 14, 16, 17, 18, 19', // 手机规则：13、14、16、17、18、19开头的11位手机号
-    'user.import.email.rule': 'Email rules: numbers, letters, underscores + @ + numbers, English + . + English', // 邮箱规则：数字、字母、下划线 + @ + 数字、英文 + . +英文
+    'user.import.username.rule': 'Username: ', // 用户名：长度为1-50个字母、数字、横线或下划线组成的字符串
+    'user.import.phone.rule': 'Phone: The phone number of legitimate', // 手机：11位手机号
+    'user.import.email.rule': 'Email: eg 12345678@qq.com', // 邮箱：如 12345678@qq.com
     'user.import.yellow.tips': 'The yellow marking system has not found the corresponding customer, you can continue to import, you need to set the customer after importing.', // 黄色标示系统未找不到对应的客户，可以继续导入，导入后需要自行设置客户。
     'user.user.add.success': 'Add successfully',//添加成功
     'user.user.basic': 'Basic information',//基本信息

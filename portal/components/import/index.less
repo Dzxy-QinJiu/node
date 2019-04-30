@@ -1,11 +1,12 @@
 @import "../../public/css/common-variables";
+
 .import-step-container{
   .import-template-panel.right-pannel-default {
     transform: translateX(100%);
     font-size: 14px;
     background-color: transparent!important;
     .iconfont.icon-close.clue-import-btn{
-      color: #fff;
+      color: @apply-detail-bg-color;
       background-color: #8ea9c4;
       border-radius: 0 !important;
       width: 24px;
@@ -17,24 +18,24 @@
     .import-detail-wrap{
       float: left;
       height: 100%;
-      background-color: #f5f5f5 !important;
+      background-color: @import_bg_color !important;
       position: relative;
       //线索标题
       .clue-top-title{
-        background: #fff;
+        background: @apply-detail-bg-color;
         padding: 20px 12px 20px 20px;
         font-weight: bold;
       }
       .import-title-top{
         padding: 20px 60px 10px 20px;
         .ant-steps {
-          width:400px;
+          width:440px;
           .ant-steps-item {
             .ant-steps-head{
-              background-color:#f5f5f5;
+              background-color:@import_bg_color;
             }
             .ant-steps-title{
-              background-color:#f5f5f5 ;
+              background-color:@import_bg_color ;
             }
           }
         }
@@ -46,13 +47,13 @@
 
         .first-step-content {
           height: 100%;
-          background: #fff;
+          background: @apply-detail-bg-color;
           padding: 20px;
         }
 
         .second-step-content{
           height: 100%;
-          background: #fff;
+          background: @apply-detail-bg-color;
           padding:100px;
           text-align: center;
           .down-load-template{
@@ -62,42 +63,42 @@
         }
         .third-step-content{
           .import-warning{
-            background: #fff;
+            background: @apply-detail-bg-color;
             .ant-alert.ant-alert-error, .ant-alert.ant-alert-warning{
-              border: 1px solid #fff;
-              background-color: #fff;
+              border: 1px solid @apply-detail-bg-color;
+              background-color: @apply-detail-bg-color;
               position: relative;
               top: 0;
               left: 0;
               .ant-alert-icon{
-                color:@error_tips_color;
+                color:@import_data_error_color;
               }
               .ant-alert-message{
                 font-size: 13px;
-                color:@error_tips_color;
+                color:@import_data_error_color;
               }
             }
             .warning-rule-decription {
               padding-left: 28px;
               font-size: 13px;
-              color:@error_tips_color;
+              color:@import_data_rule_color;
             }
             .ant-alert.ant-alert-warning {
               .ant-alert-message{
                 font-size: 13px;
-                color: #ffa800;
+                color: @import_data_warn_color;
               }
             }
           }
           .ant-table-body{
-            background: #fff;
+            background: @apply-detail-bg-color;
             tr td{
               white-space: normal;
               .repeat-item-name{
-                color:@error_tips_color;
+                color:@import_data_error_color;
               }
               .item-tips {
-                color: #ffa800;
+                color: @import_data_warn_color;
               }
             }
           }
@@ -108,7 +109,7 @@
               margin-left:10px;
             }
             .ant-btn[disabled]{
-              color: #fff;
+              color: @apply-detail-bg-color;
               background-color: #CBE4F8;
               border-color: #CBE4F8;
             }
@@ -142,7 +143,7 @@
   top:400px;
   .ant-message-notice-content{
     background: rgba(0, 0, 0, 0.5);
-    color:#fff;
+    color:@apply-detail-bg-color;
   }
 }
 .file-tip{

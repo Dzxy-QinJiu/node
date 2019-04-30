@@ -406,16 +406,6 @@ class UserTabContent extends React.Component {
         }
     }
 
-    // componentWillReceiveProps(nextProps) {
-    //     if (nextProps.importUserFlag) {
-    //         //页面滚动条置顶，避免重新获取数据之后，接着翻页
-    //         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
-    //         setTimeout(() => {
-    //             this.fetchUserList();
-    //         });
-    //     }
-    // }
-
     componentWillUnmount() {
         $('body').css('overflow', 'auto');
         AppUserStore.unlisten(this.onStoreChange);

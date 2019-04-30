@@ -594,10 +594,10 @@ class AppUserManage extends React.Component {
     // 处理导入用户错误信息
     handleImportUserInfo = (errors, errorType) => {
         let isError = _.find(errors, item => item.field === errorType);
-        let cls = isError && errorType !== 'customer_name' ? 'repeat-item-name' : '';
-        if (isError && errorType === 'customer_name') {
-            cls = 'item-tips';
-        }
+        let cls = classNames({
+            'repeat-item-name': isError && errorType !== 'customer_name',
+            'item-tips': isError && errorType === 'customer_name'
+        });
         let tipsMessage = '';
         if (isError) {
             if (errorType === 'user_name') {
