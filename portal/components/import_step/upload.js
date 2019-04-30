@@ -127,7 +127,6 @@ UploadBtn.defaultProps = {
     uploadHref: '',
     uploadTip: Intl.get('clue.import.csv', '上传表格'),
     regRules: []
-
 };
 UploadBtn.propTypes = {
     isLoading: PropTypes.bool,
@@ -137,7 +136,7 @@ UploadBtn.propTypes = {
     uploadActionName: PropTypes.string,
     uploadHref: PropTypes.string,
     uploadTip: PropTypes.string,
-    regRules: PropTypes.object,
+    regRules: PropTypes.object
 };
 
 export default UploadBtn;

@@ -32,6 +32,9 @@ var CONSTANTS = {
     APPROVAL_STATE_PASS: '1' // 已通过
 };
 
+//上传超时时长 5分钟
+const uploadTimeOut = 5 * 60 * 1000;
+
 var AppUserRestApis = {
     //根据用户名获取用户信息
     getUserByName: '/rest/base/v1/user/name',
@@ -127,6 +130,10 @@ var AppUserRestApis = {
     getRealmList: '/rest/base/v1/realm/list',
     // 根据客户的id查询客户最后联系时间
     getQueryCustomerById: '/rest/customer/v3/customer/range/:type/10/1/start_time/descend',
+    // 上传用户的预览接口
+    uploadUser: '/rest/base/v1/user/import/preview',
+    // 确认上传用户
+    confirmUploadUser: 'rest/base/v1/user/import'
 };
 
 exports.urls = AppUserRestApis;
@@ -952,4 +959,25 @@ exports.getRealmList = function(req, res) {
         req: req,
         res: res
     }, {});
+};
+
+exports.uploadUser = function(req, res, formData) {
+    return restUtil.authRest.post({
+        url: AppUserRestApis.uploadUser + '?app_id=' + req.params.app_id,
+        req: req,
+        res: res,
+        formData: formData,
+        timeout: uploadTimeOut
+    }, null);
+};
+
+//确认上传用户
+exports.confirmUploadUser = function(req, res) {
+    let obj = _.get(req.body, 'list', []);
+    return restUtil.authRest.post(
+        {
+            url: AppUserRestApis.confirmUploadUser + '?app_id=' + req.params.app_id,
+            req: req,
+            res: res
+        }, obj);
 };
