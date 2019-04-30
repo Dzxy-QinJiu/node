@@ -105,7 +105,7 @@ class UploadBtn extends React.Component {
             <Upload {...props} className="import-clue" data-tracename="上传表格">
                 <Button type='primary'>{this.props.uploadTip}{this.state.isLoading ?
                     <Icon type="loading" className="icon-loading"/> : null}</Button>
-                <p className="file-tip">{this.props.importFileTips}</p>
+                <p className="file-tip">{Intl.get('clue.and.crm.upload.size','文件大小不要超过10M!')}</p>
                 {this.state.warningMsg ? <AlertTimer time={4000}
                     message={this.state.warningMsg}
                     type="error"
@@ -126,8 +126,7 @@ UploadBtn.defaultProps = {
     uploadActionName: '',
     uploadHref: '',
     uploadTip: Intl.get('clue.import.csv', '上传表格'),
-    regRules: [],
-    importFileTips: Intl.get('clue.and.crm.upload.size','文件大小不要超过10M!')
+    regRules: []
 };
 UploadBtn.propTypes = {
     isLoading: PropTypes.bool,
@@ -137,8 +136,7 @@ UploadBtn.propTypes = {
     uploadActionName: PropTypes.string,
     uploadHref: PropTypes.string,
     uploadTip: PropTypes.string,
-    regRules: PropTypes.object,
-    importFileTips: PropTypes.string
+    regRules: PropTypes.object
 };
 
 export default UploadBtn;
