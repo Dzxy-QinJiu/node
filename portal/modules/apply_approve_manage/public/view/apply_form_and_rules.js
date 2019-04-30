@@ -13,17 +13,17 @@ const TAB_KEYS = {
 };
 import Trace from 'LIB_DIR/trace';
 var classNames = require('classnames');
-import {calculateHeight, APPLYAPPROVE_LAYOUT,ALL_COMPONENTS, ALL_COMPONENTS_TYPE} from '../utils/apply-approve-utils';
+import {calculateHeight, APPLYAPPROVE_LAYOUT, ALL_COMPONENTS, ALL_COMPONENTS_TYPE} from '../utils/apply-approve-utils';
 import InputEdit from './input-components/input-edit';
 import InputShow from './input-components/show-input';
-import ApplyRules from './reg-rules/view';
+import ApplyRulesView from './reg-rules/reg_rules_view';
 class AddApplyForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             activeKey: TAB_KEYS.FORM_CONTENT,//当前选中的TAB
             applyTypeData: _.cloneDeep(this.props.applyTypeData),//编辑某个审批的类型
-            addApplyRules: [
+            addApplyFormComponents: [
                 {
                     'rulename': Intl.get('apply.rule.text', '文字输入'),
                     'iconfontCls': 'icon-fuwu',
@@ -55,11 +55,53 @@ class AddApplyForm extends React.Component {
                 {'rulename': Intl.get('apply.rule.period', '周期选择'), 'iconfontCls': 'icon-fuwu'},
                 {'rulename': Intl.get('apply.rule.customer', '客户选择'), 'iconfontCls': 'icon-fuwu'},
                 {'rulename': Intl.get('apply.rule.production', '产品配置'), 'iconfontCls': 'icon-fuwu'}
-            ]
+            ],
+            //某个申请保存的表单
+            applySaveForm: [{
+                id: 'XXX',
+                title: '时长组件',
+                isRequired: false,
+                componentType: 'timeRange',
+                keys: ['timeRange'],
+                subKeys: ['starttime', 'endtime', 'total_range']
+            }],
+            //某个申请的审批规则及相关配置
+            applyRulesAndSetting: {
+                applyApproveRules: [{
+                    defaultFlow: [
+                        {
+                            name: 'UserTask_1_0',
+                            id: 'UserTask_1_0',
+                            type: 'UserTask',
+                            next: 'UserTask_1_1',
+                            showName: `填写${_.get(this, 'props.applyTypeData.applyType')}`,
+                            flowIndex: '1_0'
+                        },
+                        {
+                            name: 'UserTask_1_2',
+                            id: 'UserTask_1_2',
+                            type: 'UserTask',
+                            previous: 'UserTask_1_0',
+                            showName: '部门经理',
+                            candidateApprover: 'teamowner',
+                            flowIndex: '1_2'
+                        }
+                    ]
+                }],//审批规则
+                //抄送人
+                ccInformation: 'apply',//抄送通知
+                cancelAfterApprove: false,//撤销权限
+                mergeSameApprover: false//其他
+            },
         };
     }
 
     onStoreChange = () => {
+
+    };
+    componentDiDMount = () => {
+        //todo 需要在这里发请求取表单和审批规则
+        //如果还没有配置过，就只有一个默认的规则
 
     };
     handleTabChange = (key) => {
@@ -85,15 +127,15 @@ class AddApplyForm extends React.Component {
                     return (
                         <InputEdit
                             formItem={formItem}
-                            handleCancel = {this.removeTargetFormItem}
-                            handleSubmit = {this.handleSubmitInput}
+                            handleCancel={this.removeTargetFormItem}
+                            handleSubmit={this.handleSubmitInput}
                         />
                     );
                 } else {
                     return (
                         <InputShow
                             formItem={formItem}
-                            handleRemoveItem = {this.removeTargetFormItem}
+                            handleRemoveItem={this.removeTargetFormItem}
                             handleEditItem={this.handleEditItem}
                         />
                     );
@@ -148,7 +190,7 @@ class AddApplyForm extends React.Component {
     renderAddFormContent = () => {
         var applyTypeData = this.state.applyTypeData;
         var hasFormItem = _.get(applyTypeData, 'formContent.length');
-        var cls = classNames('apply-form-content',{'has-form-item': hasFormItem});
+        var cls = classNames('apply-form-content', {'has-form-item': hasFormItem});
         return (<div className={cls}>
             {hasFormItem ? this.renderFormComponents() : this.renderNodataContent()}
         </div>);
@@ -167,10 +209,10 @@ class AddApplyForm extends React.Component {
         }
     };
     renderAddFormRules = () => {
-        var addApplyRules = this.state.addApplyRules;
+        var addApplyFormComponents = this.state.addApplyFormComponents;
         return (
             <div className="rule-content-wrap">
-                {_.map(addApplyRules, (ruleItem) => {
+                {_.map(addApplyFormComponents, (ruleItem) => {
                     var cls = 'iconfont ' + ruleItem.iconfontCls;
                     return (
                         <span className="rule-content-container"
@@ -199,10 +241,12 @@ class AddApplyForm extends React.Component {
         );
     };
     renderApplyRegex = () => {
-        var applyTypeData = _.get(this, 'state.applyTypeData');
+        var applyRulesAndSetting = _.get(this, 'state.applyRulesAndSetting');
+        var applySaveForm = _.get(this, 'state.applySaveForm');
         return (
-            <ApplyRules
-                applyTypeData = {applyTypeData}
+            <ApplyRulesView
+                applyRulesAndSetting={applyRulesAndSetting}
+                applySaveForm={applySaveForm}
             />
         );
     };

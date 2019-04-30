@@ -1,80 +1,88 @@
-.reg-rule-container{
-  #bpmn-container{
-  //display: none;
- }
-  .reg-rule-wrap{
-    .rule-item{
+.reg-rule-container {
+  #bpmn-container {
+    //display: none;
+  }
+  .reg-rule-wrap {
+    .rule-item {
       padding: 16px 0;
       margin-left: 24px;
       border-bottom: 1px solid #DEDFE3;
       overflow: hidden;
 
-      .item-label{
+      .item-label {
         display: inline-block;
         font-size: 14px;
         color: #333;
         width: 110px;
         float: left;
       }
-      .rule-content{
+      .rule-content.apply-node-lists{
         float: left;
         overflow: hidden;
-        .item-node{
+        .item-node {
           float: left;
           width: 50px;
           margin-right: 21px;
           position: relative;
-          .icon-container{
+          .icon-container {
             display: block;
-            width:40px;
+            width: 40px;
             height: 40px;
             line-height: 40px;
             border-radius: 50%;
             background: #B8D3EA;
             text-align: center;
-            .iconfont{
+            .iconfont {
               font-size: 28px;
-              color:#fff;
+              color: #fff;
             }
           }
-          .icon-container.add-node{
+          .icon-container.add-node {
             background: #fff;
             border: 1px solid #ccc;
-            .iconfont.icon-add{
+            .iconfont.icon-add {
               color: #8DA8C5;
               font-size: 17px;
               cursor: pointer;
             }
           }
-          .show-name{
-             display: block;
-             font-size: 12px;
-             color: #333;
-          }
-          .iconfont.icon-close{
-             cursor: pointer;
-             position: absolute;
-            right: 6px;
-            top:0;
+          .show-name {
+            display: block;
             font-size: 12px;
+            color: #333;
           }
-          .connet-bar{
-            position: relative;
+          .iconfont.icon-close-btn {
+            cursor: pointer;
+            position: absolute;
+            right: 4px;
+            top: -3px;
+          }
+          .connet-bar {
+            position: absolute;
             display: inline-block;
             width: 30px;
-            top:-48px;
+            top: 20px;
             border-bottom: 2px solid #B8D3EA;
-            left:41px;
+            left: 41px;
           }
         }
       }
-      .rule-content.info-container{
-        .ant-radio-wrapper{
+      .rule-content.info-container {
+        .ant-radio-wrapper {
           display: block;
         }
       }
     }
 
-
+  }
+  //添加申请审批人节点面板
+  .show-add-node-modal{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 12;
+    background: rgba(0, 0, 0, 0.5);
   }
 }

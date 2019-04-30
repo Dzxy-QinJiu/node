@@ -5,7 +5,7 @@
  */
 require('./style/index.less');
 var classNames = require('classnames');
-import AddAndShowApplyList from './view/add_and_show_apply_list';
+import ApplyProcessList from './view/apply_process_list';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {Button} from 'antd';
 import {calculateHeight } from './utils/apply-approve-utils';
@@ -15,40 +15,7 @@ class ApplyApproveManage extends React.Component {
         this.state = {
             showAddForm: false,
             showApplyTypeList: [
-                {'applyType': '默认申请审批','approveRoles': ['销售'],'approveCheck': false,id: '111111111111'}, {'applyType': '出差申请审批','approveRoles': ['销售222'],'approveCheck': true,id: '222222222222222222',applyRules: [{
-                    defaultFlow: [
-                        {
-                            name: 'UserTask_1_1',
-                            id: 'UserTask_1_1',
-                            type: 'UserTask',
-                            next: 'UserTask_1_2',
-                            showName: '填写出差申请',
-                        },
-                        {
-                            name: 'UserTask_1_2',
-                            id: 'UserTask_1_2',
-                            type: 'UserTask',
-                            previous: 'UserTask_1_1',
-                            next: 'UserTask_1_3',
-                            showName: '部门经理',
-                            candidateApprover: 'teamowner',
-                        },{
-                            name: 'UserTask_1_3',
-                            id: 'UserTask_1_3',
-                            type: 'UserTask',
-                            next: 'EndTask_1',
-                            previous: 'UserTask_1_2',
-                            showName: '总经理',
-                            candidateApprover: 'manager',
-                            description: 'final_task'
-                        }, {
-                            name: 'EndTask_1',
-                            id: 'EndTask_1',
-                            type: 'EndEvent',
-                            previous: 'UserTask_1_3',
-                            showName: 'end',
-                        }]
-                }]}],//申请审批的列表
+                {'applyType': '默认申请审批','approveRoles': ['销售'],'approveCheck': false,id: '111111111111'}, {'applyType': '出差申请审批','approveRoles': ['销售222'],'approveCheck': true,id: '222222222222222222'}],//申请审批的列表
         };
     }
     onStoreChange = () => {
@@ -64,7 +31,7 @@ class ApplyApproveManage extends React.Component {
 
     renderApplyTypeList = () => {
         return (
-            <AddAndShowApplyList
+            <ApplyProcessList
                 showApplyList = {this.state.showApplyTypeList}
                 showAddForm = {this.state.showAddForm}
                 updateShowApplyList = {this.updateShowApplyList}
