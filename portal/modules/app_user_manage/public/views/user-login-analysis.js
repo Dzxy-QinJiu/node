@@ -443,7 +443,8 @@ class UserLoginAnalysis extends React.Component {
         let starttime = _.get(this.state.appUserDataMap, [app.app_id, 'starttime']) || moment().subtract(1, 'year').valueOf();
         let yearStartTime = _.get(DATE_SELECT, '[0].value');
         // 防止时间框出现数值的情况
-        if (starttime - yearStartTime < 10 * 60 * 1000 && starttime - yearStartTime > -10 * 60 * 1000) {
+        let dayTime = 24 * 60 * 60 * 1000;
+        if (starttime - yearStartTime < dayTime && starttime - yearStartTime > -dayTime) {
             starttime = yearStartTime;
         }
         let list = _.map(DATE_SELECT, item =>
