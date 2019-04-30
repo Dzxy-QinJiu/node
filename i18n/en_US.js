@@ -2863,7 +2863,11 @@ var en_US = {
     'common.number.of.trial.qualified.customer': 'Number of trial qualified customer',//试用合格客户数
     'common.number.of.travel.day': 'Number of travel day',//出差天数
     'common.number.of.customers.visited': 'Number of customers visited',//拜访客户数
+    'common.number.of.customers.contacted': 'Number of customers contacted',//联系客户数
+    'common.number.of.calls.made': 'Number of calls made',//接通数
+    'common.number.of.calls.not.connected': 'Number of calls not connected',//未接通数
     'common.daily.duration.of.calls': 'Daily duration of calls',//日均电话时长
     'common.daily.number.of.calls': 'Daily number of calls',//日均电话数
+    'common.customer.visit.record': 'Customer visit record',//客户拜访记录
 };
 export default en_US;

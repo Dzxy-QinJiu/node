@@ -2890,7 +2890,11 @@ var zh_CN = {
     'common.number.of.trial.qualified.customer': '试用合格客户数',
     'common.number.of.travel.day': '出差天数',
     'common.number.of.customers.visited': '拜访客户数',
+    'common.number.of.customers.contacted': '联系客户数',
+    'common.number.of.calls.made': '接通数',
+    'common.number.of.calls.not.connected': '未接通数',
     'common.daily.duration.of.calls': '日均电话时长',
     'common.daily.number.of.calls': '日均电话数',
+    'common.customer.visit.record': '客户拜访记录',
 };
 export default zh_CN;

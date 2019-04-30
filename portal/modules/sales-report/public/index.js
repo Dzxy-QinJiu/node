@@ -444,7 +444,7 @@ class SalesReport extends React.Component {
                 //客户数统计
                 customerCharts.getCustomerNumChart(),
                 //销售行为统计
-                reportCharts.getSalesBehaviorChart({
+                customerCharts.getSalesBehaviorVisitCustomerChart({
                     visitedCustomerNumClickHandler: this.visitedCustomerNumClickHandler
                 }),
                 //订单阶段
@@ -523,17 +523,17 @@ class SalesReport extends React.Component {
                 <CustomerListPanel
                     customerListPanelColumns={[
                         {
-                            title: '开始时间',
+                            title: Intl.get('contract.120', '开始时间'),
                             dataIndex: 'start_time_alias',
                             width: '10%'
                         },
                         {
-                            title: '结束时间',
+                            title: Intl.get('contract.105', '结束时间'),
                             dataIndex: 'end_time',
                             width: '10%'
                         },
                         {
-                            title: '拜访记录',
+                            title: Intl.get('common.customer.visit.record', '客户拜访记录'),
                             dataIndex: 'remark',
                             width: '50%'
                         }

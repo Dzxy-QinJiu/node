@@ -2,15 +2,17 @@
  * 销售行为统计
  */
 
-export function getSalesBehaviorChart(paramObj = {}) {
+import { argCallbackMemberIdToMemberIds } from '../../utils';
+
+export function getSalesBehaviorVisitCustomerChart(paramObj = {}) {
     return {
         title: Intl.get('common.sales.behavior.statistics', '销售行为统计'),
         chartType: 'table',
         url: '/rest/analysis/callrecord/v1/customertrace/:data_type/sale/trace/statistics',
         argCallback: arg => {
-            if (arg.query.member_id) {
-                arg.query.member_ids = arg.query.member_id;
-                delete arg.query.member_id;
+            argCallbackMemberIdToMemberIds(arg);
+            if (arg.query.member_ids) {
+                arg.query.result_type = 'user';
             }
         },
         processData: data => {
@@ -27,7 +29,7 @@ export function getSalesBehaviorChart(paramObj = {}) {
         },
         option: {
             columns: [{
-                title: '拜访客户数',
+                title: Intl.get('common.number.of.customers.visited': '拜访客户数'),
                 dataIndex: 'visit',
                 width: '25%',
                 render: value => {
@@ -38,15 +40,15 @@ export function getSalesBehaviorChart(paramObj = {}) {
                     }
                 }
             }, {
-                title: '联系客户数',
+                title: Intl.get('common.number.of.customers.contacted', '联系客户数'),
                 dataIndex: 'phone_all',
                 width: '25%',
             }, {
-                title: '接通数',
+                title: Intl.get('common.number.of.calls.made', '接通数'),
                 dataIndex: 'phone_answer',
                 width: '25%',
             }, {
-                title: '未接通数',
+                title: Intl.get('common.number.of.calls.not.connected', '未接通数'),
                 dataIndex: 'phone_no_answer',
                 width: '25%',
             }]
