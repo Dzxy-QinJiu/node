@@ -65,6 +65,7 @@ function SalesOpportunityApplyActions() {
 //获取我审批过的列表
 function getApplyListApprovedByMe(that,queryObj) {
     ApplyApproveAjax.getApplyListApprovedByMe().sendRequest(queryObj).success((data) => {
+        scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
         that.dispatch({error: false, loading: false, data: data});
     }).error(xhr => {
         that.dispatch({
