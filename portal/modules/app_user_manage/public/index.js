@@ -45,7 +45,7 @@ import Spinner from 'CMP_DIR/spinner';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import IntegrateConfigView from './views/integrate-config/index';
 import TopNav from 'CMP_DIR/top-nav';
-import ImportUser from 'CMP_DIR/import';
+import ImportUser from './views/import';
 import {REG_CRM_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 
 /*用户管理界面外层容器*/

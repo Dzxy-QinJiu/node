@@ -1,15 +1,16 @@
+
 const PropTypes = require('prop-types');
 var React = require('react');
 import {Button, Steps, message, Alert} from 'antd';
 var rightPanelUtil = require('CMP_DIR/rightPanel');
 var RightPanel = rightPanelUtil.RightPanel;
-import Upload from './upload';
+import Upload from 'CMP_DIR/import_step/upload';
 require('./index.less');
 const Step = Steps.Step;
 import {AntcTable} from 'antc';
 import Spinner from 'CMP_DIR/spinner';
 import Trace from 'LIB_DIR/trace';
-import SelectFullWidth from '../select-fullwidth';
+import SelectFullWidth from 'CMP_DIR//select-fullwidth';
 
 const SET_TIME_OUT = {
     TRANSITION_TIME: 600,//右侧面板动画隐藏的时间
@@ -23,7 +24,7 @@ const LAYOUT = {
     BOTTOM_DISTANCE: 90,
     TABLE_TOP: 40,
     ERROR_TIPS_MESSAGE_WIDTH: 110, // 错误信息宽度
-    WARN_TIPS_MESSAGE_WIDTH: 110, // 警告信息宽度
+    WARN_TIPS_MESSAGE_WIDTH: 10, // 警告信息宽度
 };
 function noop() {}
 import {isEqualArray} from 'LIB_DIR/func';
@@ -365,4 +366,3 @@ ImportTemplate.propTypes = {
     getSelectAppId: PropTypes.func,
 };
 export default ImportTemplate;
-
