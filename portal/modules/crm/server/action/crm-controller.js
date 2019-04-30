@@ -157,9 +157,9 @@ exports.getCompetitorList = function(req, res) {
             res.status(500).json(err && err.message);
         });
 };
-//获取筛选面板的负责人名称列表
-exports.getOwnerNameList = function(req, res) {
-    crmService.getOwnerNameList(req, res)
+//获取筛选面板的负责人列表
+exports.getOwnerList = function(req, res) {
+    crmService.getOwnerList(req, res)
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {

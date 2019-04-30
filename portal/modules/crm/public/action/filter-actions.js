@@ -46,9 +46,9 @@ function FilterAction() {
             if (_.isFunction(cb)) cb(list);
         });
     };
-    //获取负责人名称列表
-    this.getOwnerNameList = function() {
-        FilterAjax.getOwnerNameList().then(list => {
+    //获取负责人列表
+    this.getOwnerList = function() {
+        FilterAjax.getOwnerList().then(list => {
             this.dispatch(list);
         }, function(errorMsg) {
             console.log(errorMsg);
