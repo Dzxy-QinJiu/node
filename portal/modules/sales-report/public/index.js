@@ -1,4 +1,6 @@
 require('./style.less');
+import CustomerListPanel from 'MOD_DIR/crm/public/customer-list-panel';
+import {listPanelEmitter} from 'PUB_DIR/sources/utils/emitters';
 import ajax from 'ant-ajax';
 import userData from 'PUB_DIR/sources/user-data';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
@@ -22,11 +24,16 @@ const STORED_MEMBER_ID_KEY = 'sales_report_selected_member_id';
 const authType = hasPrivilege('CALL_RECORD_VIEW_MANAGER') ? 'manager' : 'user';
 const dataType = hasPrivilege('GET_TEAM_LIST_ALL') ? 'all' : 'self';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
+
 //销售角色
 const SALES_ROLE = {
     sales_manager: '销售经理',
     customer_manager: '客户经理'
 };
+
+const now = moment();
+const defaultStartTime = now.startOf('week').valueOf();
+const defaultEndTime = now.valueOf();
 
 class SalesReport extends React.Component {
     state = {
@@ -36,6 +43,8 @@ class SalesReport extends React.Component {
         currentMember: {
             user_id: storageUtil.local.get(STORED_MEMBER_ID_KEY),
         },
+        startTime: defaultStartTime,
+        endTime: defaultStartTime
     };
 
     componentDidMount() {
@@ -160,11 +169,11 @@ class SalesReport extends React.Component {
             },
             {
                 name: 'start_time',
-                value: moment().startOf('week').valueOf(),
+                value: defaultStartTime,
             },
             {
                 name: 'end_time',
-                value: moment().valueOf(),
+                value: defaultEndTime,
             },
             {
                 name: 'member_id',
@@ -207,6 +216,7 @@ class SalesReport extends React.Component {
     //处理日期变更事件
     onDateChange = (startTime, endTime) => {
         dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
+        this.setState({startTime, endTime});
     };
 
     //渲染筛选器
@@ -381,6 +391,22 @@ class SalesReport extends React.Component {
         );
     };
 
+    //销售行为统计拜访客户数点击处理函数
+    visitedCustomerNumClickHandler = (e) => {
+        Trace.traceEvent(e, '点击销售个人报告页面上的销售行为统计拜访客户数查看详细列表');
+
+        const paramObj = {
+            listType: 'customer',
+            url: '/rest/analysis/callrecord/v1/customertrace/sale/visit/statistics',
+            type: 'get',
+            start_time: this.state.startTime,
+            end_time: this.state.endTime,
+            member_id: this.state.currentMember.user_id
+        };
+
+        listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
+    }
+
     //渲染销售行为
     renderSalesBehavior = () => {
         if (!this.state.currentMember.team_id) return;
@@ -409,7 +435,9 @@ class SalesReport extends React.Component {
                 //客户数统计
                 customerCharts.getCustomerNumChart(),
                 //销售行为统计
-                reportCharts.salesBehaviorChart,
+                reportCharts.getSalesBehaviorChart({
+                    visitedCustomerNumClickHandler: this.visitedCustomerNumClickHandler
+                }),
                 //订单阶段
                 orderCharts.getOrderStageChart({
                     stageList: this.state.stageList
@@ -483,6 +511,7 @@ class SalesReport extends React.Component {
                         </Col>
                     </Row>
                 </div>
+                <CustomerListPanel/>
             </div>
         );
     }
