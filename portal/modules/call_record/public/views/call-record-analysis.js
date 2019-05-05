@@ -1081,6 +1081,9 @@ class CallRecordAnalyis extends React.Component {
                 columns: this.getPhoneListColumn(),
             },
             cardContainer: {
+                //只有存在操作按钮或下拉选项时，才默认显示导出按钮，所以这里放一个空的操作按钮，让导出按钮能显示出来
+                //Todo: 修改一下卡片容器组件里的判断逻辑
+                operateButtons: [{}],
                 props: {
                     subTitle: this.renderFilter114(),
                     isShowRefreshButton: true,
@@ -1538,12 +1541,15 @@ class CallRecordAnalyis extends React.Component {
                         <div className="call-info col-xs-12">
                             {this.renderCallInfo()}
                         </div>
-                        <AntcAnalysis
-                            charts={[customerCharts.getCallIndustryChart()]}
-                            conditions={this.getConditions()}
-                            emitterConfigList={this.getEmitters()}
-                            isGetDataOnMount={true}
-                        />
+                        <div className="col-xs-12">
+                            <AntcAnalysis
+                                charts={[customerCharts.getCallIndustryChart()]}
+                                conditions={this.getConditions()}
+                                emitterConfigList={this.getEmitters()}
+                                isGetDataOnMount={true}
+                                style={{padding: 0}}
+                            />
+                        </div>
                         <div className="call-range col-xs-12">
                             {/*根据电话的排序的通话次数TOP10*/}
                             {this.renderCallTopTen(this.state.callTotalCountObj, {
