@@ -74,11 +74,16 @@ exports.getAllProductList = function(cb) {
         });
     }
 };
-//获取所有的成员列表
-const getAllUserList = function() {
+//获取所有的成员列表,notFilterStop:不过滤停用的成员
+const getAllUserList = function(notFilterStop) {
     return new Promise((resolve, reject) => {
         if (_.get(allUserList, '[0]')) {
-            resolve(allUserList);
+            //过滤停用的成员
+            if(!notFilterStop){
+                resolve(_.filter(allUserList, sales => sales && sales.status === 1));
+            }else{//不过滤停用的成员
+                resolve(allUserList);
+            }
         } else {
             $.ajax({
                 url: '/rest/user',
@@ -87,8 +92,13 @@ const getAllUserList = function() {
                 data: {},
                 success: result => {
                     if (_.isArray(result.data)) {
-                        allUserList = _.filter(result.data, sales => sales && sales.status === 1);
-                        resolve(allUserList);
+                        allUserList = result.data;
+                        //过滤停用的成员
+                        if(!notFilterStop){
+                            resolve(_.filter(allUserList, sales => sales && sales.status === 1));
+                        }else{//不过滤停用的成员
+                            resolve(allUserList);
+                        }
                     }
                 },
                 error: xhr => {
