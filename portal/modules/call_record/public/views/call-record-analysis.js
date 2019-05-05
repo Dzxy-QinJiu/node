@@ -1388,7 +1388,7 @@ class CallRecordAnalyis extends React.Component {
                 noExportCsv: true,
                 resultType: getResultType(this.state.customerData.loading, this.state.customerData.errMsg),
                 errMsgRender: () => {
-                    return getErrorTipAndRetryFunction(this.state.customerData.errMsg);
+                    return '获取客户阶段统计失败';
                 }
             }
         ];
@@ -1417,7 +1417,7 @@ class CallRecordAnalyis extends React.Component {
                 noExportCsv: true,
                 resultType: getResultType(this.state.customerData.loading, this.state.customerData.errMsg),
                 errMsgRender: () => {
-                    return getErrorTipAndRetryFunction(this.state.customerData.errMsg);
+                    return '获取订单阶段统计失败';
                 }
             }
         ];
