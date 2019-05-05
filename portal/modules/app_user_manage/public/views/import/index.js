@@ -4,7 +4,7 @@ var React = require('react');
 import {Button, Steps, message, Alert} from 'antd';
 var rightPanelUtil = require('CMP_DIR/rightPanel');
 var RightPanel = rightPanelUtil.RightPanel;
-import Upload from 'CMP_DIR/import_step/upload';
+import Upload from './upload';
 require('./index.less');
 const Step = Steps.Step;
 import {AntcTable} from 'antc';
