@@ -158,7 +158,13 @@ class ImportTemplate extends React.Component {
         });
     };
     renderImportFooter = () => {
-        let errors = this.getImportUserErrorData();
+        let errors = [];
+        _.each(this.state.previewList, (item) => {
+            if (item.errors) {
+                errors = _.concat(errors, item.errors);
+            }
+        });
+        errors = this.uniqueArray(errors);
         let length = _.get(errors, 'length');
         let noMatchCustomer = _.find(errors, item => item.field === 'customer_name');
         let disabledImportBtn = false;
@@ -195,10 +201,21 @@ class ImportTemplate extends React.Component {
         var tableHeight = this.calculateTableHeight();
         this.setState({tableHeight});
     };
-    // 获取导入数据的错误信息
-    getImportUserErrorData = () => {
-        let errorsInfo = _.find(this.state.previewList, item => item.errors);
-        return _.get(errorsInfo, 'errors');
+
+    uniqueArray = (arr) => {
+        let unique = []; // 去重后的数组
+        for(let item1 of arr){ //循环arr数组对象的内容
+            let flag = true; //建立标记，判断数据是否重复，true为不重复
+            for(let item2 of unique){ // 循环新数组的内容
+                if(item1.field === item2.field && item1.data === item2.data){ //让arr数组对象的内容与新数组的内容作比较，相同的话，改变标记为false
+                    flag = false;
+                }
+            }
+            if(flag){ //判断是否重复
+                unique.push(item1); //不重复的放入新数组。
+            }
+        }
+        return unique;
     };
 
     renderThirdStepContent = () => {
@@ -208,6 +225,7 @@ class ImportTemplate extends React.Component {
                 errors = _.concat(errors, item.errors);
             }
         });
+        errors = this.uniqueArray(errors);
         let length = _.get(errors, 'length');
         let tipsMessage = [];
         let noMatchCustomer = _.find(errors, item => item.field === 'customer_name');

@@ -979,5 +979,5 @@ exports.confirmUploadUser = function(req, res) {
             url: AppUserRestApis.confirmUploadUser + '?app_id=' + req.params.app_id,
             req: req,
             res: res
-        }, obj);
+        }, JSON.parse(obj));
 };
