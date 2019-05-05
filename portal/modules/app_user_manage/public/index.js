@@ -610,7 +610,7 @@ class AppUserManage extends React.Component {
                     Intl.get('common.email.is.existed', '邮箱已存在') : Intl.get('user.import.email.no.match.rule', '邮箱不符合规则');
             } else if (errorType === 'customer_name') {
                 tipsMessage = isError.detail === 'data unexist' ?
-                    Intl.get('user.import.customer.no.match', '系统未找不到对应的客户，可以继续导入，导入后需要自行设置客户。') : '';
+                    Intl.get('user.import.customer.no.match', '系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。') : '';
             }
         }
         return {cls: cls, tipsMessage: tipsMessage};

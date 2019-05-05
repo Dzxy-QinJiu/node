@@ -336,7 +336,7 @@ var zh_CN = {
     'user.import.username.no.match.rule': '用户名不符合规则',
     'user.import.phone.no.match.rule': '手机号不符合规则',
     'user.import.email.no.match.rule': '邮箱不符合规则',
-    'user.import.customer.no.match': '系统未找不到对应的客户，可以继续导入，导入后需要自行设置客户。',
+    'user.import.customer.no.match': '系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。',
     'user.import.red.tips': '红色标示数据不符合规则或是已存在，请修改数据后重新导入，或删除不符合规则的数据后直接导入。',
     'user.import.username.rule': '用户名：长度为1-50个字母、数字、横线或下划线组成的字符串',
     'user.import.phone.rule': '手机：11位手机号',

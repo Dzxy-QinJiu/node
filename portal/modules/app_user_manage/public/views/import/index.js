@@ -217,13 +217,13 @@ class ImportTemplate extends React.Component {
             if (length > 1) {
                 tipsMessage.push(Intl.get('user.import.red.tips', '红色标示数据不符合规则或是已存在，请修改数据后重新导入，或删除不符合规则的数据后直接导入。'));
                 if (noMatchCustomer) {
-                    tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找不到对应的客户，可以继续导入，导入后需要自行设置客户。'));
+                    tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。'));
                 }
                 height -= (LAYOUT.ERROR_TIPS_MESSAGE_WIDTH + LAYOUT.WARN_TIPS_MESSAGE_WIDTH);
                 tableHeight -= (LAYOUT.ERROR_TIPS_MESSAGE_WIDTH + LAYOUT.WARN_TIPS_MESSAGE_WIDTH);
             } else if (length === 1) {
                 if (noMatchCustomer) {
-                    tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找不到对应的客户，可以继续导入，导入后需要自行设置客户。'));
+                    tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。'));
                 } else {
                     tipsMessage.push(Intl.get('user.import.red.tips', '红色标示数据不符合规则或是已存在，请修改数据后重新导入，或删除不符合规则的数据后直接导入。'));
                     height -= LAYOUT.ERROR_TIPS_MESSAGE_WIDTH;
@@ -239,9 +239,9 @@ class ImportTemplate extends React.Component {
                             <div>
                                 <Alert type="error" message={'1.' + _.get(tipsMessage, [0])}/>
                                 <div className="warning-rule-decription">
-                                    <div>{Intl.get('user.import.username.rule', '用户名规则：长度为1到50的字母、数字、横线、下划线')}</div>
-                                    <div>{Intl.get('user.import.phone.rule', '手机规则：13、14、16、17、18、19开头的11位手机号')}</div>
-                                    <div>{Intl.get('user.import.email.rule', '邮箱规则：数字、字母、下划线 + @ + 数字、英文 + . +英文')}</div>
+                                    <div>{Intl.get('user.import.username.rule', '用户名：长度为1-50个字母、数字、横线或下划线组成的字符串')}</div>
+                                    <div>{Intl.get('user.import.phone.rule', '手机：11位手机号')}</div>
+                                    <div>{Intl.get('user.import.email.rule', '邮箱：如 12345678@qq.com')}</div>
                                 </div>
                                 <Alert type="warning" message={'2.' + _.get(tipsMessage, [1])}/>
                             </div>
@@ -252,9 +252,9 @@ class ImportTemplate extends React.Component {
                                 <div>
                                     <Alert type="error" message={'1.' + _.get(tipsMessage, [0])}/>
                                     <div className="warning-rule-decription">
-                                        <div>{Intl.get('user.import.username.rule', '用户名规则：长度为1到50的字母、数字、横线、下划线')}</div>
-                                        <div>{Intl.get('user.import.phone.rule', '手机规则：13、14、16、17、18、19开头的11位手机号')}</div>
-                                        <div>{Intl.get('user.import.email.rule', '邮箱规则：数字、字母、下划线 + @ + 数字、英文 + . +英文')}</div>
+                                        <div>{Intl.get('user.import.username.rule', '用户名：长度为1-50个字母、数字、横线或下划线组成的字符串')}</div>
+                                        <div>{Intl.get('user.import.phone.rule', '手机：11位手机号')}</div>
+                                        <div>{Intl.get('user.import.email.rule', '邮箱：如 12345678@qq.com')}</div>
                                     </div>
                                 </div>
                             )
