@@ -63,7 +63,7 @@ function UserLoginAnalysisAction() {
 
             // 用户登录信息（时长、次数、首次和最后一次登录时间）
             this.actions.getUserLoginInfo(loginParam);
-            let lastLoginParam = {...loginParam, starttime: _.get(searchObj, 'starttime') || moment().subtract(1, 'year').valueOf()};
+            let lastLoginParam = {...loginParam, timeType: _.get(searchObj, 'timeType'), starttime: _.get(searchObj, 'starttime') || moment().subtract(1, 'year').valueOf()};
             // 用户登录统计图中登录时长、登录频次
             this.actions.getUserLoginChartInfo(lastLoginParam);
             
@@ -118,7 +118,9 @@ function UserLoginAnalysisAction() {
     this.getUserLoginChartInfo = function(loginParam){
         if (loginParam && loginParam.appid) {
             this.dispatch({paramsObj: loginParam, loading: true, error: false});
-            userAuditLogAjax.getUserLoginChartInfo(loginParam).then((data) => {
+            let reqData = _.clone(loginParam);
+            delete reqData.timeType;
+            userAuditLogAjax.getUserLoginChartInfo(reqData).then((data) => {
                 this.dispatch({paramsObj: loginParam, loading: false, error: false, data: data});
             },(errorMsg) => {
                 this.dispatch({paramsObj: loginParam, loading: false,error: true, errorMsg: errorMsg});
@@ -131,7 +133,9 @@ function UserLoginAnalysisAction() {
     this.getLoginUserActiveStatistics = function(loginParam, type){
         if (loginParam && loginParam.appid) {
             this.dispatch({paramsObj: loginParam, loading: true, error: false});
-            userAuditLogAjax.getLoginUserActiveStatistics(loginParam, type).then( (data) => {
+            let reqData = _.clone(loginParam);
+            delete reqData.timeType;
+            userAuditLogAjax.getLoginUserActiveStatistics(reqData, type).then( (data) => {
                 this.dispatch({paramsObj: loginParam, loading: false, error: false, data: data});
             },(errorMsg) => {
                 this.dispatch({paramsObj: loginParam, loading: false, error: true, errorMsg: errorMsg});

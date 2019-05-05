@@ -252,7 +252,7 @@ exports.getTimeList = function(field,rowData) {
             if(time === 'Invalid date') {
                 time = Intl.get('common.unknown', '未知');
             }
-            if(app[field] === 0) {
+            if(app[field] === 0 || app[field] === '0') {
                 time = Intl.get('user.nothing', '无');
             }
             return (
