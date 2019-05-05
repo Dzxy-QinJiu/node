@@ -18,6 +18,7 @@ const FORMLAYOUT = {
 };
 import AlertTimer from 'CMP_DIR/alert-timer';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+const CONDITION_KEYS = [{name: Intl.get('user.duration', '时长'),value: 'timeRange'}];
 const CONDITION_LIMITE = [{
     name: Intl.get('apply.add.condition.larger', '大于'),
     value: '>',
@@ -44,7 +45,9 @@ class AddApplyConditionPanel extends React.Component {
         super(props);
         this.state = {
             showAddConditionForm: false,
-            diffConditionLists: {},//添加的条件审批数据
+            diffConditionLists: {
+                limitRules: [],
+            },//添加的条件审批数据
             applySaveForm: this.props.applySaveForm,
         };
     }
@@ -54,7 +57,9 @@ class AddApplyConditionPanel extends React.Component {
 
     handleAddConditionType = (conditionType) => {
         var diffConditionLists = this.state.diffConditionLists;
-        diffConditionLists[conditionType] = {};
+        var limitRules = _.get(diffConditionLists,'limitRules',[]);
+        var target = _.find(CONDITION_KEYS, item => item.value === conditionType);
+        limitRules.push({limitType: conditionType, limitTypeDsc: _.get(target,'name')});
         this.setState({
             showAddConditionForm: true,
             diffConditionLists: diffConditionLists
@@ -81,9 +86,9 @@ class AddApplyConditionPanel extends React.Component {
     };
     deleteConditionType = (deleteType) => {
         var diffConditionLists = this.state.diffConditionLists;
-        delete diffConditionLists[deleteType];
+        var limitRules = _.filter(_.get(diffConditionLists,'limitRules'),(item) => item.type !== deleteType);
         //如果所有条件都删除完了，要展示添加的提示
-        if (_.isEmpty(diffConditionLists)){
+        if (_.get(limitRules,'length')){
             this.setState({
                 showAddConditionForm: false
             });
@@ -92,42 +97,67 @@ class AddApplyConditionPanel extends React.Component {
             diffConditionLists
         });
     };
-    handleChangeRangeLimit = (key, subKey, value) => {
+    handleChangeRangeLimit = (key, subKey, allType, value) => {
         var diffConditionLists = this.state.diffConditionLists;
-        diffConditionLists[key][subKey] = value;
+        var limitRules = _.get(diffConditionLists,'limitRules');
+        var target = _.find(limitRules,limit => limit.limitType === key);
+        if (target){
+            var limitTarget = _.find(allType, limitItem => limitItem.value === value);
+            target[subKey] = value;
+            target[subKey + 'Dsc'] = _.get(limitTarget,'name');
+            this.setState({
+                diffConditionLists
+            });
+        }
+
+    };
+    handleRangeInputChange = (key, subKey, Dsc, e) => {
+        var diffConditionLists = this.state.diffConditionLists;
+        var limitRules = _.get(diffConditionLists,'limitRules');
+        var target = _.find(limitRules,limit => limit.limitType === key);
+        if (target){
+            target[subKey] = e.target.value;
+            target[subKey + 'Dsc'] = e.target.value + Dsc;
+            this.setState({
+                diffConditionLists
+            });
+        }
+
+    };
+    handleConditionTitleChange = (e) => {
+        var diffConditionLists = this.state.diffConditionLists;
+        diffConditionLists['conditionTitle'] = e.target.value;
         this.setState({
             diffConditionLists
         });
     };
-    handleRangeInputChange = (key, subKey, e) => {
-        var diffConditionLists = this.state.diffConditionLists;
-        diffConditionLists[key][subKey] = e.target.value;
-        this.setState({
-            diffConditionLists
-        });
+    getDiffConditionType = () => {
+
     };
     renderDiffTypeConditions = () => {
         var diffConditionLists = this.state.diffConditionLists;
+        var limitRules = _.get(diffConditionLists,'limitRules',[]);
         return (
             <div className="condition_list_type">
-                {_.map(diffConditionLists,(value, key) => {
-                    switch (key){
+                {_.map(limitRules,(value) => {
+                    var limitType = value.limitType;
+                    switch (limitType){
                         case 'timeRange':
+                            var conditionType = Intl.get('user.duration', '时长');
                             return (<div className="condition-type-container range-condition-container">
                                 <div className="condition-type-title">
-                                    {Intl.get('user.duration', '时长')}
-                                    <i className="iconfont icon-delete" onClick={this.deleteConditionType.bind(this, key)}></i>
+                                    {conditionType}
+                                    <i className="iconfont icon-delete" onClick={this.deleteConditionType.bind(this, limitType)}></i>
                                 </div>
                                 <div className="condition-type-content">
                                     <Select
-                                        onChange={this.handleChangeRangeLimit.bind(this, key, 'range_limit')}
-                                        value={_.get(value, 'range_limit')}
+                                        onChange={this.handleChangeRangeLimit.bind(this, limitType, 'rangeLimit', CONDITION_LIMITE)}
                                     >
                                         {_.map(CONDITION_LIMITE,(item,index) => {
                                             return (<Option key={index} value={item.value}>{item.name}</Option>);
                                         })}
                                     </Select>
-                                    <Input onChange={this.handleRangeInputChange.bind(this, key, 'range_number')} addonAfter={Intl.get('common.time.unit.day', '天')}/>
+                                    <Input onChange={this.handleRangeInputChange.bind(this, limitType, 'rangeNumber', Intl.get('common.time.unit.day', '天'))} addonAfter={Intl.get('common.time.unit.day', '天')}/>
                                 </div>
                             </div>);
                     }
@@ -139,6 +169,9 @@ class AddApplyConditionPanel extends React.Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) return;
+            var submitObj = _.cloneDeep(this.state.diffConditionLists);
+            this.props.saveAddApprovCondition(submitObj);
+            this.props.hideRightPanel();
         });
     };
 
@@ -176,7 +209,7 @@ class AddApplyConditionPanel extends React.Component {
                                         {getFieldDecorator('condition_name', {
                                             rules: [{required: true, message: Intl.get('apply.add.reg.name', '请填写名称')}],
                                         })(
-                                            <Input />
+                                            <Input onChange={this.handleConditionTitleChange}/>
                                         )}
                                     </FormItem>
                                     <FormItem
@@ -221,7 +254,7 @@ AddApplyConditionPanel.defaultProps = {
 };
 AddApplyConditionPanel.propTypes = {
     hideRightPanel: PropTypes.func,
-    saveAddApproveNode: PropTypes.func,
+    saveAddApprovCondition: PropTypes.func,
     applySaveForm: PropTypes.object,
 
 

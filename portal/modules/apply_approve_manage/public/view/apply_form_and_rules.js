@@ -67,27 +67,30 @@ class AddApplyForm extends React.Component {
             }],
             //某个申请的审批规则及相关配置
             applyRulesAndSetting: {
-                applyApproveRules: [{
-                    defaultFlow: [
-                        {
-                            name: 'UserTask_1_0',
-                            id: 'UserTask_1_0',
-                            type: 'UserTask',
-                            next: 'UserTask_1_1',
-                            showName: `填写${_.get(this, 'props.applyTypeData.applyType')}`,
-                            flowIndex: '1_0'
-                        },
-                        {
-                            name: 'UserTask_1_2',
-                            id: 'UserTask_1_2',
-                            type: 'UserTask',
-                            previous: 'UserTask_1_0',
-                            showName: '部门经理',
-                            candidateApprover: 'teamowner',
-                            flowIndex: '1_2'
-                        }
-                    ]
-                }],//审批规则
+                applyApproveRules: {
+                    defaultFlow: {
+                        bpmnNode: [
+                            {
+                                name: 'UserTask_1_0',
+                                id: 'UserTask_1_0',
+                                type: 'UserTask',
+                                next: 'UserTask_1_2',
+                                showName: `填写${_.get(this, 'props.applyTypeData.applyType')}`,
+                                flowIndex: '1_0'
+                            },
+                            {
+                                name: 'UserTask_1_2',
+                                id: 'UserTask_1_2',
+                                type: 'UserTask',
+                                previous: 'UserTask_1_0',
+                                showName: '部门经理',
+                                candidateApprover: 'teamowner',
+                                flowIndex: '1_2'
+                            }
+                        ],
+                        ccPerson: [],//默认抄送人
+                    }
+                },//审批规则
                 //抄送人
                 ccInformation: 'apply',//抄送通知
                 cancelAfterApprove: false,//撤销权限

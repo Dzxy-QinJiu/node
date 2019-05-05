@@ -10,7 +10,6 @@
       overflow: hidden;
 
       .item-label {
-        display: inline-block;
         font-size: 14px;
         color: #333;
         width: 110px;
@@ -72,6 +71,81 @@
           display: block;
         }
       }
+      //条件审批流程
+      .rule-content.condition-block{
+        float: left;
+        width: calc(100% - 120px);
+        .add-condition{
+          color: #8DA8C5;
+          font-size: 14px;
+        }
+        .condition-container{
+          width: 100%;
+          .condition-item-content{
+            width: 100%;
+            border: 1px solid #DEDFE3;
+            border-bottom: none;
+            .condition-item{
+              padding: 12px;
+              border-bottom: 1px solid #DEDFE3;
+              color: #999;
+              font-size: 14px;
+            }
+            .condition-item.condition-item-title-wrap{
+              background:rgba(245,245,245,1);
+                padding: 12px;
+                .condition-item-title{
+                  color: #333;
+                  font-size: 14px;
+
+                }
+              .condition-operate{
+                  .confirm-btns{
+                      .ant-btn{
+                        margin-right: 12px;
+                      }
+                    .confirm-delete.ant-btn{
+                      color: #fff;
+                      background: #EB5E57;
+                    }
+                  }
+                  .iconfont-wrap{
+                    .iconfont{
+                      margin-right: 10px;
+                      cursor: pointer;
+                      color: #8DA8C5;
+                      font-size: 17px;
+                    }
+                  }
+                }
+
+                
+              }
+            .condition-item.condition-item-des{
+              overflow: hidden;
+              .condition-item-label{
+                float: left;
+              }
+              ul{
+                float: left;
+                color:#333;
+                .icon-tip{
+                  display: inline-block;
+                  width: 8px;
+                  height: 8px;
+                  border-radius: 50%;
+                  background: #8DA8C5;
+                  margin:0 5px;
+                }
+              }
+            }
+          }
+          &.has-condition-item{
+            margin-top: 12px;
+          }
+        }
+      }
+
     }
 
   }

@@ -11,7 +11,7 @@ import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camu
 require('../../style/reg-rules.less');
 require('../../style/diagram-js.css');
 import classNames from 'classnames';
-import {Checkbox, Radio} from 'antd';
+import {Checkbox, Radio, Button} from 'antd';
 const RadioGroup = Radio.Group;
 import assign from 'lodash/assign';
 // import CamundaModdleDescriptor from 'camunda-bpmn-moddle/camunda';
@@ -120,24 +120,20 @@ class RegRulesView extends React.Component {
     };
     //把表单中的点画到图表中
     renderFormData(callback) {
-        var formData = _.get(this, 'state.applyRulesAndSetting.applyApproveRules'), elementRegistry = this.state.elementRegistry,
+        var formData = _.get(this, 'state.applyRulesAndSetting.applyApproveRules'),
+            elementRegistry = this.state.elementRegistry,
             modeling = this.state.modeling, elementFactory = this.state.elementFactory,
             bpmnFactory = this.state.bpmnFactory;
-        if (_.isArray(formData)) {
-            _.forEach(formData, (item, itemIndex) => {
-                var elementsArr = item['elements'] || item['defaultFlow'];
+        if (_.isObject(formData)) {
+            _.map(formData, (item, key) => {
+                var elementsArr = item['bpmnNode'];
                 if (_.isArray(elementsArr)) {
                     _.forEach(elementsArr, (elem, elemIndex) => {
                         var previousNode = null;
                         if (elem.previous) {
                             previousNode = elementRegistry.get(elem.previous);
                         } else {
-                            // previousNode = null;
                             previousNode = this.getStartNode();
-                        }
-                        var options = {};
-                        if (elemIndex === 0) {
-                            options.y = (itemIndex + 1) * 100;
                         }
                         var bpmnType = `bpmn:${elem.type}`;
                         var curNode = elementFactory.createShape(Object.assign({type: bpmnType}, {id: elem.id}));
@@ -152,25 +148,7 @@ class RegRulesView extends React.Component {
                         if (elem.description) {
                             bo.get('documentation').push(bpmnFactory.create('bpmn:Documentation', {text: elem.description}));
                         }
-                        //把camunda换成activiti
-                        // var eType = _.get(bo,'eventDefinitions[0]');
-                        // console.log(eType);
-                        // if (previousNode){
                         modeling.appendShape(previousNode, curNode);
-                        // }else{
-                        //创建开始节点
-                        // var viewer = this.state.bpmnModeler;
-                        // var canvas = viewer.get('canvas');
-                        // assign(curNode, { x: 250, y: 250 });
-                        // canvas.addShape(curNode);
-                        // }
-                        //将带有待审批人的节点的属性的camunda换成activiti
-                        // if (bo.candidateUsers) {
-                        //     setTimeout(() => {
-                        //         _.isFunction(callback) && callback(curNode);
-                        //     }, 60 * 1000);
-                        //
-                        // }
                         //如果上一节点是个网关
                         if (this.isGatewayNode(elem)) {
                             let bpmnFactory = this.state.bpmnFactory;
@@ -179,7 +157,6 @@ class RegRulesView extends React.Component {
                             modeling.updateProperties(curNode.incoming[0], {
                                 name: elem.conditionDsc
                             });
-                            // bo.name = elem.conditionDsc;
                         }
                     });
                 }
@@ -218,8 +195,7 @@ class RegRulesView extends React.Component {
 
     };
     getDefaultFlow = () => {
-        var applyRules = _.get(this, 'state.applyRulesAndSetting.applyApproveRules');
-        return _.get(_.find(applyRules, item => item.defaultFlow), 'defaultFlow');
+        return _.get(this, 'state.applyRulesAndSetting.applyApproveRules.defaultFlow.bpmnNode');
     };
     addApplyNode = () => {
         this.setState({
@@ -231,7 +207,7 @@ class RegRulesView extends React.Component {
         var applyApproveRules = applyRulesAndSetting.applyApproveRules;
         var defaultRules = this.getDefaultFlow();
         //把默认流程的中待审批人所在的节点过滤出来
-        applyApproveRules[0].defaultFlow = _.filter(defaultRules, (item) => deleteItem.id !== item.id);
+        applyApproveRules.defaultFlow.bpmnNode = _.filter(defaultRules, (item) => deleteItem.id !== item.id);
         this.setState({
             applyRulesAndSetting: applyRulesAndSetting
         });
@@ -285,31 +261,31 @@ class RegRulesView extends React.Component {
         });
     };
     removeEndEventNode = () => {
-        var applyApproveRules = _.get(this, 'state.applyRulesAndSetting.applyApproveRules[0].defaultFlow');
-        var previousNode = _.last(applyApproveRules);
+        var defaultBpmnNode = _.get(this, 'state.applyRulesAndSetting.applyApproveRules.defaultFlow.bpmnNode');
+        var previousNode = _.last(defaultBpmnNode);
         //看一下最后一个节点的节点类型
-        if (previousNode.type === 'EndEvent'){
+        if (previousNode.type === 'EndEvent') {
             //删除最后一个节点
-            previousNode = _.last(applyApproveRules.pop());
+            previousNode = _.last(defaultBpmnNode.pop());
         }
         return previousNode;
     };
     handleSubmitApproveApply = () => {
         //需要在最后加上最后一个节点,需要先判断之前是不是有结束节点
-        var applyApproveRules = _.get(this, 'state.applyRulesAndSetting.applyApproveRules[0].defaultFlow');
-        var previousNode = _.last(applyApproveRules);
+        var defaultBpmnNode = _.get(this, 'state.applyRulesAndSetting.applyApproveRules.defaultFlow.bpmnNode');
+        var previousNode = _.last(defaultBpmnNode);
         //看一下最后一个节点的节点类型
-        if (previousNode.type === 'EndEvent'){
+        if (previousNode.type === 'EndEvent') {
             //删除最后一个节点
-            applyApproveRules.pop();
-            previousNode = _.last(applyApproveRules);
+            defaultBpmnNode.pop();
+            previousNode = _.last(defaultBpmnNode);
         }
         var previousNodeIndex = _.get(previousNode, 'flowIndex');
         var nodeIndexArr = _.split(previousNodeIndex, '_');
         nodeIndexArr.splice(nodeIndexArr.length - 1, 1, parseInt(_.last(nodeIndexArr)) + 1);
         var newIndex = nodeIndexArr.join('_');
         previousNode.next = `EndTask_${newIndex}`;
-        applyApproveRules.push({
+        defaultBpmnNode.push({
             name: `EndTask_${newIndex}`,
             id: `EndTask_${newIndex}`,
             type: 'EndEvent',
@@ -334,13 +310,13 @@ class RegRulesView extends React.Component {
     };
     saveAddApproveNode = (data) => {
         //新加节点的数据,要把原来最后一个节点的next加上，先判断之前的数据结构中是不是有结束节点
-        var applyApproveRules = _.get(this, 'state.applyRulesAndSetting.applyApproveRules[0].defaultFlow');
-        var previousNode = _.last(applyApproveRules);
+        var defaultBpmnNode = _.get(this, 'state.applyRulesAndSetting.applyApproveRules.defaultFlow.bpmnNode');
+        var previousNode = _.last(defaultBpmnNode);
         //看一下最后一个节点的节点类型
-        if (previousNode.type === 'EndEvent'){
+        if (previousNode.type === 'EndEvent') {
             //删除最后一个节点
-            applyApproveRules.pop();
-            previousNode = _.last(applyApproveRules);
+            defaultBpmnNode.pop();
+            previousNode = _.last(defaultBpmnNode);
         }
         var previousNodeIndex = _.get(previousNode, 'flowIndex');
         var nodeIndexArr = _.split(previousNodeIndex, '_');
@@ -354,10 +330,10 @@ class RegRulesView extends React.Component {
             previous: `UserTask_${previousNodeIndex}`,
             flowIndex: `${newIndex}`
         };
-        for (var key in data){
+        for (var key in data) {
             newNodeObj[key] = data[key];
         }
-        applyApproveRules.push(newNodeObj);
+        defaultBpmnNode.push(newNodeObj);
     };
     handleOtherCheckChange = (e) => {
         var applyRulesAndSetting = _.get(this, 'state.applyRulesAndSetting');
@@ -377,6 +353,116 @@ class RegRulesView extends React.Component {
         this.setState({
             showAddConditionPanel: true
         });
+    };
+    saveAddApprovCondition = (data) => {
+        //再原来默认的流程上加上一个网关，然后把添加的条件改成节点，有利于画图
+        var applyApproveRules = _.get(this, 'state.applyRulesAndSetting.applyApproveRules');
+        //要在默认流程那里加一个网关
+        var defalutBpmnNode = _.get(applyApproveRules, 'defaultFlow.bpmnNode');
+        var firstNode = _.get(defalutBpmnNode,'[0]');
+        firstNode['next'] = 'Gateway_1_1';
+        var secondNode = _.get(defalutBpmnNode,'[1]');
+        secondNode['previous'] = 'Gateway_1_1';
+        defalutBpmnNode.splice(1,0,{
+            name: 'Gateway_1_1',
+            id: 'Gateway_1_1',
+            type: 'ExclusiveGateway',
+            next: 'UserTask_1_2',
+            previous: 'UserTask_1_0',
+            flowIndex: '1_1'
+        });
+
+        applyApproveRules['condition1'] = {
+            bpmnNode: [],
+            conditionDsc: data,
+            ccPerson: []
+        };
+        this.setState({
+            applyApproveRules
+        });
+    };
+    handleDeleteConditionItem = (key) => {
+        this.setState({
+            confirmDeleteItem: key
+        });
+    };
+    handleCancelDeleteItem = () => {
+        this.setState({
+            confirmDeleteItem: ''
+        });
+    };
+    handleConfirmDeleteItem = () => {
+        var deleteKey = this.state.confirmDeleteItem;
+        if (deleteKey) {
+            var applyApproveRules = _.get(this, 'state.applyRulesAndSetting.applyApproveRules');
+            delete applyApproveRules[deleteKey];
+            this.setState({applyApproveRules, confirmDeleteItem: ''});
+        }
+
+    };
+    handleUpdateConditionItem = (key) => {
+
+    };
+    renderAddConditionFlow = () => {
+        var applyApproveRules = _.get(this, 'state.applyRulesAndSetting.applyApproveRules');
+        return (
+            <div className='condition-container'>
+                {_.map(applyApproveRules, (item, key) => {
+                    if (key.indexOf('condition') > -1) {
+                        var conditionDsc = _.get(item, 'conditionDsc');
+                        return (
+                            <div className="condition-item-content">
+                                <div className="condition-item condition-item-title-wrap">
+                                    <span className="condition-item-title">
+                                        {_.get(conditionDsc, 'conditionTitle')}
+                                    </span>
+                                    <span className="pull-right condition-operate">
+                                        {this.state.confirmDeleteItem === key ? <span className="confirm-btns">
+                                            <Button className='confirm-delete'
+                                                onClick={this.handleConfirmDeleteItem}>{Intl.get('crm.contact.delete.confirm', '确认删除')}</Button>
+                                            <Button
+                                                onClick={this.handleCancelDeleteItem}>{Intl.get('common.cancel', '取消')}</Button>
+                                        </span> : <span className="iconfont-wrap"> <i className="iconfont icon-update"
+                                            onClick={this.handleUpdateConditionItem.bind(this, key)}></i>
+                                        <i className="iconfont icon-delete"
+                                            onClick={this.handleDeleteConditionItem.bind(this, key)}></i></span>}
+
+                                    </span>
+                                </div>
+                                <div className="condition-item condition-item-des">
+                                    <span
+                                        className="condition-item-label">{Intl.get('apply.add.qualify.condition', '满足条件')}:</span>
+                                    <ul>
+                                        {_.map(_.get(conditionDsc, 'limitRules'), ruleItem => {
+                                            return (
+                                                <li>
+                                                    <i className="icon-tip"></i>
+                                                    {ruleItem.limitTypeDsc}:
+                                                    {ruleItem.rangeLimitDsc}{ruleItem.rangeNumberDsc}
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+
+                                </div>
+                                <div className="condition-item condition-item-flow">
+                                    <span
+                                        className="condition-item-label">{Intl.get('apply.condition.apply.approve', '审批流程')}:</span>
+                                    {_.get(item, 'bpmnNode.length') ? <div></div> : null}
+                                </div>
+                                <div className="condition-item condition-item-cc">
+                                    <span
+                                        className="condition-item-label">{Intl.get('apply.condition.item.add.cc', '抄送人')}:</span>
+                                </div>
+
+                            </div>
+                        );
+                    } else {
+                        return null;
+                    }
+                })}
+            </div>
+        );
     };
 
     render = () => {
@@ -412,8 +498,10 @@ class RegRulesView extends React.Component {
                             <span className="item-label">
                                 {Intl.get('apply.condition.work.flow', '条件审批流程')}:
                             </span>
-                            <div className="rule-content">
-                                <a onClick={this.handleAddConditionProcess}>{Intl.get('apply.add.condition.workflow', '添加条件审批流程')}</a>
+                            <div className="rule-content condition-block">
+                                <a className="add-condition"
+                                    onClick={this.handleAddConditionProcess}>{Intl.get('apply.add.condition.workflow', '添加条件审批流程')}</a>
+                                {this.renderAddConditionFlow()}
                             </div>
                         </div>
                         <div className="inform-cc rule-item">
@@ -421,7 +509,8 @@ class RegRulesView extends React.Component {
                                 {Intl.get('apply.info.cc.email', '抄送通知')}：
                             </span>
                             <div className="rule-content info-container">
-                                <RadioGroup onChange={this.onRadioChange} value={_.get(this, 'state.applyRulesAndSetting.ccInformation')}>
+                                <RadioGroup onChange={this.onRadioChange}
+                                    value={_.get(this, 'state.applyRulesAndSetting.ccInformation')}>
                                     <Radio value='apply'>{Intl.get('apply.cc.when,submit', '提交申请时抄送')}</Radio>
                                     <Radio value='approve'>{Intl.get('apply.cc.when.approve.apply', '审批通过后抄送')}</Radio>
                                     <Radio
@@ -435,7 +524,8 @@ class RegRulesView extends React.Component {
                                 {Intl.get('apply.info.cancel.privilege', '撤销权限')}
                             </span>
                             <div className="rule-content">
-                                <Checkbox onChange={this.handleCancelCheckChange} value={_.get(this, 'state.applyRulesAndSetting.cancelAfterApprove')}>
+                                <Checkbox onChange={this.handleCancelCheckChange}
+                                    value={_.get(this, 'state.applyRulesAndSetting.cancelAfterApprove')}>
                                     {Intl.get('apply.workflow.cancel.approve', '通过后允许撤销（审批通过后，经审批人同意，可撤销申请）')}
                                 </Checkbox>
                             </div>
@@ -445,7 +535,8 @@ class RegRulesView extends React.Component {
                                 {Intl.get('crm.186', '其他')}
                             </span>
                             <div className="rule-content">
-                                <Checkbox onChange={this.handleOtherCheckChange} value={_.get(this, 'state.applyRulesAndSetting.mergeSameApprover')}>
+                                <Checkbox onChange={this.handleOtherCheckChange}
+                                    value={_.get(this, 'state.applyRulesAndSetting.mergeSameApprover')}>
                                     {Intl.get('apply.workflow.merge.same.approver', '合并相同审批人（通过后，后面自动通过）')}
                                 </Checkbox>
                             </div>
