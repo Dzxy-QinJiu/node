@@ -451,3 +451,20 @@ exports.getCallSystemConfig = function() {
         }
     });
 };
+
+// 对象数组的去重方法
+exports.uniqueObjectOfArray = (arr) => {
+    let unique = []; // 去重后的数组
+    _.each(arr, (originalItem) => { // 循环arr重复数组对象的内容
+        let flag = true; // 建立标记，判断数据是否重复，true为不重复
+        _.each(unique, (uniqueItem) => {
+            if(originalItem.field === uniqueItem.field && originalItem.detail === uniqueItem.detail){ //让arr数组对象的内容与新数组的内容作比较，相同的话，改变标记为false
+                flag = false;
+            }
+        });
+        if(flag){ //判断是否重复
+            unique.push(originalItem); //不重复的放入新数组。
+        }
+    });
+    return unique;
+};

@@ -11,7 +11,7 @@ import {AntcTable} from 'antc';
 import Spinner from 'CMP_DIR/spinner';
 import Trace from 'LIB_DIR/trace';
 import SelectFullWidth from 'CMP_DIR//select-fullwidth';
-
+import {uniqueObjectOfArray} from 'PUB_DIR/sources/utils/common-data-util';
 const SET_TIME_OUT = {
     TRANSITION_TIME: 600,//右侧面板动画隐藏的时间
     LOADING_TIME: 1500//避免在第三步时关闭太快，加上延时展示loading效果
@@ -157,14 +157,19 @@ class ImportTemplate extends React.Component {
             message.error(errMsg || Intl.get('clue.customer.import.clue.failed', '导入{type}失败',{type: this.props.importType}));
         });
     };
-    renderImportFooter = () => {
+
+    getImportErrorData = () => {
         let errors = [];
         _.each(this.state.previewList, (item) => {
             if (item.errors) {
                 errors = _.concat(errors, item.errors);
             }
         });
-        errors = this.uniqueArray(errors);
+        return uniqueObjectOfArray(errors);
+    };
+
+    renderImportFooter = () => {
+        let errors = this.getImportErrorData(errors);
         let length = _.get(errors, 'length');
         let noMatchCustomer = _.find(errors, item => item.field === 'customer_name');
         let disabledImportBtn = false;
@@ -202,30 +207,8 @@ class ImportTemplate extends React.Component {
         this.setState({tableHeight});
     };
 
-    uniqueArray = (arr) => {
-        let unique = []; // 去重后的数组
-        for(let item1 of arr){ //循环arr数组对象的内容
-            let flag = true; //建立标记，判断数据是否重复，true为不重复
-            for(let item2 of unique){ // 循环新数组的内容
-                if(item1.field === item2.field && item1.data === item2.data){ //让arr数组对象的内容与新数组的内容作比较，相同的话，改变标记为false
-                    flag = false;
-                }
-            }
-            if(flag){ //判断是否重复
-                unique.push(item1); //不重复的放入新数组。
-            }
-        }
-        return unique;
-    };
-
     renderThirdStepContent = () => {
-        let errors = [];
-        _.each(this.state.previewList, (item) => {
-            if (item.errors) {
-                errors = _.concat(errors, item.errors);
-            }
-        });
-        errors = this.uniqueArray(errors);
+        let errors = this.getImportErrorData(errors);
         let length = _.get(errors, 'length');
         let tipsMessage = [];
         let noMatchCustomer = _.find(errors, item => item.field === 'customer_name');

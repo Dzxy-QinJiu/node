@@ -38,7 +38,7 @@ import queryString from 'query-string';
 import {RETRY_GET_APP} from './util/consts';
 import Trace from 'LIB_DIR/trace';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
-import {getIntegrationConfig, getProductList} from 'PUB_DIR/sources/utils/common-data-util';
+import {getIntegrationConfig, getProductList, uniqueObjectOfArray} from 'PUB_DIR/sources/utils/common-data-util';
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import Spinner from 'CMP_DIR/spinner';
@@ -706,7 +706,7 @@ class AppUserManage extends React.Component {
                 errors = _.concat(errors, item.errors);
             }
         });
-        errors = this.uniqueArray(errors);
+        errors = uniqueObjectOfArray(errors);
         let length = _.get(errors, 'length');
         let noMatchCustomer = _.find(errors, item => item.field === 'customer_name');
         let isShowOperateColumn = false;
