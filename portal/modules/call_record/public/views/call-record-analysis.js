@@ -1692,6 +1692,8 @@ class CallRecordAnalyis extends React.Component {
                 { memberList.length > 1 ? (
                     <SelectFullWidth
                         multiple
+                        showSearch
+                        optionFilterProp="children"
                         value={this.state.secondSelectValue}
                         onChange={this.onSecondSelectChange}
                         className="team-member-select-options btn-item"
