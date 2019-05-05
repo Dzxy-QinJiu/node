@@ -124,7 +124,7 @@ UserLoginAnalysisStore.prototype.getUserLoginChartInfo = function(result){
     item.loginChartInfo = {
         errorMsg: ''
     };
-    item.starttime = _.get(result,'paramsObj.starttime');
+    item.timeType = _.get(result,'paramsObj.timeType');
     if(result.loading){
         item.loginChartInfo.errorMsg = '';
     } else {

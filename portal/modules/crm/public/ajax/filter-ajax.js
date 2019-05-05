@@ -1,10 +1,10 @@
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 var appAjaxTrans = require('../../../common/public/ajax/app');
 import ajaxPro from 'MOD_DIR/common/ajaxUtil';
-exports.getAppList = function () {
+exports.getAppList = function() {
     var Deferred = $.Deferred();
-    appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(function (list) {
-        list = list.map(function (app) {
+    appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(function(list) {
+        list = list.map(function(app) {
             return {
                 client_id: app.app_id,
                 client_name: app.app_name,
@@ -12,32 +12,32 @@ exports.getAppList = function () {
             };
         });
         Deferred.resolve(list);
-    }).error(function (errorMsg) {
+    }).error(function(errorMsg) {
         Deferred.reject(errorMsg.responseJSON);
-    }).timeout(function (errorMsg) {
+    }).timeout(function(errorMsg) {
         Deferred.reject(errorMsg.responseJSON);
     });
     return Deferred.promise();
 };
 
-exports.getStageList = function () {
+exports.getStageList = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/customer/v2/salesopportunity/term/sale_stages',
         dataType: 'json',
         type: 'post',
         data: { reqData: JSON.stringify({}) },
-        success: function (resData) {
+        success: function(resData) {
             Deferred.resolve(resData.result);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();
 };
 
-exports.getTagList = function () {
+exports.getTagList = function() {
     var pageSize = 100;
     var num = 1;
     let type = 'user';
@@ -49,10 +49,10 @@ exports.getTagList = function () {
         url: '/rest/crm/get_recommend_tags/' + pageSize + '/' + num + '/' + type,
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data.result);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
@@ -60,7 +60,7 @@ exports.getTagList = function () {
 };
 //获取销售角色列表
 let salesRoleListAjax;
-exports.getSalesRoleList = function () {
+exports.getSalesRoleList = function() {
     let type = 'user';//CRM_GET_USER_ROLE
     if (hasPrivilege('CRM_GET_MANAGER_ROLE')) {
         type = 'manager';
@@ -71,10 +71,10 @@ exports.getSalesRoleList = function () {
         url: '/rest/crm_filter/:type/sales_role_list'.replace(':type', type),
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data.result);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseJSON);
             }
@@ -82,28 +82,28 @@ exports.getSalesRoleList = function () {
     });
     return Deferred.promise();
 };
-//获取负责人名称列表
-exports.getOwnerNameList = function () {
+//获取负责人列表
+exports.getOwnerList = function() {
     let type = 'user';//CUSTOMER_USER_GET_USER_NAME
     if (hasPrivilege('CUSTOMER_MANAGER_GET_USER_NAME')) {
         type = 'manager';
     }
     let Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/crm/owner_name/' + type,
+        url: '/rest/crm/owner/' + type,
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();
 };
 
-exports.getStageTagList = function () {
+exports.getStageTagList = function() {
     let type = 'user';//CRM_USER_GET_CUSTOMER_CUSTOMER_LABEL
     if (hasPrivilege('CRM_MANAGER_GET_CUSTOMER_CUSTOMER_LABEL')) {
         type = 'manager';
@@ -113,17 +113,17 @@ exports.getStageTagList = function () {
         url: '/rest/crm/stage_tag/' + type,
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data.result);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();
 };
 //获取竞品列表
-exports.getCompetitorList = function () {
+exports.getCompetitorList = function() {
     let type = 'user';//CUSTOMER_USER_COMPETING_PRODUCTS_GET
     if (hasPrivilege('CUSTOMER_MANAGER_COMPETING_PRODUCTS_GET')) {
         type = 'manager';
@@ -133,10 +133,10 @@ exports.getCompetitorList = function () {
         url: '/rest/crm/competitor_list/' + type,
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data.result);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
@@ -144,32 +144,32 @@ exports.getCompetitorList = function () {
 };
 
 //获取行业列表
-exports.getIndustries = function () {
+exports.getIndustries = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/crm_filter/industries',
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });
     return Deferred.promise();
 };
 
-exports.getFilterProvinces = function (type) {
+exports.getFilterProvinces = function(type) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/crm_filter/provinces/' + type,
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });
@@ -177,10 +177,10 @@ exports.getFilterProvinces = function (type) {
 };
 
 //常用筛选项的增删改查
-exports.addCommonFilter = params => ajaxPro("addCommonFilter", params);
+exports.addCommonFilter = params => ajaxPro('addCommonFilter', params);
 
-exports.updateCommonFilter = params => ajaxPro("updateCommonFilter", params);
+exports.updateCommonFilter = params => ajaxPro('updateCommonFilter', params);
 
-exports.delCommonFilter = params => ajaxPro("delCommonFilter", params);
+exports.delCommonFilter = params => ajaxPro('delCommonFilter', params);
 
-exports.getCommonFilterList = params => ajaxPro("getCommonFilterList", params);
+exports.getCommonFilterList = params => ajaxPro('getCommonFilterList', params);

@@ -1,10 +1,5 @@
 const PropTypes = require('prop-types');
 var React = require('react');
-/**
- * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
- * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
- * Created by zhangshujuan on 2018/8/21.
- */
 import {Upload, Icon, message, Button} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import {checkFileSizeLimit, checkFileNameAllowRule} from 'PUB_DIR/sources/utils/common-method-util';
@@ -105,7 +100,7 @@ class UploadBtn extends React.Component {
             <Upload {...props} className="import-clue" data-tracename="上传表格">
                 <Button type='primary'>{this.props.uploadTip}{this.state.isLoading ?
                     <Icon type="loading" className="icon-loading"/> : null}</Button>
-                <p className="file-tip">{Intl.get('clue.and.crm.upload.size','文件大小不要超过10M!')}</p>
+                <p className="file-tip">{this.props.importFileTips}</p>
                 {this.state.warningMsg ? <AlertTimer time={4000}
                     message={this.state.warningMsg}
                     type="error"
@@ -126,7 +121,8 @@ UploadBtn.defaultProps = {
     uploadActionName: '',
     uploadHref: '',
     uploadTip: Intl.get('clue.import.csv', '上传表格'),
-    regRules: []
+    regRules: [],
+    importFileTips: Intl.get('clue.and.crm.upload.size','文件大小不要超过10M!')
 };
 UploadBtn.propTypes = {
     isLoading: PropTypes.bool,
@@ -136,7 +132,8 @@ UploadBtn.propTypes = {
     uploadActionName: PropTypes.string,
     uploadHref: PropTypes.string,
     uploadTip: PropTypes.string,
-    regRules: PropTypes.object
+    regRules: PropTypes.object,
+    importFileTips: PropTypes.string
 };
 
 export default UploadBtn;

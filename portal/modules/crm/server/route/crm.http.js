@@ -67,8 +67,8 @@ module.exports = {
         },
         {
             method: 'get',
-            path: '/rest/crm/owner_name/:type',
-            handler: 'getOwnerNameList',
+            path: '/rest/crm/owner/:type',
+            handler: 'getOwnerList',
             passport: {
                 needLogin: true
             }

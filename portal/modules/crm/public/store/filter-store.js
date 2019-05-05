@@ -17,7 +17,7 @@ const qualifiedTagList = [{
 function FilterStore() {
     this.appList = [];
     this.teamList = [];
-    this.ownerNameList = [];//有客户的负责人名称列表
+    this.ownerList = [];//有客户的负责人名称列表
     this.stageList = [];
     this.tagList = [];
     this.stageTagList = [];//阶段标签
@@ -31,10 +31,10 @@ function FilterStore() {
 
     this.bindActions(FilterActions);
 }
-FilterStore.prototype.setInitialCondition = function () {
+FilterStore.prototype.setInitialCondition = function() {
     this.condition = {
         sales_team_id: '',
-        user_name: '',//负责人
+        user_id: '',//负责人
         industry: '',
         province: '',
         app_ids: [''],
@@ -53,37 +53,37 @@ FilterStore.prototype.setInitialCondition = function () {
     this.commonFilterList = {
         data: [],
         loading: false,
-        errorMsg: ""
-    }
+        errorMsg: ''
+    };
 };
 //获取地域列表
-FilterStore.prototype.getFilterProvinces = function (list) {
+FilterStore.prototype.getFilterProvinces = function(list) {
     this.provinceList = list;
 };
 
 //获取行业列表
-FilterStore.prototype.getIndustries = function (list) {
+FilterStore.prototype.getIndustries = function(list) {
     this.industryList = list;
 };
 
-FilterStore.prototype.getAppList = function (list) {
+FilterStore.prototype.getAppList = function(list) {
     this.appList = list;
 };
 
-FilterStore.prototype.getTeamList = function (result) {
+FilterStore.prototype.getTeamList = function(result) {
     this.teamTreeList = result.teamTreeList;
     this.teamList = result.teamList;
 };
 
-FilterStore.prototype.getOwnerNameList = function (list) {
-    this.ownerNameList = _.get(list, '[0]') ? list : [];
+FilterStore.prototype.getOwnerList = function(list) {
+    this.ownerList = _.get(list, '[0]') ? list : [];
 };
 
-FilterStore.prototype.getStageList = function (list) {
+FilterStore.prototype.getStageList = function(list) {
     this.stageList = list;
 };
 
-FilterStore.prototype.getStageTagList = function (data) {
+FilterStore.prototype.getStageTagList = function(data) {
     let stageTagList = [{ name: '', show_name: Intl.get('common.all', '全部') }];
     if (!data.errorMsg && _.isArray(data.list)) {
         let list = _.map(data.list, tag => {
@@ -94,7 +94,7 @@ FilterStore.prototype.getStageTagList = function (data) {
     this.stageTagList = stageTagList;
 };
 
-FilterStore.prototype.getSalesRoleList = function (data) {
+FilterStore.prototype.getSalesRoleList = function(data) {
     let salesRoleList = [{ name: '', show_name: Intl.get('common.all', '全部') }];
     if (!data.errorMsg && _.isArray(data.list)) {
         let list = _.map(data.list, role => {
@@ -105,52 +105,52 @@ FilterStore.prototype.getSalesRoleList = function (data) {
     this.salesRoleList = salesRoleList;
 };
 
-FilterStore.prototype.getTagList = function (list) {
+FilterStore.prototype.getTagList = function(list) {
     this.tagList = list;
 };
 
-FilterStore.prototype.getCompetitorList = function (list) {
+FilterStore.prototype.getCompetitorList = function(list) {
     this.competitorList = list;
 };
 
-FilterStore.prototype.setApp = function (value) {
+FilterStore.prototype.setApp = function(value) {
     this.condition.sales_opportunities[0].apps = [value];
 };
 
-FilterStore.prototype.setTeam = function (value) {
+FilterStore.prototype.setTeam = function(value) {
     this.condition.sales_team_id = value;
 };
 
-FilterStore.prototype.setStage = function (value) {
+FilterStore.prototype.setStage = function(value) {
     this.condition.sales_opportunities[0].sale_stages = value;
 };
 
-FilterStore.prototype.setTag = function (value) {
+FilterStore.prototype.setTag = function(value) {
     this.condition.labels = value;
 };
-FilterStore.prototype.setStageTag = function (value) {
+FilterStore.prototype.setStageTag = function(value) {
     this.condition.customer_label = value;
 };
 
-FilterStore.prototype.setSalesRole = function (value) {
+FilterStore.prototype.setSalesRole = function(value) {
     this.condition.member_role = value;
 };
 
-FilterStore.prototype.setCompetitor = function (value) {
+FilterStore.prototype.setCompetitor = function(value) {
     this.condition.competing_products = value;
 };
 
-FilterStore.prototype.setIndustry = function (value) {
+FilterStore.prototype.setIndustry = function(value) {
     this.condition.industry = value;
 };
 
-FilterStore.prototype.setProvince = function (value) {
+FilterStore.prototype.setProvince = function(value) {
     this.condition.province = value;
 };
-FilterStore.prototype.setContact = function (value) {
+FilterStore.prototype.setContact = function(value) {
     this.condition.contact = value;
 };
-FilterStore.prototype.setInputCondition = function (searchObj) {
+FilterStore.prototype.setInputCondition = function(searchObj) {
     if (_.has(searchObj, 'contact_name')) {
         //联系人的搜索
         this.inputCondition = { contacts: [{ name: searchObj.contact_name }] };
@@ -158,31 +158,31 @@ FilterStore.prototype.setInputCondition = function (searchObj) {
         this.inputCondition = searchObj;
     }
 };
-FilterStore.prototype.setClue = function (value) {
+FilterStore.prototype.setClue = function(value) {
     this.condition.clue = value;
 };
-FilterStore.prototype.setLevel = function (value) {
+FilterStore.prototype.setLevel = function(value) {
     this.condition.administrative_level = value;
 };
 
-FilterStore.prototype.setOtherSelectedItem = function (item) {
+FilterStore.prototype.setOtherSelectedItem = function(item) {
     this.condition.otherSelectedItem = item;
 };
 
-FilterStore.prototype.showPanel = function () {
+FilterStore.prototype.showPanel = function() {
     this.isPanelShow = true;
 };
 
-FilterStore.prototype.hidePanel = function () {
+FilterStore.prototype.hidePanel = function() {
     this.isPanelShow = false;
 };
 
-FilterStore.prototype.setCondition = function (conditionObj) {
+FilterStore.prototype.setCondition = function(conditionObj) {
     this.condition = $.extend({}, this.condition, conditionObj);
 };
 
 //将查询条件转换为前端展示用的格式
-const getFilterItemFromConditionItem = function (item) {
+const getFilterItemFromConditionItem = function(item) {
     let filterLevelArray = [{ id: '', level: Intl.get('common.all', '全部') }].concat(administrativeLevels);
     const stageArray = this.stageList.concat(STAGE_OPTIONS);
     const industryArray = ['', Intl.get('user.unknown', '未知')].concat(this.industryList);
@@ -198,23 +198,23 @@ const getFilterItemFromConditionItem = function (item) {
                 ...nameObj,
                 selected: true
             }]
-        }
+        };
         const sameGroupItem = filters.find(x => x.groupId === filterItem.groupId);
         //将已存在的高级筛选合并成commonData的结构
         if (sameGroupItem) {
             sameGroupItem.data.push({
                 ...nameObj,
                 selected: true
-            })
+            });
         }
         else {
-            filters.push(filterItem)
+            filters.push(filterItem);
         }
-    }
+    };
     //处理筛选项的value，处理成前端的格式
     const handleValue = (value, key) => {
         if (['term_fields'].includes(key)) {
-            return
+            return;
         }
         let item = null;
         const nameObj = {
@@ -231,107 +231,107 @@ const getFilterItemFromConditionItem = function (item) {
         }
         //处理name（展示的筛选项文字）
         switch (key) {
-            case "term_fields":
+            case 'term_fields':
                 break;
             case 'sales_team_id':
                 item = this.teamList.find(x => x.group_id === value);
                 if (item) {
-                    nameObj.name = item.group_name
+                    nameObj.name = item.group_name;
                 }
                 //todo 销售部无法处理
                 break;
-            case "contain_sales_opportunity"://订单阶段value由name表示
+            case 'contain_sales_opportunity'://订单阶段value由name表示
                 item = stageArray.find(x => x.name === value);
                 if (item) {
                     nameObj.name = item.show_name;
                 }
-                if (value === "false") {
+                if (value === 'false') {
                     nameObj.name = UNKNOWN;
                     nameObj.value = UNKNOWN;
                 }
-                nameObj.groupId = "sales_opportunities";
+                nameObj.groupId = 'sales_opportunities';
                 break;
-            case "sales_opportunities":
+            case 'sales_opportunities':
                 item = stageArray.find(x => x.name === value);
                 if (item) {
                     nameObj.name = item.show_name;
                 }
                 break;
-            case "administrative_level":
+            case 'administrative_level':
                 item = filterLevelArray.find(x => x.id === value);
                 if (item) {
                     nameObj.name = item.level;
                 }
                 break;
-            case "labels":
+            case 'labels':
                 item = this.tagList.find(x => x.name === value);
                 if (item) {
-                    nameObj.name = item.show_name
+                    nameObj.name = item.show_name;
                 }
                 if (nameObj.name === Intl.get('crm.tag.unknown', '未打标签的客户')) {
                     nameObj.selectOnly = true;
                 }
                 break;
-            case "competing_products":
+            case 'competing_products':
                 item = this.competitorList.find(x => x.name === value);
                 if (item) {
                     nameObj.name = item.show_name;
                 }
                 break;
-            case "qualify_label":
+            case 'qualify_label':
                 item = qualifiedTagList.find(x => x.value === value);
                 if (item) {
-                    nameObj.name = item.name
+                    nameObj.name = item.name;
                 }
                 break;
-            case "contain_contact":
+            case 'contain_contact':
                 nameObj.name = Intl.get('crm.no.contact.way', '无联系方式客户');
                 nameObj.value = 'no_contact_way';
                 nameObj.groupId = COMMON_OTHER_ITEM;
                 nameObj.groupName = Intl.get('crm.186', '其他');
                 break;
-            case "call_and_remark":
-                nameObj.name = Intl.get('crm.call.no.remark', '最后联系但未写跟进记录')
+            case 'call_and_remark':
+                nameObj.name = Intl.get('crm.call.no.remark', '最后联系但未写跟进记录');
                 nameObj.value = 'last_call_no_record';
                 nameObj.groupId = COMMON_OTHER_ITEM;
                 nameObj.groupName = Intl.get('crm.186', '其他');
                 break;
-            case "last_trace":
-                nameObj.name = Intl.get('crm.call.no.remark.over30', '超30天未写跟进记录')
+            case 'last_trace':
+                nameObj.name = Intl.get('crm.call.no.remark.over30', '超30天未写跟进记录');
                 nameObj.value = 'last_trace';
                 nameObj.groupId = COMMON_OTHER_ITEM;
                 nameObj.groupName = Intl.get('crm.186', '其他');
                 break;
-            case "interest_member_ids":
-                nameObj.name = Intl.get('crm.my.concerned.customer', '我关注的客户')
+            case 'interest_member_ids':
+                nameObj.name = Intl.get('crm.my.concerned.customer', '我关注的客户');
                 nameObj.value = 'my_interest';
                 nameObj.groupId = COMMON_OTHER_ITEM;
                 nameObj.groupName = Intl.get('crm.186', '其他');
                 break;
-            case "unexist_fields":
+            case 'unexist_fields':
                 switch (value) {
-                    case "industry":
+                    case 'industry':
                         nameObj.name = UNKNOWN;
                         nameObj.value = UNKNOWN;
-                        nameObj.groupId = "industry";
+                        nameObj.groupId = 'industry';
                         break;
-                    case "province":
-                        nameObj.groupId = "province";
+                    case 'province':
+                        nameObj.groupId = 'province';
                         nameObj.name = UNKNOWN;
                         nameObj.value = UNKNOWN;
                         break;
-                    case "qualify_label":
-                        nameObj.groupId = "qualify_label";
+                    case 'qualify_label':
+                        nameObj.groupId = 'qualify_label';
                         nameObj.name = CUSTOMER_TAGS.NEVER_QUALIFIED;
                         nameObj.value = '3';
                         break;
-                    case "labels":
-                        nameObj.groupId = "labels";
+                    case 'labels':
+                        nameObj.groupId = 'labels';
                         nameObj.name = Intl.get('crm.tag.unknown', '未打标签的客户');
                         nameObj.value = SPECIAL_LABEL.NON_TAGGED_CUSTOMER;
                         break;
-                    case "member_id":
-                        nameObj.groupId = "member_id";
+                    case 'member_id':
+                        nameObj.groupId = 'member_id';
                         nameObj.name = Intl.get('crm.213', '未分配客户');
                         nameObj.value = OTHER_FILTER_ITEMS.UNDISTRIBUTED;
                         break;
@@ -339,9 +339,9 @@ const getFilterItemFromConditionItem = function (item) {
                         break;
                 }
                 break;
-            case "exist_fields":
+            case 'exist_fields':
                 switch (value) {
-                    case "interest_member_ids":
+                    case 'interest_member_ids':
                         nameObj.name = Intl.get('crm.concerned.customer', '被关注的客户');
                         nameObj.value = 'interest_member_ids';
                         nameObj.groupId = COMMON_OTHER_ITEM;
@@ -352,14 +352,14 @@ const getFilterItemFromConditionItem = function (item) {
                         break;
                 }
                 break;
-            case "availability":
+            case 'availability':
                 nameObj.groupId = COMMON_OTHER_ITEM;
                 nameObj.name = Intl.get('crm.available.customer', '有效客户');
                 nameObj.value = 'availability';
                 break;
         }
-        handleAddItem(nameObj)
-    }
+        handleAddItem(nameObj);
+    };
 
     if (_.get(item, 'query_condition')) {
         if (_.get(item.query_condition, 'query')) {
@@ -371,8 +371,8 @@ const getFilterItemFromConditionItem = function (item) {
                     }
                     if (typeof value === 'string') {
                         //拼接字符串（数组value）
-                        if (value.includes(",")) {
-                            valueList = value.split(",");
+                        if (value.includes(',')) {
+                            valueList = value.split(',');
                         }
                         //单个字符串
                         else {
@@ -383,18 +383,18 @@ const getFilterItemFromConditionItem = function (item) {
                     if (Array.isArray(valueList) && valueList.length > 0) {
                         valueList.forEach(x => {
                             handleValue(x, key);
-                        })
+                        });
                     }
                 }
             });
         }
         //日期范围通过interval判断
         if (_.get(item.query_condition, 'rang_params.length')) {
-            item.query_condition.rang_params.forEach(rangeItem => {               
+            item.query_condition.rang_params.forEach(rangeItem => {
                 const nameObj = {
                     groupId: COMMON_OTHER_ITEM,
                     groupName: Intl.get('crm.186', '其他'),
-                    value: "",
+                    value: '',
                     name: rangeItem.name
                 };
                 switch (rangeItem.name) {
@@ -403,7 +403,7 @@ const getFilterItemFromConditionItem = function (item) {
                             case 30:
                                 nameObj.name = Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 30 });
                                 nameObj.value = OTHER_FILTER_ITEMS.THIRTY_UNCONTACT;
-                                //超30天未联系的客户                                
+                                //超30天未联系的客户
                                 break;
                             case 15:
                                 nameObj.name = Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 15 });
@@ -422,7 +422,7 @@ const getFilterItemFromConditionItem = function (item) {
                             case 30:
                                 nameObj.name = Intl.get('crm.recent.month.active', '近一个月的活跃客户');
                                 nameObj.value = 'month_login';
-                                //超30天未联系的客户                                
+                                //超30天未联系的客户
                                 break;
                             case 7:
                                 nameObj.name = Intl.get('crm.recent.week.active', '近一周的活跃客户');
@@ -442,7 +442,7 @@ const getFilterItemFromConditionItem = function (item) {
                         break;
                 }
                 handleAddItem(nameObj);
-            })
+            });
         }
     }
 
@@ -455,10 +455,10 @@ const getFilterItemFromConditionItem = function (item) {
     };
 };
 
-FilterStore.prototype.getCommonFilterList = resultHandler('commonFilterList', function ({ data, paramsObj }) {
+FilterStore.prototype.getCommonFilterList = resultHandler('commonFilterList', function({ data, paramsObj }) {
     if (_.get(data, 'list.length') > 0) {
-        this.commonFilterList.data = data.list.map(condition => getFilterItemFromConditionItem.call(this, condition))
-        console.log(this.commonFilterList.data)
+        this.commonFilterList.data = data.list.map(condition => getFilterItemFromConditionItem.call(this, condition));
+        console.log(this.commonFilterList.data);
     }
 });
 

@@ -110,7 +110,7 @@ class CrmFilterPanel extends React.Component {
         FilterAction.getCompetitorList();
         FilterAction.getIndustries();
         //负责任人名称列表
-        FilterAction.getOwnerNameList();
+        FilterAction.getOwnerList();
         //地域列表的获取
         let type = 'user';
         //管理员获取地域列表的权限
@@ -549,11 +549,11 @@ class CrmFilterPanel extends React.Component {
                 },
                 {
                     groupName: Intl.get('crm.6', '负责人'),
-                    groupId: 'user_name',
+                    groupId: 'user_id',
                     singleSelect: true,
-                    data: _.map(this.state.ownerNameList, x => ({
-                        name: x,
-                        value: x
+                    data: _.map(this.state.ownerList, x => ({
+                        name: x.nickname,
+                        value: x.user_id
                     }))
                 }
             );
