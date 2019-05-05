@@ -390,7 +390,7 @@ const getFilterItemFromConditionItem = function(item) {
         }
         //日期范围通过interval判断
         if (_.get(item.query_condition, 'rang_params.length')) {
-            item.query_condition.rang_params.forEach(rangeItem => {               
+            item.query_condition.rang_params.forEach(rangeItem => {
                 const nameObj = {
                     groupId: COMMON_OTHER_ITEM,
                     groupName: Intl.get('crm.186', '其他'),
@@ -403,7 +403,7 @@ const getFilterItemFromConditionItem = function(item) {
                             case 30:
                                 nameObj.name = Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 30 });
                                 nameObj.value = OTHER_FILTER_ITEMS.THIRTY_UNCONTACT;
-                                //超30天未联系的客户                                
+                                //超30天未联系的客户
                                 break;
                             case 15:
                                 nameObj.name = Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 15 });
@@ -422,7 +422,7 @@ const getFilterItemFromConditionItem = function(item) {
                             case 30:
                                 nameObj.name = Intl.get('crm.recent.month.active', '近一个月的活跃客户');
                                 nameObj.value = 'month_login';
-                                //超30天未联系的客户                                
+                                //超30天未联系的客户
                                 break;
                             case 7:
                                 nameObj.name = Intl.get('crm.recent.week.active', '近一周的活跃客户');
