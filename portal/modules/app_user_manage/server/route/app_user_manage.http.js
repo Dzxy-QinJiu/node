@@ -261,5 +261,26 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    }, { // 导入用户模板文件
+        'method': 'get',
+        'path': '/rest/import/user/download_template',
+        'handler': 'getUserTemplate',
+        'passport': {
+            'needLogin': true
+        }
+    }, { // 预览上传用户
+        'method': 'post',
+        'path': '/rest/user/upload/:app_id',
+        'handler': 'uploadUser',
+        'passport': {
+            'needLogin': true
+        }
+    }, { // 确认上传用户
+        'method': 'post',
+        'path': '/rest/confirm/user/upload/:app_id',
+        'handler': 'confirmUploadUser',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

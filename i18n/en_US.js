@@ -248,6 +248,7 @@ var en_US = {
     'common.product.search.placeholder': 'Please enter the product name for search',//请输入产品名进行筛选
     'common.or': 'Or', // 或
     'common.before': 'Before', // 前
+    'common.download.template.filename': 'Download {type} Template', // 下载{type}模板
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -322,6 +323,18 @@ var en_US = {
     'user.title': 'Users',//用户管理
     'user.exist.user': 'Existing Users',//已有用户
     'user.user.add': 'Add Users',//添加用户
+    'user.import.user': 'Import Users', // 导入用户
+    'user.import.user.toplimit': 'Up to 300 users per import', // 每次导入上限为300条用户
+    'user.import.user.template': 'user_template', // 用户模板
+    'user.import.username.no.match.rule': 'Username does not match the rule', // 用户名不符合规则
+    'user.import.phone.no.match.rule': 'Phone does not match the rule', // 手机号不符合规则
+    'user.import.email.no.match.rule': 'Email does not match the rule', // 邮箱不符合规则
+    'user.import.customer.no.match': 'The system has not found the corresponding customer, you can continue to import, you need to set the customer after import.', // 系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。
+    'user.import.red.tips': 'The red flag data does not match the rule or exists. Please modify the data and re-import it, or delete the data that does not match the rule and import it directly.', // 红色标示数据不符合规则或是已存在，请修改数据后重新导入，或删除不符合规则的数据后直接导入。
+    'user.import.username.rule': 'Username: ', // 用户名：长度为1-50个字母、数字、横线或下划线组成的字符串
+    'user.import.phone.rule': 'Phone: The phone number of legitimate', // 手机：11位手机号
+    'user.import.email.rule': 'Email: eg 12345678@qq.com', // 邮箱：如 12345678@qq.com
+    'user.import.yellow.tips': 'The yellow marking system has not found the corresponding customer, you can continue to import, you need to set the customer after importing.', // 黄色标示系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。
     'user.user.add.success': 'Add successfully',//添加成功
     'user.user.basic': 'Basic information',//基本信息
     'user.user.app.select': 'Select applications',//选择应用

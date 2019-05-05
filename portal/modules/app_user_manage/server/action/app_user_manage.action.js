@@ -3,6 +3,9 @@ var extend = require('extend');
 var CryptoJS = require('crypto-js');
 const _ = require('lodash');
 var appUserDetailDto = require('../dto/apps');
+const multiparty = require('multiparty');
+const fs = require('fs');
+let BackendIntl = require('../../../../lib/utils/backend_intl');
 
 /**
  * 获取应用用户列表
@@ -351,4 +354,63 @@ exports.getRealmList = function(req, res) {
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
+};
+
+function templateFile(req, res, example) {
+    let backendIntl = new BackendIntl(req);
+    let content = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(example)]);
+    res.setHeader('Content-disposition', `attachement; filename=${encodeURI(backendIntl.get('user.import.user.template', '用户模板'))}.csv`);
+    res.setHeader('Content-Type', 'application/csv');
+    res.write(content);
+    res.end();
+}
+
+// 导入用户模板文件
+exports.getUserTemplate = (req, res) => {
+    let example = '用户名(必填),昵称(必填),手机号,邮箱,所属客户,类型,开通时间,到期时间,备注\n' +
+        'curtao@qq.com,客套,15166666666,curtao@qq.com,客套智能科技有限公司,试用,2019/04/10,2019/04/25,,\n';
+    templateFile(req, res, example);
+};
+
+// 上传用户
+exports.uploadUser = (req, res) => {
+    var form = new multiparty.Form();
+
+    //开始处理上传请求
+    form.parse(req, (err, fields, files) => {
+        // 获取上传文件的临时路径
+        let tmpPath = files['users'][0].path;
+        // 文件内容为空的处理
+        let file_size = files['users'][0].size;
+        if(file_size === 0) {
+            res.json(false);
+            return;
+        }
+        // 文件不为空的处理
+        let formData = {
+            file: [fs.createReadStream(tmpPath)]
+        };
+
+        //调用上传请求服务
+        AppUserService.uploadUser(req, res, formData)
+            .on('success', (data) => {
+                res.json(data);
+            })
+            .on('error', (err) => {
+                res.json(err && err.message);
+            });
+        // 删除临时文件
+        fs.unlinkSync(tmpPath);
+    });
+};
+
+// 确认上传用户
+exports.confirmUploadUser = (req, res) => {
+    AppUserService.confirmUploadUser(req, res)
+        .on('success', (data) => {
+            res.status(200).json(data);
+        })
+        .on('error', (err) => {
+            res.status(500).json(err && err.message);
+        });
 };
