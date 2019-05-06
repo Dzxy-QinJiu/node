@@ -978,7 +978,7 @@ class AppUserManage extends React.Component {
                     onItemListImport={this.onUserImport}
                     doImportAjax={this.doImportAjax}
                     regRules={REG_CRM_FILES_TYPE_RULES}
-                    importFileTips={Intl.get('user.import.user.toplimit', '每次导入上限为300条用户')}
+                    importFileTips={Intl.get('user.import.user.toplimit', '每次导入上限为300个用户')}
                 />
             </div>
         );

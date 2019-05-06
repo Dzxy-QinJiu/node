@@ -324,7 +324,7 @@ var en_US = {
     'user.exist.user': 'Existing Users',//已有用户
     'user.user.add': 'Add Users',//添加用户
     'user.import.user': 'Import Users', // 导入用户
-    'user.import.user.toplimit': 'Up to 300 users per import', // 每次导入上限为300条用户
+    'user.import.user.toplimit': 'Up to 300 users per import', // 每次导入上限为300个用户
     'user.import.user.template': 'user_template', // 用户模板
     'user.import.username.no.match.rule': 'Username does not match the rule', // 用户名不符合规则
     'user.import.phone.no.match.rule': 'Phone does not match the rule', // 手机号不符合规则
