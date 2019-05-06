@@ -416,17 +416,18 @@ class SalesReport extends React.Component {
             columns: [
                 {
                     title: Intl.get('crm.41', '客户名'),
-                    dataIndex: 'name'
+                    dataIndex: 'name',
+                    width: '20%'
                 },
                 {
                     title: Intl.get('contract.120', '开始时间'),
                     dataIndex: 'start_time',
-                    width: '10%'
+                    width: '15%'
                 },
                 {
                     title: Intl.get('contract.105', '结束时间'),
                     dataIndex: 'end_time',
-                    width: '10%'
+                    width: '15%'
                 },
                 {
                     title: Intl.get('common.customer.visit.record', '客户拜访记录'),
