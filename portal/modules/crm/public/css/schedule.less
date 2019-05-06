@@ -177,6 +177,54 @@
     }
   }
 }
+form.schedule-form {
+  //自定义提醒时间样式设置
+  .define-timerange-area {
+    .ant-form-item {
+      .ant-switch {
+        margin-left: 2px;
+      }
+      .begin-date-input {
+        border: 1px solid #d9d9d9;
+        width: 110px;
+        margin-right: 10px;
+        padding-left: 8px;
+      }
+    }
+  }
+  .ant-radio-group {
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    .iconfont {
+      margin-right: 2px;
+      font-size: 16px;
+    }
+    .ant-radio-button-wrapper{
+      color:#ddd;
+    }
+    .ant-radio-button-wrapper-checked{
+      color:#999;
+      .iconfont{
+        color: @other_icon_color;
+      }
+      .iconfont.icon-visit-briefcase {
+        color: @icon_visit_color;
+      }
+      .icon-phone-call-out {
+        color: @today_color;
+      }
+    }
+
+  }
+  .ant-form-item input{
+    height: 30px;
+    border-radius: 3px;
+    font-size: 13px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+  }
+}
 .right-pannel-default,.add-todo{
   //添加面板的表单
   form.schedule-form {
@@ -185,12 +233,9 @@
     //自定义提醒时间样式设置
     .define-timerange-area {
       .ant-form-item {
-        .ant-switch {
-          margin-left: 2px;
-        }
+
         .begin-date-input {
           width: auto;
-          border: 1px solid #d9d9d9;
           margin-right: 10px;
           padding-left: 8px;
         }
@@ -206,32 +251,11 @@
       }
       .ant-radio-group {
         margin-right: 20px;
-        margin-bottom: 0;
-        font-size: 14px;
-        font-weight: normal;
         .iconfont {
           margin-right: 8px;
-          font-size: 16px;
-
         }
-        .ant-radio-button-wrapper{
-         color:#ddd;
-        }
-        .ant-radio-button-wrapper-checked{
-          color:#999;
-          .iconfont{
-            color: @other_icon_color;
-          }
-          .iconfont.icon-visit-briefcase {
-            color: @icon_visit_color;
-          }
-          .icon-phone-call-out {
-            color: @today_color;
-          }
-
-        }
-
       }
+
     }
   }
 }
