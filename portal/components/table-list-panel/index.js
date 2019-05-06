@@ -1,7 +1,7 @@
 /**
- * 列表表格
+ * 表格列表面板组件
  *
- * 显示以表格形式展示的列表，用于点击统计数字时滑出右侧面板显示详细的客户列表等场景
+ * 显示以表格形式展示的列表面板，用于点击统计数字时滑出右侧面板显示详细的客户列表等场景
  */
 
 require('./style.less');
@@ -81,13 +81,15 @@ class DataList extends React.Component {
     }
 }
 
-//列表表格组件
-function ListTable(props) { 
+//表格列表面板组件
+function tableListPanel(props) { 
     return (
-        <ListPanel listType='customer'>
-            <DataList {...props}/>
-        </ListPanel>
+        <div className='table-list-panel'>
+            <ListPanel listType='customer'>
+                <DataList {...props}/>
+            </ListPanel>
+        </div>
     );
 }
 
-export default ListTable;
+export default tableListPanel;

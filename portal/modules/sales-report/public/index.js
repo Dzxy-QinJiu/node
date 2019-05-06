@@ -1,5 +1,5 @@
 require('./style.less');
-import ListTable from 'CMP_DIR/list-table';
+import TableListPanel from 'CMP_DIR/table-list-panel';
 import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import {listPanelEmitter} from 'PUB_DIR/sources/utils/emitters';
 import ajax from 'ant-ajax';
@@ -550,7 +550,7 @@ class SalesReport extends React.Component {
                         </Col>
                     </Row>
                 </div>
-                <ListTable/>
+                <TableListPanel/>
             </div>
         );
     }
