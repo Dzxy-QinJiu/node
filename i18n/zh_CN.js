@@ -2896,5 +2896,7 @@ var zh_CN = {
     'common.daily.duration.of.calls': '日均电话时长',
     'common.daily.number.of.calls': '日均电话数',
     'common.customer.visit.record': '客户拜访记录',
+    'common.visit.start.time': '拜访开始时间',
+    'common.visit.end.time': '拜访结束时间',
 };
 export default zh_CN;

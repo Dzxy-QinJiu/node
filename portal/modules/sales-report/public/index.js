@@ -420,12 +420,12 @@ class SalesReport extends React.Component {
                     width: '20%'
                 },
                 {
-                    title: Intl.get('contract.120', '开始时间'),
+                    title: Intl.get('common.visit.start.time', '拜访开始时间'),
                     dataIndex: 'start_time',
                     width: '15%'
                 },
                 {
-                    title: Intl.get('contract.105', '结束时间'),
+                    title: Intl.get('common.visit.end.time', '拜访结束时间'),
                     dataIndex: 'end_time',
                     width: '15%'
                 },
