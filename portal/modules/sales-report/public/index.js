@@ -1,5 +1,6 @@
 require('./style.less');
-import CustomerListPanel from 'MOD_DIR/crm/public/customer-list-panel';
+import ListTable from 'CMP_DIR/list-table';
+import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import {listPanelEmitter} from 'PUB_DIR/sources/utils/emitters';
 import ajax from 'ant-ajax';
 import userData from 'PUB_DIR/sources/user-data';
@@ -398,10 +399,48 @@ class SalesReport extends React.Component {
         const paramObj = {
             listType: 'customer',
             url: '/rest/analysis/callrecord/v1/customertrace/sale/visit/statistics',
-            type: 'get',
-            start_time: this.state.startTime,
-            end_time: this.state.endTime,
-            member_id: this.state.currentMember.user_id
+            conditions: [
+                {
+                    name: 'start_time',
+                    value: this.state.startTime
+                },
+                {
+                    name: 'end_time',
+                    value: this.state.endTime
+                },
+                {
+                    name: 'member_id',
+                    value: this.state.currentMember.user_id
+                }
+            ],
+            columns: [
+                {
+                    title: Intl.get('crm.41', '客户名'),
+                    dataIndex: 'name'
+                },
+                {
+                    title: Intl.get('contract.120', '开始时间'),
+                    dataIndex: 'start_time',
+                    width: '10%'
+                },
+                {
+                    title: Intl.get('contract.105', '结束时间'),
+                    dataIndex: 'end_time',
+                    width: '10%'
+                },
+                {
+                    title: Intl.get('common.customer.visit.record', '客户拜访记录'),
+                    dataIndex: 'remark',
+                    width: '50%'
+                }
+            ],
+            onRowClick: record => {
+                phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+                    customer_params: {
+                        currentId: record.id 
+                    }
+                });
+            }
         };
 
         listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
@@ -511,7 +550,7 @@ class SalesReport extends React.Component {
                         </Col>
                     </Row>
                 </div>
-                <CustomerListPanel/>
+                <ListTable/>
             </div>
         );
     }
