@@ -1,5 +1,5 @@
 var FilterAjax = require('../ajax/filter-ajax');
-import {getMyTeamTreeAndFlattenList, getSalesmanList, getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
+import {getMyTeamTreeAndFlattenList, getTeamAllMembersList, getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import { altAsyncUtil } from 'ant-utils';
 const {asyncDispatcher} = altAsyncUtil;
 import userData from 'PUB_DIR/sources/user-data';
@@ -63,11 +63,11 @@ function FilterAction() {
                 console.log(errorMsg);
             });
         } else {//销售获取我所在团队及下级团的成员列表
-            getSalesmanList().then(list => {
+            getTeamAllMembersList().then(list => {
                 this.dispatch(_.map(list, item => {
                     return {
-                        user_id: _.get(item, 'user_info.user_id'),
-                        nickname: _.get(item, 'user_info.nick_name')
+                        user_id: _.get(item, 'user_id'),
+                        nickname: _.get(item, 'nick_name')
                     };
                 }));
             }, function(errorMsg) {

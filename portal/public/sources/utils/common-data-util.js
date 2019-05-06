@@ -3,7 +3,7 @@ import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import teamAjaxTrans from 'MOD_DIR/common/public/ajax/team';
 import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
 import {storageUtil} from 'ant-utils';
-import {traversingTeamTree, getParamByPrivilege,hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import {traversingTeamTree, getParamByPrivilege, hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {message} from 'antd';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {getCallClient, isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
@@ -18,6 +18,12 @@ let dealStageList = [];
 let allUserList = [];
 // 销售列表
 let salesmanList = [];
+const ALLMEMBERS = 'allMembers';
+const NODISABLEDMEMBERS = 'noDisabledMembers';
+//团队下销售列表
+let membersLists = {};
+membersLists[ALLMEMBERS] = [];
+membersLists[NODISABLEDMEMBERS] = [];
 //缓存在sessionStorage中的我能查看的团队
 const MY_TEAM_TREE_KEY = 'my_team_tree';
 const AUTH_MAP = {
@@ -79,9 +85,9 @@ const getAllUserList = function(notFilterStop) {
     return new Promise((resolve, reject) => {
         if (_.get(allUserList, '[0]')) {
             //过滤停用的成员
-            if(!notFilterStop){
+            if (!notFilterStop) {
                 resolve(_.filter(allUserList, sales => sales && sales.status === 1));
-            }else{//不过滤停用的成员
+            } else {//不过滤停用的成员
                 resolve(allUserList);
             }
         } else {
@@ -94,9 +100,9 @@ const getAllUserList = function(notFilterStop) {
                     if (_.isArray(result.data)) {
                         allUserList = result.data;
                         //过滤停用的成员
-                        if(!notFilterStop){
+                        if (!notFilterStop) {
                             resolve(_.filter(allUserList, sales => sales && sales.status === 1));
-                        }else{//不过滤停用的成员
+                        } else {//不过滤停用的成员
                             resolve(allUserList);
                         }
                     }
@@ -136,6 +142,30 @@ const getSalesmanList = function() {
     });
 };
 exports.getSalesmanList = getSalesmanList;
+
+const getTeamAllMembersList = function(filter_disabled) {
+    var memberKey = filter_disabled ? NODISABLEDMEMBERS : ALLMEMBERS;
+    var teamMembers = membersLists[memberKey];
+    return new Promise((resolve, reject) => {
+        if (_.get(teamMembers, '[0]')) {
+            resolve(teamMembers);
+        } else {
+            salesmanAjax.getTeamAllMembersListsAjax().sendRequest({filter_disabled: filter_disabled ? true : false}).success(result => {
+                if (_.isArray(result)) {
+                    membersLists[memberKey] = result;
+                    resolve(result);
+                }
+            }).error(() => {
+                membersLists[memberKey] = [];
+                resolve([]);
+            }).timeout(() => {
+                membersLists[memberKey] = [];
+                resolve([]);
+            });
+        }
+    });
+};
+exports.getTeamAllMembersList = getTeamAllMembersList;
 
 // 返回所有成员列表和销售列表的组合数据
 exports.getAllSalesUserList = function(cb) {
@@ -302,11 +332,11 @@ exports.hasApprovedReportAndDocumentApply = function(approverIds) {
     }
 };
 
-function calculateTimeRange(beginType,endType) {
+function calculateTimeRange(beginType, endType) {
     var timeRange = '';
-    if (beginType === endType){
+    if (beginType === endType) {
         timeRange = 0.5;
-    }else if (beginType === AM_AND_PM.AM && endType === AM_AND_PM.PM){
+    } else if (beginType === AM_AND_PM.AM && endType === AM_AND_PM.PM) {
         timeRange = 1;
     }
     return timeRange;
@@ -401,7 +431,7 @@ exports.getIntegrationConfig = function() {
 //获取已集成的产品列表
 exports.getProductList = function(cb, isRefresh) {
     //需要刷新产品列表或产品列表中没有数据时，发请求获取已集成的产品列表
-    if(isRefresh || !_.get(integrationProductList, '[0]')){
+    if (isRefresh || !_.get(integrationProductList, '[0]')) {
         $.ajax({
             url: '/rest/product',
             type: 'get',
@@ -430,9 +460,9 @@ function isRealmManager() {
 //点击电话后不可拨打的提示
 exports.showDisabledCallTip = function() {
     //是否是管理员
-    if (isRealmManager()){
+    if (isRealmManager()) {
         return Intl.get('manager.role.has.not.setting.phone.systerm', '您尚未开通电话系统或未设置座席号!');
-    }else{
+    } else {
         return Intl.get('sales.role.has.not.setting.phone.systerm', '您尚未开通电话系统或未设置座席号，请通知管理员!');
     }
 };
@@ -468,11 +498,11 @@ exports.uniqueObjectOfArray = (arr) => {
     _.each(arr, (originalItem) => { // 循环arr重复数组对象的内容
         let flag = true; // 建立标记，判断数据是否重复，true为不重复
         _.each(unique, (uniqueItem) => {
-            if(originalItem.field === uniqueItem.field && originalItem.detail === uniqueItem.detail){ //让arr数组对象的内容与新数组的内容作比较，相同的话，改变标记为false
+            if (originalItem.field === uniqueItem.field && originalItem.detail === uniqueItem.detail) { //让arr数组对象的内容与新数组的内容作比较，相同的话，改变标记为false
                 flag = false;
             }
         });
-        if(flag){ //判断是否重复
+        if (flag) { //判断是否重复
             unique.push(originalItem); //不重复的放入新数组。
         }
     });
