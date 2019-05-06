@@ -86,13 +86,6 @@ SalesHomeStore.prototype.setInitState = function() {
         list: [],
         errMsg: ''
     };
-    //审批之后数据
-    this.applyResult = {
-        //提交状态  "" loading error success
-        submitResult: '',
-        //错误信息
-        errorMsg: ''
-    };
 };
 
 // 重置回访记录列表状态
@@ -713,17 +706,10 @@ SalesHomeStore.prototype.getPendingApproveMemberApplyList = function(result) {
     }
 };
 
-// 通过或者驳回审批
-SalesHomeStore.prototype.approveMemberApplyPassOrReject = function(obj) {
-    if (obj.loading) {
-        this.applyResult.submitResult = 'loading';
-        this.applyResult.errorMsg = '';
-    } else if (obj.error) {
-        this.applyResult.submitResult = 'error';
-        this.applyResult.errorMsg = obj.errorMsg;
-    } else {
-        this.applyResult.submitResult = 'success';
-        this.applyResult.errorMsg = '';
+// 处理成员审批
+SalesHomeStore.prototype.handleMemberApprove = function(flag) {
+    if (flag) {
+        this.pendingApproveMemberObj.list = _.slice(this.pendingApproveMemberObj.list, 1);
     }
 };
 

@@ -2779,6 +2779,8 @@ var en_US = {
 
     // 成员申请
     'member.application': 'Member Application', // 成员申请
+    'member.apply.who.invite': '{who}\'s invitation', // {who}的邀请
+    'member.apply.approve.failed.tips': 'deal with it later', // 稍后处理
     'member.apply.failed.get.worklist': 'Failed to get member applies to be approved by me',// 获取由我审批的成员申请失败
     'member.apply.failed.get.all.apply': 'Failed to get all member applies', // 获取全部成员申请失败
     'member.apply.no.member.apply': 'No eligible member apply', // 暂无符合条件的成员申请

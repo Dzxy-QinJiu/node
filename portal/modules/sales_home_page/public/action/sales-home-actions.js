@@ -23,6 +23,7 @@ function SalesHomeActions() {
         'setInitState',//设置初始化数据
         'updateSalesTeamMembersObj',//修改团队成员列表中的信息（销售角色）
         'resetCallBackRecord', // 重置回访记录列表状态
+        'handleMemberApprove', // 处理成员审批
     );
 
     //获取当前登录销售的角色（销售/经理/总监）
@@ -249,16 +250,6 @@ function SalesHomeActions() {
                 error: true,
                 errMsg: errorMsg || Intl.get('member.apply.failed.get.worklist', '获取由我审批的成员申请失败')
             });
-        });
-    };
-
-    //通过或者驳回审批
-    this.approveMemberApplyPassOrReject = function( obj) {
-        this.dispatch({loading: true, error: false});
-        salesHomeAjax.approveMemberApplyPassOrReject(obj).then((data) => {
-            this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
-        }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
 }

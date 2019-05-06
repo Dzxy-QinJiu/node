@@ -507,20 +507,33 @@ class CrmRightList extends React.Component {
         SalesHomeAction.setActiveView(view);
     };
 
+    // 处理成员审批
+    handleMemberApprove = (flag) => {
+        SalesHomeAction.handleMemberApprove(flag);
+    };
+
     renderPendingApproveMemberContent = () => {
         let pendingInfo = _.get(this.props.pendingApproveMemberObj, 'list[0]');
         return (
-            <MemberApply pendingInfo={pendingInfo}/>
+            <MemberApply
+                pendingInfo={pendingInfo}
+                memberApprove={this.handleMemberApprove}
+            />
         );
     };
 
     render() {
         let resultType = this.props.salesTeamListObj.resultType, errorMsg = this.props.salesTeamListObj.errorMsg;
+        let pendingLength = _.get(this.props.pendingApproveMemberObj, 'list.length');
         return (
             <div className="crm-sales-team-zone">
-                <div className="member-apply-container">
-                    {this.renderPendingApproveMemberContent()}
-                </div>
+                {
+                    pendingLength ? (
+                        <div className="member-apply-container">
+                            {this.renderPendingApproveMemberContent()}
+                        </div>
+                    ) : null
+                }
                 <div className="crm-sales-team-container" data-tracename="销售（团队）列表">
                     {resultType ? (this.renderTooltip(resultType, errorMsg)) : this.renderListContent()}
                 </div>
