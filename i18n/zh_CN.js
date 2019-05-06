@@ -2143,12 +2143,13 @@ var zh_CN = {
     'errorcode.150': '修改线索信息失败',
     'errorcode.151': '获取销售新开客户数和新开帐号数失败',
     'errorcode.152': '线索重复',
-    'errorcoe.different.realm': '安全域不一致',
+    'errorcode.different.realm': '安全域不一致',
     'errorcode.invalid.wechat': '无效的微信账号',
     'errorcode.get.call.statistics.failed': '获取通话记录统计失败',
-    'errorcoe.bound.wechat': '该账号已绑定到其他微信',
-    'errorcoe.wechat.bound.other': '您的微信已绑定到其他账号',
-    'errorcoe.17334': '获取最近联系客户统计失败',
+    'errorcode.bound.wechat': '该账号已绑定到其他微信',
+    'errorcode.wechat.bound.other': '您的微信已绑定到其他账号',
+    'errorcode.17334': '获取最近联系客户统计失败',
+    'errorcdoe.17331': '统计通话的客户的地域,阶段,行业分布失败',
 
     //遗漏部分
     'user.input.phone': '请输入手机号',

@@ -2109,12 +2109,13 @@ var en_US = {
     'errorcode.150': 'Failed to update the clue',//修改线索信息失败
     'errorcode.151': 'Failed to get sales new open accounts and new open accounts',//获取销售新开客户数和新开帐号数失败
     'errorcode.152': 'There are repeat clues!',//线索重复
-    'errorcoe.different.realm': 'Different realms',//安全域不一致
+    'errorcode.different.realm': 'Different realms',//安全域不一致
     'errorcode.invalid.wechat': 'Invalid Wechat Account',//无效的微信账号
     'errorcode.get.call.statistics.failed': 'Get call statistics failed', //获取通话记录统计失败
-    'errorcoe.bound.wechat': 'The account has been bound to other Wechat',//该账号已绑定到其他微信
-    'errorcoe.wechat.bound.other': 'Your Wechat has been bound to other accounts',//您的微信已绑定到其他账号
-    'errorcoe.17334': 'Get recent contact customer statistics failed',//获取最近联系客户统计失败
+    'errorcode.bound.wechat': 'The account has been bound to other Wechat',//该账号已绑定到其他微信
+    'errorcode.wechat.bound.other': 'Your Wechat has been bound to other accounts',//您的微信已绑定到其他账号
+    'errorcode.17334': 'Get recent contact customer statistics failed',//获取最近联系客户统计失败
+    'errorcode.17331': 'Statistics of call customers by region, stage, industry distribution failure',//统计通话的客户的地域,阶段,行业分布失败
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索

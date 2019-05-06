@@ -80,14 +80,14 @@ function getConfigJson(req) {
         //用户密码错误
         '11440': {'httpCode': 500, 'message': backendIntl.get('errorcode.39', '用户名或密码错误')},
         //获取是否绑定微信时报的错
-        '11462': {'httpCode': 500, 'message': backendIntl.get('errorcoe.different.realm', '安全域不一致')},
+        '11462': {'httpCode': 500, 'message': backendIntl.get('errorcode.different.realm', '安全域不一致')},
         //在其他应用已退出
         '11473': {'httpCode': 500, 'message': backendIntl.get('errorcode.36', '在其他应用已退出')},
         '11476': {'httpCode': 500, 'message': backendIntl.get('errorcode.42', '你的账号已被停用，请联系管理员')},
         //绑定微信时报的错
         '11520': {'httpCode': 500, 'message': backendIntl.get('errorcode.invalid.wechat', '无效的微信账号')},
-        '11521': {'httpCode': 500, 'message': backendIntl.get('errorcoe.bound.wechat', '该账号已绑定到其他微信')},
-        '11522': {'httpCode': 500, 'message': backendIntl.get('errorcoe.wechat.bound.other', '您的微信已绑定到其他账号')},
+        '11521': {'httpCode': 500, 'message': backendIntl.get('errorcode.bound.wechat', '该账号已绑定到其他微信')},
+        '11522': {'httpCode': 500, 'message': backendIntl.get('errorcode.wechat.bound.other', '您的微信已绑定到其他账号')},
 
         /****************** 安全域  ***************** */
 
@@ -324,6 +324,8 @@ function getConfigJson(req) {
         '17223': {'httpCode': 500, 'message': backendIntl.get('errorcode.118', '获取数据失败')},
         //用户角色无分析客户数据权限
         '17299': {'httpCode': 500, 'message': backendIntl.get('errorcode.68', '没有权限')},
+        //统计通话的客户的地域,阶段,行业分布失败
+        '17331': {'httpCode': 500, 'message': backendIntl.get('errorcode.17331', '统计通话的客户的地域,阶段,行业分布失败')},
         //获取最近联系客户统计失败
         '17334': {'httpCode': 500, 'message': backendIntl.get('errorcode.17334', '获取最近联系客户统计失败')},
         /**日志**/
