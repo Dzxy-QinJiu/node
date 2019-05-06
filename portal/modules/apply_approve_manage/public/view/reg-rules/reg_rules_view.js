@@ -31,7 +31,7 @@ class RegRulesView extends React.Component {
         this.state = {
             applySaveForm: applySaveForm,
             applyRulesAndSetting: applyRulesAndSetting,
-            showAddNodePanel: false,
+            addNodePanelFlow: '',
             showAddConditionPanel: false
         };
     }
@@ -197,9 +197,9 @@ class RegRulesView extends React.Component {
     getDefaultFlow = () => {
         return _.get(this, 'state.applyRulesAndSetting.applyApproveRules.defaultFlow.bpmnNode');
     };
-    addApplyNode = () => {
+    addApplyNode = (applyFlow) => {
         this.setState({
-            showAddNodePanel: true
+            addNodePanelFlow: applyFlow
         });
     };
     handleDeleteNode = (deleteItem) => {
@@ -213,12 +213,9 @@ class RegRulesView extends React.Component {
         });
 
     };
-    renderDefaultWorkFlow = () => {
-        var defaultRules = this.getDefaultFlow();
-        //把默认流程的中待审批人所在的节点过滤出来
-        var candidateRules = _.filter(defaultRules, (item) => item.candidateApprover);
+    renderApplyWorkFlowNode = (candidateRules) => {
         return (
-            <div>
+            <div className="rule-content apply-node-lists">
                 {_.map(candidateRules, (item, index) => {
                     var showDeleteIcon = index === _.get(candidateRules, 'length') - 1 && index !== 0;
                     return (
@@ -234,7 +231,7 @@ class RegRulesView extends React.Component {
                     );
                 })}
                 <div className="item-node">
-                    <div className="icon-container  add-node" onClick={this.addApplyNode}>
+                    <div className="icon-container  add-node" onClick={this.addApplyNode.bind(this, 'defaultFlow')}>
                         <i className="iconfont icon-add"></i>
                     </div>
                 </div>
@@ -304,36 +301,61 @@ class RegRulesView extends React.Component {
     };
     hideRightAddPanel = () => {
         this.setState({
-            showAddNodePanel: false,
+            addNodePanelFlow: '',
             showAddConditionPanel: false
         });
     };
+    getGateWayNode = () => {
+
+    };
     saveAddApproveNode = (data) => {
         //新加节点的数据,要把原来最后一个节点的next加上，先判断之前的数据结构中是不是有结束节点
-        var defaultBpmnNode = _.get(this, 'state.applyRulesAndSetting.applyApproveRules.defaultFlow.bpmnNode');
-        var previousNode = _.last(defaultBpmnNode);
+        var applyFlow = this.state.addNodePanelFlow;
+        var bpmnNodeFlow = _.get(this, `state.applyRulesAndSetting.applyApproveRules.${applyFlow}.bpmnNode`, []);
+        var defaultBpmnNode = _.get(this, 'state.applyRulesAndSetting.applyApproveRules.defaultFlow.bpmnNode', []);
+        //如果是默认流程
+        var previousNode = _.last(bpmnNodeFlow);
         //看一下最后一个节点的节点类型
+        if (!previousNode) {
+            //如果上一个节点不存在，那就指定为网关节点
+
+            previousNode = _.find(defaultBpmnNode, item => item.type === 'ExclusiveGateway');
+        }
         if (previousNode.type === 'EndEvent') {
             //删除最后一个节点
-            defaultBpmnNode.pop();
-            previousNode = _.last(defaultBpmnNode);
+            bpmnNodeFlow.pop();
+            previousNode = _.last(bpmnNodeFlow);
         }
-        var previousNodeIndex = _.get(previousNode, 'flowIndex');
-        var nodeIndexArr = _.split(previousNodeIndex, '_');
-        nodeIndexArr.splice(nodeIndexArr.length - 1, 1, parseInt(_.last(nodeIndexArr)) + 1);
-        var newIndex = nodeIndexArr.join('_');
-        previousNode.next = `UserTask_${newIndex}`;
-        var newNodeObj = {
-            name: `UserTask_${newIndex}`,
-            id: `UserTask_${newIndex}`,
-            type: 'UserTask',
-            previous: `UserTask_${previousNodeIndex}`,
-            flowIndex: `${newIndex}`
-        };
+        if (previousNode.type === 'ExclusiveGateway') {
+            var nodeIndexArr = applyFlow.split('_');
+            var newIndex = _.last(nodeIndexArr) + '_' + '1';
+            var newNodeObj = {
+                name: `UserTask_${newIndex}`,
+                id: `UserTask_${newIndex}`,
+                type: 'UserTask',
+                previous: 'Gateway_1_1',
+                flowIndex: `${newIndex}`
+            };
+        } else {
+            var previousNodeIndex = _.get(previousNode, 'flowIndex');
+            var nodeIndexArr = _.split(previousNodeIndex, '_');
+            nodeIndexArr.splice(nodeIndexArr.length - 1, 1, parseInt(_.last(nodeIndexArr)) + 1);
+            var newIndex = nodeIndexArr.join('_');
+            previousNode.next = `UserTask_${newIndex}`;
+            var newNodeObj = {
+                name: `UserTask_${newIndex}`,
+                id: `UserTask_${newIndex}`,
+                type: 'UserTask',
+                previous: `UserTask_${previousNodeIndex}`,
+                flowIndex: `${newIndex}`
+            };
+        }
+
         for (var key in data) {
             newNodeObj[key] = data[key];
         }
-        defaultBpmnNode.push(newNodeObj);
+        bpmnNodeFlow.push(newNodeObj);
+
     };
     handleOtherCheckChange = (e) => {
         var applyRulesAndSetting = _.get(this, 'state.applyRulesAndSetting');
@@ -359,11 +381,13 @@ class RegRulesView extends React.Component {
         var applyApproveRules = _.get(this, 'state.applyRulesAndSetting.applyApproveRules');
         //要在默认流程那里加一个网关
         var defalutBpmnNode = _.get(applyApproveRules, 'defaultFlow.bpmnNode');
-        var firstNode = _.get(defalutBpmnNode,'[0]');
+        var firstNode = _.get(defalutBpmnNode, '[0]');
         firstNode['next'] = 'Gateway_1_1';
-        var secondNode = _.get(defalutBpmnNode,'[1]');
+        var secondNode = _.get(defalutBpmnNode, '[1]');
         secondNode['previous'] = 'Gateway_1_1';
-        defalutBpmnNode.splice(1,0,{
+        secondNode['condition'] = 'default';
+        secondNode['conditionDsc'] = '默认流程',
+        defalutBpmnNode.splice(1, 0, {
             name: 'Gateway_1_1',
             id: 'Gateway_1_1',
             type: 'ExclusiveGateway',
@@ -372,7 +396,7 @@ class RegRulesView extends React.Component {
             flowIndex: '1_1'
         });
 
-        applyApproveRules['condition1'] = {
+        applyApproveRules['condition_2'] = {
             bpmnNode: [],
             conditionDsc: data,
             ccPerson: []
@@ -448,7 +472,11 @@ class RegRulesView extends React.Component {
                                 <div className="condition-item condition-item-flow">
                                     <span
                                         className="condition-item-label">{Intl.get('apply.condition.apply.approve', '审批流程')}:</span>
-                                    {_.get(item, 'bpmnNode.length') ? <div></div> : null}
+                                    {_.get(item, 'bpmnNode.length') ? this.renderApplyWorkFlowNode(item.bpmnNode) :
+                                        <div className="icon-container add-node"
+                                            onClick={this.addApplyNode.bind(this, key)}>
+                                            <i className="iconfont icon-add"></i>
+                                        </div>}
                                 </div>
                                 <div className="condition-item condition-item-cc">
                                     <span
@@ -470,8 +498,11 @@ class RegRulesView extends React.Component {
         var cls = classNames('', {
             'err-tip': hasErrTip
         });
-        var addPanelWrap = classNames({'show-add-node-modal': this.state.showAddNodePanel || this.state.showAddConditionPanel});
+        var addPanelWrap = classNames({'show-add-node-modal': this.state.addNodePanelFlow || this.state.showAddConditionPanel});
         var divHeight = $(window).height() - FORMLAYOUT.PADDINGTOTAL;
+        var defaultRules = this.getDefaultFlow();
+        //把默认流程的中待审批人所在的节点过滤出来
+        var candidateRules = _.filter(defaultRules, (item) => item.candidateApprover);
         return (
             <div className="reg-rule-container" style={{'height': divHeight}}>
                 <GeminiScrollbar>
@@ -480,10 +511,7 @@ class RegRulesView extends React.Component {
                             <span className="item-label">
                                 {Intl.get('apply.default.apply.workflow', '默认审批流程')}:
                             </span>
-                            <div className="rule-content apply-node-lists">
-                                {this.renderDefaultWorkFlow()}
-                            </div>
-
+                            {this.renderApplyWorkFlowNode(candidateRules)}
                         </div>
                         <div className="default-cc-person rule-item">
                             <span className="item-label">
@@ -553,7 +581,7 @@ class RegRulesView extends React.Component {
                         hideCancelBtns={true}
                     />
                 </div>
-                {this.state.showAddNodePanel ?
+                {this.state.addNodePanelFlow ?
                     <div className={addPanelWrap}>
                         <AddApplyNodePanel
                             saveAddApproveNode={this.saveAddApproveNode}
