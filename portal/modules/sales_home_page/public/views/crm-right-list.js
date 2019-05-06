@@ -22,6 +22,7 @@ const TOP_TEAM_ID = 'sales-team-list-parent-group-id';
 var delayConstant = constantUtil.DELAY.TIMERANG;
 const CALLING_STATUS = 'busy';//正在打电话的状态（busy繁忙，idle空闲，空值-还未配置座机号）
 import MemberApply from './member-apply';
+import classNames from 'classnames';
 
 class CrmRightList extends React.Component {
     state = {
@@ -48,6 +49,12 @@ class CrmRightList extends React.Component {
                     });
                 }, delayConstant);
             });
+        }
+        // 有审批权限时，并且待审批的信息已审批完时，重新获取待我审批的邀请成员列表
+        if (hasPrivilege('MEMBER_INVITE_MANAGE')) {
+            if (nextProps.pendingApproveMemberObj && nextProps.isApprovedCompleted) {
+                SalesHomeAction.getPendingApproveMemberApplyList();
+            }
         }
     }
 
@@ -459,9 +466,16 @@ class CrmRightList extends React.Component {
                 break;
         }
         let salesListHeight = this.props.getSalesListHeight();
+        let pendingLength = _.get(this.props.pendingApproveMemberObj, 'list.length');
+        if (pendingLength) {
+            salesListHeight -= 140;
+        }
+        let salesTeamCls = classNames('sales-team-top',{
+            'has-pending-approve-member': pendingLength,
+        });
         return (
             <div>
-                <div className="sales-team-top">
+                <div className={salesTeamCls}>
                     <span className="sales-team-title"> {salesTitle}</span>
                     {isShowSearch ? this.state.searchInputShow ? (
                         <SearchInput searchPlaceHolder={Intl.get('sales.home.filter.tip', '请输入关键字进行过滤')}
@@ -478,6 +492,11 @@ class CrmRightList extends React.Component {
     };
 
     renderContent = (salesListLi) => {
+        let salesListHeight = this.props.getSalesListHeight();
+        let pendingLength = _.get(this.props.pendingApproveMemberObj, 'list.length');
+        if (pendingLength) {
+            salesListHeight -= 200;
+        }
         if (this.state.updateScrollBar) {
             return (
                 <div>
@@ -486,7 +505,11 @@ class CrmRightList extends React.Component {
             );
         } else {
             return (
-                <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="scrollbar">
+                <GeminiScrollbar
+                    enabled={this.props.scrollbarEnabled}
+                    ref="scrollbar"
+                    style={{height: salesListHeight}}
+                >
                     {salesListLi}
                 </GeminiScrollbar>
             );
@@ -529,7 +552,7 @@ class CrmRightList extends React.Component {
             <div className="crm-sales-team-zone">
                 {
                     pendingLength ? (
-                        <div className="member-apply-container">
+                        <div className="member-apply-container" data-tracename='成员审批'>
                             {this.renderPendingApproveMemberContent()}
                         </div>
                     ) : null
@@ -555,6 +578,7 @@ CrmRightList.propTypes = {
     refreshDataByChangeSales: PropTypes.func,
     getSalesListHeight: PropTypes.func,
     pendingApproveMemberObj: PropTypes.object,
+    isApprovedCompleted: PropTypes.boolean
 };
 module.exports = CrmRightList;
 
