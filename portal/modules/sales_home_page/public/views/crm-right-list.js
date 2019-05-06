@@ -551,7 +551,7 @@ class CrmRightList extends React.Component {
         return (
             <div className="crm-sales-team-zone">
                 {
-                    pendingLength ? (
+                    hasPrivilege('MEMBER_INVITE_MANAGE') && pendingLength ? (
                         <div className="member-apply-container" data-tracename='成员审批'>
                             {this.renderPendingApproveMemberContent()}
                         </div>
