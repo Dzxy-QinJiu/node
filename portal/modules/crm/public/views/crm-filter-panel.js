@@ -493,6 +493,14 @@ class CrmFilterPanel extends React.Component {
             }];
             return x;
         });
+        //选中的客户阶段列表
+        let selectedCustomerLabels = _.get(this.state, 'condition.customer_label', '').split(',');
+        //选中的标签列表
+        let selectedLabels = _.get(this.state, 'condition.labels', []);
+        //选中的竞品列表
+        let selectedCompetings = _.get(this.state, 'condition.competing_products', []);
+        //选中的行政级别列表
+        let selectedLevel = _.get(this.state, 'condition.administrative_level', '').split(',');
         const advancedData = [
             {
                 groupName: Intl.get('crm.order.stage', '订单阶段'),
@@ -501,7 +509,7 @@ class CrmFilterPanel extends React.Component {
                 data: _.drop(stageArray).map(x => ({
                     name: x.show_name,
                     value: x.name,
-
+                    selected: x.name === _.get(this.state, 'condition.sales_opportunities[0].sale_stages', '')
                 }))
             },
             {
@@ -509,14 +517,21 @@ class CrmFilterPanel extends React.Component {
                 groupId: 'customer_label',
                 data: _.drop(this.state.stageTagList).map(x => ({
                     name: x.show_name,
-                    value: x.name
+                    value: x.name,
+                    selected: _.indexOf(selectedCustomerLabels, x.name) !== -1
                 }))
             },
             {
                 groupName: Intl.get('common.qualified', '合格'),
                 groupId: 'qualify_label',
                 singleSelect: true,
-                data: qualifiedTagList
+                data: _.map(qualifiedTagList, x => {
+                    return {
+                        name: x.name,
+                        value: x.value,
+                        selected: x.value === _.get(this.state, 'condition.qualify_label', '')
+                    };
+                })
             },
             {
                 groupName: Intl.get('common.tag', '标签'),
@@ -524,7 +539,8 @@ class CrmFilterPanel extends React.Component {
                 data: _.drop(this.state.tagList).map(x => {
                     const item = {
                         name: x.show_name,
-                        value: x.name
+                        value: x.name,
+                        selected: _.indexOf(selectedLabels, x.name) !== -1
                     };
                     if (x.name === Intl.get('crm.tag.unknown', '未打标签的客户')) {
                         item.selectOnly = true;
@@ -537,7 +553,8 @@ class CrmFilterPanel extends React.Component {
                 groupId: 'competing_products',
                 data: _.drop(this.state.competitorList).map(x => ({
                     name: x.show_name,
-                    value: x.name
+                    value: x.name,
+                    selected: _.indexOf(selectedCompetings, x.name) !== -1
                 }))
             },
             {
@@ -546,7 +563,8 @@ class CrmFilterPanel extends React.Component {
                 singleSelect: true,
                 data: _.drop(industryArray).map(x => ({
                     name: x,
-                    value: x
+                    value: x,
+                    selected: x === _.get(this.state, 'condition.industry', '')
                 }))
             },
             {
@@ -554,7 +572,8 @@ class CrmFilterPanel extends React.Component {
                 groupId: 'administrative_level',
                 data: _.drop(filterLevelArray).map(x => ({
                     name: x.level,
-                    value: x.id
+                    value: x.id,
+                    selected: _.indexOf(selectedLevel, x.id) !== -1
                 }))
             },
             {
@@ -565,7 +584,8 @@ class CrmFilterPanel extends React.Component {
                     .concat(this.state.provinceList)
                     .map(x => ({
                         name: x,
-                        value: x
+                        value: x,
+                        selected: x === _.get(this.state, 'condition.province', '')
                     }))
             }
         ];
