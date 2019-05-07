@@ -231,6 +231,8 @@ class UploadAndDeleteFile extends React.Component {
         var salesUploadAndDeletePrivilege = this.props.salesUploadAndDeletePrivilege;
         if(this.isDetailObjExist()){
             props.data = detailInfoObj.id;
+            //在详情中一次只能上传一个文件，如果单次上传多个，如10个，后端有时候会来不及更新线索详情，导致上传10个文件成功但是再次刷新，发现详情中文件数小于10个
+            props.multiple = false;
             props.beforeUpload = function(file) {
                 var fileName = file.name,fileSize = file.size;
                 _this.setState({isUpLoading: true});
