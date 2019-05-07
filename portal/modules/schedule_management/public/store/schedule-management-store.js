@@ -61,8 +61,8 @@ ScheduleManagementStore.prototype.getScheduleList = function(data) {
         this.isLoadingScheduleExpired = false;
         this.scheduleExpiredErrMsg = data.errorMsg;
     } else {
-        let list = data.scheduleListObj ? data.scheduleListObj.list : [];
-        this.scheduleExpiredSize = data.scheduleListObj ? data.scheduleListObj.total : 0;
+        let list = _.get(data, 'scheduleListObj.list',[]);
+        this.scheduleExpiredSize = _.get(data, 'scheduleListObj.total',0);
         if (this.scheduleExpiredSize){
             this.isShowExpiredPanel = true;
         }
