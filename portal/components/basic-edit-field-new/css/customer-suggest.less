@@ -48,6 +48,16 @@
   .associate-customer-wrap {
     .ant-select{
       width: 100%;
+      &.err-tip {
+        &:focus{
+          outline:none ;
+        }
+        .ant-select-selection{
+        &:focus, &:active{
+          box-shadow: none;
+        }
+        border: 2px solid @error_tips_color;
+      }}
     }
   }
   .customer-name{

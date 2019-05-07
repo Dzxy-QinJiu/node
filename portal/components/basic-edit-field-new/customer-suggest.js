@@ -281,10 +281,16 @@ class CustomerSuggest extends React.Component {
         var search_input_val = $search_input.val();
         this.suggestChange(search_input_val);
     };
+    getNoCustomerTip = () => {
+        return this.props.canCreateCustomer && userData.getUserData().privileges.indexOf('CRM_CUSTOMER_INFO_EDIT') >= 0;
+    };
+    getSearchValue = () => {
+        var $search_input = this.getCustomerSearchInput();
+        return $search_input.val();
+    };
 
     getCustomerTipBlock = () => {
-        var $search_input = this.getCustomerSearchInput();
-        var search_input_val = $search_input.val();
+        var search_input_val = this.getSearchValue();
         if (this.props.show_error) {
             return (
                 <div className="customer_suggest_tip customer_suggest_error_tip">
@@ -309,12 +315,11 @@ class CustomerSuggest extends React.Component {
                     </div>
                 );
             } else {
-                var canCreateCustomer = this.props.canCreateCustomer && userData.getUserData().privileges.indexOf('CRM_CUSTOMER_INFO_EDIT') >= 0;
                 //是否跳转到crm页面添加客户
                 var noJumpToAddCrmPanel = this.props.noJumpToCrm;
                 return (
                     <div className="customer_suggest_tip">
-                        {canCreateCustomer ?
+                        {this.getNoCustomerTip() ?
                             <span>{Intl.get('user.customer.suggest.not.found', '未找到该客户')}，{Intl.get('common.yesno', '是否')}
                                 {noJumpToAddCrmPanel ?
                                     <a onClick={this.props.addAssignedCustomer} data-tracename="点击创建客户按钮">{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</a> :
@@ -371,6 +376,10 @@ class CustomerSuggest extends React.Component {
             setDisplayState(this.state.displayText, this.state.displayCustomerId);
         }
 
+    };
+    getCustomerTipErrmsg = () => {
+        var search_input_val = this.getSearchValue();
+        return !this.props.show_error && search_input_val && this.state.show_tip && this.state.result_type !== 'error' && this.getNoCustomerTip();
     };
 
     resetCustomer = () => {
@@ -479,9 +488,11 @@ class CustomerSuggest extends React.Component {
                 );
             }
         }
+
         var selectBlock = this.state.displayType === 'edit' ? (
             <div ref="customer_searchbox" className="associate-customer-wrap">
                 <Select
+                    className={this.getCustomerTipErrmsg() ? 'err-tip' : ''}
                     name={this.props.name}
                     combobox
                     autoFocus = {true}
