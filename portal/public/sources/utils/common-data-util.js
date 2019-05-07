@@ -18,12 +18,7 @@ let dealStageList = [];
 let allUserList = [];
 // 销售列表
 let salesmanList = [];
-const ALLMEMBERS = 'allMembers';
-const NODISABLEDMEMBERS = 'noDisabledMembers';
-//团队下销售列表
-let membersLists = {};
-membersLists[ALLMEMBERS] = [];
-membersLists[NODISABLEDMEMBERS] = [];
+let myTeamTreeMemberList = [];//我所在团队及下级团队的人员列表（管理员返回所有团队下的人员列表）
 //缓存在sessionStorage中的我能查看的团队
 const MY_TEAM_TREE_KEY = 'my_team_tree';
 const AUTH_MAP = {
@@ -142,30 +137,37 @@ const getSalesmanList = function() {
     });
 };
 exports.getSalesmanList = getSalesmanList;
-
-const getTeamAllMembersList = function(filter_disabled) {
-    var memberKey = filter_disabled ? NODISABLEDMEMBERS : ALLMEMBERS;
-    var teamMembers = membersLists[memberKey];
+function filterDisabledMembers(memberLists) {
+    return _.filter(memberLists, item => item.status === 1);
+}
+const getMyTeamTreeMemberList = function(filter_disabled) {
     return new Promise((resolve, reject) => {
-        if (_.get(teamMembers, '[0]')) {
-            resolve(teamMembers);
+        if (_.get(myTeamTreeMemberList, '[0]')) {
+            var data = myTeamTreeMemberList;
+            if (filter_disabled){
+                data = filterDisabledMembers(data);
+            }
+            resolve(data);
         } else {
-            salesmanAjax.getTeamAllMembersListsAjax().sendRequest({filter_disabled: filter_disabled ? true : false}).success(result => {
+            salesmanAjax.getMyTeamTreeMemberListAjax().sendRequest({}).success(result => {
                 if (_.isArray(result)) {
-                    membersLists[memberKey] = result;
+                    myTeamTreeMemberList = result;
+                    if (filter_disabled){
+                        result = filterDisabledMembers(result);
+                    }
                     resolve(result);
                 }
             }).error(() => {
-                membersLists[memberKey] = [];
-                resolve([]);
+                myTeamTreeMemberList = [];
+                resolve(myTeamTreeMemberList);
             }).timeout(() => {
-                membersLists[memberKey] = [];
-                resolve([]);
+                myTeamTreeMemberList = [];
+                resolve(myTeamTreeMemberList);
             });
         }
     });
 };
-exports.getTeamAllMembersList = getTeamAllMembersList;
+exports.getMyTeamTreeMemberList = getMyTeamTreeMemberList;
 
 // 返回所有成员列表和销售列表的组合数据
 exports.getAllSalesUserList = function(cb) {
@@ -507,4 +509,33 @@ exports.uniqueObjectOfArray = (arr) => {
         }
     });
     return unique;
+};
+//获取我所在团队及下级团队的人员列表（管理员获取所有团队下的人员列表）
+exports.getTeamTreeMemberLists = function(callback) {
+    //运营或管理员，获取所有的成员列表
+    if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
+        //获取所有的成员（不过滤停用的成员）
+        getAllUserList(true).then(list => {
+            _.isFunction(callback) && callback(_.map(list, item => {
+                return {
+                    user_id: _.get(item, 'userId', ''),
+                    nickname: _.get(item, 'nickName', '')
+                };
+            }));
+
+        }, function(errorMsg) {
+            console.log(errorMsg);
+        });
+    } else {//销售获取我所在团队及下级团的成员列表
+        getMyTeamTreeMemberList().then(list => {
+            _.isFunction(callback) && callback(_.map(list, item => {
+                return {
+                    user_id: _.get(item, 'user_id'),
+                    nickname: _.get(item, 'nick_name')
+                };
+            }));
+        }, function(errorMsg) {
+            console.log(errorMsg);
+        });
+    }
 };

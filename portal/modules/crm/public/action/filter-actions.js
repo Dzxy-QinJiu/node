@@ -1,8 +1,7 @@
 var FilterAjax = require('../ajax/filter-ajax');
-import {getMyTeamTreeAndFlattenList, getTeamAllMembersList, getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
+import {getMyTeamTreeAndFlattenList, getTeamTreeMemberLists} from 'PUB_DIR/sources/utils/common-data-util';
 import { altAsyncUtil } from 'ant-utils';
 const {asyncDispatcher} = altAsyncUtil;
-import userData from 'PUB_DIR/sources/user-data';
 
 function FilterAction() {
     this.generateActions(
@@ -49,31 +48,9 @@ function FilterAction() {
     };
     //获取负责人列表
     this.getOwnerList = function() {
-        //运营或管理员，获取所有的成员列表
-        if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
-            //获取所有的成员（不过滤停用的成员）
-            getAllUserList(true).then(list => {
-                this.dispatch(_.map(list, item => {
-                    return {
-                        user_id: _.get(item, 'userId', ''),
-                        nickname: _.get(item, 'nickName', '')
-                    };
-                }));
-            }, function(errorMsg) {
-                console.log(errorMsg);
-            });
-        } else {//销售获取我所在团队及下级团的成员列表
-            getTeamAllMembersList().then(list => {
-                this.dispatch(_.map(list, item => {
-                    return {
-                        user_id: _.get(item, 'user_id'),
-                        nickname: _.get(item, 'nick_name')
-                    };
-                }));
-            }, function(errorMsg) {
-                console.log(errorMsg);
-            });
-        }
+        getTeamTreeMemberLists((result) => {
+            this.dispatch(result);
+        });
     };
 
     this.getStageList = function() {

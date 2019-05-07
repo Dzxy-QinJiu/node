@@ -15,7 +15,7 @@ module.exports = {
     },{
         'method': 'get',
         'path': '/get/team/memberlists/:type',
-        'handler': 'getTeamAllMembersLists',
+        'handler': 'getMyTeamTreeMemberList',
         'passport': {
             'needLogin': true
         }

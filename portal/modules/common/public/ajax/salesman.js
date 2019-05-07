@@ -16,7 +16,7 @@ trans.register('teamAllMembersList', {url: `/get/team/memberlists/${memberPrivil
 exports.getSalesmanListAjax = function(filter_manager) {
     return trans.getAjax('salesmanList', {filter_manager: filter_manager ? true : false});
 };
-exports.getTeamAllMembersListsAjax = function(filter_disabled) {
-    return trans.getAjax('teamAllMembersList', {filter_disabled: filter_disabled ? true : false});
+exports.getMyTeamTreeMemberListAjax = function() {
+    return trans.getAjax('teamAllMembersList', {});
 };
 

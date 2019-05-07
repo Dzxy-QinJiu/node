@@ -2,8 +2,8 @@ var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 const _ = require('lodash');
 var urls = {
-    //获取团队中所有的成员列表
-    getTeamAllMembersLists: '/rest/base/v1/group/team/members/:type'
+    //获取我所在团队及下级团队的人员列表（管理员获取所有团队下的人员列表）
+    getMyTeamTreeMemberList: '/rest/base/v1/group/team/members/:type'
 };
 //获取销售人员列表
 exports.getSalesmanList = function(req, res) {
@@ -16,19 +16,11 @@ exports.getSalesmanList = function(req, res) {
 };
 
 //获取团队中所有的成员列表
-exports.getTeamAllMembersLists = function(req, res) {
+exports.getMyTeamTreeMemberList = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: urls.getTeamAllMembersLists.replace(':type',req.params.type),
+            url: urls.getMyTeamTreeMemberList.replace(':type',req.params.type),
             req: req,
             res: res
-        }, null,{
-            success: (emitter, data) => {
-                //是否需要过滤掉禁用的成员
-                if (_.get(req, 'query.filter_disabled') === 'true'){
-                    data = _.filter(data, item => item.status === 1);
-                }
-                emitter.emit('success', data);
-            }
-        });
+        }, null);
 };
