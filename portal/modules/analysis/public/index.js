@@ -287,12 +287,16 @@ class CurtaoAnalysis extends React.Component {
             isAppSelectorShow = true;
             adjustConditions = conditions => {
                 let defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY);
+
+                //当前是否在延期帐号页
+                const isDeferredAccountPage = page.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE;
+        
                 if (defaultAppId) {
-                    if (page.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE && defaultAppId === 'all') {
+                    if (isDeferredAccountPage && defaultAppId === 'all') {
                         defaultAppId = [_.get(Store.appList, '[1].app_id')];
                     }
                 } else {
-                    if (page.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE) {
+                    if (isDeferredAccountPage) {
                         defaultAppId = _.get(Store.appList, '[1].app_id');
                     } else {
                         defaultAppId = 'all';
@@ -413,10 +417,13 @@ class CurtaoAnalysis extends React.Component {
     }
 
     render() {
+        //当前是否在延期帐号页
+        const isDeferredAccountPage = this.state.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE;
+
         let appList = _.cloneDeep(Store.appList);
 
         //延期用户分析页不让选全部应用
-        if (this.state.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE) {
+        if (isDeferredAccountPage) {
             //去掉全部应用项
             appList.splice(0, 1);
         }
@@ -428,11 +435,11 @@ class CurtaoAnalysis extends React.Component {
         if (storedAppId) {
             defaultAppId = storedAppId.split(',');
 
-            if (this.state.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE && storedAppId === 'all') {
+            if (isDeferredAccountPage && storedAppId === 'all') {
                 defaultAppId = [_.get(Store.appList, '[1].app_id')];
             }
         } else {
-            if (this.state.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE) {
+            if (isDeferredAccountPage) {
                 defaultAppId = [_.get(Store.appList, '[1].app_id')];
             } else {
                 defaultAppId = ['all'];
@@ -456,6 +463,7 @@ class CurtaoAnalysis extends React.Component {
                                     storedAppIdKey={STORED_APP_ID_KEY}
                                     defaultValue={defaultAppId}
                                     appList={appList}
+                                    isDeferredAccountPage={isDeferredAccountPage}
                                 />
                             </div>
                         ) : null}
