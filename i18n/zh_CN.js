@@ -331,7 +331,7 @@ var zh_CN = {
     'user.exist.user': '已有用户',
     'user.user.add': '添加用户',
     'user.import.user': '导入用户',
-    'user.import.user.toplimit': '每次导入上限为300条用户',
+    'user.import.user.toplimit': '每次导入上限为300个用户',
     'user.import.user.template': '用户模板',
     'user.import.username.no.match.rule': '用户名不符合规则',
     'user.import.phone.no.match.rule': '手机号不符合规则',
