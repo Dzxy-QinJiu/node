@@ -593,29 +593,38 @@ class CrmFilterPanel extends React.Component {
         if (!userData.getUserData().isCommonSales) {
             let salesTeamId = _.get(this.state, 'condition.sales_team_id', '');
             let ownerList = [];
-            //如果选了团队，负责人列表为该团队内的人
+            //如果选了团队，负责人列表为选中团队内的人
             if (salesTeamId) {
-                let team = this.getTeamFromTree(this.state.teamTreeList, salesTeamId);
-                //获取团队及下级团队的成员id
-                let memberIds = this.traverseTeamMember([team]);
+                let selectedTeamIds = salesTeamId.split(',');
+                let memberIds = [];
+                _.each(selectedTeamIds, teamId => {
+                    let team = this.getTeamFromTree(this.state.teamTreeList, teamId);
+                    //获取团队及下级团队的成员id
+                    let curTeamMemberIds = this.traverseTeamMember([team]);
+                    memberIds = _.concat(memberIds, curTeamMemberIds);
+                });
+                //去重，父子团队都选中时，会有重复的情况
+                memberIds = _.uniq(memberIds);
                 //过滤掉不是该团队内的成员
                 ownerList = _.filter(this.state.ownerList, owner => _.indexOf(memberIds, owner.user_id) !== -1);
             } else {
                 ownerList = this.state.ownerList;
             }
-            let ownerNameList = _.uniq(_.map(ownerList, 'nickname'));
+            let ownerNameList = _.uniqBy(ownerList, 'nickname');
             if (_.get(ownerList, 'length')) {
                 advancedData.unshift({
                     groupName: Intl.get('crm.6', '负责人'),
                     groupId: 'user_name',
                     singleSelect: true,
                     data: _.map(ownerNameList, x => ({
-                        name: x,
-                        value: x,
-                        selected: x === _.get(this.state, 'condition.user_name', '')
+                        name: x.nickname,
+                        value: x.nickname,
+                        selected: x.nickname === _.get(this.state, 'condition.user_name', '')
                     }))
                 });
             }
+            //已选中的销售角色列表
+            let selectedRoles = _.get(this.state, 'condition.member_role', '').split(',');
             advancedData.unshift(
                 {
                     groupName: Intl.get('crm.detail.sales.role', '销售角色'),
@@ -623,7 +632,7 @@ class CrmFilterPanel extends React.Component {
                     data: _.drop(this.state.salesRoleList).map(x => ({
                         name: x.show_name,
                         value: x.name,
-                        selected: x.name === _.get(this.state, 'condition.member_role', '')
+                        selected: _.indexOf(selectedRoles, x.name) !== -1
                     }))
                 },
                 {
@@ -632,7 +641,7 @@ class CrmFilterPanel extends React.Component {
                     data: _.drop(this.state.teamList).map(x => ({
                         name: x.group_name,
                         value: x.group_id,
-                        selected: x.group_id === salesTeamId
+                        selected: _.indexOf(salesTeamId.split(','), x.group_id) !== -1
                     }))
                 }
             );
