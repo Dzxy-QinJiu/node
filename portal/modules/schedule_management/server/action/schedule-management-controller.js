@@ -16,14 +16,6 @@ exports.handleScheduleStatus = function(req, res) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
-
-
-
-
-
-
-
-
 exports.addSchedule = function(req, res) {
     scheduleService.addSchedule(req, res)
         .on('success', function(data) {
