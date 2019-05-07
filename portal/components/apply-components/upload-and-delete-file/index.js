@@ -454,7 +454,7 @@ UploadAndDeleteFile.defaultProps = {
 
     },
     fileList: [],
-    salesUploadAndDeletePrivilege: false,
+    salesUploadAndDeletePrivilege: true,
     approverUploadAndDeletePrivilege: false,
     selectType: [],
 
