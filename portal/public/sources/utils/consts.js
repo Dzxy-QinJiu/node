@@ -490,3 +490,8 @@ export const DATE_SELECT = [
 ];
 //为配置坐席号的错误提示
 export const PHONE_NOT_SETTING_TIP = '未绑定座席号!';
+//上传文件是计算单个文件大小还是计算总文件大小
+export const FILES_LIMIT = {
+    TOTAL: 'total',
+    SINGLE: 'single'
+};

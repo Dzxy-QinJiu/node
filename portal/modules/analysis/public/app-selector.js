@@ -15,13 +15,16 @@ class AppSelector extends React.Component {
         //外部条件默认值
         defaultValue: ['all'],
         //应用列表
-        appList: []
+        appList: [],
+        //选择模式，默认多选
+        selectMode: 'multiple'
     };
 
     static propTypes = {
         storedAppIdKey: PropTypes.string,
         defaultValue: PropTypes.string,
         appList: PropTypes.array,
+        selectMode: PropTypes.string
     };
 
     constructor(props) {
@@ -67,12 +70,13 @@ class AppSelector extends React.Component {
 
     render() {
         const appList = this.props.appList;
+        const selectMode = this.props.selectMode;
 
         return (
             <div className='app-selector'>
                 {_.isEmpty(appList) ? null : (
                     <Select
-                        mode="multiple"
+                        mode={selectMode}
                         value={this.state.selectedApp}
                         onChange={this.onAppChange}
                         dropdownMatchSelectWidth={false}

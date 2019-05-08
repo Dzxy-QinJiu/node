@@ -15,7 +15,7 @@ const FORMLAYOUT = {
 };
 var user = require('PUB_DIR/sources/user-data').getUserData();
 import AlertTimer from 'CMP_DIR/alert-timer';
-import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
+import {DELAY_TIME_RANGE, FILES_LIMIT} from 'PUB_DIR/sources/utils/consts';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import Trace from 'LIB_DIR/trace';
@@ -306,6 +306,7 @@ class AddReportSendApply extends React.Component {
                                         beforeUpload = {this.beforeUpload}
                                         fileList={this.state.fileList}
                                         fileRemove={this.fileRemove}
+                                        uploadAndDeletePrivilege={FILES_LIMIT.TOTAL}
                                     />
                                     <div className="submit-button-container">
                                         <Button type="primary" className="submit-btn" onClick={this.handleSubmit}

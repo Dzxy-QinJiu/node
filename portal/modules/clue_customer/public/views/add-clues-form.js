@@ -221,6 +221,11 @@ class ClueAddForm extends React.Component {
         }, 1000);
 
     };
+    hideContactRequired = () => {
+        this.setState({
+            contactErrMsg: ''
+        });
+    };
     render() {
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const formItemLayout = {
@@ -299,6 +304,7 @@ class ClueAddForm extends React.Component {
                                 {...formItemLayout}
                             >
                                 <DynamicAddDelContact
+                                    hideContactRequired={this.hideContactRequired}
                                     validateContactName={contactNameRule()}
                                     form={this.props.form} />
                             </FormItem>

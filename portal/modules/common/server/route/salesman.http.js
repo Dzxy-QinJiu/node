@@ -12,5 +12,12 @@ module.exports = {
             'needLogin': true
         },
         'privileges': []
+    },{
+        'method': 'get',
+        'path': '/get/team/memberlists/:type',
+        'handler': 'getMyTeamTreeMemberList',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

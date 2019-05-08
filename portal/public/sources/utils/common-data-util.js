@@ -3,7 +3,7 @@ import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import teamAjaxTrans from 'MOD_DIR/common/public/ajax/team';
 import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
 import {storageUtil} from 'ant-utils';
-import {traversingTeamTree, getParamByPrivilege,hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import {traversingTeamTree, getParamByPrivilege, hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {message} from 'antd';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {getCallClient, isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
@@ -18,6 +18,7 @@ let dealStageList = [];
 let allUserList = [];
 // 销售列表
 let salesmanList = [];
+let myTeamTreeMemberList = [];//我所在团队及下级团队的人员列表（管理员返回所有团队下的人员列表）
 //缓存在sessionStorage中的我能查看的团队
 const MY_TEAM_TREE_KEY = 'my_team_tree';
 const AUTH_MAP = {
@@ -26,6 +27,7 @@ const AUTH_MAP = {
 import {DIFF_TYPE_LOG_FILES, AM_AND_PM} from './consts';
 import {isEqualArray} from 'LIB_DIR/func';
 import userData from 'PUB_DIR/sources/user-data';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 //获取oplate中的应用
 exports.getAppList = function(cb) {
     if (_.get(appList, '[0]')) {
@@ -79,9 +81,9 @@ const getAllUserList = function(notFilterStop) {
     return new Promise((resolve, reject) => {
         if (_.get(allUserList, '[0]')) {
             //过滤停用的成员
-            if(!notFilterStop){
+            if (!notFilterStop) {
                 resolve(_.filter(allUserList, sales => sales && sales.status === 1));
-            }else{//不过滤停用的成员
+            } else {//不过滤停用的成员
                 resolve(allUserList);
             }
         } else {
@@ -94,9 +96,9 @@ const getAllUserList = function(notFilterStop) {
                     if (_.isArray(result.data)) {
                         allUserList = result.data;
                         //过滤停用的成员
-                        if(!notFilterStop){
+                        if (!notFilterStop) {
                             resolve(_.filter(allUserList, sales => sales && sales.status === 1));
-                        }else{//不过滤停用的成员
+                        } else {//不过滤停用的成员
                             resolve(allUserList);
                         }
                     }
@@ -136,6 +138,43 @@ const getSalesmanList = function() {
     });
 };
 exports.getSalesmanList = getSalesmanList;
+function filterDisabledMembers(memberLists) {
+    return _.filter(memberLists, item => item.status === 1);
+}
+const getMyTeamTreeMemberList = function(filter_disabled) {
+    return new Promise((resolve, reject) => {
+        if (_.get(myTeamTreeMemberList, '[0]')) {
+            var data = myTeamTreeMemberList;
+            if (filter_disabled){
+                data = filterDisabledMembers(data);
+            }
+            resolve(data);
+        } else {
+            var type = 'self';
+            if (hasPrivilege('GET_TEAM_MEMBERS_ALL')){
+                type = 'all';
+            }
+            salesmanAjax.getMyTeamTreeMemberListAjax().resolvePath({
+                type: type
+            }).sendRequest({}).success(result => {
+                if (_.isArray(result)) {
+                    myTeamTreeMemberList = result;
+                    if (filter_disabled){
+                        result = filterDisabledMembers(result);
+                    }
+                    resolve(result);
+                }
+            }).error(() => {
+                myTeamTreeMemberList = [];
+                resolve(myTeamTreeMemberList);
+            }).timeout(() => {
+                myTeamTreeMemberList = [];
+                resolve(myTeamTreeMemberList);
+            });
+        }
+    });
+};
+exports.getMyTeamTreeMemberList = getMyTeamTreeMemberList;
 
 // 返回所有成员列表和销售列表的组合数据
 exports.getAllSalesUserList = function(cb) {
@@ -302,11 +341,11 @@ exports.hasApprovedReportAndDocumentApply = function(approverIds) {
     }
 };
 
-function calculateTimeRange(beginType,endType) {
+function calculateTimeRange(beginType, endType) {
     var timeRange = '';
-    if (beginType === endType){
+    if (beginType === endType) {
         timeRange = 0.5;
-    }else if (beginType === AM_AND_PM.AM && endType === AM_AND_PM.PM){
+    } else if (beginType === AM_AND_PM.AM && endType === AM_AND_PM.PM) {
         timeRange = 1;
     }
     return timeRange;
@@ -401,7 +440,7 @@ exports.getIntegrationConfig = function() {
 //获取已集成的产品列表
 exports.getProductList = function(cb, isRefresh) {
     //需要刷新产品列表或产品列表中没有数据时，发请求获取已集成的产品列表
-    if(isRefresh || !_.get(integrationProductList, '[0]')){
+    if (isRefresh || !_.get(integrationProductList, '[0]')) {
         $.ajax({
             url: '/rest/product',
             type: 'get',
@@ -430,9 +469,9 @@ function isRealmManager() {
 //点击电话后不可拨打的提示
 exports.showDisabledCallTip = function() {
     //是否是管理员
-    if (isRealmManager()){
+    if (isRealmManager()) {
         return Intl.get('manager.role.has.not.setting.phone.systerm', '您尚未开通电话系统或未设置座席号!');
-    }else{
+    } else {
         return Intl.get('sales.role.has.not.setting.phone.systerm', '您尚未开通电话系统或未设置座席号，请通知管理员!');
     }
 };
@@ -468,13 +507,42 @@ exports.uniqueObjectOfArray = (arr) => {
     _.each(arr, (originalItem) => { // 循环arr重复数组对象的内容
         let flag = true; // 建立标记，判断数据是否重复，true为不重复
         _.each(unique, (uniqueItem) => {
-            if(originalItem.field === uniqueItem.field && originalItem.detail === uniqueItem.detail){ //让arr数组对象的内容与新数组的内容作比较，相同的话，改变标记为false
+            if (originalItem.field === uniqueItem.field && originalItem.detail === uniqueItem.detail) { //让arr数组对象的内容与新数组的内容作比较，相同的话，改变标记为false
                 flag = false;
             }
         });
-        if(flag){ //判断是否重复
+        if (flag) { //判断是否重复
             unique.push(originalItem); //不重复的放入新数组。
         }
     });
     return unique;
+};
+//获取我所在团队及下级团队的人员列表（管理员获取所有团队下的人员列表）
+exports.getTeamTreeMemberLists = function(callback) {
+    //运营或管理员，获取所有的成员列表
+    if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
+        //获取所有的成员（不过滤停用的成员）
+        getAllUserList(true).then(list => {
+            _.isFunction(callback) && callback(_.map(list, item => {
+                return {
+                    user_id: _.get(item, 'userId', ''),
+                    nickname: _.get(item, 'nickName', '')
+                };
+            }));
+
+        }, function(errorMsg) {
+            console.log(errorMsg);
+        });
+    } else {//销售获取我所在团队及下级团的成员列表
+        getMyTeamTreeMemberList().then(list => {
+            _.isFunction(callback) && callback(_.map(list, item => {
+                return {
+                    user_id: _.get(item, 'user_id'),
+                    nickname: _.get(item, 'nick_name')
+                };
+            }));
+        }, function(errorMsg) {
+            console.log(errorMsg);
+        });
+    }
 };
