@@ -831,7 +831,7 @@ class ClueCustomer extends React.Component {
             {
                 title: Intl.get('crm.sales.clue', '线索'),
                 dataIndex: 'clue_name',
-                width: '300px',
+                width: '350px',
                 render: (text, salesClueItem, index) => {
                     return (
                         <div className="clue-top-title" >
@@ -933,7 +933,7 @@ class ClueCustomer extends React.Component {
                 title: Intl.get('clue.customer.associate.customer', '关联客户'),
                 dataIndex: 'assocaite_customer',
                 className: 'invalid-td-clue',
-                width: '350px',
+                width: '300px',
                 render: (text, salesClueItem, index) => {
                     //是有效线索
                     let availability = salesClueItem.availability !== '1';
