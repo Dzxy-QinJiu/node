@@ -32,7 +32,7 @@ const salesmanAjax = require('MOD_DIR/common/public/ajax/salesman');
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE, FILES_LIMIT} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 
@@ -590,23 +590,20 @@ class ApplyViewDetail extends React.Component {
         var detailInfoObj = this.state.detailInfoObj.info;
         var hasApproved = hasApprovedReportAndDocumentApply(_.get(detailInfoObj,'approver_ids',[]));
         //销售可以继续添加或者删除上传的文件
-        var salesUploadAndDeletePrivilege = false;
+        var uploadAndDeletePrivilege = '';
         let user_id = userData.getUserData().user_id;
         if (_.get(detailInfoObj,'applicant.user_id') === user_id && detailInfoObj.status === 'ongoing' && !hasApproved){
-            salesUploadAndDeletePrivilege = true;
+            uploadAndDeletePrivilege = FILES_LIMIT.TOTAL;
         }
-
-        //管理员可以继续添加或者删除上传的文件
-        var approverUploadAndDeletePrivilege = false;
+        //确认后支持部可以继续添加或者删除上传的文件
         if (detailInfoObj.status === 'ongoing' && hasApproved && detailInfoObj.showApproveBtn){
-            approverUploadAndDeletePrivilege = true;
+            uploadAndDeletePrivilege = FILES_LIMIT.SINGLE;
         }
         return (<UploadAndDeleteFile
             detailInfoObj={detailInfoObj}
             setUpdateFiles={this.setUpdateFiles}
             fileList={_.get(detailInfoObj,'detail.file_upload_logs')}
-            salesUploadAndDeletePrivilege={salesUploadAndDeletePrivilege}
-            approverUploadAndDeletePrivilege={approverUploadAndDeletePrivilege}
+            uploadAndDeletePrivilege={uploadAndDeletePrivilege}
             selectType={DOCUMENT_TYPE}
         />);
     };

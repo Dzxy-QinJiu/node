@@ -19,7 +19,7 @@ import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
-import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS,FILES_LIMIT} from 'PUB_DIR/sources/utils/consts';
 import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc, getFilterReplyList,handleDiffTypeApply,getReportSendApplyStatusTimeLineDesc,formatUsersmanList,updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import {REPORT_TYPE,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
@@ -594,24 +594,20 @@ class ApplyViewDetail extends React.Component {
         var detailInfoObj = this.state.detailInfoObj.info;
         var hasApproved = hasApprovedReportAndDocumentApply(_.get(detailInfoObj,'approver_ids',[]));
         //销售可以继续添加或者删除上传的文件
-        var salesUploadAndDeletePrivilege = false;
+        var uploadAndDeletePrivilege = '';
         let user_id = userData.getUserData().user_id;
         if (_.get(detailInfoObj,'applicant.user_id') === user_id && detailInfoObj.status === 'ongoing' && !hasApproved){
-            salesUploadAndDeletePrivilege = true;
+            uploadAndDeletePrivilege = FILES_LIMIT.TOTAL;
         }
-
-        //管理员可以继续添加或者删除上传的文件
-        var approverUploadAndDeletePrivilege = false;
         if (detailInfoObj.status === 'ongoing' && hasApproved && detailInfoObj.showApproveBtn){
-            approverUploadAndDeletePrivilege = true;
+            uploadAndDeletePrivilege = FILES_LIMIT.SINGLE;
         }
         return (
             <UploadAndDeleteFile
                 detailInfoObj={detailInfoObj}
                 setUpdateFiles={this.setUpdateFiles}
                 fileList={_.get(detailInfoObj,'detail.file_upload_logs')}
-                salesUploadAndDeletePrivilege={salesUploadAndDeletePrivilege}
-                approverUploadAndDeletePrivilege={approverUploadAndDeletePrivilege}
+                uploadAndDeletePrivilege={uploadAndDeletePrivilege}
                 selectType={REPORT_TYPE}
             />
         );
