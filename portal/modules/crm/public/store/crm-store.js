@@ -210,7 +210,14 @@ CrmStore.prototype.updateCustomerDefContact = function(contact) {
             delete updateCustomer.contact_name;//删除后端返回的默认联系人姓名
             delete updateCustomer.phones;//删除后端返回的默认联系人电话
         }else{
-            updateCustomer.contacts = [contact];
+            let updateContact = _.get(updateCustomer, 'contacts[0]', {});
+            //单项修改时的更新
+            if(contact.property){
+                updateContact[contact.property] = contact[contact.property];
+            }else{//添加默认联系人时的更新
+                updateContact = contact;
+            }
+            updateCustomer.contacts = [updateContact];
         }
     }
 };
