@@ -19,7 +19,7 @@ const Avatar = require('CMP_DIR/Avatar');
 const Option = Select.Option;
 const TopNav = require('CMP_DIR/top-nav');
 const STORED_MEMBER_ID_KEY = 'sales_report_selected_member_id';
-const authType = hasPrivilege('CALL_RECORD_VIEW_MANAGER') ? 'manager' : 'user';
+const authType = hasPrivilege('CALL_RECORD_VIEW_MANAGER') ? 'manager' : 'common';
 const dataType = hasPrivilege('GET_TEAM_LIST_ALL') ? 'all' : 'self';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 //销售角色
