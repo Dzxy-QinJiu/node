@@ -104,25 +104,30 @@ class MemberApply extends React.Component {
         });
         return (
             <div className={memberApproveCls}>
-                <div className='member-invite-title'>{Intl.get('member.apply.who.invite', '{who}的邀请', {who: applicantName})}</div>
-                <div className="apply-info-content">
-                    <div className='apply-item'>{Intl.get('common.name', '姓名')}: {nickname}</div>
-                    <div className='apply-item'>{Intl.get('common.email', '邮箱')}: {email}</div>
-                    {
-                        teamId ? (
-                            <div className='apply-item'>{Intl.get('common.belong.team', '所属团队')}: {teamName}</div>
-                        ) : null
-                    }
-                    <div className='apply-item'>{Intl.get('common.role', '角色')}: {roleName}</div>
+                <div className='approve-content'>
+                    <div className='member-invite-title'>{Intl.get('member.apply.who.invite', '{who}的邀请', {who: applicantName})}</div>
+                    <div className="apply-info-content">
+                        <div className='apply-item'>{Intl.get('common.name', '姓名')}: {nickname}</div>
+                        <div className='apply-item'>{Intl.get('common.email', '邮箱')}: {email}</div>
+                        {
+                            teamId ? (
+                                <div className='apply-item'>{Intl.get('common.belong.team', '所属团队')}: {teamName}</div>
+                            ) : null
+                        }
+                        <div className='apply-item'>{Intl.get('common.role', '角色')}: {roleName}</div>
+                    </div>
                 </div>
-                <SaveCancelButton
-                    loading={this.state.loading}
-                    saveErrorMsg={this.state.applyResult !== '' ? this.renderApproveMsg() : ''}
-                    handleSubmit={this.submitApprovalForm.bind(this, 'pass')}
-                    handleCancel={this.submitApprovalForm.bind(this, 'reject')}
-                    okBtnText={Intl.get('user.apply.detail.button.pass', '通过')}
-                    cancelBtnText={Intl.get('common.apply.reject', '驳回')}
-                />
+
+                <div className='approve-btn'>
+                    <SaveCancelButton
+                        loading={this.state.loading}
+                        saveErrorMsg={this.state.applyResult !== '' ? this.renderApproveMsg() : ''}
+                        handleSubmit={this.submitApprovalForm.bind(this, 'pass')}
+                        handleCancel={this.submitApprovalForm.bind(this, 'reject')}
+                        okBtnText={Intl.get('user.apply.detail.button.pass', '通过')}
+                        cancelBtnText={Intl.get('common.apply.reject', '驳回')}
+                    />
+                </div>
             </div>
         );
     }

@@ -371,7 +371,7 @@
       }
       // 成员审批样式
       .member-apply-container {
-        padding: 10px;
+        width: 100%;
         .next-approve-member {
           animation: member-apply 2s;
           -moz-animation: member-apply 2s; /* Firefox */
@@ -407,17 +407,24 @@
           100% {opacity: 1;}
         }
         .member-approve {
-          .member-invite-title {
-            font-size: 14px;
-            font-weight: bold;
-            padding: 5px 0;
-          }
-          .apply-info-content {
-            color: #75797c;
-            .apply-item {
-              padding-bottom: 5px;
+          .approve-content {
+            padding: 10px;
+            .member-invite-title {
+              font-size: 14px;
+              font-weight: bold;
+              padding: 5px 0;
             }
+            .apply-info-content {
+              color: #75797c;
+              .apply-item {
+                padding-bottom: 5px;
+              }
+            }
+          }
+          .approve-btn {
+            padding-bottom: 10px;
             .button-container {
+              margin-top: 0;
               .save-error {
                 .approve-failed {
                   font-size: 12px;
