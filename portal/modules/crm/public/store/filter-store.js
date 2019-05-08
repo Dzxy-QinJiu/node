@@ -34,7 +34,7 @@ function FilterStore() {
 FilterStore.prototype.setInitialCondition = function() {
     this.condition = {
         sales_team_id: '',
-        user_id: '',//负责人
+        user_name: '',//负责人
         industry: '',
         province: '',
         app_ids: [''],

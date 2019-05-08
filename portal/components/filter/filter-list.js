@@ -116,14 +116,24 @@ class FilterList extends React.Component {
             collapsedCommon: false
         });
     }
+    //获取清空所有选中项后的高级选项的数据
+    getClearSelectedAdvancedData(){
+        return _.map(this.state.rawAdvancedData, item => {
+            let data = _.map(item.data, x => {
+                return {...x, selected: false};
+            });
+            return {...item, data};
+        });
+    }
     handleClearAll() {
+        let advancedData = this.getClearSelectedAdvancedData();
         this.setState({
-            advancedData: this.state.rawAdvancedData,
+            advancedData,
             selectedCommonIndex: ''
         }, () => {
             //发送选择筛选项事件
             filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, []);
-            this.props.onFilterChange(this.processSelectedFilters(this.state.advancedData));
+            this.props.onFilterChange(this.processSelectedFilters(advancedData));
         });
     }
     clearSelect(groupName) {
@@ -331,7 +341,7 @@ class FilterList extends React.Component {
                 //已有选择的常用筛选，清空之前选择的常用筛选中的高级筛选
                 if (this.state.selectedCommonIndex) {
                     this.setState({
-                        advancedData: this.state.rawAdvancedData
+                        advancedData: this.getClearSelectedAdvancedData()
                     }, () => {
                         handleCommon();
                     });
