@@ -372,7 +372,6 @@
       // 成员审批样式
       .member-apply-container {
         padding: 10px;
-        min-height: 165px;
         .next-approve-member {
           animation: member-apply 2s;
         }
@@ -395,10 +394,36 @@
               padding-bottom: 5px;
             }
           }
-          .approve-failed {
-            .failed-handle {
-              cursor: pointer;
+          .approve-success {
+            .alert-timer {
+              .ant-alert.ant-alert-no-icon {
+                padding: 0;
+              }
+              .ant-alert-success {
+                border: none;
+                background-color: #ffffff;
+                .ant-alert-message {
+                  font-size: 14px;
+                  color: #0e77ca;
+                }
+              }
             }
+          }
+        }
+        .approve-continer-team-tips {
+          @media (max-width: 1440px) {
+            min-height: 190px;
+          }
+          .approve-success,.approve-failed {
+            padding-top: 5px;
+          }
+        }
+        .approve-continer-tips {
+          @media (max-width: 1440px) {
+            min-height: 170px;
+          }
+          .approve-success,.approve-failed {
+            padding-top: 5px;
           }
         }
       }

@@ -53,12 +53,6 @@ class CrmRightList extends React.Component {
                 }, delayConstant);
             });
         }
-        // 有审批权限时，并且待审批的信息已审批完时，重新获取待我审批的邀请成员列表
-        if (hasPrivilege('MEMBER_INVITE_MANAGE')) {
-            if (nextProps.isGetMemberApplyList) {
-                SalesHomeAction.getPendingApproveMemberApplyList();
-            }
-        }
     }
 
     //获取销售角色列表
@@ -543,6 +537,10 @@ class CrmRightList extends React.Component {
     // 处理成员审批
     handleMemberApprove = (flag) => {
         SalesHomeAction.handleMemberApprove(flag);
+        let pendingLength = _.get(this.props.pendingApproveMemberObj, 'list.length');
+        if (pendingLength === 0) {
+            SalesHomeAction.getPendingApproveMemberApplyList();
+        }
     };
 
     renderPendingApproveMemberContent = () => {

@@ -41,14 +41,14 @@ class MemberApply extends React.Component {
                 this.setState({
                     loading: false,
                     applyResult: 'error',
-                    applyResultMsg: Intl.get('fail.apply.approve.result','审批失败')
+                    applyResultMsg: Intl.get('member.apply.approve.tips','操作失败')
                 });
             }
-        }, () => {
+        }, (errMsg) => {
             this.setState({
                 loading: false,
                 applyResult: 'error',
-                applyResultMsg: Intl.get('fail.apply.approve.result','审批失败')
+                applyResultMsg: errMsg || Intl.get('member.apply.approve.tips','操作失败')
             });
         });
     };
@@ -63,25 +63,22 @@ class MemberApply extends React.Component {
     };
 
     hideTooltip = () => {
-        this.props.memberApprove(true);
-        this.setState({
-            applyResult: '',
-            applyResultMsg: ''
-        });
+        this.handleApproveFail();
     };
 
     renderApproveMsg = () => {
-        if (this.state.applyResult === 'success' && this.state.applyResultMsg) {
+        if (this.state.applyResult === 'success') {
             return (
-                <div>
+                <div className='approve-success'>
                     <AlertTimer
-                        time={2000}
+                        time={1000}
                         message={this.state.applyResultMsg}
                         type='success'
                         onHide={this.hideTooltip}
                     />
                 </div>
             );
+
         } else if (this.state.applyResult === 'error') {
             return (
                 <div className='approve-failed'>
@@ -103,7 +100,9 @@ class MemberApply extends React.Component {
         let applicant = _.get(pendingMemberInfo, 'applicant');
         let applicantName = _.get(applicant, 'nick_name');
         let memberApproveCls = classNames('member-approve',{
-            'next-approve-member': this.state.applyResult === 'error' || this.state.applyResult === 'success' ,
+            'next-approve-member': !this.state.applyResult,
+            'approve-continer-team-tips': this.state.applyResultMsg && teamId,
+            'approve-continer-tips': this.state.applyResultMsg && !teamId
         });
         return (
             <div className={memberApproveCls}>
