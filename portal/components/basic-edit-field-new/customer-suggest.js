@@ -12,6 +12,7 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
+import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 
 class CustomerSuggest extends React.Component {
     static defaultProps = {
@@ -282,7 +283,8 @@ class CustomerSuggest extends React.Component {
         this.suggestChange(search_input_val);
     };
     getNoCustomerTip = () => {
-        return this.props.canCreateCustomer && userData.getUserData().privileges.indexOf('CRM_CUSTOMER_INFO_EDIT') >= 0;
+
+        return this.props.canCreateCustomer && hasPrivilege('CRM_CUSTOMER_INFO_EDIT');
     };
     getSearchValue = () => {
         var $search_input = this.getCustomerSearchInput();
