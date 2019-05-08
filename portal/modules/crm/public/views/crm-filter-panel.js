@@ -528,6 +528,7 @@ class CrmFilterPanel extends React.Component {
                     }))
             }
         ];
+        var ownerList = _.uniqBy(this.state.ownerList, 'nickname');
         //非普通销售才有销售角色和团队
         if (!userData.getUserData().isCommonSales) {
             advancedData.unshift(
@@ -549,11 +550,11 @@ class CrmFilterPanel extends React.Component {
                 },
                 {
                     groupName: Intl.get('crm.6', '负责人'),
-                    groupId: 'user_id',
+                    groupId: 'user_name',
                     singleSelect: true,
-                    data: _.map(this.state.ownerList, x => ({
+                    data: _.map(ownerList, x => ({
                         name: x.nickname,
-                        value: x.user_id
+                        value: x.nickname
                     }))
                 }
             );
