@@ -289,7 +289,7 @@ class CurtaoAnalysis extends React.Component {
                 let defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY);
 
                 //当前是否在延期帐号页
-                const isDeferredAccountPage = page.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE;
+                const isDeferredAccountPage = this.getIsDeferredAccountPage(page.title);
         
                 if (defaultAppId) {
                     if (isDeferredAccountPage && defaultAppId === 'all') {
@@ -416,9 +416,14 @@ class CurtaoAnalysis extends React.Component {
         }];
     }
 
+    //获取当前是否在延期帐号页
+    getIsDeferredAccountPage(pageTitle = this.state.currentPage.title) {
+        return pageTitle === DEFERRED_ACCOUNT_ANALYSIS_TITLE;
+    }
+
     render() {
         //当前是否在延期帐号页
-        const isDeferredAccountPage = this.state.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE;
+        const isDeferredAccountPage = this.getIsDeferredAccountPage();
 
         let appList = _.cloneDeep(Store.appList);
         //应用选择模式
