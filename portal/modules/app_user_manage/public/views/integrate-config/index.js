@@ -11,8 +11,10 @@ import Logo from 'CMP_DIR/Logo';
 import {Link} from 'react-router-dom';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import {getUemJSCode} from 'PUB_DIR/sources/utils/uem-js-code';
+import classNames from 'classnames';
 const matomoSrc = require('./matomo.png');
 const oplateSrc = require('./oplate.png');
+
 class IntegrateConfigView extends React.Component {
     constructor(props) {
         super(props);
@@ -112,8 +114,11 @@ class IntegrateConfigView extends React.Component {
         let integrateConfigUrl = '/background_management/integration';
         let addProduct = this.state.addProduct;
         let jsCode = _.get(addProduct, 'integration_id') ? getUemJSCode(addProduct.integration_id) : '';
+        let integrateConfigCls = classNames('integrate-config-wrap', {
+            'js-code-show': _.get(addProduct, 'name')
+        });
         return (
-            <div className="integrate-config-wrap">
+            <div className={integrateConfigCls}>
                 <div className="access-step-tip">{Intl.get('user.access.steps.tip', '您还没有接入用户，请按照下面流程接入用户')}</div>
                 <div className="curtao-access-wrap">
                     {_.get(addProduct, 'name') ? (
