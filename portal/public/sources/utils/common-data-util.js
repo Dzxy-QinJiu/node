@@ -27,6 +27,7 @@ const AUTH_MAP = {
 import {DIFF_TYPE_LOG_FILES, AM_AND_PM} from './consts';
 import {isEqualArray} from 'LIB_DIR/func';
 import userData from 'PUB_DIR/sources/user-data';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 //获取oplate中的应用
 exports.getAppList = function(cb) {
     if (_.get(appList, '[0]')) {
@@ -149,7 +150,13 @@ const getMyTeamTreeMemberList = function(filter_disabled) {
             }
             resolve(data);
         } else {
-            salesmanAjax.getMyTeamTreeMemberListAjax().sendRequest({}).success(result => {
+            var type = 'self';
+            if (hasPrivilege('GET_TEAM_MEMBERS_ALL')){
+                type = 'all';
+            }
+            salesmanAjax.getMyTeamTreeMemberListAjax().resolvePath({
+                type: type
+            }).sendRequest({}).success(result => {
                 if (_.isArray(result)) {
                     myTeamTreeMemberList = result;
                     if (filter_disabled){
