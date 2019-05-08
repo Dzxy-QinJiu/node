@@ -18,10 +18,7 @@
     "dev": "npm run gen-route  && node devserver.js -d",
     "gen-route": "node ./portal/generator/generateRoute.js",
     "start": "node app.js -p",
-    "build": "npm run gen-route && npm run dll && npm run webpack && npm run server",
-    "production": "npm run build && npm run start",
-    "precommit": "lint-staged",
-    "eslint_fix": "eslint --fix  --ext .jsx,.js ./  -o eslint-fix.log"
+    "build": "npm run gen-route && npm run dll && npm run webpack && npm run server"
   },
   "lint-staged": {
     "*.{js,jsx}": [

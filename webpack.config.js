@@ -137,15 +137,6 @@ var loadersLists = [
             path.resolve(__dirname, 'portal'),
             path.resolve(__dirname, 'node_modules/antc')
         ]
-    },
-    {
-        test: /\.json$/,
-        use: [
-            {loader: 'json'}
-        ],
-        include: [
-            path.resolve(__dirname, 'portal')
-        ]
     }
 ];
 //webpack的plugins列表

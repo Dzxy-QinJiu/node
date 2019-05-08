@@ -291,6 +291,14 @@ let routers = [
                 component: `${MODULE_PATH}production-manage/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['PRODUCTS_MANAGE']
+            },
+            {
+                id: 'APPLY_APPROVE',
+                name: 'config.apply.manage',//申请审批管理
+                routePath: '/background_management/apply_approve',
+                component: `${MODULE_PATH}apply_approve_manage/public`,
+                //todo 权限名称待修改= 有这个权限，才显示入口图标
+                showPrivileges: ['PRODUCTS_MANAGE']
             }
         ]
     },
