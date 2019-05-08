@@ -74,6 +74,7 @@ class PhoneInput extends React.Component {
                     <Input
                         placeholder={this.props.placeholder}
                         data-tracename="填写新建联系人的电话"
+                        onChange={this.props.handleInputChange}
                     />
                 )}
                 {this.props.suffix}
@@ -94,7 +95,8 @@ PhoneInput.defaultProps = {
     validateRules: [],
     hideLable: false,
     id: '',
-    form: {}
+    form: {},
+    handleInputChange: noop,
 };
 PhoneInput.propTypes = {
     label: PropTypes.string,
@@ -109,6 +111,7 @@ PhoneInput.propTypes = {
     hideLable: PropTypes.bool,
     id: PropTypes.string,
     form: PropTypes.object,
+    handleInputChange: PropTypes.func,
 };
 
 const options = {

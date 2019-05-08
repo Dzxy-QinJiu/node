@@ -193,6 +193,7 @@ class DynamicAddDelContacts extends React.Component {
                                     colon={false}
                                     form={this.props.form}
                                     label={phoneIndex === 0 ? Intl.get('common.phone', '电话') : ' '}
+                                    handleInputChange={this.setPhoneValue}
                                 />
                                 {this.renderContactWayBtns(index, phoneIndex, phoneArray.length, 'phone', phone.key)}
                             </div>);
@@ -210,6 +211,17 @@ class DynamicAddDelContacts extends React.Component {
             </div>
         );
     }
+    handleInputChange = (e) => {
+        var value = _.trim(e.target.value);
+        if (value){
+            this.props.hideContactRequired();
+        }
+    };
+    setPhoneValue = (obj) => {
+        if (_.get(obj,'target.value','')){
+            this.props.hideContactRequired();
+        }
+    };
 
     /**
      *  渲染某一个联系方式
@@ -242,7 +254,7 @@ class DynamicAddDelContacts extends React.Component {
                         initialValue: contactWayValue,
                         rules: rules,
                     })(
-                        <Input className='contact-type-tip' placeholder={CONTACT_WAY_PLACEHOLDER[contactWay]}
+                        <Input className='contact-type-tip' placeholder={CONTACT_WAY_PLACEHOLDER[contactWay]} onChange={this.handleInputChange}
                         />
                     ) }
                 </FormItem>
@@ -339,12 +351,16 @@ DynamicAddDelContacts.propTypes = {
     form: PropTypes.object,
     phoneOnlyOneRules: PropTypes.array,
     contacts: PropTypes.array,//编辑时，传入的已有联系人列表
-    validateContactName: PropTypes.array
+    validateContactName: PropTypes.array,
+    hideContactRequired: PropTypes.func
 };
 DynamicAddDelContacts.defaultProps = {
     form: {},
     phoneOnlyOneRules: [],//电话唯一性的验证
-    validateContactName: []
+    validateContactName: [],
+    hideContactRequired: function() {
+
+    }
 };
 export default DynamicAddDelContacts;
 
