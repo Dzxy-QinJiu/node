@@ -374,8 +374,32 @@
         padding: 10px;
         .next-approve-member {
           animation: member-apply 2s;
+          -moz-animation: member-apply 2s; /* Firefox */
+          -webkit-animation: member-apply 2s; /* Safari and Chrome */
+          -o-animation: member-apply 2s; /* Opera */
         }
         @keyframes member-apply
+        {
+          0%   {opacity: 0}
+          25%  {opacity: 0.25}
+          50%  {opacity: 0.5;}
+          100% {opacity: 1;}
+        }
+        @-moz-keyframes member-apply /* Firefox */
+        {
+          0%   {opacity: 0}
+          25%  {opacity: 0.25}
+          50%  {opacity: 0.5;}
+          100% {opacity: 1;}
+        }
+        @-webkit-keyframes member-apply /* Safari and Chrome */
+        {
+          0%   {opacity: 0}
+          25%  {opacity: 0.25}
+          50%  {opacity: 0.5;}
+          100% {opacity: 1;}
+        }
+        @-o-keyframes member-apply /* Opera */
         {
           0%   {opacity: 0}
           25%  {opacity: 0.25}
@@ -393,6 +417,13 @@
             .apply-item {
               padding-bottom: 5px;
             }
+            .button-container {
+              .save-error {
+                .approve-failed {
+                  font-size: 12px;
+                }
+              }
+            }
           }
           .approve-success {
             .alert-timer {
@@ -403,27 +434,11 @@
                 border: none;
                 background-color: #ffffff;
                 .ant-alert-message {
-                  font-size: 14px;
-                  color: #0e77ca;
+                  font-size: 12px;
+                  color: #4dbe50;
                 }
               }
             }
-          }
-        }
-        .approve-continer-team-tips {
-          @media (max-width: 1440px) {
-            min-height: 190px;
-          }
-          .approve-success,.approve-failed {
-            padding-top: 5px;
-          }
-        }
-        .approve-continer-tips {
-          @media (max-width: 1440px) {
-            min-height: 170px;
-          }
-          .approve-success,.approve-failed {
-            padding-top: 5px;
           }
         }
       }

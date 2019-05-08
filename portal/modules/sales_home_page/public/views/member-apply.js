@@ -101,8 +101,6 @@ class MemberApply extends React.Component {
         let applicantName = _.get(applicant, 'nick_name');
         let memberApproveCls = classNames('member-approve',{
             'next-approve-member': !this.state.applyResult,
-            'approve-continer-team-tips': this.state.applyResultMsg && teamId,
-            'approve-continer-tips': this.state.applyResultMsg && !teamId
         });
         return (
             <div className={memberApproveCls}>
