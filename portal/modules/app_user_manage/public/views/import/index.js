@@ -4,14 +4,14 @@ var React = require('react');
 import {Button, Steps, message, Alert} from 'antd';
 var rightPanelUtil = require('CMP_DIR/rightPanel');
 var RightPanel = rightPanelUtil.RightPanel;
-import Upload from 'CMP_DIR/import_step/upload';
+import Upload from './upload';
 require('./index.less');
 const Step = Steps.Step;
 import {AntcTable} from 'antc';
 import Spinner from 'CMP_DIR/spinner';
 import Trace from 'LIB_DIR/trace';
 import SelectFullWidth from 'CMP_DIR//select-fullwidth';
-
+import {uniqueObjectOfArray} from 'PUB_DIR/sources/utils/common-data-util';
 const SET_TIME_OUT = {
     TRANSITION_TIME: 600,//右侧面板动画隐藏的时间
     LOADING_TIME: 1500//避免在第三步时关闭太快，加上延时展示loading效果
@@ -157,8 +157,19 @@ class ImportTemplate extends React.Component {
             message.error(errMsg || Intl.get('clue.customer.import.clue.failed', '导入{type}失败',{type: this.props.importType}));
         });
     };
+
+    getImportErrorData = () => {
+        let errors = [];
+        _.each(this.state.previewList, (item) => {
+            if (item.errors) {
+                errors = _.concat(errors, item.errors);
+            }
+        });
+        return uniqueObjectOfArray(errors);
+    };
+
     renderImportFooter = () => {
-        let errors = this.getImportUserErrorData();
+        let errors = this.getImportErrorData(errors);
         let length = _.get(errors, 'length');
         let noMatchCustomer = _.find(errors, item => item.field === 'customer_name');
         let disabledImportBtn = false;
@@ -195,19 +206,9 @@ class ImportTemplate extends React.Component {
         var tableHeight = this.calculateTableHeight();
         this.setState({tableHeight});
     };
-    // 获取导入数据的错误信息
-    getImportUserErrorData = () => {
-        let errorsInfo = _.find(this.state.previewList, item => item.errors);
-        return _.get(errorsInfo, 'errors');
-    };
 
     renderThirdStepContent = () => {
-        let errors = [];
-        _.each(this.state.previewList, (item) => {
-            if (item.errors) {
-                errors = _.concat(errors, item.errors);
-            }
-        });
+        let errors = this.getImportErrorData(errors);
         let length = _.get(errors, 'length');
         let tipsMessage = [];
         let noMatchCustomer = _.find(errors, item => item.field === 'customer_name');
@@ -217,13 +218,13 @@ class ImportTemplate extends React.Component {
             if (length > 1) {
                 tipsMessage.push(Intl.get('user.import.red.tips', '红色标示数据不符合规则或是已存在，请修改数据后重新导入，或删除不符合规则的数据后直接导入。'));
                 if (noMatchCustomer) {
-                    tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找不到对应的客户，可以继续导入，导入后需要自行设置客户。'));
+                    tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。'));
                 }
                 height -= (LAYOUT.ERROR_TIPS_MESSAGE_WIDTH + LAYOUT.WARN_TIPS_MESSAGE_WIDTH);
                 tableHeight -= (LAYOUT.ERROR_TIPS_MESSAGE_WIDTH + LAYOUT.WARN_TIPS_MESSAGE_WIDTH);
             } else if (length === 1) {
                 if (noMatchCustomer) {
-                    tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找不到对应的客户，可以继续导入，导入后需要自行设置客户。'));
+                    tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。'));
                 } else {
                     tipsMessage.push(Intl.get('user.import.red.tips', '红色标示数据不符合规则或是已存在，请修改数据后重新导入，或删除不符合规则的数据后直接导入。'));
                     height -= LAYOUT.ERROR_TIPS_MESSAGE_WIDTH;
@@ -239,9 +240,9 @@ class ImportTemplate extends React.Component {
                             <div>
                                 <Alert type="error" message={'1.' + _.get(tipsMessage, [0])}/>
                                 <div className="warning-rule-decription">
-                                    <div>{Intl.get('user.import.username.rule', '用户名规则：长度为1到50的字母、数字、横线、下划线')}</div>
-                                    <div>{Intl.get('user.import.phone.rule', '手机规则：13、14、16、17、18、19开头的11位手机号')}</div>
-                                    <div>{Intl.get('user.import.email.rule', '邮箱规则：数字、字母、下划线 + @ + 数字、英文 + . +英文')}</div>
+                                    <div>{Intl.get('user.import.username.rule', '用户名：长度为1-50个字母、数字、横线或下划线组成的字符串')}</div>
+                                    <div>{Intl.get('user.import.phone.rule', '手机：11位手机号')}</div>
+                                    <div>{Intl.get('user.import.email.rule', '邮箱：如 12345678@qq.com')}</div>
                                 </div>
                                 <Alert type="warning" message={'2.' + _.get(tipsMessage, [1])}/>
                             </div>
@@ -252,9 +253,9 @@ class ImportTemplate extends React.Component {
                                 <div>
                                     <Alert type="error" message={'1.' + _.get(tipsMessage, [0])}/>
                                     <div className="warning-rule-decription">
-                                        <div>{Intl.get('user.import.username.rule', '用户名规则：长度为1到50的字母、数字、横线、下划线')}</div>
-                                        <div>{Intl.get('user.import.phone.rule', '手机规则：13、14、16、17、18、19开头的11位手机号')}</div>
-                                        <div>{Intl.get('user.import.email.rule', '邮箱规则：数字、字母、下划线 + @ + 数字、英文 + . +英文')}</div>
+                                        <div>{Intl.get('user.import.username.rule', '用户名：长度为1-50个字母、数字、横线或下划线组成的字符串')}</div>
+                                        <div>{Intl.get('user.import.phone.rule', '手机：11位手机号')}</div>
+                                        <div>{Intl.get('user.import.email.rule', '邮箱：如 12345678@qq.com')}</div>
                                     </div>
                                 </div>
                             )

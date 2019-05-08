@@ -826,11 +826,12 @@ class ClueCustomer extends React.Component {
 
     };
     getClueTableColunms = () => {
+        const column_width = '80px';
         let columns = [
             {
                 title: Intl.get('crm.sales.clue', '线索'),
                 dataIndex: 'clue_name',
-                width: '30%',
+                width: '350px',
                 render: (text, salesClueItem, index) => {
                     return (
                         <div className="clue-top-title" >
@@ -856,7 +857,7 @@ class ClueCustomer extends React.Component {
             },{
                 title: Intl.get('call.record.contacts', '联系人'),
                 dataIndex: 'contact',
-                width: '20%',
+                width: '230px',
                 render: (text, salesClueItem, index) => {
                     //联系人的相关信息
                     var contacts = salesClueItem.contacts ? salesClueItem.contacts : [];
@@ -884,7 +885,7 @@ class ClueCustomer extends React.Component {
             },{
                 title: Intl.get('clue.handle.clue.person', '当前跟进人'),
                 dataIndex: 'trace_person',
-                width: '10%',
+                width: '100px',
                 render: (text, salesClueItem, index) => {
                     let user = userData.getUserData();
                     var handlePersonName = _.get(salesClueItem,'user_name','');//当前跟进人
@@ -918,7 +919,7 @@ class ClueCustomer extends React.Component {
             },{
                 title: Intl.get('call.record.follow.content', '跟进内容'),
                 dataIndex: 'trace_content',
-                width: '20%',
+                width: '300px',
                 render: (text, salesClueItem, index) => {
                     return(
                         <div className="clue-foot" id="clue-foot">
@@ -932,7 +933,7 @@ class ClueCustomer extends React.Component {
                 title: Intl.get('clue.customer.associate.customer', '关联客户'),
                 dataIndex: 'assocaite_customer',
                 className: 'invalid-td-clue',
-                width: '20%',
+                width: '300px',
                 render: (text, salesClueItem, index) => {
                     //是有效线索
                     let availability = salesClueItem.availability !== '1';

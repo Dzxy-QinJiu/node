@@ -39,7 +39,7 @@ class UserLoginAnalysis extends React.Component {
     };
 
     getUserAnalysisInfo = (userId, selectedAppId) => {
-        UserLoginAnalysisAction.getSingleUserAppList({ user_id: userId }, selectedAppId);
+        UserLoginAnalysisAction.getSingleUserAppList({ user_id: userId, timeType: 'year' }, selectedAppId);
         if (selectedAppId) {
             UserLoginAnalysisAction.setSelectedAppId(selectedAppId);
         }
@@ -432,24 +432,24 @@ class UserLoginAnalysis extends React.Component {
         });
     };
     handleSelectDate = (app, value) => {
-        let queryObj = this.getUserLastLoginParams({appid: app.app_id, starttime: value});
+        let starttime = moment().subtract(1, 'year').valueOf();
+        if (value === 'month') {
+            starttime = moment().subtract(1, 'month').valueOf();
+        } else if (value === 'week') {
+            starttime = moment().subtract(1, 'week').valueOf();
+        }
+        let queryObj = this.getUserLastLoginParams({appid: app.app_id, starttime: starttime});
         let type = this.getUserLoginType();
+        let reqData = {...queryObj, timeType: value};
         // 获取登录用户活跃统计信息（登录时长，登录次数，活跃天数）
-        UserLoginAnalysisAction.getLoginUserActiveStatistics(queryObj, type);
-        UserLoginAnalysisAction.getUserLoginChartInfo(queryObj);
+        UserLoginAnalysisAction.getLoginUserActiveStatistics(reqData, type);
+        UserLoginAnalysisAction.getUserLoginChartInfo(reqData);
     };
     // 渲染时间选择框
     renderTimeSelect = (app) => {
-        let starttime = _.get(this.state.appUserDataMap, [app.app_id, 'starttime']) || moment().subtract(1, 'year').valueOf();
-        let yearStartTime = _.get(DATE_SELECT, '[0].value');
-        // 防止时间框出现数值的情况
-        if (starttime - yearStartTime < 10 * 60 * 1000 && starttime - yearStartTime > -10 * 60 * 1000) {
-            starttime = yearStartTime;
-        }
+        let timeType = _.get(this.state.appUserDataMap, [app.app_id, 'timeType'], 'year');
         let list = _.map(DATE_SELECT, item =>
             <Option value={item.value} key={item.value} title={item.name}>{item.name}</Option>);
-        let loginTitle = _.find(DATE_SELECT, item => item.value === starttime);
-
         return (
             <div className="last-login-select">
                 <div className="last-login-title">
@@ -459,7 +459,7 @@ class UserLoginAnalysis extends React.Component {
                         values={{
                             'title': <Select
                                 style={{ width: 100 }}
-                                value={starttime}
+                                value={timeType}
                                 onChange={this.handleSelectDate.bind(this, app)}
                             >
                                 {list}

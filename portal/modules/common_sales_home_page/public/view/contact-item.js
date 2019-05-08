@@ -44,7 +44,7 @@ class ContactItem extends React.Component {
                     });
                     return (
                         <div className="contact-container" key={idx}>
-                            <span className={cls}>{contactName}</span>
+                            <span className={cls} title={contactName}>{contactName}</span>
                             {_.isArray(contactItem.phone) && contactItem.phone.length ?
                                 <span className="phone-num-container">
                                     {_.map(contactItem.phone, (phoneItem, index) => {

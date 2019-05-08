@@ -287,12 +287,16 @@ class CurtaoAnalysis extends React.Component {
             isAppSelectorShow = true;
             adjustConditions = conditions => {
                 let defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY);
+
+                //当前是否在延期帐号页
+                const isDeferredAccountPage = this.getIsDeferredAccountPage(page.title);
+        
                 if (defaultAppId) {
-                    if (page.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE && defaultAppId === 'all') {
+                    if (isDeferredAccountPage && defaultAppId === 'all') {
                         defaultAppId = [_.get(Store.appList, '[1].app_id')];
                     }
                 } else {
-                    if (page.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE) {
+                    if (isDeferredAccountPage) {
                         defaultAppId = _.get(Store.appList, '[1].app_id');
                     } else {
                         defaultAppId = 'all';
@@ -412,13 +416,25 @@ class CurtaoAnalysis extends React.Component {
         }];
     }
 
+    //获取当前是否在延期帐号页
+    getIsDeferredAccountPage(pageTitle = this.state.currentPage.title) {
+        return pageTitle === DEFERRED_ACCOUNT_ANALYSIS_TITLE;
+    }
+
     render() {
+        //当前是否在延期帐号页
+        const isDeferredAccountPage = this.getIsDeferredAccountPage();
+
         let appList = _.cloneDeep(Store.appList);
+        //应用选择模式
+        let appSelectMode = 'multiple';
 
         //延期用户分析页不让选全部应用
-        if (this.state.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE) {
+        if (isDeferredAccountPage) {
             //去掉全部应用项
             appList.splice(0, 1);
+            //在延期帐号统计页上时由于后端处理问题，不能同时查询多个应用的数据，所以需要设成只能单选
+            appSelectMode = '';
         }
 
         const storedAppId = storageUtil.local.get(STORED_APP_ID_KEY);
@@ -428,11 +444,11 @@ class CurtaoAnalysis extends React.Component {
         if (storedAppId) {
             defaultAppId = storedAppId.split(',');
 
-            if (this.state.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE && storedAppId === 'all') {
+            if (isDeferredAccountPage && storedAppId === 'all') {
                 defaultAppId = [_.get(Store.appList, '[1].app_id')];
             }
         } else {
-            if (this.state.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE) {
+            if (isDeferredAccountPage) {
                 defaultAppId = [_.get(Store.appList, '[1].app_id')];
             } else {
                 defaultAppId = ['all'];
@@ -456,6 +472,7 @@ class CurtaoAnalysis extends React.Component {
                                     storedAppIdKey={STORED_APP_ID_KEY}
                                     defaultValue={defaultAppId}
                                     appList={appList}
+                                    selectMode={appSelectMode}
                                 />
                             </div>
                         ) : null}

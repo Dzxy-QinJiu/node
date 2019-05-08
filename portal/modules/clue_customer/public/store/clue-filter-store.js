@@ -57,6 +57,8 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.unexist_fields = [];
     //按销售进行筛选
     this.filterClueUsers = [];
+    //按负责人进行筛选
+    this.teamMemberList = [];
 };
 //获取线索来源
 ClueFilterStore.prototype.setCondition = function(list) {
@@ -79,6 +81,9 @@ ClueFilterStore.prototype.setTimeType = function(timeType) {
         this.setTimeRange({start_time: start_time, end_time: end_time});
     }
 
+};
+ClueFilterStore.prototype.getTeamMemberList = function(list) {
+    this.teamMemberList = _.get(list, '[0]') ? list : [];
 };
 //设置筛选线索的类型
 ClueFilterStore.prototype.setFilterType = function(updateType) {

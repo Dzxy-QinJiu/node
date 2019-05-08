@@ -324,17 +324,17 @@ var en_US = {
     'user.exist.user': 'Existing Users',//已有用户
     'user.user.add': 'Add Users',//添加用户
     'user.import.user': 'Import Users', // 导入用户
-    'user.import.user.toplimit': 'Up to 300 users per import', // 每次导入上限为300条用户
+    'user.import.user.toplimit': 'Up to 300 users per import', // 每次导入上限为300个用户
     'user.import.user.template': 'user_template', // 用户模板
     'user.import.username.no.match.rule': 'Username does not match the rule', // 用户名不符合规则
     'user.import.phone.no.match.rule': 'Phone does not match the rule', // 手机号不符合规则
     'user.import.email.no.match.rule': 'Email does not match the rule', // 邮箱不符合规则
-    'user.import.customer.no.match': 'The system has not found the corresponding customer, you can continue to import, you need to set the customer after import.', // 系统未找不到对应的客户，可以继续导入，导入后需要自行设置客户。
+    'user.import.customer.no.match': 'The system has not found the corresponding customer, you can continue to import, you need to set the customer after import.', // 系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。
     'user.import.red.tips': 'The red flag data does not match the rule or exists. Please modify the data and re-import it, or delete the data that does not match the rule and import it directly.', // 红色标示数据不符合规则或是已存在，请修改数据后重新导入，或删除不符合规则的数据后直接导入。
     'user.import.username.rule': 'Username: ', // 用户名：长度为1-50个字母、数字、横线或下划线组成的字符串
     'user.import.phone.rule': 'Phone: The phone number of legitimate', // 手机：11位手机号
     'user.import.email.rule': 'Email: eg 12345678@qq.com', // 邮箱：如 12345678@qq.com
-    'user.import.yellow.tips': 'The yellow marking system has not found the corresponding customer, you can continue to import, you need to set the customer after importing.', // 黄色标示系统未找不到对应的客户，可以继续导入，导入后需要自行设置客户。
+    'user.import.yellow.tips': 'The yellow marking system has not found the corresponding customer, you can continue to import, you need to set the customer after importing.', // 黄色标示系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。
     'user.user.add.success': 'Add successfully',//添加成功
     'user.user.basic': 'Basic information',//基本信息
     'user.user.app.select': 'Select applications',//选择应用
@@ -2109,12 +2109,13 @@ var en_US = {
     'errorcode.150': 'Failed to update the clue',//修改线索信息失败
     'errorcode.151': 'Failed to get sales new open accounts and new open accounts',//获取销售新开客户数和新开帐号数失败
     'errorcode.152': 'There are repeat clues!',//线索重复
-    'errorcoe.different.realm': 'Different realms',//安全域不一致
+    'errorcode.different.realm': 'Different realms',//安全域不一致
     'errorcode.invalid.wechat': 'Invalid Wechat Account',//无效的微信账号
     'errorcode.get.call.statistics.failed': 'Get call statistics failed', //获取通话记录统计失败
-    'errorcoe.bound.wechat': 'The account has been bound to other Wechat',//该账号已绑定到其他微信
-    'errorcoe.wechat.bound.other': 'Your Wechat has been bound to other accounts',//您的微信已绑定到其他账号
-    'errorcoe.17334': 'Get recent contact customer statistics failed',//获取最近联系客户统计失败
+    'errorcode.bound.wechat': 'The account has been bound to other Wechat',//该账号已绑定到其他微信
+    'errorcode.wechat.bound.other': 'Your Wechat has been bound to other accounts',//您的微信已绑定到其他账号
+    'errorcode.17334': 'Get recent contact customer statistics failed',//获取最近联系客户统计失败
+    'errorcode.17331': 'Statistics of call customers by region, stage, industry distribution failure',//统计通话的客户的地域,阶段,行业分布失败
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
@@ -2876,7 +2877,13 @@ var en_US = {
     'common.number.of.trial.qualified.customer': 'Number of trial qualified customer',//试用合格客户数
     'common.number.of.travel.day': 'Number of travel day',//出差天数
     'common.number.of.customers.visited': 'Number of customers visited',//拜访客户数
+    'common.number.of.customers.contacted': 'Number of customers contacted',//联系客户数
+    'common.number.of.calls.made': 'Number of calls made',//接通数
+    'common.number.of.calls.not.connected': 'Number of calls not connected',//未接通数
     'common.daily.duration.of.calls': 'Daily duration of calls',//日均电话时长
     'common.daily.number.of.calls': 'Daily number of calls',//日均电话数
+    'common.customer.visit.record': 'Customer visit record',//客户拜访记录
+    'common.visit.start.time': 'Visit start time',//拜访开始时间
+    'common.visit.end.time': 'Visit end time',//拜访结束时间
 };
 export default en_US;

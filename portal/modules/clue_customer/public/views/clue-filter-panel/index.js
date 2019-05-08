@@ -30,7 +30,6 @@ class ClueFilterPanel extends React.Component {
             clueSourceArray: this.props.clueSourceArray,
             accessChannelArray: this.props.accessChannelArray,
             clueClassifyArray: this.props.clueClassifyArray,
-            salesManList: this.props.salesManList,
             ...clueFilterStore.getState(),
         };
     }
@@ -41,14 +40,14 @@ class ClueFilterPanel extends React.Component {
     componentDidMount = () => {
         clueFilterStore.listen(this.onStoreChange);
         this.getClueProvinceList();
+        //获取所有销售列表
+        FilterAction.getTeamMemberList();
     };
     componentWillReceiveProps = (nextProps) => {
         this.setState({
             clueSourceArray: nextProps.clueSourceArray,
             accessChannelArray: nextProps.accessChannelArray,
             clueClassifyArray: nextProps.clueClassifyArray,
-            salesManList: nextProps.salesManList,
-
         });
     };
     componentWillUnmount = () => {
@@ -183,10 +182,6 @@ class ClueFilterPanel extends React.Component {
         const accessChannelArray = this.state.accessChannelArray;
         //线索分类
         const clueClassifyArray = this.state.clueClassifyArray;
-        //团队及下级团队的销售
-        const salesManList = _.map(this.state.salesManList, item => {
-            return _.get(item.name.split('-'),'[0]');
-        });
         var filterClueStatus = this.state.filterClueStatus;
         filterClueStatus = _.filter(filterClueStatus, item => {
             return item.value;
@@ -256,14 +251,15 @@ class ClueFilterPanel extends React.Component {
             }];
         //非普通销售才有销售角色和团队
         if (!userData.getUserData().isCommonSales) {
+            var ownerList = _.uniqBy(this.state.teamMemberList, 'nickname');
             advancedData.unshift(
                 {
                     groupName: Intl.get('sales.home.sales', '销售'),
                     groupId: 'user_name',
-
-                    data: _.map(salesManList, x => ({
-                        name: x,
-                        value: x
+                    singleSelect: true,
+                    data: _.map(ownerList, x => ({
+                        name: x.nickname,
+                        value: x.nickname
                     }))
                 }
             );
@@ -288,7 +284,6 @@ ClueFilterPanel.defaultProps = {
     clueSourceArray: [],
     accessChannelArray: [],
     clueClassifyArray: [],
-    salesManList: [],
     getClueList: function() {
 
     },
@@ -298,7 +293,6 @@ ClueFilterPanel.propTypes = {
     clueSourceArray: PropTypes.object,
     accessChannelArray: PropTypes.object,
     clueClassifyArray: PropTypes.object,
-    salesManList: PropTypes.object,
     getClueList: PropTypes.func,
     style: PropTypes.object,
 };

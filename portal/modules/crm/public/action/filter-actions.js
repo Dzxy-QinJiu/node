@@ -1,5 +1,5 @@
 var FilterAjax = require('../ajax/filter-ajax');
-import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
+import {getMyTeamTreeAndFlattenList, getTeamTreeMemberLists} from 'PUB_DIR/sources/utils/common-data-util';
 import { altAsyncUtil } from 'ant-utils';
 const {asyncDispatcher} = altAsyncUtil;
 
@@ -48,10 +48,8 @@ function FilterAction() {
     };
     //获取负责人列表
     this.getOwnerList = function() {
-        FilterAjax.getOwnerList().then(list => {
-            this.dispatch(list);
-        }, function(errorMsg) {
-            console.log(errorMsg);
+        getTeamTreeMemberLists((result) => {
+            this.dispatch(result);
         });
     };
 
@@ -133,11 +131,11 @@ function FilterAction() {
             console.log(errorMsg);
         });
     };
-    
+
     this.getCommonFilterList = asyncDispatcher(FilterAjax.getCommonFilterList);
 
     this.delCommonFilter = asyncDispatcher(FilterAjax.delCommonFilter, true);
-    
+
 }
 
 module.exports = alt.createActions(FilterAction);
