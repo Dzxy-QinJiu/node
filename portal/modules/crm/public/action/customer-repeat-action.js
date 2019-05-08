@@ -16,6 +16,7 @@ function CustomerRepeatAction() {
         'editBasicSuccess',//修改基本资料后，更新重复客户列表
         'updateCustomerDefContact',//修改默认联系人后，更新重复客户列表
         'setInitialRepeatCustomerList',//从父组件把重复客户传到子组件中
+        'setInitData'//初始值的设置
     );
     //获取重复客户列表
     this.getRepeatCustomerList = function(queryParams) {

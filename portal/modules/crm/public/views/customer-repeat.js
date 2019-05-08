@@ -76,6 +76,7 @@ class CustomerRepeat extends React.Component {
 
     componentWillUnmount() {
         CustomerRepeatStore.unlisten(this.onStoreChange);
+        CustomerRepeatAction.setInitData();
     }
 
     getCrmListHeight = () => {

@@ -1,5 +1,10 @@
 let CustomerRepeatAction = require('../action/customer-repeat-action');
 function CustomerRepeatStore() {
+    this.setInitData();
+    this.bindActions(CustomerRepeatAction);
+}
+//初始值的设置
+CustomerRepeatStore.prototype.setInitData = function() {
     this.originCustomerList = [];//后台返回的重复客户列表
     this.repeatCustomerList = [];//转换为界面使用的重复客户列表
     this.selectedCustomers = [];//选择的客户
@@ -18,8 +23,7 @@ function CustomerRepeatStore() {
     this.userNameSearchIsShow = false;//是否展示负责人的搜索框
     this.remarksSearchIsShow = false;//是否展示备注的搜索框
     this.filterObj = {};//搜索对象
-    this.bindActions(CustomerRepeatAction);
-}
+};
 //修改默认联系人后，更新列表
 CustomerRepeatStore.prototype.updateCustomerDefContact = function(contact) {
     if (contact && contact.customer_id) {
