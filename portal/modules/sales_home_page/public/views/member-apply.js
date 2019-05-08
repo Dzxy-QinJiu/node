@@ -27,7 +27,7 @@ class MemberApply extends React.Component {
             loading: true
         });
         salesHomeAjax.approveMemberApplyPassOrReject(submitData).then((data) => {
-            let applyResultMsg = '成员添加成功';
+            let applyResultMsg = Intl.get('member.apply.invite.member.sucess','成员添加成功');
             if (confirmType === 'reject') {
                 applyResultMsg = '';
             }
@@ -103,7 +103,7 @@ class MemberApply extends React.Component {
         let applicant = _.get(pendingMemberInfo, 'applicant');
         let applicantName = _.get(applicant, 'nick_name');
         let memberApproveCls = classNames('member-approve',{
-            'next-approve-member': !this.state.applyResult,
+            'next-approve-member': this.state.applyResult === 'error' || this.state.applyResult === 'success' ,
         });
         return (
             <div className={memberApproveCls}>

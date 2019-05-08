@@ -2808,6 +2808,7 @@ var zh_CN = {
     // 成员申请
     'member.application': '成员申请',
     'member.apply.who.invite': '{who}的邀请',
+    'member.apply.invite.member.sucess': '成员添加成功',
     'member.apply.approve.failed.tips': '稍后处理',
     'member.apply.failed.get.worklist': '获取由我审批的成员申请失败',
     'member.apply.failed.get.all.apply': '获取全部成员申请失败',
