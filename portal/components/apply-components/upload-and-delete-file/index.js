@@ -9,7 +9,7 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import Trace from 'LIB_DIR/trace';
 import {isEqualArray} from 'LIB_DIR/func';
-import {FILES_TYPE_FORBIDDEN_RULES, FILES_TYPE_ALLOW_RULES} from 'PUB_DIR/sources/utils/consts';
+import {FILES_TYPE_FORBIDDEN_RULES, FILES_TYPE_ALLOW_RULES, FILES_LIMIT} from 'PUB_DIR/sources/utils/consts';
 import {seperateFilesDiffType, hasApprovedReportAndDocumentApply} from 'PUB_DIR/sources/utils/common-data-util';
 import {checkFileSizeLimit, checkFileNameForbidRule, checkFileNameAllowRule} from 'PUB_DIR/sources/utils/common-method-util';
 class UploadAndDeleteFile extends React.Component {
@@ -219,7 +219,6 @@ class UploadAndDeleteFile extends React.Component {
         var _this = this;
         var props = {
             name: 'reportsend',
-            multiple: true,
             action: '/rest/reportsend/upload',
             showUploadList: false,
             onChange: this.handleChange,
@@ -227,8 +226,8 @@ class UploadAndDeleteFile extends React.Component {
         var fileList = this.state.fileList;
         var detailInfoObj = this.props.detailInfoObj;
         var btnDesc = Intl.get('apply.approve.upload.file.type','上传{fileType}',{fileType: Intl.get('apply.approve.customer.info', '客户资料')});
-        //销售可以上传和删除的权限
-        var salesUploadAndDeletePrivilege = this.props.salesUploadAndDeletePrivilege;
+        //需要计算的是总文件大小
+        var calTotalSize = this.props.uploadAndDeletePrivilege === FILES_LIMIT.TOTAL;
         if(this.isDetailObjExist()){
             props.data = detailInfoObj.id;
             props.beforeUpload = function(file) {
@@ -236,7 +235,7 @@ class UploadAndDeleteFile extends React.Component {
                 _this.setState({isUpLoading: true});
                 //如果是销售继续上传，需要计算文件的总大小，如果是支持部人员上传，不需要计算文件的总大小，只是需要单次的大小不能超过10M
                 var Size = fileSize;
-                if (salesUploadAndDeletePrivilege) {
+                if (calTotalSize) {
                     Size = fileSize + _this.state.totalFileSize;
                 }
                 if (!_this.checkFileType(fileName, Size)) {
@@ -288,7 +287,7 @@ class UploadAndDeleteFile extends React.Component {
                                 <Tooltip title="'rar','zip'">
                                     <span>{Intl.get('leave.apply.compact.document', '压缩文件')}</span>
                                 </Tooltip>),
-                            'filetypes': salesUploadAndDeletePrivilege ? Intl.get('upload.files.total.file.size','文件总大小') : Intl.get('upload.files.each.file.size','每次上传大小') ,
+                            'filetypes': calTotalSize ? Intl.get('upload.files.total.file.size','文件总大小') : Intl.get('upload.files.each.file.size','每次上传大小') ,
                         }}
                     />
                 </p>
@@ -326,10 +325,9 @@ class UploadAndDeleteFile extends React.Component {
         var salesFiles = _.concat(allUploadFiles.customerFiles,allUploadFiles.customerAddedFiles);
         //管理员确认后上传的文件
         var managerFiles = allUploadFiles.approverUploadFiles;
-        //销售可以上传和删除的权限
-        var salesUploadAndDeletePrivilege = this.props.salesUploadAndDeletePrivilege;
-        //管理员可以上传和删除的权限
-        var approverUploadAndDeletePrivilege = this.props.approverUploadAndDeletePrivilege;
+        var uploadAndDeletePrivilege = this.props.uploadAndDeletePrivilege;
+        var salesUploadAndDeletePrivilege = uploadAndDeletePrivilege === FILES_LIMIT.TOTAL;
+        var approverUploadAndDeletePrivilege = uploadAndDeletePrivilege === FILES_LIMIT.SINGLE;
         return (
             <div>
                 <div className="sales-upload-lists">
@@ -349,7 +347,7 @@ class UploadAndDeleteFile extends React.Component {
                                         <a href={'/rest/reportsend/download/' + JSON.stringify(reqData)}>{fileName}</a> : fileName}
                                 </span>
 
-                                { salesUploadAndDeletePrivilege ? this.renderDeleteAndLoadingBtn(fileItem) : null}
+                                {salesUploadAndDeletePrivilege ? this.renderDeleteAndLoadingBtn(fileItem) : null}
                             </div>
                         );
                     })}
@@ -455,8 +453,7 @@ UploadAndDeleteFile.defaultProps = {
 
     },
     fileList: [],
-    salesUploadAndDeletePrivilege: false,
-    approverUploadAndDeletePrivilege: false,
+    uploadAndDeletePrivilege: '',//total：上传文件计算大小是根据总文件判断 single：上传文件计算大小是根据单个文件判断
     selectType: [],
 
 };
@@ -468,8 +465,7 @@ UploadAndDeleteFile.propTypes = {
     beforeUpload: PropTypes.func,
     fileRemove: PropTypes.func,
     fileList: PropTypes.object,
-    salesUploadAndDeletePrivilege: PropTypes.bool,
-    approverUploadAndDeletePrivilege: PropTypes.bool,
+    uploadAndDeletePrivilege: PropTypes.string,
     selectType: PropTypes.object,
 };
 export default UploadAndDeleteFile;
