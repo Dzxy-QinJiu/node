@@ -16,15 +16,15 @@ class AppSelector extends React.Component {
         defaultValue: ['all'],
         //应用列表
         appList: [],
-        //是否在延期帐号页
-        isDeferredAccountPage: false
+        //选择模式，默认多选
+        selectMode: 'multiple'
     };
 
     static propTypes = {
         storedAppIdKey: PropTypes.string,
         defaultValue: PropTypes.string,
         appList: PropTypes.array,
-        isDeferredAccountPage: PropTypes.bool
+        selectMode: PropTypes.string
     };
 
     constructor(props) {
@@ -70,13 +70,7 @@ class AppSelector extends React.Component {
 
     render() {
         const appList = this.props.appList;
-        //默认可多选
-        let selectMode = 'multiple';
-
-        //在延期帐号统计页上时由于后端处理问题，不能同时查询多个应用的数据，所以需要设成只能单选
-        if (this.props.isDeferredAccountPage) {
-            selectMode = '';
-        }
+        const selectMode = this.props.selectMode;
 
         return (
             <div className='app-selector'>

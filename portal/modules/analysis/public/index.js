@@ -421,11 +421,15 @@ class CurtaoAnalysis extends React.Component {
         const isDeferredAccountPage = this.state.currentPage.title === DEFERRED_ACCOUNT_ANALYSIS_TITLE;
 
         let appList = _.cloneDeep(Store.appList);
+        //应用选择模式
+        let appSelectMode = 'multiple';
 
         //延期用户分析页不让选全部应用
         if (isDeferredAccountPage) {
             //去掉全部应用项
             appList.splice(0, 1);
+            //在延期帐号统计页上时由于后端处理问题，不能同时查询多个应用的数据，所以需要设成只能单选
+            appSelectMode = '';
         }
 
         const storedAppId = storageUtil.local.get(STORED_APP_ID_KEY);
@@ -463,7 +467,7 @@ class CurtaoAnalysis extends React.Component {
                                     storedAppIdKey={STORED_APP_ID_KEY}
                                     defaultValue={defaultAppId}
                                     appList={appList}
-                                    isDeferredAccountPage={isDeferredAccountPage}
+                                    selectMode={appSelectMode}
                                 />
                             </div>
                         ) : null}
