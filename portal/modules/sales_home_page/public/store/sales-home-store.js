@@ -86,7 +86,7 @@ SalesHomeStore.prototype.setInitState = function() {
         list: [],
         errMsg: ''
     };
-    this.isApprovedCompleted = false; // 是否已审批完，默认false
+    this.isGetMemberApplyList = false; // 是否获取成员审批列表信息，默认false
 };
 
 // 重置回访记录列表状态
@@ -703,7 +703,7 @@ SalesHomeStore.prototype.getPendingApproveMemberApplyList = function(result) {
         this.pendingApproveMemberObj.errMsg = _.get(result, 'errMsg');
     } else {
         this.pendingApproveMemberObj.errMsg = '';
-        this.isApprovedCompleted = false; // 说明成员邀请，没有审批完
+        this.isGetMemberApplyList = false;
         let length = _.get(result, 'data.list.length');
         if (length) {
             this.pendingApproveMemberObj.list = _.get(result, 'data.list');
@@ -717,9 +717,9 @@ SalesHomeStore.prototype.handleMemberApprove = function(flag) {
         this.pendingApproveMemberObj.list = _.slice(this.pendingApproveMemberObj.list, 1);
         let length = _.get(this.pendingApproveMemberObj, 'list.length');
         if (length === 0) {
-            this.isApprovedCompleted = true;
+            this.isGetMemberApplyList = true;
         } else {
-            this.isApprovedCompleted = false;
+            this.isGetMemberApplyList = false;
         }
     }
 };

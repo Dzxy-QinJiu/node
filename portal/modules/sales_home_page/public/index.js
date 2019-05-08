@@ -1179,7 +1179,7 @@ class SalesHomePage extends React.Component {
                                     salesCallStatus={this.state.salesCallStatus}
                                     teamMemberCountList={this.state.teamMemberCountList}
                                     pendingApproveMemberObj={this.state.pendingApproveMemberObj}
-                                    isApprovedCompleted={this.state.isApprovedCompleted}
+                                    isGetMemberApplyList={this.state.isGetMemberApplyList}
                                 />
                             </div>
                         ) : null}

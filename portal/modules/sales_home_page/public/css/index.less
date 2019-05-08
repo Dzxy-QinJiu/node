@@ -372,7 +372,17 @@
       // 成员审批样式
       .member-apply-container {
         padding: 10px;
-        height: 165px;
+        min-height: 165px;
+        .next-approve-member {
+          animation: member-apply 2s;
+        }
+        @keyframes member-apply
+        {
+          0%   {opacity: 0}
+          25%  {opacity: 0.25}
+          50%  {opacity: 0.5;}
+          100% {opacity: 1;}
+        }
         .member-approve {
           .member-invite-title {
             font-size: 14px;

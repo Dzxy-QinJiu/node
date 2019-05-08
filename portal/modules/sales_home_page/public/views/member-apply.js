@@ -3,6 +3,8 @@
  */
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import salesHomeAjax from '../ajax/sales-home-ajax';
+import AlertTimer from 'CMP_DIR/alert-timer';
+import classNames from 'classnames';
 
 class MemberApply extends React.Component {
     constructor(props) {
@@ -25,13 +27,16 @@ class MemberApply extends React.Component {
             loading: true
         });
         salesHomeAjax.approveMemberApplyPassOrReject(submitData).then((data) => {
+            let applyResultMsg = '成员添加成功';
+            if (confirmType === 'reject') {
+                applyResultMsg = '';
+            }
             if (data) {
                 this.setState({
                     loading: false,
                     applyResult: 'success',
-                    applyResultMsg: ''
+                    applyResultMsg: applyResultMsg
                 });
-                this.props.memberApprove(true);
             } else {
                 this.setState({
                     loading: false,
@@ -57,13 +62,34 @@ class MemberApply extends React.Component {
         });
     };
 
-    renderApproveFailMsg = () => {
-        return (
-            <div className='approve-failed'>
-                <span>{this.state.applyResultMsg},</span>
-                <a onClick={this.handleApproveFail}>{Intl.get('member.apply.approve.failed.tips','稍后处理')}</a>
-            </div>
-        );
+    hideTooltip = () => {
+        this.props.memberApprove(true);
+        this.setState({
+            applyResult: '',
+            applyResultMsg: ''
+        });
+    };
+
+    renderApproveMsg = () => {
+        if (this.state.applyResult === 'success' && this.state.applyResultMsg) {
+            return (
+                <div>
+                    <AlertTimer
+                        time={2000}
+                        message={this.state.applyResultMsg}
+                        type='success'
+                        onHide={this.hideTooltip}
+                    />
+                </div>
+            );
+        } else if (this.state.applyResult === 'error') {
+            return (
+                <div className='approve-failed'>
+                    <span>{this.state.applyResultMsg},</span>
+                    <a onClick={this.handleApproveFail}>{Intl.get('member.apply.approve.failed.tips','稍后处理')}</a>
+                </div>
+            );
+        }
     };
 
     render() {
@@ -76,8 +102,11 @@ class MemberApply extends React.Component {
         let roleName = _.get(detail, 'role.role_name', '');
         let applicant = _.get(pendingMemberInfo, 'applicant');
         let applicantName = _.get(applicant, 'nick_name');
+        let memberApproveCls = classNames('member-approve',{
+            'next-approve-member': !this.state.applyResult,
+        });
         return (
-            <div className='member-approve'>
+            <div className={memberApproveCls}>
                 <div className='member-invite-title'>{Intl.get('member.apply.who.invite', '{who}的邀请', {who: applicantName})}</div>
                 <div className="apply-info-content">
                     <div className='apply-item'>{Intl.get('common.name', '姓名')}: {nickname}</div>
@@ -91,7 +120,7 @@ class MemberApply extends React.Component {
                 </div>
                 <SaveCancelButton
                     loading={this.state.loading}
-                    saveErrorMsg={this.state.applyResult === 'error' ? this.renderApproveFailMsg() : ''}
+                    saveErrorMsg={this.state.applyResult !== '' ? this.renderApproveMsg() : ''}
                     handleSubmit={this.submitApprovalForm.bind(this, 'pass')}
                     handleCancel={this.submitApprovalForm.bind(this, 'reject')}
                     okBtnText={Intl.get('user.apply.detail.button.pass', '通过')}
