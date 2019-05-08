@@ -731,7 +731,8 @@ class CustomerRecord extends React.Component {
             divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
         }
         //减通话状态的高度
-        if (_.indexOf([CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CALL_BACK, 'all'], this.state.filterType) !== -1) {
+        if (_.indexOf([CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CALL_BACK, 'all'], this.state.filterType) !== -1
+            && _.get(this.state, 'customerRecord.length') > 0) {
             divHeight -= LAYOUT_CONSTANTS.PHONE_STATUS_HEIGHT;
         }
         return divHeight;
@@ -750,8 +751,11 @@ class CustomerRecord extends React.Component {
         } else if (this.state.customerRecordErrMsg && !this.state.customerRecordLoading) {
             //加载完成，出错的情况
             return (
-                <ErrorDataTip errorMsg={this.state.customerRecordErrMsg} isRetry={true}
-                    retryFunc={this.retryChangeRecord}/>
+                <div className="no-record-container"
+                    style={{'height': this.props.isOverViewPanel ? LAYOUT_CONSTANTS.OVER_VIEW_LOADING_HEIGHT : this.getRecordListShowHeight()}}>
+                    <ErrorDataTip errorMsg={this.state.customerRecordErrMsg} isRetry={true}
+                        retryFunc={this.retryChangeRecord}/>
+                </div>
             );
         } else if (recordLength === 0 && !this.state.customerRecordLoading && !this.props.isOverViewPanel) {
             //加载完成，没有数据的情况（概览页的跟进记录是在标题上展示）

@@ -91,10 +91,12 @@ CrmStore.prototype.afterMergeCustomer = function(mergeObj) {
         let mergeCustomer = mergeObj.customer;
         let index = _.findIndex(this.curCustomers, customer => customer.id === mergeCustomer.id);
         this.curCustomers[index] = mergeCustomer;
-        //过滤掉合并后删除的客户
-        let delCustomerIds = mergeObj.delete_ids;
-        if (_.isArray(delCustomerIds) && delCustomerIds.length > 0) {
-            this.curCustomers = _.filter(this.curCustomers, customer => delCustomerIds.indexOf(customer.id) === -1);
+        //合并后，删除的客户
+        let deleteCustomers = _.get(mergeObj,'delete_customers', []);
+        //合并后删除的客户id列表
+        let delCustomerIds = _.map(deleteCustomers,'id');
+        if (_.get(delCustomerIds,'[0]')) {
+            this.curCustomers = _.filter(this.curCustomers, customer => _.indexOf(delCustomerIds,customer.id) === -1);
             this.customersSize -= delCustomerIds.length;//客户的总数去掉删除的客户数
         }
     }
@@ -208,7 +210,14 @@ CrmStore.prototype.updateCustomerDefContact = function(contact) {
             delete updateCustomer.contact_name;//删除后端返回的默认联系人姓名
             delete updateCustomer.phones;//删除后端返回的默认联系人电话
         }else{
-            updateCustomer.contacts = [contact];
+            let updateContact = _.get(updateCustomer, 'contacts[0]', {});
+            //单项修改时的更新
+            if(contact.property){
+                updateContact[contact.property] = contact[contact.property];
+            }else{//添加默认联系人时的更新
+                updateContact = contact;
+            }
+            updateCustomer.contacts = [updateContact];
         }
     }
 };

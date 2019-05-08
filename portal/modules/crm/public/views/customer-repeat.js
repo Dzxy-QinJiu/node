@@ -76,6 +76,7 @@ class CustomerRepeat extends React.Component {
 
     componentWillUnmount() {
         CustomerRepeatStore.unlisten(this.onStoreChange);
+        CustomerRepeatAction.setInitData();
     }
 
     getCrmListHeight = () => {
@@ -310,7 +311,7 @@ class CustomerRepeat extends React.Component {
         let customerNameCls = classNames('repeat-customer-col customer-name-click',
             {'customer-name-active': this.state.curCustomer.id === customer.id});
         return (
-            <Row className="customer-row">
+            <Row className="customer-row" key={customer.id}>
                 <Col span={5} className={customerNameCls}
                     onClick={this.showRightPanel.bind(this, customer.id)}>
                     {customer.name}
