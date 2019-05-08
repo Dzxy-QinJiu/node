@@ -55,6 +55,10 @@ var UserPwdPage = createReactClass({
         }
     },
 
+    propTypes: {
+        form: PropTypes.object,
+    },
+    
     componentDidMount: function() {
         $('body').css('overflow', 'hidden');
         UserInfoStore.listen(this.onChange);
@@ -129,6 +133,10 @@ var UserPwdPage = createReactClass({
                     passwd: this.md5Hash(values.passwd),
                     newPasswd: this.md5Hash(values.newPasswd)
                 };
+                if (user.newPasswd === user.passwd) {
+                    UserInfoAction.handleSamePassWord();
+                    return;
+                }
                 UserInfoAction.editUserInfoPwd(user);
             }
         });

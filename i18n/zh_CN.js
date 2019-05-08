@@ -814,6 +814,7 @@ var zh_CN = {
     'user.password.input.initial.password': '请输入原密码',
     'user.password.new.password': '新密码',
     'user.password.save.password': '保存密码',
+    'user.password.same.password': '新密码和原始密码相同',
     //密码管理end
     //通知start
     'notification.all.infor': '全部申请消息',
