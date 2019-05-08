@@ -62,6 +62,7 @@ var loadersLists = [
         include: [
             path.join(__dirname, 'portal'),
             path.join(__dirname, 'node_modules/component-util'),
+            path.join(__dirname, 'node_modules/ant-chart-collection'),
             path.join(__dirname, 'node_modules/callcenter-sdk-client')
         ]
     },
