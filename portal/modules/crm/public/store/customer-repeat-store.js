@@ -87,16 +87,16 @@ CustomerRepeatStore.prototype.toggleSearchInput = function(keyObj) {
 
 //合并重复客户后的处理
 CustomerRepeatStore.prototype.afterMergeRepeatCustomer = function(mergeObj) {
-    //合并后保存的客户的id也放入要删除的客户id列表中
-    if (_.isObject(mergeObj.customer) && mergeObj.customer.id) {
-        if (_.isArray(mergeObj.delete_ids) && mergeObj.delete_ids.length > 0) {
-            mergeObj.delete_ids.push(mergeObj.customer.id);
-        } else {
-            mergeObj.delete_ids = [mergeObj.customer.id];
-        }
+    //合并后，删除的客户
+    let deleteCustomers = _.get(mergeObj,'delete_customers', []);
+    //合并后删除的客户id列表
+    let delCustomerIds = _.map(deleteCustomers,'id');
+    //合并后保存的客户的id也需要从重复客户列表中删除
+    if (_.get(mergeObj,'customer.id')) {
+        delCustomerIds.push(mergeObj.customer.id);
     }
     //过滤掉合并的重复客户
-    this.delRepeatCustomer(mergeObj.delete_ids);
+    this.delRepeatCustomer(delCustomerIds);
 };
 
 //是否展示客户合并面板的设置
@@ -179,15 +179,9 @@ CustomerRepeatStore.prototype.refreshRepeatCustomer = function(data) {
 CustomerRepeatStore.prototype.delRepeatCustomer = function(delCustomerIds) {
     //删除成功后的处理
     if (_.isArray(delCustomerIds) && delCustomerIds.length > 0) {
-        this.originCustomerList = _.filter(this.originCustomerList, customer => delCustomerIds.indexOf(customer.id) === -1);
-        _.each(this.repeatCustomerList, (repeatObj) => {
-            let repeatList = repeatObj.repeatList;
-            if (_.isArray(repeatList) && repeatList.length) {
-                repeatObj.repeatList = _.filter(repeatList, customer => delCustomerIds.indexOf(customer.id) === -1);
-            }
-        });
-        //重复客户全部删没后，过滤掉整条重复客户的记录
-        this.repeatCustomerList = _.filter(this.repeatCustomerList, repeatObj => (_.isArray(repeatObj.repeatList) && repeatObj.repeatList.length > 0));
+        //过滤掉删除的重复客户
+        this.originCustomerList = _.filter(this.originCustomerList, customer => _.indexOf(delCustomerIds, customer.id) === -1);
+        this.repeatCustomerList = this.processForList(this.originCustomerList);
         this.repeatCustomersSize -= delCustomerIds.length;//重复客户的总数去掉删除的客户数
     }
 };
