@@ -8,16 +8,26 @@ var classNames = require('classnames');
 import ApplyProcessList from './view/apply_process_list';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {Button} from 'antd';
-import {calculateHeight } from './utils/apply-approve-utils';
+import {calculateHeight} from './utils/apply-approve-utils';
 class ApplyApproveManage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             showAddForm: false,
             showApplyTypeList: [
-                {'applyType': '默认申请审批','approveRoles': ['销售'],'approveCheck': false,id: '111111111111'}, {'applyType': '出差申请审批','approveRoles': ['销售222'],'approveCheck': true,id: '222222222222222222'}],//申请审批的列表
+                {
+                    'applyType': '默认申请审批',
+                    'approveRoles': ['销售'],
+                    'approveCheck': false,
+                    id: '111111111111'
+                }, {'applyType': '出差申请审批', 'approveRoles': ['销售222'], 'approveCheck': true, id: '222222222222222222'},{
+                    'applyType': '请假申请审批', 'approveRoles': ['销售333'], 'approveCheck': true, id: '333333333333333333'
+                },{
+                    'applyType': '销售机会申请审批', 'approveRoles': ['销售444'], 'approveCheck': true, id: '444444444444444'
+                }],//申请审批的列表
         };
     }
+
     onStoreChange = () => {
 
     };
@@ -32,9 +42,9 @@ class ApplyApproveManage extends React.Component {
     renderApplyTypeList = () => {
         return (
             <ApplyProcessList
-                showApplyList = {this.state.showApplyTypeList}
-                showAddForm = {this.state.showAddForm}
-                updateShowApplyList = {this.updateShowApplyList}
+                showApplyList={this.state.showApplyTypeList}
+                showAddForm={this.state.showAddForm}
+                updateShowApplyList={this.updateShowApplyList}
             />
         );
     };
@@ -48,7 +58,7 @@ class ApplyApproveManage extends React.Component {
             <ButtonZones>
                 <div className="btn-item-container">
                     <Button className='btn-item'
-                        onClick={this.handleClickAddForm}>{Intl.get('apply.add.apply.type', '添加申请类型')}</Button>
+                            onClick={this.handleClickAddForm}>{Intl.get('apply.add.apply.type', '添加申请类型')}</Button>
                 </div>
             </ButtonZones>
         );
@@ -66,11 +76,7 @@ class ApplyApproveManage extends React.Component {
     }
 }
 
-ApplyApproveManage.defaultProps = {
+ApplyApproveManage.defaultProps = {};
 
-};
-
-ApplyApproveManage.propTypes = {
-
-};
+ApplyApproveManage.propTypes = {};
 export default ApplyApproveManage;

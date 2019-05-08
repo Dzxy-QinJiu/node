@@ -231,7 +231,7 @@ class RegRulesView extends React.Component {
                     );
                 })}
                 <div className="item-node">
-                    <div className="icon-container  add-node" onClick={this.addApplyNode.bind(this, 'defaultFlow')}>
+                    <div className="icon-container add-node" onClick={this.addApplyNode.bind(this, 'defaultFlow')}>
                         <i className="iconfont icon-add"></i>
                     </div>
                 </div>
@@ -473,10 +473,13 @@ class RegRulesView extends React.Component {
                                     <span
                                         className="condition-item-label">{Intl.get('apply.condition.apply.approve', '审批流程')}:</span>
                                     {_.get(item, 'bpmnNode.length') ? this.renderApplyWorkFlowNode(item.bpmnNode) :
-                                        <div className="icon-container add-node"
-                                            onClick={this.addApplyNode.bind(this, key)}>
-                                            <i className="iconfont icon-add"></i>
-                                        </div>}
+                                        <div className="rule-content apply-node-lists">
+                                            <div className="icon-container add-node"
+                                                 onClick={this.addApplyNode.bind(this, key)}>
+                                                <i className="iconfont icon-add"></i>
+                                            </div>
+                                        </div>
+                                       }
                                 </div>
                                 <div className="condition-item condition-item-cc">
                                     <span

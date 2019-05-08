@@ -2974,6 +2974,7 @@ var zh_CN = {
     'apply.add.condition.within': '介于',
     'apply.condition.meet.rule': '满足条件',
     'apply.condition.apply.approve': '审批流程',
-    'apply.condition.item.add.cc': '抄送人'
+    'apply.condition.item.add.cc': '抄送人',
+    'apply.condition.item.money': '金额'
 };
 export default zh_CN;

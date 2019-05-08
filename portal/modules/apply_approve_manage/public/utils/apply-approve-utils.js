@@ -25,3 +25,7 @@ exports.applyComponentsType = [{
     name: ALL_COMPONENTS.INPUT,
     component: Input
 }];
+exports.CONDITION_KEYS = [
+    {name: Intl.get('user.duration', '时长'), value: 'timeRange'},
+    {name: Intl.get('apply.condition.item.money', '金额'), value: 'money'}
+];

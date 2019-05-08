@@ -56,15 +56,8 @@ class AddApplyForm extends React.Component {
                 {'rulename': Intl.get('apply.rule.customer', '客户选择'), 'iconfontCls': 'icon-fuwu'},
                 {'rulename': Intl.get('apply.rule.production', '产品配置'), 'iconfontCls': 'icon-fuwu'}
             ],
-            //某个申请保存的表单
-            applySaveForm: [{
-                id: 'XXX',
-                title: '时长组件',
-                isRequired: false,
-                componentType: 'timeRange',
-                keys: ['timeRange'],
-                subKeys: ['starttime', 'endtime', 'total_range']
-            }],
+            //某个申请保存的表单，应该是通过ajax请求获取
+            applySaveForm: this.getSavedComponentsByApplyId(_.get(this, 'props.applyTypeData.id')),
             //某个申请的审批规则及相关配置
             applyRulesAndSetting: {
                 applyApproveRules: {
@@ -97,7 +90,55 @@ class AddApplyForm extends React.Component {
                 mergeSameApprover: false//其他
             },
         };
-    }
+    };
+
+    //根据审批流程的id获取已保存的表单，这样在写审批规则的时候就根据表单写规则
+    getSavedComponentsByApplyId = (applyId) => {
+        var allFormLists = [{
+            applyId: '111111111111',
+            applySaveForm: [{
+                id: 'XXX',
+                title: '时长组件',
+                isRequired: false,
+                componentType: 'timeRange',
+                keys: ['timeRange'],
+                subKeys: ['starttime', 'endtime', 'total_range']
+            }],
+        },{
+            applyId: '222222222222222222',
+            applySaveForm: [{
+                id: 'XXX',
+                title: '时长组件',
+                isRequired: false,
+                componentType: 'timeRange',
+                keys: ['timeRange'],
+                subKeys: ['starttime', 'endtime', 'total_range']
+            }],
+        },{
+            applyId: '333333333333333333',
+            applySaveForm: [{
+                id: 'XXX',
+                title: '时长组件',
+                isRequired: false,
+                componentType: 'timeRange',
+                keys: ['timeRange'],
+                subKeys: ['starttime', 'endtime', 'total_range']
+            }],
+        },{
+            applyId: '444444444444444',
+            applySaveForm: [{
+                id: 'XXX',
+                title: '金额组件',
+                isRequired: false,
+                componentType: 'InputNumber',
+                subComponentType: 'money',
+                keys: ['value']
+            }],
+        }];
+        var target = _.find(allFormLists, item => item.applyId === applyId);
+        return _.get(target,'applySaveForm');
+
+    };
 
     onStoreChange = () => {
 
@@ -219,7 +260,7 @@ class AddApplyForm extends React.Component {
                     var cls = 'iconfont ' + ruleItem.iconfontCls;
                     return (
                         <span className="rule-content-container"
-                            onClick={this.handleAddComponents.bind(this, ruleItem)}>
+                              onClick={this.handleAddComponents.bind(this, ruleItem)}>
                             <i className={cls}></i>
                             <span className="rule-cls">{ruleItem.rulename}</span>
                             {ruleItem.defaultPlaceholder ?
@@ -233,7 +274,7 @@ class AddApplyForm extends React.Component {
     renderFormContent = () => {
         return (
             <div className="apply-form-content-wrap"
-                style={{height: calculateHeight() - 2 * APPLYAPPROVE_LAYOUT.PADDINGHEIGHT - APPLYAPPROVE_LAYOUT.TABTITLE - APPLYAPPROVE_LAYOUT.TOPANDBOTTOM}}>
+                 style={{height: calculateHeight() - 2 * APPLYAPPROVE_LAYOUT.PADDINGHEIGHT - APPLYAPPROVE_LAYOUT.TABTITLE - APPLYAPPROVE_LAYOUT.TOPANDBOTTOM}}>
                 <div className="apply-form-rules">
                     {this.renderAddFormRules()}
                 </div>
@@ -257,14 +298,14 @@ class AddApplyForm extends React.Component {
         return (
             <div className="add-apply-form-content">
                 <Tabs defaultActiveKey={TAB_KEYS.FORM_CONTENT}
-                    activeKey={this.state.activeKey}
-                    onChange={this.handleTabChange}>
+                      activeKey={this.state.activeKey}
+                      onChange={this.handleTabChange}>
                     <TabPane tab={Intl.get('apply.add.form.content', '表单内容')}
-                        key={TAB_KEYS.FORM_CONTENT}>
+                             key={TAB_KEYS.FORM_CONTENT}>
                         {this.renderFormContent()}
                     </TabPane>
                     <TabPane tab={Intl.get('apply.add.form.regex', '审批规则')}
-                        key={TAB_KEYS.APPLY_RULE}>
+                             key={TAB_KEYS.APPLY_RULE}>
                         {this.renderApplyRegex()}
                     </TabPane>
                 </Tabs>
@@ -291,7 +332,7 @@ class AddApplyForm extends React.Component {
 }
 
 AddApplyForm.defaultProps = {
-    closeAddPanel: function() {
+    closeAddPanel: function () {
 
     },
     applyTypeData: {}
