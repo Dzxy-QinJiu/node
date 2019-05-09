@@ -122,7 +122,7 @@ class TopBar extends React.Component {
         let selectedMember;
         let memberIdStr;
 
-        //清空所有选中的销售时，默认选中第一个
+        //清空所有选中的成员时，默认选中第一个
         if (_.isEmpty(memberId)) {
             const firstMemberId = _.get(_.first(this.state.memberList), 'user_info.user_id');
             selectedMember = [firstMemberId];
@@ -209,7 +209,7 @@ class TopBar extends React.Component {
                         onChange={this.onFilterTypeChange}
                     >
                         <Option key="1" value="team">按团队</Option>
-                        <Option key="2" value="member">按销售</Option>
+                        <Option key="2" value="member">按成员</Option>
                     </Select>
                 )}
 
