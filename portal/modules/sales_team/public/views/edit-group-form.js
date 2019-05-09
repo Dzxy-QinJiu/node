@@ -15,6 +15,7 @@ var classNames = require('classnames');
 var AlertTimer = require('../../../../components/alert-timer');
 var Icon = require('antd').Icon;
 var SalesTeamActions = require('../action/sales-team-actions');
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import Trace from 'LIB_DIR/trace';
 
 function noop() {
@@ -23,7 +24,12 @@ function noop() {
 var SalesTeamForm = createReactClass({
     displayName: 'SalesTeamForm',
     mixins: [Validation.FieldMixin],
-
+    propTypes: {
+        salesTeam: PropTypes.object,
+        cancelSalesTeamForm: PropTypes.func,
+        salesTeamList: PropTypes.array,
+        className: PropTypes.string
+    },
     getDefaultProps: function() {
         return {
             submitSalesTeamForm: noop,
@@ -123,13 +129,13 @@ var SalesTeamForm = createReactClass({
                         formData.saveTeamResult = result.saveResult;
                         formData.isTeamSaving = false;
                         _this.setState({formData: formData});
-                        if (result.saveResult == 'success') {
+                        if (result.saveResult === 'success') {
                             //保存成功后的处理
                             var salesTeam = _this.props.salesTeam;
                             if (salesTeam && salesTeam.isEditGroup) {
                                 SalesTeamActions.cancelEditGroup(salesTeam);
                                 //刷新团队列表
-                                if (salesTeam.superiorTeam == formData.superiorTeam) {
+                                if (salesTeam.superiorTeam === formData.superiorTeam) {
                                     //只修改了团队的名称
                                     SalesTeamActions.updateTeamNameAfterEdit(formData);
                                 } else {
@@ -174,7 +180,7 @@ var SalesTeamForm = createReactClass({
 
     //递归遍历团队树，查树中是否含有此团队
     findChildren: function(id, curSalesTeam) {
-        if (id == curSalesTeam.key) {
+        if (id === curSalesTeam.key) {
             return true;
         } else {
             if (_.isArray(curSalesTeam.children) && curSalesTeam.children.length > 0) {
@@ -216,13 +222,11 @@ var SalesTeamForm = createReactClass({
     },
 
     render: function() {
-        var _this = this;
         var formData = this.state.formData;
         var status = this.state.status;
         var formClass = classNames('edit-sales-team-form', this.props.className, {
             'select': formData.select
         });
-        var editResult = this.state.formData.saveTeamResult;
         return (
             <div className={formClass} data-tracename ="编辑/添加团队表单">
                 <Form layout='horizontal' className="form">
@@ -273,25 +277,11 @@ var SalesTeamForm = createReactClass({
                         <FormItem
                             prefixCls="edit-sales-team-btn-item ant-form"
                             wrapperCol={{span: 24}}>
-                            {this.state.formData.isTeamSaving ? (<Icon type="loading"/>) : (
-                                editResult ? (<div className="indicator">
-                                    <AlertTimer time={editResult == 'error' ? 3000 : 600}
-                                        message={this.state.formData.saveTeamMsg}
-                                        type={editResult} showIcon
-                                        onHide={this.hideSaveTooltip}/>
-                                </div>) : null)
-                            }
-                            <Button type="primary" className="btn-primary-sure member-form-btn"
-                                onClick={(e) => {_this.handleSubmit(e);}}
-                            >
-                                <ReactIntl.FormattedMessage id="common.confirm" defaultMessage="确认"/>
-                            </Button>
-                            <Button type="ghost" className="btn-primary-cancel member-form-btn"
-                                onClick={(e) => {_this.handleCancel(e);}}
-
-                            >
-                                <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
-                            </Button>
+                            <SaveCancelButton loading={formData.isTeamSaving}
+                                saveErrorMsg={formData.saveTeamMsg}
+                                handleSubmit={this.handleSubmit.bind(this)}
+                                handleCancel={this.handleCancel.bind(this)}
+                            />
                         </FormItem>
                     </Validation>
                 </Form>
