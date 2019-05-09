@@ -25,7 +25,7 @@ var userRestApis = {
     //获取用户的操作日志
     getUserLog: '/rest/analysis/auditlog/v1/all',
     //获取角色列表
-    getRoleList: '/rest/base/v1/application/role',
+    getRoleList: '/rest/base/v1/application/roles',
     //成员属性唯一性验证的url
     checkOnlyUser: '/rest/base/v1/user/member/:key/:value/unique',
     //修改成员的所属团队
@@ -183,10 +183,10 @@ exports.getUserLog = function(req, res, condition) {
 
 
 //获取角色列表
-exports.getRoleList = function(req, res, clientId) {
+exports.getRoleList = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: userRestApis.getRoleList + '/' + clientId,
+            url: userRestApis.getRoleList,
             req: req,
             res: res
         },
