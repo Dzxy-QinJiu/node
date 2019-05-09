@@ -135,6 +135,10 @@ var UserPwdPage = createReactClass({
                 };
                 if (user.newPasswd === user.passwd) {
                     UserInfoAction.handleSamePassWord();
+                    this.props.form.setFields({
+                        newPasswd: '',
+                        rePasswd: ''
+                    });
                     return;
                 }
                 UserInfoAction.editUserInfoPwd(user);
