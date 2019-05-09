@@ -8,9 +8,9 @@ export const repaymentChart = {
     url: '/rest/analysis/contract/report/repayment/:auth_type',
     ajaxInstanceFlag: 'sales_report_repayment',
     argCallback: arg => {
-        if (arg.query.member_id) {
-            arg.query.user_ids = arg.query.member_id;
-            delete arg.query.member_id;
+        if (arg.query.member_ids) {
+            arg.query.user_ids = arg.query.member_ids;
+            delete arg.query.member_ids;
         }
     },
     processData: data => {

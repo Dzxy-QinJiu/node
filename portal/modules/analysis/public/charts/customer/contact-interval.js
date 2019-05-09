@@ -2,6 +2,8 @@
  * 联系客户间隔统计
  */
 
+import { argCallbackMemberIdsToMemberId } from '../../utils';
+
 export function getContactCustomerIntervalChart(intervals) {
     intervals = intervals || [{
         name: '1-3天',
@@ -64,6 +66,7 @@ export function getContactCustomerIntervalChart(intervals) {
         title: '联系客户间隔统计',
         chartType: 'bar',
         url: '/rest/analysis/customer/v2/customertrace/sale/contact/interval/statistics',
+        argCallback: argCallbackMemberIdsToMemberId,
         processData: data => data,
         processOption: (option, chartProps) => {
             //平均时间间隔数据
