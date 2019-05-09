@@ -789,6 +789,7 @@ class CustomerAnalysis extends React.Component {
                     //将缓存key加到每一条记录中，方便在点击事件中获取
                     _.each(list, item => {
                         item.cache_key = cacheKey;
+                        item.active_rate = this.numToPercent(item.active_rate);
                     });
 
                     return list;
@@ -823,9 +824,6 @@ class CustomerAnalysis extends React.Component {
                     {
                         title: Intl.get('effective.customer.activity.rate', '有效客户活跃率'),
                         dataIndex: 'active_rate',
-                        render: text => {
-                            return <span>{this.numToPercent(text)}</span>;
-                        }
                     },
                 ],
             },
