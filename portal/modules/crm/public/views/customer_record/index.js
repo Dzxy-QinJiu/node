@@ -731,7 +731,7 @@ class CustomerRecord extends React.Component {
             divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
         }
         //减通话状态的高度
-        if (_.indexOf([CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CALL_BACK, 'all'], this.state.filterType) !== -1
+        if (_.includes([CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CALL_BACK, 'all'], this.state.filterType)
             && _.get(this.state, 'customerRecord.length') > 0) {
             divHeight -= LAYOUT_CONSTANTS.PHONE_STATUS_HEIGHT;
         }
@@ -740,19 +740,19 @@ class CustomerRecord extends React.Component {
 
     renderCustomerRecordLists = () => {
         var recordLength = this.state.customerRecord.length;
+        //加载状态或加载数据错误时，容器高度的设置
+        let loadingErrorHeight = this.props.isOverViewPanel ? LAYOUT_CONSTANTS.OVER_VIEW_LOADING_HEIGHT : this.getRecordListShowHeight();
         if (this.state.customerRecordLoading && this.state.curPage === 1) {
             //加载中的情况
             return (
-                <div className="customer-trace-loading"
-                    style={{'height': this.props.isOverViewPanel ? LAYOUT_CONSTANTS.OVER_VIEW_LOADING_HEIGHT : this.getRecordListShowHeight()}}>
+                <div className="customer-trace-loading" style={{'height': loadingErrorHeight }}>
                     <Spinner/>
                 </div>
             );
         } else if (this.state.customerRecordErrMsg && !this.state.customerRecordLoading) {
             //加载完成，出错的情况
             return (
-                <div className="no-record-container"
-                    style={{'height': this.props.isOverViewPanel ? LAYOUT_CONSTANTS.OVER_VIEW_LOADING_HEIGHT : this.getRecordListShowHeight()}}>
+                <div className="no-record-container" style={{'height': loadingErrorHeight}}>
                     <ErrorDataTip errorMsg={this.state.customerRecordErrMsg} isRetry={true}
                         retryFunc={this.retryChangeRecord}/>
                 </div>

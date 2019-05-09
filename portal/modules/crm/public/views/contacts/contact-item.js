@@ -163,7 +163,7 @@ class ContactItem extends React.Component {
                 if (data) {
                     if (_.isFunction(successFunc)) successFunc();
                     ContactAction.afterEditContact(saveObj);
-                    let def_contancts = _.get(this.props, 'contact.contact.def_contancts', '');
+                    let def_contancts = _.get(this.props, 'contact.contact.def_contancts');
                     //修改默认联系人的姓名、电话时，更新列表中的联系人数据
                     if (def_contancts === 'true' && (property === 'name' || property === 'phone')) {
                         //只有在客户列表中才有更新列表中联系人的方法
