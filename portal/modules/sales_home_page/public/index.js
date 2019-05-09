@@ -120,6 +120,10 @@ class SalesHomePage extends React.Component {
     componentDidMount() {
         SalesHomeStore.listen(this.onChange);
         let type = this.getDataType();
+        // 有审批权限时，获取待我审批的邀请成员列表
+        if (hasPrivilege('MEMBER_INVITE_MANAGE')) {
+            SalesHomeAction.getPendingApproveMemberApplyList();
+        }
         //获取统计团队内成员个数的列表
         SalesHomeAction.getTeamMemberCountList();
         SalesHomeAction.getSalesTeamList(type);
@@ -1183,7 +1187,8 @@ class SalesHomePage extends React.Component {
                         {/*除了销售之外*/}
                         {!(this.state.currShowType === showTypeConstant.SALESMAN && !this.state.currShowSalesman) ? (
                             <div className={crmSaleList}>
-                                <CrmRightList currShowType={this.state.currShowType}
+                                <CrmRightList
+                                    currShowType={this.state.currShowType}
                                     salesTeamListObj={this.state.salesTeamListObj}
                                     originSalesTeamTree={this.state.originSalesTeamTree}
                                     scrollbarEnabled={this.state.scrollbarEnabled}
@@ -1195,6 +1200,8 @@ class SalesHomePage extends React.Component {
                                     updateScrollBar={this.state.updateScrollBar}
                                     salesCallStatus={this.state.salesCallStatus}
                                     teamMemberCountList={this.state.teamMemberCountList}
+                                    pendingApproveMemberObj={this.state.pendingApproveMemberObj}
+                                    isGetMemberApplyList={this.state.isGetMemberApplyList}
                                 />
                             </div>
                         ) : null}

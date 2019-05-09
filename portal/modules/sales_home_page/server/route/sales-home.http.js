@@ -77,14 +77,20 @@ module.exports = {
         'privileges': [
             'MEMBER_WEBSITE_CONFIG'
         ]
-    },
-    {
+    }, {
         'method': 'post',
         'path': '/rest/call_record/:type/:start_time/:end_time/:page_size/:sort_field/:sort_order',
         'handler': 'getCallBack',
         'passport': {
             'needLogin': true
         }
-    }
+    }, { //批准或驳回审批
+        method: 'post',
+        path: '/rest/member_apply/apply',
+        handler: 'approveMemberApplyPassOrReject',
+        passport: {
+            needLogin: true
+        }
+    }    
     ]
 };

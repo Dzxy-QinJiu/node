@@ -28,6 +28,8 @@ var restApis = {
     callRecordListUrl: '/rest/callrecord/v2/callrecord/query/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
     // 获取全部和客户电话的列表（所有的，包括不在团队里的数据）
     managerCallRcordListUrl: '/rest/callrecord/v2/callrecord/query/manager/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
+    //通过或者驳回申请
+    approveMemberApplyPassOrReject: '/rest/base/v1/workflow/memberinvite/approve',
 };
 exports.restUrls = restApis;
 
@@ -157,4 +159,14 @@ exports.getCallBack = function(req, res, params, filterObj, queryObj) {
             req: req,
             res: res
         }, filterObj);
+};
+
+//批准或驳回审批
+exports.approveMemberApplyPassOrReject = (req, res) => {
+    return restUtil.authRest.post(
+        {
+            url: restApis.approveMemberApplyPassOrReject,
+            req: req,
+            res: res
+        }, req.body);
 };
