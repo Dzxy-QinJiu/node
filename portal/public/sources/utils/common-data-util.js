@@ -80,11 +80,11 @@ exports.getAllProductList = function(cb) {
 const getAllUserList = function(notFilterStop) {
     return new Promise((resolve, reject) => {
         if (_.get(allUserList, '[0]')) {
-            //过滤停用的成员
-            if (!notFilterStop) {
-                resolve(_.filter(allUserList, sales => sales && sales.status === 1));
-            } else {//不过滤停用的成员
+            //不过滤停用的成员
+            if(notFilterStop){
                 resolve(allUserList);
+            }else{//过滤停用的成员
+                resolve(_.filter(allUserList, sales => sales && sales.status === 1));
             }
         } else {
             $.ajax({
@@ -93,14 +93,14 @@ const getAllUserList = function(notFilterStop) {
                 dataType: 'json',
                 data: {},
                 success: result => {
-                    if (_.isArray(result.data)) {
+                    if (_.get(result, 'data[0]')) {
                         allUserList = result.data;
-                        //过滤停用的成员
-                        if (!notFilterStop) {
-                            resolve(_.filter(allUserList, sales => sales && sales.status === 1));
-                        } else {//不过滤停用的成员
-                            resolve(allUserList);
-                        }
+                    }
+                    //不过滤停用的成员
+                    if(notFilterStop){
+                        resolve(allUserList);
+                    }else{//过滤停用的成员
+                        resolve(_.filter(allUserList, sales => sales && sales.status === 1));
                     }
                 },
                 error: xhr => {

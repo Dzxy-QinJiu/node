@@ -413,6 +413,46 @@ class CrmFilterPanel extends React.Component {
             }
         });
     }
+    //从团队树中递归遍历查找团队
+    getTeamFromTree(teamList,teamId){
+        let team = {};
+        _.each(teamList, item => {
+            if (item.group_id === teamId) {
+                team = item;
+            } else if (_.get(item, 'child_groups[0]')) {
+                team = this.getTeamFromTree(item.child_groups, teamId);
+            }
+            //找到team就停止遍历
+            if(!_.isEmpty(team)){
+                return false;
+            }
+        });
+        return team;
+    }
+    //递归遍历团队列表,获取团队及下级团队的人员id列表
+    traverseTeamMember(teamList) {
+        let memberIds = [];
+        _.each(teamList, team => {
+            //成员
+            if (_.get(team, 'user_ids[0]')) {
+                memberIds = _.concat(memberIds, team.user_ids);
+            }
+            //舆情秘书
+            if(_.get(team, 'manager_ids[0]')){
+                memberIds = _.concat(memberIds, team.manager_ids);
+            }
+            //主管
+            if (_.get(team, 'owner_id')) {
+                memberIds.push(team.owner_id);
+            }
+            if (_.get(team, 'child_groups[0]')) {
+                let childMemberIds = this.traverseTeamMember(team.child_groups);
+                memberIds = _.concat(memberIds, childMemberIds);
+            }
+        });
+        return memberIds;
+    }
+
     render() {
         const appListJsx = this.state.appList.map((app, idx) => {
             let className = app.client_id === this.state.condition.sales_opportunities[0].apps[0] ? 'selected' : '';
@@ -453,6 +493,14 @@ class CrmFilterPanel extends React.Component {
             }];
             return x;
         });
+        //选中的客户阶段列表
+        let selectedCustomerLabels = _.get(this.state, 'condition.customer_label', '').split(',');
+        //选中的标签列表
+        let selectedLabels = _.get(this.state, 'condition.labels', []);
+        //选中的竞品列表
+        let selectedCompetings = _.get(this.state, 'condition.competing_products', []);
+        //选中的行政级别列表
+        let selectedLevel = _.get(this.state, 'condition.administrative_level', '').split(',');
         const advancedData = [
             {
                 groupName: Intl.get('crm.order.stage', '订单阶段'),
@@ -460,7 +508,8 @@ class CrmFilterPanel extends React.Component {
                 singleSelect: true,
                 data: _.drop(stageArray).map(x => ({
                     name: x.show_name,
-                    value: x.name
+                    value: x.name,
+                    selected: x.name === _.get(this.state, 'condition.sales_opportunities[0].sale_stages', '')
                 }))
             },
             {
@@ -468,14 +517,21 @@ class CrmFilterPanel extends React.Component {
                 groupId: 'customer_label',
                 data: _.drop(this.state.stageTagList).map(x => ({
                     name: x.show_name,
-                    value: x.name
+                    value: x.name,
+                    selected: _.indexOf(selectedCustomerLabels, x.name) !== -1
                 }))
             },
             {
                 groupName: Intl.get('common.qualified', '合格'),
                 groupId: 'qualify_label',
                 singleSelect: true,
-                data: qualifiedTagList
+                data: _.map(qualifiedTagList, x => {
+                    return {
+                        name: x.name,
+                        value: x.value,
+                        selected: x.value === _.get(this.state, 'condition.qualify_label', '')
+                    };
+                })
             },
             {
                 groupName: Intl.get('common.tag', '标签'),
@@ -483,7 +539,8 @@ class CrmFilterPanel extends React.Component {
                 data: _.drop(this.state.tagList).map(x => {
                     const item = {
                         name: x.show_name,
-                        value: x.name
+                        value: x.name,
+                        selected: _.indexOf(selectedLabels, x.name) !== -1
                     };
                     if (x.name === Intl.get('crm.tag.unknown', '未打标签的客户')) {
                         item.selectOnly = true;
@@ -496,7 +553,8 @@ class CrmFilterPanel extends React.Component {
                 groupId: 'competing_products',
                 data: _.drop(this.state.competitorList).map(x => ({
                     name: x.show_name,
-                    value: x.name
+                    value: x.name,
+                    selected: _.indexOf(selectedCompetings, x.name) !== -1
                 }))
             },
             {
@@ -505,7 +563,8 @@ class CrmFilterPanel extends React.Component {
                 singleSelect: true,
                 data: _.drop(industryArray).map(x => ({
                     name: x,
-                    value: x
+                    value: x,
+                    selected: x === _.get(this.state, 'condition.industry', '')
                 }))
             },
             {
@@ -513,7 +572,8 @@ class CrmFilterPanel extends React.Component {
                 groupId: 'administrative_level',
                 data: _.drop(filterLevelArray).map(x => ({
                     name: x.level,
-                    value: x.id
+                    value: x.id,
+                    selected: _.indexOf(selectedLevel, x.id) !== -1
                 }))
             },
             {
@@ -524,20 +584,56 @@ class CrmFilterPanel extends React.Component {
                     .concat(this.state.provinceList)
                     .map(x => ({
                         name: x,
-                        value: x
+                        value: x,
+                        selected: x === _.get(this.state, 'condition.province', '')
                     }))
             }
         ];
         var ownerList = _.uniqBy(this.state.ownerList, 'nickname');
         //非普通销售才有销售角色和团队
         if (!userData.getUserData().isCommonSales) {
+            let salesTeamId = _.get(this.state, 'condition.sales_team_id', '');
+            let ownerList = [];
+            //如果选了团队，负责人列表为选中团队内的人
+            if (salesTeamId) {
+                let selectedTeamIds = salesTeamId.split(',');
+                let memberIds = [];
+                _.each(selectedTeamIds, teamId => {
+                    let team = this.getTeamFromTree(this.state.teamTreeList, teamId);
+                    //获取团队及下级团队的成员id
+                    let curTeamMemberIds = this.traverseTeamMember([team]);
+                    memberIds = _.concat(memberIds, curTeamMemberIds);
+                });
+                //去重，父子团队都选中时，会有重复的情况
+                memberIds = _.uniq(memberIds);
+                //过滤掉不是该团队内的成员
+                ownerList = _.filter(this.state.ownerList, owner => _.indexOf(memberIds, owner.user_id) !== -1);
+            } else {
+                ownerList = this.state.ownerList;
+            }
+            let ownerNameList = _.uniqBy(ownerList, 'nickname');
+            if (_.get(ownerList, 'length')) {
+                advancedData.unshift({
+                    groupName: Intl.get('crm.6', '负责人'),
+                    groupId: 'user_name',
+                    singleSelect: true,
+                    data: _.map(ownerNameList, x => ({
+                        name: x.nickname,
+                        value: x.nickname,
+                        selected: x.nickname === _.get(this.state, 'condition.user_name', '')
+                    }))
+                });
+            }
+            //已选中的销售角色列表
+            let selectedRoles = _.get(this.state, 'condition.member_role', '').split(',');
             advancedData.unshift(
                 {
                     groupName: Intl.get('crm.detail.sales.role', '销售角色'),
                     groupId: 'member_role',
                     data: _.drop(this.state.salesRoleList).map(x => ({
                         name: x.show_name,
-                        value: x.name
+                        value: x.name,
+                        selected: _.indexOf(selectedRoles, x.name) !== -1
                     }))
                 },
                 {
@@ -545,7 +641,8 @@ class CrmFilterPanel extends React.Component {
                     groupId: 'sales_team_id',
                     data: _.drop(this.state.teamList).map(x => ({
                         name: x.group_name,
-                        value: x.group_id
+                        value: x.group_id,
+                        selected: _.indexOf(salesTeamId.split(','), x.group_id) !== -1
                     }))
                 },
                 {
