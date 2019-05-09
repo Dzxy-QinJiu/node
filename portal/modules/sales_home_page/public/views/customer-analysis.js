@@ -896,23 +896,9 @@ class CustomerAnalysis extends React.Component {
                     return this.state.timeType === 'day';
                 },
             },
-        }, {
-            title: Intl.get('oplate_customer_analysis.customer.stage', '客户阶段统计'),
-            url: '/rest/analysis/customer/stage/label/:auth_type/summary',
-            argCallback: (arg) => {
-                let query = arg.query;
-                 
-                if (query && query.starttime) {
-                    query.starttime = 0;
-                }
-            },
-            chartType: 'funnel',
-            processData: processCustomerStageData,
-            customOption: {
-                valueField: 'showValue',
-                minSize: '5%',
-            },
-        },
+        }, 
+        //客户阶段统计
+        customerCharts.getCustomerStageChart(),
         //订单阶段统计
         orderCharts.getOrderStageChart({
             stageList: this.state.salesStageList
