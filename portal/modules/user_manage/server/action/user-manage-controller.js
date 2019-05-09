@@ -139,7 +139,7 @@ exports.updateUserStatus = function(req, res) {
  */
 
 exports.getRoleList = function(req, res) {
-    userManageService.getRoleList(req, res, req.params.client_id).on('success', function(data) {
+    userManageService.getRoleList(req, res).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.json(codeMessage && codeMessage.message);

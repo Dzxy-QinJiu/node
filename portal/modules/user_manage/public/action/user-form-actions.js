@@ -1,7 +1,6 @@
 /**
  * Created by wangliping on 2016/4/18.
  */
-var userData = require('../../../../public/sources/user-data');
 var userAjax = require('../ajax/user-ajax');
 var UserActions = require('./user-actions');
 var cardEmitter = require('../../../../public/sources/utils/emitters').cardEmitter;
@@ -49,10 +48,8 @@ function UserFormActions() {
 
     //获取角色列表
     this.getRoleList = function() {
-        var _this = this;
-        var clientId = userData.getUserData().auth.client_id;
-        userAjax.getRoleList(clientId).then(function(roleList) {
-            _this.dispatch(roleList);
+        userAjax.getRoleList().then((roleList) => {
+            this.dispatch(roleList);
         });
     };
 

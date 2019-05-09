@@ -83,7 +83,7 @@ module.exports = {
         ]
     }, {
         'method': 'get',
-        'path': '/rest/user/roles/:client_id',
+        'path': '/rest/user/roles',
         'handler': 'getRoleList',
         'passport': {
             'needLogin': true
