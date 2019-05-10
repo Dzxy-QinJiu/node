@@ -246,12 +246,12 @@ class DealDetailPanel extends React.Component {
         );
         //关闭订单项
         const closeDealStep = (
-            <Dropdown overlay={menu} trigger={['click']}>
+            <Dropdown overlay={menu} trigger={['click']} placement="bottomCenter">
                 {this.state.curDealCloseStatus === DEAL_STATUS.WIN ? (
-                    <Popconfirm visible={true} onCancel={this.cancelCloseDeal}
+                    <Popconfirm placement="topRight" visible={true} onCancel={this.cancelCloseDeal}
                         onConfirm={this.closeDeal.bind(this, DEAL_STATUS.WIN)}
                         title={Intl.get('crm.order.close.win.confirm', '确定将订单的关闭状态设为赢单吗？')}>
-                        {Intl.get('crm.order.status.win', '赢单')}
+                        <span className="deal-stage-win"/>
                     </Popconfirm>) : (<span className="deal-stage-name"/>)}
             </Dropdown>);
         stageStepList.push({title: Intl.get('crm.order.close.step', '关闭订单'), stepHandleElement: closeDealStep,});

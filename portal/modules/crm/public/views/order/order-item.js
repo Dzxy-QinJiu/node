@@ -544,14 +544,13 @@ class OrderItem extends React.Component {
         );
         //关闭订单项
         const closeOrderStep = (
-            <Dropdown overlay={menu} trigger={['click']}>
+            <Dropdown overlay={menu} trigger={['click']} placement="bottomCenter">
                 {this.state.curOrderCloseStatus === ORDER_STATUS.WIN ? (
-                    <Popconfirm visible={true} onCancel={this.cancelCloseOrder}
+                    <Popconfirm placement="topRight" visible={true} onCancel={this.cancelCloseOrder}
                         onConfirm={this.closeOrder.bind(this, ORDER_STATUS.WIN)}
                         title={Intl.get('crm.order.close.win.confirm', '确定将订单的关闭状态设为赢单吗？')}>
-                        {Intl.get('crm.order.status.win', '赢单')}
-                    </Popconfirm>) : (
-                    <span className="order-stage-name"/>)}
+                        <span className="order-stage-win"/>
+                    </Popconfirm>) : (<span className="order-stage-name"/>)}
             </Dropdown>);
         if(!this.props.disableEdit){
             stageStepList.push({title: Intl.get('crm.order.close.step', '关闭订单'), stepHandleElement: closeOrderStep});
