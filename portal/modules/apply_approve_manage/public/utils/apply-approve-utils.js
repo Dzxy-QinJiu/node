@@ -26,6 +26,13 @@ exports.applyComponentsType = [{
     component: Input
 }];
 exports.CONDITION_KEYS = [
-    {name: Intl.get('user.duration', '时长'), value: 'timeRange'},
+    {name: Intl.get('user.duration', '时长'), value: 'timeRange', conditionRule: function (item) {
+        item['conditionRule'] = item['rangeLimit'] + item['rangeNumber'];
+        item['conditionInverseRule'] = item['inverseCondition'] + item['rangeNumber'];
+        item['conditionRuleDsc'] = item['rangeLimitDsc'] + item['rangeNumberDsc'];
+    }},
     {name: Intl.get('apply.condition.item.money', '金额'), value: 'money'}
 ];
+exports.FLOW_TYPES = {
+    DEFAULTFLOW: 'defaultFlow'
+};

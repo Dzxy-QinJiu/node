@@ -23,18 +23,23 @@ import {CONDITION_KEYS} from '../../utils/apply-approve-utils';
 const CONDITION_LIMITE = [{
     name: Intl.get('apply.add.condition.larger', '大于'),
     value: '>',
+    inverseCondition: '<='
 }, {
     name: Intl.get('apply.add.condition.larger.and.equal', '大于等于'),
     value: '>=',
+    inverseCondition: '<'
 }, {
     name: Intl.get('apply.add.condition.less', '小于'),
     value: '<',
+    inverseCondition: '>='
 }, {
     name: Intl.get('apply.add.condition.less.and.equal', '小于等于'),
     value: '<=',
+    inverseCondition: '>'
 }, {
     name: Intl.get('apply.add.condition.equal', '等于'),
     value: '===',
+    inverseCondition: '!=='
 }, {
     name: Intl.get('apply.add.condition.within', '介于'),
     value: '',
@@ -107,7 +112,7 @@ class AddApplyConditionPanel extends React.Component {
             diffConditionLists
         });
     };
-    handleChangeRangeLimit = (key, subKey, allType, value) => {
+    handleChangeRangeLimit = (key, subKey, inverseKey,allType, value) => {
         var diffConditionLists = this.state.diffConditionLists;
         var limitRules = _.get(diffConditionLists, 'limitRules');
         var target = _.find(limitRules, limit => limit.limitType === key);
@@ -115,6 +120,7 @@ class AddApplyConditionPanel extends React.Component {
             var limitTarget = _.find(allType, limitItem => limitItem.value === value);
             target[subKey] = value;
             target[subKey + 'Dsc'] = _.get(limitTarget, 'name');
+            target[inverseKey] = _.get(limitTarget, inverseKey);
             this.setState({
                 diffConditionLists
             });
@@ -162,7 +168,7 @@ class AddApplyConditionPanel extends React.Component {
                                 </div>
                                 <div className="condition-type-content">
                                     <Select
-                                        onChange={this.handleChangeRangeLimit.bind(this, limitType, 'rangeLimit', CONDITION_LIMITE)}
+                                        onChange={this.handleChangeRangeLimit.bind(this, limitType, 'rangeLimit', 'inverseCondition', CONDITION_LIMITE)}
                                     >
                                         {_.map(CONDITION_LIMITE, (item, index) => {
                                             return (<Option key={index} value={item.value}>{item.name}</Option>);
@@ -183,6 +189,10 @@ class AddApplyConditionPanel extends React.Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) return;
             var submitObj = _.cloneDeep(this.state.diffConditionLists);
+            _.forEach(_.get(submitObj,'limitRules'), (item) => {
+                var target = this.getConditionRelate(item.limitType);
+                target.conditionRule(item);
+            });
             this.props.saveAddApprovCondition(submitObj);
             this.props.hideRightPanel();
         });
