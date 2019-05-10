@@ -77,6 +77,8 @@ export const callVolumeChart = {
     },
 };
 
-function numberRender(text) {
-    return <span>{text.toFixed()}</span>;
+function numberRender(value) {
+    if (!_.isNumber(value)) value = 0;
+
+    return <span>{value.toFixed()}</span>;
 }
