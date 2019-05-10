@@ -644,15 +644,6 @@ class CrmFilterPanel extends React.Component {
                         value: x.group_id,
                         selected: _.indexOf(salesTeamId.split(','), x.group_id) !== -1
                     }))
-                },
-                {
-                    groupName: Intl.get('crm.6', '负责人'),
-                    groupId: 'user_name',
-                    singleSelect: true,
-                    data: _.map(ownerList, x => ({
-                        name: x.nickname,
-                        value: x.nickname
-                    }))
                 }
             );
         }
