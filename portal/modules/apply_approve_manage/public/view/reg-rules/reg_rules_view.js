@@ -163,13 +163,26 @@ class RegRulesView extends React.Component {
                             this.connectDiffNode(curNode,nextNode);
                         }
                         //如果上一节点是个网关
-                        if (this.isGatewayNode(elem) && elem.conditionTotalRule) {
-                            let bpmnFactory = this.state.bpmnFactory;
-                            var bo = curNode.incoming[0].businessObject;
-                            bo.set('conditionExpression', bpmnFactory.create('bpmn:FormalExpression', {body: '${interval' + elem.conditionTotalRule + '}'}));
-                            modeling.updateProperties(curNode.incoming[0], {
-                                name: elem.conditionTotalRuleDsc
-                            });
+                        if (this.isGatewayNode(elem)) {
+                            var incomingBo = curNode.incoming[0].businessObject;
+                            //网关的条件
+                            if(elem.conditionTotalRule){
+                                let bpmnFactory = this.state.bpmnFactory;
+                                incomingBo.set('conditionExpression', bpmnFactory.create('bpmn:FormalExpression', {body: '${interval' + elem.conditionTotalRule + '}'}));
+                                modeling.updateProperties(curNode.incoming[0], {
+                                    name: elem.conditionTotalRuleDsc
+                                });
+                            }else{
+                                //网关默认流程
+                                modeling.updateProperties(previousNode, {
+                                    default: incomingBo,
+                                });
+                                modeling.updateProperties(curNode.incoming[0], {
+                                    name: '默认审批流程'
+                                });
+
+                            }
+
 
                         }
                     });
@@ -443,8 +456,6 @@ class RegRulesView extends React.Component {
             firstNode['next'] = 'Gateway_1_1';
             var secondNode = _.get(defalutBpmnNode, '[1]');
             secondNode['previous'] = 'Gateway_1_1';
-            secondNode['conditionTotalRule'] = _.map(_.get(data, 'limitRules'),'conditionInverseRule')[0];
-            secondNode['conditionTotalRuleDsc'] = '默认流程',
             defalutBpmnNode.splice(1, 0, {
                     name: 'Gateway_1_1',
                     id: 'Gateway_1_1',
