@@ -851,7 +851,7 @@ var en_US = {
     //通知end
     //销售阶段start
     'sales.stage.change.sort': 'Change order',//变更顺序
-    'sales.stage.add.sales.stage': 'Add sales stage',//添加销售阶段
+    'sales.stage.add.order.stage': 'Add order stage', // 添加订单阶段
     'sales.stage.sales.stage': 'Sales Stage',//销售阶段
     'sales.stage.input.length200.tip': '1 ~ 200 characters',//最少1个字符,最多200个字符
     'sales.stage.delete.sales.stage': 'Are you sure to delete this sales stage?',//确定删除这个销售阶段麽
@@ -859,6 +859,7 @@ var en_US = {
     'sales.stage.intention': 'intention',//意向
     'sales.stage.message': 'message',//信息
     'sales.stage.lost': 'lost',//'流失'
+    'sales.stage.toplimit': 'The number of order stages has reached the upper limit(8).', // 订单阶段个数已达上限（8个）
     //销售阶段end
     //销售团队start
     'sales.team.no.sales.team.tip': 'There is no team, please add!',//暂无团队，请先添加：

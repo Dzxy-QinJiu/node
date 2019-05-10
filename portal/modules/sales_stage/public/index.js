@@ -143,6 +143,13 @@ class SalesStagePage extends React.Component {
 
     //渲染操作按钮区
     renderTopNavOperation = () => {
+        let length = _.get(this.state.salesStageList, 'length');
+        let disabled = false;
+        let title = '';
+        if (length > 7) {
+            disabled = true;
+            title = Intl.get('sales.stage.toplimit', '订单阶段个数已达上限（8个）');
+        }
         return (<ButtonZones>
             {this.state.salesStageEditOrder ?
                 (<div className="sales-stage-top-div-group">
@@ -166,11 +173,13 @@ class SalesStagePage extends React.Component {
                                 defaultMessage="变更顺序"/></Button>
                     </PrivilegeChecker>
                     <PrivilegeChecker check="BGM_SALES_STAGE_ADD" className="sales-stage-top-div">
-                        <Button type="ghost" className="sales-stage-top-btn btn-item"
+                        <Button
+                            type="ghost" className="sales-stage-top-btn btn-item"
                             onClick={this.events_showSalesStageForm.bind(this, 'addSalesStage')}
-                            data-tracename="添加销售阶段"
-                        ><ReactIntl.FormattedMessage id="sales.stage.add.sales.stage"
-                                defaultMessage="添加销售阶段"/></Button>
+                            data-tracename="添加订单阶段"
+                            disabled={disabled}
+                            title={title}
+                        >{Intl.get('sales.stage.add.order.stage', '添加订单阶段')}</Button>
                     </PrivilegeChecker>
                 </div>)}
         </ButtonZones>);
