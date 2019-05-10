@@ -22,6 +22,9 @@ export function getActivityChart(type, title) {
             argCallbackUnderlineTimeToTime(arg);
             argCallbackTeamIdsToTeamId(arg);
             argCallbackMemberIdsToSalesId(arg);
+
+            //去掉query参数中的公共interval，以免引起迷惑
+            delete arg.query.interval;
         },
         chartType: 'line',
         valueField: 'active',

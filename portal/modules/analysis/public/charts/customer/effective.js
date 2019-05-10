@@ -8,13 +8,10 @@ export function getCustomerEffectiveChart() {
     return {
         title: '有效客户活跃率统计',
         url: '/rest/analysis/customer/v2/:data_type/customer/active_rate',
-        argCallback: argCallbackMemberIdsToMemberId,
-        conditions: [
-            {
-                name: 'interval',
-                value: 'day',
-            },
-        ],
+        argCallback: arg => {
+            argCallbackMemberIdsToMemberId(arg);
+            _.set(arg, 'query.interval', 'day');
+        },
         chartType: 'table',
         dataField: 'list',
         option: {

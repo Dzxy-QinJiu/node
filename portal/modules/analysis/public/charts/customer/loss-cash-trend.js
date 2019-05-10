@@ -8,10 +8,6 @@ export function getLossCashTrendChart(paramObj = {}) {
         chartType: 'line',
         url: '/rest/analysis/customer/label/:data_type/churn/gross/trend',
         argCallback: paramObj.argCallback,
-        conditions: [{
-            name: 'interval',
-            value: 'month'
-        }],
         valueField: 'churn_gross_profit',
     };
 }

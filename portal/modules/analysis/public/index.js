@@ -356,11 +356,12 @@ class CurtaoAnalysis extends React.Component {
         }, {
             name: 'start_time',
             value: initialTime.start,
-            type: 'query',
         }, {
             name: 'end_time',
             value: initialTime.end,
-            type: 'query',
+        }, {
+            name: 'interval',
+            value: 'day',
         }, {
             name: 'auth_type',
             value: authType,
@@ -412,6 +413,8 @@ class CurtaoAnalysis extends React.Component {
                 name: 'start_time',
             }, {
                 name: 'end_time',
+            }, {
+                name: 'interval',
             }],
         }];
     }

@@ -9,6 +9,16 @@ export function getChanceDealTrendChart() {
         title: '成交率趋势统计',
         chartType: 'line',
         url: '/rest/analysis/customer/v2/sales_opportunity/:data_type/apply/opportunity/rate/trend',
+        argCallback: arg => {
+            const intervalImportant = _.get(arg, 'query.interval_important');
+
+            if (intervalImportant) {
+                //用图表自身条件中的interval替换公共条件中的interval
+                _.set(arg, 'query.interval', intervalImportant);
+
+                delete arg.query.interval_important;
+            }
+        },
         processData: data => {
             data = _.get(data, 'result.list');
 
@@ -42,7 +52,7 @@ export function getChanceDealTrendChart() {
             }]
         },
         conditions: [{
-            name: 'interval',
+            name: 'interval_important',
             value: 'month'
         }],
         cardContainer: {
@@ -54,7 +64,7 @@ export function getChanceDealTrendChart() {
                     {name: Intl.get('common.time.unit.year', '年'), value: 'year'}
                 ],
                 activeOption: 'month',
-                conditionName: 'interval',
+                conditionName: 'interval_important',
             }],
         },
     };

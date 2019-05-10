@@ -151,7 +151,17 @@ class TopBar extends React.Component {
 
         this.setState({startTime, endTime, range});
 
-        dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
+        let interval;
+
+        if (range === 'day' || range === 'week') {
+            interval = 'day';
+        } else if (range === 'month') {
+            interval = 'week';
+        } else {
+            interval = 'month';
+        }
+
+        dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime, interval);
     };
 
     componentWillReceiveProps(nextProps) {
