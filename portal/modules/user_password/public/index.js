@@ -55,6 +55,10 @@ var UserPwdPage = createReactClass({
         }
     },
 
+    propTypes: {
+        form: PropTypes.object,
+    },
+    
     componentDidMount: function() {
         $('body').css('overflow', 'hidden');
         UserInfoStore.listen(this.onChange);
@@ -77,8 +81,11 @@ var UserPwdPage = createReactClass({
                 passBarShow: passStrengthObj.passBarShow,
                 passStrength: passStrengthObj.passStrength
             });
-            if (this.props.form.getFieldValue('newPasswd')) {
-                this.props.form.validateFields(['rePasswd'], {force: true});
+            if (this.props.form.getFieldValue('newPasswd') === this.props.form.getFieldValue('passwd')) {
+                this.setState({
+                    passBarShow: false
+                });
+                callback(Intl.get('user.password.same.password','新密码和原始密码相同'));
             }
             callback();
         } else {

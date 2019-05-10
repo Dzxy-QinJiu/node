@@ -811,6 +811,7 @@ var en_US = {
     'user.password.input.initial.password': 'Please enter original password',//请输入原密码
     'user.password.new.password': 'New',//新密码
     'user.password.save.password': 'Save Changes',//保存密码
+    'user.password.same.password': 'The new password is the same as the original password.', // 新密码和原始密码相同
     //密码管理end
     //通知start
     'notification.all.infor': 'All application messages',//全部申请消息
