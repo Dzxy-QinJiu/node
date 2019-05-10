@@ -8,9 +8,5 @@ export function getRenewalCustomerTrendChart(paramObj = {}) {
         url: '/rest/analysis/customer/label/:data_type/renewal/rate/trend',
         argCallback: paramObj.argCallback,
         chartType: 'line',
-        conditions: [{
-            name: 'interval',
-            value: 'month'
-        }]
     };
 }

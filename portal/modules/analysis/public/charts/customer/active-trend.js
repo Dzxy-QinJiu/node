@@ -9,12 +9,6 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
         title,
         chartType: 'line',
         url: '/rest/analysis/customer/label/:data_type/active/trend',
-        conditions: [
-            {
-                name: 'interval',
-                value: interval,
-            },
-        ],
         argCallback: arg => {
             argCallbackTeamIdsToTeamId(arg);
             argCallbackMemberIdsToMemberId(arg);
@@ -23,7 +17,7 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
             let query = arg.query;
 
             if (query) {
-                const interval = query.interval;
+                query.interval = interval;
 
                 if (interval === 'day') {
                     query.starttime = moment().subtract(1, 'months').valueOf();
