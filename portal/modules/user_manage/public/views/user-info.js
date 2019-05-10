@@ -567,8 +567,8 @@ class UserInfo extends React.Component {
             return null;
         }
         let iconCls = classNames('iconfont', {
-            'icon-enable': userInfo.status,
-            'icon-disable': !userInfo.status
+            'icon-enable': !userInfo.status,
+            'icon-disable': userInfo.status
         });
         return (
             <div className="status-switch-container">
