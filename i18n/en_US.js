@@ -2885,5 +2885,7 @@ var en_US = {
     'common.customer.visit.record': 'Customer visit record',//客户拜访记录
     'common.visit.start.time': 'Visit start time',//拜访开始时间
     'common.visit.end.time': 'Visit end time',//拜访结束时间
+    'common.by.team': 'by team',//按团队
+    'common.by.member': 'by member',//按成员
 };
 export default en_US;

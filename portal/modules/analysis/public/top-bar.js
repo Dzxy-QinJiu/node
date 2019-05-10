@@ -208,8 +208,8 @@ class TopBar extends React.Component {
                         className='btn-item'
                         onChange={this.onFilterTypeChange}
                     >
-                        <Option key="1" value="team">按团队</Option>
-                        <Option key="2" value="member">按成员</Option>
+                        <Option key="1" value="team">{Intl.get('common.by.team', '按团队')}</Option>
+                        <Option key="2" value="member">{Intl.get('common.by.member', '按成员')}</Option>
                     </Select>
                 )}
 
