@@ -176,8 +176,6 @@ class SalesStagePage extends React.Component {
                             <Popover content={title}>
                                 <Button
                                     type="ghost" className="sales-stage-top-btn btn-item"
-                                    onClick={this.events_showSalesStageForm.bind(this, 'addSalesStage')}
-                                    data-tracename="添加订单阶段"
                                     disabled={disabled}
                                 >{Intl.get('sales.stage.add.order.stage', '添加订单阶段')}</Button>
                             </Popover>
