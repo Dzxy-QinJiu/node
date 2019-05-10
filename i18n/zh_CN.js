@@ -855,7 +855,7 @@ var zh_CN = {
     //通知end
     //销售阶段start
     'sales.stage.change.sort': '变更顺序',
-    'sales.stage.add.sales.stage': '添加销售阶段',
+    'sales.stage.add.order.stage': '添加订单阶段',
     'sales.stage.sales.stage': '销售阶段',
     'sales.stage.input.length200.tip': '最少1个字符,最多200个字符',
     'sales.stage.delete.sales.stage': '确定删除这个销售阶段吗?',
@@ -863,6 +863,7 @@ var zh_CN = {
     'sales.stage.intention': '意向',
     'sales.stage.message': '信息',
     'sales.stage.lost': '流失',
+    'sales.stage.toplimit': '订单阶段个数已达上限（8个）',
     //销售阶段end
     //销售团队start
     'sales.team.no.sales.team.tip': '暂无团队，请先添加：',
