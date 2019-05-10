@@ -789,6 +789,7 @@ class CustomerAnalysis extends React.Component {
                     //将缓存key加到每一条记录中，方便在点击事件中获取
                     _.each(list, item => {
                         item.cache_key = cacheKey;
+                        item.active_rate = this.numToPercent(item.active_rate);
                     });
 
                     return list;
@@ -823,9 +824,6 @@ class CustomerAnalysis extends React.Component {
                     {
                         title: Intl.get('effective.customer.activity.rate', '有效客户活跃率'),
                         dataIndex: 'active_rate',
-                        render: text => {
-                            return <span>{this.numToPercent(text)}</span>;
-                        }
                     },
                 ],
             },
@@ -898,23 +896,9 @@ class CustomerAnalysis extends React.Component {
                     return this.state.timeType === 'day';
                 },
             },
-        }, {
-            title: Intl.get('oplate_customer_analysis.customer.stage', '客户阶段统计'),
-            url: '/rest/analysis/customer/stage/label/:auth_type/summary',
-            argCallback: (arg) => {
-                let query = arg.query;
-                 
-                if (query && query.starttime) {
-                    query.starttime = 0;
-                }
-            },
-            chartType: 'funnel',
-            processData: processCustomerStageData,
-            customOption: {
-                valueField: 'showValue',
-                minSize: '5%',
-            },
-        },
+        }, 
+        //客户阶段统计
+        customerCharts.getCustomerStageChart(),
         //订单阶段统计
         orderCharts.getOrderStageChart({
             stageList: this.state.salesStageList
@@ -977,6 +961,7 @@ class CustomerAnalysis extends React.Component {
                     }, {
                         title: Intl.get('crm.41', '客户名'),
                         dataIndex: 'customer_name',
+                        isSetCsvValueBlank: true,
                         key: 'customer_name',
                         className: 'customer-name',
                         sorter: true,
@@ -1002,6 +987,7 @@ class CustomerAnalysis extends React.Component {
                     }, {
                         title: Intl.get('user.sales.team', '销售团队'),
                         dataIndex: 'sales_team',
+                        isSetCsvValueBlank: true,
                         key: 'sales_team',
                         width: 100,
                     }

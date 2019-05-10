@@ -81,6 +81,11 @@ SalesHomeStore.prototype.setInitState = function() {
         isShowAddEmail: false,//是否展示添加邮箱的提示, 不能仅用是否有email字段进行判断，原因是如果数据获取慢的时候，也会在页面上展示出添加邮箱的提示
         isShowSetClient: false//是否展示设置电话系统的提示
     };
+    // 待我审批的成员信息
+    this.pendingApproveMemberObj = {
+        list: [],
+        errMsg: ''
+    };
 };
 
 // 重置回访记录列表状态
@@ -688,6 +693,26 @@ SalesHomeStore.prototype.getCallBackList = function(result) {
                 callBackRecord.listenScrollBottom = false;
             }
         }
+    }
+};
+
+// 获取待我审批的邀请成员列表
+SalesHomeStore.prototype.getPendingApproveMemberApplyList = function(result) {
+    if (result.error) {
+        this.pendingApproveMemberObj.errMsg = _.get(result, 'errMsg');
+    } else {
+        this.pendingApproveMemberObj.errMsg = '';
+        let length = _.get(result, 'data.list.length');
+        if (length) {
+            this.pendingApproveMemberObj.list = _.get(result, 'data.list');
+        }
+    }
+};
+
+// 处理成员审批
+SalesHomeStore.prototype.handleMemberApprove = function(flag) {
+    if (flag) {
+        this.pendingApproveMemberObj.list = _.slice(this.pendingApproveMemberObj.list, 1);
     }
 };
 

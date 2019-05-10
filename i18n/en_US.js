@@ -158,7 +158,7 @@ var en_US = {
     'common.no.more.contract': 'No contract', // 暂无合同
     'common.no.more.trace.record': 'There is no trace record',//暂无跟进记录
     'common.no.clue': 'There is no clue',//暂无线索
-    'common.no.audit': 'There is no audit',//暂无审计日志
+    'common.no.audit': 'There is no operation record',//暂无操作记录
     'common.no.call.record': 'There is no call record',//暂无通话记录
 
     'common.yesno': 'whether',//是否
@@ -811,6 +811,7 @@ var en_US = {
     'user.password.input.initial.password': 'Please enter original password',//请输入原密码
     'user.password.new.password': 'New',//新密码
     'user.password.save.password': 'Save Changes',//保存密码
+    'user.password.same.password': 'The new password is the same as the original password.', // 新密码和原始密码相同
     //密码管理end
     //通知start
     'notification.all.infor': 'All application messages',//全部申请消息
@@ -851,7 +852,7 @@ var en_US = {
     //通知end
     //销售阶段start
     'sales.stage.change.sort': 'Change order',//变更顺序
-    'sales.stage.add.sales.stage': 'Add sales stage',//添加销售阶段
+    'sales.stage.add.order.stage': 'Add order stage', // 添加订单阶段
     'sales.stage.sales.stage': 'Sales Stage',//销售阶段
     'sales.stage.input.length200.tip': '1 ~ 200 characters',//最少1个字符,最多200个字符
     'sales.stage.delete.sales.stage': 'Are you sure to delete this sales stage?',//确定删除这个销售阶段麽
@@ -859,6 +860,7 @@ var en_US = {
     'sales.stage.intention': 'intention',//意向
     'sales.stage.message': 'message',//信息
     'sales.stage.lost': 'lost',//'流失'
+    'sales.stage.toplimit': 'The number of order stages has reached the upper limit(8).', // 订单阶段个数已达上限（8个）
     //销售阶段end
     //销售团队start
     'sales.team.no.sales.team.tip': 'There is no team, please add!',//暂无团队，请先添加：
@@ -2797,6 +2799,10 @@ var en_US = {
 
     // 成员申请
     'member.application': 'Member Application', // 成员申请
+    'member.apply.who.invite': '{who}\'s invitation', // {who}的邀请
+    'member.apply.invite.member.sucess': 'The member was added successfully.', // 成员添加成功
+    'member.apply.approve.tips': 'Failed to operation', // 操作失败
+    'member.apply.approve.failed.tips': 'deal with it later', // 稍后处理
     'member.apply.failed.get.worklist': 'Failed to get member applies to be approved by me',// 获取由我审批的成员申请失败
     'member.apply.failed.get.all.apply': 'Failed to get all member applies', // 获取全部成员申请失败
     'member.apply.no.member.apply': 'No eligible member apply', // 暂无符合条件的成员申请
@@ -2885,5 +2891,7 @@ var en_US = {
     'common.customer.visit.record': 'Customer visit record',//客户拜访记录
     'common.visit.start.time': 'Visit start time',//拜访开始时间
     'common.visit.end.time': 'Visit end time',//拜访结束时间
+    'common.by.team': 'by team',//按团队
+    'common.by.member': 'by member',//按成员
 };
 export default en_US;

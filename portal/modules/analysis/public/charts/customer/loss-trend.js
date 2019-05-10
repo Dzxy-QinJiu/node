@@ -8,9 +8,5 @@ export function getLossCustomerTrendChart(paramObj = {}) {
         chartType: 'line',
         url: '/rest/analysis/customer/label/:data_type/churn/customer/trend',
         argCallback: paramObj.argCallback,
-        conditions: [{
-            name: 'interval',
-            value: 'month'
-        }]
     };
 }

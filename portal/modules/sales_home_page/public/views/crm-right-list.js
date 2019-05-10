@@ -21,6 +21,11 @@ const teamTreeEmitter = Emitters.teamTreeEmitter;
 const TOP_TEAM_ID = 'sales-team-list-parent-group-id';
 var delayConstant = constantUtil.DELAY.TIMERANG;
 const CALLING_STATUS = 'busy';//正在打电话的状态（busy繁忙，idle空闲，空值-还未配置座机号）
+import MemberApply from './member-apply';
+import classNames from 'classnames';
+
+const OPERATOR_MEMBER_APPLY_HEIGHT = 165; // 运营人员，成员申请的高度
+const SALE_MEMBER_APPLY_HEIGHT = 190; // 销售人员，成员申请的高度
 
 class CrmRightList extends React.Component {
     state = {
@@ -434,6 +439,22 @@ class CrmRightList extends React.Component {
         this.setState({searchInputShow: true});
     };
 
+    // 获取销售团队列表的高度
+    getSalesListHeight = () => {
+        let salesListHeight = this.props.getSalesListHeight();
+        let pendingLength = _.get(this.props.pendingApproveMemberObj, 'list.length');
+        if (pendingLength) {
+            let detail = _.get(this.props.pendingApproveMemberObj, 'list[0].detail');
+            let teamId = _.get(detail, 'team.group_id', '');
+            if (teamId) {
+                salesListHeight -= SALE_MEMBER_APPLY_HEIGHT;
+            } else {
+                salesListHeight -= OPERATOR_MEMBER_APPLY_HEIGHT;
+            }
+        }
+        return salesListHeight;
+    };
+
     renderListContent = () => {
         let salesTitle = '', salesListLi = [], isShowSearch = true;
         switch (this.props.currShowType) {
@@ -457,10 +478,14 @@ class CrmRightList extends React.Component {
                 salesListLi = this.getSalesTeamList();
                 break;
         }
-        let salesListHeight = this.props.getSalesListHeight();
+        let salesListHeight = this.getSalesListHeight();
+        let pendingLength = _.get(this.props.pendingApproveMemberObj, 'list.length');
+        let salesTeamCls = classNames('sales-team-top',{
+            'has-pending-approve-member': pendingLength,
+        });
         return (
             <div>
-                <div className="sales-team-top">
+                <div className={salesTeamCls}>
                     <span className="sales-team-title"> {salesTitle}</span>
                     {isShowSearch ? this.state.searchInputShow ? (
                         <SearchInput searchPlaceHolder={Intl.get('sales.home.filter.tip', '请输入关键字进行过滤')}
@@ -485,7 +510,10 @@ class CrmRightList extends React.Component {
             );
         } else {
             return (
-                <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="scrollbar">
+                <GeminiScrollbar
+                    enabled={this.props.scrollbarEnabled}
+                    ref="scrollbar"
+                >
                     {salesListLi}
                 </GeminiScrollbar>
             );
@@ -506,11 +534,38 @@ class CrmRightList extends React.Component {
         SalesHomeAction.setActiveView(view);
     };
 
+    // 处理成员审批
+    handleMemberApprove = (flag) => {
+        SalesHomeAction.handleMemberApprove(flag);
+        let pendingLength = _.get(this.props.pendingApproveMemberObj, 'list.length');
+        if (pendingLength === 0) {
+            SalesHomeAction.getPendingApproveMemberApplyList();
+        }
+    };
+
+    renderPendingApproveMemberContent = () => {
+        let pendingInfo = _.get(this.props.pendingApproveMemberObj, 'list[0]');
+        return (
+            <MemberApply
+                pendingInfo={pendingInfo}
+                memberApprove={this.handleMemberApprove}
+            />
+        );
+    };
+
     render() {
         let resultType = this.props.salesTeamListObj.resultType, errorMsg = this.props.salesTeamListObj.errorMsg;
+        let pendingLength = _.get(this.props.pendingApproveMemberObj, 'list.length');
         return (
-            <div className="crm-sales-team-zone" data-tracename="销售（团队）列表">
-                <div className="crm-sales-team-container">
+            <div className="crm-sales-team-zone">
+                {
+                    hasPrivilege('MEMBER_INVITE_MANAGE') && pendingLength ? (
+                        <div className="member-apply-container" data-tracename='成员审批'>
+                            {this.renderPendingApproveMemberContent()}
+                        </div>
+                    ) : null
+                }
+                <div className="crm-sales-team-container" data-tracename="销售（团队）列表">
                     {resultType ? (this.renderTooltip(resultType, errorMsg)) : this.renderListContent()}
                 </div>
             </div>
@@ -530,6 +585,8 @@ CrmRightList.propTypes = {
     currShowType: PropTypes.string,
     refreshDataByChangeSales: PropTypes.func,
     getSalesListHeight: PropTypes.func,
+    pendingApproveMemberObj: PropTypes.object,
+    isGetMemberApplyList: PropTypes.boolean
 };
 module.exports = CrmRightList;
 

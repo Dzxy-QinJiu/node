@@ -29,10 +29,21 @@ export function getRemainAccountChart(paramObj = {}) {
         title,
         url: '/rest/analysis/user/v3/:data_type/retention/add_user',
         conditions: [{
-            name: 'interval',
+            name: 'interval_important',
             value: interval
         }],
-        argCallback: argCallbackUnderlineTimeToTime,
+        argCallback: arg => {
+            argCallbackUnderlineTimeToTime(arg);
+
+            const intervalImportant = _.get(arg, 'query.interval_important');
+
+            if (intervalImportant) {
+                //用图表自身条件中的interval替换公共条件中的interval
+                _.set(arg, 'query.interval', intervalImportant);
+
+                delete arg.query.interval_important;
+            }
+        },
         chartType: 'table',
         option: {
             columns: (() => {

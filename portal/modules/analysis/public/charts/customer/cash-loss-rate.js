@@ -8,10 +8,6 @@ export function getCashLossRateChart(paramObj = {}) {
         chartType: 'line',
         url: '/rest/analysis/customer/label/:data_type/churn/gross/rate/trend',
         argCallback: paramObj.argCallback,
-        conditions: [{
-            name: 'interval',
-            value: 'month'
-        }],
         processData: data => {
             _.each(data, item => {
                 item.name = moment(item.timestamp).format(oplateConsts.DATE_FORMAT);

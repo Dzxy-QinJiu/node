@@ -67,6 +67,7 @@ export function getCustomerTrialQualifiedDistributionChart(title, field) {
             let columns = [{
                 title: '名称',
                 dataIndex: 'name',
+                isSetCsvValueBlank: true,
                 render: (value, row, index) => {
                     let obj = {
                         children: value,

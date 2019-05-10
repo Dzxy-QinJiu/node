@@ -162,7 +162,7 @@ var zh_CN = {
     'common.no.more.order': '暂无订单',
     'common.no.more.contract': '暂无合同',
     'common.no.clue': '暂无线索',
-    'common.no.audit': '暂无审计日志',
+    'common.no.audit': '暂无操作记录',
     'common.no.more.trace.record': '暂无跟进记录',
     'common.no.call.record': '暂无通话记录',
 
@@ -814,6 +814,7 @@ var zh_CN = {
     'user.password.input.initial.password': '请输入原密码',
     'user.password.new.password': '新密码',
     'user.password.save.password': '保存密码',
+    'user.password.same.password': '新密码和原始密码相同',
     //密码管理end
     //通知start
     'notification.all.infor': '全部申请消息',
@@ -854,7 +855,7 @@ var zh_CN = {
     //通知end
     //销售阶段start
     'sales.stage.change.sort': '变更顺序',
-    'sales.stage.add.sales.stage': '添加销售阶段',
+    'sales.stage.add.order.stage': '添加订单阶段',
     'sales.stage.sales.stage': '销售阶段',
     'sales.stage.input.length200.tip': '最少1个字符,最多200个字符',
     'sales.stage.delete.sales.stage': '确定删除这个销售阶段吗?',
@@ -862,6 +863,7 @@ var zh_CN = {
     'sales.stage.intention': '意向',
     'sales.stage.message': '信息',
     'sales.stage.lost': '流失',
+    'sales.stage.toplimit': '订单阶段个数已达上限（8个）',
     //销售阶段end
     //销售团队start
     'sales.team.no.sales.team.tip': '暂无团队，请先添加：',
@@ -2825,6 +2827,10 @@ var zh_CN = {
 
     // 成员申请
     'member.application': '成员申请',
+    'member.apply.who.invite': '{who}的邀请',
+    'member.apply.invite.member.sucess': '成员添加成功',
+    'member.apply.approve.tips': '操作失败',
+    'member.apply.approve.failed.tips': '稍后处理',
     'member.apply.failed.get.worklist': '获取由我审批的成员申请失败',
     'member.apply.failed.get.all.apply': '获取全部成员申请失败',
     'member.apply.no.member.apply': '暂无符合条件的成员申请',
@@ -2912,5 +2918,7 @@ var zh_CN = {
     'common.customer.visit.record': '客户拜访记录',
     'common.visit.start.time': '拜访开始时间',
     'common.visit.end.time': '拜访结束时间',
+    'common.by.team': '按团队',
+    'common.by.member': '按成员',
 };
 export default zh_CN;

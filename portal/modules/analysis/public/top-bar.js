@@ -122,7 +122,7 @@ class TopBar extends React.Component {
         let selectedMember;
         let memberIdStr;
 
-        //清空所有选中的销售时，默认选中第一个
+        //清空所有选中的成员时，默认选中第一个
         if (_.isEmpty(memberId)) {
             const firstMemberId = _.get(_.first(this.state.memberList), 'user_info.user_id');
             selectedMember = [firstMemberId];
@@ -151,7 +151,17 @@ class TopBar extends React.Component {
 
         this.setState({startTime, endTime, range});
 
-        dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
+        let interval;
+
+        if (range === 'day' || range === 'week') {
+            interval = 'day';
+        } else if (range === 'month') {
+            interval = 'week';
+        } else {
+            interval = 'month';
+        }
+
+        dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime, interval);
     };
 
     componentWillReceiveProps(nextProps) {
@@ -208,8 +218,8 @@ class TopBar extends React.Component {
                         className='btn-item'
                         onChange={this.onFilterTypeChange}
                     >
-                        <Option key="1" value="team">按团队</Option>
-                        <Option key="2" value="member">按销售</Option>
+                        <Option key="1" value="team">{Intl.get('common.by.team', '按团队')}</Option>
+                        <Option key="2" value="member">{Intl.get('common.by.member', '按成员')}</Option>
                     </Select>
                 )}
 

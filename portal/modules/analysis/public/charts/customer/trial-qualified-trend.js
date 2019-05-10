@@ -9,9 +9,6 @@ export function getCustomerTrialQualifiedTrendChart() {
         layout: {sm: 24},
         url: '/rest/analysis/customer/v2/:data_type/trial/qualify/trend',
         conditions: [{
-            name: 'interval',
-            value: 'month',
-        }, {
             name: 'label',
             value: '试用合格',
         }],

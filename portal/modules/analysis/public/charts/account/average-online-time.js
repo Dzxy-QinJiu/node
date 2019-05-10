@@ -12,9 +12,18 @@ export function getAverageOnlineTimeChart(type = 'all') {
             argCallbackUnderlineTimeToTime(arg);
             argCallbackTeamIdsToTeamId(arg);
             argCallbackMemberIdsToSalesId(arg);
+
+            const intervalImportant = _.get(arg, 'query.interval_important');
+
+            if (intervalImportant) {
+                //用图表自身条件中的interval替换公共条件中的interval
+                _.set(arg, 'query.interval', intervalImportant);
+
+                delete arg.query.interval_important;
+            }
         },
         conditions: [{
-            name: 'interval',
+            name: 'interval_important',
             value: 'hourly',
         }, {
             name: 'analysis_type',
@@ -81,7 +90,7 @@ export function getAverageOnlineTimeChart(type = 'all') {
                     {name: Intl.get('common.time.unit.year', '年'), value: 'yearly'}
                 ],
                 activeOption: 'hourly',
-                conditionName: 'interval',
+                conditionName: 'interval_important',
             }],
         },
         noShowCondition: {

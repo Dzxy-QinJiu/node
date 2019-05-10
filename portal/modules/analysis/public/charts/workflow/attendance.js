@@ -11,10 +11,10 @@ export function getAttendanceChart() {
             '/rest/base/v1/workflow/leave/statistic'
         ],
         argCallback: arg => {
-            if (arg.query.member_id) {
-                arg.query.user_id = arg.query.member_id;
+            if (arg.query.member_ids) {
+                arg.query.user_id = arg.query.member_ids;
 
-                delete arg.query.member_id;
+                delete arg.query.member_ids;
             }
         },
         processData: data => {

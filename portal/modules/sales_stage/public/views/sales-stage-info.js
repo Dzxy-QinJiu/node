@@ -8,8 +8,6 @@ var ModalDialog = require('../../../../components/ModalDialog');
 import Trace from 'LIB_DIR/trace';
 function noop() {
 }
-import classNames from 'classnames';
-import {isMacOs} from 'PUB_DIR/sources/utils/validate-util';
 
 class SalesStageInfo extends React.Component {
     static defaultProps = {
@@ -49,15 +47,6 @@ class SalesStageInfo extends React.Component {
         var salesStage = this.props.salesStage;
         var width = this.props.width;
         var modalContent = Intl.get('sales.stage.delete.sales.stage', '确定删除这个销售阶段麽') + '?';
-        // 判断用户登录的系统是否为Mac系统，若是Mac系统，使用Mac系统的图片（图片是普通的2倍清晰度），否则使用普通的图片
-        let upArrowCls = classNames('sales-stage-btn-class',{
-            'up-arrow': !isMacOs,
-            'mac-os-up-arrow': isMacOs
-        });
-        let downArrowCls = classNames('sales-stage-btn-class',{
-            'down-arrow': !isMacOs,
-            'mac-os-down-arrow': isMacOs
-        });
         return (
             <div className="sales-stage-timeline-item-content modal-container" style={{width: width}}
                 data-tracename="销售阶段列表">
@@ -69,13 +58,13 @@ class SalesStageInfo extends React.Component {
                 {
                     this.props.salesStageEditOrder ?
                         (<div className="sales-stage-btn-div order-arrow">
-                            <Button className={upArrowCls}
+                            <Button className="sales-stage-btn-class up-arrow"
                                 onClick={_this.salesStageOrderUp.bind(this, salesStage)}
                                 data-tracename="上移销售阶段"
                             >
                             </Button>
                             <Button
-                                className={downArrowCls}
+                                className="sales-stage-btn-class down-arrow"
                                 onClick={_this.salesStageOrderDown.bind(this, salesStage)}
                                 data-tracename="下移销售阶段"
                             >

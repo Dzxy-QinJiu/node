@@ -11,6 +11,15 @@ export function getAllChanceChart(specifyColumns) {
         argCallback: arg => {
             //因为要统计所有机会，所以将开始时间设为0，以统计截止到选择的结束时间的所有数据
             _.set(arg, 'query.start_time', 0);
+
+            const statisticsType = _.get(arg, 'query.statistics_type');
+            
+            //这个接口的返回类型参数和别的接口不一样，需要处理一下
+            if (statisticsType) {
+                _.set(arg, 'query.result_type', statisticsType);
+
+                delete arg.query.statistics_type;
+            }
         },
         dataField: 'list',
         option: {

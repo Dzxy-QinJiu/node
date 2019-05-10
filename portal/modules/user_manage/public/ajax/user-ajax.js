@@ -139,10 +139,10 @@ exports.updateUserStatus = function(user) {
 };
 
 //获取角色列表
-exports.getRoleList = function(clientId) {
+exports.getRoleList = function() {
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/user/roles/' + clientId,
+        url: '/rest/user/roles',
         type: 'get',
         success: function(roleList) {
             Deferred.resolve(roleList);

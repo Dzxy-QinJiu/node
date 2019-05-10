@@ -224,10 +224,12 @@ class DealDetailPanel extends React.Component {
                 return {title: stageName};
             } else {
                 return {
-                    title: (
+                    title: stageName,
+                    //该步骤的处理元素渲染
+                    stepHandleElement: (
                         <Popconfirm title={Intl.get('crm.order.update.confirm', '确定要修改订单阶段？')}
                             onConfirm={this.editDealStage.bind(this, stage.name)} key={index}>
-                            <span className="deal-stage-name">{stageName}</span>
+                            <span className="deal-stage-name"/>
                         </Popconfirm>)
                 };
             }
@@ -244,16 +246,15 @@ class DealDetailPanel extends React.Component {
         );
         //关闭订单项
         const closeDealStep = (
-            <Dropdown overlay={menu} trigger={['click']}>
+            <Dropdown overlay={menu} trigger={['click']} placement="bottomCenter">
                 {this.state.curDealCloseStatus === DEAL_STATUS.WIN ? (
                     <Popconfirm placement="topRight" visible={true} onCancel={this.cancelCloseDeal}
                         onConfirm={this.closeDeal.bind(this, DEAL_STATUS.WIN)}
                         title={Intl.get('crm.order.close.win.confirm', '确定将订单的关闭状态设为赢单吗？')}>
-                        {Intl.get('crm.order.status.win', '赢单')}
-                    </Popconfirm>) : (
-                    <span className="deal-stage-name">{Intl.get('crm.order.close.step', '关闭订单')}</span>)}
+                        <span className="deal-stage-win"/>
+                    </Popconfirm>) : (<span className="deal-stage-name"/>)}
             </Dropdown>);
-        stageStepList.push({title: closeDealStep});
+        stageStepList.push({title: Intl.get('crm.order.close.step', '关闭订单'), stepHandleElement: closeDealStep,});
         return (
             <StepsBar stepDataList={stageStepList} currentStepIndex={currentStageIndex}
                 onClickStep={this.onClickStep.bind(this)}/>);

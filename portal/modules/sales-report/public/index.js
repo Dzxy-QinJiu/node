@@ -177,9 +177,13 @@ class SalesReport extends React.Component {
                 value: defaultEndTime,
             },
             {
-                name: 'member_id',
+                name: 'member_ids',
                 value: this.state.currentMember.user_id,
             },
+            {
+                name: 'statistics_type',
+                value: 'user'
+            }
         ];
     };
 
@@ -199,7 +203,7 @@ class SalesReport extends React.Component {
                 emitter: teamTreeEmitter,
                 event: teamTreeEmitter.SELECT_MEMBER,
                 callbackArgs: [{
-                    name: 'member_id',
+                    name: 'member_ids',
                 }],
             },
         ];
@@ -464,7 +468,7 @@ class SalesReport extends React.Component {
                 //客户活跃度统计
                 customerCharts.getCustomerActiveTrendChart('客户活跃度统计', 'day', true),
                 //新开客户登录
-                reportCharts.newCustomerLoginChart(this.state.currentMember.team_id, this.state.currentMember.user_id),
+                reportCharts.newCustomerLoginChart(),
                 //合格客户统计
                 customerCharts.getCustomerNumChart('qualified'),
                 //联系客户频率统计

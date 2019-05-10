@@ -6,6 +6,8 @@ var _ = require('lodash');
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
 import UserAjax from '../../../common/public/ajax/user';
 import {afterGetExtendUserInfo} from 'PUB_DIR/sources/utils/common-method-util';
+import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {getWorklistApplyList} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 
 function SalesHomeActions() {
     this.generateActions(
@@ -21,6 +23,7 @@ function SalesHomeActions() {
         'setInitState',//设置初始化数据
         'updateSalesTeamMembersObj',//修改团队成员列表中的信息（销售角色）
         'resetCallBackRecord', // 重置回访记录列表状态
+        'handleMemberApprove', // 处理成员审批
     );
 
     //获取当前登录销售的角色（销售/经理/总监）
@@ -236,6 +239,18 @@ function SalesHomeActions() {
             errorMsg => {
                 this.dispatch({loading: false, error: true, errorMsg: errorMsg});
             });
+    };
+
+    // 获取待我审批的邀请成员列表
+    this.getPendingApproveMemberApplyList = function() {
+        getWorklistApplyList({type: APPLY_APPROVE_TYPES.MEMBER_INVITE}).then((workList) => {
+            this.dispatch({error: false, data: workList});
+        }, (errorMsg) => {
+            this.dispatch({
+                error: true,
+                errMsg: errorMsg || Intl.get('member.apply.failed.get.worklist', '获取由我审批的成员申请失败')
+            });
+        });
     };
 }
 
