@@ -300,7 +300,7 @@ class SingleUserLog extends React.Component {
         } else {
             return <div className="alert-container">
                 <Alert
-                    message={Intl.get('common.no.audit', '暂无审计日志')}
+                    message={Intl.get('common.no.audit', '暂无操作记录')}
                     type="info"
                     showIcon={true}
                 />

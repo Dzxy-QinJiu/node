@@ -158,7 +158,7 @@ var en_US = {
     'common.no.more.contract': 'No contract', // 暂无合同
     'common.no.more.trace.record': 'There is no trace record',//暂无跟进记录
     'common.no.clue': 'There is no clue',//暂无线索
-    'common.no.audit': 'There is no audit',//暂无审计日志
+    'common.no.audit': 'There is no operation record',//暂无操作记录
     'common.no.call.record': 'There is no call record',//暂无通话记录
 
     'common.yesno': 'whether',//是否

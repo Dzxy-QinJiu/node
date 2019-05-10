@@ -567,8 +567,8 @@ class UserInfo extends React.Component {
             return null;
         }
         let iconCls = classNames('iconfont', {
-            'icon-enable': userInfo.status,
-            'icon-disable': !userInfo.status
+            'icon-enable': !userInfo.status,
+            'icon-disable': userInfo.status
         });
         return (
             <div className="status-switch-container">
@@ -583,7 +583,7 @@ class UserInfo extends React.Component {
                             status: userInfo.status === 0 ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用')
                         })}>
                         <span className={iconCls}
-                            title={userInfo.status === 0 ? Intl.get('common.stop', '停用') : Intl.get('common.enabled', '启用')}/>
+                            title={userInfo.status === 0 ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用')}/>
                     </Popconfirm>
                 </StatusWrapper>
             </div>

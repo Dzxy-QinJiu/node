@@ -162,7 +162,7 @@ var zh_CN = {
     'common.no.more.order': '暂无订单',
     'common.no.more.contract': '暂无合同',
     'common.no.clue': '暂无线索',
-    'common.no.audit': '暂无审计日志',
+    'common.no.audit': '暂无操作记录',
     'common.no.more.trace.record': '暂无跟进记录',
     'common.no.call.record': '暂无通话记录',
 
