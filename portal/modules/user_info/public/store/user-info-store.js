@@ -152,4 +152,5 @@ UserInfoStore.prototype.hideSubmitTip = function() {
     this.submitErrorMsg = '';
     this.submitResult = '';
 };
+
 module.exports = alt.createStore(UserInfoStore, 'UserInfoStore');
