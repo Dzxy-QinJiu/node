@@ -7,7 +7,6 @@ function UserInfoActions() {
         'hideUserInfoForm',//隐藏修改用户面板
         'hideSubmitTip',//隐藏保存提示
         'setLogNum',//设置当前操作记录的展示页
-        'handleSamePassWord' // 密码相同时的处理
     );
 
     //获取用户信息

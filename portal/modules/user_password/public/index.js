@@ -81,8 +81,11 @@ var UserPwdPage = createReactClass({
                 passBarShow: passStrengthObj.passBarShow,
                 passStrength: passStrengthObj.passStrength
             });
-            if (this.props.form.getFieldValue('newPasswd')) {
-                this.props.form.validateFields(['rePasswd'], {force: true});
+            if (this.props.form.getFieldValue('newPasswd') === this.props.form.getFieldValue('passwd')) {
+                this.setState({
+                    passBarShow: false
+                });
+                callback(Intl.get('user.password.same.password','新密码和原始密码相同'));
             }
             callback();
         } else {
@@ -133,14 +136,6 @@ var UserPwdPage = createReactClass({
                     passwd: this.md5Hash(values.passwd),
                     newPasswd: this.md5Hash(values.newPasswd)
                 };
-                if (user.newPasswd === user.passwd) {
-                    UserInfoAction.handleSamePassWord();
-                    this.props.form.setFields({
-                        newPasswd: '',
-                        rePasswd: ''
-                    });
-                    return;
-                }
                 UserInfoAction.editUserInfoPwd(user);
             }
         });

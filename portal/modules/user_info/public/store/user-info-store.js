@@ -152,10 +152,4 @@ UserInfoStore.prototype.hideSubmitTip = function() {
     this.submitErrorMsg = '';
     this.submitResult = '';
 };
-
-UserInfoStore.prototype.handleSamePassWord = function() {
-    this.submitErrorMsg = Intl.get('user.password.same.password','新密码和原始密码相同');
-    this.submitResult = 'error';
-};
-
 module.exports = alt.createStore(UserInfoStore, 'UserInfoStore');
