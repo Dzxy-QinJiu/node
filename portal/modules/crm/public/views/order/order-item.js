@@ -518,13 +518,16 @@ class OrderItem extends React.Component {
         let stageStepList = _.map(stageList, (stage, index) => {
             const stageName = stage.name ? stage.name.split('阶段')[0] : '';
             if (index === currentStageIndex || this.props.disableEdit) {
+                //title用于展示
                 return {title: stageName};
             } else {
                 return {
-                    title: (
+                    title: stageName,
+                    //该步骤的处理元素渲染
+                    stepHandleElement: (
                         <Popconfirm title={Intl.get('crm.order.update.confirm', '确定要修改订单阶段？')}
                             onConfirm={this.editOrderStage.bind(this, stage.name)}>
-                            <span className="order-stage-name">{stageName}</span>
+                            <span className="order-stage-name"/>
                         </Popconfirm>)
                 };
             }
@@ -541,17 +544,16 @@ class OrderItem extends React.Component {
         );
         //关闭订单项
         const closeOrderStep = (
-            <Dropdown overlay={menu} trigger={['click']}>
+            <Dropdown overlay={menu} trigger={['click']} placement="bottomCenter">
                 {this.state.curOrderCloseStatus === ORDER_STATUS.WIN ? (
                     <Popconfirm placement="topRight" visible={true} onCancel={this.cancelCloseOrder}
                         onConfirm={this.closeOrder.bind(this, ORDER_STATUS.WIN)}
                         title={Intl.get('crm.order.close.win.confirm', '确定将订单的关闭状态设为赢单吗？')}>
-                        {Intl.get('crm.order.status.win', '赢单')}
-                    </Popconfirm>) : (
-                    <span className="order-stage-name">{Intl.get('crm.order.close.step', '关闭订单')}</span>)}
+                        <span className="order-stage-win"/>
+                    </Popconfirm>) : (<span className="order-stage-name"/>)}
             </Dropdown>);
         if(!this.props.disableEdit){
-            stageStepList.push({title: closeOrderStep});
+            stageStepList.push({title: Intl.get('crm.order.close.step', '关闭订单'), stepHandleElement: closeOrderStep});
         }
         return (
             <StepsBar stepDataList={stageStepList} currentStepIndex={currentStageIndex}
