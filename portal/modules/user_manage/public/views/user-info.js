@@ -5,7 +5,7 @@ var React = require('react');
 const PropTypes = require('prop-types');
 var language = require('../../../../public/language/getLanguage');
 require('../css/user-info.less');
-import {Icon, Select, Popconfirm, message, Tabs} from 'antd';
+import {Icon, Select, Popconfirm, message, Tabs, Switch} from 'antd';
 const TabPane = Tabs.TabPane;
 import {getPassStrenth, passwordRegex} from 'CMP_DIR/password-strength-bar';
 var Option = Select.Option;
@@ -47,6 +47,7 @@ class UserInfo extends React.Component {
         roleList: UserFormStore.getState().roleList,
         isPasswordInputShow: false,//是否展示修改密码的输入框
         activeKey: TAB_KEYS.BASIC_INFO_TAB,
+        visible: false, // 是否弹出修改用户状态的确认框，默认false
         ...UserInfoStore.getState(),
     };
 
@@ -115,6 +116,15 @@ class UserInfo extends React.Component {
                 status
             });
         }
+        this.setState({
+            visible: false
+        });
+    };
+    
+    handleCancelChangeUserStatus = () => {
+        this.setState({
+            visible: false
+        });
     };
 
     //获取团队下拉列表
@@ -560,16 +570,18 @@ class UserInfo extends React.Component {
         });
     };
 
+    handleClickUserStatus = () => {
+        this.setState({
+            visible: true
+        });
+    };
+
     renderMemberStatus(userInfo) {
         let loginUserInfo = UserData.getUserData();
         //自己不能停用自己
         if (userInfo.id === loginUserInfo.user_id) {
             return null;
         }
-        let iconCls = classNames('iconfont', {
-            'icon-enable': !userInfo.status,
-            'icon-disable': userInfo.status
-        });
         return (
             <div className="status-switch-container">
                 <StatusWrapper
@@ -578,12 +590,21 @@ class UserInfo extends React.Component {
                     size='small'
                 >
                     <Popconfirm
-                        placement="bottomRight" onConfirm={this.forbidCard.bind(this)}
+                        visible={this.state.visible}
+                        placement="bottomRight"
+                        onConfirm={this.forbidCard.bind(this)}
+                        onCancel={this.handleCancelChangeUserStatus}
                         title={Intl.get('member.status.eidt.tip', '确定要{status}该成员？', {
-                            status: userInfo.status === 0 ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用')
-                        })}>
-                        <span className={iconCls}
-                            title={userInfo.status === 0 ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用')}/>
+                            status: userInfo.status === 0 ? Intl.get('common.enabled', '启用') :
+                                Intl.get('common.stop', '停用')
+                        })}
+                    >
+                        <Switch
+                            checked={userInfo.status}
+                            checkedChildren={Intl.get('common.enabled', '启用')}
+                            unCheckedChildren={Intl.get('common.stop', '停用')}
+                            onClick={this.handleClickUserStatus}
+                        />
                     </Popconfirm>
                 </StatusWrapper>
             </div>
