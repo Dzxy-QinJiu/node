@@ -85,13 +85,12 @@ class UserStatusFieldSwitch extends React.Component {
                         errorMsg={this.state.resultType === 'error' && this.state.errorMsg}
                         size='small'
                     >
-                        {
-                            this.state.status ?
-                                <span title={Intl.get('common.stop', '停用')} className="iconfont icon-disable" onClick={() => this.changeUserStatus(false)}>
-                                </span> :
-                                <span title={Intl.get('common.enabled', '启用')} className="iconfont icon-enable" onClick={() => this.changeUserStatus(true)}>
-                                </span>
-                        }
+                        <Switch
+                            checked={this.state.status}
+                            onChange={this.changeUserStatus}
+                            checkedChildren={Intl.get('common.enabled', '启用')}
+                            unCheckedChildren={Intl.get('common.stop', '停用')}
+                        />
                     </StatusWrapper>
                 </div>
             );
@@ -114,5 +113,11 @@ class UserStatusFieldSwitch extends React.Component {
         );
     }
 }
+
+UserStatusFieldSwitch.propTypes = {
+    status: PropTypes.bool,
+    userId: PropTypes.string,
+    useIcon: PropTypes.bool,
+};
 
 module.exports = UserStatusFieldSwitch;
