@@ -176,13 +176,30 @@ class SalesStagePage extends React.Component {
         </ButtonZones>);
     };
 
+    retryGetOrderList = () => {
+        SalesStageAction.getSalesStageList();
+    };
+
+    renderRetryGetOrderStage = () => {
+        if (this.state.getSalesStageListErrMsg) {
+            return (
+                <div className="btn-containers">
+                    {this.state.getSalesStageListErrMsg}
+                    <a className="retry-btn" onClick={this.retryGetOrderList}>
+                        , {Intl.get('user.info.retry', '请重试')}
+                    </a>
+                </div>
+            );
+        }
+    };
+
     render() {
         var _this = this;
         var width = this.state.salesStageWidth;
         var salesStageList = this.state.salesStageList;
         let length = _.get(salesStageList, 'length');
         let noDataTips = this.state.getSalesStageListErrMsg;
-        if (!this.state.loading && length === 0) {
+        if (!this.state.loading && !this.state.getSalesStageListErrMsg && length === 0) {
             noDataTips = Intl.get('crm.order.stage.nodata.tips', '暂无订单阶段，请先添加');
         }
         return (
@@ -195,7 +212,11 @@ class SalesStagePage extends React.Component {
                 }
                 {
                     noDataTips ? (
-                        <NoDataIntro noDataTip={noDataTips}/>
+                        <NoDataIntro
+                            noDataTip={noDataTips}
+                            renderAddAndImportBtns={this.renderRetryGetOrderStage}
+                            showAddBtn={this.state.getSalesStageListErrMsg ? true : false}
+                        />
                     ) : null
                 }
                 {this.state.salesStageFormShow ? (
