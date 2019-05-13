@@ -216,7 +216,7 @@ class SalesStagePage extends React.Component {
         let salesStageList = this.state.salesStageList;
         let length = _.get(salesStageList, 'length');
         let msgTips = this.state.getSalesStageListErrMsg;
-        if (!msgTips && length === 0) {
+        if (!msgTips && length === 0 && !this.state.loading) {
             msgTips = Intl.get('crm.order.stage.nodata.tips', '暂无订单阶段，请先添加');
         }
         if (msgTips) {
