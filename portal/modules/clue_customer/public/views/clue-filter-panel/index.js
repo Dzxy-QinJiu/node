@@ -254,7 +254,7 @@ class ClueFilterPanel extends React.Component {
             var ownerList = _.uniqBy(this.state.teamMemberList, 'nickname');
             advancedData.unshift(
                 {
-                    groupName: Intl.get('cluecustomer.trace.person', '负责人'),
+                    groupName: Intl.get('crm.6', '负责人'),
                     groupId: 'user_name',
                     singleSelect: true,
                     data: _.map(ownerList, x => ({
