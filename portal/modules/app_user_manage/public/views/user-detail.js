@@ -247,7 +247,12 @@ class UserDetail extends React.Component {
         if (!hasEditPrivilege) {
             return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
         }
-        return (<UserStatusSwitch useIcon={useIcon} userId={_.get(user, 'user_id')} status={userStatus === '1' ? true : false} />);
+        return (
+            <UserStatusSwitch
+                useIcon={useIcon}
+                userId={_.get(user, 'user_id')}
+                status={userStatus === '1' ? true : false}
+            />);
     };
 
     render() {

@@ -2304,9 +2304,8 @@ var zh_CN = {
     'sales.homepage.hide.teamlist': '隐藏团队列表',
     'sales.homepage.show.teamlist': '展开团队列表',
     'crm.save.customertrace.first': '请先保存或取消正在编辑的跟进记录',
-    'sales.add.email.info': '请到{userinfo}页面添加邮箱，否则将会无法接收用户申请的邮件。',
+    'sales.add.email.info': '请到{userinfo}页面添加邮箱，否则将会无法收到客套向您发送的邮件。',
     'cluecustomer.create.time': '创建于{startTime}',
-    'cluecustomer.trace.person': '跟进人',
     'cluecustomer.content.not.empty': '跟进内容不能为空',
     'failed.submit.trace.content': '添加跟进内容失败',
     'clue.customer.save.content': '请先保存或取消保存正在编辑的跟进内容',
@@ -2586,7 +2585,6 @@ var zh_CN = {
     'clue.add.clue.time': '添加于',
     'clue.no.trace.content': '暂无跟进',
     'clue.associate.user': '关联账号',
-    'clue.handle.clue.person': '当前跟进人',
     'clue.handle.no.distribute.clue': '未分配',
     'clue.has.no.data': '暂无',
     'clue.handle.clue': '线索处理',
@@ -2920,5 +2918,7 @@ var zh_CN = {
     'common.visit.end.time': '拜访结束时间',
     'common.by.team': '按团队',
     'common.by.member': '按成员',
+    'common.deal.number': '成交数',
+    'common.deal.amount': '成交额',
 };
 export default zh_CN;

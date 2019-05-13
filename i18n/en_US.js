@@ -2258,13 +2258,12 @@ var en_US = {
     'sales.homepage.hide.teamlist': 'Hide team lists',//隐藏团队列表
     'sales.homepage.show.teamlist': 'Show team lists',//展开团队列表
     'crm.save.customertrace.first': 'Please save or cancel the editing customer trace record first',//请先保存或取消正在编辑的跟进记录内容
-    'sales.add.email.info': 'Please add the E-mail address on the {userinfo} page, otherwise you will be unable to receive the application email from users',//请到{userinfo}页面添加邮箱，否则将会无法接收用户申请的邮件。
+    'sales.add.email.info': 'Please add the E-mail address on the {userinfo} page, otherwise you will be unable to receive the email from ketao',//请到{userinfo}页面添加邮箱，否则将会无法收到客套向您发送的邮件。
     'crm.sales.add.clue': 'Add clue',//添加线索
     'clue.customer.will.distribution': 'To be assigned',//待分配
     'clue.customer.has.distribution': 'Assigned',//已分配
     'clue.customer.has.follow': 'Has followed up',//已跟进
     'cluecustomer.create.time': 'Created on {startTime}',//创建于{startTime}
-    'cluecustomer.trace.person': 'Follower',//跟进人
     'cluecustomer.content.not.empty': 'Follow-up content can not be empty',//跟进内容不能为空
     'failed.submit.trace.content': 'Failed to add follow-up content',//添加跟进内容失败
     'clue.customer.save.content': 'Please save or cancel the editing follow-up content first',//请先保存或取消保存正在编辑的跟进内容
@@ -2561,7 +2560,6 @@ var en_US = {
     'clue.add.clue.time': 'Added to',//添加于
     'clue.no.trace.content': 'no trace content',//暂无跟进
     'clue.associate.user': 'Associated account',//关联账号
-    'clue.handle.clue.person': 'Handler',//当前跟进人
     'clue.handle.no.distribute.clue': '未分配',//
     'clue.has.no.data': 'No',//暂无
     'clue.handle.clue': 'Clue handle',//线索处理
@@ -2893,5 +2891,7 @@ var en_US = {
     'common.visit.end.time': 'Visit end time',//拜访结束时间
     'common.by.team': 'by team',//按团队
     'common.by.member': 'by member',//按成员
+    'common.deal.number': 'deal number',//成交数
+    'common.deal.amount': 'deal amount',//成交额
 };
 export default en_US;

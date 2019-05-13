@@ -256,7 +256,7 @@ function getClueListColumns(backendIntl) {
             title: backendIntl.get('clue.customer.associate.customer', '关联客户'),
             dataIndex: 'customer_name'
         },{
-            title: backendIntl.get('clue.handle.clue.person', '当前跟进人'),
+            title: backendIntl.get('crm.6', '负责人'),
             dataIndex: 'user_name'
         },{
             title: backendIntl.get('clue.list.clue.availibility','无效线索'),

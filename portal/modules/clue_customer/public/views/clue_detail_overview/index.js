@@ -470,7 +470,7 @@ class ClueDetailOverview extends React.Component {
         return (
             <div className="clue-info-item">
                 <div className="clue-info-label">
-                    {Intl.get('cluecustomer.trace.person', '跟进人')}：
+                    {Intl.get('crm.6', '负责人')}：
                 </div>
                 <div className="clue-info-detail no-handled">
                     {Intl.get('clue.has.not.distribute', '该线索还没有分配')}
@@ -501,7 +501,7 @@ class ClueDetailOverview extends React.Component {
         return (
             <div className="clue-info-item">
                 <div className="clue-info-label handle-clue-person">
-                    {Intl.get('clue.handle.clue.person', '当前跟进人')}：
+                    {Intl.get('crm.6', '负责人')}：
                 </div>
                 <div className="clue-info-detail">
                     <BasicEditSelectField
