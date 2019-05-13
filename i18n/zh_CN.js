@@ -2920,5 +2920,7 @@ var zh_CN = {
     'common.visit.end.time': '拜访结束时间',
     'common.by.team': '按团队',
     'common.by.member': '按成员',
+    'common.deal.number': '成交数',
+    'common.deal.amount': '成交额',
 };
 export default zh_CN;

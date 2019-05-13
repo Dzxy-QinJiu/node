@@ -2893,5 +2893,7 @@ var en_US = {
     'common.visit.end.time': 'Visit end time',//拜访结束时间
     'common.by.team': 'by team',//按团队
     'common.by.member': 'by member',//按成员
+    'common.deal.number': 'deal number',//成交数
+    'common.deal.amount': 'deal amount',//成交额
 };
 export default en_US;
