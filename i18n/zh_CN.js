@@ -76,7 +76,7 @@ var zh_CN = {
     'common.associate': '关联',
     'common.image.type.tip': '图片类型必须是gif,jpeg,jpg,png,bmp中的一种！',
     'common.image.upload': '上传',
-    'common.image.upload.size': '请上传小于300kb的图片',
+    'common.image.upload.size': '请上传小于10kb的图片',
     'common.edit': '编辑',
     //密码安全等级
     'common.password.low': '低',

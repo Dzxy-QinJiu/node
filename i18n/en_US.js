@@ -76,7 +76,7 @@ var en_US = {
     'common.associate': 'Associate',//关联
     'common.image.type.tip': 'The type of image must be one of gif, jpeg, jpg, png, bmp!',//图片类型必须是gif,jpeg,jpg,png,bmp中的一种！
     'common.image.upload': 'upload',//上传
-    'common.image.upload.size': 'The size of image must be less than 300 kb!',//请上传小于300kb的图片
+    'common.image.upload.size': 'The size of image must be less than 10 kb!',//请上传小于10kb的图片
     'common.edit': 'Edit',//编辑
     //密码安全等级
     'common.password.low': 'Weak',//低
