@@ -126,6 +126,11 @@ class SalesReport extends React.Component {
                     result.create_date = moment(result.create_date).format(oplateConsts.DATE_FORMAT);
                 }
 
+                //如果取不到角色，默认设为销售经理
+                if (!result.role_name) {
+                    result.role_name = SALES_ROLE.sales_manager;
+                }
+
                 const currentMember = _.extend({}, this.state.currentMember, result);
 
                 this.setState({
