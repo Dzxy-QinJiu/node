@@ -552,8 +552,13 @@ var CrmAlertForm = createReactClass({
 
     //是否选中全天
     onChangeSelectFullday: function(checked) {
+        let formData = this.state.formData;
+        if (!checked){
+            formData.start_time = moment().valueOf();
+        }
         this.setState({
             isSelectFullday: checked,
+            formData: formData
         });
     },
 
@@ -578,6 +583,8 @@ var CrmAlertForm = createReactClass({
         var formData = this.state.formData;
         //如果一个电话对应多个联系人的时候，要可以选择标题
         let hasOverOneCustomer = _.isArray(this.props.customerArr) && this.props.customerArr.length > 1;
+        var scheduleStartTime = moment(formData.start_time).format(HOUR_MUNITE_FORMAT);
+        var scheduleEndTime = moment(formData.end_time).format(HOUR_MUNITE_FORMAT);
         return (
             <Form layout='horizontal' data-tracename="添加联系计划表单" className="schedule-form" id="schedule-form">
                 <Validation ref="validation" onValidate={this.handleValidate}>
@@ -706,7 +713,7 @@ var CrmAlertForm = createReactClass({
                                     />
                                     {this.state.isSelectFullday ? null :
                                         <TimePicker
-                                            defaultValue={moment(formData.start_time, HOUR_MUNITE_FORMAT)}
+                                            value={moment(scheduleStartTime, HOUR_MUNITE_FORMAT)}
                                             format={HOUR_MUNITE_FORMAT}
                                             onChange={this.onScheduleStartTimeChange}
                                         />
@@ -725,7 +732,7 @@ var CrmAlertForm = createReactClass({
                                     label={Intl.get('crm.schedule.end.time', '结束')}
                                 >
                                     <TimePicker
-                                        defaultValue={moment(formData.end_time, HOUR_MUNITE_FORMAT)}
+                                        value={moment(scheduleEndTime, HOUR_MUNITE_FORMAT)}
                                         format={HOUR_MUNITE_FORMAT}
                                         onChange={this.onScheduleEndTimeChange}
                                     />
