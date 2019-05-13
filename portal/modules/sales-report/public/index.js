@@ -137,8 +137,7 @@ class SalesReport extends React.Component {
 
     //获取销售角色
     getSalesRole = (id) => {
-        //角色默认设为销售经理
-        let roleName = SALES_ROLE.sales_manager;
+        let roleName = '';
 
         ajax.send({
             url: '/rest/sales/role?member_id=' + id,
@@ -537,6 +536,8 @@ class SalesReport extends React.Component {
     };
 
     render() {
+        const role = this.state.currentMember.role_name;
+
         return (
             <div className="sales-report" data-tracename='销售报告'>
                 {this.renderFilter()}
@@ -548,10 +549,10 @@ class SalesReport extends React.Component {
                         <Col span={21} style={{height: this.state.contentHeight}}>
                             <GeminiScrollBar>
                                 {this.renderBaseInfo()}
-                                {this.renderOverallAnalysis()}
-                                {this.renderSalesPerformance()}
-                                {this.renderSalesBehavior()}
-                                {this.renderAttendance()}
+                                {role ? this.renderOverallAnalysis() : null}
+                                {role ? this.renderSalesPerformance() : null}
+                                {role ? this.renderSalesBehavior() : null}
+                                {role ? this.renderAttendance() : null}
                             </GeminiScrollBar>
                         </Col>
                     </Row>
