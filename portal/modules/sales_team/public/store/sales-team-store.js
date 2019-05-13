@@ -783,12 +783,21 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(user) {
     }else if(user.team){
         //修改用户所在的团队
         if (user.team !== teamMemberObj.groupId){
+            let oldTeam = _.find(this.salesTeamList, item => item.group_id === user.team);
+            //改的负责人的团队
             if (teamMemberObj.owner && teamMemberObj.owner.userId === user.id) {
-                teamMemberObj.owner = {};
-                return;
+                delete teamMemberObj.owner;
+                delete oldTeam.owner_id;
             }
+            //改的舆情秘书的团队
+            if (_.isArray(teamMemberObj.managers)) {
+                teamMemberObj.managers = _.filter(teamMemberObj.managers, userItem => userItem.userId !== user.id);
+                oldTeam.manager_ids = _.filter(oldTeam.manager_ids, id => id !== user.id);
+            }
+            //改的成员的团队
             if (_.isArray(teamMemberObj.users)) {
                 teamMemberObj.users = _.filter(teamMemberObj.users, userItem => userItem.userId !== user.id);
+                oldTeam.user_ids = _.filter(oldTeam.user_ids, id => id !== user.id);
             }
         }
         //将成员加入新团队中
