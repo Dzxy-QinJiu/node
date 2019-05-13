@@ -225,14 +225,13 @@ exports.getMyTeamTreeList = function(cb) {
     }
 };
 
-//获取平铺的和树状团队列表
+//获取平铺的和树状团队列表，
+// flag：是否重新获取数据，并且teamList中需要返回root_group，parent_group
+// 团队管理中，获取团队及添加、修改团队后刷新团队列表时需要重新获取数据，不能用缓存的团队数据
 exports.getMyTeamTreeAndFlattenList = function(cb, flag) {
     let teamTreeList = getUserData().my_team_tree || [];
     let teamList = [];
-    if (_.get(teamTreeList, '[0]')) {
-        traversingTeamTree(teamTreeList, teamList, flag);
-        if (_.isFunction(cb)) cb({teamTreeList, teamList});
-    } else {
+    if (flag || _.isEmpty(teamTreeList)) {
         const reqData = getParamByPrivilege();
         teamAjaxTrans.getMyTeamTreeListAjax().sendRequest({
             type: reqData.type,
@@ -251,6 +250,9 @@ exports.getMyTeamTreeAndFlattenList = function(cb, flag) {
             //保存到userData中
             setUserData(MY_TEAM_TREE_KEY, teamTreeList);
         });
+    } else {
+        traversingTeamTree(teamTreeList, teamList, flag);
+        if (_.isFunction(cb)) cb({teamTreeList, teamList});
     }
 };
 
