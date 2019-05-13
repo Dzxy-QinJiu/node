@@ -180,15 +180,29 @@ class SalesStagePage extends React.Component {
         SalesStageAction.getSalesStageList();
     };
 
-    renderRetryGetOrderStage = () => {
-        if (this.state.getSalesStageListErrMsg) {
+    renderMsgTips = (msgTips) => {
+        return (
+            <div>
+                <span>{msgTips},</span>
+                <a className="retry-btn" onClick={this.retryGetOrderList}>
+                    {Intl.get('user.info.retry', '请重试')}
+                </a>
+            </div>
+        );
+    };
+
+    renderNoDataTipsOrErrMsg = () => {
+        let salesStageList = this.state.salesStageList;
+        let length = _.get(salesStageList, 'length');
+        let errMsg = this.state.getSalesStageListErrMsg;
+        let noDataTips = Intl.get('crm.order.stage.nodata.tips', '暂无订单阶段，请先添加');
+        if (errMsg) {
             return (
-                <div className="btn-containers">
-                    {this.state.getSalesStageListErrMsg}
-                    <a className="retry-btn" onClick={this.retryGetOrderList}>
-                        , {Intl.get('user.info.retry', '请重试')}
-                    </a>
-                </div>
+                <NoDataIntro noDataTip={this.renderMsgTips(errMsg)}/>
+            );
+        } else if (!errMsg && length === 0) {
+            return (
+                <NoDataIntro noDataTip={noDataTips}/>
             );
         }
     };
@@ -197,11 +211,6 @@ class SalesStagePage extends React.Component {
         var _this = this;
         var width = this.state.salesStageWidth;
         var salesStageList = this.state.salesStageList;
-        let length = _.get(salesStageList, 'length');
-        let noDataTips = this.state.getSalesStageListErrMsg;
-        if (!this.state.loading && !this.state.getSalesStageListErrMsg && length === 0) {
-            noDataTips = Intl.get('crm.order.stage.nodata.tips', '暂无订单阶段，请先添加');
-        }
         return (
             <div className="sales-stage-manage-container" data-tracename="订单阶段管理">
                 {this.renderTopNavOperation()}
@@ -210,15 +219,7 @@ class SalesStagePage extends React.Component {
                         <Spinner/>
                     ) : null
                 }
-                {
-                    noDataTips ? (
-                        <NoDataIntro
-                            noDataTip={noDataTips}
-                            renderAddAndImportBtns={this.renderRetryGetOrderStage}
-                            showAddBtn={this.state.getSalesStageListErrMsg ? true : false}
-                        />
-                    ) : null
-                }
+                {this.renderNoDataTipsOrErrMsg()}
                 {this.state.salesStageFormShow ? (
                     <SalesStageForm
                         salesStage={this.state.currentSalesStage}
