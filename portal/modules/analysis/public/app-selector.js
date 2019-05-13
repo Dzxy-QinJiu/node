@@ -51,7 +51,7 @@ class AppSelector extends React.Component {
         if (_.isArray(appId)) {
             //如果清空了所有选中项
             if (_.isEmpty(appId)) {
-                const firstAppId = this.props.appList[0].app_id;
+                const firstAppId = _.get(this.props, 'appList[0].app_id');
                 //默认选中第一个应用
                 selectedApp = [firstAppId];
                 appIdStr = firstAppId;
