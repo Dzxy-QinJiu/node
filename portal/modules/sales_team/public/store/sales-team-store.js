@@ -350,6 +350,15 @@ SalesTeamStore.prototype.afterEditMember = function(data) {
             //删除选中的管理员
             curShowTeam.manager_ids = _.difference(curShowTeam.manager_ids, data.user_ids);
             if (data.operate === 'exchange_owner') {//将管理员设为所有者
+                //将原所有者加到普通成员里
+                if(curShowTeam.owner_id){
+                    if (_.isEmpty(curShowTeam.user_ids)) {
+                        curShowTeam.user_ids = [curShowTeam.owner_id];
+                    } else {
+                        curShowTeam.user_ids.push(curShowTeam.owner_id);
+                    }
+                }
+                //团队所有者的更新
                 curShowTeam.owner_id = data.user_ids[0];
             } else if (data.operate === 'exchange') {//将管理员设为普通成员
                 if (_.isArray(curShowTeam.user_ids) && curShowTeam.user_ids.length) {
@@ -364,6 +373,13 @@ SalesTeamStore.prototype.afterEditMember = function(data) {
             //删除选中的普通成员
             curShowTeam.user_ids = _.difference(curShowTeam.user_ids, data.user_ids);
             if (data.operate === 'exchange_owner') {//将普通成员设为所有者
+                //将原所有者加到普通成员里
+                if (_.isEmpty(curShowTeam.user_ids)) {
+                    curShowTeam.user_ids = [curShowTeam.owner_id];
+                } else {
+                    curShowTeam.user_ids.push(curShowTeam.owner_id);
+                }
+                //团队所有者的更新
                 curShowTeam.owner_id = data.user_ids[0];
             } else if (data.operate === 'exchange') {//将普通成员设为管理员
                 if (_.isArray(curShowTeam.manager_ids) && curShowTeam.manager_ids.length) {
