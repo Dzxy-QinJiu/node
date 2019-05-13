@@ -402,7 +402,7 @@ class SalesClueItem extends React.Component {
                 : null}
             <div className="handle-clue">
                 <div className="handle-and-trace">
-                    {handlePersonName ? <span className="current-trace-person">{Intl.get('clue.handle.clue.person', '当前跟进人')}: {handlePersonName}</span> : null}
+                    {handlePersonName ? <span className="current-trace-person">{Intl.get('clue.handle.clue.person', '当前负责人')}: {handlePersonName}</span> : null}
                     {/*有分配权限*/}
                     {hasAssignedPrivilege ?
                         <AntcDropdown

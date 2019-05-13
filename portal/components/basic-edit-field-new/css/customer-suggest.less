@@ -1,89 +1,102 @@
 @import '../../../public/css/common-variables';
+
 .customer_search_wrap {
   position: relative;
   //颜色是666
-  color:#666;
+  color: #666;
   //提示样式
   .customer_suggest_tip {
-    color:#666;
-    padding-top:7px;
+    color: #666;
+    padding-top: 7px;
   }
   //错误样式
   .customer_suggest_error_tip {
-    color:@error_tips_color;
+    color: @error_tips_color;
   }
   //已经选中了客户的样式
   .customer_choosen {
-    display:inline-block;
-    margin-top:4px;
-    cursor:pointer;
+    display: inline-block;
+    margin-top: 4px;
+    cursor: pointer;
     background-color: #f3f3f3;
     &:hover {
-      background-color: darken(#f3f3f3,5%);
+      background-color: darken(#f3f3f3, 5%);
     }
     border-radius: 4px;
     overflow: hidden;
     padding: 3px 10px 3px 10px !important;
-    &>span {
-      vertical-align:middle;
+    & > span {
+      vertical-align: middle;
     }
     .iconfont {
-      display:inline-block;
-      vertical-align:middle;
-      font-family:anticon !important;
+      display: inline-block;
+      vertical-align: middle;
+      font-family: anticon !important;
       &:before {
-        content:"\E62D";
+        content: "\E62D";
       }
-      transform:scale(.66666667) rotate(0deg);
+      transform: scale(.66666667) rotate(0deg);
       text-transform: none;
       text-rendering: auto;
-      zoom:1;
-      filter:none;
+      zoom: 1;
+      filter: none;
     }
   }
   .ant-select-search__field__placeholder {
-    top:3px;
-    color:#cdcdcd;
+    top: 3px;
+    color: #cdcdcd;
   }
   .associate-customer-wrap {
-    .ant-select{
+    .ant-select {
       width: 100%;
-      &.err-tip {
-        &:focus{
-          outline:none ;
+      &.err-tip{
+        &:focus {
+          outline: none;
         }
-        .ant-select-selection{
-        &:focus, &:active{
-          box-shadow: none;
+        .ant-select-selection {
+          border: 1px solid @error_tips_color;
+          &:focus, &:active {
+            box-shadow: 0 0 0 2px rgba(240, 65, 52, 0.2);
+          }
+          .ant-select-search__field__wrap .ant-select-search__field:focus {
+            box-shadow: none;
+          }
         }
-        border: 2px solid @error_tips_color;
-      }}
+      }
+      &.ant-select-focused.err-tip{
+      .ant-select-selection {
+        box-shadow: 0 0 0 2px rgba(240, 65, 52, 0.2);
+        &:focus, &:active {
+          box-shadow: 0 0 0 2px rgba(240, 65, 52, 0.2);
+        }
+      }
+    }
     }
   }
-  .customer-name{
+  .customer-name {
     cursor: pointer;
-    color:@FILTER-BUTTON;
+    color: @FILTER-BUTTON;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    .arrow-right{
-      margin-left:4px;
+    .arrow-right {
+      margin-left: 4px;
     }
   }
 
   &.customer_searchbox_error {
     .ant-select-selection--single {
-      border:1px solid @error_tips_color;
+      border: 1px solid @error_tips_color;
     }
   }
-  .edit-container.hover-show-edit{
-    padding:3px 0;
-    .icon-edit-btn{
+  .edit-container.hover-show-edit {
+    padding: 3px 0;
+    .icon-edit-btn {
       display: none;
     }
-    &:hover{
+    &:hover {
       background: #E8F5FE;
-      .icon-edit-btn{
+      .icon-edit-btn {
         display: inline-block;
       }
     }
@@ -109,10 +122,8 @@
   .customer-label.loss-tag-style {
     background-color: @loss-tag-color;
   }
-  .customer-label.re-contract-tag-style{
+  .customer-label.re-contract-tag-style {
     background-color: @re-contract-color;
   }
-
-
 
 }
