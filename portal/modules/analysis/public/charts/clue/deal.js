@@ -16,7 +16,7 @@ export function getClueDealChart() {
                     return `
                         ${params[0].name}<br>
                         ${Intl.get('common.deal.number', '成交数')}：${params[0].value}<br>
-                        ${Intl.get('common.deal.amount', '成交额')}：${params[0].data.date_gross_profit_total}
+                        ${Intl.get('common.deal.amount', '成交额')}：${params[0].data.date_gross_profit_total}${Intl.get('contract.82', '元')}
                     `;
                 }
             },
@@ -38,7 +38,8 @@ export function getClueDealChart() {
             csvData.push(dealNumberTr);
 
             const dealAmountData = _.map(serieData, 'date_gross_profit_total');
-            const dealAmountTr = [Intl.get('common.deal.amount', '成交额')].concat(dealAmountData);
+            const dealAmountTitle = Intl.get('common.deal.amount', '成交额') + '(' + Intl.get('contract.160', '单位') + ': ' + Intl.get('contract.82', '元') + ')';
+            const dealAmountTr = [dealAmountTitle].concat(dealAmountData);
 
             csvData.push(dealAmountTr);
 
