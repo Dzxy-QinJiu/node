@@ -198,10 +198,16 @@ class SalesStagePage extends React.Component {
     renderMsgTips = (msgTips) => {
         return (
             <div>
-                <span>{msgTips},</span>
-                <a className="retry-btn" onClick={this.retryGetOrderList}>
-                    {Intl.get('user.info.retry', '请重试')}
-                </a>
+                <span>{msgTips}</span>
+                {
+                    msgTips === this.state.getSalesStageListErrMsg ? (
+                        <span>
+                        ,<a className="retry-btn" onClick={this.retryGetOrderList}>
+                                {Intl.get('user.info.retry', '请重试')}
+                            </a>
+                        </span>
+                    ) : null
+                }
             </div>
         );
     };
@@ -209,15 +215,13 @@ class SalesStagePage extends React.Component {
     renderNoDataTipsOrErrMsg = () => {
         let salesStageList = this.state.salesStageList;
         let length = _.get(salesStageList, 'length');
-        let errMsg = this.state.getSalesStageListErrMsg;
-        let noDataTips = Intl.get('crm.order.stage.nodata.tips', '暂无订单阶段，请先添加');
-        if (errMsg) {
+        let msgTips = this.state.getSalesStageListErrMsg;
+        if (!msgTips && length === 0) {
+            msgTips = Intl.get('crm.order.stage.nodata.tips', '暂无订单阶段，请先添加');
+        }
+        if (msgTips) {
             return (
-                <NoDataIntro noDataTip={this.renderMsgTips(errMsg)}/>
-            );
-        } else if (!errMsg && length === 0) {
-            return (
-                <NoDataIntro noDataTip={noDataTips}/>
+                <NoDataIntro noDataTip={this.renderMsgTips(msgTips)}/>
             );
         }
     };
