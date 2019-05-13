@@ -231,8 +231,11 @@ class ClueDetailOverview extends React.Component {
     };
 
     //保存跟进记录内容
-    saveTraceContentInfo = (remarkContent, saveObj, successFunc, errorFunc) => {
-        if (Oplate && Oplate.unread && !remarkContent && userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
+    saveTraceContentInfo = (saveObj, successFunc, errorFunc) => {
+        if (!_.get(saveObj,'remark')){
+            return;
+        }
+        if (Oplate && Oplate.unread && userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
             Oplate.unread['unhandleClue'] -= 1;
             if (timeoutFunc) {
                 clearTimeout(timeoutFunc);
@@ -353,12 +356,31 @@ class ClueDetailOverview extends React.Component {
                 if (_.isFunction(successFunc)) successFunc();
                 curClueDetail.customer_id = submitObj.customer_id;
                 curClueDetail.customer_name = submitObj.customer_name;
+                if (submitObj.customer_id ){
+                    //如果有客户的id，需要把线索的状态改成已跟进
+                    if (curClueDetail.status !== SELECT_TYPE.HAS_TRACE){
+                        curClueDetail.status = SELECT_TYPE.HAS_TRACE;
+                    }
+                }else{
+                    if (!_.get(curClueDetail,'customer_traces[0].remark')){
+                        if (_.get(curClueDetail,'user_name')){
+                            curClueDetail.status = SELECT_TYPE.HAS_TRACE;
+                        }else{
+                            curClueDetail.status = SELECT_TYPE.WILL_DISTRIBUTE;
+                        }
+                    }
+                }
                 this.setState({
                     clickAssociatedBtn: false,
                     curClue: curClueDetail
                 });
                 clueCustomerAction.afterModifiedAssocaitedCustomer(curClueDetail);
             }
+        });
+    };
+    saveSameNoCustomerName = () => {
+        this.setState({
+            clickAssociatedBtn: false,
         });
     };
 
@@ -588,6 +610,7 @@ class ClueDetailOverview extends React.Component {
                             noDataTip={Intl.get('clue.has.no.data', '暂无')}
                             handleCancel={this.handleCancelCustomerSuggest}
                             customerLable={curClue.customer_label}
+                            saveSameNoCustomerName={this.saveSameNoCustomerName}
                         />
                     </div>
                 </div>
@@ -649,11 +672,15 @@ class ClueDetailOverview extends React.Component {
                         <BasicEditInputField
                             hasEditPrivilege={hasPrivilegeAddEditTrace}
                             id={curClue.id}
-                            saveEditInput={this.saveTraceContentInfo.bind(this, remarkContent)}
+                            saveEditInput={this.saveTraceContentInfo}
                             value={remarkContent}
                             field='remark'
                             type='textarea'
                             row={3}
+                            validators={[{
+                                required: true,
+                                message: Intl.get('cluecustomer.content.not.empty', '跟进内容不能为空')
+                            }]}
                             noDataTip={Intl.get('clue.no.trace.content', '暂无跟进')}
                             addDataTip={Intl.get('clue.add.trace.content', '添加跟进内容')}
                             placeholder={Intl.get('sales.home.fill.in.trace.content', '请输入跟进内容')}
