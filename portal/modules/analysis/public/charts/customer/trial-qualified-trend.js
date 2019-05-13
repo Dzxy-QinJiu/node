@@ -60,13 +60,13 @@ export function getCustomerTrialQualifiedTrendChart() {
         processCsvData: (chart, option) => {
             let csvData = [];
 
-            let thead = _.get(option, 'xAxis[0].data', []);
+            let thead = _.clone(_.get(option, 'xAxis[0].data', []));
             thead.unshift('');
 
             csvData.push(thead);
 
             _.each(option.series, serie => {
-                let tr = serie.data;
+                let tr = _.clone(serie.data);
                 tr.unshift(serie.name);
 
                 csvData.push(tr);
