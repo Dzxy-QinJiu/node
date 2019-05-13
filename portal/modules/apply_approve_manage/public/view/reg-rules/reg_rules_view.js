@@ -180,10 +180,7 @@ class RegRulesView extends React.Component {
                                 modeling.updateProperties(curNode.incoming[0], {
                                     name: '默认审批流程'
                                 });
-
                             }
-
-
                         }
                     });
                 }
@@ -207,7 +204,7 @@ class RegRulesView extends React.Component {
     getXML = () => {
         var viewer = this.state.bpmnModeler;
         return new Promise((resolve) => {
-            viewer.saveXML({format: true, preserveCDATA: true}, (err, xml) => {
+            viewer.saveXML({format: true}, (err, xml) => {
                 moddle.fromXML(xml, {format: true}, (err, definitions, context) => {
                     resolve({definitions, context});
                 });
@@ -683,6 +680,7 @@ class RegRulesView extends React.Component {
                 {this.state.addNodePanelFlow ?
                     <div className={addPanelWrap}>
                         <AddApplyNodePanel
+                            isPreviousNodeSetting = {true}
                             saveAddApproveNode={this.saveAddApproveNode}
                             hideRightPanel={this.hideRightAddPanel}
                             getAllApplyList={this.getAllBusinessApplyList}
