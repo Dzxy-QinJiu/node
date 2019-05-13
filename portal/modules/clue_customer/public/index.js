@@ -883,7 +883,7 @@ class ClueCustomer extends React.Component {
 
                 }
             },{
-                title: Intl.get('clue.handle.clue.person', '当前负责人'),
+                title: Intl.get('crm.6', '负责人'),
                 dataIndex: 'trace_person',
                 width: '100px',
                 render: (text, salesClueItem, index) => {

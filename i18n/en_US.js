@@ -2264,7 +2264,6 @@ var en_US = {
     'clue.customer.has.distribution': 'Assigned',//已分配
     'clue.customer.has.follow': 'Has followed up',//已跟进
     'cluecustomer.create.time': 'Created on {startTime}',//创建于{startTime}
-    'cluecustomer.trace.person': 'Follower',//负责人
     'cluecustomer.content.not.empty': 'Follow-up content can not be empty',//跟进内容不能为空
     'failed.submit.trace.content': 'Failed to add follow-up content',//添加跟进内容失败
     'clue.customer.save.content': 'Please save or cancel the editing follow-up content first',//请先保存或取消保存正在编辑的跟进内容
@@ -2561,7 +2560,6 @@ var en_US = {
     'clue.add.clue.time': 'Added to',//添加于
     'clue.no.trace.content': 'no trace content',//暂无跟进
     'clue.associate.user': 'Associated account',//关联账号
-    'clue.handle.clue.person': 'Handler',//当前负责人
     'clue.handle.no.distribute.clue': '未分配',//
     'clue.has.no.data': 'No',//暂无
     'clue.handle.clue': 'Clue handle',//线索处理
