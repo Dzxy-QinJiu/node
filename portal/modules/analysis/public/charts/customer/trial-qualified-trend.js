@@ -24,8 +24,10 @@ export function getCustomerTrialQualifiedTrendChart() {
                 query.result_type = query.statistics_type;
                 delete query.statistics_type;
             }
+
+            query.interval = 'month';
         },
-        processData: data => data.list,
+        dataField: 'list',
         processOption: (option, props) => {
             const data = props.data;
             const firstDataItem = _.first(data);
@@ -54,6 +56,23 @@ export function getCustomerTrialQualifiedTrendChart() {
                 data: legendData
             };
             option.series = series;
+        },
+        processCsvData: (chart, option) => {
+            let csvData = [];
+
+            let thead = _.get(option, 'xAxis[0].data', []);
+            thead.unshift('');
+
+            csvData.push(thead);
+
+            _.each(option.series, serie => {
+                let tr = serie.data;
+                tr.unshift(serie.name);
+
+                csvData.push(tr);
+            });
+
+            return csvData;
         }
     };
 }
