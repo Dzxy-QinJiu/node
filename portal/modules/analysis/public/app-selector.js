@@ -47,19 +47,26 @@ class AppSelector extends React.Component {
         let selectedApp; 
         let appIdStr;
          
-        //如果清空了所有选中项
-        if (_.isEmpty(appId)) {
-            const firstAppId = this.props.appList[0].app_id;
-            //默认选中第一个应用
-            selectedApp = [firstAppId];
-            appIdStr = firstAppId;
-        //如果选择了全部应用
-        } else if (_.last(appId) === 'all') {
-            selectedApp = ['all'];
-            appIdStr = 'all';
+        //如果选中值是数组，按数组处理
+        if (_.isArray(appId)) {
+            //如果清空了所有选中项
+            if (_.isEmpty(appId)) {
+                const firstAppId = this.props.appList[0].app_id;
+                //默认选中第一个应用
+                selectedApp = [firstAppId];
+                appIdStr = firstAppId;
+            //如果选择了全部应用
+            } else if (_.last(appId) === 'all') {
+                selectedApp = ['all'];
+                appIdStr = 'all';
+            } else {
+                selectedApp = _.filter(appId, id => id !== 'all');
+                appIdStr = selectedApp.join(',');
+            }
+        //否则，按字符串处理
         } else {
-            selectedApp = _.filter(appId, id => id !== 'all');
-            appIdStr = selectedApp.join(',');
+            selectedApp = [appId];
+            appIdStr = appId;
         }
 
         this.setState({selectedApp}, () => {
@@ -71,13 +78,19 @@ class AppSelector extends React.Component {
     render() {
         const appList = this.props.appList;
         const selectMode = this.props.selectMode;
+        let selectedValue = this.state.selectedApp;
+
+        //单选模式下，需要将选中值由数组转成字符串
+        if (selectMode === '' && _.isArray(selectedValue)) {
+            selectedValue = selectedValue[0];
+        }
 
         return (
             <div className='app-selector'>
                 {_.isEmpty(appList) ? null : (
                     <Select
                         mode={selectMode}
-                        value={this.state.selectedApp}
+                        value={selectedValue}
                         onChange={this.onAppChange}
                         dropdownMatchSelectWidth={false}
                     >
