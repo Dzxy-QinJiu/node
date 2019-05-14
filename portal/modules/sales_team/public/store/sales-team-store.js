@@ -753,6 +753,10 @@ SalesTeamStore.prototype.checkSelectTree = function() {
     });
     return selectObj;
 };
+//查找列表中修改的成员
+function findEditMember(memberList, editUserId) {
+    return _.find(memberList, userItem => userItem.userId === editUserId);
+}
 //列表中是否有修改的成员
 function hasEditMember(memberList, editUserId) {
     return _.some(memberList, userItem => userItem.userId === editUserId);
@@ -764,15 +768,17 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(user) {
     if (user.nick_name) {
         if (teamMemberObj.owner && teamMemberObj.owner.userId === user.user_id) {
             teamMemberObj.owner.nickName = user.nick_name;
-        } else if(hasEditMember(teamMemberObj.managers, user.user_id)){
-            let updateObj = _.find(teamMemberObj.managers, userItem => userItem.userId === user.user_id);
+        } else {
+            let updateObj = findEditMember(teamMemberObj.managers, user.user_id);
+            //修改舆情秘书的昵称
             if (updateObj) {
                 updateObj.nickName = user.nick_name;
-            }
-        } else if(hasEditMember(teamMemberObj.users, user.user_id)){
-            let updateObj = _.find(teamMemberObj.users, userItem => userItem.userId === user.user_id);
-            if (updateObj) {
-                updateObj.nickName = user.nick_name;
+            } else {
+                updateObj = findEditMember(teamMemberObj.users, user.user_id);
+                //修改普通成员的昵称
+                if (updateObj) {
+                    updateObj.nickName = user.nick_name;
+                }
             }
         }
     } else if (_.has(user, 'status')) {
@@ -781,41 +787,43 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(user) {
         //修改用户的状态
         if (teamMemberObj.owner && teamMemberObj.owner.userId === user.id) {
             teamMemberObj.owner.status = user.status;
-            if(_.has(updateMemberCountTeam, 'available.owner')){
+            if (_.has(updateMemberCountTeam, 'available.owner')) {
                 if (user.status === 1) {
                     updateMemberCountTeam.available.owner += 1;
                 } else {
                     updateMemberCountTeam.available.owner -= 1;
                 }
             }
-        } else if (hasEditMember(teamMemberObj.managers, user.id)) {
-            let updateObj = _.find(teamMemberObj.managers, userItem => userItem.userId === user.id);
+        } else {
+            let updateObj = findEditMember(teamMemberObj.managers, user.id);
+            //修改舆情秘书的状态
             if (updateObj) {
                 updateObj.status = user.status;
-            }
-            if(_.has(updateMemberCountTeam, 'available.manager')){
-                if (user.status === 1) {
-                    updateMemberCountTeam.available.manager += 1;
-                } else {
-                    updateMemberCountTeam.available.manager -= 1;
+                if (_.has(updateMemberCountTeam, 'available.manager')) {
+                    if (user.status === 1) {
+                        updateMemberCountTeam.available.manager += 1;
+                    } else {
+                        updateMemberCountTeam.available.manager -= 1;
+                    }
                 }
-            }
-        } else if (hasEditMember(teamMemberObj.users, user.id)) {
-            let updateObj = _.find(teamMemberObj.users, userItem => userItem.userId === user.id);
-            if (updateObj) {
-                updateObj.status = user.status;
-            }
-            if(_.has(updateMemberCountTeam, 'available.user')){
-                if (user.status === 1) {
-                    updateMemberCountTeam.available.user += 1;
-                } else {
-                    updateMemberCountTeam.available.user -= 1;
+            } else {
+                updateObj = findEditMember(teamMemberObj.users, user.id);
+                //修改普通成员的状态
+                if (updateObj) {
+                    updateObj.status = user.status;
+                    if (_.has(updateMemberCountTeam, 'available.user')) {
+                        if (user.status === 1) {
+                            updateMemberCountTeam.available.user += 1;
+                        } else {
+                            updateMemberCountTeam.available.user -= 1;
+                        }
+                    }
                 }
             }
         }
-    }else if(user.team){
+    } else if (user.team) {
         //修改用户所在的团队
-        if (user.team !== teamMemberObj.groupId){
+        if (user.team !== teamMemberObj.groupId) {
             let oldTeam = _.find(this.salesTeamList, item => item.group_id === user.team);
             //改的负责人的团队
             if (teamMemberObj.owner && teamMemberObj.owner.userId === user.id) {
@@ -836,7 +844,6 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(user) {
         } else if (addInTeam) {
             addInTeam.user_ids = [user.id];
         }
-
     }
 };
 

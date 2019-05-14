@@ -226,12 +226,12 @@ exports.getMyTeamTreeList = function(cb) {
 };
 
 //获取平铺的和树状团队列表，
-// flag：是否重新获取数据，并且teamList中需要返回root_group，parent_group
+// isReload：是否重新获取数据，并且teamList中会返回root_group，parent_group
 // 团队管理中，获取团队及添加、修改团队后刷新团队列表时需要重新获取数据，不能用缓存的团队数据
-exports.getMyTeamTreeAndFlattenList = function(cb, flag) {
+exports.getMyTeamTreeAndFlattenList = function(cb, isReload) {
     let teamTreeList = getUserData().my_team_tree || [];
     let teamList = [];
-    if (flag || _.isEmpty(teamTreeList)) {
+    if (isReload || _.isEmpty(teamTreeList)) {
         const reqData = getParamByPrivilege();
         teamAjaxTrans.getMyTeamTreeListAjax().sendRequest({
             type: reqData.type,
@@ -239,7 +239,7 @@ exports.getMyTeamTreeAndFlattenList = function(cb, flag) {
             if (_.get(treeList, '[0]')) {
                 teamTreeList = treeList;
                 //遍历团队树取出我能看的所有的团队列表list
-                traversingTeamTree(teamTreeList, teamList, flag);
+                traversingTeamTree(teamTreeList, teamList, isReload);
             }
             if (_.isFunction(cb)) cb({teamTreeList, teamList});
             //保存到userData中
@@ -251,7 +251,7 @@ exports.getMyTeamTreeAndFlattenList = function(cb, flag) {
             setUserData(MY_TEAM_TREE_KEY, teamTreeList);
         });
     } else {
-        traversingTeamTree(teamTreeList, teamList, flag);
+        traversingTeamTree(teamTreeList, teamList, isReload);
         if (_.isFunction(cb)) cb({teamTreeList, teamList});
     }
 };

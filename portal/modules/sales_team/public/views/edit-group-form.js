@@ -220,7 +220,13 @@ var SalesTeamForm = createReactClass({
     handleSelect: function() {
         Trace.traceEvent(ReactDOM.findDOMNode(this),'选择上级团队');
     },
-
+    //团队名的修改
+    onChangeTeamName: function(event) {
+        let formData = this.state.formData;
+        formData.title = _.trim(event.target.value);
+        formData.saveTeamMsg = '';
+        this.setState({formData});
+    },
     render: function() {
         var formData = this.state.formData;
         var status = this.state.status;
@@ -241,7 +247,7 @@ var SalesTeamForm = createReactClass({
                             <Validator
                                 rules={[{required: true, min: 1, max: 20 , message: Intl.get('common.input.character.rules', '最少1个字符,最多8个字符')}]}>
                                 <Input name="title" id="title" value={formData.title}
-                                    onChange={this.setField.bind(this, 'title')}
+                                    onChange={this.onChangeTeamName.bind(this)}
                                     placeholder={Intl.get('common.required.tip', '必填项*')}
                                     data-tracename="填写团队名称"
                                 />
