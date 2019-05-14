@@ -1146,10 +1146,10 @@ class SalesHomePage extends React.Component {
                     <div className="main-content-container" style={{height: rightContentHeight}}>
                         {/*是否展示邮箱激活或者添加邮箱的提示提示*/}
                         {addOrActiveEmailPrivelege ? this.renderAddOrActiveEmailAlert() : this.renderCalloutAlert()}
-                        <div className="customer-list-left" data-tracename="客户分类">
+                        <div className="customer-list-left" data-tracename="左侧分类tab">
                             {this.renderDiffCustomerPanel()}
                         </div>
-                        <div className={cls} data-tracename="客户详情">
+                        <div className={cls} data-tracename="右侧详情列表">
                             {this.renderCustomerContent()}
                         </div>
                     </div>
