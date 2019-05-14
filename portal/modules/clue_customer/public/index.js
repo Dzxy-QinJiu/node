@@ -892,15 +892,16 @@ class ClueCustomer extends React.Component {
                     //分配线索给销售的权限
                     var hasAssignedPrivilege = hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales);
                     var assigenCls = classNames('assign-btn',{'can-edit': !handlePersonName});
+                    var containerCls = classNames('handle-and-trace',{'assign-privilege': hasAssignedPrivilege});
                     return (
-                        <div className="handle-and-trace" ref='trace-person'>
+                        <div className={containerCls} ref='trace-person'>
                             {/*有分配权限*/}
                             {hasAssignedPrivilege ?
                                 <AntcDropdown
                                     ref={changeSale => this['changesale' + salesClueItem.id] = changeSale}
                                     content={<span
                                         data-tracename="点击分配线索客户按钮"
-                                        className={assigenCls}>{handlePersonName || Intl.get('clue.customer.distribute', '分配')}</span>}
+                                        className={assigenCls}> {handlePersonName || Intl.get('clue.customer.distribute', '分配')}</span>}
                                     overlayTitle={Intl.get('user.salesman', '销售人员')}
                                     okTitle={Intl.get('common.confirm', '确认')}
                                     cancelTitle={Intl.get('common.cancel', '取消')}
@@ -910,7 +911,7 @@ class ClueCustomer extends React.Component {
                                     unSelectDataTip={this.state.unSelectDataTip}
                                     clearSelectData={this.clearSelectSales}
                                     btnAtTop={false}
-                                /> : null
+                                /> : handlePersonName
                             }
                         </div>
                     );
