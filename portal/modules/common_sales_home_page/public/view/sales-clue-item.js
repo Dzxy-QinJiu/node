@@ -94,28 +94,36 @@ class SalesClueItem extends React.Component {
             submitContent: e.target.value
         });
     };
+    updateRemarks = (remarks) => {
+        var salesClueItemDetail = this.state.salesClueItemDetail;
+        salesClueItemDetail['customer_traces'] = remarks;
+        salesClueItemDetail['status'] = SELECT_TYPE.HAS_TRACE;
+        this.setState({
+            salesClueItemDetail,
+            submitContent: this.getSubmitContent(salesClueItemDetail)
+        });
+    };
     handleSubmitContent = (item) => {
+        //获取填写的保存跟进记录的内容
+        var textareVal = _.trim(this.state.submitContent);
         if (this.state.submitTraceLoading) {
             return;
         }
-        var value = _.get(item, 'customer_traces[0].remark', '');
-        if (Oplate && Oplate.unread && !value && userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
-            Oplate.unread['unhandleClue'] -= 1;
-            if (timeoutFunc) {
-                clearTimeout(timeoutFunc);
-            }
-            timeoutFunc = setTimeout(function() {
-                //触发展示的组件待审批数的刷新
-                notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
-            }, timeout);
-        }
-        //获取填写的保存跟进记录的内容
-        var textareVal = _.trim(this.state.submitContent);
         if (!textareVal) {
             this.setState({
                 submitTraceErrMsg: Intl.get('cluecustomer.content.not.empty', '跟进内容不能为空')
             });
         } else {
+            if (Oplate && Oplate.unread && userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
+                Oplate.unread['unhandleClue'] -= 1;
+                if (timeoutFunc) {
+                    clearTimeout(timeoutFunc);
+                }
+                timeoutFunc = setTimeout(function() {
+                    //触发展示的组件待审批数的刷新
+                    notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
+                }, timeout);
+            }
             var submitObj = {
                 'customer_id': item.id,
                 'remark': textareVal
@@ -438,6 +446,16 @@ class SalesClueItem extends React.Component {
         </div>;
     }
 
+    removeUpdateClueItem = () => {
+        //需要把这条线索在列表中去掉
+        var salesClueItemDetail = this.state.salesClueItemDetail;
+        this.props.removeClueItem(salesClueItemDetail);
+        this.setState({
+            isAssocaiteItem: '',
+            isShowClueDetail: false
+        });
+    };
+
     render() {
         var salesClueItem = this.state.salesClueItemDetail;
         //联系人的相关信息
@@ -504,9 +522,11 @@ class SalesClueItem extends React.Component {
                     <div className={associateCls}>
                         <ClueRightPanel
                             showFlag={true}
-                            currentId={this.state.isAssocaiteItem.id}
+                            curClue={this.state.isAssocaiteItem}
                             hideRightPanel={this.hideRightPanel}
                             curCustomer={this.state.isAssocaiteItem}
+                            removeUpdateClueItem={this.removeUpdateClueItem}
+                            updateRemarks={this.updateRemarks}
                         />
                     </div>
                     : null}
@@ -552,7 +572,10 @@ SalesClueItem.defaultProps = {
     clearSelectSales: function() {
 
     },
-    currentId: ''
+    currentId: '',
+    removeClueItem: function() {
+
+    }
 
 };
 SalesClueItem.propTypes = {
@@ -566,7 +589,8 @@ SalesClueItem.propTypes = {
     renderSalesBlock: PropTypes.func,
     handleSubmitAssignSales: PropTypes.func,
     clearSelectSales: PropTypes.func,
-    currentId: PropTypes.string
+    currentId: PropTypes.string,
+    removeClueItem: PropTypes.func,
 
 };
 export default SalesClueItem;

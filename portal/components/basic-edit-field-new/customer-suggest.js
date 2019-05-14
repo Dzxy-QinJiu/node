@@ -56,7 +56,10 @@ class CustomerSuggest extends React.Component {
         customer_id: '',//客户id
         hideCustomerRequiredTip: function() {
             
-        }
+        },
+        saveSameNoCustomerName: function() {
+
+        },
     };
 
     state = {
@@ -376,6 +379,7 @@ class CustomerSuggest extends React.Component {
             });
         } else {
             setDisplayState(this.state.displayText, this.state.displayCustomerId);
+            this.props.saveSameNoCustomerName();
         }
 
     };
@@ -579,6 +583,7 @@ CustomerSuggest.propTypes = {
     noDataTip: PropTypes.string,
     hideButtonBlock: PropTypes.bool,
     hideCustomerRequiredTip: PropTypes.func,
+    saveSameNoCustomerName: PropTypes.func,
 };
 
 module.exports = CustomerSuggest;
