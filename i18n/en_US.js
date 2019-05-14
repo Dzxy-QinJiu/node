@@ -464,6 +464,7 @@ var en_US = {
     'user.first.login': 'First time login',//首次登录
     'user.last.login': 'Login recently',//最近登录
     'user.no.login': 'User has not logined',//用户暂无登录
+    'user.status.eidt.tip': 'Are you sure to {status} this user?', // 确定要{status}该用户？
     'user.basic.info': 'Basic Information',//基本资料
     'user.detail.analysis': 'Analysis',//分析
     'user.password.tip': 'In secrecy',//保密中

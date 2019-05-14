@@ -27,9 +27,9 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import DetailCard from 'CMP_DIR/detail-card';
-import {StatusWrapper} from 'antc';
-import classNames from 'classnames';
 import Spinner from 'CMP_DIR/spinner';
+import { StatusWrapper } from 'antc';
+import MemberStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
 const TAB_KEYS = {
     BASIC_INFO_TAB: '1',//基本信息
     LOG_TAB: '2'//操作日志
@@ -47,7 +47,8 @@ class UserInfo extends React.Component {
         roleList: UserFormStore.getState().roleList,
         isPasswordInputShow: false,//是否展示修改密码的输入框
         activeKey: TAB_KEYS.BASIC_INFO_TAB,
-        visible: false, // 是否弹出修改用户状态的确认框，默认false
+        resultType: this.props.resultType,
+        errorMsg: this.props.errorMsg,
         ...UserInfoStore.getState(),
     };
 
@@ -60,7 +61,9 @@ class UserInfo extends React.Component {
         this.setState({
             userInfo: $.extend(true, {}, nextProps.userInfo),
             getUserDetailError: nextProps.getUserDetailError,
-            userIsLoading: nextProps.userIsLoading
+            userIsLoading: nextProps.userIsLoading,
+            resultType: nextProps.resultType,
+            errorMsg: nextProps.errorMsg,
         });
     }
 
@@ -99,7 +102,7 @@ class UserInfo extends React.Component {
 
     };
 
-    forbidCard = (e) => {
+    handleConfirm = (e) => {
         let userInfo = this.state.userInfo;
         let modalStr = Intl.get('member.start.this', '启用此');
         if (userInfo.status === 1) {
@@ -116,15 +119,6 @@ class UserInfo extends React.Component {
                 status
             });
         }
-        this.setState({
-            visible: false
-        });
-    };
-    
-    handleCancelChangeUserStatus = () => {
-        this.setState({
-            visible: false
-        });
     };
 
     //获取团队下拉列表
@@ -570,42 +564,27 @@ class UserInfo extends React.Component {
         });
     };
 
-    handleClickUserStatus = () => {
-        this.setState({
-            visible: true
-        });
-    };
-
     renderMemberStatus(userInfo) {
         let loginUserInfo = UserData.getUserData();
         //自己不能停用自己
         if (userInfo.id === loginUserInfo.user_id) {
             return null;
         }
+
         return (
             <div className="status-switch-container">
                 <StatusWrapper
-                    loading={this.state.resultType === 'loading'}
                     errorMsg={this.state.resultType === 'error' && this.state.errorMsg}
                     size='small'
                 >
-                    <Popconfirm
-                        visible={this.state.visible}
-                        placement="bottomRight"
-                        onConfirm={this.forbidCard.bind(this)}
-                        onCancel={this.handleCancelChangeUserStatus}
+                    <MemberStatusSwitch
                         title={Intl.get('member.status.eidt.tip', '确定要{status}该成员？', {
                             status: userInfo.status === 0 ? Intl.get('common.enabled', '启用') :
                                 Intl.get('common.stop', '停用')
                         })}
-                    >
-                        <Switch
-                            checked={userInfo.status}
-                            checkedChildren={Intl.get('common.enabled', '启用')}
-                            unCheckedChildren={Intl.get('common.stop', '停用')}
-                            onClick={this.handleClickUserStatus}
-                        />
-                    </Popconfirm>
+                        handleConfirm={this.handleConfirm}
+                        status={userInfo.status}
+                    />
                 </StatusWrapper>
             </div>
         );
@@ -812,7 +791,9 @@ UserInfo.propTypes = {
     closeRightPanel: PropTypes.func,
     showEditForm: PropTypes.func,
     userIsLoading: PropTypes.string,
-    getUserDetailError: PropTypes.string
+    getUserDetailError: PropTypes.string,
+    resultType: PropTypes.string,
+    errorMsg: PropTypes.string,
 };
 module.exports = UserInfo;
 

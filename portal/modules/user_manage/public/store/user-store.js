@@ -62,6 +62,8 @@ function UserStore() {
     //获取成员详情失败的错误提示
     this.getUserDetailError = '';
     this.isContinueAddButtonShow = false;
+    this.resultType = '';
+    this.errorMsg = '';
     this.bindActions(UserActions);
 
 }
@@ -173,6 +175,8 @@ UserStore.prototype.setCurUser = function(userId) {
 //获取成员详情后，重新赋值详情信息
 UserStore.prototype.getCurUserById = function(user) {
     this.userIsLoading = false;
+    this.resultType = '';
+    this.errorMsg = '';
     if (_.isString(user)) {
         this.getUserDetailError = user;
     } else {
@@ -199,6 +203,8 @@ UserStore.prototype.closeAddPanel = function() {
 //启停用成员
 UserStore.prototype.updateUserStatus = function(modifiedUser) {
     if (_.isObject(modifiedUser)) {
+        this.resultType = '';
+        this.errorMsg = '';
         var curUserList = this.curUserList;
         for (var j = 0, rLen = curUserList.length; j < rLen; j++) {
             if (curUserList[j].id === modifiedUser.id) {
@@ -206,6 +212,9 @@ UserStore.prototype.updateUserStatus = function(modifiedUser) {
                 break;
             }
         }
+    } else {
+        this.resultType = 'error';
+        this.errorMsg = modifiedUser || Intl.get('common.edit.failed', '修改失败');
     }
 };
 
