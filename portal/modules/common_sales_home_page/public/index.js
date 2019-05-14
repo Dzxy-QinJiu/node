@@ -775,14 +775,16 @@ class SalesHomePage extends React.Component {
                                 salesClueItemDetail= {item}
                                 showFrontPageTip={true}
                                 afterRemarkClue={SalesHomeAction.afterRemarkClue}
+                                removeClueItem={this.removeClueItem}
                             />
                         );
                     })}
                 </GeminiScrollbar>
             </div>
-
         );
-
+    };
+    removeClueItem = (removeItem) => {
+        SalesHomeAction.removeClueItem(removeItem);
     };
 
     afterHandleMessage = (messageObj) => {

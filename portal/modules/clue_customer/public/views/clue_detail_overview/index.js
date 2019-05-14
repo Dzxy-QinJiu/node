@@ -271,6 +271,7 @@ class ClueDetailOverview extends React.Component {
                     curClue.customer_traces[0].nick_name = userName;
                     curClue.customer_traces[0].add_time = addTime;
                 }
+                this.props.updateRemarks(curClue.customer_traces);
                 clueCustomerAction.updateClueProperty({id: saveObj.customer_id,status: SELECT_TYPE.HAS_TRACE,customer_traces: curClue.customer_traces});
                 this.setState({
                     curClue: curClue
@@ -357,8 +358,10 @@ class ClueDetailOverview extends React.Component {
                 curClueDetail.customer_name = submitObj.customer_name;
                 if (submitObj.customer_id){
                     //如果有客户的id，需要把线索的状态改成已跟进
+                    this.props.removeUpdateClueItem();
                     if (curClueDetail.status !== SELECT_TYPE.HAS_TRACE){
                         curClueDetail.status = SELECT_TYPE.HAS_TRACE;
+
                     }
                 }else{
                     if (!_.get(curClueDetail,'customer_traces[0].remark')){
@@ -1009,6 +1012,12 @@ ClueDetailOverview.defaultProps = {
     updateClueChannel: function() {},
     updateClueClassify: function() {},
     salesManList: [],
+    removeUpdateClueItem: function() {
+
+    },
+    updateRemarks: function() {
+
+    }
 };
 ClueDetailOverview.propTypes = {
     curClue: PropTypes.object,
@@ -1020,6 +1029,8 @@ ClueDetailOverview.propTypes = {
     updateClueChannel: PropTypes.func,
     updateClueClassify: PropTypes.func,
     salesManList: PropTypes.object,
+    removeUpdateClueItem: PropTypes.func,
+    updateRemarks: PropTypes.func,
 };
 
 module.exports = ClueDetailOverview;

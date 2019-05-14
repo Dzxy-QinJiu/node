@@ -211,6 +211,11 @@ SalesHomeStore.prototype.setWebsiteConfig = function(userInfo) {
         this.setWebConfigStatus = 'loading';
     }
 };
+SalesHomeStore.prototype.removeClueItem = function(removeItem) {
+    var clueData = _.get(this,'salesClueObj.data.list');
+    this.salesClueObj.data.list = _.filter(clueData, item => item.id !== removeItem.id);
+    this.salesClueObj.data.total = _.get(this, 'salesClueObj.data.list.length');
+};
 //获取今日通话数量和时长
 SalesHomeStore.prototype.getPhoneTotal = function(result) {
     this.phoneTotalObj.loading = result.loading;

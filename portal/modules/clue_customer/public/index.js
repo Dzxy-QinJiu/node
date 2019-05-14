@@ -1095,7 +1095,9 @@ class ClueCustomer extends React.Component {
             item.user_id = sale_id;
             item.sales_team = team_name;
             item.sales_team_id = team_id;
-            item.status = SELECT_TYPE.WILL_TRACE;
+            if (item.status !== SELECT_TYPE.HAS_TRACE){
+                item.status = SELECT_TYPE.WILL_TRACE;
+            }
         }
     };
     //单个及批量修改跟进人完成后的处理
