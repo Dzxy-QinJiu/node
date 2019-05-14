@@ -464,6 +464,7 @@ var zh_CN = {
     'user.first.login': '首次登录',
     'user.last.login': '最近登录',
     'user.no.login': '用户暂无登录',
+    'user.status.eidt.tip': '确定要{status}该用户？',
     'user.basic.info': '基本资料',
     'user.detail.analysis': '分析',
     'user.password.tip': '保密中',

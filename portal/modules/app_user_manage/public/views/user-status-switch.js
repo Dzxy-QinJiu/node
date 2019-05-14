@@ -1,6 +1,6 @@
 //用户状态添加switch切换逻辑
 var React = require('react');
-import { Icon, Switch } from 'antd';
+import { Icon, Switch, Popconfirm } from 'antd';
 const AppUserAjax = require('../ajax/app-user-ajax');
 const AlertTimer = require('CMP_DIR/alert-timer');
 import language from 'PUB_DIR/language/getLanguage';
@@ -21,7 +21,8 @@ class UserStatusFieldSwitch extends React.Component {
     state = {
         resultType: '',
         errorMsg: '',
-        status: this.props.status
+        status: this.props.status,
+        visible: false, // 是否弹出修改用户状态的确认框，默认false
     };
 
     componentWillReceiveProps(nextProps) {
@@ -52,6 +53,25 @@ class UserStatusFieldSwitch extends React.Component {
         }
     };
 
+    handleConfirmChangeUserStatus = (e) => {
+        console.log('e:', e);
+        let status = true;
+        if (this.state.status) {
+            status = false;
+        }
+        this.setState({
+            status: status
+        }, () => {
+            this.saveUserStatus();
+        });
+    };
+
+    handleCancelChangeUserStatus = () => {
+        this.setState({
+            visible: false
+        });
+    };
+
     saveUserStatus = () => {
         let submitObj = {
             user_id: this.props.userId,
@@ -61,18 +81,31 @@ class UserStatusFieldSwitch extends React.Component {
         //提交数据
         AppUserAjax.editAppUser(submitObj).then((result) => {
             if (result) {
-                this.setState({ resultType: '', errorMsg: '', status: submitObj.status === '1'});
+                this.setState({
+                    resultType: '',
+                    errorMsg: '',
+                    status: submitObj.status === '1',
+                    visible: false
+                });
             } else {
                 this.setState({
                     resultType: 'error',
-                    errorMsg: Intl.get('common.edit.failed', '修改失败')                    
+                    visible: false,
+                    errorMsg: Intl.get('common.edit.failed', '修改失败')
                 });
             }
         }, (errorMsg) => {
             this.setState({
                 resultType: 'error',
-                errorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败')
+                errorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败'),
+                visible: false
             });
+        });
+    };
+
+    handleClickUserStatus = () => {
+        this.setState({
+            visible: true
         });
     };
 
@@ -85,12 +118,24 @@ class UserStatusFieldSwitch extends React.Component {
                         errorMsg={this.state.resultType === 'error' && this.state.errorMsg}
                         size='small'
                     >
-                        <Switch
-                            checked={this.state.status}
-                            onChange={this.changeUserStatus}
-                            checkedChildren={Intl.get('common.enabled', '启用')}
-                            unCheckedChildren={Intl.get('common.stop', '停用')}
-                        />
+                        <Popconfirm
+                            visible={this.state.visible}
+                            placement="bottomRight"
+                            onConfirm={this.handleConfirmChangeUserStatus}
+                            onCancel={this.handleCancelChangeUserStatus}
+                            title={Intl.get('user.status.eidt.tip', '确定要{status}该用户？', {
+                                status: this.state.status ? Intl.get('common.stop', '停用') :
+                                    Intl.get('common.enabled', '启用')
+                            })}
+                        >
+                            <Switch
+                                checked={this.state.status}
+                                checkedChildren={Intl.get('common.enabled', '启用')}
+                                unCheckedChildren={Intl.get('common.stop', '停用')}
+                                onClick={this.handleClickUserStatus}
+                            />
+                        </Popconfirm>
+
                     </StatusWrapper>
                 </div>
             );
