@@ -480,8 +480,7 @@ class BasicOverview extends React.Component {
                     <SalesTeamCard
                         isMerge={this.props.isMerge}
                         updateMergeCustomer={this.props.updateMergeCustomer}
-                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_SALES') && !this.props.disableEdit}
-                        enableEditSecondSales={hasPrivilege(PRIVILEGE_MAP.EDIT_ASSERT_CUSTOMER_SALES) && !this.props.disableEdit}
+                        disableEdit={this.props.disableEdit}
                         customerId={basicData.id}
                         userName={basicData.user_name}
                         userId={basicData.user_id}
