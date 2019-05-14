@@ -53,12 +53,14 @@ class UserStatusFieldSwitch extends React.Component {
         }
     };
 
-    handleConfirmChangeUserStatus = (e) => {
-        console.log('e:', e);
+    handleConfirmChangeUserStatus = () => {
         let status = true;
+        let modalStr = Intl.get('member.start.this', '启用此');
         if (this.state.status) {
             status = false;
+            modalStr = Intl.get('member.stop.this', '禁用此');
         }
+        Trace.traceEvent('用户详情', '点击确认' + modalStr + '用户');
         this.setState({
             status: status
         }, () => {
