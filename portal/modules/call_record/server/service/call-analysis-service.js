@@ -232,12 +232,51 @@ exports.getSaleMemberList = function(req, res, params) {
         });
 };
 
-// 获取通话客户的地域和阶段分布
-exports.getCallCustomerZoneStage = (req, res) => {
-    return restUtil.authRest.get(
-        {
+//获取客户阶段及地域统计Promise
+function getStageZonePromise(req, res, field) {
+    return new Promise((resolve, reject) => {
+        req.query.field = field;
+
+        return restUtil.authRest.get({
             url: restApis.getCallCustomerZoneStage.replace(':authType', req.params.authType),
             req: req,
             res: res
-        }, req.query);
+        }, req.query, {
+            success: function(eventEmitter, data) {
+                resolve(data);
+            },
+            error: function(eventEmitter, errorDesc) {
+                reject(errorDesc);
+            }
+        });
+    });
+}
+
+// 获取通话客户的地域和阶段分布
+exports.getCallCustomerZoneStage = (req, res) => {
+    const emitter = new EventEmitter();
+
+    const promiseList = [
+        //客户阶段统计
+        getStageZonePromise(req, res, 'customer_label'),
+        //订单阶段统计
+        getStageZonePromise(req, res, 'sales_stage'),
+        //地域统计
+        getStageZonePromise(req, res, 'region')
+    ];
+
+    Promise.all(promiseList).then((result) => {
+        let allData = {
+            code: 0,
+            customer_label_sum: result[0],
+            opp_stage_sum: result[1],
+            sum: result[2]
+        };
+
+        emitter.emit('success', allData);
+    }).catch((err) => {
+        emitter.emit('error', err);
+    });
+
+    return emitter;
 };
