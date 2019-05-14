@@ -275,7 +275,6 @@ class ClueDetailOverview extends React.Component {
                 this.setState({
                     curClue: curClue
                 });
-
                 if (_.isFunction(successFunc)) successFunc();
             }
         });
@@ -356,7 +355,7 @@ class ClueDetailOverview extends React.Component {
                 if (_.isFunction(successFunc)) successFunc();
                 curClueDetail.customer_id = submitObj.customer_id;
                 curClueDetail.customer_name = submitObj.customer_name;
-                if (submitObj.customer_id ){
+                if (submitObj.customer_id){
                     //如果有客户的id，需要把线索的状态改成已跟进
                     if (curClueDetail.status !== SELECT_TYPE.HAS_TRACE){
                         curClueDetail.status = SELECT_TYPE.HAS_TRACE;
@@ -364,7 +363,7 @@ class ClueDetailOverview extends React.Component {
                 }else{
                     if (!_.get(curClueDetail,'customer_traces[0].remark')){
                         if (_.get(curClueDetail,'user_name')){
-                            curClueDetail.status = SELECT_TYPE.HAS_TRACE;
+                            curClueDetail.status = SELECT_TYPE.WILL_TRACE;
                         }else{
                             curClueDetail.status = SELECT_TYPE.WILL_DISTRIBUTE;
                         }
