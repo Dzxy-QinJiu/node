@@ -1457,6 +1457,8 @@ var en_US = {
     'crm.this.week.contact': 'Customers contacted this week',//本周联系过的客户
     'crm.record.unupload.phone': 'Unuploaded voice recordings, unable to play',//未上传通话录音，无法播放
     'crm.record.edit.record.tip': 'Click to modify the record',//点击修改跟进记录
+    'crm.search.no.owner': 'No relevant person in charge',//无相关负责人
+
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
     'crm.contract.validity.one.year': 'Valid for one year', // 有效期一年

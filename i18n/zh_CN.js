@@ -1475,6 +1475,7 @@ var zh_CN = {
     'crm.this.week.contact': '本周联系过的客户',
     'crm.record.unupload.phone': '未上传通话录音，无法播放',
     'crm.record.edit.record.tip': '点击修改跟进记录',
+    'crm.search.no.owner': '无相关负责人',
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
     'crm.contract.validity.one.year': '有效期一年',

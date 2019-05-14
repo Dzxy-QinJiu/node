@@ -462,10 +462,6 @@ class BasicOverview extends React.Component {
         }
         return null;
     };
-    //是否有修改所属团的权限
-    hasEditTeamPrivilege() {
-        return hasPrivilege(PRIVILEGE_MAP.EDIT_TEAM_MANAGER) || hasPrivilege(PRIVILEGE_MAP.EDIT_TEAM_USER);
-    }
 
     render() {
         var basicData = this.state.basicData ? this.state.basicData : {};
@@ -485,7 +481,6 @@ class BasicOverview extends React.Component {
                         isMerge={this.props.isMerge}
                         updateMergeCustomer={this.props.updateMergeCustomer}
                         enableEdit={hasPrivilege('CUSTOMER_UPDATE_SALES') && !this.props.disableEdit}
-                        enableEditTeam={this.hasEditTeamPrivilege() && !this.props.disableEdit}
                         enableEditSecondSales={hasPrivilege(PRIVILEGE_MAP.EDIT_ASSERT_CUSTOMER_SALES) && !this.props.disableEdit}
                         customerId={basicData.id}
                         userName={basicData.user_name}
