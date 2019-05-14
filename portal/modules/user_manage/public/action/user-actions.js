@@ -53,13 +53,14 @@ function UserActions() {
     };
 
     this.updateUserStatus = function(user) {
-        var _this = this;
-        userAjax.updateUserStatus(user).then(function(data) {
+        userAjax.updateUserStatus(user).then( (data) => {
             if (data) {
-                _this.dispatch(user);
+                this.dispatch(user);
+            } else {
+                this.dispatch(Intl.get('common.edit.failed', '修改失败'));
             }
-        }, function(errorMsg) {
-            _this.dispatch(errorMsg || Intl.get('common.edit.failed', '修改失败'));
+        }, (errorMsg) => {
+            this.dispatch(errorMsg || Intl.get('common.edit.failed', '修改失败'));
         });
     };
 

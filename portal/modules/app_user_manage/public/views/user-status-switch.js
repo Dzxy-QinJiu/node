@@ -5,6 +5,7 @@ const AppUserAjax = require('../ajax/app-user-ajax');
 const AlertTimer = require('CMP_DIR/alert-timer');
 import language from 'PUB_DIR/language/getLanguage';
 import { StatusWrapper } from 'antc';
+import MemberStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
 
 class UserStatusFieldSwitch extends React.Component {
     //获取默认属性
@@ -22,7 +23,6 @@ class UserStatusFieldSwitch extends React.Component {
         resultType: '',
         errorMsg: '',
         status: this.props.status,
-        visible: false, // 是否弹出修改用户状态的确认框，默认false
     };
 
     componentWillReceiveProps(nextProps) {
@@ -53,7 +53,7 @@ class UserStatusFieldSwitch extends React.Component {
         }
     };
 
-    handleConfirmChangeUserStatus = () => {
+    handleConfirm = () => {
         let status = true;
         let modalStr = Intl.get('member.start.this', '启用此');
         if (this.state.status) {
@@ -65,12 +65,6 @@ class UserStatusFieldSwitch extends React.Component {
             status: status
         }, () => {
             this.saveUserStatus();
-        });
-    };
-
-    handleCancelChangeUserStatus = () => {
-        this.setState({
-            visible: false
         });
     };
 
@@ -87,27 +81,18 @@ class UserStatusFieldSwitch extends React.Component {
                     resultType: '',
                     errorMsg: '',
                     status: submitObj.status === '1',
-                    visible: false
                 });
             } else {
                 this.setState({
                     resultType: 'error',
-                    visible: false,
-                    errorMsg: Intl.get('common.edit.failed', '修改失败')
+                    errorMsg: Intl.get('common.edit.failed', '修改失败'),
                 });
             }
         }, (errorMsg) => {
             this.setState({
                 resultType: 'error',
                 errorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败'),
-                visible: false
             });
-        });
-    };
-
-    handleClickUserStatus = () => {
-        this.setState({
-            visible: true
         });
     };
 
@@ -116,28 +101,17 @@ class UserStatusFieldSwitch extends React.Component {
             return (
                 <div className="status-switch-container">
                     <StatusWrapper
-                        loading={this.state.resultType === 'loading'}
                         errorMsg={this.state.resultType === 'error' && this.state.errorMsg}
                         size='small'
                     >
-                        <Popconfirm
-                            visible={this.state.visible}
-                            placement="bottomRight"
-                            onConfirm={this.handleConfirmChangeUserStatus}
-                            onCancel={this.handleCancelChangeUserStatus}
+                        <MemberStatusSwitch
                             title={Intl.get('user.status.eidt.tip', '确定要{status}该用户？', {
                                 status: this.state.status ? Intl.get('common.stop', '停用') :
                                     Intl.get('common.enabled', '启用')
                             })}
-                        >
-                            <Switch
-                                checked={this.state.status}
-                                checkedChildren={Intl.get('common.enabled', '启用')}
-                                unCheckedChildren={Intl.get('common.stop', '停用')}
-                                onClick={this.handleClickUserStatus}
-                            />
-                        </Popconfirm>
-
+                            handleConfirm={this.handleConfirm}
+                            status={this.state.status}
+                        />
                     </StatusWrapper>
                 </div>
             );
