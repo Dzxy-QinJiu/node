@@ -212,14 +212,54 @@ exports.getCallIntervalData = function(req, res, reqQuery) {
         }, reqQuery);
 };
 
+//获取通话总次数、总时长为top10的Promise
+function getCallTotalPromise(req, res, reqQuery, type) {
+    return new Promise((resolve, reject) => {
+        reqQuery.top_type = type;
+
+        return restUtil.authRest.get(
+            {
+                url: restApis.getCallTotalList.replace(':authType', req.params.authType),
+                req: req,
+                res: res
+            }, reqQuery, {
+                success: function(eventEmitter, data) {
+                    resolve(data);
+                },
+                error: function(eventEmitter, errorDesc) {
+                    reject(errorDesc);
+                }
+            });
+    });
+}
+
 // 获取通话总次数、总时长为top10的数据
 exports.getCallTotalList = function(req, res, reqQuery) {
-    return restUtil.authRest.get(
-        {
-            url: restApis.getCallTotalList.replace(':authType', req.params.authType),
-            req: req,
-            res: res
-        }, reqQuery);
+    const emitter = new EventEmitter();
+
+    const promiseList = [
+        //通话总次数top10统计
+        getCallTotalPromise(req, res, reqQuery, 'count'),
+        //通话总时长top10统计
+        getCallTotalPromise(req, res, reqQuery, 'sum')
+    ];
+
+    Promise.all(promiseList).then((result) => {
+        let allData = {
+            code: 200,
+            list: {
+                count: result[0],
+                sum: result[1]
+            },
+            result: 'true'
+        };
+
+        emitter.emit('success', allData);
+    }).catch((err) => {
+        emitter.emit('error', err);
+    });
+
+    return emitter;
 };
 
 // 获取成员信息
