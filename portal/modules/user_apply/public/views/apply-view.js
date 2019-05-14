@@ -235,9 +235,9 @@ class ApplyTabContent extends React.Component {
         UserApplyActions.setLastApplyId('');
         setTimeout(() => {
             if (this.state.isCheckUnreadApplyList) {
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '查看有未读回复的申请');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_wrap'), '查看有未读回复的申请');
             } else {
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '取消有未读回复申请的查看');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_wrap'), '取消有未读回复申请的查看');
             }
             this.fetchApplyList();
         });
@@ -245,7 +245,7 @@ class ApplyTabContent extends React.Component {
 
     //点击展示详情
     clickShowDetail = (obj, idx) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '查看申请详情');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.list-unstyled'), '查看申请详情');
         UserApplyActions.setSelectedDetailItem({obj, idx});
     };
 
