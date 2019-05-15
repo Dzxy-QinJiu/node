@@ -7,13 +7,16 @@ export const nameLengthRule = {
     max: 50,
     message: Intl.get('common.input.character.prompt', '最少1个字符,最多50个字符')
 };
-//客户名验证的正则表达式
-export const nameRegex = regex.customerNameRegex;
+//名称验证的正则表达式（包含大小写字母、下划线、中英文括号、点及汉字，长度1-50之间）
+export const nameRegex = regex.getNameRegex(50);
 //线索联系人的校验规则
 export const clueNameContactRule = {
     pattern: nameRegex,
     message: Intl.get('clue.contact.name.within.ten.character', '联系人名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间')
 };
+
+//客户名验证的正则表达式（包含大小写字母、下划线、中英文括号、点及汉字，长度1-25之间）
+export const customerNameRegex = regex.getNameRegex(25);
 // 数字验证规则
 exports.getNumberValidateRule = function() {
     return {pattern: /^(\d|,)+(\.\d+)?$/, message: Intl.get('contract.45', '请填写数字')};

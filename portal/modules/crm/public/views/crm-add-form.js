@@ -2,8 +2,6 @@ require('../css/crm-add-form.less');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
-import {regex} from 'ant-utils';
-const nameRegex = regex.customerNameRegex;
 import {Icon, Form, Input, Select, message}from 'antd';
 import {AntcAreaSelection} from 'antc';
 var rightPanelUtil = require('../../../../components/rightPanel');
@@ -26,7 +24,7 @@ import FieldMixin from 'CMP_DIR/antd-form-fieldmixin';
 const PHONE_INPUT_ID = 'phoneInput';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
-import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
+import {clueNameContactRule, customerNameRegex} from 'PUB_DIR/sources/utils/validate-util';
 const ADD_TITLE_HEIGHT = 70 + 24;//添加客户标题的高度+下边距marginBottom
 var CRMAddForm = createReactClass({
     displayName: 'CRMAddForm',
@@ -263,7 +261,7 @@ var CRMAddForm = createReactClass({
     checkOnlyCustomerName: function(e) {
         var customerName = _.trim(this.state.formData.name);
         //满足验证条件后再进行唯一性验证
-        if (customerName && nameRegex.test(customerName)) {
+        if (customerName && customerNameRegex.test(customerName)) {
             Trace.traceEvent(e, '添加客户名称');
             CrmAction.checkOnlyCustomerName(customerName, (data) => {
                 if (_.isString(data)) {
@@ -345,11 +343,11 @@ var CRMAddForm = createReactClass({
     checkCustomerName: function(rule, value, callback) {
         value = _.trim(value);
         if (value) {
-            if (nameRegex.test(value)) {
+            if (customerNameRegex.test(value)) {
                 callback();
             } else {
                 this.setState({customerNameExist: false, checkNameError: false});
-                callback(new Error(Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间')));
+                callback(new Error(Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到25（包括25）之间')));
             }
         } else {
             this.setState({customerNameExist: false, checkNameError: false});

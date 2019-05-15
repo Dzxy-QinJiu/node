@@ -11,7 +11,7 @@ let FormItem = Form.Item;
 let crypto = require('crypto');
 let autosize = require('autosize');
 import FieldMixin from '../../../../../components/antd-form-fieldmixin';
-import {nameRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {customerNameRegex} from 'PUB_DIR/sources/utils/validate-util';
 let AutosizeTextarea = require('../../../../../components/autosize-textarea');
 let CrmAction = require('../../action/crm-actions');
 let CrmBasicAjax = require('../../ajax/index');
@@ -119,11 +119,11 @@ let NameTextareaField = createReactClass({
     checkCustomerName: function(rule, value, callback) {
         value = _.trim(value);
         if (value) {
-            if (nameRegex.test(value)) {
+            if (customerNameRegex.test(value)) {
                 callback();
             } else {
                 this.setState({submitErrorMsg: ''});
-                callback(new Error(Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间')));
+                callback(new Error(Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到25（包括25）之间')));
             }
         } else {
             this.setState({submitErrorMsg: ''});
@@ -135,7 +135,7 @@ let NameTextareaField = createReactClass({
     checkOnlyCustomerName: function(e) {
         var customerName = _.trim(this.state.formData.name);
         //满足验证条件后再进行唯一性验证
-        if (customerName && customerName !== this.props.name && nameRegex.test(customerName)) {
+        if (customerName && customerName !== this.props.name && customerNameRegex.test(customerName)) {
             Trace.traceEvent(e, '修改客户名');
             CrmAction.checkOnlyCustomerName(customerName, (data) => {
                 if (_.isString(data)) {
