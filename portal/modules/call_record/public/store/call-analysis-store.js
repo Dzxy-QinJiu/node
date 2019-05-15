@@ -179,8 +179,9 @@ CallAnalysisStore.prototype.getCallCountAndDurSeparately = function(result) {
         eachTeamCallList.errMsg = '';
         if (result.resData) {
             let resData = result.resData;
+            var callListData = [];
+
             if (_.isArray(resData) && resData.length > 0) {
-                var callListData = [];
                 _.each(resData, (item) => {
                     //通话时长
                     let durationArray = [];
