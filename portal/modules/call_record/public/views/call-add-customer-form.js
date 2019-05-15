@@ -11,7 +11,7 @@ var RightPanelClose = rightPanelUtil.RightPanelClose;
 var FormItem = Form.Item;
 var Option = Select.Option;
 var CrmAction = require('../../../crm/public/action/crm-actions');
-import {nameRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {customerNameRegex} from 'PUB_DIR/sources/utils/validate-util';
 var ContactUtil = require('../../../crm/public/utils/contact-util');
 var Spinner = require('../../../../components/spinner');
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
@@ -176,7 +176,7 @@ var CallAddCustomerForm = createReactClass({
     checkOnlyCustomerName: function() {
         var customerName = _.trim(this.state.formData.name);
         //满足验证条件后再进行唯一性验证
-        if (customerName && nameRegex.test(customerName)) {
+        if (customerName && customerNameRegex.test(customerName)) {
             CrmAction.checkOnlyCustomerName(customerName, (data) => {
                 if (_.isString(data)) {
                     //唯一性验证出错了
@@ -251,11 +251,11 @@ var CallAddCustomerForm = createReactClass({
     checkCustomerName: function(rule, value, callback) {
         value = _.trim(value);
         if (value) {
-            if (nameRegex.test(value)) {
+            if (customerNameRegex.test(value)) {
                 callback();
             } else {
                 this.setState({customerNameExist: false, checkNameError: false});
-                callback(new Error(Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间')));
+                callback(new Error(Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到25（包括25）之间')));
             }
         } else {
             this.setState({customerNameExist: false, checkNameError: false});

@@ -1243,7 +1243,7 @@ var en_US = {
     'crm.193': 'Failed to verify customer', // 客户名唯一性验证失败
     'crm.194': 'Failed to verify phone', // 联系人电话唯一性验证失败
     'crm.196': 'Please enter a valid phone number.', // 请输入正确的电话号码，格式例如：13877775555，010-77775555 或 400-777-5555
-    'crm.197': 'The customer name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', // 客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
+    'crm.197': 'The customer name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 25', // 客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到25（包括25）之间
     'crm.198': '{number} users.', // 有{number}个用户
     'crm.199': 'Call {phone} on {time} for {duration} seconds ', // 在{time}拨打了号码{phone}通话时长{duration}秒
     'crm.200': 'Budget Amount (Unit: Million)', // 预算金额(单位: 万)
