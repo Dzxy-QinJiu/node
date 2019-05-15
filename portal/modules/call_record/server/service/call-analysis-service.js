@@ -308,9 +308,9 @@ exports.getCallCustomerZoneStage = (req, res) => {
     Promise.all(promiseList).then((result) => {
         let allData = {
             code: 0,
-            customer_label_sum: result[0],
-            opp_stage_sum: result[1],
-            sum: result[2]
+            customer_label_sum: _.get(result, '[0].customer_label_sum', []),
+            opp_stage_sum: _.get(result, '[1].opp_stage_sum', []),
+            sum: _.get(result, '[2].sum', [])
         };
 
         emitter.emit('success', allData);
