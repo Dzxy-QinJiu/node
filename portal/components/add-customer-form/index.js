@@ -10,7 +10,7 @@ const GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var crmAjax = require('MOD_DIR/crm/public/ajax/index');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 var ContactUtil = require('MOD_DIR/crm/public/utils/contact-util');
-import {nameRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {customerNameRegex} from 'PUB_DIR/sources/utils/validate-util';
 var crmUtil = require('MOD_DIR/crm/public/utils/crm-util');
 import {isUnmodifiableTag} from 'MOD_DIR/crm/public/utils/crm-util';
 var FormItem = Form.Item;
@@ -106,7 +106,7 @@ class AddCustomerForm extends React.Component {
     checkCustomerName = (rule, value, callback) => {
         value = _.trim(value);
         if (value) {
-            if (nameRegex.test(value)) {
+            if (customerNameRegex.test(value)) {
                 callback();
             } else {
                 this.setState({customerNameExist: false, checkNameError: false});
@@ -130,7 +130,7 @@ class AddCustomerForm extends React.Component {
     checkOnlyCustomerName = () => {
         var customerName = this.props.form.getFieldValue('name');
         //满足验证条件后再进行唯一性验证
-        if (customerName && nameRegex.test(customerName)) {
+        if (customerName && customerNameRegex.test(customerName)) {
             CrmAction.checkOnlyCustomerName(customerName, (data) => {
                 if (_.isString(data)) {
                     //唯一性验证出错了
