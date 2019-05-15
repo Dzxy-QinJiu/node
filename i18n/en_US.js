@@ -1224,7 +1224,7 @@ var en_US = {
     'crm.169': 'Failed to modify customer name', // 修改客户名失败
     'crm.170': 'Setting customer name', // 设置客户名
     'crm.171': 'Failed to modify remark', // 修改客户备注失败
-    'crm.172': 'Failed to change sales personnel for customer ', // 修改客户所属销售失败
+    'crm.172': 'Failed to modify the customer\'s responsible person ', // 修改客户负责人失败
     'crm.173': 'modify sales personnel', // 设置销售
     'crm.174': 'Failed to modify area', // 修改客户地域失败
     'crm.175': 'Setting area', // 设置地域
@@ -1454,10 +1454,15 @@ var en_US = {
     'crm.contact.hobby.add': 'Add hobby',//添加爱好
     'crm.contact.hobby.none': 'No hobby add',//未添加爱好
     'crm.second.sales': 'Second Sales',//联合跟进人
+    'crm.select.second.sales': 'Please seletct second sales',//请选择联合跟进人
+    'crm.no.second.sales': 'No second sales',//暂无联合跟进人
+    'crm.set.second.sales': 'Set second sales',//设置联合跟进人
     'crm.apply.active.email.tip': 'Your mailbox is not activated. Please {activeEmail} first',//您的邮箱未激活，请先{aciveEmail}
     'crm.this.week.contact': 'Customers contacted this week',//本周联系过的客户
     'crm.record.unupload.phone': 'Unuploaded voice recordings, unable to play',//未上传通话录音，无法播放
     'crm.record.edit.record.tip': 'Click to modify the record',//点击修改跟进记录
+    'crm.search.no.owner': 'No relevant person in charge',//无相关负责人
+
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
     'crm.contract.validity.one.year': 'Valid for one year', // 有效期一年
@@ -2455,7 +2460,7 @@ var en_US = {
     'crm.import.over.limit': 'After importing customers, you will exceed the limit of your own customers. Please reduce importing {num} customers',//导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入
     'crm.transfer.over.limit': 'Transferring to customers will exceed the limit of the sales-owning customer, please reduce the transfer to {num} customers',//转出客户后会超过该销售拥有客户的上限，请减少{num}个客户后再转出
     'crm.change.over.limit': 'Changing the customer will exceed the limit of the sales-owning customer, please reduce the change {num} customers',//变更销售后会超过该销售拥有客户的上限，请减少{num}个客户后再变更销售
-    'crm.should.reduce.customer': 'The number of customers has reached the limit!',//该销售拥有客户数量已达到上限！
+    'crm.should.reduce.customer': 'The number of customers has reached the limit!',//该负责人拥有客户数已达到上限！
     'sales.role.config.customer.num': 'Maximum number of customers',//最大客户数
     'sales.role.setting.name': 'Sales role name',//销售角色名称
     'sales.if.switch.type': 'Whether to distinguish between two types of new and renewal',//是否区分新签和续约类型
