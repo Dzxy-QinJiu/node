@@ -60,6 +60,15 @@ export function getAllChanceChart(specifyColumns) {
                 //接口返回数据中的第一条记录
                 const firstDataItem = _.get(chartProps.data, '[0]');
 
+                //如果接口返回数据中的第一条记录中不包含团队字段，需要把列定义中的团队列移除掉
+                if (!_.has(firstDataItem, 'sales_team')) {
+                    const teamNameColumnIndex = _.findIndex(option.columns, column => column.dataIndex === 'sales_team');
+
+                    if (teamNameColumnIndex > -1) {
+                        option.columns.splice(teamNameColumnIndex, 1);
+                    }
+                }
+
                 //如果接口返回数据中的第一条记录中不包含昵称字段，说明返回的是团队数据，需要把列定义中的成员列移除掉
                 if (!_.has(firstDataItem, 'nick_name')) {
                     const memberNameColumnIndex = _.findIndex(option.columns, column => column.dataIndex === 'nick_name');
