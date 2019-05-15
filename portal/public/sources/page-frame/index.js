@@ -51,6 +51,9 @@ class PageFrame extends React.Component {
         audioMsgEmitter.on(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
         //系统内有弹窗时，点击弹框中的线索名称可以查看线索详情
         notificationEmitter.on(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
+        // 点击系统通知框的的触发
+        notificationEmitter.on(notificationEmitter.CLICK_SYSTEM_NOTICE, this.showNotificationPanel);
+
         $(window).on('resize', this.resizeHandler);
     }
 
@@ -92,9 +95,16 @@ class PageFrame extends React.Component {
         audioMsgEmitter.removeListener(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
         notificationEmitter.removeListener(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
+        notificationEmitter.removeListener(notificationEmitter.CLICK_SYSTEM_NOTICE, this.showNotificationPanel);
         $(window).off('resize', this.resizeHandler);
         phoneUtil.unload(() => {
             console.log('成功登出电话系统!');
+        });
+    }
+
+    showNotificationPanel = () => {
+        this.setState({
+            isShowNotificationPanel: true
         });
     }
 

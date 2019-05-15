@@ -226,7 +226,7 @@ function listenSystemNotice(notice) {
                     //如果页面上存在提示框，只显示有多少条消息
                     let tipContent = '';
                     if (systemTipCount > 0) {
-                        tipContent = tipContent + `<p>${Intl.get('notification.system.tip.count', '您有{systemTipCount}条系统消息', {systemTipCount: systemTipCount})}</p>`;
+                        tipContent = tipContent + `<p class=\'notice-system\'  onclick=\'handleClickNoticeStystem(event)\'>${Intl.get('notification.system.tip.count', '您有{systemTipCount}条系统消息', {systemTipCount: systemTipCount})}</p>`;
                         notificationUtil.updateText(notify, {
                             content: tipContent,
                         });
@@ -236,6 +236,15 @@ function listenSystemNotice(notice) {
         }
     }
 }
+
+// 点击查看系统通知详情
+window.handleClickNoticeStystem = function(event) {
+    Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.noty-container .noty-content .notice-system'), '打开系统通知');
+    notificationEmitter.emit(notificationEmitter.CLICK_SYSTEM_NOTICE, systemTipCount);
+    //点击查看详情时要把对应的通知框关掉
+    $(event.target).closest('li').remove();
+};
+
 //桌面通知的展示
 function showDesktopNotification(title, tipContent, isClosedByClick) {
     let notification = new Notification(title, {
