@@ -12,7 +12,7 @@ const fs = require('fs');
 
 function templateFile(res, example, filename) {
     var example = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(example)]);
-    res.setHeader('Content-disposition', 'attachement; filename=' + filename);
+    res.setHeader('Content-disposition', 'attachement; filename=' + encodeURIComponent(filename));
     res.setHeader('Content-Type', 'application/csv');
     res.write(example);
     res.end();
@@ -319,7 +319,7 @@ exports.transferCustomer = function(req, res) {
 };
 
 exports.getCustomerList = function(req, res) {
-    crmManageServic.getCustomerList(req, res).on('success', function(data) {
+    crmService.getCustomerList(req, res).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.json(codeMessage && codeMessage.message);
@@ -382,13 +382,9 @@ exports.uploadCustomers = function(req, res) {
 
 // 处理导入客户模板文件
 exports.getCrmTemplate = function(req, res) {
-    var example = '手机号码,电话号码,客户名称,销售人员(填写分机),添加时间,其他电话,地址,备注,销售团队,项目预算,' +
-        '联系人,QQ,邮箱,联系人角色,部门,职位,竞争对手,联系记录,下次联系时间,所属省份(必填),项目阶段(必填),行业\n' +
-        '18057331777,51265238850,浙江优选网络科技有限公司,8009,2016/1/29  13:22:39,,,了解产品,,,邱总,240953334,' +
-        '240953334@qq.com,关键人,信息科技部,副经理,,,2016/2/4 14:00,浙江省,信息阶段,企业\n' +
-        '18306357808,6357364708,莘县地税局,8009,2016/9/18  10:10:28,,,10/10上门沟通,,,徐主任,540256834,' +
-        'pxfybgs@163.com,信息科主任,信息科技部,,,,,山东省,意向阶段,税务局\n';
-    var filename = 'crm_tmpl.csv';
+    var example = '客户名称(必填),联系人,电话号码(必填，多个用空格分隔),QQ(多个用空格分隔),邮箱(多个用空格分隔),联系人角色,部门,职位,订单阶段(必填),预算, 负责人,跟进记录,添加时间(格式必须为:yyyy/MM/dd),行业,所属省份,地址,备注,竞品(多个用空格分隔)\n' +
+        '山东客套智能科技有限公司,梁总,15666666666 05312345678,12345678,curtao@qq.com,关键人,信息科技部,副经理,试用阶段,123,销售1,,2016/1/29,企业,浙江省,,了解产品,,';
+    var filename = '客户导入模板.csv';
     templateFile(res, example, filename);
 };
 
