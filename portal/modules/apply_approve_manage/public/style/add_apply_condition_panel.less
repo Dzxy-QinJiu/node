@@ -1,0 +1,102 @@
+@import "../../../../public/css/common-variables";
+.add-apply-condition-container.right-pannel-default{
+  width: 480px!important;
+  background-color:transparent!important;
+  transform: translateX(480px);
+  overflow: visible;
+  .add-apply-condition-wrap{
+    box-shadow: -4px 0 20px @box_shadow_color;
+    height: 100%;
+    width: 480px !important;
+    background-color: @NOTICE-BACKGROUND !important;
+    position: relative;
+    .add-apply-form-wrap{
+      padding: 20px 0 20px 0;
+      margin-right: 20px;
+      .add-apply-form{
+        .ant-form-item{
+          width: 100%;
+          .ant-form-item-label label{
+            font-size: 14px;
+            color:#999;
+          }
+          input, textarea, .ant-select{
+            width: 100%;
+          }
+          .ant-form-item-control{
+            text-align: left;
+          }
+        }
+        .condition-type-container{
+          background: #fff;
+          color: #333333;
+          font-size: 14px;
+          padding: 5px 12px 12px 12px;
+          margin-bottom: 8px;
+          .iconfont.icon-delete{
+            float: right;
+            visibility: hidden;
+            cursor: pointer;
+          }
+          &:hover{
+            .iconfont.icon-delete{
+              visibility: visible;
+            }
+          }
+        }
+        .condition-type-container.range-condition-container{
+          .condition-type-content {
+            overflow: hidden;
+            .ant-select{
+              float: left;
+              width: 84px;
+            }
+            .ant-input-group-wrapper{
+              float: right;
+              width: 230px;
+            }
+          }
+        }
+
+        //.add-condition-content{
+        //  float: left;
+        //  padding: 5px 0 0 0;
+        //  color: #333;
+        //  font-weight: 400;
+        //  font-size: 14px;
+        //  .addition-condition{
+        //    padding-left: 20px;
+        //    .addition-condition-item{
+        //      margin-top:6px;
+        //      &:last-child{
+        //        margin-bottom: 6px;
+        //      }
+        //    }
+        //  }
+        //
+        //}
+        .submit-button-container{
+          text-align: right;
+          .submit-btn{
+            margin-right:10px;
+          }
+          button{
+            font-size: 14px;
+          }
+          .indicator{
+            .ant-alert{
+              width: 180px;
+              margin:0 auto;
+            }
+          }
+        }
+      }
+    }
+
+  }
+}
+.ant-radio-wrapper>span, .ant-checkbox-wrapper>span{
+  font-weight: 400;
+  font-size: 14px;
+  color: #333;
+}
