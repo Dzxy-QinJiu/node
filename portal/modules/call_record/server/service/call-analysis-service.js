@@ -248,8 +248,8 @@ exports.getCallTotalList = function(req, res, reqQuery) {
         let allData = {
             code: 200,
             list: {
-                count: result[0],
-                sum: result[1]
+                count: _.get(result, '[0].list.count', []),
+                sum: _.get(result, '[1].list.sum', [])
             },
             result: 'true'
         };
