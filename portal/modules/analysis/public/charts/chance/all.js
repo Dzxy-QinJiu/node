@@ -2,6 +2,8 @@
  * 所有机会统计
  */
 
+const TEAM_FIELD = 'sales_team';
+
 export function getAllChanceChart(specifyColumns) {
     return {
         title: '所有机会统计',
@@ -26,7 +28,7 @@ export function getAllChanceChart(specifyColumns) {
             columns: [
                 {
                     title: '团队',
-                    dataIndex: 'sales_team',
+                    dataIndex: TEAM_FIELD,
                     width: '20%',
                 }, {
                     title: '成员',
@@ -61,8 +63,8 @@ export function getAllChanceChart(specifyColumns) {
                 const firstDataItem = _.get(chartProps.data, '[0]');
 
                 //如果接口返回数据中的第一条记录中不包含团队字段，需要把列定义中的团队列移除掉
-                if (!_.has(firstDataItem, 'sales_team')) {
-                    const teamNameColumnIndex = _.findIndex(option.columns, column => column.dataIndex === 'sales_team');
+                if (!_.has(firstDataItem, TEAM_FIELD)) {
+                    const teamNameColumnIndex = _.findIndex(option.columns, column => column.dataIndex === TEAM_FIELD);
 
                     if (teamNameColumnIndex > -1) {
                         option.columns.splice(teamNameColumnIndex, 1);
