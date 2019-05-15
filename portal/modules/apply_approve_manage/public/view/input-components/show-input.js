@@ -24,11 +24,24 @@ class InputShow extends React.Component {
     onStoreChange = () => {
 
     };
+    componentWillReceiveProps(nextProps) {
+
+    };
     getTargetType = (formItem) => {
         var target = _.find(applyComponentsType,item => item.name === _.get(formItem,'componentType'));
         if (target){
             var ApplyComponent = target.component;
-            return <ApplyComponent placeholder={_.get(formItem,'placeholder')} type={formItem.type || ''}/>;
+            var componentProps = {
+                placeholder: _.get(formItem,'placeholder'),
+                type: formItem.type || '',
+                addonAfter: formItem.addonAfter || '',
+            };
+            if (_.get(formItem,'componentType') === ALL_COMPONENTS.RANGEINPUT){
+                componentProps.selectedArr = _.filter(_.get(formItem,'timeRange.unitList'),item=>
+                    _.indexOf(_.get(formItem,'selectedArr'),item.value) > -1
+                );
+            };
+            return <ApplyComponent {...componentProps}/>;
         }else{
             return null;
         }
@@ -55,7 +68,7 @@ class InputShow extends React.Component {
             'required': isRequired
         });
         return (
-            <div className="show-container">
+            <div className="show-container" key={formItem.key}>
                 <div className={cls}>{formItem.title}
                     <span className="pull-right icon-container">
                         {this.state.showCancelConfirmBtn ?
@@ -63,9 +76,9 @@ class InputShow extends React.Component {
                                 <Button className='confirm-btn' onClick={this.props.handleRemoveItem.bind(this, formItem)}>{Intl.get('crm.contact.delete.confirm', '确认删除')}</Button>
                                 <Button onClick={this.cancelRemoveItem}>{Intl.get('common.cancel', '取消')}</Button>
                             </span>
-                            : <span>
+                            : <span className="icon-wrap">
                                 <i className="iconfont icon-update" onClick={this.handleEditItem.bind(this, formItem)}></i>
-                                <i className="iconfont icon-forbid"></i>
+                                <i className="iconfont icon-transfer"></i>
                                 <i className="iconfont icon-delete" onClick={this.handleRemoveItem.bind(this, formItem)}></i>
                             </span>}
 

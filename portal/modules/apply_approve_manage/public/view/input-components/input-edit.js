@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2019/4/4.
  */
 import {Input,Checkbox } from 'antd';
+const CheckboxGroup = Checkbox.Group;
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 require('./index.less');
 import classNames from 'classnames';
@@ -14,7 +15,7 @@ class InputEdit extends React.Component {
         this.state = {
             title: _.get(formItem,'title',''),//标题
             placeholder: _.get(formItem,'placeholder','') || _.get(formItem,'defaultPlaceholder',''),//提示说明
-            isRequired: false, //是否必填
+            isRequired: _.get(formItem,'isRequired',false), //是否必填
             loading: false,//正在保存
             submitErrorMsg: '',
             titleRequiredMsg: '',
@@ -72,21 +73,28 @@ class InputEdit extends React.Component {
     };
     handleCancel = () => {
         var formItem = this.props.formItem;
-        this.props.handleCancel(formItem);
+        if (formItem){
+            formItem.isEditting = false;
+            this.props.handleCancel(formItem);
+        }
+
     };
     onCheckboxChange = (e) => {
         this.setState({
             isRequired: e.target.checked
         });
     };
-
+    ontimeRangeChange = (checkedValues) => {
+        var formItem = this.props.formItem;
+        formItem.selectedArr = checkedValues;
+    };
     render = () => {
         var formItem = this.props.formItem, hasErrTip = this.state.titleRequiredMsg;
         var cls = classNames('',{
             'err-tip': hasErrTip
         });
         return (
-            <div className="edit-container">
+            <div className="edit-container" key={formItem.key}>
                 <div className="component-row">
                     <span className="label-components">{Intl.get('apply.components.name', '组件名称')}</span>
                     <span className="text-components">
@@ -103,16 +111,25 @@ class InputEdit extends React.Component {
                         </span> : null}
                     </span>
                 </div>
-                <div className="component-row">
+                {this.state.placeholder ? <div className="component-row">
                     <span className="label-components">{Intl.get('apply.components.tip.msg', '提示说明')}</span>
                     <span className='text-components'>
                         <Input className={cls} defaultValue={this.state.placeholder} onChange={this.handleChangeTip}/>
                     </span>
-                </div>
+                </div> : null}
+                {_.get(formItem,'timeRange') ?
+                    <div className="component-row required">
+                        <span className="label-components">{_.get(formItem,'timeRange.unitLabel')}</span>
+                        <span className='text-components'>
+                            <CheckboxGroup options={_.get(formItem,'timeRange.unitList',[])} defaultValue={_.get(formItem,'selectedArr')} onChange={this.ontimeRangeChange} />
+                        </span>
+                    </div>
+                    : null}
+
                 <div className="component-row">
                     <span className="label-components">{Intl.get('crm.186', '其他')}</span>
                     <span className="text-components">
-                        <Checkbox onChange={this.onCheckboxChange}/>
+                        <Checkbox checked={this.state.isRequired} onChange={this.onCheckboxChange}/>
                         {Intl.get('apply.components.required.item', '必填')}
                     </span>
                 </div>

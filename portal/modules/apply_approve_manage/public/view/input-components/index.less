@@ -61,15 +61,43 @@
 //展示组件
 .show-container{
   background: #fff;
-  padding:16px 219px 16px 227px;
+  padding:10px 219px 10px 227px;
   margin:0 auto;
   &:hover{
     box-shadow:0px 0px 16px 0px rgba(0, 0, 0, 0.24);
+    background: #E4F2FE;
+    .title-label .icon-wrap{
+      visibility: visible;
+    }
   }
   .title-label{
     color: #333333;
     font-size: 14px;
     margin-bottom: 10px;
+    .icon-wrap{
+      visibility: hidden;
+    }
+
+  }
+  .range-input-container{
+    .ant-select{
+      width: 47%;
+      .ant-select-selection--single{
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+
+    }
+    .ant-input{
+      width: 53%;
+      position: relative;
+      top: 1px;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+  .ant-input-number{
+    height: auto;
   }
   .icon-container{
     .iconfont{

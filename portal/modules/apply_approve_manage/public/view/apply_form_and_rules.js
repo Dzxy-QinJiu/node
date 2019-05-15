@@ -13,7 +13,7 @@ const TAB_KEYS = {
 };
 import Trace from 'LIB_DIR/trace';
 var classNames = require('classnames');
-import {calculateHeight, APPLYAPPROVE_LAYOUT, ALL_COMPONENTS, ALL_COMPONENTS_TYPE} from '../utils/apply-approve-utils';
+import {calculateHeight, APPLYAPPROVE_LAYOUT, ALL_COMPONENTS, ALL_COMPONENTS_TYPE, ADDAPPLYFORMCOMPONENTS} from '../utils/apply-approve-utils';
 import InputEdit from './input-components/input-edit';
 import InputShow from './input-components/show-input';
 import ApplyRulesView from './reg-rules/reg_rules_view';
@@ -23,39 +23,6 @@ class AddApplyForm extends React.Component {
         this.state = {
             activeKey: TAB_KEYS.FORM_CONTENT,//当前选中的TAB
             applyTypeData: _.cloneDeep(this.props.applyTypeData),//编辑某个审批的类型
-            addApplyFormComponents: [
-                {
-                    'rulename': Intl.get('apply.rule.text', '文字输入'),
-                    'iconfontCls': 'icon-fuwu',
-                    'defaultPlaceholder': Intl.get('apply.rule.within.32', '32个字符以内'),
-                    'componentType': ALL_COMPONENTS.INPUT
-                },
-                {
-                    'rulename': Intl.get('apply.rule.textare', '多行文字输入'),
-                    'iconfontCls': 'icon-fuwu',
-                    'defaultPlaceholder': Intl.get('apply.rule.over.32', '32个字符以上'),
-                    'componentType': ALL_COMPONENTS.INPUT,
-                    'type': ALL_COMPONENTS_TYPE.TEXTAREA
-                },
-                {
-                    'rulename': Intl.get('apply.rule.number', '数字输入'),
-                    'iconfontCls': 'icon-fuwu',
-                    'defaultPlaceholder': Intl.get('apply.rule.limit.int', '仅限整数')
-                },
-                {
-                    'rulename': Intl.get('apply.rule.count', '金额输入'),
-                    'iconfontCls': 'icon-fuwu',
-                    'defaultPlaceholder': Intl.get('apply.rule.allow.point', '允许小数点')
-                },
-                {'rulename': Intl.get('apply.rule.hour', '时长输入'), 'iconfontCls': 'icon-fuwu'},
-                {'rulename': Intl.get('apply.rule.radio', '单选'), 'iconfontCls': 'icon-fuwu'},
-                {'rulename': Intl.get('apply.rule.check', '多选'), 'iconfontCls': 'icon-fuwu'},
-                {'rulename': Intl.get('apply.rule.date', '日期选择'), 'iconfontCls': 'icon-fuwu'},
-                {'rulename': Intl.get('apply.rule.date.and.time', '日期+时间选择'), 'iconfontCls': 'icon-fuwu'},
-                {'rulename': Intl.get('apply.rule.period', '周期选择'), 'iconfontCls': 'icon-fuwu'},
-                {'rulename': Intl.get('apply.rule.customer', '客户选择'), 'iconfontCls': 'icon-fuwu'},
-                {'rulename': Intl.get('apply.rule.production', '产品配置'), 'iconfontCls': 'icon-fuwu'}
-            ],
             //某个申请保存的表单，应该是通过ajax请求获取
             applySaveForm: this.getSavedComponentsByApplyId(_.get(this, 'props.applyTypeData.id')),
             //某个申请的审批规则及相关配置
@@ -162,29 +129,32 @@ class AddApplyForm extends React.Component {
             </span>
         );
     };
+
     renderFormComponents = () => {
         var applyTypeData = this.state.applyTypeData;
-        return _.map(applyTypeData.formContent, (formItem) => {
-            if (formItem.componentType === 'Input') {
+        return _.map(applyTypeData.formContent, (formItem,key) => {
+            // if (formItem.componentType === 'Input') {
                 //如果是编辑状态
                 if (formItem.isEditting) {
                     return (
                         <InputEdit
+                            key={formItem.key}
                             formItem={formItem}
-                            handleCancel={this.removeTargetFormItem}
+                            handleCancel={this.handleCancelEditFormItem}
                             handleSubmit={this.handleSubmitInput}
                         />
                     );
                 } else {
                     return (
                         <InputShow
+                            key={formItem.key}
                             formItem={formItem}
                             handleRemoveItem={this.removeTargetFormItem}
                             handleEditItem={this.handleEditItem}
                         />
                     );
                 }
-            }
+            // }
         });
     };
     getTargetFormItem = (formKey) => {
@@ -194,11 +164,25 @@ class AddApplyForm extends React.Component {
     //删除某个item
     removeTargetFormItem = (formItem) => {
         var formKey = formItem.key;
-        var formContent = _.get(this, 'state.applyTypeData.formContent');
         var applyTypeData = this.state.applyTypeData;
+        var formContent = _.get(applyTypeData, 'formContent');
         applyTypeData.formContent = _.filter(formContent, item => item.key !== formKey);
         this.setState({
-            applyTypeData: this.state.applyTypeData
+            applyTypeData
+        });
+    };
+    handleCancelEditFormItem = (formItem) => {
+        var formKey = formItem.key;
+        var target = this.getTargetFormItem(formKey);
+        var applyTypeData = this.state.applyTypeData;
+        var formContent = _.get(applyTypeData, 'formContent');
+        if (formItem.title){
+            target.isEditting = false;
+        }else{
+            applyTypeData.formContent = _.filter(formContent, item => item.key !== formKey);
+        }
+        this.setState({
+            applyTypeData
         });
     };
     handleEditItem = (formItem) => {
@@ -243,27 +227,31 @@ class AddApplyForm extends React.Component {
     handleAddComponents = (ruleItem) => {
         var applyTypeData = this.state.applyTypeData;
         var componentType = ruleItem.componentType;
-        if (componentType === 'Input') {
+        // if (_.includes(['Input','InputNumber'], componentType)){
             var formContent = _.get(applyTypeData, 'formContent', []);
-            formContent.push({...ruleItem, 'key': formContent.length, 'isEditting': true});
+            var keysArr = _.map(formContent,'key');
+            var formContentKey = 0;
+            if (keysArr.length){
+                formContentKey = _.max(keysArr) + 1;
+            }
+            formContent.push({...ruleItem, 'key': formContentKey, 'isEditting': true});
             applyTypeData.formContent = formContent;
             this.setState({
                 applyTypeData: applyTypeData
             });
-        }
+        // }
     };
     renderAddFormRules = () => {
-        var addApplyFormComponents = this.state.addApplyFormComponents;
         return (
             <div className="rule-content-wrap">
-                {_.map(addApplyFormComponents, (ruleItem) => {
+                {_.map(ADDAPPLYFORMCOMPONENTS, (ruleItem) => {
                     var cls = 'iconfont ' + ruleItem.iconfontCls;
                     return (
                         <span className="rule-content-container"
                               onClick={this.handleAddComponents.bind(this, ruleItem)}>
                             <i className={cls}></i>
                             <span className="rule-cls">{ruleItem.rulename}</span>
-                            {ruleItem.defaultPlaceholder ?
+                            {ruleItem.defaultPlaceholder && !ruleItem.notshowInList ?
                                 <span className="addition-cls">({ruleItem.defaultPlaceholder})</span> : null}
                         </span>
                     );
