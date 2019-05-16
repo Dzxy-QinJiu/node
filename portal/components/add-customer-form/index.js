@@ -110,7 +110,7 @@ class AddCustomerForm extends React.Component {
                 callback();
             } else {
                 this.setState({customerNameExist: false, checkNameError: false});
-                callback(Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间'));
+                callback(Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到25（包括25）之间'));
             }
         } else {
             this.setState({customerNameExist: false, checkNameError: false});
