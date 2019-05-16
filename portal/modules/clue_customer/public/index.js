@@ -1612,6 +1612,7 @@ class ClueCustomer extends React.Component {
                         onItemListImport={this.onClueImport}
                         repeatAlertMessage={Intl.get('clue.repeat.delete', '红色标示线索名及联系方式已存在，请删除后再导入')}
                         regRules={REG_CLUE_FILES_TYPE_RULES}
+                        downLoadFileName={Intl.get('sales.home.customer', '客户') + '.xls'}
                     />
                     {this.state.rightPanelIsShow ?
                         <ClueRightPanel

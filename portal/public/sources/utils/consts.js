@@ -474,7 +474,7 @@ export const REG_CLUE_FILES_TYPE_RULES = [
 ];
 
 export const REG_CRM_FILES_TYPE_RULES = [
-    {valueArr: ['csv'],messageTips: Intl.get('clue.import.file.type','只能导入{type}格式的文件！',{type: 'csv'})},
+    {valueArr: ['xls'],messageTips: Intl.get('clue.import.file.type','只能导入{type}格式的文件！',{type: 'xls'})},
 ];
 export const FINAL_TASK = 'final_task';
 export const DIFF_APPLY_TYPE_UNREAD_REPLY = {

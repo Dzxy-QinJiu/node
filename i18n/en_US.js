@@ -139,12 +139,12 @@ var en_US = {
     'common.app': 'Application',//应用
     'common.sure': 'Confirm',//确定
     'common.name.is.existed': 'The name is already exists!', // 姓名已存在！
-    'common.name.is.unique': 'The name already exists', // 姓名唯一性校验出错！
+    'common.name.is.unique': 'The name already exists!', // 姓名唯一性校验出错！
     'common.is.existed': 'The username is already exists!',//用户名已存在！
-    'common.username.is.unique': 'The username already exists',//用户名唯一性校验出错！
-    'common.phone.is.existed': 'The phone number already exists',//电话已存在！
-    'common.phone.is.unique': 'The phone number already exists',//电话唯一性校验出错！
-    'common.email.is.existed': 'The email already exists',//邮箱已存在！
+    'common.username.is.unique': 'The username already exists!',//用户名唯一性校验出错！
+    'common.phone.is.existed': 'The phone number already exists!',//电话已存在！
+    'common.phone.is.unique': 'The phone number already exists!',//电话唯一性校验出错！
+    'common.email.is.existed': 'The email already exists!',//邮箱已存在！
     'common.name': 'Name',//姓名
     'common.get.again': 'Retry',//重新获取
     'common.refresh': 'Refresh',//刷新
@@ -249,6 +249,7 @@ var en_US = {
     'common.or': 'Or', // 或
     'common.before': 'Before', // 前
     'common.download.template.filename': 'Download {type} Template', // 下载{type}模板
+    'common.import.template': 'Template',//模板
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -1462,6 +1463,10 @@ var en_US = {
     'crm.record.unupload.phone': 'Unuploaded voice recordings, unable to play',//未上传通话录音，无法播放
     'crm.record.edit.record.tip': 'Click to modify the record',//点击修改跟进记录
     'crm.search.no.owner': 'No relevant person in charge',//无相关负责人
+    'crm.contact.role': 'Contact role',//联系人角色
+    'crm.add.time': 'Add time',//添加时间
+    'crm.province.in': 'Provinces',//所属省份
+    'crm.name.exist': 'Customer name already exists!',//客户名已存在！
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
@@ -2492,8 +2497,8 @@ var en_US = {
     'clue.customer.import.clue.suceess': 'Import {type} successfully',//导入{type}成功
     'clue.customer.import.clue.failed': 'Failed to import {type}',//导入{type}失败
     'clue.delete.duplicate.failed': 'Failed to delete clue',//删除重复线索失败
-    'clue.repeat.delete': 'Some repeated clues already in the system, which have been marked in red color, please delete these record fist, then import',//红色标示线索名及联系方式已存在，请删除后再导入
-    'crm.repeat.delete': 'Some repeated customers already in the system, which have been marked in red color, please delete these record fist, then import',//红色标识客户名或联系方式已存在，请删除后再导入
+    'clue.repeat.delete': 'Red indicates that the clue name or contact information already exists, please delete it before importing it',//红色标示线索名及联系方式已存在，请删除后再导入
+    'crm.repeat.delete': 'Red indicates that the customer name or phone already exists, please delete it before importing it.',//红色标识客户名或电话已存在，请删除后再导入
     'clue.customer.belong.to.other.sales': 'This phone is registered to {customer} and belongs to {sales}',//该电话属于客户{customer}，所属销售{sales}
     'phone.alert.select.customer': 'Please select the customer to follow',//请选择要跟进的客户
     'clue.analysis.consult.time': 'Consult time',//咨询时间

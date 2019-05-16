@@ -8,7 +8,8 @@ var crmService = require('../service/crm-manage-service');
 var _ = require('lodash');
 const multiparty = require('multiparty');
 const fs = require('fs');
-
+const path = require('path');
+let BackendIntl = require('../../../../lib/utils/backend_intl');
 
 function templateFile(res, example, filename) {
     var example = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(example)]);
@@ -382,12 +383,18 @@ exports.uploadCustomers = function(req, res) {
 
 // 处理导入客户模板文件
 exports.getCrmTemplate = function(req, res) {
-    var example = '客户名称(必填),联系人,电话号码(必填，多个用空格分隔),QQ(多个用空格分隔),邮箱(多个用空格分隔),联系人角色,部门,职位,订单阶段(必填),预算, 负责人,跟进记录,添加时间(格式必须为:yyyy/MM/dd),行业,所属省份,地址,备注,竞品(多个用空格分隔)\n' +
-        '山东客套智能科技有限公司,梁总,15666666666 05312345678,12345678,curtao@qq.com,关键人,信息科技部,副经理,试用阶段,123,销售1,,2016/1/29,企业,浙江省,,了解产品,,';
-    var filename = '客户导入模板.csv';
-    templateFile(res, example, filename);
+    let isCsv = req.query.is_csv;//是否是用csv格式的模板
+    let backendIntl = new BackendIntl(req);
+    let filename = backendIntl.get('sales.home.customer', '客户');
+    if (isCsv) {
+        let example = '客户名称（必填）,联系人,电话号码（必填，多个用空格分隔）,QQ（多个用空格分隔）,邮箱（多个用空格分隔）,联系人角色,部门,职位, 负责人,跟进记录,添加时间（格式必须为yyyy/MM/dd）,行业,所属省份,地址,竞品（多个用空格分隔）,备注\n' +
+            '山东客套智能科技有限公司,梁总,15666666666 05312345678,,curtao@qq.com,关键人,信息科技部,总经理,销售1,负责人不在下次再联系,2016/1/29,企业,山东省,,了解产品,,';
+        templateFile(res, example, filename + '.csv');
+    } else {
+        let filePath = path.resolve(__dirname, '../tpl/crm_tpl.xls');
+        res.download(filePath, filename + '.xls');
+    }
 };
-
 
 // 拨打电话
 exports.callOut = function(req, res) {
