@@ -165,33 +165,29 @@ function dealCommonSaleRoute(routes, isCommonSales) {
     }
 }
 function filterCertainRoutes(routes, item) {
-    //在流程中删掉这个流程
+    //在路由中删掉这个流程
+    //application_apply_management 是父路由的id
     var target = _.find(routes, item => item.id === 'application_apply_management');
     if (target && _.isArray(target.routes)) {
-        target.routes = _.filter(target.routes,subMenuItem => subMenuItem.id !== item.id);
+        target.routes = _.filter(target.routes, subMenuItem => subMenuItem.id !== item.id);
     }
 }
 /*
  * 过滤流程配置路由
  * * @param userRoutes  授权的路由
- * @param workFlowConfigLiST  配置申请审批流程
+ *   @param workFlowConfigLiST  配置申请审批流程
  * */
 function dealWorkFlowConfigRoute(userRoutes, workFlowConfigLiST) {
     var REPORTANDDOUCMENTMAP = [{
         id: 'reportsend_apply_management',
         configType: 'opinionreport'
     }, {
-        id: 'documentwriting_apply_management',
-        configType: 'documentwriting'
+        id: 'documentwriting_apply_management',//路由配置中路由id
+        configType: 'documentwriting'//获取后端返回的申请流程配置中流程的类型
     }];
     _.forEach(REPORTANDDOUCMENTMAP, item => {
-        if (!workFlowConfigLiST){
+        if (!workFlowConfigLiST || _.indexOf(_.map(workFlowConfigLiST, 'type'), item.configType) < 0 ) {
             filterCertainRoutes(userRoutes, item);
-        }else{
-            //此流程没有配置
-            if (_.indexOf(_.map(workFlowConfigLiST, 'type'), item.configType) < 0 ) {
-                filterCertainRoutes(userRoutes, item);
-            }
         }
     });
 }
