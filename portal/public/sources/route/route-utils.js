@@ -164,6 +164,37 @@ function dealCommonSaleRoute(routes, isCommonSales) {
         }
     }
 }
+function filterCertainRoutes(routes, item) {
+    //在流程中删掉这个流程
+    var target = _.find(routes, item => item.id === 'application_apply_management');
+    if (target && _.isArray(target.routes)) {
+        target.routes = _.filter(target.routes,subMenuItem => subMenuItem.id !== item.id);
+    }
+}
+/*
+ * 过滤流程配置路由
+ * * @param userRoutes  授权的路由
+ * @param workFlowConfigLiST  配置申请审批流程
+ * */
+function dealWorkFlowConfigRoute(userRoutes, workFlowConfigLiST) {
+    var REPORTANDDOUCMENTMAP = [{
+        id: 'reportsend_apply_management',
+        configType: 'opinionreport'
+    }, {
+        id: 'documentwriting_apply_management',
+        configType: 'documentwriting'
+    }];
+    _.forEach(REPORTANDDOUCMENTMAP, item => {
+        if (!workFlowConfigLiST){
+            filterCertainRoutes(userRoutes, item);
+        }else{
+            //此流程没有配置
+            if (_.indexOf(_.map(workFlowConfigLiST, 'type'), item.configType) < 0 ) {
+                filterCertainRoutes(userRoutes, item);
+            }
+        }
+    });
+}
 
 /**
  * 过滤路由，返回界面上需要的路由
@@ -172,6 +203,8 @@ function dealCommonSaleRoute(routes, isCommonSales) {
  */
 function filterRoute(allRoutes) {
     let user = userData.getUserData();
+    //过滤没有配置过流程的路由
+    dealWorkFlowConfigRoute(user.routes, user.workFlowConfigs);
     let childRoutes = matchRoute(user.routes, allRoutes);
     dealCommonSaleRoute(childRoutes, user.isCommonSales);
     //路由配置
