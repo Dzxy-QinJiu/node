@@ -46,7 +46,7 @@ import {OTHER_FILTER_ITEMS, DAY_TIME} from 'PUB_DIR/sources/utils/consts';
 import {getStartTime, getEndTime} from 'PUB_DIR/sources/utils/time-format-util';
 import ShearContent from 'CMP_DIR/shear-content';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
-import {REG_CRM_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
+import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
     tried: '试用阶段',
@@ -1805,7 +1805,7 @@ class Crm extends React.Component {
                     onItemListImport={this.onCustomerImport}
                     doImportAjax={this.doImport}
                     repeatAlertMessage={Intl.get('crm.repeat.delete', '红色标识客户名或电话已存在，请删除后再导入')}
-                    regRules={REG_CRM_FILES_TYPE_RULES}
+                    regRules={XLS_FILES_TYPE_RULES}
                     downLoadFileName={Intl.get('crm.sales.clue', '线索') + '.xls'}
                 />
 
