@@ -3,12 +3,12 @@
  */
 var React = require('react');
 var language = require('../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('./headIcon-es_VE.less');
-} else if (language.lan() == 'zh') {
+} else if (language.lan() === 'zh') {
     require('./headIcon-zh_CN.less');
 }
-var limitSize = 300;//图片大小限制300kb
+var limitSize = 10;//图片大小限制10kb
 var message = require('antd').message;
 var DefaultUserLogoTitle = require('../default-user-logo-title');
 
@@ -30,8 +30,8 @@ class HeadIcon extends React.Component {
         if (file) {
             var type = file.type.split('/')[1];
             type = type.toUpperCase();
-            if (type != 'JPEG' && type != 'PNG' && type != 'JPG'
-                && type != 'GIF' && type != 'BMP') {
+            if (type !== 'JPEG' && type !== 'PNG' && type !== 'JPG'
+                && type !== 'GIF' && type !== 'BMP') {
                 message.warn(Intl.get('common.image.type.tip', '图片类型必须是gif,jpeg,jpg,png,bmp中的一种！'));
                 event.target.value = '';
             } else if (file.size > limitSize * 1024) {
@@ -63,7 +63,7 @@ class HeadIcon extends React.Component {
         return (
             <div className="head-image-container">
                 <div className="cirle-image">
-                    {this.props.isEdit ? ( <div className="upload-img-container" title={Intl.get('common.image.upload.size','请上传小于300kb的图片')}>
+                    {this.props.isEdit ? ( <div className="upload-img-container" title={Intl.get('common.image.upload.size','请上传小于10kb的图片')}>
                         <div className="update-logo-desr"> {Intl.get('common.upload.img.change','更改')}</div>
                         <input className="upload-img-select" type="file" name="imgUpload" data-tracename="上传头像"
                             onChange={this.uploadImg}
@@ -98,6 +98,15 @@ class HeadIcon extends React.Component {
         );
     }
 }
+
+HeadIcon.propTypes = {
+    isEdit: PropTypes.bool,
+    isUserHeadIcon: PropTypes.bool,
+    userName: PropTypes.string,
+    iconDescr: PropTypes.string,
+    isNotShowUserName: PropTypes.bool,
+    headIcon: PropTypes.string
+};
 
 module.exports = HeadIcon;
 
