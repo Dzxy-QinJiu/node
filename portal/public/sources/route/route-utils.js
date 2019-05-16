@@ -177,7 +177,7 @@ function filterCertainRoutes(routes, item) {
  * * @param userRoutes  授权的路由
  *   @param workFlowConfigLiST  配置申请审批流程
  * */
-function dealWorkFlowConfigRoute(userRoutes, workFlowConfigLiST) {
+function dealWorkFlowConfigRoute(userRoutes, workFlowConfigLisT) {
     var REPORTANDDOUCMENTMAP = [{
         id: 'reportsend_apply_management',
         configType: 'opinionreport'
@@ -186,7 +186,7 @@ function dealWorkFlowConfigRoute(userRoutes, workFlowConfigLiST) {
         configType: 'documentwriting'//获取后端返回的申请流程配置中流程的类型
     }];
     _.forEach(REPORTANDDOUCMENTMAP, item => {
-        if (!workFlowConfigLiST || _.indexOf(_.map(workFlowConfigLiST, 'type'), item.configType) < 0 ) {
+        if (!workFlowConfigLisT || _.indexOf(_.map(workFlowConfigLisT, 'type'), item.configType) < 0 ) {
             filterCertainRoutes(userRoutes, item);
         }
     });
