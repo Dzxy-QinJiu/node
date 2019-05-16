@@ -502,7 +502,7 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
                 }
             });
             //负责人
-            if (curShowTeam.owner_id) {
+            if (curShowTeam && curShowTeam.owner_id) {
                 this.curShowTeamMemberObj.owner = _.find(_this.salesTeamMemberList, function(member) {
                     if (curShowTeam.owner_id === member.userId) {
                         return true;
@@ -510,7 +510,7 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
                 });
             }
             //秘书
-            if (curShowTeam.manager_ids) {
+            if (curShowTeam && curShowTeam.manager_ids) {
                 var managers = [];
                 curShowTeam.manager_ids.forEach(function(id) {
                     var manager = _.find(_this.salesTeamMemberList, function(member) {
@@ -525,7 +525,7 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
                 this.curShowTeamMemberObj.managers = sortTeamMembers(managers);
             }
             //成员
-            if (curShowTeam.user_ids) {
+            if (curShowTeam && curShowTeam.user_ids) {
                 var users = [];
                 curShowTeam.user_ids.forEach(function(id) {
                     var user = _.find(_this.salesTeamMemberList, function(member) {
