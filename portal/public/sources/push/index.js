@@ -226,7 +226,7 @@ function listenSystemNotice(notice) {
                     //如果页面上存在提示框，只显示有多少条消息
                     let tipContent = '';
                     if (systemTipCount > 0) {
-                        tipContent = tipContent + `<p class=\'notice-system\'  onclick=\'handleClickNoticeStystem(event)\'>${Intl.get('notification.system.tip.count', '您有{systemTipCount}条系统消息', {systemTipCount: systemTipCount})}</p>`;
+                        tipContent = tipContent + `<p class='notice-system'  onclick='handleClickNoticeStystem(event)'>${Intl.get('notification.system.tip.count', '您有{systemTipCount}条系统消息', {systemTipCount: systemTipCount})}</p>`;
                         notificationUtil.updateText(notify, {
                             content: tipContent,
                         });
