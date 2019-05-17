@@ -4,6 +4,16 @@
  * Created by zhangshujuan on 2017/5/11.
  */
 var customerTraceService = require('../service/customer-trace-service');
+
+//获取某组织内跟进记录的类型（除去固定的电话、拜访、其他以外的类型）
+exports.getExtraTraceType = function(req, res) {
+    customerTraceService.getExtraTraceType(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+};
 /*
 * 获取客户跟踪记录列表 */
 exports.getCustomerTraceList = function(req, res) {

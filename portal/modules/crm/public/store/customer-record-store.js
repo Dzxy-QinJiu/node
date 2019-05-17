@@ -12,14 +12,17 @@ function CustomerRecordStore() {
     //跟进记录统计时间
     this.start_time = 0;
     this.end_time = 0;
-    this.customerTraceStatisticObj = {
-        phone: 0,//电话次数(eefung+容联+客套app)
-        // app: 0,//客套APP
+    //跟进记录分类统计数据,以下数据类型是目前支持的所有类型，有数据返回，没有的不反回
+    /* {
+        phone: 0,//eefung电话次数
+        curtao_phone: 0//客套容联的电话次数
+        app: 0,//客套APP电话次数
         call_back: 0,//回访次数
         visit: 0,//拜访
         data_report: 0,//舆情上报次数
         other: 0, //其他跟进
-    };//跟进记录分类统计数据
+    } */
+    this.customerTraceStatisticObj = {};
     this.bindActions(CustomerRecordActions);
 }
 CustomerRecordStore.prototype.resetState = function() {
@@ -61,17 +64,7 @@ CustomerRecordStore.prototype.changeTimeRange = function(timeRange) {
 };
 CustomerRecordStore.prototype.getCustomerTraceStatistic = function(result) {
     if (!result.loading && !result.error) {
-        let statisticData = result.data || {};
-        // 电话次数(eefung+客套)
-        this.customerTraceStatisticObj[CALL_RECORD_TYPE.PHONE] = _.get(statisticData, `${CALL_RECORD_TYPE.PHONE}`, 0) +
-            _.get(statisticData, `${CALL_RECORD_TYPE.CURTAO_PHONE}`, 0) +
-            _.get(statisticData, `${CALL_RECORD_TYPE.APP}`, 0);
-        _.each(this.customerTraceStatisticObj, (value, key) => {
-            //不是电话类型时的次数
-            if (key !== CALL_RECORD_TYPE.PHONE && key !== CALL_RECORD_TYPE.CURTAO_PHONE && key !== CALL_RECORD_TYPE.APP) {
-                this.customerTraceStatisticObj[key] = statisticData[key] || 0;
-            }
-        });
+        this.customerTraceStatisticObj = _.get(result,'data',{});
     }
 };
 CustomerRecordStore.prototype.getCustomerTraceList = function(result) {
@@ -90,11 +83,11 @@ CustomerRecordStore.prototype.getCustomerTraceList = function(result) {
                 item.showAdd = false;
             });
             this.customerRecord = this.customerRecord.concat(customerRecord);
-            //过滤出所有电话类型的通话记录(eefung、容联、客套APP)
-            var phoneTypeRecords = _.filter(this.customerRecord, (item) => {
-                return item.type === CALL_RECORD_TYPE.PHONE ||
-                    item.type === CALL_RECORD_TYPE.CURTAO_PHONE ||
-                    item.type === CALL_RECORD_TYPE.APP;
+            //电话类型（eefung电话类型，客套容联电话类型,客套APP电话类型，回访类型）
+            const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL_RECORD_TYPE.APP, CALL_RECORD_TYPE.CALL_BACK];
+            //过滤出所有电话类型的通话记录(eefung、容联、客套APP、回访)
+            let phoneTypeRecords = _.filter(this.customerRecord, (item) => {
+                return _.includes(PHONE_TYPES, item.type);
             });
             //找出最后一条电话跟进记录的id
             if (phoneTypeRecords.length) {
