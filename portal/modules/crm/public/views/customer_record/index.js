@@ -946,13 +946,13 @@ class CustomerRecord extends React.Component {
         let traceStatisticObj = this.state.customerTraceStatisticObj || {};
         // 电话次数(eefung电话+客套容联+客套app+回访)
         _.each(PHONE_TYPES, type => {
-            statisticData.phone += _.get(traceStatisticObj, `${type}`, 0);
+            statisticData.phone += _.get(traceStatisticObj, type, 0);
         });
         //非电话类型的次数统计
         _.each(statisticData, (value, key) => {
             //不是电话类型时的次数
             if (key !== CALL_RECORD_TYPE.PHONE) {
-                statisticData[key] = _.get(traceStatisticObj, `${key}`, 0);
+                statisticData[key] = _.get(traceStatisticObj, key, 0);
             }
         });
         return statisticData;
