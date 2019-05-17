@@ -63,6 +63,8 @@ exports.notificationEmitter.APPLY_UNREAD_REPLY = 'applyUnreadReply';
 exports.notificationEmitter.DIFF_APPLY_UNREAD_REPLY = 'diffApplyUnreadReply';
 //刷新系统消息的emitter
 exports.notificationEmitter.SYSTEM_NOTICE_UPDATED = 'systemNoticeUpdated';
+// 点击系统通知框的emitter
+exports.notificationEmitter.CLICK_SYSTEM_NOTICE = 'clickSystemNotice';
 //用户批量推送的emitter
 exports.batchPushEmitter = new EventEmitter();
 //用户管理批量-所属客户

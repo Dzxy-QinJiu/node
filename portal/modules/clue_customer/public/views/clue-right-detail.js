@@ -300,6 +300,8 @@ class ClueRightPanel extends React.Component {
                                             updateClueClassify={this.updateClueClassify}
                                             salesManList={this.state.salesManList}
                                             divHeight={divHeight}
+                                            removeUpdateClueItem={this.props.removeUpdateClueItem}
+                                            updateRemarks={this.props.updateRemarks}
                                         />
                                     ) : null}
                                 </TabPane>
@@ -342,6 +344,8 @@ ClueRightPanel.defaultProps = {
     showFlag: false,
     currentId: '',
     className: '',
+    removeUpdateClueItem: noop,
+    updateRemarks: noop,
 };
 ClueRightPanel.propTypes = {
     curClue: PropTypes.object,
@@ -350,6 +354,8 @@ ClueRightPanel.propTypes = {
     showFlag: PropTypes.bool,
     currentId: PropTypes.string,
     className: PropTypes.string,
-    ShowCustomerUserListPanel: PropTypes.func
+    ShowCustomerUserListPanel: PropTypes.func,
+    removeUpdateClueItem: PropTypes.func,
+    updateRemarks: PropTypes.func,
 };
 export default ClueRightPanel;

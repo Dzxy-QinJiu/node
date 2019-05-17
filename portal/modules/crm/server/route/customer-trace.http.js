@@ -7,6 +7,13 @@ module.exports = {
     module: 'crm/server/action/customer-trace-controller',
     routes: [
         {
+            method: 'get',
+            path: '/rest/customer/trace_type',
+            handler: 'getExtraTraceType',
+            passport: {
+                needLogin: true
+            },
+        },{
             method: 'post',
             path: '/rest/customer/get_customer_trace_list',
             handler: 'getCustomerTraceList',

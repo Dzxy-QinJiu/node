@@ -1,10 +1,11 @@
 //用户状态添加switch切换逻辑
 var React = require('react');
-import { Icon, Switch } from 'antd';
+import { Icon, Switch, Popconfirm } from 'antd';
 const AppUserAjax = require('../ajax/app-user-ajax');
 const AlertTimer = require('CMP_DIR/alert-timer');
 import language from 'PUB_DIR/language/getLanguage';
 import { StatusWrapper } from 'antc';
+import MemberStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
 
 class UserStatusFieldSwitch extends React.Component {
     //获取默认属性
@@ -21,7 +22,7 @@ class UserStatusFieldSwitch extends React.Component {
     state = {
         resultType: '',
         errorMsg: '',
-        status: this.props.status
+        status: this.props.status,
     };
 
     componentWillReceiveProps(nextProps) {
@@ -52,6 +53,21 @@ class UserStatusFieldSwitch extends React.Component {
         }
     };
 
+    handleConfirm = () => {
+        let status = true;
+        let modalStr = Intl.get('member.start.this', '启用此');
+        if (this.state.status) {
+            status = false;
+            modalStr = Intl.get('member.stop.this', '禁用此');
+        }
+        Trace.traceEvent('用户详情', '点击确认' + modalStr + '用户');
+        this.setState({
+            status: status
+        }, () => {
+            this.saveUserStatus();
+        });
+    };
+
     saveUserStatus = () => {
         let submitObj = {
             user_id: this.props.userId,
@@ -61,17 +77,21 @@ class UserStatusFieldSwitch extends React.Component {
         //提交数据
         AppUserAjax.editAppUser(submitObj).then((result) => {
             if (result) {
-                this.setState({ resultType: '', errorMsg: '', status: submitObj.status === '1'});
+                this.setState({
+                    resultType: '',
+                    errorMsg: '',
+                    status: submitObj.status === '1',
+                });
             } else {
                 this.setState({
                     resultType: 'error',
-                    errorMsg: Intl.get('common.edit.failed', '修改失败')                    
+                    errorMsg: Intl.get('common.edit.failed', '修改失败'),
                 });
             }
         }, (errorMsg) => {
             this.setState({
                 resultType: 'error',
-                errorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败')
+                errorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败'),
             });
         });
     };
@@ -81,15 +101,16 @@ class UserStatusFieldSwitch extends React.Component {
             return (
                 <div className="status-switch-container">
                     <StatusWrapper
-                        loading={this.state.resultType === 'loading'}
                         errorMsg={this.state.resultType === 'error' && this.state.errorMsg}
                         size='small'
                     >
-                        <Switch
-                            checked={this.state.status}
-                            onChange={this.changeUserStatus}
-                            checkedChildren={Intl.get('common.enabled', '启用')}
-                            unCheckedChildren={Intl.get('common.stop', '停用')}
+                        <MemberStatusSwitch
+                            title={Intl.get('user.status.eidt.tip', '确定要{status}该用户？', {
+                                status: this.state.status ? Intl.get('common.stop', '停用') :
+                                    Intl.get('common.enabled', '启用')
+                            })}
+                            handleConfirm={this.handleConfirm}
+                            status={this.state.status}
                         />
                     </StatusWrapper>
                 </div>

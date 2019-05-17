@@ -212,14 +212,54 @@ exports.getCallIntervalData = function(req, res, reqQuery) {
         }, reqQuery);
 };
 
+//获取通话总次数、总时长为top10的Promise
+function getCallTotalPromise(req, res, reqQuery, type) {
+    return new Promise((resolve, reject) => {
+        reqQuery.top_type = type;
+
+        return restUtil.authRest.get(
+            {
+                url: restApis.getCallTotalList.replace(':authType', req.params.authType),
+                req: req,
+                res: res
+            }, reqQuery, {
+                success: function(eventEmitter, data) {
+                    resolve(data);
+                },
+                error: function(eventEmitter, errorDesc) {
+                    reject(errorDesc);
+                }
+            });
+    });
+}
+
 // 获取通话总次数、总时长为top10的数据
 exports.getCallTotalList = function(req, res, reqQuery) {
-    return restUtil.authRest.get(
-        {
-            url: restApis.getCallTotalList.replace(':authType', req.params.authType),
-            req: req,
-            res: res
-        }, reqQuery);
+    const emitter = new EventEmitter();
+
+    const promiseList = [
+        //通话总次数top10统计
+        getCallTotalPromise(req, res, reqQuery, 'count'),
+        //通话总时长top10统计
+        getCallTotalPromise(req, res, reqQuery, 'sum')
+    ];
+
+    Promise.all(promiseList).then((result) => {
+        let allData = {
+            code: 200,
+            list: {
+                count: _.get(result, '[0].list.count', []),
+                sum: _.get(result, '[1].list.sum', [])
+            },
+            result: 'true'
+        };
+
+        emitter.emit('success', allData);
+    }).catch((err) => {
+        emitter.emit('error', err);
+    });
+
+    return emitter;
 };
 
 // 获取成员信息
@@ -232,12 +272,51 @@ exports.getSaleMemberList = function(req, res, params) {
         });
 };
 
-// 获取通话客户的地域和阶段分布
-exports.getCallCustomerZoneStage = (req, res) => {
-    return restUtil.authRest.get(
-        {
+//获取客户阶段及地域统计Promise
+function getStageZonePromise(req, res, field) {
+    return new Promise((resolve, reject) => {
+        req.query.field = field;
+
+        return restUtil.authRest.get({
             url: restApis.getCallCustomerZoneStage.replace(':authType', req.params.authType),
             req: req,
             res: res
-        }, req.query);
+        }, req.query, {
+            success: function(eventEmitter, data) {
+                resolve(data);
+            },
+            error: function(eventEmitter, errorDesc) {
+                reject(errorDesc);
+            }
+        });
+    });
+}
+
+// 获取通话客户的地域和阶段分布
+exports.getCallCustomerZoneStage = (req, res) => {
+    const emitter = new EventEmitter();
+
+    const promiseList = [
+        //客户阶段统计
+        getStageZonePromise(req, res, 'customer_label'),
+        //订单阶段统计
+        getStageZonePromise(req, res, 'sales_stage'),
+        //地域统计
+        getStageZonePromise(req, res, 'region')
+    ];
+
+    Promise.all(promiseList).then((result) => {
+        let allData = {
+            code: 0,
+            customer_label_sum: _.get(result, '[0].customer_label_sum', []),
+            opp_stage_sum: _.get(result, '[1].opp_stage_sum', []),
+            sum: _.get(result, '[2].sum', [])
+        };
+
+        emitter.emit('success', allData);
+    }).catch((err) => {
+        emitter.emit('error', err);
+    });
+
+    return emitter;
 };

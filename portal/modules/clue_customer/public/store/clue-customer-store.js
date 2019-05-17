@@ -114,7 +114,7 @@ ClueCustomerStore.prototype.updateClueProperty = function(updateObj) {
 ClueCustomerStore.prototype.removeClueItem = function(updateObj) {
     this.curClueLists = _.filter(this.curClueLists, clue => updateObj.id !== clue.id);
 };
-//绑定客户改变后，把列表中绑定的客户信息也修改了
+//关联客户改变后，把列表中关联的客户信息也修改了
 //标记线索为无效线索后，线索状态变成已跟进，在页面上不展示该条数据
 ClueCustomerStore.prototype.afterModifiedAssocaitedCustomer = function(updateClue) {
     var targetIndex = _.findIndex(this.curClueLists, clue => updateClue.id === clue.id);

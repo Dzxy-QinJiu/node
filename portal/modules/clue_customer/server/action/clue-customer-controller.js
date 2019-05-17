@@ -111,7 +111,9 @@ exports.relateClueAndCustomer = function(req, res) {
 // 处理导入线索模板文件
 exports.getClueTemplate = function(req, res) {
     var filePath = path.resolve(__dirname, '../../tpl/clue_temp.xls');
-    res.download(filePath);
+    let backendIntl = new BackendIntl(req);
+    let filename = backendIntl.get('crm.sales.clue', '线索') + '.xls';
+    res.download(filePath, filename);
 };
 
 exports.uploadClues = function(req, res) {

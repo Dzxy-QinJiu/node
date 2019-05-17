@@ -46,7 +46,7 @@ import {OTHER_FILTER_ITEMS, DAY_TIME} from 'PUB_DIR/sources/utils/consts';
 import {getStartTime, getEndTime} from 'PUB_DIR/sources/utils/time-format-util';
 import ShearContent from 'CMP_DIR/shear-content';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
-import {REG_CRM_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
+import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
     tried: '试用阶段',
@@ -1045,7 +1045,7 @@ class Crm extends React.Component {
                     //可以转入
                     this.setState({
                         isPreviewShow: true,
-                        previewList: CrmStore.processForList(list),
+                        previewList: this.handlePreviewList(list),
                     });
                 } else if (result > 0) {
                     //不可以转入
@@ -1308,23 +1308,154 @@ class Crm extends React.Component {
 
     };
 
-    getItemPrevList(columns) {
-        let previewColumns = [];
-        previewColumns = extend([], columns);
-        //导入预览表格中去掉最后联系列
-        previewColumns = _.filter(previewColumns, column => column.dataIndex !== 'last_contact_time');
-        let remarksColumn = _.find(previewColumns, column => column.dataIndex === 'remarks');
-
-        if (!remarksColumn) {
-            remarksColumn = {
-                dataIndex: 'remarks',
+    //获取导入预览中的列
+    getPreviewColumns = () => {
+        const column_width_min = 80, column_width = 120, column_width_max = 200;
+        return [
+            {
+                title: Intl.get('crm.4', '客户名称'),
+                width: column_width_max,
+                dataIndex: 'name',
+                render: (text, record, index) => {
+                    let cls = classNames({
+                        'repeat-item-name': record.name_repeat
+                    });
+                    return (<span className={cls}
+                        title={record.name_repeat ? Intl.get('crm.name.exist', '客户名已存在！') : ''}>{text}</span>);
+                }
+            }, {
+                title: Intl.get('call.record.contacts', '联系人'),
+                width: column_width_min,
+                dataIndex: 'contact_name',
+            }, {
+                title: Intl.get('clue.add.phone.num', '电话号码'),
+                width: column_width,
+                dataIndex: 'contact_phone',
+                render: (text, record, index) => {
+                    let cls = classNames({
+                        'repeat-item-name': record.phone_repeat
+                    });
+                    return (
+                        <div className={cls}
+                            title={record.phone_repeat ? Intl.get('common.phone.is.existed', '电话已存在！') : ''}>
+                            {_.map(record.contact_phone, (item, index) => {
+                                return (<div key={index}>{item}</div>);
+                            })}
+                        </div>);
+                }
+            }, {
+                title: 'QQ',
+                width: column_width,
+                dataIndex: 'contact_qq',
+                render: (text, record, index) => {
+                    return _.map(record.contact_qq, (item, index) => {
+                        return (<div key={index}>{item}</div>);
+                    });
+                }
+            }, {
+                title: Intl.get('common.email', '邮箱'),
+                width: column_width,
+                dataIndex: 'contact_email',
+                render: (text, record, index) => {
+                    return _.map(record.contact_email, (item, index) => {
+                        return (<div key={index}>{item}</div>);
+                    });
+                }
+            }, {
+                title: Intl.get('crm.contact.role', '联系人角色'),
+                width: column_width_min,
+                dataIndex: 'contact_role',
+            }, {
+                title: Intl.get('crm.113', '部门'),
+                width: column_width,
+                dataIndex: 'contact_department',
+            }, {
+                title: Intl.get('crm.91', '职位'),
+                width: column_width_min,
+                dataIndex: 'contact_position',
+            }, {
+                title: Intl.get('crm.6', '负责人'),
+                width: column_width_min,
+                dataIndex: 'user_name',
+            }, {
+                title: Intl.get('menu.trace', '跟进记录'),
+                width: column_width,
+                dataIndex: 'trace_record',
+            }, {
+                title: Intl.get('crm.add.time', '添加时间'),
+                width: column_width,
+                dataIndex: 'start_time',
+            }, {
+                title: Intl.get('common.industry', '行业'),
+                width: column_width_min,
+                dataIndex: 'industry',
+            }, {
+                title: Intl.get('crm.province.in', '所属省份'),
+                width: column_width_min,
+                dataIndex: 'province',
+            }, {
+                title: Intl.get('common.address', '地址'),
+                width: column_width,
+                dataIndex: 'address',
+            }, {
+                title: Intl.get('crm.competing.products', '竞品'),
+                width: column_width_min,
+                dataIndex: 'competing_products',
+                render: (text, record, index) => {
+                    return _.map(record.competing_products, (item, index) => {
+                        return (<div key={index}>{item}</div>);
+                    });
+                }
+            }, {
                 title: Intl.get('common.remark', '备注'),
+                width: column_width,
+                dataIndex: 'remarks',
+            }, {
+                title: Intl.get('common.operate', '操作'),
+                width: 50,
+                render: (text, record, index) => {
+                    //是否是重复的客户
+                    const isRepeat = record.phone_repeat || record.name_repeat;
+                    return (
+                        <span className="cus-op" data-tracename="删除客户">
+                            {isRepeat ? (
+                                <Button className="order-btn-class" icon="delete"
+                                    onClick={this.deleteDuplicatImportCustomer.bind(this, index)}
+                                    title={Intl.get('common.delete', '删除')}/>
+                            ) : null}
+                        </span>
+                    );
+                }
+            }
+        ];
+    }
+    //将导入预览的数据转换为预览列表中展示所需数据
+    handlePreviewList(list) {
+        return _.map(list, item => {
+            let start_time = _.get(item, 'start_time', '');
+            start_time = start_time ? moment(start_time).format(oplateConsts.DATE_FORMAT) : '';
+            return {
+                name: _.get(item, 'name', ''),
+                contact_name: _.get(item, 'contacts[0].name', ''),
+                contact_phone: _.get(item, 'contacts[0].phone', ''),
+                contact_qq: _.get(item, 'contacts[0].qq', ''),
+                contact_email: _.get(item, 'contacts[0].email', ''),
+                contact_role: _.get(item, 'contacts[0].role', ''),
+                contact_department: _.get(item, 'contacts[0].department', ''),
+                contact_position: _.get(item, 'contacts[0].position', ''),
+                user_name: _.get(item, 'user_name', ''),
+                trace_record: _.get(item, 'customer_traces[0].remark', ''),
+                start_time,
+                industry: _.get(item, 'industry', ''),
+                province: _.get(item, 'province', ''),
+                address: _.get(item, 'address', ''),
+                competing_products: _.get(item, 'competing_products', ''),
+                remarks: _.get(item, 'remarks', ''),
+                name_repeat: _.get(item, 'name_repeat', false),
+                phone_repeat: _.get(item, 'phone_repeat', false),
+                repeat: _.get(item, 'name_repeat', false) || _.get(item, 'phone_repeat', false)
             };
-            //添加备注列
-            previewColumns.splice(-1, 0, remarksColumn);
-        }
-        return previewColumns;
-
+        });
     }
 
     handleFocusCustomerTop(e) {
@@ -1669,12 +1800,13 @@ class Crm extends React.Component {
                     uploadHref='/rest/crm/customers'
                     previewList={this.state.previewList}
                     showFlag={this.state.crmTemplateRightPanelShow}
-                    getItemPrevList={this.getItemPrevList.bind(this, columns)}
+                    getItemPrevList={this.getPreviewColumns}
                     closeTemplatePanel={this.closeCrmTemplatePanel}
                     onItemListImport={this.onCustomerImport}
                     doImportAjax={this.doImport}
-                    repeatAlertMessage={Intl.get('crm.repeat.delete','红色标识客户名或联系方式已存在，请删除后再导入')}
-                    regRules={REG_CRM_FILES_TYPE_RULES}
+                    repeatAlertMessage={Intl.get('crm.repeat.delete', '红色标识客户名或电话已存在，请删除后再导入')}
+                    regRules={XLS_FILES_TYPE_RULES}
+                    downLoadFileName={Intl.get('crm.sales.clue', '线索') + '.xls'}
                 />
 
                 {this.state.mergePanelIsShow ? (<CrmRightMergePanel

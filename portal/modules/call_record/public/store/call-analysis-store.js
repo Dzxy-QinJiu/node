@@ -179,8 +179,9 @@ CallAnalysisStore.prototype.getCallCountAndDurSeparately = function(result) {
         eachTeamCallList.errMsg = '';
         if (result.resData) {
             let resData = result.resData;
+            var callListData = [];
+
             if (_.isArray(resData) && resData.length > 0) {
-                var callListData = [];
                 _.each(resData, (item) => {
                     //通话时长
                     let durationArray = [];
@@ -411,13 +412,13 @@ CallAnalysisStore.prototype.getCallCustomerZoneStage = function(result) {
             let salesPhase = [];
             let salesSum = resData.opp_stage_sum || [];
             if (_.isArray(salesSum) && salesSum.length) {
-                _.each(salesSum, (item) => {
-                    _.find(salesStageList, (saleItem) => {
-                        if (saleItem.index === item.name) {
-                            salesPhase.push({name: saleItem.name, num: item.count});
-                        }
-                    });
+                salesPhase = _.map(salesSum, item => {
+                    return {
+                        name: item.name,
+                        num: item.count
+                    };
                 });
+
                 this.customerData.OrderPhase = salesPhase;
             }
         }

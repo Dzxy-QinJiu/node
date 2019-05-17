@@ -195,10 +195,10 @@ class SalesStagePage extends React.Component {
         SalesStageAction.getSalesStageList();
     };
 
-    renderMsgTips = (msgTips) => {
+    renderMsgTips = (errMsg) => {
         return (
             <div>
-                <span>{msgTips},</span>
+                <span>{errMsg},</span>
                 <a className="retry-btn" onClick={this.retryGetOrderList}>
                     {Intl.get('user.info.retry', '请重试')}
                 </a>
@@ -207,25 +207,21 @@ class SalesStagePage extends React.Component {
     };
 
     renderNoDataTipsOrErrMsg = () => {
-        let salesStageList = this.state.salesStageList;
-        let length = _.get(salesStageList, 'length');
-        let errMsg = this.state.getSalesStageListErrMsg;
         let noDataTips = Intl.get('crm.order.stage.nodata.tips', '暂无订单阶段，请先添加');
+        let errMsg = this.state.getSalesStageListErrMsg;
         if (errMsg) {
-            return (
-                <NoDataIntro noDataTip={this.renderMsgTips(errMsg)}/>
-            );
-        } else if (!errMsg && length === 0) {
-            return (
-                <NoDataIntro noDataTip={noDataTips}/>
-            );
+            noDataTips = this.renderMsgTips(errMsg);
         }
+        return (
+            <NoDataIntro noDataTip={noDataTips}/>
+        );
     };
 
     render() {
         var _this = this;
         var width = this.state.salesStageWidth;
         var salesStageList = this.state.salesStageList;
+        let length = _.get(salesStageList, 'length');
         return (
             <div className="sales-stage-manage-container" data-tracename="订单阶段管理">
                 {this.renderTopNavOperation()}
@@ -234,7 +230,10 @@ class SalesStagePage extends React.Component {
                         <Spinner/>
                     ) : null
                 }
-                {this.renderNoDataTipsOrErrMsg()}
+                {
+                    !this.state.loading && (length === 0 || this.state.getSalesStageListErrMsg) ?
+                        this.renderNoDataTipsOrErrMsg() : null
+                }
                 {this.state.salesStageFormShow ? (
                     <SalesStageForm
                         salesStage={this.state.currentSalesStage}

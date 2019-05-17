@@ -22,7 +22,7 @@ const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import {removeSpacesAndEnter,getUnhandledClueCountParams} from 'PUB_DIR/sources/utils/common-method-util';
-import {REG_CLUE_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
+import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 require('./css/index.less');
 import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount, AVALIBILITYSTATUS} from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
@@ -892,15 +892,16 @@ class ClueCustomer extends React.Component {
                     //分配线索给销售的权限
                     var hasAssignedPrivilege = hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales);
                     var assigenCls = classNames('assign-btn',{'can-edit': !handlePersonName});
+                    var containerCls = classNames('handle-and-trace',{'assign-privilege': hasAssignedPrivilege});
                     return (
-                        <div className="handle-and-trace" ref='trace-person'>
+                        <div className={containerCls} ref='trace-person'>
                             {/*有分配权限*/}
                             {hasAssignedPrivilege ?
                                 <AntcDropdown
                                     ref={changeSale => this['changesale' + salesClueItem.id] = changeSale}
                                     content={<span
                                         data-tracename="点击分配线索客户按钮"
-                                        className={assigenCls}>{handlePersonName || Intl.get('clue.customer.distribute', '分配')}</span>}
+                                        className={assigenCls}> {handlePersonName || Intl.get('clue.customer.distribute', '分配')}</span>}
                                     overlayTitle={Intl.get('user.salesman', '销售人员')}
                                     okTitle={Intl.get('common.confirm', '确认')}
                                     cancelTitle={Intl.get('common.cancel', '取消')}
@@ -910,7 +911,7 @@ class ClueCustomer extends React.Component {
                                     unSelectDataTip={this.state.unSelectDataTip}
                                     clearSelectData={this.clearSelectSales}
                                     btnAtTop={false}
-                                /> : null
+                                /> : handlePersonName
                             }
                         </div>
                     );
@@ -1095,7 +1096,9 @@ class ClueCustomer extends React.Component {
             item.user_id = sale_id;
             item.sales_team = team_name;
             item.sales_team_id = team_id;
-            item.status = SELECT_TYPE.WILL_TRACE;
+            if (item.status !== SELECT_TYPE.HAS_TRACE){
+                item.status = SELECT_TYPE.WILL_TRACE;
+            }
         }
     };
     //单个及批量修改跟进人完成后的处理
@@ -1608,7 +1611,8 @@ class ClueCustomer extends React.Component {
                         doImportAjax={this.doImportAjax}
                         onItemListImport={this.onClueImport}
                         repeatAlertMessage={Intl.get('clue.repeat.delete', '红色标示线索名及联系方式已存在，请删除后再导入')}
-                        regRules={REG_CLUE_FILES_TYPE_RULES}
+                        regRules={XLS_FILES_TYPE_RULES}
+                        downLoadFileName={Intl.get('sales.home.customer', '客户') + '.xls'}
                     />
                     {this.state.rightPanelIsShow ?
                         <ClueRightPanel

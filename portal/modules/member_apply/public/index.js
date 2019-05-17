@@ -138,7 +138,7 @@ class MemberApply extends React.Component {
     };
     //点击展示详情
     clickShowDetail = (obj, idx) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '查看申请详情');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.list-unstyled'), '查看申请详情');
         MemberApplyAction.setSelectedDetailItem({obj, idx});
     };
 

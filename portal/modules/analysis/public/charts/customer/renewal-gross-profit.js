@@ -25,6 +25,7 @@ export function getRenewalCustomerGrossProfitChart(paramObj = {}) {
             }, {
                 title: '续约金额增长率',
                 dataIndex: 'percent',
+                showAsPercent: true,
                 width: '20%',
             }],
         },
