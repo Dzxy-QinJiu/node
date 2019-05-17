@@ -46,7 +46,7 @@ import NoDataIntro from 'CMP_DIR/no-data-intro';
 import IntegrateConfigView from './views/integrate-config/index';
 import TopNav from 'CMP_DIR/top-nav';
 import ImportUser from './views/import';
-import {REG_CRM_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
+import {CSV_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 
 /*用户管理界面外层容器*/
 class AppUserManage extends React.Component {
@@ -977,7 +977,7 @@ class AppUserManage extends React.Component {
                     closeTemplatePanel={this.closeImportUserRightPanel}
                     onItemListImport={this.onUserImport}
                     doImportAjax={this.doImportAjax}
-                    regRules={REG_CRM_FILES_TYPE_RULES}
+                    regRules={CSV_FILES_TYPE_RULES}
                     importFileTips={Intl.get('user.import.user.toplimit', '每次导入上限为300个用户')}
                 />
             </div>
