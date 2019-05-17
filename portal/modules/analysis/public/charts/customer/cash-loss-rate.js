@@ -6,6 +6,10 @@ export function getCashLossRateChart(paramObj = {}) {
     return {
         title: '现金流失率',
         chartType: 'line',
+        customOption: {
+            showValueAsPercent: true,
+            showYaxisLabelAsPercent: true
+        },
         url: '/rest/analysis/customer/label/:data_type/churn/gross/rate/trend',
         argCallback: paramObj.argCallback,
         processData: data => {
