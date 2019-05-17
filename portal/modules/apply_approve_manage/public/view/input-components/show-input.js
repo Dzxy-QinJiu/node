@@ -52,6 +52,22 @@ class InputShow extends React.Component {
                     componentProps.selectedArr.push({label: item, value: item});
                 });
             }
+            if (_.get(formItem, 'componentType') === ALL_COMPONENTS.DATETIME) {
+                if (_.get(formItem, 'type') === 'time'){
+                    var nowTime = moment().format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+                    componentProps.defaultValue = moment(nowTime,oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+                    componentProps.showTime = { format: 'HH:mm' };
+                    componentProps.format = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
+                }else{
+                    var nowDate = moment().format(oplateConsts.DATE_FORMAT);
+                    componentProps.defaultValue = moment(nowDate,oplateConsts.DATE_FORMAT);
+                }
+            }
+            if (_.get(formItem, 'componentType') === ALL_COMPONENTS.CUSTOMERSEARCH) {
+                componentProps.displayType = _.get(formItem,'displayType');
+                componentProps.hideButtonBlock = true;
+            }
+
             
             return <ApplyComponent {...componentProps}/>;
         } else {

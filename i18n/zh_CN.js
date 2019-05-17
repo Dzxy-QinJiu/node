@@ -2998,6 +2998,8 @@ var zh_CN = {
     'apply.time.range.unit.select': '单位选项',
     'apply.approve.option.one': '选项一',
     'apply.approve.option.two': '选项二',
-    'apply.time.range.unit.select.label': '选项'
+    'apply.time.range.unit.select.label': '选项',
+    'apply.time.select.period': '周期选择',
+    'apply.time.distinct.am': '区分上下午'
 };
 export default zh_CN;

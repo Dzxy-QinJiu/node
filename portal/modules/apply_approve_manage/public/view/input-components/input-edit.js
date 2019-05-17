@@ -3,8 +3,9 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/4/4.
  */
-import {Input,Checkbox, Icon } from 'antd';
+import {Input,Checkbox, Icon, Radio} from 'antd';
 const CheckboxGroup = Checkbox.Group;
+const RadioGroup = Radio.Group;
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-field';
 require('./index.less');
@@ -100,6 +101,11 @@ class InputEdit extends React.Component {
         options.splice(index ,1);
         this.setState({formItem});
     };
+    onRadioChange = (value) => {
+        var formItem = this.state.formItem;
+        formItem.selectedValue = value;
+        this.setState({formItem});
+    };
     handleInputChange = (index,e) => {
         var formItem = this.state.formItem;
         var options = _.get(formItem,'options.optionArrs');
@@ -129,10 +135,10 @@ class InputEdit extends React.Component {
                         </span> : null}
                     </span>
                 </div>
-                { _.get(formItem,'defaultPlaceholder','') ? <div className="component-row">
+                { _.get(formItem,'placeholder','') ? <div className="component-row">
                     <span className="label-components">{Intl.get('apply.components.tip.msg', '提示说明')}</span>
                     <span className='text-components'>
-                        <Input className={cls} defaultValue={ _.get(formItem,'defaultPlaceholder','')} onChange={this.handleChangeTip}/>
+                        <Input className={cls} defaultValue={ _.get(formItem,'placeholder','')} onChange={this.handleChangeTip}/>
                     </span>
                 </div> : null}
                 {_.get(formItem,'timeRange') ?
@@ -159,6 +165,17 @@ class InputEdit extends React.Component {
                                     </span>
                                 </span>;
                             })}
+                        </span>
+
+                    </div>
+                    : null}
+                {_.get(formItem,'timePrecoius') ?
+                    <div className="component-row required">
+                        <span className="label-components">{_.get(formItem,'timePrecoius.unitLabel')}</span>
+                        <span className="text-components">
+                            <RadioGroup onChange={this.onRadioChange} value={_.get(formItem,'selectedValue')}>
+                                {_.map(_.get(formItem,'timePrecoius.unitList'),item => <Radio value={item.value}>{item.label}</Radio>)}
+                            </RadioGroup>({_.get(formItem,'timePrecoius.unitMsg')})
                         </span>
 
                     </div>

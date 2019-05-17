@@ -27,11 +27,26 @@ class SelectOption extends React.Component {
         var selectArr = this.props.selectedArr;
         return <CheckboxGroup options={selectArr}/>;
     };
+    renderOptionGroup = () => {
+        var selectArr = this.props.selectedArr;
+        return (
+            <Select
+                showSearch
+                placeholder={this.props.placeholder}
+            >
+                {_.map(selectArr,(item) => {
+                    return <Option value={item.value}>{item.name}</Option>;
+                })}
+            </Select>
+        );
+    };
 
     render = () => {
         return (
             <div className="select-option-container">
-                {this.props.type === 'radio' ? this.renderRadioGroup() : this.renderCheckGroup()}
+                {this.props.type === 'radio' ? this.renderRadioGroup() : null}
+                {this.props.type === 'checkbox' ? this.renderCheckGroup() : null}
+                {this.props.type === 'option' ? this.renderOptionGroup() : null}
             </div>
         );
     }
@@ -39,11 +54,13 @@ class SelectOption extends React.Component {
 
 SelectOption.defaultProps = {
     selectedArr: [],
-    type: ''
+    type: '',
+    placeholder: ''
 };
 
 SelectOption.propTypes = {
     selectedArr: PropTypes.array,
-    type: PropTypes.string
+    type: PropTypes.string,
+    placeholder: PropTypes.string,
 };
 export default SelectOption;

@@ -31,19 +31,18 @@ class AddApplyForm extends React.Component {
                 applyApproveRules: {
                     defaultFlow: {
                         bpmnNode: [
-                            {
-                                name: 'UserTask_1_0',
-                                id: 'UserTask_1_0',
-                                type: 'UserTask',
-                                next: 'UserTask_1_2',
-                                showName: `填写${_.get(this, 'props.applyTypeData.applyType')}`,
-                                flowIndex: '1_0'
-                            },
+                            // {
+                            //     name: 'UserTask_1_0',
+                            //     id: 'UserTask_1_0',
+                            //     type: 'UserTask',
+                            //     next: 'UserTask_1_2',
+                            //     showName: `填写${_.get(this, 'props.applyTypeData.applyType')}`,
+                            //     flowIndex: '1_0'
+                            // },
                             {
                                 name: 'UserTask_1_2',
                                 id: 'UserTask_1_2',
                                 type: 'UserTask',
-                                previous: 'UserTask_1_0',
                                 showName: '部门经理',
                                 candidateApprover: 'teamowner',
                                 flowIndex: '1_2'
@@ -252,8 +251,8 @@ class AddApplyForm extends React.Component {
                             onClick={this.handleAddComponents.bind(this, ruleItem)}>
                             <i className={cls}></i>
                             <span className="rule-cls">{ruleItem.rulename}</span>
-                            {ruleItem.defaultPlaceholder && !ruleItem.notshowInList ?
-                                <span className="addition-cls">({ruleItem.defaultPlaceholder})</span> : null}
+                            {ruleItem.placeholder && !ruleItem.notshowInList ?
+                                <span className="addition-cls">({ruleItem.placeholder})</span> : null}
                         </span>
                     );
                 })}

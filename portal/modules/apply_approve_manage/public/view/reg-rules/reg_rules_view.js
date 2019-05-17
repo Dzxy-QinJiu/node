@@ -88,6 +88,8 @@ class RegRulesView extends React.Component {
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>`;
+
+
         this.state.bpmnModeler.importXML(bpmnXmlStr, (err) => {
             if (err) {
                 console.error(err);
@@ -147,6 +149,7 @@ class RegRulesView extends React.Component {
                         var curNode = elementFactory.createShape(Object.assign({type: bpmnType}, {id: elem.id}));
                         var bo = curNode.businessObject;
                         bo.name = elem.showName;
+                        //todo 暂时不展示，测试方便啊啊啊啊啊啊啊
                         //增加节点的审批人
                         if (elem.candidateApprover) {
                             modeling.updateProperties(curNode, {
@@ -328,17 +331,17 @@ class RegRulesView extends React.Component {
         var applyApproveRules = _.get(applyRulesAndSetting,'applyApproveRules');
         if (_.isObject(applyApproveRules)){
             _.map(applyApproveRules,(flowType,typeKey) => {
-               if(typeKey !== FLOW_TYPES.DEFAULTFLOW){
-                   var elementsArr = flowType['bpmnNode'];
-                   if (_.isArray(elementsArr)){
-                       var lastNode = _.last(elementsArr);
-                       if (lastNode){
-                           lastNode.next = `EndTask_${newIndex}`;
-                       }
-                   };
-               }
+                if(typeKey !== FLOW_TYPES.DEFAULTFLOW){
+                    var elementsArr = flowType['bpmnNode'];
+                    if (_.isArray(elementsArr)){
+                        var lastNode = _.last(elementsArr);
+                        if (lastNode){
+                            lastNode.next = `EndTask_${newIndex}`;
+                        }
+                    }
+                }
             });
-        };
+        }
 
         //保存的时候进行画图
         this.createNewDiagram(() => {
@@ -449,18 +452,18 @@ class RegRulesView extends React.Component {
         //要在默认流程那里加一个网关,只限于在第一次添加网关的时候
         var defalutBpmnNode = this.getDiffTypeFlow(FLOW_TYPES.DEFAULTFLOW);
         var firstNode = _.get(defalutBpmnNode, '[0]');
-        if (firstNode['next'] !== 'Gateway_1_1'){
-            firstNode['next'] = 'Gateway_1_1';
+        if (firstNode['previous'] !== 'Gateway_1_1'){
+            firstNode['previous'] = 'Gateway_1_1';
             var secondNode = _.get(defalutBpmnNode, '[1]');
-            secondNode['previous'] = 'Gateway_1_1';
-            defalutBpmnNode.splice(1, 0, {
-                    name: 'Gateway_1_1',
-                    id: 'Gateway_1_1',
-                    type: 'ExclusiveGateway',
-                    next: 'UserTask_1_2',
-                    previous: 'UserTask_1_0',
-                    flowIndex: '1_1'
-                });
+            defalutBpmnNode.splice(0, 0, {
+                name: 'Gateway_1_1',
+                id: 'Gateway_1_1',
+                type: 'ExclusiveGateway',
+                next: 'UserTask_1_2',
+                //
+                // previous: 'UserTask_1_0',
+                flowIndex: '1_1'
+            });
         }
         //
         var initialValue = 1;
@@ -495,7 +498,7 @@ class RegRulesView extends React.Component {
             var flowLength = 0;
             for (var key in applyApproveRules){
                 flowLength++;
-            };
+            }
             //如果只剩最后一个默认流程，就把网关也去掉
             if (flowLength === 1){
                 var defalutBpmnNode = this.getDiffTypeFlow(FLOW_TYPES.DEFAULTFLOW);
@@ -504,7 +507,7 @@ class RegRulesView extends React.Component {
                 var secondNode = _.get(defalutBpmnNode,'[1]');
                 firstNode.next = secondNode.id;
                 secondNode.previous = firstNode.id;
-            };
+            }
             this.setState({applyRulesAndSetting, confirmDeleteItem: ''});
         }
 
@@ -560,11 +563,11 @@ class RegRulesView extends React.Component {
                                     {_.get(item, 'bpmnNode.length') ? this.renderApplyWorkFlowNode(item.bpmnNode, key) :
                                         <div className="rule-content apply-node-lists">
                                             <div className="icon-container add-node"
-                                                 onClick={this.addApplyNode.bind(this, key)}>
+                                                onClick={this.addApplyNode.bind(this, key)}>
                                                 <i className="iconfont icon-add"></i>
                                             </div>
                                         </div>
-                                       }
+                                    }
                                 </div>
                                 <div className="condition-item condition-item-cc">
                                     <span
@@ -667,7 +670,7 @@ class RegRulesView extends React.Component {
                     <ul className="buttons">
                         <li>
                             <a id="js-download-diagram" href title="download BPMN diagram"
-                               onClick={this.handleDownLoadBPMN}>
+                                onClick={this.handleDownLoadBPMN}>
                                 下载BPMN
                             </a>
                         </li>
