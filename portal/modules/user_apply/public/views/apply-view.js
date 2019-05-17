@@ -235,9 +235,9 @@ class ApplyTabContent extends React.Component {
         UserApplyActions.setLastApplyId('');
         setTimeout(() => {
             if (this.state.isCheckUnreadApplyList) {
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_wrap'), '查看有未读回复的申请');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.apply_manage_wrap'), '查看有未读回复的申请');
             } else {
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_wrap'), '取消有未读回复申请的查看');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.apply_manage_wrap'), '取消有未读回复申请的查看');
             }
             this.fetchApplyList();
         });
@@ -478,7 +478,7 @@ class ApplyTabContent extends React.Component {
                 values={{'return': <a onClick={this.toggleUnreadApplyList}>{Intl.get('crm.52', '返回')}</a>}}
             />) : Intl.get('user.apply.no.apply', '还没有用户审批诶...');
             return (
-                <div className="app_user_manage_apply_wrap">
+                <div className="apply_manage_wrap">
                     <NoData msg={noDataTip}/>
                 </div>
             );
@@ -520,7 +520,7 @@ class ApplyTabContent extends React.Component {
         }
 
         return (
-            <div className="app_user_manage_apply_wrap clearfix user-manage-v2">
+            <div className="apply_manage_wrap clearfix user-manage-v2">
                 <div className="app_user_manage_apply_list_wrap" data-tracename="申请列表">
                     {this.renderApplyHeader()}
                     {this.renderApplyListError()}

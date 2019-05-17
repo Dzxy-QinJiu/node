@@ -245,9 +245,9 @@ class SalesOpportunityApplyManagement extends React.Component {
         SalesOpportunityApplyAction.setLastApplyId('');
         setTimeout(() => {
             if (this.state.isCheckUnreadApplyList) {
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_wrap'), '查看有未读回复的申请');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.apply_manage_wrap'), '查看有未读回复的申请');
             } else {
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_wrap'), '取消有未读回复申请的查看');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.apply_manage_wrap'), '取消有未读回复申请的查看');
             }
             this.getAllSalesOpportunityApplyList();
         });
@@ -291,7 +291,7 @@ class SalesOpportunityApplyManagement extends React.Component {
                 values={{'return': <a onClick={this.toggleUnreadApplyList}>{Intl.get('crm.52', '返回')}</a>}}
             />) : Intl.get('user.apply.no.apply', '还没有用户审批诶...');
             return (
-                <div className="app_user_manage_apply_wrap">
+                <div className="apply_manage_wrap">
                     <NoData msg={noDataTip}/>
                 </div>
             );
@@ -312,7 +312,7 @@ class SalesOpportunityApplyManagement extends React.Component {
             key: APPLY_TYPE_STATUS_CONST.MYAPPROVED, value: Intl.get('apply.list.my.approved', '我审批过'),
         });
         return (
-            <div className="sales-opportunity-apply-container app_user_manage_apply_wrap">
+            <div className="sales-opportunity-apply-container apply_manage_wrap">
                 <div className="leave-apply-list-detail-wrap">
                     <div className="col-md-4 leave-apply-list" data-tracename="销售机会申请列表">
                         <ApplyDropdownAndAddBtn
