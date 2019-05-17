@@ -7,6 +7,10 @@ export function getOrderTurnoverRateTrendChart() {
         title: '订单成交率趋势',
         url: '/rest/analysis/customer/v2/sales_opportunity/:data_type/apply/opportunity/rate/trend',
         chartType: 'line',
+        customOption: {
+            showValueAsPercent: true,
+            showYaxisLabelAsPercent: true
+        },
         processData: data => {
             const list = _.get(data, 'result.list');
 
