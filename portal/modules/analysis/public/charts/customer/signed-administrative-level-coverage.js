@@ -17,6 +17,7 @@ export function getSignedCustomerAdministrativeLevelCoverageChart(paramObj = {})
             }, {
                 title: '省级占有率',
                 dataIndex: 'province_percent',
+                showAsPercent: true,
                 width: '15%',
             }, {
                 title: '市级客户数',
@@ -25,6 +26,7 @@ export function getSignedCustomerAdministrativeLevelCoverageChart(paramObj = {})
             }, {
                 title: '市级占有率',
                 dataIndex: 'city_percent',
+                showAsPercent: true,
                 width: '15%',
             }, {
                 title: '县级客户数',
@@ -33,6 +35,7 @@ export function getSignedCustomerAdministrativeLevelCoverageChart(paramObj = {})
             }, {
                 title: '县级占有率',
                 dataIndex: 'county_percent',
+                showAsPercent: true,
                 width: '15%',
             }],
         },
