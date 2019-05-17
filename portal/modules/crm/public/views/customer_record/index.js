@@ -16,8 +16,7 @@ const RadioGroup = Radio.Group;
 const {TextArea} = Input;
 import CustomerRecordActions from '../../action/customer-record-action';
 import CustomerRecordStore from '../../store/customer-record-store';
-
-var crmUtil = require('./../../utils/crm-util');
+import recordAjax from '../../ajax/customer-record-ajax';
 var GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
 var Spinner = require('../../../../../components/spinner');
 import ModalDialog from 'CMP_DIR/ModalDialog';
@@ -37,6 +36,7 @@ import ShearContent from '../../../../../components/shear-content';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 var classNames = require('classnames');
 import {AntcDatePicker as DatePicker} from 'antc';
+import {CALL_RECORD_TYPE, processForTrace} from './../../utils/crm-util';
 
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -68,14 +68,15 @@ const CALL_TYPE_MAP = {
     'data_report': Intl.get('crm.trace.delivery.report', '舆情报送'),
     'other': Intl.get('customer.other', '其他')
 };
-
-const CALL_RECORD_TYPE = crmUtil.CALL_RECORD_TYPE;
+//电话类型（eefung电话类型，客套容联电话类型,客套APP电话类型，回访类型）
+const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL_RECORD_TYPE.APP, CALL_RECORD_TYPE.CALL_BACK];
 //跟进记录为空时的提示
 const TRACE_NULL_TIP = Intl.get('customer.trace.content', '客户跟进记录内容不能为空');
 
 const OVERVIEW_SHOW_COUNT = 5;//概览页展示跟进记录的条数
 var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
-
+//除去固定的电话、拜访、其他以外的类型的缓存数据，获取后存起来，不用每次都取
+let extraTraceTypeList = [];
 class CustomerRecord extends React.Component {
     state = {
         playingItemAddr: '',//正在播放的那条记录的地址
@@ -92,6 +93,7 @@ class CustomerRecord extends React.Component {
         appList: [],//应用列表，用来展示舆情上报的应用名称
         addRecordNullTip: '',//添加跟进记录内容为空的提示
         editRecordNullTip: '', //编辑跟进内容为空的提示
+        extraTraceTypeList: [], //除去固定的电话、拜访、其他以外的类型
         ...CustomerRecordStore.getState()
     };
 
@@ -102,6 +104,7 @@ class CustomerRecord extends React.Component {
 
     componentDidMount() {
         CustomerRecordStore.listen(this.onStoreChange);
+        this.getExtraTraceType();
         //获取所有联系人的联系电话，通过电话和客户id获取跟进记录
         var customer_id = this.props.curCustomer.customer_id || this.props.curCustomer.id;
         if (!customer_id) return;
@@ -126,6 +129,21 @@ class CustomerRecord extends React.Component {
             });
         });
         this.getAppList();
+    }
+    //获取某组织内跟进记录的类型（除去固定的电话、拜访、其他以外的类型）
+    getExtraTraceType() {
+        //未获取过额外跟进类型，需要获取一遍存起来，下次不用再取
+        if (_.isEmpty(extraTraceTypeList)) {
+            recordAjax.getExtraTraceType().then((data) => {
+                extraTraceTypeList = _.get(data, 'result', []);
+                this.setState({extraTraceTypeList});
+            }, (errorMsg) => {
+                extraTraceTypeList = [];
+                this.setState({extraTraceTypeList});
+            });
+        } else {//已获取过可以直接用
+            this.setState({extraTraceTypeList});
+        }
     }
 
     //获取跟进记录的分类统计
@@ -203,8 +221,8 @@ class CustomerRecord extends React.Component {
         }
         //跟进类型的过滤
         if (this.state.filterType === CALL_RECORD_TYPE.PHONE) {
-            //电话类型：eefung电话+容联电话+客套APP电话
-            bodyData.type = `${CALL_RECORD_TYPE.PHONE},${CALL_RECORD_TYPE.CURTAO_PHONE},${CALL_RECORD_TYPE.APP}`;
+            //电话类型：eefung电话+容联电话+客套APP电话+回访
+            bodyData.type = PHONE_TYPES.join(',');
         } else if (this.state.filterType && this.state.filterType !== 'all') {
             bodyData.type = this.state.filterType;
         } else {//全部及概览页的跟进记录，都过滤掉舆情上报的跟进记录（可以通过筛选舆情上报的类型来查看此类的跟进）
@@ -604,7 +622,7 @@ class CustomerRecord extends React.Component {
     };
 
     renderTimeLineItem = (item, hasSplitLine) => {
-        var traceObj = crmUtil.processForTrace(item);
+        var traceObj = processForTrace(item);
         //渲染时间线
         var iconClass = traceObj.iconClass, title = traceObj.title, traceDsc = traceObj.traceDsc;
         //是否上传了录音文件
@@ -619,7 +637,7 @@ class CustomerRecord extends React.Component {
                 <p className="item-detail-tip">
                     <span className="icon-container" title={title}><i className={iconClass}></i></span>
                     {traceDsc ? (<span className="trace-title-name" title={traceDsc}>{traceDsc}</span>) : null}
-                    {(item.type === CALL_RECORD_TYPE.PHONE || item.type === CALL_RECORD_TYPE.CURTAO_PHONE || item.type === CALL_RECORD_TYPE.APP) ?
+                    {_.includes(PHONE_TYPES, item.type) ?
                         <PhoneCallout
                             phoneNumber={item.dst}
                         /> : null}
@@ -731,7 +749,7 @@ class CustomerRecord extends React.Component {
             divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
         }
         //减通话状态的高度
-        if (_.includes([CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CALL_BACK, 'all'], this.state.filterType)
+        if (_.includes([CALL_RECORD_TYPE.PHONE, 'all'], this.state.filterType)
             && _.get(this.state, 'customerRecord.length') > 0) {
             divHeight -= LAYOUT_CONSTANTS.PHONE_STATUS_HEIGHT;
         }
@@ -881,8 +899,8 @@ class CustomerRecord extends React.Component {
             //     return Intl.get('menu.download.app', '客套APP');
             case CALL_RECORD_TYPE.VISIT:
                 return Intl.get('customer.visit', '拜访');
-            case CALL_RECORD_TYPE.CALL_BACK:
-                return Intl.get('common.callback', '回访');
+            // case CALL_RECORD_TYPE.CALL_BACK:
+            //     return Intl.get('common.callback', '回访');
             case CALL_RECORD_TYPE.DATA_REPORT:
                 return Intl.get('crm.trace.delivery.report', '舆情报送');
             case CALL_RECORD_TYPE.OTHER:
@@ -911,15 +929,47 @@ class CustomerRecord extends React.Component {
         });
 
     }
-
+    //获取类型统计数据（根据固定类型+后端获取的额外类型和后端获取的统计数据的组合）
+    getTypeStatisticData(){
+        //固定的跟进类型统计
+        let statisticData = {
+            phone: 0,//eefung+客套容联+客套APP+回访的电话次
+            visit: 0,//拜访
+        };
+        //将从后端获取的额外的跟进类型，加入到跟进类型统计对象中
+        _.each(this.state.extraTraceTypeList, type => {
+            statisticData[type] = 0;
+        });
+        //其他跟进
+        statisticData.other = 0;
+        //从后端获取的类型统计数据
+        let traceStatisticObj = this.state.customerTraceStatisticObj || {};
+        // 电话次数(eefung电话+客套容联+客套app+回访)
+        _.each(PHONE_TYPES, type => {
+            statisticData.phone += _.get(traceStatisticObj, `${type}`, 0);
+        });
+        //非电话类型的次数统计
+        _.each(statisticData, (value, key) => {
+            //不是电话类型时的次数
+            if (key !== CALL_RECORD_TYPE.PHONE) {
+                statisticData[key] = _.get(traceStatisticObj, `${key}`, 0);
+            }
+        });
+        return statisticData;
+    }
     //渲染跟进统计
     renderStatisticTabs() {
+        let statisticData = this.getTypeStatisticData();
+        //获取跟进类型的个数，最少有3个固定的类型，所以默认值为：3
+        let typeSize = _.get(_.keys(statisticData), 'length', 3);
+        let typeItemWidth = (100 / typeSize) + '%';
         return (
             <div className="statistic-container">
-                {_.map(this.state.customerTraceStatisticObj, (value, key) => {
+                {_.map(statisticData, (value, key) => {
                     let itemCls = classNames('statistic-item', {'active': key === this.state.filterType});
                     return (
-                        <div className={itemCls} onClick={this.onTraceTypeChange.bind(this, key)}>
+                        <div className={itemCls} onClick={this.onTraceTypeChange.bind(this, key)}
+                            style={{width: typeItemWidth}}>
                             <div className="statistic-label">{this.getTraceTypeDescr(key)}</div>
                             <div className="statistic-value">
                                 {Intl.get('crm.trace.statistic.unit', '{count}次', {count: value})}

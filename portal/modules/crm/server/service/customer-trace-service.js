@@ -16,9 +16,20 @@ var restApis = {
     // 更新客户跟踪记录
     updateCustomerTraceList: '/rest/callrecord/v2/callrecord/trace',
     //微信小程序签到
-    visitCustomer: '/rest/callrecord/v2/callrecord/visit'
+    visitCustomer: '/rest/callrecord/v2/callrecord/visit',
+    //获取某组织内跟进记录的类型（除去固定的电话、拜访、其他以外的类型）
+    getExtraTraceType: '/rest/customer/v2/customer/trace_type'
 };
 exports.restUrls = restApis;
+//获取某组织内跟进记录的类型（除去固定的电话、拜访、其他以外的类型）
+exports.getExtraTraceType = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getExtraTraceType,
+            req: req,
+            res: res
+        });
+};
 // 获取客户跟踪记录列表
 exports.getCustomerTraceList = function(req, res) {
     let url = restApis.getCustomerTraceList;
