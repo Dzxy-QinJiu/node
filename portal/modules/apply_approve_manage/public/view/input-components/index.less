@@ -20,6 +20,23 @@
         width: 372px;
         height: 24px;
       }
+      .option-container{
+        display: block;
+        .ant-input {
+          width: 316px;
+        }
+        .icon-container{
+          .hide-icon{
+            visibility: hidden;
+          }
+          .anticon{
+            display: inline-block;
+            width: 33px;
+            color:#8DA8C5
+          }
+        }
+      }
+
       .iconfont {
         font-size: 14px;
         color: #8DA8C5;
@@ -79,6 +96,7 @@
     }
 
   }
+  //时长组件
   .range-input-container{
     .ant-select{
       width: 47%;
@@ -94,6 +112,14 @@
       top: 1px;
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
+    }
+  }
+  //单选和多选的组件
+  .select-option-container{
+    .ant-radio-wrapper,.ant-checkbox-wrapper{
+      display: block;
+      height: 30px;
+      lineHeight: 30px
     }
   }
   .ant-input-number{

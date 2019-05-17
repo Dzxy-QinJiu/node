@@ -3,21 +3,24 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/4/4.
  */
-import {Input, InputNumber} from 'antd';
+import {Input, InputNumber, Radio} from 'antd';
+const RadioGroup = Radio.Group;
 import RangeInput from '../view/range_input';
+import SelectOption from '../view/select_option';
 const APPLYAPPROVE_LAYOUT = {
     TOPANDBOTTOM: 64,
     PADDINGHEIGHT: 24,
     TABTITLE: 36
 };
 exports.APPLYAPPROVE_LAYOUT = APPLYAPPROVE_LAYOUT;
-exports.calculateHeight = function () {
+exports.calculateHeight = function() {
     return $(window).height() - APPLYAPPROVE_LAYOUT.TOPANDBOTTOM;
 };
 export const ALL_COMPONENTS = {
     INPUT: 'Input',
     INPUTNUMBER: 'InputNumber',
-    RANGEINPUT: 'rangeinput'
+    RANGEINPUT: 'rangeinput',
+    SELECTOPTION: 'selectoption'
 
 };
 export const ALL_COMPONENTS_TYPE = {
@@ -33,14 +36,17 @@ exports.applyComponentsType = [{
 }, {
     name: ALL_COMPONENTS.RANGEINPUT,
     component: RangeInput
+}, {
+    name: ALL_COMPONENTS.SELECTOPTION,
+    component: SelectOption
 }];
 exports.CONDITION_KEYS = [
     {
-        name: Intl.get('user.duration', '时长'), value: 'timeRange', conditionRule: function (item) {
-        item['conditionRule'] = item['rangeLimit'] + item['rangeNumber'];
-        item['conditionInverseRule'] = item['inverseCondition'] + item['rangeNumber'];
-        item['conditionRuleDsc'] = item['rangeLimitDsc'] + item['rangeNumberDsc'];
-    }
+        name: Intl.get('user.duration', '时长'), value: 'timeRange', conditionRule: function(item) {
+            item['conditionRule'] = item['rangeLimit'] + item['rangeNumber'];
+            item['conditionInverseRule'] = item['inverseCondition'] + item['rangeNumber'];
+            item['conditionRuleDsc'] = item['rangeLimitDsc'] + item['rangeNumberDsc'];
+        }
     },
     {name: Intl.get('apply.condition.item.money', '金额'), value: 'money'}
 ];
@@ -103,8 +109,22 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         selectedArr: ['hour'],
         'componentType': ALL_COMPONENTS.RANGEINPUT,
     },
-    {'rulename': Intl.get('apply.rule.radio', '单选'), 'iconfontCls': 'icon-fuwu'},
-    {'rulename': Intl.get('apply.rule.check', '多选'), 'iconfontCls': 'icon-fuwu'},
+    {'rulename': Intl.get('apply.rule.radio', '单选'), 'iconfontCls': 'icon-fuwu',
+        options: {
+            optionLabel: Intl.get('apply.time.range.unit.select.label', '选项'),
+            optionArrs: [Intl.get('apply.approve.option.one', '选项一'),Intl.get('apply.approve.option.two', '选项二')]
+        },
+        'componentType': ALL_COMPONENTS.SELECTOPTION,
+        'type': 'radio'
+    },
+    {'rulename': Intl.get('apply.rule.check', '多选'), 'iconfontCls': 'icon-fuwu',
+        options: {
+            optionLabel: Intl.get('apply.time.range.unit.select.label', '选项'),
+            optionArrs: [Intl.get('apply.approve.option.one', '选项一'),Intl.get('apply.approve.option.two', '选项二')]
+        },
+        'componentType': ALL_COMPONENTS.SELECTOPTION,
+        'type': 'checkbox'
+    },
     {'rulename': Intl.get('apply.rule.date', '日期选择'), 'iconfontCls': 'icon-fuwu'},
     {'rulename': Intl.get('apply.rule.date.and.time', '日期+时间选择'), 'iconfontCls': 'icon-fuwu'},
     {'rulename': Intl.get('apply.rule.period', '周期选择'), 'iconfontCls': 'icon-fuwu'},

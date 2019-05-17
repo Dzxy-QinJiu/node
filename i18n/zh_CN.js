@@ -2995,6 +2995,9 @@ var zh_CN = {
     'apply.condition.apply.approve': '审批流程',
     'apply.condition.item.add.cc': '抄送人',
     'apply.condition.item.money': '金额',
-    'apply.time.range.unit.select': '单位选项'
+    'apply.time.range.unit.select': '单位选项',
+    'apply.approve.option.one': '选项一',
+    'apply.approve.option.two': '选项二',
+    'apply.time.range.unit.select.label': '选项'
 };
 export default zh_CN;

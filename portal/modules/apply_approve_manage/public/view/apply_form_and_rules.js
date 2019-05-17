@@ -17,6 +17,7 @@ import {calculateHeight, APPLYAPPROVE_LAYOUT, ALL_COMPONENTS, ALL_COMPONENTS_TYP
 import InputEdit from './input-components/input-edit';
 import InputShow from './input-components/show-input';
 import ApplyRulesView from './reg-rules/reg_rules_view';
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 class AddApplyForm extends React.Component {
     constructor(props) {
         super(props);
@@ -57,7 +58,7 @@ class AddApplyForm extends React.Component {
                 mergeSameApprover: false//其他
             },
         };
-    };
+    }
 
     //根据审批流程的id获取已保存的表单，这样在写审批规则的时候就根据表单写规则
     getSavedComponentsByApplyId = (applyId) => {
@@ -134,26 +135,26 @@ class AddApplyForm extends React.Component {
         var applyTypeData = this.state.applyTypeData;
         return _.map(applyTypeData.formContent, (formItem,key) => {
             // if (formItem.componentType === 'Input') {
-                //如果是编辑状态
-                if (formItem.isEditting) {
-                    return (
-                        <InputEdit
-                            key={formItem.key}
-                            formItem={formItem}
-                            handleCancel={this.handleCancelEditFormItem}
-                            handleSubmit={this.handleSubmitInput}
-                        />
-                    );
-                } else {
-                    return (
-                        <InputShow
-                            key={formItem.key}
-                            formItem={formItem}
-                            handleRemoveItem={this.removeTargetFormItem}
-                            handleEditItem={this.handleEditItem}
-                        />
-                    );
-                }
+            //如果是编辑状态
+            if (formItem.isEditting) {
+                return (
+                    <InputEdit
+                        key={formItem.key}
+                        formItem={formItem}
+                        handleCancel={this.handleCancelEditFormItem}
+                        handleSubmit={this.handleSubmitInput}
+                    />
+                );
+            } else {
+                return (
+                    <InputShow
+                        key={formItem.key}
+                        formItem={formItem}
+                        handleRemoveItem={this.removeTargetFormItem}
+                        handleEditItem={this.handleEditItem}
+                    />
+                );
+            }
             // }
         });
     };
@@ -228,17 +229,17 @@ class AddApplyForm extends React.Component {
         var applyTypeData = this.state.applyTypeData;
         var componentType = ruleItem.componentType;
         // if (_.includes(['Input','InputNumber'], componentType)){
-            var formContent = _.get(applyTypeData, 'formContent', []);
-            var keysArr = _.map(formContent,'key');
-            var formContentKey = 0;
-            if (keysArr.length){
-                formContentKey = _.max(keysArr) + 1;
-            }
-            formContent.push({...ruleItem, 'key': formContentKey, 'isEditting': true});
-            applyTypeData.formContent = formContent;
-            this.setState({
-                applyTypeData: applyTypeData
-            });
+        var formContent = _.get(applyTypeData, 'formContent', []);
+        var keysArr = _.map(formContent,'key');
+        var formContentKey = 0;
+        if (keysArr.length){
+            formContentKey = _.max(keysArr) + 1;
+        }
+        formContent.push({...ruleItem, 'key': formContentKey, 'isEditting': true});
+        applyTypeData.formContent = formContent;
+        this.setState({
+            applyTypeData: applyTypeData
+        });
         // }
     };
     renderAddFormRules = () => {
@@ -248,7 +249,7 @@ class AddApplyForm extends React.Component {
                     var cls = 'iconfont ' + ruleItem.iconfontCls;
                     return (
                         <span className="rule-content-container"
-                              onClick={this.handleAddComponents.bind(this, ruleItem)}>
+                            onClick={this.handleAddComponents.bind(this, ruleItem)}>
                             <i className={cls}></i>
                             <span className="rule-cls">{ruleItem.rulename}</span>
                             {ruleItem.defaultPlaceholder && !ruleItem.notshowInList ?
@@ -262,12 +263,14 @@ class AddApplyForm extends React.Component {
     renderFormContent = () => {
         return (
             <div className="apply-form-content-wrap"
-                 style={{height: calculateHeight() - 2 * APPLYAPPROVE_LAYOUT.PADDINGHEIGHT - APPLYAPPROVE_LAYOUT.TABTITLE - APPLYAPPROVE_LAYOUT.TOPANDBOTTOM}}>
+                style={{height: calculateHeight() - 2 * APPLYAPPROVE_LAYOUT.PADDINGHEIGHT - APPLYAPPROVE_LAYOUT.TABTITLE - APPLYAPPROVE_LAYOUT.TOPANDBOTTOM}}>
                 <div className="apply-form-rules">
                     {this.renderAddFormRules()}
                 </div>
                 <div className="apply-form-content-container">
-                    {this.renderAddFormContent()}
+                    <GeminiScrollbar>
+                        {this.renderAddFormContent()}
+                    </GeminiScrollbar>
                 </div>
             </div>
         );
@@ -286,14 +289,14 @@ class AddApplyForm extends React.Component {
         return (
             <div className="add-apply-form-content">
                 <Tabs defaultActiveKey={TAB_KEYS.FORM_CONTENT}
-                      activeKey={this.state.activeKey}
-                      onChange={this.handleTabChange}>
+                    activeKey={this.state.activeKey}
+                    onChange={this.handleTabChange}>
                     <TabPane tab={Intl.get('apply.add.form.content', '表单内容')}
-                             key={TAB_KEYS.FORM_CONTENT}>
+                        key={TAB_KEYS.FORM_CONTENT}>
                         {this.renderFormContent()}
                     </TabPane>
                     <TabPane tab={Intl.get('apply.add.form.regex', '审批规则')}
-                             key={TAB_KEYS.APPLY_RULE}>
+                        key={TAB_KEYS.APPLY_RULE}>
                         {this.renderApplyRegex()}
                     </TabPane>
                 </Tabs>
@@ -320,7 +323,7 @@ class AddApplyForm extends React.Component {
 }
 
 AddApplyForm.defaultProps = {
-    closeAddPanel: function () {
+    closeAddPanel: function() {
 
     },
     applyTypeData: {}

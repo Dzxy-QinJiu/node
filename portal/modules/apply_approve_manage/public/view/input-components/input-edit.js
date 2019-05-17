@@ -3,9 +3,10 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/4/4.
  */
-import {Input,Checkbox } from 'antd';
+import {Input,Checkbox, Icon } from 'antd';
 const CheckboxGroup = Checkbox.Group;
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-field';
 require('./index.less');
 import classNames from 'classnames';
 class InputEdit extends React.Component {
@@ -13,9 +14,7 @@ class InputEdit extends React.Component {
         super(props);
         var formItem = _.cloneDeep(this.props.formItem);
         this.state = {
-            title: _.get(formItem,'title',''),//标题
-            placeholder: _.get(formItem,'placeholder','') || _.get(formItem,'defaultPlaceholder',''),//提示说明
-            isRequired: _.get(formItem,'isRequired',false), //是否必填
+            formItem: formItem,
             loading: false,//正在保存
             submitErrorMsg: '',
             titleRequiredMsg: '',
@@ -25,6 +24,7 @@ class InputEdit extends React.Component {
 
     };
     handleChangeTopic = (e) => {
+        var formItem = this.state.formItem;
         var value = e.target.value;
         if (value){
             var errTip = value.length > 6 ? Intl.get('apply.components.length.character', '标题长度不能超过6个字符') : '';
@@ -32,22 +32,25 @@ class InputEdit extends React.Component {
                 submitErrorMsg: errTip
             });
         }
+        formItem.title = value;
         this.setState({
-            title: value
+            formItem
         });
     };
     handleChangeTip = (e) => {
-        var value = e.target.value;
+        var formItem = this.state.formItem;
+        formItem.placeholder = e.target.value;
         this.setState({
-            placeholder: value
+            formItem
         });
     };
     handleSubmit = () => {
         if (this.state.loading || this.state.submitErrorMsg){
             return;
         }
+        var formItem = this.state.formItem;
         //如果必填项没有写，不允许提交
-        if (!this.state.title){
+        if (!formItem.title){
             this.setState({
                 titleRequiredMsg: Intl.get('apply.components.write.title', '请填写标题！')
             });
@@ -56,13 +59,7 @@ class InputEdit extends React.Component {
         this.setState({
             loading: true
         },() => {
-            var submitData = {
-                key: _.get(this,'props.formItem.key'),
-                placeholder: this.state.placeholder,
-                title: this.state.title,
-                isRequired: this.state.isRequired
-            };
-            this.props.handleSubmit(submitData,() => {
+            this.props.handleSubmit(formItem,() => {
             },(errorMsg) => {
                 this.setState({
                     loading: false,
@@ -72,7 +69,7 @@ class InputEdit extends React.Component {
         });
     };
     handleCancel = () => {
-        var formItem = this.props.formItem;
+        var formItem = this.state.formItem;
         if (formItem){
             formItem.isEditting = false;
             this.props.handleCancel(formItem);
@@ -80,16 +77,37 @@ class InputEdit extends React.Component {
 
     };
     onCheckboxChange = (e) => {
+        var formItem = this.state.formItem;
+        formItem.isRequired = e.target.checked;
         this.setState({
-            isRequired: e.target.checked
+            formItem
         });
     };
     ontimeRangeChange = (checkedValues) => {
-        var formItem = this.props.formItem;
+        var formItem = this.state.formItem;
         formItem.selectedArr = checkedValues;
+        this.setState({formItem});
+    };
+    handleAddInput = () => {
+        var formItem = this.state.formItem;
+        var options = _.get(formItem,'options.optionArrs');
+        options.push('');
+        this.setState({formItem});
+    };
+    handleMinusInput = (index) => {
+        var formItem = this.state.formItem;
+        var options = _.get(formItem,'options.optionArrs');
+        options.splice(index ,1);
+        this.setState({formItem});
+    };
+    handleInputChange = (index,e) => {
+        var formItem = this.state.formItem;
+        var options = _.get(formItem,'options.optionArrs');
+        options.splice(index ,1, e.target.value);
+        this.setState({formItem});
     };
     render = () => {
-        var formItem = this.props.formItem, hasErrTip = this.state.titleRequiredMsg;
+        var formItem = this.state.formItem, hasErrTip = this.state.titleRequiredMsg;
         var cls = classNames('',{
             'err-tip': hasErrTip
         });
@@ -105,16 +123,16 @@ class InputEdit extends React.Component {
                 <div className="component-row required">
                     <span className="label-components">{Intl.get('crm.alert.topic', '标题')}</span>
                     <span className="text-components">
-                        <Input className={cls} defaultValue={this.state.title} onChange={this.handleChangeTopic}/>
+                        <Input className={cls} defaultValue={_.get(formItem,'title')} onChange={this.handleChangeTopic}/>
                         {hasErrTip ? <span className="require-err-tip">
                             {hasErrTip}
                         </span> : null}
                     </span>
                 </div>
-                {this.state.placeholder ? <div className="component-row">
+                { _.get(formItem,'defaultPlaceholder','') ? <div className="component-row">
                     <span className="label-components">{Intl.get('apply.components.tip.msg', '提示说明')}</span>
                     <span className='text-components'>
-                        <Input className={cls} defaultValue={this.state.placeholder} onChange={this.handleChangeTip}/>
+                        <Input className={cls} defaultValue={ _.get(formItem,'defaultPlaceholder','')} onChange={this.handleChangeTip}/>
                     </span>
                 </div> : null}
                 {_.get(formItem,'timeRange') ?
@@ -125,11 +143,31 @@ class InputEdit extends React.Component {
                         </span>
                     </div>
                     : null}
+                {_.get(formItem,'options') ?
+                    <div className="component-row required">
+
+                        <span className="label-components">{_.get(formItem,'options.optionLabel')}</span>
+                        <span className="text-components">
+                            {_.map(_.get(formItem,'options.optionArrs'),(item,index) => {
+                                const noShowMinus = index === 0 && _.get(formItem,'options.optionArrs.length') === 1;
+                                const noShowAdd = index + 1 !== _.get(formItem,'options.optionArrs.length');
+                                return <span className="option-container" key={index}>
+                                    <Input value={item} onChange={this.handleInputChange.bind(this, index)}/>
+                                    <span className="icon-container">
+                                        <Icon className={noShowMinus ? 'hide-icon' : ''} type="minus" onClick={this.handleMinusInput.bind(this,index)}/>
+                                        <Icon className={noShowAdd ? 'hide-icon' : ''} type="plus" onClick={this.handleAddInput.bind(this,index)}/>
+                                    </span>
+                                </span>;
+                            })}
+                        </span>
+
+                    </div>
+                    : null}
 
                 <div className="component-row">
                     <span className="label-components">{Intl.get('crm.186', '其他')}</span>
                     <span className="text-components">
-                        <Checkbox checked={this.state.isRequired} onChange={this.onCheckboxChange}/>
+                        <Checkbox checked={_.get(formItem,'isRequired')} onChange={this.onCheckboxChange}/>
                         {Intl.get('apply.components.required.item', '必填')}
                     </span>
                 </div>

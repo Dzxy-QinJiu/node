@@ -8,10 +8,10 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/4/4.
  */
-import {Input,Checkbox ,Button} from 'antd';
+import {Input, Checkbox, Button} from 'antd';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 require('./index.less');
-import {ALL_COMPONENTS,ALL_COMPONENTS_TYPE,applyComponentsType} from '../../utils/apply-approve-utils';
+import {ALL_COMPONENTS, ALL_COMPONENTS_TYPE, applyComponentsType} from '../../utils/apply-approve-utils';
 import classNames from 'classnames';
 class InputShow extends React.Component {
     constructor(props) {
@@ -21,28 +21,40 @@ class InputShow extends React.Component {
             showCancelConfirmBtn: false
         };
     }
+
     onStoreChange = () => {
 
     };
+
     componentWillReceiveProps(nextProps) {
 
-    };
+    }
+
     getTargetType = (formItem) => {
-        var target = _.find(applyComponentsType,item => item.name === _.get(formItem,'componentType'));
-        if (target){
+        var target = _.find(applyComponentsType, item => item.name === _.get(formItem, 'componentType'));
+        if (target) {
             var ApplyComponent = target.component;
             var componentProps = {
-                placeholder: _.get(formItem,'placeholder'),
+                placeholder: _.get(formItem, 'placeholder'),
                 type: formItem.type || '',
                 addonAfter: formItem.addonAfter || '',
             };
-            if (_.get(formItem,'componentType') === ALL_COMPONENTS.RANGEINPUT){
-                componentProps.selectedArr = _.filter(_.get(formItem,'timeRange.unitList'),item=>
-                    _.indexOf(_.get(formItem,'selectedArr'),item.value) > -1
+            if (_.get(formItem, 'componentType') === ALL_COMPONENTS.RANGEINPUT) {
+                componentProps.selectedArr = _.filter(_.get(formItem, 'timeRange.unitList'), item =>
+                    _.indexOf(_.get(formItem, 'selectedArr'), item.value) > -1
                 );
-            };
+            }
+            
+            if (_.get(formItem, 'componentType') === ALL_COMPONENTS.SELECTOPTION) {
+                var optionArr = _.filter(_.get(formItem, 'options.optionArrs'), item => item);
+                componentProps.selectedArr = [];
+                _.forEach(optionArr, (item) => {
+                    componentProps.selectedArr.push({label: item, value: item});
+                });
+            }
+            
             return <ApplyComponent {...componentProps}/>;
-        }else{
+        } else {
             return null;
         }
     };
@@ -62,9 +74,9 @@ class InputShow extends React.Component {
 
     render = () => {
         var formItem = this.props.formItem;
-        var isRequired = _.get(formItem,'isRequired');
+        var isRequired = _.get(formItem, 'isRequired');
 
-        var cls = classNames('title-label',{
+        var cls = classNames('title-label', {
             'required': isRequired
         });
         return (
@@ -73,13 +85,16 @@ class InputShow extends React.Component {
                     <span className="pull-right icon-container">
                         {this.state.showCancelConfirmBtn ?
                             <span className="btns-container">
-                                <Button className='confirm-btn' onClick={this.props.handleRemoveItem.bind(this, formItem)}>{Intl.get('crm.contact.delete.confirm', '确认删除')}</Button>
+                                <Button className='confirm-btn'
+                                    onClick={this.props.handleRemoveItem.bind(this, formItem)}>{Intl.get('crm.contact.delete.confirm', '确认删除')}</Button>
                                 <Button onClick={this.cancelRemoveItem}>{Intl.get('common.cancel', '取消')}</Button>
                             </span>
                             : <span className="icon-wrap">
-                                <i className="iconfont icon-update" onClick={this.handleEditItem.bind(this, formItem)}></i>
+                                <i className="iconfont icon-update"
+                                    onClick={this.handleEditItem.bind(this, formItem)}></i>
                                 <i className="iconfont icon-transfer"></i>
-                                <i className="iconfont icon-delete" onClick={this.handleRemoveItem.bind(this, formItem)}></i>
+                                <i className="iconfont icon-delete"
+                                    onClick={this.handleRemoveItem.bind(this, formItem)}></i>
                             </span>}
 
                     </span>
@@ -93,7 +108,7 @@ class InputShow extends React.Component {
 InputShow.defaultProps = {
     formItem: {},
     handleRemoveItem: function() {
-        
+
     },
     handleEditItem: function() {
 
