@@ -1309,7 +1309,7 @@ class Crm extends React.Component {
     };
 
     //获取导入预览中的列
-    getPrevColumns = () => {
+    getPreviewColumns = () => {
         const column_width_min = 80, column_width = 120, column_width_max = 200;
         return [
             {
@@ -1800,7 +1800,7 @@ class Crm extends React.Component {
                     uploadHref='/rest/crm/customers'
                     previewList={this.state.previewList}
                     showFlag={this.state.crmTemplateRightPanelShow}
-                    getItemPrevList={this.getPrevColumns}
+                    getItemPrevList={this.getPreviewColumns}
                     closeTemplatePanel={this.closeCrmTemplatePanel}
                     onItemListImport={this.onCustomerImport}
                     doImportAjax={this.doImport}

@@ -384,14 +384,14 @@ exports.uploadCustomers = function(req, res) {
 // 处理导入客户模板文件
 exports.getCrmTemplate = function(req, res) {
     let isCsv = req.query.is_csv;//是否是用csv格式的模板
-    let backendIntl = new BackendIntl(req);
-    let filename = backendIntl.get('sales.home.customer', '客户');
+    const backendIntl = new BackendIntl(req);
+    const filename = backendIntl.get('sales.home.customer', '客户');
     if (isCsv) {
-        let example = '客户名称（必填）,联系人,电话号码（必填，多个用空格分隔）,QQ（多个用空格分隔）,邮箱（多个用空格分隔）,联系人角色,部门,职位, 负责人,跟进记录,添加时间（格式必须为yyyy/MM/dd）,行业,所属省份,地址,竞品（多个用空格分隔）,备注\n' +
+        const example = '客户名称（必填）,联系人,电话号码（必填，多个用空格分隔）,QQ（多个用空格分隔）,邮箱（多个用空格分隔）,联系人角色,部门,职位, 负责人,跟进记录,添加时间（格式必须为yyyy/MM/dd）,行业,所属省份,地址,竞品（多个用空格分隔）,备注\n' +
             '山东客套智能科技有限公司,梁总,15666666666 05312345678,,curtao@qq.com,关键人,信息科技部,总经理,销售1,负责人不在下次再联系,2016/1/29,企业,山东省,,了解产品,,';
         templateFile(res, example, filename + '.csv');
     } else {
-        let filePath = path.resolve(__dirname, '../tpl/crm_tpl.xls');
+        const filePath = path.resolve(__dirname, '../tpl/crm_tpl.xls');
         res.download(filePath, filename + '.xls');
     }
 };
