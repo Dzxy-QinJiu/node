@@ -5,9 +5,15 @@
 import { ifNotSingleApp, argCallbackUnderlineTimeToTime } from '../../utils';
 
 export function getLoginLongChart(type = 'total') {
+    let url = `/rest/analysis/user/v1/${type}/login_long`;
+
+    if (type === 'total') {
+        url = `/rest/analysis/user/v1/all/${type}/login_long`;
+    }
+
     return {
         title: Intl.get('oplate.user.analysis.6', '在线时长统计'),
-        url: `/rest/analysis/user/v1/${type}/login_long`,
+        url,
         conditions: [{
             name: 'ranges',
             value: 1,
