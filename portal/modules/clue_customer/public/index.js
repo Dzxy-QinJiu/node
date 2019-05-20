@@ -1577,7 +1577,7 @@ class ClueCustomer extends React.Component {
                                 clueClassifyArray={this.state.clueClassifyArray}
                                 salesManList={this.getSalesDataList()}
                                 getClueList={this.getClueList}
-                                style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: this.state.tableHeight}}
+                                style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: this.state.tableHeight + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT}}
                             />
                         </div>
                         <div className={contentClassName}>
