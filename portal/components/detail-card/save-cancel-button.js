@@ -14,9 +14,9 @@ class SaveCancelButton extends React.Component {
     render() {
         return (
             <div className="button-container">
-                <Button className="button-cancel" onClick={this.props.handleCancel.bind(this)}>
+                {this.props.hideCancelBtns ? null : <Button className="button-cancel" onClick={this.props.handleCancel.bind(this)}>
                     {this.props.cancelBtnText || Intl.get('common.cancel', '取消')}
-                </Button>
+                </Button> }
                 <Button className="button-save" type="primary"
                     onClick={this.props.handleSubmit.bind(this)}
                     disabled={this.props.loading}
@@ -39,7 +39,8 @@ SaveCancelButton.defaultProps = {
     handleSubmit: function() {
     },//保存的处理
     handleCancel: function() {
-    }//取消的处理
+    },//取消的处理
+    hideCancelBtns: false
 };
 SaveCancelButton.propTypes = {
     handleSubmit: PropTypes.func,
@@ -48,5 +49,6 @@ SaveCancelButton.propTypes = {
     handleCancel: PropTypes.func,
     cancelBtnText: PropTypes.string,
     saveErrorMsg: PropTypes.string,
+    hideCancelBtns: PropTypes.bool,
 };
 export default SaveCancelButton;
