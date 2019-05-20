@@ -48,7 +48,11 @@ class RightPanelScrollBar extends React.Component {
             <div style={{height: divHeight}} className="right-pannel-scrollbar">
                 <GeminiScrollbar className="srollbar-out-card-style"
                     handleScrollBottom={this.handleScrollBarBottom.bind(this)}
-                    listenScrollBottom={this.props.listenScrollBottom}>
+                    listenScrollBottom={this.props.listenScrollBottom}
+                    ref={scrollBar => {
+                        this.rightPanelScrollBarRef = scrollBar;
+                    }}
+                >
                     {this.props.children}
                 </GeminiScrollbar>
             </div>);
