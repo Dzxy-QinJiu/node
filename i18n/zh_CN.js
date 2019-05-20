@@ -994,7 +994,7 @@ var zh_CN = {
     'call.record.save.content.success': '保存跟进内容成功！',
     'call.record.save.content.error': '保存跟进内容失败！',
     'call.record.is.save.content.title': '是否保存跟进内容？',
-    'call.record.trend.charts': '近一个月的通话趋势：',
+    'call.record.trend.charts': '近一个月的通话趋势',
     'call.record.recommend.list': '获取推荐列表失败！',
     'call.record.servicecall.get.err': '获取客服电话统计失败',
     'call.record.servicecall': '客服电话统计',

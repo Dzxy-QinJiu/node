@@ -10,7 +10,7 @@ import TopBar from './top-bar';
 import HistoricHighDetail from './historic-high-detail';
 import AppSelector from './app-selector';
 import {getContextContent} from './utils';
-import {initialTime, STORED_APP_ID_KEY, CUSTOMER_IDS_FIELD, DEFERRED_ACCOUNT_ANALYSIS_TITLE} from './consts';
+import {authType, dataType, initialTime, STORED_APP_ID_KEY, CUSTOMER_IDS_FIELD, DEFERRED_ACCOUNT_ANALYSIS_TITLE} from './consts';
 import {AntcAnalysis} from 'antc';
 import {Row, Col, Collapse} from 'antd';
 
@@ -30,11 +30,6 @@ const RightPanelClose = rightPanelUtil.RightPanelClose;
 const CustomerList = require('MOD_DIR/crm/public/crm-list');
 
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-
-//权限类型
-const authType = hasPrivilege('CUSTOMER_ANALYSIS_MANAGER') ? 'manager' : 'common';
-//数据类型
-const dataType = hasPrivilege('GET_TEAM_LIST_ALL') ? 'all' : 'self';
 
 //引入pages目录（包括子目录）下的所有index.js文件
 const req = require.context('./pages', true, /index\.js$/);

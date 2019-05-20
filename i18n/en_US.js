@@ -986,7 +986,7 @@ var en_US = {
     'call.record.save.content.success': 'Save follow-up content successfully.', // 保存跟进内容成功！
     'call.record.save.content.error': 'Failed to save follow-up content.', // 保存跟进内容失败！
     'call.record.is.save.content.title': 'Are you  sure to save follow-up content?', // 是否保存跟进内容？
-    'call.record.trend.charts': 'Call Trend(the latest month)', // 近一个月的通话趋势：
+    'call.record.trend.charts': 'Call Trend(the latest month)', // 近一个月的通话趋势
     'call.record.recommend.list': 'Failed to get recommend list.', // 获取推荐列表失败！
     'call.record.servicecall.get.err': 'Failed to get the statistic about customer services phones',//获取客服电话统计失败
     'call.record.servicecall': 'statistic about customer services phones',//客服电话统计
