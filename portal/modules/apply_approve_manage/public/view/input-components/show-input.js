@@ -67,8 +67,9 @@ class InputShow extends React.Component {
                 componentProps.displayType = _.get(formItem,'displayType');
                 componentProps.hideButtonBlock = true;
             }
-
-            
+            if (_.get(formItem, 'componentType') === ALL_COMPONENTS.TIMEPERIOD) {
+                componentProps.selectedValue = _.get(formItem,'selectedValue');
+            }
             return <ApplyComponent {...componentProps}/>;
         } else {
             return null;

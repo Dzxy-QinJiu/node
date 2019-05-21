@@ -40,10 +40,10 @@ class AddLeaveApply extends React.Component {
         var formData = this.state.formData;
         for (var key in newSetting){
             formData[key] = newSetting[key];
-        };
+        }
         this.setState({
-            formData:formData
-        },()=>{
+            formData: formData
+        },() => {
             this.calculateTotalLeaveRange();
         });
         this.addLabelRequiredCls();
@@ -299,7 +299,7 @@ class AddLeaveApply extends React.Component {
                                                 required: true,
                                                 message: Intl.get('leave.apply.fill.in.end.time', '请填写结束时间')
                                             }, {validator: _this.validateStartAndEndTime('end_time')}],
-                                            initialValue:  moment(formData.end_time)
+                                            initialValue: moment(formData.end_time)
                                         })(
                                             <DatePicker
                                                 format="YYYY-MM-DD"

@@ -101,9 +101,9 @@ class InputEdit extends React.Component {
         options.splice(index ,1);
         this.setState({formItem});
     };
-    onRadioChange = (value) => {
+    onPreciousRadioChange = (e) => {
         var formItem = this.state.formItem;
-        formItem.selectedValue = value;
+        formItem.selectedValue = e.target.value;
         this.setState({formItem});
     };
     handleInputChange = (index,e) => {
@@ -169,13 +169,13 @@ class InputEdit extends React.Component {
 
                     </div>
                     : null}
-                {_.get(formItem,'timePrecoius') ?
+                {_.get(formItem,'timePrecious') ?
                     <div className="component-row required">
-                        <span className="label-components">{_.get(formItem,'timePrecoius.unitLabel')}</span>
+                        <span className="label-components">{_.get(formItem,'timePrecious.unitLabel')}</span>
                         <span className="text-components">
-                            <RadioGroup onChange={this.onRadioChange} value={_.get(formItem,'selectedValue')}>
-                                {_.map(_.get(formItem,'timePrecoius.unitList'),item => <Radio value={item.value}>{item.label}</Radio>)}
-                            </RadioGroup>({_.get(formItem,'timePrecoius.unitMsg')})
+                            <RadioGroup onChange={this.onPreciousRadioChange} value={_.get(formItem,'selectedValue')}>
+                                {_.map(_.get(formItem,'timePrecious.unitList'),item => <Radio value={item.value}>{item.label}</Radio>)}
+                            </RadioGroup>({_.get(formItem,'timePrecious.unitMsg')})
                         </span>
 
                     </div>

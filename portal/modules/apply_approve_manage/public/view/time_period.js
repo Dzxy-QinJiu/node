@@ -22,15 +22,13 @@ class TimePeriod extends React.Component {
         };
     }
 
-    componentDidMount() {
+    componentWillMount() {
         var newSetting = calculateRangeType();
         var formData = this.state.formData;
         for (var key in newSetting) {
             formData[key] = newSetting[key];
         }
-        
         this.updateFormData(formData);
-
     }
 
     calculateTotalLeaveRange = () => {
@@ -72,10 +70,29 @@ class TimePeriod extends React.Component {
         });
         this.props.onBeginTypeChange();
     };
-    onEndTimeChange = () => {
-        this.props.onEndTimeChange();
+    onEndTimeChange = (date) => {
+        var formData = this.state.formData;
+        formData.end_time = moment(date).valueOf();
+        this.setState({
+            formData: formData
+        }, () => {
+            if (formData.begin_type && formData.end_type) {
+                this.calculateTotalLeaveRange();
+                this.props.onEndTimeChange();
+            }
+        });
+
     };
-    onEndTypeChange = () => {
+    onEndTypeChange = (value) => {
+        var formData = this.state.formData;
+        formData.end_type = value;
+        this.setState({
+            formData: formData
+        },() => {
+            if (formData.begin_type){
+                this.calculateTotalLeaveRange();
+            }
+        });
         this.props.onEndTypeChange();
     };
 
@@ -91,7 +108,7 @@ class TimePeriod extends React.Component {
                         defaultValue={moment()}
                         onChange={this.onBeginTimeChange}
                     />
-                    <Select
+                    {_.get(formData,'selectedValue') === '0.5day' || true ? <Select
                         defaultValue= {_.get(formData,'begin_type')}
                         onChange={this.onBeginTypeChange}
 
@@ -101,7 +118,11 @@ class TimePeriod extends React.Component {
                                 return (<Option key={idx} value={item.value}>{item.name}</Option>);
                             }) : null
                         }
-                    </Select>
+                    </Select> : null}
+
+                </span>
+                <span className="split-line">
+                     ——
                 </span>
                 <span className="end-container">
                     <DatePicker
@@ -109,7 +130,7 @@ class TimePeriod extends React.Component {
                         defaultValue={moment()}
                         onChange={this.onEndTimeChange}
                     />
-                    <Select
+                    {_.get(formData,'selectedValue') === '0.5day' || true ? <Select
                         defaultValue= {_.get(formData,'end_type')}
                         onChange={this.onEndTypeChange}
 
@@ -119,7 +140,11 @@ class TimePeriod extends React.Component {
                                 return (<Option key={idx} value={item.value}>{item.name}</Option>);
                             }) : null
                         }
-                    </Select>
+                    </Select> : null}
+
+                </span>
+                <span className="total-range-container">
+                    {_.get(formData,'total_range') ? Intl.get('apply.approve.total.days', '共{X}天',{X: _.get(formData,'total_range')}) : null}
                 </span>
 
 
@@ -129,6 +154,7 @@ class TimePeriod extends React.Component {
 }
 
 TimePeriod.defaultProps = {
+    selectedValue: '',
     placeholder: '',
     selectedArr: [],
     onBeginTimeChange: function() {
@@ -146,6 +172,7 @@ TimePeriod.defaultProps = {
 };
 
 TimePeriod.propTypes = {
+    selectedValue: PropTypes.string,
     placeholder: PropTypes.string,
     selectedArr: PropTypes.array,
     onBeginTimeChange: PropTypes.func,

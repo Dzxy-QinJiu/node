@@ -157,7 +157,7 @@ exports.ADDAPPLYFORMCOMPONENTS = [
     },
     {
         'rulename': Intl.get('apply.rule.period', '周期选择'), 'iconfontCls': 'icon-fuwu',
-        timePrecoius: {
+        timePrecious: {
             unitLabel: Intl.get('apply.time.select.period', '周期选择'),
             unitList: [{
                 label: Intl.get('weekly.report.n.days', '{n}天', {n: 1}),
