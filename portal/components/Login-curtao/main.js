@@ -274,9 +274,9 @@ class LoginMain extends React.Component {
             return (
                 <div className="login-wrap" style={bgStyle}>
                     <Logo logoSrc={logoScr}/>
-                    <Button className='login-register-btn' onClick={this.changeView.bind(this)}>
-                        {this.state.currentView === VIEWS.RIGISTER ? Intl.get('login.login', '登录') : Intl.get('login.register', '注册')}
-                    </Button>
+                    {/*<Button className='login-register-btn' onClick={this.changeView.bind(this)}>*/}
+                    {/*{this.state.currentView === VIEWS.RIGISTER ? Intl.get('login.login', '登录') : Intl.get('login.register', '注册')}*/}
+                    {/*</Button>*/}
                     {hasWindow ? (
                         <div className="form-wrap" style={{height: this.getFormHeight()}}>
                             <div className="form-title">
