@@ -3,13 +3,19 @@
  */
 
 import Store from '../../store';
+import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import { Radio, Switch } from 'antd';
 const RadioGroup = Radio.Group;
 
 export function getCallNumberTimeTrendChart() {
-    this.chart = {
+    return {
         title: Intl.get('call.record.trend.charts', '近一个月的通话趋势'),
         chartType: 'line',
+        option: {
+            tooltip: {
+                formatter: getTooltipFormatter('count')
+            }
+        },
         layout: {sm: 24},
         url: '/rest/analysis/callrecord/v1/callrecord/histogram',
         conditions: [{
@@ -23,29 +29,40 @@ export function getCallNumberTimeTrendChart() {
             query.start_time = moment(query.end_time).subtract(1, 'month').valueOf();
         },
         dataField: 'total',
-        processData: (data, chart) => {
-            chart.cardContainer.props.subTitle = renderCallTrendChartSwitch();
+        processData: (data, chart, analysisInstance) => {
+            _.set(chart, 'cardContainer.props.subTitle', renderCallTrendChartSwitch(chart, analysisInstance));
 
-            return _.map(data, item => {
-                return {
-                    name: moment(item.date).format(oplateConsts.DATE_FORMAT),
+            //通话数量
+            let dataCount = [];
+            //通话时长
+            let dataDuration = [];
+
+            _.each(data, item => {
+                const name = moment(item.date).format(oplateConsts.DATE_FORMAT);
+
+                dataCount.push({
+                    name,
                     value: item.docments
-                };
+                });
+
+                dataDuration.push({
+                    name,
+                    value: item.sum
+                });
             });
+
+            chart.data_count = dataCount;
+            chart.data_duration = dataDuration;
+
+            //默认显示通话数量
+            return dataCount;
         },
-        cardContainer: {
-            getProps: (analysisInstance, charts, chart) => {
-                return {
-                    subTitle: renderCallTrendChartSwitch(analysisInstance, charts, chart)
-                };
-            }
-        }
     };
 
-    function renderCallTrendChartSwitch(analysisInstance, charts, chart) {
+    function renderCallTrendChartSwitch(chart, analysisInstance) {
         return (
             <div>
-                <RadioGroup defaultValue='count' onChange={handleSelectRadio.bind(this, analysisInstance, charts, chart)}>
+                <RadioGroup defaultValue='count' onChange={handleRadioChange.bind(this, chart, analysisInstance)}>
                     <Radio value="count">{Intl.get('sales.home.call.cout', '通话数量')}</Radio>
                     <Radio value="duration">{Intl.get('call.record.call.duration', '通话时长')}</Radio>
                 </RadioGroup>
@@ -53,7 +70,7 @@ export function getCallNumberTimeTrendChart() {
                 {Store.teamMemberFilterType === 'team' ? (
                     <div style={{display: 'inline-block'}}>
                         {Intl.get('call.record.all.teams.trend', '查看各团队通话趋势图')}：
-                        <Switch onChange={handleSwitchChange}
+                        <Switch onChange={handleSwitchChange.bind(this, chart, analysisInstance)}
                             checkedChildren={Intl.get('user.yes', '是')}
                             unCheckedChildren={Intl.get('user.no', '否')}/>
                     </div>
@@ -62,8 +79,53 @@ export function getCallNumberTimeTrendChart() {
         );
     }
 
-    function handleSelectRadio(analysisInstance, charts, chart, value) {
-        console.log(analysisInstance, charts, chart, value);
+    //通话数量、通话时长按钮变化处理函数
+    function handleRadioChange(chart, analysisInstance, e) {
+        const value = e.target.value;
+
+        chart.data = chart['data_' + value];
+
+        const formatter = getTooltipFormatter(value);
+
+        _.set(chart, 'option.tooltip.formatter', formatter);
+
+        const charts = analysisInstance.state.charts;
+
+        analysisInstance.setState({charts});
     }
-    function handleSwitchChange() {}
+
+    //获取tooltip格式化函数
+    function getTooltipFormatter(type) {
+        return function(params) {
+            let textArr = [];
+
+            _.each(params, (param, index) => {
+                if (index === 0) {
+                    textArr.push(param.name);
+                }
+
+                let text = '';
+                let value = param.value;
+
+                if (type === 'count') {
+                    text += Intl.get('sales.home.call.cout', '通话数量');
+                } else {
+                    text += Intl.get('call.record.call.duration', '通话时长');
+                    value = TimeUtil.secondsToHourMinuteSecond(value).timeDescr;
+                }
+
+                text += ': ' + value;
+
+                textArr.push(text);
+            });
+
+            const content = textArr.join('<br>');
+
+            return content;
+        };
+    }
+
+    //“查看各团队通话趋势图”开关变化处理函数
+    function handleSwitchChange(chart, analysisInstance, value) {
+    }
 }
