@@ -21,6 +21,9 @@ export function getCallNumberTimeTrendChart() {
         conditions: [{
             name: 'interval',
             value: 'day',
+        }, {
+            name: 'statistics_type',
+            value: 'team',
         }],
         argCallback: arg => {
             let query = arg.query;
@@ -28,8 +31,9 @@ export function getCallNumberTimeTrendChart() {
             //开始时间改为从结束时间往前推一个月
             query.start_time = moment(query.end_time).subtract(1, 'month').valueOf();
         },
-        dataField: 'total',
         processData: (data, chart, analysisInstance) => {
+            chart.rawData = data;
+
             _.set(chart, 'cardContainer.props.subTitle', renderCallTrendChartSwitch(chart, analysisInstance));
 
             //通话数量
@@ -37,18 +41,30 @@ export function getCallNumberTimeTrendChart() {
             //通话时长
             let dataDuration = [];
 
-            _.each(data, item => {
-                const name = moment(item.date).format(oplateConsts.DATE_FORMAT);
+            _.each(data, (v, k) => {
+                if (_.isEmpty(dataCount)) {
+                    _.each(v, item => {
+                        const name = moment(item.date).format(oplateConsts.DATE_FORMAT);
 
-                dataCount.push({
-                    name,
-                    value: item.docments
-                });
+                        dataCount.push({
+                            name,
+                            value: item.docments
+                        });
 
-                dataDuration.push({
-                    name,
-                    value: item.sum
-                });
+                        dataDuration.push({
+                            name,
+                            value: item.sum
+                        });
+                    });
+                } else {
+                    _.each(dataCount, (item, index) => {
+                        item.value += v[index].docments;
+                    });
+
+                    _.each(dataDuration, (item, index) => {
+                        item.value += v[index].sum;
+                    });
+                }
             });
 
             chart.data_count = dataCount;
