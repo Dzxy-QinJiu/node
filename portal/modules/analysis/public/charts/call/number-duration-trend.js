@@ -32,8 +32,6 @@ export function getCallNumberTimeTrendChart() {
             query.start_time = moment(query.end_time).subtract(1, 'month').valueOf();
         },
         processData: (data, chart, analysisInstance) => {
-            chart.rawData = data;
-
             _.set(chart, 'cardContainer.props.subTitle', renderCallTrendChartSwitch(chart, analysisInstance));
 
             //通话数量
@@ -44,15 +42,15 @@ export function getCallNumberTimeTrendChart() {
             _.each(data, (v, k) => {
                 if (_.isEmpty(dataCount)) {
                     _.each(v, item => {
-                        const name = moment(item.date).format(oplateConsts.DATE_FORMAT);
+                        item.name = moment(item.date).format(oplateConsts.DATE_FORMAT);
 
                         dataCount.push({
-                            name,
+                            name: item.name,
                             value: item.docments
                         });
 
                         dataDuration.push({
-                            name,
+                            name: item.name,
                             value: item.sum
                         });
                     });
@@ -69,12 +67,14 @@ export function getCallNumberTimeTrendChart() {
 
             chart.data_count = dataCount;
             chart.data_duration = dataDuration;
+            chart.processedData = data;
 
             //默认显示通话数量
             return dataCount;
         },
     };
 
+    //渲染切换按钮
     function renderCallTrendChartSwitch(chart, analysisInstance) {
         return (
             <div>
@@ -143,5 +143,37 @@ export function getCallNumberTimeTrendChart() {
 
     //“查看各团队通话趋势图”开关变化处理函数
     function handleSwitchChange(chart, analysisInstance, value) {
+        if (value) {
+            chart.processOption = option => {
+                if (analysisInstance.teamViewOption) {
+                    option.series = analysisInstance.teamViewOption.series;
+                } else {
+                    let legendData = [];
+                    let series = [];
+
+                    _.each(chart.processedData, (v, k) => {
+                        legendData.push(k);
+                        series.push({
+                            type: 'line',
+                            name: k,
+                            data: _.map(v, item => {
+                                return {
+                                    name: item.name,
+                                    value: item.docments
+                                };
+                            })
+                        });
+                    });
+
+                    option.legend.data = legendData;
+                    option.series = series;
+                }
+            };
+        } else {
+        }
+
+        const charts = analysisInstance.state.charts;
+
+        analysisInstance.setState({charts});
     }
 }
