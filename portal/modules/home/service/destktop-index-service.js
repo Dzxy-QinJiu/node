@@ -114,6 +114,9 @@ function getIsCommonSalesByTeams(userId, teamTreeList) {
                 isCommonSales = true;
             }
         }
+    } else {//没有团队的销售也是普通销售
+        isCommonSales = true;
+
     }
     return isCommonSales;
 }
