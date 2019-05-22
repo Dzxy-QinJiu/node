@@ -40,16 +40,16 @@ class InputShow extends React.Component {
                 addonAfter: formItem.addonAfter || '',
             };
             if (_.get(formItem, 'component_type') === ALL_COMPONENTS.RANGEINPUT) {
-                componentProps.selectedArr = _.filter(_.get(formItem, 'timeRange.unitList'), item =>
-                    _.indexOf(_.get(formItem, 'selectedArr'), item.value) > -1
+                componentProps.default_value = _.filter(_.get(formItem, 'select_arr'), item =>
+                    _.indexOf(_.get(formItem, 'default_value'), item.value) > -1
                 );
             }
             
             if (_.get(formItem, 'component_type') === ALL_COMPONENTS.SELECTOPTION) {
-                var optionArr = _.filter(_.get(formItem, 'options.optionArrs'), item => item);
-                componentProps.selectedArr = [];
+                var optionArr = _.filter(_.get(formItem, 'select_arr'), item => item);
+                componentProps.default_value = [];
                 _.forEach(optionArr, (item) => {
-                    componentProps.selectedArr.push({label: item, value: item});
+                    componentProps.default_value.push({label: item, value: item});
                 });
             }
             if (_.get(formItem, 'component_type') === ALL_COMPONENTS.DATETIME) {

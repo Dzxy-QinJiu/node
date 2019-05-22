@@ -9,6 +9,7 @@ const RadioGroup = Radio.Group;
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-field';
 require('./index.less');
+import {ALL_COMPONENTS} from '../../utils/apply-approve-utils';
 import classNames from 'classnames';
 class InputEdit extends React.Component {
     constructor(props) {
@@ -27,12 +28,12 @@ class InputEdit extends React.Component {
     handleChangeTopic = (e) => {
         var formItem = this.state.formItem;
         var value = e.target.value;
-        if (value){
-            var errTip = value.length > 6 ? Intl.get('apply.components.length.character', '标题长度不能超过6个字符') : '';
-            this.setState({
-                submitErrorMsg: errTip
-            });
-        }
+        // if (value){
+        //     var errTip = value.length > 6 ? Intl.get('apply.components.length.character', '标题长度不能超过6个字符') : '';
+        //     this.setState({
+        //         submitErrorMsg: errTip
+        //     });
+        // }
         formItem.title = value;
         this.setState({
             formItem
@@ -86,18 +87,18 @@ class InputEdit extends React.Component {
     };
     ontimeRangeChange = (checkedValues) => {
         var formItem = this.state.formItem;
-        formItem.selectedArr = checkedValues;
+        formItem.default_value = checkedValues;
         this.setState({formItem});
     };
     handleAddInput = () => {
         var formItem = this.state.formItem;
-        var options = _.get(formItem,'options.optionArrs');
+        var options = _.get(formItem,'select_arr');
         options.push('');
         this.setState({formItem});
     };
     handleMinusInput = (index) => {
         var formItem = this.state.formItem;
-        var options = _.get(formItem,'options.optionArrs');
+        var options = _.get(formItem,'select_arr');
         options.splice(index ,1);
         this.setState({formItem});
     };
@@ -108,7 +109,7 @@ class InputEdit extends React.Component {
     };
     handleInputChange = (index,e) => {
         var formItem = this.state.formItem;
-        var options = _.get(formItem,'options.optionArrs');
+        var options = _.get(formItem,'select_arr');
         options.splice(index ,1, e.target.value);
         this.setState({formItem});
     };
@@ -135,28 +136,28 @@ class InputEdit extends React.Component {
                         </span> : null}
                     </span>
                 </div>
-                { _.get(formItem,'placeholder','') ? <div className="component-row">
+                { _.get(this,'props.formItem.placeholder','') ? <div className="component-row">
                     <span className="label-components">{Intl.get('apply.components.tip.msg', '提示说明')}</span>
                     <span className='text-components'>
                         <Input className={cls} defaultValue={ _.get(formItem,'placeholder','')} onChange={this.handleChangeTip}/>
                     </span>
                 </div> : null}
-                {_.get(formItem,'timeRange') ?
+                {_.get(formItem,'component_type') === ALL_COMPONENTS.RANGEINPUT ?
                     <div className="component-row required">
-                        <span className="label-components">{_.get(formItem,'timeRange.unitLabel')}</span>
+                        <span className="label-components">{_.get(formItem,'unitLabel')}</span>
                         <span className='text-components'>
-                            <CheckboxGroup options={_.get(formItem,'timeRange.unitList',[])} defaultValue={_.get(formItem,'selectedArr')} onChange={this.ontimeRangeChange} />
+                            <CheckboxGroup options={_.get(formItem,'select_arr',[])} defaultValue={_.get(formItem,'default_value')} onChange={this.ontimeRangeChange} />
                         </span>
                     </div>
                     : null}
-                {_.get(formItem,'options') ?
+                {_.get(formItem,'component_type') === ALL_COMPONENTS.SELECTOPTION ?
                     <div className="component-row required">
 
-                        <span className="label-components">{_.get(formItem,'options.optionLabel')}</span>
+                        <span className="label-components">{_.get(formItem,'unitLabel')}</span>
                         <span className="text-components">
-                            {_.map(_.get(formItem,'options.optionArrs'),(item,index) => {
-                                const noShowMinus = index === 0 && _.get(formItem,'options.optionArrs.length') === 1;
-                                const noShowAdd = index + 1 !== _.get(formItem,'options.optionArrs.length');
+                            {_.map(_.get(formItem,'select_arr'),(item,index) => {
+                                const noShowMinus = index === 0 && _.get(formItem,'select_arr.length') === 1;
+                                const noShowAdd = index + 1 !== _.get(formItem,'select_arr.length');
                                 return <span className="option-container" key={index}>
                                     <Input value={item} onChange={this.handleInputChange.bind(this, index)}/>
                                     <span className="icon-container">
@@ -169,13 +170,13 @@ class InputEdit extends React.Component {
 
                     </div>
                     : null}
-                {_.get(formItem,'timePrecious') ?
+                {_.get(formItem,'component_type') === ALL_COMPONENTS.TIMEPERIOD ?
                     <div className="component-row required">
-                        <span className="label-components">{_.get(formItem,'timePrecious.unitLabel')}</span>
+                        <span className="label-components">{_.get(formItem,'unitLabel')}</span>
                         <span className="text-components">
                             <RadioGroup onChange={this.onPreciousRadioChange} value={_.get(formItem,'selectedValue')}>
-                                {_.map(_.get(formItem,'timePrecious.unitList'),item => <Radio value={item.value}>{item.label}</Radio>)}
-                            </RadioGroup>({_.get(formItem,'timePrecious.unitMsg')})
+                                {_.map(_.get(formItem,'select_arr'),item => <Radio value={item.value}>{item.label}</Radio>)}
+                            </RadioGroup>({_.get(formItem,'unitMsg')})
                         </span>
 
                     </div>

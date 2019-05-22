@@ -7,6 +7,8 @@
 var ApplyApproveManageService = require('../service/apply_approve_manage-service');
 var moment = require('moment');
 var _ = require('lodash');
+const fs = require('fs');
+const path = require('path');
 exports.addSelfSettingWorkFlow = function(req, res) {
     ApplyApproveManageService.addSelfSettingWorkFlow(req, res).on('success', function(data) {
         res.status(200).json(data);
@@ -29,10 +31,23 @@ exports.deleteSelfSettingWorkFlow = function(req, res) {
     });
 };
 exports.saveSelfSettingWorkFlowRules = function(req, res) {
-    ApplyApproveManageService.saveSelfSettingWorkFlowRules(req, res).on('success', function(data) {
+    var reqBody = _.cloneDeep(req.body);
+    var applyId = req.params.id;
+    //将字符串写成临时文件
+    // const filePath = path.resolve(__dirname, `${applyId}.bpmn`);
+    fs.writeFileSync(`${applyId}.bpmn`, reqBody.bpmnJson, 'utf-8');
+    //再将文件转换成文档流
+    var formData = {
+        ...reqBody,
+        id: applyId,
+        file: fs.createReadStream(`${applyId}.bpmn`),
+    };
+    ApplyApproveManageService.saveSelfSettingWorkFlowRules(req, res, formData).on('success', function (data) {
         res.status(200).json(data);
-    }).on('error', function(codeMessage) {
+    }).on('error', function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
+
+
 };
 

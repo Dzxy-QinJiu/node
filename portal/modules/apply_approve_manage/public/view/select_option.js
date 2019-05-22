@@ -14,7 +14,7 @@ class SelectOption extends React.Component {
     }
 
     renderRadioGroup = () => {
-        var selectArr = this.props.selectedArr;
+        var selectArr = this.props.default_value;
         return (
             <RadioGroup>
                 {_.map(selectArr, (item) => {
@@ -24,11 +24,11 @@ class SelectOption extends React.Component {
         );
     };
     renderCheckGroup = () => {
-        var selectArr = this.props.selectedArr;
+        var selectArr = this.props.default_value;
         return <CheckboxGroup options={selectArr}/>;
     };
     renderOptionGroup = () => {
-        var selectArr = this.props.selectedArr;
+        var selectArr = this.props.default_value;
         return (
             <Select
                 showSearch
@@ -53,13 +53,13 @@ class SelectOption extends React.Component {
 }
 
 SelectOption.defaultProps = {
-    selectedArr: [],
+    default_value: [],
     type: '',
     placeholder: ''
 };
 
 SelectOption.propTypes = {
-    selectedArr: PropTypes.array,
+    default_value: PropTypes.array,
     type: PropTypes.string,
     placeholder: PropTypes.string,
 };

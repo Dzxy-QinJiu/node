@@ -50,6 +50,18 @@ ApplyApproveManageStore.prototype.delSelfSettingWorkFlow = function (result) {
         this.delWorkFlowErrMsg = '';
     }
 };
+ApplyApproveManageStore.prototype.saveSelfSettingWorkFlowRules = function (result) {
+    if (result.loading) {
+        this.saveRulesWorkFlowLoading = true;
+        this.saveRulesWorkFlowErrMsg = '';
+    } else if (result.error) {
+        this.saveRulesWorkFlowLoading = false;
+        this.saveRulesWorkFlowErrMsg = result.errorMsg;
+    } else {
+        this.saveRulesWorkFlowLoading = false;
+        this.saveRulesWorkFlowErrMsg = '';
+    }
+};
 
 
 module.exports = alt.createStore(ApplyApproveManageStore, 'ApplyApproveManageStore');

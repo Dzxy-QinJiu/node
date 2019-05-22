@@ -28,8 +28,8 @@ module.exports = {
                 needLogin: true
             },
         }, {
-            method: 'put',
-            path: '/rest/put/self_setting/work_flow/rules',
+            method: 'post',
+            path: '/rest/put/self_setting/work_flow/rules/:id',
             handler: 'saveSelfSettingWorkFlowRules',
             passport: {
                 needLogin: true

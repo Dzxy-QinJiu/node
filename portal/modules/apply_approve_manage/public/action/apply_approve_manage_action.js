@@ -39,6 +39,15 @@ function ApplyApproveManageActions() {
 
         });
     };
+    this.saveSelfSettingWorkFlowRules = function (applyId,data,callback) {
+        this.dispatch({error: false, loading: true});
+        applyApproveManageAjax.saveSelfSettingWorkFlowRules(applyId,data).then((result) => {
+            this.dispatch({error: false, loading: false});
+            _.isFunction(callback) && callback(result);
+        }, (errorMsg) => {
+            this.dispatch({error: true, loading: false, errorMsg: errorMsg});
+        });
+    };
 
 
 }

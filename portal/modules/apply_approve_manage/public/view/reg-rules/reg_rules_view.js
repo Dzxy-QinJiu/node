@@ -20,6 +20,7 @@ import AddApplyNodePanel from './add_apply_node_panel';
 import AddApplyConditionPanel from './add_apply_condition_panel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+var applyApproveManageAction = require('../../action/apply_approve_manage_action');
 const FORMLAYOUT = {
     PADDINGTOTAL: 260,
 };
@@ -88,8 +89,6 @@ class RegRulesView extends React.Component {
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>`;
-
-
         this.state.bpmnModeler.importXML(bpmnXmlStr, (err) => {
             if (err) {
                 console.error(err);
@@ -291,6 +290,8 @@ class RegRulesView extends React.Component {
         var downloadLink = $('#js-download-diagram');
         viewer.saveXML({format: true}, (err, xml) => {
             applyRulesAndSetting.bpmnJson = xml;
+            var applyId = _.get(this, 'props.applyTypeData.id');
+            applyApproveManageAction.saveSelfSettingWorkFlowRules(applyId,applyRulesAndSetting);
         });
     };
     removeEndEventNode = () => {
@@ -667,15 +668,16 @@ class RegRulesView extends React.Component {
                     </div>
                 </GeminiScrollbar>
                 <div className="save-cancel-container">
-                    {/*<ul className="buttons">*/}
-                        {/*<li>*/}
-                            {/*<a id="js-download-diagram" href title="download BPMN diagram"*/}
-                                {/*onClick={this.handleDownLoadBPMN}>*/}
-                                {/*下载BPMN*/}
-                            {/*</a>*/}
-                        {/*</li>*/}
-                    {/*</ul>*/}
+                    <ul className="buttons">
+                        <li>
+                            <a id="js-download-diagram" href title="download BPMN diagram"
+                                onClick={this.handleDownLoadBPMN}>
+                                下载BPMN
+                            </a>
+                        </li>
+                    </ul>
                     <SaveCancelButton
+                        loading={this.state.saveRulesWorkFlowLoading}
                         handleSubmit={this.handleSubmitApproveApply}
                         hideCancelBtns={true}
                     />
@@ -708,11 +710,13 @@ class RegRulesView extends React.Component {
 RegRulesView.defaultProps = {
     applyRulesAndSetting: {},
     applySaveForm: {},
+    applyTypeData: {}
 };
 
 RegRulesView.propTypes = {
     applyRulesAndSetting: PropTypes.object,
     applySaveForm: PropTypes.object,
+    applyTypeData: PropTypes.object,
 
 };
 export default RegRulesView;

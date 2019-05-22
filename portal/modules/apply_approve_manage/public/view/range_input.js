@@ -15,7 +15,7 @@ class RangeInput extends React.Component {
     }
 
     render = () => {
-        var selectArr = this.props.selectedArr;
+        var selectArr = this.props.default_value;
         return (
             <div className="range-input-container">
                 <Input placeholder={this.props.placeholder} onChange={this.props.onChangeInput}/>
@@ -32,7 +32,7 @@ class RangeInput extends React.Component {
 
 RangeInput.defaultProps = {
     placeholder: '',
-    selectedArr: [],
+    default_value: [],
     onChangeSelect: function () {
 
     },
@@ -43,7 +43,7 @@ RangeInput.defaultProps = {
 
 RangeInput.propTypes = {
     placeholder: PropTypes.string,
-    selectedArr: PropTypes.array,
+    'default_value': PropTypes.array,
     onChangeSelect: PropTypes.func,
     onChangeInput: PropTypes.func
 };

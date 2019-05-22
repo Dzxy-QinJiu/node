@@ -3,6 +3,8 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/5/20.
  */
+//上传超时时长
+var uploadTimeOut = 5 * 60 * 1000;
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var _ = require('lodash');
@@ -10,9 +12,9 @@ var restApis = {
     //添加自定义流程
     selfSettingWorkFlow: '/rest/base/v1/workflow/config',
     //删除自定义流程
-    deleteSelfSettingWorkFlow: '/re/base/v1/workflow/config/:id',
+    deleteSelfSettingWorkFlow: '/rest/base/v1/workflow/config/:id',
     //保存流程规则
-    saveSelfSettingWorkFlowRules: '',
+    saveSelfSettingWorkFlowRules: '/rest/base/v1/workflow/config/deploy',
 };
 exports.restUrls = restApis;
 //添加自定义流程
@@ -42,11 +44,14 @@ exports.deleteSelfSettingWorkFlow = function(req, res) {
             res: res
         }, null);
 };
-exports.saveSelfSettingWorkFlowRules = function(req, res) {
-    return restUtil.authRest.put(
-        {
-            url: restApis.saveSelfSettingWorkFlowRules,
-            req: req,
-            res: res
-        }, req.body);
+exports.saveSelfSettingWorkFlowRules = function(req, res, formData) {
+
+    // return restUtil.authRest.post(
+    //     {
+    //         url: restApis.saveSelfSettingWorkFlowRules,
+    //         req: req,
+    //         res: res,
+    //         formData: formData,
+    //         timeout: uploadTimeOut,
+    //     }, null);
 };

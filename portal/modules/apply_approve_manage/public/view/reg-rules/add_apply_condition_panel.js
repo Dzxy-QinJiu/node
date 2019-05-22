@@ -18,8 +18,7 @@ const FORMLAYOUT = {
 };
 import AlertTimer from 'CMP_DIR/alert-timer';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-
-import {CONDITION_KEYS} from '../../utils/apply-approve-utils';
+import {CONDITION_KEYS, ALL_COMPONENTS} from '../../utils/apply-approve-utils';
 const CONDITION_LIMITE = [{
     name: Intl.get('apply.add.condition.larger', '大于'),
     value: '>',
@@ -65,14 +64,14 @@ class AddApplyConditionPanel extends React.Component {
         var diffConditionLists = this.state.diffConditionLists;
         var limitRules = _.get(diffConditionLists, 'limitRules', []);
         var target = this.getConditionRelate(conditionType);
-        limitRules.push({limitType: conditionType, limitTypeDsc: _.get(target, 'name')});
+        limitRules.push({limitType: _.get(target, 'value'), limitTypeDsc: _.get(target, 'name')});
         this.setState({
             showAddConditionForm: true,
             diffConditionLists: diffConditionLists
         });
     };
     getConditionRelate = (conditionType) => {
-       var target = _.find(CONDITION_KEYS, item => item.value === conditionType);
+       var target = _.find(CONDITION_KEYS, item => item.value.indexOf(conditionType) > -1);
        return target;
     };
     getDiffTypeComponents = () => {
@@ -82,9 +81,12 @@ class AddApplyConditionPanel extends React.Component {
             _.map(applySaveForm, (item) => {
                 var component_type = item.subComponentType || item.component_type;
                 var target = this.getConditionRelate(component_type);
-               return <Menu.Item>
-                    <a onClick={this.handleAddConditionType.bind(this, component_type)}>{_.get(target,'name')}</a>
-                </Menu.Item>;
+                if (target){
+                    return <Menu.Item>
+                        <a onClick={this.handleAddConditionType.bind(this, component_type)}>{_.get(target,'name')}</a>
+                    </Menu.Item>;
+                }
+
             })
         }</Menu>;
         return menus;
@@ -159,7 +161,7 @@ class AddApplyConditionPanel extends React.Component {
                     var limitType = value.limitType;
                     var target = this.getConditionRelate(limitType);
                     switch (limitType) {
-                        case 'timeRange':
+                        case ALL_COMPONENTS.TIMEPERIOD + '_limit':
                             return (<div className="condition-type-container range-condition-container">
                                 <div className="condition-type-title">
                                     {_.get(target,'name')}

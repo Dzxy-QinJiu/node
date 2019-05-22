@@ -54,12 +54,12 @@ exports.delSelfSettingWorkFlow = function(applyId) {
     return Deferred.promise();
 };
 //保存流程规则
-exports.saveSelfSettingWorkFlowRules = function(data) {
+exports.saveSelfSettingWorkFlowRules = function(applyId,data) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/put/self_setting/work_flow/rules',
+        url: '/rest/put/self_setting/work_flow/rules/' + applyId,
         dataType: 'json',
-        type: 'put',
+        type: 'post',
         data: data,
         success: function(list) {
             Deferred.resolve(list);

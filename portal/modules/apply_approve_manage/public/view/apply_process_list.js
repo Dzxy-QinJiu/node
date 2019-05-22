@@ -168,18 +168,21 @@ class AddAndShowApplyList extends React.Component {
                 <Switch size="small" checked={record.approveCheck}
                     onChange={this.changeApplyStatus.bind(this, _.get(record, 'id'))}/>
                 <Dropdown overlay={this.renderOverLayMenu(record)} trigger={['click']}><i
-                    className="iconfont icon-suspension-points"></i>
+                    className="iconfont icon-suspension-points icon-hangye"></i>
                 </Dropdown>
             </span>
         );
     };
     handleConfirmDeleteApply = (record) => {
-        //todo 删除成功后
-        var applyList = this.state.showApplyList;
-        applyList = _.filter(applyList, item => item.id !== record.id);
-        this.setState({
-            showApplyList: applyList
+        applyApproveManageAction.delSelfSettingWorkFlow(record.id,() => {
+            var applyList = this.state.showApplyList;
+            applyList = _.filter(applyList, item => item.id !== record.id);
+            this.setState({
+                showApplyList: applyList
+            });
         });
+
+
     };
     handleCancelDeleteApply = (record) => {
         var target = this.getTargetApply(record.id);
@@ -194,7 +197,9 @@ class AddAndShowApplyList extends React.Component {
     renderDeletingBtns = (record) => {
         return (
             <span className="delete-btn-container">
-                <Button className='confirm-del' onClick={this.handleConfirmDeleteApply.bind(this, record)}>{Intl.get('crm.contact.delete.confirm', '确认删除')}</Button>
+                <Button className='confirm-del' disabled={this.state.delWorkFlowLoading} onClick={this.handleConfirmDeleteApply.bind(this, record)}>{Intl.get('crm.contact.delete.confirm', '确认删除')}
+                    {this.state.delWorkFlowLoading ? <Icon type="'loading"/> : null}
+                </Button>
                 <Button onClick={this.handleCancelDeleteApply.bind(this, record)}>{Intl.get('config.manage.realm.canceltext', '取消')}</Button>
             </span>
         );

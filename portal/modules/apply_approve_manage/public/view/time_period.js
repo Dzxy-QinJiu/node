@@ -156,7 +156,7 @@ class TimePeriod extends React.Component {
 TimePeriod.defaultProps = {
     selectedValue: '',
     placeholder: '',
-    selectedArr: [],
+    default_value: [],
     onBeginTimeChange: function() {
 
     },
@@ -174,7 +174,7 @@ TimePeriod.defaultProps = {
 TimePeriod.propTypes = {
     selectedValue: PropTypes.string,
     placeholder: PropTypes.string,
-    selectedArr: PropTypes.array,
+    default_value: PropTypes.array,
     onBeginTimeChange: PropTypes.func,
     onBeginTypeChange: PropTypes.func,
     onEndTimeChange: PropTypes.func,

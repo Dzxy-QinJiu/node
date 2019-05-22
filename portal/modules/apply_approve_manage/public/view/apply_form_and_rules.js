@@ -27,7 +27,7 @@ class AddApplyForm extends React.Component {
             activeKey: TAB_KEYS.FORM_CONTENT,//当前选中的TAB
             applyTypeData: _.cloneDeep(this.props.applyTypeData),//编辑某个审批的类型
             //某个申请保存的表单，应该是通过ajax请求获取
-            applySaveForm: this.getSavedComponentsByApplyId(_.get(this, 'props.applyTypeData.id')),
+            applySaveForm: _.get(this, 'props.applyTypeData.customiz_form'),
             //某个申请的审批规则及相关配置
             applyRulesAndSetting: {
                 applyApproveRules: {
@@ -173,6 +173,7 @@ class AddApplyForm extends React.Component {
             applyTypeData
         });
     };
+    //一种是编辑状态的取消，一种是添加的取消
     handleCancelEditFormItem = (formItem) => {
         var formKey = formItem.key;
         var target = this.getTargetFormItem(formKey);
@@ -228,11 +229,14 @@ class AddApplyForm extends React.Component {
     handleSubmitApproveForm = () => {
         var applyTypeData = this.state.applyTypeData;
         var customiz_form = _.get(applyTypeData, 'customiz_form');
-        if (_.includes(_.map(customiz_form,'isEditting'), true)){
-            return;
-        }else{
+        if (!_.includes(_.map(customiz_form,'isEditting'), true)){
             var applyTypeData = this.state.applyTypeData;
-            applyApproveManageAction.editSelfSettingWorkFlow(applyTypeData);
+            applyApproveManageAction.editSelfSettingWorkFlow(applyTypeData,() => {
+                //保存成功后自动切换到另一个tab
+                this.setState({
+                    activeKey: TAB_KEYS.APPLY_RULE
+                });
+            });
         }
     }
 
@@ -245,7 +249,7 @@ class AddApplyForm extends React.Component {
         var keysArr = _.map(customiz_form,'key');
         var formContentKey = 0;
         if (keysArr.length){
-            formContentKey = _.max(keysArr) + 1;
+            formContentKey = parseInt(_.max(keysArr)) + 1;
         }
         customiz_form.push({...ruleItem, 'key': formContentKey, 'isEditting': true});
         applyTypeData.customiz_form = customiz_form;
@@ -273,7 +277,7 @@ class AddApplyForm extends React.Component {
         );
     };
     renderFormContent = () => {
-        var applyTypeData = this.state.applyTypeData;
+        var applyTypeData = this.props.applyTypeData;
         var hasFormItem = _.get(applyTypeData, 'customiz_form.length');
         return (
             <div className="apply-form-content-wrap"
@@ -303,6 +307,7 @@ class AddApplyForm extends React.Component {
         var applySaveForm = _.get(this, 'state.applySaveForm');
         return (
             <ApplyRulesView
+                applyTypeData={this.state.applyTypeData}
                 applyRulesAndSetting={applyRulesAndSetting}
                 applySaveForm={applySaveForm}
             />
