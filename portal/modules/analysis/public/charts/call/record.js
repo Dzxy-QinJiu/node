@@ -4,13 +4,17 @@
 
 import Store from '../../store';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
+import { Checkbox } from 'antd';
 
 export function getCallRecordChart() {
     return {
         title: '通话记录统计',
-        chartType: 'table',
         layout: {sm: 24},
         height: 'auto',
+        chartType: 'table',
+        option: {
+            columns: getColumns()
+        },
         url: [
             '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
             '/rest/base/v1/group/team/available/statistic'
@@ -24,7 +28,10 @@ export function getCallRecordChart() {
                 query.device_type = 'all';
             }
         },
-        processData: data => {
+        processData: (data, chart, analysisInstance, chartIndex) => {
+            _.set(chart, 'cardContainer.props.subTitle', renderFilter114(analysisInstance, chartIndex));
+            _.set(chart, 'cardContainer.props.refreshData', refreshData.bind(null, analysisInstance, chartIndex));
+
             let callInfoList = _.get(data, '[0].result');
             const teamInfoList = _.get(data, '[1]');
 
@@ -48,9 +55,11 @@ export function getCallRecordChart() {
                 return [];
             }
         },
-        option: {
-            columns: getColumns()
-        }
+        cardContainer: {
+            props: {
+                isShowRefreshButton: true,
+            },
+        },
     };
 }
 
@@ -203,8 +212,25 @@ function getColumns() {
             sorter: function(a, b) {
                 return a.per_capita_number - b.per_capita_number;
             },
-        },);
+        });
     }
 
     return columns;
+}
+
+function renderFilter114() {
+    return (
+        <div className="filter-114-wrap">
+            <Checkbox onChange={onFilter114Change}>
+                {Intl.get('call.analysis.filter.114', '过滤掉114')}
+            </Checkbox>
+        </div>
+    );
+}
+
+function refreshData(analysisInstance, chartIndex) {
+    analysisInstance.getData(chartIndex);
+}
+
+function onFilter114Change(analysisInstance) {
 }
