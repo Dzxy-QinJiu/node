@@ -495,3 +495,10 @@ export const FILES_LIMIT = {
     TOTAL: 'total',
     SINGLE: 'single'
 };
+
+//成员状态的下拉选项
+export const memberStatusList = [
+    {name: Intl.get('user.online.all.status', '全部状态'), value: ''},
+    {name: Intl.get('common.enabled', '启用'), value: '1'},
+    {name: Intl.get('common.stop', '停用'), value: '0'},
+];

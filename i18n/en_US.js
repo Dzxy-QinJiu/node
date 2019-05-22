@@ -18,6 +18,7 @@ var en_US = {
     'menu.appuser.auditlog': 'Operation record',//操作记录
     'menu.appuser.position': 'Position Order', // 座席号管理
     'menu.backend': 'Background',//后台管理
+    'menu.member': 'Members', // 成员
     'menu.user': 'Members',//成员管理
     'menu.role': 'Roles',//角色管理
     'menu.auth': 'Authority',//权限管理
@@ -662,7 +663,8 @@ var en_US = {
 
     //后台管理-成员start
     'member.member': 'Member',//成员
-    'member.search.placeholder': 'username/nickname/phone/email',//用户名/昵称/电话/邮箱
+    'member.search.placeholder': 'account/nickname/phone',// 账号/昵称/手机
+    'member.role.select.default.role': 'All roles', // 全部角色
     'member.start.this': 'enable this ',//启用此
     'member.stop.this': 'disable this ',//禁用此
     'member.change.group.failed': 'Failed to change affiliated team',//修改所属团队失败
@@ -707,6 +709,11 @@ var en_US = {
     'member.log.no.data': 'No operation log',//暂无操作日志
     'member.add.member.phone.verify': 'The number of phone is already taken', // 手机号唯一性验证出错了
     'member.add.member.phone.exist': 'The number of phone was existed', // 该手机号已存在
+    'member.position': 'Position', // 职务
+    'member.phone': 'Phone number', // 手机
+    'member.sale.goal': 'Personal Sales Target', // 个人销售目标
+    'member.no.more.tips': 'There is no more member list', // 没有更多成员信息了
+
     //后台管理-成员end
     //组织管理start
     'organization.no.organization.tip': 'No organization,please add one first',//暂无组织，请先添加
