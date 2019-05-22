@@ -10,7 +10,9 @@ var restApis = {
     //添加自定义流程
     selfSettingWorkFlow: '/rest/base/v1/workflow/config',
     //删除自定义流程
-    deleteSelfSettingWorkFlow: '/re/base/v1/workflow/config/:id'
+    deleteSelfSettingWorkFlow: '/re/base/v1/workflow/config/:id',
+    //保存流程规则
+    saveSelfSettingWorkFlowRules: '',
 };
 exports.restUrls = restApis;
 //添加自定义流程
@@ -39,4 +41,12 @@ exports.deleteSelfSettingWorkFlow = function(req, res) {
             req: req,
             res: res
         }, null);
+};
+exports.saveSelfSettingWorkFlowRules = function(req, res) {
+    return restUtil.authRest.put(
+        {
+            url: restApis.saveSelfSettingWorkFlowRules,
+            req: req,
+            res: res
+        }, req.body);
 };

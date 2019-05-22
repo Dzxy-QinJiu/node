@@ -26,7 +26,30 @@ ApplyApproveManageStore.prototype.addSelfSettingWorkFlow = function (result) {
         this.addWorkFlowErrMsg = '';
     }
 };
-
+ApplyApproveManageStore.prototype.editSelfSettingWorkFlow = function (result) {
+    if (result.loading) {
+        this.editWorkFlowLoading = true;
+        this.editWorkFlowErrMsg = '';
+    } else if (result.error) {
+        this.editWorkFlowLoading = false;
+        this.editWorkFlowErrMsg = result.errorMsg;
+    } else {
+        this.editWorkFlowLoading = false;
+        this.editWorkFlowErrMsg = '';
+    }
+};
+ApplyApproveManageStore.prototype.delSelfSettingWorkFlow = function (result) {
+    if (result.loading) {
+        this.delWorkFlowLoading = true;
+        this.delWorkFlowErrMsg = '';
+    } else if (result.error) {
+        this.delWorkFlowLoading = false;
+        this.delWorkFlowErrMsg = result.errorMsg;
+    } else {
+        this.delWorkFlowLoading = false;
+        this.delWorkFlowErrMsg = '';
+    }
+};
 
 
 module.exports = alt.createStore(ApplyApproveManageStore, 'ApplyApproveManageStore');

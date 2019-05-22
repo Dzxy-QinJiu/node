@@ -19,6 +19,26 @@ function ApplyApproveManageActions() {
 
         });
     };
+    this.editSelfSettingWorkFlow = function(submitObj,callback) {
+        this.dispatch({error: false, loading: true});
+        applyApproveManageAjax.editSelfSettingWorkFlow(submitObj).then((result) => {
+            this.dispatch({error: false, loading: false});
+            _.isFunction(callback) && callback(result);
+        }, (errorMsg) => {
+            this.dispatch({error: true, loading: false, errorMsg: errorMsg});
+
+        });
+    };
+    this.delSelfSettingWorkFlow = function(applyId,callback) {
+        this.dispatch({error: false, loading: true});
+        applyApproveManageAjax.delSelfSettingWorkFlow(applyId).then((result) => {
+            this.dispatch({error: false, loading: false});
+            _.isFunction(callback) && callback(result);
+        }, (errorMsg) => {
+            this.dispatch({error: true, loading: false, errorMsg: errorMsg});
+
+        });
+    };
 
 
 }

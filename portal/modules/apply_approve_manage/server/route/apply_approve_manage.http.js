@@ -27,6 +27,13 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+        }, {
+            method: 'put',
+            path: '/rest/put/self_setting/work_flow/rules',
+            handler: 'saveSelfSettingWorkFlowRules',
+            passport: {
+                needLogin: true
+            },
         }
     ]
 };

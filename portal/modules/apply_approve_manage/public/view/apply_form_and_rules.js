@@ -58,7 +58,6 @@ class AddApplyForm extends React.Component {
                 cancelAfterApprove: false,//撤销权限
                 mergeSameApprover: false//其他
             },
-            saveFormErrMsg: ''//保存表单出错的提示
         };
     }
 
@@ -230,38 +229,10 @@ class AddApplyForm extends React.Component {
         var applyTypeData = this.state.applyTypeData;
         var customiz_form = _.get(applyTypeData, 'customiz_form');
         if (_.includes(_.map(customiz_form,'isEditting'), true)){
-            // this.setState({
-            //     saveFormErrMsg: Intl.get('apply.form.has.edit.components', '您有组件还是编辑状态')
-            // });
             return;
         }else{
             var applyTypeData = this.state.applyTypeData;
-            var submitObj = {"id":"sdsdfsdfsf","type":"fei_test34444","description":"sfsdf","customiz_form":[{"component_type": "Input",
-                "iconfontCls": "icon-fuwu",
-                "is_required": true,
-                "key": "0",
-                "title": "问问"
-            }]};
-            var obj = {
-                customiz_form: [{
-                    "iconfontCls": "icon-fuwu",
-                    "component_type": "Input",
-                    "key": 0,
-                    "title": "wew",
-                    "is_required": true
-                }],
-                description: "我的请假0521",
-                id: "3a9f0f3d-0d69-42fd-b885-3988b3837785",
-                type: "work_flow_6da029b1_3"
-            }
-            delete applyTypeData.create_time;
-            delete applyTypeData.customiz;
-            delete applyTypeData.customiz_form[0].isEditting;
-            delete applyTypeData.customiz_form[0].rulename;
-            delete applyTypeData.customiz_form[0].placeholder;
-            console.log(applyTypeData);
-            applyTypeData.type = '11111sdsd';
-            applyApproveManageAction.addSelfSettingWorkFlow(applyTypeData);
+            applyApproveManageAction.editSelfSettingWorkFlow(applyTypeData);
         }
     }
 
@@ -316,8 +287,9 @@ class AddApplyForm extends React.Component {
                     </GeminiScrollbar>
                     {hasFormItem ? <div className="save-cancel-container">
                         <SaveCancelButton
+                            loading={this.state.editWorkFlowLoading}
                             handleSubmit={this.handleSubmitApproveForm}
-                            saveErrorMsg={this.state.saveFormErrMsg}
+                            saveErrorMsg={this.state.editWorkFlowErrMsg}
                             hideCancelBtns={true}
                         />
                     </div> : null}
