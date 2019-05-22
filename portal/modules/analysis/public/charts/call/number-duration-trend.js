@@ -99,6 +99,9 @@ export function getCallNumberTimeTrendChart() {
     function handleRadioChange(chart, analysisInstance, e) {
         const value = e.target.value;
 
+        analysisInstance.radioType = value;
+        analysisInstance.teamViewOption = null;
+
         chart.data = chart['data_' + value];
 
         const formatter = getTooltipFormatter(value);
@@ -152,8 +155,6 @@ export function getCallNumberTimeTrendChart() {
     function handleSwitchChange(chart, analysisInstance, value) {
         if (value) {
             chart.processOption = option => {
-                analysisInstance.totalViewOption = _.cloneDeep(option);
-                
                 if (analysisInstance.teamViewOption) {
                     option.legend.data = analysisInstance.teamViewOption.legend.data;
                     option.series = analysisInstance.teamViewOption.series;
@@ -169,7 +170,7 @@ export function getCallNumberTimeTrendChart() {
                             data: _.map(v, item => {
                                 return {
                                     name: item.name,
-                                    value: item.docments
+                                    value: analysisInstance.radioType === 'duration' ? item.sum : item.docments
                                 };
                             })
                         });
@@ -183,10 +184,7 @@ export function getCallNumberTimeTrendChart() {
                 }
             };
         } else {
-            chart.processOption = option => {
-                option.legend.data = analysisInstance.totalViewOption.legend.data;
-                option.series = analysisInstance.totalViewOption.series;
-            };
+            delete chart.processOption;
         }
 
         const charts = analysisInstance.state.charts;
