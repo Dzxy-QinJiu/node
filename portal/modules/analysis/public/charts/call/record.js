@@ -10,8 +10,9 @@ export function getCallRecordChart() {
         title: '通话记录统计',
         chartType: 'table',
         layout: {sm: 24},
+        height: 'auto',
         url: [
-            '/rest/callrecord/v2/callrecord/query/:auth_type/call_record/view',
+            '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
             '/rest/base/v1/group/team/available/statistic'
         ],
         argCallback: arg => {
@@ -19,12 +20,12 @@ export function getCallRecordChart() {
 
             if (query) {
                 query.filter_phone = false,
-                query.effective_phone = true,
-                query.deviceType = 'all';
+                query.filter_invalid_phone = true,
+                query.device_type = 'all';
             }
         },
-        processData: (data) => {
-            let callInfoList = _.get(data, '[0].list');
+        processData: data => {
+            let callInfoList = _.get(data, '[0].result');
             const teamInfoList = _.get(data, '[1]');
 
             if (_.isArray(callInfoList) && _.isArray(teamInfoList)) {
@@ -55,11 +56,11 @@ export function getCallRecordChart() {
 
 function getColumns() {
     let col_width = 95, num_col_width = 80, col_lg_width = 120;
+
     let columns = [{
         title: '销售团队',
         width: col_width,
         dataIndex: 'name',
-        className: 'table-data-align-left',
     }, {
         title: Intl.get('sales.home.total.duration', '总时长'),
         width: col_width,
