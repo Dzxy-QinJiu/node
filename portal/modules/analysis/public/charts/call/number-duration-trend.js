@@ -120,8 +120,15 @@ export function getCallNumberTimeTrendChart() {
                     textArr.push(param.name);
                 }
 
-                let text = '';
                 let value = param.value;
+                const seriesName = param.seriesName;
+
+                let text = '';
+
+                //如果系列名不是默认的以series开头的命名，说明指定了系列名，需要把系列名显示出来
+                if (!seriesName.startWith('series')) {
+                    text += seriesName + ', ';
+                }
 
                 if (type === 'count') {
                     text += Intl.get('sales.home.call.cout', '通话数量');
