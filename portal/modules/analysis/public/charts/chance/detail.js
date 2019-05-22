@@ -34,7 +34,7 @@ export function getChanceDetailChart() {
                 {
                     title: '销售团队',
                     dataIndex: 'apply_team_name',
-                    width: '10%',
+                    width: 75,
                     render: (value, row) => {
                         let obj = {
                             children: value,
@@ -48,23 +48,22 @@ export function getChanceDetailChart() {
                 }, {
                     title: '销售经理',
                     dataIndex: 'apply_nick_name',
-                    width: '10%',
+                    width: 75,
                 }, {
                     title: '销售机会',
                     dataIndex: 'customer_name',
-                    width: '30%',
                 }, {
                     title: '转入团队',
                     dataIndex: 'team_name',
-                    width: '10%',
+                    width: 75,
                 }, {
                     title: '客户经理',
                     dataIndex: 'nick_name',
-                    width: '10%',
+                    width: 75,
                 }, {
                     title: '是否签单',
                     dataIndex: 'is_signed',
-                    width: '10%',
+                    width: 75,
                 }
             ],
         },
