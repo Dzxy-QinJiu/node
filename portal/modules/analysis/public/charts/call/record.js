@@ -19,15 +19,16 @@ export function getCallRecordChart() {
             '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
             '/rest/base/v1/group/team/available/statistic'
         ],
-        argCallback: arg => {
-            let query = arg.query;
-
-            if (query) {
-                query.filter_phone = false,
-                query.filter_invalid_phone = true,
-                query.device_type = 'all';
-            }
-        },
+        conditions: [{
+            name: 'filter_phone',
+            value: false 
+        }, {
+            name: 'filter_invalid_phone',
+            value: true, 
+        }, {
+            name: 'device_type',
+            value: 'all'
+        }],
         processData: (data, chart, analysisInstance, chartIndex) => {
             _.set(chart, 'cardContainer.props.subTitle', renderFilter114(analysisInstance, chartIndex));
             _.set(chart, 'cardContainer.props.refreshData', refreshData.bind(null, analysisInstance, chartIndex));
@@ -218,10 +219,10 @@ function getColumns() {
     return columns;
 }
 
-function renderFilter114() {
+function renderFilter114(analysisInstance, chartIndex) {
     return (
         <div className="filter-114-wrap">
-            <Checkbox onChange={onFilter114Change}>
+            <Checkbox onChange={onFilter114Change.bind(null, analysisInstance, chartIndex)}>
                 {Intl.get('call.analysis.filter.114', '过滤掉114')}
             </Checkbox>
         </div>
@@ -232,5 +233,22 @@ function refreshData(analysisInstance, chartIndex) {
     analysisInstance.getData(chartIndex);
 }
 
-function onFilter114Change(analysisInstance) {
+function onFilter114Change(analysisInstance, chartIndex, e) {
+    const checked = e.target.checked;
+
+    let charts = analysisInstance.state.charts;
+
+    let chart = charts[chartIndex];
+
+    let condition = _.find(chart.conditions, item => item.name === 'filter_phone');
+
+    if (!condition) return;
+
+    if (checked) {
+        condition.value = true;
+    } else {
+        condition.value = false;
+    }
+
+    analysisInstance.getData(chartIndex);
 }
