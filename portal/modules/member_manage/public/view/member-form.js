@@ -277,10 +277,30 @@ class MemberForm extends React.Component {
         return roleOptions;
     };
 
+    // 渲染职务下拉列表
+    renderPositionOptions = () => {
+        let values = this.props.form.getFieldsValue();
+        // 职务列表
+        let positionOptions = '';
+        let positionList = this.state.positionList;
+        if (_.isArray(positionList) && _.get(positionList, 'length')) {
+            positionOptions = _.map(positionList, (item) => {
+                let className = (item.name === values.position ? 'role-options-selected' : '');
+                return (<Option className={className} key={item.name} value={item.name}>
+                    {item.name}
+                </Option>);
+            });
+        } else {
+            positionOptions =
+                <Option value="">{Intl.get('member.no.position', '暂无职务')}</Option>;
+        }
+        return positionOptions;
+    };
+
     //渲染所属团队下拉列表
     renderTeamOptions = () => {
         let values = this.props.form.getFieldsValue();
-        //团队列表
+        // 部门列表
         var teamOptions = '';
         var teamList = this.state.userTeamList;
         if (_.isArray(teamList) && teamList.length > 0) {
@@ -296,9 +316,13 @@ class MemberForm extends React.Component {
             });
         } else {
             teamOptions =
-                <Option value=""><ReactIntl.FormattedMessage id="member.no.groups" defaultMessage="暂无团队"/></Option>;
+                <Option value="">{Intl.get('contract.68', '暂无部门')}</Option>;
         }
         return teamOptions;
+    };
+
+    handlePositionSelect = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form ul li'), '选择职务');
     };
 
     handleSelect = () => {
@@ -306,7 +330,7 @@ class MemberForm extends React.Component {
     };
 
     handleTeamSelect = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form ul li'), '选择所属团队');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form ul li'), '选择部门');
     };
 
     state = this.initData();
@@ -393,6 +417,34 @@ class MemberForm extends React.Component {
                             </FormItem>
                             {this.renderEmailMsg()}
                             <FormItem
+                                label={Intl.get('member.position', '职务')}
+                                {...formItemLayout}
+                            >
+                                {this.state.isLoadingPosition ? (
+                                    <div className="role-list-loading">
+                                        {Intl.get('member.is.get.position.lists', '正在获取职务列表')}
+                                        <Icon type="loading"/>
+                                    </div>) : (
+                                    <div>
+                                        {getFieldDecorator('position', {
+                                        })(
+                                            <Select
+                                                name="position"
+                                                id="position"
+                                                optionFilterProp="children"
+                                                placeholder={Intl.get('member.select.position', '请选择职务')}
+                                                searchPlaceholder={Intl.get('member.select.position', '请选择职务')}
+                                                notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
+                                                onSelect={this.handlePositionSelect}
+                                                getPopupContainer={() => document.getElementById('user-add-form')}
+                                            >
+                                                {this.renderPositionOptions()}
+                                            </Select>
+                                        )}
+                                    </div>)
+                                }
+                            </FormItem>
+                            <FormItem
                                 label={Intl.get('common.role', '角色')}
                                 {...formItemLayout}
                             >
@@ -426,7 +478,7 @@ class MemberForm extends React.Component {
                                 }
                             </FormItem>
                             <FormItem
-                                label={Intl.get('user.phone', '手机号')}
+                                label={Intl.get('member.phone', '手机')}
                                 colon={false}
                                 {...formItemLayout}
                             >
@@ -445,20 +497,23 @@ class MemberForm extends React.Component {
 
                             {/** v8环境下，不显示所属团队 */}
                             {this.props.formType === 'add' ? (!Oplate.hideSomeItem && <FormItem
-                                label={Intl.get('common.belong.team', '所属团队')}
+                                label={Intl.get('crm.113', '部门')}
                                 {...formItemLayout}
                             >
                                 {this.state.isLoadingTeamList ? (
-                                    <div className="role-list-loading"><ReactIntl.FormattedMessage
-                                        id="member.is.get.group.lists" defaultMessage="正在获取团队列表"/><Icon
-                                        type="loading"/></div>) : (
+                                    <div className="role-list-loading">
+                                        {Intl.get('member.is.get.department.lists', '正在获取部门列表')}
+                                        <Icon type="loading"/>
+                                    </div>) : (
                                     <div>
                                         {getFieldDecorator('team')(
-                                            <Select name="team" id="team"
-                                                placeholder={Intl.get('member.select.group', '请选择团队')}
-                                                notFoundContent={Intl.get('member.no.group', '暂无此团队')}
+                                            <Select
+                                                name="team"
+                                                id="team"
+                                                placeholder={Intl.get('contract.67', '请选择部门')}
+                                                notFoundContent={Intl.get('member.no.department', '暂无此部门')}
                                                 showSearch
-                                                searchPlaceholder={Intl.get('member.search.group.by.name', '输入团队名称搜索')}
+                                                searchPlaceholder={Intl.get('member.search.department.by.name', '输入部门名称搜索')}
                                                 optionFilterProp="children"
                                                 value={values.team}
                                                 // onChange={this.setField.bind(this, 'team')}

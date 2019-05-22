@@ -1,4 +1,6 @@
-//获取成员列表
+import {getSalesTeamRoleList} from '../../../common/public/ajax/role';
+
+// 获取成员列表
 exports.getMemberList = (searchObj) => {
     let Deferred = $.Deferred();
     $.ajax({
@@ -18,7 +20,7 @@ exports.getMemberList = (searchObj) => {
     return Deferred.promise();
 };
 
-//获取当前成员的详细信息
+// 获取当前成员的详细信息
 exports.getCurMemberById = (memberId) => {
     let Deferred = $.Deferred();
     $.ajax({
@@ -54,7 +56,7 @@ exports.updateMemberStatus = (member) => {
 
 
 
-//获取用户的个人日志
+// 获取用户的个人日志
 exports.getLogList = function(condition) {
     let Deferred = $.Deferred();
     $.ajax({
@@ -106,7 +108,7 @@ exports.editUser = function(user) {
     return Deferred.promise();
 };
 
-//修改成员的所属团队
+//修改成员的部门
 exports.updateUserTeam = function(user) {
     let Deferred = $.Deferred();
     $.ajax({
@@ -123,29 +125,41 @@ exports.updateUserTeam = function(user) {
 };
 
 //修改成员的角色
-exports.updateUserRoles = function(user) {
+exports.updateUserRoles = (user) => {
     let Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/user_roles',
         dataType: 'json',
         type: 'put',
         data: {user_id: user.id, role_ids: JSON.stringify(user.role)},
-        success: function(userModified) {
+        success: (userModified) => {
             Deferred.resolve(userModified);
-        }, error: function(errorInfo) {
+        }, error: (errorInfo) => {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
     return Deferred.promise();
 };
 
+// 获取职务列表
+exports.getSalesPosition = () => {
+    let Deferred = $.Deferred();
+    getSalesTeamRoleList().sendRequest().success((data) => {
+        Deferred.resolve(data);
+    }).error((xhr) => {
+        Deferred.reject(xhr.responseJSON || Intl.get('user.log.login.fail', '获取职务列表失败！'));
+    });
+
+    return Deferred.promise();
+};
+
 //获取角色列表
-exports.getRoleList = function() {
+exports.getRoleList = () => {
     let Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/roles',
         type: 'get',
-        success: function(roleList) {
+        success: (roleList) => {
             Deferred.resolve(roleList);
         }
     });
@@ -160,7 +174,6 @@ exports.checkOnlyNickName = (nickName) => {
         dataType: 'json',
         type: 'get',
         success: (result) => {
-            console.log('ajax:', result);
             Deferred.resolve(result);
         }, error: (errorInfo) => {
             Deferred.reject(errorInfo.responseJSON);

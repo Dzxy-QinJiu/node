@@ -713,6 +713,13 @@ var en_US = {
     'member.phone': 'Phone number', // 手机
     'member.sale.goal': 'Personal Sales Target', // 个人销售目标
     'member.no.more.tips': 'There is no more member list', // 没有更多成员信息了
+    'member.is.get.department.lists': 'Getting department list', // 正在获取部门列表
+    'member.no.department': 'Department non-exists', // 暂无此部门
+    'member.search.department.by.name': 'Enter department name for searching', // 输入部门名称搜索
+    'member.is.get.position.lists': 'Getting position list', // 正在获取职务列表
+    'member.select.position': 'Please select position', // 请选择职务
+    'member.no.position': 'No position', // 暂无职务
+    'member.search.position.by.name': 'Enter position name for searching', // 输入职务名称搜索
 
     //后台管理-成员end
     //组织管理start

@@ -715,6 +715,13 @@ var zh_CN = {
     'member.phone': '手机',
     'member.sale.goal': '个人销售目标',
     'member.no.more.tips': '没有更多成员信息了',
+    'member.is.get.department.lists': '正在获取部门列表',
+    'member.no.department': '暂无此部门',
+    'member.search.department.by.name': '输入部门名称搜索',
+    'member.is.get.position.lists': '正在获取职务列表',
+    'member.select.position': '请选择职务',
+    'member.no.position': '暂无职务',
+    'member.search.position.by.name': '输入职务名称搜索',
 
     //后台管理-成员end
     //组织管理start

@@ -18,7 +18,9 @@ class MemberFormStore {
         this.roleList = []; //角色列表
         this.isLoadingRoleList = false; //正在获取角色列表
         this.userTeamList = []; //团队列表
-        this.isLoadingTeamList = false; //正在获取团队列表
+        this.isLoadingTeamList = false; //正在获取部门列表
+        this.isLoadingPosition = false; // 正在获取职务列表
+        this.positionList = []; // 职务列表
         
         this.bindActions(MemberFormActions);
     }
@@ -31,6 +33,16 @@ class MemberFormStore {
     //设置是否正在获取团队列表
     setTeamListLoading(flag) {
         this.isLoadingTeamList = flag;
+    }
+    //设置是否正在获取职务列表
+    setPositionListLoading(flag) {
+        this.isLoadingPosition = flag;
+    }
+
+    // 获取职务列表
+    getSalesPosition(positionList) {
+        this.isLoadingPosition = false;
+        this.positionList = _.isArray(positionList) ? positionList : [];
     }
 
     //设置是否正在获取角色列表

@@ -64,6 +64,9 @@ class MemberManage extends React.Component {
                 MemberFormAction.setTeamListLoading(true);
                 MemberFormAction.getUserTeamList();
             }
+            // 获取职务列表
+            MemberFormAction.setPositionListLoading(true);
+            MemberFormAction.getSalesPosition();
             //获取角色列表
             MemberFormAction.setRoleListLoading(true);
             MemberFormAction.getRoleList();

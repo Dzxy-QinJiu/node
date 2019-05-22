@@ -9,6 +9,7 @@ class MemberFormActions {
             'resetNickNameFlags', // 重置昵称（对应的是姓名）验证的标志
             'resetUserNameFlags', //重置用户验证的标志
             'resetEmailFlags', //重置邮箱验证的标志
+            'setPositionListLoading',//正在获取职务列表
             'setRoleListLoading', //正在获取角色列表
             'setTeamListLoading' //是否正在获取销售团队列表的标志
         );
@@ -23,6 +24,15 @@ class MemberFormActions {
                 this.dispatch(data.teamList);
             }
         });
+    }
+
+    // 获取职务列表
+    getSalesPosition() {
+        MemberManageAjax.getSalesPosition().then( (positionList) => {
+            this.dispatch(positionList);
+        }, (errMsg) => {
+            this.dispatch(errMsg);
+        } );
     }
 
     //获取角色列表
@@ -69,7 +79,6 @@ class MemberFormActions {
     resetSaveResult(formType, saveResult) {
         if (saveResult === 'success') {
             if (formType === 'add') {
-                cardEmitter.emit(cardEmitter.ADD_CARD);
                 //清空搜索内容
                 MemberManageAction.updateSearchContent('');
             } else if (formType === 'edit') {
@@ -112,7 +121,7 @@ class MemberFormActions {
             this.dispatch(result);
             if (!result) {
                 //不存在邮箱为email的用户时，验证是否存在用户名为该邮箱的用户
-                actions.checkOnlyUserName(email);
+                this.actions.checkOnlyUserName(email);
             }
         }, (errorMsg) => {
             this.dispatch(errorMsg || Intl.get('user.email.only.error', '邮箱唯一性验证失败'));
