@@ -168,7 +168,7 @@ const ApplyViewDetail = createReactClass({
             checkStatus: true, //自动生成密码radio是否选中
             passwordValue: '',//试用或者签约用户申请的明文密码
             showWariningTip: false,//是否展示密码的提示信息
-            isShowingOpenUserDatePicker: '',//正在展示修改到期时间
+            curEditExpireDateAppIdr: '',//正在展示修改到期时间的应用id
             updateDelayTime: '',//修改后的到期时间
             ...ApplyViewDetailStore.getState()
         };
@@ -232,7 +232,9 @@ const ApplyViewDetail = createReactClass({
             this.appsSetting = {};
             if (nextProps.detailItem.id !== _.get(this, 'props.detailItem.id')) {
                 this.setState({
-                    showBackoutConfirmType: ''
+                    showBackoutConfirmType: '',
+                    curEditExpireDateAppIdr: '',
+                    updateDelayTime: ''
                 });
             }
             if ((!this.state.applyResult.submitResult && !this.state.backApplyResult.submitResult) || nextProps.detailItem.id !== this.props.detailItem.id) {
@@ -883,7 +885,7 @@ const ApplyViewDetail = createReactClass({
     },
     handleShowDatePicker: function(appId) {
         this.setState({
-            isShowingOpenUserDatePicker: appId
+            curEditExpireDateAppIdr: appId
         });
     },
     saveExpiredTime: function(app, custom_setting) {
@@ -893,11 +895,11 @@ const ApplyViewDetail = createReactClass({
         }else{
             app.end_date = this.state.updateDelayTime;
         }
-        this.setState({isShowingOpenUserDatePicker: ''});
+        this.setState({curEditExpireDateAppIdr: ''});
     },
     cancelExpiredTime: function() {
         this.setState({
-            isShowingOpenUserDatePicker: ''
+            curEditExpireDateAppIdr: ''
         });
     },
     onChangeExpiredTime: function(date) {
@@ -967,7 +969,7 @@ const ApplyViewDetail = createReactClass({
         }
         if (isDelay) {
             var appId = app.app_id;
-            if (this.state.isShowingOpenUserDatePicker === appId) {
+            if (this.state.curEditExpireDateAppIdr === appId) {
                 return <div>
                     <DatePicker
                         format={oplateConsts.DATE_FORMAT}
