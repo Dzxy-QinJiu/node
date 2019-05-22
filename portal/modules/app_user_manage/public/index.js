@@ -197,10 +197,18 @@ class AppUserManage extends React.Component {
                         });
                     }
                 } else {
-                    // 点击刷新按钮时
-                    if (this.props.listPanelParamObj) {
-                        //在列表面板中打开时，根据面板条件查询
-                        AppUserAction.getAppUserList(this.props.listPanelParamObj);
+                    //列表面板参数
+                    const paramObj = this.props.listPanelParamObj;
+
+                    //若存在列表面板参数，说明是在列表面板中打开
+                    if (paramObj) {
+                        //根据面板条件查询用户
+                        AppUserAction.getAppUserList(paramObj);
+
+                        _.each(paramObj, (value, key) => {
+                            //保存查询条件，以便下拉加载时能根据同样的条件查询
+                            AppUserAction.toggleSearchField({field: key, value});
+                        });
                     } else {
                         //查询所有用户
                         AppUserAction.getAppUserList();
