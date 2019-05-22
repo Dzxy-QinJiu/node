@@ -1,6 +1,7 @@
 require('./css/right-content.less');
 var history = require('../../public/sources/history');
 var TopNav = require('CMP_DIR/top-nav');
+import LeftSubNav from 'CMP_DIR/left-sub-nav';
 
 import {renderRoutes} from 'react-router-config';
 import classNames from 'classnames';
@@ -21,8 +22,24 @@ class RightContent extends React.Component {
         }
         return false;
     };
-
-
+    //是否是左侧子导航
+    isLeftSubNav() {
+        return _.get(this.props, 'route.subMenuPosition') === 'left';
+    }
+    renderSubNav(){
+        if(this.props.route){
+            if (this.isLeftSubNav()) {
+                return (<LeftSubNav/>);
+            } else {
+                return (
+                    <TopNav>
+                        <TopNav.MenuList/>
+                    </TopNav>);
+            }
+        }else{
+            return null;
+        }
+    }
     render() {
         if (this.props.route) {
             var jump = this.checkRoute();
@@ -31,15 +48,13 @@ class RightContent extends React.Component {
             }
         }
         const cls = classNames({
-            'moduleContent': this.props.route ? true : false
+            'top-nav-module-content': this.props.route && !this.isLeftSubNav(),
+            'left-nav-module-conent': this.props.route && this.isLeftSubNav()
         });
         return (
             <div className="rightContent">
                 <div className="main">
-                    {this.props.route ? (<TopNav>
-                        <TopNav.MenuList/>
-                    </TopNav>
-                    ) : null}
+                    {this.renderSubNav()}
                     <div className={cls}>
                         {this.props.route ? renderRoutes(this.props.route.routes) : this.props.children}
                     </div>
