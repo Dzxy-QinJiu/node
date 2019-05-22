@@ -76,26 +76,26 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'rulename': Intl.get('apply.rule.text', '文字输入'),
         'iconfontCls': 'icon-fuwu',
         'placeholder': Intl.get('apply.rule.within.32', '32个字符以内'),
-        'componentType': ALL_COMPONENTS.INPUT
+        'component_type': ALL_COMPONENTS.INPUT
     },
     {
         'rulename': Intl.get('apply.rule.textare', '多行文字输入'),
         'iconfontCls': 'icon-fuwu',
         'placeholder': Intl.get('apply.rule.over.32', '32个字符以上'),
-        'componentType': ALL_COMPONENTS.INPUT,
+        'component_type': ALL_COMPONENTS.INPUT,
         'type': ALL_COMPONENTS_TYPE.TEXTAREA
     },
     {
         'rulename': Intl.get('apply.rule.number', '数字输入'),
         'iconfontCls': 'icon-fuwu',
         'placeholder': Intl.get('apply.rule.limit.int', '仅限整数'),
-        'componentType': ALL_COMPONENTS.INPUTNUMBER,
+        'component_type': ALL_COMPONENTS.INPUTNUMBER,
     },
     {
         'rulename': Intl.get('apply.rule.count', '金额输入'),
         'iconfontCls': 'icon-fuwu',
         'placeholder': Intl.get('apply.rule.allow.point', '允许小数点'),
-        'componentType': ALL_COMPONENTS.INPUT,
+        'component_type': ALL_COMPONENTS.INPUT,
         'addonAfter': Intl.get('contract.82', '元')
     },
     {
@@ -125,7 +125,7 @@ exports.ADDAPPLYFORMCOMPONENTS = [
             }]
         },
         selectedArr: ['hour'],
-        'componentType': ALL_COMPONENTS.RANGEINPUT,
+        'component_type': ALL_COMPONENTS.RANGEINPUT,
     },
     {
         'rulename': Intl.get('apply.rule.radio', '单选'), 'iconfontCls': 'icon-fuwu',
@@ -133,7 +133,7 @@ exports.ADDAPPLYFORMCOMPONENTS = [
             optionLabel: Intl.get('apply.time.range.unit.select.label', '选项'),
             optionArrs: [Intl.get('apply.approve.option.one', '选项一'), Intl.get('apply.approve.option.two', '选项二')]
         },
-        'componentType': ALL_COMPONENTS.SELECTOPTION,
+        'component_type': ALL_COMPONENTS.SELECTOPTION,
         'type': 'radio'
     },
     {
@@ -142,17 +142,17 @@ exports.ADDAPPLYFORMCOMPONENTS = [
             optionLabel: Intl.get('apply.time.range.unit.select.label', '选项'),
             optionArrs: [Intl.get('apply.approve.option.one', '选项一'), Intl.get('apply.approve.option.two', '选项二')]
         },
-        'componentType': ALL_COMPONENTS.SELECTOPTION,
+        'component_type': ALL_COMPONENTS.SELECTOPTION,
         'type': 'checkbox'
     },
     {
         'rulename': Intl.get('apply.rule.date', '日期选择'), 'iconfontCls': 'icon-fuwu',
-        'componentType': ALL_COMPONENTS.DATETIME,
+        'component_type': ALL_COMPONENTS.DATETIME,
         'type': 'date'
     },
     {
         'rulename': Intl.get('apply.rule.date.and.time', '日期+时间选择'), 'iconfontCls': 'icon-fuwu',
-        'componentType': ALL_COMPONENTS.DATETIME,
+        'component_type': ALL_COMPONENTS.DATETIME,
         'type': 'time'
     },
     {
@@ -169,17 +169,17 @@ exports.ADDAPPLYFORMCOMPONENTS = [
             unitMsg: Intl.get('apply.time.distinct.am','区分上下午')
         },
         selectedValue: '1day',
-        'componentType': ALL_COMPONENTS.TIMEPERIOD
+        'component_type': ALL_COMPONENTS.TIMEPERIOD
     },
     {
         'rulename': Intl.get('apply.rule.customer', '客户选择'), 'iconfontCls': 'icon-fuwu',
-        'componentType': ALL_COMPONENTS.CUSTOMERSEARCH,
+        'component_type': ALL_COMPONENTS.CUSTOMERSEARCH,
         'displayType': 'edit',
 
     },
     {
         'rulename': Intl.get('apply.rule.production', '产品配置'), 'iconfontCls': 'icon-fuwu',
-        'componentType': ALL_COMPONENTS.PRODUCTION,
+        'component_type': ALL_COMPONENTS.PRODUCTION,
         'type': 'option',
         'placeholder': Intl.get('leave.apply.select.product', '请选择产品'),
         notshowInList: true,

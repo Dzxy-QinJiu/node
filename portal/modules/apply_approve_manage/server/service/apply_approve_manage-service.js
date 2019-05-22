@@ -10,7 +10,7 @@ var restApis = {
     //添加自定义流程
     selfSettingWorkFlow: '/rest/base/v1/workflow/config',
     //删除自定义流程
-    deleteSelfSettingWorkFlow: '/base/v1/workflow/config/:id'
+    deleteSelfSettingWorkFlow: '/re/base/v1/workflow/config/:id'
 };
 exports.restUrls = restApis;
 //添加自定义流程

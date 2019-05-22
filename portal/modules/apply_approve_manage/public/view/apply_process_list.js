@@ -5,11 +5,14 @@
  */
 require('../style/add_and_show_apply.less');
 import {AntcTable} from 'antc';
-import {Switch, Input, Button, Dropdown, Menu} from 'antd';
+import {Switch, Input, Button, Dropdown, Menu, Icon} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import ApplyFormAndRules from './apply_form_and_rules';
 var classNames = require('classnames');
 import {calculateHeight, APPLYAPPROVE_LAYOUT } from '../utils/apply-approve-utils';
+var applyApproveManageStore = require('../store/apply_approve_manage_store');
+var applyApproveManageAction = require('../action/apply_approve_manage_action');
+var uuid = require('uuid/v4');
 class AddAndShowApplyList extends React.Component {
     constructor(props) {
         super(props);
@@ -17,7 +20,8 @@ class AddAndShowApplyList extends React.Component {
             newApplyTitle: '',//新添加的申请的名称
             showApplyList: _.cloneDeep(this.props.showApplyList),
             showAddForm: this.props.showAddForm,
-            showApplyDetailForm: false//是否展示审批的详情
+            showApplyDetailForm: false,//是否展示审批的详情
+            ...applyApproveManageStore.getState()
         };
     }
 
@@ -39,6 +43,7 @@ class AddAndShowApplyList extends React.Component {
 
     };
     componentDidMount = () => {
+        applyApproveManageStore.listen(this.onStoreChange);
         var _this = this;
         //点击客户列表某一行时打开对应的详情
         $('.apply-list-container').on('click', 'td.has-filter', function(e) {
@@ -65,30 +70,40 @@ class AddAndShowApplyList extends React.Component {
 
     };
     onStoreChange = () => {
-
+        this.setState(applyApproveManageStore.getState());
     };
     handleInputValue = (e) => {
         this.setState({
             newApplyTitle: _.get(e, 'target.value')
         });
     };
+    componentWillUnmount() {
+        applyApproveManageStore.unlisten(this.onStoreChange);
+    }
     //保存新加的审批类型
     handleSaveApplyTitle = () => {
-        //todo 发送ajax请求
-        //todo 成功后的处理
-        var applyList = this.state.showApplyList;
-        applyList.splice(0, 1, {
-            'applyType': this.state.newApplyTitle,
-            'approveRoles': [],
-            'approveCheck': false,
-            id: '222222222'
+        //只能用数字，字母，下划线组成这个任意的type，但是任意生成的会有-
+        var randomType = 'work_flow_' + uuid();
+        var reg = new RegExp( '-' , 'g');
+        randomType = randomType.replace( reg , '_');
+        var submitObj = {
+            description: this.state.newApplyTitle,
+            customiz_form: {},
+            //todo 用uuid生成一个唯一的type
+            type: randomType.slice(0,20)
+        };
+        applyApproveManageAction.addSelfSettingWorkFlow(submitObj,(data) => {
+            var applyList = this.state.showApplyList;
+            applyList.splice(0,1,data);
+            this.setState({
+                showApplyList: applyList,
+                showAddForm: false
+            }, () => {
+                this.props.updateShowApplyList(applyList);
+            });
         });
-        this.setState({
-            showApplyList: applyList,
-            showAddForm: false
-        }, () => {
-            this.props.updateShowApplyList(applyList);
-        });
+
+
 
     };
     handleCancelSaveApplyTitle = () => {
@@ -103,7 +118,9 @@ class AddAndShowApplyList extends React.Component {
         return (
             <span className="add-form">
                 <Input onChange={this.handleInputValue} placeholder={Intl.get('apply.approve.name.apply', '申请类型名称')}/>
-                <Button type='primary' onClick={this.handleSaveApplyTitle}>{Intl.get('common.confirm', '确认')}</Button>
+                <Button disabled={this.state.addWorkFlowLoading} type='primary' onClick={this.handleSaveApplyTitle}>{Intl.get('common.confirm', '确认')}
+                    {this.state.addWorkFlowLoading ? <Icon type="loading"/>:null}
+                </Button>
                 <Button onClick={this.handleCancelSaveApplyTitle}>{Intl.get('common.cancel', '取消')}</Button>
             </span>
         );
@@ -200,7 +217,7 @@ class AddAndShowApplyList extends React.Component {
             {
                 title: Intl.get('user.apply.type', '申请类型'),
                 width: '240px',
-                dataIndex: 'applyType',
+                dataIndex: 'description',
                 className: 'has-filter',
                 render: (text, record, index) => {
                     if (record.showAddForm) {
@@ -212,9 +229,10 @@ class AddAndShowApplyList extends React.Component {
                         };
                     } else {
                         var cls = classNames('apply-type',{'approve-status': !record.approveCheck});
+                        //todo 现在数据不全，后期要补全，改成description
                         return (
                             <span className={cls}>
-                                <span>{text}</span>
+                                <span>{record.description || record.type}</span>
                                 <span className="hidden record-id">{record.id}</span>
                             </span>
                         );
@@ -222,7 +240,8 @@ class AddAndShowApplyList extends React.Component {
                 }
             }, {
                 title: Intl.get('apply.approve.qualified.user', '可申用户'),
-                dataIndex: 'approveRoles',
+                //todo 数据不全，后期会修改
+                dataIndex: 'default_users',
                 className: 'has-filter',
                 render: (text, record, index) => {
                     if (record.showAddForm) {

@@ -31,7 +31,7 @@ class InputShow extends React.Component {
     }
 
     getTargetType = (formItem) => {
-        var target = _.find(applyComponentsType, item => item.name === _.get(formItem, 'componentType'));
+        var target = _.find(applyComponentsType, item => item.name === _.get(formItem, 'component_type'));
         if (target) {
             var ApplyComponent = target.component;
             var componentProps = {
@@ -39,20 +39,20 @@ class InputShow extends React.Component {
                 type: formItem.type || '',
                 addonAfter: formItem.addonAfter || '',
             };
-            if (_.get(formItem, 'componentType') === ALL_COMPONENTS.RANGEINPUT) {
+            if (_.get(formItem, 'component_type') === ALL_COMPONENTS.RANGEINPUT) {
                 componentProps.selectedArr = _.filter(_.get(formItem, 'timeRange.unitList'), item =>
                     _.indexOf(_.get(formItem, 'selectedArr'), item.value) > -1
                 );
             }
             
-            if (_.get(formItem, 'componentType') === ALL_COMPONENTS.SELECTOPTION) {
+            if (_.get(formItem, 'component_type') === ALL_COMPONENTS.SELECTOPTION) {
                 var optionArr = _.filter(_.get(formItem, 'options.optionArrs'), item => item);
                 componentProps.selectedArr = [];
                 _.forEach(optionArr, (item) => {
                     componentProps.selectedArr.push({label: item, value: item});
                 });
             }
-            if (_.get(formItem, 'componentType') === ALL_COMPONENTS.DATETIME) {
+            if (_.get(formItem, 'component_type') === ALL_COMPONENTS.DATETIME) {
                 if (_.get(formItem, 'type') === 'time'){
                     var nowTime = moment().format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
                     componentProps.defaultValue = moment(nowTime,oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
@@ -63,11 +63,11 @@ class InputShow extends React.Component {
                     componentProps.defaultValue = moment(nowDate,oplateConsts.DATE_FORMAT);
                 }
             }
-            if (_.get(formItem, 'componentType') === ALL_COMPONENTS.CUSTOMERSEARCH) {
+            if (_.get(formItem, 'component_type') === ALL_COMPONENTS.CUSTOMERSEARCH) {
                 componentProps.displayType = _.get(formItem,'displayType');
                 componentProps.hideButtonBlock = true;
             }
-            if (_.get(formItem, 'componentType') === ALL_COMPONENTS.TIMEPERIOD) {
+            if (_.get(formItem, 'component_type') === ALL_COMPONENTS.TIMEPERIOD) {
                 componentProps.selectedValue = _.get(formItem,'selectedValue');
             }
             return <ApplyComponent {...componentProps}/>;
@@ -91,10 +91,10 @@ class InputShow extends React.Component {
 
     render = () => {
         var formItem = this.props.formItem;
-        var isRequired = _.get(formItem, 'isRequired');
+        var is_required = _.get(formItem, 'is_required');
 
         var cls = classNames('title-label', {
-            'required': isRequired
+            'required': is_required
         });
         return (
             <div className="show-container" key={formItem.key}>

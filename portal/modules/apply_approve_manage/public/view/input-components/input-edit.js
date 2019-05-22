@@ -79,7 +79,7 @@ class InputEdit extends React.Component {
     };
     onCheckboxChange = (e) => {
         var formItem = this.state.formItem;
-        formItem.isRequired = e.target.checked;
+        formItem.is_required = e.target.checked;
         this.setState({
             formItem
         });
@@ -184,7 +184,7 @@ class InputEdit extends React.Component {
                 <div className="component-row">
                     <span className="label-components">{Intl.get('crm.186', '其他')}</span>
                     <span className="text-components">
-                        <Checkbox checked={_.get(formItem,'isRequired')} onChange={this.onCheckboxChange}/>
+                        <Checkbox checked={_.get(formItem,'is_required')} onChange={this.onCheckboxChange}/>
                         {Intl.get('apply.components.required.item', '必填')}
                     </span>
                 </div>

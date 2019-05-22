@@ -80,10 +80,10 @@ class AddApplyConditionPanel extends React.Component {
         //保存的已经添加的表单，是个数组
         var menus = <Menu>{
             _.map(applySaveForm, (item) => {
-                var componentType = item.subComponentType || item.componentType;
-                var target = this.getConditionRelate(componentType);
+                var component_type = item.subComponentType || item.component_type;
+                var target = this.getConditionRelate(component_type);
                return <Menu.Item>
-                    <a onClick={this.handleAddConditionType.bind(this, componentType)}>{_.get(target,'name')}</a>
+                    <a onClick={this.handleAddConditionType.bind(this, component_type)}>{_.get(target,'name')}</a>
                 </Menu.Item>;
             })
         }</Menu>;

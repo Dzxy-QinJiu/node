@@ -18,6 +18,8 @@ import InputEdit from './input-components/input-edit';
 import InputShow from './input-components/show-input';
 import ApplyRulesView from './reg-rules/reg_rules_view';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+var applyApproveManageAction = require('../action/apply_approve_manage_action');
 class AddApplyForm extends React.Component {
     constructor(props) {
         super(props);
@@ -56,6 +58,7 @@ class AddApplyForm extends React.Component {
                 cancelAfterApprove: false,//撤销权限
                 mergeSameApprover: false//其他
             },
+            saveFormErrMsg: ''//保存表单出错的提示
         };
     }
 
@@ -66,8 +69,8 @@ class AddApplyForm extends React.Component {
             applySaveForm: [{
                 id: 'XXX',
                 title: '时长组件',
-                isRequired: false,
-                componentType: 'timeRange',
+                is_required: false,
+                component_type: 'timeRange',
                 keys: ['timeRange'],
                 subKeys: ['starttime', 'endtime', 'total_range']
             }],
@@ -76,8 +79,8 @@ class AddApplyForm extends React.Component {
             applySaveForm: [{
                 id: 'XXX',
                 title: '时长组件',
-                isRequired: false,
-                componentType: 'timeRange',
+                is_required: false,
+                component_type: 'timeRange',
                 keys: ['timeRange'],
                 subKeys: ['starttime', 'endtime', 'total_range']
             }],
@@ -86,8 +89,8 @@ class AddApplyForm extends React.Component {
             applySaveForm: [{
                 id: 'XXX',
                 title: '时长组件',
-                isRequired: false,
-                componentType: 'timeRange',
+                is_required: false,
+                component_type: 'timeRange',
                 keys: ['timeRange'],
                 subKeys: ['starttime', 'endtime', 'total_range']
             }],
@@ -96,8 +99,8 @@ class AddApplyForm extends React.Component {
             applySaveForm: [{
                 id: 'XXX',
                 title: '金额组件',
-                isRequired: false,
-                componentType: 'InputNumber',
+                is_required: false,
+                component_type: 'InputNumber',
                 subComponentType: 'money',
                 keys: ['value']
             }],
@@ -132,8 +135,8 @@ class AddApplyForm extends React.Component {
 
     renderFormComponents = () => {
         var applyTypeData = this.state.applyTypeData;
-        return _.map(applyTypeData.formContent, (formItem,key) => {
-            // if (formItem.componentType === 'Input') {
+        return _.map(applyTypeData.customiz_form, (formItem,key) => {
+            // if (formItem.component_type === 'Input') {
             //如果是编辑状态
             if (formItem.isEditting) {
                 return (
@@ -158,15 +161,15 @@ class AddApplyForm extends React.Component {
         });
     };
     getTargetFormItem = (formKey) => {
-        var formContent = _.get(this, 'state.applyTypeData.formContent');
-        return _.find(formContent, item => item.key === formKey);
+        var customiz_form = _.get(this, 'state.applyTypeData.customiz_form');
+        return _.find(customiz_form, item => item.key === formKey);
     };
     //删除某个item
     removeTargetFormItem = (formItem) => {
         var formKey = formItem.key;
         var applyTypeData = this.state.applyTypeData;
-        var formContent = _.get(applyTypeData, 'formContent');
-        applyTypeData.formContent = _.filter(formContent, item => item.key !== formKey);
+        var customiz_form = _.get(applyTypeData, 'customiz_form');
+        applyTypeData.customiz_form = _.filter(customiz_form, item => item.key !== formKey);
         this.setState({
             applyTypeData
         });
@@ -175,11 +178,11 @@ class AddApplyForm extends React.Component {
         var formKey = formItem.key;
         var target = this.getTargetFormItem(formKey);
         var applyTypeData = this.state.applyTypeData;
-        var formContent = _.get(applyTypeData, 'formContent');
+        var customiz_form = _.get(applyTypeData, 'customiz_form');
         if (formItem.title){
             target.isEditting = false;
         }else{
-            applyTypeData.formContent = _.filter(formContent, item => item.key !== formKey);
+            applyTypeData.customiz_form = _.filter(customiz_form, item => item.key !== formKey);
         }
         this.setState({
             applyTypeData
@@ -217,25 +220,64 @@ class AddApplyForm extends React.Component {
     };
     renderAddFormContent = () => {
         var applyTypeData = this.state.applyTypeData;
-        var hasFormItem = _.get(applyTypeData, 'formContent.length');
+        var hasFormItem = _.get(applyTypeData, 'customiz_form.length');
         var cls = classNames('apply-form-content', {'has-form-item': hasFormItem});
         return (<div className={cls}>
             {hasFormItem ? this.renderFormComponents() : this.renderNodataContent()}
         </div>);
-
     };
+    handleSubmitApproveForm = () => {
+        var applyTypeData = this.state.applyTypeData;
+        var customiz_form = _.get(applyTypeData, 'customiz_form');
+        if (_.includes(_.map(customiz_form,'isEditting'), true)){
+            // this.setState({
+            //     saveFormErrMsg: Intl.get('apply.form.has.edit.components', '您有组件还是编辑状态')
+            // });
+            return;
+        }else{
+            var applyTypeData = this.state.applyTypeData;
+            var submitObj = {"id":"sdsdfsdfsf","type":"fei_test34444","description":"sfsdf","customiz_form":[{"component_type": "Input",
+                "iconfontCls": "icon-fuwu",
+                "is_required": true,
+                "key": "0",
+                "title": "问问"
+            }]};
+            var obj = {
+                customiz_form: [{
+                    "iconfontCls": "icon-fuwu",
+                    "component_type": "Input",
+                    "key": 0,
+                    "title": "wew",
+                    "is_required": true
+                }],
+                description: "我的请假0521",
+                id: "3a9f0f3d-0d69-42fd-b885-3988b3837785",
+                type: "work_flow_6da029b1_3"
+            }
+            delete applyTypeData.create_time;
+            delete applyTypeData.customiz;
+            delete applyTypeData.customiz_form[0].isEditting;
+            delete applyTypeData.customiz_form[0].rulename;
+            delete applyTypeData.customiz_form[0].placeholder;
+            console.log(applyTypeData);
+            applyTypeData.type = '11111sdsd';
+            applyApproveManageAction.addSelfSettingWorkFlow(applyTypeData);
+        }
+    }
+
+    ;
     handleAddComponents = (ruleItem) => {
         var applyTypeData = this.state.applyTypeData;
-        var componentType = ruleItem.componentType;
-        // if (_.includes(['Input','InputNumber'], componentType)){
-        var formContent = _.get(applyTypeData, 'formContent', []);
-        var keysArr = _.map(formContent,'key');
+        var component_type = ruleItem.component_type;
+        // if (_.includes(['Input','InputNumber'], component_type)){
+        var customiz_form = _.get(applyTypeData, 'customiz_form', []);
+        var keysArr = _.map(customiz_form,'key');
         var formContentKey = 0;
         if (keysArr.length){
             formContentKey = _.max(keysArr) + 1;
         }
-        formContent.push({...ruleItem, 'key': formContentKey, 'isEditting': true});
-        applyTypeData.formContent = formContent;
+        customiz_form.push({...ruleItem, 'key': formContentKey, 'isEditting': true});
+        applyTypeData.customiz_form = customiz_form;
         this.setState({
             applyTypeData: applyTypeData
         });
@@ -260,6 +302,8 @@ class AddApplyForm extends React.Component {
         );
     };
     renderFormContent = () => {
+        var applyTypeData = this.state.applyTypeData;
+        var hasFormItem = _.get(applyTypeData, 'customiz_form.length');
         return (
             <div className="apply-form-content-wrap"
                 style={{height: calculateHeight() - 2 * APPLYAPPROVE_LAYOUT.PADDINGHEIGHT - APPLYAPPROVE_LAYOUT.TABTITLE - APPLYAPPROVE_LAYOUT.TOPANDBOTTOM}}>
@@ -270,6 +314,14 @@ class AddApplyForm extends React.Component {
                     <GeminiScrollbar>
                         {this.renderAddFormContent()}
                     </GeminiScrollbar>
+                    {hasFormItem ? <div className="save-cancel-container">
+                        <SaveCancelButton
+                            handleSubmit={this.handleSubmitApproveForm}
+                            saveErrorMsg={this.state.saveFormErrMsg}
+                            hideCancelBtns={true}
+                        />
+                    </div> : null}
+
                 </div>
             </div>
         );
@@ -306,11 +358,12 @@ class AddApplyForm extends React.Component {
         this.props.closeAddPanel();
     };
     render = () => {
+        var applyTypeData = this.state.applyTypeData;
         return (
             <div className="add-apply-form-container">
                 <div className="add-apply-form-title">
                     <div className="show-and-edit-approve-type">
-                        {_.get(this, 'state.applyTypeData.applyType')}
+                        {_.get(applyTypeData, 'description') || _.get(applyTypeData, 'type')}
                         <i className="pull-right iconfont icon-update"></i>
                     </div>
                     <i className="pull-right iconfont icon-close" onClick={this.handleClickCloseAddPanel}></i>

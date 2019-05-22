@@ -667,14 +667,14 @@ class RegRulesView extends React.Component {
                     </div>
                 </GeminiScrollbar>
                 <div className="save-cancel-container">
-                    <ul className="buttons">
-                        <li>
-                            <a id="js-download-diagram" href title="download BPMN diagram"
-                                onClick={this.handleDownLoadBPMN}>
-                                下载BPMN
-                            </a>
-                        </li>
-                    </ul>
+                    {/*<ul className="buttons">*/}
+                        {/*<li>*/}
+                            {/*<a id="js-download-diagram" href title="download BPMN diagram"*/}
+                                {/*onClick={this.handleDownLoadBPMN}>*/}
+                                {/*下载BPMN*/}
+                            {/*</a>*/}
+                        {/*</li>*/}
+                    {/*</ul>*/}
                     <SaveCancelButton
                         handleSubmit={this.handleSubmitApproveApply}
                         hideCancelBtns={true}

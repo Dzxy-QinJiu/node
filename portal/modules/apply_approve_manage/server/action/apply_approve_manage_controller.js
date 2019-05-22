@@ -14,15 +14,15 @@ exports.addSelfSettingWorkFlow = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-exports.addSelfSettingWorkFlow = function(req, res) {
-    ApplyApproveManageService.addSelfSettingWorkFlow(req, res).on('success', function(data) {
+exports.editSelfSettingWorkFlow = function(req, res) {
+    ApplyApproveManageService.editSelfSettingWorkFlow(req, res).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-exports.addSelfSettingWorkFlow = function(req, res) {
-    ApplyApproveManageService.addSelfSettingWorkFlow(req, res).on('success', function(data) {
+exports.deleteSelfSettingWorkFlow = function(req, res) {
+    ApplyApproveManageService.deleteSelfSettingWorkFlow(req, res).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
