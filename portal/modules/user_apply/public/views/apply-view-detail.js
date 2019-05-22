@@ -168,6 +168,8 @@ const ApplyViewDetail = createReactClass({
             checkStatus: true, //自动生成密码radio是否选中
             passwordValue: '',//试用或者签约用户申请的明文密码
             showWariningTip: false,//是否展示密码的提示信息
+            curEditExpireDateAppIdr: '',//正在展示修改到期时间的应用id
+            updateDelayTime: '',//修改后的到期时间
             ...ApplyViewDetailStore.getState()
         };
     },
@@ -230,7 +232,9 @@ const ApplyViewDetail = createReactClass({
             this.appsSetting = {};
             if (nextProps.detailItem.id !== _.get(this, 'props.detailItem.id')) {
                 this.setState({
-                    showBackoutConfirmType: ''
+                    showBackoutConfirmType: '',
+                    curEditExpireDateAppIdr: '',
+                    updateDelayTime: ''
                 });
             }
             if ((!this.state.applyResult.submitResult && !this.state.backApplyResult.submitResult) || nextProps.detailItem.id !== this.props.detailItem.id) {
@@ -879,10 +883,34 @@ const ApplyViewDetail = createReactClass({
                 )}
         </div>;
     },
+    handleShowDatePicker: function(appId) {
+        this.setState({
+            curEditExpireDateAppIdr: appId
+        });
+    },
+    saveExpiredTime: function(app, custom_setting) {
+        //如果有特殊配置，需要更改的是
+        if (custom_setting){
+            custom_setting.time.end_time = this.state.updateDelayTime;
+        }else{
+            app.end_date = this.state.updateDelayTime;
+        }
+        this.setState({curEditExpireDateAppIdr: ''});
+    },
+    cancelExpiredTime: function() {
+        this.setState({
+            curEditExpireDateAppIdr: ''
+        });
+    },
+    onChangeExpiredTime: function(date) {
+        this.setState({
+            updateDelayTime: moment(date).valueOf()
+        });
+    },
 
     //渲染开通周期
     renderApplyTime(app, custom_setting, isDelay) {
-        let displayStartTime = '', displayEndTime = '', displayText = '';
+        let displayStartTime = '', displayEndTime = '', displayText = '',updateTime = '';
         const UNKNOWN = Intl.get('common.unknown', '未知');
         const FOREVER = Intl.get('common.time.forever', '永久');
         const CONNECTOR = Intl.get('common.time.connector', '至');
@@ -940,9 +968,34 @@ const ApplyViewDetail = createReactClass({
             }
         }
         if (isDelay) {
-            return displayEndTime + ' ' + Intl.get('apply.delay.endTime', '到期');
+            var appId = app.app_id;
+            if (this.state.curEditExpireDateAppIdr === appId) {
+                return <div>
+                    <DatePicker
+                        format={oplateConsts.DATE_FORMAT}
+                        onChange={this.onChangeExpiredTime}
+                        defaultValue={displayEndTime ? moment(displayEndTime, oplateConsts.DATE_FORMAT) : ''}
+                    />
+                    <span className="save-buttons">
+                        <span className="iconfont icon-choose" onClick={this.saveExpiredTime.bind(this, app, custom_setting)}></span>
+                        <span className="iconfont icon-close" onClick={this.cancelExpiredTime}></span>
+                    </span>
+                </div>;
+            } else {
+
+                return <span>
+                    {displayEndTime + ' ' + Intl.get('apply.delay.endTime', '到期')}
+                    {this.showEditDateIcon() ?
+                        <i className="iconfont icon-update" onClick={this.handleShowDatePicker.bind(this, appId)}></i> : null}
+                </span>;
+            }
         }
         return displayText;
+    },
+    showEditDateIcon: function(){
+        //是否是uem的用户
+        var isUem = !this.state.isOplateUser;
+        return isUem && _.get(this, 'state.detailInfoObj.info.type') === CONSTANTS.APPLY_USER && this.showPassWordPrivilege();
     },
 
     // 应用app的配置面板
