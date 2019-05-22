@@ -168,7 +168,7 @@ const ApplyViewDetail = createReactClass({
             checkStatus: true, //自动生成密码radio是否选中
             passwordValue: '',//试用或者签约用户申请的明文密码
             showWariningTip: false,//是否展示密码的提示信息
-            showOpenUserDatePicker: false,//是否展示修改到期时间
+            isShowingOpenUserDatePicker: '',//正在展示修改到期时间
             updateDelayTime: '',//修改后的到期时间
             ...ApplyViewDetailStore.getState()
         };
@@ -881,9 +881,9 @@ const ApplyViewDetail = createReactClass({
                 )}
         </div>;
     },
-    handleShowDatePicker: function() {
+    handleShowDatePicker: function(appId) {
         this.setState({
-            showOpenUserDatePicker: true
+            isShowingOpenUserDatePicker: appId
         });
     },
     saveExpiredTime: function(app, custom_setting) {
@@ -893,11 +893,11 @@ const ApplyViewDetail = createReactClass({
         }else{
             app.end_date = this.state.updateDelayTime;
         }
-        this.setState({showOpenUserDatePicker: false});
+        this.setState({isShowingOpenUserDatePicker: ''});
     },
     cancelExpiredTime: function() {
         this.setState({
-            showOpenUserDatePicker: false
+            isShowingOpenUserDatePicker: ''
         });
     },
     onChangeExpiredTime: function(date) {
@@ -966,7 +966,8 @@ const ApplyViewDetail = createReactClass({
             }
         }
         if (isDelay) {
-            if (this.state.showOpenUserDatePicker) {
+            var appId = app.app_id;
+            if (this.state.isShowingOpenUserDatePicker === appId) {
                 return <div>
                     <DatePicker
                         format={oplateConsts.DATE_FORMAT}
@@ -979,14 +980,20 @@ const ApplyViewDetail = createReactClass({
                     </span>
                 </div>;
             } else {
+
                 return <span>
                     {displayEndTime + ' ' + Intl.get('apply.delay.endTime', '到期')}
-                    {this.showPassWordPrivilege() ?
-                        <i className="iconfont icon-update" onClick={this.handleShowDatePicker}></i> : null}
+                    {this.showEditDateIcon() ?
+                        <i className="iconfont icon-update" onClick={this.handleShowDatePicker.bind(this, appId)}></i> : null}
                 </span>;
             }
         }
         return displayText;
+    },
+    showEditDateIcon: function(){
+        //是否是uem的用户
+        var isUem = !this.state.isOplateUser;
+        return isUem && _.get(this, 'state.detailInfoObj.info.type') === CONSTANTS.APPLY_USER && this.showPassWordPrivilege();
     },
 
     // 应用app的配置面板
