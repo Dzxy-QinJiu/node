@@ -232,7 +232,7 @@ let routers = [
         routePath: '/background_management',
         shortName: 'menu.shortName.config',//设置
         bottom: true,
-        subMenuPosition: 'left',//二级菜单的展示位置，顶部还是左侧展示（默认: 'top'）
+        // subMenuPosition: 'left',//二级菜单的展示位置，顶部还是左侧展示（默认: 'top'）
         subMenu: [
             {
                 id: 'USER_MANAGE', //唯一标识

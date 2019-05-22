@@ -4,7 +4,7 @@ var classNames = require('classnames');
 //导航菜单的超链接
 import {NavLink} from 'react-router-dom';
 require('./index.less');
-let history = require('../../public/sources/history');
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 
 //获取第一层路由
 function getCategory() {
@@ -29,9 +29,9 @@ class LeftNav extends React.Component {
         var locationPath = window.location.pathname;
 
         return (
-            <div className="leftNav" ref={(element) => this.topNav = element}>
-                <div className="left-sub-nav-wrap">
-                    <ul className="clearfix left-sub-nav-links">
+            <div className="leftNav">
+                <ul className="clearfix left-sub-nav-links">
+                    <GeminiScrollbar>
                         {
                             subModules.map(function(menu, i) {
                                 var menuRoutePath = menu.routePath.slice(1).replace(/\//g, '_');
@@ -44,13 +44,13 @@ class LeftNav extends React.Component {
                                     activeClassName="active"
                                     ref={(element) => this.navLinks = element}> {menu.name}</NavLink>);
                                 return (
-                                    <li className={cls} key={i}>
+                                    <li className={cls} key={i} title={menu.name}>
                                         {liContent}
                                     </li>);
                             })
                         }
-                    </ul>
-                </div>
+                    </GeminiScrollbar>
+                </ul>
             </div>
         );
     }
