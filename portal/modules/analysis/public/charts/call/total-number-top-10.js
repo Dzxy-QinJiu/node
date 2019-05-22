@@ -8,19 +8,24 @@ export function getTotalNumberTop10Chart() {
     return {
         title: Intl.get('call.analysis.total.count', '通话总次数') + 'TOP10',
         chartType: 'table',
-        url: '/rest/callrecord/v2/callrecord/query/:auth_type/call_record/top',
-        argCallback: arg => {
-            let query = arg.query;
-
-            if (query) {
-                query.filter_phone = false,
-                query.effective_phone = true,
-                query.device_type = 'all';
-            }
-        },
-        processData: (data) => {
-            return _.get(data, 'list.count', []);
-        },
+        url: '/rest/analysis/callrecord/v1/callrecord/statistics/top/sum/count',
+        conditions: [{
+            name: 'filter_phone',
+            value: false 
+        }, {
+            name: 'filter_invalid_phone',
+            value: true, 
+        }, {
+            name: 'device_type',
+            value: 'all'
+        }, {
+            name: 'top_size',
+            value: 10
+        }, {
+            name: 'top_type',
+            value: 'count'
+        }],
+        dataField: 'list',
         option: {
             columns: [
                 {
