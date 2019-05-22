@@ -152,7 +152,10 @@ export function getCallNumberTimeTrendChart() {
     function handleSwitchChange(chart, analysisInstance, value) {
         if (value) {
             chart.processOption = option => {
+                analysisInstance.totalViewOption = _.cloneDeep(option);
+                
                 if (analysisInstance.teamViewOption) {
+                    option.legend.data = analysisInstance.teamViewOption.legend.data;
                     option.series = analysisInstance.teamViewOption.series;
                 } else {
                     let legendData = [];
@@ -172,11 +175,18 @@ export function getCallNumberTimeTrendChart() {
                         });
                     });
 
+
                     option.legend.data = legendData;
                     option.series = series;
+
+                    analysisInstance.teamViewOption = _.cloneDeep(option);
                 }
             };
         } else {
+            chart.processOption = option => {
+                option.legend.data = analysisInstance.totalViewOption.legend.data;
+                option.series = analysisInstance.totalViewOption.series;
+            };
         }
 
         const charts = analysisInstance.state.charts;
