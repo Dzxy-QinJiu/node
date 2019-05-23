@@ -6,16 +6,17 @@ export function getCallCustomerStageChart() {
     return {
         title: '客户阶段统计',
         chartType: 'pie',
-        url: '/rest/callrecord/v2/callrecord/query/:data_type/call_record/region/stage/statistic',
-        argCallback: arg => {
-            let query = arg.query;
-
-            if (query) {
-                query.filter_phone = false,
-                query.effective_phone = false,
-                query.device_type = 'all';
-            }
-        },
+        url: '/rest/analysis/callrecord/v1/callrecord/statistics/distribution/customer_label',
+        conditions: [{
+            name: 'filter_phone',
+            value: false 
+        }, {
+            name: 'filter_invalid_phone',
+            value: false, 
+        }, {
+            name: 'device_type',
+            value: 'all'
+        }],
         dataField: 'customer_label_sum',
     };
 }
