@@ -35,7 +35,7 @@ import timeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import {getResultType, getErrorTipAndRetryFunction,isOrganizationEefung, isOrganizationCiviw} from 'PUB_DIR/sources/utils/common-method-util';
 import {getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import {dateSelectorEmitter, teamTreeEmitter, callDeviceTypeEmitter} from 'PUB_DIR/sources/utils/emitters';
-import customerCharts from 'MOD_DIR/analysis/public/charts/customer';
+import callCharts from 'MOD_DIR/analysis/public/charts/call';
 //地图的formatter
 function mapFormatter(obj) {
     let name = Intl.get('oplate_bd_analysis_realm_zone.2', '市区');
@@ -930,8 +930,6 @@ class CallRecordAnalyis extends React.Component {
 
     //近一个月的通话趋势
     renderCallChart = (dataList, charTips, isMutileLine, lineType) => {
-        var isLoading = this.state.callList.loading || this.state.eachTeamCallList.loading;
-        var isError = this.state.callList.errMsg || this.state.eachTeamCallList.errMsg;
         const charts = [{
             title: Intl.get('call.record.trend.charts', ' 近一个月的通话趋势：'),
             chartType: 'line',
@@ -1543,7 +1541,7 @@ class CallRecordAnalyis extends React.Component {
                         </div>
                         <div className="col-xs-12">
                             <AntcAnalysis
-                                charts={[customerCharts.getCallIndustryChart()]}
+                                charts={[callCharts.getCallIndustryChart()]}
                                 conditions={this.getConditions()}
                                 emitterConfigList={this.getEmitters()}
                                 isGetDataOnMount={true}

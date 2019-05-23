@@ -21,7 +21,10 @@ export function getCallCustomerGeographicalDistributionChart() {
         dataField: 'sum',
         events: [{
             name: 'click',
-            func: () => {}
-        }]
+        }],
+        subRegionField: 'sub_region',
+        processSubRegionData: data => {
+            _.each(data, item => item.value = item.count);
+        }
     };
 }
