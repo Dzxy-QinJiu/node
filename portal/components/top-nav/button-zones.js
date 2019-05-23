@@ -29,7 +29,7 @@ class ButtonZones extends React.Component {
     cleanUpStyle = () => {
         //找到外层节点
         let $wrap = $('.rightContent .topNav').first();
-        let $content = $('.rightContent .moduleContent');
+        let $content = $('.rightContent .top-nav-module-content');
         //按钮区
         let $buttonZones = $(ReactDOM.findDOMNode(this));
         $wrap && $wrap.removeClass('fixed-position');
@@ -43,7 +43,7 @@ class ButtonZones extends React.Component {
     resizeHandler = () => {
         //找到外层节点
         let $wrap = $('.rightContent .topNav').first();
-        let $content = $('.rightContent .moduleContent');
+        let $content = $('.rightContent .top-nav-module-content');
         //找到菜单列表
         let $topLinks = $wrap.find('.topnav-links-wrap');
         if (!$wrap.length || !$content.length || !$topLinks.length) {
