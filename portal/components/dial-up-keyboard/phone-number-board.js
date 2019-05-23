@@ -60,13 +60,14 @@ class PhoneNumberBoard extends React.Component {
     dialPhoneNumber = () => {
         let phoneNumber = this.state.inputNumber;
         if (phoneNumber && !Oplate.isCalling) {
-            if (isTelephone(phoneNumber)) {
-                handleCallOutResult({
-                    phoneNumber: phoneNumber,//拨打的电话
-                });
-            } else {
-                message.error(Intl.get('phone.call.error.tip', '电话号码错误！'));
-            }
+            //先去掉电话号码的验证
+            // if (isTelephone(phoneNumber)) {
+            handleCallOutResult({
+                phoneNumber: phoneNumber,//拨打的电话
+            });
+            // } else {
+            //     message.error(Intl.get('phone.call.error.tip', '电话号码错误！'));
+            // }
         }
     }
     render() {
