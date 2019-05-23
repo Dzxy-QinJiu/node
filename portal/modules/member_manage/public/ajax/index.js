@@ -1,4 +1,4 @@
-import {getSalesTeamRoleList} from '../../../common/public/ajax/role';
+import {getSalesTeamRoleList} from 'MOD_DIR/common/public/ajax/role';
 
 // 获取成员列表
 exports.getMemberList = (searchObj) => {
@@ -149,7 +149,6 @@ exports.getSalesPosition = () => {
     }).error((xhr) => {
         Deferred.reject(xhr.responseJSON || Intl.get('user.log.login.fail', '获取职务列表失败！'));
     });
-
     return Deferred.promise();
 };
 

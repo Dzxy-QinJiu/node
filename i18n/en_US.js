@@ -720,6 +720,8 @@ var en_US = {
     'member.select.position': 'Please select position', // 请选择职务
     'member.no.position': 'No position', // 暂无职务
     'member.search.position.by.name': 'Enter position name for searching', // 输入职务名称搜索
+    'member.add.position': 'Add', // 添加职务
+    'member.position.name.label': 'Name', // 职务名称
 
     //后台管理-成员end
     //组织管理start

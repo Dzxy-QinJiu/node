@@ -722,6 +722,8 @@ var zh_CN = {
     'member.select.position': '请选择职务',
     'member.no.position': '暂无职务',
     'member.search.position.by.name': '输入职务名称搜索',
+    'member.add.position': '添加职务',
+    'member.position.name.label': '职务名称',
 
     //后台管理-成员end
     //组织管理start

@@ -1,5 +1,5 @@
 require('./css/index.less');
-import {SearchInput} from 'antc';
+import {SearchInput, AntcTable} from 'antc';
 import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import MemberManageStore from './store';
@@ -8,8 +8,8 @@ import MemberFormAction from './action/member-form-actions';
 import MemberForm from './view/member-form';
 import MemberInfo from './view/member-info';
 import {memberStatusList} from 'PUB_DIR/sources/utils/consts';
-import {Icon, Button} from 'antd';
-import { AntcTable } from 'antc';
+import DepartmentPosition from './view/department-position';
+import {Icon, Button } from 'antd';
 import Trace from 'LIB_DIR/trace';
 
 let openTimeout = null;//打开面板时的时间延迟设置
@@ -301,7 +301,6 @@ class MemberManage extends React.Component {
     
     // 修改成员字段成功的处理
     changeMemberFieldSuccess = (member) => {
-        console.log('member:', member);
         MemberManageAction.afterEditMember(member);
     };
     // 修改成员状态
@@ -320,10 +319,13 @@ class MemberManage extends React.Component {
                         <div className='member-top-nav'>
                             {this.renderTopNavOperation()}
                         </div>
-                        <div className='member-table-info'>
-                            {this.renderMemberTableContent()}
-                        </div>
-                        <div className='member-teams-info'>
+                        <div className='member-content'>
+                            <div className='member-table-info'>
+                                {this.renderMemberTableContent()}
+                            </div>
+                            <div className='member-teams-info'>
+                                <DepartmentPosition />
+                            </div>
                         </div>
                     </div>
                 </div>
