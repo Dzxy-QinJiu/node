@@ -11,20 +11,20 @@ export function getCallTimeIntervalChart() {
     return {
         title: '通话时段统计',
         chartType: 'scatter',
-        url: '/rest/callrecord/v2/callrecord/query/:auth_type/call_record/statistic',
-        argCallback: arg => {
-            let query = arg.query;
-
-            if (query) {
-                query.type = 'all';
-                query.filter_phone = false;
-                query.filter_invalid_phone = false;
-            }
-        },
-        processData: (data) => {
-            const list = _.get(data, 'list');
-
-            return _.map(list, item => {
+        url: '/rest/analysis/callrecord/v1/callrecord/statistics/sum/count',
+        conditions: [{
+            name: 'filter_phone',
+            value: false 
+        }, {
+            name: 'filter_invalid_phone',
+            value: false 
+        }, {
+            name: 'device_type',
+            value: 'all' 
+        }],
+        dataField: 'list',
+        processData: data => {
+            return _.map(data, item => {
                 return {
                     week: item.week,
                     hour: item.hour,
