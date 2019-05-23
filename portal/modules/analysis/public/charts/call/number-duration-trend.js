@@ -17,6 +17,7 @@ export function getCallNumberTimeTrendChart() {
             }
         },
         layout: {sm: 24},
+        ajaxInstanceFlag: 'getCallNumberTimeTrend',
         url: '/rest/analysis/callrecord/v1/callrecord/histogram',
         conditions: [{
             name: 'interval',

@@ -35,7 +35,7 @@ import timeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import {getResultType, getErrorTipAndRetryFunction,isOrganizationEefung, isOrganizationCiviw} from 'PUB_DIR/sources/utils/common-method-util';
 import {getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import {dateSelectorEmitter, teamTreeEmitter, callDeviceTypeEmitter} from 'PUB_DIR/sources/utils/emitters';
-import callCharts from 'MOD_DIR/analysis/public/charts/call';
+import callChart from 'MOD_DIR/analysis/public/charts/call';
 //地图的formatter
 function mapFormatter(obj) {
     let name = Intl.get('oplate_bd_analysis_realm_zone.2', '市区');
@@ -701,25 +701,7 @@ class CallRecordAnalyis extends React.Component {
         return (
             <div className="call-trend-container">
                 <div className="call-trend-chart">
-                    {this.state.switchStatus && this.state.firstSelectValue === LITERAL_CONSTANT.TEAM ?
-                        <div>
-                            {
-                                this.state.selectRadioValue === CALL_RADIO_VALUES.COUNT ?
-                                    // 通话数量
-                                    this.renderCallChart(this.state.eachTeamCallList.list, this.countTooltip, true, CALL_RADIO_VALUES.COUNT) :
-                                    // 通话时长
-                                    this.renderCallChart(this.state.eachTeamCallList.list, this.durationTooltip, true, CALL_RADIO_VALUES.DURATION)
-                            }
-                        </div>
-                        : (<div>
-                            {
-                                this.state.selectRadioValue === CALL_RADIO_VALUES.COUNT ?
-                                    // 通话数量
-                                    this.renderCallChart(this.state.callList.count, this.countTooltip) :
-                                    // 通话时长
-                                    this.renderCallChart(this.state.callList.duration, this.durationTooltip)
-                            }
-                        </div>)}
+                    {this.renderCallChart()}
                 </div>
             </div>
         );
@@ -930,30 +912,13 @@ class CallRecordAnalyis extends React.Component {
 
     //近一个月的通话趋势
     renderCallChart = (dataList, charTips, isMutileLine, lineType) => {
-        const charts = [{
-            title: Intl.get('call.record.trend.charts', ' 近一个月的通话趋势：'),
-            chartType: 'line',
-            data: dataList,
-            layout: {
-                sm: 24,
-            },
-            option: this.getCallTrendEchartOptions(dataList, charTips, isMutileLine, lineType),
-            noExportCsv: true,
-            resultType: getResultType(isLoading, isError),
-            errMsgRender: () => {
-                return getErrorTipAndRetryFunction(isError);
-            },
-            cardContainer: {
-                props: {
-                    subTitle: this.renderCallTrendChartSwitch()
-                }
-            }
-        }];
+        const charts = [callChart.getCallNumberTimeTrendChart()];
 
         return (
             <AntcAnalysis
                 charts={charts}
                 chartHeight={this.state.trendHeight}
+                isGetDataOnMount={true}
             />
         );
     };
@@ -1423,35 +1388,11 @@ class CallRecordAnalyis extends React.Component {
             <div>
                 <AntcAnalysis
                     charts={charts}
+                    conditions={this.getConditions()}
+                    emitterConfigList={this.getEmitters()}
+                    isGetDataOnMount={true}
                     chartHeight={CHART_LAYOUT_HEIGHT.INITIAL_HEIGHT}
                 />
-            </div>
-        );
-    };
-    onFilter114Change = (e) => {
-        this.setState({filter_phone: e.target.checked},() => {
-            this.getCallInfoData();
-        });
-    };
-
-    //渲染通话趋势图上的切换项
-    renderCallTrendChartSwitch = () => {
-        return (
-            <div className="trend-chart-title">
-                <div className="call-interval-radio clearfix btn-item">
-                    <RadioGroup onChange={this.handleSelectRadio} value={this.state.selectRadioValue}>
-                        <Radio value="count">{Intl.get('sales.home.call.cout', '通话数量')}</Radio>
-                        <Radio value="duration">{Intl.get('call.record.call.duration', '通话时长')}</Radio>
-                    </RadioGroup>
-                </div>
-
-                {this.state.firstSelectValue === LITERAL_CONSTANT.TEAM ?
-                    <div className="each-team-trend">
-                        {Intl.get('call.record.all.teams.trend', '查看各团队通话趋势图')}：
-                        <Switch checked={this.state.switchStatus} onChange={this.handleSwitchChange}
-                            checkedChildren={Intl.get('user.yes', '是')}
-                            unCheckedChildren={Intl.get('user.no', '否')}/>
-                    </div> : null}
             </div>
         );
     };
@@ -1524,6 +1465,33 @@ class CallRecordAnalyis extends React.Component {
         ];
     };
 
+    getCharts() {
+        return [
+            //通话记录统计
+            callChart.getCallRecordChart(),
+            //电话行业统计
+            callChart.getCallIndustryChart(),
+            //通话总次数TOP10
+            callChart.getTotalNumberTop10Chart(),
+            //通话总时长TOP10
+            callChart.getTotalDurationTop10Chart(),
+            //单次通话时长TOP10
+            callChart.getSingleDurationTop10Chart(),
+            //114占比统计
+            callChart.getCall114RatioChart(),
+            //客服电话统计
+            callChart.getCallServiceTelChart(),
+            //通话时段统计
+            callChart.getCallTimeIntervalChart(),
+            //客户阶段统计
+            callChart.getCallCustomerStageChart(),
+            //订单阶段统计
+            callChart.getCallOrderStageChart(),
+            //客户的地域分布
+            callChart.getCallCustomerGeographicalDistributionChart(),
+        ];
+    }
+
     renderCallAnalysisView = () => {
         const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height();
         return (<div className="call-table-container" ref="phoneList">
@@ -1536,84 +1504,12 @@ class CallRecordAnalyis extends React.Component {
             <div style={{height: tableHeight}} className="table-list-containers">
                 <GeminiScrollBar>
                     <div className="analysis-wrapper">
-                        <div className="call-info col-xs-12">
-                            {this.renderCallInfo()}
-                        </div>
-                        <div className="col-xs-12">
-                            <AntcAnalysis
-                                charts={[callCharts.getCallIndustryChart()]}
-                                conditions={this.getConditions()}
-                                emitterConfigList={this.getEmitters()}
-                                isGetDataOnMount={true}
-                                style={{padding: 0}}
-                            />
-                        </div>
-                        <div className="call-range col-xs-12">
-                            {/*根据电话的排序的通话次数TOP10*/}
-                            {this.renderCallTopTen(this.state.callTotalCountObj, {
-                                title: Intl.get('call.analysis.total.count', '通话总次数'),
-                                dataKey: 'count'
-                            },'auto')}
-                            {/*根据电话的排序的通话总时长TOP10*/}
-                            {this.renderCallTopTen(this.state.callTotalTimeObj, {
-                                title: Intl.get('call.analysis.total.time', '通话总时长'),
-                                dataKey: 'sum'
-                            },'auto')}
-                        </div>
-                        <div className="call-duration col-xs-12">
-                            {/*根据电话的排序的单次通话时长TOP10*/}
-                            {this.renderCallTopTen(this.state.callDurList, {
-                                title: Intl.get('sales.home.call.top.ten', '单次通话时长'),
-                                dataKey: 'billsec'
-                            },CHART_LAYOUT_HEIGHT.LARGER_HEIGHT)}
-                            <div className="call-rate-service-rate col-xs-6 padding-both-none">
-                                <div className="call-rate">
-                                    {this.renderCallRateChar('114')}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="call-rate col-xs-12">
-                            <div className="call-service-rate col-xs-6">
-                                <div className="call-rate">
-                                    {this.renderCallRateChar('service')}
-                                </div>
-                            </div>
-                            <div className="call-interval-block col-xs-6 padding-both-none">
-                                {this.renderCallIntervalChart()}
-                                <div className="call-interval-radio clearfix btn-item">
-                                    <RadioGroup onChange={this.onChangeCallIntervalRadio}
-                                        value={this.state.selectedCallInterval}>
-                                        <Radio value={CALL_RADIO_VALUES.COUNT}>
-                                            {Intl.get('sales.home.call.cout', '通话数量')}
-                                        </Radio>
-                                        <Radio value={CALL_RADIO_VALUES.DURATION}>
-                                            {Intl.get('call.record.call.duration', '通话时长')}
-                                        </Radio>
-                                    </RadioGroup>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div className="call-stage col-xs-12">
-                            <div className="customer-stage-distribute col-xs-6">
-                                <div className="call-stage">
-                                    {this.renderCustomerPhase()}
-                                </div>
-                            </div>
-                            <div className="call-stage-distribute col-xs-6 padding-both-none">
-                                <div className="call-sale">
-                                    {this.renderOrderPhase()}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-xs-12">
-                            <div className="call-zone col-xs-6">
-                                <div className="call-zone-distribute" ref="mapChartWrap">
-                                    {this.renderCustomerZoneDistribute()}
-                                </div>
-                            </div>
-                        </div>
-
+                        <AntcAnalysis
+                            charts={this.getCharts()}
+                            conditions={this.getConditions()}
+                            emitterConfigList={this.getEmitters()}
+                            isGetDataOnMount={true}
+                        />
                     </div>
                 </GeminiScrollBar>
             </div>
