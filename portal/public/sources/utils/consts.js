@@ -469,11 +469,11 @@ export const REG_FILES_SIZE_RULES = [
     {maxValue: 10 * 1024 * 1024, messageTips: Intl.get('apply.approve.upload.not.more.than50','文件大小不能超过10M!')},
 ];
 
-export const REG_CLUE_FILES_TYPE_RULES = [
+export const XLS_FILES_TYPE_RULES = [
     {valueArr: ['xls'],messageTips: Intl.get('clue.import.file.type','只能导入{type}格式的文件！',{type: 'xls'})},
 ];
 
-export const REG_CRM_FILES_TYPE_RULES = [
+export const CSV_FILES_TYPE_RULES = [
     {valueArr: ['csv'],messageTips: Intl.get('clue.import.file.type','只能导入{type}格式的文件！',{type: 'csv'})},
 ];
 export const FINAL_TASK = 'final_task';

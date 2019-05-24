@@ -10,6 +10,10 @@ export function getCustomerTransferTrendChart() {
         chartType: 'line',
         layout: {sm: 24},
         url: '/rest/analysis/customer/v2/:data_type/customer/transfer_record/trend',
+        conditions: [{
+            name: 'tranfer_type',
+            value: 'out'
+        }],
         argCallback: arg => {
             argCallbackTimeToUnderlineTime(arg);
             argCallbackMemberIdToMemberIds(arg);

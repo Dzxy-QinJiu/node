@@ -160,7 +160,7 @@ class BusinessApplyManagement extends React.Component {
     };
     //点击展示详情
     clickShowDetail = (obj, idx) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '查看申请详情');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.list-unstyled'), '查看申请详情');
         BusinessApplyAction.setSelectedDetailItem({obj, idx});
     };
 
@@ -237,9 +237,9 @@ class BusinessApplyManagement extends React.Component {
         BusinessApplyAction.setLastApplyId('');
         setTimeout(() => {
             if (this.state.isCheckUnreadApplyList) {
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '查看有未读回复的申请');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.apply_manage_wrap'), '查看有未读回复的申请');
             } else {
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.app_user_manage_apply_list'), '取消有未读回复申请的查看');
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.apply_manage_wrap'), '取消有未读回复申请的查看');
             }
             this.getAllBusinessApplyList();
         });
@@ -282,7 +282,7 @@ class BusinessApplyManagement extends React.Component {
                 values={{'return': <a onClick={this.toggleUnreadApplyList}>{Intl.get('crm.52', '返回')}</a>}}
             />) : Intl.get('user.apply.no.apply', '还没有用户审批诶...');
             return (
-                <div className="app_user_manage_apply_wrap">
+                <div className="apply_manage_wrap">
                     <NoData msg={noDataTip}/>
                 </div>
             );
@@ -293,7 +293,7 @@ class BusinessApplyManagement extends React.Component {
         var applyType = commonMethodUtil.getApplyStatusDscr(applyListType);
         var noShowApplyDetail = this.state.applyListObj.list.length === 0;
         return (
-            <div className="bussiness-apply-container">
+            <div className="bussiness-apply-container apply_manage_wrap">
                 <div className="leave-apply-list-detail-wrap">
                     <div className="col-md-4 leave-apply-list" data-tracename="出差申请列表">
                         <ApplyDropdownAndAddBtn

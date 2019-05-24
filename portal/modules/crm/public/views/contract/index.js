@@ -50,7 +50,23 @@ class Contract extends React.Component {
             this.getContractByCustomerId(this.props.curCustomer.id);
         }
         $(window).on('resize', this.onStoreChange);
+        let $contractContainer = $('.contract-container-scroll');
+        if($contractContainer){
+            $contractContainer.delegate('.add-app-container .add-btn', 'click', this.refreshScrollBar);
+            $contractContainer.delegate('.add-app-container .sure-btn', 'click', this.refreshScrollBar);
+            $contractContainer.delegate('.add-app-container .cancel-btn', 'click', this.refreshScrollBar);
+        }
     }
+
+    refreshScrollBar = () => {
+        let contractListLength = this.state.contractList.data.length || 0;
+        setTimeout(() => {
+            //没有合同时，添加合同，选择应用时或选择应用后，滚动条展示、隐藏的处理
+            if (!contractListLength && _.get(this.contactScrollRef, 'rightPanelScrollBarRef')) {
+                this.contactScrollRef.rightPanelScrollBarRef.update();
+            }
+        });
+    };
 
     componentWillReceiveProps(nextProps) {
         let oldCustomerId = this.state.curCustomer.id;
@@ -76,6 +92,7 @@ class Contract extends React.Component {
     };
 
     render() {
+
         let contractListLength = this.state.contractList.data.length || 0;
         let loading = this.state.contractList.loading;
         return (
@@ -94,7 +111,9 @@ class Contract extends React.Component {
                         </Button>
                     )}
                 </div>
-                <RightPanelScrollBar totalHeight={contractListLength}>
+                <RightPanelScrollBar totalHeight={contractListLength} ref={(contactScroll) => {
+                    this.contactScrollRef = contactScroll;
+                }}>
                     <div className="contract-container-scroll">
                         {
                             this.state.isAddFormShow ? (

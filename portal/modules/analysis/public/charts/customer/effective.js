@@ -2,7 +2,7 @@
  * 有效客户活跃率统计
  */
 
-import { numToPercent, argCallbackMemberIdsToMemberId } from '../../utils';
+import { argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getCustomerEffectiveChart() {
     return {
@@ -34,9 +34,7 @@ export function getCustomerEffectiveChart() {
                 {
                     title: Intl.get('effective.customer.activity.rate', '有效客户活跃率'),
                     dataIndex: 'active_rate',
-                    render: text => {
-                        return <span>{numToPercent(text)}</span>;
-                    }
+                    showAsPercent: true
                 },
             ],
         },

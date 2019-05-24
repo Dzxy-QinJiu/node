@@ -22,7 +22,7 @@ const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import {removeSpacesAndEnter,getUnhandledClueCountParams} from 'PUB_DIR/sources/utils/common-method-util';
-import {REG_CLUE_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
+import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 require('./css/index.less');
 import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount, AVALIBILITYSTATUS} from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
@@ -1577,7 +1577,7 @@ class ClueCustomer extends React.Component {
                                 clueClassifyArray={this.state.clueClassifyArray}
                                 salesManList={this.getSalesDataList()}
                                 getClueList={this.getClueList}
-                                style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: this.state.tableHeight}}
+                                style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: this.state.tableHeight + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT}}
                             />
                         </div>
                         <div className={contentClassName}>
@@ -1611,7 +1611,8 @@ class ClueCustomer extends React.Component {
                         doImportAjax={this.doImportAjax}
                         onItemListImport={this.onClueImport}
                         repeatAlertMessage={Intl.get('clue.repeat.delete', '红色标示线索名及联系方式已存在，请删除后再导入')}
-                        regRules={REG_CLUE_FILES_TYPE_RULES}
+                        regRules={XLS_FILES_TYPE_RULES}
+                        downLoadFileName={Intl.get('sales.home.customer', '客户') + '.xls'}
                     />
                     {this.state.rightPanelIsShow ?
                         <ClueRightPanel

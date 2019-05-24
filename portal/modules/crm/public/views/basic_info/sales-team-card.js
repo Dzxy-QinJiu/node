@@ -75,16 +75,19 @@ class SalesTeamCard extends React.Component {
     }
 
     componentDidMount() {
-        let isManager = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
-        //管理员修改客户的所属销售时
-        if (this.enableEditSales() && isManager) {
-            // 获取所有的成员和带团队的销售组合的列表（可以将客户分给除销售外的其他人）
-            this.getAllUserList();
-        }
-        //销售修改客户的所属销售或有修改联合跟进人的权限时
-        if (this.enableEditSales() && !isManager || this.enableEditSecondSales()) {
-            //获取销售所在团队及其下级团队和对应的成员列表
-            this.getSalesManList();
+        //不是普通销售时，获取负责人、联合跟进人修改时的下拉列表
+        if(!this.isCommonSales()){
+            let isManager = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
+            //管理员修改客户的所属销售时
+            if (this.enableEditSales() && isManager) {
+                // 获取所有的成员和带团队的销售组合的列表（可以将客户分给除销售外的其他人）
+                this.getAllUserList();
+            }
+            //销售领导修改客户的所属销售或有修改联合跟进人的权限时
+            if (this.enableEditSales() && !isManager || this.enableEditSecondSales()) {
+                //获取销售所在团队及其下级团队和对应的成员列表
+                this.getSalesManList();
+            }
         }
         //获取销售及联合跟进人
         this.getSalesByCustomerId(this.state.customerId);
@@ -342,13 +345,20 @@ class SalesTeamCard extends React.Component {
         }
         return selectValue;
     }
-
-    enableEditSales() {
-        return hasPrivilege(EDIT_PRIVILIGES.EDIT_SALES) && !this.props.disableEdit;
+    //是否是普通销售
+    isCommonSales(){
+        let userObj = userData.getUserData();
+        return _.get(userObj, 'isCommonSales');
     }
-
+    //是否可修改负责人
+    enableEditSales() {
+        //有修改负责人的权限，可修改，不是普通销售
+        return hasPrivilege(EDIT_PRIVILIGES.EDIT_SALES) && !this.props.disableEdit && !this.isCommonSales();
+    }
+    //是否可修改联合跟进人
     enableEditSecondSales() {
-        return hasPrivilege(EDIT_PRIVILIGES.EDIT_SECOND_SALES) && !this.props.disableEdit;
+        //有修改联合跟进人的权限，可修改，不是普通销售
+        return hasPrivilege(EDIT_PRIVILIGES.EDIT_SECOND_SALES) && !this.props.disableEdit && !this.isCommonSales();
     }
 
     renderContent = () => {

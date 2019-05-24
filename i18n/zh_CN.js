@@ -77,7 +77,7 @@ var zh_CN = {
     'common.associate': '关联',
     'common.image.type.tip': '图片类型必须是gif,jpeg,jpg,png,bmp中的一种！',
     'common.image.upload': '上传',
-    'common.image.upload.size': '请上传小于300kb的图片',
+    'common.image.upload.size': '请上传小于10kb的图片',
     'common.edit': '编辑',
     //密码安全等级
     'common.password.low': '低',
@@ -255,6 +255,7 @@ var zh_CN = {
     'common.or': '或',
     'common.before': '前',
     'common.download.template.filename': '下载{type}模板',
+    'common.import.template': '模板',
 
     //公共部分--end
     'login.login': '登录',
@@ -1495,6 +1496,11 @@ var zh_CN = {
     'crm.record.unupload.phone': '未上传通话录音，无法播放',
     'crm.record.edit.record.tip': '点击修改跟进记录',
     'crm.search.no.owner': '无相关负责人',
+    'crm.contact.role': '联系人角色',
+    'crm.add.time': '添加时间',
+    'crm.province.in': '所属省份',
+    'crm.name.exist': '客户名已存在！',
+
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
     'crm.contract.validity.one.year': '有效期一年',
@@ -2532,7 +2538,7 @@ var zh_CN = {
     'clue.customer.import.clue.failed': '导入{type}失败',
     'clue.delete.duplicate.failed': '删除重复线索失败',
     'clue.repeat.delete': '红色标示线索名及联系方式已存在，请删除后再导入',
-    'crm.repeat.delete': '红色标识客户名或联系方式已存在，请删除后再导入',
+    'crm.repeat.delete': '红色标识客户名或电话已存在，请删除后再导入',
     'clue.customer.belong.to.other.sales': '该电话属于客户{customer}，所属销售{sales}',
     'phone.alert.select.customer': '请选择要跟进的客户',
     'clue.analysis.consult.time': '咨询时间',

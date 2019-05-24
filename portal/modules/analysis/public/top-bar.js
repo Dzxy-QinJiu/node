@@ -138,17 +138,6 @@ class TopBar extends React.Component {
     };
 
     onSelectDate = (startTime, endTime, range) => {
-        //选择的不是全部时间时，将时间值转为整数
-        //选择全部时间时，开始时间为空，不用处理
-        if (startTime) {
-            startTime = parseInt(startTime);
-        }
-
-        //同上
-        if (endTime) {
-            endTime = parseInt(endTime);
-        }
-
         this.setState({startTime, endTime, range});
 
         let interval;
@@ -180,9 +169,6 @@ class TopBar extends React.Component {
             endTime: this.state.endTime,
 
             periodOptions: [{
-                name: Intl.get('user.time.all', '全部时间'),
-                value: 'all'
-            }, {
                 name: Intl.get('common.time.unit.day', '天'),
                 value: 'day'
             }, {

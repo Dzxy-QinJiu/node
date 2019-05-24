@@ -1,47 +1,53 @@
 //自定义下拉菜单的样式处理
-.ant-dropdown-menu {
-  .dropdown-li {
-    display: inline-block;
-    width: 100%;
-    padding: 10px;
-  }
-  .custom-dropdown-title-container {
-    height: 40px;
-    .dropdown-title {
-      float: left;
-      font-size: 14px;
-      font-weight: bold;
+.antc-dropdwon-container{
+  .ant-dropdown-menu {
+    //去掉鼠标移上时的hover背景色
+    .ant-dropdown-menu-item{
+      background-color: #ffffff;
     }
-    .dropdown-btn-container {
-      float: right;
-      .icon-close, .icon-choose {
-        margin-left: 10px;
-        cursor: pointer;
+    .dropdown-li {
+      display: inline-block;
+      width: 100%;
+      padding: 10px;
+    }
+    .custom-dropdown-title-container {
+      height: 40px;
+      .dropdown-title {
+        float: left;
+        font-size: 14px;
+        font-weight: bold;
       }
-      .icon-close {
-        color: #f43631;
-        &:hover {
-          color: #b50e0a;
+      .dropdown-btn-container {
+        float: right;
+        .icon-close, .icon-choose {
+          margin-left: 10px;
+          cursor: pointer;
         }
-      }
-      .icon-choose {
-        color: #4dbe50;
-        &:hover {
-          color: #2c792e;
+        .icon-close {
+          color: #f43631;
+          &:hover {
+            color: #b50e0a;
+          }
         }
-      }
+        .icon-choose {
+          color: #4dbe50;
+          &:hover {
+            color: #2c792e;
+          }
+        }
 
+      }
     }
-  }
-  .un-select-data-tip{
-    color: #f43631;
-    vertical-align: text-bottom;
-  }
-  .btn-container{
-    text-align: right;
-    padding:10px;
-    button{
-      margin-right: 5px;
+    .un-select-data-tip{
+      color: #f43631;
+      vertical-align: text-bottom;
+    }
+    .btn-container{
+      text-align: right;
+      padding:10px;
+      button{
+        margin-right: 5px;
+      }
     }
   }
 }

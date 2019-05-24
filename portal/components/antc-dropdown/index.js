@@ -97,12 +97,15 @@ class AntcDropdown extends React.Component {
                 </Menu.Item>
             </Menu>
         );
-
+        let overLayClass = 'antc-dropdwon-container';
+        if (this.props.overlayClassName) {
+            overLayClass += ` ${this.props.overlayClassName}`;
+        }
         return (
             <Dropdown overlay={menu} visible={this.props.isShowDropDownContent || this.state.menuVisible}
                 placement={this.props.placement} trigger={['click']}
                 onVisibleChange={this.handleVisibleChange.bind(this)}
-                overlayClassName={this.props.overlayClassName}
+                overlayClassName={overLayClass}
             >
                 {this.props.content}
             </Dropdown>

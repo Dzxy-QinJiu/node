@@ -31,6 +31,22 @@ exports.getCustomerTraceRecordList = function(queryObj, bodyData) {
     return Deferred.promise();
 };
 
+//获取某组织内跟进记录的类型（除去固定的电话、拜访、其他以外的类型）
+exports.getExtraTraceType = function() {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/customer/trace_type',
+        dataType: 'json',
+        type: 'get',
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
 //获取跟进记录的分类统计
 exports.getCustomerTraceStatistic = function(queryParams) {
     var Deferred = $.Deferred();

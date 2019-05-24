@@ -45,11 +45,8 @@ export function getAllChanceChart(specifyColumns) {
                 }, {
                     title: '成交率',
                     dataIndex: 'deal_rate',
+                    showAsPercent: true,
                     width: '20%',
-                    render: text => {
-                        text = (text * 100).toFixed(2) + '%';
-                        return <span>{text}</span>;
-                    }
                 }
             ],
         },

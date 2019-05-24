@@ -165,6 +165,7 @@ CrmStore.prototype.queryCustomer = function(data) {
 //监听Action的addCustomer方法
 CrmStore.prototype.addCustomer = function(added) {
     this.curCustomers.unshift(added);
+    this.customersSize += 1;
 };
 
 //监听Action的deleteCustomer方法
