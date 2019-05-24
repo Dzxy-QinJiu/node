@@ -168,7 +168,7 @@ class RegRulesView extends React.Component {
                             //网关的条件
                             if(elem.conditionTotalRule){
                                 let bpmnFactory = this.state.bpmnFactory;
-                                incomingBo.set('conditionExpression', bpmnFactory.create('bpmn:FormalExpression', {body: '${interval' + elem.conditionTotalRule + '}'}));
+                                incomingBo.set('conditionExpression', bpmnFactory.create('bpmn:FormalExpression', {body: '${condition' + elem.conditionTotalRule + '}'}));
                                 modeling.updateProperties(curNode.incoming[0], {
                                     name: elem.conditionTotalRuleDsc
                                 });
