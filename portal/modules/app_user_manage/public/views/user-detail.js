@@ -42,6 +42,7 @@ class UserDetail extends React.Component {
     static defaultProps = {
         userId: '1',
         appLists: [],
+        userConditions: []
     };
 
     state = {
@@ -303,8 +304,13 @@ class UserDetail extends React.Component {
         }
         //当前选择的应用（用户详情的接口中无法返回应用是否合格的属性，需要用用户列表接口中返回的应用是否合格属性）
         let selectApp = {};
+        // 当前应用的自定义筛选条件
+        let userConditions = [];
         if (this.props.selectedAppId) {
             selectApp = _.find(this.props.appLists, app => app.app_id === this.props.selectedAppId);
+            userConditions = _.filter(this.props.userConditions, item => {
+                return item.app_id === this.props.selectedAppId;
+            });
         }
 
         var tabPaneList = [
@@ -316,6 +322,7 @@ class UserDetail extends React.Component {
                         selectApp={selectApp}
                         ref={ref => this.userDetailRef = ref}
                         getBasicInfo={this.getBasicInfo}
+                        userConditions={userConditions}
                     />
                 </div> : null}
             </TabPane>
@@ -505,6 +512,7 @@ UserDetail.propTypes = {
     selectedAppId: PropTypes.string,
     appLists: PropTypes.array,
     userId: PropTypes.string,
-    isShownExceptionTab: PropTypes.bool
+    isShownExceptionTab: PropTypes.bool,
+    userConditions: PropTypes.array
 };
 module.exports = UserDetail;

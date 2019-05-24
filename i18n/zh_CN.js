@@ -2931,5 +2931,6 @@ var zh_CN = {
     'common.by.member': '按成员',
     'common.deal.number': '成交数',
     'common.deal.amount': '成交额',
+    'user.info.get.user.condition.failed': '获取用户查询条件失败',
 };
 export default zh_CN;

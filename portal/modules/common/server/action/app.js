@@ -52,3 +52,14 @@ exports.getCurAppById = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+// 获取该组织的用户查询条件
+exports.queryUserCondition = (req, res) => {
+    appService.queryUserCondition(req, res)
+        .on('success', (data) => {
+            res.status(200).json(data);
+        })
+        .on('error', (err) => {
+            res.status(500).json(err && err.message);
+        });
+};

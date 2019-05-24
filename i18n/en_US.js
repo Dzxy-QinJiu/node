@@ -2904,5 +2904,6 @@ var en_US = {
     'common.by.member': 'by member',//按成员
     'common.deal.number': 'deal number',//成交数
     'common.deal.amount': 'deal amount',//成交额
+    'user.info.get.user.condition.failed': 'Failed to get user query condition',//获取用户查询条件失败
 };
 export default en_US;

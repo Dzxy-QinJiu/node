@@ -441,7 +441,43 @@ class UserDetailBasic extends React.Component {
             </div>
         );
     };
+    renderUemAppInfo = (app) => {
+        var end_time = moment(new Date(+app.end_time)).format(FORMAT);
+        var displayEndTime = '';
 
+        if (app.end_time === '0') {
+            displayEndTime = Intl.get('user.nothing', '无');
+        } else if (end_time === 'Invalid date') {
+            displayEndTime = Intl.get('common.unknown', '未知');
+        } else {
+            displayEndTime = end_time;
+        }
+
+        /*let custom_varialbes = _.filter(this.props.userConditions, item => {
+            if (item.key === 'user_type' || item.key === 'role') {// 用户类型， 角色
+                return false;
+            }
+            return item;
+        });*/
+
+        return (
+            <div className="rows-3">
+                <div className={(!app.showDetail && app.is_disabled === 'true') ? 'hide' : 'app-prop-list'}>
+                    <span><ReactIntl.FormattedMessage id="user.time.end" defaultMessage="到期时间" />：{displayEndTime}</span>
+                    {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.user.type"
+                        defaultMessage="用户类型" />：{this.getUserTypeText(app)}</span>}
+                    {/*{
+                        _.map(custom_varialbes, item => {
+                            let value = app.custom_variables ? (app.custom_variables[item.key] || '') : '';
+                            return (
+                                <span>{item.description || ''}：{value}</span>
+                            );
+                        })
+                    }*/}
+                </div>
+            </div>
+        );
+    };
     showAppDetail = (params) => {
         AppUserDetailAction.showAppDetail(params);
     };
@@ -477,10 +513,18 @@ class UserDetailBasic extends React.Component {
             className += ' pull-left';
             despWidth = LAYOUTS.ITEM_WIDTH - LAYOUTS.MARGIN_LEFT - maxWidth - 5;
         }
+
+
         return (
             <ul className="app_list">
                 {this.state.initialUser.apps.map(app => {
                     const hideDetail = !app.showDetail && app.is_disabled === 'true';
+                    let renderAppInfo = null;
+                    if(isOplateUser()) {
+                        renderAppInfo = _this.renderAppInfo(app);
+                    }else {
+                        renderAppInfo = _this.renderUemAppInfo(app);
+                    }
                     return (
                         <li className={hideDetail ? 'clearfix list-unstyled hide-detail' : 'clearfix list-unstyled'} key={app.app_id}>
                             <div className="title-container">
@@ -511,7 +555,7 @@ class UserDetailBasic extends React.Component {
                             </div>
                             <div className="desp pull-left">
                                 {
-                                    _this.renderAppInfo(app)
+                                    renderAppInfo
                                 }
                             </div>
 
@@ -798,5 +842,6 @@ UserDetailBasic.propTypes = {
     getBasicInfo: PropTypes.func,
     selectApp: PropTypes.object,
     height: PropTypes.number,
+    userConditions: PropTypes.array
 };
 module.exports = UserDetailBasic;
