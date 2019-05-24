@@ -9,6 +9,7 @@ import RangeInput from '../view/range_input';
 import SelectOption from '../view/select_option';
 import TimePeriod from '../view/time_period';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
+import InputContent from '../view/input_container';
 const APPLYAPPROVE_LAYOUT = {
     TOPANDBOTTOM: 64,
     PADDINGHEIGHT: 24,
@@ -35,7 +36,7 @@ export const ALL_COMPONENTS_TYPE = {
 };
 exports.applyComponentsType = [{
     name: ALL_COMPONENTS.INPUT,
-    component: Input
+    component: InputContent
 }, {
     name: ALL_COMPONENTS.INPUTNUMBER,
     component: InputNumber
@@ -122,7 +123,10 @@ exports.ADDAPPLYFORMCOMPONENTS = [
              value: 'month'
          }],
         'unitLabel': Intl.get('apply.time.range.unit.select', '单位选项'),
-        'default_value': ['hour'],
+        'default_value': [{
+            label: Intl.get('common.label.hours', '小时'),
+            value: 'hour'
+        }],
         'component_type': ALL_COMPONENTS.RANGEINPUT,
     },
     {
@@ -142,12 +146,17 @@ exports.ADDAPPLYFORMCOMPONENTS = [
     {
         'rulename': Intl.get('apply.rule.date', '日期选择'), 'iconfontCls': 'icon-fuwu',
         'component_type': ALL_COMPONENTS.DATETIME,
-        'type': 'date'
+        'type': 'date',
+        'defaultValue': moment(moment().format(oplateConsts.DATE_FORMAT), oplateConsts.DATE_FORMAT)
     },
     {
         'rulename': Intl.get('apply.rule.date.and.time', '日期+时间选择'), 'iconfontCls': 'icon-fuwu',
         'component_type': ALL_COMPONENTS.DATETIME,
-        'type': 'time'
+        'type': 'time',
+        'defaultValue': moment(moment().format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT),
+        'showTime': {format: 'HH:mm'},
+        'format': oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT,
+
     },
     {
         'rulename': Intl.get('apply.rule.period', '周期选择'), 'iconfontCls': 'icon-fuwu',
@@ -167,16 +176,14 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'rulename': Intl.get('apply.rule.customer', '客户选择'), 'iconfontCls': 'icon-fuwu',
         'component_type': ALL_COMPONENTS.CUSTOMERSEARCH,
         'displayType': 'edit',
-
+        'hideButtonBlock': true
     },
     {
         'rulename': Intl.get('apply.rule.production', '产品配置'), 'iconfontCls': 'icon-fuwu',
         'component_type': ALL_COMPONENTS.PRODUCTION,
         'type': 'option',
         'placeholder': Intl.get('leave.apply.select.product', '请选择产品'),
-         'notshowInList': true,
+        'notshowInList': true,
         'default_value': []
-
-
     }
 ];

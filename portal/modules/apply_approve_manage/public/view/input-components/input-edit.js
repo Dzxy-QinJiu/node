@@ -87,7 +87,9 @@ class InputEdit extends React.Component {
     };
     ontimeRangeChange = (checkedValues) => {
         var formItem = this.state.formItem;
-        formItem.default_value = checkedValues;
+            formItem.default_value = _.filter(_.get(formItem, 'select_arr'), item =>
+                _.indexOf(checkedValues, item.value) > -1
+            );
         this.setState({formItem});
     };
     handleAddInput = () => {
@@ -146,7 +148,7 @@ class InputEdit extends React.Component {
                     <div className="component-row required">
                         <span className="label-components">{_.get(formItem,'unitLabel')}</span>
                         <span className='text-components'>
-                            <CheckboxGroup options={_.get(formItem,'select_arr',[])} defaultValue={_.get(formItem,'default_value')} onChange={this.ontimeRangeChange} />
+                            <CheckboxGroup options={_.get(formItem,'select_arr',[])} defaultValue={_.map(_.get(formItem,'default_value'),'value')} onChange={this.ontimeRangeChange} />
                         </span>
                     </div>
                     : null}

@@ -3007,6 +3007,7 @@ var zh_CN = {
     'apply.time.range.unit.select.label': '选项',
     'apply.time.select.period': '周期选择',
     'apply.time.distinct.am': '区分上下午',
-    'apply.form.has.edit.components': '您有组件还是编辑状态'
+    'apply.form.has.edit.components': '您有组件还是编辑状态',
+    'apply.my.self.setting.work.flow': '我的自定义流程',
 };
 export default zh_CN;

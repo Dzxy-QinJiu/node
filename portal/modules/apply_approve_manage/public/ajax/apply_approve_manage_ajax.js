@@ -20,6 +20,23 @@ exports.addSelfSettingWorkFlow = function(data) {
     });
     return Deferred.promise();
 };
+//添加自定义申请
+exports.addSelfSettingApply = function(data) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/add/self_setting/apply',
+        dataType: 'json',
+        type: 'post',
+        data: data,
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
 //修改自定义流程
 exports.editSelfSettingWorkFlow = function(data) {
     var Deferred = $.Deferred();

@@ -34,43 +34,7 @@ class InputShow extends React.Component {
         var target = _.find(applyComponentsType, item => item.name === _.get(formItem, 'component_type'));
         if (target) {
             var ApplyComponent = target.component;
-            var componentProps = {
-                placeholder: _.get(formItem, 'placeholder'),
-                type: formItem.type || '',
-                addonAfter: formItem.addonAfter || '',
-            };
-            if (_.get(formItem, 'component_type') === ALL_COMPONENTS.RANGEINPUT) {
-                componentProps.default_value = _.filter(_.get(formItem, 'select_arr'), item =>
-                    _.indexOf(_.get(formItem, 'default_value'), item.value) > -1
-                );
-            }
-            
-            if (_.get(formItem, 'component_type') === ALL_COMPONENTS.SELECTOPTION) {
-                var optionArr = _.filter(_.get(formItem, 'select_arr'), item => item);
-                componentProps.default_value = [];
-                _.forEach(optionArr, (item) => {
-                    componentProps.default_value.push({label: item, value: item});
-                });
-            }
-            if (_.get(formItem, 'component_type') === ALL_COMPONENTS.DATETIME) {
-                if (_.get(formItem, 'type') === 'time'){
-                    var nowTime = moment().format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-                    componentProps.defaultValue = moment(nowTime,oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-                    componentProps.showTime = { format: 'HH:mm' };
-                    componentProps.format = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
-                }else{
-                    var nowDate = moment().format(oplateConsts.DATE_FORMAT);
-                    componentProps.defaultValue = moment(nowDate,oplateConsts.DATE_FORMAT);
-                }
-            }
-            if (_.get(formItem, 'component_type') === ALL_COMPONENTS.CUSTOMERSEARCH) {
-                componentProps.displayType = _.get(formItem,'displayType');
-                componentProps.hideButtonBlock = true;
-            }
-            if (_.get(formItem, 'component_type') === ALL_COMPONENTS.TIMEPERIOD) {
-                componentProps.selectedValue = _.get(formItem,'selectedValue');
-            }
-            return <ApplyComponent {...componentProps}/>;
+            return <ApplyComponent {...formItem}/>;
         } else {
             return null;
         }

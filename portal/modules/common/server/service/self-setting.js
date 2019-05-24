@@ -15,6 +15,12 @@ var restApis = {
     deleteSelfSettingWorkFlow: '/rest/base/v1/workflow/config/:id',
     //保存流程规则
     saveSelfSettingWorkFlowRules: '/rest/base/v1/workflow/config/deploy',
+    //自定义流程的启动
+    saveSelfSettingApply: '/rest/base/v1/workflow/customiz/apply',
+    //自定义流程的审批
+    approveSelfSettingApply: '/base/v1/workflow/customiz/approve'
+
+
 };
 exports.restUrls = restApis;
 //添加自定义流程
@@ -28,6 +34,7 @@ exports.addSelfSettingWorkFlow = function(req, res) {
 };
 //修改自定义流程
 exports.editSelfSettingWorkFlow = function(req, res) {
+
     return restUtil.authRest.put(
         {
             url: restApis.selfSettingWorkFlow,
@@ -45,13 +52,36 @@ exports.deleteSelfSettingWorkFlow = function(req, res) {
         }, null);
 };
 exports.saveSelfSettingWorkFlowRules = function(req, res, formData) {
-
-    // return restUtil.authRest.post(
-    //     {
-    //         url: restApis.saveSelfSettingWorkFlowRules,
-    //         req: req,
-    //         res: res,
-    //         formData: formData,
-    //         timeout: uploadTimeOut,
-    //     }, null);
+    return restUtil.authRest.post(
+        {
+            url: restApis.saveSelfSettingWorkFlowRules,
+            req: req,
+            res: res,
+            formData: formData,
+            timeout: uploadTimeOut,
+        }, null);
+};
+//添加自定义申请
+exports.addSelfSettingApply = function(req, res) {
+    var detail = req.body.detail;
+    if (_.isArray(detail)){
+        req.body.detail = {},
+            _.forEach(detail,(item,index) => {
+                req.body.detail['' + index] = item;
+            });
+    }
+    return restUtil.authRest.post(
+        {
+            url: restApis.saveSelfSettingApply,
+            req: req,
+            res: res
+        }, req.body);
+};
+exports.approveSelfSettingApply = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.approveSelfSettingApply,
+            req: req,
+            res: res
+        }, req.body);
 };

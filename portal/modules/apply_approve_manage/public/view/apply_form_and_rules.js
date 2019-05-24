@@ -26,8 +26,6 @@ class AddApplyForm extends React.Component {
         this.state = {
             activeKey: TAB_KEYS.FORM_CONTENT,//当前选中的TAB
             applyTypeData: _.cloneDeep(this.props.applyTypeData),//编辑某个审批的类型
-            //某个申请保存的表单，应该是通过ajax请求获取
-            applySaveForm: _.get(this, 'props.applyTypeData.customiz_form'),
             //某个申请的审批规则及相关配置
             applyRulesAndSetting: {
                 applyApproveRules: {
@@ -179,6 +177,7 @@ class AddApplyForm extends React.Component {
         var target = this.getTargetFormItem(formKey);
         var applyTypeData = this.state.applyTypeData;
         var customiz_form = _.get(applyTypeData, 'customiz_form');
+        //todo 待优化这里的判断
         if (formItem.title){
             target.isEditting = false;
         }else{
@@ -289,14 +288,17 @@ class AddApplyForm extends React.Component {
                     <GeminiScrollbar>
                         {this.renderAddFormContent()}
                     </GeminiScrollbar>
-                    {hasFormItem ? <div className="save-cancel-container">
+                    {/*todo 待优化部分*/}
+                    {/*{hasFormItem || true ? */}
+                        <div className="save-cancel-container">
                         <SaveCancelButton
                             loading={this.state.editWorkFlowLoading}
                             handleSubmit={this.handleSubmitApproveForm}
                             saveErrorMsg={this.state.editWorkFlowErrMsg}
                             hideCancelBtns={true}
                         />
-                    </div> : null}
+                    </div>
+                        // : null}
 
                 </div>
             </div>
@@ -304,12 +306,10 @@ class AddApplyForm extends React.Component {
     };
     renderApplyRegex = () => {
         var applyRulesAndSetting = _.get(this, 'state.applyRulesAndSetting');
-        var applySaveForm = _.get(this, 'state.applySaveForm');
         return (
             <ApplyRulesView
                 applyTypeData={this.state.applyTypeData}
                 applyRulesAndSetting={applyRulesAndSetting}
-                applySaveForm={applySaveForm}
             />
         );
     };

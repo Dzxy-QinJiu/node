@@ -29,9 +29,7 @@ class RegRulesView extends React.Component {
     constructor(props) {
         super(props);
         var applyRulesAndSetting = _.cloneDeep(this.props.applyRulesAndSetting);
-        var applySaveForm = _.cloneDeep(this.props.applySaveForm);
         this.state = {
-            applySaveForm: applySaveForm,
             applyRulesAndSetting: applyRulesAndSetting,
             addNodePanelFlow: '',
             showAddConditionPanel: false
@@ -697,7 +695,7 @@ class RegRulesView extends React.Component {
                         <AddApplyConditionPanel
                             saveAddApprovCondition={this.saveAddApprovCondition}
                             hideRightPanel={this.hideRightAddPanel}
-                            applySaveForm={this.state.applySaveForm}
+                            applySaveForm={_.get(this, 'props.applyTypeData.customiz_form')}
                         />
                     </div>
                     : null}
@@ -709,13 +707,11 @@ class RegRulesView extends React.Component {
 
 RegRulesView.defaultProps = {
     applyRulesAndSetting: {},
-    applySaveForm: {},
     applyTypeData: {}
 };
 
 RegRulesView.propTypes = {
     applyRulesAndSetting: PropTypes.object,
-    applySaveForm: PropTypes.object,
     applyTypeData: PropTypes.object,
 
 };

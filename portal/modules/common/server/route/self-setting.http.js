@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2019/5/20.
  */
 module.exports = {
-    module: 'apply_approve_manage/server/action/apply_approve_manage_controller',
+    module: 'common/server/action/self-setting',
     routes: [
         {
             method: 'post',
@@ -31,6 +31,20 @@ module.exports = {
             method: 'post',
             path: '/rest/put/self_setting/work_flow/rules/:id',
             handler: 'saveSelfSettingWorkFlowRules',
+            passport: {
+                needLogin: true
+            },
+        }, {
+            method: 'post',
+            path: '/rest/add/self_setting/apply',
+            handler: 'addSelfSettingApply',
+            passport: {
+                needLogin: true
+            },
+        }, {
+            method: 'post',
+            path: '/rest/approve/self_setting/apply',
+            handler: 'approveSelfSettingApply',
             passport: {
                 needLogin: true
             },

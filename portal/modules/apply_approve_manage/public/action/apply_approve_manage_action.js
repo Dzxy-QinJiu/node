@@ -19,6 +19,17 @@ function ApplyApproveManageActions() {
 
         });
     };
+    this.addSelfSettingApply = function(submitObj,callback) {
+        this.dispatch({error: false, loading: true});
+        applyApproveManageAjax.addSelfSettingApply(submitObj).then((result) => {
+            this.dispatch({error: false, loading: false});
+            _.isFunction(callback) && callback(result);
+        }, (errorMsg) => {
+            this.dispatch({error: true, loading: false, errorMsg: errorMsg});
+
+        });
+    };
+
     this.editSelfSettingWorkFlow = function(submitObj,callback) {
         this.dispatch({error: false, loading: true});
         applyApproveManageAjax.editSelfSettingWorkFlow(submitObj).then((result) => {

@@ -10,25 +10,32 @@ const CheckboxGroup = Checkbox.Group;
 class SelectOption extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            selectedRadioValue:''
+        };
     }
 
     renderRadioGroup = () => {
-        var selectArr = this.props.default_value;
+        var selectArr = this.props.select_arr;
         return (
-            <RadioGroup>
+            <RadioGroup onChange={this.handleRadioChange}>
                 {_.map(selectArr, (item) => {
-                    return (<Radio value={item.value}>{item.label}</Radio>);
+                    return (<Radio value={item}>{item}</Radio>);
                 })}
             </RadioGroup>
         );
     };
+    handleRadioChange = (e) =>{
+        this.setState({
+            selectedRadioValue: e.target.value
+        });
+    };
     renderCheckGroup = () => {
-        var selectArr = this.props.default_value;
+        var selectArr = this.props.select_arr;
         return <CheckboxGroup options={selectArr}/>;
     };
     renderOptionGroup = () => {
-        var selectArr = this.props.default_value;
+        var selectArr = this.props.select_arr;
         return (
             <Select
                 showSearch
@@ -39,6 +46,13 @@ class SelectOption extends React.Component {
                 })}
             </Select>
         );
+    };
+    onSaveAllData = () => {
+       if (this.props.type === 'radio'){
+           var submitObj = {}, label = this.props.labelKey;
+           submitObj[label + ''] = this.state.selectedRadioValue;
+           return submitObj;
+       }
     };
 
     render = () => {
@@ -53,14 +67,18 @@ class SelectOption extends React.Component {
 }
 
 SelectOption.defaultProps = {
-    default_value: [],
+    select_arr: [],
     type: '',
-    placeholder: ''
+    placeholder: '',
+    component_type: '',
+    labelKey: ''
 };
 
 SelectOption.propTypes = {
-    default_value: PropTypes.array,
+    select_arr: PropTypes.array,
     type: PropTypes.string,
     placeholder: PropTypes.string,
+    component_type: PropTypes.string,
+    labelKey: PropTypes.string,
 };
 export default SelectOption;
