@@ -886,3 +886,10 @@ exports.isFinalTask = function(applyNode) {
         return _.some(applyNode, item => item.description === FINAL_TASK);
     }
 };
+//把文件列表中文件大小的字段file_size,再加上一个字段size。防止在导入新文件时，计算文件大小的字段是size
+exports.uniteFileSize = function(fileLists) {
+    if (_.get(fileLists,'[0].file_size','')){
+        _.forEach(fileLists,item => item.size = item.file_size);
+    }
+    return fileLists;
+};

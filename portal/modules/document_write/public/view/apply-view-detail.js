@@ -35,7 +35,7 @@ import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE, FILES_LIMIT} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-
+import {uniteFileSize} from 'PUB_DIR/sources/utils/common-method-util';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -599,10 +599,11 @@ class ApplyViewDetail extends React.Component {
         if (detailInfoObj.status === 'ongoing' && hasApproved && detailInfoObj.showApproveBtn){
             uploadAndDeletePrivilege = FILES_LIMIT.SINGLE;
         }
+        var fileList = uniteFileSize(_.get(detailInfoObj,'detail.file_upload_logs'));
         return (<UploadAndDeleteFile
             detailInfoObj={detailInfoObj}
             setUpdateFiles={this.setUpdateFiles}
-            fileList={_.get(detailInfoObj,'detail.file_upload_logs')}
+            fileList={fileList}
             uploadAndDeletePrivilege={uploadAndDeletePrivilege}
             selectType={DOCUMENT_TYPE}
         />);

@@ -30,9 +30,6 @@ class UploadAndDeleteFile extends React.Component {
     calculateExistFileSize = (Props) => {
         var fileSize = 0;
         _.forEach(Props.fileList,(item) => {
-            if (!item.size && item.file_size){
-                item.size = item.file_size;
-            }
             fileSize += item.size;
         });
         return fileSize;
@@ -53,9 +50,6 @@ class UploadAndDeleteFile extends React.Component {
     updateCalculateFilesSize = (response) => {
         var fileSize = this.state.totalFileSize;
         _.forEach(response,(item) => {
-            if (!item.size && item.file_size){
-                item.size = item.file_size;
-            }
             fileSize += item.size;
         });
         this.setState({

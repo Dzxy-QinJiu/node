@@ -107,6 +107,9 @@ exports.uploadReportSend = function(req, res) {
                 };
                 //调用上传请求服务
                 ReportSendApplyService.uploadReportSend(req, res, formData, idArr.join('')).on('success', function(data) {
+                    if (_.get(data,'[0].file_size','')){
+                        _.forEach(data,item => item.size = item.file_size);
+                    }
                     res.json(data);
                 }).on('error', function(err) {
                     res.status(500).json(err.message);
