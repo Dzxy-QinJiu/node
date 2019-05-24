@@ -23,6 +23,7 @@ var RightPanel = rightPanelUtil.RightPanel;
 var UserStore = require('MOD_DIR/user_manage/public/store/user-store');
 var UserAction = require('MOD_DIR/user_manage/public/action/user-actions');
 var UserFormAction = require('MOD_DIR/user_manage/public/action/user-form-actions');
+import { AntcTable } from 'antc';
 //成员的类型
 const MEMBER_TYPE = {
     OWNER: 'owner',//负责人
@@ -88,8 +89,8 @@ var MemberList = createReactClass({
             isShowBatchChangeTeamGoal: true,//是否展示设置团队目标按钮
             isShowBatchChangeSelfGoal: true, //是否展示设置个人目标按钮
             isSavingTeamGoal: false, //正在保存团队目标
-            isSavingMemberGoal: false//正在保存个人目标
-
+            isSavingMemberGoal: false,//正在保存个人目标
+            selectedRowIndex: null, // 点击的行索引
         };
     },
 
@@ -420,6 +421,95 @@ var MemberList = createReactClass({
             </div>
         );
     },
+
+
+    getTableColumns() {
+        return [{
+            title: Intl.get('member.member', '成员'),
+            dataIndex: 'nickName',
+            key: 'nickName',
+            width: '35%'
+        }, {
+            title: Intl.get('operation.report.department', '部门'),
+            dataIndex: 'department',
+            key: 'department',
+            width: '25%'
+        },{
+            title: Intl.get('member.position', '职务'),
+            dataIndex: 'position',
+            key: 'position',
+            width: '25%'
+        },{
+            title: Intl.get('member.phone', '手机'),
+            dataIndex: 'phone',
+            key: 'phone',
+            width: '15%'
+        }];
+    },
+
+    // table中的数据处理
+    processTableData() {
+        let curShowTeamMemberObj = this.state.curShowTeamMemberObj;
+        let dataSource = [];
+        let owner = _.get(curShowTeamMemberObj, 'owner');
+        if (owner) {
+            dataSource = _.concat(dataSource, owner);
+        }
+        let managers = _.get(curShowTeamMemberObj, 'managers');
+        if (managers) {
+            dataSource = _.concat(dataSource, managers);
+        }
+        let users = _.get(curShowTeamMemberObj, 'users');
+        if (users) {
+            dataSource = _.concat(dataSource, users);
+        }
+        return dataSource;
+    },
+
+    handleRowClick(record, index) {
+        this.setState({
+            selectedRowIndex: index
+        });
+        let userId = _.get(record, 'userId');
+        UserAction.setCurUser(userId);
+        //获取成员的详情
+        UserAction.setUserLoading(true);
+        UserAction.getCurUserById(userId);
+        if ($('.right-panel-content').hasClass('right-panel-content-slide')) {
+            $('.right-panel-content').removeClass('right-panel-content-slide');
+            SalesTeamAction.showUserInfoPanel();
+        } else {
+            SalesTeamAction.showUserInfoPanel();
+        }
+    },
+
+    //处理选中行的样式
+    handleRowClassName(record, index){
+        if (index === this.state.selectedRowIndex) {
+            return 'current-row';
+        }
+        else {
+            return '';
+        }
+    },
+
+    // 渲染当前正在展示的团队成员列表，使用table的方式
+    renderMemberList(){
+        let columns = this.getTableColumns();
+        let dataSource = this.processTableData();
+        return (
+            <div className='member-list-table'>
+                <AntcTable
+                    dataSource={dataSource}
+                    columns={columns}
+                    pagination={false}
+                    onRowClick={this.handleRowClick}
+                    rowClassName={this.handleRowClassName}
+                />
+            </div>
+        );
+    },
+
 
     //渲染当前正在展示的团队成员列表
     renderCurTeamMemberList: function(hasSelectBtn) {
@@ -813,11 +903,17 @@ var MemberList = createReactClass({
                 </div>
             ) : (<div className="sales-team-member-show-list sales-team-member-tier"
                 style={{height: memberListContainerH - 20}}>
-                {this.props.teamMemberListTipMsg ? (
-                    <div className="member-list-tip"> {this.props.teamMemberListTipMsg} </div>) : (<GeminiScrollbar
-                    className="geminiScrollbar-div sales-team-member-select-geminiScrollbar">
-                    {_this.renderCurTeamMemberList()}
-                </GeminiScrollbar>)
+                {
+                    this.props.teamMemberListTipMsg ? (
+                        <div className="member-list-tip">
+                            {this.props.teamMemberListTipMsg}
+                        </div>
+                    ) : (
+                        <GeminiScrollbar
+                            className="geminiScrollbar-div sales-team-member-select-geminiScrollbar"
+                        >
+                            {_this.renderMemberList()}
+                        </GeminiScrollbar>)
                 }
             </div>);
     },

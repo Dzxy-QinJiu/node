@@ -268,16 +268,16 @@ class LeftTree extends React.Component {
     };
 
     render() {
-        var _this = this;
-        var salesTeamGroupList = this.props.salesTeamGroupList;
+        let salesTeamGroupList = this.props.salesTeamGroupList;
 
-        const loop = data => data.map((item) => {
 
-            var btnClass = classNames('sales-team-group-name-div', _this.props.className, {
+        const loop = data => _.map(data, (item) => {
+
+            let btnClass = classNames('sales-team-group-name-div', this.props.className, {
                 'select': item.select,
                 'show-tree-operation': item.isShowOperationArea
             });
-            var liClass = classNames('sales-team-group-li', _this.props.className, {
+            let liClass = classNames('sales-team-group-li', this.props.className, {
                 'isLiSelect': item.isLiSelect
             });
 
@@ -285,7 +285,7 @@ class LeftTree extends React.Component {
                 return (
                     <li key={item.key} title={item.title} className={liClass}>
                         {
-                            _this.treeElement(btnClass, item, true)
+                            this.treeElement(btnClass, item, true)
                         }
                         <ul className="left-tree-children-ul">{loop(item.children)}</ul>
                     </li>
@@ -294,7 +294,7 @@ class LeftTree extends React.Component {
             return (
                 <li key={item.key} className="sales-team-group-li">
                     {
-                        _this.treeElement(btnClass, item, false)
+                        this.treeElement(btnClass, item, false)
                     }
                 </li>
             );
@@ -363,6 +363,7 @@ LeftTree.propTypes = {
     salesTeamGroupList: PropTypes.array,
     containerHeight: PropTypes.number,
     isAddSalesTeamRoot: PropTypes.bool,
-    delTeamErrorMsg: PropTypes.string
+    delTeamErrorMsg: PropTypes.string,
+    className: PropTypes.string,
 };
 module.exports = LeftTree;

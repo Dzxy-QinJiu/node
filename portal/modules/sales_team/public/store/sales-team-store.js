@@ -491,33 +491,23 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
         this.teamMemberListTipMsg = resultData;
     } else {
         if (_.isArray(resultData) && resultData.length > 0) {
+            let salesTeamMemberList = resultData;
             this.salesTeamMemberList = resultData;
             this.teamMemberListTipMsg = '';
-            var _this = this;
             //当前展示组的信息
-            var curTeamId = _this.curShowTeamMemberObj.groupId;
-            var curShowTeam = _.find(_this.salesTeamList, function(team) {
-                if (team.group_id === curTeamId) {
-                    return true;
-                }
-            });
-            //负责人
-            if (curShowTeam && curShowTeam.owner_id) {
-                this.curShowTeamMemberObj.owner = _.find(_this.salesTeamMemberList, function(member) {
-                    if (curShowTeam.owner_id === member.userId) {
-                        return true;
-                    }
-                });
+            let curTeamId = _.get(this.curShowTeamMemberObj, 'groupId');
+            let curShowTeam = _.find(this.salesTeamList, team => team.group_id === curTeamId);
+            // 负责人
+            let ownerId = _.get(curShowTeam, 'owner_id');
+            if (ownerId) {
+                this.curShowTeamMemberObj.owner = _.find(salesTeamMemberList, member => ownerId === member.userId);
             }
-            //秘书
-            if (curShowTeam && curShowTeam.manager_ids) {
-                var managers = [];
-                curShowTeam.manager_ids.forEach(function(id) {
-                    var manager = _.find(_this.salesTeamMemberList, function(member) {
-                        if (id === member.userId) {
-                            return true;
-                        }
-                    });
+            // 秘书
+            let managerIds = _.get(curShowTeam, 'manager_ids');
+            if (managerIds) {
+                let managers = [];
+                _.each(managerIds, (id) => {
+                    let manager = _.find(salesTeamMemberList, member => id === member.userId);
                     if (manager) {
                         managers.push(manager);
                     }
@@ -525,14 +515,11 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
                 this.curShowTeamMemberObj.managers = sortTeamMembers(managers);
             }
             //成员
-            if (curShowTeam && curShowTeam.user_ids) {
-                var users = [];
-                curShowTeam.user_ids.forEach(function(id) {
-                    var user = _.find(_this.salesTeamMemberList, function(member) {
-                        if (id === member.userId) {
-                            return true;
-                        }
-                    });
+            let userIds = _.get(curShowTeam, 'user_ids');
+            if (userIds) {
+                let users = [];
+                _.each(userIds, (id) => {
+                    let user = _.find(salesTeamMemberList, item => id === item.userId);
                     if (user) {
                         users.push(user);
                     }
