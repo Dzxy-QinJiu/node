@@ -4,8 +4,8 @@
  * Created by zhangshujuan on 2019/5/23.
  */
 var trans = $.ajaxTrans();
-trans.register('candidateList', {url: '', type: 'get'});
+trans.register('approveSelfSettingApply', {url: '/rest/approve/self_setting/apply', type: 'post'});
 
-exports.getNextCandidate = function(reqParams) {
-    return trans.getAjax('candidateList', reqParams);
+exports.approveSelfSettingApply = function(reqParams) {
+    return trans.getAjax('approveSelfSettingApply', reqParams);
 };

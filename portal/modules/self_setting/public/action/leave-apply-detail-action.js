@@ -10,8 +10,10 @@ var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
+import SelfSettingApproveAjax from '../../../common/public/ajax/self-setting';
 import {getApplyDetailById,getApplyStatusById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import applyApproveAction from './leave-apply-action';
+
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -75,9 +77,9 @@ function ApplyViewDetailActions() {
     };
 
     //通过或者驳回审批
-    this.approveLeaveApplyPassOrReject = function( obj) {
+    this.approveLeaveApplyPassOrReject = function(obj) {
         this.dispatch({loading: true, error: false});
-        LeaveApplyAjax.approveLeaveApplyPassOrReject(obj).then((data) => {
+        SelfSettingApproveAjax.approveSelfSettingApply().sendRequest(obj).success((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
             //更新选中的申请单类型
             LeaveApplyUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
@@ -91,7 +93,7 @@ function ApplyViewDetailActions() {
                     notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
                 }, timeout);
             }
-        }, (errorMsg) => {
+        }).error((errorMsg) => {
             //更新选中的申请单类型
             LeaveApplyUtils.emitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});

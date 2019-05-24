@@ -452,7 +452,7 @@ class ApplyViewDetail extends React.Component {
                     currentLength--;
                 }
                 stepArr.push({
-                    title: (replyItem.nick_name || userData.getUserData().nick_name || '') + descrpt,
+                    title: (replyItem.nick_name || replyItem.user_name || userData.getUserData().nick_name || '') + descrpt,
                     description: moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
                 });
             });

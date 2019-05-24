@@ -150,7 +150,7 @@ class RegRulesView extends React.Component {
                         //增加节点的审批人
                         if (elem.candidateApprover) {
                             modeling.updateProperties(curNode, {
-                                candidateUsers: elem.candidateApprover
+                                candidateUsers: '${' + elem.candidateApprover + '}'
                             });
                         }
                         if (elem.description) {

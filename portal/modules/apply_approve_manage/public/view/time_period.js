@@ -139,7 +139,7 @@ class TimePeriod extends React.Component {
         submitObj[label + ''] = {
             starttime: moment(formData.begin_time).format(oplateConsts.DATE_FORMAT) + `_${formData.begin_type}`,
             endtime: moment(formData.end_time).format(oplateConsts.DATE_FORMAT) + `_${formData.end_type}`,
-            total_range: formData.total_range
+            condition: {'condition': parseInt(formData.total_range)}
         };
         return submitObj;
     };

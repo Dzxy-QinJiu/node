@@ -41,17 +41,24 @@ class AddLeaveApply extends React.Component {
 
     handleSubmit = () => {
 
-        var submitObj = {};
+        var submitObj = {},conditionObj = {};
         var refObj = this.refs;
         for (var key in refObj){
             var onSaveCallBack = _.get(refObj[key],'onSaveAllData');
             if (_.isFunction(onSaveCallBack)){
-                _.extend(submitObj, onSaveCallBack());
+                var saveObj = onSaveCallBack();
+                for (var key in saveObj){
+                    if (saveObj[key]['condition']){
+                        _.extend(conditionObj, saveObj[key]['condition']);
+                        delete saveObj[key].condition;
+                    }
+                }
+                _.extend(submitObj,saveObj );
             }
         };
 
         var workConfig = user.workFlowConfigs[0];
-        ApplyApproveAction.addSelfSettingApply({'detail': submitObj,'type': workConfig.type});
+        ApplyApproveAction.addSelfSettingApply({'detail': submitObj,'type': workConfig.type, condition: conditionObj});
     };
 
 
