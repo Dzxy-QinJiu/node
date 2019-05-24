@@ -53,5 +53,15 @@ module.exports = {
             //有一个需求：获取一个app_id对应的logo
             //如果限制了权限，产品总经理看在线用户统计的时候，将不能显示应用logo
         ]
+    }, { // 获取该组织的用户查询条件
+        'method': 'get',
+        'path': '/rest/userquery/condition',
+        'handler': 'queryUserCondition',
+        'privileges': [
+            'ORGANIZATION_BASE_PERMISSION'//为用户修改应用
+        ],
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

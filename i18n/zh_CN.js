@@ -2933,6 +2933,7 @@ var zh_CN = {
     'common.deal.amount': '成交额',
     'common.net.increase': '净增',
     'common.reflux': '回流',
+    'user.info.get.user.condition.failed': '获取用户查询条件失败',
     'apply.upload.same.name': '该文件名称已存在'
 };
 export default zh_CN;
