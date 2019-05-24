@@ -270,7 +270,6 @@ class LeftTree extends React.Component {
     render() {
         let salesTeamGroupList = this.props.salesTeamGroupList;
 
-
         const loop = data => _.map(data, (item) => {
 
             let btnClass = classNames('sales-team-group-name-div', this.props.className, {

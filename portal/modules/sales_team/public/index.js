@@ -87,8 +87,8 @@ class SalesTeamPage extends React.Component {
 
     //团队名称修改的处理
     onSalesTeamNameChange = (event) => {
-        this.state.salesTeamName = event.target.value;
-        this.setState({salesTeamName: this.state.salesTeamName});
+        let salesTeamName = _.get(event, 'target.value');
+        this.setState({salesTeamName: salesTeamName});
     };
 
     //添加团队
@@ -128,11 +128,13 @@ class SalesTeamPage extends React.Component {
 
     //隐藏添加团队后的提示信息
     hideSaveTooltip = () => {
-        if (this.state.saveSalesTeamResult == CONSTANT.SUCCESS) {
+        if (this.state.saveSalesTeamResult === CONSTANT.SUCCESS) {
             SalesTeamAction.getSalesTeamList();
         }
-        this.state.saveSalesTeamMsg = '';
-        this.state.saveSalesTeamResult = '';
+        this.setState({
+            saveSalesTeamMsg: '',
+            saveSalesTeamResult: ''
+        });
     };
 
     //无团队时，添加团队面板的渲染
@@ -147,7 +149,7 @@ class SalesTeamPage extends React.Component {
                     onChange={this.onSalesTeamNameChange}
                     placeholder={Intl.get('sales.team.search.placeholder', '请输入团队名称')}/>
                 {this.state.saveSalesTeamMsg ? (<div className="indicator">
-                    <AlertTimer time={this.state.saveSalesTeamResult == CONSTANT.ERROR ? 3000 : 600}
+                    <AlertTimer time={this.state.saveSalesTeamResult === CONSTANT.ERROR ? 3000 : 600}
                         message={this.state.saveSalesTeamMsg}
                         type={this.state.saveSalesTeamResult} showIcon
                         onHide={this.hideSaveTooltip}/>
@@ -166,24 +168,14 @@ class SalesTeamPage extends React.Component {
         var salesTeamMemberWidth = containerWidth - 300 - 2;
         var salesTeamList = this.state.salesTeamList;
         let leftTreeData = this.state.searchContent ? this.state.searchSalesTeamTree : this.state.salesTeamListArray;
+
         return (
             <div className="sales-team-manage-container" data-tracename="团队管理">
-                {this.state.salesTeamLisTipMsg ? (this.state.salesTeamLisTipMsg == CONSTANT.SALES_TEAM_IS_NULL ? this.renderAddSalesTeam() :
+                {this.state.salesTeamLisTipMsg ? (this.state.salesTeamLisTipMsg === CONSTANT.SALES_TEAM_IS_NULL ? this.renderAddSalesTeam() :
                     <NoData msg={this.state.salesTeamLisTipMsg}/>) : (this.state.isLoadingSalesTeam ? (
                     <Spinner className="isloading"/>) : (
                     <div className="sales-team-table-block modal-container"
                         style={{width: containerWidth,height: containerHeight}}>
-                        <LeftTree
-                            containerHeight={containerHeight}
-                            salesTeamList={salesTeamList}
-                            searchContent={this.state.searchContent}
-                            salesTeamGroupList={leftTreeData}
-                            deleteGroupItem={this.state.deleteGroupItem}
-                            isLoadingTeamMember={this.state.isLoadingTeamMember}
-                            delTeamErrorMsg={this.state.delTeamErrorMsg}
-                            isAddSalesTeamRoot={this.state.isAddSalesTeamRoot}
-                            teamMemberCountList={this.state.teamMemberCountList}
-                        />
                         <MemberList
                             salesTeamMemberWidth={salesTeamMemberWidth}
                             containerHeight={containerHeight}
@@ -204,6 +196,17 @@ class SalesTeamPage extends React.Component {
                             getSalesGoalErrMsg={this.state.getSalesGoalErrMsg}
                         >
                         </MemberList>
+                        <LeftTree
+                            containerHeight={containerHeight}
+                            salesTeamList={salesTeamList}
+                            searchContent={this.state.searchContent}
+                            salesTeamGroupList={leftTreeData}
+                            deleteGroupItem={this.state.deleteGroupItem}
+                            isLoadingTeamMember={this.state.isLoadingTeamMember}
+                            delTeamErrorMsg={this.state.delTeamErrorMsg}
+                            isAddSalesTeamRoot={this.state.isAddSalesTeamRoot}
+                            teamMemberCountList={this.state.teamMemberCountList}
+                        />
                     </div>))
                 }
             </div>

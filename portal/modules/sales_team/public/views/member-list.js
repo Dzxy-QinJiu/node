@@ -860,6 +860,7 @@ var MemberList = createReactClass({
         } else {
             selectMemberListH -= 20;//20：padding
         }
+
         return _this.props.isAddMember ?
             (<div className="sales-team-member-add-container">
                 <div className="sales-team-member-search-input-div">
@@ -895,7 +896,7 @@ var MemberList = createReactClass({
                             <div className="member-list-tip"> {this.props.teamMemberListTipMsg} </div>) : (
                             <GeminiScrollbar
                                 className="geminiScrollbar-div sales-team-member-select-geminiScrollbar">
-                                {_this.renderCurTeamMemberList(true)}
+                                {_this.renderMemberList(true)}
                             </GeminiScrollbar>)
                         }
                     </div>

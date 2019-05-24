@@ -79,11 +79,10 @@ function SalesTeamAction() {
     };
 
     this.getSalesTeamMemberList = function(teamId) {
-        var _this = this;
-        SalesTeamAjax.getSalesTeamMemberList(teamId).then(function(list) {
-            _this.dispatch(list);
-        }, function(errorMsg) {
-            _this.dispatch(errorMsg || Intl.get('sales.team.get.sales.team.member.list.failed', '获取团队成员失败'));
+        SalesTeamAjax.getSalesTeamMemberList(teamId).then( (list) => {
+            this.dispatch(list);
+        }, (errorMsg) => {
+            this.dispatch(errorMsg || Intl.get('sales.team.get.sales.team.member.list.failed', '获取团队成员失败'));
         });
     };
 
