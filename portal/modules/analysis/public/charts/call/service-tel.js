@@ -14,13 +14,19 @@ export function getCallServiceTelChart() {
             name: 'filter_invalid_phone',
             value: false 
         }],
-        processData: (data) => {
-            return _.map(data, item => {
-                return {
-                    name: item.sales_team,
-                    value: item.invalid_docs
-                };
+        processData: data => {
+            let processedData = [];
+
+            _.each(data, item => {
+                if (item.rate !== 0) {
+                    processedData.push({
+                        name: item.sales_team || item.nick_name,
+                        value: item.invalid_docs
+                    });
+                }
             });
-        },
+
+            return processedData;
+        }
     };
 }

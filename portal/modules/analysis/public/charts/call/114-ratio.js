@@ -18,7 +18,7 @@ export function getCall114RatioChart() {
             name: 'filter_invalid_phone',
             value: true, 
         }],
-        processData: (data) => {
+        processData: data => {
             let processedData = [];
 
             _.each(data, item => {
@@ -31,6 +31,6 @@ export function getCall114RatioChart() {
             });
 
             return processedData;
-        },
+        }
     };
 }
