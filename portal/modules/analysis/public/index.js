@@ -6,6 +6,7 @@ require('./style.less');
 import {storageUtil} from 'ant-utils';
 import Store from './store';
 import ajax from 'ant-ajax';
+import TableListPanel from 'CMP_DIR/table-list-panel';
 import TopBar from './top-bar';
 import HistoricHighDetail from './historic-high-detail';
 import AppSelector from './app-selector';
@@ -482,6 +483,7 @@ class CurtaoAnalysis extends React.Component {
                         {this.renderContent()}
                     </Col>
                 </Row>
+                <TableListPanel/>
             </div>
         );
     }

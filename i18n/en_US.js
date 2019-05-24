@@ -2904,6 +2904,8 @@ var en_US = {
     'common.by.member': 'by member',//按成员
     'common.deal.number': 'deal number',//成交数
     'common.deal.amount': 'deal amount',//成交额
+    'common.net.increase': 'net increase',//净增
+    'common.reflux': 'reflux',//回流
     'apply.upload.same.name': 'The file name cannot be repeat!'//该文件名称已存在
 };
 export default en_US;
