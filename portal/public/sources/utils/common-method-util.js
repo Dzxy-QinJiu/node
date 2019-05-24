@@ -792,6 +792,18 @@ exports.checkFileNameAllowRule = (filename, regnamerules) => {
 
     return {nameQualified: nameQualified,warningMsg: warningMsg};
 };
+exports.checkFileNameRepeat = (filename, fileLists) => {
+    var nameQualified = true, warningMsg = '';
+    //允许的规则
+    if (_.isArray(fileLists) && _.isString(filename)){
+        var target = _.find(fileLists, item => _.get(item,'name','').indexOf(filename) > -1 || _.get(item,'file_name','').indexOf(filename) > -1);
+        if (target){
+            warningMsg = Intl.get('apply.upload.same.name', '该文件名称已存在');
+            nameQualified = false;
+        }
+    }
+    return {nameQualified: nameQualified,warningMsg: warningMsg};
+};
 //获取团队里所有成员列表
 function getTeamUsers(teamList) {
     var subUserArr = [];
@@ -885,4 +897,11 @@ exports.isFinalTask = function(applyNode) {
         //现在主要是看用户申请的审批是否位于最后一个节点，这种类型的节点只会有一个，但是如果有并行的节点，applyNode就会有两个，现在认为有一个节点是final_task ，这条审批就是位于最后一个节点
         return _.some(applyNode, item => item.description === FINAL_TASK);
     }
+};
+//把文件列表中文件大小的字段file_size,再加上一个字段size。防止在导入新文件时，计算文件大小的字段是size
+exports.uniteFileSize = function(fileLists) {
+    if (_.get(fileLists,'[0].file_size','')){
+        _.forEach(fileLists,item => item.size = item.file_size);
+    }
+    return fileLists;
 };

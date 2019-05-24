@@ -11,7 +11,7 @@ import Trace from 'LIB_DIR/trace';
 import {isEqualArray} from 'LIB_DIR/func';
 import {FILES_TYPE_FORBIDDEN_RULES, FILES_TYPE_ALLOW_RULES, FILES_LIMIT} from 'PUB_DIR/sources/utils/consts';
 import {seperateFilesDiffType, hasApprovedReportAndDocumentApply} from 'PUB_DIR/sources/utils/common-data-util';
-import {checkFileSizeLimit, checkFileNameForbidRule, checkFileNameAllowRule} from 'PUB_DIR/sources/utils/common-method-util';
+import {checkFileSizeLimit, checkFileNameForbidRule, checkFileNameAllowRule, checkFileNameRepeat} from 'PUB_DIR/sources/utils/common-method-util';
 class UploadAndDeleteFile extends React.Component {
     constructor(props) {
         super(props);
@@ -30,7 +30,7 @@ class UploadAndDeleteFile extends React.Component {
     calculateExistFileSize = (Props) => {
         var fileSize = 0;
         _.forEach(Props.fileList,(item) => {
-            fileSize += item.file_size;
+            fileSize += item.size;
         });
         return fileSize;
     };
@@ -50,7 +50,7 @@ class UploadAndDeleteFile extends React.Component {
     updateCalculateFilesSize = (response) => {
         var fileSize = this.state.totalFileSize;
         _.forEach(response,(item) => {
-            fileSize += item.file_size;
+            fileSize += item.size;
         });
         this.setState({
             totalFileSize: fileSize
@@ -86,7 +86,7 @@ class UploadAndDeleteFile extends React.Component {
         if (index > -1){
             newFileList.splice(index, 1);
             var totalFileSize = this.state.totalFileSize;
-            var fileSize = file.file_size;
+            var fileSize = file.size;
             totalFileSize -= fileSize;
             this.setState({
                 totalFileSize: totalFileSize,
@@ -109,9 +109,10 @@ class UploadAndDeleteFile extends React.Component {
     checkFileNameRule = (filename) => {
         var checkForbidObj = checkFileNameForbidRule(filename, FILES_TYPE_FORBIDDEN_RULES);
         var checkAllowObj = checkFileNameAllowRule(filename, FILES_TYPE_ALLOW_RULES);
-        var warningMsg = checkForbidObj.warningMsg || checkAllowObj.warningMsg;
+        var checkRepeatObj = checkFileNameRepeat(filename, this.state.fileList);
+        var warningMsg = checkForbidObj.warningMsg || checkAllowObj.warningMsg || checkRepeatObj.warningMsg;
         var nameQualified = true;
-        if (!checkForbidObj.nameQualified || !checkAllowObj.nameQualified){
+        if (!checkForbidObj.nameQualified || !checkAllowObj.nameQualified || !checkRepeatObj.nameQualified ){
             nameQualified = false;
         }
         if (warningMsg){

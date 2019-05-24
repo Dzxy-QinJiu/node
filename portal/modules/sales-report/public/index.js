@@ -537,6 +537,7 @@ class SalesReport extends React.Component {
 
     render() {
         const role = this.state.currentMember.role_name;
+        const memberId = this.state.currentMember.user_id;
 
         return (
             <div className="sales-report" data-tracename='销售报告'>
@@ -549,10 +550,14 @@ class SalesReport extends React.Component {
                         <Col span={21} style={{height: this.state.contentHeight}}>
                             <GeminiScrollBar>
                                 {this.renderBaseInfo()}
-                                {role ? this.renderOverallAnalysis() : null}
-                                {role ? this.renderSalesPerformance() : null}
-                                {role ? this.renderSalesBehavior() : null}
-                                {role ? this.renderAttendance() : null}
+                                {(role && memberId) ? (
+                                    <div>
+                                        {this.renderOverallAnalysis()}
+                                        {this.renderSalesPerformance()}
+                                        {this.renderSalesBehavior()}
+                                        {this.renderAttendance()}
+                                    </div>
+                                ) : null}
                             </GeminiScrollBar>
                         </Col>
                     </Row>

@@ -69,6 +69,10 @@ function dealRouteData(route) {
         if (route.otherAuth) {
             data += 'otherAuth:\'' + route.otherAuth + '\',';
         }
+        //下级菜单的展示位置（top,left,不设默认为top）
+        if(route.subMenuPosition){
+            data += 'subMenuPosition:\'' + route.subMenuPosition + '\',';
+        }
     }
     return data;
 }
