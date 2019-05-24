@@ -2931,5 +2931,6 @@ var zh_CN = {
     'common.by.member': '按成员',
     'common.deal.number': '成交数',
     'common.deal.amount': '成交额',
+    'apply.upload.same.name': '该文件名称已存在'
 };
 export default zh_CN;

@@ -16,6 +16,7 @@ const FORMLAYOUT = {
 var user = require('PUB_DIR/sources/user-data').getUserData();
 import AlertTimer from 'CMP_DIR/alert-timer';
 import {DELAY_TIME_RANGE, FILES_LIMIT} from 'PUB_DIR/sources/utils/consts';
+import {uniteFileSize} from 'PUB_DIR/sources/utils/common-method-util';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import Trace from 'LIB_DIR/trace';
@@ -207,6 +208,7 @@ class AddReportSendApply extends React.Component {
             },
         };
         let saveResult = this.state.saveResult;
+        var fileList = uniteFileSize(this.state.fileList);
         return (
             <RightPanel showFlag={true} data-tracename="添加舆情报告申请" className="add-leave-container">
                 <span className="iconfont icon-close add-leave-apply-close-btn"
@@ -304,7 +306,7 @@ class AddReportSendApply extends React.Component {
                                     </FormItem>
                                     <UploadAndDeleteFile
                                         beforeUpload = {this.beforeUpload}
-                                        fileList={this.state.fileList}
+                                        fileList={fileList}
                                         fileRemove={this.fileRemove}
                                         uploadAndDeletePrivilege={FILES_LIMIT.TOTAL}
                                     />
