@@ -792,6 +792,18 @@ exports.checkFileNameAllowRule = (filename, regnamerules) => {
 
     return {nameQualified: nameQualified,warningMsg: warningMsg};
 };
+exports.checkFileNameRepeat = (filename, fileLists) => {
+    var nameQualified = true, warningMsg = '';
+    //允许的规则
+    if (_.isArray(fileLists) && _.isString(filename)){
+        var target = _.find(fileLists, item => _.get(item,'name','').indexOf(filename) > -1 || _.get(item,'file_name','').indexOf(filename) > -1);
+        if (target){
+            warningMsg = Intl.get('apply.upload.same.name', '该文件名称已存在');
+            nameQualified = false;
+        }
+    }
+    return {nameQualified: nameQualified,warningMsg: warningMsg};
+};
 //获取团队里所有成员列表
 function getTeamUsers(teamList) {
     var subUserArr = [];
