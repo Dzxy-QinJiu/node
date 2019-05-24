@@ -6,7 +6,7 @@ import {Select} from 'antd';
 const Option = Select.Option;
 var RightContent = require('CMP_DIR/privilege/right-content');
 var TopNav = require('CMP_DIR/top-nav');
-import { AntcAnalysis, AntcDatePicker as DatePicker } from 'antc';
+import { AntcAnalysis, AntcDatePicker } from 'antc';
 import CallAnalysisAction from '../action/call-analysis-action';
 import CallAnalysisStore from '../store/call-analysis-store';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
@@ -409,21 +409,21 @@ class CallRecordAnalyis extends React.Component {
                                 {this.filterCallTypeSelect()}
                             </div>
                             <span className="btn-item">
-                                <DatePicker
+                                <AntcDatePicker
                                     disableDateAfterToday={true}
                                     range="day"
                                     selectedTimeFormat="int"
                                     onSelect={this.onSelectDate}>
-                                    <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
-                                    <DatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
-                                    <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
-                                    <DatePicker.Option
-                                        value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
-                                    <DatePicker.Option
-                                        value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
-                                    <DatePicker.Option value="year">{Intl.get('common.time.unit.year', '年')}</DatePicker.Option>
-                                    <DatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
-                                </DatePicker>
+                                    <AntcDatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</AntcDatePicker.Option>
+                                    <AntcDatePicker.Option value="day">{Intl.get('common.time.unit.day', '天')}</AntcDatePicker.Option>
+                                    <AntcDatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</AntcDatePicker.Option>
+                                    <AntcDatePicker.Option
+                                        value="month">{Intl.get('common.time.unit.month', '月')}</AntcDatePicker.Option>
+                                    <AntcDatePicker.Option
+                                        value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</AntcDatePicker.Option>
+                                    <AntcDatePicker.Option value="year">{Intl.get('common.time.unit.year', '年')}</AntcDatePicker.Option>
+                                    <AntcDatePicker.Option value="custom">{Intl.get('user.time.custom', '自定义')}</AntcDatePicker.Option>
+                                </AntcDatePicker>
                             </span>
                             {/**
                              * 团队和成员筛选框
