@@ -1135,20 +1135,23 @@ class UserTabContent extends React.Component {
             filterRoles = [],
             filterUserTypes = [];
         let custom_variables = _.filter(this.state.userConditions, item => {
-            if (item.key === 'user_type') {// 用户类型
-                if(_.get(item.values, '[0]')) {
-                    hasUserType = true;
-                    filterUserTypes = item;
+            if(item.app_id === this.state.selectedAppId) {
+                if (item.key === 'user_type') {// 用户类型
+                    if(_.get(item.values, '[0]')) {
+                        hasUserType = true;
+                        filterUserTypes = item;
+                    }
+                    return false;
+                } else if(item.key === 'role') {// 角色
+                    if(_.get(item.values, '[0]')) {
+                        hasRoleType = true;
+                        filterRoles = item;
+                    }
+                    return false;
                 }
-                return false;
-            } else if(item.key === 'role') {// 角色
-                if(_.get(item.values, '[0]')) {
-                    hasRoleType = true;
-                    filterRoles = item;
-                }
-                return false;
+                return true;
             }
-            return item.app_id === this.state.selectedAppId;
+            return false;
         });
         return <div data-tracename="应用筛选">
             <dl>
