@@ -19,18 +19,6 @@ import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import {dateSelectorEmitter, teamTreeEmitter, callDeviceTypeEmitter} from 'PUB_DIR/sources/utils/emitters';
 import callChart from 'MOD_DIR/analysis/public/charts/call';
 
-// 用于布局趋势图的宽度
-const LAYOUT_WIDTH = {
-    ORIGIN_WIDTH: 135,
-    RESIZE_WIDTH: 60
-};
-
-//用于布局趋势图的高度
-const LAYOUT_HEIGHT = {
-    ORIGIN_HEIGHT: 100,
-    RESIZE_HEIGHT: 300
-};
-
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 65,
@@ -46,19 +34,17 @@ const LITERAL_CONSTANT = {
 const FIRSR_SELECT_DATA = [LITERAL_CONSTANT.TEAM, LITERAL_CONSTANT.MEMBER];
 
 class CallRecordAnalyis extends React.Component {
+    static propTypes = {
+        closeCallAnalysisPanel: PropTypes.func
+    };
+
     constructor(props) {
         super(props);
 
-        CallAnalysisAction.resetState();
-
         const callStateData = CallAnalysisStore.getState();
-
-        const trendWidth = $(window).width() - LAYOUT_WIDTH.ORIGIN_WIDTH;
 
         this.state = {
             ...callStateData,
-            trendWidth, // 趋势图的宽度
-            trendHeight: LAYOUT_HEIGHT.ORIGIN_HEIGHT,
             firstSelectValue: FIRSR_SELECT_DATA[0], // 第一个选择框的值
             secondSelectValue: LITERAL_CONSTANT.ALL, // 第二个选择宽的值，默认是全部的状态
         };
@@ -77,26 +63,7 @@ class CallRecordAnalyis extends React.Component {
         CallAnalysisAction.getSaleGroupTeams(reqData);
         // 获取成员数据
         CallAnalysisAction.getSaleMemberList(reqData);
-
-        $(window).resize(() => {
-            this.setState({
-                trendWidth: $('.call-analysis-content').width() - LAYOUT_WIDTH.RESIZE_WIDTH
-            });
-        });
     }
-
-    setChartContainerHeight = () => {
-        //如果选择全部团队或者团队选择的个数大于4个时，把容器的高度撑高
-        if ((this.state.secondSelectValue === LITERAL_CONSTANT.ALL && this.state.switchStatus) || (_.isArray(this.state.secondSelectValue) && this.state.secondSelectValue.length > 4)) {
-            this.setState({
-                trendHeight: LAYOUT_HEIGHT.RESIZE_HEIGHT
-            });
-        } else {
-            this.setState({
-                trendHeight: LAYOUT_HEIGHT.ORIGIN_HEIGHT
-            });
-        }
-    };
 
     componentWillUnmount() {
         CallAnalysisStore.unlisten(this.onStoreChange);
@@ -128,16 +95,6 @@ class CallRecordAnalyis extends React.Component {
     selectCallTypeValue = (value) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.call-type-select'), '根据通话类型过滤');
 
-        this.setState({
-            callType: value
-        }, () => {
-            if (this.state.callType === CALL_TYPE_OPTION.ALL) {
-                this.refreshCallAnalysisData();
-            } else {
-                this.refreshCallAnalysisData({deviceType: this.state.callType});
-            }
-        });
-
         callDeviceTypeEmitter.emit(callDeviceTypeEmitter.CHANGE_CALL_DEVICE_TYPE, value);
     };
 
@@ -150,7 +107,8 @@ class CallRecordAnalyis extends React.Component {
                 <div className="call-trend-chart">
                     <AntcAnalysis
                         charts={charts}
-                        chartHeight={this.state.trendHeight}
+                        conditions={this.getConditions()}
+                        emitterConfigList={this.getEmitters()}
                         isGetDataOnMount={true}
                     />
                 </div>
@@ -253,25 +211,9 @@ class CallRecordAnalyis extends React.Component {
         ];
     }
 
-
     //时间的设置
     onSelectDate = (startTime, endTime, timeType) => {
-        let timeObj = {startTime: startTime, endTime: endTime, timeType: timeType};
-        CallAnalysisAction.changeSearchTime(timeObj);
-        setTimeout(() => {
-            this.refreshCallAnalysisData();
-        });
-
         dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
-    };
-
-    handleFirstSelect = () => {
-        if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '选择成员过滤');
-        } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '选择团队过滤');
-        }
-
     };
 
     handleSelectTeamOrMember = () => {
@@ -313,6 +255,7 @@ class CallRecordAnalyis extends React.Component {
                 });
             }
         }
+
         secondOptions.unshift(<Option value={LITERAL_CONSTANT.ALL}>{LITERAL_CONSTANT.ALL}</Option>);
 
         return (
@@ -321,7 +264,6 @@ class CallRecordAnalyis extends React.Component {
                     <SelectFullWidth
                         defaultValue={FIRSR_SELECT_DATA[0]}
                         onChange={this.handleFirstSelectChange}
-                        onSelect={this.handleFirstSelect}
                         className="btn-item"
                     >
                         {firstOptions}
@@ -346,16 +288,19 @@ class CallRecordAnalyis extends React.Component {
 
     // 团队和成员框的选择
     handleFirstSelectChange = (value) => {
+        if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '选择成员过滤');
+        } else if (this.state.firstSelectValue === LITERAL_CONSTANT.MEMBER) {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '选择团队过滤');
+        }
+
         this.setState({
             firstSelectValue: value,
             secondSelectValue: LITERAL_CONSTANT.ALL
         }, () => {
             if (value === LITERAL_CONSTANT.MEMBER) {
-                let userIdArray = _.map(this.state.memberList.list, 'id');
-                this.refreshCallAnalysisData({user_id: userIdArray.join(',')});
                 teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, '');
             } else {
-                this.refreshCallAnalysisData();
                 teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, '');
             }
         });
@@ -382,16 +327,7 @@ class CallRecordAnalyis extends React.Component {
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, valueStr);
         }
 
-        this.setState({
-            secondSelectValue: value,
-        }, () => {
-            this.setChartContainerHeight();
-            this.refreshCallAnalysisData();
-            if (this.state.switchStatus && this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
-                var reqBody = this.getCallAnalysisBodyParamSeparately();
-                this.getCallAnalysisTrendDataSeparately(reqBody);//每个团队分别的趋势图
-            }
-        });
+        this.setState({ secondSelectValue: value });
     };
 
     render() {
@@ -466,9 +402,5 @@ class CallRecordAnalyis extends React.Component {
         );
     }
 }
-
-CallRecordAnalyis.propTypes = {
-    closeCallAnalysisPanel: PropTypes.func
-};
 
 module.exports = CallRecordAnalyis;
