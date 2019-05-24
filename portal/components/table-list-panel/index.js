@@ -29,10 +29,11 @@ class DataTable extends React.Component {
     render() {
         const props = this.props;
         const data = props.data;
+        const dataSource = props.dataField ? data[props.dataField] : data;
 
         let tableProps = {
             columns: props.columns,
-            dataSource: data[props.dataField],
+            dataSource,
             onRowClick: props.onRowClick,
             pagination: {
                 showTotal: total => `共${total}条`
