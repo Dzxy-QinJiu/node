@@ -214,6 +214,14 @@ let routers = [
             component: `${MODULE_PATH}document_write/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
+        }, {
+            //todo 待修改的！！！！！！
+            id: 'MY_LAEVE_APPLY_MANAGEMENT',
+            name: 'apply.my.self.setting.work.flow',//文件撰写
+            routePath: '/application/self_setting',
+            component: `${MODULE_PATH}self_setting/public`,
+            //有这个权限，才显示入口图标
+            showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
         }]
     },
     {
@@ -284,6 +292,14 @@ let routers = [
                 routePath: '/background_management/products',
                 component: `${MODULE_PATH}production-manage/public`,
                 //有这个权限，才显示入口图标
+                showPrivileges: ['PRODUCTS_MANAGE']
+            },
+            {
+                id: 'APPLY_APPROVE',
+                name: 'config.apply.manage',//申请审批管理
+                routePath: '/background_management/apply_approve',
+                component: `${MODULE_PATH}apply_approve_manage/public`,
+                //todo 权限名称待修改= 有这个权限，才显示入口图标
                 showPrivileges: ['PRODUCTS_MANAGE']
             }
         ]

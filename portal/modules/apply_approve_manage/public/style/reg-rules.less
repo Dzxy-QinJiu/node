@@ -1,0 +1,170 @@
+.reg-rule-container {
+  #bpmn-container {
+    //display: none;
+  }
+  .reg-rule-wrap {
+    .rule-item {
+      padding: 16px 0;
+      margin-left: 24px;
+      border-bottom: 1px solid #DEDFE3;
+      overflow: hidden;
+
+      .item-label {
+        font-size: 14px;
+        color: #333;
+        width: 110px;
+        float: left;
+      }
+      .rule-content.info-container {
+        .ant-radio-wrapper {
+          display: block;
+        }
+      }
+      //条件审批流程
+      .rule-content.condition-block{
+        float: left;
+        width: calc(100% - 120px);
+        .add-condition{
+          color: #8DA8C5;
+          font-size: 14px;
+        }
+        .condition-container{
+          width: 100%;
+          .condition-item-content{
+            width: 100%;
+            border: 1px solid #DEDFE3;
+            border-bottom: none;
+            .condition-item{
+              padding: 12px;
+              border-bottom: 1px solid #DEDFE3;
+              color: #999;
+              font-size: 14px;
+              overflow: hidden;
+              .condition-item-label{
+                float: left;
+                display: inline-block;
+                width: 80px;
+              }
+            }
+            .condition-item.condition-item-flow{
+            }
+            .condition-item.condition-item-title-wrap{
+              background:rgba(245,245,245,1);
+                padding: 12px;
+                .condition-item-title{
+                  color: #333;
+                  font-size: 14px;
+
+                }
+              .condition-operate{
+                  .confirm-btns{
+                      .ant-btn{
+                        margin-right: 12px;
+                      }
+                    .confirm-delete.ant-btn{
+                      color: #fff;
+                      background: #EB5E57;
+                    }
+                  }
+                  .iconfont-wrap{
+                    .iconfont{
+                      margin-right: 10px;
+                      cursor: pointer;
+                      color: #8DA8C5;
+                      font-size: 17px;
+                    }
+                  }
+                }
+
+                
+              }
+            .condition-item.condition-item-des{
+
+              ul{
+                float: left;
+                color:#333;
+                .icon-tip{
+                  display: inline-block;
+                  width: 8px;
+                  height: 8px;
+                  border-radius: 50%;
+                  background: #8DA8C5;
+                  margin:0 5px;
+                }
+              }
+            }
+          }
+          &.has-condition-item{
+            margin-top: 12px;
+          }
+        }
+      }
+
+    };
+    //添加节点的样式
+    .rule-content.apply-node-lists{
+      float: left;
+      overflow: hidden;
+      .item-node {
+        float: left;
+        width: 50px;
+        margin-right: 21px;
+        position: relative;
+        .show-name {
+          display: block;
+          font-size: 12px;
+          color: #333;
+        }
+        .iconfont.icon-close-btn {
+          cursor: pointer;
+          position: absolute;
+          right: 4px;
+          top: -3px;
+        }
+        .connet-bar {
+          position: absolute;
+          display: inline-block;
+          width: 30px;
+          top: 20px;
+          border-bottom: 2px solid #B8D3EA;
+          left: 41px;
+        }
+      }
+      //添加节点的标识
+      .icon-container {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        border-radius: 50%;
+        background: #B8D3EA;
+        text-align: center;
+        .iconfont {
+          font-size: 28px;
+          color: #fff;
+        }
+      }
+      .icon-container.add-node {
+        background: #fff;
+        border: 1px solid #ccc;
+        .iconfont.icon-add {
+          color: #8DA8C5;
+          font-size: 17px;
+          cursor: pointer;
+        }
+      }
+    }
+
+
+  }
+  //添加申请审批人节点面板
+  .show-add-node-modal{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 12;
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
