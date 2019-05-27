@@ -108,10 +108,15 @@ export function ifNotSingleApp(conditions) {
     }
 }
 
+//是否普通销售
+export function isCommonSales() {
+    return userData.getUserData().isCommonSales;
+}
+
 //是否是要查看具体销售人员的数据
 //普通销售自己登录或管理人员选择某些销售都属于这种情况
 export function isSales() {
-    return userData.getUserData().isCommonSales || Store.teamMemberFilterType === 'member'; 
+    return isCommonSales() || Store.teamMemberFilterType === 'member'; 
 }
 
 //是否是管理员或运营人员
