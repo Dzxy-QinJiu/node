@@ -22,6 +22,22 @@ export function getCallCustomerGeographicalDistributionChart() {
         subRegionField: 'sub_region',
         processSubRegionData: data => {
             _.each(data, item => item.value = item.count);
+        },
+        processCsvData: (chart, option) => {
+            let csvData = [];
+
+            let thead = [];
+
+            let tr = [];
+
+            _.each(option.series[0].data, item => {
+                thead.push(item.name);
+                tr.push(item.value);
+            });
+
+            csvData.push(thead, tr);
+
+            return csvData;
         }
     };
 }
