@@ -22,6 +22,9 @@ export function getCallNumberTimeTrendChart() {
         conditions: [{
             name: 'interval',
             value: 'day',
+        }, {
+            name: 'statistics_type',
+            value: 'team',
         }],
         argCallback: arg => {
             let query = arg.query;
@@ -70,6 +73,35 @@ export function getCallNumberTimeTrendChart() {
             //默认显示通话数量
             return dataCount;
         },
+        processCsvData: (chart, option) => {
+            let csvData = [];
+
+            let thead = option.xAxis[0].data;
+
+            const series = option.series;
+
+            if (_.has(series[0], 'name')) {
+                thead.unshift('');
+            }
+
+            csvData.push(thead);
+
+            _.each(option.series, (serie, index) => {
+                const values = _.map(serie.data, 'value');
+
+                let tr = [];
+
+                if (serie.name) {
+                    tr.push(serie.name);
+                }
+
+                tr = tr.concat(values);
+
+                csvData.push(tr);
+            });
+
+            return csvData;
+        }
     };
 
     //渲染切换按钮
