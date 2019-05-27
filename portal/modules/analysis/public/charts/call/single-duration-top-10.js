@@ -50,12 +50,11 @@ export function getSingleDurationTop10Chart() {
                 {
                     title: Intl.get('common.phone', '电话'),
                     dataIndex: 'dst',
-                    width: '120',
-                    align: 'right'
+                    width: 120,
                 }, {
                     title: Intl.get('sales.home.call.top.ten', '单次通话时长'),
                     dataIndex: 'billsec',
-                    width: '100',
+                    width: 100,
                     align: 'right',
                     render: function(data) {
                         return TimeUtil.getFormatTime(data);
@@ -63,11 +62,13 @@ export function getSingleDurationTop10Chart() {
                 }, {
                     title: Intl.get('call.record.customer', '客户'),
                     dataIndex: 'customer_name',
-                    width: '250',
+                    isSetCsvValueBlank: true,
+                    width: 250,
                 }, {
                     title: Intl.get('call.record.caller', '呼叫者'),
                     dataIndex: 'nick_name',
-                    width: '70',
+                    isSetCsvValueBlank: true,
+                    width: 70,
                 }
             ]
         }
