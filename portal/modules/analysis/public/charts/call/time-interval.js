@@ -29,6 +29,29 @@ export function getCallTimeIntervalChart() {
                 };
             });
         },
+        processCsvData: (chart, option) => {
+            let csvData = [];
+
+            const thead = [''].concat(_.get(option, 'singleAxis[0].data', []));
+
+            csvData.push(thead);
+
+            _.each(option.title, (item, index) => {
+                let tr = [];
+
+                tr.push(item.text);
+
+                const serie = option.series[index];
+
+                _.each(serie.data, item => {
+                    tr.push(item[1]);
+                });
+
+                csvData.push(tr);
+            });
+
+            return csvData;
+        },
         option: getOption('通话数量'),
         yAxisLabels: days,
         xAxisLabels: hours,
