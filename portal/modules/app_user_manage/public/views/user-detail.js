@@ -245,6 +245,9 @@ class UserDetail extends React.Component {
     renderUserStatus = (user, useIcon = false) => {
         let userStatus = user && user.status;
         let hasEditPrivilege = hasPrivilege('APP_USER_EDIT') && this.state.isOplateUser;
+        if(!this.state.isOplateUser) {
+            return '';
+        }
         if (!hasEditPrivilege) {
             return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
         }

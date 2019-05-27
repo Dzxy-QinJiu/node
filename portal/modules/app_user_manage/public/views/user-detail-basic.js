@@ -338,9 +338,13 @@ class UserDetailBasic extends React.Component {
         if (typeof is_disabled === 'boolean') {
             is_disabled = is_disabled.toString();
         }
-        //没有编辑的权限或者不是oplate用户时
-        if (!hasPrivilege('APP_USER_EDIT') || !isOplateUser()) {
+        //没有编辑的权限
+        if (!hasPrivilege('APP_USER_EDIT')) {
             return is_disabled ? (is_disabled === 'true' ? Intl.get('common.app.status.close', '关闭') : Intl.get('common.app.status.open', '开启')) : is_disabled;
+        }
+        //不是oplate用户时
+        if(!isOplateUser()) {
+            return '';
         }
         if (!is_disabled) {
             return '';
@@ -461,7 +465,7 @@ class UserDetailBasic extends React.Component {
         });*/
 
         return (
-            <div className="rows-3">
+            <div className="rows-3 uem-wrapper">
                 <div className={(!app.showDetail && app.is_disabled === 'true') ? 'hide' : 'app-prop-list'}>
                     <span><ReactIntl.FormattedMessage id="user.time.end" defaultMessage="到期时间" />：{displayEndTime}</span>
                     {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.user.type"
