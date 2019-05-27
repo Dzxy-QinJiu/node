@@ -197,7 +197,7 @@ var NavSidebar = createReactClass({
         this.getHasDiffApplyUnreadReply();
         //响应式设计 logo和菜单占据的实际高度
         responsiveLayout.logoAndMenusHeight = $('.logo-and-menus').outerHeight(true);
-        //计算 通知、二维码、个人信息 占据的实际高度
+        //计算 拨号按钮、通知、设置、个人信息 占据的实际高度
         responsiveLayout.userInfoHeight = $(this.userInfo).outerHeight(true);
         this.calculateHeight();
         $(window).on('resize', this.calculateHeight);
@@ -222,6 +222,11 @@ var NavSidebar = createReactClass({
         //电话系统初始化完成后，判断是否有打电话的权限（是否配坐席号，配置了才可以打电话）
         if (hasCalloutPrivilege) {
             this.setState({isShowDialUpKeyboard: true});
+            setTimeout(() => {
+                //计算 拨号按钮、通知、设置、个人信息 占据的实际高度
+                responsiveLayout.userInfoHeight = $(this.userInfo).outerHeight(true);
+                this.calculateHeight();
+            });
         }
     },
     getHasDiffApplyUnreadReply: function() {
@@ -539,6 +544,8 @@ var NavSidebar = createReactClass({
 
     render: function() {
         var _this = this;
+        const DialIcon = this.state.hideNavIcon ? Intl.get('phone.dial.up.text', '拨号') :
+            (<i className='iconfont icon-dial-up-keybord' style={{fontSize: 24}}/>);
         return (
             <nav className="navbar" onClick={this.closeNotificationPanel}>
                 <div className="container">
@@ -568,7 +575,7 @@ var NavSidebar = createReactClass({
                     <div className="sidebar-user" ref={(element) => {
                         this.userInfo = element;
                     }}>
-                        {this.state.isShowDialUpKeyboard ? (<DialUpKeyboard btnSize={24} placement="right"/>) : null}
+                        {this.state.isShowDialUpKeyboard ? (<DialUpKeyboard placement="right" dialIcon={DialIcon}/>) : null}
                         {_this.getNotificationBlock()}
                         {_this.renderBackendConfigBlock()}
                         {_this.getUserInfoBlock()}

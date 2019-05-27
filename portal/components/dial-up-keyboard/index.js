@@ -52,7 +52,7 @@ class DialUpKeyboard extends React.Component {
                 onVisibleChange={this.handleVisibleChange}
             >
                 <div className={btnClass} title={Intl.get('phone.dial.up.keyboard.btn', '拨号键盘')}>
-                    <i className='iconfont icon-dial-up-keybord' style={{fontSize: this.props.btnSize || 16}}/>
+                    {this.props.dialIcon || <i className='iconfont icon-dial-up-keybord' style={{fontSize: 16}}/>}
                 </div>
             </Popover>);
     }
@@ -63,7 +63,7 @@ DialUpKeyboard.propTypes = {
     phoneNumber: PropTypes.string,
     //拨号键盘的显示位置 ：top、right、bottom、left等，不传默认为bottom
     placement: PropTypes.string,
-    //拨号图标大小,不传默认16
-    btnSize: PropTypes.number,
+    //拨号图标(可以是字符串也可以是图标等元素)
+    dialIcon: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
 };
 export default DialUpKeyboard;
