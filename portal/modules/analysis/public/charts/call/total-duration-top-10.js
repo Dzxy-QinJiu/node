@@ -16,9 +16,6 @@ export function getTotalDurationTop10Chart() {
             name: 'filter_invalid_phone',
             value: true, 
         }, {
-            name: 'device_type',
-            value: 'all'
-        }, {
             name: 'top_size',
             value: 10
         }, {

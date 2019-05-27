@@ -25,9 +25,6 @@ export function getCallRecordChart() {
         }, {
             name: 'filter_invalid_phone',
             value: true, 
-        }, {
-            name: 'device_type',
-            value: 'all'
         }],
         processData: (data, chart, analysisInstance, chartIndex) => {
             _.set(chart, 'cardContainer.props.subTitle', renderFilter114(analysisInstance, chartIndex));

@@ -22,9 +22,6 @@ export function getCallNumberTimeTrendChart() {
         conditions: [{
             name: 'interval',
             value: 'day',
-        }, {
-            name: 'statistics_type',
-            value: 'team',
         }],
         argCallback: arg => {
             let query = arg.query;

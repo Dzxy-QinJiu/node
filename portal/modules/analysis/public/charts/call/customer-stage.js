@@ -13,9 +13,6 @@ export function getCallCustomerStageChart() {
         }, {
             name: 'filter_invalid_phone',
             value: false, 
-        }, {
-            name: 'device_type',
-            value: 'all'
         }],
         dataField: 'customer_label_sum',
     };

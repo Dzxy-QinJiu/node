@@ -14,9 +14,6 @@ export function getCallCustomerGeographicalDistributionChart() {
         }, {
             name: 'filter_invalid_phone',
             value: false, 
-        }, {
-            name: 'device_type',
-            value: 'all'
         }],
         dataField: 'sum',
         events: [{

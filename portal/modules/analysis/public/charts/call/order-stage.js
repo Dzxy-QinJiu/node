@@ -13,9 +13,6 @@ export function getCallOrderStageChart() {
         }, {
             name: 'filter_invalid_phone',
             value: false, 
-        }, {
-            name: 'device_type',
-            value: 'all'
         }],
         dataField: 'opp_stage_sum',
     };
