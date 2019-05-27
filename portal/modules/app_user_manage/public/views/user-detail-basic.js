@@ -777,14 +777,14 @@ class UserDetailBasic extends React.Component {
                     }}
                     saveEditInput={AppUserAjax.editAppUser}
                 />
-                <OrgCard
+                {isOplateUser() ? <OrgCard
                     user_id={userInfo.user_id}
-                    showBtn={true} 
+                    showBtn={true}
                     groupsInfo={groupsInfo}
                     onModifySuccess={this.organizationChangeSuccess}
                     userInfo={userInfo}
                     sales_team={_.get(initialUser, 'sales_team', {})}
-                />
+                /> : null}
                 <div className="app_wrap" ref="app_wrap"> 
                     <DetailCard
                         title={(<div className="sales-team-show-block">
