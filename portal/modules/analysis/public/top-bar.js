@@ -9,21 +9,23 @@ import Store from './store';
 import {Select} from 'antd';
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
+import {dateSelectorEmitter, teamTreeEmitter, callDeviceTypeEmitter} from 'PUB_DIR/sources/utils/emitters';
+const isCommonSales = require('PUB_DIR/sources/user-data').getUserData().isCommonSales;
+import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 
 const Option = Select.Option;
-const emitters = require('PUB_DIR/sources/utils/emitters');
-const dateSelectorEmitter = emitters.dateSelectorEmitter;
-const teamTreeEmitter = emitters.teamTreeEmitter;
-const isCommonSales = require('PUB_DIR/sources/user-data').getUserData().isCommonSales;
 
 class TopBar extends React.Component {
     static defaultProps = {
         //当前显示页面
-        currentPage: {}
+        currentPage: {},
+        //是否显示通话设备类型选择器
+        isCallDeviceTypeSelectorShow: false
     };
 
     static propTypes = {
-        currentPage: PropTypes.object
+        currentPage: PropTypes.object,
+        isCallDeviceTypeSelectorShow: PropTypes.bool
     };
 
     constructor(props) {
@@ -170,6 +172,33 @@ class TopBar extends React.Component {
         }
     }
 
+    // 通话类型的筛选框
+    renderCallTypeSelect = () => {
+        return (
+            <div className='btn-item'>
+                <Select
+                    defaultValue={CALL_TYPE_OPTION.ALL}
+                    onChange={this.selectCallTypeValue}
+                >
+                    <Option value={CALL_TYPE_OPTION.ALL}>
+                        {Intl.get('user.online.all.type', '全部类型')}
+                    </Option>
+                    <Option value={CALL_TYPE_OPTION.PHONE}>
+                        {Intl.get('call.record.call.center', '呼叫中心')}
+                    </Option>
+                    <Option value={CALL_TYPE_OPTION.APP}>
+                        {Intl.get('common.ketao.app', '客套APP')}
+                    </Option>
+                </Select>
+            </div>
+        );
+    };
+
+    // 选择通话类型的值
+    selectCallTypeValue = (value) => {
+        callDeviceTypeEmitter.emit(callDeviceTypeEmitter.CHANGE_CALL_DEVICE_TYPE, value);
+    };
+
     //渲染操作按钮区
     renderButtonZones = () => {
         //日期选择器选项
@@ -212,6 +241,7 @@ class TopBar extends React.Component {
 
         return (
             <div className="btn-item-container">
+                {this.props.isCallDeviceTypeSelectorShow ? this.renderCallTypeSelect() : null}
                 {isCommonSales ? null : (
                     <Select
                         defaultValue="team"

@@ -20,7 +20,8 @@ import {
     appSelectorEmitter,
     teamTreeEmitter,
     dateSelectorEmitter,
-    analysisCustomerListEmitter
+    analysisCustomerListEmitter,
+    callDeviceTypeEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 
 import rightPanelUtil from 'CMP_DIR/rightPanel';
@@ -49,6 +50,8 @@ class CurtaoAnalysis extends React.Component {
             currentPage: '',
             groups: this.processMenu(processedGroups),
             isAppSelectorShow: false,
+            //是否显示通话设备类型选择器
+            isCallDeviceTypeSelectorShow: false,
             //是否显示右侧面板
             isRightPanelShow: false,
             //是否显示客户列表
@@ -275,12 +278,35 @@ class CurtaoAnalysis extends React.Component {
         const charts = _.get(page, 'charts');
 
         let isAppSelectorShow = false;
+        let isCallDeviceTypeSelectorShow = false;
 
         let adjustConditions;
 
-        if (group.title === '账号分析') {
+        function deleteCallDeviceTypeCondition(conditions) {
+            const callDeviceTypeConditionIndex = _.findIndex(conditions, condition => condition.name === 'device_type');
+
+            if (callDeviceTypeConditionIndex !== -1) {
+                conditions.splice(callDeviceTypeConditionIndex, 1);
+            }
+        }
+
+        if (group.title === '通话分析') {
+            isCallDeviceTypeSelectorShow = true;
+            adjustConditions = conditions => {
+                const callDeviceTypeCondition = _.find(conditions, condition => condition.name === 'device_type');
+
+                if (!callDeviceTypeCondition) {
+                    conditions.push({
+                        name: 'device_type',
+                        value: 'all'
+                    });
+                }
+            };
+        } else if (group.title === '账号分析') {
             isAppSelectorShow = true;
             adjustConditions = conditions => {
+                deleteCallDeviceTypeCondition(conditions);
+
                 let defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY);
 
                 //当前是否在延期帐号页
@@ -307,6 +333,8 @@ class CurtaoAnalysis extends React.Component {
                 adjustConditions = page.adjustConditions;
             } else {
                 adjustConditions = conditions => {
+                    deleteCallDeviceTypeCondition(conditions);
+
                     const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
                     _.set(appIdCondition, 'value', 'all');
                     this.adjustStartEndTime(conditions);
@@ -319,6 +347,7 @@ class CurtaoAnalysis extends React.Component {
             currentCharts: charts,
             currentPage: page,
             isAppSelectorShow,
+            isCallDeviceTypeSelectorShow,
             adjustConditions
         });
     }
@@ -374,6 +403,12 @@ class CurtaoAnalysis extends React.Component {
 
     getEmitters() {
         return [{
+            emitter: callDeviceTypeEmitter,
+            event: callDeviceTypeEmitter.CHANGE_CALL_DEVICE_TYPE,
+            callbackArgs: [{
+                name: 'device_type',
+            }],
+        }, {
             emitter: appSelectorEmitter,
             event: appSelectorEmitter.SELECT_APP,
             callbackArgs: [{
@@ -458,6 +493,7 @@ class CurtaoAnalysis extends React.Component {
                 <TopBar
                     currentPage={this.state.currentPage}
                     ref={ref => this.topBar = ref}
+                    isCallDeviceTypeSelectorShow={this.state.isCallDeviceTypeSelectorShow}
                 />
                 <Row>
                     <Col span={3}>
