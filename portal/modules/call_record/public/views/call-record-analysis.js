@@ -197,9 +197,15 @@ class CallRecordAnalyis extends React.Component {
             //单次通话时长TOP10
             callChart.getSingleDurationTop10Chart(),
             //114占比统计
-            callChart.getCall114RatioChart(),
+            callChart.getCall114RatioAndServiceTelChart({
+                title: '114占比统计',
+                type: '114'
+            }),
             //客服电话统计
-            callChart.getCallServiceTelChart(),
+            callChart.getCall114RatioAndServiceTelChart({
+                title: '客服电话统计',
+                type: 'service-tel'
+            }),
             //通话时段统计
             callChart.getCallTimeIntervalChart(),
             //客户阶段统计

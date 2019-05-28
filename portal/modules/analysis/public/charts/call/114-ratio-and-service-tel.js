@@ -1,20 +1,20 @@
 /**
- * 114占比统计
+ * 114占比统计和客服电话统计
  */
 
 import { isCommonSales, numToPercent } from '../../utils';
 
-export function getCall114RatioChart() {
+export function getCall114RatioAndServiceTelChart(paramObj = {}) {
     let chart = {
-        title: '114占比统计',
+        title: paramObj.title,
         chartType: isCommonSales() ? 'pie' : 'bar',
         url: '/rest/analysis/callrecord/v1/callrecord/term/invailid',
         conditions: [{
             name: 'filter_phone',
-            value: false 
+            value: paramObj.type === '114' ? false : true
         }, {
             name: 'filter_invalid_phone',
-            value: true, 
+            value: paramObj.type === '114' ? true : false
         }],
         processData: (data, chart) => {
             let processedData = [];
@@ -22,16 +22,16 @@ export function getCall114RatioChart() {
             if (isCommonSales()) {
                 data = data[0];
 
-                if (data.rate !== 0 || 1) {
+                if (data.rate !== 0) {
                     processedData.push(
                         {
                             name: '114电话',
-                            value: 2,
+                            value: data.invalid_docs,
                             rate: data.rate
                         },
                         {
                             name: '非114电话',
-                            value: 3,
+                            value: data.total_docs - data.invalid_docs,
                             rate: 1 - data.rate
                         }
                     );
