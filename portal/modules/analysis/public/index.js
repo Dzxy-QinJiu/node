@@ -7,6 +7,7 @@ import {storageUtil} from 'ant-utils';
 import Store from './store';
 import ajax from 'ant-ajax';
 import TopBar from './top-bar';
+import {getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import HistoricHighDetail from './historic-high-detail';
 import AppSelector from './app-selector';
 import {getContextContent} from './utils';
@@ -69,6 +70,8 @@ class CurtaoAnalysis extends React.Component {
         this.getAppList();
         this.getClueChannelList();
         this.getClueSourceList();
+        // 获取组织电话系统配置
+        this.getCallSystemConfig();
 
         analysisCustomerListEmitter.on(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, this.handleCustomerListEvent);
     }
@@ -129,6 +132,15 @@ class CurtaoAnalysis extends React.Component {
             Store.clueSourceList = _.get(result, 'result');
         });
     };
+    
+    //获取组织电话系统配置
+    getCallSystemConfig() {
+        getCallSystemConfig().then(config => {
+            const isShowEffectiveTimeAndCount = _.get(config,'filter_114',false) || _.get(config,'filter_customerservice_number',false);
+
+            Store.isShowEffectiveTimeAndCount = isShowEffectiveTimeAndCount;
+        });
+    }
 
     processMenu(menus, subMenuField = 'pages') {
         return _.filter(menus, menu => {
