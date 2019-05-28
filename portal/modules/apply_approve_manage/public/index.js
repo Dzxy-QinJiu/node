@@ -8,24 +8,20 @@ var classNames = require('classnames');
 import ApplyProcessList from './view/apply_process_list';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {Button} from 'antd';
-import {calculateHeight} from './utils/apply-approve-utils';
-let userData = require('PUB_DIR/sources/user-data');
+
 class ApplyApproveManage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showAddForm: false,
-            showApplyTypeList: userData.getUserData().workFlowConfigs,
+            showAddWorkFlowName: false,//是否展示添加自定义流程的名字
         };
     }
-
     onStoreChange = () => {
 
     };
-    updateShowApplyList = (showApplyTypeList) => {
+    updateShowApplyList = () => {
         this.setState({
-            showApplyTypeList: showApplyTypeList || this.state.showApplyTypeList,
-            showAddForm: false
+            showAddWorkFlowName: false
         });
     };
 
@@ -33,15 +29,14 @@ class ApplyApproveManage extends React.Component {
     renderApplyTypeList = () => {
         return (
             <ApplyProcessList
-                showApplyList={this.state.showApplyTypeList}
-                showAddForm={this.state.showAddForm}
+                showAddWorkFlowName={this.state.showAddWorkFlowName}
                 updateShowApplyList={this.updateShowApplyList}
             />
         );
     };
     handleClickAddForm = () => {
         this.setState({
-            showAddForm: true
+            showAddWorkFlowName: true
         });
     };
     renderTopBottom = () => {
@@ -49,7 +44,7 @@ class ApplyApproveManage extends React.Component {
             <ButtonZones>
                 <div className="btn-item-container">
                     <Button className='btn-item'
-                            onClick={this.handleClickAddForm}>{Intl.get('apply.add.apply.type', '添加申请类型')}</Button>
+                        onClick={this.handleClickAddForm}>{Intl.get('apply.add.apply.type', '添加申请类型')}</Button>
                 </div>
             </ButtonZones>
         );
@@ -58,7 +53,7 @@ class ApplyApproveManage extends React.Component {
         return (
             <div className="apply-approve-manage">
                 {this.renderTopBottom()}
-                <div className='apply-approve-container' style={{height: calculateHeight()}}>
+                <div className='apply-approve-container'>
                     {this.renderApplyTypeList()}
                 </div>
             </div>
