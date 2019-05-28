@@ -494,9 +494,12 @@ var MemberList = createReactClass({
     },
 
     // 渲染当前正在展示的团队成员列表，使用table的方式
-    renderMemberList(){
+    renderMemberList(flag, addMemberList){
         let columns = this.getTableColumns();
         let dataSource = this.processTableData();
+        if (flag === 'add') {
+            dataSource = addMemberList;
+        }
         return (
             <div className='member-list-table'>
                 <AntcTable
@@ -861,6 +864,12 @@ var MemberList = createReactClass({
             selectMemberListH -= 20;//20：padding
         }
 
+        let addMemberList = this.state.addMemberList;
+        let searchValue = this.state.searchValue;
+        if (searchValue) {
+            addMemberList = _.filter(addMemberList, item => item.userName.indexOf(searchValue) !== -1 || item.nickName.indexOf(searchValue) !== -1);
+        }
+        let flag = 'add';
         return _this.props.isAddMember ?
             (<div className="sales-team-member-add-container">
                 <div className="sales-team-member-search-input-div">
@@ -873,17 +882,8 @@ var MemberList = createReactClass({
                     {this.props.addMemberListTipMsg ? (
                         <div className="member-list-tip"> {this.props.addMemberListTipMsg} </div>) : (<GeminiScrollbar
                         className="geminiScrollbar-div sales-team-member-select-geminiScrollbar">
-                        {
-                            _this.state.addMemberList.map(function(salesTeamMember) {
-                                //搜索的过滤
-                                if (salesTeamMember.nickName.indexOf(_this.state.searchValue) !== -1 || salesTeamMember.userName.indexOf(_this.state.searchValue) !== -1) {
-                                    //已选择加为的过滤
-                                    if (!salesTeamMember.isHidden) {
-                                        return _this.renderMemberEle(salesTeamMember, MEMBER_TYPE.USER, true);
-                                    }
-                                }
-                            })
-                        }
+                        {_this.renderMemberList(flag, addMemberList)}
+
                     </GeminiScrollbar>)
                     }
                 </div>

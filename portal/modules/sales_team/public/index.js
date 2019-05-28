@@ -22,6 +22,7 @@ var CONSTANT = {
     SAVE_SUCCESS: Intl.get('common.save.success', '保存成功'),
     SAVE_ERROR: Intl.get('common.save.failed', '保存失败')
 };
+import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 
 class SalesTeamPage extends React.Component {
     constructor(props, context) {
@@ -168,7 +169,7 @@ class SalesTeamPage extends React.Component {
         var salesTeamMemberWidth = containerWidth - 300 - 2;
         var salesTeamList = this.state.salesTeamList;
         let leftTreeData = this.state.searchContent ? this.state.searchSalesTeamTree : this.state.salesTeamListArray;
-
+        let managedOrganization = _.get(getOrganization(), 'name', '');
         return (
             <div className="sales-team-manage-container" data-tracename="团队管理">
                 {this.state.salesTeamLisTipMsg ? (this.state.salesTeamLisTipMsg === CONSTANT.SALES_TEAM_IS_NULL ? this.renderAddSalesTeam() :
@@ -194,8 +195,7 @@ class SalesTeamPage extends React.Component {
                             rightPanelShow={this.state.rightPanelShow}
                             isLoadingSalesGoal={this.state.isLoadingSalesGoal}
                             getSalesGoalErrMsg={this.state.getSalesGoalErrMsg}
-                        >
-                        </MemberList>
+                        />
                         <LeftTree
                             containerHeight={containerHeight}
                             salesTeamList={salesTeamList}

@@ -232,8 +232,16 @@ let routers = [
         routePath: '/background_management',
         shortName: 'menu.shortName.config',//设置
         bottom: true,
-        // subMenuPosition: 'left',//二级菜单的展示位置，顶部还是左侧展示（默认: 'top'）
+        subMenuPosition: 'left',//二级菜单的展示位置，顶部还是左侧展示（默认: 'top'）
         subMenu: [
+            {
+                id: 'MEMBER', //唯一标识
+                name: 'menu.member',//成员
+                routePath: '/background_management/member',
+                component: `${MODULE_PATH}member_manage/public`,
+                //有这个权限，才显示入口图标
+                showPrivileges: ['USER_MANAGE_LIST_USERS', 'BGM_SALES_TEAM_LIST']
+            },
             {
                 id: 'USER_MANAGE', //唯一标识
                 name: 'menu.user',//成员管理
