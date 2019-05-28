@@ -5,6 +5,7 @@ const _ = require('lodash');
 var appUserDetailDto = require('../dto/apps');
 const multiparty = require('multiparty');
 const fs = require('fs');
+const path = require('path');
 let BackendIntl = require('../../../../lib/utils/backend_intl');
 
 /**
@@ -367,9 +368,11 @@ function templateFile(req, res, example) {
 
 // 导入用户模板文件
 exports.getUserTemplate = (req, res) => {
-    let example = '用户名(必填),昵称(必填),手机号,邮箱,所属客户,类型,开通时间(格式必须为yyyy/MM/dd),到期时间(格式必须为yyyy/MM/dd),备注\n' +
-        'curtao@qq.com,客套,15166666666,curtao@qq.com,客套智能科技有限公司,试用,2019/04/10,2019/04/25,,\n';
-    templateFile(req, res, example);
+    const backendIntl = new BackendIntl(req);
+    const filename = backendIntl.get('user.import.user.template', '用户模板');
+    const filePath = path.resolve(__dirname, '../tpl/user_tpl.csv');
+    res.download(filePath, filename + '.csv');
+
 };
 
 // 上传用户
