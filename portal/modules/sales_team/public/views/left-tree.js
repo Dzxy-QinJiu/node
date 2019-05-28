@@ -12,6 +12,7 @@ var ModalDialog = require('../../../../components/ModalDialog');
 var AlertTimer = require('../../../../components/alert-timer');
 import {SearchInput} from 'antc';
 var SalesTeamAction = require('../action/sales-team-actions');
+import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 
 function noop() {
@@ -153,6 +154,8 @@ class LeftTree extends React.Component {
 
     element = (item, type) => {
         //团队人数的统计(递归计算该团队及所有子团队的人数)
+        let organizationName = _.get(getOrganization(), 'name', '');
+        let organizationId = _.get(getOrganization(), 'id', '');
         let teamMemberCount = commonMethodUtil.getTeamMemberCount(item, 0, this.props.teamMemberCountList, false);
         return (
             <div className="left-tree-item-container">
@@ -182,26 +185,30 @@ class LeftTree extends React.Component {
                             <span>)</span>
                         </span>
                     </div>
-                    <div className="tree-operation-div">
-                        <PrivilegeChecker check="BGM_SALES_TEAM_ADD">
-                            <span className="icon-operation iconfont icon-add tree-operation-icon"
-                                title={Intl.get('sales.team.add.child.team', '添加子团队')}
-                                onClick={this.addGroup.bind(this, item)}
-                            />
-                        </PrivilegeChecker>
-                        <PrivilegeChecker check="BGM_SALES_TEAM_EDIT">
-                            <span className="icon-operation iconfont icon-update tree-operation-icon"
-                                title={Intl.get('sales.team.edit.team', '编辑团队')}
-                                onClick={this.editGroup.bind(this, item)}
-                            />
-                        </PrivilegeChecker>
-                        <PrivilegeChecker check="BGM_SALES_TEAM_DELETE">
-                            <span className="icon-operation iconfont icon-delete tree-operation-icon"
-                                title={Intl.get('sales.team.del.team', '删除团队')}
-                                onClick={this.deleteGroup.bind(this, item)}
-                            />
-                        </PrivilegeChecker>
-                    </div>
+                    {
+                        item.title === organizationName && item.key === organizationId ? null : (
+                            <div className="tree-operation-div">
+                                <PrivilegeChecker check="BGM_SALES_TEAM_ADD">
+                                    <span className="icon-operation iconfont icon-add tree-operation-icon"
+                                        title={Intl.get('sales.team.add.child.team', '添加子团队')}
+                                        onClick={this.addGroup.bind(this, item)}
+                                    />
+                                </PrivilegeChecker>
+                                <PrivilegeChecker check="BGM_SALES_TEAM_EDIT">
+                                    <span className="icon-operation iconfont icon-update tree-operation-icon"
+                                        title={Intl.get('sales.team.edit.team', '编辑团队')}
+                                        onClick={this.editGroup.bind(this, item)}
+                                    />
+                                </PrivilegeChecker>
+                                <PrivilegeChecker check="BGM_SALES_TEAM_DELETE">
+                                    <span className="icon-operation iconfont icon-delete tree-operation-icon"
+                                        title={Intl.get('sales.team.del.team', '删除团队')}
+                                        onClick={this.deleteGroup.bind(this, item)}
+                                    />
+                                </PrivilegeChecker>
+                            </div>
+                        )
+                    }
                 </div>
 
             </div>);

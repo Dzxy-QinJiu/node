@@ -1,9 +1,9 @@
 /**
  * Created by wangliping on 2018/3/1.
  */
-require('../action/sales-role-manage-controller');
+
 module.exports = {
-    module: 'config_manage/server/action/sales-role-manage-controller',
+    module: 'office_manage/server/action/office-manage-controller',
     routes: [{
         'method': 'get',
         'path': '/rest/sales/role_list',

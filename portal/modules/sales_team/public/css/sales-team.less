@@ -9,6 +9,10 @@
 @edit-teamName-form-height: 90px;
 
 .sales-team-manage-container {
+  padding: 12px;
+  .member-list-zone {
+    background: #fff;
+  }
   //团队搜索框的样式设置
   .sales-team-search-block {
     position: relative;
@@ -89,15 +93,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
-  padding-right: @container_padding;
-  padding-left: @container_padding;
-  padding-top: 20px;
-
   .sales-team-table-block {
     min-width: 720px;
     font-size: 0px;
-    border: 1px solid @border-color;
     border-radius: 4px;
     .sales-team-group, .sales-team-tree-container {
       > .alert-timer {
@@ -360,8 +358,6 @@
       min-width: 418px;
       float: left;
       font-size: 14px;
-      border-left: 1px solid @border-color;
-      padding: 20px;
       padding-bottom: 0px;
       //右侧用户详情面板
       .right-pannel-default {

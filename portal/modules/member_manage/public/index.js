@@ -8,19 +8,12 @@ import MemberFormAction from './action/member-form-actions';
 import MemberForm from './view/member-form';
 import MemberInfo from './view/member-info';
 import {memberStatusList} from 'PUB_DIR/sources/utils/consts';
-import {Icon, Button, Tabs} from 'antd';
-const TabPane = Tabs.TabPane;
+import {Icon, Button} from 'antd';
 import Trace from 'LIB_DIR/trace';
-import PositionManage from './view/sales-role-manage';
-import DepartmentManage from '../../sales_team/public';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 
 let openTimeout = null;//打开面板时的时间延迟设置
 let focusTimeout = null;//focus事件的时间延迟设置
-const TAB_KEYS = {
-    DEPARTMENT_TAB: '1',//部门
-    POSITION_TAB: '2'// 职务
-};
 
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -32,7 +25,6 @@ class MemberManage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            activeKey: TAB_KEYS.DEPARTMENT_TAB,
             ...MemberManageStore.getState(),
         };
     }
@@ -42,9 +34,10 @@ class MemberManage extends React.Component {
     };
 
     componentDidMount = () => {
-        $('body').css('overflow', 'hidden');
         MemberManageStore.listen(this.onChange);
-        this.getMemberList(); // 获取成员列表
+        setTimeout( () => {
+            this.getMemberList(); // 获取成员列表
+        }, 0);
     };
 
     getMemberList = (queryParams) => {
@@ -59,7 +52,6 @@ class MemberManage extends React.Component {
     };
 
     componentWillUnmount = () => {
-        $('body').css('overflow', 'auto');
         MemberManageStore.unlisten(this.onChange);
     };
 
@@ -319,49 +311,11 @@ class MemberManage extends React.Component {
         MemberManageAction.updateCurrentMemberStatus(status);
     };
 
-    // 切换tab时的处理
-    changeActiveKey = (key) => {
-        this.setState({
-            activeKey: key
-        });
-    };
-
-    renderMemberTeamGroup = () => {
-        let organizationName = _.get(getOrganization(), 'name', '');
-        let count = this.state.memberTotal;
-        return (
-            <Tabs
-                defaultActiveKey={TAB_KEYS.DEPARTMENT_TAB}
-                activeKey={this.state.activeKey}
-                onChange={this.changeActiveKey}
-            >
-                <TabPane
-                    tab={Intl.get('crm.113', '部门')}
-                    key={TAB_KEYS.DEPARTMENT_TAB}
-                >
-                    <ul>
-                        <li>
-                            <div className='organization-name'>{organizationName}</div>
-                        </li>
-                        <li>
-                            <DepartmentManage/>
-                        </li>
-                    </ul>
-                </TabPane>
-                <TabPane
-                    tab={Intl.get('member.position', '职务')}
-                    key={TAB_KEYS.POSITION_TAB}
-                >
-                    <PositionManage />
-                </TabPane>
-            </Tabs>
-        );
-    }
-
     render() {
+        let height = $(window).height();
         return (
             <div className='member-container'>
-                <div className='member-wrap'>
+                <div className='member-wrap' style={{height: height}}>
                     <div className='member-detail-wrap'>
                         <div className='member-top-nav'>
                             {this.renderTopNavOperation()}
@@ -372,9 +326,6 @@ class MemberManage extends React.Component {
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className='member-teams-group'>
-
                 </div>
                 <div className='member-right-panel'>
                     {this.state.isShowMemberForm ? (

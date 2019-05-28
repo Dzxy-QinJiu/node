@@ -1,29 +1,26 @@
 const React = require('react');
-require('../css/position.less');
+require('./index.less');
 const Spinner = require('CMP_DIR/spinner');
 const AlertTimer = require('CMP_DIR/alert-timer');
 import Trace from 'LIB_DIR/trace';
 import {Icon, Alert, InputNumber, Input, Form, Button} from 'antd';
 const FormItem = Form.Item;
 import classNames from 'classnames';
-import positionManageAjax from '../ajax/position-manage-ajax';
+import officeManageAjax from './ajax';
 import {COLOR_LIST} from 'PUB_DIR/sources/utils/consts';
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
 
-class SalesRoleManage extends React.Component {
+class OfficeManage extends React.Component {
     state = {
         positionList: [], // 职务列表
         getPositionListMsg: '', // 获取职务列表失败的信息
         errMsgTips: '', // 错误信息
-
-
         //点击角色添加按钮的loading效果是否显示
         isLoading: false,
         //当前正在删除的角色
         DeletingItem: '',
         //正在设置默认的角色
         settingDefaultRole: '',
-
         //添加失败的信息
         addErrMsg: '',
         // 删除角色失败
@@ -44,7 +41,7 @@ class SalesRoleManage extends React.Component {
 
     // 获取职务列表
     getPositionList = () => {
-        positionManageAjax.getPositionList().then( (data) => {
+        officeManageAjax.getPositionList().then( (data) => {
             this.setState({
                 positionList: _.isArray(data) ? data : [],
             });
@@ -271,14 +268,14 @@ class SalesRoleManage extends React.Component {
         let length = _.get(positionList, 'length');
         if (this.state.getPositionListMsg) { // 错误提示
             return (
-                <div className="position-list-error-tips">
+                <div className="office-list-error-tips">
                     <Alert type="error" showIcon message={this.state.getPositionListMsg}/>
                 </div>
             );
         } else if (_.isArray(positionList) && length) {
             // 职务列表
             return (
-                <ul className="position-list" data-tracename="职务管理">
+                <ul className="office-list" data-tracename="职务管理">
                     {_.map(positionList,(item) => {
                         let defaultCls = classNames('default-role-descr', {'default-role-checked': item.is_default});
                         let title_tip = item.is_default ? '' : Intl.get('role.set.default', '设为默认角色');
@@ -359,7 +356,7 @@ class SalesRoleManage extends React.Component {
         };
         let errMsgTips = this.state.addErrMsg;
         return (
-            <div className="position-box">
+            <div className="office-box">
                 <Form layout='horizontal' className='form' autoComplete='off'>
                     <FormItem
                         label={Intl.get('member.position.name.label', '职务名称')}
@@ -374,7 +371,7 @@ class SalesRoleManage extends React.Component {
                         <InputNumber onChange={this.onChange} value={this.state.addRoleCustomerNum} min={1}/>
                     </FormItem>
                     <FormItem>
-                        <div className="position-btn">
+                        <div className="office-btn">
                             <Button className="button-save" type="primary"
                                 onClick={this.handleSubmit}
                                 disabled={this.state.isLoading}
@@ -397,22 +394,21 @@ class SalesRoleManage extends React.Component {
 
     render() {
         return (
-            <div className="position-container" data-tracename="职务">
+            <div className="office-container" data-tracename="职务">
                 {this.state.deleteErrMsg ? this.handleDeleteRoleFail() : null}
-                <div className="add-position-container">
+                <div className="add-office-container">
                     {this.state.isShowAddPosition ? (
-                        <div className="add-position" onClick={this.addPosition}>
+                        <div className="add-office" onClick={this.addPosition}>
                             <Icon type="plus" />
                             <span className="name-label">{Intl.get('member.add.position', '添加职务')}</span>
                         </div>
                     ) : (
-                        <div className="add-position-box">
+                        <div className="add-office-box">
                             {this.renderPositionBox()}
                         </div>
                     )}
-
                 </div>
-                <div className="position-content">
+                <div className="office-content">
                     {this.renderPositionList()}
                 </div>
             </div>
@@ -420,4 +416,4 @@ class SalesRoleManage extends React.Component {
     }
 }
 
-module.exports = SalesRoleManage;
+module.exports = OfficeManage;

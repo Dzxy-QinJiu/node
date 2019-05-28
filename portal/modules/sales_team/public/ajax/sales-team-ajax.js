@@ -2,6 +2,7 @@
  * Created by xiaojinfeng on 2016/04/08.
  */
 let teamAjax = require('../../../common/public/ajax/team');
+let memberAjax = require('../../../member_manage/public/ajax');
 
 //获取统计团队内成员个数的列表
 let teamMemberCountAjax;

@@ -238,7 +238,7 @@ let routers = [
                 id: 'MEMBER', //唯一标识
                 name: 'menu.member',//成员
                 routePath: '/background_management/member',
-                component: `${MODULE_PATH}member_manage/public`,
+                component: `${MODULE_PATH}sales_team/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['USER_MANAGE_LIST_USERS', 'BGM_SALES_TEAM_LIST']
             },
@@ -249,13 +249,6 @@ let routers = [
                 component: `${MODULE_PATH}user_manage/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['USER_MANAGE_LIST_USERS']
-            }, {
-                id: 'SALESTEAM',
-                name: 'menu.salesteam',//团队管理
-                routePath: '/background_management/sales_team',
-                component: `${MODULE_PATH}sales_team/public`,
-                //有这个权限，才显示入口图标
-                showPrivileges: ['BGM_SALES_TEAM_LIST']
             }, {
                 id: 'SALESSTAGE',
                 name: 'crm.order.stage.manage',//订单阶段管理
