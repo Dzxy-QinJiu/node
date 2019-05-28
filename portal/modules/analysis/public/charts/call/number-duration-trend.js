@@ -30,7 +30,7 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
             //开始时间改为从结束时间往前推一个月
             query.start_time = moment(query.end_time).subtract(1, 'month').valueOf();
 
-            if (query.member_ids) {
+            if (Store.teamMemberFilterType === 'member') {
                 query.statistics_type = 'user';
             } else {
                 query.statistics_type = 'team';
@@ -97,6 +97,7 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
                 });
 
                 option.legend.data = legendData;
+                option.legend.type = 'scroll';
                 option.series = series;
 
             }
