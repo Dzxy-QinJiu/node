@@ -338,26 +338,30 @@ class UserDetailBasic extends React.Component {
         if (typeof is_disabled === 'boolean') {
             is_disabled = is_disabled.toString();
         }
-        //没有编辑的权限或者不是oplate用户时
-        if (!hasPrivilege('APP_USER_EDIT') || !isOplateUser()) {
-            return is_disabled ? (is_disabled === 'true' ? Intl.get('common.app.status.close', '关闭') : Intl.get('common.app.status.open', '开启')) : is_disabled;
+        if(isOplateUser()) {
+            //没有编辑的权限
+            if (!hasPrivilege('APP_USER_EDIT')) {
+                return is_disabled ? (is_disabled === 'true' ? Intl.get('common.app.status.close', '关闭') : Intl.get('common.app.status.open', '开启')) : is_disabled;
+            }
+            if (!is_disabled) {
+                return '';
+            }
+            return <UserDetailFieldSwitch
+                userId={this.props.userId}
+                appId={app.app_id}
+                originValue={is_disabled}
+                checkedValue="false"
+                unCheckedValue="true"
+                checkedSubmitValue="1"
+                unCheckedSubmitValue="0"
+                checkedChildren={Intl.get('common.enabled', '启用')}
+                unCheckedChildren={Intl.get('user.status.stop', '停用')}
+                field="status"
+                onSubmitSuccess={this.onFieldChangeSuccess}
+            />;
+        }else {
+            return null;
         }
-        if (!is_disabled) {
-            return '';
-        }
-        return <UserDetailFieldSwitch
-            userId={this.props.userId}
-            appId={app.app_id}
-            originValue={is_disabled}
-            checkedValue="false"
-            unCheckedValue="true"
-            checkedSubmitValue="1"
-            unCheckedSubmitValue="0"
-            checkedChildren={Intl.get('common.enabled', '启用')}
-            unCheckedChildren={Intl.get('user.status.stop', '停用')}
-            field="status"
-            onSubmitSuccess={this.onFieldChangeSuccess}
-        />;
     };
     renderAppRoleLists = (roleItems) => {
         return (
@@ -461,7 +465,7 @@ class UserDetailBasic extends React.Component {
         });*/
 
         return (
-            <div className="rows-3">
+            <div className="rows-3 uem-wrapper">
                 <div className={(!app.showDetail && app.is_disabled === 'true') ? 'hide' : 'app-prop-list'}>
                     <span><ReactIntl.FormattedMessage id="user.time.end" defaultMessage="到期时间" />：{displayEndTime}</span>
                     {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.user.type"
@@ -773,14 +777,14 @@ class UserDetailBasic extends React.Component {
                     }}
                     saveEditInput={AppUserAjax.editAppUser}
                 />
-                <OrgCard
+                {isOplateUser() ? <OrgCard
                     user_id={userInfo.user_id}
-                    showBtn={true} 
+                    showBtn={true}
                     groupsInfo={groupsInfo}
                     onModifySuccess={this.organizationChangeSuccess}
                     userInfo={userInfo}
                     sales_team={_.get(initialUser, 'sales_team', {})}
-                />
+                /> : null}
                 <div className="app_wrap" ref="app_wrap"> 
                     <DetailCard
                         title={(<div className="sales-team-show-block">

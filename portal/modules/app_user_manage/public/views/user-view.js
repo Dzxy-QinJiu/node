@@ -143,10 +143,14 @@ class UserTabContent extends React.Component {
                 for(var key in custom_filter) {
                     if(custom_filter[key] !== '') {
                         // oatruc: 表示多个查询条件时的分隔符
-                        custom_filter_str += `${key}:${custom_filter[key]}oatruc`;
+                        if(custom_filter_str){
+                            custom_filter_str += `oatruc${key}:${custom_filter[key]}`;
+                        }else {
+                            custom_filter_str = `${key}:${custom_filter[key]}`;
+                        }
                     }
                 }
-                ajaxObj.custom_filter = custom_filter_str.replace(/oatruc$/,'');
+                ajaxObj.custom_filter = custom_filter_str;
             }
         }
         //团队筛选的处理
@@ -821,22 +825,27 @@ class UserTabContent extends React.Component {
         const fourWordWidth = 100;
         getProductList(productList => {
             let selectedApp = productList.find(item => item.id === this.state.selectedAppId);
+            // 该应用的自定义属性集合 {key: 描述} 如 {status: 状态}
             let customVariable = _.get(selectedApp, 'custom_variable',{});
+            // 自定义属性数组
             let customVariables = [];
             for(let key in customVariable) {
                 customVariables.push({
+                    // 描述名
                     name: customVariable[key],
+                    // 键名
                     value: key,
                 });
             }
             let coulmns = _.map(customVariables,item => {
                 return {
                     title: item.name,
-                    dataIndex: CUSTOM_VARIABLES,
+                    dataIndex: 'apps',
                     key: item.value,
                     width: fourWordWidth,
-                    render: function(variables, rowData, idx) {
-                        let value = rowData[CUSTOM_VARIABLES] && rowData[CUSTOM_VARIABLES][item.key] || '';
+                    render: function(apps, rowData, idx) {
+                        // apps: [{custom_variables: { 'status': '启用' } }]
+                        let value = apps[0][CUSTOM_VARIABLES] && apps[0][CUSTOM_VARIABLES][item.value] || '';
                         return (
                             <div title={value}>
                                 {value}
@@ -847,6 +856,11 @@ class UserTabContent extends React.Component {
             });
             if(_.isFunction(cb)) cb(coulmns);
         });
+    };
+
+    // 能否添加角色筛选
+    hasAddRoleFilter = () => {
+        return !this.props.customer_id && !Oplate.hideSomeItem;
     };
 
 
@@ -957,7 +971,7 @@ class UserTabContent extends React.Component {
             renderFilter = (
                 <div>
                     {this.renderFilterFields()}
-                    {!this.props.customer_id && (language.lan() === 'zh' || language.lan() === 'en') ? this.renderFilterRoles() : null}
+                    {this.hasAddRoleFilter() ? this.renderFilterRoles() : null}
                 </div>
             );
         }else {
@@ -1135,14 +1149,17 @@ class UserTabContent extends React.Component {
             filterRoles = [],
             filterUserTypes = [];
         let custom_variables = _.filter(this.state.userConditions, item => {
+            // 是否是当前选中的应用
             if(item.app_id === this.state.selectedAppId) {
+                // 当类型为user_type或者role时，不加入自定义筛选属性中
                 if (item.key === 'user_type') {// 用户类型
                     if(_.get(item.values, '[0]')) {
                         hasUserType = true;
                         filterUserTypes = item;
                     }
                     return false;
-                } else if(item.key === 'role') {// 角色
+                }
+                if(item.key === 'role') {// 角色
                     if(_.get(item.values, '[0]')) {
                         hasRoleType = true;
                         filterRoles = item;
@@ -1150,8 +1167,9 @@ class UserTabContent extends React.Component {
                     return false;
                 }
                 return true;
+            }else {
+                return false;
             }
-            return false;
         });
         return <div data-tracename="应用筛选">
             <dl>
@@ -1234,7 +1252,7 @@ class UserTabContent extends React.Component {
                 </div>
             )}
             {/*角色*/}
-            {hasRoleType ? (
+            {hasRoleType && this.hasAddRoleFilter() ? (
                 <dl className="filter_roles">
                     <dt>
                         {filterRoles.description ? filterRoles.description : (<ReactIntl.FormattedMessage id="common.role" defaultMessage="角色"/>)}：
