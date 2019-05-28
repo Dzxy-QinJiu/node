@@ -2908,6 +2908,7 @@ var en_US = {
     'common.net.increase': 'net increase',//净增
     'common.reflux': 'reflux',//回流
     'user.info.get.user.condition.failed': 'Failed to get user query condition',//获取用户查询条件失败
-    'apply.upload.same.name': 'The file name cannot be repeat!'//该文件名称已存在
+    'apply.upload.same.name': 'The file name cannot be repeat!',//该文件名称已存在
+    'clue.customer.set.invalid': ''//标为无效
 };
 export default en_US;

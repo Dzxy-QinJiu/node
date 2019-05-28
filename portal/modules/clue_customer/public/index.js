@@ -793,7 +793,7 @@ class ClueCustomer extends React.Component {
             <span className="valid-or-invalid-container">
                 {avalibilityPrivilege ? <span className="cancel-invalid" onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)}
                     data-tracename="取消判定线索无效" disabled={isEditting}>
-                    {inValid ? <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span> : <span className="invalid-name">{Intl.get('sales.clue.is.enable', '无效')}</span>}
+                    {inValid ? <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span> : <span className="can-edit">{Intl.get('clue.customer.set.invalid', '标为无效')}</span>}
                     {isEditting ? <Icon type="loading"/> : null}
                 </span> : null}
             </span>
