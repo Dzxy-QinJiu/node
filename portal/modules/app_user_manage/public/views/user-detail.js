@@ -244,19 +244,20 @@ class UserDetail extends React.Component {
 
     renderUserStatus = (user, useIcon = false) => {
         let userStatus = user && user.status;
-        let hasEditPrivilege = hasPrivilege('APP_USER_EDIT') && this.state.isOplateUser;
-        if(!this.state.isOplateUser) {
-            return '';
+        if(this.state.isOplateUser) {
+            let hasEditPrivilege = hasPrivilege('APP_USER_EDIT');
+            if (!hasEditPrivilege) {
+                return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
+            }
+            return (
+                <UserStatusSwitch
+                    useIcon={useIcon}
+                    userId={_.get(user, 'user_id')}
+                    status={userStatus === '1' ? true : false}
+                />);
+        }else {
+            return null;
         }
-        if (!hasEditPrivilege) {
-            return userStatus === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用');
-        }
-        return (
-            <UserStatusSwitch
-                useIcon={useIcon}
-                userId={_.get(user, 'user_id')}
-                status={userStatus === '1' ? true : false}
-            />);
     };
 
     render() {

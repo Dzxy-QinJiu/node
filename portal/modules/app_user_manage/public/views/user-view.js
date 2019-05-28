@@ -825,13 +825,15 @@ class UserTabContent extends React.Component {
         const fourWordWidth = 100;
         getProductList(productList => {
             let selectedApp = productList.find(item => item.id === this.state.selectedAppId);
-            // 该应用的自定义属性集合
+            // 该应用的自定义属性集合 {key: 描述} 如 {status: 状态}
             let customVariable = _.get(selectedApp, 'custom_variable',{});
             // 自定义属性数组
             let customVariables = [];
             for(let key in customVariable) {
                 customVariables.push({
+                    // 描述名
                     name: customVariable[key],
+                    // 键名
                     value: key,
                 });
             }
@@ -841,8 +843,9 @@ class UserTabContent extends React.Component {
                     dataIndex: 'apps',
                     key: item.value,
                     width: fourWordWidth,
-                    render: function(variables, rowData, idx) {
-                        let value = variables[0][CUSTOM_VARIABLES] && variables[0][CUSTOM_VARIABLES][item.value] || '';
+                    render: function(apps, rowData, idx) {
+                        // apps: [{custom_variables: { 'status': '启用' } }]
+                        let value = apps[0][CUSTOM_VARIABLES] && apps[0][CUSTOM_VARIABLES][item.value] || '';
                         return (
                             <div title={value}>
                                 {value}
@@ -853,6 +856,11 @@ class UserTabContent extends React.Component {
             });
             if(_.isFunction(cb)) cb(coulmns);
         });
+    };
+
+    // 能否添加角色筛选
+    hasAddRoleFilter = () => {
+        return !this.props.customer_id && !Oplate.hideSomeItem;
     };
 
 
@@ -963,7 +971,7 @@ class UserTabContent extends React.Component {
             renderFilter = (
                 <div>
                     {this.renderFilterFields()}
-                    {!this.props.customer_id && (language.lan() === 'zh' || language.lan() === 'en') ? this.renderFilterRoles() : null}
+                    {this.hasAddRoleFilter() ? this.renderFilterRoles() : null}
                 </div>
             );
         }else {
@@ -1244,7 +1252,7 @@ class UserTabContent extends React.Component {
                 </div>
             )}
             {/*角色*/}
-            {hasRoleType && !this.props.customer_id && (language.lan() === 'zh' || language.lan() === 'en') ? (
+            {hasRoleType && this.hasAddRoleFilter() ? (
                 <dl className="filter_roles">
                     <dt>
                         {filterRoles.description ? filterRoles.description : (<ReactIntl.FormattedMessage id="common.role" defaultMessage="角色"/>)}：

@@ -338,30 +338,30 @@ class UserDetailBasic extends React.Component {
         if (typeof is_disabled === 'boolean') {
             is_disabled = is_disabled.toString();
         }
-        //没有编辑的权限
-        if (!hasPrivilege('APP_USER_EDIT')) {
-            return is_disabled ? (is_disabled === 'true' ? Intl.get('common.app.status.close', '关闭') : Intl.get('common.app.status.open', '开启')) : is_disabled;
+        if(isOplateUser()) {
+            //没有编辑的权限
+            if (!hasPrivilege('APP_USER_EDIT')) {
+                return is_disabled ? (is_disabled === 'true' ? Intl.get('common.app.status.close', '关闭') : Intl.get('common.app.status.open', '开启')) : is_disabled;
+            }
+            if (!is_disabled) {
+                return '';
+            }
+            return <UserDetailFieldSwitch
+                userId={this.props.userId}
+                appId={app.app_id}
+                originValue={is_disabled}
+                checkedValue="false"
+                unCheckedValue="true"
+                checkedSubmitValue="1"
+                unCheckedSubmitValue="0"
+                checkedChildren={Intl.get('common.enabled', '启用')}
+                unCheckedChildren={Intl.get('user.status.stop', '停用')}
+                field="status"
+                onSubmitSuccess={this.onFieldChangeSuccess}
+            />;
+        }else {
+            return null;
         }
-        //不是oplate用户时
-        if(!isOplateUser()) {
-            return '';
-        }
-        if (!is_disabled) {
-            return '';
-        }
-        return <UserDetailFieldSwitch
-            userId={this.props.userId}
-            appId={app.app_id}
-            originValue={is_disabled}
-            checkedValue="false"
-            unCheckedValue="true"
-            checkedSubmitValue="1"
-            unCheckedSubmitValue="0"
-            checkedChildren={Intl.get('common.enabled', '启用')}
-            unCheckedChildren={Intl.get('user.status.stop', '停用')}
-            field="status"
-            onSubmitSuccess={this.onFieldChangeSuccess}
-        />;
     };
     renderAppRoleLists = (roleItems) => {
         return (
