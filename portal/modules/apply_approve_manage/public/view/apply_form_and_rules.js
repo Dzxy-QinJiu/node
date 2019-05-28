@@ -13,19 +13,26 @@ const TAB_KEYS = {
 };
 import Trace from 'LIB_DIR/trace';
 var classNames = require('classnames');
-import {calculateHeight, APPLYAPPROVE_LAYOUT, ALL_COMPONENTS, ALL_COMPONENTS_TYPE, ADDAPPLYFORMCOMPONENTS} from '../utils/apply-approve-utils';
-import InputEdit from './input-components/input-edit';
-import InputShow from './input-components/show-input';
+import {
+    calculateHeight,
+    APPLYAPPROVE_LAYOUT,
+    ALL_COMPONENTS,
+    ALL_COMPONENTS_TYPE,
+    ADDAPPLYFORMCOMPONENTS
+} from '../utils/apply-approve-utils';
+import ComponentEdit from './basic-components/component-edit';
+import ComponentShow from './basic-components/component-show';
 import ApplyRulesView from './reg-rules/reg_rules_view';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 var applyApproveManageAction = require('../action/apply_approve_manage_action');
+let userData = require('PUB_DIR/sources/user-data');
 class ApplyFormAndRules extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             activeKey: TAB_KEYS.FORM_CONTENT,//当前选中的TAB
-            isEdittingApplyName: false,//是否正在修改申请审批的标题
+            isEdittingApplyName: '',//正在修改申请审批的标题
             applyTypeData: _.cloneDeep(this.props.applyTypeData),//编辑某个审批的相关数据
         };
     }
@@ -54,11 +61,11 @@ class ApplyFormAndRules extends React.Component {
 
     renderFormComponents = () => {
         var applyTypeData = this.state.applyTypeData;
-        return _.map(applyTypeData.customiz_form, (formItem,key) => {
+        return _.map(applyTypeData.customiz_form, (formItem, key) => {
             //如果是编辑状态
             if (formItem.isEditting) {
                 return (
-                    <InputEdit
+                    <ComponentEdit
                         key={formItem.key}
                         formItem={formItem}
                         handleCancel={this.handleCancelEditFormItem}
@@ -67,7 +74,7 @@ class ApplyFormAndRules extends React.Component {
                 );
             } else {
                 return (
-                    <InputShow
+                    <ComponentShow
                         key={formItem.key}
                         formItem={formItem}
                         handleRemoveItem={this.removeTargetFormItem}
@@ -98,9 +105,9 @@ class ApplyFormAndRules extends React.Component {
         var applyTypeData = this.state.applyTypeData;
         var customiz_form = _.get(applyTypeData, 'customiz_form');
         //todo 待优化这里的判断
-        if (formItem.title){
+        if (formItem.title) {
             target.isEditting = false;
-        }else{
+        } else {
             applyTypeData.customiz_form = _.filter(customiz_form, item => item.key !== formKey);
         }
         this.setState({
@@ -146,11 +153,18 @@ class ApplyFormAndRules extends React.Component {
         </div>);
     };
     handleSubmitApproveForm = () => {
-        var applyTypeData = this.state.applyTypeData;
-        var customiz_form = _.get(applyTypeData, 'customiz_form');
-        if (!_.includes(_.map(customiz_form,'isEditting'), true)){
-            var applyTypeData = this.state.applyTypeData;
-            applyApproveManageAction.editSelfSettingWorkFlow(applyTypeData,() => {
+        var submitObj = _.cloneDeep(this.state.applyTypeData);
+        if (this.validateBeforeSubmit()) {
+            //不需要把所有的东西都传过去，只传表单相关内容即可，可以把规则先去掉
+            if (submitObj.applyRulesAndSetting) {
+                delete submitObj.applyRulesAndSetting;
+            }
+            applyApproveManageAction.editSelfSettingWorkFlow(submitObj, () => {
+                //userData上的属性也修改
+                var targetItem = this.updateUserData();
+                if (targetItem) {
+                    targetItem.customiz_form = submitObj.customiz_form;
+                }
                 //保存成功后自动切换到另一个tab
                 this.setState({
                     activeKey: TAB_KEYS.APPLY_RULE
@@ -158,18 +172,64 @@ class ApplyFormAndRules extends React.Component {
             });
         }
     };
-    //保存
-    handleSaveApproveTitle = () => {
+    validateBeforeSubmit = () => {
+        var applyTypeData = this.state.applyTypeData;
+        var customiz_form = _.get(applyTypeData, 'customiz_form');
+        return !_.includes(_.map(customiz_form, 'isEditting'), true);
+    };
+    //修改申请审批的名字后保存
+    handleSaveApproveTitle = (initialValue) => {
+        var updateName = this.state.isEdittingApplyName;
         //如果名字没有修改，不需要发请求保存
+        if (_.trim(initialValue) === _.trim(updateName)) {
+            this.setState({
+                isEdittingApplyName: '',
+            });
+        } else {
+            var applyTypeData = this.state.applyTypeData;
+            var submitObj = _.cloneDeep(applyTypeData);
+            //只提交名字相关的东西，表单和规则不需要提交
+            if (submitObj.customiz_form) {
+                delete submitObj.customiz_form;
+            }
+            if (submitObj.applyRulesAndSetting) {
+                delete submitObj.applyRulesAndSetting;
+            }
+            submitObj.description = updateName;
+            applyApproveManageAction.editSelfSettingWorkFlow(submitObj, () => {
+                //userData上的属性也修改
+                var targetItem = this.updateUserData();
+                if (targetItem) {
+                    targetItem.description = updateName;
+                }
+                //此页面的名字也需要修改
+                applyTypeData.description = updateName;
+                this.setState({
+                    applyTypeData: applyTypeData,
+                    isEdittingApplyName: '',
+                });
+            });
 
+        }
+    };
+    //获取目标
+    updateUserData = () => {
+        var applyLists = userData.getUserData().workFlowConfigs;
+        return _.find(applyLists, item => item.key === _.get(this, 'state.applyTypeData.key'));
+    };
+    //
+    handleCancelSaveTitle = () => {
+        this.setState({
+            isEdittingApplyName: ''
+        });
     };
     handleAddComponents = (ruleItem) => {
         var applyTypeData = this.state.applyTypeData;
-        var component_type = ruleItem.component_type;
         var customiz_form = _.get(applyTypeData, 'customiz_form', []);
-        var keysArr = _.map(customiz_form,'key');
+        var keysArr = _.map(customiz_form, 'key');
         var formContentKey = 0;
-        if (keysArr.length){
+        //todo key不可以用简短的数字表示
+        if (keysArr.length) {
             formContentKey = parseInt(_.max(keysArr)) + 1;
         }
         customiz_form.push({...ruleItem, 'key': formContentKey, 'isEditting': true});
@@ -210,6 +270,7 @@ class ApplyFormAndRules extends React.Component {
                         {this.renderAddFormContent()}
                     </GeminiScrollbar>
                     {/*todo 待优化部分*/}
+                    {/*保存表单内容*/}
                     {hasFormItem || true ?
                         <div className="save-cancel-container">
                             <SaveCancelButton
@@ -226,11 +287,13 @@ class ApplyFormAndRules extends React.Component {
     };
     renderApplyRegex = () => {
         var applyTypeData = this.state.applyTypeData;
-        var applyRulesAndSetting = _.get(applyTypeData,'applyRulesAndSetting');
-        if (!_.isEmpty(applyRulesAndSetting) && _.isString(applyRulesAndSetting.applyApproveRules)){
-            //如果之前保存过流程的相关配置，后端保存的applyApproveRules是字符串格式的，
-            applyRulesAndSetting.applyApproveRules = JSON.parse(applyRulesAndSetting.applyApproveRules);
-        }else{
+        var applyRulesAndSetting = _.get(applyTypeData, 'applyRulesAndSetting');
+        if (!_.isEmpty(applyRulesAndSetting)) {
+            if (_.isString(applyRulesAndSetting.applyApproveRules)){
+                //如果之前保存过流程的相关配置，后端保存的applyApproveRules是字符串格式的，
+                applyRulesAndSetting.applyApproveRules = JSON.parse(applyRulesAndSetting.applyApproveRules);
+            }
+        } else {
             //如果之前没有加过流程，这是默认的流程，默认流程是部门经理审批的
             applyRulesAndSetting = {
                 applyApproveRules: {
@@ -254,14 +317,26 @@ class ApplyFormAndRules extends React.Component {
                 mergeSameApprover: false//其他
             };
         }
-
-
+        applyTypeData.applyRulesAndSetting = applyRulesAndSetting;
         return (
             <ApplyRulesView
-                applyTypeData={this.state.applyTypeData}
-                applyRulesAndSetting={applyRulesAndSetting}
+                applyTypeData={applyTypeData}
+                updateRegRulesView={this.updateRegRulesView}
             />
         );
+    };
+    updateRegRulesView = (updateRules) => {
+        //userData上的属性也修改
+        var targetItem = this.updateUserData();
+        if (targetItem) {
+            targetItem.applyRulesAndSetting = updateRules;
+            var applyTypeData = this.state.applyTypeData;
+            applyTypeData.applyRulesAndSetting = updateRules;
+            this.setState({
+                applyTypeData: applyTypeData
+            });
+        }
+
     };
     renderAddApplyContent = () => {
         return (
@@ -285,14 +360,14 @@ class ApplyFormAndRules extends React.Component {
         this.props.closeAddPanel();
     };
     //修改自定义流程的标题
-    handleEditApplyTitle = () => {
+    handleEditApplyTitle = (initialApplyTitle) => {
         this.setState({
-            isEdittingApplyName: true
+            isEdittingApplyName: initialApplyTitle
         });
     };
     handleApplyTitleChange = (e) => {
         this.setState({
-            updatedApplyName: e.target.value
+            isEdittingApplyName: e.target.value
         });
     };
     render = () => {
@@ -302,16 +377,19 @@ class ApplyFormAndRules extends React.Component {
             <div className="add-apply-form-container">
                 <div className="add-apply-form-title">
                     <div className="show-and-edit-approve-type">
-                        {this.state.isEdittingApplyName ? <span>
+                        {this.state.isEdittingApplyName ? <span className="edit-name-container">
                             <Input defaultValue={initialApplyTitle} onChange={this.handleApplyTitleChange}/>
                             <SaveCancelButton
                                 loading={this.state.editApplyTitleLoading}
-                                handleSubmit={this.handleSaveApproveTitle}
+                                handleSubmit={this.handleSaveApproveTitle.bind(this, initialApplyTitle)}
+                                handleCancel={this.handleCancelSaveTitle}
                                 saveErrorMsg={this.state.editApplyTitleErrMsg}
                             />
-                        </span> : <span>
+
+                        </span> : <span className="show-name-container">
                             {initialApplyTitle}
-                            <i className="pull-right iconfont icon-update" onClick={this.handleEditApplyTitle}></i>
+                            <i className="pull-right iconfont icon-update"
+                                onClick={this.handleEditApplyTitle.bind(this, initialApplyTitle)}></i>
                         </span>}
 
                     </div>

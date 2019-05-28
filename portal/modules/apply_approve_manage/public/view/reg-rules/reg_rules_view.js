@@ -28,7 +28,7 @@ import {FLOW_TYPES} from '../../utils/apply-approve-utils';
 class RegRulesView extends React.Component {
     constructor(props) {
         super(props);
-        var applyRulesAndSetting = _.cloneDeep(this.props.applyRulesAndSetting);
+        var applyRulesAndSetting = _.cloneDeep(this.props.applyTypeData.applyRulesAndSetting);
         this.state = {
             applyRulesAndSetting: applyRulesAndSetting,
             addNodePanelFlow: '',
@@ -39,6 +39,9 @@ class RegRulesView extends React.Component {
     onStoreChange = () => {
 
     };
+    componentWillReceiveProps(nextProps) {
+
+    }
 
     componentDidMount() {
         // 获取到属性ref为“canvas”的dom节点
@@ -60,17 +63,18 @@ class RegRulesView extends React.Component {
                 camunda: CamundaModdleDescriptor
             }
         });
+        this.createBpmnTool(bpmnModeler);
+    }
+    createBpmnTool = (bpmnModeler) => {
         //在这个对象上加上相应的操作方法
         this.setState({
             bpmnModeler: bpmnModeler,
-            canvas: bpmnModeler.get('canvas'),
             elementRegistry: bpmnModeler.get('elementRegistry'),
-            create: bpmnModeler.get('create'),
             elementFactory: bpmnModeler.get('elementFactory'),
             bpmnFactory: bpmnModeler.get('bpmnFactory'),
             modeling: bpmnModeler.get('modeling'),
         });
-    }
+    };
 
 
     createNewDiagram(callback) {
@@ -289,7 +293,10 @@ class RegRulesView extends React.Component {
         viewer.saveXML({format: true}, (err, xml) => {
             applyRulesAndSetting.bpmnJson = xml;
             var applyId = _.get(this, 'props.applyTypeData.id');
-            applyApproveManageAction.saveSelfSettingWorkFlowRules(applyId,applyRulesAndSetting);
+            //表单的内容不需要提交
+            applyApproveManageAction.saveSelfSettingWorkFlowRules(applyId,applyRulesAndSetting,() => {
+                this.props.updateRegRulesView(applyRulesAndSetting);
+            });
         });
     };
     removeEndEventNode = () => {
@@ -643,7 +650,7 @@ class RegRulesView extends React.Component {
                             </span>
                             <div className="rule-content">
                                 <Checkbox onChange={this.handleCancelCheckChange}
-                                    value={_.get(this, 'state.applyRulesAndSetting.cancelAfterApprove')}>
+                                    checked={_.get(this, 'state.applyRulesAndSetting.cancelAfterApprove')}>
                                     {Intl.get('apply.workflow.cancel.approve', '通过后允许撤销（审批通过后，经审批人同意，可撤销申请）')}
                                 </Checkbox>
                             </div>
@@ -654,7 +661,7 @@ class RegRulesView extends React.Component {
                             </span>
                             <div className="rule-content">
                                 <Checkbox onChange={this.handleOtherCheckChange}
-                                    value={_.get(this, 'state.applyRulesAndSetting.mergeSameApprover')}>
+                                    checked={_.get(this, 'state.applyRulesAndSetting.mergeSameApprover')}>
                                     {Intl.get('apply.workflow.merge.same.approver', '合并相同审批人（通过后，后面自动通过）')}
                                 </Checkbox>
                             </div>
@@ -706,13 +713,15 @@ class RegRulesView extends React.Component {
 }
 
 RegRulesView.defaultProps = {
-    applyRulesAndSetting: {},
-    applyTypeData: {}
+    applyTypeData: {},
+    updateRegRulesView: function() {
+
+    },
 };
 
 RegRulesView.propTypes = {
-    applyRulesAndSetting: PropTypes.object,
     applyTypeData: PropTypes.object,
+    updateRegRulesView: PropTypes.func
 
 };
 export default RegRulesView;
