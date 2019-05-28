@@ -18,6 +18,7 @@ import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import {dateSelectorEmitter, teamTreeEmitter, callDeviceTypeEmitter} from 'PUB_DIR/sources/utils/emitters';
 import callChart from 'MOD_DIR/analysis/public/charts/call';
+import {getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -47,7 +48,8 @@ class CallRecordAnalyis extends React.Component {
             ...callStateData,
             firstSelectValue: FIRSR_SELECT_DATA[0], // 第一个选择框的值
             secondSelectValue: LITERAL_CONSTANT.ALL, // 第二个选择宽的值，默认是全部的状态
-            teamMemberFilterType: 'team'
+            teamMemberFilterType: 'team', // 按团队还是成员筛选
+            isShowEffectiveTimeAndCount: false, // 是否展示有效通话时长和有效接通数
         };
     }
 
@@ -64,10 +66,20 @@ class CallRecordAnalyis extends React.Component {
         CallAnalysisAction.getSaleGroupTeams(reqData);
         // 获取成员数据
         CallAnalysisAction.getSaleMemberList(reqData);
+        // 获取组织电话系统配置
+        this.getCallSystemConfig();
     }
 
     componentWillUnmount() {
         CallAnalysisStore.unlisten(this.onStoreChange);
+    }
+    
+    // 获取组织电话系统配置
+    getCallSystemConfig() {
+        getCallSystemConfig().then(config => {
+            let isShowEffectiveTimeAndCount = _.get(config,'filter_114',false) || _.get(config,'filter_customerservice_number',false);
+            this.setState({ isShowEffectiveTimeAndCount });
+        });
     }
 
     // 通话类型的筛选框

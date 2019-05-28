@@ -157,9 +157,8 @@ export function getCallRecordChart(paramObj = {}) {
             className: 'has-filter'
         }];
 
-        // 如果是蚁坊的用户，展示有效通话时长和有效接通数
-        const isOrganizationEefung = true;
-        if ( isOrganizationEefung ){
+        // 如果需要展示有效通话时长和有效接通数
+        if ( paramObj.Store.isShowEffectiveTimeAndCount ){
             columns.push({
                 title: Intl.get('sales.home.phone.effective.connected', '有效接通数'),
                 width: col_lg_width,
