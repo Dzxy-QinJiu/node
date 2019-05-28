@@ -47,6 +47,7 @@ class CallRecordAnalyis extends React.Component {
             ...callStateData,
             firstSelectValue: FIRSR_SELECT_DATA[0], // 第一个选择框的值
             secondSelectValue: LITERAL_CONSTANT.ALL, // 第二个选择宽的值，默认是全部的状态
+            teamMemberFilterType: 'team'
         };
     }
 
@@ -187,7 +188,9 @@ class CallRecordAnalyis extends React.Component {
     getCharts() {
         return [
             //通话记录统计
-            callChart.getCallRecordChart(),
+            callChart.getCallRecordChart({
+                Store: this.state
+            }),
             //电话行业统计
             callChart.getCallIndustryChart(),
             //通话总次数TOP10
@@ -300,9 +303,12 @@ class CallRecordAnalyis extends React.Component {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '选择团队过滤');
         }
 
+        const teamMemberFilterType = value === LITERAL_CONSTANT.MEMBER ? 'user' : 'team';
+
         this.setState({
             firstSelectValue: value,
-            secondSelectValue: LITERAL_CONSTANT.ALL
+            secondSelectValue: LITERAL_CONSTANT.ALL,
+            teamMemberFilterType
         }, () => {
             if (value === LITERAL_CONSTANT.MEMBER) {
                 teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, '');
