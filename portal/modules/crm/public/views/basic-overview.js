@@ -45,6 +45,7 @@ class BasicOverview extends React.Component {
 
         this.state = {
             ...basicOverviewStore.getState(),
+            basicData: props.curCustomer || {},
             salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
             showDetailFlag: false,//控制客户详情展示隐藏的标识
             recommendTags: [],//推荐标签
@@ -175,7 +176,6 @@ class BasicOverview extends React.Component {
     componentWillUnmount() {
         basicOverviewStore.unlisten(this.onChange);
         CustomerRecordStore.unlisten(this.onRecordStoreChange);
-        basicOverviewAction.getBasicData({});
     }
 
     //展示按客户搜索到的用户列表
