@@ -45,6 +45,8 @@ class PageFrame extends React.Component {
         Trace.addEventListener(window, 'click', Trace.eventHandler);
         //打开拨打电话面板的事件监听
         phoneMsgEmitter.on(phoneMsgEmitter.OPEN_PHONE_PANEL, this.openPhonePanel);
+        //关闭拨打电话面板的事件监听
+        phoneMsgEmitter.on(phoneMsgEmitter.CLOSE_PHONE_PANEL, this.closePhonePanel);
         //打开播放录音面板的事件监听
         audioMsgEmitter.on(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
         //隐藏上报客服电话的按钮
@@ -92,6 +94,8 @@ class PageFrame extends React.Component {
     componentWillUnmount() {
         Trace.detachEventListener(window, 'click', Trace.eventHandler);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL, this.openPhonePanel);
+        //关闭拨打电话面板的事件监听
+        phoneMsgEmitter.on(phoneMsgEmitter.CLOSE_PHONE_PANEL, this.closePhonePanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
         notificationEmitter.removeListener(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);

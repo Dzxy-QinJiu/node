@@ -12,6 +12,7 @@ exports.scrollBarEmitter.HIDE_BOTTOM_LOADING = 'scrollBar.hideBottomLoading';
 exports.phoneMsgEmitter = new EventEmitter();
 //打开拨打电话的面板emitter
 exports.phoneMsgEmitter.OPEN_PHONE_PANEL = 'openPhonePanel';
+exports.phoneMsgEmitter.CLOSE_PHONE_PANEL = 'closePhonePanel';
 exports.phoneMsgEmitter.SEND_PHONE_NUMBER = 'sendPhoneNumber';
 //关闭拨打电话模态框emitter
 exports.phoneMsgEmitter.CLOSE_PHONE_MODAL = 'closePhoneModal';

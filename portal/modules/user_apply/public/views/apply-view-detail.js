@@ -239,6 +239,8 @@ const ApplyViewDetail = createReactClass({
             }
             if ((!this.state.applyResult.submitResult && !this.state.backApplyResult.submitResult) || nextProps.detailItem.id !== this.props.detailItem.id) {
                 this.getApplyDetail(nextProps.detailItem);
+                //关闭右侧详情
+                phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
             }
         }
     },
