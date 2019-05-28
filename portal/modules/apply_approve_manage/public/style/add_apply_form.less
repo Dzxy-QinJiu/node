@@ -10,12 +10,39 @@
     .show-and-edit-approve-type {
       color: #333;
       font-size: 16px;
-      background: #E4F2FE;
       display: inline-block;
       font-weight: 500;
-      .iconfont.icon-update {
-        color: #2196F3;
+      .ant-input{
+        width: 160px;
+        top: -2px;
       }
+      .edit-name-container{
+        display: inline-block;
+        height: 40px;
+        line-height: 40px;
+      }
+      .button-container{
+
+        margin-top:0;
+        display: inline-block;
+        position: relative;
+        top:6px;
+      }
+      .iconfont.icon-update{
+        visibility: hidden;
+      }
+      &:hover{
+        background: #E4F2FE;
+        .iconfont.icon-update {
+          visibility: visible;
+          color: #2196F3;
+          cursor: pointer;
+          margin-left: 5px;
+        }
+      }
+
+
+
     }
     .iconfont.icon-close {
       color: #999;

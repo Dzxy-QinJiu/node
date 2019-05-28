@@ -13,7 +13,7 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 require('./index.less');
 import {ALL_COMPONENTS, ALL_COMPONENTS_TYPE, applyComponentsType} from '../../utils/apply-approve-utils';
 import classNames from 'classnames';
-class InputShow extends React.Component {
+class componentShow extends React.Component {
     constructor(props) {
         super(props);
         var formItem = _.cloneDeep(this.props.formItem);
@@ -86,7 +86,7 @@ class InputShow extends React.Component {
     }
 }
 
-InputShow.defaultProps = {
+componentShow.defaultProps = {
     formItem: {},
     handleRemoveItem: function() {
 
@@ -96,9 +96,9 @@ InputShow.defaultProps = {
     }
 };
 
-InputShow.propTypes = {
+componentShow.propTypes = {
     formItem: PropTypes.object,
     handleRemoveItem: PropTypes.func,
     handleEditItem: PropTypes.func,
 };
-export default InputShow;
+export default componentShow;

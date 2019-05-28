@@ -11,7 +11,7 @@ import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-
 require('./index.less');
 import {ALL_COMPONENTS} from '../../utils/apply-approve-utils';
 import classNames from 'classnames';
-class InputEdit extends React.Component {
+class componentEdit extends React.Component {
     constructor(props) {
         super(props);
         var formItem = _.cloneDeep(this.props.formItem);
@@ -87,9 +87,9 @@ class InputEdit extends React.Component {
     };
     ontimeRangeChange = (checkedValues) => {
         var formItem = this.state.formItem;
-            formItem.default_value = _.filter(_.get(formItem, 'select_arr'), item =>
-                _.indexOf(checkedValues, item.value) > -1
-            );
+        formItem.default_value = _.filter(_.get(formItem, 'select_arr'), item =>
+            _.indexOf(checkedValues, item.value) > -1
+        );
         this.setState({formItem});
     };
     handleAddInput = () => {
@@ -200,15 +200,15 @@ class InputEdit extends React.Component {
     }
 }
 
-InputEdit.defaultProps = {
+componentEdit.defaultProps = {
     formItem: {},
     handleCancel: function(){},
     handleSubmit: function(){},
 };
 
-InputEdit.propTypes = {
+componentEdit.propTypes = {
     formItem: PropTypes.object,
     handleCancel: PropTypes.func,
     handleSubmit: PropTypes.func,
 };
-export default InputEdit;
+export default componentEdit;
