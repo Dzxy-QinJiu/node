@@ -3,6 +3,7 @@
  */
 
 import callChart from '../../charts/call';
+import Store from '../../store';
 
 module.exports = {
     title: '数量与时长统计',
@@ -19,7 +20,9 @@ function getCharts() {
         //近一个月的通话数量/时长趋势图
         callChart.getCallNumberTimeTrendChart(),
         //通话记录统计
-        callChart.getCallRecordChart(),
+        callChart.getCallRecordChart({
+            Store
+        }),
         //通话总次数TOP10
         callChart.getTotalNumberTop10Chart(),
         //通话总时长TOP10
