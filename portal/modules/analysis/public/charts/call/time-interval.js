@@ -25,7 +25,7 @@ export function getCallTimeIntervalChart() {
         processData: (data, chart, analysisInstance) => {
             _.set(chart, 'cardContainer.props.subTitle', renderSwitch(chart, analysisInstance));
 
-            return data;
+            return _.filter(data, item => item.count > 0);
         },
         processCsvData: (chart, option) => {
             let csvData = [];
