@@ -18,11 +18,9 @@ module.exports = {
 function getCharts() {
     return [
         //近一个月的通话数量/时长趋势图
-        callChart.getCallNumberTimeTrendChart(),
+        callChart.getCallNumberTimeTrendChart({Store}),
         //通话记录统计
-        callChart.getCallRecordChart({
-            Store
-        }),
+        callChart.getCallRecordChart({Store}),
         //通话总次数TOP10
         callChart.getTotalNumberTop10Chart(),
         //通话总时长TOP10

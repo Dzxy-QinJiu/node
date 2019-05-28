@@ -2,12 +2,13 @@
  * 近一个月的通话数量/时长趋势图
  */
 
-import Store from '../../store';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import { Radio, Switch } from 'antd';
 const RadioGroup = Radio.Group;
 
-export function getCallNumberTimeTrendChart() {
+export function getCallNumberTimeTrendChart(paramObj = {}) {
+    const Store = paramObj.Store;
+
     return {
         title: Intl.get('call.record.trend.charts', '近一个月的通话趋势'),
         chartType: 'line',
@@ -22,15 +23,18 @@ export function getCallNumberTimeTrendChart() {
         conditions: [{
             name: 'interval',
             value: 'day',
-        }, {
-            name: 'statistics_type',
-            value: 'team',
         }],
         argCallback: arg => {
             let query = arg.query;
 
             //开始时间改为从结束时间往前推一个月
             query.start_time = moment(query.end_time).subtract(1, 'month').valueOf();
+
+            if (query.member_ids) {
+                query.statistics_type = 'user';
+            } else {
+                query.statistics_type = 'team';
+            }
         },
         processData: (data, chart, analysisInstance) => {
             _.set(chart, 'cardContainer.props.subTitle', renderCallTrendChartSwitch(chart, analysisInstance));
@@ -72,6 +76,30 @@ export function getCallNumberTimeTrendChart() {
 
             //默认显示通话数量
             return dataCount;
+        },
+        processOption: (option, chart) => {
+            if (Store.teamMemberFilterType === 'member') {
+                let legendData = [];
+                let series = [];
+
+                _.each(chart.processedData, (v, k) => {
+                    legendData.push(k);
+                    series.push({
+                        type: 'line',
+                        name: k,
+                        data: _.map(v, item => {
+                            return {
+                                name: item.name,
+                                value: chart.radioType === 'duration' ? item.sum : item.docments
+                            };
+                        })
+                    });
+                });
+
+                option.legend.data = legendData;
+                option.series = series;
+
+            }
         },
         processCsvData: (chart, option) => {
             let csvData = [];
@@ -129,8 +157,8 @@ export function getCallNumberTimeTrendChart() {
     function handleRadioChange(chart, analysisInstance, e) {
         const value = e.target.value;
 
-        analysisInstance.radioType = value;
-        analysisInstance.teamViewOption = null;
+        chart.radioType = value;
+        chart.teamViewOption = null;
 
         chart.data = chart['data_' + value];
 
@@ -185,9 +213,9 @@ export function getCallNumberTimeTrendChart() {
     function handleSwitchChange(chart, analysisInstance, value) {
         if (value) {
             chart.processOption = option => {
-                if (analysisInstance.teamViewOption) {
-                    option.legend.data = analysisInstance.teamViewOption.legend.data;
-                    option.series = analysisInstance.teamViewOption.series;
+                if (chart.teamViewOption) {
+                    option.legend.data = chart.teamViewOption.legend.data;
+                    option.series = chart.teamViewOption.series;
                 } else {
                     let legendData = [];
                     let series = [];
@@ -200,7 +228,7 @@ export function getCallNumberTimeTrendChart() {
                             data: _.map(v, item => {
                                 return {
                                     name: item.name,
-                                    value: analysisInstance.radioType === 'duration' ? item.sum : item.docments
+                                    value: chart.radioType === 'duration' ? item.sum : item.docments
                                 };
                             })
                         });
@@ -210,7 +238,7 @@ export function getCallNumberTimeTrendChart() {
                     option.legend.data = legendData;
                     option.series = series;
 
-                    analysisInstance.teamViewOption = _.cloneDeep(option);
+                    chart.teamViewOption = _.cloneDeep(option);
                 }
             };
         } else {

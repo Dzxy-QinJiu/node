@@ -113,7 +113,7 @@ class CallRecordAnalyis extends React.Component {
 
     // 渲染通话数量和通话时长的趋势图
     renderCallTrendChart = () => {
-        const charts = [callChart.getCallNumberTimeTrendChart()];
+        const charts = [callChart.getCallNumberTimeTrendChart({Store: this.state})];
 
         return (
             <div className="call-trend-container">
@@ -315,7 +315,7 @@ class CallRecordAnalyis extends React.Component {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.team-member-select'), '选择团队过滤');
         }
 
-        const teamMemberFilterType = value === LITERAL_CONSTANT.MEMBER ? 'user' : 'team';
+        const teamMemberFilterType = value === LITERAL_CONSTANT.MEMBER ? 'member' : 'team';
 
         this.setState({
             firstSelectValue: value,
