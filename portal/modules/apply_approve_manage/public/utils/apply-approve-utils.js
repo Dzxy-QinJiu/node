@@ -13,7 +13,8 @@ import InputContent from '../view/input_container';
 const APPLYAPPROVE_LAYOUT = {
     TOPANDBOTTOM: 64,
     PADDINGHEIGHT: 24,
-    TABTITLE: 36
+    TABTITLE: 36,
+    TABLE_TITLE_HEIGHT: 48
 };
 exports.APPLYAPPROVE_LAYOUT = APPLYAPPROVE_LAYOUT;
 exports.calculateHeight = function() {
@@ -103,25 +104,25 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'rulename': Intl.get('apply.rule.hour', '时长输入'), 'iconfontCls': 'icon-fuwu',
         'placeholder': Intl.get('contract.input', '请输入'),
         'notshowInList': true,
-         'select_arr': [{
-             label: Intl.get('common.label.hours', '小时'),
-             value: 'hour'
-         }, {
-             label: Intl.get('apply.approve.leave.am', '上午'),
-             value: 'am'
-         }, {
-             label: Intl.get('apply.approve.leave.pm', '下午'),
-             value: 'pm'
-         }, {
-             label: Intl.get('common.time.unit.day', '天'),
-             value: 'day'
-         }, {
-             label: Intl.get('common.time.unit.week', '周'),
-             value: 'week'
-         }, {
-             label: Intl.get('common.time.unit.month', '月'),
-             value: 'month'
-         }],
+        'select_arr': [{
+            label: Intl.get('common.label.hours', '小时'),
+            value: 'hour'
+        }, {
+            label: Intl.get('apply.approve.leave.am', '上午'),
+            value: 'am'
+        }, {
+            label: Intl.get('apply.approve.leave.pm', '下午'),
+            value: 'pm'
+        }, {
+            label: Intl.get('common.time.unit.day', '天'),
+            value: 'day'
+        }, {
+            label: Intl.get('common.time.unit.week', '周'),
+            value: 'week'
+        }, {
+            label: Intl.get('common.time.unit.month', '月'),
+            value: 'month'
+        }],
         'unitLabel': Intl.get('apply.time.range.unit.select', '单位选项'),
         'default_value': [{
             label: Intl.get('common.label.hours', '小时'),

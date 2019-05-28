@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2019/3/27.
  */
 require('../style/add_apply_form.less');
-import {Tabs} from 'antd';
+import {Tabs, Input} from 'antd';
 const TabPane = Tabs.TabPane;
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 const TAB_KEYS = {
@@ -20,103 +20,25 @@ import ApplyRulesView from './reg-rules/reg_rules_view';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 var applyApproveManageAction = require('../action/apply_approve_manage_action');
-class AddApplyForm extends React.Component {
+class ApplyFormAndRules extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             activeKey: TAB_KEYS.FORM_CONTENT,//当前选中的TAB
-            applyTypeData: _.cloneDeep(this.props.applyTypeData),//编辑某个审批的类型
-            //某个申请的审批规则及相关配置
-            applyRulesAndSetting: {
-                applyApproveRules: {
-                    defaultFlow: {
-                        bpmnNode: [
-                            // {
-                            //     name: 'UserTask_1_0',
-                            //     id: 'UserTask_1_0',
-                            //     type: 'UserTask',
-                            //     next: 'UserTask_1_2',
-                            //     showName: `填写${_.get(this, 'props.applyTypeData.applyType')}`,
-                            //     flowIndex: '1_0'
-                            // },
-                            {
-                                name: 'UserTask_1_2',
-                                id: 'UserTask_1_2',
-                                type: 'UserTask',
-                                showName: '部门经理',
-                                candidateApprover: 'teamowner',
-                                flowIndex: '1_2'
-                            }
-                        ],
-                        ccPerson: [],//默认抄送人
-                    }
-                },//审批规则
-                //抄送人
-                ccInformation: 'apply',//抄送通知
-                cancelAfterApprove: false,//撤销权限
-                mergeSameApprover: false//其他
-            },
+            isEdittingApplyName: false,//是否正在修改申请审批的标题
+            applyTypeData: _.cloneDeep(this.props.applyTypeData),//编辑某个审批的相关数据
         };
     }
-
-    //根据审批流程的id获取已保存的表单，这样在写审批规则的时候就根据表单写规则
-    getSavedComponentsByApplyId = (applyId) => {
-        var allFormLists = [{
-            applyId: '111111111111',
-            applySaveForm: [{
-                id: 'XXX',
-                title: '时长组件',
-                is_required: false,
-                component_type: 'timeRange',
-                keys: ['timeRange'],
-                subKeys: ['starttime', 'endtime', 'total_range']
-            }],
-        },{
-            applyId: '222222222222222222',
-            applySaveForm: [{
-                id: 'XXX',
-                title: '时长组件',
-                is_required: false,
-                component_type: 'timeRange',
-                keys: ['timeRange'],
-                subKeys: ['starttime', 'endtime', 'total_range']
-            }],
-        },{
-            applyId: '333333333333333333',
-            applySaveForm: [{
-                id: 'XXX',
-                title: '时长组件',
-                is_required: false,
-                component_type: 'timeRange',
-                keys: ['timeRange'],
-                subKeys: ['starttime', 'endtime', 'total_range']
-            }],
-        },{
-            applyId: '444444444444444',
-            applySaveForm: [{
-                id: 'XXX',
-                title: '金额组件',
-                is_required: false,
-                component_type: 'InputNumber',
-                subComponentType: 'money',
-                keys: ['value']
-            }],
-        }];
-        var target = _.find(allFormLists, item => item.applyId === applyId);
-        return _.get(target,'applySaveForm');
-
-    };
 
     onStoreChange = () => {
 
     };
     componentDiDMount = () => {
-        //todo 需要在这里发请求取表单和审批规则
         //如果还没有配置过，就只有一个默认的规则
 
     };
     handleTabChange = (key) => {
-        let keyName = key === TAB_KEYS.FORM_CONTENT ? '表单内容' : '审批规则';
+        let keyName = key === TAB_KEYS.FORM_CONTENT ? Intl.get('apply.add.form.content', '表单内容') : Intl.get('apply.add.form.regex', '审批规则');
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + keyName);
         this.setState({
             activeKey: key
@@ -133,7 +55,6 @@ class AddApplyForm extends React.Component {
     renderFormComponents = () => {
         var applyTypeData = this.state.applyTypeData;
         return _.map(applyTypeData.customiz_form, (formItem,key) => {
-            // if (formItem.component_type === 'Input') {
             //如果是编辑状态
             if (formItem.isEditting) {
                 return (
@@ -154,7 +75,6 @@ class AddApplyForm extends React.Component {
                     />
                 );
             }
-            // }
         });
     };
     getTargetFormItem = (formKey) => {
@@ -237,13 +157,15 @@ class AddApplyForm extends React.Component {
                 });
             });
         }
-    }
+    };
+    //保存
+    handleSaveApproveTitle = () => {
+        //如果名字没有修改，不需要发请求保存
 
-    ;
+    };
     handleAddComponents = (ruleItem) => {
         var applyTypeData = this.state.applyTypeData;
         var component_type = ruleItem.component_type;
-        // if (_.includes(['Input','InputNumber'], component_type)){
         var customiz_form = _.get(applyTypeData, 'customiz_form', []);
         var keysArr = _.map(customiz_form,'key');
         var formContentKey = 0;
@@ -255,7 +177,6 @@ class AddApplyForm extends React.Component {
         this.setState({
             applyTypeData: applyTypeData
         });
-        // }
     };
     renderAddFormRules = () => {
         return (
@@ -289,23 +210,52 @@ class AddApplyForm extends React.Component {
                         {this.renderAddFormContent()}
                     </GeminiScrollbar>
                     {/*todo 待优化部分*/}
-                    {/*{hasFormItem || true ? */}
+                    {hasFormItem || true ?
                         <div className="save-cancel-container">
-                        <SaveCancelButton
-                            loading={this.state.editWorkFlowLoading}
-                            handleSubmit={this.handleSubmitApproveForm}
-                            saveErrorMsg={this.state.editWorkFlowErrMsg}
-                            hideCancelBtns={true}
-                        />
-                    </div>
-                        // : null}
+                            <SaveCancelButton
+                                loading={this.state.editWorkFlowLoading}
+                                handleSubmit={this.handleSubmitApproveForm}
+                                saveErrorMsg={this.state.editWorkFlowErrMsg}
+                                hideCancelBtns={true}
+                            />
+                        </div> : null}
 
                 </div>
             </div>
         );
     };
     renderApplyRegex = () => {
-        var applyRulesAndSetting = _.get(this, 'state.applyRulesAndSetting');
+        var applyTypeData = this.state.applyTypeData;
+        var applyRulesAndSetting = _.get(applyTypeData,'applyRulesAndSetting');
+        if (!_.isEmpty(applyRulesAndSetting) && _.isString(applyRulesAndSetting.applyApproveRules)){
+            //如果之前保存过流程的相关配置，后端保存的applyApproveRules是字符串格式的，
+            applyRulesAndSetting.applyApproveRules = JSON.parse(applyRulesAndSetting.applyApproveRules);
+        }else{
+            //如果之前没有加过流程，这是默认的流程，默认流程是部门经理审批的
+            applyRulesAndSetting = {
+                applyApproveRules: {
+                    defaultFlow: {
+                        bpmnNode: [
+                            {
+                                name: 'UserTask_1_2',
+                                id: 'UserTask_1_2',
+                                type: 'UserTask',
+                                showName: '部门经理',
+                                candidateApprover: 'teamowner',
+                                flowIndex: '1_2'
+                            }
+                        ],
+                        ccPerson: [],//默认抄送人
+                    }
+                },//审批规则
+                //抄送人
+                ccInformation: 'apply',//抄送通知
+                cancelAfterApprove: false,//撤销权限
+                mergeSameApprover: false//其他
+            };
+        }
+
+
         return (
             <ApplyRulesView
                 applyTypeData={this.state.applyTypeData}
@@ -334,14 +284,36 @@ class AddApplyForm extends React.Component {
     handleClickCloseAddPanel = () => {
         this.props.closeAddPanel();
     };
+    //修改自定义流程的标题
+    handleEditApplyTitle = () => {
+        this.setState({
+            isEdittingApplyName: true
+        });
+    };
+    handleApplyTitleChange = (e) => {
+        this.setState({
+            updatedApplyName: e.target.value
+        });
+    };
     render = () => {
         var applyTypeData = this.state.applyTypeData;
+        var initialApplyTitle = _.get(applyTypeData, 'description') || _.get(applyTypeData, 'type');
         return (
             <div className="add-apply-form-container">
                 <div className="add-apply-form-title">
                     <div className="show-and-edit-approve-type">
-                        {_.get(applyTypeData, 'description') || _.get(applyTypeData, 'type')}
-                        <i className="pull-right iconfont icon-update"></i>
+                        {this.state.isEdittingApplyName ? <span>
+                            <Input defaultValue={initialApplyTitle} onChange={this.handleApplyTitleChange}/>
+                            <SaveCancelButton
+                                loading={this.state.editApplyTitleLoading}
+                                handleSubmit={this.handleSaveApproveTitle}
+                                saveErrorMsg={this.state.editApplyTitleErrMsg}
+                            />
+                        </span> : <span>
+                            {initialApplyTitle}
+                            <i className="pull-right iconfont icon-update" onClick={this.handleEditApplyTitle}></i>
+                        </span>}
+
                     </div>
                     <i className="pull-right iconfont icon-close" onClick={this.handleClickCloseAddPanel}></i>
                 </div>
@@ -351,15 +323,15 @@ class AddApplyForm extends React.Component {
     }
 }
 
-AddApplyForm.defaultProps = {
+ApplyFormAndRules.defaultProps = {
     closeAddPanel: function() {
 
     },
     applyTypeData: {}
 };
 
-AddApplyForm.propTypes = {
+ApplyFormAndRules.propTypes = {
     closeAddPanel: PropTypes.func,
     applyTypeData: PropTypes.object
 };
-export default AddApplyForm;
+export default ApplyFormAndRules;

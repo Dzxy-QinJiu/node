@@ -61,7 +61,7 @@ class InputShow extends React.Component {
             'required': is_required
         });
         return (
-            <div className="show-container" key={formItem.key}>
+            <div className="component-show-container" key={formItem.key}>
                 <div className={cls}>{formItem.title}
                     <span className="pull-right icon-container">
                         {this.state.showCancelConfirmBtn ?
