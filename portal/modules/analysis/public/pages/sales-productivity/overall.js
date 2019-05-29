@@ -11,6 +11,7 @@ module.exports = {
         'CUSTOMER_ANALYSIS_COMMON',
         'CUSTOMER_ANALYSIS_MANAGER',
     ],
+    adjustDatePicker,
     charts: getCharts()
 };
 
@@ -19,4 +20,10 @@ function getCharts() {
         //销售经理业绩排名
         salesProductivityChart.getSalesManagerPerformanceRankingChart()
     ];
+}
+
+//调整日期选择器
+function adjustDatePicker(option) {
+    //隐藏日期选择器
+    option.className += ' hide';
 }
