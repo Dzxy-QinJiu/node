@@ -7,11 +7,21 @@ export function getSalesManagerPerformanceRankingChart() {
         title: '销售经理业绩排名',
         chartType: 'table',
         url: '/rest/analysis/contract/contract/v2/:data_type/performance/order/sales-manager',
+        conditions: [{
+            name: 'time_interval',
+            value: 'week'
+        }],
         argCallback: arg => {
-            //统计的最小区间是周
-            if (arg.query.interval === 'day') {
-                arg.query.interval = 'week';
-            }
+            let query = arg.query;
+
+            const endTime = moment();
+            const timeInterval = query.time_interval;
+
+            query.interval = timeInterval;
+            query.start_time = endTime.clone().startOf(timeInterval).valueOf();
+            query.end_time = endTime.valueOf();
+
+            delete query.time_interval;
         },
         option: {
             columns: [
@@ -41,6 +51,30 @@ export function getSalesManagerPerformanceRankingChart() {
                     width: '10%',
                 }
             ],
+        },
+        cardContainer: {
+            selectors: [{
+                options: [
+                    {
+                        name: '本周',
+                        value: 'week'
+                    },
+                    {
+                        name: '本月',
+                        value: 'month'
+                    },
+                    {
+                        name: '本季度',
+                        value: 'quarter'
+                    },
+                    {
+                        name: '本年',
+                        value: 'year'
+                    }
+                ],
+                activeOption: 'week',
+                conditionName: 'time_interval',
+            }],
         },
     };
 }
