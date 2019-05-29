@@ -1311,7 +1311,7 @@ class Crm extends React.Component {
     //获取导入预览中的列
     getPreviewColumns = () => {
         const column_width_min = 80, column_width = 120, column_width_max = 200;
-        return [
+        let columns = [
             {
                 title: Intl.get('crm.4', '客户名称'),
                 width: column_width_max,
@@ -1374,10 +1374,6 @@ class Crm extends React.Component {
                 width: column_width_min,
                 dataIndex: 'contact_position',
             }, {
-                title: Intl.get('crm.6', '负责人'),
-                width: column_width_min,
-                dataIndex: 'user_name',
-            }, {
                 title: Intl.get('menu.trace', '跟进记录'),
                 width: column_width,
                 dataIndex: 'trace_record',
@@ -1410,7 +1406,10 @@ class Crm extends React.Component {
                 title: Intl.get('common.remark', '备注'),
                 width: column_width,
                 dataIndex: 'remarks',
-            }, {
+            }];
+        let hasRepeatCustomer = _.some(this.state.previewList, item => item.repeat);
+        if (hasRepeatCustomer) {
+            columns.push({
                 title: Intl.get('common.operate', '操作'),
                 width: 50,
                 render: (text, record, index) => {
@@ -1426,8 +1425,9 @@ class Crm extends React.Component {
                         </span>
                     );
                 }
-            }
-        ];
+            });
+        }
+        return columns;
     }
     //将导入预览的数据转换为预览列表中展示所需数据
     handlePreviewList(list) {
