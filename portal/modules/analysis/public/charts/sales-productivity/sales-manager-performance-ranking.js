@@ -36,18 +36,22 @@ export function getSalesManagerPerformanceRankingChart() {
                 }, {
                     title: '回款毛利',
                     dataIndex: 'gross_profit',
+                    sorter: sorter.bind(null, 'gross_profit'),
                     width: '10%',
                 }, {
                     title: '机会数量',
                     dataIndex: 'opportunity_count',
+                    sorter: sorter.bind(null, 'opportunity_count'),
                     width: '10%',
                 }, {
                     title: '业绩',
                     dataIndex: 'performance',
+                    sorter: sorter.bind(null, 'performance'),
                     width: '10%',
                 }, {
                     title: '名次',
                     dataIndex: 'order',
+                    sorter: sorter.bind(null, 'order'),
                     width: '10%',
                 }
             ],
@@ -77,4 +81,8 @@ export function getSalesManagerPerformanceRankingChart() {
             }],
         },
     };
+
+    function sorter(f, a, b) {
+        return a[f] - b[f];
+    }
 }
