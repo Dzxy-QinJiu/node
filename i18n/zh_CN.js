@@ -3013,6 +3013,13 @@ var zh_CN = {
     'apply.time.distinct.am': '区分上下午',
     'apply.form.has.edit.components': '您有组件还是编辑状态',
     'apply.my.self.setting.work.flow': '我的自定义流程',
-    'clue.customer.set.invalid': '标为无效'
+    'clue.customer.set.invalid': '标为无效',
+    'common.oppertunity.number': '机会数量',
+    'common.performance': '业绩',
+    'common.sales.manager.performance.ranking': '销售经理业绩排名',
+    'common.current.week': '本周',
+    'common.current.quarter': '本季度',
+    'common.current.year': '本年',
+    'common.rank': '名次',
 };
 export default zh_CN;

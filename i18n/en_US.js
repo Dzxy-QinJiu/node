@@ -2909,6 +2909,13 @@ var en_US = {
     'common.reflux': 'reflux',//回流
     'user.info.get.user.condition.failed': 'Failed to get user query condition',//获取用户查询条件失败
     'apply.upload.same.name': 'The file name cannot be repeat!',//该文件名称已存在
-    'clue.customer.set.invalid': ''//标为无效
+    'clue.customer.set.invalid': '',//标为无效
+    'common.oppertunity.number': 'oppertunity number',//机会数量
+    'common.performance': 'performance',//业绩
+    'common.sales.manager.performance.ranking': 'sales manager performance ranking',//销售经理业绩排名
+    'common.current.week': 'current week',//本周
+    'common.current.quarter': 'current quarter',//本季度
+    'common.current.year': 'current year',//本年
+    'common.rank': 'rank',//名次
 };
 export default en_US;

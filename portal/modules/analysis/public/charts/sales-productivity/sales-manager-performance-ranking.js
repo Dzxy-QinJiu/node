@@ -4,7 +4,7 @@
 
 export function getSalesManagerPerformanceRankingChart() {
     return {
-        title: '销售经理业绩排名',
+        title: Intl.get('common.sales.manager.performance.ranking', '销售经理业绩排名'),
         chartType: 'table',
         url: '/rest/analysis/contract/contract/v2/:data_type/performance/order/sales-manager',
         conditions: [{
@@ -26,30 +26,30 @@ export function getSalesManagerPerformanceRankingChart() {
         option: {
             columns: [
                 {
-                    title: '团队',
+                    title: Intl.get('user.user.team', '团队'),
                     dataIndex: 'sales_team',
                     width: '10%',
                 }, {
-                    title: '销售',
+                    title: Intl.get('sales.home.sales', '销售'),
                     dataIndex: 'member_name',
                     width: '10%',
                 }, {
-                    title: '回款毛利',
+                    title: Intl.get('contract.29', '回款毛利'),
                     dataIndex: 'gross_profit',
                     sorter: sorter.bind(null, 'gross_profit'),
                     width: '10%',
                 }, {
-                    title: '机会数量',
+                    title: Intl.get('common.oppertunity.number', '机会数量'),
                     dataIndex: 'opportunity_count',
                     sorter: sorter.bind(null, 'opportunity_count'),
                     width: '10%',
                 }, {
-                    title: '业绩',
+                    title: Intl.get('common.performance', '业绩'),
                     dataIndex: 'performance',
                     sorter: sorter.bind(null, 'performance'),
                     width: '10%',
                 }, {
-                    title: '名次',
+                    title: Intl.get('common.rank', '名次'),
                     dataIndex: 'order',
                     sorter: sorter.bind(null, 'order'),
                     width: '10%',
@@ -60,19 +60,19 @@ export function getSalesManagerPerformanceRankingChart() {
             selectors: [{
                 options: [
                     {
-                        name: '本周',
+                        name: Intl.get('common.current.week', '本周'),
                         value: 'week'
                     },
                     {
-                        name: '本月',
+                        name: Intl.get('common.this.month', '本月'),
                         value: 'month'
                     },
                     {
-                        name: '本季度',
+                        name: Intl.get('common.current.quarter', '本季度'),
                         value: 'quarter'
                     },
                     {
-                        name: '本年',
+                        name: Intl.get('common.current.year', '本年'),
                         value: 'year'
                     }
                 ],
