@@ -11,14 +11,18 @@ import {memberStatusList} from 'PUB_DIR/sources/utils/consts';
 import {Icon, Button} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
+import classNames from 'classnames';
 
 let openTimeout = null;//打开面板时的时间延迟设置
 let focusTimeout = null;//focus事件的时间延迟设置
 
-//用于布局的高度
 const LAYOUT_CONSTANTS = {
-    TOP_DISTANCE: 120,
-    BOTTOM_DISTANCE: 40
+    FRIST_NAV_WIDTH: 75, // 一级导航的宽度
+    NAV_WIDTH: 120, // 导航宽度
+    TOP_ZONE_HEIGHT: 80, // 头部（添加成员、筛选的高度）高度
+    TABLE_HEAD_HEIGHT: 40, // 表格头部的高度
+    PADDING_WIDTH: 24 * 2, // padding占的宽度
+    PADDING_HEIGHT: 24 * 2 // padding占的高度
 };
 
 class MemberManage extends React.Component {
@@ -173,35 +177,51 @@ class MemberManage extends React.Component {
         this.getMemberList({id: this.state.sortId});
     };
 
+    memberStatusClass = (status) => {
+        return classNames({'member-status': status === 0});
+    };
+
     getTableColumns = () => {
         return [{
             title: Intl.get('member.member', '成员'),
             dataIndex: 'name',
             key: 'name',
-            width: '35%',
+            width: '40%',
             render: (name, record) => {
+                let memberNameCls = classNames('member-name', this.memberStatusClass(_.get(record, 'status')));
                 return (
-                    <div>
-                        <div>{_.get(record, 'name')}</div>
-                        <div>{_.get(record, 'userName')}</div>
+                    <div className={memberNameCls}>
+                        <div className='accout'>{_.get(record, 'name')}</div>
+                        <div className='nickname'>{_.get(record, 'userName')}</div>
                     </div>
                 );
             }
         }, {
-            title: Intl.get('operation.report.department', '部门'),
-            dataIndex: 'department',
-            key: 'department',
-            width: '25%'
-        },{
-            title: Intl.get('member.position', '职务'),
-            dataIndex: 'position',
-            key: 'position',
-            width: '25%'
+            title: Intl.get('common.email', '邮箱'),
+            dataIndex: 'email',
+            key: 'email',
+            width: '30%',
+            render: (email, record) => {
+                let emailCls = this.memberStatusClass(_.get(record, 'status'));
+                return (
+                    <div className={emailCls}>
+                        {email}
+                    </div>
+                );
+            }
         },{
             title: Intl.get('member.phone', '手机'),
             dataIndex: 'phone',
             key: 'phone',
-            width: '15%'
+            width: '30%',
+            render: (phone, record) => {
+                let phoneCls = this.memberStatusClass(_.get(record, 'status'));
+                return (
+                    <div className={phoneCls}>
+                        {phone}
+                    </div>
+                );
+            }
         }];
     };
     
@@ -218,7 +238,8 @@ class MemberManage extends React.Component {
         }
         let columns = this.getTableColumns();
         let dataSource = this.state.memberList;
-        let tableHeight = $(window).height() - 24 * 2 - 32 - 40;
+        let tableHeight = $(window).height() - LAYOUT_CONSTANTS.PADDING_HEIGHT -
+            LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT - LAYOUT_CONSTANTS.TABLE_HEAD_HEIGHT;
         const dropLoadConfig = {
             listenScrollBottom: this.state.listenScrollBottom,
             handleScrollBottom: this.handleScrollBottom,
@@ -312,12 +333,14 @@ class MemberManage extends React.Component {
     };
 
     render() {
-        let height = $(window).height();
+        let height = $(window).height() - LAYOUT_CONSTANTS.PADDING_HEIGHT;
+        let topNavWidth = $(window).width() - LAYOUT_CONSTANTS.NAV_WIDTH -
+                LAYOUT_CONSTANTS.PADDING_WIDTH - LAYOUT_CONSTANTS.FRIST_NAV_WIDTH;
         return (
-            <div className='member-container'>
+            <div className='member-container' style={{height: height}}>
                 <div className='member-wrap' style={{height: height}}>
                     <div className='member-detail-wrap'>
-                        <div className='member-top-nav'>
+                        <div className='member-top-nav' style={{width: topNavWidth}}>
                             {this.renderTopNavOperation()}
                         </div>
                         <div className='member-content'>
