@@ -23,6 +23,19 @@ export function getSalesManagerPerformanceRankingChart() {
 
             delete query.time_interval;
         },
+        processOption: option => {
+            const uniqTeams = _.uniqBy(option.dataSource, 'sales_team');
+
+            //只有一个团队时
+            if (uniqTeams.length === 1) {
+                const teamColumnIndex = _.findIndex(option.columns, column => column.dataIndex === 'sales_team');
+
+                if (teamColumnIndex !== -1) {
+                    //去掉团队列
+                    option.columns.splice(teamColumnIndex, 1);
+                }
+            }
+        },
         option: {
             columns: [
                 {
