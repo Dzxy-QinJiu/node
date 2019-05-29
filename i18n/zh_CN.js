@@ -3013,5 +3013,6 @@ var zh_CN = {
     'apply.time.distinct.am': '区分上下午',
     'apply.form.has.edit.components': '您有组件还是编辑状态',
     'apply.my.self.setting.work.flow': '我的自定义流程',
+    'apply.approve.assign.sales': '分配销售'
 };
 export default zh_CN;

@@ -16,46 +16,8 @@ const FORMLAYOUT = {
     PADDINGTOTAL: 60
 };
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+import {INNER_SETTING_FLOW, APPROVER_TYPE, HIGHER_LEVEL, isSalesOpportunityFlow, isBussinessTripFlow, isLeaveFlow} from '../../utils/apply-approve-utils';
 require('../../style/add-apply-node.less');
-const APPROVER_TYPE = [{
-    name: Intl.get('apply.add.approver.higher.level', '上级'),
-    value: 'higher_ups',
-}, {
-    name: Intl.get('apply.add.approver.setting.role', '指定角色'),
-    value: 'setting_roles',
-}, {
-    name: Intl.get('apply.add.approver.setting.user', '指定成员'),
-    value: 'setting_users',
-}, {name: Intl.get('apply.add.approver.applicant.setting', '申请人指定'), value: 'application_setting',},
-{name: Intl.get('apply.add.approver.applicant.self', '申请人自己'), value: 'application_self'}
-];
-const HIGHER_LEVEL = [
-    {
-        name: Intl.get('apply.add.approve.node.team.owner', '团队所有者'),
-        value: 'teamowner'
-    },
-    {
-        name: Intl.get('apply.add.approve.node.team.owner.and.higher.level.owner', '团队所有者或者上级团队所有者'),
-        value: 'teamownerorseniorowner'
-    },
-    {
-        name: Intl.get('apply.add.approve.node.higher.level.owner', '上级团队所有者'),
-        value: 'seniorteamowner'
-    },
-    {
-        name: Intl.get('apply.add.approve.node.all.higher.level.owner', '所有上级团队所有者'),
-        value: 'allseniorteamowner'
-    },
-    {
-        name: Intl.get('common.managers', '管理员'),
-        value: 'managers'
-    },
-    {
-        name: Intl.get('apply.add.approve.node.operation', '运营人员'),
-        value: 'operations'
-    },
-];
-
 class AddApplyNodePanel extends React.Component {
     constructor(props) {
         super(props);
@@ -78,6 +40,7 @@ class AddApplyNodePanel extends React.Component {
             },
             submitFiles: false,//可以上传文件
             distributeCheck: false,//可分配
+            distributeSales: false, //可分配销售
             roleList: [],//角色列表
             userList: [],//用户列表
             submitErrorMsg: '',//提交时的错误提示
@@ -129,7 +92,8 @@ class AddApplyNodePanel extends React.Component {
                 }
             }
         });
-        this.state.checkedRadioValue = radioValue;
+        var checkedRadioValue = this.state.checkedRadioValue;
+        checkedRadioValue = radioValue;
         this.setState(this.state);
     };
     onChangeSubmitFilesCheck = (e) => {
@@ -140,6 +104,11 @@ class AddApplyNodePanel extends React.Component {
     onChangeSubmitDistributeCheck = (e) => {
         this.setState({
             distributeCheck: e.target.checked,
+        });
+    };
+    onChangeSubmitDistributeSales = (e) => {
+        this.setState({
+            distributeSales: e.target.checked,
         });
     };
     handleHigherUpChange = (value) => {
@@ -357,6 +326,14 @@ class AddApplyNodePanel extends React.Component {
                                             {Intl.get('apply.add.approver.distribute', '可分配')}
                                         </Checkbox>
                                     </div>
+                                    {isSalesOpportunityFlow(_.get(this, 'props.applyTypeData.type')) ? <div>
+                                        <Checkbox
+                                            checked={this.state.distributeSales}
+                                            onChange={this.onChangeSubmitDistributeSales}
+                                        >
+                                            {Intl.get('apply.approve.assign.sales', '分配销售')}
+                                        </Checkbox>
+                                    </div> : null}
                                 </div>
                             </div>
                             <SaveCancelButton
@@ -378,12 +355,14 @@ AddApplyNodePanel.defaultProps = {
     },
     saveAddApproveNode: function() {
 
-    }
+    },
+    applyTypeData: {}
 
 };
 AddApplyNodePanel.propTypes = {
     hideRightPanel: PropTypes.func,
     saveAddApproveNode: PropTypes.func,
+    applyTypeData: PropTypes.object,
 
 
     defaultClueData: PropTypes.object,

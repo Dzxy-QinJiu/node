@@ -694,6 +694,7 @@ class RegRulesView extends React.Component {
                             saveAddApproveNode={this.saveAddApproveNode}
                             hideRightPanel={this.hideRightAddPanel}
                             getAllApplyList={this.getAllBusinessApplyList}
+                            applyTypeData={this.props.applyTypeData}
                         />
                     </div>
                     : null}
@@ -702,7 +703,7 @@ class RegRulesView extends React.Component {
                         <AddApplyConditionPanel
                             saveAddApprovCondition={this.saveAddApprovCondition}
                             hideRightPanel={this.hideRightAddPanel}
-                            applySaveForm={_.get(this, 'props.applyTypeData.customiz_form')}
+                            applyTypeData={this.props.applyTypeData}
                         />
                     </div>
                     : null}

@@ -62,7 +62,9 @@ exports.applyComponentsType = [{
 }];
 exports.CONDITION_KEYS = [
     {
-        name: Intl.get('user.duration', '时长'), value: ALL_COMPONENTS.TIMEPERIOD + '_limit', conditionRule: function(item) {
+        name: Intl.get('user.duration', '时长'),
+        value: ALL_COMPONENTS.TIMEPERIOD + '_limit',
+        conditionRule: function(item) {
             item['conditionRule'] = item['rangeLimit'] + item['rangeNumber'];
             item['conditionInverseRule'] = item['inverseCondition'] + item['rangeNumber'];
             item['conditionRuleDsc'] = item['rangeLimitDsc'] + item['rangeNumberDsc'];
@@ -169,7 +171,7 @@ exports.ADDAPPLYFORMCOMPONENTS = [
             label: Intl.get('weekly.report.n.days', '{n}天', {n: 0.5}),
             value: '0.5day'
         }],
-        'unitMsg': Intl.get('apply.time.distinct.am','区分上下午'),
+        'unitMsg': Intl.get('apply.time.distinct.am', '区分上下午'),
         'selectedValue': '1day',
         'component_type': ALL_COMPONENTS.TIMEPERIOD
     },
@@ -188,3 +190,86 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'default_value': []
     }
 ];
+
+//内置审批流程
+const INNER_SETTING_FLOW = {
+    BUSSINESSTRIP: 'businesstrip',//出差
+    LEAVE: 'leave',//请假
+    BUSINESSOPPORTUNITIES: 'businessopportunities',//销售机会
+    USERAPPLY: 'userapply',//用户申请
+};
+exports.INNER_SETTING_FLOW = INNER_SETTING_FLOW;
+exports.APPROVER_TYPE = [{
+    name: Intl.get('apply.add.approver.higher.level', '上级'),
+    value: 'higher_ups',
+}, {
+    name: Intl.get('apply.add.approver.setting.role', '指定角色'),
+    value: 'setting_roles',
+}, {
+    name: Intl.get('apply.add.approver.setting.user', '指定成员'),
+    value: 'setting_users',
+}, {name: Intl.get('apply.add.approver.applicant.setting', '申请人指定'), value: 'application_setting',},
+{name: Intl.get('apply.add.approver.applicant.self', '申请人自己'), value: 'application_self'}
+];
+exports.HIGHER_LEVEL = [
+    {
+        name: Intl.get('apply.add.approve.node.team.owner', '团队所有者'),
+        value: 'teamowner'
+    },
+    {
+        name: Intl.get('apply.add.approve.node.team.owner.and.higher.level.owner', '团队所有者或者上级团队所有者'),
+        value: 'teamownerorseniorowner'
+    },
+    {
+        name: Intl.get('apply.add.approve.node.higher.level.owner', '上级团队所有者'),
+        value: 'seniorteamowner'
+    },
+    {
+        name: Intl.get('apply.add.approve.node.all.higher.level.owner', '所有上级团队所有者'),
+        value: 'allseniorteamowner'
+    },
+    {
+        name: Intl.get('common.managers', '管理员'),
+        value: 'managers'
+    },
+    {
+        name: Intl.get('apply.add.approve.node.operation', '运营人员'),
+        value: 'operations'
+    },
+];
+exports.CONDITION_LIMITE = [{
+    name: Intl.get('apply.add.condition.larger', '大于'),
+    value: '>',
+    inverseCondition: '<='
+}, {
+    name: Intl.get('apply.add.condition.larger.and.equal', '大于等于'),
+    value: '>=',
+    inverseCondition: '<'
+}, {
+    name: Intl.get('apply.add.condition.less', '小于'),
+    value: '<',
+    inverseCondition: '>='
+}, {
+    name: Intl.get('apply.add.condition.less.and.equal', '小于等于'),
+    value: '<=',
+    inverseCondition: '>'
+}, {
+    name: Intl.get('apply.add.condition.equal', '等于'),
+    value: '===',
+    inverseCondition: '!=='
+}, {
+    name: Intl.get('apply.add.condition.within', '介于'),
+    value: '',
+}];
+//是销售机会申请流程
+exports.isSalesOpportunityFlow = function(itemType) {
+    return itemType === INNER_SETTING_FLOW.BUSINESSOPPORTUNITIES;
+};
+//是出差申请流程
+exports.isBussinessTripFlow = function(itemType) {
+    return itemType === INNER_SETTING_FLOW.BUSSINESSTRIP;
+};
+//是请假申请流程
+exports.isLeaveFlow = function(itemType) {
+    return itemType === INNER_SETTING_FLOW.LEAVE;
+};
