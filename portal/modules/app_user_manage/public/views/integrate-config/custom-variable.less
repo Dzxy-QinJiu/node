@@ -1,0 +1,56 @@
+/** Created by 2019-05-29 14:53 */
+.custom-variables-wrapper{
+  margin: 10px 0;
+  &.editing{
+    margin-bottom: 25px;
+    .button-container{
+      margin-top: 0;
+    }
+  }
+  // 展示文本时样式
+  .edit-container{
+    position: relative;
+    .icon-edit-btn{
+      cursor: pointer;
+      display: none;
+      position: absolute;
+      right: 10px;
+      top: 0;
+    }
+    &.hover-show-edit:hover{
+      .icon-edit-btn{
+        display: inline-block;
+      }
+    }
+    .custom-variable-item{
+      color: #000;
+    }
+  }
+  // 编辑时样式
+  .custom-variable-wrap{
+    position: relative;
+    .ant-form{
+      .ant-form-item{
+        margin-bottom: 15px;
+      }
+      .ant-form-item-label{
+        text-align: left;
+      }
+    }
+    .custom-form-item{
+      float: left;
+      width: calc(100% - 25px);
+    }
+    .circle-button{
+      position: relative;
+      margin: 0;
+      z-index: 1;
+      cursor: pointer;
+      top: 3px;
+      right: -10px;
+    }
+    .circle-button-minus, .circle-button-plus {
+      float: left;
+    }
+  }
+}

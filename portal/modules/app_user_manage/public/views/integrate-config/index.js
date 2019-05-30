@@ -5,13 +5,14 @@
  */
 require('./index.less');
 
-import {Input, Button, Form, Icon} from 'antd';
+import {Input, Button, Form, Icon, message} from 'antd';
 const FormItem = Form.Item;
 import Logo from 'CMP_DIR/Logo';
 import {Link} from 'react-router-dom';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import {getUemJSCode} from 'PUB_DIR/sources/utils/uem-js-code';
 import classNames from 'classnames';
+import CustomVariable from './custom-variable';
 const matomoSrc = require('./matomo.png');
 const oplateSrc = require('./oplate.png');
 
@@ -24,6 +25,7 @@ class IntegrateConfigView extends React.Component {
             addProduct: null,//添加的产品
             jsCopied: false,
             testResult: '',//测试结果success、error
+            custom_variable: {}, // 自定义属性
         };
     }
 
@@ -108,12 +110,40 @@ class IntegrateConfigView extends React.Component {
         }
     }
 
+    // 添加自定义属性
+    saveCustomVariable = (saveObj, successFunc, errorFunc) => {
+        //是否修改基本信息
+        saveObj.isEditBasic = true;
+        $.ajax({
+            url: '/rest/product',
+            type: 'put',
+            dataType: 'json',
+            data: saveObj,
+            success: (data) => {
+                //修改成功{editBasicSuccess: true, editTypeSuccess:true}
+                if (_.get(data,'editBasicSuccess') && _.get(data, 'editTypeSuccess')) {
+                    //保存成功后的处理
+                    message.success(Intl.get('user.user.add.success', '添加成功'));
+                    _.isFunction(successFunc) && successFunc();
+                    this.setState({
+                        custom_variable: saveObj.custom_variable
+                    });
+                } else {
+                    _.isFunction(errorFunc) && errorFunc(Intl.get('member.add.failed', '添加失败！'));
+                }
+            },
+            error: (xhr) => {
+                _.isFunction(errorFunc) && errorFunc(xhr.responseJSON);
+            }
+        });
+    };
+
     render() {
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {colon: false};
         let integrateConfigUrl = '/background_management/integration';
         let addProduct = this.state.addProduct;
-        let jsCode = _.get(addProduct, 'integration_id') ? getUemJSCode(addProduct.integration_id) : '';
+        let jsCode = getUemJSCode(_.get(addProduct, 'integration_id'), this.state.custom_variable);
         let integrateConfigCls = classNames('integrate-config-wrap', {
             'js-code-show': _.get(addProduct, 'name')
         });
@@ -129,6 +159,38 @@ class IntegrateConfigView extends React.Component {
                             <div className="access-step-tip margin-style curtao-product-name">
                                 <span className="js-code-label">{Intl.get('common.product.name', '产品名称')}：</span>
                                 <span>{addProduct.name} </span>
+                            </div>
+                            <div className="access-step-tip margin-style js-code-contianer">
+                                <span className="js-code-label">用户属性：</span>
+                            </div>
+                            <div className="access-step-tip margin-style custom-variable-container">
+                                <div className="custom-variable-item">
+                                    <span className="custom-variable-key">key：nickname</span>
+                                    <span>{Intl.get('common.describe', '描述')}：{Intl.get('common.nickname', '昵称')}</span>
+                                </div>
+                                <div className="custom-variable-item">
+                                    <span className="custom-variable-key">key：role</span>
+                                    <span>{Intl.get('common.describe', '描述')}：{Intl.get('app.user.manage.role.name', '角色名称')}</span>
+                                </div>
+                                <div className="custom-variable-item">
+                                    <span className="custom-variable-key">key：organization</span>
+                                    <span>{Intl.get('common.describe', '描述')}：{Intl.get('app.user.manage.organaization.name', '所在单位或公司')}</span>
+                                </div>
+                                <div className="custom-variable-item">
+                                    <span className="custom-variable-key">key：expiretime</span>
+                                    <span>{Intl.get('common.describe', '描述')}：{Intl.get('user.time.end', '到期时间')}</span>
+                                </div>
+                                <div className="custom-variable-item">
+                                    <span className="custom-variable-key">key：user_type</span>
+                                    <span>{Intl.get('common.describe', '描述')}：{Intl.get('user.user.type', '用户类型')}</span>
+                                </div>
+                                <CustomVariable
+                                    id={_.get(addProduct,'id')}
+                                    value={this.state.custom_variable}
+                                    hasEditPrivilege={true}
+                                    addBtnTip={Intl.get('app.user.manage.add.custom.text', '添加属性')}
+                                    saveEditInput={this.saveCustomVariable}
+                                />
                             </div>
                             <div className="access-step-tip margin-style js-code-contianer">
                                 <span className="js-code-label">{Intl.get('common.trace.code', '跟踪代码')}： </span>
