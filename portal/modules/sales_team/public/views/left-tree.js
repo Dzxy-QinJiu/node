@@ -173,15 +173,17 @@ class LeftTree extends React.Component {
                 <div className="sales-team-group-info">
                     <div className="sales-team-group-name" title={item.title}>
                         <span className="sales-team-name-text">{item.title}</span>
-                        <span className="sales-team-member-statistic">
-                            <ReactIntl.FormattedMessage
-                                id="sales.team.member.count"
-                                defaultMessage={'{teamMemberCount}人'}
-                                values={{
-                                    'teamMemberCount': teamMemberCount
-                                }}
-                            />
-                        </span>
+                        {
+                            item.title === organizationName ? (
+                                <span className="sales-team-member-statistic">
+                                    {Intl.get('sales.team.member.count', '{teamMemberCount}人', {teamMemberCount: this.props.memberCount})}
+                                </span>
+                            ) : (
+                                <span className="sales-team-member-statistic">
+                                    {Intl.get('sales.team.member.count', '{teamMemberCount}人', {teamMemberCount: teamMemberCount})}
+                                </span>
+                            )
+                        }
                     </div>
                     {
                         item.title === organizationName && item.key === organizationId ? null : (
@@ -369,5 +371,6 @@ LeftTree.propTypes = {
     isAddSalesTeamRoot: PropTypes.bool,
     delTeamErrorMsg: PropTypes.string,
     className: PropTypes.string,
+    memberCount: PropTypes.number,
 };
 module.exports = LeftTree;

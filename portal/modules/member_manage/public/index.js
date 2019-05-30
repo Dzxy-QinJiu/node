@@ -2,6 +2,7 @@ require('./css/index.less');
 import {SearchInput, AntcTable} from 'antc';
 import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
+import Spinner from 'CMP_DIR/spinner';
 import MemberManageStore from './store';
 import MemberManageAction from './action';
 import MemberFormAction from './action/member-form-actions';
@@ -53,6 +54,7 @@ class MemberManage extends React.Component {
             id: _.get(queryParams, 'id', ''), // 下拉加载最后一条的id
         };
         MemberManageAction.getMemberList(queryObj);
+        this.props.getMemberCount(this.state.memberTotal);
     };
 
     componentWillUnmount = () => {
@@ -344,9 +346,18 @@ class MemberManage extends React.Component {
                             {this.renderTopNavOperation()}
                         </div>
                         <div className='member-content'>
-                            <div className='member-table-info'>
-                                {this.renderMemberTableContent()}
-                            </div>
+                            {
+                                this.state.loading && this.state.sortId === '' ? (
+                                    <div>
+                                        <Spinner/>
+                                    </div>
+                                ) : (
+                                    <div className='member-table-info'>
+                                        {this.renderMemberTableContent()}
+                                    </div>
+                                )
+                            }
+
                         </div>
                     </div>
                 </div>
@@ -383,5 +394,9 @@ class MemberManage extends React.Component {
         );
     }
 }
+
+MemberManage.propTypes = {
+    getMemberCount: PropTypes.func
+};
 
 module.exports = MemberManage;

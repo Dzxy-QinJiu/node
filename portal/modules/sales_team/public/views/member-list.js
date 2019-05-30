@@ -451,9 +451,21 @@ const MemberList = createReactClass({
             width: '40%',
             render: (name, record) => {
                 let memberNameCls = classNames('member-name', this.memberStatusClass(_.get(record, 'status')));
+                let role = _.get(record, 'role');
+                let iconClass = classNames('iconfont icon-team-role', {
+                    'sale-owner': role === 'owner',
+                    'sale-manage': role === 'manager',
+                    'sale-user': role === 'user',
+                    'sale-status-stop': _.get(record, 'status') === 0
+                });
                 return (
                     <div className={memberNameCls}>
-                        <div className='accout'>{_.get(record, 'userName')}</div>
+                        <div className='accout'>
+                            <i className={iconClass}/>
+                            <span>
+                                {_.get(record, 'userName')}
+                            </span>
+                        </div>
                         <div className='nickname'>{_.get(record, 'nickName')}</div>
                     </div>
                 );
@@ -719,7 +731,7 @@ const MemberList = createReactClass({
         let ownerId = '';
         //当前选中的是秘书，将秘书转为负责人
         _.each(curMemberList, item => {
-            if (item.role === 'manage') {
+            if (item.role === 'manager') {
                 if (item.selected) {
                     ownerId = item.userId;
                     editObj.type = MEMBER_TYPE.MANAGER;

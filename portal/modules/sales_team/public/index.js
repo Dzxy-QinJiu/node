@@ -55,6 +55,7 @@ class SalesTeamPage extends React.Component {
         data.saveSalesTeamResult = '';//添加团队成功还是失败（success/error）
         this.state = {
             activeKey: TAB_KEYS.DEPARTMENT_TAB,
+            memberCount: 0, // 成员的数量
             ...data,
         };
     }
@@ -192,6 +193,11 @@ class SalesTeamPage extends React.Component {
         });
     };
 
+    getMemberCount = (number) => {
+        this.setState({
+            memberCount: number
+        });
+    };
     render() {
         let containerHeight = this.state.containerHeight;
         let containerWidth = this.state.containerWidth;
@@ -218,7 +224,7 @@ class SalesTeamPage extends React.Component {
                                             width: salesTeamMemberWidth
                                         }}
                                     >
-                                        <MemberManage />
+                                        <MemberManage getMemberCount={this.getMemberCount}/>
                                     </div>
                                 ) :
                                     <MemberList
@@ -254,6 +260,7 @@ class SalesTeamPage extends React.Component {
                                         key={TAB_KEYS.DEPARTMENT_TAB}
                                     >
                                         <LeftTree
+                                            memberCount={this.state.memberCount}
                                             containerHeight={tabHeight}
                                             salesTeamList={salesTeamList}
                                             searchContent={this.state.searchContent}
