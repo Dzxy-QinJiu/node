@@ -501,6 +501,7 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
             let ownerId = _.get(curShowTeam, 'owner_id');
             if (ownerId) {
                 this.curShowTeamMemberObj.owner = _.find(salesTeamMemberList, member => ownerId === member.userId);
+                this.curShowTeamMemberObj.owner.role = 'owner';
             }
             // 秘书
             let managerIds = _.get(curShowTeam, 'manager_ids');
@@ -509,6 +510,7 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
                 _.each(managerIds, (id) => {
                     let manager = _.find(salesTeamMemberList, member => id === member.userId);
                     if (manager) {
+                        manager.role = 'manager';
                         managers.push(manager);
                     }
                 });
@@ -521,6 +523,7 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
                 _.each(userIds, (id) => {
                     let user = _.find(salesTeamMemberList, item => id === item.userId);
                     if (user) {
+                        user.role = 'user';
                         users.push(user);
                     }
                 });

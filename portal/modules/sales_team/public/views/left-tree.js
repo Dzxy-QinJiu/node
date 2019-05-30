@@ -174,7 +174,6 @@ class LeftTree extends React.Component {
                     <div className="sales-team-group-name" title={item.title}>
                         <span className="sales-team-name-text">{item.title}</span>
                         <span className="sales-team-member-statistic">
-                            <span>(</span>
                             <ReactIntl.FormattedMessage
                                 id="sales.team.member.count"
                                 defaultMessage={'{teamMemberCount}人'}
@@ -182,7 +181,6 @@ class LeftTree extends React.Component {
                                     'teamMemberCount': teamMemberCount
                                 }}
                             />
-                            <span>)</span>
                         </span>
                     </div>
                     {

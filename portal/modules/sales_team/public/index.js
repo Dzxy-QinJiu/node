@@ -2,6 +2,7 @@
  * Created by xiaojinfeng on 2016/04/08.
  */
 let React = require('react');
+require('./css/index.less');
 require('./css/sales-team.less');
 import {Icon,Input,Button,Tabs} from 'antd';
 const TabPane = Tabs.TabPane;
@@ -14,11 +15,11 @@ let PrivilegeChecker = require('../../../components/privilege/checker').Privileg
 let LeftTree = require('./views/left-tree');
 let MemberList = require('./views/member-list');
 let SalesTeamAjax = require('./ajax/sales-team-ajax');
-let topHeight = 87; // 22 + 65 : 添加按钮高度+顶部导航高度
-let bootomHeight = 20; //距离底部高度
 import OfficeManage from '../../office_manage/public';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import MemberManage from '../../member_manage/public';
+let topHeight = 87; // 22 + 65 : 添加按钮高度+顶部导航高度
+let bootomHeight = 20; //距离底部高度
 
 let CONSTANT = {
     SALES_TEAM_IS_NULL: 'sales-team-is-null',//没有团队时的提示信息
@@ -30,6 +31,15 @@ let CONSTANT = {
 const TAB_KEYS = {
     DEPARTMENT_TAB: '1',//部门
     POSITION_TAB: '2'// 职务
+};
+
+// 用于布局的常量
+const LAYOUT_CONSTANTS = {
+    FRIST_NAV_WIDTH: 75, // 一级导航的宽度
+    NAV_WIDTH: 120, // 导航宽度
+    TOP_ZONE_HEIGHT: 80, // 头部（添加成员、筛选的高度）高度
+    PADDING_WIDTH: 24 * 2, // padding占的宽度
+    PADDING_HEIGHT: 24 * 2 // padding占的高度
 };
 
 class SalesTeamPage extends React.Component {
@@ -82,7 +92,7 @@ class SalesTeamPage extends React.Component {
     }
 
     containerHeightFnc = () => {
-        return $(window).height() - topHeight - bootomHeight;
+        return $(window).height() - LAYOUT_CONSTANTS.PADDING_HEIGHT;
     };
 
     windowHeightFnc = () => {
@@ -90,7 +100,8 @@ class SalesTeamPage extends React.Component {
     };
 
     containerWidthFnc = () => {
-        return $(window).width() - 75 - 40;
+        return $(window).width() - LAYOUT_CONSTANTS.FRIST_NAV_WIDTH -
+            LAYOUT_CONSTANTS.NAV_WIDTH - LAYOUT_CONSTANTS.PADDING_WIDTH;
     };
 
     cancelAddGroup = () => {
@@ -182,28 +193,28 @@ class SalesTeamPage extends React.Component {
     };
 
     render() {
-        let containerHeight = this.state.containerHeight - 2;
-        let containerWidth = this.state.containerWidth - 2;
-        let salesTeamMemberWidth = containerWidth - 300 - 2;
+        let containerHeight = this.state.containerHeight;
+        let containerWidth = this.state.containerWidth;
+        let salesTeamMemberWidth = containerWidth - 340;
         let salesTeamList = this.state.salesTeamList;
         let leftTreeData = this.state.searchContent ? this.state.searchSalesTeamTree : this.state.salesTeamListArray;
         let organizationName = _.get(getOrganization(), 'name', '');
         let groupName = _.get(this.state.curShowTeamMemberObj, 'groupName');
-        let height = $(window).height();
+        let tabHeight = containerHeight - LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
         return (
-            <div className="sales-team-manage-container" data-tracename="团队管理" style={{height: height}}>
-                <div className='member-list-zone' style={{height: height}}>
+            <div className="sales-team-manage-container" data-tracename="团队管理" style={{height: containerHeight}}>
+                <div className='member-list-zone' style={{height: containerHeight}}>
                     {this.state.salesTeamLisTipMsg ? (this.state.salesTeamLisTipMsg === CONSTANT.SALES_TEAM_IS_NULL ? this.renderAddSalesTeam() :
                         <NoData msg={this.state.salesTeamLisTipMsg}/>) : (this.state.isLoadingSalesTeam ? (
                         <Spinner className="isloading"/>) : (
                         <div className="sales-team-table-block modal-container"
-                            style={{width: containerWidth,height: containerHeight}}>
+                            style={{width: containerWidth ,height: containerHeight}}>
                             {
                                 groupName === organizationName ? (
                                     <div
-                                        className='sales-team-personnel'
+                                        className='member-zone'
                                         style={{
-                                            height: salesTeamMemberWidth,
+                                            height: containerHeight,
                                             width: salesTeamMemberWidth
                                         }}
                                     >
@@ -231,7 +242,7 @@ class SalesTeamPage extends React.Component {
                                     />
                             }
                             <div className='member-group-tabs' style={{
-                                height: containerHeight
+                                height: containerHeight,
                             }}>
                                 <Tabs
                                     defaultActiveKey={TAB_KEYS.DEPARTMENT_TAB}
@@ -243,7 +254,7 @@ class SalesTeamPage extends React.Component {
                                         key={TAB_KEYS.DEPARTMENT_TAB}
                                     >
                                         <LeftTree
-                                            containerHeight={containerHeight}
+                                            containerHeight={tabHeight}
                                             salesTeamList={salesTeamList}
                                             searchContent={this.state.searchContent}
                                             salesTeamGroupList={leftTreeData}

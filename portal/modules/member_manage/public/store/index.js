@@ -77,7 +77,7 @@ class MemberManageStore {
 
     //点击成员查看详情时，先设置已有的详情信息
     setCurMember(memberId) {
-        this.currentUser = _.find(this.memberList, item => item.id === memberId) || emptyUser;
+        this.currentMember = _.find(this.memberList, item => item.id === memberId) || emptyMember;
     }
 
     //获取成员详情后，重新赋值详情信息
@@ -207,7 +207,7 @@ class MemberManageStore {
                             }
                             this.memberList[j].email = modifiedMember.email;
                         }
-                        this.currentUser = this.memberList[j];
+                        this.currentMember = this.memberList[j];
                     }
                     break;
                 }
