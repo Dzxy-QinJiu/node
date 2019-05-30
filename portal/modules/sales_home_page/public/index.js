@@ -145,10 +145,22 @@ class SalesHomePage extends React.Component {
             this.setState({
                 isAnimateShow: true,
                 isClientAnimateShow: true
+            }, () => {
+                //触发窗口大小变更事件，以重新计算滚动区域高度
+                this.triggerWindowResizeEvent();
             });
         }, DELAY_TIME);
         this.getPhoneInitialed();
     }
+
+    //触发窗口大小变更事件
+    triggerWindowResizeEvent() {
+        setTimeout(() => {
+            //触发窗口大小变更事件，以重新计算图表区域高度，防止出现图表展示不全的情况
+            window.dispatchEvent(new Event('resize'));
+        }, DELAY_TIME);
+    }
+
     getPhoneInitialed = () => {
         var showSetPhoneTip = oplateConsts.SHOW_SET_PHONE_TIP;
         if (_.isBoolean(showSetPhoneTip)){
@@ -838,6 +850,9 @@ class SalesHomePage extends React.Component {
                 //设置成功后，隐藏提示框
                 this.setState({
                     isAnimateHide: true
+                }, () => {
+                    //触发窗口大小变更事件，以重新计算滚动区域高度
+                    this.triggerWindowResizeEvent();
                 });
             }
         });
