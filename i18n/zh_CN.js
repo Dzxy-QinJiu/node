@@ -2931,6 +2931,7 @@ var zh_CN = {
     'common.by.team': '按团队',
     'common.by.member': '按成员',
     'common.deal.number': '成交数',
+    'common.deal.rate': '成交率',
     'common.deal.amount': '成交额',
     'common.net.increase': '净增',
     'common.reflux': '回流',

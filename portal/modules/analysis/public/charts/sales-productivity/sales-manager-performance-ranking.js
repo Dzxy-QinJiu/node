@@ -6,6 +6,7 @@ export function getSalesManagerPerformanceRankingChart() {
     return {
         title: Intl.get('common.sales.manager.performance.ranking', '销售经理业绩排名'),
         chartType: 'table',
+        layout: { sm: 24 },
         url: '/rest/analysis/contract/contract/v2/:data_type/performance/order/sales-manager',
         conditions: [{
             name: 'time_interval',
@@ -55,6 +56,17 @@ export function getSalesManagerPerformanceRankingChart() {
                     title: Intl.get('common.oppertunity.number', '机会数量'),
                     dataIndex: 'opportunity_count',
                     sorter: sorter.bind(null, 'opportunity_count'),
+                    width: '10%',
+                }, {
+                    title: Intl.get('common.deal.number', '成交数'),
+                    dataIndex: 'deal_count',
+                    sorter: sorter.bind(null, 'deal_count'),
+                    width: '10%',
+                }, {
+                    title: Intl.get('common.deal.rate', '成交率'),
+                    dataIndex: 'deal_rate',
+                    showAsPercent: true,
+                    sorter: sorter.bind(null, 'deal_rate'),
                     width: '10%',
                 }, {
                     title: Intl.get('common.performance', '业绩'),

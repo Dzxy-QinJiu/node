@@ -2904,6 +2904,7 @@ var en_US = {
     'common.by.team': 'by team',//按团队
     'common.by.member': 'by member',//按成员
     'common.deal.number': 'deal number',//成交数
+    'common.deal.rate': 'deal rate',//成交率
     'common.deal.amount': 'deal amount',//成交额
     'common.net.increase': 'net increase',//净增
     'common.reflux': 'reflux',//回流
