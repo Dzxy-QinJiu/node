@@ -20,24 +20,26 @@ export function getClueHistoricalPeriodComparisionChart() {
                 };
             }
 
-            const dataArr = [
-                data.before_last_list,
-                data.last_list,
-                data.current_list
-            ];
+            //全部数据
+            //包含从开始时间到结束时间里每个年份前推3年的数据
+            //因为年份可能会重叠，所以有重复数据
+            const allData = data.before_last_list.concat(data.last_list).concat(data.current_list);
+            //去重后的数据
+            const uniqData = _.uniqBy(allData, 'date');
+            //将去重后的数据按年份分组
+            const groupedData = _.groupBy(uniqData, item => item.date_str.substr(0, 4));
             
             option.series = [];
             option.legend.data = [];
 
-            _.each(dataArr, dataArrItem => {
-                const dateStr = _.get(dataArrItem, '[0].date_str');
-                const year = moment(dateStr).year() + Intl.get('common.time.unit.year', '年');
+            _.each(groupedData, (value, key) => {
+                const year = key + Intl.get('common.time.unit.year', '年');
 
                 option.legend.data.push(year);
                 option.series.push({
                     name: year,
                     type: 'bar',
-                    data: _.map(dataArrItem, itemMapFunc),
+                    data: _.map(value, itemMapFunc),
                     itemStyle: {
                         normal: {
                             label: {
