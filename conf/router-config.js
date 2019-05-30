@@ -243,6 +243,22 @@ let routers = [
                 showPrivileges: ['USER_MANAGE_LIST_USERS', 'BGM_SALES_TEAM_LIST']
             },
             {
+                id: 'PRODUCTIONS',
+                name: 'menu.product',// 产品
+                routePath: '/background_management/products',
+                component: `${MODULE_PATH}production-manage/public`,
+                //有这个权限，才显示入口图标
+                showPrivileges: ['PRODUCTS_MANAGE']
+            },
+            {
+                id: 'SALESSTAGE',
+                name: 'menu.order.stage',// 订单阶段
+                routePath: '/background_management/sales_stage',
+                component: `${MODULE_PATH}sales_stage/public`,
+                //有这个权限，才显示入口图标
+                showPrivileges: ['BGM_SALES_STAGE_ADD']
+            },
+            {
                 id: 'USER_MANAGE', //唯一标识
                 name: 'menu.user',//成员管理
                 routePath: '/background_management/user',
@@ -250,13 +266,6 @@ let routers = [
                 //有这个权限，才显示入口图标
                 showPrivileges: ['USER_MANAGE_LIST_USERS']
             }, {
-                id: 'SALESSTAGE',
-                name: 'crm.order.stage.manage',//订单阶段管理
-                routePath: '/background_management/sales_stage',
-                component: `${MODULE_PATH}sales_stage/public`,
-                //有这个权限，才显示入口图标
-                showPrivileges: ['BGM_SALES_STAGE_ADD']
-            },{
                 id: 'CONFIGARATION',
                 name: 'menu.config',//配置
                 routePath: '/background_management/configaration',
@@ -279,14 +288,6 @@ let routers = [
                 //有这个权限，才显示入口图标
                 showPrivileges: ['ROLEP_RIVILEGE_ROLE_CLIENT_LIST']
             },
-            {
-                id: 'PRODUCTIONS',
-                name: 'config.product.manage',//产品管理
-                routePath: '/background_management/products',
-                component: `${MODULE_PATH}production-manage/public`,
-                //有这个权限，才显示入口图标
-                showPrivileges: ['PRODUCTS_MANAGE']
-            }
         ]
     },
     {

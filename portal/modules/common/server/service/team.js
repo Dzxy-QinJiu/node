@@ -87,6 +87,7 @@ function turnToFrontMember(data) {
                 teamRoleId: member.teamrole_id,
                 teamRoleName: member.teamrole_name,
                 teamRoleColor: member.teamrole_color,
+                phone: _.get(member, 'phone'),
             };
         });
     }

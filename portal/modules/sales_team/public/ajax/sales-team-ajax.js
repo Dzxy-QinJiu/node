@@ -53,7 +53,7 @@ exports.getSalesTeamMemberList = function(groupId) {
     var Deferred = $.Deferred();
     teamAjax.getMemberListByTeamIdAjax().resolvePath({
         group_id: groupId
-    }).sendRequest().success(function(list) {
+    }).sendRequest({with_teamrole: true}).success(function(list) {
         Deferred.resolve(list);
     }).error(function(errorInfo) {
         Deferred.reject(errorInfo.responseJSON);

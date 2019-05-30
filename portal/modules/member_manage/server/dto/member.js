@@ -20,7 +20,6 @@ exports.User = function(opts) {
 };
 
 exports.toFrontObject = function(restObject) {
-    console.log('restObject###############################restObject:',restObject);
     let frontObj = {};
     frontObj.id = restObject.user_id;
     frontObj.userName = restObject.user_name || '';

@@ -19,6 +19,13 @@ var en_US = {
     'menu.appuser.position': 'Position Order', // 座席号管理
     'menu.backend': 'Background',//后台管理
     'menu.member': 'Members', // 成员
+    'menu.product': 'Product', // 产品
+    'menu.apply.approve': 'Application for approval', // 申请审批
+    'menu.order.stage': 'Order Stage', // 订单阶段
+    'menu.industry': 'Industry', // 行业
+    'menu.competing.product': 'Competing products', // 竞品
+    'menu.clue.allocation': 'Clue allocation', // 线索分配
+    'menu.my.company': 'My Company', // 我的企业
     'menu.user': 'Members',//成员管理
     'menu.role': 'Roles',//角色管理
     'menu.auth': 'Authority',//权限管理
@@ -665,6 +672,7 @@ var en_US = {
     //后台管理-成员start
     'member.member': 'Member',//成员
     'member.search.placeholder': 'account/nickname/phone',// 账号/昵称/手机
+    'member.add.member.search.placeholder': 'account/nickname', // 账号/昵称
     'member.role.select.default.role': 'All roles', // 全部角色
     'member.start.this': 'enable this ',//启用此
     'member.stop.this': 'disable this ',//禁用此
