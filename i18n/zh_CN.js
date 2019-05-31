@@ -2933,5 +2933,6 @@ var zh_CN = {
     'common.deal.amount': '成交额',
     'common.114.phone': '114电话',
     'common.non.114.phone': '非114电话',
+    'common.non.service.phone': '非客服电话',
 };
 export default zh_CN;

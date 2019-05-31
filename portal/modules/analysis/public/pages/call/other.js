@@ -17,15 +17,9 @@ module.exports = {
 function getCharts() {
     return [
         //114占比统计
-        callChart.getCall114RatioAndServiceTelChart({
-            title: '114占比统计',
-            type: '114'
-        }),
+        callChart.getCall114RatioChart(),
         //客服电话统计
-        callChart.getCall114RatioAndServiceTelChart({
-            title: '客服电话统计',
-            type: 'service-tel'
-        }),
+        callChart.getCallServiceTelChart(),
         //通话时段统计
         callChart.getCallTimeIntervalChart(),
         //客户阶段统计

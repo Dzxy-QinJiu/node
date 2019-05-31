@@ -2905,6 +2905,7 @@ var en_US = {
     'common.deal.number': 'deal number',//成交数
     'common.deal.amount': 'deal amount',//成交额
     'common.114.phone': '114 phone',//114电话
-    'common.non.114.phone': '',//非114电话
+    'common.non.114.phone': 'non 114 phone',//非114电话
+    'common.non.service.phone': 'non service phone',//非客服电话
 };
 export default en_US;
