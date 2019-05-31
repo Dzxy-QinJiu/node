@@ -284,9 +284,9 @@ class ConfigManage extends React.Component {
                         <PrivilegeChecker check={auths.STRATEGY}>
                             <RealmConfig />
                         </PrivilegeChecker>
-                        <PrivilegeChecker check={auths.TELECONFIG}>
+                        {/*<PrivilegeChecker check={auths.TELECONFIG}>
                             <TeleConfig />
-                        </PrivilegeChecker>
+                        </PrivilegeChecker>*/}
                         <PrivilegeChecker check={auths.COMPETING_PRODUCT}>
                             <CompetingProductManage/>
                         </PrivilegeChecker>
