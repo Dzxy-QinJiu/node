@@ -5,7 +5,7 @@
 import salesProductivityChart from '../../charts/sales-productivity';
 
 module.exports = {
-    title: '总体分析',
+    title: Intl.get('common.overall.analysis', '总体分析'),
     menuIndex: 1,
     privileges: [
         'CUSTOMER_ANALYSIS_COMMON',

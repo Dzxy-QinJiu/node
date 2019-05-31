@@ -2918,5 +2918,6 @@ var en_US = {
     'common.current.quarter': 'current quarter',//本季度
     'common.current.year': 'current year',//本年
     'common.rank': 'rank',//名次
+    'common.sales.productivity.analysis': 'Sales productivity analysis',//销售生产力分析
 };
 export default en_US;

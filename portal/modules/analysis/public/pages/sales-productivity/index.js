@@ -11,7 +11,7 @@ const req = require.context('.', false, /^((?!index).)*\.js$/);
 const pages = getContextContent(req);
 
 module.exports = {
-    title: '销售生产力分析',
+    title: Intl.get('common.sales.productivity.analysis', '销售生产力分析'),
     menuIndex: 6,
     privileges: [
         'CUSTOMER_ANALYSIS_COMMON',

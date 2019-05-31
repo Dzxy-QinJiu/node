@@ -3022,5 +3022,6 @@ var zh_CN = {
     'common.current.quarter': '本季度',
     'common.current.year': '本年',
     'common.rank': '名次',
+    'common.sales.productivity.analysis': '销售生产力分析',
 };
 export default zh_CN;
