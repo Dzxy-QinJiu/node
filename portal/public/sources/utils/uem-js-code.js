@@ -4,8 +4,9 @@
  * Created by wangliping on 2019/1/24.
  */
 //uem用户接入时，产品设置的js代码
-exports.getUemJSCode = (uemSiteId) => {
-    return `<!-- Curtao -->
+exports.getUemJSCode = (uemSiteId, custom_variable) => {
+    // 固定的自定义属性
+    let fixedCode = `<!-- Curtao -->
 <script type='text/javascript'>
   var _paq = _paq || [];
   /* 将下一行代码中的星号，替换为真实的用户账号，此项为必须设置的项*/
@@ -19,7 +20,10 @@ exports.getUemJSCode = (uemSiteId) => {
   /*_paq.push(['setCustomVariable', '3', 'organization', '******', 'visit']);*/
   /*用户到期时间，时间格式为：YYYY-MM-DD*/
   /*_paq.push(['setCustomVariable', '4', 'expiretime', '******', 'visit']);*/
-  _paq.push(['trackPageView']);
+  /*用户类型，例如: 试用，签约*/
+  /*_paq.push(['setCustomVariable', '5', 'user_type', '******', 'visit']);*/`;
+    // 底部代码
+    let footerCode = `  _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
   (function() {
     var u='https://ustatweb.antfact.com/';
@@ -30,4 +34,28 @@ exports.getUemJSCode = (uemSiteId) => {
   })();
 </script>
 <!-- End Curtao Code -->`;
+
+    // 自定义属性代码
+    let customCode = '';
+    // 固定的自定义属性个数
+    let jsCodeFixedCount = 5;
+    // 加上添加的自定义属性
+    let keys = _.keys(custom_variable);
+    let custom_variables = [];
+    _.each(keys,(key, index) => {
+        // 添加描述
+        custom_variables.push(`  /*${custom_variable[key]}*/`);
+        // 添加key
+        custom_variables.push(`  /*_paq.push(['setCustomVariable', '${jsCodeFixedCount + index + 1}', '${key}', '******', 'visit']);*/`);
+    });
+    if(_.get(custom_variables,'[0]')) {
+        _.each(custom_variables, (custom, index) => {
+            if(index === 0) {
+                customCode += '\n' + custom + '\n';
+            }else {
+                customCode += custom + '\n';
+            }
+        });
+    }
+    return fixedCode + customCode + footerCode;
 };
