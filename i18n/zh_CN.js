@@ -2986,7 +2986,7 @@ var zh_CN = {
     'apply.add.approver.applicant.setting': '申请人指定',
     'apply.add.approver.applicant.self': '申请人自己',
     'apply.add.approver.submit.files': '可提交文件',
-    'apply.add.approver.distribute': '可分配',
+    'apply.add.approver.distribute': '指定下一审批人',
     'apply.add.approve.node.team.owner': '团队所有者',
     'apply.add.approve.node.team.owner.and.higher.level.owner': '团队所有者或者上级团队所有者',
     'apply.add.approve.node.higher.level.owner': '上级团队所有者',
@@ -3036,5 +3036,6 @@ var zh_CN = {
     'common.current.year': '本年',
     'common.rank': '名次',
     'common.sales.productivity.analysis': '销售生产力分析',
+    'apply.approve.set.approver': '指定审批人'
 };
 export default zh_CN;

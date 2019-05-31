@@ -158,6 +158,9 @@ class AddBusinessApply extends React.Component {
                 start: moment(values.begin_time).format(oplateConsts.DATE_FORMAT) + `_${formData.begin_type}`,
                 end: moment(values.end_time).format(oplateConsts.DATE_FORMAT) + `_${formData.end_type}`
             }];
+            submitObj.condition = {
+                condition: formData.total_range
+            };
             var hasNoExistCustomer = false;
             _.forEach(formData.customers, (customerItem, index) => {
                 var submitCustomerItem = {

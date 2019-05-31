@@ -41,12 +41,15 @@ class AddLeaveApply extends React.Component {
         for (var key in newSetting){
             formData[key] = newSetting[key];
         }
+        this.updateFormData(formData);
+        this.addLabelRequiredCls();
+    }
+    updateFormData = (formData) => {
         this.setState({
             formData: formData
         },() => {
             this.calculateTotalLeaveRange();
         });
-        this.addLabelRequiredCls();
     }
     componentDidUpdate() {
         this.addLabelRequiredCls();
@@ -90,6 +93,10 @@ class AddLeaveApply extends React.Component {
                 start: moment(values.begin_time).format(oplateConsts.DATE_FORMAT) + `_${formData.begin_type}`,
                 end: moment(values.end_time).format(oplateConsts.DATE_FORMAT) + `_${formData.end_type}`,
             }];
+            //增加出差时长
+            values.condition = {
+                condition: formData.total_range
+            };
             delete values.begin_time;
             delete values.end_time;
             delete values.total_range;
