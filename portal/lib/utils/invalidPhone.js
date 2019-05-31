@@ -25,7 +25,7 @@ exports.getInvalidPhone = function(onSuccess, onError) {
 };
 //添加为无效电话
 exports.addInvalidPhone = function(data, onSuccess, onError) {
-    const route = _.find(routeList, route => route.handler === 'addInvalidPhoneV2');
+    const route = _.find(routeList, route => route.handler === 'addInvalidPhone');
     const arg = {
         url: route.path,
         type: route.method,

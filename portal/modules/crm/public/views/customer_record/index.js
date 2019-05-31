@@ -117,7 +117,7 @@ class CustomerRecord extends React.Component {
             });
         });
         //获取无效电话号码列表
-        getInvalidPhone((data) => {
+        /*getInvalidPhone((data) => {
             this.setState({
                 invalidPhoneLists: data.result,
                 getInvalidPhoneErrMsg: ''
@@ -127,7 +127,7 @@ class CustomerRecord extends React.Component {
                 invalidPhoneLists: [],
                 getInvalidPhoneErrMsg: errMsg || Intl.get('call.record.get.invalid.phone.lists', '获取无效电话列表失败')
             });
-        });
+        });*/
         this.getAppList();
     }
     //获取某组织内跟进记录的类型（除去固定的电话、拜访、其他以外的类型）
