@@ -100,6 +100,20 @@ class TopBar extends React.Component {
         }
     };
 
+    //调整团队、成员下拉菜单内容区域的宽度，以解决删除选中项时下拉内容宽度和菜单宽度不对应，导致页面产生横向滚动条的问题
+    adjustTeamMemberDropdownWidth() {
+        setTimeout(() => {
+            const teamMemberSelectWidth = $('.select-team-member-list').width();
+
+            const dropdownWidth = $('.team-member-dropdown').width();
+
+            $('.team-member-dropdown').css({
+                width: teamMemberSelectWidth,
+                minWidth: teamMemberSelectWidth
+            });
+        }, 300);
+    }
+
     onTeamChange = (teamId) => {
         let selectedTeam;
         let teamIdStr;
@@ -117,6 +131,8 @@ class TopBar extends React.Component {
 
         this.setState({selectedTeam}, () => {
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamIdStr);
+
+            this.adjustTeamMemberDropdownWidth();
         });
     };
 
@@ -136,6 +152,8 @@ class TopBar extends React.Component {
 
         this.setState({selectedMember}, () => {
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, memberIdStr);
+
+            this.adjustTeamMemberDropdownWidth();
         });
     };
 
@@ -247,7 +265,7 @@ class TopBar extends React.Component {
                         optionFilterProp="children"
                         value={this.state.selectedTeam}
                         onChange={this.onTeamChange}
-                        dropdownMatchSelectWidth={false}
+                        dropdownClassName="team-member-dropdown"
                     >
                         {_.map(this.state.teamList, (teamItem, index) => {
                             return <Option key={index} value={teamItem.group_id}>{teamItem.group_name}</Option>;
@@ -263,7 +281,7 @@ class TopBar extends React.Component {
                         optionFilterProp="children"
                         value={this.state.selectedMember}
                         onChange={this.onMemberChange}
-                        dropdownMatchSelectWidth={false}
+                        dropdownClassName="team-member-dropdown"
                     >
                         {_.map(this.state.memberList, (memberItem, index) => {
                             return <Option key={index}

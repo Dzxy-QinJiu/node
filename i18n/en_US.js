@@ -2904,6 +2904,7 @@ var en_US = {
     'common.by.team': 'by team',//按团队
     'common.by.member': 'by member',//按成员
     'common.deal.number': 'deal number',//成交数
+    'common.deal.rate': 'deal rate',//成交率
     'common.deal.amount': 'deal amount',//成交额
     'common.114.phone': '114 phone',//114电话
     'common.non.114.phone': 'non 114 phone',//非114电话
@@ -2923,5 +2924,13 @@ var en_US = {
     'app.user.manage.add.custom.text': 'Add attributes',//添加属性
     'app.user.manage.user.attributes': 'User attributes',//用户属性
     'clue.customer.set.invalid': 'Mark as invalid',//标为无效
+    'common.oppertunity.number': 'oppertunity number',//机会数量
+    'common.performance': 'performance',//业绩
+    'common.sales.manager.performance.ranking': 'sales manager performance ranking',//销售经理业绩排名
+    'common.current.week': 'current week',//本周
+    'common.current.quarter': 'current quarter',//本季度
+    'common.current.year': 'current year',//本年
+    'common.rank': 'rank',//名次
+    'common.sales.productivity.analysis': 'Sales productivity analysis',//销售生产力分析
 };
 export default en_US;

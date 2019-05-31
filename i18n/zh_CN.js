@@ -2931,6 +2931,7 @@ var zh_CN = {
     'common.by.team': '按团队',
     'common.by.member': '按成员',
     'common.deal.number': '成交数',
+    'common.deal.rate': '成交率',
     'common.deal.amount': '成交额',
     'common.114.phone': '114电话',
     'common.non.114.phone': '非114电话',
@@ -3027,5 +3028,13 @@ var zh_CN = {
     'app.user.manage.add.custom.text': '添加属性',
     'app.user.manage.user.attributes': '用户属性',
     'clue.customer.set.invalid': '标为无效',
+    'common.oppertunity.number': '机会数量',
+    'common.performance': '业绩',
+    'common.sales.manager.performance.ranking': '销售经理业绩排名',
+    'common.current.week': '本周',
+    'common.current.quarter': '本季度',
+    'common.current.year': '本年',
+    'common.rank': '名次',
+    'common.sales.productivity.analysis': '销售生产力分析',
 };
 export default zh_CN;
