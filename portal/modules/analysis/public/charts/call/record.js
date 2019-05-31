@@ -61,7 +61,12 @@ export function getCallRecordChart(paramObj = {}) {
 
     function getColumns() {
         //是否显示的是团队数据
-        const isShowTeamData = paramObj.Store.teamMemberFilterType === 'team';
+        let isShowTeamData = paramObj.Store.teamMemberFilterType === 'team';
+
+        //只有一个团队时不显示的是团队数据
+        if (paramObj.Store.teamList.list.length === 1) {
+            isShowTeamData = false;
+        }
 
         let col_width = 95, num_col_width = 80, col_lg_width = 120;
 
