@@ -54,6 +54,8 @@ function AppUserAction() {
         'toggleFilterExpanded',
         //切换某个过滤条件
         'toggleSearchField',
+        //切换uem某个过滤条件
+        'uemToggleSearchField',
         //更新一个用户的一个应用成功后，同步列表中的数据
         'updateAppInfo',
         //全部停用之后，更新用户列表中的数据
@@ -86,6 +88,8 @@ function AppUserAction() {
         'getTeamLists',
         // 获取安全域列表
         'getRealmList',
+        // 获取用户查询的条件
+        'getUserCondition',
         //恢复初始数据
         'setInitialData',
         //用户生成线索客户后，更新apps中的clue_created属性
@@ -182,6 +186,14 @@ function AppUserAction() {
 
     this.getRealmList = function() {
         AppUserAjax.getRealmList().then( (list) => {
+            this.dispatch({error: false, list: list});
+        },() => {
+            this.dispatch({error: true});
+        });
+    };
+
+    this.getUserCondition = function() {
+        AppUserAjax.getUserCondition().then( (list) => {
             this.dispatch({error: false, list: list});
         },() => {
             this.dispatch({error: true});

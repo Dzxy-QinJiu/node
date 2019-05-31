@@ -104,6 +104,8 @@ class AppUserManage extends React.Component {
             let integrationType = _.get(resultObj, 'type');
             //集成类型不存在或集成类型为uem时，
             if (!integrationType || integrationType === INTEGRATE_TYPES.UEM) {
+                // 获取用户查询的条件列表
+                AppUserAction.getUserCondition();
                 //获取已集成的产品列表
                 getProductList(productList => {
                     //有产品时，直接获取用户列表并展示
@@ -875,6 +877,7 @@ class AppUserManage extends React.Component {
                             appLists={this.state.detailUser.apps}
                             isShownExceptionTab={this.state.detailUser.isShownExceptionTab}
                             selectedAppId={this.state.selectedAppId}
+                            userConditions={this.state.userConditions}
                         />
                     );
                     break;

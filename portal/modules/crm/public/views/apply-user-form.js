@@ -73,7 +73,8 @@ const ApplyUserForm = createReactClass({
             formHeight: 215,//form表单初始高度
             isOplateUser: true,
             applyErrorMsg: '',//申请失败的错误提示
-            defContactChecked: false//是否选中使用默认联系人进行申请
+            defContactChecked: false,//是否选中使用默认联系人进行申请
+            uemUserTypes: [],// uem 用户类型列表
         };
     },
     getInitialApps: function(props,flag) {
@@ -93,11 +94,21 @@ const ApplyUserForm = createReactClass({
         commonDataUtil.getIntegrationConfig().then(resultObj => {
             let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
             let formData = this.state.formData;
+            let uemUserTypes = this.state.uemUserTypes;
             //从客户详情中申请用户时，用户类型默认值的设置（只有oplate用户申请时，需要默认值为试用用户）
             if (this.props.applyFrom !== 'order') {
                 formData.tag = isOplateUser ? Intl.get('common.trial.user', '试用用户') : '';
             }
-            this.setState({isOplateUser,formData});
+            if(!isOplateUser) {
+                commonAppAjax.getUserCondition().then( (list) => {
+                    uemUserTypes = _.filter(list, item => {
+                        return item.key === 'user_type' && _.get(item.values,'[0]');
+                    });
+                },() => {
+                    uemUserTypes = [];
+                });
+            }
+            this.setState({isOplateUser,formData,uemUserTypes});
         });
     },
 
@@ -670,6 +681,10 @@ const ApplyUserForm = createReactClass({
     },
     renderUemUserType: function() {
         var UserTypeList = [Intl.get('common.trial.user', '试用用户'), Intl.get('user.signed.user', '签约用户')];
+        _.each(this.state.uemUserTypes, item => {
+            // 去重取并集
+            UserTypeList = _.union(UserTypeList, item.values);
+        });
         var formData = this.state.formData;
         return (
             <Select combobox

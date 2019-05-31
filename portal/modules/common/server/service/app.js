@@ -12,8 +12,9 @@ var urls = {
     //通过id获取应用详细信息
     getCurAppById: '/rest/base/v1/application/id',
     //获取产品集成的配置
-    getIntegrationConfig: '/rest/base/v1/products/integration/config'
-
+    getIntegrationConfig: '/rest/base/v1/products/integration/config',
+    // 获取该组织的用户查询条件
+    queryUserCondition: '/rest/base/v1/realm/userquery/condition',
 };
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
@@ -161,4 +162,14 @@ exports.getCurAppById = function(req, res, appId) {
                 eventEmitter.emit('success', data);
             }
         });
+};
+
+//获取用户查询条件
+exports.queryUserCondition = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: urls.queryUserCondition,
+            req: req,
+            res: res
+        }, null);
 };

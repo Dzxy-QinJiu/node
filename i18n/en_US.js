@@ -986,7 +986,7 @@ var en_US = {
     'call.record.save.content.success': 'Save follow-up content successfully.', // 保存跟进内容成功！
     'call.record.save.content.error': 'Failed to save follow-up content.', // 保存跟进内容失败！
     'call.record.is.save.content.title': 'Are you  sure to save follow-up content?', // 是否保存跟进内容？
-    'call.record.trend.charts': 'Call Trend(the latest month)', // 近一个月的通话趋势：
+    'call.record.trend.charts': 'Call Trend(the latest month)', // 近一个月的通话趋势
     'call.record.recommend.list': 'Failed to get recommend list.', // 获取推荐列表失败！
     'call.record.servicecall.get.err': 'Failed to get the statistic about customer services phones',//获取客服电话统计失败
     'call.record.servicecall': 'statistic about customer services phones',//客服电话统计
@@ -2513,6 +2513,7 @@ var en_US = {
     'phone.status.other.hang.out': 'The other hangs up',//对方挂断
     'phone.status.contact.later': 'The contact is not here now, please contact later',//联系人现在不在，之后再联系
     'phone.dial.up.keyboard.btn': 'Dial-up keyboard',//拨号键盘
+    'phone.dial.up.text': 'Dial up',//拨号
     'phone.call.error.tip': 'The phone number is wrong!',//电话号码错误！
     'clue.customer.analysis.trend': 'Trend',//趋势
     'clue.stage.statics': 'Clue stage statistics',//线索阶段统计
@@ -2903,9 +2904,33 @@ var en_US = {
     'common.by.team': 'by team',//按团队
     'common.by.member': 'by member',//按成员
     'common.deal.number': 'deal number',//成交数
+    'common.deal.rate': 'deal rate',//成交率
     'common.deal.amount': 'deal amount',//成交额
+    'common.114.phone': '114 phone',//114电话
+    'common.non.114.phone': 'non 114 phone',//非114电话
+    'common.non.service.phone': 'non service phone',//非客服电话
     'common.net.increase': 'net increase',//净增
     'common.reflux': 'reflux',//回流
-    'apply.upload.same.name': 'The file name cannot be repeat!'//该文件名称已存在
+    'user.info.get.user.condition.failed': 'Failed to get user query condition',//获取用户查询条件失败
+    'apply.upload.same.name': 'The file name cannot be repeat!',//该文件名称已存在
+    'app.user.manage.role.name': 'Role name',//角色名称
+    'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司
+    'app.user.manage.product.key.validate': 'The custom attribute key can contain only letters and underscores',//自定义属性key只能包含字母、下划线
+    'app.user.manage.product.des.validate': 'The custom variable description can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English brackets, and the length is between 1 and 20 (including 20).',//自定义属性描述只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到20（包括20）之间
+    'app.user.manage.custom.variable.key.tip': 'Enter the key for the custom attribute',//请输入key
+    'app.user.manage.custom.variable.des.tip': 'Enter a description',//请输入描述
+    'app.user.manage.custom.variable.no.key.tip': 'The key of the custom property cannot be empty',//自定义属性的key不能为空
+    'app.user.manage.custom.variable.no.des.tip': 'The description of a custom property cannot be empty',//自定义属性的描述不能为空
+    'app.user.manage.add.custom.text': 'Add attributes',//添加属性
+    'app.user.manage.user.attributes': 'User attributes',//用户属性
+    'clue.customer.set.invalid': 'Mark as invalid',//标为无效
+    'common.oppertunity.number': 'oppertunity number',//机会数量
+    'common.performance': 'performance',//业绩
+    'common.sales.manager.performance.ranking': 'sales manager performance ranking',//销售经理业绩排名
+    'common.current.week': 'current week',//本周
+    'common.current.quarter': 'current quarter',//本季度
+    'common.current.year': 'current year',//本年
+    'common.rank': 'rank',//名次
+    'common.sales.productivity.analysis': 'Sales productivity analysis',//销售生产力分析
 };
 export default en_US;

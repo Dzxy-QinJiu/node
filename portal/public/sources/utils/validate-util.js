@@ -104,3 +104,18 @@ export const isTelephone = function(phoneNumber) {
 
 // 判断系统是否为苹果系统
 export const isMacOs = (/macintosh|mac os x/i).test(navigator.userAgent);
+
+// 自定义属性key的正则表达式， 如status, user_type, custom_variables_field
+export const keyRegex = /^[a-zA-Z][a-zA-Z_]*$/;
+//产品key键值的校验规则
+export const productKeyRule = {
+    pattern: keyRegex,
+    message: Intl.get('app.user.manage.product.key.validate', '自定义属性key只能包含字母、下划线')
+};
+// 自定义属性描述的正则表达式（包含大小写字母、下划线、中英文括号、点及汉字，长度1-20之间）
+export const descriptionRegex = regex.getNameRegex(20);
+// 产品自定义属性描述验证规则
+export const productDesRule = {
+    pattern: descriptionRegex,
+    message: Intl.get('app.user.manage.product.des.validate', '自定义属性key只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到20（包括20）之间')
+};

@@ -6,7 +6,7 @@
 
 require('../style/production-info.less');
 
-import {Form, Input, Icon, Radio, Button, Select, Checkbox} from 'antd';
+import { Form, Input, Icon, Radio, Button, Select, Checkbox, message } from 'antd';
 const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
 import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
@@ -24,6 +24,7 @@ let util = require('../utils/production-util');
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import {getUemJSCode} from 'PUB_DIR/sources/utils/uem-js-code';
+import CustomVariable from 'MOD_DIR/app_user_manage/public/views/integrate-config/custom-variable';
 
 const LAYOUT_CONST = {
     HEADICON_H: 107,//头像的高度
@@ -65,7 +66,8 @@ class Production extends React.Component {
             addErrorMsg: '',//添加失败的错误提示
             testResult: '',
             isTesting: false,
-            jsCopied: false
+            jsCopied: false,
+            firstLoaded: false, // 是否第一次加载完
         };
     };
 
@@ -85,8 +87,14 @@ class Production extends React.Component {
 
     componentDidMount() {
         ProductionFormStore.listen(this.onChange);
+        this.firstLoaded();
     }
 
+    firstLoaded() {
+        if(!this.state.firstLoaded) {
+            this.setState({firstLoaded: true});
+        }
+    }
 
     handleCancel = (e) => {
         e.preventDefault();
@@ -247,6 +255,31 @@ class Production extends React.Component {
             this.setState({jsCopied: false});
         }, 1000);
     }
+    // 添加自定义属性
+    saveCustomVariable = (saveObj, successFunc, errorFunc) => {
+        //是否修改基本信息
+        saveObj.isEditBasic = true;
+        $.ajax({
+            url: '/rest/product',
+            type: 'put',
+            dataType: 'json',
+            data: saveObj,
+            success: (data) => {
+                //修改成功{editBasicSuccess: true, editTypeSuccess:true}
+                if (_.get(data,'editBasicSuccess') && _.get(data, 'editTypeSuccess')) {
+                    //保存成功后的处理
+                    message.success(Intl.get('user.user.add.success', '添加成功'));
+                    _.isFunction(successFunc) && successFunc();
+                    this.props.afterOperation(this.props.formType, saveObj);
+                } else {
+                    _.isFunction(errorFunc) && errorFunc(Intl.get('member.add.failed', '添加失败！'));
+                }
+            },
+            error: (xhr) => {
+                _.isFunction(errorFunc) && errorFunc(xhr.responseJSON);
+            }
+        });
+    };
 
     renderTestResult() {
         if (this.state.testResult === 'success') {
@@ -272,6 +305,10 @@ class Production extends React.Component {
             labelCol: {span: 5},
             wrapperCol: {span: 19},
         };
+        let jsCode = '';
+        if(this.state.uemSiteId && values.useJS !== false) {
+            jsCode = getUemJSCode(this.state.uemSiteId, _.get(this.props.info,'custom_variable',{}));
+        }
         return (
             <Form layout='horizontal' className="form" autoComplete="off">
                 <FormItem id="preview_image">
@@ -418,12 +455,27 @@ class Production extends React.Component {
                                     )}
                                 </FormItem>) : null}
                             {this.state.uemSiteId && values.useJS !== false ? (
+                                <FormItem>
+                                    <CustomVariable
+                                        id={_.get(this.props.info,'id')}
+                                        value={_.get(this.props.info,'custom_variable',{})}
+                                        hasEditPrivilege={true}
+                                        editFormLayout={{
+                                            labelCol: {span: 5},
+                                            wrapperCol: {span: 19}
+                                        }}
+                                        addBtnTip={Intl.get('app.user.manage.add.custom.text', '添加属性')}
+                                        saveEditInput={this.saveCustomVariable}
+                                    />
+                                </FormItem>
+                            ) : null}
+                            {this.state.uemSiteId && values.useJS !== false ? (
                                 <FormItem
                                     className='jscode-form-item'
                                     label={Intl.get('common.trace.code', '跟踪代码')}
                                     {...formItemLayout}
                                 >
-                                    <CopyToClipboard text={getUemJSCode(this.state.uemSiteId)}
+                                    <CopyToClipboard text={jsCode}
                                         onCopy={this.copyJSCode}>
                                         <Button size='default' type="primary" className='copy-btn'>
                                             {Intl.get('user.jscode.copy', '复制')}
@@ -438,7 +490,7 @@ class Production extends React.Component {
                                 this.state.uemSiteId && values.useJS !== false ? (
                                     <FormItem>
                                         <div className="access-step-tip margin-style js-code-contianer">
-                                            <pre id='matomo-js-code'>{getUemJSCode(this.state.uemSiteId)}</pre>
+                                            <pre id='matomo-js-code'>{jsCode}</pre>
                                             <span className="js-code-user-tip">
                                                 <span className="attention-flag"> * </span>
                                                 {Intl.get('user.jscode.use.tip', '请将以上js代码添加到应用页面的header中，如已添加')}

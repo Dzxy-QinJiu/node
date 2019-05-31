@@ -9,21 +9,23 @@ import Store from './store';
 import {Select} from 'antd';
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
+import {dateSelectorEmitter, teamTreeEmitter, callDeviceTypeEmitter} from 'PUB_DIR/sources/utils/emitters';
+const isCommonSales = require('PUB_DIR/sources/user-data').getUserData().isCommonSales;
+import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 
 const Option = Select.Option;
-const emitters = require('PUB_DIR/sources/utils/emitters');
-const dateSelectorEmitter = emitters.dateSelectorEmitter;
-const teamTreeEmitter = emitters.teamTreeEmitter;
-const isCommonSales = require('PUB_DIR/sources/user-data').getUserData().isCommonSales;
 
 class TopBar extends React.Component {
     static defaultProps = {
         //当前显示页面
-        currentPage: {}
+        currentPage: {},
+        //是否显示通话设备类型选择器
+        isCallDeviceTypeSelectorShow: false
     };
 
     static propTypes = {
-        currentPage: PropTypes.object
+        currentPage: PropTypes.object,
+        isCallDeviceTypeSelectorShow: PropTypes.bool
     };
 
     constructor(props) {
@@ -98,6 +100,20 @@ class TopBar extends React.Component {
         }
     };
 
+    //调整团队、成员下拉菜单内容区域的宽度，以解决删除选中项时下拉内容宽度和菜单宽度不对应，导致页面产生横向滚动条的问题
+    adjustTeamMemberDropdownWidth() {
+        setTimeout(() => {
+            const teamMemberSelectWidth = $('.select-team-member-list').width();
+
+            const dropdownWidth = $('.team-member-dropdown').width();
+
+            $('.team-member-dropdown').css({
+                width: teamMemberSelectWidth,
+                minWidth: teamMemberSelectWidth
+            });
+        }, 300);
+    }
+
     onTeamChange = (teamId) => {
         let selectedTeam;
         let teamIdStr;
@@ -115,6 +131,8 @@ class TopBar extends React.Component {
 
         this.setState({selectedTeam}, () => {
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, teamIdStr);
+
+            this.adjustTeamMemberDropdownWidth();
         });
     };
 
@@ -134,6 +152,8 @@ class TopBar extends React.Component {
 
         this.setState({selectedMember}, () => {
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, memberIdStr);
+
+            this.adjustTeamMemberDropdownWidth();
         });
     };
 
@@ -158,6 +178,33 @@ class TopBar extends React.Component {
             this.setState({currentPage: nextProps.currentPage});
         }
     }
+
+    // 通话类型的筛选框
+    renderCallTypeSelect = () => {
+        return (
+            <div className='btn-item'>
+                <Select
+                    defaultValue={CALL_TYPE_OPTION.ALL}
+                    onChange={this.selectCallTypeValue}
+                >
+                    <Option value={CALL_TYPE_OPTION.ALL}>
+                        {Intl.get('user.online.all.type', '全部类型')}
+                    </Option>
+                    <Option value={CALL_TYPE_OPTION.PHONE}>
+                        {Intl.get('call.record.call.center', '呼叫中心')}
+                    </Option>
+                    <Option value={CALL_TYPE_OPTION.APP}>
+                        {Intl.get('common.ketao.app', '客套APP')}
+                    </Option>
+                </Select>
+            </div>
+        );
+    };
+
+    // 选择通话类型的值
+    selectCallTypeValue = (value) => {
+        callDeviceTypeEmitter.emit(callDeviceTypeEmitter.CHANGE_CALL_DEVICE_TYPE, value);
+    };
 
     //渲染操作按钮区
     renderButtonZones = () => {
@@ -198,6 +245,7 @@ class TopBar extends React.Component {
 
         return (
             <div className="btn-item-container">
+                {this.props.isCallDeviceTypeSelectorShow ? this.renderCallTypeSelect() : null}
                 {isCommonSales ? null : (
                     <Select
                         defaultValue="team"
@@ -217,7 +265,7 @@ class TopBar extends React.Component {
                         optionFilterProp="children"
                         value={this.state.selectedTeam}
                         onChange={this.onTeamChange}
-                        dropdownMatchSelectWidth={false}
+                        dropdownClassName="team-member-dropdown"
                     >
                         {_.map(this.state.teamList, (teamItem, index) => {
                             return <Option key={index} value={teamItem.group_id}>{teamItem.group_name}</Option>;
@@ -233,7 +281,7 @@ class TopBar extends React.Component {
                         optionFilterProp="children"
                         value={this.state.selectedMember}
                         onChange={this.onMemberChange}
-                        dropdownMatchSelectWidth={false}
+                        dropdownClassName="team-member-dropdown"
                     >
                         {_.map(this.state.memberList, (memberItem, index) => {
                             return <Option key={index}

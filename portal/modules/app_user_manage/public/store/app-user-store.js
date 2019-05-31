@@ -93,6 +93,11 @@ AppUserStore.prototype.resetState = function() {
     this.sort_order = '';
     // 安全域列表
     this.realmList = [];
+    // 用户查询条件列表
+    this.userConditions = [];
+    //uem过滤字段的对应关系
+    //键值对存储结构 user_type=xxx   outdate=xxx   user_status=xxx customer_unknown=xxx
+    this.uemFilterFieldMap = {};
 };
 //恢复初始值
 AppUserStore.prototype.setInitialData = function() {
@@ -232,6 +237,7 @@ AppUserStore.prototype.setSelectedAppId = function(appId) {
     //如果是切换到全部应用，则去掉排序
     if(!appId) {
         this.filterFieldMap = {};
+        this.uemFilterFieldMap = {};
         this.filterAreaExpanded = false;
     }
     //如果之前是全部应用，切换到某一个应用，并且没有排序条件，则默认按照开通时间倒序
@@ -375,6 +381,18 @@ AppUserStore.prototype.toggleSearchField = function({field,value}) {
             filterFieldMap[field] = value;
         }
 
+    }
+    this.lastUserId = '';
+};
+
+//uem toggle搜索过滤条件
+AppUserStore.prototype.uemToggleSearchField = function({field,value}) {
+    var uemFilterFieldMap = this.uemFilterFieldMap;
+    if(!value) {
+        delete uemFilterFieldMap[field];
+
+    } else {
+        uemFilterFieldMap[field] = value;
     }
     this.lastUserId = '';
 };
@@ -1178,6 +1196,15 @@ AppUserStore.prototype.getRealmList = function(result) {
         this.realmList = [];
     } else {
         this.realmList = result && result.list || [];
+    }
+};
+
+// 用户查询的条件列表
+AppUserStore.prototype.getUserCondition = function(result) {
+    if(result && result.error){
+        this.userConditions = [];
+    }else {
+        this.userConditions = result && result.list || [];
     }
 };
 

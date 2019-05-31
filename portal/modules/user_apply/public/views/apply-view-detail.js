@@ -239,6 +239,8 @@ const ApplyViewDetail = createReactClass({
             }
             if ((!this.state.applyResult.submitResult && !this.state.backApplyResult.submitResult) || nextProps.detailItem.id !== this.props.detailItem.id) {
                 this.getApplyDetail(nextProps.detailItem);
+                //关闭右侧详情
+                phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
             }
         }
     },
@@ -621,9 +623,7 @@ const ApplyViewDetail = createReactClass({
             this.setState({isOplateUser: isOplateUser,checkStatus: isOplateUser});
         });
     },
-    notShowIcon(){
-        return !this.isUnApproved() || !hasPrivilege('APP_USER_APPLY_APPROVAL') || !this.state.isOplateUser;
-    },
+
     renderDetailOperateBtn(user_id) {
         if (this.notShowIcon()) {
             return null;
@@ -700,7 +700,7 @@ const ApplyViewDetail = createReactClass({
         }
         let maxUserNumber = this.getChangeMaxUserNumber();
         return (<div>
-            {!this.hasApprovalPrivilege() ? <span>{info.user_names[0]}</span>
+            {!this.showPassWordPrivilege() ? <span>{info.user_names[0]}</span>
                 : (this.state.isUserEdit ? (
                     <div className="user-name-wrap">
                         <Form>
@@ -749,6 +749,9 @@ const ApplyViewDetail = createReactClass({
     showPassWordPrivilege: function() {
         //有修改权限 && 是待审批状态的申请 && 能展示通过驳回按钮 && 该审批位于最后一个节点
         return this.hasApprovalPrivilege() && this.isUnApproved() && _.get(this, 'state.detailInfoObj.info.showApproveBtn') && isFinalTask(this.state.applyNode);
+    },
+    notShowIcon(){
+        return !this.isUnApproved() || !hasPrivilege('APP_USER_APPLY_APPROVAL') || !this.state.isOplateUser || !isFinalTask(this.state.applyNode) || !_.get(this, 'state.detailInfoObj.info.showApproveBtn');
     },
     //选择了手动设置密码时，未输入密码，不能通过
     settingPasswordManuWithNoValue: function() {
@@ -859,7 +862,7 @@ const ApplyViewDetail = createReactClass({
             return <span>{info.nick_names[0]}</span>;
         }
         return <div>
-            {!this.hasApprovalPrivilege() ? <span>{info.nick_names[0]}</span>
+            {!this.showPassWordPrivilege() ? <span>{info.nick_names[0]}</span>
                 : (this.state.isNickNameEdit ?
                     (<div className="user-name-wrap">
                         <Form layout='horizontal'>
@@ -1389,7 +1392,7 @@ const ApplyViewDetail = createReactClass({
                 <div className="apply-info-content">
                     {this.renderApplyUserNames(detailInfo)}
                     {
-                        selectedDetailItem.isConsumed === 'true' || !this.hasApprovalPrivilege() ? null : (
+                        selectedDetailItem.isConsumed === 'true' || !this.showPassWordPrivilege() ? null : (
                             <Form layout='horizontal'>
                                 <Validation ref="validation" onValidate={this.handleValidate}>
                                     <div className="apply-info-label">
@@ -1485,8 +1488,6 @@ const ApplyViewDetail = createReactClass({
     //旧版申请展示
     //渲染用户延期
     renderDetailDelayTime: function(detailInfo) {
-        var isRealmAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ||
-            userData.hasRole(userData.ROLE_CONSTANS.REALM_OWNER);
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
@@ -1496,7 +1497,7 @@ const ApplyViewDetail = createReactClass({
                         <div className="user-info-label">{this.renderApplyDelayName()}:</div>
                         <span className="user-info-text">
                             {this.state.isModifyDelayTime ? null : this.renderApplyDelayModifyTime()}
-                            {isRealmAdmin ? this.renderModifyDelayTime() : null}
+                            {this.showPassWordPrivilege() ? this.renderModifyDelayTime() : null}
                         </span>
                     </div>
                 </div>
@@ -1531,7 +1532,7 @@ const ApplyViewDetail = createReactClass({
                         <div className="user-info-label label-fix">{this.renderApplyDelayName()}:</div>
                         <span className="user-info-text edit-fix">
                             {this.state.isModifyDelayTime ? null : this.renderApplyDelayModifyTime()}
-                            {isRealmAdmin && isUnApproved ? this.renderModifyDelayTime() : null}
+                            {this.showPassWordPrivilege() ? this.renderModifyDelayTime() : null}
                         </span>
                     </div>
                     {

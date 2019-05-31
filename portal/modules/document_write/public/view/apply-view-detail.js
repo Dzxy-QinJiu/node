@@ -213,6 +213,8 @@ class ApplyViewDetail extends React.Component {
             });
         }else if (thisPropsId && nextPropsId && nextPropsId !== thisPropsId) {
             this.getBusinessApplyDetailData(nextProps.detailItem);
+            //关闭右侧详情
+            phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
             this.setState({
                 showBackoutConfirmType: '',
                 clickConfirmBtn: false

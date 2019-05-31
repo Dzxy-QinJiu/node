@@ -338,26 +338,30 @@ class UserDetailBasic extends React.Component {
         if (typeof is_disabled === 'boolean') {
             is_disabled = is_disabled.toString();
         }
-        //没有编辑的权限或者不是oplate用户时
-        if (!hasPrivilege('APP_USER_EDIT') || !isOplateUser()) {
-            return is_disabled ? (is_disabled === 'true' ? Intl.get('common.app.status.close', '关闭') : Intl.get('common.app.status.open', '开启')) : is_disabled;
+        if(isOplateUser()) {
+            //没有编辑的权限
+            if (!hasPrivilege('APP_USER_EDIT')) {
+                return is_disabled ? (is_disabled === 'true' ? Intl.get('common.app.status.close', '关闭') : Intl.get('common.app.status.open', '开启')) : is_disabled;
+            }
+            if (!is_disabled) {
+                return '';
+            }
+            return <UserDetailFieldSwitch
+                userId={this.props.userId}
+                appId={app.app_id}
+                originValue={is_disabled}
+                checkedValue="false"
+                unCheckedValue="true"
+                checkedSubmitValue="1"
+                unCheckedSubmitValue="0"
+                checkedChildren={Intl.get('common.enabled', '启用')}
+                unCheckedChildren={Intl.get('user.status.stop', '停用')}
+                field="status"
+                onSubmitSuccess={this.onFieldChangeSuccess}
+            />;
+        }else {
+            return null;
         }
-        if (!is_disabled) {
-            return '';
-        }
-        return <UserDetailFieldSwitch
-            userId={this.props.userId}
-            appId={app.app_id}
-            originValue={is_disabled}
-            checkedValue="false"
-            unCheckedValue="true"
-            checkedSubmitValue="1"
-            unCheckedSubmitValue="0"
-            checkedChildren={Intl.get('common.enabled', '启用')}
-            unCheckedChildren={Intl.get('user.status.stop', '停用')}
-            field="status"
-            onSubmitSuccess={this.onFieldChangeSuccess}
-        />;
     };
     renderAppRoleLists = (roleItems) => {
         return (
@@ -441,7 +445,43 @@ class UserDetailBasic extends React.Component {
             </div>
         );
     };
+    renderUemAppInfo = (app) => {
+        var end_time = moment(new Date(+app.end_time)).format(FORMAT);
+        var displayEndTime = '';
 
+        if (app.end_time === '0') {
+            displayEndTime = Intl.get('user.nothing', '无');
+        } else if (end_time === 'Invalid date') {
+            displayEndTime = Intl.get('common.unknown', '未知');
+        } else {
+            displayEndTime = end_time;
+        }
+
+        /*let custom_varialbes = _.filter(this.props.userConditions, item => {
+            if (item.key === 'user_type' || item.key === 'role') {// 用户类型， 角色
+                return false;
+            }
+            return item;
+        });*/
+
+        return (
+            <div className="rows-3 uem-wrapper">
+                <div className={(!app.showDetail && app.is_disabled === 'true') ? 'hide' : 'app-prop-list'}>
+                    <span><ReactIntl.FormattedMessage id="user.time.end" defaultMessage="到期时间" />：{displayEndTime}</span>
+                    {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.user.type"
+                        defaultMessage="用户类型" />：{this.getUserTypeText(app)}</span>}
+                    {/*{
+                        _.map(custom_varialbes, item => {
+                            let value = app.custom_variables ? (app.custom_variables[item.key] || '') : '';
+                            return (
+                                <span>{item.description || ''}：{value}</span>
+                            );
+                        })
+                    }*/}
+                </div>
+            </div>
+        );
+    };
     showAppDetail = (params) => {
         AppUserDetailAction.showAppDetail(params);
     };
@@ -477,10 +517,18 @@ class UserDetailBasic extends React.Component {
             className += ' pull-left';
             despWidth = LAYOUTS.ITEM_WIDTH - LAYOUTS.MARGIN_LEFT - maxWidth - 5;
         }
+
+
         return (
             <ul className="app_list">
                 {this.state.initialUser.apps.map(app => {
                     const hideDetail = !app.showDetail && app.is_disabled === 'true';
+                    let renderAppInfo = null;
+                    if(isOplateUser()) {
+                        renderAppInfo = _this.renderAppInfo(app);
+                    }else {
+                        renderAppInfo = _this.renderUemAppInfo(app);
+                    }
                     return (
                         <li className={hideDetail ? 'clearfix list-unstyled hide-detail' : 'clearfix list-unstyled'} key={app.app_id}>
                             <div className="title-container">
@@ -511,7 +559,7 @@ class UserDetailBasic extends React.Component {
                             </div>
                             <div className="desp pull-left">
                                 {
-                                    _this.renderAppInfo(app)
+                                    renderAppInfo
                                 }
                             </div>
 
@@ -729,14 +777,14 @@ class UserDetailBasic extends React.Component {
                     }}
                     saveEditInput={AppUserAjax.editAppUser}
                 />
-                <OrgCard
+                {isOplateUser() ? <OrgCard
                     user_id={userInfo.user_id}
-                    showBtn={true} 
+                    showBtn={true}
                     groupsInfo={groupsInfo}
                     onModifySuccess={this.organizationChangeSuccess}
                     userInfo={userInfo}
                     sales_team={_.get(initialUser, 'sales_team', {})}
-                />
+                /> : null}
                 <div className="app_wrap" ref="app_wrap"> 
                     <DetailCard
                         title={(<div className="sales-team-show-block">
@@ -798,5 +846,6 @@ UserDetailBasic.propTypes = {
     getBasicInfo: PropTypes.func,
     selectApp: PropTypes.object,
     height: PropTypes.number,
+    userConditions: PropTypes.array
 };
 module.exports = UserDetailBasic;

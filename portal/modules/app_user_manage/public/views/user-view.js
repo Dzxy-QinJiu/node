@@ -25,6 +25,7 @@ import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/so
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import {commonPhoneRegex, areaPhoneRegex, hotlinePhoneRegex} from 'PUB_DIR/sources/utils/validate-util';
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
+import { getProductList } from 'PUB_DIR/sources/utils/common-data-util';
 //异常登录的类型
 const EXCEPTION_TYPES = [{
     name: Intl.get('common.all', '全部'),
@@ -44,6 +45,8 @@ var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 120,
     BOTTOM_DISTANCE: 50
 };
+// 自定义属性变量
+const CUSTOM_VARIABLES = 'custom_variables';
 import {
     removeSpacesAndEnter,
     traversingSelectTeamTree,
@@ -131,6 +134,25 @@ class UserTabContent extends React.Component {
         };
         var filterFieldMap = this.state.filterFieldMap;
         ajaxObj = $.extend(true, ajaxObj, filterFieldMap);
+        if(!isOplateUser()) {
+            var uemFilterFieldMap = this.state.uemFilterFieldMap;
+            var custom_filter = ajaxObj.custom_filter || {};
+            custom_filter = $.extend(true, custom_filter, uemFilterFieldMap);
+            if(!_.isEmpty(custom_filter)) {
+                let custom_filter_str = '';
+                for(var key in custom_filter) {
+                    if(custom_filter[key] !== '') {
+                        // oatruc: 表示多个查询条件时的分隔符
+                        if(custom_filter_str){
+                            custom_filter_str += `oatruc${key}:${custom_filter[key]}`;
+                        }else {
+                            custom_filter_str = `${key}:${custom_filter[key]}`;
+                        }
+                    }
+                }
+                ajaxObj.custom_filter = custom_filter_str;
+            }
+        }
         //团队筛选的处理
         if (_.get(ajaxObj.team_ids, '[0]')) {
             //实际选中的团队列表
@@ -423,221 +445,424 @@ class UserTabContent extends React.Component {
         let numClass = classNames('has-filter num-float-right', {'has-sorter': sortable});
         //表头中字的个数设置不同宽度
         const fourWordWidth = 100, twoWordWidth = 50, multiWordWidth = 160, columnWidth = 200;
-
-        var columns = [
-            {
-                title: Intl.get('common.username', '用户名'),
-                dataIndex: 'account_name',
-                key: 'account_name',
-                width: multiWordWidth,
-                className: sortable ? 'has-sorter has-filter' : 'has-filter',
-                sorter: sortable,
-                render: function($1, rowData, idx) {
-                    var user_name = rowData.user && rowData.user.user_name || '';
-                    var user_id = rowData.user && rowData.user.user_id || '';
-                    const isShown = _.find(rowData.apps, app => {
-                        //只要exception_mark_date存在，就属于异常登录
-                        return app.exception_mark_date;
-                    });
-                    let app = _.isArray(rowData.apps) && rowData.apps[0] ? rowData.apps[0] : {};
-                    let contract_tag = app.contract_tag === 'new' ? Intl.get('contract.162', '新签约') :
-                        app.contract_tag === 'renew' ? Intl.get('contract.163', '续约') : '';
-                    return (
-                        <div>
-                            <div title={user_name}>
-                                {hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && isShown ?
-                                    <i className="iconfont icon-warn-icon unnormal-login"
-                                        title={Intl.get('user.login.abnormal', '异常登录')}></i> : null}
-                                {rowData.apps[0].qualify_label === 1 ? (
-                                    <Tag className="qualified-tag-style">
-                                        {Intl.get('common.qualified', '合格')}</Tag>) : null
-                                }
-                                {user_name}
-                                <input type="hidden" className="hidden_user_id" value={user_id}/>
-                            </div>
-                            <div className="user-list-tags">
-                                {app.create_tag && app.create_tag === 'register' ? <Tag
-                                    className="user-tag-style">{Intl.get('oplate.user.register.self', '自注册')}</Tag> : null}
-                                {contract_tag ? <Tag className="user-tag-style">{contract_tag}</Tag> : null}
-                            </div>
-                        </div>
-                    );
-                }
-            },
-            {
-                title: Intl.get('common.nickname', '昵称'),
-                dataIndex: 'account_nickname',
-                key: 'account_nickname',
-                width: multiWordWidth,
-                className: sortable ? 'has-sorter has-filter' : 'has-filter',
-                sorter: sortable,
-                render: function($1, rowData, idx) {
-                    var nick_name = rowData.user && rowData.user.nick_name || '';
-                    return (
-                        <div title={nick_name}>
-                            {nick_name}
-                        </div>
-                    );
-                }
-            },
-            {
-                title: Intl.get('common.belong.customer', '所属客户'),
-                dataIndex: 'customer_name',
-                key: 'customer_name',
-                width: multiWordWidth,
-                className: sortable ? 'has-sorter has-filter owner-customer-wrap' : 'has-filter owner-customer-wrap',
-                sorter: sortable,
-                render: function($1, rowData, idx) {
-                    var customer_name = rowData.customer && rowData.customer.customer_name || '';
-                    var customer_id = rowData.customer && rowData.customer.customer_id || '';
-                    return (
-                        <div title={customer_name} className="owner-customer"
-                            onClick={_this.showCustomerDetail.bind(this, customer_id)}
-                            data-tracename="点击所属客户列">{customer_name}
-                            <input type="hidden" className="hidden_customer_id" value={customer_id}/>
-                        </div>
-                    );
-                }
-            },
-            {
-                title: Intl.get('common.app.name', '应用名称'),
-                dataIndex: 'apps',
-                key: 'appName',
-                width: multiWordWidth,
-                render: function(apps, rowData, idx) {
-                    return AppUserUtil.getAppNameList(apps, rowData);
-                }
-            },
-            {
-                title: Intl.get('common.status', '状态'),
-                dataIndex: 'apps',
-                width: twoWordWidth,
-                key: 'status',
-                render: function(apps, rowData, idx) {
-                    return AppUserUtil.getAppStatusList(apps, rowData);
-                }
-            },
-            {
-                title: Intl.get('common.type', '类型'),
-                dataIndex: 'apps',
-                width: twoWordWidth,
-                key: 'accountType',
-                render: function(apps, rowData, idx) {
-                    return AppUserUtil.getAccountTypeList(apps, rowData);
-                }
-            },
-            {
-                title: Intl.get('user.time.start', '开通时间'),
-                dataIndex: 'grant_create_date',
-                width: fourWordWidth,
-                key: 'grant_create_date',
-                className: sortable ? 'has-sorter has-filter' : 'has-filter',
-                sorter: sortable,
-                render: function($1, rowData, idx) {
-                    return AppUserUtil.getTimeList('create_time', rowData);
-                }
-            },
-            {
-                title: Intl.get('user.time.end', '到期时间'),
-                dataIndex: 'end_date',
-                width: fourWordWidth,
-                key: 'end_date',
-                className: sortable ? 'has-sorter has-filter' : 'has-filter',
-                sorter: sortable,
-                render: function($1, rowData, idx) {
-                    return AppUserUtil.getTimeList('end_time', rowData);
-                }
-            },
-            {
-                title: Intl.get('common.belong.sales', '所属销售'),
-                dataIndex: 'member_name',
-                width: fourWordWidth,
-                key: 'member_name',
-                className: sortable ? 'has-sorter has-filter' : 'has-filter',
-                sorter: sortable,
-                render: function(sales, rowData, idx) {
-                    var sales_name = rowData.sales && rowData.sales.sales_name || '';
-                    return (
-                        <div title={sales_name}>{sales_name}</div>
-                    );
-                }
-            },
-            // {
-            //     title: Intl.get('user.login.times', '登录次数'),
-            //     dataIndex: 'logins',
-            //     key: 'logins',
-            //     width: fourWordWidth,
-            //     className: numClass,
-            //     sorter: sortable,
-            //     render: function(text, rowData, idx) {
-            //         let loginCount = 0;
-            //         if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
-            //             loginCount = rowData.apps[0].logins || 0;
-            //         }
-            //         return (
-            //             <div className="num-float-right" title={loginCount}>{loginCount} </div>
-            //         );
-            //     }
-            // },
-            {
-                title: Intl.get('user.login.days', '活跃天数'),
-                dataIndex: 'login_day_count',
-                key: 'login_day_count',
-                width: fourWordWidth,
-                className: numClass,
-                sorter: sortable,
-                render: function(text, rowData, idx) {
-                    let loginDays = 0;
-                    if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
-                        loginDays = rowData.apps[0].login_day_count || 0;
-                    }
-                    return (
-                        <div className="num-float-right" title={loginDays}>{loginDays}</div>
-                    );
-                }
-            }, {
-                title: Intl.get('user.login.score', '分数'),
-                dataIndex: 'score',
-                key: 'score',
-                width: fourWordWidth,
-                className: numClass,
-                sorter: sortable,
-                render: (text, rowData, idx) => {
-                    let score = Math.round((_.get(rowData.apps[0], 'score') || 0) * 100);
-                    return (
-                        <div className="num-float-right" title={score}>{score} </div>
-                    );
-                }
-            }, {
-                title: Intl.get('common.remark', '备注'),
-                dataIndex: 'user',
-                key: 'description',
-                width: columnWidth,
-                render: function(user, rowData, idx) {
-                    //是否展示 生成线索的 按钮，必须要选中某个应用，
-                    // create_tag === "register" 表示是自注册的用户
-                    // clue_created属性存在，并且为true 表示已经生成过线索客户
-                    var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === 'register' && !rowData.apps[0].clue_created && hasPrivilege('CUSTOMER_ADD_CLUE') ? true : false;
-                    return user ? (
-                        <div title={user.description}>
-                            {user.description}
-                            {isShowTransClueButton ?
-                                <div className="trans-clue-customer">
-                                    <Button type="primary"
-                                        onClick={_this.transformClueCustomer.bind(this, rowData)}>{Intl.get('app.user.trans.clue.customer', '生成线索')}</Button>
+        let columns = [];
+        let isOplate = isOplateUser();
+        // oplate类型列
+        if(isOplate) {
+            columns = [
+                {
+                    title: Intl.get('common.username', '用户名'),
+                    dataIndex: 'account_name',
+                    key: 'account_name',
+                    width: multiWordWidth,
+                    className: sortable ? 'has-sorter has-filter' : 'has-filter',
+                    sorter: sortable,
+                    render: function($1, rowData, idx) {
+                        var user_name = rowData.user && rowData.user.user_name || '';
+                        var user_id = rowData.user && rowData.user.user_id || '';
+                        const isShown = _.find(rowData.apps, app => {
+                            //只要exception_mark_date存在，就属于异常登录
+                            return app.exception_mark_date;
+                        });
+                        let app = _.isArray(rowData.apps) && rowData.apps[0] ? rowData.apps[0] : {};
+                        let contract_tag = app.contract_tag === 'new' ? Intl.get('contract.162', '新签约') :
+                            app.contract_tag === 'renew' ? Intl.get('contract.163', '续约') : '';
+                        return (
+                            <div>
+                                <div title={user_name}>
+                                    {hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && isShown ?
+                                        <i className="iconfont icon-warn-icon unnormal-login"
+                                            title={Intl.get('user.login.abnormal', '异常登录')}></i> : null}
+                                    {rowData.apps[0].qualify_label === 1 ? (
+                                        <Tag className="qualified-tag-style">
+                                            {Intl.get('common.qualified', '合格')}</Tag>) : null
+                                    }
+                                    {user_name}
+                                    <input type="hidden" className="hidden_user_id" value={user_id}/>
                                 </div>
-                                : null}
-                        </div>
-                    ) : null;
+                                <div className="user-list-tags">
+                                    {app.create_tag && app.create_tag === 'register' ? <Tag
+                                        className="user-tag-style">{Intl.get('oplate.user.register.self', '自注册')}</Tag> : null}
+                                    {contract_tag ? <Tag className="user-tag-style">{contract_tag}</Tag> : null}
+                                </div>
+                            </div>
+                        );
+                    }
+                },
+                {
+                    title: Intl.get('common.nickname', '昵称'),
+                    dataIndex: 'account_nickname',
+                    key: 'account_nickname',
+                    width: multiWordWidth,
+                    className: sortable ? 'has-sorter has-filter' : 'has-filter',
+                    sorter: sortable,
+                    render: function($1, rowData, idx) {
+                        var nick_name = rowData.user && rowData.user.nick_name || '';
+                        return (
+                            <div title={nick_name}>
+                                {nick_name}
+                            </div>
+                        );
+                    }
+                },
+                {
+                    title: Intl.get('common.belong.customer', '所属客户'),
+                    dataIndex: 'customer_name',
+                    key: 'customer_name',
+                    width: multiWordWidth,
+                    className: sortable ? 'has-sorter has-filter owner-customer-wrap' : 'has-filter owner-customer-wrap',
+                    sorter: sortable,
+                    render: function($1, rowData, idx) {
+                        var customer_name = rowData.customer && rowData.customer.customer_name || '';
+                        var customer_id = rowData.customer && rowData.customer.customer_id || '';
+                        return (
+                            <div title={customer_name} className="owner-customer"
+                                onClick={_this.showCustomerDetail.bind(this, customer_id)}
+                                data-tracename="点击所属客户列">{customer_name}
+                                <input type="hidden" className="hidden_customer_id" value={customer_id}/>
+                            </div>
+                        );
+                    }
+                },
+                {
+                    title: Intl.get('common.app.name', '应用名称'),
+                    dataIndex: 'apps',
+                    key: 'appName',
+                    width: multiWordWidth,
+                    render: function(apps, rowData, idx) {
+                        return AppUserUtil.getAppNameList(apps, rowData);
+                    }
+                },
+                {
+                    title: Intl.get('common.status', '状态'),
+                    dataIndex: 'apps',
+                    width: twoWordWidth,
+                    key: 'status',
+                    render: function(apps, rowData, idx) {
+                        return AppUserUtil.getAppStatusList(apps, rowData);
+                    }
+                },
+                {
+                    title: Intl.get('common.type', '类型'),
+                    dataIndex: 'apps',
+                    width: twoWordWidth,
+                    key: 'accountType',
+                    render: function(apps, rowData, idx) {
+                        return AppUserUtil.getAccountTypeList(apps, rowData);
+                    }
+                },
+                {
+                    title: Intl.get('user.time.start', '开通时间'),
+                    dataIndex: 'grant_create_date',
+                    width: fourWordWidth,
+                    key: 'grant_create_date',
+                    className: sortable ? 'has-sorter has-filter' : 'has-filter',
+                    sorter: sortable,
+                    render: function($1, rowData, idx) {
+                        return AppUserUtil.getTimeList('create_time', rowData);
+                    }
+                },
+                {
+                    title: Intl.get('user.time.end', '到期时间'),
+                    dataIndex: 'end_date',
+                    width: fourWordWidth,
+                    key: 'end_date',
+                    className: sortable ? 'has-sorter has-filter' : 'has-filter',
+                    sorter: sortable,
+                    render: function($1, rowData, idx) {
+                        return AppUserUtil.getTimeList('end_time', rowData);
+                    }
+                },
+                {
+                    title: Intl.get('common.belong.sales', '所属销售'),
+                    dataIndex: 'member_name',
+                    width: fourWordWidth,
+                    key: 'member_name',
+                    className: sortable ? 'has-sorter has-filter' : 'has-filter',
+                    sorter: sortable,
+                    render: function(sales, rowData, idx) {
+                        var sales_name = rowData.sales && rowData.sales.sales_name || '';
+                        return (
+                            <div title={sales_name}>{sales_name}</div>
+                        );
+                    }
+                },
+                // {
+                //     title: Intl.get('user.login.times', '登录次数'),
+                //     dataIndex: 'logins',
+                //     key: 'logins',
+                //     width: fourWordWidth,
+                //     className: numClass,
+                //     sorter: sortable,
+                //     render: function(text, rowData, idx) {
+                //         let loginCount = 0;
+                //         if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
+                //             loginCount = rowData.apps[0].logins || 0;
+                //         }
+                //         return (
+                //             <div className="num-float-right" title={loginCount}>{loginCount} </div>
+                //         );
+                //     }
+                // },
+                {
+                    title: Intl.get('user.login.days', '活跃天数'),
+                    dataIndex: 'login_day_count',
+                    key: 'login_day_count',
+                    width: fourWordWidth,
+                    className: numClass,
+                    sorter: sortable,
+                    render: function(text, rowData, idx) {
+                        let loginDays = 0;
+                        if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
+                            loginDays = rowData.apps[0].login_day_count || 0;
+                        }
+                        return (
+                            <div className="num-float-right" title={loginDays}>{loginDays}</div>
+                        );
+                    }
+                },
+                {
+                    title: Intl.get('user.login.score', '分数'),
+                    dataIndex: 'score',
+                    key: 'score',
+                    width: fourWordWidth,
+                    className: numClass,
+                    sorter: sortable,
+                    render: (text, rowData, idx) => {
+                        let score = Math.round((_.get(rowData.apps[0], 'score') || 0) * 100);
+                        return (
+                            <div className="num-float-right" title={score}>{score} </div>
+                        );
+                    }
+                },
+                {
+                    title: Intl.get('common.remark', '备注'),
+                    dataIndex: 'user',
+                    key: 'description',
+                    width: columnWidth,
+                    render: function(user, rowData, idx) {
+                        //是否展示 生成线索的 按钮，必须要选中某个应用，
+                        // create_tag === "register" 表示是自注册的用户
+                        // clue_created属性存在，并且为true 表示已经生成过线索客户
+                        var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === 'register' && !rowData.apps[0].clue_created && hasPrivilege('CUSTOMER_ADD_CLUE') ? true : false;
+                        return user ? (
+                            <div title={user.description}>
+                                {user.description}
+                                {isShowTransClueButton ?
+                                    <div className="trans-clue-customer">
+                                        <Button type="primary"
+                                            onClick={_this.transformClueCustomer.bind(this, rowData)}>{Intl.get('app.user.trans.clue.customer', '生成线索')}</Button>
+                                    </div>
+                                    : null}
+                            </div>
+                        ) : null;
+                    }
                 }
-            }
-        ];
+            ];
+        } else {// uem
+            columns = [
+                {
+                    title: Intl.get('common.username', '用户名'),
+                    dataIndex: 'account_name',
+                    key: 'account_name',
+                    width: multiWordWidth,
+                    className: sortable ? 'has-sorter has-filter' : 'has-filter',
+                    sorter: sortable,
+                    render: function($1, rowData, idx) {
+                        var user_name = rowData.user && rowData.user.user_name || '';
+                        var user_id = rowData.user && rowData.user.user_id || '';
+                        const isShown = _.find(rowData.apps, app => {
+                            //只要exception_mark_date存在，就属于异常登录
+                            return app.exception_mark_date;
+                        });
+                        let app = _.isArray(rowData.apps) && rowData.apps[0] ? rowData.apps[0] : {};
+                        let contract_tag = app.contract_tag === 'new' ? Intl.get('contract.162', '新签约') :
+                            app.contract_tag === 'renew' ? Intl.get('contract.163', '续约') : '';
+                        return (
+                            <div>
+                                <div title={user_name}>
+                                    {hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && isShown ?
+                                        <i className="iconfont icon-warn-icon unnormal-login"
+                                            title={Intl.get('user.login.abnormal', '异常登录')}></i> : null}
+                                    {rowData.apps[0].qualify_label === 1 ? (
+                                        <Tag className="qualified-tag-style">
+                                            {Intl.get('common.qualified', '合格')}</Tag>) : null
+                                    }
+                                    {user_name}
+                                    <input type="hidden" className="hidden_user_id" value={user_id}/>
+                                </div>
+                                <div className="user-list-tags">
+                                    {app.create_tag && app.create_tag === 'register' ? <Tag
+                                        className="user-tag-style">{Intl.get('oplate.user.register.self', '自注册')}</Tag> : null}
+                                    {contract_tag ? <Tag className="user-tag-style">{contract_tag}</Tag> : null}
+                                </div>
+                            </div>
+                        );
+                    }
+                },
+                {
+                    title: Intl.get('common.nickname', '昵称'),
+                    dataIndex: 'account_nickname',
+                    key: 'account_nickname',
+                    width: multiWordWidth,
+                    className: sortable ? 'has-sorter has-filter' : 'has-filter',
+                    sorter: sortable,
+                    render: function($1, rowData, idx) {
+                        var nick_name = rowData.user && rowData.user.nick_name || '';
+                        return (
+                            <div title={nick_name}>
+                                {nick_name}
+                            </div>
+                        );
+                    }
+                },
+                {
+                    title: Intl.get('common.belong.customer', '所属客户'),
+                    dataIndex: 'customer_name',
+                    key: 'customer_name',
+                    width: multiWordWidth,
+                    className: sortable ? 'has-sorter has-filter owner-customer-wrap' : 'has-filter owner-customer-wrap',
+                    sorter: sortable,
+                    render: function($1, rowData, idx) {
+                        var customer_name = rowData.customer && rowData.customer.customer_name || '';
+                        var customer_id = rowData.customer && rowData.customer.customer_id || '';
+                        return (
+                            <div title={customer_name} className="owner-customer"
+                                onClick={_this.showCustomerDetail.bind(this, customer_id)}
+                                data-tracename="点击所属客户列">{customer_name}
+                                <input type="hidden" className="hidden_customer_id" value={customer_id}/>
+                            </div>
+                        );
+                    }
+                },
+                {
+                    title: Intl.get('common.app.name', '应用名称'),
+                    dataIndex: 'apps',
+                    key: 'appName',
+                    width: multiWordWidth,
+                    render: function(apps, rowData, idx) {
+                        return AppUserUtil.getAppNameList(apps, rowData);
+                    }
+                },
+                {
+                    title: Intl.get('common.type', '类型'),
+                    dataIndex: 'apps',
+                    width: twoWordWidth,
+                    key: 'accountType',
+                    render: function(apps, rowData, idx) {
+                        return AppUserUtil.getAccountTypeList(apps, rowData);
+                    }
+                },
+                {
+                    title: Intl.get('user.time.end', '到期时间'),
+                    dataIndex: 'end_date',
+                    width: fourWordWidth,
+                    key: 'end_date',
+                    className: sortable ? 'has-sorter has-filter' : 'has-filter',
+                    sorter: sortable,
+                    render: function($1, rowData, idx) {
+                        return AppUserUtil.getTimeList('end_time', rowData);
+                    }
+                },
+                {
+                    title: Intl.get('common.belong.sales', '所属销售'),
+                    dataIndex: 'member_name',
+                    width: fourWordWidth,
+                    key: 'member_name',
+                    className: sortable ? 'has-sorter has-filter' : 'has-filter',
+                    sorter: sortable,
+                    render: function(sales, rowData, idx) {
+                        var sales_name = rowData.sales && rowData.sales.sales_name || '';
+                        return (
+                            <div title={sales_name}>{sales_name}</div>
+                        );
+                    }
+                },
+                {
+                    title: Intl.get('common.remark', '备注'),
+                    dataIndex: 'user',
+                    key: 'description',
+                    width: columnWidth,
+                    render: function(user, rowData, idx) {
+                        //是否展示 生成线索的 按钮，必须要选中某个应用，
+                        // create_tag === "register" 表示是自注册的用户
+                        // clue_created属性存在，并且为true 表示已经生成过线索客户
+                        var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === 'register' && !rowData.apps[0].clue_created && hasPrivilege('CUSTOMER_ADD_CLUE') ? true : false;
+                        return user ? (
+                            <div title={user.description}>
+                                {user.description}
+                                {isShowTransClueButton ?
+                                    <div className="trans-clue-customer">
+                                        <Button type="primary"
+                                            onClick={_this.transformClueCustomer.bind(this, rowData)}>{Intl.get('app.user.trans.clue.customer', '生成线索')}</Button>
+                                    </div>
+                                    : null}
+                            </div>
+                        ) : null;
+                    }
+                }
+            ];
+        }
+
         //选中应用后，去掉应用列的展示
         if(this.state.selectedAppId){
-            columns = _.filter(columns, item => item.dataIndex !== 'apps');
+            // oplate去掉应用列
+            if(isOplate) {
+                columns = _.filter(columns, item => item.dataIndex !== 'apps');
+            }else {// uem去掉应用名称
+                columns = _.filter(columns, item => item.key !== 'appName');
+                // 加上自定义的属性列custom_variables
+                this.getCustomVariableColumns((custom_variables_columns) => {
+                    columns = columns.concat(custom_variables_columns);
+                });
+            }
         }
         return columns;
     };
+
+    // 加上自定义的属性列
+    getCustomVariableColumns = (cb) => {
+        const fourWordWidth = 100;
+        getProductList(productList => {
+            let selectedApp = productList.find(item => item.id === this.state.selectedAppId);
+            // 该应用的自定义属性集合 {key: 描述} 如 {status: 状态}
+            let customVariable = _.get(selectedApp, 'custom_variable',{});
+            // 自定义属性数组
+            let customVariables = [];
+            for(let key in customVariable) {
+                customVariables.push({
+                    // 描述名
+                    name: customVariable[key],
+                    // 键名
+                    value: key,
+                });
+            }
+            let coulmns = _.map(customVariables,item => {
+                return {
+                    title: item.name,
+                    dataIndex: 'apps',
+                    key: item.value,
+                    width: fourWordWidth,
+                    render: function(apps, rowData, idx) {
+                        // apps: [{custom_variables: { 'status': '启用' } }]
+                        let value = apps[0][CUSTOM_VARIABLES] && apps[0][CUSTOM_VARIABLES][item.value] || '';
+                        return (
+                            <div title={value}>
+                                {value}
+                            </div>
+                        );
+                    }
+                };
+            });
+            if(_.isFunction(cb)) cb(coulmns);
+        });
+    };
+
+    // 能否添加角色筛选
+    hasAddRoleFilter = () => {
+        return !this.props.customer_id && !Oplate.hideSomeItem;
+    };
+
 
     //转化成线索客户
     transformClueCustomer = (item) => {
@@ -719,12 +944,47 @@ class UserTabContent extends React.Component {
         });
     };
 
+    //uem获取过字段的class
+    getUemFilterFieldClass = (field, value) => {
+        var uemFilterFieldMap = this.state.uemFilterFieldMap;
+        if (!value) {
+            return !uemFilterFieldMap[field] ? 'selected' : '';
+        } else {
+            return uemFilterFieldMap[field] === value ? 'selected' : '';
+        }
+    };
+
+    //uem按照某个筛选条件进行过滤
+    uemToggleSearchField = (field, value) => {
+        AppUserAction.uemToggleSearchField({field, value});
+        //页面滚动条置顶，避免重新获取数据之后，接着翻页
+        GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
+        setTimeout(() => {
+            this.fetchUserList();
+        });
+    };
+
     renderFilterBlock = () => {
+        let renderFilter = null;
+        //oplate
+        if(isOplateUser()) {
+            renderFilter = (
+                <div>
+                    {this.renderFilterFields()}
+                    {this.hasAddRoleFilter() ? this.renderFilterRoles() : null}
+                </div>
+            );
+        }else {
+            renderFilter = (
+                <div>
+                    {this.renderUemFilterFields()}
+                </div>
+            );
+        }
         return (
             <div className="global_filter_adv" ref="filter_adv"
                 style={{display: this.state.filterAreaExpanded ? 'block' : 'none'}}>
-                {this.renderFilterFields()}
-                {!this.props.customer_id && (language.lan() === 'zh' || language.lan() === 'en') ? this.renderFilterRoles() : null}
+                {renderFilter}
             </div>
         );
     };
@@ -876,6 +1136,167 @@ class UserTabContent extends React.Component {
                         </dl>)
                         : null}
                 </div>)}
+        </div>;
+    };
+
+    //渲染uem等多虑字段筛选条件列表
+    renderUemFilterFields = () => {
+        // 固定字段：过期时间，所属客户
+        // 动态获取：用户类型(user_type)，角色(role)
+        // 选中某个应用时，需要添加上该应用自定义的属性
+        let hasUserType = false,
+            hasRoleType = false,
+            filterRoles = [],
+            filterUserTypes = [];
+        let custom_variables = _.filter(this.state.userConditions, item => {
+            // 是否是当前选中的应用
+            if(item.app_id === this.state.selectedAppId) {
+                // 当类型为user_type或者role时，不加入自定义筛选属性中
+                if (item.key === 'user_type') {// 用户类型
+                    if(_.get(item.values, '[0]')) {
+                        hasUserType = true;
+                        filterUserTypes = item;
+                    }
+                    return false;
+                }
+                if(item.key === 'role') {// 角色
+                    if(_.get(item.values, '[0]')) {
+                        hasRoleType = true;
+                        filterRoles = item;
+                    }
+                    return false;
+                }
+                return true;
+            }else {
+                return false;
+            }
+        });
+        return <div data-tracename="应用筛选">
+            <dl>
+                <dt><ReactIntl.FormattedMessage id="user.overdue.whether" defaultMessage="是否过期"/>：</dt>
+                <dd>
+                    <ul data-tracename="是否过期筛选">
+                        <li onClick={this.toggleSearchField.bind(this, 'outdate', '')}
+                            className={this.getFilterFieldClass('outdate', '')} data-tracename="全部">
+                            <ReactIntl.FormattedMessage
+                                id="common.all" defaultMessage="全部"/></li>
+                        <li onClick={this.toggleSearchField.bind(this, 'outdate', '1')}
+                            className={this.getFilterFieldClass('outdate', '1')} data-tracename="过期">
+                            <ReactIntl.FormattedMessage
+                                id="user.overdue" defaultMessage="过期"/></li>
+                        <li onClick={this.toggleSearchField.bind(this, 'outdate', '0')}
+                            className={this.getFilterFieldClass('outdate', '0')} data-tracename="未过期">
+                            <ReactIntl.FormattedMessage
+                                id="user.overdue.not" defaultMessage="未过期"/></li>
+                        <li onClick={this.toggleSearchField.bind(this, 'outdate', '1w')}
+                            className={this.getFilterFieldClass('outdate', '1w')} data-tracename="一周内过期">
+                            <ReactIntl.FormattedMessage
+                                id="user.overdue.one.week" defaultMessage="一周内过期"/></li>
+                        <li onClick={this.toggleSearchField.bind(this, 'outdate', 'is_filter_forever')}
+                            className={this.getFilterFieldClass('outdate', 'is_filter_forever')} data-tracename="永不过期">
+                            <ReactIntl.FormattedMessage id="user.overdue.not.forever" defaultMessage="永不过期"/></li>
+                    </ul>
+                </dd>
+            </dl>
+            {Oplate.hideSomeItem || !hasUserType ? null : (
+                <dl>
+                    <dt>
+                        {
+                            filterUserTypes.description ? filterUserTypes.description : <ReactIntl.FormattedMessage id="user.user.type" defaultMessage="用户类型"/>
+                        }：
+                    </dt>
+                    <dd>
+                        <ul data-tracename="用户类型筛选">
+                            <li onClick={this.uemToggleSearchField.bind(this, 'user_type', '')}
+                                className={this.getUemFilterFieldClass('user_type', '')} data-tracename="全部">
+                                <ReactIntl.FormattedMessage
+                                    id="common.all" defaultMessage="全部"/></li>
+                            {
+                                _.map(filterUserTypes.values, (value, index) => {
+                                    return <li onClick={this.uemToggleSearchField.bind(this, 'user_type', value)}
+                                        className={this.getUemFilterFieldClass('user_type', value)}>{value}</li>;
+                                })
+                            }
+                        </ul>
+                    </dd>
+                </dl>
+            )}
+
+            {/*从客户列表中打开某个客户的用户列表时，不需要下面的筛选项*/}
+            {this.props.customer_id ? null : (
+                <div>
+                    {Oplate.hideSomeItem ? null : (
+                        <dl>
+                            <dt><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户"/>：</dt>
+                            <dd>
+                                <ul data-tracename="所属客户筛选">
+                                    <li
+                                        onClick={this.toggleSearchField.bind(this, 'customer_unknown', '')}
+                                        className={this.getFilterFieldClass('customer_unknown', '')}
+                                        data-tracename="全部"
+                                    >
+                                        <ReactIntl.FormattedMessage id="common.all" defaultMessage="全部"/>
+                                    </li>
+                                    <li
+                                        onClick={this.toggleSearchField.bind(this, 'customer_unknown', 'true')}
+                                        className={this.getFilterFieldClass('customer_unknown', 'true')}
+                                        data-tracename="未知"
+                                    >
+                                        <ReactIntl.FormattedMessage id="common.unknown" defaultMessage="未知"/>
+                                    </li>
+                                </ul>
+
+                            </dd>
+                        </dl>
+                    )}
+                </div>
+            )}
+            {/*角色*/}
+            {hasRoleType && this.hasAddRoleFilter() ? (
+                <dl className="filter_roles">
+                    <dt>
+                        {filterRoles.description ? filterRoles.description : (<ReactIntl.FormattedMessage id="common.role" defaultMessage="角色"/>)}：
+                    </dt>
+                    <dd>
+                        <ul data-tracename="角色筛选">
+                            <li className={this.getUemFilterFieldClass('role', '')} onClick={this.uemToggleSearchField.bind(this,'role', '')} data-tracename="全部角色">
+                                <ReactIntl.FormattedMessage id="common.all" defaultMessage="全部"/></li>
+                            {
+                                _.map(filterRoles.values,(role, index) => {
+                                    return <li className={this.getUemFilterFieldClass('role', role)} key={role}
+                                        onClick={this.uemToggleSearchField.bind(this,'role', role)} data-tracename="单个角色">{role}</li>;
+                                })
+                            }
+                        </ul>
+                    </dd>
+                </dl>
+            ) : null}
+            {/*其他自定义属性*/}
+            {
+                _.get(custom_variables,'[0]') ? (
+                    _.map(custom_variables, item => {
+                        return (
+                            <dl>
+                                <dt>{item.description || ''}：</dt>
+                                <dd>
+                                    <ul data-tracename={item.description + '筛选'}>
+                                        <li onClick={this.uemToggleSearchField.bind(this, item.key, '')}
+                                            className={this.getUemFilterFieldClass(item.key, '')} data-tracename="全部">
+                                            <ReactIntl.FormattedMessage
+                                                id="common.all" defaultMessage="全部"/></li>
+                                        {
+                                            _.map(item.values, (value, index) => {
+                                                return <li onClick={this.uemToggleSearchField.bind(this, item.key, value)}
+                                                    className={this.getUemFilterFieldClass(item.key, value)}>{value}</li>;
+                                            })
+                                        }
+                                    </ul>
+                                </dd>
+                            </dl>
+                        );
+                    })
+                ) : null
+            }
         </div>;
     };
 

@@ -15,4 +15,21 @@ exports.getAppsDefaultConfigAjax = function(reqParams) {
     return trans.getAjax('appsDefaultConfig',reqParams);
 };
 
+// 获取用户查询条件
+exports.getUserCondition = function() {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/userquery/condition',
+        dataType: 'json',
+        type: 'get',
+        success: function(result) {
+            Deferred.resolve(result);
+        },
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON || Intl.get('user.info.get.user.condition.failed', '获取用户查询条件失败'));
+        }
+    });
+    return Deferred.promise();
+};
+
 
