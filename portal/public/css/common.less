@@ -152,6 +152,24 @@
     .ant-select-selection {
         .border-radius;
     } //下拉框默认高度
+
+    //下拉菜单进行选择操作时，边框高亮
+    .ant-select-focused.ant-select-open {
+        .ant-select-selection {
+            border-color: #49a9ee;
+            outline: 0;
+            box-shadow: 0 0 0 2px rgba(16, 142, 233, 0.2);
+        }
+    }
+
+    //下拉菜单选择完之后，去掉边框高亮
+    .ant-select-focused {
+        .ant-select-selection {
+            border-color: #d9d9d9;
+            box-shadow: none;
+        }
+    }
+
     .ant-select-lg {
         .ant-select-selection--single {
             height: @input_height;
