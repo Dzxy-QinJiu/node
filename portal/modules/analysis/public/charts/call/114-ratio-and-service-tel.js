@@ -55,6 +55,9 @@ export function getCall114RatioAndServiceTelChart(paramObj = {}) {
                     return params.marker + params.name + ': ' + params.value + ', 占比: ' + numToPercent(params.data.rate);
                 };
             }
+
+            //纵轴标签显示到100%
+            option.yAxis[0].max = 1;
         }
     };
 
