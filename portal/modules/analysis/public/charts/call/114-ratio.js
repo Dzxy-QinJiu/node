@@ -11,10 +11,10 @@ export function getCall114RatioChart() {
         url: '/rest/analysis/callrecord/v1/callrecord/term/invailid',
         conditions: [{
             name: 'filter_phone',
-            value: false
+            value: true
         }, {
             name: 'filter_invalid_phone',
-            value: true
+            value: false
         }],
         processData: get114RatioAndServiceTelProcessDataFunc('114'),
         processOption: get114RatioAndServiceTelProcessOptionFunc(),
