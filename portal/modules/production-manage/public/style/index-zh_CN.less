@@ -37,23 +37,43 @@
 }
 
 //产品管理样式设置
-.backgroundManagement_production_content {
-  .right-cards-container {
-    ul.topnav-links {
-      min-width: 412px;
-    }
-    .cards-filter {
-      display: none;
-    }
-    .card-list-container {
-      .no-data-intro, .no-data {
-        margin: 260px auto;
+.production-manage-container {
+  padding: 12px;
+  .backgroundManagement_production_content {
+    background: #fff;
+    .production-top-nav {
+      height: 80px;
+      border-bottom: 1px solid #E5E5E5;
+      .condition-operator {
+        .pull-left {
+          padding: 24px 24px 0;
+        }
+        .pull-right {
+          padding-top: 10px;
+          padding-right: 16px;
+          .icon-oplate {
+            padding-right: 5px;
+          }
+        }
       }
-      .no-data-intro .no-data-container {
-        top: -34px;
+    }
+    .right-cards-container {
+      ul.topnav-links {
+        min-width: 412px;
       }
-      .card-box .single-card .card-content .card-item .card-item-right {
-        width: 60%;
+      .cards-filter {
+        display: none;
+      }
+      .card-list-container {
+        .no-data-intro, .no-data {
+          margin: 260px auto;
+        }
+        .no-data-intro .no-data-container {
+          top: -34px;
+        }
+        .card-box .single-card .card-content .card-item .card-item-right {
+          width: 60%;
+        }
       }
     }
   }

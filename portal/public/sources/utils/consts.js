@@ -502,3 +502,11 @@ export const memberStatusList = [
     {name: Intl.get('common.enabled', '启用'), value: '1'},
     {name: Intl.get('common.stop', '停用'), value: '0'},
 ];
+
+// 后台管理布局
+export const BACKGROUG_LAYOUT_CONSTANTS = {
+    FRIST_NAV_WIDTH: 75, // 一级导航的宽度
+    NAV_WIDTH: 120, // 导航宽度
+    PADDING_WIDTH: 24 * 2, // padding占的宽度
+    PADDING_HEIGHT: 24 * 2 // padding占的高度
+};

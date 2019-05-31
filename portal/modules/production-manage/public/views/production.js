@@ -369,7 +369,7 @@ class Production extends React.Component {
                                 )}
                             </FormItem>
                             <FormItem
-                                label={Intl.get('config.product.spec', '规格或版本')}
+                                label={Intl.get('config.product.spec', '规格/版本')}
                                 {...formItemLayout}
                             >
                                 {getFieldDecorator('specifications', {

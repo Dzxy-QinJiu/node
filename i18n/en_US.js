@@ -973,7 +973,7 @@ var en_US = {
     'config.product.type': 'Product type',//产品类型
     'config.product.select.tip': 'Please choose products (Multiple choices)',//请选择产品（可多选）
     'config.product.js.collect.user': 'Use JS script to collect user data',//使用JS脚本采集用户数据
-    'config.product.list.import': 'Import {type} Products',//导入{type}产品
+    'config.product.list.import': 'Import Products',//导入产品
     'config.product.import.tip': 'You have integrated {type} to import the following {type} products',//您已集成{type}，可以导入以下{type}的产品
     'config.product.import.finish': 'Import finished',//导入完成
     'config.product.import.failed': 'Import failed',//导入失败
