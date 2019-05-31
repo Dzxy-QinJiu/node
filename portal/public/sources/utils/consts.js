@@ -220,8 +220,11 @@ export const ALL_CUSTOMER_LISTS_TYPE = [
 //处理 或者未处理
 //不同列表的类型
 export const STATUS = {UNHANDLED: 'unhandled', HANDLED: 'handled'};
+//通话设备类型
 export const CALL_TYPE_OPTION = {
     ALL: 'all',
+    //phone：私有呼叫中心（目前有：eefung长沙、济南的电话系统）
+    //curtao_phone: 客套呼叫中心（目前有: eefung北京、合天的电话系统）
     PHONE: 'phone,curtao_phone',
     APP: 'app'
 };
