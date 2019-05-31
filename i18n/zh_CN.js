@@ -3017,10 +3017,11 @@ var zh_CN = {
     'app.user.manage.organaization.name': '所在单位或公司',
     'app.user.manage.product.key.validate': '自定义属性key只能包含字母、下划线',
     'app.user.manage.product.des.validate': '自定义属性描述只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到20（包括20）之间',
-    'app.user.manage.custom.variable.key.tip': '请输入自定义属性的key',
-    'app.user.manage.custom.variable.des.tip': '请输入自定义属性的描述',
+    'app.user.manage.custom.variable.key.tip': '请输入key',
+    'app.user.manage.custom.variable.des.tip': '请输入描述',
     'app.user.manage.custom.variable.no.key.tip': '自定义属性的key不能为空',
     'app.user.manage.custom.variable.no.des.tip': '自定义属性的描述不能为空',
     'app.user.manage.add.custom.text': '添加属性',
+    'app.user.manage.user.attributes': '用户属性',
 };
 export default zh_CN;

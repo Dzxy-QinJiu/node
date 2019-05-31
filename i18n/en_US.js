@@ -2913,10 +2913,11 @@ var en_US = {
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司
     'app.user.manage.product.key.validate': 'The custom attribute key can contain only letters and underscores',//自定义属性key只能包含字母、下划线
     'app.user.manage.product.des.validate': 'The custom variable description can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English brackets, and the length is between 1 and 20 (including 20).',//自定义属性描述只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到20（包括20）之间
-    'app.user.manage.custom.variable.key.tip': 'Enter the key for the custom attribute',//请输入自定义属性的key
-    'app.user.manage.custom.variable.des.tip': 'Enter a description of the custom property',//请输入自定义属性的key
+    'app.user.manage.custom.variable.key.tip': 'Enter the key for the custom attribute',//请输入key
+    'app.user.manage.custom.variable.des.tip': 'Enter a description',//请输入描述
     'app.user.manage.custom.variable.no.key.tip': 'The key of the custom property cannot be empty',//自定义属性的key不能为空
     'app.user.manage.custom.variable.no.des.tip': 'The description of a custom property cannot be empty',//自定义属性的描述不能为空
     'app.user.manage.add.custom.text': 'Add attributes',//添加属性
+    'app.user.manage.user.attributes': 'User attributes',//用户属性
 };
 export default en_US;

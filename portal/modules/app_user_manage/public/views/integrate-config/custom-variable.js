@@ -17,6 +17,29 @@ const CUSTOM_TYPES = {
 };
 // 自定义属性的最大个数(2),总共7个减去固定的5个
 const maxCustomVariableCount = 2;
+// 固定的自定义属性
+const FIXED_CUSTOM_VARIABLES = [
+    {
+        key: 'nickname',
+        description: Intl.get('common.nickname', '昵称')
+    },
+    {
+        key: 'role',
+        description: Intl.get('app.user.manage.role.name', '角色名称')
+    },
+    {
+        key: 'organization',
+        description: Intl.get('app.user.manage.organaization.name', '所在单位或公司')
+    },
+    {
+        key: 'expiretime',
+        description: Intl.get('user.time.end', '到期时间')
+    },
+    {
+        key: 'user_type',
+        description: Intl.get('user.user.type', '用户类型')
+    },
+];
 
 class CustomVariable extends React.Component {
     constructor(props) {
@@ -45,9 +68,7 @@ class CustomVariable extends React.Component {
         if(type === 'add') {
             value = [{
                 key: '',
-                description: '',
-                keyErrMsg: '',
-                desErrMsg: ''
+                description: ''
             }];
         }
         this.setState({
@@ -65,8 +86,6 @@ class CustomVariable extends React.Component {
             value.push({
                 key: '',
                 description: '',
-                keyErrMsg: '',
-                desErrMsg: ''
             });
             this.setState({
                 value
@@ -92,38 +111,20 @@ class CustomVariable extends React.Component {
     onInputChange = (type, index, e) => {
         let inputValue = e.target.value;
         let value = this.state.value;
-        let fieldName = CUSTOM_VARIABLE_FIELD + index;
         if(inputValue) {
             // key发生变化
             if(type === CUSTOM_TYPES.key) {
-                fieldName += CUSTOM_TYPES.key;
-                if(!productKeyRule.pattern.test(inputValue)) {
-                    value[index].keyErrMsg = productKeyRule.message;
-                }else {
-                    value[index].key = inputValue;
-                    value[index].keyErrMsg = '';
-                }
+                value[index].key = inputValue;
             }
             else if(type === CUSTOM_TYPES.desc) {// 描述发生变化
-                fieldName += CUSTOM_TYPES.desc;
-                if(!productDesRule.pattern.test(inputValue)) {
-                    value[index].desErrMsg = productDesRule.message;
-                }else {
-                    value[index].description = inputValue;
-                    value[index].desErrMsg = '';
-                }
+                value[index].description = inputValue;
             }
         }else {
             // 没值时，清除所有的参数
             value[index][type] = '';
-            if(type === CUSTOM_TYPES.key) {
-                value[index].keyErrMsg = '';
-            }else { value[index].desErrMsg = ''; }
         }
         this.setState({
             value
-        }, () => {
-            this.props.form.validateFields([fieldName], {force: true});
         });
     };
 
@@ -135,8 +136,6 @@ class CustomVariable extends React.Component {
             return {
                 key,
                 description: data[key],
-                keyErrMsg: '',
-                desErrMsg: ''
             };
         });
     };
@@ -149,42 +148,6 @@ class CustomVariable extends React.Component {
             obj[item.key] = item.description;
         });
         return obj;
-    };
-
-    getCustomVariableKeyValidateRules = (index) => {
-        return {
-            validator: (rule, value, callback) => {
-                let errMsg = _.get(this.state.value, `[${index}].keyErrMsg`, '');
-                if (errMsg) {
-                    callback(errMsg);
-                } else {
-                    // 判断key是否有值
-                    if (this.state.value[index].key) {
-                        callback();
-                    } else {
-                        callback(Intl.get('app.user.manage.custom.variable.no.key.tip', '自定义属性的key不能为空'));
-                    }
-                }
-            }
-        };
-    };
-
-    getCustomVariableDesValidateRules = (index) => {
-        return {
-            validator: (rule, value, callback) => {
-                let errMsg = _.get(this.state.value, `[${index}].desErrMsg`, '');
-                if (errMsg) {
-                    callback(errMsg);
-                } else {
-                    // 判断description是否有值
-                    if (this.state.value[index].description) {
-                        callback();
-                    } else {
-                        callback(Intl.get('app.user.manage.custom.variable.no.des.tip', '自定义属性的描述不能为空'));
-                    }
-                }
-            }
-        };
     };
 
     handleCancel = (e) => {
@@ -241,6 +204,14 @@ class CustomVariable extends React.Component {
 
         let displayText = this.state.value;
         let textBlock = null;
+        let fixedBlock = _.map(FIXED_CUSTOM_VARIABLES, custom => {
+            return (
+                <div className="custom-variable-item">
+                    <span className="custom-variable-key">key：{custom.key}</span>
+                    <span>{Intl.get('common.describe', '描述')}：{custom.description}</span>
+                </div>
+            );
+        });
         let cls = classNames('edit-container',{
             'hover-show-edit': this.props.hasEditPrivilege
         });
@@ -297,16 +268,18 @@ class CustomVariable extends React.Component {
                                             key={index}
                                             className='custom-key'
                                             label='key'
-                                            labelCol={{span: 4}}
-                                            wrapperCol={{span: 20}}
+                                            {...this.props.editFormLayout}
                                         >
                                             {getFieldDecorator(fieldName + CUSTOM_TYPES.key, {
                                                 initialValue: item.key,
-                                                rules: [this.getCustomVariableKeyValidateRules(index)],
+                                                rules: [{
+                                                    required: true,
+                                                    message: Intl.get('app.user.manage.custom.variable.no.key.tip', '自定义属性的key不能为空')
+                                                }, productKeyRule]
                                             })(
                                                 <Input
-                                                    title={Intl.get('app.user.manage.custom.variable.key.tip', '请输入自定义属性的key')}
-                                                    placeholder={Intl.get('app.user.manage.custom.variable.key.tip', '请输入自定义属性的key')}
+                                                    title={Intl.get('app.user.manage.custom.variable.key.tip', '请输入key')}
+                                                    placeholder={Intl.get('app.user.manage.custom.variable.key.tip', '请输入key')}
                                                     onChange={this.onInputChange.bind(this, CUSTOM_TYPES.key, index)}
                                                 />
                                             )}
@@ -318,16 +291,18 @@ class CustomVariable extends React.Component {
                                             key={index}
                                             className='custom-des'
                                             label={Intl.get('common.describe', '描述')}
-                                            labelCol={{span: 4}}
-                                            wrapperCol={{span: 20}}
+                                            {...this.props.editFormLayout}
                                         >
                                             {getFieldDecorator(fieldName + CUSTOM_TYPES.desc, {
                                                 initialValue: item.description,
-                                                rules: [this.getCustomVariableDesValidateRules(index)],
+                                                rules: [{
+                                                    required: true,
+                                                    message: Intl.get('app.user.manage.custom.variable.no.des.tip', '自定义属性的描述不能为空')
+                                                }, productDesRule]
                                             })(
                                                 <Input
-                                                    title={Intl.get('app.user.manage.custom.variable.des.tip', '请输入自定义属性的描述')}
-                                                    placeholder={Intl.get('app.user.manage.custom.variable.des.tip', '请输入自定义属性的描述')}
+                                                    title={Intl.get('app.user.manage.custom.variable.des.tip', '请输入描述')}
+                                                    placeholder={Intl.get('app.user.manage.custom.variable.des.tip', '请输入描述')}
                                                     onChange={this.onInputChange.bind(this, CUSTOM_TYPES.desc, index)}
                                                 />
                                             )}
@@ -367,9 +342,17 @@ class CustomVariable extends React.Component {
             </div>
         ) : null;
         return (
-            <div className={displayCls}>
-                {textBlock}
-                {inputBlock}
+            <div className='custom-variable-container'>
+                <div className="custom-label-container">
+                    <span className="custom-label">{Intl.get('app.user.manage.user.attributes', '用户属性')}：</span>
+                </div>
+                <div className="custom-variable-content">
+                    {fixedBlock}
+                    <div className={displayCls}>
+                        {textBlock}
+                        {inputBlock}
+                    </div>
+                </div>
             </div>
         );
     }
@@ -388,6 +371,11 @@ CustomVariable.defaultProps = {
     width: '100%',
     //保存按钮的文字展示
     okBtnText: Intl.get('common.add', '添加'),
+    // 编辑表单的展示布局
+    editFormLayout: {
+        labelCol: {span: 4},
+        wrapperCol: {span: 20}
+    },
     //保存自定义属性的修改方法
     saveEditInput: function() {}
 };
@@ -401,5 +389,6 @@ CustomVariable.propTypes = {
     addBtnTip: PropTypes.string,
     width: PropTypes.string,
     okBtnText: PropTypes.string,
+    editFormLayout: PropTypes.object
 };
 export default Form.create()(CustomVariable);

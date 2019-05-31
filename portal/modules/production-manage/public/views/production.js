@@ -456,38 +456,17 @@ class Production extends React.Component {
                                 </FormItem>) : null}
                             {this.state.uemSiteId && values.useJS !== false ? (
                                 <FormItem>
-                                    <div className="access-step-tip margin-style js-code-contianer">
-                                        <span className="js-code-label">用户属性：</span>
-                                    </div>
-                                    <div className="access-step-tip margin-style custom-variable-container">
-                                        <div className="custom-variable-item">
-                                            <span className="custom-variable-key">key：nickname</span>
-                                            <span>{Intl.get('common.describe', '描述')}：{Intl.get('common.nickname', '昵称')}</span>
-                                        </div>
-                                        <div className="custom-variable-item">
-                                            <span className="custom-variable-key">key：role</span>
-                                            <span>{Intl.get('common.describe', '描述')}：{Intl.get('app.user.manage.role.name', '角色名称')}</span>
-                                        </div>
-                                        <div className="custom-variable-item">
-                                            <span className="custom-variable-key">key：organization</span>
-                                            <span>{Intl.get('common.describe', '描述')}：{Intl.get('app.user.manage.organaization.name', '所在单位或公司')}</span>
-                                        </div>
-                                        <div className="custom-variable-item">
-                                            <span className="custom-variable-key">key：expiretime</span>
-                                            <span>{Intl.get('common.describe', '描述')}：{Intl.get('user.time.end', '到期时间')}</span>
-                                        </div>
-                                        <div className="custom-variable-item">
-                                            <span className="custom-variable-key">key：user_type</span>
-                                            <span>{Intl.get('common.describe', '描述')}：{Intl.get('user.user.type', '用户类型')}</span>
-                                        </div>
-                                        <CustomVariable
-                                            id={_.get(this.props.info,'id')}
-                                            value={_.get(this.props.info,'custom_variable',{})}
-                                            hasEditPrivilege={true}
-                                            addBtnTip={Intl.get('app.user.manage.add.custom.text', '添加属性')}
-                                            saveEditInput={this.saveCustomVariable}
-                                        />
-                                    </div>
+                                    <CustomVariable
+                                        id={_.get(this.props.info,'id')}
+                                        value={_.get(this.props.info,'custom_variable',{})}
+                                        hasEditPrivilege={true}
+                                        editFormLayout={{
+                                            labelCol: {span: 5},
+                                            wrapperCol: {span: 19}
+                                        }}
+                                        addBtnTip={Intl.get('app.user.manage.add.custom.text', '添加属性')}
+                                        saveEditInput={this.saveCustomVariable}
+                                    />
                                 </FormItem>
                             ) : null}
                             {this.state.uemSiteId && values.useJS !== false ? (
