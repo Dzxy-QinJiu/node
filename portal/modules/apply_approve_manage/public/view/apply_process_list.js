@@ -162,7 +162,7 @@ class AddAndShowApplyList extends React.Component {
                 <Menu.Item>
                     <span onClick={this.copyApply.bind(this, record)}>{Intl.get('user.jscode.copy', '复制')}</span>
                 </Menu.Item>
-                {!record.approveCheck ? <Menu.Item>
+                {!record.approveCheck && record.customiz ? <Menu.Item>
                     <span onClick={this.deleteApply.bind(this, record)}>{Intl.get('common.delete', '删除')}</span>
                 </Menu.Item> : null}
 

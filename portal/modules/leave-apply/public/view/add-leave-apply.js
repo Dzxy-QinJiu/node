@@ -41,10 +41,10 @@ class AddLeaveApply extends React.Component {
         for (var key in newSetting){
             formData[key] = newSetting[key];
         }
-        this.updateFormData();
+        this.updateFormData(formData);
         this.addLabelRequiredCls();
     }
-    updateFormData = () => {
+    updateFormData = (formData) => {
         this.setState({
             formData: formData
         },() => {

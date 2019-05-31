@@ -456,6 +456,11 @@ class ApplyViewDetail extends React.Component {
                     description: moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
                 });
             });
+        }else if(applicantList.status === 'cancel'){
+            stepArr.push({
+                title: Intl.get('user.apply.backout', '已撤销'),
+                description: moment(_.get(applicantList, 'update_time')).format(oplateConsts.DATE_TIME_FORMAT)
+            });
         }
         var candidate = this.state.candidateList,candidateName = '';
         //如果下一个节点是直接主管审核

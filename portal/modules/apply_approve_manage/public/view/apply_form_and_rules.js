@@ -219,7 +219,7 @@ class ApplyFormAndRules extends React.Component {
     //获取目标
     updateUserData = () => {
         var applyLists = userData.getUserData().workFlowConfigs;
-        return _.find(applyLists, item => item.key === _.get(this, 'state.applyTypeData.key'));
+        return _.find(applyLists, item => item.type === _.get(this, 'state.applyTypeData.type'));
     };
     //
     handleCancelSaveTitle = () => {
@@ -396,8 +396,10 @@ class ApplyFormAndRules extends React.Component {
 
                         </span> : <span className="show-name-container">
                             {initialApplyTitle}
-                            <i className="pull-right iconfont icon-update"
-                                onClick={this.handleEditApplyTitle.bind(this, initialApplyTitle)}></i>
+                            {/*如果是内置的流程，不让修改流程的名称*/}
+                            {_.get(this, 'state.applyTypeData.customiz') ? <i className="pull-right iconfont icon-update"
+                                onClick={this.handleEditApplyTitle.bind(this, initialApplyTitle)}></i> : null}
+
                         </span>}
 
                     </div>

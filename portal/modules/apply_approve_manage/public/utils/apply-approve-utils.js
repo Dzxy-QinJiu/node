@@ -35,6 +35,11 @@ export const ALL_COMPONENTS_TYPE = {
     TEXTAREA: 'textarea',
 
 };
+export const ASSIGEN_APPROVER = 'Assign_approver';
+exports.SETTING_APPLY_APPROVER = {
+    label: Intl.get('apply.approve.set.approver', '指定审批人'),
+    value: ASSIGEN_APPROVER
+};
 exports.applyComponentsType = [{
     name: ALL_COMPONENTS.INPUT,
     component: InputContent
@@ -65,7 +70,7 @@ exports.CONDITION_KEYS = [
         name: Intl.get('user.duration', '时长'),
         value: ALL_COMPONENTS.TIMEPERIOD + '_limit',
         conditionRule: function(item) {
-            item['conditionRule'] = item['rangeLimit'] + item['rangeNumber'];
+            item['conditionRule'] = '${condition' + item['rangeLimit'] + parseFloat(item['rangeNumber']).toFixed(1) + '}';
             item['conditionInverseRule'] = item['inverseCondition'] + item['rangeNumber'];
             item['conditionRuleDsc'] = item['rangeLimitDsc'] + item['rangeNumberDsc'];
         }
@@ -273,3 +278,4 @@ exports.isBussinessTripFlow = function(itemType) {
 exports.isLeaveFlow = function(itemType) {
     return itemType === INNER_SETTING_FLOW.LEAVE;
 };
+exports.ADDTIONPROPERTIES = ['higherLevelApproveChecked','adminApproveChecked','submitFiles','assignNextNodeApprover','distributeSales'];

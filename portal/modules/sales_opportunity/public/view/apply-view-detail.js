@@ -247,8 +247,8 @@ class ApplyViewDetail extends React.Component {
             } else if (detailItem.id) {
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyDetailById({id: detailItem.id});
                 SalesOpportunityApplyDetailAction.getSalesOpportunityApplyCommentList({id: detailItem.id});
-                //根据申请的id获取申请的状态
-                SalesOpportunityApplyDetailAction.getSalesOpportunityApplyStatusById({id: detailItem.id});
+                //获取该审批所在节点的位置
+                SalesOpportunityApplyDetailAction.getApplyTaskNode({id: detailItem.id});
                 this.getNextCandidate(detailItem.id);
             }
         });
@@ -539,10 +539,10 @@ class ApplyViewDetail extends React.Component {
         var showApproveBtn = detailInfoObj.showApproveBtn;
         var renderAssigenedContext = null;
         //渲染分配的按钮
-        if (_.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.ASSIGN_SALES_APPLY && showApproveBtn){
+        if (_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'distributeSales') > -1 && showApproveBtn){
             //分配给普通销售
             renderAssigenedContext = this.renderAssigenedContext;
-        }else if(_.get(this.state,'replyStatusInfo.list[0]','') === APPLY_STATUS.READY_APPLY && detailInfoObj.showApproveBtn){
+        }else if(_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'assignNextNodeApprover') > -1 && detailInfoObj.showApproveBtn){
             if (this.isCiviwRealm()){
                 //如果是识微域，直接点通过就可以，不需要手动选择分配销售总经理
                 renderAssigenedContext = null;
@@ -697,6 +697,11 @@ class ApplyViewDetail extends React.Component {
                     title: (replyItem.nick_name || userData.getUserData().nick_name) + descrpt,
                     description: moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
                 });
+            });
+        }else if(applicantList.status === 'cancel'){
+            stepArr.push({
+                title: Intl.get('user.apply.backout', '已撤销'),
+                description: moment(_.get(applicantList, 'update_time')).format(oplateConsts.DATE_TIME_FORMAT)
             });
         }
 

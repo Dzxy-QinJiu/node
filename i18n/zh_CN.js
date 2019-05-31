@@ -2982,7 +2982,7 @@ var zh_CN = {
     'apply.add.approver.applicant.setting': '申请人指定',
     'apply.add.approver.applicant.self': '申请人自己',
     'apply.add.approver.submit.files': '可提交文件',
-    'apply.add.approver.distribute': '可分配',
+    'apply.add.approver.distribute': '指定下一审批人',
     'apply.add.approve.node.team.owner': '团队所有者',
     'apply.add.approve.node.team.owner.and.higher.level.owner': '团队所有者或者上级团队所有者',
     'apply.add.approve.node.higher.level.owner': '上级团队所有者',
@@ -3013,6 +3013,6 @@ var zh_CN = {
     'apply.time.distinct.am': '区分上下午',
     'apply.form.has.edit.components': '您有组件还是编辑状态',
     'apply.my.self.setting.work.flow': '我的自定义流程',
-    'apply.approve.assign.sales': '分配销售'
+    'apply.approve.set.approver': '指定审批人'
 };
 export default zh_CN;

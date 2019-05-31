@@ -23,24 +23,33 @@ import {
     ALL_COMPONENTS,
     isBussinessTripFlow,
     isLeaveFlow,
+    isSalesOpportunityFlow,
     CONDITION_LIMITE
 } from '../../utils/apply-approve-utils';
 require('../../style/add_apply_condition_panel.less');
-
 class AddApplyConditionPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showAddConditionForm: false,
-            diffConditionLists: {
+            showAddConditionForm: _.get(this, 'props.updateConditionObj.limitRules[0]') ? true : false,
+            diffConditionLists: _.isEmpty(this.props.updateConditionObj) ? {
+                conditionTitle: '',
                 limitRules: [],
-            },//添加的条件审批数据
-            applySaveForm: _.get(this, 'props.applyTypeData.customiz_form',[]),
+            } : _.cloneDeep(this.props.updateConditionObj),//添加的条件审批数据
+            applySaveForm: _.get(this, 'props.applyTypeData.customiz_form', []),
         };
     }
 
     componentDidMount() {
     }
+
+    // componentWillReceiveProps(nextProps) {
+    //     if (!_.isEmpty(nextProps.updateConditionObj)){
+    //         this.setState({
+    //             diffConditionLists: nextProps.updateConditionObj
+    //         });
+    //     }
+    // }
 
     handleAddConditionType = (conditionType) => {
         var diffConditionLists = this.state.diffConditionLists;
@@ -59,13 +68,25 @@ class AddApplyConditionPanel extends React.Component {
     getDiffTypeComponents = () => {
         var applySaveForm = this.state.applySaveForm;
         var applyType = _.get(this, 'props.applyTypeData.type');
+        //如果是出差或者请假申请，需要展示时长这个条件
         var isShowTimeRange = isBussinessTripFlow(applyType) || isLeaveFlow(applyType);
-
+        //如果是销售机会申请，需要展示金额这个条件
+        var isShowMoneyRange = isSalesOpportunityFlow(applyType);
+        var componentType = '', descriptionTip = '', showInnerCondition = false;
+        if (isShowTimeRange) {
+            componentType = ALL_COMPONENTS.TIMEPERIOD;
+            descriptionTip = Intl.get('user.duration', '时长');
+            showInnerCondition = true;
+        } else if (isShowMoneyRange) {
+            componentType = ALL_COMPONENTS.TIMEPERIOD;
+            descriptionTip = Intl.get('user.duration', '时长');
+            showInnerCondition = true;
+        }
         //保存的已经添加的表单，是个数组
         var menus = <Menu>{
             //如果是内置的出差流程或者是请假流程，要加上时长的判断
-            isShowTimeRange ? <Menu.Item>
-                <a onClick={this.handleAddConditionType.bind(this, ALL_COMPONENTS.TIMEPERIOD)}>{Intl.get('user.duration', '时长')}</a>
+            showInnerCondition ? <Menu.Item>
+                <a onClick={this.handleAddConditionType.bind(this, componentType)}>{descriptionTip}</a>
             </Menu.Item> :
                 _.map(applySaveForm, (item) => {
                     var component_type = item.subComponentType || item.component_type;
@@ -160,6 +181,7 @@ class AddApplyConditionPanel extends React.Component {
                                 </div>
                                 <div className="condition-type-content">
                                     <Select
+                                        defaultValue={_.get(value, 'rangeLimit')}
                                         onChange={this.handleChangeRangeLimit.bind(this, limitType, 'rangeLimit', 'inverseCondition', CONDITION_LIMITE)}
                                     >
                                         {_.map(CONDITION_LIMITE, (item, index) => {
@@ -167,6 +189,7 @@ class AddApplyConditionPanel extends React.Component {
                                         })}
                                     </Select>
                                     <Input
+                                        defaultValue={_.get(value, 'rangeNumber')}
                                         onChange={this.handleRangeInputChange.bind(this, limitType, 'rangeNumber', Intl.get('common.time.unit.day', '天'))}
                                         addonAfter={Intl.get('common.time.unit.day', '天')}/>
                                 </div>
@@ -185,6 +208,9 @@ class AddApplyConditionPanel extends React.Component {
                 var target = this.getConditionRelate(item.limitType);
                 target.conditionRule(item);
             });
+            if (this.props.updateConditionFlowKey) {
+                submitObj.updateConditionFlowKey = this.props.updateConditionFlowKey;
+            }
             this.props.saveAddApprovCondition(submitObj);
             this.props.hideRightPanel();
         });
@@ -222,6 +248,7 @@ class AddApplyConditionPanel extends React.Component {
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('condition_name', {
+                                            initialValue: _.get(this, 'state.diffConditionLists.conditionTitle'),
                                             rules: [{required: true, message: Intl.get('apply.add.reg.name', '请填写名称')}],
                                         })(
                                             <Input onChange={this.handleConditionTitleChange}/>
@@ -265,13 +292,17 @@ AddApplyConditionPanel.defaultProps = {
     saveAddApprovCondition: function() {
 
     },
-    applyTypeData: {}
+    applyTypeData: {},
+    updateConditionObj: {},
+    updateConditionFlowKey: ''
 
 };
 AddApplyConditionPanel.propTypes = {
     hideRightPanel: PropTypes.func,
     saveAddApprovCondition: PropTypes.func,
     applyTypeData: PropTypes.object,
+    updateConditionObj: PropTypes.object,
+    updateConditionFlowKey: PropTypes.string,
 
 
     defaultClueData: PropTypes.object,
