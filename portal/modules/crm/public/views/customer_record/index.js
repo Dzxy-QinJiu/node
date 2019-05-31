@@ -497,7 +497,7 @@ class CustomerRecord extends React.Component {
         //给本条记录加上标识
         item.playSelected = true;
         var playItemAddr = commonMethodUtil.getAudioRecordUrl(item.local, item.recording, item.type);
-        var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, item.dst) === -1;
+        var isShowReportButton = true;//_.indexOf(this.state.invalidPhoneLists, item.dst) === -1;
         audioMsgEmitter.emit(audioMsgEmitter.OPEN_AUDIO_PANEL, {
             playingItemAddr: playItemAddr,
             getInvalidPhoneErrMsg: this.state.getInvalidPhoneErrMsg,
@@ -697,7 +697,7 @@ class CustomerRecord extends React.Component {
         this.setState({
             isAddingInvalidPhone: true
         });
-        addInvalidPhone({'phone': curPhone}, () => {
+        addInvalidPhone({'number': curPhone}, () => {
             this.state.invalidPhoneLists.push(curPhone);
             this.setState({
                 isAddingInvalidPhone: false,
