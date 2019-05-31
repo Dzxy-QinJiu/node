@@ -2931,5 +2931,7 @@ var zh_CN = {
     'common.by.member': '按成员',
     'common.deal.number': '成交数',
     'common.deal.amount': '成交额',
+    'common.114.phone': '114电话',
+    'common.non.114.phone': '非114电话',
 };
 export default zh_CN;

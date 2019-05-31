@@ -25,12 +25,12 @@ export function getCall114RatioAndServiceTelChart(paramObj = {}) {
                 if (data.rate !== 0) {
                     processedData.push(
                         {
-                            name: '114电话',
+                            name: Intl.get('common.114.phone', '114电话'),
                             value: data.invalid_docs,
                             rate: data.rate
                         },
                         {
-                            name: '非114电话',
+                            name: Intl.get('common.non.114.phone', '非114电话'),
                             value: data.total_docs - data.invalid_docs,
                             rate: 1 - data.rate
                         }
