@@ -108,10 +108,15 @@ export function ifNotSingleApp(conditions) {
     }
 }
 
+//是否普通销售
+export function isCommonSales() {
+    return userData.getUserData().isCommonSales;
+}
+
 //是否是要查看具体销售人员的数据
 //普通销售自己登录或管理人员选择某些销售都属于这种情况
 export function isSales() {
-    return userData.getUserData().isCommonSales || Store.teamMemberFilterType === 'member'; 
+    return isCommonSales() || Store.teamMemberFilterType === 'member'; 
 }
 
 //是否是管理员或运营人员
@@ -446,4 +451,65 @@ export function funnelWithConvertRateProcessCsvData(chart, option) {
     csvData.push(thead, tbody);
 
     return csvData;
+}
+
+//获取114占比和客服电话统计数据处理函数
+export function get114RatioAndServiceTelProcessDataFunc(type) {
+    return function(data, chart) {
+        let processedData = [];
+
+        if (isCommonSales()) {
+            data = data[0];
+
+            if (data.rate !== 0) {
+                let name, nonName;
+
+                if (type === '114') {
+                    name = Intl.get('common.114.phone', '114电话');
+                    nonName = Intl.get('common.non.114.phone', '非114电话');
+                } else {
+                    name = Intl.get('call.record.service.phone', '客服电话');
+                    nonName = Intl.get('common.non.service.phone', '非客服电话');
+                }
+
+                processedData.push(
+                    {
+                        name,
+                        value: data.invalid_docs,
+                        rate: data.rate
+                    },
+                    {
+                        name: nonName,
+                        value: data.total_docs - data.invalid_docs,
+                        rate: 1 - data.rate
+                    }
+                );
+            }
+        } else {
+            _.each(data, item => {
+                if (item.rate !== 0) {
+                    processedData.push({
+                        name: item.sales_team || item.nick_name,
+                        value: item.rate
+                    });
+                }
+            });
+        }
+
+        return processedData;
+    };
+}
+
+//获取114占比和客服电话统计选项处理函数
+export function get114RatioAndServiceTelProcessOptionFunc() {
+    return function(option) {
+        if (isCommonSales()) {
+            option.tooltip.formatter = params => {
+                return params.marker + params.name + ': ' + params.value + ', 占比: ' + numToPercent(params.data.rate);
+            };
+        }
+
+        //纵轴标签显示到100%
+        option.yAxis[0].max = 1;
+    };
 }

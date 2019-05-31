@@ -2,6 +2,13 @@
  * 公共常量
  */
 
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+
+//权限类型
+export const authType = hasPrivilege('CUSTOMER_ANALYSIS_MANAGER') ? 'manager' : 'common';
+//数据类型
+export const dataType = hasPrivilege('GET_TEAM_LIST_ALL') ? 'all' : 'self';
+
 //初始时间
 export const initialTime = {
     range: 'week',

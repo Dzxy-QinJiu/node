@@ -8,10 +8,11 @@ import Store from './store';
 import ajax from 'ant-ajax';
 import TableListPanel from 'CMP_DIR/table-list-panel';
 import TopBar from './top-bar';
+import {getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import HistoricHighDetail from './historic-high-detail';
 import AppSelector from './app-selector';
 import {getContextContent} from './utils';
-import {initialTime, STORED_APP_ID_KEY, CUSTOMER_IDS_FIELD, DEFERRED_ACCOUNT_ANALYSIS_TITLE} from './consts';
+import {authType, dataType, initialTime, STORED_APP_ID_KEY, CUSTOMER_IDS_FIELD, DEFERRED_ACCOUNT_ANALYSIS_TITLE} from './consts';
 import {AntcAnalysis} from 'antc';
 import {Row, Col, Collapse} from 'antd';
 
@@ -21,7 +22,8 @@ import {
     appSelectorEmitter,
     teamTreeEmitter,
     dateSelectorEmitter,
-    analysisCustomerListEmitter
+    analysisCustomerListEmitter,
+    callDeviceTypeEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 
 import rightPanelUtil from 'CMP_DIR/rightPanel';
@@ -31,11 +33,6 @@ const RightPanelClose = rightPanelUtil.RightPanelClose;
 const CustomerList = require('MOD_DIR/crm/public/crm-list');
 
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-
-//权限类型
-const authType = hasPrivilege('CUSTOMER_ANALYSIS_MANAGER') ? 'manager' : 'common';
-//数据类型
-const dataType = hasPrivilege('GET_TEAM_LIST_ALL') ? 'all' : 'self';
 
 //引入pages目录（包括子目录）下的所有index.js文件
 const req = require.context('./pages', true, /index\.js$/);
@@ -55,6 +52,8 @@ class CurtaoAnalysis extends React.Component {
             currentPage: '',
             groups: this.processMenu(processedGroups),
             isAppSelectorShow: false,
+            //是否显示通话设备类型选择器
+            isCallDeviceTypeSelectorShow: false,
             //是否显示右侧面板
             isRightPanelShow: false,
             //是否显示客户列表
@@ -72,6 +71,8 @@ class CurtaoAnalysis extends React.Component {
         this.getAppList();
         this.getClueChannelList();
         this.getClueSourceList();
+        // 获取组织电话系统配置
+        this.getCallSystemConfig();
 
         analysisCustomerListEmitter.on(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, this.handleCustomerListEvent);
     }
@@ -132,6 +133,15 @@ class CurtaoAnalysis extends React.Component {
             Store.clueSourceList = _.get(result, 'result');
         });
     };
+    
+    //获取组织电话系统配置
+    getCallSystemConfig() {
+        getCallSystemConfig().then(config => {
+            const isShowEffectiveTimeAndCount = _.get(config,'filter_114',false) || _.get(config,'filter_customerservice_number',false);
+
+            Store.isShowEffectiveTimeAndCount = isShowEffectiveTimeAndCount;
+        });
+    }
 
     processMenu(menus, subMenuField = 'pages') {
         return _.filter(menus, menu => {
@@ -281,12 +291,35 @@ class CurtaoAnalysis extends React.Component {
         const charts = _.get(page, 'charts');
 
         let isAppSelectorShow = false;
+        let isCallDeviceTypeSelectorShow = false;
 
         let adjustConditions;
 
-        if (group.title === '账号分析') {
+        function deleteCallDeviceTypeCondition(conditions) {
+            const callDeviceTypeConditionIndex = _.findIndex(conditions, condition => condition.name === 'device_type');
+
+            if (callDeviceTypeConditionIndex !== -1) {
+                conditions.splice(callDeviceTypeConditionIndex, 1);
+            }
+        }
+
+        if (group.title === '通话分析') {
+            isCallDeviceTypeSelectorShow = true;
+            adjustConditions = conditions => {
+                const callDeviceTypeCondition = _.find(conditions, condition => condition.name === 'device_type');
+
+                if (!callDeviceTypeCondition) {
+                    conditions.push({
+                        name: 'device_type',
+                        value: 'all'
+                    });
+                }
+            };
+        } else if (group.title === '账号分析') {
             isAppSelectorShow = true;
             adjustConditions = conditions => {
+                deleteCallDeviceTypeCondition(conditions);
+
                 let defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY);
 
                 //当前是否在延期帐号页
@@ -313,6 +346,8 @@ class CurtaoAnalysis extends React.Component {
                 adjustConditions = page.adjustConditions;
             } else {
                 adjustConditions = conditions => {
+                    deleteCallDeviceTypeCondition(conditions);
+
                     const appIdCondition = _.find(conditions, condition => condition.name === 'app_id');
                     _.set(appIdCondition, 'value', 'all');
                     this.adjustStartEndTime(conditions);
@@ -325,6 +360,7 @@ class CurtaoAnalysis extends React.Component {
             currentCharts: charts,
             currentPage: page,
             isAppSelectorShow,
+            isCallDeviceTypeSelectorShow,
             adjustConditions
         });
     }
@@ -380,6 +416,12 @@ class CurtaoAnalysis extends React.Component {
 
     getEmitters() {
         return [{
+            emitter: callDeviceTypeEmitter,
+            event: callDeviceTypeEmitter.CHANGE_CALL_DEVICE_TYPE,
+            callbackArgs: [{
+                name: 'device_type',
+            }],
+        }, {
             emitter: appSelectorEmitter,
             event: appSelectorEmitter.SELECT_APP,
             callbackArgs: [{
@@ -464,6 +506,7 @@ class CurtaoAnalysis extends React.Component {
                 <TopBar
                     currentPage={this.state.currentPage}
                     ref={ref => this.topBar = ref}
+                    isCallDeviceTypeSelectorShow={this.state.isCallDeviceTypeSelectorShow}
                 />
                 <Row>
                     <Col span={3}>

@@ -986,7 +986,7 @@ var en_US = {
     'call.record.save.content.success': 'Save follow-up content successfully.', // 保存跟进内容成功！
     'call.record.save.content.error': 'Failed to save follow-up content.', // 保存跟进内容失败！
     'call.record.is.save.content.title': 'Are you  sure to save follow-up content?', // 是否保存跟进内容？
-    'call.record.trend.charts': 'Call Trend(the latest month)', // 近一个月的通话趋势：
+    'call.record.trend.charts': 'Call Trend(the latest month)', // 近一个月的通话趋势
     'call.record.recommend.list': 'Failed to get recommend list.', // 获取推荐列表失败！
     'call.record.servicecall.get.err': 'Failed to get the statistic about customer services phones',//获取客服电话统计失败
     'call.record.servicecall': 'statistic about customer services phones',//客服电话统计
@@ -2905,6 +2905,9 @@ var en_US = {
     'common.by.member': 'by member',//按成员
     'common.deal.number': 'deal number',//成交数
     'common.deal.amount': 'deal amount',//成交额
+    'common.114.phone': '114 phone',//114电话
+    'common.non.114.phone': 'non 114 phone',//非114电话
+    'common.non.service.phone': 'non service phone',//非客服电话
     'common.net.increase': 'net increase',//净增
     'common.reflux': 'reflux',//回流
     'user.info.get.user.condition.failed': 'Failed to get user query condition',//获取用户查询条件失败
