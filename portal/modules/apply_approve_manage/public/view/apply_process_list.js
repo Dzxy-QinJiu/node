@@ -295,7 +295,7 @@ class AddAndShowApplyList extends React.Component {
         ];
         var height = calculateHeight() - APPLYAPPROVE_LAYOUT.PADDINGHEIGHT * 2;
         return (
-            <div className="apply-list-container" style={{height: height}}>
+            <div className="apply-list-container">
                 {this.state.showApplyDetailForm ? this.renderApplyDetail() : <AntcTable
                     columns={columns}
                     dataSource={this.state.showApplyList}
