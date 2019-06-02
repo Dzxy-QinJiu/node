@@ -764,6 +764,11 @@ var en_US = {
     'organization.get.add.organization.member.list.failed': 'Failed to get member lists that who can join  the organization',//获取可加入组织的成员列表失败
     'organization.no.realms': 'There is no realm',//还没有安全域诶..
     //组织管理end
+
+    // 后台管理-竞品start
+    'competing.product.add.placeholder': 'Add competing product', // 添加竞品
+    // 后台管理-竞品end
+
     //应用管理start
     'app.title': 'application management', // 应用管理
     'app.search.placeholder': 'name/describe', // 应用名/描述

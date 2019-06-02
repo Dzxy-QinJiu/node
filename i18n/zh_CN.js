@@ -766,6 +766,11 @@ var zh_CN = {
     'organization.get.add.organization.member.list.failed': '获取可加入组织的成员列表失败',
     'organization.no.realms': '还没有安全域诶..',
     //组织管理end
+
+    // 后台管理-竞品start
+    'competing.product.add.placeholder': '添加竞品',
+    // 后台管理-竞品end
+
     //应用管理start
     'app.title': '应用管理',
     'app.search.placeholder': '应用名/描述',

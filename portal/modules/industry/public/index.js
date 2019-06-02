@@ -3,7 +3,6 @@ const Spinner = require('CMP_DIR/spinner');
 import {Icon, Alert, Input, Button} from 'antd';
 const AlertTimer = require('CMP_DIR/alert-timer');
 import Trace from 'LIB_DIR/trace';
-const PrivilegeChecker = require('CMP_DIR/privilege/checker').PrivilegeChecker;
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 const PAGE_SIZE = 1000;
@@ -124,7 +123,7 @@ class Industry extends React.Component {
 
     //增加行业失败
     handleAddIndustryFail = () => {
-        var hide = () => {
+        let hide = () => {
             this.setState({
                 addErrMsg: '',
                 isAddloading: -1
@@ -204,7 +203,7 @@ class Industry extends React.Component {
         let TagLists = this.state.TagLists;
         let length = _.get(TagLists, 'length');
         return (
-            <div data-tracename="行业">
+            <div className="industry-content-zone">
                 <div className="msg-tips">
                     {
                         this.state.deleteErrMsg !== '' ? this.handleDeleteIndustryFail() : null
@@ -259,16 +258,14 @@ class Industry extends React.Component {
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         let contentHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
         return (
-            <div className="industy-container" data-tracename="行业" style={{height: height}}>
+            <div className="industry-container" data-tracename="行业" style={{height: height}}>
                 <div className="industry-content-wrap" style={{height: height}}>
-                    <div className="industy-top-nav">
+                    <div className="industry-top-nav">
                         {this.renderTopNavOperation()}
                     </div>
                     <div className="industry-content" style={{height: contentHeight}}>
                         <GeminiScrollBar>
-                            <PrivilegeChecker check='GET_CONFIG_INDUSTRY'>
-                                {this.renderIndustryConfig()}
-                            </PrivilegeChecker>
+                            {this.renderIndustryConfig()}
                         </GeminiScrollBar>
                     </div>
 

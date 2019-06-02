@@ -274,14 +274,6 @@ let routers = [
                 //有这个权限，才显示入口图标
                 showPrivileges: ['CRM_COMPETING_PRODUCT']
             },
-            {
-                id: 'CONFIGARATION',
-                name: 'menu.config',//配置
-                routePath: '/background_management/configaration',
-                component: `${MODULE_PATH}config_manage/public`,
-                //有这个权限，才显示入口图标
-                showPrivileges: ['CRM_COMPETING_PRODUCT']
-            }
         ]
     },
     {
