@@ -251,7 +251,7 @@ let routers = [
                 showPrivileges: ['PRODUCTS_MANAGE']
             },
             {
-                id: 'SALESSTAGE',
+                id: 'ORDERSTAGE',
                 name: 'menu.order.stage',// 订单阶段
                 routePath: '/background_management/sales_stage',
                 component: `${MODULE_PATH}sales_stage/public`,
@@ -259,35 +259,29 @@ let routers = [
                 showPrivileges: ['BGM_SALES_STAGE_ADD']
             },
             {
-                id: 'USER_MANAGE', //唯一标识
-                name: 'menu.user',//成员管理
-                routePath: '/background_management/user',
-                component: `${MODULE_PATH}user_manage/public`,
+                id: 'INDUSTRY',
+                name: 'menu.industry',// 行业
+                routePath: '/background_management/industry',
+                component: `${MODULE_PATH}industry/public`,
                 //有这个权限，才显示入口图标
-                showPrivileges: ['USER_MANAGE_LIST_USERS']
-            }, {
+                showPrivileges: ['GET_CONFIG_INDUSTRY']
+            },
+            {
+                id: 'COMPETE',
+                name: 'menu.competing.product',// 竞品
+                routePath: '/background_management/competing/product',
+                component: `${MODULE_PATH}competing_product/public`,
+                //有这个权限，才显示入口图标
+                showPrivileges: ['CRM_COMPETING_PRODUCT']
+            },
+            {
                 id: 'CONFIGARATION',
                 name: 'menu.config',//配置
                 routePath: '/background_management/configaration',
                 component: `${MODULE_PATH}config_manage/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['CRM_COMPETING_PRODUCT']
-            }, {
-                id: 'INTEGRATION',
-                name: 'config.integration',//集成
-                routePath: '/background_management/integration',
-                component: `${MODULE_PATH}integration_config/public`,
-                //有这个权限，才显示入口图标
-                showPrivileges: ['PRODUCTS_MANAGE']
-            },
-            {
-                id: 'OPENAPP',
-                name: 'app.title',//应用管理
-                routePath: '/background_management/openApp',
-                component: `${MODULE_PATH}app_open_manage/public`,
-                //有这个权限，才显示入口图标
-                showPrivileges: ['ROLEP_RIVILEGE_ROLE_CLIENT_LIST']
-            },
+            }
         ]
     },
     {
