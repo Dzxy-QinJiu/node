@@ -15,7 +15,7 @@ import Trace from 'LIB_DIR/trace';
 import {message, Button, Popover, Icon} from 'antd';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
-
+import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 
 function getStateFromStore(_this) {
     return {
@@ -162,7 +162,8 @@ class SalesStagePage extends React.Component {
                         {title ? (
                             <Popover content={title}>
                                 <Button
-                                    type="ghost" className="sales-stage-top-btn btn-item"
+                                    type="ghost"
+                                    className="sales-stage-top-btn btn-item"
                                     disabled={disabled}
                                 >
                                     <Icon type="plus" />
@@ -254,6 +255,7 @@ class SalesStagePage extends React.Component {
         let salesStageList = this.state.salesStageList;
         let length = _.get(salesStageList, 'length');
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
+        let containerHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
         return (
             <div
                 className="order-stage-manage-container"
@@ -281,35 +283,38 @@ class SalesStagePage extends React.Component {
                             cancelSalesStageForm={this.events_hideSalesStageeForm}
                             submitSalesStageForm={this.events_submitSalesStageForm}
                         />) : null}
-                    <div className="sales-stage-table-block">
-                        {this.state.isSavingSalesStageHome ? (<div className="sales-stage-block">
-                            <Spinner className="sales-stage-saving"/>
-                        </div>) : null}
-                        <ul className="sales-stage-timeline">
-                            {
-                                salesStageList.map( (salesStage, key) => {
-                                    return (
-                                        <li className="sales-stage-timeline-item" key={key}>
-                                            <div className="sales-stage-timeline-item-tail"></div>
-                                            <div className="sales-stage-timeline-item-head"></div>
-                                            <SalesStageInfo
-                                                salesStage={salesStage}
-                                                width={width}
-                                                showSalesStageModalDialog={this.events_showSalesStageModalDialog}
-                                                hideSalesStageModalDialog={this.events_hideSalesStageModalDialog}
-                                                deleteSalesStage={this.events_deleteSalesStage}
-                                                showSalesStageForm={this.events_showSalesStageForm.bind(this)}
-                                                salesStageOrderUp={this.events_salesStageOrderUp}
-                                                salesStageOrderDown={this.events_salesStageOrderDown}
-                                                salesStageEditOrder={this.state.salesStageEditOrder}
-                                            >
-                                            </SalesStageInfo>
-                                        </li>
-                                    );
-                                })
-                            }
-                        </ul>
-                    </div>
+                    <GeminiScrollBar style={{height: containerHeight}}>
+                        <div className="sales-stage-table-block">
+                            {this.state.isSavingSalesStageHome ? (<div className="sales-stage-block">
+                                <Spinner className="sales-stage-saving"/>
+                            </div>) : null}
+                            <ul className="sales-stage-timeline">
+                                {
+                                    salesStageList.map( (salesStage, key) => {
+                                        return (
+                                            <li className="sales-stage-timeline-item" key={key}>
+                                                <div className="sales-stage-timeline-item-tail"></div>
+                                                <div className="sales-stage-timeline-item-head"></div>
+                                                <SalesStageInfo
+                                                    salesStage={salesStage}
+                                                    width={width}
+                                                    showSalesStageModalDialog={this.events_showSalesStageModalDialog}
+                                                    hideSalesStageModalDialog={this.events_hideSalesStageModalDialog}
+                                                    deleteSalesStage={this.events_deleteSalesStage}
+                                                    showSalesStageForm={this.events_showSalesStageForm.bind(this)}
+                                                    salesStageOrderUp={this.events_salesStageOrderUp}
+                                                    salesStageOrderDown={this.events_salesStageOrderDown}
+                                                    salesStageEditOrder={this.state.salesStageEditOrder}
+                                                >
+                                                </SalesStageInfo>
+                                            </li>
+                                        );
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    </GeminiScrollBar>
+
                 </div>
 
             </div>

@@ -44,6 +44,7 @@ class ApplyApproveManage extends React.Component {
             <div className='condition-operator'>
                 <div className='pull-left'>
                     <Button
+                        className="btn-item"
                         data-tracename="添加申请类型"
                         onClick={this.handleClickAddForm}
                     >
@@ -56,7 +57,6 @@ class ApplyApproveManage extends React.Component {
 
     render = () => {
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
-        let cardContainerHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
         return (
             <div className="apply-approve-manage" style={{height: height}}>
                 <div className="apply-approve-wrap" style={{height: height}}>
