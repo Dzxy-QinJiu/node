@@ -431,15 +431,17 @@ class MemberInfo extends React.Component {
                             addDataTip={Intl.get('sales.team.add.team', '添加团队')}
                         />
                     </div>) : null }
-                <div className="basic-info-item">
-                    <span className="basic-info-label">{Intl.get('member.position', '职务')}:</span>
-                    <BasicEditInputField
-                        width={EDIT_FEILD_LESS_WIDTH}
-                        id={memberInfo.id}
-                        value={memberInfo.phoneOrder}
-                        hasEditPrivilege={false}
-                    />
-                </div>
+                {/**
+                 *  <div className="basic-info-item">
+                 <span className="basic-info-label">{Intl.get('member.position', '职务')}:</span>
+                 <BasicEditInputField
+                 width={EDIT_FEILD_LESS_WIDTH}
+                 id={memberInfo.id}
+                 value={memberInfo.phoneOrder}
+                 hasEditPrivilege={false}
+                 />
+                 </div>
+                 */}
                 <div className="basic-info-item">
                     <span className="basic-info-label">{Intl.get('user.manage.phone.order', '座席号')}:</span>
                     <BasicEditInputField
@@ -783,7 +785,7 @@ class MemberInfo extends React.Component {
                     {this.state.activeKey === TAB_KEYS.LOG_TAB ? (
                         <MemberLog getContainerHeight={this.getContainerHeight}
                             userName={_.get(this.state, 'memberInfo.userName.value') ||
-                                 _.get(this.state, 'memberInfo.userName', '')}/>) : null}
+                                   _.get(this.state, 'memberInfo.userName', '')}/>) : null}
                 </TabPane>
             </Tabs>);
     }
@@ -819,4 +821,3 @@ MemberInfo.propTypes = {
     errorMsg: PropTypes.string,
 };
 module.exports = MemberInfo;
-

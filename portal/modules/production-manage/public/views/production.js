@@ -24,6 +24,7 @@ let util = require('../utils/production-util');
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import {getUemJSCode} from 'PUB_DIR/sources/utils/uem-js-code';
+import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 
 const LAYOUT_CONST = {
     HEADICON_H: 107,//头像的高度
@@ -264,7 +265,7 @@ class Production extends React.Component {
     renderFormContent() {
         const {getFieldDecorator} = this.props.form;
         let values = this.props.form.getFieldsValue();
-        var headDescr = Intl.get('common.product', '产品');
+        let headDescr = Intl.get('common.product', '产品');
         let saveResult = this.state.saveResult;
         let formHeight = $('body').height() - LAYOUT_CONST.HEADICON_H - LAYOUT_CONST.TITLE_H;
         const formItemLayout = {
@@ -307,34 +308,6 @@ class Production extends React.Component {
                                 )}
                             </FormItem>
                             <FormItem
-                                label={Intl.get('config.product.code', '产品编号')}
-                                {...formItemLayout}
-                            >
-                                {getFieldDecorator('code', {
-                                    initialValue: this.props.info.code,
-                                    rules: [{
-                                        required: false,
-                                        min: 0,
-                                        max: 50,
-                                        message: Intl.get('crm.contact.name.length', '请输入最多50个字符')
-                                    }]
-                                })(
-                                    <Input name="code" id="code" type="text"
-                                        placeholder={Intl.get('config.product.input.code', '请输入产品编号')}/>
-                                )}
-                            </FormItem>
-                            <FormItem
-                                label={Intl.get('config.product.desc', '产品描述')}
-                                {...formItemLayout}
-                            >
-                                {getFieldDecorator('description', {
-                                    initialValue: this.props.info.description,
-                                })(
-                                    <Input name="description" id="description" type="text"
-                                        placeholder={Intl.get('config.product.input.desc', '请输入产品描述')}/>
-                                )}
-                            </FormItem>
-                            <FormItem
                                 label={Intl.get('config.product.price', '产品单价')}
                                 {...formItemLayout}
                             >
@@ -353,7 +326,6 @@ class Production extends React.Component {
                                 )}
                                 < div className='currency_unit'>{Intl.get('contract.82', '元')}</div>
                             </FormItem>
-
                             <FormItem
                                 label={Intl.get('config.product.sales_unit', '计价单位')}
                                 {...formItemLayout}
@@ -380,6 +352,24 @@ class Production extends React.Component {
                                 )}
                             </FormItem>
                             <FormItem
+                                label={Intl.get('config.product.code', '产品编号')}
+                                {...formItemLayout}
+                            >
+                                {getFieldDecorator('code', {
+                                    initialValue: this.props.info.code,
+                                    rules: [{
+                                        required: false,
+                                        min: 0,
+                                        max: 50,
+                                        message: Intl.get('crm.contact.name.length', '请输入最多50个字符')
+                                    }]
+                                })(
+                                    <Input name="code" id="code" type="text"
+                                        placeholder={Intl.get('config.product.input.code', '请输入产品编号')}/>
+                                )}
+                            </FormItem>
+
+                            <FormItem
                                 label={Intl.get('config.product.url', '访问地址')}
                                 {...formItemLayout}
                             >
@@ -388,6 +378,17 @@ class Production extends React.Component {
                                 })(
                                     <Input name="url" id="url" type="text"
                                         placeholder={Intl.get('config.product.input.url', '请输入访问地址')}/>
+                                )}
+                            </FormItem>
+                            <FormItem
+                                label={Intl.get('config.product.desc', '产品描述')}
+                                {...formItemLayout}
+                            >
+                                {getFieldDecorator('description', {
+                                    initialValue: this.props.info.description,
+                                })(
+                                    <Input name="description" id="description" type="text"
+                                        placeholder={Intl.get('config.product.input.desc', '请输入产品描述')}/>
                                 )}
                             </FormItem>
                             {this.state.create_time ?
@@ -478,16 +479,24 @@ class Production extends React.Component {
     }
 
     render() {
-        let title = this.props.info.name ? Intl.get('config.product.modify', '修改产品') : Intl.get('config.product.add', '添加产品');
+        let isShowModal = true;
+        let title = Intl.get('config.product.add', '添加产品');
+        let dataTracename = Intl.get('config.product.add', '添加产品');
+        let content = this.renderFormContent();
+        if (this.props.formType === util.CONST.EDIT) {
+            isShowModal = false;
+            title = Intl.get('config.product.modify', '修改产品');
+            dataTracename = Intl.get('config.product.modify', '修改产品');
+        }
         return (
             <RightPanelModal
                 className="product-add-container"
-                isShowMadal={true}
+                isShowMadal={isShowModal}
                 isShowCloseBtn={true}
                 onClosePanel={this.handleCancel.bind(this)}
                 title={title}
-                content={this.renderFormContent()}
-                dataTracename={title}
+                content={content}
+                dataTracename={dataTracename}
             />);
     }
 }
@@ -501,5 +510,3 @@ Production.propTypes = {
     afterOperation: PropTypes.func
 };
 module.exports = Form.create()(Production);
-
-

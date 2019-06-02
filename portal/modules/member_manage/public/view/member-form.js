@@ -416,34 +416,36 @@ class MemberForm extends React.Component {
                                 )}
                             </FormItem>
                             {this.renderEmailMsg()}
-                            <FormItem
-                                label={Intl.get('member.position', '职务')}
-                                {...formItemLayout}
-                            >
-                                {this.state.isLoadingPosition ? (
-                                    <div className="role-list-loading">
-                                        {Intl.get('member.is.get.position.lists', '正在获取职务列表')}
-                                        <Icon type="loading"/>
-                                    </div>) : (
-                                    <div>
-                                        {getFieldDecorator('position', {
-                                        })(
-                                            <Select
-                                                name="position"
-                                                id="position"
-                                                optionFilterProp="children"
-                                                placeholder={Intl.get('member.select.position', '请选择职务')}
-                                                searchPlaceholder={Intl.get('member.select.position', '请选择职务')}
-                                                notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
-                                                onSelect={this.handlePositionSelect}
-                                                getPopupContainer={() => document.getElementById('user-add-form')}
-                                            >
-                                                {this.renderPositionOptions()}
-                                            </Select>
-                                        )}
-                                    </div>)
-                                }
-                            </FormItem>
+                            {/**
+                             * <FormItem
+                             label={Intl.get('member.position', '职务')}
+                             {...formItemLayout}
+                             >
+                             {this.state.isLoadingPosition ? (
+                                 <div className="role-list-loading">
+                                     {Intl.get('member.is.get.position.lists', '正在获取职务列表')}
+                                     <Icon type="loading"/>
+                                 </div>) : (
+                                 <div>
+                                     {getFieldDecorator('position', {
+                                     })(
+                                         <Select
+                                             name="position"
+                                             id="position"
+                                             optionFilterProp="children"
+                                             placeholder={Intl.get('member.select.position', '请选择职务')}
+                                             searchPlaceholder={Intl.get('member.select.position', '请选择职务')}
+                                             notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
+                                             onSelect={this.handlePositionSelect}
+                                             getPopupContainer={() => document.getElementById('user-add-form')}
+                                         >
+                                             {this.renderPositionOptions()}
+                                         </Select>
+                                     )}
+                                 </div>)
+                             }
+                             </FormItem>
+                             * */}
                             <FormItem
                                 label={Intl.get('common.role', '角色')}
                                 {...formItemLayout}
@@ -573,6 +575,6 @@ MemberForm.propTypes = {
     returnInfoPanel: PropTypes.func,
     showContinueAddButton: PropTypes.func,
     isShowMemberForm: PropTypes.bool
-},
-module.exports = Form.create()(MemberForm);
+};
 
+module.exports = Form.create()(MemberForm);
