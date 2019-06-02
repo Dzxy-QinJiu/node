@@ -61,15 +61,8 @@ class Industry extends React.Component {
             dateType: 'json',
             success: (result) => {
                 if (result) {
-                    let delIndex = ''; //获取正在删除标签在数组中的下标
-                    this.state.TagLists.forEach( (tag, index) => {
-                        if (tag.id === id) {
-                            delIndex = index;
-                        }
-                    });
-                    //在数组中删除当前正在删除的标签
-                    this.state.TagLists.splice(delIndex, 1);
-                    let TagLists = this.state.TagLists;
+                    //在数组中删除当前正在删除的行业
+                    let TagLists = _.filter(this.state.TagLists, (industry) => industry.id !== id);
                     this.setState({
                         DeletingItemId: -1,
                         TagLists: TagLists
