@@ -254,7 +254,7 @@ class ProductionManage extends React.Component {
     render() {
         let firstLoading = this.state.isLoading;
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
-        let cardContainerHeight = height - 80;
+        let cardContainerHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
         return (
             <div className='production-manage-container' style={{height: height}}>
                 <div
