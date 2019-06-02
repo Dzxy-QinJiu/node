@@ -240,59 +240,47 @@ let routers = [
         routePath: '/background_management',
         shortName: 'menu.shortName.config',//设置
         bottom: true,
-        // subMenuPosition: 'left',//二级菜单的展示位置，顶部还是左侧展示（默认: 'top'）
+        subMenuPosition: 'left',//二级菜单的展示位置，顶部还是左侧展示（默认: 'top'）
         subMenu: [
             {
-                id: 'USER_MANAGE', //唯一标识
-                name: 'menu.user',//成员管理
-                routePath: '/background_management/user',
-                component: `${MODULE_PATH}user_manage/public`,
-                //有这个权限，才显示入口图标
-                showPrivileges: ['USER_MANAGE_LIST_USERS']
-            }, {
-                id: 'SALESTEAM',
-                name: 'menu.salesteam',//团队管理
-                routePath: '/background_management/sales_team',
+                id: 'MEMBER', //唯一标识
+                name: 'menu.member',//成员
+                routePath: '/background_management/member',
                 component: `${MODULE_PATH}sales_team/public`,
                 //有这个权限，才显示入口图标
-                showPrivileges: ['BGM_SALES_TEAM_LIST']
-            }, {
-                id: 'SALESSTAGE',
-                name: 'crm.order.stage.manage',//订单阶段管理
-                routePath: '/background_management/sales_stage',
-                component: `${MODULE_PATH}sales_stage/public`,
-                //有这个权限，才显示入口图标
-                showPrivileges: ['BGM_SALES_STAGE_ADD']
-            },{
-                id: 'CONFIGARATION',
-                name: 'menu.config',//配置
-                routePath: '/background_management/configaration',
-                component: `${MODULE_PATH}config_manage/public`,
-                //有这个权限，才显示入口图标
-                showPrivileges: ['CRM_COMPETING_PRODUCT']
-            }, {
-                id: 'INTEGRATION',
-                name: 'config.integration',//集成
-                routePath: '/background_management/integration',
-                component: `${MODULE_PATH}integration_config/public`,
-                //有这个权限，才显示入口图标
-                showPrivileges: ['PRODUCTS_MANAGE']
-            },
-            {
-                id: 'OPENAPP',
-                name: 'app.title',//应用管理
-                routePath: '/background_management/openApp',
-                component: `${MODULE_PATH}app_open_manage/public`,
-                //有这个权限，才显示入口图标
-                showPrivileges: ['ROLEP_RIVILEGE_ROLE_CLIENT_LIST']
+                showPrivileges: ['USER_MANAGE_LIST_USERS', 'BGM_SALES_TEAM_LIST']
             },
             {
                 id: 'PRODUCTIONS',
-                name: 'config.product.manage',//产品管理
+                name: 'menu.product',// 产品
                 routePath: '/background_management/products',
                 component: `${MODULE_PATH}production-manage/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['PRODUCTS_MANAGE']
+            },
+            {
+                id: 'APPLY_APPROVE',
+                name: 'menu.apply.approve',//申请审批
+                routePath: '/background_management/apply_approve',
+                component: `${MODULE_PATH}apply_approve_manage/public`,
+                //todo 权限名称待修改= 有这个权限，才显示入口图标
+                showPrivileges: ['PRODUCTS_MANAGE']
+            },
+            {
+                id: 'ORDERSTAGE',
+                name: 'menu.order.stage',// 订单阶段
+                routePath: '/background_management/sales_stage',
+                component: `${MODULE_PATH}sales_stage/public`,
+                //有这个权限，才显示入口图标
+                showPrivileges: ['BGM_SALES_STAGE_ADD']
+            },
+            {
+                id: 'INDUSTRY',
+                name: 'menu.industry',// 行业
+                routePath: '/background_management/industry',
+                component: `${MODULE_PATH}industry/public`,
+                //有这个权限，才显示入口图标
+                showPrivileges: ['GET_CONFIG_INDUSTRY']
             },
             {
                 id: 'APPLY_APPROVE',
@@ -301,8 +289,7 @@ let routers = [
                 component: `${MODULE_PATH}apply_approve_manage/public`,
                 //todo 权限名称待修改= 有这个权限，才显示入口图标
                 showPrivileges: ['PRODUCTS_MANAGE']
-            }
-        ]
+            }]
     },
     {
         id: 'USER_INFO_MANAGE',//唯一标识

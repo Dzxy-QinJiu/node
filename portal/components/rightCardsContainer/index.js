@@ -98,6 +98,7 @@ class RihgtCardsContainer extends React.Component {
                         renderAddAndImportBtns={this.props.renderAddAndImportBtns}
                         showAddBtn={this.props.showAddBtn}
                         deleteItem={this.props.deleteItem}
+                        cardContainerHeight={this.props.cardContainerHeight}
                     />
                 </div>
             </div>

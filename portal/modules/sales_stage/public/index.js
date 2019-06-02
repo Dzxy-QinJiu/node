@@ -5,16 +5,17 @@ var React = require('react');
 require('./css/sales-stage.less');
 var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
 var topHeight = 87; // 22 + 65 : 添加按钮高度+顶部导航高度
-var leftWidth = 281; // 75+45+117+44 左侧导航宽度+右侧内容左边距+右侧右侧边距+销售阶段内容左侧边距
+var leftWidth = 281; // 45+117+44 左侧导航宽度+右侧内容左边距+右侧右侧边距+销售阶段内容左侧边距
 var SalesStageStore = require('./store/sales-stage-store');
 var SalesStageAction = require('./action/sales-stage-actions');
 var SalesStageInfo = require('./views/sales-stage-info');
 var Spinner = require('../../../components/spinner');
 import SalesStageForm from './views/sales-stage-form';
 import Trace from 'LIB_DIR/trace';
-import {message, Button, Popover} from 'antd';
-import ButtonZones from 'CMP_DIR/top-nav/button-zones';
+import {message, Button, Popover, Icon} from 'antd';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
+import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+
 
 function getStateFromStore(_this) {
     return {
@@ -41,7 +42,8 @@ class SalesStagePage extends React.Component {
     }
 
     salesStageWidthFnc = () => {
-        return $(window).width() - leftWidth;
+        return $(window).width() - leftWidth - BACKGROUG_LAYOUT_CONSTANTS.PADDING_WIDTH -
+            BACKGROUG_LAYOUT_CONSTANTS.FRIST_NAV_WIDTH - BACKGROUG_LAYOUT_CONSTANTS.NAV_WIDTH;
     };
 
     resizeWindow = () => {
@@ -63,6 +65,10 @@ class SalesStagePage extends React.Component {
 
     events_submitSalesStageForm = (salesStage) => {
         if (salesStage.id) {
+            let id = _.get(salesStage, 'id');
+            let salesStageList = this.state.salesStageList;
+            let index = _.findIndex(salesStageList, item => item.id === id);
+            salesStage.index = index + 1;
             SalesStageAction.editSalesStage(salesStage, () => {
                 SalesStageAction.hideSalesStageeForm();
                 message.success(Intl.get('crm.218', '修改成功！'));
@@ -149,46 +155,72 @@ class SalesStagePage extends React.Component {
             disabled = true;
             title = Intl.get('sales.stage.toplimit', '订单阶段个数已达上限（8个）');
         }
-        return (<ButtonZones>
-            {this.state.salesStageEditOrder ?
-                (<div className="sales-stage-top-div-group">
-                    <div className="sales-stage-top-div">
-                        <Button type="ghost" className="sales-stage-top-btn btn-item"
-                            onClick={this.events_hideSalesStageEditOrder.bind(this)}
-                        ><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/></Button>
-                    </div>
-                    <div className="sales-stage-top-div">
-                        <Button type="ghost" className="sales-stage-top-btn btn-item"
-                            onClick={this.events_saveSalesStageOrder.bind(this)}
-                        ><ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/></Button>
-                    </div>
-                </div>) :
-                (<div className="sales-stage-top-div-group">
-                    <PrivilegeChecker check="BGM_SALES_STAGE_SORT" className="sales-stage-top-div">
-                        <Button type="ghost" className="sales-stage-top-btn btn-item btn-m-r-2"
-                            onClick={this.events_showSalesStageEditOrder.bind(this)}
-
-                        ><ReactIntl.FormattedMessage id="sales.stage.change.sort"
-                                defaultMessage="变更顺序"/></Button>
-                    </PrivilegeChecker>
+        return (
+            <div className='condition-operator'>
+                <div className='pull-left'>
                     <PrivilegeChecker check="BGM_SALES_STAGE_ADD" className="sales-stage-top-div">
                         {title ? (
                             <Popover content={title}>
                                 <Button
                                     type="ghost" className="sales-stage-top-btn btn-item"
                                     disabled={disabled}
-                                >{Intl.get('sales.stage.add.order.stage', '添加订单阶段')}</Button>
+                                >
+                                    <Icon type="plus" />
+                                    {Intl.get('sales.stage.add.order.stage', '添加订单阶段')}
+                                </Button>
                             </Popover>
                         ) : (
                             <Button
                                 type="ghost" className="sales-stage-top-btn btn-item"
                                 onClick={this.events_showSalesStageForm.bind(this, 'addSalesStage')}
                                 data-tracename="添加订单阶段"
-                            >{Intl.get('sales.stage.add.order.stage', '添加订单阶段')}</Button>
+                            >
+                                <Icon type="plus" />
+                                {Intl.get('sales.stage.add.order.stage', '添加订单阶段')}
+                            </Button>
                         )}
                     </PrivilegeChecker>
-                </div>)}
-        </ButtonZones>);
+                </div>
+                <div className='pull-right'>
+                    {
+                        this.state.salesStageEditOrder ?
+                            (<div className="sales-stage-top-div-group">
+                                <div className="sales-stage-top-div">
+                                    <Button
+                                        type="ghost"
+                                        className="sales-stage-top-btn btn-item"
+                                        onClick={this.events_hideSalesStageEditOrder.bind(this)}
+                                    >
+                                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
+                                    </Button>
+                                </div>
+                                <div className="sales-stage-top-div">
+                                    <Button
+                                        type="ghost"
+                                        className="sales-stage-top-btn btn-item"
+                                        onClick={this.events_saveSalesStageOrder.bind(this)}
+                                    >
+                                        <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
+                                    </Button>
+                                </div>
+                            </div>) : (
+                                <PrivilegeChecker
+                                    check="BGM_SALES_STAGE_SORT"
+                                >
+                                    <Button
+                                        type="ghost"
+                                        className="sales-stage-top-btn btn-item btn-m-r-2"
+                                        onClick={this.events_showSalesStageEditOrder.bind(this)}
+                                    >
+                                        <i className='iconfont icon-transfer'></i>
+                                        {Intl.get('sales.stage.change.sort', '变更顺序')}
+                                    </Button>
+                                </PrivilegeChecker>
+                            )
+                    }
+                </div>
+            </div>
+        );
     };
 
     retryGetOrderList = () => {
@@ -218,58 +250,68 @@ class SalesStagePage extends React.Component {
     };
 
     render() {
-        var _this = this;
-        var width = this.state.salesStageWidth;
-        var salesStageList = this.state.salesStageList;
+        let width = this.state.salesStageWidth;
+        let salesStageList = this.state.salesStageList;
         let length = _.get(salesStageList, 'length');
+        let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         return (
-            <div className="sales-stage-manage-container" data-tracename="订单阶段管理">
-                {this.renderTopNavOperation()}
-                {
-                    this.state.loading ? (
-                        <Spinner/>
-                    ) : null
-                }
-                {
-                    !this.state.loading && (length === 0 || this.state.getSalesStageListErrMsg) ?
-                        this.renderNoDataTipsOrErrMsg() : null
-                }
-                {this.state.salesStageFormShow ? (
-                    <SalesStageForm
-                        salesStage={this.state.currentSalesStage}
-                        salesStageFormShow={this.state.salesStageFormShow}
-                        cancelSalesStageForm={this.events_hideSalesStageeForm}
-                        submitSalesStageForm={this.events_submitSalesStageForm}
-                    />) : null}
-                <div className="sales-stage-table-block">
-                    {this.state.isSavingSalesStageHome ? (<div className="sales-stage-block">
-                        <Spinner className="sales-stage-saving"/>
-                    </div>) : null}
-                    <ul className="sales-stage-timeline">
-                        {
-                            salesStageList.map(function(salesStage, key) {
-                                return (
-                                    <li className="sales-stage-timeline-item" key={key}>
-                                        <div className="sales-stage-timeline-item-tail"></div>
-                                        <div className="sales-stage-timeline-item-head">{salesStage.index}</div>
-                                        <SalesStageInfo
-                                            salesStage={salesStage}
-                                            width={width}
-                                            showSalesStageModalDialog={_this.events_showSalesStageModalDialog}
-                                            hideSalesStageModalDialog={_this.events_hideSalesStageModalDialog}
-                                            deleteSalesStage={_this.events_deleteSalesStage}
-                                            showSalesStageForm={_this.events_showSalesStageForm.bind(_this)}
-                                            salesStageOrderUp={_this.events_salesStageOrderUp}
-                                            salesStageOrderDown={_this.events_salesStageOrderDown}
-                                            salesStageEditOrder={_this.state.salesStageEditOrder}
-                                        >
-                                        </SalesStageInfo>
-                                    </li>
-                                );
-                            })
-                        }
-                    </ul>
+            <div
+                className="order-stage-manage-container"
+                data-tracename="订单阶段管理"
+                style={{height: height}}
+            >
+                <div className="order-stage-content" style={{height: height}}>
+                    <div className="order-stage-top-nav">
+                        {this.renderTopNavOperation()}
+                    </div>
+
+                    {
+                        this.state.loading ? (
+                            <Spinner/>
+                        ) : null
+                    }
+                    {
+                        !this.state.loading && (length === 0 || this.state.getSalesStageListErrMsg) ?
+                            this.renderNoDataTipsOrErrMsg() : null
+                    }
+                    {this.state.salesStageFormShow ? (
+                        <SalesStageForm
+                            salesStage={this.state.currentSalesStage}
+                            salesStageFormShow={this.state.salesStageFormShow}
+                            cancelSalesStageForm={this.events_hideSalesStageeForm}
+                            submitSalesStageForm={this.events_submitSalesStageForm}
+                        />) : null}
+                    <div className="sales-stage-table-block">
+                        {this.state.isSavingSalesStageHome ? (<div className="sales-stage-block">
+                            <Spinner className="sales-stage-saving"/>
+                        </div>) : null}
+                        <ul className="sales-stage-timeline">
+                            {
+                                salesStageList.map( (salesStage, key) => {
+                                    return (
+                                        <li className="sales-stage-timeline-item" key={key}>
+                                            <div className="sales-stage-timeline-item-tail"></div>
+                                            <div className="sales-stage-timeline-item-head"></div>
+                                            <SalesStageInfo
+                                                salesStage={salesStage}
+                                                width={width}
+                                                showSalesStageModalDialog={this.events_showSalesStageModalDialog}
+                                                hideSalesStageModalDialog={this.events_hideSalesStageModalDialog}
+                                                deleteSalesStage={this.events_deleteSalesStage}
+                                                showSalesStageForm={this.events_showSalesStageForm.bind(this)}
+                                                salesStageOrderUp={this.events_salesStageOrderUp}
+                                                salesStageOrderDown={this.events_salesStageOrderDown}
+                                                salesStageEditOrder={this.state.salesStageEditOrder}
+                                            >
+                                            </SalesStageInfo>
+                                        </li>
+                                    );
+                                })
+                            }
+                        </ul>
+                    </div>
                 </div>
+
             </div>
         );
     }

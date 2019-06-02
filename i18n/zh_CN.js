@@ -18,6 +18,14 @@ var zh_CN = {
     'menu.appuser.auditlog': '操作记录',
     'menu.appuser.position': '座席号管理',
     'menu.backend': '后台管理',
+    'menu.member': '成员',
+    'menu.product': '产品',
+    'menu.apply.approve': '申请审批',
+    'menu.order.stage': '订单阶段',
+    'menu.industry': '行业',
+    'menu.competing.product': '竞品',
+    'menu.clue.allocation': '线索分配',
+    'menu.my.company': '我的企业',
     'menu.user': '成员管理',
     'menu.role': '角色管理',
     'menu.auth': '权限管理',
@@ -665,7 +673,9 @@ var zh_CN = {
 
     //后台管理-成员start
     'member.member': '成员',
-    'member.search.placeholder': '用户名/昵称/电话/邮箱',
+    'member.search.placeholder': '账号/昵称/手机',
+    'member.add.member.search.placeholder': '账号/昵称',
+    'member.role.select.default.role': '全部角色',
     'member.start.this': '启用此',
     'member.stop.this': '禁用此',
     'member.change.group.failed': '修改所属团队失败',
@@ -710,6 +720,19 @@ var zh_CN = {
     'member.log.no.data': '暂无操作日志',
     'member.add.member.phone.verify': '手机号唯一性验证出错了',
     'member.add.member.phone.exist': '该手机号已存在',
+    'member.position': '职务',
+    'member.phone': '手机',
+    'member.sale.goal': '个人销售目标',
+    'member.no.more.tips': '没有更多成员信息了',
+    'member.is.get.department.lists': '正在获取部门列表',
+    'member.no.department': '暂无此部门',
+    'member.search.department.by.name': '输入部门名称搜索',
+    'member.is.get.position.lists': '正在获取职务列表',
+    'member.select.position': '请选择职务',
+    'member.no.position': '暂无职务',
+    'member.search.position.by.name': '输入职务名称搜索',
+    'member.add.position': '添加职务',
+    'member.position.name.label': '职务名称',
 
     //后台管理-成员end
     //组织管理start
@@ -743,6 +766,11 @@ var zh_CN = {
     'organization.get.add.organization.member.list.failed': '获取可加入组织的成员列表失败',
     'organization.no.realms': '还没有安全域诶..',
     //组织管理end
+
+    // 后台管理-竞品start
+    'competing.product.add.placeholder': '添加竞品',
+    // 后台管理-竞品end
+
     //应用管理start
     'app.title': '应用管理',
     'app.search.placeholder': '应用名/描述',
@@ -949,7 +977,7 @@ var zh_CN = {
     'config.product.input.number': '请输入数字',
     'config.product.sales_unit': '计价单位',
     'config.product.input.sales_unit': '请输入计价单位',
-    'config.product.spec': '规格或版本',
+    'config.product.spec': '规格/版本',
     'config.product.input.spec': '请输入产品规格或版本',
     'config.product.url': '访问地址',
     'config.product.input.url': '请输入访问地址',
@@ -957,7 +985,7 @@ var zh_CN = {
     'config.product.type': '产品类型',
     'config.product.select.tip': '请选择产品（可多选）',
     'config.product.js.collect.user': '使用JS脚本采集用户数据',
-    'config.product.list.import': '导入{type}产品',
+    'config.product.list.import': '导入产品',
     'config.product.import.tip': '您已集成{type}，可以导入以下{type}的产品',
     'config.product.import.finish': '导入完成',
     'config.product.import.failed': '导入失败',

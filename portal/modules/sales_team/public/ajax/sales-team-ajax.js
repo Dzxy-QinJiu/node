@@ -2,6 +2,7 @@
  * Created by xiaojinfeng on 2016/04/08.
  */
 let teamAjax = require('../../../common/public/ajax/team');
+let memberAjax = require('../../../member_manage/public/ajax');
 
 //获取统计团队内成员个数的列表
 let teamMemberCountAjax;
@@ -52,7 +53,7 @@ exports.getSalesTeamMemberList = function(groupId) {
     var Deferred = $.Deferred();
     teamAjax.getMemberListByTeamIdAjax().resolvePath({
         group_id: groupId
-    }).sendRequest().success(function(list) {
+    }).sendRequest({with_teamrole: true}).success(function(list) {
         Deferred.resolve(list);
     }).error(function(errorInfo) {
         Deferred.reject(errorInfo.responseJSON);

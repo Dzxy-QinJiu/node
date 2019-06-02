@@ -12,6 +12,7 @@ var ModalDialog = require('../../../../components/ModalDialog');
 var AlertTimer = require('../../../../components/alert-timer');
 import {SearchInput} from 'antc';
 var SalesTeamAction = require('../action/sales-team-actions');
+import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 
 function noop() {
@@ -153,6 +154,8 @@ class LeftTree extends React.Component {
 
     element = (item, type) => {
         //团队人数的统计(递归计算该团队及所有子团队的人数)
+        let organizationName = _.get(getOrganization(), 'name', '');
+        let organizationId = _.get(getOrganization(), 'id', '');
         let teamMemberCount = commonMethodUtil.getTeamMemberCount(item, 0, this.props.teamMemberCountList, false);
         return (
             <div className="left-tree-item-container">
@@ -170,38 +173,42 @@ class LeftTree extends React.Component {
                 <div className="sales-team-group-info">
                     <div className="sales-team-group-name" title={item.title}>
                         <span className="sales-team-name-text">{item.title}</span>
-                        <span className="sales-team-member-statistic">
-                            <span>(</span>
-                            <ReactIntl.FormattedMessage
-                                id="sales.team.member.count"
-                                defaultMessage={'{teamMemberCount}人'}
-                                values={{
-                                    'teamMemberCount': teamMemberCount
-                                }}
-                            />
-                            <span>)</span>
-                        </span>
+                        {
+                            item.title === organizationName ? (
+                                <span className="sales-team-member-statistic">
+                                    {Intl.get('sales.team.member.count', '{teamMemberCount}人', {teamMemberCount: this.props.memberCount})}
+                                </span>
+                            ) : (
+                                <span className="sales-team-member-statistic">
+                                    {Intl.get('sales.team.member.count', '{teamMemberCount}人', {teamMemberCount: teamMemberCount})}
+                                </span>
+                            )
+                        }
                     </div>
-                    <div className="tree-operation-div">
-                        <PrivilegeChecker check="BGM_SALES_TEAM_ADD">
-                            <span className="icon-operation iconfont icon-add tree-operation-icon"
-                                title={Intl.get('sales.team.add.child.team', '添加子团队')}
-                                onClick={this.addGroup.bind(this, item)}
-                            />
-                        </PrivilegeChecker>
-                        <PrivilegeChecker check="BGM_SALES_TEAM_EDIT">
-                            <span className="icon-operation iconfont icon-update tree-operation-icon"
-                                title={Intl.get('sales.team.edit.team', '编辑团队')}
-                                onClick={this.editGroup.bind(this, item)}
-                            />
-                        </PrivilegeChecker>
-                        <PrivilegeChecker check="BGM_SALES_TEAM_DELETE">
-                            <span className="icon-operation iconfont icon-delete tree-operation-icon"
-                                title={Intl.get('sales.team.del.team', '删除团队')}
-                                onClick={this.deleteGroup.bind(this, item)}
-                            />
-                        </PrivilegeChecker>
-                    </div>
+                    {
+                        item.title === organizationName && item.key === organizationId ? null : (
+                            <div className="tree-operation-div">
+                                <PrivilegeChecker check="BGM_SALES_TEAM_ADD">
+                                    <span className="icon-operation iconfont icon-add tree-operation-icon"
+                                        title={Intl.get('sales.team.add.child.team', '添加子团队')}
+                                        onClick={this.addGroup.bind(this, item)}
+                                    />
+                                </PrivilegeChecker>
+                                <PrivilegeChecker check="BGM_SALES_TEAM_EDIT">
+                                    <span className="icon-operation iconfont icon-update tree-operation-icon"
+                                        title={Intl.get('sales.team.edit.team', '编辑团队')}
+                                        onClick={this.editGroup.bind(this, item)}
+                                    />
+                                </PrivilegeChecker>
+                                <PrivilegeChecker check="BGM_SALES_TEAM_DELETE">
+                                    <span className="icon-operation iconfont icon-delete tree-operation-icon"
+                                        title={Intl.get('sales.team.del.team', '删除团队')}
+                                        onClick={this.deleteGroup.bind(this, item)}
+                                    />
+                                </PrivilegeChecker>
+                            </div>
+                        )
+                    }
                 </div>
 
             </div>);
@@ -268,16 +275,15 @@ class LeftTree extends React.Component {
     };
 
     render() {
-        var _this = this;
-        var salesTeamGroupList = this.props.salesTeamGroupList;
+        let salesTeamGroupList = this.props.salesTeamGroupList;
 
-        const loop = data => data.map((item) => {
+        const loop = data => _.map(data, (item) => {
 
-            var btnClass = classNames('sales-team-group-name-div', _this.props.className, {
+            let btnClass = classNames('sales-team-group-name-div', this.props.className, {
                 'select': item.select,
                 'show-tree-operation': item.isShowOperationArea
             });
-            var liClass = classNames('sales-team-group-li', _this.props.className, {
+            let liClass = classNames('sales-team-group-li', this.props.className, {
                 'isLiSelect': item.isLiSelect
             });
 
@@ -285,7 +291,7 @@ class LeftTree extends React.Component {
                 return (
                     <li key={item.key} title={item.title} className={liClass}>
                         {
-                            _this.treeElement(btnClass, item, true)
+                            this.treeElement(btnClass, item, true)
                         }
                         <ul className="left-tree-children-ul">{loop(item.children)}</ul>
                     </li>
@@ -294,7 +300,7 @@ class LeftTree extends React.Component {
             return (
                 <li key={item.key} className="sales-team-group-li">
                     {
-                        _this.treeElement(btnClass, item, false)
+                        this.treeElement(btnClass, item, false)
                     }
                 </li>
             );
@@ -363,6 +369,8 @@ LeftTree.propTypes = {
     salesTeamGroupList: PropTypes.array,
     containerHeight: PropTypes.number,
     isAddSalesTeamRoot: PropTypes.bool,
-    delTeamErrorMsg: PropTypes.string
+    delTeamErrorMsg: PropTypes.string,
+    className: PropTypes.string,
+    memberCount: PropTypes.number,
 };
 module.exports = LeftTree;
