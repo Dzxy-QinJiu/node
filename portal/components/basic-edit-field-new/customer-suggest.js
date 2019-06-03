@@ -313,7 +313,7 @@ class CustomerSuggest extends React.Component {
         if (this.state.show_tip) {
             if (this.state.result_type === 'error') {
                 return (
-                    <div className="customer_suggest_tip">
+                    <div className="customer_suggest_tip customer_suggest_error_tip">
                         {this.state.suggest_error_msg}，{Intl.get('common.yesno', '是否')}<a href="javascript:void(0)"
                             onClick={this.retrySuggest} data-tracename="重新搜索客户"><ReactIntl.FormattedMessage
                                 id="common.retry" defaultMessage="重试"/></a>
