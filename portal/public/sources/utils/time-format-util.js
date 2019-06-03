@@ -6,7 +6,7 @@
 exports.secondsToHourMinuteSecond = function(timeSeconds) {
     let hours = Math.floor(timeSeconds / (60 * 60));//小时数
     let minutes = Math.floor((timeSeconds - hours * 60 * 60) / 60);//分钟数
-    let seconds = timeSeconds - hours * 60 * 60 - minutes * 60;//秒数
+    let seconds = Math.floor(timeSeconds - hours * 60 * 60 - minutes * 60);//秒数
     let timeDescr = '';//转换后的时间描述
     if (hours > 0) {
         timeDescr = hours + Intl.get('user.time.hour', '小时');

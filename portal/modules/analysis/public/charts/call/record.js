@@ -38,10 +38,15 @@ export function getCallRecordChart(paramObj = {}) {
                         const availableUserNum = _.get(corrTeamInfo, 'available.user');
 
                         if (availableUserNum) {
-                            callInfo.per_capita_duration = (callInfo.total_time / availableUserNum).toFixed();
-                            callInfo.per_capita_number = (callInfo.total_callout_success / availableUserNum).toFixed();
+                            callInfo.per_capita_duration = _.toInteger(callInfo.total_time / availableUserNum);
+                            callInfo.per_capita_number = _.toInteger(callInfo.total_callout_success / availableUserNum);
                         }
                     }
+
+                    //日均接通数转换为整数
+                    callInfo.average_num = _.toInteger(callInfo.average_num);
+                    //日均时长转换为整数
+                    callInfo.average_time = _.toInteger(callInfo.average_time);
                 });
 
                 return callInfoList;
@@ -140,6 +145,7 @@ export function getCallRecordChart(paramObj = {}) {
             title: Intl.get('sales.home.phone.callin.rate', '呼入接通率'),
             width: col_lg_width,
             dataIndex: 'callin_rate',
+            showAsPercent: true,
             sorter: function(a, b) {
                 return a.callin_rate - b.callin_rate;
             },
@@ -156,6 +162,7 @@ export function getCallRecordChart(paramObj = {}) {
             title: Intl.get('sales.home.phone.callout.rate', '呼出接通率'),
             width: col_lg_width,
             dataIndex: 'callout_rate',
+            showAsPercent: true,
             sorter: function(a, b) {
                 return a.callout_rate - b.callout_rate;
             },
