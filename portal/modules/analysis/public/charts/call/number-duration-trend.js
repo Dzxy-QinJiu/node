@@ -78,7 +78,7 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
             return dataCount;
         },
         processOption: (option, chart) => {
-            if (Store.teamMemberFilterType === 'member') {
+            if (Store.teamMemberFilterType === 'member' && Store.secondSelectValue !== Intl.get('common.all', '全部')) {
                 let legendData = [];
                 let series = [];
 
