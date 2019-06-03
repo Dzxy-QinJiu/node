@@ -327,107 +327,6 @@
 
   }
 
-  /*--成员头像、名称、选择框样式--start  */
-
-  //成员头像样式
-  .sales-team-member-info-img {
-    height: @img-height;
-    width: @img-width;
-    border-radius: 50%;
-  }
-
-  //盛放展示成员头像及name的div样式
-  .sales-team-member-info {
-    position: relative;
-    float: left;
-    width: 90px;
-    height: 80px;
-    text-align: center;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-
-  //成员名称的样式
-  .sales-team-member-info-name {
-    width: 90px;
-    color: #7f9e9b;
-    font-size: 12px;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 5px;
-    &:extend(.sales-team-manage-container .public-overflow-hidden);
-  }
-
-  //盛放带选择框的成员头像及name的div样式
-  .operation-sales-team-member-info {
-    &:extend(.sales-team-manage-container .sales-team-member-info);
-    //盛放选择框和名称的div样式
-    .sales-team-member-info-name-div {
-      height: 20px;
-      line-height: 20px;
-      width: 90px;
-      padding-left: 10px;
-      //名称前选择框样式
-      .select-icon-div {
-        width: 15px;
-        height: 15px;
-        float: left;
-        border-radius: 50%;
-        background-color: #dfe5e8;
-        color: #ffffff;
-        line-height: 17px;
-        font-size: 10px;
-        margin-top: 7px;
-        //选择框选中样式
-        &.select-member {
-          background-color: #4d96d1 !important;
-        }
-
-      }
-      //带选择框的名称样式
-      .sales-team-member-info-name {
-        &:extend(.sales-team-manage-container .sales-team-member-info-name);
-        width: 60px;
-        text-align: left;
-      }
-    }
-  }
-
-  //停用成员的样式
-  .sales-team-member-stop {
-    position: absolute;
-    height: 45px;
-    width: 45px;
-    line-height: 45px;
-    font-size: 12px;
-    border-radius: 50%;
-    top: 0;
-    z-index: 2;
-    left: 22px;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: #fff;
-  }
-  //负责人的样式
-  .icon-sale-team-owner {
-    position: absolute;
-    height: 45px;
-    top: -22px;
-    left: 10px;
-    font-size: 40px;
-    color: #272636;
-  }
-
-  //秘书的样式
-  .icon-sale-team-manager {
-    position: absolute;
-    height: 45px;
-    top: -23px;
-    left: 9.5px;
-    font-size: 60px;
-    color: #c44999;
-  }
-  /*--成员头像、名称、选择框样式--end  */
-
   //搜索框样式
   .sales-team-member-search-input-div {
     width: 315px;
@@ -443,6 +342,4 @@
       color: #000;
     }
   }
-
-
 }

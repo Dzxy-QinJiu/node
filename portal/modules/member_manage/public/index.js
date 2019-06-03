@@ -187,6 +187,7 @@ class MemberManage extends React.Component {
         return [{
             title: Intl.get('member.member', '成员'),
             dataIndex: 'name',
+            className: 'member-th-head',
             key: 'name',
             width: '40%',
             render: (name, record) => {

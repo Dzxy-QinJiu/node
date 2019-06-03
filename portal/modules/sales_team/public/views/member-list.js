@@ -452,10 +452,9 @@ const MemberList = createReactClass({
             render: (name, record) => {
                 let memberNameCls = classNames('member-name', this.memberStatusClass(_.get(record, 'status')));
                 let role = _.get(record, 'role');
-                let iconClass = classNames('iconfont icon-team-role', {
-                    'sale-owner': role === 'owner',
-                    'sale-manage': role === 'manager',
-                    'sale-user': role === 'user',
+                let iconClass = classNames('iconfont', {
+                    'icon-team-role': role === 'owner',
+                    'icon-sale-team-manager': role === 'manager',
                     'sale-status-stop': _.get(record, 'status') === 0
                 });
                 return (
