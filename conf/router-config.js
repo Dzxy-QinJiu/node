@@ -214,15 +214,17 @@ let routers = [
             component: `${MODULE_PATH}document_write/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
-        }, {
-            //todo 待修改的！！！！！！
-            id: 'MY_LAEVE_APPLY_MANAGEMENT',
-            name: 'apply.my.self.setting.work.flow',//文件撰写
-            routePath: '/application/self_setting',
-            component: `${MODULE_PATH}self_setting/public`,
-            //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
-        }]
+        },
+        //     {
+        //     //todo 待修改的！！！！！！
+        //     id: 'MY_LAEVE_APPLY_MANAGEMENT',
+        //     name: 'apply.my.self.setting.work.flow',//我的自定义流程
+        //     routePath: '/application/self_setting',
+        //     component: `${MODULE_PATH}self_setting/public`,
+        //     //有这个权限，才显示入口图标
+        //     showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
+        // }
+        ]
     },
     {
         id: 'NOTIFICATION',//唯一标识 - 通知
