@@ -18,7 +18,7 @@ function ClueFilterStore() {
 ClueFilterStore.prototype.setInitialData = function() {
     var defaultValue = '';
     if (userData.getUserData().isCommonSales) {
-        defaultValue = SELECT_TYPE.WILL_TRACE;
+        defaultValue = SELECT_TYPE.WAIT_ME_HANDLE;
     }
     var filterClueStatus = _.cloneDeep(CLUE_DIFF_TYPE);
     //是否展示分配筛选按钮要根据权限判断
@@ -26,6 +26,13 @@ ClueFilterStore.prototype.setInitialData = function() {
         filterClueStatus.push({
             name: Intl.get('clue.customer.will.distribution', '待分配'),
             value: SELECT_TYPE.WILL_DISTRIBUTE,
+        });
+    }
+    //如果是普通销售，增加待我处理筛选项
+    if (userData.getUserData().isCommonSales){
+        filterClueStatus.push({
+            name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
+            value: SELECT_TYPE.WAIT_ME_HANDLE,
         });
     }
     _.forEach(filterClueStatus, (item) => {

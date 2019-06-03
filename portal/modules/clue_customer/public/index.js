@@ -344,7 +344,6 @@ class ClueCustomer extends React.Component {
             keyword: this.state.keyword,
             rangeParams: rangeParams,
             statistics_fields: 'status',
-            userId: userData.getUserData().userId || '',
             typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter)
         };
 
@@ -400,7 +399,6 @@ class ClueCustomer extends React.Component {
             keyword: keyWord,
             rangeParams: JSON.stringify(rangeParams),
             statistics_fields: 'status',
-            userId: userData.getUserData().userId || '',
             typeFilter: JSON.stringify(typeFilter)
         };
         if (!isGetAllClue){
