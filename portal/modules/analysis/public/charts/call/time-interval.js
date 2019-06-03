@@ -13,6 +13,8 @@ export function getCallTimeIntervalChart() {
     return {
         title: '通话时段统计',
         chartType: 'scatter',
+        //数据显示类型，是数量还是时长
+        dataType: 'count',
         url: '/rest/analysis/callrecord/v1/callrecord/statistics/sum/count',
         conditions: [{
             name: 'filter_phone',
@@ -30,14 +32,28 @@ export function getCallTimeIntervalChart() {
         processCsvData: (chart, option) => {
             let csvData = [];
 
-            const thead = [''].concat(_.get(option, 'singleAxis[0].data', []));
+            let thead = _.get(option, 'singleAxis[0].data', []);
+            thead = _.map(thead, item => item + Intl.get('crm.75', '点'));
+            thead.unshift('');
 
             csvData.push(thead);
+
+            //数据类型：数量/时长
+            let dataTypeText;
+
+            if (chart.dataType === 'count') {
+                dataTypeText = Intl.get('common.app.count', '数量');
+            } else {
+                dataTypeText = Intl.get('user.duration', '时长');
+
+            }
 
             _.each(option.title, (item, index) => {
                 let tr = [];
 
-                tr.push(item.text);
+                const rowTitle = item.text + '(' + dataTypeText + ')';
+
+                tr.push(rowTitle);
 
                 const serie = option.series[index];
 
@@ -50,7 +66,7 @@ export function getCallTimeIntervalChart() {
 
             return csvData;
         },
-        option: getOption('通话数量'),
+        option: getOption(),
         yAxisLabels: days,
         xAxisLabels: hours,
     };
@@ -83,6 +99,8 @@ export function getCallTimeIntervalChart() {
         const formatter = getTooltipFormatter(value);
 
         _.set(chart, 'option.tooltip.formatter', formatter);
+        //设置数据显示类型，是数量还是时长
+        _.set(chart, 'dataType', value);
 
         const charts = analysisInstance.state.charts;
 
@@ -112,7 +130,7 @@ export function getCallTimeIntervalChart() {
         };
     }
 
-    function getOption(dataName, dataType) {
+    function getOption() {
         var options = {
             tooltip: {
                 formatter: getTooltipFormatter('count')
