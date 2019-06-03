@@ -145,6 +145,7 @@ export function getCallRecordChart(paramObj = {}) {
             title: Intl.get('sales.home.phone.callin.rate', '呼入接通率'),
             width: col_lg_width,
             dataIndex: 'callin_rate',
+            showAsPercent: true,
             sorter: function(a, b) {
                 return a.callin_rate - b.callin_rate;
             },
@@ -161,6 +162,7 @@ export function getCallRecordChart(paramObj = {}) {
             title: Intl.get('sales.home.phone.callout.rate', '呼出接通率'),
             width: col_lg_width,
             dataIndex: 'callout_rate',
+            showAsPercent: true,
             sorter: function(a, b) {
                 return a.callout_rate - b.callout_rate;
             },
