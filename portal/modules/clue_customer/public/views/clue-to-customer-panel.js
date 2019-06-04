@@ -3,18 +3,24 @@
  */
 
 //require('./style.less');
+import ajax from 'ant-ajax';
 import {RightPanel} from 'CMP_DIR/rightPanel';
+import {AUTHS} from 'MOD_DIR/crm/public/utils/crm-util';
+const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
+const authType = hasPrivilege(AUTHS.GETALL) ? 'manager' : 'user';
 const noop = function() {};
 
 class ClueToCustomerPanel extends React.Component {
     static defaultProps = {
         showFlag: false,
         hidePanel: noop,
+        clue: {}
     };
 
     static propTypes = {
         showFlag: PropTypes.bool,
         hidePanel: PropTypes.func,
+        clue: PropTypes.object
     };
 
     constructor(props) {
@@ -28,9 +34,28 @@ class ClueToCustomerPanel extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        if (this.props.clue.id !== nextProps.clue.id) {
+            this.getCustomer(nextProps);
+        }
     }
 
-    componentWillUnmount() {
+    //获取客户信息
+    getCustomer(props) {
+        const customerName = props.clue.name;
+
+        ajax.send({
+            url: `/rest/customer/v3/customer/range/${authType}/20/1/start_time/descend`,
+            type: 'post',
+            data: {
+                query: {
+                    name: customerName
+                }
+            }
+        })
+            .done(result => {
+            })
+            .fail(err => {
+            });
     }
 
     render() {

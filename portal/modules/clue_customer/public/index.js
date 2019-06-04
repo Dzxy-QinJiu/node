@@ -956,7 +956,7 @@ class ClueCustomer extends React.Component {
                         <span
                         
                             className="can-edit"
-                            onClick={this.showClueToCustomerPanel}
+                            onClick={this.showClueToCustomerPanel.bind(this, record.id)}
                         >
                             转为客户
                         </span>
@@ -967,13 +967,15 @@ class ClueCustomer extends React.Component {
     };
 
     //显示线索转客户面板
-    showClueToCustomerPanel = () => {
+    showClueToCustomerPanel = (clueId) => {
         this.setState({isShowClueToCustomerPanel: true});
+        clueCustomerAction.setCurrentCustomer(clueId);
     };
 
     //隐藏线索转客户面板
     hideClueToCustomerPanel = () => {
         this.setState({isShowClueToCustomerPanel: false});
+        clueCustomerAction.setCurrentCustomer('');
     };
 
     setInvalidClassName= (record, index) => {
@@ -1705,6 +1707,7 @@ class ClueCustomer extends React.Component {
 
                     <ClueToCustomerPanel
                         showFlag={this.state.isShowClueToCustomerPanel}
+                        clue={this.state.curClue}
                         hidePanel={this.hideClueToCustomerPanel}
                     />
                 </div>
