@@ -946,6 +946,19 @@ class ClueCustomer extends React.Component {
                         </div>
                     );
                 }
+            },{
+                title: Intl.get('common.operate': '操作'),
+                width: 100,
+                render: (value, record) => {
+                    return (
+                        <span
+                        
+                            className="can-edit"
+                        >
+                            转为客户
+                        </span>
+                    );
+                }
             }];
         return columns;
     };
