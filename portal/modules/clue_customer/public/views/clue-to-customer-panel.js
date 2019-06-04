@@ -2,8 +2,8 @@
  * 线索转客户的操作面板
  */
 
-//require('./style.less');
-import { Row, Col } from 'antd';
+require('../css/clue-to-customer-panel.less');
+import { Row, Col, Button } from 'antd';
 import ajax from 'ant-ajax';
 import { RightPanel } from 'CMP_DIR/rightPanel';
 import { AUTHS } from 'MOD_DIR/crm/public/utils/crm-util';
@@ -28,6 +28,7 @@ class ClueToCustomerPanel extends React.Component {
         super(props);
 
         this.state = {
+            customers: []
         };
     }
 
@@ -54,6 +55,9 @@ class ClueToCustomerPanel extends React.Component {
             }
         })
             .done(result => {
+                this.setState({
+                    customers: result.result
+                });
             })
             .fail(err => {
             });
@@ -70,38 +74,66 @@ class ClueToCustomerPanel extends React.Component {
             >
                 <span className="iconfont icon-close clue-right-btn" onClick={this.props.hidePanel} data-tracename="关闭线索转客户面板"></span>
                 <div className="clue-detail-wrap">
-                    <Row>
-                        <Col span={12}>
-                            {Intl.get('crm.41', '客户名')}
-                        </Col>
-                        <Col span={12}>
-                            {clue.name}
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={12}>
-                            {Intl.get('call.record.contacts', '联系人')}
-                        </Col>
-                        <Col span={12}>
-                            {_.get(clue, 'contacts[0].name', '')}
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={12}>
-                            {Intl.get('common.phone', '电话')}
-                        </Col>
-                        <Col span={12}>
-                            {_.get(clue, 'contacts[0].phone[0]', '')}
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={12}>
-                            {Intl.get('crm.6', '负责人')}
-                        </Col>
-                        <Col span={12}>
-                            {clue.user_name}
-                        </Col>
-                    </Row>
+                    <div className="panel-content">
+                        <Row>
+                            <Col span={4}>
+                                {Intl.get('crm.41', '客户名')}：
+                            </Col>
+                            <Col span={4}>
+                                {clue.name}
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={4}>
+                                {Intl.get('call.record.contacts', '联系人')}：
+                            </Col>
+                            <Col span={4}>
+                                {_.get(clue, 'contacts[0].name', '')}
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={4}>
+                                {Intl.get('common.phone', '电话')}：
+                            </Col>
+                            <Col span={4}>
+                                {_.get(clue, 'contacts[0].phone[0]', '')}
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={4}>
+                                {Intl.get('crm.6', '负责人')}：
+                            </Col>
+                            <Col span={12}>
+                                {clue.user_name}
+                            </Col>
+                        </Row>
+
+                        <div className="existing-customer">
+                            <b className="title">已存在客户</b>
+
+                            {_.map(this.state.customers, (customer, index) => {
+                                return (
+                                    <Row>
+                                        <Col span={12}>
+                                            {customer.name}
+                                        </Col>
+                                        <Col span={12}>
+                                            是否合并到此客户?
+                                        </Col>
+                                    </Row>
+                                );
+                            })}
+                        </div>
+
+                        <Row>
+                            <Col span={4}>
+                                <Button type="primary">添加</Button>
+                            </Col>
+                            <Col span={12}>
+                                <Button>取消</Button>
+                            </Col>
+                        </Row>
+                    </div>
                 </div>
             </RightPanel>
         );
