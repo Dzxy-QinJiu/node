@@ -81,6 +81,8 @@ class BasicOverview extends React.Component {
             if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
                 setTimeout(() => {
                     this.getCrmUserList(this.props.curCustomer);
+                    //需要展示未处理的电联的联系计划
+                    this.getNotCompletedScheduleList(this.props.curCustomer);
                 });
             }
         }
