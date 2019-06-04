@@ -118,7 +118,11 @@ class ClueToCustomerPanel extends React.Component {
                                             {customer.name}
                                         </Col>
                                         <Col span={12}>
-                                            是否合并到此客户?
+                                            <span
+                                                className="clickable"
+                                            >
+                                                是否合并到此客户?
+                                            </span>
                                         </Col>
                                     </Row>
                                 );
