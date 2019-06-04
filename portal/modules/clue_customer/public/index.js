@@ -36,6 +36,7 @@ const RightPanel = rightPanelUtil.RightPanel;
 var RightContent = require('CMP_DIR/privilege/right-content');
 import classNames from 'classnames';
 import ClueRightPanel from './views/clue-right-detail';
+import ClueToCustomerPanel from './views/clue-to-customer-panel';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
@@ -82,6 +83,7 @@ class ClueCustomer extends React.Component {
         submitTraceLoading: false,//正在提交跟进记录
         showCustomerId: '',//正在展示客户详情的客户id
         isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
+        isShowClueToCustomerPanel: false,//是否展示线索转客户面板
         customerOfCurUser: {},//当前展示用户所属客户的详情
         selectedClues: [],//获取批量操作选中的线索
         ...clueCustomerStore.getState()
@@ -954,6 +956,7 @@ class ClueCustomer extends React.Component {
                         <span
                         
                             className="can-edit"
+                            onClick={this.showClueToCustomerPanel}
                         >
                             转为客户
                         </span>
@@ -962,6 +965,17 @@ class ClueCustomer extends React.Component {
             }];
         return columns;
     };
+
+    //显示线索转客户面板
+    showClueToCustomerPanel = () => {
+        this.setState({isShowClueToCustomerPanel: true});
+    };
+
+    //隐藏线索转客户面板
+    hideClueToCustomerPanel = () => {
+        this.setState({isShowClueToCustomerPanel: false});
+    };
+
     setInvalidClassName= (record, index) => {
         return (record.availability === '1' ? 'invalid-clue' : '');
     };
@@ -1688,6 +1702,11 @@ class ClueCustomer extends React.Component {
                                 }
                             </RightPanel> : null
                     }
+
+                    <ClueToCustomerPanel
+                        showFlag={this.state.isShowClueToCustomerPanel}
+                        hidePanel={this.hideClueToCustomerPanel}
+                    />
                 </div>
             </RightContent>
         );
