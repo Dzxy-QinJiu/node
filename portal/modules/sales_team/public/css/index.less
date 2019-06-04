@@ -239,109 +239,93 @@
           width: @group-tree-width;
           font-size: 14px;
           .left-tree-ul {
-            position: relative;
-            float: left;
-            min-width: 300px;
-
+            padding: 16px 24px 16px;
             .sales-team-group-li {
-              display: block;
-              font-size: 14px;
-              padding-left: 10px;
-
-              .left-tree-children-ul {
-                display: none;
-              }
-
-              &.isLiSelect {
-                & > .left-tree-children-ul {
-                  display: block;
-                }
-
-              }
-              //左侧树项的背景设置
-              .item-border-style {
-                position: absolute;
-                width: 100%;
-                left: 0;
-                border-bottom: 1px solid #f3f5f7;
-              }
               .sales-team-group-name-div {
-                width: 100%;
                 cursor: pointer;
+                //左侧树项的背景设置
                 .item-border-style {
-                  height: @group-tree-name-height;
+                  position: absolute;
+                  height: 32px;
+                  width: 264px;
+                }
+                .left-tree-item-container {
+                  .sales-team-group-info, .member-info {
+                    position: relative;
+                    height: 32px;
+                    .sales-team-group-name , .member-info-name{
+                      span {
+                        float: left;
+                        height: 30px;
+                        line-height: 30px;
+                      }
+                      .sales-team-name-text {
+                        display: inline-block;
+                        &:extend(.sales-team-manage-container .public-overflow-hidden);
+                      }
+                      .sales-team-member-statistic, .member-statistic, .icon-more{
+                        float: right;
+                        padding-right: 8px;
+                      }
+                      .icon-more {
+                        color: #2196F3;
+                      }
+                    }
+                    .member-info-name {
+                      padding-left: 24px;
+                      .sales-team-name-text {
+                        color: #2196F3;
+                      }
+                    }
+                    .sales-team-group-pen {
+                      height: 30px;
+                      line-height: 30px;
+                      color: #B8BDBF;
+                      &:extend(.sales-team-manage-container .public-overflow-hidden);
+
+                    }
+                  }
+                  .member-info {
+                    background-color: #E4F2FE;
+                  }
+                  .left-tree-arrow {
+                    float: left;
+                    width: 25px;
+                    height: 32px;
+                    text-align: left;
+                    line-height: 32px;
+                    position: relative;
+                    z-index: 11;
+
+                    .icon-tree-arrow {
+                      font-size: 10px;
+                    }
+                    &:hover {
+                      .icon-tree-arrow {
+                        color: #4d96d1;
+                      }
+                    }
+                  }
                 }
 
                 &.select {
                   .item-border-style {
-                    background-color: #ecf2f3 !important;
+                    background-color: #E4F2FE !important;
                   }
                 }
 
                 &:hover {
                   .item-border-style {
-                    background-color: #EFF8F9;
+                    background-color: #E4F2FE;
                   }
                   .tree-operation-icon {
                     display: block !important;
                   }
 
                   .tree-operation-btn-div {
-                    background-color: #ecf2f3 !important;
+                    background-color: #E4F2FE !important;
                   }
                 }
-                .left-tree-item-container {
-                  min-width: 240px;
-                }
-                .left-tree-arrow {
-                  float: left;
-                  width: 25px;
-                  height: @group-tree-name-height;
-                  text-align: left;
-                  line-height: @group-tree-name-height;
-                  position: relative;
-                  z-index: 11;
-
-                  .icon-tree-arrow {
-                    font-size: 10px;
-                  }
-                  &:hover {
-                    .icon-tree-arrow {
-                      color: #4d96d1;
-                    }
-                  }
-                }
-
-                .sales-team-group-info {
-                  position: relative;
-                  height: @group-tree-name-height;
-                  padding-top: 14px;
-
-                  .sales-team-group-name {
-                    span {
-                      float: left;
-                      height: 30px;
-                      line-height: 30px;
-                    }
-                    .sales-team-name-text {
-                      max-width: 100px;
-                      padding-right: 220px;
-                      display: inline-block;
-                      &:extend(.sales-team-manage-container .public-overflow-hidden);
-                    }
-                    .sales-team-member-statistic {
-                      display: inline-block;
-                    }
-                  }
-                  .sales-team-group-pen {
-                    height: 30px;
-                    line-height: 30px;
-                    color: #B8BDBF;
-                    &:extend(.sales-team-manage-container .public-overflow-hidden);
-
-                  }
-                }
-
                 &.show-tree-operation {
                   .tree-operation-icon {
                     display: block !important;
@@ -357,16 +341,13 @@
                   position: relative;
                   float: right;
                   right: 50px;
-                  bottom: 30px;
                   display: inline-block;
                   .icon-delete, .icon-update {
                     margin-left: 5px;
                   }
                   .tree-operation-icon {
                     float: left;
-                    font-size: 20px;
                     display: none;
-
                     &:hover {
                       color: #2377bd;
                     }
@@ -400,6 +381,17 @@
                   }
                 }
               }
+              .left-tree-children-ul {
+                padding-left: 20px;
+                display: none;
+              }
+              &.isLiSelect {
+                & > .left-tree-children-ul {
+                  display: block;
+                }
+
+              }
+
             }
           }
 
@@ -491,7 +483,7 @@
     &:extend(.sales-team-manage-container .public-overflow-hidden);
 
     &.select-active {
-      background-color: #4d96d1;
+      background-color: #E4F2FE;
       border-color: #4d96d1;
       color: #ffffff;
     }
@@ -517,7 +509,7 @@
   //加为xx、删除按钮的hover事件
   .member-btn-enable:hover {
     color: #fff !important;
-    background-color: #4d96d1 !important;
+    background-color: #E4F2FE !important;
   }
   .member-owner-disabled {
     background-color: #aeb3b9;
@@ -611,12 +603,30 @@
         background: #fff;
         z-index: 2;
         &:hover {
-          color: #4d96d1;;
+          color: #E4F2FE;;
         }
       }
     }
     &:hover {
-      background-color: #EFF8F9;
+      background-color: #E4F2FE;
+    }
+  }
+}
+
+// 添加子团队、编辑子团队、删除子团队的样式
+.ant-popover-inner-content {
+  .tree-operation-div {
+    color: #8DA8C5;
+    font-size: 14px;
+    .iconfont {
+      padding-right: 5px;
+    }
+    .tree-operation-item-zone {
+      height: 32px;
+      &:hover {
+        color: #2196F3;
+        background-color: #E4F2FE;
+      }
     }
   }
 }

@@ -201,86 +201,100 @@ class SalesTeamPage extends React.Component {
     render() {
         let containerHeight = this.state.containerHeight;
         let containerWidth = this.state.containerWidth;
-        let salesTeamMemberWidth = containerWidth - 340;
+        let salesTeamMemberWidth = containerWidth - 304;
         let salesTeamList = this.state.salesTeamList;
         let leftTreeData = this.state.searchContent ? this.state.searchSalesTeamTree : this.state.salesTeamListArray;
         let organizationName = _.get(getOrganization(), 'name', '');
         let groupName = _.get(this.state.curShowTeamMemberObj, 'groupName');
         let tabHeight = containerHeight - LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
         return (
-            <div className="sales-team-manage-container" data-tracename="团队管理" style={{height: containerHeight}}>
-                <div className='member-list-zone' style={{height: containerHeight}}>
-                    {this.state.salesTeamLisTipMsg ? (this.state.salesTeamLisTipMsg === CONSTANT.SALES_TEAM_IS_NULL ? this.renderAddSalesTeam() :
-                        <NoData msg={this.state.salesTeamLisTipMsg}/>) : (this.state.isLoadingSalesTeam ? (
-                        <Spinner className="isloading"/>) : (
-                        <div className="sales-team-table-block modal-container"
-                            style={{width: containerWidth ,height: containerHeight}}>
-                            {
-                                groupName === organizationName ? (
-                                    <div
-                                        className='member-zone'
-                                        style={{
-                                            height: containerHeight,
-                                            width: salesTeamMemberWidth
-                                        }}
-                                    >
-                                        <MemberManage getMemberCount={this.getMemberCount}/>
-                                    </div>
-                                ) :
-                                    <MemberList
-                                        salesTeamMemberWidth={salesTeamMemberWidth}
-                                        containerHeight={containerHeight}
-                                        isLoadingTeamMember={this.state.isLoadingTeamMember}
-                                        salesTeamMerberList={this.state.salesTeamMemberList}
-                                        curShowTeamMemberObj={this.state.curShowTeamMemberObj}
-                                        isAddMember={this.state.isAddMember}
-                                        isEditMember={this.state.isEditMember}
-                                        addMemberList={this.state.addMemberList}
-                                        showMemberOperationBtn={this.state.showMemberOperationBtn}
-                                        teamMemberListTipMsg={this.state.teamMemberListTipMsg}
-                                        addMemberListTipMsg={this.state.addMemberListTipMsg}
-                                        salesGoals={this.state.salesGoals}
-                                        userInfoShow = {this.state.userInfoShow}
-                                        userFormShow = {this.state.userFormShow}
-                                        rightPanelShow={this.state.rightPanelShow}
-                                        isLoadingSalesGoal={this.state.isLoadingSalesGoal}
-                                        getSalesGoalErrMsg={this.state.getSalesGoalErrMsg}
-                                    />
-                            }
-                            <div className='member-group-tabs' style={{
-                                height: containerHeight,
-                            }}>
-                                <Tabs
-                                    defaultActiveKey={TAB_KEYS.DEPARTMENT_TAB}
-                                    activeKey={this.state.activeKey}
-                                    onChange={this.changeActiveKey}
+            <div
+                className="sales-team-manage-container"
+                data-tracename="团队管理"
+                style={{height: containerHeight}}
+            >
+                <div
+                    className='member-list-zone'
+                    style={{height: containerHeight}}
+                >
+                    {
+                        this.state.salesTeamLisTipMsg ? (
+                            this.state.salesTeamLisTipMsg === CONSTANT.SALES_TEAM_IS_NULL ?
+                                this.renderAddSalesTeam() :
+                                <NoData msg={this.state.salesTeamLisTipMsg}/>
+                        ) : (
+                            this.state.isLoadingSalesTeam ? (
+                                <Spinner className="isloading"/>) : (
+                                <div
+                                    className="sales-team-table-block modal-container"
+                                    style={{width: containerWidth ,height: containerHeight}}
                                 >
-                                    <TabPane
-                                        tab={Intl.get('crm.113', '部门')}
-                                        key={TAB_KEYS.DEPARTMENT_TAB}
-                                    >
-                                        <LeftTree
-                                            memberCount={this.state.memberCount}
-                                            containerHeight={tabHeight}
-                                            salesTeamList={salesTeamList}
-                                            searchContent={this.state.searchContent}
-                                            salesTeamGroupList={leftTreeData}
-                                            deleteGroupItem={this.state.deleteGroupItem}
-                                            isLoadingTeamMember={this.state.isLoadingTeamMember}
-                                            delTeamErrorMsg={this.state.delTeamErrorMsg}
-                                            isAddSalesTeamRoot={this.state.isAddSalesTeamRoot}
-                                            teamMemberCountList={this.state.teamMemberCountList}
-                                        />
-                                    </TabPane>
-                                    <TabPane
-                                        tab={Intl.get('member.position', '职务')}
-                                        key={TAB_KEYS.POSITION_TAB}
-                                    >
-                                        <OfficeManage />
-                                    </TabPane>
-                                </Tabs>
-                            </div>
-                        </div>))
+                                    {
+                                        groupName === organizationName ? (
+                                            <div
+                                                className='member-zone'
+                                                style={{
+                                                    height: containerHeight,
+                                                    width: salesTeamMemberWidth
+                                                }}
+                                            >
+                                                <MemberManage getMemberCount={this.getMemberCount}/>
+                                            </div>
+                                        ) :
+                                            <MemberList
+                                                salesTeamMemberWidth={salesTeamMemberWidth}
+                                                containerHeight={containerHeight}
+                                                isLoadingTeamMember={this.state.isLoadingTeamMember}
+                                                salesTeamMerberList={this.state.salesTeamMemberList}
+                                                curShowTeamMemberObj={this.state.curShowTeamMemberObj}
+                                                isAddMember={this.state.isAddMember}
+                                                isEditMember={this.state.isEditMember}
+                                                addMemberList={this.state.addMemberList}
+                                                showMemberOperationBtn={this.state.showMemberOperationBtn}
+                                                teamMemberListTipMsg={this.state.teamMemberListTipMsg}
+                                                addMemberListTipMsg={this.state.addMemberListTipMsg}
+                                                salesGoals={this.state.salesGoals}
+                                                userInfoShow = {this.state.userInfoShow}
+                                                userFormShow = {this.state.userFormShow}
+                                                rightPanelShow={this.state.rightPanelShow}
+                                                isLoadingSalesGoal={this.state.isLoadingSalesGoal}
+                                                getSalesGoalErrMsg={this.state.getSalesGoalErrMsg}
+                                            />
+                                    }
+                                    <div className='member-group-tabs' style={{
+                                        height: containerHeight,
+                                    }}>
+                                        <Tabs
+                                            defaultActiveKey={TAB_KEYS.DEPARTMENT_TAB}
+                                            activeKey={this.state.activeKey}
+                                            onChange={this.changeActiveKey}
+                                        >
+                                            <TabPane
+                                                tab={Intl.get('crm.113', '部门')}
+                                                key={TAB_KEYS.DEPARTMENT_TAB}
+                                            >
+                                                <LeftTree
+                                                    memberCount={this.state.memberCount}
+                                                    containerHeight={tabHeight}
+                                                    salesTeamList={salesTeamList}
+                                                    searchContent={this.state.searchContent}
+                                                    salesTeamGroupList={leftTreeData}
+                                                    deleteGroupItem={this.state.deleteGroupItem}
+                                                    isLoadingTeamMember={this.state.isLoadingTeamMember}
+                                                    delTeamErrorMsg={this.state.delTeamErrorMsg}
+                                                    isAddSalesTeamRoot={this.state.isAddSalesTeamRoot}
+                                                    teamMemberCountList={this.state.teamMemberCountList}
+                                                />
+                                            </TabPane>
+                                            <TabPane
+                                                tab={Intl.get('member.position', '职务')}
+                                                key={TAB_KEYS.POSITION_TAB}
+                                            >
+                                                <OfficeManage />
+                                            </TabPane>
+                                        </Tabs>
+                                    </div>
+                                </div>))
                     }
                 </div>
             </div>
