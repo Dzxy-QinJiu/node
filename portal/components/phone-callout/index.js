@@ -60,7 +60,7 @@ class PhoneCallout extends React.Component {
         var contactName = this.props.contactName;
         var visible = this.state.visible;
         var iconCls = classNames('iconfont icon-active-call_record-ico',{
-            'default-show': this.props.showPhoneIcon
+            'default-show': this.props.showPhoneIcon || this.props.hidePhoneNumber
         });
         return (
             <Popover placement="right" content={contentTip} trigger="click" visible={visible}
@@ -73,22 +73,24 @@ class PhoneCallout extends React.Component {
     render() {
         return(
             <span className="phone-callout-container" >
-                <span>{this.props.showPhoneNum || this.props.phoneNumber}</span>
+                {this.props.hidePhoneNumber ? null : (<span>{this.props.showPhoneNum || this.props.phoneNumber}</span>)}
                 {this.renderPhoneIcon()}
             </span>
         );
     }
 }
 PhoneCallout.defaultProps = {
-    showPhoneNum: '',
-    phoneNumber: '',
-    contactName: '',
-    showPhoneIcon: false
+    showPhoneNum: '',//（非必传）当展示和拨打时用的不是同一个时，展示的用此属性值展示（例如：展示：0531-88457451，拨打：053188457451）
+    phoneNumber: '',//（必传）拨打和展示的相同时，用来拨号和展示，不同时，用来拨号
+    contactName: '',//（非必传）拨打电话时，用来在弹屏上展示的联系人姓名
+    showPhoneIcon: false,//是否一直展示电话图标
+    hidePhoneNumber: false,//是否不展示电话号码，不展示时，电话图标会一直显示
 };
 PhoneCallout.propTypes = {
     showPhoneNum: PropTypes.string,
     phoneNumber: PropTypes.string,
     contactName: PropTypes.string,
-    showPhoneIcon: PropTypes.bool
+    showPhoneIcon: PropTypes.bool,
+    hidePhoneNumber: PropTypes.bool
 };
 export default PhoneCallout;
