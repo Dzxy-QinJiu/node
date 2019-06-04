@@ -754,6 +754,15 @@ class UserTabContent extends React.Component {
                     }
                 },
                 {
+                    title: Intl.get('common.role', '角色'),
+                    dataIndex: 'apps',
+                    width: twoWordWidth,
+                    key: 'role',
+                    render: function(apps, rowData, idx) {
+                        return AppUserUtil.getRoleList(apps, rowData);
+                    }
+                },
+                {
                     title: Intl.get('user.time.end', '到期时间'),
                     dataIndex: 'end_date',
                     width: fourWordWidth,
@@ -778,7 +787,21 @@ class UserTabContent extends React.Component {
                         );
                     }
                 },
-                {
+            ];
+        }
+
+        //选中应用后，去掉应用列的展示
+        if(this.state.selectedAppId){
+            // oplate去掉应用列
+            if(isOplate) {
+                columns = _.filter(columns, item => item.dataIndex !== 'apps');
+            }else {// uem去掉应用名称
+                columns = _.filter(columns, item => item.key !== 'appName');
+                // 加上自定义的属性列custom_variables
+                this.getCustomVariableColumns((custom_variables_columns) => {
+                    columns = columns.concat(custom_variables_columns);
+                });
+                columns.push({
                     title: Intl.get('common.remark', '备注'),
                     dataIndex: 'user',
                     key: 'description',
@@ -800,20 +823,6 @@ class UserTabContent extends React.Component {
                             </div>
                         ) : null;
                     }
-                }
-            ];
-        }
-
-        //选中应用后，去掉应用列的展示
-        if(this.state.selectedAppId){
-            // oplate去掉应用列
-            if(isOplate) {
-                columns = _.filter(columns, item => item.dataIndex !== 'apps');
-            }else {// uem去掉应用名称
-                columns = _.filter(columns, item => item.key !== 'appName');
-                // 加上自定义的属性列custom_variables
-                this.getCustomVariableColumns((custom_variables_columns) => {
-                    columns = columns.concat(custom_variables_columns);
                 });
             }
         }

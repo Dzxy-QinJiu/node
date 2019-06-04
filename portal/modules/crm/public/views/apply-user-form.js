@@ -680,11 +680,11 @@ const ApplyUserForm = createReactClass({
         );
     },
     renderUemUserType: function() {
-        var UserTypeList = [Intl.get('common.trial.user', '试用用户'), Intl.get('user.signed.user', '签约用户')];
-        _.each(this.state.uemUserTypes, item => {
+        var UserTypeList = _.get(this.state.uemUserTypes,'[0]') ? this.state.uemUserTypes : [Intl.get('common.trial.user', '试用用户'), Intl.get('user.signed.user', '签约用户')];
+        /*_.each(this.state.uemUserTypes, item => {
             // 去重取并集
             UserTypeList = _.union(UserTypeList, item.values);
-        });
+        });*/
         var formData = this.state.formData;
         return (
             <Select combobox
