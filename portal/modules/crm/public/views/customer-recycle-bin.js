@@ -270,13 +270,11 @@ class CustomerRecycleBin extends React.Component {
                             <span className="hidden record-id">{record.unique_id}</span>
                         </span>);
                 }
-            },
-            {
+            }, {
                 title: Intl.get('call.record.contacts', '联系人'),
                 width: column_width,
                 dataIndex: 'contact',
-            },
-            {
+            }, {
                 title: Intl.get('crm.5', '联系方式'),
                 width: 130,
                 dataIndex: 'contact_way',
@@ -313,16 +311,20 @@ class CustomerRecycleBin extends React.Component {
                 sorter: true,
                 className: 'has-filter table-data-align-right'
             }, {
-                title: Intl.get('crm.customer.delete.time', '删除时间'),
-                width: 100,
-                dataIndex: 'time',
-                sorter: true
+                title: Intl.get('crm.recycle.bin.type', '操作类型'),
+                width: column_width,
+                dataIndex: 'operation',
             }, {
                 title: Intl.get('user.operator', '操作人'),
                 width: column_width,
                 dataIndex: 'operator_name'
             }, {
-                title: Intl.get('common.operate', '操作'),
+                title: Intl.get('crm.recycle.bin.time', '操作时间'),
+                width: 100,
+                dataIndex: 'time',
+                sorter: true
+            }, {
+                title: Intl.get('notification.system.handled.set', '处理'),
                 width: 70,
                 render: (text, record, index) => {
                     if (record.id === this.state.isRecoveringId || record.id === this.state.isDeletingId) {
@@ -377,7 +379,8 @@ class CustomerRecycleBin extends React.Component {
                 start_time,
                 last_contact_time,
                 time: item.time ? moment(parseInt(item.time)).format(oplateConsts.DATE_FORMAT) : '',
-                operator_name: _.get(item, 'operator_name', '')
+                operator_name: _.get(item, 'operator_name', ''),
+                operation: _.get(item, 'operation', '')
             };
         });
         return tableData;

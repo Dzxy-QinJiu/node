@@ -1467,6 +1467,8 @@ var en_US = {
     'crm.add.time': 'Add time',//添加时间
     'crm.province.in': 'Provinces',//所属省份
     'crm.name.exist': 'Customer name already exists!',//客户名已存在！
+    'crm.recycle.bin.type': 'Operation type',//操作类型
+    'crm.recycle.bin.time': 'Operation time',//操作时间
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
