@@ -114,7 +114,11 @@ CustomerRecordStore.prototype.addCustomerTrace = function(result) {
         let type = _.get(result, 'data.customer_trace.type');
         //添加其他或拜访跟进时，对应类型的统计数加一
         if(type){
-            this.customerTraceStatisticObj[type] += 1;
+            if (this.customerTraceStatisticObj[type]) {
+                this.customerTraceStatisticObj[type] += 1;
+            } else {
+                this.customerTraceStatisticObj[type] = 1;
+            }
         }
         //全部类型下或添加类型筛选下，将新添加的跟进加入到当前展示类型的跟进列表中
         if (this.filterType === 'all' || this.filterType === type) {
