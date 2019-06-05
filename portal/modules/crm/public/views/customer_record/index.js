@@ -68,8 +68,8 @@ const CALL_TYPE_MAP = {
     'data_report': Intl.get('crm.trace.delivery.report', '舆情报送'),
     'other': Intl.get('customer.other', '其他')
 };
-//电话类型（eefung电话类型，客套容联电话类型,客套APP电话类型，回访类型）
-const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL_RECORD_TYPE.APP, CALL_RECORD_TYPE.CALL_BACK];
+//电话类型（eefung电话类型，客套容联电话类型,客套APP电话类型）
+const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL_RECORD_TYPE.APP];
 //跟进记录为空时的提示
 const TRACE_NULL_TIP = Intl.get('customer.trace.content', '客户跟进记录内容不能为空');
 
@@ -221,7 +221,7 @@ class CustomerRecord extends React.Component {
         }
         //跟进类型的过滤
         if (this.state.filterType === CALL_RECORD_TYPE.PHONE) {
-            //电话类型：eefung电话+容联电话+客套APP电话+回访
+            //电话类型：eefung电话+容联电话+客套APP电话
             bodyData.type = PHONE_TYPES.join(',');
         } else if (this.state.filterType && this.state.filterType !== 'all') {
             bodyData.type = this.state.filterType;

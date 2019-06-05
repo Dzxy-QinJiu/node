@@ -338,7 +338,7 @@ class SalesHomePage extends React.Component {
             }
         };
         let filterObj = {
-            type: 'call_back'
+            call_back: 'true'
         };
         SalesHomeAction.getCallBackList(paramsObj, filterObj);
     };

@@ -34,42 +34,43 @@ const processForTrace = function(item) {
         //渲染时间线
         //根据不同的类型
         if (item.type) {
-            switch (item.type) {
-                case CALL_RECORD_TYPE.VISIT:
-                    traceObj.iconClass = 'icon-visit-briefcase';
-                    traceObj.title = Intl.get('customer.visit', '拜访');
-                    traceObj.traceDsc = Intl.get('customer.visit.customer', '拜访客户');
-                    break;
-                case CALL_RECORD_TYPE.PHONE:
-                    traceObj.iconClass = 'icon-contact-phone';
-                    traceObj.title = Intl.get('common.phone.system', '电话系统');
-                    traceObj.traceDsc = (!item.contact_name && !item.dst) ? Intl.get('customer.contact.customer', '联系客户') : item.contact_name || '';
-                    break;
-                case CALL_RECORD_TYPE.CURTAO_PHONE:
-                    traceObj.iconClass = 'icon-contact-phone';
-                    traceObj.title = Intl.get('common.phone.system', '电话系统');
-                    traceObj.traceDsc = (!item.contact_name && !item.dst) ? Intl.get('customer.contact.customer', '联系客户') : item.contact_name || '';
-                    break;
-                case CALL_RECORD_TYPE.APP:
-                    traceObj.iconClass = 'icon-contact-ketao-app';
-                    traceObj.title = Intl.get('customer.ketao.app', '客套app');
-                    traceObj.traceDsc = (!item.contact_name && !item.dst) ? Intl.get('customer.contact.customer', '联系客户') : item.contact_name || '';
-                    break;
-                case CALL_RECORD_TYPE.CALL_BACK:
-                    traceObj.iconClass = 'icon-callback';
-                    traceObj.title = Intl.get('common.callback', '回访');
-                    traceObj.traceDsc = Intl.get('common.callback.customer', '回访客户');
-                    break;
-                case CALL_RECORD_TYPE.DATA_REPORT:
-                    traceObj.iconClass = 'icon-report-delivery';
-                    traceObj.title = Intl.get('crm.trace.delivery.report', '舆情报送');
-                    traceObj.traceDsc = Intl.get('crm.trace.delivery.report', '舆情报送');
-                    break;
-                case CALL_RECORD_TYPE.OTHER:
-                    traceObj.iconClass = 'icon-trace-other';
-                    traceObj.title = Intl.get('customer.other', '其他');
-                    traceObj.traceDsc = Intl.get('customer.follow.customer', '跟进客户');
-                    break;
+            if (item.call_back === 'true') {
+                traceObj.iconClass = 'icon-callback';
+                traceObj.title = Intl.get('common.callback', '回访');
+                traceObj.traceDsc = Intl.get('common.callback.customer', '回访客户');
+            } else {
+                switch (item.type) {
+                    case CALL_RECORD_TYPE.VISIT:
+                        traceObj.iconClass = 'icon-visit-briefcase';
+                        traceObj.title = Intl.get('customer.visit', '拜访');
+                        traceObj.traceDsc = Intl.get('customer.visit.customer', '拜访客户');
+                        break;
+                    case CALL_RECORD_TYPE.PHONE:
+                        traceObj.iconClass = 'icon-contact-phone';
+                        traceObj.title = Intl.get('common.phone.system', '电话系统');
+                        traceObj.traceDsc = (!item.contact_name && !item.dst) ? Intl.get('customer.contact.customer', '联系客户') : item.contact_name || '';
+                        break;
+                    case CALL_RECORD_TYPE.CURTAO_PHONE:
+                        traceObj.iconClass = 'icon-contact-phone';
+                        traceObj.title = Intl.get('common.phone.system', '电话系统');
+                        traceObj.traceDsc = (!item.contact_name && !item.dst) ? Intl.get('customer.contact.customer', '联系客户') : item.contact_name || '';
+                        break;
+                    case CALL_RECORD_TYPE.APP:
+                        traceObj.iconClass = 'icon-contact-ketao-app';
+                        traceObj.title = Intl.get('customer.ketao.app', '客套app');
+                        traceObj.traceDsc = (!item.contact_name && !item.dst) ? Intl.get('customer.contact.customer', '联系客户') : item.contact_name || '';
+                        break;
+                    case CALL_RECORD_TYPE.DATA_REPORT:
+                        traceObj.iconClass = 'icon-report-delivery';
+                        traceObj.title = Intl.get('crm.trace.delivery.report', '舆情报送');
+                        traceObj.traceDsc = Intl.get('crm.trace.delivery.report', '舆情报送');
+                        break;
+                    case CALL_RECORD_TYPE.OTHER:
+                        traceObj.iconClass = 'icon-trace-other';
+                        traceObj.title = Intl.get('customer.other', '其他');
+                        traceObj.traceDsc = Intl.get('customer.follow.customer', '跟进客户');
+                        break;
+                }
             }
         }
         traceObj.iconClass += ' iconfont';
