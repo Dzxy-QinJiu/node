@@ -325,7 +325,8 @@ class ClueDetailOverview extends React.Component {
                         'sales_team': teamName,
                         'sales_team_id': teamId,
                     };
-                    if (_.get(this, 'state.curClue.status') !== SELECT_TYPE.HAS_TRACE){
+                    //如果原来的状态是待分配状态，分配完线索后，把状态改成待跟进
+                    if (_.get(this, 'state.curClue.status') === SELECT_TYPE.WILL_DISTRIBUTE){
                         updateObj.status = SELECT_TYPE.WILL_TRACE;
                     }
                     clueCustomerAction.afterEditCustomerDetail(updateObj);
