@@ -319,13 +319,17 @@ class ClueDetailOverview extends React.Component {
                     this.setState({
                         clickAssigenedBtn: false
                     });
-                    clueCustomerAction.afterEditCustomerDetail({
+                    var updateObj = {
                         'user_name': userName,
                         'user_id': submitObj.user_id,
                         'sales_team': teamName,
                         'sales_team_id': teamId,
-                        'status': SELECT_TYPE.WILL_TRACE
-                    });
+                    };
+                    //如果原来的状态是待分配状态，分配完线索后，把状态改成待跟进
+                    if (_.get(this, 'state.curClue.status') === SELECT_TYPE.WILL_DISTRIBUTE){
+                        updateObj.status = SELECT_TYPE.WILL_TRACE;
+                    }
+                    clueCustomerAction.afterEditCustomerDetail(updateObj);
                 }
             });
         }
