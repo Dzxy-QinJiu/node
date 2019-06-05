@@ -107,8 +107,9 @@ class ClueCustomer extends React.Component {
     }
     getUnhandledClue = () => {
         var data = getUnhandledClueCountParams();
+        //现在只有普通销售有未读数
         clueFilterAction.setTimeType('all');
-        clueFilterAction.setFilterType([{value: _.get(JSON.parse(data.typeFilter),'status')}]);
+        clueFilterAction.setFilterType([{value: SELECT_TYPE.WAIT_ME_HANDLE}]);
         setTimeout(() => {
             this.getClueList(data);
         });
@@ -118,7 +119,7 @@ class ClueCustomer extends React.Component {
         this.setState({ tableHeight});
     };
     componentWillReceiveProps(nextProps) {
-        if (_.get(nextProps,'history.action') === 'PUSH'){
+        if (_.get(nextProps,'history.action') === 'PUSH' && _.get(this,'props.history.action') !== 'PUSH'){
             if(_.get(nextProps,'location.state.clickUnhandleNum')){
                 delete nextProps.location.state.clickUnhandleNum;
                 clueCustomerAction.setClueInitialData();
@@ -336,8 +337,9 @@ class ClueCustomer extends React.Component {
             clueCustomerAction.setSortField('source_time');
         }
         var unExistFileds = clueFilterStore.getState().unexist_fields;
+        var isWaitMeHandle = typeFilter.status === SELECT_TYPE.WAIT_ME_HANDLE;
         //如果线索的类型是待我处理，需要查询的字段是allot_no_traced
-        if (typeFilter.status === SELECT_TYPE.WAIT_ME_HANDLE){
+        if (isWaitMeHandle){
             delete typeFilter.status;
             typeFilter.allot_no_traced = '0';
         }
@@ -348,7 +350,6 @@ class ClueCustomer extends React.Component {
             sorter: this.state.sorter,
             keyword: this.state.keyword,
             rangeParams: rangeParams,
-            statistics_fields: 'allot_no_traced',
             typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter)
         };
         //选中的线索来源
@@ -401,7 +402,6 @@ class ClueCustomer extends React.Component {
         var queryObj = {
             keyword: keyWord,
             rangeParams: JSON.stringify(rangeParams),
-            statistics_fields: 'status',
             typeFilter: JSON.stringify(typeFilter)
         };
         if (!isGetAllClue){
