@@ -244,10 +244,9 @@ class CrmSchedule extends React.Component {
                         </Button>
                     )}
                 </div>
-                {this.state.isLoadingScheduleList ? (<Spinner/>) : _.get(this.state, 'scheduleList[0]') ? (
-                    <DetailCard className='schedule-contianer'
-                        content={this.renderScheduleContent()}/>) : (
-                    <NoDataIconTip tipContent={Intl.get('common.no.more.schedule', '暂无计划')}/>)}
+                {this.state.isLoadingScheduleList ? (<Spinner/>) : _.get(this.state, 'scheduleList[0]') ?
+                    this.renderScheduleContent() : (
+                        <NoDataIconTip tipContent={Intl.get('common.no.more.schedule', '暂无计划')}/>)}
             </RightPanelScrollBar>
         );
     }

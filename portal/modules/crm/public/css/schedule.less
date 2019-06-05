@@ -4,9 +4,9 @@
 @padding: 8px;
 @icon_visit_color: #9b5bf7;
 @other_icon_color: #8da8c5;
-@title_color: #33333;
+@title_color: #333333;
 @font_color: #999999;
-@overdue_color: #f7a340;
+@overdue_color: #fbcb8f;
 @today_color: #34ca71;
 
 .break_line {
@@ -26,53 +26,66 @@
   }
 }
 
-.schedule-contianer {
-  .schedule-add-btn {
-    float: right;
-    margin-left: 6px;
-    font-size: 16px;
-    color: @btn_color;
-    &:hover {
-      color: @hover_color;
-    }
-  }
-  //日程列表
-  .schedule-list {
-    color: @title_color;
-    //没有联系计划的提示
-    .schedule-list-no-data {
-      .ant-alert {
-        top: 200px;
-        width: 150px;
-        left: 50%;
-        margin-left: -75px;
-      }
+
+//日程列表
+.schedule-list {
+  float: left;
+  width: 100%;
+  margin-top: 6px;
+  padding: 6px 10px 0 12px;
+  background-color: #ffffff;
+  color: @title_color;
+  //没有联系计划的提示
+  .schedule-list-no-data {
+    .ant-alert {
+      top: 200px;
+      width: 150px;
+      left: 50%;
+      margin-left: -75px;
     }
   }
 }
 
 //日程列表项的展示
 .schedule-item {
-  float: right;
-  width: 350px;
-  padding: 6px 6px 10px 6px;
+  float: left;
+  width: 100%;
+  padding: 8px;
   margin-bottom: 10px;
   font-size: 14px;
+  border-radius: 3px;
+  background-color: #f9f9f9;
   &:hover {
-    background-color: #f6fbff;
+    background-color: #f1f9ff;
     .schedule-item-buttons {
       .right-handle-buttons {
         display: inline-block;
       }
     }
   }
+  .schedule-item-title {
+    color: @title_color;
+    .iconfont.icon-alarm-clock {
+      float: right;
+      color: @btn_color;
+      cursor: default;
+    }
+  }
+  .iconfont.schedule-type-icon{
+    margin-right: 8px;
+    font-size: 14px;
+    color: #c4c6c7;
+  }
   .schedule-type-text {
     padding-left: 10px;
   }
-  .schedule-item-content {
-    padding-bottom: 4px;
-    color: @font_color;
-    &:extend(.break_line);
+  .schedule-item-content-wrap{
+    padding-left: 28px;
+    .schedule-item-content {
+      padding-bottom: 4px;
+      color: @font_color;
+      &:extend(.break_line);
+    }
   }
   //每条日程底部按钮区的样式
   .schedule-item-buttons {
@@ -117,8 +130,8 @@
     //联系客户按钮
     .schedule-contact-btn {
       color: #ffffff;
-      border-color: @btn_color;
-      background-color: @btn_color;
+      border-color: #c4c6c7;
+      background-color: #c4c6c7;
       &:hover {
         border-color: @hover_color;
         background-color: @hover_color;
@@ -126,12 +139,13 @@
     }
     .right-handle-buttons {
       float: right;
+      margin-right: 3px;
       display: none;
     }
   }
   .iconfont {
-    padding-right: @padding;
-    font-size: 12px;
+    //margin-right: @padding;
+    //font-size: 12px;
     color: @other_icon_color;
     &:hover {
       color: @hover_color;
@@ -164,7 +178,7 @@
 
 //今天的日程
 .today-schedule-item {
-  @today_color: #34ca71;
+  @today_color: #7dc6a1;
   .schedule-item-title {
     .iconfont {
       color: @today_color;
@@ -185,7 +199,7 @@ form.schedule-form {
         margin-left: 2px;
       }
       .begin-date-input {
-        border: 1px solid #d9d9d9;
+        border: 1px solid #ffe8c8;
         width: 110px;
         margin-right: 10px;
         padding-left: 8px;

@@ -645,51 +645,49 @@ class CustomerRecord extends React.Component {
             'icon-play-disable': !is_record_upload
         });
         return (
-            <div className="trace-item-wrap">
-                <div className={classNames('trace-item-content', {'day-split-line': hasSplitLine})}>
-                    <p className="item-detail-tip">
-                        <span className="icon-container" title={title}><i className={iconClass}></i></span>
-                        {traceDsc ? (<span className="trace-title-name" title={traceDsc}>{traceDsc}</span>) : null}
-                        {_.includes(PHONE_TYPES, item.type) ? (<span className="trace-title-phone">{item.dst}</span>) : null}
-                    </p>
-                    {item.type === 'data_report' ? this.renderReportContent(item) : (<div className="trace-content">
-                        <div className="item-detail-content" id={item.id}>
-                            {item.showAdd ? this.renderAddDetail(item) : this.renderRecordShowContent(item)}
-                        </div>
-                        <div className="item-bottom-content">
-                            {item.billsec === 0 ? (/*未接听*/
-                                <span className="call-un-answer">
-                                    {Intl.get('call.record.state.no.answer', '未接听')}
-                                </span>
-                            ) : /* 电话已接通并且有recording这个字段展示播放图标*/
-                                item.recording ? (
-                                    <span className="audio-container"
-                                        title={is_record_upload ? Intl.get('call.record.play', '播放录音') : Intl.get('crm.record.unupload.phone', '未上传通话录音，无法播放')}>
-                                        <span className={cls} onClick={this.handleAudioPlay.bind(this, item)}
-                                            data-tracename="点击播放录音按钮">
-                                            <span className="call-time-descr">
-                                                {TimeUtil.getFormatMinuteTime(item.billsec)}
-                                            </span>
+            <div className={classNames('trace-item-content', {'day-split-line': hasSplitLine})}>
+                <p className="item-detail-tip">
+                    <span className="icon-container" title={title}><i className={iconClass}></i></span>
+                    {traceDsc ? (<span className="trace-title-name" title={traceDsc}>{traceDsc}</span>) : null}
+                    {_.includes(PHONE_TYPES, item.type) ? (<span className="trace-title-phone">{item.dst}</span>) : null}
+                </p>
+                {item.type === 'data_report' ? this.renderReportContent(item) : (<div className="trace-content">
+                    <div className="item-detail-content" id={item.id}>
+                        {item.showAdd ? this.renderAddDetail(item) : this.renderRecordShowContent(item)}
+                    </div>
+                    <div className="item-bottom-content">
+                        {item.billsec === 0 ? (/*未接听*/
+                            <span className="call-un-answer">
+                                {Intl.get('call.record.state.no.answer', '未接听')}
+                            </span>
+                        ) : /* 电话已接通并且有recording这个字段展示播放图标*/
+                            item.recording ? (
+                                <span className="audio-container"
+                                    title={is_record_upload ? Intl.get('call.record.play', '播放录音') : Intl.get('crm.record.unupload.phone', '未上传通话录音，无法播放')}>
+                                    <span className={cls} onClick={this.handleAudioPlay.bind(this, item)}
+                                        data-tracename="点击播放录音按钮">
+                                        <span className="call-time-descr">
+                                            {TimeUtil.getFormatMinuteTime(item.billsec)}
                                         </span>
                                     </span>
-                                ) : null
-                            }
-                            {_.includes(PHONE_TYPES, item.type) ?
-                                (<span className="phone-call-out-btn" title={Intl.get('crm.click.call.phone', '点击拨打电话')}>
-                                    <PhoneCallout
-                                        phoneNumber={item.dst}
-                                        hidePhoneNumber={true}
-                                    />
-                                </span>) : null}
-                            <span className="item-bottom-right">
-                                <span className="sale-name">{item.nick_name}</span>
-                                <span className="trace-record-time">
-                                    {moment(item.time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
                                 </span>
+                            ) : null
+                        }
+                        {_.includes(PHONE_TYPES, item.type) ?
+                            (<span className="phone-call-out-btn" title={Intl.get('crm.click.call.phone', '点击拨打电话')}>
+                                <PhoneCallout
+                                    phoneNumber={item.dst}
+                                    hidePhoneNumber={true}
+                                />
+                            </span>) : null}
+                        <span className="item-bottom-right">
+                            <span className="sale-name">{item.nick_name}</span>
+                            <span className="trace-record-time">
+                                {moment(item.time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
                             </span>
-                        </div>
-                    </div>)}
-                </div>
+                        </span>
+                    </div>
+                </div>)}
             </div>
         );
     };
