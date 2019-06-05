@@ -128,6 +128,7 @@ class AddApplyNodePanel extends React.Component {
     onChangeAdminApproveCheck = (e) => {
         var higher_ups = this.state.higher_ups;
         higher_ups.adminApproveChecked = e.target.checked;
+        higher_ups.higherLevelApproveChecked = false;
         this.setState({
             higher_ups: higher_ups
         });
@@ -135,6 +136,7 @@ class AddApplyNodePanel extends React.Component {
     onChangeHigherLevelCheck = (e) => {
         var higher_ups = this.state.higher_ups;
         higher_ups.higherLevelApproveChecked = e.target.checked;
+        higher_ups.adminApproveChecked = false;
         this.setState({
             higher_ups: higher_ups
         });

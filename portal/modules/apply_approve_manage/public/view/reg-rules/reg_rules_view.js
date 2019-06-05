@@ -261,7 +261,7 @@ class RegRulesView extends React.Component {
         return (
             <div className="rule-content apply-node-lists">
                 {_.map(candidateRules, (item, index) => {
-                    var showDeleteIcon = index === _.get(candidateRules, 'length') - 1 && index !== 0;
+                    var showDeleteIcon = index === _.get(candidateRules, 'length') - 1;
                     return (
                         <div className="item-node">
                             <div className="icon-container">
