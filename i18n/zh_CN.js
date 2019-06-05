@@ -733,6 +733,7 @@ var zh_CN = {
     'member.search.position.by.name': '输入职务名称搜索',
     'member.add.position': '添加职务',
     'member.position.name.label': '职务名称',
+    'member.team.add.child.department': '添加子部门',
 
     //后台管理-成员end
     //组织管理start

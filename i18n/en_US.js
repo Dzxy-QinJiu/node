@@ -731,6 +731,7 @@ var en_US = {
     'member.search.position.by.name': 'Enter position name for searching', // 输入职务名称搜索
     'member.add.position': 'Add', // 添加职务
     'member.position.name.label': 'Name', // 职务名称
+    'member.team.add.child.department': 'Add sub department', // 添加子部门
 
     //后台管理-成员end
     //组织管理start

@@ -28,7 +28,8 @@ var SalesTeamForm = createReactClass({
         salesTeam: PropTypes.object,
         cancelSalesTeamForm: PropTypes.func,
         salesTeamList: PropTypes.array,
-        className: PropTypes.string
+        className: PropTypes.string,
+        handleSubmitTeamForm: PropTypes.func
     },
     getDefaultProps: function() {
         return {
@@ -174,6 +175,7 @@ var SalesTeamForm = createReactClass({
                         }
                     });
                 }
+                this.props.handleSubmitTeamForm();
             }
         });
     },
@@ -238,46 +240,50 @@ var SalesTeamForm = createReactClass({
                 <Form layout='horizontal' className="form">
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
-                            label={Intl.get('common.definition', '名称')}
+                            colon={false}
+                            label={formData.isEditGroup ? Intl.get('common.definition', '名称') : null}
                             id="title"
-                            labelCol={{span: 5}}
-                            wrapperCol={{span: 18}}
+                            labelCol={{span: formData.isEditGroup ? 5 : 0}}
+                            wrapperCol={{span: formData.isEditGroup ? 18 : 20}}
                             validateStatus={this.renderValidateStyle('title')}
                             help={status.title.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.title.errors && status.title.errors.join(','))}>
                             <Validator
                                 rules={[{required: true, min: 1, max: 20 , message: Intl.get('common.input.character.rules', '最少1个字符,最多8个字符')}]}>
                                 <Input name="title" id="title" value={formData.title}
                                     onChange={this.onChangeTeamName.bind(this)}
-                                    placeholder={Intl.get('common.required.tip', '必填项*')}
+                                    placeholder={Intl.get('sales.team.search.placeholder', '请输入团队名称')}
                                     data-tracename="填写团队名称"
                                 />
                             </Validator>
                         </FormItem>
                         {
-                            formData.superiorTeam ? (<FormItem
-                                label={Intl.get('sales.team.sub.group', '上级团队')}
-                                id="superiorTeam"
-                                labelCol={{span: 5}}
-                                wrapperCol={{span: 18}}
-                                validateStatus={this.renderValidateStyle('superiorTeam')}
-                                help={status.superiorTeam.errors ? status.superiorTeam.errors.join(',') : null}
-                            >
-                                <Validator
-                                    rules={[{required: true, message: Intl.get('sales.team.select.sub.group', '请选择上级团队')}]}>
-                                    <Select size="large" style={{width: '100%'}}
-                                        name="superiorTeam"
-                                        value={formData.superiorTeam}
-                                        placeholder={Intl.get('sales.team.select.sub.group', '请选择上级团队')}
-                                        showSearch
-                                        optionFilterProp="children"
-                                        notFoundContent={Intl.get('common.not.found', '无法找到')}
-                                        searchPlaceholder={Intl.get('common.input.keyword', '输入关键词')}
-                                        onChange={this.handleSelect}
-                                    >
-                                        {this.renderSuperiorTeam()}
-                                    </Select>
-                                </Validator>
-                            </FormItem>) : null
+                            formData.superiorTeam ? (
+                                <FormItem
+                                    colon={false}
+                                    label={Intl.get('sales.team.sub.group', '上级团队')}
+                                    id="superiorTeam"
+                                    labelCol={{span: 5}}
+                                    wrapperCol={{span: 18}}
+                                    validateStatus={this.renderValidateStyle('superiorTeam')}
+                                    help={status.superiorTeam.errors ? status.superiorTeam.errors.join(',') : null}
+                                >
+                                    <Validator
+                                        rules={[{required: true, message: Intl.get('sales.team.select.sub.group', '请选择上级团队')}]}>
+                                        <Select size="large" style={{width: '100%'}}
+                                            name="superiorTeam"
+                                            value={formData.superiorTeam}
+                                            placeholder={Intl.get('sales.team.select.sub.group', '请选择上级团队')}
+                                            showSearch
+                                            optionFilterProp="children"
+                                            notFoundContent={Intl.get('common.not.found', '无法找到')}
+                                            searchPlaceholder={Intl.get('common.input.keyword', '输入关键词')}
+                                            onChange={this.handleSelect}
+                                        >
+                                            {this.renderSuperiorTeam()}
+                                        </Select>
+                                    </Validator>
+                                </FormItem>
+                            ) : null
                         }
 
                         <FormItem

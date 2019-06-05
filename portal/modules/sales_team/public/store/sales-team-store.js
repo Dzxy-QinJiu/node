@@ -30,7 +30,8 @@ function SalesTeamStore() {
     this.userInfoShow = false;
     this.userFormShow = false;
     this.rightPanelShow = false;
-
+    this.isEditGroupFlag = false; // 是否编辑部门，默认false
+    this.curEditGroup = {}; // 当前编辑的部门
     this.bindActions(SalesTeamActions);
 }
 SalesTeamStore.prototype.showUserInfoPanel = function() {
@@ -545,12 +546,16 @@ function sortTeamMembers(list) {
     });
 }
 SalesTeamStore.prototype.deleteGroup = function(deleteGroupItem) {
-    deleteGroupItem.modalDialogFlag = true;
+    deleteGroupItem.isDeleteGroup = true;
     this.deleteGroupItem = deleteGroupItem;
 };
 
 SalesTeamStore.prototype.hideModalDialog = function(deleteGroupItem) {
-    deleteGroupItem.modalDialogFlag = false;
+    deleteGroupItem.isDeleteGroup = false;
+};
+
+SalesTeamStore.prototype.handleCancelDeleteGroup = function(item) {
+    item.isDeleteGroup = false;
 };
 
 //编辑成员
@@ -634,6 +639,8 @@ SalesTeamStore.prototype.addSalesTeamRoot = function() {
 
 //展示组修改表单
 SalesTeamStore.prototype.editGroup = function(item) {
+    this.curEditGroup = item;
+    this.isEditGroupFlag = true;
     item.isEditGroup = true;
     item.isShowOperationArea = false;
 };
@@ -641,6 +648,8 @@ SalesTeamStore.prototype.editGroup = function(item) {
 //取消展示组修改表单
 SalesTeamStore.prototype.cancelEditGroup = function(item) {
     item.isEditGroup = false;
+    this.isEditGroupFlag = false;
+    this.curEditGroup = {};
 };
 
 //展示组添加表单

@@ -284,6 +284,8 @@ class SalesTeamPage extends React.Component {
                                                     delTeamErrorMsg={this.state.delTeamErrorMsg}
                                                     isAddSalesTeamRoot={this.state.isAddSalesTeamRoot}
                                                     teamMemberCountList={this.state.teamMemberCountList}
+                                                    isEditGroupFlag={this.state.isEditGroupFlag}
+                                                    curEditGroup={this.state.curEditGroup}
                                                 />
                                             </TabPane>
                                             <TabPane
