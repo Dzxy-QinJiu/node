@@ -1485,8 +1485,13 @@ var zh_CN = {
     'crm.add.time': '添加时间',
     'crm.province.in': '所属省份',
     'crm.name.exist': '客户名已存在！',
+<<<<<<< i18n/zh_CN.js
     'crm.schedule.call': '打电话',
     'crm.schedule.del.confirm': '确定要删除此联系计划吗？',
+=======
+    'crm.recycle.bin.type': '操作类型',
+    'crm.recycle.bin.time': '操作时间',
+>>>>>>> i18n/zh_CN.js
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
