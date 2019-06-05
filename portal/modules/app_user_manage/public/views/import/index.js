@@ -1,9 +1,9 @@
 
 const PropTypes = require('prop-types');
-var React = require('react');
+const React = require('react');
 import {Button, Steps, message, Alert} from 'antd';
-var rightPanelUtil = require('CMP_DIR/rightPanel');
-var RightPanel = rightPanelUtil.RightPanel;
+const rightPanelUtil = require('CMP_DIR/rightPanel');
+const RightPanel = rightPanelUtil.RightPanel;
 import Upload from './upload';
 require('./index.less');
 const Step = Steps.Step;
@@ -12,6 +12,8 @@ import Spinner from 'CMP_DIR/spinner';
 import Trace from 'LIB_DIR/trace';
 import SelectFullWidth from 'CMP_DIR//select-fullwidth';
 import {uniqueObjectOfArray} from 'PUB_DIR/sources/utils/common-data-util';
+import userData from 'PUB_DIR/sources/user-data';
+
 const SET_TIME_OUT = {
     TRANSITION_TIME: 600,//右侧面板动画隐藏的时间
     LOADING_TIME: 1500//避免在第三步时关闭太快，加上延时展示loading效果
@@ -173,15 +175,19 @@ class ImportTemplate extends React.Component {
         let length = _.get(errors, 'length');
         let noMatchCustomer = _.find(errors, item => item.field === 'customer_name');
         let disabledImportBtn = false;
+        let roles = _.get(userData.getUserData(), 'roles');
+        let isManager = _.find(roles, item => item === 'realm_manage');
         if (length) {
             if (length > 1) {
                 disabledImportBtn = true;
-            } else{
-                if (noMatchCustomer) {
-                    disabledImportBtn = false;
-                } else {
-                    disabledImportBtn = true;
+                if (isManager) {
+                    if (noMatchCustomer) {
+                        disabledImportBtn = false;
+                    } else {
+                        disabledImportBtn = true;
+                    }
                 }
+
             }
         } else if (!_.get(this.state.previewList, 'length')) {
             disabledImportBtn = true;
@@ -214,6 +220,8 @@ class ImportTemplate extends React.Component {
         let noMatchCustomer = _.find(errors, item => item.field === 'customer_name');
         let height = this.state.tableHeight + LAYOUT.TABLE_TOP;
         let tableHeight = this.state.tableHeight;
+        // todo 判断管理员和销售
+        // todo 若是销售的话，客户不匹配的话，不能导入
         if (length) {
             if (length > 1) {
                 tipsMessage.push(Intl.get('user.import.red.tips', '红色标示数据不符合规则或是已存在，请修改数据后重新导入，或删除不符合规则的数据后直接导入。'));
