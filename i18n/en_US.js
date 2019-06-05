@@ -1467,6 +1467,8 @@ var en_US = {
     'crm.add.time': 'Add time',//添加时间
     'crm.province.in': 'Provinces',//所属省份
     'crm.name.exist': 'Customer name already exists!',//客户名已存在！
+    'crm.schedule.call': 'Phone call',//打电话
+    'crm.schedule.del.confirm': 'Are you sure to delete this schedule?',//确定要删除此联系计划吗？
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期

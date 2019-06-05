@@ -141,14 +141,10 @@ class TimeLine extends React.Component {
                     let thisYear = moment().format(YEAR_TIME_FORMAT);
                     if (yearStr && yearStr.substr(0, 4) !== thisYear.substr(0, 4)) {
                         //每年的第一条跟进记录，展示完整的日期 YYYY-MM-DD
-                        dayStr = yearStr;
+                        dayStr = moment(item[timeField]).format(YEAR_TIME_FORMAT);
                     }
                     return (
                         <div className="time-line-item" key={index}>
-                            {/*{yearStr && yearStr !== thisYear ? (*/}
-                            {/*<div className="group-year">*/}
-                            {/*{yearStr}*/}
-                            {/*</div>) : null}*/}
                             {dayStr ? <div className="group-day">{dayStr}</div> : null}
                             {_.isFunction(this.props.renderTimeLineItem) ? this.props.renderTimeLineItem(item, hasSplitLine) : null}
                         </div>
