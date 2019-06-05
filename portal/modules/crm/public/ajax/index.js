@@ -149,9 +149,13 @@ exports.getRepeatCustomerList = function(queryParams) {
 
 //通过重复客户的id获取重复的客户列表
 exports.getRepeatCustomersById = function(customerId) {
+    let type = 'user';
+    if (hasPrivilege(AUTHS.GETALL)) {
+        type = 'manager';
+    }
     var Deferred = $.Deferred();
     $.ajax({
-        url: `/rest/crm/repeat_customer/${customerId}`,
+        url: `/rest/crm/repeat_customer/${type}/${customerId}`,
         dataType: 'json',
         type: 'get',
         success: function(list) {
