@@ -596,9 +596,13 @@ class CallRecord extends React.Component {
                     });
                     let returnContent;
                     if (type === CALL_TYPE_OPTION.PHONE || type === CALL_TYPE_OPTION.CURTAO_PHONE) {
-                        returnContent = <i className={cls} title={Intl.get('call.record.call.center', '呼叫中心')}></i>;
-                    } else if (type === CALL_TYPE_OPTION.CALL_BACK) {
-                        returnContent = <i className='iconfont icon-callback' title={Intl.get('common.callback', '回访')}></i>;
+                        //回访电话的处理
+                        if (column.call_back === 'true') {
+                            returnContent =
+                                <i className='iconfont icon-callback' title={Intl.get('common.callback', '回访')}></i>;
+                        } else {
+                            returnContent = <i className={cls} title={Intl.get('call.record.call.center', '呼叫中心')}></i>;
+                        }
                     } else {
                         returnContent = <i className="iconfont icon-ketao-app" title={Intl.get('common.ketao.app', '客套APP')}></i>;
                     }
@@ -1088,6 +1092,7 @@ class CallRecord extends React.Component {
     };
 
     getCallListByAjax = (queryParam) => {
+
         var queryObj = {
             start_time: this.getReqParam(queryParam, 'start_time'),
             end_time: this.getReqParam(queryParam, 'end_time'),
@@ -1096,11 +1101,15 @@ class CallRecord extends React.Component {
             lastId: queryParam ? queryParam.lastId : '',
             sort_field: this.getCallListReqParam(queryParam, 'sort_field'),
             sort_order: this.getCallListReqParam(queryParam, 'sort_order'),
-            //电话记录类型
-            phone_type: this.getReqParam(queryParam, 'phone_type'),
+            phone_type: this.getReqParam(queryParam, 'phone_type')
         };
-
-        CallRecordActions.getCallRecordList(queryObj, this.state.filterObj);
+        let filterObj = {...this.state.filterObj};
+        //回访电话类型的过滤处理
+        if (filterObj.type === CALL_TYPE_OPTION.CALL_BACK) {
+            filterObj.call_back = 'true';
+            delete filterObj.type;
+        }
+        CallRecordActions.getCallRecordList(queryObj, filterObj);
     };
 
     handleScrollBottom = () => {

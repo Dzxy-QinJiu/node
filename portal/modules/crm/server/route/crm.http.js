@@ -91,7 +91,7 @@ module.exports = {
             privileges: []
         }, {
             method: 'get',
-            path: '/rest/crm/repeat_customer/:customerId',
+            path: '/rest/crm/repeat_customer/:type/:customer_id',
             handler: 'getRepeatCustomerById',
             passport: {
                 needLogin: true

@@ -20,6 +20,7 @@ import BasicInfo from './basic_info';
 import BasicOverview from './basic-overview';
 import CustomerUsers from './users';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import Spinner from 'CMP_DIR/spinner';
 
 class CrmRightMergePanel extends React.Component {
     componentDidMount() {
@@ -32,15 +33,18 @@ class CrmRightMergePanel extends React.Component {
     }
 
     getRepeatCustomersById = (mergeCustomerList) => {
+        this.setState({isLoadingMergeCustomer: true});
         let mergedCustomerIds = _.map(mergeCustomerList, 'id');
         ajax.getRepeatCustomersById(mergedCustomerIds.join(',')).then((data) => {
             if (_.get(data, 'result[0]')) {
                 this.setState({
+                    isLoadingMergeCustomer: false,
                     originCustomerList: data.result,
                     selectedCustomer: this.getMergedCustomer(mergeCustomerList, data.result)
                 });
             }
         }, (errorMsg) => {
+            this.setState({isLoadingMergeCustomer: false});
             message.error(errorMsg);
         });
     };
@@ -483,7 +487,8 @@ class CrmRightMergePanel extends React.Component {
         originCustomerList: this.props.originCustomerList,//后端返回的重复列表的数据
         mergeCustomerList: this.props.mergeCustomerList,//选中的要合并的客户
         selectedCustomer: this.getMergedCustomer(this.props.mergeCustomerList, this.props.originCustomerList),//合并后保存的客户（默认第一个）
-        tabsContainerHeight: 'auto'
+        tabsContainerHeight: 'auto',
+        isLoadingMergeCustomer: true,//正在获取合并客户详细信息（联系人、订单）
     };
 
     render() {
@@ -498,153 +503,158 @@ class CrmRightMergePanel extends React.Component {
                 <span className="iconfont icon-close" onClick={(e) => {
                     this.hideRightPanel(e);
                 }}/>
-                <div className={className}>
-                    <div className="select-customer-container">
-                        <span className="select-customer-label">{Intl.get('crm.63', '合并后保存的客户')}：</span>
-                        <Select value={this.state.selectedCustomer.id}
-                            dropdownClassName="merge-customer-select"
-                            style={{width: 200}}
-                            onChange={this.handleChange}>
-                            {this.renderSelectOptions()}
-                        </Select>
-                        <Button type="primary" className="btn-primary-merge"
-                            onClick={this.mergeRepeatCustomer}
-                            data-tracename="点击合并按钮"
-                        ><ReactIntl.FormattedMessage id="crm.54" defaultMessage="合并"/></Button>
+                {this.state.isLoadingMergeCustomer ? (
+                    <div className={className}>
+                        <Spinner/>
+                    </div>) : (
+                    <div className={className}>
+                        <div className="select-customer-container">
+                            <span className="select-customer-label">{Intl.get('crm.63', '合并后保存的客户')}：</span>
+                            <Select value={this.state.selectedCustomer.id}
+                                dropdownClassName="merge-customer-select"
+                                style={{width: 200}}
+                                onChange={this.handleChange}>
+                                {this.renderSelectOptions()}
+                            </Select>
+                            <Button type="primary" className="btn-primary-merge"
+                                onClick={this.mergeRepeatCustomer}
+                                data-tracename="点击合并按钮"
+                            ><ReactIntl.FormattedMessage id="crm.54" defaultMessage="合并"/></Button>
+                        </div>
+                        {this.state.isMergingCustomer ?
+                            <Icon className="merge-customer-loading" type="loading"/> : null}
+                        { this.state.mergeErrorMsg ? (
+                            <div className="merge-customer-tooltip">
+                                <AlertTimer time={3000}
+                                    message={this.state.mergeErrorMsg}
+                                    type="error" showIcon
+                                    onHide={this.hideSaveTooltip}/></div>) : null}
+                        <BasicInfo isRepeat={this.props.isRepeat}
+                            isMerge={true}
+                            curCustomer={this.state.selectedCustomer}
+                            refreshCustomerList={this.props.refreshCustomerList}
+                            updateMergeCustomer={this.updateMergeCustomer}
+                            handleFocusCustomer={this.props.handleFocusCustomer}
+                            setTabsContainerHeight={this.setTabsContainerHeight}
+                            showRightPanel={this.props.showRightPanel}
+                        />
+                        <div className="crm-right-panel-content" style={{height: this.state.tabsContainerHeight}}>
+                            {this.state.selectedCustomer ? (
+                                <Tabs
+                                    defaultActiveKey="1"
+                                    activeKey={this.state.activeKey}
+                                    onChange={this.changeActiveKey}
+                                >
+                                    <TabPane
+                                        tab={Intl.get('crm.basic.overview', '概览')}
+                                        key="1"
+                                    >
+                                        {this.state.activeKey === '1' ? (
+                                            <BasicOverview
+                                                isMerge={true}
+                                                curCustomer={this.state.selectedCustomer}
+                                                refreshCustomerList={this.props.refreshCustomerList}
+                                                updateMergeCustomer={this.updateMergeCustomer}
+                                                changeActiveKey={this.changeActiveKey}
+                                            />
+                                        ) : null}
+                                    </TabPane>
+                                    <TabPane
+                                        tab={Intl.get('call.record.contacts', '联系人')}
+                                        key="2"
+                                    >
+                                        {this.state.activeKey === '2' ? (
+                                            <Contacts
+                                                isMerge={true}
+                                                setMergeCustomerDefaultContact={this.setMergeCustomerDefaultContact}
+                                                delMergeCustomerContact={this.delMergeCustomerContact}
+                                                updateMergeCustomerContact={this.updateMergeCustomerContact}
+                                                refreshCustomerList={this.props.refreshCustomerList}
+                                                curCustomer={this.state.selectedCustomer}
+                                            />
+                                        ) : null}
+                                    </TabPane>
+                                    <TabPane
+                                        tab={Intl.get('menu.trace', '跟进记录')}
+                                        key="3"
+                                    >
+                                        {this.state.activeKey === '3' ? (
+                                            <CustomerRecord
+                                                disableEdit={true}
+                                                curCustomer={this.state.selectedCustomer}
+                                                refreshCustomerList={this.props.refreshCustomerList}
+                                            />
+                                        ) : null}
+                                    </TabPane>
+                                    <TabPane
+                                        tab={Intl.get('crm.detail.user', '用户')}
+                                        key="4"
+                                    >
+                                        {this.state.activeKey === '4' ? (
+                                            <CustomerUsers
+                                                isMerge={true}
+                                                curCustomer={this.state.selectedCustomer}
+                                                refreshCustomerList={this.props.refreshCustomerList}
+                                            />
+                                        ) : null}
+                                    </TabPane>
+                                    <TabPane
+                                        tab={Intl.get('user.apply.detail.order', '订单')}
+                                        key="5"
+                                    >
+                                        {this.state.activeKey === '5' ? (
+                                            <Order
+                                                isMerge={true}
+                                                updateMergeCustomerOrder={this.updateMergeCustomerOrder}
+                                                delMergeCustomerOrder={this.delMergeCustomerOrder}
+                                                closeRightPanel={this.props.hideRightPanel}
+                                                curCustomer={this.state.selectedCustomer}
+                                                refreshCustomerList={this.props.refreshCustomerList}
+                                            />
+                                        ) : null}
+                                    </TabPane>
+                                    {
+                                        hasPrivilege('OPLATE_CONTRACT_QUERY') ? (
+                                            <TabPane
+                                                tab={Intl.get('contract.125', '合同')}
+                                                key='6'
+                                            >
+                                                {this.state.activeKey === 6 ? (
+                                                    <Contract
+                                                        isMerge={true}
+                                                        curCustomer={this.state.curCustomer}
+                                                    />
+                                                ) : null}
+                                            </TabPane>
+                                        ) : null
+                                    }
+                                    <TabPane
+                                        tab={Intl.get('crm.39', '动态')}
+                                        key="7"
+                                    >
+                                        {this.state.activeKey === '7' ? (
+                                            <Dynamic
+                                                isMerge={true}
+                                                currentId={this.state.selectedCustomer.id}
+                                            />
+                                        ) : null}
+                                    </TabPane>
+                                    <TabPane
+                                        tab={Intl.get('crm.right.schedule', '联系计划')}
+                                        key="7"
+                                    >
+                                        {this.state.activeKey === '7' ? (
+                                            <CrmSchedule
+                                                isMerge={true}
+                                                curCustomer={this.state.selectedCustomer}
+                                            />
+                                        ) : null}
+                                    </TabPane>
+                                </Tabs>
+                            ) : null}
+                        </div>
                     </div>
-                    {this.state.isMergingCustomer ?
-                        <Icon className="merge-customer-loading" type="loading"/> : null}
-                    { this.state.mergeErrorMsg ? (
-                        <div className="merge-customer-tooltip">
-                            <AlertTimer time={3000}
-                                message={this.state.mergeErrorMsg}
-                                type="error" showIcon
-                                onHide={this.hideSaveTooltip}/></div>) : null}
-                    <BasicInfo isRepeat={this.props.isRepeat}
-                        isMerge={true}
-                        curCustomer={this.state.selectedCustomer}
-                        refreshCustomerList={this.props.refreshCustomerList}
-                        updateMergeCustomer={this.updateMergeCustomer}
-                        handleFocusCustomer={this.props.handleFocusCustomer}
-                        setTabsContainerHeight={this.setTabsContainerHeight}
-                        showRightPanel={this.props.showRightPanel}
-                    />
-                    <div className="crm-right-panel-content" style={{height: this.state.tabsContainerHeight}}>
-                        {this.state.selectedCustomer ? (
-                            <Tabs
-                                defaultActiveKey="1"
-                                activeKey={this.state.activeKey}
-                                onChange={this.changeActiveKey}
-                            >
-                                <TabPane
-                                    tab={Intl.get('crm.basic.overview', '概览')}
-                                    key="1"
-                                >
-                                    {this.state.activeKey === '1' ? (
-                                        <BasicOverview
-                                            isMerge={true}
-                                            curCustomer={this.state.selectedCustomer}
-                                            refreshCustomerList={this.props.refreshCustomerList}
-                                            updateMergeCustomer={this.updateMergeCustomer}
-                                            changeActiveKey={this.changeActiveKey}
-                                        />
-                                    ) : null}
-                                </TabPane>
-                                <TabPane
-                                    tab={Intl.get('call.record.contacts', '联系人')}
-                                    key="2"
-                                >
-                                    {this.state.activeKey === '2' ? (
-                                        <Contacts
-                                            isMerge={true}
-                                            setMergeCustomerDefaultContact={this.setMergeCustomerDefaultContact}
-                                            delMergeCustomerContact={this.delMergeCustomerContact}
-                                            updateMergeCustomerContact={this.updateMergeCustomerContact}
-                                            refreshCustomerList={this.props.refreshCustomerList}
-                                            curCustomer={this.state.selectedCustomer}
-                                        />
-                                    ) : null}
-                                </TabPane>
-                                <TabPane
-                                    tab={Intl.get('menu.trace', '跟进记录')}
-                                    key="3"
-                                >
-                                    {this.state.activeKey === '3' ? (
-                                        <CustomerRecord
-                                            disableEdit={true}
-                                            curCustomer={this.state.selectedCustomer}
-                                            refreshCustomerList={this.props.refreshCustomerList}
-                                        />
-                                    ) : null}
-                                </TabPane>
-                                <TabPane
-                                    tab={Intl.get('crm.detail.user', '用户')}
-                                    key="4"
-                                >
-                                    {this.state.activeKey === '4' ? (
-                                        <CustomerUsers
-                                            isMerge={true}
-                                            curCustomer={this.state.selectedCustomer}
-                                            refreshCustomerList={this.props.refreshCustomerList}
-                                        />
-                                    ) : null}
-                                </TabPane>
-                                <TabPane
-                                    tab={Intl.get('user.apply.detail.order', '订单')}
-                                    key="5"
-                                >
-                                    {this.state.activeKey === '5' ? (
-                                        <Order
-                                            isMerge={true}
-                                            updateMergeCustomerOrder={this.updateMergeCustomerOrder}
-                                            delMergeCustomerOrder={this.delMergeCustomerOrder}
-                                            closeRightPanel={this.props.hideRightPanel}
-                                            curCustomer={this.state.selectedCustomer}
-                                            refreshCustomerList={this.props.refreshCustomerList}
-                                        />
-                                    ) : null}
-                                </TabPane>
-                                {
-                                    hasPrivilege('OPLATE_CONTRACT_QUERY') ? (
-                                        <TabPane
-                                            tab={Intl.get('contract.125', '合同')}
-                                            key='6'
-                                        >
-                                            {this.state.activeKey === 6 ? (
-                                                <Contract
-                                                    isMerge={true}
-                                                    curCustomer={this.state.curCustomer}
-                                                />
-                                            ) : null}
-                                        </TabPane>
-                                    ) : null
-                                }
-                                <TabPane
-                                    tab={Intl.get('crm.39', '动态')}
-                                    key="7"
-                                >
-                                    {this.state.activeKey === '7' ? (
-                                        <Dynamic
-                                            isMerge={true}
-                                            currentId={this.state.selectedCustomer.id}
-                                        />
-                                    ) : null}
-                                </TabPane>
-                                <TabPane
-                                    tab={Intl.get('crm.right.schedule', '联系计划')}
-                                    key="7"
-                                >
-                                    {this.state.activeKey === '7' ? (
-                                        <CrmSchedule
-                                            isMerge={true}
-                                            curCustomer={this.state.selectedCustomer}
-                                        />
-                                    ) : null}
-                                </TabPane>
-                            </Tabs>
-                        ) : null}
-                    </div>
-                </div>
+                )}
             </RightPanel>
         );
     }
