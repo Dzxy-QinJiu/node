@@ -33,15 +33,15 @@ exports.filterSalesTeamList = function(userName) {
     return Deferred.promise();
 };
 //获取销售目标
-exports.getSalesGoals = function(teamId) {
-    var Deferred = $.Deferred();
+exports.getSalesGoals = (teamId) => {
+    let Deferred = $.Deferred();
     $.ajax({
         url: '/rest/team/sales_goals/' + teamId,
         dataType: 'json',
         type: 'get',
-        success: function(salesGoals) {
+        success: (salesGoals) => {
             Deferred.resolve(salesGoals);
-        }, error: function(errorInfo) {
+        }, error: (errorInfo) => {
             Deferred.reject(errorInfo.responseJSON);
         }
     });

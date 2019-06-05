@@ -734,6 +734,8 @@ var zh_CN = {
     'member.add.position': '添加职务',
     'member.position.name.label': '职务名称',
     'member.team.add.child.department': '添加子部门',
+    'member.group.sales.goal': '部门销售目标',
+    'member.selected.member.count': '已选{count}',
 
     //后台管理-成员end
     //组织管理start

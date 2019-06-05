@@ -732,6 +732,8 @@ var en_US = {
     'member.add.position': 'Add', // 添加职务
     'member.position.name.label': 'Name', // 职务名称
     'member.team.add.child.department': 'Add sub department', // 添加子部门
+    'member.group.sales.goal': 'Department Sales Target', // 部门销售目标
+    'member.selected.member.count': '{count} selected', // 已选{count}
 
     //后台管理-成员end
     //组织管理start

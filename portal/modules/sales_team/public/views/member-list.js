@@ -9,7 +9,6 @@ var PrivilegeChecker = require('../../../../components/privilege/checker').Privi
 var DefaultUserLogoTitle = require('../../../../components/default-user-logo-title');
 var Spinner = require('../../../../components/spinner');
 var AlertTimer = require('../../../../components/alert-timer');
-var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 import {SearchInput} from 'antc';
 var classNames = require('classnames');
 var SalesTeamAction = require('../action/sales-team-actions');
@@ -21,8 +20,8 @@ import MemberInfo from 'MOD_DIR/member_manage/public/view/member-info';
 import MemberManageStore from 'MOD_DIR/member_manage/public/store';
 import MemberManageAction from 'MOD_DIR/member_manage/public/action';
 import MemberFormAction from 'MOD_DIR/member_manage/public/action/member-form-actions';
-
 import { AntcTable } from 'antc';
+
 //成员的类型
 const MEMBER_TYPE = {
     OWNER: 'owner',//负责人
@@ -81,7 +80,7 @@ const MemberList = createReactClass({
             saveMemberListObj: {},//修改、添加时要保存的数据对象
             teamConfirmVisible: false,
             memberConfirmVisible: false,
-            memberListHeight: this.getMemberListHeight(),
+            memberListHeight: this.props.containerHeight,
             currentMember: MemberManageStore.getState().currentMember,
             isLoadingSalesGoal: this.props.isLoadingSalesGoal,
             getSalesGoalErrMsg: this.props.getSalesGoalErrMsg,
@@ -97,7 +96,7 @@ const MemberList = createReactClass({
     },
 
     onChange: function() {
-        var savingFlags = MemberListEditStore.getState();
+        let savingFlags = MemberListEditStore.getState();
         this.setState({
             isMemberListSaving: savingFlags.isMemberListSaving,
             saveMemberListResult: savingFlags.saveMemberListResult,
@@ -106,21 +105,9 @@ const MemberList = createReactClass({
         });
     },
 
-    getMemberListHeight: function() {
-        let containerHeight = this.props.containerHeight;
-        let memberListPaddingTop = 20;//成员列表顶部padding
-        let memberListTitleHeight = 50;//成员列表顶部操作区域高度
-        let $topElement = $('.member-top-operation-div');
-        //缩放浏览器时，顶部编辑框和按钮展示不开换行时的高度设置
-        if ($topElement.size() && $topElement.height() > memberListTitleHeight) {
-            memberListTitleHeight = $topElement.height();
-        }
-        return containerHeight - memberListPaddingTop - memberListTitleHeight;
-    },
-
     layout: function() {
         setTimeout(() => {
-            this.setState({memberListHeight: this.getMemberListHeight()});
+            this.setState({memberListHeight: this.props.containerHeight});
         });
     },
 
@@ -562,20 +549,34 @@ const MemberList = createReactClass({
 
         const hasSelected = _.get(selectedRowKeys, 'length');
         let tableHeight = this.state.memberListHeight - 40;
+        let operationZoneWidth = this.props.salesTeamMemberWidth;
+        let isShowAddMemberOperateBtn = this.state.isShowAddMemberOperateBtn;
         return (
             <div className="member-table-container">
-                <div className='operation-zone'>
-                    <span className="select-row-number">
-                        {hasSelected ? `已选 ${hasSelected}` : ''}
-                    </span>
-                    {
-                        this.state.isShowAddMemberOperateBtn && hasSelected ? this.renderAddBtns()
-                            : null
-                    }
-                    {
-                        this.state.isShowEditMemberOperateBtn && hasSelected ? this.renderEditBtns() : null
-                    }
-                </div>
+                {
+                    hasSelected ? (
+                        <div className='operation-zone' style={{width: operationZoneWidth}}>
+                            <span className="select-row-number">
+                                {Intl.get('member.selected.member.count', '已选{count}', {count: hasSelected})}
+                            </span>
+                            {
+                                isShowAddMemberOperateBtn ? this.renderAddBtns()
+                                    : null
+                            }
+                            {
+                                this.state.isShowEditMemberOperateBtn ? this.renderEditBtns() : null
+                            }
+                        </div>
+                    ) : (
+                        <div className='sale-goal-zone' style={{width: operationZoneWidth}}>
+                            <span className="member-top-operation-div-title">
+                                {this.state.curShowTeamMemberObj.groupName || ''}
+                            </span>
+                            {this.state.isLoadingSalesGoal || this.state.getSalesGoalErrMsg ? null : this.renderSalesGoals()}
+                        </div>
+                    )
+                }
+
                 <div className='member-list-table'>
                     <AntcTable
                         rowSelection={rowSelection}
@@ -996,11 +997,12 @@ const MemberList = createReactClass({
                             this.props.addMemberListTipMsg ? (
                                 <div className="member-list-tip">
                                     {this.props.addMemberListTipMsg}
-                                </div>) : null
+                                </div>) : (
+                                <div className="member-table-zone">
+                                    {this.renderMemberList(flag, addMemberList)}
+                                </div>
+                            )
                         }
-                        <div className="member-table-zone">
-                            {this.renderMemberList(flag, addMemberList)}
-                        </div>
                     </div>
                 </div>
             );
@@ -1016,11 +1018,13 @@ const MemberList = createReactClass({
                                 <div className="member-list-tip">
                                     {this.props.teamMemberListTipMsg}
                                 </div>
-                            ) : null
+                            ) : (
+                                <div className="member-table-zone">
+                                    {this.renderMemberList()}
+                                </div>
+                            )
                         }
-                        <div className="member-table-zone">
-                            {this.renderMemberList()}
-                        </div>
+
                     </div>
                 </div>
             );
@@ -1035,11 +1039,13 @@ const MemberList = createReactClass({
                             <div className="member-list-tip">
                                 {this.props.teamMemberListTipMsg}
                             </div>
-                        ) : null
+                        ) : (
+                            <div className="member-table-zone">
+                                {this.renderMemberList()}
+                            </div>
+                        )
                     }
-                    <div className="member-table-zone">
-                        {this.renderMemberList()}
-                    </div>
+
                 </div>
             );
         }
@@ -1047,7 +1053,7 @@ const MemberList = createReactClass({
 
     createMemberInfoElement() {
         let selectMemberListH = 0;
-        let memberListContainerH = this.state.memberListHeight;
+        let memberListContainerH = this.state.memberListHeight - 80;
         if (this.props.isAddMember || this.props.isEditMember) {
             selectMemberListH = memberListContainerH - 35;//20:paddingTOP+paddingBottom,35:BtnH+margin
             if (this.props.isAddMember) {
@@ -1295,36 +1301,81 @@ const MemberList = createReactClass({
 
     //渲染团队目标
     renderSalesGoals: function() {
+        let groupGoal = _.get(this.state.salesGoals, 'goal');
         return (
             <div className="sales-team-goals-container" data-tracename="团队管理">
-                <span className="iconfont icon-sales-goals" title={Intl.get('sales.team.sales.goal', '销售目标')} data-tracename="团队管理"/>
-                {this.state.isShowBatchChangeTeamGoal ? <Button className="team-sales-goal" onClick={this.toggleBatchChangeTeamGoalBtn.bind(this, false)}>{Intl.get('common.batch.sales.target', '设置团队销售目标')}</Button> : <div className="sales-goals-item">
-                    <span className="sales-goals-label">{Intl.get('user.user.team', '团队')}：</span>
-                    <InputNumber className="team-goals-input"
-                        value={this.turnGoalToShowData(this.state.salesGoals.goal)}
-                        onChange={this.changeTeamSalesGoals}
-                    />
-                    {this.state.isSavingTeamGoal ? <Icon type="loading"/> : <span className="team-icon-container">
-                        <i className="iconfont icon-choose" onClick={this.saveSalesGoals.bind(this, SALES_GOALS_TYPE.TEAM)}></i>
-                        <i className="iconfont icon-close" onClick={this.cancelSaveSalesGoals.bind(this, SALES_GOALS_TYPE.TEAM, true)}></i>
-                    </span>}
-
-
-                    <span className="sales-goals-label">{Intl.get('contract.139', '万')}，</span>
-                </div>}
-                {this.state.isShowBatchChangeSelfGoal ? <Button className="self-sales-goal" onClick={this.toggleBatchChangeSelfGoalBtn.bind(this, false)}>{Intl.get('common.batch.self.sales.target', '批量设置个人销售目标')}</Button> : <div className="sales-goals-item">
-                    <span className="sales-goals-label">{Intl.get('sales.team.personal', '个人')}：</span>
-                    <InputNumber className="member-goals-input"
-                        value={this.turnGoalToShowData(this.state.salesGoals.member_goal)}
-                        onChange={this.changeMemberSalesGoals}
-                    />
-                    {this.state.isSavingMemberGoal ? <Icon type="loading"/> : <span className="member-icon-container">
-                        <i className="iconfont icon-choose" onClick={this.saveSalesGoals.bind(this, SALES_GOALS_TYPE.MEMBER)}></i>
-                        <i className="iconfont icon-close" onClick={this.cancelSaveSalesGoals.bind(this, SALES_GOALS_TYPE.MEMBER, true)}></i>
-                    </span>}
-
-                    <span className="sales-goals-label">{Intl.get('contract.139', '万')}</span>
-                </div>}
+                <span className='group-sales-goals'>
+                    {Intl.get('member.group.sales.goal', '部门销售目标')}:
+                </span>
+                {
+                    this.state.isShowBatchChangeTeamGoal ? (
+                        groupGoal ? (
+                            <span className='sales-goal-value'>
+                                {groupGoal}
+                                <i
+                                    className='iconfont icon-update'
+                                    onClick={this.toggleBatchChangeTeamGoalBtn.bind(this, false)}
+                                ></i>
+                            </span>
+                        ) : (
+                            <span
+                                className='no-sale-goal-value'
+                                onClick={this.toggleBatchChangeTeamGoalBtn.bind(this, false)}
+                            >
+                                {Intl.get('sales.team.add.sales.team', '添加')}
+                            </span>
+                        )
+                    ) :
+                        <div className="sales-goals-item">
+                            <InputNumber
+                                className="team-goals-input"
+                                value={this.turnGoalToShowData(this.state.salesGoals.goal)}
+                                onChange={this.changeTeamSalesGoals}
+                            />
+                            {
+                                this.state.isSavingTeamGoal ?
+                                    <Icon type="loading"/> :
+                                    <span className="team-icon-container">
+                                        <i className="iconfont icon-choose"
+                                            onClick={this.saveSalesGoals.bind(this, SALES_GOALS_TYPE.TEAM)}
+                                        ></i>
+                                        <i className="iconfont icon-close"
+                                            onClick={this.cancelSaveSalesGoals.bind(this, SALES_GOALS_TYPE.TEAM, true)}
+                                        ></i>
+                                    </span>
+                            }
+                            <span className="sales-goals-label">{Intl.get('contract.139', '万')}，</span>
+                        </div>
+                }
+                {
+                    this.state.isShowBatchChangeSelfGoal ?
+                        <Button className="self-sales-goal"
+                            onClick={this.toggleBatchChangeSelfGoalBtn.bind(this, false)}
+                        >
+                            {Intl.get('common.batch.self.sales.target', '批量设置个人销售目标')}
+                        </Button> :
+                        <div className="sales-goals-item">
+                            <span className="sales-goals-label">{Intl.get('sales.team.personal', '个人')}：</span>
+                            <InputNumber
+                                className="member-goals-input"
+                                value={this.turnGoalToShowData(this.state.salesGoals.member_goal)}
+                                onChange={this.changeMemberSalesGoals}
+                            />
+                            {
+                                this.state.isSavingMemberGoal ?
+                                    <Icon type="loading"/> :
+                                    <span className="member-icon-container">
+                                        <i className="iconfont icon-choose"
+                                            onClick={this.saveSalesGoals.bind(this, SALES_GOALS_TYPE.MEMBER)}
+                                        ></i>
+                                        <i className="iconfont icon-close"
+                                            onClick={this.cancelSaveSalesGoals.bind(this, SALES_GOALS_TYPE.MEMBER, true)}
+                                        ></i>
+                                    </span>
+                            }
+                            <span className="sales-goals-label">{Intl.get('contract.139', '万')}</span>
+                        </div>
+                }
             </div>);
     },
 
@@ -1381,11 +1432,6 @@ const MemberList = createReactClass({
                             </div>
                         ) : null
                     }
-
-                    <div className="member-top-operation-div-title">
-                        {this.state.curShowTeamMemberObj.groupName || ''}
-                    </div>
-                    {this.state.isLoadingSalesGoal || this.state.getSalesGoalErrMsg ? null : this.renderSalesGoals()}
                 </div>
                 <div className="member-list-div"
                     style={{height: this.state.memberListHeight}}>

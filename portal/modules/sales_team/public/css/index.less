@@ -41,6 +41,7 @@
         float: left;
         .member-top-operation-div {
           padding: 12px 24px;
+          height: 80px;
           .member-top-operation-div-title {
             float: left;
             line-height: 46px;
@@ -138,9 +139,52 @@
         }
         //团队内成员展示区域样式设置
         .member-list-div {
+          // 操作区样式（销售目标、团队成员设置以及添加团队成员）
+          .operation-zone, .sale-goal-zone {
+            position: absolute;
+            top: 50px;
+            padding-right: 16px
+          }
           .operation-zone {
             .select-row-number {
-              padding-left: 20px;
+              padding-left: 24px;
+            }
+            .set-select-member-btns {
+              display: inline-block;
+              .add-member-btn {
+                display: inline-block;
+                padding-left: 16px;
+              }
+            }
+          }
+          .sale-goal-zone {
+            .member-top-operation-div-title {
+              color: #333333;
+              padding-left: 24px;
+              font-size: 16px;
+            }
+            .sales-team-goals-container {
+              color: #999999;
+              display: inline-block;
+              float: right;
+              .sales-goal-value, .no-sale-goal-value {
+                padding-right: 24px;
+                .icon-update {
+                  padding: 0 5px;
+                  cursor: pointer;
+                  color: #8DA8C5;
+                }
+              }
+              .no-sale-goal-value {
+                cursor: pointer;
+                color: #8DA8C5;
+              }
+              .sales-goals-item {
+                display: inline-block;
+                .ant-input-number-input {
+                  height:24px;
+                }
+              }
             }
           }
           .sales-team-member-tier {

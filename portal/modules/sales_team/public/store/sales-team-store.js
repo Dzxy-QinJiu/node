@@ -134,7 +134,7 @@ SalesTeamStore.prototype.filterByTeamName = function(teamName) {
     });
     this.delSelectSalesTeam(this.salesTeamListArray);
     //递归遍历组织树，根据组织名查找组织
-    var filterTeamArray = [];
+    let filterTeamArray = [];
     this.findGroupListByName(this.salesTeamListArray, teamName, filterTeamArray);
     //默认展示第一个团队的成员
     if (filterTeamArray.length > 0) {
@@ -531,8 +531,6 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
                 this.curShowTeamMemberObj.users = sortTeamMembers(users);
             }
         } else {
-            //暂无数据的提示
-            this.teamMemberListTipMsg = Intl.get('common.no.member', '暂无成员');
             this.salesTeamMemberList = [];
         }
     }
