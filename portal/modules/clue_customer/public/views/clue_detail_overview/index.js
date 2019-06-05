@@ -319,13 +319,16 @@ class ClueDetailOverview extends React.Component {
                     this.setState({
                         clickAssigenedBtn: false
                     });
-                    clueCustomerAction.afterEditCustomerDetail({
+                    var updateObj = {
                         'user_name': userName,
                         'user_id': submitObj.user_id,
                         'sales_team': teamName,
                         'sales_team_id': teamId,
-                        'status': SELECT_TYPE.WILL_TRACE
-                    });
+                    };
+                    if (_.get(this, 'state.curClue.status') !== SELECT_TYPE.HAS_TRACE){
+                        updateObj.status = SELECT_TYPE.WILL_TRACE;
+                    }
+                    clueCustomerAction.afterEditCustomerDetail(updateObj);
                 }
             });
         }
