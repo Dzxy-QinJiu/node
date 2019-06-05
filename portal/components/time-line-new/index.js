@@ -110,7 +110,7 @@ class TimeLine extends React.Component {
         let curItemDay;
         //时间线数据
         let dataList = this.props.list;
-        const YEAR_TIME_FORMAT = oplateConsts.DATE_TIME_YEAR_FORMAT + Intl.get('common.time.unit.year', '年');
+        const YEAR_TIME_FORMAT = oplateConsts.DATE_FORMAT;
         if (_.isArray(dataList) && dataList.length) {
             return (<div className="time-line">
                 {dataList.map((item, index) => {
@@ -139,12 +139,16 @@ class TimeLine extends React.Component {
                     let hasSplitLine = dayStr && index;
                     //今年的跟进记录的年不展示
                     let thisYear = moment().format(YEAR_TIME_FORMAT);
+                    if (yearStr && yearStr.substr(0, 4) !== thisYear.substr(0, 4)) {
+                        //每年的第一条跟进记录，展示完整的日期 YYYY-MM-DD
+                        dayStr = yearStr;
+                    }
                     return (
                         <div className="time-line-item" key={index}>
-                            {yearStr && yearStr !== thisYear ? (
-                                <div className="group-year">
-                                    {yearStr}
-                                </div>) : null}
+                            {/*{yearStr && yearStr !== thisYear ? (*/}
+                            {/*<div className="group-year">*/}
+                            {/*{yearStr}*/}
+                            {/*</div>) : null}*/}
                             {dayStr ? <div className="group-day">{dayStr}</div> : null}
                             {_.isFunction(this.props.renderTimeLineItem) ? this.props.renderTimeLineItem(item, hasSplitLine) : null}
                         </div>

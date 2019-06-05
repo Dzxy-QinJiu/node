@@ -1,6 +1,7 @@
 //时间线的样式
 @font_color: #999999;
 @split_line_color: #f5f5f5;
+@day_color: #333333;
 .time-line {
   .time-line-item {
     float: left;
@@ -22,10 +23,10 @@
     //天的时间样式
     .group-day {
       float: left;
-      height: 30px;
-      width: 64px;
-      padding: 10px 16px 0 12px;
-      font-size: 14px;
+      width: 100%;
+      padding: 0 16px;
+      font-size: 16px;
+      color: @day_color;
     }
     //天分隔线
     .day-split-line {
