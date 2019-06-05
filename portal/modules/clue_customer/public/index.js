@@ -336,6 +336,11 @@ class ClueCustomer extends React.Component {
             clueCustomerAction.setSortField('source_time');
         }
         var unExistFileds = clueFilterStore.getState().unexist_fields;
+        //如果线索的类型是待我处理，需要查询的字段是allot_no_traced
+        if (typeFilter.status === SELECT_TYPE.WAIT_ME_HANDLE){
+            delete typeFilter.status;
+            typeFilter.allot_no_traced = '0';
+        }
         //跟据类型筛选
         const queryObj = {
             lastClueId: this.state.lastCustomerId,
@@ -343,11 +348,9 @@ class ClueCustomer extends React.Component {
             sorter: this.state.sorter,
             keyword: this.state.keyword,
             rangeParams: rangeParams,
-            statistics_fields: 'status',
+            statistics_fields: 'allot_no_traced',
             typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter)
         };
-
-
         //选中的线索来源
         var filterClueSource = filterStoreData.filterClueSource;
         if (_.isArray(filterClueSource) && filterClueSource.length){

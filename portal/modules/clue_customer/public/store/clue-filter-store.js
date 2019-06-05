@@ -16,10 +16,6 @@ function ClueFilterStore() {
 }
 
 ClueFilterStore.prototype.setInitialData = function() {
-    var defaultValue = '';
-    if (userData.getUserData().isCommonSales) {
-        defaultValue = SELECT_TYPE.WAIT_ME_HANDLE;
-    }
     var filterClueStatus = _.cloneDeep(CLUE_DIFF_TYPE);
     //是否展示分配筛选按钮要根据权限判断
     if(hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
@@ -33,13 +29,9 @@ ClueFilterStore.prototype.setInitialData = function() {
         filterClueStatus.push({
             name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
             value: SELECT_TYPE.WAIT_ME_HANDLE,
+            selected: true
         });
     }
-    _.forEach(filterClueStatus, (item) => {
-        if (item.value === defaultValue) {
-            item.selected = true;
-        }
-    });
     //默认展示全部时间
     this.timeType = 'all';
     this.rangeParams = [{//时间范围参数
