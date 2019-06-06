@@ -64,7 +64,8 @@ export const SELECT_TYPE = {
     ALL: '',
     WILL_DISTRIBUTE: '0',
     WILL_TRACE: '1',
-    HAS_TRACE: '2'
+    HAS_TRACE: '2',
+    WAIT_ME_HANDLE: 'waitMeHandle'
 };
 
 export const CLUE_DIFF_TYPE = [

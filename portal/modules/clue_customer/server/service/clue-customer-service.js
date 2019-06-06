@@ -254,7 +254,7 @@ exports.getClueFulltext = function(req, res) {
         url += `&id=${reqBody.lastClueId}`;
     }
     var bodyObj = {
-        query: {status: typeFilter.status,user_name: typeFilter.user_name},
+        query: {...typeFilter},
     };
     if (reqBody.userId){
         bodyObj.query.userId = reqBody.userId;

@@ -360,23 +360,14 @@ exports.renderClueStatus = function(status) {
     return statusDes;
 };
 //获取线索未处理的权限
-//只有是管理员或者销售领导或者銷售才有展示线索未读数的权限
-//管理员，销售，运营人员有获取线索列表的权限，但是运营人员不用展示线索未处理数
+//只有普通銷售才有展示线索未读数的权限
 exports.getClueUnhandledPrivilege = function() {
-    return (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER') || hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_USER')) && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+    return (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER') || hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_USER')) && userData.getUserData().isCommonSales;
 };
 //获取线索未读数的参数
 exports.getUnhandledClueCountParams = function() {
-    let status = '';
-    //如果是域管理员，展示待分配的线索数量
-    if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
-        status = SELECT_TYPE.WILL_DISTRIBUTE;
-    } else {
-        //销售领导和销售展示待跟进的线索数量
-        status = SELECT_TYPE.WILL_TRACE;
-    }
     var data = {
-        typeFilter: JSON.stringify({status: status}),
+        typeFilter: JSON.stringify({allot_no_traced: '0'}),
         rangeParams: JSON.stringify([{//时间范围参数
             from: moment('2010-01-01 00:00:00').valueOf(),//开始时间设置为2010年
             to: moment().valueOf(),
