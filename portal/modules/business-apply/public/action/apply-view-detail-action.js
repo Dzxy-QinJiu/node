@@ -43,15 +43,6 @@ function ApplyViewDetailActions() {
         }
 
     };
-    //根据申请的id获取审批的状态
-    this.getApplyStatusById = function(queryObj) {
-        this.dispatch({loading: true, error: false});
-        getApplyStatusById(queryObj).then((list) => {
-            this.dispatch({loading: false, error: false, list: list});
-        }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
-    };
 
     //获取回复列表
     this.getBusinessApplyCommentList = function(queryObj) {

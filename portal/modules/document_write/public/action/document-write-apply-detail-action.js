@@ -45,14 +45,13 @@ function ApplyViewDetailActions() {
             });
         }
     };
-    //根据申请的id获取审批的状态
-    this.getApplyStatusById = function(queryObj) {
-        this.dispatch({loading: true, error: false});
-        getApplyStatusById(queryObj).then((list) => {
-            this.dispatch({loading: false, error: false, list: list});
-        }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
+    //获取该审批所在节点
+    this.getApplyTaskNode = function(queryObj){
+        ApplyApproveAjax.getApplyTaskNode().sendRequest(queryObj).success((list) => {
+            if (_.isArray(list)) {
+                this.dispatch(list);
+            }
+        }).error(this.dispatch({error: true}));
     };
 
     //获取回复列表

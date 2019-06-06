@@ -177,7 +177,7 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="add-higher-up addition-condition">
                             <div className="higher-level-item addition-condition-item">
-                                <Select value={higher_ups.candidateUsers}
+                                <Select showSearch value={higher_ups.candidateUsers}
                                     onChange={this.handleHigherUpChange}>
                                     {_.map(HIGHER_LEVEL, (item) => {
                                         return <Option value={item.value}>{item.name}</Option>;
@@ -199,7 +199,7 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
-                                <Select value={setting_roles.selectRole} onChange={this.handleChangeSelectRole}>
+                                <Select showSearch value={setting_roles.selectRole} onChange={this.handleChangeSelectRole}>
                                     {_.map(this.state.roleList, (item) => {
                                         return <Option value={item.save_role_value}>{item.role_name}(
                                             {Intl.get('apply.add.approve.num.person', '{num}人', {num: item.num})})</Option>;
@@ -213,7 +213,7 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
-                                <Select value={setting_users.selectUser} onChange={this.handleChangeSelectUser}>
+                                <Select showSearch value={setting_users.selectUser} onChange={this.handleChangeSelectUser}>
                                     {_.map(this.state.userList, (item) => {
                                         return <Option value={item.userId}>{item.nickName}</Option>;
                                     })}

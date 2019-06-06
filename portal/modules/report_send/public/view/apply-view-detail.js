@@ -258,8 +258,8 @@ class ApplyViewDetail extends React.Component {
             } else if (detailItem.id) {
                 ReportSendApplyDetailAction.getApplyDetailById({id: detailItem.id});
                 ReportSendApplyDetailAction.getApplyCommentList({id: detailItem.id});
-                //根据申请的id获取申请的状态
-                ReportSendApplyDetailAction.getApplyStatusById({id: detailItem.id});
+                //根据申请的id获取申请的节点位置
+                ReportSendApplyDetailAction.getApplyTaskNode({id: detailItem.id});
                 this.getNextCandidate(detailItem.id);
             }
         });
@@ -275,11 +275,6 @@ class ApplyViewDetail extends React.Component {
             ReportSendApplyDetailAction.getApplyCommentList({id: detailItem.id});
             this.getNextCandidate(detailItem.id);
         }
-    };
-    //重新获取申请的状态
-    refreshApplyStatusList = (e) => {
-        var detailItem = this.props.detailItem;
-        ReportSendApplyDetailAction.getApplyStatusById({id: detailItem.id});
     };
 
 
@@ -465,8 +460,8 @@ class ApplyViewDetail extends React.Component {
         var approvalDes = getApplyResultDscr(detailInfoObj);
         var renderAssigenedContext = null,passText = '',showApproveBtn = detailInfoObj.showApproveBtn;
         if (detailInfoObj.status === 'ongoing' && showApproveBtn){
-            //approver_ids的数组长度是2的时候  或者 clickConfirmBtn 是true 是表示已经确认过 待确认申请
-            var hasApprovedApply = hasApprovedReportAndDocumentApply(_.get(detailInfoObj,'approver_ids',[]));
+            // clickConfirmBtn 是true 是表示已经确认过 待确认申请
+            var hasApprovedApply = hasApprovedReportAndDocumentApply(this);
             if (hasApprovedApply || this.state.clickConfirmBtn){
                 //approverUpload存在表示已经上传过文件 已经上传文件了
                 var upLoadFileArrs = _.get(detailInfoObj,'detail.file_upload_logs',[]);
@@ -539,7 +534,7 @@ class ApplyViewDetail extends React.Component {
             }
             var stepTip = '',file_upload_logs = _.get(applicantList,'detail.file_upload_logs',[]);
             file_upload_logs = seperateFilesDiffType(file_upload_logs).approverUploadFiles;
-            var hasConfirmApproved = hasApprovedReportAndDocumentApply(_.get(applicantList,'approver_ids',[]));
+            var hasConfirmApproved = hasApprovedReportAndDocumentApply(this);
             if (hasConfirmApproved){
                 stepTip = Intl.get('apply.approve.wait.upload','待{uploader}上传',{'uploader': candidateName});
             }else{
@@ -594,14 +589,14 @@ class ApplyViewDetail extends React.Component {
     };
     renderUploadAndDownloadInfo = () => {
         var detailInfoObj = this.state.detailInfoObj.info;
-        var hasApproved = hasApprovedReportAndDocumentApply(_.get(detailInfoObj,'approver_ids',[]));
+        var hasApproved = hasApprovedReportAndDocumentApply(this);
         //销售可以继续添加或者删除上传的文件
         var uploadAndDeletePrivilege = '';
         let user_id = userData.getUserData().user_id;
-        if (_.get(detailInfoObj,'applicant.user_id') === user_id && detailInfoObj.status === 'ongoing' && !hasApproved){
+        if (_.get(detailInfoObj,'applicant.user_id') === user_id && detailInfoObj.status === 'ongoing'){
             uploadAndDeletePrivilege = FILES_LIMIT.TOTAL;
         }
-        if (detailInfoObj.status === 'ongoing' && hasApproved && detailInfoObj.showApproveBtn){
+        if (detailInfoObj.status === 'ongoing' && detailInfoObj.showApproveBtn && this.submitFilesNode()){
             uploadAndDeletePrivilege = FILES_LIMIT.SINGLE;
         }
         var fileList = uniteFileSize(_.get(detailInfoObj,'detail.file_upload_logs'));
@@ -619,7 +614,7 @@ class ApplyViewDetail extends React.Component {
         // 驳回的时候也会有这个属性，所以再加上status的判断
         //如果是销售添加的申请，并且还没有确认审核之前是可以添加的
         var salesAddPrivilege = _.get(detailInfo,'applicant.user_id') === userData.getUserData().user_id && !detailInfo.approver_ids && detailInfo.status === 'ongoing';
-        var managerAddPrivilege = (hasApprovedReportAndDocumentApply(detailInfo.approver_ids) && detailInfo.status === 'ongoing') || this.state.clickConfirmBtn || _.get(detailInfo,'detail.file_upload_logs',[]).length;//管理员在确认通过审核后或者在点击了确认按钮也可以展示添加区域
+        var managerAddPrivilege = (hasApprovedReportAndDocumentApply(this) && detailInfo.status === 'ongoing') || this.state.clickConfirmBtn || _.get(detailInfo,'detail.file_upload_logs',[]).length;//管理员在确认通过审核后或者在点击了确认按钮也可以展示添加区域
         if (managerAddPrivilege || salesAddPrivilege){
             var showApplyInfo = [{
                 label: '',

@@ -47,15 +47,6 @@ DocumentWriteApplyDetailStore.prototype.setInitState = function() {
         //错误信息
         errorMsg: ''
     };
-    //审批状态列表
-    this.replyStatusInfo = {
-        //三种状态,loading,error,''
-        result: 'loading',
-        //列表数组
-        list: [],
-        //服务端错误信息
-        errorMsg: ''
-    };
     this.backApplyResult = {
         //提交状态  "" loading error success
         submitResult: '',
@@ -81,15 +72,6 @@ DocumentWriteApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(deta
         errorMsg: ''
     };
     this.replyListInfo = {
-        //三种状态,loading,error,''
-        result: '',
-        //列表数组
-        list: [],
-        //服务端错误信息
-        errorMsg: ''
-    };
-    //审批状态列表
-    this.replyStatusInfo = {
         //三种状态,loading,error,''
         result: '',
         //列表数组
@@ -246,20 +228,6 @@ DocumentWriteApplyDetailStore.prototype.approveApplyPassOrReject = function(obj)
         this.applyResult.errorMsg = '';
     }
 };
-//获取审批的状态
-DocumentWriteApplyDetailStore.prototype.getApplyStatusById = function(obj) {
-    if (obj.loading) {
-        this.replyStatusInfo.result = 'loading';
-        this.replyStatusInfo.errorMsg = '';
-    } else if (obj.error) {
-        this.replyStatusInfo.result = 'error';
-        this.replyStatusInfo.errorMsg = obj.errorMsg;
-    } else {
-        this.replyStatusInfo.result = 'success';
-        this.replyStatusInfo.errorMsg = '';
-        this.replyStatusInfo.list = obj.list;
-    }
-};
 DocumentWriteApplyDetailStore.prototype.cancelSendApproval = function() {
     this.applyResult.submitResult = '';
     this.applyResult.errorMsg = '';
@@ -297,6 +265,13 @@ DocumentWriteApplyDetailStore.prototype.transferNextCandidate = function(result)
         //如果转出成功，要隐藏审批的按钮
         this.selectedDetailItem.showApproveBtn = false;
         this.detailInfoObj.info.showApproveBtn = false;
+    }
+};
+DocumentWriteApplyDetailStore.prototype.getApplyTaskNode = function(result){
+    if (result.error) {
+        this.applyNode = [];
+    } else {
+        this.applyNode = result;
     }
 };
 
