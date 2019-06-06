@@ -58,11 +58,15 @@ class UserDetail extends React.Component {
         ...AppUserPanelSwitchStore.getState()
     };
     componentWillReceiveProps(nextProps) {
-        // 若当前tab页是异常登录，切换用户时，若此用户没有异常登录项，则返回到基本资料
-        if (!nextProps.isShownExceptionTab && this.state.activeKey === '5') {
-            this.setState({
-                activeKey: '1'
-            });
+        if (nextProps.userId !== this.props.userId) {
+            $(this.refs.wrap).removeClass('move_left');
+            $(this.refs.topWrap).removeClass('move-left-wrapper');
+            // 若当前tab页是异常登录，切换用户时，若此用户没有异常登录项，则返回到基本资料
+            if (!nextProps.isShownExceptionTab && this.state.activeKey === '5') {
+                this.setState({
+                    activeKey: '1'
+                });
+            }
         }
     }
     
