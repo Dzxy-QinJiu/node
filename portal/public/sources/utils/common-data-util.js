@@ -335,12 +335,8 @@ exports.seperateFilesDiffType = function(fileList) {
     return allUploadFiles;
 };
 //标识是否已经确认过审批,因为文件类型和舆情报告前面是有两个节点
-exports.hasApprovedReportAndDocumentApply = function(approverIds) {
-    if (_.isArray(approverIds)) {
-        return approverIds.length === 2;
-    } else {
-        return false;
-    }
+exports.hasApprovedReportAndDocumentApply = function(that) {
+    return _.get(that, 'state.applyNode[0].forms[0]') === 'submitFiles';
 };
 
 function calculateTimeRange(beginType, endType) {

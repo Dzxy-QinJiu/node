@@ -252,11 +252,7 @@ class ApplyViewDetail extends React.Component {
             this.getNextCandidate(detailItem.id);
         }
     };
-    //重新获取申请的状态
-    refreshApplyStatusList = (e) => {
-        var detailItem = this.props.detailItem;
-        ApplyViewDetailActions.getApplyStatusById({id: detailItem.id});
-    };
+
 
     //显示客户详情
     showCustomerDetail = (customerId) => {

@@ -47,15 +47,6 @@ ReportSendApplyDetailStore.prototype.setInitState = function() {
         //错误信息
         errorMsg: ''
     };
-    //审批状态列表
-    this.replyStatusInfo = {
-        //三种状态,loading,error,''
-        result: 'loading',
-        //列表数组
-        list: [],
-        //服务端错误信息
-        errorMsg: ''
-    };
     this.backApplyResult = {
         //提交状态  "" loading error success
         submitResult: '',
@@ -74,6 +65,7 @@ ReportSendApplyDetailStore.prototype.setInitState = function() {
         errorMsg: ''
     };
     this.isLeader = false; //当前账号是否是待审批人的上级领导
+    this.applyNode = [];
 };
 ReportSendApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
@@ -86,15 +78,6 @@ ReportSendApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailO
         errorMsg: ''
     };
     this.replyListInfo = {
-        //三种状态,loading,error,''
-        result: '',
-        //列表数组
-        list: [],
-        //服务端错误信息
-        errorMsg: ''
-    };
-    //审批状态列表
-    this.replyStatusInfo = {
         //三种状态,loading,error,''
         result: '',
         //列表数组
@@ -123,6 +106,13 @@ ReportSendApplyDetailStore.prototype.setApplyComment = function(list) {
         list: _.isArray(list) ? _.concat(this.replyListInfo.list,list) : null,
         errorMsg: ''
     };
+};
+ReportSendApplyDetailStore.prototype.getApplyTaskNode = function(result){
+    if (result.error) {
+        this.applyNode = [];
+    } else {
+        this.applyNode = result;
+    }
 };
 ReportSendApplyDetailStore.prototype.setInitialData = function(obj) {
     //重置数据
@@ -250,20 +240,7 @@ ReportSendApplyDetailStore.prototype.approveApplyPassOrReject = function(obj) {
         this.applyResult.errorMsg = '';
     }
 };
-//获取审批的状态
-ReportSendApplyDetailStore.prototype.getApplyStatusById = function(obj) {
-    if (obj.loading) {
-        this.replyStatusInfo.result = 'loading';
-        this.replyStatusInfo.errorMsg = '';
-    } else if (obj.error) {
-        this.replyStatusInfo.result = 'error';
-        this.replyStatusInfo.errorMsg = obj.errorMsg;
-    } else {
-        this.replyStatusInfo.result = 'success';
-        this.replyStatusInfo.errorMsg = '';
-        this.replyStatusInfo.list = obj.list;
-    }
-};
+
 ReportSendApplyDetailStore.prototype.cancelSendApproval = function() {
     this.applyResult.submitResult = '';
     this.applyResult.errorMsg = '';

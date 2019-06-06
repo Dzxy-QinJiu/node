@@ -43,14 +43,6 @@ class AddApplyConditionPanel extends React.Component {
     componentDidMount() {
     }
 
-    // componentWillReceiveProps(nextProps) {
-    //     if (!_.isEmpty(nextProps.updateConditionObj)){
-    //         this.setState({
-    //             diffConditionLists: nextProps.updateConditionObj
-    //         });
-    //     }
-    // }
-
     handleAddConditionType = (conditionType) => {
         var diffConditionLists = this.state.diffConditionLists;
         var limitRules = _.get(diffConditionLists, 'limitRules', []);

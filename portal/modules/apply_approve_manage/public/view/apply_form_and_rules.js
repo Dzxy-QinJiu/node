@@ -27,6 +27,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 var applyApproveManageAction = require('../action/apply_approve_manage_action');
 let userData = require('PUB_DIR/sources/user-data');
+var uuid = require('uuid/v4');
 class ApplyFormAndRules extends React.Component {
     constructor(props) {
         super(props);
@@ -156,7 +157,7 @@ class ApplyFormAndRules extends React.Component {
     };
     handleSubmitApproveForm = () => {
         var submitObj = _.cloneDeep(this.state.applyTypeData);
-        if (this.validateBeforeSubmit()) {
+        if (this.validateBeforeSubmit(submitObj)) {
             //不需要把所有的东西都传过去，只传表单相关内容即可，可以把规则先去掉
             if (submitObj.applyRulesAndSetting) {
                 delete submitObj.applyRulesAndSetting;
@@ -174,9 +175,14 @@ class ApplyFormAndRules extends React.Component {
             });
         }
     };
-    validateBeforeSubmit = () => {
-        var applyTypeData = this.state.applyTypeData;
-        var customiz_form = _.get(applyTypeData, 'customiz_form');
+    validateBeforeSubmit = (submitObj) => {
+        var customiz_form = _.get(submitObj, 'customiz_form');
+        //如果有时间相关组件，需要把默认的时间值去掉，要不就会报错
+        _.forEach(customiz_form, item => {
+            if (item.component_type === ALL_COMPONENTS.DATETIME){
+                delete item.defaultValue;
+            }
+        });
         return !_.includes(_.map(customiz_form, 'isEditting'), true);
     };
     //修改申请审批的名字后保存
@@ -231,13 +237,7 @@ class ApplyFormAndRules extends React.Component {
     handleAddComponents = (ruleItem) => {
         var applyTypeData = this.state.applyTypeData;
         var customiz_form = _.get(applyTypeData, 'customiz_form', []);
-        var keysArr = _.map(customiz_form, 'key');
-        var formContentKey = 0;
-        //todo key不可以用简短的数字表示
-        if (keysArr.length) {
-            formContentKey = parseInt(_.max(keysArr)) + 1;
-        }
-        customiz_form.push({...ruleItem, 'key': formContentKey, 'isEditting': true});
+        customiz_form.push({...ruleItem, 'key': uuid(), 'isEditting': true});
         applyTypeData.customiz_form = customiz_form;
         this.setState({
             applyTypeData: applyTypeData
