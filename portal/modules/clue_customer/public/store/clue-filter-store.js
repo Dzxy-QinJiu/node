@@ -24,14 +24,6 @@ ClueFilterStore.prototype.setInitialData = function() {
             value: SELECT_TYPE.WILL_DISTRIBUTE,
         });
     }
-    //如果是普通销售，增加待我处理筛选项
-    if (userData.getUserData().isCommonSales){
-        filterClueStatus.push({
-            name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
-            value: SELECT_TYPE.WAIT_ME_HANDLE,
-            selected: true
-        });
-    }
     //默认展示全部时间
     this.timeType = 'all';
     this.rangeParams = [{//时间范围参数
@@ -58,6 +50,8 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.filterClueUsers = [];
     //按负责人进行筛选
     this.teamMemberList = [];
+    //按 待我处理 进行筛选
+    this.filterAllotNoTraced = userData.getUserData().isCommonSales ? '0' : '';
 };
 //获取线索来源
 ClueFilterStore.prototype.setCondition = function(list) {
@@ -139,6 +133,9 @@ ClueFilterStore.prototype.setFilterClueAvailbility = function() {
         }
     });
 
+};
+ClueFilterStore.prototype.setFilterClueAllotNoTrace = function(updateTrace) {
+    this.filterAllotNoTraced = updateTrace;
 };
 ClueFilterStore.prototype.setFilterClueProvince = function(updateProvince) {
     var selectedProvince = [];

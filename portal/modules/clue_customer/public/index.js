@@ -73,7 +73,7 @@ class ClueCustomer extends React.Component {
         clueImportTemplateFormShow: false,//线索导入面板是否展示
         previewList: [],//预览列表
         clueAnalysisPanelShow: false,//线索分析面板是否展示
-        showFilterList: false,//是否展示线索筛选区域
+        showFilterList: userData.getUserData().isCommonSales ? true : false,//是否展示线索筛选区域
         exportRange: 'filtered',
         isExportModalShow: false,//是否展示导出线索的模态框
         isEdittingItem: {},//正在编辑的那一条
@@ -86,6 +86,9 @@ class ClueCustomer extends React.Component {
         selectedClues: [],//获取批量操作选中的线索
         ...clueCustomerStore.getState()
     };
+    isCommonSales = () => {
+        return userData.getUserData().isCommonSales;
+    };
     componentDidMount() {
         clueCustomerStore.listen(this.onStoreChange);
         //获取线索来源
@@ -95,10 +98,8 @@ class ClueCustomer extends React.Component {
         //获取线索分类
         this.getClueClassify();
         clueCustomerAction.getSalesManList();
-        //点击未处理线索的数量跳转过来的
-        if(_.get(this.props,'location.state.clickUnhandleNum')){
-            this.getUnhandledClue();
-        }else{
+        //如果是普通销售，不需要发请求了
+        if(!this.isCommonSales()){
             this.getClueList();
         }
         this.changeTableHeight();
@@ -109,17 +110,15 @@ class ClueCustomer extends React.Component {
         var data = getUnhandledClueCountParams();
         //现在只有普通销售有未读数
         clueFilterAction.setTimeType('all');
-        clueFilterAction.setFilterType([{value: SELECT_TYPE.WAIT_ME_HANDLE}]);
-        setTimeout(() => {
-            this.getClueList(data);
-        });
+        clueFilterAction.setFilterClueAllotNoTrace('0');
+        this.filterPanel.filterList.setDefaultFilterSetting();
     };
     changeTableHeight = () => {
         var tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE - LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT;
         this.setState({ tableHeight});
     };
     componentWillReceiveProps(nextProps) {
-        if (_.get(nextProps,'history.action') === 'PUSH' && _.get(this,'props.history.action') !== 'PUSH'){
+        if (_.get(nextProps,'history.action') === 'PUSH'){
             if(_.get(nextProps,'location.state.clickUnhandleNum')){
                 delete nextProps.location.state.clickUnhandleNum;
                 clueCustomerAction.setClueInitialData();
@@ -337,11 +336,9 @@ class ClueCustomer extends React.Component {
             clueCustomerAction.setSortField('source_time');
         }
         var unExistFileds = clueFilterStore.getState().unexist_fields;
-        var isWaitMeHandle = typeFilter.status === SELECT_TYPE.WAIT_ME_HANDLE;
-        //如果线索的类型是待我处理，需要查询的字段是allot_no_traced
-        if (isWaitMeHandle){
-            delete typeFilter.status;
-            typeFilter.allot_no_traced = '0';
+        var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
+        if (filterAllotNoTraced){
+            typeFilter.allot_no_traced = filterAllotNoTraced;
         }
         //跟据类型筛选
         const queryObj = {
@@ -384,7 +381,6 @@ class ClueCustomer extends React.Component {
         if(_.isArray(unExistFileds) && unExistFileds.length){
             queryObj.unexist_fields = JSON.stringify(unExistFileds);
         }
-
         //取全部线索列表
         clueCustomerAction.getClueFulltext(queryObj);
     };
@@ -1573,6 +1569,7 @@ class ClueCustomer extends React.Component {
                         <div
                             className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>
                             <ClueFilterPanel
+                                ref={filterPanel => this.filterPanel = filterPanel}
                                 clueSourceArray={this.state.clueSourceArray}
                                 accessChannelArray={this.state.accessChannelArray}
                                 clueClassifyArray={this.state.clueClassifyArray}
