@@ -33,10 +33,20 @@ class FilterList extends React.Component {
         this.handleClearAll = this.handleClearAll.bind(this);
     }
     componentDidMount() {
+        this.setDefaultFilterSetting();
         filterEmitter.on(filterEmitter.CLEAR_FILTERS + this.props.key, this.handleClearAll);
         filterEmitter.on(filterEmitter.ADD_COMMON + this.props.key, this.handleAddCommon);
         filterEmitter.on(filterEmitter.CHANGE_PERMITTED + this.props.key, this.handleChangePermitted);
         this.handleChangePermitted = this.handleChangePermitted.bind(this);
+    }
+    setDefaultFilterSetting = () => {
+        if (this.props.setDefaultSelect){
+            this.props.setDefaultSelectCommonFilter(this.state.commonData,(targetIndex) => {
+                if (targetIndex !== ''){
+                    this.handleCommonItemClick(this.state.commonData[targetIndex],targetIndex);
+                }
+            });
+        }
     }
     componentWillReceiveProps(newProps) {
         const { commonData, advancedData } = newProps;
@@ -720,7 +730,11 @@ FilterList.defaultProps = {
     renderOtherDataContent: function() {
 
     },
-    hideAdvancedTitle: false
+    hideAdvancedTitle: false,
+    setDefaultSelectCommonFilter: function() {
+
+    },
+    setDefaultSelect: false,
 };
 /**
  * advancedData=[
@@ -770,5 +784,7 @@ FilterList.propTypes = {
     renderOtherDataContent: PropTypes.func,
     onDelete: PropTypes.func,
     hideAdvancedTitle: PropTypes.bool,
+    setDefaultSelectCommonFilter: PropTypes.func,
+    setDefaultSelect: PropTypes.bool,
 };
 export default FilterList;

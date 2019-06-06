@@ -21,7 +21,7 @@ const RadioGroup = Radio.Group;
 const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
-import {removeSpacesAndEnter,getUnhandledClueCountParams} from 'PUB_DIR/sources/utils/common-method-util';
+import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 require('./css/index.less');
 import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount, AVALIBILITYSTATUS} from './utils/clue-customer-utils';
@@ -73,7 +73,7 @@ class ClueCustomer extends React.Component {
         clueImportTemplateFormShow: false,//线索导入面板是否展示
         previewList: [],//预览列表
         clueAnalysisPanelShow: false,//线索分析面板是否展示
-        showFilterList: false,//是否展示线索筛选区域
+        showFilterList: userData.getUserData().isCommonSales ? true : false,//是否展示线索筛选区域
         exportRange: 'filtered',
         isExportModalShow: false,//是否展示导出线索的模态框
         isEdittingItem: {},//正在编辑的那一条
@@ -86,6 +86,9 @@ class ClueCustomer extends React.Component {
         selectedClues: [],//获取批量操作选中的线索
         ...clueCustomerStore.getState()
     };
+    isCommonSales = () => {
+        return userData.getUserData().isCommonSales;
+    };
     componentDidMount() {
         clueCustomerStore.listen(this.onStoreChange);
         //获取线索来源
@@ -95,10 +98,8 @@ class ClueCustomer extends React.Component {
         //获取线索分类
         this.getClueClassify();
         clueCustomerAction.getSalesManList();
-        //点击未处理线索的数量跳转过来的
-        if(_.get(this.props,'location.state.clickUnhandleNum')){
-            this.getUnhandledClue();
-        }else{
+        //如果是普通销售，不需要发请求了
+        if(!this.isCommonSales()){
             this.getClueList();
         }
         this.changeTableHeight();
@@ -106,12 +107,10 @@ class ClueCustomer extends React.Component {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
     }
     getUnhandledClue = () => {
-        var data = getUnhandledClueCountParams();
+        //现在只有普通销售有未读数
         clueFilterAction.setTimeType('all');
-        clueFilterAction.setFilterType([{value: _.get(JSON.parse(data.typeFilter),'status')}]);
-        setTimeout(() => {
-            this.getClueList(data);
-        });
+        clueFilterAction.setFilterClueAllotNoTrace('0');
+        this.filterPanel.filterList.setDefaultFilterSetting();
     };
     changeTableHeight = () => {
         var tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE - LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT;
@@ -336,6 +335,10 @@ class ClueCustomer extends React.Component {
             clueCustomerAction.setSortField('source_time');
         }
         var unExistFileds = clueFilterStore.getState().unexist_fields;
+        var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
+        if (filterAllotNoTraced){
+            typeFilter.allot_no_traced = filterAllotNoTraced;
+        }
         //跟据类型筛选
         const queryObj = {
             lastClueId: this.state.lastCustomerId,
@@ -343,12 +346,8 @@ class ClueCustomer extends React.Component {
             sorter: this.state.sorter,
             keyword: this.state.keyword,
             rangeParams: rangeParams,
-            statistics_fields: 'status',
-            userId: userData.getUserData().userId || '',
             typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter)
         };
-
-
         //选中的线索来源
         var filterClueSource = filterStoreData.filterClueSource;
         if (_.isArray(filterClueSource) && filterClueSource.length){
@@ -381,7 +380,6 @@ class ClueCustomer extends React.Component {
         if(_.isArray(unExistFileds) && unExistFileds.length){
             queryObj.unexist_fields = JSON.stringify(unExistFileds);
         }
-
         //取全部线索列表
         clueCustomerAction.getClueFulltext(queryObj);
     };
@@ -399,8 +397,6 @@ class ClueCustomer extends React.Component {
         var queryObj = {
             keyword: keyWord,
             rangeParams: JSON.stringify(rangeParams),
-            statistics_fields: 'status',
-            userId: userData.getUserData().userId || '',
             typeFilter: JSON.stringify(typeFilter)
         };
         if (!isGetAllClue){
@@ -1572,6 +1568,7 @@ class ClueCustomer extends React.Component {
                         <div
                             className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>
                             <ClueFilterPanel
+                                ref={filterPanel => this.filterPanel = filterPanel}
                                 clueSourceArray={this.state.clueSourceArray}
                                 accessChannelArray={this.state.accessChannelArray}
                                 clueClassifyArray={this.state.clueClassifyArray}

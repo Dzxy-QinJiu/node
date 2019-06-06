@@ -10,16 +10,19 @@ var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
 import { AntcDatePicker as DatePicker } from 'antc';
-import {clueStartTime } from '../../utils/clue-customer-utils';
+import {clueStartTime, SELECT_TYPE} from '../../utils/clue-customer-utils';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
 const COMMON_OTHER_ITEM = 'otherSelectedItem';
-const otherFilterArray = [{
+var otherFilterArray = [{
     name: Intl.get('clue.repeat.clue.list', '重复线索'),
     value: 'repeat_id'
 }, {
     name: Intl.get('clue.has.no.relative.customer', '没有关联客户的线索'),
     value: 'customer_id'
+},{
+    name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
+    value: SELECT_TYPE.WAIT_ME_HANDLE
 }
 ];
 import userData from 'PUB_DIR/sources/user-data';
@@ -73,6 +76,7 @@ class ClueFilterPanel extends React.Component {
         if (!data.find(group => group.groupId === COMMON_OTHER_ITEM)) {
             FilterAction.setExistedFiled();
             FilterAction.setUnexistedFiled();
+            FilterAction.setFilterClueAllotNoTrace();
         }
         data.forEach(item => {
             if (item.groupId) {
@@ -108,9 +112,16 @@ class ClueFilterPanel extends React.Component {
                     if (item.value === 'repeat_id'){
                         FilterAction.setExistedFiled('repeat_id');
                         FilterAction.setUnexistedFiled();
+                        FilterAction.setFilterClueAllotNoTrace();
                     }else if (item.value === 'customer_id'){
                         FilterAction.setExistedFiled();
                         FilterAction.setUnexistedFiled('customer_id');
+                        FilterAction.setFilterClueAllotNoTrace();
+                    }else if (item.value === SELECT_TYPE.WAIT_ME_HANDLE){
+                        //如果筛选的是待我处理的线索
+                        FilterAction.setExistedFiled();
+                        FilterAction.setUnexistedFiled();
+                        FilterAction.setFilterClueAllotNoTrace('0');
                     }
                 }else if (item.groupId === 'user_name'){
                     FilterAction.setFilterClueUsername( _.get(item,'data'));
@@ -175,6 +186,13 @@ class ClueFilterPanel extends React.Component {
         });
         return _.flattenDeep(provinceList);
     };
+    setDefaultSelectCommonFilter = (commonData,callback) => {
+        var targetIndex = '';
+        if (userData.getUserData().isCommonSales){
+            var targetIndex = _.findIndex(commonData, item => item.value === SELECT_TYPE.WAIT_ME_HANDLE);
+        }
+        _.isFunction(callback) && callback(targetIndex);
+    };
     render(){
         //线索来源
         const clueSourceArray = this.state.clueSourceArray;
@@ -192,6 +210,10 @@ class ClueFilterPanel extends React.Component {
             value: 'avaibility',
         });
         const clueProvinceList = this.handleClueProvinceList();
+        //如果是普通销售，增加待我处理筛选项
+        if (!userData.getUserData().isCommonSales){
+            otherFilterArray = _.filter(otherFilterArray, item => item.value !== SELECT_TYPE.WAIT_ME_HANDLE);
+        }
         const commonData = otherFilterArray.map(x => {
             x.readOnly = true;
             x.groupId = COMMON_OTHER_ITEM;
@@ -269,10 +291,13 @@ class ClueFilterPanel extends React.Component {
             <div data-tracename="筛选">
                 <div className="clue-filter-panel">
                     <FilterList
+                        ref={filterList => this.filterList = filterList}
                         commonData={commonData}
                         advancedData={advancedData}
                         onFilterChange={this.handleFilterChange.bind(this)}
                         renderOtherDataContent={this.renderTimeRangeSelect}
+                        setDefaultSelectCommonFilter={this.setDefaultSelectCommonFilter}
+                        setDefaultSelect={true}
                         style={this.props.style}
                     />
                 </div>
