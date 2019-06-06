@@ -21,7 +21,7 @@ const RadioGroup = Radio.Group;
 const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
-import {removeSpacesAndEnter,getUnhandledClueCountParams} from 'PUB_DIR/sources/utils/common-method-util';
+import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 require('./css/index.less');
 import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount, AVALIBILITYSTATUS} from './utils/clue-customer-utils';
@@ -107,7 +107,6 @@ class ClueCustomer extends React.Component {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
     }
     getUnhandledClue = () => {
-        var data = getUnhandledClueCountParams();
         //现在只有普通销售有未读数
         clueFilterAction.setTimeType('all');
         clueFilterAction.setFilterClueAllotNoTrace('0');
