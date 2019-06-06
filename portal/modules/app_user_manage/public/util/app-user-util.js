@@ -239,6 +239,29 @@ exports.getAccountTypeList = function(apps,rowData) {
     );
 };
 
+//用户表格中，获取角色的列表
+exports.getRoleList = function(apps,rowData) {
+    let appList = [];
+    if(_.isArray(apps)){
+        let cls = classNames({
+            app_ellipsis: apps.length > 1
+        });
+        appList = apps.map(function(app, i) {
+            var text = app.custom_variables ? app.custom_variables['role'] : '';
+            return (
+                <li key={i} className={cls} title={text}>
+                    {text ? text : <span>&nbsp;</span>}
+                </li>
+            );
+        });
+    }
+    return (
+        <ul className="appList">
+            {appList}
+        </ul>
+    );
+};
+
 //用户表格中，获取时间的列表
 exports.getTimeList = function(field,rowData) {
     let apps = rowData ? rowData.apps : [];

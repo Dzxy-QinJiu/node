@@ -95,7 +95,7 @@ CrmStore.prototype.afterMergeCustomer = function(mergeObj) {
         let deleteCustomers = _.get(mergeObj,'delete_customers');
         //合并后删除的客户id列表
         let delCustomerIds = _.map(deleteCustomers,'id');
-        if (_.isEmpty(delCustomerIds)) {
+        if (!_.isEmpty(delCustomerIds)) {
             this.curCustomers = _.filter(this.curCustomers, customer => _.indexOf(delCustomerIds,customer.id) === -1);
             this.customersSize -= delCustomerIds.length;//客户的总数去掉删除的客户数
         }

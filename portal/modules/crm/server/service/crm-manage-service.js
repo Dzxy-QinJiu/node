@@ -26,7 +26,7 @@ var crmRestApis = {
     dynamic: '/rest/customer/v2/customerdynamic',
     upload: '/rest/customer/v3/customer/upload/preview',
     repeatCustomer: '/rest/customer/v3/customer/range/:type/:page_size/repeat_id/descend',
-    getRepeatCustomerById: '/rest/customer/v2/customer/:customerId',
+    getRepeatCustomerById: '/rest/customer/v3/customer/all/:type/:page_size/repeat_id/descend',
     delRepeatCustomer: '/rest/customer/v2/customer/delete',
     getCustomerById: '/rest/customer/v2/customer/query/1/name/descend',
     mergeRepeatCustomer: '/rest/customer/v3/customer/merge/customer',
@@ -256,12 +256,14 @@ exports.getRepeatCustomerList = function(req, res, queryParams) {
 
 //通过重复客户的客户id获取重复客户
 exports.getRepeatCustomerById = function(req, res) {
-    return restUtil.authRest.get(
+    let customerIds = req.params.customer_id || '';
+    let page_size = _.get(customerIds.split(','), 'length', 0);
+    return restUtil.authRest.post(
         {
-            url: crmRestApis.getRepeatCustomerById.replace(':customerId', req.params.customerId),
+            url: crmRestApis.getRepeatCustomerById.replace(':type', req.params.type || 'user').replace(':page_size', page_size),
             req: req,
             res: res
-        }, null);
+        }, {query: {id: customerIds}});
 };
 
 //删除重复客户
