@@ -1,13 +1,67 @@
 @import "../../../public/css/common-variables.less";
 
 .office-container {
-  padding: 16px 16px 24px;
+  padding: 16px 24px;
+  .office-content {
+    .office-list {
+      .item-office-container {
+        min-height: 32px;
+        font-size: 14px;
+        .item-office-content {
+          padding: 0 8px;
+          .icon-team-role {
+            padding-right: 8px;
+          }
+          .item-text {
+            padding-right: 8px;
+          }
+          .default-role-checked{
+            color: #999999;
+            border: 1px solid #999999;
+            font-size: 12px;
+          }
+          .customer-container {
+            color: #999999;
+            font-size: 12px;
+            float: right;
+            .customer-count, .icon-more {
+              padding-left: 5px;
+            }
+            .icon-more {
+              color: #2196F3;
+              cursor: pointer;
+            }
+          }
+          .delete-zone {
+            display: inline-block;
+            float: right;
+            cursor: pointer;
+            .delete-position {
+              color: #EB5E57;
+              padding-right: 10px;
+            }
+            .cancel-delete {
+              color: #999;
+            }
+          }
+        }
+        &:hover{
+          background: #F1F8FE;
+        }
+      }
+      .item-office-delete-container {
+        background: #FBDFDD;
+      }
+    }
+  }
+
+
   // 增加职务样式
   .add-office-container {
     font-size: 14px;
     .add-office {
       color: #8DA8C5;
-      height: 24px;
+      height: 32px;
       cursor: pointer;
       .name-label {
         padding-left: 6px;
@@ -38,57 +92,23 @@
 
     }
   }
-  li.sales-tag{
+}
+
+// 编辑职务、删除职务、设为默认的样式
+.ant-popover-inner-content {
+  .office-operation-zone {
+    cursor: pointer;
+    color: #8DA8C5;
     font-size: 14px;
-    margin-bottom: 10px;
-    office: relative;
-    height: 32px;
-    &:hover{
-      background: #ecf6fd;
+    .iconfont {
+      padding-right: 5px;
     }
-    input{
-      height: 25px;
-    }
-    .sales-tag-content {
-      .default-role-checked{
-        color: #fdc90c;
-        border: 1px solid #fdc90c;
-        cursor: default;
+    .operation-item-zone {
+      height: 32px;
+      &:hover {
+        color: #2196F3;
+        background-color: #F1F8FE;
       }
-    }
-    .sales-tag-text{
-      display: inline-block;
-      margin: 0px 10px 0 0;
-    }
-    .default-role-descr{
-      margin: 0 10px 0 0;
-      color: #d2cfcf;
-      border: 1px solid #d2cfcf;
-      padding: 1px;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    .customer-container{
-      margin: 0px 10px;
-      display: inline-block;
-      .iconfont{
-        cursor: pointer;
-        padding-left: 5px;
-      }
-      .iconfont.icon-choose{
-        font-size: 12px;
-        color:@icon_choose_color;
-      }
-      .iconfont.icon-close{
-        font-size: 12px;
-        margin-right: 10px;
-        color:@icon_close_color;
-      }
-    }
-    .alert-timer{
-      office: absolute;
-      top:-15px;
-      right:600px;
     }
   }
 }

@@ -731,10 +731,14 @@ var en_US = {
     'member.search.position.by.name': 'Enter position name for searching', // 输入职务名称搜索
     'member.add.position': 'Add', // 添加职务
     'member.position.name.label': 'Name', // 职务名称
+    'member.position.name.placeholder': '', // 请输入职务名称
     'member.team.add.child.department': 'Add sub department', // 添加子部门
     'member.group.sales.goal': 'Department Sales Target', // 部门销售目标
     'member.selected.member.count': '{count} selected', // 已选{count}
-
+    'member.position.set.default.failed': '', // 设置默认角色失败
+    'member.position.edit.office': '', // 编辑职务
+    'member.position.delete.office': '', // 删除职务
+    'member.position.set.default': '', // 设为默认
     //后台管理-成员end
     //组织管理start
     'organization.no.organization.tip': 'No organization,please add one first',//暂无组织，请先添加
