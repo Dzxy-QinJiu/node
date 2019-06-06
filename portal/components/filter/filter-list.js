@@ -40,7 +40,7 @@ class FilterList extends React.Component {
         this.handleChangePermitted = this.handleChangePermitted.bind(this);
     }
     setDefaultFilterSetting = () => {
-        if (_.isFunction(this.props.setDefaultSelectCommonFilter)){
+        if (this.props.setDefaultSelect){
             this.props.setDefaultSelectCommonFilter(this.state.commonData,(targetIndex) => {
                 if (targetIndex !== ''){
                     this.handleCommonItemClick(this.state.commonData[targetIndex],targetIndex);
@@ -734,6 +734,7 @@ FilterList.defaultProps = {
     setDefaultSelectCommonFilter: function() {
 
     },
+    setDefaultSelect: false,
 };
 /**
  * advancedData=[
@@ -784,5 +785,6 @@ FilterList.propTypes = {
     onDelete: PropTypes.func,
     hideAdvancedTitle: PropTypes.bool,
     setDefaultSelectCommonFilter: PropTypes.func,
+    setDefaultSelect: PropTypes.bool,
 };
 export default FilterList;
