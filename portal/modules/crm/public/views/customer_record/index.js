@@ -37,6 +37,7 @@ import PhoneCallout from 'CMP_DIR/phone-callout';
 var classNames = require('classnames');
 import {AntcDatePicker as DatePicker} from 'antc';
 import {CALL_RECORD_TYPE, processForTrace} from './../../utils/crm-util';
+import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -578,11 +579,15 @@ class CustomerRecord extends React.Component {
             <div className="report-detail-content">
                 <div className="item-detail-content" id={item.id}>
                     <div className="report-content-descr">
-                        {platformName ? `[${platformName}] ` : ''}
-                        <a href={reportUrl}>{reportUrl}</a>
-                        <ShearContent>
-                            {decodeHTML(reportContent)}
-                        </ShearContent>
+                        <div className="report-content-start">
+                            {platformName ? `[${platformName}] ` : ''}
+                            <a href={reportUrl}>{reportUrl}</a>
+                        </div>
+                        <div className="content-overflow-ellipsis">
+                            <ShearContent>
+                                {decodeHTML(reportContent)}
+                            </ShearContent>
+                        </div>
                     </div>
                     <div>
                         <a onClick={this.openSourceUrl.bind(this, reportDoc.url)}>{Intl.get('crm.trace.report.source', '原文')}</a>
@@ -592,10 +597,12 @@ class CustomerRecord extends React.Component {
                     </div>
                 </div>
                 <div className="item-bottom-content">
-                    <span className="sale-name">{reportObj.submitter_name || ''}</span>
-                    {appName ? (<span className="report-app-name"> - {appName}</span>) : null}
-                    <span className="trace-record-time">
-                        {moment(item.time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
+                    {appName ? (<span className="report-app-name">{appName}</span>) : null}
+                    <span className="item-bottom-right">
+                        <span className="sale-name">{reportObj.submitter_name || ''}</span>
+                        <span className="trace-record-time">
+                            {moment(item.time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
+                        </span>
                     </span>
                 </div>
             </div>
@@ -614,10 +621,15 @@ class CustomerRecord extends React.Component {
     renderRecordShowContent = (item) => {
         //是否是编辑跟进记录，有跟进内容并且能编辑(没有跟进内容时是补充跟进记录)
         let isEditRecord = item.remark && !this.props.disableEdit;
+        //是否展示编辑按钮,有跟进内容(没有跟进内容时是补充跟进记录)，能编辑，并且没有正在编辑的跟进记录，并且没有正在添加跟进记录
+        let showEidtBtn = item.remark && !this.props.disableEdit && !this.state.isEdit && !this.state.addRecordPanelShow;
         return (
-            <div className="record-content-show" onClick={this.editDetailContent.bind(this, item)}
-                title={isEditRecord ? Intl.get('crm.record.edit.record.tip', '点击修改跟进记录') : ''}>
+            <div className="record-content-show">
                 {item.remark ? (<ShearContent>{item.remark}</ShearContent>) : this.renderSupplementTip(item)}
+                {showEidtBtn ? <DetailEditBtn
+                    title={Intl.get('common.edit', '编辑')}
+                    onClick={this.editDetailContent.bind(this, item)}
+                /> : null}
             </div>);
     };
 
@@ -637,12 +649,9 @@ class CustomerRecord extends React.Component {
                 <p className="item-detail-tip">
                     <span className="icon-container" title={title}><i className={iconClass}></i></span>
                     {traceDsc ? (<span className="trace-title-name" title={traceDsc}>{traceDsc}</span>) : null}
-                    {_.includes(PHONE_TYPES, item.type) ?
-                        <PhoneCallout
-                            phoneNumber={item.dst}
-                        /> : null}
+                    {_.includes(PHONE_TYPES, item.type) ? (<span className="trace-title-phone">{item.dst}</span>) : null}
                 </p>
-                {item.type === 'data_report' ? this.renderReportContent(item) : (<div>
+                {item.type === 'data_report' ? this.renderReportContent(item) : (<div className="trace-content">
                     <div className="item-detail-content" id={item.id}>
                         {item.showAdd ? this.renderAddDetail(item) : this.renderRecordShowContent(item)}
                     </div>
@@ -653,21 +662,29 @@ class CustomerRecord extends React.Component {
                             </span>
                         ) : /* 电话已接通并且有recording这个字段展示播放图标*/
                             item.recording ? (
-                                <Tooltip placement='top'
+                                <span className="audio-container"
                                     title={is_record_upload ? Intl.get('call.record.play', '播放录音') : Intl.get('crm.record.unupload.phone', '未上传通话录音，无法播放')}>
-                                    <span className="audio-container">
-                                        <span className={cls} onClick={this.handleAudioPlay.bind(this, item)}
-                                            data-tracename="点击播放录音按钮">
-                                            <span className="call-time-descr">
-                                                {TimeUtil.getFormatMinuteTime(item.billsec)}
-                                            </span>
+                                    <span className={cls} onClick={this.handleAudioPlay.bind(this, item)}
+                                        data-tracename="点击播放录音按钮">
+                                        <span className="call-time-descr">
+                                            {TimeUtil.getFormatMinuteTime(item.billsec)}
                                         </span>
                                     </span>
-                                </Tooltip>) : null
+                                </span>
+                            ) : null
                         }
-                        <span className="sale-name">{item.nick_name}</span>
-                        <span className="trace-record-time">
-                            {moment(item.time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
+                        {_.includes(PHONE_TYPES, item.type) ?
+                            (<span className="phone-call-out-btn" title={Intl.get('crm.click.call.phone', '点击拨打电话')}>
+                                <PhoneCallout
+                                    phoneNumber={item.dst}
+                                    hidePhoneNumber={true}
+                                />
+                            </span>) : null}
+                        <span className="item-bottom-right">
+                            <span className="sale-name">{item.nick_name}</span>
+                            <span className="trace-record-time">
+                                {moment(item.time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
+                            </span>
                         </span>
                     </div>
                 </div>)}
