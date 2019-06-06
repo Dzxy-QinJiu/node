@@ -153,8 +153,12 @@ class RegRulesView extends React.Component {
                         bo.name = elem.showName;
                         //增加节点的审批人，如果是指定的审批人，先不需要加candidateUsers这个属性，加上会报错
                         if (elem.candidateApprover && elem.candidateApprover !== ASSIGEN_APPROVER) {
+                            var candidateText = '${' + elem.candidateApprover + '}';
+                            if (elem.hideBrack){
+                                candidateText = elem.candidateApprover;
+                            }
                             modeling.updateProperties(curNode, {
-                                candidateUsers: '${' + elem.candidateApprover + '}'
+                                candidateUsers: candidateText
                             });
                         }
                         modeling.appendShape(previousNode, curNode);

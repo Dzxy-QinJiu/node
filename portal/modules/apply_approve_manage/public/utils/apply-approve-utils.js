@@ -232,7 +232,9 @@ exports.HIGHER_LEVEL = [
     {
         name: Intl.get('apply.add.approve.node.all.higher.level.owner', '所有上级团队所有者'),
         value: 'allseniorteamowner'
-    },
+    }
+];
+exports.ROLES_SETTING = [
     {
         name: Intl.get('common.managers', '管理员'),
         value: 'managers'

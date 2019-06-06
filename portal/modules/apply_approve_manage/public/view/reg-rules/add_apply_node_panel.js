@@ -23,6 +23,7 @@ import {
     isSalesOpportunityFlow,
     isBussinessTripFlow,
     isLeaveFlow,
+    ROLES_SETTING,
     SETTING_APPLY_APPROVER
 } from '../../utils/apply-approve-utils';
 require('../../style/add-apply-node.less');
@@ -69,9 +70,17 @@ class AddApplyNodePanel extends React.Component {
             type: 'get',
             data: {cur_page: 1},
             success: (userListObj) => {
+                var rolesList = _.get(userListObj, 'roles');
+                _.forEach(rolesList, item => {
+                    var roleName = item.role_name;
+                    var target = _.find(ROLES_SETTING, levelItem => levelItem.name === roleName);
+                    if (target){
+                        item.save_role_value = target.value;
+                    }
+                });
                 this.setState({
                     userList: _.get(userListObj, 'data'),
-                    roleList: _.get(userListObj, 'roles')
+                    roleList: rolesList
                 });
             },
             error: (xhr, textStatus) => {
@@ -144,7 +153,7 @@ class AddApplyNodePanel extends React.Component {
     handleChangeSelectRole = (value) => {
         var setting_roles = this.state.setting_roles;
         setting_roles.selectRole = value;
-        var target = _.find(this.state.roleList, item => item.role_id === value);
+        var target = _.find(this.state.roleList, item => item.save_role_value === value);
         setting_roles.showSelectRole = target.role_name;
         this.setState({
             setting_roles: setting_roles
@@ -192,7 +201,7 @@ class AddApplyNodePanel extends React.Component {
                             <div className="addition-condition-item">
                                 <Select value={setting_roles.selectRole} onChange={this.handleChangeSelectRole}>
                                     {_.map(this.state.roleList, (item) => {
-                                        return <Option value={item.role_id}>{item.role_name}(
+                                        return <Option value={item.save_role_value}>{item.role_name}(
                                             {Intl.get('apply.add.approve.num.person', '{num}人', {num: item.num})})</Option>;
                                     })}
                                 </Select>
@@ -248,6 +257,7 @@ class AddApplyNodePanel extends React.Component {
                     if (setting_users.selectUser) {
                         submitObj.candidateApprover = setting_users.selectUser;
                         submitObj.showName = setting_users.showSelectUser;
+                        submitObj.hideBrack = true;//如果是指定成员的话，不需要加$符号
                     } else {
                         errTip = 'sssaaa';
                     }
