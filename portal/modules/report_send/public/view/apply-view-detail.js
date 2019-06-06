@@ -255,13 +255,14 @@ class ApplyViewDetail extends React.Component {
             if (APPLY_FINISH_STATUS.includes(detailItem.status)) {
                 ReportSendApplyDetailAction.getApplyCommentList({id: detailItem.id});
                 ReportSendApplyDetailAction.getApplyDetailById({id: detailItem.id}, detailItem.status, applyData);
+
             } else if (detailItem.id) {
                 ReportSendApplyDetailAction.getApplyDetailById({id: detailItem.id});
                 ReportSendApplyDetailAction.getApplyCommentList({id: detailItem.id});
                 //根据申请的id获取申请的节点位置
                 ReportSendApplyDetailAction.getApplyTaskNode({id: detailItem.id});
-                this.getNextCandidate(detailItem.id);
             }
+            this.getNextCandidate(detailItem.id);
         });
     }
 
@@ -435,6 +436,7 @@ class ApplyViewDetail extends React.Component {
                 status: 'pass'
             });
             detailInfoObj.approve_details = replyList;
+            ReportSendApplyDetailAction.setNextCandidate([]);
             ReportSendApplyDetailAction.setDetailInfo(detailInfoObj);
         });
     };

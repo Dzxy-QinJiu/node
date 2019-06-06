@@ -431,6 +431,7 @@ class ApplyViewDetail extends React.Component {
                 status: 'pass'
             });
             detailInfoObj.approve_details = replyList;
+            DocumentWriteApplyDetailAction.setNextCandidate([]);
             DocumentWriteApplyDetailAction.setDetailInfo(detailInfoObj);
         });
     };
