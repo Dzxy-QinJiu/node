@@ -251,7 +251,7 @@ class UploadAndDeleteFile extends React.Component {
             var managerFiles = allUploadFiles.approverUploadFiles;
             if (managerFiles.length){
                 btnDesc = Intl.get('apply.approve.continue.file.type','继续上传{fileType}',{fileType: this.getFileListName()});
-            }else if (hasApprovedReportAndDocumentApply(_.get(detailInfoObj,'approver_ids',[]))){
+            }else if (!calTotalSize){
                 btnDesc = Intl.get('apply.approve.upload.file.type','上传{fileType}',{fileType: this.getFileListName()});
             }else if (salesFiles.length){
                 btnDesc = Intl.get('apply.approve.continue.file.type','继续上传{fileType}',{fileType: Intl.get('apply.approve.customer.info', '客户资料')});
@@ -455,7 +455,7 @@ UploadAndDeleteFile.defaultProps = {
     },
     fileList: [],
     uploadAndDeletePrivilege: '',//total：上传文件计算大小是根据总文件判断 single：上传文件计算大小是根据单个文件判断
-    selectType: [],
+    selectType: []
 
 };
 UploadAndDeleteFile.propTypes = {
@@ -467,6 +467,6 @@ UploadAndDeleteFile.propTypes = {
     fileRemove: PropTypes.func,
     fileList: PropTypes.object,
     uploadAndDeletePrivilege: PropTypes.string,
-    selectType: PropTypes.object,
+    selectType: PropTypes.object
 };
 export default UploadAndDeleteFile;
