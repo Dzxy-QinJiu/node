@@ -370,9 +370,8 @@ function templateFile(req, res, example) {
 exports.getUserTemplate = (req, res) => {
     const backendIntl = new BackendIntl(req);
     const filename = backendIntl.get('user.import.user.template', '用户模板');
-    const filePath = path.resolve(__dirname, '../tpl/user_tpl.csv');
-    res.download(filePath, filename + '.csv');
-
+    const filePath = path.resolve(__dirname, '../tpl/user_tpl.xls');
+    res.download(filePath, filename + '.xls');
 };
 
 // 上传用户
