@@ -14,6 +14,7 @@ class OfficeForm extends React.Component{
     }
 
     getFormData = (itemOffice) => {
+        console.log('itemOffice:',itemOffice);
         let isEdit = _.get(itemOffice, 'isEdit');
         if (isEdit) { // 编辑
             return {
@@ -45,8 +46,27 @@ class OfficeForm extends React.Component{
         event.preventDefault();
         let formData = this.state.formData;
         let isEdit = _.get(formData, 'isEdit');
+        this.setState({
+            loading: true
+        });
         if (isEdit) {
-
+            officeManageAjax.editPosition(formData).then( (result) => {
+                this.setState({
+                    loading: false
+                });
+                if (result) {
+                    this.props.handleSubmit(formData, 'edit');
+                } else {
+                    this.setState({
+                        errMsg: Intl.get('member.add.failed', '添加失败！')
+                    });
+                }
+            }, (errMsg) => {
+                this.setState({
+                    loading: false,
+                    errMsg: errMsg
+                });
+            } );
         } else {
             let nameValue = _.get(formData, 'name');
             if (nameValue) {
@@ -59,12 +79,13 @@ class OfficeForm extends React.Component{
                     return;
                 }
                 officeManageAjax.addPosition(formData).then( (result) => {
-                    console.log('result:',result);
-                    if (result) {
-                        this.props.handleSubmitOperate(result);
+                    this.setState({
+                        loading: false,
+                    });
+                    if (result && _.get(result, 'id')) {
+                        this.props.handleSubmit(result, 'add');
                     } else {
                         this.setState({
-                            loading: false,
                             errMsg: Intl.get('member.add.failed', '添加失败！')
                         });
                     }
@@ -82,17 +103,24 @@ class OfficeForm extends React.Component{
         }
     };
 
+    handleCancel = (event) => {
+        event.preventDefault();
+        let formData = this.state.formData;
+        console.log('formData:',formData);
+        this.props.handleCancel(formData);
+    };
+
     render() {
         const formItemLayout = {
             colon: false,
-            labelCol: {span: 5},
-            wrapperCol: {span: 19}
+            labelCol: {span: 8},
+            wrapperCol: {span: 16}
         };
         let formData = this.state.formData;
         let nameValue = _.get(formData, 'name');
         let count = _.get(formData, 'customer_num');
         return (
-            <div className="office-box">
+            <div className='office-form'>
                 <Form layout='horizontal' className='form' autoComplete='off'>
                     <FormItem
                         label={Intl.get('member.position.name.label', '职务名称')}
@@ -131,7 +159,8 @@ class OfficeForm extends React.Component{
 OfficeForm.propTypes = {
     itemOffice: PropTypes.object,
     positionList: PropTypes.array,
-    handleSubmitOperate: PropTypes.func,
+    handleSubmit: PropTypes.func,
+    handleCancel: PropTypes.func
 };
 
 module.exports = Form.create()(OfficeForm);

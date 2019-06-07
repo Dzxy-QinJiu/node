@@ -51,10 +51,12 @@
       }
       .item-office-delete-container {
         background: #FBDFDD;
+        &:hover{
+          background: #FBDFDD;
+        }
       }
     }
   }
-
 
   // 增加职务样式
   .add-office-container {
@@ -67,36 +69,42 @@
         padding-left: 6px;
       }
     }
-    .add-office-box {
-      height: 128px;
-      background: #E4F2FE;
-      border-radius: 4px;
-      .office-box {
-        .ant-form-item {
-          padding-top: 5px;
-          margin-bottom: 5px;
-          height: 32px;
-          .ant-form-item-label label {
-            color: #999999;
-            font-size: 14px;
-            font-weight: 400;
-          }
+  }
+  // 表单样式
+  .edit-item-or-add-zone {
+    height: 128px;
+    background: #E4F2FE;
+    border-radius: 4px;
+    .office-form {
+      padding: 8px;
+      .ant-form-item {
+        margin-bottom: 5px;
+        height: 32px;
+        .ant-input-number {
+          width: 160px;
         }
-        .office-btn {
+        .ant-form-item-label label {
+          color: #999999;
+          font-size: 14px;
+          font-weight: 400;
           text-align: right;
-          button {
-            margin-right: 10px;
-          }
         }
       }
-
+      .office-btn {
+        text-align: right;
+        button {
+          margin-right: 10px;
+        }
+      }
     }
+
   }
 }
 
 // 编辑职务、删除职务、设为默认的样式
 .ant-popover-inner-content {
   .office-operation-zone {
+    z-index: 99;
     cursor: pointer;
     color: #8DA8C5;
     font-size: 14px;

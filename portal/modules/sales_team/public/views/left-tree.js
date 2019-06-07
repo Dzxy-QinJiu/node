@@ -215,6 +215,15 @@ class LeftTree extends React.Component {
         });
     };
 
+    handleHoverChange = (visible) => {
+        if (!visible) {
+            this.setState({
+                mouseZoneHoverKey: '',
+                visible: false
+            });
+        }
+    };
+
     handleMouseLeave = (event) => {
         event.stopPropagation();
         this.setState({
@@ -292,6 +301,7 @@ class LeftTree extends React.Component {
                                                 <Popover
                                                     content={this.renderOperateChildTeam(item)}
                                                     placement="bottomRight"
+                                                    onVisibleChange={this.handleHoverChange}
                                                 >
                                                     <span className='iconfont icon-more'></span>
                                                 </Popover>
@@ -439,7 +449,10 @@ class LeftTree extends React.Component {
             <div className="sales-team-group" style={{height: this.props.containerHeight}} data-tracename="团队管理左侧列表">
                 <div className="sales-team-tree-container" style={{height: scrollHeight}} data-tracename="团队列表">
                     <GeminiScrollbar className="geminiScrollbar-vertical">
-                        <ul className="left-tree-ul">
+                        <ul
+                            className="left-tree-ul"
+                            onMouseLeave={this.handleMouseLeave}
+                        >
                             {
                                 this.props.isEditGroupFlag ? (
                                     this.renderAddOrEditGroup(this.props.curEditGroup)

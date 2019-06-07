@@ -18,7 +18,10 @@ class OfficeManage extends React.Component {
         isLoading: false,
         deleteErrMsg: '', // 删除角色失败
         isShowAddPosition: true, // 默认显示添加职务
+        isShowEditPositionFlag: false, // 默认不显示编辑
+        isShowDeletePositionFlag: false, // 默认不显示删除
         mouseZoneHoverItemId: '', // 鼠标移入区域的id
+        visible: false
     };
 
     componentDidMount = () => {
@@ -49,41 +52,9 @@ class OfficeManage extends React.Component {
     // 编辑职务
     editPosition = (item) => {
         item.isEdit = true;
-        let updateObj = {
-            id: item.id,
-            customer_num: this.state.updateRoleCustomerNum
-        };
         this.setState({
-            isUpdateloading: true
+            isShowEditPositionFlag: true
         });
-
-        $.ajax({
-            url: '/rest/sales/setting/customer',
-            type: 'put',
-            dateType: 'json',
-            data: updateObj,
-            success: (result) => {
-                if (result) {
-                    let positionList = this.state.positionList;
-                    let updateRoleItem = _.find(positionList, saleRole => saleRole.id === item.id);
-                    updateRoleItem.customer_num = this.state.updateRoleCustomerNum;
-                    this.setState({
-                        positionList: this.state.positionList,
-                        isUpdateloading: false,
-                        updateErrMsg: '',
-                    });
-                }
-                item.isEdit = false;
-            },
-            error: (errMsg) => {
-                this.setState({
-                    isUpdateloading: false,
-                    updateErrMsg: errMsg
-                });
-                item.isEdit = false;
-            }
-        });
-
     };
 
 
@@ -119,21 +90,6 @@ class OfficeManage extends React.Component {
         } );
     };
 
-    // 添加职务失败
-    handleAddRoleFail = () => {
-        var hide = () => {
-            this.setState({
-                addErrMsg: '',
-                isLoading: false
-            });
-        };
-        return (
-            <div className="add-config-fail">
-                {this.renderErrorAlert(this.state.addErrMsg, hide)}
-            </div>
-        );
-    };
-
     renderErrorAlert = (errorMsg, hide) => {
         return (<AlertTimer time={ALERT_TIME} message={errorMsg} type="error" showIcon onHide={hide}/>);
     };
@@ -151,23 +107,11 @@ class OfficeManage extends React.Component {
         );
     };
 
-    handleEditItem = (item) => {
-        this.setState({
-            updateErrMsg: ''
-        });
-    };
-
-    cancelEditCustomerNum = () => {
-        this.setState({
-            updateErrMsg: '',
-            updateRoleCustomerNum: 0
-        });
-    };
-
     handleMouseEnter = (item, event) => {
         event.stopPropagation();
         this.setState({
             mouseZoneHoverItemId: _.get(item, 'id'),
+            visible: true
         });
     };
 
@@ -175,6 +119,7 @@ class OfficeManage extends React.Component {
         event.stopPropagation();
         this.setState({
             mouseZoneHoverItemId: '',
+            visible: false
         });
     };
 
@@ -211,6 +156,9 @@ class OfficeManage extends React.Component {
     //删除职务
     deletePosition = (item) => {
         item.isDelete = true;
+        this.setState({
+            isShowDeletePositionFlag: true
+        });
     };
 
     // 确认删除
@@ -222,17 +170,20 @@ class OfficeManage extends React.Component {
                 //在数组中删除当前正在删除的职务
                 let positionList = _.filter(this.state.positionList, (item) => item.id !== id);
                 this.setState({
-                    positionList: positionList
+                    positionList: positionList,
+                    isShowDeletePositionFlag: false
                 });
             } else {
                 this.setState({
-                    deleteErrMsg: Intl.get('crm.139', '删除失败！')
+                    deleteErrMsg: Intl.get('crm.139', '删除失败！'),
+                    isShowDeletePositionFlag: false
                 });
             }
         }, (errMsg) => {
             delete item.isDelete;
             this.setState({
-                deleteErrMsg: errMsg
+                deleteErrMsg: errMsg,
+                isShowDeletePositionFlag: false
             });
         } );
     };
@@ -240,6 +191,9 @@ class OfficeManage extends React.Component {
     // 取消删除
     handleCancelDelete = (item) => {
         delete item.isDelete;
+        this.setState({
+            isShowDeletePositionFlag: false
+        });
     };
 
     // 正在添加、编辑、删除职务时，其他不能点击
@@ -250,35 +204,61 @@ class OfficeManage extends React.Component {
         }
     };
 
-    handleSubmitOperate = (result) => {
-        let positionList = this.state.positionList;
-        // 数组默认角色后添加输入的职务(第一个角色是默认角色)
-        if (positionList.length) {
-            positionList.splice(1, 0, result);
-        } else {
-            positionList = [result];
+    handleSubmit = (result, flag) => {
+        if (flag === 'add') {
+            let positionList = this.state.positionList;
+            // 数组默认角色后添加输入的职务(第一个角色是默认角色)
+            if (positionList.length) {
+                positionList.splice(1, 0, result);
+            } else {
+                positionList = [result];
+            }
+            this.setState({
+                positionList: positionList,
+                isShowAddPosition: true
+            });
+        } else if( flag === 'edit'){
+            let positionList = this.state.positionList;
+            _.find(positionList, item => {
+                if (_.get(item, 'id') === _.get(result, 'id')) {
+                    item = result;
+                    delete item.isEdit;
+                }
+            });
+            this.setState({
+                positionList: this.state.positionList,
+                isShowEditPositionFlag: false
+            });
         }
-        this.setState({
-            positionList: positionList,
-        });
+
     };
 
-    handleCancelOperate = () => {
-
+    handleCancelForm = (data) => {
+        if (!this.state.isShowAddPosition) {
+            this.setState({
+                isShowAddPosition: true
+            });
+        } else {
+            this.setState({
+                isShowEditPositionFlag: false
+            });
+            delete data.isEdit;
+        }
     };
 
     renderEditOrAddPosition = (item) => {
-        let officeItem = {color: this.getPositionColor()};
+        let itemOffice = {color: this.getPositionColor()};
         if (this.state.isShowAddPosition) {
-            officeItem = item;
+            itemOffice = item;
+            item.isEdit = true;
         }
         return (
-            <div className='item'>
+            <div className='edit-item-or-add-zone'>
                 <OfficeForm
                     positionList={this.state.positionList}
-                    officeItem={officeItem}
-                    handleCancel={this.handleCancelOperate.bind(this, officeItem)}
-                    handleSubmit={this.handleSubmitOperate}
+                    itemOffice={itemOffice}
+                    handleCancel={this.handleCancelForm}
+                    handleSubmit={this.handleSubmit}
                 />
             </div>
         );
@@ -316,8 +296,8 @@ class OfficeManage extends React.Component {
                                 onClick={this.onSelectPosition.bind(this, item )}
                             >
                                 {
-                                    isEdit ? (
-                                        <div className="item-office-content">
+                                    isEdit && this.state.isShowEditPositionFlag ? (
+                                        <div className="item-office-edit-zone">
                                             {this.renderEditOrAddPosition(item)}
                                         </div>
                                     ) : (
@@ -332,7 +312,7 @@ class OfficeManage extends React.Component {
                                                     null
                                             }
                                             {
-                                                isDelete ? (
+                                                isDelete && this.state.isShowDeletePositionFlag ? (
                                                     <div className='delete-zone'>
                                                         <span
                                                             className='delete-position'
@@ -355,6 +335,7 @@ class OfficeManage extends React.Component {
                                                                 <Popover
                                                                     content={this.renderModifyOffice(item)}
                                                                     placement="bottomRight"
+                                                                    onVisibleChange={this.handleHoverChange}
                                                                 >
                                                                     <span className='iconfont icon-more'></span>
                                                                 </Popover>
@@ -389,9 +370,18 @@ class OfficeManage extends React.Component {
         });
     };
 
+    handleHoverChange = (visible) => {
+        if (!visible) {
+            this.setState({
+                mouseZoneHoverItemId: '',
+                visible: false
+            });
+        }
+    };
+
     render() {
         return (
-            <div className="office-container" data-tracename="职务">
+            <div className="office-container" data-tracename="职务" onMouseLeave={this.handleMouseLeave}>
                 {this.state.deleteErrMsg ? this.handleDeleteRoleFail() : null}
                 <div className="add-office-container">
                     {this.state.isShowAddPosition ? (
