@@ -3,11 +3,11 @@ require('./index.less');
 const Spinner = require('CMP_DIR/spinner');
 const AlertTimer = require('CMP_DIR/alert-timer');
 import Trace from 'LIB_DIR/trace';
-import {Icon, Alert, InputNumber, Input, Form, Button} from 'antd';
-const FormItem = Form.Item;
+import {Icon, Alert, Popover} from 'antd';
 import classNames from 'classnames';
 import officeManageAjax from './ajax';
 import {COLOR_LIST} from 'PUB_DIR/sources/utils/consts';
+import OfficeForm from './office-form';
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
 
 class OfficeManage extends React.Component {
@@ -15,28 +15,25 @@ class OfficeManage extends React.Component {
         positionList: [], // 职务列表
         getPositionListMsg: '', // 获取职务列表失败的信息
         errMsgTips: '', // 错误信息
-        //点击角色添加按钮的loading效果是否显示
         isLoading: false,
-        //当前正在删除的角色
-        DeletingItem: '',
-        //正在设置默认的角色
-        settingDefaultRole: '',
-        //添加失败的信息
-        addErrMsg: '',
-        // 删除角色失败
-        deleteErrMsg: '',
-        //正在编辑客户容量的角色
-        isEdittingItem: '',
-        updateRoleCustomerNum: 0,//要更新某个职务的客户容量,默认值0
-        addRoleCustomerNum: '',//某个添加角色的客户容量
-        isUpdateloading: false,
-        updateErrMsg: '',//修改客户容量失败后的错误信息
+        deleteErrMsg: '', // 删除角色失败
         isShowAddPosition: true, // 默认显示添加职务
-        positionNameValue: '', // 职位名称的值
+        isShowEditPositionFlag: false, // 默认不显示编辑
+        isShowDeletePositionFlag: false, // 默认不显示删除
+        mouseZoneHoverItemId: '', // 鼠标移入区域的id
+        visible: false
     };
 
     componentDidMount = () => {
         this.getPositionList();
+    };
+
+    // 获取职务的颜色
+    getPositionColor = () => {
+        // 职务列表中已存在的颜色列表
+        let existColors = _.map(this.state.positionList, 'color');
+        //第一个不在已有角色的颜色列表中的颜色，作为当前添加角色的颜色
+        return _.find(COLOR_LIST, color => existColors.indexOf(color) === -1);
     };
 
     // 获取职务列表
@@ -52,140 +49,45 @@ class OfficeManage extends React.Component {
         } );
     };
 
-    // 获取职务的颜色
-    getPositionColor = () => {
-        // 职务列表中已存在的颜色列表
-        let existColors = _.map(this.state.positionList, 'color');
-        //第一个不在已有角色的颜色列表中的颜色，作为当前添加角色的颜色
-        return _.find(COLOR_LIST, color => existColors.indexOf(color) === -1);
+    // 编辑职务
+    editPosition = (item) => {
+        item.isEdit = true;
+        this.setState({
+            isShowEditPositionFlag: true
+        });
     };
 
-    //删除职务
-    handleDeleteItem = (delId) => {
-        //当前正在删除的职务的id
-        this.setState({
-            DeletingItem: delId
-        });
-        $.ajax({
-            url: '/rest/sales/role/' + delId,
-            type: 'delete',
-            dateType: 'json',
-            success: (result) => {
-                //在数组中删除当前正在删除的职务
-                let positionList = _.filter(this.state.positionList, (role) => role.id !== delId);
-                this.setState({
-                    DeletingItem: '',
-                    positionList: positionList
-                });
-            },
-            error: (errorInfo) => {
-                this.setState({
-                    DeletingItem: '',
-                    deleteErrMsg: errorInfo.responseJSON
-                });
-            }
-        });
-    };
 
     //设为默认角色
-    setDefautRole = (role) => {
-        if (role.is_default) {
+    setDefautRole = (item) => {
+        let isDefault = _.get(item, 'is_default');
+        let id = _.get(item, 'id');
+        if (isDefault) {
             return;
         }
-        this.setState({settingDefaultRole: role.id});
-        $.ajax({
-            url: '/rest/sales/default_role/' + role.id,
-            type: 'put',
-            dateType: 'json',
-            success: (result) => {
+        officeManageAjax.setDefautRole(id).then( (result) => {
+            if (result) {
                 //设置默认的角色
                 _.each(this.state.positionList, (item) => {
-                    if (item.id === role.id) {
+                    if (item.id === id) {
                         item.is_default = true;
                     } else {//去掉原来默认角色的默认属性
                         delete item.is_default;
                     }
                 });
-                this.setState({positionList: this.state.positionList, settingDefaultRole: ''});
-            },
-            error: (errorInfo) => {
                 this.setState({
-                    settingDefaultRole: '',
-                    deleteErrMsg: errorInfo.responseJSON
+                    positionList: this.state.positionList,
+                });
+            } else {
+                this.setState({
+                    deleteErrMsg: Intl.get('member.position.set.default.failed', '设置默认角色失败！')
                 });
             }
-        });
-    };
-
-    // 增加职务
-    handleSubmit = (e) => {
-        Trace.traceEvent(e, '点击添加职务按钮');
-        e.preventDefault();
-        // 输入的职务名称去空格
-        let nameValue = _.trim(this.state.positionNameValue);
-        if (nameValue) {
-            // 判断添加的职务和已有的职务名称是否相同，唯一性检测
-            let targetItem = _.find(this.state.positionList, item => item.name === nameValue);
-            if (targetItem){
-                this.setState({
-                    addErrMsg: Intl.get('config.sales.role.has.repeat', '该职务名称已存在')
-                });
-                return;
-            }
-        }
-        // 输入的客户容量
-        let customer_num = this.state.addRoleCustomerNum;
-        let addRole = {name: nameValue, color: this.getPositionColor(), customer_num: customer_num};
-        //显示添加的loading效果
-        this.setState({
-            isLoading: true
-        });
-        $.ajax({
-            url: '/rest/sales/role',
-            type: 'post',
-            dateType: 'json',
-            data: addRole,
-            success: (result) => {
-                if (result) {
-                    let positionList = this.state.positionList;
-                    // 数组默认角色后添加输入的职务(第一个角色是默认角色)
-                    if (positionList.length) {
-                        positionList.splice(1, 0, result);
-                    } else {
-                        positionList = [result];
-                    }
-                    this.setState({
-                        positionList: positionList,
-                        isLoading: false,
-                        addRoleCustomerNum: '',
-                        isShowAddPosition: true,
-                        positionNameValue: ''
-                    });
-                }
-            },
-            error: (errorInfo) => {
-                this.setState({
-                    isLoading: false,
-                    addErrMsg: errorInfo.responseJSON
-                });
-            }
-        });
-
-    };
-
-    // 添加职务失败
-    handleAddRoleFail = () => {
-        var hide = () => {
+        }, (errMsg) => {
             this.setState({
-                addErrMsg: '',
-                isLoading: false
+                deleteErrMsg: errMsg
             });
-        };
-        return (
-            <div className="add-config-fail">
-                {this.renderErrorAlert(this.state.addErrMsg, hide)}
-            </div>
-        );
+        } );
     };
 
     renderErrorAlert = (errorMsg, hide) => {
@@ -205,63 +107,163 @@ class OfficeManage extends React.Component {
         );
     };
 
-    handleEditItem = (item) => {
+    handleMouseEnter = (item, event) => {
+        event.stopPropagation();
         this.setState({
-            isEdittingItem: item.id,
-            updateErrMsg: ''
+            mouseZoneHoverItemId: _.get(item, 'id'),
+            visible: true
         });
     };
 
-    cancelEditCustomerNum = () => {
+    handleMouseLeave = (event) => {
+        event.stopPropagation();
         this.setState({
-            isEdittingItem: '',
-            updateErrMsg: '',
-            updateRoleCustomerNum: 0
+            mouseZoneHoverItemId: '',
+            visible: false
         });
     };
 
-    submitUpdateCustomerNum = (item) => {
-        if (this.state.updateRoleCustomerNum === 0){
-            this.setState({
-                isEdittingItem: ''
-            });
-            return;
-        }
-        var updateObj = {
-            id: item.id,
-            customer_num: this.state.updateRoleCustomerNum
-        };
-        this.setState({
-            isUpdateloading: true
-        });
+    renderModifyOffice = (item) => {
+        return (
+            <div className="office-operation-zone">
+                <div className="operation-item-zone"
+                    onClick={this.editPosition.bind(this, item)}
+                >
+                    <i className='iconfont icon-update'></i>
+                    <span className='operation-item-text'>
+                        {Intl.get('member.position.edit.office', '编辑职务')}
+                    </span>
+                </div>
+                <div className="operation-item-zone"
+                    onClick={this.deletePosition.bind(this, item)}
+                >
+                    <i className='iconfont icon-delete'></i>
+                    <span className='operation-item-text'>
+                        {Intl.get('member.position.delete.office', '删除职务')}
+                    </span>
+                </div>
+                <div className="operation-item-zone"
+                    onClick={this.setDefautRole.bind(this, item)}
+                >
+                    <span className='operation-item-text'>
+                        {Intl.get('member.position.set.default', '设为默认')}
+                    </span>
+                </div>
+            </div>
+        );
+    };
 
-        $.ajax({
-            url: '/rest/sales/setting/customer',
-            type: 'put',
-            dateType: 'json',
-            data: updateObj,
-            success: (result) => {
-                if (result) {
-                    let positionList = this.state.positionList;
-                    let updateRoleItem = _.find(positionList, saleRole => saleRole.id === item.id);
-                    updateRoleItem.customer_num = this.state.updateRoleCustomerNum;
-                    this.setState({
-                        positionList: this.state.positionList,
-                        isUpdateloading: false,
-                        updateErrMsg: '',
-                        isEdittingItem: ''
-                    });
-                }
-            },
-            error: (errorInfo) => {
+    //删除职务
+    deletePosition = (item) => {
+        item.isDelete = true;
+        this.setState({
+            isShowDeletePositionFlag: true
+        });
+    };
+
+    // 确认删除
+    handleConfirmDelete = (item) => {
+        let id = _.get(item, 'id');
+        officeManageAjax.deletePosition(id).then( (result) => {
+            delete item.isDelete;
+            if (result) {
+                //在数组中删除当前正在删除的职务
+                let positionList = _.filter(this.state.positionList, (item) => item.id !== id);
                 this.setState({
-                    isUpdateloading: false,
-                    updateErrMsg: errorInfo.responseJSON
+                    positionList: positionList,
+                    isShowDeletePositionFlag: false
+                });
+            } else {
+                this.setState({
+                    deleteErrMsg: Intl.get('crm.139', '删除失败！'),
+                    isShowDeletePositionFlag: false
                 });
             }
+        }, (errMsg) => {
+            delete item.isDelete;
+            this.setState({
+                deleteErrMsg: errMsg,
+                isShowDeletePositionFlag: false
+            });
+        } );
+    };
+
+    // 取消删除
+    handleCancelDelete = (item) => {
+        delete item.isDelete;
+        this.setState({
+            isShowDeletePositionFlag: false
         });
+    };
+
+    // 正在添加、编辑、删除职务时，其他不能点击
+    onSelectPosition = (item, event) => {
+        event.stopPropagation();
+        if ( !this.state.isShowAddPosition || item.isEdit || item.isDelete) {
+            return;
+        }
+    };
+
+    handleSubmit = (result, flag) => {
+        if (flag === 'add') {
+            let positionList = this.state.positionList;
+            // 数组默认角色后添加输入的职务(第一个角色是默认角色)
+            if (positionList.length) {
+                positionList.splice(1, 0, result);
+            } else {
+                positionList = [result];
+            }
+            this.setState({
+                positionList: positionList,
+                isShowAddPosition: true
+            });
+        } else if( flag === 'edit'){
+            let positionList = this.state.positionList;
+            _.find(positionList, item => {
+                if (_.get(item, 'id') === _.get(result, 'id')) {
+                    item = result;
+                    delete item.isEdit;
+                }
+            });
+            this.setState({
+                positionList: this.state.positionList,
+                isShowEditPositionFlag: false
+            });
+        }
 
     };
+
+    handleCancelForm = (data) => {
+        if (!this.state.isShowAddPosition) {
+            this.setState({
+                isShowAddPosition: true
+            });
+        } else {
+            this.setState({
+                isShowEditPositionFlag: false
+            });
+            delete data.isEdit;
+        }
+    };
+
+    renderEditOrAddPosition = (item) => {
+        let itemOffice = {color: this.getPositionColor()};
+        if (this.state.isShowAddPosition) {
+            itemOffice = item;
+            item.isEdit = true;
+        }
+        return (
+            <div className='edit-item-or-add-zone'>
+                <OfficeForm
+                    positionList={this.state.positionList}
+                    itemOffice={itemOffice}
+                    handleCancel={this.handleCancelForm}
+                    handleSubmit={this.handleSubmit}
+                />
+            </div>
+        );
+    };
+
     // 渲染职务列表
     renderPositionList = () => {
         let positionList = this.state.positionList;
@@ -277,54 +279,81 @@ class OfficeManage extends React.Component {
             return (
                 <ul className="office-list" data-tracename="职务管理">
                     {_.map(positionList,(item) => {
-                        let defaultCls = classNames('default-role-descr', {'default-role-checked': item.is_default});
-                        let title_tip = item.is_default ? '' : Intl.get('role.set.default', '设为默认角色');
+                        let isDefaultFlag = _.get(item, 'is_default');
+                        let defaultCls = classNames('default-role-descr', {'default-role-checked': isDefaultFlag});
+                        let count = _.get(item, 'customer_num', 0);
+                        let id = _.get(item, 'id');
+                        let isShowMoreBtn = this.state.mouseZoneHoverItemId === id; // 是否显示更多按钮
+                        let isEdit = _.get(item, 'isEdit');
+                        let isDelete = _.get(item, 'isDelete');
+                        let itemContainerCls = classNames('item-office-container', {
+                            'item-office-delete-container': isDelete
+                        });
                         return (
-                            <li className="sales-tag">
-                                <div className="sales-tag-content">
-                                    <span className="iconfont icon-team-role sales-role-icon" style={{color: item.color}}/>
-                                    <span className="sales-tag-text">{item.name}</span>
-                                    <span className={defaultCls} title={title_tip}
-                                        onClick={this.setDefautRole.bind(this, item)}
-                                        data-tracename="点击设为默认角色按钮">
-                                        {Intl.get('role.default.set', '默认')}
-                                        {this.state.settingDefaultRole === item.id ? <Icon type="loading"/> : null}
-                                    </span>
-                                    <div className="customer-container">
-                                        {Intl.get('sales.role.config.customer.num','最大客户数')}:
-                                        {this.state.isEdittingItem === item.id ? <span><InputNumber defaultValue={item.customer_num} onChange={this.onUpdateCustomerNumChange} min={1}/>
-                                            {this.state.isUpdateloading ? <Icon type="loading"/> : <span>
-                                                <i className="iconfont icon-choose" onClick={this.submitUpdateCustomerNum.bind(this, item)} data-tracename="保存设置最大客户数量"></i><i className="iconfont icon-close" onClick={this.cancelEditCustomerNum} data-tracename="取消设置最大客户数量"></i>
-                                            </span>}
-                                        </span> : <span>{item.customer_num}<i className="iconfont icon-update" onClick={this.handleEditItem.bind(this, item)}></i></span>}
-                                    </div>
-                                    {item.is_default || this.state.settingDefaultRole === item.id ? null :
-                                        <span className="anticon anticon-delete"
-                                            onClick={this.handleDeleteItem.bind(this, item.id)}
-                                            data-tracename="点击删除某个销售角色按钮"
-                                        />}
-                                    { this.state.DeletingItem === item.id ? (
-                                        <Icon type="loading"/>
-                                    ) : null}
-                                    {this.state.updateErrMsg && this.state.isEdittingItem === item.id ? this.renderErrorAlert(this.state.updateErrMsg, hide) : null}
-                                </div>
+                            <li
+                                className={itemContainerCls}
+                                onMouseEnter={this.handleMouseEnter.bind(this, item)}
+                                onClick={this.onSelectPosition.bind(this, item )}
+                            >
+                                {
+                                    isEdit && this.state.isShowEditPositionFlag ? (
+                                        <div className="item-office-edit-zone">
+                                            {this.renderEditOrAddPosition(item)}
+                                        </div>
+                                    ) : (
+                                        <div className="item-office-content">
+                                            <span className="iconfont icon-team-role sales-role-icon" style={{color: item.color}}/>
+                                            <span className="item-text">{item.name}</span>
+                                            {
+                                                isDefaultFlag ?
+                                                    <span className={defaultCls}>
+                                                        {Intl.get('role.default.set', '默认')}
+                                                    </span> :
+                                                    null
+                                            }
+                                            {
+                                                isDelete && this.state.isShowDeletePositionFlag ? (
+                                                    <div className='delete-zone'>
+                                                        <span
+                                                            className='delete-position'
+                                                            onClick={this.handleConfirmDelete.bind(this, item)}
+                                                        >
+                                                            {Intl.get('crm.contact.delete.confirm', '确认删除')}
+                                                        </span>
+                                                        <span
+                                                            className='cancel-delete'
+                                                            onClick={this.handleCancelDelete.bind(this, item)}
+                                                        >
+                                                            {Intl.get('common.cancel', '取消')}
+                                                        </span>
+                                                    </div>
+                                                ) : (
+                                                    <div className="customer-container">
+                                                        <span>{Intl.get('sales.role.config.customer.num','最大客户数')}</span>
+                                                        {
+                                                            isShowMoreBtn ? (
+                                                                <Popover
+                                                                    content={this.renderModifyOffice(item)}
+                                                                    placement="bottomRight"
+                                                                    onVisibleChange={this.handleHoverChange}
+                                                                >
+                                                                    <span className='iconfont icon-more'></span>
+                                                                </Popover>
+                                                            ) : (
+                                                                <span className="customer-count">{count}</span>
+                                                            )
+                                                        }
+                                                    </div>
+                                                )
+                                            }
+                                        </div>
+                                    )
+                                }
                             </li>);
                     }
                     )}
                 </ul>);
         }
-    };
-
-    onChange = (value) => {
-        this.setState({
-            addRoleCustomerNum: value
-        });
-    };
-
-    onUpdateCustomerNumChange = (value) => {
-        this.setState({
-            updateRoleCustomerNum: value
-        });
     };
 
     // 添加职务
@@ -340,61 +369,19 @@ class OfficeManage extends React.Component {
             isShowAddPosition: true
         });
     };
-    // 职位名称的input
-    handlePositionName = (event) => {
-        let value = _.get(event, 'target.value');
-        this.setState({
-            positionNameValue: value
-        });
-    };
-    // 渲染职务的添加或是编辑内容区
-    renderPositionBox = () => {
-        const formItemLayout = {
-            colon: false,
-            labelCol: {span: 5},
-            wrapperCol: {span: 15}
-        };
-        let errMsgTips = this.state.addErrMsg;
-        return (
-            <div className="office-box">
-                <Form layout='horizontal' className='form' autoComplete='off'>
-                    <FormItem
-                        label={Intl.get('member.position.name.label', '职务名称')}
-                        {...formItemLayout}
-                    >
-                        <Input value={this.state.positionNameValue} onChange={this.handlePositionName}/>
-                    </FormItem>
-                    <FormItem
-                        label={Intl.get('sales.role.config.customer.num', '最大客户数')}
-                        {...formItemLayout}
-                    >
-                        <InputNumber onChange={this.onChange} value={this.state.addRoleCustomerNum} min={1}/>
-                    </FormItem>
-                    <FormItem>
-                        <div className="office-btn">
-                            <Button className="button-save" type="primary"
-                                onClick={this.handleSubmit}
-                                disabled={this.state.isLoading}
-                            >
-                                {Intl.get('common.save', '保存')}
-                            </Button>
-                            <Button className="button-cancel" onClick={this.handleCancel}>
-                                {Intl.get('common.cancel', '取消')}
-                            </Button>
-                            {this.state.isLoading ? (
-                                <Icon type="loading" className="save-loading"/>) : errMsgTips ? (
-                                <span className="save-error">{errMsgTips}</span>
-                            ) : null}
-                        </div>
-                    </FormItem>
-                </Form>
-            </div>
-        );
+
+    handleHoverChange = (visible) => {
+        if (!visible) {
+            this.setState({
+                mouseZoneHoverItemId: '',
+                visible: false
+            });
+        }
     };
 
     render() {
         return (
-            <div className="office-container" data-tracename="职务">
+            <div className="office-container" data-tracename="职务" onMouseLeave={this.handleMouseLeave}>
                 {this.state.deleteErrMsg ? this.handleDeleteRoleFail() : null}
                 <div className="add-office-container">
                     {this.state.isShowAddPosition ? (
@@ -404,7 +391,7 @@ class OfficeManage extends React.Component {
                         </div>
                     ) : (
                         <div className="add-office-box">
-                            {this.renderPositionBox()}
+                            {this.renderEditOrAddPosition()}
                         </div>
                     )}
                 </div>

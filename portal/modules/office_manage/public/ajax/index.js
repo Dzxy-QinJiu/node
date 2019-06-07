@@ -22,8 +22,61 @@ exports.addPosition = (reqBody) => {
         success: (result) => {
             Deferred.resolve(result);
         },
-        error: (errorInfo) => {
+        error: (xhr) => {
             Deferred.reject(xhr.responseJSON || Intl.get('member.add.failed', '添加失败！'));
+        }
+    });
+    return Deferred.promise();
+};
+
+// 设为默认角色
+exports.setDefautRole = (id) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/sales/default_role/' + id,
+        type: 'put',
+        dateType: 'json',
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (xhr) => {
+            Deferred.reject(xhr.responseJSON || Intl.get('member.position.set.default.failed', '设置默认角色失败！'));
+        }
+    });
+    return Deferred.promise();
+};
+
+// 编辑职务
+exports.editPosition = (updateObj) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/sales/setting/customer',
+        type: 'put',
+        dateType: 'json',
+        data: updateObj,
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (xhr) => {
+            Deferred.reject(xhr.responseJSON || Intl.get('member.add.failed', '添加失败！'));
+        }
+    });
+
+    return Deferred.promise();
+};
+
+// 删除职务
+exports.deletePosition = (id) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/sales/role/' + id,
+        type: 'delete',
+        dateType: 'json',
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (xhr) => {
+            Deferred.reject(xhr.responseJSON || Intl.get('crm.139', '删除失败！'));
         }
     });
     return Deferred.promise();

@@ -30,7 +30,8 @@ function SalesTeamStore() {
     this.userInfoShow = false;
     this.userFormShow = false;
     this.rightPanelShow = false;
-
+    this.isEditGroupFlag = false; // 是否编辑部门，默认false
+    this.curEditGroup = {}; // 当前编辑的部门
     this.bindActions(SalesTeamActions);
 }
 SalesTeamStore.prototype.showUserInfoPanel = function() {
@@ -133,7 +134,7 @@ SalesTeamStore.prototype.filterByTeamName = function(teamName) {
     });
     this.delSelectSalesTeam(this.salesTeamListArray);
     //递归遍历组织树，根据组织名查找组织
-    var filterTeamArray = [];
+    let filterTeamArray = [];
     this.findGroupListByName(this.salesTeamListArray, teamName, filterTeamArray);
     //默认展示第一个团队的成员
     if (filterTeamArray.length > 0) {
@@ -530,8 +531,6 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
                 this.curShowTeamMemberObj.users = sortTeamMembers(users);
             }
         } else {
-            //暂无数据的提示
-            this.teamMemberListTipMsg = Intl.get('common.no.member', '暂无成员');
             this.salesTeamMemberList = [];
         }
     }
@@ -545,12 +544,16 @@ function sortTeamMembers(list) {
     });
 }
 SalesTeamStore.prototype.deleteGroup = function(deleteGroupItem) {
-    deleteGroupItem.modalDialogFlag = true;
+    deleteGroupItem.isDeleteGroup = true;
     this.deleteGroupItem = deleteGroupItem;
 };
 
 SalesTeamStore.prototype.hideModalDialog = function(deleteGroupItem) {
-    deleteGroupItem.modalDialogFlag = false;
+    deleteGroupItem.isDeleteGroup = false;
+};
+
+SalesTeamStore.prototype.handleCancelDeleteGroup = function(item) {
+    item.isDeleteGroup = false;
 };
 
 //编辑成员
@@ -634,6 +637,8 @@ SalesTeamStore.prototype.addSalesTeamRoot = function() {
 
 //展示组修改表单
 SalesTeamStore.prototype.editGroup = function(item) {
+    this.curEditGroup = item;
+    this.isEditGroupFlag = true;
     item.isEditGroup = true;
     item.isShowOperationArea = false;
 };
@@ -641,6 +646,8 @@ SalesTeamStore.prototype.editGroup = function(item) {
 //取消展示组修改表单
 SalesTeamStore.prototype.cancelEditGroup = function(item) {
     item.isEditGroup = false;
+    this.isEditGroupFlag = false;
+    this.curEditGroup = {};
 };
 
 //展示组添加表单

@@ -19,9 +19,14 @@
         border-top: 1px solid #E5E5E5;
         .member-table-info {
           .member-list-table-wrap {
-            .ant-table-thead {
-              th {
-                color: #999 !important;
+            .antc-table {
+              .ant-table-thead {
+                th {
+                  color: #999 !important;
+                }
+                th:first-child {
+                  padding: 9px 9px 24px !important;
+                }
               }
             }
             .ant-table-tbody {
@@ -29,6 +34,7 @@
                 font-size: 14px;
                 color: #333 !important;
                 .member-name {
+                  padding-left: 16px;
                   .accout {
                     font-size: 16px;
                   }

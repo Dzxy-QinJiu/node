@@ -24,6 +24,7 @@ function SalesTeamAction() {
         'cancelAddGroup',
         'deleteGroup',
         'hideModalDialog',
+        'handleCancelDeleteGroup', // 取消删除部门
         'hideSearchInputFnc',
         'selectTree',
         'toggleGroupTree',
