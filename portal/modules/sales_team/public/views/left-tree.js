@@ -174,7 +174,7 @@ class LeftTree extends React.Component {
         return (
             <div className="tree-operation-div">
                 <PrivilegeChecker check="BGM_SALES_TEAM_ADD">
-                    <div className="tree-operation-item-zone"
+                    <div className="tree-operation-item-zone icon-operation tree-operation-icon"
                         onClick={this.addGroup.bind(this, item)}
                     >
                         <i className='iconfont icon-add'></i>
@@ -184,7 +184,7 @@ class LeftTree extends React.Component {
                     </div>
                 </PrivilegeChecker>
                 <PrivilegeChecker check="BGM_SALES_TEAM_EDIT">
-                    <div className="tree-operation-item-zone"
+                    <div className="tree-operation-item-zone icon-operation tree-operation-icon"
                         onClick={this.editGroup.bind(this, item)}
                     >
                         <i className='iconfont icon-update'></i>
@@ -194,7 +194,7 @@ class LeftTree extends React.Component {
                     </div>
                 </PrivilegeChecker>
                 <PrivilegeChecker check="BGM_SALES_TEAM_DELETE">
-                    <div className="tree-operation-item-zone"
+                    <div className="tree-operation-item-zone icon-operation tree-operation-icon"
                         onClick={this.deleteGroup.bind(this, item)}
                     >
                         <i className='iconfont icon-delete'></i>
@@ -215,8 +215,8 @@ class LeftTree extends React.Component {
         });
     };
 
-    handleHoverChange = (visible) => {
-        if (!visible) {
+    handleHoverChange = (flag) => {
+        if (!flag) {
             this.setState({
                 mouseZoneHoverKey: '',
                 visible: false
@@ -451,7 +451,6 @@ class LeftTree extends React.Component {
                     <GeminiScrollbar className="geminiScrollbar-vertical">
                         <ul
                             className="left-tree-ul"
-                            onMouseLeave={this.handleMouseLeave}
                         >
                             {
                                 this.props.isEditGroupFlag ? (

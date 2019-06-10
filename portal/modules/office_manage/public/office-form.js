@@ -14,8 +14,7 @@ class OfficeForm extends React.Component{
     }
 
     getFormData = (itemOffice) => {
-        console.log('itemOffice:',itemOffice);
-        let isEdit = _.get(itemOffice, 'isEdit');
+        let isEdit = _.get(itemOffice, 'id');
         if (isEdit) { // 编辑
             return {
                 ...itemOffice,
@@ -45,7 +44,7 @@ class OfficeForm extends React.Component{
     handleSubmit = (event) => {
         event.preventDefault();
         let formData = this.state.formData;
-        let isEdit = _.get(formData, 'isEdit');
+        let isEdit = _.get(formData, 'id');
         this.setState({
             loading: true
         });
@@ -55,6 +54,7 @@ class OfficeForm extends React.Component{
                     loading: false
                 });
                 if (result) {
+                    console.log('formData:',formData);
                     this.props.handleSubmit(formData, 'edit');
                 } else {
                     this.setState({
@@ -74,6 +74,7 @@ class OfficeForm extends React.Component{
                 let targetItem = _.find(this.props.positionList, item => item.name === nameValue);
                 if (targetItem){
                     this.setState({
+                        loading: false,
                         errMsg: Intl.get('config.sales.role.has.repeat', '该职务名称已存在')
                     });
                     return;
@@ -97,6 +98,7 @@ class OfficeForm extends React.Component{
                 } );
             } else {
                 this.setState({
+                    loading: false,
                     errMsg: Intl.get('member.position.name.placeholder', '请输入职务名称')
                 });
             }
@@ -106,8 +108,7 @@ class OfficeForm extends React.Component{
     handleCancel = (event) => {
         event.preventDefault();
         let formData = this.state.formData;
-        console.log('formData:',formData);
-        this.props.handleCancel(formData);
+        this.props.handleCancelForm(formData);
     };
 
     render() {
@@ -160,7 +161,7 @@ OfficeForm.propTypes = {
     itemOffice: PropTypes.object,
     positionList: PropTypes.array,
     handleSubmit: PropTypes.func,
-    handleCancel: PropTypes.func
+    handleCancelForm: PropTypes.func
 };
 
 module.exports = Form.create()(OfficeForm);

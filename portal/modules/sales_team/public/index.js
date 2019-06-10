@@ -3,7 +3,6 @@
  */
 let React = require('react');
 require('./css/index.less');
-require('./css/sales-team.less');
 import {Icon,Input,Button,Tabs} from 'antd';
 const TabPane = Tabs.TabPane;
 let SalesTeamStore = require('./store/sales-team-store');
@@ -292,7 +291,9 @@ class SalesTeamPage extends React.Component {
                                                 tab={Intl.get('member.position', '职务')}
                                                 key={TAB_KEYS.POSITION_TAB}
                                             >
-                                                <OfficeManage />
+                                                <OfficeManage
+                                                    height={tabHeight}
+                                                />
                                             </TabPane>
                                         </Tabs>
                                     </div>
