@@ -12,7 +12,8 @@ import Spinner from 'CMP_DIR/spinner';
 import Trace from 'LIB_DIR/trace';
 import SelectFullWidth from 'CMP_DIR//select-fullwidth';
 import {uniqueObjectOfArray} from 'PUB_DIR/sources/utils/common-data-util';
-import userData from 'PUB_DIR/sources/user-data';
+import {getUserData} from 'PUB_DIR/sources/user-data';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 
 const SET_TIME_OUT = {
     TRANSITION_TIME: 600,//右侧面板动画隐藏的时间
@@ -175,12 +176,12 @@ class ImportTemplate extends React.Component {
         let length = _.get(errors, 'length');
         let noMatchCustomer = _.find(errors, item => item.field === 'customer_name');
         let disabledImportBtn = false;
-        let roles = _.get(userData.getUserData(), 'roles');
-        let isManager = _.find(roles, item => item === 'realm_manage');
+        let isManager = this.getLoginUserRole(); // 判断登录的用户是否为管理员, true是管理员，否则是销售
         if (length) {
-            if (length > 1) {
-                disabledImportBtn = true;
-                if (isManager) {
+            if (isManager) { // 管理员，可以导入不匹配的客户
+                if (length > 1) {
+                    disabledImportBtn = true;
+                } else {
                     if (noMatchCustomer) {
                         disabledImportBtn = false;
                     } else {
@@ -188,6 +189,8 @@ class ImportTemplate extends React.Component {
                     }
                 }
 
+            } else { // 销售，不可以导入不匹配的客户
+                disabledImportBtn = true;
             }
         } else if (!_.get(this.state.previewList, 'length')) {
             disabledImportBtn = true;
@@ -207,10 +210,16 @@ class ImportTemplate extends React.Component {
     };
     calculateTableHeight = () => {
         return $(window).height() - LAYOUT.TOP_DISTANCE - LAYOUT.BOTTOM_DISTANCE;
-    }
+    };
     changeTableHeight = () => {
-        var tableHeight = this.calculateTableHeight();
+        let tableHeight = this.calculateTableHeight();
         this.setState({tableHeight});
+    };
+
+    // 获取登录用户的角色，只有管理员和销售有权限导入
+    // 管理员可以导入不匹配的客户，销售不可以导入匹配的客户
+    getLoginUserRole = () => {
+        return getUserData().isCommonSales === false; // 返回true，说明是管理员，否则是销售
     };
 
     renderThirdStepContent = () => {
@@ -220,19 +229,26 @@ class ImportTemplate extends React.Component {
         let noMatchCustomer = _.find(errors, item => item.field === 'customer_name');
         let height = this.state.tableHeight + LAYOUT.TABLE_TOP;
         let tableHeight = this.state.tableHeight;
-        // todo 判断管理员和销售
-        // todo 若是销售的话，客户不匹配的话，不能导入
+        let isManager = this.getLoginUserRole(); // 判断登录的用户是否为管理员, true是管理员，否则是销售
         if (length) {
             if (length > 1) {
                 tipsMessage.push(Intl.get('user.import.red.tips', '红色标示数据不符合规则或是已存在，请修改数据后重新导入，或删除不符合规则的数据后直接导入。'));
                 if (noMatchCustomer) {
-                    tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。'));
+                    if(isManager) { // 管理员
+                        tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。'));
+                    } else { // 销售
+                        tipsMessage.push(Intl.get('user.import.no.match.customer.tips', '系统未找到对应的客户，必须是自己客户的用户，请修改数据后重新导入'));
+                    }
                 }
                 height -= (LAYOUT.ERROR_TIPS_MESSAGE_WIDTH + LAYOUT.WARN_TIPS_MESSAGE_WIDTH);
                 tableHeight -= (LAYOUT.ERROR_TIPS_MESSAGE_WIDTH + LAYOUT.WARN_TIPS_MESSAGE_WIDTH);
             } else if (length === 1) {
                 if (noMatchCustomer) {
-                    tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。'));
+                    if(isManager) { // 管理员
+                        tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。'));
+                    } else { // 销售
+                        tipsMessage.push(Intl.get('user.import.no.match.customer.tips', '系统未找到对应的客户，必须是自己客户的用户，请修改数据后重新导入'));
+                    }
                 } else {
                     tipsMessage.push(Intl.get('user.import.red.tips', '红色标示数据不符合规则或是已存在，请修改数据后重新导入，或删除不符合规则的数据后直接导入。'));
                     height -= LAYOUT.ERROR_TIPS_MESSAGE_WIDTH;
@@ -240,6 +256,8 @@ class ImportTemplate extends React.Component {
                 }
             }
         }
+        let type = isManager ? 'warning' : 'error';
+
         return (
             <div className="third-step-content">
                 {length ? <div className="import-warning">
@@ -252,11 +270,11 @@ class ImportTemplate extends React.Component {
                                     <div>{Intl.get('user.import.phone.rule', '手机：11位手机号')}</div>
                                     <div>{Intl.get('user.import.email.rule', '邮箱：如 12345678@qq.com')}</div>
                                 </div>
-                                <Alert type="warning" message={'2.' + _.get(tipsMessage, [1])}/>
+                                <Alert type={type} message={'2.' + _.get(tipsMessage, [1])}/>
                             </div>
                         ) : (
                             noMatchCustomer ? (
-                                <Alert type="warning" message={'1.' + _.get(tipsMessage, [0])}/>
+                                <Alert type={type} message={'1.' + _.get(tipsMessage, [0])}/>
                             ) : (
                                 <div>
                                     <Alert type="error" message={'1.' + _.get(tipsMessage, [0])}/>

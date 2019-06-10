@@ -343,6 +343,7 @@ var zh_CN = {
     'user.import.phone.rule': '手机：11位手机号',
     'user.import.email.rule': '邮箱：如 12345678@qq.com',
     'user.import.yellow.tips': '黄色标示系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。',
+    'user.import.no.match.customer.tips': '系统未找到对应的客户，必须是自己客户的用户，请修改数据后重新导入',
     'user.user.add.success': '添加成功',
     'user.user.basic': '基本信息',
     'user.user.app.select': '选择应用',

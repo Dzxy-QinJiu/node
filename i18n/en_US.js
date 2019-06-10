@@ -336,6 +336,7 @@ var en_US = {
     'user.import.phone.rule': 'Phone: The phone number of legitimate', // 手机：11位手机号
     'user.import.email.rule': 'Email: eg 12345678@qq.com', // 邮箱：如 12345678@qq.com
     'user.import.yellow.tips': 'The yellow marking system has not found the corresponding customer, you can continue to import, you need to set the customer after importing.', // 黄色标示系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。
+    'user.import.no.match.customer.tips': 'The system does not find the corresponding customer, it must be the user of its own customer, please modify the data and re-import', // 系统未找到对应的客户，必须是自己客户的用户，请修改数据后重新导入
     'user.user.add.success': 'Add successfully',//添加成功
     'user.user.basic': 'Basic information',//基本信息
     'user.user.app.select': 'Select applications',//选择应用
