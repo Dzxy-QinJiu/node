@@ -30,7 +30,9 @@ class ClueToCustomerPanel extends React.Component {
 
         this.state = {
             customers: [],
-            isModalDialogShow: false
+            currentCustomer: {},
+            isModalDialogShow: false,
+            isMergeCustomerBlockShow: false,
         };
     }
 
@@ -65,8 +67,9 @@ class ClueToCustomerPanel extends React.Component {
             });
     }
 
-    onMergeToCustomerClick = () => {
+    onMergeToCustomerClick = (customer) => {
         this.setState({
+            currentCustomer: customer,
             isModalDialogShow: true
         });
     }
@@ -79,13 +82,138 @@ class ClueToCustomerPanel extends React.Component {
 
     onModalDialogConfirm = () => {
         this.setState({
-            isModalDialogShow: false
+            isModalDialogShow: false,
+            isMergeCustomerBlockShow: true,
         });
     }
 
-    render() {
+    //渲染基本信息区块
+    renderBasicInfoBlock() {
         const clue = this.props.clue;
 
+        return (
+            <div className="basic-info">
+                <Row>
+                    <Col span={4}>
+                        {Intl.get('crm.41', '客户名')}：
+                    </Col>
+                    <Col span={4}>
+                        {clue.name}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={4}>
+                        {Intl.get('call.record.contacts', '联系人')}：
+                    </Col>
+                    <Col span={4}>
+                        {_.get(clue, 'contacts[0].name', '')}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={4}>
+                        {Intl.get('common.phone', '电话')}：
+                    </Col>
+                    <Col span={4}>
+                        {_.get(clue, 'contacts[0].phone[0]', '')}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={4}>
+                        {Intl.get('crm.6', '负责人')}：
+                    </Col>
+                    <Col span={12}>
+                        {clue.user_name}
+                    </Col>
+                </Row>
+            </div>
+        );
+    }
+
+    //渲染已存在客户区块
+    renderExistsCustomerBlock() {
+        return (
+            <div className="existing-customer">
+                <b className="title">已存在客户</b>
+
+                {_.map(this.state.customers, (customer, index) => {
+                    return (
+                        <Row>
+                            <Col span={12}>
+                                {customer.name}
+                            </Col>
+                            <Col span={12}>
+                                <span
+                                    className="clickable"
+                                    onClick={this.onMergeToCustomerClick.bind(this, customer)}
+                                >
+                                    是否合并到此客户?
+                                </span>
+                            </Col>
+                        </Row>
+                    );
+                })}
+            </div>
+        );
+    }
+
+    //渲染合并客户区块
+    renderMergeCustomerBlock() {
+        const customer = this.state.currentCustomer;
+
+        return (
+            <div className="panel-content">
+                <Row>
+                    <Col span={4}>
+                        {Intl.get('crm.41', '客户名')}：
+                    </Col>
+                    <Col span={4}>
+                        {customer.name}
+                    </Col>
+                </Row>
+                {_.map(customer.contacts, contact => {
+                    return (
+                        <div>
+                            <Row>
+                                <Col span={4}>
+                                    {Intl.get('call.record.contacts', '联系人')}：
+                                </Col>
+                                <Col span={4}>
+                                    {contact.name}
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span={4}>
+                                    {Intl.get('common.phone', '电话')}：
+                                </Col>
+                                <Col span={4}>
+                                    {_.map(contact.phone, phone => {
+                                        return <div>{phone}</div>;
+                                    })}
+                                </Col>
+                            </Row>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    }
+
+    renderBtnBlock() {
+        return (
+            <div className="btn-block">
+                <Row>
+                    <Col span={4}>
+                        <Button type="primary">添加</Button>
+                    </Col>
+                    <Col span={12}>
+                        <Button>取消</Button>
+                    </Col>
+                </Row>
+            </div>
+        );
+    }
+
+    render() {
         return (
             <RightPanel
                 className="clue_customer_rightpanel clue-to-customer-panel"
@@ -95,69 +223,9 @@ class ClueToCustomerPanel extends React.Component {
                 <span className="iconfont icon-close clue-right-btn" onClick={this.props.hidePanel} data-tracename="关闭线索转客户面板"></span>
                 <div className="clue-detail-wrap">
                     <div className="panel-content">
-                        <Row>
-                            <Col span={4}>
-                                {Intl.get('crm.41', '客户名')}：
-                            </Col>
-                            <Col span={4}>
-                                {clue.name}
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={4}>
-                                {Intl.get('call.record.contacts', '联系人')}：
-                            </Col>
-                            <Col span={4}>
-                                {_.get(clue, 'contacts[0].name', '')}
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={4}>
-                                {Intl.get('common.phone', '电话')}：
-                            </Col>
-                            <Col span={4}>
-                                {_.get(clue, 'contacts[0].phone[0]', '')}
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={4}>
-                                {Intl.get('crm.6', '负责人')}：
-                            </Col>
-                            <Col span={12}>
-                                {clue.user_name}
-                            </Col>
-                        </Row>
-
-                        <div className="existing-customer">
-                            <b className="title">已存在客户</b>
-
-                            {_.map(this.state.customers, (customer, index) => {
-                                return (
-                                    <Row>
-                                        <Col span={12}>
-                                            {customer.name}
-                                        </Col>
-                                        <Col span={12}>
-                                            <span
-                                                className="clickable"
-                                                onClick={this.onMergeToCustomerClick}
-                                            >
-                                                是否合并到此客户?
-                                            </span>
-                                        </Col>
-                                    </Row>
-                                );
-                            })}
-                        </div>
-
-                        <Row>
-                            <Col span={4}>
-                                <Button type="primary">添加</Button>
-                            </Col>
-                            <Col span={12}>
-                                <Button>取消</Button>
-                            </Col>
-                        </Row>
+                        {this.renderBasicInfoBlock()}
+                        {this.state.isMergeCustomerBlockShow ? this.renderMergeCustomerBlock() : this.renderExistsCustomerBlock()}
+                        {this.renderBtnBlock()}
                     </div>
 
                     <ModalDialog
