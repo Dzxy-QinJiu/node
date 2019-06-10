@@ -55,7 +55,7 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
                         });
 
                         dataDuration.push({
-                            name: item.name,
+                            name,
                             value: item.sum
                         });
                     });
@@ -78,7 +78,7 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
             return dataCount;
         },
         processOption: (option, chart) => {
-            if (Store.teamMemberFilterType === 'member' && Store.secondSelectValue !== Intl.get('common.all', '全部')) {
+            if (chart.isTeamView || (Store.teamMemberFilterType === 'member' && Store.secondSelectValue !== Intl.get('common.all', '全部'))) {
                 let legendData = [];
                 let series = [];
 
@@ -156,7 +156,6 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
         const value = e.target.value;
 
         chart.radioType = value;
-        chart.teamViewOption = null;
 
         chart.data = chart['data_' + value];
 
@@ -209,36 +208,7 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
 
     //“查看各团队通话趋势图”开关变化处理函数
     function handleSwitchChange(chart, analysisInstance, value) {
-        if (value) {
-            chart.processOption = option => {
-                if (chart.teamViewOption) {
-                    option.legend.data = chart.teamViewOption.legend.data;
-                    option.series = chart.teamViewOption.series;
-                } else {
-                    let legendData = [];
-                    let series = [];
-
-                    _.each(chart.rawData, (v, k) => {
-                        legendData.push(k);
-                        series.push({
-                            type: 'line',
-                            name: k,
-                            data: _.map(v, item => {
-                                return chart.radioType === 'duration' ? item.sum : item.docments;
-                            })
-                        });
-                    });
-
-
-                    option.legend.data = legendData;
-                    option.series = series;
-
-                    chart.teamViewOption = _.cloneDeep(option);
-                }
-            };
-        } else {
-            delete chart.processOption;
-        }
+        chart.isTeamView = value;
 
         const charts = analysisInstance.state.charts;
 
