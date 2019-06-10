@@ -117,8 +117,35 @@ class ClueCustomer extends React.Component {
         this.setState({ tableHeight});
     };
     componentWillReceiveProps(nextProps) {
-        if (_.get(nextProps,'history.action') === 'PUSH'){
-            if(_.get(nextProps,'location.state.clickUnhandleNum')){
+        if (_.get(nextProps,'history.action') === 'PUSH' && _.get(nextProps,'location.state.clickUnhandleNum')){
+            //点击数字进行跳转时，如果当前选中的条件只是待我审批的条件，那么就不需要清空数据,如果当前选中的除了待我审批的，还有其他的条件，就需要把数据进行情况
+            var filterStoreData = clueFilterStore.getState();
+            var checkAllotNoTraced = filterStoreData.filterAllotNoTraced === '0';//待我审批
+            var checkedAdvance = false;//在高级筛选中是否有其他的选中项
+            var checkOtherData = _.get(this,'filterPanel.filterList.props.advancedData',[]);//线索状态
+            if (filterStoreData.filterClueAvailability === '1'){
+                //是否选中线索无效的标签
+                checkedAdvance = true;
+            }
+            if (!checkedAdvance){
+                _.forEach(checkOtherData,(group) => {
+                    var target = _.find(group.data, item => item.selected);
+                    if (target){
+                        checkedAdvance = true;
+                        return;
+                    }
+                });
+            }
+            if (!checkedAdvance){
+                var filterItem = ['filterClueAccess','filterClueClassify','filterClueProvince','filterClueSource'];//高级筛选的其他选项
+                _.forEach(filterItem,(itemName) => {
+                    if (_.get(filterStoreData,`[${itemName}].length`)){
+                        checkedAdvance = true;
+                        return;
+                    }
+                });
+            }
+            if((!checkAllotNoTraced || (checkAllotNoTraced && checkedAdvance))){
                 delete nextProps.location.state.clickUnhandleNum;
                 clueCustomerAction.setClueInitialData();
                 this.getUnhandledClue();
