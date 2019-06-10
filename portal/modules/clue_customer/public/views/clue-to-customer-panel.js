@@ -87,12 +87,18 @@ class ClueToCustomerPanel extends React.Component {
         });
     }
 
+    hideMergeCustomerBlock = () => {
+        this.setState({
+            isMergeCustomerBlockShow: false,
+        });
+    }
+
     //渲染基本信息区块
     renderBasicInfoBlock() {
         const clue = this.props.clue;
 
         return (
-            <div className="basic-info">
+            <div className="basic-info-block">
                 <Row>
                     <Col span={4}>
                         {Intl.get('crm.41', '客户名')}：
@@ -101,22 +107,30 @@ class ClueToCustomerPanel extends React.Component {
                         {clue.name}
                     </Col>
                 </Row>
-                <Row>
-                    <Col span={4}>
-                        {Intl.get('call.record.contacts', '联系人')}：
-                    </Col>
-                    <Col span={4}>
-                        {_.get(clue, 'contacts[0].name', '')}
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={4}>
-                        {Intl.get('common.phone', '电话')}：
-                    </Col>
-                    <Col span={4}>
-                        {_.get(clue, 'contacts[0].phone[0]', '')}
-                    </Col>
-                </Row>
+                {_.map(clue.contacts, contact => {
+                    return (
+                        <div>
+                            <Row>
+                                <Col span={4}>
+                                    {Intl.get('call.record.contacts', '联系人')}：
+                                </Col>
+                                <Col span={4}>
+                                    {contact.name}
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span={4}>
+                                    {Intl.get('common.phone', '电话')}：
+                                </Col>
+                                <Col span={4}>
+                                    {_.map(contact.phone, phone => {
+                                        return <div>{phone}</div>;
+                                    })}
+                                </Col>
+                            </Row>
+                        </div>
+                    );
+                })}
                 <Row>
                     <Col span={4}>
                         {Intl.get('crm.6', '负责人')}：
@@ -132,7 +146,7 @@ class ClueToCustomerPanel extends React.Component {
     //渲染已存在客户区块
     renderExistsCustomerBlock() {
         return (
-            <div className="existing-customer">
+            <div className="exists-customer-block">
                 <b className="title">已存在客户</b>
 
                 {_.map(this.state.customers, (customer, index) => {
@@ -159,9 +173,14 @@ class ClueToCustomerPanel extends React.Component {
     //渲染合并客户区块
     renderMergeCustomerBlock() {
         const customer = this.state.currentCustomer;
+        const clue = this.props.clue;
 
         return (
-            <div className="panel-content">
+            <div className="merge-customer-block">
+                <div>
+                    <b className="title">合并到此客户</b>
+                    <span className="go-back clickable" onClick={this.hideMergeCustomerBlock}>返回</span>
+                </div>
                 <Row>
                     <Col span={4}>
                         {Intl.get('crm.41', '客户名')}：
@@ -198,6 +217,7 @@ class ClueToCustomerPanel extends React.Component {
         );
     }
 
+    //渲染按钮区域
     renderBtnBlock() {
         return (
             <div className="btn-block">
@@ -229,6 +249,7 @@ class ClueToCustomerPanel extends React.Component {
                     </div>
 
                     <ModalDialog
+                        modalContent={`合并到客户${this.state.currentCustomer.name}?`}
                         modalShow={this.state.isModalDialogShow}
                         container={this}
                         hideModalDialog={this.hideModalDialog}
