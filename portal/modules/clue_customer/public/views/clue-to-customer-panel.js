@@ -6,6 +6,7 @@ require('../css/clue-to-customer-panel.less');
 import { Row, Col, Button } from 'antd';
 import ajax from 'ant-ajax';
 import { RightPanel } from 'CMP_DIR/rightPanel';
+import ModalDialog from 'CMP_DIR/ModalDialog';
 import { AUTHS } from 'MOD_DIR/crm/public/utils/crm-util';
 const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 const authType = hasPrivilege(AUTHS.GETALL) ? 'manager' : 'user';
