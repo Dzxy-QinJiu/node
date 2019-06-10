@@ -78,7 +78,18 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
             return dataCount;
         },
         processOption: (option, chart) => {
-            if (chart.isTeamView || (Store.teamMemberFilterType === 'member' && Store.secondSelectValue !== Intl.get('common.all', '全部'))) {
+            //是否分团队显示
+            const isShowSeparateTeam = chart.isTeamView;
+
+            //是否分成员显示
+            //筛选类型选的是成员
+            //并且选择了具体的成员时
+            //分成员显示
+            const isShowSeparateMember = Store.teamMemberFilterType === 'member' && _.isArray(Store.secondSelectValue);
+
+            //如果需要分团队或成员显示
+            //处理图表选项，生成多个显示系列
+            if (isShowSeparateTeam || isShowSeparateMember) {
                 let legendData = [];
                 let series = [];
 
@@ -132,6 +143,13 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
 
     //渲染切换按钮
     function renderCallTrendChartSwitch(chart, analysisInstance) {
+        //是否显示"查看各团队通话趋势图"开关
+        //筛选类型选的是团队
+        //并且团队选的是全部
+        //或者选择的团队大于一个时
+        //显示"查看各团队通话趋势图"开关
+        const isTeamSwitchShow = Store.teamMemberFilterType === 'team' && (!_.isArray(Store.secondSelectValue) || (_.isArray(Store.secondSelectValue) && Store.secondSelectValue.length > 1));
+
         return (
             <div>
                 <RadioGroup defaultValue='count' onChange={handleRadioChange.bind(this, chart, analysisInstance)}>
@@ -139,7 +157,7 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
                     <Radio value="duration">{Intl.get('call.record.call.duration', '通话时长')}</Radio>
                 </RadioGroup>
 
-                {Store.teamMemberFilterType === 'team' ? (
+                {isTeamSwitchShow ? (
                     <div style={{display: 'inline-block'}}>
                         {Intl.get('call.record.all.teams.trend', '查看各团队通话趋势图')}：
                         <Switch onChange={handleSwitchChange.bind(this, chart, analysisInstance)}
