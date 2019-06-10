@@ -29,7 +29,8 @@ class ClueToCustomerPanel extends React.Component {
         super(props);
 
         this.state = {
-            customers: []
+            customers: [],
+            isModalDialogShow: false
         };
     }
 
@@ -62,6 +63,24 @@ class ClueToCustomerPanel extends React.Component {
             })
             .fail(err => {
             });
+    }
+
+    onMergeToCustomerClick = () => {
+        this.setState({
+            isModalDialogShow: true
+        });
+    }
+
+    hideModalDialog = () => {
+        this.setState({
+            isModalDialogShow: false
+        });
+    }
+
+    onModalDialogConfirm = () => {
+        this.setState({
+            isModalDialogShow: false
+        });
     }
 
     render() {
@@ -121,6 +140,7 @@ class ClueToCustomerPanel extends React.Component {
                                         <Col span={12}>
                                             <span
                                                 className="clickable"
+                                                onClick={this.onMergeToCustomerClick}
                                             >
                                                 是否合并到此客户?
                                             </span>
@@ -139,6 +159,13 @@ class ClueToCustomerPanel extends React.Component {
                             </Col>
                         </Row>
                     </div>
+
+                    <ModalDialog
+                        modalShow={this.state.isModalDialogShow}
+                        container={this}
+                        hideModalDialog={this.hideModalDialog}
+                        delete={this.onModalDialogConfirm}
+                    />
                 </div>
             </RightPanel>
         );
