@@ -47,10 +47,10 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
             _.each(data, (v, k) => {
                 if (_.isEmpty(dataCount)) {
                     _.each(v, item => {
-                        item.name = moment(item.date).format(oplateConsts.DATE_FORMAT);
+                        const name = moment(item.date).format(oplateConsts.DATE_FORMAT);
 
                         dataCount.push({
-                            name: item.name,
+                            name,
                             value: item.docments
                         });
 
@@ -72,7 +72,7 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
 
             chart.data_count = dataCount;
             chart.data_duration = dataDuration;
-            chart.processedData = data;
+            chart.rawData = data;
 
             //默认显示通话数量
             return dataCount;
@@ -82,16 +82,13 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
                 let legendData = [];
                 let series = [];
 
-                _.each(chart.processedData, (v, k) => {
+                _.each(chart.rawData, (v, k) => {
                     legendData.push(k);
                     series.push({
                         type: 'line',
                         name: k,
                         data: _.map(v, item => {
-                            return {
-                                name: item.name,
-                                value: chart.radioType === 'duration' ? item.sum : item.docments
-                            };
+                            return chart.radioType === 'duration' ? item.sum : item.docments;
                         })
                     });
                 });
@@ -221,16 +218,13 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
                     let legendData = [];
                     let series = [];
 
-                    _.each(chart.processedData, (v, k) => {
+                    _.each(chart.rawData, (v, k) => {
                         legendData.push(k);
                         series.push({
                             type: 'line',
                             name: k,
                             data: _.map(v, item => {
-                                return {
-                                    name: item.name,
-                                    value: chart.radioType === 'duration' ? item.sum : item.docments
-                                };
+                                return chart.radioType === 'duration' ? item.sum : item.docments;
                             })
                         });
                     });
