@@ -612,7 +612,7 @@ class CustomerRecord extends React.Component {
     //渲染补充跟进记录的提示
     renderSupplementTip(item) {
         return this.props.disableEdit ? null : (
-            <span className="add-detail-tip">
+            <span className="add-detail-tip" onClick={this.editDetailContent.bind(this, item)}>
                 {Intl.get('click.to.add.trace.detail', '请点击此处补充跟进内容')}
             </span>);
     }
