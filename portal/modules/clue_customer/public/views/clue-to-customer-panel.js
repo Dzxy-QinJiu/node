@@ -103,7 +103,7 @@ class ClueToCustomerPanel extends React.Component {
                     <Col span={4}>
                         {Intl.get('crm.41', '客户名')}：
                     </Col>
-                    <Col span={4}>
+                    <Col span={20}>
                         {clue.name}
                     </Col>
                 </Row>
@@ -114,7 +114,7 @@ class ClueToCustomerPanel extends React.Component {
                                 <Col span={4}>
                                     {Intl.get('call.record.contacts', '联系人')}：
                                 </Col>
-                                <Col span={4}>
+                                <Col span={20}>
                                     {contact.name}
                                 </Col>
                             </Row>
@@ -122,7 +122,7 @@ class ClueToCustomerPanel extends React.Component {
                                 <Col span={4}>
                                     {Intl.get('common.phone', '电话')}：
                                 </Col>
-                                <Col span={4}>
+                                <Col span={20}>
                                     {_.map(contact.phone, phone => {
                                         return <div>{phone}</div>;
                                     })}
@@ -135,7 +135,7 @@ class ClueToCustomerPanel extends React.Component {
                     <Col span={4}>
                         {Intl.get('crm.6', '负责人')}：
                     </Col>
-                    <Col span={12}>
+                    <Col span={20}>
                         {clue.user_name}
                     </Col>
                 </Row>
@@ -245,7 +245,7 @@ class ClueToCustomerPanel extends React.Component {
                     <Col span={4}>
                         {Intl.get('crm.41', '客户名')}：
                     </Col>
-                    <Col span={4}>
+                    <Col span={20}>
                         {customer.name}
                     </Col>
                 </Row>
@@ -256,7 +256,7 @@ class ClueToCustomerPanel extends React.Component {
                                 <Col span={4}>
                                     {Intl.get('call.record.contacts', '联系人')}：
                                 </Col>
-                                <Col span={4}>
+                                <Col span={20}>
                                     {contact.name}
                                 </Col>
                             </Row>
@@ -264,7 +264,7 @@ class ClueToCustomerPanel extends React.Component {
                                 <Col span={4}>
                                     {Intl.get('common.phone', '电话')}：
                                 </Col>
-                                <Col span={4}>
+                                <Col span={20}>
                                     {_.map(contact.phone, phone => {
                                         return <div>{phone}</div>;
                                     })}
