@@ -355,7 +355,7 @@ class SalesClueItem extends React.Component {
         //是无效线索且有判定线索无效的相关信息
         let inValidClue = salesClueItem.availability === '1' && salesClueItem.invalid_info;
         //是否有更改跟进记录的权限
-        let canEditTrace = (member_id === _.get(salesClueItem, 'customer_traces[0].user_id', ''));
+        let canEditTrace = hasPrivilege('CLUECUSTOMER_ADD_TRACE');
         //关联客户
         var associatedCustomer = salesClueItem.customer_name;
         var traceContent = _.get(salesClueItem, 'customer_traces[0].remark', '');//该线索的跟进内容

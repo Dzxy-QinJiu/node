@@ -667,8 +667,8 @@ class ClueCustomer extends React.Component {
         var tracePersonId = _.get(salesClueItem, 'customer_traces[0].user_id', '');//跟进人的id
         var tracePersonName = _.get(salesClueItem, 'customer_traces[0].nick_name', '');//跟进人的名字
         var handlePersonName = _.get(salesClueItem,'user_name');//当前跟进人
-        //是否有更改跟进记录的权限
-        let canEditTrace = (member_id === _.get(salesClueItem, 'customer_traces[0].user_id', ''));
+        //是否有添加跟进记录的权限
+        var hasPrivilegeAddEditTrace = hasPrivilege('CLUECUSTOMER_ADD_TRACE');
         return (
             <div className="foot-text-content" key={salesClueItem.id}>
                 {/*有跟进记录*/}
@@ -683,7 +683,7 @@ class ClueCustomer extends React.Component {
                                 {Intl.get('clue.add.trace.follow', '跟进') + ':' + traceContent}
                             </span>
                         </ShearContent>
-                        {canEditTrace ? <i className="iconfont icon-edit-btn" onClick={this.handleEditTrace.bind(this, salesClueItem)}></i> : null}
+                        {hasPrivilegeAddEditTrace ? <i className="iconfont icon-edit-btn" onClick={this.handleEditTrace.bind(this, salesClueItem)}></i> : null}
                     </div>
                     : hasPrivilege('CLUECUSTOMER_ADD_TRACE') ?
                         <span className='add-trace-content'
