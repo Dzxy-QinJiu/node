@@ -1,0 +1,555 @@
+/**
+ * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
+ * Created by zhangshujuan on 2019/6/10.
+ */
+var React = require('react');
+require('../../css/clue_trace_list.less');
+var ClueTraceStore = require('../../store/clue-trace-store');
+var ClueTraceAction = require('../../action/clue-trace-action');
+import {AntcTimeLine} from 'antc';
+import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
+import Spinner from 'CMP_DIR/spinner';
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+import AppUserManage from 'MOD_DIR/app_user_manage/public';
+import {RightPanel} from 'CMP_DIR/rightPanel';
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import ShearContent from '../../../../../components/shear-content';
+import {Dropdown, Icon, Button, Form, Input, Menu, message} from 'antd';
+const FormItem = Form.Item;
+const {TextArea} = Input;
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+import {CALL_STATUS_MAP, AUTO_SIZE_MAP, CALL_TYPE_MAP, TRACE_NULL_TIP} from 'PUB_DIR/sources/utils/consts';
+import {AntcDatePicker as DatePicker} from 'antc';
+import ModalDialog from 'CMP_DIR/ModalDialog';
+import ErrorDataTip from 'MOD_DIR/crm/public/views/components/error-data-tip';
+import {processForTrace} from 'MOD_DIR/crm/public/utils/crm-util';
+import TimeLine from 'CMP_DIR/time-line-new';
+import PhoneCallout from 'CMP_DIR/phone-callout';
+var classNames = require('classnames');
+import Trace from 'LIB_DIR/trace';
+import { DetailEditBtn } from 'CMP_DIR/rightPanel';
+//用于布局的高度
+const LAYOUT_CONSTANTS = {
+    TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
+    MARGIN_BOTTOM: 8, //跟进记录页的下边距
+    ADD_TRACE_HEIGHHT: 155,//添加跟进记录面板的高度
+    PHONE_STATUS_HEIGHT: 30,//通话状态筛选框的高度
+    TIME_ADD_BTN_HEIGHT: 30,//时间选择框和跟进记录的高度
+    STATISTIC_TYPE_HEIGHT: 50,//类型统计高度
+    OVER_VIEW_LOADING_HEIGHT: 30//概览页”最新跟进“加载效果的高度
+};
+class ClueTraceList extends React.Component {
+    state = {
+        showCustomerId: '',//正在展示客户详情的客户id
+        isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
+        customerOfCurUser: {},//当前展示用户所属客户的详情
+        ...ClueTraceStore.getState(),
+        divHeight: this.props.divHeight,
+
+
+        addRecordPanelShow: false,//是否展示添加跟进记录面板
+    };
+
+    onStoreChange = () => {
+        this.setState({...ClueTraceStore.getState()});
+    };
+
+    componentDidMount() {
+        ClueTraceStore.listen(this.onStoreChange);
+        this.getClueTraceList();
+        $(window).on('resize', this.onStoreChange);
+    }
+
+    componentWillReceiveProps(nextProps) {
+
+    }
+    //获取线索跟进记录列表
+    getClueTraceList = () => {
+
+    };
+
+    componentWillUnmount() {
+        ClueTraceStore.unlisten(this.onStoreChange);
+        setTimeout(() => {
+            ClueTraceAction.dismiss();
+        });
+    }
+
+    handleShowCustomerDetail = (customerId) => {
+        this.setState({
+            showCustomerId: customerId
+        });
+    };
+
+    showCustomerDetail = (customerId) => {
+        this.setState({
+            showCustomerId: customerId
+        });
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: customerId,
+                ShowCustomerUserListPanel: this.props.ShowCustomerUserListPanel,
+                hideRightPanel: this.closeRightPanel
+            }
+        });
+    };
+
+    closeRightPanel = () => {
+        this.setState({
+            showCustomerId: ''
+        });
+    };
+
+    timeLineItemRender = (item) => {
+        return (
+            <dl>
+                <dd>
+                    <ShearContent>
+                        {item.message}
+                    </ShearContent>
+                    {item.relate_name && item.relate_id ?
+                        <span className="relete-name" onClick={this.showCustomerDetail.bind(this, item.relate_id)}
+                            data-tracename="查看客户详情">{item.relate_name}</span> : null}
+                </dd>
+                <dt>{moment(item.date).format(oplateConsts.TIME_FORMAT)}</dt>
+            </dl>
+        );
+    };
+    //添加跟进记录面板的展示与隐藏
+    toggleAddRecordPanel = () => {
+        this.setState({addRecordPanelShow: !this.state.addRecordPanelShow});
+    };
+    //渲染添加跟进记录的按钮
+    renderAddRecordButton() {
+        //跟进记录页，添加跟进记录的按钮
+        return (<Button className='crm-detail-add-btn'
+            onClick={this.toggleAddRecordPanel.bind(this, '')} data-tracename="添加跟进记录">
+            {Intl.get('sales.frontpage.add.customer', '添加跟进记录')}
+        </Button>);
+
+    }
+
+    onSelectDate = (start_time, end_time) => {
+        ClueTraceAction.dismiss();
+        ClueTraceAction.changeTimeRange({start_time, end_time});
+        ClueTraceAction.setLoading();
+        setTimeout(() => {
+            this.getClueTraceList();
+        });
+    };
+
+    renderDatePicker() {
+        return (
+            <DatePicker
+                disableDateAfterToday={true}
+                range="all"
+                onSelect={this.onSelectDate}>
+                <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
+                <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
+                <DatePicker.Option value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
+                <DatePicker.Option
+                    value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
+            </DatePicker>
+        );
+    }
+    //顶部增加客户跟进记录输入时的处理
+    handleInputChange = (e) => {
+        let value = e.target.value;
+        //有输入的内容，则清空必填项验证的提示
+        if (value) {
+            ClueTraceAction.setContent({value: value, validateStatus: 'success', errorMsg: null});
+        } else {
+            ClueTraceAction.setContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
+        }
+    };
+    handleAddDetailChange = (e) => {
+        //补充客户跟进记录
+        let value = e.target.value;
+        if (value) {
+            ClueTraceAction.setDetailContent({value: value, validateStatus: 'success', errorMsg: null});
+        } else {
+            ClueTraceAction.setDetailContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
+        }
+    };
+    hideModalDialog = () => {
+        ClueTraceAction.setModalDialogFlag(false);
+    };
+    //渲染顶部增加记录的teaxare框
+    renderAddRecordPanel = () => {
+        const formItemLayout = {
+            labelCol: {span: 4},
+            wrapperCol: {span: 20},
+            colon: false
+        };
+        return (
+            <Form className="add-customer-trace">
+                <FormItem
+                    {...formItemLayout}
+                    label={Intl.get('call.record.follow.content', '跟进内容')}
+                    validateStatus={_.get(this.state, 'inputContent.validateStatus')}
+                    help={_.get(this.state, 'inputContent.errorMsg')}
+                >
+                    <TextArea placeholder={Intl.get('customer.input.customer.trace.content', '请填写跟进内容')}
+                        value={_.get(this.state, 'inputContent.value') || ''}
+                        onChange={this.handleInputChange.bind(this)}
+                        autosize={AUTO_SIZE_MAP}
+                    />
+                </FormItem>
+                <SaveCancelButton loading={this.state.addCustomerLoading}
+                    saveErrorMsg={this.state.addCustomerErrMsg}
+                    handleSubmit={this.showModalDialog}
+                    handleCancel={this.handleCancel}
+                />
+            </Form>
+        );
+    };
+    //点击顶部取消按钮后
+    handleCancel = (e) => {
+        Trace.traceEvent(e, '关闭添加跟进内容输入区');
+        ClueTraceAction.setContent({value: ''});
+        this.toggleAddRecordPanel();
+        this.setState({addRecordNullTip: ''});
+    };
+    //点击保存按钮，展示模态框
+    showModalDialog = (item, e) => {
+        if (item.id) {
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '添加补充的跟进内容');
+            //点击补充客户跟踪记录编辑状态下的保存按钮
+            var detail = _.trim(_.get(this.state, 'detailContent.value'));
+            if (detail) {
+                ClueTraceAction.setModalDialogFlag(true);
+                ClueTraceAction.changeAddButtonType('update');
+                ClueTraceAction.updateItem(item);
+            } else {
+                ClueTraceAction.setDetailContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
+            }
+        } else {
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '保存添加跟进内容');
+            //点击顶部输入框下的保存按钮
+            var addcontent = _.trim(_.get(this.state, 'inputContent.value'));
+            if (addcontent) {
+                ClueTraceAction.setModalDialogFlag(true);
+                ClueTraceAction.changeAddButtonType('add');
+            } else {
+                ClueTraceAction.setContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
+            }
+        }
+    };
+
+    handleCancelDetail = (item) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.show-customer-trace .add-detail-container .cancel-btn'), '关闭补充跟进内容输入区');
+        //点击补充客户跟进记录编辑状态下的取消按钮
+        item.showAdd = false;
+        ClueTraceAction.setDetailContent({value: '', cancelEdit: true});
+    };
+    onSelectFilterStatus = ({item, key, selectedKeys}) => {
+        this.setState({filterStatus: key});
+        ClueTraceAction.dismiss();
+        ClueTraceAction.setLoading();
+        setTimeout(() => {
+            this.getClueTraceList();
+        });
+    };
+    getStatusMenu = () => {
+        return (
+            <Menu selectedKeys={[this.state.filterStatus]} onClick={this.onSelectFilterStatus}>
+                {_.map(CALL_STATUS_MAP, (value, key) => {
+                    return (<Menu.Item key={key}>
+                        {value}
+                    </Menu.Item>);
+                })}
+            </Menu>
+        );
+    };
+    getRecordListShowHeight = () => {
+        var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT -
+            LAYOUT_CONSTANTS.TIME_ADD_BTN_HEIGHT - LAYOUT_CONSTANTS.STATISTIC_TYPE_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
+        let basicInfoHeight = parseInt($('.clue-basic-info-container').outerHeight(true));
+        //减头部的客户基本信息高度
+        divHeight -= basicInfoHeight;
+        if ($('.phone-alert-modal-title').size()) {
+            divHeight -= $('.phone-alert-modal-title').outerHeight(true);
+        }
+        //减添加跟进记录面版的高度
+        if (this.state.addRecordPanelShow) {
+            divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
+        }
+        // //减通话状态的高度
+        // if (_.includes([CALL_RECORD_TYPE.PHONE, 'all'], this.state.filterType)
+        //     && _.get(this.state, 'customerRecord.length') > 0) {
+        //     divHeight -= LAYOUT_CONSTANTS.PHONE_STATUS_HEIGHT;
+        // }
+        return divHeight;
+    };
+    renderAddDetail = (item) => {
+        //补充跟进记录
+        return (
+            <Form className="add-customer-trace">
+                <FormItem
+                    colon={false}
+                    wrapperCol={{span: 24}}
+                    validateStatus={_.get(this.state, 'detailContent.validateStatus')}
+                    help={_.get(this.state, 'detailContent.errorMsg')}
+                >
+                    <TextArea placeholder={Intl.get('customer.add.customer.trace.detail', '请补充跟进记录详情')}
+                        value={_.get(this.state, 'detailContent.value') || ''}
+                        onChange={this.handleAddDetailChange.bind(this)}
+                        autosize={AUTO_SIZE_MAP}
+                    />
+                </FormItem>
+                {this.state.editRecordNullTip ? (
+                    <div className="record-null-tip">{this.state.editRecordNullTip}</div>) : null}
+                <SaveCancelButton loading={this.state.addCustomerLoading}
+                    saveErrorMsg={this.state.addCustomerErrMsg}
+                    handleSubmit={this.showModalDialog.bind(this, item)}
+                    handleCancel={this.handleCancelDetail.bind(this, item)}
+                />
+            </Form>);
+    };
+    editDetailContent = (item, e) => {
+        e.stopPropagation();
+        //不能编辑时
+        if (this.props.disableEdit) return;
+        //如果有一个在编辑，或正在添加跟进时，再点击修改时
+        if (this.state.isEdit || this.state.addRecordPanelShow) {
+            message.error(Intl.get('crm.save.customertrace.first', '请先保存或取消正在编辑的跟进记录内容'));
+            return;
+        }
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.show-container .item-detail-content .add-detail-tip'), '点击补充跟进内容区域');
+        item.showAdd = true;
+        let remark = _.get(item, 'remark', '');
+        ClueTraceAction.setDetailContent({value: remark});
+    };
+    //渲染补充跟进记录的提示
+    renderSupplementTip(item) {
+        return this.props.disableEdit ? null : (
+            <span className="add-detail-tip" onClick={this.editDetailContent.bind(this, item)}>
+                {Intl.get('click.to.add.trace.detail', '请点击此处补充跟进内容')}
+            </span>);
+    }
+    //渲染跟进记录的展示内容
+    renderRecordShowContent = (item) => {
+        //是否是编辑跟进记录，有跟进内容并且能编辑(没有跟进内容时是补充跟进记录)
+        let isEditRecord = item.remark && !this.props.disableEdit;
+        //是否展示编辑按钮,有跟进内容(没有跟进内容时是补充跟进记录)，能编辑，并且没有正在编辑的跟进记录，并且没有正在添加跟进记录
+        let showEidtBtn = item.remark && !this.props.disableEdit && !this.state.isEdit && !this.state.addRecordPanelShow;
+        return (
+            <div className="record-content-show">
+                {item.remark ? (<ShearContent>{item.remark}</ShearContent>) : this.renderSupplementTip(item)}
+                {showEidtBtn ? <DetailEditBtn
+                    title={Intl.get('common.edit', '编辑')}
+                    onClick={this.editDetailContent.bind(this, item)}
+                /> : null}
+            </div>);
+    };
+    renderTimeLineItem = (item, hasSplitLine) => {
+        var traceObj = processForTrace(item);
+        //渲染时间线
+        var iconClass = traceObj.iconClass, title = traceObj.title, traceDsc = traceObj.traceDsc;
+        //是否上传了录音文件
+        let is_record_upload = item.is_record_upload === '1';
+        //playSelected表示当前正在播放的那条录音，图标显示红色
+        var cls = classNames('iconfont', 'icon-play', {
+            'icon-selected': item.playSelected,
+            'icon-play-disable': !is_record_upload
+        });
+        return (
+            <div className={classNames('trace-item-content', {'day-split-line': hasSplitLine})}>
+                <p className="item-detail-tip">
+                    <span className="icon-container" title={title}><i className={iconClass}></i></span>
+                    {traceDsc ? (<span className="trace-title-name" title={traceDsc}>{traceDsc}</span>) : null}
+                    {/*{_.includes(PHONE_TYPES, item.type) ? (<span className="trace-title-phone">{item.dst}</span>) : null}*/}
+                </p>
+                {item.type === 'data_report' ? this.renderReportContent(item) : (<div className="trace-content">
+                    <div className="item-detail-content" id={item.id}>
+                        {item.showAdd ? this.renderAddDetail(item) : this.renderRecordShowContent(item)}
+                    </div>
+                    <div className="item-bottom-content">
+                        {item.billsec === 0 ? (/*未接听*/
+                            <span className="call-un-answer">
+                                {Intl.get('call.record.state.no.answer', '未接听')}
+                            </span>
+                        ) : /* 电话已接通并且有recording这个字段展示播放图标*/
+                            item.recording ? (
+                                <span className="audio-container"
+                                    title={is_record_upload ? Intl.get('call.record.play', '播放录音') : Intl.get('crm.record.unupload.phone', '未上传通话录音，无法播放')}>
+                                    <span className={cls} onClick={this.handleAudioPlay.bind(this, item)}
+                                        data-tracename="点击播放录音按钮">
+                                        <span className="call-time-descr">
+                                            {TimeUtil.getFormatMinuteTime(item.billsec)}
+                                        </span>
+                                    </span>
+                                </span>
+                            ) : null
+                        }
+                        {/*{_.includes(PHONE_TYPES, item.type) ?*/}
+                        {/*(<span className="phone-call-out-btn" title={Intl.get('crm.click.call.phone', '点击拨打电话')}>*/}
+                        {/*<PhoneCallout*/}
+                        {/*phoneNumber={item.dst}*/}
+                        {/*hidePhoneNumber={true}*/}
+                        {/*/>*/}
+                        {/*</span>) : null}*/}
+                        <span className="item-bottom-right">
+                            <span className="sale-name">{item.nick_name}</span>
+                            <span className="trace-record-time">
+                                {moment(item.time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
+                            </span>
+                        </span>
+                    </div>
+                </div>)}
+            </div>
+        );
+    };
+    renderTimeLine = () => {
+        return (
+            <TimeLine
+                list={this.state.customerRecord}
+                groupByDay={true}
+                groupByYear={true}
+                timeField="time"
+                renderTimeLineItem={this.renderTimeLineItem}
+                relativeDate={false}
+            />);
+    };
+    saveAddTraceContent = () => {
+        //顶部增加跟进记录的内容
+        var customerId = this.state.customerId || '';
+        if (this.state.saveButtonType === 'add') {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加跟进内容');
+            //输入框中的内容
+            var addcontent = _.trim(_.get(this.state, 'inputContent.value'));
+            var queryObj = {
+                customer_id: customerId,
+                type: this.state.selectedtracetype,
+                remark: addcontent,
+            };
+            ClueTraceAction.addClueTrace(queryObj, (customer_trace) => {
+                //更新列表中的最后联系
+                // _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(customer_trace);
+                this.toggleAddRecordPanel();
+            });
+            // $('.add-content-input').focus();
+        } else {
+            //补充跟进记录的内容
+            var detail = _.trim(_.get(this.state, 'detailContent.value'));
+            var item = this.state.edittingItem;
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加补充的跟进内容');
+            var queryObj = {
+                id: item.id,
+                customer_id: item.customer_id || customerId,
+                type: item.type,
+                remark: detail
+            };
+            //把跟进记录中的最后一条电话数据进行标识
+            if (item.id === this.state.lastPhoneTraceItemId) {
+                queryObj.last_callrecord = 'true';
+            }
+            ClueTraceAction.setUpdateId(item.id);
+            ClueTraceAction.updateClueTrace(queryObj, () => {
+                //如果补充的是最后一条跟进记录（如果是电话类型的需要是打通的电话类型），更新列表中的最后联系
+                if (_.get(this.state, 'customerRecord[0].id') === item.id) {
+                    //打通电话的才会更新最后联系
+                    if (item.billsec === 0) return;
+                    // _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(item);
+                }
+            });
+        }
+    };
+    renderCustomerRecordLists = () => {
+        var recordLength = _.get(this, 'state.customerRecord.length');
+        //加载状态或加载数据错误时，容器高度的设置
+        let loadingErrorHeight = this.getRecordListShowHeight();
+        if (this.state.customerRecordLoading && this.state.curPage === 1) {
+            //加载中的情况
+            return (
+                <div className="customer-trace-loading" style={{'height': loadingErrorHeight }}>
+                    <Spinner/>
+                </div>
+            );
+        } else if (this.state.customerRecordErrMsg && !this.state.customerRecordLoading) {
+            //加载完成，出错的情况
+            return (
+                <div className="no-record-container" style={{'height': loadingErrorHeight}}>
+                    <ErrorDataTip errorMsg={this.state.customerRecordErrMsg} isRetry={true}
+                        retryFunc={this.retryChangeRecord}/>
+                </div>
+            );
+        } else if (recordLength === 0 && !this.state.customerRecordLoading
+        // && !this.props.isOverViewPanel
+        ) {
+            //加载完成，没有数据的情况（概览页的跟进记录是在标题上展示）
+            return (
+                <div className="no-record-container" style={{'height': this.getRecordListShowHeight()}}>
+                    <NoDataIconTip tipContent={Intl.get('common.no.more.trace.record', '暂无跟进记录')}/>
+                </div>);
+        } else {
+            //加载完成，有数据的情况
+            return (
+                <div className="show-customer-trace">
+                    <div className="show-content" style={{'height': this.getRecordListShowHeight()}}>
+                        <GeminiScrollbar className="srollbar-out-card-style"
+                            handleScrollBottom={this.handleScrollBarBottom}
+                            listenScrollBottom={this.state.listenScrollBottom}
+                        >
+                            {this.renderTimeLine()}
+                        </GeminiScrollbar>
+                    </div>
+                </div>
+            );
+        }
+    };
+    //监听下拉加载
+    handleScrollBarBottom = () => {
+        var length = this.state.customerRecord.length;
+        if (length < this.state.total) {
+            var lastId = this.state.customerRecord[length - 1].id;
+            this.getCustomerTraceList(lastId);
+        } else if (length === this.state.total) {
+            this.setState({
+                listenScrollBottom: false
+            });
+        }
+    };
+    render() {
+        //能否添加跟进记录， 可编辑并且没有正在编辑的跟进记录时，可添加
+        let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit;
+        var modalContent = Intl.get('customer.confirm.trace', '确定要保存此跟进内容？');
+        var closedModalTip = _.trim(_.get(this.state, 'detailContent.value')) ? '取消补充跟进内容' : '取消添加跟进内容';
+        return (
+            <div className="clue-trace-container" data-tracename="跟进记录页面" id="clue-trace-container">
+                <div className="top-hander-wrap">
+                    {this.renderDatePicker()}
+                    {hasAddRecordPrivilege ? this.renderAddRecordButton() : null}
+                </div>
+                {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : null}
+                <div className="show-container" id="show-container">
+                    <Dropdown overlay={this.getStatusMenu()} trigger={['click']}>
+                        <a className="ant-dropdown-link trace-filter-item">
+                            {this.state.filterStatus ? CALL_STATUS_MAP[this.state.filterStatus] : Intl.get('call.record.call.state', '通话状态')}
+                            <Icon type="down"/>
+                        </a>
+                    </Dropdown>
+                    {this.renderCustomerRecordLists()}
+                    <ModalDialog modalContent={modalContent}
+                        modalShow={this.state.modalDialogFlag}
+                        container={this}
+                        hideModalDialog={this.hideModalDialog}
+                        delete={this.saveAddTraceContent}
+                        closedModalTip={closedModalTip}
+                    />
+                </div>
+            </div>
+        );
+    }
+}
+ClueTraceList.propTypes = {
+    disableEdit: PropTypes.bool,
+    divHeight: PropTypes.number,
+    currentId: PropTypes.string,
+    ShowCustomerUserListPanel: PropTypes.func
+};
+module.exports = ClueTraceList;
+
+

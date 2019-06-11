@@ -25,7 +25,7 @@ exports.getCustomerTraceRecordList = function(queryObj, bodyData) {
             Deferred.resolve(data);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get('customer.fail.get.customer.trace', '获取客户跟踪记录列表失败'));
+            Deferred.reject(xhr.responseJSON || Intl.get('customer.fail.get.customer.trace', '获取{type}跟进记录列表失败',{type: Intl.get('call.record.customer', '客户')}));
         }
     });
     return Deferred.promise();
@@ -59,7 +59,7 @@ exports.getCustomerTraceStatistic = function(queryParams) {
             Deferred.resolve(data);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get('customer.fail.get.customer.trace', '获取客户跟踪记录列表失败'));
+            Deferred.reject(xhr.responseJSON || Intl.get('clue.fail.customer.trace.statics', '获取跟进记录的分类统计失败'));
         }
     });
     return Deferred.promise();

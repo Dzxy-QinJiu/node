@@ -13,10 +13,12 @@ var TabPane = Tabs.TabPane;
 const TAB_KEYS = {
     OVERVIEW_TAB: '1',//概览页
     DYNAMIC_TAB: '2',//动态
+    CLUE_TRACE_LIST: '3'//跟进记录
 };
 var tabNameList = {
     '1': Intl.get('clue.detail.info', '线索信息'),
     '2': Intl.get('user.change.record', '变更记录'),
+    '3': Intl.get('menu.trace', '跟进记录')
 };
 var noop = function() {
 
@@ -28,6 +30,7 @@ import PropTypes from 'prop-types';
 import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
 import ClueDynamic from '../views/dynamic';
 import ClueBasicInfo from '../views/clue_detail_overview';
+import ClueTraceList from '../views/clue_trace_list';
 import Trace from 'LIB_DIR/trace';
 import clueCustomerAjax from '../ajax/clue-customer-ajax';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
@@ -314,6 +317,16 @@ class ClueRightPanel extends React.Component {
                                             currentId={curClue.id}
                                             divHeight={divHeight}
                                             ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={tabNameList[TAB_KEYS.CLUE_TRACE_LIST]}
+                                    key={TAB_KEYS.CLUE_TRACE_LIST}
+                                >
+                                    {this.state.activeKey === TAB_KEYS.CLUE_TRACE_LIST ? (
+                                        <ClueTraceList
+                                            divHeight={divHeight}
                                         />
                                     ) : null}
                                 </TabPane>
