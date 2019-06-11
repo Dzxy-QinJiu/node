@@ -2,6 +2,8 @@
  * 销售经理业绩排名
  */
 
+const calc = require('calculatorjs');
+
 export function getSalesManagerPerformanceRankingChart() {
     return {
         title: Intl.get('common.sales.manager.performance.ranking', '销售经理业绩排名'),
@@ -23,6 +25,13 @@ export function getSalesManagerPerformanceRankingChart() {
             query.end_time = endTime.valueOf();
 
             delete query.time_interval;
+        },
+        processData: data => {
+            _.each(data, item => {
+                item.performance = calc.mul(item.performance, 100);
+            });
+
+            return data;
         },
         processOption: option => {
             const uniqTeams = _.uniqBy(option.dataSource, 'sales_team');
@@ -69,7 +78,7 @@ export function getSalesManagerPerformanceRankingChart() {
                     sorter: sorter.bind(null, 'deal_rate'),
                     width: '10%',
                 }, {
-                    title: Intl.get('common.performance', '业绩'),
+                    title: Intl.get('common.total.points', '总分'),
                     dataIndex: 'performance',
                     sorter: sorter.bind(null, 'performance'),
                     width: '10%',
