@@ -147,7 +147,9 @@ class ClueToCustomerPanel extends React.Component {
     renderExistsCustomerBlock() {
         return (
             <div className="exists-customer-block">
-                <b className="title">已存在客户</b>
+                <div className="title">
+                    <b>已存在客户</b>
+                </div>
 
                 {_.map(this.state.customers, (customer, index) => {
                     return (
@@ -237,8 +239,8 @@ class ClueToCustomerPanel extends React.Component {
 
         return (
             <div className="merge-customer-block">
-                <div>
-                    <b className="title">合并到此客户</b>
+                <div className="title">
+                    <b>合并到此客户</b>
                     <span className="go-back clickable" onClick={this.hideMergeCustomerBlock}>返回</span>
                 </div>
                 <Row>
@@ -251,7 +253,7 @@ class ClueToCustomerPanel extends React.Component {
                 </Row>
                 {_.map(customer.contacts, contact => {
                     return (
-                        <div>
+                        <div className="exist-customer">
                             <Row>
                                 <Col span={4}>
                                     {Intl.get('call.record.contacts', '联系人')}：
@@ -273,22 +275,10 @@ class ClueToCustomerPanel extends React.Component {
                         </div>
                     );
                 })}
-            </div>
-        );
-    }
-
-    //渲染按钮区域
-    renderBtnBlock() {
-        return (
-            <div className="btn-block">
-                <Row>
-                    <Col span={4}>
-                        <Button type="primary">添加</Button>
-                    </Col>
-                    <Col span={12}>
-                        <Button>取消</Button>
-                    </Col>
-                </Row>
+                <div className="btn-block">
+                    <Button>{Intl.get('common.cancel', '取消')}</Button>
+                    <Button type="primary">{Intl.get('common.sure', '确定')}</Button>
+                </div>
             </div>
         );
     }
@@ -305,7 +295,6 @@ class ClueToCustomerPanel extends React.Component {
                     <div className="panel-content">
                         {this.renderBasicInfoBlock()}
                         {this.state.isMergeCustomerBlockShow ? this.renderMergeCustomerBlock() : this.renderExistsCustomerBlock()}
-                        {this.renderBtnBlock()}
                     </div>
 
                     <ModalDialog
