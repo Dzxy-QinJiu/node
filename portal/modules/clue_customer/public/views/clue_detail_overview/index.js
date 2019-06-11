@@ -873,7 +873,7 @@ class ClueDetailOverview extends React.Component {
                                 return (
                                     <div className="contact-item">
                                         <div className="contact-item-content contact-name">
-                                            <span className="clue-info-label">{Intl.get('common.name', '姓名')}:</span>
+                                            <span className="clue-info-label">{Intl.get('call.record.contacts', '联系人')}:</span>
                                             <div className="clue-info-detail">
                                                 <BasicEditInputField
                                                     width={EDIT_FEILD_WIDTH}
