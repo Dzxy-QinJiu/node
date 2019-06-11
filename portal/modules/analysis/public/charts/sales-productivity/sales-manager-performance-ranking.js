@@ -11,22 +11,6 @@ export function getSalesManagerPerformanceRankingChart() {
         layout: { sm: 24 },
         height: 'auto',
         url: '/rest/analysis/contract/contract/v2/:data_type/performance/order/sales-manager',
-        conditions: [{
-            name: 'time_interval',
-            value: 'week'
-        }],
-        argCallback: arg => {
-            let query = arg.query;
-
-            const endTime = moment();
-            const timeInterval = query.time_interval;
-
-            query.interval = timeInterval;
-            query.start_time = endTime.clone().startOf(timeInterval).valueOf();
-            query.end_time = endTime.valueOf();
-
-            delete query.time_interval;
-        },
         processData: data => {
             _.each(data, item => {
                 item.performance = calc.mul(item.performance, 100);
@@ -90,30 +74,6 @@ export function getSalesManagerPerformanceRankingChart() {
                     width: '10%',
                 }
             ],
-        },
-        cardContainer: {
-            selectors: [{
-                options: [
-                    {
-                        name: Intl.get('common.current.week', '本周'),
-                        value: 'week'
-                    },
-                    {
-                        name: Intl.get('common.this.month', '本月'),
-                        value: 'month'
-                    },
-                    {
-                        name: Intl.get('common.current.quarter', '本季度'),
-                        value: 'quarter'
-                    },
-                    {
-                        name: Intl.get('common.current.year', '本年'),
-                        value: 'year'
-                    }
-                ],
-                activeOption: 'week',
-                conditionName: 'time_interval',
-            }],
         },
     };
 
