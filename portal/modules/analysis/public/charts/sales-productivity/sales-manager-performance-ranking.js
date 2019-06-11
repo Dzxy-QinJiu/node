@@ -2,27 +2,21 @@
  * 销售经理业绩排名
  */
 
+const calc = require('calculatorjs');
+
 export function getSalesManagerPerformanceRankingChart() {
     return {
         title: Intl.get('common.sales.manager.performance.ranking', '销售经理业绩排名'),
         chartType: 'table',
         layout: { sm: 24 },
+        height: 'auto',
         url: '/rest/analysis/contract/contract/v2/:data_type/performance/order/sales-manager',
-        conditions: [{
-            name: 'time_interval',
-            value: 'week'
-        }],
-        argCallback: arg => {
-            let query = arg.query;
+        processData: data => {
+            _.each(data, item => {
+                item.performance = calc.mul(item.performance, 100);
+            });
 
-            const endTime = moment();
-            const timeInterval = query.time_interval;
-
-            query.interval = timeInterval;
-            query.start_time = endTime.clone().startOf(timeInterval).valueOf();
-            query.end_time = endTime.valueOf();
-
-            delete query.time_interval;
+            return data;
         },
         processOption: option => {
             const uniqTeams = _.uniqBy(option.dataSource, 'sales_team');
@@ -69,7 +63,7 @@ export function getSalesManagerPerformanceRankingChart() {
                     sorter: sorter.bind(null, 'deal_rate'),
                     width: '10%',
                 }, {
-                    title: Intl.get('common.performance', '业绩'),
+                    title: Intl.get('common.total.points', '总分'),
                     dataIndex: 'performance',
                     sorter: sorter.bind(null, 'performance'),
                     width: '10%',
@@ -80,30 +74,6 @@ export function getSalesManagerPerformanceRankingChart() {
                     width: '10%',
                 }
             ],
-        },
-        cardContainer: {
-            selectors: [{
-                options: [
-                    {
-                        name: Intl.get('common.current.week', '本周'),
-                        value: 'week'
-                    },
-                    {
-                        name: Intl.get('common.this.month', '本月'),
-                        value: 'month'
-                    },
-                    {
-                        name: Intl.get('common.current.quarter', '本季度'),
-                        value: 'quarter'
-                    },
-                    {
-                        name: Intl.get('common.current.year', '本年'),
-                        value: 'year'
-                    }
-                ],
-                activeOption: 'week',
-                conditionName: 'time_interval',
-            }],
         },
     };
 

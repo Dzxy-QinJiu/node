@@ -2936,6 +2936,7 @@ var en_US = {
     'common.current.year': 'current year',//本年
     'common.rank': 'rank',//名次
     'common.sales.productivity.analysis': 'Sales productivity analysis',//销售生产力分析
+    'common.total.points': 'total points',//总分
     'clue.filter.wait.me.handle': 'Wait me to handle'//待我处理
 };
 export default en_US;

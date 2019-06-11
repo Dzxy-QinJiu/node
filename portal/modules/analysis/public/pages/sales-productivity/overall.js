@@ -12,6 +12,7 @@ module.exports = {
         'CUSTOMER_ANALYSIS_MANAGER',
     ],
     adjustDatePicker,
+    adjustInterval,
     charts: getCharts()
 };
 
@@ -24,6 +25,12 @@ function getCharts() {
 
 //调整日期选择器
 function adjustDatePicker(option) {
-    //隐藏日期选择器
-    option.className += ' hide';
+    //该页上的日期选择器不允许选择天和自定义
+    option.periodOptions = _.filter(option.periodOptions, item => !_.includes(['day', 'custom'], item.value));
+}
+
+//调整时间区间参数
+function adjustInterval(range) {
+    //该页上的时间区间参数和日期选择器上选择的时间区间一致
+    return range;
 }
