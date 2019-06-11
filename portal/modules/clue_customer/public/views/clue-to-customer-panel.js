@@ -174,10 +174,14 @@ class ClueToCustomerPanel extends React.Component {
 
     //渲染合并客户区块
     renderMergeCustomerBlock() {
-        //要合并到的客户
-        const customer = _.cloneDeep(this.state.currentCustomer);
         //当前线索
         const clue = this.props.clue;
+
+        //没有当前线索时直接返回
+        if (_.isEmpty(clue)) return;
+
+        //要合并到的客户
+        const customer = _.cloneDeep(this.state.currentCustomer);
 
         //所有联系人
         const allContacts = _.concat(customer.contacts, clue.contacts);
@@ -257,6 +261,9 @@ class ClueToCustomerPanel extends React.Component {
                             <Row>
                                 <Col span={4}>
                                     {Intl.get('call.record.contacts', '联系人')}：
+                                    {contact.replaceName ? (
+                                        <span>是否替换为{contact.replaceName}</span>
+                                    ) : null}
                                 </Col>
                                 <Col span={20}>
                                     {contact.name}
@@ -268,7 +275,14 @@ class ClueToCustomerPanel extends React.Component {
                                 </Col>
                                 <Col span={20}>
                                     {_.map(contact.phone, phone => {
-                                        return <div>{phone}</div>;
+                                        return (
+                                            <div>
+                                                {phone}
+                                                {contact.isDup ? (
+                                                    <span>删除</span>
+                                                ) : null}
+                                            </div>
+                                        );
                                     })}
                                 </Col>
                             </Row>
