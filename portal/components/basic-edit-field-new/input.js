@@ -48,8 +48,7 @@ const BasicEditField = createReactClass({
         okBtnText: PropTypes.string,
         cancelBtnText: PropTypes.string,
         showPasswordStrength: PropTypes.bool,
-        textCut: PropTypes.bool,
-        hasMoreRow: PropTypes.bool
+        textCut: PropTypes.bool
     },
     getDefaultProps: function() {
         return {
@@ -99,8 +98,7 @@ const BasicEditField = createReactClass({
             //展示内容后面跟的提示信息
             afterTextTip: '',
             //超过3行是否截断
-            textCut: false,
-            hasMoreRow: false
+            textCut: false
         };
     },
 
@@ -271,7 +269,6 @@ const BasicEditField = createReactClass({
             'basic-edit-field-input': this.props.type !== 'textarea',
             'basic-edit-field-textarea': this.props.type === 'textarea',
             'basic-edit-field': true,
-            'has-more-row': this.props.hasMoreRow,
             'editing': this.state.displayType === 'edit'
         });
         var textBlock = null;
