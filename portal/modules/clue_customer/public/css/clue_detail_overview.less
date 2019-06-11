@@ -9,18 +9,17 @@
     .clue-info-item{
       overflow: hidden;
       margin-bottom:4px;
-      .clue-info-label{
-        float: left;
+      .clue-info-label,.item-show-label{
         width: 60px;
+        float: left;
         color: @FONT_COLOR;
-        margin-right:12px;
-        position: relative;
-        top: 2px;
         font-size: 14px;
+        line-height: 24px;
+        &.contact-way-icon{
+          margin-top:0;
+        }
       }
       .clue-info-detail{
-        float: left;
-        width: 320px;
         font-size: 14px;
         color:#333;
         .basic-edit-field .basic-info-text{
@@ -53,12 +52,11 @@
       overflow: hidden;
       margin-bottom:10px;
       .contact-item-content{
-        overflow: hidden;
-        padding-left: 12px;
         label.ant-form-item-required:before{
           display: none;
         }
       }
+
        .contact-way{
          display: block;
          &>.iconfont{
