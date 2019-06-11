@@ -51,7 +51,7 @@ export function getAverageOnlineTimeChart(type = 'all') {
 
                     return `
                         ${name}<br>
-                        ${Intl.get('common.app.minute', '分钟')}：${moment.duration(data.value).asMinutes().toFixed()}
+                        ${Intl.get('common.app.minute', '分钟')}：${data.value}
                     `;
                 },
             },
@@ -77,6 +77,8 @@ export function getAverageOnlineTimeChart(type = 'all') {
             _.each(serieData, dataItem => {
                 //将通话时间转成分钟
                 dataItem.value = moment.duration(dataItem.value).asMinutes().toFixed();
+                //在数据中标识当前统计的时间区间
+                dataItem.cardSelectValue = interval;
             });
         },
         cardContainer: {
