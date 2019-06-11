@@ -9,6 +9,7 @@ export function getSalesManagerPerformanceRankingChart() {
         title: Intl.get('common.sales.manager.performance.ranking', '销售经理业绩排名'),
         chartType: 'table',
         layout: { sm: 24 },
+        height: 'auto',
         url: '/rest/analysis/contract/contract/v2/:data_type/performance/order/sales-manager',
         conditions: [{
             name: 'time_interval',
