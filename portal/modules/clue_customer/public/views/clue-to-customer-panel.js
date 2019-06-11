@@ -290,7 +290,7 @@ class ClueToCustomerPanel extends React.Component {
                     );
                 })}
                 <div className="btn-block">
-                    <Button>{Intl.get('common.cancel', '取消')}</Button>
+                    <Button onClick={this.hideMergeCustomerBlock}>{Intl.get('common.cancel', '取消')}</Button>
                     <Button type="primary">{Intl.get('common.sure', '确定')}</Button>
                 </div>
             </div>
