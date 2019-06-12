@@ -40,6 +40,7 @@ class ClueToCustomerPanel extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        //console.log(this.props.clue.id , nextProps.clue.id)
         if (this.props.clue.id !== nextProps.clue.id) {
             this.getCustomer(nextProps);
         }
@@ -183,63 +184,52 @@ class ClueToCustomerPanel extends React.Component {
         //要合并到的客户
         const customer = _.cloneDeep(this.state.currentCustomer);
 
-        //所有联系人
-        const allContacts = _.concat(customer.contacts, clue.contacts);
-        //不重复的联系人
-        const uniqContacts = _.uniqBy(allContacts, 'name');
-        //重复的联系人
-        const dupContacts = _.differenceBy(allContacts, uniqContacts);
+        //遍历客户联系人
+        _.each(customer.contacts, customerContact => {
+            //遍历线索联系人
+            _.some(clue.contacts, clueContact => {
+                //客户联系人电话和线索联系人电话的合集
+                const allPhone = _.concat(customerContact.phone, clueContact.phone);
+                //去重后的电话合集
+                const uniqPhone = _.uniq(allPhone);
 
-        //如果没有重复的联系人
-        if (_.isEmpty(dupContacts)) {
-            //所有客户联系人电话
-            const allCustomerContactPhone = _.map(customer.contacts, 'phone');
-            //所有线索联系人电话
-            const allClueContactPhone = _.map(clue.contacts, 'phone');
-            //所有电话
-            let allPhone = _.concat(allCustomerContactPhone, allClueContactPhone);
-            //将二维数组展平
-            allPhone = _.flatten(allPhone);
-            //不重复的电话
-            const uniqPhone = _.uniq(allPhone);
-            //重复的电话
-            const dupPhone = _.differenceBy(allPhone, uniqPhone);
+                //如果存在同名联系人，说明联系人重复
+                if (clueContact.name === customerContact.name) {
+                    //将客户联系人的电话设置为去重后的电话合集
+                    customerContact.phone = uniqPhone;
+                    //将该客户联系人标记为重复联系人
+                    customerContact.isDup = true;
+                    //将该线索联系人标记为重复联系人
+                    clueContact.isDup = true;
 
-
-            //如果没有重复的电话
-            if (_.isEmpty(dupPhone)) {
-                //将所有联系人设为客户联系人
-                customer.contacts = allContacts;
-            } else {
-                _.each(dupPhone, phone => {
-                    //客户联系人
-                    let customerContact = _.find(customer.contacts, item => _.includes(item.phone, phone));
-                    //线索联系人
-                    const clueContact = _.find(clue.contacts, item => _.includes(item.phone, phone));
-
+                    //中止遍历
+                    return true;
+                //如果电话重复
+                } else if (allPhone.length > uniqPhone.length) {
+                    //将客户联系人的电话设置为去重后的电话合集
+                    customerContact.phone = uniqPhone;
+                    //将该客户联系人标记为重复联系人
+                    customerContact.isDup = true;
+                    //将该线索联系人标记为重复联系人
+                    clueContact.isDup = true;
+                    
                     //如果有重复电话的客户联系人和线索联系人的名字不相同
                     if (customerContact.name !== clueContact.name) {
                         //将线索联系人的名字设置为客户联系人的替换名字
                         customerContact.replaceName = clueContact.name;
                     }
-                });
-            }
-        } else {
-            //将和客户联系人重复的线索联系人的电话合并到客户联系人
-            //并将该客户联系人标记为重复联系人
-            _.each(dupContacts, contact => {
-                //客户联系人
-                let customerContact = _.find(customer.contacts, item => item.name === contact.name);
-                //线索联系人
-                const clueContact = _.find(clue.contacts, item => item.name === contact.name);
-                //将线索联系人的电话合并到客户联系人
-                customerContact.phone = _.concat(customerContact.phone, clueContact.phone);
-                //对合并后的电话去重
-                customerContact.phone = _.uniq(customerContact.phone);
-                //标记为重复联系人
-                customerContact.isDup = true;
+
+                    //中止遍历
+                    return true;
+                }
             });
-        }
+        });
+
+        //和客户联系人的名称及电话都不重复的线索联系人
+        const noneDupClueContacts = _.filter(clue.contacts, clueContact => !clueContact.isDup);
+
+        //将这些不重复的联系人合并到客户联系人
+        customer.contacts = _.concat(customer.contacts, noneDupClueContacts);
 
         return (
             <div className="merge-customer-block">
