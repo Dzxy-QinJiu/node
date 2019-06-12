@@ -40,6 +40,8 @@ class ClueToCustomerPanel extends React.Component {
             mergedCustomer: {},
             //要替换名称的联系人的索引
             toReplaceContactIndex: -1,
+            //要替换成的联系人名称
+            replaceName: '',
             //是否显示合并到此客户对话框
             isMergeToCustomerDialogShow: false,
             //是否显示替换联系人名称对话框
@@ -53,7 +55,6 @@ class ClueToCustomerPanel extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        //console.log(this.props.clue.id , nextProps.clue.id)
         if (this.props.clue.id !== nextProps.clue.id) {
             this.getCustomer(nextProps);
         }
@@ -108,10 +109,11 @@ class ClueToCustomerPanel extends React.Component {
     }
 
     //替换联系人名称按钮点击事件
-    onReplaceContactNameClick = contactIndex => {
+    onReplaceContactNameClick = (contactIndex, replaceName) => {
         this.setState({
             isReplaceContactNameDialogShow: true,
-            toReplaceContactIndex: contactIndex
+            toReplaceContactIndex: contactIndex,
+            replaceName
         });
     }
 
@@ -124,7 +126,12 @@ class ClueToCustomerPanel extends React.Component {
 
     //替换联系人名称对话框确定按钮点击事件
     onReplaceContactNameDialogConfirm = () => {
+        let mergedCustomer = _.cloneDeep(this.state.mergedCustomer);
+
+        _.set(mergedCustomer, 'contacts[' + this.state.toReplaceContactIndex + '].name', this.state.replaceName);
+
         this.setState({
+            mergedCustomer,
             isReplaceContactNameDialogShow: false,
         });
     }
@@ -306,7 +313,7 @@ class ClueToCustomerPanel extends React.Component {
                                     {contact.replaceName ? (
                                         <span
                                             className="is-replace-contract-name clickable"
-                                            onClick={this.onReplaceContactNameClick.bind(this, contactIndex)}
+                                            onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
                                         >
                                             是否替换为“{contact.replaceName}”
                                         </span>
