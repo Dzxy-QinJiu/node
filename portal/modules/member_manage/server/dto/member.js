@@ -71,13 +71,8 @@ exports.toRestObject = function(frontObj) {
         restObject.email = frontObj.email;
     }
     if (frontObj.role) {
-        let role = JSON.parse(frontObj.role);
-        if (role && role.length > 0) {
-            restObject.roles = [];
-            for (let i = 0, len = role.length; i < len; i++) {
-                restObject.roles.push({role_id: role[i]});
-            }
-        }
+        let role = frontObj.role;
+        restObject.roles = [{role_id: role}];
     }
     if (frontObj.team) {
         restObject.team_id = frontObj.team;

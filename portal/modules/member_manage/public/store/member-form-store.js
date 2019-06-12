@@ -91,7 +91,6 @@ class MemberFormStore {
 
     // 昵称（对应的是姓名）唯一性的验证
     checkOnlyNickName(result) {
-        console.log('result:',result);
         if (_.isString(result)) {
             //验证出错！
             this.nickNameError = true;

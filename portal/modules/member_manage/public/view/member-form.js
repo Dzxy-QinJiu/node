@@ -68,9 +68,8 @@ class MemberForm extends React.Component {
         MemberFormStore.unlisten(this.onChange);
     }
 
-    componentDidMount() {
-        var _this = this;
-        MemberFormStore.listen(_this.onChange);
+    componentDidMount = () => {
+        MemberFormStore.listen(this.onChange);
     }
 
     //关闭面板前清空验证的处理
@@ -110,7 +109,6 @@ class MemberForm extends React.Component {
                     //修改邮箱后，邮箱的激活状态改为未激活
                     user.emailEnable = false;
                 }
-                user.role = JSON.stringify(user.role);
                 //设置正在保存中
                 MemberFormAction.setSaveFlag(true);
                 if (this.props.formType === 'add') {
@@ -250,22 +248,12 @@ class MemberForm extends React.Component {
 
     //渲染角色下拉列表
     renderRoleOptions = () => {
-        let formData = this.props.form.getFieldsValue();
         //角色列表
-        var roleOptions = '';
-        var roleList = this.state.roleList;
+        let roleOptions = '';
+        let roleList = this.state.roleList;
         if (_.isArray(roleList) && roleList.length > 0) {
             roleOptions = roleList.map(function(role) {
-                var className = '';
-                if (_.isArray(formData.role) && formData.role.length > 0) {
-                    formData.role.forEach(function(roleId) {
-                        if (role.roleId === roleId) {
-                            className = 'role-options-selected';
-                        }
-                    });
-                }
-                //<span className={className}>{role.roleName}</span>
-                return (<Option className={className} key={role.roleId} value={role.roleId}>
+                return (<Option key={role.roleId} value={role.roleId}>
                     {role.roleName}
                 </Option>);
 
@@ -460,11 +448,10 @@ class MemberForm extends React.Component {
                                         {getFieldDecorator('role', {
                                             rules: [{
                                                 required: true,
-                                                type: 'array',
                                                 message: Intl.get('member.select.role', '请选择角色')
                                             }]
                                         })(
-                                            <Select multiple
+                                            <Select
                                                 size='large'
                                                 optionFilterProp="children"
                                                 placeholder={Intl.get('member.select.role', '请选择角色')}
