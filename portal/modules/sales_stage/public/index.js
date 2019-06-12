@@ -5,7 +5,7 @@ var React = require('react');
 require('./css/sales-stage.less');
 var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
 var topHeight = 87; // 22 + 65 : 添加按钮高度+顶部导航高度
-var leftWidth = 281; // 45+117+44 左侧导航宽度+右侧内容左边距+右侧右侧边距+销售阶段内容左侧边距
+var leftWidth = 105;
 var SalesStageStore = require('./store/sales-stage-store');
 var SalesStageAction = require('./action/sales-stage-actions');
 var SalesStageInfo = require('./views/sales-stage-info');
@@ -294,7 +294,10 @@ class SalesStagePage extends React.Component {
                                         return (
                                             <li className="sales-stage-timeline-item" key={key}>
                                                 <div className="sales-stage-timeline-item-tail"></div>
-                                                <div className="sales-stage-timeline-item-head"></div>
+                                                <div className="sales-stage-timeline-item-head">
+                                                    <i className='iconfont icon-order-arrow-down'></i>
+                                                </div>
+                                                <div className="sales-stage-timeline-item-right"></div>
                                                 <SalesStageInfo
                                                     salesStage={salesStage}
                                                     width={width}
