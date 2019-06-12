@@ -3040,6 +3040,8 @@ var zh_CN = {
     'common.current.year': '本年',
     'common.rank': '名次',
     'common.sales.productivity.analysis': '销售生产力分析',
-    'clue.filter.wait.me.handle': '待我处理'
+    'clue.filter.wait.me.handle': '待我处理',
+    'clue.show.no.show.tip': '还有{num}个提醒未展示',
+    'clue.close.all.noty': '关闭所有提醒？'
 };
 export default zh_CN;

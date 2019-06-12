@@ -165,21 +165,37 @@ function clueUnhandledListener(data) {
                 content: tipContent,
                 closeWith: ['button'],
                 maxVisible: 3,
+                callback: { // 关闭的时候
+                    onClose: () => {
+                        //关闭之后，队列中还有几个未展示的提醒
+                        var noteLength = _.get($.noty, 'queue.length') - 1;
+                        if (noteLength === 0){
+                            hasAddCloseBtn = false;
+                            $('#noty-quene-tip-container').remove();
+                        }else if(noteLength > 0 && hasAddCloseBtn){
+                            var queueNum = $('#queue-num');
+                            if (queueNum) {
+                                queueNum.text(noteLength);
+                            }
+                        }
+                    }
+                },
             });
 
         }
     }
     //如果总共的数量超过3个，就需要展示关闭所有的按钮
-    if (_.get($.noty,'queue.length') > 0){
-        var queueArrLength = _.get($.noty,'queue.length');
+    if (_.get($.noty, 'queue.length') > 0) {
         var ulHtml = $('#noty_topRight_layout_container');
-        if (!hasAddCloseBtn){
+        if (!hasAddCloseBtn) {
             hasAddCloseBtn = true;
-            ulHtml.before(`<p id="noty-quene-tip-container">还有<span id="queue-num">${queueArrLength}</span>个提醒没有展示，<a href="#" onclick='closeAllNoty()'>关闭所有提醒</a></p>`);
-        }else{
+            ulHtml.before(`<p id="noty-quene-tip-container">
+${Intl.get('clue.show.no.show.tip', '还有{num}个提醒未展示，', {num: `<span id="queue-num">${_.get($.noty, 'queue.length')}</span>`})}，<a href="#" onclick='closeAllNoty()'>
+${Intl.get('clue.close.all.noty', '关闭所有提醒？')}</a></p>`);
+        } else {
             var queueNum = $('#queue-num');
-            if (queueNum){
-                queueNum.text(queueArrLength);
+            if (queueNum) {
+                queueNum.text(_.get($.noty, 'queue.length'));
             }
         }
     }
