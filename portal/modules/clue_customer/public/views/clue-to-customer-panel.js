@@ -382,6 +382,16 @@ class ClueToCustomerPanel extends React.Component {
         );
     }
 
+    //渲染添加取消按钮区域
+    renderAddCancelBtnBlock() {
+        return (
+            <div className="btn-block">
+                <Button onClick={this.hideMergeCustomerBlock}>{Intl.get('common.cancel', '取消')}</Button>
+                <Button type="primary">{Intl.get('common.sure', '确定')}</Button>
+            </div>
+        );
+    }
+
     //渲染是否合并到此客户对话框
     renderMergeToCustomerDialog() {
         return (
@@ -432,7 +442,9 @@ class ClueToCustomerPanel extends React.Component {
                 <div className="clue-detail-wrap">
                     <div className="panel-content">
                         {this.renderBasicInfoBlock()}
-                        {this.state.isMergeCustomerBlockShow ? this.renderMergeCustomerBlock() : this.renderExistsCustomerBlock()}
+                        {this.state.existingCustomers.length && !this.state.isMergeCustomerBlockShow ? this.renderExistsCustomerBlock() : null}
+                        {this.state.isMergeCustomerBlockShow ? this.renderMergeCustomerBlock() : null}
+                        {!this.state.existingCustomers.length && !this.state.isMergeCustomerBlockShow ? this.renderAddCancelBtnBlock() : null}
                     </div>
                 </div>
 
