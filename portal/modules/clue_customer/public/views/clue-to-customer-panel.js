@@ -61,6 +61,7 @@ class ClueToCustomerPanel extends React.Component {
         })
             .done(result => {
                 this.setState({
+                    isMergeCustomerBlockShow: false,
                     customers: result.result
                 });
             })
