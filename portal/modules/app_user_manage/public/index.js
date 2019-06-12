@@ -49,6 +49,12 @@ import ImportUser from './views/import';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 import userData from 'PUB_DIR/sources/user-data';
 
+const UPLOAD_USER_TIPS = {
+    EXIST: 'data exist', // （用户名、邮箱 ）已存在
+    ILLEGAL: 'data illegal', // （用户名、邮箱、手机号）不合法
+    UNEXIST: 'data unexist' // 客户名称不匹配
+};
+
 /*用户管理界面外层容器*/
 class AppUserManage extends React.Component {
 
@@ -618,17 +624,23 @@ class AppUserManage extends React.Component {
         let tipsMessage = '';
         if (isError) {
             if (errorType === 'user_name') {
-                tipsMessage = isError.detail === 'data exist' ? 
+                tipsMessage = isError.detail === UPLOAD_USER_TIPS.EXIST ?
                     Intl.get('common.is.existed', '用户名已存在') : Intl.get('user.import.username.no.match.rule', '用户名不符合规则');
             } else if (errorType === 'phone') {
-                tipsMessage = isError.detail === 'data illegal' ? Intl.get('user.import.phone.no.match.rule', '手机号不符合规则') : '';
+                tipsMessage = isError.detail === UPLOAD_USER_TIPS.ILLEGAL ? Intl.get('user.import.phone.no.match.rule', '手机号不符合规则') : '';
             }else if (errorType === 'email') {
-                tipsMessage = isError.detail === 'data exist' ?
+                tipsMessage = isError.detail === UPLOAD_USER_TIPS.EXIST ?
                     Intl.get('common.email.is.existed', '邮箱已存在') : Intl.get('user.import.email.no.match.rule', '邮箱不符合规则');
             } else if (errorType === 'customer_name') {
-                tipsMessage = isError.detail === 'data unexist' && isManager ?
-                    Intl.get('user.import.customer.no.match', '未找到用户所属客户，可能没有此客户或客户名不一致。您可以修改数据后再导入，或者直接导入，导入后手动添加所属客户') :
-                    Intl.get('user.import.no.match.customer.tips', '未找到用户所属客户，可能没有此客户或客户名不一致，请修改数据后重新导入');
+                if (isError.detail === UPLOAD_USER_TIPS.UNEXIST) {
+                    if (isManager) {
+                        tipsMessage = Intl.get('user.import.customer.no.match', '未找到用户所属客户，可能没有此客户或客户名不一致。您可以修改数据后再导入，或者直接导入，导入后手动添加所属客户');
+                    } else {
+                        tipsMessage = Intl.get('user.import.no.match.customer.tips', '未找到用户所属客户，可能没有此客户或客户名不一致，请修改数据后重新导入');
+                    }
+                } else {
+                    tipsMessage = Intl.get('user.import.no.match.customer.tips', '未找到用户所属客户，可能没有此客户或客户名不一致，请修改数据后重新导入');
+                }
             }
         }
         return {cls: cls, tipsMessage: tipsMessage};
