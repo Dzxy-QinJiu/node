@@ -145,7 +145,7 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
     function renderCallTrendChartSwitch(chart, analysisInstance) {
         //是否显示"查看各团队通话趋势图"开关
         //筛选类型选的是团队
-        //并且团队选的是全部
+        //并且团队选的是全部，这个是根据Store.secondSelectValue的值来判断的，只有选全部的时候这个值不是数组，所以可以根据这个值是否是数组来判断选择的是否是全部
         //或者选择的团队大于一个时
         //显示"查看各团队通话趋势图"开关
         const isTeamSwitchShow = Store.teamMemberFilterType === 'team' && (!_.isArray(Store.secondSelectValue) || (_.isArray(Store.secondSelectValue) && Store.secondSelectValue.length > 1));
