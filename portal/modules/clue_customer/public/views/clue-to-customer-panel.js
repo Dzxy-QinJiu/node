@@ -38,8 +38,12 @@ class ClueToCustomerPanel extends React.Component {
             toMergeCustomer: {},
             //合并后的客户
             mergedCustomer: {},
-            //是否显示“合并询问对话框”
-            isMergeModalShow: false,
+            //要替换名称的联系人的索引
+            toReplaceContactIndex: -1,
+            //是否显示合并到此客户对话框
+            isMergeToCustomerDialogShow: false,
+            //是否显示替换联系人名称对话框
+            isReplaceContactNameDialogShow: false,
             //合并到客户的操作区块是否显示
             isMergeCustomerBlockShow: false,
         };
@@ -78,28 +82,54 @@ class ClueToCustomerPanel extends React.Component {
             });
     }
 
+    //合并到此客户按钮点击事件
     onMergeToCustomerClick = (customer) => {
         this.setState({
             toMergeCustomer: customer,
-            isMergeModalShow: true
+            isMergeToCustomerDialogShow: true
         });
     }
 
-    hideModalDialog = () => {
+    //隐藏合并到此客户对话框
+    hideMergeToCustomerDialog = () => {
         this.setState({
-            isMergeModalShow: false
+            isMergeToCustomerDialogShow: false
         });
     }
 
-    onModalDialogConfirm = () => {
+    //合并到此客户对话框确定按钮点击事件
+    onMergeToCustomerDialogConfirm = () => {
         this.setState({
-            isMergeModalShow: false,
+            isMergeToCustomerDialogShow: false,
             isMergeCustomerBlockShow: true,
         });
 
         this.setMergedCustomer();
     }
 
+    //替换联系人名称按钮点击事件
+    onReplaceContactNameClick = contactIndex => {
+        this.setState({
+            isReplaceContactNameDialogShow: true,
+            toReplaceContactIndex: contactIndex
+        });
+    }
+
+    //隐藏替换联系人名称对话框
+    hideReplaceContactNameDialog = () => {
+        this.setState({
+            isReplaceContactNameDialogShow: false
+        });
+    }
+
+    //替换联系人名称对话框确定按钮点击事件
+    onReplaceContactNameDialogConfirm = () => {
+        this.setState({
+            isReplaceContactNameDialogShow: false,
+        });
+    }
+
+    //隐藏合并客户操作区块
     hideMergeCustomerBlock = () => {
         this.setState({
             isMergeCustomerBlockShow: false,
@@ -264,7 +294,7 @@ class ClueToCustomerPanel extends React.Component {
                         {customer.name}
                     </Col>
                 </Row>
-                {_.map(customer.contacts, contact => {
+                {_.map(customer.contacts, (contact, contactIndex) => {
                     return (
                         <div className="exist-customer">
                             <Row>
@@ -274,7 +304,12 @@ class ClueToCustomerPanel extends React.Component {
                                 <Col span={20}>
                                     {contact.name}
                                     {contact.replaceName ? (
-                                        <span className="is-replace-contract-name clickable">是否替换为“{contact.replaceName}”</span>
+                                        <span
+                                            className="is-replace-contract-name clickable"
+                                            onClick={this.onReplaceContactNameClick.bind(this, contactIndex)}
+                                        >
+                                            是否替换为“{contact.replaceName}”
+                                        </span>
                                     ) : null}
                                 </Col>
                             </Row>
@@ -306,6 +341,31 @@ class ClueToCustomerPanel extends React.Component {
         );
     }
 
+    //渲染是否合并到此客户对话框
+    renderMergeToCustomerDialog() {
+        return (
+            <ModalDialog
+                modalContent={`合并到客户${this.state.toMergeCustomer.name}?`}
+                modalShow={this.state.isMergeToCustomerDialogShow}
+                container={this}
+                hideModalDialog={this.hideMergeToCustomerDialog}
+                delete={this.onMergeToCustomerDialogConfirm}
+            />
+        );
+    }
+
+    //渲染是否替换联系人名称对话框
+    renderReplaceContactNameDialog() {
+        return (
+            <ModalDialog
+                modalShow={this.state.isReplaceContactNameDialogShow}
+                container={this}
+                hideModalDialog={this.hideReplaceContactNameDialog}
+                delete={this.onReplaceContactNameDialogConfirm}
+            />
+        );
+    }
+
     render() {
         return (
             <RightPanel
@@ -319,15 +379,10 @@ class ClueToCustomerPanel extends React.Component {
                         {this.renderBasicInfoBlock()}
                         {this.state.isMergeCustomerBlockShow ? this.renderMergeCustomerBlock() : this.renderExistsCustomerBlock()}
                     </div>
-
-                    <ModalDialog
-                        modalContent={`合并到客户${this.state.toMergeCustomer.name}?`}
-                        modalShow={this.state.isMergeModalShow}
-                        container={this}
-                        hideModalDialog={this.hideModalDialog}
-                        delete={this.onModalDialogConfirm}
-                    />
                 </div>
+
+                {this.renderMergeToCustomerDialog()}
+                {this.renderReplaceContactNameDialog()}
             </RightPanel>
         );
     }
