@@ -3041,6 +3041,8 @@ var zh_CN = {
     'common.rank': '名次',
     'common.sales.productivity.analysis': '销售生产力分析',
     'common.total.points': '总分',
-    'clue.filter.wait.me.handle': '待我处理'
+    'clue.filter.wait.me.handle': '待我处理',
+    'clue.item.source.from': '来自“{source}”',
+    'clue.item.acceess.channel': '详情：“{content}”'
 };
 export default zh_CN;
