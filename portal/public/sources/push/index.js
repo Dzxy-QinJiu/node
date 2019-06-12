@@ -37,6 +37,7 @@ import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 var contactNameObj = {};
 //socketIo对象
 var socketIo;
+var hasAddCloseBtn = false;
 //推送过来新的消息后，将未读数加/减一
 function updateUnreadByPushMessage(type, isAdd) {
     //将未读数加一
@@ -131,6 +132,11 @@ function applyApproveUnhandledListener(data) {
     }
 
 }
+window.closeAllNoty = function() {
+    hasAddCloseBtn = false;
+    $('#noty-quene-tip-container').remove();
+    $.noty.closeAll();
+};
 //处理线索的数据
 function clueUnhandledListener(data) {
     if (_.isObject(data)) {
@@ -149,16 +155,48 @@ function clueUnhandledListener(data) {
         } else {//系统弹出通知
             var clueHtml = '',titleHtml = '';
             titleHtml += '<p class=\'clue-title\'>' + '<i class=\'iconfont icon-clue\'></i>' + '<span class=\'title-tip\'>' + title + '</span>';
-
             _.each(clueArr, (clueItem) => {
                 clueHtml += '<p class=\'clue-item\' title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(event, ' + JSON.stringify(clueItem.id) + ')\'>' + '<span class=\'clue-item-name\'>' + clueItem.name + '</span>' + '<span class=\'clue-detail\'>' + Intl.get('call.record.show.customer.detail', '查看详情') + '<i class=\'great-than\'>&gt;</i>' + '</span>' + '</p>';
             });
             tipContent = `<div>${clueHtml}</div>`;
+            var largerText = 0;
             notificationUtil.showNotification({
                 title: titleHtml,
                 content: tipContent,
-                closeWith: ['button']
+                closeWith: ['button'],
+                maxVisible: 3,
+                callback: { // 关闭的时候
+                    onClose: () => {
+                        //关闭之后，队列中还有几个未展示的提醒
+                        var noteLength = _.get($.noty, 'queue.length') - 1;
+                        if (noteLength === 0){
+                            hasAddCloseBtn = false;
+                            $('#noty-quene-tip-container').remove();
+                        }else if(noteLength > 0 && hasAddCloseBtn){
+                            var queueNum = $('#queue-num');
+                            if (queueNum) {
+                                queueNum.text(noteLength);
+                            }
+                        }
+                    }
+                },
             });
+
+        }
+    }
+    //如果总共的数量超过3个，就需要展示关闭所有的按钮
+    if (_.get($.noty, 'queue.length') > 0) {
+        var ulHtml = $('#noty_topRight_layout_container');
+        if (!hasAddCloseBtn) {
+            hasAddCloseBtn = true;
+            ulHtml.before(`<p id="noty-quene-tip-container">
+${Intl.get('clue.show.no.show.tip', '还有{num}个提醒未展示，', {num: `<span id="queue-num">${_.get($.noty, 'queue.length')}</span>`})}，<a href="#" onclick='closeAllNoty()'>
+${Intl.get('clue.close.all.noty', '关闭所有提醒？')}</a></p>`);
+        } else {
+            var queueNum = $('#queue-num');
+            if (queueNum) {
+                queueNum.text(_.get($.noty, 'queue.length'));
+            }
         }
     }
 }

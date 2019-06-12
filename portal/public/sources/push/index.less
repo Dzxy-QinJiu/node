@@ -21,6 +21,7 @@
 }
 #noty_topRight_layout_container {
   width: 360px!important;
+  top: 40px!important;
   li{
     border:1px solid @BORDER-BLUE !important;
     width: 360px!important;
@@ -91,7 +92,22 @@
         }
       }
     }
+    &:nth-child(n+4){
+      display: none;
+    }
   }
+};
+#noty-quene-tip-container{
+  position: fixed;
+  right:20px;
+  background: #FFF;
+  padding: 5px 0px 5px 11px;
+  font-size: 14px;
+  border: 1px solid @BORDER-BLUE;
+  width: 360px;
+  border-bottom: none;
+  top:12px;
+  z-index: 10000000000;
 }
 
 

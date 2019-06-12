@@ -3043,6 +3043,8 @@ var zh_CN = {
     'common.total.points': '总分',
     'clue.filter.wait.me.handle': '待我处理',
     'clue.item.source.from': '来自“{source}”',
-    'clue.item.acceess.channel': '详情：“{content}”'
+    'clue.item.acceess.channel': '详情：“{content}”',
+    'clue.show.no.show.tip': '还有{num}个提醒未展示',
+    'clue.close.all.noty': '关闭所有提醒？'
 };
 export default zh_CN;
