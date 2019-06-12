@@ -541,6 +541,10 @@ class ClueCustomer extends React.Component {
         this.setState({
             isEdittingItem: updateItem,
             submitContent: this.getSubmitContent(updateItem)
+        }, () => {
+            if (this['changeTextare' + updateItem.id]) {
+                this['changeTextare' + updateItem.id].focus();
+            }
         });
     };
     handleInputChange = (e) => {
@@ -644,7 +648,7 @@ class ClueCustomer extends React.Component {
                         />
                     </div>
                 ) : null}
-                <TextArea type='textarea' value={this.state.submitContent}
+                <TextArea ref={changeTextare => this['changeTextare' + salesClueItem.id] = changeTextare} type='textarea' value={this.state.submitContent}
                     placeholder={Intl.get('sales.home.fill.in.trace.content', '请输入跟进内容')}
                     onChange={this.handleInputChange}/>
                 <div className="save-cancel-btn">
@@ -666,7 +670,6 @@ class ClueCustomer extends React.Component {
         var traceAddTime = _.get(salesClueItem, 'customer_traces[0].add_time');//跟进时间
         var tracePersonId = _.get(salesClueItem, 'customer_traces[0].user_id', '');//跟进人的id
         var tracePersonName = _.get(salesClueItem, 'customer_traces[0].nick_name', '');//跟进人的名字
-        var handlePersonName = _.get(salesClueItem,'user_name');//当前跟进人
         //是否有添加跟进记录的权限
         var hasPrivilegeAddEditTrace = hasPrivilege('CLUECUSTOMER_ADD_TRACE');
         return (
