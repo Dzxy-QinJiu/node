@@ -365,6 +365,7 @@ class ClueToCustomerPanel extends React.Component {
     renderReplaceContactNameDialog() {
         return (
             <ModalDialog
+                modalContent={`是否将联系人名称替换为"${this.state.replaceName}"?`}
                 modalShow={this.state.isReplaceContactNameDialogShow}
                 container={this}
                 hideModalDialog={this.hideReplaceContactNameDialog}
