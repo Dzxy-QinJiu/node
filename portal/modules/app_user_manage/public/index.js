@@ -47,7 +47,7 @@ import IntegrateConfigView from './views/integrate-config/index';
 import TopNav from 'CMP_DIR/top-nav';
 import ImportUser from './views/import';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
-import {getUserData} from 'PUB_DIR/sources/user-data';
+import userData from 'PUB_DIR/sources/user-data';
 
 /*用户管理界面外层容器*/
 class AppUserManage extends React.Component {
@@ -604,7 +604,7 @@ class AppUserManage extends React.Component {
     // 获取登录用户的角色，只有管理员和销售有权限导入
     // 管理员可以导入不匹配的客户，销售不可以导入匹配的客户
     getLoginUserRole = () => {
-        return getUserData().isCommonSales === false; // 返回true，说明是管理员，否则是销售
+        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN); // 返回true，说明是管理员，否则是销售
     };
     // 处理导入用户错误信息
     handleImportUserInfo = (errors, errorType) => {
@@ -627,8 +627,8 @@ class AppUserManage extends React.Component {
                     Intl.get('common.email.is.existed', '邮箱已存在') : Intl.get('user.import.email.no.match.rule', '邮箱不符合规则');
             } else if (errorType === 'customer_name') {
                 tipsMessage = isError.detail === 'data unexist' && isManager ?
-                    Intl.get('user.import.customer.no.match', '系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。') :
-                    Intl.get('user.import.no.match.customer.tips', '系统未找到对应的客户，必须是自己客户的用户，请修改数据后重新导入');
+                    Intl.get('user.import.customer.no.match', '未找到用户所属客户，可能没有此客户或客户名不一致。您可以修改数据后再导入，或者直接导入，导入后手动添加所属客户') :
+                    Intl.get('user.import.no.match.customer.tips', '未找到用户所属客户，可能没有此客户或客户名不一致，请修改数据后重新导入');
             }
         }
         return {cls: cls, tipsMessage: tipsMessage};

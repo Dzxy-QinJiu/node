@@ -12,8 +12,8 @@ import Spinner from 'CMP_DIR/spinner';
 import Trace from 'LIB_DIR/trace';
 import SelectFullWidth from 'CMP_DIR//select-fullwidth';
 import {uniqueObjectOfArray} from 'PUB_DIR/sources/utils/common-data-util';
-import {getUserData} from 'PUB_DIR/sources/user-data';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import userData from 'PUB_DIR/sources/user-data';
 
 const SET_TIME_OUT = {
     TRANSITION_TIME: 600,//右侧面板动画隐藏的时间
@@ -219,7 +219,7 @@ class ImportTemplate extends React.Component {
     // 获取登录用户的角色，只有管理员和销售有权限导入
     // 管理员可以导入不匹配的客户，销售不可以导入匹配的客户
     getLoginUserRole = () => {
-        return getUserData().isCommonSales === false; // 返回true，说明是管理员，否则是销售
+        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN); // 返回true，说明是管理员，否则是销售
     };
 
     renderThirdStepContent = () => {
@@ -235,9 +235,9 @@ class ImportTemplate extends React.Component {
                 tipsMessage.push(Intl.get('user.import.red.tips', '红色标示数据不符合规则或是已存在，请修改数据后重新导入，或删除不符合规则的数据后直接导入。'));
                 if (noMatchCustomer) {
                     if(isManager) { // 管理员
-                        tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。'));
+                        tipsMessage.push(Intl.get('user.import.yellow.tips', '未找到用户所属客户，可能没有此客户或客户名不一致。您可以修改数据后再导入，或者直接导入，导入后手动添加所属客户'));
                     } else { // 销售
-                        tipsMessage.push(Intl.get('user.import.no.match.customer.tips', '系统未找到对应的客户，必须是自己客户的用户，请修改数据后重新导入'));
+                        tipsMessage.push(Intl.get('user.import.no.match.customer.tips', '未找到用户所属客户，可能没有此客户或客户名不一致，请修改数据后重新导入'));
                     }
                 }
                 height -= (LAYOUT.ERROR_TIPS_MESSAGE_WIDTH + LAYOUT.WARN_TIPS_MESSAGE_WIDTH);
@@ -245,9 +245,9 @@ class ImportTemplate extends React.Component {
             } else if (length === 1) {
                 if (noMatchCustomer) {
                     if(isManager) { // 管理员
-                        tipsMessage.push(Intl.get('user.import.yellow.tips', '黄色标示系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。'));
+                        tipsMessage.push(Intl.get('user.import.yellow.tips', '未找到用户所属客户，可能没有此客户或客户名不一致。您可以修改数据后再导入，或者直接导入，导入后手动添加所属客户'));
                     } else { // 销售
-                        tipsMessage.push(Intl.get('user.import.no.match.customer.tips', '系统未找到对应的客户，必须是自己客户的用户，请修改数据后重新导入'));
+                        tipsMessage.push(Intl.get('user.import.no.match.customer.tips', '未找到用户所属客户，可能没有此客户或客户名不一致，请修改数据后重新导入'));
                     }
                 } else {
                     tipsMessage.push(Intl.get('user.import.red.tips', '红色标示数据不符合规则或是已存在，请修改数据后重新导入，或删除不符合规则的数据后直接导入。'));
