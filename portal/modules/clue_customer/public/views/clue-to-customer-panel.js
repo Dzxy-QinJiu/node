@@ -38,10 +38,14 @@ class ClueToCustomerPanel extends React.Component {
             toMergeCustomer: {},
             //合并后的客户
             mergedCustomer: {},
-            //要替换名称的联系人的索引
-            toReplaceContactIndex: -1,
+            //要操作的联系人的索引
+            opContactIndex: -1,
             //要替换成的联系人名称
             replaceName: '',
+            //要操作的电话的索引
+            opPhoneIndex: -1,
+            //要操作的电话
+            opPhone: '',
             //是否显示合并到此客户对话框
             isMergeToCustomerDialogShow: false,
             //是否显示替换联系人名称对话框
@@ -112,7 +116,7 @@ class ClueToCustomerPanel extends React.Component {
     onReplaceContactNameClick = (contactIndex, replaceName) => {
         this.setState({
             isReplaceContactNameDialogShow: true,
-            toReplaceContactIndex: contactIndex,
+            opContactIndex: contactIndex,
             replaceName
         });
     }
@@ -128,7 +132,7 @@ class ClueToCustomerPanel extends React.Component {
     onReplaceContactNameDialogConfirm = () => {
         let mergedCustomer = _.cloneDeep(this.state.mergedCustomer);
 
-        _.set(mergedCustomer, 'contacts[' + this.state.toReplaceContactIndex + '].name', this.state.replaceName);
+        _.set(mergedCustomer, 'contacts[' + this.state.opContactIndex + '].name', this.state.replaceName);
 
         this.setState({
             mergedCustomer,
@@ -202,6 +206,35 @@ class ClueToCustomerPanel extends React.Component {
         mergedCustomer.contacts = _.concat(mergedCustomer.contacts, noneDupClueContacts);
 
         this.setState({mergedCustomer});
+    }
+
+    //删除电话按钮点击事件
+    onDeletePhoneClick = (contactIndex, phoneIndex, phone) => {
+        this.setState({
+            isDeletePhoneDialogShow: true,
+            opContactIndex: contactIndex,
+            opPhoneIndex: phoneIndex,
+            opPhone: phone
+        });
+    }
+
+    //隐藏删除电话对话框
+    hideDeletePhoneDialog = () => {
+        this.setState({
+            isDeletePhoneDialogShow: false
+        });
+    }
+
+    //删除电话对话框确定按钮点击事件
+    onDeletePhoneDialogConfirm = () => {
+        let mergedCustomer = _.cloneDeep(this.state.mergedCustomer);
+
+        mergedCustomer.contacts[this.state.opContactIndex].phone.splice(this.state.opPhoneIndex, 1);
+
+        this.setState({
+            mergedCustomer,
+            isDeletePhoneDialogShow: false,
+        });
     }
 
     //渲染基本信息区块
@@ -325,12 +358,13 @@ class ClueToCustomerPanel extends React.Component {
                                     {Intl.get('common.phone', '电话')}：
                                 </Col>
                                 <Col span={20}>
-                                    {_.map(contact.phone, phone => {
+                                    {_.map(contact.phone, (phone, phoneIndex) => {
                                         return (
                                             <div>
                                                 {phone}
                                                 {contact.isDup ? (
-                                                    <span className="btn-delete clickable">删除</span>
+                                                    <span className="btn-delete clickable" onClick={this.onDeletePhoneClick.bind(this, contactIndex, phoneIndex, phone)}
+                                                    >删除</span>
                                                 ) : null}
                                             </div>
                                         );
@@ -374,6 +408,19 @@ class ClueToCustomerPanel extends React.Component {
         );
     }
 
+    //渲染是否删除电话对话框
+    renderDeletePhoneDialog() {
+        return (
+            <ModalDialog
+                modalContent={`是否删除电话"${this.state.opPhone}"?`}
+                modalShow={this.state.isDeletePhoneDialogShow}
+                container={this}
+                hideModalDialog={this.hideDeletePhoneDialog}
+                delete={this.onDeletePhoneDialogConfirm}
+            />
+        );
+    }
+
     render() {
         return (
             <RightPanel
@@ -391,6 +438,7 @@ class ClueToCustomerPanel extends React.Component {
 
                 {this.renderMergeToCustomerDialog()}
                 {this.renderReplaceContactNameDialog()}
+                {this.renderDeletePhoneDialog()}
             </RightPanel>
         );
     }
