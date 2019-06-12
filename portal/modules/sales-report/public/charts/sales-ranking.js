@@ -147,9 +147,11 @@ export function getSalesRankingChart(role) {
                     let content = ['<b style="font-size: 15px">' + params.name + '</b>'];
 
                     _.each(dimensions, (item, index) => {
-                        const countText = item + ': ' + params.data.countArr[index] + ', 排名: ' + params.data.realValue[index];
+                        if (!_.isUndefined(params.data.countArr[index])) {
+                            const countText = item + ': ' + params.data.countArr[index] + ', 排名: ' + params.data.realValue[index];
 
-                        content.push(countText);
+                            content.push(countText);
+                        }
                     });
 
                     const contentHtml = content.join('<br>');
