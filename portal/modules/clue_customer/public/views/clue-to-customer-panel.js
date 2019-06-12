@@ -14,8 +14,11 @@ const noop = function() {};
 
 class ClueToCustomerPanel extends React.Component {
     static defaultProps = {
+        //面板是否显示
         showFlag: false,
+        //关闭面板按钮点击事件
         hidePanel: noop,
+        //当前线索
         clue: {}
     };
 
@@ -29,9 +32,15 @@ class ClueToCustomerPanel extends React.Component {
         super(props);
 
         this.state = {
-            customers: [],
-            currentCustomer: {},
-            isModalDialogShow: false,
+            //已存在的客户们
+            existingCustomers: [],
+            //要合并到的客户
+            toMergeCustomer: {},
+            //合并后的客户
+            mergedCustomer: {},
+            //是否显示“合并询问对话框”
+            isMergeModalShow: false,
+            //合并到客户的操作区块是否显示
             isMergeCustomerBlockShow: false,
         };
     }
@@ -62,7 +71,7 @@ class ClueToCustomerPanel extends React.Component {
             .done(result => {
                 this.setState({
                     isMergeCustomerBlockShow: false,
-                    customers: result.result
+                    existingCustomers: result.result
                 });
             })
             .fail(err => {
@@ -71,28 +80,91 @@ class ClueToCustomerPanel extends React.Component {
 
     onMergeToCustomerClick = (customer) => {
         this.setState({
-            currentCustomer: customer,
-            isModalDialogShow: true
+            toMergeCustomer: customer,
+            isMergeModalShow: true
         });
     }
 
     hideModalDialog = () => {
         this.setState({
-            isModalDialogShow: false
+            isMergeModalShow: false
         });
     }
 
     onModalDialogConfirm = () => {
         this.setState({
-            isModalDialogShow: false,
+            isMergeModalShow: false,
             isMergeCustomerBlockShow: true,
         });
+
+        this.setMergedCustomer();
     }
 
     hideMergeCustomerBlock = () => {
         this.setState({
             isMergeCustomerBlockShow: false,
         });
+    }
+
+    //设置已合并客户
+    setMergedCustomer() {
+        //当前线索
+        const clue = this.props.clue;
+
+        //没有当前线索时直接返回
+        if (_.isEmpty(clue)) return;
+
+        //合并后的客户
+        let mergedCustomer = _.cloneDeep(this.state.toMergeCustomer);
+
+        //遍历客户联系人
+        _.each(mergedCustomer.contacts, customerContact => {
+            //遍历线索联系人
+            _.some(clue.contacts, clueContact => {
+                //客户联系人电话和线索联系人电话的合集
+                const allPhone = _.concat(customerContact.phone, clueContact.phone);
+                //去重后的电话合集
+                const uniqPhone = _.uniq(allPhone);
+
+                //如果存在同名联系人，说明联系人重复
+                if (clueContact.name === customerContact.name) {
+                    //将客户联系人的电话设置为去重后的电话合集
+                    customerContact.phone = uniqPhone;
+                    //将该客户联系人标记为重复联系人
+                    customerContact.isDup = true;
+                    //将该线索联系人标记为重复联系人
+                    clueContact.isDup = true;
+
+                    //中止遍历
+                    return true;
+                //如果电话重复
+                } else if (allPhone.length > uniqPhone.length) {
+                    //将客户联系人的电话设置为去重后的电话合集
+                    customerContact.phone = uniqPhone;
+                    //将该客户联系人标记为重复联系人
+                    customerContact.isDup = true;
+                    //将该线索联系人标记为重复联系人
+                    clueContact.isDup = true;
+                    
+                    //如果有重复电话的客户联系人和线索联系人的名字不相同
+                    if (customerContact.name !== clueContact.name) {
+                        //将线索联系人的名字设置为客户联系人的替换名字
+                        customerContact.replaceName = clueContact.name;
+                    }
+
+                    //中止遍历
+                    return true;
+                }
+            });
+        });
+
+        //和客户联系人的名称及电话都不重复的线索联系人
+        const noneDupClueContacts = _.filter(clue.contacts, clueContact => !clueContact.isDup);
+
+        //将这些不重复的联系人合并到客户联系人
+        mergedCustomer.contacts = _.concat(mergedCustomer.contacts, noneDupClueContacts);
+
+        this.setState({mergedCustomer});
     }
 
     //渲染基本信息区块
@@ -153,7 +225,7 @@ class ClueToCustomerPanel extends React.Component {
                     <b>已存在客户</b>
                 </div>
 
-                {_.map(this.state.customers, (customer, index) => {
+                {_.map(this.state.existingCustomers, (customer, index) => {
                     return (
                         <Row>
                             <Col span={12}>
@@ -176,61 +248,7 @@ class ClueToCustomerPanel extends React.Component {
 
     //渲染合并客户区块
     renderMergeCustomerBlock() {
-        //当前线索
-        const clue = this.props.clue;
-
-        //没有当前线索时直接返回
-        if (_.isEmpty(clue)) return;
-
-        //要合并到的客户
-        const customer = _.cloneDeep(this.state.currentCustomer);
-
-        //遍历客户联系人
-        _.each(customer.contacts, customerContact => {
-            //遍历线索联系人
-            _.some(clue.contacts, clueContact => {
-                //客户联系人电话和线索联系人电话的合集
-                const allPhone = _.concat(customerContact.phone, clueContact.phone);
-                //去重后的电话合集
-                const uniqPhone = _.uniq(allPhone);
-
-                //如果存在同名联系人，说明联系人重复
-                if (clueContact.name === customerContact.name) {
-                    //将客户联系人的电话设置为去重后的电话合集
-                    customerContact.phone = uniqPhone;
-                    //将该客户联系人标记为重复联系人
-                    customerContact.isDup = true;
-                    //将该线索联系人标记为重复联系人
-                    clueContact.isDup = true;
-
-                    //中止遍历
-                    return true;
-                //如果电话重复
-                } else if (allPhone.length > uniqPhone.length) {
-                    //将客户联系人的电话设置为去重后的电话合集
-                    customerContact.phone = uniqPhone;
-                    //将该客户联系人标记为重复联系人
-                    customerContact.isDup = true;
-                    //将该线索联系人标记为重复联系人
-                    clueContact.isDup = true;
-                    
-                    //如果有重复电话的客户联系人和线索联系人的名字不相同
-                    if (customerContact.name !== clueContact.name) {
-                        //将线索联系人的名字设置为客户联系人的替换名字
-                        customerContact.replaceName = clueContact.name;
-                    }
-
-                    //中止遍历
-                    return true;
-                }
-            });
-        });
-
-        //和客户联系人的名称及电话都不重复的线索联系人
-        const noneDupClueContacts = _.filter(clue.contacts, clueContact => !clueContact.isDup);
-
-        //将这些不重复的联系人合并到客户联系人
-        customer.contacts = _.concat(customer.contacts, noneDupClueContacts);
+        const customer = this.state.mergedCustomer;
 
         return (
             <div className="merge-customer-block">
@@ -303,8 +321,8 @@ class ClueToCustomerPanel extends React.Component {
                     </div>
 
                     <ModalDialog
-                        modalContent={`合并到客户${this.state.currentCustomer.name}?`}
-                        modalShow={this.state.isModalDialogShow}
+                        modalContent={`合并到客户${this.state.toMergeCustomer.name}?`}
+                        modalShow={this.state.isMergeModalShow}
                         container={this}
                         hideModalDialog={this.hideModalDialog}
                         delete={this.onModalDialogConfirm}
