@@ -19,6 +19,7 @@ import {DetailEditBtn} from '../rightPanel';
 import SaveCancelButton from '../detail-card/save-cancel-button';
 import {parseAmount} from 'LIB_DIR/func';
 import ShearContent from '../shear-content';
+var uuid = require('uuid/v4');
 
 const BasicEditField = createReactClass({
     displayName: 'BasicEditField',
@@ -122,10 +123,10 @@ const BasicEditField = createReactClass({
             //密码强度
             passStrength: {
                 passBarShow: false
-            }
+            },
+            setRandomInputId: uuid()
         };
     },
-
     componentWillReceiveProps: function(nextProps) {
         if (nextProps.id !== this.props.id || !_.isEqual(this.props.value, nextProps.value)) {
             var type = nextProps.type, value = nextProps.value;
@@ -151,6 +152,7 @@ const BasicEditField = createReactClass({
                 passBarShow: false
             }
         }, function() {
+
             var dom = $('input[type="text"],input[type="password"],textarea', this.refs.inputWrap)[0];
             var val = dom.value;
             if (dom.createTextRange) {//IE浏览器
@@ -160,7 +162,9 @@ const BasicEditField = createReactClass({
                 range.select();
             } else {//非IE浏览器
                 dom.setSelectionRange(val.length, val.length);
-                dom.focus();
+                if (this['changeInput' + this.state.setRandomInputId]) {
+                    this['changeInput' + this.state.setRandomInputId].focus();
+                }
             }
         });
         this.props.onDisplayTypeChange('edit');
@@ -325,6 +329,7 @@ const BasicEditField = createReactClass({
                             <Validator rules={this.props.validators}>
                                 {this.props.type === 'textarea' ?
                                     <Input name="input"
+                                        ref={changeInput => this['changeInput' + this.state.setRandomInputId] = changeInput}
                                         type={this.props.type}
                                         placeholder={this.props.placeholder}
                                         value={formData.input}
@@ -335,6 +340,7 @@ const BasicEditField = createReactClass({
                                         autosize={{minRows: 2, maxRows: 6}}
                                     />
                                     : <Input name="input"
+                                        ref={changeInput => this['changeInput' + this.state.setRandomInputId] = changeInput}     
                                         type={this.props.type}
                                         placeholder={this.props.placeholder}
                                         value={formData.input}
