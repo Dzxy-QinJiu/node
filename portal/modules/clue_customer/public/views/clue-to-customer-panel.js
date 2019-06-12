@@ -270,12 +270,12 @@ class ClueToCustomerPanel extends React.Component {
                             <Row>
                                 <Col span={4}>
                                     {Intl.get('call.record.contacts', '联系人')}：
-                                    {contact.replaceName ? (
-                                        <span>是否替换为{contact.replaceName}</span>
-                                    ) : null}
                                 </Col>
                                 <Col span={20}>
                                     {contact.name}
+                                    {contact.replaceName ? (
+                                        <span className="is-replace-contract-name clickable">是否替换为“{contact.replaceName}”</span>
+                                    ) : null}
                                 </Col>
                             </Row>
                             <Row>
@@ -288,7 +288,7 @@ class ClueToCustomerPanel extends React.Component {
                                             <div>
                                                 {phone}
                                                 {contact.isDup ? (
-                                                    <span>删除</span>
+                                                    <span className="btn-delete clickable">删除</span>
                                                 ) : null}
                                             </div>
                                         );
