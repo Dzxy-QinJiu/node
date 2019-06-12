@@ -7,6 +7,7 @@ import { Row, Col, Button } from 'antd';
 import ajax from 'ant-ajax';
 import { RightPanel } from 'CMP_DIR/rightPanel';
 import ModalDialog from 'CMP_DIR/ModalDialog';
+import Spinner from 'CMP_DIR/spinner';
 import { AUTHS } from 'MOD_DIR/crm/public/utils/crm-util';
 const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 const authType = hasPrivilege(AUTHS.GETALL) ? 'manager' : 'user';
@@ -32,6 +33,14 @@ class ClueToCustomerPanel extends React.Component {
         super(props);
 
         this.state = {
+            //是否显示loading
+            isLoadingShow: true,
+            //是否显示合并到此客户对话框
+            isMergeToCustomerDialogShow: false,
+            //是否显示替换联系人名称对话框
+            isReplaceContactNameDialogShow: false,
+            //合并到客户的操作区块是否显示
+            isMergeCustomerBlockShow: false,
             //已存在的客户们
             existingCustomers: [],
             //要合并到的客户
@@ -46,12 +55,6 @@ class ClueToCustomerPanel extends React.Component {
             opPhoneIndex: -1,
             //要操作的电话
             opPhone: '',
-            //是否显示合并到此客户对话框
-            isMergeToCustomerDialogShow: false,
-            //是否显示替换联系人名称对话框
-            isReplaceContactNameDialogShow: false,
-            //合并到客户的操作区块是否显示
-            isMergeCustomerBlockShow: false,
         };
     }
 
@@ -79,6 +82,7 @@ class ClueToCustomerPanel extends React.Component {
         })
             .done(result => {
                 this.setState({
+                    isLoadingShow: false,
                     isMergeCustomerBlockShow: false,
                     existingCustomers: result.result
                 });
@@ -440,12 +444,16 @@ class ClueToCustomerPanel extends React.Component {
             >
                 <span className="iconfont icon-close clue-right-btn" onClick={this.props.hidePanel} data-tracename="关闭线索转客户面板"></span>
                 <div className="clue-detail-wrap">
-                    <div className="panel-content">
-                        {this.renderBasicInfoBlock()}
-                        {this.state.existingCustomers.length && !this.state.isMergeCustomerBlockShow ? this.renderExistsCustomerBlock() : null}
-                        {this.state.isMergeCustomerBlockShow ? this.renderMergeCustomerBlock() : null}
-                        {!this.state.existingCustomers.length && !this.state.isMergeCustomerBlockShow ? this.renderAddCancelBtnBlock() : null}
-                    </div>
+                    {this.state.isLoadingShow ? (
+                        <Spinner /> 
+                    ) : (
+                        <div className="panel-content">
+                            {this.renderBasicInfoBlock()}
+                            {this.state.existingCustomers.length && !this.state.isMergeCustomerBlockShow ? this.renderExistsCustomerBlock() : null}
+                            {this.state.isMergeCustomerBlockShow ? this.renderMergeCustomerBlock() : null}
+                            {!this.state.existingCustomers.length && !this.state.isMergeCustomerBlockShow ? this.renderAddCancelBtnBlock() : null}
+                        </div>
+                    )}
                 </div>
 
                 {this.renderMergeToCustomerDialog()}
