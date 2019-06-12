@@ -448,7 +448,9 @@ class LeftTree extends React.Component {
         return (
             <div className="sales-team-group" style={{height: this.props.containerHeight}} data-tracename="团队管理左侧列表">
                 <div className="sales-team-tree-container" style={{height: scrollHeight}} data-tracename="团队列表">
-                    <GeminiScrollbar className="geminiScrollbar-vertical">
+                    <GeminiScrollbar
+                        className="geminiScrollbar-vertical"
+                    >
                         <ul
                             className="left-tree-ul"
                         >
@@ -461,10 +463,16 @@ class LeftTree extends React.Component {
                             }
                         </ul>
                     </GeminiScrollbar>
-                    {this.props.delTeamErrorMsg ? (<AlertTimer time={2000}
-                        message={this.props.delTeamErrorMsg}
-                        type='error' showIcon
-                        onHide={this.hideDelTooltip}/>) : null}
+                    {
+                        this.props.delTeamErrorMsg ? (
+                            <AlertTimer
+                                time={2000}
+                                message={this.props.delTeamErrorMsg}
+                                type='error' showIcon
+                                onHide={this.hideDelTooltip}
+                            />
+                        ) : null
+                    }
                 </div>
             </div>
         );
