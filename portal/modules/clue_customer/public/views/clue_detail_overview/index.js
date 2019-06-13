@@ -990,7 +990,6 @@ class ClueDetailOverview extends React.Component {
                             this.renderAssigendClueText() : this.renderAssignedClueEdit()
                         }
                     </div>
-                    {this.renderTraceContent()}
                     <div className="associate-customer-detail clue-detail-block">
                         {/*线索处理，没有关联到客户并且线索不是无效的*/}
                         {

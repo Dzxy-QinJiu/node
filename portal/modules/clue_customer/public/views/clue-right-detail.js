@@ -326,7 +326,9 @@ class ClueRightPanel extends React.Component {
                                 >
                                     {this.state.activeKey === TAB_KEYS.CLUE_TRACE_LIST ? (
                                         <ClueTraceList
+                                            curClue={curClue}
                                             divHeight={divHeight}
+                                            updateCustomerLastContact={this.props.updateCustomerLastContact}
                                         />
                                     ) : null}
                                 </TabPane>
@@ -359,6 +361,7 @@ ClueRightPanel.defaultProps = {
     className: '',
     removeUpdateClueItem: noop,
     updateRemarks: noop,
+    updateCustomerLastContact: noop,
 };
 ClueRightPanel.propTypes = {
     curClue: PropTypes.object,
@@ -370,5 +373,6 @@ ClueRightPanel.propTypes = {
     ShowCustomerUserListPanel: PropTypes.func,
     removeUpdateClueItem: PropTypes.func,
     updateRemarks: PropTypes.func,
+    updateCustomerLastContact: PropTypes.func,
 };
 export default ClueRightPanel;

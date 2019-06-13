@@ -49,32 +49,33 @@ ClueTraceStore.prototype.changeTimeRange = function(timeRange) {
 };
 //获取线索跟进记录列表
 ClueTraceStore.prototype.getClueTraceList = function(result) {
-    this.addCustomerErrMsg = '';
-    if (!result.loading) {
+    if (result.loading){
+        this.customerRecordLoading = true;
+        this.customerRecordErrMsg = '';
+        this.addCustomerErrMsg = '';
+    }else if(result.error){
         this.customerRecordLoading = false;
-        if (result.error) {
-            this.customerRecordErrMsg = result.errorMsg;
-            this.customerRecord = [];
-        } else {
-            this.customerRecordErrMsg = '';
-            this.curPage++;
-            var customerRecord = _.isArray(result.data.result) ? result.data.result : [];
-            customerRecord.forEach(function(item) {
-                item.showAdd = false;
-            });
-            this.customerRecord = this.customerRecord.concat(customerRecord);
-            // //电话类型（eefung电话类型，客套容联电话类型,客套APP电话类型，回访类型）
-            // const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL_RECORD_TYPE.APP, CALL_RECORD_TYPE.CALL_BACK];
-            // //过滤出所有电话类型的通话记录(eefung、容联、客套APP、回访)
-            // let phoneTypeRecords = _.filter(this.customerRecord, (item) => {
-            //     return _.includes(PHONE_TYPES, item.type);
-            // });
-            // //找出最后一条电话跟进记录的id
-            // if (phoneTypeRecords.length) {
-            //     this.lastPhoneTraceItemId = _.first(phoneTypeRecords).id;
-            // }
-            this.total = result.data.total;
-        }
+        this.customerRecordErrMsg = result.errorMsg;
+    }else{
+        this.customerRecordLoading = false;
+        this.customerRecordErrMsg = '';
+        this.curPage++;
+        var customerRecord = _.isArray(result.data.result) ? result.data.result : [];
+        customerRecord.forEach(function(item) {
+            item.showAdd = false;
+        });
+        this.customerRecord = this.customerRecord.concat(customerRecord);
+        // //电话类型（eefung电话类型，客套容联电话类型,客套APP电话类型，回访类型）
+        // const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL_RECORD_TYPE.APP, CALL_RECORD_TYPE.CALL_BACK];
+        // //过滤出所有电话类型的通话记录(eefung、容联、客套APP、回访)
+        // let phoneTypeRecords = _.filter(this.customerRecord, (item) => {
+        //     return _.includes(PHONE_TYPES, item.type);
+        // });
+        // //找出最后一条电话跟进记录的id
+        // if (phoneTypeRecords.length) {
+        //     this.lastPhoneTraceItemId = _.first(phoneTypeRecords).id;
+        // }
+        this.total = result.data.total;
     }
 };
 ClueTraceStore.prototype.addClueTrace = function(result) {

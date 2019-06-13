@@ -23,32 +23,34 @@ import {CALL_STATUS_MAP, AUTO_SIZE_MAP, CALL_TYPE_MAP, TRACE_NULL_TIP} from 'PUB
 import {AntcDatePicker as DatePicker} from 'antc';
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import ErrorDataTip from 'MOD_DIR/crm/public/views/components/error-data-tip';
-import {processForTrace} from 'MOD_DIR/crm/public/utils/crm-util';
+import {processForTrace, CALL_RECORD_TYPE, LAYOUT_CONSTANTS} from 'MOD_DIR/crm/public/utils/crm-util';
 import TimeLine from 'CMP_DIR/time-line-new';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 var classNames = require('classnames');
 import Trace from 'LIB_DIR/trace';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
-//用于布局的高度
-const LAYOUT_CONSTANTS = {
-    TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
-    MARGIN_BOTTOM: 8, //跟进记录页的下边距
-    ADD_TRACE_HEIGHHT: 155,//添加跟进记录面板的高度
-    PHONE_STATUS_HEIGHT: 30,//通话状态筛选框的高度
-    TIME_ADD_BTN_HEIGHT: 30,//时间选择框和跟进记录的高度
-    STATISTIC_TYPE_HEIGHT: 50,//类型统计高度
-    OVER_VIEW_LOADING_HEIGHT: 30//概览页”最新跟进“加载效果的高度
-};
+//获取无效电话的列表  设置某个电话为无效电话
+import {getInvalidPhone, addInvalidPhone} from 'LIB_DIR/utils/invalidPhone';
+//电话类型（eefung电话类型，客套容联电话类型,客套APP电话类型）
+const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL_RECORD_TYPE.APP];
+var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
+import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 class ClueTraceList extends React.Component {
     state = {
-        showCustomerId: '',//正在展示客户详情的客户id
-        isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
-        customerOfCurUser: {},//当前展示用户所属客户的详情
-        ...ClueTraceStore.getState(),
-        divHeight: this.props.divHeight,
-
-
+        playingItemAddr: '',//正在播放的那条记录的地址
+        leadId: this.props.curClue.id,
         addRecordPanelShow: false,//是否展示添加跟进记录面板
+        invalidPhoneLists: [],//无效电话列表
+        getInvalidPhoneErrMsg: '',//获取无效电话失败后的信息
+        playingItemPhone: '',//正在听的录音所属的电话号码
+        isAddingInvalidPhone: false,//正在添加无效电话
+        addingInvalidPhoneErrMsg: '',//添加无效电话出错的情况
+        // filterType: '',//跟进类型的过滤
+        filterStatus: '',//通话状态的过滤
+        addRecordNullTip: '',//添加跟进记录内容为空的提示
+        editRecordNullTip: '', //编辑跟进内容为空的提示
+        ...ClueTraceStore.getState(),
     };
 
     onStoreChange = () => {
@@ -57,16 +59,105 @@ class ClueTraceList extends React.Component {
 
     componentDidMount() {
         ClueTraceStore.listen(this.onStoreChange);
+        //获取线索的跟进记录
         this.getClueTraceList();
         $(window).on('resize', this.onStoreChange);
     }
 
     componentWillReceiveProps(nextProps) {
-
+        var nextLeadId = nextProps.curClue.id || '';
+        var oldLeadId = this.props.curClue.id || '';
+        if (nextLeadId !== oldLeadId && nextLeadId) {
+            this.setState({
+                playingItemAddr: '',
+                playingItemPhone: '',
+                leadId: nextLeadId
+            });
+            setTimeout(() => {//此处不加setTimeout，下面调用action中dismiss方法时会报Dispatch错误
+                ClueTraceAction.dismiss();
+                //获取客户跟踪记录列表
+                this.getClueTraceList();
+            });
+        }
     }
-    //获取线索跟进记录列表
-    getClueTraceList = () => {
+    //获取列表失败后重试
+    retryChangeRecord = () => {
+        this.getClueTraceList();
+    };
+    //获取线索跟踪列表
+    getClueTraceList = (lastId) => {
+        let queryObj = {
+            page_size: 10
+        };
+        if (this.state.start_time) {
+            queryObj.start_time = this.state.start_time;
+        }
+        if (this.state.end_time) {
+            queryObj.end_time = this.state.end_time;
+        }
+        if (lastId) {
+            queryObj.id = lastId;
+        }
+        // //概览页只获取最近五条的跟进记录
+        // if (this.props.isOverViewPanel) {
+        //     queryObj.page_size = OVERVIEW_SHOW_COUNT;
+        // }
 
+        let bodyData = {
+            lead_id: this.state.leadId || '',
+        };
+        // //跟进类型的过滤
+        // if (this.state.filterType === CALL_RECORD_TYPE.PHONE) {
+        //     //电话类型：eefung电话+容联电话+客套APP电话
+        //     bodyData.type = PHONE_TYPES.join(',');
+        // } else if (this.state.filterType && this.state.filterType !== 'all') {
+        //     bodyData.type = this.state.filterType;
+        // } else {//全部及概览页的跟进记录，都过滤掉舆情上报的跟进记录（可以通过筛选舆情上报的类型来查看此类的跟进）
+        let types = _.keys(CALL_TYPE_MAP);
+        // 过滤掉舆情上报的跟进记录
+        let typeArray = _.filter(types, type => type !== 'all' && type !== 'data_report');
+        if (_.get(typeArray, '[0]')) {
+            bodyData.type = typeArray.join(',');
+        }
+        // }
+        //通话状态的过滤
+        if (this.state.filterStatus && this.state.filterStatus !== 'ALL') {
+            bodyData.disposition = this.state.filterStatus;
+        }
+        ClueTraceAction.getClueTraceList(queryObj, bodyData, () => {
+            // if (_.isFunction(this.props.refreshSrollbar)) {
+            //     setTimeout(() => {
+            //         this.props.refreshSrollbar();
+            //     });
+            // }
+        });
+    };
+    //上报客服电话
+    handleAddInvalidPhone = () => {
+        var curPhone = this.state.playingItemPhone;
+        if (!curPhone) {
+            return;
+        }
+        this.setState({
+            isAddingInvalidPhone: true
+        });
+        addInvalidPhone({'number': curPhone}, () => {
+            this.state.invalidPhoneLists.push(curPhone);
+            this.setState({
+                isAddingInvalidPhone: false,
+                invalidPhoneLists: this.state.invalidPhoneLists,
+                addingInvalidPhoneErrMsg: ''
+            });
+            //上报成功后，不展示上报按钮
+            audioMsgEmitter.emit(audioMsgEmitter.HIDE_REPORT_BTN, {
+                isShowReportButton: false
+            });
+        }, (errMsg) => {
+            this.setState({
+                isAddingInvalidPhone: false,
+                addingInvalidPhoneErrMsg: errMsg || Intl.get('fail.report.phone.err.tip', '上报无效电话失败！')
+            });
+        });
     };
 
     componentWillUnmount() {
@@ -76,59 +167,28 @@ class ClueTraceList extends React.Component {
         });
     }
 
-    handleShowCustomerDetail = (customerId) => {
-        this.setState({
-            showCustomerId: customerId
-        });
-    };
-
-    showCustomerDetail = (customerId) => {
-        this.setState({
-            showCustomerId: customerId
-        });
-        //触发打开带拨打电话状态的客户详情面板
-        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
-            customer_params: {
-                currentId: customerId,
-                ShowCustomerUserListPanel: this.props.ShowCustomerUserListPanel,
-                hideRightPanel: this.closeRightPanel
+    //添加跟进记录面板的展示与隐藏
+    toggleAddRecordPanel = () => {
+        this.setState({addRecordPanelShow: !this.state.addRecordPanelShow}, () => {
+            if (this['addTextare']) {
+                this['addTextare'].focus();
             }
         });
     };
-
-    closeRightPanel = () => {
-        this.setState({
-            showCustomerId: ''
-        });
-    };
-
-    timeLineItemRender = (item) => {
-        return (
-            <dl>
-                <dd>
-                    <ShearContent>
-                        {item.message}
-                    </ShearContent>
-                    {item.relate_name && item.relate_id ?
-                        <span className="relete-name" onClick={this.showCustomerDetail.bind(this, item.relate_id)}
-                            data-tracename="查看客户详情">{item.relate_name}</span> : null}
-                </dd>
-                <dt>{moment(item.date).format(oplateConsts.TIME_FORMAT)}</dt>
-            </dl>
-        );
-    };
-    //添加跟进记录面板的展示与隐藏
-    toggleAddRecordPanel = () => {
-        this.setState({addRecordPanelShow: !this.state.addRecordPanelShow});
-    };
     //渲染添加跟进记录的按钮
     renderAddRecordButton() {
-        //跟进记录页，添加跟进记录的按钮
+
+        // //概览页添加跟进记录的按钮
+        // if (this.props.isOverViewPanel) {
+        //     return (
+        //         <span className="iconfont icon-add" onClick={this.toggleAddRecordPanel.bind(this)}
+        //               title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>);
+        // } else {//跟进记录页，添加跟进记录的按钮
         return (<Button className='crm-detail-add-btn'
             onClick={this.toggleAddRecordPanel.bind(this, '')} data-tracename="添加跟进记录">
             {Intl.get('sales.frontpage.add.customer', '添加跟进记录')}
         </Button>);
-
+        // }
     }
 
     onSelectDate = (start_time, end_time) => {
@@ -191,7 +251,7 @@ class ClueTraceList extends React.Component {
                     validateStatus={_.get(this.state, 'inputContent.validateStatus')}
                     help={_.get(this.state, 'inputContent.errorMsg')}
                 >
-                    <TextArea placeholder={Intl.get('customer.input.customer.trace.content', '请填写跟进内容')}
+                    <TextArea ref={addTextare => this['addTextare'] = addTextare} placeholder={Intl.get('customer.input.customer.trace.content', '请填写跟进内容')}
                         value={_.get(this.state, 'inputContent.value') || ''}
                         onChange={this.handleInputChange.bind(this)}
                         autosize={AUTO_SIZE_MAP}
@@ -263,6 +323,29 @@ class ClueTraceList extends React.Component {
             </Menu>
         );
     };
+    turnToTraceRecordList = () => {
+        // if (_.isFunction(this.props.changeActiveKey)) this.props.changeActiveKey('3');
+    };
+
+    renderTraceRecordBottom = () => {
+        //概览页只展示最近的五条跟进记录，如果总数大于5条时，可以点击更多转到跟进记录列表进行查看
+        // if (this.props.isOverViewPanel && this.state.total > OVERVIEW_SHOW_COUNT) {
+        //     return (
+        //         <div className="trace-record-bottom">
+        //             <span className="more-customer-record"
+        //                   onClick={this.turnToTraceRecordList}>
+        //                 {Intl.get('crm.basic.more', '更多')}
+        //             </span>
+        //         </div>);
+        // }
+
+    };
+    //是否展示通话状态的过滤框
+    isStatusFilterShow() {
+        //不是概览页，有跟进记录或有通话状态筛选条件（有数据时才展示状态筛选框，但通过状态筛选后无数据也需要展示），并且不是拜访、舆情报上和其他类型时，展示通话状态筛选框
+        // return !this.props.isOverViewPanel &&
+        return (_.get(this.state, 'customerRecord[0]') || this.state.filterStatus);
+    }
     getRecordListShowHeight = () => {
         var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT -
             LAYOUT_CONSTANTS.TIME_ADD_BTN_HEIGHT - LAYOUT_CONSTANTS.STATISTIC_TYPE_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
@@ -276,11 +359,6 @@ class ClueTraceList extends React.Component {
         if (this.state.addRecordPanelShow) {
             divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
         }
-        // //减通话状态的高度
-        // if (_.includes([CALL_RECORD_TYPE.PHONE, 'all'], this.state.filterType)
-        //     && _.get(this.state, 'customerRecord.length') > 0) {
-        //     divHeight -= LAYOUT_CONSTANTS.PHONE_STATUS_HEIGHT;
-        // }
         return divHeight;
     };
     renderAddDetail = (item) => {
@@ -293,7 +371,7 @@ class ClueTraceList extends React.Component {
                     validateStatus={_.get(this.state, 'detailContent.validateStatus')}
                     help={_.get(this.state, 'detailContent.errorMsg')}
                 >
-                    <TextArea placeholder={Intl.get('customer.add.customer.trace.detail', '请补充跟进记录详情')}
+                    <TextArea ref={updateTextare => this['updateTextare' + item.id] = updateTextare} placeholder={Intl.get('customer.add.customer.trace.detail', '请补充跟进记录详情')}
                         value={_.get(this.state, 'detailContent.value') || ''}
                         onChange={this.handleAddDetailChange.bind(this)}
                         autosize={AUTO_SIZE_MAP}
@@ -321,6 +399,13 @@ class ClueTraceList extends React.Component {
         item.showAdd = true;
         let remark = _.get(item, 'remark', '');
         ClueTraceAction.setDetailContent({value: remark});
+        setTimeout(() => {
+            if (this['updateTextare' + item.id]){
+                this['updateTextare' + item.id].focus();
+            }
+        });
+
+
     };
     //渲染补充跟进记录的提示
     renderSupplementTip(item) {
@@ -344,6 +429,75 @@ class ClueTraceList extends React.Component {
                 /> : null}
             </div>);
     };
+
+    //点击播放录音
+    handleAudioPlay = (item) => {
+        //未上传录音文件时，不播放
+        if (item.is_record_upload !== '1') return;
+        //如果是点击切换不同的录音，找到上次点击播放的那一条记录，把他的playSelected属性去掉
+        var oldItemId = '';
+        var oldSelected = _.find(this.state.customerRecord, function(record) {
+            return record.playSelected;
+        });
+        if (oldSelected) {
+            delete oldSelected.playSelected;
+            oldItemId = oldSelected.id;
+        }
+        //给本条记录加上标识
+        item.playSelected = true;
+        var playItemAddr = commonMethodUtil.getAudioRecordUrl(item.local, item.recording, item.type);
+        var isShowReportButton = true;//_.indexOf(this.state.invalidPhoneLists, item.dst) === -1;
+        audioMsgEmitter.emit(audioMsgEmitter.OPEN_AUDIO_PANEL, {
+            playingItemAddr: playItemAddr,
+            getInvalidPhoneErrMsg: this.state.getInvalidPhoneErrMsg,
+            addingInvalidPhoneErrMsg: this.state.addingInvalidPhoneErrMsg,
+            isAddingInvalidPhone: this.state.isAddingInvalidPhone,
+            isShowReportButton: isShowReportButton,
+            closeAudioPlayContainer: this.closeAudioPlayContainer,
+            handleAddInvalidPhone: this.handleAddInvalidPhone,
+            hideErrTooltip: this.hideErrTooltip,
+        });
+
+        this.setState({
+            customerRecord: this.state.customerRecord,
+            playingItemAddr: playItemAddr,
+            playingItemPhone: item.dst //正在播放的录音所属的电话号码
+        }, () => {
+            var audio = $('#audio')[0];
+            if (audio) {
+                if (oldItemId && oldItemId === item.id) {
+                    //点击当前正在播放的那条记录，重新播放
+                    audio.currentTime = 0;
+                } else {
+                    //播放某条新记录
+                    audio.play();
+                }
+            }
+        });
+    };
+    //提示框隐藏后的处理
+    hideErrTooltip = () => {
+        this.setState({
+            addingInvalidPhoneErrMsg: ''
+        });
+    };
+
+    //关闭音频播放按钮
+    closeAudioPlayContainer = (e) => {
+        Trace.traceEvent(e, '关闭播放器按钮');
+        //找到当前正在播放的那条记录
+        var oldSelected = _.find(this.state.customerRecord, function(item) {
+            return item.playSelected;
+        });
+        if (oldSelected) {
+            delete oldSelected.playSelected;
+        }
+        this.setState({
+            customerRecord: this.state.customerRecord,
+            playingItemAddr: '',
+            playingItemPhone: ''
+        });
+    };
     renderTimeLineItem = (item, hasSplitLine) => {
         var traceObj = processForTrace(item);
         //渲染时间线
@@ -360,9 +514,9 @@ class ClueTraceList extends React.Component {
                 <p className="item-detail-tip">
                     <span className="icon-container" title={title}><i className={iconClass}></i></span>
                     {traceDsc ? (<span className="trace-title-name" title={traceDsc}>{traceDsc}</span>) : null}
-                    {/*{_.includes(PHONE_TYPES, item.type) ? (<span className="trace-title-phone">{item.dst}</span>) : null}*/}
+                    {_.includes(PHONE_TYPES, item.type) ? (<span className="trace-title-phone">{item.dst}</span>) : null}
                 </p>
-                {item.type === 'data_report' ? this.renderReportContent(item) : (<div className="trace-content">
+                <div className="trace-content">
                     <div className="item-detail-content" id={item.id}>
                         {item.showAdd ? this.renderAddDetail(item) : this.renderRecordShowContent(item)}
                     </div>
@@ -384,13 +538,13 @@ class ClueTraceList extends React.Component {
                                 </span>
                             ) : null
                         }
-                        {/*{_.includes(PHONE_TYPES, item.type) ?*/}
-                        {/*(<span className="phone-call-out-btn" title={Intl.get('crm.click.call.phone', '点击拨打电话')}>*/}
-                        {/*<PhoneCallout*/}
-                        {/*phoneNumber={item.dst}*/}
-                        {/*hidePhoneNumber={true}*/}
-                        {/*/>*/}
-                        {/*</span>) : null}*/}
+                        {_.includes(PHONE_TYPES, item.type) ?
+                            (<span className="phone-call-out-btn" title={Intl.get('crm.click.call.phone', '点击拨打电话')}>
+                                <PhoneCallout
+                                    phoneNumber={item.dst}
+                                    hidePhoneNumber={true}
+                                />
+                            </span>) : null}
                         <span className="item-bottom-right">
                             <span className="sale-name">{item.nick_name}</span>
                             <span className="trace-record-time">
@@ -398,7 +552,7 @@ class ClueTraceList extends React.Component {
                             </span>
                         </span>
                     </div>
-                </div>)}
+                </div>
             </div>
         );
     };
@@ -415,19 +569,19 @@ class ClueTraceList extends React.Component {
     };
     saveAddTraceContent = () => {
         //顶部增加跟进记录的内容
-        var customerId = this.state.customerId || '';
+        var leadId = this.state.leadId || '';
         if (this.state.saveButtonType === 'add') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加跟进内容');
             //输入框中的内容
             var addcontent = _.trim(_.get(this.state, 'inputContent.value'));
             var queryObj = {
-                customer_id: customerId,
-                type: this.state.selectedtracetype,
+                lead_id: leadId,
+                type: 'other',//界面上没有选项，默认传other类型，必传
                 remark: addcontent,
             };
             ClueTraceAction.addClueTrace(queryObj, (customer_trace) => {
                 //更新列表中的最后联系
-                // _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(customer_trace);
+                _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(customer_trace);
                 this.toggleAddRecordPanel();
             });
             // $('.add-content-input').focus();
@@ -438,21 +592,17 @@ class ClueTraceList extends React.Component {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加补充的跟进内容');
             var queryObj = {
                 id: item.id,
-                customer_id: item.customer_id || customerId,
+                lead_id: item.lead_id || leadId,
                 type: item.type,
                 remark: detail
             };
-            //把跟进记录中的最后一条电话数据进行标识
-            if (item.id === this.state.lastPhoneTraceItemId) {
-                queryObj.last_callrecord = 'true';
-            }
             ClueTraceAction.setUpdateId(item.id);
             ClueTraceAction.updateClueTrace(queryObj, () => {
                 //如果补充的是最后一条跟进记录（如果是电话类型的需要是打通的电话类型），更新列表中的最后联系
                 if (_.get(this.state, 'customerRecord[0].id') === item.id) {
                     //打通电话的才会更新最后联系
                     if (item.billsec === 0) return;
-                    // _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(item);
+                    _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(item);
                 }
             });
         }
@@ -460,7 +610,9 @@ class ClueTraceList extends React.Component {
     renderCustomerRecordLists = () => {
         var recordLength = _.get(this, 'state.customerRecord.length');
         //加载状态或加载数据错误时，容器高度的设置
-        let loadingErrorHeight = this.getRecordListShowHeight();
+        let loadingErrorHeight =
+        // this.props.isOverViewPanel ? LAYOUT_CONSTANTS.OVER_VIEW_LOADING_HEIGHT :
+                this.getRecordListShowHeight();
         if (this.state.customerRecordLoading && this.state.curPage === 1) {
             //加载中的情况
             return (
@@ -505,7 +657,7 @@ class ClueTraceList extends React.Component {
         var length = this.state.customerRecord.length;
         if (length < this.state.total) {
             var lastId = this.state.customerRecord[length - 1].id;
-            this.getCustomerTraceList(lastId);
+            this.getClueTraceList(lastId);
         } else if (length === this.state.total) {
             this.setState({
                 listenScrollBottom: false
@@ -525,12 +677,12 @@ class ClueTraceList extends React.Component {
                 </div>
                 {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : null}
                 <div className="show-container" id="show-container">
-                    <Dropdown overlay={this.getStatusMenu()} trigger={['click']}>
+                    {this.isStatusFilterShow() ? <Dropdown overlay={this.getStatusMenu()} trigger={['click']}>
                         <a className="ant-dropdown-link trace-filter-item">
                             {this.state.filterStatus ? CALL_STATUS_MAP[this.state.filterStatus] : Intl.get('call.record.call.state', '通话状态')}
                             <Icon type="down"/>
                         </a>
-                    </Dropdown>
+                    </Dropdown> : null}
                     {this.renderCustomerRecordLists()}
                     <ModalDialog modalContent={modalContent}
                         modalShow={this.state.modalDialogFlag}
@@ -546,9 +698,11 @@ class ClueTraceList extends React.Component {
 }
 ClueTraceList.propTypes = {
     disableEdit: PropTypes.bool,
-    divHeight: PropTypes.number,
     currentId: PropTypes.string,
-    ShowCustomerUserListPanel: PropTypes.func
+    ShowCustomerUserListPanel: PropTypes.func,
+    updateCustomerLastContact: PropTypes.func,
+    curClue: PropTypes.object
+
 };
 module.exports = ClueTraceList;
 

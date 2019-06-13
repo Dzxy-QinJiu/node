@@ -36,23 +36,11 @@ import ShearContent from '../../../../../components/shear-content';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 var classNames = require('classnames');
 import {AntcDatePicker as DatePicker} from 'antc';
-import {CALL_RECORD_TYPE, processForTrace} from './../../utils/crm-util';
+import {CALL_RECORD_TYPE, processForTrace, LAYOUT_CONSTANTS} from './../../utils/crm-util';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 //电话类型（eefung电话类型，客套容联电话类型,客套APP电话类型）
 const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL_RECORD_TYPE.APP];
-//用于布局的高度
-const LAYOUT_CONSTANTS = {
-    TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
-    MARGIN_BOTTOM: 8, //跟进记录页的下边距
-    ADD_TRACE_HEIGHHT: 155,//添加跟进记录面板的高度
-    PHONE_STATUS_HEIGHT: 30,//通话状态筛选框的高度
-    TIME_ADD_BTN_HEIGHT: 30,//时间选择框和跟进记录的高度
-    STATISTIC_TYPE_HEIGHT: 50,//类型统计高度
-    OVER_VIEW_LOADING_HEIGHT: 30//概览页”最新跟进“加载效果的高度
-};
-
 import {CALL_STATUS_MAP, AUTO_SIZE_MAP, CALL_TYPE_MAP, TRACE_NULL_TIP} from 'PUB_DIR/sources/utils/consts';
-
 const OVERVIEW_SHOW_COUNT = 5;//概览页展示跟进记录的条数
 var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
 //除去固定的电话、拜访、其他以外的类型的缓存数据，获取后存起来，不用每次都取

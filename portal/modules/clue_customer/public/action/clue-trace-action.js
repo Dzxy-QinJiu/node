@@ -22,6 +22,7 @@ function ClueTraceAction() {
     );
     //获取线索跟进记录列表
     this.getClueTraceList = function(queryObj, bodyData, callback) {
+        this.dispatch({loading: true,error: false});
         clueTraceAjax.getClueTraceList(queryObj, bodyData).then((data) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({loading: false,error: false,data: data});
