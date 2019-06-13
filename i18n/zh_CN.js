@@ -2183,9 +2183,9 @@ var zh_CN = {
     'user.close.multilogin': '关闭了多人登录。',
     'user.open.multilogin': '开启了多人登录。',
     //增加
-    'customer.fail.get.customer.trace': '获取客户跟踪记录列表失败',
+    'customer.fail.get.customer.trace': '获取{type}跟进记录列表失败',
     'customer.fail.add.customer.trace': '增加客户跟踪记录列表失败',
-    'customer.trace.content': '客户跟进记录内容不能为空',
+    'customer.trace.content': '跟进记录内容不能为空',
     'customer.input.customer.trace.content': '请填写跟进内容',
     'customer.add.customer.trace.detail': '请补充跟进记录详情',
     'customer.total.record': '共{num}条跟进记录',
@@ -3046,6 +3046,7 @@ var zh_CN = {
     'clue.item.source.from': '来自“{source}”',
     'clue.item.acceess.channel': '详情：“{content}”',
     'clue.show.no.show.tip': '还有{num}个提醒未展示',
-    'clue.close.all.noty': '关闭所有提醒？'
+    'clue.close.all.noty': '关闭所有提醒？',
+    'clue.fail.customer.trace.statics': '获取跟进记录的分类统计失败'
 };
 export default zh_CN;

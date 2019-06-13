@@ -2149,7 +2149,7 @@ var en_US = {
     'user.open.multilogin': 'Open multilogin',//开启了多人登录。
 
     //补充
-    'customer.fail.get.customer.trace': 'Failed to get customer trace lists',//获取客户跟踪记录列表失败
+    'customer.fail.get.customer.trace': 'Failed to get {type} trace lists',//获取{type}跟进记录列表失败
     'customer.fail.add.customer.trace': 'Failed to add customer trace list',//增加客户跟踪记录列表失败
     'user.user.lists': 'user lists',//用户列表
     'user.user.applies': 'user applies',//用户申请
@@ -2452,7 +2452,7 @@ var en_US = {
     'contract.127': 'Add cost',//添加费用
     'contract.129': 'Cost information',//费用信息
     'crm.214': 'Add contact plan',//添加联系计划
-    'customer.trace.content': 'Customer follow up records can not be empty',//客户跟进记录内容不能为空
+    'customer.trace.content': 'Records can not be empty',//跟进记录内容不能为空
     'add.customer.trace.detail': 'Please fill in follow-up record',//请补充跟进记录详情
     'click.to.add.trace.detail': 'Please click here to supplement the follow-up content',//请点击此处补充跟进内容
     'common.visit': 'Visit',//拜访
@@ -2942,6 +2942,7 @@ var en_US = {
     'clue.item.source.from': 'From "{source}"',//来自“{source}”
     'clue.item.acceess.channel': 'Detail: "{content}"',//详情：“{content}”
     'clue.show.no.show.tip': 'There has {num} notices not showing',//还有{num}个提醒未展示
-    'clue.close.all.noty': 'Close all notices'//关闭所有提醒？
+    'clue.close.all.noty': 'Close all notices',//关闭所有提醒？
+    'clue.fail.customer.trace.statics': 'Failed to get trace type statics!'//获取跟进记录的分类统计失败
 };
 export default en_US;

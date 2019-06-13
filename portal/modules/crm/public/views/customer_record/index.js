@@ -38,7 +38,8 @@ var classNames = require('classnames');
 import {AntcDatePicker as DatePicker} from 'antc';
 import {CALL_RECORD_TYPE, processForTrace} from './../../utils/crm-util';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
-
+//电话类型（eefung电话类型，客套容联电话类型,客套APP电话类型）
+const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL_RECORD_TYPE.APP];
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
     TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
@@ -49,30 +50,8 @@ const LAYOUT_CONSTANTS = {
     STATISTIC_TYPE_HEIGHT: 50,//类型统计高度
     OVER_VIEW_LOADING_HEIGHT: 30//概览页”最新跟进“加载效果的高度
 };
-//textarea自适应高度
-const AUTO_SIZE_MAP = {minRows: 2, maxRows: 6};
-// 通话状态
-const CALL_STATUS_MAP = {
-    'ALL': Intl.get('common.all', '全部'),
-    'ANSWERED': Intl.get('call.record.state.answer', '已接听'),
-    'NO ANSWER': Intl.get('call.record.state.no.answer', '未接听'),
-    'BUSY': Intl.get('call.record.state.busy', '用户忙')
-};
 
-// 通话类型
-const CALL_TYPE_MAP = {
-    'all': Intl.get('common.all', '全部'),
-    'phone,curtao_phone': Intl.get('common.phone.system', '电话系统'),
-    'app': Intl.get('menu.download.app', '客套APP'),
-    'visit': Intl.get('customer.visit', '拜访'),
-    'call_back': Intl.get('common.callback', '回访'),
-    'data_report': Intl.get('crm.trace.delivery.report', '舆情报送'),
-    'other': Intl.get('customer.other', '其他')
-};
-//电话类型（eefung电话类型，客套容联电话类型,客套APP电话类型）
-const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL_RECORD_TYPE.APP];
-//跟进记录为空时的提示
-const TRACE_NULL_TIP = Intl.get('customer.trace.content', '客户跟进记录内容不能为空');
+import {CALL_STATUS_MAP, AUTO_SIZE_MAP, CALL_TYPE_MAP, TRACE_NULL_TIP} from 'PUB_DIR/sources/utils/consts';
 
 const OVERVIEW_SHOW_COUNT = 5;//概览页展示跟进记录的条数
 var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
