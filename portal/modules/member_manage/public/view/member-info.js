@@ -182,19 +182,11 @@ class MemberInfo extends React.Component {
     //渲染角色下拉列表
     getRoleSelectOptions = (memberInfo) => {
         //角色列表
-        var roleOptions = [];
-        var roleList = this.state.roleList;
+        let roleOptions = [];
+        let roleList = this.state.roleList;
         if (_.isArray(roleList) && roleList.length > 0) {
             roleOptions = roleList.map(function(role) {
-                var className = '';
-                if (_.isArray(memberInfo.roleIds) && memberInfo.roleIds.length > 0) {
-                    memberInfo.roleIds.forEach(function(roleId) {
-                        if (role.roleId === roleId) {
-                            className = 'role-options-selected';
-                        }
-                    });
-                }
-                return (<Option className={className} key={role.roleId} value={role.roleId}>
+                return (<Option key={role.roleId} value={role.roleId}>
                     {role.roleName}
                 </Option>);
 
@@ -404,8 +396,8 @@ class MemberInfo extends React.Component {
                 isSales = true;
             }
             roleNames = memberInfo.roleNames.join(',');
-
         }
+        let roleId = _.get(memberInfo, 'roleIds[0]');
         return (
             <div>
                 {/** v8环境下，不显示所属团队*/}
@@ -433,13 +425,13 @@ class MemberInfo extends React.Component {
                     </div>) : null }
                 {/**
                  *  <div className="basic-info-item">
-                 <span className="basic-info-label">{Intl.get('member.position', '职务')}:</span>
-                 <BasicEditInputField
-                 width={EDIT_FEILD_LESS_WIDTH}
-                 id={memberInfo.id}
-                 value={memberInfo.phoneOrder}
-                 hasEditPrivilege={false}
-                 />
+                     <span className="basic-info-label">{Intl.get('member.position', '职务')}:</span>
+                     <BasicEditInputField
+                     width={EDIT_FEILD_LESS_WIDTH}
+                     id={memberInfo.id}
+                     value={memberInfo.phoneOrder}
+                     hasEditPrivilege={false}
+                     />
                  </div>
                  */}
                 <div className="basic-info-item">
@@ -465,15 +457,13 @@ class MemberInfo extends React.Component {
                         width={EDIT_FEILD_WIDTH}
                         id={memberInfo.id}
                         displayText={roleNames}
-                        value={memberInfo.roleIds}
-                        multiple={true}
+                        value={roleId}
                         field="role"
                         selectOptions={roleSelectOptions}
                         hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_ROLE')}
                         validators={[{
                             required: true,
                             message: Intl.get('member.select.role', '请选择角色'),
-                            type: 'array'
                         }]}
                         placeholder={Intl.get('member.select.role', '请选择角色')}
                         onSelectChange={this.selectRole}

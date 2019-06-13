@@ -92,7 +92,7 @@
           left: 14px;
           top: 0;
           height: 100%;
-          border-left: 2px solid #4A92CC;
+          border-left: 4px dotted #8DA8C5;
         }
 
         //序号
@@ -100,12 +100,20 @@
           position: absolute;
           width: 30px;
           height: 30px;
-          background-color: #4A92CC;
+          background-color: #8DA8C5;
           border-radius: 100px;
           color: #fff;
           text-align: center;
           line-height: 30px;
           font-size: 14px;
+        }
+
+        .sales-stage-timeline-item-right {
+          width:14px;
+          border: 2px solid #8DA8C5;
+          position: relative;
+          top: 15px;
+          left: 30px;
         }
 
         //内容
@@ -114,29 +122,26 @@
           position: relative;
           border: 1px solid #edf1f2;
           margin-left: 44px;
-          top: -17px;
-          height: 62px;
+          top: -24px;
+          height: 80px;
           &:hover {
             background: #F1F8FE;
           }
 
           .sales-stage-content {
             float: left;
-            height: 60px;
-
+            padding-top: 16px;
+            padding-left: 16px;
             .sales-stage-content-name {
-              font-size: 14px;
+              font-size: 16px;
               font-weight: bold;
-              height: 30px;
-              line-height: 30px;
-              padding-left: 15px;
+              padding-bottom: 5px;
+              color: #333;
               &:extend(.overhidden-public);
             }
 
             .sales-stage-content-describe {
-              height: 30px;
-              line-height: 30px;
-              padding-left: 15px;
+              color: #999;
               font-size: 14px;
               &:extend(.overhidden-public);
             }

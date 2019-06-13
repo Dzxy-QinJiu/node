@@ -174,7 +174,7 @@ class LeftTree extends React.Component {
         return (
             <div className="tree-operation-div">
                 <PrivilegeChecker check="BGM_SALES_TEAM_ADD">
-                    <div className="tree-operation-item-zone"
+                    <div className="tree-operation-item-zone icon-operation tree-operation-icon"
                         onClick={this.addGroup.bind(this, item)}
                     >
                         <i className='iconfont icon-add'></i>
@@ -184,7 +184,7 @@ class LeftTree extends React.Component {
                     </div>
                 </PrivilegeChecker>
                 <PrivilegeChecker check="BGM_SALES_TEAM_EDIT">
-                    <div className="tree-operation-item-zone"
+                    <div className="tree-operation-item-zone icon-operation tree-operation-icon"
                         onClick={this.editGroup.bind(this, item)}
                     >
                         <i className='iconfont icon-update'></i>
@@ -194,7 +194,7 @@ class LeftTree extends React.Component {
                     </div>
                 </PrivilegeChecker>
                 <PrivilegeChecker check="BGM_SALES_TEAM_DELETE">
-                    <div className="tree-operation-item-zone"
+                    <div className="tree-operation-item-zone icon-operation tree-operation-icon"
                         onClick={this.deleteGroup.bind(this, item)}
                     >
                         <i className='iconfont icon-delete'></i>
@@ -215,8 +215,8 @@ class LeftTree extends React.Component {
         });
     };
 
-    handleHoverChange = (visible) => {
-        if (!visible) {
+    handleHoverChange = (flag) => {
+        if (!flag) {
             this.setState({
                 mouseZoneHoverKey: '',
                 visible: false
@@ -448,10 +448,11 @@ class LeftTree extends React.Component {
         return (
             <div className="sales-team-group" style={{height: this.props.containerHeight}} data-tracename="团队管理左侧列表">
                 <div className="sales-team-tree-container" style={{height: scrollHeight}} data-tracename="团队列表">
-                    <GeminiScrollbar className="geminiScrollbar-vertical">
+                    <GeminiScrollbar
+                        className="geminiScrollbar-vertical"
+                    >
                         <ul
                             className="left-tree-ul"
-                            onMouseLeave={this.handleMouseLeave}
                         >
                             {
                                 this.props.isEditGroupFlag ? (
@@ -462,10 +463,16 @@ class LeftTree extends React.Component {
                             }
                         </ul>
                     </GeminiScrollbar>
-                    {this.props.delTeamErrorMsg ? (<AlertTimer time={2000}
-                        message={this.props.delTeamErrorMsg}
-                        type='error' showIcon
-                        onHide={this.hideDelTooltip}/>) : null}
+                    {
+                        this.props.delTeamErrorMsg ? (
+                            <AlertTimer
+                                time={2000}
+                                message={this.props.delTeamErrorMsg}
+                                type='error' showIcon
+                                onHide={this.hideDelTooltip}
+                            />
+                        ) : null
+                    }
                 </div>
             </div>
         );

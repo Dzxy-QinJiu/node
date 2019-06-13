@@ -94,7 +94,7 @@ exports.addMember = function(obj) {
 };
 
 exports.editMember = function(obj) {
-    var Deferred = $.Deferred();
+    let Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_team_member',
         dataType: 'json',

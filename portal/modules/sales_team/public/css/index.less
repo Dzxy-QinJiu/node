@@ -150,10 +150,11 @@
               padding-left: 24px;
             }
             .set-select-member-btns {
+              cursor: pointer;
               display: inline-block;
               .add-member-btn {
                 display: inline-block;
-                padding-left: 16px;
+                padding: 0 8px;
               }
             }
           }
@@ -243,6 +244,9 @@
                 .member-status {
                   color: #999;
                 }
+              }
+              .current-row, .current-row:hover {
+                background: #E4F2FE !important;
               }
             }
           }
@@ -342,6 +346,8 @@
                     height: 32px;
                     line-height: 32px;
                     padding: 0 8px;
+                    position: relative;
+                    z-index: 11;
                     .icon-tree-arrow {
                       font-size: 10px;
                     }
@@ -567,7 +573,7 @@
   //加为xx、删除按钮的hover事件
   .member-btn-enable:hover {
     color: #fff !important;
-    background-color: #F1F8FE !important;
+    background-color: #4d96d1 !important;
   }
   .member-owner-disabled {
     background-color: #aeb3b9;

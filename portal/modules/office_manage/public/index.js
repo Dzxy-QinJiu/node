@@ -9,6 +9,13 @@ import officeManageAjax from './ajax';
 import {COLOR_LIST} from 'PUB_DIR/sources/utils/consts';
 import OfficeForm from './office-form';
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+
+const LAYOUT = {
+    HAED_HEIGHT: 40, // tabs项的高度
+    ADD_POSITION_HEIGHT: 60, // 添加职务占据的高度
+    ADD_FORM_HEIGHT: 130 // 添加表单的高度
+};
 
 class OfficeManage extends React.Component {
     state = {
@@ -77,15 +84,18 @@ class OfficeManage extends React.Component {
                 });
                 this.setState({
                     positionList: this.state.positionList,
+                    mouseZoneHoverItemId: ''
                 });
             } else {
                 this.setState({
-                    deleteErrMsg: Intl.get('member.position.set.default.failed', '设置默认角色失败！')
+                    deleteErrMsg: Intl.get('member.position.set.default.failed', '设置默认角色失败！'),
+                    mouseZoneHoverItemId: ''
                 });
             }
         }, (errMsg) => {
             this.setState({
-                deleteErrMsg: errMsg
+                deleteErrMsg: errMsg,
+                mouseZoneHoverItemId: ''
             });
         } );
     };
@@ -218,15 +228,12 @@ class OfficeManage extends React.Component {
                 isShowAddPosition: true
             });
         } else if( flag === 'edit'){
+            delete result.isEdit;
+            let id = _.get(result, 'id');
             let positionList = this.state.positionList;
-            _.find(positionList, item => {
-                if (_.get(item, 'id') === _.get(result, 'id')) {
-                    item = result;
-                    delete item.isEdit;
-                }
-            });
+            let index = _.findIndex(positionList, item => item.id === id);
+            positionList.splice(index, 1, result);
             this.setState({
-                positionList: this.state.positionList,
                 isShowEditPositionFlag: false
             });
         }
@@ -239,10 +246,15 @@ class OfficeManage extends React.Component {
                 isShowAddPosition: true
             });
         } else {
+            let id = _.get(data, 'id');
+            _.find(this.state.positionList, item => {
+                if (item.id === id) {
+                    delete item.isEdit;
+                }
+            });
             this.setState({
                 isShowEditPositionFlag: false
             });
-            delete data.isEdit;
         }
     };
 
@@ -250,24 +262,40 @@ class OfficeManage extends React.Component {
         let itemOffice = {color: this.getPositionColor()};
         if (this.state.isShowAddPosition) {
             itemOffice = item;
-            item.isEdit = true;
         }
         return (
             <div className='edit-item-or-add-zone'>
                 <OfficeForm
                     positionList={this.state.positionList}
                     itemOffice={itemOffice}
-                    handleCancel={this.handleCancelForm}
+                    handleCancelForm={this.handleCancelForm}
                     handleSubmit={this.handleSubmit}
                 />
             </div>
         );
     };
 
+    getContentHeight = () => {
+        return this.props.height - LAYOUT.HAED_HEIGHT;
+    };
+
+    handleHoverChange = (flag) => {
+        if (!flag) {
+            this.setState({
+                mouseZoneHoverItemId: '',
+                visible: false
+            });
+        }
+    };
+
     // 渲染职务列表
     renderPositionList = () => {
         let positionList = this.state.positionList;
         let length = _.get(positionList, 'length');
+        let scrollHeight = this.getContentHeight() - LAYOUT.ADD_POSITION_HEIGHT;
+        if (!this.state.isShowAddPosition) {
+            scrollHeight -= LAYOUT.ADD_FORM_HEIGHT;
+        }
         if (this.state.getPositionListMsg) { // 错误提示
             return (
                 <div className="office-list-error-tips">
@@ -277,83 +305,86 @@ class OfficeManage extends React.Component {
         } else if (_.isArray(positionList) && length) {
             // 职务列表
             return (
-                <ul className="office-list" data-tracename="职务管理">
-                    {_.map(positionList,(item) => {
-                        let isDefaultFlag = _.get(item, 'is_default');
-                        let defaultCls = classNames('default-role-descr', {'default-role-checked': isDefaultFlag});
-                        let count = _.get(item, 'customer_num', 0);
-                        let id = _.get(item, 'id');
-                        let isShowMoreBtn = this.state.mouseZoneHoverItemId === id; // 是否显示更多按钮
-                        let isEdit = _.get(item, 'isEdit');
-                        let isDelete = _.get(item, 'isDelete');
-                        let itemContainerCls = classNames('item-office-container', {
-                            'item-office-delete-container': isDelete
-                        });
-                        return (
-                            <li
-                                className={itemContainerCls}
-                                onMouseEnter={this.handleMouseEnter.bind(this, item)}
-                                onClick={this.onSelectPosition.bind(this, item )}
-                            >
-                                {
-                                    isEdit && this.state.isShowEditPositionFlag ? (
-                                        <div className="item-office-edit-zone">
-                                            {this.renderEditOrAddPosition(item)}
-                                        </div>
-                                    ) : (
-                                        <div className="item-office-content">
-                                            <span className="iconfont icon-team-role sales-role-icon" style={{color: item.color}}/>
-                                            <span className="item-text">{item.name}</span>
-                                            {
-                                                isDefaultFlag ?
-                                                    <span className={defaultCls}>
-                                                        {Intl.get('role.default.set', '默认')}
-                                                    </span> :
-                                                    null
-                                            }
-                                            {
-                                                isDelete && this.state.isShowDeletePositionFlag ? (
-                                                    <div className='delete-zone'>
-                                                        <span
-                                                            className='delete-position'
-                                                            onClick={this.handleConfirmDelete.bind(this, item)}
-                                                        >
-                                                            {Intl.get('crm.contact.delete.confirm', '确认删除')}
-                                                        </span>
-                                                        <span
-                                                            className='cancel-delete'
-                                                            onClick={this.handleCancelDelete.bind(this, item)}
-                                                        >
-                                                            {Intl.get('common.cancel', '取消')}
-                                                        </span>
-                                                    </div>
-                                                ) : (
-                                                    <div className="customer-container">
-                                                        <span>{Intl.get('sales.role.config.customer.num','最大客户数')}</span>
-                                                        {
-                                                            isShowMoreBtn ? (
-                                                                <Popover
-                                                                    content={this.renderModifyOffice(item)}
-                                                                    placement="bottomRight"
-                                                                    onVisibleChange={this.handleHoverChange}
+                <div className="office-content-zone" style={{height: scrollHeight}}>
+                    <GeminiScrollbar>
+                        <ul className="office-list" data-tracename="职务管理">
+                            {_.map(positionList,(item) => {
+                                let isDefaultFlag = _.get(item, 'is_default');
+                                let defaultCls = classNames('default-role-descr', {'default-role-checked': isDefaultFlag});
+                                let count = _.get(item, 'customer_num', 0);
+                                let id = _.get(item, 'id');
+                                let isShowMoreBtn = this.state.mouseZoneHoverItemId === id; // 是否显示更多按钮
+                                let isEdit = _.get(item, 'isEdit');
+                                let isDelete = _.get(item, 'isDelete');
+                                let itemContainerCls = classNames('item-office-container', {
+                                    'item-office-delete-container': isDelete
+                                });
+                                return (
+                                    <li
+                                        className={itemContainerCls}
+                                        onMouseEnter={this.handleMouseEnter.bind(this, item)}
+                                        onClick={this.onSelectPosition.bind(this, item )}
+                                    >
+                                        {
+                                            isEdit && this.state.isShowEditPositionFlag ? (
+                                                <div className="item-office-edit-zone">
+                                                    {this.renderEditOrAddPosition(item)}
+                                                </div>
+                                            ) : (
+                                                <div className="item-office-content">
+                                                    <span className="iconfont icon-team-role sales-role-icon" style={{color: item.color}}/>
+                                                    <span className="item-text">{item.name}</span>
+                                                    {
+                                                        isDefaultFlag ?
+                                                            <span className={defaultCls}>
+                                                                {Intl.get('role.default.set', '默认')}
+                                                            </span> : null
+                                                    }
+                                                    {
+                                                        isDelete && this.state.isShowDeletePositionFlag ? (
+                                                            <div className='delete-zone'>
+                                                                <span
+                                                                    className='delete-position'
+                                                                    onClick={this.handleConfirmDelete.bind(this, item)}
                                                                 >
-                                                                    <span className='iconfont icon-more'></span>
-                                                                </Popover>
-                                                            ) : (
-                                                                <span className="customer-count">{count}</span>
-                                                            )
-                                                        }
-                                                    </div>
-                                                )
-                                            }
-                                        </div>
-                                    )
-                                }
-                            </li>);
-                    }
-                    )}
-                </ul>);
-        }
+                                                                    {Intl.get('crm.contact.delete.confirm', '确认删除')}
+                                                                </span>
+                                                                <span
+                                                                    className='cancel-delete'
+                                                                    onClick={this.handleCancelDelete.bind(this, item)}
+                                                                >
+                                                                    {Intl.get('common.cancel', '取消')}
+                                                                </span>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="customer-container">
+                                                                <span>{Intl.get('sales.role.config.customer.num','最大客户数')}</span>
+                                                                {
+                                                                    isShowMoreBtn ? (
+                                                                        <Popover
+                                                                            content={this.renderModifyOffice(item)}
+                                                                            placement="bottomRight"
+                                                                            onVisibleChange={this.handleHoverChange}
+                                                                        >
+                                                                            <span className='iconfont icon-more'></span>
+                                                                        </Popover>
+                                                                    ) : (
+                                                                        <span className="customer-count">{count}</span>
+                                                                    )
+                                                                }
+                                                            </div>
+                                                        )
+                                                    }
+                                                </div>
+                                            )
+                                        }
+                                    </li>);
+                            }
+                            )}
+                        </ul>
+                    </GeminiScrollbar>
+                </div>
+            );}
     };
 
     // 添加职务
@@ -370,18 +401,10 @@ class OfficeManage extends React.Component {
         });
     };
 
-    handleHoverChange = (visible) => {
-        if (!visible) {
-            this.setState({
-                mouseZoneHoverItemId: '',
-                visible: false
-            });
-        }
-    };
-
     render() {
+        let height = this.getContentHeight();
         return (
-            <div className="office-container" data-tracename="职务" onMouseLeave={this.handleMouseLeave}>
+            <div className="office-container" data-tracename="职务" style={{height: height}}>
                 {this.state.deleteErrMsg ? this.handleDeleteRoleFail() : null}
                 <div className="add-office-container">
                     {this.state.isShowAddPosition ? (
@@ -402,5 +425,9 @@ class OfficeManage extends React.Component {
         );
     }
 }
+
+OfficeManage.propTypes = {
+    height: PropTypes.number
+};
 
 module.exports = OfficeManage;

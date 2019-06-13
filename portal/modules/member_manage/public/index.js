@@ -30,6 +30,7 @@ class MemberManage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            selectedRowIndex: null, // 点击的行索引
             ...MemberManageStore.getState(),
         };
     }
@@ -53,8 +54,9 @@ class MemberManage extends React.Component {
             status: _.get(queryParams, 'status', this.state.status), // 成员状态
             id: _.get(queryParams, 'id', ''), // 下拉加载最后一条的id
         };
-        MemberManageAction.getMemberList(queryObj);
-        this.props.getMemberCount(this.state.memberTotal);
+        MemberManageAction.getMemberList(queryObj, (memberTotal) => {
+            this.props.getMemberCount(memberTotal);
+        });
     };
 
     componentWillUnmount = () => {
@@ -231,6 +233,19 @@ class MemberManage extends React.Component {
     // 点击表格
     handleRowClick = (record, index) => {
         this.showMemberInfo(record);
+        this.setState({
+            selectedRowIndex: index
+        });
+    };
+
+    //处理选中行的样式
+    handleRowClassName = (record, index) => {
+        if (index === this.state.selectedRowIndex && this.state.isShowMemberDetail) {
+            return 'current-row';
+        }
+        else {
+            return '';
+        }
     };
 
     renderMemberTableContent = () => {
