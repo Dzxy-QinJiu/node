@@ -30,6 +30,7 @@ class MemberManage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            selectedRowIndex: null, // 点击的行索引
             ...MemberManageStore.getState(),
         };
     }
@@ -231,6 +232,19 @@ class MemberManage extends React.Component {
     // 点击表格
     handleRowClick = (record, index) => {
         this.showMemberInfo(record);
+        this.setState({
+            selectedRowIndex: index
+        });
+    };
+
+    //处理选中行的样式
+    handleRowClassName = (record, index) => {
+        if (index === this.state.selectedRowIndex && this.state.isShowMemberDetail) {
+            return 'current-row';
+        }
+        else {
+            return '';
+        }
     };
 
     renderMemberTableContent = () => {

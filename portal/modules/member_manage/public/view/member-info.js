@@ -396,8 +396,8 @@ class MemberInfo extends React.Component {
                 isSales = true;
             }
             roleNames = memberInfo.roleNames.join(',');
-
         }
+        let roleId = _.get(memberInfo, 'roleIds[0]');
         return (
             <div>
                 {/** v8环境下，不显示所属团队*/}
@@ -457,7 +457,7 @@ class MemberInfo extends React.Component {
                         width={EDIT_FEILD_WIDTH}
                         id={memberInfo.id}
                         displayText={roleNames}
-                        value={memberInfo.roleIds[0]}
+                        value={roleId}
                         field="role"
                         selectOptions={roleSelectOptions}
                         hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_ROLE')}

@@ -258,6 +258,7 @@ class SalesTeamPage extends React.Component {
                                                 rightPanelShow={this.state.rightPanelShow}
                                                 isLoadingSalesGoal={this.state.isLoadingSalesGoal}
                                                 getSalesGoalErrMsg={this.state.getSalesGoalErrMsg}
+                                                selectedRowIndex={this.state.selectedRowIndex}
                                             />
                                     }
                                     <div className='member-group-tabs' style={{

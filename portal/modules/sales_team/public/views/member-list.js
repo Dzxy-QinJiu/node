@@ -21,6 +21,8 @@ import MemberManageStore from 'MOD_DIR/member_manage/public/store';
 import MemberManageAction from 'MOD_DIR/member_manage/public/action';
 import MemberFormAction from 'MOD_DIR/member_manage/public/action/member-form-actions';
 import { AntcTable } from 'antc';
+import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+const tableHeadHeight = 50; // table表格头部高度
 
 //成员的类型
 const MEMBER_TYPE = {
@@ -65,7 +67,8 @@ const MemberList = createReactClass({
         isLoadingTeamMember: PropTypes.bool,
         rightPanelShow: PropTypes.bool,
         userInfoShow: PropTypes.bool,
-        userFormShow: PropTypes.bool
+        userFormShow: PropTypes.bool,
+        selectedRowIndex: PropTypes.number,
     },
     getInitialState: function() {
         var savingFlags = MemberListEditStore.getState();
@@ -88,7 +91,6 @@ const MemberList = createReactClass({
             isShowBatchChangeSelfGoal: true, //是否展示设置个人目标按钮
             isSavingTeamGoal: false, //正在保存团队目标
             isSavingMemberGoal: false,//正在保存个人目标
-            selectedRowIndex: null, // 点击的行索引
             selectedRowKeys: [], // 选中的行
             isShowAddMemberOperateBtn: false, // 点击添加成员时，显示相应的操作
             isShowEditMemberOperateBtn: false, // 选择table中的行时，显示编辑相应的操作
@@ -141,6 +143,32 @@ const MemberList = createReactClass({
         $('.sales-team-member-add-container .search-input').val('');
     },
 
+    // 显示成员详情
+    showMemberInfo(member, index) {
+        Trace.traceEvent('团队管理','点击查看成员详情');
+        let id = _.get(member, 'userId');
+        MemberManageAction.setCurMember(id);
+        MemberManageAction.setMemberLoading(true);
+        // 获取成员详情
+        MemberManageAction.getCurMemberById(id);
+        setTimeout(() => {
+            //获取团队列表
+            if (!Oplate.hideSomeItem) { // v8环境下，不显示所属团队，所以不用发请求
+                MemberFormAction.setTeamListLoading(true);
+                MemberFormAction.getUserTeamList();
+            }
+            //获取角色列表
+            MemberFormAction.setRoleListLoading(true);
+            MemberFormAction.getRoleList();
+        });
+        if ($('.right-panel-content').hasClass('right-panel-content-slide')) {
+            $('.right-panel-content').removeClass('right-panel-content-slide');
+            SalesTeamAction.showUserInfoPanel(index);
+        } else {
+            SalesTeamAction.showUserInfoPanel(index);
+        }
+    },
+
     selectMember(salesTeamMember) {
         if (this.props.isAddMember) {
             this.state.addMemberList.forEach(function(member) {
@@ -152,31 +180,6 @@ const MemberList = createReactClass({
                 addMemberList: this.state.addMemberList
             });
         } else {
-            //展示用户的时候
-            if (!this.props.isEditMember){
-                Trace.traceEvent('团队管理','点击查看成员详情');
-                let id = _.get(salesTeamMember, 'userId');
-                MemberManageAction.setCurMember(id);
-                MemberManageAction.setMemberLoading(true);
-                // 获取成员详情
-                MemberManageAction.getCurMemberById(id);
-                setTimeout(() => {
-                    //获取团队列表
-                    if (!Oplate.hideSomeItem) { // v8环境下，不显示所属团队，所以不用发请求
-                        MemberFormAction.setTeamListLoading(true);
-                        MemberFormAction.getUserTeamList();
-                    }
-                    //获取角色列表
-                    MemberFormAction.setRoleListLoading(true);
-                    MemberFormAction.getRoleList();
-                });
-                if ($('.right-panel-content').hasClass('right-panel-content-slide')) {
-                    $('.right-panel-content').removeClass('right-panel-content-slide');
-                    SalesTeamAction.showUserInfoPanel();
-                } else {
-                    SalesTeamAction.showUserInfoPanel();
-                }
-            }
             //删除、编辑
             var curShowTeamMemberObj = this.state.curShowTeamMemberObj;
             //负责人存在
@@ -359,73 +362,6 @@ const MemberList = createReactClass({
         }
     },
 
-    createOperationBtn: function() {
-        let isAddMember = this.props.isAddMember; //是否是添加状态
-        let isEditMember = this.props.isEditMember;//是否是编辑状态
-        let showMemberOperationBtn = this.props.showMemberOperationBtn;
-        let addActiveClass = classNames('add-member-btn operation-top-btn iconfont icon-add', this.props.className, {
-            'active-btn': isAddMember
-        });
-        var editActiveClass = classNames('edit-member-btn operation-top-btn iconfont icon-update', this.props.className, {
-            'active-btn': isEditMember
-        });
-        return (
-            showMemberOperationBtn ? null :
-                (<div className="operation-top-btn-div">
-                    <PrivilegeChecker check="BGM_SALES_TEAM_MEMBER_EDIT" className="operation-top-btn-div-label">
-                        <div className={editActiveClass} title={Intl.get('sales.team.edit.team.member', '编辑团队成员')}
-                            onClick={this.editMember} data-tracename="编辑团队成员">
-                        </div>
-                    </PrivilegeChecker>
-                    <PrivilegeChecker check="BGM_SALES_TEAM_MEMBER_EDIT" className="operation-top-btn-div-label">
-                        <div className={addActiveClass} title={Intl.get('sales.team.add.team.member', '添加团队成员')}
-                            onClick={this.addMember} data-tracename="添加团队成员">
-                        </div>
-                    </PrivilegeChecker>
-                </div>)
-        );
-    },
-
-    //渲染成员头像及名称，memeber:成员信息，type:负责人/秘书/成员，hasSelectBtn:是否需要选择按钮
-    renderMemberEle: function(salesTeamMember, type, hasSelectBtn) {
-        var selectBtnClass = '';
-        //只展示的成员样式
-        var memberClass = 'sales-team-member-info';
-        if (hasSelectBtn) {
-            selectBtnClass = classNames('select-icon-div iconfont icon-select-member', this.props.className, {
-                'select-member': salesTeamMember.selected
-            });
-            //带选择框的成员样式
-            memberClass = 'operation-sales-team-member-info';
-        }
-        let userName = salesTeamMember.userName ? salesTeamMember.userName : '';
-        //没有昵称时，用用户名展示
-        let nickName = salesTeamMember.nickName ? salesTeamMember.nickName : userName;
-        return (
-            <div className={memberClass} key={salesTeamMember.userId}
-                onClick={this.selectMember.bind(this, salesTeamMember)}>
-                <DefaultUserLogoTitle defaultImgClass={'sales-team-member-info-img'}
-                    userName={userName}
-                    nickName={nickName}
-                    userLogo={salesTeamMember.userLogo}
-                >
-                </DefaultUserLogoTitle>
-                {salesTeamMember.status === 0 ? (
-                    <div className="sales-team-member-stop"><ReactIntl.FormattedMessage id="common.stop"
-                        defaultMessage="停用"/>
-                    </div>) : null}
-                {type !== MEMBER_TYPE.USER ?
-                    (<span className={'iconfont icon-sale-team-' + type}/> ) : null}
-                <div className="sales-team-member-info-name-div">
-                    {hasSelectBtn ? (<div className={selectBtnClass}></div>) : null}
-                    <div className="sales-team-member-info-name" title={nickName}>
-                        {nickName}
-                    </div>
-                </div>
-            </div>
-        );
-    },
-
     memberStatusClass(status){
         return classNames({'member-status': status === 0});
     },
@@ -506,15 +442,12 @@ const MemberList = createReactClass({
     },
 
     handleRowClick(record, index) {
-        this.setState({
-            selectedRowIndex: index
-        });
-        this.selectMember(record);
+        this.showMemberInfo(record, index);
     },
 
     //处理选中行的样式
     handleRowClassName(record, index){
-        if (index === this.state.selectedRowIndex) {
+        if (index === this.props.selectedRowIndex) {
             return 'current-row';
         }
         else {
@@ -548,11 +481,12 @@ const MemberList = createReactClass({
         };
 
         const hasSelected = _.get(selectedRowKeys, 'length');
-        let tableHeight = this.state.memberListHeight - 40;
+        let height = this.state.memberListHeight - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
+        let tableHeight = height - tableHeadHeight;
         let operationZoneWidth = this.props.salesTeamMemberWidth;
         let isShowAddMemberOperateBtn = this.state.isShowAddMemberOperateBtn;
         return (
-            <div className="member-table-container">
+            <div className="member-table-container" style={{height: this.state.memberListHeight}}>
                 {
                     hasSelected ? (
                         <div className='operation-zone' style={{width: operationZoneWidth}}>
@@ -576,18 +510,20 @@ const MemberList = createReactClass({
                         </div>
                     )
                 }
+                <div className='member-list-table' style={{height: height}}>
+                    <div style={{ height: height }}>
+                        <AntcTable
+                            rowSelection={rowSelection}
+                            dataSource={dataSource}
+                            columns={columns}
+                            pagination={false}
+                            onRowClick={this.handleRowClick}
+                            rowClassName={this.handleRowClassName}
+                            locale={{ emptyText: Intl.get('common.no.member', '暂无成员') }}
+                            scroll={{ y: tableHeight }}
+                        />
+                    </div>
 
-                <div className='member-list-table'>
-                    <AntcTable
-                        rowSelection={rowSelection}
-                        dataSource={dataSource}
-                        columns={columns}
-                        pagination={false}
-                        onRowClick={this.handleRowClick}
-                        rowClassName={this.handleRowClassName}
-                        locale={{ emptyText: Intl.get('common.no.member', '暂无成员') }}
-                        scroll={{ y: tableHeight }}
-                    />
                 </div>
             </div>
         );
@@ -1434,7 +1370,7 @@ const MemberList = createReactClass({
                     }
                 </div>
                 <div className="member-list-div"
-                    style={{height: this.state.memberListHeight}}>
+                    style={{height: this.state.memberListHeight - 80}}>
                     {
                         this.props.isLoadingTeamMember ? (
                             <Spinner className="isloading"/>

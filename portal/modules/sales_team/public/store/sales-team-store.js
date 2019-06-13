@@ -31,17 +31,20 @@ function SalesTeamStore() {
     this.userFormShow = false;
     this.rightPanelShow = false;
     this.isEditGroupFlag = false; // 是否编辑部门，默认false
+    this.selectedRowIndex = -1; // 点击的行索引， 默认不选中
     this.curEditGroup = {}; // 当前编辑的部门
     this.bindActions(SalesTeamActions);
 }
-SalesTeamStore.prototype.showUserInfoPanel = function() {
+SalesTeamStore.prototype.showUserInfoPanel = function(index) {
     this.userInfoShow = true;
     this.userFormShow = false;
     this.rightPanelShow = true;
+    this.selectedRowIndex = index;
 };
 SalesTeamStore.prototype.closeRightPanel = function() {
     this.rightPanelShow = false;
     this.userInfoShow = false;
+    this.selectedRowIndex = -1;
 };
 //获取统计团队内成员个数的列表
 SalesTeamStore.prototype.getTeamMemberCountList = function(list) {
