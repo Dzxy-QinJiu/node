@@ -3,6 +3,7 @@
  */
 let React = require('react');
 require('./css/index.less');
+require('./css/sales-team.less');
 import {Icon,Input,Button,Tabs} from 'antd';
 const TabPane = Tabs.TabPane;
 let SalesTeamStore = require('./store/sales-team-store');

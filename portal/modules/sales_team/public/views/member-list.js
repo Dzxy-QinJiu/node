@@ -181,7 +181,7 @@ const MemberList = createReactClass({
             });
         } else {
             //删除、编辑
-            var curShowTeamMemberObj = this.state.curShowTeamMemberObj;
+            let curShowTeamMemberObj = this.state.curShowTeamMemberObj;
             //负责人存在
             if (curShowTeamMemberObj.owner && curShowTeamMemberObj.owner.userId === salesTeamMember.userId) {
                 curShowTeamMemberObj.owner.selected = !curShowTeamMemberObj.owner.selected;
@@ -234,8 +234,8 @@ const MemberList = createReactClass({
             return;
         }
         this.setState({
-            isShowAddMemberOperateBtn: true,
-            isShowEditMemberOperateBtn: false
+            isShowAddMemberOperateBtn: true, // 添加成员
+            isShowEditMemberOperateBtn: false // 编辑团队成员
         });
     },
 
@@ -296,6 +296,7 @@ const MemberList = createReactClass({
         if (curShowTeamMemberObj.owner) {
             ownerId = curShowTeamMemberObj.owner.userId;
         }
+
         //秘书
         if (_.isArray(curShowTeamMemberObj.managers) && curShowTeamMemberObj.managers.length > 0) {
             curShowTeamMemberObj.managers.forEach(function(member) {
@@ -319,7 +320,8 @@ const MemberList = createReactClass({
         MemberListEditAction.editMember(saveMemberListObj);
         this.setState({
             saveMemberListObj: saveMemberListObj,
-            selectedRowKeys: []
+            selectedRowKeys: [],
+            isShowEditMemberOperateBtn: false
         });
         this.cleanSearchInput();
     },
@@ -692,7 +694,8 @@ const MemberList = createReactClass({
             this.setState({
                 saveMemberListObj: editObj,
                 isShowEditMemberOperateBtn: false,
-                selectedRowKeys: []
+                selectedRowKeys: [],
+                curShowTeamMemberObj: curShowTeamMemberObj
             });
         }
     },
@@ -702,7 +705,7 @@ const MemberList = createReactClass({
         if (!$('#set-manager-btn').hasClass('member-btn-enable')) {
             return;
         }
-        var curShowTeamMemberObj = this.state.curShowTeamMemberObj;
+        let curShowTeamMemberObj = this.state.curShowTeamMemberObj;
         let editObj = {
             group_id: curShowTeamMemberObj.groupId
         };
@@ -890,7 +893,8 @@ const MemberList = createReactClass({
         let saveResult = this.state.saveMemberListResult;
         return saveResult ?
             (<div className="indicator">
-                <AlertTimer time={saveResult === 'error' ? 3000 : 600}
+                <AlertTimer
+                    time={saveResult === 'error' ? 30000000 : 60000000}
                     message={this.state.saveMemberListMsg}
                     type={saveResult} showIcon
                     onHide={this.hideSaveTooltip}/>
@@ -901,7 +905,6 @@ const MemberList = createReactClass({
     renderAddBtns() {
         return (
             <div className="operation-add-member">
-                {this.renderSaveMsg()}
                 <span className="operation-add"
                     onClick={(e) => this.handleOK(e)}>
                     {Intl.get('common.add', '添加')}
@@ -985,80 +988,6 @@ const MemberList = createReactClass({
                 </div>
             );
         }
-    },
-
-    createMemberInfoElement() {
-        let selectMemberListH = 0;
-        let memberListContainerH = this.state.memberListHeight - 80;
-        if (this.props.isAddMember || this.props.isEditMember) {
-            selectMemberListH = memberListContainerH - 35;//20:paddingTOP+paddingBottom,35:BtnH+margin
-            if (this.props.isAddMember) {
-                selectMemberListH -= 42;//42：搜索框的高度
-            }
-        } else {
-            selectMemberListH -= 20;//20：padding
-        }
-        let addMemberList = this.state.addMemberList;
-        let searchValue = this.state.searchValue;
-        if (searchValue) {
-            addMemberList = _.filter(addMemberList, item => item.userName.indexOf(searchValue) !== -1 || item.nickName.indexOf(searchValue) !== -1);
-        }
-        let flag = 'add';
-        return this.props.isAddMember ?
-            (
-                <div className="sales-team-member-add-container">
-                    <div
-                        className="sales-team-member-select-list sales-team-member-tier"
-                        style={{height: selectMemberListH}}
-                    >
-                        {
-                            this.props.addMemberListTipMsg ? (
-                                <div className="member-list-tip">
-                                    {this.props.addMemberListTipMsg}
-                                </div>) : (
-                                <div className="member-table-zone">
-                                    {this.renderMemberList(flag, addMemberList)}
-                                </div>
-                            )
-                        }
-                    </div>
-                </div>
-            ) : this.props.isEditMember ? (
-                <div className="sales-team-member-edit-container">
-                    <div
-                        className="sales-team-member-select-list sales-team-member-tier"
-                        style={{height: selectMemberListH}}
-                    >
-                        {
-                            this.props.teamMemberListTipMsg ? (
-                                <div className="member-list-tip">
-                                    {this.props.teamMemberListTipMsg}
-                                </div>
-                            ) : (
-                                <div className="member-table-zone">
-                                    {this.renderMemberList(true)}
-                                </div>
-                            )
-                        }
-                    </div>
-                </div>
-            ) : (
-                <div
-                    className="sales-team-member-show-list sales-team-member-tier"
-                    style={{height: memberListContainerH}}
-                >
-                    {
-                        this.props.teamMemberListTipMsg ? (
-                            <div className="member-list-tip">
-                                {this.props.teamMemberListTipMsg}
-                            </div>
-                        ) : (
-                            <div className="member-table-zone">
-                                {this.renderMemberList()}
-                            </div>
-                        )
-                    }
-                </div>);
     },
 
     //修改团队销售目标时的处理
@@ -1377,9 +1306,13 @@ const MemberList = createReactClass({
                         ) : this.renderMemberZoneData()
                     }
                 </div>
-                {this.state.isMemberListSaving ? (<div className="member-list-edit-block">
-                    <Spinner className="isloading"/>
-                </div>) : ''}
+                {
+                    this.state.isMemberListSaving ? (
+                        <div className="member-list-edit-block">
+                            <Spinner className="isloading"/>
+                        </div>
+                    ) : ''
+                }
                 {this.props.rightPanelShow ? (
                     <MemberInfo
                         memberInfo={this.state.currentMember}
