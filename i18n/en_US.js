@@ -2932,6 +2932,7 @@ var en_US = {
     'common.current.year': 'current year',//本年
     'common.rank': 'rank',//名次
     'common.sales.productivity.analysis': 'Sales productivity analysis',//销售生产力分析
+    'common.convert.to.customer': ' convert to customer',//转为客户
     'common.convert.to.new.customer': ' convert to new customer',//转为新客户
 };
 export default en_US;

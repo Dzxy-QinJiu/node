@@ -3036,6 +3036,7 @@ var zh_CN = {
     'common.current.year': '本年',
     'common.rank': '名次',
     'common.sales.productivity.analysis': '销售生产力分析',
+    'common.convert.to.customer': '转为客户',
     'common.convert.to.new.customer': '转为新客户',
 };
 export default zh_CN;

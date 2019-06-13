@@ -7,10 +7,6 @@ import { Row, Col, Button } from 'antd';
 import ajax from 'ant-ajax';
 import { RightPanel } from 'CMP_DIR/rightPanel';
 import ModalDialog from 'CMP_DIR/ModalDialog';
-import Spinner from 'CMP_DIR/spinner';
-import { AUTHS } from 'MOD_DIR/crm/public/utils/crm-util';
-const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
-const authType = hasPrivilege(AUTHS.GETALL) ? 'manager' : 'user';
 const noop = function() {};
 
 class ClueToCustomerPanel extends React.Component {
@@ -20,29 +16,28 @@ class ClueToCustomerPanel extends React.Component {
         //关闭面板按钮点击事件
         hidePanel: noop,
         //当前线索
-        clue: {}
+        clue: {},
+        //已存在的客户
+        existingCustomers: []
     };
 
     static propTypes = {
         showFlag: PropTypes.bool,
         hidePanel: PropTypes.func,
-        clue: PropTypes.object
+        clue: PropTypes.object,
+        existingCustomers: PropTypes.array
     };
 
     constructor(props) {
         super(props);
 
         this.state = {
-            //是否显示loading
-            isLoadingShow: true,
             //是否显示合并到此客户对话框
             isMergeToCustomerDialogShow: false,
             //是否显示替换联系人名称对话框
             isReplaceContactNameDialogShow: false,
             //合并到客户的操作区块是否显示
             isMergeCustomerBlockShow: false,
-            //已存在的客户们
-            existingCustomers: [],
             //要合并到的客户
             toMergeCustomer: {},
             //合并后的客户
@@ -56,39 +51,6 @@ class ClueToCustomerPanel extends React.Component {
             //要操作的电话
             opPhone: '',
         };
-    }
-
-    componentDidMount() {
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.clue.id !== nextProps.clue.id) {
-            this.getCustomer(nextProps);
-        }
-    }
-
-    //获取客户信息
-    getCustomer(props) {
-        const customerName = props.clue.name;
-
-        ajax.send({
-            url: `/rest/customer/v3/customer/range/${authType}/20/1/start_time/descend`,
-            type: 'post',
-            data: {
-                query: {
-                    name: customerName
-                }
-            }
-        })
-            .done(result => {
-                this.setState({
-                    isLoadingShow: false,
-                    isMergeCustomerBlockShow: false,
-                    existingCustomers: result.result
-                });
-            })
-            .fail(err => {
-            });
     }
 
     //合并到此客户按钮点击事件
@@ -241,8 +203,8 @@ class ClueToCustomerPanel extends React.Component {
         });
     }
 
-    //渲染基本信息区块
-    renderBasicInfoBlock() {
+    //渲染添加新客户区块
+    renderAddCustomerBlock() {
         const clue = this.props.clue;
 
         return (
@@ -299,7 +261,7 @@ class ClueToCustomerPanel extends React.Component {
                     <b>已存在客户</b>
                 </div>
 
-                {_.map(this.state.existingCustomers, (customer, index) => {
+                {_.map(this.props.existingCustomers, (customer, index) => {
                     return (
                         <Row>
                             <Col span={12}>
@@ -318,7 +280,7 @@ class ClueToCustomerPanel extends React.Component {
                 })}
 
                 <div className="btn-block">
-                    <Button onClick={this.hideMergeCustomerBlock}>{Intl.get('common.cancel', '取消')}</Button>
+                    <Button onClick={this.props.hidePanel}>{Intl.get('common.cancel', '取消')}</Button>
                     <Button type="primary">{Intl.get('common.convert.to.new.customer', '转为新客户')}</Button>
                 </div>
             </div>
@@ -432,7 +394,7 @@ class ClueToCustomerPanel extends React.Component {
 
     render() {
         //相似客户区块是否显示
-        const isExistingCustomersBlockShow = this.state.existingCustomers.length && !this.state.isMergeCustomerBlockShow;
+        const isExistingCustomersBlockShow = this.props.existingCustomers.length && !this.state.isMergeCustomerBlockShow;
         //合并客户区块是否显示
         const isMergeCustomerBlockShow = this.state.isMergeCustomerBlockShow;
 
@@ -444,14 +406,10 @@ class ClueToCustomerPanel extends React.Component {
             >
                 <span className="iconfont icon-close clue-right-btn" onClick={this.props.hidePanel} data-tracename="关闭线索转客户面板"></span>
                 <div className="clue-detail-wrap">
-                    {this.state.isLoadingShow ? (
-                        <Spinner /> 
-                    ) : (
-                        <div className="panel-content">
-                            {isExistingCustomersBlockShow ? this.renderExistingCustomersBlock() : null}
-                            {isMergeCustomerBlockShow ? this.renderMergeCustomerBlock() : null}
-                        </div>
-                    )}
+                    <div className="panel-content">
+                        {isExistingCustomersBlockShow ? this.renderExistingCustomersBlock() : null}
+                        {isMergeCustomerBlockShow ? this.renderMergeCustomerBlock() : null}
+                    </div>
                 </div>
 
                 {this.renderMergeToCustomerDialog()}
