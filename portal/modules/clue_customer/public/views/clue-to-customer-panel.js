@@ -292,7 +292,7 @@ class ClueToCustomerPanel extends React.Component {
     }
 
     //渲染已存在客户区块
-    renderExistsCustomerBlock() {
+    renderExistingCustomersBlock() {
         return (
             <div className="exists-customer-block">
                 <div className="title">
@@ -316,6 +316,11 @@ class ClueToCustomerPanel extends React.Component {
                         </Row>
                     );
                 })}
+
+                <div className="btn-block">
+                    <Button onClick={this.hideMergeCustomerBlock}>{Intl.get('common.cancel', '取消')}</Button>
+                    <Button type="primary">{Intl.get('common.convert.to.new.customer', '转为新客户')}</Button>
+                </div>
             </div>
         );
     }
@@ -386,16 +391,6 @@ class ClueToCustomerPanel extends React.Component {
         );
     }
 
-    //渲染添加取消按钮区域
-    renderAddCancelBtnBlock() {
-        return (
-            <div className="btn-block">
-                <Button onClick={this.hideMergeCustomerBlock}>{Intl.get('common.cancel', '取消')}</Button>
-                <Button type="primary">{Intl.get('common.sure', '确定')}</Button>
-            </div>
-        );
-    }
-
     //渲染是否合并到此客户对话框
     renderMergeToCustomerDialog() {
         return (
@@ -436,6 +431,11 @@ class ClueToCustomerPanel extends React.Component {
     }
 
     render() {
+        //相似客户区块是否显示
+        const isExistingCustomersBlockShow = this.state.existingCustomers.length && !this.state.isMergeCustomerBlockShow;
+        //合并客户区块是否显示
+        const isMergeCustomerBlockShow = this.state.isMergeCustomerBlockShow;
+
         return (
             <RightPanel
                 className="clue_customer_rightpanel clue-to-customer-panel"
@@ -448,10 +448,8 @@ class ClueToCustomerPanel extends React.Component {
                         <Spinner /> 
                     ) : (
                         <div className="panel-content">
-                            {this.renderBasicInfoBlock()}
-                            {this.state.existingCustomers.length && !this.state.isMergeCustomerBlockShow ? this.renderExistsCustomerBlock() : null}
-                            {this.state.isMergeCustomerBlockShow ? this.renderMergeCustomerBlock() : null}
-                            {!this.state.existingCustomers.length && !this.state.isMergeCustomerBlockShow ? this.renderAddCancelBtnBlock() : null}
+                            {isExistingCustomersBlockShow ? this.renderExistingCustomersBlock() : null}
+                            {isMergeCustomerBlockShow ? this.renderMergeCustomerBlock() : null}
                         </div>
                     )}
                 </div>
