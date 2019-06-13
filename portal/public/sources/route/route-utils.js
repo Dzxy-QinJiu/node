@@ -11,11 +11,11 @@ const userData = require('../user-data');
 const menuUtil = require('../utils/menu-util');
 const ROUTE_CONST = {
     'SALES_HOME': 'sales_home_page',//销售首页id
-    'CONTRACT_DASHBOARD': 'contract_dashboard'//合同概览id
+    'HOME_PAGE': 'home_page'//合同概览id
 };
 
 //如果访问/，跳转到左侧导航菜单的第一个路由
-class HomeIndexRoute extends React.Component {
+class FirstIndexRoute extends React.Component {
     //当组件即将加载的时候，跳转到第一个路由
     componentWillMount() {
         var allMenus = menuUtil.getAllMenu();
@@ -48,12 +48,12 @@ class SalesIndexRoute extends React.Component {
     }
 }
 
-//跳转到合同仪表盘
-class ContractIndexRoute extends React.Component {
+//跳转到客套首页
+class HomeIndexRoute extends React.Component {
     componentWillMount() {
-        var contract_dashboard = menuUtil.getMenuById(ROUTE_CONST.CONTRACT_DASHBOARD);
-        if (contract_dashboard) {
-            history.replace(contract_dashboard.routePath);
+        var home_page = menuUtil.getMenuById(ROUTE_CONST.HOME_PAGE);
+        if (home_page) {
+            history.replace(home_page.routePath);
             return true;
         }
     }
@@ -86,15 +86,11 @@ const IndexRoute = (props) => {
     if (user.preUrl && user.preUrl !== '/') {
         return <TurnPageIndexRoute/>;
     } else {
-        if (hasPrivilege('GET_ALL_CALL_RECORD') || //GET_ALL_CALL_RECORD 获取所有电话统计记录的权限
-            hasPrivilege('GET_MY_CALL_RECORD')) {//GET_MY_CALL_RECORD 获取我的电话统计记录的权限
-            //客套销售首页视图的权限跳到销售主页
-            return <SalesIndexRoute/>;
-        } else if (userData.hasRole(userData.ROLE_CONSTANS.ACCOUNTANT)) {
-            //财务人员跳转到合同仪表盘
-            return <ContractIndexRoute/>;
-        } else {
+        if (hasPrivilege('USER_INFO_USER')) {// USER_INFO_USER 获取我的个人资料的权限
+            //客套首页
             return <HomeIndexRoute/>;
+        } else {
+            return <FirstIndexRoute/>;
         }
     }
 };

@@ -319,6 +319,9 @@ var en_US = {
     'register.wechat.register.bind': 'Registration of new accounts',//注册新账号
     'login.wechat.register.login.error': 'WeChat register login failed',//微信号注册登录失败
 
+    //首页
+    'home.page': 'Home page',//首页
+
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
     'user.title': 'Users',//用户管理

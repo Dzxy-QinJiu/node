@@ -7,6 +7,15 @@ const MODULE_PATH = 'modules/';
 
 let routers = [
     {
+        id: 'HOME_PAGE', //唯一标识，首页
+        name: 'menu.home.page',//首页
+        routePath: '/home',
+        isNotShow: 'true',//不在菜单中展示
+        component: `${MODULE_PATH}home_page/public`,
+        //有这个权限，才显示入口图标
+        showPrivileges: ['USER_INFO_USER']
+    },
+    {
         id: 'CRM',
         name: 'call.record.customer',//客户
         routePath: '/crm',
