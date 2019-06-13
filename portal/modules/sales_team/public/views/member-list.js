@@ -92,8 +92,6 @@ const MemberList = createReactClass({
             isSavingTeamGoal: false, //正在保存团队目标
             isSavingMemberGoal: false,//正在保存个人目标
             selectedRowKeys: [], // 选中的行
-            isShowAddMemberOperateBtn: false, // 点击添加成员时，显示相应的操作
-            isShowEditMemberOperateBtn: false, // 选择table中的行时，显示编辑相应的操作
         };
     },
 
@@ -186,10 +184,12 @@ const MemberList = createReactClass({
         if (this.state.teamConfirmVisible || this.state.memberConfirmVisible) {
             return;
         }
-        this.setState({
-            isShowAddMemberOperateBtn: true, // 添加成员
-            isShowEditMemberOperateBtn: false // 编辑团队成员
-        });
+
+        if (!this.props.isAddMember) {
+            this.resetAddMemberList();
+            SalesTeamAction.getIsAddMember();
+            this.cleanSearchInput();
+        }
     },
 
     editMember() {
@@ -197,10 +197,11 @@ const MemberList = createReactClass({
         if (this.state.teamConfirmVisible || this.state.memberConfirmVisible) {
             return;
         }
-        this.setState({
-            isShowAddMemberOperateBtn: false,
-            isShowEditMemberOperateBtn: true
-        });
+        if (!this.props.isEditMember) {
+            this.resetCurShowTeamMemberObj();
+            SalesTeamAction.getIsEditMember();
+            this.cleanSearchInput();
+        }
     },
 
     //确认的处理
@@ -209,10 +210,10 @@ const MemberList = createReactClass({
         if (this.state.teamConfirmVisible || this.state.memberConfirmVisible) {
             return;
         }
-        if (this.state.isShowAddMemberOperateBtn) {
+        if (this.props.isAddMember) {
             Trace.traceEvent(e, '保存添加团队成员的修改');
             this.saveAddMember();
-        } else {
+        } else if (this.props.isEditMember) {
             Trace.traceEvent(e, '保存编辑团队成员的修改');
             this.saveEditMember();
         }
@@ -224,14 +225,18 @@ const MemberList = createReactClass({
         if (this.state.teamConfirmVisible || this.state.memberConfirmVisible) {
             return;
         }
-        if (this.state.isShowAddMemberOperateBtn) {
+        //如果有确认保存的提示框，应先保存或取消保存后再进行操作
+        if (this.state.teamConfirmVisible || this.state.memberConfirmVisible) {
+            return;
+        }
+        if (this.props.isAddMember) {
             this.setState({
                 selectedRowKeys: [],
-                isShowAddMemberOperateBtn: false
             });
+            SalesTeamAction.cancelAddMember();
             this.resetAddMemberList();
             Trace.traceEvent(e, '取消添加团队成员的修改');
-        } else {
+        } else if (this.props.isEditMember) {
             this.setState({
                 selectedRowKeys: [],
             });
@@ -274,7 +279,6 @@ const MemberList = createReactClass({
         this.setState({
             saveMemberListObj: saveMemberListObj,
             selectedRowKeys: [],
-            isShowEditMemberOperateBtn: false
         });
         this.cleanSearchInput();
     },
@@ -299,7 +303,6 @@ const MemberList = createReactClass({
             this.setState({
                 saveMemberListObj: saveMemberListObj,
                 selectedRowKeys: [],
-                isShowAddMemberOperateBtn: false
             });
             this.cleanSearchInput();
         }
@@ -415,7 +418,7 @@ const MemberList = createReactClass({
             selectedRowKeys: selectedRowKeys
         });
         if (selectedRowKeys.length) {
-            if (!this.state.isShowAddMemberOperateBtn) {
+            if (!this.props.isAddMember) {
                 this.editMember();
             }
         }
@@ -439,7 +442,6 @@ const MemberList = createReactClass({
         let height = this.state.memberListHeight - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
         let tableHeight = height - tableHeadHeight;
         let operationZoneWidth = this.props.salesTeamMemberWidth;
-        let isShowAddMemberOperateBtn = this.state.isShowAddMemberOperateBtn;
         return (
             <div className="member-table-container" style={{height: this.state.memberListHeight}}>
                 {
@@ -449,11 +451,11 @@ const MemberList = createReactClass({
                                 {Intl.get('member.selected.member.count', '已选{count}', {count: hasSelected})}
                             </span>
                             {
-                                isShowAddMemberOperateBtn ? this.renderAddBtns()
+                                this.props.isAddMember ? this.renderAddBtns()
                                     : null
                             }
                             {
-                                this.state.isShowEditMemberOperateBtn ? this.renderEditBtns() : null
+                                this.props.isEditMember ? this.renderEditBtns() : null
                             }
                         </div>
                     ) : (
@@ -594,7 +596,6 @@ const MemberList = createReactClass({
         this.setState({
             saveMemberListObj: delObj,
             selectedRowKeys: [],
-            isShowAddMemberOperateBtn: false
         });
         this.cleanSearchInput();
     },
@@ -646,7 +647,6 @@ const MemberList = createReactClass({
             MemberListEditAction.editMember(editObj);
             this.setState({
                 saveMemberListObj: editObj,
-                isShowEditMemberOperateBtn: false,
                 selectedRowKeys: [],
                 curShowTeamMemberObj: curShowTeamMemberObj
             });
@@ -693,7 +693,6 @@ const MemberList = createReactClass({
         MemberListEditAction.editMember(editObj);
         this.setState({
             saveMemberListObj: editObj,
-            isShowEditMemberOperateBtn: false,
             selectedRowKeys: []
         });
 
@@ -743,7 +742,6 @@ const MemberList = createReactClass({
         MemberListEditAction.editMember(editObj);
         this.setState({
             saveMemberListObj: editObj,
-            isShowEditMemberOperateBtn: false,
             selectedRowKeys: []
         });
     },
@@ -798,7 +796,6 @@ const MemberList = createReactClass({
         });
         return (
             <div className="set-select-member-btns">
-                {this.renderSaveMsg()}
                 <div
                     id="set-owner-btn"
                     className={addOwnerBtnCls}
@@ -847,7 +844,7 @@ const MemberList = createReactClass({
         return saveResult ?
             (<div className="indicator">
                 <AlertTimer
-                    time={saveResult === 'error' ? 30000000 : 60000000}
+                    time={saveResult === 'error' ? 3000 : 600}
                     message={this.state.saveMemberListMsg}
                     type={saveResult} showIcon
                     onHide={this.hideSaveTooltip}/>
@@ -878,7 +875,7 @@ const MemberList = createReactClass({
             addMemberList = _.filter(addMemberList, item => item.userName.indexOf(searchValue) !== -1 || item.nickName.indexOf(searchValue) !== -1);
         }
         let flag = 'add';
-        if (this.state.isShowAddMemberOperateBtn) { // 显示添加成员的数据
+        if (this.props.isAddMember) { // 显示添加成员的数据
             return (
                 <div className="sales-team-member-add-container">
                     <div
@@ -898,7 +895,7 @@ const MemberList = createReactClass({
                     </div>
                 </div>
             );
-        } else if (this.state.isShowEditMemberOperateBtn) {
+        } else if (this.props.isEditMember) {
             return (
                 <div className="sales-team-member-edit-container">
                     <div
@@ -1240,7 +1237,7 @@ const MemberList = createReactClass({
                         </PrivilegeChecker>
                     </div>
                     {
-                        this.state.isShowAddMemberOperateBtn ? (
+                        this.props.isAddMember ? (
                             <div className='pull-right'>
                                 <div className="search-input-block btn-item">
                                     <SearchInput
@@ -1264,7 +1261,7 @@ const MemberList = createReactClass({
                         <div className="member-list-edit-block">
                             <Spinner className="isloading"/>
                         </div>
-                    ) : null
+                    ) : this.renderSaveMsg()
                 }
                 {this.props.rightPanelShow ? (
                     <MemberInfo
