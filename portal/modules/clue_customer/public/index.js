@@ -1768,6 +1768,7 @@ class ClueCustomer extends React.Component {
                             addOne={this.hideAddCustomerPanel}
                             formData={this.state.curClue}
                             isAssociateClue={true}
+                            isConvert={true}
                             phoneNum={_.get(this.state, 'curClue.contact_way', '')}
                             isShowMadal={false}
                         />

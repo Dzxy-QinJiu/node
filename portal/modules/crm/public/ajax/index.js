@@ -42,14 +42,14 @@ exports.editSecondSales = function(submitObj) {
 
 //通过线索添加客户
 let addCustomerByClueAjax = null;
-exports.addCustomerByClue = function(newCus) {
+exports.addCustomerByClue = function(newCus, isConvert) {
     var reqBody = _.cloneDeep(newCus);
     var clueId = newCus.clue_id;
     delete reqBody.clue_id;
     var Deferred = $.Deferred();
     addCustomerByClueAjax && addCustomerByClueAjax.abort();
     addCustomerByClueAjax = $.ajax({
-        url: '/rest/crm/add_customer_by_clue' + `?clueId=${clueId}`,
+        url: '/rest/crm/add_customer_by_clue' + `?clueId=${clueId}&is_convert=${isConvert}`,
         dataType: 'json',
         type: 'post',
         data: reqBody,
