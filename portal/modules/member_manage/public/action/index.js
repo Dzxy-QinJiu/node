@@ -28,10 +28,12 @@ class MemberManageAction {
     }
 
     // 获取成员列表
-    getMemberList(searchObj) {
+    getMemberList(searchObj, cb) {
         this.dispatch({loading: true, error: false});
         MemberManageAjax.getMemberList(searchObj).then( (result) => {
+            let memberTotal = _.get(result, 'list_size', 0);
             this.dispatch({loading: false, resData: result, error: false});
+            cb(memberTotal);
         }, (errorMsg) => {
             this.dispatch({loading: false, errorMsg: errorMsg, error: true});
         } );

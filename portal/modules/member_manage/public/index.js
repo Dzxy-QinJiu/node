@@ -54,8 +54,9 @@ class MemberManage extends React.Component {
             status: _.get(queryParams, 'status', this.state.status), // 成员状态
             id: _.get(queryParams, 'id', ''), // 下拉加载最后一条的id
         };
-        MemberManageAction.getMemberList(queryObj);
-        this.props.getMemberCount(this.state.memberTotal);
+        MemberManageAction.getMemberList(queryObj, (memberTotal) => {
+            this.props.getMemberCount(memberTotal);
+        });
     };
 
     componentWillUnmount = () => {

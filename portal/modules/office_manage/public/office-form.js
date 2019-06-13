@@ -54,7 +54,6 @@ class OfficeForm extends React.Component{
                     loading: false
                 });
                 if (result) {
-                    console.log('formData:',formData);
                     this.props.handleSubmit(formData, 'edit');
                 } else {
                     this.setState({

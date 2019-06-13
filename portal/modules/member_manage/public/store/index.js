@@ -135,7 +135,6 @@ class MemberManageStore {
     }
     // 返回详细信息展示页
     returnInfoPanel(newMember) {
-        console.log('newMember:',newMember);
         if (_.get(newMember, 'id')) {
             //添加完成员返回详情页的处理
             let rolesIds = _.get(newMember, 'roleIds');
