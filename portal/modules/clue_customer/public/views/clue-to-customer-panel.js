@@ -13,19 +13,22 @@ class ClueToCustomerPanel extends React.Component {
     static defaultProps = {
         //面板是否显示
         showFlag: false,
-        //关闭面板按钮点击事件
-        hidePanel: noop,
         //当前线索
         clue: {},
         //已存在的客户
-        existingCustomers: []
+        existingCustomers: [],
+        //关闭面板按钮点击事件
+        hidePanel: noop,
+        //显示添加客户面板
+        showAddCustomerPanel: noop
     };
 
     static propTypes = {
         showFlag: PropTypes.bool,
-        hidePanel: PropTypes.func,
         clue: PropTypes.object,
-        existingCustomers: PropTypes.array
+        existingCustomers: PropTypes.array,
+        hidePanel: PropTypes.func,
+        showAddCustomerPanel: PropTypes.func
     };
 
     constructor(props) {
@@ -281,7 +284,7 @@ class ClueToCustomerPanel extends React.Component {
 
                 <div className="btn-block">
                     <Button onClick={this.props.hidePanel}>{Intl.get('common.cancel', '取消')}</Button>
-                    <Button type="primary">{Intl.get('common.convert.to.new.customer', '转为新客户')}</Button>
+                    <Button type="primary" onClick={this.props.showAddCustomerPanel}>{Intl.get('common.convert.to.new.customer', '转为新客户')}</Button>
                 </div>
             </div>
         );

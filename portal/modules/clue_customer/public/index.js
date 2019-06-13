@@ -1015,13 +1015,16 @@ class ClueCustomer extends React.Component {
     //隐藏线索转客户面板
     hideClueToCustomerPanel = () => {
         this.setState({isShowClueToCustomerPanel: false});
-        clueCustomerAction.setCurrentCustomer('');
+    };
+
+    //显示添加客户面板
+    showAddCustomerPanel = () => {
+        this.setState({isShowAddCustomerPanel: true});
     };
 
     //隐藏添加客户面板
     hideAddCustomerPanel = () => {
         this.setState({isShowAddCustomerPanel: false});
-        clueCustomerAction.setCurrentCustomer('');
     };
 
     setInvalidClassName= (record, index) => {
@@ -1756,6 +1759,7 @@ class ClueCustomer extends React.Component {
                         clue={this.state.curClue}
                         existingCustomers={this.state.existingCustomers}
                         hidePanel={this.hideClueToCustomerPanel}
+                        showAddCustomerPanel={this.showAddCustomerPanel}
                     />
 
                     {this.state.isShowAddCustomerPanel ? (
