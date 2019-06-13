@@ -12,18 +12,17 @@ function SalesTeamMemberAction() {
     );
 
     this.addMember = function(obj) {
-        var _this = this;
-        SalesTeamAjax.addMember(obj).then(function(data) {
+        SalesTeamAjax.addMember(obj).then( (data) => {
             if (data) {
-                _this.dispatch({saveResult: 'success', saveMsg: Intl.get('common.save.success', '保存成功')});
+                this.dispatch({saveResult: 'success', saveMsg: Intl.get('common.save.success', '保存成功')});
 
             } else {
-                _this.dispatch({saveResult: 'error', saveMsg: Intl.get('common.save.failed', '保存失败')});
+                this.dispatch({saveResult: 'error', saveMsg: Intl.get('common.save.failed', '保存失败')});
             }
 
-        }, function(errorMsg) {
+        }, (errorMsg) => {
             //保存失败后的处理
-            _this.dispatch({saveResult: 'error', saveMsg: errorMsg || Intl.get('common.save.failed', '保存失败')});
+            this.dispatch({saveResult: 'error', saveMsg: errorMsg || Intl.get('common.save.failed', '保存失败')});
         });
     };
 

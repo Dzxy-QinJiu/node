@@ -169,53 +169,6 @@ const MemberList = createReactClass({
         }
     },
 
-    selectMember(salesTeamMember) {
-        if (this.props.isAddMember) {
-            this.state.addMemberList.forEach(function(member) {
-                if (member && (member.userId === salesTeamMember.userId)) {
-                    member.selected = !member.selected;
-                }
-            });
-            this.setState({
-                addMemberList: this.state.addMemberList
-            });
-        } else {
-            //删除、编辑
-            let curShowTeamMemberObj = this.state.curShowTeamMemberObj;
-            //负责人存在
-            if (curShowTeamMemberObj.owner && curShowTeamMemberObj.owner.userId === salesTeamMember.userId) {
-                curShowTeamMemberObj.owner.selected = !curShowTeamMemberObj.owner.selected;
-                this.setState({curShowTeamMemberObj: curShowTeamMemberObj});
-                return;
-            }
-            //秘书存在
-            if (_.isArray(curShowTeamMemberObj.managers) && curShowTeamMemberObj.managers.length > 0) {
-                var findManager = false;
-                _.some(curShowTeamMemberObj.managers, function(member) {
-                    if (member && (member.userId === salesTeamMember.userId)) {
-                        member.selected = !member.selected;
-                        findManager = true;
-                        return findManager;
-                    }
-                });
-                if (findManager) {
-                    this.setState({curShowTeamMemberObj: curShowTeamMemberObj});
-                    return;
-                }
-            }
-            //成员存在
-            if (_.isArray(curShowTeamMemberObj.users) && curShowTeamMemberObj.users.length > 0) {
-                _.some(curShowTeamMemberObj.users, function(member) {
-                    if (member && (member.userId === salesTeamMember.userId)) {
-                        member.selected = !member.selected;
-                        return true;
-                    }
-                });
-                this.setState({curShowTeamMemberObj: curShowTeamMemberObj});
-            }
-        }
-    },
-
     //还原团队成员对象
     resetCurShowTeamMemberObj: function() {
         this.setState({
@@ -1311,7 +1264,7 @@ const MemberList = createReactClass({
                         <div className="member-list-edit-block">
                             <Spinner className="isloading"/>
                         </div>
-                    ) : ''
+                    ) : null
                 }
                 {this.props.rightPanelShow ? (
                     <MemberInfo

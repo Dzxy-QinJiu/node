@@ -1,9 +1,8 @@
 /**
  * Created by xiaojinfeng on 2016/04/08.
  */
-let React = require('react');
+const React = require('react');
 require('./css/index.less');
-require('./css/sales-team.less');
 import {Icon,Input,Button,Tabs} from 'antd';
 const TabPane = Tabs.TabPane;
 let SalesTeamStore = require('./store/sales-team-store');
@@ -18,8 +17,6 @@ let SalesTeamAjax = require('./ajax/sales-team-ajax');
 import OfficeManage from '../../office_manage/public';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import MemberManage from '../../member_manage/public';
-let topHeight = 87; // 22 + 65 : 添加按钮高度+顶部导航高度
-let bootomHeight = 20; //距离底部高度
 
 let CONSTANT = {
     SALES_TEAM_IS_NULL: 'sales-team-is-null',//没有团队时的提示信息
