@@ -97,6 +97,8 @@ class ClueToCustomerPanel extends React.Component {
 
         //合并后的客户
         let mergedCustomer = _.cloneDeep(this.state.toMergeCustomer);
+        let contactsToModify = _.cloneDeep(this.state.contactsToModify);
+        let contactsToAdd = _.cloneDeep(this.state.contactsToAdd);
 
         //遍历客户联系人
         _.each(mergedCustomer.contacts, customerContact => {
@@ -111,8 +113,14 @@ class ClueToCustomerPanel extends React.Component {
                 if (clueContact.name === customerContact.name) {
                     //将客户联系人的电话设置为去重后的电话合集
                     customerContact.phone = uniqPhone;
-                    //将该客户联系人标记为重复联系人
-                    customerContact.isDup = true;
+                    //将该客户联系人标记为需要更新电话
+                    customerContact.modifyField = 'phone';
+                    //设置客户id
+                    customerContact.customer_id = mergedCustomer.id;
+
+                    //加入需要更新的联系人列表
+                    contactsToModify.push(customerContact);
+
                     //将该线索联系人标记为重复联系人
                     clueContact.isDup = true;
 
@@ -140,13 +148,23 @@ class ClueToCustomerPanel extends React.Component {
         });
 
         //和客户联系人的名称及电话都不重复的线索联系人
-        const noneDupClueContacts = _.filter(clue.contacts, clueContact => !clueContact.isDup);
+        let noneDupClueContacts = _.filter(clue.contacts, clueContact => !clueContact.isDup);
+
+        //添加客户id
+        _.each(noneDupClueContacts, noneDupClueContact => {
+            noneDupClueContact.customer_id = mergedCustomer.id;
+        });
 
         //将这些不重复的联系人合并到客户联系人
         mergedCustomer.contacts = _.concat(mergedCustomer.contacts, noneDupClueContacts);
 
+        //将这些不重复的联系人合并到要添加的联系人列表
+        contactsToAdd = _.concat(contactsToAdd, noneDupClueContacts);
+
         this.setState({
             mergedCustomer,
+            contactsToModify,
+            contactsToAdd,
             isMergeCustomerBlockShow: true,
         });
     }
