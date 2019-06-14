@@ -35,8 +35,6 @@ class ClueToCustomerPanel extends React.Component {
         super(props);
 
         this.state = {
-            //是否显示替换联系人名称对话框
-            isReplaceContactNameDialogShow: false,
             //合并到客户的操作区块是否显示
             isMergeCustomerBlockShow: false,
             //要合并到的客户
@@ -45,8 +43,6 @@ class ClueToCustomerPanel extends React.Component {
             mergedCustomer: {},
             //要操作的联系人的索引
             opContactIndex: -1,
-            //要替换成的联系人名称
-            replaceName: '',
             //要操作的电话的索引
             opPhoneIndex: -1,
             //要操作的电话
@@ -67,29 +63,14 @@ class ClueToCustomerPanel extends React.Component {
 
     //替换联系人名称按钮点击事件
     onReplaceContactNameClick = (contactIndex, replaceName) => {
-        this.setState({
-            isReplaceContactNameDialogShow: true,
-            opContactIndex: contactIndex,
-            replaceName
-        });
-    }
-
-    //隐藏替换联系人名称对话框
-    hideReplaceContactNameDialog = () => {
-        this.setState({
-            isReplaceContactNameDialogShow: false
-        });
-    }
-
-    //替换联系人名称对话框确定按钮点击事件
-    onReplaceContactNameDialogConfirm = () => {
         let mergedCustomer = _.cloneDeep(this.state.mergedCustomer);
 
-        _.set(mergedCustomer, 'contacts[' + this.state.opContactIndex + '].name', this.state.replaceName);
+        //替换联系人名称
+        mergedCustomer.contacts[contactIndex].name = replaceName;
+        delete mergedCustomer.contacts[contactIndex].replaceName;
 
         this.setState({
-            mergedCustomer,
-            isReplaceContactNameDialogShow: false,
+            mergedCustomer
         });
     }
 
@@ -307,12 +288,20 @@ class ClueToCustomerPanel extends React.Component {
                                 <Col span={20}>
                                     {contact.name}
                                     {contact.replaceName ? (
-                                        <span
-                                            className="is-replace-contract-name clickable"
-                                            onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
-                                        >
-                                            是否替换为“{contact.replaceName}”
-                                        </span>
+                                        <div>
+                                            修改姓名为“{contact.replaceName}”？
+                                            <Button
+                                                type="primary"
+                                                onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
+                                            >
+                                            确认修改
+                                            </Button>
+                                            <Button
+                                                onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
+                                            >
+                                            不修改
+                                            </Button>
+                                        </div>
                                     ) : null}
                                 </Col>
                             </Row>
@@ -342,19 +331,6 @@ class ClueToCustomerPanel extends React.Component {
                     <Button type="primary">{Intl.get('common.sure', '确定')}</Button>
                 </div>
             </div>
-        );
-    }
-
-    //渲染是否替换联系人名称对话框
-    renderReplaceContactNameDialog() {
-        return (
-            <ModalDialog
-                modalContent={`是否将联系人名称替换为"${this.state.replaceName}"?`}
-                modalShow={this.state.isReplaceContactNameDialogShow}
-                container={this}
-                hideModalDialog={this.hideReplaceContactNameDialog}
-                delete={this.onReplaceContactNameDialogConfirm}
-            />
         );
     }
 
@@ -391,7 +367,6 @@ class ClueToCustomerPanel extends React.Component {
                     </div>
                 </div>
 
-                {this.renderReplaceContactNameDialog()}
                 {this.renderDeletePhoneDialog()}
             </RightPanel>
         );
