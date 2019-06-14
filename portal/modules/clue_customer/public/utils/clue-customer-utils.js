@@ -103,6 +103,8 @@ export const getClueStatusValue = (filterClueStatus) => {
     });
     if (targetObj){
         typeFilter['status'] = targetObj.value;
+    }else{
+        typeFilter['status'] = '';
     }
     return typeFilter;
 };

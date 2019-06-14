@@ -28,6 +28,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+const EDIT_FEILD_WIDTH = 300;
 import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-field';
 class ClueDetailOverview extends React.Component {
     state = {
@@ -676,6 +677,7 @@ class ClueDetailOverview extends React.Component {
                     </div>
                     <div className="clue-info-detail">
                         <BasicEditInputField
+                            width={EDIT_FEILD_WIDTH}
                             hasEditPrivilege={hasPrivilegeAddEditTrace}
                             id={curClue.id}
                             saveEditInput={this.saveTraceContentInfo}
@@ -690,7 +692,6 @@ class ClueDetailOverview extends React.Component {
                             noDataTip={Intl.get('clue.no.trace.content', '暂无跟进')}
                             addDataTip={Intl.get('clue.add.trace.content', '添加跟进内容')}
                             placeholder={Intl.get('sales.home.fill.in.trace.content', '请输入跟进内容')}
-                            hasMoreRow={true}
                         />
                     </div>
                 </div>
@@ -731,6 +732,7 @@ class ClueDetailOverview extends React.Component {
         var curClue = this.state.curClue;
         //是否有权限修改线索详情
         var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER');
+
         return (
             <div className="clue-info-wrap clue-detail-block">
                 <div className="clue-basic-info">
@@ -740,6 +742,7 @@ class ClueDetailOverview extends React.Component {
                         </div>
                         <div className="clue-info-detail">
                             <DatePickerField
+                                width={EDIT_FEILD_WIDTH}
                                 hasEditPrivilege={hasPrivilegeEdit}
                                 id={curClue.id}
                                 saveEditDateInput={this.saveEditBasicInfo.bind(this, 'source_time')}
@@ -755,6 +758,7 @@ class ClueDetailOverview extends React.Component {
                         </div>
                         <div className="clue-info-detail">
                             <BasicEditInputField
+                                width={EDIT_FEILD_WIDTH}
                                 hasEditPrivilege={hasPrivilegeEdit}
                                 id={curClue.id}
                                 saveEditInput={this.saveEditBasicInfo.bind(this, 'source')}
@@ -774,6 +778,7 @@ class ClueDetailOverview extends React.Component {
                         </div>
                         <div className="clue-info-detail">
                             <BasicEditSelectField
+                                width={EDIT_FEILD_WIDTH}
                                 combobox={true}
                                 hasEditPrivilege={hasPrivilegeEdit}
                                 id={curClue.id}
@@ -822,6 +827,7 @@ class ClueDetailOverview extends React.Component {
                         </div>
                         <div className="clue-info-detail">
                             <BasicEditSelectField
+                                width={EDIT_FEILD_WIDTH}
                                 combobox={true}
                                 hasEditPrivilege={hasPrivilegeEdit}
                                 id={curClue.id}
@@ -844,6 +850,7 @@ class ClueDetailOverview extends React.Component {
                         </div>
                         <div className="clue-info-detail">
                             <BasicEditSelectField
+                                width={EDIT_FEILD_WIDTH}
                                 combobox={true}
                                 hasEditPrivilege={hasPrivilegeEdit}
                                 id={curClue.id}
@@ -861,26 +868,26 @@ class ClueDetailOverview extends React.Component {
                         </div>
                     </div>
                     <div className="clue-info-item">
-                        <div className="clue-info-label">
-                            {Intl.get('crm.5', '联系方式')}：
-                        </div>
-                        <div className="clue-info-detail clue-contact-container">
+                        <div className="clue-contact-container">
                             {_.map(curClue.contacts, (contactItem) => {
                                 return (
                                     <div className="contact-item">
-                                        <div className="contact-name">
-                                            <BasicEditInputField
-                                                hasEditPrivilege={hasPrivilegeEdit}
-                                                id={curClue.id}
-                                                saveEditInput={this.saveEditBasicInfo.bind(this, {editItem: 'contact_name',id: contactItem.id})}
-                                                value={contactItem.name}
-                                                field='contact_name'
-                                                noDataTip={Intl.get('common.unknown', '未知')}
-                                                addDataTip={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
-                                                placeholder={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
-                                                hasMoreRow={true}
-                                                validators={contactNameRule()}
-                                            />
+                                        <div className="contact-item-content contact-name">
+                                            <span className="clue-info-label">{Intl.get('call.record.contacts', '联系人')}:</span>
+                                            <div className="clue-info-detail">
+                                                <BasicEditInputField
+                                                    width={EDIT_FEILD_WIDTH}
+                                                    hasEditPrivilege={hasPrivilegeEdit}
+                                                    id={curClue.id}
+                                                    saveEditInput={this.saveEditBasicInfo.bind(this, {editItem: 'contact_name',id: contactItem.id})}
+                                                    value={contactItem.name}
+                                                    field='contact_name'
+                                                    noDataTip={Intl.get('common.unknown', '未知')}
+                                                    addDataTip={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
+                                                    placeholder={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
+                                                    validators={contactNameRule()}
+                                                />
+                                            </div>
                                         </div>
                                         <div className="contact-item-content">
                                             <DynamicAddDelField
@@ -896,6 +903,8 @@ class ClueDetailOverview extends React.Component {
                                                 addDataTip={Intl.get('crm.contact.phone.add', '添加电话')}
                                                 contactName={contactItem.name}
                                             />
+                                        </div>
+                                        <div className="contact-item-content">
                                             <DynamicAddDelField
                                                 id={curClue.id}
                                                 field='qq'
@@ -981,7 +990,6 @@ class ClueDetailOverview extends React.Component {
                             this.renderAssigendClueText() : this.renderAssignedClueEdit()
                         }
                     </div>
-                    {this.renderTraceContent()}
                     <div className="associate-customer-detail clue-detail-block">
                         {/*线索处理，没有关联到客户并且线索不是无效的*/}
                         {

@@ -209,7 +209,7 @@ ClueCustomerStore.prototype.afterAddSalesClue = function(updateObj) {
     this.curClueLists = _.filter(this.curClueLists, customer => customer.id !== newCustomer.id);
     var filterClueStatus = clueFilterStore.getState().filterClueStatus;
     var typeFilter = getClueStatusValue(filterClueStatus);
-    //只有筛选状态是待分配，并且筛选时间是今天的时候，才把这个新增客户加到列表中
+    //只有筛选状态是待分配 或者 没有选分配状态的时候，并且筛选时间是今天的时候，才把这个新增客户加到列表中
     if (filterClueStatus && typeFilter){
         if (((typeFilter.status === '0' || typeFilter.status === '')) && clueFilterStore.getState().rangeParams[0].from <= newCustomer.start_time && newCustomer.start_time <= clueFilterStore.getState().rangeParams[0].to){
             this.curClueLists.unshift(newCustomer);
@@ -305,6 +305,23 @@ ClueCustomerStore.prototype.deleteClueById = function(data) {
 ClueCustomerStore.prototype.updateClueCustomers = function(data) {
     this.curClueLists = data;
     this.customersSize = _.get(this,'curClueLists.length');
+};
+//添加跟进记录时，修改客户最新的跟进记录时，更新列表中的最后联系
+ClueCustomerStore.prototype.updateCustomerLastContact = function(traceObj) {
+    if (_.get(traceObj, 'lead_id')) {
+        let updateTraceCustomer = _.find(this.curClueLists, curClue => curClue.id === traceObj.lead_id);
+        if (updateTraceCustomer) {
+            if (_.get(updateTraceCustomer, 'customer_traces[0]')) {
+                updateTraceCustomer.customer_traces[0].remark = traceObj.remark;
+                updateTraceCustomer.customer_traces[0].add_time = traceObj.time;
+            } else {
+                updateTraceCustomer.customer_traces = [{remark: traceObj.remark,add_time: traceObj.time}];
+            }
+        }
+        if (traceObj.remark){
+            updateTraceCustomer.status = SELECT_TYPE.HAS_TRACE;
+        }
+    }
 };
 
 module.exports = alt.createStore(ClueCustomerStore, 'ClueCustomerStore');

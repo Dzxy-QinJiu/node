@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2017/10/16.
  */
 var clueCustomerAjax = require('../ajax/clue-customer-ajax');
+var clueTraceAjax = require('../ajax/clue-trace-ajax');
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 import {handleSubmitClueItemData} from '../utils/clue-customer-utils';
 function ClueCustomerActions() {
@@ -31,7 +32,9 @@ function ClueCustomerActions() {
         'setKeyWord',//设置关键字
         'setLastClueId',//用于设置下拉加载的最后一个线索的id
         'setSortField',
-        'updateClueCustomers'//更新线索列表
+        'updateClueCustomers',//更新线索列表
+        //添加、补充跟进记录后，列表中最后联系数据的更新
+        'updateCustomerLastContact'
     );
     //获取销售列表
     this.getSalesManList = function(cb) {
@@ -47,7 +50,7 @@ function ClueCustomerActions() {
     //添加或更新跟进内容
     this.addCluecustomerTrace = function(submitObj,callback) {
         this.dispatch({error: false, loading: true});
-        clueCustomerAjax.addCluecustomerTrace(submitObj).then((result) => {
+        clueTraceAjax.addClueTrace(submitObj).then((result) => {
             this.dispatch({error: false, loading: false, submitTip: result});
             _.isFunction(callback) && callback({error: false});
         },(errorMsg) => {

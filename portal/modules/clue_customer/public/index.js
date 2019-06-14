@@ -117,8 +117,36 @@ class ClueCustomer extends React.Component {
         this.setState({ tableHeight});
     };
     componentWillReceiveProps(nextProps) {
-        if (_.get(nextProps,'history.action') === 'PUSH'){
-            if(_.get(nextProps,'location.state.clickUnhandleNum')){
+        if (_.get(nextProps,'history.action') === 'PUSH' && _.get(nextProps,'location.state.clickUnhandleNum')){
+
+            var filterStoreData = clueFilterStore.getState();
+            var checkAllotNoTraced = filterStoreData.filterAllotNoTraced === '0';//待我审批
+            var checkedAdvance = false;//在高级筛选中是否有其他的选中项
+            var checkOtherData = _.get(this,'filterPanel.filterList.props.advancedData',[]);//线索状态
+            if (filterStoreData.filterClueAvailability === '1'){
+                //是否选中线索无效的标签
+                checkedAdvance = true;
+            }
+            if (!checkedAdvance){
+                _.forEach(checkOtherData,(group) => {
+                    var target = _.find(group.data, item => item.selected);
+                    if (target){
+                        checkedAdvance = true;
+                        return;
+                    }
+                });
+            }
+            if (!checkedAdvance){
+                var filterItem = ['filterClueAccess','filterClueClassify','filterClueProvince','filterClueSource'];//高级筛选的其他选项
+                _.forEach(filterItem,(itemName) => {
+                    if (_.get(filterStoreData,`[${itemName}].length`)){
+                        checkedAdvance = true;
+                        return;
+                    }
+                });
+            }
+            //点击数字进行跳转时，如果当前选中的条件只是待我审批的条件，那么就不需要清空数据,如果当前选中的除了待我审批的，还有其他的条件，就需要把数据进行情况  checkAllotNoTraced： 选中了待我审批  checkedAdvance： 还有其他筛选项
+            if((!checkAllotNoTraced || (checkAllotNoTraced && checkedAdvance))){
                 delete nextProps.location.state.clickUnhandleNum;
                 clueCustomerAction.setClueInitialData();
                 this.getUnhandledClue();
@@ -541,6 +569,10 @@ class ClueCustomer extends React.Component {
         this.setState({
             isEdittingItem: updateItem,
             submitContent: this.getSubmitContent(updateItem)
+        }, () => {
+            if (this['changeTextare' + updateItem.id]) {
+                this['changeTextare' + updateItem.id].focus();
+            }
         });
     };
     handleInputChange = (e) => {
@@ -571,7 +603,8 @@ class ClueCustomer extends React.Component {
             });
         } else {
             var submitObj = {
-                'customer_id': item.id,
+                'lead_id': item.id,
+                'type': 'other',
                 'remark': textareVal
             };
             this.setState({
@@ -644,7 +677,7 @@ class ClueCustomer extends React.Component {
                         />
                     </div>
                 ) : null}
-                <TextArea type='textarea' value={this.state.submitContent}
+                <TextArea ref={changeTextare => this['changeTextare' + salesClueItem.id] = changeTextare} type='textarea' value={this.state.submitContent}
                     placeholder={Intl.get('sales.home.fill.in.trace.content', '请输入跟进内容')}
                     onChange={this.handleInputChange}/>
                 <div className="save-cancel-btn">
@@ -660,30 +693,19 @@ class ClueCustomer extends React.Component {
         );
     };
     renderShowTraceContent = (salesClueItem) => {
-        let user = userData.getUserData();
-        let member_id = user.user_id || '';
         var traceContent = _.get(salesClueItem, 'customer_traces[0].remark', '');//该线索的跟进内容
         var traceAddTime = _.get(salesClueItem, 'customer_traces[0].add_time');//跟进时间
-        var tracePersonId = _.get(salesClueItem, 'customer_traces[0].user_id', '');//跟进人的id
-        var tracePersonName = _.get(salesClueItem, 'customer_traces[0].nick_name', '');//跟进人的名字
-        var handlePersonName = _.get(salesClueItem,'user_name');//当前跟进人
-        //是否有添加跟进记录的权限
-        var hasPrivilegeAddEditTrace = hasPrivilege('CLUECUSTOMER_ADD_TRACE');
         return (
             <div className="foot-text-content" key={salesClueItem.id}>
                 {/*有跟进记录*/}
                 {traceContent ?
                     <div className="record-trace-container">
                         <ShearContent>
-                            <span>{traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : ''}</span>
+                            <span className="trace-time">{traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : ''}</span>
                             <span>
-                                <span className="trace-author">
-                                    <span className="trace-name">{tracePersonId === member_id ? Intl.get('sales.home.i.trace', '我') : tracePersonName} </span>
-                                </span>
-                                {Intl.get('clue.add.trace.follow', '跟进') + ':' + traceContent}
+                                {traceContent}
                             </span>
                         </ShearContent>
-                        {hasPrivilegeAddEditTrace ? <i className="iconfont icon-edit-btn" onClick={this.handleEditTrace.bind(this, salesClueItem)}></i> : null}
                     </div>
                     : hasPrivilege('CLUECUSTOMER_ADD_TRACE') ?
                         <span className='add-trace-content'
@@ -838,11 +860,13 @@ class ClueCustomer extends React.Component {
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
                                 <ShearContent>
                                     <span>
-                                        <span>{moment(salesClueItem.source_time).format(oplateConsts.DATE_FORMAT)}</span>
-                                        <span className="clue-access-channel">{salesClueItem.access_channel ? '-' + salesClueItem.access_channel + ':' : ''}</span>
+                                        <span className="clue_source_time">{moment(salesClueItem.source_time).format(oplateConsts.DATE_FORMAT)}&nbsp;</span>
                                         <span>
-                                            {salesClueItem.source}
+                                            {salesClueItem.clue_source ? Intl.get('clue.item.source.from', '来自{source}',{source: salesClueItem.clue_source}) : null}
                                         </span>
+                                        {salesClueItem.clue_source && salesClueItem.source ? '，' : null}
+                                        <span>{salesClueItem.source ? Intl.get('clue.item.acceess.channel', '详情：“{content}”',{content: salesClueItem.source}) : null}</span>
+
                                     </span>
                                 </ShearContent>
                             </div>
@@ -1512,6 +1536,9 @@ class ClueCustomer extends React.Component {
     hasSelectedClues = () => {
         return _.get(this, 'state.selectedClues.length');
     };
+    updateCustomerLastContact = (item) => {
+        clueCustomerAction.updateCustomerLastContact(item);
+    };
     renderNotSelectClueBtns = () => {
         return (
             <div className="pull-right add-anlysis-handle-btns">
@@ -1618,6 +1645,7 @@ class ClueCustomer extends React.Component {
                             curClue={this.state.curClue}
                             ShowCustomerUserListPanel = {this.ShowCustomerUserListPanel}
                             hideRightPanel={this.hideRightPanel}
+                            updateCustomerLastContact={this.updateCustomerLastContact}
                         /> : null}
 
                     {this.state.clueAnalysisPanelShow ? <RightPanel

@@ -46,7 +46,14 @@ import NoDataIntro from 'CMP_DIR/no-data-intro';
 import IntegrateConfigView from './views/integrate-config/index';
 import TopNav from 'CMP_DIR/top-nav';
 import ImportUser from './views/import';
-import {CSV_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
+import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
+import userData from 'PUB_DIR/sources/user-data';
+
+const UPLOAD_USER_TIPS = {
+    EXIST: 'data exist', // （用户名、邮箱 ）已存在
+    ILLEGAL: 'data illegal', // （用户名、邮箱、手机号）不合法
+    UNEXIST: 'data unexist' // 客户名称不匹配
+};
 
 /*用户管理界面外层容器*/
 class AppUserManage extends React.Component {
@@ -600,26 +607,40 @@ class AppUserManage extends React.Component {
             }
         });
     };
+    // 获取登录用户的角色，只有管理员和销售有权限导入
+    // 管理员可以导入不匹配的客户，销售不可以导入匹配的客户
+    getLoginUserRole = () => {
+        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN); // 返回true，说明是管理员，否则是销售
+    };
     // 处理导入用户错误信息
     handleImportUserInfo = (errors, errorType) => {
+        let isManager = this.getLoginUserRole();
         let isError = _.find(errors, item => item.field === errorType);
         let cls = classNames({
             'repeat-item-name': isError && errorType !== 'customer_name',
-            'item-tips': isError && errorType === 'customer_name'
+            'item-tips': isError && errorType === 'customer_name' && isManager,
+            'sales-import-item-tips': isError && errorType === 'customer_name' && !isManager,
         });
         let tipsMessage = '';
         if (isError) {
             if (errorType === 'user_name') {
-                tipsMessage = isError.detail === 'data exist' ? 
+                tipsMessage = isError.detail === UPLOAD_USER_TIPS.EXIST ?
                     Intl.get('common.is.existed', '用户名已存在') : Intl.get('user.import.username.no.match.rule', '用户名不符合规则');
             } else if (errorType === 'phone') {
-                tipsMessage = isError.detail === 'data illegal' ? Intl.get('user.import.phone.no.match.rule', '手机号不符合规则') : '';
+                tipsMessage = isError.detail === UPLOAD_USER_TIPS.ILLEGAL ? Intl.get('user.import.phone.no.match.rule', '手机号不符合规则') : '';
             }else if (errorType === 'email') {
-                tipsMessage = isError.detail === 'data exist' ?
+                tipsMessage = isError.detail === UPLOAD_USER_TIPS.EXIST ?
                     Intl.get('common.email.is.existed', '邮箱已存在') : Intl.get('user.import.email.no.match.rule', '邮箱不符合规则');
             } else if (errorType === 'customer_name') {
-                tipsMessage = isError.detail === 'data unexist' ?
-                    Intl.get('user.import.customer.no.match', '系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。') : '';
+                if (isError.detail === UPLOAD_USER_TIPS.UNEXIST) {
+                    if (isManager) {
+                        tipsMessage = Intl.get('user.import.customer.no.match', '未找到用户所属客户，可能没有此客户或客户名不一致。您可以修改数据后再导入，或者直接导入，导入后手动添加所属客户');
+                    } else {
+                        tipsMessage = Intl.get('user.import.no.match.customer.tips', '未找到用户所属客户，可能没有此客户或客户名不一致，请修改数据后重新导入');
+                    }
+                } else {
+                    tipsMessage = Intl.get('user.import.no.match.customer.tips', '未找到用户所属客户，可能没有此客户或客户名不一致，请修改数据后重新导入');
+                }
             }
         }
         return {cls: cls, tipsMessage: tipsMessage};
@@ -988,7 +1009,7 @@ class AppUserManage extends React.Component {
                     closeTemplatePanel={this.closeImportUserRightPanel}
                     onItemListImport={this.onUserImport}
                     doImportAjax={this.doImportAjax}
-                    regRules={CSV_FILES_TYPE_RULES}
+                    regRules={XLS_FILES_TYPE_RULES}
                     importFileTips={Intl.get('user.import.user.toplimit', '每次导入上限为300个用户')}
                 />
             </div>

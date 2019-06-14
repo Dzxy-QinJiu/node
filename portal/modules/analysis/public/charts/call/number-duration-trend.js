@@ -47,15 +47,15 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
             _.each(data, (v, k) => {
                 if (_.isEmpty(dataCount)) {
                     _.each(v, item => {
-                        item.name = moment(item.date).format(oplateConsts.DATE_FORMAT);
+                        const name = moment(item.date).format(oplateConsts.DATE_FORMAT);
 
                         dataCount.push({
-                            name: item.name,
+                            name,
                             value: item.docments
                         });
 
                         dataDuration.push({
-                            name: item.name,
+                            name,
                             value: item.sum
                         });
                     });
@@ -72,26 +72,34 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
 
             chart.data_count = dataCount;
             chart.data_duration = dataDuration;
-            chart.processedData = data;
+            chart.rawData = data;
 
             //默认显示通话数量
             return dataCount;
         },
         processOption: (option, chart) => {
-            if (Store.teamMemberFilterType === 'member' && Store.secondSelectValue !== Intl.get('common.all', '全部')) {
+            //是否分团队显示
+            const isShowSeparateTeam = chart.isTeamView;
+
+            //是否分成员显示
+            //筛选类型选的是成员
+            //并且选择了具体的成员时
+            //分成员显示
+            const isShowSeparateMember = Store.teamMemberFilterType === 'member' && _.isArray(Store.secondSelectValue);
+
+            //如果需要分团队或成员显示
+            //处理图表选项，生成多个显示系列
+            if (isShowSeparateTeam || isShowSeparateMember) {
                 let legendData = [];
                 let series = [];
 
-                _.each(chart.processedData, (v, k) => {
+                _.each(chart.rawData, (v, k) => {
                     legendData.push(k);
                     series.push({
                         type: 'line',
                         name: k,
                         data: _.map(v, item => {
-                            return {
-                                name: item.name,
-                                value: chart.radioType === 'duration' ? item.sum : item.docments
-                            };
+                            return chart.radioType === 'duration' ? item.sum : item.docments;
                         })
                     });
                 });
@@ -135,6 +143,13 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
 
     //渲染切换按钮
     function renderCallTrendChartSwitch(chart, analysisInstance) {
+        //是否显示"查看各团队通话趋势图"开关
+        //筛选类型选的是团队
+        //并且团队选的是全部，这个是根据Store.secondSelectValue的值来判断的，只有选全部的时候这个值不是数组，所以可以根据这个值是否是数组来判断选择的是否是全部
+        //或者选择的团队大于一个时
+        //显示"查看各团队通话趋势图"开关
+        const isTeamSwitchShow = Store.teamMemberFilterType === 'team' && (!_.isArray(Store.secondSelectValue) || (_.isArray(Store.secondSelectValue) && Store.secondSelectValue.length > 1));
+
         return (
             <div>
                 <RadioGroup defaultValue='count' onChange={handleRadioChange.bind(this, chart, analysisInstance)}>
@@ -142,7 +157,7 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
                     <Radio value="duration">{Intl.get('call.record.call.duration', '通话时长')}</Radio>
                 </RadioGroup>
 
-                {Store.teamMemberFilterType === 'team' ? (
+                {isTeamSwitchShow ? (
                     <div style={{display: 'inline-block'}}>
                         {Intl.get('call.record.all.teams.trend', '查看各团队通话趋势图')}：
                         <Switch onChange={handleSwitchChange.bind(this, chart, analysisInstance)}
@@ -159,7 +174,6 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
         const value = e.target.value;
 
         chart.radioType = value;
-        chart.teamViewOption = null;
 
         chart.data = chart['data_' + value];
 
@@ -212,39 +226,7 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
 
     //“查看各团队通话趋势图”开关变化处理函数
     function handleSwitchChange(chart, analysisInstance, value) {
-        if (value) {
-            chart.processOption = option => {
-                if (chart.teamViewOption) {
-                    option.legend.data = chart.teamViewOption.legend.data;
-                    option.series = chart.teamViewOption.series;
-                } else {
-                    let legendData = [];
-                    let series = [];
-
-                    _.each(chart.processedData, (v, k) => {
-                        legendData.push(k);
-                        series.push({
-                            type: 'line',
-                            name: k,
-                            data: _.map(v, item => {
-                                return {
-                                    name: item.name,
-                                    value: chart.radioType === 'duration' ? item.sum : item.docments
-                                };
-                            })
-                        });
-                    });
-
-
-                    option.legend.data = legendData;
-                    option.series = series;
-
-                    chart.teamViewOption = _.cloneDeep(option);
-                }
-            };
-        } else {
-            delete chart.processOption;
-        }
+        chart.isTeamView = value;
 
         const charts = analysisInstance.state.charts;
 

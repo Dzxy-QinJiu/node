@@ -342,7 +342,8 @@ var zh_CN = {
     'user.import.username.rule': '用户名：长度为1-50个字母、数字、横线或下划线组成的字符串',
     'user.import.phone.rule': '手机：11位手机号',
     'user.import.email.rule': '邮箱：如 12345678@qq.com',
-    'user.import.yellow.tips': '黄色标示系统未找到对应的客户，可以继续导入，导入后需要自行设置客户。',
+    'user.import.yellow.tips': '未找到用户所属客户，可能没有此客户或客户名不一致。您可以修改数据后再导入，或者直接导入，导入后手动添加所属客户。',
+    'user.import.no.match.customer.tips': '未找到用户所属客户，可能没有此客户或客户名不一致，请修改数据后重新导入',
     'user.user.add.success': '添加成功',
     'user.user.basic': '基本信息',
     'user.user.app.select': '选择应用',
@@ -2182,9 +2183,9 @@ var zh_CN = {
     'user.close.multilogin': '关闭了多人登录。',
     'user.open.multilogin': '开启了多人登录。',
     //增加
-    'customer.fail.get.customer.trace': '获取客户跟踪记录列表失败',
+    'customer.fail.get.customer.trace': '获取{type}跟进记录列表失败',
     'customer.fail.add.customer.trace': '增加客户跟踪记录列表失败',
-    'customer.trace.content': '客户跟进记录内容不能为空',
+    'customer.trace.content': '跟进记录内容不能为空',
     'customer.input.customer.trace.content': '请填写跟进内容',
     'customer.add.customer.trace.detail': '请补充跟进记录详情',
     'customer.total.record': '共{num}条跟进记录',
@@ -3040,8 +3041,12 @@ var zh_CN = {
     'common.current.year': '本年',
     'common.rank': '名次',
     'common.sales.productivity.analysis': '销售生产力分析',
+    'common.total.points': '总分',
     'clue.filter.wait.me.handle': '待我处理',
+    'clue.item.source.from': '来自“{source}”',
+    'clue.item.acceess.channel': '详情：“{content}”',
     'clue.show.no.show.tip': '还有{num}个提醒未展示',
-    'clue.close.all.noty': '关闭所有提醒？'
+    'clue.close.all.noty': '关闭所有提醒？',
+    'clue.fail.customer.trace.statics': '获取跟进记录的分类统计失败'
 };
 export default zh_CN;
