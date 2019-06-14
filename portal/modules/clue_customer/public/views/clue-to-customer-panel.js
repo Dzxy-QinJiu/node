@@ -3,6 +3,7 @@
  */
 
 require('../css/clue-to-customer-panel.less');
+require('MOD_DIR/crm/public/css/contact.less');
 import { Row, Col, Button } from 'antd';
 import ajax from 'ant-ajax';
 import { RightPanel } from 'CMP_DIR/rightPanel';
@@ -339,10 +340,12 @@ class ClueToCustomerPanel extends React.Component {
         contact = {contact};
 
         return (
-            <ContactForm
-                type="edit"
-                contact={contact}
-            />
+            <div className="crm-pannel-contacts">
+                <ContactForm
+                    type="edit"
+                    contact={contact}
+                />
+            </div>
         );
     }
 
