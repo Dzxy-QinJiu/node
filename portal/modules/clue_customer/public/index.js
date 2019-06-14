@@ -118,7 +118,7 @@ class ClueCustomer extends React.Component {
     };
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps,'history.action') === 'PUSH' && _.get(nextProps,'location.state.clickUnhandleNum')){
-            //点击数字进行跳转时，如果当前选中的条件只是待我审批的条件，那么就不需要清空数据,如果当前选中的除了待我审批的，还有其他的条件，就需要把数据进行情况
+
             var filterStoreData = clueFilterStore.getState();
             var checkAllotNoTraced = filterStoreData.filterAllotNoTraced === '0';//待我审批
             var checkedAdvance = false;//在高级筛选中是否有其他的选中项
@@ -145,6 +145,7 @@ class ClueCustomer extends React.Component {
                     }
                 });
             }
+            //点击数字进行跳转时，如果当前选中的条件只是待我审批的条件，那么就不需要清空数据,如果当前选中的除了待我审批的，还有其他的条件，就需要把数据进行情况  checkAllotNoTraced： 选中了待我审批  checkedAdvance： 还有其他筛选项
             if((!checkAllotNoTraced || (checkAllotNoTraced && checkedAdvance))){
                 delete nextProps.location.state.clickUnhandleNum;
                 clueCustomerAction.setClueInitialData();
