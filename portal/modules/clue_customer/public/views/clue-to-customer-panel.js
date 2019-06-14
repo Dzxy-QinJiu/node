@@ -48,9 +48,9 @@ class ClueToCustomerPanel extends React.Component {
             //要操作的电话
             opPhone: '',
             //要修改的联系人
-            contactToModify: [],
+            contactsToModify: [],
             //要添加的联系人
-            contactToAdd: [],
+            contactsToAdd: [],
         };
     }
 
@@ -64,13 +64,19 @@ class ClueToCustomerPanel extends React.Component {
     //替换联系人名称按钮点击事件
     onReplaceContactNameClick = (contactIndex, replaceName) => {
         let mergedCustomer = _.cloneDeep(this.state.mergedCustomer);
+        let contactsToModify = _.cloneDeep(this.state.contactsToModify);
+        let contact = mergedCustomer.contacts[contactIndex];
 
         //替换联系人名称
-        mergedCustomer.contacts[contactIndex].name = replaceName;
-        delete mergedCustomer.contacts[contactIndex].replaceName;
+        contact.name = replaceName;
+        contact.customer_id = mergedCustomer.id;
+        contact.modifyField = 'name';
+        delete contact.replaceName;
+        contactsToModify.push(contact);
 
         this.setState({
-            mergedCustomer
+            mergedCustomer,
+            contactsToModify
         });
     }
 
@@ -143,6 +149,36 @@ class ClueToCustomerPanel extends React.Component {
             mergedCustomer,
             isMergeCustomerBlockShow: true,
         });
+    }
+
+    //合并到客户
+    mergeToCustomer = () => {
+        const clueId = this.props.clue.id;
+        const contactsToModify = this.state.contactsToModify;
+        const contactsToAdd = this.state.contactsToAdd;
+
+        if (!_.isEmpty(contactsToModify)) {
+            _.each(contactsToModify, contact => {
+                const type = contact.modifyField;
+                delete contact.modifyField;
+                ajax.send({
+                    url: `/rest/customer/v3/contacts/property/${type}/lead?clue_id=${clueId}`,
+                    type: 'put',
+                    data: contact
+                })
+                    .done(result => {
+                    })
+                    .fail(err => {
+                        /*
+                        this.setState({
+                            isShowClueToCustomerPanel: false,
+                            isShowAddCustomerPanel: true,
+                            existingCustomers: []
+                        });
+                        */
+                    });
+            });
+        }
     }
 
     //删除电话按钮点击事件
@@ -328,7 +364,7 @@ class ClueToCustomerPanel extends React.Component {
                 })}
                 <div className="btn-block">
                     <Button onClick={this.hideMergeCustomerBlock}>{Intl.get('common.cancel', '取消')}</Button>
-                    <Button type="primary">{Intl.get('common.sure', '确定')}</Button>
+                    <Button type="primary" onClick={this.mergeToCustomer}>确认合并</Button>
                 </div>
             </div>
         );
