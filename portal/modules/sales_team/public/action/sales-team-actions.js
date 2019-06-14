@@ -4,6 +4,8 @@
 //联系人的ajax
 var SalesTeamAjax = require('../ajax/sales-team-ajax');
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
+import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
+
 function SalesTeamAction() {
 
     this.generateActions(
@@ -22,6 +24,7 @@ function SalesTeamAction() {
         'cancelAddGroup',
         'deleteGroup',
         'hideModalDialog',
+        'handleCancelDeleteGroup', // 取消删除部门
         'hideSearchInputFnc',
         'selectTree',
         'toggleGroupTree',
@@ -55,7 +58,12 @@ function SalesTeamAction() {
             if(data.errorMsg) {
                 this.dispatch(data.errorMsg || Intl.get('common.get.sale.lists.failed', '获取销售团队列表失败'));
             } else {
-                this.dispatch(data.teamList);
+                let teamList = _.get(data, 'teamList');
+                let organizationName = _.get(getOrganization(), 'name', '');
+                let organizationId = _.get(getOrganization(), 'id', '');
+                teamList.unshift({group_name: organizationName, group_id: organizationId});
+
+                this.dispatch(teamList);
             }
         },true);
     };
@@ -79,11 +87,10 @@ function SalesTeamAction() {
     };
 
     this.getSalesTeamMemberList = function(teamId) {
-        var _this = this;
-        SalesTeamAjax.getSalesTeamMemberList(teamId).then(function(list) {
-            _this.dispatch(list);
-        }, function(errorMsg) {
-            _this.dispatch(errorMsg || Intl.get('sales.team.get.sales.team.member.list.failed', '获取团队成员失败'));
+        SalesTeamAjax.getSalesTeamMemberList(teamId).then( (list) => {
+            this.dispatch(list);
+        }, (errorMsg) => {
+            this.dispatch(errorMsg || Intl.get('sales.team.get.sales.team.member.list.failed', '获取团队成员失败'));
         });
     };
 

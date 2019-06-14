@@ -1,0 +1,166 @@
+//成员详情样式文件
+@btn-color: #8da8c5;
+@label-color: #999999;
+.member-detail-container {
+  //成员详情头部样式设置
+  .right-panel-modal-content {
+    .right-panel-modal-title {
+      margin-bottom: 0;
+      padding: 20px 20px 14px;
+      font-weight: normal;
+    }
+  }
+  .member-detail-title {
+    display: inline-block;
+    width: 100%;
+    font-weight: normal;
+    //头像
+    .head-image-container {
+      float: left;
+      height: auto;
+      margin-bottom: 0;
+      margin-top: 0;
+      p {
+        float: left;
+        width: 0;
+      }
+      .cirle-image {
+        float: left;
+        margin-left: 0;
+      }
+      .update-logo-desr {
+        font-size: 12px;
+      }
+    }
+    //成员名称
+    .memeber-name-container {
+      .member-name-label {
+        min-height: 26px;
+        line-height: 20px;
+        //名称展示
+        .basic-edit-field .basic-info-text {
+          margin-left: 0;
+          font-weight: bold;
+        }
+        //编辑按钮
+        .icon-edit-btn {
+          float: right;
+          margin-left: 6px;
+          cursor: pointer;
+        }
+      }
+    }
+    //名称、密码区域的公共的样式
+    .memeber-name-container, .password-edit-container {
+      float: left;
+      margin-top: 10px;
+      margin-left: 10px;
+      .ant-form-item {
+        padding-right: 0;
+        margin-bottom: 6px !important;
+        .ant-input {
+          margin-left: 0;
+        }
+      }
+    }
+
+    //按钮区
+    .member-title-btns {
+      float: right;
+      .iconfont {
+        margin-left: 8px;
+        color: @btn-color;
+        cursor: pointer;
+      }
+      .status-switch-container {
+        float: right;
+        .ant-switch {
+          margin-left: 8px;
+        }
+      }
+    }
+  }
+
+  .ant-tabs {
+    padding: 0 20px;
+  }
+
+  .basic-info-item {
+    float: left;
+    width: 100%;
+    min-height: 24px;
+    font-size: 14px;
+    .basic-info-label {
+      float: left;
+      line-height: 24px;
+      color: @label-color;
+    }
+    //编辑按钮hover时才展示
+    .icon-edit-btn {
+      display: none;
+    }
+    &:hover {
+      .icon-edit-btn {
+        display: block;
+        float: right;
+        font-size: 16px;
+        color: @btn-color;
+        cursor: pointer;
+      }
+    }
+    form {
+      .ant-form-item {
+        padding-right: 0;
+      }
+    }
+  }
+  //提成比例样式
+  .radio-container {
+    font-size: 14px;
+    .ant-checkbox-wrapper {
+      font-size: 14px;
+    }
+    .ant-input-number-input {
+      height: 25px;
+    }
+    .ant-input-number {
+      margin: 5px 10px;
+    }
+    .iconfont {
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .icon-choose, .icon-update {
+      margin: 0px 5px;
+    }
+    .icon-choose {
+      color: #4dbe50;
+    }
+    .icon-close {
+      color: #f43631;
+    }
+    .edit-btn {
+      cursor: pointer;
+    }
+  }
+  //再添加一个成员的按钮样式
+  .btn-add-member {
+    float:left;
+    width:100%;
+    height: 34px;
+    border: 1px solid #4d8cbf;
+    border-radius: 4px;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 13px;
+    color: #4d8cbf;
+    padding-top: 5px;
+    cursor: pointer;
+    .anticon-plus {
+      font-size: 15px;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+  }
+
+}

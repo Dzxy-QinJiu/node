@@ -519,3 +519,20 @@ export const CALL_TYPE_MAP = {
 };
 //跟进记录为空时的提示
 export const TRACE_NULL_TIP = Intl.get('customer.trace.content', '跟进记录内容不能为空');
+
+//成员状态的下拉选项
+export const memberStatusList = [
+    {name: Intl.get('user.online.all.status', '全部状态'), value: ''},
+    {name: Intl.get('common.enabled', '启用'), value: '1'},
+    {name: Intl.get('common.stop', '停用'), value: '0'},
+];
+
+// 后台管理布局
+export const BACKGROUG_LAYOUT_CONSTANTS = {
+    FRIST_NAV_WIDTH: 75, // 一级导航的宽度
+    NAV_WIDTH: 120, // 导航宽度
+    TOP_ZONE_HEIGHT: 80, // 头部（添加、相应操作的区域）高度
+    PADDING_WIDTH: 24 * 2, // padding占的宽度
+    PADDING_HEIGHT: 24 * 2 // padding占的高度
+};
+

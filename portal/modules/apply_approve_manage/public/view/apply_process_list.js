@@ -162,7 +162,7 @@ class AddAndShowApplyList extends React.Component {
                 <Menu.Item>
                     <span onClick={this.copyApply.bind(this, record)}>{Intl.get('user.jscode.copy', '复制')}</span>
                 </Menu.Item>
-                {!record.approveCheck ? <Menu.Item>
+                {!record.approveCheck && record.customiz ? <Menu.Item>
                     <span onClick={this.deleteApply.bind(this, record)}>{Intl.get('common.delete', '删除')}</span>
                 </Menu.Item> : null}
 
@@ -295,7 +295,7 @@ class AddAndShowApplyList extends React.Component {
         ];
         var height = calculateHeight() - APPLYAPPROVE_LAYOUT.PADDINGHEIGHT * 2;
         return (
-            <div className="apply-list-container" style={{height: height}}>
+            <div className="apply-list-container">
                 {this.state.showApplyDetailForm ? this.renderApplyDetail() : <AntcTable
                     columns={columns}
                     dataSource={this.state.showApplyList}

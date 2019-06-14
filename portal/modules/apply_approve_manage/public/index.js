@@ -4,10 +4,9 @@
  * Created by zhangshujuan on 2019/3/27.
  */
 require('./style/index.less');
-var classNames = require('classnames');
 import ApplyProcessList from './view/apply_process_list';
-import ButtonZones from 'CMP_DIR/top-nav/button-zones';
-import {Button} from 'antd';
+import {Button, Icon} from 'antd';
+import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 
 class ApplyApproveManage extends React.Component {
     constructor(props) {
@@ -39,22 +38,34 @@ class ApplyApproveManage extends React.Component {
             showAddWorkFlowName: true
         });
     };
-    renderTopBottom = () => {
+
+    renderTopNavOperation = () => {
         return (
-            <ButtonZones>
-                <div className="btn-item-container">
-                    <Button className='btn-item'
-                        onClick={this.handleClickAddForm}>{Intl.get('apply.add.apply.type', '添加申请类型')}</Button>
+            <div className='condition-operator'>
+                <div className='pull-left'>
+                    <Button
+                        className="btn-item"
+                        data-tracename="添加申请类型"
+                        onClick={this.handleClickAddForm}
+                    >
+                        <Icon type="plus" />{Intl.get('apply.add.apply.type', '添加申请类型')}
+                    </Button>
                 </div>
-            </ButtonZones>
+            </div>
         );
     };
+
     render = () => {
+        let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         return (
-            <div className="apply-approve-manage">
-                {this.renderTopBottom()}
-                <div className='apply-approve-container'>
-                    {this.renderApplyTypeList()}
+            <div className="apply-approve-manage" style={{height: height}}>
+                <div className="apply-approve-wrap" style={{height: height}}>
+                    <div className='apply-approve-top-nav'>
+                        {this.renderTopNavOperation()}
+                    </div>
+                    <div className='apply-approve-container'>
+                        {this.renderApplyTypeList()}
+                    </div>
                 </div>
             </div>
 

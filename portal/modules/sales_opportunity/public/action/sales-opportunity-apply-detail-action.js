@@ -11,7 +11,7 @@ var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
-import {getApplyStatusById,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+import {cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import applyApproveAction from './sales-opportunity-apply-action';
 function ApplyViewDetailActions() {
     this.generateActions(
@@ -48,16 +48,6 @@ function ApplyViewDetailActions() {
         }
 
     };
-    //根据申请的id获取审批的状态
-    this.getSalesOpportunityApplyStatusById = function(queryObj) {
-        this.dispatch({loading: true, error: false});
-        getApplyStatusById(queryObj).then((list) => {
-            this.dispatch({loading: false, error: false, list: list});
-        }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
-    };
-
     //获取回复列表
     this.getSalesOpportunityApplyCommentList = function(queryObj) {
         this.dispatch({loading: true, error: false});
@@ -170,6 +160,14 @@ function ApplyViewDetailActions() {
             _.isFunction(callback) && callback(false);
         }
         );
+    };
+    //获取该审批所在节点
+    this.getApplyTaskNode = function(queryObj){
+        ApplyApproveAjax.getApplyTaskNode().sendRequest(queryObj).success((list) => {
+            if (_.isArray(list)) {
+                this.dispatch(list);
+            }
+        }).error(this.dispatch({error: true}));
     };
 
 }

@@ -294,7 +294,8 @@ class CardList extends React.Component {
             });
         }
 
-        var cardListHeight = this.getCardListHeight();
+        let cardListHeight = this.props.cardContainerHeight ? this.props.cardContainerHeight : this.getCardListHeight();
+
         return (
             <div className="card-list-container">
                 {

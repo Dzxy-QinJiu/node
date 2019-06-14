@@ -270,11 +270,7 @@ class ApplyViewDetail extends React.Component {
             this.getNextCandidate(detailItem.id);
         }
     };
-    //重新获取申请的状态
-    refreshApplyStatusList = (e) => {
-        var detailItem = this.props.detailItem;
-        LeaveApplyDetailAction.getLeaveApplyStatusById({id: detailItem.id});
-    };
+
 
 
     //显示客户详情
@@ -294,11 +290,7 @@ class ApplyViewDetail extends React.Component {
             customerOfCurUser: {}
         });
     };
-    //重新获取申请的状态
-    refreshApplyStatusList = (e) => {
-        var detailItem = this.props.detailItem;
-        LeaveApplyDetailAction.getLeaveApplyStatusById({id: detailItem.id});
-    };
+
 
     ShowCustomerUserListPanel = (data) => {
         this.setState({
@@ -455,6 +447,11 @@ class ApplyViewDetail extends React.Component {
                     title: (replyItem.nick_name || userData.getUserData().nick_name || '') + descrpt,
                     description: moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
                 });
+            });
+        }else if(applicantList.status === 'cancel'){
+            stepArr.push({
+                title: Intl.get('user.apply.backout', '已撤销'),
+                description: moment(_.get(applicantList, 'update_time')).format(oplateConsts.DATE_TIME_FORMAT)
             });
         }
         var candidate = this.state.candidateList,candidateName = '';

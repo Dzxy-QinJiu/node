@@ -2,6 +2,7 @@
  * Created by xiaojinfeng on 2016/04/08.
  */
 let teamAjax = require('../../../common/public/ajax/team');
+let memberAjax = require('../../../member_manage/public/ajax');
 
 //获取统计团队内成员个数的列表
 let teamMemberCountAjax;
@@ -32,15 +33,15 @@ exports.filterSalesTeamList = function(userName) {
     return Deferred.promise();
 };
 //获取销售目标
-exports.getSalesGoals = function(teamId) {
-    var Deferred = $.Deferred();
+exports.getSalesGoals = (teamId) => {
+    let Deferred = $.Deferred();
     $.ajax({
         url: '/rest/team/sales_goals/' + teamId,
         dataType: 'json',
         type: 'get',
-        success: function(salesGoals) {
+        success: (salesGoals) => {
             Deferred.resolve(salesGoals);
-        }, error: function(errorInfo) {
+        }, error: (errorInfo) => {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -52,7 +53,7 @@ exports.getSalesTeamMemberList = function(groupId) {
     var Deferred = $.Deferred();
     teamAjax.getMemberListByTeamIdAjax().resolvePath({
         group_id: groupId
-    }).sendRequest().success(function(list) {
+    }).sendRequest({with_teamrole: true}).success(function(list) {
         Deferred.resolve(list);
     }).error(function(errorInfo) {
         Deferred.reject(errorInfo.responseJSON);
@@ -93,7 +94,7 @@ exports.addMember = function(obj) {
 };
 
 exports.editMember = function(obj) {
-    var Deferred = $.Deferred();
+    let Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_team_member',
         dataType: 'json',

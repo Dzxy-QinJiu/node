@@ -1,33 +1,48 @@
-.apply-approve-container{
-  padding: 24px;
-  background: #F5F5F5;
-  .apply-add-show-card{
-    display: inline-block;
-    width: 299px;
-    height: 72px;
-    line-height: 72px;
-    text-align: center;
-    cursor: pointer;
-  }
-  .apply-add-show-card.add-card{
-    color:#999;
-    font-size:16px;
-    border:1px dotted #ccc;
-    &:hover{
-      color: #2196F3;
-      border-color: #2196F3;
+.apply-approve-manage {
+  padding: 12px;
+  .apply-approve-wrap {
+    background: #fff;
+    .apply-approve-top-nav {
+      padding: 24px;
+      height: 80px;
+    }
+    .apply-approve-container{
+      border-top: 1px solid #E5E5E5;
+      .apply-add-show-card{
+        display: inline-block;
+        width: 299px;
+        height: 72px;
+        line-height: 72px;
+        text-align: center;
+        cursor: pointer;
+      }
+      .apply-add-show-card.add-card{
+        color:#999;
+        font-size:16px;
+        border:1px dotted #ccc;
+        &:hover{
+          color: #2196F3;
+          border-color: #2196F3;
+        }
+      }
+      .save-cancel-container{
+        position: absolute;
+        bottom:0;
+        right: 24px;
+
+      }
+      .apply-form-content-container{
+
+      }
+    }
+    .show-apply-list.apply-approve-container{
+      background: #fff;
     }
   }
-  .save-cancel-container{
-    position: absolute;
-    bottom:0;
-    right: 24px;
-
-  }
-  .apply-form-content-container{
-
-  }
 }
-.show-apply-list.apply-approve-container{
-  background: #fff;
+
+
+//todo 暂时把图标隐藏掉
+.bjs-container a img {
+  display: none;
 }

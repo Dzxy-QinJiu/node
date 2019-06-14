@@ -251,8 +251,6 @@ class ApplyViewDetail extends React.Component {
             } else if (detailItem.id) {
                 MemberApplyDetailAction.getMemberApplyDetailById({id: detailItem.id});
                 MemberApplyDetailAction.getMemberApplyCommentList({id: detailItem.id});
-                //根据申请的id获取申请的状态
-                MemberApplyDetailAction.getMemberApplyStatusById({id: detailItem.id});
                 this.getNextCandidate(detailItem.id);
             }
         });
@@ -268,17 +266,7 @@ class ApplyViewDetail extends React.Component {
             MemberApplyDetailAction.getMemberApplyCommentList({id: detailItem.id});
         }
     };
-    //重新获取申请的状态
-    refreshApplyStatusList = (e) => {
-        var detailItem = this.props.detailItem;
-        MemberApplyDetailAction.getMemberApplyStatusById({id: detailItem.id});
-    };
 
-    //重新获取申请的状态
-    refreshApplyStatusList = (e) => {
-        var detailItem = this.props.detailItem;
-        MemberApplyDetailAction.getMemberApplyStatusById({id: detailItem.id});
-    };
     //验证姓名唯一性
     checkOnlyName = () => {
         let nickname = _.trim(this.props.form.getFieldValue('nickname'));

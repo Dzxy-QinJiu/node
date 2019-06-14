@@ -16,56 +16,29 @@ const FORMLAYOUT = {
     PADDINGTOTAL: 60
 };
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+import {
+    INNER_SETTING_FLOW,
+    APPROVER_TYPE,
+    HIGHER_LEVEL,
+    isSalesOpportunityFlow,
+    isBussinessTripFlow,
+    isLeaveFlow,
+    ROLES_SETTING,
+    SETTING_APPLY_APPROVER
+} from '../../utils/apply-approve-utils';
 require('../../style/add-apply-node.less');
-const APPROVER_TYPE = [{
-    name: Intl.get('apply.add.approver.higher.level', '上级'),
-    value: 'higher_ups',
-}, {
-    name: Intl.get('apply.add.approver.setting.role', '指定角色'),
-    value: 'setting_roles',
-}, {
-    name: Intl.get('apply.add.approver.setting.user', '指定成员'),
-    value: 'setting_users',
-}, {name: Intl.get('apply.add.approver.applicant.setting', '申请人指定'), value: 'application_setting',},
-{name: Intl.get('apply.add.approver.applicant.self', '申请人自己'), value: 'application_self'}
-];
-const HIGHER_LEVEL = [
-    {
-        name: Intl.get('apply.add.approve.node.team.owner', '团队所有者'),
-        value: 'teamowner'
-    },
-    {
-        name: Intl.get('apply.add.approve.node.team.owner.and.higher.level.owner', '团队所有者或者上级团队所有者'),
-        value: 'teamownerorseniorowner'
-    },
-    {
-        name: Intl.get('apply.add.approve.node.higher.level.owner', '上级团队所有者'),
-        value: 'seniorteamowner'
-    },
-    {
-        name: Intl.get('apply.add.approve.node.all.higher.level.owner', '所有上级团队所有者'),
-        value: 'allseniorteamowner'
-    },
-    {
-        name: Intl.get('common.managers', '管理员'),
-        value: 'managers'
-    },
-    {
-        name: Intl.get('apply.add.approve.node.operation', '运营人员'),
-        value: 'operations'
-    },
-];
-
 class AddApplyNodePanel extends React.Component {
     constructor(props) {
         super(props);
+        var isPreviousNodeCheck = this.isPreviousNodeCheck();
         this.state = {
+            adminApproveHigherLevel: 'higherLevelApproveChecked',
             checkedRadioValue: '',
             //todo 可否可以多选
             higher_ups: {
                 candidateUsers: '',//上级审批人
                 showCandidateUsers: '',//显示的名称
-                higherLevelApproveChecked: false,//空缺时由组织中的更上一级审批
+                higherLevelApproveChecked: true,//空缺时由组织中的更上一级审批
                 adminApproveChecked: false,//没有审批人的时候由管理员审批
             },
             setting_roles: {
@@ -77,10 +50,11 @@ class AddApplyNodePanel extends React.Component {
                 showSelectUser: ''
             },
             submitFiles: false,//可以上传文件
-            distributeCheck: false,//可分配
+            assignNextNodeApprover: false,//指定下一审批人
             roleList: [],//角色列表
             userList: [],//用户列表
             submitErrorMsg: '',//提交时的错误提示
+            isPreviousNodeCheck: isPreviousNodeCheck
 
         };
     }
@@ -97,9 +71,17 @@ class AddApplyNodePanel extends React.Component {
             type: 'get',
             data: {cur_page: 1},
             success: (userListObj) => {
+                var rolesList = _.get(userListObj, 'roles');
+                _.forEach(rolesList, item => {
+                    var roleName = item.role_name;
+                    var target = _.find(ROLES_SETTING, levelItem => levelItem.name === roleName);
+                    if (target){
+                        item.save_role_value = target.value;
+                    }
+                });
                 this.setState({
                     userList: _.get(userListObj, 'data'),
-                    roleList: _.get(userListObj, 'roles')
+                    roleList: rolesList
                 });
             },
             error: (xhr, textStatus) => {
@@ -114,32 +96,34 @@ class AddApplyNodePanel extends React.Component {
         //把其他类型的下面的选项都置为空
         var radioValue = event.target.value;
         var allRadioSelect = [];
-        _.forEach(APPROVER_TYPE,(item) => {
-            if (item.value && item.value !== radioValue){
+        _.forEach(APPROVER_TYPE, (item) => {
+            if (item.value && item.value !== radioValue) {
                 allRadioSelect.push(item.value);
             }
         });
-        _.forEach(allRadioSelect,(item) => {
+        _.forEach(allRadioSelect, (item) => {
             var radioType = this.state[item];
-            for (var key in radioType){
-                if (_.isBoolean(radioType[key])){
+            for (var key in radioType) {
+                if (_.isBoolean(radioType[key])) {
                     radioType[key] = false;
-                }else{
+                } else {
                     radioType[key] = '';
                 }
             }
         });
-        this.state.checkedRadioValue = radioValue;
-        this.setState(this.state);
+        var checkedRadioValue = this.state.checkedRadioValue;
+        this.setState({
+            checkedRadioValue: radioValue
+        });
     };
     onChangeSubmitFilesCheck = (e) => {
         this.setState({
             submitFiles: e.target.checked,
         });
     };
-    onChangeSubmitDistributeCheck = (e) => {
+    onChangeAssignNextNodeApprover = (e) => {
         this.setState({
-            distributeCheck: e.target.checked,
+            assignNextNodeApprover: e.target.checked,
         });
     };
     handleHigherUpChange = (value) => {
@@ -154,6 +138,7 @@ class AddApplyNodePanel extends React.Component {
     onChangeAdminApproveCheck = (e) => {
         var higher_ups = this.state.higher_ups;
         higher_ups.adminApproveChecked = e.target.checked;
+        higher_ups.higherLevelApproveChecked = false;
         this.setState({
             higher_ups: higher_ups
         });
@@ -161,14 +146,32 @@ class AddApplyNodePanel extends React.Component {
     onChangeHigherLevelCheck = (e) => {
         var higher_ups = this.state.higher_ups;
         higher_ups.higherLevelApproveChecked = e.target.checked;
+        higher_ups.adminApproveChecked = false;
         this.setState({
             higher_ups: higher_ups
         });
     };
+    onChangeAdminApproveHigherLevel = (e) => {
+        var value = e.target.value;
+        var higher_ups = this.state.higher_ups;
+        if (value === 'higherLevelApproveChecked'){
+            higher_ups.higherLevelApproveChecked = true;
+            higher_ups.adminApproveChecked = false;
+        }else if (value === 'adminApproveChecked'){
+            higher_ups.higherLevelApproveChecked = false;
+            higher_ups.adminApproveChecked = true;
+        }
+        this.setState({
+            adminApproveHigherLevel: value,
+            higher_ups: higher_ups
+        });
+
+
+    };
     handleChangeSelectRole = (value) => {
         var setting_roles = this.state.setting_roles;
         setting_roles.selectRole = value;
-        var target = _.find(this.state.roleList, item => item.role_id === value);
+        var target = _.find(this.state.roleList, item => item.save_role_value === value);
         setting_roles.showSelectRole = target.role_name;
         this.setState({
             setting_roles: setting_roles
@@ -192,21 +195,17 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="add-higher-up addition-condition">
                             <div className="higher-level-item addition-condition-item">
-                                <Select value={higher_ups.candidateUsers}
+                                <Select showSearch value={higher_ups.candidateUsers}
                                     onChange={this.handleHigherUpChange}>
                                     {_.map(HIGHER_LEVEL, (item) => {
                                         return <Option value={item.value}>{item.name}</Option>;
                                     })}
                                 </Select>
                             </div>
-                            <div className="higher-level-item addition-condition-item">
-                                <Checkbox checked={higher_ups.higherLevelApproveChecked}
-                                    onChange={this.onChangeHigherLevelCheck}>{Intl.get('apply.empty.approve.higher.level', '空缺时，由组织中的更上一级代审批')}</Checkbox>
-                            </div>
-                            <div className="higher-level-item addition-condition-item">
-                                <Checkbox checked={higher_ups.adminApproveChecked}
-                                    onChange={this.onChangeAdminApproveCheck}>{Intl.get('apply.empty.admin.approve', '没有审批人时，由管理员审批')}</Checkbox>
-                            </div>
+                            <Radio.Group className="radio-select-list" onChange={this.onChangeAdminApproveHigherLevel} value={this.state.adminApproveHigherLevel}>
+                                <Radio value='higherLevelApproveChecked'>{Intl.get('apply.empty.approve.higher.level', '空缺时，由组织中的更上一级代审批')}</Radio>
+                                <Radio value='adminApproveChecked'>{Intl.get('apply.empty.admin.approve', '没有审批人时，由管理员审批')}</Radio>
+                            </Radio.Group>
                         </div>
                     );
                 case 'setting_roles' :
@@ -214,10 +213,10 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
-                                <Select value={setting_roles.selectRole} onChange={this.handleChangeSelectRole}>
+                                <Select showSearch value={setting_roles.selectRole} onChange={this.handleChangeSelectRole}>
                                     {_.map(this.state.roleList, (item) => {
-                                        return <Option value={item.role_id}>{item.role_name}(
-                                            {Intl.get('apply.add.approve.num.person', '{num}人',{num: item.num})})</Option>;
+                                        return <Option value={item.save_role_value}>{item.role_name}(
+                                            {Intl.get('apply.add.approve.num.person', '{num}人', {num: item.num})})</Option>;
                                     })}
                                 </Select>
                             </div>
@@ -228,7 +227,7 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
-                                <Select value={setting_users.selectUser} onChange={this.handleChangeSelectUser}>
+                                <Select showSearch value={setting_users.selectUser} onChange={this.handleChangeSelectUser}>
                                     {_.map(this.state.userList, (item) => {
                                         return <Option value={item.userId}>{item.nickName}</Option>;
                                     })}
@@ -240,71 +239,103 @@ class AddApplyNodePanel extends React.Component {
         }
     };
     handleSubmitAddApproveNode = () => {
-        var radioValue = this.state.checkedRadioValue,submitObj = {}, errTip = '';
-        if (radioValue){
-            switch (radioValue){
+        var radioValue = this.state.checkedRadioValue, submitObj = {}, errTip = true;
+        if (radioValue) {
+            switch (radioValue) {
                 case 'higher_ups':
                     var higher_ups = this.state.higher_ups;
-                    if (higher_ups.candidateUsers){
+                    if (higher_ups.candidateUsers) {
                         submitObj.candidateApprover = higher_ups.candidateUsers;
                         submitObj.showName = higher_ups.showCandidateUsers;
-                        if (higher_ups.higherLevelApproveChecked){
-                            submitObj.candidateApprover += '_higherLevel';
+                        if (_.isBoolean(higher_ups.higherLevelApproveChecked)) {
                             submitObj.higherLevelApproveChecked = higher_ups.higherLevelApproveChecked;
                         }
-                        if (higher_ups.adminApproveChecked){
-                            submitObj.candidateApprover += '_adminApprove';
+                        if (_.isBoolean(higher_ups.adminApproveChecked)) {
                             submitObj.adminApproveChecked = higher_ups.adminApproveChecked;
                         }
-                    }else{
-                        errTip = 'asaa11';
+                        errTip = false;
                     }
                     break;
                 case 'setting_roles':
                     var setting_roles = this.state.setting_roles;
-                    if (setting_roles.selectRole){
+                    if (setting_roles.selectRole) {
                         submitObj.candidateApprover = setting_roles.selectRole;
                         submitObj.showName = setting_roles.showSelectRole;
-                    }else{
-                        errTip = 'sss';
+                        errTip = false;
                     }
                     break;
                 case 'setting_users':
                     var setting_users = this.state.setting_users;
-                    if (setting_users.selectUser){
+                    if (setting_users.selectUser) {
                         submitObj.candidateApprover = setting_users.selectUser;
                         submitObj.showName = setting_users.showSelectUser;
-                    }else{
-                        errTip = 'sssaaa';
+                        submitObj.hideBrack = true;//如果是指定成员的话，不需要加$符号
+                        errTip = false;
                     }
                     break;
                 default:
                     submitObj.candidateApprover = radioValue;
-                    var target = _.find(APPROVER_TYPE,item => item.value === radioValue);
+                    var target = _.find(APPROVER_TYPE, item => item.value === radioValue);
                     submitObj.showName = target.name;
+                    errTip = false;
             }
 
 
-        }else{
-            errTip = 'aaa';
+        } else {
+            //如果上一节点是指定审批人
+            if (this.state.isPreviousNodeCheck) {
+                submitObj.candidateApprover = SETTING_APPLY_APPROVER.value;
+                submitObj.showName = SETTING_APPLY_APPROVER.label;
+                errTip = false;
+            }
+
         }
-        if (!errTip){
+        if (!errTip) {
             submitObj.radioType = radioValue;
-            if (this.state.submitFiles){
-                submitObj.submitFiles = this.state.submitFiles;
-            }
-            if (this.state.distributeCheck){
-                submitObj.distributeCheck = this.state.distributeCheck;
-            }
+            //可上传文件
+            submitObj.submitFiles = this.state.submitFiles;
+            //可以指定下一节点审批人
+            submitObj.assignNextNodeApprover = this.state.assignNextNodeApprover;
+            //可分配销售
+            // submitObj.distributeSales = this.state.distributeSales;
+
             this.props.saveAddApproveNode(submitObj);
             this.props.hideRightPanel();
+        }else{
+            this.setState({
+                submitErrorMsg: Intl.get('apply.select.approver.type', '请选择审批人类型')
+            });
         }
-        this.setState({
-            submitErrorMsg: errTip
-        });
-        console.log(submitObj);
 
 
+
+    };
+    //上一节点是否选择了指定下一节点审批人
+    isPreviousNodeCheck = () => {
+        var hideType = false;
+        var applyRulesAndSetting = _.get(this, 'props.applyRulesAndSetting.applyApproveRules');
+        var addNodePanelFlow = this.props.addNodePanelFlow;
+        if (_.isObject(applyRulesAndSetting[addNodePanelFlow]) && _.isArray(applyRulesAndSetting[addNodePanelFlow]['bpmnNode'])) {
+            //如果是之前已经添加过的流程，最后一个节点是结束的节点，那就要看倒数第二个是不是指定了需要
+            var bpmnNodeArr = applyRulesAndSetting[addNodePanelFlow]['bpmnNode'];
+            var lastNode = _.last(bpmnNodeArr);
+            if(lastNode){
+                if (lastNode.type === 'EndEvent'){
+                    var arrLength = bpmnNodeArr.length - 2;
+                    if (arrLength > -1){
+                        lastNode = _.get(bpmnNodeArr,`[${arrLength}]`);
+                    }else{
+                        lastNode = null;
+                    }
+
+                }
+                if (lastNode && lastNode.assignNextNodeApprover + '' === 'true'){
+                    hideType = true;
+                }
+
+            }
+        }
+        return hideType;
     };
 
     render() {
@@ -317,23 +348,25 @@ class AddApplyNodePanel extends React.Component {
                     />
                     <div className="add-apply-node-item " style={{'height': divHeight}}>
                         <GeminiScrollbar>
+                            {/*如果上一节点已经勾选了指定下一审批人，那么下一节点添加的时候就不展示类型了*/}
+
                             <div className="add-apply-form ant-row ant-form-item">
                                 <label className="ant-form-item-label ">
                                     {Intl.get('common.type', '类型')}
                                 </label>
                                 <div className="add-node-content ant-form-item-control-wrapper">
-                                    <RadioGroup onChange={this.onRadioChange} value={this.state.checkedRadioValue}>
-                                        {_.map(APPROVER_TYPE, (typeItem, index) => {
-                                            return (
-                                                <div>
-                                                    <Radio value={typeItem.value}>{typeItem.name}</Radio>
-                                                    {this.renderAdditonContent(typeItem, index)}
-                                                </div>
-                                            );
+                                    {this.state.isPreviousNodeCheck ? <span>{SETTING_APPLY_APPROVER.label}</span> :
+                                        <RadioGroup onChange={this.onRadioChange} value={this.state.checkedRadioValue}>
+                                            {_.map(APPROVER_TYPE, (typeItem, index) => {
+                                                return (
+                                                    <div>
+                                                        <Radio value={typeItem.value}>{typeItem.name}</Radio>
+                                                        {this.renderAdditonContent(typeItem, index)}
+                                                    </div>
+                                                );
 
-                                        })}
-                                    </RadioGroup>
-
+                                            })}
+                                        </RadioGroup>}
                                 </div>
                             </div>
                             <div className="add-apply-form ant-row ant-form-item">
@@ -351,10 +384,10 @@ class AddApplyNodePanel extends React.Component {
                                     </div>
                                     <div>
                                         <Checkbox
-                                            checked={this.state.distributeCheck}
-                                            onChange={this.onChangeSubmitDistributeCheck}
+                                            checked={this.state.assignNextNodeApprover}
+                                            onChange={this.onChangeAssignNextNodeApprover}
                                         >
-                                            {Intl.get('apply.add.approver.distribute', '可分配')}
+                                            {Intl.get('apply.add.approver.distribute', '指定下一审批人')}
                                         </Checkbox>
                                     </div>
                                 </div>
@@ -378,12 +411,18 @@ AddApplyNodePanel.defaultProps = {
     },
     saveAddApproveNode: function() {
 
-    }
+    },
+
+    applyRulesAndSetting: {},
+    addNodePanelFlow: ''
+
 
 };
 AddApplyNodePanel.propTypes = {
     hideRightPanel: PropTypes.func,
     saveAddApproveNode: PropTypes.func,
+    applyRulesAndSetting: PropTypes.object,
+    addNodePanelFlow: PropTypes.string,
 
 
     defaultClueData: PropTypes.object,

@@ -34,6 +34,13 @@ class componentShow extends React.Component {
         var target = _.find(applyComponentsType, item => item.name === _.get(formItem, 'component_type'));
         if (target) {
             var ApplyComponent = target.component;
+            if (target.component_type === ALL_COMPONENTS.DATETIME && !target.defaultValue){
+                if (target.type === 'date'){
+                    target.defaultValue = moment(moment().format(oplateConsts.DATE_FORMAT), oplateConsts.DATE_FORMAT);
+                }else{
+                    target.defaultValue = moment(moment().format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+                }
+            }
             return <ApplyComponent {...formItem}/>;
         } else {
             return null;

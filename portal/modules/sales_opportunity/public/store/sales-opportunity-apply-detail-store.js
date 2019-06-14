@@ -47,15 +47,6 @@ SalesOpportunityApplyDetailStore.prototype.setInitState = function() {
         //错误信息
         errorMsg: ''
     };
-    //审批状态列表
-    this.replyStatusInfo = {
-        //三种状态,loading,error,''
-        result: 'loading',
-        //列表数组
-        list: [],
-        //服务端错误信息
-        errorMsg: ''
-    };
     this.backApplyResult = {
         //提交状态  "" loading error success
         submitResult: '',
@@ -69,6 +60,7 @@ SalesOpportunityApplyDetailStore.prototype.setInitState = function() {
         errorMsg: ''
     };
     this.isLeader = false; //当前账号是否是待审批人的上级领导
+    this.applyNode = [];
 };
 SalesOpportunityApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
@@ -81,15 +73,6 @@ SalesOpportunityApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(d
         errorMsg: ''
     };
     this.replyListInfo = {
-        //三种状态,loading,error,''
-        result: '',
-        //列表数组
-        list: [],
-        //服务端错误信息
-        errorMsg: ''
-    };
-    //审批状态列表
-    this.replyStatusInfo = {
         //三种状态,loading,error,''
         result: '',
         //列表数组
@@ -219,20 +202,6 @@ SalesOpportunityApplyDetailStore.prototype.approveSalesOpportunityApplyPassOrRej
         this.applyResult.errorMsg = '';
     }
 };
-//获取审批的状态
-SalesOpportunityApplyDetailStore.prototype.getSalesOpportunityApplyStatusById = function(obj) {
-    if (obj.loading) {
-        this.replyStatusInfo.result = 'loading';
-        this.replyStatusInfo.errorMsg = '';
-    } else if (obj.error) {
-        this.replyStatusInfo.result = 'error';
-        this.replyStatusInfo.errorMsg = obj.errorMsg;
-    } else {
-        this.replyStatusInfo.result = 'success';
-        this.replyStatusInfo.errorMsg = '';
-        this.replyStatusInfo.list = obj.list;
-    }
-};
 SalesOpportunityApplyDetailStore.prototype.cancelSendApproval = function() {
     this.applyResult.submitResult = '';
     this.applyResult.errorMsg = '';
@@ -288,6 +257,13 @@ SalesOpportunityApplyDetailStore.prototype.transferNextCandidate = function(resu
         //如果转出成功，要隐藏审批的按钮
         this.selectedDetailItem.showApproveBtn = false;
         this.detailInfoObj.info.showApproveBtn = false;
+    }
+};
+SalesOpportunityApplyDetailStore.prototype.getApplyTaskNode = function(result){
+    if (result.error) {
+        this.applyNode = [];
+    } else {
+        this.applyNode = result;
     }
 };
 

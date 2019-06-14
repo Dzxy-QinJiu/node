@@ -18,42 +18,25 @@ const FORMLAYOUT = {
 };
 import AlertTimer from 'CMP_DIR/alert-timer';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-import {CONDITION_KEYS, ALL_COMPONENTS} from '../../utils/apply-approve-utils';
-const CONDITION_LIMITE = [{
-    name: Intl.get('apply.add.condition.larger', '大于'),
-    value: '>',
-    inverseCondition: '<='
-}, {
-    name: Intl.get('apply.add.condition.larger.and.equal', '大于等于'),
-    value: '>=',
-    inverseCondition: '<'
-}, {
-    name: Intl.get('apply.add.condition.less', '小于'),
-    value: '<',
-    inverseCondition: '>='
-}, {
-    name: Intl.get('apply.add.condition.less.and.equal', '小于等于'),
-    value: '<=',
-    inverseCondition: '>'
-}, {
-    name: Intl.get('apply.add.condition.equal', '等于'),
-    value: '===',
-    inverseCondition: '!=='
-}, {
-    name: Intl.get('apply.add.condition.within', '介于'),
-    value: '',
-}];
+import {
+    CONDITION_KEYS,
+    ALL_COMPONENTS,
+    isBussinessTripFlow,
+    isLeaveFlow,
+    isSalesOpportunityFlow,
+    CONDITION_LIMITE
+} from '../../utils/apply-approve-utils';
 require('../../style/add_apply_condition_panel.less');
-
 class AddApplyConditionPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showAddConditionForm: false,
-            diffConditionLists: {
+            showAddConditionForm: _.get(this, 'props.updateConditionObj.limitRules[0]') ? true : false,
+            diffConditionLists: _.isEmpty(this.props.updateConditionObj) ? {
+                conditionTitle: '',
                 limitRules: [],
-            },//添加的条件审批数据
-            applySaveForm: this.props.applySaveForm,
+            } : _.cloneDeep(this.props.updateConditionObj),//添加的条件审批数据
+            applySaveForm: _.get(this, 'props.applyTypeData.customiz_form', []),
         };
     }
 
@@ -71,23 +54,43 @@ class AddApplyConditionPanel extends React.Component {
         });
     };
     getConditionRelate = (conditionType) => {
-       var target = _.find(CONDITION_KEYS, item => item.value.indexOf(conditionType) > -1);
-       return target;
+        var target = _.find(CONDITION_KEYS, item => item.value.indexOf(conditionType) > -1);
+        return target;
     };
     getDiffTypeComponents = () => {
         var applySaveForm = this.state.applySaveForm;
+        var applyType = _.get(this, 'props.applyTypeData.type');
+        //如果是出差或者请假申请，需要展示时长这个条件
+        var isShowTimeRange = isBussinessTripFlow(applyType) || isLeaveFlow(applyType);
+        //如果是销售机会申请，需要展示金额这个条件
+        var isShowMoneyRange = isSalesOpportunityFlow(applyType);
+        var componentType = '', descriptionTip = '', showInnerCondition = false;
+        if (isShowTimeRange) {
+            componentType = ALL_COMPONENTS.TIMEPERIOD;
+            descriptionTip = Intl.get('user.duration', '时长');
+            showInnerCondition = true;
+        } else if (isShowMoneyRange) {
+            componentType = ALL_COMPONENTS.TIMEPERIOD;
+            descriptionTip = Intl.get('user.duration', '时长');
+            showInnerCondition = true;
+        }
         //保存的已经添加的表单，是个数组
         var menus = <Menu>{
-            _.map(applySaveForm, (item) => {
-                var component_type = item.subComponentType || item.component_type;
-                var target = this.getConditionRelate(component_type);
-                if (target){
-                    return <Menu.Item>
-                        <a onClick={this.handleAddConditionType.bind(this, component_type)}>{_.get(target,'name')}</a>
-                    </Menu.Item>;
-                }
+            //如果是内置的出差流程或者是请假流程，要加上时长的判断
+            showInnerCondition ? <Menu.Item>
+                <a onClick={this.handleAddConditionType.bind(this, componentType)}>{descriptionTip}</a>
+            </Menu.Item> :
+                _.map(applySaveForm, (item) => {
+                    var component_type = item.subComponentType || item.component_type;
+                    var target = this.getConditionRelate(component_type);
+                    if (target) {
+                        return <Menu.Item>
+                            <a onClick={this.handleAddConditionType.bind(this, component_type)}>{_.get(target, 'name')}</a>
+                        </Menu.Item>;
+                    }
 
-            })
+                })
+
         }</Menu>;
         return menus;
     };
@@ -114,7 +117,7 @@ class AddApplyConditionPanel extends React.Component {
             diffConditionLists
         });
     };
-    handleChangeRangeLimit = (key, subKey, inverseKey,allType, value) => {
+    handleChangeRangeLimit = (key, subKey, inverseKey, allType, value) => {
         var diffConditionLists = this.state.diffConditionLists;
         var limitRules = _.get(diffConditionLists, 'limitRules');
         var target = _.find(limitRules, limit => limit.limitType === key);
@@ -164,12 +167,13 @@ class AddApplyConditionPanel extends React.Component {
                         case ALL_COMPONENTS.TIMEPERIOD + '_limit':
                             return (<div className="condition-type-container range-condition-container">
                                 <div className="condition-type-title">
-                                    {_.get(target,'name')}
+                                    {_.get(target, 'name')}
                                     <i className="iconfont icon-delete"
-                                       onClick={this.deleteConditionType.bind(this, limitType)}></i>
+                                        onClick={this.deleteConditionType.bind(this, limitType)}></i>
                                 </div>
                                 <div className="condition-type-content">
                                     <Select
+                                        defaultValue={_.get(value, 'rangeLimit')}
                                         onChange={this.handleChangeRangeLimit.bind(this, limitType, 'rangeLimit', 'inverseCondition', CONDITION_LIMITE)}
                                     >
                                         {_.map(CONDITION_LIMITE, (item, index) => {
@@ -177,6 +181,7 @@ class AddApplyConditionPanel extends React.Component {
                                         })}
                                     </Select>
                                     <Input
+                                        defaultValue={_.get(value, 'rangeNumber')}
                                         onChange={this.handleRangeInputChange.bind(this, limitType, 'rangeNumber', Intl.get('common.time.unit.day', '天'))}
                                         addonAfter={Intl.get('common.time.unit.day', '天')}/>
                                 </div>
@@ -191,10 +196,13 @@ class AddApplyConditionPanel extends React.Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) return;
             var submitObj = _.cloneDeep(this.state.diffConditionLists);
-            _.forEach(_.get(submitObj,'limitRules'), (item) => {
+            _.forEach(_.get(submitObj, 'limitRules'), (item) => {
                 var target = this.getConditionRelate(item.limitType);
                 target.conditionRule(item);
             });
+            if (this.props.updateConditionFlowKey) {
+                submitObj.updateConditionFlowKey = this.props.updateConditionFlowKey;
+            }
             this.props.saveAddApprovCondition(submitObj);
             this.props.hideRightPanel();
         });
@@ -232,6 +240,7 @@ class AddApplyConditionPanel extends React.Component {
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('condition_name', {
+                                            initialValue: _.get(this, 'state.diffConditionLists.conditionTitle'),
                                             rules: [{required: true, message: Intl.get('apply.add.reg.name', '请填写名称')}],
                                         })(
                                             <Input onChange={this.handleConditionTitleChange}/>
@@ -248,14 +257,14 @@ class AddApplyConditionPanel extends React.Component {
                                     </FormItem>
                                     <div className="submit-button-container">
                                         <Button type="primary" className="submit-btn"
-                                                onClick={this.handleSubmitCondition}
-                                                disabled={this.state.isSaving} data-tracename="点击保存添加
+                                            onClick={this.handleSubmitCondition}
+                                            disabled={this.state.isSaving} data-tracename="点击保存添加
                                             条件审批申请">
                                             {Intl.get('common.save', '保存')}
                                             {this.state.isSaving ? <Icon type="loading"/> : null}
                                         </Button>
                                         <Button className="cancel-btn" onClick={this.props.hideRightPanel}
-                                                data-tracename="点击取消添加条件审批流程按钮">
+                                            data-tracename="点击取消添加条件审批流程按钮">
                                             {Intl.get('common.cancel', '取消')}
                                         </Button>
                                     </div>
@@ -269,19 +278,23 @@ class AddApplyConditionPanel extends React.Component {
     }
 }
 AddApplyConditionPanel.defaultProps = {
-    hideRightPanel: function () {
+    hideRightPanel: function() {
 
     },
-    saveAddApprovCondition: function () {
+    saveAddApprovCondition: function() {
 
     },
-    applySaveForm: {}
+    applyTypeData: {},
+    updateConditionObj: {},
+    updateConditionFlowKey: ''
 
 };
 AddApplyConditionPanel.propTypes = {
     hideRightPanel: PropTypes.func,
     saveAddApprovCondition: PropTypes.func,
-    applySaveForm: PropTypes.object,
+    applyTypeData: PropTypes.object,
+    updateConditionObj: PropTypes.object,
+    updateConditionFlowKey: PropTypes.string,
 
 
     defaultClueData: PropTypes.object,

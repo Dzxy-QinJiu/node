@@ -18,6 +18,14 @@ var en_US = {
     'menu.appuser.auditlog': 'Operation record',//操作记录
     'menu.appuser.position': 'Position Order', // 座席号管理
     'menu.backend': 'Background',//后台管理
+    'menu.member': 'Members', // 成员
+    'menu.product': 'Product', // 产品
+    'menu.apply.approve': 'Application for approval', // 申请审批
+    'menu.order.stage': 'Order Stage', // 订单阶段
+    'menu.industry': 'Industry', // 行业
+    'menu.competing.product': 'Competing products', // 竞品
+    'menu.clue.allocation': 'Clue allocation', // 线索分配
+    'menu.my.company': 'My Company', // 我的企业
     'menu.user': 'Members',//成员管理
     'menu.role': 'Roles',//角色管理
     'menu.auth': 'Authority',//权限管理
@@ -664,7 +672,9 @@ var en_US = {
 
     //后台管理-成员start
     'member.member': 'Member',//成员
-    'member.search.placeholder': 'username/nickname/phone/email',//用户名/昵称/电话/邮箱
+    'member.search.placeholder': 'account/nickname/phone',// 账号/昵称/手机
+    'member.add.member.search.placeholder': 'account/nickname', // 账号/昵称
+    'member.role.select.default.role': 'All roles', // 全部角色
     'member.start.this': 'enable this ',//启用此
     'member.stop.this': 'disable this ',//禁用此
     'member.change.group.failed': 'Failed to change affiliated team',//修改所属团队失败
@@ -709,6 +719,27 @@ var en_US = {
     'member.log.no.data': 'No operation log',//暂无操作日志
     'member.add.member.phone.verify': 'The number of phone is already taken', // 手机号唯一性验证出错了
     'member.add.member.phone.exist': 'The number of phone was existed', // 该手机号已存在
+    'member.position': 'Position', // 职务
+    'member.phone': 'Phone number', // 手机
+    'member.sale.goal': 'Personal Sales Target', // 个人销售目标
+    'member.no.more.tips': 'There is no more member list', // 没有更多成员信息了
+    'member.is.get.department.lists': 'Getting department list', // 正在获取部门列表
+    'member.no.department': 'Department non-exists', // 暂无此部门
+    'member.search.department.by.name': 'Enter department name for searching', // 输入部门名称搜索
+    'member.is.get.position.lists': 'Getting position list', // 正在获取职务列表
+    'member.select.position': 'Please select position', // 请选择职务
+    'member.no.position': 'No position', // 暂无职务
+    'member.search.position.by.name': 'Enter position name for searching', // 输入职务名称搜索
+    'member.add.position': 'Add', // 添加职务
+    'member.position.name.label': 'Name', // 职务名称
+    'member.position.name.placeholder': '', // 请输入职务名称
+    'member.team.add.child.department': 'Add sub department', // 添加子部门
+    'member.group.sales.goal': 'Department Sales Target', // 部门销售目标
+    'member.selected.member.count': '{count} selected', // 已选{count}
+    'member.position.set.default.failed': '', // 设置默认角色失败
+    'member.position.edit.office': '', // 编辑职务
+    'member.position.delete.office': '', // 删除职务
+    'member.position.set.default': '', // 设为默认
     //后台管理-成员end
     //组织管理start
     'organization.no.organization.tip': 'No organization,please add one first',//暂无组织，请先添加
@@ -741,6 +772,11 @@ var en_US = {
     'organization.get.add.organization.member.list.failed': 'Failed to get member lists that who can join  the organization',//获取可加入组织的成员列表失败
     'organization.no.realms': 'There is no realm',//还没有安全域诶..
     //组织管理end
+
+    // 后台管理-竞品start
+    'competing.product.add.placeholder': 'Add competing product', // 添加竞品
+    // 后台管理-竞品end
+
     //应用管理start
     'app.title': 'application management', // 应用管理
     'app.search.placeholder': 'name/describe', // 应用名/描述
@@ -950,7 +986,7 @@ var en_US = {
     'config.product.type': 'Product type',//产品类型
     'config.product.select.tip': 'Please choose products (Multiple choices)',//请选择产品（可多选）
     'config.product.js.collect.user': 'Use JS script to collect user data',//使用JS脚本采集用户数据
-    'config.product.list.import': 'Import {type} Products',//导入{type}产品
+    'config.product.list.import': 'Import Products',//导入产品
     'config.product.import.tip': 'You have integrated {type} to import the following {type} products',//您已集成{type}，可以导入以下{type}的产品
     'config.product.import.finish': 'Import finished',//导入完成
     'config.product.import.failed': 'Import failed',//导入失败
@@ -2943,6 +2979,8 @@ var en_US = {
     'clue.item.acceess.channel': 'Detail: "{content}"',//详情：“{content}”
     'clue.show.no.show.tip': 'There has {num} notices not showing',//还有{num}个提醒未展示
     'clue.close.all.noty': 'Close all notices',//关闭所有提醒？
-    'clue.fail.customer.trace.statics': 'Failed to get trace type statics!'//获取跟进记录的分类统计失败
+    'clue.fail.customer.trace.statics': 'Failed to get trace type statics!',//获取跟进记录的分类统计失败
+    'apply.approve.assign.sales': 'Assgin sales',//分配销售
+    'apply.select.approver.type': 'Please select apply type'//请选择审批人类型
 };
 export default en_US;
