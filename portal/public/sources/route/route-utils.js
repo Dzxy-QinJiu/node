@@ -184,6 +184,18 @@ function dealWorkFlowConfigRoute(userRoutes, workFlowConfigList) {
     }, {
         id: 'documentwriting_apply_management',//路由配置中路由id
         configType: 'documentwriting'//获取后端返回的申请流程配置中流程的类型
+    }, {
+        id: 'app_user_manage_apply',//路由配置中路由id
+        configType: 'userapply'//获取后端返回的申请流程配置中流程的类型
+    }, {
+        id: 'leave_apply_management',//路由配置中路由id
+        configType: 'leave'//获取后端返回的申请流程配置中流程的类型
+    }, {
+        id: 'sales_bussiness_apply_management',//路由配置中路由id
+        configType: 'businessopportunities'//获取后端返回的申请流程配置中流程的类型
+    }, {
+        id: 'bussiness_apply_management',//路由配置中路由id
+        configType: 'businesstrip'//获取后端返回的申请流程配置中流程的类型
     }];
     _.forEach(REPORTANDDOUCMENTMAP, item => {
         if (!workFlowConfigList || _.indexOf(_.map(workFlowConfigList, 'type'), item.configType) < 0 ) {
