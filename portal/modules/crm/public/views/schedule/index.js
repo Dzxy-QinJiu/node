@@ -136,18 +136,17 @@ class CrmSchedule extends React.Component {
     };
 
     updateScheduleList = (newItem, type) => {
+        let scheduleList = this.state.scheduleList;
         //如果是新增一个提醒
         if (type === 'add') {
             newItem.edit = false;
-            this.state.scheduleList.unshift(newItem);
+            scheduleList.unshift(newItem);
         } else if (type === 'delete') {
-            this.state.scheduleList = _.filter(this.state.scheduleList, (list) => {
+            scheduleList = _.filter(scheduleList, (list) => {
                 return list.id !== newItem.id;
             });
         }
-        this.setState({
-            scheduleList: this.state.scheduleList
-        });
+        this.setState({ scheduleList });
     };
 
     toggleScheduleContact = (item, flag) => {
@@ -244,13 +243,16 @@ class CrmSchedule extends React.Component {
                         </Button>
                     )}
                 </div>
-                {this.state.isLoadingScheduleList ? (<Spinner/>) : _.get(this.state, 'scheduleList[0]') ?
+                {this.state.isLoadingScheduleList && !this.state.lastScheduleId ? (<Spinner/>) : _.get(this.state, 'scheduleList[0]') ?
                     this.renderScheduleContent() : (
                         <NoDataIconTip tipContent={Intl.get('common.no.more.schedule', '暂无计划')}/>)}
             </RightPanelScrollBar>
         );
     }
 }
-
+CrmSchedule.propTypes = {
+    curCustomer: PropTypes.object,
+    isMerge: PropTypes.bool
+};
 module.exports = CrmSchedule;
 
