@@ -121,7 +121,7 @@ class componentEdit extends React.Component {
             'err-tip': hasErrTip
         });
         return (
-            <div className="edit-container" key={formItem.key}>
+            <div className="approve-edit-container" key={formItem.key}>
                 <div className="component-row">
                     <span className="label-components">{Intl.get('apply.components.name', '组件名称')}</span>
                     <span className="text-components">

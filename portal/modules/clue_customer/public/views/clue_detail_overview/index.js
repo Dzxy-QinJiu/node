@@ -601,7 +601,7 @@ class ClueDetailOverview extends React.Component {
                     <div className="clue-info-label">
                         {Intl.get('clue.customer.associate.customer', '关联客户')}：
                     </div>
-                    <div className="clue-info-detail">
+                    <div className="clue-info-detail has-associated-customer">
                         <CustomerSuggest
                             field='customer_id'
                             hasEditPrivilege={associatedPrivilege}
