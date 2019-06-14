@@ -66,3 +66,12 @@ exports.setSalesRoleGoal = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+// 编辑某个角色的名称/容量
+exports.editPosition = (req, res) => {
+    officeManageService.editPosition(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

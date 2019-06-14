@@ -50,7 +50,7 @@ exports.setDefautRole = (id) => {
 exports.editPosition = (updateObj) => {
     let Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/sales/setting/customer',
+        url: '/rest/sales/edit/role',
         type: 'put',
         dateType: 'json',
         data: updateObj,
@@ -58,7 +58,7 @@ exports.editPosition = (updateObj) => {
             Deferred.resolve(result);
         },
         error: (xhr) => {
-            Deferred.reject(xhr.responseJSON || Intl.get('member.add.failed', '添加失败！'));
+            Deferred.reject(xhr.responseJSON || Intl.get('common.edit.failed', '修改失败！'));
         }
     });
 

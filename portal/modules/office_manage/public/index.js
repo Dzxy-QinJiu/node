@@ -225,7 +225,8 @@ class OfficeManage extends React.Component {
             }
             this.setState({
                 positionList: positionList,
-                isShowAddPosition: true
+                isShowAddPosition: true,
+                mouseZoneHoverItemId: ''
             });
         } else if( flag === 'edit'){
             delete result.isEdit;
@@ -234,7 +235,8 @@ class OfficeManage extends React.Component {
             let index = _.findIndex(positionList, item => item.id === id);
             positionList.splice(index, 1, result);
             this.setState({
-                isShowEditPositionFlag: false
+                isShowEditPositionFlag: false,
+                mouseZoneHoverItemId: ''
             });
         }
 
@@ -243,7 +245,8 @@ class OfficeManage extends React.Component {
     handleCancelForm = (data) => {
         if (!this.state.isShowAddPosition) {
             this.setState({
-                isShowAddPosition: true
+                isShowAddPosition: true,
+                mouseZoneHoverItemId: ''
             });
         } else {
             let id = _.get(data, 'id');
@@ -253,7 +256,8 @@ class OfficeManage extends React.Component {
                 }
             });
             this.setState({
-                isShowEditPositionFlag: false
+                isShowEditPositionFlag: false,
+                mouseZoneHoverItemId: ''
             });
         }
     };
