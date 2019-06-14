@@ -10,7 +10,7 @@ var PrivilegeChecker = require('../../../../components/privilege/checker').Privi
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var AlertTimer = require('../../../../components/alert-timer');
 import {SearchInput} from 'antc';
-var SalesTeamAction = require('../action/sales-team-actions');
+const SalesTeamAction = require('../action/sales-team-actions');
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 
@@ -356,7 +356,6 @@ class LeftTree extends React.Component {
                         <div className="item-border-style"></div>
                     )
                 }
-
                 <GroupFrom
                     cancelSalesTeamForm={this.cancelEditGroup.bind(this,item )}
                     salesTeam={item}

@@ -574,7 +574,6 @@ SalesTeamStore.prototype.cancelEditMember = function() {
 SalesTeamStore.prototype.getIsAddMember = function() {
     this.isEditMember = false;
     this.isAddMember = true;
-
 };
 
 //取消添加成员

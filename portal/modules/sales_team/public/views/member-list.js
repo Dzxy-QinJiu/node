@@ -2,18 +2,17 @@
  * Created by xiaojinfeng on 2016/04/13.
  */
 
-var React = require('react');
-var createReactClass = require('create-react-class');
+const React = require('react');
+const createReactClass = require('create-react-class');
 import {InputNumber, Button, message, Icon} from 'antd';
-var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
-var DefaultUserLogoTitle = require('../../../../components/default-user-logo-title');
-var Spinner = require('../../../../components/spinner');
-var AlertTimer = require('../../../../components/alert-timer');
+const PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
+const Spinner = require('../../../../components/spinner');
+const AlertTimer = require('../../../../components/alert-timer');
 import {SearchInput} from 'antc';
-var classNames = require('classnames');
-var SalesTeamAction = require('../action/sales-team-actions');
-var MemberListEditAction = require('../action/member-list-edit-actions');
-var MemberListEditStore = require('../store/member-list-edit-store');
+const classNames = require('classnames');
+const SalesTeamAction = require('../action/sales-team-actions');
+const MemberListEditAction = require('../action/member-list-edit-actions');
+const MemberListEditStore = require('../store/member-list-edit-store');
 import salesTeamAjax from '../ajax/sales-team-ajax';
 import Trace from 'LIB_DIR/trace';
 import MemberInfo from 'MOD_DIR/member_manage/public/view/member-info';
@@ -184,7 +183,6 @@ const MemberList = createReactClass({
         if (this.state.teamConfirmVisible || this.state.memberConfirmVisible) {
             return;
         }
-
         if (!this.props.isAddMember) {
             this.resetAddMemberList();
             SalesTeamAction.getIsAddMember();
@@ -198,8 +196,8 @@ const MemberList = createReactClass({
             return;
         }
         if (!this.props.isEditMember) {
-            this.resetCurShowTeamMemberObj();
             SalesTeamAction.getIsEditMember();
+            this.resetCurShowTeamMemberObj();
             this.cleanSearchInput();
         }
     },
@@ -231,7 +229,7 @@ const MemberList = createReactClass({
         }
         if (this.props.isAddMember) {
             this.setState({
-                selectedRowKeys: [],
+                selectedRowKeys: []
             });
             SalesTeamAction.cancelAddMember();
             this.resetAddMemberList();
@@ -302,7 +300,7 @@ const MemberList = createReactClass({
             MemberListEditAction.addMember(saveMemberListObj);
             this.setState({
                 saveMemberListObj: saveMemberListObj,
-                selectedRowKeys: [],
+                selectedRowKeys: []
             });
             this.cleanSearchInput();
         }
@@ -417,11 +415,6 @@ const MemberList = createReactClass({
         this.setState({
             selectedRowKeys: selectedRowKeys
         });
-        if (selectedRowKeys.length) {
-            if (!this.props.isAddMember) {
-                this.editMember();
-            }
-        }
     },
 
     // 渲染当前正在展示的团队成员列表，使用table的方式
@@ -438,12 +431,17 @@ const MemberList = createReactClass({
             onChange: this.onSelectChange,
         };
 
-        const hasSelected = _.get(selectedRowKeys, 'length');
+        const hasSelected = _.get(selectedRowKeys, 'length', 0);
+        if (hasSelected) {
+            if (!this.props.isAddMember) {
+                this.editMember();
+            }
+        }
         let height = this.state.memberListHeight - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
         let tableHeight = height - tableHeadHeight;
         let operationZoneWidth = this.props.salesTeamMemberWidth;
         return (
-            <div className="member-table-container" style={{height: this.state.memberListHeight}}>
+            <div className="member-table-container" style={{height: height}}>
                 {
                     hasSelected ? (
                         <div className='operation-zone' style={{width: operationZoneWidth}}>
@@ -451,11 +449,7 @@ const MemberList = createReactClass({
                                 {Intl.get('member.selected.member.count', '已选{count}', {count: hasSelected})}
                             </span>
                             {
-                                this.props.isAddMember ? this.renderAddBtns()
-                                    : null
-                            }
-                            {
-                                this.props.isEditMember ? this.renderEditBtns() : null
+                                this.props.isAddMember ? this.renderAddBtns() : this.renderEditBtns()
                             }
                         </div>
                     ) : (
@@ -463,7 +457,9 @@ const MemberList = createReactClass({
                             <span className="member-top-operation-div-title">
                                 {this.state.curShowTeamMemberObj.groupName || ''}
                             </span>
-                            {this.state.isLoadingSalesGoal || this.state.getSalesGoalErrMsg ? null : this.renderSalesGoals()}
+                            {
+                                this.state.isLoadingSalesGoal || this.state.getSalesGoalErrMsg ? null :
+                                    this.renderSalesGoals()}
                         </div>
                     )
                 }
@@ -520,22 +516,6 @@ const MemberList = createReactClass({
             selectedUserSize: selectedUserSize,
             selectedSize: selectedOwnerSize + selectedUserSize + selectedManagerSize
         };
-    },
-
-    //将选中成员加为XXX的处理
-    handleAddMember(className, type) {
-        if (className && className.indexOf('member-btn-enable') !== -1) {
-            //将选中成员加为XXX的处理
-            this.state.addMemberList.forEach(function(member) {
-                if (member && member.selected && !member.isHidden) {
-                    member.roleType = type;//添加成员的角色，负责人：owner,秘书：manager,成员：user
-                    member.isHidden = true;//该成员已选择添加了，在添加列表中则不显示
-                }
-            });
-            this.setState({
-                addMemberList: this.state.addMemberList
-            });
-        }
     },
 
     //删除团队成员的处理
@@ -748,7 +728,9 @@ const MemberList = createReactClass({
 
     hideSaveTooltip: function() {
         let type = this.props.isAddMember ? 'add' : 'edit';
-        MemberListEditAction.clearSaveFlags(type, this.state.saveMemberListResult, this.state.saveMemberListObj);
+        let saveResult = this.state.saveMemberListResult;
+        let saveObj = this.state.saveMemberListObj;
+        MemberListEditAction.clearSaveFlags(type, saveResult, saveObj);
     },
 
     //渲染'设为xx'按钮
@@ -868,7 +850,7 @@ const MemberList = createReactClass({
     },
 
     renderMemberZoneData() {
-        let memberListContainerH = this.state.memberListHeight;
+        let memberListContainerH = this.state.memberListHeight - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
         let addMemberList = this.state.addMemberList; // 添加成员的数据
         let searchValue = this.state.searchValue;
         if (searchValue) {
@@ -1170,7 +1152,7 @@ const MemberList = createReactClass({
                             {Intl.get('common.batch.self.sales.target', '批量设置个人销售目标')}
                         </Button> :
                         <div className="sales-goals-item">
-                            <span className="sales-goals-label">{Intl.get('sales.team.personal', '个人')}：</span>
+                            <span className="sales-goals-label">{Intl.get('sales.team.personal', '个人')}:</span>
                             <InputNumber
                                 className="member-goals-input"
                                 value={this.turnGoalToShowData(this.state.salesGoals.member_goal)}
