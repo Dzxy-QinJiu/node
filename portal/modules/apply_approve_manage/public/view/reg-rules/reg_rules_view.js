@@ -11,7 +11,7 @@ import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camu
 require('../../style/reg-rules.less');
 require('../../style/diagram-js.css');
 import classNames from 'classnames';
-import {Checkbox, Radio, Button} from 'antd';
+import {Checkbox, Radio, Button, message} from 'antd';
 const RadioGroup = Radio.Group;
 import assign from 'lodash/assign';
 // import CamundaModdleDescriptor from 'camunda-bpmn-moddle/camunda';
@@ -319,6 +319,7 @@ class RegRulesView extends React.Component {
             var applyId = _.get(this, 'props.applyTypeData.id');
             //表单的内容不需要提交
             applyApproveManageAction.saveSelfSettingWorkFlowRules(applyId,applyRulesAndSetting,() => {
+                message.success('保存成功');
                 this.props.updateRegRulesView(applyRulesAndSetting);
             });
         });
@@ -403,13 +404,14 @@ class RegRulesView extends React.Component {
         if (!previousNode) {
             //如果上一个节点不存在，那就指定为网关节点
             previousNode = _.find(defaultBpmnNode, item => item.type === 'ExclusiveGateway');
+
         }
-        if (previousNode.type === 'EndEvent') {
+        if (_.get(previousNode,'type') === 'EndEvent') {
             //删除最后一个节点
             bpmnNodeFlow.pop();
             previousNode = _.last(bpmnNodeFlow);
         }
-        if (previousNode.type === 'ExclusiveGateway') {
+        if (_.get(previousNode,'type') === 'ExclusiveGateway') {
             var nodeIndexArr = applyFlow.split('_');
             var newIndex = _.last(nodeIndexArr) + '_' + '1';
             var newNodeObj = {
@@ -435,18 +437,30 @@ class RegRulesView extends React.Component {
 
             }
         } else {
-            var previousNodeIndex = _.get(previousNode, 'flowIndex');
-            var nodeIndexArr = _.split(previousNodeIndex, '_');
-            nodeIndexArr.splice(nodeIndexArr.length - 1, 1, parseInt(_.last(nodeIndexArr)) + 1);
-            var newIndex = nodeIndexArr.join('_');
-            previousNode.next = `UserTask_${newIndex}`;
-            var newNodeObj = {
-                name: `UserTask_${newIndex}`,
-                id: `UserTask_${newIndex}`,
-                type: 'UserTask',
-                previous: `UserTask_${previousNodeIndex}`,
-                flowIndex: `${newIndex}`
-            };
+            //如果是第一个节点
+            if (previousNode){
+                var previousNodeIndex = _.get(previousNode, 'flowIndex');
+                var nodeIndexArr = _.split(previousNodeIndex, '_');
+                nodeIndexArr.splice(nodeIndexArr.length - 1, 1, parseInt(_.last(nodeIndexArr)) + 1);
+                var newIndex = nodeIndexArr.join('_');
+                previousNode.next = `UserTask_${newIndex}`;
+                var newNodeObj = {
+                    name: `UserTask_${newIndex}`,
+                    id: `UserTask_${newIndex}`,
+                    type: 'UserTask',
+                    previous: `UserTask_${previousNodeIndex}`,
+                    flowIndex: `${newIndex}`
+                };
+            }else{
+                var newIndex = '1_2';
+                var newNodeObj = {
+                    name: `UserTask_${newIndex}`,
+                    id: `UserTask_${newIndex}`,
+                    type: 'UserTask',
+                    flowIndex: `${newIndex}`
+                };
+            }
+
         }
         for (var key in data) {
             newNodeObj[key] = data[key];
@@ -718,14 +732,6 @@ class RegRulesView extends React.Component {
                     </div>
                 </GeminiScrollbar>
                 <div className="save-cancel-container">
-                    <ul className="buttons">
-                        <li>
-                            <a id="js-download-diagram" href title="download BPMN diagram"
-                                onClick={this.handleDownLoadBPMN}>
-                                下载BPMN
-                            </a>
-                        </li>
-                    </ul>
                     <SaveCancelButton
                         loading={this.state.saveRulesWorkFlowLoading}
                         handleSubmit={this.handleSubmitApproveApply}

@@ -3072,6 +3072,7 @@ var zh_CN = {
     'common.current.year': '本年',
     'common.rank': '名次',
     'common.sales.productivity.analysis': '销售生产力分析',
-    'apply.approve.set.approver': '指定审批人'
+    'apply.approve.set.approver': '指定审批人',
+    'apply.select.approver.type': '请选择审批人类型'
 };
 export default zh_CN;

@@ -2968,6 +2968,7 @@ var en_US = {
     'common.current.year': 'current year',//本年
     'common.rank': 'rank',//名次
     'common.sales.productivity.analysis': 'Sales productivity analysis',//销售生产力分析
-    'apply.approve.assign.sales': 'Assgin sales'//分配销售
+    'apply.approve.assign.sales': 'Assgin sales',//分配销售
+    'apply.select.approver.type': 'Please select apply type'//请选择审批人类型
 };
 export default en_US;
