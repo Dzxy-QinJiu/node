@@ -149,7 +149,7 @@ export function getSalesRankingChart(role) {
                     _.each(dimensions, (item, index) => {
                         const count = _.get(params, 'data.countArr[' + index + ']', '');
                         const rank = _.get(params, 'data.realValue[' + index + ']', '');
-                        const countText = `${item}: ${count}, 排名: ${rank}`;
+                        const countText = `${item}: ${count}, ${Intl.get('common.ranking', '排名')}: ${rank}`;
 
                         content.push(countText);
                     });
