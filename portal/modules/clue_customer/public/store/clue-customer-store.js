@@ -311,7 +311,7 @@ ClueCustomerStore.prototype.updateCustomerLastContact = function(traceObj) {
     if (_.get(traceObj, 'lead_id')) {
         let updateTraceCustomer = _.find(this.curClueLists, curClue => curClue.id === traceObj.lead_id);
         if (updateTraceCustomer) {
-            if (_.get(updateTraceCustomer, 'customer_trces[0]')) {
+            if (_.get(updateTraceCustomer, 'customer_traces[0]')) {
                 updateTraceCustomer.customer_traces[0].remark = traceObj.remark;
                 updateTraceCustomer.customer_traces[0].add_time = traceObj.time;
             } else {

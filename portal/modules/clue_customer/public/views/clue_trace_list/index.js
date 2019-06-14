@@ -600,8 +600,6 @@ class ClueTraceList extends React.Component {
             ClueTraceAction.updateClueTrace(queryObj, () => {
                 //如果补充的是最后一条跟进记录（如果是电话类型的需要是打通的电话类型），更新列表中的最后联系
                 if (_.get(this.state, 'customerRecord[0].id') === item.id) {
-                    //打通电话的才会更新最后联系
-                    if (item.billsec === 0) return;
                     _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(item);
                 }
             });
