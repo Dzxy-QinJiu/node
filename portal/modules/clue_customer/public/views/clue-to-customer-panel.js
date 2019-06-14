@@ -6,7 +6,8 @@ require('../css/clue-to-customer-panel.less');
 import { Row, Col, Button } from 'antd';
 import ajax from 'ant-ajax';
 import { RightPanel } from 'CMP_DIR/rightPanel';
-import ModalDialog from 'CMP_DIR/ModalDialog';
+//联系人表单
+const ContactForm = require('MOD_DIR/crm/public/views/contacts/contact-form');
 const noop = function() {};
 
 class ClueToCustomerPanel extends React.Component {
@@ -333,6 +334,18 @@ class ClueToCustomerPanel extends React.Component {
         );
     }
 
+    //渲染联系人表单
+    renderContactForm(contact, contactIndex) {
+        contact = {contact};
+
+        return (
+            <ContactForm
+                type="edit"
+                contact={contact}
+            />
+        );
+    }
+
     //渲染合并客户区块
     renderMergeCustomerBlock() {
         const customer = this.state.mergedCustomer;
@@ -352,7 +365,11 @@ class ClueToCustomerPanel extends React.Component {
                     </Col>
                 </Row>
                 {_.map(customer.contacts, (contact, contactIndex) => {
-                    return this.renderContact(contact, contactIndex);
+                    if (contact.isNew) {
+                        return this.renderContactForm(contact, contactIndex);
+                    } else {
+                        return this.renderContact(contact, contactIndex);
+                    }
                 })}
                 <div className="btn-block">
                     <Button onClick={this.hideMergeCustomerBlock}>{Intl.get('common.cancel', '取消')}</Button>
