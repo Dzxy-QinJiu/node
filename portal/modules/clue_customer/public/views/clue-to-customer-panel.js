@@ -258,13 +258,15 @@ class ClueToCustomerPanel extends React.Component {
 
     //渲染已存在客户区块
     renderExistingCustomersBlock() {
+        const existingCustomers = this.props.existingCustomers;
+
         return (
             <div className="exists-customer-block">
                 <div className="title">
-                    <b>已存在客户</b>
+                    <b>{Intl.get('common.has.similar.customers', '有{count}个信息相似的客户', {count: existingCustomers.length})}</b>
                 </div>
 
-                {_.map(this.props.existingCustomers, (customer, index) => {
+                {_.map(existingCustomers, (customer, index) => {
                     return (
                         <Row>
                             <Col span={12}>
