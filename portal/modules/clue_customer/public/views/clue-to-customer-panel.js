@@ -150,9 +150,11 @@ class ClueToCustomerPanel extends React.Component {
         //和客户联系人的名称及电话都不重复的线索联系人
         let noneDupClueContacts = _.filter(clue.contacts, clueContact => !clueContact.isDup);
 
-        //添加客户id
         _.each(noneDupClueContacts, noneDupClueContact => {
+            //添加客户id
             noneDupClueContact.customer_id = mergedCustomer.id;
+            //标记为新联系人
+            noneDupClueContact.isNew = true;
         });
 
         //将这些不重复的联系人合并到客户联系人
@@ -285,6 +287,52 @@ class ClueToCustomerPanel extends React.Component {
         );
     }
 
+    //渲染联系人
+    renderContact(contact, contactIndex) {
+        return (
+            <div className="exist-customer">
+                <Row>
+                    <Col span={4}>
+                        {Intl.get('call.record.contacts', '联系人')}：
+                    </Col>
+                    <Col span={20}>
+                        {contact.name}
+                        {contact.replaceName ? (
+                            <div>
+                                修改姓名为“{contact.replaceName}”？
+                                <Button
+                                    type="primary"
+                                    onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
+                                >
+                                确认修改
+                                </Button>
+                                <Button
+                                    onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
+                                >
+                                不修改
+                                </Button>
+                            </div>
+                        ) : null}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={4}>
+                        {Intl.get('common.phone', '电话')}：
+                    </Col>
+                    <Col span={20}>
+                        {_.map(contact.phone, (phone, phoneIndex) => {
+                            return (
+                                <div>
+                                    {phone}
+                                </div>
+                            );
+                        })}
+                    </Col>
+                </Row>
+            </div>
+        );
+    }
+
     //渲染合并客户区块
     renderMergeCustomerBlock() {
         const customer = this.state.mergedCustomer;
@@ -304,48 +352,7 @@ class ClueToCustomerPanel extends React.Component {
                     </Col>
                 </Row>
                 {_.map(customer.contacts, (contact, contactIndex) => {
-                    return (
-                        <div className="exist-customer">
-                            <Row>
-                                <Col span={4}>
-                                    {Intl.get('call.record.contacts', '联系人')}：
-                                </Col>
-                                <Col span={20}>
-                                    {contact.name}
-                                    {contact.replaceName ? (
-                                        <div>
-                                            修改姓名为“{contact.replaceName}”？
-                                            <Button
-                                                type="primary"
-                                                onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
-                                            >
-                                            确认修改
-                                            </Button>
-                                            <Button
-                                                onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
-                                            >
-                                            不修改
-                                            </Button>
-                                        </div>
-                                    ) : null}
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={4}>
-                                    {Intl.get('common.phone', '电话')}：
-                                </Col>
-                                <Col span={20}>
-                                    {_.map(contact.phone, (phone, phoneIndex) => {
-                                        return (
-                                            <div>
-                                                {phone}
-                                            </div>
-                                        );
-                                    })}
-                                </Col>
-                            </Row>
-                        </div>
-                    );
+                    return this.renderContact(contact, contactIndex);
                 })}
                 <div className="btn-block">
                     <Button onClick={this.hideMergeCustomerBlock}>{Intl.get('common.cancel', '取消')}</Button>
