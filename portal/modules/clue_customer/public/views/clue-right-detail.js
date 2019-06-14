@@ -12,13 +12,13 @@ import {Button, Tabs, message, Icon} from 'antd';
 var TabPane = Tabs.TabPane;
 const TAB_KEYS = {
     OVERVIEW_TAB: '1',//概览页
-    DYNAMIC_TAB: '2',//动态
-    CLUE_TRACE_LIST: '3'//跟进记录
+    CLUE_TRACE_LIST: '2',//跟进记录
+    DYNAMIC_TAB: '3',//动态
 };
 var tabNameList = {
     '1': Intl.get('clue.detail.info', '线索信息'),
-    '2': Intl.get('user.change.record', '变更记录'),
-    '3': Intl.get('menu.trace', '跟进记录')
+    '2': Intl.get('menu.trace', '跟进记录'),
+    '3': Intl.get('user.change.record', '变更记录')
 };
 var noop = function() {
 
@@ -309,18 +309,6 @@ class ClueRightPanel extends React.Component {
                                     ) : null}
                                 </TabPane>
                                 <TabPane
-                                    tab={tabNameList[TAB_KEYS.DYNAMIC_TAB]}
-                                    key={TAB_KEYS.DYNAMIC_TAB}
-                                >
-                                    {this.state.activeKey === TAB_KEYS.DYNAMIC_TAB ? (
-                                        <ClueDynamic
-                                            currentId={curClue.id}
-                                            divHeight={divHeight}
-                                            ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
-                                        />
-                                    ) : null}
-                                </TabPane>
-                                <TabPane
                                     tab={tabNameList[TAB_KEYS.CLUE_TRACE_LIST]}
                                     key={TAB_KEYS.CLUE_TRACE_LIST}
                                 >
@@ -329,6 +317,18 @@ class ClueRightPanel extends React.Component {
                                             curClue={curClue}
                                             divHeight={divHeight}
                                             updateCustomerLastContact={this.props.updateCustomerLastContact}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={tabNameList[TAB_KEYS.DYNAMIC_TAB]}
+                                    key={TAB_KEYS.DYNAMIC_TAB}
+                                >
+                                    {this.state.activeKey === TAB_KEYS.DYNAMIC_TAB ? (
+                                        <ClueDynamic
+                                            currentId={curClue.id}
+                                            divHeight={divHeight}
+                                            ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
                                         />
                                     ) : null}
                                 </TabPane>

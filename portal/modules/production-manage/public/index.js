@@ -18,12 +18,12 @@ let Spinner = require('../../../components/spinner');
 let openTimeout = null;//打开面板时的时间延迟设置
 let hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 let util = require('./utils/production-util');
-import {Button, Select} from 'antd';
+import {Button, Icon} from 'antd';
 import Trace from 'LIB_DIR/trace';
-import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {getIntegrationConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import ProductDropDown from './views/product-dropdown';
+import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 
 //用来存储获取的oplate\matomo产品列表，不用每次添加产品时都获取一遍
 let productList = [];
@@ -159,7 +159,7 @@ class ProductionManage extends React.Component {
                 full_image: production.full_image,
                 image: production.preview_image,
                 specifications: {
-                    label: Intl.get('config.product.spec', '规格或版本') + ':',
+                    label: Intl.get('config.product.spec', '规格/版本') + ':',
                     value: production.specifications,
                     showOnCard: true
                 },
@@ -221,56 +221,82 @@ class ProductionManage extends React.Component {
     };
     //渲染操作按钮区
     renderTopNavOperation = () => {
-        return (<ButtonZones>
-            <PrivilegeChecker check="PRODUCTS_MANAGE" className="block float-r btn-item-container"
-                onClick={this.events_showAddForm.bind(this, util.CONST.ADD)}
-                data-tracename="添加产品">
-                <Button className="btn-item btn-m-r-2">
-                    {Intl.get('config.product.add', '添加产品')}
-                </Button>
-            </PrivilegeChecker>
-            {this.isOplateOrMatomoType(this.state.integrateType) && _.get(this.state, 'productList[0]') ? (
-                <ProductDropDown integrateType={this.state.integrateType} productList={this.state.productList}
-                    afterOperation={this.events_afterOperation}/>
-            ) : null}
-        </ButtonZones>);
+        return (
+            <div className='condition-operator'>
+                <div className='pull-left'>
+                    <PrivilegeChecker
+                        check="PRODUCTS_MANAGE"
+                        className="btn-item"
+                    >
+                        <Button
+                            data-tracename="添加成员"
+                            onClick={this.events_showAddForm.bind(this, util.CONST.ADD)}
+                        >
+                            <Icon type="plus" />{Intl.get('config.product.add', '添加产品')}
+                        </Button>
+                    </PrivilegeChecker>
+                </div>
+                <div className='pull-right'>
+                    {
+                        this.isOplateOrMatomoType(this.state.integrateType) && _.get(this.state, 'productList[0]') ? (
+                            <ProductDropDown
+                                integrateType={this.state.integrateType}
+                                productList={this.state.productList}
+                                afterOperation={this.events_afterOperation}
+                            />
+                        ) : null
+                    }
+                </div>
+            </div>
+        );
     };
 
     render() {
-        var firstLoading = this.state.isLoading;
+        let firstLoading = this.state.isLoading;
+        let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
+        let cardContainerHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
         return (
-            <div className="production_manage_style backgroundManagement_production_content" data-tracename="产品管理">
-                {this.renderTopNavOperation()}
-                {
-                    firstLoading ? <div className="firstLoading">
-                        <Spinner/>
-                    </div> : null
-                }
-                <RightCardsContainer
-                    currentCard={this.state.currentProduction}
-                    cardListSize={this.state.userListSize}
-                    curCardList={this.getCardList()}
-                    listTipMsg={this.state.listTipMsg}
-                    curPage={this.state.curPage}
-                    pageSize={this.state.pageSize}
-                    searchPlaceHolder={Intl.get('common.product.name', '产品名称')}
-                    updatePageSize={this.events_updatePageSize.bind(this)}
-                    changePageEvent={this.events_onChangePage.bind(this)}
-                    showCardInfo={this.events_showDetail.bind(this)}
-                    renderAddAndImportBtns={this.renderAddAndImportBtns}
-                    showAddBtn={this.hasNoFilterCondition()}
-                    deleteItem={this.deleteItem}
+            <div className='production-manage-container' style={{height: height}}>
+                <div
+                    className="production_manage_style backgroundManagement_production_content"
+                    data-tracename="产品管理"
+                    style={{height: height}}
                 >
-                    {this.state.formShow ?
-                        <Production
-                            integrateType={this.state.integrateType}
-                            formType={this.state.currentProduction.id ? util.CONST.EDIT : util.CONST.ADD}
-                            info={this.state.currentProduction}
-                            closeRightPanel={this.events_closeRightPanel}
-                            afterOperation={this.events_afterOperation}
-                        /> : null}
-                    {this.state.deleteError ? (<message></message>) : null}
-                </RightCardsContainer>
+                    <div className='production-top-nav'>
+                        {this.renderTopNavOperation()}
+                    </div>
+                    {
+                        firstLoading ? <div className="firstLoading">
+                            <Spinner/>
+                        </div> : null
+                    }
+                    <RightCardsContainer
+                        currentCard={this.state.currentProduction}
+                        cardListSize={this.state.userListSize}
+                        curCardList={this.getCardList()}
+                        listTipMsg={this.state.listTipMsg}
+                        curPage={this.state.curPage}
+                        pageSize={this.state.pageSize}
+                        searchPlaceHolder={Intl.get('common.product.name', '产品名称')}
+                        updatePageSize={this.events_updatePageSize.bind(this)}
+                        changePageEvent={this.events_onChangePage.bind(this)}
+                        showCardInfo={this.events_showDetail.bind(this)}
+                        renderAddAndImportBtns={this.renderAddAndImportBtns}
+                        showAddBtn={this.hasNoFilterCondition()}
+                        deleteItem={this.deleteItem}
+                        cardContainerHeight={cardContainerHeight}
+                    >
+                        {this.state.formShow ?
+                            <Production
+                                integrateType={this.state.integrateType}
+                                formType={this.state.currentProduction.id ? util.CONST.EDIT : util.CONST.ADD}
+                                info={this.state.currentProduction}
+                                closeRightPanel={this.events_closeRightPanel}
+                                afterOperation={this.events_afterOperation}
+                            /> : null}
+                        {this.state.deleteError ? (<message></message>) : null}
+                    </RightCardsContainer>
+                </div>
             </div>
         );
     }

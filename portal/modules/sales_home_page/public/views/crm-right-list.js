@@ -586,7 +586,7 @@ CrmRightList.propTypes = {
     refreshDataByChangeSales: PropTypes.func,
     getSalesListHeight: PropTypes.func,
     pendingApproveMemberObj: PropTypes.object,
-    isGetMemberApplyList: PropTypes.boolean
+    isGetMemberApplyList: PropTypes.bool
 };
 module.exports = CrmRightList;
 

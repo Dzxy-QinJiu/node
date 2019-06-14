@@ -162,7 +162,7 @@ class AddAndShowApplyList extends React.Component {
                 <Menu.Item>
                     <span onClick={this.copyApply.bind(this, record)}>{Intl.get('user.jscode.copy', '复制')}</span>
                 </Menu.Item>
-                {!record.approveCheck ? <Menu.Item>
+                {!record.approveCheck && record.customiz ? <Menu.Item>
                     <span onClick={this.deleteApply.bind(this, record)}>{Intl.get('common.delete', '删除')}</span>
                 </Menu.Item> : null}
 
@@ -257,45 +257,46 @@ class AddAndShowApplyList extends React.Component {
                         );
                     }
                 }
-            }, {
-                title: Intl.get('apply.approve.qualified.user', '可申用户'),
-                //todo 数据不全，后期会修改
-                dataIndex: 'default_users',
-                className: 'has-filter',
-                render: (text, record, index) => {
-                    if (record.showAddWorkFlowName) {
-                        return {
-                            children: text,
-                            props: {'colSpan': 0},
-                        };
-                    } else {
-                        return (<span className="approve-role">{text}</span>);
-                    }
-
-                }
-            }, {
-                title: Intl.get('common.operate', '操作'),
-                width: '240px',
-                className: '',
-                render: (text, record, index) => {
-                    if (record.showAddWorkFlowName) {
-                        return {
-                            children: text,
-                            props: {'colSpan': 0},
-                        };
-                    } else {
-                        return (
-                            <span className="operate-wrap">
-                                {record.isDeleting ? this.renderDeletingBtns(record) : this.renderOperateBtns(record) }
-                            </span>
-                        );
-                    }
-                }
             },
+            // {
+            //     title: Intl.get('apply.approve.qualified.user', '可申用户'),
+            //     //todo 数据不全，后期会修改
+            //     dataIndex: 'default_users',
+            //     className: 'has-filter',
+            //     render: (text, record, index) => {
+            //         if (record.showAddWorkFlowName) {
+            //             return {
+            //                 children: text,
+            //                 props: {'colSpan': 0},
+            //             };
+            //         } else {
+            //             return (<span className="approve-role">{text}</span>);
+            //         }
+            //
+            //     }
+            // }, {
+            //     title: Intl.get('common.operate', '操作'),
+            //     width: '240px',
+            //     className: '',
+            //     render: (text, record, index) => {
+            //         if (record.showAddWorkFlowName) {
+            //             return {
+            //                 children: text,
+            //                 props: {'colSpan': 0},
+            //             };
+            //         } else {
+            //             return (
+            //                 <span className="operate-wrap">
+            //                     {record.isDeleting ? this.renderDeletingBtns(record) : this.renderOperateBtns(record) }
+            //                 </span>
+            //             );
+            //         }
+            //     }
+            // },
         ];
         var height = calculateHeight() - APPLYAPPROVE_LAYOUT.PADDINGHEIGHT * 2;
         return (
-            <div className="apply-list-container" style={{height: height}}>
+            <div className="apply-list-container">
                 {this.state.showApplyDetailForm ? this.renderApplyDetail() : <AntcTable
                     columns={columns}
                     dataSource={this.state.showApplyList}

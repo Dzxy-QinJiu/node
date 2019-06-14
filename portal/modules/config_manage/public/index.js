@@ -4,7 +4,6 @@ var Alert = require('antd').Alert;
 var AlertTimer = require('CMP_DIR/alert-timer');
 import IpConfig from './views/ip-config';
 import RealmConfig from './views/realm-config';
-import TeleConfig from './views/tele-config';
 import Trace from 'LIB_DIR/trace';
 import CompetingProductManage from './views/competing-product';
 import CustomerStageManage from './views/customer-stage';
@@ -16,7 +15,6 @@ require('./css/index.less');
 const auths = {
     INDUSTRY: 'GET_CONFIG_INDUSTRY',//获取行业配置的权限
     IP: 'GET_CONFIG_IP',//获取IP配置的权限
-    TELECONFIG: 'CUSTOMER_INVALID_PHONE_GET',// 获取客服电话权限
     COMPETING_PRODUCT: 'CRM_COMPETING_PRODUCT',//竞品管理权限
     CRM_CUSTOMER_CONF_LABEL: 'CRM_CUSTOMER_CONF_LABEL',//客户阶段管理权限
     TEAM_ROLE_MANAGE: 'TEAM_ROLE_MANAGE',//销售角色管理权限

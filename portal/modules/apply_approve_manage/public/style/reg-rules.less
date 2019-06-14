@@ -1,6 +1,6 @@
 .reg-rule-container {
   #bpmn-container {
-    //display: none;
+    display: none;
   }
   .reg-rule-wrap {
     .rule-item {
@@ -101,17 +101,14 @@
       }
 
     };
-    //todo 待删除
-    img{
-      display: none;
-    }
+
     //添加节点的样式
     .rule-content.apply-node-lists{
       float: left;
       overflow: hidden;
       .item-node {
         float: left;
-        width: 50px;
+        width: 80px;
         margin-right: 21px;
         position: relative;
         .show-name {
@@ -119,16 +116,20 @@
           font-size: 12px;
           color: #333;
         }
+        .addition-text{
+          display: inline-block;
+          color:#999
+        }
         .iconfont.icon-close-btn {
           cursor: pointer;
           position: absolute;
-          right: 4px;
+          right: 33px;
           top: -3px;
         }
         .connet-bar {
           position: absolute;
           display: inline-block;
-          width: 30px;
+          width: 60px;
           top: 20px;
           border-bottom: 2px solid #B8D3EA;
           left: 41px;

@@ -1,0 +1,697 @@
+@import "../../../../public/css/common-variables";
+
+@group-tree-width: 300px;
+@group-tree-name-height: 60px;
+@border-color: #f3f5f7;
+@edit-team-form-height: 130px;
+@edit-teamName-form-height: 90px;
+
+.sales-team-manage-container {
+  padding: 12px;
+  .member-list-zone {
+    background: #fff;
+    //获取销售团队无数据或出错的提示
+    .nodata-msg-block {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: auto;
+    }
+
+    //正在加载的样式设置
+    .isloading {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      margin: auto;
+    }
+
+    .sales-team-table-block {
+      .member-zone {
+        float: left;
+      }
+      .sales-team-personnel {
+        font-size: 14px;
+        float: left;
+        .member-top-operation-div {
+          padding: 12px 24px;
+          height: 80px;
+          .member-top-operation-div-title {
+            float: left;
+            line-height: 46px;
+            font-size: 14px;
+          }
+          //销售目标
+          .sales-team-goals-container {
+            margin-left: 20px;
+            .icon-sales-goals {
+              float: left;
+              font-size: 24px;
+              line-height: 40px;
+            }
+            .team-sales-goal {
+              cursor: pointer;
+              margin: 8px 10px 0 0;
+            }
+            .self-sales-goal {
+              cursor: pointer;
+              margin: 8px 0 0 0;
+            }
+
+            .sales-goals-item {
+              display: inline-block;
+              margin-right: 5px;
+              position: relative;
+              top: -7px;
+              .ant-input-number-input-wrap {
+                height: 25px;
+                overflow: hidden;
+              }
+              .team-goals-input, .member-goals-input {
+                float: left;
+                width: 70px;
+                margin-top: 8px;
+                margin-right: 5px;
+                .ant-input-number-input {
+                  padding: 0 2px 0 7px;
+                }
+              }
+              .anticon-loading {
+                position: relative;
+                top: 10px;
+              }
+              .team-icon-container, .member-icon-container {
+                position: relative;
+                top: 12px;
+                .iconfont {
+                  margin: 0px 5px;
+                  font-size: 12px;
+                  cursor: pointer;
+                }
+                .iconfont.icon-choose {
+                  color: @icon_choose_color;
+                }
+                .iconfont.icon-close {
+                  margin-right: 10px;
+                  color: @icon_close_color;
+                }
+              }
+              .sales-goals-label {
+                float: left;
+                line-height: 46px;
+              }
+            }
+          }
+
+          .operation-top-btn-div {
+            float: right;
+            .operation-top-btn-div-label {
+              float: left;
+
+              .operation-top-btn {
+                width: 30px;
+                color: #7d8e98;
+                font-size: 24px;
+                float: left;
+                text-align: center;
+                margin-left: 15px;
+                cursor: pointer;
+
+                &.active-btn {
+                  color: #4d96d1;
+                }
+              }
+
+              .add-member-btn {
+                font-size: 26px;
+                line-height: 32px;
+              }
+            }
+
+          }
+
+        }
+        //团队内成员展示区域样式设置
+        .member-list-div {
+          // 操作区样式（销售目标、团队成员设置以及添加团队成员）
+          .operation-zone, .sale-goal-zone {
+            position: absolute;
+            top: 50px;
+            padding-right: 16px
+          }
+          .operation-zone {
+            .select-row-number {
+              padding-left: 24px;
+            }
+            .set-select-member-btns {
+              cursor: pointer;
+              display: inline-block;
+              .add-member-btn {
+                display: inline-block;
+                padding: 0 8px;
+              }
+            }
+          }
+          .sale-goal-zone {
+            .member-top-operation-div-title {
+              color: #333333;
+              padding-left: 24px;
+              font-size: 16px;
+            }
+            .sales-team-goals-container {
+              color: #999999;
+              display: inline-block;
+              float: right;
+              .sales-goal-value, .no-sale-goal-value {
+                padding-right: 24px;
+                .icon-update {
+                  padding: 0 5px;
+                  cursor: pointer;
+                  color: #8DA8C5;
+                }
+              }
+              .no-sale-goal-value {
+                cursor: pointer;
+                color: #8DA8C5;
+              }
+              .sales-goals-item {
+                display: inline-block;
+                .ant-input-number-input {
+                  height:24px;
+                }
+              }
+            }
+          }
+          .sales-team-member-tier {
+            //暂无数据，获取数据失败的提示样式
+            .member-list-tip {
+              position: absolute;
+              height: 20px;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              margin: auto;
+              text-align: center;
+              color: rgba(102, 102, 102, 0.66);
+            }
+          }
+          // table表格
+          .member-list-table {
+            border-top: 1px solid #E5E5E5;
+            .current-row, .current-row:hover{
+              background:#DFEAF3;
+            }
+            .ant-table-thead {
+              th {
+                color: #999 !important;
+              }
+            }
+            .ant-table-tbody {
+              cursor: pointer;
+              td {
+                font-size: 14px;
+                color: #333 !important;
+                .member-name {
+                  .accout {
+                    font-size: 16px;
+                    .icon-team-role {
+                      padding-right: 5px;
+                      color: #EFA246;
+                    }
+                    .icon-sale-team-manager {
+                      padding-right: 5px;
+                      color: #C44999;
+                      font-weight: bolder;
+                      width: 16px;
+                      height: 16px;
+                    }
+                    .sale-status-stop {
+                      padding-right: 5px;
+                      color: #CCCCCC;
+                    }
+                  }
+                  .nickname {
+                    font-size: 12px;
+                    color: #999;
+                  }
+                }
+                .member-status {
+                  color: #999;
+                }
+              }
+              .current-row, .current-row:hover {
+                background: #E4F2FE !important;
+              }
+            }
+          }
+        }
+        //右侧用户详情面板
+        .right-pannel-default {
+          width: 420px;
+          transform: translate(420px, 0);
+          padding: 0;
+          .no-user-logo-div {
+            width: 70px;
+            height: 70px;
+            line-height: 65px;
+            font-size: 30px;
+          }
+        }
+        // 添加团队成员的添加、取消样式
+        .operation-add-member {
+          cursor: pointer;
+          float: right;
+          .operation-add, .operation-cancel {
+            padding: 0 15px 0;
+            color: #8DA8C5;
+          }
+        }
+      }
+      .member-group-tabs {
+        overflow: hidden;
+        padding-top: 80px;
+        .ant-tabs {
+          border-left: 1px solid #E5E5E5;
+          border-top: 1px solid #E5E5E5;
+          .ant-tabs-bar .ant-tabs-nav .ant-tabs-tab{
+              padding: 10px 55px !important;
+          }
+        }
+        .sales-team-group {
+          width: @group-tree-width;
+          font-size: 14px;
+          .left-tree-ul {
+            padding: 16px 24px 16px;
+            .sales-team-group-li {
+              .sales-team-group-name-div {
+                cursor: pointer;
+                //左侧树项的背景设置
+                .item-border-style {
+                  position: absolute;
+                  height: 32px;
+                  width: 264px;
+                }
+                .left-tree-item-container {
+                  .sales-team-group-info, .member-info {
+                    position: relative;
+                    min-height: 32px;
+                    .sales-team-group-name , .member-info-name{
+                      span {
+                        line-height: 30px;
+                      }
+                      .sales-team-name-text {
+                        display: inline-block;
+                      }
+                      .sales-team-member-statistic, .member-statistic, .icon-more{
+                        float: right;
+                        padding-right: 8px;
+                      }
+                      .icon-more {
+                        color: #2196F3;
+                      }
+                    }
+                    .member-info-name {
+                      .sales-team-name-text {
+                        padding-left: 8px;
+                      }
+                    }
+                    .sales-team-group-pen {
+                      height: 30px;
+                      line-height: 30px;
+                      color: #B8BDBF;
+                    }
+                    .sale-team-delete-group {
+                      display: inline-block;
+                      float: right;
+                      .delete-group {
+                        color: #EB5E57;
+                        padding-right: 10px;
+                      }
+                      .cancel-delete {
+                        color: #999;
+                      }
+                    }
+                  }
+                  .sale-team-add-group {
+                    background-color: #E4F2FE;
+                  }
+                  .left-tree-arrow {
+                    float: left;
+                    height: 32px;
+                    line-height: 32px;
+                    padding: 0 8px;
+                    position: relative;
+                    z-index: 11;
+                    .icon-tree-arrow {
+                      font-size: 10px;
+                    }
+                    &:hover {
+                      .icon-tree-arrow {
+                        color: #4d96d1;
+                      }
+                    }
+                  }
+                }
+                &.select {
+                  color: #2196F3;
+                  .item-border-style {
+                    background-color: #E4F2FE !important;
+                  }
+                }
+
+                &:hover {
+                  .item-border-style {
+                    background-color: #F1F8FE;
+                  }
+                  .tree-operation-icon {
+                    display: block !important;
+                  }
+
+                  .tree-operation-btn-div {
+                    background-color: #E4F2FE !important;
+                  }
+                }
+                // 删除部门的样式
+                .sale-team-detele-item-group {
+                  background: #FBDFDD !important;
+                }
+                &.show-tree-operation {
+                  .tree-operation-icon {
+                    display: block !important;
+                  }
+                }
+
+                .tree-operation-div {
+                  width: 70px;
+                  height: 30px;
+                  line-height: 30px;
+                  text-align: center;
+                  z-index: 11;
+                  position: relative;
+                  float: right;
+                  right: 50px;
+                  display: inline-block;
+                  .icon-delete, .icon-update {
+                    margin-left: 5px;
+                  }
+                  .tree-operation-icon {
+                    float: left;
+                    display: none;
+                    &:hover {
+                      color: #2377bd;
+                    }
+                  }
+
+                  .tree-operation-btn-div {
+                    width: 80px;
+                    height: 81px;
+                    margin-top: -1px;
+                    position: absolute;
+                    top: 0;
+                    left: 46px;
+                    background-color: #ffffff;
+                    border-bottom: 1px solid @border-color;
+                    border-right: 1px solid @border-color;
+                    border-top: 1px solid @border-color;
+                    padding-top: 4px;
+
+                    .tree-operation-btn-div-item {
+                      height: 25px;
+                      line-height: 25px;
+                      cursor: pointer;
+                      margin-top: 5px;
+                      .operation-btn-item-span {
+                        padding-left: 5px;
+                      }
+                      &:hover {
+                        color: #2377bd;;
+                      }
+                    }
+                  }
+                }
+              }
+              .left-tree-children-ul {
+                padding-left: 20px;
+                display: none;
+              }
+              &.isLiSelect {
+                & > .left-tree-children-ul {
+                  display: block;
+                }
+
+              }
+
+            }
+          }
+
+          .add-sales-team-div {
+            padding: 10px;
+            .add-sales-team-div-btn {
+              height: 30px;
+              line-height: 30px;
+              text-align: center;
+              border: 1px solid #dfe5e8;
+              border-radius: 5px;
+              cursor: pointer;
+            }
+          }
+
+          //  form样式
+          .group-form-div, .group-form-edit-group {
+            height: @edit-team-form-height;
+            .item-border-style {
+              height: @edit-team-form-height;
+              background-color: #EFF8F9;
+            }
+          }
+          //没有上级团队的编辑界面高度去掉上级团队选项的高度
+          .group-form-no-superior.group-form-div, .group-form-no-superior.group-form-edit-group {
+            height: @edit-teamName-form-height;
+            .edit-sales-team-form {
+              height: @edit-teamName-form-height;
+            }
+            .item-border-style {
+              height: @edit-teamName-form-height;
+            }
+
+          }
+          .edit-sales-team-form {
+            cursor: default;
+            height: @edit-team-form-height;
+            .form {
+              padding: 10px;
+
+              .ant-form-item {
+                margin-bottom: 6px;
+                position: relative;
+                left: 10px;
+              }
+              .edit-sales-team-btn-item {
+                padding-right: 12px;
+                max-width: 236px;
+                height: auto;
+                .button-container{
+                  margin-top: 5px;
+                  .button-cancel, .button-save {
+                    height: 32px;
+                  }
+                }
+                .anticon.anticon-loading {
+                  font-size: 18px;
+                  margin-right: 10px;
+                }
+                .indicator {
+                  top: -5px;
+                  right: 120px;
+                }
+                .member-form-btn {
+                  border-radius: 4px;
+                  margin-left: 10px;
+                }
+              }
+            }
+
+          }
+          // 编辑部门样式
+          .group-form-edit-group {
+            background: #EFF8F9;
+            .edit-sales-team-form {
+              form {
+                .ant-form-item {
+                  left: 0;
+                }
+                .edit-sales-team-btn-item {
+                  padding-right: 3px;
+                  .button-container{
+                    margin-top: 0;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  //销售团队按钮的样式
+  .sales-team-item {
+    line-height: 1.5;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-block;
+    padding: 0 15px 0;
+
+    &.select-active {
+      background-color: #E4F2FE;
+      border-color: #4d96d1;
+      color: #ffffff;
+    }
+  }
+  //加为xx按钮的样式
+  .set-select-member-btns {
+    position: relative;
+    float: right;
+    color: #8DA8C5;
+    display: inline-block;
+
+    .indicator {
+      position: relative;
+      float: left;
+      left: 0px;
+      top: 0;
+      right: auto;
+      text-align: center;
+    }
+  }
+  //加为xx、删除按钮的hover事件
+  .member-btn-enable:hover {
+    color: #fff !important;
+    background-color: #4d96d1 !important;
+  }
+  .member-owner-disabled {
+    background-color: #aeb3b9;
+  }
+  //无团队时，添加团队的样式设置、
+  .sales-team-null-add-container {
+    position: absolute;
+    width: 300px;
+    height: 200px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    .no-sales-team-tip {
+      width: 100%;
+      height: 20px;
+      margin-bottom: 10px;
+      padding-left: 8px;
+      font-size: 14px;
+    }
+    .add-sales-team-div {
+      position: relative;
+      .indicator {
+        top: 48px;
+      }
+      input {
+        margin-bottom: 10px;
+        font-size: 14px;
+      }
+      button {
+        float: right;
+        margin-top: 10px;
+        padding: 3px 15px;
+        border-radius: 4px;
+      }
+    }
+  }
+  //添加根团队按钮样式设置
+  .sales-team-root-add {
+    border-bottom: 1px solid #f3f5f7;
+    cursor: pointer;
+    .add-sales-team-root-div {
+      height: 40px;
+      position: relative;
+      float: left;
+      .add-root-sales-team-btn {
+        height: @input_height;
+        border-radius: @border-radius;
+        margin-top: 5px;
+        margin-left: 5px;
+        font-size: @form_font_size;
+        width: 70px;
+        padding: 0;
+      }
+    }
+    //搜索按钮的样式设置
+    .search-sales-team-icon {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #666;
+      cursor: pointer;
+      &:hover {
+        color: #4d96d1;
+      }
+    }
+    //搜索框
+    .sales-team-search-input-container {
+      position: relative;
+      float: left;
+      width: 220px;
+      padding: 5px 0px 5px 5px;
+      .search-input {
+        height: @input_height;
+      }
+      .search-clear-icon {
+        position: absolute;
+        top: 6px;
+        right: 7px;
+        height: 28px;
+        line-height: 28px;
+        width: 20px;
+        font-size: 18px;
+        color: #7f909a;
+        background: #fff;
+        z-index: 2;
+        &:hover {
+          color: #E4F2FE;;
+        }
+      }
+    }
+    &:hover {
+      background-color: #F1F8FE;
+    }
+  }
+}
+
+// 添加子团队、编辑子团队、删除子团队的样式
+.ant-popover-inner-content {
+  .tree-operation-div {
+    color: #8DA8C5;
+    font-size: 14px;
+    .iconfont {
+      padding-right: 5px;
+    }
+    .tree-operation-item-zone {
+      height: 32px;
+      &:hover {
+        color: #2196F3;
+        background-color: #F1F8FE;
+      }
+    }
+  }
+}

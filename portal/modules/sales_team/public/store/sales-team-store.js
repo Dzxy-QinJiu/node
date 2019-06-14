@@ -30,17 +30,21 @@ function SalesTeamStore() {
     this.userInfoShow = false;
     this.userFormShow = false;
     this.rightPanelShow = false;
-
+    this.isEditGroupFlag = false; // 是否编辑部门，默认false
+    this.selectedRowIndex = -1; // 点击的行索引， 默认不选中
+    this.curEditGroup = {}; // 当前编辑的部门
     this.bindActions(SalesTeamActions);
 }
-SalesTeamStore.prototype.showUserInfoPanel = function() {
+SalesTeamStore.prototype.showUserInfoPanel = function(index) {
     this.userInfoShow = true;
     this.userFormShow = false;
     this.rightPanelShow = true;
+    this.selectedRowIndex = index;
 };
 SalesTeamStore.prototype.closeRightPanel = function() {
     this.rightPanelShow = false;
     this.userInfoShow = false;
+    this.selectedRowIndex = -1;
 };
 //获取统计团队内成员个数的列表
 SalesTeamStore.prototype.getTeamMemberCountList = function(list) {
@@ -133,7 +137,7 @@ SalesTeamStore.prototype.filterByTeamName = function(teamName) {
     });
     this.delSelectSalesTeam(this.salesTeamListArray);
     //递归遍历组织树，根据组织名查找组织
-    var filterTeamArray = [];
+    let filterTeamArray = [];
     this.findGroupListByName(this.salesTeamListArray, teamName, filterTeamArray);
     //默认展示第一个团队的成员
     if (filterTeamArray.length > 0) {
@@ -491,57 +495,45 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
         this.teamMemberListTipMsg = resultData;
     } else {
         if (_.isArray(resultData) && resultData.length > 0) {
+            let salesTeamMemberList = resultData;
             this.salesTeamMemberList = resultData;
             this.teamMemberListTipMsg = '';
-            var _this = this;
             //当前展示组的信息
-            var curTeamId = _this.curShowTeamMemberObj.groupId;
-            var curShowTeam = _.find(_this.salesTeamList, function(team) {
-                if (team.group_id === curTeamId) {
-                    return true;
-                }
-            });
-            //负责人
-            if (curShowTeam.owner_id) {
-                this.curShowTeamMemberObj.owner = _.find(_this.salesTeamMemberList, function(member) {
-                    if (curShowTeam.owner_id === member.userId) {
-                        return true;
-                    }
-                });
+            let curTeamId = _.get(this.curShowTeamMemberObj, 'groupId');
+            let curShowTeam = _.find(this.salesTeamList, team => team.group_id === curTeamId);
+            // 负责人
+            let ownerId = _.get(curShowTeam, 'owner_id');
+            if (ownerId) {
+                this.curShowTeamMemberObj.owner = _.find(salesTeamMemberList, member => ownerId === member.userId);
+                this.curShowTeamMemberObj.owner.role = 'owner';
             }
-            //秘书
-            if (curShowTeam.manager_ids) {
-                var managers = [];
-                curShowTeam.manager_ids.forEach(function(id) {
-                    var manager = _.find(_this.salesTeamMemberList, function(member) {
-                        if (id === member.userId) {
-                            return true;
-                        }
-                    });
+            // 秘书
+            let managerIds = _.get(curShowTeam, 'manager_ids');
+            if (managerIds) {
+                let managers = [];
+                _.each(managerIds, (id) => {
+                    let manager = _.find(salesTeamMemberList, member => id === member.userId);
                     if (manager) {
+                        manager.role = 'manager';
                         managers.push(manager);
                     }
                 });
                 this.curShowTeamMemberObj.managers = sortTeamMembers(managers);
             }
             //成员
-            if (curShowTeam.user_ids) {
-                var users = [];
-                curShowTeam.user_ids.forEach(function(id) {
-                    var user = _.find(_this.salesTeamMemberList, function(member) {
-                        if (id === member.userId) {
-                            return true;
-                        }
-                    });
+            let userIds = _.get(curShowTeam, 'user_ids');
+            if (userIds) {
+                let users = [];
+                _.each(userIds, (id) => {
+                    let user = _.find(salesTeamMemberList, item => id === item.userId);
                     if (user) {
+                        user.role = 'user';
                         users.push(user);
                     }
                 });
                 this.curShowTeamMemberObj.users = sortTeamMembers(users);
             }
         } else {
-            //暂无数据的提示
-            this.teamMemberListTipMsg = Intl.get('common.no.member', '暂无成员');
             this.salesTeamMemberList = [];
         }
     }
@@ -555,12 +547,16 @@ function sortTeamMembers(list) {
     });
 }
 SalesTeamStore.prototype.deleteGroup = function(deleteGroupItem) {
-    deleteGroupItem.modalDialogFlag = true;
+    deleteGroupItem.isDeleteGroup = true;
     this.deleteGroupItem = deleteGroupItem;
 };
 
 SalesTeamStore.prototype.hideModalDialog = function(deleteGroupItem) {
-    deleteGroupItem.modalDialogFlag = false;
+    deleteGroupItem.isDeleteGroup = false;
+};
+
+SalesTeamStore.prototype.handleCancelDeleteGroup = function(item) {
+    item.isDeleteGroup = false;
 };
 
 //编辑成员
@@ -578,7 +574,6 @@ SalesTeamStore.prototype.cancelEditMember = function() {
 SalesTeamStore.prototype.getIsAddMember = function() {
     this.isEditMember = false;
     this.isAddMember = true;
-
 };
 
 //取消添加成员
@@ -644,6 +639,8 @@ SalesTeamStore.prototype.addSalesTeamRoot = function() {
 
 //展示组修改表单
 SalesTeamStore.prototype.editGroup = function(item) {
+    this.curEditGroup = item;
+    this.isEditGroupFlag = true;
     item.isEditGroup = true;
     item.isShowOperationArea = false;
 };
@@ -651,6 +648,8 @@ SalesTeamStore.prototype.editGroup = function(item) {
 //取消展示组修改表单
 SalesTeamStore.prototype.cancelEditGroup = function(item) {
     item.isEditGroup = false;
+    this.isEditGroupFlag = false;
+    this.curEditGroup = {};
 };
 
 //展示组添加表单
