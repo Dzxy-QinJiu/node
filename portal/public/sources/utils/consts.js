@@ -498,3 +498,24 @@ export const FILES_LIMIT = {
     TOTAL: 'total',
     SINGLE: 'single'
 };
+// 通话状态
+export const CALL_STATUS_MAP = {
+    'ALL': Intl.get('common.all', '全部'),
+    'ANSWERED': Intl.get('call.record.state.answer', '已接听'),
+    'NO ANSWER': Intl.get('call.record.state.no.answer', '未接听'),
+    'BUSY': Intl.get('call.record.state.busy', '用户忙')
+};
+//textarea自适应高度
+export const AUTO_SIZE_MAP = {minRows: 2, maxRows: 6};
+// 通话类型
+export const CALL_TYPE_MAP = {
+    'all': Intl.get('common.all', '全部'),
+    'phone,curtao_phone': Intl.get('common.phone.system', '电话系统'),
+    'app': Intl.get('menu.download.app', '客套APP'),
+    'visit': Intl.get('customer.visit', '拜访'),
+    'call_back': Intl.get('common.callback', '回访'),
+    'data_report': Intl.get('crm.trace.delivery.report', '舆情报送'),
+    'other': Intl.get('customer.other', '其他')
+};
+//跟进记录为空时的提示
+export const TRACE_NULL_TIP = Intl.get('customer.trace.content', '跟进记录内容不能为空');

@@ -306,5 +306,22 @@ ClueCustomerStore.prototype.updateClueCustomers = function(data) {
     this.curClueLists = data;
     this.customersSize = _.get(this,'curClueLists.length');
 };
+//添加跟进记录时，修改客户最新的跟进记录时，更新列表中的最后联系
+ClueCustomerStore.prototype.updateCustomerLastContact = function(traceObj) {
+    if (_.get(traceObj, 'lead_id')) {
+        let updateTraceCustomer = _.find(this.curClueLists, curClue => curClue.id === traceObj.lead_id);
+        if (updateTraceCustomer) {
+            if (_.get(updateTraceCustomer, 'customer_traces[0]')) {
+                updateTraceCustomer.customer_traces[0].remark = traceObj.remark;
+                updateTraceCustomer.customer_traces[0].add_time = traceObj.time;
+            } else {
+                updateTraceCustomer.customer_traces = [{remark: traceObj.remark,add_time: traceObj.time}];
+            }
+        }
+        if (traceObj.remark){
+            updateTraceCustomer.status = SELECT_TYPE.HAS_TRACE;
+        }
+    }
+};
 
 module.exports = alt.createStore(ClueCustomerStore, 'ClueCustomerStore');

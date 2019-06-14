@@ -575,7 +575,8 @@ class ClueCustomer extends React.Component {
             });
         } else {
             var submitObj = {
-                'customer_id': item.id,
+                'lead_id': item.id,
+                'type': 'other',
                 'remark': textareVal
             };
             this.setState({
@@ -664,29 +665,19 @@ class ClueCustomer extends React.Component {
         );
     };
     renderShowTraceContent = (salesClueItem) => {
-        let user = userData.getUserData();
-        let member_id = user.user_id || '';
         var traceContent = _.get(salesClueItem, 'customer_traces[0].remark', '');//该线索的跟进内容
         var traceAddTime = _.get(salesClueItem, 'customer_traces[0].add_time');//跟进时间
-        var tracePersonId = _.get(salesClueItem, 'customer_traces[0].user_id', '');//跟进人的id
-        var tracePersonName = _.get(salesClueItem, 'customer_traces[0].nick_name', '');//跟进人的名字
-        //是否有添加跟进记录的权限
-        var hasPrivilegeAddEditTrace = hasPrivilege('CLUECUSTOMER_ADD_TRACE');
         return (
             <div className="foot-text-content" key={salesClueItem.id}>
                 {/*有跟进记录*/}
                 {traceContent ?
                     <div className="record-trace-container">
                         <ShearContent>
-                            <span>{traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : ''}</span>
+                            <span className="trace-time">{traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : ''}</span>
                             <span>
-                                <span className="trace-author">
-                                    <span className="trace-name">{tracePersonId === member_id ? Intl.get('sales.home.i.trace', '我') : tracePersonName} </span>
-                                </span>
-                                {Intl.get('clue.add.trace.follow', '跟进') + ':' + traceContent}
+                                {traceContent}
                             </span>
                         </ShearContent>
-                        {hasPrivilegeAddEditTrace ? <i className="iconfont icon-edit-btn" onClick={this.handleEditTrace.bind(this, salesClueItem)}></i> : null}
                     </div>
                     : hasPrivilege('CLUECUSTOMER_ADD_TRACE') ?
                         <span className='add-trace-content'
@@ -1517,6 +1508,9 @@ class ClueCustomer extends React.Component {
     hasSelectedClues = () => {
         return _.get(this, 'state.selectedClues.length');
     };
+    updateCustomerLastContact = (item) => {
+        clueCustomerAction.updateCustomerLastContact(item);
+    };
     renderNotSelectClueBtns = () => {
         return (
             <div className="pull-right add-anlysis-handle-btns">
@@ -1623,6 +1617,7 @@ class ClueCustomer extends React.Component {
                             curClue={this.state.curClue}
                             ShowCustomerUserListPanel = {this.ShowCustomerUserListPanel}
                             hideRightPanel={this.hideRightPanel}
+                            updateCustomerLastContact={this.updateCustomerLastContact}
                         /> : null}
 
                     {this.state.clueAnalysisPanelShow ? <RightPanel

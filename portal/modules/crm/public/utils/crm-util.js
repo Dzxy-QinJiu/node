@@ -203,4 +203,14 @@ exports.AUTHS = {
     'UPDATE_ALL': 'CUSTOMER_MANAGER_UPDATE_ALL',
     'TRANSFER_MANAGER': 'CRM_MANAGER_TRANSFER'
 };
+//用于布局的高度
+exports.LAYOUT_CONSTANTS = {
+    TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
+    MARGIN_BOTTOM: 8, //跟进记录页的下边距
+    ADD_TRACE_HEIGHHT: 155,//添加跟进记录面板的高度
+    PHONE_STATUS_HEIGHT: 30,//通话状态筛选框的高度
+    TIME_ADD_BTN_HEIGHT: 30,//时间选择框和跟进记录的高度
+    STATISTIC_TYPE_HEIGHT: 50,//类型统计高度
+    OVER_VIEW_LOADING_HEIGHT: 30//概览页”最新跟进“加载效果的高度
+};
 
