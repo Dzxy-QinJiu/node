@@ -57,10 +57,17 @@ class ClueToCustomerPanel extends React.Component {
     }
 
     //合并到此客户按钮点击事件
-    onMergeToCustomerClick = (customer) => {
-        this.setState({
-            toMergeCustomer: customer,
-        }, this.setMergedCustomer);
+    onMergeToCustomerClick = customer => {
+        ajax.send({
+            url: `/rest/customer/v3/contacts/${customer.id}`,
+        })
+            .done(result => {
+                this.setState({
+                    toMergeCustomer: customer,
+                }, this.setMergedCustomer);
+            })
+            .fail(err => {
+            });
     }
 
     //替换联系人名称按钮点击事件
