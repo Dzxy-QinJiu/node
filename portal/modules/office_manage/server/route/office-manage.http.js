@@ -79,6 +79,13 @@ module.exports = {
         privileges: [
             'TEAM_ROLE_MANAGE'
         ]
-    }
-    ]
+    }, { // 编辑某个角色的名称/容量
+        method: 'put',
+        path: '/rest/sales/edit/role',
+        handler: 'editPosition',
+        passport: {
+            'needLogin': true
+        },
+        privileges: ['TEAM_ROLE_MANAGE']
+    }]
 };

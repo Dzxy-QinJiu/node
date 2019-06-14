@@ -9,6 +9,8 @@ class OfficeForm extends React.Component{
         this.state = {
             loading: false, // loading
             errMsg: '', // 错误信息
+            isEditNum: false, // 编辑数量，默认false
+            isEditName: false, // 编辑名称，默认false
             formData: this.getFormData(this.props.itemOffice)
         };
     }
@@ -32,12 +34,14 @@ class OfficeForm extends React.Component{
         let value = _.get(event, 'target.value');
         let formData = this.state.formData;
         formData.name = _.trim(value);
+        formData.isEditName = true;
         this.setState({formData});
     };
 
     handleCustomerCount = (value) => {
         let formData = this.state.formData;
         formData.customer_num = _.trim(value);
+        formData.isEditNum = true;
         this.setState({formData});
     };
 
@@ -106,6 +110,10 @@ class OfficeForm extends React.Component{
 
     handleCancel = (event) => {
         event.preventDefault();
+        this.setState({
+            isEditName: false,
+            isEditNum: false
+        });
         let formData = this.state.formData;
         this.props.handleCancelForm(formData);
     };
