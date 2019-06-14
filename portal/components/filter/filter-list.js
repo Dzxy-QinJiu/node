@@ -33,20 +33,32 @@ class FilterList extends React.Component {
         this.handleClearAll = this.handleClearAll.bind(this);
     }
     componentDidMount() {
-        this.setDefaultFilterSetting();
         filterEmitter.on(filterEmitter.CLEAR_FILTERS + this.props.key, this.handleClearAll);
         filterEmitter.on(filterEmitter.ADD_COMMON + this.props.key, this.handleAddCommon);
         filterEmitter.on(filterEmitter.CHANGE_PERMITTED + this.props.key, this.handleChangePermitted);
-        this.handleChangePermitted = this.handleChangePermitted.bind(this);
+        if (this.props.setDefaultCommonSelect){
+            this.setDefaultFilterSetting();
+        }else{
+            this.handleChangePermitted = this.handleChangePermitted.bind(this);
+        }
+
     }
     setDefaultFilterSetting = () => {
-        if (this.props.setDefaultSelect){
+        //把高级筛选的所有选中项都设置为false
+        let advancedData = this.getClearSelectedAdvancedData();
+        this.setState({
+            advancedData
+        },() => {
             this.props.setDefaultSelectCommonFilter(this.state.commonData,(targetIndex) => {
                 if (targetIndex !== ''){
-                    this.handleCommonItemClick(this.state.commonData[targetIndex],targetIndex);
+                    this.handleCommonItemClick(this.state.commonData[targetIndex],targetIndex, true);
+                    //选择的常用筛选中不包含高级筛选项, 对外和search提供两者的union
+                    const allSelectedFilterData = this.unionFilterList(this.state.commonData[targetIndex].data, this.state.advancedData);
+                    //发送选择筛选项事件
+                    filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, allSelectedFilterData);
                 }
             });
-        }
+        });
     }
     componentWillReceiveProps(newProps) {
         const { commonData, advancedData } = newProps;
@@ -156,7 +168,7 @@ class FilterList extends React.Component {
             });
         }
 
-        if (this.state.selectedCommonIndex &&
+        if ((this.state.selectedCommonIndex || this.state.selectedCommonIndex === 0) &&
             _.get(this.state, ['commonData', this.state.selectedCommonIndex, 'data', 'length'])
         ) {
             //已选中的常用筛选中包含高级筛选时，直接清空常用筛选
@@ -393,13 +405,13 @@ class FilterList extends React.Component {
         }
     }
 
-    handleCommonItemClick(item, index) {
+    handleCommonItemClick(item, index, flag) {
         //存在选中的客户时，切换筛选条件需要先提示，确认后再修改筛选条件
         let selectedIndex = this.state.selectedCommonIndex;
         let newSelectIndex = index;
         let dataItem = $.extend(true, {}, item);
         //已经选中该项，不进行处理,
-        if (selectedIndex === index) {
+        if (selectedIndex === index && !flag) {
             return;
         }
         //记录当前索引项的点击次数
@@ -734,7 +746,7 @@ FilterList.defaultProps = {
     setDefaultSelectCommonFilter: function() {
 
     },
-    setDefaultSelect: false,
+    setDefaultCommonSelect: false,
 };
 /**
  * advancedData=[
@@ -785,6 +797,6 @@ FilterList.propTypes = {
     onDelete: PropTypes.func,
     hideAdvancedTitle: PropTypes.bool,
     setDefaultSelectCommonFilter: PropTypes.func,
-    setDefaultSelect: PropTypes.bool,
+    setDefaultCommonSelect: PropTypes.bool,
 };
 export default FilterList;
