@@ -199,35 +199,6 @@ class ClueToCustomerPanel extends React.Component {
         }
     }
 
-    //删除电话按钮点击事件
-    onDeletePhoneClick = (contactIndex, phoneIndex, phone) => {
-        this.setState({
-            isDeletePhoneDialogShow: true,
-            opContactIndex: contactIndex,
-            opPhoneIndex: phoneIndex,
-            opPhone: phone
-        });
-    }
-
-    //隐藏删除电话对话框
-    hideDeletePhoneDialog = () => {
-        this.setState({
-            isDeletePhoneDialogShow: false
-        });
-    }
-
-    //删除电话对话框确定按钮点击事件
-    onDeletePhoneDialogConfirm = () => {
-        let mergedCustomer = _.cloneDeep(this.state.mergedCustomer);
-
-        mergedCustomer.contacts[this.state.opContactIndex].phone.splice(this.state.opPhoneIndex, 1);
-
-        this.setState({
-            mergedCustomer,
-            isDeletePhoneDialogShow: false,
-        });
-    }
-
     //渲染添加新客户区块
     renderAddCustomerBlock() {
         const clue = this.props.clue;
@@ -368,10 +339,6 @@ class ClueToCustomerPanel extends React.Component {
                                         return (
                                             <div>
                                                 {phone}
-                                                {contact.isDup ? (
-                                                    <span className="btn-delete clickable" onClick={this.onDeletePhoneClick.bind(this, contactIndex, phoneIndex, phone)}
-                                                    >删除</span>
-                                                ) : null}
                                             </div>
                                         );
                                     })}
@@ -385,19 +352,6 @@ class ClueToCustomerPanel extends React.Component {
                     <Button type="primary" onClick={this.mergeToCustomer}>确认合并</Button>
                 </div>
             </div>
-        );
-    }
-
-    //渲染是否删除电话对话框
-    renderDeletePhoneDialog() {
-        return (
-            <ModalDialog
-                modalContent={`是否删除电话"${this.state.opPhone}"?`}
-                modalShow={this.state.isDeletePhoneDialogShow}
-                container={this}
-                hideModalDialog={this.hideDeletePhoneDialog}
-                delete={this.onDeletePhoneDialogConfirm}
-            />
         );
     }
 
@@ -420,8 +374,6 @@ class ClueToCustomerPanel extends React.Component {
                         {isMergeCustomerBlockShow ? this.renderMergeCustomerBlock() : null}
                     </div>
                 </div>
-
-                {this.renderDeletePhoneDialog()}
             </RightPanel>
         );
     }
