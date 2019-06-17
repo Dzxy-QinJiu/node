@@ -60,6 +60,7 @@ LeaveApplyDetailStore.prototype.setInitState = function() {
         errorMsg: ''
     };
     this.isLeader = false; //当前账号是否是待审批人的上级领导
+    this.applyNode = [];
 };
 LeaveApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
@@ -251,6 +252,13 @@ LeaveApplyDetailStore.prototype.transferNextCandidate = function(result) {
         //如果转出成功，要隐藏审批的按钮
         this.selectedDetailItem.showApproveBtn = false;
         this.detailInfoObj.info.showApproveBtn = false;
+    }
+};
+LeaveApplyDetailStore.prototype.getApplyTaskNode = function(result){
+    if (result.error) {
+        this.applyNode = [];
+    } else {
+        this.applyNode = result;
     }
 };
 

@@ -251,6 +251,8 @@ class ApplyViewDetail extends React.Component {
             } else if (detailItem.id) {
                 MemberApplyDetailAction.getMemberApplyDetailById({id: detailItem.id});
                 MemberApplyDetailAction.getMemberApplyCommentList({id: detailItem.id});
+                //根据申请的id获取申请的状态
+                MemberApplyDetailAction.getApplyTaskNode({id: detailItem.id});
                 this.getNextCandidate(detailItem.id);
             }
         });

@@ -235,7 +235,7 @@ class ApplyViewDetail extends React.Component {
                 ApplyViewDetailActions.getBusinessApplyDetailById({id: detailItem.id});
                 ApplyViewDetailActions.getBusinessApplyCommentList({id: detailItem.id});
                 //根据申请的id获取申请的状态
-                ApplyViewDetailActions.getApplyStatusById({id: detailItem.id});
+                ApplyViewDetailActions.getApplyTaskNode({id: detailItem.id});
                 this.getNextCandidate(detailItem.id);
             }
         });
