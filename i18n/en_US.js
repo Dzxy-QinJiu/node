@@ -2203,8 +2203,8 @@ var en_US = {
 
     'company.name.curtao': '© Curtao Smart Technology 鲁ICP备18038856号',//© 客套智能科技 鲁ICP备18038856号
     'company.name.eefung': '© Eefung Software 湘ICP备14007253号-1',//© 蚁坊软件 湘ICP备14007253号-1
-    'companay.hotline': 'Service Hotline:400-677-0986',//服务热线: 400-677-0986
-    'company.qq': 'QQ:{qq}',//企业QQ: 4006770986
+    'companay.hotline': 'Service Hotline: {phone}',//服务热线: {phone}
+    'company.qq': 'QQ: {qq}',//企业QQ: {qq}
     'login.fail.login': 'Login service is temporarily unavailable. Please try again later',//登录服务暂时不可用，请稍后重试
     'customer.input.customer.trace.content': 'Please fill in the customer follow-up record',//请填写跟进内容
     'customer.add.customer.trace.detail': 'Please add details of customer follow-up record',//请补充客户跟进记录详情
