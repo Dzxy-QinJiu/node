@@ -2643,6 +2643,7 @@ var zh_CN = {
     'common.trial.qualified.customer.statistics': '试用合格客户数统计', 'clue.repeat.clue.list': '重复线索',
     'clue.has.no.relative.customer': '没有关联客户的线索',
     'clue.export.clue.list': '导出线索',
+    'clue.extract.clue': '提取线索',
     'clue.list.clue.availibility': '无效线索',
     'common.memeber.all': '全部成员',
     'user.detail.analysis.tip.activity': '最近30天的活跃天数/30。该分项在总分中占比30%',

@@ -53,6 +53,7 @@ const AlertTimer = require('CMP_DIR/alert-timer');
 const DELAY_TIME = 3000;
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
+import ClueExtract from 'MOD_DIR/clue_pool/public';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 68,
@@ -84,6 +85,7 @@ class ClueCustomer extends React.Component {
         isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
         customerOfCurUser: {},//当前展示用户所属客户的详情
         selectedClues: [],//获取批量操作选中的线索
+        isShowExtractCluePanel: false, // 是否显示提取线索界面，默认不显示
         ...clueCustomerStore.getState()
     };
     isCommonSales = () => {
@@ -244,6 +246,32 @@ class ClueCustomer extends React.Component {
                         </span>
                     </Button>
                     : null}
+            </div>
+        );
+    };
+
+    // 点击关闭提取线索的界面
+    closeExtractCluePanel = () => {
+        this.setState({
+            isShowExtractCluePanel: false
+        });
+    };
+
+    // 点击显示提取线索的界面
+    showExtractCluePanel = () => {
+        this.setState({
+            isShowExtractCluePanel: true
+        });
+    };
+    // 提取线索 todo 需要加权限的判断
+    renderExtractClue = () => {
+        return (
+            <div className="extract-clue-customer-container pull-right">
+                <Button onClick={this.showExtractCluePanel} className="btn-item">
+                    <span className="clue-container">
+                        {Intl.get('clue.extract.clue','提取线索')}
+                    </span>
+                </Button>
             </div>
         );
     };
@@ -1525,6 +1553,7 @@ class ClueCustomer extends React.Component {
                  CRM_CLUE_TREND_STATISTIC_ALL CRM_CLUE_TREND_STATISTIC_SELF 查看线索趋势分析的权限
                  */}
                 {hasPrivilege('CRM_CLUE_STATISTICAL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_ALL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_SELF') ? this.renderClueAnalysisBtn() : null}
+                {this.renderExtractClue()}
                 {this.renderExportClue()}
                 {this.renderHandleBtn()}
                 {this.renderImportClue()}
@@ -1624,7 +1653,18 @@ class ClueCustomer extends React.Component {
                             ShowCustomerUserListPanel = {this.ShowCustomerUserListPanel}
                             hideRightPanel={this.hideRightPanel}
                         /> : null}
-
+                    {
+                        this.state.isShowExtractCluePanel ?
+                            <RightPanel
+                                className="extract-clue-panel"
+                                showFlag={this.state.isShowExtractCluePanel}
+                            >
+                                <ClueExtract
+                                    closeExtractCluePanel={this.closeExtractCluePanel}
+                                />
+                            </RightPanel>
+                            : null
+                    }
                     {this.state.clueAnalysisPanelShow ? <RightPanel
                         className="clue-analysis-panel"
                         showFlag={this.state.clueAnalysisPanelShow}
