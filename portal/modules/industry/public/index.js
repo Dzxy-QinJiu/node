@@ -229,10 +229,11 @@ class Industry extends React.Component {
                     <ul className="mb-taglist">
                         {
                             _.map(TagLists, (item, index) => {
+                                let content = _.get(item, 'industry');
                                 return (
                                     <li className="mb-tag" key={index}>
                                         <div className="mb-tag-content">
-                                            <span className="tag-content">{item.industry}</span>
+                                            <span className="tag-content" title={content}>{content}</span>
                                             <span
                                                 onClick={this.handleDeleteItem.bind(this, item)}
                                                 data-tracename="点击删除某个行业按钮"
