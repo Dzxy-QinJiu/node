@@ -266,7 +266,7 @@ class ApplyFormAndRules extends React.Component {
         var hasFormItem = _.get(applyTypeData, 'customiz_form.length');
         return (
             <div className="apply-form-content-wrap"
-                style={{height: calculateHeight() - 2 * APPLYAPPROVE_LAYOUT.PADDINGHEIGHT - APPLYAPPROVE_LAYOUT.TABTITLE - APPLYAPPROVE_LAYOUT.TOPANDBOTTOM}}>
+                style={{height: calculateHeight() - 2 * APPLYAPPROVE_LAYOUT.PADDINGHEIGHT - APPLYAPPROVE_LAYOUT.TABTITLE - APPLYAPPROVE_LAYOUT.TOPANDBOTTOM + 70}}>
                 <div className="apply-form-rules">
                     {this.renderAddFormRules()}
                 </div>

@@ -60,6 +60,7 @@ ApplyViewDetailStore.prototype.setInitState = function() {
         errorMsg: ''
     };
     this.isLeader = false; //当前账号是否是待审批人的上级领导
+    this.applyNode = [];
 };
 //设置某条申请的回复列表
 ApplyViewDetailStore.prototype.setApplyComment = function(list) {
@@ -247,6 +248,14 @@ ApplyViewDetailStore.prototype.transferNextCandidate = function(result) {
         this.detailInfoObj.info.showApproveBtn = false;
     }
 };
+ApplyViewDetailStore.prototype.getApplyTaskNode = function(result){
+    if (result.error) {
+        this.applyNode = [];
+    } else {
+        this.applyNode = result;
+    }
+};
+
 
 
 module.exports = alt.createStore(ApplyViewDetailStore, 'ApplyViewDetailStore');
