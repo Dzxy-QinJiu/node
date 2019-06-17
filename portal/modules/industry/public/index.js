@@ -4,8 +4,10 @@ import {Icon, Alert, Input, Button} from 'antd';
 const AlertTimer = require('CMP_DIR/alert-timer');
 import Trace from 'LIB_DIR/trace';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+import {ajustTagWidth} from 'PUB_DIR/sources/utils/common-method-util';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 const PAGE_SIZE = 1000;
+
 class Industry extends React.Component {
     state = {
         isLoading: true, // 获取行业列表的loading，初始状态为true
@@ -199,9 +201,25 @@ class Industry extends React.Component {
         );
     };
 
+    getAdjustTagWidth = () => {
+        let contentWidth = $('.industry-content').width();
+        let tagsWidth = TAG_MIN_WIDTH * COUNT + 16 * 5;
+        let tagWidth = TAG_MIN_WIDTH;
+        if (contentWidth) {
+            if (contentWidth >= tagsWidth) {
+                tagWidth = (contentWidth - 16 * 5) / 6;
+            } else {
+                let count = Math.floor(contentWidth / 176);
+                tagWidth = (contentWidth - 16 * (count - 1)) / count;
+            }
+        }
+    };
+
     renderIndustryConfig = () => {
         let TagLists = this.state.TagLists;
         let length = _.get(TagLists, 'length');
+        let contentWidth = $('.industry-content').width();
+        let tagWidth = ajustTagWidth(contentWidth);
         return (
             <div className="industry-content-zone">
                 <div className="msg-tips">
@@ -231,14 +249,15 @@ class Industry extends React.Component {
                             _.map(TagLists, (item, index) => {
                                 let content = _.get(item, 'industry');
                                 return (
-                                    <li className="mb-tag" key={index}>
+                                    <li className="mb-tag" key={index} style={{width: tagWidth}}>
                                         <div className="mb-tag-content">
                                             <span className="tag-content" title={content}>{content}</span>
                                             <span
                                                 onClick={this.handleDeleteItem.bind(this, item)}
                                                 data-tracename="点击删除某个行业按钮"
-                                                className="iconfont icon-delete"
+                                                className="ant-btn"
                                             >
+                                                <i className="iconfont icon-delete "></i>
                                             </span>
                                             { this.state.DeletingItemId === item.id ? (
                                                 <span ><Icon type="loading"/></span>
@@ -258,6 +277,8 @@ class Industry extends React.Component {
     render = () => {
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         let contentHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
+        let contentWidth = $(window).width() - BACKGROUG_LAYOUT_CONSTANTS.FRIST_NAV_WIDTH -
+            BACKGROUG_LAYOUT_CONSTANTS.NAV_WIDTH - BACKGROUG_LAYOUT_CONSTANTS.PADDING_WIDTH;
         return (
             <div className="industry-container" data-tracename="行业" style={{height: height}}>
                 <div className="industry-content-wrap" style={{height: height}}>
@@ -265,7 +286,7 @@ class Industry extends React.Component {
                         {this.renderTopNavOperation()}
                     </div>
                     <div className="industry-content" style={{height: contentHeight}}>
-                        <GeminiScrollBar>
+                        <GeminiScrollBar style={{width: contentWidth}}>
                             {this.renderIndustryConfig()}
                         </GeminiScrollBar>
                     </div>

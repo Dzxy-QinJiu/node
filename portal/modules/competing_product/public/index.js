@@ -5,6 +5,7 @@ const AlertTimer = require('CMP_DIR/alert-timer');
 import Trace from 'LIB_DIR/trace';
 import {Icon, Alert, Input, Button} from 'antd';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+import {ajustTagWidth} from 'PUB_DIR/sources/utils/common-method-util';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
@@ -167,6 +168,8 @@ class competingProduct extends React.Component {
         let length = _.get(productList, 'length');
         let getErrMsg = this.state.getErrMsg;
         let isLoading = this.state.isLoading;
+        let contentWidth = $('.competing-product-content').width();
+        let tagWidth = ajustTagWidth(contentWidth);
         return (
             <div className="competing-product-content-zone">
                 <div className="msg-tips">
@@ -195,14 +198,15 @@ class competingProduct extends React.Component {
                         {
                             _.map(productList, (item, index) => {
                                 return (
-                                    <li className="mb-tag" key={index}>
+                                    <li className="mb-tag" key={index} style={{width: tagWidth}}>
                                         <div className="mb-tag-content">
                                             <span className="tag-content" title={item}>{item}</span>
                                             <span
                                                 onClick={this.handleDeleteItem.bind(this, item)}
                                                 data-tracename="点击删除某个竞品按钮"
-                                                className="iconfont icon-delete"
+                                                className="ant-btn"
                                             >
+                                                <i className="iconfont icon-delete"></i>
                                             </span>
                                             { this.state.DeletingItemId === item ? (
                                                 <span ><Icon type="loading"/></span>
@@ -259,6 +263,8 @@ class competingProduct extends React.Component {
     render() {
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         let contentHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
+        let contentWidth = $(window).width() - BACKGROUG_LAYOUT_CONSTANTS.FRIST_NAV_WIDTH -
+            BACKGROUG_LAYOUT_CONSTANTS.NAV_WIDTH - BACKGROUG_LAYOUT_CONSTANTS.PADDING_WIDTH;
         return (
             <div className="competing-product-container" data-tracename="行业" style={{height: height}}>
                 <div className="competing-product-content-wrap" style={{height: height}}>
@@ -266,7 +272,7 @@ class competingProduct extends React.Component {
                         {this.renderTopNavOperation()}
                     </div>
                     <div className="competing-product-content" style={{height: contentHeight}}>
-                        <GeminiScrollBar>
+                        <GeminiScrollBar style={{width: contentWidth}}>
                             {this.renderCompetingProductList()}
                         </GeminiScrollBar>
                     </div>

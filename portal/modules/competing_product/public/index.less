@@ -17,7 +17,7 @@
     }
     .competing-product-content {
       border-top: 1px solid #E5E5E5;
-      padding: 24px;
+      padding: 8px 24px 24px;
       .msg-tips {
         width: 350px;
       }
@@ -29,10 +29,10 @@
           border: 1px solid #E5E5E5;
           border-radius:4px;
           color: #333;
-          margin: 0 16px 16px 0;
+          margin: 16px 16px 16px 0;
           display: inline-block;
           .mb-tag-content {
-            padding: 0 5px;
+            padding: 0 16px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -41,19 +41,28 @@
             .tag-content {
               font-size: 16px;
             }
-            .icon-delete {
+            .ant-btn {
               position: absolute;
-              right: 5px;
-              top: -15px;
-              color: #CCC;
-              width: 14px;
-              height: 16px;
+              right: -10px;
+              top: -12px;
+              width: 24px;
+              height: 24px;
+              border-radius: 50%;
+              background-color: #8DA8C5;
+              .icon-delete {
+                color: #CCC;
+                width: 14px;
+                height: 16px;
+                position: relative;
+                top: 2px;
+                right: 8px;
+              }
               display: none;
             }
           }
           &:hover {
             background-color: #F1F8FE;
-            .icon-delete {
+            .ant-btn {
               display: inline-block;
             }
           }
