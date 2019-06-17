@@ -655,7 +655,7 @@ class RegRulesView extends React.Component {
             'err-tip': hasErrTip
         });
         var addPanelWrap = classNames({'show-add-node-modal': this.state.addNodePanelFlow || this.state.showAddConditionPanel});
-        var divHeight = $(window).height() - FORMLAYOUT.PADDINGTOTAL;
+        var divHeight = $(window).height() - FORMLAYOUT.PADDINGTOTAL + 110;
         var defaultRules = this.getDiffTypeFlow(FLOW_TYPES.DEFAULTFLOW);
         //把默认流程的中待审批人所在的节点过滤出来
         var candidateRules = _.filter(defaultRules, (item) => item.candidateApprover);
