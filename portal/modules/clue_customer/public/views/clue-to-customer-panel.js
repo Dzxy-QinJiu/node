@@ -176,7 +176,24 @@ class ClueToCustomerPanel extends React.Component {
         _.each(contacts, contact => {
             //如果是新联系人
             if (contact.isNew) {
-                contact = this.refs[contact.id].state.formData;
+                contact = _.cloneDeep(this.refs[contact.id].state.formData);
+                const fields = ['phone', 'qq', 'weChat', 'email'];
+
+                _.each(contact, (value, key) => {
+                    const keyWithoutIndex = key.substr(0, key.length - 1);
+
+                    if (_.includes(fields, keyWithoutIndex)) {
+                        if (!contact[keyWithoutIndex]) {
+                            contact[keyWithoutIndex] = [value];
+                        } else {
+                            contact[keyWithoutIndex].push(value);
+                        }
+
+                        delete contact[key];
+                    }
+                });
+                //console.log(contact)
+                //return
 
                 ajax.send({
                     url: `/rest/customer/v3/contacts/lead?clue_id=${clueId}`,
@@ -302,7 +319,15 @@ class ClueToCustomerPanel extends React.Component {
         const contactId = contact.id;
 
         //将联系人对象转换成联系人表单组件需要的形式
-        contact = {contact};
+        contact = {
+            contact,
+            contactWayAddObj: {
+                phone: !_.isEmpty(contact.phone) ? contact.phone : [''],
+                qq: !_.isEmpty(contact.qq) ? contact.qq : [''],
+                weChat: !_.isEmpty(contact.weChat) ? contact.weChat : [''],
+                email: !_.isEmpty(contact.email) ? contact.email : ['']
+            }
+        };
 
         return (
             <div className="crm-pannel-contacts">
