@@ -66,6 +66,7 @@ MemberApplyDetailStore.prototype.setInitState = function() {
     this.emailError = false;// 邮件唯一性验证出错
     this.autoGenerationPsd = true; // 是否自动生成密码，默认true
     this.password = '';// 手动输入申请成员的密码，默认是空
+    this.applyNode = [];
 };
 MemberApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
@@ -306,6 +307,12 @@ MemberApplyDetailStore.prototype.checkAutoGeneration = function(check) {
 MemberApplyDetailStore.prototype.handleInputPassword = function(value) {
     this.password = value;
 };
-
+MemberApplyDetailStore.prototype.getApplyTaskNode = function(result){
+    if (result.error) {
+        this.applyNode = [];
+    } else {
+        this.applyNode = result;
+    }
+};
 
 module.exports = alt.createStore(MemberApplyDetailStore, 'MemberApplyDetailStore');
