@@ -432,7 +432,7 @@ exports.addCustomerByClue = function(req, res) {
 
     //在线索转客户过程中生成客户时
     if (req.query.is_convert) {
-        url = crmRestApis.addCustomerByClueAtConvert + `?lead_id=${req.query.clueId}`;
+        url = crmRestApis.addCustomerByClueAtConvert + `?clue_id=${req.query.clueId}`;
     //在线索关联客户过程中生成客户时
     } else {
         url = crmRestApis.addCustomerByClue + `?clue_id=${req.query.clueId}`;
