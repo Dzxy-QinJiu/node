@@ -197,7 +197,7 @@ class competingProduct extends React.Component {
                                 return (
                                     <li className="mb-tag" key={index}>
                                         <div className="mb-tag-content">
-                                            <span className="tag-content">{item}</span>
+                                            <span className="tag-content" title={item}>{item}</span>
                                             <span
                                                 onClick={this.handleDeleteItem.bind(this, item)}
                                                 data-tracename="点击删除某个竞品按钮"
